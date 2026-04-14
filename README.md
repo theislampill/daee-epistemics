@@ -72,23 +72,39 @@ Read behaviorally as well as structurally, the architecture works like this: dia
 
 The distributable artifact for this repository is `daee-epistemics.skill`. Its archive root must contain `SKILL.md` and `references/` directly. Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
 
-From this repo:
-
-1. Clone or download the repository.
-2. Run one of the packaging commands below from the repo root.
-3. Upload `daee-epistemics.skill` in Claude.ai via Settings > Skills or the [Claude Skills](https://claude.ai/customize/skills) page.
+From any folder, open a terminal and paste one of the following. The command will clone the repo into a temporary subfolder, build `daee-epistemics.skill`, and remove the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 
 PowerShell:
 
 ```powershell
-Compress-Archive -Path .\skill\* -DestinationPath .\daee-epistemics.zip -Force
-Move-Item .\daee-epistemics.zip .\daee-epistemics.skill -Force
+$repo = "https://github.com/theislampill/daee-epistemics.git"
+$tmp = "daee-epistemics-src"
+$tmpSkill = "daee-epistemics.tmp.skill"
+$outSkill = "daee-epistemics.skill"
+
+if (Test-Path $tmp) { Remove-Item $tmp -Recurse -Force }
+if (Test-Path $tmpSkill) { Remove-Item $tmpSkill -Force }
+
+git clone $repo $tmp
+Compress-Archive -Path ".\$tmp\skill\*" -DestinationPath ".\$tmpSkill.zip" -Force
+Move-Item ".\$tmpSkill.zip" ".\$tmpSkill" -Force
+Move-Item ".\$tmpSkill" ".\$outSkill" -Force
+Remove-Item $tmp -Recurse -Force
 ```
 
 Bash:
 
 ```bash
-(cd skill && zip -r ../daee-epistemics.skill .)
+repo="https://github.com/theislampill/daee-epistemics.git"
+tmp="daee-epistemics-src"
+tmp_skill="daee-epistemics.tmp.skill"
+out_skill="daee-epistemics.skill"
+
+rm -rf "$tmp" "$tmp_skill"
+git clone "$repo" "$tmp" &&
+(cd "$tmp/skill" && zip -r "../../$tmp_skill" .) &&
+mv -f "$tmp_skill" "$out_skill" &&
+rm -rf "$tmp"
 ```
 
 If you open `daee-epistemics.skill`, you should see `SKILL.md` and `references/` at the top level of the archive.
