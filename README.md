@@ -12,8 +12,6 @@ This repository is organized as a GitHub landing page plus a self-contained skil
 - [Threat Model](#threat-model)
 - [Repository Architecture](#repository-architecture)
 - [Install / Package for Claude](#install--package-for-claude)
-- [Quick Start](#quick-start)
-- [Primary Use Cases](#primary-use-cases)
 - [Terminology Note](#terminology-note)
 
 ## Core Thesis
@@ -103,25 +101,6 @@ Claude-first installation flow:
 4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
 
 The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.
-
-## Quick Start
-
-1. Start with [`skill/SKILL.md`](skill/SKILL.md), not with a random objection file.
-2. Use [`skill/references/case-library/INDEX.md`](skill/references/case-library/INDEX.md) and the relevant `INDEX.md` files under [`diagnostics`](skill/references/diagnostics/), [`tactics`](skill/references/tactics/), [`techniques`](skill/references/techniques/), and [`procedures`](skill/references/procedures/) as routers before loading deeper material.
-3. Diagnose before rebutting: determine the input type, noetic structure, operative deformation, concealment mode, and discourse orientation.
-4. Load only the files required by the present engagement. The repository is designed to prevent over-response and argumentative sprawl.
-5. Choose the response layer that matches the case: a tactic for a local maneuver, a technique for a reusable method, or a procedure for a staged engagement.
-
-## Primary Use Cases
-
-This repository is designed for engagements such as:
-
-- diagnosing a person's worldview or underlying belief-structure before responding
-- handling named objections such as evil, hiddenness, religious diversity, Trinity-related challenges, or philosopher's-God arguments
-- addressing questions about revelation, scripture, transmission, testimony, and final prophethood
-- working through Muslim-internal crises shaped by authority fatigue, betrayal, revisionism, or textual-historical doubt
-- analyzing conversation excerpts to determine what kind of engagement is actually taking place
-- helping a practitioner distinguish intellectual confusion from grief, evasion, or identity-protective discourse
 
 ## Terminology Note
 
