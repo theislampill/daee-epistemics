@@ -1,0 +1,150 @@
+# Fiṭrah Perspectives — Three-View Taxonomy
+
+Load when an interlocutor's conception of the fiṭrah is itself in question — when they deny
+that the fiṭrah is innate, claim it is a blank slate, present a dual-nature view, or when
+a Muslim-internal dispute about the nature of the fiṭrah is operative.
+
+Also load when diagnosing the noetic structure of an interlocutor who holds a blank-slate
+account of human nature (the tabula rasa position) or a dualistic account (equal tendencies
+toward good and evil). These positions have implications for the skill's fiṭrah-based
+engagement strategy.
+
+---
+
+## The Three Historical Positions
+
+Three views have been championed throughout Islamic intellectual history. Knowing which
+position an interlocutor holds determines how the engagement proceeds.
+
+### 1. The Neutral Perspective (Tabula Rasa) — Minority View
+
+**Representative:** Ibn 'Abd al-Barr and others; parallels John Locke's blank-slate account.
+
+**The position:** The fiṭrah is neither a state of intrinsic belief nor intrinsic disbelief.
+The child is born in a wholesome state but with no cognition of īmān or kufr; belief or
+disbelief become manifest only when the child reaches maturity and encounters external
+influences.
+
+**Qurʾānic basis claimed:** "It is God who brought you out of your mothers' wombs knowing
+nothing" (16:78).
+
+**Internal problems:**
+
+First, it confuses lacking knowledge with lacking a nature. These are different things.
+An animal is born with its limbs fully intact even though it lacks knowledge — the Prophetic
+hadith explicitly uses this comparison. Having a nature is not the same as having
+propositional knowledge. The neutral view conflates the two.
+
+Second, if there are no innate forces within the person to guide them, "external guidance
+then becomes absolutely decisive" — which renders the concept of fiṭrah entirely irrelevant
+within Islamic thought. A blank slate has no nature to restore. The prophetic mission
+becomes mere information-transfer rather than reminder and awakening.
+
+Third, the verse cited (16:78) speaks of the child's lack of knowledge, not the absence
+of a normative orientation. Knowledge and natural disposition are categorically distinct.
+
+**Engagement implication:** An interlocutor holding this view will resist the fiṭrah-based
+argument entirely. The correct move is not to argue about the fiṭrah but to deploy E2
+and V3 first — establish that basic belief operates in their own noetic structure — and
+then show that the blank-slate account faces the same regress problem the interlocutor
+is trying to place on theistic belief. If a person has no innate orientation, on what
+basis do they form any basic beliefs at all?
+
+---
+
+### 2. The Dual Perspective — Heterodox, Internally Inconsistent
+
+**Representative:** Syed Qutb; influenced by Cartesian dualism rather than the Islamic
+scholarly tradition.
+
+**The position:** Two essential constituents — the spirit and the clay — give rise to
+good and evil as two equal tendencies in the person. The person has both an innate
+tendency toward good and an innate tendency toward evil. The conscious faculty enables
+choice between them, but since the tendencies are equally influential, external forces
+become decisive in determining outcomes.
+
+**Internal problems:**
+
+First, the Prophetic comparison to fully-formed newborn animals directly contradicts a
+dual-tendency account. The hadith asks "Do you see anything deficient in them?" — having
+two opposing non-complementary tendencies is precisely a deficiency.
+
+Second, if good and evil tendencies are equally influential, they effectively cancel each
+other out, making both irrelevant. The interlocutor must posit a third faculty capable
+of choosing between them — but this faculty is not supplied by the dual-nature position.
+Free will becomes incoherent: either the tendencies are equal and the will cannot move,
+or one tendency dominates and the will is not free.
+
+Third, the Qurʾān repeatedly describes those who rebel against God as believing they are
+doing good — not as consciously choosing evil over good. "We are only putting things
+right" (2:11-12). This implies not a dual pull between good and evil but a single
+tendency (submission) choosing what to submit to. The struggle is between the paths
+toward fulfillment, not between two opposed fundamental orientations.
+
+Fourth, the dual view imports Cartesian dualism — a historically contingent Western
+philosophical framework — into Islamic anthropology where it does not belong.
+
+**The correct positive account:** There is one nature — submission (islām in its generic
+sense). Man always pursues what he takes to be good. The internal struggle (jihad of the
+self) is not between opposing natures but between multiple paths toward fulfilling the
+one tendency. The nafs (desires) are not inherently evil and must be purified; rather
+they can be directed toward good or evil. The direction, not the desire, is what is
+at issue.
+
+**Engagement implication:** An interlocutor holding this view often uses it to explain
+why belief in God is "just one option among equally valid alternatives." The correct
+move: show the internal incoherence (the equality of tendencies collapses the free will
+the position claims to protect), then redirect to the Qurʾānic and hadith account of
+the fiṭrah as a single positive orientation that is suppressed, not opposed, by error.
+
+---
+
+### 3. The Positive Perspective — Majority, Orthodox
+
+**Representatives:** The scholarly consensus (Ahl al-Sunnah wal-Jamāʿah): Ibn Taymiyyah,
+Ibn al-Qayyim, al-Ghazali, Imam Qurtubi, Imam Nawawi, and the broad scholarly tradition.
+
+**The position:** Every child is born in a state of fiṭrah and any deviation from proper
+recognition is produced by external agents of misguidance. The fiṭrah is not merely a
+dormant potential awaiting activation from without — it is the source of awakening itself,
+within the individual. Human beings are naturally adapted to submission to God (Dīn
+al-Islām in its generic sense — recognition of and orientation toward the Creator).
+
+**What this view holds about the fiṭrah:**
+
+The fiṭrah is a positive orientation, not a neutral capacity. It is the normative state
+— what human beings are when functioning correctly. Deviation from it is the deviation,
+not the baseline. Corruption of the fiṭrah is more like a suppression than an alteration
+of the nature itself (except in cases of severe illness or disability).
+
+The fiṭrah is not a pre-packaged set of propositions about Islamic law and practice.
+The child is born with recognition of God (maʿrifa) and orientation toward Islam as
+a way of being, not with knowledge of the Sharīʿah. Specific doctrinal and legal
+knowledge requires external guidance; the normative orientation toward the Creator is
+internal and prior.
+
+**On the corruptibility of the fiṭrah:** Corruption is better understood as suppression
+— a layering-over of the original orientation by iʿtiqādāt mawrūtha, ʿāda, hawā, and
+gharaḍ — rather than as an actual alteration of the underlying nature. The fiṭrah
+cannot be destroyed except by severe cognitive impairment; it can be thoroughly
+occluded such that direct appeal to it produces no visible response.
+
+**Engagement implication:** This is the skill's operative position. Engagement proceeds
+from it without defense unless the interlocutor challenges it. When challenged, use the
+internal-coherence arguments above against the neutral and dual views, and the tawātur
+fiṭrī argument (sound-reason-epistemology.md §4) as the cross-cultural empirical
+grounding for the positive account.
+
+---
+
+## Operational Summary
+
+When diagnosing an interlocutor:
+
+- **Blank-slate interlocutor:** Does not accept that theistic orientation is native to
+  human cognition. Deploy E2 and V3 first; establish that basic belief operates in their
+  noetic structure regardless; show blank-slate account generates its own regress.
+- **Dual-nature interlocutor:** Treats religious belief as one option among equally valid
+  alternatives. Show internal incoherence; redirect to the single-orientation account.
+- **Positive-perspective interlocutor:** The skill's own position. Proceed with the
+  fiṭrah-restoration framework (P1) and the standard tactic set.
