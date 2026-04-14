@@ -2,7 +2,7 @@
 
 A modular LLM skill for epistemic operations and noetic analysis: a cognitive-security framework for classifying discourse, diagnosing orientation, deformation, and concealment, and routing engagements through matched tactics, techniques, procedures, and case modules.
 
-This repository packages a modular LLM skill grounded in an Islamic account of sound reason, the *fiṭrah* (the innate normative disposition toward truth and recognition of God), and revelation. It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
+This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). The package is grounded in an Islamic account of sound reason, the *fiṭrah* (the innate normative disposition toward truth and recognition of God), and revelation. It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
 ## Core Thesis
 
@@ -14,7 +14,7 @@ Not a storehouse of arguments; this is a cognitive-security and diagnostic-respo
 
 ## Why This Framing Fits the Repository
 
-The repository begins with diagnosis before rebuttal. [`SKILL.md`](SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. That posture is the opposite of generic polemics, which often move straight to proposition-level refutation.
+The repository begins with diagnosis before rebuttal. [`skill/SKILL.md`](skill/SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. That posture is the opposite of generic polemics, which often move straight to proposition-level refutation.
 
 This matters because the framework treats falsehood as more than a bad conclusion. It also tracks compromised process: inherited priors presented as neutral defaults, malformed evidential standards, grief operating as epistemic fog, socially reinforced habits of discourse, and volitional resistance masquerading as pure rationality. A formally correct argument can fail if it is given to the wrong kind of case.
 
@@ -47,21 +47,21 @@ The repository operationalizes the thesis through a layered structure:
 
 | Path | Role |
 |------|------|
-| [`SKILL.md`](SKILL.md) | Governing protocol and routing logic. Defines activation conditions, epistemological standpoint, diagnostic protocol, and response format. |
-| [`references/diagnostics/`](references/diagnostics/) | Classifies the epistemic condition before argument: noetic reading, deformations, concealment modes, discourse orientation, and related diagnostic lenses. |
-| [`references/tactics/`](references/tactics/) | Context-triggered maneuvers for live objection patterns and argumentative behaviors. |
-| [`references/techniques/`](references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. |
-| [`references/procedures/`](references/procedures/) | Ordered multi-stage workflows for recurring engagement classes, including cases that require sustained restoration rather than a single reply. |
-| [`references/case-library/`](references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
-| [`references/terminology.md`](references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
-| [`references/sound-reason-epistemology.md`](references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
+| [`skill/SKILL.md`](skill/SKILL.md) | Governing protocol and routing logic. Defines activation conditions, epistemological standpoint, diagnostic protocol, and response format. |
+| [`skill/references/diagnostics/`](skill/references/diagnostics/) | Classifies the epistemic condition before argument: noetic reading, deformations, concealment modes, discourse orientation, and related diagnostic lenses. |
+| [`skill/references/tactics/`](skill/references/tactics/) | Context-triggered maneuvers for live objection patterns and argumentative behaviors. |
+| [`skill/references/techniques/`](skill/references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. |
+| [`skill/references/procedures/`](skill/references/procedures/) | Ordered multi-stage workflows for recurring engagement classes, including cases that require sustained restoration rather than a single reply. |
+| [`skill/references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
+| [`skill/references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
+| [`skill/references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
 
-Read behaviorally as well as structurally, the architecture works like this: diagnose the noetic structure, identify the primary deformation, classify concealment and discourse orientation, and only then select the relevant tactic, technique, procedure, or case module. [`references/techniques/heuristics.md`](references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
+Read behaviorally as well as structurally, the architecture works like this: diagnose the noetic structure, identify the primary deformation, classify concealment and discourse orientation, and only then select the relevant tactic, technique, procedure, or case module. [`skill/references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Quick Start
 
-1. Start with [`SKILL.md`](SKILL.md), not with a random objection file.
-2. Use [`references/case-library/INDEX.md`](references/case-library/INDEX.md) and the relevant `INDEX.md` files under [`diagnostics`](references/diagnostics/), [`tactics`](references/tactics/), [`techniques`](references/techniques/), and [`procedures`](references/procedures/) as routers before loading deeper material.
+1. Start with [`skill/SKILL.md`](skill/SKILL.md), not with a random objection file.
+2. Use [`skill/references/case-library/INDEX.md`](skill/references/case-library/INDEX.md) and the relevant `INDEX.md` files under [`diagnostics`](skill/references/diagnostics/), [`tactics`](skill/references/tactics/), [`techniques`](skill/references/techniques/), and [`procedures`](skill/references/procedures/) as routers before loading deeper material.
 3. Diagnose before rebutting: determine the input type, noetic structure, operative deformation, concealment mode, and discourse orientation.
 4. Load only the files required by the present engagement. The repository is designed to prevent over-response and argumentative sprawl.
 5. Choose the response layer that matches the case: a tactic for a local maneuver, a technique for a reusable method, or a procedure for a staged engagement.
@@ -79,6 +79,6 @@ This repository is designed for engagements such as:
 
 ## Terminology Note
 
-The repository uses Arabic and philosophical vocabulary because the framework itself is articulated in those terms. This README defines key terms on first use so that newcomers do not need prior training in Islamic theology or philosophy to follow the argument. For fuller definitions, see [`references/terminology.md`](references/terminology.md).
+The repository uses Arabic and philosophical vocabulary because the framework itself is articulated in those terms. This README defines key terms on first use so that newcomers do not need prior training in Islamic theology or philosophy to follow the argument. For fuller definitions, see [`skill/references/terminology.md`](skill/references/terminology.md).
 
 Readers unfamiliar with the vocabulary should treat these terms as named components of the framework, not as insider shibboleths. The repository's own method requires clarity before response, and that applies to terminology as well.
