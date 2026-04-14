@@ -4,6 +4,18 @@ A modular LLM skill for epistemic operations and noetic analysis: a cognitive-se
 
 This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). The package is grounded in an Islamic account of sound reason, the *fiṭrah* (the innate normative disposition toward truth and recognition of God), and revelation. It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
+## Table of Contents
+
+- [Core Thesis](#core-thesis)
+- [Why This Framing Fits the Repository](#why-this-framing-fits-the-repository)
+- [What the Skill Protects](#what-the-skill-protects)
+- [Threat Model](#threat-model)
+- [Repository Architecture](#repository-architecture)
+- [Install / Package for Claude](#install--package-for-claude)
+- [Quick Start](#quick-start)
+- [Primary Use Cases](#primary-use-cases)
+- [Terminology Note](#terminology-note)
+
 ## Core Thesis
 
 > `daee-epistemics` is best understood as an epistemic SOC: a structured system for identifying, classifying, and remediating epistemic distortion affecting the human heart-mind.
@@ -57,6 +69,40 @@ The repository operationalizes the thesis through a layered structure:
 | [`skill/references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
 
 Read behaviorally as well as structurally, the architecture works like this: diagnose the noetic structure, identify the primary deformation, classify concealment and discourse orientation, and only then select the relevant tactic, technique, procedure, or case module. [`skill/references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
+
+## Install / Package for Claude
+
+The distributable artifact for this repository is `daee-epistemics.skill`. Its archive root must contain `SKILL.md` and `references/` directly. Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
+
+From this repo:
+
+1. Clone or download the repository.
+2. Run one of the packaging commands below from the repo root.
+3. Upload `daee-epistemics.skill` in Claude.ai via Settings > Skills or the [Claude Skills](https://claude.ai/customize/skills) page.
+
+PowerShell:
+
+```powershell
+Compress-Archive -Path .\skill\* -DestinationPath .\daee-epistemics.zip -Force
+Move-Item .\daee-epistemics.zip .\daee-epistemics.skill -Force
+```
+
+Bash:
+
+```bash
+(cd skill && zip -r ../daee-epistemics.skill .)
+```
+
+If you open `daee-epistemics.skill`, you should see `SKILL.md` and `references/` at the top level of the archive.
+
+Claude-first installation flow:
+
+1. Package the skill from this repository.
+2. Open Claude.ai and go to Settings > Skills, or open [Claude Skills](https://claude.ai/customize/skills).
+3. Upload `daee-epistemics.skill`.
+4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
+
+The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.
 
 ## Quick Start
 
