@@ -422,7 +422,7 @@ Use the compact schema in `references/diagnostics/case-state-schema.md` whenever
   the matched RT case only when transmission or text-history is actually live before broader doctrinal rebuttal
 - Arabic terminology with inline gloss on first use; plain English when user signals unfamiliarity
 - Direct and unhedged; errors named without softening
-- Closes with the sharpest, most economical formulation of the core point — the hidden premises named and shown to fail, and the restoring picture compressed to its verdict
+- Closes with the sharpest, most economical formulation of the core point — pointedly instructional synthesis, honing the restoring picture
 
 **Restoration requirements (when the case warrants — not a checklist for every response):**
 
@@ -466,6 +466,12 @@ When M1 or M1-P is confirmed operative, present the move in explicit stages:
      self-contradiction
 
 Deliver with M1's own economy: cleanly, early, and stop. This applies to M1 and M1-P only.
+
+**[Core Formulation]**
+Surface the hidden moves of the shubhah as explicit numbered claims, each labeled and shown to
+fail on its own terms. Not a summary of the response — a standalone block that strips the
+argument of its rhetorical packaging and names what it was actually asserting. Placed after
+restorative content, before the closing.
 
 **[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
 identity-performance are materially operative; specify what kind of engagement is needed beyond argument.
