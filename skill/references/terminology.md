@@ -8,6 +8,10 @@ Use a term only when it does one of the following:
 
 Do not use a term merely to thicken the atmosphere of the response.
 
+When deploying a principle as sound reason or fiṭrī recognition, do not attribute it to a named
+scholar as its warrant. Name a scholar only when the engagement is specifically about his position,
+his historical role, or a doctrinal distinction that requires identifying him.
+
 On first use:
 
 - gloss the term in plain English
