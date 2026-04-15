@@ -1,30 +1,28 @@
 # Procedures — Index
 
-Procedures are multi-stage engagement frameworks for sustained conversation. In a
-single-response context, apply the relevant stages as the response architecture.
-Always run M5 (deformation triage) before selecting a procedure.
+Procedures are multi-stage engagement frameworks. Use them when the case cannot be handled
+well by a single tactic or technique.
 
-## When to Use Procedures vs. Tactics
+## Selection Rules
 
-- **Tactic:** A single move within one exchange
-- **Technique:** An architectural approach governing a stretch of conversation
-- **Procedure:** A multi-stage framework governing a sustained engagement across
-  multiple exchanges, or structuring a comprehensive single response
+- Run M5 before choosing a procedure.
+- Procedures govern sequencing. They do not cancel the need for tactic and technique discipline.
+- If the case only needs one move, do not escalate it into a procedure.
 
 ## Procedures
 
-| File | Procedure | For |
-|------|-----------|-----|
-| `references/procedures/P1-fitrah-restoration.md` | P1 | Fiṭrah significantly suppressed; prolonged iʿtiqādāt mawrūtha or ʿāda combined with hawā or gharaḍ; goal is creating conditions for fiṭrah to resume function |
-| `references/procedures/P2-objection-mapping.md` | P2 | Battery of intellectual objections; interlocutor in juhūd or inkār mode engaging critically |
-| `references/procedures/P3-reason-revelation-tension.md` | P3 | Interlocutor stuck on perceived fundamental conflict between reason and religious belief |
-| `references/procedures/P4-maieutic.md` | P4 | Interlocutor in inkār mode — recognition present in the qalb but denied on the tongue |
-| `references/procedures/P5-already-believing.md` | P5 | Believer whose faith is shallow, untested, or held by taqlīd |
-| `references/procedures/P6-universal-aqidah-principle.md` | P6 | Interlocutor claims to have no religion, no worldview, no ʿaqīdah; or "there is no righteous guidance" |
+| File | For | Use when | Do not use when | Typical pairings |
+|------|-----|----------|-----------------|-----------------|
+| `references/procedures/P1-fitrah-restoration.md` | Restoration-first cases | The fitrah is significantly suppressed and the main work is clearing conditions for recognition | The case is still a clean, truth-oriented intellectual exchange | V2, V5, F3 |
+| `references/procedures/P2-objection-mapping.md` | Objection batteries | A cluster of objections must be separated and sequenced | The case is really one upstream criterion problem in disguise | V2, case-library DO files |
+| `references/procedures/P3-reason-revelation-tension.md` | Framework conflict | Reason/science is being posed as fundamentally opposed to revelation | The case is local rather than framework-level | V2, E4 |
+| `references/procedures/P4-maieutic.md` | Inkār cases | Recognition seems present but suppressed | The case is still purely classificatory or grief-primary | R2, V5 |
+| `references/procedures/P5-already-believing.md` | Internal strengthening | A believer's conviction is shallow, inherited, or fragile | The case is not primarily internal to belief formation | E3, F3 |
+| `references/procedures/P6-universal-aqidah-principle.md` | Neutrality challenge | The interlocutor claims to have no worldview or no righteous guidance | The case already acknowledges a substantive worldview | M7, M8 |
 
 ## Sequencing Notes
 
-- P1 (fiṭrah restoration) is the most foundational — it creates the conditions for all other procedures
-- P2 (objection mapping) often transitions into P4 (maieutic) when objections accelerate rather than converge
-- P3 (reason-revelation tension) is often a prerequisite for P2 — the framework must be cleared before first-order objections can be addressed
-- P6 (universal ʿaqīdah principle) is typically an opening procedure — establishing that the interlocutor has a position before engaging it
+- P1 is usually upstream of other procedures because it restores conditions of apprehension.
+- P2 often hands off to P4 when objection-generation accelerates rather than converges.
+- P3 often precedes P2 because framework conflict can invalidate all first-order engagement.
+- P6 is often an opening move establishing that a supposedly neutral stance is still an aqidah.

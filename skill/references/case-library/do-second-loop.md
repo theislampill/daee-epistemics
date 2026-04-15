@@ -12,7 +12,6 @@ See `case-library/INDEX.md` for the full routing table.
 ---
 
 ## Doctrinal Objections — Second Loop (DO-7 through DO-10)
- Doctrinal Objections — Second Loop (DO-7 through DO-10)
 
 These objections sharpen recurring second-order and reflexive pressures on the fiṭrah-based
 account. Each contains the strongest rebuttal and the response.

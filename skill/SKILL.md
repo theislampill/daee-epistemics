@@ -24,6 +24,10 @@ Do not load unless the stated condition is confirmed. The INDEX above provides q
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
+| `references/case-library/revelation-transmission.md` | RT-1 through RT-4 confirmed |
+
+Use the case-library index's Quick NS, DO, and RT identification tables before loading a content
+file.
 
 ### Diagnostic Subfolder — `references/diagnostics/`
 | File | Load When |
@@ -35,6 +39,10 @@ Do not load unless the stated condition is confirmed. The INDEX above provides q
 | `references/diagnostics/discourse-orientation.md` | Discourse orientation unclear or mixed; determining what the engagement is actually ordered toward |
 | `references/diagnostics/kalamic-interlocutor.md` | Interlocutor formed in a kalāmic tradition (Muʿtazilī, Ashʿarī, Māturīdī); holds theistic belief requires inferential demonstration to count as knowledge |
 | `references/diagnostics/fitrah-perspectives.md` | Interlocutor denies the fiṭrah is innate; holds blank-slate account; holds dual-nature view; or Muslim-internal dispute about the nature of the fiṭrah is operative |
+| `references/diagnostics/case-state-schema.md` | Any substantive response that should surface case type, primary read, chosen modules, confidence, or what would change the diagnosis |
+| `references/diagnostics/inference-boundary.md` | Distinguishing file-grounded material from cross-file synthesis, model inference, or speculative extension |
+| `references/diagnostics/mixed-case-handling.md` | Diagnosis is underdetermined, mixed, thinly evidenced, or could be misread by premature confidence |
+| `references/diagnostics/anti-patterns.md` | Auditing for diagnosis collapse, forced fit, tactic over-selection, decorative terminology, or rhetorical overreach |
 
 ### Tactics Subfolder — `references/tactics/`
 | File | Load When |
@@ -77,6 +85,7 @@ Do not load unless the stated condition is confirmed. The INDEX above provides q
 | `references/techniques/V7-taqlid-check.md` | Skepticism appears assumed-by-default |
 | `references/techniques/V8-bila-kayf-anchor.md` | Transcendence, attribute-coherence, Trinity-adjacent God-language, or philosopher's-God objections |
 | `references/techniques/V9-necessary-knowledge-priority.md` | Argument concludes against universally-held fiṭrī intuition |
+| `references/techniques/V10-transmission-content-vetting.md` | Revelation, scripture, transmission, canon, manuscript, preservation, or text-history-entangled final-prophethood cases need provenance/content/authority separation |
 | `references/techniques/heuristics.md` | Always-active operative principles; internalized background |
 
 ### Procedures Subfolder — `references/procedures/`
@@ -89,6 +98,16 @@ Do not load unless the stated condition is confirmed. The INDEX above provides q
 | `references/procedures/P4-maieutic.md` | Inkār mode — recognition present but suppressed |
 | `references/procedures/P5-already-believing.md` | Believer with shallow or taqlīd-held belief |
 | `references/procedures/P6-universal-aqidah-principle.md` | Interlocutor claims no religion/worldview; denies righteous guidance |
+
+### Routing Discipline
+- Diagnose before rebutting. Case modules are downstream of diagnosis, not substitutes for it.
+- Select the smallest matched subset of modules needed for the next move. Do not advertise unused modules.
+- Case-state, confidence, and inference-boundary marking are part of the protocol, not stylistic extras.
+- When the case is mixed or underdetermined, answer proportionally and state what would change the read.
+- Do not present model inference or speculative extension as though the file itself stated it.
+- In testimony, text, canon, preservation, and believer-destabilization cases - and in
+  final-prophethood cases only when they are entangled with transmission or text-history - V10 plus
+  the matched RT case come before broader doctrinal rebuttal.
 
 ---
 
@@ -322,8 +341,8 @@ rebuttal framed as removal of occlusion.
 | Reformed / Basic Belief | R1–R3, qalb-fiṭrah chain |
 | Hard Naturalism | V2 first (self-undermining), then E-register |
 | Agnosticism / Soft Skepticism | E2, V3, M2 — proportionality norm is itself unproportioned |
-| Historical-critical skepticism | P2 first - separate attacks on testimony, transmission, text, and specific prophetic claim |
-| Modernist revisionism | V2 + P2 - separate moral recoil, authority fatigue, and textual-historical shubhah |
+| Historical-critical skepticism | P2 + V10 first - separate testimony, transmission, text, canon, and specific prophetic claim before rebuttal |
+| Modernist revisionism | V2 + P2 + V10 - separate moral recoil, authority fatigue, and textual-historical shubhah |
 
 ### IV.C — Four Modes of Concealment (Summary)
 
@@ -362,33 +381,50 @@ Determines whether intellectual engagement is the right instrument at all.
 - **Conjecture without anchor:** Positions asserted without warrant discipline. Press for specific grounds of one claim at a time before engaging the general position.
 - **Mixed / unstable:** Respond to the predominant mode; remain alert to shifts toward truth-seeking.
 
+### IV.F — Strength of Read, Mixed Cases, and Insufficient Basis
+
+Full treatment: `references/diagnostics/mixed-case-handling.md`
+
+- **Strong read:** Multiple indicators converge across noetic structure, deformation, and discourse behavior.
+- **Provisional read:** The diagnosis is plausible but still depends on partial signals.
+- **Low-confidence read:** Only the surface objection is available; orientation, concealment mode, or motive remain open.
+- **Mixed case rule:** Carry one primary read only if it governs intervention order. Otherwise keep at most two live possibilities.
+- **Insufficient basis rule:** Do not declare motive, concealment mode, or discourse orientation from a slogan or thin excerpt. Answer the established claim-type and state what would change the read.
+
 ---
 
 ## V. Response Format
 
-**[Diagnosis]**
-- Input type
-- Epistemological position operative
-- Mode of concealment (if discernible)
-- Primary deformation (which of the seven)
-- Discourse orientation (IV.E)
-- Whether M1/M1-P self-refutation applies
-- Which tactic, technique, procedure, or case-library entry governs the response
+Use the compact schema in `references/diagnostics/case-state-schema.md` whenever routing legibility matters.
 
-**[Response]**
+**[Case State]**
+- Use the shortest version of the standard block from `references/diagnostics/case-state-schema.md`
+  that still makes routing, confidence, and next-step governance explicit.
+- Surface `Recursion` and `Cumulative escalation` only when they change the next move.
+- Name M1/M1-P only when one of them materially governs the opening move.
+
+**[Source Basis]**
+- Use the markers in `references/diagnostics/inference-boundary.md` when the distinction matters:
+  `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]`
+- Mark where the skill is file-grounded, where multiple files are being synthesized, and where the model is extending beyond the file set
+- If a move depends materially on inference, say what evidence would strengthen or weaken it
+
+**[Restorative Response]**
 - M1/M1-P first if applicable — lead with it, cleanly
 - Presuppositional level before first-order content — always
-- First-order content using the appropriate tactic/technique/procedure
+- First-order content using the chosen tactic/technique/procedure/case module
 - M2 prior probability surfaced where evidential arguments appear
 - M3 orphaned intuitions probed where relevant
-- Keep logical, probabilistic, historical, moral, and authority claims distinct; answer the actual claim made
-- For revelation, scripture, and final-prophethood cases, separate generic theism, testimony/transmission, and the specific prophetic claim rather than collapsing them
+- Keep logical, probabilistic, historical, moral, grief, and authority claims distinct; answer the actual pressure being applied
+- For revelation, scripture, and final-prophethood cases, separate generic theism, testimony/transmission,
+  text, canon, and the specific prophetic claim rather than collapsing them; route through V10 and
+  the matched RT case only when transmission or text-history is actually live before broader doctrinal rebuttal
 - Arabic terminology with inline gloss on first use; plain English when user signals unfamiliarity
 - Direct and unhedged; errors named without softening
-- Closes with the sharpest, most economical formulation of the core point
+- Close with the sharpest, most economical formulation of the restoring point
 
-**[Pastoral/Relational Note]** — Appended when obstinacy, vested interest, entrenched bias, or
-grief are operative; specifies what kind of engagement is needed beyond argument.
+**[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
+identity-performance are materially operative; specify what kind of engagement is needed beyond argument.
 
 ---
 

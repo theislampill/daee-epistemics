@@ -1,3 +1,8 @@
+> role: theoretical substrate
+> use when: the case needs the full account of warrant, proper function, tawatur, husn al-nazar, or bila kayf
+> do not use when: a lighter diagnostic or tactical file already gives the needed routing guidance
+> output: anchored theory for deeper grounding, not a default response script
+
 # The Epistemological Architecture of Sound Reason
 
 This file is the theoretical substrate of the skill's operative ontology. It articulates
@@ -21,6 +26,10 @@ For the kalāmic interlocutor engagement strategy, load:
 
 For the four inferential arguments available under ḥusn al-naẓar, load:
   `references/tactics/husn-al-nazar-arguments.md`
+
+Do not load this file merely because the topic is philosophical. Load it when the case
+actually needs the theoretical depth; otherwise it will over-weight theory where routing
+and restoration should stay light and precise.
 
 **Cross-references:**
 - §1 → noetic checklist dimensions 1, 3, 6; grounds V3 (regress-dissolution)
@@ -59,6 +68,20 @@ leads to knowledge through discursive reasoning must be one that goes back to pr
 known necessarily from the fiṭrah. For if rationally inferred premises are always
 established by other rationally inferred premises, it will lead to circularity or an
 infinite regress."
+
+### 1.1 - Basic Cognition and Rational Reminder
+
+Sound reasoning does not create the deepest truths from nothing. It reminds, clarifies, and
+re-orders what basic cognition already carries when the fitrah is clouded. This distinction is
+pedagogically important:
+
+- basic or intuitive cognition delivers what is grasped immediately and lived prior to discursive
+  defense
+- rational or theoretical reminder returns the mind to those deliverances when confusion,
+  deformation, or foreign criteria obscure them
+
+The practical implication is that argument is secondary even when necessary. Husn al-nazar is not
+the replacement for fitri recognition but the disciplined route back toward it.
 
 **Critical implication for the regress objection:** When an interlocutor demands
 justification for a foundational commitment, the correct response is not to supply
@@ -331,6 +354,15 @@ within an already narrowed naturalistic frame. Those are not neutral starting po
 contested epistemological filters, and must be identified as such before first-order debate
 proceeds.
 
+Operationally, revelation cases should be kept in a fixed order:
+
+1. provenance / transmission - what kind of report, text, manuscript, or attribution is this?
+2. contents - what does it actually say, and what claim is being imposed on it?
+3. authority - does it function as authenticated transmission, historical witness, or neither?
+
+That order governs V10 and the RT case family. It prevents manuscript drama, canon anxiety, or
+text-history rhetoric from doing the work of a full doctrinal refutation without first earning it.
+
 ---
 
 ## 5. Ḥusn al-Naẓar — Sound Inferential Reasoning for the Impaired Fiṭrah
@@ -452,3 +484,20 @@ God-talk; it replaces the living God with a philosophical abstraction. Sound rea
 therefore refuses two reductions at once: the reduction of transcendence to negation,
 and the reduction of perfection to lifeless immutability. The revealed God is perfect
 without being a creature, and active without being reducible to created modes of change.
+
+### 6.1 - Time, Space, and Created Systems
+
+A recurring philosopher's-God pressure says: if God created time and space, then there is no
+meaningful "before" creation or "above" the world. That pressure depends on treating time and
+space as self-standing containers rather than as attributes or measures belonging to created
+systems.
+
+Keep the operative distinction short:
+
+- temporal relation between events: a relation, not a separately subsisting entity
+- time as the measure of motion in a moving substrate (`zaman`): an extra-mental attribute that
+  exists only in particulars
+
+Days, years, and created spatiality belong to created particulars. God's creating them does not
+force a static or timeless deity; it only forbids transferring the created system's mode to God or
+evacuating God of real action in order to avoid that transfer.

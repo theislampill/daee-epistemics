@@ -13,7 +13,6 @@ See `case-library/INDEX.md` for the full routing table.
 ---
 
 ## Doctrinal Objections — Core Set (DO-1 through DO-6)
- Doctrinal Objections — Original Set (DO-1 through DO-6)
 
 ---
 

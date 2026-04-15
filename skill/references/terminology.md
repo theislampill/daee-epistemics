@@ -1,3 +1,27 @@
+# Terminology Discipline
+
+Use a term only when it does one of the following:
+
+- names a routing distinction the English paraphrase would blur
+- marks a doctrinal distinction the case depends on
+- sharpens the difference between diagnosis, response, and restoration
+
+Do not use a term merely to thicken the atmosphere of the response.
+
+On first use:
+
+- gloss the term in plain English
+- make clear what work it is doing in the case
+- prefer English alone when the Arabic term adds no operational value
+
+High-frequency operational terms include: `fitrah`, `aqidah`, `shubha`, `juhud`, `inkar`,
+`hawa`, `gharad`, `tawatur fitri`, `taqlid`, `tahqiq`, and `bila kayf`. These terms should
+normally be linked to diagnosis, routing, or scope control rather than used as ornament.
+Transmission terms such as `isnad`, `wijadah`, `qira'at`, `ahruf`, `mushaf`, `canon`, and
+`tahrif` should be used only when they change how a revelation / transmission case is classified.
+
+---
+
 # Arabic and Technical Terminology Reference
 
 Load this file when composing responses that require precise use of Arabic terminology,
@@ -164,6 +188,52 @@ First use in any response: gloss inline. Thereafter: use freely without gloss.
 | Historical-critical method | A modern method that treats texts primarily as human historical artifacts and often brackets revealed status in advance |
 | Naturalistic prior | The assumption that public explanation should begin by excluding revelation, miracle, and divine action unless forced otherwise |
 | Religious modernism | A revisionist tendency that filters inherited doctrine and law through contemporary moral and intellectual norms taken as prior |
+
+## Route-Critical Transmission Terms
+
+Use these only when they change routing or scope:
+
+- `isnad`: the chain by which a report is transmitted and authenticated. Operationally decisive in
+  V10 because an isolated text-artifact is not the same thing as transmitted khabar.
+- `wijadah`: finding a text without a live transmission-chain. It may preserve historical
+  material, but it does not automatically carry the authority of authenticated transmission.
+- `qira'at`: canonically transmitted modes of Qur'anic recitation. Do not treat the term as a
+  synonym for uncontrolled textual corruption.
+- `ahruf`: the revealed range or modes associated with Qur'anic recitation. Do not collapse ahruf
+  discussion into any single manuscript question.
+- `mushaf`: a written codex or written copy of the Qur'an. A mushaf is a textual witness, not the
+  whole transmission system by itself.
+- `canon` / `canonicity`: the recognized corpus treated as scriptural and normatively
+  authoritative. Distinguish canon recognition from inspiration and from textual reconstruction.
+- `tahrif`: distortion or alteration. State whether the case is about textual corruption,
+  interpretive distortion, or both before answering.
+
+---
+
+## Route-Critical Worship Terms
+
+- `ibadah` / worship: drawing near in devotion to one believed to bear unseen authority over
+  benefit, harm, protection, or access to them. Do not reduce worship to outward ritual alone.
+- `ma'bud`: an object of worship - that to which nearness is sought because it is believed to
+  affect reality beyond ordinary visible causation.
+- `shirk`: assigning worship or worship-functions to other than Allah, whether by attributing
+  independent efficacy or intermediary efficacy.
+- `intermediation`: approaching an object not as independently sovereign, but as a means of
+  nearness, intercession, or access to a higher power. This still changes case-classification.
+- self-authority: the worshipped is treated as independently benefiting or harming
+- intermediary-authority: the worshipped is treated as a mediator to one believed to possess the
+  independent authority
+
+---
+
+## Time, Space, and Motion Terms
+
+- temporal relation: the relation between events considered as before/after. This is not a
+  separately subsisting thing.
+- `zaman`: time as the measure of motion subsisting in a moving substrate. When it belongs to a
+  created system, it is created with that system.
+- space: the spatial extension or location-property of particulars, not a self-standing container
+  existing apart from them.
 
 ---
 

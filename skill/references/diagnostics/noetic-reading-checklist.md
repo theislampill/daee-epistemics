@@ -1,3 +1,8 @@
+> role: core diagnostic
+> use when: diagnosing worldview structure, not merely answering a single proposition
+> do not use when: the task is a narrow factual clarification with no need for noetic classification
+> output: primary noetic issue, likely intervention point, confidence conditions
+
 # Noetic Reading Checklist — Full Treatment
 
 ## What a Noetic Structure Is
@@ -22,6 +27,16 @@ structure.
 - Before any sustained engagement — the checklist reveals which instrument has traction
 - When a response to an argument or tactic produces an unexpected reaction
 - When the interlocutor's position appears internally inconsistent
+
+## What This Checklist Should Produce
+
+Convert findings into a compact case state rather than a lecture. At minimum, determine:
+
+- the primary noetic issue that governs the next move
+- the likely deformation or deformation pair
+- whether the case is strong, provisional, or low-confidence
+- which tactic, technique, procedure, or case module becomes the smallest matched next step
+- what missing differentiator would change the read
 
 ## The Nine Analytical Dimensions
 
@@ -149,3 +164,12 @@ useful; withhold what would be experienced as a lecture or an accusation. Typica
   engagement entirely
 - Dimension 9 findings → frame response: how close or far is the subject from what is
   recoverable through honest inquiry alone?
+
+## Strength-of-Read Guide
+
+- `Strong`: multiple dimensions converge on the same upstream issue and intervention path.
+- `Provisional`: the likely intervention is visible, but one or more routing dimensions remain open.
+- `Low confidence`: the checklist can only classify the claim-type, not the whole case.
+
+If the diagnosis remains low confidence, route through `mixed-case-handling.md` before
+claiming a settled read.

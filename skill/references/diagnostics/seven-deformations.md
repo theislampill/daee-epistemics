@@ -1,3 +1,8 @@
+> role: deformation classifier
+> use when: the upstream obstruction must be identified precisely before responding
+> do not use when: grief or non-truth-seeking orientation already suspends normal tactic selection
+> output: primary deformation, common confusion, and first intervention
+
 # Seven Deformations of the Fiṭrah — Full Treatment
 
 ## Preamble
@@ -18,6 +23,18 @@ The seven come from Ibn Taymiyyah's Darʾ taʿāruḍ, extracted by El-Tobgui. T
 merely metaphors but pre-specified conditions examinable in the particular case.
 
 ---
+
+## Routing Summary
+
+| Deformation | Primary cue | First move | Do not do first | Common confusion |
+|-------------|-------------|------------|-----------------|-----------------|
+| Iʿtiqādāt mawrūtha | Filter treated as common sense | V2 | Present first-order evidence through the filter | Taqlid or zann without framework-level filtering |
+| Hawā | Objections multiply as soon as one clears | F2 or relational engagement | Supply more arguments | Genuine shubha |
+| Ẓann | Position feels examined but is inherited by default | V7 | Treat it as deep principled skepticism | Taqlid |
+| Taqlīd | Position adopted by imitation | Invite tahqiq | Shame the person for inherited belief | Ẓann |
+| ʿĀda | Distortion feels like direct reality | V2 then V5 | Argue as if the signs are already landing | Iʿtiqādāt mawrūtha |
+| Gharaḍ | Honest inquiry feels costly | F2 | Force argumentative escalation | Hawā |
+| Shubha | The apparent barrier actually yields to intellectual clearing | V9 or matched doctrinal/case response | Attribute hidden motive too quickly | Any of the other six wearing a respectable surface |
 
 ## 1. Iʿtiqādāt Mawrūtha — Inherited Beliefs
 

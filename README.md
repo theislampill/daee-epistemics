@@ -11,6 +11,8 @@ This repository is organized as a GitHub landing page plus a self-contained skil
 - [What the Skill Protects](#what-the-skill-protects)
 - [Threat Model](#threat-model)
 - [Repository Architecture](#repository-architecture)
+- [Operational Governance](#operational-governance)
+- [Corpus Integration](#corpus-integration)
 - [Install / Package for Claude](#install--package-for-claude)
 - [Terminology Note](#terminology-note)
 
@@ -65,8 +67,27 @@ The repository operationalizes the thesis through a layered structure:
 | [`skill/references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
 | [`skill/references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
 | [`skill/references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
+| [`skill/references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Compact metadiscursive output form for surfacing case type, module choice, confidence, and restoration target without chain-of-thought dumping. |
+| [`skill/references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
+| [`skill/references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
+| [`skill/references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach. |
 
 Read behaviorally as well as structurally, the architecture works like this: diagnose the noetic structure, identify the primary deformation, classify concealment and discourse orientation, and only then select the relevant tactic, technique, procedure, or case module. [`skill/references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
+
+## Operational Governance
+
+The repository is not only a content store. It now carries an explicit governance layer that makes its routing state inspectable:
+
+- a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
+- an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
+- mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
+- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach before they harden into output
+
+This matters because the repository's thesis is restorative, not merely polemical. The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
+
+## Corpus Integration
+
+New source material should be integrated only when it improves routing, restoration, scope control, or terminology discipline. The goal is not to accumulate study notes. The goal is to extract durable distinctions and convert them into reusable architecture: new case modules, tighter tactic or technique criteria, clarified glossary entries, sharper confidence rules, or better routing boundaries. If a source does not alter how the skill classifies, sequences, or restores, it should usually not be imported.
 
 ## Install / Package for Claude
 

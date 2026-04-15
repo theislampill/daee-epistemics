@@ -1,9 +1,35 @@
-# V6 — The Convergence Technique
+> role: technique
+> use when: several epistemic registers are genuinely live and their convergence is itself the needed point
+> do not use when: one upstream barrier still dominates or only one register is actually doing real work
+> output: a cross-register synthesis showing non-collusive convergence without overlayering
 
-**Deploy when:** Interlocutor inhabits multiple epistemological registers simultaneously; showing that evidential, fideist, and basic-belief considerations all point in the same direction.
+# V6 - The Convergence Technique
 
-This disarms the common move of setting one register against another — "reason" against "faith," "experience" against "argument" — by showing all converge on the same conclusion.
+**Deploy when:** The interlocutor inhabits multiple epistemological registers simultaneously and
+needs to see that evidential, fitri, experiential, and testimonial considerations point in the
+same direction.
 
-**The deeper principle:** This is not merely rhetorical. It reflects how knowledge actually works. Ibn Taymiyyah is explicit that confining knowledge of God to a particular order or single pathway is misleading. Knowledge actually comes through a vast and diversified range of pathways: cosmological reasoning, the moral sense, testimonial transmission, direct inner awareness, the encounter with beauty, the fiṭrah's own recognition. When multiple independent pathways converge on the same recognition without possibility of collusion, that convergence is evidence of the recognition's truth. This is the structure of the tawātur argument extended to epistemic pathway diversity.
+This disarms the common move of setting one register against another - "reason" against "faith,"
+"experience" against "argument" - by showing all converge on the same conclusion.
 
-**Deployment:** An interlocutor moved neither by argument alone nor by experience alone may find convergence compelling. "Here is what the cosmological evidence says. Here is what the moral sense says. Here is what the experience of consciousness points toward. Here is what the testimony of humanity across all cultures says. They all arrive at the same place." Convergence across independent routes is itself an epistemic datum.
+**The deeper principle:** This is not merely rhetorical. It reflects how knowledge actually works.
+Ibn Taymiyyah is explicit that confining knowledge of God to a particular order or single pathway
+is misleading. Knowledge actually comes through a diversified range of pathways: cosmological
+reasoning, the moral sense, testimonial transmission, direct inner awareness, the encounter with
+beauty, and the fitrah's own recognition. When multiple independent pathways converge on the same
+recognition without possibility of collusion, that convergence is evidence of the recognition's
+truth. This is the structure of the tawatur argument extended to epistemic pathway diversity.
+
+**Deployment:** An interlocutor moved neither by argument alone nor by experience alone may find
+convergence compelling. "Here is what the cosmological evidence says. Here is what the moral sense
+says. Here is what the experience of consciousness points toward. Here is what the testimony of
+humanity across cultures says. They all arrive at the same place." Convergence across independent
+routes is itself an epistemic datum.
+
+## Deployment Rules
+
+- Use after the dominant blocker has been cleared, not as a substitute for clearing it.
+- Use when the interlocutor keeps setting registers against one another and the convergence datum
+  itself changes the case.
+- If E3 already suffices within one register, V6 may be unnecessary.
+- Stop when the cross-register convergence point is clear enough for the next move.

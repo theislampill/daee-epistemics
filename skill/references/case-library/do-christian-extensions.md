@@ -1,4 +1,4 @@
-# Case Library — Doctrinal Objections: Christian Extensions (DO-11 through DO-13)
+# Case Library - Doctrinal Objections: Christian Extensions (DO-11 through DO-13)
 
 Load this file when one of the following objections arises:
 DO-11 (Trinity from divine perfection), DO-12 (logical problem of the Trinity),
@@ -8,12 +8,7 @@ See `case-library/INDEX.md` for the full routing table.
 
 ---
 
-## Doctrinal Objections — Comparative-Christian Extensions (DO-11 through DO-13)
- Doctrinal Objections — Comparative-Christian Extensions (DO-11 through DO-13)
-
----
-
-### DO-11 — Trinity from Divine Perfection
+## DO-11 - Trinity from Divine Perfection
 
 **The objection:** A unipersonal God cannot be maximally perfect. Perfect love, perfect
 glory, and perfect flourishing require an eternal other of equal status within God. A God
@@ -30,24 +25,24 @@ God only loves creatures, then one of the highest divine perfections seems to aw
 creation in order to be fully real.
 
 **Taymiyyan response:**
-The argument trades on an illicit slide from *having* a perfection to *eternally exercising
-it in one specific relational mode*. That move is not self-evident, and no contradiction has
-been shown between perfect divine love and one divine self prior to creation. A disposition,
-power, or perfection need not require an eternal peer-object in order to be real. Otherwise
-many perfections would collapse: mercy, forgiveness, provision, justice, and lordship would
-all require eternal created correlates in order to count as real before creation. That is not
-how perfection works.
+Force the hidden premise into the open: the argument does not merely say love is a perfection. It
+says a perfection is incomplete unless eternally exercised in one determinate relational mode
+against an equal internal other. That premise is doing the real work, and it is not self-evident.
 
-The more precise distinction is between the perfection itself and the occasion of its
-manifestation. A perfect being can be fully loving without an eternal co-equal beloved in the
-Godhead, just as a perfect being can be just without eternal sinners. The argument therefore
-fails to establish that unipersonality is incoherent or even less perfect on purely rational
-grounds.
+Once exposed, the pressure weakens quickly. Possessing a perfection is not the same thing as
+needing an eternal peer-object for that perfection to be real. Otherwise the same logic generates
+parody pressures: mercy would require eternal sinners, forgiveness would require eternal offense,
+provision would require eternal creatures in need, and lordship would require eternal subjects. A
+perfection can be intrinsic while the occasions of its outward or relational exercise are not
+eternal.
 
-More deeply: if the Trinity is to be argued, it cannot be forced out of bare perfect-being
-reasoning alone. The debate must move to revelation, scripture, or churchly authority. The
-philosophical claim that divine perfection *requires* multipersonality does not carry the
-weight placed on it.
+The cleaner distinction is between the perfection itself and one chosen mode of manifestation. A
+perfect God can be fully loving without an eternal co-equal beloved in the Godhead, just as God
+can be just without eternal wrongdoers. The argument therefore does not establish that
+unipersonality is incoherent, deficient, or even less perfect on rational grounds alone.
+
+If the Trinity is to be affirmed, the debate must move to revelation, scripture, or churchly
+authority. Perfect-being reasoning by itself does not force multipersonality.
 
 **Remaining probe:** Is the claim that unipersonal monotheism is logically impossible,
 comparatively less probable, or merely not your preferred reading of Christian revelation?
@@ -55,7 +50,7 @@ Those are different claims and must not be smuggled into one another.
 
 ---
 
-### DO-12 — The Logical Problem of the Trinity
+## DO-12 - The Logical Problem of the Trinity
 
 **The objection:** The Father is God, the Son is God, the Spirit is God; the Father is not
 the Son, the Father is not the Spirit, the Son is not the Spirit; and there is exactly one
@@ -72,27 +67,25 @@ argue that independent revelatory evidence justifies holding the doctrine despit
 conceptual tension.
 
 **Taymiyyan response:**
-The first obligation is model-identification. Do not answer "the Trinity" in the abstract;
-require the interlocutor to state which kind of model they mean. Once that is done, the
-problem sharpens rather than softens.
+The first obligation is model-identification. Do not answer "the Trinity" in the abstract.
+Require the interlocutor to state which family of model they mean, because each family fails in a
+different way:
 
-If "is God" in the first three propositions is predicative, the doctrine tends toward
-tritheism: three distinct divine persons each count as divine in a way that makes "one God"
-unstable. If "is God" is taken as identity, the doctrine tends toward modalism: identity
-collapses the distinct persons into one and the same subject. Social or equivocation-style
-solutions leave an important sense in which there are three gods. Pure relative-identity
-solutions preserve the doctrine only by rejecting or suspending classical identity, one of the
-most basic and intuitive deliverances of ordinary rational thought. Impure relative-identity
-solutions attempt to count gods by a rule other than identity, but typically do so in an ad
-hoc and unprincipled manner. Dialetheist approaches embrace contradiction; mystery-appeals do
-not solve the contradiction at all.
+- identity-style readings tend toward modalism
+- predicative or social readings tend toward tritheism
+- relative-identity or alternative-counting readings preserve the doctrine only by suspending or
+  redefining ordinary identity and counting in an ad hoc way
+- contradiction-embracing or mystery-after-failure readings do not solve the problem at all
 
-The appeal to "independent evidence" does not repair an unresolved internal incoherence. It may
-explain why a person continues to believe, but it does not show the doctrine itself has been
-made coherent. The skill's governing stance is that fiṭrī rational deliverances — identity,
-non-contradiction, and counting discipline — are not casually suspended to preserve a doctrine.
-If a doctrine repeatedly survives only by equivocation, ad hoc counting, or appeal to mystery
-after failure, the burden remains on the doctrine.
+That taxonomy matters because it prevents a drift between models whenever pressure lands. Once a
+model is fixed, the response family is clearer: expose the collapse, the three-gods pressure, the
+ad hoc counting rule, or the retreat into mystery.
+
+The appeal to "independent evidence" does not repair internal incoherence. It may explain why a
+person remains committed, but it does not make the doctrine coherent. The skill's governing stance
+is that fitri rational deliverances - identity, non-contradiction, and counting discipline - are
+not casually suspended to preserve a doctrine. If a position survives only by equivocation, ad hoc
+counting, or mystery after failure, the burden remains on the position.
 
 **Remaining probe:** Which exact model do you affirm, and by what principled rule do you count
 one God while retaining three really distinct persons without collapsing into tritheism or
@@ -100,7 +93,7 @@ modalism?
 
 ---
 
-### DO-13 — The God of the Philosophers and the God of Revelation
+## DO-13 - The God of the Philosophers and the God of Revelation
 
 **The objection:** The highest conception of God is an absolutely simple, immutable,
 timeless, self-sufficient reality. A God who speaks when he wills, acts in succession, or
@@ -124,11 +117,19 @@ to purify revelation but to replace it.
 
 The distinction between essence and act matters here. God is necessarily existent in his
 essence, while his acts are free acts of will, not necessary emanations from a metaphysical
-system. Likewise, bilā kayf blocks the anthropomorphism charge: one may affirm real divine
+system. Likewise, bila kayf blocks the anthropomorphism charge: one may affirm real divine
 attributes and real divine acts without importing creaturely mode. The common accusation of
-tashbīh often depends on a hidden premise that any shared predicate between Creator and
+tashbih often depends on a hidden premise that any shared predicate between Creator and
 creature implies shared mode or ontological sharing. That premise is false. The semantic core
 of a predicate can apply genuinely while the mode of instantiation differs categorically.
+
+A common modern pressure says that if God created time and space, then there is no meaningful
+"before" creation or "above" the world, so revelation's language about divine action and
+exaltedness must be translated away. That move assumes time and space are self-standing
+containers. The skill's route is different: created days and years are measures of motion in
+created systems, and created spatiality belongs to created particulars. God's creating these does
+not force a timeless, nowhere, relationless deity. It only forbids projecting creaturely mode
+onto God.
 
 Once these distinctions are in place, the choice is not between Aristotelian abstraction and
 crude creatureliness. The revealed God is neither a creature nor a philosophical remainder. He
