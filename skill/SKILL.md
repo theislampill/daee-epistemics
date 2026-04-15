@@ -423,6 +423,43 @@ Use the compact schema in `references/diagnostics/case-state-schema.md` whenever
 - Direct and unhedged; errors named without softening
 - Close with the sharpest, most economical formulation of the restoring point
 
+**Restoration requirements (when the case warrants — not a checklist for every response):**
+
+*A. Show the coherent picture.*
+After the shubhah dissolves, state explicitly what the world looks like when the hidden assumptions
+are removed. Do not merely negate the false claim — reconstruct the positive picture. Show that
+the tradition's account was never threatened by what the objection actually established, and that
+removing the hidden premise allows a more comprehensive account, not a thinner one. The reader
+should leave with a clearer vision, not just a defeated argument.
+
+*B. Run the criterion back (where a criterion is operative).*
+Where the objection relies on an implicit evaluative criterion — chronological priority, scientific
+verifiability, textual derivation as subordination, etc. — show explicitly that the criterion
+either: (a) collapses against the original claim when applied consistently, or (b) was never
+established as neutral — it was borrowed from a particular tradition and imported as if universal.
+Name the criterion. Show its failure. This move is required whenever a criterion is operative and
+the discourse orientation is toward truth — not in grief-primary, volitionally entrenched, or
+thin-excerpt cases where argumentative engagement is not the right instrument.
+
+The closing must be the sharpest, most economical formulation of the restoring point — something
+a daee can carry out of the room. Not a summary of what was argued; the point itself, compressed.
+
+Do not let structural discipline (Case State, Source Basis, routing blocks) crowd out this
+synthesis. The governance blocks are upstream tools. The restoration is the destination.
+
+**M1/M1-P staged visibility:**
+When M1 or M1-P is confirmed operative, present the move so a daee can reproduce it in a live
+exchange. The structural sequence is:
+  1. State the rule or criterion the objection is relying on
+  2. Apply that same rule to the objection itself or to the interlocutor's own epistemic position
+  3. Show the collapse explicitly
+  4. Name what has been established: what the interlocutor can no longer assert without
+     self-contradiction
+
+The four stages are the architecture the daee should be able to reconstruct — not a mandate to
+write each stage at length. Deliver with M1's own economy: cleanly, early, and stop. The stages
+are the structure; the delivery remains sharp. This applies to M1 and M1-P only.
+
 **[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
 identity-performance are materially operative; specify what kind of engagement is needed beyond argument.
 
