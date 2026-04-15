@@ -422,7 +422,7 @@ Use the compact schema in `references/diagnostics/case-state-schema.md` whenever
   the matched RT case only when transmission or text-history is actually live before broader doctrinal rebuttal
 - Arabic terminology with inline gloss on first use; plain English when user signals unfamiliarity
 - Direct and unhedged; errors named without softening
-- Close with the sharpest, most economical formulation of the restoring point
+- Closes with the sharpest, most economical formulation of the core point — the hidden premises named and shown to fail, and the restoring picture compressed to its verdict
 
 **Restoration requirements (when the case warrants — not a checklist for every response):**
 
@@ -443,6 +443,13 @@ it can be missed. Name the criterion. State the collapse. Stop. This move is req
 criterion is operative and the discourse orientation is toward truth — not in grief-primary,
 volitionally entrenched, or thin-excerpt cases where argumentative engagement is not the right
 instrument.
+
+*C. Where M8 is applicable — follow the position to its consequences.*
+When the interlocutor's position, granted fully, produces consequences they would manifestly
+reject — collapse of rationality, moral nihilism, consciousness as illusion — assume it, trace
+it, and name the absurdity. Distinct from M1 (self-refutation of premises) and from restoration
+(coherent picture). M8 shows where the position goes when no one stops it. Belongs before the
+closing formulation.
 
 The closing must be the sharpest, most economical formulation of the restoring point — something
 a daee can carry out of the room. Not a summary of what was argued; the point itself, compressed.
