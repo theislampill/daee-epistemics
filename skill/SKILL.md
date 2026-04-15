@@ -451,17 +451,14 @@ Do not let structural discipline (Case State, Source Basis, routing blocks) crow
 synthesis. The governance blocks are upstream tools. The restoration is the destination.
 
 **M1/M1-P staged visibility:**
-When M1 or M1-P is confirmed operative, present the move so a daee can reproduce it in a live
-exchange. The structural sequence is:
+When M1 or M1-P is confirmed operative, present the move in explicit stages:
   1. State the rule or criterion the objection is relying on
   2. Apply that same rule to the objection itself or to the interlocutor's own epistemic position
   3. Show the collapse explicitly
   4. Name what has been established: what the interlocutor can no longer assert without
      self-contradiction
 
-The four stages are the architecture the daee should be able to reconstruct — not a mandate to
-write each stage at length. Deliver with M1's own economy: cleanly, early, and stop. The stages
-are the structure; the delivery remains sharp. This applies to M1 and M1-P only.
+Deliver with M1's own economy: cleanly, early, and stop. This applies to M1 and M1-P only.
 
 **[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
 identity-performance are materially operative; specify what kind of engagement is needed beyond argument.
