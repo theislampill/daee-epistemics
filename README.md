@@ -3,6 +3,7 @@
 `daee-epistemics` is a modular LLM skill for epistemic operations and noetic analysis: a cognitive-security framework for classifying discourse, diagnosing orientation, deformation, and concealment, and routing engagements through matched tactics, techniques, procedures, and case modules.
 
 This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). 
+
 The package is grounded in the coherence and convergence of a common sense account of sound reason, the *fiṭrah* (the innate normative disposition toward truth), and revelation. 
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
