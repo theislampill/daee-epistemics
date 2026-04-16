@@ -29,6 +29,7 @@ merely metaphors but pre-specified conditions examinable in the particular case.
 | Deformation | Primary cue | First move | Do not do first | Common confusion |
 |-------------|-------------|------------|-----------------|-----------------|
 | Iʿtiqādāt mawrūtha | Filter treated as common sense | V2 | Present first-order evidence through the filter | Taqlid or zann without framework-level filtering |
+| Mushābara fāsida (1-A) | One premise regenerates the downstream conclusions | Name the premise, then apply M1 to the premise itself | Keep arguing derivative conclusions while the premise stands | Systemic inherited filtering |
 | Hawā | Objections multiply as soon as one clears | F2 or relational engagement | Supply more arguments | Genuine shubha |
 | Ẓann | Position feels examined but is inherited by default | V7 | Treat it as deep principled skepticism | Taqlid |
 | Taqlīd | Position adopted by imitation | Invite tahqiq | Shame the person for inherited belief | Ẓann |
@@ -352,25 +353,19 @@ polemical accusation to deploy against interlocutors — it is an internal diagn
 explains why intellectual engagement alone cannot reach the person whose barrier is hawā
 or gharaḍ. The barrier is not epistemic; it is volitional. See F2 for the intervention.
 
-**Category C — Mentalizing deficits (not blameworthy)**
+**Category C — Cognitive-access limits (not blameworthy)**
 
-The third cause is genuine cognitive limitation — mentalizing deficits that impair the
-capacity for certain kinds of abstract reasoning, including reasoning about divine persons
-and intentions. Research in cognitive science suggests that the capacity to conceptualize
-intentional agents with mental states who respond to human beliefs and desires is the very
-faculty by which theistic recognition typically operates. Impairment of this faculty may
-undermine intuitive support for theistic belief independently of intellectual position.
+The third cause is genuine cognitive limitation — a case where the person does not have
+ordinary access to the kind of discursive or recognitional movement the engagement would
+normally presuppose.
 
 People in this category are not blameworthy. The tradition's account of divine justice —
 calibrated to what a person actually has access to (the principle of ḥujjah) — applies
 here. Compassion is the appropriate disposition; intellectual pressure is not.
 
-**Diagnostic use:** When an interlocutor appears genuinely intellectually committed to
-their position (not merely performing it, not protecting a stake), and the position
-appears to be held with sincerity rather than suppression, the question is whether the
-barrier is Category A (limited data — addressable by honest engagement and time) or
-Category C (cognitive structure — requiring a different kind of pastoral engagement).
-The Category B identification — willful suppression — should be held lightly, since
-it is accessible from the outside only through patterns of behavior over time, not
-from a single exchange. Deploy F2 (foregrounding the volitional dimension) as a probe
-rather than an accusation.
+**Diagnostic use:** Do not use Category C as a first-line label from ordinary discourse.
+Only let it govern routing when there is direct evidence of cognitive inaccessibility, or
+after sustained engagement has exhausted the matched instruments without yielding any live
+differentiator. In the existing corpus the operational consequence is P1 Stage 7: suspend
+active discursive pressure without turning that suspension into a verdict on the person's
+state before God.

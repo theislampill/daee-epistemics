@@ -26,9 +26,17 @@ the case still requires.
 |---------|--------|---------------------|------------------|
 | NS-1 Naturalist | "there is no evidence"; causal closure assumed | I'tiqadat mawrutha | V2 |
 | NS-2 Agnostic Evidentialist | "belief must be proportioned to evidence" | zann; possibly genuine shubha | E2 plus V3 |
-| NS-3 Post-Religious | Deconversion narrative; orphaned moral commitments | hawa; zann; possibly gharad | M3 or P4 |
+| NS-3 Deconverted | Deconversion narrative; orphaned moral commitments | hawa; zann; possibly gharad | M3 or P4 |
 | NS-4 Secular Moral Realist | Moral facts are objective but God is rejected | zann; i'tiqadat mawrutha | M3 |
-| NS-5 Convinced Atheist | God's non-existence treated as basic | hawa; gharad; 'ada | M4, R2, or V7 depending on register |
+| NS-5 Habituated Atheist | God's non-existence treated as basic | Primarily hawa; possibly gharad; 'ada | F2 (volitional acknowledgment) first; then M4 if grief-primary, R2 if involuntary recognition near surface, V7 otherwise |
+
+## Specialty Diagnostic Markers
+
+| Surface marker | Load |
+|----------------|------|
+| `dalil` demand ("give me a proof/argument"); taqlīd equated with non-knowledge; "naẓar is obligatory on every rational person" | `diagnostics/kalamic-interlocutor.md` |
+| Fiṭrah described as blank-slate or purely environment-shaped; "humans have equal tendencies toward good and evil"; religious belief framed as "just one option among equally valid alternatives" | `diagnostics/fitrah-perspectives.md` |
+| One premise keeps regenerating the conclusions even after local objections are answered | `diagnostics/seven-deformations.md` §1-A (`mushābara fāsida`) |
 
 ## Quick DO Identification
 

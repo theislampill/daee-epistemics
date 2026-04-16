@@ -1,8 +1,6 @@
 # P2 - Objection Mapping
 
-**For:** Interlocutors presenting a battery of intellectual objections; engagement primarily
-critical rather than existential. Run M5 (`references/tactics/M5-deformation-triage.md`) first -
-apparent intellectual objections frequently conceal volitional barriers.
+**For:** Interlocutors presenting a battery of intellectual objections; engagement primarily critical rather than existential. Start with V1 and use M5 (`references/tactics/M5-deformation-triage.md`) inside its triage phase - apparent intellectual objections frequently conceal volitional barriers.
 
 ## Structure
 

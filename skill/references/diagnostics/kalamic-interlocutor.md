@@ -1,8 +1,50 @@
 # Kalāmic Interlocutor — Engagement Strategy
 
-Load when IV.B identifies the interlocutor as formed in a kalāmic tradition (Muʿtazilī,
-Ashʿarī, or Māturīdī), or when the interlocutor holds that theistic belief requires
-inferential demonstration to count as genuine knowledge.
+Load when the interlocutor uses surface markers of kalāmic evidentialism: theistic belief
+must be grounded in `dalil`; `wujūb al-naẓar` is assumed or defended; taqlīd-based belief is
+treated as non-knowledge; the fiṭrah alone is denied epistemic weight without propositional
+support; or the interlocutor explicitly identifies with Muʿtazilī, Ashʿarī, or Māturīdī reasoning.
+
+---
+
+## Surface Recognition Markers
+
+The following are sentence patterns, objection forms, and terms of approval or dismissal a
+practitioner would actually hear from an interlocutor formed in the kalāmic framework. Each
+is derived from the doctrinal content described in this file.
+
+1. **Dalīl demand:** "You need to give me a proof (dalīl) — your belief doesn't count as
+   knowledge unless it is grounded in an argument." Variations: "Show me the evidence,"
+   "What is your proof for that?" — where the demand is specifically for *propositional*
+   demonstration rather than any other epistemic ground.
+
+2. **Taqlīd dismissal:** "That is just taqlīd — you only believe because your parents did.
+   Taqlīd is not knowledge; every rational person must investigate for themselves." The
+   key signal is the equation of inherited or unarticulated belief with non-knowledge
+   rather than merely with *unexamined* belief.
+
+3. **Wujūb al-naẓar assertion:** "Rational inquiry (naẓar) is obligatory on every sane
+   adult — there is no valid excuse for not reasoning your way to the answer." The
+   obligation framing is the marker: not merely that reasoning is useful but that it is
+   *required* before belief can have epistemic standing.
+
+4. **Dismissal of fiṭrah-alone as insufficient:** "Feeling it, or being inclined toward
+   it, doesn't make it knowledge. The fiṭrah is not an argument." The practitioner will
+   hear this as a flat rejection of non-inferential grounds — the fiṭrah is acknowledged
+   as a psychological fact but denied epistemic weight without propositional support.
+
+5. **Narrow-foundations restriction:** "Sense perception and logical self-evidence give
+   you knowledge — everything else needs to be demonstrated." Or: "That kind of immediate
+   certainty only applies to mathematics and direct observation." This pattern restricts
+   properly basic beliefs to the kalāmic ḍarūrī class and treats everything outside it
+   as needing inferential grounding.
+
+6. **Approval of demonstration, dismissal of recognition:** Terms of praise cluster around
+   propositional success — "That is a proper proof," "Now you have established it," "That
+   argument holds." Terms of dismissal cluster around directness and recognition — "That
+   is just intuition," "You are assuming what you need to prove," "That is circular." The
+   asymmetry itself is the marker: direct recognition counts as nothing; successful
+   inference counts as knowledge.
 
 ---
 

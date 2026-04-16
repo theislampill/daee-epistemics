@@ -8,6 +8,8 @@ narrower than a full procedure.
 - Use a technique when the case needs an architectural approach, not just a single move.
 - Do not stack techniques unless each one changes the next stage of engagement.
 - When in doubt, prefer the earlier clearing technique over the later sign-direction technique.
+- V1 is the umbrella entrypoint for substantive cases; M5 operates inside V1's triage phase rather
+  than beside it.
 - In revelation, scripture, transmission, canon, preservation, and text-history cases - and in
   final-prophethood cases only when transmission or text-history is actually live - run V10 before
   broader doctrinal rebuttal or case-library deployment.
@@ -27,3 +29,9 @@ narrower than a full procedure.
 | `references/techniques/V9-necessary-knowledge-priority.md` | Necessity-over-inference control | A discursive argument contradicts universally held fitri knowledge | The argument is merely unpopular or difficult, not genuinely anti-necessary | E4, DO-7, DO-9 |
 | `references/techniques/V10-transmission-content-vetting.md` | Transmission and source discipline | Revelation, scripture, manuscript, canon, preservation, or testimony claims need separation | The issue is generic theism, grief, or attribute language rather than source-vetting | RT-1 to RT-4, P2, P5 |
 | `references/techniques/heuristics.md` | Always-active analyst discipline | You need the standing operator rules and self-audit frame | Not a tactic or technique to cite as if it were a move | All folders |
+
+## Structural Subtype Checks
+
+- `Mushābara fāsida` is the deformation-1 subtype where one premise is doing the load-bearing work.
+  It is usually discovered through V1/M5 and then handled by targeting that premise directly rather
+  than by treating the whole case as a general V2 problem.

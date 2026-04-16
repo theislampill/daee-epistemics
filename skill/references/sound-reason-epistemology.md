@@ -214,7 +214,7 @@ happens afterwards which casts a veil over it."
 
 ## 3-A. The Four-Stage Cognitive Model and Cognitive Translation (RICP: Reception → Impression → Configuration → Projection)
 
-A supplementary account of how the fiṭrah processes experience — useful for the noetic
+A supplementary analytic lens for how the fiṭrah processes experience — useful for the noetic
 reading checklist (dimensions 2–6) and for grounding the consciousness argument (V5
 track b) and the orphaned intuition probe (M3).
 

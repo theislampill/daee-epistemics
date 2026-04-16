@@ -1,12 +1,12 @@
 # Tactics — Index
 
 Tactics are immediate conversational moves. They are not the whole response architecture.
-Run M5 before selecting one, and do not treat a tactic as a substitute for diagnosis.
+Start with V1, use M5 inside its triage phase, and do not treat a tactic as a substitute for diagnosis.
 
 ## Selection Rules
 
 - Choose the tactic that changes the next move, not every tactic that could be mentioned.
-- Read `do not use when` as "do not open with this as the primary move" unless the file itself says otherwise.
+- Treat `do not use when` as a precondition: if the condition is not met, that tactic is not the opening move.
 - Do not use a tactic when the case is primarily grief, identity-performance, or entrenched will unless the tactic itself is built for that condition.
 - Pair tactics with techniques or procedures when the case requires a longer arc.
 
@@ -29,11 +29,17 @@ Run M5 before selecting one, and do not treat a tactic as a substitute for diagn
 | `references/tactics/M2-prior-probability.md` | Meta | Evil, hiddenness, or diversity arguments are doing probabilistic work | The case is logical contradiction, not probabilistic pressure | DO-1, DO-2, DO-4 |
 | `references/tactics/M3-orphaned-intuition.md` | Meta | Moral, aesthetic, or existential deliverances outstrip the stated framework | The interlocutor's framework already grounds those deliverances cleanly | NS-3, NS-4, V5 |
 | `references/tactics/M4-grief-register.md` | Meta | The problem of evil is grief or moral protest, not seminar argument | The case is clearly probabilistic argumentation | P1 |
-| `references/tactics/M5-deformation-triage.md` | Meta | Before any other tactic | Never skip unless the case is genuinely trivial | V1, `seven-deformations.md` |
+| `references/tactics/M5-deformation-triage.md` | Meta | During V1's triage phase, or for narrow local deformation sorting | Do not use as a rival full-entry architecture | V1, `seven-deformations.md` |
 | `references/tactics/M6-excluded-middle.md` | Meta | The interlocutor retreats into indefiniteness or evasion | The proposition itself is still poorly defined | M7 |
 | `references/tactics/M7-definition-anchor.md` | Meta | Terminology is blocking substantive engagement | The dispute is already substantive rather than lexical | M6 |
 | `references/tactics/M8-reductio.md` | Meta | A position generates unacceptable consequences when followed through | M1 or M1-P already gives the cleaner result | DO-7, P6 |
 | `references/tactics/symmetric-taqlid-check.md` | Supplementary | The practitioner's own inquiry is in view | You are only diagnosing the interlocutor and the issue is not taqlid | V7 |
 | `references/tactics/inductive-fitri-method.md` | Supplementary | You need to distinguish fitri foundation from cultural superstructure | The case does not turn on universality claims | E4 |
-| `references/tactics/husn-al-nazar-arguments.md` | Supplementary | Husn al-nazar has already been selected for an impaired fitrah case | The framework is still contaminated or the case is not inferentially ripe | V2, E3 |
-| `references/tactics/doubt-vs-skepticism.md` | Supplementary | The demand for evidence is being posed as the neutral default | The case is normal doubt rather than ideological skepticism | E2, M1P |
+| `references/tactics/husn-al-nazar-arguments.md` | Evidentialist | Husn al-nazar has already been selected for an impaired fitrah case | The framework is still contaminated or the case is not inferentially ripe | V2, E3, `sound-reason-epistemology.md §5` |
+| `references/tactics/doubt-vs-skepticism.md` | Meta | The demand for evidence is being posed as the neutral default | The case is normal doubt rather than ideological skepticism | E2, M1P |
+
+## Structural Subtype Checks
+
+- `Mushābara fāsida` is not a separate tactic file, but it is a distinct routing target inside
+  deformation 1. If one premise keeps regenerating the conclusions after local rebuttals, name the
+  premise and apply M1 to that premise before returning to broader framework-clearing or case work.

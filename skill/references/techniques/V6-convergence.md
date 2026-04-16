@@ -26,6 +26,10 @@ says. Here is what the experience of consciousness points toward. Here is what t
 humanity across cultures says. They all arrive at the same place." Convergence across independent
 routes is itself an epistemic datum.
 
+**Difference from E3:** E3 is bounded cumulative assembly within one operative register. V6 is for
+cases where several registers are being set against one another and the cross-register convergence
+itself is what changes the case.
+
 ## Deployment Rules
 
 - Use after the dominant blocker has been cleared, not as a substitute for clearing it.

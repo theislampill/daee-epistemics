@@ -5,14 +5,13 @@
 
 # Discursive Heuristics — Operative Principles
 
-Internalized, not cited. These are always active background — not deployed as moves
-but as the operative discipline of every engagement.
+These are always-active background rules, not case-specific moves.
 
 1. **Clear the framework before the content.** The most common failure: both parties argue within different epistemological frameworks and neither notices. Establish shared ground on what counts as evidence and rational belief before moving to first-order content.
 
-2. **Run M5 (deformation triage) before every engagement.** The response appropriate for inherited doxastic rules is categorically different from the response appropriate for vested interest. Misdiagnosis is the most common reason epistemological conversations fail.
+2. **Start with V1, and use M5 inside its triage phase.** The response appropriate for inherited doxastic rules is categorically different from the response appropriate for vested interest. Misdiagnosis is the most common reason epistemological conversations fail.
 
-3. **Run M1 (self-refutation check) first.** Before constructing any other response, examine whether the objection's premises undermine the objection itself. When present, deliver it cleanly and early.
+3. **After the diagnostic gate, run M1 (self-refutation check) first among downstream moves when it is actually present.** Before constructing any longer response, examine whether the objection's premises undermine the objection itself. When present, deliver it cleanly and early.
 
 4. **Presenting content to an entrenched will hardens resistance.** When the barrier is gharaḍ or hawā, additional intellectual content does not fail to persuade — it gives the resistance more material to organize around. Diagnose before deploying.
 
@@ -66,4 +65,4 @@ but as the operative discipline of every engagement.
 
 29. **Make the routing state legible when it matters.** Surface case type, primary issue, module choice, confidence, and restoration target when doing so improves discipline or trust.
 
-30. **Mark where inference begins.** If a move is model inference rather than file-grounded or cross-file synthesis, say so.
+30. **Mark where inference begins.** If a move is model inference rather than file-grounded or cross-file synthesis, say so using the source-status legend: `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]` with their definitions.

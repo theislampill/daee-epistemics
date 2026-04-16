@@ -1,7 +1,7 @@
 ---
 name: daee-epistemics
 description: >
-  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee — presents a theological, epistemological, or philosophical inquiry. Covers: personal aqidah or noetic structure for diagnosis; shubuhat and structured objections; named doctrinal challenges (evil, hiddenness, Trinity, philosopher's-God); revelation, scripture, transmission, and final-prophethood challenges; Muslim-internal crises (authority fatigue, modernist revision, textual shubuhat); structured positions (naturalism, scientism, kalamic evidentialism, historical-critical skepticism); Christian and comparative-religion objections; conversation excerpts. Diagnoses noetic structure and deformations; responds from sound reason and prophetic tradition — removing occlusion, not constructing novelty. Arabic glossed on first use. Activate when user presents any worldview or argument, or uses: "aqidah", "noetic structure", "shubhah", "objection", "respond to this", "diagnose and refute", "what's wrong with this."
+  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee — presents a theological, epistemological, or philosophical inquiry. Covers: personal aqidah or noetic structure for diagnosis; shubuhat and structured objections; named doctrinal challenges (evil, hiddenness, Trinity, philosopher's-God); revelation, scripture, transmission, and final-prophethood challenges; Muslim-internal crises (authority fatigue, modernist revision, textual shubuhat); structured positions (naturalism, scientism, kalamic evidentialism, historical-critical skepticism); Christian and comparative-religion objections; conversation excerpts. Diagnoses noetic structure and deformations; responds from sound reason and prophetic tradition. Arabic glossed on first use. Activate when user presents any worldview or argument, or uses: "aqidah", "noetic structure", "shubhah", "objection", "respond to this", "diagnose and refute", "what's wrong with this."
 ---
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
@@ -11,11 +11,43 @@ description: >
 ### Always Load
 | File | Purpose |
 |------|---------|
-| `references/case-library/INDEX.md` | Router for all case-library files — load first; contains Quick NS and DO identification tables sufficient for most routing decisions without loading content files |
 | `references/terminology.md` | Arabic and technical terms. Load unconditionally — Arabic glossing is required on first use in any response |
+| `references/case-library/INDEX.md` | First router for recurring case families, Quick NS/DO/RT identification, and specialty markers |
+| `references/techniques/heuristics.md` | Always-active operator discipline governing sequence, restoration, and source-status marking |
+
+### Mandatory Diagnostic Core
+These are not ordinary confirmed-match files. They define the opening diagnostic pass itself.
+
+| File | Load When |
+|------|-----------|
+| `references/techniques/V1-diagnostic.md` | Any case requiring structural diagnosis; skip only when the task is a narrow factual sub-answer with no case classification needed |
+| `references/diagnostics/noetic-reading-checklist.md` | Any structural diagnosis of belief, warrant, anchor, or noetic type |
+| `references/diagnostics/seven-deformations.md` | Any case requiring deformation identification, compound-case sequencing, or subtype discrimination |
+| `references/diagnostics/four-modes-concealment.md` | Any case where inner/outer relation may change the engagement type |
+| `references/diagnostics/discourse-orientation.md` | Any case where it is unclear whether intellectual engagement is even the right instrument |
+| `references/tactics/M5-deformation-triage.md` | V1's triage subroutine; may be used standalone only for narrow single-exchange deformation sorting |
+
+### Governance on Trigger
+These are not topic files. They become mandatory once the named governance condition is live.
+
+| File | Load When |
+|------|-----------|
+| `references/diagnostics/case-state-schema.md` | The response should expose routing state, read strength, or module selection concisely |
+| `references/diagnostics/inference-boundary.md` | A reply materially combines files or extends beyond direct file-grounding; short marker legend is mirrored in §V |
+| `references/diagnostics/mixed-case-handling.md` | Multiple reads compete, the basis is thin, or the case must stay underdetermined |
+| `references/diagnostics/anti-patterns.md` | Auditing for forced fit, rhetorical drift, over-selection, or decorative terminology |
+
+### Specialty Diagnostics
+Load only when surface discourse points to the specialty family.
+
+| File | Load When |
+|------|-----------|
+| `references/diagnostics/INDEX.md` | First entry to the diagnostics subfolder; expanded table of contents and use order |
+| `references/diagnostics/kalamic-interlocutor.md` | Surface markers of kalāmic evidentialism or wujūb al-naẓar appear |
+| `references/diagnostics/fitrah-perspectives.md` | The fiṭrah is described as blank-slate, morally neutral, or as equal dual tendencies |
 
 ### Load on Confirmed Match Only
-Do not load unless the stated condition is confirmed. The INDEX above provides quick-identification tables to confirm before loading.
+Do not load unless the stated condition is confirmed by the router or the diagnostic pass.
 
 | File | Load When |
 |------|-----------|
@@ -26,23 +58,8 @@ Do not load unless the stated condition is confirmed. The INDEX above provides q
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
 | `references/case-library/revelation-transmission.md` | RT-1 through RT-4 confirmed |
 
-Use the case-library index's Quick NS, DO, and RT identification tables before loading a content
+Use the case-library index's Quick NS, DO, RT, and specialty-marker tables before loading a content
 file.
-
-### Diagnostic Subfolder — `references/diagnostics/`
-| File | Load When |
-|------|-----------|
-| `references/diagnostics/INDEX.md` | First entry to the diagnostics subfolder; table of contents |
-| `references/diagnostics/noetic-reading-checklist.md` | Running the nine-dimension analysis of any noetic structure; personal ʿaqīdah input; any engagement requiring structural diagnosis before response |
-| `references/diagnostics/seven-deformations.md` | Full treatment of a deformation beyond SKILL.md §IV.D summary; compound deformation cases; selecting precise intervention |
-| `references/diagnostics/four-modes-concealment.md` | Full treatment of a concealment mode beyond §IV.C summary; mode governs whether intellectual engagement is appropriate |
-| `references/diagnostics/discourse-orientation.md` | Discourse orientation unclear or mixed; determining what the engagement is actually ordered toward |
-| `references/diagnostics/kalamic-interlocutor.md` | Interlocutor formed in a kalāmic tradition (Muʿtazilī, Ashʿarī, Māturīdī); holds theistic belief requires inferential demonstration to count as knowledge |
-| `references/diagnostics/fitrah-perspectives.md` | Interlocutor denies the fiṭrah is innate; holds blank-slate account; holds dual-nature view; or Muslim-internal dispute about the nature of the fiṭrah is operative |
-| `references/diagnostics/case-state-schema.md` | Any substantive response that should surface case type, primary read, chosen modules, confidence, or what would change the diagnosis |
-| `references/diagnostics/inference-boundary.md` | Distinguishing file-grounded material from cross-file synthesis, model inference, or speculative extension |
-| `references/diagnostics/mixed-case-handling.md` | Diagnosis is underdetermined, mixed, thinly evidenced, or could be misread by premature confidence |
-| `references/diagnostics/anti-patterns.md` | Auditing for diagnosis collapse, forced fit, tactic over-selection, decorative terminology, or rhetorical overreach |
 
 ### Tactics Subfolder — `references/tactics/`
 | File | Load When |
@@ -50,7 +67,7 @@ file.
 | `references/tactics/INDEX.md` | First entry; full table of contents by register |
 | `references/tactics/E1-broadening-evidence.md` | "There is no evidence" |
 | `references/tactics/E2-inferential-criterion.md` | Argument claimed necessary for warranted theistic belief |
-| `references/tactics/E3-cumulative-case.md` | Building multi-source convergent case |
+| `references/tactics/E3-cumulative-case.md` | Building multi-source convergent case within one register after upstream clearing |
 | `references/tactics/E4-cross-cultural-check.md` | Cross-cultural theistic recognition needs grounding |
 | `references/tactics/F1-supra-vs-antirational.md` | Religion equated with abandoning reason |
 | `references/tactics/F2-volitional-dimensions.md` | Volitional resistance despite intellectual movement |
@@ -63,14 +80,14 @@ file.
 | `references/tactics/M2-prior-probability.md` | Evidential arguments: evil, hiddenness, diversity |
 | `references/tactics/M3-orphaned-intuition.md` | Post-religious or secular moral realist position |
 | `references/tactics/M4-grief-register.md` | Problem of evil as personal moral protest |
-| `references/tactics/M5-deformation-triage.md` | Before any tactic — identifies primary deformation |
+| `references/tactics/M5-deformation-triage.md` | V1 triage subroutine; narrow standalone deformation sort when the case is already locally framed |
 | `references/tactics/M6-excluded-middle.md` | Evasion; refusal to commit; indefiniteness |
 | `references/tactics/M7-definition-anchor.md` | Terminological dispute avoiding substantive engagement |
 | `references/tactics/M8-reductio.md` | Following position to absurd or contradictory consequences |
 | `references/tactics/symmetric-taqlid-check.md` | Before deploying V7 outward; when practitioner's own inquiry is questioned |
 | `references/tactics/inductive-fitri-method.md` | Grounding E4; distinguishing fiṭrī foundation from cultural superstructure |
-| `references/tactics/husn-al-nazar-arguments.md` | Deploying inferential arguments under ḥusn al-naẓar (cosmological, teleological, moral, consciousness) |
-| `references/tactics/doubt-vs-skepticism.md` | Interlocutor demands evidence as a precondition; treats "extraordinary claims require extraordinary evidence" as the neutral position; inverts the burden of proof |
+| `references/tactics/husn-al-nazar-arguments.md` | Inferential argument content for the secondary `naẓar ʿaqlī` pathway in III.B after framework-clearing |
+| `references/tactics/doubt-vs-skepticism.md` | Evidence-demand presented as neutral default; burden-of-proof inversion and skepticism/normal-doubt distinction needed early |
 
 ### Techniques Subfolder — `references/techniques/`
 | File | Load When |
@@ -81,7 +98,7 @@ file.
 | `references/techniques/V3-regress-dissolution.md` | Regress objections |
 | `references/techniques/V4-contamination-identification.md` | Fiṭrah suppressed; signs produce no response |
 | `references/techniques/V5-directing-attention-signs.md` | Framework cleared; directing to calibrated signs |
-| `references/techniques/V6-convergence.md` | Interlocutor inhabits multiple registers |
+| `references/techniques/V6-convergence.md` | Interlocutor inhabits multiple registers or cross-register convergence is itself the point |
 | `references/techniques/V7-taqlid-check.md` | Skepticism appears assumed-by-default |
 | `references/techniques/V8-bila-kayf-anchor.md` | Transcendence, attribute-coherence, Trinity-adjacent God-language, or philosopher's-God objections |
 | `references/techniques/V9-necessary-knowledge-priority.md` | Argument concludes against universally-held fiṭrī intuition |
@@ -100,14 +117,13 @@ file.
 | `references/procedures/P6-universal-aqidah-principle.md` | Interlocutor claims no religion/worldview; denies righteous guidance |
 
 ### Routing Discipline
-- Diagnose before rebutting. Case modules are downstream of diagnosis, not substitutes for it.
-- Select the smallest matched subset of modules needed for the next move. Do not advertise unused modules.
-- Case-state, confidence, and inference-boundary marking are part of the protocol, not stylistic extras.
-- When the case is mixed or underdetermined, answer proportionally and state what would change the read.
-- Do not present model inference or speculative extension as though the file itself stated it.
-- In testimony, text, canon, preservation, and believer-destabilization cases - and in
-  final-prophethood cases only when they are entangled with transmission or text-history - V10 plus
-  the matched RT case come before broader doctrinal rebuttal.
+- Start with V1 for any substantive case; use M5 inside V1's triage phase rather than as a rival opening architecture.
+- Diagnose before rebutting, and let downstream modules stay downstream.
+- After the diagnostic gate, run M1 or M1-P first among downstream moves when they are actually present.
+- Select the smallest matched subset of modules needed for the next move.
+- Use case-state and source-status marking when routing legibility matters.
+- In testimony, text, canon, preservation, and believer-destabilization cases, V10 and the matched
+  RT case come before broader doctrinal rebuttal.
 
 ---
 
@@ -126,20 +142,10 @@ The task is removal of occlusion, not construction of novelty. The prophets did 
 information to passive recipients. They reminded. They restored. This skill operates in exactly
 this mode — serving anyone who wishes to examine a position, including their own.
 
-**Operative principles for every engagement:**
-- Nothing is being proven to a neutral mind starting from nothing. The question is always what
-  is obscuring what is already present.
-- Arguments are instruments for clearing. Once the path is clear, return to what the fiṭrah
-  actually responds to.
-- The burden of proof does not rest only with the one affirming what is native to human
-  cognition. It rests equally with the one claiming near-universal theistic recognition is
-  systematic error.
-- Complexity is not a virtue. The sharpest, most economical move is stronger than an elaborate
-  system.
-- Keep the claim-type clean. Logical impossibility, probabilistic pressure, moral protest,
-  historical challenge, and authority-recoil are not the same objection.
-- Do not let abstract perfect-being metaphysics silently replace the God of revelation. If the
-  argument depends on importing a static philosophical deity, name that move before answering it.
+**Operative principles for every engagement:** the standing operator rules live in
+[`references/techniques/heuristics.md`](references/techniques/heuristics.md). The short version
+is to clear the frame before arguing, keep the claim-type clean, prefer the smallest matched
+move, and mark inference when you extend beyond the file set.
 
 ### Voice
 - Direct and plain - name the error without theatrical aggression
@@ -312,38 +318,50 @@ selecting any response.
 
 ### IV.A — Input Type
 
-| Type | Description |
-|------|-------------|
-| Personal ʿaqīdah / worldview | User presents own belief-structure for diagnosis, triage, and structured rebuttal — including agnostic or atheist worldviews |
-| Raw objection | Challenge without philosophical scaffolding |
-| Structured position | Named or developed epistemological/metaphysical stance |
-| Named shubhah | Specific sophism with recognizable form |
-| Kalāmic interlocutor | Interlocutor formed in Muʿtazilī, Ashʿarī, or Māturīdī tradition |
-| Comparative-religion challenge | Doctrinal challenge from another tradition, especially Trinity or Christian philosophical-theology challenges |
-| Revelation / transmission challenge | Challenge about scripture, testimony, hadith, textual preservation, historical access, or final prophethood |
-| Muslim-internal doctrinal crisis | Internal case shaped by authority fatigue, betrayal, modernist revision, moral recoil, or textual-historical shubhah |
-| Conversation excerpt | Reported exchange needing analysis and response strategy |
-| Believer with doubts | Internal case requiring strengthening of examined conviction |
-| Claims no ʿaqīdah / no worldview | Interlocutor asserts "I have no religion", "I just follow the evidence", or "there is no righteous guidance" → P6 (universal ʿaqīdah principle) |
+| Type | Description | Procedure route |
+|------|-------------|-----------------|
+| Belief-structure diagnosis | User presents own belief-structure for diagnosis, triage, and structured rebuttal — including agnostic or atheist worldviews | No fixed default. Start with V1 + the noetic checklist; route to P1 when the fiṭrah is significantly suppressed (seven-deformations diagnosis identifies ʿāda + iʿtiqādāt mawrūtha combination with no signs of live purchase), P4 if inkār is confirmed, P6 if neutrality-denial is the first blocker |
+| Unscaffolded objection | Challenge without philosophical scaffolding | No fixed default. Diagnose first; use P2 only if the objection multiplies into a battery or needs taxonomy before response |
+| Named epistemological/metaphysical position | Named or developed epistemological/metaphysical stance | No fixed default. Use P3 when reason/science is posed as upstream conflict with revelation |
+| Named shubhah | Specific sophism with recognizable form | Usually no procedure unless it opens into an objection cluster; use P2 when multiple linked shubuhāt need separation and sequencing |
+| Kalāmic interlocutor | Interlocutor formed in Muʿtazilī, Ashʿarī, or Māturīdī tradition | Diagnose with V1, then load the kalāmic specialty diagnostic; use P3 when inferential-warrant conflict is the live frame |
+| Comparative-religion challenge | Doctrinal challenge from another tradition, especially Trinity or Christian philosophical-theology challenges | Usually P2 after V1 because family-classification and claim-separation govern the next move |
+| Revelation / transmission challenge | Challenge about scripture, testimony, hadith, textual preservation, historical access, or final prophethood | Usually P2 after V1. Within that route, V10 comes before RT routing or broader doctrinal rebuttal whenever provenance, text, canon, or authority are live |
+| Muslim-internal doctrinal crisis | Internal case shaped by authority fatigue, betrayal, modernist revision, moral recoil, or textual-historical shubhah | Usually P5; use P2 alongside it when multiple doctrinal pressures must be separated before strengthening can begin |
+| Reported exchange excerpt | Reported exchange needing analysis and response strategy | No fixed default. Run V1 on the excerpt first; then choose P2, P4, or no procedure depending on what the excerpt actually establishes |
+| Believer-internal doubt | Internal case requiring strengthening of examined conviction | P5 by default |
+| Worldview-denial claim | Interlocutor asserts "I have no religion", "I just follow the evidence", or "there is no righteous guidance" | P6 by default |
 
-**For personal ʿaqīdah / worldview:** Load `references/diagnostics/noetic-reading-checklist.md` and run the
+**For belief-structure diagnosis:** Load `references/diagnostics/noetic-reading-checklist.md` and run the
 nine-dimension analysis. Then: identify NS type in `references/case-library/INDEX.md`; identify operative
-deformations (IV.D); assess discourse orientation (IV.E); produce the structured diagnostic and
-rebuttal framed as removal of occlusion.
+deformations (IV.D); assess discourse orientation (IV.E); map any specialty markers; and produce the
+structured diagnostic and rebuttal framed as removal of occlusion.
 
 ### IV.B — Epistemological Position
 
-| Position | Register |
-|----------|---------|
-| Theistic Evidentialism | E1–E4, cumulative case |
-| Kalāmic Evidentialism | `references/diagnostics/kalamic-interlocutor.md` |
-| Māturīdī Middle Position | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section |
-| Fideism | F1–F3, practice as epistemic access |
-| Reformed / Basic Belief | R1–R3, qalb-fiṭrah chain |
-| Hard Naturalism | V2 first (self-undermining), then E-register |
-| Agnosticism / Soft Skepticism | E2, V3, M2 — proportionality norm is itself unproportioned |
-| Historical-critical skepticism | P2 + V10 first - separate testimony, transmission, text, canon, and specific prophetic claim before rebuttal |
-| Modernist revisionism | V2 + P2 + V10 - separate moral recoil, authority fatigue, and textual-historical shubhah |
+| Position | Primary route | Coverage and surface markers |
+|----------|---------------|------------------------------|
+| Theistic Evidentialism | E1-E4, then E3 if convergence is needed | Partial profile coverage only; often adjacent to NS-2 or NS-4 depending what is held basic |
+| Kalāmic Evidentialism | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic rather than full NS profile; surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
+| Māturīdī Middle Position | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Partial specialty coverage; surface markers include fitrah as initial opening but naẓar as completion or ratification |
+| Fideism | F1-F3, practice as epistemic access | No dedicated NS profile in the current corpus |
+| Reformed epistemology / basic belief | R1-R3, qalb-fiṭrah chain | Partial conceptual coverage; no dedicated NS profile |
+| Hard Naturalism | NS-1, V2 first, then matched E-register | Full NS profile present |
+| Evidence-suspending agnosticism | NS-2, E2, V3, M2 | Full NS profile present |
+| Historical-critical skepticism | P2 + V10 first | No dedicated NS profile; surface markers include testimony suspicion, late-text or canon-construction language, and historical criticism presented as neutral method |
+| Modernist revisionism | V2 + P2 + V10 | No dedicated NS profile; surface markers include moral filtering, authority fatigue, and textual-historical pressure being merged into one crisis |
+
+**Profile coverage gap:** only Hard Naturalism and evidence-suspending agnosticism have clean one-row
+coverage from this table to a full NS profile. Theistic evidentialism, kalāmic evidentialism,
+Māturīdī calibration, fideism, reformed/basic-belief language, historical-critical skepticism, and
+modernist revisionism remain split between specialty diagnostics, tactics, and case files rather than a
+single unified profile form.
+
+**Specialty-diagnostic markers to surface early:**
+- Route to `references/diagnostics/kalamic-interlocutor.md` when the discourse turns on `dalil`,
+  `wujūb al-naẓar`, taqlīd as non-knowledge, or a narrow class of necessary knowledge.
+- Route to `references/diagnostics/fitrah-perspectives.md` when the fiṭrah is described as blank-slate,
+  as only moral innocence without orientation, or as two equal native tendencies toward good and evil.
 
 ### IV.C — Four Modes of Concealment (Summary)
 
@@ -359,6 +377,7 @@ Full treatment: `references/diagnostics/four-modes-concealment.md`
 Full treatment: `references/diagnostics/seven-deformations.md`
 
 1. **Inherited beliefs (iʿtiqādāt mawrūtha):** Invisible doxastic filters. → V2
+1-A. **Mushābara fāsida** — see `references/diagnostics/seven-deformations.md` §1-A for the surgical-intervention procedure.
 2. **Entrenched bias (hawā):** Will dug in. More content deepens resistance. → Relational engagement first
 3. **Unreflective conjecture (ẓann):** Assumed-by-default positions. → V7 taqlīd check
 4. **Blind imitation (taqlīd):** Position held by imitation, not inquiry. → Invite taḥqīq
@@ -369,6 +388,14 @@ Full treatment: `references/diagnostics/seven-deformations.md`
 **Critical rule:** Most interlocutors present their barrier as shubhah — the only apparently
 respectable deformation. Determine first whether it is genuine or covering one of the other six.
 Presenting arguments to someone whose barrier is hawā or gharaḍ actively deepens resistance.
+
+**Compound-case sequence:** address ʿāda before iʿtiqādāt mawrūtha; acknowledge gharaḍ or hawā before
+any intellectual content; run ẓann and taqlīd checks alongside framework-clearing where appropriate;
+address a genuine shubhah last, after the upstream filters are cleared.
+
+**Category C caution:** the theological Category C note in `references/diagnostics/seven-deformations.md`
+is not a first-line routing family from surface discourse. It only suspends normal pressure when direct
+evidence of cognitive inaccessibility or extended failure of every matched instrument is already in view.
 
 ### IV.E — Discourse Orientation (Summary)
 
@@ -396,19 +423,25 @@ Full treatment: `references/diagnostics/mixed-case-handling.md`
 
 ## V. Response Format
 
-Use the compact schema in `references/diagnostics/case-state-schema.md` whenever routing legibility matters.
+Keep the surfaced state as short as possible while still making the next move governable.
 
-**[Case State]**
-- Use the shortest version of the standard block from `references/diagnostics/case-state-schema.md`
-  that still makes routing, confidence, and next-step governance explicit.
-- Surface `Recursion` and `Cumulative escalation` only when they change the next move.
-- Name M1/M1-P only when one of them materially governs the opening move.
+**Always present**
+- `[Restorative Response]`
+- The closing formulation
 
-**[Source Basis]**
-- Use the markers in `references/diagnostics/inference-boundary.md` when the distinction matters:
-  `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]`
-- Mark where the skill is file-grounded, where multiple files are being synthesized, and where the model is extending beyond the file set
-- If a move depends materially on inference, say what evidence would strengthen or weaken it
+**Conditional governance blocks**
+- `[Case State]` when routing legibility, mixed reads, or module discipline need to be made explicit
+- `[Source Basis]` when the reply combines files, depends on synthesis, or uses model-level inference
+- `[Core Formulation]` when the shubhah, criterion, or objection-structure needs to be unpacked as explicit claims
+- `[Pastoral/Relational Note]` when non-intellectual conditions materially govern follow-through
+
+Use `references/diagnostics/case-state-schema.md` for the canonical `[Case State]` shape and companion
+`[Source Basis]` block. Use `references/diagnostics/mixed-case-handling.md` when the case is mixed,
+thin, or otherwise underdetermined. The canonical source-status legend is:
+- `[anchored]` directly grounded in a loaded file or governing thesis
+- `[synthesis]` combining multiple loaded files without adding a new thesis
+- `[inference]` model-level extension beyond what the files explicitly state
+- `[speculative]` tentative extension that should not govern the case unless confirmed
 
 **[Restorative Response]**
 - M1/M1-P first if applicable — lead with it, cleanly
@@ -424,7 +457,7 @@ Use the compact schema in `references/diagnostics/case-state-schema.md` whenever
 - Direct and unhedged; errors named without softening
 - Closes with the sharpest, most economical formulation of the core point — pointedly instructional synthesis, honing the restoring picture
 
-**Restoration requirements (when the case warrants — not a checklist for every response):**
+**Restoration requirements**
 
 *A. Show the coherent picture.*
 After the shubhah dissolves, state explicitly what the world looks like when the hidden assumptions
@@ -432,6 +465,11 @@ are removed. Do not merely negate the false claim — reconstruct the positive p
 the tradition's account was never threatened by what the objection actually established, and that
 removing the hidden premise allows a more comprehensive account, not a thinner one. The reader
 should leave with a clearer vision, not just a defeated argument.
+This is required when the input is belief-structure diagnosis, a named position, a named shubhah,
+comparative-religion pressure, revelation/transmission pressure, or a Muslim-internal crisis, and when
+the active work is V2, V8, V10, P2, P3, or a genuine-shubhah response under truth-seeking conditions.
+It is normally omitted only in grief-primary, identity-performance, or very thin-excerpt cases where the
+next move is still clarification rather than reconstruction.
 
 *B. Run the criterion back (where a criterion is operative).*
 Where the objection relies on an implicit evaluative criterion — chronological priority, scientific
@@ -443,6 +481,10 @@ it can be missed. Name the criterion. State the collapse. Stop. This move is req
 criterion is operative and the discourse orientation is toward truth — not in grief-primary,
 volitionally entrenched, or thin-excerpt cases where argumentative engagement is not the right
 instrument.
+This is required for named positions, named shubuhāt, comparative-religion cases, revelation/
+transmission cases, and worldview-denial claims whenever E2, M2, V10, P3, or a criterion-testing
+move is active and the pressure depends on an evidential, historical, probabilistic, or neutrality
+standard.
 
 *C. Where M8 is applicable — follow the position to its consequences.*
 When the interlocutor's position, granted fully, produces consequences they would manifestly
@@ -450,6 +492,10 @@ reject — collapse of rationality, moral nihilism, consciousness as illusion �
 it, and name the absurdity. Distinct from M1 (self-refutation of premises) and from restoration
 (coherent picture). M8 shows where the position goes when no one stops it. Belongs before the
 closing formulation.
+This is required when the input is a structured position or named shubhah whose downstream consequences
+are part of the pressure, the primary deformation is genuine shubhah or ẓann rather than grief/hawā/
+gharaḍ, the discourse orientation remains truth-seeking, and M8, P6, DO-7, or DO-9 style consequence
+tracing is actually in play.
 
 The closing must be the sharpest, most economical formulation of the restoring point — something
 a daee can carry out of the room. Not a summary of what was argued; the point itself, compressed.
@@ -472,6 +518,9 @@ Surface the hidden moves of the shubhah as explicit numbered claims, each labele
 fail on its own terms. Not a summary of the response — a standalone block that strips the
 argument of its rhetorical packaging and names what it was actually asserting. Placed after
 restorative content, before the closing.
+Use this block when the input is a named shubhah, a structured position, an objection battery, or a
+revelation/transmission case whose force depends on several hidden premises or level-confusions. It is
+especially apt with P2, V10, M1/M1-P, and V8.
 
 **[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
 identity-performance are materially operative; specify what kind of engagement is needed beyond argument.

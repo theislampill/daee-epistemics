@@ -16,11 +16,7 @@ of ayat that together catalyze recognition.
 **Frame:** "Here is what direct experience says; here is what testimony says; here is what careful
 reasoning says - and they all point the same direction."
 
-**The deeper principle:** Convergence of independent epistemic routes is not merely rhetorical. It
-reflects how knowledge actually works. Ibn Taymiyyah is explicit that confining knowledge to a
-single pathway is a form of contamination. When multiple independent routes arrive at the same
-recognition without possibility of collusion, that convergence is evidence of the recognition's
-truth. This is the structure of the tawatur argument extended to epistemic pathway diversity.
+The epistemological grounding for convergence as evidence is in V6 (`references/techniques/V6-convergence.md`, 'The deeper principle'). Deploy E3 for bounded assembly within one register; deploy V6 when cross-register convergence is itself the argument.
 
 ## Assembly Rules
 

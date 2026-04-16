@@ -1,7 +1,7 @@
 > role: core diagnostic
 > use when: diagnosing worldview structure, not merely answering a single proposition
 > do not use when: the task is a narrow factual clarification with no need for noetic classification
-> output: primary noetic issue, likely intervention point, confidence conditions
+> output: primary noetic issue, likely intervention point, strength of read, decisive missing differentiator
 
 # Noetic Reading Checklist — Full Treatment
 
@@ -25,7 +25,7 @@ structure.
 
 - Whenever a personal ʿaqīdah or worldview is presented for diagnosis
 - Before any sustained engagement — the checklist reveals which instrument has traction
-- When a response to an argument or tactic produces an unexpected reaction
+- When a move clears an upstream barrier and exposes a new downstream issue, or when the interlocutor shifts register in a way that changes intervention order
 - When the interlocutor's position appears internally inconsistent
 
 ## What This Checklist Should Produce
@@ -143,7 +143,7 @@ Synthesizing diagnostic across all eight dimensions:
   astronomy is showing what happens when departing from the point of yaqīn.
 
 *Theoretical grounding: `references/sound-reason-epistemology.md` §4 (tawātur as final epistemic
-guarantor); SKILL.md §I-B (the divergence diagnostic).*
+   guarantor); the divergence diagnostic.*
 
 ## What to Do with the Findings
 

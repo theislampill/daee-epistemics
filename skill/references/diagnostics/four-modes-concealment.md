@@ -29,7 +29,7 @@ not available to engagement.
 **What works:** Arguments do not land. Intellectual content does not help. The barrier
 must be named — gently and directly — not argued past. Sometimes the most honest thing
 is to name what is happening: "It seems like you are not actually engaging the question.
-What would it take to engage it?" Character as evidence (see SKILL.md §I) is operative
+What would it take to engage it?" Character as evidence is operative
 here — the quality of presence and genuine care can create conditions that make honest
 engagement possible over time, where argument cannot.
 

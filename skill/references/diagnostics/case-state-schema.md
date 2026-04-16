@@ -7,6 +7,7 @@
 
 This file governs how the skill surfaces its read of a case. It is not a separate tactic.
 It is the compact metadiscursive layer that makes routing legible and auditable.
+Use this file as the canonical case-state shape wherever routing legibility matters.
 
 ## Standard Form
 
@@ -14,35 +15,48 @@ Use this block when diagnosis matters to the response:
 
 ```text
 [Case State]
-- Case type:
-- Primary noetic issue:
+- Case family:
+- Primary upstream issue:
 - Primary deformation:
-- Secondary possibilities:
-- Recursion:
-- Cumulative escalation:
+- Read status:
+- Live alternatives:
+- Reassessment:
+- Convergence requirement:
 - Discourse orientation:
 - Concealment mode:
-- Chosen modules:
-- Why these modules:
+- Matched modules:
+- Sequencing rationale:
 - Restoration target:
 - Confidence:
-- What would change the read:
+- Decisive missing differentiator:
+```
+
+```text
+[Source Basis]
+- [anchored]:
+- [synthesis]:
+- [inference]:
+- [speculative]:
 ```
 
 ## Field Discipline
 
-- `Case type` names the class of case, not the whole argument history.
-- `Primary noetic issue` states the upstream issue being treated first.
+- `Case family` names the class of case, not the whole argument history.
+- `Primary upstream issue` states the upstream issue being treated first.
 - `Primary deformation` should name only the deformation governing the next move.
-- `Secondary possibilities` should stay short. Keep live alternatives, not a full inventory.
-- `Recursion` should say `not warranted`, `revisit after X`, or `warranted now because Y`.
-- `Cumulative escalation` should say whether one dominant move remains preferable or whether
+- `Read status` should be `dominant`, `distributed`, or `underdetermined`.
+- `Live alternatives` should stay short. Keep live alternatives, not a full inventory.
+- `Reassessment` should say `not warranted`, `revisit after X`, or `warranted now because Y`.
+- `Convergence requirement` should say whether one dominant move remains preferable or whether
   convergence across independent routes is now needed.
-- `Chosen modules` should list only the matched subset. Do not advertise unused modules.
-- `Why these modules` should explain sequencing, not restate file names.
+- `Matched modules` should list only the matched subset. Do not advertise unused modules.
+- `Sequencing rationale` should explain sequencing, not restate file names.
 - `Restoration target` should say what is being cleared, restored, separated, or re-ordered.
+  It names the routing-level target, not the entire restorative paragraph or closing formulation.
 - `Confidence` should be marked as `strong`, `provisional`, or `low`.
-- `What would change the read` should identify the decisive missing differentiator.
+- `Decisive missing differentiator` should name the one signal that would collapse the remaining ambiguity.
+- `[Source Basis]` is the companion block used when the reply combines files or needs explicit
+  source-status marking. Omit empty lines rather than filling every marker slot performatively.
 
 ## Strength Rules
 

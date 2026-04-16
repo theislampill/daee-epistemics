@@ -9,6 +9,52 @@ account of human nature (the tabula rasa position) or a dualistic account (equal
 toward good and evil). These positions have implications for the skill's fiṭrah-based
 engagement strategy.
 
+Surface markers: the fiṭrah is described as morally neutral, as mere innocence without orientation,
+as a blank slate filled entirely from outside, or as two equal native tendencies toward good and evil.
+
+---
+
+## Surface Recognition Markers
+
+Organized by view. The Sound Fitrah (majority, orthodox) view is the skill's operative position
+and does not require surface detection — these markers identify the two non-standard views that
+trigger differential engagement.
+
+### Tabula Rasa (Neutral Perspective) Markers
+
+1. **Environment-as-determinant sentence pattern:** "People only believe because of how they were
+   raised — if you had been born in a different culture you would hold completely different beliefs."
+   The signal is the claim that *all* belief-content is externally installed with no prior
+   orientation selecting or filtering it.
+
+2. **Blank-state assertion:** "The child is born knowing nothing about God — there is no innate
+   tendency toward belief or disbelief." May invoke Qurʾān 16:78 ("knowing nothing") as proof
+   that the fiṭrah is purely receptive. The key marker is conflating *absence of propositional
+   knowledge* with *absence of normative orientation* — precisely the confusion the file identifies
+   as the neutral view's internal problem.
+
+3. **Irrelevance dismissal of the fiṭrah argument:** "Even if you call it fiṭrah, it just means
+   what you were shaped into — it has no authority." Recognizable because it treats the fiṭrah as
+   a label for cultural conditioning rather than as an innately normative nature.
+
+### Dual Perspective Markers
+
+4. **Equal-tendencies framing:** "Human beings have both good and evil inside them — we have a
+   spiritual side and a physical/base side, and these are in constant tension." Derived from the
+   two-constituent (spirit and clay) account described in this file. The equality claim is the
+   marker: not that struggle is real but that the two tendencies are *equally influential*.
+
+5. **Belief-as-one-option presentation:** "Believing in God is just one option — there is an
+   equally strong pull in the other direction." The interlocutor uses the dual-tendency framework
+   to treat religious commitment as a preference among genuinely neutral alternatives rather than
+   as the fulfillment of a positive orientation.
+
+6. **External-factor-as-decisive:** "It really comes down to what influences you — family,
+   society, experience. Without the right external factors, the internal forces cancel out."
+   This pattern surfaces the dual view's consequence (identified in the file): if tendencies are
+   equal, external forces become decisive. The interlocutor treats this as explanatory rather than
+   as the problem it actually is.
+
 ---
 
 ## The Three Historical Positions

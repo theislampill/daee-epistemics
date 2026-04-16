@@ -38,6 +38,8 @@ not the same issue.
 
 ## RT-2 - Canon Formation vs Inspired Authority
 
+V10 sequence governs: maintain provenance → contents → authority ordering (V10-transmission-content-vetting.md).
+
 **The pressure:** "Communities selected texts later, so scripture has no binding authority" or
 "canon instability proves revelation is only communal politics."
 
@@ -60,6 +62,8 @@ question, then ask what any text teaches.
 ---
 
 ## RT-3 - Qur'anic Preservation, Qira'at, and Manuscript Confusion
+
+V10 sequence governs: maintain provenance → contents → authority ordering (V10-transmission-content-vetting.md).
 
 **The pressure:** "qira'at, ahruf, manuscripts, or early codices prove corruption / instability."
 

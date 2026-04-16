@@ -12,4 +12,4 @@ When the interlocutor shows a sign that something has moved — a pause, a softe
 
 What to do: be quiet, or ask a question that allows the recognition to deepen rather than one that demands it declare itself. "What is that, do you think?" rather than "Does that not suggest to you that..." The recognition, if genuine, will deepen on its own. The dāʿī's role at this moment is not to capture it but to leave space for it.
 
-**Connection:** R2 is the prophetic mode — the reminder. It operates through V5 (directing attention to signs) as the vehicle for what R2 elicits. See also `references/procedures/P4-maieutic.md` for the extended procedure.
+**Connection:** R2 is the prophetic mode — the reminder. It operates through V5 (directing attention to signs) as the vehicle for what R2 elicits. The same move can be sustained as a longer maieutic procedure when the case needs extended questioning.

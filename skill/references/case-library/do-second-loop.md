@@ -2,12 +2,12 @@
 
 Load this file when one of the following objections arises:
 DO-7 (cognitive science of religion / HADD), DO-8 (prophetic mission and moral luck),
-DO-9 (Great Pumpkin objection to proper functionalism),
+DO-9 (universality-condition challenge to proper functionalism),
 DO-10 (three-tiered epistemological structure formalized).
 
 These sharpen recurring second-order and reflexive pressures on the fiṭrah-based account.
 
-See `case-library/INDEX.md` for the full routing table.
+Use the case-library routing table when you need the broader family map.
 
 ---
 
@@ -126,7 +126,7 @@ the ongoing condition of one who has access to honest inquiry but refuses it.
 
 ---
 
-### DO-9 — The Great Pumpkin Objection to Proper Functionalism
+### DO-9 — The Universality-Condition Challenge to Proper Functionalism
 
 **The objection:** On the externalist proper-function account you offer, a child
 sincerely raised to believe in the Great Pumpkin would have properly basic belief in

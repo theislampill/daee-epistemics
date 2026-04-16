@@ -8,7 +8,7 @@ DO-5 (transcendence and language), DO-6 (attribute coherence).
 Each entry gives: the objection stated strongly, the strongest rebuttal
 to the Islamic response, and the full rebuttal chain.
 
-See `case-library/INDEX.md` for the full routing table.
+Use the case-library routing table when you need the broader family map.
 
 ---
 
@@ -176,6 +176,8 @@ where occlusion is widespread.
 
 ### DO-5 — The Argument from Divine Transcendence Against Language
 
+Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
+
 **The objection:** If God is truly transcendent — infinite, beyond human categories — then any
 revelation mediated through human language is necessarily distorted. Human language is formed
 from finite, creaturely experience and cannot accurately represent infinite reality. Therefore
@@ -214,6 +216,8 @@ epistemically honest acknowledgment of the limit of creaturely cognition applied
 
 ### DO-6 — The Coherence of the Classical Concept of God
 
+Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
+
 **The objection:** The classical attributes of God — omniscience, omnipotence, omnibenevolence,
 necessary existence — are either individually incoherent or mutually contradictory. E.g.:
 omniscience requires knowing future free actions, but if those actions are genuinely free they
@@ -242,7 +246,8 @@ describing nothing. Not a constraint on divine power; a grammatical confusion.
 succession of events as future, present, and past. God is not located in time in the way his
 creatures are. The temporal framework within which the tension between foreknowledge and freedom
 arises is a creaturely framework. Applying it to divine knowledge is the same mode-error addressed
-in DO-5: confusing the how of creaturely cognition with the how of divine cognition. God's
+in DO-5 and V8 (`references/techniques/V8-bila-kayf-anchor.md`): confusing the how of creaturely
+cognition with the how of divine cognition. God's
 knowledge of a free action does not coerce the agent, any more than present knowledge of a past
 free action retroactively determines what was freely done.
 

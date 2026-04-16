@@ -8,6 +8,9 @@ default epistemological position.
 **Cross-references:** E2 (inferential criterion); M1-P (the demand itself is self-undermining);
 M2 (prior probability — the evidential bar is not applied symmetrically).
 
+This is a first-line meta-clearing move when the evidence demand is being used as a neutral chair,
+not a merely supplementary aside.
+
 ---
 
 ## The Core Distinction
@@ -73,18 +76,7 @@ that cognition delivers. What are those grounds?
 
 ## The Self-Refutation of Radical Skepticism
 
-The skeptic who insists everything requires evidence has not validated that claim by
-evidence. "Evidence without an end is not even evidence." The demand that everything
-be scientifically validated is not itself scientifically validated — it is a philosophical
-commitment held as basic. Applied rigorously, the demand destroys itself along with
-everything else it targets.
-
-The correct deployment: do not meet the demand head-on with theistic counter-evidence.
-Name what the demand is — a specific philosophical commitment about epistemology, not
-a neutral starting point — and show it is not applied consistently. The interlocutor
-holds beliefs in other minds, the past, the reliability of memory, mathematical objects,
-and the uniformity of nature — none of which survive the evidential demand they are
-applying to theism. See E2 (inferential criterion) for the full execution.
+For the full criterion-generates-regress execution, load E2 (`references/tactics/E2-inferential-criterion.md`).
 
 ---
 

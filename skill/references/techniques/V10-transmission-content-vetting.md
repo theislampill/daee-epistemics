@@ -1,7 +1,7 @@
 > role: technique
 > use when: the case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 > do not use when: the live issue is generic theism, grief-primary protest, or attribute language rather than transmission and authority
-> overlaps: P2, P5, `case-library/revelation-transmission.md`, `sound-reason-epistemology.md` §4.3
+> overlaps: P2, P5, `sound-reason-epistemology.md` §4.3
 > output: a fixed sequence for separating provenance, contents, and authority before response
 
 # V10 - Transmission / Content Vetting
@@ -59,6 +59,9 @@ This step governs shareability. Do not circulate a dramatic claim as though it w
 it has not passed the first two checks.
 
 ## Matched Uses
+
+For recurring family treatments after this sequence, see
+`references/case-library/revelation-transmission.md`.
 
 - Viral manuscript or screenshot claims -> start here, then route to RT-1
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2

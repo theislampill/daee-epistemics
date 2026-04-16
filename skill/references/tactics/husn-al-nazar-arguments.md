@@ -1,9 +1,14 @@
 # Ḥusn al-Naẓar — Inferential Arguments for the Impaired Fiṭrah
 
-Load when ḥusn al-naẓar has been selected (see `references/sound-reason-epistemology.md` §5 for
-deployment conditions and sequencing). These are not primary means to theistic belief —
-they are instruments for clearing the path back to fiṭrah-operation when the fiṭrah is
-too impaired to respond directly to signs (āyāt).
+Load when ḥusn al-naẓar has been selected and the framework has already been cleared enough
+for inferential work. These are not primary means to theistic belief — they are instruments
+for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond
+directly to signs (āyāt). See `references/sound-reason-epistemology.md` §5 for deployment
+conditions and operational hierarchy.
+
+This file supplies the inferential content for the secondary `naẓar ʿaqlī` pathway named in
+`skill/SKILL.md` III.B. It is operationally important, but still downstream of framework-clearing
+and reminder-based routes.
 
 Always sequence correctly: V2 (clear the framework) → M1 (self-refutation check) →
 deploy the argument calibrated to this interlocutor → return to V5/R2 (signs and the

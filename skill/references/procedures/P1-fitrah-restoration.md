@@ -15,8 +15,9 @@ good faith; the dāʿī must build that first.
 
 **2. Identify the primary deformation.**
 Using `references/diagnostics/seven-deformations.md`, determine which mechanism is primarily suppressing
-the fiṭrah. Name it — without accusation, without condescension — if the relationship is
-strong enough to hold that. If the barrier is gharaḍ or hawā, no intellectual content will
+the fiṭrah. Name it — without accusation, without condescension — if the trust established in Stage 1
+has produced genuine candor from the interlocutor — i.e., if the interlocutor has been
+honest about their own resistance rather than only presenting intellectual objections. If the barrier is gharaḍ or hawā, no intellectual content will
 help until this is acknowledged.
 
 **3. Clear conceptual obstacles first.**
@@ -60,11 +61,10 @@ stimulation, or conjecture without anchor with no movement toward genuine inquir
 involuntary response to signs, no moments of recognition however faint, no existential
 opening even in states of vulnerability.
 
-*Condition 3:* Either (a) confirmed or strongly indicated majnūn condition — genuine
-cognitive impairment that places this person in Category C (see `references/diagnostics/
-seven-deformations.md §8`) and outside the scope of discursive engagement entirely, or
-(b) compound deformations so deeply entrenched and mutually reinforcing that every
-appropriate instrument has been tried and none has found purchase.
+*Condition 3:* Either (a) direct evidence of cognitive inaccessibility that places the
+person outside normal discursive engagement, or (b) compound deformations so deeply
+entrenched and mutually reinforcing that every matched instrument has been tried and
+none has produced a new differentiator or any sign of live purchase.
 
 **What this stage is not:** It is not a verdict on the interlocutor's state before God.
 It is not a permanent conclusion about their fiṭrah's accessibility. It is not a
@@ -78,8 +78,7 @@ to work in the intervals. Many have been reached by what was planted long after 
 planting and in the dāʿī's absence. The suspension is of *active instrumental engagement*,
 not of the relationship or of hope.
 
-**For the majnūn condition specifically:** The correct posture is compassion without
+**For direct cognitive inaccessibility specifically:** The correct posture is compassion without
 argumentative pressure. The tradition is clear that accountability is calibrated to what
-a person actually has access to (ḥujjah). Those whose cognitive structure cannot support
-the mentalizing required for theistic recognition are in God's hands in a way that is
-not the dāʿī's to adjudicate. Engage them humanly; do not press epistemically.
+a person actually has access to (ḥujjah). Engage humanly; do not press epistemically, and
+do not turn the suspension of pressure into a verdict on the person's standing before God.

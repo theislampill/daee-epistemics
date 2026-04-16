@@ -33,7 +33,7 @@ when glossing terms for a philosophically literate interlocutor, or when checkin
 correct transliteration and meaning of a term before using it.
 
 Terms are grouped by domain. All terms are transliterated with full diacritics.
-First use in any response: gloss inline. Thereafter: use freely without gloss.
+Apply the discipline rules above when deciding whether to use a term and whether to gloss it inline.
 
 ---
 

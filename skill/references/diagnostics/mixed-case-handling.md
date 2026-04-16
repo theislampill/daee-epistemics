@@ -11,7 +11,7 @@
 - Carry at most two live secondary possibilities when the case is genuinely mixed.
 - Sequence from upstream barrier to downstream content. Do not answer a downstream objection while an upstream filter still governs the case.
 - If grief, vested interest, or identity-performance may be primary, do not treat the case as a pure shubha until that possibility has been tested.
-- Read `do not use when` rules as "do not open with this as the primary move" unless the file says otherwise.
+- Treat `do not use when` as a precondition: the file is not the opening move when that condition is not met.
   A deferred tactic or technique may be added later if an upstream barrier has been cleared and the
   added move changes the next differentiator rather than merely thickening the response.
 
@@ -31,7 +31,7 @@
   interlocutor shifts register, or when a secondary reading becomes operationally decisive.
 - Do not recurse merely because more modules are available or because the first move was not
   theatrically decisive.
-- If reassessment would not change intervention order, chosen modules, or stopping conditions, do
+- If reassessment would not change intervention order, matched modules, or stopping conditions, do
   not reroute.
 
 ## Cumulative-Case Escalation
@@ -58,7 +58,7 @@ When the evidence is thin:
 - classify the claim-type before classifying the whole person
 - answer only the part of the case that is actually established
 - mark the diagnosis as provisional or low confidence
-- state the missing differentiator in `What would change the read`
+- state the missing differentiator in `Decisive missing differentiator`
 
 ## Insufficient-Basis Conditions
 
@@ -73,12 +73,14 @@ In these cases, give the smallest matched response and avoid motive-laundering.
 
 ## Safe Fallback Form
 
-```text
-[Case State]
-- Primary read: underdetermined between X and Y
-- Recursion: not yet warranted / revisit after X
-- Cumulative escalation: not yet warranted / use E3 or V6 after X
-- Chosen modules: smallest subset that serves both reads
-- Confidence: low
-- What would change the read: the next differentiating signal
-```
+When the case is still underdetermined, use the standard case-state schema in
+`case-state-schema.md` and make the uncertainty explicit:
+
+- set `Read status` to `underdetermined` when no single read governs intervention order, or to
+  `distributed` when two live reads still change module choice after the first upstream check
+- keep `Case family` at the smallest established level and name unresolved alternatives in
+  `Live alternatives`
+- keep reassessment and convergence requirement tied to the missing differentiator
+- keep the matched modules to the smallest subset that serves the established read
+- mark confidence honestly
+- state the next signal that would change the read in `Decisive missing differentiator`

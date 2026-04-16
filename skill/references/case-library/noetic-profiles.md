@@ -5,11 +5,18 @@ type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
 the load-bearing anchor, critical vulnerabilities, deformation type, and
 intervention point.
 
+This file only provides full profiles for NS-1 through NS-5. Kalāmic evidentialism,
+Māturīdī calibration, blank-slate fiṭrah positions, and dual-nature fiṭrah positions
+still route through specialty diagnostics rather than through this profile format.
+
 See `case-library/INDEX.md` for the full routing table.
 
 ---
 
 ## About Noetic Structures
+
+See `references/diagnostics/noetic-reading-checklist.md` for the shared definition of noetic
+structure.
 
 --- Noetic Structure Profiles
 
@@ -90,7 +97,7 @@ basic belief — and theistic basic belief is in contention.
 
 ---
 
-### NS-3 — The Post-Religious
+### NS-3 — The Deconverted (Post-Religious)
 
 **Implicit doxastic rule:** The deconversion narrative functions as the operative filter — new
 information is evaluated through the lens of "what I now know I was deceived about."
@@ -145,7 +152,7 @@ most coherent grounding is theistic.
 
 ---
 
-### NS-5 — The Convinced Atheist
+### NS-5 — The Habituated Atheist
 
 **Implicit doxastic rule:** God's non-existence has migrated from a conclusion to a basic belief
 through extended intellectual habituation — held now without live reference to the arguments that
@@ -158,17 +165,27 @@ of moral protest.
 self-defeating (M1 — self-refutation). (b) The problem of evil as a probabilistic argument
 depends on a prior probability assignment (M2 — prior probability probe). (c) The problem of
 evil as presented is often a moral protest, not a philosophical argument (M4 — grief register).
-(d) The ʿinfikāk pattern: the will has become invested in the position, and argumentative
-engagement deepens resistance.
+(d) The will can become invested in the position, so argumentative engagement may deepen resistance
+rather than clear it.
 
-**Deformation types:** Hawā (the will has dug in); possibly gharaḍ (social or professional
-identity bound to the atheist position); ʿāda (the framework has been habituated over years).
+**Deformation types:** Primarily hawā (the will has dug in); possibly gharaḍ (social or
+professional identity bound to the atheist position); ʿāda (the framework has been habituated
+over years).
 
-**Intervention point:** The most productive move is often R2 (the reminder) directed at whatever
-moments of involuntary recognition persist. Careful attention to whether the problem of evil is
-being presented as argument or as grief — M4 if the latter. Do not supply arguments when the
-barrier is hawā. The taqlīd check (V7) may open space by distinguishing between the carefully
-examined atheism the interlocutor believes they hold and the absorbed-by-default position that
-examination often reveals.
+**Primary deformation:** Hawā — the compound-case sequencing rule requires acknowledging hawā
+and gharaḍ before any intellectual content (seven-deformations.md §The Compound Case, rule 2).
+ʿĀda is addressed alongside or immediately after the volitional barrier is acknowledged, not
+before it, because hawā governs access to the case.
+
+**Intervention point:** Relational engagement and F2 (foregrounding the volitional dimension)
+before any argument. Do not supply new intellectual content while hawā governs the case — more
+argument deepens resistance rather than clearing it.
+
+**Opening-move hierarchy:**
+1. If the presenting pressure is grief or moral protest, start with M4 (grief register).
+2. If involuntary recognition remains near the surface, start with R2 (the reminder).
+3. Otherwise use V7 (taqlīd check) to test whether the atheism being defended is actually
+   examined rather than absorbed-by-default.
+Use M2 or M1 only after the opening move has changed the next live differentiator.
 
 ---

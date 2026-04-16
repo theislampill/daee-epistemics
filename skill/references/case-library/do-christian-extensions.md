@@ -4,11 +4,15 @@ Load this file when one of the following objections arises:
 DO-11 (Trinity from divine perfection), DO-12 (logical problem of the Trinity),
 DO-13 (God of the philosophers vs. God of revelation).
 
-See `case-library/INDEX.md` for the full routing table.
+Use the case-library routing table when you need the broader family map. When the pressure is really
+about divine attributes, perfection, transcendence, or creaturely-mode smuggling, pair this file
+with V8 (`references/techniques/V8-bila-kayf-anchor.md`).
 
 ---
 
 ## DO-11 - Trinity from Divine Perfection
+
+Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
 **The objection:** A unipersonal God cannot be maximally perfect. Perfect love, perfect
 glory, and perfect flourishing require an eternal other of equal status within God. A God
@@ -42,7 +46,8 @@ can be just without eternal wrongdoers. The argument therefore does not establis
 unipersonality is incoherent, deficient, or even less perfect on rational grounds alone.
 
 If the Trinity is to be affirmed, the debate must move to revelation, scripture, or churchly
-authority. Perfect-being reasoning by itself does not force multipersonality.
+authority. Perfect-being reasoning by itself does not force multipersonality. When that move occurs,
+route to V10 and then RT-2 before treating canon recognition or church authority as settled.
 
 **Remaining probe:** Is the claim that unipersonal monotheism is logically impossible,
 comparatively less probable, or merely not your preferred reading of Christian revelation?
@@ -51,6 +56,8 @@ Those are different claims and must not be smuggled into one another.
 ---
 
 ## DO-12 - The Logical Problem of the Trinity
+
+Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
 **The objection:** The Father is God, the Son is God, the Spirit is God; the Father is not
 the Son, the Father is not the Spirit, the Son is not the Spirit; and there is exactly one
@@ -95,6 +102,8 @@ modalism?
 
 ## DO-13 - The God of the Philosophers and the God of Revelation
 
+Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
+
 **The objection:** The highest conception of God is an absolutely simple, immutable,
 timeless, self-sufficient reality. A God who speaks when he wills, acts in succession, or
 stands in real relation to creation seems to undergo change and therefore to be less perfect.
@@ -135,6 +144,9 @@ Once these distinctions are in place, the choice is not between Aristotelian abs
 crude creatureliness. The revealed God is neither a creature nor a philosophical remainder. He
 is more transcendent than the philosopher's abstraction precisely because his transcendence does
 not depend on emptying him of living perfection.
+
+This is exactly the V8 route: preserve transcendence by refusing creaturely mode, not by evacuating
+the revealed predicates themselves.
 
 **Remaining probe:** Are you defending revelation, or are you asking revelation to submit to a
 prior metaphysical picture of what "perfection" and "immutability" must mean?

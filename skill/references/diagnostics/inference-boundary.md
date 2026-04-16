@@ -7,6 +7,9 @@
 
 This file governs the difference between what the repository says, what multiple files jointly
 support, what the model is inferring, and what remains speculative.
+Use this file as the canonical source-status legend whenever a response crosses file boundaries.
+The short legend is mirrored in `skill/SKILL.md` §V and can be surfaced there without treating this
+file as a separate topic module.
 
 ## Marker Set
 

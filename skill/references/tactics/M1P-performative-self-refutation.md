@@ -15,4 +15,4 @@ Standard M1 examines whether an argument's *premises*, applied consistently, und
 
 **Delivery:** Economy is essential. State the position. Name the self-enactment. Stop. The move is either seen immediately or it is not seen — elaboration only provides cover.
 
-**Connection:** See also `references/procedures/P6-universal-aqidah-principle.md` where M1-P is applied to "I have no religion" — the claim enacts what it denies by offering righteous guidance about the absence of righteous guidance.
+**Connection:** This pattern also governs claims about having no religion or no comprehensive worldview: the claim enacts what it denies by offering guidance about the absence of guidance.
