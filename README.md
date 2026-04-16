@@ -155,10 +155,12 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
+
 Diagnose the Noetic Structure, 
 Identify the Primary Deformation, 
 Classify Concealment and Discourse Orientation, 
 and only then select the relevant Tactic, Technique, Procedure, or Case Module. 
+
 [`references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Operational Governance
