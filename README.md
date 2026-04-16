@@ -1,6 +1,8 @@
 # daee-epistemics
 
-This repo is a landing page plus the packaged `skill/` tree. The skill itself is the source of truth; the README stays compact so the routing and governance text lives in one place.
+A modular LLM skill for epistemic operations and noetic analysis: a cognitive-security framework for classifying discourse, diagnosing orientation, deformation, and concealment, and routing engagements through matched tactics, techniques, procedures, and case modules.
+
+This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). The package is grounded in an Islamic account of sound reason, the *fiṭrah* (the innate normative disposition toward truth and recognition of God), and revelation. It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
 ## Before You Use This Tool
 
@@ -12,20 +14,96 @@ The symmetric check applies inward before outward. `references/tactics/symmetric
 
 The tool can assist getting there. The skill's diagnostic vocabulary — deformation types, discourse orientation, noetic structure across the nine analytical dimensions — is available for self-application. A practitioner who suspects their own reads are contaminated can run the noetic reading checklist and the seven deformations taxonomy on themselves, not only on interlocutors. Dimension 8 (discourse orientation) is especially apt: determine whether your own engagement is ordered toward truth and warrant, or toward identity-performance or vested outcome. This is a feature of the architecture, not an afterthought — the same instruments that produce a structured diagnostic of an interlocutor's noetic structure can produce one of the practitioner's own.
 
-## Start Here
+## Table of Contents
 
-- `skill/SKILL.md`: canonical entry point for the skill, including routing, diagnostics, and response structure
-- `skill/references/`: diagnostics, tactics, techniques, procedures, case libraries, and terminology
-- `skill/references/techniques/heuristics.md`: always-active analyst discipline and background routing rules
-- `skill/references/terminology.md`: glossary for Arabic and technical vocabulary
+- [Core Thesis](#core-thesis)
+- [Why This Framing Fits the Repository](#why-this-framing-fits-the-repository)
+- [What the Skill Protects](#what-the-skill-protects)
+- [Threat Model](#threat-model)
+- [Repository Architecture](#repository-architecture)
+- [Operational Governance](#operational-governance)
+- [Corpus Integration](#corpus-integration)
+- [Install / Package for Claude](#install--package-for-claude)
+- [Terminology Note](#terminology-note)
 
-## Package Shape
+## Core Thesis
 
-The distributable artifact is `daee-epistemics.skill`. Its archive root must contain `SKILL.md` and `references/` directly. Do not package the repository root or preserve the `skill/` folder name inside the final bundle.
+> `daee-epistemics` is best understood as an epistemic SOC: a structured system for identifying, classifying, and remediating epistemic distortion affecting the human heart-mind.
+
+The point of that analogy is architectural, not ornamental. A Security Operations Center does not begin by deploying countermeasures blindly; it begins with intake, triage, classification, root-cause analysis, and response selection. This repository applies a comparable logic to theological and philosophical engagement. It treats an objection not merely as a proposition to rebut, but as an event arising within a wider *noetic structure* (the underlying structure of how a person knows, trusts, reasons, and proportions belief).
+
+Not a storehouse of arguments; this is a cognitive-security and diagnostic-response framework for epistemic compromise. Its aim is restorative: to clear occlusion, reorder cognition, and return the person to sound perception of truth rather than to construct belief from nothing.
+
+## Why This Framing Fits the Repository
+
+The repository begins with diagnosis before rebuttal. [`skill/SKILL.md`](skill/SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. That posture is the opposite of generic polemics, which often move straight to proposition-level refutation.
+
+This matters because the framework treats falsehood as more than a bad conclusion. It also tracks compromised process: inherited priors presented as neutral defaults, malformed evidential standards, grief operating as epistemic fog, socially reinforced habits of discourse, and volitional resistance masquerading as pure rationality. A formally correct argument can fail if it is given to the wrong kind of case.
+
+For that reason, the repository routes engagements by condition, not only by topic. In some cases the appropriate move is inferential; in others it is classificatory, clarificatory, or *maieutic* (a method of drawing out latent recognition rather than supplying wholly new content). The underlying assumption is that truth is often already signified but occluded, displaced, or misread.
+
+## What the Skill Protects
+
+The protected asset is not "belief" in a thin or merely verbal sense. The framework is concerned with the integrity of the human epistemic constitution as rightly ordered toward truth: the *fiṭrah*, sound *ʿaql*, and the right relationship among foundational knowledge, inferential knowledge, testimony, signs, and revelation.
+
+That is why the repository is restorative rather than novelty-producing. It assumes that sound reason and authentic revelation agree, and that many objections become persuasive only after the noetic environment has already been disordered. The work, then, is to identify that disorder and respond at the right depth.
+
+## Threat Model
+
+The framework's threat model includes more than explicit disbelief. It also includes conditions that deform inquiry upstream:
+
+- inherited background assumptions posing as neutrality
+- *taqlīd* (unexamined imitation) and socially inherited defaults
+- malformed evidential standards that treat one narrow criterion as the whole of rationality
+- category mistakes, equivocation, and false contrasts
+- grief, injury, or moral protest functioning as epistemic fog
+- identity-protective habits of discourse
+- volitional resistance and vested interest
+- pseudo-rational criteria that parasitize genuine rational norms
+
+In this model, an objection may be intellectually formulated while still arising from a compromised epistemic process. That is why the repository repeatedly distinguishes deformations, concealment modes, and discourse orientation before recommending a response.
+
+## Repository Architecture
+
+The repository operationalizes the thesis through a layered structure:
+
+| Path | Role |
+|------|------|
+| [`skill/SKILL.md`](skill/SKILL.md) | Governing protocol and routing logic. Defines activation conditions, epistemological standpoint, diagnostic protocol, and response format. |
+| [`skill/references/diagnostics/`](skill/references/diagnostics/) | Classifies the epistemic condition before argument: noetic reading, deformations, concealment modes, discourse orientation, and related diagnostic lenses. |
+| [`skill/references/tactics/`](skill/references/tactics/) | Context-triggered maneuvers for live objection patterns and argumentative behaviors. |
+| [`skill/references/techniques/`](skill/references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. |
+| [`skill/references/procedures/`](skill/references/procedures/) | Ordered multi-stage workflows for recurring engagement classes, including cases that require sustained restoration rather than a single reply. |
+| [`skill/references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
+| [`skill/references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
+| [`skill/references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
+| [`skill/references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Compact metadiscursive output form for surfacing case type, module choice, confidence, and restoration target without chain-of-thought dumping. |
+| [`skill/references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
+| [`skill/references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
+| [`skill/references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach. |
+
+Read behaviorally as well as structurally, the architecture works like this: diagnose the noetic structure, identify the primary deformation, classify concealment and discourse orientation, and only then select the relevant tactic, technique, procedure, or case module. [`skill/references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
+
+## Operational Governance
+
+The repository is not only a content store. It now carries an explicit governance layer that makes its routing state inspectable:
+
+- a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
+- an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
+- mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
+- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach before they harden into output
+
+This matters because the repository's thesis is restorative, not merely polemical. The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
+
+## Corpus Integration
+
+New source material should be integrated only when it improves routing, restoration, scope control, or terminology discipline. The goal is not to accumulate study notes. The goal is to extract durable distinctions and convert them into reusable architecture: new case modules, tighter tactic or technique criteria, clarified glossary entries, sharper confidence rules, or better routing boundaries. If a source does not alter how the skill classifies, sequences, or restores, it should usually not be imported.
 
 ## Install / Package for Claude
 
-From any folder, open a terminal and run one of the following. The command clones the repo into a temporary folder, builds `daee-epistemics.skill`, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
+The distributable artifact for this repository is `daee-epistemics.skill`. Its archive root must contain `SKILL.md` and `references/` directly. Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
+
+From any folder, open a terminal and paste one of the following. The command will clone the repo into a temporary subfolder, build `daee-epistemics.skill`, and remove the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 
 PowerShell:
 
@@ -69,6 +147,10 @@ Claude-first installation flow:
 3. Upload `daee-epistemics.skill`.
 4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
 
-## Terminology
+The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.
 
-The skill uses Arabic and philosophical vocabulary, but the README does not repeat the definitions. For the operational glossary, read `skill/references/terminology.md`.
+## Terminology Note
+
+The repository uses Arabic and philosophical vocabulary because the framework itself is articulated in those terms. This README defines key terms on first use so that newcomers do not need prior training in Islamic theology or philosophy to follow the argument. For fuller definitions, see [`skill/references/terminology.md`](skill/references/terminology.md).
+
+Readers unfamiliar with the vocabulary should treat these terms as named components of the framework, not as insider shibboleths. The repository's own method requires clarity before response, and that applies to terminology as well.
