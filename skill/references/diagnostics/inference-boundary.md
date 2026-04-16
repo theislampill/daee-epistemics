@@ -18,10 +18,34 @@ file as a separate topic module.
 - `[inference]` A model-level inference extending beyond what the loaded files explicitly state.
 - `[speculative]` A tentative extension, hypothesis, or extrapolation that should not govern the case unless confirmed.
 
+## Source Status vs. Source Weight
+
+Source status and source weight are not the same thing.
+
+- **Status** asks how a claim relates to the loaded material: anchored, synthesized, inferred, or speculative.
+- **Weight** asks what kind of material is carrying the claim: core theory/case architecture,
+  research-grade study, narrower argumentative resource, or light operational/instructional aid.
+
+Do not let a lower-weight source inherit the status of a higher-weight one merely because both are
+loaded.
+
+## Source-Weight Discipline
+
+- Core theoretical files, case files, and research-grade studies may anchor substantive doctrinal
+  or epistemic claims when they are actually loaded.
+- Narrower argumentative resources, edited collections, or translated discussions may anchor a
+  specific distinction or formulation, but they should not by themselves silently reset the whole
+  architecture.
+- Course decks, lecture notes, and operational notes may anchor sequencing, examples, reminders, or
+  quick distinctions; they should not by themselves settle doctrine or override higher-weight
+  material.
+
 ## Rules
 
 - Do not present `[inference]` or `[speculative]` material as though it were `[anchored]`.
 - If a key move depends on `[synthesis]`, name the files or distinctions being joined.
+- If a key move depends on materials with different weights, name that difference instead of
+  flattening them into one evidentiary class.
 - If a response depends materially on `[inference]`, state what evidence would confirm or weaken it.
 - Reserve `[speculative]` for rare cases where the extension is useful enough to expose openly.
 - If most of the case read would need `[inference]`, shrink the claim or mark the diagnosis underdetermined.

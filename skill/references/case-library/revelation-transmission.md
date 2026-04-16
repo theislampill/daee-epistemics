@@ -7,7 +7,8 @@
 # Case Library - Revelation and Transmission (RT-1 through RT-4)
 
 Load this file only after the case has been identified as a revelation / transmission case, or as a
-final-prophethood case whose live pressure is actually testimony, text, canon, or preservation.
+final-prophethood case whose live pressure is actually testimony, text, canon, preservation,
+historical criticism, or original-text skepticism.
 Begin with V10 (`references/techniques/V10-transmission-content-vetting.md`) before using any RT
 entry. The family exists to keep testimony, textual integrity, canon authority, and believer
 destabilization from being collapsed into one objection.
@@ -16,7 +17,8 @@ destabilization from being collapsed into one objection.
 
 ## RT-1 - Manuscript Reconstruction vs Authenticated Transmission
 
-**The pressure:** "We found a manuscript / fragment / image / quotation that changes everything."
+**The pressure:** "We found a manuscript / fragment / image / quotation that changes everything,"
+or "historical criticism shows the original text is unrecoverable."
 
 **Primary distinction:** Manuscript reconstruction is not the same thing as authenticated
 transmission. A text-artifact may witness to a textual history without functioning as a
@@ -41,7 +43,8 @@ not the same issue.
 V10 sequence governs: maintain provenance → contents → authority ordering (V10-transmission-content-vetting.md).
 
 **The pressure:** "Communities selected texts later, so scripture has no binding authority" or
-"canon instability proves revelation is only communal politics."
+"canon instability proves revelation is only communal politics," including original-text
+skepticism when the point being pressed is authority rather than reconstruction.
 
 **Primary distinction:** The historical process by which a community recognizes a canon is not
 identical to the question of whether a text is inspired, revelatory, or normatively authoritative.

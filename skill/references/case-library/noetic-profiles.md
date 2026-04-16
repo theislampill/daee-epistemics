@@ -1,13 +1,14 @@
-# Case Library — Noetic Structure Profiles (NS-1 through NS-5)
+# Case Library — Noetic Structure Profiles (NS-1 through NS-6)
 
 Load this file when an interlocutor's position matches a recognizable noetic
 type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
 the load-bearing anchor, critical vulnerabilities, deformation type, and
 intervention point.
 
-This file only provides full profiles for NS-1 through NS-5. Kalāmic evidentialism,
-Māturīdī calibration, blank-slate fiṭrah positions, and dual-nature fiṭrah positions
-still route through specialty diagnostics rather than through this profile format.
+This file provides full profiles for NS-1 through NS-6. Māturīdī calibration,
+historical-critical skepticism, blank-slate fiṭrah positions, and dual-nature fiṭrah
+positions still route through specialty diagnostics or other case files rather than
+through this profile format.
 
 See `case-library/INDEX.md` for the full routing table.
 
@@ -189,3 +190,36 @@ argument deepens resistance rather than clearing it.
 Use M2 or M1 only after the opening move has changed the next live differentiator.
 
 ---
+
+### NS-6 — The Kalāmic Evidentialist
+
+**Implicit doxastic rule:** "Religious belief counts as knowledge only when it is grounded in
+discursive dalil; belief held without inferential demonstration is at best taqlid and does not yet
+have full epistemic standing."
+
+**Load-bearing anchor:** The restriction of necessary knowledge to a narrow class together with the
+claim that nazar is the required route by which belief about God becomes knowledge.
+
+**What the interlocutor holds as basic:** Logical axioms, direct sensory deliverances, and
+mutawatir testimony are treated as foundational. The interlocutor also treats it as effectively
+basic that anything outside this narrow necessary class must be inferentially demonstrated before
+it may count as knowledge.
+
+**Critical vulnerability:** The framework is narrower than the interlocutor's own practice. It does
+not match how memory, other minds, ordinary testimony, and many settled convictions are actually
+held. The requirement of nazar also depends on the very fitri reliability it demotes: inferential
+reasoning cannot certify itself from nowhere. Finally, the prophetic pattern is sign-direction and
+recognition before demonstration, so the framework mistakes a remedial path for the universal first
+path of belief.
+
+**Deformation types:** Primarily i'tiqadat mawrutha; often zann where the evidentialist restriction
+has been inherited as though it were self-evident reason itself.
+
+**Primary deformation:** I'tiqadat mawrutha governing what the interlocutor will even allow to count
+as knowledge before the case is heard.
+
+**Intervention point:** Use `references/diagnostics/kalamic-interlocutor.md` to identify whether the
+pressure is hard Mu'tazili/Ash'ari, softened Maturidi, or mixed. Then use V2 to expose the inherited
+restriction of reason, and use P3 when the live framing is reason versus revelation. Keep husn
+al-nazar available as a secondary restorative path for impaired recognition, not as the universal
+precondition of warranted belief.

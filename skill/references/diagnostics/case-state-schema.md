@@ -37,6 +37,8 @@ Use this block when diagnosis matters to the response:
 - [synthesis]:
 - [inference]:
 - [speculative]:
+- Source type / weight:
+- Restoration source:
 ```
 
 ## Field Discipline
@@ -57,6 +59,11 @@ Use this block when diagnosis matters to the response:
 - `Decisive missing differentiator` should name the one signal that would collapse the remaining ambiguity.
 - `[Source Basis]` is the companion block used when the reply combines files or needs explicit
   source-status marking. Omit empty lines rather than filling every marker slot performatively.
+- `Source type / weight` is optional. Use it when unlike materials are joined or when a lighter
+  source is being used only for sequencing, illustration, or operational reminder rather than for
+  the core doctrinal or epistemic claim.
+- `Restoration source` is optional. Use it when the positive picture is being drawn from a clearly
+  anchored higher-weight source rather than from free synthesis.
 
 ## Strength Rules
 

@@ -46,6 +46,7 @@ Apply the discipline rules above when deciding whether to use a term and whether
 | قوة | Quwwa | Potency, capacity — the fiṭrah's character as a dispositional power, not an actualized content |
 | علم ضروري | ʿIlm ḍarūrī | Non-inferential necessary knowledge — foundational, immediately grasped without argument |
 | علم اكتسابي | ʿIlm iktisābī | Inferential or acquired knowledge — built up through reasoning from necessary knowledge |
+| علم نظري | ʿIlm naẓarī | Theoretical or inferential knowledge reached through discursive reasoning; contrasted with ʿilm ḍarūrī |
 | فطري ضروري | Fiṭrī-ḍarūrī | Innate-and-necessary — the compound descriptor for knowledge basic to the fiṭrah; knowledge of God in this class when fiṭrah is sound |
 | بديهيات | Badīhiyyāt | Self-evident axioms of reason — Laws of Non-Contradiction, Excluded Middle, Identity; held as immediately certain |
 | حس سليم | Ḥiss salīm | Sound perception — both outer sensory experience and inner states (hunger, awe, moral horror, the felt sense of certainty) |
@@ -180,6 +181,10 @@ Apply the discipline rules above when deciding whether to use a term and whether
 | Divine immutability | The thesis that God does not change; requires careful distinction from the denial of real divine action |
 | Perfect-being theology | The method of reasoning from maximal perfection to conclusions about what God must be like |
 | God of the philosophers | A highly abstract metaphysical conception of deity, often contrasted with the living God of revelation |
+| Incarnation | The Christian claim that the Son became human without ceasing to be divine |
+| Hypostatic union | The claim that one person subsists in two natures, divine and human |
+| Kenoticism | Incarnation models built around divine self-emptying or self-limitation |
+| Agnoetism | The claim that Christ's human consciousness included genuine ignorance in some respects |
 
 ---
 
@@ -216,9 +221,13 @@ Use these only when they change routing or scope:
 
 ## Route-Critical Worship Terms
 
+- `rububiyyah`: divine lordship — creating, sustaining, owning, governing, and disposing. Do not
+  confuse conceding lordship with conceding exclusive worship.
+- `uluhiyyah`: God's exclusive right to be worshipped. Many disputes concede rububiyyah while
+  violating uluhiyyah through devotion, mediation, or unseen-authority claims.
 - `ibadah` / worship: drawing near in devotion to one believed to bear unseen authority over
   benefit, harm, protection, or access to them. Do not reduce worship to outward ritual alone.
-- `ma'bud`: an object of worship - that to which nearness is sought because it is believed to
+- `ma'bud` / `ilah`: an object of worship - that to which nearness is sought because it is believed to
   affect reality beyond ordinary visible causation.
 - `shirk`: assigning worship or worship-functions to other than Allah, whether by attributing
   independent efficacy or intermediary efficacy.

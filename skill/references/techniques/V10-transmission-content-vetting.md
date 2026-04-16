@@ -10,6 +10,10 @@ Use this technique when the pressure is not merely "is this claim persuasive?" b
 thing, how did it reach us, and what authority does it actually carry?" The sequence is fixed.
 Do not begin with contents while provenance is still undefined.
 
+This technique operationalizes a fixed transmission / contents split: first ask how the item
+reached us, then ask what it actually shows. Historical criticism, manuscript reconstruction,
+canon formation, and original-text skepticism all sit on this split.
+
 ## Sequence
 
 ### 1. Provenance / transmission check first
@@ -17,7 +21,8 @@ Do not begin with contents while provenance is still undefined.
 Ask what kind of object is actually being presented.
 
 - Is this authenticated transmission, an attributed report, a manuscript witness, an anonymous
-  image, a secondary quotation, or a modern reconstruction?
+  image, a secondary quotation, a historical-critical reconstruction, or a modern skepticism
+  about an original text?
 - Who is transmitting it, through what path, and with what identifiable chain of custody?
 - Is the claim about what a source says, or about whether the source itself is authoritative?
 
@@ -38,6 +43,8 @@ Once the object-type is clear, assess what the contents do and do not show.
 - Does the text actually say what the claim says it says?
 - Are textual variation, manuscript loss, canon formation, qira'at, ahruf, or interpretive
   dispute being collapsed into one bucket?
+- Is the objection really about historical criticism, manuscript reconstruction, canon formation,
+  or original-text skepticism rather than about the contents of a settled source?
 - Is the objection about reconstruction, preservation, authority, meaning, or doctrine?
 - Are analogies crossing traditions without regard to differences in transmission structure?
 
@@ -64,6 +71,8 @@ For recurring family treatments after this sequence, see
 `references/case-library/revelation-transmission.md`.
 
 - Viral manuscript or screenshot claims -> start here, then route to RT-1
+- Historical criticism / original-text skepticism -> start here, then route to RT-1 if the live
+  issue is manuscript reconstruction, or RT-2 if the live issue is canon formation
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2
 - Qur'anic preservation / qira'at / manuscript confusion -> start here, then route to RT-3
 - Muslim-internal panic over text-history material -> start here, then route to RT-4

@@ -19,8 +19,9 @@ Most interlocutors present their barrier as shubhah (deformation 7) — the only
 respectable one. The diagnostic task is to determine whether shubhah is genuinely operative
 or whether it is covering one of the other six.
 
-The seven come from Ibn Taymiyyah's Darʾ taʿāruḍ, extracted by El-Tobgui. They are not
-merely metaphors but pre-specified conditions examinable in the particular case.
+The seven are treated here as a standing sound-reason diagnostic of why recognition gets
+blocked. They are not merely metaphors but pre-specified conditions examinable in the
+particular case.
 
 ---
 

@@ -52,7 +52,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | File | Load When |
 |------|-----------|
 | `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13 |
-| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-5 |
+| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-6 |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
@@ -342,26 +342,33 @@ structured diagnostic and rebuttal framed as removal of occlusion.
 | Position | Primary route | Coverage and surface markers |
 |----------|---------------|------------------------------|
 | Theistic Evidentialism | E1-E4, then E3 if convergence is needed | Partial profile coverage only; often adjacent to NS-2 or NS-4 depending what is held basic |
-| Kalāmic Evidentialism | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic rather than full NS profile; surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
+| Kalāmic Evidentialism | NS-6 plus `references/diagnostics/kalamic-interlocutor.md` | Full NS profile for the noetic shape; use the specialty diagnostic for school-specific pressure. Surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
 | Māturīdī Middle Position | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Partial specialty coverage; surface markers include fitrah as initial opening but naẓar as completion or ratification |
 | Fideism | F1-F3, practice as epistemic access | No dedicated NS profile in the current corpus |
 | Reformed epistemology / basic belief | R1-R3, qalb-fiṭrah chain | Partial conceptual coverage; no dedicated NS profile |
 | Hard Naturalism | NS-1, V2 first, then matched E-register | Full NS profile present |
 | Evidence-suspending agnosticism | NS-2, E2, V3, M2 | Full NS profile present |
-| Historical-critical skepticism | P2 + V10 first | No dedicated NS profile; surface markers include testimony suspicion, late-text or canon-construction language, and historical criticism presented as neutral method |
+| Historical-critical skepticism | V10 plus RT-1/RT-2 first; P2 when the case is a mixed objection battery | No dedicated NS profile; surface markers include testimony suspicion, late-text or canon-construction language, manuscript-reconstruction pressure, and historical criticism presented as neutral method |
 | Modernist revisionism | V2 + P2 + V10 | No dedicated NS profile; surface markers include moral filtering, authority fatigue, and textual-historical pressure being merged into one crisis |
 
-**Profile coverage gap:** only Hard Naturalism and evidence-suspending agnosticism have clean one-row
-coverage from this table to a full NS profile. Theistic evidentialism, kalāmic evidentialism,
-Māturīdī calibration, fideism, reformed/basic-belief language, historical-critical skepticism, and
-modernist revisionism remain split between specialty diagnostics, tactics, and case files rather than a
-single unified profile form.
+**Profile coverage gap:** Hard Naturalism, evidence-suspending agnosticism, and kalāmic
+evidentialism now have clean one-row coverage from this table to a full NS profile. Theistic
+evidentialism, Māturīdī calibration, fideism, reformed/basic-belief language, historical-critical
+skepticism, and modernist revisionism remain split between specialty diagnostics, tactics, and case
+files rather than a single unified profile form.
 
 **Specialty-diagnostic markers to surface early:**
 - Route to `references/diagnostics/kalamic-interlocutor.md` when the discourse turns on `dalil`,
   `wujūb al-naẓar`, taqlīd as non-knowledge, or a narrow class of necessary knowledge.
 - Route to `references/diagnostics/fitrah-perspectives.md` when the fiṭrah is described as blank-slate,
   as only moral innocence without orientation, or as two equal native tendencies toward good and evil.
+- Route to V10 and the matched RT case when the discourse turns on historical criticism, manuscript
+  reconstruction, original-text skepticism, canon formation, or "who chose scripture?" pressure.
+- Route to V8 and the matched Christian-extension case when the discourse turns on perfect-being-to-
+  Trinity reasoning, Trinity model-identification pressure, incarnation coherence, or philosopher's-
+  God objections.
+- Route to V9 when necessary knowledge itself is being attacked or discursive reasoning is being
+  treated as superior to immediate certainty.
 
 ### IV.C — Four Modes of Concealment (Summary)
 
@@ -443,6 +450,11 @@ thin, or otherwise underdetermined. The canonical source-status legend is:
 - `[inference]` model-level extension beyond what the files explicitly state
 - `[speculative]` tentative extension that should not govern the case unless confirmed
 
+When unlike source types are joined, mark source weight in `[Source Basis]`. Higher-weight theoretical
+or research-grade material may anchor substantive doctrinal and epistemic claims; lighter operational
+or instructional material may anchor sequencing, examples, or reminders, but should not by itself set
+doctrine or override the core architecture.
+
 **[Restorative Response]**
 - M1/M1-P first if applicable — lead with it, cleanly
 - Presuppositional level before first-order content — always
@@ -470,6 +482,8 @@ comparative-religion pressure, revelation/transmission pressure, or a Muslim-int
 the active work is V2, V8, V10, P2, P3, or a genuine-shubhah response under truth-seeking conditions.
 It is normally omitted only in grief-primary, identity-performance, or very thin-excerpt cases where the
 next move is still clarification rather than reconstruction.
+When a loaded source already gives the positive doctrinal picture cleanly, restore from that anchored
+picture before improvising a fresh synthesis.
 
 *B. Run the criterion back (where a criterion is operative).*
 Where the objection relies on an implicit evaluative criterion — chronological priority, scientific

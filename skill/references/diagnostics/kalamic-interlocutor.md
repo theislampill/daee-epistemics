@@ -3,7 +3,8 @@
 Load when the interlocutor uses surface markers of kalāmic evidentialism: theistic belief
 must be grounded in `dalil`; `wujūb al-naẓar` is assumed or defended; taqlīd-based belief is
 treated as non-knowledge; the fiṭrah alone is denied epistemic weight without propositional
-support; or the interlocutor explicitly identifies with Muʿtazilī, Ashʿarī, or Māturīdī reasoning.
+support; Māturīdī concession language is surfacing; or the interlocutor explicitly identifies with
+Muʿtazilī, Ashʿarī, or Māturīdī reasoning.
 
 ---
 
@@ -45,6 +46,12 @@ is derived from the doctrinal content described in this file.
    is just intuition," "You are assuming what you need to prove," "That is circular." The
    asymmetry itself is the marker: direct recognition counts as nothing; successful
    inference counts as knowledge.
+
+7. **Māturīdī concession language:** "The ordinary believer may rely on the community's
+   demonstration," "the obligation may be communal rather than individual," or "miracle,
+   Qur'anic encounter, or experience can still ground valid faith." The signal here is not
+   hard evidentialism but a softened inferential framework retaining the vocabulary of
+   obligation and ratification.
 
 ---
 

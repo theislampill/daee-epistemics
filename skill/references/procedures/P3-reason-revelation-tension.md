@@ -20,7 +20,10 @@ until its specific form is established.
 **2. Examine the conception of reason (V2).**
 Where did the operative conception come from? Is it itself self-evident? Was it always
 dominant? Can it establish itself by its own standards? Scientism cannot validate itself
-scientifically. Deploy `references/techniques/V2-reconstituting-reason.md`.
+scientifically. The contamination may also arrive in theological form: a narrow necessary-
+knowledge criterion, a demand that all belief about God begin with discursive proof, or a prior
+metaphysical model of perfection presented as "reason itself." Deploy
+`references/techniques/V2-reconstituting-reason.md`.
 
 **3. Apply the cross-cultural check (E4 with tawātur grounding).**
 Does the interlocutor's conception of reason require that virtually all human beings in all
@@ -33,6 +36,10 @@ shows why that cost is not payable. Deploy `references/tactics/E4-cross-cultural
 ṣarīḥ — genuine reason, operating without distortion — and genuine revelation, properly
 understood, are fully corroborative. Never 'believe despite what reason says' — always 'you
 are using a deficient conception of reason.'"
+
+Sound reason is not exhausted by one modern method or one narrowed scholastic criterion.
+Fitri recognition, sound testimony, tawatur, and valid nazar each have their proper place.
+The conflict dissolves when historically conditioned filters stop posing as reason itself.
 
 **5. Return to the positive.**
 Once the conceptual obstacles are cleared, return to the direct case: the convergence of the

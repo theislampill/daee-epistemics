@@ -2,7 +2,8 @@
 
 Load this file when one of the following objections arises:
 DO-11 (Trinity from divine perfection), DO-12 (logical problem of the Trinity),
-DO-13 (God of the philosophers vs. God of revelation).
+DO-13 (God of the philosophers vs. God of revelation), or incarnation coherence pressure that
+is really asking whether divine self-disclosure can be coherent without creaturely-mode smuggling.
 
 Use the case-library routing table when you need the broader family map. When the pressure is really
 about divine attributes, perfection, transcendence, or creaturely-mode smuggling, pair this file
@@ -94,9 +95,17 @@ is that fitri rational deliverances - identity, non-contradiction, and counting 
 not casually suspended to preserve a doctrine. If a position survives only by equivocation, ad hoc
 counting, or mystery after failure, the burden remains on the position.
 
+Incarnation coherence belongs on the same coherence layer. If the claim is that divine self-
+disclosure in flesh is impossible, distinguish real contradiction from the hidden assumption that
+divine action must always remain static, abstract, and creaturely-modeled. Do not let a question
+about mode of presence get turned into a question about authority before the coherence issue has
+been named.
+
 **Remaining probe:** Which exact model do you affirm, and by what principled rule do you count
 one God while retaining three really distinct persons without collapsing into tritheism or
-modalism?
+modalism? If the live pressure is incarnation coherence, what exactly is said to be
+contradictory: divine nature, human nature, or the hidden assumption that a divine act must be
+creaturely in order to be real?
 
 ---
 

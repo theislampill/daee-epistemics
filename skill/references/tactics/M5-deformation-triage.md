@@ -20,4 +20,14 @@ Before selecting any downstream tactic, identify which of the seven deformations
 - ẓann and taqlīd checks alongside framework-clearing where appropriate
 - genuine shubhah last, after the upstream filters are cleared
 
+**Router guardrails:** M5 helps identify the upstream obstruction; it does not replace the family
+router once the live case-type is clear.
+- If the presenting pressure is manuscript, canon, preservation, original-text, or text-history
+  destabilization, route through V10 and the matched RT case before letting M5 become the opening
+  architecture.
+- If the presenting pressure is Trinity, incarnation coherence, perfect-being-to-Trinity, or
+  philosopher's-God pressure, route through V8 and the matched DO case after deformation sorting.
+- If the presenting pressure is a discursive attack on necessary knowledge itself, route to V9
+  rather than treating the issue as generic shubhah management.
+
 **Category C caution:** The Category C note in `references/diagnostics/seven-deformations.md` is not a normal first-line routing label for surface discourse. It only governs suspension of pressure after direct evidence of cognitive inaccessibility or extended failure of every matched instrument.
