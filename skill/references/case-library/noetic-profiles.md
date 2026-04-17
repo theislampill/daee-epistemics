@@ -5,9 +5,10 @@ type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
 the load-bearing anchor, critical vulnerabilities, deformation type, and
 intervention point.
 
-This file provides full profiles for NS-1 through NS-9. Māturīdī calibration,
-blank-slate fiṭrah positions, and dual-nature fiṭrah positions still route
-through specialty diagnostics rather than through this profile format.
+This file provides full profiles for NS-1 through NS-9. The Māturīdī evidentialist
+position (a distinct deviation from the sound position, not a legitimate middle ground),
+blank-slate fiṭrah positions, and dual-nature fiṭrah positions still route through
+specialty diagnostics rather than through this profile format.
 
 See `case-library/INDEX.md` for the full routing table.
 

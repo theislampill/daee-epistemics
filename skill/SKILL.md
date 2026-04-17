@@ -343,7 +343,7 @@ structured diagnostic and rebuttal framed as removal of occlusion.
 |----------|---------------|------------------------------|
 | Theistic Evidentialism | E1-E4, then E3 if convergence is needed | Partial profile coverage only; often adjacent to NS-2 or NS-4 depending what is held basic |
 | Kalāmic Evidentialism | NS-6 plus `references/diagnostics/kalamic-interlocutor.md` | Full NS profile for the noetic shape; use the specialty diagnostic for school-specific pressure. Surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
-| Māturīdī Middle Position | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Partial specialty coverage; surface markers include fitrah as initial opening but naẓar as completion or ratification |
+| Māturīdī Evidentialism | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Partial specialty coverage; surface markers include fiṭrah as initial opening but naẓar as required ratification; ontological errors on divine attributes share Ashʿarī Kullābī inheritance and are treated as diagnosed deviations, not as valid alternatives |
 | Fideism | F1-F3, practice as epistemic access | No dedicated NS profile in the current corpus |
 | Reformed epistemology / basic belief | R1-R3, qalb-fiṭrah chain | Partial conceptual coverage; no dedicated NS profile |
 | Hard Naturalism | NS-1, V2 first, then matched E-register | Full NS profile present |
@@ -353,7 +353,7 @@ structured diagnostic and rebuttal framed as removal of occlusion.
 
 **Profile coverage gap:** Hard Naturalism, evidence-suspending agnosticism, and kalāmic
 evidentialism now have clean one-row coverage from this table to a full NS profile. Theistic
-evidentialism, Māturīdī calibration, fideism, reformed/basic-belief language, historical-critical
+evidentialism, Māturīdī evidentialism, fideism, reformed/basic-belief language, historical-critical
 skepticism, and modernist revisionism remain split between specialty diagnostics, tactics, and case
 files rather than a single unified profile form.
 

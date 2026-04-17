@@ -38,6 +38,15 @@ testimony/revelation layer rather than treating it as a pure attributes dispute.
 becomes whether Christian revelation, canon, or church authority licenses the doctrine, route to
 V10 and the matched RT case rather than leaving the case inside pure metaphysics.
 
+**Muslim-internal khalq al-Qurʾān routing check.** When the case is specifically about the
+createdness of the Qurʾān, the status of divine speech, or the Muʿtazilī/Ashʿarī/Salafī dispute
+on this question: the ḥudūth/khalq distinction is the load-bearing move. Confirm it is
+explicitly present in the response before releasing — the Muʿtazilī error (ḥudūth → makhlūq)
+and the Ashʿarī error (denial of ḥawādith subsisting in God) both depend on its absence. The
+bilā kayf account alone does not prevent this collapse; the distinction must be named and
+deployed. Load `references/sound-reason-epistemology.md` §6.2 and
+`references/terminology.md` (Ḥudūth, Khalq, Ṣifa qāʾima bi-dhātihi) for the full treatment.
+
 For the full treatment: `references/sound-reason-epistemology.md` §6. For specific objections:
 `references/case-library/do-core.md` DO-5 (transcendence/language) and DO-6 (attribute coherence);
 `references/case-library/do-christian-extensions.md` DO-11 (divine perfection and Trinity), DO-12

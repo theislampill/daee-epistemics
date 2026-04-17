@@ -36,7 +36,7 @@ and restoration should stay light and precise.
 - §2–3 → noetic checklist dimension 4; grounds R1–R3; fiṭrah-as-potency distinction
 - §4 → noetic checklist dimension 9; grounds E4; grounds V9
 - §5 → invoked after V2 when fiṭrah is impaired; sequencing for ḥusn al-naẓar
-- §6 → invoked for V8, DO-5, DO-6, DO-11, DO-12, DO-13 (bilā kayf, attribute coherence, Trinity-adjacent perfection claims, philosopher's-God disputes)
+- §6 → invoked for V8, DO-5, DO-6, DO-11, DO-12, DO-13 (bilā kayf, attribute coherence, Trinity-adjacent perfection claims, philosopher's-God disputes); §6.2 specifically for Muslim-internal khalq al-Qurʾān disputes (ḥudūth/khalq distinction, Salafī vs. Ashʿarī vs. Muʿtazilī on divine speech)
 
 ---
 
@@ -501,3 +501,46 @@ Keep the operative distinction short:
 Days, years, and created spatiality belong to created particulars. God's creating them does not
 force a static or timeless deity; it only forbids transferring the created system's mode to God or
 evacuating God of real action in order to avoid that transfer.
+
+### 6.2 — The Ḥudūth/Khalq Distinction: The Doctrinal Node for Kalām al-Qurʾān
+
+The dhāt/fiʿl distinction (§6 above) operates at the level of essence versus act. One level
+below it — and load-bearing in the khalq al-Qurʾān case and all disputes about the status of
+divine speech — is the ḥudūth/khalq distinction.
+
+**The ṣifa of kalām is eternal.** God is *lam yazal mutakalliman idhā shāʾ* — He has been
+speaking from eternity when He willed. The attribute of speech subsists in the divine essence
+(ṣifa qāʾima bi-dhātihi) and is not originated.
+
+**The particular acts of speech are ḥādith, not makhlūq.** The specific occurrences of divine
+speech — expressed as ḥurūf (letters) and aṣwāt (sounds), the Qurʾān as recited and heard — are
+*ḥawādith qāʾima bihi*: temporally originating events that subsist in God. They are **ḥādith**
+(they come into occurrence by divine will and did not pre-exist as specific utterances) but they
+are **not makhlūq** (they are not external productions ontologically distinct from Allah —
+*khalq* requires precisely that ontological externality).
+
+**Why this distinction is the load-bearing move:**
+
+- The **Muʿtazilī error** was to infer: *the Qurʾān is muḥdath* → *therefore it is makhlūq*.
+  This collapse of ḥudūth into khalq treated temporal origination as sufficient for external
+  creation, which it is not. The Muʿtazila were correct that the particular speech-acts are
+  ḥādith; they erred in concluding this made them ontologically external objects.
+
+- The **Ashʿarī error** (via Ibn Kullāb) was the mirror image: to avoid the Muʿtazilī conclusion,
+  they denied that *any* ḥawādith (temporally originating events) could subsist in God at all.
+  The result was kalām nafsī — an eternal inner meaning — with the verbal expression (lafẓī) held
+  to be created but external. This preserved divine simplicity at the cost of severing the
+  revealed Qurʾān from being genuinely God's own speech in the sense the texts require.
+
+- The **Salafī/Ḥanbalī position** holds both: the ṣifa is eternal and subsists in the essence;
+  the particular acts are ḥādith yet also subsist in the essence (qiyām al-ḥawādith bihi) and are
+  therefore not makhlūq. The Qurʾān is genuinely and directly the speech of Allah — not a
+  creaturely transcript of an inner meaning and not an eternal proposition co-existing alongside
+  the divine essence.
+
+**Operational implication for response composition:** When a case involves the createdness of the
+Qurʾān, the status of revelation, or any Muslim-internal dispute about divine speech, the
+ḥudūth/khalq distinction must be explicitly deployed, not left implicit in the general bilā kayf
+account. The three-way differentiation (Salafī / Ashʿarī / Muʿtazilī) should be stated with
+precision: the errors at each pole depend on this distinction being absent from the response. See
+V8 routing note and `references/terminology.md` (Ḥudūth, Khalq, Ṣifa qāʾima bi-dhātihi).
