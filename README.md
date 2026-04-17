@@ -70,7 +70,7 @@ a structured system for identifying, classifying, and remediating epistemic dist
 
 The point of that analogy is architectural, not ornamental. 
 
-A Security Operations Center does not begin by deploying countermeasures blindly; it initiates:
+A Security Operations Center (SOC) does not begin by deploying countermeasures blindly; it initiates:
 * intake
 * triage
 * classification
@@ -84,6 +84,19 @@ Not a storehouse of arguments; this is a cognitive-security and diagnostic-respo
 Its aim is restorative: to clear occlusion, reorder cognition, and return the person to sound perception of truth rather than to construct belief from nothing.
 
 ## Why This Framing Fits the Repository
+
+A SOC needs an inventory of systems and dependencies. In this skill, **Noetic Structure** functions like that inventory, as an asset map.
+
+It maps:
+* what the person takes as basic
+* what they think counts as evidence
+* whether their commitments are foundational or derivative
+* how they proportion assent
+* what they trust as testimony
+* what inferential norms they presuppose
+* what distortions are already upstream
+
+So, noetic structure is not just "their worldview"; it is more like the **ontology of their epistemic operating environment.**
 
 The repository begins with diagnosis before rebuttal. 
 [`SKILL.md`](skill/SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. 
@@ -155,10 +168,12 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
+
 Diagnose the Noetic Structure, 
 Identify the Primary Deformation, 
 Classify Concealment and Discourse Orientation, 
 and only then select the relevant Tactic, Technique, Procedure, or Case Module. 
+
 [`references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Operational Governance

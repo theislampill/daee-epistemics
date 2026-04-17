@@ -173,3 +173,35 @@ useful; withhold what would be experienced as a lecture or an accusation. Typica
 
 If the diagnosis remains low confidence, route through `mixed-case-handling.md` before
 claiming a settled read.
+
+## NS Code Emission
+
+The checklist terminates with an NS-code assignment. This is what feeds `case-library/noetic-profiles.md` and the Quick NS table in `case-library/INDEX.md`. Without this emission the case library cannot be routed to; the diagnostic stops at prose.
+
+Emit a single NS code when the nine dimensions converge on one profile. Emit `NS-X | NS-Y` when the subject genuinely straddles two profiles (for example, a habituated atheism shot through with an evidentialist demand: `NS-5 | NS-2`), and name the intervention-order consequence rather than forcing collapse to one code. Emit `NS-?` only when Dimensions 1, 4, and 6 are jointly under-signalled — and in that case, route through `mixed-case-handling.md` before proceeding.
+
+| Converging marker set | NS code |
+|----------------------|---------|
+| Causal closure treated as basic; naturalism as default filter; evidence narrowed to the empirically testable; empirical method treated as self-validating; drift toward sophistic skepticism about first principles when pressed consistently | NS-1 |
+| "Belief proportioned to evidence" as governing rule; refusal of non-inferential warrant (fiṭrī / ḍarūrī) even where it is the proper mode; burden-of-proof inversion; absence treated as disproof | NS-2 |
+| Grievance-stabilized argumentation around a single shubhah treated as dispositive; orphaned moral or meaning-commitments; affect of betrayal or authority-wound near the surface. Ex-believer biography alone is insufficient — the diagnostic is the grievance-stabilized inferential pattern | NS-3 |
+| Moral realism asserted with firmness; theism rejected while moral facts are treated as basic; normativity helped-to without any ontology to ground it | NS-4 |
+| Non-existence of God treated as basic; engagement pattern shows absorption rather than examination; possible grief or vested interest underneath; habituated inattention to signs | NS-5 |
+| `dalīl` demanded; `wujūb al-naẓar` treated as individually obligatory for warranted belief; taqlīd treated as non-knowledge; kalāmic-school vocabulary | NS-6 |
+| Belief in God accepted; inferential warrant (classical apologetics / philosophical-theist framing) held as *precondition* for warranted belief | NS-7 |
+| Muslim-internal; authority fatigue + moral recoil + textual-historical pressure compounded into a single crisis; sometimes `taʿāruḍ` anxiety between reason and transmitted report | NS-8 |
+| Testimony-suspicion as default; manuscript-reconstruction or canon-formation language; tawātur flattened into single-strand chain reasoning; manuscript variance read as doctrinal corruption; New-Testament textual conditions imported onto the Qurʾān; historical criticism presented as neutral method | NS-9 |
+
+When two NS codes are simultaneously defensible, report `NS-X | NS-Y` and name which profile sets intervention order. Collapse to a single code only when one profile clearly dominates the dimensions that most govern the next move (typically Dimensions 1, 4, and 8).
+
+## Hand-Off to Discourse Orientation and Concealment Mode
+
+The NS code is necessary but not sufficient for routing. Before selecting a case-library entry, surface the discourse-orientation code from `discourse-orientation.md` (DO-orient) and the concealment mode from `modes-of-concealment.md`. The case-library entries assume all three are known. If a case is truth-seeking DO-orient plus an NS code, the case-library module is directly loadable. If the discourse orientation is identity-performance or novelty-seeking, the NS code may still be correct but the intervention is pastoral/relational before doctrinal.
+
+## Output Shape
+
+Terminate the checklist with a compact line, not a lecture:
+
+    NS: NS-X [| NS-Y]    Deformation: <primary> [| <secondary>]    Concealment: <mode>    DO-orient: <orientation>    Strength: <strong | provisional | low>    Next: <smallest matched module>
+
+This line is what the case-state schema in `case-state-schema.md` ingests. It is the routing artifact. Everything before it is the work that produced it.

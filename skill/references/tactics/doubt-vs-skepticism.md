@@ -6,10 +6,21 @@ scientific evidence is irrational; or treats the demand for evidence as the neut
 default epistemological position.
 
 **Cross-references:** E2 (inferential criterion); M1-P (the demand itself is self-undermining);
-M2 (prior probability — the evidential bar is not applied symmetrically).
+M2 (prior probability — the evidential bar is not applied symmetrically); E1 (broadening the
+evidential scope — see precedence rule below).
 
 This is a first-line meta-clearing move when the evidence demand is being used as a neutral chair,
 not a merely supplementary aside.
+
+## Precedence vs. E1
+
+`doubt-vs-skepticism` clears the framework; E1 broadens what counts as evidence inside a
+framework that already accepts evidence as the terminal question. If the interlocutor's
+rule is "belief requires evidence, absence is disproof," run this file first. E1 applied
+to an uncleared evidentialist framework is absorbed — each broader channel is filtered as
+"not the right kind." The framework-clearing must come first, or E1 must find the
+narrower foothold (inconsistency between standard and practice) that does the clearing
+incidentally. See E1 for the full precedence rule.
 
 ---
 

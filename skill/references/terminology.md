@@ -18,9 +18,10 @@ On first use:
 - make clear what work it is doing in the case
 - prefer English alone when the Arabic term adds no operational value
 
-High-frequency operational terms include: `fitrah`, `aqidah`, `shubha`, `juhud`, `inkar`,
-`hawa`, `gharad`, `tawatur fitri`, `taqlid`, `tahqiq`, and `bila kayf`. These terms should
-normally be linked to diagnosis, routing, or scope control rather than used as ornament.
+High-frequency operational terms include: `fitrah`, `aqidah`, `shubha`, `irad`, `juhud`,
+`inkar`, `istikbar`, `nifaq`, `hawa`, `gharad`, `tawatur fitri`, `taqlid`, `tahqiq`, and
+`bila kayf`. These terms should normally be linked to diagnosis, routing, or scope control
+rather than used as ornament.
 Transmission terms such as `isnad`, `wijadah`, `qira'at`, `ahruf`, `mushaf`, `canon`, and
 `tahrif` should be used only when they change how a revelation / transmission case is classified.
 
@@ -108,14 +109,62 @@ Apply the discipline rules above when deciding whether to use a term and whether
 
 ---
 
-## Modes of Concealment (Four)
+## Modes of Concealment
+
+The taxonomy is not closed at any fixed count. The skill currently distinguishes five
+modes; further refinement is possible where a phenomenologically distinct mode demands a
+distinct register. The root shared across these terms and the concept of *covering* is
+*k-f-r* — see the sharʿī vs. lexical note below.
 
 | Arabic | Transliteration | Meaning |
 |--------|----------------|---------|
-| جحود | Juhūd | Denial — refusal to acknowledge the question seriously or investigate honestly; primarily volitional |
-| إنكار | Inkār | Rejection — outward denial despite inward recognition already present in the qalb |
-| استكبار | Istikbār | Obstinacy — acknowledgment without volitional alignment; the will is not aligned with the recognition |
-| نفاق | Nifāq | Surface acceptance without genuine inner conviction; language of belief without inner reorganization |
+| إعراض | Iʿrāḍ | Turning away — refusal to attend; decline to investigate when the opportunity is available; the matter has not yet been allowed to press. Register: invitational; do not dump argument; leave one honest question live |
+| جحود | Juḥūd | Culpable denial — refusal of acknowledgment *once the matter has been allowed to press*; repudiative posture; primarily volitional. Register: relational; name the barrier rather than argue past it |
+| إنكار | Inkār | Rejection — outward denial despite inward recognition already present in the qalb. Register: maieutic (P4) + R2 |
+| استكبار | Istikbār | Obstinacy — acknowledgment without volitional alignment; the will is not aligned with the recognition. Register: relational/spiritual; pride-structure is the barrier |
+| نفاق | Nifāq | Surface acceptance without genuine inner conviction; language of belief without inner reorganization. Register: already-believing procedure (P5) |
+
+**`irad` vs. `juhud` diagnostic boundary.** The two most frequently confused modes.
+`irad` is attention not yet given; `juhud` is acknowledgment refused once attention has
+landed. Test: has the matter been *allowed to press*? If not, the mode is `irad`
+regardless of the surface vigor of the refusal. The registers are almost opposite —
+`irad` wants invitation and room; `juhud` wants the barrier named — so misrouting is
+costly. Misrouting `irad` as `juhud` hardens the turning-away into something more
+defined; misrouting `juhud` as `irad` keeps offering invitations that the subject has
+already moved past refusing.
+
+### Sharʿī vs. Lexical Use of *Kufr* — and of the Concealment Modes
+
+The root *k-f-r* (ك-ف-ر) carries a generalized lexical sense of *covering*, refusing,
+concealing, suppressing, withholding recognition. The theological category of *kufr* —
+unbelief standing over against *īmān* (faith) — is the full sharʿī term, with its own
+conditions (knowledge of the matter, capacity, absence of excusing factors, the
+distinction between the act and the actor, and the reserved jurisdiction over takfīr of
+the particular person).
+
+This skill uses the root-sense *analytically* when naming the modes of concealment. An
+emission of `irad`, `juhud`, `inkar`, `istikbar`, or `nifaq` names a cognitive-moral
+structure — what is happening to recognition inside the subject's noetic field. It does
+not, on its own, constitute the sharʿī judgment that a specific person stands in the
+relation of *kufr* to *īmān*. That judgment has its own conditions and its own
+jurisdiction; this diagnostic does not adjudicate it. Da'wah work at its best is aware of
+both registers and does not collapse one into the other: the diagnostic use helps the
+dāʿī see *what is occluding* the fiṭrah's recognition in the subject; the sharʿī category
+belongs to the science of takfīr and is not a routing label inside this skill.
+
+The same distinction applies to the deformation-axis terms *hawā* and *gharaḍ*:
+diagnostic use names the mechanism of willful suppression; the sharʿī judgment of the
+particular person is a different act, with different conditions, and is not issued here.
+
+### Restorative, Not Constructive
+
+The skill's apparatus is *restorative*, not *constructive*: it removes the occlusions
+that prevent the fiṭrah's properly basic recognition from operating. It does not build
+warranted belief in God out of discursive premises. The concealment modes are named
+diagnostically in service of *removing what covers* — i.e., in service of restoration.
+The restored remainder is not the practitioner's construction; it is what the fiṭrah
+already carries once what covers it is cleared. Keep this asymmetry visible in any
+output: the closing formulation is *restoration language*, not *argument conclusion*.
 
 ---
 

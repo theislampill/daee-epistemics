@@ -9,3 +9,5 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 **The alternative:** Taḥqīq — genuine investigation. The tradition asks this of everyone: believer, skeptic, and seeker alike.
 
 **Symmetric application:** This check applies equally to the practitioner's own position. See `references/tactics/symmetric-taqlid-check.md`. The practitioner who has not genuinely examined their own position has no standing to deploy V7 outward.
+
+**Follow-through:** V7 exposes taqlīd; it does not itself accomplish the transition to taḥqīq. If the subject recognizes the taqlīd and is willing to transition, route to `references/techniques/V11-taqlid-transition.md`. V7 without a V11 follow-through can produce destabilization — the subject sees their position is held by taqlīd but has no structured path forward, and the position may fall before examined ground is available. The classical tradition treats the questioner who opens a door they cannot close as having harmed the subject, not helped them.

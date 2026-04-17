@@ -305,14 +305,47 @@ genuine: address the underlying deformation; do not engage the intellectual surf
 
 ## The Compound Case
 
-Most real interlocutors exhibit more than one deformation. The intervention must sequence
-correctly:
+> **Canonical source for compound-case sequencing.** All other files (SKILL.md,
+> V1-diagnostic.md, M5-deformation-triage.md, noetic-profiles.md opening-move
+> hierarchies, P1-fitrah-restoration.md) refer to this section rather than
+> restating the rules. If an apparent conflict arises between files, this section
+> governs.
 
-1. ʿĀda, if present, must be addressed before iʿtiqādāt mawrūtha can be reached
-2. Gharaḍ and hawā, if present, must be acknowledged before any intellectual content
-3. Iʿtiqādāt mawrūtha must be loosened before evidence can land
-4. Ẓann and taqlīd can often be addressed in parallel with iʿtiqādāt mawrūtha
-5. Shubhah, if genuine, is addressed last — after the framework is cleared
+Most real interlocutors exhibit more than one deformation. The intervention must sequence
+correctly. The rule is always *outside in* — the layer that most governs access to the
+next layer is addressed first.
+
+1. ʿĀda, if present, must be addressed before iʿtiqādāt mawrūtha can be reached — the
+   habituated pattern blocks the filter from being examined.
+2. Gharaḍ and hawā, if present, must be acknowledged before any intellectual content —
+   the volitional barrier will absorb intellectual content as more material for
+   resistance.
+3. Iʿtiqādāt mawrūtha must be loosened before evidence can land — the framework
+   pre-filters what will be counted as evidence.
+4. Ẓann and taqlīd can often be addressed in parallel with iʿtiqādāt mawrūtha — both
+   respond to V7 and symmetric-taqlīd checks that compose naturally with framework
+   loosening.
+5. Mushābara fāsida, when present alongside iʿtiqādāt mawrūtha, requires surgical
+   targeting of the specific premise in addition to framework loosening — the premise
+   will regenerate the conclusions even after the framework has been named.
+6. Shubhah, if genuine, is addressed last — after the framework is cleared. A shubhah
+   engaged while upstream filters govern the case is a shubhah engaged at the wrong
+   level; the interlocutor will experience the response as confirmation that the
+   filter was operative.
+
+**Register-hold rule:** The sequence above describes deformation order. The concealment
+mode and DO-orient may additionally hold the entire deformation intervention pending a
+register shift. If DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, or if
+concealment is `irad`, `juhud`, or `istikbar`, the matched deformation instrument waits on
+the register shift. (Under `irad`, the deformation layer often cannot even be read with
+confidence — the subject has not engaged enough for the deformation to surface.)
+Deformation sequencing is *within* the register that permits intellectual or maieutic
+engagement; it does not overrule register.
+
+**Operationalization:** `references/tactics/M5-deformation-triage.md` provides the
+pairwise table that applies this sequence move-by-move. V1 Phase 3 (triage) calls M5;
+M5 reads this section. The rules here are the standard; the table there is the
+application.
 
 The practitioner who attempts to engage shubhah while gharaḍ and iʿtiqādāt mawrūtha are
 unaddressed is working at the wrong level. The layers must be addressed from the outside in.
@@ -335,24 +368,33 @@ any human life, divergent beliefs are not surprising. This corresponds to deform
 relatively low culpability — the prophetic mission exists precisely to address initial
 corruption through the delivery of clear guidance.
 
-**Category B — Willful suppression (hawā, gharaḍ) = kufr**
+**Category B — Willful suppression (hawā, gharaḍ)**
 
 The second cause is cognitive dissonance: the willful suppression of what a person knows
 or recognizes to be true, for reasons of emotional or material gain (social belonging,
-economic status, political identity, personal comfort). This is the Qurʾānic concept of
-kufr (كفر) — literally "to cover." The Qurʾān's condemnation of kāfirūn targets those who
-are knowledgeable of the truth but refuse to accept it for less-than-justifiable reasons.
-The root confirms it: they are covering, not ignorant.
-
-This is why the Qurʾān frequently describes those who reject the truth as *believing they
+economic status, political identity, personal comfort). The Qurʾānic root *k-f-r* (كفر) —
+literally "to cover" — indexes exactly this structure: covering recognition rather than
+lacking it. The Qurʾān frequently describes those who reject the truth as *believing they
 are doing right* (2:11-12) — they are not ignorant; they have reconfigured their framework
 so that their suppression looks, to themselves, like an honest position.
 
-The theological implication: Allah takes into account the difference between ignorance
-and willful suppression. The former is innocent; the latter is culpable. This is not a
-polemical accusation to deploy against interlocutors — it is an internal diagnostic that
-explains why intellectual engagement alone cannot reach the person whose barrier is hawā
-or gharaḍ. The barrier is not epistemic; it is volitional. See F2 for the intervention.
+**Sharʿī vs. lexical use.** The full sharʿī category of *kufr* — theological unbelief
+standing over against *īmān* — has its own conditions (knowledge, capacity, absence of
+excusing factors, the distinction between the act and the actor, and the reserved
+jurisdiction over takfīr of the particular person). This skill does *not* adjudicate that
+theological judgment. What it uses is the *lexical-analytic* force of the root: the
+deformation map and the concealment map both trade on the root-sense *covering* to
+describe what has happened inside a subject's noetic structure. A diagnostic emission of
+`gharad` or `hawa` on the deformation axis — or `juhud` on the concealment axis — names a
+cognitive-moral mechanism; it is not, on its own, a pronouncement of takfīr. See
+`references/terminology.md` for the full treatment of the distinction.
+
+The theological implication is that Allah takes into account the difference between
+ignorance and willful suppression. The former is innocent; the latter is culpable. This is
+not a polemical accusation to deploy against interlocutors — it is an internal diagnostic
+that explains why intellectual engagement alone cannot reach the person whose barrier is
+hawā or gharaḍ. The barrier is not epistemic; it is volitional. See F2 for the
+intervention.
 
 **Category C — Cognitive-access limits (not blameworthy)**
 
@@ -370,3 +412,69 @@ after sustained engagement has exhausted the matched instruments without yieldin
 differentiator. In the existing corpus the operational consequence is P1 Stage 7: suspend
 active discursive pressure without turning that suspension into a verdict on the person's
 state before God.
+
+---
+
+## Deformation Code Emission
+
+The diagnostic terminates in one of the eight short codes used throughout the skill; no
+re-abbreviation. Compound cases emit a pair; the primary is named first, the secondary
+second, in the order of required intervention (outside in).
+
+| Surface / inferential cue | Deformation code |
+|---------------------------|------------------|
+| Filter treated as neutral common sense; evidence narrowed silently before any claim is examined | `i'tiqadat-mawrutha` |
+| One foundational premise regenerates the downstream conclusions every time local objections are answered | `mushabara-fasida` (subsection of `i'tiqadat-mawrutha`) |
+| Objections accelerate once one is dissolved; affective intensity disproportionate to the argument | `hawa` |
+| Position held with the texture of a conclusion but never examined; absorbed from milieu | `zann` |
+| Acquired by imitation; no live taḥqīq; applies symmetrically to belief and unbelief | `taqlid` |
+| Distorted framework felt as direct experience; āyāt pass without resonance | `ada` |
+| Honest inquiry feels costly in a specific external stake | `gharad` |
+| The barrier genuinely yields to intellectual clearing; no covert volitional or framework layer | `shubha` |
+
+Compound emission uses the pipe: `hawa | zann`, `i'tiqadat-mawrutha | shubha`, etc. The
+Compound Case section above fixes the sequencing: ʿāda before iʿtiqādāt mawrūtha, gharaḍ
+and hawā before any intellectual content, iʿtiqādāt mawrūtha before evidence can land,
+shubha (if genuine) last. The emission mirrors that order.
+
+When the barrier presented as shubha is covering one of the other six (the default
+suspicion that §7 above specifies), emit the covering deformation first and the shubha
+second only if the intellectual surface still has live content once the cover is lifted:
+`hawa | shubha` is legitimate; `shubha | hawa` is usually a misread.
+
+**Posture markers that pull toward specific emissions.** These are not separate
+deformations; they are surface-markers that help disambiguate compound cases. Each
+routes the primary emission:
+
+- *Mukābara* — obstinate denial of what the subject has already recognized as true —
+  pulls toward `hawa` or `gharad` in the deformation axis, and toward `istikbar` or
+  `inkar` in the concealment axis. The diagnostic is: the subject is not disputing
+  whether the claim is true but refusing to be moved by it.
+- *Muʿānada* — contentious rejection (argument-for-argument's-sake against what would
+  otherwise be granted) — pulls toward `hawa` on the deformation axis and `juhud` or
+  `istikbar` on the concealment axis. The diagnostic is: the subject's objection-
+  generation outpaces the arguments being offered, with no intent to converge.
+- *Tawāṭuʾ* — collusive or schooled agreement (holding a position because one's
+  school or intellectual community all hold it) — pulls toward `taqlid`, and when it
+  protects a single framework-level presupposition, toward `mushabara-fasida` as
+  compound. Apply V7 symmetrically.
+- *Safsaṭa* (sophistic drift) — skepticism about first principles generated as a
+  downstream consequence of pressing naturalism or evidentialism consistently — pulls
+  toward `i'tiqadat-mawrutha | mushabara-fasida` and calls V9 (necessary-knowledge
+  priority) as the matched instrument.
+
+---
+
+## Output Shape
+
+The deformation diagnostic terminates with one line feeding the case-state:
+
+    Deformation: <primary> [| <secondary>]    First instrument: <matched module>    Sequencing note (if compound): <what must clear before the second>
+
+This line composes with the NS emission from `noetic-reading-checklist.md`, the DO-orient
+emission from `discourse-orientation.md`, and the concealment mode from
+`modes-of-concealment.md` to produce the full case-state line consumed by
+`case-state-schema.md`. The three orthogonal axes — what the fiṭrah's operation has been
+distorted by (deformation), what the subject's inner/outer relation is (concealment), and
+what the discourse is for (DO-orient) — must all be emitted before a case-library module
+can be loaded with confidence.

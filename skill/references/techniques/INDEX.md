@@ -28,6 +28,7 @@ narrower than a full procedure.
 | `references/techniques/V8-bila-kayf-anchor.md` | Attribute discipline | Transcendence, attributes, Trinity-adjacent language, incarnation coherence, or philosopher's-God pressure is primary | The case has already moved to testimony or revelation authority | DO-5, DO-6, DO-11 to DO-13 |
 | `references/techniques/V9-necessary-knowledge-priority.md` | Necessity-over-inference control | A discursive argument contradicts universally held fitri knowledge | The argument is merely unpopular or difficult, not genuinely anti-necessary | E4, DO-7, DO-9 |
 | `references/techniques/V10-transmission-content-vetting.md` | Transmission and source discipline | Revelation, scripture, manuscript, canon, preservation, historical-critical, original-text, or testimony claims need separation | The issue is generic theism, grief, or attribute language rather than source-vetting | RT-1 to RT-4, P2, P5 |
+| `references/techniques/V11-taqlid-transition.md` | Structured transition from taqlīd to taḥqīq | The subject has recognized their position is held by taqlīd and is willing to transition | The subject is still defending the taqlīd; V7 must precede V11 | V7, symmetric-taqlid-check, V9 |
 | `references/techniques/heuristics.md` | Always-active analyst discipline | You need the standing operator rules and self-audit frame | Not a tactic or technique to cite as if it were a move | All folders |
 
 ## Structural Subtype Checks

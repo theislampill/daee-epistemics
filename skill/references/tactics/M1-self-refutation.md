@@ -13,6 +13,39 @@ When present, deliver this move cleanly and early. Do not bury it. The interlocu
 
 **Delivery:** State the objection at its strongest. Then: "But notice that the premises of this argument, applied consistently, also undermine the argument itself." Show the move cleanly. Stop. Do not pile on.
 
+## The Staged-Visibility Protocol
+
+The move lands at the moment it becomes visible to the interlocutor, and is destroyed by
+elaboration. The practitioner's job is to produce the conditions under which the
+interlocutor sees the self-refutation themselves. Four stages, each a separate turn
+where possible:
+
+**Stage 1 — State the position at its strongest.** Before delivering M1, steelman the
+objection. If the interlocutor does not recognize their own position in the steelman,
+the move will not land — they will experience M1 as a strawman's refutation. The
+steelman must be accurate enough that the interlocutor says "yes, that is what I hold."
+
+**Stage 2 — Name the structural rule the position invokes.** Not the conclusion, the
+rule. For "only empirically testable propositions are meaningful," the rule is: *every
+meaningful proposition must be empirically testable*. State it as a rule, not as the
+interlocutor's conclusion.
+
+**Stage 3 — Apply the rule to the position itself.** "What is the empirical test for the
+claim that only empirically testable propositions are meaningful?" Do not answer the
+question. Leave the question live. The self-refutation should become visible to the
+interlocutor in the act of attempting to answer.
+
+**Stage 4 — Stop.** Do not elaborate. Do not stack a second tactic on top. Do not
+explain what the interlocutor has just seen. If they have seen it, elaboration reduces
+the weight of what they saw. If they have not seen it, more argument will not produce
+seeing — but it will let them find cover in the additional content.
+
+If the interlocutor absorbs the move without movement — restates their position with
+small modifications, introduces a new objection, changes the subject — the barrier is
+not shubha. The self-refutation is not the problem; the problem is what the position
+is protecting. Update the case-state (reread the concealment mode and deformation
+axis) before any further move. Do not repeat M1 with more force.
+
 **Distinguishing from M1-P:** M1 is about premises undermining conclusions through logical entailment. M1-P (performative self-refutation) is about the act of asserting the position enacting what it denies. They are different — and often both apply simultaneously.
 
 ## The Phenomenological Falsification of Naturalism

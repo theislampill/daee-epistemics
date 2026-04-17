@@ -1,14 +1,13 @@
-# Case Library — Noetic Structure Profiles (NS-1 through NS-6)
+# Case Library — Noetic Structure Profiles (NS-1 through NS-9)
 
 Load this file when an interlocutor's position matches a recognizable noetic
 type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
 the load-bearing anchor, critical vulnerabilities, deformation type, and
 intervention point.
 
-This file provides full profiles for NS-1 through NS-6. Māturīdī calibration,
-historical-critical skepticism, blank-slate fiṭrah positions, and dual-nature fiṭrah
-positions still route through specialty diagnostics or other case files rather than
-through this profile format.
+This file provides full profiles for NS-1 through NS-9. Māturīdī calibration,
+blank-slate fiṭrah positions, and dual-nature fiṭrah positions still route
+through specialty diagnostics rather than through this profile format.
 
 See `case-library/INDEX.md` for the full routing table.
 
@@ -223,3 +222,165 @@ pressure is hard Mu'tazili/Ash'ari, softened Maturidi, or mixed. Then use V2 to 
 restriction of reason, and use P3 when the live framing is reason versus revelation. Keep husn
 al-nazar available as a secondary restorative path for impaired recognition, not as the universal
 precondition of warranted belief.
+
+---
+
+### NS-7 — The Theistic Evidentialist
+
+**Implicit doxastic rule:** "Belief in God is warranted only when established by inferential
+argument from premises the interlocutor antecedently accepts. Recognitional warrant (fiṭrah),
+testimonial warrant (khabar), and non-inferential basic-belief warrant do not yet count as
+knowledge of God — they require inferential demonstration first."
+
+**Load-bearing anchor:** Classical natural-theology or philosophical-theology apparatus (cosmological
+argument, fine-tuning, ontological argument, Bayesian natural theology, perfect-being theology)
+held as the *precondition* for warranted belief rather than as one legitimate path among others.
+The anchor is the evidentialist restriction itself, not any one argument. The restriction is
+typically inherited from the kalāmic evidentialist line (wujūb al-naẓar) — the same inheritance
+that anchors NS-6 — but NS-7 is distinct in direction: the interlocutor already affirms God, and
+so reads any pressure on the restriction as pressure on theism itself. NS-6 is on the threshold;
+NS-7 is inside, holding the door closed by the same inheritance.
+
+**What the interlocutor holds as basic:** Logical axioms, mathematical truth, direct perception,
+the reliability of memory. The evidentialist restriction on religious warrant is held as basic
+without being applied symmetrically to these other domains. Belief in other minds, the past, the
+uniformity of nature — all held without inferential demonstration of the kind demanded of theistic
+belief.
+
+**Critical vulnerability:** Same structural vulnerability as NS-2 and NS-6, but inverted in
+direction: the interlocutor already *believes* but insists the belief does not yet count. (a) The
+standard is not applied symmetrically — other basic beliefs are held without inferential
+demonstration. (b) The fiṭrī / recognitional warrant is demoted to "mere feeling" by a rule that
+itself cannot be grounded the way it requires other beliefs to be grounded. (c) The prophetic
+pattern is sign-direction and recognition preceding demonstration — the evidentialist order
+reverses this. (d) A theology built on the evidentialist restriction is brittle: when an argument
+falls, the belief it was meant to ground falls with it.
+
+**Deformation types:** Primarily i'tiqadat mawrutha (the evidentialist restriction is inherited
+from a philosophical-theological tradition, not from the prophetic tradition); often zann (the
+restriction is held as examined when it is actually absorbed). The theistic surface can conceal an
+underlying naturalist epistemology.
+
+**Intervention point:** Do *not* attack the inferential arguments themselves — the interlocutor
+reads this as an attack on theism. Deploy V9 (necessary-knowledge priority): the fiṭrah's
+deliverance of the Creator is ḍarūrī, not iktisābī; inferential argument is a legitimate
+*restorative* or *remedial* route that can itself produce knowledge when the fiṭrah is occluded,
+but it is not the universal precondition of warranted belief. Use V7 symmetrically on the
+evidentialist restriction: have you examined the restriction itself, or inherited it? The
+intervention goal is not to demote the interlocutor's arguments — inferential proof is
+genuinely knowledge-conferring — but to relocate warrant properly: recognition first, argument as
+one legitimate path among others, never as the gatekeeper that must license recognition before
+recognition may count.
+
+**Opening-move hierarchy:**
+1. V9 first: establish that non-inferential warrant is the norm, not the exception.
+2. Then V7 symmetric: examine the evidentialist restriction itself.
+3. Only after 1–2 do the apologetic arguments get re-positioned as scaffolding, not foundation.
+
+---
+
+### NS-8 — The Muslim-Internal Crisis (Modernist Revisionism / Authority-Fatigue Compound)
+
+**Implicit doxastic rule:** The live rule is unstable and compound. Three commitments pressure one
+another: (a) "Islam must be defensible by the standards of the modern discourse I am situated in"
+(modernist evidentialism); (b) "The traditional authorities have failed morally or epistemically"
+(authority-fatigue, often with specific incidents driving it); (c) "Reason and transmitted text are
+in conflict on [X]" (taʿāruḍ anxiety, typically over a specific verse, hadith, or classical ruling).
+
+**Load-bearing anchor:** Not a single proposition but a *compound* — the interlocutor is holding
+authority-fatigue plus moral-recoil plus textual-historical pressure simultaneously, and each is
+reinforcing the others. Disaggregation is the first move.
+
+**What the interlocutor holds as basic:** ʿAqīdah commitments still hold at the fiṭrī level — the
+subject still prays, still recognizes the Qurʾān's authority at a level deeper than the surface
+discourse. But the basic-belief structure has been destabilized: commitments that were firm now
+feel provisional. Moral-intuition commitments (often modern liberal-secular) are held at near-ḍarūrī
+firmness, and the perceived conflict between these intuitions and a classical ruling is what
+precipitates the crisis.
+
+**Critical vulnerability:** The compound nature is itself the vulnerability. Each element, in
+isolation, would be tractable: authority-fatigue addresses by distinguishing institutional failure
+from doctrinal truth; moral-recoil addresses by distinguishing modern liberal premises from the
+tradition's moral-ontological premises; taʿāruḍ addresses by the Darʾ taʿāruḍ procedure. The
+interlocutor presents them compounded precisely because the compound is more stable than any
+single element would be. Disaggregation releases them to be addressed.
+
+**Deformation types:** Compound. The taʿāruḍ-surface is often shubha covering hawā (moral recoil
+at a ruling) or gharaḍ (social stake in modernist circles). Authority-fatigue can function as
+iʿtiqādāt mawrūtha (absorbed framework). The compound must be diagnosed before the intervention
+is chosen.
+
+**Intervention point:** This case does *not* route directly to a case-library module. It routes
+first to `references/procedures/` for the longer P-procedure that handles Muslim-internal crisis
+(see P6 / mixed-case-handling.md), then to the matched sub-module per disaggregated component:
+- Taʿāruḍ-surface → Darʾ taʿāruḍ procedure; V2 on the modern hermeneutic that sets up the conflict
+- Moral-recoil → M3 (orphaned intuition probe) on the modern moral commitments that produce the
+  recoil; do not concede their foundation-status uncritically
+- Authority-fatigue → Distinguish the institutional from the doctrinal; name the historical
+  incidents honestly; do not defend the indefensible; do not let institutional failure become a
+  warrant for doctrinal revision
+
+**Register note:** This is a pastoral case before it is a doctrinal one. Intellectual engagement
+without relational register frequently worsens the crisis. If the interlocutor is destabilized,
+the order of operations is: hold the relationship → disaggregate the compound → address one
+element at a time → do not force convergence within a single exchange. The pastoral-first
+ordering is a practical inference: when ulterior motive, whim, or shubha are active
+fiṭrah-suppressors, cognitive intervention on a destabilized person tends to misfire before the
+stabilizing conditions are in place.
+
+---
+
+### NS-9 — The Historical-Critical Skeptic
+
+**Implicit doxastic rule:** "Religious texts must be reconstructed by the methods of secular
+historical criticism — manuscript genealogy, redaction analysis, form criticism, source criticism
+— before any claim grounded in them can be credited. Until the reconstruction is complete, the
+text cannot ground doctrine. Transmission through tradition is suspicious testimony; manuscript
+collation is neutral method."
+
+**Load-bearing anchor:** The methodological primacy of secular historical criticism, typically
+imported from a framework developed for the New Testament (with its specific transmission
+conditions) and applied to the Qurʾān as if the conditions were analogous. The interlocutor
+frequently does not recognize the imported conditions as conditions.
+
+**What the interlocutor holds as basic:** The reliability of manuscript-critical method itself;
+the neutrality of the secular academic discipline; the assumption that variance in manuscripts
+indicates textual instability in the doctrinal sense; the flattening of tawātur into single-strand
+chain-of-custody reasoning.
+
+**Critical vulnerability:** (a) Tawātur is not a chain of custody — it is a simultaneous
+multi-path mass-transmission producing ḍarūrī knowledge, whose epistemic force is structurally
+different from the single-strand textual transmission that historical criticism was built to
+evaluate. Flattening the two is a category error. (b) The *specific conditions* under which
+New-Testament historical criticism was developed — no isnād system, a late and disputed canon, a
+fluid "live text" with documented scribal harmonization, no living mutawātir recitational
+community — are what licensed the method there. None of those conditions obtain for the Qurʾān.
+Importing the method without naming and examining those conditions carries parasitic assumptions.
+(c) Qirāʾāt are not manuscript variants in the Western text-critical sense — they are authorized
+recitational readings traced to the Prophet via mutawātir ḥadīth (the seven aḥruf), chosen by
+readers from authentic chains, not scribal accidents. Reading them as evidence of textual
+corruption is, again, a category error. (d) The claim to methodological neutrality is itself
+iʿtiqādāt mawrūtha: secular historical criticism carries specific philosophical commitments
+(methodological naturalism, suspicion of testimony, preference for reconstructed original over
+received text) that are not neutral.
+
+**Deformation types:** Primarily iʿtiqādāt mawrūtha (an imported framework treated as neutral
+method); often ẓann (the method is held as examined when the conditions of its application have
+not been examined); sometimes shubha (the specific manuscript-claim does have intellectual content
+once the framework is loosened, but the intellectual content is narrower than the claim being
+made).
+
+**Intervention point:** This case routes to `case-library/revelation-transmission.md` via V10
+(separating artifact from authenticated transmission). The NS-9 profile alone is insufficient —
+the live issue (RT-1 manuscript/fragment, RT-2 canon formation, RT-3 qirāʾāt/aḥruf) determines the
+matched module. The order of operations:
+1. V2 on the imported framework: name the specific conditions under which historical criticism was
+   developed; show the conditions are not analogous.
+2. V10 (separate artifact from authenticated transmission): the manuscript, the fragment, the
+   textual variant is an *artifact*; authenticated transmission is what carries the epistemic
+   weight. The artifact does not overturn the transmission; it sits inside it.
+3. Only then engage the specific case — RT-1, RT-2, or RT-3 — by the matched module.
+
+**Register note:** The interlocutor often presents as truth-seeking (`truth-seek` DO-orient) and
+the scholarship is real. The diagnostic is not suspicion of the interlocutor but of the imported
+framework. V2 is applied to the method, not to the person.

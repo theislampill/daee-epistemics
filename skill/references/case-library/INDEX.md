@@ -24,12 +24,15 @@ the case still requires.
 
 | Profile | Marker | Primary deformation | First likely move |
 |---------|--------|---------------------|------------------|
-| NS-1 Naturalist | "there is no evidence"; causal closure assumed | I'tiqadat mawrutha | V2 |
-| NS-2 Agnostic Evidentialist | "belief must be proportioned to evidence" | zann; possibly genuine shubha | E2 plus V3 |
-| NS-3 Deconverted | Deconversion narrative; orphaned moral commitments | hawa; zann; possibly gharad | M3 or P4 |
-| NS-4 Secular Moral Realist | Moral facts are objective but God is rejected | zann; i'tiqadat mawrutha | M3 |
+| NS-1 Naturalist | "there is no evidence"; causal closure assumed; drift toward sophistic skepticism under consistent pressure | I'tiqadat mawrutha | V2 |
+| NS-2 Agnostic Evidentialist | "belief must be proportioned to evidence"; refusal of non-inferential warrant | zann; possibly genuine shubha | E2 plus V3 |
+| NS-3 Deconverted | Grievance-stabilized argumentation around a single shubhah; orphaned moral commitments | hawa; zann; possibly gharad | M3 or P4 |
+| NS-4 Secular Moral Realist | Moral facts are objective but God is rejected; normativity helped-to without ontology | zann; i'tiqadat mawrutha | M3 |
 | NS-5 Habituated Atheist | God's non-existence treated as basic | Primarily hawa; possibly gharad; 'ada | F2 (volitional acknowledgment) first; then M4 if grief-primary, R2 if involuntary recognition near surface, V7 otherwise |
 | NS-6 Kalamic Evidentialist | `dalil` demand; `wujub al-nazar`; taqlid treated as non-knowledge; narrow necessary-knowledge class | i'tiqadat mawrutha; often zann | `diagnostics/kalamic-interlocutor.md`, then V2 or P3 as the live conflict requires |
+| NS-7 Theistic Evidentialist | God affirmed; natural-theology apparatus held as the *precondition* for warranted belief; fiṭrī recognition demoted to "mere feeling" | i'tiqadat mawrutha; often zann | V9 first (necessary-knowledge priority), then V7 symmetric on the restriction, then reposition the apologetic arguments as legitimate remedial paths |
+| NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubha covering hawa or gharad | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (Darʾ taʿāruḍ / M3 / institutional-vs-doctrinal separation) |
+| NS-9 Historical-Critical Skeptic | Tawātur flattened; qirāʾāt read as Western text-critical variants; NT transmission conditions imported onto the Qurʾān; method-neutrality held as basic | i'tiqadat mawrutha; often zann | V2 on the imported framework, V10 (separate artifact from authenticated transmission), then `case-library/revelation-transmission.md` for RT-1/2/3 |
 
 ## Specialty Diagnostic Markers
 

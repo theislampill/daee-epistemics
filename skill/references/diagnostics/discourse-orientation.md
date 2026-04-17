@@ -118,3 +118,57 @@ The practitioner should:
 - Not assume that a mixed orientation is stable — the truth-seeking element, however
   small, is what the engagement is in service of
 - Leave space for orientation to shift without pressing for it
+
+---
+
+## DO-Orient Code Emission
+
+The orientation read terminates in a short code (`DO-orient`) that routes downstream. It
+is not the same as the doctrinal DO-1..13 codes in `case-library/INDEX.md`; it rides
+beside them. Both are named with the "DO" prefix because both belong to the discourse
+axis: DO-orient answers *what the discourse is for*; DO-1..13 answers *what objection
+family is live inside that discourse*.
+
+| Orientation read | DO-orient code | What it governs |
+|------------------|----------------|------------------|
+| Toward truth and warrant | `truth-seek` | Full intellectual apparatus applies; route via NS and doctrinal DO codes |
+| Identity-performance | `identity-perf` | Withhold more content; name the distinction; shift to relational register |
+| Novelty-seeking / autotelic stimulation | `autotelic` | Do not mistake for shubhah; leave one question alive; stop feeding stimulation |
+| Conjecture without anchor (ẓann as mode) | `zann-mode` | Suspend movement; press for grounds of one claim at a time before any larger move |
+| Mixed / unstable | `mixed` | Name the predominant orientation and note the minority channel; stay alert for shift |
+
+If the orientation is `identity-perf`, `autotelic`, or `zann-mode`, the correct next step
+is almost never a case-library entry — even if the NS code is clear. The doctrinal module
+is the right content at the wrong register. Name the orientation first; return to content
+once the register is truth-seeking, or once a question has been left alive long enough for
+the fiṭrah to do its work.
+
+---
+
+## Doctrinal DO-1..13 Routing Note
+
+The DO-1..13 codes in `case-library/INDEX.md` live on a different axis. They are emitted
+from the NS + problem-family diagnostic, not from this file. When scripture-history pressure
+is live the corresponding axis is RT-1..4. This file's job is the orientation read; other
+files emit the doctrinal and transmission codes. All three axes — NS code, DO-orient, and
+(where applicable) doctrinal DO / RT — appear in the final case-state line.
+
+---
+
+## Output Shape
+
+The orientation diagnostic terminates with one line feeding `case-state-schema.md`:
+
+    DO-orient: <truth-seek | identity-perf | autotelic | zann-mode | mixed>    Engagement posture: <intellectual | relational | suspended>    Next: <smallest matched move>
+
+`Engagement posture` is the DO-orient–level gate on whether intellectual engagement is
+apt at all. It is not the same field as the concealment-mode `Register`
+(`invitational | intellectual | maieutic | relational | suspended`), which refines *how*
+an intellectually apt engagement should be conducted once the posture permits it. The
+two fields are nested, not redundant: posture selects whether to proceed; register
+selects the manner of proceeding.
+
+If the orientation is `truth-seek`, the noetic-reading-checklist's NS emission plus the
+concealment-mode emission plus (where applicable) the doctrinal DO or RT code compose the
+full case-state line. If the orientation is anything else, the DO-orient line governs and
+the other emissions remain available but not acted on until the register shifts.

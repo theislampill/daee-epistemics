@@ -23,7 +23,7 @@ These are not ordinary confirmed-match files. They define the opening diagnostic
 | `references/techniques/V1-diagnostic.md` | Any case requiring structural diagnosis; skip only when the task is a narrow factual sub-answer with no case classification needed |
 | `references/diagnostics/noetic-reading-checklist.md` | Any structural diagnosis of belief, warrant, anchor, or noetic type |
 | `references/diagnostics/seven-deformations.md` | Any case requiring deformation identification, compound-case sequencing, or subtype discrimination |
-| `references/diagnostics/four-modes-concealment.md` | Any case where inner/outer relation may change the engagement type |
+| `references/diagnostics/modes-of-concealment.md` | Any case where inner/outer relation may change the engagement type |
 | `references/diagnostics/discourse-orientation.md` | Any case where it is unclear whether intellectual engagement is even the right instrument |
 | `references/tactics/M5-deformation-triage.md` | V1's triage subroutine; may be used standalone only for narrow single-exchange deformation sorting |
 
@@ -370,14 +370,25 @@ files rather than a single unified profile form.
 - Route to V9 when necessary knowledge itself is being attacked or discursive reasoning is being
   treated as superior to immediate certainty.
 
-### IV.C — Four Modes of Concealment (Summary)
+### IV.C — Modes of Concealment (Summary)
 
-Full treatment: `references/diagnostics/four-modes-concealment.md`
+Full treatment: `references/diagnostics/modes-of-concealment.md`. The taxonomy is open
+— the current treatment distinguishes five modes, and further refinement is possible
+where a phenomenologically distinct mode demands a distinct register. These modes are
+used *diagnostically* in the lexical-analytic sense of the root *k-f-r* (covering /
+refusing / withholding recognition) and do not, on their own, constitute the full sharʿī
+judgment of *kufr* (theological unbelief vs. *īmān*). See `references/terminology.md`.
 
-- **Denial (juhūd):** Refusal to engage. Primarily volitional. Arguments will not land. Name the barrier; do not argue past it.
+- **Turning away (iʿrāḍ):** Refusal to attend; decline to investigate when the opportunity is available. The matter has not yet been allowed to press. Do not dump argument; name the aversion invitationally; leave one honest question live.
+- **Denial (juḥūd):** Refusal of acknowledgment *once the matter has been allowed to press*. Repudiative posture. Arguments alone will not land. Name the barrier; do not argue past it. Maieutic (P4) if a seam of inner recognition is visible.
 - **Rejection (inkār):** Inward recognition present, outward denial. Maieutic procedure (P4) most apt.
 - **Obstinacy (istikbār):** Acknowledgment without volitional alignment. Relational engagement, not more content.
 - **Surface acceptance (nifāq):** Outward agreement, genuine inner conviction absent. Build alignment between surface and depth.
+
+**Boundary — iʿrāḍ vs. juḥūd:** iʿrāḍ is attention not yet given; juḥūd is acknowledgment
+refused once attention has landed. The register required is almost opposite: iʿrāḍ wants
+invitation and room; juḥūd wants the barrier named. Misrouting hardens iʿrāḍ into juḥūd
+or keeps offering invitations past the point at which they are consumed rather than received.
 
 ### IV.D — Seven Deformations of the Fiṭrah (Summary)
 
@@ -398,7 +409,9 @@ Presenting arguments to someone whose barrier is hawā or gharaḍ actively deep
 
 **Compound-case sequence:** address ʿāda before iʿtiqādāt mawrūtha; acknowledge gharaḍ or hawā before
 any intellectual content; run ẓann and taqlīd checks alongside framework-clearing where appropriate;
-address a genuine shubhah last, after the upstream filters are cleared.
+address a genuine shubhah last, after the upstream filters are cleared. Canonical source of this rule:
+`references/diagnostics/seven-deformations.md` §The Compound Case; pairwise application:
+`references/tactics/M5-deformation-triage.md`.
 
 **Category C caution:** the theological Category C note in `references/diagnostics/seven-deformations.md`
 is not a first-line routing family from surface discourse. It only suspends normal pressure when direct
@@ -517,6 +530,30 @@ a daee can carry out of the room. Not a summary of what was argued; the point it
 Do not let structural discipline (Case State, Source Basis, routing blocks) crowd out this
 synthesis. The governance blocks are upstream tools. The restoration is the destination.
 
+**Restorative, not constructive.** The skill's architecture is restorative. The matched
+modules clear what is occluding the fiṭrah's recognition; they do not construct belief in
+God out of discursive premises. The closing formulation should speak in restoration
+language — what the fiṭrah already carries, now made visible — rather than in
+argument-conclusion language. The *restored remainder* is what the subject already had
+once the covering is lifted; the dāʿī's work is to lift, not to build. Generic recap of
+what was said is not restoration; restoration names the picture that now stands clear.
+
+**Coordination, not collapse.** The axes (NS, DO-orient, concealment, deformation, RT)
+are orthogonal. The right concealment register does not substitute for the right
+deformation instrument, and neither substitutes for the right doctrinal content. When
+more than one matched move applies, *coordinate* them in order rather than collapsing to
+a single move. The skill loads the smallest matched coordination — the smallest set of
+moves that together address the live pressure — not the smallest single move.
+
+**No premature collapse in mixed cases.** When two reads are genuinely live and the
+decisive differentiator is not yet in view, hold the pair rather than forcing a single
+read. The case-state line permits `NS-X | NS-Y`, `<mode-A> | <mode-B>`, and `<primary> |
+<secondary>` compounds precisely so that parallel candidate readings are preserved until
+a differentiator arrives. Forcing collapse before the differentiator is available
+produces a confident misread; the module then loads against the wrong register and the
+response fails to land. Name what would decide the read and proceed on the provisional
+primary only when its intervention order is safe across both candidates.
+
 **M1/M1-P staged visibility:**
 When M1 or M1-P is confirmed operative, present the move in explicit stages:
   1. State the rule or criterion the objection is relying on
@@ -548,7 +585,7 @@ See `references/terminology.md` — organised by domain:
 - Knowledge Sources and Testimony
 - Signs and Evidence
 - Deformations of the Fiṭrah (all seven)
-- Modes of Concealment (all four)
+- Modes of Concealment (iʿrāḍ, juḥūd, inkār, istikbār, nifāq) — with sharʿī vs. lexical note on *k-f-r*
 - Epistemological Virtues and Vices (including yaqīn, safsaṭa, qarmata, ikhtilāf)
 - Divine Attributes and the Bilā Kayf Doctrine
 - Kalāmic and Theological Vocabulary

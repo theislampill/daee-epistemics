@@ -120,3 +120,67 @@ restoratively and proportionally.
 - Am I forcing a generic prophetic-mission case into RT when transmission or text-history is not
   the live issue?
 - Am I answering a believer's panic as though it were only a debate prompt?
+
+---
+
+## Surface-Marker Triage — RT-1 vs. RT-2 vs. RT-3 vs. RT-4
+
+RT cases are commonly misrouted because the surface material (a fragment, a variant, a
+canon-history claim) looks similar across the four. The correct routing is determined
+not by the material but by what the material is being asked to do in the objection.
+
+| If the interlocutor is asking... | Route to | Telltale |
+|----------------------------------|----------|----------|
+| "This artifact proves the text was reconstructed later / the original is lost" | RT-1 | The artifact is positioned as self-authenticating; the interlocutor does not distinguish reconstruction from transmission |
+| "Canon was chosen by community politics, so the text has no binding authority" | RT-2 | The live claim is about authority/inspiration, not reconstruction; the artifact-question is downstream |
+| "qirāʾāt / aḥruf / codex differences show textual corruption" | RT-3 | Recitational-plurality material is being read as scribal-variance material; category error between authorized reading and manuscript accident |
+| "I'm a Muslim and this is destabilizing me" | RT-4 | The register is internal crisis, not external debate; the pastoral order applies before the doctrinal |
+
+**Ambiguous surface cases:**
+- A manuscript claim that is *really* an authority claim → RT-2, not RT-1. Test: ask the
+  interlocutor what would change if the manuscript were authenticated as they describe;
+  if the answer is "then the authority claim is refuted," the case is RT-2.
+- A qirāʾāt claim that is *really* a reconstruction claim → RT-1 plus V10 on the method,
+  because the interlocutor is importing a reconstruction framework onto recitational
+  material.
+- A canon-history claim raised *to destabilize a believer* → RT-4 first, then RT-2 after
+  the pastoral ground is held.
+
+The rule: RT-1 is about the artifact's evidential status; RT-2 is about the authority's
+grounding; RT-3 is about the distinction between recitation-category and manuscript-
+category; RT-4 is about register (internal crisis). Do not collapse them.
+
+---
+
+## DO-7 vs. DO-10 — When Cognitive-Science Pressure Is Really an Attack on Necessary Knowledge
+
+DO-7 (CSR/HADD) and DO-10 (three-tier epistemology / attacks on ʿilm ḍarūrī) are
+adjacent. The confusion surfaces when an interlocutor argues that *intuitive* or
+*necessary* knowledge itself is produced by cognitive modules whose epistemic warrant is
+dubious — collapsing the ordinary CSR argument (which targets theistic recognition
+specifically) into a general skepticism about ʿilm ḍarūrī.
+
+**Route to DO-7** when the objection targets theistic belief specifically as a
+CSR-artifact, and the interlocutor retains confidence in other basic beliefs (other
+minds, moral intuition, perception). The move is the foundation/superstructure
+distinction + genetic-fallacy reply + self-refutation-check on the debunking argument.
+
+**Route to DO-10** when the objection extends to necessary knowledge as such — when the
+interlocutor is willing to treat ordinary cognition (not just theistic cognition) as
+dubious, or when the argument's consistent application would require abandoning
+ʿilm ḍarūrī. The matched move is V9 (necessary-knowledge priority) — a different
+register from the DO-7 content.
+
+**The telltale for the boundary:** ask the interlocutor whether the CSR-style critique,
+consistently applied, would apply to their own moral intuitions or perceptual deliverances.
+- If they accept the consistent application and the general skepticism: the case is
+  DO-10, and the engagement is V9 on the attack on necessary knowledge itself.
+- If they refuse the consistent application (protect other basic beliefs while
+  disqualifying theistic ones): the case is DO-7, and the move is the
+  targeted-defeater / inconsistency reply.
+- If they vacillate: the case is mixed; name the vacillation before committing.
+
+Misrouting DO-10 as DO-7 treats a general-skepticism case as a targeted-defeater case;
+the targeted-defeater reply fails because the interlocutor has already ceded the ground
+it assumes. Misrouting DO-7 as DO-10 supplies V9 when the interlocutor has not actually
+attacked necessary knowledge; V9 overshoots and the engagement loses traction.
