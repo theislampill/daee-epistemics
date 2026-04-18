@@ -9,4 +9,4 @@ Identify the commitments they retain from a framework they have abandoned or nev
 
 **The orphaned intuitions as fiṭrah deliverances:** These commitments are not residue or coincidence — they are the fiṭrah operating in the domain of moral knowledge, producing recognition that has outlasted the explicit religious framework the interlocutor has abandoned. They are signs (āyāt al-anfus — signs within the soul).
 
-**Connection:** M3 is the entry point for NS-4 (secular moral realist) from `references/case-library/noetic-profiles.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).
+**Connection:** M3 is the entry point for NS-4 (secular moral realist); see `references/case-library/profiles/ns-4-secular-moral-realist.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).

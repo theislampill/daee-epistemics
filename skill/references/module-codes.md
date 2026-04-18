@@ -13,22 +13,22 @@ and summarizes.
 ## Axis 1 — Noetic Structure (NS)
 
 Source: `references/diagnostics/noetic-reading-checklist.md` (markers table).
-Full profiles: `references/case-library/noetic-profiles.md`.
+Full profiles: `references/case-library/profiles/` (individual per-profile files; see `profiles/INDEX.md` for routing table).
 
 | Code | Name | Canonical profile |
 |------|------|-------------------|
-| NS-1 | Naturalist | `case-library/noetic-profiles.md` §NS-1 |
-| NS-2 | Agnostic Evidentialist | §NS-2 |
-| NS-3 | Deconverted | §NS-3 |
-| NS-4 | Secular Moral Realist | §NS-4 |
-| NS-5 | Habituated Atheist | §NS-5 |
-| NS-6 | Kalāmic Evidentialist | §NS-6 |
-| NS-7 | Theistic Evidentialist | §NS-7 |
-| NS-8 | Muslim-Internal Crisis (Modernist / Authority-Fatigue Compound) | §NS-8 |
-| NS-9 | Historical-Critical Skeptic | §NS-9 |
-| NS-10 | Māturīdī Evidentialist | §NS-10 |
-| NS-11 | Fideist / Reformed Basic-Belief | §NS-11 |
-| NS-12 | Blank-Slate or Dual-Nature Fiṭrah | §NS-12 |
+| NS-1 | Naturalist | `case-library/profiles/ns-1-naturalist.md` |
+| NS-2 | Agnostic Evidentialist | `case-library/profiles/ns-2-agnostic-evidentialist.md` |
+| NS-3 | Deconverted | `case-library/profiles/ns-3-deconverted.md` |
+| NS-4 | Secular Moral Realist | `case-library/profiles/ns-4-secular-moral-realist.md` |
+| NS-5 | Habituated Atheist | `case-library/profiles/ns-5-habituated-atheist.md` |
+| NS-6 | Kalāmic Evidentialist | `case-library/profiles/ns-6-kalamic-evidentialist.md` |
+| NS-7 | Theistic Evidentialist | `case-library/profiles/ns-7-theistic-evidentialist.md` |
+| NS-8 | Muslim-Internal Crisis (Modernist / Authority-Fatigue Compound) | `case-library/profiles/ns-8-muslim-internal-crisis.md` |
+| NS-9 | Historical-Critical Skeptic | `case-library/profiles/ns-9-historical-critical-skeptic.md` |
+| NS-10 | Māturīdī Evidentialist | `case-library/profiles/ns-10-maturidi-evidentialist.md` |
+| NS-11 | Fideist / Reformed Basic-Belief | `case-library/profiles/ns-11-fideist-reformed.md` |
+| NS-12 | Blank-Slate or Dual-Nature Fiṭrah | `case-library/profiles/ns-12-blank-slate-dual-fitrah.md` |
 
 Compound: `NS-X | NS-Y` — used when the subject genuinely straddles two profiles. The
 first code sets intervention order.

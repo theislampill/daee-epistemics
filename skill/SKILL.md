@@ -71,7 +71,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | File | Load When |
 |------|-----------|
 | `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13; attribute-multiplicity / tarkīb-iftiqār shubhah (§6.3) |
-| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-12 |
+| `references/case-library/profiles/[matched-ns-code].md` | Interlocutor confirmed as NS-1 through NS-12; load only the file matching the confirmed NS code — see `references/case-library/profiles/INDEX.md` for routing table |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
@@ -383,8 +383,8 @@ structured diagnostic and rebuttal framed as removal of occlusion.
 | Theistic Evidentialism | E1-E4, then E3 if convergence is needed | Partial profile coverage only; often adjacent to NS-2 or NS-4 depending what is held basic |
 | Kalāmic Evidentialism | NS-6 plus `references/diagnostics/kalamic-interlocutor.md` | Full NS profile for the noetic shape; use the specialty diagnostic for school-specific pressure. Surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
 | Māturīdī Evidentialism | NS-10 plus `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Full NS-10 profile; V9 as primary technique; load kalamic-interlocutor.md for school-specific pressure; surface markers include fiṭrah as initial opening but naẓar as required ratification |
-| Fideism | NS-11, F1-F3, practice as epistemic access | Full NS-11 profile covers fideism and Reformed basic-belief variants; see `case-library/noetic-profiles.md` §NS-11; R3 + V5 as primary intervention |
-| Reformed epistemology / basic belief | NS-11, R1-R3, qalb-fiṭrah chain | Full NS-11 profile; proper-function account contrasted with fiṭrah account; see `case-library/noetic-profiles.md` §NS-11 |
+| Fideism | NS-11, F1-F3, practice as epistemic access | Full NS-11 profile covers fideism and Reformed basic-belief variants; see `case-library/profiles/ns-11-fideist-reformed.md`; R3 + V5 as primary intervention |
+| Reformed epistemology / basic belief | NS-11, R1-R3, qalb-fiṭrah chain | Full NS-11 profile; proper-function account contrasted with fiṭrah account; see `case-library/profiles/ns-11-fideist-reformed.md` |
 | Hard Naturalism | NS-1, V2 first, then matched E-register | Full NS profile present |
 | Evidence-suspending agnosticism | NS-2, E2, V3, M2 | Full NS profile present |
 | Historical-critical skepticism | NS-9; V2 on imported framework first; V10; then matched RT module | Full NS-9 profile; surface markers include testimony suspicion, late-text or canon-construction language, manuscript-reconstruction pressure, and historical criticism presented as neutral method |

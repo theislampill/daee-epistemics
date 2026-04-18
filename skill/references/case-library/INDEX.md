@@ -14,7 +14,7 @@ the case still requires.
 
 | Confirmed match | File | Do not use when | Typical pairings |
 |-----------------|------|-----------------|-----------------|
-| NS-1 through NS-12 | `case-library/noetic-profiles.md` | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
+| NS-1 through NS-12 | `case-library/profiles/[matched-ns-code].md` — see `case-library/profiles/INDEX.md` for routing table | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
 | DO-1 through DO-6 | `case-library/do-core.md` | The objection family is not yet distinguished from grief, criterion protest, or testimony critique | M2, V8, P2 |
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-13 | `case-library/do-christian-extensions.md` | Trinity or philosopher's-God pressure has not been classified precisely | V8, P2 |
@@ -34,7 +34,7 @@ the case still requires.
 
 **NS vs. DO distinction in practice:** If you find yourself assigning an NS code based primarily on which DO case the interlocutor is pressing, you have collapsed the orthogonal axes. Return to the noetic-reading-checklist and identify what the subject holds as basic before assigning NS.
 
-**NS-10 through NS-12:** These codes cover the profile gaps that previously routed only through specialty diagnostics. NS-10 = Māturīdī Evidentialist; NS-11 = Fideist / Reformed Basic-Belief; NS-12 = Blank-Slate or Dual-Nature Fiṭrah. Full profiles in `noetic-profiles.md`. NS-10 still loads `kalamic-interlocutor.md` for deep treatment; NS-12 still loads `fitrah-perspectives.md`.
+**NS-10 through NS-12:** These codes cover the profile gaps that previously routed only through specialty diagnostics. NS-10 = Māturīdī Evidentialist; NS-11 = Fideist / Reformed Basic-Belief; NS-12 = Blank-Slate or Dual-Nature Fiṭrah. Full profiles in individual files under `case-library/profiles/`. NS-10 still loads `kalamic-interlocutor.md` for deep treatment; NS-12 still loads `fitrah-perspectives.md`.
 
 ---
 
@@ -62,7 +62,7 @@ the case still requires.
 
 **Incorrect routing:** Routing to RT-3 because the interlocutor mentioned "the Qurʾān," rather than because they are specifically pressing manuscript, qirāʾāt, or preservation questions. Mentioning a text is not the same as pressing a text-history claim. The RT family requires that text-history, transmission reliability, or canon authority is the live pressure, not merely the subject.
 
-**Adversarial near-miss:** Interlocutor is an NS-9 historical-critical skeptic importing NT text-critical categories and asking about early Qurʾānic codices. The surface looks like RT-1 (manuscript reconstruction). But the live pressure is actually V10's prior question — the imported framework treats all ancient documents through the same criterion, which does not distinguish artifact from authenticated transmission. Routing directly to RT-1 content without first applying V2 (framework-clearing on the imported method) confirms the NT criterion's applicability to the Qurʾānic case. Correct sequence: V2 → V10 → RT-1 sub-route. This is also the NS-9 pattern in `noetic-profiles.md` — check that profile for the full intervention order before loading RT-1.
+**Adversarial near-miss:** Interlocutor is an NS-9 historical-critical skeptic importing NT text-critical categories and asking about early Qurʾānic codices. The surface looks like RT-1 (manuscript reconstruction). But the live pressure is actually V10's prior question — the imported framework treats all ancient documents through the same criterion, which does not distinguish artifact from authenticated transmission. Routing directly to RT-1 content without first applying V2 (framework-clearing on the imported method) confirms the NT criterion's applicability to the Qurʾānic case. Correct sequence: V2 → V10 → RT-1 sub-route. This is also the NS-9 pattern — check `case-library/profiles/ns-9-historical-critical-skeptic.md` for the full intervention order before loading RT-1.
 
 ## Quick NS Identification
 
@@ -77,6 +77,9 @@ the case still requires.
 | NS-7 Theistic Evidentialist | God affirmed; natural-theology apparatus held as the *precondition* for warranted belief; fiṭrī recognition demoted to "mere feeling" | i'tiqadat mawrutha; often zann | V9 first (necessary-knowledge priority), then V7 symmetric on the restriction, then reposition the apologetic arguments as legitimate remedial paths |
 | NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubha covering hawa or gharad | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (taʿāruḍ resolution / M3 / institutional-vs-doctrinal separation) |
 | NS-9 Historical-Critical Skeptic | Tawātur flattened; qirāʾāt read as Western text-critical variants; NT transmission conditions imported onto the Qurʾān; method-neutrality held as basic | i'tiqadat mawrutha; often zann | V2 on the imported framework, V10 (separate artifact from authenticated transmission), then `case-library/revelation-transmission.md` for RT-1/2/3 |
+| NS-10 Māturīdī Evidentialist | Fiṭrah acknowledged as inclined toward God but demoted from ḍarūrī to preparatory; naẓar required to complete warrant rather than replace fiṭrī recognition | i'tiqadat mawrutha; sometimes zann | `diagnostics/kalamic-interlocutor.md` (Māturīdī section), then V9 (necessary-knowledge priority) |
+| NS-11 Fideist / Reformed Basic-Belief | Theist; basic belief affirmed but grounded in proper-function (Plantinga) rather than fiṭrah specifically; no inferential justification required or demanded | Minimal; i'tiqadat mawrutha at philosophical-apparatus level if Reformed epistemology is the only recognized framework | R3 (warranted basic belief), then V5 (directing attention to signs) |
+| NS-12 Blank-Slate or Dual-Nature Fiṭrah | Fiṭrah acknowledged as real faculty but disputed as to content; blank-slate (capacity for religiosity, not theism) or dual-nature (equal inclinations toward belief and unbelief) | i'tiqadat mawrutha; sometimes zann | `diagnostics/fitrah-perspectives.md`; V5 (phenomenological signs — primary); E4 (cross-cultural check — secondary) |
 
 ## Specialty Diagnostic Markers
 

@@ -37,7 +37,7 @@ When multiple axes compete, apply in this order:
 
 These rules specify when one axis suppresses or delays another:
 
-**Rule S-1:** Non-truth-seeking DO-orient suppresses all doctrinal content modules. No case-library file (noetic-profiles.md, do-core.md, etc.) may be opened while `identity-perf`, `autotelic`, or `zann-mode` governs the orientation.
+**Rule S-1:** Non-truth-seeking DO-orient suppresses all doctrinal content modules. No case-library file (any NS profile file, do-core.md, etc.) may be opened while `identity-perf`, `autotelic`, or `zann-mode` governs the orientation.
 
 **Rule S-2:** Confirmed hawā or gharaḍ suppresses shubhah engagement. Even when a genuine shubhah is present alongside hawā/gharaḍ, the shubhah is not engaged until the volitional layer is addressed. The emission order `hawa | shubha` reflects this: hawā must clear before the shubhah gets the instrument.
 

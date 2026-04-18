@@ -51,7 +51,7 @@ The following features, individually or in combination, signal philosophical usu
 
 **Telltale features:** U-1, U-2, U-4. The standard is the prior constraint (U-1); the question asked of revelation is not "is it true?" but "can it pass scientific scrutiny?" (U-2); the standard is held as obvious and unexamined (U-4).
 
-**Connected files:** NS-1 (`case-library/noetic-profiles.md`); V2; `foreign-premise-detection.md` tribunal type: empirical verifiability.
+**Connected files:** NS-1 (`case-library/profiles/ns-1-naturalist.md`); V2; `foreign-premise-detection.md` tribunal type: empirical verifiability.
 
 ### Type C — Historical-Critical Methodology as Hermeneutic Authority
 
@@ -59,7 +59,7 @@ The following features, individually or in combination, signal philosophical usu
 
 **Telltale features:** U-2, U-3, U-5. The question is whether revelation satisfies historical-critical standards (U-2); when the tradition's transmission criteria produce a different result than historical-critical methods, the historical-critical result governs (U-3); the framework's own assumptions (methodological naturalism, suspicion of testimony) are not examined (U-5).
 
-**Connected files:** NS-9 (`case-library/noetic-profiles.md`); V10; `case-library/revelation-transmission.md`.
+**Connected files:** NS-9 (`case-library/profiles/ns-9-historical-critical-skeptic.md`); V10; `case-library/revelation-transmission.md`.
 
 ### Type D — Liberal Political Philosophy as Moral Arbiter
 
@@ -67,7 +67,7 @@ The following features, individually or in combination, signal philosophical usu
 
 **Telltale features:** U-1, U-3. The liberal principles function as prior moral constraints (U-1); when revealed prescriptions conflict, the framework's verdict governs and revelation requires reinterpretation (U-3).
 
-**Connected files:** NS-8 (`case-library/noetic-profiles.md`); `diagnostics/seven-deformations.md` iʿtiqādāt mawrūtha forms.
+**Connected files:** NS-8 (`case-library/profiles/ns-8-muslim-internal-crisis.md`); `diagnostics/seven-deformations.md` iʿtiqādāt mawrūtha forms.
 
 ---
 

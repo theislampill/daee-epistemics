@@ -176,7 +176,7 @@ claiming a settled read.
 
 ## NS Code Emission
 
-The checklist terminates with an NS-code assignment. This is what feeds `case-library/noetic-profiles.md` and the Quick NS table in `case-library/INDEX.md`. Without this emission the case library cannot be routed to; the diagnostic stops at prose.
+The checklist terminates with an NS-code assignment. This is what feeds the matched profile file in `case-library/profiles/` and the Quick NS table in `case-library/INDEX.md`. Without this emission the case library cannot be routed to; the diagnostic stops at prose.
 
 Emit a single NS code when the nine dimensions converge on one profile. Emit `NS-X | NS-Y` when the subject genuinely straddles two profiles (for example, a habituated atheism shot through with an evidentialist demand: `NS-5 | NS-2`), and name the intervention-order consequence rather than forcing collapse to one code. Emit `NS-?` only when Dimensions 1, 4, and 6 are jointly under-signalled — and in that case, route through `mixed-case-handling.md` before proceeding.
 

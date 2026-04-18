@@ -342,8 +342,8 @@ genuine: address the underlying deformation; do not engage the intellectual surf
 ## The Compound Case
 
 > **Canonical source for compound-case sequencing.** All other files (SKILL.md,
-> V1-diagnostic.md, M5-deformation-triage.md, noetic-profiles.md opening-move
-> hierarchies, P1-fitrah-restoration.md) refer to this section rather than
+> V1-diagnostic.md, M5-deformation-triage.md, individual NS profile opening-move
+> hierarchies in `case-library/profiles/`, P1-fitrah-restoration.md) refer to this section rather than
 > restating the rules. If an apparent conflict arises between files, this section
 > governs.
 
