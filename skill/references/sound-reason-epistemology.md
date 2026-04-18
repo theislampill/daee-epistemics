@@ -544,3 +544,109 @@ Qurʾān, the status of revelation, or any Muslim-internal dispute about divine 
 account. The three-way differentiation (Salafī / Ashʿarī / Muʿtazilī) should be stated with
 precision: the errors at each pole depend on this distinction being absent from the response. See
 V8 routing note and `references/terminology.md` (Ḥudūth, Khalq, Ṣifa qāʾima bi-dhātihi).
+
+### 6.3 — The Attribute-Multiplicity Shubhah (Tarkīb/Iftiqār Equivocation)
+
+**The shubhah:** If God possesses attributes — knowledge, power, will, and so on — then the
+divine essence (*dhāt*) is composed of (*murakkab* min) its essence and its attributes; the
+essence is dependent (*muftaqir*) on those attributes as its "parts" (*ajzāʾ*); and the attributes
+are "other than" (*ghayr*) the essence, making God dependent on something other than Himself.
+This dependency allegedly negates divine perfection and self-sufficiency, and therefore requires
+the denial of real divine attributes (the Muʿtazilī and philosopher's move toward *tāʿṭīl*).
+
+The shubhah is structurally a three-stage failure: first an equivocation, then a category error,
+then an inversion of the correct account of perfection. The response addresses all three in order.
+
+**Step 1 — Equivocation exposure (M9 Function 1):**
+
+The argument deploys *tarkīb* (composition), *ajzāʾ* (parts), *iftiqār* (dependence/need), and
+*ghayr* (other than) as technical philosophical terms with specialized meanings that diverge from
+their shared conventional Arabic senses. The dependency conclusion only follows under the
+*conventional* meanings; the *technical* meanings, correctly stated, reduce to a tautology.
+
+The conventional meanings: *tarkīb* means that which has been assembled from previously
+separate pieces, or that which can be disassembled; *ajzāʾ* means ontologically separable
+components; *iftiqār* means genuine causal need of one thing for another distinct thing;
+*ghayr* means a distinct, separately existing other. Under these meanings, the dependency
+inference appears to have force: if the attributes are separable parts on which the essence
+causally depends, and those parts are ontologically distinct from the essence, then the divine
+essence depends on something external — a genuine deficiency.
+
+The technical meanings deployed by the philosophers: *tarkīb* covers *any* entity describable
+by more than one predicate; *ajzāʾ* covers any logically distinguishable aspect of an entity,
+including aspects that cannot exist separately; *ghayr* covers any conceptually distinguishable
+feature, even one inseparable from the entity in external reality; *iftiqār* covers the
+necessary co-occurrence of essence and attribute even when no causal dependence is involved.
+
+Under the technical meanings, the argument reads: "An entity qualified by a necessary
+concomitant attribute can only exist along with that attribute." This is a tautology. It is true,
+non-problematic, and fully affirmed. The philosophers have substituted the technical meanings
+for the conventional ones in the setup of the argument while the conclusion draws on the
+conventional meanings. **The inference only holds if the conventional and technical senses are
+identical across all occurrences — they are not. The equivocation is the argument's load-bearing
+move, and its exposure dissolves the inference before the dependency question arises.**
+
+See `references/tactics/M9-predication-mode.md` Function 1 for the general equivocation
+procedure and the tarkīb/iftiqār case as a worked example.
+
+**Step 2 — Category error dissolution (M9 Function 2):**
+
+Even setting aside the equivocation, the dependency inference presupposes that divine essence and
+divine attributes are *ontologically separable* — that it is at least possible, in external
+reality (*al-khārij*), for the essence to exist stripped of its attributes. This presupposition
+is false, and the philosophers themselves cannot escape it.
+
+The distinction between essence and attributes is *purely mental* (*iʿtibārī* — a conceptual
+distinction serving rational analysis) and does not reflect ontological separability in external
+reality. In *al-khārij*, what exists is the essence as fully qualified by its concomitant
+attributes — inseparably and necessarily — not an essence alongside attributes as though they
+were two distinct things capable of independent existence. The mind may separate them for
+analysis, as it may separate "roundness" from "this ball" for mathematical analysis; this does
+not entail that the ball could exist without shape, or the shape without a shaped thing.
+
+The opponents themselves concede that no substance in external reality exists without attributes:
+they know of no created thing — whether called a substance, body, or anything else — that
+subsists by itself entirely stripped of all attributes. The existence of an attribute-less
+substance is not merely unknown; it is conceded to be impossible in external reality by the same
+philosophers who press the shubhah.
+
+If the separability of essence and attributes is impossible in external reality — and the
+opponents concede it is impossible even for created things — then the dependency inference
+has no purchase: it requires a separation that cannot obtain. The term "essence" (*dhāt*) in
+Arabic always appears in construct form, qualified by what it possesses. An "essence" stripped
+of all attributes is a mental fiction, not an external reality. The question "does the essence
+depend on its attributes in external reality?" dissolves: the scenario of an essence without
+attributes in external reality is not a well-formed possibility. See M9 Function 2 for the
+general category-error procedure.
+
+**Step 3 — Positive restoration: talāzum and the mark of perfection (M9 Function 3 → V8/§6):**
+
+Once the equivocation is named and the separability presupposition dissolved, the correct
+description is *talāzum* (تلازم — mutual necessitation, ontological co-entailment) between
+the divine essence and its essential attributes. This is not a concession to the shubhah; it
+is the affirmatively correct account.
+
+The ṣifāt (attributes) are *qāʾima bi-dhātihi* (قائمة بذاته — subsisting in the essence itself)
+without ontological separability, without constituting parts in the conventional sense, and
+without their real distinction from one another and from the essence — as a matter of mental
+analysis — entailing any division in divine unity. The distinction is *iʿtibārī*; the unity is
+real and extramental.
+
+The claim that talāzum constitutes a deficiency inverts the correct account: if separation were
+possible — if it were conceivable that the divine essence might exist without the attributes of
+perfection — then perfection would be contingent rather than necessary, and God would depend on
+something external to Himself in order to acquire those attributes. *That* is the actual
+deficiency, and it is precisely what the shubhah's conclusion would introduce. The mutual
+necessitation of essence and attributes of perfection, far from being a flaw, is the mark of
+the highest degree of perfection: what is intrinsically and necessarily perfect is more perfect
+than what merely possibly possesses perfections that could conceivably be absent.
+
+The bilā kayf (بلا كيف — without asking how) limit applies to the mode of this subsistence: the
+attributes subsist in the divine essence in a manner that befits His necessary and perfect
+existence, unlike the mode in which attributes adhere to created substances. Both errors must
+be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and *tashbīh*
+(importing creaturely-mode attribute-adherence). See V8 and §6 for the full treatment.
+
+**Cross-references:** `references/tactics/M9-predication-mode.md` (Functions 1, 2, and 3);
+`references/techniques/V8-bila-kayf-anchor.md`; `references/terminology.md`
+(Ṣifa qāʾima bi-dhātihi, Tāʿṭīl, Tashbīh, Talāzum — add if not present).

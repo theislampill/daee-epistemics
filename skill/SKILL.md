@@ -51,7 +51,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 
 | File | Load When |
 |------|-----------|
-| `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13 |
+| `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13; attribute-multiplicity / tarkīb-iftiqār shubhah (§6.3) |
 | `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-6 |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
@@ -84,6 +84,7 @@ file.
 | `references/tactics/M6-excluded-middle.md` | Evasion; refusal to commit; indefiniteness |
 | `references/tactics/M7-definition-anchor.md` | Terminological dispute avoiding substantive engagement |
 | `references/tactics/M8-reductio.md` | Following position to absurd or contradictory consequences |
+| `references/tactics/M9-predication-mode.md` | Term imported from one domain applied to a subject in a categorically different domain; argument validity depends on a term carrying identical sense across shifted occurrences; empirical inference applied to a subject that is ghayb and accessible only through āthar (transmitted revelation); question of whether X applies to Y where the predication structure is itself the problem — deploy even when neither party has raised a terminological objection, as equivocation and domain-boundary failures are frequently invisible; operates upstream of content-level response selection |
 | `references/tactics/symmetric-taqlid-check.md` | Before deploying V7 outward; when practitioner's own inquiry is questioned |
 | `references/tactics/inductive-fitri-method.md` | Grounding E4; distinguishing fiṭrī foundation from cultural superstructure |
 | `references/tactics/husn-al-nazar-arguments.md` | Inferential argument content for the secondary `naẓar ʿaqlī` pathway in III.B after framework-clearing |
@@ -103,6 +104,7 @@ file.
 | `references/techniques/V8-bila-kayf-anchor.md` | Transcendence, attribute-coherence, Trinity-adjacent God-language, or philosopher's-God objections |
 | `references/techniques/V9-necessary-knowledge-priority.md` | Argument concludes against universally-held fiṭrī intuition |
 | `references/techniques/V10-transmission-content-vetting.md` | Revelation, scripture, transmission, canon, manuscript, preservation, or text-history-entangled final-prophethood cases need provenance/content/authority separation |
+| `references/techniques/V12-tamanuc-exhaustion.md` | Divine plurality, polytheism, multiple independent lords, or multiple independent deities — any interlocutor; deploy before Trinitarian-specific DO cases; DO-11/DO-13 are the Christian overlay on top, not alternatives |
 | `references/techniques/heuristics.md` | Always-active operative principles; internalized background |
 
 ### Procedures Subfolder — `references/procedures/`
@@ -367,6 +369,14 @@ files rather than a single unified profile form.
 - Route to V8 and the matched Christian-extension case when the discourse turns on perfect-being-to-
   Trinity reasoning, Trinity model-identification pressure, incarnation coherence, or philosopher's-
   God objections.
+- Route to V12 when any claim of divine plurality, polytheism, or multiple independent lords
+  appears — regardless of whether the interlocutor is Trinitarian. V12 is the base rational
+  procedure; DO-11 and DO-13 are the Trinitarian overlay, deployed on top of V12, not instead of it.
+- Route to `references/sound-reason-epistemology.md` §6.3 and M9 when the shubhah takes the form
+  that possessing attributes entails composition (*tarkīb*), parts (*ajzāʾ*), dependency
+  (*iftiqār*), or otherness (*ghayr*) — the attribute-multiplicity / philosophical-simplicity
+  pressure. The three-step response is: equivocation exposure (M9 Function 1), separability
+  dissolution (M9 Function 2), talāzum restoration (M9 Function 3 → V8/§6).
 - Route to V9 when necessary knowledge itself is being attacked or discursive reasoning is being
   treated as superior to immediate certainty.
 

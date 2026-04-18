@@ -139,7 +139,7 @@ The framework's threat model includes more than explicit disbelief. It also incl
 - inherited background assumptions posing as neutrality
 - *taqlīd* (unexamined imitation) and socially inherited defaults
 - malformed evidential standards that treat one narrow criterion as the whole of rationality
-- category mistakes, equivocation, and false contrasts
+- category mistakes, equivocation, univocal predication failures, domain-boundary violations, and false contrasts
 - grief, injury, or moral protest functioning as epistemic fog
 - identity-protective habits of discourse
 - volitional resistance and vested interest
@@ -157,7 +157,7 @@ The repository operationalizes the thesis through a layered structure:
 | [`SKILL.md`](skill/SKILL.md) | Governing protocol and routing logic. Defines activation conditions, epistemological standpoint, diagnostic protocol, and response format. |
 | [`references/diagnostics/`](skill/references/diagnostics/) | Classifies the epistemic condition before argument: noetic reading, deformations, concealment modes, discourse orientation, and related diagnostic lenses. |
 | [`references/tactics/`](skill/references/tactics/) | Context-triggered maneuvers for live objection patterns and argumentative behaviors. |
-| [`references/techniques/`](skill/references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. |
+| [`references/techniques/`](skill/references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. Includes both diagnostic-restorative methods and rational argument procedures (e.g., logical exhaustion of competing ontological independence claims). |
 | [`references/procedures/`](skill/references/procedures/) | Ordered multi-stage workflows for recurring engagement classes, including cases that require sustained restoration rather than a single reply. |
 | [`references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
 | [`references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |

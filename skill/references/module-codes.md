@@ -144,6 +144,7 @@ Source: `references/techniques/INDEX.md`.
 | V9 | Necessary-knowledge priority |
 | V10 | Transmission and content vetting |
 | V11 | Taqlīd recognition and transition to taḥqīq |
+| V12 | Burhān al-Tamānuʿ — logical exhaustion of divine plurality |
 
 ## Axis 8 — Tactics (M / E / F / R)
 
@@ -160,6 +161,7 @@ Source: `references/tactics/INDEX.md`.
 | M6 | Excluded middle |
 | M7 | Definition anchor |
 | M8 | Reductio |
+| M9 | Predication-mode analysis (equivocation exposure, category-error dissolution, ghayb-boundary jurisdiction failure, analogical predication) |
 | E1 | Broadening evidence |
 | E2 | Inferential criterion |
 | E3 | Cumulative case |

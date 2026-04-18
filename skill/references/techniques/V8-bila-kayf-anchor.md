@@ -24,6 +24,20 @@ semantic core (the property of a subject such that things are as they are to tha
 without the creaturely mode (dependence on sensation, memory, inference, temporal sequence). The
 affirmation is not empty.
 
+For the generalized predication-mode framework across non-divine domains — equivocation exposure,
+category-error dissolution, and ghayb-boundary jurisdiction failure — load M9
+(`references/tactics/M9-predication-mode.md`). V8 governs the divine-attribute subcase; M9
+routes that subcase back here.
+
+For the attribute-multiplicity shubhah specifically — the *tarkīb/iftiqār* argument that
+possessing attributes entails composition and dependency — the full three-step response
+(equivocation exposure, separability dissolution, talāzum restoration) is in
+`references/sound-reason-epistemology.md` §6.3.
+
+For divine plurality and polytheism pressure — whether philosophical, popular, or Trinitarian
+— load V12 (`references/techniques/V12-tamanuc-exhaustion.md`) as the base logical exhaustion
+procedure before deploying DO-11/DO-13 as the Christian-specific overlay.
+
 Against divine-perfection-to-Trinity arguments: load DO-11 (`references/case-library/do-christian-extensions.md`). V8's bilā kayf discipline governs attribute language throughout.
 
 Against incarnation-coherence pressure: keep the case on hidden creaturely-mode assumptions,
