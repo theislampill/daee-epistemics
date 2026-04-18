@@ -5,10 +5,7 @@ type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
 the load-bearing anchor, critical vulnerabilities, deformation type, and
 intervention point.
 
-This file provides full profiles for NS-1 through NS-9. The Māturīdī evidentialist
-position (a distinct deviation from the sound position, not a legitimate middle ground),
-blank-slate fiṭrah positions, and dual-nature fiṭrah positions still route through
-specialty diagnostics rather than through this profile format.
+This file provides full profiles for NS-1 through NS-12. NS-10 through NS-12 address the profile gaps that previously routed only through specialty diagnostics. The specialty diagnostic files (`kalamic-interlocutor.md`, `fitrah-perspectives.md`) remain the deep-treatment resources; these profiles provide the unified profile-format entry point needed for case-state routing.
 
 See `case-library/INDEX.md` for the full routing table.
 
@@ -446,3 +443,58 @@ matched module. The order of operations:
 **Register note:** The interlocutor often presents as truth-seeking (`truth-seek` DO-orient) and
 the scholarship is real. The diagnostic is not suspicion of the interlocutor but of the imported
 framework. V2 is applied to the method, not to the person.
+
+---
+
+### NS-10 — The Māturīdī Evidentialist
+
+**Implicit doxastic rule:** "Innate fiṭrī recognition constitutes some basis for theistic inclination, but full epistemic warrant — knowledge (ʿilm) rather than mere ẓann — requires naẓar (rational investigation). The fiṭrah is not self-sufficient for warrant; it is a pull toward investigation that must then be completed by discursive argument."
+
+**Distinguishing from NS-6 (Kalāmic Evidentialist):** NS-6 is typically Ashʿarī in origin and requires naẓar as an obligatory precondition before theistic belief is even licit (wujūb al-naẓar in its hard form). NS-10 is Māturīdī: the fiṭrah is already acknowledged as genuinely inclined toward God, and naẓar is presented not as a replacement for fiṭrī recognition but as its confirmatory complement. This appears as a concession to the prophetic tradition — the fiṭrah is affirmed — while still demoting its epistemic standing from ḍarūrī (necessary, self-sufficient) to preparatory. The demotion is less obvious and more resistant to correction precisely because it sounds like a middle position.
+
+**Load-bearing anchor:** The claim that ḍarūrī knowledge requires naẓar for completion in the domain of theistic belief — that fiṭrī recognition without discursive supplement is ẓann rather than ʿilm.
+
+**Critical vulnerability:** (a) The Māturīdī concession that the fiṭrah is inclined toward God implicitly grants everything the tradition requires: if the fiṭrah reliably points toward the Creator, then what it points to is not ẓann. The evidentialist restriction is doing philosophical work that the tradition's own fiṭrah-doctrine does not support. (b) The restriction collapses the ḍarūrī/iktisābī distinction at the site where the tradition most carefully maintains it: knowledge of God's existence is ḍarūrī precisely because it is grounded in the fiṭrah, not in argument. (c) The concessive position, if accepted, would require the prophets to have opened by demanding naẓar — which they did not. See `references/procedures/P4-maieutic.md`.
+
+**Deformation types:** Iʿtiqādāt mawrūtha (the concessive restriction is absorbed from a school tradition rather than derived from the prophetic sources); sometimes ẓann where the distinction between ḍarūrī and ẓann-via-fiṭrah has been assumed rather than examined.
+
+**Intervention point:** Load `references/diagnostics/kalamic-interlocutor.md` for the full Māturīdī-specific treatment. The key move: affirm the fiṭrah's orientation toward God (the interlocutor already concedes this), then press on whether the conceded orientation constitutes epistemic standing or requires supplementary naẓar before standing is achieved. V9 (necessary-knowledge priority) is the primary technique: the fiṭrah's deliverance is ḍarūrī, not iktisābī; confirming this is not adding to what was conceded but drawing out its implication. P3 (reason-revelation tension) governs if the framing has been set up as reason-versus-fiṭrah.
+
+**Register note:** This is often an in-house theological interlocutor — a student of kalām or a madrasa-trained person who is genuinely trying to hold both fiṭrah and naẓar. The engagement is internal to the tradition, not apologetic. The goal is restoring the correct epistemic order, not winning an inter-school debate.
+
+---
+
+### NS-11 — The Fideist / Reformed Basic-Belief Holder
+
+**Implicit doxastic rule:** "Belief in God is properly basic — it does not require inferential justification because it is grounded in experience and the deliverances of the sensus divinitatis (or a functionally analogous faculty). Any demand for inferential proof imposes the wrong epistemic standard. The belief is warranted because it is formed through properly functioning faculties aimed at truth."
+
+**Distinguishing from NS-7 (Theistic Evidentialist):** NS-7 already believes but insists the belief must be inferentially grounded. NS-11 already believes *and* insists it need not be. They appear similar — both are theists — but require opposite interventions. NS-7 needs to be loosened from the evidentialist restriction; NS-11 needs to be questioned about whether their basic-belief warrant is actually ḍarūrī (grounded in the fiṭrah) or merely non-inferential (grounded in Reformed epistemology's proper-function framework). The distinction matters because the two accounts differ substantially in what is being held as basic and why.
+
+**Load-bearing anchor:** The proper-function account of warrant (Plantinga) or a functionally equivalent account. The belief is basic not because it is fiṭrī in the Islamic sense (a primordial covenant-based orientation) but because it is formed by properly functioning faculties in an appropriate environment. This is a weaker and more philosophically contingent anchor than the fiṭrah.
+
+**Critical vulnerability:** (a) If "properly functioning faculties" is doing the epistemic work, then any report of properly functioning faculties that delivers God is sufficient — including fiṭrī recognition. The tradition's account of the fiṭrah subsumes the proper-function account rather than being subsumed by it. (b) The proper-function account gives no basis for distinguishing between the deliverances of the prophetic tradition (waḥy) and the deliverances of any other claimed revelation source; the tradition's fiṭrah-plus-tawātur account does make this distinction. (c) The fideist who concedes that all properly functioning theistic belief is warranted has already granted the fiṭrah's epistemic standing — the only question is whether the specific content being delivered is correctly characterized.
+
+**Deformation types:** Typically minimal — the interlocutor is truth-seeking and the basic-belief stance is genuinely held. The deformation, if any, is iʿtiqādāt mawrūtha at the level of the philosophical apparatus used to articulate the basic-belief stance (Reformed epistemology as the only framework within which basic belief makes sense).
+
+**Intervention point:** Do not attack the basic-belief thesis — it is broadly correct. Instead, use R3 (warranted basic belief): place the fiṭrī account alongside the proper-function account as a richer and more specific articulation of the same epistemic phenomenon. The goal is not to defeat the Reformed account but to show that the tradition's account is more finely calibrated — it specifies what faculty is operating (the fiṭrah), on what basis (the primordial covenant), with what epistemic status (ḍarūrī), and what is required for its deliverances to be properly actualized (āyāt, sound conditions). This is more, not less, than the proper-function account offers.
+
+**Opening-move hierarchy:**
+1. R3 (warranted basic belief): affirm the basic-belief structure; introduce the fiṭrah as the named faculty.
+2. V5 (directing attention to signs): the āyāt are what actualize the fiṭrah's delivery; this is the Islamic specification of what "appropriate epistemic environment" means.
+3. Only then, if the interlocutor presses on the distinction between Reformed and fiṭrī accounts, use the distinguishing argument above.
+
+---
+
+### NS-12 — The Blank-Slate or Dual-Nature Fiṭrah Holder
+
+**Implicit doxastic rule:** The fiṭrah either has no determinate religious content (blank-slate: it is a general capacity that gets shaped by environment) or it contains equally weighted orientations toward belief and unbelief (dual-nature: the fiṭrah pulls in two directions simultaneously). In either case, the fiṭrah cannot ground theistic warrant specifically — environmental or rational input is required to tip the balance.
+
+**Distinguishing from NS-1 and NS-2:** NS-1 and NS-2 are externalist — they operate from a secular framework that does not acknowledge the fiṭrah at all. NS-12 acknowledges the fiṭrah as a genuine human faculty but disputes its content. This distinction matters: attacking scientism (V2) is the wrong instrument against someone who already accepts the fiṭrah's reality but contests its determinate deliverances.
+
+**Load-bearing anchor:** The blank-slate claim: "The fiṭrah is a capacity for religiosity, not a capacity for theism specifically — different environments actualize it differently." Or the dual-nature claim: "The fiṭrah pulls toward both theism and atheism; the human being is equally inclined in both directions, and the outcome depends on which pull is cultivated."
+
+**Critical vulnerability:** (a) The blank-slate reading collapses the ḍarūrī/iktisābī distinction: if the fiṭrah has no determinate content, knowledge of God's existence becomes iktisābī (acquired by environmental input), which conflicts with the tradition's careful account of why it is ḍarūrī. (b) The tawātur fiṭrī argument — the pan-human mass attestation of theistic recognition — is evidence that the deliverances are not environmentally variable in the way blank-slate posits; environmental variation at the surface does not refute the claim that the deep orientation is determinate. (c) The dual-nature reading typically imports a psychology of moral neutrality (the nafs ammāra / lawwāma / muṭmaʾinna series is being collapsed into a simple equipoise) that the tradition explicitly distinguishes: the nafs is described as pulling toward both higher and lower, but the fiṭrah as a distinct faculty is described as having a specific orientation toward the Creator, not a neutral one. (d) Neither blank-slate nor dual-nature can account for the specific phenomenology of involuntary theistic recognition — beauty, moral horror, gratitude without recipient — that persists across environments and appears with an object-directedness (toward a personal Creator) that blank-slate cannot explain.
+
+**Deformation types:** Typically iʿtiqādāt mawrūtha (a specific reading of the fiṭrah absorbed from a psychological or theological tradition, often without examining the tradition's own full account). Sometimes ẓann — the dual-nature reading is often held without careful examination of the distinction between the nafs's dual tendency and the fiṭrah's specific orientation.
+
+**Intervention point:** Load `references/diagnostics/fitrah-perspectives.md` for the full treatment of blank-slate and dual-nature positions. The primary technique is V5 (directing attention to signs): the phenomenological argument — directing the interlocutor toward what their own fiṭrī recognition actually delivers when functioning well — is more effective than the propositional argument. The propositional argument (the tawātur fiṭrī thesis) is the secondary move after the phenomenological engagement has opened the question. E4 (cross-cultural check) is useful: if the fiṭrah's deliverances were environmentally determined in the way blank-slate posits, one would not expect the specific cross-cultural convergence on a personal Creator over against impersonal grounds of being.

@@ -14,11 +14,13 @@ the case still requires.
 
 | Confirmed match | File | Do not use when | Typical pairings |
 |-----------------|------|-----------------|-----------------|
-| NS-1 through NS-9 | `case-library/noetic-profiles.md` | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
+| NS-1 through NS-12 | `case-library/noetic-profiles.md` | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
 | DO-1 through DO-6 | `case-library/do-core.md` | The objection family is not yet distinguished from grief, criterion protest, or testimony critique | M2, V8, P2 |
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-13 | `case-library/do-christian-extensions.md` | Trinity or philosopher's-God pressure has not been classified precisely | V8, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
+| DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
+| Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
 
 ### NS Family — Routing Discipline
 
@@ -31,6 +33,8 @@ the case still requires.
 **Incorrect routing:** Assigning NS-1 because the interlocutor cited a naturalist argument. The argument type does not determine the NS code. A kalāmic evidentialist (NS-6) can cite an evolutionary debunking argument; a habituated atheist (NS-5) can press a hiddenness argument. Match the NS code to the noetic structure, not to the objection content.
 
 **NS vs. DO distinction in practice:** If you find yourself assigning an NS code based primarily on which DO case the interlocutor is pressing, you have collapsed the orthogonal axes. Return to the noetic-reading-checklist and identify what the subject holds as basic before assigning NS.
+
+**NS-10 through NS-12:** These codes cover the profile gaps that previously routed only through specialty diagnostics. NS-10 = Māturīdī Evidentialist; NS-11 = Fideist / Reformed Basic-Belief; NS-12 = Blank-Slate or Dual-Nature Fiṭrah. Full profiles in `noetic-profiles.md`. NS-10 still loads `kalamic-interlocutor.md` for deep treatment; NS-12 still loads `fitrah-perspectives.md`.
 
 ---
 

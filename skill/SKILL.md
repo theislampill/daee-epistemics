@@ -63,11 +63,17 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | File | Load When |
 |------|-----------|
 | `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13; attribute-multiplicity / tarkīb-iftiqār shubhah (§6.3) |
-| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-9 |
+| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-12 |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
 | `references/case-library/revelation-transmission.md` | RT-1 through RT-4 confirmed |
+| `references/case-library/do-attribute-precision.md` | DO-6, DO-11, DO-12, or DO-13 confirmed AND the live pressure involves predication-type, analogy validity, equivocation, composition, or person-multiplicity |
+| `references/case-library/philosophical-usurpation.md` | A philosophical framework is confirmed functioning as the upstream authority that revelation must satisfy — detected via foreign-premise-detection.md or V1 Phase 2 |
+| `references/prophecy-wahy-supremacy.md` | Revelation is being required to clear a philosophical bar before being credited; DO-13 confirmed; Aristotelian/neo-Platonic theism installed as default standard |
+| `references/metaphysical-architecture.md` | Auditing whether the response is consistent with the ontological and epistemic order being restored — the architecture behind the workflow |
+| `references/diagnostics/diagnostic-ir.md` | Producing a full auditable case-state for a substantive engagement; prevents cosmetic workflow compliance |
+| `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 and the case involves criterion-importing, tribunal-installation, epistemic-ordering disruption, transmission-system conflation, or sharʿī/lexical collapse |
 
 Use the case-library index's Quick NS, DO, RT, and specialty-marker tables before loading a content
 file.
