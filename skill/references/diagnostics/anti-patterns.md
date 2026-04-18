@@ -17,6 +17,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Mark the read provisional. Answer the specific claim made. State that NS-1 is a candidate but has not been confirmed; note what additional signals would confirm it.
 *Self-audit question:* Have I confirmed the case family by multiple convergent signals, or did I choose this module because it is the first plausible match?
 *Why it damages the skill:* Forced fit addresses the wrong case. The person receives a response optimized for a profile that is not theirs — correct in form, wrong in substance. The practitioner has the subjective experience of having engaged; the interlocutor has the experience of not being heard. The routing architecture exists precisely to prevent this: bypassing it with a plausible-first match converts the skill into a pattern-matching shortcut.
+*Prevented by:* `V1-diagnostic.md` (full diagnostic pass before module selection); `noetic-reading-checklist.md` (multiple-convergent-signal requirement before NS code is assigned); `mixed-case-handling.md` (provisional status requirement when signals are thin).
 
 ---
 
@@ -26,6 +27,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Re-run V1 and update the case-state only when a move has cleared an upstream barrier, the interlocutor has shifted register, or a new objection family has appeared. Otherwise hold the current read and proceed with the current module.
 *Self-audit question:* What specifically changed that justifies a new diagnostic pass — has intervention order actually shifted?
 *Why it damages the skill:* Each rediagnosis pass that changes nothing operationally replaces action with procedure. The engagement becomes a diagnostic exercise rather than a restorative one. The interlocutor experiences a practitioner who is elaborately analyzing rather than genuinely present. This is a form of gharaḍ in the practitioner — the diagnostic apparatus is being operated for its own sake rather than in service of restoration.
+*Prevented by:* `mixed-case-handling.md` §Recursive Reassessment (reassess only when a move has cleared an upstream barrier or a new differentiator has appeared); `heuristics.md` rule 28 (smallest matched subset); the case-state schema's `Reassessment` field (should say "not warranted" unless conditions met).
 
 ---
 
@@ -35,6 +37,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Deploy only V2. Wait for a differentiating signal before escalating. Escalate to E3 or V6 only when no single blocker still dominates and multiple routes add genuinely non-redundant warrant.
 *Self-audit question:* Is the upstream blocker genuinely cleared, or am I loading additional modules into an unreconstituted filter?
 *Why it damages the skill:* Every module loaded into an unreconstituted filter is absorbed through that filter and found wanting — which reinforces the filter's authority. The interlocutor's implicit conclusion after each failed argument is that the evidence confirms their criterion. Cumulative inflation therefore makes subsequent V2 application harder: the criterion has been reinforced by the failed attempts, not loosened.
+*Prevented by:* `mixed-case-handling.md` §Cumulative-Case Escalation (escalate only when no single upstream blocker dominates); `anti-patterns.md` (self-referentially: Cumulative Inflation IS this anti-pattern — the check against it is the upstream-blocker-still-dominant question); SKILL.md Named Routing Constraint 3 (no content before register is cleared).
 
 ---
 
@@ -44,6 +47,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Mark the claim `[inference]` or `[synthesis]` and name the files being combined or the inferential step being made. Use `[anchored]` only for claims directly stated in the loaded file.
 *Self-audit question:* Is this claim directly stated in the loaded file, or am I extending it — and have I marked the extension?
 *Why it damages the skill:* Inference laundering corrupts the audit trail. The reader cannot distinguish what the skill actually says from what the model is adding on the skill's behalf. Over time, inference laundering expands the skill's apparent positions beyond what its files actually support, and the expanded positions cannot be audited or corrected because they are not clearly attributed. The inference-boundary discipline exists to prevent exactly this.
+*Prevented by:* `inference-boundary.md` §Mandatory Pre-Release Check (every claim extending beyond loaded files must be marked); `case-state-schema.md` §Source Basis block (`[Source Basis]` forces explicit annotation of anchored vs. synthesized vs. inferred); `heuristics.md` rule 30 (mark where inference begins).
 
 ---
 
@@ -53,6 +57,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Introduce a technical term only when it changes what move is required or when the concept it names is operationally distinct from what plain English would convey.
 *Self-audit question:* Does this term change the routing or the doctrinal precision, or is it adding prestige to a point that plain language would state more clearly?
 *Why it damages the skill:* Decorative terminology signals erudition while reducing precision. The interlocutor encounters a response that is harder to engage because the governing point is obscured under technical vocabulary. In the practitioner, it is a form of gharaḍ — using the skill's register for identity-presentation rather than for the interlocutor's benefit.
+*Prevented by:* `heuristics.md` rule 15 (prefer simplicity; the sharpest move over the most elaborate); `seven-deformations.md` §Gharaḍ (vested interest applies to practitioners too — the vested interest here is scholarly self-presentation); `case-state-schema.md` §Compression Rule (surface only fields that improve governance, not transparency theater).
 
 ---
 
@@ -62,6 +67,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Identify the one or two modules that address the current live differentiator. Defer everything else until the first move has been made and a new differentiator appears.
 *Self-audit question:* Is each module in this response changing the next live differentiator, or am I loading it because it might be relevant?
 *Why it damages the skill:* Module proliferation masks the actual diagnostic precision the skill is designed to produce. A response advertising nine modules suggests the practitioner does not know which one is actually needed. More practically: every additional module is a new surface for the interlocutor to deflect to, multiplying the number of available exits from the main engagement. The smallest matched subset is also the hardest to deflect.
+*Prevented by:* `heuristics.md` rule 28 (smallest matched subset); `mixed-case-handling.md` §Stopping Conditions (stop when next module would only restate the same point); `case-state-schema.md` §Matched modules field (list only the matched subset — do not advertise unused modules); SKILL.md Named Routing Constraint 5 (no argument-stacking after landed move).
 
 ---
 
@@ -71,6 +77,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Mark the read provisional. State what signals would confirm or disconfirm the candidate mode. Respond to the established claim-type only; do not name a concealment mode without multiple convergent signals.
 *Self-audit question:* Do I have multiple convergent signals supporting this characterization, or am I extrapolating from a single data point?
 *Why it damages the skill:* Naming a concealment mode without evidential basis is itself a form of the juḥūd diagnosis applied without warrant — the practitioner has attributed culpable resistance where it is not confirmed. This harms the engagement directly (the interlocutor experiences a misjudgment) and corrupts the practitioner's subsequent reads (subsequent moves are now calibrated to a mode that was never confirmed).
+*Prevented by:* `modes-of-concealment.md` (iʿrāḍ vs. juḥūd boundary and juḥūd vs. inkār boundary require multiple convergent signals); `mixed-case-handling.md` §Insufficient-Basis Conditions (do not claim a settled read of concealment mode when evidence is thin); `heuristics.md` rule 5 (distinguish register before naming a mode); SKILL.md Named Routing Constraint 4 (no confident family-lock from thin basis).
 
 ---
 
@@ -80,6 +87,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Run V1 first. Identify the claim-type, the concealment mode, the deformation, and the discourse orientation before selecting any content module. Diagnose before rebutting.
 *Self-audit question:* Have I run V1 and confirmed the noetic structure, deformation, and discourse orientation before loading content?
 *Why it damages the skill:* Content deployed without diagnostic routing is calibrated to the wrong register by default. The skill's discriminating power — its ability to send different responses to different cases — is entirely dependent on the diagnostic gate. Bypassing V1 collapses all cases into the one the practitioner expects, converting a precision instrument into a generic apologetics dispatcher.
+*Prevented by:* `V1-diagnostic.md` (the diagnostic gate itself); SKILL.md Named Routing Constraint 1 (no content module before V1 has been run); `heuristics.md` rule 2 (start with V1); `framework-pipeline.md` (forbidden shortcut path: intake → direct doctrinal rebuttal).
 
 ## Quick Self-Audit
 

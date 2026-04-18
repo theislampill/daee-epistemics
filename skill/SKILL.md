@@ -129,6 +129,18 @@ file.
 - In testimony, text, canon, preservation, and believer-destabilization cases, V10 and the matched
   RT case come before broader doctrinal rebuttal.
 
+### Named Routing Constraints (hard prohibitions)
+
+These are not soft norms. Violation of any of these is a routing error, not a style choice.
+
+1. **No diagnosis-bypass:** Do not route to any content module (DO, RT, NS case file, or tactic) before V1 has been run and a case-state has been produced.
+2. **No ambient substrate loading:** Do not load `sound-reason-epistemology.md` because philosophical vocabulary appears in the input. Load it only when a named section's specific load condition (§1, §2–3, §4, §4.3, §5, §6, §6.2, §6.3) is confirmed live by the diagnostic pass.
+3. **No content-before-register:** Do not deploy doctrinal or case-library content before confirming the concealment × orientation matrix cell permits deployment. Where the matrix cell is any non-`truth-seek` orientation or any active concealment mode, content deployment requires a named register release condition.
+4. **No confident family-lock from thin basis:** Do not assign a high-confidence NS code, deformation code, or concealment mode from a single sentence or absent a pattern of multiple convergent signals. Route through `mixed-case-handling.md` and P7 Stop 4.
+5. **No argument-stacking after a landed move:** When recognition has surfaced or a key move has landed, stop. P7 Stop 2 governs; additional content at that moment converts a restorative contact into a verbal concession press.
+
+See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
+
 ---
 
 ## I. The Epistemological Standpoint

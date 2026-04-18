@@ -11,6 +11,8 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 
 > The question is never "can you believe in God despite what reason says?" It is: "are you using a conception of reason adequate to the full range of what human beings can know?"
 
+**Deeper rationale:** The contaminated conception of reason is not just a bad epistemological theory. It is the fiṭrah's guiding function to the intellect (ʿaql) being occluded. Sound reason (ʿaql ṣarīḥ) depends on the fiṭrah's health: when the fiṭrah is sound, it provides the intellect with its orientation toward truth. When a historically contingent philosophical framework has been internalized as reason itself, the fiṭrah's guidance is blocked at the level of the intellect — the filter corrupts the faculty's directedness before any content is evaluated. This means V2 is a form of fiṭrah-restoration at the level of ʿaql. It is not independent of P1 (fiṭrah restoration); it is P1 operating at the specific layer where the blockage is conceptual-intellectual rather than affective or habitual.
+
 **Connection:** V2 clears the filter; V5 (directing attention to signs) is what follows once the filter is loosened.
 
 **Exit criteria:** Hand off from V2 only when at least one of the following has happened:

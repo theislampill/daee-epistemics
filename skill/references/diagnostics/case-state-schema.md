@@ -65,6 +65,31 @@ Use this block when diagnosis matters to the response:
 - `Restoration source` is optional. Use it when the positive picture is being drawn from a clearly
   anchored higher-weight source rather than from free synthesis.
 
+## Restoration Trace Block
+
+Use this block after the matched-module response is complete. It records the restorative logic, not just the argumentative content. Omit when the case is too thin for restorative work to have been performed, or when the routing was entirely routine.
+
+```text
+[Restoration Trace]
+- Governing misread risk:
+- What was withheld and why:
+- What correction was applied:
+- Route that became permissible after correction:
+- What remains live or unresolved:
+```
+
+**Field discipline:**
+
+- `Governing misread risk` names the single most likely wrong module or wrong register the case would route to without the diagnostic gate — what the skill would have done had it skipped V1 (e.g., "immediate DO-2 deployment into a grief-primary case").
+- `What was withheld and why` names the module(s) held in reserve and the governing reason (grief-primary, underdetermined case, identity-performance, register not yet cleared).
+- `What correction was applied` names the specific restorative move made — framework-clearing, relational register established, deformation identified and named, criterion loosened, etc.
+- `Route that became permissible after correction` names what could be deployed only because the correction was made first.
+- `What remains live or unresolved` names any open axis — unconfirmed deformation, live alternative, or issue whose resolution depends on the next exchange.
+
+**Compression rule:** Populate only the fields that had operative content. A restoration trace with two populated fields is more honest than one that fills all five performatively. If no correction was required, omit the block entirely rather than filling it with null values.
+
+**Integration with [Source Basis]:** The restoration trace is downstream of the case-state and source-basis blocks. It does not replace them. Case-state names what was diagnosed; source-basis names where claims are grounded; restoration trace names what was done to create the conditions under which the response could land.
+
 ## Strength Rules
 
 - Mark `strong` only when multiple indicators align across noetic structure, deformation, and discourse behavior.
