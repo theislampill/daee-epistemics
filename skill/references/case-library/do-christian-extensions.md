@@ -159,3 +159,15 @@ the revealed predicates themselves.
 
 **Remaining probe:** Are you defending revelation, or are you asking revelation to submit to a
 prior metaphysical picture of what "perfection" and "immutability" must mean?
+
+---
+
+## Minimal-Pair Discriminator: DO-5 (Transcendence and Language) vs. DO-13 (Philosopher's God vs. God of Revelation)
+
+*Decision rule:* DO-5 is about whether divine attributes can be affirmed using human language at all — the transcendence objection to predication. DO-13 is about which conception of God is correct — whether the God of revelation must be reinterpreted through philosophical categories of absolute simplicity and immutability. DO-5 operates at the level of the semantics of divine speech; DO-13 operates at the level of competing theistic ontologies.
+
+*Left correct (DO-5):* Interlocutor says "any description of God using human language reduces God to creaturely categories — therefore we cannot say God knows, wills, or acts without anthropomorphizing." The objection is to predication itself. Route to V8 (bilā kayf) and §6 of `references/sound-reason-epistemology.md`. Not DO-13 — the interlocutor is not pressing a rival philosophical ontology against revelation; they are questioning whether any divine description is coherent.
+
+*Right correct (DO-13):* Interlocutor accepts that divine attributes can be affirmed but argues: "The God who speaks in time, acts in succession, and responds to events is less perfect than the Aristotelian absolute — therefore the scriptural portrayal must be allegorized." The objection accepts predication but imposes a philosophical criterion (immutability, atemporality, simplicity) as superior to revelation. Route to DO-13 engagement. Not DO-5 — predication itself is not contested; a rival ontological model is being privileged over revelation.
+
+*Differentiating signal:* Is the objection to predication-as-such (DO-5) or to one specific ontological model of God being privileged over another (DO-13)? DO-5 is a semantics-of-language problem; DO-13 is a competing-ontology problem.

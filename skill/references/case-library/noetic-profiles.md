@@ -14,6 +14,18 @@ See `case-library/INDEX.md` for the full routing table.
 
 ---
 
+## Minimal-Pair Discriminator: NS-2 (Agnostic Evidentialist) vs. NS-6 (Kalāmic Evidentialist)
+
+*Decision rule:* Both demand inferential argument before granting warrant to theistic belief. The difference is the framework within which that demand is made. NS-2 operates within a broadly empiricist or analytic framework; NS-6 operates within a kalāmic theological framework that accepts revelation in principle but requires naẓar (inferential reasoning) as ratificatory.
+
+*Left correct (NS-2):* Interlocutor says "I won't believe in God without sufficient empirical evidence — the same standard I'd apply to any other claim." No reference to kalāmic vocabulary; no acceptance of revelation as a legitimate source; the standard is secular-empiricist. Correct instrument: V2 (contaminated conception of reason) before any evidential content. Not NS-6 — the framework is not kalāmic.
+
+*Right correct (NS-6):* Interlocutor is a madrasa-trained student who says "taqlīd is not knowledge — I need to know my ʿaqīdah through naẓar." Accepts the legitimacy of revelation in principle but treats the kalāmic evidentialist criterion (wujūb al-naẓar) as a requirement for their own knowledge. V2 still applies, but the contamination is kalāmic, not secular; load `references/diagnostics/kalamic-interlocutor.md` to locate the specific school position. Not NS-2 — the framework is already within a theistic tradition.
+
+*Differentiating signal:* Does the interlocutor accept the legitimacy of revelation as a knowledge source in principle, while nonetheless requiring inferential ratification? If yes, NS-6. If revelation is itself not accepted as a legitimate source, NS-2.
+
+---
+
 ## About Noetic Structures
 
 See `references/diagnostics/noetic-reading-checklist.md` for the shared definition of noetic
@@ -328,6 +340,55 @@ element at a time → do not force convergence within a single exchange. The pas
 ordering is a practical inference: when ulterior motive, whim, or shubha are active
 fiṭrah-suppressors, cognitive intervention on a destabilized person tends to misfire before the
 stabilizing conditions are in place.
+
+### Compound Presentation Playbooks (NS-8)
+
+These playbooks compile the compound-case sequencing rules from `references/diagnostics/seven-deformations.md §The Compound Case` into NS-8-specific named sequences. P7 stop references are explicit; see `references/procedures/P7-restoration-stops.md` for mandatory and prohibited actions under each stop.
+
+#### (i) Authority-Fatigue + Textual Pressure
+
+**Intervention order:**
+1. Address the authority-wound before engaging the textual argument.
+2. Determine whether the textual claim would still be operative if the authority-wound were healed — in many NS-8 cases, it would not.
+3. Deploy V10 and the matched RT case only after the authority-wound has been acknowledged.
+
+**Reassessment trigger:** Interlocutor separates "I'm hurt by what happened in this institution" from "I have genuine doubts about this text-history question."
+
+**Stopping condition:** If the interlocutor re-collapses the textual question into the authority grievance as soon as the intellectual engagement begins, the wound is still primary. Return to the relational register.
+
+**P7 stops:** Stop 1 (Content-Withholding Stop) and Stop 3 (Relational-Repair-First Stop) both apply. Do not deploy V10 or textual counter-arguments into an unaddressed institutional wound.
+
+**Correct engagement:** Acknowledge authority-fatigue before raising V10. The doctrinal content waits until the relational register is established.
+
+---
+
+#### (ii) Moral Recoil + Historical Criticism
+
+**Intervention order:**
+1. Identify whether the moral recoil — a hadith found troubling, a ruling perceived as unjust — is the governing concern, with historical criticism recruited as corroboration after the fact.
+2. If moral recoil is primary, address it directly; historical-critical arguments engaged alone will not resolve the underlying moral discomfort.
+3. Only after the moral recoil is acknowledged, assess whether the historical-critical claim still needs independent engagement.
+
+**Reassessment trigger:** Interlocutor explicitly engages the moral question independently of the historical-critical framing.
+
+**Stopping condition:** If resolving the historical-critical point does not visibly reduce the moral distress, the moral recoil is primary. Argument alone is not the remedy.
+
+**P7 stop:** Stop 1 applies — moral recoil is a form of protest that must be acknowledged before content is deployed. Deploying RT or DO content directly into moral protest deepens resistance.
+
+---
+
+#### (iii) Inherited-Trust Collapse + Evidential Demand
+
+**Intervention order:**
+1. Check whether the evidential demand ("show me evidence") has emerged from inherited trust having collapsed — the interlocutor previously accepted religious claims on communal trust and now rejects that as a basis.
+2. If the demand for evidence is a response to trust-collapse rather than a principled evidentialist starting point, do not satisfy the demand within its own terms before addressing the trust history.
+3. Apply V2 (framework-clearing) on the evidential criterion after identifying whether it is genuinely held or instrumentally deployed.
+
+**Reassessment trigger:** Interlocutor distinguishes between "I no longer trust my community's testimony" and "I now hold a principled evidentialist criterion."
+
+**Stopping condition:** If V2 produces no movement and the evidential demand remains fixed, check whether the demand is covering gharaḍ or hawā. If so, route to Stop 1.
+
+**P7 stop:** Stop 4 (Underdetermined-Case Stop) applies if the read between genuine evidentialist and trust-collapse is not yet settled. Do not supply evidential content before the diagnosis is confirmed.
 
 ---
 

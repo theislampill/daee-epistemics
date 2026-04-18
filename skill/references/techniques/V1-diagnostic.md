@@ -129,7 +129,7 @@ functions as cover for a relational or volitional problem.
 ## The Case-State Output
 
 V1 terminates in a single composed line that feeds
-`references/procedures/case-state-schema.md`:
+`references/diagnostics/case-state-schema.md`:
 
     NS: NS-X [| NS-Y]    DO-orient: <code>    Concealment: <code>    RT (if applicable): <RT-X>    Deformation: <primary> [| <secondary>]    Strength: <strong | provisional | low>    Next: <smallest matched module>
 

@@ -52,7 +52,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | File | Load When |
 |------|-----------|
 | `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13; attribute-multiplicity / tarkīb-iftiqār shubhah (§6.3) |
-| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-6 |
+| `references/case-library/noetic-profiles.md` | Interlocutor confirmed as NS-1 through NS-9 |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
@@ -117,6 +117,7 @@ file.
 | `references/procedures/P4-maieutic.md` | Inkār mode — recognition present but suppressed |
 | `references/procedures/P5-already-believing.md` | Believer with shallow or taqlīd-held belief |
 | `references/procedures/P6-universal-aqidah-principle.md` | Interlocutor claims no religion/worldview; denies righteous guidance |
+| `references/procedures/P7-restoration-stops.md` | Any case where grief-primary, identity-performance, hawā/gharaḍ, or relational-register bypass is a risk; mandatory when case basis is insufficient for confident diagnosis; enforces Stop 1–5 as named hard rails |
 
 ### Routing Discipline
 - Start with V1 for any substantive case; use M5 inside V1's triage phase rather than as a rival opening architecture.

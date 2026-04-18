@@ -303,6 +303,18 @@ genuine: address the underlying deformation; do not engage the intellectual surf
 
 ---
 
+### Minimal-Pair Discriminator: Shubhah vs. Grief-Register (M4)
+
+*Decision rule:* Is the problem of evil being presented as a propositional argument with identifiable premises, or is it being expressed as moral protest, grief, or a felt injustice that has not been translated into argument form?
+
+*Left correct (shubhah):* Interlocutor presents the logical problem of evil with explicit premises: "An all-powerful, all-knowing, all-good God would prevent suffering. Suffering exists. Therefore no such God exists." The form is argumentative; the pressure is propositional. Deformation is shubhah (if genuine). Correct response: M1 check, then M2 or DO-2 matched content.
+
+*Right correct (grief / M4):* Interlocutor's child died and they cannot reconcile a loving God with the loss. They do not offer a syllogism; they express that the loss makes God seem absent or indifferent. The form is grief and moral protest. The deformation is not shubhah — it is a relational wound that has been given theological language. Correct response: M4 register (grief/moral protest); not DO-2 probabilistic engagement.
+
+*Differentiating signal:* Does the presentation contain identifiable premises that could be evaluated and potentially falsified? If yes, shubhah may be operative. If the presentation is narrative, affective, and relational — structured around a personal story of loss or moral outrage rather than a logical structure — grief register governs. Note: grief and shubhah can co-occur; when they do, grief must be addressed before the shubhah is engaged.
+
+---
+
 ## The Compound Case
 
 > **Canonical source for compound-case sequencing.** All other files (SKILL.md,

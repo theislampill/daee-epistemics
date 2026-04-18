@@ -39,7 +39,7 @@ These are always-active background rules, not case-specific moves.
 
 16. **Character is evidence — actively, not passively.** The absence of defensiveness, the quality of listening, the genuine care for the interlocutor rather than the argument — these are epistemically operative, not decorative.
 
-17. **Know when to pause.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations.
+17. **Know when to pause.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. When any of the five stop triggers fires, P7 governs the mandatory and prohibited actions. Heuristics states the principle; P7 enforces it procedurally.
 
 18. **Do not grant scientism the neutral chair.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
 

@@ -172,3 +172,15 @@ If the orientation is `truth-seek`, the noetic-reading-checklist's NS emission p
 concealment-mode emission plus (where applicable) the doctrinal DO or RT code compose the
 full case-state line. If the orientation is anything else, the DO-orient line governs and
 the other emissions remain available but not acted on until the register shifts.
+
+---
+
+## Minimal-Pair Discriminator: Gharaḍ (Vested Interest) vs. Identity-Performance
+
+*Decision rule:* Gharaḍ is a deformation — something is at stake that makes honest inquiry threatening. Identity-performance is a discourse orientation — the position is being held and expressed as a credential or affiliation marker. They can co-occur but require different instruments.
+
+*Left correct (gharaḍ):* Interlocutor is a scientist who has publicly and repeatedly stated their atheism. The vested interest is concrete: professional identity, published positions, and social capital are at stake. The deformation is gharaḍ — the cost of honest inquiry is visible and real. The discourse orientation may still be truth-seeking at surface level. Correct instrument: F2 (name the cost); not identity-performance mode.
+
+*Right correct (identity-performance):* Interlocutor is a university student who signals their atheism prominently, has no professional stake, but treats every exchange as an opportunity to perform their identity before implicit social witnesses. Every intellectual point is absorbed into self-presentation. The orientation is identity-performance; gharaḍ is minimal. Correct instrument: name the register, defer content; not F2 (there is no specific cost to name).
+
+*Differentiating signal:* Is there a concrete external stake — professional, social, financial, relational — that would be materially threatened by inquiry? If yes, gharaḍ is operative. If the position functions primarily as self-presentation without a concrete external stake, identity-performance governs.

@@ -227,6 +227,32 @@ All three are needed before a case-library module can be loaded with confidence.
 
 ---
 
+## Minimal-Pair Discriminators
+
+### Minimal-Pair Discriminator: Iʿrāḍ vs. Juḥūd
+
+*Decision rule:* Has the matter been allowed to press? Iʿrāḍ is prior to engagement; juḥūd is refusal after engagement has occurred.
+
+*Left correct (iʿrāḍ):* An acquaintance changes the subject when a religious question is mentioned in passing. No argument has been presented; no position has engaged theirs. The mode is iʿrāḍ — attention has not yet been given. Correct response: invitational register, one question left live, no intellectual content deployed. Incorrect if diagnosed as juḥūd: naming a barrier that hasn't yet formed hardens iʿrāḍ into something more defined.
+
+*Right correct (juḥūd):* The same person, in a later conversation, explicitly acknowledges having read an argument, grants its internal logic, but dismisses it as "not for them" while showing clear signs of repudiation. Engagement has occurred; the refusal is post-engagement. The mode is juḥūd. Correct response: name the barrier. Incorrect if still diagnosed as iʿrāḍ: continuing invitational mode fails to address the now-operative repudiation.
+
+*Differentiating signal:* Has the interlocutor demonstrated engagement with the substance — even if to dismiss it? If yes, juḥūd is in play. If the substance has never been engaged, iʿrāḍ governs.
+
+---
+
+### Minimal-Pair Discriminator: Juḥūd vs. Inkār
+
+*Decision rule:* Is there evidence of inner recognition being suppressed, or is the refusal an outward stance with no detectable inner recognition?
+
+*Left correct (juḥūd):* Interlocutor responds to a fiṭrah-directed sign by intellectually dismissing it ("that's just psychology") without any affect suggesting inner movement. The refusal is repudiative but shows no seam of recognition. Mode is juḥūd. Correct response: relational register, barrier named; not P4.
+
+*Right correct (inkār):* Interlocutor responds to the same sign with visible affect, attempts to change the subject immediately, or gives an unusually vehement dismissal inconsistent with intellectual confidence. The vigor of the denial exceeds what intellectual disagreement requires. Mode is inkār — recognition appears to be present and is being actively resisted. Correct response: P4 (maieutic); not more argument.
+
+*Differentiating signal:* Disproportionate vigor of denial, subject-change after a sign lands, or affective charge inconsistent with the stated intellectual confidence. Any of these suggests inkār over juḥūd.
+
+---
+
 ## Revelation-Transmission (RT) Axis — When to Emit
 
 The concealment diagnostic also sits adjacent to the revelation-transmission axis. When

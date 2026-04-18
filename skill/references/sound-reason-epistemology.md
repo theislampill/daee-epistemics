@@ -3,6 +3,8 @@
 > do not use when: a lighter diagnostic or tactical file already gives the needed routing guidance
 > output: anchored theory for deeper grounding, not a default response script
 
+**Theory-Bleed Prevention:** This file is a matched-load substrate. Load it only when the case genuinely requires theoretical depth. V1 diagnosis, mixed-case handling, and lighter matched modules must precede this file. If a case can be handled by V8 alone (bilā kayf without the full warrant account), by DO-5 alone (transcendence and language without the tawātur thesis), or by a tactical triage file, do not load this file. Over-loading this file adds theoretical weight to cases that need routing precision, and it risks substituting theory-display for the smallest matched move.
+
 # The Epistemological Architecture of Sound Reason
 
 This file is the theoretical substrate of the skill's operative ontology. It articulates
@@ -31,12 +33,20 @@ Do not load this file merely because the topic is philosophical. Load it when th
 actually needs the theoretical depth; otherwise it will over-weight theory where routing
 and restoration should stay light and precise.
 
-**Cross-references:**
-- §1 → noetic checklist dimensions 1, 3, 6; grounds V3 (regress-dissolution)
-- §2–3 → noetic checklist dimension 4; grounds R1–R3; fiṭrah-as-potency distinction
-- §4 → noetic checklist dimension 9; grounds E4; grounds V9
-- §5 → invoked after V2 when fiṭrah is impaired; sequencing for ḥusn al-naẓar
-- §6 → invoked for V8, DO-5, DO-6, DO-11, DO-12, DO-13 (bilā kayf, attribute coherence, Trinity-adjacent perfection claims, philosopher's-God disputes); §6.2 specifically for Muslim-internal khalq al-Qurʾān disputes (ḥudūth/khalq distinction, Salafī vs. Ashʿarī vs. Muʿtazilī on divine speech)
+**Cross-references and operative load cues — section by section:**
+
+- **§1** → load-bearing operative substrate: noetic checklist dimensions 1, 3, 6 depend on this for the foundational/inferential distinction; grounds V3 (regress-dissolution). *Load cue: only when the case requires the theory of foundational vs. inferential knowledge — not merely when the topic is "epistemology."*
+- **§2–3** → load-bearing operative substrate: grounds R1–R3 (proper function, basic belief); fiṭrah-as-potency distinction; noetic checklist dimension 4. *Load cue: only when the interlocutor is pressing the conditions for warrant, or when proper function needs to be explicitly grounded.*
+- **§3-A (RICP model)** → supportive but compressible: useful for grounding the consciousness argument (V5 track b) and the orphaned-intuition probe (M3) when a deep account of perception is needed; can be omitted when simpler formulations suffice.
+- **§4** → load-bearing operative substrate: the tawātur fiṭrī thesis; grounds E4 (cross-cultural check); grounds V9 (necessary-knowledge priority). *Load cue: only when cross-cultural convergence or the epistemic weight of mass-attested fiṭrī deliverables is the live argument — not merely when diversity is mentioned.*
+- **§4.3** → load-bearing operative substrate: separates the epistemic layers of generic theism, testimony, text, and specific prophetic claim. Essential for RT cases and revelation-structure arguments. *Load cue: revelation-transmission cases and any case where the interlocutor collapses these layers.*
+- **§5** → load-bearing operative substrate: the ḥusn al-naẓar sequencing procedure for the impaired fiṭrah. *Load cue: invoked after V2 when the fiṭrah is genuinely impaired and inferential reasoning is the needed secondary route. Not triggered merely by philosophical discussion.*
+- **§6** → load-bearing operative substrate: bilā kayf, analogical predication, dhāt/fiʿl, ipseity corollary, philosopher's-God vs. revelatory-God. Directly required by V8, DO-5, DO-6, DO-11, DO-12, DO-13. *Load cue: only when divine attribute objections, transcendence pressure, or attribute coherence are confirmed live — not merely when God-language appears.*
+- **§6.1** → supportive: time, space, and created systems. Relevant for philosopher's-God temporal-ordering objections. *Load cue: only when the "no meaningful before creation / no above the world" pressure is specifically live.*
+- **§6.2** → load-bearing operative substrate: ḥudūth/khalq distinction; Salafī/Ashʿarī/Muʿtazilī differentiation on divine speech. *Load cue: specifically for Muslim-internal khalq al-Qurʾān disputes and any case involving the status of divine speech.*
+- **§6.3** → load-bearing operative substrate: the tarkīb/iftiqār attribute-multiplicity shubhah; M9 Functions 1–3. *Load cue: specifically when the shubhah takes the form that possessing attributes entails composition, dependency, or otherness — the philosophical-simplicity attack on divine attributes. Route to §6.3 and M9 together.*
+
+**Darʾ-congruence judgment:** After the §6.3 addition, this file is appropriately scoped relative to its operative burden. It carries genuine load-bearing content across all six confirmed downstream uses (§1, §2–3, §4, §4.3, §5, §6), and the §3-A section is compressible but not redundant for its specific use cases. The primary risk of misuse is over-broad loading: the file is sometimes triggered when philosophical vocabulary appears in a case, rather than when the specific theoretical depth it provides is actually required. The theory-bleed prevention note at the top addresses this. The file should not be tightened further — removing sections would break the downstream load-bearing relationships. But triggering discipline must remain strict: load only when a named section's specific grounding is confirmed live. The file as currently constituted earns its load when those conditions are met, and costs precision when they are not.
 
 ---
 

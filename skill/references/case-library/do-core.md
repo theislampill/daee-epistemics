@@ -212,6 +212,8 @@ Bilā kayf positions itself between two errors: tashbīh (applying creaturely mo
 attributes) and tāʿṭīl (denying the reality of divine attributes). Both are worse than the
 epistemically honest acknowledgment of the limit of creaturely cognition applied to the infinite.
 
+**DO-5 / DO-13 routing note:** For the related DO-13 case (philosopher's-God vs. revelatory-God), where predication is accepted but a philosophical ontological model is pressed against revelation, see `references/case-library/do-christian-extensions.md`. DO-5 and DO-13 require a discriminator: DO-5 is a semantics-of-language problem (whether predication is coherent at all); DO-13 is a competing-ontology problem (which model of God is correct). See the minimal-pair discriminator block at the end of the do-christian-extensions file.
+
 ---
 
 ### DO-6 — The Coherence of the Classical Concept of God

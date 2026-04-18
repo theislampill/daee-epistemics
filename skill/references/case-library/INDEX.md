@@ -14,11 +14,43 @@ the case still requires.
 
 | Confirmed match | File | Do not use when | Typical pairings |
 |-----------------|------|-----------------|-----------------|
-| NS-1 through NS-6 | `case-library/noetic-profiles.md` | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
+| NS-1 through NS-9 | `case-library/noetic-profiles.md` | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
 | DO-1 through DO-6 | `case-library/do-core.md` | The objection family is not yet distinguished from grief, criterion protest, or testimony critique | M2, V8, P2 |
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-13 | `case-library/do-christian-extensions.md` | Trinity or philosopher's-God pressure has not been classified precisely | V8, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
+
+### NS Family — Routing Discipline
+
+**What NS codes identify:** The noetic structure of the subject — who the person IS epistemically: what they hold as basic, what their implicit doxastic rule is, what the load-bearing anchor of their belief-structure is. NS is orthogonal to DO: a single person can be NS-1 while pressing a DO-2 argument; knowing their NS type does not determine which argument they are making, and knowing which argument they are making does not determine their NS type.
+
+**Load-sequence note:** Run `references/diagnostics/noetic-reading-checklist.md` first, then identify the NS type, then check discourse orientation via `references/diagnostics/discourse-orientation.md`.
+
+**Correct routing:** NS code is assigned based on the subject's governing epistemic commitments and warrant structure — their implicit doxastic rule, load-bearing anchor, and basic-belief set — not based on the argument they happen to be making.
+
+**Incorrect routing:** Assigning NS-1 because the interlocutor cited a naturalist argument. The argument type does not determine the NS code. A kalāmic evidentialist (NS-6) can cite an evolutionary debunking argument; a habituated atheist (NS-5) can press a hiddenness argument. Match the NS code to the noetic structure, not to the objection content.
+
+**NS vs. DO distinction in practice:** If you find yourself assigning an NS code based primarily on which DO case the interlocutor is pressing, you have collapsed the orthogonal axes. Return to the noetic-reading-checklist and identify what the subject holds as basic before assigning NS.
+
+---
+
+### DO Family — Routing Discipline
+
+**What DO codes identify:** The objection family of the argument the interlocutor is pressing — the problem family requiring substantive engagement. DO is orthogonal to NS: different NS types can press the same DO argument, and the same person can shift DO families across a conversation.
+
+**Correct routing:** The DO code identifies which argument family requires substantive engagement at the content level. Route to the DO entry after the NS code and deformation read are established — the DO content is selected based on what the noetic structure and deformation allow to land.
+
+**Incorrect routing:** Using DO-6 (attribute coherence) as the trigger when the real pressure is DO-13 (philosopher's-God vs. God of revelation), because both involve attribute language. DO-6 (attribute coherence) is about whether divine attributes can be coherently affirmed at all — the incoherence objection to classical theism. DO-13 is about whether the God of revelation must be reinterpreted through the philosophical categories of absolute simplicity and immutability — a competing theistic ontology. Do not collapse these: DO-6 is a semantic-coherence problem; DO-13 is a competing-ontology problem.
+
+---
+
+### RT Family — Routing Discipline
+
+**What RT codes identify:** Cases about transmission, text, canon, and preservation — cases where the interlocutor is specifically pressing text-history or authority-of-source claims. RT cases are never the primary routing family unless the interlocutor is specifically pressing manuscript, canon-formation, qirāʾāt, or preservation questions.
+
+**Correct routing:** Route to RT only when the live pressure is specifically on transmission reliability (RT-1), canon authority (RT-2), qirāʾāt/manuscript plurality (RT-3), or believer-destabilization (RT-4). Run V10 before any RT case entry.
+
+**Incorrect routing:** Routing to RT-3 because the interlocutor mentioned "the Qurʾān," rather than because they are specifically pressing manuscript, qirāʾāt, or preservation questions. Mentioning a text is not the same as pressing a text-history claim. The RT family requires that text-history, transmission reliability, or canon authority is the live pressure, not merely the subject.
 
 ## Quick NS Identification
 
