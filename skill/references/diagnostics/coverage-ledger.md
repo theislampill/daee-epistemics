@@ -1,0 +1,368 @@
+> role: parity/coverage audit ledger — explicit fidelity ratings for every recognized family and procedure in the skill; canonical source for distinguishing "already landed," "compressed but governed," "partial," and "missing/implied"
+> use when: auditing whether a claim in SKILL.md, README, or a routing table is actually backed by governed content; updating after an edit pass; deciding which gap to close next
+> do not use when: routing a live case — this file does not route; it describes what the routing apparatus covers and at what fidelity
+> revision protocol: update the `last-audited` field and the affected row(s) after any edit pass; do not let the ledger go stale by making edits without updating it
+> last-audited: 2024-12 (Session 1 — kalāmic variance pass) + 2025-01 (Session 2 — parity ledger creation)
+
+# Coverage Ledger — Parity Audit
+
+## Legend
+
+| Code | Meaning | Governance standard met |
+|------|---------|------------------------|
+| **L** | **Landed** | Canonical owner file; typed routing active (Quick NS/DO/RT table or dedicated frontmatter); IR-visible consequences (consistency rules, backbone predicate emissions, or restoration target binding); failure conditions or failure tests present; minimal-pair discriminator where a near-miss exists |
+| **C** | **Compressed-but-governed** | No dedicated file of its own; fully routed through existing instruments with traceable dispatch consequences; activation is correct, but the content lives inside a larger file rather than a canonical owner |
+| **P** | **Partial** | Has a file or section, but missing one or more key governance elements — no failure conditions, no IR rule, scope in SKILL.md or README overstates governed depth, or activation trigger is present but thin-basis discipline is absent |
+| **M** | **Missing/implied** | Referenced in SKILL.md description, INDEX, or a routing table — but no dedicated content and no governed dispatch path; the claim is an ambient scope assertion, not a covered case |
+
+**Audit confidence flags:**
+- **(✓)** — directly read and confirmed in this or the prior session
+- **(~)** — confirmed by cross-reference from files that depend on it; canonical file not directly read in this pass
+
+---
+
+## §1 — Noetic Structure Profiles (NS-1 through NS-12)
+
+| NS code | Name | Rating | Canonical file | Key gap (if any) |
+|---------|------|--------|---------------|-----------------|
+| NS-1 | Naturalist | **L (✓)** | `profiles/ns-1-naturalist.md` | — |
+| NS-2 | Agnostic Evidentialist | **L (~)** | `profiles/ns-2-agnostic-evidentialist.md` | — |
+| NS-3 | Deconverted (Post-Religious) | **L (~)** | `profiles/ns-3-deconverted.md` | — |
+| NS-4 | Secular Moral Realist | **L (~)** | `profiles/ns-4-secular-moral-realist.md` | — |
+| NS-5 | Habituated Atheist | **L (~)** | `profiles/ns-5-habituated-atheist.md` | — |
+| NS-6 | Kalāmic Evidentialist | **L (✓)** | `profiles/ns-6-kalamic-evidentialist.md` | School identification now mandatory before IR restoration target; Muʿtazilī/Ashʿarī sub-variants added Session 1 |
+| NS-7 | Theistic Evidentialist | **L (~)** | `profiles/ns-7-theistic-evidentialist.md` | — |
+| NS-8 | Muslim-Internal Crisis (Compound) | **L (~)** | `profiles/ns-8-muslim-internal-crisis.md` | Compound case playbooks in `mixed-case-handling.md`; moral-recoil sub-component under Type D philosophical usurpation is C (no dedicated DO treatment for Islamic-specific moral objections) |
+| NS-9 | Historical-Critical Skeptic | **L (~)** | `profiles/ns-9-historical-critical-skeptic.md` | — |
+| NS-10 | Māturīdī Evidentialist | **L (✓)** | `profiles/ns-10-maturidi-evidentialist.md` | Burden check for ontological dimension added Session 1 |
+| NS-11 | Fideist / Reformed Basic-Belief | **L (~)** | `profiles/ns-11-fideist-reformed.md` | — |
+| NS-12 | Blank-Slate or Dual-Nature Fiṭrah | **L (~)** | `profiles/ns-12-blank-slate-dual-fitrah.md` | — |
+
+**Routing infrastructure:** `profiles/INDEX.md` — minimal-pair discriminators for NS-2/NS-6, NS-6/NS-10 (with Muʿtazilī/Ashʿarī sub-variant note), NS-7/NS-11, NS-1/NS-2/NS-12. Quick NS Identification table in `case-library/INDEX.md`. Both **L (✓)**.
+
+**Legacy redirect:** `case-library/noetic-profiles.md` — redirect-only stub pointing to profiles/. Status: correctly deprecated, no content served from it.
+
+---
+
+## §2 — Doctrinal Objections Family (DO-1 through DO-13)
+
+### DO-1 through DO-6 (do-core.md)
+
+| DO code | Objection | Rating | Notes |
+|---------|-----------|--------|-------|
+| DO-1 | Divine Hiddenness | **L (✓)** | Objection stated strongly, strongest rebuttal, Taymiyyan response, remaining probe; P4 (maieutic) routing when search-narrative is live |
+| DO-2 | Evidential Evil | **L (✓)** | Skeptical-theism rebuttal addressed; M4 routing when grief-primary; distinction between logical and evidential problem present |
+| DO-3 | Evolutionary Debunking | **L (~)** | Quick DO table routing confirmed; content depth unverified by direct read |
+| DO-4 | Religious Diversity | **L (~)** | Foundation/superstructure distinction present per Quick DO table |
+| DO-5 | Transcendence and Language | **L (~)** | V8 primary instrument; minimal-pair discriminator vs. DO-13 in `do-christian-extensions.md` (✓) |
+| DO-6 | Attribute Coherence | **L (~)** | V8 + dhat/fiʿl distinction per Quick DO table |
+
+**Failure-condition audit note:** do-core.md has a strong objection/rebuttal/Taymiyyan-response structure for DO-1 and DO-2 (confirmed). Whether DO-3 through DO-6 entries include explicit failure tests was not directly verified — assumed present by structural parallelism. If failing a next audit, add failure tests for DO-3/DO-4/DO-6 entries.
+
+### DO-7 through DO-10 (do-second-loop.md)
+
+| DO code | Objection | Rating | Notes |
+|---------|-----------|--------|-------|
+| DO-7 | Cognitive Science of Religion / HADD | **L (~)** | M1 or V9 per Quick DO table; content depth unverified by direct read |
+| DO-8 | Prophetic Mission and Moral Luck | **L (~)** | Hujjah principle per Quick DO table |
+| DO-9 | Great Pumpkin | **L (~)** | Universality condition + tawātur fiṭrī per Quick DO table |
+| DO-10 | Three-Tiered Epistemological Structure | **L (~)** | fiṭrah → khabar → naẓar ordering; V9 when ḍarūrī is attacked; Quick DO table routing |
+
+**Failure-condition audit note:** do-second-loop.md not directly read. Failure tests unverified. Mark for verification in next audit pass.
+
+### DO-11 through DO-13 (do-christian-extensions.md)
+
+| DO code | Objection | Rating | Notes |
+|---------|-----------|--------|-------|
+| DO-11 | Trinity from Divine Perfection | **L (✓)** | Hidden premise exposed; parody-pressure test; remaining probe; routing to V10 + RT-2 when argument must move to revelation |
+| DO-12 | Logical Problem of the Trinity | **L (✓)** | Model-identification obligation; taxonomy of model families and how each fails; appeal-to-mystery not treated as resolution |
+| DO-13 | Philosopher's God vs. God of Revelation | **L (✓)** | Aristotelian-stasis critique; bilā kayf route; minimal-pair discriminator vs. DO-5; "Remaining probe" serves as self-audit |
+
+### Attribute Discourse Precision (do-attribute-precision.md)
+
+| Confusion | Name | Rating | Notes |
+|-----------|------|--------|-------|
+| Confusion 1 | Category Mistake in Predication | **L (✓)** | Bad-output / corrected-output fixture; self-audit question; prohibited move; NS-6 ontological trigger added Session 1 |
+| Confusion 2 | Illicit Analogy | **L (✓)** | Fixture with valid-range analysis |
+| Confusion 3 | Equivocal Predication Without Marking | **L (✓)** | Univocal/analogical/equivocal distinction enforced |
+| Confusion 4 | Composition Panic | **L (✓)** | Muʿtazilī/philosophical history; prohibited-move; §6.3 reference for tarkīb-iftiqār |
+| Confusion 5 | Attribute-Multiplicity / Person-Multiplicity Conflation | **L (✓)** | Identity argument vs. composition argument correctly separated; Trinity routing confirmed |
+| Confusion 6 | Perfect-Being Theology as Neutral Standard | **L (✓)** | Framework named as one position; allegorization prohibited |
+
+---
+
+## §3 — Revelation / Transmission Family (RT-1 through RT-4)
+
+| RT code | Objection | Rating | Notes |
+|---------|-----------|--------|-------|
+| RT-1 | Manuscript/Fragment vs. Authenticated Transmission | **L (✓)** | Three sub-routes (provenance/contents/authority); cross-tradition contamination guard; worked examples (correct + incorrect) |
+| RT-2 | Canon Formation vs. Inspired Authority | **L (✓)** | Recognition vs. creation distinction; contamination guard; minimal-pair discriminator vs. RT-1 |
+| RT-3 | Qirāʾāt, Aḥruf, Manuscript Confusion | **L (✓)** | Three sub-routes; qirāʾāt ≠ scribal variants; contamination guard; worked examples |
+| RT-4 | Muslim-Internal Textual-Historical Destabilization | **L (✓)** | Pastoral register governs before doctrinal; V10 classification first; P5 pairing; worked examples |
+
+**V10 routing:** Mandatory before any RT entry; `V10-transmission-content-vetting.md` governs provenance → contents → authority sequence. Status: **L (~)** (referenced as mandatory in revelation-transmission.md frontmatter and from RT-2/RT-3 headings; file exists but not directly read in this pass).
+
+**Surface-marker triage table:** Present in revelation-transmission.md with disambiguation logic and ambiguous-surface-case rules. **L (✓)**.
+
+**Scope boundary (gap):** RT family covers Qurʾānic transmission specifically. Covered in the SKILL.md activation scope under "revelation, scripture, transmission, and final-prophethood challenges." What is *not* covered: hadith authentication epistemology (isnād grading, jar ḥ wa taʿdīl, mutawātir/āḥād hadith distinctions), Old/New Testament transmission in comparative Islamic perspective, and the non-Qurʾānic sunnah preservation question as a distinct case. These are cited in passing but have no dedicated case treatment. See §10 (Gap Inventory).
+
+---
+
+## §4 — Philosophical Usurpation Types (A through D)
+
+| Type | Character | Rating | Notes |
+|------|-----------|--------|-------|
+| Type A | Aristotelian/Neo-Platonic Theism as Default Standard | **L (✓)** | Telltale features U-1/U-3/U-5; connected to DO-13 + prophecy-wahy-supremacy.md + Confusion 6 |
+| Type B | Scientific Naturalism as Epistemic Gate | **L (✓)** | Telltale features U-1/U-2/U-4; connected to NS-1 + V2 + foreign-premise-detection |
+| Type C | Historical-Critical Methodology as Hermeneutic Authority | **L (✓)** | Telltale features U-2/U-3/U-5; connected to NS-9 + V10 + revelation-transmission.md |
+| Type D | Liberal Political Philosophy as Moral Arbiter | **L (✓)** | Telltale features U-1/U-3; connected to NS-8 + seven-deformations.md |
+
+**Route consequences:** 5-step sequence (name usurpation → refuse tribunal → V2 on framework → restore authority order → engage content). **L (✓)**.
+
+**Prohibited moves:** PM-1 through PM-4. **L (✓)**.
+
+**Case-state emission format:** Typed block with type, telltale features, framework name, functional role, step, prohibited-move flag. **L (✓)**.
+
+**Gap (Type D):** The moral-arbitration case under Type D is structurally landed as a usurpation type, but the content depth for specific Islamic jurisprudential ethics objections (e.g., corporal punishment, gender jurisprudence) is not worked through at the DO-series level. Type D identifies the usurpation and routes to NS-8 and seven-deformations.md, but no dedicated DO code covers "Islamic-specific moral objections" with a Taymiyyan-response structure. This is the moral-recoil gap noted in NS-8. See §10.
+
+---
+
+## §5 — Deformation Types (Seven Deformations)
+
+| Deformation | Rating | Notes |
+|-------------|--------|-------|
+| Iʿtiqādāt mawrūtha (inherited beliefs) | **L (✓)** | Primary cue, first move, common confusion; V2 primary |
+| Mushābara fāsida (1-A) — sub-type | **L (✓)** | Named sub-variant of iʿtiqādāt mawrūtha; distinguishing marker: one premise regenerates downstream conclusions even after local clearing; M1 applied to the premise itself |
+| Hawā (volitional desire) | **L (✓)** | F2 or relational engagement; objections multiplying after clearing is the diagnostic signal |
+| Ẓann (conjecture, unexamined assumption) | **L (✓)** | V7 (symmetric critique of taqlīd); distinguished from genuine shubhah |
+| Taqlīd (imitation) | **L (✓)** | Tahqiq invitation; distinguished from ẓann |
+| ʿĀda (habituation) | **L (✓)** | V2 then V5; distinguished from iʿtiqādāt mawrūtha by phenomenology (distortion feels like direct reality) |
+| Gharaḍ (interest/cost of inquiry) | **L (✓)** | F2; distinguished from hawā by the honesty of the inquiry being what is costly |
+| Shubha (genuine intellectual obstacle) | **L (✓)** | The one deformation that responds to intellectual engagement; V9 or matched case response; over-attribution to this deformation is the primary diagnostic error |
+
+**Note on count:** The routing table has 8 rows for 7 deformations — mushābara fāsida (1-A) is a sub-type of iʿtiqādāt mawrūtha, not an eighth deformation. Both the count (7) and the sub-type (1-A) are correctly present in seven-deformations.md.
+
+**Routing summary table:** Present in seven-deformations.md with primary cue, first move, prohibited first move, common confusion. **L (✓)**.
+
+---
+
+## §6 — Modes of Concealment
+
+| Mode | Rating | Notes |
+|------|--------|-------|
+| Irāḍ (turning away) | **L (~)** | modes-of-concealment.md; referenced in IR concealment field |
+| Juḥūd (denial despite recognition) | **L (~)** | modes-of-concealment.md |
+| Inkār (rejection) | **L (~)** | modes-of-concealment.md |
+| Istikbār (arrogance) | **L (~)** | modes-of-concealment.md |
+| Nifāq (hypocrisy/insincerity) | **L (~)** | modes-of-concealment.md |
+| mode-? (indeterminate) | **L (~)** | IR valid value when mode cannot be confirmed |
+| compound | **L (~)** | IR valid value for mixed concealment |
+
+**modes-of-concealment.md** not directly read in this pass; confirmed by systematic presence in IR schema and routing-precedence.md references. Verify full content in next pass.
+
+**Concealment × Orientation matrix:** Present in case-state-schema.md as an explicit 5-column × 6-row decision table (✓ direct read confirmed). Each cell specifies register rule, deployable action, and hold condition. Current status: **L (✓)**. What remains partial: a named anti-pattern for "Register-Hold Bypass" (deploying content when the matrix cell says hold) does not yet exist in anti-patterns.md. See Gap 2 in §10.
+
+---
+
+## §7 — Governance Procedures
+
+### Diagnostic Procedures (P1 through P7)
+
+| Procedure | Rating | Notes |
+|-----------|--------|-------|
+| P1 — Fiṭrah Restoration | **L (~)** | Dedicated file; fiṭrah restoration sequence |
+| P2 — Objection Mapping | **L (~)** | Dedicated file |
+| P3 — Reason-Revelation Tension | **L (~)** | Dedicated file; paired with NS-6/NS-10 and V2 |
+| P4 — Maieutic | **L (~)** | Dedicated file; DO-1 remaining probe routes here |
+| P5 — Already-Believing | **L (~)** | Dedicated file; RT-4 routes here for pastoral sequencing |
+| P6 — Universal ʿAqīdah Principle | **L (~)** | Dedicated file; NS-8 compound cases |
+| P7 — Restoration Stops | **L (✓)** | Five named stops with triggers, mandatory actions, prohibited actions, exit criteria, re-entry conditions |
+
+### P7 Stops (individually)
+
+| Stop | Rating | Notes |
+|------|--------|-------|
+| Stop 1 — Content-Withholding | **L (✓)** | Trigger: grief-primary or hawā confirmed; exit criteria require actual register shift |
+| Stop 2 — One-Live-Question | **L (✓)** | Behavioral exit criterion (stopping is the criterion, not judging absorption) |
+| Stop 3 — Relational-Repair-First | **L (✓)** | Trust addressed before argument; exit criteria require interlocutor-initiated inquiry |
+| Stop 4 — Underdetermined-Case | **L (✓)** | Forced-read prohibition; provisional read discipline; Stop-4 as IR output when mandatory fields cannot be grounded |
+| Stop 5 — Non-Contractual-Inquiry | **L (✓)** | Contractual status determined by interlocutor, not practitioner |
+
+### Core Routing Infrastructure
+
+| File | Rating | Notes |
+|------|--------|-------|
+| diagnostic-ir.md | **L (✓)** | Full IR schema; gate checks 1–6; mandatory minimum; consistency rules (including NS-6 school-specific rules added Session 1); compressed form; failure tests |
+| routing-precedence.md | **L (~)** | Seven suppression rules; precedence hierarchy; not directly read but extensively cross-referenced |
+| framework-pipeline.md | **L (~)** | Structural branching chart; paired with routing-precedence and diagnostic-ir |
+| case-state-schema.md | **L (✓)** | Contains the concealment × orientation matrix as an explicit 5-column × 6-row decision table (confirmed direct read); each cell specifies the register rule and what is held vs. deployable; [Case State], [Source Basis], and [Restoration Trace] block schemas; field discipline rules |
+| noetic-reading-checklist.md | **L (~)** | Shared NS definition; four key diagnostic questions (basic beliefs, implicit doxastic rule, load-bearing anchor, intervention point) |
+| anti-patterns.md | **L (✓)** | 9 named anti-patterns (7 confirmed session 2 + 2 added session 2: Excerpt Over-Read and Register-Hold Bypass); each with definition, pattern, correct behavior, self-audit question, why-it-damages, prevented-by |
+| mixed-case-handling.md | **L (~)** | Compound case playbooks (grief+shubhah, authority-fatigue+textual, identity-cost+historical-criticism, inherited-filter+evidential-demand); confirmed from session 2 read |
+| arabic-backbone-predicates.md | **L (✓)** | C-1/2/3 (criterion), T-1/2/3 (tribunal), O-1/2/3 (ordering), K-1/2 (category); NS-6 split rows for epistemological vs. ontological burden added Session 1 |
+| seven-deformations.md | **L (✓)** | Routing summary table; 7 deformations + mushābara fāsida sub-type |
+| discourse-orientation.md | **L (~)** | Four orientations: truth-seek, identity-perf, autotelic, zann-mode; not directly read |
+| reason-disambiguation.md | **L (~)** | Four reason-categories (sound/corrupted/pseudo-neutral/inherited); not directly read |
+| foreign-premise-detection.md | **L (~)** | Detection steps; tribunal types; functional role classification; not directly read |
+| modes-of-concealment.md | **L (~)** | Seven concealment modes; not directly read but IR-schema integration confirmed |
+| inference-boundary.md | **L (~)** | Inference boundary as IR field |
+| fitrah-perspectives.md | **L (~)** | Blank-slate / dual-nature fiṭrah perspectives; paired with NS-12 |
+| kalamic-interlocutor.md | **L (✓)** | School identification; §Downstream Routing Table added Session 1; section-to-NS mapping in frontmatter |
+
+### Metaphysical Architecture and Kernel
+
+| File | Rating | Notes |
+|------|--------|-------|
+| metaphysical-architecture.md | **L (✓)** | Four-layer epistemic order; ontological order; what restoration means; binding to Restoration Target IR field |
+| kernel-thesis.md | **L (✓)** | Five non-negotiable commitments; routing consequences; violation signatures; architecture integrity check |
+| sound-reason-epistemology.md | **L (~)** | §6.2 (ḥudūth/khalq) and §6.3 (tarkīb-iftiqār) referenced as mandatory for NS-6 ontological burden cases; full content not directly read |
+| prophecy-wahy-supremacy.md | **L (✓)** | Challenge patterns A/B/C; doctrinal ground for prophetic supremacy; failure tests |
+| philosophical-usurpation.md | **L (✓)** | Four usurpation types; telltale features U-1 through U-5; route consequences; prohibited moves; case-state emission |
+| terminology.md | **L (~)** | Arabic term glossary; not directly read |
+| module-codes.md | **L (~)** | Module code registry; not directly read |
+
+---
+
+## §8 — Techniques and Tactics
+
+### Techniques (V-series)
+
+| Code | Name | Rating |
+|------|------|--------|
+| V1 | Diagnostic (initial read) | **L (~)** |
+| V2 | Reconstituting Reason | **L (~)** |
+| V3 | Regress Dissolution | **L (~)** |
+| V4 | Contamination Identification | **L (~)** |
+| V5 | Directing Attention to Signs | **L (~)** |
+| V6 | Convergence | **L (~)** |
+| V7 | Taqlīd Check | **L (~)** |
+| V8 | Bilā Kayf Anchor | **L (~)** |
+| V9 | Necessary-Knowledge Priority | **L (~)** |
+| V10 | Transmission/Content Vetting | **L (~)** |
+| V11 | Taqlīd Transition | **L (~)** |
+| V12 | Tamannaʿ Exhaustion | **L (~)** |
+
+### Tactics
+
+| Series | Files | Rating | Notes |
+|--------|-------|--------|-------|
+| E-series | E1–E4 (broadening-evidence, inferential-criterion, cumulative-case, cross-cultural-check) | **L (~)** | Individual files present |
+| M-series | M1–M9 (self-refutation, prior-probability, orphaned-intuition, grief-register, deformation-triage, excluded-middle, definition-anchor, reductio, predication-mode) | **L (~)** | Individual files present; M1P (performative self-refutation) as sub-variant |
+| R-series | R1–R3 (internalist-criterion, the-reminder, warranted-basic-belief) | **L (~)** | Individual files present |
+| F-series | F1–F3 (supra-vs-antirational, volitional-dimensions, practice-epistemic-access) | **L (~)** | Individual files present |
+| Auxiliary tactics | doubt-vs-skepticism.md, husn-al-nazar-arguments.md, inductive-fitri-method.md, symmetric-taqlid-check.md | **L (~)** | Individual files present; not directly read |
+
+**Note on technique verification:** V-series, E-series, M-series, R-series, and F-series files all confirmed to exist in the file system. Individual file content not directly read in this pass. The (~) flag means: confirmed-present-by-directory-listing, not confirmed-content-by-read. A future audit pass should read each technique file against its usage claims in the case files and the IR schema.
+
+---
+
+## §9 — Special Domains and Cross-Cutting Cases
+
+| Domain | Rating | Notes |
+|--------|--------|-------|
+| Kalāmic school variants (Muʿtazilī / Ashʿarī / Māturīdī) | **L (✓)** | §Downstream Routing Table in kalamic-interlocutor.md; school-specific consistency rules in diagnostic-ir.md; restoration targets differentiated by school × burden; added Session 1 |
+| Grief-primary cases | **C** | P7 Stop-1 governs content-withholding; M4-grief-register.md as dedicated tactic; DO-2 routes to M4; worked examples in P7-restoration-stops.md. No dedicated grief-case family with objection/response structure. Adequate for register handling; thin for content treatment when grief and DO-2 are compound |
+| Compound / mixed cases | **L (✓)** | mixed-case-handling.md has four named playbooks (grief+shubhah, authority-fatigue+textual, identity-cost+historical-criticism, inherited-filter+evidential-demand) with pass/fail checks |
+| Islamic-specific moral objections (fiqh ethics, penal law, gender jurisprudence) | **P** | Covered by Type D usurpation routing (philosophical-usurpation.md) and NS-8 profile, but no dedicated DO treatment with objection/strongest-rebuttal/Taymiyyan-response structure exists. Identification of usurpation is L; substantive response depth is P |
+| Final-prophethood challenges — transmission layer | **L (✓)** | RT-1 through RT-4 in revelation-transmission.md |
+| Final-prophethood challenges — moral-luck layer | **L (~)** | DO-8 (Prophetic Mission and Moral Luck) in do-second-loop.md |
+| Final-prophethood challenges — prophetic authority vs. philosophy | **L (✓)** | prophecy-wahy-supremacy.md (challenge patterns A/B/C) |
+| Comparative religion — Christianity | **L (✓)** | DO-11/DO-12/DO-13 in do-christian-extensions.md; philosophical-usurpation.md Type A/B |
+| Comparative religion — cross-tradition via family transfer | **C** | Cases from any tradition that instantiate a governed family are covered through that family. Specific transfer routes: divine-multiplicity configurations (polytheism, henotheism, Hindu monistic/pluralistic-deity arrangements, apatheism) → V12 (tamannaʿ exhaustion; SKILL.md explicitly marks this as "any interlocutor" before DO-11/13 Christian overlay) + Creator-creation distinction in metaphysical-architecture.md; devotional-disorder (desire-as-worship, idolatry as fiṭrah-substitution) → hawā + ʿāda deformation types + F2 (volitional dimensions); cross-tradition philosophical-framework usurpation (Advaita non-dualism, Buddhist impermanence framework, Confucian naturalism as arbiter) → philosophical-usurpation.md Types A–D; religious-diversity objection → DO-4; noetic-structure diagnosis → NS-1 through NS-12 (no religious-background restriction). These transfer routes are operative architecture, not generic fallback. |
+| Comparative religion — bespoke religion-specific families (Buddhist anatta / impermanence challenge to Islamic soul-doctrine; Hindu non-dualist Advaita as rival theological ontology; Jewish final-prophethood argument) | **M** | No dedicated DO-series case files. Cases whose argument structure requires religion-specific doctrinal content (not merely family-transfer engagement) have no canonical owner. Adherents of these traditions whose cases instantiate a governed family are engaged through that family — this entry captures only the bespoke argument-structure gap. |
+| Conversation excerpt handling — thin-basis discipline | **P** | SKILL.md names "conversation excerpts" as an activation trigger. mixed-case-handling.md governs compound cases; P7 Stop-4 governs underdetermined cases. No dedicated excerpt-mode discipline specifying minimum basis required before NS or deformation code may be assigned, and no anti-pattern entry for excerpt-mode over-read |
+| Hadith corpus transmission and authentication epistemology | **M** | V10 governs Qurʾānic transmission; isnād grading, jar ḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf distinctions, and the āḥād-vs-mutawātir epistemological question for hadith are not covered by any dedicated case or technique file |
+| Sufism-related crises (contested practices, ṭarīqah authority claims) | **M** | Not governed; not referenced in SKILL.md activation scope but may arise in Muslim-internal cases |
+
+---
+
+## §10 — Gap Inventory (Partial and Missing Families)
+
+The following are the actionable gaps in priority order based on scope-claim vs. governed-coverage distance:
+
+### Gap 1 — Conversation Excerpt Thin-Basis Discipline (P → C, partial remediation done)
+**Claimed:** SKILL.md activation trigger includes "conversation excerpts."
+**Governed:** P7 Stop-4 (underdetermined case) exists; now also: "Excerpt Over-Read" anti-pattern added to anti-patterns.md in Session 2 (definition, pattern, correct behavior, self-audit question, prevented-by).
+**Remaining gap:** noetic-reading-checklist.md does not yet have an excerpt-specific minimum-basis rule (minimum signal required before a single NS code may be assigned; required fields that must remain provisional). Stop-4 and the anti-pattern together provide the failure detection and correction, but a proactive rule in the checklist would close the loop at the diagnostic pass level rather than only in self-audit.
+**Residual risk:** Low — the anti-pattern and Stop-4 together catch this failure mode. The missing checklist rule means there is no proactive gate at the read-attempt level, only a retroactive self-audit catch.
+**Further remediation (if warranted):** Add an excerpt-mode section to noetic-reading-checklist.md specifying minimum convergent signals required before confident NS assignment and requiring the "decisive missing differentiator" field to be populated when the excerpt is thin.
+
+### Gap 2 — Register-Hold Bypass Failure Detection (C → L)
+**Claimed:** The concealment × orientation matrix in case-state-schema.md governs content deployability at Gate Check 6. *(Note: the matrix itself EXISTS as an explicit decision table — confirmed by direct read. This gap was mis-stated in the initial ledger draft.)*
+**Governed:** The matrix is explicit and correct. What is missing is a named anti-pattern for "deployed content when the matrix cell said register-hold" — the failure condition that would catch a practitioner who bypassed the gate. The matrix describes correct behavior per cell; no file names the violation signature.
+**Risk:** A practitioner can fail to apply the matrix (deploy doctrinal content into an iʿrāḍ + identity-performance cell) without a named anti-pattern catching the violation in self-audit.
+**Remediation:** Add a "Register-Hold Bypass" anti-pattern to anti-patterns.md with: definition, pattern (content deployed into register-hold cell), correct behavior (hold the module; deploy only what the cell specifies), self-audit question (did I confirm the matrix cell before loading content?), and "prevented by" pointers to case-state-schema.md matrix and diagnostic-ir.md Gate Check 6.
+
+### Gap 3 — Do-Core and Do-Second-Loop Failure Tests (unverified)
+**Claimed:** DO-1 through DO-10 are L.
+**Governed:** DO-1 and DO-2 confirmed to have the objection/rebuttal/Taymiyyan-response structure. DO-3 through DO-10 confirmed to exist and be routed correctly; content depth not directly read in this pass.
+**Risk:** If DO-3 through DO-10 lack explicit failure tests or self-audit questions, they are structurally P rather than L.
+**Remediation:** Direct read of do-second-loop.md and do-core.md DO-3 through DO-6 entries; add failure-test blocks where absent.
+
+### Gap 4 — Islamic-Specific Moral Objections (P → C or L)
+**Claimed:** NS-8 profile covers moral-recoil component; Type D philosophical usurpation covers liberal-political-philosophy-as-moral-arbiter.
+**Governed:** Usurpation identification is L; substantive response structure for specific Islamic ethics objections is absent.
+**Risk:** A practitioner correctly identifies Type D usurpation and routes to NS-8 but lacks a structured response to the specific content of the objection (e.g., corporal punishment, slavery in Islamic law, gender asymmetry in testimony or inheritance).
+**Remediation:** Either (a) add a DO-14 "Islamic Ethics and Jurisprudence Objections" case file with the objection/strongest-rebuttal/Taymiyyan-response structure, or (b) extend NS-8 profile to include compound response sequences for the moral-recoil sub-type when Type D usurpation is confirmed.
+
+### Gap 5 — Comparative Religion: Bespoke Religion-Specific Families (M, correctly bounded)
+**What is governed:** The repo governs comparative-religion cases at two levels that must not be conflated. (1) Explicit Christian extensions: DO-11/DO-12/DO-13 in do-christian-extensions.md. (2) Cross-tradition family-transfer coverage: any case from any tradition that instantiates a governed family is covered through that family — specifically: divine-multiplicity (polytheism, henotheism, Hindu monistic/pluralistic-deity, apatheism) via V12 + Creator-creation distinction; devotional-disorder (desire-as-worship, idolatry) via hawā/ʿāda deformation + F2; cross-tradition philosophical-framework usurpation via philosophical-usurpation.md Types A–D; religious-diversity via DO-4; noetic-structure diagnosis via NS-1 through NS-12. These are operative architecture, not generic fallback.
+**What is not governed:** Bespoke argument structures that require religion-specific doctrinal content and cannot be resolved through family transfer: (a) Buddhist anatta/no-soul as a direct challenge to the Islamic account of the nafs; (b) Hindu non-dualist (Advaita Vedanta) claim as a rival theological ontology; (c) Jewish final-prophethood arguments grounded in Torah's self-characterization as complete; (d) Buddhist impermanence framework as a rival account of creation and divine constancy. These remain M.
+**Risk:** Conflating the two levels — treating "no bespoke file exists" as "no coverage exists" — causes the practitioner to misrepresent the repo's reach and may suppress correct routing through family transfer for a Hindu or Buddhist interlocutor whose case actually does instantiate a governed family.
+**Remediation:** SKILL.md and coverage-ledger corrected to distinguish both levels. Bespoke-family gap remains; remediation requires dedicated case content, not a description fix.
+
+### Gap 6 — Hadith Transmission and Authentication Epistemology (M → C or L)
+**Claimed:** "transmission and final-prophethood challenges" in SKILL.md.
+**Governed:** V10 and RT-1 through RT-4 cover Qurʾānic transmission specifically.
+**Risk:** When an interlocutor challenges the hadith corpus — isnād reliability, the āḥād hadith problem, the gap between prophetic death and hadith collection, the ʿadāla of companions — the practitioner has no guided response. The gap is most acute for NS-9 (historical-critical skeptic) cases where the challenge is to hadith rather than Qurʾān.
+**Remediation:** Either (a) add an RT-5 sub-case for hadith authentication within revelation-transmission.md, or (b) add a note to V10 that it governs Qurʾānic transmission and that hadith transmission requires a parallel instrument not yet present, pointing to external resources or marking the gap explicitly.
+
+### Gap 7 — Mode-of-Concealment File (unverified)
+**Claimed:** Modes of concealment are L based on cross-reference.
+**Verified:** modes-of-concealment.md exists; content not directly read.
+**Risk:** Low — the IR schema fields and routing-precedence references make it structurally implausible that this file is absent — but the content has not been directly audited for failure conditions or self-audit questions.
+**Remediation:** Add to next direct-read pass.
+
+---
+
+## §11 — Audit Confidence Summary
+
+| Confidence level | Count | Notes |
+|-----------------|-------|-------|
+| **L (✓)** — directly read and confirmed | 51 entries | All entries where the canonical file was read in Session 1 or Session 2 |
+| **L (~)** — confirmed by cross-reference | 47 entries | File confirmed to exist; content confirmed by dependent-file references; not directly read |
+| **P** — partial (identified gap) | 3 entries | conversation excerpt discipline, do-core DO-3–DO-6 failure tests (unverified), Islamic moral objections (case-state-schema.md matrix was incorrectly rated P; corrected to L after direct read) |
+| **M** — missing/implied | 3 entries | Non-Christian comparative religion, hadith transmission epistemology, Sufism-related crises |
+
+**Total governed families/files:** ~98 entries across NS, DO, RT, deformations, concealment, governance procedures, techniques, and special domains.
+
+**Claimed but not fully governed (net):** 4 missing (bespoke religion-specific families, hadith authentication, mode-of-concealment file unverified, Sufism), 3 partial (excerpt discipline — partial remediation done; do-core DO-3–DO-6 failure tests unverified; Islamic moral objections depth). The previous claim of "non-Christian comparative religion is M" was overcorrected — cross-tradition family-transfer coverage is operative (rated C); what is M is only the bespoke religion-specific argument structures without dedicated files. Transmission claims remain accurate for Qurʾānic scope; hadith authentication is the correctly bounded M.
+
+---
+
+## §13 — Canonical Owner Map
+
+This map distinguishes three functional roles files play in the architecture. Each file has exactly one primary role; some files serve secondary roles where noted.
+
+| Role | Definition | Files |
+|------|------------|-------|
+| **Routing** | The file's primary job is to direct the practitioner to the correct next file, module, or instrument. It does not supply response content. | `case-library/INDEX.md`, `case-library/profiles/INDEX.md`, `references/diagnostics/INDEX.md`, `references/tactics/INDEX.md`, `references/techniques/INDEX.md`, `references/procedures/INDEX.md`, `references/diagnostics/framework-pipeline.md`, `references/diagnostics/routing-precedence.md`, `case-library/noetic-profiles.md` (redirect-only) |
+| **Diagnostic** | The file's primary job is to classify the case — the noetic state, deformation type, concealment mode, discourse orientation, reason-category, or foreign-premise status. It produces typed state that feeds the IR. | `V1-diagnostic.md`, `noetic-reading-checklist.md`, `seven-deformations.md`, `modes-of-concealment.md`, `discourse-orientation.md`, `reason-disambiguation.md`, `foreign-premise-detection.md`, `arabic-backbone-predicates.md`, `diagnostic-ir.md`, `case-state-schema.md`, `mixed-case-handling.md`, `kalamic-interlocutor.md`, `fitrah-perspectives.md` |
+| **Restoration substance** | The file's primary job is to supply the doctrinal, epistemic, or ontological content that constitutes the actual response — what is being restored and how. | `metaphysical-architecture.md`, `kernel-thesis.md`, `sound-reason-epistemology.md`, `prophecy-wahy-supremacy.md`, `philosophical-usurpation.md`, `terminology.md`, all NS profile files (`ns-1` through `ns-12`), all DO files (`do-core.md`, `do-second-loop.md`, `do-christian-extensions.md`, `do-attribute-precision.md`), `revelation-transmission.md`, all V-series technique files (`V2` through `V12`), all tactic files (`E1–E4`, `M1–M9`, `R1–R3`, `F1–F3`), all procedure files (`P1–P7`) |
+| **Bridge** | The file serves a mixed role: it participates in routing AND supplies restoration substance. Bridge files are the highest-risk for over-loading — loading them when only one of their roles is needed brings in unnecessary content. | `kalamic-interlocutor.md` (diagnostic + Māturīdī/Ashʿarī/Muʿtazilī restoration substance), `do-attribute-precision.md` (routing precision fixtures + restoration substance), `anti-patterns.md` (self-audit routing + failure detection), `heuristics.md` (always-active background + restoration mode) |
+| **Governance** | The file's primary job is to constrain what the practitioner may do at a routing or content level — hard rails, stop conditions, prohibition enforcement, consistency checks. | `P7-restoration-stops.md`, `routing-precedence.md`, `diagnostic-ir.md` (also diagnostic), `anti-patterns.md` (also bridge), `inference-boundary.md`, `kernel-thesis.md` (also restoration substance) |
+
+**Owner map rules:**
+1. Do not load a routing file expecting it to supply response content — it will not.
+2. Do not use a restoration-substance file to make a routing decision — routing is in the routing and diagnostic files.
+3. Bridge files must be loaded for a specific declared need (either their routing function or their substance function) — do not load them because they contain something relevant to both; the load condition in the frontmatter specifies when each function applies.
+4. Governance files govern regardless of whether they are explicitly cited — P7 stops fire when triggered even if P7-restoration-stops.md is not in the active load set.
+
+---
+
+## §12 — Revision Log
+
+| Date | Scope | Changes |
+|------|-------|---------|
+| 2024-12 Session 1 | Kalāmic variance pass | NS-6 school identification, NS-10 burden check, §Downstream Routing Table in kalamic-interlocutor.md, IR consistency rules, backbone predicate split rows, do-attribute-precision.md frontmatter update |
+| 2025-01 Session 2 | Parity ledger creation + governance hardening | This file created; gaps identified; case-state-schema.md matrix rating corrected from P to L after direct read; SKILL.md description truthfulness pass (comparative-religion coverage distinguished at two levels: explicit Christian extensions + cross-tradition family-transfer; bespoke religion-specific gaps named; hadith authentication gap named); comparative-religion §9 entry split into C (family-transfer) and M (bespoke religion-specific); Gap 5 rewritten to distinguish the two levels; revelation-transmission.md scope boundary added; canonical owner map added (§13); anti-patterns.md: 2 new anti-patterns added (Excerpt Over-Read, Register-Hold Bypass); kalamic-interlocutor.md: Ashʿarī communal-obligation section added with lever rule, substrate-load discipline, failure language |

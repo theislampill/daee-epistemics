@@ -156,7 +156,7 @@ The repository is not only a content store. It carries an explicit governance la
 - a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
 - an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
-- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach before they harden into output
+- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
 
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
@@ -188,7 +188,8 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Compact metadiscursive output form for surfacing case type, module choice, confidence, and restoration target without chain-of-thought dumping. |
 | [`references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
 | [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
-| [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach. |
+| [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass. |
+| [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Parity/coverage audit ledger: explicit fidelity ratings (Landed / Compressed-but-governed / Partial / Missing) for every governed family, file, and procedure; gap inventory; canonical owner map. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
 

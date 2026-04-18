@@ -89,6 +89,28 @@ The following entries expand the compressed table into full audit-grade entries.
 *Why it damages the skill:* Content deployed without diagnostic routing is calibrated to the wrong register by default. The skill's discriminating power — its ability to send different responses to different cases — is entirely dependent on the diagnostic gate. Bypassing V1 collapses all cases into the one the practitioner expects, converting a precision instrument into a generic apologetics dispatcher.
 *Prevented by:* `V1-diagnostic.md` (the diagnostic gate itself); SKILL.md Named Routing Constraint 1 (no content module before V1 has been run); `heuristics.md` rule 2 (start with V1); `framework-pipeline.md` (forbidden shortcut path: intake → direct doctrinal rebuttal).
 
+---
+
+**Excerpt Over-Read**
+*Definition:* Assigning a confident NS code, deformation type, or concealment mode from a conversation excerpt that is too thin to support the assignment — without marking the read provisional or naming what differentiating signal would resolve the ambiguity.
+*Pattern appearing in output:* A three-sentence excerpt in which someone asks "isn't it arrogant to think your religion is right?" is diagnosed as NS-5 (habituated atheist) with primary deformation hawā and concealment mode istikbār. A confident [Diagnostic IR] block is emitted and the matched modules are loaded.
+*Correct behavior in the same case:* Mark read status as `underdetermined`. List the competing NS candidates (NS-5, NS-2, or possibly NS-4). Answer the specific claim made — the arrogance charge — without assigning a governing read to the whole case. State: "Differentiating signal: whether this is a held position (NS-5 candidate), a principled criterion objection (NS-2 candidate), or a moral-parity argument (NS-4 candidate) — cannot be distinguished from this excerpt alone."
+*Self-audit question:* Is my NS/deformation/concealment diagnosis supported by multiple convergent signals from this excerpt, or by the most plausible surface reading of a single sentence?
+*Why it damages the skill:* An excerpt-mode over-read produces a response optimized for a wrongly diagnosed profile. The person receives a response precisely calibrated to a noetic structure they may not have. Because excerpts are often culled for review rather than produced in live dialogue, the practitioner has no feedback loop to correct the wrong diagnosis. Each module loaded on the wrong diagnosis reinforces the wrong treatment frame.
+*Prevented by:* `P7-restoration-stops.md` Stop 4 (underdetermined-case stop — "do not assign a deformation or concealment code without sufficient signal"); `mixed-case-handling.md` §Insufficient-Basis Conditions; `noetic-reading-checklist.md` multiple-convergent-signal requirement; SKILL.md Named Routing Constraint 4 ("no confident family-lock from thin basis").
+
+---
+
+**Register-Hold Bypass**
+*Definition:* Deploying a matched content module when the concealment × orientation matrix in `case-state-schema.md` specifies that the current register requires a hold — loading doctrinal or case-library content into a cell that says "relational only," "held pending register shift," or equivalent.
+*Pattern appearing in output:* Concealment is confirmed as iʿrāḍ (aversion) and discourse orientation is identity-performance. The matrix cell for this pair says "Iʿrāḍ compounded by identity performance hardens under argument. Relational only; no doctrinal module." The response nonetheless loads DO-1 (divine hiddenness rebuttal) and deploys probabilistic analysis of sincere non-belief.
+*Correct behavior in the same case:* Confirm the matrix cell before loading any content module. When the cell specifies relational-only, invitational, or character-as-evidence: deploy exactly that. Include in the case-state: "Register-hold: iʿrāḍ + identity-performance. Deployable on shift to: truth-seek orientation or concealment clearing." Hold the matched DO module until the register shifts.
+*Self-audit question:* Did I check the concealment × orientation matrix cell before loading any content module? Does the cell I confirmed permit full apparatus deployment, or does it specify a hold?
+*Why it damages the skill:* Content deployed into a register-hold cell is filtered through the very barrier the register-hold exists to address. iʿrāḍ + identity-performance hardens under argument specifically because argument is experienced as pressure, and pressure reinforces the aversion-identity compound. Every argument deployed into this cell is metabolized as further confirmation of the interlocutor's identity position — the skill's precision is converted into a precision instrument for reinforcing the barrier.
+*Prevented by:* `case-state-schema.md` §Concealment × Orientation Routing Matrix (explicit cell-level rules); `diagnostic-ir.md` Gate Check 6 ("confirm the concealment × orientation matrix cell shows content is deployable now"); SKILL.md Named Routing Constraint 3 ("no content-before-register"); `P7-restoration-stops.md` Stop 1 (Content-Withholding Stop — the hard-rail version of the same constraint).
+
+---
+
 ## Quick Self-Audit
 
 - Have I diagnosed before rebutting?
@@ -97,3 +119,5 @@ The following entries expand the compressed table into full audit-grade entries.
 - Is the discourse orientation established or only guessed?
 - Have I preserved restoration over rhetorical win?
 - Have I marked where inference begins?
+- If this is a conversation excerpt, have I confirmed multiple convergent signals before assigning a confident NS code?
+- Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?

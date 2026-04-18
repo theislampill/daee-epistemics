@@ -3,6 +3,7 @@
 > do not use when: generic theism, grief, Trinity pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental
 > overlaps: V10, P2, P5, `sound-reason-epistemology.md` §4.3, `terminology.md`
 > output: matched recurring cases in the revelation / transmission family
+> scope boundary: this file governs Qurʾānic transmission cases (RT-1 through RT-4). It does NOT govern: (1) hadith authentication epistemology — isnād grading, jar ḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf classification, āḥād-vs-mutawātir epistemological status of sunnah — these are not currently covered by any dedicated case file; (2) Bible/NT transmission in a comparative Islamic framework — this is tangentially addressed in cross-tradition contamination guards within RT-1 through RT-3 but is not a governed case in its own right. When a challenge is to hadith corpus rather than Qurʾān, route through NS-9 (historical-critical skeptic) and V10 principles, noting explicitly that a dedicated hadith-authentication case file does not yet exist.
 
 # Case Library - Revelation and Transmission (RT-1 through RT-4)
 

@@ -164,6 +164,38 @@ through the resulting distorting filter. The engagement names this mechanism cle
 as one theological preference against another, but as the difference between sound reason
 and its contaminated substitute.
 
+## The Ashʿarī Communal-Obligation — Distinct Engagement Path
+
+The Ashʿarī tradition softens the Muʿtazilī wujūb al-naẓar without dismantling it. The Ashʿarī move: the obligation is communal (farḍ kifāya) rather than individually universal; ordinary believers may rely on the scholars' demonstrations; non-inferential recognition is not denied as a psychological fact, only as individually sufficient epistemic warrant. This sounds like a concession toward the sound position. It is not. The error is identical at the framework level — only the location of the obligated party has shifted.
+
+**The communal-obligation lever (apply in sequence):**
+
+1. **Name the concession the Ashʿarī has already made:** If ordinary believers need not personally perform naẓar to achieve warranted theistic belief, their belief already has epistemic standing without individual demonstration. The Ashʿarī has conceded that non-inferential theistic standing is epistemically coherent for ordinary believers. That concession is the load-bearing admission.
+
+2. **Press the dilemma about the ordinary believer's standing:** On what basis does the ordinary believer's belief have epistemic standing? Two options: (a) it derives from the scholars' naẓar by testimony — in which case testimony from a community is the warrant, not individual inference, and the standing is externalist-faculty rather than inferentialist; or (b) the ordinary believer's belief has no epistemic standing — a result so counterintuitive that no coherent position can maintain it. The Ashʿarī must choose. Option (a) concedes the externalist-fiṭrah account; option (b) is untenable. Name the dilemma and hold it without resolution — do not supply the Ashʿarī's exit from it.
+
+3. **Apply the naẓar-circularity argument in the Ashʿarī form:** The scholars' naẓar must be reliable before it can ground the ordinary believer's belief by testimony. What grounds the scholars' naẓar's reliability? Either: (a) naẓar certifies itself — circular; or (b) the fiṭrah's orientation toward truth certifies the reliability of properly functioning cognitive faculties, including naẓar — which is the sound position. The communal-obligation move does not escape the circularity; it relocates it.
+
+**Substrate-load discipline (Ashʿarī epistemological track only):**
+
+The Ashʿarī epistemological engagement (communal-obligation lever, naẓar-circularity argument) and the Ashʿarī ontological engagement (kalām nafsī doctrine, §The Ontological Dimension) are distinct tracks requiring distinct instruments.
+
+- **Epistemological burden live, ontological burden absent:** Deploy V2 + the communal-obligation lever + naẓar-circularity argument. Do NOT load §The Ontological Dimension — loading it fragments the sequence and addresses a target that is not governing this exchange.
+- **Ontological burden live, epistemological burden absent:** Deploy §6.2 + V8 + kalām nafsī treatment. Do NOT use the communal-obligation lever — it addresses a different target.
+- **Both live:** Sequence epistemological first per the routing table; ontological second. Do not merge the treatments — the communal-obligation lever does not assist the kalām nafsī correction, and the kalām nafsī treatment does not assist the communal-obligation lever. Each must run its own sequence.
+
+**Failure language (this engagement has failed if any of the following occur):**
+
+1. The communal-obligation move is treated as movement toward the sound position — affirmed as a step in the right direction. The correct move is to name the error's persistence, not the direction of travel. The framework error is not resolved by communal-level transfer.
+
+2. The naẓar-circularity argument is applied only to the Muʿtazilī form and not to the Ashʿarī. Both forms presuppose naẓar's reliability; the Ashʿarī form's communal-obligation move depends on the scholars' naẓar being reliable, which is a form of the same presupposition. The circularity argument applies to both.
+
+3. The dilemma (externalist account or no individual warrant) is not presented. Leaving the communal-obligation move's internal tension unnamed is a failure of the lever — the Ashʿarī is allowed to retain the softening as if it had coherently dissolved the framework problem.
+
+4. §The Ontological Dimension (kalām nafsī) is loaded while the live pressure is epistemological only. This cross-loading confuses the restoration target and produces a response that addresses a real Ashʿarī error but not the one governing the current engagement.
+
+5. The softening is confused with NS-10 (Māturīdī concession) — these are distinct. Ashʿarī softening retains the inferential framework while relocating the individual obligation; Māturīdī softening additionally admits non-propositional evidence in some forms. The engagement lever for the communal-obligation is appropriate for Ashʿarī; the NS-10 profile and §The Māturīdī Position govern the Māturīdī engagement path. Do not mix them.
+
 ## The Māturīdī Position — Distinct Engagement Path
 
 The Māturīdī tradition is a distinct deviation, not a legitimate midpoint between the
