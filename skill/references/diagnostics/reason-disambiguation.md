@@ -1,8 +1,9 @@
-> role: typed diagnostic substrate
-> use when: the case turns on what counts as reason, rationality, or rational evidence — whether the interlocutor's conception of reason is at issue, or whether the practitioner must identify which category of reason is governing the case
-> do not use when: the case is purely transmission-related, grief-primary, or involves no dispute about what counts as valid epistemic grounds
-> output: four typed categories, their routing consequences, and the restoration move each implies
-> load-after: V1 Phase 2 axis classification; load alongside V2 when the contaminated-reason deformation is confirmed
+> role: typed diagnostic substrate — Mandatory Pass [P-A] in V1 Phase 2; classifies reason-category before any content gate can open
+> use when: any case where the interlocutor is pressing an intellectual argument (DO-orient = truth-seek or mixed); this pass runs by default — it is not conditional on "whether reason is at issue," because that question cannot be answered without running the pass
+> do not use when: P7 Stop-1 is active (grief-primary case where no content gate is being assessed yet), or when the case is register-only with no intellectual content component pending
+> output: four typed categories, their routing consequences, and the restoration move each implies; emits reason-category field to the case-state
+> load-after: V1 Phase 2 axis classification, before any content module is selected; reason-category output feeds the diagnostic IR's Gate Check 1 (mandatory minimum) and Gate Check 3 (suppression rules)
+> failure test: if a content module was dispatched without a reason-category field in the case-state, this pass was skipped; the routing gate was opened without the mandatory minimum fields populated
 
 # Reason-Disambiguation — Typed Diagnostic Categories
 

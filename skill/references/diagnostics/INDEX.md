@@ -9,8 +9,14 @@ instrument.
 1. Within V1, start with noetic reading.
 2. Within V1, identify deformation and concealment.
 3. Within V1, check discourse orientation.
-4. Surface case state, confidence, and inference boundary when the response needs to show its routing.
-5. If the case is mixed or thin, use the mixed-case rules before selecting downstream modules.
+4. Run V1 Phase 2 mandatory passes in sequence:
+   [P-A] reason-disambiguation.md → emit reason-category (1–4) + routing gate
+   [P-B] foreign-premise-detection.md → emit [Foreign Premise Detection] block
+   [P-C] arabic-backbone-predicates.md → emit active predicates or "none active"
+5. Form the diagnostic IR (diagnostic-ir.md). All gate checks must pass before module dispatch.
+   Gate blocked? → identify stop condition; do not proceed to matched modules.
+6. If the case is mixed or thin, use mixed-case rules before selecting downstream modules.
+7. Surface case state, confidence, and inference boundary when routing legibility is needed.
 
 ## Files
 

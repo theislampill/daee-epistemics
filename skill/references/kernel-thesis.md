@@ -1,7 +1,7 @@
-> role: canonical architecture anchor
-> use when: auditing whether a response, a routing decision, or a new module is consistent with the skill's governing commitments
+> role: canonical architecture anchor — five non-negotiable commitments; checked as Gate Check 5 in diagnostic-ir.md before module dispatch
+> use when: auditing whether a response, a routing decision, or a new module is consistent with the skill's governing commitments; specifically invoked during diagnostic-ir.md Gate Check 5 to verify no violation signature is present in the planned response
 > do not use when: the task is a narrow sub-answer that does not require architecture-level grounding
-> output: five non-negotiable commitments and their routing consequences
+> output: five non-negotiable commitments, routing consequences, and violation signatures
 
 # Kernel Thesis — Non-Negotiable Architecture
 

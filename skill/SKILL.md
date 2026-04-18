@@ -40,13 +40,21 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
-### V1 Phase 2 Passes — Run Inside the Diagnostic Gate
-These passes execute within V1 Phase 2 (axis classification). Triggered by conditions the diagnostic gate identifies, not by topic.
+### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
+These passes are mandatory within V1 Phase 2. They are not conditional on topic. Run them in sequence on any case with an intellectual-content component. Skip only if P7 Stop-1 is active (no content gate is being assessed).
 
-| File | Load When |
-|------|-----------|
-| `references/diagnostics/reason-disambiguation.md` | The interlocutor's criterion or conception of reason is at issue; reason-category must be established before routing; claim-type involves what counts as rational evidence |
-| `references/diagnostics/foreign-premise-detection.md` | A criterion-importing element is visible; the framework being applied to the religious position has not been examined; V1 Phase 2 axis classification is underway |
+| Pass | File | Emit |
+|------|------|------|
+| [P-A] mandatory | `references/diagnostics/reason-disambiguation.md` | reason-category (1–4) + routing gate; feeds case-state and diagnostic IR |
+| [P-B] mandatory when criterion-importing visible | `references/diagnostics/foreign-premise-detection.md` | [Foreign Premise Detection] block; skip only if reason-category = 1 AND no criterion-importing element is visible |
+| [P-C] mandatory per trigger mapping | `references/diagnostics/arabic-backbone-predicates.md` | [Backbone Predicates] block or "none active"; check trigger-mapping table for minimum checks per NS/DO code |
+
+### Dispatch Gate — Required Before Module Dispatch
+The diagnostic IR must be formed and all gate checks must pass before any content module is dispatched. This is not an optional output.
+
+| File | Role |
+|------|------|
+| `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
 
 ### Specialty Diagnostics
 Load only when surface discourse points to the specialty family.
@@ -72,8 +80,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | `references/case-library/philosophical-usurpation.md` | A philosophical framework is confirmed functioning as the upstream authority that revelation must satisfy — detected via foreign-premise-detection.md or V1 Phase 2 |
 | `references/prophecy-wahy-supremacy.md` | Revelation is being required to clear a philosophical bar before being credited; DO-13 confirmed; Aristotelian/neo-Platonic theism installed as default standard |
 | `references/metaphysical-architecture.md` | Auditing whether the response is consistent with the ontological and epistemic order being restored — the architecture behind the workflow |
-| `references/diagnostics/diagnostic-ir.md` | Producing a full auditable case-state for a substantive engagement; prevents cosmetic workflow compliance |
-| `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 and the case involves criterion-importing, tribunal-installation, epistemic-ordering disruption, transmission-system conflation, or sharʿī/lexical collapse |
+| `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 mandatory pass [P-C]; also individually when criterion-importing, tribunal-installation, or epistemic-ordering elements are live — see trigger-mapping table |
 
 Use the case-library index's Quick NS, DO, RT, and specialty-marker tables before loading a content
 file.
@@ -375,19 +382,19 @@ structured diagnostic and rebuttal framed as removal of occlusion.
 |----------|---------------|------------------------------|
 | Theistic Evidentialism | E1-E4, then E3 if convergence is needed | Partial profile coverage only; often adjacent to NS-2 or NS-4 depending what is held basic |
 | Kalāmic Evidentialism | NS-6 plus `references/diagnostics/kalamic-interlocutor.md` | Full NS profile for the noetic shape; use the specialty diagnostic for school-specific pressure. Surface markers include `dalil`, `wujūb al-naẓar`, taqlīd-not-knowledge, and restricting knowledge to inferentially demonstrated belief |
-| Māturīdī Evidentialism | `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Partial specialty coverage; surface markers include fiṭrah as initial opening but naẓar as required ratification; ontological errors on divine attributes share Ashʿarī Kullābī inheritance and are treated as diagnosed deviations, not as valid alternatives |
-| Fideism | F1-F3, practice as epistemic access | No dedicated NS profile in the current corpus |
-| Reformed epistemology / basic belief | R1-R3, qalb-fiṭrah chain | Partial conceptual coverage; no dedicated NS profile |
+| Māturīdī Evidentialism | NS-10 plus `references/diagnostics/kalamic-interlocutor.md` — Māturīdī section | Full NS-10 profile; V9 as primary technique; load kalamic-interlocutor.md for school-specific pressure; surface markers include fiṭrah as initial opening but naẓar as required ratification |
+| Fideism | NS-11, F1-F3, practice as epistemic access | Full NS-11 profile covers fideism and Reformed basic-belief variants; see `case-library/noetic-profiles.md` §NS-11; R3 + V5 as primary intervention |
+| Reformed epistemology / basic belief | NS-11, R1-R3, qalb-fiṭrah chain | Full NS-11 profile; proper-function account contrasted with fiṭrah account; see `case-library/noetic-profiles.md` §NS-11 |
 | Hard Naturalism | NS-1, V2 first, then matched E-register | Full NS profile present |
 | Evidence-suspending agnosticism | NS-2, E2, V3, M2 | Full NS profile present |
-| Historical-critical skepticism | V10 plus RT-1/RT-2 first; P2 when the case is a mixed objection battery | No dedicated NS profile; surface markers include testimony suspicion, late-text or canon-construction language, manuscript-reconstruction pressure, and historical criticism presented as neutral method |
-| Modernist revisionism | V2 + P2 + V10 | No dedicated NS profile; surface markers include moral filtering, authority fatigue, and textual-historical pressure being merged into one crisis |
+| Historical-critical skepticism | NS-9; V2 on imported framework first; V10; then matched RT module | Full NS-9 profile; surface markers include testimony suspicion, late-text or canon-construction language, manuscript-reconstruction pressure, and historical criticism presented as neutral method |
+| Modernist revisionism | NS-8; P6 / mixed-case-handling; V2 + P2 + V10 per component | Full NS-8 profile; P6 governs disaggregation; surface markers include moral filtering, authority fatigue, and textual-historical pressure merged into one crisis |
 
-**Profile coverage gap:** Hard Naturalism, evidence-suspending agnosticism, and kalāmic
-evidentialism now have clean one-row coverage from this table to a full NS profile. Theistic
-evidentialism, Māturīdī evidentialism, fideism, reformed/basic-belief language, historical-critical
-skepticism, and modernist revisionism remain split between specialty diagnostics, tactics, and case
-files rather than a single unified profile form.
+**Profile coverage:** All major epistemological positions now have full NS profile coverage.
+NS-1 through NS-9 have been present since the initial corpus. NS-10 (Māturīdī Evidentialist),
+NS-11 (Fideist / Reformed Basic-Belief), and NS-12 (Blank-Slate or Dual-Nature Fiṭrah) complete
+the taxonomy. Theistic evidentialism remains partially covered — often adjacent to NS-2 or NS-7
+depending on what the interlocutor holds as basic.
 
 **Specialty-diagnostic markers to surface early:**
 - Route to `references/diagnostics/kalamic-interlocutor.md` when the discourse turns on `dalil`,

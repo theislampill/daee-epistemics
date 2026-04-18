@@ -1,8 +1,9 @@
-> role: operational predicate layer — bridges the tradition's commitments to the diagnostic state-space
-> use when: V1 Phase 2 axis classification is underway and the practitioner needs to check whether a structurally important violation of the tradition's epistemic order is present — not as inspiration but as a typed check
+> role: operational predicate library — typed checks that fire when a structurally important violation of the tradition's epistemic order is present
+> use when: V1 Phase 2 axis classification is underway and a criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element is visible
 > do not use when: the case is already fully diagnosed and the upstream blocker is established
 > output: typed predicates that compose with the case-state — each predicate is either true, false, or unknown; each carries a route consequence when true
 > pipeline position: runs alongside foreign-premise-detection.md and reason-disambiguation.md inside V1 Phase 2
+> ownership note: this file is the check library; foreign-premise-detection.md is the pass that draws on it — specifically, C-1/C-2/C-3 and T-1 map to FPD Steps 1-3; the two files are complementary not redundant: FPD detects and emits a structured finding; ABP provides the full predicate vocabulary for that detection and for broader ordering violations FPD does not cover (O-1/O-2/O-3/K-1/K-2)
 
 # Arabic-Backbone Predicates — Operational Checks from the Tradition
 
@@ -186,3 +187,34 @@ Each predicate that fires contributes to the case-state. The emission format:
 ```
 
 **Compression rule:** Do not populate all predicates performatively. Run only the checks relevant to the live case. If no backbone predicate fires, emit `[Backbone Predicates] — none active` and proceed. The purpose is disciplined checking, not exhaustive annotation.
+
+---
+
+## Trigger Mapping — Minimum Checks by NS Code and DO Family
+
+The following predicates should be checked as a minimum for the named cases. Other predicates may also be active; these are the ones that most commonly fire and are most costly to miss.
+
+| Case surface | Check minimally |
+|---|---|
+| NS-1 (Naturalist) | C-1, C-2, C-3 (the naturalist framework is almost always C-1 or C-3) |
+| NS-6 (Kalāmic Evidentialist) | T-2 (wujūb al-naẓar functions as T-2), T-3 (kalāmic apparatus as "pure foundation") |
+| NS-9 (Historical-Critical Skeptic) | K-1 (conflation of transmission systems), C-1 (historical-critical neutrality as smuggled criterion) |
+| NS-10 (Māturīdī Evidentialist) | T-2, O-2 (naẓar required before fiṭrī recognition counts as knowledge) |
+| DO-5 (Transcendence and language) | O-1, K-2 (lexical predication vs. sharʿī judgment) |
+| DO-6 (Attribute coherence) | C-1, O-1 (reason-over-transmission inversion in attribute argument) |
+| DO-13 (Philosopher's God vs. God of revelation) | T-1, T-3, O-1 (Aristotelian framework as counterfeit tribunal + later foundation mistaken for pure) |
+| DO-11/12 (Trinity pressure) | K-1, C-1 (Trinitarian categories imported from a different metaphysical tradition) |
+| RT-1/RT-3 (Manuscript/qirāʾāt) | K-1 (NT manuscript methods conflated with Qurʾānic transmission architecture) |
+| Any case where "God must be X" appears | T-1, T-3, C-1 (usurpation pattern) |
+| Any case where fiṭrī recognition is dismissed | O-2, O-3 |
+| Any case where kalāmic proof is demanded | T-2, O-3 |
+
+---
+
+## Failure Test
+
+This file has not been applied if:
+
+- Criterion-importing, tribunal-installation, or ordering-violation elements were visible in the input, but `[Backbone Predicates] — none active` was emitted without checking the relevant predicates from the trigger mapping above.
+- A backbone predicate fired (C-1, T-1, O-2, etc.) but no route consequence was recorded and no module was triggered by it.
+- The compression rule was invoked to avoid checking predicates that the trigger mapping flags as minimum checks for the live NS/DO case.

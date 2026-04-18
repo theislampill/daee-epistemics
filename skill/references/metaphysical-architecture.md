@@ -95,3 +95,17 @@ This file does not route. It does not select modules. It does not produce case-s
 A response that satisfies the workflow while violating the architecture described here has satisfied the form and missed the substance. The architecture integrity check in `kernel-thesis.md` is the operational test; this file is the substance behind that check.
 
 **Paired file:** `diagnostic-ir.md` — the typed intermediate representation that binds this architecture to the workflow layer. The IR takes fields from the workflow (case-state, deformation, reason-category, backbone predicates) and fields from this file (which layer is disrupted, what restoration target is implied) to produce a complete typed diagnostic state that is auditable independently of prose quality.
+
+**Binding to the Restoration Target field:** The `Restoration target` field in both `case-state-schema.md` and `diagnostic-ir.md` must be stated in terms that correspond to the layers and distinctions named in this file. The valid typed values are:
+
+- Layer 1 — fiṭrah: name the specific deformation or contamination occluding fiṭrī recognition; name the restoration move matched to it (P1, V2, V5, R2)
+- Layer 2 — sound reason: name which category of contaminated reason (2/3/4) is present; name the move restoring Category 1 (V2, V7, reason-disambiguation)
+- Layer 3 — authentic transmission: name which transmission evaluation criterion is being displaced; name V10 and the relevant branch operator
+- Layer 4 — inferential argument: name the inversion (gatekeeper rather than secondary route); name V9 or E2 as the relocation instrument
+- Ontological — creator-creation: name the category mistake in predication; name the fixture from `do-attribute-precision.md`
+- Ontological — transcendence-immanence: name the specific philosophical framework generating the false tension; name V2 + DO-13 or `philosophical-usurpation.md`
+- Ontological — prophetic authority: name the tribunal; name the route through `foreign-premise-detection.md` → `philosophical-usurpation.md` → `prophecy-wahy-supremacy.md`
+
+A restoration target stated only as "correct the argument" or "demonstrate X" is not typed against this architecture and does not constitute a valid field value.
+
+**Failure test:** If the IR's `Restoration target` field can be satisfied without naming a layer from this file's taxonomy, this file has not governed the response. The architecture is present in the repo but absent from the execution.

@@ -1,8 +1,9 @@
-> role: diagnostic pipeline pass
+> role: diagnostic pipeline pass — detects and classifies imported premises, criteria, and tribunals
 > use when: V1 Phase 2 axis classification is underway and the interlocutor's framework, criterion, or prior probability assignment is not yet examined
 > do not use when: the claim is purely transmission-related with no criterion-importing element, or when the reason-category has already been established as sound (Category 1)
 > output: a structured diagnostic pass with a defined output shape — not an optional reflective move
 > pipeline position: runs as part of V1 Phase 2 alongside the deformation and concealment reads; its emission feeds the case-state
+> ownership note: this file is the detection pass; arabic-backbone-predicates.md is the broader predicate library — FPD Steps 1-3 map specifically to C-1/C-2/C-3 and T-1 in ABP; for ordering violations (O-1/O-2/O-3) and category-conflation violations (K-1/K-2) that do not involve an imported foreign premise, use ABP directly; on confirmed usurpation, load philosophical-usurpation.md as the case family file
 
 # Foreign-Premise Detection — Explicit Diagnostic Pass
 

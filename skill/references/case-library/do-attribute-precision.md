@@ -1,8 +1,10 @@
-> role: attribute-discourse precision fixtures
+> role: attribute-discourse precision fixtures — named confusion types with bad/corrected output fixtures, self-audit questions, and prohibited moves
 > use when: the live pressure involves how divine attributes are predicated, how divine identity is conceived, or how the relation between attributes, essence, and persons is argued — DO-6 (attribute coherence), DO-11 (Trinity coherence), DO-12 (perfect-being theology), DO-13 (philosopher's-God vs. God of revelation)
 > do not use when: the case is purely evidentialist, transmission-related, or grief-primary with no attribute-discourse component
 > output: named confusion type, fixture (bad output → corrected output), audit question, prohibited move
 > load-after: DO family confirmed; V8 (bilā kayf) loaded when relevant; sound-reason-epistemology.md §6.3 loaded when composition/tarkīb shubhah is active
+> backbone-predicate connections: Confusion 1 → K-1 (category mistake = predication-type conflation) + O-1 (reason-over-transmission inversion when creaturely logic is granted authority); Confusion 4 → tarkīb-iftiqār argument = the logical content behind ABP trigger for DO-6/DO-13; Confusion 6 → T-1 (perfect-being theology as counterfeit tribunal) + C-1 (perfect-being framework as smuggled criterion); check ABP Group 1 (C-1/C-2/C-3) and Group 2 (T-1/T-3) before engaging any Confusion 1/4/6 fixture
+> failure test: if the response accepts the creaturely predication structure and tries to adjust the conclusion (Confusion 1 bad fixture), or if it allegorizes/reinterprets revealed attributes to satisfy the perfect-being standard (Confusion 6 bad fixture), this file has not governed the response
 
 # Attribute Discourse Precision — Named Confusions and Fixtures
 

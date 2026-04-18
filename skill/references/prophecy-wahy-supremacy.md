@@ -1,7 +1,8 @@
-> role: doctrinal governance — epistemic authority of prophecy and waḥy
+> role: doctrinal governance — epistemic authority of prophecy and waḥy; supplies the positive doctrinal case where philosophical-usurpation.md supplies the routing structure
 > use when: the case explicitly or implicitly treats philosophical systems as the legitimate arbiter of revelation's content; when the interlocutor requires revelation to satisfy a prior rational standard before it may be credited; when the practitioner needs to articulate why waḥy is not an optional supplement to philosophy but the primary and superior source in precisely the domains where philosophy is weakest
 > do not use when: the case is purely transmission-related with no authority-ordering dispute, or when the interlocutor already accepts waḥy as primary
-> load-after: foreign-premise-detection.md (when a philosophical tribunal is confirmed); connects to DO-13, kernel-thesis.md Commitment 2 and 5, and V2
+> load-after: philosophical-usurpation.md (Type A or Type B confirmed); foreign-premise-detection.md (when a philosophical tribunal is confirmed); connects to DO-13, kernel-thesis.md Commitment 2 and 5, and V2
+> ownership note: philosophical-usurpation.md governs detection and routing for all four usurpation types; this file governs the doctrinal content specifically needed when the live question is why waḥy has authority the philosophical system cannot confer — it is the doctrinal counterpart to PU's routing structure, not a substitute for it
 > output: the doctrinal ground for prophetic supremacy in ilāhiyyāt and nubuwwāt, with routing consequences for each major challenge pattern
 
 # Prophecy and Waḥy — Doctrinal Governance File
@@ -99,3 +100,19 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 Commitment 2 of `references/kernel-thesis.md`: sound reason and authentic transmission never truly conflict — the apparent conflict is in contaminated reason, weak transmission, or the wrong rational criterion applied. This file supplies the doctrinal grounding for that commitment: when reason (in its contaminated or pseudo-neutral form) appears to conflict with prophetic content, the conflict is always located in the criterion being applied to reason's deliverances — not in a genuine tension between the faculty of reason and the content of revelation. The faculty of sound reason is capable of recognizing prophetic truth; what blocks it is the inherited criterion that has been substituted for it.
 
 Commitment 5: later philosophical filters are not neutral defaults. This file supplies the positive doctrinal account of why: the God of revelation transcends those filters, was not required to answer to them, and the prophets addressed themselves to the fiṭrah — which requires no such filter — rather than to the philosopher's rationalist demand.
+
+---
+
+## VI. Failure Tests
+
+This file has not governed the response if any of the following occurred:
+
+- **The philosophical bar was satisfied as the first move.** The response produced a philosophical defense of revelation before questioning the bar's jurisdiction. This is Challenge Pattern A's prohibited move — producing the defense ratifies the tribunal.
+
+- **Revealed attributes were assimilated to the philosopher's God.** The response defended divine responsiveness, speech, or engagement by reinterpreting them as metaphors for philosophical properties (will, eternal decree, etc.). This accepts the perfect-being framework's authority and abandons the revealed description. This is Challenge Pattern B's prohibited move.
+
+- **The prophetic knowledge claim was defended as a subjective experience.** The response treated prophetic reception as one psychological event among others, rather than as a categorically distinct epistemic event that cannot be evaluated by the naturalist criterion. This is Challenge Pattern C's failure mode.
+
+- **The kalāmic demonstration was offered before the inversion was named.** The interlocutor demanded a rational demonstration of prophetic credentials; the response immediately produced the demonstration. This places the remedial apparatus in the gatekeeper position that this file exists to correct. The inversion must be named before the demonstration is offered (if offered at all).
+
+- **No authority-ordering was established.** The response corrected the specific philosophical claim but did not establish why waḥy has epistemic authority in the domains where it speaks. Refutation alone leaves a vacuum. This is PM-4 from `philosophical-usurpation.md` — the positive account must accompany the critique.

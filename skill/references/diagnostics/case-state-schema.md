@@ -17,7 +17,9 @@ Use this block when diagnosis matters to the response:
 [Case State]
 - Case family:
 - Claim-type:
-- Primary upstream issue:
+- Reason-category:                   # 1 / 2 / 3 / 4 — from reason-disambiguation.md; governs routing gate
+- Foreign-premise status:            # detected [premise] / none-detected / uncertain — from FPD pass
+- Primary upstream issue:            # must reflect FPD output when criterion-importing is live
 - Primary deformation:
 - Read status:
 - Live alternatives:
@@ -27,7 +29,7 @@ Use this block when diagnosis matters to the response:
 - Concealment mode:
 - Matched modules:
 - Sequencing rationale:
-- Restoration target:
+- Restoration target:                # must name epistemic layer or ontological distinction from metaphysical-architecture.md
 - Confidence:
 - Decisive missing differentiator:
 ```
@@ -45,6 +47,10 @@ Use this block when diagnosis matters to the response:
 ## Field Discipline
 
 - `Case family` names the class of case, not the whole argument history.
+- `Reason-category` is required. Emit `1`, `2`, `3`, or `4` from `reason-disambiguation.md`. The routing gate depends on this field: category 3 or 4 blocks content until V2; category 2 requires deformation-first gate; category 1 leaves the gate open. Do not leave this field blank on any case where intellectual content is being pressed.
+- `Foreign-premise status` is required when criterion-importing, tribunal-installation, or framework-importing elements are visible. The [Foreign Premise Detection] block from `foreign-premise-detection.md` feeds this field. If FPD was not run and this field is blank, the `Primary upstream issue` field cannot be reliably populated — this is a mandatory minimum failure.
+- `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, or prior probability assignment that is generating the objection is.
+- `Restoration target` must name what epistemic layer (fiṭrah / sound reason / authentic transmission / inferential argument) or ontological distinction (creator-creation / transcendence-immanence / prophetic authority) is being restored. A target stated as "demonstrate divine unity" or "correct the objection" has not reached the restoration level. See `metaphysical-architecture.md` for the layer taxonomy.
 - `Claim-type` identifies the logical category of the live pressure: `logical` (contradiction, self-defeat), `metaphysical` (existence, attribute, causation), `moral` (problem of evil, divine command, hiddenness as injustice), `historical` (manuscript, dating, provenance, authorship), `transmission` (chain-of-custody, canon formation, textual preservation), `phenomenological` (religious experience, absence of felt presence), or `authority` (who has the right to define, interpret, or adjudicate). A case can carry two types: name the primary first. This field is required because many failures come from answering one claim-type while another is doing the real governing work — a grief-case framed as logical-problem, a transmission-case framed as authority-case, or a moral-protest case framed as metaphysical argument.
 - `Primary upstream issue` states the upstream issue being treated first.
 - `Primary deformation` should name only the deformation governing the next move.

@@ -1,11 +1,18 @@
-# Case Library — Noetic Structure Profiles (NS-1 through NS-9)
+# Case Library — Noetic Structure Profiles (NS-1 through NS-12)
 
-Load this file when an interlocutor's position matches a recognizable noetic
-type. Each entry gives the full diagnostic profile, the implicit doxastic rule,
-the load-bearing anchor, critical vulnerabilities, deformation type, and
-intervention point.
+Load the matched section only. Do not load the full file — each section is a
+distinct executable unit, individually addressed via the case-state NS code field
+and routed through `case-library/INDEX.md §Quick NS Identification`.
 
-This file provides full profiles for NS-1 through NS-12. NS-10 through NS-12 address the profile gaps that previously routed only through specialty diagnostics. The specialty diagnostic files (`kalamic-interlocutor.md`, `fitrah-perspectives.md`) remain the deep-treatment resources; these profiles provide the unified profile-format entry point needed for case-state routing.
+Each entry gives the full diagnostic profile, the implicit doxastic rule, the
+load-bearing anchor, critical vulnerabilities, deformation type, and intervention
+point.
+
+NS-10 through NS-12 address the profile gaps that previously routed only through
+specialty diagnostics. The specialty diagnostic files (`kalamic-interlocutor.md`,
+`fitrah-perspectives.md`) remain the deep-treatment resources for NS-10 and NS-12
+respectively; these profiles provide the unified profile-format entry point needed
+for case-state routing.
 
 See `case-library/INDEX.md` for the full routing table.
 

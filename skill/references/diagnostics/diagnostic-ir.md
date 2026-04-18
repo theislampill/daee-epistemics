@@ -1,11 +1,13 @@
-> role: typed diagnostic intermediate representation — binds workflow layer to metaphysical-architecture layer
-> use when: producing a full case-state for a substantive engagement where routing must be auditable independently of prose quality; prevents cosmetic workflow compliance from masking architectural drift
+> role: dispatch gate and typed diagnostic intermediate representation — the constrained layer that module dispatch must pass through before any content module is loaded
+> use when: any substantive engagement requiring routing; the IR is not optional for these cases — it is the gate
 > do not use when: the task is a narrow conversational sub-answer with no case classification required
-> output: a typed diagnostic state with explicit fields for all governed dimensions; serves as the auditable record of both the routing decision and the architectural alignment
+> output: a typed diagnostic state that gates module dispatch; also serves as the auditable record of the routing decision and architectural alignment
 
-# Diagnostic IR — Typed Intermediate Representation
+# Diagnostic IR — Dispatch Gate and Typed Intermediate Representation
 
-This file defines the complete typed state that sits between the workflow layer (routing procedure) and the metaphysical-architecture layer (what is being restored). Its purpose is to make routing auditable independently of prose quality — a response whose prose is eloquent but whose IR is inconsistent or incomplete has drifted, and the drift is detectable.
+This file defines the complete typed state that must be formed before any content module is dispatched. It sits between the workflow layer (routing procedure) and the metaphysical-architecture layer (what is being restored). Its purpose is twofold: (1) to gate module dispatch — dispatch is blocked until the mandatory minimum fields are populated and consistency checks pass; (2) to make routing auditable independently of prose quality — a response whose prose is eloquent but whose IR is inconsistent or incomplete has drifted, and the drift is detectable.
+
+**The IR is not a retrospective record.** Writing the IR after the response is cosmetic compliance — the IR's function is to govern dispatch, not to document it after the fact. If the IR cannot be formed because mandatory fields cannot be populated, the correct action is Stop-4 (Underdetermined-Case Stop), not a response with a post-hoc IR.
 
 The IR composes fields from several sources:
 - Case-state fields (from `case-state-schema.md`)
@@ -17,7 +19,31 @@ The IR composes fields from several sources:
 - P7 stop status (from `P7-restoration-stops.md`)
 - Routing-precedence state (from `routing-precedence.md`)
 
-The IR does not replace these files. It is the composed output that proves they were actually consulted and their results actually governed the response — not bypassed by elegant summary.
+---
+
+## Gate Protocol — Required Before Module Dispatch
+
+Before any content module is dispatched, the following checks must pass in order. If any check fails, dispatch is blocked; the blocking condition is named explicitly rather than silently resolved.
+
+**Gate Check 1 — Mandatory minimum fields populated.**
+All fields in the mandatory minimum (see §Field Rules below) must be populated. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a partial IR.
+
+**Gate Check 2 — Consistency rules pass.**
+None of the invalid combinations (see §Field Rules below) may be present. An IR with an invalid combination is a misread — re-run Phase 2 before dispatching.
+
+**Gate Check 3 — Routing-precedence suppression rules applied.**
+Apply `routing-precedence.md` Suppression Rules S-1 through S-5. If any suppression rule fires, the routing gate is blocked for the operation that rule suppresses, regardless of how strong the NS/deformation read is. Note the active suppression rule in the `P7 stops active` and `Routing gate` fields.
+
+**Gate Check 4 — P7 stops checked.**
+Each P7 stop, when triggered, blocks the corresponding content operation. Check all five stops before dispatch. Record active stops in the IR. An active P7 stop is a gate block for its governed operation — not an advisory.
+
+**Gate Check 5 — Architectural integrity check.**
+The `Restoration target` field must name a specific epistemic layer (fiṭrah / sound reason / authentic transmission / inferential argument) or ontological distinction (creator-creation / transcendence-immanence / prophetic authority) from `metaphysical-architecture.md`. A restoration target stated as "correct the interlocutor's argument" or "demonstrate X" has not been grounded in the architecture. Re-state it in terms of what faculty, ordering, or distinction is being restored in the interlocutor's noetic structure. Also check that no `kernel-thesis.md` violation signature is present in the response being planned.
+
+**Gate Check 6 — Route cleared for content.**
+After Checks 1-5 pass: confirm the concealment × orientation matrix (in `case-state-schema.md`) shows content is deployable now. If register-hold applies, the matched content module is held — not dispatched.
+
+Only after all six checks pass does module dispatch proceed.
 
 ---
 
@@ -120,4 +146,16 @@ Cosmetic compliance occurs when the practitioner acknowledges the workflow while
 
 ## Connection to Framework Pipeline
 
-`framework-pipeline.md` shows the structural branching of the canonical pipeline. `routing-precedence.md` specifies the decision rules at each branch point. This file (diagnostic-ir.md) is the output artifact that proves the pipeline was traversed correctly — the typed state produced at the end of V1 Phase 2 and the beginning of module selection, against which the response is auditable. The three files are the structural chart, the decision rules, and the output record — together they constitute the complete governance apparatus for routing decisions.
+`framework-pipeline.md` shows the structural branching of the canonical pipeline. `routing-precedence.md` specifies the decision rules at each branch point. This file (diagnostic-ir.md) is the gate and the typed state produced at the end of V1 Phase 2 — the check that must be passed before module selection occurs. The three files are the structural chart, the decision rules, and the gate/record — together they constitute the complete governance apparatus for routing decisions.
+
+---
+
+## Failure Tests
+
+The following conditions indicate this file has not governed the response, even if an IR block appears:
+
+- **IR written after the response:** The IR was composed to match a response already drafted. The IR must precede dispatch. If the IR was formed after dispatch, it is cosmetic compliance.
+- **Restoration target is argumentative, not restorative:** The restoration target names what argument is being won, not what epistemic faculty or ordering is being restored. Check against `metaphysical-architecture.md` four-layer taxonomy.
+- **Mandatory minimum fields are empty but IR is marked complete:** Empty fields are not populated fields. Stop-4 is the correct output when mandatory fields cannot be grounded.
+- **Suppression rule is active but corresponding module was dispatched:** A firing S-rule blocks the operation it governs absolutely. If a module was dispatched while its governing suppression rule was active, Gate Check 3 was not applied.
+- **Consistency rule violation present but response proceeded:** Any invalid combination in the consistency rules constitutes a workflow-architecture inconsistency. The response that follows it has drifted even if the prose is strong.

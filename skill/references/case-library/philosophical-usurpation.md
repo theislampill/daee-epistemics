@@ -1,7 +1,8 @@
-> role: named case family — philosophical-usurpation
+> role: named case family — philosophical-usurpation; governs all four usurpation types and their routing responses
 > use when: an imported philosophical framework is operating as the upstream authority that revelation is being forced to satisfy; the case is not merely "the interlocutor holds a philosophical framework" but "the framework has been installed as the legitimate judge of what revelation may assert"
 > do not use when: the interlocutor holds a philosophical framework that is not yet functioning as an upstream authority (in that case, foreign-premise-detection.md governs the detection phase; this file handles the case once usurpation is confirmed)
-> load-after: foreign-premise-detection.md (confirmed usurpation); connects to DO-13, prophecy-wahy-supremacy.md, V2, P3
+> load-after: foreign-premise-detection.md (confirmed usurpation); connects to DO-13, V2, P3
+> ownership note: this file covers all four usurpation types (A=Aristotelian, B=Scientific Naturalism, C=Historical-Critical, D=Liberal Political); for Type A and Type B specifically, where the live question becomes why waḥy has epistemic authority the philosophical system cannot grant, load prophecy-wahy-supremacy.md as the doctrinal counterpart — PU routes, PWS supplies the doctrinal ground
 > output: telltale features, route consequences, prohibited moves, restoration targets
 
 # Philosophical Usurpation — Named Case Family

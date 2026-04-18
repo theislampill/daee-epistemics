@@ -26,6 +26,9 @@ Full profiles: `references/case-library/noetic-profiles.md`.
 | NS-7 | Theistic Evidentialist | §NS-7 |
 | NS-8 | Muslim-Internal Crisis (Modernist / Authority-Fatigue Compound) | §NS-8 |
 | NS-9 | Historical-Critical Skeptic | §NS-9 |
+| NS-10 | Māturīdī Evidentialist | §NS-10 |
+| NS-11 | Fideist / Reformed Basic-Belief | §NS-11 |
+| NS-12 | Blank-Slate or Dual-Nature Fiṭrah | §NS-12 |
 
 Compound: `NS-X | NS-Y` — used when the subject genuinely straddles two profiles. The
 first code sets intervention order.
@@ -185,6 +188,7 @@ Source: `references/procedures/INDEX.md`.
 | P4 | Maieutic |
 | P5 | Already-believing |
 | P6 | Universal ʿaqīdah principle |
+| P7 | Restoration stops (5 named hard-rail stop conditions) |
 
 ## Worked Examples — Composed Case-State Lines
 
