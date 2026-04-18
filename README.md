@@ -15,9 +15,10 @@ Its governing aim is not to manufacture novelty or simply accumulate clever refu
 - [Why This Framing Fits the Repository](#why-this-framing-fits-the-repository)
 - [What the Skill Protects](#what-the-skill-protects)
 - [Threat Model](#threat-model)
-- [Repository Architecture](#repository-architecture)
 - [Operational Governance](#operational-governance)
 - [Corpus Integration](#corpus-integration)
+- [Repository Architecture](#repository-architecture)
+- [Repository Diagram](#repository-diagram)
 - [Install / Package for Claude](#install--package-for-claude)
 
 ## Before You Use This Skill
@@ -148,6 +149,28 @@ The framework's threat model includes more than explicit disbelief. It also incl
 In this model, an objection may be intellectually formulated while still arising from a compromised epistemic process. 
 That is why the repository repeatedly distinguishes deformations, concealment modes, and discourse orientation before recommending a response.
 
+## Operational Governance
+
+The repository is not only a content store. It carries an explicit governance layer that makes its routing state inspectable:
+
+- a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
+- an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
+- mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
+- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach before they harden into output
+
+This matters because the repository's thesis is restorative, not merely polemical. 
+The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
+
+## Corpus Integration
+
+New source material should be integrated only when it improves routing, restoration, scope control, or terminology discipline. 
+
+The goal is not to accumulate study notes. 
+
+The goal is to extract durable distinctions and convert them into reusable architecture: new Case Modules, tighter Tactic or Technique criteria, clarified Glossary entries, sharper confidence rules, or better routing boundaries. 
+
+If a source does not alter how the skill classifies, sequences, or restores, it should usually not be imported.
+
 ## Repository Architecture
 
 The repository operationalizes the thesis through a layered structure:
@@ -176,27 +199,139 @@ and only then select the relevant Tactic, Technique, Procedure, or Case Module.
 
 [`references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
-## Operational Governance
+## Repository Diagram
 
-The repository is not only a content store. It carries an explicit governance layer that makes its routing state inspectable:
+```mermaid
+flowchart TB
 
-- a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
-- an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
-- mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
-- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, and rhetorical overreach before they harden into output
+subgraph FOUNDATION["Foundational / control layer"]
+direction TB
+  subgraph FTOP[" "]
+  direction LR
+    README["README<br/>landing / docs<br/>[README.md]"]
+    SKILLROOT["Skill root<br/>deployable artifact"]
+    SKILL["SKILL.md<br/>control plane<br/>[SKILL.md]"]
+  end
+  subgraph FBASE[" "]
+  direction LR
+    TERM["Terminology<br/>shared vocabulary<br/>[terminology.md]"]
+    KERNEL["Kernel thesis<br/>architectural anchor<br/>[kernel-thesis.md]"]
+    META["Metaphysical architecture<br/>ontological / epistemic order<br/>[metaphysical-architecture.md]"]
+    WAHY["Wahy supremacy<br/>authority-order governance<br/>[prophecy-wahy-supremacy.md]"]
+  end
+end
 
-This matters because the repository's thesis is restorative, not merely polemical. 
-The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
+subgraph DIAG["Diagnostics + gate"]
+direction TB
+  D_INDEX["Diagnostics index<br/>routing / use order<br/>[INDEX.md]"]
 
-## Corpus Integration
+  subgraph PASSES["Diagnostic passes"]
+  direction LR
+    NOETIC["Noetic reading<br/>diagnostic lens"]
+    ORIENT["Discourse orientation<br/>diagnostic classification"]
+    DEF["Deformations<br/>diagnostic classification"]
+    CONC["Concealment modes<br/>diagnostic classification"]
+  end
 
-New source material should be integrated only when it improves routing, restoration, scope control, or terminology discipline. 
+  subgraph TYPED["Mandatory typed passes"]
+  direction LR
+    REASON["Reason disambiguation<br/>mandatory pass [P-A]"]
+    FPD["Foreign-premise detection<br/>mandatory pass [P-B]"]
+    ABP["Backbone predicates<br/>mandatory pass [P-C]"]
+    CASE["Case-state schema<br/>typed routing artifact"]
+  end
 
-The goal is not to accumulate study notes. 
+  subgraph GATE["Gate governance"]
+  direction LR
+    IR["Diagnostic IR<br/>dispatch gate<br/>[diagnostic-ir.md]"]
+    PRECED["Routing precedence<br/>suppression / tie-breaks"]
+    BOUND["Inference boundary<br/>source / synthesis control"]
+    MIXED["Mixed cases<br/>thin-basis governance"]
+    ANTI["Anti-patterns<br/>failure checks<br/>[anti-patterns.md]"]
+    PIPE["Framework pipeline<br/>canonical ASCII audit surface"]
+  end
+end
 
-The goal is to extract durable distinctions and convert them into reusable architecture: new Case Modules, tighter Tactic or Technique criteria, clarified Glossary entries, sharper confidence rules, or better routing boundaries. 
+subgraph LOWER["Dispatch surfaces"]
+direction LR
+  subgraph CASELIB["Case library"]
+  direction TB
+    CASEINDEX["Case-library index<br/>NS / DO / RT router<br/>[INDEX.md]"]
+    PROFILES["Profiles<br/>NS-1 ... NS-12<br/>[profiles/INDEX.md]"]
+    DOCTRINE["Doctrine cases<br/>DO / RT / specialty families"]
+  end
 
-If a source does not alter how the skill classifies, sequences, or restores, it should usually not be imported.
+  subgraph RESP["Response modules"]
+  direction TB
+    PROCS["Procedures index<br/>workflows<br/>[INDEX.md]"]
+    TACTICS["Tactics index<br/>response moves<br/>[INDEX.md]"]
+    TECH["Techniques index<br/>analytic methods<br/>[INDEX.md]"]
+    P7["P7 restoration stops<br/>content-withholding hard rails"]
+    SOUND["Sound reason epistemology<br/>deep grounding on confirmed match"]
+  end
+end
+
+README -->|packages| SKILLROOT
+SKILLROOT -->|contains| SKILL
+
+TERM -->|standardizes| D_INDEX
+KERNEL -->|anchors| SKILL
+META -->|anchors| SKILL
+WAHY -->|anchors| SKILL
+META -->|types restoration target| IR
+
+SKILL -->|starts with| D_INDEX
+SKILL -->|governs| PRECED
+SKILL -->|routes to| CASEINDEX
+SKILL -->|Gate Check 5| IR
+
+D_INDEX -->|starts with| NOETIC
+D_INDEX -->|includes| ORIENT
+D_INDEX -->|classifies| DEF
+D_INDEX -->|checks| CONC
+
+D_INDEX -->|requires| REASON
+D_INDEX -->|requires when live| FPD
+D_INDEX -->|requires when live| ABP
+D_INDEX -->|feeds typed state| CASE
+
+REASON -->|required input| IR
+FPD -->|required when live| IR
+ABP -->|required when live| IR
+CASE -->|forms| IR
+
+IR -->|checks| BOUND
+IR -->|handles thin / mixed reads| MIXED
+IR -->|guards against| ANTI
+IR -->|audited by| PIPE
+IR -->|clears to| PRECED
+
+PRECED -->|opens confirmed family loads only after clearance| CASEINDEX
+CASEINDEX -->|confirmed NS match| PROFILES
+CASEINDEX -->|confirmed DO / RT / specialty match| DOCTRINE
+
+PRECED -->|opens matched dispatch only after clearance| PROCS
+PRECED -->|opens matched dispatch only after clearance| TACTICS
+TACTICS -->|feeds| TECH
+
+PROCS -->|can halt / suspend| P7
+TECH -->|includes on confirmed match| SOUND
+DOCTRINE -->|may require| SOUND
+
+classDef blue fill:#eef6ff,stroke:#4f8cff,stroke-width:1.5px,color:#173a74;
+classDef amber fill:#fff7ed,stroke:#f59e0b,stroke-width:1.5px,color:#92400e;
+classDef cerulean fill:#e7f3ff,stroke:#2f7fd8,stroke-width:1.5px,color:#184e8c;
+classDef dgreen fill:#e8f7ef,stroke:#20965f,stroke-width:1.5px,color:#0f5132;
+classDef red fill:#fff1f2,stroke:#fb7185,stroke-width:1.5px,color:#9f1239;
+classDef indigo fill:#eef2ff,stroke:#818cf8,stroke-width:1.5px,color:#3730a3;
+
+class README blue;
+class SKILLROOT,SKILL amber;
+class TERM,KERNEL,META,WAHY cerulean;
+class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,ABP,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
+class CASEINDEX,PROFILES,DOCTRINE indigo;
+class PROCS,TACTICS,TECH,P7,SOUND red;
+```
 
 ## Install / Package for Claude
 

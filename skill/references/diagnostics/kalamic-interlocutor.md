@@ -18,6 +18,34 @@ Muʿtazilī, Ashʿarī, or Māturīdī reasoning.
 
 ---
 
+## Downstream Routing Table — School × Burden
+
+School identification is not optional. Once this file is loaded, the school variant must be
+identified before restoration target and matched modules are committed to the IR. Do not
+dispatch NS-6 with a generic "foundationalist restriction" restoration target without first
+running the identification step below. The table governs what changes downstream.
+
+**Burden identification rule:**
+- **Epistemological burden:** the live pressure is wujūb al-naẓar, taqlīd-as-non-knowledge,
+  or the narrow necessary-knowledge restriction — regardless of what doctrinal object is named.
+- **Ontological burden:** the live pressure is divine attributes, divine speech, the status of
+  the Qurʾān, or any claim governed by the ḥudūth/khalq distinction or kalām nafsī doctrine.
+- **Mixed:** both are simultaneously live. Sequence epistemological first; ontological second.
+  Do not flatten into a single "kalāmic engagement" — the targets and load conditions differ.
+
+| School variant | NS code | Burden | Restoration target | Must load (beyond this file) | Prohibited moves |
+|---------------|---------|--------|--------------------|------------------------------|------------------|
+| Muʿtazilī | NS-6 | Epistemological | Expose the self-undermining circularity: wujūb al-naẓar presupposes the fiṭrī reliability it demotes; naẓar cannot certify itself from nowhere | V2 (inherited filter); backbone predicates T-2, T-3 | Do not engage the hard wujūb as merely "too strict" — it is structurally self-undermining; do not concede fiṭrī recognition as sub-epistemic without argument |
+| Muʿtazilī | NS-6 | Ontological | Deploy the ḥudūth/khalq distinction explicitly: the Muʿtazilī inferred makhlūq from ḥudūth — name and dissolve this collapse; §6.2 is the required grounding | §6.2 of `sound-reason-epistemology.md` + V8 + `terminology.md` (Khalq, Ṣifa qāʾima bi-dhātihi); `do-attribute-precision.md` Confusion 1 (Muʿtazilī predication move) | Do not leave the ḥudūth premise standing as a concession; the ḥudūth/khalq distinction is the load-bearing move — ḥādith ≠ makhlūq |
+| Ashʿarī | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not individually demonstrate, their belief is already non-inferentially warranted — name the concession | V2; the naẓar-circularity argument | Do not treat Ashʿarī softening as movement toward the sound position; it retains the inferential framework while relocating the obligation — the framework error is not resolved by communal-level transfer |
+| Ashʿarī | NS-6 | Ontological | Target the kalām nafsī doctrine specifically: it severs the expressed Qurʾān from being genuinely God's speech in the sense the texts require — not merely philosophically awkward, but a textual-theological failure; deploy §6.2 three-way differentiation | §6.2 + V8 + `terminology.md` (Ṣifa qāʾima bi-dhātihi); `do-attribute-precision.md` | Do not allow the kalām nafsī doctrine to remain standing while engaging bilā kayf generally; it is a named Ashʿarī error, not a legitimate bilā kayf position; bilā kayf is the correct position, kalām nafsī is a deviation from it |
+| Māturīdī | NS-10 | Epistemological | Press the internal instability: the communal-obligation concession already breaks the individual requirement — name what has been conceded; the admission of non-propositional evidence already opens the inferential framework | V9 (necessary-knowledge priority); §Māturīdī section in this file | Do not endorse the communal-obligation move as correct; it is a pressure point exposing instability, not a halfway house; do not treat the Māturīdī position as a valid intermediate |
+| Māturīdī | NS-10 | Ontological | Shared Ashʿarī Kullābī inheritance: engage as diagnosed Ashʿarī ontological error — the restoration target is the same as Ashʿarī ontological | §6.2 + V8 | Do not treat Māturīdī ontological position as a distinct third pole; at the ontological level it inherits the Ashʿarī error |
+| School unclear (provisional) | NS-6 provisional | Epistemological | Hold provisional read; deploy naẓar-circularity argument as school-neutral opening while identification runs | V2; this file's §The Critique | Do not commit to a school-specific restoration target or prohibited move before the identification differentiator is in |
+| Mixed (any school) | NS-6 or NS-10 | Epistemological + Ontological | Sequence: address epistemological burden (foundationalist restriction) first; ontological burden second (school-specific target per above) | Per school row above for each burden; both must load | Do not flatten both burdens into a single "kalāmic engagement" — they have different restoration targets and the wrong sequence inverts the repair order |
+
+---
+
 ## Surface Recognition Markers
 
 The following are sentence patterns, objection forms, and terms of approval or dismissal a
