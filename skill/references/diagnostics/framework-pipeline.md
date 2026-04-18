@@ -35,18 +35,24 @@
 +------------------------------------------------------------+
 | PHASE 2: AXIS CLASSIFICATION + MANDATORY PASSES           |
 |                                                            |
-| CORE AXES:                                                 |
-| A1  NS code         NS-1..12                              |
-| A2  DO-orient       truth-seek / identity-perf /          |
-|                     autotelic / zann-mode / mixed          |
-| A3  Concealment     irad / juhud / inkar /                |
-|                     istikbar / nifaq / mode-?              |
-| A4  Deformation     outside-in compound or single         |
-| A5  Claim-type      logical / metaphysical / moral /      |
-|                     historical / transmission /            |
-|                     phenomenological / authority           |
-| A6  Reason-cat      1 sound / 2 corrupted /               |
-|                     3 pseudo-neutral / 4 inherited         |
+| CORE AXES (source → emit):                                |
+| A1  NS code         noetic-reading-checklist.md           |
+|                     → NS-1..12                            |
+| A2  DO-orient       discourse-orientation.md              |
+|                     → truth-seek / identity-perf /        |
+|                       autotelic / zann-mode / mixed        |
+| A3  Concealment     modes-of-concealment.md               |
+|                     → irad / juhud / inkar /              |
+|                       istikbar / nifaq / mode-?            |
+| A4  Deformation     seven-deformations.md                 |
+|                     → outside-in compound or single       |
+| A5  Claim-type      case-state-schema.md field            |
+|                     → logical / metaphysical / moral /    |
+|                       historical / transmission /          |
+|                       phenomenological / authority         |
+| A6  Reason-cat      reason-disambiguation.md [P-A]        |
+|                     → 1 sound / 2 corrupted /             |
+|                       3 pseudo-neutral / 4 inherited       |
 |                                                            |
 | MANDATORY PASSES — run in sequence:                        |
 | [P-A] reason-disambiguation.md                            |

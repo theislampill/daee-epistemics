@@ -1,3 +1,13 @@
+> role: specialty diagnostic — kalāmic evidentialism engagement strategy (Muʿtazilī / Ashʿarī / Māturīdī variants)
+> use when: NS-6 or NS-10 confirmed; surface markers of kalāmic evidentialism present (dalīl demand, wujūb al-naẓar, taqlīd-as-non-knowledge, fiṭrah denied epistemic weight without propositional support)
+> do not use when: interlocutor is externalist-secular (NS-1/NS-2) and does not operate within a kalāmic theological framework
+> section-to-NS mapping:
+>   §Surface Recognition Markers + §The Kalāmic Position + §The Critique + §Engaging the Kalāmic Interlocutor → NS-6 primary; also load for NS-10 (shared infrastructure)
+>   §The Māturīdī Position — Distinct Engagement Path → NS-10 primary; do not load for NS-6 cases where Māturīdī softening is not the live form
+>   §The Ontological Dimension → load when the kalāmic interlocutor's position is about divine attributes, not merely the epistemological framework
+> load-discipline: load the whole file; use only the section(s) matched to the confirmed school variant and live pressure
+> paired files: NS-6 profile (case-library/profiles/ns-6-kalamic-evidentialist.md); NS-10 profile (case-library/profiles/ns-10-maturidi-evidentialist.md); V2 (reconstituting reason); P3 (reason-revelation tension); V9 (necessary-knowledge priority for Māturīdī section)
+
 # Kalāmic Interlocutor — Engagement Strategy
 
 Load when the interlocutor uses surface markers of kalāmic evidentialism: theistic belief

@@ -1,3 +1,12 @@
+> role: specialty diagnostic — fiṭrah-content taxonomy; classifies the interlocutor's operative conception of the fiṭrah for NS-12 cases and Muslim-internal fiṭrah disputes
+> use when: NS-12 confirmed (blank-slate or dual-nature fiṭrah holder); or when any interlocutor denies that the fiṭrah is innate, claims it is environmentally determined, or presents a dual-nature (equal inclinations) account; or when a Muslim-internal dispute about the nature of the fiṭrah is operative
+> do not use when: the interlocutor accepts the fiṭrah's theistic orientation and the dispute is about something else
+> IR field: Fiṭrah-view = sound (operative default, no special action) | tabula-rasa | dual-nature; governs which engagement path from this file applies
+> section-to-view mapping:
+>   §Tabula Rasa (Neutral Perspective) → tabula-rasa view; V5 primary; E4 cross-cultural check secondary
+>   §Dual Perspective → dual-nature view; nafs/fiṭrah distinction primary; V5 secondary
+> paired files: NS-12 profile (case-library/profiles/ns-12-blank-slate-dual-fitrah.md); V5 (directing attention to signs — primary); E4 (cross-cultural check — secondary)
+
 # Fiṭrah Perspectives — Three-View Taxonomy
 
 Load when an interlocutor's conception of the fiṭrah is itself in question — when they deny

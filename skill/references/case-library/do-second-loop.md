@@ -164,6 +164,41 @@ unimpaired cognizers.
 
 ---
 
+## Minimal-Pair Discriminator: DO-7 vs. DO-10
+
+DO-7 (CSR/HADD) and DO-10 (three-tier epistemology / attacks on ʿilm ḍarūrī) are
+adjacent. The confusion surfaces when an interlocutor argues that *intuitive* or
+*necessary* knowledge itself is produced by cognitive modules whose epistemic warrant is
+dubious — collapsing the ordinary CSR argument (which targets theistic recognition
+specifically) into a general skepticism about ʿilm ḍarūrī.
+
+**Route to DO-7** when the objection targets theistic belief specifically as a
+CSR-artifact, and the interlocutor retains confidence in other basic beliefs (other
+minds, moral intuition, perception). The move is the foundation/superstructure
+distinction + genetic-fallacy reply + self-refutation-check on the debunking argument.
+
+**Route to DO-10** when the objection extends to necessary knowledge as such — when the
+interlocutor is willing to treat ordinary cognition (not just theistic cognition) as
+dubious, or when the argument's consistent application would require abandoning
+ʿilm ḍarūrī. The matched move is V9 (necessary-knowledge priority) — a different
+register from the DO-7 content.
+
+**The telltale for the boundary:** ask the interlocutor whether the CSR-style critique,
+consistently applied, would apply to their own moral intuitions or perceptual deliverances.
+- If they accept the consistent application and the general skepticism: the case is
+  DO-10, and the engagement is V9 on the attack on necessary knowledge itself.
+- If they refuse the consistent application (protect other basic beliefs while
+  disqualifying theistic ones): the case is DO-7, and the move is the
+  targeted-defeater / inconsistency reply.
+- If they vacillate: the case is mixed; name the vacillation before committing.
+
+Misrouting DO-10 as DO-7 treats a general-skepticism case as a targeted-defeater case;
+the targeted-defeater reply fails because the interlocutor has already ceded the ground
+it assumes. Misrouting DO-7 as DO-10 supplies V9 when the interlocutor has not actually
+attacked necessary knowledge; V9 overshoots and the engagement loses traction.
+
+---
+
 ### DO-10 — The Three-Tiered Epistemological Structure (Formalized)
 
 **The objection:** "The fiṭrah-based account at its best produces a justified opening

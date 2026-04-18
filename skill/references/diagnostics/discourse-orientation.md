@@ -1,3 +1,10 @@
+> role: diagnostic classifier — discourse orientation (DO-orient axis); determines what the engagement is ordered toward before any content module is selected
+> use when: any case; run this classifier before selecting any intellectual response or case-library module — it determines whether intellectual engagement is the right instrument at all
+> do not use when: discourse orientation is already established from prior context and has not shifted
+> IR field: DO-orient code = truth-seek | identity-perf | autotelic | zann-mode | mixed
+> output: DO-orient code emitted to case-state; governs suppression rules S-1 and S-3 in routing-precedence.md and P7 Stop-1 trigger
+> paired files: routing-precedence.md (S-1: non-truth-seek suppresses all doctrinal modules); P7-restoration-stops.md (Stop-1: identity-perf and grief trigger content-withhold); seven-deformations.md (DO-orient and deformation are orthogonal axes — run both)
+
 # Discourse Orientation — Full Treatment
 
 ## Preamble
