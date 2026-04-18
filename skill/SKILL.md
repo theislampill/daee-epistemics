@@ -37,6 +37,16 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/mixed-case-handling.md` | Multiple reads compete, the basis is thin, or the case must stay underdetermined |
 | `references/diagnostics/anti-patterns.md` | Auditing for forced fit, rhetorical drift, over-selection, or decorative terminology |
 | `references/diagnostics/framework-pipeline.md` | Auditing the canonical decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate — the single canonical ASCII chart of the full pipeline |
+| `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
+| `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
+
+### V1 Phase 2 Passes — Run Inside the Diagnostic Gate
+These passes execute within V1 Phase 2 (axis classification). Triggered by conditions the diagnostic gate identifies, not by topic.
+
+| File | Load When |
+|------|-----------|
+| `references/diagnostics/reason-disambiguation.md` | The interlocutor's criterion or conception of reason is at issue; reason-category must be established before routing; claim-type involves what counts as rational evidence |
+| `references/diagnostics/foreign-premise-detection.md` | A criterion-importing element is visible; the framework being applied to the religious position has not been examined; V1 Phase 2 axis classification is underway |
 
 ### Specialty Diagnostics
 Load only when surface discourse points to the specialty family.

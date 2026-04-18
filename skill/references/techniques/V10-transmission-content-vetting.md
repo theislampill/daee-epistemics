@@ -65,6 +65,67 @@ Only after provenance and contents are separated decide how the material may be 
 This step governs shareability. Do not circulate a dramatic claim as though it were settled when
 it has not passed the first two checks.
 
+## Tradition-Specific Branch Operators
+
+After the three-step sequence, route to the appropriate branch. Each branch specifies what changes in the sequence and what conflations are prohibited within it. Do not apply one branch's constraints to another — the traditions have structurally different transmission architectures.
+
+### Branch A — Qurʾān: Qirāʾāt, Aḥruf, Manuscript Plurality
+
+**What changes in the sequence:** Provenance for the Qurʾān is established through the concept of tawātur — mass independent transmission across chains rather than chain-of-custody for a single document. The question at Step 1 is not "what manuscript is this?" but "has this reading been transmitted through a mutawātir channel or not?" Variants classified as tawātur lafẓī (verbatim mass transmission) and qirāʾāt (approved readings transmitted through named chains with multiple independent attestation) are not evidence of corruption — they are the expected texture of the transmission system.
+
+**Prohibited conflations:**
+- Do not treat qirāʾāt plurality as equivalent to uncontrolled textual corruption. Qirāʾāt are not manuscript variants in the sense of accidental divergence; they are licensed readings transmitted through named chains.
+- Do not treat the existence of early manuscripts (Ṣanʿāʾ, Topkapi) as independent transmission evidence in the sense that contradicts the oral transmission structure. The manuscript tradition is secondary in function; the primary transmission vehicle is oral.
+- Do not treat aḥruf (the seven modes of revelation) as equivalent to seven independently authored texts.
+- Do not collapse the distinction between what is mutawātir (certain) and what is āḥād (probable) in transmission status.
+
+**Route after:** RT-3 for qirāʾāt/aḥruf/manuscript cases; RT-4 if a Muslim is destabilized by material about Qurʾānic text history.
+
+---
+
+### Branch B — Biblical Canon and Manuscripts
+
+**What changes in the sequence:** The Biblical transmission system does not rest on mutawātir oral transmission as a primary vehicle. The provenance question (Step 1) centers on: which manuscript tradition, through which textual family, with what degree of attestation, and at what proximity to the claimed original? Canon formation (what was included and when) is a distinct question from textual transmission (how reliably a text was copied). These must not be collapsed.
+
+**Prohibited conflations:**
+- Do not treat "many early manuscripts agree" as equivalent to the Islamic tawātur standard — the attestation structures are different in kind, not only in degree.
+- Do not treat canon formation debates as establishing that no scriptures are reliable — the scope of the canon question is different from the reliability of particular texts within it.
+- Do not treat later manuscript discovery (Dead Sea Scrolls, Oxyrhynchus papyri) as automatically overturning later canonical text — the relationship between earlier and later manuscripts requires text-critical methodology, not a simple "earlier is more authentic" rule.
+- Do not let the interlocutor conflate "the Bible has textual variants" (true of all ancient documents) with "the Bible has been substantially corrupted from its original" (a strong claim requiring substantive argument).
+
+**Route after:** RT-2 for canon-formation pressure; RT-1 for specific viral manuscript or fragment claims.
+
+---
+
+### Branch C — Hadith, Isnād, and Wijādah
+
+**What changes in the sequence:** Hadith transmission operates through isnād (chains of narrators) with an elaborate classification science. The provenance question (Step 1) must determine: the classification of the report (ṣaḥīḥ, ḥasan, ḍaʿīf, mawḍūʿ), which collection it appears in, and whether the critique being pressed targets a specific report or the hadith system as such. These are entirely different problems requiring different responses.
+
+**Prohibited conflations:**
+- Do not treat a ḍaʿīf (weak) report as having the same evidential weight as a ṣaḥīḥ (sound) one. The classification is not decorative — it determines the epistemic status of the transmission.
+- Do not treat late compilation of collections (Bukhārī d. 870 CE) as evidence that the reports were invented at that date. The transmission chains predate the collection; the date of the collection is the date of final written organization, not of the transmitted content.
+- Do not let wijādah (found-document transmission without a live isnād) be treated as normative — it has a lower epistemic status than mutawātir or ṣaḥīḥ isnād transmission.
+- Do not collapse the distinct questions: was this specific hadith reliably transmitted? vs. is the hadith system as a whole a reliable transmission mechanism?
+
+**Route after:** RT-1 for specific viral hadith claims; the doctrinal objection files if the hadith is being used to support a DO-series argument.
+
+---
+
+### Branch D — Final Prophethood: Transmission and Doctrine Intertwined
+
+**What changes in the sequence:** Final-prophethood cases present a unique intertwining: the doctrinal claim (Muḥammad ﷺ is the seal of the prophets) is itself partially a transmission claim (the Qurʾān transmits this; the hadith tradition transmits this; the community transmits this continuously). The objection may target the transmission (was this reliably transmitted?) or the doctrine (does this make sense as a divine arrangement?) or both at once.
+
+The three-step sequence must be run on each layer separately: What is the transmission status of the specific verses, reports, or claims being pressed? What do the contents of the properly vetted material actually show? What authority does that material carry for the specific doctrinal question?
+
+**Prohibited conflations:**
+- Do not let a transmission challenge to the seal-of-prophets doctrine collapse into a general "the Qurʾān might be unreliable" argument without the interlocutor establishing that the specific transmission mechanism for those specific texts has failed.
+- Do not let a theological objection ("why would God stop sending prophets?") be treated as if it were a transmission objection — the registers require different instruments.
+- Do not treat an argument about the timing or necessity of final prophethood as equivalent to an argument about whether the transmission of the claim is sound. These are orthogonal questions.
+
+**Route after:** DO-series for purely doctrinal challenges after transmission is cleared; RT-1 or RT-3 if specific text-transmission questions are live.
+
+---
+
 ## Matched Uses
 
 For recurring family treatments after this sequence, see

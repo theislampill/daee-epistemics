@@ -16,6 +16,7 @@ Use this block when diagnosis matters to the response:
 ```text
 [Case State]
 - Case family:
+- Claim-type:
 - Primary upstream issue:
 - Primary deformation:
 - Read status:
@@ -44,6 +45,7 @@ Use this block when diagnosis matters to the response:
 ## Field Discipline
 
 - `Case family` names the class of case, not the whole argument history.
+- `Claim-type` identifies the logical category of the live pressure: `logical` (contradiction, self-defeat), `metaphysical` (existence, attribute, causation), `moral` (problem of evil, divine command, hiddenness as injustice), `historical` (manuscript, dating, provenance, authorship), `transmission` (chain-of-custody, canon formation, textual preservation), `phenomenological` (religious experience, absence of felt presence), or `authority` (who has the right to define, interpret, or adjudicate). A case can carry two types: name the primary first. This field is required because many failures come from answering one claim-type while another is doing the real governing work — a grief-case framed as logical-problem, a transmission-case framed as authority-case, or a moral-protest case framed as metaphysical argument.
 - `Primary upstream issue` states the upstream issue being treated first.
 - `Primary deformation` should name only the deformation governing the next move.
 - `Read status` should be `dominant`, `distributed`, or `underdetermined`.

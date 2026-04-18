@@ -1,5 +1,23 @@
 # Terminology Discipline
 
+## Arabic-Use Enforcement Rule
+
+**This is a hard constraint, not a style preference.** Every Arabic or technical term used in surfaced output must satisfy at least one of the following three conditions. If none is satisfied, the term must not appear:
+
+1. **Routing distinction:** The term names a category that changes what move comes next. Using `iʿrāḍ` instead of "avoidance" changes the register selection; using `shubhah` instead of "objection" marks that intellectual engagement is the matched response. These terms earn their presence because they are operationally loaded.
+
+2. **Doctrinal distinction:** The term marks a boundary that the case depends on. Using `ḍarūrī` instead of "obvious" marks that the claim is non-inferential and not subject to the same defeater conditions as discursive conclusions. Using `tawātur` instead of "widely reported" marks a transmission-grade claim. Collapsing these would lose the distinction the case turns on.
+
+3. **Scope-control distinction:** The term prevents an illicit extension or an illicit collapse. Using `kufr` with the sharʿī/lexical distinction explicit controls the scope of what is being claimed. Using `hawā` marks that the barrier is volitional, which prevents the reader from treating the response as incomplete because no counter-argument was provided.
+
+**Enforcement:** Before any Arabic or technical term appears in surfaced output, ask: which of these three conditions does it satisfy? If none, replace with plain English. If one, keep it — and on first use, gloss it inline and name which condition it is satisfying so the reader can audit the choice.
+
+**Violation signature:** Arabic terms appearing for atmosphere, scholarly register, or to signal familiarity with the tradition. The tell: the term could be replaced by a plain English paraphrase without any loss of routing precision, doctrinal sharpness, or scope control.
+
+---
+
+## Legacy Guideline (still operative within the enforcement rule)
+
 Use a term only when it does one of the following:
 
 - names a routing distinction the English paraphrase would blur

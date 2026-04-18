@@ -303,6 +303,30 @@ genuine: address the underlying deformation; do not engage the intellectual surf
 
 ---
 
+### Minimal-Pair Discriminator: Hawā vs. Gharaḍ
+
+*Decision rule:* Is the will's resistance general (it does not want this conclusion) or specific (it has something particular at stake externally that would be lost)?
+
+*Left correct (hawā):* Interlocutor resists theistic conclusions across every register and form of engagement. When one objection is dissolved, another appears immediately. The resistance feels totalizing — not "I cannot believe because of my job" but a generalized sense that belief would cost something existential but unnameable. The will is dug in without an identifiable external stake. Deformation is hawā. Correct response: F2 (foregrounding the volitional dimension) without forcing identification of a specific stake; relational engagement; no additional intellectual content.
+
+*Right correct (gharaḍ):* Interlocutor has a clearly identifiable stake: professional identity as a secular academic, a relationship that would be strained, community membership that depends on the skeptical position, or a lifestyle incompatible with what belief would require. The resistance is not totalizing — it is organized around a specific cost. "I can see why you'd say that, but I just can't..." followed by deflection toward the specific stake. Deformation is gharaḍ. Correct response: F2 directed at naming the specific stake; "What would it cost you, practically, if this were true?" The question must be pastoral, not accusatory.
+
+*Differentiating signal:* Ask internally: can I name the specific external thing being protected? If yes, and if the interlocutor's resistance maps to that specific thing, gharaḍ governs. If the resistance is more diffuse — distributed across all potential conclusions rather than organized around a specific stake — hawā governs. In compound cases (both present), gharaḍ is addressed first because naming the specific stake often uncovers the hawā underneath it; gharaḍ without hawā is relatively rare.
+
+---
+
+### Minimal-Pair Discriminator: Hawā vs. Shubhah
+
+*Decision rule:* Does the barrier yield to intellectual clearing, or does it generate new objections when existing ones are addressed?
+
+*Left correct (hawā):* Interlocutor presents objections that, when addressed clearly and completely, are replaced immediately by new objections. The pattern of objection-generation accelerates as the engagement deepens. No single dissolved objection produces relief or even temporary recognition — only more material. The intellectual surface is genuine, but the governing structure is volitional. Deformation is hawā. Correct response: Do not supply more arguments. Identify the pattern explicitly (F2) or shift to relational engagement. More intellectual content gives the resistance more material to organize around.
+
+*Right correct (shubhah):* Interlocutor presents an objection that, when addressed clearly and completely, produces visible relief or genuine re-examination. The objection had actual intellectual force that was blocking access to what the fiṭrah would otherwise apprehend. The person was not protecting a conclusion — they were genuinely stuck. Dissolution of the objection produces movement, not new objections in the same pattern. Deformation is shubhah. Correct response: Engage directly and fully; apply M1, M8, or V9 as matched; stop after dissolution.
+
+*Differentiating signal:* The accelerating-objection pattern is the primary signal for hawā. If objections multiply and shift as soon as one is dissolved — especially if the new objections concern different families (one round about evil, the next about evolution, the next about history) — the governing structure is not intellectual. A genuine shubhah stays focused on one point and yields (at least partially) when that point is addressed. Secondary signal: affect. Hawā often carries a kind of urgency or emotional loading inconsistent with pure intellectual puzzlement; genuine shubhah has a quality of intellectual frustration rather than volitional resistance.
+
+---
+
 ### Minimal-Pair Discriminator: Shubhah vs. Grief-Register (M4)
 
 *Decision rule:* Is the problem of evil being presented as a propositional argument with identifiable premises, or is it being expressed as moral protest, grief, or a felt injustice that has not been translated into argument form?
