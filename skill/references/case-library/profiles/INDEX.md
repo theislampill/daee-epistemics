@@ -62,6 +62,22 @@ precondition before theistic belief is even licit). NS-10 concedes the fiṭrah'
 toward God but demotes its epistemic standing from ḍarūrī to preparatory — naẓar completes rather
 than replaces it. Full discriminator in `references/diagnostics/kalamic-interlocutor.md`.
 
+*Sub-variant within NS-6 — Muʿtazilī vs. Ashʿarī:* Once NS-6 is confirmed (not NS-10), the
+school must be further identified. Both are "hard kalāmic" (naẓar as obligatory precondition),
+but they differ materially when the ontological dimension is live:
+- **Muʿtazilī strand:** restoration target on ontological burden = ḥudūth/khalq distinction (the
+  Muʿtazilī error was inferring makhlūq from ḥudūth); prohibited move = accepting ḥudūth as a
+  concession without dissolving the makhlūq inference.
+- **Ashʿarī strand:** restoration target on ontological burden = kalām nafsī doctrine (the Ashʿarī
+  error was denying all ḥawādith in God, severing the expressed Qurʾān from genuine divine speech);
+  prohibited move = treating the kalām nafsī doctrine as a legitimate bilā kayf position rather
+  than a named deviation.
+- On epistemological burden only (no divine attributes or speech live), the Muʿtazilī/Ashʿarī
+  distinction does not change the primary instrument (V2 + naẓar-circularity argument), though
+  the Ashʿarī communal-obligation softening is a distinct pressure point to exploit.
+See `diagnostics/kalamic-interlocutor.md` §Downstream Routing Table for the complete
+school × burden consequence mapping.
+
 ---
 
 ### NS-7 (Theistic Evidentialist) vs. NS-11 (Fideist / Reformed Basic-Belief)

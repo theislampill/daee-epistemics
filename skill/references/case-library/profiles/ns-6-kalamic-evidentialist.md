@@ -31,8 +31,31 @@ has been inherited as though it were self-evident reason itself.
 **Primary deformation:** Iʿtiqādāt mawrūtha governing what the interlocutor will even allow to count
 as knowledge before the case is heard.
 
-**Intervention point:** Use `references/diagnostics/kalamic-interlocutor.md` to identify whether the
-pressure is hard Muʿtazilī/Ashʿarī, softened Māturīdī, or mixed. Then use V2 to expose the inherited
-restriction of reason, and use P3 when the live framing is reason versus revelation. Keep ḥusn
-al-naẓar available as a secondary restorative path for impaired recognition, not as the universal
-precondition of warranted belief.
+**Intervention point:** Load `references/diagnostics/kalamic-interlocutor.md` and run the school
+identification step before committing the IR's restoration target or matched modules. School
+identification is not optional — the restoration target, load conditions, and prohibited moves
+differ by school and by burden type.
+
+*School identification consequences:*
+- **If Māturīdī confirmed:** re-assign NS code to NS-10 before dispatch; do not continue as
+  NS-6. Load NS-10 profile and the Māturīdī section of `kalamic-interlocutor.md`.
+- **If Muʿtazilī or Ashʿarī confirmed (epistemological burden):** V2 is the primary instrument;
+  target the foundationalist restriction's circularity; see `kalamic-interlocutor.md`
+  §Downstream Routing Table for school-specific prohibited moves.
+- **If Muʿtazilī or Ashʿarī confirmed (ontological burden — divine attributes or speech live):**
+  the restoration target shifts to a school-specific ontological target (ḥudūth/khalq
+  distinction for Muʿtazilī; kalām nafsī doctrine for Ashʿarī); §6.2 of
+  `sound-reason-epistemology.md` and V8 must load; `do-attribute-precision.md` is the
+  precision fixture source. Do not route the ontological burden through a generic bilā kayf
+  treatment — the school-specific error must be named.
+- **If school is unclear (provisional):** deploy the naẓar-circularity argument as a
+  school-neutral opening; complete identification before committing the restoration target.
+
+*Burden check:* When the interlocutor is pressing both epistemological framework and ontological
+position simultaneously, sequence the IR to address epistemological burden first, ontological
+second. The two burdens have different restoration targets; flattening them into one dispatch
+is a routing failure.
+
+P3 (reason-revelation tension) loads when the framing is explicitly reason versus revelation.
+Ḥusn al-naẓar remains available as a secondary restorative path for impaired recognition, not
+as the universal precondition of warranted belief.

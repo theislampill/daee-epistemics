@@ -36,12 +36,20 @@ which they did not.
 tradition rather than derived from the prophetic sources); sometimes ẓann where the distinction
 between ḍarūrī and ẓann-via-fiṭrah has been assumed rather than examined.
 
-**Intervention point:** Load `references/diagnostics/kalamic-interlocutor.md` for the full
-Māturīdī-specific treatment. The key move: affirm the fiṭrah's orientation toward God (the
-interlocutor already concedes this), then press on whether the conceded orientation constitutes
-epistemic standing or requires supplementary naẓar before standing is achieved. V9 (necessary-
-knowledge priority) is the primary technique: the fiṭrah's deliverance is ḍarūrī, not iktisābī;
-confirming this is not adding to what was conceded but drawing out its implication.
+**Intervention point:** Load `references/diagnostics/kalamic-interlocutor.md` (Māturīdī section)
+for the full treatment. The key epistemological move: affirm the fiṭrah's orientation toward God
+(the interlocutor already concedes this), then press on whether the conceded orientation
+constitutes epistemic standing or requires supplementary naẓar before standing is achieved. V9
+(necessary-knowledge priority) is the primary technique: the fiṭrah's deliverance is ḍarūrī, not
+iktisābī; confirming this is not adding to what was conceded but drawing out its implication.
+
+*Burden check:* When the interlocutor's position also involves divine attributes or speech
+(ontological burden live), the NS-10 ontological restoration target is the same as Ashʿarī
+ontological (shared Kullābī inheritance); see `kalamic-interlocutor.md` §Downstream Routing
+Table, NS-10 ontological row. §6.2 of `sound-reason-epistemology.md` and V8 must load for
+that burden. Do not route the ontological dimension through the epistemological instrument
+(V9 addresses the ḍarūrī/ẓann distinction; it does not address the ḥudūth/khalq or kalām
+nafsī problem).
 
 **Register note:** This is often an in-house theological interlocutor — a student of kalām or a
 madrasa-trained person who is genuinely trying to hold both fiṭrah and naẓar. The engagement is

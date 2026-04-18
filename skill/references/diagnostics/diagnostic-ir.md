@@ -112,6 +112,8 @@ If these fields cannot be populated because the basis is too thin, the correct o
 - `Routing gate: V2-required` + `Matched modules: [any content module]`
 - `DO-orient: identity-perf` + `Matched modules: [any doctrinal case file]`
 - `Reason-category: 3 or 4` + `Routing gate: open`
+- `NS code: NS-6` + `Restoration target: [generic foundationalist restriction or generic wujūb al-naẓar]` + `Architectural layer disrupted: transcendence-immanence` — invalid because NS-6 ontological cases require a school-specific restoration target (Muʿtazilī: ḥudūth/khalq distinction; Ashʿarī: kalām nafsī doctrine), not a generic bilā kayf or foundationalist-restriction target. If the architectural layer is disrupted at transcendence-immanence and the NS code is NS-6, the restoration target must name the school-specific ontological error, and `Matched modules` must include §6.2 of `sound-reason-epistemology.md` and V8.
+- `NS code: NS-6` + `Restoration target: [any ontological target]` + `Backbone predicates active: [T-2, T-3 only]` — invalid when ontological burden is live. When NS-6 and the case involves divine attributes or speech, O-1 and C-1 must be checked as minimum (see `arabic-backbone-predicates.md` NS-6 ontological row); a backbone-predicate emission that omits them when the ontological dimension is active has not completed the mandatory check.
 
 An IR with any of the above combinations has a workflow-architecture inconsistency and the response it governs has drifted.
 

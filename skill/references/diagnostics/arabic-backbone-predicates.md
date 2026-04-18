@@ -197,7 +197,8 @@ The following predicates should be checked as a minimum for the named cases. Oth
 | Case surface | Check minimally |
 |---|---|
 | NS-1 (Naturalist) | C-1, C-2, C-3 (the naturalist framework is almost always C-1 or C-3) |
-| NS-6 (Kalāmic Evidentialist) | T-2 (wujūb al-naẓar functions as T-2), T-3 (kalāmic apparatus as "pure foundation") |
+| NS-6 (Kalāmic Evidentialist) — epistemological burden | T-2 (wujūb al-naẓar functions as T-2), T-3 (kalāmic apparatus as "pure foundation") |
+| NS-6 (Kalāmic Evidentialist) — ontological burden (divine attributes or speech live) | T-2, T-3, O-1 (reason-over-transmission inversion: creaturely attribute logic granted authority over divine speech), C-1 (attribute-simplicity or ḥudūth-as-khalq inference as smuggled criterion). School sub-variant determines the active form — Muʿtazilī: ḥudūth-equals-makhlūq collapse (C-1 fires for the ḥudūth premise); Ashʿarī: denial of ḥawādith subsisting in God (T-3 fires for Kullābī inheritance presented as pure foundation). Identify before emitting route consequences. |
 | NS-9 (Historical-Critical Skeptic) | K-1 (conflation of transmission systems), C-1 (historical-critical neutrality as smuggled criterion) |
 | NS-10 (Māturīdī Evidentialist) | T-2, O-2 (naẓar required before fiṭrī recognition counts as knowledge) |
 | DO-5 (Transcendence and language) | O-1, K-2 (lexical predication vs. sharʿī judgment) |
