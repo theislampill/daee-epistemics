@@ -182,6 +182,130 @@ intervention sequences.
 
 ---
 
+---
+
+### (v) Compound Profile: Inherited-Tradition Background — Pre-Inquiry Compound (Inherited Framework + Evidentialist Demand + Canon/Authority Confusion)
+
+> This playbook is a **case-profile routing rule**, not a surface-pattern trigger. Activate when the interlocutor's case profile — constructed from V1 diagnostic output — exhibits the following co-present structural features:
+> (1) an inherited religious framework (any tradition — Christian, Jewish, secular-progressive, Hindu, or other) functioning as an unreconstituted background criterion;
+> (2) an evidentialist demand or "no reason" claim that has not yet formed into a specific intellectual objection;
+> (3) one or more of: canon-selection or textual-authority confusion, transmission-reliability uncertainty, comparative-prophethood question (DO-10/DO-4), or doctrinal-settlement uncertainty specific to the background tradition.
+>
+> **This playbook does NOT activate on any single surface marker** ("was raised Christian," "no reason," "which Bible"). It activates when V1 Phase 2 produces a case-state showing the above profile pattern with sufficient convergent signal. If the signal is thin, mark underdetermined (Stop 4) and do not load this playbook.
+>
+> **Tradition-specific routing note:** The module dispatch in step 3 below is written for the Christian-background instance — the most common presenting form and the one with dedicated case-library coverage (DO-14, DO-11/DO-12). For other background traditions, apply the same sequencing logic with the appropriate tradition-specific modules: *Jewish background* → Masoretic canon and rabbinic authority question (V10 Step 3 canon-authority structural form; no dedicated DO module yet); *Hindu background* → śruti/smṛti hierarchy and Vedic apauruṣeya question (V10 Step 3; no dedicated DO module yet); *secular background* → FPD on the naturalist or scientistic criterion (Type B philosophical usurpation). The structural compound profile and the intervention order are shared; the case-library modules are tradition-specific.
+
+**Dominant structural read:** Inherited filter (iʿtiqādāt mawrūtha) as the governing deformation, with evidentialist-demand expression. The canon/transmission/prophethood confusions are downstream of the inherited framework — they are the specific epistemic questions the filter is generating, not the filter itself.
+
+**Critical correction to the "restoration-first" failure mode:** This case profile does NOT default to fiṭrah-restoration (P1/P4) as the opening move. The error is: "inherited Christian framework → needs restoration of fiṭrī capacity → load P1/P4." This failure mode produces preachy or exhortatory responses when the interlocutor has a live epistemic question about canon, authority, or prophethood that requires epistemic argument, not restoration. Fiṭrah-restoration framing may support the engagement but does not replace the required epistemic argument. P1/P4 are the opening move only when the case is purely PF-8 (blank-slate, minimal deformation, no active sub-question, no criterion operating) — not when any of features (2) or (3) above are present.
+
+**Intervention order:**
+
+1. **V1 full pass — case-profile construction.** Run all four axes plus FPD. The case-state output governs sequencing. Do not skip FPD: the evidentialist demand in feature (2) may or may not be operating with an explicit criterion; FPD determines this.
+
+2. **FPD output gates the next move:**
+   - *If FPD = detected (criterion functioning as tribunal or prior):* V2 must come before any content module. The criterion must be loosened before any epistemic content lands. DO NOT proceed to canon/transmission/prophethood content while the criterion pre-filters it.
+   - *If FPD = none-detected (the evidential demand is a genuine pre-inquiry, no explicit tribunal):* FPD complete; proceed to feature (3) identification below.
+   - *If FPD = uncertain:* Mark underdetermined; proceed only with the established part of the case (e.g., if DO-orient is established as truth-seek, answer the smallest tractable sub-question and name the decisive missing differentiator).
+
+3. **Sub-question identification (feature 3).** Which specific epistemic question is live?
+   - *Canon-selection/authorization:* DO-14. Run the sub-question discrimination (selection vs. formation vs. authorization) within DO-14 before loading content.
+   - *Transmission/preservation:* V10 → RT-1 or RT-3, with cross-tradition contamination guard active (do not import NT text-critical assumptions).
+   - *Comparative prophethood ("why Islam not another religion"):* DO-10 (three-tier structure owns the epistemological architecture) → DO-4 if the relativist diversity-challenge is additionally live.
+   - *Doctrinal settlement (Trinity/Incarnation confusion from within the interlocutor's prior tradition):* This sub-question is NOT a trigger for V12 unless an active Trinitarian claim is being made. If the interlocutor's confusion is about their own tradition's internal coherence (rather than a challenge to divine unity), DO-14 authorization-analysis is the correct entry; V12 + DO-11/DO-12 are held until a specific Trinitarian challenge is formed.
+   - *Multiple sub-questions simultaneously present:* Apply smallest-matched-subset principle. Route the most upstream sub-question first. Canon/authorization is upstream of comparative prophethood (you cannot evaluate which prophetic claim is authoritative before you have a criterion for authority). Run DO-14 before DO-10 in this case.
+
+4. **After the sub-question's content module has been engaged:** Reassess the case-state. Check whether a new downstream sub-question has emerged or whether the interlocutor's register has shifted. Do not preemptively load the next content module — wait for the differentiating signal.
+
+5. **Restoration framing (P1/P4):** Appropriate as a supporting register when the interlocutor shows openness and genuine inquiry — but never as a substitute for the content module identified in step 3. If the sub-question is about canonical authority and you have loaded DO-14, a brief fiṭrī orientation ("the question of what authorizes any claim to speak for God is exactly the foundational question") may accompany the epistemic argument. It does not replace it.
+
+**Reassessment trigger:** Interlocutor engages one sub-question and then either: (a) the criterion loosens (register shifts toward truth-seek), or (b) a new sub-question emerges, or (c) an affective dimension surfaces (grief, identity-cost, community-belonging concern). In case (c), the deformation read changes — hawā or gharaḍ may become primary, requiring M5 triage and potential hold.
+
+**Stopping conditions:**
+- Stop when the current content module has not yet visibly engaged the interlocutor — do not add the next module.
+- Stop when the interlocutor's response shows the epistemic question has been received and they are processing — do not extend.
+- Stop cumulative dispatch as soon as the convergence point is clear.
+- If V2 has been applied and the criterion has not budged after a clean application, run M5 (deformation triage) to check whether hawā is the governing deformation rather than iʿtiqādāt mawrūtha.
+
+**Pass:** FPD run → criterion status established → sub-question identified → matched module loaded → stopping conditions honored → restoration framing as support, not replacement.
+
+**Fail (regression 1 — restoration-first):** Interlocutor described as "Christian background" → response defaults to P1 fiṭrah-restoration framing and invitation → sub-question about canon/authority never addressed → interlocutor's actual epistemic question goes unanswered.
+
+**Fail (regression 2 — Christology preemption):** "I was raised Christian" → practitioner loads V12 and DO-11 → response addresses Trinity coherence when no Trinitarian claim was active → engagement is precisely optimized for the wrong sub-question.
+
+**Fail (regression 3 — transmission collapse):** "Which Bible version?" → practitioner loads RT-2 (Islamic canon formation) → response addresses Islamic transmission when the interlocutor was asking about Christian canonical diversity → engagement answers a question that was not asked.
+
+**Fail (regression 4 — criterion grant):** "I don't have any reason to be Muslim" → practitioner accepts the evidential demand at face value and loads E1/E3 → evidential content is supplied into an unreconstituted criterion → the criterion pre-filters all content; each piece of evidence is absorbed and found wanting; the criterion's authority is reinforced by the failed attempts.
+
+**Adversarial near-miss:** Interlocutor says "I was raised Christian and I don't have any reason to switch." This may look like (a) PF-8 (blank slate, positive restoration) or (b) PF-2 (evidentialist demand with inherited criterion). The differentiating signal: does "no reason" indicate the interlocutor has not yet formed a question (PF-8 → P4 / maieutic), or does it indicate they have a criterion that Islam has not met (PF-2 → FPD → V2)? The phrasing alone does not decide this. The next exchange move is the differentiator — do not preemptively load either P4 or V2 without confirming the DO-orient and FPD status.
+
+---
+
+### (vi) Case-Profile Pattern: Doctrinal Complexity as Inquiry, Deflection, or Criterion-Pressure
+
+> This playbook governs when the presenting surface is "Islam is complicated," "scholars disagree," "too many opinions," or equivalent complexity-framing. Like playbook (v), this is a **case-profile routing rule**: the presenting words alone do not trigger routing. The discourse orientation and the functional role of the complexity claim are the operative signals.
+
+**Three structurally distinct profiles — identify before routing:**
+
+**Profile (vi-A) — Genuine inquiry:** Complexity is experienced as an obstacle to understanding, not as a reason to reject. DO-orient = truth-seek. Concealment = none or thin iʿrāḍ. The interlocutor wants to know why complexity exists and how to navigate it.
+
+```text
+[Case-Profile: vi-A — Doctrinal Complexity as Inquiry]
+- DO-orient: truth-seek
+- Concealment: none or iʿrāḍ (thin)
+- Deformation: minimal — possibly ẓann (inherited assumption that complexity implies falsehood)
+- Route: P4 (maieutic) + P3 (reason-revelation tension) if epistemological pressure is present
+- Prohibited: loading the DO-series or RT-series content as the first move — this addresses the
+  interlocutor's specific doctrinal curiosity, not the structural question of why complexity exists
+- Note: This profile is an invitation, not an objection. Respond accordingly.
+```
+
+**Profile (vi-B) — Iʿrāḍ / complexity as exit:** Complexity is being used to decline engagement ("too many opinions, I can't be expected to sort through all this"). DO-orient = autotelic or zann-mode. Concealment = iʿrāḍ confirmed. The complexity is not generating a question — it is closing one.
+
+```text
+[Case-Profile: vi-B — Doctrinal Complexity as Deflection]
+- DO-orient: autotelic or zann-mode
+- Concealment: iʿrāḍ confirmed
+- Deformation: ʿāda (avoidance habituated) or hawā (exit orientation governs)
+- Route: Relational/invitational only — concealment × orientation matrix cell for iʿrāḍ + autotelic
+  specifies: no doctrinal module; character-as-evidence; one honest question left live
+- Prohibited: explaining why complexity exists (content); loading P3/P4 as if the interlocutor
+  were genuinely inquiring; any evidential or doctrinal response
+- Note: The correct move is an honest question that names what would need to be true for the
+  interlocutor to engage — not a defense of Islamic scholarly diversity.
+```
+
+**Profile (vi-C) — Criterion-pressure:** Disagreement among scholars is being used as a logical argument: if scholars disagree, no one knows. DO-orient = truth-seek or zann-mode with criterion-use. Concealment may be iʿrāḍ or none. FPD required: "agreement is the test of truth/knowledge" is a foreign criterion if stated as a principle.
+
+```text
+[Case-Profile: vi-C — Doctrinal Complexity as Criterion-Pressure]
+- DO-orient: truth-seek (can engage argument) or zann-mode (holds the criterion unreflectively)
+- Concealment: variable
+- Deformation: iʿtiqādāt mawrūtha (criterion imported — agreement-implies-knowledge; disagreement-
+  implies-falsehood); ẓann (criterion held unreflectively)
+- FPD: run — "agreement is the test of knowledge" is a foreign criterion; source tradition:
+  scientific consensus norms or liberal-epistemics; functional role = criterion
+- Route: V2 on the criterion → then (if criterion loosens): distinction between levels of the
+  tradition (ʿaqīdah as widely agreed vs. fiqh as deliberately diverse) may be useful; then P3
+  if epistemological tension between reason and tradition complexity is live
+- Prohibited: explaining scholarly diversity before V2 has loosened the criterion — doing so
+  accepts the criterion as legitimate and places the burden on Islam to satisfy it
+```
+
+**Sequencing rule across profiles:** Establish which profile applies before loading any content. The wrong profile loaded for a given case wastes engagement and may harden the barrier. Discourse orientation is the primary axis: if DO-orient is autotelic (vi-B), no content loads regardless of how sophisticated the complexity claim sounds.
+
+**Minimal-pair discriminator: vi-A vs. vi-C:**
+- vi-A: "This is complicated and I want to understand it" — the complexity is an obstacle, not a weapon.
+- vi-C: "Scholars disagree, so nobody really knows" — the complexity is being used as a premise in an argument.
+- The differentiator: is the interlocutor asking a question or making a claim?
+
+**Minimal-pair discriminator: vi-B vs. vi-C:**
+- vi-B: Complexity named, then topic changed or engagement declined. The complexity is functional as an exit.
+- vi-C: Complexity named, then an explicit or implicit argument follows (therefore Islam isn't trustworthy / therefore nobody knows).
+- The differentiator: does a conclusion follow from the complexity claim, or does the claim just terminate the engagement?
+
+---
+
 ## Safe Fallback Form
 
 When the case is still underdetermined, use the standard case-state schema in

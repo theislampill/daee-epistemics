@@ -11,6 +11,42 @@ Use the case-library routing table when you need the broader family map.
 
 ---
 
+## Comparative-Prophethood Opening-Frame Dispatch
+
+**Activate when:** The interlocutor's case profile exhibits the following structural features — (a) theistic framework already in place or uncontested (God's existence is not the live question); (b) the question is why this specific prophetic claim (Muhammad ﷺ / Islam) rather than another; (c) the frame may be comparative ("why Islam not Christianity / Judaism / any religion"), diversity-challenge ("all religions claim truth"), or specific-credentials ("why is Muhammad the final prophet?").
+
+This is a distinct case-profile from the fiṭrah-establishment case (where the existence of a Creator is the live question). When theism is established, the question moves to Tier 2 of the epistemological structure — the prophetic claim as khabar — and the dispatch is as follows.
+
+**Dispatch sequence (ordered by structural dependency):**
+
+**Level 1 — DO-10 (three-tiered epistemological structure):** Always the primary structural entry for this profile. DO-10 establishes that the prophetic claim is evaluated at the khabar tier (reliable testimony reaching tawātur), not at the fiṭrah tier (which established generic theism) or the naẓar tier (which evaluates coherence). This structural answer dissolves the implicit demand that a single faculty must establish all commitments — the demand that generates the "why Islam specifically?" force. DO-10 must be engaged before specific prophetic credentials, because credentials are not receivable without the structural understanding of why khabar-based knowledge is epistemically appropriate for prophetic claims.
+
+**Level 2 — DO-4 (religious diversity):** Load when the diversity-challenge form is active — "all religions claim truth, so no one claim can be privileged." This is a separate pressure from the structural epistemology question. DO-4 addresses the relativist challenge by distinguishing the diversity of claims from their epistemic parity. DO-4 does NOT establish why the Islamic claim is true — it dissolves the inference from "multiple claims exist" to "all claims are equally warranted." Once DO-4 dissolves the relativist move, DO-10 provides the epistemological structure for evaluating the specific Islamic prophetic claim.
+
+**Level 3 — `prophecy-wahy-supremacy.md`:** Load for specific prophetic credentials — the challenge patterns (A: philosophical attack on prophetic knowledge; B: science-based dismissal; C: historical-critical skepticism about the prophetic event). This is NOT a first-level entry for comparative-prophethood cases. Specific credentials are relevant only after the interlocutor understands the epistemological framework within which credentials are evaluated (DO-10) and after the diversity-challenge form is dissolved if present (DO-4).
+
+**Stopping conditions across levels:**
+- If DO-10 is deployed and the interlocutor accepts the three-tier structure and asks specifically about credentials: proceed to prophecy-wahy-supremacy.md. DO-4 is not needed if the relativist challenge was not the live pressure.
+- If DO-4 is deployed and the relativist challenge is dissolved: proceed to DO-10. Do not load specific credentials before DO-10 structures the epistemological frame.
+- If the interlocutor is specifically comparing Islam with Christianity and has a Christian background: run the compound playbook in `mixed-case-handling.md §(v)` first, which may route to DO-14 (canonical authority question) upstream of DO-10 (prophethood epistemology) — canonical authority is upstream of prophetic credentials.
+
+**Case-profile IR for comparative-prophethood dispatch:**
+```text
+[Case-Profile: Comparative Prophethood]
+- Theistic framework: established / uncontested (if contested, route to fiṭrah tier first)
+- Diversity-challenge active: yes → DO-4 before DO-10 | no → DO-10 directly
+- Specific credentials question active: yes → DO-10 → prophecy-wahy-supremacy.md (in order)
+- Canon/authority question upstream: if Christian-background → DO-14 before DO-10
+- Prohibited move: loading specific prophetic credentials (prophecy-wahy-supremacy.md) before
+  DO-10 establishes why khabar-based knowledge is the appropriate epistemological mode; the
+  interlocutor who lacks the three-tier structure will evaluate credentials by a criterion
+  the repo has not yet addressed
+```
+
+---
+
+---
+
 ## Doctrinal Objections — Second Loop (DO-7 through DO-10)
 
 These objections sharpen recurring second-order and reflexive pressures on the fiṭrah-based

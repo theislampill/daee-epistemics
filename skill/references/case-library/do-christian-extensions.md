@@ -162,6 +162,87 @@ prior metaphysical picture of what "perfection" and "immutability" must mean?
 
 ---
 
+## DO-14 — Christian Canon Selection: Which Bible, and Why
+
+Load when the presenting question is which version of the Christian Bible is authoritative — Protestant, Catholic, Orthodox — or who decided which texts belong, or why canonical diversity within Christianity undermines the very concept of authoritative scripture. This is an authority-certification case, not a Trinity or Incarnation case.
+
+**Case-profile IR:**
+```text
+[Case-Profile: DO-14 — Christian Canon Selection]
+- Pressure type: authority-certification; canon-formation; text-selection
+- Sub-question discrimination (identify before routing):
+    (a) Selection: which books are in the canon? (Protestant 66 / Catholic 73 / Orthodox broader)
+    (b) Formation: who decided, when, by what process?
+    (c) Authorization: on what grounds does the selection carry binding authority?
+- Primary deformation candidate: iʿtiqādāt mawrūtha — an inherited criterion for canonical authority
+  (sola scriptura from ancient apostolic consensus; OR Church-tradition-plus-scripture) applied
+  without examination of whether that criterion is self-grounding
+- Concealment candidate: iʿrāḍ if diversity is used as an exit ("too complicated, can't know")
+- Discourse orientation check: required before loading any content — is this genuine inquiry (sub-question
+  (b) or (c) live), or is diversity being used to avoid the question of authority altogether (iʿrāḍ)?
+- Route: [1] Identify which sub-question is live → [2] address that sub-question with the matched
+  content below → [3] if sub-question (c) is reached, open the positive criterion question (do not
+  supply the Islamic answer yet; let the criterion-gap become visible first) → [4] route to DO-10
+  Tier 2 for the positive Islamic account of prophetic authorization
+- Prohibited move: "your tradition is confused, therefore Islam is correct" — this treats the confusion
+  as the positive argument, which it is not; the confusion is diagnostic (the criterion for canonical
+  authority is contested), not conclusive
+```
+
+**Sub-question (a) — Selection: Which books are in the canon?**
+
+The difference between the Protestant Old Testament (39 books, aligned with the Masoretic Hebrew canon), the Catholic Old Testament (46 books including deuterocanonical texts such as Sirach and Maccabees), and the broader Orthodox canon (which includes additional texts such as 3 Maccabees and the Prayer of Manasseh) is historically documented and undisputed. These are not positions of equal standing within each tradition — each tradition presents its selection as the authoritative one.
+
+The question the interlocutor is actually asking is rarely "list the differences." It is: **how does any Christian tradition know which selection is correct?** That question is sub-question (c) — the authorization question — and should be named as such before proceeding.
+
+**Sub-question (b) — Formation: Who decided, and when?**
+
+The process of canon recognition differs structurally between the traditions:
+- The Protestant Old Testament canon relies on correspondence with the Hebrew Bible as received by the Jewish tradition — Reformation-era criterion: if it was not in the Jewish canon, it lacks apostolic authority.
+- The Catholic canon includes books present in the Septuagint (Greek Old Testament) and recognized by the early Church — confirmed formally at the Council of Trent (1546) in response to Protestant challenges.
+- Orthodox canon-formation was not settled by a single council and varies by Church.
+
+The precision that must be maintained: **canon-recognition events are distinct from canon-creation events**. A council or community that names which texts are authoritative is identifying a prior fact about authority, not manufacturing that authority by the act of naming. The interlocutor who argues "therefore the canon is a community invention" has conflated recognition with creation — the same move that RT-2 addresses for Qurʾānic transmission. Apply V10's provenance → contents → authority sequence to the presented claim:
+- Provenance: what historical event or body is being cited?
+- Contents: what does that event actually show — recognition of prior authority, or generation of new authority?
+- Authority: does the recognition event settle the authorization question, or does the authorization question precede and ground the recognition event?
+
+**Sub-question (c) — Authorization: On what grounds is any selection binding?**
+
+*Structural note: the criterion-circularity form of this sub-question — by what criterion is this selection certified as authoritative, and is that criterion self-grounding? — is cross-traditional. V10 Step 3 §(Canon-authority structural form) is the generalized structural owner; DO-14 is its Christian instantiation. For Jewish, Hindu, and other textual-authority cases involving the same logical structure, route through V10 Step 3 directly.*
+
+This is the operationally significant sub-question. The criterion for canonical authority is contested within Christianity along lines that do not resolve internally:
+- *Sola scriptura* (Scripture alone) — the Protestant position — requires a criterion for identifying what counts as Scripture that is itself not derived from Scripture, on pain of circularity. The criterion typically invoked (apostolic authorship, apostolic use, consistency with the rule of faith) is a theological judgment, not a scriptural datum.
+- *Scripture and Tradition together* — the Catholic position — avoids the sola scriptura circularity by grounding canonical authority in the teaching authority (Magisterium) of the Church. But this requires establishing the Magisterium's authority, which cannot be done from Scripture alone.
+
+**The correct epistemic move here is not to declare Islam the winner of this internal dispute.** The correct move is:
+1. Name the structure of the problem: the criterion for canonical authority is contested along lines that neither Protestant nor Catholic positions resolve without circularity or infinite regress.
+2. Show that this is a genuine epistemic problem within Christianity, not merely a historical curiosity.
+3. Open the positive question: what IS the correct criterion for identifying and authenticating a divinely authorized communication? Do not answer yet — let the question become visible as genuinely open.
+4. Route to DO-10 (three-tiered epistemological structure) for the Islamic answer: Tier 2 (khabar — reliable testimony reaching tawātur) is the Islamic account of how prophetic authorization is established, and it contrasts directly with the sola scriptura and Magisterium positions. The comparison is structural: different criteria for different transmission architectures.
+
+**Adversarial near-misses:**
+
+*Near-miss 1 — Treating the diversity as self-conclusive:* The response concludes "since Christians disagree on their canon, scripture cannot be authoritative" — and then moves directly to Islamic arguments. Error: the diversity shows the criterion is contested, not that no authoritative canon exists. The Islamic argument must stand on its own positive epistemological grounds, not on the failure of a competitor.
+
+*Near-miss 2 — Collapsing into RT-2 (Islamic canon formation):* The response treats the Christian canon question as a mirror of RT-2 and proceeds to explain the Islamic compilation as superior. Error: the interlocutor was asking about their own tradition, not about the Qurʾān. Contrast with Islamic transmission comes after the Christian case has been properly analyzed — not as a substitution for that analysis.
+
+*Near-miss 3 — Supplying the Islamic answer before the question is open:* The response immediately explains tawātur, isnād, and the Companions' preservation before the interlocutor has registered that their own tradition's criterion is structurally unresolved. Error: the positive argument is not yet receivable; the criterion-gap must become visible first.
+
+**Routing:**
+- If sub-question (a) is live and the interlocutor wants the factual differences: supply them briefly and confirm whether (b) or (c) is the real question.
+- If sub-question (b) is live and the interlocutor is asking about the historical process: run V10 (provenance → contents → authority) on the presented formation claim.
+- If sub-question (c) is live and the criterion question is open: proceed with the authorization analysis above, then route to DO-10 Tier 2 for the Islamic positive account.
+- If discourse orientation is iʿrāḍ (diversity used as exit, no genuine inquiry into the criterion): relational register only; do not load authorization analysis into an unreconstituted exit.
+
+**NS/deformation pairing:**
+- NS-7 (theistic evidentialist seeking authority grounds) — most common for this DO; V9 is not required; DO-14 directly addresses the authority criterion
+- NS-12 (blank slate) — genuine inquiry; proceed with DO-14 sub-question identification
+- NS-3 (deconverted) — canon-confusion may have contributed to departure from Christianity; M3 (orphaned intuition probe) may be relevant alongside DO-14 if the narrative layer is active
+- NS-11 (fideist) — will resist the authorization-analysis step; register-hold applies if identity-performance governs
+
+---
+
 ## Minimal-Pair Discriminator: DO-5 (Transcendence and Language) vs. DO-13 (Philosopher's God vs. God of Revelation)
 
 *Decision rule:* DO-5 is about whether divine attributes can be affirmed using human language at all — the transcendence objection to predication. DO-13 is about which conception of God is correct — whether the God of revelation must be reinterpreted through philosophical categories of absolute simplicity and immutability. DO-5 operates at the level of the semantics of divine speech; DO-13 operates at the level of competing theistic ontologies.

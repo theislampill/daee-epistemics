@@ -82,8 +82,10 @@ compound pair in sequencing order.
   language → `references/diagnostics/kalamic-interlocutor.md`
 - Blank-slate or dual-nature fiṭrah language → `references/diagnostics/fitrah-perspectives.md`
 - Attacks on necessary knowledge / ʿilm ḍarūrī / fiṭrī deliverances → `references/techniques/V9-necessary-knowledge-priority.md`
-- Historical-critical / manuscript-reconstruction / canon-formation / qirāʾāt-as-variants → `case-library/revelation-transmission.md`
-- Trinity-from-perfection / model-identification / incarnation / philosopher's-God → `case-library/do-christian-extensions.md`
+- Historical-critical / manuscript-reconstruction / Qurʾānic canon-formation / qirāʾāt-as-variants → `case-library/revelation-transmission.md` (governs Qurʾānic transmission; for hadith-transmission challenges, see interim routing section in that file)
+- Trinity-from-perfection / model-identification / incarnation / philosopher's-God → `case-library/do-christian-extensions.md` DO-11 through DO-13
+- Christian canon-selection confusion / "which Bible version" / Protestant-Catholic-Orthodox canonical diversity / authority-of-scripture-within-Christianity → `case-library/do-christian-extensions.md` DO-14 (not an RT case; distinguish from Qurʾānic RT-2 which governs Islamic canon formation)
+- (This list is illustrative, not exhaustive — structural pattern recognition takes priority over keyword matching; activate the matched module when the case-profile exhibits the structural feature, not merely the surface phrasing)
 - Muslim-internal compound (authority-fatigue + moral recoil + textual pressure) → NS-8 profile; pastoral register before doctrinal
 
 **Claim-type check:** What kind of pressure is actually being applied — logical,

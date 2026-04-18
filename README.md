@@ -190,6 +190,7 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
 | [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass. |
 | [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Parity/coverage audit ledger: explicit fidelity ratings (Landed / Compressed-but-governed / Partial / Missing) for every governed family, file, and procedure; gap inventory; canonical owner map. |
+| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Pattern-family robustness and multi-module routing discipline audit: 12-family map (PF-1 through PF-12) with abstract definitions, noetic pressures, routing surfaces, co-dispatch conditions; coverage/ownership audit; routing/cumulative-dispatch audit; abstraction-level audit; ranked gap list; file-by-file patch plan; regression fixture suite (F1–F8 across 8 failure modes); production-readiness judgment. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
 

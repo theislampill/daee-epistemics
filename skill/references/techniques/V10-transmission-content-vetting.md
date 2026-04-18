@@ -3,6 +3,7 @@
 > do not use when: the live issue is generic theism, grief-primary protest, or attribute language rather than transmission and authority
 > overlaps: P2, P5, `sound-reason-epistemology.md` §4.3
 > output: a fixed sequence for separating provenance, contents, and authority before response
+> scope: cross-traditional — the provenance → contents → authority sequence is triggered by the structural condition of a transmission or canonical-authority claim being pressed, not by the tradition of origin. Branch operators below distinguish what changes per tradition; the three-step sequence is shared across all tradition-specific instances.
 
 # V10 - Transmission / Content Vetting
 
@@ -65,6 +66,17 @@ Only after provenance and contents are separated decide how the material may be 
 This step governs shareability. Do not circulate a dramatic claim as though it were settled when
 it has not passed the first two checks.
 
+**Recognition vs. creation principle (cross-traditional):** A body that recognizes a text's canonical authority is identifying a prior fact about authority — it is not manufacturing new authority by the act of naming. The authority precedes and grounds the recognition; the recognition event does not create it. Conflating recognition with creation is the move that transfers authority from the text's divine source to the human community that named it. This error has the same logical form regardless of tradition: the recognizing body cannot authorize the canon using the canon as its warrant, nor ground its own authority from within the system it is authorizing.
+
+**Canon-authority structural form (cross-traditional):** When the live authority question concerns which texts belong to a canon and why that selection carries binding force — what DO-14 calls sub-question (c) — Step 3 instantiates as: *by what criterion is this selection certified as authoritative, and is that criterion self-grounding?* The criterion-circularity structure is shared across traditions, though the corpora, formation events, and doctrinal objects differ:
+
+- *Protestant sola scriptura* requires a non-scriptural criterion for identifying what counts as Scripture — on pain of circularity.
+- *Catholic Magisterium* grounds canonical authority in the Church's teaching authority — which requires independent grounding not derivable from the canon itself.
+- *Jewish Masoretic canon* relies on rabbinic recognition; the authority of that recognition requires independent grounding not internal to the rabbinic tradition.
+- *Hindu śruti/smṛti hierarchy* rests on Vedic apauruṣeya (non-human-origin) status; establishing that classification for specific texts requires a non-circular criterion.
+
+The tradition-specific corpora, formation events, and arguments differ; the logical form of the criterion problem does not. For the Christian canon-selection and authorization case specifically, see DO-14 (sub-question (c) and the authorization analysis), which is this file's Christian-instance. Route from DO-14 sub-question (c) → DO-10 Tier 2 for the positive Islamic epistemological account.
+
 ## Tradition-Specific Branch Operators
 
 After the three-step sequence, route to the appropriate branch. Each branch specifies what changes in the sequence and what conflations are prohibited within it. Do not apply one branch's constraints to another — the traditions have structurally different transmission architectures.
@@ -93,7 +105,7 @@ After the three-step sequence, route to the appropriate branch. Each branch spec
 - Do not treat later manuscript discovery (Dead Sea Scrolls, Oxyrhynchus papyri) as automatically overturning later canonical text — the relationship between earlier and later manuscripts requires text-critical methodology, not a simple "earlier is more authentic" rule.
 - Do not let the interlocutor conflate "the Bible has textual variants" (true of all ancient documents) with "the Bible has been substantially corrupted from its original" (a strong claim requiring substantive argument).
 
-**Route after:** RT-2 for canon-formation pressure; RT-1 for specific viral manuscript or fragment claims.
+**Route after:** RT-2 for Islamic canon-formation pressure; DO-14 for Christian canon-selection and authorization questions (sub-questions (a)–(c)); RT-1 for specific viral manuscript or fragment claims.
 
 ---
 
