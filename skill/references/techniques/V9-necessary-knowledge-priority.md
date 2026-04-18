@@ -16,7 +16,7 @@
 
 **Three-step execution:**
 1. *Name the conflict:* "This argument's conclusion contradicts what virtually all human beings across all cultures and times hold as immediately and necessarily known. That convergence takes precedence over the conclusion of any particular inference."
-2. *Identify the class of error:* (a) applying a logical operation valid within a domain to an entity outside it; (b) confusing what exists in the mind as a concept with what exists in external reality (Ibn Taymiyyah's diagnosis of al-Rāzī's error); (c) beginning from a contaminated premise elevated to axiomatic status without examination.
+2. *Identify the class of error:* (a) applying a logical operation valid within a domain to an entity outside it; (b) confusing what exists in the mind as a concept with what exists in external reality — a move that treats mental constructs as if they were arguments about real existence; (c) beginning from a contaminated premise elevated to axiomatic status without examination.
 3. *Locate the specific premise:* Work backward through the argument to find the specific defective premise. This is cleaner than a counter-argument at the same level.
 
 **The tawātur test:** If a conclusion would strike a sound-minded person as obviously wrong, and if that conclusion is universally rejected among those whose fiṭrah is not corrupted by the specific philosophical habituation that generated the argument, this near-universal rejection is evidence via tawātur fiṭrī that the conclusion is false. The philosopher who has talked himself into accepting it has acquired a deformation, not discovered a truth.

@@ -13,8 +13,8 @@ conviction grounded in direct experience.
 Spiritual practice — attentiveness, stillness, moral discipline, dhikr (remembrance of
 God) — purifies the inner life, creating the conditions under which direct awareness of
 God becomes accessible. The qalb requires clarity for the fiṭrah to operate; practice
-provides that clarity. Ibn Taymiyyah: the fiṭrah "is kept intact through spiritual
-practice."
+provides that clarity. The fiṭrah is kept intact through spiritual practice — this is
+established in the tradition.
 
 Offer this not as a demand to believe without evidence, but as a genuine epistemic
 proposal: if these practices in fact create access to a form of knowledge that argument

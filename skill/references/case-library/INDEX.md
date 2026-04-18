@@ -38,9 +38,13 @@ the case still requires.
 
 **What DO codes identify:** The objection family of the argument the interlocutor is pressing — the problem family requiring substantive engagement. DO is orthogonal to NS: different NS types can press the same DO argument, and the same person can shift DO families across a conversation.
 
-**Correct routing:** The DO code identifies which argument family requires substantive engagement at the content level. Route to the DO entry after the NS code and deformation read are established — the DO content is selected based on what the noetic structure and deformation allow to land.
+**Load-sequence note:** Establish NS code and deformation read first. DO entry is selected based on what the noetic structure and deformation allow to land — DO content is the last layer loaded, not the first. Do not route to a DO file before confirming discourse orientation; content deployed into identity-performance or grief-primary register has been loaded before the filter that will absorb it is addressed.
+
+**Correct routing:** Route to the DO entry after the NS code, deformation read, and discourse orientation are established. Confirm the specific DO family before loading: DO families share surface vocabulary (attribute language, transcendence, diversity) but the underlying problem is different in each case.
 
 **Incorrect routing:** Using DO-6 (attribute coherence) as the trigger when the real pressure is DO-13 (philosopher's-God vs. God of revelation), because both involve attribute language. DO-6 (attribute coherence) is about whether divine attributes can be coherently affirmed at all — the incoherence objection to classical theism. DO-13 is about whether the God of revelation must be reinterpreted through the philosophical categories of absolute simplicity and immutability — a competing theistic ontology. Do not collapse these: DO-6 is a semantic-coherence problem; DO-13 is a competing-ontology problem.
+
+**Adversarial near-miss:** Interlocutor cites divine hiddenness (surface: DO-1) but the real governing structure is grief — a personal loss that has been given theological language. The DO-1 philosophical apparatus (sincere-non-belief, epistemic distance, evidence-proportioned belief) does not address the affective register. Misrouting to DO-1 content while grief governs is the Diagnosis Collapse anti-pattern applied to the DO axis. Differentiating signal: does the hiddenness claim have propositional structure with evaluable premises, or is it a felt absence expressed in theological language? If the latter, M4 governs before any DO entry.
 
 ---
 
@@ -48,9 +52,13 @@ the case still requires.
 
 **What RT codes identify:** Cases about transmission, text, canon, and preservation — cases where the interlocutor is specifically pressing text-history or authority-of-source claims. RT cases are never the primary routing family unless the interlocutor is specifically pressing manuscript, canon-formation, qirāʾāt, or preservation questions.
 
+**Load-sequence note:** Run V10 (transmission and content vetting) before any RT case entry — V10 separates the artifact from the authenticated transmission before any content-level response is given. For RT-4 (believer-destabilization), check whether authority-fatigue or relational harm is co-present before engaging the textual layer; if so, P7 Stop 3 (Relational-Repair-First) may govern before RT content.
+
 **Correct routing:** Route to RT only when the live pressure is specifically on transmission reliability (RT-1), canon authority (RT-2), qirāʾāt/manuscript plurality (RT-3), or believer-destabilization (RT-4). Run V10 before any RT case entry.
 
 **Incorrect routing:** Routing to RT-3 because the interlocutor mentioned "the Qurʾān," rather than because they are specifically pressing manuscript, qirāʾāt, or preservation questions. Mentioning a text is not the same as pressing a text-history claim. The RT family requires that text-history, transmission reliability, or canon authority is the live pressure, not merely the subject.
+
+**Adversarial near-miss:** Interlocutor is an NS-9 historical-critical skeptic importing NT text-critical categories and asking about early Qurʾānic codices. The surface looks like RT-1 (manuscript reconstruction). But the live pressure is actually V10's prior question — the imported framework treats all ancient documents through the same criterion, which does not distinguish artifact from authenticated transmission. Routing directly to RT-1 content without first applying V2 (framework-clearing on the imported method) confirms the NT criterion's applicability to the Qurʾānic case. Correct sequence: V2 → V10 → RT-1 sub-route. This is also the NS-9 pattern in `noetic-profiles.md` — check that profile for the full intervention order before loading RT-1.
 
 ## Quick NS Identification
 
@@ -63,7 +71,7 @@ the case still requires.
 | NS-5 Habituated Atheist | God's non-existence treated as basic | Primarily hawa; possibly gharad; 'ada | F2 (volitional acknowledgment) first; then M4 if grief-primary, R2 if involuntary recognition near surface, V7 otherwise |
 | NS-6 Kalamic Evidentialist | `dalil` demand; `wujub al-nazar`; taqlid treated as non-knowledge; narrow necessary-knowledge class | i'tiqadat mawrutha; often zann | `diagnostics/kalamic-interlocutor.md`, then V2 or P3 as the live conflict requires |
 | NS-7 Theistic Evidentialist | God affirmed; natural-theology apparatus held as the *precondition* for warranted belief; fiṭrī recognition demoted to "mere feeling" | i'tiqadat mawrutha; often zann | V9 first (necessary-knowledge priority), then V7 symmetric on the restriction, then reposition the apologetic arguments as legitimate remedial paths |
-| NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubha covering hawa or gharad | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (Darʾ taʿāruḍ / M3 / institutional-vs-doctrinal separation) |
+| NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubha covering hawa or gharad | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (taʿāruḍ resolution / M3 / institutional-vs-doctrinal separation) |
 | NS-9 Historical-Critical Skeptic | Tawātur flattened; qirāʾāt read as Western text-critical variants; NT transmission conditions imported onto the Qurʾān; method-neutrality held as basic | i'tiqadat mawrutha; often zann | V2 on the imported framework, V10 (separate artifact from authenticated transmission), then `case-library/revelation-transmission.md` for RT-1/2/3 |
 
 ## Specialty Diagnostic Markers

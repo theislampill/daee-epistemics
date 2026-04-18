@@ -4,7 +4,7 @@
 
 ## The Method
 
-Ibn Taymiyyah's methodology for identifying what is genuinely fiṭrī is inductive: survey what is universally held among those whose cognition is unimpaired by the relevant deformation; treat that universality as evidence of what sound fiṭrah actually delivers.
+The method for identifying what is genuinely fiṭrī is inductive: survey what is universally held among those whose cognition is unimpaired by the relevant deformation; treat that universality as evidence of what sound fiṭrah actually delivers.
 
 This is not an appeal to numbers (the genetic fallacy). It is the application of the tawātur principle to cognitive deliverances: when a vast number of human beings across all times and cultures, without possibility of collusion, report the same innate cognitive intuition, this constitutes pan-human tawātur on the level of fiṭrah deliverances (tawātur fiṭrī).
 

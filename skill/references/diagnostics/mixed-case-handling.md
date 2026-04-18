@@ -91,7 +91,11 @@ intervention sequences.
 
 **Reassessment trigger:** Interlocutor shifts from affect-laden language to propositional form, or explicitly requests intellectual engagement.
 
-**Stopping condition:** If grief reasserts after intellectual content is offered, return to grief register immediately; do not continue argument.
+**Stopping condition:** If grief reasserts after intellectual content is offered, return to grief register immediately; do not continue argument. See P7 Stop 1 (Content-Withholding Stop) in `references/procedures/P7-restoration-stops.md` — grief-primary is a named trigger for that stop.
+
+**Adversarial near-miss:** Interlocutor uses protest language ("How can God let this happen?") but is pressing a structured theodicy argument rather than expressing personal loss. The affect is rhetorical framing around a genuine philosophical claim. Misrouting this as grief-primary withholds intellectual engagement the case actually requires. Differentiating signal: is the language anchored to personal loss, or is it rhetorical entry into a DO-2 argument? If the latter, discourse orientation is truth-seek; deformation is shubhah; M4 does not govern.
+
+**Regression/failure block:** Premature intellectual engagement while grief is primary produces resistance, not engagement — the person experiences argument as dismissal. Each failed argument attempt deepens the wound. Recovery requires returning entirely to the relational register before any content can land. The failure is compounding.
 
 **Pass:** grief acknowledged → relational register established → shubhah addressed only if still live.
 
@@ -111,7 +115,11 @@ intervention sequences.
 
 **Reassessment trigger:** Interlocutor distinguishes between their institutional grievance and the textual question itself.
 
-**Stopping condition:** If the interlocutor collapses back into the authority grievance whenever textual content is offered, the wound is still primary.
+**Stopping condition:** If the interlocutor collapses back into the authority grievance whenever textual content is offered, the wound is still primary. See P7 Stop 1 (Content-Withholding Stop) and Stop 3 (Relational-Repair-First Stop) in `references/procedures/P7-restoration-stops.md`.
+
+**Adversarial near-miss:** Interlocutor presents a sophisticated manuscript or hadith criticism that appears to be purely intellectual — no emotional charge, no institutional grievance named. Tempting to route directly to RT-1 or V10. But if the sophistication is borrowed (absorbed from an ex-Muslim podcast or community) without genuine prior engagement with the tradition, the textual argument may be the rationalization for an authority exit already decided. Differentiating signal: does the interlocutor show awareness of the tradition's own response to the question? If not, the textual argument may be functioning as rationalization for a pre-existing exit orientation.
+
+**Regression/failure block:** Engaging the textual argument while the authority wound is primary produces a new problem: the practitioner has now legitimized the framing that the textual argument is the real barrier. The interlocutor exits having been told, implicitly, that the intellectual layer was the live issue. The authority wound remains unaddressed. The next engagement must now address both the wound and the argument — a harder task than addressing the wound first.
 
 **Pass:** authority-fatigue named and addressed → textual shubhah engaged only when genuinely operative.
 
@@ -130,7 +138,11 @@ intervention sequences.
 
 **Reassessment trigger:** Interlocutor explicitly separates their social/emotional position from the intellectual question, or acknowledges the distinction.
 
-**Stopping condition:** If every response is absorbed into the identity narrative, the case is identity-performance and argument cannot proceed productively.
+**Stopping condition:** If every response is absorbed into the identity narrative, the case is identity-performance and argument cannot proceed productively. See P7 Stop 1 (Content-Withholding Stop) in `references/procedures/P7-restoration-stops.md` — identity-performance is a named trigger.
+
+**Adversarial near-miss:** Interlocutor is a practicing Muslim engaging seriously with historical criticism — not presenting a deconversion narrative, not performing a social exit, but genuinely troubled by what they have read. The intellectual content overlaps with the identity-cost case, but the discourse orientation is truth-seeking. Misrouting this as identity-performance withholds engagement that is actually due. Differentiating signal: does the interlocutor show genuine openness to a response, or does every response get absorbed into a departure narrative already in motion?
+
+**Regression/failure block:** Deploying historical counter-arguments into an identity-performance context reinforces the departure narrative — the interlocutor now has more intellectual material to organize the exit around. The skill has functioned as a rationalization amplifier. After this occurs, returning to the relational register is harder because the practitioner has already committed to the intellectual register the case was not ready for.
 
 **Pass:** identity layer identified → content withheld from rationalization function → intellectual question engaged only if discourse orientation shifts.
 
@@ -150,7 +162,11 @@ intervention sequences.
 
 **Reassessment trigger:** Interlocutor's criterion visibly shifts, or they acknowledge the criterion itself as contestable.
 
-**Stopping condition:** If V2 has been applied cleanly and the criterion is still treated as non-negotiable, the deformation may be hawā disguised as intellectual rigor.
+**Stopping condition:** If V2 has been applied cleanly and the criterion is still treated as non-negotiable, the deformation may be hawā disguised as intellectual rigor. See P7 Stop 4 (Underdetermined-Case Stop) if the read between genuine shubhah and hawā has not been confirmed.
+
+**Adversarial near-miss:** Interlocutor says "I'd believe if there was sufficient evidence" but the context shows they have engaged several evidential arguments and found reasons to reject each one. This may look like iʿtiqādāt mawrūtha + evidential demand, suggesting V2. But the pattern of argument-regeneration after each dissolved objection is the marker of hawā or gharaḍ, not an inherited filter. The near-miss is treating a will-entrenched rejection as a framework-cleaning problem. Differentiating signal: does a clear argument gain any purchase, or does each engaged argument generate a new objection immediately?
+
+**Regression/failure block:** Supplying evidential content into an unreconstituted criterion does not merely fail to persuade — it reinforces the criterion's authority. After each failed evidential attempt, the interlocutor's implicit conclusion is that the evidence is insufficient, which they read as confirming the criterion. V2 applied after several failed evidential exchanges is harder because the failures have been absorbed as supporting the criterion.
 
 **Pass:** criterion identified → V2 applied → evidential content supplied only after filter is loosened.
 

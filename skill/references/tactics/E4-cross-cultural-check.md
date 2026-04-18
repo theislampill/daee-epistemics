@@ -7,7 +7,7 @@ Theistic recognition is among the most widespread, persistent, involuntary, and 
 
 **The tawātur grounding (not bare appeal to numbers):** The near-universal convergence of human cognition on theistic recognition, absent collusion, constitutes pan-human tawātur fiṭrī. The denier must explain what went systematically and universally wrong with human cognitive function — a very large claim. See `references/sound-reason-epistemology.md` §4 for the full tawātur argument.
 
-**The inductive method for identifying fiṭrī deliverables:** Survey what is universally held among those whose cognition is unimpaired by the relevant deformation; treat that universality as evidence of what sound fiṭrah actually delivers. This is Ibn Taymiyyah's own methodology — it distinguishes genuine fiṭrī recognition from culturally conditioned belief.
+**The inductive method for identifying fiṭrī deliverables:** Survey what is universally held among those whose cognition is unimpaired by the relevant deformation; treat that universality as evidence of what sound fiṭrah actually delivers. This inductive method distinguishes genuine fiṭrī recognition from culturally conditioned belief. See `references/tactics/inductive-fitri-method.md` for the full method and the foundation/superstructure distinction.
 
 **Foundation vs. superstructure (critical diagnostic):** When interlocutor cites religious diversity to defeat E4:
 - *Foundation (fiṭrī-invariant):* That being requires a source; that moral obligation is real and categorical; that the purely material is inadequate. This does not vary significantly across cultures when deformations are controlled for.

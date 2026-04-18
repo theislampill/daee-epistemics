@@ -11,4 +11,6 @@ When this is operative, the argumentative register must be entirely suspended. E
 
 **What does not work:** Any intellectual content while the grief is present and primary. Theodicy offered too soon is experienced as dismissal.
 
+**P7 stop:** When M4 is active, P7 Stop 1 (Content-Withholding Stop) in `references/procedures/P7-restoration-stops.md` is automatically triggered. Grief-primary is a named trigger for that stop. The mandatory action (establish relational register before any intellectual content) and the prohibited action (deploying doctrinal content into a grief-primary space) are specified there. M4 names the register; P7 Stop 1 enforces the mandatory and prohibited actions as hard rails.
+
 **Connection:** M4 does not route to any subsequent tactic directly — it suspends the tactic-selection process. The subsequent engagement is governed by what the person needs and what opens, not by the skill's diagnostic.

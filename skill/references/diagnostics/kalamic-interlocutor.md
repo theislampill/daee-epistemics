@@ -183,8 +183,8 @@ expressed Qurʾān (its ḥurūf and aṣwāt) was held to be created but extern
 deviation from the sound position on two counts: it denies the subsistence of volitional
 acts in the divine essence (al-umūr al-ikhtiyāriyya al-qāʾima bi-dhātihi), and it produces
 a doctrine of divine speech that severs the revealed Qurʾān from being genuinely God's own
-word in the sense the texts require. Per Ibn Taymiyya, this is a "remnant of Muʿtazilī
-principles" embedded in Ashʿarism — an error that worsened with each successive generation.
+word in the sense the texts require. This deviation — a remnant of Muʿtazilī principles
+embedded in Ashʿarism — worsened with each successive generation.
 
 **Muʿtazilī ontological position (diagnosed error):** Denied the hypostatic character of
 the essential attributes entirely; treated ḥudūth (temporal origination) as sufficient for

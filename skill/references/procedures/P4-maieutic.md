@@ -7,9 +7,10 @@ is present but suppressed.
 **Logic:** The dāʿī's role is not to transmit knowledge but to help the interlocutor bring
 to birth knowledge already present within them. This is the logic of the tradition itself:
 the Messengers do not bring information from outside; they awaken what is already present in
-the fiṭrah. Ibn Taymiyyah: "No Prophet has ever addressed his people and asked that they
-should first of all know their Creator by looking into various arguments. Everyone is born
-with the fiṭrah, only that something happens afterwards which casts a veil over it."
+the fiṭrah. The prophetic tradition is explicit: no Prophet ever opened by demanding that
+his people first establish knowledge of their Creator through discursive argument. Everyone
+is born with the fiṭrah intact; what happens afterward casts a veil over it. The maieutic
+procedure works with this — clearing the veil, not constructing knowledge from outside.
 
 ## Execution
 

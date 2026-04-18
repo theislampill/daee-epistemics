@@ -35,7 +35,7 @@ non-coercively. Be patient.
 **5. Introduce spiritual practice.**
 Suggest — gently, without pressure — that the practices which open direct awareness of God
 (attentive reflection, moral discipline, stillness, dhikr) are worth trying as inquiry rather
-than as devotion. Ibn Taymiyyah: the fiṭrah "is kept intact through spiritual practice." Since
+than as devotion. The tradition is explicit that the fiṭrah is kept intact through spiritual practice. Since
 the qalb cannot grasp the evidence for God without spiritual attunement, practical orientation
 toward God creates epistemic access. Introduce it as a recommendation to investigate, not a
 demand to commit.

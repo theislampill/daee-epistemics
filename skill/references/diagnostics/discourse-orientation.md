@@ -53,7 +53,9 @@ identity. The productive response is to name the distinction: "there is a differ
 between holding a position because you have examined it and holding it because of what
 it represents — which is this?" Do not supply more content to be performed against.
 Relational engagement and the longer work of making honest inquiry available are the
-appropriate instruments.
+appropriate instruments. See P7 Stop 1 (Content-Withholding Stop) in
+`references/procedures/P7-restoration-stops.md` — identity-performance is a named
+trigger for that stop.
 
 ---
 

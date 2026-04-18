@@ -288,7 +288,7 @@ not genuine shubuhāt. They are covers for one of the other six. The tell: if ad
 the objection carefully and completely produces not relief but a new objection, the
 barrier was never intellectual.
 
-**The shubhah as disease of the heart (waswās):** Ibn Taymiyyah distinguishes between
+**The shubhah as disease of the heart (waswās):** The tradition distinguishes between
 a shubhah that arises from genuine inquiry and one that functions as waswās — whispered
 doubt, a disease of the heart that casts doubt on what is firmly known. The latter does
 not respond to intellectual engagement because its purpose is destabilization, not

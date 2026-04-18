@@ -36,6 +36,7 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/inference-boundary.md` | A reply materially combines files or extends beyond direct file-grounding; short marker legend is mirrored in §V |
 | `references/diagnostics/mixed-case-handling.md` | Multiple reads compete, the basis is thin, or the case must stay underdetermined |
 | `references/diagnostics/anti-patterns.md` | Auditing for forced fit, rhetorical drift, over-selection, or decorative terminology |
+| `references/diagnostics/framework-pipeline.md` | Auditing the canonical decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate — the single canonical ASCII chart of the full pipeline |
 
 ### Specialty Diagnostics
 Load only when surface discourse points to the specialty family.
@@ -240,7 +241,7 @@ A shubhah (plural: shubuhāt) is a specious argument — one that presents false
 appearance of truth. It resembles a sound argument without being one. It wraps a body of
 falsehood in the clothing of truth.
 
-Ibn Taymiyyah:
+Four principles established in the tradition:
 
 *"Sophistry is the denial of existing truths through deception and obfuscation."*
 
