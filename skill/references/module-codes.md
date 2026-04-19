@@ -48,11 +48,11 @@ Source: `references/diagnostics/discourse-orientation.md`.
 | `zann-mode` | Assertions without discipline of warrant | Press one specific claim at a time |
 | `mixed` | Predominant + minority channel | Respond to predominant; track for shift |
 
-## Axis 3 — Doctrinal DO-1..13 (Problem Family)
+## Axis 3 — Doctrinal DO-1..14 (Problem Family)
 
 Source: `references/case-library/INDEX.md` §Quick DO Identification.
 Full treatment: `case-library/do-core.md` (DO-1..6), `case-library/do-second-loop.md`
-(DO-7..10), `case-library/do-christian-extensions.md` (DO-11..13).
+(DO-7..10), `case-library/do-christian-extensions.md` (DO-11..14).
 
 | Code | Objection family |
 |------|------------------|
@@ -69,9 +69,10 @@ Full treatment: `case-library/do-core.md` (DO-1..6), `case-library/do-second-loo
 | DO-11 | Trinity from divine perfection |
 | DO-12 | Logical problem of the Trinity; model-identification |
 | DO-13 | Philosopher's God vs. God of revelation; incarnation coherence |
+| DO-14 | Christian canon selection: which Bible, and why |
 
-DO-1..13 are a different axis from DO-orient; they share the prefix because both live
-on the discourse axis. DO-orient answers *what the discourse is for*; DO-1..13 answers
+DO-1..14 are a different axis from DO-orient; they share the prefix because both live
+on the discourse axis. DO-orient answers *what the discourse is for*; DO-1..14 answers
 *what objection family is live inside it*.
 
 ## Axis 4 — Concealment Mode

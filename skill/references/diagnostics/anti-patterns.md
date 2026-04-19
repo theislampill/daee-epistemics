@@ -111,6 +111,16 @@ The following entries expand the compressed table into full audit-grade entries.
 
 ---
 
+**Restoration-First Default**
+*Definition:* Loading P1 (fiṭrah-restoration) or P4 (maieutic) as the opening move when the case carries a live epistemic question — evidentialist demand, canon or authority confusion, doctrinal complexity structured as argument — that requires the matched content module before any restoration framing.
+*Pattern appearing in output:* An interlocutor with an inherited-tradition background asks "which Bible is authoritative, and how would anyone know?" The response immediately frames the question as a fiṭrah-recognition opportunity, invites reflection on creation, and omits the canon-authority analysis the interlocutor actually asked about. Or: an interlocutor with an evidentialist criterion objection receives P4 maieutic prompts about inner recognition before V2 has loosened the criterion that is doing the governing work.
+*Correct behavior in the same case:* Run V1 and foreign-premise detection (FPD). Identify the live epistemic question and the matched content module. Deploy the matched module first — DO-14 for canon-selection, DO-10 for ḍarūrī criterion attacks, V2 for inherited evidentialist criteria, V10 for transmission pressure. Restoration framing may accompany the engagement later (once the epistemic question has been met) but never substitutes for the matched module.
+*Self-audit question:* Does this case carry a live epistemic question (evidentialist demand, canon/authority confusion, doctrinal-complexity-as-argument), and if so have I deployed the matched content module before loading any restoration frame?
+*Why it damages the skill:* Defaulting to restoration when argument is required produces a preachy or exhortatory response that leaves the interlocutor's actual question unanswered. The practitioner has the subjective experience of having offered something gentle and principled; the interlocutor experiences being addressed at a register they did not ask for and not at the one they did. Across repeated cases, this converts the skill's epistemic-comparative architecture into an invitational register — the specific regression `mixed-case-handling.md` playbook (v) was written to prevent. Generalized, this anti-pattern protects cases beyond playbook (v) (including NS-3, NS-11, and NS-12 profiles) where the localized playbook guard does not fire.
+*Prevented by:* `mixed-case-handling.md` Playbook (v) §Critical correction to the "restoration-first" failure mode (the localized correction this anti-pattern generalizes); `P7-restoration-stops.md` Stop 1 (Content-Withholding Stop — the inverse guard, preventing content when register requires hold; restoration-first is the other-direction failure, preventing content when content is what is required); `kernel-thesis.md` Commitment 4 (restoration works through matched content, not around it); `heuristics.md` rule 12 exception clause (restoration framing supports but does not substitute epistemic content when epistemic demand is present); SKILL.md Named Routing Constraint 1 (no content module before V1 has been run — the read from V1 is what separates restoration-need from epistemic-need).
+
+---
+
 ## Quick Self-Audit
 
 - Have I diagnosed before rebutting?
@@ -121,3 +131,4 @@ The following entries expand the compressed table into full audit-grade entries.
 - Have I marked where inference begins?
 - If this is a conversation excerpt, have I confirmed multiple convergent signals before assigning a confident NS code?
 - Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?
+- Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?

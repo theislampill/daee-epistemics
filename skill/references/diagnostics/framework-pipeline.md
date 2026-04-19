@@ -84,15 +84,15 @@
 |    (firing S-rule -> gate blocked for that operation)     |
 | 4. P7 stops checked? (all five)                           |
 |    (active stop -> gate blocked for governed operation)   |
-| 5. Restoration target typed against metaphysical-         |
+| 5. Architectural integrity check:                         |
+|    Restoration target typed against metaphysical-         |
 |    architecture.md layer taxonomy?                        |
-|    (fail -> restate; do not dispatch)                     |
-| 6. kernel-thesis.md violation signatures absent?          |
-|    (fail -> identify violation; do not dispatch)          |
-| 7. Concealment x orientation matrix: content deployable?  |
+|    kernel-thesis.md violation signatures absent?          |
+|    (fail -> restate / identify violation; do not dispatch)|
+| 6. Concealment x orientation matrix: content deployable?  |
 |    (register-hold -> hold module; do not dispatch yet)    |
 |                                                            |
-| *** Module dispatch is BLOCKED until all 7 checks pass ***|
+| *** Module dispatch is BLOCKED until all 6 checks pass ***|
 +------------------------------------------------------------+
              |
        +-----+-----+

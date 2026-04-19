@@ -95,11 +95,11 @@ is that fitri rational deliverances - identity, non-contradiction, and counting 
 not casually suspended to preserve a doctrine. If a position survives only by equivocation, ad hoc
 counting, or mystery after failure, the burden remains on the position.
 
-Incarnation coherence belongs on the same coherence layer. If the claim is that divine self-
-disclosure in flesh is impossible, distinguish real contradiction from the hidden assumption that
-divine action must always remain static, abstract, and creaturely-modeled. Do not let a question
-about mode of presence get turned into a question about authority before the coherence issue has
-been named.
+If the live pressure is incarnation coherence rather than the Trinity per se, route to the
+Incarnation Coherence section below. The same coherence layer governs, and the same model-
+identification discipline transfers; only the specific models and the hidden premise about
+ontological merger are different. Do not let a question about mode of presence get turned into a
+question about authority before the coherence issue has been named.
 
 **Remaining probe:** Which exact model do you affirm, and by what principled rule do you count
 one God while retaining three really distinct persons without collapsing into tritheism or

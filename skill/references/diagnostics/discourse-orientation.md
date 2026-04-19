@@ -168,14 +168,17 @@ files emit the doctrinal and transmission codes. All three axes — NS code, DO-
 
 The orientation diagnostic terminates with one line feeding `case-state-schema.md`:
 
-    DO-orient: <truth-seek | identity-perf | autotelic | zann-mode | mixed>    Engagement posture: <intellectual | relational | suspended>    Next: <smallest matched move>
+    DO-orient: <truth-seek | identity-perf | autotelic | zann-mode | mixed>    Next: <smallest matched move>
 
-`Engagement posture` is the DO-orient–level gate on whether intellectual engagement is
-apt at all. It is not the same field as the concealment-mode `Register`
-(`invitational | intellectual | maieutic | relational | suspended`), which refines *how*
-an intellectually apt engagement should be conducted once the posture permits it. The
-two fields are nested, not redundant: posture selects whether to proceed; register
-selects the manner of proceeding.
+*Engagement posture* is an internal diagnostic distinction — not a separately emitted IR
+field. It names whether intellectual engagement is apt at all (intellectual / relational /
+suspended), and that judgment is folded into the downstream `Register` selection emitted
+by the concealment-mode diagnostic via `case-state-schema.md`. Concretely: a DO-orient of
+`identity-perf`, `autotelic`, or `zann-mode` forces the emitted `Register` into
+`relational` or `suspended` regardless of the concealment-mode read; a DO-orient of
+`truth-seek` allows the concealment-mode read to select among
+`invitational | intellectual | maieutic | relational | suspended` on its own terms. The
+posture governs the register; the register is what appears on the wire.
 
 If the orientation is `truth-seek`, the noetic-reading-checklist's NS emission plus the
 concealment-mode emission plus (where applicable) the doctrinal DO or RT code compose the

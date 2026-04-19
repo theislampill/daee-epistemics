@@ -29,7 +29,7 @@ These are always-active background rules, not case-specific moves.
 
 11. **Surface the prior probability.** Evidential arguments are probabilistic. The prior the interlocutor is assuming is not neutral — surface it.
 
-12. **Frame everything as restoration, not construction.** Every argument, every sign, every question is clearing a path back — not building a case from zero.
+12. **Frame everything as restoration, not construction.** Every argument, every sign, every question is clearing a path back — not building a case from zero. *Exception:* when the case carries a live epistemic question — evidentialist criterion, canon or authority confusion, doctrinal complexity structured as argument — restoration framing supports but does not substitute the matched content module. Deploy the epistemic content first; add restoration framing as accompanying register only once the epistemic question has been met. This is the restoration-first regression named in `references/playbooks/mixed-case-handling.md` playbook (v) and `references/diagnostics/anti-patterns.md` §Restoration-First Default.
 
 13. **When an argument conflicts with universal innate intuition, the intuition wins (V9).** Locate the error in the argument's premises; do not suspend the universal deliverable.
 
