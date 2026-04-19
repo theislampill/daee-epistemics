@@ -1,6 +1,6 @@
 # daee-epistemics
 
-`daee-epistemics` is a modular LLM skill for epistemic operations and noetic analysis: a cognitive-security framework for classifying discourse, diagnosing orientation, deformation, and concealment, and routing engagements through matched tactics, techniques, procedures, and case modules.
+`daee-epistemics` is a modular LLM skill and governed diagnostic framework for epistemic operations and noetic analysis: analogous to a cognitive-security framework for classifying discourse, diagnosing Orientation, Deformation, and Concealment, and routing engagements through matched Tactics, Techniques, Procedures, and Case Modules.
 
 This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). 
 
@@ -66,10 +66,32 @@ The repository's own method requires clarity before response, and that applies t
 
 ## Core Thesis
 
-> `daee-epistemics` is best understood as an epistemic SOC: 
+> `daee-epistemics` is best understood as analogous to an epistemic SOC: 
 a structured system for identifying, classifying, and remediating epistemic distortion affecting the heart-mind.
 
-The point of that analogy is architectural, not ornamental. 
+The point of that analogy is architectural (onboarding-oriented), not ornamental. 
+
+More fundamentally, the skill is attempting to formalise not only the handling of cases within the domain, but the domain’s own **epistemology, noetic analysis, diagnostic ontology, and meta-level grammar** by which cases are subjected to **first-order analysis, higher-order diagnosis, case-typing, routing, interpretation, and restoration**.
+
+The skill covers a governed diagnostic and restorative framework for epistemological, ontological, metaphysical, theological, and related philosophical cases, while also formalising the meta-level grammar by which such cases are typed, routed, interpreted, and restored. 
+It aims to externalise the domain’s diagnostic ontology into a compact DSL/IR so that both higher-order diagnosis and first-order analysis become explicit, auditable, and reusable. 
+This means the encode/decode not just of answers, but the operative ontology of epistemic states, noetic structures and deformations, and restoration transitions: 
+what kind of case is present, 
+what level it is operating at, 
+what is being smuggled or conflated, 
+what must be clarified first, 
+what routing follows, and 
+how a case moves from deformation toward restored order.
+
+In that sense, the framework is not just organising content; it is formalising a meta-epistemology and an operative map of noetic, epistemic, ontological, and meta-level states and transitions. That makes the system more deterministic at runtime, more portable across models, more compressible across context windows, and potentially usable not only as reference material but as a training grammar for diagnosis, analysis, and restoration.
+
+This makes it desirable for both frontier and quantised LLMs, though for different reasons. 
+For frontier models, it functions as external discipline: it reduces drift, forces explicit case-typing and routing, and makes outputs more auditable and reproducible rather than leaving the model to generate persuasive but structurally ungoverned prose. 
+For quantised or smaller models, it functions as external cognitive compression: instead of having to internally reconstruct the whole domain at full resolution, the model can operate through a compact case language, typed state, and bounded restoration grammar.
+
+In both cases, the point is the same: to shift the burden from vague latent improvisation toward a portable, inspectable, and reusable structure for diagnosis, analysis, and restoration.
+
+The cognitive-security / epistemic-SOC analogy is helpful here as an onboarding frame, but it is secondary.
 
 A Security Operations Center (SOC) does not begin by deploying countermeasures blindly; it initiates:
 * intake
