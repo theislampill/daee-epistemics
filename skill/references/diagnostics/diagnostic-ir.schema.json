@@ -35,7 +35,16 @@
     },
     "deformation": {
       "type": "string",
-      "minLength": 1
+      "enum": [
+        "Iʿtiqādāt mawrūtha",
+        "Mushābara fāsida",
+        "Hawā",
+        "Ẓann",
+        "Taqlīd",
+        "ʿĀda",
+        "Gharaḍ",
+        "Shubha"
+      ]
     },
     "concealment_mode": {
       "type": "string",
@@ -77,9 +86,17 @@
     },
     "matched_modules": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 },
-      "minItems": 1,
-      "uniqueItems": true
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "module_class": { "type": "string", "enum": ["case-library", "tactic", "procedure", "technique"] },
+          "content_bearing": { "type": "boolean" },
+          "doctrinal_case_file": { "type": "boolean" }
+        },
+        "required": ["id", "module_class", "content_bearing", "doctrinal_case_file"]
+      },
+      "minItems": 1
     },
     "restoration_target": {
       "type": "string",
@@ -90,8 +107,14 @@
       "minLength": 1
     },
 
-    "ns_code": { "type": "string" },
-    "rt_marker": { "type": "string" },
+    "ns_code": {
+      "type": "string",
+      "enum": ["NS-1", "NS-2", "NS-3", "NS-4", "NS-5", "NS-6", "NS-7", "NS-8", "NS-9", "NS-10", "NS-11", "NS-12", "provisional"]
+    },
+    "rt_marker": {
+      "type": "string",
+      "enum": ["RT-1", "RT-2", "RT-3", "RT-4", "none"]
+    },
     "read_status": {
       "type": "string",
       "enum": ["dominant", "distributed", "underdetermined"]
@@ -101,30 +124,58 @@
       "enum": ["strong", "provisional", "low"]
     },
     "p7_stops_active": {
-      "oneOf": [
-        { "type": "string" },
-        {
-          "type": "array",
-          "items": { "type": "string" },
-          "uniqueItems": true
-        }
-      ]
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5", "none"]
+      },
+      "uniqueItems": true
     },
     "prohibited_moves": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string",
+        "enum": ["PM-1", "PM-2", "PM-3", "PM-4"]
+      },
       "uniqueItems": true
     },
     "backbone_predicates_active": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string",
+        "enum": ["C-1", "C-2", "C-3", "T-1", "T-2", "T-3", "O-1", "O-2", "O-3", "K-1", "K-2"]
+      },
       "uniqueItems": true
     },
-    "foreign_premise": { "type": "string" },
-    "philosophical_usurpation": { "type": "string" },
-    "architectural_layer_disrupted": { "type": "string" },
-    "ontological_disorder": { "type": "string" },
-    "source_basis": { "type": "string" },
+    "foreign_premise": { "type": "string", "minLength": 1 },
+    "philosophical_usurpation": { "type": "string", "minLength": 1 },
+    "architectural_layer_disrupted": {
+      "type": "string",
+      "enum": [
+        "fiṭrah",
+        "sound-reason",
+        "authentic-transmission",
+        "inferential-route",
+        "transcendence-immanence",
+        "prophetic-authority",
+        "none"
+      ]
+    },
+    "ontological_disorder": {
+      "type": "string",
+      "enum": [
+        "category-mistake",
+        "illicit-analogy",
+        "equivocal-predication",
+        "composition-panic",
+        "person-multiplicity-conflation",
+        "perfect-being-usurpation",
+        "none"
+      ]
+    },
+    "source_basis": {
+      "type": "string"
+    },
     "inference_boundary_active": {
       "type": "string",
       "enum": ["yes", "no"]
@@ -165,6 +216,70 @@
         "properties": {
           "routing_gate": {
             "not": { "const": "open" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "concealment_mode": { "const": "juhud" }
+        },
+        "required": ["concealment_mode"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": { "const": "content" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "p7_stops_active": { "contains": { "const": "Stop-1" } }
+        },
+        "required": ["p7_stops_active"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": { "const": "content" }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": { "const": "V2-required" }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "properties": {
+          "matched_modules": {
+            "items": {
+              "content_bearing": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "do_orient": { "const": "identity-perf" }
+        },
+        "required": ["do_orient"]
+      },
+      "then": {
+        "properties": {
+          "matched_modules": {
+            "items": {
+              "doctrinal_case_file": false
+            }
           }
         }
       }

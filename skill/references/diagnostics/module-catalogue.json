@@ -1,0 +1,319 @@
+{
+  "modules": [
+    {
+      "id": "do-attribute-precision",
+      "path": "skill/references/case-library/do-attribute-precision.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "do-christian-extensions",
+      "path": "skill/references/case-library/do-christian-extensions.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "do-core",
+      "path": "skill/references/case-library/do-core.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "do-second-loop",
+      "path": "skill/references/case-library/do-second-loop.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "noetic-profiles",
+      "path": "skill/references/case-library/noetic-profiles.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "philosophical-usurpation",
+      "path": "skill/references/case-library/philosophical-usurpation.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "revelation-transmission",
+      "path": "skill/references/case-library/revelation-transmission.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-1-naturalist",
+      "path": "skill/references/case-library/profiles/ns-1-naturalist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-2-agnostic-evidentialist",
+      "path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-3-deconverted",
+      "path": "skill/references/case-library/profiles/ns-3-deconverted.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-4-secular-moral-realist",
+      "path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-5-habituated-atheist",
+      "path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-6-kalamic-evidentialist",
+      "path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-7-theistic-evidentialist",
+      "path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-8-muslim-internal-crisis",
+      "path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-9-historical-critical-skeptic",
+      "path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-10-maturidi-evidentialist",
+      "path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-11-fideist-reformed",
+      "path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "ns-12-blank-slate-dual-fitrah",
+      "path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
+      "module_class": "case-library"
+    },
+    {
+      "id": "E1-broadening-evidence",
+      "path": "skill/references/tactics/E1-broadening-evidence.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "E2-inferential-criterion",
+      "path": "skill/references/tactics/E2-inferential-criterion.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "E3-cumulative-case",
+      "path": "skill/references/tactics/E3-cumulative-case.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "E4-cross-cultural-check",
+      "path": "skill/references/tactics/E4-cross-cultural-check.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "F1-supra-vs-antirational",
+      "path": "skill/references/tactics/F1-supra-vs-antirational.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "F2-volitional-dimensions",
+      "path": "skill/references/tactics/F2-volitional-dimensions.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "F3-practice-epistemic-access",
+      "path": "skill/references/tactics/F3-practice-epistemic-access.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M1-self-refutation",
+      "path": "skill/references/tactics/M1-self-refutation.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M1P-performative-self-refutation",
+      "path": "skill/references/tactics/M1P-performative-self-refutation.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M2-prior-probability",
+      "path": "skill/references/tactics/M2-prior-probability.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M3-orphaned-intuition",
+      "path": "skill/references/tactics/M3-orphaned-intuition.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M4-grief-register",
+      "path": "skill/references/tactics/M4-grief-register.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M5-deformation-triage",
+      "path": "skill/references/tactics/M5-deformation-triage.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M6-excluded-middle",
+      "path": "skill/references/tactics/M6-excluded-middle.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M7-definition-anchor",
+      "path": "skill/references/tactics/M7-definition-anchor.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M8-reductio",
+      "path": "skill/references/tactics/M8-reductio.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M9-predication-mode",
+      "path": "skill/references/tactics/M9-predication-mode.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "R1-internalist-criterion",
+      "path": "skill/references/tactics/R1-internalist-criterion.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "R2-the-reminder",
+      "path": "skill/references/tactics/R2-the-reminder.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "R3-warranted-basic-belief",
+      "path": "skill/references/tactics/R3-warranted-basic-belief.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "doubt-vs-skepticism",
+      "path": "skill/references/tactics/doubt-vs-skepticism.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "husn-al-nazar-arguments",
+      "path": "skill/references/tactics/husn-al-nazar-arguments.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "inductive-fitri-method",
+      "path": "skill/references/tactics/inductive-fitri-method.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "symmetric-taqlid-check",
+      "path": "skill/references/tactics/symmetric-taqlid-check.md",
+      "module_class": "tactic"
+    },
+    {
+      "id": "P1-fitrah-restoration",
+      "path": "skill/references/procedures/P1-fitrah-restoration.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P2-objection-mapping",
+      "path": "skill/references/procedures/P2-objection-mapping.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P3-reason-revelation-tension",
+      "path": "skill/references/procedures/P3-reason-revelation-tension.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P4-maieutic",
+      "path": "skill/references/procedures/P4-maieutic.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P5-already-believing",
+      "path": "skill/references/procedures/P5-already-believing.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P6-universal-aqidah-principle",
+      "path": "skill/references/procedures/P6-universal-aqidah-principle.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "P7-restoration-stops",
+      "path": "skill/references/procedures/P7-restoration-stops.md",
+      "module_class": "procedure"
+    },
+    {
+      "id": "V1-diagnostic",
+      "path": "skill/references/techniques/V1-diagnostic.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V10-transmission-content-vetting",
+      "path": "skill/references/techniques/V10-transmission-content-vetting.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V11-taqlid-transition",
+      "path": "skill/references/techniques/V11-taqlid-transition.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V12-tamanuc-exhaustion",
+      "path": "skill/references/techniques/V12-tamanuc-exhaustion.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V2-reconstituting-reason",
+      "path": "skill/references/techniques/V2-reconstituting-reason.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V3-regress-dissolution",
+      "path": "skill/references/techniques/V3-regress-dissolution.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V4-contamination-identification",
+      "path": "skill/references/techniques/V4-contamination-identification.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V5-directing-attention-signs",
+      "path": "skill/references/techniques/V5-directing-attention-signs.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V6-convergence",
+      "path": "skill/references/techniques/V6-convergence.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V7-taqlid-check",
+      "path": "skill/references/techniques/V7-taqlid-check.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V8-bila-kayf-anchor",
+      "path": "skill/references/techniques/V8-bila-kayf-anchor.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "V9-necessary-knowledge-priority",
+      "path": "skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "module_class": "technique"
+    },
+    {
+      "id": "heuristics",
+      "path": "skill/references/techniques/heuristics.md",
+      "module_class": "technique"
+    }
+  ]
+}
