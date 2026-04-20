@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skill/references/diagnostics/diagnostic-ir.schema.json",
+  "title": "Diagnostic IR",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "case_family",
+    "claim_type",
+    "deformation",
+    "concealment_mode",
+    "do_orient",
+    "reason_category",
+    "routing_gate",
+    "matched_modules",
+    "restoration_target",
+    "next_move"
+  ],
+  "properties": {
+    "case_family": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "logical",
+        "metaphysical",
+        "moral",
+        "historical",
+        "transmission",
+        "phenomenological",
+        "authority"
+      ]
+    },
+    "deformation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "concealment_mode": {
+      "type": "string",
+      "enum": [
+        "irad",
+        "juhud",
+        "inkar",
+        "istikbar",
+        "nifaq",
+        "mode-?",
+        "compound"
+      ]
+    },
+    "do_orient": {
+      "type": "string",
+      "enum": [
+        "truth-seek",
+        "identity-perf",
+        "autotelic",
+        "zann-mode",
+        "mixed"
+      ]
+    },
+    "reason_category": {
+      "oneOf": [
+        { "type": "integer", "enum": [1, 2, 3, 4] },
+        { "type": "string", "enum": ["1", "2", "3", "4"] }
+      ]
+    },
+    "routing_gate": {
+      "type": "string",
+      "enum": [
+        "open",
+        "V2-required",
+        "deformation-first",
+        "register-hold",
+        "stop-condition"
+      ]
+    },
+    "matched_modules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "restoration_target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "next_move": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "ns_code": { "type": "string" },
+    "rt_marker": { "type": "string" },
+    "read_status": {
+      "type": "string",
+      "enum": ["dominant", "distributed", "underdetermined"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["strong", "provisional", "low"]
+    },
+    "p7_stops_active": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "prohibited_moves": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "backbone_predicates_active": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "foreign_premise": { "type": "string" },
+    "philosophical_usurpation": { "type": "string" },
+    "architectural_layer_disrupted": { "type": "string" },
+    "ontological_disorder": { "type": "string" },
+    "source_basis": { "type": "string" },
+    "inference_boundary_active": {
+      "type": "string",
+      "enum": ["yes", "no"]
+    },
+    "output_shape": {
+      "type": "string",
+      "enum": [
+        "content",
+        "relational",
+        "maieutic",
+        "invitational",
+        "single-response",
+        "held-pending"
+      ]
+    },
+    "what_is_withheld_and_why": { "type": "string" },
+    "what_remains_live": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "read_status": { "const": "underdetermined" },
+          "confidence": { "const": "strong" }
+        },
+        "required": ["read_status", "confidence"]
+      },
+      "then": false
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_category": { "enum": [3, 4, "3", "4"] }
+        },
+        "required": ["reason_category"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": { "const": "open" }
+          }
+        }
+      }
+    }
+  ]
+}
