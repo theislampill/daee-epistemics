@@ -1,13 +1,11 @@
 > role: cross-axis precedence encoding
 > use when: multiple diagnostic axes produce competing or ambiguous routing signals, or when a routing decision must be justified rather than inferred from prose description
 > do not use when: the case is unambiguously single-axis and the matched module is clear
-> output: deterministic precedence rules for the defined diagnostic state-space — supersedes prose description where the rules conflict
+> output: deterministic precedence rules for the defined diagnostic state-space
 
-# Routing Precedence — Cross-Axis Rules
+# Routing Precedence - Cross-Axis Rules
 
-The skill operates on seven independent diagnostic axes: NS (noetic structure), deformation, concealment mode, discourse orientation (DO-orient), claim-type, RT marker, and reason-category. These axes interact. When they produce competing routing signals, the rules below determine which signal takes precedence. Rules are numbered for reference. Where a rule governs, prose-level judgment is not a substitute.
-
-The concealment × orientation routing matrix (in `case-state-schema.md`) handles two axes. This file handles the remaining cross-axis interactions and provides the full precedence hierarchy.
+The skill operates on seven independent diagnostic axes: NS, deformation, concealment mode, discourse orientation (DO-orient), claim-type, RT marker, and reason-category. This file governs their interactions when they produce competing routing signals. The concealment x orientation matrix in `case-state-schema.md` handles two axes directly; this file handles the remaining cross-axis interactions and the full precedence hierarchy.
 
 ---
 
@@ -15,21 +13,15 @@ The concealment × orientation routing matrix (in `case-state-schema.md`) handle
 
 When multiple axes compete, apply in this order:
 
-1. **Concealment mode (if non-clear):** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing. Content cannot be deployed until the register the concealment mode requires is established, regardless of what the deformation, NS code, or DO entry would otherwise imply.
-
-2. **Discourse orientation (if non-truth-seek):** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held. The orientation must shift before the module is deployed.
-
-3. **Deformation (outside-in sequence):** Within the register permitted by concealment mode and DO-orient, deformations are addressed outside-in. ʿĀda before iʿtiqādāt mawrūtha; gharaḍ and hawā before any intellectual content; iʿtiqādāt mawrūtha before evidence; shubhah last.
-
-4. **Reason-category (for content gate):** When reason-category is 3 (pseudo-neutral) or 4 (inherited criterion), V2 is required before content. When reason-category is 2 (corrupted), the volitional deformation is addressed before reason-engagement.
-
-5. **Foreign-premise status:** When a foreign premise is detected functioning as criterion or tribunal, V2 runs before content. This is parallel to reason-category 3/4 — both gate content deployment; a detected foreign premise triggers V2 even if reason-category was marked as sound.
-
-6. **NS code (for content selection):** Only after axes 1–5 are clear does the NS code govern what content is selected. The NS code identifies *what to say*; axes 1–5 identify *whether to say it yet*.
-
-7. **DO code (for argument family):** The DO entry is loaded last — after NS, after register is clear, after deformation sequence is correct. DO is the final content layer, not the entry point.
-
-8. **RT marker (parallel to DO):** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer.
+1. **Concealment mode (if non-clear).** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
+2. **Discourse orientation (if non-truth-seek).** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held until orientation shifts.
+3. **Deformation (outside-in sequence).** `ada` before `i'tiqadat mawrutha`; `gharad` and `hawa` before any intellectual content; `i'tiqadat mawrutha` before evidence; `shubha` last.
+4. **Reason-category (content gate).** When reason-category is 3 or 4, V2 is required before content. When reason-category is 2, the volitional deformation is addressed before reason-engagement.
+5. **Foreign-premise status.** When a foreign premise is detected functioning as criterion or tribunal, V2 runs before content even if reason-category was marked as sound.
+6. **Semantic-discipline gate.** When semantic neutralization of prophetic discourse or a loaded lexical-ontological trap is live, doctrinal content is held until the semantic problem is cleared. This gate does not erase foreign-premise or tribunal findings; it runs after criterion detection and before doctrinal release.
+7. **NS code (content selection).** Only after axes 1-6 are clear does the NS code govern what content is selected. The NS code identifies what to say; axes 1-6 identify whether to say it yet.
+8. **DO code (argument family).** The DO entry is loaded after NS, after register is clear, and after the correct upstream sequence has run.
+9. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer.
 
 ---
 
@@ -37,15 +29,17 @@ When multiple axes compete, apply in this order:
 
 These rules specify when one axis suppresses or delays another:
 
-**Rule S-1:** Non-truth-seeking DO-orient suppresses all doctrinal content modules. No case-library file (any NS profile file, do-core.md, etc.) may be opened while `identity-perf`, `autotelic`, or `zann-mode` governs the orientation.
+**Rule S-1:** Non-truth-seeking DO-orient suppresses all doctrinal content modules.
 
-**Rule S-2:** Confirmed hawā or gharaḍ suppresses shubhah engagement. Even when a genuine shubhah is present alongside hawā/gharaḍ, the shubhah is not engaged until the volitional layer is addressed. The emission order `hawa | shubha` reflects this: hawā must clear before the shubhah gets the instrument.
+**Rule S-2:** Confirmed `hawa` or `gharad` suppresses `shubha` engagement. Even when a genuine `shubha` is present alongside them, the `shubha` is not engaged until the volitional layer is addressed.
 
-**Rule S-3:** Underdetermined case-state (read-status: underdetermined) suppresses module selection. When confidence is `low` and read status is `underdetermined`, no module is loaded for the whole-case read. Only the specific claim-type stated is addressed; the governing read is explicitly provisional.
+**Rule S-3:** Underdetermined case-state suppresses whole-case module selection. When confidence is `low` and read status is `underdetermined`, no module is loaded for the whole-case read.
 
-**Rule S-4:** Non-contractual status suppresses depth. When Stop 5 is active (non-contractual inquiry), the full matched module set is suppressed regardless of how clear the NS code and deformation read are. A single well-anchored response is the output ceiling.
+**Rule S-4:** Non-contractual status suppresses depth. When Stop-5 is active, the full matched module set is suppressed regardless of how clear the NS code and deformation read are.
 
-**Rule S-5:** Active P7 stop suppresses the corresponding operation. Each P7 stop, when triggered, suppresses a specific type of output until its exit criterion is met. Content-Withholding Stop suppresses argument into grief/identity-performance. One-Live-Question Stop suppresses follow-up content after a landed move. Relational-Repair-First Stop suppresses intellectual content until relational register is established. Underdetermined-Case Stop suppresses confident diagnosis. Non-Contractual-Inquiry Marker suppresses depth beyond a single response.
+**Rule S-5:** Active P7 stop suppresses the corresponding operation.
+
+**Rule S-6:** Semantic-discipline blockers suppress doctrinal release. When `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` is active, the routing gate is `semantic-discipline-required` until the relevant semantic clarification file has run.
 
 ---
 
@@ -53,44 +47,47 @@ These rules specify when one axis suppresses or delays another:
 
 When two axes appear to compete at the same precedence level:
 
-**Rule T-1 (concealment tie):** When two concealment modes are genuinely co-present (emission `<mode-A> | <mode-B>`), the more restrictive register governs. `juhud` is more restrictive than `irad` (juhud requires naming the barrier; irad requires invitation — leading with barrier-naming when irad is present hardens the turning-away). When in doubt, apply the more restrictive register and re-assess after one exchange.
+**Rule T-1 (concealment tie):** When two concealment modes are genuinely co-present, the more restrictive register governs.
 
-**Rule T-2 (deformation tie):** When two deformations are present and their interventions conflict (e.g., gharaḍ requires relational engagement; iʿtiqādāt mawrūtha requires V2), address the outer layer first. Gharaḍ and hawā are always outer layers; iʿtiqādāt mawrūtha is always inner. The Compound Case section of seven-deformations.md fixes the sequence; this rule enforces it when ambiguity arises.
+**Rule T-2 (deformation tie):** When two deformations are present and their interventions conflict, address the outer layer first.
 
-**Rule T-3 (claim-type tie):** When the case presents two claim-types and both appear live (e.g., logical + moral, or historical + authority), identify which one is doing the *governing* work — which one would, if addressed, change the state of the engagement. Address that one first. The secondary claim-type is not ignored; it is deferred until the primary has been addressed.
+**Rule T-3 (claim-type tie):** When the case presents two claim-types and both appear live, identify which one is doing the governing work and address that one first.
 
-**Rule T-4 (RT + DO tie):** When both RT pressure and a DO objection are live, V10 runs before the DO entry. The transmission question governs what authority the content carries; the doctrinal question is addressed only after the transmission layer is vetted.
+**Rule T-4 (RT + DO tie):** When both RT pressure and a DO objection are live, V10 runs before the DO entry.
+
+**Rule T-5 (tribunal + semantic blocker tie):** When both an imported tribunal and a semantic blocker are live, intervention order is tribunal first, semantic blocker second, doctrinal content third. The semantic blocker remains live after tribunal refusal; do not collapse the case into one label.
 
 ---
 
 ## IV. Invalid Combinations
 
-These axis combinations are diagnostic red flags — they indicate a misread or a forced routing rather than a genuine case:
+These combinations are diagnostic red flags:
 
-| Combination | Why it is invalid | Correct action |
-|-------------|-------------------|----------------|
-| `juhud` + `truth-seek` DO-orient + content module deployed | Juhūd bars content deployment; full truth-seeking orientation is incompatible with juhūd's register requirement | Re-run V1; re-assess concealment read; if juhūd is confirmed, hold content module |
-| `underdetermined` read-status + `strong` confidence | These fields are defined to be mutually exclusive | Mark one or the other; if basis is thin, confidence cannot be strong |
-| Shubhah as sole deformation + P7 Stop 1 active | Stop 1 fires for grief/identity-performance; genuine shubhah does not trigger Stop 1 | Re-check whether the stated shubhah is actually covering a volitional deformation |
-| NS code assigned + discourse orientation `autotelic` | Autotelic orientation means the engagement is not aimed at truth; an NS code characterizes epistemic structure, which requires some level of genuine orientation toward the question | Mark NS as provisional or omit pending orientation shift |
-| DO-series content loaded + concealment `irad` | Iʿrāḍ means the interlocutor has not given the matter attention; loading DO content pre-supposes the matter has been allowed to press | Invitational register only; DO content held until attention is given |
+| Combination | Why invalid | Correct action |
+|-------------|-------------|----------------|
+| `juhud` + `truth-seek` DO-orient + content module deployed | `juhud` bars content deployment | Re-run V1; if `juhud` is confirmed, hold content module |
+| `underdetermined` read-status + `strong` confidence | These fields are mutually exclusive | Mark one or the other |
+| `Shubha` as sole deformation + P7 Stop-1 active | Stop-1 fires for grief or identity-performance, not genuine `shubha` | Re-check whether the stated `shubha` is covering a volitional deformation |
+| NS code assigned + discourse orientation `autotelic` | Autotelic orientation means the engagement is not aimed at truth | Mark NS as provisional or omit pending orientation shift |
+| DO-series content loaded + concealment `irad` | `irad` means the matter has not been allowed to press | Invitational register only; DO content held |
+| `semantic-neutralization-*` or `lexical-ontological-trap` active + `Routing gate: open` | Semantic discipline is an upstream blocker | Set `Routing gate: semantic-discipline-required`; run the owning file first |
 
 ---
 
-## V. Route-Priority Rules (When Multiple Modules Are Live)
+## V. Route-Priority Rules
 
 When the case-state has been established and multiple modules could plausibly be deployed:
 
-**Rule P-1 (upstream-blocker priority):** The module that addresses the upstream blocker takes priority over the module that addresses the derived problem. V2 before evidence; F2 before intellectual content; V10 before DO entry; Stop conditions before matched modules.
+**Rule P-1 (upstream-blocker priority):** The module that addresses the upstream blocker takes priority over the module that addresses the derived problem. V2 before evidence; semantic-discipline owner before doctrinal release; F2 before intellectual content; V10 before DO entry; stop conditions before matched modules.
 
-**Rule P-2 (smallest matched subset):** Among modules that address the same layer, select the smallest subset that changes the next live differentiator. Three well-matched modules outperform nine plausibly relevant ones.
+**Rule P-2 (smallest matched subset):** Among modules that address the same layer, select the smallest subset that changes the next live differentiator.
 
-**Rule P-3 (no stacking after landing):** Once a module has produced visible recognition or movement, Stop 2 fires. No additional module is deployed until the interlocutor has re-entered the exchange. This is absolute.
+**Rule P-3 (no stacking after landing):** Once a module has produced visible recognition or movement, Stop-2 fires. No additional module is deployed until the interlocutor has re-entered the exchange.
 
-**Rule P-4 (register before content):** When the concealment × orientation matrix indicates a register-hold, no content module is loaded regardless of how strong the NS/deformation read is. Register-hold = deployable only after shift. This is stated in the matrix; this rule restates it as a routing-precedence rule so it is enforced across both files.
+**Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded regardless of how strong the NS or deformation read is.
 
 ---
 
 ## VI. Connection to the Framework Pipeline
 
-This file specifies the rules that govern the routing branches shown in `framework-pipeline.md`. The ASCII chart shows the branching structure; this file specifies the logic at each branch point. Use the pipeline chart for structural audit; use this file for the decision rules at each node. They are complementary surfaces of the same decision architecture.
+This file specifies the rules that govern the routing branches shown in `framework-pipeline.md`. The ASCII chart shows the branching structure; this file specifies the logic at each branch point.

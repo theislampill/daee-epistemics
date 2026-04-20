@@ -1,271 +1,97 @@
-> role: specialty diagnostic — kalāmic evidentialism engagement strategy (Muʿtazilī / Ashʿarī / Māturīdī variants)
-> use when: NS-6 or NS-10 confirmed; surface markers of kalāmic evidentialism present (dalīl demand, wujūb al-naẓar, taqlīd-as-non-knowledge, fiṭrah denied epistemic weight without propositional support)
-> do not use when: interlocutor is externalist-secular (NS-1/NS-2) and does not operate within a kalāmic theological framework
-> section-to-NS mapping:
->   §Surface Recognition Markers + §The Kalāmic Position + §The Critique + §Engaging the Kalāmic Interlocutor → NS-6 primary; also load for NS-10 (shared infrastructure)
->   §The Māturīdī Position — Distinct Engagement Path → NS-10 primary; do not load for NS-6 cases where Māturīdī softening is not the live form
->   §The Ontological Dimension → load when the kalāmic interlocutor's position is about divine attributes, not merely the epistemological framework
-> load-discipline: load the whole file; use only the section(s) matched to the confirmed school variant and live pressure
-> paired files: NS-6 profile (case-library/profiles/ns-6-kalamic-evidentialist.md); NS-10 profile (case-library/profiles/ns-10-maturidi-evidentialist.md); V2 (reconstituting reason); P3 (reason-revelation tension); V9 (necessary-knowledge priority for Māturīdī section)
+> role: specialty diagnostic - kalamic evidentialism engagement strategy (Mu'tazili / Ash'ari / Maturidi variants)
+> use when: NS-6 or NS-10 is confirmed; surface markers of kalamic evidentialism are present
+> do not use when: the interlocutor is externalist-secular and does not operate within a kalamic theological framework
+> output: school-sensitive routing and restoration targets
 
-# Kalāmic Interlocutor — Engagement Strategy
+# Kalamic Interlocutor - Engagement Strategy
 
-Load when the interlocutor uses surface markers of kalāmic evidentialism: theistic belief
-must be grounded in `dalil`; `wujūb al-naẓar` is assumed or defended; taqlīd-based belief is
-treated as non-knowledge; the fiṭrah alone is denied epistemic weight without propositional
-support; Māturīdī concession language is surfacing; or the interlocutor explicitly identifies with
-Muʿtazilī, Ashʿarī, or Māturīdī reasoning.
+Load when the interlocutor uses markers of kalamic evidentialism: `dalil` demand, `wujub al-nazar`, `taqlid` treated as non-knowledge, `fitrah` denied epistemic standing without propositional ratification, or explicit Mu'tazili / Ash'ari / Maturidi framing.
 
 ---
 
-## Downstream Routing Table — School × Burden
+## School x Burden Routing Table
 
-School identification is not optional. Once this file is loaded, the school variant must be
-identified before restoration target and matched modules are committed to the IR. Do not
-dispatch NS-6 with a generic "foundationalist restriction" restoration target without first
-running the identification step below. The table governs what changes downstream.
+School identification is not optional. Once this file is loaded, identify the school variant before committing the restoration target.
 
-**Burden identification rule:**
-- **Epistemological burden:** the live pressure is wujūb al-naẓar, taqlīd-as-non-knowledge,
-  or the narrow necessary-knowledge restriction — regardless of what doctrinal object is named.
-- **Ontological burden:** the live pressure is divine attributes, divine speech, the status of
-  the Qurʾān, or any claim governed by the ḥudūth/khalq distinction or kalām nafsī doctrine.
-- **Mixed:** both are simultaneously live. Sequence epistemological first; ontological second.
-  Do not flatten into a single "kalāmic engagement" — the targets and load conditions differ.
+### Burden identification rule
 
-| School variant | NS code | Burden | Restoration target | Must load (beyond this file) | Prohibited moves |
-|---------------|---------|--------|--------------------|------------------------------|------------------|
-| Muʿtazilī | NS-6 | Epistemological | Expose the self-undermining circularity: wujūb al-naẓar presupposes the fiṭrī reliability it demotes; naẓar cannot certify itself from nowhere | V2 (inherited filter); backbone predicates T-2, T-3 | Do not engage the hard wujūb as merely "too strict" — it is structurally self-undermining; do not concede fiṭrī recognition as sub-epistemic without argument |
-| Muʿtazilī | NS-6 | Ontological | Deploy the ḥudūth/khalq distinction explicitly: the Muʿtazilī inferred makhlūq from ḥudūth — name and dissolve this collapse; §6.2 is the required grounding | §6.2 of `sound-reason-epistemology.md` + V8 + `terminology.md` (Khalq, Ṣifa qāʾima bi-dhātihi); `do-attribute-precision.md` Confusion 1 (Muʿtazilī predication move) | Do not leave the ḥudūth premise standing as a concession; the ḥudūth/khalq distinction is the load-bearing move — ḥādith ≠ makhlūq |
-| Ashʿarī | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not individually demonstrate, their belief is already non-inferentially warranted — name the concession | V2; the naẓar-circularity argument | Do not treat Ashʿarī softening as movement toward the sound position; it retains the inferential framework while relocating the obligation — the framework error is not resolved by communal-level transfer |
-| Ashʿarī | NS-6 | Ontological | Target the kalām nafsī doctrine specifically: it severs the expressed Qurʾān from being genuinely God's speech in the sense the texts require — not merely philosophically awkward, but a textual-theological failure; deploy §6.2 three-way differentiation | §6.2 + V8 + `terminology.md` (Ṣifa qāʾima bi-dhātihi); `do-attribute-precision.md` | Do not allow the kalām nafsī doctrine to remain standing while engaging bilā kayf generally; it is a named Ashʿarī error, not a legitimate bilā kayf position; bilā kayf is the correct position, kalām nafsī is a deviation from it |
-| Māturīdī | NS-10 | Epistemological | Press the internal instability: the communal-obligation concession already breaks the individual requirement — name what has been conceded; the admission of non-propositional evidence already opens the inferential framework | V9 (necessary-knowledge priority); §Māturīdī section in this file | Do not endorse the communal-obligation move as correct; it is a pressure point exposing instability, not a halfway house; do not treat the Māturīdī position as a valid intermediate |
-| Māturīdī | NS-10 | Ontological | Shared Ashʿarī Kullābī inheritance: engage as diagnosed Ashʿarī ontological error — the restoration target is the same as Ashʿarī ontological | §6.2 + V8 | Do not treat Māturīdī ontological position as a distinct third pole; at the ontological level it inherits the Ashʿarī error |
-| School unclear (provisional) | NS-6 provisional | Epistemological | Hold provisional read; deploy naẓar-circularity argument as school-neutral opening while identification runs | V2; this file's §The Critique | Do not commit to a school-specific restoration target or prohibited move before the identification differentiator is in |
-| Mixed (any school) | NS-6 or NS-10 | Epistemological + Ontological | Sequence: address epistemological burden (foundationalist restriction) first; ontological burden second (school-specific target per above) | Per school row above for each burden; both must load | Do not flatten both burdens into a single "kalāmic engagement" — they have different restoration targets and the wrong sequence inverts the repair order |
+- **Epistemological burden:** the live pressure is `wujub al-nazar`, `taqlid`-as-non-knowledge, or narrow necessary-knowledge restriction.
+- **Ontological burden:** the live pressure is divine attributes, divine speech, the status of the Quran, or any claim governed by the `huduth/khalq` distinction or `kalam nafsi`.
+- **Mixed burden:** both are simultaneously live. Sequence epistemological first; ontological second.
+
+### Semantic gate for ontological burdens
+
+When the ontological pressure is phrased through loaded terms such as body, direction, place, limit, composition, or their Arabic technical correlates, run `references/tactics/M9-predication-mode.md` first. School-specific ontological routing begins only after that term has been semantically split.
+
+| School variant | NS code | Burden | Restoration target | Must load | Prohibited move |
+|---------------|---------|--------|--------------------|-----------|-----------------|
+| Mu'tazili | NS-6 | Epistemological | Show that `wujub al-nazar` presupposes the very fitri reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fitri recognition as sub-epistemic |
+| Mu'tazili | NS-6 | Ontological | Deploy the `huduth/khalq` distinction explicitly; expose the collapse from temporal origination to created external product | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not leave the `huduth` premise standing as concession |
+| Ash'ari | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not personally demonstrate, their belief already has non-inferential standing | V2 | Do not treat the softening as resolution of the framework error |
+| Ash'ari | NS-6 | Ontological | Target `kalam nafsi` specifically and the denial of volitional acts subsisting in God | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bila kayf` language |
+| Maturidi | NS-10 | Epistemological | Press the instability of the concessionary inferential framework | V9 plus this file | Do not endorse the position as a valid midpoint |
+| Maturidi | NS-10 | Ontological | Shared Ash'ari inheritance on the ontological burden | `sound-reason-epistemology.md`; V8 | Do not treat it as a distinct third ontological pole |
+| School unclear | NS-6 provisional | Epistemological | Hold provisional read and deploy the school-neutral circularity criticism first | V2 | Do not commit to school-specific restoration target yet |
+| Mixed | NS-6 or NS-10 | Both | Sequence epistemological first, ontological second | Per relevant row | Do not flatten both burdens into one generic "kalamic engagement" |
 
 ---
 
 ## Surface Recognition Markers
 
-The following are sentence patterns, objection forms, and terms of approval or dismissal a
-practitioner would actually hear from an interlocutor formed in the kalāmic framework. Each
-is derived from the doctrinal content described in this file.
+Common markers:
 
-1. **Dalīl demand:** "You need to give me a proof (dalīl) — your belief doesn't count as
-   knowledge unless it is grounded in an argument." Variations: "Show me the evidence,"
-   "What is your proof for that?" — where the demand is specifically for *propositional*
-   demonstration rather than any other epistemic ground.
-
-2. **Taqlīd dismissal:** "That is just taqlīd — you only believe because your parents did.
-   Taqlīd is not knowledge; every rational person must investigate for themselves." The
-   key signal is the equation of inherited or unarticulated belief with non-knowledge
-   rather than merely with *unexamined* belief.
-
-3. **Wujūb al-naẓar assertion:** "Rational inquiry (naẓar) is obligatory on every sane
-   adult — there is no valid excuse for not reasoning your way to the answer." The
-   obligation framing is the marker: not merely that reasoning is useful but that it is
-   *required* before belief can have epistemic standing.
-
-4. **Dismissal of fiṭrah-alone as insufficient:** "Feeling it, or being inclined toward
-   it, doesn't make it knowledge. The fiṭrah is not an argument." The practitioner will
-   hear this as a flat rejection of non-inferential grounds — the fiṭrah is acknowledged
-   as a psychological fact but denied epistemic weight without propositional support.
-
-5. **Narrow-foundations restriction:** "Sense perception and logical self-evidence give
-   you knowledge — everything else needs to be demonstrated." Or: "That kind of immediate
-   certainty only applies to mathematics and direct observation." This pattern restricts
-   properly basic beliefs to the kalāmic ḍarūrī class and treats everything outside it
-   as needing inferential grounding.
-
-6. **Approval of demonstration, dismissal of recognition:** Terms of praise cluster around
-   propositional success — "That is a proper proof," "Now you have established it," "That
-   argument holds." Terms of dismissal cluster around directness and recognition — "That
-   is just intuition," "You are assuming what you need to prove," "That is circular." The
-   asymmetry itself is the marker: direct recognition counts as nothing; successful
-   inference counts as knowledge.
-
-7. **Māturīdī concession language:** "The ordinary believer may rely on the community's
-   demonstration," "the obligation may be communal rather than individual," or "miracle,
-   Qur'anic encounter, or experience can still ground valid faith." The signal here is not
-   hard evidentialism but a softened inferential framework retaining the vocabulary of
-   obligation and ratification.
+- "You need a `dalil` for belief."
+- "`Taqlid` is not knowledge."
+- "`Wujub al-nazar` applies to every rational person."
+- "`Fitrah` alone is not epistemically sufficient."
+- Narrow restriction of non-inferential knowledge to logic, sense-perception, and similarly limited classes.
+- Maturidi concession language about communal obligation or partial allowance for non-propositional evidence.
 
 ---
 
-## The Kalāmic Position
+## The Shared Critique
 
-The major schools of kalām share a foundationalist epistemology that restricts necessary
-knowledge (ʿilm ḍarūrī) to: logical axioms, sense perceptions, incorrigible beliefs,
-and mutawātir testimony. Theistic belief falls outside this class. Therefore, for
-religious belief to achieve the status of knowledge, it must be based on propositional
-evidence (dalīl). This generates the doctrine of wujūb al-naẓar: the obligation on
-every rational person to engage in discursive rational inquiry as the means to knowledge
-of God.
+Four recurring critiques govern the kalamic evidentialist family:
 
-**Consequences:**
-- Belief held without argument cannot achieve the status of knowledge — only taqlīd
-- The Muʿtazila hold such taqlīd-based belief to be epistemically and morally
-  impermissible
-- The Ashʿarī tradition softens this to a communal rather than individual obligation
-  but retains the inferential requirement
-- In all versions: theistic belief grounded in the fiṭrah alone, without propositional
-  support, fails to achieve knowledge
+1. **The foundationalist restriction is arbitrarily narrow.**
+   The framework restricts non-inferential knowledge too tightly without principled justification.
+2. **The fitrah legitimately widens the foundations.**
+   Fitri recognition is not a mere feeling awaiting inferential promotion.
+3. **`Wujub al-nazar` is circular.**
+   The reliability of `nazar` cannot be grounded by `nazar` from nowhere.
+4. **The prophetic method is misrepresented.**
+   The prophets did not begin by making later kalamic demonstration the universal gate to revelation.
 
-## The Critique
+---
 
-**First — the foundationalist restriction is arbitrarily narrow:** The kalāmic framework
-restricts properly basic beliefs to a narrow class without principled justification.
-Why should belief in other minds, in the reliability of memory, in the past — none of
-which pass the kalāmic ḍarūrī tests — be epistemically acceptable, while theistic
-belief held with the same immediacy and involuntariness is not? The criterion is applied
-selectively. The restriction imports a historically contingent model of non-inferential
-knowledge that is itself not self-evident.
+## Distinct Engagement Paths
 
-**Second — the fiṭrah widens the foundations legitimately:** Fiṭrī-ḍarūrī knowledge
-extends the class of properly basic beliefs beyond what the kalāmic framework recognizes.
-The fiṭrah produces warranted belief in God directly, without inference, when functioning
-without corruption. This is not a retreat from epistemic rigor — it is a more accurate
-account of how belief-warrant works, one that the externalist faculty-based epistemology
-of the Reidian tradition later converged on independently.
+### Mu'tazili
 
-**Third — the circularity of wujūb al-naẓar:** The obligation to engage in naẓar
-presupposes the reliability of naẓar as a cognitive procedure. But what grounds the
-reliability of naẓar? The fiṭrah — "the proper functioning of all our epistemic
-faculties is predicated on the health and proper functioning of the fiṭrah." Naẓar not
-grounded in sound fiṭrah is contaminated rationality (bidʿī ʿaqlī) that feels like pure
-reason but is not. The kalāmic framework depends on the very thing it undervalues.
+- Epistemological track: press the circularity and the demotion of fitri recognition.
+- Ontological track: insist on the `huduth/khalq` distinction and refuse the move from temporal origination to created external product.
 
-**Fourth — misrepresentation of the prophetic method:** No prophet addressed his
-community by demanding they first master rational proofs before any religious knowledge
-was valid. The prophets directed attention to signs (āyāt) — already present in creation
-and in the soul — and invited recognition, not demonstration. The kalāmic demand for
-inferential grounding inverts the actual epistemological structure of prophetic
-communication.
+### Ash'ari
 
-## Engaging the Kalāmic Interlocutor
+- Epistemological track: use the communal-obligation concession as a pressure point. If ordinary believers need not personally perform inferential demonstration, the framework has already conceded non-inferential standing in practice.
+- Ontological track: target `kalam nafsi` directly. The error is not generic caution about divine language; it is a specific severing of the expressed Quran from genuine divine speech in the required sense.
 
-The engagement operates on two levels simultaneously:
+### Maturidi
 
-**1. Internal Islamic ground:** The framework grounded in ʿaql ṣarīḥ and naql ṣaḥīḥ is
-not a position competing with the kalāmic schools for legitimacy — it is the sound
-Islamic epistemology, the one that correctly accounts for the prophetic method and is
-faithful to the Qurʾānic account of how human beings come to know God. The kalāmic schools
-deviated from this through the importation of Hellenistic categories; this is a diagnosis,
-not a preference. The engagement shows the kalāmic framework as what it is — a historically
-contingent deviation — and returns the interlocutor to what sound reason and authentic
-revelation have always held.
+- Epistemological track: treat the concessionary structure as instability, not progress. The framework quietly opens the door to the very fitri account it still refuses to acknowledge clearly.
+- Ontological track: route with the Ash'ari ontological burden where the live issue is divine speech or attributes.
 
-**2. The specific mechanism of deviation:** The kalāmic framework imported bidʿī ʿaqlī
-(contaminated rationality) and presented it as reason itself. Genuine reason (ʿaql ṣarīḥ)
-always agrees with genuine revelation (naql ṣaḥīḥ); the kalāmic schools substituted a
-Hellenistic-conditioned conception of reason for the real thing, then read revelation
-through the resulting distorting filter. The engagement names this mechanism clearly: not
-as one theological preference against another, but as the difference between sound reason
-and its contaminated substitute.
+---
 
-## The Ashʿarī Communal-Obligation — Distinct Engagement Path
+## Ontological Dimension
 
-The Ashʿarī tradition softens the Muʿtazilī wujūb al-naẓar without dismantling it. The Ashʿarī move: the obligation is communal (farḍ kifāya) rather than individually universal; ordinary believers may rely on the scholars' demonstrations; non-inferential recognition is not denied as a psychological fact, only as individually sufficient epistemic warrant. This sounds like a concession toward the sound position. It is not. The error is identical at the framework level — only the location of the obligated party has shifted.
+Load the ontological track only when divine attributes, divine speech, the status of the Quran, or related anti-attribute arguments are actually live.
 
-**The communal-obligation lever (apply in sequence):**
+The governing corrections are:
 
-1. **Name the concession the Ashʿarī has already made:** If ordinary believers need not personally perform naẓar to achieve warranted theistic belief, their belief already has epistemic standing without individual demonstration. The Ashʿarī has conceded that non-inferential theistic standing is epistemically coherent for ordinary believers. That concession is the load-bearing admission.
+- `huduth` does not automatically mean `khalq`
+- real divine action and speech are not automatically defects
+- creaturely predication structures are not neutral tribunals over divine discourse
+- school-specific errors must stay school-specific; do not flatten them into generic abstraction
 
-2. **Press the dilemma about the ordinary believer's standing:** On what basis does the ordinary believer's belief have epistemic standing? Two options: (a) it derives from the scholars' naẓar by testimony — in which case testimony from a community is the warrant, not individual inference, and the standing is externalist-faculty rather than inferentialist; or (b) the ordinary believer's belief has no epistemic standing — a result so counterintuitive that no coherent position can maintain it. The Ashʿarī must choose. Option (a) concedes the externalist-fiṭrah account; option (b) is untenable. Name the dilemma and hold it without resolution — do not supply the Ashʿarī's exit from it.
-
-3. **Apply the naẓar-circularity argument in the Ashʿarī form:** The scholars' naẓar must be reliable before it can ground the ordinary believer's belief by testimony. What grounds the scholars' naẓar's reliability? Either: (a) naẓar certifies itself — circular; or (b) the fiṭrah's orientation toward truth certifies the reliability of properly functioning cognitive faculties, including naẓar — which is the sound position. The communal-obligation move does not escape the circularity; it relocates it.
-
-**Substrate-load discipline (Ashʿarī epistemological track only):**
-
-The Ashʿarī epistemological engagement (communal-obligation lever, naẓar-circularity argument) and the Ashʿarī ontological engagement (kalām nafsī doctrine, §The Ontological Dimension) are distinct tracks requiring distinct instruments.
-
-- **Epistemological burden live, ontological burden absent:** Deploy V2 + the communal-obligation lever + naẓar-circularity argument. Do NOT load §The Ontological Dimension — loading it fragments the sequence and addresses a target that is not governing this exchange.
-- **Ontological burden live, epistemological burden absent:** Deploy §6.2 + V8 + kalām nafsī treatment. Do NOT use the communal-obligation lever — it addresses a different target.
-- **Both live:** Sequence epistemological first per the routing table; ontological second. Do not merge the treatments — the communal-obligation lever does not assist the kalām nafsī correction, and the kalām nafsī treatment does not assist the communal-obligation lever. Each must run its own sequence.
-
-**Failure language (this engagement has failed if any of the following occur):**
-
-1. The communal-obligation move is treated as movement toward the sound position — affirmed as a step in the right direction. The correct move is to name the error's persistence, not the direction of travel. The framework error is not resolved by communal-level transfer.
-
-2. The naẓar-circularity argument is applied only to the Muʿtazilī form and not to the Ashʿarī. Both forms presuppose naẓar's reliability; the Ashʿarī form's communal-obligation move depends on the scholars' naẓar being reliable, which is a form of the same presupposition. The circularity argument applies to both.
-
-3. The dilemma (externalist account or no individual warrant) is not presented. Leaving the communal-obligation move's internal tension unnamed is a failure of the lever — the Ashʿarī is allowed to retain the softening as if it had coherently dissolved the framework problem.
-
-4. §The Ontological Dimension (kalām nafsī) is loaded while the live pressure is epistemological only. This cross-loading confuses the restoration target and produces a response that addresses a real Ashʿarī error but not the one governing the current engagement.
-
-5. The softening is confused with NS-10 (Māturīdī concession) — these are distinct. Ashʿarī softening retains the inferential framework while relocating the individual obligation; Māturīdī softening additionally admits non-propositional evidence in some forms. The engagement lever for the communal-obligation is appropriate for Ashʿarī; the NS-10 profile and §The Māturīdī Position govern the Māturīdī engagement path. Do not mix them.
-
-## The Māturīdī Position — Distinct Engagement Path
-
-The Māturīdī tradition is a distinct deviation, not a legitimate midpoint between the
-Muʿtazilī error and the sound position. It softens the Muʿtazilī requirement (wujūb
-al-naẓar becomes communal rather than individual; non-propositional evidence is admitted
-in some forms), but it retains the inferential framework and its characteristic errors on
-divine being. The school's ontological positions — on divine attributes, on the nature of
-kalām — are not authoritative; they share the Ashʿarī inheritance of Hellenistic
-contamination at the ontological level and produce their own distinct errors at the
-epistemological level.
-
-An interlocutor formed in the Māturīdī tradition holds a position that is internally
-unstable and can be pressed from within. The engagement path is tactical, not one of
-concession:
-
-**Engage the Māturīdī concession as a pressure point — not an endorsement:** The communal
-obligation reading already breaks the individual requirement; the allowance of
-non-propositional evidence already opens a crack in the inferential framework. Use these
-as levers to press the position toward its own inconsistency. This is a tactical move —
-working with where the position has already partially collapsed — not an affirmation that
-the Māturīdī framework is correct.
-
-**Press the instability of the communal-obligation move:** If the ordinary believer need
-not personally argue their way to God, on what basis does their belief have epistemic
-standing? If reliance on the community's demonstration is sufficient, the belief's warrant
-is grounded in something other than the believer's own inferential process — which is
-precisely what the externalist account of the fiṭrah holds. The Māturīdī position has
-quietly conceded the externalist point while retaining the vocabulary of obligation. Name
-what has been conceded.
-
-**Show the fiṭrah account is the correct one:** The fiṭrah account does not occupy a
-position "beyond" the Māturīdī concession by degree — it corrects the Māturīdī framework
-at the root. The fiṭrah produces warranted belief directly when functioning correctly; the
-scholarly community's arguments serve to restore the fiṭrah's operation when it has been
-corrupted, not to supply what the fiṭrah lacks. The Māturīdī framework constructs an
-architecture of individual vs. communal obligations precisely because it has already
-misconstrued the epistemic structure of prophetic communication.
-
-## The Ontological Dimension — Ashʿarī and Māturīdī Errors on Divine Being
-
-**Load §6.2 of `references/sound-reason-epistemology.md` and the Ḥudūth/Khalq/Ṣifa qāʾima
-bi-dhātihi entries in `references/terminology.md` when the kalāmic interlocutor's position
-is about divine attributes, divine speech, or the status of the Qurʾān — not merely about
-the epistemological framework.**
-
-The kalāmic files' epistemological errors (wujūb al-naẓar, restricted foundationalism) are
-well-mapped above. Their **ontological** errors are a separate and equally serious failure:
-
-**Ashʿarī ontological position (diagnosed error):** Following the Ibn Kullāb inheritance,
-the Ashʿarī school denied that any ḥawādith (temporally originating events) could subsist
-in God, on the grounds that this would entail the succession of temporal events in the
-divine being (taʿāqub al-ḥawādith ʿalayhi). The result was the doctrine of kalām nafsī —
-an eternal inner meaning attributed to God as the "true" divine speech — while the verbally
-expressed Qurʾān (its ḥurūf and aṣwāt) was held to be created but external. This is a
-deviation from the sound position on two counts: it denies the subsistence of volitional
-acts in the divine essence (al-umūr al-ikhtiyāriyya al-qāʾima bi-dhātihi), and it produces
-a doctrine of divine speech that severs the revealed Qurʾān from being genuinely God's own
-word in the sense the texts require. This deviation — a remnant of Muʿtazilī principles
-embedded in Ashʿarism — worsened with each successive generation.
-
-**Muʿtazilī ontological position (diagnosed error):** Denied the hypostatic character of
-the essential attributes entirely; treated ḥudūth (temporal origination) as sufficient for
-khalq (external creation), collapsing the ḥudūth/khalq distinction that the sound position
-depends on. The consequence was the createdness of the Qurʾān as an external object — the
-most notorious deviation.
-
-**Governing principle:** The kalāmic schools' ontological positions are not treated as valid
-Islamic alternatives. They are diagnosed as historically arising from the importation of
-Hellenistic categories into Islamic theology — categories that were never validated by ʿaql
-ṣarīḥ or naql ṣaḥīḥ and that systematically distorted the account of divine being. When
-engaging a kalāmic interlocutor on divine attributes, confirm the ḥudūth/khalq distinction
-is in the response (V8 routing check) and engage their ontological position as a diagnosed
-error, not as a competing school with equal standing.
+When the pressure is carried by loaded terms such as body, direction, place, or composition, M9 is the first move. Only after semantic splitting may the school-specific ontological correction be released.

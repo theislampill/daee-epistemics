@@ -1,167 +1,104 @@
-# V1 — The Diagnostic Technique
+# V1 - The Diagnostic Technique
 
 > role: entry gate for all substantive engagements
 > use when: beginning any engagement, whenever the interlocutor shifts register, or whenever a move clears an upstream barrier and exposes a new downstream issue
-> do not use when: the task is a narrow factual clarification with no noetic-routing consequence
-> output: a composed case-state line (NS + DO-orient + concealment + deformation + next matched module)
+> do not use when: the task is a narrow factual clarification with no routing consequence
+> output: a composed case-state line plus the matched next module
 
 ## Role of V1 in the Skill
 
-V1 is the entry gate. No tactic, technique, procedure, or case-library module is selected
-before V1 has produced a case-state. Without V1, the other instruments are applied blind —
-at best to the wrong register, at worst to a case that is actively being worsened by
-intellectual content. V1's job is not to answer the interlocutor; its job is to produce the
-routing artifact that makes a matched answer possible.
-
-The governing rule: diagnosis is not interchangeable with engagement. A diagnostic that ends
-in "present X module" when X was pre-selected is not V1. V1 is the process by which the
-pre-selected X becomes visible as a bet the diagnostic chose — not as a default the
-diagnostic inherited.
+V1 is the entry gate. No tactic, technique, procedure, or case-library module is selected before V1 has produced a case-state. V1 does not answer the interlocutor; it produces the routing artifact that makes a matched answer possible.
 
 ## The Three Phases
 
-### Phase 1 — Listening
+### Phase 1 - Listening
 
-Extended, non-argumentative engagement whose sole purpose is to map the interlocutor's
-actual noetic structure, not the one they present. The interlocutor's stated epistemology
-and their operative noetic structure can differ substantially; listening is how the
-operative structure becomes inferable. See
-`references/diagnostics/noetic-reading-checklist.md` for the nine analytical dimensions
-and `references/sound-reason-epistemology.md` §1 for the theoretical grounding.
+Extended, non-argumentative engagement whose purpose is to map the interlocutor's actual noetic structure.
 
-What to track during listening:
-- Which propositions are held with the firmness of necessary knowledge (ḍarūrī)?
-- What is functioning as the implicit doxastic rule?
-- What is the load-bearing anchor — the commitment whose removal would collapse the rest?
-- What does the interlocutor treat as evidence, warrant, authority?
-- Where is the affective weight? Where does the tone shift?
-- What is conspicuously absent — an account of consciousness, a grounding for moral
-  commitments, an explanation of why reason is reliable?
+Track:
 
-This phase frequently reveals that an apparent intellectual objection conceals a volitional
-or relational barrier. The listening phase is the single most common omission in bad
-engagements.
+- what is held with the firmness of necessary knowledge
+- what functions as the implicit doxastic rule
+- what counts as evidence, warrant, and authority
+- where affective weight sits
+- what is conspicuously absent from the framework
 
-### Phase 2 — Classification
+### Phase 2 - Classification
 
-Produce short codes on four axes. Each axis has a dedicated diagnostic file and each
-emits a compact output line; V1 is the place where the four outputs are composed.
+Produce short codes on the main axes:
 
-**Axis 1 — Noetic structure (NS):** Run
-`references/diagnostics/noetic-reading-checklist.md`. Emit `NS-X` or `NS-X | NS-Y` per
-the marker table there.
+- NS code
+- discourse orientation
+- concealment
+- deformation
+- claim-type
 
-**Axis 2 — Discourse orientation (DO-orient):** Run
-`references/diagnostics/discourse-orientation.md`. Emit `truth-seek`, `identity-perf`,
-`autotelic`, `zann-mode`, or `mixed`. This is a different axis from the doctrinal DO-1..13
-codes — it rides beside them.
+Then run the mandatory passes in sequence:
 
-**Axis 3 — Concealment:** Run
-`references/diagnostics/modes-of-concealment.md`. Emit `irad`, `juhud`, `inkar`, `istikbar`,
-`nifaq`, a compound pair, or `mode-?`. The taxonomy is not closed at a fixed count; five
-modes are currently distinguished, and further refinement is possible where a
-phenomenologically distinct mode demands a distinct register. These codes are used
-diagnostically in the lexical-analytic sense of *k-f-r* (covering / refusing / withholding
-recognition); they are not imputations of the full sharʿī category of *kufr* vs. *īmān*
-(see `references/terminology.md`). If scripture-pressure is live, the RT-1..4 code is
-additionally emitted from this file.
+1. `reason-disambiguation.md`
+2. `foreign-premise-detection.md`
+3. `prophetic-discourse-neutralization.md`
+4. `arabic-backbone-predicates.md`
 
-**`irad` vs. `juhud` read-check:** Ask whether the matter has been *allowed to press*. If
-the subject has not yet let the question come close enough to be denied — turning it aside,
-changing the subject, declining to look — the mode is `irad` regardless of surface vigor.
-If the subject has engaged the matter enough to repudiate it, the mode is `juhud`. The
-register required is almost opposite (invitation vs. named-barrier), so misrouting is
-costly.
+### Specialty markers to surface early
 
-**Axis 4 — Deformation:** Run
-`references/diagnostics/seven-deformations.md`. Emit a single deformation code or a
-compound pair in sequencing order.
+- `dalil`, `wujub al-nazar`, or `taqlid`-as-non-knowledge -> `kalamic-interlocutor.md`
+- blank-slate or dual-nature `fitrah` language -> `fitrah-perspectives.md`
+- attacks on necessary knowledge -> V9
+- historical-critical, manuscript, canon, or text-history pressure -> V10 and the matched RT case
+- prophetic discourse being redirected, semantically overridden, or evacuated -> `prophetic-discourse-neutralization.md`
+- loaded negative theological terms (`jism`, `jihah`, `hadd`, `tarkib`, body, direction, place, limit, composition, substance) -> M9 before doctrinal release
+- imported perfection / immutability / simplicity tribunal -> `perfection-criterion-usurpation.md`
+- causal regress, simultaneous/successive series, circularity, or secondary-cause self-sufficiency -> `causal-series-taxonomy.md`
+- public-language capture, silent redefinition, universals/particulars confusion, or mental/extra-mental confusion -> `definition-discipline.md`
+- necessity/contingency proof-grammar pressure or philosophically trained proof-overreach -> `proof-method-audit.md`
 
-**Specialty markers to surface early** (these short-circuit normal routing):
-- `dalīl` / `wujūb al-naẓar` / taqlīd-treated-as-non-knowledge / Māturīdī concession
-  language → `references/diagnostics/kalamic-interlocutor.md`
-- Blank-slate or dual-nature fiṭrah language → `references/diagnostics/fitrah-perspectives.md`
-- Attacks on necessary knowledge / ʿilm ḍarūrī / fiṭrī deliverances → `references/techniques/V9-necessary-knowledge-priority.md`
-- Historical-critical / manuscript-reconstruction / Qurʾānic canon-formation / qirāʾāt-as-variants → `case-library/revelation-transmission.md` (governs Qurʾānic transmission; for hadith-transmission challenges, see interim routing section in that file)
-- Trinity-from-perfection / model-identification / incarnation / philosopher's-God → `case-library/do-christian-extensions.md` DO-11 through DO-13
-- Christian canon-selection confusion / "which Bible version" / Protestant-Catholic-Orthodox canonical diversity / authority-of-scripture-within-Christianity → `case-library/do-christian-extensions.md` DO-14 (not an RT case; distinguish from Qurʾānic RT-2 which governs Islamic canon formation)
-- (This list is illustrative, not exhaustive — structural pattern recognition takes priority over keyword matching; activate the matched module when the case-profile exhibits the structural feature, not merely the surface phrasing)
-- Muslim-internal compound (authority-fatigue + moral recoil + textual pressure) → NS-8 profile; pastoral register before doctrinal
+### Phase 3 - Triage
 
-**Claim-type check:** What kind of pressure is actually being applied — logical,
-probabilistic, historical, moral, or authority-based? Many failed engagements come from
-answering one claim-type while another is doing the real work.
+Determine which instrument is the smallest matched next step, and in what order if multiple are required.
 
-### Phase 3 — Triage
+Use M5 as the deformation-triage subroutine inside V1, not as a rival opening architecture.
 
-Determine which instrument is the smallest matched next step, and in what order if
-multiple are required.
+Compound-case sequencing rule:
 
-Use `references/tactics/M5-deformation-triage.md` as the deformation-triage subroutine,
-not as a rival opening architecture. M5 is called *inside* V1's triage phase; the skill
-has one entry gate, not two.
+- `ada` before `i'tiqadat mawrutha`
+- `gharad` and `hawa` before intellectual content
+- `i'tiqadat mawrutha` before evidence
+- `zann` and `taqlid` in parallel where appropriate
+- genuine `shubha` last
 
-**Compound-case sequencing rule** — canonical source and full treatment:
-`references/diagnostics/seven-deformations.md` §The Compound Case. Pairwise application:
-`references/tactics/M5-deformation-triage.md`. Summary of the outside-in rule: ʿāda
-before iʿtiqādāt mawrūtha; gharaḍ and hawā before any intellectual content; iʿtiqādāt
-mawrūtha before evidence; ẓann and taqlīd in parallel; shubhah last.
+Cross-axis precedence:
 
-**Cross-axis precedence:**
-- If DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the correct next step is
-  almost never a doctrinal case-library entry. The NS code may be accurate but the module
-  is the right content at the wrong register. Name the orientation before any content.
-- If concealment mode is `irad`, the matter has not been allowed to press. Do not dump
-  argument; name the aversion invitationally; leave one honest question live;
-  character-as-evidence. The matched instrument is held until attention is given.
-- If concealment mode is `juhud` or `istikbar`, intellectual argument will not land. The
-  register is relational / character-as-evidence; the doctrinal module waits. Under
-  `juhud`, the maieutic procedure (P4) may open a seam of inner recognition where one is
-  visible; otherwise the work is relational.
-- If concealment is `inkar`, run the maieutic procedure (P4) and R2 — do not feed material
-  the subject can absorb into the resistance pattern.
-- If concealment is `nifaq`, run the already-believing procedure (P5) — questions that
-  require the subject to inhabit the stated position rather than only report it.
-
-**Subsidiary move — separating conceptual from volitional:** At the right moment —
-"Is this an intellectual objection, or is there something personally at stake in the
-question?" Not accusatory; genuinely exploratory. The intellectual surface frequently
-functions as cover for a relational or volitional problem.
+- if DO-orient is non-truth-seeking, the next step is almost never a doctrinal case file
+- if concealment is `irad`, argument is held until the matter has been allowed to press
+- if concealment is `juhud` or `istikbar`, argument will not land
+- if reason-category or foreign-premise detection makes V2 mandatory, content waits
+- if semantic neutralization or a lexical-ontological trap is live, doctrinal content waits behind the semantic gate
 
 ## The Case-State Output
 
-V1 terminates in a single composed line that feeds
-`references/diagnostics/case-state-schema.md`:
+V1 terminates in a composed line that feeds `case-state-schema.md`:
 
-    NS: NS-X [| NS-Y]    DO-orient: <code>    Concealment: <code>    RT (if applicable): <RT-X>    Deformation: <primary> [| <secondary>]    Strength: <strong | provisional | low>    Next: <smallest matched module>
+```text
+NS: NS-X [| NS-Y]    DO-orient: <code>    Concealment: <code>    RT (if applicable): <RT-X>    Deformation: <primary> [| <secondary>]    Strength: <strong | provisional | low>    Next: <smallest matched module>
+```
 
-This line is the routing artifact. Everything before it is the work that produced it.
-Every subsequent move in the engagement is legible back to this line.
+Where legibility is needed, surface the fuller `[Case State]` block from `case-state-schema.md`.
 
-## The Critical Warning
+## Critical Warning
 
-Presenting intellectual content to someone whose barrier is vested interest, entrenched
-will, identity-performance, or ẓann-mode discourse does not merely fail — it provides new
-material for resistance or stimulation to organize around, and actively hardens the
-barrier. Triage is not optional. The most consequential diagnostic error in this skill is
-to skip V1 and apply a pre-selected module to a case whose noetic structure, discourse
-orientation, concealment mode, and deformation have not been identified.
+Presenting intellectual content to someone whose governing barrier is vested interest, entrenched will, identity-performance, semantic neutralization, or a loaded lexical trap does not merely fail; it gives the barrier new material to organize around.
 
 ## Downstream Ordering Rule
 
-Once V1 has produced the case-state and M5 has confirmed the governing deformation, run
-M1 or M1-P first among downstream moves whenever self-refutation is actually present in
-the interlocutor's framework — these moves are load-bearing and should not be deferred
-behind content they would obviate. Other downstream moves sequence per the matched
-module's own ordering.
+Once V1 has produced the case-state and M5 has confirmed the governing deformation, run M1 or M1-P first among downstream moves whenever self-refutation is actually present.
 
 ## When to Re-Run V1
 
-V1 is not one-shot. Re-run (or update the case-state line) whenever:
-- A move clears an upstream barrier and exposes a new downstream issue
-- The interlocutor shifts register (e.g., from `truth-seek` to `identity-perf`)
-- Affective tone shifts significantly
-- A new objection family appears that the current module does not cover
-- The case becomes genuinely mixed and `mixed-case-handling.md` is needed to re-route
+Re-run or update the case-state whenever:
 
-The case-state line is a living artifact, not a one-time diagnosis.
+- a move clears an upstream barrier and exposes a new downstream issue
+- the interlocutor shifts register
+- affective tone shifts significantly
+- a new objection family appears
+- the case becomes genuinely mixed

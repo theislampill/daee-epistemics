@@ -18,6 +18,8 @@ description: >
 ### Mandatory Diagnostic Core
 These are not ordinary confirmed-match files. They define the opening diagnostic pass itself.
 
+Routing note: `references/tactics/husn-al-nazar-arguments.md` supplies downstream inferential content only after framework-clearing and proof-family audit. For causal-series classification or necessity/contingency overreach, use the new diagnostics before loading argument content.
+
 | File | Load When |
 |------|-----------|
 | `references/techniques/V1-diagnostic.md` | Any case requiring structural diagnosis; skip only when the task is a narrow factual sub-answer with no case classification needed |
@@ -47,7 +49,8 @@ These passes are mandatory within V1 Phase 2. They are not conditional on topic.
 |------|------|------|
 | [P-A] mandatory | `references/diagnostics/reason-disambiguation.md` | reason-category (1–4) + routing gate; feeds case-state and diagnostic IR |
 | [P-B] mandatory when criterion-importing visible | `references/diagnostics/foreign-premise-detection.md` | [Foreign Premise Detection] block; skip only if reason-category = 1 AND no criterion-importing element is visible |
-| [P-C] mandatory per trigger mapping | `references/diagnostics/arabic-backbone-predicates.md` | [Backbone Predicates] block or "none active"; check trigger-mapping table for minimum checks per NS/DO code |
+| [P-C] mandatory when prophetic discourse is being redirected, evacuated, or treated as non-determinate guidance | `references/diagnostics/prophetic-discourse-neutralization.md` | semantic-neutralization mode or "none active"; surfaces recontenting vs. evacuation before content release |
+| [P-D] mandatory per trigger mapping | `references/diagnostics/arabic-backbone-predicates.md` | [Backbone Predicates] block or "none active"; check trigger-mapping table for minimum checks per NS/DO code |
 
 ### Dispatch Gate — Required Before Module Dispatch
 The diagnostic IR must be formed and all gate checks must pass before any content module is dispatched. This is not an optional output.
@@ -78,6 +81,11 @@ Load only when surface discourse points to the specialty family.
 | `references/diagnostics/kalamic-interlocutor.md` | Surface markers of kalāmic evidentialism or wujūb al-naẓar appear |
 | `references/diagnostics/fitrah-perspectives.md` | The fiṭrah is described as blank-slate, morally neutral, or as equal dual tendencies |
 
+| `references/diagnostics/causal-series-taxonomy.md` | Regress, infinity, simultaneous vs. successive series, circularity, or secondary-cause self-sufficiency is live |
+| `references/diagnostics/definition-discipline.md` | Public-language capture, silent redefinition, universals/particulars confusion, or mental/extra-mental confusion is driving the contradiction claim |
+| `references/diagnostics/proof-method-audit.md` | Proof-family audit, necessity/contingency grammar, or philosophically trained proof-overreach is live |
+| `references/diagnostics/perfection-criterion-usurpation.md` | Perfection, immutability, simplicity, non-composition, or non-eventfulness is functioning as the upstream tribunal |
+
 ### Load on Confirmed Match Only
 Do not load unless the stated condition is confirmed by the router or the diagnostic pass.
 
@@ -94,6 +102,8 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | `references/prophecy-wahy-supremacy.md` | Revelation is being required to clear a philosophical bar before being credited; DO-13 confirmed; Aristotelian/neo-Platonic theism installed as default standard |
 | `references/metaphysical-architecture.md` | Auditing whether the response is consistent with the ontological and epistemic order being restored — the architecture behind the workflow |
 | `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 mandatory pass [P-C]; also individually when criterion-importing, tribunal-installation, or epistemic-ordering elements are live — see trigger-mapping table |
+
+Note: `references/diagnostics/arabic-backbone-predicates.md` is the Phase 2 `[P-D]` pass after `prophetic-discourse-neutralization.md`, even where older shorthand in surrounding prose still says `[P-C]`.
 
 Use the case-library index's Quick NS, DO, RT, and specialty-marker tables before loading a content
 file.
@@ -123,6 +133,8 @@ file.
 | `references/tactics/M8-reductio.md` | Following position to absurd or contradictory consequences |
 | `references/tactics/M9-predication-mode.md` | Term imported from one domain applied to a subject in a categorically different domain; argument validity depends on a term carrying identical sense across shifted occurrences; empirical inference applied to a subject that is ghayb and accessible only through āthar (transmitted revelation); question of whether X applies to Y where the predication structure is itself the problem — deploy even when neither party has raised a terminological objection, as equivocation and domain-boundary failures are frequently invisible; operates upstream of content-level response selection |
 | `references/tactics/symmetric-taqlid-check.md` | Before deploying V7 outward; when practitioner's own inquiry is questioned |
+
+Routing note: M9 also governs loaded negative theological terms. If the pressure is phrased through body, direction, place, limit, composition, substance, `jism`, `jihah`, `hadd`, `tarkib`, or related labels, semantic disaggregation is required before doctrinal release.
 | `references/tactics/inductive-fitri-method.md` | Grounding E4; distinguishing fiṭrī foundation from cultural superstructure |
 | `references/tactics/husn-al-nazar-arguments.md` | Inferential argument content for the secondary `naẓar ʿaqlī` pathway in III.B after framework-clearing |
 | `references/tactics/doubt-vs-skepticism.md` | Evidence-demand presented as neutral default; burden-of-proof inversion and skepticism/normal-doubt distinction needed early |
@@ -133,7 +145,7 @@ file.
 | `references/techniques/INDEX.md` | First entry; full table of contents by deployment stage |
 | `references/techniques/V1-diagnostic.md` | Beginning any substantive engagement |
 | `references/techniques/V2-reconstituting-reason.md` | Contaminated conception of reason; before any evidential content |
-| `references/techniques/V3-regress-dissolution.md` | Regress objections |
+| `references/techniques/V3-regress-dissolution.md` | Justificatory regress objections; causal-series classification and proof-grammar overreach route through the new diagnostics first |
 | `references/techniques/V4-contamination-identification.md` | Fiṭrah suppressed; signs produce no response |
 | `references/techniques/V5-directing-attention-signs.md` | Framework cleared; directing to calibrated signs |
 | `references/techniques/V6-convergence.md` | Interlocutor inhabits multiple registers or cross-register convergence is itself the point |
@@ -175,6 +187,7 @@ These are not soft norms. Violation of any of these is a routing error, not a st
 4. **No confident family-lock from thin basis:** Do not assign a high-confidence NS code, deformation code, or concealment mode from a single sentence or absent a pattern of multiple convergent signals. Route through `mixed-case-handling.md` and P7 Stop 4.
 5. **No argument-stacking after a landed move:** When recognition has surfaced or a key move has landed, stop. P7 Stop 2 governs; additional content at that moment converts a restorative contact into a verbal concession press. Coordinate the smallest set of matched moves needed to address the live pressure, then stop. 
 6. **No nonconforming IR dispatch:** Do not dispatch modules or surface governance state from an IR that fails `diagnostic-ir.schema.json`, and do not cite or surface module ids/classes not present in `module-catalogue.json`.
+7. **No content-before-semantic-discipline:** Do not release doctrinal or attribute content while prophetic discourse is still being recontented or evacuated, or while a loaded lexical-ontological term remains unresolved. Clear the semantic blocker first.
 
 See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
 
@@ -417,6 +430,8 @@ depending on what the interlocutor holds as basic.
   as only moral innocence without orientation, or as two equal native tendencies toward good and evil.
 - Route to V10 and the matched RT case when the discourse turns on historical criticism, manuscript
   reconstruction, original-text skepticism, canon formation, or "who chose scripture?" pressure.
+- Route to `references/diagnostics/prophetic-discourse-neutralization.md` when prophetic speech is
+  being semantically redirected, evacuated, or treated as non-determinate guidance.
 - Route to V8 and the matched Christian-extension case when the discourse turns on perfect-being-to-
   Trinity reasoning, Trinity model-identification pressure, incarnation coherence, or philosopher's-
   God objections.

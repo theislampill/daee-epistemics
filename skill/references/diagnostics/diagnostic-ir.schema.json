@@ -35,16 +35,7 @@
     },
     "deformation": {
       "type": "string",
-      "enum": [
-        "Iʿtiqādāt mawrūtha",
-        "Mushābara fāsida",
-        "Hawā",
-        "Ẓann",
-        "Taqlīd",
-        "ʿĀda",
-        "Gharaḍ",
-        "Shubha"
-      ]
+      "minLength": 1
     },
     "concealment_mode": {
       "type": "string",
@@ -70,8 +61,14 @@
     },
     "reason_category": {
       "oneOf": [
-        { "type": "integer", "enum": [1, 2, 3, 4] },
-        { "type": "string", "enum": ["1", "2", "3", "4"] }
+        {
+          "type": "integer",
+          "enum": [1, 2, 3, 4]
+        },
+        {
+          "type": "string",
+          "enum": ["1", "2", "3", "4"]
+        }
       ]
     },
     "routing_gate": {
@@ -80,21 +77,28 @@
         "open",
         "V2-required",
         "deformation-first",
+        "semantic-discipline-required",
         "register-hold",
         "stop-condition"
       ]
     },
     "matched_modules": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
+        "required": ["id", "module_class"],
         "properties": {
-          "id": { "type": "string", "minLength": 1 },
-          "module_class": { "type": "string", "enum": ["case-library", "tactic", "procedure", "technique"] }
-        },
-        "required": ["id", "module_class"]
-      },
-      "minItems": 1
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module_class": {
+            "type": "string",
+            "enum": ["case-library", "tactic", "procedure", "technique", "diagnostic"]
+          }
+        }
+      }
     },
     "restoration_target": {
       "type": "string",
@@ -104,10 +108,8 @@
       "type": "string",
       "minLength": 1
     },
-
     "ns_code": {
-      "type": "string",
-      "enum": ["NS-1", "NS-2", "NS-3", "NS-4", "NS-5", "NS-6", "NS-7", "NS-8", "NS-9", "NS-10", "NS-11", "NS-12", "provisional"]
+      "type": "string"
     },
     "rt_marker": {
       "type": "string",
@@ -132,8 +134,7 @@
     "prohibited_moves": {
       "type": "array",
       "items": {
-        "type": "string",
-        "enum": ["PM-1", "PM-2", "PM-3", "PM-4"]
+        "type": "string"
       },
       "uniqueItems": true
     },
@@ -145,12 +146,31 @@
       },
       "uniqueItems": true
     },
-    "foreign_premise": { "type": "string", "minLength": 1 },
-    "philosophical_usurpation": { "type": "string", "minLength": 1 },
+    "foreign_premise": {
+      "type": "string"
+    },
+    "upstream_findings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "criterion-import",
+          "tribunal-installation",
+          "transmission-demotion",
+          "semantic-neutralization-recontenting",
+          "semantic-neutralization-evacuation",
+          "lexical-ontological-trap"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "philosophical_usurpation": {
+      "type": "string"
+    },
     "architectural_layer_disrupted": {
       "type": "string",
       "enum": [
-        "fiṭrah",
+        "fitrah",
         "sound-reason",
         "authentic-transmission",
         "inferential-route",
@@ -215,7 +235,11 @@
             "allOf": [
               {
                 "if": {
-                  "properties": { "source_kind": { "const": "module" } },
+                  "properties": {
+                    "source_kind": {
+                      "const": "module"
+                    }
+                  },
                   "required": ["source_kind"]
                 },
                 "then": {
@@ -225,7 +249,9 @@
               {
                 "if": {
                   "properties": {
-                    "basis_type": { "enum": ["anchored", "inference", "speculative"] }
+                    "basis_type": {
+                      "enum": ["anchored", "inference", "speculative"]
+                    }
                   },
                   "required": ["basis_type"]
                 },
@@ -253,15 +279,23 @@
         "held-pending"
       ]
     },
-    "what_is_withheld_and_why": { "type": "string" },
-    "what_remains_live": { "type": "string" }
+    "what_is_withheld_and_why": {
+      "type": "string"
+    },
+    "what_remains_live": {
+      "type": "string"
+    }
   },
   "allOf": [
     {
       "if": {
         "properties": {
-          "read_status": { "const": "underdetermined" },
-          "confidence": { "const": "strong" }
+          "read_status": {
+            "const": "underdetermined"
+          },
+          "confidence": {
+            "const": "strong"
+          }
         },
         "required": ["read_status", "confidence"]
       },
@@ -270,14 +304,18 @@
     {
       "if": {
         "properties": {
-          "reason_category": { "enum": [3, 4, "3", "4"] }
+          "reason_category": {
+            "enum": [3, 4, "3", "4"]
+          }
         },
         "required": ["reason_category"]
       },
       "then": {
         "properties": {
           "routing_gate": {
-            "not": { "const": "open" }
+            "not": {
+              "const": "open"
+            }
           }
         }
       }
@@ -285,14 +323,18 @@
     {
       "if": {
         "properties": {
-          "concealment_mode": { "const": "juhud" }
+          "concealment_mode": {
+            "const": "juhud"
+          }
         },
         "required": ["concealment_mode"]
       },
       "then": {
         "properties": {
           "output_shape": {
-            "not": { "const": "content" }
+            "not": {
+              "const": "content"
+            }
           }
         }
       }
@@ -300,14 +342,45 @@
     {
       "if": {
         "properties": {
-          "p7_stops_active": { "contains": { "const": "Stop-1" } }
+          "p7_stops_active": {
+            "contains": {
+              "const": "Stop-1"
+            }
+          }
         },
         "required": ["p7_stops_active"]
       },
       "then": {
         "properties": {
           "output_shape": {
-            "not": { "const": "content" }
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "upstream_findings": {
+            "contains": {
+              "enum": [
+                "semantic-neutralization-recontenting",
+                "semantic-neutralization-evacuation",
+                "lexical-ontological-trap"
+              ]
+            }
+          }
+        },
+        "required": ["upstream_findings"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": {
+              "const": "open"
+            }
           }
         }
       }

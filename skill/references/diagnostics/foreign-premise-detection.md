@@ -1,21 +1,19 @@
-> role: diagnostic pipeline pass — detects and classifies imported premises, criteria, and tribunals
+> role: diagnostic pipeline pass - detects and classifies imported premises, criteria, and tribunals
 > use when: V1 Phase 2 axis classification is underway and the interlocutor's framework, criterion, or prior probability assignment is not yet examined
 > do not use when: the claim is purely transmission-related with no criterion-importing element, or when the reason-category has already been established as sound (Category 1)
-> output: a structured diagnostic pass with a defined output shape — not an optional reflective move
-> pipeline position: runs as part of V1 Phase 2 alongside the deformation and concealment reads; its emission feeds the case-state
-> ownership note: this file is the detection pass; arabic-backbone-predicates.md is the broader predicate library — FPD Steps 1-3 map specifically to C-1/C-2/C-3 and T-1 in ABP; for ordering violations (O-1/O-2/O-3) and category-conflation violations (K-1/K-2) that do not involve an imported foreign premise, use ABP directly; on confirmed usurpation, load philosophical-usurpation.md as the case family file
+> output: a structured diagnostic pass with a defined output shape
+> pipeline position: runs as part of V1 Phase 2 alongside the deformation and concealment reads
+> ownership note: this file is the detection pass; `arabic-backbone-predicates.md` is the broader predicate library
 
-# Foreign-Premise Detection — Explicit Diagnostic Pass
+# Foreign-Premise Detection - Explicit Diagnostic Pass
 
-This pass asks: what premise has been imported from outside the tradition being examined, from where, and how is it now functioning in the current engagement? The pass is not optional when the criterion-importing element is visible. It must either mark a premise as detected, mark none detected, or mark detection as uncertain — it cannot be skipped by elegant prose that glides past the upstream criterion.
+This pass asks: what premise has been imported from outside the tradition being examined, from where, and how is it now functioning in the current engagement? The pass is not optional when the criterion-importing element is visible.
 
-The purpose is to prevent the most common structural failure: a response that addresses the visible objection while leaving the upstream criterion that is generating the objection unexamined. The objection can be dissolved and the criterion will regenerate a new objection from the same upstream position.
+Its purpose is to prevent the most common structural failure: a response that addresses the visible objection while leaving the upstream criterion that is generating the objection unexamined.
 
 ---
 
 ## Required Output Shape
-
-Every run of this pass must produce one of the following outputs. The output feeds the case-state `Primary upstream issue` field and governs whether V2, V3, or M1 is required before content engagement.
 
 ```text
 [Foreign Premise Detection]
@@ -28,70 +26,115 @@ Every run of this pass must produce one of the following outputs. The output fee
 - Prohibited move: <what response would grant the premise the chair>
 ```
 
-If `Premise status: none-detected`, fill only the first two fields and proceed. If `uncertain`, fill through `Upstream position` and mark the decisive missing differentiator.
+If `Premise status: none-detected`, fill only the first two fields and proceed. If `uncertain`, fill through `Upstream position` and name the decisive missing differentiator.
 
 ---
 
 ## Pass Execution Sequence
 
-### Step 1 — Identify the Tribunal
+### Step 1 - Identify the Tribunal
 
 Ask: what standard is being applied to the religious position? Not "what objection is being made?" but "what would count as a satisfying answer, and who set that standard?"
 
 Common tribunal types:
-- **Empirical verifiability:** Only claims testable by scientific method are legitimate knowledge claims. Religious claims must pass this test or are meaningless / merely subjective.
-- **Historical-critical neutrality:** Scripture, revelation, and religious testimony must be evaluated using the same methods applied to ancient documents generally, with naturalistic priors. Any appeal to the tradition's own authentication criteria is question-begging.
-- **Pure rational necessity:** Only what can be established by discursive argument from self-evident premises counts as knowledge. Fiṭrī recognition and tawātur-based knowledge are illegitimate without prior rational demonstration.
-- **Liberal autonomy:** Individual rational consent is the ultimate legitimating criterion for any belief system. Authority, tradition, and community are obstacles to this, not epistemic inputs.
-- **Aristotelian/neo-Platonic theism:** The God of revelation must be the God of the philosophers — simple, unmoved, non-personal, non-acting in time. The God who speaks, commands, and responds is less than the highest philosophical conception.
 
-### Step 2 — Identify the Source Tradition
+- empirical verifiability
+- historical-critical neutrality
+- pure rational necessity
+- liberal autonomy
+- Aristotelian / neo-Platonic theism
 
-Where did this criterion come from? Naming the source tradition does two things: it shows the interlocutor that the criterion has a specific historical origin (not eternal philosophical necessity), and it allows the practitioner to know which family of responses addresses its specific failure modes.
+### Step 2 - Identify the Source Tradition
 
-### Step 3 — Identify the Functional Role
+Where did this criterion come from? Naming the source tradition shows the criterion has a specific historical origin rather than neutral self-evidence.
 
-How is the premise currently functioning? The function determines the intervention:
+### Step 3 - Identify the Functional Role
+
+How is the premise currently functioning?
 
 | Functional role | What it does | V2 move required |
-|----------------|--------------|-----------------|
-| **Criterion** | Sets the bar evidence must clear | Show the criterion is not self-grounding; the bar itself needs justification |
-| **Tribunal** | Acts as the upstream authority deciding what the tradition must answer to | Name the tribunal; show it has no special claim to the chair |
-| **Prior probability assignment** | Sets a prior so low that evidence cannot overcome it | Surface the prior; show it is a philosophical choice, not a neutral starting point |
-| **Definitional constraint** | Defines terms (God, reason, knowledge) in a way that makes religious claims false by definition | Expose the stipulation; insist on the distinction between definitional exclusion and discovery |
-| **Background assumption** | Operates below explicit commitment as "common sense" | V2 + V7: name and externalize the assumption; make it visible as a choice |
+|----------------|--------------|------------------|
+| `criterion` | Sets the bar evidence must clear | Show the criterion is not self-grounding |
+| `tribunal` | Acts as upstream authority deciding what the tradition must answer to | Name the tribunal and question its jurisdiction |
+| `prior probability assignment` | Sets a prior so low that evidence cannot overcome it | Surface the prior and show it is a philosophical choice |
+| `definitional constraint` | Defines terms so the religious claim is false by definition | Expose the stipulation |
+| `background assumption` | Operates below explicit commitment as common sense | Externalize it as a choice |
 
-### Step 4 — Determine Upstream Position
+### Step 4 - Determine Upstream Position
 
-Is the premise operating above the visible objection? If the interlocutor's objection is downstream of the premise — if dissolving the objection will produce a new objection from the same upstream position — then the premise is upstream. Addressing the visible objection without addressing the premise wastes both parties' time. The premise regenerates.
+Is the premise operating above the visible objection? If dissolving the visible objection will simply regenerate a new objection from the same premise, then the premise is upstream.
 
-Signal: if the interlocutor has shifted DO families (evil → evolution → hiddenness → authority) while maintaining the same underlying criterion, the premise is upstream.
-
-### Step 5 — Route Consequence and Prohibited Move
+### Step 5 - Route Consequence and Prohibited Move
 
 Every detected premise specifies:
-- **What must happen before content:** V2 must be run to loosen the framework; M1 applied to the criterion itself; V3 to dissolve any regress the criterion generates; the premise named as one position among alternatives.
-- **What is prohibited:** Accepting the premise's terms; responding as if the criterion is legitimate and the only question is whether the religious position meets it; producing a "defense" that treats the foreign tribunal as the appropriate judge.
+
+- what must happen before content
+- what is prohibited
+
+Typical consequence: V2 must be run to loosen the framework before content is released.
+
+---
+
+## Validation Inversion / Transmission Demotion Check
+
+This subsection is mandatory whenever the case includes language like "reason first proves revelation," "reason validates transmission and therefore outranks it," "transmission only counts after rational vetting of its content," or any equivalent framing.
+
+### What to detect
+
+Distinguish three related but non-identical findings:
+
+1. **Criterion import present**
+   Reason or rational necessity is being used as the bar revelation must clear.
+2. **Tribunal installation present**
+   Reason is not merely one tool among others; it is installed as the court before which transmission must justify itself.
+3. **Transmission demotion / inversion present**
+   Transmission is treated as derivative, confirmatory, or epistemically downstream of reason in a way that removes its native standing as source.
+
+### Minimal discriminator
+
+- **Imported criterion only:** "Your text must satisfy my rational standard."
+- **Tribunal installation:** "Reason decides what revelation is allowed to say."
+- **Transmission demotion:** "Transmission only has standing after reason has already validated its content or category."
+
+### Route consequence
+
+When tribunal installation or transmission demotion is present:
+
+- mark `Primary upstream issue` in tribunal language, not merely objection language
+- add `tribunal-installation` and, when appropriate, `transmission-demotion` to `Upstream findings`
+- connect the case to `O-1` in `arabic-backbone-predicates.md`
+- hold doctrinal content until the inversion is named and refused
+
+### Prohibited move
+
+Do not answer as if revelation were merely a downstream confirmation of what reason already owns. That concedes the inversion before it is examined.
 
 ---
 
 ## Adversarial Near-Misses
 
-**Near-miss 1 — Sophisticated shubhah covering upstream criterion:** An interlocutor presents a detailed philosophical objection (e.g., the problem of divine hiddenness with explicit premises and literature citations). The response routes to DO-1 and engages the philosophical apparatus. But the real governing structure is a prior-probability assignment — the interlocutor's prior for theism is set so low that no hiddenness argument could be the real driver; the hiddenness argument is the visible objection downstream of the prior. Correct detection: run Step 3 (prior probability assignment?) before loading DO-1.
+**Near-miss 1 - sophisticated shubha covering upstream prior.**
+The visible objection looks content-level, but the real driver is the prior probability assignment upstream of it.
 
-**Near-miss 2 — Historical-critical methodology presented as neutral:** An interlocutor challenges the reliability of hadith transmission using historical-critical methodology and assumes the methodology is the neutral standard. The response defends specific hadith against the methodology's criteria. But the methodology itself is not neutral — it imports naturalistic priors and assumes that the same methods apply to all ancient documents regardless of their transmission architecture. Correct detection: identify the methodological framework as the foreign premise before engaging the specific hadith question.
+**Near-miss 2 - historical-critical methodology presented as neutral.**
+The response is tempted to defend specific reports while leaving the imported method unchallenged.
 
-**Near-miss 3 — Philosophical concept of God as the default:** An interlocutor argues that the God of revelation (who speaks, commands, gets "angry," responds to prayer) is anthropomorphic and philosophically primitive compared to the God of the philosophers (simple, unmoved, atemporal). The response defends divine attribute language defensively. But the premise that philosophical simplicity is the highest conception of God is itself the foreign import — the God of revelation is not required to conform to Aristotelian or neo-Platonic metaphysical categories. Correct detection: name the Aristotelian/neo-Platonic theism as the competing position, not the neutral standard against which revelation must be measured.
+**Near-miss 3 - philosophical concept of God as default.**
+The visible objection is anthropomorphism or imperfection, but the real issue is the imported tribunal.
+
+**Near-miss 4 - validation inversion disguised as respect for reason.**
+The speaker says reason merely "checks" revelation, but the actual structure is that revelation has no standing until reason has ruled. This is tribunal installation, not neutral review.
 
 ---
 
 ## Integration with V1 Phase 2
 
-This pass runs in V1 Phase 2 (axis classification). Its output updates the case-state as follows:
+This pass runs in V1 Phase 2. Its output updates case-state and IR as follows:
 
-- If `Premise status: detected` and the premise is functioning as criterion or tribunal: `Primary upstream issue` is the foreign premise. V2 is required before any content module.
-- If `Premise status: detected` and the premise is a background assumption: add to the `Primary deformation` as `i'tiqadat-mawrutha` (Category 4 in reason-disambiguation.md) and route V2 + V7.
-- If `Premise status: none-detected`: proceed with deformation and concealment reads as primary axis classification.
-- If `Premise status: uncertain`: mark `Confidence: provisional` in the case-state and name the decisive missing differentiator.
+- If `Premise status: detected` and the premise is functioning as criterion or tribunal: `Primary upstream issue` is the foreign premise. V2 is required before content.
+- If `Premise status: detected` and the premise is a background assumption: add it to the deformation read as inherited framework and route V2.
+- If `Premise status: detected` and validation inversion is present: surface `tribunal-installation` and, where appropriate, `transmission-demotion` in `Upstream findings`.
+- If `Premise status: none-detected`: proceed with deformation and concealment reads as primary.
+- If `Premise status: uncertain`: mark confidence as provisional and name the decisive missing differentiator.
 
-**Connection:** This pass produces the upstream issue that V2 addresses. V2 is the intervention; this pass is the detection that triggers it. They are not interchangeable — the pass identifies whether and what kind of foreign premise is present; V2 removes it. Without the pass, V2 risks being applied to cases that do not need it (forced fit) or being skipped in cases that do (diagnosis collapse).
+This pass is the detection layer. V2 is the intervention it triggers. They are not interchangeable.

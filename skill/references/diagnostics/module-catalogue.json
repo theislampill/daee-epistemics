@@ -36,6 +36,31 @@
       "module_class": "case-library"
     },
     {
+      "id": "prophetic-discourse-neutralization",
+      "path": "skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "module_class": "diagnostic"
+    },
+    {
+      "id": "causal-series-taxonomy",
+      "path": "skill/references/diagnostics/causal-series-taxonomy.md",
+      "module_class": "diagnostic"
+    },
+    {
+      "id": "definition-discipline",
+      "path": "skill/references/diagnostics/definition-discipline.md",
+      "module_class": "diagnostic"
+    },
+    {
+      "id": "proof-method-audit",
+      "path": "skill/references/diagnostics/proof-method-audit.md",
+      "module_class": "diagnostic"
+    },
+    {
+      "id": "perfection-criterion-usurpation",
+      "path": "skill/references/diagnostics/perfection-criterion-usurpation.md",
+      "module_class": "diagnostic"
+    },
+    {
       "id": "ns-1-naturalist",
       "path": "skill/references/case-library/profiles/ns-1-naturalist.md",
       "module_class": "case-library"

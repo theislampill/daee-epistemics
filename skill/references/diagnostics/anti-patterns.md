@@ -121,6 +121,18 @@ The following entries expand the compressed table into full audit-grade entries.
 
 ---
 
+---
+
+**Semantic Gate Bypass**
+*Definition:* Releasing doctrinal or attribute content while an upstream semantic blocker is still live - recontented prophetic discourse, evacuated prophetic discourse, or an unresolved loaded negative theological term.
+*Pattern appearing in output:* The response answers "God is not a body" or "bilā kayf solves it" before clarifying what "body," "direction," "composition," or the prophetic-language claim is actually being made to mean.
+*Correct behavior in the same case:* Clear the semantic blocker first. If prophetic discourse is being redirected or evacuated, run the prophetic-discourse-neutralization pass. If the case is built on loaded anti-attribute vocabulary, run M9's lexical-ontological split before doctrinal release.
+*Self-audit question:* Have I restored meaning before releasing doctrine, or did I answer a semantically unstable question as if it were already well formed?
+*Why it damages the skill:* It lets the objectioner's hidden semantics govern the exchange. The practitioner appears to answer the claim while actually accepting the opponent's terms, so the same semantic trap simply regenerates downstream objections.
+*Prevented by:* `prophetic-discourse-neutralization.md`; `M9-predication-mode.md`; `routing-precedence.md` Rule S-6; `diagnostic-ir.md` semantic-discipline gate.
+
+---
+
 ## Quick Self-Audit
 
 - Have I diagnosed before rebutting?
