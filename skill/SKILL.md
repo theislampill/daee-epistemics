@@ -56,6 +56,19 @@ The diagnostic IR must be formed and all gate checks must pass before any conten
 |------|------|
 | `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
 
+### JSON / IR Adherence (hard requirement)
+
+The diagnostic IR is not complete unless it conforms to `references/diagnostics/diagnostic-ir.schema.json`.
+
+Rules:
+1. Before any content module is dispatched, construct a diagnostic IR object that validates against `references/diagnostics/diagnostic-ir.schema.json`.
+2. Any `matched_modules` entry must use an `id` and `module_class` that exactly match `module-catalogue.json`.
+3. Do not invent module ids, module classes, routing fields, or source-basis categories outside the schema and catalogue.
+4. If the IR is underdetermined, keep it underdetermined in-schema rather than forcing a stronger read in prose.
+5. Surfaced `[Case State]`, `[Source Basis]`, and other governance blocks must be rendered from the validated IR, not improvised independently of it.
+6. Schema failure, catalogue mismatch, or IR/output divergence is a routing failure and must be corrected before final response.
+
+
 ### Specialty Diagnostics
 Load only when surface discourse points to the specialty family.
 
@@ -160,7 +173,8 @@ These are not soft norms. Violation of any of these is a routing error, not a st
 2. **No ambient substrate loading:** Do not load `sound-reason-epistemology.md` because philosophical vocabulary appears in the input. Load it only when a named section's specific load condition (§1, §2–3, §4, §4.3, §5, §6, §6.2, §6.3) is confirmed live by the diagnostic pass.
 3. **No content-before-register:** Do not deploy doctrinal or case-library content before confirming the concealment × orientation matrix cell permits deployment. Where the matrix cell is any non-`truth-seek` orientation or any active concealment mode, content deployment requires a named register release condition.
 4. **No confident family-lock from thin basis:** Do not assign a high-confidence NS code, deformation code, or concealment mode from a single sentence or absent a pattern of multiple convergent signals. Route through `mixed-case-handling.md` and P7 Stop 4.
-5. **No argument-stacking after a landed move:** When recognition has surfaced or a key move has landed, stop. P7 Stop 2 governs; additional content at that moment converts a restorative contact into a verbal concession press.
+5. **No argument-stacking after a landed move:** When recognition has surfaced or a key move has landed, stop. P7 Stop 2 governs; additional content at that moment converts a restorative contact into a verbal concession press. Coordinate the smallest set of matched moves needed to address the live pressure, then stop. 
+6. **No nonconforming IR dispatch:** Do not dispatch modules or surface governance state from an IR that fails `diagnostic-ir.schema.json`, and do not cite or surface module ids/classes not present in `module-catalogue.json`.
 
 See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
 
@@ -509,6 +523,8 @@ thin, or otherwise underdetermined. The canonical source-status legend is:
 - `[synthesis]` combining multiple loaded files without adding a new thesis
 - `[inference]` model-level extension beyond what the files explicitly state
 - `[speculative]` tentative extension that should not govern the case unless confirmed
+
+Any surfaced governance block must be traceable to the validated diagnostic IR; do not add extra governance blocks, fields, or post-hoc extensions not licensed by the IR and the canonical response schema.
 
 When unlike source types are joined, mark source weight in `[Source Basis]`. Higher-weight theoretical
 or research-grade material may anchor substantive doctrinal and epistemic claims; lighter operational
