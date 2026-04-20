@@ -90,11 +90,9 @@
         "type": "object",
         "properties": {
           "id": { "type": "string", "minLength": 1 },
-          "module_class": { "type": "string", "enum": ["case-library", "tactic", "procedure", "technique"] },
-          "content_bearing": { "type": "boolean" },
-          "doctrinal_case_file": { "type": "boolean" }
+          "module_class": { "type": "string", "enum": ["case-library", "tactic", "procedure", "technique"] }
         },
-        "required": ["id", "module_class", "content_bearing", "doctrinal_case_file"]
+        "required": ["id", "module_class"]
       },
       "minItems": 1
     },
@@ -174,7 +172,71 @@
       ]
     },
     "source_basis": {
-      "type": "string"
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entries"],
+      "properties": {
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["basis_type", "claim", "source_kind"],
+            "properties": {
+              "basis_type": {
+                "type": "string",
+                "enum": ["anchored", "inference", "speculative", "synthesis"]
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_kind": {
+                "type": "string",
+                "enum": ["input", "module", "schema", "catalogue", "operator"]
+              },
+              "module_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "type": "string"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "source_kind": { "const": "module" } },
+                  "required": ["source_kind"]
+                },
+                "then": {
+                  "required": ["module_id"]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "basis_type": { "enum": ["anchored", "inference", "speculative"] }
+                  },
+                  "required": ["basis_type"]
+                },
+                "then": {
+                  "required": ["source_ref"]
+                }
+              }
+            ]
+          }
+        }
+      }
     },
     "inference_boundary_active": {
       "type": "string",
@@ -246,40 +308,6 @@
         "properties": {
           "output_shape": {
             "not": { "const": "content" }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "routing_gate": { "const": "V2-required" }
-        },
-        "required": ["routing_gate"]
-      },
-      "then": {
-        "properties": {
-          "matched_modules": {
-            "items": {
-              "content_bearing": false
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "do_orient": { "const": "identity-perf" }
-        },
-        "required": ["do_orient"]
-      },
-      "then": {
-        "properties": {
-          "matched_modules": {
-            "items": {
-              "doctrinal_case_file": false
-            }
           }
         }
       }
