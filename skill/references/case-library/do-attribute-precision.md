@@ -57,9 +57,9 @@ This file isolates the logical move going wrong in divine-attribute discourse. M
 
 ---
 
-## Confusion 6 - Imported Perfection Standard as Neutral Tribunal
+## Confusion 6 - Imported Perfection Standard as Upstream Tribunal
 
-**Mechanism:** A philosophical perfection framework is treated as the neutral standard by which revelation must be judged.
+**Mechanism:** A philosophical perfection framework is treated as the upstream tribunal by which revelation must be judged.
 
 **Corrected fixture:** Name the framework as one position among others, refuse its tribunal status, and only then engage the attribute question.
 

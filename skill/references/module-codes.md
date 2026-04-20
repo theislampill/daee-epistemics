@@ -10,6 +10,58 @@ file; other files refer to the code but do not re-specify it. If this reference
 disagrees with the canonical file, the canonical file governs — this reference indexes
 and summarizes.
 
+## Axis 0 — Claim Level and Pattern Profile
+
+Source: `references/diagnostics/pattern-profiling.md`.
+
+### Claim level
+
+| Code | Meaning | Route consequence |
+|------|---------|------------------|
+| `first-order` | The live pressure is about the content claim itself | Route by the ordinary NS / DO / RT stack after upstream gates clear |
+| `meta-epistemic` | The live pressure is about what counts as knowledge, proof, evidence, testimony, neutrality, or rational warrant | Clear the criterion or proof-method burden before first-order content |
+| `meta-ontological` | The live pressure is about what categories may apply or what ontological distinctions are admissible | Clear category, predication, definition, or perfection-criterion burdens before first-order content |
+| `meta-noetic` | The live pressure is about recognition, suppression, deformation, concealment, or the conditions under which content can land | Clear the noetic/register burden before content dispatch |
+| `cross-level` | First-order and higher-order burdens are both live | Keep both explicit; sequence higher-order clearing first |
+
+### Pattern profile
+
+| Code | Name |
+|------|------|
+| `PF-1` | Inherited framework / habituated belief |
+| `PF-2` | Evidentialist demand / pre-inquiry criterion pressure |
+| `PF-3` | Canon formation / text selection / authority certification |
+| `PF-4` | Transmission / preservation / authentication |
+| `PF-5` | Doctrinal complexity / disagreement pressure |
+| `PF-6` | Christology / Trinity / Jesus-status pressure |
+| `PF-7` | Comparative prophethood / why this revelation |
+| `PF-8` | Positive restoration / opening framing |
+| `PF-9` | Self-refutation / performative incoherence |
+| `PF-10` | Grief / existential pressure / evil register-hold |
+| `PF-11` | Muslim-internal crisis / authority fatigue / textual destabilization |
+| `PF-12` | Philosophical naturalism / scientistic filtering |
+
+### Diagnostic gate / upstream findings tags
+
+Source: `references/diagnostics/case-state-schema.md`, `diagnostic-ir.md`,
+`foreign-premise-detection.md`, and `prophetic-discourse-neutralization.md`.
+These are emitted tags, not new module families.
+
+| Tag | Canonical owner |
+|-----|-----------------|
+| `criterion-import` | `foreign-premise-detection.md` |
+| `tribunal-installation` | `foreign-premise-detection.md`; `routing-precedence.md` |
+| `transmission-demotion` | `foreign-premise-detection.md`; `arabic-backbone-predicates.md` O-1 |
+| `semantic-neutralization-recontenting` | `prophetic-discourse-neutralization.md` |
+| `semantic-neutralization-evacuation` | `prophetic-discourse-neutralization.md` |
+| `lexical-ontological-trap` | `M9-predication-mode.md`; `definition-discipline.md` |
+| `open` | `diagnostic-ir.md`; `routing-precedence.md` |
+| `V2-required` | `reason-disambiguation.md`; `foreign-premise-detection.md` |
+| `deformation-first` | `reason-disambiguation.md`; `seven-deformations.md` |
+| `semantic-discipline-required` | `routing-precedence.md` S-6; `diagnostic-ir.md` |
+| `register-hold` | `case-state-schema.md` concealment x orientation matrix |
+| `stop-condition` | `P7-restoration-stops.md` |
+
 ## Axis 1 — Noetic Structure (NS)
 
 Source: `references/diagnostics/noetic-reading-checklist.md` (markers table).
@@ -199,7 +251,7 @@ The interlocutor is an analytically inclined atheist who frames the question as 
 and insists "there is no evidence," engaging in good faith. No obvious affective charge;
 no authority-wound; no identity performance visible.
 
-    NS: NS-1    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-12    NS: NS-1    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
 
 Reasoning: The NS code is clear; orientation is truth-seek so the full apparatus applies;
 no concealment mode is active (the interlocutor is not concealing anything beneath the
@@ -214,7 +266,7 @@ The interlocutor presents a deconversion story prominently in every exchange, re
 intellectual content by narrating their departure from faith, and exhibits strong
 affective resistance to any position that would complicate the narrative.
 
-    NS: NS-3    DO-orient: identity-perf    Concealment: istikbar    Deformation: hawa | zann    Strength: strong    Next: Name the register first (V1 pastoral note); defer M3; do not supply more intellectual content
+    Case: NS profile    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-3    DO-orient: identity-perf    Concealment: istikbar    Deformation: hawa | zann    Strength: strong    Next: Name the register first (V1 pastoral note); defer M3; do not supply more intellectual content
 
 Reasoning: The NS code is clear; DO-orient is identity-perf because the deconversion
 narrative is functioning as self-presentation; concealment is istikbar because there is
@@ -230,7 +282,7 @@ willing to transition.
 A classically trained student raises the question: "How can I hold ʿaqīdah as knowledge
 without naẓar? Doesn't taqlīd fail to rise to the level of ʿilm?"
 
-    NS: NS-6    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate hard Muʿtazilī / Ashʿarī / Māturīdī position; then V2 on the evidentialist restriction
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-2    NS: NS-6    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate hard Muʿtazilī / Ashʿarī / Māturīdī position; then V2 on the evidentialist restriction
 
 Reasoning: The markers are clear (dalīl demand; wujūb al-naẓar; taqlīd-treated-as-non-
 knowledge); truth-seek applies; no concealment; the deformation is the inherited kalāmic
@@ -243,7 +295,7 @@ A practicing Muslim raises simultaneously: a hadith they find morally troubling,
 about a scholar's public failure, and a Twitter thread about Qurʾānic manuscript variants.
 Affect is anxious; the register is internal, not external debate.
 
-    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: —    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the hadith) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: P6 / mixed-case-handling — pastoral first; disaggregate; matched sub-move per component
+    Case: compound internal crisis    Claim: transmission @ cross-level    Pattern: PF-11    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: —    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the hadith) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: P6 / mixed-case-handling — pastoral first; disaggregate; matched sub-move per component
 
 Reasoning: NS-8 is the compound. DO-orient is mixed because the subject is genuinely
 truth-seeking and simultaneously destabilized. RT-4 applies on the text-history axis
@@ -257,7 +309,7 @@ without increasing the destabilization.
 An academic non-Muslim with training in NT text-criticism raises manuscript claims about
 early Qurʾānic codices, framing the question as methodologically neutral.
 
-    NS: NS-9    DO-orient: truth-seek    Concealment: —    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework (name NT conditions that are not analogous); then V10 (separate artifact from authenticated transmission); then matched RT module
+    Case: RT pressure    Claim: transmission @ meta-epistemic    Pattern: PF-4    NS: NS-9    DO-orient: truth-seek    Concealment: —    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework (name NT conditions that are not analogous); then V10 (separate artifact from authenticated transmission); then matched RT module
 
 Reasoning: The interlocutor is genuinely truth-seeking; the framework is the problem, not
 the person. The deformation is iʿtiqādāt mawrūtha applied to method. Direct RT-1
@@ -271,7 +323,7 @@ An acquaintance, on hearing a religious question posed in passing, immediately c
 the subject, invokes busyness, marks the matter as "not for them," and declines to look.
 There is no vigor of refusal, no argued position — only a quiet withholding of attention.
 
-    NS: NS-?    DO-orient: mixed (surface truth-neutral, minority autotelic)    Concealment: irad    Deformation: provisional — likely gharad or ada in the background; not yet decidable    Strength: low    Next: invitational register; leave one honest question alive; character-as-evidence; no doctrinal module
+    Case: low-signal encounter    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-?    DO-orient: mixed (surface truth-neutral, minority autotelic)    Concealment: irad    Deformation: provisional — likely gharad or ada in the background; not yet decidable    Strength: low    Next: invitational register; leave one honest question alive; character-as-evidence; no doctrinal module
 
 Reasoning: The subject has not engaged the matter enough to be triaged on deformation —
 the turning-away is prior to any assertion the deformation axis could read. Under `juhud`

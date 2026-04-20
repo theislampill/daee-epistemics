@@ -69,7 +69,7 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 
 **Presentation:** "The God you describe — personal, speaking, responding, emotionally engaged — is philosophically inferior to the simple, unmoved, perfectly immutable absolute of philosophical theism. Your God is anthropomorphic."
 
-**Diagnostic:** DO-13 + Predicate T-3 (later foundation mistaken for pure foundation) + Confusion 6 in `case-library/do-attribute-precision.md` (perfect-being theology as neutral standard).
+**Diagnostic:** DO-13 + Predicate T-3 (later foundation mistaken for pure foundation) + Confusion 6 in `case-library/do-attribute-precision.md` (perfect-being theology as upstream tribunal).
 
 **Response route:**
 1. Name the specific philosophical framework being used as the standard (Aristotelian, neo-Platonic, perfect-being theology).

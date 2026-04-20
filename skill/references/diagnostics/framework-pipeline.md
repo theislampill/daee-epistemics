@@ -44,6 +44,10 @@
 | A5  Claim-type      case-state-schema.md field             |
 | A6  Reason-cat      reason-disambiguation.md [P-A]         |
 |                                                            |
+| CONDITIONAL OVERLAYS:                                      |
+| O1  Claim-level     pattern-profiling.md when higher-order |
+| O2  Pattern profile pattern-profiling.md when recurring PF |
+|                                                            |
 | MANDATORY PASSES - run in sequence:                        |
 | [P-A] reason-disambiguation.md                             |
 |       emit: reason-category (1-4) + routing gate           |
@@ -64,11 +68,14 @@
 | DIAGNOSTIC IR - FORMATION + DISPATCH GATE                  |
 |                                                            |
 | Compose IR from Phase 2 outputs.                           |
+| Meta-level burdens clear here: if claim-level is not       |
+| first-order, the governing higher-order owner must clear   |
+| before first-order DO / RT dispatch.                       |
 |                                                            |
 | GATE CHECKS (all must pass before dispatch):               |
 | 1. Mandatory minimum fields populated?                     |
 | 2. Consistency rules pass?                                 |
-| 3. routing-precedence.md suppression rules S-1..S-6?       |
+| 3. routing-precedence.md suppression rules S-1..S-7?       |
 | 4. P7 stops checked?                                       |
 | 5. Architectural integrity check passed?                   |
 | 6. Concealment x orientation matrix permits content now?   |

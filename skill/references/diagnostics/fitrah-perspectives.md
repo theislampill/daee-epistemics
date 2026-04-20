@@ -156,8 +156,7 @@ the fiṭrah as a single positive orientation that is suppressed, not opposed, b
 
 ### 3. The Positive Perspective — Majority, Orthodox
 
-**Representatives:** The scholarly consensus (Ahl al-Sunnah wal-Jamāʿah): Ibn Taymiyyah,
-Ibn al-Qayyim, al-Ghazali, Imam Qurtubi, Imam Nawawi, and the broad scholarly tradition.
+**Representatives:** The scholarly consensus (Ahl al-Sunnah wal-Jamāʿah) and the broad inherited Sunni tradition.
 
 **The position:** Every child is born in a state of fiṭrah and any deviation from proper
 recognition is produced by external agents of misguidance. The fiṭrah is not merely a

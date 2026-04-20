@@ -5,7 +5,7 @@
 
 # Routing Precedence - Cross-Axis Rules
 
-The skill operates on seven independent diagnostic axes: NS, deformation, concealment mode, discourse orientation (DO-orient), claim-type, RT marker, and reason-category. This file governs their interactions when they produce competing routing signals. The concealment x orientation matrix in `case-state-schema.md` handles two axes directly; this file handles the remaining cross-axis interactions and the full precedence hierarchy.
+The skill operates on seven primary diagnostic axes: NS, deformation, concealment mode, discourse orientation (DO-orient), claim-type, RT marker, and reason-category. Two governance overlays also shape routing when emitted: `claim_level` and `pattern_profile` from `pattern-profiling.md`. This file governs their interactions when they produce competing routing signals. The concealment x orientation matrix in `case-state-schema.md` handles two axes directly; this file handles the remaining cross-axis interactions and the full precedence hierarchy.
 
 ---
 
@@ -19,9 +19,12 @@ When multiple axes compete, apply in this order:
 4. **Reason-category (content gate).** When reason-category is 3 or 4, V2 is required before content. When reason-category is 2, the volitional deformation is addressed before reason-engagement.
 5. **Foreign-premise status.** When a foreign premise is detected functioning as criterion or tribunal, V2 runs before content even if reason-category was marked as sound.
 6. **Semantic-discipline gate.** When semantic neutralization of prophetic discourse or a loaded lexical-ontological trap is live, doctrinal content is held until the semantic problem is cleared. This gate does not erase foreign-premise or tribunal findings; it runs after criterion detection and before doctrinal release.
-7. **NS code (content selection).** Only after axes 1-6 are clear does the NS code govern what content is selected. The NS code identifies what to say; axes 1-6 identify whether to say it yet.
-8. **DO code (argument family).** The DO entry is loaded after NS, after register is clear, and after the correct upstream sequence has run.
-9. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer.
+7. **Claim-level (higher-order priority).** When `claim_level` is `meta-epistemic`, `meta-ontological`, `meta-noetic`, or `cross-level`, clear the higher-order burden before first-order case content is released.
+8. **NS code (content selection).** Only after steps 1-7 are clear does the NS code govern what content is selected. The NS code identifies what to say; the earlier steps identify whether to say it yet.
+9. **DO code (argument family).** The DO entry is loaded after NS, after register is clear, and after the correct upstream sequence has run.
+10. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer.
+
+`pattern_profile` does not outrank the hierarchy. It is a consolidation overlay that helps choose the smallest matched coordination once the higher-precedence blockers have been handled.
 
 ---
 
@@ -40,6 +43,8 @@ These rules specify when one axis suppresses or delays another:
 **Rule S-5:** Active P7 stop suppresses the corresponding operation.
 
 **Rule S-6:** Semantic-discipline blockers suppress doctrinal release. When `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` is active, the routing gate is `semantic-discipline-required` until the relevant semantic clarification file has run.
+
+**Rule S-7:** Higher-order burdens suppress first-order-only release. When `claim_level` is `meta-epistemic`, `meta-ontological`, or `meta-noetic`, first-order case files are held until the governing higher-order owner has cleared the burden.
 
 ---
 
@@ -78,7 +83,7 @@ These combinations are diagnostic red flags:
 
 When the case-state has been established and multiple modules could plausibly be deployed:
 
-**Rule P-1 (upstream-blocker priority):** The module that addresses the upstream blocker takes priority over the module that addresses the derived problem. V2 before evidence; semantic-discipline owner before doctrinal release; F2 before intellectual content; V10 before DO entry; stop conditions before matched modules.
+**Rule P-1 (upstream-blocker priority):** The module that addresses the upstream blocker takes priority over the module that addresses the derived problem. V2 before evidence; semantic-discipline owner before doctrinal release; higher-order claim-level owner before first-order case content; F2 before intellectual content; V10 before DO entry; stop conditions before matched modules.
 
 **Rule P-2 (smallest matched subset):** Among modules that address the same layer, select the smallest subset that changes the next live differentiator.
 

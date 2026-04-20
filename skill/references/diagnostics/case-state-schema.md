@@ -17,10 +17,12 @@ Use this block when diagnosis matters to the response:
 [Case State]
 - Case family:
 - Claim-type:
+- Claim level:                      # first-order / meta-epistemic / meta-ontological / meta-noetic / cross-level; omit only when routine first-order
 - Reason-category:                   # 1 / 2 / 3 / 4 - from reason-disambiguation.md; governs routing gate
 - Foreign-premise status:            # detected [premise] / none-detected / uncertain - from FPD pass
 - Upstream findings:                 # criterion-import / tribunal-installation / transmission-demotion / semantic-neutralization-recontenting / semantic-neutralization-evacuation / lexical-ontological-trap
 - Primary upstream issue:            # must reflect FPD output when criterion-importing is live
+- Pattern profile:                   # PF-1 ... PF-12 from pattern-profiling.md when a recurring cross-volume family is governing
 - Primary deformation:
 - Routing gate:                      # open / V2-required / deformation-first / semantic-discipline-required / register-hold / stop-condition
 - Read status:
@@ -49,14 +51,16 @@ Use this block when diagnosis matters to the response:
 ## Field Discipline
 
 - `Case family` names the class of case, not the whole argument history.
+- `Claim-level` is required when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the full Diagnostic IR is being surfaced. In narrow routine first-order cases it may be omitted from the surfaced case-state after the diagnostic pass has found no criterion, category, or noetic-order fight. Omission means "no higher-order burden detected," not "unknown."
 - `Reason-category` is required. Emit `1`, `2`, `3`, or `4` from `reason-disambiguation.md`. The routing gate depends on this field: category 3 or 4 blocks content until V2; category 2 requires deformation-first gate; category 1 leaves the gate open. Do not leave this field blank on any case where intellectual content is being pressed.
 - `Foreign-premise status` is required when criterion-importing, tribunal-installation, or framework-importing elements are visible. The `[Foreign Premise Detection]` block from `foreign-premise-detection.md` feeds this field. If FPD was not run and this field is blank, the `Primary upstream issue` field cannot be reliably populated.
 - `Upstream findings` is the compact owner hook for upstream burdens that must stay live across passes without collapsing into one label. Use only the canonical tags named in the standard form. When both an imported tribunal and a semantic-discipline problem are live, include both tags and let `Sequencing rationale` state the intervention order rather than erasing one into the other.
 - `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, or prior probability assignment that is generating the objection is.
+- `Pattern profile` is optional but strongly preferred when a recurring PF family is governing the next move. Keep one primary profile only; carry competing profiles in `Live alternatives`.
 - `Primary deformation` should name only the deformation governing the next move.
 - `Routing gate` is required whenever any upstream blocker remains live. Use `semantic-discipline-required` when semantic neutralization or a loaded lexical-ontological trap must be cleared before doctrinal content can be released.
 - `Restoration target` must name what epistemic layer (`fitrah` / sound reason / authentic transmission / inferential argument) or ontological distinction (`creator-creation` / `transcendence-immanence` / `prophetic-authority`) is being restored. A target stated as "demonstrate divine unity" or "correct the objection" has not reached the restoration level.
-- `Claim-type` identifies the logical category of the live pressure: `logical`, `metaphysical`, `moral`, `historical`, `transmission`, `phenomenological`, or `authority`. A case can carry two types: name the primary first. This field is required because many failures come from answering one claim-type while another is doing the real governing work.
+- `Claim-type` identifies the governing logical category of the live pressure: `logical`, `metaphysical`, `moral`, `historical`, `transmission`, `phenomenological`, or `authority`. Record the primary type only. Carry any secondary type in `Live alternatives`, `[Core Formulation]`, or `What remains live`.
 - `Read status` should be `dominant`, `distributed`, or `underdetermined`.
 - `Live alternatives` should stay short. Keep live alternatives, not a full inventory.
 - `Reassessment` should say `not warranted`, `revisit after X`, or `warranted now because Y`.

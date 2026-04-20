@@ -56,6 +56,20 @@ These are not identical. A case may deny one, the other, both, or neither.
 
 **Route consequence:** When the live move is to turn secondary causes into an ultimate explanatory closure, this file governs before generic naturalist rebuttal or generic usurpation language.
 
+### 5. Impossibility-Claim Audit
+
+When a causal-series case says "this is impossible," do not accept the word as a
+conclusion. Classify the impossibility:
+
+- logical impossibility: contradiction in the terms
+- causal or explanatory impossibility: derivative causes cannot supply a self-sufficient source
+- modal impossibility: the claim depends on necessity/contingency grammar
+- semantic impossibility: the contradiction is manufactured by a definition shift
+
+Route consequence: logical and causal cases stay here; modal overreach routes through
+proof-method-audit.md; semantic impossibility routes through definition-discipline.md.
+Do not let one impossibility type borrow the force of another.
+
 ---
 
 ## When This File Governs Instead of Generic Usurpation
@@ -88,6 +102,10 @@ In mixed cases, keep both live: tribunal-clearing first, series-classification s
 **Minimal pair 3 — secondary causes vs. self-sufficiency**
 - "There are natural causes." → ordinary secondary-cause affirmation
 - "Therefore nature is explanatorily complete in itself." → self-sufficiency overreach
+
+**Minimal pair 4 - impossibility type**
+- "An endless derivative chain has no self-sufficient source." -> causal/explanatory impossibility
+- "An infinite count is contradictory." -> logical/numerical claim, not yet causal proof
 
 ---
 

@@ -1,8 +1,9 @@
-# Case Library - Doctrinal Objections: Christian Extensions (DO-11 through DO-13)
+# Case Library - Doctrinal Objections: Christian Extensions (DO-11 through DO-14)
 
 Load this file when one of the following objections arises:
 DO-11 (Trinity from divine perfection), DO-12 (logical problem of the Trinity),
-DO-13 (God of the philosophers vs. God of revelation), or incarnation coherence pressure that
+DO-13 (God of the philosophers vs. God of revelation), DO-14 (Christian canon selection),
+or incarnation coherence pressure that
 is really asking whether divine self-disclosure can be coherent without creaturely-mode smuggling.
 
 Use the case-library routing table when you need the broader family map. When the pressure is really
@@ -29,7 +30,7 @@ always fully actual. Creation-dependent manifestation also appears problematic: 
 God only loves creatures, then one of the highest divine perfections seems to await
 creation in order to be fully real.
 
-**Taymiyyan response:**
+**Operative response:**
 Force the hidden premise into the open: the argument does not merely say love is a perfection. It
 says a perfection is incomplete unless eternally exercised in one determinate relational mode
 against an equal internal other. That premise is doing the real work, and it is not self-evident.
@@ -74,7 +75,7 @@ intra-divine reality. Even if no simple model resolves the issue, the Trinitaria
 argue that independent revelatory evidence justifies holding the doctrine despite unresolved
 conceptual tension.
 
-**Taymiyyan response:**
+**Operative response:**
 The first obligation is model-identification. Do not answer "the Trinity" in the abstract.
 Require the interlocutor to state which family of model they mean, because each family fails in a
 different way:
@@ -113,6 +114,11 @@ creaturely in order to be real?
 
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
+**Upstream routing note:** If perfection, immutability, simplicity, impassibility, or
+non-eventfulness is functioning as the tribunal, run
+`references/diagnostics/perfection-criterion-usurpation.md` first. DO-13 and V8 are
+downstream after the tribunal status has been refused.
+
 **The objection:** The highest conception of God is an absolutely simple, immutable,
 timeless, self-sufficient reality. A God who speaks when he wills, acts in succession, or
 stands in real relation to creation seems to undergo change and therefore to be less perfect.
@@ -125,7 +131,7 @@ distinctions, real acts, or temporally indexed action seem to introduce composit
 becoming, and likeness to creatures. If one refuses the static philosophical conception, it
 may look as though one has safeguarded divine action only by diminishing divine perfection.
 
-**Taymiyyan response:**
+**Operative response:**
 The objection assumes without demonstration that perfection is identical to Aristotelian
 stasis. That is the crucial move to name. A static self-thinking absolute is not automatically
 the highest concept of deity; it is one philosophical model among others. The God of
@@ -166,7 +172,7 @@ prior metaphysical picture of what "perfection" and "immutability" must mean?
 
 Load when the presenting question is which version of the Christian Bible is authoritative — Protestant, Catholic, Orthodox — or who decided which texts belong, or why canonical diversity within Christianity undermines the very concept of authoritative scripture. This is an authority-certification case, not a Trinity or Incarnation case.
 
-**Case-profile IR:**
+**Case-profile:**
 ```text
 [Case-Profile: DO-14 — Christian Canon Selection]
 - Pressure type: authority-certification; canon-formation; text-selection
@@ -249,6 +255,6 @@ This is the operationally significant sub-question. The criterion for canonical 
 
 *Left correct (DO-5):* Interlocutor says "any description of God using human language reduces God to creaturely categories — therefore we cannot say God knows, wills, or acts without anthropomorphizing." The objection is to predication itself. Route to V8 (bilā kayf) and §6 of `references/sound-reason-epistemology.md`. Not DO-13 — the interlocutor is not pressing a rival philosophical ontology against revelation; they are questioning whether any divine description is coherent.
 
-*Right correct (DO-13):* Interlocutor accepts that divine attributes can be affirmed but argues: "The God who speaks in time, acts in succession, and responds to events is less perfect than the Aristotelian absolute — therefore the scriptural portrayal must be allegorized." The objection accepts predication but imposes a philosophical criterion (immutability, atemporality, simplicity) as superior to revelation. Route to DO-13 engagement. Not DO-5 — predication itself is not contested; a rival ontological model is being privileged over revelation.
+*Right correct (DO-13):* Interlocutor accepts that divine attributes can be affirmed but argues: "The God who speaks in time, acts in succession, and responds to events is less perfect than the Aristotelian absolute — therefore the scriptural portrayal must be allegorized." The objection accepts predication but imposes a philosophical criterion (immutability, atemporality, simplicity) as superior to revelation. Route first to `perfection-criterion-usurpation.md` when that criterion is acting as tribunal, then to DO-13/V8 after the tribunal is refused. Not DO-5 — predication itself is not contested; a rival ontological model is being privileged over revelation.
 
 *Differentiating signal:* Is the objection to predication-as-such (DO-5) or to one specific ontological model of God being privileged over another (DO-13)? DO-5 is a semantics-of-language problem; DO-13 is a competing-ontology problem.

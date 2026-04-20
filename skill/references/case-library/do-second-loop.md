@@ -30,7 +30,7 @@ This is a distinct case-profile from the fiṭrah-establishment case (where the 
 - If DO-4 is deployed and the relativist challenge is dissolved: proceed to DO-10. Do not load specific credentials before DO-10 structures the epistemological frame.
 - If the interlocutor is specifically comparing Islam with Christianity and has a Christian background: run the compound playbook in `mixed-case-handling.md §(v)` first, which may route to DO-14 (canonical authority question) upstream of DO-10 (prophethood epistemology) — canonical authority is upstream of prophetic credentials.
 
-**Case-profile IR for comparative-prophethood dispatch:**
+**Case-profile for comparative-prophethood dispatch:**
 ```text
 [Case-Profile: Comparative Prophethood]
 - Theistic framework: established / uncontested (if contested, route to fiṭrah tier first)
@@ -65,7 +65,7 @@ Theistic belief is the product of HADD over-extension, not fiṭrah-delivered re
 The cross-cultural universality of theism reflects a cognitive bias, not a truth-tracking
 faculty.
 
-**Strongest rebuttal to the Taymiyyan response:**
+**Strongest rebuttal to the operative response:**
 After the self-refutation of evolutionary debunking is pointed out (the argument uses
 the very cognitive faculties it declares unreliable), the sophisticated interlocutor
 replies: "The self-refutation only works against strong eliminative naturalism. I am not
@@ -74,7 +74,7 @@ is unreliable for tracking metaphysical truth. I retain the cognitive faculties 
 to evaluate evolutionary psychology while identifying HADD as a specific faculty that
 over-generates. This is not global skepticism; it is targeted cognitive defeater."
 
-**Taymiyyan response to the refined rebuttal:**
+**Operative response to the refined rebuttal:**
 The targeted-defeater version is more careful but fails on examination. The claim that
 HADD specifically tracks fitness rather than truth requires a principled account of
 which cognitive modules are truth-tracking and which are not — an account generated
@@ -119,7 +119,7 @@ would produce billions of people whose fiṭrah would be corrupted before they c
 exercise any agency over it, is not a God who desires relationship with all human beings.
 The fiṭrah system generates systematic epistemic injustice.
 
-**Strongest rebuttal to the Taymiyyan response:**
+**Strongest rebuttal to the operative response:**
 After the prophetic mission is offered as the correction mechanism, the interlocutor
 replies: "The prophetic correction is empirically uneven. Many peoples throughout history
 had no access to prophetic correctives, or had access only to corrupted or distorted
@@ -127,7 +127,7 @@ versions. If the correction mechanism itself is uneven and unreliable, it doesn'
 the moral-luck problem — it relocates it. Some people happen to encounter the authentic
 prophetic message; others don't. That's still moral luck."
 
-**Taymiyyan response to the refined rebuttal:**
+**Operative response to the refined rebuttal:**
 The rebuttal correctly identifies that the prophetic mission, empirically, was not
 uniformly accessible to all people at all times. The tradition does not deny this —
 it affirms it and addresses it through two distinct theological resources:
@@ -170,7 +170,7 @@ the Great Pumpkin if that belief were produced by properly functioning faculties
 account cannot distinguish genuine religious knowledge from well-produced delusion.
 Basic belief is too permissive.
 
-**Taymiyyan response:**
+**Operative response:**
 The objection mistakes the universality condition. Proper functionalism does not say
 that any belief produced by any functioning faculty in any environment is warranted.
 It says that a belief is warranted when produced by faculties functioning properly,
@@ -243,7 +243,7 @@ But the tradition requires specific Islamic commitment. The jump from generic th
 specifically Islamic commitment is not explained by the fiṭrah account. The account is
 too thin to produce warranted Islamic belief."
 
-**Taymiyyan response — the three-tiered structure:**
+**Operative response — the three-tiered structure:**
 
 The tradition does not claim that a single faculty produces all warranted religious
 commitment. It claims a *layered epistemological structure* in which different kinds

@@ -40,13 +40,13 @@ and restoration should stay light and precise.
 - **§3-A (RICP model)** → supportive but compressible: useful for grounding the consciousness argument (V5 track b) and the orphaned-intuition probe (M3) when a deep account of perception is needed; can be omitted when simpler formulations suffice.
 - **§4** → load-bearing operative substrate: the tawātur fiṭrī thesis; grounds E4 (cross-cultural check); grounds V9 (necessary-knowledge priority). *Load cue: only when cross-cultural convergence or the epistemic weight of mass-attested fiṭrī deliverables is the live argument — not merely when diversity is mentioned.*
 - **§4.3** → load-bearing operative substrate: separates the epistemic layers of generic theism, testimony, text, and specific prophetic claim. Essential for RT cases and revelation-structure arguments. *Load cue: revelation-transmission cases and any case where the interlocutor collapses these layers.*
-- **§5** → load-bearing operative substrate: the ḥusn al-naẓar sequencing procedure for the impaired fiṭrah. *Load cue: invoked after V2 when the fiṭrah is genuinely impaired and inferential reasoning is the needed secondary route. Not triggered merely by philosophical discussion.*
+- **§5** → load-bearing operative substrate: the ḥusn al-naẓar sequencing procedure for the impaired fiṭrah. *Load cue: invoked after V2 when the fiṭrah is genuinely impaired and inferential reasoning is the needed secondary restorative route. Not triggered merely by philosophical discussion.*
 - **§6** → load-bearing operative substrate: bilā kayf, analogical predication, dhāt/fiʿl, ipseity corollary, philosopher's-God vs. revelatory-God. Directly required by V8, DO-5, DO-6, DO-11, DO-12, DO-13. *Load cue: only when divine attribute objections, transcendence pressure, or attribute coherence are confirmed live — not merely when God-language appears.*
 - **§6.1** → supportive: time, space, and created systems. Relevant for philosopher's-God temporal-ordering objections. *Load cue: only when the "no meaningful before creation / no above the world" pressure is specifically live.*
-- **§6.2** → load-bearing operative substrate: ḥudūth/khalq distinction; Salafī/Ashʿarī/Muʿtazilī differentiation on divine speech. *Load cue: specifically for Muslim-internal khalq al-Qurʾān disputes and any case involving the status of divine speech.*
+- **§6.2** → load-bearing operative substrate: ḥudūth/khalq distinction; affirmed/Ashʿarī/Muʿtazilī differentiation on divine speech. *Load cue: specifically for Muslim-internal khalq al-Qurʾān disputes and any case involving the status of divine speech.*
 - **§6.3** → load-bearing operative substrate: the tarkīb/iftiqār attribute-multiplicity shubhah; M9 Functions 1–3. *Load cue: specifically when the shubhah takes the form that possessing attributes entails composition, dependency, or otherness — the philosophical-simplicity attack on divine attributes. Route to §6.3 and M9 together.*
 
-**Darʾ-congruence judgment:** After the §6.3 addition, this file is appropriately scoped relative to its operative burden. It carries genuine load-bearing content across all six confirmed downstream uses (§1, §2–3, §4, §4.3, §5, §6), and the §3-A section is compressible but not redundant for its specific use cases. The primary risk of misuse is over-broad loading: the file is sometimes triggered when philosophical vocabulary appears in a case, rather than when the specific theoretical depth it provides is actually required. The theory-bleed prevention note at the top addresses this. The file should not be tightened further — removing sections would break the downstream load-bearing relationships. But triggering discipline must remain strict: load only when a named section's specific grounding is confirmed live. The file as currently constituted earns its load when those conditions are met, and costs precision when they are not.
+**Repo-native congruence judgment:** After the §6.3 addition, this file is appropriately scoped relative to its operative burden. It carries genuine load-bearing content across all six confirmed downstream uses (§1, §2–3, §4, §4.3, §5, §6), and the §3-A section is compressible but not redundant for its specific use cases. The primary risk of misuse is over-broad loading: the file is sometimes triggered when philosophical vocabulary appears in a case, rather than when the specific theoretical depth it provides is actually required. The theory-bleed prevention note at the top addresses this. The file should not be tightened further — removing sections would break the downstream load-bearing relationships. But triggering discipline must remain strict: load only when a named section's specific grounding is confirmed live. The file as currently constituted earns its load when those conditions are met, and costs precision when they are not.
 
 ---
 
@@ -378,7 +378,7 @@ text-history rhetoric from doing the work of a full doctrinal refutation without
 ## 5. Ḥusn al-Naẓar — Sound Inferential Reasoning for the Impaired Fiṭrah
 
 When the fiṭrah is significantly corrupted, sound inferential reasoning (ḥusn al-naẓar)
-serves as a secondary means to knowledge of God and as a means to revive the fiṭrah:
+serves as a secondary restorative route to knowledge of God and as a means to revive the fiṭrah:
 
 "The establishment and recognition of the Creator is innate and necessary in the souls
 of all people, even though some people have done something to corrupt their nature such
@@ -542,7 +542,7 @@ are **not makhlūq** (they are not external productions ontologically distinct f
   to be created but external. This preserved divine simplicity at the cost of severing the
   revealed Qurʾān from being genuinely God's own speech in the sense the texts require.
 
-- The **Salafī/Ḥanbalī position** holds both: the ṣifa is eternal and subsists in the essence;
+- The **position restored here** holds both: the ṣifa is eternal and subsists in the essence;
   the particular acts are ḥādith yet also subsist in the essence (qiyām al-ḥawādith bihi) and are
   therefore not makhlūq. The Qurʾān is genuinely and directly the speech of Allah — not a
   creaturely transcript of an inner meaning and not an eternal proposition co-existing alongside
@@ -551,7 +551,7 @@ are **not makhlūq** (they are not external productions ontologically distinct f
 **Operational implication for response composition:** When a case involves the createdness of the
 Qurʾān, the status of revelation, or any Muslim-internal dispute about divine speech, the
 ḥudūth/khalq distinction must be explicitly deployed, not left implicit in the general bilā kayf
-account. The three-way differentiation (Salafī / Ashʿarī / Muʿtazilī) should be stated with
+account. The three-way differentiation (affirmed position / Ashʿarī / Muʿtazilī) should be stated with
 precision: the errors at each pole depend on this distinction being absent from the response. See
 V8 routing note and `references/terminology.md` (Ḥudūth, Khalq, Ṣifa qāʾima bi-dhātihi).
 
@@ -597,7 +597,7 @@ identical across all occurrences — they are not. The equivocation is the argum
 move, and its exposure dissolves the inference before the dependency question arises.**
 
 See `references/tactics/M9-predication-mode.md` Function 1 for the general equivocation
-procedure and the tarkīb/iftiqār case as a worked example.
+procedure. This section supplies the tarkīb/iftiqār worked example.
 
 **Step 2 — Category error dissolution (M9 Function 2):**
 

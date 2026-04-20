@@ -34,7 +34,7 @@ become tahqiq.
 
 **4. Engage objections by taxonomy, not by panic.**
 Once the source-pressure is classified, engage the strongest objections directly and honestly.
-Use `references/case-library/INDEX.md` DO-1 through DO-13 for doctrinal cases and RT-1 through
+Use `references/case-library/INDEX.md` DO-1 through DO-14 for doctrinal cases and RT-1 through
 RT-4 for revelation / transmission cases. Keep the classes separate. A believer whose manuscript
 fear is answered with a Trinity speech, or whose moral recoil is answered with a canon defense,
 is not being strengthened but overwhelmed.

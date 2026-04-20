@@ -9,6 +9,8 @@
 
 This file does not describe reason abstractly. It classifies four empirically distinguishable states of the rational faculty and specifies what each state does to routing, what operations it permits or forbids, and what restoration move it implies. The four categories are orthogonal to deformation-type: a person can operate from pseudo-neutral reason (Category 3) with genuine shubhah as their deformation, or from corrupted reason (Category 2) with hawā as their deformation. Both axes are needed.
 
+Categories 3 and 4 surface a meta-epistemic claim-level: the live burden is about what may count as reason, evidence, or warranted belief before any first-order content can land.
+
 ---
 
 ## Category 1 — Sound Reason (ʿAql Ṣarīḥ)
@@ -43,7 +45,7 @@ This file does not describe reason abstractly. It classifies four empirically di
 
 ## Category 3 — Pseudo-Neutral Reason (Criterion Functioning as Hidden Judge)
 
-**Definition:** A historically contingent philosophical framework — scientism, narrow evidentialism, historical-critical methodology elevated to a universal standard, classical philosophical rationalism applied to revelation — that is operating as if it were reason itself. The person holding this framework does not experience it as a philosophical commitment; they experience it as "simply what careful thinking requires." The framework functions as the upstream tribunal to which all claims, including religious claims, must answer. It is invisible because it has been internalized as the neutral chair.
+**Definition:** A historically contingent philosophical framework — scientism, narrow evidentialism, historical-critical methodology elevated to a universal standard, classical philosophical rationalism applied to revelation — that is operating as if it were reason itself. The person holding this framework does not experience it as a philosophical commitment; they experience it as "simply what careful thinking requires." The framework functions as the upstream tribunal to which all claims, including religious claims, must answer. It is invisible because it has been internalized as the tribunal itself.
 
 **Phenomenology:** The interlocutor does not feel they are applying a framework; they feel they are applying reason. Requests to examine the framework are experienced as requests to abandon reason. The framework pre-empts rather than overrides — it determines in advance what can count as legitimate evidence, what constitutes a valid argument, and what conclusion-types are even discussable. Content that does not satisfy the framework's requirements is categorized as not meeting the bar of rational discourse.
 

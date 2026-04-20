@@ -14,15 +14,16 @@ The IR is not a retrospective record. Writing the IR after the response is cosme
 
 The IR composes fields from several sources:
 
-- Case-state fields from `case-state-schema.md`
-- Reason-category fields from `reason-disambiguation.md`
-- Backbone predicate emissions from `arabic-backbone-predicates.md`
-- Foreign-premise detection from `foreign-premise-detection.md`
-- Prophetic discourse neutralization from `prophetic-discourse-neutralization.md`
-- Philosophical-usurpation fields from `philosophical-usurpation.md` when active
-- Architectural layer disruption from `metaphysical-architecture.md`
-- P7 stop status from `P7-restoration-stops.md`
-- Routing-precedence state from `routing-precedence.md`
+- Case-state fields from `references/diagnostics/case-state-schema.md`
+- Claim-level and pattern-profile fields from `references/diagnostics/pattern-profiling.md`
+- Reason-category fields from `references/diagnostics/reason-disambiguation.md`
+- Backbone predicate emissions from `references/diagnostics/arabic-backbone-predicates.md`
+- Foreign-premise detection from `references/diagnostics/foreign-premise-detection.md`
+- Prophetic discourse neutralization from `references/diagnostics/prophetic-discourse-neutralization.md`
+- Philosophical-usurpation fields from `references/case-library/philosophical-usurpation.md` when active
+- Architectural layer disruption from `references/metaphysical-architecture.md`
+- P7 stop status from `references/procedures/P7-restoration-stops.md`
+- Routing-precedence state from `references/diagnostics/routing-precedence.md`
 
 ---
 
@@ -31,13 +32,13 @@ The IR composes fields from several sources:
 Before any content module is dispatched, the following checks must pass in order. If any check fails, dispatch is blocked; the blocking condition is named explicitly rather than silently resolved.
 
 **Gate Check 1 - Mandatory minimum fields populated.**
-All fields in the mandatory minimum must be populated. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a partial IR.
+All fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a partial IR.
 
 **Gate Check 2 - Consistency rules pass.**
 None of the invalid combinations may be present. An IR with an invalid combination is a misread. Re-run Phase 2 before dispatching.
 
 **Gate Check 3 - Routing-precedence suppression rules applied.**
-Apply `routing-precedence.md` suppression rules S-1 through S-6. If any suppression rule fires, the routing gate is blocked for the operation that rule suppresses, regardless of how strong the NS or deformation read is.
+Apply `routing-precedence.md` suppression rules S-1 through S-7. If any suppression rule fires, the routing gate is blocked for the operation that rule suppresses, regardless of how strong the NS or deformation read is.
 
 **Gate Check 4 - P7 stops checked.**
 Each P7 stop, when triggered, blocks the corresponding content operation. Check all five stops before dispatch.
@@ -60,6 +61,8 @@ Only after all six checks pass does module dispatch proceed.
 --- Workflow Layer ---
 Case family:
 Claim-type:                          # logical | metaphysical | moral | historical | transmission | phenomenological | authority
+Claim-level:                        # first-order | meta-epistemic | meta-ontological | meta-noetic | cross-level
+Pattern-profile:                    # PF-1 ... PF-12 | none
 NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
 Concealment mode:                    # irad | juhud | inkar | istikbar | nifaq | mode-? | compound
@@ -114,6 +117,17 @@ For any substantive response claiming to have done V1, the following fields must
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
+**Conditional mandatory additions**
+
+Populate these whenever their trigger is live:
+
+- `Claim-level` when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the IR is being emitted as the full audit record. If absent in a compressed routine case, treat the level as first-order only after higher-order triggers have been checked and found inactive.
+- `Foreign premise` and `Upstream findings` when criterion import, tribunal installation, transmission demotion, or framework import is visible
+- `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
+- `Pattern-profile` when a recurring PF family is governing routing or cross-volume consolidation
+- `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
+- `RT marker` when transmission, canon, manuscript, or believer-destabilization pressure is live
+
 **Consistency rules**
 
 The following inconsistencies are invalid:
@@ -125,6 +139,7 @@ The following inconsistencies are invalid:
 - `Routing gate: semantic-discipline-required` + `Matched modules: [any doctrinal case file or attribute-content release]`
 - `DO-orient: identity-perf` + `Matched modules: [any doctrinal case file]`
 - `Reason-category: 3 or 4` + `Routing gate: open`
+- `Claim-level: meta-epistemic | meta-ontological | meta-noetic` + `Matched modules: [first-order case file only]`. Higher-order burdens must clear before first-order dispatch.
 - `Upstream findings` contains `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` + `Routing gate: open`
 - `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`huduth/khalq` distinction for the Mu'tazili form; `kalam nafsi` doctrine for the Ash'ari form), not a generic `bila kayf` or generic foundationalist target.
 - `NS code: NS-6` + ontological burden live + `Backbone predicates active` omits `O-1` and `C-1`. When NS-6 and the case involves divine attributes or speech, those predicates are minimum checks.
@@ -139,10 +154,12 @@ For cases where a subset of fields is sufficient, the compressed form may be use
 
 ```text
 [IR - compressed]
-Case: [family] | Claim: [type] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Module: [matched] | Target: [restoration] | Next: [one move]
+Case: [family] | Claim: [type @ level?] | Pattern: [PF-x | none] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Module: [matched] | Target: [restoration] | Next: [one move]
 ```
 
-The compressed form is not acceptable when architectural-layer fields are active.
+The compressed form is not acceptable when architectural-layer fields are active. If the
+level is omitted in compressed form, it means first-order after higher-order triggers
+have been checked, not an unexamined blank.
 
 ---
 
@@ -160,7 +177,7 @@ Specific failure modes:
 
 ## Connection to Framework Pipeline
 
-`framework-pipeline.md` shows the structural branching of the canonical pipeline. `routing-precedence.md` specifies the decision rules at each branch point. This file is the gate and the typed state produced at the end of V1 Phase 2 - the check that must be passed before module selection occurs.
+`references/diagnostics/framework-pipeline.md` shows the structural branching of the canonical pipeline. `references/diagnostics/routing-precedence.md` specifies the decision rules at each branch point. This file is the gate and the typed state produced at the end of V1 Phase 2 - the check that must be passed before module selection occurs.
 
 ---
 

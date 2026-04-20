@@ -33,6 +33,21 @@
         "authority"
       ]
     },
+    "claim_level": {
+      "type": "string",
+      "default": "first-order",
+      "enum": [
+        "first-order",
+        "meta-epistemic",
+        "meta-ontological",
+        "meta-noetic",
+        "cross-level"
+      ]
+    },
+    "pattern_profile": {
+      "type": "string",
+      "pattern": "^(PF-(?:[1-9]|1[0-2])|none)$"
+    },
     "deformation": {
       "type": "string",
       "minLength": 1

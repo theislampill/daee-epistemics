@@ -88,9 +88,9 @@ These predicates distill the tradition's core epistemic commitments into typed c
 
 **Route consequence:** V10 branch selection and transmission-architecture distinction.
 
-### Predicate K-2: Lexical and Shar'i Levels Collapsed
+### Predicate K-2: Lexical, Technical, and Shar'i Levels Collapsed
 
-**Check:** Has a term being used in its lexical-analytic sense been received or deployed as if it were a full shar'i judgment?
+**Check:** Has a term being used in one level - lexical, technical, ontological, or shar'i - been received or deployed as if it already carried another level?
 
 **Route consequence:** Re-state the level of the claim explicitly.
 
@@ -110,7 +110,7 @@ These predicates distill the tradition's core epistemic commitments into typed c
 - O-2 (fitri recognition demoted): true / false / unknown
 - O-3 (sign converted to premise): true / false / unknown
 - K-1 (unlike transmission systems conflated): true / false / unknown
-- K-2 (lexical / shar'i levels collapsed): true / false / unknown
+- K-2 (lexical / technical / shar'i levels collapsed): true / false / unknown
 - Active predicates: [list true ones]
 - Route consequences: [list what each active predicate requires]
 ```
@@ -136,7 +136,7 @@ Compression rule: run only the checks relevant to the live case. If no backbone 
 | Any case where "God must be X" appears | T-1, T-3, C-1 |
 | Any case where fitri recognition is dismissed | O-2, O-3 |
 | Any case where kalamic proof is demanded | T-2, O-3 |
-| Any case built on loaded negative theological terms | K-2 plus M9 semantic split before doctrinal content |
+| Any case built on loaded negative theological terms | M9 semantic split before doctrinal content; add K-2 only when lexical, technical, ontological, or shar'i levels are being collapsed; add definition-discipline.md when hidden technical narrowing is manufacturing the objection |
 
 ---
 

@@ -16,7 +16,7 @@ Its governing aim is not to manufacture novelty or simply accumulate clever refu
 - [What the Skill Protects](#what-the-skill-protects)
 - [Threat Model](#threat-model)
 - [Operational Governance](#operational-governance)
-- [Corpus Integration](#corpus-integration)
+- [Integration Boundary](#integration-boundary)
 - [Repository Architecture](#repository-architecture)
 - [Repository Diagram](#repository-diagram)
 - [Install / Package for Claude](#install--package-for-claude)
@@ -176,6 +176,7 @@ That is why the repository repeatedly distinguishes deformations, concealment mo
 The repository is not only a content store. It carries an explicit governance layer that makes its routing state inspectable:
 
 - a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
+- a proportionate claim-level and pattern-profile overlay for distinguishing first-order objections from meta-epistemic, meta-ontological, and meta-noetic burdens when that distinction changes routing
 - an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
 - an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
@@ -183,15 +184,15 @@ The repository is not only a content store. It carries an explicit governance la
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
 
-## Corpus Integration
+## Integration Boundary
 
-New source material should be integrated only when it improves routing, restoration, scope control, or terminology discipline. 
+New background material should be integrated only when it improves routing, restoration, scope control, or terminology discipline.
 
 The goal is not to accumulate study notes. 
 
 The goal is to extract durable distinctions and convert them into reusable architecture: new Case Modules, tighter Tactic or Technique criteria, clarified Glossary entries, sharper confidence rules, or better routing boundaries. 
 
-If a source does not alter how the skill classifies, sequences, or restores, it should usually not be imported.
+If material does not alter how the skill classifies, sequences, or restores, it should usually stay outside the live skill surface.
 
 ## Repository Architecture
 
@@ -208,11 +209,12 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
 | [`references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
 | [`references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Compact metadiscursive output form for surfacing case type, module choice, confidence, and restoration target without chain-of-thought dumping. |
+| [`references/diagnostics/pattern-profiling.md`](skill/references/diagnostics/pattern-profiling.md) | Operational owner for `claim_level` and `pattern_profile`: the routing overlay that makes higher-order recurrent structures explicit only when they change sequencing or owner selection. |
 | [`references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
 | [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
 | [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass. |
 | [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Parity/coverage audit ledger: explicit fidelity ratings (Landed / Compressed-but-governed / Partial / Missing) for every governed family, file, and procedure; gap inventory; canonical owner map. |
-| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Pattern-family robustness and multi-module routing discipline audit: 12-family map (PF-1 through PF-12) with abstract definitions, noetic pressures, routing surfaces, co-dispatch conditions; coverage/ownership audit; routing/cumulative-dispatch audit; abstraction-level audit; ranked gap list; file-by-file patch plan; regression fixture suite (F1–F8 across 8 failure modes); production-readiness judgment. |
+| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Historical audit and regression document for the pattern-profile layer: 12-family map (PF-1 through PF-12), coverage/ownership audit, regression fixtures, and production-readiness judgments. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
 
@@ -261,7 +263,8 @@ direction TB
   direction LR
     REASON["Reason disambiguation<br/>mandatory pass [P-A]"]
     FPD["Foreign-premise detection<br/>mandatory pass [P-B]"]
-    ABP["Backbone predicates<br/>mandatory pass [P-C]"]
+    PDN["Prophetic discourse neutralization<br/>mandatory pass [P-C]"]
+    ABP["Backbone predicates<br/>mandatory pass [P-D]"]
     CASE["Case-state schema<br/>typed routing artifact"]
   end
 
@@ -316,11 +319,13 @@ D_INDEX -->|checks| CONC
 
 D_INDEX -->|requires| REASON
 D_INDEX -->|requires when live| FPD
+D_INDEX -->|requires when live| PDN
 D_INDEX -->|requires when live| ABP
 D_INDEX -->|feeds typed state| CASE
 
 REASON -->|required input| IR
 FPD -->|required when live| IR
+PDN -->|required when live| IR
 ABP -->|required when live| IR
 CASE -->|forms| IR
 
@@ -352,7 +357,7 @@ classDef indigo fill:#eef2ff,stroke:#818cf8,stroke-width:1.5px,color:#3730a3;
 class README blue;
 class SKILLROOT,SKILL amber;
 class TERM,KERNEL,META,WAHY cerulean;
-class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,ABP,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
+class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
 class CASEINDEX,PROFILES,DOCTRINE indigo;
 class PROCS,TACTICS,TECH,P7,SOUND red;
 ```

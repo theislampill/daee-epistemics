@@ -17,7 +17,7 @@ the case still requires.
 | NS-1 through NS-12 | `case-library/profiles/[matched-ns-code].md` — see `case-library/profiles/INDEX.md` for routing table | You only have a topic, not a recognizable noetic type | V1, M5, V2, M3 |
 | DO-1 through DO-6 | `case-library/do-core.md` | The objection family is not yet distinguished from grief, criterion protest, or testimony critique | M2, V8, P2 |
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
-| DO-11 through DO-13 | `case-library/do-christian-extensions.md` | Trinity or philosopher's-God pressure has not been classified precisely | V8, P2 |
+| DO-11 through DO-14 | `case-library/do-christian-extensions.md` | Trinity, philosopher's-God, or Christian canon-authority pressure has not been classified precisely | V8, V10, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
 | DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
 | Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
@@ -108,7 +108,8 @@ the case still requires.
 | DO-10 | Three-tiered epistemological structure; attacks on `ilm daruri` / fitri intuition | Fitrah -> khabar -> nazar ordering; V9 when necessary knowledge itself is being denied | Flattening all knowledge into a single inferential tier |
 | DO-11 | Trinity from divine perfection; perfect-being-to-Trinity arguments | Distinguish perfection from one mode of exercise | Smuggling revelation-level claims into bare perfection reasoning |
 | DO-12 | Logical problem of the Trinity; model-identification pressure | Identify the model first | Letting "mystery" stand in for coherence |
-| DO-13 | Philosopher's God vs. God of revelation; incarnation coherence / static-deity collapse | Refuse the static-deity collapse | Treating abstraction as purification |
+| DO-13 | Philosopher's God vs. God of revelation; incarnation coherence / imported-perfection collapse | Refuse the imported-perfection collapse | Treating abstraction as purification |
+| DO-14 | Christian canon selection / authorization pressure | V10 Step 3 canon-authority form, then DO-10 Tier 2 | Collapsing Christian canon-selection into RT-2 or generic diversity |
 
 ## Quick RT Identification
 

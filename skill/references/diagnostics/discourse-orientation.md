@@ -133,9 +133,9 @@ The practitioner should:
 ## DO-Orient Code Emission
 
 The orientation read terminates in a short code (`DO-orient`) that routes downstream. It
-is not the same as the doctrinal DO-1..13 codes in `case-library/INDEX.md`; it rides
+is not the same as the doctrinal DO-1..14 codes in `case-library/INDEX.md`; it rides
 beside them. Both are named with the "DO" prefix because both belong to the discourse
-axis: DO-orient answers *what the discourse is for*; DO-1..13 answers *what objection
+axis: DO-orient answers *what the discourse is for*; DO-1..14 answers *what objection
 family is live inside that discourse*.
 
 | Orientation read | DO-orient code | What it governs |
@@ -154,9 +154,9 @@ the fiṭrah to do its work.
 
 ---
 
-## Doctrinal DO-1..13 Routing Note
+## Doctrinal DO-1..14 Routing Note
 
-The DO-1..13 codes in `case-library/INDEX.md` live on a different axis. They are emitted
+The DO-1..14 codes in `case-library/INDEX.md` live on a different axis. They are emitted
 from the NS + problem-family diagnostic, not from this file. When scripture-history pressure
 is live the corresponding axis is RT-1..4. This file's job is the orientation read; other
 files emit the doctrinal and transmission codes. All three axes — NS code, DO-orient, and

@@ -39,7 +39,7 @@ Authentic transmission and sound reason do not conflict in their proper domains.
 
 ### Layer 4 — Inferential Argument
 
-Inferential argument from created order (the cosmological, teleological, and moral arguments in their various forms) is a legitimate and knowledge-conferring route to theistic knowledge — but it is a remedial and secondary route, not the primary one. It becomes the primary operative route when the fiṭrah has been sufficiently occluded that non-inferential recognition is unavailable; in that case, the argument can restore access by a longer path.
+Inferential argument from created order (the cosmological, teleological, and moral arguments in their various forms) is a legitimate and knowledge-conferring route to theistic knowledge — but it is a remedial and secondary restorative route, not the primary one. It becomes the primary operative route when the fiṭrah has been sufficiently occluded that non-inferential recognition is unavailable; in that case, the argument can restore access by a longer path.
 
 The error is elevating this route to the position of universal gatekeeper: insisting that theistic knowledge is only warranted when it has been established by inferential argument, and treating fiṭrī recognition as merely subjective until argument arrives to validate it. This inverts the correct order.
 
@@ -101,7 +101,7 @@ A response that satisfies the workflow while violating the architecture describe
 - Layer 1 — fiṭrah: name the specific deformation or contamination occluding fiṭrī recognition; name the restoration move matched to it (P1, V2, V5, R2)
 - Layer 2 — sound reason: name which category of contaminated reason (2/3/4) is present; name the move restoring Category 1 (V2, V7, reason-disambiguation)
 - Layer 3 — authentic transmission: name which transmission evaluation criterion is being displaced; name V10 and the relevant branch operator
-- Layer 4 — inferential argument: name the inversion (gatekeeper rather than secondary route); name V9 or E2 as the relocation instrument
+- Layer 4 — inferential argument: name the inversion (gatekeeper rather than secondary restorative route); name V9 or E2 as the relocation instrument
 - Ontological — creator-creation: name the category mistake in predication; name the fixture from `do-attribute-precision.md`
 - Ontological — transcendence-immanence: name the specific philosophical framework generating the false tension; name V2 + DO-13 or `philosophical-usurpation.md`
 - Ontological — prophetic authority: name the tribunal; name the route through `foreign-premise-detection.md` → `philosophical-usurpation.md` → `prophecy-wahy-supremacy.md`

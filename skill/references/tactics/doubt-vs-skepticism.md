@@ -9,7 +9,7 @@ default epistemological position.
 M2 (prior probability — the evidential bar is not applied symmetrically); E1 (broadening the
 evidential scope — see precedence rule below).
 
-This is a first-line meta-clearing move when the evidence demand is being used as a neutral chair,
+This is a first-line meta-clearing move when the evidence demand is being used as an upstream tribunal,
 not a merely supplementary aside.
 
 ## Precedence vs. E1
@@ -74,7 +74,7 @@ The answer is supplied by the fiṭrah account and tawātur fiṭrī: the recogn
 Creator is the near-universal, involuntary, cross-cultural default of human cognition.
 It is not the anomaly requiring evidence. The denial of a Creator — as a claimed
 improvement on what virtually all human beings across all times and cultures have held
-in their most basic cognitive deliverances — is the anomaly. The burden of evidence
+in their most basic cognitive deliverances — is the anomaly. The burden-of-proof inversion
 falls symmetrically on what disrupts the established framework.
 
 This does not mean theistic belief is simply correct because it is widespread. It means

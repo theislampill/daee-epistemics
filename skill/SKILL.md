@@ -35,6 +35,7 @@ These are not topic files. They become mandatory once the named governance condi
 | File | Load When |
 |------|-----------|
 | `references/diagnostics/case-state-schema.md` | The response should expose routing state, read strength, or module selection concisely |
+| `references/diagnostics/pattern-profiling.md` | The case needs explicit claim-level or recurring pattern-profile surfacing so meta-epistemic, meta-ontological, and meta-noetic burdens are not collapsed into first-order content |
 | `references/diagnostics/inference-boundary.md` | A reply materially combines files or extends beyond direct file-grounding; short marker legend is mirrored in §V |
 | `references/diagnostics/mixed-case-handling.md` | Multiple reads compete, the basis is thin, or the case must stay underdetermined |
 | `references/diagnostics/anti-patterns.md` | Auditing for forced fit, rhetorical drift, over-selection, or decorative terminology |
@@ -68,8 +69,10 @@ Rules:
 2. Any `matched_modules` entry must use an `id` and `module_class` that exactly match `module-catalogue.json`.
 3. Do not invent module ids, module classes, routing fields, or source-basis categories outside the schema and catalogue.
 4. If the IR is underdetermined, keep it underdetermined in-schema rather than forcing a stronger read in prose.
-5. Surfaced `[Case State]`, `[Source Basis]`, and other governance blocks must be rendered from the validated IR, not improvised independently of it.
-6. Schema failure, catalogue mismatch, or IR/output divergence is a routing failure and must be corrected before final response.
+5. Distinguish `claim_level` from `claim_type` whenever a criterion, proof-method, category-set, or noetic-order fight is live. Routine first-order cases may omit `claim_level` from surfaced output after those triggers are checked.
+6. When a case instantiates a recurring governed family from `references/diagnostics/pattern-profiling.md` and the overlay changes routing or sequencing, emit `pattern_profile` rather than leaving the pattern implicit.
+7. Surfaced `[Case State]`, `[Source Basis]`, and other governance blocks must be rendered from the validated IR, not improvised independently of it.
+8. Schema failure, catalogue mismatch, or IR/output divergence is a routing failure and must be corrected before final response.
 
 
 ### Specialty Diagnostics
@@ -95,15 +98,13 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | `references/case-library/profiles/[matched-ns-code].md` | Interlocutor confirmed as NS-1 through NS-12; load only the file matching the confirmed NS code — see `references/case-library/profiles/INDEX.md` for routing table |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
 | `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
-| `references/case-library/do-christian-extensions.md` | DO-11 through DO-13 confirmed |
+| `references/case-library/do-christian-extensions.md` | DO-11 through DO-14 confirmed |
 | `references/case-library/revelation-transmission.md` | RT-1 through RT-4 confirmed |
 | `references/case-library/do-attribute-precision.md` | DO-6, DO-11, DO-12, or DO-13 confirmed AND the live pressure involves predication-type, analogy validity, equivocation, composition, or person-multiplicity |
 | `references/case-library/philosophical-usurpation.md` | A philosophical framework is confirmed functioning as the upstream authority that revelation must satisfy — detected via foreign-premise-detection.md or V1 Phase 2 |
 | `references/prophecy-wahy-supremacy.md` | Revelation is being required to clear a philosophical bar before being credited; DO-13 confirmed; Aristotelian/neo-Platonic theism installed as default standard |
 | `references/metaphysical-architecture.md` | Auditing whether the response is consistent with the ontological and epistemic order being restored — the architecture behind the workflow |
-| `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 mandatory pass [P-C]; also individually when criterion-importing, tribunal-installation, or epistemic-ordering elements are live — see trigger-mapping table |
-
-Note: `references/diagnostics/arabic-backbone-predicates.md` is the Phase 2 `[P-D]` pass after `prophetic-discourse-neutralization.md`, even where older shorthand in surrounding prose still says `[P-C]`.
+| `references/diagnostics/arabic-backbone-predicates.md` | V1 Phase 2 mandatory pass [P-D]; also individually when criterion-importing, tribunal-installation, or epistemic-ordering elements are live — see trigger-mapping table |
 
 Use the case-library index's Quick NS, DO, RT, and specialty-marker tables before loading a content
 file.

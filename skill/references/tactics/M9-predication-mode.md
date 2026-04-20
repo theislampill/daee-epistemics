@@ -65,7 +65,7 @@
 
 ## Function 4 - Loaded Negative Terms / Lexical-Ontological Trap
 
-This section is the canonical owner for ambiguous negative theological terms. It governs cases built around labels such as `jism`, `arad`, `jihah`, `hayyiz`, `hadd`, `tarkib`, `murakkab`, `juz`, `parts`, `substance`, `body`, `direction`, `place`, `limit`, `composition`, and similar anti-attribute vocabulary.
+This section is the canonical owner for ambiguous negative theological terms. It governs cases built around labels such as `jism`, `arad`, `jihah`, `hayyiz`, `hadd`, `tarkib`, `murakkab`, `juz`, `parts`, `substance`, `body`, `direction`, `place`, `above`, `uluww`, `exaltedness`, `limit`, `composition`, and similar anti-attribute vocabulary.
 
 These terms often hide both true and false meanings. The discipline here is mandatory: **semantic disaggregation before doctrinal engagement**.
 

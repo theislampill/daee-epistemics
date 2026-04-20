@@ -32,6 +32,8 @@ Produce short codes on the main axes:
 - concealment
 - deformation
 - claim-type
+- claim-level when a higher-order burden is visible or the full IR is being surfaced
+- pattern profile when one recurring PF family is governing
 
 Then run the mandatory passes in sequence:
 
@@ -80,8 +82,11 @@ Cross-axis precedence:
 V1 terminates in a composed line that feeds `case-state-schema.md`:
 
 ```text
-NS: NS-X [| NS-Y]    DO-orient: <code>    Concealment: <code>    RT (if applicable): <RT-X>    Deformation: <primary> [| <secondary>]    Strength: <strong | provisional | low>    Next: <smallest matched module>
+Case: <family>    Claim: <type> [@ <level>]    Pattern: <PF-X | none>    NS: NS-X [| NS-Y]    DO-orient: <code>    Concealment: <code>    RT (if applicable): <RT-X>    Deformation: <primary> [| <secondary>]    Strength: <strong | provisional | low>    Next: <smallest matched module>
 ```
+
+Omit `@ <level>` only when the case is routine first-order after higher-order triggers
+have been checked and found inactive.
 
 Where legibility is needed, surface the fuller `[Case State]` block from `case-state-schema.md`.
 

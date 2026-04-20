@@ -1,6 +1,6 @@
 > role: diagnostic pipeline pass - detects and classifies imported premises, criteria, and tribunals
 > use when: V1 Phase 2 axis classification is underway and the interlocutor's framework, criterion, or prior probability assignment is not yet examined
-> do not use when: the claim is purely transmission-related with no criterion-importing element, or when the reason-category has already been established as sound (Category 1)
+> do not use when: the claim is purely transmission-related with no criterion-importing element
 > output: a structured diagnostic pass with a defined output shape
 > pipeline position: runs as part of V1 Phase 2 alongside the deformation and concealment reads
 > ownership note: this file is the detection pass; `arabic-backbone-predicates.md` is the broader predicate library
@@ -10,6 +10,9 @@
 This pass asks: what premise has been imported from outside the tradition being examined, from where, and how is it now functioning in the current engagement? The pass is not optional when the criterion-importing element is visible.
 
 Its purpose is to prevent the most common structural failure: a response that addresses the visible objection while leaving the upstream criterion that is generating the objection unexamined.
+
+Category 1 does not waive this pass if a criterion-importing element is visible. Sound reason
+at the faculty level can still be presented through an imported tribunal at the case level.
 
 ---
 
@@ -72,6 +75,17 @@ Every detected premise specifies:
 - what is prohibited
 
 Typical consequence: V2 must be run to loosen the framework before content is released.
+
+### Source-Native Foundations vs. Constructed Foundations
+
+When the imported criterion presents itself as "the principles" that revelation must
+obey, ask whether those principles are source-native or constructed upstream of the
+source. A constructed foundation may use religious vocabulary while still functioning as
+a foreign tribunal if it decides in advance what transmitted discourse may mean.
+
+Route consequence: mark `tribunal-installation` rather than treating the case as a
+mere disagreement over conclusions. The next move is to restore authority order before
+answering the downstream doctrinal issue.
 
 ---
 

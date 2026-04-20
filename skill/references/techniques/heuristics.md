@@ -29,7 +29,7 @@ These are always-active background rules, not case-specific moves.
 
 11. **Surface the prior probability.** Evidential arguments are probabilistic. The prior the interlocutor is assuming is not neutral — surface it.
 
-12. **Frame everything as restoration, not construction.** Every argument, every sign, every question is clearing a path back — not building a case from zero. *Exception:* when the case carries a live epistemic question — evidentialist criterion, canon or authority confusion, doctrinal complexity structured as argument — restoration framing supports but does not substitute the matched content module. Deploy the epistemic content first; add restoration framing as accompanying register only once the epistemic question has been met. This is the restoration-first regression named in `references/playbooks/mixed-case-handling.md` playbook (v) and `references/diagnostics/anti-patterns.md` §Restoration-First Default.
+12. **Frame everything as restoration, not construction.** Every argument, every sign, every question is clearing a path back — not building a case from zero. *Exception:* when the case carries a live epistemic question — evidentialist criterion, canon or authority confusion, doctrinal complexity structured as argument — restoration framing supports but does not substitute the matched content module. Deploy the epistemic content first; add restoration framing as accompanying register only once the epistemic question has been met. This is the restoration-first regression named in `references/diagnostics/mixed-case-handling.md` playbook (v) and `references/diagnostics/anti-patterns.md` §Restoration-First Default.
 
 13. **When an argument conflicts with universal innate intuition, the intuition wins (V9).** Locate the error in the argument's premises; do not suspend the universal deliverable.
 
@@ -41,7 +41,7 @@ These are always-active background rules, not case-specific moves.
 
 17. **Know when to pause.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. When any of the five stop triggers fires, P7 governs the mandatory and prohibited actions. Heuristics states the principle; P7 enforces it procedurally.
 
-18. **Do not grant scientism the neutral chair.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
+18. **Do not grant scientism upstream-tribunal status.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
 
 19. **In Christian doctrinal cases, classify the objection family first.** Distinguish divine-perfection arguments, formal Trinity-coherence arguments, mystery appeals, and philosopher's-God appeals before loading a rebuttal chain.
 
@@ -55,7 +55,7 @@ These are always-active background rules, not case-specific moves.
 
 24. **Revelation cases are layered.** Distinguish possibility of revelation, credibility of testimony, textual integrity, specific prophetic claim, and moral recoil from the content before answering.
 
-25. **Do not let hostile historical criticism pose as a neutral chair.** It often imports a narrowed theory of testimony and a naturalistic prior before the argument even begins.
+25. **Do not let hostile historical criticism pose as an upstream tribunal.** It often imports a narrowed theory of testimony and a naturalistic prior before the argument even begins.
 
 26. **In Muslim-internal cases, separate authority fatigue from shubha.** Betrayal, hypocrisy of representatives, revisionist moral filtering, and genuine textual-historical doubt are not the same thing.
 

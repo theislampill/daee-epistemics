@@ -174,6 +174,17 @@ useful; withhold what would be experienced as a lecture or an accusation. Typica
 If the diagnosis remains low confidence, route through `mixed-case-handling.md` before
 claiming a settled read.
 
+## Thin-Basis / Excerpt Mode
+
+When the basis is only a slogan, short excerpt, or one-turn prompt:
+
+- do not emit a single confident NS code unless Dimensions 1, 4, and 8 each carry convergent signal
+- prefer `NS-X | NS-Y` or `NS-?` over a forced single-profile lock
+- populate the decisive missing differentiator explicitly
+- if the recurring family is clearer than the noetic profile, surface a `pattern_profile` from `pattern-profiling.md` while keeping the NS read provisional
+
+Excerpt mode does not suspend diagnosis. It suspends overcommitment.
+
 ## NS Code Emission
 
 The checklist terminates with an NS-code assignment. This is what feeds the matched profile file in `case-library/profiles/` and the Quick NS table in `case-library/INDEX.md`. Without this emission the case library cannot be routed to; the diagnostic stops at prose.
@@ -193,6 +204,12 @@ Emit a single NS code when the nine dimensions converge on one profile. Emit `NS
 | Testimony-suspicion as default; manuscript-reconstruction or canon-formation language; tawātur flattened into single-strand chain reasoning; manuscript variance read as doctrinal corruption; New-Testament textual conditions imported onto the Qurʾān; historical criticism presented as neutral method | NS-9 |
 
 When two NS codes are simultaneously defensible, report `NS-X | NS-Y` and name which profile sets intervention order. Collapse to a single code only when one profile clearly dominates the dimensions that most govern the next move (typically Dimensions 1, 4, and 8).
+
+## Pattern-Profile Hand-Off
+
+After the NS read, ask whether the case also instantiates a recurring PF family from
+`pattern-profiling.md`. If yes, surface the profile in case-state or IR so cross-volume
+compounds remain visible without replacing the NS code.
 
 ## Hand-Off to Discourse Orientation and Concealment Mode
 

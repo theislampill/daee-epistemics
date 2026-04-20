@@ -1,4 +1,4 @@
-> role: diagnostic owner — imported perfection criterion / static-deity tribunal family
+> role: diagnostic owner — imported perfection criterion / non-eventfulness tribunal family
 > use when: a metaphysical picture of perfection, immutability, simplicity, impassibility, or non-eventfulness is functioning as the court before which revelation must justify itself
 > do not use when: the live issue is only whether a term can be predicated coherently at all — route to V8 or M9 first if the problem is semantic rather than tribunal-level
 > output: criterion-family identification, minimal-pair discrimination, required sequence, and next owner file
@@ -60,7 +60,11 @@ That makes it a criterion-family problem before it becomes a content-family prob
 - "If particular utterances occur by will, they must be created like any external product."
 - First move: sound-reason-epistemology.md §6.2 after tribunal-clearing if the perfection model is also governing
 
-Rule: if the case starts with what perfection must be, do not collapse it into a downstream predication or composition debate.
+**5. Upstream tribunal vs. downstream anthropomorphism objection**
+- "A perfect God cannot be above, act, speak, or respond." -> this file first
+- "Does affirming above/action/speech make God like creation?" -> M9/V8 first, unless a prior perfection criterion is also governing
+
+Rule: if the case starts with what perfection must be, do not collapse it into a downstream predication or composition debate. Direction, place, exaltedness, action, and speech language must not be reduced to generic anthropomorphism talk when the real pressure is a prior static-perfection filter.
 
 ---
 
@@ -74,7 +78,7 @@ Treat the following as one recurring restoration target:
 - divine speech
 - the false collapse from "occurs by will" to "created external product"
 
-The burden here is to refuse the static-deity criterion first, then restore that real action is not a defect and real speech is not equivalent to creaturely composition.
+The burden here is to refuse the imported perfection criterion first, then restore that real action is not a defect and real speech is not equivalent to creaturely composition.
 
 ---
 

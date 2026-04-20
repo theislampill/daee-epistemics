@@ -26,7 +26,7 @@ precipitates the crisis.
 **Critical vulnerability:** The compound nature is itself the vulnerability. Each element, in
 isolation, would be tractable: authority-fatigue addresses by distinguishing institutional failure
 from doctrinal truth; moral-recoil addresses by distinguishing modern liberal premises from the
-tradition's moral-ontological premises; taʿāruḍ addresses by the Darʾ taʿāruḍ procedure. The
+tradition's moral-ontological premises; taʿāruḍ addresses by the reason-revelation tension procedure. The
 interlocutor presents them compounded precisely because the compound is more stable than any
 single element would be. Disaggregation releases them to be addressed.
 
@@ -38,7 +38,7 @@ is chosen.
 **Intervention point:** This case does *not* route directly to a case-library module. It routes
 first to `references/procedures/` for the longer P-procedure that handles Muslim-internal crisis
 (see P6 / mixed-case-handling.md), then to the matched sub-module per disaggregated component:
-- Taʿāruḍ-surface → Darʾ taʿāruḍ procedure; V2 on the modern hermeneutic that sets up the conflict
+- Taʿāruḍ-surface → reason-revelation tension procedure; V2 on the modern hermeneutic that sets up the conflict
 - Moral-recoil → M3 (orphaned intuition probe) on the modern moral commitments that produce the
   recoil; do not concede their foundation-status uncritically
 - Authority-fatigue → Distinguish the institutional from the doctrinal; name the historical

@@ -1,6 +1,6 @@
 # Pattern-Family Robustness and Multi-Module Routing Discipline Audit
 
-> role: governance
+> role: audit artifact / regression suite
 > produced by: comprehensive audit pass — file bodies read directly, not inferred from README summaries
 > anchor case: "I was raised as a Christian, I don't have any reason to be Muslim, and I'm not sure which Bible version such as Protestant or Catholic to choose from, or why these topics seem complicated."
 > represents: inherited-framework, evidentialist-demand/pre-inquiry, canon-formation/authority-certification, transmission/authentication, doctrinal-complexity, Christology/later-doctrinal-settlement, positive-restoration-framing pressures
@@ -10,7 +10,9 @@
 
 ## §1 — Pattern-Family Map
 
-Each family below is derived from the repo's file structure and read against the anchor case. The map is abstract-first: pattern definition precedes surface realizations. This is the canonical reference for what the repo is expected to handle.
+Each family below is derived from the repo's file structure and read against the anchor case. The map is abstract-first: pattern definition precedes surface realizations. `pattern-profiling.md` is now the operational owner for live `claim_level` and `pattern_profile` emission; this file remains the long-form audit and regression reference.
+
+State note: the sections below preserve the audit-time snapshot so the regression history stays inspectable. When a snapshot statement conflicts with the live repo, the current owner files, `pattern-profiling.md`, and the revision log govern.
 
 ---
 
@@ -583,15 +585,15 @@ Expected: Apatheism. Concealment = iʿrāḍ (matter not allowed to press). DO-o
 
 **Closed gaps (all implemented):**
 
-- **GAP-A (DO-14):** `do-christian-extensions.md` now owns "Christian Canon Selection Confusion" as a governed DO family with a case-profile IR block, three sub-question discrimination (selection/formation/authorization), prohibited moves (diversity-as-conclusive; RT-2 collapse; premature Islamic answer), positive routing to DO-10 Tier 2 via criterion-gap opening, and NS/deformation pairing. `V1-diagnostic.md` specialty-marker list updated. `coverage-ledger.md` DO-14 row added.
+- **GAP-A (DO-14):** `do-christian-extensions.md` now owns "Christian Canon Selection Confusion" as a governed DO family with a case-profile block, three sub-question discrimination (selection/formation/authorization), prohibited moves (diversity-as-conclusive; RT-2 collapse; premature Islamic answer), positive routing to DO-10 Tier 2 via criterion-gap opening, and NS/deformation pairing. `V1-diagnostic.md` specialty-marker list updated. `coverage-ledger.md` DO-14 row added.
 
-- **GAP-B (§vi in mixed-case-handling.md):** Doctrinal Complexity is now a canonical case-profile routing rule with three structurally distinct profiles (vi-A genuine inquiry / vi-B iʿrāḍ deflection / vi-C criterion-pressure), each with typed case-profile IR blocks and minimal-pair discriminators. Discourse orientation is the primary axis; content is held if autotelic/iʿrāḍ governs regardless of sophistication of the complexity claim.
+- **GAP-B (§vi in mixed-case-handling.md):** Doctrinal Complexity is now a canonical case-profile routing rule with three structurally distinct profiles (vi-A genuine inquiry / vi-B iʿrāḍ deflection / vi-C criterion-pressure), each with typed case-profile blocks and minimal-pair discriminators. Discourse orientation is the primary axis; content is held if autotelic/iʿrāḍ governs regardless of sophistication of the complexity claim.
 
 - **GAP-C (§v in mixed-case-handling.md):** The Christian-Background Pre-Inquiry compound playbook now activates on structured case-profile, not surface markers. FPD gate is explicit and mandatory before any content module. Sub-question discrimination determines which canonical module applies (DO-14 / RT-1/RT-3 / DO-10/DO-4). Four named failure modes with pass/fail checks: restoration-first collapse, Christology preemption, RT-2 substitution, criterion grant. Fiṭrah-restoration framing (P1/P4) is correctly repositioned as supportive, never substitutive.
 
 - **GAP-D (V12 stopping conditions):** DO-11 → DO-12 sequencing is now governed with explicit stopping conditions, P-3 violation named, and the authority-shift redirect (V10 + RT-2 replaces DO-12 when the interlocutor appeals to tradition rather than philosophy).
 
-- **GAP-E (do-second-loop.md dispatch declaration):** Comparative-prophethood opening-frame dispatch now has a named section with Level 1/2/3 structural dependency (DO-10 → DO-4 → prophecy-wahy-supremacy.md), stopping conditions per level, and a case-profile IR block including the Christian-background upstream precedence of DO-14 over DO-10.
+- **GAP-E (do-second-loop.md dispatch declaration):** Comparative-prophethood opening-frame dispatch now has a named section with Level 1/2/3 structural dependency (DO-10 → DO-4 → prophecy-wahy-supremacy.md), stopping conditions per level, and a case-profile block including the Christian-background upstream precedence of DO-14 over DO-10.
 
 - **GAP-F (family-transfer propagation):** V12 routing note now carries an explicit cross-tradition scope statement (structural trigger, not tradition-specific; Advaita variant acknowledged with gap notation). `philosophical-usurpation.md` frontmatter now carries the cross-tradition scope (types keyed to framework, not interlocutor background; examples per type).
 
