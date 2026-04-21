@@ -74,7 +74,7 @@ Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
 P7 stops active:                     # Stop-1 | Stop-2 | Stop-3 | Stop-4 | Stop-5 | none
 Routing gate:                        # open | V2-required | deformation-first | semantic-discipline-required | register-hold | stop-condition
-Matched modules:                     # smallest matched subset only
+Matched modules:                     # current-pass, case-state-justified coordination only
 Prohibited moves:                    # list any PM from routing-precedence or do-attribute-precision
 
 --- Architectural Layer ---
@@ -118,11 +118,15 @@ For any substantive response claiming to have done V1, the following fields must
 - Deformation
 - Concealment mode
 - DO-orient
+- Read status
+- Confidence
 - Reason-category
+- P7 stops active
 - Routing gate
 - Matched modules
 - Restoration target
 - Next move
+- Output shape
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
@@ -136,6 +140,15 @@ Populate these whenever their trigger is live:
 - `Pattern-profile` when a recurring PF family is governing routing or cross-volume consolidation
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
 - `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Hadith-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
+- `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
+- `What remains live` when live alternatives, held routes, or a boundary-reset condition must stay visible
+
+**Current-pass activation rule**
+
+- `Matched modules` records only the case-state-justified coordination active in the present pass.
+- Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
+- `Next move` names one live move only. It is not a queue of later modules.
+- When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state.
 
 **Consistency rules**
 
@@ -144,13 +157,19 @@ The following inconsistencies are invalid:
 - `Read status: underdetermined` + `Confidence: strong`
 - `Concealment mode: juhud` + `Output shape: content`
 - `P7 Stop-1 active` + `Output shape: content`
+- `DO-orient: identity-perf | autotelic` + `Output shape: content`
 - `Routing gate: V2-required` + `Matched modules: [any content module]`
 - `Routing gate: semantic-discipline-required` + `Matched modules: [any doctrinal case file or attribute-content release]`
+- `Routing gate: register-hold` + missing `What is withheld and why`
+- `Routing gate: semantic-discipline-required` + missing `What is withheld and why`
+- `Routing gate: stop-condition` + missing `What is withheld and why`
 - `DO-orient: identity-perf` + `Matched modules: [any doctrinal case file]`
 - `Reason-category: 3 or 4` + `Routing gate: open`
 - `Concealment mode: anything other than clear` + `Output shape: content`. Register-hold governs Layer B whenever concealment remains live.
 - `Claim-level: meta-epistemic | meta-ontological | meta-noetic` + `Matched modules: [first-order case file only]`. Higher-order burdens must clear before first-order dispatch.
 - `Upstream findings` contains `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` + `Routing gate: open`
+- `Matched modules` includes anticipated downstream modules or reserve owners not governing the current pass
+- `P7 Stop-2 active` + `Next move` advertises another argumentative sequence rather than a boundary reset / one bounded question
 - `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`huduth/khalq` distinction for the Mu'tazili form; `kalam nafsi` doctrine for the Ash'ari form), not a generic `bila kayf` or generic foundationalist target.
 - `NS code: NS-6` + ontological burden live + `Backbone predicates active` omits `O-1` and `C-1`. When NS-6 and the case involves divine attributes or speech, those predicates are minimum checks.
 
@@ -180,7 +199,9 @@ Specific failure modes:
 - **Cosmetic V1 compliance:** the response says V1 was run but the routing gate remains open while orientation or upstream blockers still prevent content.
 - **Cosmetic framework-clearing:** the response names V2 but still loads content into the unreconstituted filter.
 - **Cosmetic register acknowledgment:** the response acknowledges grief or register-hold but still outputs propositional content.
+- **Current-pass blur:** the response advertises a queue of downstream modules rather than the coordination actually governing this pass.
 - **Output-layer collapse:** the response notes `irad` or another register-hold and therefore omits the structural diagnosis from the complete output, leaving technique without the diagnostic architecture that justified it.
+- **Held-route preview:** a stop or register-hold is named, but Layer B still previews the held doctrinal substance or future module chain.
 - **Architectural drift:** the response satisfies workflow checks but states the restoration target argumentatively rather than restoratively.
 - **Semantic-bypass compliance:** semantic neutralization or a lexical-ontological trap is active, but doctrinal content is released anyway. The IR catches this by requiring `semantic-discipline-required`.
 
@@ -202,3 +223,4 @@ This file has not governed the response if any of the following is true:
 - A suppression rule was active but the corresponding module was still dispatched.
 - A consistency-rule violation is present but the response proceeded anyway.
 - A semantic-discipline blocker was present but doctrinal content still released.
+- The IR carried the previous round's matched modules forward after Stop-2 or another boundary reset without re-running V1.

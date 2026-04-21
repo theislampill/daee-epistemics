@@ -72,7 +72,9 @@ Rules:
 5. Distinguish `claim_level` from `claim_type` whenever a criterion, proof-method, category-set, or noetic-order fight is live. Routine first-order cases may omit `claim_level` from surfaced output after those triggers are checked.
 6. When a case instantiates a recurring governed family from `references/diagnostics/pattern-profiling.md` and the overlay changes routing or sequencing, emit `pattern_profile` rather than leaving the pattern implicit.
 7. Surfaced `[Case State]`, `[Source Basis]`, and other governance blocks must be rendered from the validated IR, not improvised independently of it.
-8. Schema failure, catalogue mismatch, or IR/output divergence is a routing failure and must be corrected before final response.
+8. `matched_modules` is the current-pass activation record, not a warehouse of every plausible or downstream module. List only the case-state-justified coordination whose governing work is live in this pass. If a route is diagnosed but held by register, semantic, or stop governance, keep it explicit in Layer A via the hold / withheld-content fields rather than padding the active list.
+9. `output_shape`, `p7_stops_active`, and any withheld-content note are part of the validated IR. Do not improvise Layer B depth, stop status, or held-route narration outside the IR.
+10. Schema failure, catalogue mismatch, or IR/output divergence is a routing failure and must be corrected before final response.
 
 
 ### Specialty Diagnostics
@@ -174,7 +176,7 @@ Routing note: M9 also governs loaded negative theological terms. If the pressure
 - Start with V1 for any substantive case; use M5 inside V1's triage phase rather than as a rival opening architecture.
 - Diagnose before rebutting, and let downstream modules stay downstream.
 - After the diagnostic gate, run M1 or M1-P first among downstream moves when they are actually present.
-- Select the smallest matched subset of modules needed for the next move.
+- Select only the case-state-justified coordination of modules needed for the next move. This may be one module or a layered cluster when the live case warrants it; do not widen it into ambient default loading.
 - Use case-state and source-status marking when routing legibility matters.
 - In testimony, text, canon, preservation, believer-destabilization, and hadith-authentication
   cases, V10 and the matched RT case or hadith-authentication owner come before broader doctrinal rebuttal.
@@ -548,10 +550,12 @@ the interlocutor now.
   Structural and doctrinal content stays held pending actual attention being given.
 - When the task asks for wording to say, surface Layer B separately rather than substituting
   it for Layer A.
+- Layer B may name what is held and what would release it, but it does not preview held doctrinal substance, queued downstream modules, or future-round sequences as though they were already live.
 
 **Always present**
 - `[Restorative Response]`
 - The closing formulation
+- When Stop-2 or Stop-5 governs, the closing formulation compresses to the landed move or one bounded question. It does not reopen layering after the stop has fired.
 
 **Conditional governance blocks**
 - `[Case State]` when routing legibility, mixed reads, or module discipline need to be made explicit
@@ -588,6 +592,8 @@ held and why, and what shift would release the hold. It does not replace
 - In audit/diagnostic tasks, preserve the full structural response here even when Layer B is
   held. Mark held deployment explicitly rather than collapsing the response to register-only
   speech.
+- Use only the current-pass, case-state-justified coordination here. Do not turn diagnosed-but-held routes into a simultaneous module inventory.
+- When a stop is active or the next move has landed, end at the landed move. Do not append a second supporting tactic, a reserve-route preview, or a future-sequence map after the stop.
 - M2 prior probability surfaced where evidential arguments appear
 - M3 orphaned intuitions probed where relevant
 - Keep logical, probabilistic, historical, moral, grief, and authority claims distinct; answer the actual pressure being applied

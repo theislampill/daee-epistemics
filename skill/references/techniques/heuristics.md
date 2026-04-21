@@ -61,7 +61,7 @@ These are always-active background rules, not case-specific moves.
 
 27. **Where public identity-cost is high, aim first at unclenching.** In those cases the first win is claim-separation and reduced defensiveness, not immediate verbal surrender.
 
-28. **Select the smallest matched subset.** A response using three well-matched modules is usually stronger than one advertising nine.
+28. **Select the case-state-justified coordination.** A response using three well-matched modules can be stronger than one advertising nine, but do not force a single-module answer when the live case genuinely requires layered coordination.
 
 29. **Make the routing state legible when it matters.** Surface case type, claim level, primary issue, module choice, confidence, and restoration target when doing so improves discipline or trust. When a higher-order PF family is live, keep the burden, the pattern, and the restoration target distinct.
 

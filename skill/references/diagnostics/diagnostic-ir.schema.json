@@ -3,18 +3,22 @@
   "$id": "skill/references/diagnostics/diagnostic-ir.schema.json",
   "title": "Diagnostic IR",
   "type": "object",
-  "additionalProperties": true,
+  "additionalProperties": false,
   "required": [
     "case_family",
     "claim_type",
     "deformation",
     "concealment_mode",
     "do_orient",
+    "read_status",
+    "confidence",
     "reason_category",
+    "p7_stops_active",
     "routing_gate",
     "matched_modules",
     "restoration_target",
-    "next_move"
+    "next_move",
+    "output_shape"
   ],
   "properties": {
     "case_family": {
@@ -101,8 +105,10 @@
     "matched_modules": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["id", "module_class"],
         "properties": {
           "id": {
@@ -320,6 +326,30 @@
     {
       "if": {
         "properties": {
+          "do_orient": {
+            "enum": ["identity-perf", "autotelic"]
+          }
+        },
+        "required": ["do_orient"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": {
+              "const": "open"
+            }
+          },
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "reason_category": {
             "enum": [3, 4, "3", "4"]
           }
@@ -334,6 +364,72 @@
             }
           }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "register-hold"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "semantic-discipline-required"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "stop-condition"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "output_shape": {
+            "const": "held-pending"
+          }
+        },
+        "required": ["output_shape"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"]
       }
     },
     {
@@ -361,6 +457,27 @@
           "p7_stops_active": {
             "contains": {
               "const": "Stop-1"
+            }
+          }
+        },
+        "required": ["p7_stops_active"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "p7_stops_active": {
+            "contains": {
+              "const": "Stop-2"
             }
           }
         },

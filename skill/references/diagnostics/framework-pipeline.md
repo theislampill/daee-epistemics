@@ -90,7 +90,7 @@
 | GATE BLOCKED|  | GATE OPEN                                     |
 |             |  |                                               |
 | P7 stops or |  | Routing-precedence levels 1-9 applied.        |
-| semantic    |  | Smallest matched subset only.                 |
+| semantic    |  | Case-state-justified coordination only.       |
 | holds keep  |  |                                               |
 | content out |  | MATCHED MODULE ENTRY:                         |
 | until the   |  | Techniques: V2/V3/V5/V8/V9/V10/V12...         |

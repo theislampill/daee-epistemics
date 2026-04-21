@@ -486,10 +486,12 @@ Expected routing:
 - Concealment: `irad`, not blank / `none confirmed`, when the slogan is functioning as worldview-deflection and the matter has not yet been allowed to press
 - Register-hold check: `irad` + truth-seek / zann / mixed -> invitational only for Layer B; P6 / V2 structural content held pending attention being given
 - Layer A: preserve the full structural diagnosis, then append the `irad`-keyed engagement register directly after it
+- Current-pass activation record: `matched_modules` names only the coordination governing this pass. Held doctrinal or downstream routes are named as held; they do not appear as simultaneously active loads.
 - Layer B: one honest question, no doctrinal dump, stop. Concrete question: "When you say you just follow the evidence, what tells you in advance what is allowed to count as evidence?"
+- Boundary reset: if the question lands, do not append E1, E3, DO, or RT content in the same round. Any later content round re-enters through V1 on the new signal.
 - What NOT to do: emit concealment as blank / dash / `none confirmed`; collapse to register-only output; dump the full P6 / V2 / M1 diagnosis directly at the interlocutor while `irad` remains active
 
-Failure modes tested: placeholder concealment, Layer-A-to-Layer-B collapse, register-hold bypass, forced NS lock.
+Failure modes tested: placeholder concealment, Layer-A-to-Layer-B collapse, register-hold bypass, forced NS lock, current-pass module bleed, carried-state bleed after landing.
 
 **F2-d**: "I've looked into Islam and I just don't find the arguments convincing."
 

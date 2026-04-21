@@ -27,12 +27,12 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Re-run V1 and update the case-state only when a move has cleared an upstream barrier, the interlocutor has shifted register, or a new objection family has appeared. Otherwise hold the current read and proceed with the current module.
 *Self-audit question:* What specifically changed that justifies a new diagnostic pass — has intervention order actually shifted?
 *Why it damages the skill:* Each rediagnosis pass that changes nothing operationally replaces action with procedure. The engagement becomes a diagnostic exercise rather than a restorative one. The interlocutor experiences a practitioner who is elaborately analyzing rather than genuinely present. This is a form of gharaḍ in the practitioner — the diagnostic apparatus is being operated for its own sake rather than in service of restoration.
-*Prevented by:* `mixed-case-handling.md` §Recursive Reassessment (reassess only when a move has cleared an upstream barrier or a new differentiator has appeared); `heuristics.md` rule 28 (smallest matched subset); the case-state schema's `Reassessment` field (should say "not warranted" unless conditions met).
+*Prevented by:* `mixed-case-handling.md` §Recursive Reassessment (reassess only when a move has cleared an upstream barrier or a new differentiator has appeared); `heuristics.md` rule 28 (case-state-justified coordination); the case-state schema's `Reassessment` field (should say "not warranted" unless conditions met).
 
 ---
 
 **Cumulative Inflation**
-*Definition:* Adding supporting modules, routes, and argument tracks beyond the single upstream blocker that still governs the case, inflating response weight without adding productive leverage.
+*Definition:* Adding supporting modules, routes, and argument tracks beyond the case-state-justified coordination that still governs the case, inflating response weight without adding productive leverage.
 *Pattern appearing in output:* V2 has been deployed but the framework has not yet visibly loosened; the response then also loads E1, E3, V6, and M3, adding convergent evidential content before the filter through which it will be evaluated has been changed.
 *Correct behavior in the same case:* Deploy only V2. Wait for a differentiating signal before escalating. Escalate to E3 or V6 only when no single blocker still dominates and multiple routes add genuinely non-redundant warrant.
 *Self-audit question:* Is the upstream blocker genuinely cleared, or am I loading additional modules into an unreconstituted filter?
@@ -72,12 +72,12 @@ The following entries expand the compressed table into full audit-grade entries.
 ---
 
 **Tactic Over-Selection**
-*Definition:* Loading many modules because several seem relevant to the topic, rather than selecting the smallest matched subset that changes the next differentiator.
+*Definition:* Loading many modules because several seem relevant to the topic, rather than selecting the case-state-justified coordination that changes the next differentiator.
 *Pattern appearing in output:* A response to a single hiddenness objection loads V1, M5, DO-1, P2, P4, M2, M3, and F2 in sequence, providing the full apparatus when a single well-placed M2 or the grief-register check would have changed the next live issue.
 *Correct behavior in the same case:* Identify the one or two modules that address the current live differentiator. Defer everything else until the first move has been made and a new differentiator appears.
 *Self-audit question:* Is each module in this response changing the next live differentiator, or am I loading it because it might be relevant?
-*Why it damages the skill:* Module proliferation masks the actual diagnostic precision the skill is designed to produce. A response advertising nine modules suggests the practitioner does not know which one is actually needed. More practically: every additional module is a new surface for the interlocutor to deflect to, multiplying the number of available exits from the main engagement. The smallest matched subset is also the hardest to deflect.
-*Prevented by:* `heuristics.md` rule 28 (smallest matched subset); `mixed-case-handling.md` §Stopping Conditions (stop when next module would only restate the same point); `case-state-schema.md` §Matched modules field (list only the matched subset — do not advertise unused modules); SKILL.md Named Routing Constraint 5 (no argument-stacking after landed move).
+*Why it damages the skill:* Module proliferation masks the actual diagnostic precision the skill is designed to produce. A response advertising nine modules suggests the practitioner does not know which coordination is actually needed. More practically: every additional module is a new surface for the interlocutor to deflect to, multiplying the number of available exits from the main engagement. The case-state-justified coordination is also the hardest to deflect.
+*Prevented by:* `heuristics.md` rule 28 (case-state-justified coordination); `mixed-case-handling.md` §Stopping Conditions (stop when next module would only restate the same point); `case-state-schema.md` §Matched modules field (list only the current-pass coordination — do not advertise unused modules); SKILL.md Named Routing Constraint 5 (no argument-stacking after landed move).
 
 ---
 

@@ -87,11 +87,13 @@ When the case-state has been established and multiple modules could plausibly be
 
 **Rule P-1 (upstream-blocker priority):** The module that addresses the upstream blocker takes priority over the module that addresses the derived problem. V2 before evidence; semantic-discipline owner before doctrinal release; higher-order claim-level owner before first-order case content; F2 before intellectual content; V10 before DO entry; stop conditions before matched modules.
 
-**Rule P-2 (smallest matched subset):** Among modules that address the same layer, select the smallest subset that changes the next live differentiator.
+**Rule P-2 (case-state-justified coordination):** Among modules that address the same layer, select only the coordination the current validated case-state actually warrants. This may be one module or a layered cluster when distinct live burdens genuinely require it.
 
-**Rule P-3 (no stacking after landing):** Once a module has produced visible recognition or movement, Stop-2 fires. No additional module is deployed until the interlocutor has re-entered the exchange.
+**Rule P-2a (current-pass activation):** `Matched modules` records only the modules whose governing work is active in the present pass. Diagnosed downstream routes that are held by register, semantic, or stop governance stay explicit as held; they do not become ambient simultaneous loads.
 
-**Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The matched module remains explicit in Layer A / the diagnostic IR as diagnosed-and-held, not discarded.
+**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 fires. No additional module is deployed until the interlocutor has re-entered the exchange, and any later round re-enters from V1 rather than inheriting the previous active set by default.
+
+**Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The diagnosed downstream route remains explicit in Layer A / the diagnostic IR as held, not discarded or treated as simultaneously active.
 
 ---
 

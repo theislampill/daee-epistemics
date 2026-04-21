@@ -8,7 +8,7 @@ The package is grounded in the coherence and convergence of a common sense accou
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
-> Release scope for `v0.1.0.1`: this patch release preserves the bounded initial-release scope while correcting concealment-routing and output-composition behavior around worldview-deflection / pseudo-neutrality cases. It is not a `1.0` completeness claim, not an exhaustive implementation of every later-volume or bespoke comparative family, and not a full specialist manual for every downstream domain. Bounded remaining gaps stay tracked in [`skill/references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md).
+> Release scope for `v0.1.0.2`: this patch release preserves the bounded initial-release scope while hardening selective-routing discipline, portability framing, and packaging/text-integrity guidance after the concealment-routing and output-composition correction. It is not a `1.0` completeness claim, not an exhaustive implementation of every later-volume or bespoke comparative family, and not a full specialist manual for every downstream domain. Bounded remaining gaps stay tracked in [`skill/references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md).
 
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
@@ -21,7 +21,7 @@ Its governing aim is not to manufacture novelty or simply accumulate clever refu
 - [Integration Boundary](#integration-boundary)
 - [Repository Architecture](#repository-architecture)
 - [Repository Diagram](#repository-diagram)
-- [Install / Package for Claude](#install--package-for-claude)
+- [Install / Package (Claude-First)](#install--package-claude-first)
 
 ## Before You Use This Skill
 The skill needs a practitioner whose own *fiṭrah* is in reasonable health.
@@ -390,44 +390,26 @@ class PROCS,TACTICS,TECH,P7,SOUND red;
 class LEDGER,PFAUDIT slate;
 ```
 
-## Install / Package for Claude
+## Install / Package (Claude-First)
 
 The distributable artifact for this repository is `daee-epistemics.skill`. 
 Its archive root must contain `SKILL.md` and `references/` directly. 
 Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
 
-From any folder, open a terminal and paste one of the following. The command will clone the repo into a temporary subfolder, build `daee-epistemics.skill`, and remove the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
+For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.
 
-PowerShell:
-
-```powershell
-$repo = "https://github.com/theislampill/daee-epistemics.git"
-$tmp = "daee-epistemics-src"
-$tmpSkill = "daee-epistemics.tmp.skill"
-$outSkill = "daee-epistemics.skill"
-
-if (Test-Path $tmp) { Remove-Item $tmp -Recurse -Force }
-if (Test-Path $tmpSkill) { Remove-Item $tmpSkill -Force }
-
-git clone $repo $tmp
-Compress-Archive -Path ".\$tmp\skill\*" -DestinationPath ".\$tmpSkill.zip" -Force
-Move-Item ".\$tmpSkill.zip" ".\$tmpSkill" -Force
-Move-Item ".\$tmpSkill" ".\$outSkill" -Force
-Remove-Item $tmp -Recurse -Force
-```
-
-Bash:
+From any folder, open a Bash-compatible terminal and paste the following. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the `skill/` subtree, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 
 ```bash
 repo="https://github.com/theislampill/daee-epistemics.git"
 tmp="daee-epistemics-src"
-tmp_skill="daee-epistemics.tmp.skill"
+tmp_zip="daee-epistemics.tmp.skill.zip"
 out_skill="daee-epistemics.skill"
 
-rm -rf "$tmp" "$tmp_skill"
+rm -rf "$tmp" "$tmp_zip" "$out_skill"
 git clone "$repo" "$tmp" &&
-(cd "$tmp/skill" && zip -r "../../$tmp_skill" .) &&
-mv -f "$tmp_skill" "$out_skill" &&
+(cd "$tmp" && git archive --format=zip -o "../$tmp_zip" HEAD:skill) &&
+mv -f "$tmp_zip" "$out_skill" &&
 rm -rf "$tmp"
 ```
 

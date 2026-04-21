@@ -75,7 +75,8 @@ Use this block when diagnosis matters to the response:
 - `Live alternatives` should stay short. Keep live alternatives, not a full inventory.
 - `Reassessment` should say `not warranted`, `revisit after X`, or `warranted now because Y`.
 - `Convergence requirement` should say whether one dominant move remains preferable or whether convergence across independent routes is now needed.
-- `Matched modules` should list only the matched subset. Do not advertise unused modules.
+- `Matched modules` should list only the current-pass, case-state-justified coordination: the modules whose governing work is active now. Do not use this field as a memory of every plausible file or every downstream owner that may later become relevant.
+- When a register-hold, semantic blocker, or stop keeps downstream content from deployment, keep that route explicit in `Register-hold`, `Deployable on shift to`, or the restoration trace's `What was withheld and why`; do not pad `Matched modules` with held-later content.
 - `Sequencing rationale` should explain sequencing, not restate file names.
 - `Confidence` should be marked as `strong`, `provisional`, or `low`.
 - `Decisive missing differentiator` should name the one signal that would collapse the remaining ambiguity.
@@ -99,14 +100,15 @@ Use this block after the matched-module response is complete. It records the res
 Field discipline:
 
 - `Governing misread risk` names the single most likely wrong module or wrong register the case would route to without the diagnostic gate.
-- `What was withheld and why` names the module(s) held in reserve and the governing reason.
+- `What was withheld and why` names the module(s) held in reserve and the governing reason. It preserves Layer A intelligibility; it does not authorize Layer B preview.
 - `What correction was applied` names the specific restorative move made.
-- `Route that became permissible after correction` names what could be deployed only because the correction was made first.
+- `Route that became permissible after correction` names the immediate next route only. Do not use this field to emit a queued future stack.
 - `What remains live or unresolved` names any open axis, unconfirmed deformation, or live alternative.
 
 Compression rule: populate only the fields that had operative content. A restoration trace with two populated fields is more honest than one that fills all five performatively. If no correction was required, omit the block entirely.
 
 Integration with `[Source Basis]`: the restoration trace is downstream of the case-state and source-basis blocks. It does not replace them. Case-state names what was diagnosed; source-basis names where claims are grounded; restoration trace names what was done to create the conditions under which the response could land.
+Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not carry forward automatically.
 
 ## Strength Rules
 
