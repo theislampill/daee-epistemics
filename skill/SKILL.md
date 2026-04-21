@@ -83,6 +83,7 @@ Load only when surface discourse points to the specialty family.
 | `references/diagnostics/INDEX.md` | First entry to the diagnostics subfolder; expanded table of contents and use order |
 | `references/diagnostics/kalamic-interlocutor.md` | Surface markers of kalāmic evidentialism or wujūb al-naẓar appear |
 | `references/diagnostics/fitrah-perspectives.md` | The fiṭrah is described as blank-slate, morally neutral, or as equal dual tendencies |
+| `references/diagnostics/hadith-authentication-epistemology.md` | Hadith corpus reliability, isnād / jarḥ wa taʿdīl criticism, āḥād-vs-mutawātir epistemic-yield questions, or grading rhetoric is live |
 
 | `references/diagnostics/causal-series-taxonomy.md` | Regress, infinity, simultaneous vs. successive series, circularity, or secondary-cause self-sufficiency is live |
 | `references/diagnostics/definition-discipline.md` | Public-language capture, silent redefinition, universals/particulars confusion, or mental/extra-mental confusion is driving the contradiction claim |
@@ -175,8 +176,8 @@ Routing note: M9 also governs loaded negative theological terms. If the pressure
 - After the diagnostic gate, run M1 or M1-P first among downstream moves when they are actually present.
 - Select the smallest matched subset of modules needed for the next move.
 - Use case-state and source-status marking when routing legibility matters.
-- In testimony, text, canon, preservation, and believer-destabilization cases, V10 and the matched
-  RT case come before broader doctrinal rebuttal.
+- In testimony, text, canon, preservation, believer-destabilization, and hadith-authentication
+  cases, V10 and the matched RT case or hadith-authentication owner come before broader doctrinal rebuttal.
 
 ### Named Routing Constraints (hard prohibitions)
 
@@ -555,8 +556,9 @@ doctrine or override the core architecture.
 - M3 orphaned intuitions probed where relevant
 - Keep logical, probabilistic, historical, moral, grief, and authority claims distinct; answer the actual pressure being applied
 - For revelation, scripture, and final-prophethood cases, separate generic theism, testimony/transmission,
-  text, canon, and the specific prophetic claim rather than collapsing them; route through V10 and
-  the matched RT case only when transmission or text-history is actually live before broader doctrinal rebuttal
+  text, canon, hadith-authentication burden, and the specific prophetic claim rather than collapsing them;
+  route through V10 and the matched RT case or hadith-authentication owner only when transmission or text-history
+  is actually live before broader doctrinal rebuttal
 - Arabic terminology with inline gloss on first use; plain English when user signals unfamiliarity
 - Direct and unhedged; errors named without softening
 - Closes with the sharpest, most economical formulation of the core point — pointedly instructional synthesis, honing the restoring picture

@@ -49,7 +49,7 @@ Keep one primary profile. Carry secondary candidates in `Live alternatives`.
 | `PF-1` | Inherited framework / habituated belief | `seven-deformations.md`, `mixed-case-handling.md` |
 | `PF-2` | Evidentialist demand / pre-inquiry criterion pressure | `foreign-premise-detection.md`, `V2-reconstituting-reason.md` |
 | `PF-3` | Canon formation / text selection / authority certification | `V10-transmission-content-vetting.md`, `do-christian-extensions.md` DO-14, `revelation-transmission.md` RT-2 |
-| `PF-4` | Transmission / preservation / authentication | `V10-transmission-content-vetting.md`, `revelation-transmission.md` |
+| `PF-4` | Transmission / preservation / authentication | `V10-transmission-content-vetting.md`, `revelation-transmission.md`, `hadith-authentication-epistemology.md` |
 | `PF-5` | Doctrinal complexity / disagreement pressure | `mixed-case-handling.md` |
 | `PF-6` | Christology / Trinity / Jesus-status pressure | `V12-tamanuc-exhaustion.md`, `do-christian-extensions.md` |
 | `PF-7` | Comparative prophethood / why this revelation | `do-second-loop.md`, `prophecy-wahy-supremacy.md` |

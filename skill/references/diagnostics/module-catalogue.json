@@ -51,6 +51,11 @@
       "module_class": "diagnostic"
     },
     {
+      "id": "hadith-authentication-epistemology",
+      "path": "skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "module_class": "diagnostic"
+    },
+    {
       "id": "proof-method-audit",
       "path": "skill/references/diagnostics/proof-method-audit.md",
       "module_class": "diagnostic"

@@ -19,6 +19,7 @@ the case still requires.
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-14 | `case-library/do-christian-extensions.md` | Trinity, philosopher's-God, or Christian canon-authority pressure has not been classified precisely | V8, V10, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
+| Hadith corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
 | DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
 | Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
 
@@ -60,6 +61,8 @@ the case still requires.
 
 **Correct routing:** Route to RT only when the live pressure is specifically on transmission reliability (RT-1), canon authority (RT-2), qirāʾāt/manuscript plurality (RT-3), or believer-destabilization (RT-4). Run V10 before any RT case entry.
 
+**Hadith boundary:** Hadith corpus/authentication cases are not RT-1 through RT-4 and do not emit RT-5. After V10, route them to `references/diagnostics/hadith-authentication-epistemology.md`, then release downstream doctrine only if that owner says the transmission burden is no longer primary.
+
 **Incorrect routing:** Routing to RT-3 because the interlocutor mentioned "the Qurʾān," rather than because they are specifically pressing manuscript, qirāʾāt, or preservation questions. Mentioning a text is not the same as pressing a text-history claim. The RT family requires that text-history, transmission reliability, or canon authority is the live pressure, not merely the subject.
 
 **Adversarial near-miss:** Interlocutor is an NS-9 historical-critical skeptic importing NT text-critical categories and asking about early Qurʾānic codices. The surface looks like RT-1 (manuscript reconstruction). But the live pressure is actually V10's prior question — the imported framework treats all ancient documents through the same criterion, which does not distinguish artifact from authenticated transmission. Routing directly to RT-1 content without first applying V2 (framework-clearing on the imported method) confirms the NT criterion's applicability to the Qurʾānic case. Correct sequence: V2 → V10 → RT-1 sub-route. This is also the NS-9 pattern — check `case-library/profiles/ns-9-historical-critical-skeptic.md` for the full intervention order before loading RT-1.
@@ -88,6 +91,7 @@ the case still requires.
 | `dalil` demand ("give me a proof/argument"); taqlīd equated with non-knowledge; "naẓar is obligatory on every rational person"; Maturidi concession language | `diagnostics/kalamic-interlocutor.md` |
 | Fiṭrah described as blank-slate or purely environment-shaped; "humans have equal tendencies toward good and evil"; religious belief framed as "just one option among equally valid alternatives" | `diagnostics/fitrah-perspectives.md` |
 | Historical criticism; manuscript reconstruction; original-text skepticism; "the original text is lost"; "who chose scripture?" | `case-library/revelation-transmission.md` via V10, then RT-1 or RT-2 according to whether the live issue is reconstruction or canon |
+| Hadith corpus rejection; isnād / jarḥ wa taʿdīl criticism; āḥād-vs-mutawātir or grading rhetoric | `diagnostics/hadith-authentication-epistemology.md` via V10, then matched doctrine only after the hadith burden is typed |
 | Trinity model-identification pressure; perfect-being-to-Trinity argument; incarnation coherence; philosopher's-God challenge | `case-library/do-christian-extensions.md` via V8, then DO-11, DO-12, or DO-13 according to the live issue |
 | `ilm daruri` / fitri intuition / necessary knowledge is attacked; "common sense can be wrong"; discursive reasoning is treated as superior to immediate certainty | `references/techniques/V9-necessary-knowledge-priority.md` |
 | One premise keeps regenerating the conclusions even after local objections are answered | `diagnostics/seven-deformations.md` §1-A (`mushābara fāsida`) |
@@ -119,3 +123,7 @@ the case still requires.
 | RT-2 | Canon formation destabilizes revelation | Separate canon recognition from inspired authority | Treating list-formation as identical to revelation-status |
 | RT-3 | Qur'anic preservation fails because of qira'at / ahruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
 | RT-4 | Believer destabilized by text-history pressure | Distinguish text-history confusion from authority fatigue and panic | Answering an internal crisis as if it were only a debate prompt |
+
+Hadith corpus/authentication pressures route through
+`references/diagnostics/hadith-authentication-epistemology.md` after V10. They remain
+outside the RT code family unless a separate RT-1..RT-4 issue is also live.

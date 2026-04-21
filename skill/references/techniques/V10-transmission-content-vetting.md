@@ -119,7 +119,7 @@ After the three-step sequence, route to the appropriate branch. Each branch spec
 - Do not let wijādah (found-document transmission without a live isnād) be treated as normative — it has a lower epistemic status than mutawātir or ṣaḥīḥ isnād transmission.
 - Do not collapse the distinct questions: was this specific hadith reliably transmitted? vs. is the hadith system as a whole a reliable transmission mechanism?
 
-**Route after:** RT-1 for specific viral hadith claims; the doctrinal objection files if the hadith is being used to support a DO-series argument.
+**Route after:** `references/diagnostics/hadith-authentication-epistemology.md` for burden typing and release discipline. Do not route straight to RT-1 or to a DO file. Downstream doctrinal files load only after the hadith owner has stated whether the live pressure is corpus, method, report-class / epistemic-yield, or grade confusion.
 
 ---
 
@@ -148,6 +148,7 @@ For recurring family treatments after this sequence, see
   issue is manuscript reconstruction, or RT-2 if the live issue is canon formation
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2
 - Qur'anic preservation / qira'at / manuscript confusion -> start here, then route to RT-3
+- Hadith corpus rejection / isnād criticism / āḥād-vs-mutawātir / grade-confusion pressure -> start here, then route to `diagnostics/hadith-authentication-epistemology.md`
 - Muslim-internal panic over text-history material -> start here, then route to RT-4
 - Final-prophethood challenges entangled with text-history or testimony -> use here before broader
   prophetic-credibility rebuttal

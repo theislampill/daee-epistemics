@@ -183,6 +183,10 @@ Emitted from: `diagnostics/modes-of-concealment.md` when scripture-pressure is l
 | RT-3 | Qurʾānic preservation / qirāʾāt / aḥruf / manuscript confusion |
 | RT-4 | Believer internal destabilization from text-history pressure |
 
+Hadith corpus/authentication burdens do not emit a new RT code. Route them through
+`references/diagnostics/hadith-authentication-epistemology.md`; keep `Claim-type:
+transmission` and `RT marker: none` unless a separate RT-1..RT-4 pressure is also live.
+
 ## Axis 7 — Techniques (V)
 
 Source: `references/techniques/INDEX.md`.

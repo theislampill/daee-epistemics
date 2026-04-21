@@ -22,7 +22,7 @@ When multiple axes compete, apply in this order:
 7. **Claim-level (higher-order priority).** When `claim_level` is `meta-epistemic`, `meta-ontological`, `meta-noetic`, or `cross-level`, clear the higher-order burden before first-order case content is released.
 8. **NS code (content selection).** Only after steps 1-7 are clear does the NS code govern what content is selected. The NS code identifies what to say; the earlier steps identify whether to say it yet.
 9. **DO code (argument family).** The DO entry is loaded after NS, after register is clear, and after the correct upstream sequence has run.
-10. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer.
+10. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer. When the transmission burden is hadith-authentication rather than RT-1..RT-4, V10 and `hadith-authentication-epistemology.md` occupy this slot without emitting a new RT code.
 
 `pattern_profile` does not outrank the hierarchy. It is a consolidation overlay that helps choose the smallest matched coordination once the higher-precedence blockers have been handled.
 

@@ -67,7 +67,7 @@ NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
 Concealment mode:                    # irad | juhud | inkar | istikbar | nifaq | mode-? | compound
 DO-orient:                           # truth-seek | identity-perf | autotelic | zann-mode | mixed
-RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none
+RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for hadith-authentication cases unless a separate Qur'anic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
 P7 stops active:                     # Stop-1 | Stop-2 | Stop-3 | Stop-4 | Stop-5 | none
@@ -126,7 +126,7 @@ Populate these whenever their trigger is live:
 - `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
 - `Pattern-profile` when a recurring PF family is governing routing or cross-volume consolidation
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
-- `RT marker` when transmission, canon, manuscript, or believer-destabilization pressure is live
+- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Hadith-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 
 **Consistency rules**
 

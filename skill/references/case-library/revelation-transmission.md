@@ -1,29 +1,17 @@
 > role: case-library
-> use when: revelation, scripture, textual preservation, canon formation, transmission, or text-history-entangled final-prophethood claims have already been distinguished as the live family
-> do not use when: generic theism, grief, Trinity pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental
+> use when: revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims have already been distinguished as the live family
+> do not use when: generic theism, grief, Trinity pressure, hadith corpus/authentication pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental
 > overlaps: V10, P2, P5, `sound-reason-epistemology.md` §4.3, `terminology.md`
 > output: matched recurring cases in the revelation / transmission family
-> scope boundary: this file governs Qurʾānic transmission cases (RT-1 through RT-4). It does NOT govern: (1) hadith authentication epistemology — isnād grading, jarḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf classification, āḥād-vs-mutawātir epistemological status of sunnah — these are not currently covered by any dedicated case file; (2) Bible/NT transmission in a comparative Islamic framework — this is tangentially addressed in cross-tradition contamination guards within RT-1 through RT-3 but is not a governed case in its own right. See the Interim Hadith Routing section below for provisional guidance when a hadith-corpus challenge arises.
+> scope boundary: this file governs Qurʾānic/scriptural RT cases (RT-1 through RT-4). It does NOT govern: (1) hadith corpus transmission/authentication epistemology — isnād grading, jarḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf classification, and āḥād-vs-mutawātir epistemic-yield questions now route through `references/diagnostics/hadith-authentication-epistemology.md`; (2) Bible/NT transmission in a comparative Islamic framework as a dedicated case family — this remains tangentially addressed in cross-tradition contamination guards within RT-1 through RT-3 rather than as a governed owner of its own.
 
-## Interim Hadith-Transmission Routing (Pre-Dedicated-File Guidance)
+## Hadith Routing Note
 
-A dedicated hadith-authentication case file does not yet exist. Until it does, route hadith-transmission challenges as follows. This interim routing is not equivalent to a governed case — it identifies which instruments from the existing repo apply, and where the architecture ends.
-
-**Case-profile: Hadith-transmission challenge**
-
-The presenting pressure typically takes one of three forms:
-- *Isnād skepticism:* "The chains of transmission are too long, too late, or contain unreliable narrators." → This is a transmission-reliability question analogous to RT-1 but for the sunnah corpus rather than the Qurʾān. The relevant structural distinction: isnād science (jarḥ wa taʿdīl — narrator-reliability evaluation) is a systematic authentication discipline with its own epistemological architecture, not an informal chain of telephone-transmission. Naming this distinction is the first move.
-- *Āḥād epistemology:* "A single-strand hadith cannot produce definitive knowledge (ʿilm qaṭʿī)." → This is an internal-tradition epistemological objection, not a historical-critical one. The tradition itself distinguishes mutawātir hadith (which produces ḍarūrī knowledge) from āḥād hadith (which produces ẓannī knowledge sufficient for action). The interlocutor may be pressing a legitimate intra-traditional debate; determine whether they have a specific use-case in mind (a doctrine they claim is established only through āḥād narrations) before treating this as a framework challenge.
-- *Historical-critical import:* "Modern hadith scholarship shows the corpus was fabricated / compiled late / not reliable." → This is a Type C philosophical usurpation (historical-critical methodology as hermeneutic authority). Route through NS-9 profile → V2 on the imported methodology → V10 structural principles applied to hadith: what are the specific transmission conditions, what does the method imported presuppose, and are those presuppositions present in the hadith transmission architecture?
-
-**Instruments that apply from the current repo:**
-- NS-9 (historical-critical skeptic profile) — governs when the challenge imports a methodological framework
-- V2 (reconstituting reason) — required when the framework is functioning as an upstream criterion
-- V10 (transmission-content vetting) — the provenance → contents → authority sequence applies to hadith challenges structurally, even though V10 was built for Qurʾānic cases; apply with calibration (hadith transmission conditions are different from Qurʾānic transmission conditions)
-- philosophical-usurpation.md Type C — governs when historical-critical methodology has been installed as the hermeneutic authority
-- arabic-backbone-predicates.md K-1 — category-error check applies when NT manuscript-critical assumptions are imported without naming the difference in transmission architecture
-
-**Where the architecture ends:** The specific epistemological arguments for the reliability of the hadith corpus — the isnād system's design, the scope and methods of jarḥ wa taʿdīl, the mutawātir/āḥād distinction and its doctrinal implications, the response to Goldziher/Schacht-style late-fabrication arguments — are not currently supplied by any case file. The practitioner operating from this repo alone will have the framework (V2, V10, NS-9, Type C) but not the content. Acknowledge this gap honestly in the engagement: "the structural framework applies; specific hadith-science arguments require dedicated treatment not yet present here."
+Hadith corpus/authentication pressure no longer routes through this file. Run V10 for the
+shared provenance -> contents -> authority sequence, then hand off to
+`references/diagnostics/hadith-authentication-epistemology.md` to distinguish corpus
+skepticism, method skepticism, report-class / epistemic-yield questions, grade confusion,
+and mixed doctrinal misuse.
 
 # Case Library - Revelation and Transmission (RT-1 through RT-4)
 
