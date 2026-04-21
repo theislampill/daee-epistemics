@@ -59,7 +59,7 @@
 |       emit: active predicates or "none active"             |
 |                                                            |
 | Specialty markers surfaced here if present:                |
-| kalamic / fitrah / RT pressure / usurpation type /         |
+| kalamic / fiṭrah / RT pressure / usurpation type /         |
 | causal-series / definition-capture / proof-grammar         |
 +------------------------------------------------------------+
              |

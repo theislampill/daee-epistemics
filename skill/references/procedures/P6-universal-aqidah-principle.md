@@ -1,6 +1,6 @@
-# P6 - The Universal Aqidah Principle
+# P6 - The Universal ʿAqīdah Principle
 
-**For:** Interlocutors who claim to have no religion, no worldview, no aqidah; or who
+**For:** Interlocutors who claim to have no religion, no worldview, no ʿaqīdah; or who
 assert "there is no righteous guidance"; or who present their skepticism as a neutral
 non-position. This procedure establishes that the interlocutor has a position before
 examining it.
@@ -10,7 +10,7 @@ examining it.
 ## The Logical and Epistemological Claim
 
 "I have no religion" is itself a religious claim. More precisely: every human being
-necessarily possesses an aqidah - a comprehensive method of understanding the world,
+necessarily possesses an ʿaqīdah - a comprehensive method of understanding the world,
 a set of foundational commitments that bind together their interpretation of reality,
 their values, and their judgements about what matters.
 
@@ -18,7 +18,7 @@ their values, and their judgements about what matters.
 
 ## The Etymological Convergence
 
-The Arabic word aqidah derives from the root aqada - to knot, to tie, to bind fast.
+The Arabic word ʿaqīdah derives from the root ʿaqada - to knot, to tie, to bind fast.
 It names what holds a person's understanding together: the binding commitments that
 prevent a worldview from being a mere collection of disconnected opinions.
 
@@ -42,9 +42,9 @@ are and whether you have examined them.
 
 Every person who forms any belief about the world, makes any value judgement, acts on any
 conception of what constitutes benefit or harm, or operates with any framework for
-interpreting experience - is operating with an aqidah. These are not optional. Forming
+interpreting experience - is operating with an ʿaqīdah. These are not optional. Forming
 beliefs, making judgements, and acting are not activities that can be performed without some
-framework. The question is never *whether* a person has an aqidah. It is only *which* one
+framework. The question is never *whether* a person has an ʿaqīdah. It is only *which* one
 they have, *how coherently* it is held, and *how honestly* they have examined it.
 
 ---
@@ -53,18 +53,18 @@ they have, *how coherently* it is held, and *how honestly* they have examined it
 
 When an interlocutor claims "I have no religion," "I'm not religious," or "I don't have
 beliefs - I just follow the evidence," the correct response is not to argue about whether
-they have a religion. It is to identify and name the aqidah they are actually operating
+they have a religion. It is to identify and name the ʿaqīdah they are actually operating
 with - the implicit bindings that structure their epistemic practice, their values, and
 their judgements - and to examine it with the same rigor they would apply to any other
 position.
 
 This is V7 (`references/techniques/V7-taqlid-check.md`) at its deepest level: distinguishing
 between a position arrived at through genuine investigation and a position absorbed from one's
-milieu without examination. The modern aqidah of secular non-religion - however unnamed - is no
+milieu without examination. The modern ʿaqīdah of secular non-religion - however unnamed - is no
 less a comprehensive worldview for being unnamed. Its bindings are simply invisible to its
 holder.
 
-**Common forms of unnamed aqidah and their bindings:**
+**Common forms of unnamed ʿaqīdah and their bindings:**
 
 - *Empiricism as the only valid path to knowledge* - a philosophical commitment not itself
   established by empirical method; self-undermining as stated
@@ -90,7 +90,7 @@ consequences that can be traced and examined using the noetic reading checklist
 The claim "I have no comprehensive framework for understanding the world" is itself a
 comprehensive claim about the world - specifically, about one's own epistemic situation
 within it. It requires a framework to state and a framework to evaluate. The person making
-it is using an aqidah to deny having one.
+it is using an ʿaqīdah to deny having one.
 
 This is performative self-refutation: the act of assertion enacts what the assertion denies.
 Deploy M1-P (`references/tactics/M1P-performative-self-refutation.md`) cleanly and early.
@@ -106,12 +106,12 @@ two things at once:
 When the slogan is functioning as pre-inquiry deflection rather than as a genuinely contracted
 criterion discussion, read the concealment as `irad`, not as blank, `none confirmed`, or
 "no issue here." The pseudo-neutral criterion is still diagnosed in full: M1-P, foreign-premise
-detection, reason-category 3 or 4, V2 burden, and the unnamed-aqidah structure. What changes is
+detection, reason-category 3 or 4, V2 burden, and the unnamed ʿaqīdah structure. What changes is
 the directly deployable register, not the existence of the diagnosis.
 
 **Layered deployment for this family**
 
-- **Layer A (complete diagnostic output):** preserve the full structural diagnosis for the da'i:
+- **Layer A (complete diagnostic output):** preserve the full structural diagnosis for the dāʿī:
   the self-refutation, the imported criterion, the V2 burden, the noetic structure candidate,
   and the restorative close.
 - **Layer B (directly deployable speech):** if `irad` is still live, do not lead with the full
@@ -149,11 +149,11 @@ offered on grounds of being better-grounded than another. The interlocutor who d
 guidance while offering critiques of the claim that guidance exists wields what they have
 denied. Deploy M8 (`references/tactics/M8-reductio.md`) - formal reductio.
 
-**4. The denial typically conceals an unnamed aqidah.**
+**4. The denial typically conceals an unnamed ʿaqīdah.**
 When pressed - "on what basis do you determine that guidance does not exist?" - the
 interlocutor will typically produce an implicit criterion: empirical verifiability, historical
 conditionality, or divine hiddenness. Each of these is itself a position within a
-comprehensive framework - i.e., an aqidah. The denial is never groundless; its grounds are
+comprehensive framework - i.e., an ʿaqīdah. The denial is never groundless; its grounds are
 always examinable.
 
 ---
@@ -169,12 +169,12 @@ religion."
 you take to be the basis of your moral commitments? What is your account of why human life
 has the significance it appears to have? What do you treat as the source of benefit and harm?"
 The answers reveal the bindings, including any worship-function embedded in the person's
-practical aqidah.
+practical ʿaqīdah.
 
 **Step 3:** Once bindings are identified, run the noetic reading checklist
-(`references/diagnostics/noetic-reading-checklist.md`) on the unnamed aqidah just revealed. The
+(`references/diagnostics/noetic-reading-checklist.md`) on the unnamed ʿaqīdah just revealed. The
 examination proceeds from there.
 
 **Step 4:** If the interlocutor pushes back on "there is righteous guidance," deploy the
 four-point argument above in sequence: burden of proof -> Excluded Middle -> reductio ->
-unnamed aqidah revealed.
+unnamed ʿaqīdah revealed.

@@ -1,7 +1,7 @@
 ---
 name: daee-epistemics
 description: >
-  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers aqidah/noetic-structure diagnosis; shubuhat and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhat; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “aqidah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
+  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or dāʿī presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers ʿaqīdah/noetic-structure diagnosis; shubuhāt and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhāt; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “ʿaqīdah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
 ---
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
@@ -530,7 +530,7 @@ Keep the surfaced state as short as possible while still making the next move go
 Do not conflate the full diagnostic record with the speech that is directly deployable to
 the interlocutor now.
 
-**Layer A - Complete diagnostic output (for the da'i / audited response).**
+**Layer A - Complete diagnostic output (for the dāʿī / audited response).**
 - Preserve the full structural diagnosis whenever the task is diagnostic, analytic, or
   audit-facing.
 - This layer keeps the governing architecture visible: M1 / M1-P where operative;
@@ -648,7 +648,7 @@ gharaḍ, the discourse orientation remains truth-seeking, and M8, P6, DO-7, or 
 tracing is actually in play.
 
 The closing must be the sharpest, most economical formulation of the restoring point — something
-a daee can carry out of the room. Not a summary of what was argued; the point itself, compressed.
+a dāʿī can carry out of the room. Not a summary of what was argued; the point itself, compressed.
 
 Do not let structural discipline (Case State, Source Basis, routing blocks) crowd out this
 synthesis. The governance blocks are upstream tools. The restoration is the destination.

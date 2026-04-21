@@ -1,6 +1,6 @@
-# Husn al-Nazar - Inferential Arguments for the Impaired Fitrah
+# Husn al-Nazar - Inferential Arguments for the Impaired Fiṭrah
 
-Load when `husn al-nazar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fitrah-operation when the fitrah is too impaired to respond directly to signs.
+Load when `husn al-nazar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond directly to signs.
 
 This file supplies inferential content for the secondary `nazar aqli` pathway. It remains downstream of:
 
@@ -41,7 +41,7 @@ Core point: explanatory deferral is not explanation. A chain of dependent items 
 
 Use when the interlocutor is open to inference to intelligence from order, calibration, and purposive structure. Keep the mode sign-directed rather than turning every sign into a heavy syllogism.
 
-Core point: order is most effective here when it directs attention rather than trying to replace fitrah with abstraction.
+Core point: order is most effective here when it directs attention rather than trying to replace fiṭrah with abstraction.
 
 ---
 
@@ -63,4 +63,4 @@ Core point: what matters here is not bare experience alone, but the truth-orient
 
 ## After the Argument
 
-Return immediately to fitrah-activation mode. The argument cleared a path; it did not become the final resting place of the case.
+Return immediately to fiṭrah-activation mode. The argument cleared a path; it did not become the final resting place of the case.

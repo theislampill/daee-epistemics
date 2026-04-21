@@ -45,7 +45,7 @@ Then run the mandatory passes in sequence:
 ### Specialty markers to surface early
 
 - `dalil`, `wujub al-nazar`, or `taqlid`-as-non-knowledge -> `kalamic-interlocutor.md`
-- blank-slate or dual-nature `fitrah` language -> `fitrah-perspectives.md`
+- blank-slate or dual-nature `fiṭrah` language -> `fitrah-perspectives.md`
 - attacks on necessary knowledge -> V9
 - historical-critical, manuscript, canon, or text-history pressure -> V10 and the matched RT case
 - prophetic discourse being redirected, semantically overridden, or evacuated -> `prophetic-discourse-neutralization.md`

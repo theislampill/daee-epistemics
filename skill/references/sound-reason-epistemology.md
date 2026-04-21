@@ -82,7 +82,7 @@ infinite regress."
 ### 1.1 - Basic Cognition and Rational Reminder
 
 Sound reasoning does not create the deepest truths from nothing. It reminds, clarifies, and
-re-orders what basic cognition already carries when the fitrah is clouded. This distinction is
+re-orders what basic cognition already carries when the fiṭrah is clouded. This distinction is
 pedagogically important:
 
 - basic or intuitive cognition delivers what is grasped immediately and lived prior to discursive
@@ -91,7 +91,7 @@ pedagogically important:
   deformation, or foreign criteria obscure them
 
 The practical implication is that argument is secondary even when necessary. Husn al-nazar is not
-the replacement for fitri recognition but the disciplined route back toward it.
+the replacement for fiṭrī recognition but the disciplined route back toward it.
 
 **Critical implication for the regress objection:** When an interlocutor demands
 justification for a foundational commitment, the correct response is not to supply

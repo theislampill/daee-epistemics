@@ -482,7 +482,7 @@ Expected routing:
 - NS: NS-2 | NS-1 candidate; do not force a single NS code from the slogan alone
 - Reason-category: 3 (pseudo-neutral) candidate; 4 if inherited-milieu language later becomes explicit
 - FPD: detected - narrow evidentialism / pseudo-neutral neutrality claim functioning as criterion and tribunal
-- M1 / M1-P: active - the position uses an unnamed aqidah to deny having one
+- M1 / M1-P: active - the position uses an unnamed ʿaqīdah to deny having one
 - Concealment: `irad`, not blank / `none confirmed`, when the slogan is functioning as worldview-deflection and the matter has not yet been allowed to press
 - Register-hold check: `irad` + truth-seek / zann / mixed -> invitational only for Layer B; P6 / V2 structural content held pending attention being given
 - Layer A: preserve the full structural diagnosis, then append the `irad`-keyed engagement register directly after it

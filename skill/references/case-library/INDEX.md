@@ -93,7 +93,7 @@ the case still requires.
 | Historical criticism; manuscript reconstruction; original-text skepticism; "the original text is lost"; "who chose scripture?" | `case-library/revelation-transmission.md` via V10, then RT-1 or RT-2 according to whether the live issue is reconstruction or canon |
 | Hadith corpus rejection; isnād / jarḥ wa taʿdīl criticism; āḥād-vs-mutawātir or grading rhetoric | `diagnostics/hadith-authentication-epistemology.md` via V10, then matched doctrine only after the hadith burden is typed |
 | Trinity model-identification pressure; perfect-being-to-Trinity argument; incarnation coherence; philosopher's-God challenge | `case-library/do-christian-extensions.md` via V8, then DO-11, DO-12, or DO-13 according to the live issue |
-| `ilm daruri` / fitri intuition / necessary knowledge is attacked; "common sense can be wrong"; discursive reasoning is treated as superior to immediate certainty | `references/techniques/V9-necessary-knowledge-priority.md` |
+| `ilm daruri` / fiṭrī intuition / necessary knowledge is attacked; "common sense can be wrong"; discursive reasoning is treated as superior to immediate certainty | `references/techniques/V9-necessary-knowledge-priority.md` |
 | One premise keeps regenerating the conclusions even after local objections are answered | `diagnostics/seven-deformations.md` §1-A (`mushābara fāsida`) |
 
 ## Quick DO Identification
@@ -103,13 +103,13 @@ the case still requires.
 | DO-1 | Divine hiddenness | Seven deformations plus P4 | Treating hiddenness as if sincerity alone settled it |
 | DO-2 | Evidential evil | M2; M4 if grief-primary | Confusing protest with probability |
 | DO-3 | Evolutionary debunking | M1 plus God-through-secondary-causes | Treating genealogy as falsification |
-| DO-4 | Religious diversity | Foundation/superstructure distinction | Confusing diversity of expression with diversity of fitri foundation |
+| DO-4 | Religious diversity | Foundation/superstructure distinction | Confusing diversity of expression with diversity of fiṭrī foundation |
 | DO-5 | Transcendence and language | V8; analogical predication | Collapsing mystery into contradiction or silence |
 | DO-6 | Attribute coherence | V8; dhat/fi'l distinction | Letting philosopher's-God assumptions set the frame |
 | DO-7 | Cognitive science of religion / HADD | M1 or V9 depending on form | Accepting a targeted defeater without checking its own criteria |
 | DO-8 | Prophetic mission and moral luck | Hujjah principle | Collapsing unequal exposure into divine injustice |
-| DO-9 | Great Pumpkin | Universality condition and tawatur fitri | Treating any basic belief as equal to a universal deliverable |
-| DO-10 | Three-tiered epistemological structure; attacks on `ilm daruri` / fitri intuition | Fitrah -> khabar -> nazar ordering; V9 when necessary knowledge itself is being denied | Flattening all knowledge into a single inferential tier |
+| DO-9 | Great Pumpkin | Universality condition and tawātur fiṭrī | Treating any basic belief as equal to a universal deliverable |
+| DO-10 | Three-tiered epistemological structure; attacks on `ilm daruri` / fiṭrī intuition | Fiṭrah -> khabar -> naẓar ordering; V9 when necessary knowledge itself is being denied | Flattening all knowledge into a single inferential tier |
 | DO-11 | Trinity from divine perfection; perfect-being-to-Trinity arguments | Distinguish perfection from one mode of exercise | Smuggling revelation-level claims into bare perfection reasoning |
 | DO-12 | Logical problem of the Trinity; model-identification pressure | Identify the model first | Letting "mystery" stand in for coherence |
 | DO-13 | Philosopher's God vs. God of revelation; incarnation coherence / imported-perfection collapse | Refuse the imported-perfection collapse | Treating abstraction as purification |

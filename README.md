@@ -8,7 +8,7 @@ The package is grounded in the coherence and convergence of a common sense accou
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
-> Release scope for `v0.1.0.2`: this patch release preserves the bounded initial-release scope while hardening selective-routing discipline, portability framing, and packaging/text-integrity guidance after the concealment-routing and output-composition correction. It is not a `1.0` completeness claim, not an exhaustive implementation of every later-volume or bespoke comparative family, and not a full specialist manual for every downstream domain. Bounded remaining gaps stay tracked in [`skill/references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md).
+> Release scope for `v0.1.0.3`: this corrective patch release preserves the bounded initial-release scope while repairing transliteration / Unicode integrity misses from `v0.1.0.2` in package-facing and release-facing text. It does not broaden the governed architecture or claim new coverage. Bounded remaining gaps stay tracked in [`skill/references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md).
 
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)

@@ -5,7 +5,7 @@
 
 # Kalamic Interlocutor - Engagement Strategy
 
-Load when the interlocutor uses markers of kalamic evidentialism: `dalil` demand, `wujub al-nazar`, `taqlid` treated as non-knowledge, `fitrah` denied epistemic standing without propositional ratification, or explicit Mu'tazili / Ash'ari / Maturidi framing.
+Load when the interlocutor uses markers of kalamic evidentialism: `dalil` demand, `wujub al-nazar`, `taqlid` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Mu'tazili / Ash'ari / Maturidi framing.
 
 ---
 
@@ -25,7 +25,7 @@ When the ontological pressure is phrased through loaded terms such as body, dire
 
 | School variant | NS code | Burden | Restoration target | Must load | Prohibited move |
 |---------------|---------|--------|--------------------|-----------|-----------------|
-| Mu'tazili | NS-6 | Epistemological | Show that `wujub al-nazar` presupposes the very fitri reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fitri recognition as sub-epistemic |
+| Mu'tazili | NS-6 | Epistemological | Show that `wujub al-nazar` presupposes the very fiṭrī reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fiṭrī recognition as sub-epistemic |
 | Mu'tazili | NS-6 | Ontological | Deploy the `huduth/khalq` distinction explicitly; expose the collapse from temporal origination to created external product | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not leave the `huduth` premise standing as concession |
 | Ash'ari | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not personally demonstrate, their belief already has non-inferential standing | V2 | Do not treat the softening as resolution of the framework error |
 | Ash'ari | NS-6 | Ontological | Target `kalam nafsi` specifically and the denial of volitional acts subsisting in God | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bila kayf` language |
@@ -43,7 +43,7 @@ Common markers:
 - "You need a `dalil` for belief."
 - "`Taqlid` is not knowledge."
 - "`Wujub al-nazar` applies to every rational person."
-- "`Fitrah` alone is not epistemically sufficient."
+- "`Fiṭrah` alone is not epistemically sufficient."
 - Narrow restriction of non-inferential knowledge to logic, sense-perception, and similarly limited classes.
 - Maturidi concession language about communal obligation or partial allowance for non-propositional evidence.
 
@@ -55,8 +55,8 @@ Four recurring critiques govern the kalamic evidentialist family:
 
 1. **The foundationalist restriction is arbitrarily narrow.**
    The framework restricts non-inferential knowledge too tightly without principled justification.
-2. **The fitrah legitimately widens the foundations.**
-   Fitri recognition is not a mere feeling awaiting inferential promotion.
+2. **The fiṭrah legitimately widens the foundations.**
+   Fiṭrī recognition is not a mere feeling awaiting inferential promotion.
 3. **`Wujub al-nazar` is circular.**
    The reliability of `nazar` cannot be grounded by `nazar` from nowhere.
 4. **The prophetic method is misrepresented.**
@@ -68,7 +68,7 @@ Four recurring critiques govern the kalamic evidentialist family:
 
 ### Mu'tazili
 
-- Epistemological track: press the circularity and the demotion of fitri recognition.
+- Epistemological track: press the circularity and the demotion of fiṭrī recognition.
 - Ontological track: insist on the `huduth/khalq` distinction and refuse the move from temporal origination to created external product.
 
 ### Ash'ari
@@ -78,7 +78,7 @@ Four recurring critiques govern the kalamic evidentialist family:
 
 ### Maturidi
 
-- Epistemological track: treat the concessionary structure as instability, not progress. The framework quietly opens the door to the very fitri account it still refuses to acknowledge clearly.
+- Epistemological track: treat the concessionary structure as instability, not progress. The framework quietly opens the door to the very fiṭrī account it still refuses to acknowledge clearly.
 - Ontological track: route with the Ash'ari ontological burden where the live issue is divine speech or attributes.
 
 ---

@@ -38,7 +38,7 @@ understood, are fully corroborative. Never 'believe despite what reason says' �
 are using a deficient conception of reason.'"
 
 Sound reason is not exhausted by one modern method or one narrowed scholastic criterion.
-Fitri recognition, sound testimony, tawatur, and valid nazar each have their proper place.
+Fiṭrī recognition, sound testimony, tawātur, and valid naẓar each have their proper place.
 The conflict dissolves when historically conditioned filters stop posing as reason itself.
 
 **5. Return to the positive.**

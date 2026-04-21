@@ -6,7 +6,7 @@
 # V6 - The Convergence Technique
 
 **Deploy when:** The interlocutor inhabits multiple epistemological registers simultaneously and
-needs to see that evidential, fitri, experiential, and testimonial considerations point in the
+needs to see that evidential, fiṭrī, experiential, and testimonial considerations point in the
 same direction.
 
 This disarms the common move of setting one register against another - "reason" against "faith,"

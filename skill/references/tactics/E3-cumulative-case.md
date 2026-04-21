@@ -10,8 +10,8 @@
 
 No single argument need be decisive. The convergence of cosmological, moral, experiential, and
 testimonial considerations produces cumulative warrant exceeding the sum of its parts. This mirrors
-the fitrah-sign nexus: the fitrah is activated not by one overwhelming proof but by an accumulation
-of ayat that together catalyze recognition.
+the fiṭrah-sign nexus: the fiṭrah is activated not by one overwhelming proof but by an accumulation
+of āyāt that together catalyze recognition.
 
 **Frame:** "Here is what direct experience says; here is what testimony says; here is what careful
 reasoning says - and they all point the same direction."

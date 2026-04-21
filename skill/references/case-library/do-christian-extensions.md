@@ -92,7 +92,7 @@ ad hoc counting rule, or the retreat into mystery.
 
 The appeal to "independent evidence" does not repair internal incoherence. It may explain why a
 person remains committed, but it does not make the doctrine coherent. The skill's governing stance
-is that fitri rational deliverances - identity, non-contradiction, and counting discipline - are
+is that fiṭrī rational deliverances - identity, non-contradiction, and counting discipline - are
 not casually suspended to preserve a doctrine. If a position survives only by equivocation, ad hoc
 counting, or mystery after failure, the burden remains on the position.
 

@@ -25,7 +25,7 @@ as a blank slate filled entirely from outside, or as two equal native tendencies
 
 ## Surface Recognition Markers
 
-Organized by view. The Sound Fitrah (majority, orthodox) view is the skill's operative position
+Organized by view. The Sound Fiṭrah (majority, orthodox) view is the skill's operative position
 and does not require surface detection — these markers identify the two non-standard views that
 trigger differential engagement.
 

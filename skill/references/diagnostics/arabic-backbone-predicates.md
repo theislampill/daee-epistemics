@@ -66,9 +66,9 @@ These predicates distill the tradition's core epistemic commitments into typed c
 
 **Route consequence:** Surface `tribunal-installation` and, where applicable, `transmission-demotion` in the case-state or IR. Hold content until the inversion is named and refused. The correction is not merely "reason and revelation agree"; it is that revelation is not a downstream branch licensed by reason's court.
 
-### Predicate O-2: Fitrah Recognition Demoted Below Its Epistemic Grade
+### Predicate O-2: Fiṭrah Recognition Demoted Below Its Epistemic Grade
 
-**Check:** Is the `fitrah` being treated as probable or sub-epistemic rather than as non-inferential knowledge when sound?
+**Check:** Is the `fiṭrah` being treated as probable or sub-epistemic rather than as non-inferential knowledge when sound?
 
 **Route consequence:** V9.
 
@@ -107,7 +107,7 @@ These predicates distill the tradition's core epistemic commitments into typed c
 - T-2 (prophetic discourse subjected to later categories): true / false / unknown
 - T-3 (later foundation mistaken for pure foundation): true / false / unknown
 - O-1 (reason-over-transmission inversion): true / false / unknown
-- O-2 (fitri recognition demoted): true / false / unknown
+- O-2 (fiṭrī recognition demoted): true / false / unknown
 - O-3 (sign converted to premise): true / false / unknown
 - K-1 (unlike transmission systems conflated): true / false / unknown
 - K-2 (lexical / technical / shar'i levels collapsed): true / false / unknown
@@ -134,7 +134,7 @@ Compression rule: run only the checks relevant to the live case. If no backbone 
 | DO-11/12 (Trinity pressure) | K-1, C-1 |
 | RT-1/RT-3 | K-1 |
 | Any case where "God must be X" appears | T-1, T-3, C-1 |
-| Any case where fitri recognition is dismissed | O-2, O-3 |
+| Any case where fiṭrī recognition is dismissed | O-2, O-3 |
 | Any case where kalamic proof is demanded | T-2, O-3 |
 | Any case built on loaded negative theological terms | M9 semantic split before doctrinal content; add K-2 only when lexical, technical, ontological, or shar'i levels are being collapsed; add definition-discipline.md when hidden technical narrowing is manufacturing the objection |
 

@@ -62,7 +62,7 @@ What fills it should be calibrated to *this particular person*:
 - The believer destabilized by viral manuscript content may now need P5 strengthening more than a
   debate-performance answer
 
-The positive engagement is not a new argument. It is the occasion for the fitrah to encounter
+The positive engagement is not a new argument. It is the occasion for the fiṭrah to encounter
 what it was always disposed to recognize.
 
 **Caution:** If the pattern of objection generation is accelerating rather than converging,

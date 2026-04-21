@@ -41,7 +41,7 @@ is not being strengthened but overwhelmed.
 
 **5. Broaden the evidential base into examined convergence.**
 The grounds for belief are wider than inherited assumption: cross-cultural convergence
-(tawatur fitri), cosmological and fine-tuning signs, moral experience and orphaned intuitions,
+(tawātur fiṭrī), cosmological and fine-tuning signs, moral experience and orphaned intuitions,
 scriptural testimony and disciplined transmission, and direct experience of God in sincere
 practice all contribute. Move the believer from a single inherited channel to multi-channel,
 examined warrant. Deploy E3 (`references/tactics/E3-cumulative-case.md`) where needed.
@@ -51,4 +51,4 @@ F3 (`references/tactics/F3-practice-epistemic-access.md`) remains a consolidatio
 substitute for source-vetting or objection work. Once the article of faith has been clarified and
 the strongest pressures have been answered proportionally, help the believer inhabit the truth in
 practice. Deeper examined conviction produces more sincere practice, and sincere practice keeps
-the channels of the fitrah clear.
+the channels of the fiṭrah clear.

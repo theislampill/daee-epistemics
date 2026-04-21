@@ -36,9 +36,9 @@ On first use:
 - make clear what work it is doing in the case
 - prefer English alone when the Arabic term adds no operational value
 
-High-frequency operational terms include: `fitrah`, `aqidah`, `shubha`, `irad`, `juhud`,
-`inkar`, `istikbar`, `nifaq`, `hawa`, `gharad`, `tawatur fitri`, `taqlid`, `tahqiq`, and
-`bila kayf`. These terms should normally be linked to diagnosis, routing, or scope control
+High-frequency operational terms include: `fiṭrah`, `ʿaqīdah`, `shubha`, `iʿrāḍ`, `juḥūd`,
+`inkār`, `istikbār`, `nifāq`, `hawā`, `gharaḍ`, `tawātur fiṭrī`, `taqlīd`, `taḥqīq`, and
+`bilā kayf`. These terms should normally be linked to diagnosis, routing, or scope control
 rather than used as ornament.
 Transmission terms such as `isnad`, `wijadah`, `qira'at`, `ahruf`, `mushaf`, `canon`, and
 `tahrif` should be used only when they change how a revelation / transmission case is classified.
@@ -142,13 +142,13 @@ distinct register. The root shared across these terms and the concept of *coveri
 | استكبار | Istikbār | Obstinacy — acknowledgment without volitional alignment; the will is not aligned with the recognition. Register: relational/spiritual; pride-structure is the barrier |
 | نفاق | Nifāq | Surface acceptance without genuine inner conviction; language of belief without inner reorganization. Register: already-believing procedure (P5) |
 
-**`irad` vs. `juhud` diagnostic boundary.** The two most frequently confused modes.
-`irad` is attention not yet given; `juhud` is acknowledgment refused once attention has
-landed. Test: has the matter been *allowed to press*? If not, the mode is `irad`
+**`irad` (iʿrāḍ) vs. `juhud` (juḥūd) diagnostic boundary.** The two most frequently confused modes.
+`irad` (iʿrāḍ) is attention not yet given; `juhud` (juḥūd) is acknowledgment refused once attention has
+landed. Test: has the matter been *allowed to press*? If not, the mode is `irad` (iʿrāḍ)
 regardless of the surface vigor of the refusal. The registers are almost opposite —
-`irad` wants invitation and room; `juhud` wants the barrier named — so misrouting is
-costly. Misrouting `irad` as `juhud` hardens the turning-away into something more
-defined; misrouting `juhud` as `irad` keeps offering invitations that the subject has
+`irad` (iʿrāḍ) wants invitation and room; `juhud` (juḥūd) wants the barrier named — so misrouting is
+costly. Misrouting `irad` (iʿrāḍ) as `juhud` (juḥūd) hardens the turning-away into something more
+defined; misrouting `juhud` (juḥūd) as `irad` (iʿrāḍ) keeps offering invitations that the subject has
 already moved past refusing.
 
 ### Sharʿī vs. Lexical Use of *Kufr* — and of the Concealment Modes
