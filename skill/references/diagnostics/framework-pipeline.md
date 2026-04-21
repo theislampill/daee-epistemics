@@ -12,9 +12,9 @@
              |
              v
 +----------------------------------------------+
-| ALWAYS-LOAD BACKGROUND                       |
-| terminology.md | case-library/INDEX.md       |
-| module-codes.md | heuristics.md              |
+| GOVERNING ENTRY + ALWAYS-LOAD BACKGROUND     |
+| SKILL.md | terminology.md                    |
+| case-library/INDEX.md | heuristics.md        |
 +----------------------------------------------+
              |
              v
@@ -34,7 +34,7 @@
              |
              v
 +------------------------------------------------------------+
-| PHASE 2: AXIS CLASSIFICATION + MANDATORY PASSES            |
+| PHASE 2: AXIS CLASSIFICATION + TRIGGERED PASS SET          |
 |                                                            |
 | CORE AXES (source -> emit):                                |
 | A1  NS code         noetic-reading-checklist.md            |
@@ -48,14 +48,18 @@
 | O1  Claim-level     pattern-profiling.md when higher-order |
 | O2  Pattern profile pattern-profiling.md when recurring PF |
 |                                                            |
-| MANDATORY PASSES - run in sequence:                        |
-| [P-A] reason-disambiguation.md                             |
+| PASS SET:                                                  |
+| [P-A] always when intellectual content is live             |
+|       reason-disambiguation.md                             |
 |       emit: reason-category (1-4) + routing gate           |
-| [P-B] foreign-premise-detection.md                         |
+| [P-B] when criterion / tribunal pressure is live           |
+|       foreign-premise-detection.md                         |
 |       emit: [Foreign Premise Detection] block              |
-| [P-C] prophetic-discourse-neutralization.md                |
+| [P-C] when prophetic discourse is being redirected         |
+|       prophetic-discourse-neutralization.md                |
 |       emit: semantic-neutralization mode or "none active"  |
-| [P-D] arabic-backbone-predicates.md                        |
+| [P-D] per trigger mapping                                  |
+|       arabic-backbone-predicates.md                        |
 |       emit: active predicates or "none active"             |
 |                                                            |
 | Specialty markers surfaced here if present:                |
@@ -89,14 +93,15 @@
 +-------------+  +-----------------------------------------------+
 | GATE BLOCKED|  | GATE OPEN                                     |
 |             |  |                                               |
-| P7 stops or |  | Routing-precedence levels 1-9 applied.        |
+| P7 stops,   |  | Routing-precedence levels 1-10 applied.       |
 | semantic    |  | Case-state-justified coordination only.       |
-| holds keep  |  |                                               |
-| content out |  | MATCHED MODULE ENTRY:                         |
-| until the   |  | Techniques: V2/V3/V5/V8/V9/V10/V12...         |
-| release     |  | Tactics: M1-M9 / E1-E4 / F1-F3 / R1-R3        |
-| condition   |  | Procedures: P1-P7                             |
-| is met.     |  | Case files: NS/DO/RT on confirmed match only  |
+| blockers,   |  |                                               |
+| or register |  | MATCHED MODULE ENTRY:                         |
+| holds block |  | Techniques: V2/V3/V5/V8/V9/V10/V12...         |
+| or compress |  | Tactics: M1-M9 / E1-E4 / F1-F3 / R1-R3        |
+| Layer B.    |  | Procedures: P1-P6                             |
+| Layer A     |  | Case files: NS/DO/RT on confirmed match only  |
+| stays live. |  |                                               |
 +-------------+  +-----------------------------------------------+
        |                       |
        +----------+------------+
@@ -104,12 +109,14 @@
                   v
 +------------------------------------------------------------+
 | OUTPUT GOVERNANCE                                          |
-| - Case-state surfaced if legibility needed                 |
+| - Layer A: complete diagnostic output retained             |
+| - Layer B: deployable engagement only if gate permits      |
+| - Case-state / Source Basis rendered from validated IR     |
 | - Claim-level / pattern-profile emitted only when live     |
 | - Inference-boundary markers kept distinct                 |
-| - Diagnostic IR emitted as auditable gate record           |
+| - Diagnostic IR remains the auditable gate record          |
 | - Source-weight/status kept distinct                       |
-| - Do not advertise unused modules                          |
+| - Do not advertise unused modules or future stacks         |
 +------------------------------------------------------------+
                   |
                   v

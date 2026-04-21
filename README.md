@@ -232,76 +232,76 @@ and only then select the relevant Tactic, Technique, Procedure, or Case Module.
 
 ## Repository Diagram
 
+Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal audit surface remains [`framework-pipeline.md`](skill/references/diagnostics/framework-pipeline.md).
+
 ```mermaid
 flowchart TB
 
-subgraph FOUNDATION["Foundational / control layer"]
+INPUT["INPUT PROMPT<br/>claim / question / excerpt"]
+
+subgraph FOUNDATION["Governing entry + architecture"]
 direction TB
   subgraph FTOP[" "]
   direction LR
     README["README<br/>landing / docs<br/>[README.md]"]
     SKILLROOT["Skill root<br/>deployable artifact"]
-    SKILL["SKILL.md<br/>control plane<br/>[SKILL.md]"]
+    SKILL["SKILL.md<br/>governing entry / control plane<br/>[SKILL.md]"]
   end
-  subgraph FBASE[" "]
+  subgraph FALWAYS["Always-load background"]
   direction LR
     TERM["Terminology<br/>shared vocabulary<br/>[terminology.md]"]
+    CASEINDEX["Case-library index<br/>first router / specialty markers<br/>[case-library/INDEX.md]"]
+    HEUR["Heuristics<br/>always-active operator discipline<br/>[heuristics.md]"]
+  end
+  subgraph FANCHOR["Architectural anchors / trigger governance"]
+  direction LR
     KERNEL["Kernel thesis<br/>architectural anchor<br/>[kernel-thesis.md]"]
-    META["Metaphysical architecture<br/>ontological / epistemic order<br/>[metaphysical-architecture.md]"]
+    META["Metaphysical architecture<br/>restoration target typing<br/>[metaphysical-architecture.md]"]
     WAHY["Wahy supremacy<br/>authority-order governance<br/>[prophecy-wahy-supremacy.md]"]
   end
 end
 
-subgraph DIAG["Diagnostics + gate"]
+subgraph DIAG["Diagnosis + dispatch gate"]
 direction TB
-  D_INDEX["Diagnostics index<br/>routing / use order<br/>[INDEX.md]"]
+  V1["V1 diagnostic gate<br/>listen / classify / triage<br/>[V1-diagnostic.md + M5]"]
+  DINDEX["Diagnostics index<br/>reference / use order<br/>[diagnostics/INDEX.md]"]
 
-  subgraph PASSES["Diagnostic passes"]
+  subgraph PASSES["Axes + triggered passes"]
   direction LR
     NOETIC["Noetic reading<br/>diagnostic lens"]
     ORIENT["Discourse orientation<br/>diagnostic classification"]
     DEF["Deformations<br/>diagnostic classification"]
     CONC["Concealment modes<br/>diagnostic classification"]
-  end
-
-  subgraph TYPED["Typed routing state"]
-  direction LR
     REASON["Reason disambiguation<br/>mandatory pass [P-A]"]
-    FPD["Foreign-premise detection<br/>mandatory pass [P-B]"]
-    PDN["Prophetic discourse neutralization<br/>mandatory pass [P-C]"]
-    ABP["Backbone predicates<br/>mandatory pass [P-D]"]
-    PATTERN["Pattern profiling<br/>claim_level / pattern_profile<br/>[pattern-profiling.md]"]
-    CASE["Case-state schema<br/>surfaced routing artifact<br/>[case-state-schema.md]"]
-    IR["Diagnostic IR<br/>dispatch gate + schema-backed record<br/>[diagnostic-ir.md]"]
+    FPD["Foreign-premise detection<br/>triggered pass [P-B]"]
+    PDN["Prophetic discourse neutralization<br/>triggered pass [P-C]"]
+    ABP["Backbone predicates<br/>trigger-mapped pass [P-D]"]
+    PATTERN["Pattern profiling<br/>claim_level / pattern_profile when live"]
   end
 
   subgraph GATE["Gate governance"]
   direction LR
     PRECED["Routing precedence<br/>suppression / tie-breaks"]
-    BOUND["Inference boundary<br/>source / synthesis control"]
+    IR["Diagnostic IR<br/>schema-backed dispatch gate<br/>[diagnostic-ir.md]"]
     MIXED["Mixed cases<br/>thin-basis governance"]
     ANTI["Anti-patterns<br/>failure checks<br/>[anti-patterns.md]"]
-    PIPE["Framework pipeline<br/>canonical ASCII audit surface"]
+    P7["P7 restoration stops<br/>hard rails / boundary reset"]
   end
 end
 
-subgraph LOWER["Dispatch surfaces"]
+subgraph LOWER["Selective routing / confirmed loads"]
 direction LR
-  subgraph CASELIB["Case library"]
-  direction TB
-    CASEINDEX["Case-library index<br/>NS / DO / RT router<br/>[INDEX.md]"]
-    PROFILES["Profiles<br/>NS-1 ... NS-12<br/>[profiles/INDEX.md]"]
-    DOCTRINE["Doctrine cases<br/>DO / RT / specialty families"]
-  end
+  PROFILES["Profiles<br/>NS-1 ... NS-12<br/>confirmed match only"]
+  DOCTRINE["DO / RT / specialty owners<br/>confirmed match only"]
+  MODULES["Matched techniques / tactics / procedures<br/>current-pass selective activation"]
+  SOUND["Sound reason epistemology<br/>deep grounding on confirmed match"]
+end
 
-  subgraph RESP["Response modules"]
-  direction TB
-    PROCS["Procedures index<br/>workflows<br/>[INDEX.md]"]
-    TACTICS["Tactics index<br/>response moves<br/>[INDEX.md]"]
-    TECH["Techniques index<br/>analytic methods<br/>[INDEX.md]"]
-    P7["P7 restoration stops<br/>content-withholding hard rails"]
-    SOUND["Sound reason epistemology<br/>deep grounding on confirmed match"]
-  end
+subgraph OUTPUT["Output structure"]
+direction LR
+  CASEOUT["Case State / Source Basis<br/>rendered from validated IR when needed<br/>[case-state-schema.md + inference-boundary.md]"]
+  LAYERS["Layer A complete diagnosis<br/>Layer B deployable engagement<br/>(held / minimal when gated)"]
+  REST["Restoration trace / next move<br/>stop-governed close"]
 end
 
 subgraph AUDIT["Audit / parity governance (non-dispatch)"]
@@ -310,66 +310,66 @@ direction LR
   PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[pattern-family-audit.md]"]
 end
 
-README -->|packages| SKILLROOT
+INPUT -->|enters| SKILL
+README -. documents .-> SKILLROOT
 SKILLROOT -->|contains| SKILL
 
-TERM -->|standardizes| D_INDEX
+SKILL -->|always loads| TERM
+SKILL -->|always loads| CASEINDEX
+SKILL -->|always loads| HEUR
 KERNEL -->|anchors| SKILL
 META -->|anchors| SKILL
 WAHY -->|anchors| SKILL
-META -->|types restoration target| CASE
 META -->|binds architectural layer| IR
 
-SKILL -->|starts with| D_INDEX
-SKILL -->|governs| PRECED
-SKILL -->|routes to| CASEINDEX
-SKILL -->|Gate Check 5| IR
+SKILL -->|starts with| V1
+DINDEX -. reference / specialty map .-> V1
+CASEINDEX -. first router / surface markers .-> V1
+HEUR -. operator discipline .-> V1
 
-D_INDEX -->|starts with| NOETIC
-D_INDEX -->|includes| ORIENT
-D_INDEX -->|classifies| DEF
-D_INDEX -->|checks| CONC
+V1 --> NOETIC
+V1 --> ORIENT
+V1 --> DEF
+V1 --> CONC
+V1 --> REASON
+V1 -->|when live| FPD
+V1 -->|when live| PDN
+V1 -->|per trigger mapping| ABP
 
-D_INDEX -->|requires| REASON
-D_INDEX -->|requires when live| FPD
-D_INDEX -->|requires when live| PDN
-D_INDEX -->|requires when live| ABP
 NOETIC -->|higher-order burden when live| PATTERN
 FPD -->|criterion / tribunal burden when live| PATTERN
-DEF -->|noetic deformation pressure| PATTERN
-REASON -->|required input| CASE
-FPD -->|upstream findings| CASE
-PDN -->|required when live| CASE
-ABP -->|required when live| CASE
-PATTERN -->|emits claim_level / pattern_profile when live| CASE
+NOETIC --> IR
+ORIENT --> IR
+DEF --> IR
+CONC --> IR
+REASON --> IR
+FPD --> IR
+PDN --> IR
+ABP --> IR
+PATTERN --> IR
 
-REASON -->|required input| IR
-FPD -->|required when live| IR
-PDN -->|required when live| IR
-ABP -->|required when live| IR
-PATTERN -->|feeds higher-order fields| IR
-CASE -->|forms surfaced state| IR
+IR -->|must validate before dispatch| PRECED
+IR -->|thin / mixed basis stays governed| MIXED
+IR -->|checked against| ANTI
+IR -->|checks hard rails| P7
 
-IR -->|checks| BOUND
-IR -->|handles thin / mixed reads| MIXED
-IR -->|guards against| ANTI
-IR -->|audited structurally by| PIPE
-IR -->|clears to| PRECED
-
-PRECED -->|opens confirmed family loads only after clearance| CASEINDEX
+PRECED -->|opens confirmed family loads through| CASEINDEX
 CASEINDEX -->|confirmed NS match| PROFILES
 CASEINDEX -->|confirmed DO / RT / specialty match| DOCTRINE
+PRECED -->|opens only case-state-justified activation| MODULES
 
-PRECED -->|opens matched dispatch only after clearance| PROCS
-PRECED -->|opens matched dispatch only after clearance| TACTICS
-TACTICS -->|feeds| TECH
-
-PROCS -->|can halt / suspend| P7
-TECH -->|includes on confirmed match| SOUND
+MODULES -->|may include on confirmed match| SOUND
 DOCTRINE -->|may require| SOUND
 
+IR -->|renders when needed| CASEOUT
+PROFILES --> LAYERS
+DOCTRINE --> LAYERS
+MODULES --> LAYERS
+P7 -->|can hold / compress Layer B| LAYERS
+CASEOUT -. accompanies surfaced output .-> LAYERS
+LAYERS --> REST
+
 LEDGER -. parity-audits .-> README
-LEDGER -. checks live claims against .-> CASE
 LEDGER -. checks live claims against .-> IR
 PFAUDIT -. historical regression for .-> PATTERN
 
@@ -381,13 +381,13 @@ classDef red fill:#fff1f2,stroke:#fb7185,stroke-width:1.5px,color:#9f1239;
 classDef indigo fill:#eef2ff,stroke:#818cf8,stroke-width:1.5px,color:#3730a3;
 classDef slate fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#334155;
 
-class README blue;
+class INPUT,README blue;
 class SKILLROOT,SKILL amber;
-class TERM,KERNEL,META,WAHY cerulean;
-class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,PATTERN,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
-class CASEINDEX,PROFILES,DOCTRINE indigo;
-class PROCS,TACTICS,TECH,P7,SOUND red;
-class LEDGER,PFAUDIT slate;
+class TERM,CASEINDEX,HEUR,KERNEL,META,WAHY cerulean;
+class V1,DINDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,PATTERN,IR,PRECED,MIXED,ANTI,P7 dgreen;
+class PROFILES,DOCTRINE indigo;
+class MODULES,SOUND red;
+class CASEOUT,LAYERS,REST,LEDGER,PFAUDIT slate;
 ```
 
 ## Install / Package (Claude-First)
