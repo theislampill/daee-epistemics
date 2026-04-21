@@ -211,6 +211,24 @@ After the NS read, ask whether the case also instantiates a recurring PF family 
 `pattern-profiling.md`. If yes, surface the profile in case-state or IR so cross-volume
 compounds remain visible without replacing the NS code.
 
+## Higher-Order Assessment and Restoration Hand-Off
+
+If a higher-order burden is live, keep four things distinct before selecting content:
+
+- the first-order objection content, if any
+- the higher-order burden (`claim_level`)
+- the recurring framework or memetic shape (`pattern_profile`) when one is doing real routing work
+- the restoration target layer from `metaphysical-architecture.md`
+
+Hand-off rule:
+
+- `meta-epistemic`: the pressure is about proof, evidence, testimony, neutrality, or warrant. Restore sound-reason or authentic-transmission order before first-order rebuttal.
+- `meta-ontological`: the pressure is about category, predication, perfection, composition, or what may count as divine action. Restore the creator-creation or transcendence-immanence distinction before first-order rebuttal.
+- `meta-noetic`: the pressure is about recognition, suppression, aversion, deformation, or whether content can land at all. Restore the blocked noetic/register layer before content.
+- `cross-level`: keep the first-order issue explicit, but state the higher-order burden and type the restoration target at that higher layer first.
+
+A recurring framework burden may explain why the case keeps regenerating, but `pattern_profile` never substitutes for the restoration target.
+
 ## Hand-Off to Discourse Orientation and Concealment Mode
 
 The NS code is necessary but not sufficient for routing. Before selecting a case-library entry, surface the discourse-orientation code from `discourse-orientation.md` (DO-orient) and the concealment mode from `modes-of-concealment.md`. The case-library entries assume all three are known. If a case is truth-seeking DO-orient plus an NS code, the case-library module is directly loadable. If the discourse orientation is identity-performance or novelty-seeking, the NS code may still be correct but the intervention is pastoral/relational before doctrinal.

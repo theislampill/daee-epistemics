@@ -63,6 +63,6 @@ These are always-active background rules, not case-specific moves.
 
 28. **Select the smallest matched subset.** A response using three well-matched modules is usually stronger than one advertising nine.
 
-29. **Make the routing state legible when it matters.** Surface case type, primary issue, module choice, confidence, and restoration target when doing so improves discipline or trust.
+29. **Make the routing state legible when it matters.** Surface case type, claim level, primary issue, module choice, confidence, and restoration target when doing so improves discipline or trust. When a higher-order PF family is live, keep the burden, the pattern, and the restoration target distinct.
 
 30. **Mark where inference begins.** If a move is model inference rather than file-grounded or cross-file synthesis, say so using the source-status legend: `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]` with their definitions.

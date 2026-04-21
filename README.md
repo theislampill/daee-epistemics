@@ -176,10 +176,10 @@ That is why the repository repeatedly distinguishes deformations, concealment mo
 The repository is not only a content store. It carries an explicit governance layer that makes its routing state inspectable:
 
 - a compact case-state schema for naming what kind of case is being read, which module subset is being selected, why, with what confidence
-- a proportionate claim-level and pattern-profile overlay for distinguishing first-order objections from meta-epistemic, meta-ontological, and meta-noetic burdens when that distinction changes routing
+- a conditional `claim_level` / `pattern_profile` layer in case-state and diagnostic IR for distinguishing first-order objections from meta-epistemic, meta-ontological, and meta-noetic burdens when that distinction changes routing
 - an inference-boundary legend separating direct file content from cross-file synthesis, model inference, and speculative extension
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
-- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
+- an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
 
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
@@ -208,19 +208,22 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
 | [`references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
 | [`references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
-| [`references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Compact metadiscursive output form for surfacing case type, module choice, confidence, and restoration target without chain-of-thought dumping. |
-| [`references/diagnostics/pattern-profiling.md`](skill/references/diagnostics/pattern-profiling.md) | Operational owner for `claim_level` and `pattern_profile`: the routing overlay that makes higher-order recurrent structures explicit only when they change sequencing or owner selection. |
+| [`references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Surfaced routing-state contract: case type, gating state, confidence, and restoration target, with `claim_level` / `pattern_profile` shown when higher-order burdens are live. |
+| [`references/diagnostics/diagnostic-ir.md`](skill/references/diagnostics/diagnostic-ir.md) | Typed dispatch gate and auditable routing record; paired with `diagnostic-ir.schema.json` to keep emitted IR constrained and reviewable. |
+| [`references/diagnostics/pattern-profiling.md`](skill/references/diagnostics/pattern-profiling.md) | Operational owner for emitted `claim_level` and `pattern_profile`: classifies higher-order burden and recurring PF family only when that changes routing, sequencing, or owner selection. |
 | [`references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
 | [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
-| [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, rhetorical overreach, excerpt over-read, and register-hold bypass. |
-| [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Parity/coverage audit ledger: explicit fidelity ratings (Landed / Compressed-but-governed / Partial / Missing) for every governed family, file, and procedure; gap inventory; canonical owner map. |
-| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Historical audit and regression document for the pattern-profile layer: 12-family map (PF-1 through PF-12), coverage/ownership audit, regression fixtures, and production-readiness judgments. |
+| [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass. |
+| [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Audit/parity governance ledger: tracks what is landed, compressed, partial, or historical; audits repo truthfulness and recency, but does not route live cases. |
+| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Historical PF-family regression and coverage audit for the higher-order layer; used to check drift, not as a live router. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
 
 Diagnose the Noetic Structure, 
-Identify the Primary Deformation, 
-Classify Concealment and Discourse Orientation, 
+identify any live higher-order burden, 
+type the restoration target at that same layer, 
+identify the Primary Deformation, 
+classify Concealment and Discourse Orientation, 
 and only then select the relevant Tactic, Technique, Procedure, or Case Module. 
 
 [`references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
@@ -259,18 +262,19 @@ direction TB
     CONC["Concealment modes<br/>diagnostic classification"]
   end
 
-  subgraph TYPED["Mandatory typed passes"]
+  subgraph TYPED["Typed routing state"]
   direction LR
     REASON["Reason disambiguation<br/>mandatory pass [P-A]"]
     FPD["Foreign-premise detection<br/>mandatory pass [P-B]"]
     PDN["Prophetic discourse neutralization<br/>mandatory pass [P-C]"]
     ABP["Backbone predicates<br/>mandatory pass [P-D]"]
-    CASE["Case-state schema<br/>typed routing artifact"]
+    PATTERN["Pattern profiling<br/>claim_level / pattern_profile<br/>[pattern-profiling.md]"]
+    CASE["Case-state schema<br/>surfaced routing artifact<br/>[case-state-schema.md]"]
+    IR["Diagnostic IR<br/>dispatch gate + schema-backed record<br/>[diagnostic-ir.md]"]
   end
 
   subgraph GATE["Gate governance"]
   direction LR
-    IR["Diagnostic IR<br/>dispatch gate<br/>[diagnostic-ir.md]"]
     PRECED["Routing precedence<br/>suppression / tie-breaks"]
     BOUND["Inference boundary<br/>source / synthesis control"]
     MIXED["Mixed cases<br/>thin-basis governance"]
@@ -298,6 +302,12 @@ direction LR
   end
 end
 
+subgraph AUDIT["Audit / parity governance (non-dispatch)"]
+direction LR
+  LEDGER["Coverage ledger<br/>parity / scope audit<br/>[coverage-ledger.md]"]
+  PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[pattern-family-audit.md]"]
+end
+
 README -->|packages| SKILLROOT
 SKILLROOT -->|contains| SKILL
 
@@ -305,7 +315,8 @@ TERM -->|standardizes| D_INDEX
 KERNEL -->|anchors| SKILL
 META -->|anchors| SKILL
 WAHY -->|anchors| SKILL
-META -->|types restoration target| IR
+META -->|types restoration target| CASE
+META -->|binds architectural layer| IR
 
 SKILL -->|starts with| D_INDEX
 SKILL -->|governs| PRECED
@@ -321,18 +332,26 @@ D_INDEX -->|requires| REASON
 D_INDEX -->|requires when live| FPD
 D_INDEX -->|requires when live| PDN
 D_INDEX -->|requires when live| ABP
-D_INDEX -->|feeds typed state| CASE
+NOETIC -->|higher-order burden when live| PATTERN
+FPD -->|criterion / tribunal burden when live| PATTERN
+DEF -->|noetic deformation pressure| PATTERN
+REASON -->|required input| CASE
+FPD -->|upstream findings| CASE
+PDN -->|required when live| CASE
+ABP -->|required when live| CASE
+PATTERN -->|emits claim_level / pattern_profile when live| CASE
 
 REASON -->|required input| IR
 FPD -->|required when live| IR
 PDN -->|required when live| IR
 ABP -->|required when live| IR
-CASE -->|forms| IR
+PATTERN -->|feeds higher-order fields| IR
+CASE -->|forms surfaced state| IR
 
 IR -->|checks| BOUND
 IR -->|handles thin / mixed reads| MIXED
 IR -->|guards against| ANTI
-IR -->|audited by| PIPE
+IR -->|audited structurally by| PIPE
 IR -->|clears to| PRECED
 
 PRECED -->|opens confirmed family loads only after clearance| CASEINDEX
@@ -347,19 +366,26 @@ PROCS -->|can halt / suspend| P7
 TECH -->|includes on confirmed match| SOUND
 DOCTRINE -->|may require| SOUND
 
+LEDGER -. parity-audits .-> README
+LEDGER -. checks live claims against .-> CASE
+LEDGER -. checks live claims against .-> IR
+PFAUDIT -. historical regression for .-> PATTERN
+
 classDef blue fill:#eef6ff,stroke:#4f8cff,stroke-width:1.5px,color:#173a74;
 classDef amber fill:#fff7ed,stroke:#f59e0b,stroke-width:1.5px,color:#92400e;
 classDef cerulean fill:#e7f3ff,stroke:#2f7fd8,stroke-width:1.5px,color:#184e8c;
 classDef dgreen fill:#e8f7ef,stroke:#20965f,stroke-width:1.5px,color:#0f5132;
 classDef red fill:#fff1f2,stroke:#fb7185,stroke-width:1.5px,color:#9f1239;
 classDef indigo fill:#eef2ff,stroke:#818cf8,stroke-width:1.5px,color:#3730a3;
+classDef slate fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#334155;
 
 class README blue;
 class SKILLROOT,SKILL amber;
 class TERM,KERNEL,META,WAHY cerulean;
-class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
+class D_INDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,PATTERN,CASE,IR,PRECED,BOUND,MIXED,ANTI,PIPE dgreen;
 class CASEINDEX,PROFILES,DOCTRINE indigo;
 class PROCS,TACTICS,TECH,P7,SOUND red;
+class LEDGER,PFAUDIT slate;
 ```
 
 ## Install / Package for Claude

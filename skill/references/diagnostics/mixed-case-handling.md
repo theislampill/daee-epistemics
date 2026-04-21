@@ -11,6 +11,7 @@
 - Carry at most two live secondary possibilities when the case is genuinely mixed.
 - Sequence from upstream barrier to downstream content. Do not answer a downstream objection while an upstream filter still governs the case.
 - When a higher-order burden and a first-order burden are both live, keep both explicit and sequence the higher-order burden first.
+- When a higher-order burden is primary, type the restoration target at that same layer before selecting downstream content. Do not let `pattern_profile` stand in for the layer being restored.
 - When an imported tribunal and a semantic blocker are both live, preserve both. Sequence tribunal-clearing first, then semantic clarification, then doctrinal engagement. Do not collapse the case into one label.
 - If grief, vested interest, or identity-performance may be primary, do not treat the case as a pure `shubha` until that possibility has been tested.
 - Treat `do not use when` as a precondition: this file is not the opening move when a clean primary read is already well established.
@@ -97,14 +98,15 @@ These playbooks are mandatory routing logic for cases where two deformation fami
 - Dominant read: inherited background plus pre-inquiry pressure, not a settled doctrinal objection.
 - Activation: the case combines (a) inherited tradition or community identity, (b) "no reason / why switch / too complicated" pre-inquiry language, and (c) a downstream sub-question about canon, authority, transmission, prophethood, or doctrinal complexity.
 - Intervention order: first run foreign-premise detection and discourse orientation; then route the most upstream sub-question. Do not answer every downstream family because the background tradition was named.
-- Sub-question routing: canon or authority certification -> V10 structural form, and DO-14 when specifically Christian; transmission or preservation -> V10 then matched RT route; comparative prophethood -> DO-10 before specific credentials; doctrinal complexity -> playbook (vi).
+- Sub-question routing: canon or authority certification -> V10 structural form, and DO-14 only when the downstream owner is specifically Christian; transmission or preservation -> V10 then matched RT route; comparative prophethood -> DO-10 before specific credentials; doctrinal complexity -> playbook (vi).
+- Non-Christian inherited-tradition boundary: if the case needs family-specific authorization content beyond V10 Step 3 and no dedicated downstream DO owner exists, stop at the structural form, name the boundary, and do not borrow DO-14 by analogy.
 - Restoration framing: P1/P4 may support the response when the register is open, but they do not substitute for the live epistemic module.
 - Failure tests: restoration-first collapse, Christology preemption, RT-2 substitution, and criterion grant. If any occurs, reroute to the upstream blocker and hold downstream content.
 
 ### (vi) Doctrinal Complexity / Disagreement Pressure
 
 - Dominant read depends on orientation, not on the amount of complexity named.
-- Variant A - genuine inquiry: the interlocutor wants to understand why scholarly diversity or doctrinal detail exists. Use P4/P3 as the opening shape, then give the smallest structural clarification needed.
+- Variant A - genuine inquiry: the interlocutor wants to understand why scholarly diversity or doctrinal detail exists. Use P4/P3 as the opening shape, then give the smallest structural clarification needed: distinguish the shared governing core from the downstream juristic or scholastic layer, and name one sane starting layer before listing differences.
 - Variant B - deflection / `irad`: complexity is being used as an exit. Hold content; use invitational register and leave one honest question live.
 - Variant C - criterion-pressure: disagreement is treated as proof of falsehood or unknowability. Run foreign-premise detection on the criterion, then V2 before explaining the content.
 - Minimal pair: "Where should I start?" -> Variant A. "Too many views, so nobody knows" -> Variant C unless the person is simply overwhelmed, in which case test for Variant B.

@@ -61,6 +61,16 @@ The following entries expand the compressed table into full audit-grade entries.
 
 ---
 
+**Higher-Order Vocabulary Theater**
+*Definition:* Naming a case `meta-epistemic`, `meta-noetic`, `memetic`, or `PF-x` without distinguishing the actual higher-order burden, the deformation pattern, and the restoration target that routing must clear.
+*Pattern appearing in output:* "This is a meta-noetic PF-2 / PF-12 problem" is announced, but the response never says whether the live pressure is criterion-import, naturalist filtering, aversion, or a blocked testimony-order question, and never types the restoration target beyond "respond to the framework."
+*Correct behavior in the same case:* State the first-order claim if there is one, name the higher-order burden precisely, name the deformation or noetic pattern separately, and state the restoration target in the architecture's own grammar. Example: "First-order claim: revelation is under attack. Higher-order burden: meta-epistemic criterion import. Pattern: PF-2 inherited evidential pressure. Restoration target: sound reason / authentic-transmission order. So V2 or V10 clears first."
+*Self-audit question:* If I used higher-order vocabulary, have I said what it changes in routing and what layer is being restored, or did I only name the vocabulary?
+*Why it damages the skill:* It makes the architecture sound sophisticated while hiding the actual work. The interlocutor hears labels; the operator never commits to whether the burden is about content, criterion, category, noetic condition, or the restoration layer. Higher-order language is then used as prestige-register compression rather than as auditable routing discipline.
+*Prevented by:* `pattern-profiling.md` (claim-level and PF discipline), `noetic-reading-checklist.md` (higher-order assessment -> restoration hand-off), `case-state-schema.md` and `diagnostic-ir.md` (restoration-target typing), `heuristics.md` rule 29 (keep burden, pattern, and target distinct).
+
+---
+
 **Tactic Over-Selection**
 *Definition:* Loading many modules because several seem relevant to the topic, rather than selecting the smallest matched subset that changes the next differentiator.
 *Pattern appearing in output:* A response to a single hiddenness objection loads V1, M5, DO-1, P2, P4, M2, M3, and F2 in sequence, providing the full apparatus when a single well-placed M2 or the grief-register check would have changed the next live issue.
@@ -141,6 +151,7 @@ The following entries expand the compressed table into full audit-grade entries.
 - Is the discourse orientation established or only guessed?
 - Have I preserved restoration over rhetorical win?
 - Have I marked where inference begins?
+- If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
 - If this is a conversation excerpt, have I confirmed multiple convergent signals before assigning a confident NS code?
 - Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?

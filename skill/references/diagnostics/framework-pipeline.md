@@ -105,6 +105,7 @@
 +------------------------------------------------------------+
 | OUTPUT GOVERNANCE                                          |
 | - Case-state surfaced if legibility needed                 |
+| - Claim-level / pattern-profile emitted only when live     |
 | - Inference-boundary markers kept distinct                 |
 | - Diagnostic IR emitted as auditable gate record           |
 | - Source-weight/status kept distinct                       |
@@ -130,6 +131,11 @@
 | - Stop if next step would overpress or outrun the case     |
 +------------------------------------------------------------+
 ```
+
+## Audit Companions
+
+- `coverage-ledger.md` audits parity, scope claims, and session recency. It is not on the live dispatch path.
+- `pattern-family-audit.md` remains the historical PF regression and coverage audit. `pattern-profiling.md` remains the live owner of emitted `claim_level` / `pattern_profile`.
 
 ## Forbidden Shortcut Paths
 
