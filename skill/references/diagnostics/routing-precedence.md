@@ -13,7 +13,7 @@ The skill operates on seven primary diagnostic axes: NS, deformation, concealmen
 
 When multiple axes compete, apply in this order:
 
-1. **Concealment mode (if non-clear).** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
+1. **Concealment mode.** `clear` means the axis is resolved and does not gate from the concealment side. Any other value keeps concealment live in routing; when concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
 2. **Discourse orientation (if non-truth-seek).** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held until orientation shifts.
 3. **Deformation (outside-in sequence).** `ada` before `i'tiqadat mawrutha`; `gharad` and `hawa` before any intellectual content; `i'tiqadat mawrutha` before evidence; `shubha` last.
 4. **Reason-category (content gate).** When reason-category is 3 or 4, V2 is required before content. When reason-category is 2, the volitional deformation is addressed before reason-engagement.
@@ -71,10 +71,12 @@ These combinations are diagnostic red flags:
 | Combination | Why invalid | Correct action |
 |-------------|-------------|----------------|
 | `juhud` + `truth-seek` DO-orient + content module deployed | `juhud` bars content deployment | Re-run V1; if `juhud` is confirmed, hold content module |
+| `irad` + `truth-seek` DO-orient + content module deployed | `irad` means the matter has not yet been allowed to press | Hold content module; use invitational register and one honest question |
 | `underdetermined` read-status + `strong` confidence | These fields are mutually exclusive | Mark one or the other |
 | `Shubha` as sole deformation + P7 Stop-1 active | Stop-1 fires for grief or identity-performance, not genuine `shubha` | Re-check whether the stated `shubha` is covering a volitional deformation |
 | NS code assigned + discourse orientation `autotelic` | Autotelic orientation means the engagement is not aimed at truth | Mark NS as provisional or omit pending orientation shift |
 | DO-series content loaded + concealment `irad` | `irad` means the matter has not been allowed to press | Invitational register only; DO content held |
+| Concealment field emitted as blank, dash, or `none confirmed` | Concealment is a mandatory routing axis; the value no longer distinguishes resolved absence from unresolved status | Emit `clear` if resolved absent, or `mode-?` if unresolved |
 | `semantic-neutralization-*` or `lexical-ontological-trap` active + `Routing gate: open` | Semantic discipline is an upstream blocker | Set `Routing gate: semantic-discipline-required`; run the owning file first |
 
 ---
@@ -89,7 +91,7 @@ When the case-state has been established and multiple modules could plausibly be
 
 **Rule P-3 (no stacking after landing):** Once a module has produced visible recognition or movement, Stop-2 fires. No additional module is deployed until the interlocutor has re-entered the exchange.
 
-**Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded regardless of how strong the NS or deformation read is.
+**Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The matched module remains explicit in Layer A / the diagnostic IR as diagnosed-and-held, not discarded.
 
 ---
 

@@ -3,7 +3,7 @@
 > role: diagnostic-governance
 > use when: any substantive response needs explicit routing state without chain-of-thought dumping
 > do not use when: answering a narrow subpoint that does not require case classification
-> output: compact case read, module choice, restoration target, confidence, change conditions
+> output: compact case read, module choice, restoration target, confidence, change conditions, and when needed the register-hold split between full diagnosis and direct deployment
 
 This file governs how the skill surfaces its read of a case. It is not a separate tactic.
 It is the compact metadiscursive layer that makes routing legible and auditable.
@@ -31,6 +31,8 @@ Use this block when diagnosis matters to the response:
 - Convergence requirement:
 - Discourse orientation:
 - Concealment mode:
+- Register-hold:
+- Deployable on shift to:
 - Matched modules:
 - Sequencing rationale:
 - Restoration target:                # must name epistemic layer or ontological distinction from metaphysical-architecture.md
@@ -58,6 +60,14 @@ Use this block when diagnosis matters to the response:
 - `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, or prior probability assignment that is generating the objection is.
 - `Pattern profile` is optional but strongly preferred when a recurring PF family is governing the next move. Keep one primary profile only; carry competing profiles in `Live alternatives`.
 - `Primary deformation` should name only the deformation governing the next move.
+- `Concealment mode` is required. Use `clear` when no active concealment mode is positively
+  read; use `mode-?` when the axis remains unresolved. Do not leave this field blank and do
+  not substitute placeholders such as `none confirmed`.
+- `Register-hold` is required whenever concealment x orientation blocks direct deployment.
+  It names the axis or cell doing the holding. This field governs Layer B only; it does not
+  cancel the Layer A diagnosis.
+- `Deployable on shift to` is required whenever `Register-hold` is populated. Name the shift
+  that would release held content rather than implying the content vanished.
 - `Routing gate` is required whenever any upstream blocker remains live. Use `semantic-discipline-required` when semantic neutralization or a loaded lexical-ontological trap must be cleared before doctrinal content can be released.
 - `Restoration target` must name what epistemic layer (`fitrah` / sound reason / authentic transmission / inferential argument) or ontological distinction (`creator-creation` / `transcendence-immanence` / `prophetic-authority`) is being restored. A target stated as "demonstrate divine unity" or "correct the objection" has not reached the restoration level.
 - `Claim-type` identifies the governing logical category of the live pressure: `logical`, `metaphysical`, `moral`, `historical`, `transmission`, `phenomenological`, or `authority`. Record the primary type only. Carry any secondary type in `Live alternatives`, `[Core Formulation]`, or `What remains live`.
@@ -124,7 +134,8 @@ Concealment mode and DO-orient compose orthogonally. The matrix is the fastest w
 How to read the matrix:
 
 - The top row is the only row where the full apparatus is deployable without register-shift concerns.
-- Any non-clear concealment + `truth-seek` means the content may be right but the register gates access. The matched doctrinal module is held, not discarded.
+- `clear` means the concealment axis has been positively resolved as non-operative, not left blank.
+- Any non-clear concealment + `truth-seek` means the content may be right but the register gates access. The matched doctrinal module is held in Layer B, not discarded from Layer A.
 - Any concealment + non-`truth-seek` means both axes gate access; the cell names which gate to address first.
 - `mixed` DO-orient cells are transitional; track for orientation shift and re-enter the matrix when it stabilizes.
 

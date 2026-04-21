@@ -95,6 +95,33 @@ it is using an aqidah to deny having one.
 This is performative self-refutation: the act of assertion enacts what the assertion denies.
 Deploy M1-P (`references/tactics/M1P-performative-self-refutation.md`) cleanly and early.
 
+## Worldview-Deflection and Pseudo-Neutrality
+
+A slogan such as "I have no religion, I just follow the evidence wherever it leads" can carry
+two things at once:
+
+1. a structural claim that self-refutes and imports a criterion
+2. a concealment posture in which the matter is still being kept from pressing
+
+When the slogan is functioning as pre-inquiry deflection rather than as a genuinely contracted
+criterion discussion, read the concealment as `irad`, not as blank, `none confirmed`, or
+"no issue here." The pseudo-neutral criterion is still diagnosed in full: M1-P, foreign-premise
+detection, reason-category 3 or 4, V2 burden, and the unnamed-aqidah structure. What changes is
+the directly deployable register, not the existence of the diagnosis.
+
+**Layered deployment for this family**
+
+- **Layer A (complete diagnostic output):** preserve the full structural diagnosis for the da'i:
+  the self-refutation, the imported criterion, the V2 burden, the noetic structure candidate,
+  and the restorative close.
+- **Layer B (directly deployable speech):** if `irad` is still live, do not lead with the full
+  P6 sequence. Ask one honest question, then stop. A calibrated question for this family is:
+  "When you say you just follow the evidence, what tells you in advance what is allowed to count
+  as evidence?"
+
+If the interlocutor actually lets the matter press, the same structural diagnosis remains in
+view, but the register may clear to `clear` truth-seeking or harden into another concealment mode.
+
 ---
 
 ## The Epistemic Weight of Denying Guidance

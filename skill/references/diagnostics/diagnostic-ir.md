@@ -47,7 +47,9 @@ Each P7 stop, when triggered, blocks the corresponding content operation. Check 
 The `Restoration target` field must name a specific epistemic layer (`fitrah`, sound reason, authentic transmission, inferential argument) or ontological distinction (`creator-creation`, `transcendence-immanence`, `prophetic-authority`) from `metaphysical-architecture.md`. Also check that no `kernel-thesis.md` violation signature is present.
 
 **Gate Check 6 - Route cleared for content.**
-After checks 1-5 pass, confirm the concealment x orientation matrix in `case-state-schema.md` shows content is deployable now. If register-hold applies, the matched content module is held, not dispatched.
+After checks 1-5 pass, confirm the concealment x orientation matrix in `case-state-schema.md`
+shows what is deployable now in Layer B. If register-hold applies, the matched content module
+is held from direct deployment, not erased from the complete audit record.
 
 Only after all six checks pass does module dispatch proceed.
 
@@ -65,7 +67,7 @@ Claim-level:                        # first-order | meta-epistemic | meta-ontolo
 Pattern-profile:                    # PF-1 ... PF-12 | none
 NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
-Concealment mode:                    # irad | juhud | inkar | istikbar | nifaq | mode-? | compound
+Concealment mode:                    # clear | irad | juhud | inkar | istikbar | nifaq | mode-? | compound
 DO-orient:                           # truth-seek | identity-perf | autotelic | zann-mode | mixed
 RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for hadith-authentication cases unless a separate Qur'anic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
@@ -86,11 +88,13 @@ Ontological disorder:                # category-mistake | illicit-analogy | equi
 Restoration target:                  # what noetic faculty, epistemic ordering, or ontological distinction is being cleared or re-established
 
 --- Output Governance ---
+                                  # Output-governance fields govern Layer B only.
+                                  # Layer A always preserves the complete diagnostic output.
 Source basis:                        # anchored | synthesis | inference | speculative - per claim
 Inference boundary active:           # yes | no
-Output shape:                        # content | relational | maieutic | invitational | single-response | held-pending
+Output shape:                        # Layer B only: content | relational | maieutic | invitational | single-response | held-pending
 Next move:                           # one specific action the response takes next
-What is withheld and why:            # if anything is held back
+What is withheld and why:            # Layer B hold only; never used to omit Layer A diagnosis or matched modules
 What remains live:                   # open differentiators, unresolved axes, or questions the next exchange must answer
 ```
 
@@ -99,6 +103,11 @@ What remains live:                   # open differentiators, unresolved axes, or
 ## Field Rules
 
 Compression rule: the IR is not a checklist to be filled performatively. Populate only fields with operative content.
+
+Concealment mode is mandatory. Use `clear` when no active concealment mode is positively read.
+Use `mode-?` when the axis remains unresolved. Blank values, em dashes, or placeholders such as
+`none confirmed` are invalid because they erase the difference between "resolved absent" and
+"still unread."
 
 **Mandatory minimum**
 
@@ -139,6 +148,7 @@ The following inconsistencies are invalid:
 - `Routing gate: semantic-discipline-required` + `Matched modules: [any doctrinal case file or attribute-content release]`
 - `DO-orient: identity-perf` + `Matched modules: [any doctrinal case file]`
 - `Reason-category: 3 or 4` + `Routing gate: open`
+- `Concealment mode: anything other than clear` + `Output shape: content`. Register-hold governs Layer B whenever concealment remains live.
 - `Claim-level: meta-epistemic | meta-ontological | meta-noetic` + `Matched modules: [first-order case file only]`. Higher-order burdens must clear before first-order dispatch.
 - `Upstream findings` contains `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` + `Routing gate: open`
 - `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`huduth/khalq` distinction for the Mu'tazili form; `kalam nafsi` doctrine for the Ash'ari form), not a generic `bila kayf` or generic foundationalist target.
@@ -170,6 +180,7 @@ Specific failure modes:
 - **Cosmetic V1 compliance:** the response says V1 was run but the routing gate remains open while orientation or upstream blockers still prevent content.
 - **Cosmetic framework-clearing:** the response names V2 but still loads content into the unreconstituted filter.
 - **Cosmetic register acknowledgment:** the response acknowledges grief or register-hold but still outputs propositional content.
+- **Output-layer collapse:** the response notes `irad` or another register-hold and therefore omits the structural diagnosis from the complete output, leaving technique without the diagnostic architecture that justified it.
 - **Architectural drift:** the response satisfies workflow checks but states the restoration target argumentatively rather than restoratively.
 - **Semantic-bypass compliance:** semantic neutralization or a lexical-ontological trap is active, but doctrinal content is released anyway. The IR catches this by requiring `semantic-discipline-required`.
 

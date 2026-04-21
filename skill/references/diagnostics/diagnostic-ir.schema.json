@@ -55,6 +55,7 @@
     "concealment_mode": {
       "type": "string",
       "enum": [
+        "clear",
         "irad",
         "juhud",
         "inkar",
@@ -339,7 +340,7 @@
       "if": {
         "properties": {
           "concealment_mode": {
-            "const": "juhud"
+            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mode-?", "compound"]
           }
         },
         "required": ["concealment_mode"]

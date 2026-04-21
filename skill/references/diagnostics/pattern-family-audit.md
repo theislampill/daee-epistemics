@@ -473,7 +473,25 @@ Expected: FPD pass first — no explicit criterion stated; uncertain. Check disc
 
 Expected: FPD = detected; Source tradition = scientism/narrow evidentialism; Functional role = criterion; Route consequence = V2 must loosen the criterion before any evidential content. NS-1 candidate. V2 before E1/E3. M1 check: the empirical-testability criterion is not itself empirically testable — self-refutation probe applies before V2.
 
-**F2-c**: "I've looked into Islam and I just don't find the arguments convincing."
+**F2-c** (verbatim anchor): "I have no religion, I just follow the evidence wherever it leads."
+
+Expected routing:
+- Input type: worldview-denial claim -> P6 by default
+- Claim: authority @ cross-level (meta-epistemic criterion pressure + meta-noetic register question)
+- Pattern: PF-2 primary; PF-12 candidate only if naturalist filtering becomes explicit
+- NS: NS-2 | NS-1 candidate; do not force a single NS code from the slogan alone
+- Reason-category: 3 (pseudo-neutral) candidate; 4 if inherited-milieu language later becomes explicit
+- FPD: detected - narrow evidentialism / pseudo-neutral neutrality claim functioning as criterion and tribunal
+- M1 / M1-P: active - the position uses an unnamed aqidah to deny having one
+- Concealment: `irad`, not blank / `none confirmed`, when the slogan is functioning as worldview-deflection and the matter has not yet been allowed to press
+- Register-hold check: `irad` + truth-seek / zann / mixed -> invitational only for Layer B; P6 / V2 structural content held pending attention being given
+- Layer A: preserve the full structural diagnosis, then append the `irad`-keyed engagement register directly after it
+- Layer B: one honest question, no doctrinal dump, stop. Concrete question: "When you say you just follow the evidence, what tells you in advance what is allowed to count as evidence?"
+- What NOT to do: emit concealment as blank / dash / `none confirmed`; collapse to register-only output; dump the full P6 / V2 / M1 diagnosis directly at the interlocutor while `irad` remains active
+
+Failure modes tested: placeholder concealment, Layer-A-to-Layer-B collapse, register-hold bypass, forced NS lock.
+
+**F2-d**: "I've looked into Islam and I just don't find the arguments convincing."
 
 Expected: Underdetermined — "don't find convincing" could be genuine examination with shubha (truth-seek), surface dismissal (ẓann), or argument-generation as exit (hawā/gharaḍ). Do NOT load E3 or V6. Mark underdetermined. Decisive missing differentiator: what specific arguments were examined and what is the criterion for "convincing"?
 

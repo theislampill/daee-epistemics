@@ -523,6 +523,32 @@ Full treatment: `references/diagnostics/mixed-case-handling.md`
 
 Keep the surfaced state as short as possible while still making the next move governable.
 
+### V.A - Two-Layer Output Contract
+
+Do not conflate the full diagnostic record with the speech that is directly deployable to
+the interlocutor now.
+
+**Layer A - Complete diagnostic output (for the da'i / audited response).**
+- Preserve the full structural diagnosis whenever the task is diagnostic, analytic, or
+  audit-facing.
+- This layer keeps the governing architecture visible: M1 / M1-P where operative;
+  foreign-premise detection; V2 / framework-clearing burden; noetic-structure diagnosis;
+  restorative close; concealment diagnosis; and the concealment-keyed engagement register
+  appended directly after the diagnosis.
+- Register-hold does not delete this layer. If concealment or DO-orient blocks live
+  deployment, the matched structural content remains present here as diagnosed-and-held,
+  not omitted.
+
+**Layer B - Directly deployable interlocutor-facing engagement.**
+- This layer contains only what may be said to the interlocutor under the current
+  concealment x DO-orient cell.
+- `output_shape`, register-hold, and withheld-content notes govern this layer, not Layer A.
+- Under `irad`, do not dump Layer A at the person: use the invitational register, ask one
+  honest question, stop, keep character-as-evidence primary, and leave the interval open.
+  Structural and doctrinal content stays held pending actual attention being given.
+- When the task asks for wording to say, surface Layer B separately rather than substituting
+  it for Layer A.
+
 **Always present**
 - `[Restorative Response]`
 - The closing formulation
@@ -530,6 +556,8 @@ Keep the surfaced state as short as possible while still making the next move go
 **Conditional governance blocks**
 - `[Case State]` when routing legibility, mixed reads, or module discipline need to be made explicit
 - `[Source Basis]` when the reply combines files, depends on synthesis, or uses model-level inference
+- `[Engagement Register]` when concealment mode is non-`clear`, DO-orient is non-`truth-seek`,
+  or Layer B differs materially from Layer A
 - `[Core Formulation]` when the shubhah, criterion, or objection-structure needs to be unpacked as explicit claims
 - `[Pastoral/Relational Note]` when non-intellectual conditions materially govern follow-through
 
@@ -548,10 +576,18 @@ or research-grade material may anchor substantive doctrinal and epistemic claims
 or instructional material may anchor sequencing, examples, or reminders, but should not by itself set
 doctrine or override the core architecture.
 
+If a register-hold is active, append `[Engagement Register]` directly after the structural
+diagnosis. This block names the live register, what is directly deployable now, what is
+held and why, and what shift would release the hold. It does not replace
+`[Restorative Response]`; it follows it.
+
 **[Restorative Response]**
 - M1/M1-P first if applicable — lead with it, cleanly
 - Presuppositional level before first-order content — always
 - First-order content using the chosen tactic/technique/procedure/case module
+- In audit/diagnostic tasks, preserve the full structural response here even when Layer B is
+  held. Mark held deployment explicitly rather than collapsing the response to register-only
+  speech.
 - M2 prior probability surfaced where evidential arguments appear
 - M3 orphaned intuitions probed where relevant
 - Keep logical, probabilistic, historical, moral, grief, and authority claims distinct; answer the actual pressure being applied

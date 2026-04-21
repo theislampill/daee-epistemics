@@ -137,6 +137,7 @@ and do not, on their own, constitute the full sharʿī category of *kufr* vs. *�
 
 | Code | Transliteration | Character | Register governed |
 |------|-----------------|-----------|-------------------|
+| `clear` | - | No active concealment mode positively read; the axis is resolved and does not impose a concealment hold | No concealment hold on this axis; full apparatus may deploy if DO-orient and other gates permit |
 | `irad` | Iʿrāḍ | Turning away; refusal to attend; matter not yet allowed to press | Invitational; do not dump argument; leave one honest question live; character-as-evidence |
 | `juhud` | Juḥūd | Culpable denial once the matter has pressed; repudiative posture | Relational; name the barrier; maieutic (P4) where a seam of inner recognition is visible |
 | `inkar` | Inkār | Active resistance against internal recognition | Maieutic (P4); R2; do not feed absorbable argument |
@@ -145,6 +146,10 @@ and do not, on their own, constitute the full sharʿī category of *kufr* vs. *�
 | `mode-?` | — | Mode still unreadable | Route through mixed-case-handling |
 
 Compound: `<mode-A> | <mode-B>` when two modes are genuinely co-present.
+
+Concealment is a mandatory typed field. Use `clear` when the axis is resolved absent. Use
+`mode-?` when the axis remains unreadable. Never leave the field blank and never substitute
+`none confirmed`.
 
 **`irad` vs. `juhud` boundary:** iʿrāḍ is attention not yet given; juḥūd is
 acknowledgment refused once attention has landed. Test: has the matter been *allowed to
@@ -255,7 +260,7 @@ The interlocutor is an analytically inclined atheist who frames the question as 
 and insists "there is no evidence," engaging in good faith. No obvious affective charge;
 no authority-wound; no identity performance visible.
 
-    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-12    NS: NS-1    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-12    NS: NS-1    DO-orient: truth-seek    Concealment: clear    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
 
 Reasoning: The NS code is clear; orientation is truth-seek so the full apparatus applies;
 no concealment mode is active (the interlocutor is not concealing anything beneath the
@@ -286,7 +291,7 @@ willing to transition.
 A classically trained student raises the question: "How can I hold ʿaqīdah as knowledge
 without naẓar? Doesn't taqlīd fail to rise to the level of ʿilm?"
 
-    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-2    NS: NS-6    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate hard Muʿtazilī / Ashʿarī / Māturīdī position; then V2 on the evidentialist restriction
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-2    NS: NS-6    DO-orient: truth-seek    Concealment: clear    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate hard Muʿtazilī / Ashʿarī / Māturīdī position; then V2 on the evidentialist restriction
 
 Reasoning: The markers are clear (dalīl demand; wujūb al-naẓar; taqlīd-treated-as-non-
 knowledge); truth-seek applies; no concealment; the deformation is the inherited kalāmic
@@ -299,7 +304,7 @@ A practicing Muslim raises simultaneously: a hadith they find morally troubling,
 about a scholar's public failure, and a Twitter thread about Qurʾānic manuscript variants.
 Affect is anxious; the register is internal, not external debate.
 
-    Case: compound internal crisis    Claim: transmission @ cross-level    Pattern: PF-11    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: —    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the hadith) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: P6 / mixed-case-handling — pastoral first; disaggregate; matched sub-move per component
+    Case: compound internal crisis    Claim: transmission @ cross-level    Pattern: PF-11    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: clear    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the hadith) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: P6 / mixed-case-handling — pastoral first; disaggregate; matched sub-move per component
 
 Reasoning: NS-8 is the compound. DO-orient is mixed because the subject is genuinely
 truth-seeking and simultaneously destabilized. RT-4 applies on the text-history axis
@@ -313,7 +318,7 @@ without increasing the destabilization.
 An academic non-Muslim with training in NT text-criticism raises manuscript claims about
 early Qurʾānic codices, framing the question as methodologically neutral.
 
-    Case: RT pressure    Claim: transmission @ meta-epistemic    Pattern: PF-4    NS: NS-9    DO-orient: truth-seek    Concealment: —    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework (name NT conditions that are not analogous); then V10 (separate artifact from authenticated transmission); then matched RT module
+    Case: RT pressure    Claim: transmission @ meta-epistemic    Pattern: PF-4    NS: NS-9    DO-orient: truth-seek    Concealment: clear    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework (name NT conditions that are not analogous); then V10 (separate artifact from authenticated transmission); then matched RT module
 
 Reasoning: The interlocutor is genuinely truth-seeking; the framework is the problem, not
 the person. The deformation is iʿtiqādāt mawrūtha applied to method. Direct RT-1

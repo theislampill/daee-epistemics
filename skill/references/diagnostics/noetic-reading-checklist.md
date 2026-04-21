@@ -233,10 +233,14 @@ A recurring framework burden may explain why the case keeps regenerating, but `p
 
 The NS code is necessary but not sufficient for routing. Before selecting a case-library entry, surface the discourse-orientation code from `discourse-orientation.md` (DO-orient) and the concealment mode from `modes-of-concealment.md`. The case-library entries assume all three are known. If a case is truth-seeking DO-orient plus an NS code, the case-library module is directly loadable. If the discourse orientation is identity-performance or novelty-seeking, the NS code may still be correct but the intervention is pastoral/relational before doctrinal.
 
+Concealment is mandatory on this hand-off. Emit `clear` when no active concealment mode is
+positively read; emit `mode-?` when the concealment axis remains unresolved. Do not leave the
+field blank and do not use placeholders such as `none confirmed`.
+
 ## Output Shape
 
 Terminate the checklist with a compact line, not a lecture:
 
-    NS: NS-X [| NS-Y]    Deformation: <primary> [| <secondary>]    Concealment: <mode>    DO-orient: <orientation>    Strength: <strong | provisional | low>    Next: <smallest matched module>
+    NS: NS-X [| NS-Y]    Deformation: <primary> [| <secondary>]    Concealment: <clear | irad | juhud | inkar | istikbar | nifaq | mode-A | mode-B | mode-?>    DO-orient: <orientation>    Strength: <strong | provisional | low>    Next: <smallest matched module>
 
 This line is what the case-state schema in `case-state-schema.md` ingests. It is the routing artifact. Everything before it is the work that produced it.
