@@ -1,13 +1,13 @@
 > role: case-library
 > use when: revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims have already been distinguished as the live family
-> do not use when: generic theism, grief, Trinity pressure, hadith corpus/authentication pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental
+> do not use when: generic theism, grief, Trinity pressure, ḥadīth corpus/authentication pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental
 > overlaps: V10, P2, P5, `sound-reason-epistemology.md` §4.3, `terminology.md`
 > output: matched recurring cases in the revelation / transmission family
-> scope boundary: this file governs Qurʾānic/scriptural RT cases (RT-1 through RT-4). It does NOT govern: (1) hadith corpus transmission/authentication epistemology — isnād grading, jarḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf classification, and āḥād-vs-mutawātir epistemic-yield questions now route through `references/diagnostics/hadith-authentication-epistemology.md`; (2) Bible/NT transmission in a comparative Islamic framework as a dedicated case family — this remains tangentially addressed in cross-tradition contamination guards within RT-1 through RT-3 rather than as a governed owner of its own.
+> scope boundary: this file governs Qurʾānic/scriptural RT cases (RT-1 through RT-4). It does NOT govern: (1) ḥadīth corpus transmission/authentication epistemology — isnād grading, jarḥ wa taʿdīl, ṣaḥīḥ/ḥasan/ḍaʿīf classification, and āḥād-vs-mutawātir epistemic-yield questions now route through `references/diagnostics/hadith-authentication-epistemology.md`; (2) Bible/NT transmission in a comparative Islamic framework as a dedicated case family — this remains tangentially addressed in cross-tradition contamination guards within RT-1 through RT-3 rather than as a governed owner of its own.
 
-## Hadith Routing Note
+## Ḥadīth Routing Note
 
-Hadith corpus/authentication pressure no longer routes through this file. Run V10 for the
+Ḥadīth corpus/authentication pressure no longer routes through this file. Run V10 for the
 shared provenance -> contents -> authority sequence, then hand off to
 `references/diagnostics/hadith-authentication-epistemology.md` to distinguish corpus
 skepticism, method skepticism, report-class / epistemic-yield questions, grade confusion,

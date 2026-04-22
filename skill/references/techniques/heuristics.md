@@ -57,7 +57,7 @@ These are always-active background rules, not case-specific moves.
 
 25. **Do not let hostile historical criticism pose as an upstream tribunal.** It often imports a narrowed theory of testimony and a naturalistic prior before the argument even begins.
 
-26. **In Muslim-internal cases, separate authority fatigue from shubha.** Betrayal, hypocrisy of representatives, revisionist moral filtering, and genuine textual-historical doubt are not the same thing.
+26. **In Muslim-internal cases, separate authority fatigue from shubhah.** Betrayal, hypocrisy of representatives, revisionist moral filtering, and genuine textual-historical doubt are not the same thing.
 
 27. **Where public identity-cost is high, aim first at unclenching.** In those cases the first win is claim-separation and reduced defensiveness, not immediate verbal surrender.
 

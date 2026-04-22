@@ -10,7 +10,7 @@
 another: (a) "Islam must be defensible by the standards of the modern discourse I am situated in"
 (modernist evidentialism); (b) "The traditional authorities have failed morally or epistemically"
 (authority-fatigue, often with specific incidents driving it); (c) "Reason and transmitted text are
-in conflict on [X]" (taʿāruḍ anxiety, typically over a specific verse, hadith, or classical ruling).
+in conflict on [X]" (taʿāruḍ anxiety, typically over a specific verse, ḥadīth, or classical ruling).
 
 **Load-bearing anchor:** Not a single proposition but a *compound* — the interlocutor is holding
 authority-fatigue plus moral-recoil plus textual-historical pressure simultaneously, and each is
@@ -30,7 +30,7 @@ tradition's moral-ontological premises; taʿāruḍ addresses by the reason-reve
 interlocutor presents them compounded precisely because the compound is more stable than any
 single element would be. Disaggregation releases them to be addressed.
 
-**Deformation types:** Compound. The taʿāruḍ-surface is often shubha covering hawā (moral recoil
+**Deformation types:** Compound. The taʿāruḍ-surface is often shubhah covering hawā (moral recoil
 at a ruling) or gharaḍ (social stake in modernist circles). Authority-fatigue can function as
 iʿtiqādāt mawrūtha (absorbed framework). The compound must be diagnosed before the intervention
 is chosen.
@@ -47,7 +47,7 @@ first to `references/procedures/` for the longer P-procedure that handles Muslim
 
 **Register note:** This is a pastoral case before it is a doctrinal one. Intellectual engagement
 without relational register frequently worsens the crisis. The pastoral-first ordering is a
-practical inference: when ulterior motive, whim, or shubha are active fiṭrah-suppressors,
+practical inference: when ulterior motive, whim, or shubhah are active fiṭrah-suppressors,
 cognitive intervention on a destabilized person tends to misfire before the stabilizing conditions
 are in place.
 
@@ -78,7 +78,7 @@ for mandatory and prohibited actions under each stop.
 ### Playbook (ii) — Moral Recoil + Historical Criticism
 
 **Intervention order:**
-1. Identify whether the moral recoil — a hadith found troubling, a ruling perceived as unjust — is the governing concern, with historical criticism recruited as corroboration after the fact.
+1. Identify whether the moral recoil — a ḥadīth found troubling, a ruling perceived as unjust — is the governing concern, with historical criticism recruited as corroboration after the fact.
 2. If moral recoil is primary, address it directly; historical-critical arguments engaged alone will not resolve the underlying moral discomfort.
 3. Only after the moral recoil is acknowledged, assess whether the historical-critical claim still needs independent engagement.
 

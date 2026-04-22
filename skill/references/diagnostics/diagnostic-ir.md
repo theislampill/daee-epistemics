@@ -69,7 +69,7 @@ NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
 Concealment mode:                    # clear | irad | juhud | inkar | istikbar | nifaq | mode-? | compound
 DO-orient:                           # truth-seek | identity-perf | autotelic | zann-mode | mixed
-RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for hadith-authentication cases unless a separate Qur'anic RT family is also live
+RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qur'anic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
 P7 stops active:                     # Stop-1 | Stop-2 | Stop-3 | Stop-4 | Stop-5 | none
@@ -120,8 +120,8 @@ For any substantive response claiming to have done V1, the following fields must
 - DO-orient
 - Read status
 - Confidence
-- Reason-category
 - P7 stops active
+- Reason-category
 - Routing gate
 - Matched modules
 - Restoration target
@@ -139,7 +139,7 @@ Populate these whenever their trigger is live:
 - `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
 - `Pattern-profile` when a recurring PF family is governing routing or cross-volume consolidation
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
-- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Hadith-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
+- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
 - `What remains live` when live alternatives, held routes, or a boundary-reset condition must stay visible
 
@@ -170,7 +170,7 @@ The following inconsistencies are invalid:
 - `Upstream findings` contains `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` + `Routing gate: open`
 - `Matched modules` includes anticipated downstream modules or reserve owners not governing the current pass
 - `P7 Stop-2 active` + `Next move` advertises another argumentative sequence rather than a boundary reset / one bounded question
-- `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`huduth/khalq` distinction for the Mu'tazili form; `kalam nafsi` doctrine for the Ash'ari form), not a generic `bila kayf` or generic foundationalist target.
+- `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`ḥudūth/khalq` distinction for the Muʿtazilī form; `kalām nafsī` doctrine for the Ashʿarī form), not a generic `bilā kayf` or generic foundationalist target.
 - `NS code: NS-6` + ontological burden live + `Backbone predicates active` omits `O-1` and `C-1`. When NS-6 and the case involves divine attributes or speech, those predicates are minimum checks.
 
 An IR with any of the above combinations has drifted.

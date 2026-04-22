@@ -1,6 +1,6 @@
 # V11 — Taqlīd Recognition and Transition to Taḥqīq
 
-> role: standalone module for cases where the live issue is transition from imitation to examination, not a shubha to dissolve
+> role: standalone module for cases where the live issue is transition from imitation to examination, not a shubhah to dissolve
 > use when: the interlocutor — believer or unbeliever — recognizes their position is held by taqlīd and asks, explicitly or implicitly, how to move toward taḥqīq
 > do not use when: the interlocutor is defending their taqlīd; V7 (the check) is still required before V11 (the transition)
 > output: a staged path from inherited position to examined position, without destabilizing the position itself during the transition

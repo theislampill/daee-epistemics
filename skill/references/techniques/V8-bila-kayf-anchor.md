@@ -6,7 +6,7 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 
 **Self-refutation of the transcendence objection:** if human language cannot refer to anything beyond creaturely experience, then "God is incomprehensible" cannot be stated without using creaturely language to make a claim about God.
 
-**Bila kayf** refuses both errors:
+**Bilā kayf** refuses both errors:
 
 - `tashbih` - importing creaturely mode into divine attributes
 - `ta'til` - denying the reality of divine attributes altogether
@@ -29,7 +29,7 @@ Against incarnation-coherence pressure: keep the case on hidden creaturely-mode 
 
 **Routing warning:** when the objection shifts from "can divine attributes be affirmed coherently?" to "why let revelation speak before a prior metaphysical model has ruled on God?," the case is no longer only an attribute-metaphysics case. Route outward to P2 and the testimony/revelation layer rather than treating it as a pure attributes dispute.
 
-**Muslim-internal `khalq al-Quran` routing check:** when the case is specifically about the createdness of the Quran, the status of divine speech, or intra-kalam disputes on this question, the `huduth/khalq` distinction is the load-bearing move. Confirm it is explicitly present before releasing the response. The `bila kayf` account alone does not prevent this collapse.
+**Muslim-internal `khalq al-Qurʾān` routing check:** when the case is specifically about the createdness of the Qurʾān, the status of divine speech, or intra-kalām disputes on this question, the `ḥudūth/khalq` distinction is the load-bearing move. Confirm it is explicitly present before releasing the response. The `bilā kayf` account alone does not prevent this collapse.
 
 For fuller treatment:
 

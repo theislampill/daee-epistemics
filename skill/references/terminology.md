@@ -36,12 +36,12 @@ On first use:
 - make clear what work it is doing in the case
 - prefer English alone when the Arabic term adds no operational value
 
-High-frequency operational terms include: `fiṭrah`, `ʿaqīdah`, `shubha`, `iʿrāḍ`, `juḥūd`,
+High-frequency operational terms include: `fiṭrah`, `ʿaqīdah`, `shubhah`, `iʿrāḍ`, `juḥūd`,
 `inkār`, `istikbār`, `nifāq`, `hawā`, `gharaḍ`, `tawātur fiṭrī`, `taqlīd`, `taḥqīq`, and
 `bilā kayf`. These terms should normally be linked to diagnosis, routing, or scope control
 rather than used as ornament.
-Transmission terms such as `isnad`, `wijadah`, `qira'at`, `ahruf`, `mushaf`, `canon`, and
-`tahrif` should be used only when they change how a revelation / transmission case is classified.
+Transmission terms such as `isnād`, `wijādah`, `qirāʾāt`, `aḥruf`, `muṣḥaf`, `canon`, and
+`taḥrīf` should be used only when they change how a revelation / transmission case is classified.
 
 ---
 
@@ -121,7 +121,7 @@ Apply the discipline rules above when deciding whether to use a term and whether
 | تقليد | Taqlīd | Uncritical imitation of one's intellectual or cultural environment; getting to truth or error by chance |
 | عادة | ʿĀda | Habituated pattern — cognitive and behavioral habits that have become second nature, displacing original fiṭrah deliverances |
 | غرض | Gharaḍ | Vested interest — ulterior motive (social, professional, relational) making honest inquiry feel threatening |
-| شبهة | Shubha | Spurious objection or doubt — a specific intellectual impediment lodged in the mind; the only deformation that responds directly to intellectual engagement |
+| شبهة | Shubhah | Spurious objection or doubt — a specific intellectual impediment lodged in the mind; the only deformation that responds directly to intellectual engagement |
 | بدعي عقلي | Bidʿī ʿaqlī | Contaminated rationality — a historically contingent doxastic rule (e.g. scientism) mistaken for pure reason itself |
 | بدعي نقلي | Bidʿī naqlī | Corrupted transmission — rejection of a caricature of the tradition rather than the tradition itself |
 
@@ -142,13 +142,13 @@ distinct register. The root shared across these terms and the concept of *coveri
 | استكبار | Istikbār | Obstinacy — acknowledgment without volitional alignment; the will is not aligned with the recognition. Register: relational/spiritual; pride-structure is the barrier |
 | نفاق | Nifāq | Surface acceptance without genuine inner conviction; language of belief without inner reorganization. Register: already-believing procedure (P5) |
 
-**`irad` (iʿrāḍ) vs. `juhud` (juḥūd) diagnostic boundary.** The two most frequently confused modes.
-`irad` (iʿrāḍ) is attention not yet given; `juhud` (juḥūd) is acknowledgment refused once attention has
-landed. Test: has the matter been *allowed to press*? If not, the mode is `irad` (iʿrāḍ)
+**`irad` vs. `juhud` diagnostic boundary.** The two most frequently confused modes.
+`irad` is attention not yet given; `juhud` is acknowledgment refused once attention has
+landed. Test: has the matter been *allowed to press*? If not, the mode is `irad`
 regardless of the surface vigor of the refusal. The registers are almost opposite —
-`irad` (iʿrāḍ) wants invitation and room; `juhud` (juḥūd) wants the barrier named — so misrouting is
-costly. Misrouting `irad` (iʿrāḍ) as `juhud` (juḥūd) hardens the turning-away into something more
-defined; misrouting `juhud` (juḥūd) as `irad` (iʿrāḍ) keeps offering invitations that the subject has
+`irad` wants invitation and room; `juhud` wants the barrier named — so misrouting is
+costly. Misrouting `irad` as `juhud` hardens the turning-away into something more
+defined; misrouting `juhud` as `irad` keeps offering invitations that the subject has
 already moved past refusing.
 
 ### Sharʿī vs. Lexical Use of *Kufr* — and of the Concealment Modes
@@ -273,32 +273,32 @@ output: the closing formulation is *restoration language*, not *argument conclus
 
 Use these only when they change routing or scope:
 
-- `isnad`: the chain by which a report is transmitted and authenticated. Operationally decisive in
+- `isnād`: the chain by which a report is transmitted and authenticated. Operationally decisive in
   V10 because an isolated text-artifact is not the same thing as transmitted khabar.
-- `wijadah`: finding a text without a live transmission-chain. It may preserve historical
+- `wijādah`: finding a text without a live transmission-chain. It may preserve historical
   material, but it does not automatically carry the authority of authenticated transmission.
-- `qira'at`: canonically transmitted modes of Qur'anic recitation. Do not treat the term as a
+- `qirāʾāt`: canonically transmitted modes of Qur'anic recitation. Do not treat the term as a
   synonym for uncontrolled textual corruption.
-- `ahruf`: the revealed range or modes associated with Qur'anic recitation. Do not collapse ahruf
+- `aḥruf`: the revealed range or modes associated with Qur'anic recitation. Do not collapse aḥruf
   discussion into any single manuscript question.
-- `mushaf`: a written codex or written copy of the Qur'an. A mushaf is a textual witness, not the
+- `muṣḥaf`: a written codex or written copy of the Qur'an. A muṣḥaf is a textual witness, not the
   whole transmission system by itself.
 - `canon` / `canonicity`: the recognized corpus treated as scriptural and normatively
   authoritative. Distinguish canon recognition from inspiration and from textual reconstruction.
-- `tahrif`: distortion or alteration. State whether the case is about textual corruption,
+- `taḥrīf`: distortion or alteration. State whether the case is about textual corruption,
   interpretive distortion, or both before answering.
 
 ---
 
 ## Route-Critical Worship Terms
 
-- `rububiyyah`: divine lordship — creating, sustaining, owning, governing, and disposing. Do not
+- `rubūbiyyah`: divine lordship — creating, sustaining, owning, governing, and disposing. Do not
   confuse conceding lordship with conceding exclusive worship.
-- `uluhiyyah`: God's exclusive right to be worshipped. Many disputes concede rububiyyah while
-  violating uluhiyyah through devotion, mediation, or unseen-authority claims.
-- `ibadah` / worship: drawing near in devotion to one believed to bear unseen authority over
+- `ulūhiyyah`: God's exclusive right to be worshipped. Many disputes concede rubūbiyyah while
+  violating ulūhiyyah through devotion, mediation, or unseen-authority claims.
+- `ʿibādah` / worship: drawing near in devotion to one believed to bear unseen authority over
   benefit, harm, protection, or access to them. Do not reduce worship to outward ritual alone.
-- `ma'bud` / `ilah`: an object of worship - that to which nearness is sought because it is believed to
+- `maʿbūd` / `ilāh`: an object of worship - that to which nearness is sought because it is believed to
   affect reality beyond ordinary visible causation.
 - `shirk`: assigning worship or worship-functions to other than Allah, whether by attributing
   independent efficacy or intermediary efficacy.
@@ -314,7 +314,7 @@ Use these only when they change routing or scope:
 
 - temporal relation: the relation between events considered as before/after. This is not a
   separately subsisting thing.
-- `zaman`: time as the measure of motion subsisting in a moving substrate. When it belongs to a
+- `zamān`: time as the measure of motion subsisting in a moving substrate. When it belongs to a
   created system, it is created with that system.
 - space: the spatial extension or location-property of particulars, not a self-standing container
   existing apart from them.

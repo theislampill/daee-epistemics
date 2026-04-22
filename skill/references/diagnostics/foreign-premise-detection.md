@@ -127,7 +127,7 @@ Do not answer as if revelation were merely a downstream confirmation of what rea
 
 ## Adversarial Near-Misses
 
-**Near-miss 1 - sophisticated shubha covering upstream prior.**
+**Near-miss 1 - sophisticated shubhah covering upstream prior.**
 The visible objection looks content-level, but the real driver is the prior probability assignment upstream of it.
 
 **Near-miss 2 - historical-critical methodology presented as neutral.**

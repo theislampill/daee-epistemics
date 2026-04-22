@@ -86,7 +86,7 @@ State note: the sections below preserve the audit-time snapshot so the regressio
 
 **Noetic pressures:** NS-9 (historical-critical skeptic) when scholarly framework is explicit; NS-3 (deconverted) when text-historical concerns contributed to a prior exit from a tradition.
 
-**Concealment / deformation dynamics:** iʿtiqādāt mawrūtha (historical-critical framework imported as neutral method); shubha (legitimate intellectual content remains once the framework is loosened); discourse orientation often truth-seek with genuine scholarly interlocutors.
+**Concealment / deformation dynamics:** iʿtiqādāt mawrūtha (historical-critical framework imported as neutral method); shubhah (legitimate intellectual content remains once the framework is loosened); discourse orientation often truth-seek with genuine scholarly interlocutors.
 
 **Canonical routing surfaces:** `ns-9-historical-critical-skeptic.md` profile, `V10` (provenance → contents → authority), `revelation-transmission.md RT-1/RT-3`
 
@@ -129,7 +129,7 @@ State note: the sections below preserve the audit-time snapshot so the regressio
 
 **Noetic pressures:** NS-7 (theistic evidentialist seeking philosophical coherence); NS-3 (deconverted — Christian crisis may have already occurred); NS-11 (fideist — holding Trinity on faith, resistant to rational examination).
 
-**Concealment / deformation dynamics:** iʿtiqādāt mawrūtha (Trinity as inherited commitment); shubha (specific logical puzzles about the doctrine — genuine intellectual content once framework loosens); concealment varies by profile (truth-seek if genuinely puzzled; identity-performance if Christian framework is identity-constituting).
+**Concealment / deformation dynamics:** iʿtiqādāt mawrūtha (Trinity as inherited commitment); shubhah (specific logical puzzles about the doctrine — genuine intellectual content once framework loosens); concealment varies by profile (truth-seek if genuinely puzzled; identity-performance if Christian framework is identity-constituting).
 
 **Canonical routing surfaces:** `V12` (base logical exhaustion — always first), `do-christian-extensions.md` (DO-11 / DO-12 / DO-13 as Christian-specific overlay on V12)
 
@@ -301,7 +301,7 @@ When the comparative-prophethood family is active, three modules are potentially
 
 ### Weak Abstraction (risks literal-wording reliance)
 
-**A-4 — RT-1 through RT-4 worked examples:** Structural patterns are sound but all worked examples are Qurʾānic (Sanaa manuscript, Ḥafṣ vs. Warsh, ʿUthmānic compilation). Given the scope boundary excluding hadith and Bible transmission, this is acceptable, but an explicit note that the structural patterns (provenance → contents → authority) apply to analogous transmission questions in other contexts would improve abstraction without boundary-violation.
+**A-4 — RT-1 through RT-4 worked examples:** Structural patterns are sound but all worked examples are Qurʾānic (Sanaa manuscript, Ḥafṣ vs. Warsh, ʿUthmānic compilation). Given the scope boundary excluding ḥadīth and Bible transmission, this is acceptable, but an explicit note that the structural patterns (provenance → contents → authority) apply to analogous transmission questions in other contexts would improve abstraction without boundary-violation.
 
 **A-5 — V1 specialty-marker list:** The list format ("Historical-critical / manuscript-reconstruction / canon-formation / qirāʾāt-as-variants → revelation-transmission.md") risks being read as exhaustive. "Canon-formation" listed here refers to Qurʾānic canon formation; Christian canon-selection confusion would structurally match but the marker list doesn't say so. GAP-A partially originates here.
 
@@ -347,10 +347,10 @@ Type: Coverage claim (coverage-ledger.md) not reflected in routing guidance
 Impact: Practitioner using V12 or philosophical-usurpation.md without reading the ledger won't find the explicit cross-tradition scope statement.
 Patch: `V12-tamanuc-exhaustion.md` routing note; `philosophical-usurpation.md` frontmatter
 
-**GAP-G — Hadith authentication: scope boundary declared but no interim routing bridge**
+**GAP-G — Ḥadīth authentication: scope boundary declared but no interim routing bridge**
 Type: Acknowledged gap with no provisional guidance
-Impact: When a hadith-transmission challenge arises, the scope boundary in revelation-transmission.md says "route through NS-9 and V10 principles, noting no dedicated file exists." Practitioner has no interim architecture even in principle.
-Patch: `revelation-transmission.md` — add §Hadith Interim Routing section
+Impact: When a ḥadīth-transmission challenge arises, the scope boundary in revelation-transmission.md says "route through NS-9 and V10 principles, noting no dedicated file exists." Practitioner has no interim architecture even in principle.
+Patch: `revelation-transmission.md` — add §Ḥadīth Interim Routing section
 
 ### Minor (precision polish)
 
@@ -421,10 +421,10 @@ Purpose: Make the family-transfer principle explicit in routing files, not only 
 Deficiency fixed: GAP-F
 Terminology change: None new
 
-### Patch G — revelation-transmission.md: Add Interim Hadith Routing Bridge
+### Patch G — revelation-transmission.md: Add Interim Ḥadīth Routing Bridge
 
 File: `references/case-library/revelation-transmission.md`
-Purpose: After the scope-boundary declaration, add short interim routing guidance for hadith-transmission challenges
+Purpose: After the scope-boundary declaration, add short interim routing guidance for ḥadīth-transmission challenges
 Deficiency fixed: GAP-G
 Terminology change: None new
 
@@ -473,29 +473,9 @@ Expected: FPD pass first — no explicit criterion stated; uncertain. Check disc
 
 Expected: FPD = detected; Source tradition = scientism/narrow evidentialism; Functional role = criterion; Route consequence = V2 must loosen the criterion before any evidential content. NS-1 candidate. V2 before E1/E3. M1 check: the empirical-testability criterion is not itself empirically testable — self-refutation probe applies before V2.
 
-**F2-c** (verbatim anchor): "I have no religion, I just follow the evidence wherever it leads."
+**F2-c**: "I've looked into Islam and I just don't find the arguments convincing."
 
-Expected routing:
-- Input type: worldview-denial claim -> P6 by default
-- Claim: authority @ cross-level (meta-epistemic criterion pressure + meta-noetic register question)
-- Pattern: PF-2 primary; PF-12 candidate only if naturalist filtering becomes explicit
-- NS: NS-2 | NS-1 candidate; do not force a single NS code from the slogan alone
-- Reason-category: 3 (pseudo-neutral) candidate; 4 if inherited-milieu language later becomes explicit
-- FPD: detected - narrow evidentialism / pseudo-neutral neutrality claim functioning as criterion and tribunal
-- M1 / M1-P: active - the position uses an unnamed ʿaqīdah to deny having one
-- Concealment: `irad`, not blank / `none confirmed`, when the slogan is functioning as worldview-deflection and the matter has not yet been allowed to press
-- Register-hold check: `irad` + truth-seek / zann / mixed -> invitational only for Layer B; P6 / V2 structural content held pending attention being given
-- Layer A: preserve the full structural diagnosis, then append the `irad`-keyed engagement register directly after it
-- Current-pass activation record: `matched_modules` names only the coordination governing this pass. Held doctrinal or downstream routes are named as held; they do not appear as simultaneously active loads.
-- Layer B: one honest question, no doctrinal dump, stop. Concrete question: "When you say you just follow the evidence, what tells you in advance what is allowed to count as evidence?"
-- Boundary reset: if the question lands, do not append E1, E3, DO, or RT content in the same round. Any later content round re-enters through V1 on the new signal.
-- What NOT to do: emit concealment as blank / dash / `none confirmed`; collapse to register-only output; dump the full P6 / V2 / M1 diagnosis directly at the interlocutor while `irad` remains active
-
-Failure modes tested: placeholder concealment, Layer-A-to-Layer-B collapse, register-hold bypass, forced NS lock, current-pass module bleed, carried-state bleed after landing.
-
-**F2-d**: "I've looked into Islam and I just don't find the arguments convincing."
-
-Expected: Underdetermined — "don't find convincing" could be genuine examination with shubha (truth-seek), surface dismissal (ẓann), or argument-generation as exit (hawā/gharaḍ). Do NOT load E3 or V6. Mark underdetermined. Decisive missing differentiator: what specific arguments were examined and what is the criterion for "convincing"?
+Expected: Underdetermined — "don't find convincing" could be genuine examination with shubhah (truth-seek), surface dismissal (ẓann), or argument-generation as exit (hawā/gharaḍ). Do NOT load E3 or V6. Mark underdetermined. Decisive missing differentiator: what specific arguments were examined and what is the criterion for "convincing"?
 
 ---
 
@@ -617,7 +597,7 @@ Expected: Apatheism. Concealment = iʿrāḍ (matter not allowed to press). DO-o
 
 - **GAP-F (family-transfer propagation):** V12 routing note now carries an explicit cross-tradition scope statement (structural trigger, not tradition-specific; Advaita variant acknowledged with gap notation). `philosophical-usurpation.md` frontmatter now carries the cross-tradition scope (types keyed to framework, not interlocutor background; examples per type).
 
-- **GAP-G (interim hadith routing):** `revelation-transmission.md` now includes a pre-dedicated-file routing section with case-profile discrimination for three hadith-challenge forms (isnād skepticism / āḥād epistemology / historical-critical import), instruments from the current repo, and an explicit architecture-end statement.
+- **GAP-G (interim ḥadīth routing):** `revelation-transmission.md` now includes a pre-dedicated-file routing section with case-profile discrimination for three ḥadīth-challenge forms (isnād skepticism / āḥād epistemology / historical-critical import), instruments from the current repo, and an explicit architecture-end statement.
 
 **Remaining gaps (still open, correctly bounded):**
 
@@ -629,6 +609,6 @@ Expected: Apatheism. Concealment = iʿrāḍ (matter not allowed to press). DO-o
 
 - **Islamic-specific moral objections (P):** Type D usurpation identification remains L; content depth for specific fiqh-ethics objections remains P. A future DO-15 or NS-8 extension would close this.
 
-- **Hadith authentication content depth (partial C):** Framework routing is now in place (GAP-G closed); the specific epistemological arguments remain absent. Status: partial C.
+- **Ḥadīth authentication content depth (partial C):** Framework routing is now in place (GAP-G closed); the specific epistemological arguments remain absent. Status: partial C.
 
 **Profile-patterning correction status:** The regression where mixed Christian-comparative cases collapse into fiṭrah-heavy/restorative/preachy handling is addressed at the routing level by §(v) of mixed-case-handling.md. The four named failure modes (restoration-first, Christology preemption, RT-2 collapse, criterion grant) are explicit with pass/fail checks. Cumulative dispatch is now governed by FPD output and sub-question identification rather than surface resemblance to "Christian background."

@@ -42,7 +42,7 @@ historically while remaining weak as authority.
 Once the object-type is clear, assess what the contents do and do not show.
 
 - Does the text actually say what the claim says it says?
-- Are textual variation, manuscript loss, canon formation, qira'at, ahruf, or interpretive
+- Are textual variation, manuscript loss, canon formation, qirāʾāt, aḥruf, or interpretive
   dispute being collapsed into one bucket?
 - Is the objection really about historical criticism, manuscript reconstruction, canon formation,
   or original-text skepticism rather than about the contents of a settled source?
@@ -109,23 +109,23 @@ After the three-step sequence, route to the appropriate branch. Each branch spec
 
 ---
 
-### Branch C — Hadith, Isnād, and Wijādah
+### Branch C — Ḥadīth, Isnād, and Wijādah
 
-**What changes in the sequence:** Hadith transmission operates through isnād (chains of narrators) with an elaborate classification science. The provenance question (Step 1) must determine: the classification of the report (ṣaḥīḥ, ḥasan, ḍaʿīf, mawḍūʿ), which collection it appears in, and whether the critique being pressed targets a specific report or the hadith system as such. These are entirely different problems requiring different responses.
+**What changes in the sequence:** Ḥadīth transmission operates through isnād (chains of narrators) with an elaborate classification science. The provenance question (Step 1) must determine: the classification of the report (ṣaḥīḥ, ḥasan, ḍaʿīf, mawḍūʿ), which collection it appears in, and whether the critique being pressed targets a specific report or the ḥadīth system as such. These are entirely different problems requiring different responses.
 
 **Prohibited conflations:**
 - Do not treat a ḍaʿīf (weak) report as having the same evidential weight as a ṣaḥīḥ (sound) one. The classification is not decorative — it determines the epistemic status of the transmission.
 - Do not treat late compilation of collections (Bukhārī d. 870 CE) as evidence that the reports were invented at that date. The transmission chains predate the collection; the date of the collection is the date of final written organization, not of the transmitted content.
 - Do not let wijādah (found-document transmission without a live isnād) be treated as normative — it has a lower epistemic status than mutawātir or ṣaḥīḥ isnād transmission.
-- Do not collapse the distinct questions: was this specific hadith reliably transmitted? vs. is the hadith system as a whole a reliable transmission mechanism?
+- Do not collapse the distinct questions: was this specific ḥadīth reliably transmitted? vs. is the ḥadīth system as a whole a reliable transmission mechanism?
 
-**Route after:** `references/diagnostics/hadith-authentication-epistemology.md` for burden typing and release discipline. Do not route straight to RT-1 or to a DO file. Downstream doctrinal files load only after the hadith owner has stated whether the live pressure is corpus, method, report-class / epistemic-yield, or grade confusion.
+**Route after:** `references/diagnostics/hadith-authentication-epistemology.md` for burden typing and release discipline. Do not route straight to RT-1 or to a DO file. Downstream doctrinal files load only after the ḥadīth owner has stated whether the live pressure is corpus, method, report-class / epistemic-yield, or grade confusion.
 
 ---
 
 ### Branch D — Final Prophethood: Transmission and Doctrine Intertwined
 
-**What changes in the sequence:** Final-prophethood cases present a unique intertwining: the doctrinal claim (Muḥammad ﷺ is the seal of the prophets) is itself partially a transmission claim (the Qurʾān transmits this; the hadith tradition transmits this; the community transmits this continuously). The objection may target the transmission (was this reliably transmitted?) or the doctrine (does this make sense as a divine arrangement?) or both at once.
+**What changes in the sequence:** Final-prophethood cases present a unique intertwining: the doctrinal claim (Muḥammad ﷺ is the seal of the prophets) is itself partially a transmission claim (the Qurʾān transmits this; the ḥadīth tradition transmits this; the community transmits this continuously). The objection may target the transmission (was this reliably transmitted?) or the doctrine (does this make sense as a divine arrangement?) or both at once.
 
 The three-step sequence must be run on each layer separately: What is the transmission status of the specific verses, reports, or claims being pressed? What do the contents of the properly vetted material actually show? What authority does that material carry for the specific doctrinal question?
 
@@ -147,8 +147,8 @@ For recurring family treatments after this sequence, see
 - Historical criticism / original-text skepticism -> start here, then route to RT-1 if the live
   issue is manuscript reconstruction, or RT-2 if the live issue is canon formation
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2
-- Qur'anic preservation / qira'at / manuscript confusion -> start here, then route to RT-3
-- Hadith corpus rejection / isnād criticism / āḥād-vs-mutawātir / grade-confusion pressure -> start here, then route to `diagnostics/hadith-authentication-epistemology.md`
+- Qur'anic preservation / qirāʾāt / manuscript confusion -> start here, then route to RT-3
+- Ḥadīth corpus rejection / isnād criticism / āḥād-vs-mutawātir / grade-confusion pressure -> start here, then route to `diagnostics/hadith-authentication-epistemology.md`
 - Muslim-internal panic over text-history material -> start here, then route to RT-4
 - Final-prophethood challenges entangled with text-history or testimony -> use here before broader
   prophetic-credibility rebuttal
@@ -163,7 +163,7 @@ For recurring family treatments after this sequence, see
 
 - Treating "old manuscript" as equivalent to authenticated transmission
 - Treating canon formation as equivalent to inspired authority
-- Treating qira'at differences as equivalent to uncontrolled textual corruption
+- Treating qirāʾāt differences as equivalent to uncontrolled textual corruption
 - Treating a destabilized believer as though they were posing a neutral historical question
 
 If provenance remains unclear, say so plainly and stop short of doctrinal overreach.

@@ -19,7 +19,7 @@ the case still requires.
 | DO-7 through DO-10 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-14 | `case-library/do-christian-extensions.md` | Trinity, philosopher's-God, or Christian canon-authority pressure has not been classified precisely | V8, V10, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
-| Hadith corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
+| Ḥadīth corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
 | DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
 | Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
 
@@ -61,7 +61,7 @@ the case still requires.
 
 **Correct routing:** Route to RT only when the live pressure is specifically on transmission reliability (RT-1), canon authority (RT-2), qirāʾāt/manuscript plurality (RT-3), or believer-destabilization (RT-4). Run V10 before any RT case entry.
 
-**Hadith boundary:** Hadith corpus/authentication cases are not RT-1 through RT-4 and do not emit RT-5. After V10, route them to `references/diagnostics/hadith-authentication-epistemology.md`, then release downstream doctrine only if that owner says the transmission burden is no longer primary.
+**Ḥadīth boundary:** Ḥadīth corpus/authentication cases are not RT-1 through RT-4 and do not emit RT-5. After V10, route them to `references/diagnostics/hadith-authentication-epistemology.md`, then release downstream doctrine only if that owner says the transmission burden is no longer primary.
 
 **Incorrect routing:** Routing to RT-3 because the interlocutor mentioned "the Qurʾān," rather than because they are specifically pressing manuscript, qirāʾāt, or preservation questions. Mentioning a text is not the same as pressing a text-history claim. The RT family requires that text-history, transmission reliability, or canon authority is the live pressure, not merely the subject.
 
@@ -72,17 +72,17 @@ the case still requires.
 | Profile | Marker | Primary deformation | First likely move |
 |---------|--------|---------------------|------------------|
 | NS-1 Naturalist | "there is no evidence"; causal closure assumed; drift toward sophistic skepticism under consistent pressure | I'tiqadat mawrutha | V2 |
-| NS-2 Agnostic Evidentialist | "belief must be proportioned to evidence"; refusal of non-inferential warrant | zann; possibly genuine shubha | E2 plus V3 |
+| NS-2 Agnostic Evidentialist | "belief must be proportioned to evidence"; refusal of non-inferential warrant | ẓann; possibly genuine shubhah | E2 plus V3 |
 | NS-3 Deconverted | Grievance-stabilized argumentation around a single shubhah; orphaned moral commitments | hawa; zann; possibly gharad | M3 or P4 |
 | NS-4 Secular Moral Realist | Moral facts are objective but God is rejected; normativity helped-to without ontology | zann; i'tiqadat mawrutha | M3 |
 | NS-5 Habituated Atheist | God's non-existence treated as basic | Primarily hawa; possibly gharad; 'ada | F2 (volitional acknowledgment) first; then M4 if grief-primary, R2 if involuntary recognition near surface, V7 otherwise |
-| NS-6 Kalamic Evidentialist | `dalil` demand; `wujub al-nazar`; taqlid treated as non-knowledge; narrow necessary-knowledge class | i'tiqadat mawrutha; often zann | `diagnostics/kalamic-interlocutor.md` — school identification (Muʿtazilī / Ashʿarī / Māturīdī) is mandatory before committing restoration target; if Māturīdī confirmed, re-assign to NS-10. If divine attributes or speech are live alongside the epistemological pressure, an ontological burden is also present — restoration target and matched modules differ by school (see `kalamic-interlocutor.md` §Downstream Routing Table). Then V2 for epistemological burden; §6.2 + V8 for ontological burden; P3 when reason-vs-revelation is the live framing. |
+| NS-6 Kalāmic Evidentialist | `dalīl` demand; `wujūb al-naẓar`; taqlīd treated as non-knowledge; narrow necessary-knowledge class | iʿtiqādāt mawrūtha; often ẓann | `diagnostics/kalamic-interlocutor.md` — school identification (Muʿtazilī / Ashʿarī / Māturīdī) is mandatory before committing restoration target; if Māturīdī confirmed, re-assign to NS-10. If divine attributes or speech are live alongside the epistemological pressure, an ontological burden is also present — restoration target and matched modules differ by school (see `kalamic-interlocutor.md` §Downstream Routing Table). Then V2 for epistemological burden; §6.2 + V8 for ontological burden; P3 when reason-vs-revelation is the live framing. |
 | NS-7 Theistic Evidentialist | God affirmed; natural-theology apparatus held as the *precondition* for warranted belief; fiṭrī recognition demoted to "mere feeling" | i'tiqadat mawrutha; often zann | V9 first (necessary-knowledge priority), then V7 symmetric on the restriction, then reposition the apologetic arguments as legitimate remedial paths |
-| NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubha covering hawa or gharad | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (taʿāruḍ resolution / M3 / institutional-vs-doctrinal separation) |
+| NS-8 Muslim-internal crisis | Compound of authority-fatigue + moral recoil + textual-historical / taʿāruḍ pressure presented simultaneously | Compound; often shubhah covering hawā or gharaḍ | P6 / mixed-case-handling first; disaggregate; then matched sub-move per component (taʿāruḍ resolution / M3 / institutional-vs-doctrinal separation) |
 | NS-9 Historical-Critical Skeptic | Tawātur flattened; qirāʾāt read as Western text-critical variants; NT transmission conditions imported onto the Qurʾān; method-neutrality held as basic | i'tiqadat mawrutha; often zann | V2 on the imported framework, V10 (separate artifact from authenticated transmission), then `case-library/revelation-transmission.md` for RT-1/2/3 |
 | NS-10 Māturīdī Evidentialist | Fiṭrah acknowledged as inclined toward God but demoted from ḍarūrī to preparatory; naẓar required to complete warrant rather than replace fiṭrī recognition | i'tiqadat mawrutha; sometimes zann | `diagnostics/kalamic-interlocutor.md` (Māturīdī section), then V9 (necessary-knowledge priority) |
 | NS-11 Fideist / Reformed Basic-Belief | Theist; basic belief affirmed but grounded in proper-function (Plantinga) rather than fiṭrah specifically; no inferential justification required or demanded | Minimal; i'tiqadat mawrutha at philosophical-apparatus level if Reformed epistemology is the only recognized framework | R3 (warranted basic belief), then V5 (directing attention to signs) |
-| NS-12 Blank-Slate or Dual-Nature Fiṭrah | Fiṭrah acknowledged as real faculty but disputed as to content; blank-slate (capacity for religiosity, not theism) or dual-nature (equal inclinations toward belief and unbelief) | i'tiqadat mawrutha; sometimes zann | `diagnostics/fitrah-perspectives.md`; V5 (phenomenological signs — primary); E4 (cross-cultural check — secondary) |
+| NS-12 Blank-Slate or Dual-Nature Fiṭrah | Fiṭrah acknowledged as real faculty but disputed as to content; blank-slate (capacity for religiosity, not theism) or dual-nature (equal inclinations toward belief and unbelief) | iʿtiqādāt mawrūtha; sometimes ẓann | `diagnostics/fitrah-perspectives.md`; V5 (phenomenological signs — primary); E4 (cross-cultural check — secondary) |
 
 ## Specialty Diagnostic Markers
 
@@ -91,9 +91,9 @@ the case still requires.
 | `dalil` demand ("give me a proof/argument"); taqlīd equated with non-knowledge; "naẓar is obligatory on every rational person"; Maturidi concession language | `diagnostics/kalamic-interlocutor.md` |
 | Fiṭrah described as blank-slate or purely environment-shaped; "humans have equal tendencies toward good and evil"; religious belief framed as "just one option among equally valid alternatives" | `diagnostics/fitrah-perspectives.md` |
 | Historical criticism; manuscript reconstruction; original-text skepticism; "the original text is lost"; "who chose scripture?" | `case-library/revelation-transmission.md` via V10, then RT-1 or RT-2 according to whether the live issue is reconstruction or canon |
-| Hadith corpus rejection; isnād / jarḥ wa taʿdīl criticism; āḥād-vs-mutawātir or grading rhetoric | `diagnostics/hadith-authentication-epistemology.md` via V10, then matched doctrine only after the hadith burden is typed |
+| Ḥadīth corpus rejection; isnād / jarḥ wa taʿdīl criticism; āḥād-vs-mutawātir or grading rhetoric | `diagnostics/hadith-authentication-epistemology.md` via V10, then matched doctrine only after the ḥadīth burden is typed |
 | Trinity model-identification pressure; perfect-being-to-Trinity argument; incarnation coherence; philosopher's-God challenge | `case-library/do-christian-extensions.md` via V8, then DO-11, DO-12, or DO-13 according to the live issue |
-| `ilm daruri` / fiṭrī intuition / necessary knowledge is attacked; "common sense can be wrong"; discursive reasoning is treated as superior to immediate certainty | `references/techniques/V9-necessary-knowledge-priority.md` |
+| `ʿilm ḍarūrī` / fiṭrī intuition / necessary knowledge is attacked; "common sense can be wrong"; discursive reasoning is treated as superior to immediate certainty | `references/techniques/V9-necessary-knowledge-priority.md` |
 | One premise keeps regenerating the conclusions even after local objections are answered | `diagnostics/seven-deformations.md` §1-A (`mushābara fāsida`) |
 
 ## Quick DO Identification
@@ -109,7 +109,7 @@ the case still requires.
 | DO-7 | Cognitive science of religion / HADD | M1 or V9 depending on form | Accepting a targeted defeater without checking its own criteria |
 | DO-8 | Prophetic mission and moral luck | Hujjah principle | Collapsing unequal exposure into divine injustice |
 | DO-9 | Great Pumpkin | Universality condition and tawātur fiṭrī | Treating any basic belief as equal to a universal deliverable |
-| DO-10 | Three-tiered epistemological structure; attacks on `ilm daruri` / fiṭrī intuition | Fiṭrah -> khabar -> naẓar ordering; V9 when necessary knowledge itself is being denied | Flattening all knowledge into a single inferential tier |
+| DO-10 | Three-tiered epistemological structure; attacks on `ʿilm ḍarūrī` / fiṭrī intuition | Fiṭrah -> khabar -> naẓar ordering; V9 when necessary knowledge itself is being denied | Flattening all knowledge into a single inferential tier |
 | DO-11 | Trinity from divine perfection; perfect-being-to-Trinity arguments | Distinguish perfection from one mode of exercise | Smuggling revelation-level claims into bare perfection reasoning |
 | DO-12 | Logical problem of the Trinity; model-identification pressure | Identify the model first | Letting "mystery" stand in for coherence |
 | DO-13 | Philosopher's God vs. God of revelation; incarnation coherence / imported-perfection collapse | Refuse the imported-perfection collapse | Treating abstraction as purification |
@@ -121,9 +121,9 @@ the case still requires.
 |------|-----------|----------|-----------------|
 | RT-1 | Viral manuscript / fragment / citation overturns everything | Separate artifact from authenticated transmission with V10 | Treating visual or ancient material as self-authenticating |
 | RT-2 | Canon formation destabilizes revelation | Separate canon recognition from inspired authority | Treating list-formation as identical to revelation-status |
-| RT-3 | Qur'anic preservation fails because of qira'at / ahruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
+| RT-3 | Qur'anic preservation fails because of qirāʾāt / aḥruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
 | RT-4 | Believer destabilized by text-history pressure | Distinguish text-history confusion from authority fatigue and panic | Answering an internal crisis as if it were only a debate prompt |
 
-Hadith corpus/authentication pressures route through
+Ḥadīth corpus/authentication pressures route through
 `references/diagnostics/hadith-authentication-epistemology.md` after V10. They remain
 outside the RT code family unless a separate RT-1..RT-4 issue is also live.

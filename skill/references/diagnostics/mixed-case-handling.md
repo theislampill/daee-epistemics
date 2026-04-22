@@ -68,7 +68,7 @@ In these cases, give the smallest matched response and avoid motive-laundering.
 
 These playbooks are mandatory routing logic for cases where two deformation families co-occur. They do not add thesis content; they compile the outside-in sequencing rule from `seven-deformations.md` into named, auditable intervention sequences.
 
-### (i) Grief + Shubha Compound
+### (i) Grief + Shubhah Compound
 
 - Dominant read: grief-primary, not `shubha`.
 - Intervention order: acknowledge the grief register; do not deploy intellectual content until relational register is established; only then assess whether genuine `shubha` is still operative.

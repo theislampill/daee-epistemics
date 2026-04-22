@@ -141,7 +141,7 @@ to purify revelation but to replace it.
 
 The distinction between essence and act matters here. God is necessarily existent in his
 essence, while his acts are free acts of will, not necessary emanations from a metaphysical
-system. Likewise, bila kayf blocks the anthropomorphism charge: one may affirm real divine
+system. Likewise, bilā kayf blocks the anthropomorphism charge: one may affirm real divine
 attributes and real divine acts without importing creaturely mode. The common accusation of
 tashbih often depends on a hidden premise that any shared predicate between Creator and
 creature implies shared mode or ontological sharing. That premise is false. The semantic core

@@ -1,11 +1,11 @@
 # P5 - Working with the Already-Believing
 
-**For:** Believers whose belief is shallow, untested, or held by taqlid - inherited without
+**For:** Believers whose belief is shallow, untested, or held by taqlīd - inherited without
 genuine examination and therefore fragile under pressure. The procedure moves belief from
 inherited assumption to genuine, examined conviction without turning the person into a permanent
 debater.
 
-Epistemic importance: belief held by taqlid is not epistemically stable - it is arrived at by
+Epistemic importance: belief held by taqlīd is not epistemically stable - it is arrived at by
 chance and will not survive serious intellectual pressure. The same tradition that asks genuine
 investigation of skeptics asks it of believers.
 
@@ -14,7 +14,7 @@ investigation of skeptics asks it of believers.
 **1. Honest assessment of foundations.**
 What is their belief actually based on - evidence and experience, or habit and social belonging?
 Neither is shameful, but only the former is epistemically stable. The goal is to distinguish
-taqlid from tahqiq (genuine investigation). This requires gentleness: the person has been
+taqlīd from taḥqīq (genuine investigation). This requires gentleness: the person has been
 faithful; the issue is not fidelity but epistemic grounding.
 
 **2. Name the article of faith and source of pressure precisely.**
@@ -29,8 +29,8 @@ If the believer is being shaken by clips, manuscripts, screenshots, or textual-h
 run V10 (`references/techniques/V10-transmission-content-vetting.md`) before content rebuttal.
 Move from "this scared me" to "what kind of source is this, what does it actually show, and what
 authority does it really carry?" Use RT-1 through RT-4 when the pressure is revelation,
-transmission, canon, or preservation related. This is often the point where taqlid begins to
-become tahqiq.
+transmission, canon, or preservation related. This is often the point where taqlīd begins to
+become taḥqīq.
 
 **4. Engage objections by taxonomy, not by panic.**
 Once the source-pressure is classified, engage the strongest objections directly and honestly.

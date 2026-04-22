@@ -1,7 +1,7 @@
 ---
 name: daee-epistemics
 description: >
-  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or dāʿī presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers ʿaqīdah/noetic-structure diagnosis; shubuhāt and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhāt; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “ʿaqīdah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
+  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers aqidah/noetic-structure diagnosis; shubuhat and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhat; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “aqidah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
 ---
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
@@ -85,7 +85,7 @@ Load only when surface discourse points to the specialty family.
 | `references/diagnostics/INDEX.md` | First entry to the diagnostics subfolder; expanded table of contents and use order |
 | `references/diagnostics/kalamic-interlocutor.md` | Surface markers of kalāmic evidentialism or wujūb al-naẓar appear |
 | `references/diagnostics/fitrah-perspectives.md` | The fiṭrah is described as blank-slate, morally neutral, or as equal dual tendencies |
-| `references/diagnostics/hadith-authentication-epistemology.md` | Hadith corpus reliability, isnād / jarḥ wa taʿdīl criticism, āḥād-vs-mutawātir epistemic-yield questions, or grading rhetoric is live |
+| `references/diagnostics/hadith-authentication-epistemology.md` | Ḥadīth corpus reliability, isnād / jarḥ wa taʿdīl criticism, āḥād-vs-mutawātir epistemic-yield questions, or grading rhetoric is live |
 
 | `references/diagnostics/causal-series-taxonomy.md` | Regress, infinity, simultaneous vs. successive series, circularity, or secondary-cause self-sufficiency is live |
 | `references/diagnostics/definition-discipline.md` | Public-language capture, silent redefinition, universals/particulars confusion, or mental/extra-mental confusion is driving the contradiction claim |
@@ -178,8 +178,8 @@ Routing note: M9 also governs loaded negative theological terms. If the pressure
 - After the diagnostic gate, run M1 or M1-P first among downstream moves when they are actually present.
 - Select only the case-state-justified coordination of modules needed for the next move. This may be one module or a layered cluster when the live case warrants it; do not widen it into ambient default loading.
 - Use case-state and source-status marking when routing legibility matters.
-- In testimony, text, canon, preservation, believer-destabilization, and hadith-authentication
-  cases, V10 and the matched RT case or hadith-authentication owner come before broader doctrinal rebuttal.
+- In testimony, text, canon, preservation, believer-destabilization, and ḥadīth-authentication
+  cases, V10 and the matched RT case or ḥadīth-authentication owner come before broader doctrinal rebuttal.
 
 ### Named Routing Constraints (hard prohibitions)
 
@@ -396,7 +396,7 @@ selecting any response.
 | Named shubhah | Specific sophism with recognizable form | Usually no procedure unless it opens into an objection cluster; use P2 when multiple linked shubuhāt need separation and sequencing |
 | Kalāmic interlocutor | Interlocutor formed in Muʿtazilī, Ashʿarī, or Māturīdī tradition | Diagnose with V1, then load the kalāmic specialty diagnostic; use P3 when inferential-warrant conflict is the live frame |
 | Comparative-religion challenge | Doctrinal challenge from another tradition, especially Trinity or Christian philosophical-theology challenges | Usually P2 after V1 because family-classification and claim-separation govern the next move |
-| Revelation / transmission challenge | Challenge about scripture, testimony, hadith, textual preservation, historical access, or final prophethood | Usually P2 after V1. Within that route, V10 comes before RT routing or broader doctrinal rebuttal whenever provenance, text, canon, or authority are live |
+| Revelation / transmission challenge | Challenge about scripture, testimony, ḥadīth, textual preservation, historical access, or final prophethood | Usually P2 after V1. Within that route, V10 comes before RT routing or broader doctrinal rebuttal whenever provenance, text, canon, or authority are live |
 | Muslim-internal doctrinal crisis | Internal case shaped by authority fatigue, betrayal, modernist revision, moral recoil, or textual-historical shubhah | Usually P5; use P2 alongside it when multiple doctrinal pressures must be separated before strengthening can begin |
 | Reported exchange excerpt | Reported exchange needing analysis and response strategy | No fixed default. Run V1 on the excerpt first; then choose P2, P4, or no procedure depending on what the excerpt actually establishes |
 | Believer-internal doubt | Internal case requiring strengthening of examined conviction | P5 by default |
@@ -598,8 +598,8 @@ held and why, and what shift would release the hold. It does not replace
 - M3 orphaned intuitions probed where relevant
 - Keep logical, probabilistic, historical, moral, grief, and authority claims distinct; answer the actual pressure being applied
 - For revelation, scripture, and final-prophethood cases, separate generic theism, testimony/transmission,
-  text, canon, hadith-authentication burden, and the specific prophetic claim rather than collapsing them;
-  route through V10 and the matched RT case or hadith-authentication owner only when transmission or text-history
+  text, canon, ḥadīth-authentication burden, and the specific prophetic claim rather than collapsing them;
+  route through V10 and the matched RT case or ḥadīth-authentication owner only when transmission or text-history
   is actually live before broader doctrinal rebuttal
 - Arabic terminology with inline gloss on first use; plain English when user signals unfamiliarity
 - Direct and unhedged; errors named without softening

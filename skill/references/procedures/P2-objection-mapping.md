@@ -33,7 +33,7 @@ Before addressing any objection, map all of them. Distinguish rigorously:
   Revelation routing is fixed:
   - testimony / manuscript / source claims -> V10 first, then RT-1
   - canon formation / "who chose scripture?" -> V10 first, then RT-2
-  - Qur'anic preservation / qira'at / manuscript confusion -> V10 first, then RT-3
+- Qur'anic preservation / qirāʾāt / manuscript confusion -> V10 first, then RT-3
   - Muslim-internal textual-historical destabilization -> V10 first, then RT-4 and often P5
   - specific prophetic-claim objections -> separate the transmission issue from the prophetic
     claim itself before broader doctrinal rebuttal

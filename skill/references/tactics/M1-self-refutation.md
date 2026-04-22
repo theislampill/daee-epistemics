@@ -42,7 +42,7 @@ seeing — but it will let them find cover in the additional content.
 
 If the interlocutor absorbs the move without movement — restates their position with
 small modifications, introduces a new objection, changes the subject — the barrier is
-not shubha. The self-refutation is not the problem; the problem is what the position
+not shubhah. The self-refutation is not the problem; the problem is what the position
 is protecting. Update the case-state (reread the concealment mode and deformation
 axis) before any further move. Do not repeat M1 with more force.
 

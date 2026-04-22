@@ -1,6 +1,6 @@
 > role: diagnostic audit — proof families, imported proof grammar, and necessity/contingency overreach
 > use when: arguments for God's existence, proof-family comparison, or proof grammar itself is the live issue
-> do not use when: husn al-nazar has already been selected and the practitioner only needs inferential content — use husn-al-nazar-arguments.md then
+> do not use when: ḥusn al-naẓar has already been selected and the practitioner only needs inferential content — use husn-al-nazar-arguments.md then
 > output: proof-family classification, what the proof assumes, what it establishes, what it does not establish, and whether the grammar is functioning as tribunal
 > paired files: husn-al-nazar-arguments.md; causal-series-taxonomy.md; foreign-premise-detection.md; philosophical-usurpation.md
 

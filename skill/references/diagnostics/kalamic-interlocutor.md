@@ -5,7 +5,7 @@
 
 # Kalamic Interlocutor - Engagement Strategy
 
-Load when the interlocutor uses markers of kalamic evidentialism: `dalil` demand, `wujub al-nazar`, `taqlid` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Mu'tazili / Ash'ari / Maturidi framing.
+Load when the interlocutor uses markers of kalāmic evidentialism: `dalīl` demand, `wujūb al-naẓar`, `taqlīd` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Muʿtazilī / Ashʿarī / Māturīdī framing.
 
 ---
 
@@ -15,7 +15,7 @@ School identification is not optional. Once this file is loaded, identify the sc
 
 ### Burden identification rule
 
-- **Epistemological burden:** the live pressure is `wujub al-nazar`, `taqlid`-as-non-knowledge, or narrow necessary-knowledge restriction.
+- **Epistemological burden:** the live pressure is `wujūb al-naẓar`, `taqlīd`-as-non-knowledge, or narrow necessary-knowledge restriction.
 - **Ontological burden:** the live pressure is divine attributes, divine speech, the status of the Quran, or any claim governed by the `huduth/khalq` distinction or `kalam nafsi`.
 - **Mixed burden:** both are simultaneously live. Sequence epistemological first; ontological second.
 
@@ -25,10 +25,10 @@ When the ontological pressure is phrased through loaded terms such as body, dire
 
 | School variant | NS code | Burden | Restoration target | Must load | Prohibited move |
 |---------------|---------|--------|--------------------|-----------|-----------------|
-| Mu'tazili | NS-6 | Epistemological | Show that `wujub al-nazar` presupposes the very fiṭrī reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fiṭrī recognition as sub-epistemic |
+| Muʿtazilī | NS-6 | Epistemological | Show that `wujūb al-naẓar` presupposes the very fiṭrī reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fiṭrī recognition as sub-epistemic |
 | Mu'tazili | NS-6 | Ontological | Deploy the `huduth/khalq` distinction explicitly; expose the collapse from temporal origination to created external product | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not leave the `huduth` premise standing as concession |
 | Ash'ari | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not personally demonstrate, their belief already has non-inferential standing | V2 | Do not treat the softening as resolution of the framework error |
-| Ash'ari | NS-6 | Ontological | Target `kalam nafsi` specifically and the denial of volitional acts subsisting in God | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bila kayf` language |
+| Ashʿarī | NS-6 | Ontological | Target `kalām nafsī` specifically and the denial of volitional acts subsisting in God | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bilā kayf` language |
 | Maturidi | NS-10 | Epistemological | Press the instability of the concessionary inferential framework | V9 plus this file | Do not endorse the position as a valid midpoint |
 | Maturidi | NS-10 | Ontological | Shared Ash'ari inheritance on the ontological burden | `sound-reason-epistemology.md`; V8 | Do not treat it as a distinct third ontological pole |
 | School unclear | NS-6 provisional | Epistemological | Hold provisional read and deploy the school-neutral circularity criticism first | V2 | Do not commit to school-specific restoration target yet |
@@ -41,8 +41,8 @@ When the ontological pressure is phrased through loaded terms such as body, dire
 Common markers:
 
 - "You need a `dalil` for belief."
-- "`Taqlid` is not knowledge."
-- "`Wujub al-nazar` applies to every rational person."
+- "`Taqlīd` is not knowledge."
+- "`Wujūb al-naẓar` applies to every rational person."
 - "`Fiṭrah` alone is not epistemically sufficient."
 - Narrow restriction of non-inferential knowledge to logic, sense-perception, and similarly limited classes.
 - Maturidi concession language about communal obligation or partial allowance for non-propositional evidence.
@@ -57,8 +57,8 @@ Four recurring critiques govern the kalamic evidentialist family:
    The framework restricts non-inferential knowledge too tightly without principled justification.
 2. **The fiṭrah legitimately widens the foundations.**
    Fiṭrī recognition is not a mere feeling awaiting inferential promotion.
-3. **`Wujub al-nazar` is circular.**
-   The reliability of `nazar` cannot be grounded by `nazar` from nowhere.
+3. **`Wujūb al-naẓar` is circular.**
+   The reliability of `naẓar` cannot be grounded by `naẓar` from nowhere.
 4. **The prophetic method is misrepresented.**
    The prophets did not begin by making later kalamic demonstration the universal gate to revelation.
 

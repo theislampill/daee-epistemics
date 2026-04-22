@@ -13,7 +13,7 @@ The skill operates on seven primary diagnostic axes: NS, deformation, concealmen
 
 When multiple axes compete, apply in this order:
 
-1. **Concealment mode.** `clear` means the axis is resolved and does not gate from the concealment side. Any other value keeps concealment live in routing; when concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
+1. **Concealment mode (if non-clear).** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
 2. **Discourse orientation (if non-truth-seek).** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held until orientation shifts.
 3. **Deformation (outside-in sequence).** `ada` before `i'tiqadat mawrutha`; `gharad` and `hawa` before any intellectual content; `i'tiqadat mawrutha` before evidence; `shubha` last.
 4. **Reason-category (content gate).** When reason-category is 3 or 4, V2 is required before content. When reason-category is 2, the volitional deformation is addressed before reason-engagement.
@@ -22,7 +22,7 @@ When multiple axes compete, apply in this order:
 7. **Claim-level (higher-order priority).** When `claim_level` is `meta-epistemic`, `meta-ontological`, `meta-noetic`, or `cross-level`, clear the higher-order burden before first-order case content is released.
 8. **NS code (content selection).** Only after steps 1-7 are clear does the NS code govern what content is selected. The NS code identifies what to say; the earlier steps identify whether to say it yet.
 9. **DO code (argument family).** The DO entry is loaded after NS, after register is clear, and after the correct upstream sequence has run.
-10. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer. When the transmission burden is hadith-authentication rather than RT-1..RT-4, V10 and `hadith-authentication-epistemology.md` occupy this slot without emitting a new RT code.
+10. **RT marker (parallel to DO).** RT codes run parallel to DO codes. When an RT marker is active, V10 is applied to the transmission layer before the DO entry is loaded for the doctrinal layer. When the transmission burden is ḥadīth-authentication rather than RT-1..RT-4, V10 and `hadith-authentication-epistemology.md` occupy this slot without emitting a new RT code.
 
 `pattern_profile` does not outrank the hierarchy. It is a consolidation overlay that helps choose the smallest matched coordination once the higher-precedence blockers have been handled.
 
@@ -76,7 +76,6 @@ These combinations are diagnostic red flags:
 | `Shubha` as sole deformation + P7 Stop-1 active | Stop-1 fires for grief or identity-performance, not genuine `shubha` | Re-check whether the stated `shubha` is covering a volitional deformation |
 | NS code assigned + discourse orientation `autotelic` | Autotelic orientation means the engagement is not aimed at truth | Mark NS as provisional or omit pending orientation shift |
 | DO-series content loaded + concealment `irad` | `irad` means the matter has not been allowed to press | Invitational register only; DO content held |
-| Concealment field emitted as blank, dash, or `none confirmed` | Concealment is a mandatory routing axis; the value no longer distinguishes resolved absence from unresolved status | Emit `clear` if resolved absent, or `mode-?` if unresolved |
 | `semantic-neutralization-*` or `lexical-ontological-trap` active + `Routing gate: open` | Semantic discipline is an upstream blocker | Set `Routing gate: semantic-discipline-required`; run the owning file first |
 
 ---

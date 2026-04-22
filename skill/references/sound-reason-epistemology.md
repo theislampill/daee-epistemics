@@ -1,5 +1,5 @@
 > role: theoretical substrate
-> use when: the case needs the full account of warrant, proper function, tawatur, husn al-nazar, or bila kayf
+> use when: the case needs the full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
 > do not use when: a lighter diagnostic or tactical file already gives the needed routing guidance
 > output: anchored theory for deeper grounding, not a default response script
 
@@ -90,7 +90,7 @@ pedagogically important:
 - rational or theoretical reminder returns the mind to those deliverances when confusion,
   deformation, or foreign criteria obscure them
 
-The practical implication is that argument is secondary even when necessary. Husn al-nazar is not
+The practical implication is that argument is secondary even when necessary. Ḥusn al-naẓar is not
 the replacement for fiṭrī recognition but the disciplined route back toward it.
 
 **Critical implication for the regress objection:** When an interlocutor demands
@@ -505,7 +505,7 @@ systems.
 Keep the operative distinction short:
 
 - temporal relation between events: a relation, not a separately subsisting entity
-- time as the measure of motion in a moving substrate (`zaman`): an extra-mental attribute that
+- time as the measure of motion in a moving substrate (`zamān`): an extra-mental attribute that
   exists only in particulars
 
 Days, years, and created spatiality belong to created particulars. God's creating them does not

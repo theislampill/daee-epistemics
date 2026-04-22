@@ -29,14 +29,14 @@ particular case.
 
 | Deformation | Primary cue | First move | Do not do first | Common confusion |
 |-------------|-------------|------------|-----------------|-----------------|
-| Iʿtiqādāt mawrūtha | Filter treated as common sense | V2 | Present first-order evidence through the filter | Taqlid or zann without framework-level filtering |
+| Iʿtiqādāt mawrūtha | Filter treated as common sense | V2 | Present first-order evidence through the filter | Taqlīd or ẓann without framework-level filtering |
 | Mushābara fāsida (1-A) | One premise regenerates the downstream conclusions | Name the premise, then apply M1 to the premise itself | Keep arguing derivative conclusions while the premise stands | Systemic inherited filtering |
-| Hawā | Objections multiply as soon as one clears | F2 or relational engagement | Supply more arguments | Genuine shubha |
-| Ẓann | Position feels examined but is inherited by default | V7 | Treat it as deep principled skepticism | Taqlid |
-| Taqlīd | Position adopted by imitation | Invite tahqiq | Shame the person for inherited belief | Ẓann |
+| Hawā | Objections multiply as soon as one clears | F2 or relational engagement | Supply more arguments | Genuine shubhah |
+| Ẓann | Position feels examined but is inherited by default | V7 | Treat it as deep principled skepticism | Taqlīd |
+| Taqlīd | Position adopted by imitation | Invite taḥqīq | Shame the person for inherited belief | Ẓann |
 | ʿĀda | Distortion feels like direct reality | V2 then V5 | Argue as if the signs are already landing | Iʿtiqādāt mawrūtha |
 | Gharaḍ | Honest inquiry feels costly | F2 | Force argumentative escalation | Hawā |
-| Shubha | The apparent barrier actually yields to intellectual clearing | V9 or matched doctrinal/case response | Attribute hidden motive too quickly | Any of the other six wearing a respectable surface |
+| Shubhah | The apparent barrier actually yields to intellectual clearing | V9 or matched doctrinal/case response | Attribute hidden motive too quickly | Any of the other six wearing a respectable surface |
 
 ## 1. Iʿtiqādāt Mawrūtha — Inherited Beliefs
 

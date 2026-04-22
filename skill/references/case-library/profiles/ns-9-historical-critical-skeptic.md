@@ -38,7 +38,7 @@ iʿtiqādāt mawrūtha: secular historical criticism carries specific philosophi
 
 **Deformation types:** Primarily iʿtiqādāt mawrūtha (an imported framework treated as neutral
 method); often ẓann (the method is held as examined when the conditions of its application have
-not been examined); sometimes shubha (the specific manuscript-claim does have intellectual content
+not been examined); sometimes shubhah (the specific manuscript-claim does have intellectual content
 once the framework is loosened, but the intellectual content is narrower than the claim being made).
 
 **Intervention point:** Routes to `case-library/revelation-transmission.md` via V10 (separating

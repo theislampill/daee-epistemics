@@ -35,7 +35,7 @@ Tactics are immediate conversational moves. They are not the whole response arch
 | `references/tactics/M9-predication-mode.md` | Meta | Predication structure is the problem, equivocation or category error is active, ghayb-boundary failure is active, or loaded negative theological terms require semantic disaggregation before doctrinal release | M1 or M8 already gives the cleaner result at the inference level and the case is not predication-structured | M7, V8, `sound-reason-epistemology.md` section 6 |
 | `references/tactics/symmetric-taqlid-check.md` | Supplementary | The practitioner's own inquiry is in view | You are only diagnosing the interlocutor and the issue is not `taqlid` | V7 |
 | `references/tactics/inductive-fitri-method.md` | Supplementary | You need to distinguish fiṭrī foundation from cultural superstructure | The case does not turn on universality claims | E4 |
-| `references/tactics/husn-al-nazar-arguments.md` | Evidentialist | `husn al-nazar` has already been selected for an impaired fiṭrah case and proof-family audit has cleared the route | The framework is still contaminated or the case is not inferentially ripe | V2, E3, `proof-method-audit.md` |
+| `references/tactics/husn-al-nazar-arguments.md` | Evidentialist | `ḥusn al-naẓar` has already been selected for an impaired fiṭrah case and proof-family audit has cleared the route | The framework is still contaminated or the case is not inferentially ripe | V2, E3, `proof-method-audit.md` |
 | `references/tactics/doubt-vs-skepticism.md` | Meta | The demand for evidence is being posed as the neutral default | The case is normal doubt rather than ideological skepticism | E2, M1P |
 
 ## Structural Subtype Checks

@@ -87,7 +87,7 @@ nothing" (16:78).
 
 First, it confuses lacking knowledge with lacking a nature. These are different things.
 An animal is born with its limbs fully intact even though it lacks knowledge — the Prophetic
-hadith explicitly uses this comparison. Having a nature is not the same as having
+ḥadīth explicitly uses this comparison. Having a nature is not the same as having
 propositional knowledge. The neutral view conflates the two.
 
 Second, if there are no innate forces within the person to guide them, "external guidance
@@ -121,7 +121,7 @@ become decisive in determining outcomes.
 **Internal problems:**
 
 First, the Prophetic comparison to fully-formed newborn animals directly contradicts a
-dual-tendency account. The hadith asks "Do you see anything deficient in them?" — having
+dual-tendency account. The ḥadīth asks "Do you see anything deficient in them?" — having
 two opposing non-complementary tendencies is precisely a deficiency.
 
 Second, if good and evil tendencies are equally influential, they effectively cancel each
@@ -149,7 +149,7 @@ at issue.
 **Engagement implication:** An interlocutor holding this view often uses it to explain
 why belief in God is "just one option among equally valid alternatives." The correct
 move: show the internal incoherence (the equality of tendencies collapses the free will
-the position claims to protect), then redirect to the Qurʾānic and hadith account of
+the position claims to protect), then redirect to the Qurʾānic and ḥadīth account of
 the fiṭrah as a single positive orientation that is suppressed, not opposed, by error.
 
 ---

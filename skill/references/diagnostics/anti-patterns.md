@@ -151,7 +151,7 @@ The following entries expand the compressed table into full audit-grade entries.
 - Is the discourse orientation established or only guessed?
 - Have I preserved restoration over rhetorical win?
 - Have I marked where inference begins?
-- If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
 - If this is a conversation excerpt, have I confirmed multiple convergent signals before assigning a confident NS code?
 - Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?
+- If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?

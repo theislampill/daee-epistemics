@@ -1,7 +1,7 @@
 > role: diagnostic classifier — modes of concealment (A3 axis); identifies the relationship between inner state and outer expression that governs what kind of engagement can land at all
 > use when: any case; run after DO-orient is established; concealment mode governs register — it answers what kind of engagement can land, which is distinct from what has suppressed the fiṭrah (seven-deformations.md) and what the discourse is for (discourse-orientation.md)
 > do not use when: concealment mode is already established and has not shifted
-> IR field: concealment code = clear | irad | juhud | inkar | istikbar | nifaq | mode-? | compound (emitted to case-state and IR)
+> IR field: Concealment mode code = irad | juhud | inkar | istikbar | nifaq | mode-? (emitted to case-state)
 > output: Concealment mode code + Register + RT code if applicable; consumed by case-state-schema.md
 > paired files: seven-deformations.md (deformation governs instrument; concealment governs register — both are needed); discourse-orientation.md (DO-orient governs whether intellectual engagement is appropriate at all; concealment governs how it must be delivered); P4-maieutic.md (inkār and juhūd with seam of recognition); P5-already-believing.md (nifāq)
 
@@ -23,16 +23,6 @@ current treatment distinguishes five (`irad`, `juhud`, `inkar`, `istikbar`, `nif
 and further refinement is possible wherever a phenomenologically distinct mode demands
 a distinct register. The heading is "Modes of Concealment" rather than a count so the
 architecture is not frozen by numeric reification.
-
-The axis also needs two non-mode outputs for routing integrity:
-
-- `clear` when no active concealment mode is positively read and the register is open on
-  this axis
-- `mode-?` when the concealment axis is still unreadable after genuine attention
-
-Do not use blanks, em dashes, or placeholders such as `none confirmed`. The routing cost
-is high because the register read depends on knowing whether concealment was resolved
-absent or remains unresolved.
 
 ### Lexical vs. sharʿī note
 
@@ -73,11 +63,6 @@ investigate on terms the subject can actually accept. Character-as-evidence appl
 the quality of presence can make inquiry feel safe where argument cannot. Leaving one
 honest question alive is often the correct move.
 
-**Worldview-deflection note:** A slogan such as "I have no religion, I just follow the
-evidence wherever it leads" can instantiate `irad` when pseudo-neutrality is functioning
-as deflection from letting the matter press. The criterion burden is still diagnosed in
-full; what changes is the directly deployable register, not the existence of the diagnosis.
-
 **What does not work:** Piling on more arguments; moralizing the aversion; treating the
 non-engagement as if it were a considered position to be refuted. Each of these hardens
 the turning-away into something more defined.
@@ -87,6 +72,11 @@ has come close enough to the matter to deny it. Iʿrāḍ is the prior condition
 subject has not yet let the matter come close. Many cases that look like juhūd on the
 surface are really iʿrāḍ underneath, and the register needed is invitational rather
 than confrontational.
+
+**Worldview-deflection note:** A slogan such as "I have no religion, I just follow the
+evidence wherever it leads" can instantiate `irad` when pseudo-neutrality is functioning
+as deflection from letting the matter press. The criterion burden is still diagnosed in
+full; what changes is the directly deployable register, not the existence of the diagnosis.
 
 ---
 
@@ -225,7 +215,6 @@ the transliterated names used throughout the skill; no re-abbreviation.
 
 | Surface pattern | Mode code | Register governed |
 |-----------------|-----------|-------------------|
-| No active concealment mode is positively read; the axis is resolved and register-hold does not arise from concealment | `clear` | No concealment hold on this axis; full apparatus may deploy if DO-orient and other gates permit |
 | Turning away, non-engagement, decline to investigate despite opportunity, quiet aversion to examination; subject will not let the matter press | `irad` | Do not dump argument; name the aversion invitationally; leave one honest question live; character-as-evidence; no moralizing |
 | Culpable denial once the matter has been allowed to press; repudiative posture; endless qualification, flat declaration, or pushing-back-against an already-registered matter | `juhud` | Intellectual argument will not land; name the barrier (not argue past it); character-as-evidence; relational work; maieutic (P4) if a seam of inner recognition is visible |
 | Active resistance disproportionate to the argument; pressure of unacknowledged recognition | `inkar` | Maieutic (P4); R2 Reminder; do not press argument the subject can absorb |
@@ -247,9 +236,6 @@ The concealment mode constrains the register — it answers *what kind of engage
 land at all*. It is distinct from the seven deformations (which answer *what has suppressed
 the fiṭrah's operation*) and from DO-orient (which answers *what the discourse is for*).
 All three are needed before a case-library module can be loaded with confidence.
-
-`clear` means the axis has been positively resolved as non-operative. `mode-?` means the
-axis remains unresolved. They are not interchangeable.
 
 ---
 
@@ -304,7 +290,7 @@ routing to `case-library/revelation-transmission.md`.
 
 The concealment diagnostic terminates with a short line for the case-state:
 
-    Concealment: <clear | irad | juhud | inkar | istikbar | nifaq | mode-A | mode-B | mode-?>    RT (if applicable): <RT-1..4>    Register: <invitational | intellectual | maieutic | relational | suspended>
+    Concealment: <irad | juhud | inkar | istikbar | nifaq | mode-A | mode-B | mode-?>    RT (if applicable): <RT-1..4>    Register: <invitational | intellectual | maieutic | relational | suspended>
 
 This line is consumed by `case-state-schema.md` alongside the NS emission from
 `noetic-reading-checklist.md`, the DO-orient emission from `discourse-orientation.md`,

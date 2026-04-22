@@ -98,7 +98,7 @@ clear.
   philosopher's-God, route through V8 and the matched DO case after deformation
   sorting.
 - If the pressure is a discursive attack on necessary knowledge itself, route to V9
-  rather than treating the issue as generic shubha management.
+rather than treating the issue as generic shubhah management.
 
 ## Category C Caution
 

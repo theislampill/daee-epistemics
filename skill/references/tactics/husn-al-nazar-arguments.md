@@ -1,8 +1,8 @@
-# Husn al-Nazar - Inferential Arguments for the Impaired Fiṭrah
+# Ḥusn al-Naẓar - Inferential Arguments for the Impaired Fiṭrah
 
-Load when `husn al-nazar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond directly to signs.
+Load when `ḥusn al-naẓar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond directly to signs.
 
-This file supplies inferential content for the secondary `nazar aqli` pathway. It remains downstream of:
+This file supplies inferential content for the secondary `naẓar ʿaqlī` pathway. It remains downstream of:
 
 1. framework-clearing
 2. proof-family audit

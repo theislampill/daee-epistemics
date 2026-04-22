@@ -24,7 +24,7 @@ itself held as basic, without evidence proportioned to it. Once basic belief is 
 operating in the interlocutor's noetic structure, theistic basic belief is back on a par.
 
 **Deformation type:** Primarily ẓann (operating on assumed-by-default positions taken as settled);
-possibly genuine shubha about specific arguments.
+possibly genuine shubhah about specific arguments.
 
 **Intervention point:** E2 (pressing the inferential criterion) combined with V3 (regress-
 dissolution). The proportionality norm is a basic commitment not established by evidence

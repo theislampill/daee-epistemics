@@ -12,9 +12,9 @@
              |
              v
 +----------------------------------------------+
-| GOVERNING ENTRY + ALWAYS-LOAD BACKGROUND     |
-| SKILL.md | terminology.md                    |
-| case-library/INDEX.md | heuristics.md        |
+| ALWAYS-LOAD BACKGROUND                       |
+| terminology.md | case-library/INDEX.md       |
+| module-codes.md | heuristics.md              |
 +----------------------------------------------+
              |
              v
@@ -34,7 +34,7 @@
              |
              v
 +------------------------------------------------------------+
-| PHASE 2: AXIS CLASSIFICATION + TRIGGERED PASS SET          |
+| PHASE 2: AXIS CLASSIFICATION + MANDATORY PASSES            |
 |                                                            |
 | CORE AXES (source -> emit):                                |
 | A1  NS code         noetic-reading-checklist.md            |
@@ -48,22 +48,18 @@
 | O1  Claim-level     pattern-profiling.md when higher-order |
 | O2  Pattern profile pattern-profiling.md when recurring PF |
 |                                                            |
-| PASS SET:                                                  |
-| [P-A] always when intellectual content is live             |
-|       reason-disambiguation.md                             |
+| MANDATORY PASSES - run in sequence:                        |
+| [P-A] reason-disambiguation.md                             |
 |       emit: reason-category (1-4) + routing gate           |
-| [P-B] when criterion / tribunal pressure is live           |
-|       foreign-premise-detection.md                         |
+| [P-B] foreign-premise-detection.md                         |
 |       emit: [Foreign Premise Detection] block              |
-| [P-C] when prophetic discourse is being redirected         |
-|       prophetic-discourse-neutralization.md                |
+| [P-C] prophetic-discourse-neutralization.md                |
 |       emit: semantic-neutralization mode or "none active"  |
-| [P-D] per trigger mapping                                  |
-|       arabic-backbone-predicates.md                        |
+| [P-D] arabic-backbone-predicates.md                        |
 |       emit: active predicates or "none active"             |
 |                                                            |
 | Specialty markers surfaced here if present:                |
-| kalamic / fiṭrah / RT pressure / usurpation type /         |
+| kalamic / fitrah / RT pressure / usurpation type /         |
 | causal-series / definition-capture / proof-grammar         |
 +------------------------------------------------------------+
              |
@@ -138,11 +134,6 @@
 | - Stop if next step would overpress or outrun the case     |
 +------------------------------------------------------------+
 ```
-
-## Audit Companions
-
-- `coverage-ledger.md` audits parity, scope claims, and session recency. It is not on the live dispatch path.
-- `pattern-family-audit.md` remains the historical PF regression and coverage audit. `pattern-profiling.md` remains the live owner of emitted `claim_level` / `pattern_profile`.
 
 ## Forbidden Shortcut Paths
 

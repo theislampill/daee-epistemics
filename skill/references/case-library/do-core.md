@@ -40,7 +40,7 @@ This is not unfalsifiable because the conditions are independently specifiable. 
 identifies with precision what suppresses the fiṭrah: the seven deformations. These are not
 post-hoc rationalizations — they are pre-specified conditions examinable in the particular case.
 The question to the interlocutor is not "were you sincere enough?" but "what was the actual
-moral and existential condition of your search?" — the presence of gharaḍ, of hawā, of shubha,
+moral and existential condition of your search?" — the presence of gharaḍ, of hawā, of shubhah,
 of ʿāda are independently identifiable and their presence in the search can be examined.
 
 Furthermore: the premise "if God exists and desires relationship, all sincere seekers will be
