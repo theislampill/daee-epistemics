@@ -13,7 +13,7 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 
 **Deeper rationale:** The contaminated conception of reason is not just a bad epistemological theory. It is the fiṭrah's guiding function to the intellect (ʿaql) being occluded. Sound reason (ʿaql ṣarīḥ) depends on the fiṭrah's health: when the fiṭrah is sound, it provides the intellect with its orientation toward truth. When a historically contingent philosophical framework has been internalized as reason itself, the fiṭrah's guidance is blocked at the level of the intellect — the filter corrupts the faculty's directedness before any content is evaluated. This means V2 is a form of fiṭrah-restoration at the level of ʿaql. It is not independent of P1 (fiṭrah restoration); it is P1 operating at the specific layer where the blockage is conceptual-intellectual rather than affective or habitual.
 
-**Connection:** V2 clears the filter; V5 (directing attention to signs) is what follows once the filter is loosened.
+**Connection:** V2 clears the filter; V5 (directing attention to signs) is what may follow once the filter is loosened. Do not collapse `tribunal-loosened` or `frame-cleared` into full `alignment-advanced`. After V2 lands, refresh the case-state before releasing the next move. If the next live burden is transmission or authority, route there first. If inferential elaboration has been explicitly asked for, it may follow. Otherwise prefer the smallest restorative release rather than a chain.
 
 **Exit criteria:** Hand off from V2 only when at least one of the following has happened:
 - the operative conception of reason has been named as a contestable framework rather than as neutral reason itself
@@ -21,3 +21,5 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 - the next live question has shifted from defending the filter to examining what the filter had been excluding
 
 If none of these has occurred, stay with V2 or return to noetic/deformation diagnosis rather than pretending the framework has cleared.
+
+**Governed continuation note:** V2 is a selective recursive operator, not a chain license. One cleared tribunal or one landed consequence ends the current pass. Continue only if refreshed V1 shows the restoration target still unmet and no stop, register-hold, or semantic gate bars the next move. A fresh differentiating signal may arise in a later reply or inside the same message through an accompanying proposition or entailment.

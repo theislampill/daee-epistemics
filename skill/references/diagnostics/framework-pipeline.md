@@ -135,6 +135,21 @@
 +------------------------------------------------------------+
 ```
 
+## Selective Deployment Branch
+
+Certain slogan families require a selective deployment branch inside the same mandatory-pass
+architecture, especially PF-2 / P6 worldview-deflection and pseudo-neutrality cases:
+"I have no religion," "I just follow the evidence," "I'm neutral," "I'm just following
+reason," or "I looked and just wasn't convinced" when the slogan is functioning as an
+already-installed tribunal rather than a formed inquiry.
+
+Run the full Phase 2 stack and form the full IR exactly as usual. Then, if the case-state
+shows reason-category 3 or 4 together with foreign premise / tribunal installation and a
+live concealment or register-control read, keep the whole diagnosis in Layer A while
+compressing Layer B to one bounded question or minimal tribunal-clearing. This branch exists
+to preserve memetic precision and avoid rewarding deflection with over-disclosure; it is not
+a shortcut around the diagnostic gate.
+
 ## Forbidden Shortcut Paths
 
 - `[INPUT] -> [direct doctrinal rebuttal]`

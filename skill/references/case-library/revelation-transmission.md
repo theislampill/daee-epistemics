@@ -22,6 +22,11 @@ Begin with V10 (`references/techniques/V10-transmission-content-vetting.md`) bef
 entry. The family exists to keep testimony, textual integrity, canon authority, and believer
 destabilization from being collapsed into one objection.
 
+This family does not authorize debate-autonomous chaining after V10 or an RT sub-route lands.
+Refresh the case-state after each cleared burden. If another live burden now governs, route
+there explicitly. If not, release only the smallest restorative next move rather than treating
+RT progression as permission to spill every downstream answer in one pass.
+
 ---
 
 ## RT-1 — Manuscript Reconstruction vs. Authenticated Transmission

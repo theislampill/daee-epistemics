@@ -72,6 +72,9 @@ DO-orient:                           # truth-seek | identity-perf | autotelic | 
 RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qur'anic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
+Alignment state:                     # blocked | tribunal-loosened | frame-cleared | recognition-surfaced | alignment-advanced
+Recognition strength:                # none | weak | medium | strong
+Continuation eligibility:            # not-assessed | blocked | eligible-on-refresh
 P7 stops active:                     # Stop-1 | Stop-2 | Stop-3 | Stop-4 | Stop-5 | none
 Routing gate:                        # open | V2-required | deformation-first | semantic-discipline-required | register-hold | stop-condition
 Matched modules:                     # current-pass, case-state-justified coordination only
@@ -120,6 +123,9 @@ For any substantive response claiming to have done V1, the following fields must
 - DO-orient
 - Read status
 - Confidence
+- Alignment state
+- Recognition strength
+- Continuation eligibility
 - P7 stops active
 - Reason-category
 - Routing gate
@@ -127,6 +133,8 @@ For any substantive response claiming to have done V1, the following fields must
 - Restoration target
 - Next move
 - Output shape
+- Claim-level
+- Pattern-profile
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
@@ -134,21 +142,27 @@ If these fields cannot be populated because the basis is too thin, the correct o
 
 Populate these whenever their trigger is live:
 
-- `Claim-level` when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the IR is being emitted as the full audit record. If absent in a compressed routine case, treat the level as first-order only after higher-order triggers have been checked and found inactive.
+- Internal IR discipline: in the validator-backed Diagnostic IR, `Claim-level` and `Pattern-profile` stay explicit even in routine cases. Use `Claim-level: first-order` and `Pattern-profile: none` when the higher-order and PF triggers have been checked and found inactive. Compression to omission is only for surfaced routine case-state, not for the internal IR.
 - `Foreign premise` and `Upstream findings` when criterion import, tribunal installation, transmission demotion, or framework import is visible
 - `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
-- `Pattern-profile` when a recurring PF family is governing routing or cross-volume consolidation
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
 - `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
 - `What remains live` when live alternatives, held routes, or a boundary-reset condition must stay visible
+- `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
 
 **Current-pass activation rule**
 
 - `Matched modules` records only the case-state-justified coordination active in the present pass.
 - Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
 - `Next move` names one live move only. It is not a queue of later modules.
-- When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state.
+- When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the refreshed state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
+
+**Acceptance-state rules**
+
+- `Alignment state` keeps restoration progress typed. Use `blocked` when the governing filter still controls the case; `tribunal-loosened` when the imported criterion has visibly lost its neutrality claim; `frame-cleared` when the subject can now examine signs, revelation, or transmission without the old filter governing; `recognition-surfaced` when a landed move has produced medium or strong visible uptake; `alignment-advanced` only when positive recognition and willingness to inhabit the restored order are visibly present.
+- `Recognition strength` must track the stop threshold rather than tone alone. `weak` covers politeness, irritation, surprise, silence, or rhetorical concession without state-shift; `medium` covers local consequence admission, reflective pause, or premise-examination; `strong` covers explicit blocker removal, accurate restatement, sincere next-questioning from the cleared frame, or a visible register shift into inquiry.
+- `Continuation eligibility` governs post-landing release. Use `not-assessed` before the question is live; `blocked` when a stop, hold, gate, or satisfied target forbids more release; `eligible-on-refresh` only when a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move.
 
 **Consistency rules**
 
@@ -170,6 +184,8 @@ The following inconsistencies are invalid:
 - `Upstream findings` contains `semantic-neutralization-recontenting`, `semantic-neutralization-evacuation`, or `lexical-ontological-trap` + `Routing gate: open`
 - `Matched modules` includes anticipated downstream modules or reserve owners not governing the current pass
 - `P7 Stop-2 active` + `Next move` advertises another argumentative sequence rather than a boundary reset / one bounded question
+- `Alignment state: alignment-advanced` + `Recognition strength` anything other than `strong`
+- `Continuation eligibility: eligible-on-refresh` + missing `What remains live`
 - `NS code: NS-6` + ontological burden live + generic restoration target. NS-6 ontological cases require a school-specific restoration target (`ḥudūth/khalq` distinction for the Muʿtazilī form; `kalām nafsī` doctrine for the Ashʿarī form), not a generic `bilā kayf` or generic foundationalist target.
 - `NS code: NS-6` + ontological burden live + `Backbone predicates active` omits `O-1` and `C-1`. When NS-6 and the case involves divine attributes or speech, those predicates are minimum checks.
 
@@ -183,7 +199,7 @@ For cases where a subset of fields is sufficient, the compressed form may be use
 
 ```text
 [IR - compressed]
-Case: [family] | Claim: [type @ level?] | Pattern: [PF-x | none] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Module: [matched] | Target: [restoration] | Next: [one move]
+Case: [family] | Claim: [type @ level?] | Pattern: [PF-x | none] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Align: [state] | Rec: [strength] | Continue: [status] | Module: [matched] | Target: [restoration] | Next: [one move]
 ```
 
 The compressed form is not acceptable when architectural-layer fields are active. If the

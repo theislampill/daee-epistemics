@@ -11,6 +11,12 @@ Use this technique when the pressure is not merely "is this claim persuasive?" b
 thing, how did it reach us, and what authority does it actually carry?" The sequence is fixed.
 Do not begin with contents while provenance is still undefined.
 
+V10 is a selective recursive operator. Each step may clear one burden without licensing a
+content dump. After provenance, contents, or authority has been clarified, refresh the
+case-state. If another live burden now governs, route there. If not, release only the
+smallest restorative next move. Bounded deployment governs the sequence; it does not abolish
+further rounds when refreshed state still requires them.
+
 This technique operationalizes a fixed transmission / contents split: first ask how the item
 reached us, then ask what it actually shows. Historical criticism, manuscript reconstruction,
 canon formation, and original-text skepticism all sit on this split.

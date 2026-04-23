@@ -247,6 +247,20 @@ Source: `references/procedures/INDEX.md`.
 | P6 | Universal ʿaqīdah principle |
 | P7 | Restoration stops (5 named hard-rail stop conditions) |
 
+Historical note for the worked case-state lines below:
+- use `Concealment: clear` rather than the historical em-dash placeholder when no active concealment mode is positively read
+- keep `Next` to one live move only; later routes belong in reasoning or `What remains live`, not in the active next step
+- when a gloss is helpful for a human reader, keep the validator-backed IR value canonical and move the gloss into the explanation
+- when a landed move changes the state, do not queue the refreshed continuation in the same line; re-entry belongs to a later case-state after refreshed V1, even if the differentiating signal appears inside the same message
+
+Third-wave normalization note:
+
+    Align: tribunal-loosened    Rec: medium    Continue: blocked    Next: one bounded question
+
+The refreshed continuation, if later licensed, belongs in a new case-state line:
+
+    Align: frame-cleared    Rec: strong    Continue: eligible-on-refresh    Next: <smallest refreshed move>
+
 ## Worked Examples — Composed Case-State Lines
 
 ### Example 1 — NS-1 Naturalist, truth-seeking
@@ -255,7 +269,7 @@ The interlocutor is an analytically inclined atheist who frames the question as 
 and insists "there is no evidence," engaging in good faith. No obvious affective charge;
 no authority-wound; no identity performance visible.
 
-    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-12    NS: NS-1    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-12    NS: NS-1    DO-orient: truth-seek    Concealment: clear    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: V2 (name the framework as historically contingent)
 
 Reasoning: The NS code is clear; orientation is truth-seek so the full apparatus applies;
 no concealment mode is active (the interlocutor is not concealing anything beneath the
@@ -270,7 +284,7 @@ The interlocutor presents a deconversion story prominently in every exchange, re
 intellectual content by narrating their departure from faith, and exhibits strong
 affective resistance to any position that would complicate the narrative.
 
-    Case: NS profile    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-3    DO-orient: identity-perf    Concealment: istikbar    Deformation: hawa | zann    Strength: strong    Next: Name the register first (V1 pastoral note); defer M3; do not supply more intellectual content
+    Case: NS profile    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-3    DO-orient: identity-perf    Concealment: istikbar    Deformation: hawa | zann    Strength: strong    Next: Name the register first (V1 pastoral note)
 
 Reasoning: The NS code is clear; DO-orient is identity-perf because the deconversion
 narrative is functioning as self-presentation; concealment is istikbar because there is
@@ -286,7 +300,7 @@ willing to transition.
 A classically trained student raises the question: "How can I hold ʿaqīdah as knowledge
 without naẓar? Doesn't taqlīd fail to rise to the level of ʿilm?"
 
-    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-2    NS: NS-6    DO-orient: truth-seek    Concealment: —    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate hard Muʿtazilī / Ashʿarī / Māturīdī position; then V2 on the evidentialist restriction
+    Case: NS profile    Claim: authority @ meta-epistemic    Pattern: PF-2    NS: NS-6    DO-orient: truth-seek    Concealment: clear    Deformation: i'tiqadat-mawrutha    Strength: strong    Next: kalamic-interlocutor.md to locate the governing school-position before V2
 
 Reasoning: The markers are clear (dalīl demand; wujūb al-naẓar; taqlīd-treated-as-non-
 knowledge); truth-seek applies; no concealment; the deformation is the inherited kalāmic
@@ -299,7 +313,7 @@ A practicing Muslim raises simultaneously: a ḥadīth they find morally troubli
 about a scholar's public failure, and a Twitter thread about Qurʾānic manuscript variants.
 Affect is anxious; the register is internal, not external debate.
 
-Case: compound internal crisis    Claim: transmission @ cross-level    Pattern: PF-11    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: —    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the ḥadīth) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: P6 / mixed-case-handling — pastoral first; disaggregate; matched sub-move per component
+Case: compound internal crisis    Claim: transmission @ cross-level    Pattern: PF-11    NS: NS-8    DO-orient: mixed (truth-seek + destabilization)    Concealment: clear    RT: RT-4 (on the textual surface)    Deformation: compound — shubha covering hawa (on the ḥadīth) + i'tiqadat-mawrutha (on the modern moral frame)    Strength: provisional    Next: mixed-case-handling.md for pastoral disaggregation before any matched sub-move
 
 Reasoning: NS-8 is the compound. DO-orient is mixed because the subject is genuinely
 truth-seeking and simultaneously destabilized. RT-4 applies on the text-history axis
@@ -313,7 +327,7 @@ without increasing the destabilization.
 An academic non-Muslim with training in NT text-criticism raises manuscript claims about
 early Qurʾānic codices, framing the question as methodologically neutral.
 
-    Case: RT pressure    Claim: transmission @ meta-epistemic    Pattern: PF-4    NS: NS-9    DO-orient: truth-seek    Concealment: —    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework (name NT conditions that are not analogous); then V10 (separate artifact from authenticated transmission); then matched RT module
+    Case: RT pressure    Claim: transmission @ meta-epistemic    Pattern: PF-4    NS: NS-9    DO-orient: truth-seek    Concealment: clear    RT: RT-1 (surface) — but RT-2 may emerge as the authority claim surfaces    Deformation: i'tiqadat-mawrutha (the imported framework treated as neutral method)    Strength: strong    Next: V2 on the imported framework before V10 or any RT content
 
 Reasoning: The interlocutor is genuinely truth-seeking; the framework is the problem, not
 the person. The deformation is iʿtiqādāt mawrūtha applied to method. Direct RT-1
@@ -327,7 +341,7 @@ An acquaintance, on hearing a religious question posed in passing, immediately c
 the subject, invokes busyness, marks the matter as "not for them," and declines to look.
 There is no vigor of refusal, no argued position — only a quiet withholding of attention.
 
-    Case: low-signal encounter    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-?    DO-orient: mixed (surface truth-neutral, minority autotelic)    Concealment: irad    Deformation: provisional — likely gharad or ada in the background; not yet decidable    Strength: low    Next: invitational register; leave one honest question alive; character-as-evidence; no doctrinal module
+    Case: low-signal encounter    Claim: phenomenological @ meta-noetic    Pattern: none    NS: NS-?    DO-orient: mixed (surface truth-neutral, minority autotelic)    Concealment: irad    Deformation: provisional — likely gharad or ada in the background; not yet decidable    Strength: low    Next: invitational register; leave one honest question alive
 
 Reasoning: The subject has not engaged the matter enough to be triaged on deformation —
 the turning-away is prior to any assertion the deformation axis could read. Under `juhud`

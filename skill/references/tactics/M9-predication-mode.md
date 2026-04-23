@@ -5,6 +5,11 @@
 
 **Operates upstream of content-level response selection.** Before deciding what to say about a subject, M9 determines whether the predication structure of the claim - and the inferential structure of any argument about it - is well-formed.
 
+M9 is a selective recursive operator. A semantic or predicational clarification may clear the
+question without licensing doctrinal sprawl in the same pass. After the predication problem is
+typed, refresh the case-state. If another live burden now governs, route there explicitly. If
+not, release only the smallest restorative next move.
+
 ---
 
 ## Function 1 - Equivocation Exposure

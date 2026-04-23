@@ -14,6 +14,11 @@ This pass governs cases where the live move is not yet a first-order doctrinal o
 
 Both are upstream failures. They are not resolved by answering the downstream doctrinal topic while the semantic move remains unaddressed.
 
+This pass is also a route-back control surface. Clearing the semantic neutralization does not
+by itself license full doctrinal release. After the semantic move is addressed, refresh the
+case-state. If another live burden now governs, route there. If not, release only the
+smallest restorative next move.
+
 ---
 
 ## Required Output Shape

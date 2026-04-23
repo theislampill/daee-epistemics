@@ -101,11 +101,17 @@ Claim level: <first-order | meta-epistemic | meta-ontological | meta-noetic | cr
 Pattern profile: <PF-1 ... PF-12 | none>
 ```
 
+In the validator-backed internal IR, emit both fields explicitly. Use `Claim level: first-order`
+and `Pattern profile: none` when no higher-order burden or PF overlay governs. Compression to
+omission is only for narrow surfaced case-state.
+
 Discipline:
 
 1. If `claim_level` is not `first-order`, do not dispatch first-order DO / RT / profile content
    until the governing higher-order burden has been cleared.
-2. Use `pattern_profile` only when it changes routing, sequencing, or owner selection.
+2. Use a non-`none` `pattern_profile` only when it changes routing, sequencing, or owner selection.
 3. Keep at most one primary profile. If two are genuinely live, carry the second in
    `Live alternatives` or `What remains live`.
-4. If the case is too thin for a stable profile, omit `pattern_profile` rather than forcing one.
+4. If the case is too thin for a stable profile, emit `pattern_profile: none` in the internal IR
+   rather than forcing one. A compressed surfaced case-state may omit the field, but the
+   validator-backed IR should stay explicit.

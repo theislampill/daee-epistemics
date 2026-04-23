@@ -95,6 +95,54 @@ it is using an ʿaqīdah to deny having one.
 This is performative self-refutation: the act of assertion enacts what the assertion denies.
 Deploy M1-P (`references/tactics/M1P-performative-self-refutation.md`) cleanly and early.
 
+## Worldview-Deflection and Pseudo-Neutrality
+
+Slogans such as "I have no religion, I just follow the evidence wherever it leads,"
+"I'm just following reason," "I'm neutral; I only accept evidence," or
+"I looked and just wasn't convinced" are often not neutral descriptions of inquiry.
+They are frequently meta-epistemic posture claims: they pre-classify what may count as
+evidence, install a tribunal before the matter is examined, and deny carrying a worldview
+while still operating from an unnamed ʿaqīdah.
+
+This family must therefore be treated as a live selective branch inside P6, not as a
+generic objection that simply wants sharper rebuttal. Internally, keep the full diagnosis
+alive: reason-category 3 as the default pseudo-neutral read, with reason-category 4 if an
+inherited criterion later becomes explicit; foreign-premise detection active; tribunal-
+smuggling named; worldview denial / unnamed ʿaqīdah logged; concealment possibility left
+live; deployment discipline governed by the active register. The case is memetic before it
+is merely propositional.
+
+Not every use of this language is an act of conscious deflection. Some cases are sincere but
+inherited pseudo-neutrality; others are active worldview-deflection. The distinction changes
+direct external deployment, not the existence of the diagnosis.
+
+**Selective state update for this family:**
+
+- **Retain internally:** tribunal-smuggling, reason-category, foreign premise, worldview denial,
+  concealment suspicion, and whether the routing gate is still constraining release
+- **Suppress externally:** premature full doctrinal discharge, over-answering, and first-order
+  pile-on while the interlocutor is still installing a pseudo-neutral tribunal
+- **Emit next:** one bounded diagnostic question or a tightly calibrated tribunal-clearing move,
+  depending on whether the register is still deflective or has opened into genuine inquiry
+- **Escalate later only if warranted:** when the interlocutor lets the question press, re-enter
+  through the live case-state rather than treating the original slogan as a settled inquiry
+
+These slogans may instantiate imported criterion-smuggling. They may function as worldview-
+deflection rather than inquiry. They may also carry concealment, especially `irad`, when
+deployed pre-inquiry or as register-control to stop the matter from pressing. In such cases,
+internal diagnosis remains full while external deployment remains bounded.
+
+The correct first external move is often a single honest diagnostic question rather than a
+full argument dump. Canonical bounded questions for this family include:
+
+- "When you say you just follow the evidence, what tells you in advance what is allowed to count as evidence?"
+- "What made your criterion look neutral to you rather than inherited?"
+- "Are you examining Islam, or only examining whether Islam fits a criterion you did not examine?"
+
+If the interlocutor actually moves from deflection into sincere inquiry, the route can widen
+into calibrated tribunal-clearing and only then into fuller first-order engagement. Until that
+shift appears, bounded externalization is part of the procedure itself, not a soft stylistic choice.
+
 ---
 
 ## The Epistemic Weight of Denying Guidance

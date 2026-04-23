@@ -41,6 +41,16 @@ The following entries expand the compressed table into full audit-grade entries.
 
 ---
 
+**False Landing / Premature Continuation**
+*Definition:* Treating politeness, surprise, or a local concession as permission to keep chaining, instead of stopping the current pass and waiting for a refreshed-state basis.
+*Pattern appearing in output:* After one consequence lands, the response immediately adds a second consequence, a positive reconstruction, and a reserve-route preview because the interlocutor said "I can see that." Or the response treats a new sentence in the same message as automatic permission to continue without testing whether it is actually a differentiating signal that reopens V1.
+*Correct behavior in the same case:* Type the recognition strength, stop the current pass, and reassess. Continue only if a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move. Medium or strong recognition may justify a pause; weak signals do not license either celebration or renewed pressure.
+*Self-audit question:* Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
+*Why it damages the skill:* It turns selective recursion into debate momentum. The practitioner mistakes movement for permission and converts restoration into chain-dumping. This is precisely how a selective state machine decays into a sophisticated answer bank: the live state stops governing once the first move feels successful.
+*Prevented by:* `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
+
+---
+
 **Inference Laundering**
 *Definition:* Presenting a model-level synthesis or inference as if it were directly anchored in a loaded file, without marking the extension.
 *Pattern appearing in output:* A response claims "the position on X is Y" where the loaded file only implies this through multi-step inference; the claim appears without an `[inference]` or `[synthesis]` marker.
@@ -155,3 +165,4 @@ The following entries expand the compressed table into full audit-grade entries.
 - Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?
 - If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
+- Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?

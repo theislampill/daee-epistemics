@@ -7,11 +7,16 @@
   "required": [
     "case_family",
     "claim_type",
+    "claim_level",
+    "pattern_profile",
     "deformation",
     "concealment_mode",
     "do_orient",
     "read_status",
     "confidence",
+    "alignment_state",
+    "recognition_strength",
+    "continuation_eligibility",
     "p7_stops_active",
     "reason_category",
     "routing_gate",
@@ -144,6 +149,24 @@
     "confidence": {
       "type": "string",
       "enum": ["strong", "provisional", "low"]
+    },
+    "alignment_state": {
+      "type": "string",
+      "enum": [
+        "blocked",
+        "tribunal-loosened",
+        "frame-cleared",
+        "recognition-surfaced",
+        "alignment-advanced"
+      ]
+    },
+    "recognition_strength": {
+      "type": "string",
+      "enum": ["none", "weak", "medium", "strong"]
+    },
+    "continuation_eligibility": {
+      "type": "string",
+      "enum": ["not-assessed", "blocked", "eligible-on-refresh"]
     },
     "p7_stops_active": {
       "type": "array",
@@ -396,7 +419,24 @@
         "required": ["routing_gate"]
       },
       "then": {
-        "required": ["what_is_withheld_and_why"]
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          },
+          "matched_modules": {
+            "items": {
+              "properties": {
+                "module_class": {
+                  "enum": ["diagnostic", "tactic", "procedure"]
+                }
+              },
+              "required": ["module_class"]
+            }
+          }
+        }
       }
     },
     {
@@ -514,6 +554,41 @@
             "not": {
               "const": "open"
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "alignment_state": {
+            "const": "alignment-advanced"
+          }
+        },
+        "required": ["alignment_state"]
+      },
+      "then": {
+        "properties": {
+          "recognition_strength": {
+            "const": "strong"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "continuation_eligibility": {
+            "const": "eligible-on-refresh"
+          }
+        },
+        "required": ["continuation_eligibility"]
+      },
+      "then": {
+        "required": ["what_remains_live"],
+        "properties": {
+          "routing_gate": {
+            "const": "open"
           }
         }
       }

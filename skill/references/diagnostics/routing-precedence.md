@@ -13,8 +13,8 @@ The skill operates on seven primary diagnostic axes: NS, deformation, concealmen
 
 When multiple axes compete, apply in this order:
 
-1. **Concealment mode (if non-clear).** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode gates all other routing.
-2. **Discourse orientation (if non-truth-seek).** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held until orientation shifts.
+1. **Concealment mode (if non-clear and presently stronger).** When concealment is confirmed as `irad`, `juhud`, `istikbar`, or `inkar`, the register constraint from that mode normally gates all other routing. In mixed truth-seeking plus concealment cases, do not treat concealment as automatically absolute; use the stronger present cue rule below.
+2. **Discourse orientation (if non-truth-seek and presently stronger).** When DO-orient is `identity-perf`, `autotelic`, or `zann-mode`, the matched content module is held until orientation shifts. When genuine inquiry is stronger in the present exchange, use the smallest permissible move rather than flattening the case into a total hold.
 3. **Deformation (outside-in sequence).** `ada` before `i'tiqadat mawrutha`; `gharad` and `hawa` before any intellectual content; `i'tiqadat mawrutha` before evidence; `shubha` last.
 4. **Reason-category (content gate).** When reason-category is 3 or 4, V2 is required before content. When reason-category is 2, the volitional deformation is addressed before reason-engagement.
 5. **Foreign-premise status.** When a foreign premise is detected functioning as criterion or tribunal, V2 runs before content even if reason-category was marked as sound.
@@ -62,6 +62,8 @@ When two axes appear to compete at the same precedence level:
 
 **Rule T-5 (tribunal + semantic blocker tie):** When both an imported tribunal and a semantic blocker are live, intervention order is tribunal first, semantic blocker second, doctrinal content third. The semantic blocker remains live after tribunal refusal; do not collapse the case into one label.
 
+**Rule T-6 (mixed truth-seek + concealment tie):** When truth-seeking signals and concealment or aversion signals coexist, let the stronger present cue govern the immediate Layer B move. Default sequence: ask one bounded diagnostic question first; if the answer keeps the blocker live, add only minimal tribunal-clearing; then pause. Full doctrinal release is not licensed merely because some sincerity is visible.
+
 ---
 
 ## IV. Invalid Combinations
@@ -90,7 +92,7 @@ When the case-state has been established and multiple modules could plausibly be
 
 **Rule P-2a (current-pass activation):** `Matched modules` records only the modules whose governing work is active in the present pass. Diagnosed downstream routes that are held by register, semantic, or stop governance stay explicit as held; they do not become ambient simultaneous loads.
 
-**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 fires. No additional module is deployed until the interlocutor has re-entered the exchange, and any later round re-enters from V1 rather than inheriting the previous active set by default.
+**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 governs the current pass. No additional module is deployed from momentum alone. Any later round re-enters from refreshed V1 rather than inheriting the previous active set by default. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the restoration target remains unmet and no stop, register-hold, or semantic gate remains live for the next move.
 
 **Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The diagnosed downstream route remains explicit in Layer A / the diagnostic IR as held, not discarded or treated as simultaneously active.
 

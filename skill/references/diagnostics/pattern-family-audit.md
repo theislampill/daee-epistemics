@@ -473,9 +473,28 @@ Expected: FPD pass first — no explicit criterion stated; uncertain. Check disc
 
 Expected: FPD = detected; Source tradition = scientism/narrow evidentialism; Functional role = criterion; Route consequence = V2 must loosen the criterion before any evidential content. NS-1 candidate. V2 before E1/E3. M1 check: the empirical-testability criterion is not itself empirically testable — self-refutation probe applies before V2.
 
-**F2-c**: "I've looked into Islam and I just don't find the arguments convincing."
+**F2-c** (verbatim anchor): "I have no religion, I just follow the evidence wherever it leads."
 
-Expected: Underdetermined — "don't find convincing" could be genuine examination with shubhah (truth-seek), surface dismissal (ẓann), or argument-generation as exit (hawā/gharaḍ). Do NOT load E3 or V6. Mark underdetermined. Decisive missing differentiator: what specific arguments were examined and what is the criterion for "convincing"?
+Expected routing:
+- Input type: worldview-denial claim → P6 by default
+- Claim: authority @ cross-level (meta-epistemic criterion pressure + meta-noetic register question)
+- Pattern: PF-2 primary; memetic-profile case, not merely a proposition-level objection; PF-12 candidate only if naturalist filtering later becomes explicit
+- NS: NS-2 | NS-1 candidate; do not force a single NS code from the slogan alone
+- Reason-category: 3 (pseudo-neutral) candidate; 4 if inherited-milieu language later becomes explicit
+- FPD: detected — narrow evidentialism / pseudo-neutral neutrality claim functioning as criterion and tribunal
+- Foreign premise consequence: imported criterion-smuggling is active even if the speaker names it as simple openness
+- M1 / M1-P: active — the position uses an unnamed ʿaqīdah to deny having one
+- Concealment: may read as `irad` when the slogan is functioning as pre-inquiry deflection or register-control rather than contracted inquiry
+- Deployment discipline: full internal diagnosis retained; bounded externalization only
+- Layer B: one honest question or tightly constrained tribunal-clearing, not a doctrinal dump. Concrete question: "When you say you just follow the evidence, what tells you in advance what is allowed to count as evidence?"
+- Boundary reset: if the question lands, do not append E1, E3, DO, or RT content in the same round. Any later content round re-enters through V1 on the new signal.
+- What NOT to do: treat the slogan as generic apologetic content demand; collapse the case to proposition-only rebuttal; dump the full P6 / V2 / M1 diagnosis directly at the interlocutor while `irad` remains active
+
+Failure modes tested: fixture loss, forced NS lock, register-hold bypass, current-pass module bleed, proposition-only collapse, rewarded deflection by over-disclosure.
+
+**F2-d**: "I've looked into Islam and I just don't find the arguments convincing."
+
+Expected: Underdetermined — "don't find convincing" could be genuine examination with shubhah (truth-seek), surface dismissal (ẓann), or argument-generation as exit (hawā/gharaḍ). Do NOT load E3 or V6. Mark underdetermined. If the phrase is functioning as a pseudo-neutral tribunal already installed in advance, route it through the same P6 / PF-2 selective branch above; otherwise keep the decisive missing differentiator explicit: what specific arguments were examined and what is the criterion for "convincing"?
 
 ---
 
@@ -612,3 +631,53 @@ Expected: Apatheism. Concealment = iʿrāḍ (matter not allowed to press). DO-o
 - **Ḥadīth authentication content depth (partial C):** Framework routing is now in place (GAP-G closed); the specific epistemological arguments remain absent. Status: partial C.
 
 **Profile-patterning correction status:** The regression where mixed Christian-comparative cases collapse into fiṭrah-heavy/restorative/preachy handling is addressed at the routing level by §(v) of mixed-case-handling.md. The four named failure modes (restoration-first, Christology preemption, RT-2 collapse, criterion grant) are explicit with pass/fail checks. Cumulative dispatch is now governed by FPD output and sub-question identification rather than surface resemblance to "Christian background."
+
+---
+
+## §8 - Third-Wave Acceptance Fixtures
+
+These fixtures do not repeat the first-wave census. They lock down the residual selective-state
+transitions that were still too easy to preserve in prose while losing in practice.
+
+### TW-1 - Governed Recursive Continuation
+
+Prompt: "Only empirically testable claims count as knowledge. And if that standard fails on itself, that still doesn't get you to God."
+
+Expected:
+- first pass: M1 or V2 may expose the self-undermining rule, but that landing does not authorize same-pass sprawl
+- alignment state after the first landed move: `tribunal-loosened` or `recognition-surfaced`, not automatically `alignment-advanced`
+- recognition strength: `medium` or `strong` only if the interlocutor actually grants the collapse, accurately restates it, or asks the next sincere question from inside the cleared frame
+- continuation eligibility: `blocked` unless a fresh differentiating signal now reopens V1 with the restoration target still unmet
+- Layer B: stop at the landed move or leave one bounded question alive; do not append E1, V5, or positive theism merely because M1/V2 landed
+
+### TW-2 - Same-Message Fresh Round
+
+Prompt: "Yeah, that standard isn't neutral. So what would count as a non-imported criterion?"
+
+Expected:
+- the tribunal-clearing move has landed strongly enough for Stop-2
+- recognition strength: `strong`
+- alignment state: at least `recognition-surfaced`; possibly `frame-cleared`, but not `alignment-advanced` unless positive willingness to inhabit the restored order is also visible
+- the second sentence is a differentiating signal inside the same message that reopens V1
+- continuation eligibility: `eligible-on-refresh`
+- next move: the smallest refreshed move justified by the new burden, not the carried-forward prior chain
+
+### TW-3 - Mixed Truth-Seeking Plus Concealment
+
+Prompt: "I do want the truth, but I still don't want Islam to be right."
+
+Expected:
+- mixed truth-seeking plus aversion / concealment
+- let the stronger present cue govern; do not flatten the case to either pure sincerity or pure concealment
+- default Layer B sequence: one bounded diagnostic question first; if the aversion remains the active blocker, add only minimal tribunal-clearing or named register work; then pause
+- full internal diagnosis may preserve concealment possibility, restoration target, and held routes, but Layer B does not dump doctrinal content
+
+### TW-4 - Cross-Domain Return to Restoration
+
+Prompt: "The manuscript question may not defeat transmission, but why should that make revelation authoritative?"
+
+Expected:
+- V10 or RT clarification may have landed, but the new burden is now authority rather than reconstruction
+- alignment state after the first landing: `tribunal-loosened` or `frame-cleared`, not final alignment
+- refresh the case-state, then hand off to the next governing authority route rather than continuing RT explanation from momentum
+- Layer B: one refreshed authority-facing move only; do not replay provenance, contents, and authority all over again in the same pass

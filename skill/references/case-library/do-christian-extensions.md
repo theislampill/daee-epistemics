@@ -16,6 +16,8 @@ with V8 (`references/techniques/V8-bila-kayf-anchor.md`).
 
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
+**Upstream routing note:** If divine perfection, non-eventfulness, or imported maximally-perfect-being grammar is functioning as the tribunal, run `references/diagnostics/perfection-criterion-usurpation.md` first. DO-11 and V8 are downstream after that tribunal has been refused.
+
 **The objection:** A unipersonal God cannot be maximally perfect. Perfect love, perfect
 glory, and perfect flourishing require an eternal other of equal status within God. A God
 who is only one self would either be loveless prior to creation, or dependent on creation

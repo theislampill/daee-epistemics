@@ -27,5 +27,7 @@ Assume P. Show that P, followed consistently, produces conclusions the interlocu
 1. State clearly: "I am going to assume your position for the sake of argument and trace what follows."
 2. Derive the consequences by valid steps — be explicit, not impressionistic.
 3. Identify the absurdity or unacceptable commitment: "What follows is X. Do you accept X?"
-4. If they accept X: take them further down the chain. If they resist: "you have located the premise that conflicts with your stated position."
+4. If they accept X: stop there or leave one bounded question alive. Do not continue down the chain automatically in the same round; P7 Stop-2 governs. Any further extension requires a fresh reassessment of case-state, register, concealment/orientation, and release conditions.
 5. If they reject X: "X follows necessarily from your position. You cannot reject X without rejecting the position that generated it."
+
+M8 is not a one-shot contradiction move and not an autonomous chain-dump. It is a selective recursive tactic: land one consequence, reassess the live state, and extend only if the restoration target still requires further compounding. Same-round continuation is governed by P7 stops, register discipline, and current release conditions.

@@ -78,6 +78,25 @@ evidence wherever it leads" can instantiate `irad` when pseudo-neutrality is fun
 as deflection from letting the matter press. The criterion burden is still diagnosed in
 full; what changes is the directly deployable register, not the existence of the diagnosis.
 
+Do not flatten this family into an abstract concealment label alone. Several distinct reads
+must stay visible at once:
+
+- **Sincere but inherited pseudo-neutrality:** the speaker may genuinely think they are
+  describing openness while carrying an inherited tribunal as invisible common sense
+- **Active pre-inquiry deflection:** the slogan is being used to keep the question from
+  pressing or to control register before inquiry has actually begun
+- **Criterion-smuggling as invisible filter:** the pseudo-neutral claim is itself how the
+  foreign premise enters the case, even when no concealment mode has yet been confirmed
+- **`irad` as interactional posture:** `irad` applies when the slogan is functioning as
+  turning-away or register-control, not merely whenever the slogan-family appears
+
+The practical consequence is selective deployment. The system may keep the full internal
+diagnosis — pseudo-neutral reason, imported criterion, worldview denial, hidden ʿaqīdah —
+while letting the stronger present cue govern the immediate Layer B move. Default sequence:
+ask one bounded diagnostic question first; if the same blocker stays live, add only minimal
+tribunal-clearing; then pause. Concealment analysis here is therefore a live route into
+deployment discipline, not a label that exhausts the case.
+
 ---
 
 ## Juḥūd — Culpable Denial

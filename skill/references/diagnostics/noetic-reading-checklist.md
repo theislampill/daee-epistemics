@@ -36,7 +36,23 @@ Convert findings into a compact case state rather than a lecture. At minimum, de
 - the likely deformation or deformation pair
 - whether the case is strong, provisional, or low-confidence
 - which tactic, technique, procedure, or case module becomes the smallest matched next step
+- whether a pseudo-neutral slogan is installing an imported tribunal, denying a worldview while
+  carrying a hidden ʿaqīdah, signaling concealment possibility, and requiring bounded deployment
 - what missing differentiator would change the read
+
+### Checklist Rider - Pseudo-Neutral Slogans
+
+When slogans such as "I just follow the evidence," "I'm neutral," "I'm just following
+reason," or "I looked and just wasn't convinced" appear, do not classify only the
+proposition-level content. Classify the meta-noetic posture:
+
+- imported tribunal / criterion-smuggling
+- pseudo-neutral reason claim
+- worldview denial / hidden ʿaqīdah
+- concealment possibility
+- deployment discipline: let the stronger present cue govern; ask one bounded diagnostic
+  question first; if the same blocker stays live, add only minimal tribunal-clearing; then
+  pause rather than jumping to full discharge
 
 ## The Nine Analytical Dimensions
 
@@ -202,6 +218,9 @@ Emit a single NS code when the nine dimensions converge on one profile. Emit `NS
 | Belief in God accepted; inferential warrant (classical apologetics / philosophical-theist framing) held as *precondition* for warranted belief | NS-7 |
 | Muslim-internal; authority fatigue + moral recoil + textual-historical pressure compounded into a single crisis; sometimes `taʿāruḍ` anxiety between reason and transmitted report | NS-8 |
 | Testimony-suspicion as default; manuscript-reconstruction or canon-formation language; tawātur flattened into single-strand chain reasoning; manuscript variance read as doctrinal corruption; New-Testament textual conditions imported onto the Qurʾān; historical criticism presented as neutral method | NS-9 |
+| Fiṭrah orientation conceded in principle but demoted from ḍarūrī deliverance to preparatory disposition; naẓar still treated as the completing condition for warranted belief; Māturīdī or intra-kalāmic fiṭrah vocabulary without the hard replacement move of NS-6 | NS-10 |
+| Belief retained while inferential ratification is refused as a requirement; "I do not need arguments," fideist closure, or Reformed/basic-belief framing used to block the evidentialist demand rather than satisfy it | NS-11 |
+| Fiṭrah itself disputed at the content level: blank-slate / neutral-human-nature claims, dual-nature equal-tendency claims, or environment treated as decisive over any innate theistic orientation | NS-12 |
 
 When two NS codes are simultaneously defensible, report `NS-X | NS-Y` and name which profile sets intervention order. Collapse to a single code only when one profile clearly dominates the dimensions that most govern the next move (typically Dimensions 1, 4, and 8).
 
@@ -235,8 +254,12 @@ The NS code is necessary but not sufficient for routing. Before selecting a case
 
 ## Output Shape
 
-Terminate the checklist with a compact line, not a lecture:
+Terminate the checklist with a compact line, not a lecture, when the case remains routine and first-order:
 
     NS: NS-X [| NS-Y]    Deformation: <primary> [| <secondary>]    Concealment: <mode>    DO-orient: <orientation>    Strength: <strong | provisional | low>    Next: <smallest matched module>
 
-This line is what the case-state schema in `case-state-schema.md` ingests. It is the routing artifact. Everything before it is the work that produced it.
+When `claim_level`, `pattern_profile`, `reason-category`, `register-hold`, `alignment state`,
+`recognition strength`, or `continuation eligibility` is doing real routing work, emit the richer
+Standard Form from `case-state-schema.md` instead of relying on the compact line alone. The compact
+line is a compression aid for routine first-order cases, not a substitute for the higher-order
+case-state or Diagnostic IR.

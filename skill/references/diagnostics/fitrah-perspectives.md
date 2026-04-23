@@ -3,7 +3,7 @@
 > do not use when: the interlocutor accepts the fiṭrah's theistic orientation and the dispute is about something else
 > IR field: Fiṭrah-view = sound (operative default, no special action) | tabula-rasa | dual-nature; governs which engagement path from this file applies
 > section-to-view mapping:
->   §Tabula Rasa (Neutral Perspective) → tabula-rasa view; V5 primary; E4 cross-cultural check secondary
+>   §Tabula Rasa (Neutral Perspective) → tabula-rasa view; V5 primary; E2/V3 secondary clearing when phenomenology is refused; E4 cross-cultural check supporting
 >   §Dual Perspective → dual-nature view; nafs/fiṭrah distinction primary; V5 secondary
 > paired files: NS-12 profile (case-library/profiles/ns-12-blank-slate-dual-fitrah.md); V5 (directing attention to signs — primary); E4 (cross-cultural check — secondary)
 
@@ -99,11 +99,13 @@ Third, the verse cited (16:78) speaks of the child's lack of knowledge, not the 
 of a normative orientation. Knowledge and natural disposition are categorically distinct.
 
 **Engagement implication:** An interlocutor holding this view will resist the fiṭrah-based
-argument entirely. The correct move is not to argue about the fiṭrah but to deploy E2
-and V3 first — establish that basic belief operates in their own noetic structure — and
-then show that the blank-slate account faces the same regress problem the interlocutor
-is trying to place on theistic belief. If a person has no innate orientation, on what
-basis do they form any basic beliefs at all?
+argument as a starting point. The correct first move is V5 — direct attention to the
+phenomenology of recognition that the blank-slate account fails to explain. If the
+interlocutor refuses that phenomenology as question-begging or psychologically evacuated,
+use E2 and V3 as secondary clearing: establish that basic belief still operates in their
+own noetic structure, then show that the blank-slate account faces the same regress
+problem it tries to place on theistic belief. If a person has no innate orientation, on
+what basis do they form any basic beliefs at all?
 
 ---
 
@@ -196,8 +198,10 @@ grounding for the positive account.
 When diagnosing an interlocutor:
 
 - **Blank-slate interlocutor:** Does not accept that theistic orientation is native to
-  human cognition. Deploy E2 and V3 first; establish that basic belief operates in their
-  noetic structure regardless; show blank-slate account generates its own regress.
+  human cognition. Begin with V5 to surface the phenomenology the blank-slate view does
+  not explain. If that is refused as question-begging or psychologically evacuated, use
+  E2 and V3 as secondary clearing; establish that basic belief operates in their noetic
+  structure regardless, then show the blank-slate account generates its own regress.
 - **Dual-nature interlocutor:** Treats religious belief as one option among equally valid
   alternatives. Show internal incoherence; redirect to the single-orientation account.
 - **Positive-perspective interlocutor:** The skill's own position. Proceed with the

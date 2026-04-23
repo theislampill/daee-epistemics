@@ -3,6 +3,7 @@
 > do not use when: the framework is present but not yet functioning as tribunal
 > load-after: foreign-premise-detection.md
 > output: telltale features, route consequences, prohibited moves, restoration targets
+> scope: structural family-transfer owner — Types A-D are keyed to the imported framework, not the interlocutor's background; the same family may appear in Christian, secular, Hindu/Advaita, Buddhist, Confucian, or other cases when the framework is functioning as tribunal
 
 # Philosophical Usurpation - Named Case Family
 
@@ -15,6 +16,11 @@ This is distinct from:
 - pressing a specific philosophical objection
 
 Usurpation specifically means the framework has been granted the chair.
+
+This family is not only a label. Once the tribunal has been named or loosened, refresh the
+case-state before releasing content. `tribunal-loosened` and even `frame-cleared` are real
+progress, but they do not yet equal `alignment-advanced`. If another live burden now governs,
+route there explicitly. If not, release only the smallest restorative next move.
 
 ---
 

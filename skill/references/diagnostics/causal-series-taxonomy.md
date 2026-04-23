@@ -10,6 +10,12 @@ This file prevents a common collapse: every appeal to regress, infinity, or caus
 
 The governing question is always: **what kind of series is live, what sort of impossibility is being asserted, and what role are secondary causes being made to play?**
 
+This file is a classification owner, not an automatic content release. Once the series type,
+impossibility type, or secondary-cause confusion has been clarified, refresh the case-state.
+If the next live burden is proof-method, V3, or a specific inferential route, hand off there.
+If not, release only the smallest restorative next move rather than treating taxonomy itself
+as permission for same-pass argument sprawl.
+
 ---
 
 ## Classification Grid
