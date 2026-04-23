@@ -320,3 +320,427 @@ governance, and refreshed-state continuation already require.
 The operative success condition is restorative structural viability: a noetic configuration whose
 grounding, routing, release, and recursive continuation remain ordered toward restoration rather
 than tribunal capture, semantic trap, memetic persistence, or brittle pseudo-stability.
+
+## Formal Operator View
+
+The ASCII chart, recursive state-transition view, and Mermaid graph above remain the primary audit
+surfaces. The formal view below makes the same governed interpretive framework explicit in operator
+form. It does not replace repo-native routing language, and it does not reduce the ontology to a
+pure graph. It identifies where discourse is formalized, validated, selectively activated,
+manifested under bounded permissions, refreshed, and re-entered under governance.
+
+At the highest level, the framework is not a one-shot router. It is a governed selective-recursive
+diagnostic architecture whose continuation is rejudged after every bounded move.
+
+### Global Operator
+
+Let the total system be:
+
+```math
+\hat{\mathcal{S}}_{\eta,\kappa}
+=
+\mathrm{Iterate}_{\kappa,\eta}
+\Big[
+\mathcal{R}
+\circ
+\Omega
+\circ
+G
+\circ
+\chi
+\circ
+D
+\Big]
+````
+
+Applied to raw discourse `I` under the always-load foundation `Φ`:
+
+```math
+\Psi^{*}
+=
+\hat{\mathcal{S}}_{\eta,\kappa}(I,\Phi)
+```
+
+Here, `Ψ*` is the final bounded restorative output across one or more governed rounds.
+
+This makes explicit that the framework is not a free-running recursion engine and not a static
+routing table. It is a stateful iterative operator whose continuation is governed after each landed
+move.
+
+### Symbol Legend
+
+#### Foundation Layer
+
+```math
+\Phi = \{\alpha,\beta\}
+```
+
+where:
+
+```math
+\alpha = \{\texttt{KERNEL},\texttt{META},\texttt{WAHY}\}
+\qquad
+\beta = \{\texttt{TERM},\texttt{HEUR},\texttt{CASEINDEX}\}
+```
+
+* `α`: kernel commitments / governing anchors
+* `β`: always-load substrate: terminology, heuristics, case indexing, and standing background
+
+#### Diagnostic Layer
+
+The discourse is first bound to the governing foundation:
+
+```math
+S_0 = I \otimes (\alpha + \beta)
+```
+
+Diagnostic reduction then maps governed input into raw diagnostic state:
+
+```math
+\sigma_t = D(S_t;\delta)
+```
+
+Here, `δ` names the ordered diagnostic pass family extracting the live state, including the
+noetic, orientation, deformation, reason, foreign-premise, prophetic-discourse, and backbone checks
+as governed by the canonical diagnostics.
+
+#### Governance Layer
+
+Validation and suppression are then applied:
+
+```math
+\sigma_t^{\checkmark} = G(\sigma_t \mid \gamma)
+```
+
+Here, `γ` names the hard rails carried by routing precedence, stops, semantic discipline,
+register constraints, and related governance checks.
+
+This is not merely a transition from possible to actual. It is a transition from possible to
+permitted.
+
+#### Routing Layer
+
+From the validated state, the live restoration target is selected:
+
+```math
+\eta_t = \mathrm{Target}(\sigma_t^{\checkmark})
+```
+
+Selective routing then activates only the profiles and operator surfaces justified by the current
+validated state and restoration target:
+
+```math
+(\rho_t,\mu_t) = \Omega(\sigma_t^{\checkmark},\eta_t)
+```
+
+where:
+
+* `ρ_t`: activated routed profile set
+* `μ_t`: activated TTP operator set
+
+Routing is therefore state-conditioned, not merely topic-conditioned.
+
+#### Bounded Manifestation Layer
+
+Bounded manifestation is rendered under current permissions:
+
+```math
+\Psi_t =
+\mathcal{R}(\rho_t,\mu_t,\sigma_t^{\checkmark},\eta_t)
+=
+\langle \lambda_{A,t}, \lambda_{B,t}, \tau_t \rangle
+```
+
+where:
+
+* `λ_A,t`: Layer A retained diagnosis
+* `λ_B,t`: Layer B deployable move
+* `τ_t`: restoration trace for the pass
+
+This makes explicit that the framework does not emit undifferentiated output. It renders retained
+diagnosis, deployable engagement, and restoration trace under bounded permissions.
+
+#### Recursive Layer
+
+After each bounded manifestation, refreshed state is computed:
+
+```math
+\sigma_{t+1}^{+} = \chi(\sigma_t^{\checkmark},\Psi_t,\eta_t)
+```
+
+Recursive governance then determines whether the framework stops, pauses, or re-enters:
+
+```math
+\kappa(\sigma_{t+1}^{+},\Psi_t,\eta_t)
+\in
+\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+```
+
+If recursive re-entry is licensed, the next pass begins from refreshed state under renewed
+governance rather than from unguided carry-forward:
+
+```math
+S_{t+1} = \sigma_{t+1}^{+} \otimes \Phi
+```
+
+Bounded deployment therefore governs how recursion unfolds; it does not abolish recursion.
+
+### Functional Pipeline
+
+#### I. Initialization
+
+```math
+S_0 = I \otimes (\alpha + \beta)
+```
+
+Raw discourse is bound to governing anchors and substrate.
+
+```math
+\text{raw} \to \text{governed}
+```
+
+#### II. Diagnostic Reduction
+
+```math
+\sigma_0 = D(S_0;\delta)
+```
+
+The discourse is reduced into diagnostic markers and structured state.
+
+```math
+\text{subjective} \to \text{classified}
+```
+
+#### III. Gated Validation
+
+```math
+\sigma_0^{\checkmark} = G(\sigma_0 \mid \gamma)
+```
+
+The state is checked against routing precedence, anti-pattern discipline, stop conditions, semantic
+holds, register holds, and related hard rails.
+
+```math
+\text{possible} \to \text{permitted}
+```
+
+#### IV. Selective Routing
+
+```math
+(\rho_0,\mu_0) = \Omega(\sigma_0^{\checkmark},\eta_0)
+```
+
+Only the live profiles and TTP surfaces are activated.
+
+```math
+\text{available} \to \text{selected}
+```
+
+#### V. Bounded Manifestation
+
+```math
+\Psi_0
+=
+\mathcal{R}(\rho_0,\mu_0,\sigma_0^{\checkmark},\eta_0)
+=
+\langle \lambda_{A,0}, \lambda_{B,0}, \tau_0 \rangle
+```
+
+Output is rendered under current permissions, not from total available knowledge.
+
+```math
+\text{selected} \to \text{manifest}
+```
+
+#### VI. Refreshed Recursive Decision
+
+After a landed move:
+
+```math
+\sigma_1^{+} = \chi(\sigma_0^{\checkmark},\Psi_0,\eta_0)
+```
+
+Then:
+
+```math
+\kappa(\sigma_1^{+},\Psi_0,\eta_0)
+\in
+\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+```
+
+If recursive re-entry is licensed:
+
+```math
+S_1 = \sigma_1^{+} \otimes \Phi
+```
+
+and the cycle proceeds only under renewed governance.
+
+### TTPs as Selective Recursive Operators
+
+The routed TTP layer is not merely a list of response modules. Each active TTP functions as a
+bounded state-conditioned operator ordered toward the current restoration target.
+
+Let `T_i ∈ μ_t`. Then:
+
+```math
+T_i : (\sigma_t^{\checkmark},\eta_t) \to \Delta\Psi_t
+```
+
+Meaning:
+
+* a TTP acts only on validated current state,
+* it produces a bounded delta in manifestation,
+* it remains ordered toward a restoration target rather than free expansion.
+
+So a governed pass may be extended as:
+
+```math
+\Psi_{t+1} = \Psi_t \oplus \Delta\Psi_t
+\qquad
+\text{where}
+\qquad
+\Delta\Psi_t = T_i(\sigma_t^{\checkmark},\eta_t)
+```
+
+But continuation remains governed by refreshed state:
+
+```math
+\kappa(\chi(\sigma_t^{\checkmark},\Psi_t,\eta_t),\Psi_t,\eta_t)
+```
+
+This makes explicit that TTPs are selective recursive operators whose continuation is judged only
+after refresh. They are not autonomous chains and not ambient always-on expansions.
+
+### State Taxonomy
+
+To avoid conflating state levels, the framework distinguishes:
+
+```math
+\sigma_t
+\qquad
+\text{raw diagnostic state}
+```
+
+```math
+\sigma_t^{\checkmark}
+\qquad
+\text{validated actionable state}
+```
+
+```math
+\sigma_t^{+}
+=
+\chi(\sigma_t^{\checkmark},\Psi_t,\eta_t)
+\qquad
+\text{refreshed post-move state}
+```
+
+The architecture is therefore not a single collapse event. It is a sequence of temporary
+stabilizations into actionable states under renewed governance.
+
+### Layer Semantics
+
+Layer A retains diagnostic truth-state for control integrity:
+
+```math
+\lambda_{A,t} = f_A(\sigma_t^{\checkmark})
+```
+
+Layer B manifests the deployable move under current permissions:
+
+```math
+\lambda_{B,t} = f_B(\sigma_t^{\checkmark},\eta_t,\gamma)
+```
+
+The restoration trace records the path of bounded restorative movement:
+
+```math
+\tau_t \subseteq
+\{\sigma_t^{\checkmark} \to \Psi_t \to \sigma_{t+1}^{+}\}
+```
+
+So the output is not merely answer-content. It is diagnosis, bounded engagement, and restorative
+trace under governance.
+
+### State Transition Table
+
+| Phase          | Input               | Operator | Output                 | Ontological shift       |
+| -------------- | ------------------- | -------- | ---------------------- | ----------------------- |
+| Initialization | `I`                 | `Φ`      | `S₀`                   | raw → governed          |
+| Diagnosis      | `S₀`                | `D`      | `σ₀`                   | subjective → classified |
+| Validation     | `σ₀`                | `G`      | `σ₀✓`                  | possible → permitted    |
+| Routing        | `σ₀✓, η₀`           | `Ω`      | `(ρ₀, μ₀)`             | available → selected    |
+| Rendering      | `(ρ₀, μ₀), σ₀✓, η₀` | `ℛ`      | `Ψ₀`                   | selected → manifest     |
+| Refresh        | `σ₀✓, Ψ₀, η₀`       | `χ`      | `σ₁⁺`                  | manifest → updated      |
+| Continuation   | `σ₁⁺, Ψ₀, η₀`       | `κ`      | stop / pause / recurse | updated → directed      |
+
+### Compact Summary Equation
+
+The full architecture may be stated compactly as:
+
+```math
+\Psi^{*}
+=
+\mathrm{Iterate}_{\kappa,\eta}
+\Big[
+\mathcal{R}
+\circ
+\Omega
+\circ
+G
+\circ
+\chi
+\circ
+D
+\Big]
+(I,\Phi)
+```
+
+subject to:
+
+```math
+\kappa(\sigma_t^{+},\Psi_t,\eta_t)
+\in
+\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+```
+
+and with each Layer B manifestation bounded by current permissions:
+
+```math
+\lambda_{B,t} \subseteq \mathrm{Permitted}(\sigma_t^{\checkmark},\gamma)
+```
+
+### Interpretive Conclusion
+
+This formalization treats the framework not as a static pipeline, but as a governed
+selective-recursive architecture:
+
+* the Diagnostic IR is the actionable audited control surface;
+* routing is selective activation from validated state;
+* output is bounded manifestation, not unconstrained discharge;
+* recursion is permitted only through refreshed state;
+* TTPs are selective recursive operators rather than ambient expansion rules;
+* the end is restorative structural viability, not mere contradiction-production.
+
+In compact form:
+
+$$
+\text{Input}
+\to
+\text{Governed State}
+\to
+\text{Validated IR}
+\to
+$$
+$$
+\text{Selective TTP Activation}
+\to
+\text{Bounded Move}
+\to
+$$
+$$
+\text{Refreshed State}
+\to
+\text{Recurse / Pause / Stop}
+$$
