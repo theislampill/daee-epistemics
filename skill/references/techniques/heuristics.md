@@ -66,3 +66,11 @@ These are always-active background rules, not case-specific moves.
 29. **Make the routing state legible when it matters.** In ordinary mode, surface only the routing state needed to govern the next move. In advanced mode, make the richer IR state explicit: case type, claim level, pattern profile, routing gate, alignment state, recognition strength, continuation eligibility, module choice, confidence, and restoration target. When a higher-order PF family is live, keep the burden, the pattern, and the restoration target distinct. If a brief theory-to-routing bridge clarifies the move, use one; do not turn the output into transparency theater.
 
 30. **Mark where inference begins.** If a move is model inference rather than file-grounded or cross-file synthesis, say so using the source-status legend: `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]` with their definitions.
+
+31. **Treat discourse as an analysand, not a blob.** Read claims, criteria, testimonial posture, slogan families, and register cues as separable surfaces that may require different intervention order. Do not force the whole burden into one flat answer when the case is structurally decomposable.
+
+32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, and filters. Meta-noetic memetics is how semantic-intellectual units dock, stabilize, distort, or lose force within that configuration. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding.
+
+33. **Let restorative structural viability outrank bare formal stability.** A structure may look locally coherent while still being tribunal-captured, semantically trapped, or held together by imported criteria. The goal is not merely to preserve consistency, but to restore a configuration whose grounding, routing, release, and continuation remain aligned to restored order.
+
+34. **Let the validated IR govern recursive re-entry.** If a further move cannot be justified from refreshed state inside the audited control surface, it is not licensed. Re-enter only through a still-live restoration target and a newly permitted route, never from momentum alone.

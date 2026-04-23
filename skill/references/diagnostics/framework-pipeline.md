@@ -172,3 +172,151 @@ a shortcut around the diagnostic gate.
   Uses the compression rule as a bypass.
 - `[semantic neutralization / loaded anti-attribute term] -> [release doctrinal content anyway]`
   Bypasses the `semantic-discipline-required` gate; clear recontenting, evacuation, or the lexical trap first.
+
+## Formal Operator View
+
+The ASCII chart above remains the primary audit surface. The formal view below makes the same
+governed interpretive framework explicit in compact form. It does not replace repo-native routing
+language, and it does not reduce the ontology to a pure graph. It states where discourse is
+formalized, validated, manifested, refreshed, and re-entered.
+
+Let the always-load foundation be:
+
+$$
+\Phi = \{\alpha,\beta\}
+$$
+
+where `\alpha` names the kernel commitments and `\beta` names the always-load substrate.
+
+For each governed pass `t`, the framework can be stated as:
+
+$$
+\sigma_t = D(I_t, \Phi; \delta)
+$$
+
+$$
+\sigma_t^{\checkmark} = G(\sigma_t \mid \gamma)
+$$
+
+$$
+\eta_t = \operatorname{Target}(\sigma_t^{\checkmark})
+$$
+
+$$
+(\rho_t,\mu_t) = \Omega(\sigma_t^{\checkmark}, \eta_t)
+$$
+
+$$
+\Psi_t = \mathcal{R}(\rho_t,\mu_t,\sigma_t^{\checkmark},\eta_t)
+= \langle \lambda_{A,t}, \lambda_{B,t}, \tau_t \rangle
+$$
+
+$$
+\sigma_{t+1} = \chi(\sigma_t^{\checkmark}, \Psi_t, \eta_t)
+$$
+
+$$
+\kappa(\sigma_{t+1}, \eta_t) \in \{\texttt{STOP}, \texttt{PAUSE}, \texttt{RECURSE}\}
+$$
+
+This is the quantized general framework in repo-native form: diagnostic reduction, governance,
+restoration targeting, selective routing, bounded manifestation, state refresh, and governed
+re-entry.
+
+### Symbol Legend
+
+| Symbol | Repo-native meaning |
+|--------|---------------------|
+| `I_t` | current discourse analysand for the pass |
+| `\Phi` | always-load foundation carried into the pass |
+| `\alpha` | kernel commitments / non-negotiable architecture |
+| `\beta` | always-load substrate: terminology, indices, heuristics, and standing background |
+| `D` | diagnostic reduction through V1 and the mandatory passes |
+| `\delta` | the ordered pass family extracting the live state |
+| `\sigma_t` | raw diagnostic state before validation |
+| `G` | governance / validation gate |
+| `\gamma` | routing precedence, stops, semantic discipline, register constraints, and related hard rails |
+| `\sigma_t^{\checkmark}` | validated actionable IR state |
+| `\eta_t` | live restoration target named from the validated state |
+| `\Omega` | selective routing / owner activation |
+| `\rho_t` | activated routed profile set |
+| `\mu_t` | activated TTP operator set |
+| `\mathcal{R}` | bounded render under current permissions |
+| `\Psi_t` | bounded manifestation for the pass |
+| `\lambda_A` | Layer A retained diagnosis |
+| `\lambda_B` | Layer B deployable move |
+| `\tau_t` | restoration trace for the pass |
+| `\chi` | refreshed-state update after bounded manifestation |
+| `\kappa` | recursive governance output: stop, pause, or recurse |
+
+## Recursive State-Transition View
+
+The framework is not a one-shot pipeline. Each pass produces bounded manifestation first, then
+refreshes state. Only the refreshed state may authorize further release. `STOP` and `PAUSE` are
+governed output states, not empty terminals. `RECURSE` means governed re-entry over the
+still-live burden, not autonomous looping.
+
+```mermaid
+flowchart TD
+    I["Discourse Analysand I"] --> P["Always-Load Foundation Phi = alpha + beta"]
+    P --> D["Diagnostic Reduction D via passes delta"]
+    D --> S["Raw Diagnostic State sigma"]
+
+    S --> G1["Governance Gate G under constraints gamma"]
+    G1 --> SV["Validated IR State sigma-check"]
+
+    SV --> ETA["Restoration Target eta"]
+    ETA --> O["Selective Routing Omega"]
+    O --> T["Activated Profiles rho and TTP Operators mu"]
+    T --> R["Bounded Render R"]
+    R --> PSI["Bounded Manifestation Psi_t = Layer A + Layer B + Trace"]
+
+    PSI --> X["State Refresh chi using sigma-check, Psi_t, eta"]
+    X --> SN["Refreshed State sigma-plus"]
+
+    SN --> G2["Recursive Governance over refreshed state"]
+    G2 -->|STOP| OS["Terminal bounded state"]
+    G2 -->|PAUSE / HOLD| OP["Held or compressed state"]
+    G2 -->|RECURSE| RE["Governed recursive re-entry"]
+
+    RE --> O
+```
+
+In operator terms, the route does not become recursive because the system keeps talking. It
+becomes recursive only when a bounded move has landed, the state has refreshed, the restoration
+target remains unmet, and governance still permits another pass.
+
+## Noetic Structure and Meta-Noetic Memetics
+
+Noetic structure is the object of diagnosis. It is not merely a list of claims or a worldview
+label. It is the operative configuration of commitments, grounding relations, inferential norms,
+testimonial posture, interpretive filters, stabilization structure, and routing-relevant
+dependencies by which a case is actually being carried. Those grounding relations are often
+graph-like, and locally may be read in DAG-like form, but the live control surface is richer
+than a pure graph because it must also carry weighting, suppression, underdetermination,
+concealment, and release conditions.
+
+Meta-noetic memetics names the dynamic behavior of semantic-intellectual units within and around
+that structure. It does not replace the repo's existing distinctions around concealment,
+criterion-smuggling, semantic capture, tribunal importation, or defensive stabilization; it
+clarifies how those already-named dynamics dock, persist, mutate, and propagate. It therefore is
+not enough to know that a node is present. The operator must also read why it is present, how it
+is being held in place, and what downstream dependencies will fail if a load-bearing premise,
+criterion, or authority node is cleared.
+
+The DSL-IR is the canonical audited formalization layer where those readings become governable.
+It is the repo's audited control surface for routing, release permission, restoration trace, and
+refreshed recursive eligibility. It is not decorative metadata and it is not retrospective
+paperwork.
+
+## Interpretive Note
+
+The framework does not treat discourse as a blob to ingest and answer in one pass. It treats
+discourse as an external analysand that can be inspected, decomposed, routed, manifested in
+bounded form, and revisited under refreshed governance. That clarification does not rename the
+repo into another vocabulary; it simply makes explicit what route-first discipline, DSL-IR
+governance, and refreshed-state continuation already require.
+
+The operative success condition is restorative structural viability: a noetic configuration whose
+grounding, routing, release, and recursive continuation remain ordered toward restoration rather
+than tribunal capture, semantic trap, memetic persistence, or brittle pseudo-stability.

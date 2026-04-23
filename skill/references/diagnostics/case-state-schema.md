@@ -9,6 +9,13 @@ This file governs how the skill surfaces its read of a case. It is not a separat
 It is the compact metadiscursive layer that makes routing legible and auditable.
 Use this file as the canonical case-state shape wherever routing legibility matters.
 
+The case-state is the surfaced contract derived from the validated Diagnostic IR. It surfaces the
+live noetic configuration as the object of diagnosis, not a paraphrase of the whole discourse.
+Use it to keep two things distinct: the noetic structure itself, and the meta-noetic memetic
+dynamics shaping it. The former is the operative configuration of commitments, grounding,
+testimony, filters, and dependencies. The latter is how semantic-intellectual units dock,
+stabilize, distort, or lose force inside that configuration.
+
 ## Standard Form
 
 Use this block when diagnosis matters to the response:
@@ -59,8 +66,8 @@ Use this block when diagnosis matters to the response:
 - `Claim-level` is required when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the full Diagnostic IR is being surfaced. In narrow routine first-order cases it may be omitted from the surfaced case-state after the diagnostic pass has found no criterion, category, or noetic-order fight. Omission means "no higher-order burden detected," not "unknown."
 - `Reason-category` is required. Emit `1`, `2`, `3`, or `4` from `reason-disambiguation.md`. The routing gate depends on this field: category 3 or 4 blocks content until V2; category 2 requires deformation-first gate; category 1 leaves the gate open. Do not leave this field blank on any case where intellectual content is being pressed.
 - `Foreign-premise status` is required when criterion-importing, tribunal-installation, or framework-importing elements are visible. The `[Foreign Premise Detection]` block from `foreign-premise-detection.md` feeds this field. If FPD was not run and this field is blank, the `Primary upstream issue` field cannot be reliably populated.
-- `Upstream findings` is the compact owner hook for upstream burdens that must stay live across passes without collapsing into one label. Use only the canonical tags named in the standard form. When both an imported tribunal and a semantic-discipline problem are live, include both tags and let `Sequencing rationale` state the intervention order rather than erasing one into the other.
-- `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, or prior probability assignment that is generating the objection is.
+- `Upstream findings` is the compact owner hook for upstream burdens that must stay live across passes without collapsing into one label. Use only the canonical tags named in the standard form. When both an imported tribunal and a semantic-discipline problem are live, include both tags and let `Sequencing rationale` state the intervention order rather than erasing one into the other. This is also the surfaced home for tribunal installation, semantic capture, and related meta-noetic pressures when they are doing routing work.
+- `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, prior probability assignment, or interpretive filter that is generating the objection is.
 - `Pattern profile` is optional but strongly preferred when a recurring PF family is governing the next move. Keep one primary profile only; carry competing profiles in `Live alternatives`.
 - `Primary deformation` should name only the deformation governing the next move.
 - `Concealment mode` is required. Use `clear` when no active concealment mode is positively
@@ -72,13 +79,13 @@ Use this block when diagnosis matters to the response:
 - `Deployable on shift to` is required whenever `Register-hold` is populated. Name the shift
   that would release held content rather than implying the content vanished.
 - `Routing gate` is required whenever any upstream blocker remains live. Use `semantic-discipline-required` when semantic neutralization or a loaded lexical-ontological trap must be cleared before doctrinal content can be released.
-- `Restoration target` must name what epistemic layer (`fitrah` / sound reason / authentic transmission / inferential argument) or ontological distinction (`creator-creation` / `transcendence-immanence` / `prophetic-authority`) is being restored. A target stated as "demonstrate divine unity" or "correct the objection" has not reached the restoration level.
+- `Restoration target` must name what epistemic layer (`fitrah` / sound reason / authentic transmission / inferential argument) or ontological distinction (`creator-creation` / `transcendence-immanence` / `prophetic-authority`) is being restored. A target stated as "demonstrate divine unity" or "correct the objection" has not reached the restoration level. The aim is restorative structural viability, not merely a correct sentence.
 - `Alignment state` is required whenever the response is doing explicit routing work beyond a routine first-order case. Use `blocked` when the governing filter still controls the case; `tribunal-loosened` when the imported criterion has visibly lost its neutrality claim; `frame-cleared` when the subject can now examine signs, revelation, or transmission without the old filter governing; `recognition-surfaced` when a landed move has produced medium or strong visible uptake; and `alignment-advanced` only when positive recognition and willingness to inhabit the restored order are visibly present. `tribunal-loosened` and `frame-cleared` are real progress, but they do not yet equal `alignment-advanced`.
 - `Recognition strength` is required whenever a move has landed enough to raise the Stop-2 question. Use `none`, `weak`, `medium`, or `strong`. Weak signals include politeness, silence, irritation, or rhetorical concession without state-shift. Medium and strong signals are what govern Stop-2 and refreshed continuation.
 - `Continuation eligibility` is required whenever the question is whether to continue, pause, or stop after a landed move. Use `not-assessed` before that question is live; `blocked` when a stop, hold, gate, or satisfied restoration target forbids more release; `eligible-on-refresh` only when a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move.
 - `Claim-type` identifies the governing logical category of the live pressure: `logical`, `metaphysical`, `moral`, `historical`, `transmission`, `phenomenological`, or `authority`. Record the primary type only. Carry any secondary type in `Live alternatives`, `[Core Formulation]`, or `What remains live`.
 - `Read status` should be `dominant`, `distributed`, or `underdetermined`.
-- `Live alternatives` should stay short. Keep live alternatives, not a full inventory.
+- `Live alternatives` should stay short. Keep live alternatives, not a full inventory. Preserve only routes that remain structurally live after the present correction; do not keep already-collapsed dependencies in circulation as though they still governed the case.
 - `Reassessment` should say `not warranted`, `revisit after X`, or `warranted now because Y`. A fresh differentiating signal may arise in a later reply or inside the same message through an accompanying proposition or entailment; if so, say that explicitly.
 - `Convergence requirement` should say whether one dominant move remains preferable or whether convergence across independent routes is now needed to advance the restoration target rather than merely win an argumentative point.
 - `Matched modules` should list only the current-pass, case-state-justified coordination: the modules whose governing work is active now. Do not use this field as a memory of every plausible file or every downstream owner that may later become relevant.
@@ -109,7 +116,7 @@ Field discipline:
 - `What was withheld and why` names the module(s) held in reserve and the governing reason. It preserves Layer A intelligibility; it does not authorize Layer B preview.
 - `What correction was applied` names the specific restorative move made.
 - `Route that became permissible after correction` names the immediate next route only. Do not use this field to emit a queued future stack.
-- `What remains live or unresolved` names any open axis, unconfirmed deformation, or live alternative.
+- `What remains live or unresolved` names any open axis, unconfirmed deformation, live alternative, or load-bearing dependency whose removal would reopen or collapse downstream routes.
 
 Compression rule: populate only the fields that had operative content. A restoration trace with two populated fields is more honest than one that fills all five performatively. If no correction was required, omit the block entirely.
 

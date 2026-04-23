@@ -60,6 +60,13 @@ The diagnostic IR must be formed and all gate checks must pass before any conten
 |------|------|
 | `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
 
+Architectural clarification: the diagnostic IR is the canonical audited control surface of the
+skill. The framework treats discourse as an analysand to be formally diagnosed before it is
+answered. The IR formalizes the live noetic state, higher-order burden, restoration target, and
+current release permissions before content dispatch. Each pass ends in bounded manifestation plus
+restoration trace; refreshed state then determines whether the governed outcome is stop, hold, or
+recursive re-entry.
+
 ### JSON / IR Adherence (hard requirement)
 
 The diagnostic IR is not complete unless it conforms to `references/diagnostics/diagnostic-ir.schema.json`.
@@ -278,6 +285,22 @@ stated motives — instantiated in the subject and readable from their discourse
 does not analyze from a viewless neutral vantage point. It deploys its own structured ontology of
 valid judgment, proper warrant, sound inference, reliable testimony, and true ʿaqīdah upon
 others' noetic structures. This is not a weakness; it is what honest analysis requires.
+
+Grounding relations inside that structure are often graph-like, and may be locally DAG-like, but
+the live control surface is richer than a pure graph because it must also carry weighting,
+suppression, underdetermination, concealment, and release conditions.
+
+**Meta-noetic memetics** - the dynamic behavior of semantic-intellectual units within and around
+a noetic structure. It does not replace the repo's existing distinctions around concealment,
+criterion-smuggling, semantic capture, tribunal importation, or defensive stabilization; it
+clarifies how those already-named dynamics dock, persist, mutate, and propagate. When a
+load-bearing premise, criterion, or authority claim is cleared, it also tracks the collapse
+radius across dependent claims.
+
+**DSL-IR** - the canonical audited formalization layer where the current noetic state becomes
+typed, governable, and restorable. It is the control surface for routing, hold conditions,
+bounded release, restoration trace, and refreshed recursive eligibility. It is not decorative
+metadata and it is not retrospective paperwork.
 
 ### The Skill's Own Governing Commitments
 

@@ -27,6 +27,27 @@ The IR composes fields from several sources:
 
 ---
 
+## DSL-IR as Audited Formalization Layer
+
+The Diagnostic IR is the repo's canonical audited formalization layer. It is where the live
+noetic structure becomes actionable: claims, criteria, grounding relations, testimonial posture,
+interpretive filters, held routes, and restoration target are rendered into one governable state
+before any content release.
+
+This formalization does not claim that the whole structure is exhausted by a pure proposition
+graph. Grounding relations may be read graph-like, and often locally DAG-like, but the audited
+control surface must also carry weighting, suppression, underdetermination, semantic holds,
+register holds, and release permissions.
+
+Meta-noetic memetics becomes operational here through fields such as `Foreign premise`,
+`Upstream findings`, `Claim-level`, `Pattern-profile`, `Concealment mode`, `DO-orient`,
+`What is withheld and why`, and `What remains live`. Those fields do not replace the repo's
+existing owners; they make their dynamic interaction auditable by tracking docking, tribunal
+installation, semantic capture, defensive persistence, and the collapse radius that follows when
+a load-bearing node is cleared.
+
+---
+
 ## Gate Protocol - Required Before Module Dispatch
 
 Before any content module is dispatched, the following checks must pass in order. If any check fails, dispatch is blocked; the blocking condition is named explicitly rather than silently resolved.
@@ -107,6 +128,10 @@ What remains live:                   # open differentiators, unresolved axes, or
 
 Compression rule: the IR is not a checklist to be filled performatively. Populate only fields with operative content.
 
+Noetic-object rule: populate the IR as a state of the structure, not as a paraphrase of the
+discourse. The point is to formalize what configuration is live, what governs release now, and
+what depends on what - not merely to restate the surface wording.
+
 Concealment mode is mandatory. Use `clear` when no active concealment mode is positively read.
 Use `mode-?` when the axis remains unresolved. Blank values, em dashes, or placeholders such as
 `none confirmed` are invalid because they erase the difference between "resolved absent" and
@@ -148,7 +173,7 @@ Populate these whenever their trigger is live:
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
 - `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
-- `What remains live` when live alternatives, held routes, or a boundary-reset condition must stay visible
+- `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
 
 **Current-pass activation rule**
@@ -156,6 +181,9 @@ Populate these whenever their trigger is live:
 - `Matched modules` records only the case-state-justified coordination active in the present pass.
 - Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
 - `Next move` names one live move only. It is not a queue of later modules.
+- When a load-bearing premise, criterion, or authority node has been cleared, `What remains live`
+  should mark any dependent claims whose support has collapsed or whose status now requires
+  re-evaluation before further routing.
 - When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the refreshed state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
 **Acceptance-state rules**
