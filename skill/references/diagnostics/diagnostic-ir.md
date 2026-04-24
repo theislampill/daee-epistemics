@@ -46,6 +46,20 @@ existing owners; they make their dynamic interaction auditable by tracking docki
 installation, semantic capture, defensive persistence, and the collapse radius that follows when
 a load-bearing node is cleared.
 
+**Operationalization rule:** Meta-noetic memetics does not add a new routing pass. It is the
+explanatory frame for the already-named dynamics. Its live IR surface is:
+
+- `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture moves
+- `Claim-level` and `Pattern-profile`: governing PF overlay and higher-order burden when these change routing or sequencing
+- `Concealment mode`: how recognition is being suppressed
+- `What is withheld and why` and `What remains live`: held routes and collapse radius after a load-bearing node is cleared
+
+**Negative rule:** When the concept "meta-noetic memetics" is invoked in a response without any
+of the above fields carrying a live read (no tribunal-installation in `Upstream findings`, no
+active PF overlay, no collapse-radius note in `What remains live`), the concept is being used
+decoratively. Decorative use is the anti-pattern named in
+`references/diagnostics/anti-patterns.md §Higher-Order Vocabulary Theater`.
+
 ---
 
 ## Gate Protocol - Required Before Module Dispatch
@@ -74,6 +88,12 @@ is held from direct deployment, not erased from the complete audit record.
 
 Only after all six checks pass does module dispatch proceed.
 
+**Gate trigger tracing:** When any check fires and blocks dispatch, record which check
+triggered the block using the `Gate trigger` field in the IR (e.g., `check 3 — S-2`,
+`check 4 — Stop-2`, `check 6 — register-hold`). When the gate is `open`, omit the field.
+This makes routing failures auditable without re-running the full gate protocol: the IR
+record names the blocking check, not just the resulting gate state.
+
 ---
 
 ## Full IR Schema
@@ -98,6 +118,7 @@ Recognition strength:                # none | weak | medium | strong
 Continuation eligibility:            # not-assessed | blocked | eligible-on-refresh
 P7 stops active:                     # Stop-1 | Stop-2 | Stop-3 | Stop-4 | Stop-5 | none
 Routing gate:                        # open | V2-required | deformation-first | semantic-discipline-required | register-hold | stop-condition
+Gate trigger:                        # omit when gate is open; when gate fires: check [1–6] + rule or stop id, e.g. "check 3 — S-2" or "check 4 — Stop-2"
 Matched modules:                     # current-pass, case-state-justified coordination only
 Prohibited moves:                    # list any PM from routing-precedence or do-attribute-precision
 
@@ -112,6 +133,7 @@ Ontological disorder:                # category-mistake | illicit-analogy | equi
 Restoration target:                  # what noetic faculty, epistemic ordering, or ontological distinction is being cleared or re-established
 
 --- Output Governance ---
+                                  # Canonical Layer A / Layer B definition: `SKILL.md §V.A — Two-Layer Output Contract`.
                                   # Output-governance fields govern Layer B only.
                                   # Layer A always preserves the complete diagnostic output.
 Source basis:                        # anchored | synthesis | inference | speculative - per claim
@@ -180,17 +202,50 @@ Populate these whenever their trigger is live:
 
 - `Matched modules` records only the case-state-justified coordination active in the present pass.
 - Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
+- **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - `Next move` names one live move only. It is not a queue of later modules.
 - When a load-bearing premise, criterion, or authority node has been cleared, `What remains live`
   should mark any dependent claims whose support has collapsed or whose status now requires
   re-evaluation before further routing.
 - When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the refreshed state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
+**Recursive-state model:** `references/diagnostics/framework-pipeline.md §Recursive State-Transition View` is the canonical owner of the STOP / PAUSE / RECURSE state model. The fields `continuation_eligibility`, `alignment_state`, and `recognition_strength` are this IR's typed carriers of that model. State-transition semantics and recursive re-entry conditions are defined in `framework-pipeline.md`; this section governs only how those states are represented in the IR record.
+
+**State-carry partition:** The consolidated table of what χ (state refresh) retains, resets, and re-evaluates across a pass boundary is in `references/diagnostics/framework-pipeline.md §Recursive Layer — State Carry Table`. The boundary-reset rule for matched modules after Stop-2 and the current-pass activation rule above are prose expressions of that same partition.
+
 **Acceptance-state rules**
 
 - `Alignment state` keeps restoration progress typed. Use `blocked` when the governing filter still controls the case; `tribunal-loosened` when the imported criterion has visibly lost its neutrality claim; `frame-cleared` when the subject can now examine signs, revelation, or transmission without the old filter governing; `recognition-surfaced` when a landed move has produced medium or strong visible uptake; `alignment-advanced` only when positive recognition and willingness to inhabit the restored order are visibly present.
 - `Recognition strength` must track the stop threshold rather than tone alone. `weak` covers politeness, irritation, surprise, silence, or rhetorical concession without state-shift; `medium` covers local consequence admission, reflective pause, or premise-examination; `strong` covers explicit blocker removal, accurate restatement, sincere next-questioning from the cleared frame, or a visible register shift into inquiry.
 - `Continuation eligibility` governs post-landing release. Use `not-assessed` before the question is live; `blocked` when a stop, hold, gate, or satisfied target forbids more release; `eligible-on-refresh` only when a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move.
+
+  **Positive termination:** When the restoration target is met and `alignment_state` is
+  `alignment-advanced` with `recognition_strength: strong`, set
+  `continuation_eligibility: blocked` and record `What remains live: none — restoration
+  target satisfied`. This sub-type of `blocked` marks restorative completion, not a
+  governance stop. It must be distinguished from `blocked` under an active stop condition
+  so that audits can confirm the framework terminated correctly rather than prematurely.
+
+**State transition table** — the three acceptance-state fields interact as follows. This
+table makes the forward direction explicit: given alignment state and recognition strength,
+what does continuation eligibility resolve to? Derived from the prose rules above; does not
+introduce new semantics.
+
+| `alignment_state` | `recognition_strength` | → `continuation_eligibility` |
+|-------------------|------------------------|------------------------------|
+| `blocked` | any | `blocked` |
+| `tribunal-loosened` | `weak` or `medium` | `blocked` |
+| `tribunal-loosened` | `strong` | `eligible-on-refresh` (if target unmet); `blocked — satisfied` (if target met) |
+| `frame-cleared` | `weak` | `blocked` |
+| `frame-cleared` | `medium` | `eligible-on-refresh` (if target unmet); `blocked` (if no fresh signal yet) |
+| `frame-cleared` | `strong` | `eligible-on-refresh` (if target unmet); `blocked — satisfied` (if target met) |
+| `recognition-surfaced` | `medium` or `strong` | `eligible-on-refresh` (if target unmet) |
+| `recognition-surfaced` | `weak` | `blocked` |
+| `alignment-advanced` | `strong` | `blocked — satisfied` |
+
+All `eligible-on-refresh` outcomes additionally require: a fresh differentiating signal has
+reopened V1, and no active stop, register-hold, or semantic gate remains live for the next
+move.
 
 **Consistency rules**
 
@@ -254,6 +309,11 @@ Specific failure modes:
 ## Connection to Framework Pipeline
 
 `references/diagnostics/framework-pipeline.md` shows the structural branching of the canonical pipeline. `references/diagnostics/routing-precedence.md` specifies the decision rules at each branch point. This file is the gate and the typed state produced at the end of V1 Phase 2 - the check that must be passed before module selection occurs.
+
+**IR-to-surfaced-output derivation:** The field-by-field mapping from internal IR fields to
+surfaced `[Case State]` output fields is in
+`references/diagnostics/case-state-schema.md §IR Derivation Map`. Use that table to verify
+that a surfaced case-state is derived from the validated IR rather than improvised.
 
 ---
 

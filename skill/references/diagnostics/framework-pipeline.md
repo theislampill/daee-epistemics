@@ -173,6 +173,96 @@ a shortcut around the diagnostic gate.
 - `[semantic neutralization / loaded anti-attribute term] -> [release doctrinal content anyway]`
   Bypasses the `semantic-discipline-required` gate; clear recontenting, evacuation, or the lexical trap first.
 
+## Recursive State-Transition View
+
+**Canonical owner:** This section is the authoritative definition of the STOP / PAUSE / RECURSE
+state model. All other files that govern recursive continuation (`SKILL.md §V.D`,
+`diagnostic-ir.md §Current-pass activation rule`, `routing-precedence.md Rule P-3`,
+`anti-patterns.md §False Landing`) cross-reference this section rather than re-stating the model
+independently. `P7-restoration-stops.md` is the concrete instantiation of the PAUSE / STOP
+states (Stops 1–5); this section owns the abstract state-transition semantics.
+
+The framework is not a one-shot pipeline. Each pass produces bounded manifestation first, then
+refreshes state. Only the refreshed state may authorize further release. `STOP` and `PAUSE` are
+governed output states, not empty terminals. `RECURSE` means governed re-entry over the
+still-live burden, not autonomous looping.
+
+```mermaid
+flowchart TD
+    I["Discourse Analysand I"] --> P["Always-Load Foundation Phi = alpha + beta"]
+    P --> D["Diagnostic Reduction D via passes delta"]
+    D --> S["Raw Diagnostic State sigma"]
+
+    S --> G1["Governance Gate G under constraints gamma"]
+    G1 --> SV["Validated IR State sigma-check"]
+
+    SV --> ETA["Restoration Target eta"]
+    ETA --> O["Selective Routing Omega"]
+    O --> T["Activated Profiles rho and TTP Operators mu"]
+    T --> R["Bounded Render R"]
+    R --> PSI["Bounded Manifestation Psi_t = Layer A + Layer B + Trace"]
+
+    PSI --> X["State Refresh chi using sigma-check, Psi_t, eta"]
+    X --> SN["Refreshed State sigma-plus"]
+
+    SN --> G2["Recursive Governance over refreshed state"]
+    G2 -->|STOP| OS["Terminal bounded state"]
+    G2 -->|PAUSE / HOLD| OP["Held or compressed state"]
+    G2 -->|RECURSE| RE["Governed recursive re-entry"]
+
+    RE --> O
+```
+
+In operator terms, the route does not become recursive because the system keeps talking. It
+becomes recursive only when a bounded move has landed, the state has refreshed, the restoration
+target remains unmet, and governance still permits another pass.
+
+## Noetic Structure and Meta-Noetic Memetics
+
+**Canonical owner:** This section is the authoritative definition of noetic structure and
+meta-noetic memetics as they function in this architecture. Files that engage the dynamics
+of criterion-docking, tribunal-installation, semantic-capture persistence, defensive
+stabilization, and collapse-radius should cross-reference this section rather than
+re-stating the conceptual framework independently. The DSL-IR operationalization of these
+dynamics lives in `references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization
+Layer`. This section names the conceptual architecture; that file makes it actionable.
+
+Noetic structure is the object of diagnosis. It is not merely a list of claims or a worldview
+label. It is the operative configuration of commitments, grounding relations, inferential norms,
+testimonial posture, interpretive filters, stabilization structure, and routing-relevant
+dependencies by which a case is actually being carried. Those grounding relations are often
+graph-like, and locally may be read in DAG-like form, but the live control surface is richer
+than a pure graph because it must also carry weighting, suppression, underdetermination,
+concealment, and release conditions.
+
+Meta-noetic memetics names the dynamic behavior of semantic-intellectual units within and around
+that structure. It does not replace the repo's existing distinctions around concealment,
+criterion-smuggling, semantic capture, tribunal importation, or defensive stabilization; it
+clarifies how those already-named dynamics dock, persist, mutate, and propagate. It therefore is
+not enough to know that a node is present. The operator must also read why it is present, how it
+is being held in place, and what downstream dependencies will fail if a load-bearing premise,
+criterion, or authority node is cleared.
+
+The DSL-IR is the canonical audited formalization layer where those readings become governable.
+For the authoritative definition of what the DSL-IR is, its gate protocol, field rules, and
+failure tests, see `references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization
+Layer`. That file is the canonical prose owner; this section names the pipeline surface where
+the IR sits.
+
+## Interpretive Note
+
+The framework does not treat discourse as a blob to ingest and answer in one pass. It treats
+discourse as an external analysand that can be inspected, decomposed, routed, manifested in
+bounded form, and revisited under refreshed governance. That clarification does not rename the
+repo into another vocabulary; it simply makes explicit what route-first discipline, DSL-IR
+governance, and refreshed-state continuation already require.
+
+The operative success condition is restorative structural viability: a noetic configuration whose
+grounding, routing, release, and recursive continuation remain ordered toward restoration rather
+than tribunal capture, semantic trap, memetic persistence, or brittle pseudo-stability.
+
+For the canonical definition of the Diagnostic IR, see `references/diagnostics/diagnostic-ir.md`.
+
 ## Formal Operator View
 
 The ASCII chart above remains the primary audit surface. The formal view below makes the same
@@ -226,102 +316,28 @@ re-entry.
 ### Symbol Legend
 
 | Symbol | Repo-native meaning |
-|--------|---------------------|
-| `I_t` | current discourse analysand for the pass |
-| `\Phi` | always-load foundation carried into the pass |
-| `\alpha` | kernel commitments / non-negotiable architecture |
-| `\beta` | always-load substrate: terminology, indices, heuristics, and standing background |
-| `D` | diagnostic reduction through V1 and the mandatory passes |
-| `\delta` | the ordered pass family extracting the live state |
-| `\sigma_t` | raw diagnostic state before validation |
-| `G` | governance / validation gate |
-| `\gamma` | routing precedence, stops, semantic discipline, register constraints, and related hard rails |
-| `\sigma_t^{\checkmark}` | validated actionable IR state |
-| `\eta_t` | live restoration target named from the validated state |
-| `\Omega` | selective routing / owner activation |
-| `\rho_t` | activated routed profile set |
-| `\mu_t` | activated TTP operator set |
-| `\mathcal{R}` | bounded render under current permissions |
-| `\Psi_t` | bounded manifestation for the pass |
-| `\lambda_A` | Layer A retained diagnosis |
-| `\lambda_B` | Layer B deployable move |
-| `\tau_t` | restoration trace for the pass |
-| `\chi` | refreshed-state update after bounded manifestation |
-| `\kappa` | recursive governance output: stop, pause, or recurse |
-
-## Recursive State-Transition View
-
-The framework is not a one-shot pipeline. Each pass produces bounded manifestation first, then
-refreshes state. Only the refreshed state may authorize further release. `STOP` and `PAUSE` are
-governed output states, not empty terminals. `RECURSE` means governed re-entry over the
-still-live burden, not autonomous looping.
-
-```mermaid
-flowchart TD
-    I["Discourse Analysand I"] --> P["Always-Load Foundation Phi = alpha + beta"]
-    P --> D["Diagnostic Reduction D via passes delta"]
-    D --> S["Raw Diagnostic State sigma"]
-
-    S --> G1["Governance Gate G under constraints gamma"]
-    G1 --> SV["Validated IR State sigma-check"]
-
-    SV --> ETA["Restoration Target eta"]
-    ETA --> O["Selective Routing Omega"]
-    O --> T["Activated Profiles rho and TTP Operators mu"]
-    T --> R["Bounded Render R"]
-    R --> PSI["Bounded Manifestation Psi_t = Layer A + Layer B + Trace"]
-
-    PSI --> X["State Refresh chi using sigma-check, Psi_t, eta"]
-    X --> SN["Refreshed State sigma-plus"]
-
-    SN --> G2["Recursive Governance over refreshed state"]
-    G2 -->|STOP| OS["Terminal bounded state"]
-    G2 -->|PAUSE / HOLD| OP["Held or compressed state"]
-    G2 -->|RECURSE| RE["Governed recursive re-entry"]
-
-    RE --> O
-```
-
-In operator terms, the route does not become recursive because the system keeps talking. It
-becomes recursive only when a bounded move has landed, the state has refreshed, the restoration
-target remains unmet, and governance still permits another pass.
-
-## Noetic Structure and Meta-Noetic Memetics
-
-Noetic structure is the object of diagnosis. It is not merely a list of claims or a worldview
-label. It is the operative configuration of commitments, grounding relations, inferential norms,
-testimonial posture, interpretive filters, stabilization structure, and routing-relevant
-dependencies by which a case is actually being carried. Those grounding relations are often
-graph-like, and locally may be read in DAG-like form, but the live control surface is richer
-than a pure graph because it must also carry weighting, suppression, underdetermination,
-concealment, and release conditions.
-
-Meta-noetic memetics names the dynamic behavior of semantic-intellectual units within and around
-that structure. It does not replace the repo's existing distinctions around concealment,
-criterion-smuggling, semantic capture, tribunal importation, or defensive stabilization; it
-clarifies how those already-named dynamics dock, persist, mutate, and propagate. It therefore is
-not enough to know that a node is present. The operator must also read why it is present, how it
-is being held in place, and what downstream dependencies will fail if a load-bearing premise,
-criterion, or authority node is cleared.
-
-The DSL-IR is the canonical audited formalization layer where those readings become governable.
-It is the repo's audited control surface for routing, release permission, restoration trace, and
-refreshed recursive eligibility. It is not decorative metadata and it is not retrospective
-paperwork.
-
-## Interpretive Note
-
-The framework does not treat discourse as a blob to ingest and answer in one pass. It treats
-discourse as an external analysand that can be inspected, decomposed, routed, manifested in
-bounded form, and revisited under refreshed governance. That clarification does not rename the
-repo into another vocabulary; it simply makes explicit what route-first discipline, DSL-IR
-governance, and refreshed-state continuation already require.
-
-The operative success condition is restorative structural viability: a noetic configuration whose
-grounding, routing, release, and recursive continuation remain ordered toward restoration rather
-than tribunal capture, semantic trap, memetic persistence, or brittle pseudo-stability.
-
-## Formal Operator View
+|---|---|
+| I<sub>t</sub> | current discourse analysand for the pass |
+| Φ | always-load foundation carried into the pass |
+| α | kernel commitments / non-negotiable architecture |
+| β | always-load substrate: terminology, indices, heuristics, and standing background |
+| D | diagnostic reduction through V1 and the mandatory passes |
+| δ | the ordered pass family extracting the live state |
+| σ<sub>t</sub> | raw diagnostic state before validation |
+| G | governance / validation gate |
+| γ | routing precedence, stops, semantic discipline, register constraints, and related hard rails |
+| σ<sub>t</sub><sup>✓</sup> | validated actionable IR state |
+| η<sub>t</sub> | live restoration target named from the validated state |
+| Ω | selective routing / owner activation |
+| ρ<sub>t</sub> | activated routed profile set |
+| μ<sub>t</sub> | activated TTP operator set |
+| ℛ | bounded render under current permissions |
+| Ψ<sub>t</sub> | bounded manifestation for the pass |
+| λ<sub>A</sub> | Layer A retained diagnosis |
+| λ<sub>B</sub> | Layer B deployable move |
+| τ<sub>t</sub> | restoration trace for the pass |
+| χ | refreshed-state update after bounded manifestation |
+| κ | recursive governance output: stop, pause, or recurse |
 
 The ASCII chart, recursive state-transition view, and Mermaid graph above remain the primary audit
 surfaces. The formal view below makes the same governed interpretive framework explicit in operator
@@ -341,17 +357,17 @@ Let the total system be:
 =
 \mathrm{Iterate}_{\kappa,\eta}
 \Big[
+\chi
+\circ
 \mathcal{R}
 \circ
 \Omega
 \circ
 G
 \circ
-\chi
-\circ
 D
 \Big]
-````
+```
 
 Applied to raw discourse `I` under the always-load foundation `Φ`:
 
@@ -362,6 +378,8 @@ Applied to raw discourse `I` under the always-load foundation `Φ`:
 ```
 
 Here, `Ψ*` is the final bounded restorative output across one or more governed rounds.
+The composition reads right-to-left: D first, then G, then Ω, then ℛ, then χ — matching
+the execution order in §Functional Pipeline (steps II through VI).
 
 This makes explicit that the framework is not a free-running recursion engine and not a static
 routing table. It is a stateful iterative operator whose continuation is governed after each landed
@@ -484,6 +502,24 @@ S_{t+1} = \sigma_{t+1}^{+} \otimes \Phi
 ```
 
 Bounded deployment therefore governs how recursion unfolds; it does not abolish recursion.
+
+**State Carry Table** — what χ retains, resets, and re-evaluates across a pass boundary:
+
+| State component | Carry rule |
+|----------------|------------|
+| NS code, deformation, concealment mode, DO-orient | **Carried** — stable diagnostic read persists until a fresh differentiating signal changes it |
+| Restoration target η | **Carried** if still unmet; **updated** if the landed move partially resolved it |
+| Alignment state, Recognition strength | **Carried as-is** — these progress across passes; they do not reset |
+| `What remains live` differentiators | **Carried** as the live input to the next V1 opening |
+| Matched modules (ρ_t, μ_t) | **Reset** — re-derived from refreshed state; not carried from the prior pass |
+| Layer B content (λ_{B,t}) | **Reset** — re-derived from refreshed state |
+| Next move | **Reset** — re-derived from refreshed state |
+| Continuation eligibility | **Re-evaluated fresh** from the refreshed state; not inherited from the prior pass |
+
+The prose governance for these rules is distributed across `diagnostic-ir.md §Current-pass
+activation rule` (matched modules reset, boundary reset after Stop-2) and
+`diagnostic-ir.md §Acceptance-state rules` (alignment/recognition progression). This table
+is the single consolidated reference for the carry semantics of χ.
 
 ### Functional Pipeline
 
@@ -641,6 +677,10 @@ stabilizations into actionable states under renewed governance.
 
 ### Layer Semantics
 
+Canonical definition: `SKILL.md §V.A — Two-Layer Output Contract` is the governing prose
+definition of Layer A and Layer B. The operator notation below is a compact formal summary of
+the same distinction; it does not introduce independent semantics.
+
 Layer A retains diagnostic truth-state for control integrity:
 
 ```math
@@ -684,13 +724,13 @@ The full architecture may be stated compactly as:
 =
 \mathrm{Iterate}_{\kappa,\eta}
 \Big[
+\chi
+\circ
 \mathcal{R}
 \circ
 \Omega
 \circ
 G
-\circ
-\chi
 \circ
 D
 \Big]

@@ -79,6 +79,8 @@ These combinations are diagnostic red flags:
 | NS code assigned + discourse orientation `autotelic` | Autotelic orientation means the engagement is not aimed at truth | Mark NS as provisional or omit pending orientation shift |
 | DO-series content loaded + concealment `irad` | `irad` means the matter has not been allowed to press | Invitational register only; DO content held |
 | `semantic-neutralization-*` or `lexical-ontological-trap` active + `Routing gate: open` | Semantic discipline is an upstream blocker | Set `Routing gate: semantic-discipline-required`; run the owning file first |
+| `Routing gate: register-hold` + `What is withheld and why` absent | Register-hold without an explicit hold statement is incomplete governance; the held route becomes invisible to audit | Populate `What is withheld and why` in the IR before dispatching any response |
+| `Continuation eligibility: eligible-on-refresh` + `What remains live` absent | Eligible-on-refresh without naming the open axis or unmet target is an unanchored refresh permission | Populate `What remains live` with the specific restoration gap or differentiating signal that justifies the refresh |
 
 ---
 
@@ -92,7 +94,7 @@ When the case-state has been established and multiple modules could plausibly be
 
 **Rule P-2a (current-pass activation):** `Matched modules` records only the modules whose governing work is active in the present pass. Diagnosed downstream routes that are held by register, semantic, or stop governance stay explicit as held; they do not become ambient simultaneous loads.
 
-**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 governs the current pass. No additional module is deployed from momentum alone. Any later round re-enters from refreshed V1 rather than inheriting the previous active set by default. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the restoration target remains unmet and no stop, register-hold, or semantic gate remains live for the next move.
+**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 governs the current pass. No additional module is deployed from momentum alone. Any later round re-enters from refreshed V1 rather than inheriting the previous active set by default. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the restoration target remains unmet and no stop, register-hold, or semantic gate remains live for the next move. Canonical state-transition model for STOP / PAUSE / RECURSE: `references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
 
 **Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The diagnosed downstream route remains explicit in Layer A / the diagnostic IR as held, not discarded or treated as simultaneously active.
 

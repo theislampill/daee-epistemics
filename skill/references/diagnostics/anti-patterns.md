@@ -47,7 +47,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Type the recognition strength, stop the current pass, and reassess. Continue only if a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move. Medium or strong recognition may justify a pause; weak signals do not license either celebration or renewed pressure.
 *Self-audit question:* Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
 *Why it damages the skill:* It turns selective recursion into debate momentum. The practitioner mistakes movement for permission and converts restoration into chain-dumping. This is precisely how a selective state machine decays into a sophisticated answer bank: the live state stops governing once the first move feels successful.
-*Prevented by:* `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
+*Prevented by:* `framework-pipeline.md §Recursive State-Transition View` (canonical owner of the STOP / PAUSE / RECURSE state model and recursive re-entry conditions); `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
 
 ---
 

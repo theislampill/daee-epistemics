@@ -107,6 +107,11 @@
         "stop-condition"
       ]
     },
+    "gate_trigger": {
+      "type": "string",
+      "description": "Identifies which of the six dispatch gate checks fired and blocked module activation. Format: 'check [1-6] — [rule id or stop id]', e.g. 'check 3 — S-2' or 'check 4 — Stop-2'. Omit when routing_gate is 'open'.",
+      "minLength": 1
+    },
     "matched_modules": {
       "type": "array",
       "minItems": 1,

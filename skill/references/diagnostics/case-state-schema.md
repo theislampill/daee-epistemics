@@ -16,6 +16,50 @@ dynamics shaping it. The former is the operative configuration of commitments, g
 testimony, filters, and dependencies. The latter is how semantic-intellectual units dock,
 stabilize, distort, or lose force inside that configuration.
 
+## IR Derivation Map
+
+The `[Case State]` block is the surfaced form of the validated Diagnostic IR. Every field in
+the surfaced block must be traceable to an IR source. This table is the tracing protocol.
+
+| Surfaced `[Case State]` field | IR source field | Derivation type |
+|-------------------------------|----------------|-----------------|
+| `Case family` | `Case family` | direct |
+| `Claim-type` | `Claim-type` | direct |
+| `Claim level` | `Claim-level` | direct |
+| `Reason-category` | `Reason-category` | direct |
+| `Foreign-premise status` | `Foreign premise` | direct |
+| `Upstream findings` | `Upstream findings` | direct |
+| `Primary upstream issue` | `Foreign premise` + `Upstream findings` | surfaced expansion — must not add a diagnosis absent from both IR fields |
+| `Pattern profile` | `Pattern-profile` | direct |
+| `Primary deformation` | `Deformation` (primary only) | direct |
+| `Routing gate` | `Routing gate` | direct |
+| `Read status` | `Read status` | direct |
+| `Discourse orientation` | `DO-orient` | direct |
+| `Concealment mode` | `Concealment mode` | direct |
+| `Alignment state` | `Alignment state` | direct |
+| `Recognition strength` | `Recognition strength` | direct |
+| `Continuation eligibility` | `Continuation eligibility` | direct |
+| `Confidence` | `Confidence` | direct |
+| `Restoration target` | `Restoration target` | direct |
+| `Matched modules` | `Matched modules` | direct |
+| `Register-hold` | `Routing gate: register-hold` + `What is withheld and why` | surfaced expansion — populate only when IR has register-hold gate and withheld content |
+| `Deployable on shift to` | `What is withheld and why` | surfaced expansion — names the release condition stated in the IR withheld field |
+| `Decisive missing differentiator` | `What remains live` | surfaced expansion — names one specific signal from the IR's open-axis list |
+| `Live alternatives` | `Read status: distributed` + competing NS/deformation reads in the IR | case-state-schema-native — tracks competing candidate reads alongside underdetermined IR; must not assert a read stronger than the IR's `Read status` |
+| `Reassessment` | `Continuation eligibility` + `Alignment state` | case-state-schema-native — states the refresh trigger; must not license continuation the IR's `continuation_eligibility` field has not licensed |
+| `Convergence requirement` | `Matched modules` + routing-precedence state | case-state-schema-native — expresses whether multiple non-redundant routes are warranted; must remain consistent with IR-level module selection |
+| `Sequencing rationale` | `Matched modules` + `Routing gate` + routing-precedence rules | case-state-schema-native — explains module ordering; must not justify a sequence the IR's routing gate has blocked |
+
+**Governance rule:** A `[Case State]` field populated with content that has no IR source or
+surfaced expansion path is improvised output. Improvised output violates `SKILL.md` Rule 7.
+If the IR cannot support a field, either (a) populate the IR field first, or (b) leave the
+surfaced field blank rather than filling it from prose judgment.
+
+**Compression rule:** In ordinary mode, surfaced output may omit inactive or routine fields
+(e.g., `Claim level` when first-order, `Pattern profile` when `none`). Omission means the
+field was checked and found inactive, not that the IR was not typed. The internal IR must
+still carry `Claim-level: first-order` and `Pattern-profile: none` explicitly.
+
 ## Standard Form
 
 Use this block when diagnosis matters to the response:

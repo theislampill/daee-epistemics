@@ -13,6 +13,7 @@ description: >
 |------|---------|
 | `references/terminology.md` | Arabic and technical terms. Load unconditionally — Arabic glossing is required on first use in any response |
 | `references/case-library/INDEX.md` | First router for recurring case families, Quick NS/DO/RT identification, and specialty markers |
+| `references/module-codes.md` | Canonical module ID reference; required for `matched_modules` field of the diagnostic IR — load unconditionally alongside the module catalogue |
 | `references/techniques/heuristics.md` | Always-active operator discipline governing sequence, restoration, and source-status marking |
 
 ### Mandatory Diagnostic Core
@@ -44,7 +45,7 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
 ### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
-These passes are mandatory within V1 Phase 2. They are not conditional on topic. Run them in sequence on any case with an intellectual-content component. Skip only if P7 Stop-1 is active (no content gate is being assessed).
+These passes are mandatory within V1 Phase 2. They are not conditional on topic. **Load and run** each triggered file in sequence on any case with an intellectual-content component. Loading the governing file is required — running a pass from memory without loading its file is a gate-compliance failure equivalent to skipping the pass entirely. Skip only if P7 Stop-1 is active (no content gate is being assessed).
 
 | Pass | File | Emit |
 |------|------|------|
@@ -61,18 +62,51 @@ The diagnostic IR must be formed and all gate checks must pass before any conten
 | `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
 
 Architectural clarification: the diagnostic IR is the canonical audited control surface of the
-skill. The framework treats discourse as an analysand to be formally diagnosed before it is
-answered. The IR formalizes the live noetic state, higher-order burden, restoration target, and
-current release permissions before content dispatch. Each pass ends in bounded manifestation plus
-restoration trace; refreshed state then determines whether the governed outcome is stop, hold, or
-recursive re-entry.
+skill — the gate through which all content dispatch must pass. For the authoritative definition,
+gate protocol, field rules, and failure tests, see
+`references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization Layer`.
+
+### Minimum Execution Load Floor — Required After Gate Open
+
+Passing all six dispatch gate checks is necessary but not sufficient. After gate-open,
+the following files must be loaded before any response content is dispatched. Absent
+governing files are gate-integrity violations, not conservative loading choices.
+
+1. **V1-diagnostic.md:** Must be loaded at the start of any substantive engagement.
+   Do not treat its protocol as ambient background — load the file.
+
+2. **P-A (reason-disambiguation.md):** Always-load within Phase 2 for any
+   intellectual-content case. The reason-category field of the IR must be backed by this
+   file, not inferred from context.
+
+3. **P-B through P-D governing files:** If a mandatory pass condition fired during
+   Phase 2, the governing file was loaded as part of running that pass. The corresponding
+   IR output block (e.g., `[Foreign Premise Detection]`) is evidence the file was loaded.
+   If the block appears in the IR without the file having been loaded, the IR is fabricated.
+
+4. **All confirmed case-library files:** Every case file whose load condition in the
+   "Load on Confirmed Match Only" table was satisfied by the confirmed case-state must be
+   loaded. A confirmed DO-12 mandates loading `do-christian-extensions.md`,
+   `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
+   and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
+   files is diagnosis without execution.
+
+5. **All matched_modules governing files:** Every entry in `matched_modules` corresponds
+   to a file in the skill package. That file must be loaded before dispatch. An entry in
+   `matched_modules` whose governing file was not loaded is a gate-integrity violation
+   identical to a gate miss.
+
+This floor does not relax the ceiling: files whose load condition was NOT met must not be
+loaded merely to appear thorough. The floor and ceiling together define the minimum and
+maximum load boundaries for any governed pass.
 
 ### JSON / IR Adherence (hard requirement)
 
 The diagnostic IR is not complete unless it conforms to `references/diagnostics/diagnostic-ir.schema.json`.
+Note: `diagnostic-ir.schema.json` is a constraint specification. Compliance is a conceptual check against the schema's rules; the schema is not mechanically validated at inference time. Enforcement depends on practitioner discipline.
 
 Rules:
-1. Before any content module is dispatched, construct a diagnostic IR object that validates against `references/diagnostics/diagnostic-ir.schema.json`.
+1. Before any content module is dispatched, construct a diagnostic IR object that validates against `references/diagnostics/diagnostic-ir.schema.json` (compliance check against the schema's constraints, not runtime machine validation).
 2. Any `matched_modules` entry must use an `id` and `module_class` that exactly match `module-catalogue.json`.
 3. Do not invent module ids, module classes, routing fields, or source-basis categories outside the schema and catalogue.
 4. If the IR is underdetermined, keep it underdetermined in-schema rather than forcing a stronger read in prose.
@@ -89,6 +123,10 @@ Rules:
     has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic
     gate remains live. A fresh round may arise inside the same message when the differentiating
     signal appears in an accompanying proposition or entailment.
+13. Every entry in `matched_modules` must be backed by a loaded governing file.
+    If a module appears in `matched_modules` but its governing file was not loaded,
+    the IR is non-compliant regardless of whether the content looks plausible. Plausible
+    content without file-backed activation is the failure mode this rule prevents.
 
 
 ### Specialty Diagnostics
@@ -709,6 +747,10 @@ that is the next live burden; inferential elaboration only if the interlocutor h
 minimal positive reconstruction of the restored order; V5 / sign-directed attention; one bounded
 diagnostic question only if it still advances the live target. If the target is no longer unmet, or
 the refreshed state does not license continuation, stop.
+
+The canonical stop / pause / recurse state model — including the STOP / PAUSE / RECURSE
+transition semantics and recursive re-entry conditions — is owned by
+`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
 
 Do not let structural discipline (Case State, Source Basis, routing blocks) crowd out this
 synthesis. The governance blocks are upstream tools. The restoration is the destination.
