@@ -44,6 +44,14 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
+### Output-Release Governance — Applied After Gate-Open
+These files govern release amount, order, and visible render shape. They are not topic files and are not loaded for routing. They apply after the dispatch gate opens and before the public response is shaped.
+
+| File | Role |
+|------|------|
+| `references/rubrics/output-release.md` | Runtime governance rubric: checks whether proposed output releases too much, too little, in the wrong order, or before upstream blockers clear; governs held-material reassessment and recursive traversal discipline |
+| `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape: Level 1 (ordinary prose), Level 2 (compact diagnostic / lab-report), Level 3 (full audit render); does not replace routing; render shape does not determine routing |
+
 ### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
 These passes are mandatory within V1 Phase 2. They are not conditional on topic. **Load and run** each triggered file in sequence on any case with an intellectual-content component. Loading the governing file is required — running a pass from memory without loading its file is a gate-compliance failure equivalent to skipping the pass entirely. Skip only if P7 Stop-1 is active (no content gate is being assessed).
 
@@ -65,6 +73,14 @@ Architectural clarification: the diagnostic IR is the canonical audited control 
 skill — the gate through which all content dispatch must pass. For the authoritative definition,
 gate protocol, field rules, and failure tests, see
 `references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization Layer`.
+
+### Per-File Operative Contracts — Static Metadata Layer
+These files define and validate the per-file machine-readable contract architecture. They are static metadata tools; they do not govern runtime routing or substitute for the diagnostic IR. YAML operative front matter (between `---` delimiters) is for machine parsing; human-readable prose below remains authoritative for judgment.
+
+| File | Role |
+|------|------|
+| `references/diagnostics/operative-contracts.md` | Architecture spec: purpose, required/optional keys, allowed values, pilot examples, failure modes, migration strategy, linting plan |
+| `references/diagnostics/operative-contract.schema.json` | JSON schema for YAML operative front matter; validates `id`, `module_class`, `canonical_path`, `contract_version`, and all optional fields |
 
 ### Minimum Execution Load Floor — Required After Gate Open
 
@@ -127,6 +143,15 @@ Rules:
     If a module appears in `matched_modules` but its governing file was not loaded,
     the IR is non-compliant regardless of whether the content looks plausible. Plausible
     content without file-backed activation is the failure mode this rule prevents.
+14. Every entry in `matched_modules` must have at least one corresponding `source_basis`
+    entry with `source_kind: "module"` and `module_id` matching the entry's `id`. A module
+    listed in `matched_modules` that has no such `source_basis` entry is a ghost-load: the
+    file was loaded but did not demonstrably govern any claim in this pass. Ghost-loads are
+    gate-integrity failures equivalent to IR fabrication. If a matched module governed only
+    a routing decision (not a named output claim), record that routing decision as a
+    `source_kind: "module"` entry with `basis_type: "inference"` and `claim` naming the
+    routing fork it governed.
+15. After the dispatch gate opens, the output-release rubric (`references/rubrics/output-release.md`) governs how much content may be released, in what order, and whether held downstream material has been reassessed after a governing move clears. Held means traversal-delayed, not response-delayed. State refresh is an internal state-transition operation; it may occur inside the same response when the current pass has cleared the governing blocker and the next live burden is now eligible. Same-response recursion must remain bounded by P7 and output-release discipline.
 
 
 ### Specialty Diagnostics
@@ -244,6 +269,7 @@ These are not soft norms. Violation of any of these is a routing error, not a st
 5. **No debate-autonomous continuation after a landed move:** When recognition has surfaced or a key move has landed, Stop 2 governs the current pass. Additional content at that moment converts a restorative contact into a verbal concession press. Boundary reset follows. Further continuation is permitted only after a fresh differentiating signal reopens V1, the restoration target still remains unmet, and no stop, register-hold, or semantic gate is live. A fresh round may arise inside the same message when that differentiating signal appears in an accompanying proposition or entailment.
 6. **No nonconforming IR dispatch:** Do not dispatch modules or surface governance state from an IR that fails `diagnostic-ir.schema.json`, and do not cite or surface module ids/classes not present in `module-catalogue.json`.
 7. **No content-before-semantic-discipline:** Do not release doctrinal or attribute content while prophetic discourse is still being recontented or evacuated, or while a loaded lexical-ontological term remains unresolved. Clear the semantic blocker first.
+8. **No held-as-never-answer:** When a downstream issue is held by register, semantic, or stop governance, holding means it is traversal-delayed at the current point — not permanently suppressed. After the governing move is applied, refresh the case-state and reassess whether the held material still governs. If it remains live and no gate blocks it, it may become the next bounded pass without requiring a new user reply.
 
 See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
 

@@ -1,13 +1,32 @@
 # Case Library — Doctrinal Objections: Second Loop (DO-7 through DO-10)
 
-Load this file when one of the following objections arises:
-DO-7 (cognitive science of religion / HADD), DO-8 (prophetic mission and moral luck),
-DO-9 (universality-condition challenge to proper functionalism),
-DO-10 (three-tiered epistemological structure formalized).
+> **role:** DO pressure family owner — DO-7 through DO-10
+> **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
+> **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
+> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
 
-These sharpen recurring second-order and reflexive pressures on the fiṭrah-based account.
+**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-7 through DO-10 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
 
-Use the case-library routing table when you need the broader family map.
+**DO-second-loop family-local load floor** (conditional on confirmed case-state, not global ambient):
+- V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
+- matched TTP owner(s) justified by confirmed case-state
+- P7 stop check before Layer B release
+- For proof-method/necessary-knowledge pressure (DO-7, DO-10): proof-method-audit.md, V9, kalamic-interlocutor.md as triggered
+- For moral-protest/grief pressure (DO-8): M4-grief-register.md, P7-restoration-stops.md first
+
+---
+
+## DO-second-loop Fan-Out Table
+
+| Pressure signal | Required owner route |
+|---|---|
+| evolutionary/cognitive self-refutation form | M1 first; V9 if necessary-knowledge form |
+| cognitive faculties under attack | V9 before DO-7; proof-method-audit.md if proof-grammar pressure live |
+| moral protest / grief | M4-grief-register.md, P7-restoration-stops.md; DO-8 content held |
+| prophetic authority / information asymmetry | DO-8 ḥujjah principle route; distinguish from moral-protest register |
+| Great Pumpkin / reformed epistemology | tawātur-fiṭrī + universality route before basic-belief equivalence claim |
+| naẓar-priority / proof demand | proof-method-audit.md; kalamic-interlocutor.md; reason-disambiguation.md before DO-10 content |
+| necessary-knowledge attack | V9 first; DO-10 after epistemic-order owners clear |
 
 ---
 
@@ -56,6 +75,40 @@ account. Each contains the strongest rebuttal and the response.
 
 ### DO-7 — The Cognitive Science of Religion / HADD Objection
 
+#### Pressure type
+Cognitive-science debunking of religion — CSR explains theistic belief as a natural phenomenon, undermining its epistemic status.
+
+#### Trigger signals
+"Religious belief is explained by agent-detection, HADD, tribal bonding"; CSR literature as a defeater for religious knowledge; "we know why people believe, so the content doesn't matter."
+
+#### Do-not-route-here / near-miss rules
+- Self-refutation form (CSR debunks the very cognitive faculties needed to evaluate CSR): M1 first
+- Necessary-knowledge attack form (argument implies our cognitive access to any necessary truth is unreliable): V9 first
+- Generic naturalism as governing filter: V2 upstream if NS-x governs
+
+#### Mandatory family-local load floor
+M1 (self-refutation check), V9 (necessary-knowledge attack check), proof-method-audit.md if proof-grammar pressure live.
+
+#### Ordered TTP route
+1. M1 if the argument is structurally self-undermining
+2. V9 if the argument undermines necessary knowledge (not just contingent belief)
+3. proof-method-audit.md if CSR is deployed as a proof-grammar requirement
+4. DO-7 substantive after diagnostic owners clear
+
+#### Semantic/register blockers
+Standard gate discipline; no category-specific semantic blocker.
+
+#### Allowed Layer B move
+Name the foundation/superstructure distinction: CSR explains the cognitive substrate, not the truth-value; name the self-refutation structure if live.
+
+#### Held downstream material
+Full CSR taxonomy; detailed evolutionary-religious account analysis — held until pressure type confirmed.
+
+#### Minimal discriminator/probe
+Is this argument that CSR explains religion (genetic fallacy candidate — M1) or that CSR shows religious belief is unreliable (necessary-knowledge attack — V9)?
+
+---
+
 **The objection:** Evolutionary cognitive science explains the universality of theistic
 belief without invoking truth. Human minds have a Hyperactive Agency Detection Device
 (HADD) — an evolved tendency to attribute agency to events, which enhanced survival by
@@ -74,7 +127,7 @@ is unreliable for tracking metaphysical truth. I retain the cognitive faculties 
 to evaluate evolutionary psychology while identifying HADD as a specific faculty that
 over-generates. This is not global skepticism; it is targeted cognitive defeater."
 
-**Operative response to the refined rebuttal:**
+#### Existing substantive content (route-governed):
 The targeted-defeater version is more careful but fails on examination. The claim that
 HADD specifically tracks fitness rather than truth requires a principled account of
 which cognitive modules are truth-tracking and which are not — an account generated
@@ -112,6 +165,40 @@ fiṭrī recognition* — and the interlocutor must be pressed on this distincti
 
 ### DO-8 — The Prophetic Mission and the Moral-Luck Objection
 
+#### Pressure type
+Prophetic mission and moral luck — it is unfair that access to authentic religious knowledge depends on where you were born.
+
+#### Trigger signals
+"Why is salvation geography-dependent?"; "those who never heard can't be held responsible"; moral-lottery objections to prophetic authority; "your God plays favorites."
+
+#### Do-not-route-here / near-miss rules
+- Moral protest/grief register: emotionally driven → M4/P7 before DO-8; do not deploy ḥujjah analysis into protest
+- Generic diversity argument: if underlying claim is about religious pluralism → DO-4 discriminator
+- Pastoral/existential pressure about a specific deceased person: M4/P7, DO-8 content held
+
+#### Mandatory family-local load floor
+M4-grief-register.md (discriminator), P7-restoration-stops.md (if grief/protest governs), discourse-orientation check.
+
+#### Ordered TTP route
+1. V1 discourse-orientation: is this a philosophical argument or a protest?
+2. M4 if grief or protest register governs
+3. If philosophical: ḥujjah principle (accountability requires prior communication); exposure/information asymmetry analysis
+4. DO-8 substantive after register confirmed as truth-seeking
+
+#### Semantic/register blockers
+Protest/grief register blocks DO-8 doctrinal content.
+
+#### Allowed Layer B move
+Acknowledge the moral intuition; distinguish geographical accident of birth (which affects the form of knowledge, not its availability via fiṭrah and universal signs) from the accountability question.
+
+#### Held downstream material
+Full ḥujjah analysis; detailed prophetic-authority chain; comparative accountability frameworks — held until philosophical register confirmed.
+
+#### Minimal discriminator/probe
+Is this "how can a specific person be accountable" (personal/existential, possible grief register) or "the ḥujjah principle is incoherent as a general claim" (philosophical form)?
+
+---
+
 **The objection:** Whether a person's fiṭrah is sound or corrupted depends on factors
 entirely outside their control — where they were born, what family raised them, what
 intellectual environment they encountered. A God who designed this system, knowing it
@@ -127,7 +214,7 @@ versions. If the correction mechanism itself is uneven and unreliable, it doesn'
 the moral-luck problem — it relocates it. Some people happen to encounter the authentic
 prophetic message; others don't. That's still moral luck."
 
-**Operative response to the refined rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal correctly identifies that the prophetic mission, empirically, was not
 uniformly accessible to all people at all times. The tradition does not deny this —
 it affirms it and addresses it through two distinct theological resources:
@@ -164,13 +251,46 @@ the ongoing condition of one who has access to honest inquiry but refuses it.
 
 ### DO-9 — The Universality-Condition Challenge to Proper Functionalism
 
+#### Pressure type
+Great Pumpkin objection — reformed epistemology's basic-belief move makes any belief properly basic; therefore it proves too much.
+
+#### Trigger signals
+"By your logic, anything could be properly basic"; "you can't use basic belief to privilege theism"; treating all religious traditions as epistemically equivalent.
+
+#### Do-not-route-here / near-miss rules
+- Generic diversity argument: → DO-4 discriminator
+- R3 reformed epistemology is not the active route: if the interlocutor is not pressing basic belief specifically, do not import R3 framing
+
+#### Mandatory family-local load floor
+Universality / tawātur-fiṭrī route; sound-reason-epistemology.md if its load condition is met.
+
+#### Ordered TTP route
+1. Confirm whether the objection targets R3 specifically or generic religious epistemology
+2. Distinguish Islamic epistemic account: fiṭra-based theism is dispositional and universal, not a personal doxastic state
+3. Name the universality standard as the discriminator
+4. DO-9 substantive after route is confirmed
+
+#### Semantic/register blockers
+None category-specific.
+
+#### Allowed Layer B move
+Distinguish tawātur-fiṭrī (universally embedded knowledge) from individual proper basicality; name the universality criterion as the discriminator.
+
+#### Held downstream material
+Full reformed epistemology analysis; detailed tawātur taxonomy.
+
+#### Minimal discriminator/probe
+Is the interlocutor targeting the reformed-epistemology move specifically, or using "basic belief" as a proxy for any religious epistemology?
+
+---
+
 **The objection:** On the externalist proper-function account you offer, a child
 sincerely raised to believe in the Great Pumpkin would have properly basic belief in
 the Great Pumpkin if that belief were produced by properly functioning faculties. The
 account cannot distinguish genuine religious knowledge from well-produced delusion.
 Basic belief is too permissive.
 
-**Operative response:**
+#### Existing substantive content (route-governed):
 The objection mistakes the universality condition. Proper functionalism does not say
 that any belief produced by any functioning faculty in any environment is warranted.
 It says that a belief is warranted when produced by faculties functioning properly,
@@ -237,13 +357,48 @@ attacked necessary knowledge; V9 overshoots and the engagement loses traction.
 
 ### DO-10 — The Three-Tiered Epistemological Structure (Formalized)
 
+#### Pressure type
+Three-tier epistemology attacks — demanding proof for fiṭra or khabar-based knowledge as if they were third-tier speculative conclusions; conflating epistemic tiers.
+
+#### Trigger signals
+"You need to prove God exists before talking about revelation"; kalāmic proof-priority demands; treating fiṭra as a mere feeling requiring external verification; "extraordinary claims require extraordinary evidence."
+
+#### Do-not-route-here / near-miss rules
+- Kalāmic naẓar-priority from a specific school: kalamic-interlocutor.md required
+- Necessary-knowledge attack form: V9 required
+- Proof-grammar as criterion: proof-method-audit.md required
+
+#### Mandatory family-local load floor
+proof-method-audit.md (for naẓar-priority demands); kalamic-interlocutor.md (for school-specific proof requirements); V9 (for necessary-knowledge-priority arguments); reason-disambiguation.md.
+
+#### Ordered TTP route
+1. proof-method-audit.md: what proof-grammar is being demanded?
+2. kalamic-interlocutor.md if school-specific naẓar-priority is live
+3. V9 if necessary knowledge is being attacked
+4. reason-disambiguation.md if "reason" is being used with a single meaning that flattens the three tiers
+5. DO-10 substantive after diagnostic owners clear
+
+#### Semantic/register blockers
+"Proof" and "reason" must be disambiguated before any epistemic-tier content is released.
+
+#### Allowed Layer B move
+Distinguish epistemic tiers; name that demanding proof for fiṭra is a tier-collapse; the question is not whether theism needs proof but which epistemic tier theistic knowledge occupies.
+
+#### Held downstream material
+Full three-tier taxonomy; detailed kalāmic epistemology; fiṭra/khabar/naẓar distinction — held until proof-grammar is diagnosed.
+
+#### Minimal discriminator/probe
+Is this a demand that fiṭra-based knowledge be verified by naẓar (tier-collapse), an attack on necessary knowledge (V9), or a specific kalāmic school's proof requirement (kalamic-interlocutor.md)?
+
+---
+
 **The objection:** "The fiṭrah-based account at its best produces a justified opening
 toward generic theism — a Creator, moral accountability, the inadequacy of the material.
 But the tradition requires specific Islamic commitment. The jump from generic theism to
 specifically Islamic commitment is not explained by the fiṭrah account. The account is
 too thin to produce warranted Islamic belief."
 
-**Operative response — the three-tiered structure:**
+#### Existing substantive content (route-governed):
 
 The tradition does not claim that a single faculty produces all warranted religious
 commitment. It claims a *layered epistemological structure* in which different kinds

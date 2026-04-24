@@ -24,6 +24,22 @@ route there explicitly. If not, release only the smallest restorative next move.
 
 ---
 
+## Peer-File Routing Integration
+
+This file owns the **usurpation-type taxonomy** — identifying when a philosophical framework functions as an upstream authority tribunal. Peer files own sub-family diagnosis and specific routing:
+
+| Peer file | Relation to this file |
+|---|---|
+| `foreign-premise-detection.md` | The detection layer: FPD identifies foreign premises and traces their source tradition. This file owns the next step — once a foreign premise is detected, does it function as a tribunal claiming the right to judge the case? FPD feeds this file. |
+| `perfection-criterion-usurpation.md` | The perfection sub-family: when the usurpation vehicle is a perfect-being or divine-simplicity criterion specifically. This file owns the general taxonomy; perfection-criterion-usurpation.md owns the specific case. Load perfection-criterion-usurpation.md when the criterion being usurped is a "perfect being requires X" claim. |
+| `proof-method-audit.md` | The proof-grammar sub-family: when the usurpation vehicle is a demanded proof standard (extraordinary evidence, Bayesian threshold, naẓar-priority). This file identifies whether the demanded proof standard functions as a tribunal; proof-method-audit.md owns the grammar audit. |
+| `definition-discipline.md` | The definition sub-family: when usurpation works through silent term-redefinition or technical language capture rather than through explicit framework import. This file and definition-discipline.md overlap when redefined terms function as covert criterion-import. |
+| `prophetic-discourse-neutralization.md` | When usurpation works through formally honoring revelation but functionally emptying it via philosophical constraints. This file identifies the tribunal; prophetic-discourse-neutralization.md owns the neutralization-detection protocol. |
+
+**Do not load this file as a catch-all** for every philosophical term. Load it only when a philosophical framework is functioning as an upstream authority — claiming the right to judge whether a claim is admissible, requiring a prior bar to be cleared before revelation or sound-reason evidence is admitted. A philosophical reference that merely appears in the objection is not usurpation; the tribunal function is what activates this file.
+
+---
+
 ## Detection Hooks
 
 Signal the family when one or more of these are active:

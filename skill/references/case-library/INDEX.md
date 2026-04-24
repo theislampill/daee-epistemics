@@ -53,6 +53,96 @@ the case still requires.
 
 ---
 
+### DO-Family Routing Architecture
+
+**DO codes identify pressure families, not standalone rebuttal scripts. A DO code alone does not authorize answer release.**
+
+**DO dispatch rule — all six conditions required:**
+1. the global diagnostic floor (V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md);
+2. the confirmed DO family;
+3. the family-local load floor;
+4. all matched TTP / diagnostic owners justified by the current case-state;
+5. output-release / Layer B discipline;
+6. P7 stop/hold/recurse discipline.
+
+A confirmed topic family activates its load floor, not merely its named case file.
+
+**Negative routing rules:**
+```
+Do not route as: "Trinity → do-christian-extensions.md → answer."
+Do not route as: "evil → do-core.md → theodicy."
+Do not route as: "attribute coherence → do-core.md → V8 → answer."
+Do not route as: "canon authority → do-christian-extensions.md → answer."
+```
+
+**Correct route shape:**
+```
+diagnostic gate
+→ claim-level / PF / upstream blocker read
+→ confirmed DO family
+→ family-local load floor
+→ matched semantic / authority / proof / register owners
+→ DO substantive insight only after upstream gates clear
+→ bounded Layer B
+→ held downstream material
+→ state refresh
+```
+
+**DO-family near-miss rules:**
+- hiddenness may be grief-primary (M4/P7) rather than DO-1 philosophical hiddenness; run M4 discriminator first
+- evil may be protest/grief register (M4/P7) rather than DO-2 evidential argument; do not deploy theodicy into grief
+- attribute language may be DO-5, DO-6, DO-13, or a loaded-term lexical trap (M9/definition-discipline first); do not collapse on surface vocabulary
+- Trinity pressure may be multiple-independent-lords pressure (V12) before Christian model overlay; confirm context before DO-12
+- canon pressure may be authority-certification (V10) before textual content analysis; do not load DO-14 content before V10 runs
+- secular neutrality may be criterion-import (V2/FPD/reason-disambiguation) before evidence is live; criterion must be cleared before content
+- kalāmic proof demand may be proof-method/authority-order pressure (proof-method-audit.md/kalamic-interlocutor.md) before content; proof grammar is upstream of content
+
+**DO-family load floors** (activate from confirmed routing state, not from surface keywords — not global ambient loads):
+
+| Floor | Activates when | Minimum owners |
+|---|---|---|
+| Base substantive | confirmed ordinary DO pressure, no higher-order blocker | V1 + Phase 2 passes, IR, routing-precedence.md, matched DO file, matched TTP owner(s), P7 stop check |
+| Doctrinal/metaphysical objection | divine attributes, Trinity, incarnation, philosopher's-God, predication, or composition pressure live | M9-predication-mode.md, V8-bila-kayf-anchor.md, do-attribute-precision.md, definition-discipline.md, perfection-criterion-usurpation.md, foreign-premise-detection.md |
+| Higher-order / criterion-import | tribunal, criterion, neutrality claim, proof-method requirement, or imported standard governs | reason-disambiguation.md, foreign-premise-detection.md, V2-reconstituting-reason.md, philosophical-usurpation.md, proof-method-audit.md, perfection-criterion-usurpation.md, routing-precedence.md, pattern-profiling.md |
+| Transmission / authority | scripture, canon, preservation, church authority, Qur'an transmission, hadith, or authority certification live | V10-transmission-content-vetting.md, revelation-transmission.md, hadith-authentication-epistemology.md, prophetic-discourse-neutralization.md (if revelation formally honored but functionally emptied), do-christian-extensions.md DO-14 for Christian canon |
+| Mixed / thin-basis / register-governance | thin basis, grief/identity/autotelic register, or multiple live reads compete | mixed-case-handling.md, case-state-schema.md, P7-restoration-stops.md, M4-grief-register.md, discourse-orientation.md, modes-of-concealment.md, anti-patterns.md |
+
+**Pressure-type → owner routing table:**
+
+| Pressure signal | Required owner route |
+|---|---|
+| identity/counting/multiplicity | definition-discipline.md; M9-predication-mode.md; do-attribute-precision.md when attribute/person pressure live |
+| divine predication / God-language | M9-predication-mode.md; V8-bila-kayf-anchor.md |
+| person/nature or attribute multiplicity | do-attribute-precision.md; do-christian-extensions.md after model identification |
+| perfection/simplicity/immutability/non-eventfulness tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; philosophical-usurpation.md when tribunal confirmed |
+| revelation/canon/church-authority fallback | V10-transmission-content-vetting.md; do-christian-extensions.md DO-14; revelation-transmission.md only when RT pressure is Qur'anic |
+| multiple independent deities/lords | V12-tamanuc-exhaustion.md before Trinity-specific overlays |
+| grief-primary evil/hiddenness | M4-grief-register.md; P7-restoration-stops.md; DO content held |
+| moral ontology / orphaned moral intuition | M3-orphaned-intuition.md before evidential moral debate |
+| secular neutrality / pseudo-neutral reason | reason-disambiguation.md; foreign-premise-detection.md; V2-reconstituting-reason.md; philosophical-usurpation.md when upstream tribunal confirmed |
+| kalāmic naẓar-priority / proof-method pressure | kalamic-interlocutor.md; proof-method-audit.md; reason-disambiguation.md; V2-reconstituting-reason.md |
+| loaded negative theological terms | M9-predication-mode.md; definition-discipline.md when technical capture live |
+| semantic neutralization of revelation | prophetic-discourse-neutralization.md before first-order interpretation |
+| causal-series / regress pressure | causal-series-taxonomy.md; proof-method-audit.md before cosmological proof prose |
+| necessity/contingency proof grammar | proof-method-audit.md; causal-series-taxonomy.md if dependency/regress taxonomy live; philosophical-usurpation.md if becomes tribunal |
+
+**Selective routing:** Family-local floors are minimum confirmed loads after routing state justifies them. They are not global ambient loading. Files whose load condition is not met remain unloaded. The fact that a DO family has a fan-out table does not mean every listed owner is active.
+
+Loaded owner ≠ active Layer B content. A file may be loaded because the case-state requires its gate or discriminator, while its substantive content remains held until upstream blockers clear. A triggered downstream owner may be named in `What is withheld and why`, but must not be smuggled into the public answer.
+
+**Under-load guard:** A complex confirmed DO route normally requires more than the named DO file plus one technique. Loading only the visible topic file plus one technique is insufficient for a complex case with semantic, authority, proof-method, register, or tribunal pressure. Those owners must be loaded and represented in the IR even when Layer B output remains short.
+
+Failure example:
+```
+Bad:  DO-12 → do-christian-extensions.md → V8 → answer.
+Required: V1 → Phase 2 passes → IR → routing-precedence → M9/definition-discipline if identity/counting
+  terms unstable → V12 if multiple independent lords pressure live → do-christian-extensions.md DO-12
+  → do-attribute-precision.md if person/nature/attribute precision live → V8 only after semantic/model
+  discipline clears → bounded Layer B.
+```
+
+---
+
 ### RT Family — Routing Discipline
 
 **What RT codes identify:** Cases about transmission, text, canon, and preservation — cases where the interlocutor is specifically pressing text-history or authority-of-source claims. RT cases are never the primary routing family unless the interlocutor is specifically pressing manuscript, canon-formation, qirāʾāt, or preservation questions.

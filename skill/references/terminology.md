@@ -298,8 +298,22 @@ Use these only when they change routing or scope:
   violating ulūhiyyah through devotion, mediation, or unseen-authority claims.
 - `ʿibādah` / worship: drawing near in devotion to one believed to bear unseen authority over
   benefit, harm, protection, or access to them. Do not reduce worship to outward ritual alone.
-- `maʿbūd` / `ilāh`: an object of worship - that to which nearness is sought because it is believed to
-  affect reality beyond ordinary visible causation.
+- `maʿbūd` / `ilāh` (إله): an object of worship — any entity treated as an object of worship,
+  rightly or falsely. Worship (`ʿibādah`) is not merely vague devotion or "ultimate concern."
+  It is the orientation of seeking benefit and warding off harm from the worshiped object,
+  together with dependence, devotion, submission, fear, hope, love, sacrifice, obedience,
+  or invocation as appropriate to the case.
+  - A **false `ilāh`** is treated as an object of worship but is dependent, deficient, created,
+    limited, or unable to independently attain benefit or ward off harm.
+  - **`Allāh`** is the `ilāh` who alone truly deserves all worship: the One with maximally great
+    properties, all attributes of perfection, without partner, likeness, dependency, or shortcoming;
+    the independent Creator, Provider, and Lord of the Worlds, upon whom all depend.
+  - **Routing significance (PF-6):** When the structural question is whether a posited object of
+    worship can truly bear worship-status — whether it is independent or dependent, whether it
+    can genuinely attain benefit and ward off harm — route through `pattern_profile: PF-6` and
+    the worship-status structural analysis before any tradition-specific content. Do not reduce
+    divine-plurality pressure to merely counting supernatural beings; the structural question is
+    whether each posited object can genuinely and independently bear the `ilāh` relation.
 - `shirk`: assigning worship or worship-functions to other than Allah, whether by attributing
   independent efficacy or intermediary efficacy.
 - `intermediation`: approaching an object not as independently sovereign, but as a means of

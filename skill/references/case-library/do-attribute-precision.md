@@ -1,3 +1,32 @@
+---
+id: do-attribute-precision
+module_class: case-library
+canonical_path: skill/references/case-library/do-attribute-precision.md
+contract_version: "0.2.0.0"
+load_when:
+  - live pressure involves how divine attributes are predicated
+  - divine identity or essence/attribute relation is being argued
+  - DO-6, DO-11, DO-12, or DO-13 confirmed in case-state
+  - NS-6 or NS-10 case carries ontological burden
+  - composition/dependence or person-multiplicity pressure active
+routing_effects:
+  - runs downstream of DO family routing-surface confirmation
+  - companion to M9 when loaded negative-theological terms present
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - attribute-doctrine release before semantic/predication discipline clears
+companions:
+  - M9-predication-mode
+  - definition-discipline
+  - V8-bila-kayf-anchor
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
+
 > role: attribute-discourse precision fixtures - named confusion types with bad and corrected output fixtures, self-audit questions, and prohibited moves
 > use when: the live pressure involves how divine attributes are predicated, how divine identity is conceived, or how the relation between attributes, essence, and persons is argued - DO-6, DO-11, DO-12, DO-13; also load when NS-6 or NS-10 kalamic cases carry an ontological burden
 > do not use when: the case is purely evidentialist, transmission-related, or grief-primary with no attribute-discourse component
@@ -5,13 +34,53 @@
 > load-after: DO family confirmed; V8 loaded when relevant; `sound-reason-epistemology.md` section 6.3 loaded when composition pressure is active
 > precondition: when the pressure is phrased through loaded negative theological terms (body, direction, place, limit, composition, substance, `jism`, `jihah`, `hadd`, `tarkib`, and related labels), run `references/tactics/M9-predication-mode.md` first. This file assumes the term has already been semantically split.
 
-# Attribute Discourse Precision - Named Confusions and Fixtures
+# Attribute Discourse Precision — Named Confusions and Fixtures
 
 This file isolates the logical move going wrong in divine-attribute discourse. Most failures here occur not at the level of doctrine but at the level of the move being made.
 
 ---
 
-## Confusion 1 - Category Mistake in Predication
+## Three-Layer Owner Distinction
+
+This file operates as a companion owner within the DO doctrinal/metaphysical objection floor. Its role is attribute-precision diagnosis, not first-response doctrine. The three-layer owner structure governing attribute objections is:
+
+| Owner | Role | When to load |
+|---|---|---|
+| M9-predication-mode.md | Stabilizes loaded predication terms; lexical-ontological split | When "real," "attribute," "body," "composition," "literal," "simplicity" are being used as weapons or are semantically contested |
+| definition-discipline.md | Diagnoses definition capture, public-language hijack, universals/particulars confusion | When the objection turns on technical term redefinition or concept-capture |
+| **this file** | Attribute-precision fixtures: person/nature confusion, composition-panic, attribute conflation, person-multiplicity analysis | When M9 and definition-discipline have stabilized the terms and attribute-level precision is the diagnostic work |
+| V8-bila-kayf-anchor.md | Bilā kayf anchoring after predication is stabilized | After M9 and this file have cleared the semantic and categorical ground |
+
+**Route order:** M9 → definition-discipline.md → this file → V8. Loading this file first without M9 having cleared the predication terms risks answering a semantic objection with categorical analysis, leaving the loaded terms in place.
+
+---
+
+## Current-Pass / Held Distinction
+
+This file may be loaded and its confusion fixtures consulted even when attribute-content release remains held in the current pass. **Loaded owner ≠ active Layer B content.**
+
+Attribute-content release remains held if any of the following still govern:
+- semantic gate (M9 has not stabilized predication terms)
+- register-hold (grief, protest, or identity-orientation)
+- higher-order tribunal (perfection-criterion-usurpation.md not yet cleared)
+- proof-method pressure (proof-method-audit.md not yet cleared)
+
+In those cases: diagnose the confusion fixture, name it in the IR, record in `What is withheld and why`: attribute-content held pending [reason]. Do not release attribute analysis into Layer B while upstream gates remain live.
+
+---
+
+## Failure Tests
+
+The following constitute gate-integrity failures for this file:
+
+1. **Composition-before-semantics:** Answering "does God have real attributes that compose him?" without M9 first splitting "real" and "compose" — the answer is then calibrated to the objector's hidden ontological assumptions.
+2. **Person-multiplicity without model identification:** Analyzing person/nature confusion for the Trinity without confirming which Trinitarian model is operative (→ do-christian-extensions.md DO-12 model-identification requirement).
+3. **Attribute-content release with active tribunal:** Releasing attribute reconciliation into Layer B while a perfection-criterion or philosophical-usurpation tribunal is still governing — the content is filtered through the uncleaned criterion.
+4. **Loading this file as first responder:** Treating attribute-precision as the entry point for an attribute objection without M9 having stabilized the predication terms.
+
+---
+
+## Confusion 1 — Category Mistake in Predication
 
 **Mechanism:** A creaturely predication structure is imported into divine discourse.
 

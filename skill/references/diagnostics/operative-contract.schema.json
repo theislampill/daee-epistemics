@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skill/references/diagnostics/operative-contract.schema.json",
+  "title": "Operative Contract",
+  "description": "Schema for YAML operative front matter in daee-epistemics skill files. Validates static per-file metadata; does not govern runtime routing or substitute for the diagnostic IR.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "module_class",
+    "canonical_path",
+    "contract_version"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Module id — must match module-catalogue.json entry when catalogue_registered is true. Uses the code from module-codes.md (e.g., M9-predication-mode, P7-restoration-stops, do-attribute-precision)."
+    },
+    "module_class": {
+      "type": "string",
+      "enum": [
+        "tactic",
+        "procedure",
+        "technique",
+        "diagnostic",
+        "case-library",
+        "governance"
+      ],
+      "description": "Module class. 'governance' is used for framework, pipeline, rubric, and meta files not dispatched as modules; they are not registered in module-catalogue.json."
+    },
+    "canonical_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^skill/",
+      "description": "Repo-root-relative path to this file. Must begin with 'skill/'. Linter checks that this equals the actual file path."
+    },
+    "contract_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?$",
+      "description": "Semver-style version string of the repo version when this contract was written or last updated (e.g., '0.2.0.0')."
+    },
+    "load_when": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "Trigger conditions for loading this module. Machine-readable version of the blockquote '> use when:' field. Each item is a short prose condition."
+    },
+    "routing_effects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "Effects on routing gate or dispatch order when this module is active. Uses repo routing vocabulary (e.g., 'semantic-discipline-required', 'holds doctrinal-release pending predication clearance')."
+    },
+    "emits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "IR or output fields this module is capable of populating. Should correspond to known IR fields (e.g., ontological_disorder, what_is_withheld_and_why, p7_stops_active, routing_gate). Not a guarantee of activation in any given pass."
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "Moves or dispatch paths this module prohibits. Must not contradict the file's own prose routing rules."
+    },
+    "companions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "description": "Module ids that must or should be loaded alongside this one. Each entry must be a valid id in module-catalogue.json."
+    },
+    "output_shapes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "bounded-single-pass",
+          "held-pending-upstream",
+          "recursive-traversal-permitted",
+          "pass-through"
+        ]
+      },
+      "minItems": 1,
+      "description": "Output shape(s) this module can produce. bounded-single-pass: one bounded response; held-pending-upstream: output held until upstream blocker clears; recursive-traversal-permitted: governs or licenses same-response recursion; pass-through: conditions other modules without directly producing visible output."
+    },
+    "p7_stops_governed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "stop-1",
+          "stop-2",
+          "stop-3",
+          "stop-4",
+          "stop-5"
+        ]
+      },
+      "minItems": 1,
+      "description": "P7 stops declared or governed by this file. Only declare stops this file owns or enforces. P7-restoration-stops.md governs all five. Other files declare only the stops they trigger or enforce."
+    },
+    "layer_constraint": {
+      "type": "string",
+      "enum": [
+        "layer-a-only",
+        "layer-b-permitted",
+        "layer-b-governed"
+      ],
+      "description": "Layer A / Layer B deployment constraint. layer-a-only: output stays in Layer A diagnostic only; layer-b-permitted: output may be deployed in Layer B when register permits; layer-b-governed: this module explicitly governs whether Layer B deployment is permitted or blocked in the current pass."
+    },
+    "catalogue_registered": {
+      "type": "boolean",
+      "description": "Whether this file has a matching entry in module-catalogue.json. Default behavior: true for tactic, procedure, technique, diagnostic, case-library; false for governance. Governance files must set this to false explicitly."
+    }
+  },
+  "if": {
+    "properties": {
+      "module_class": { "const": "governance" }
+    }
+  },
+  "then": {
+    "properties": {
+      "catalogue_registered": { "const": false }
+    }
+  }
+}

@@ -1,3 +1,24 @@
+---
+id: routing-precedence
+module_class: governance
+canonical_path: skill/references/diagnostics/routing-precedence.md
+contract_version: "0.2.0.0"
+load_when:
+  - multiple diagnostic axes produce competing signals
+  - suppression rules needed to prevent invalid routing combinations
+  - tie-break required between equally-weighted routes
+routing_effects:
+  - establishes deterministic owner order
+  - applies suppression rules S-1 through S-7
+  - applies route-priority rules P-1 through P-4
+emits:
+  - routing_gate
+blocks:
+  - simultaneous dispatch of competing routes without precedence resolution
+  - downstream content release before upstream-blocker route clears
+catalogue_registered: false
+---
+
 > role: cross-axis precedence encoding
 > use when: multiple diagnostic axes produce competing or ambiguous routing signals, or when a routing decision must be justified rather than inferred from prose description
 > do not use when: the case is unambiguously single-axis and the matched module is clear
@@ -103,3 +124,22 @@ When the case-state has been established and multiple modules could plausibly be
 ## VI. Connection to the Framework Pipeline
 
 This file specifies the rules that govern the routing branches shown in `framework-pipeline.md`. The ASCII chart shows the branching structure; this file specifies the logic at each branch point.
+
+---
+
+## VII. Routing Precedence vs. Output-Release Rubric
+
+Routing precedence (§I–§V above) governs owner order: which file addresses the case first, which suppression rules apply, which upstream blocker takes priority. It answers: *what runs and in what order?*
+
+The output-release rubric (`references/rubrics/output-release.md`) governs visible release order and amount. It runs after routing and owner selection. It answers: *how much of what routing selected may be visibly released now, given the current case-state?*
+
+The diagnostic render contract (`references/rubrics/diagnostic-render-contract.md`) governs visible structure. It answers: *is this ordinary prose, compact diagnostic, or full audit render?*
+
+A lower-priority downstream route may be named as held in the routing output but must not be released in the visible response until the higher-priority route has cleared. The held downstream route remains live in Layer A / the IR.
+
+**Cumulative-build rule:**
+X governs first; Y is live but held; Z is downstream and not yet released.
+After X is addressed, refresh state. If Y remains live and no stop/hold/gate blocks it, Y becomes the next bounded pass. If Y no longer governs, it is dropped or compressed.
+
+**Anti-smuggling rule:**
+Do not use a visible lab-report section or a named downstream field to release held content that routing precedence requires to remain held. Naming held content in a template field is not the same as holding it.

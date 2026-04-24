@@ -117,6 +117,29 @@
                   |
                   v
 +------------------------------------------------------------+
+| OUTPUT-RELEASE RUBRIC                                      |
+| Checks (run after gate-open, before render):               |
+| - Governing burden identified?                             |
+| - All live upstream blockers cleared?                      |
+| - Held material is held — not answered, not permanent?     |
+| - Recursive traversal ordered, bounded, refreshed?         |
+| - Release amount: not too much, not too little?            |
+| - Stop / hold / recurse decision grounded in refreshed IR? |
+| Held means traversal-delayed, not response-delayed.        |
++------------------------------------------------------------+
+                  |
+                  v
++------------------------------------------------------------+
+| DIAGNOSTIC RENDER CONTRACT                                 |
+| Level 1 — Ordinary bounded response                        |
+| Level 2 — Compact diagnostic / lab-report                  |
+| Level 3 — Full diagnostic / audit render                   |
+| Render level selected from case-state + user signal.       |
+| Render shape does not determine routing.                   |
++------------------------------------------------------------+
+                  |
+                  v
++------------------------------------------------------------+
 | RESTORATION TRACE                                          |
 | - Governing misread risk                                   |
 | - What was withheld and why                                |
@@ -172,6 +195,17 @@ a shortcut around the diagnostic gate.
   Uses the compression rule as a bypass.
 - `[semantic neutralization / loaded anti-attribute term] -> [release doctrinal content anyway]`
   Bypasses the `semantic-discipline-required` gate; clear recontenting, evacuation, or the lexical trap first.
+- `[downstream content detected] -> [held but never reassessed after blocker clears]`
+  Treats held as permanent suppression rather than traversal-delayed.
+- `[held = wait for user reply] -> [no same-response recursion ever]`
+  State refresh is an internal operation; it may occur inside the same response.
+- `[recursive traversal permitted] -> [argument dump at one refresh]`
+  Recursion is door-by-door, not total-downstream release at one state refresh.
+- `[diagnostic transparency allowed] -> [machinery dump]`
+  Diagnostic render eligibility does not suspend output-release rubric.
+
+Compact pipeline (rubric/render placement):
+`IR → PF/claim-level → owners → TTP → load floor → release rubric → render contract → bounded output → refreshed state → stop/hold/recurse`
 
 ## Recursive State-Transition View
 
