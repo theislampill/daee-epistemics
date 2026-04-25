@@ -1,3 +1,15 @@
+---
+id: framework-pipeline
+module_class: governance
+canonical_path: skill/references/diagnostics/framework-pipeline.md
+contract_version: "0.2.0.0"
+load_when:
+  - auditing the decision circuit or forbidden-shortcut check
+  - surfacing where a response went wrong
+  - verifying diagnostic IR gated dispatch rather than documenting it retrospectively
+catalogue_registered: false
+---
+
 > role: canonical pipeline audit chart - single-surface view of the governed interpretive machine
 > use when: auditing the decision circuit; surfacing where a response went wrong; checking that the diagnostic IR gated dispatch rather than documenting it retrospectively; verifying no forbidden shortcut was taken
 > do not use when: routing sequence is already clean and no audit work is needed

@@ -1,3 +1,13 @@
+---
+id: profiles-index
+module_class: governance
+canonical_path: skill/references/case-library/profiles/INDEX.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS code identified and canonical profile file location needed
+catalogue_registered: false
+---
+
 > role: noetic-profile directory index — routing table and load discipline for NS-1 through NS-12
 > use when: NS code has been identified and you need to locate the canonical profile file
 > do not use when: NS code is still provisional — route through mixed-case-handling.md first

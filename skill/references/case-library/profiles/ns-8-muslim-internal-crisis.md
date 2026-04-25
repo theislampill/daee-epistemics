@@ -1,3 +1,23 @@
+---
+id: ns-8-muslim-internal-crisis
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-8 (Muslim-Internal Crisis) confirmed via Quick NS Identification
+routing_effects:
+  - disaggregation via P6 required before routing to doctrinal modules
+  - P7 Stop-1 and Stop-3 commonly active
+companions:
+  - P6-universal-aqidah-principle
+  - P7-restoration-stops
+  - V10-transmission-content-vetting
+  - revelation-transmission
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-8 Muslim-Internal Crisis (Modernist Revisionism / Authority-Fatigue Compound)
 > use when: NS-8 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
 > IR field: NS code = NS-8

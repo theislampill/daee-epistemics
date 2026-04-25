@@ -1,3 +1,13 @@
+---
+id: case-library-index
+module_class: governance
+canonical_path: skill/references/case-library/INDEX.md
+contract_version: "0.2.0.0"
+load_when:
+  - selecting or confirming a case-library module after V1 diagnosis
+catalogue_registered: false
+---
+
 # Case Library — Index and Router
 
 Case-library files are not default entry points. Diagnose first, confirm the case family,

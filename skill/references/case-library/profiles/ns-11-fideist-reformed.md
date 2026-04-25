@@ -1,3 +1,20 @@
+---
+id: ns-11-fideist-reformed
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-11-fideist-reformed.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-11 (Fideist / Reformed Basic-Belief Holder) confirmed via Quick NS Identification
+routing_effects:
+  - R3 warranted-basic-belief mandatory first move
+companions:
+  - R3-warranted-basic-belief
+  - V5-directing-attention-signs
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-11 Fideist / Reformed Basic-Belief Holder
 > use when: NS-11 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-7 (opposite stance on argument's role)
 > IR field: NS code = NS-11

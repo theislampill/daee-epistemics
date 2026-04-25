@@ -1,3 +1,13 @@
+---
+id: anti-patterns
+module_class: governance
+canonical_path: skill/references/diagnostics/anti-patterns.md
+contract_version: "0.2.0.0"
+load_when:
+  - preparing, reviewing, or correcting a response path
+catalogue_registered: false
+---
+
 # Anti-Patterns
 
 > role: self-audit

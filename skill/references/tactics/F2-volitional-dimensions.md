@@ -1,3 +1,40 @@
+---
+id: F2-volitional-dimensions
+module_class: tactic
+canonical_path: skill/references/tactics/F2-volitional-dimensions.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor appears intellectually moved but remains volitionally resistant
+  - deformation triage (M5) identifies gharaḍ or hawā as primary
+blocks:
+  - presenting intellectual content while volitional resistance is primary — hardens the barrier
+companions:
+  - M5-deformation-triage
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+load_class: routed
+bundle: none
+execution_phase: render
+governs: []
+must_precede: [render]
+blocks_if_missing: false
+trigger_conditions:
+  - interlocutor appears intellectually moved but remains volitionally resistant
+  - deformation triage (M5) identifies gharaḍ or hawā as primary
+operator_pack: []
+source_status: canonical
+verification_status: L_check
+direct_read_required: true
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # F2 — Foregrounding the Volitional Dimensions
 
 **Register:** Fideist

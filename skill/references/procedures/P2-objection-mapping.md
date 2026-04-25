@@ -1,3 +1,19 @@
+---
+id: P2-objection-mapping
+module_class: procedure
+canonical_path: skill/references/procedures/P2-objection-mapping.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor presenting a battery of intellectual objections
+  - engagement is primarily critical rather than existential
+companions:
+  - V1-diagnostic
+  - M5-deformation-triage
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # P2 - Objection Mapping
 
 **For:** Interlocutors presenting a battery of intellectual objections; engagement primarily critical rather than existential. Start with V1 and use M5 (`references/tactics/M5-deformation-triage.md`) inside its triage phase - apparent intellectual objections frequently conceal volitional barriers.

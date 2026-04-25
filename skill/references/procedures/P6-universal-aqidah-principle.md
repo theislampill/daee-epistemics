@@ -1,3 +1,23 @@
+---
+id: P6-universal-aqidah-principle
+module_class: procedure
+canonical_path: skill/references/procedures/P6-universal-aqidah-principle.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor claims no religion, no worldview, no ʿaqīdah
+  - the claim that there is no righteous guidance asserted as a position
+  - skepticism presented as a neutral non-position
+  - pseudo-neutral slogan ("I just follow the evidence") functioning as worldview-deflection
+routing_effects:
+  - establishes the interlocutor has a position before proceeding to its content
+companions:
+  - M1P-performative-self-refutation
+  - V2-reconstituting-reason
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # P6 - The Universal ʿAqīdah Principle
 
 **For:** Interlocutors who claim to have no religion, no worldview, no ʿaqīdah; or who

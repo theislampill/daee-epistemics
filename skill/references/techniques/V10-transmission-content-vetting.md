@@ -1,3 +1,30 @@
+---
+id: V10-transmission-content-vetting
+module_class: technique
+canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
+contract_version: "0.2.0.0"
+load_when:
+  - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
+blocks:
+  - when live issue is generic theism rather than transmission or authority
+  - when live issue is grief-primary protest using text-history as vehicle
+  - when live issue is attribute language rather than testimony
+  - starting with contents while provenance is still undefined
+routing_effects:
+  - fixes provenance → contents → authority sequence before any response
+  - holds content dispatch until each step cleared
+emits:
+  - what_is_withheld_and_why
+companions:
+  - revelation-transmission
+  - hadith-authentication-epistemology
+  - do-christian-extensions
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+---
+
 > role: technique
 > use when: the case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 > do not use when: the live issue is generic theism, grief-primary protest, or attribute language rather than transmission and authority

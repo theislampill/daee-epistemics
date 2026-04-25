@@ -1,3 +1,23 @@
+---
+id: P1-fitrah-restoration
+module_class: procedure
+canonical_path: skill/references/procedures/P1-fitrah-restoration.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment
+  - goal is to create conditions for fiṭrah recovery, not to win an argument
+companions:
+  - V2-reconstituting-reason
+  - V4-contamination-identification
+  - V5-directing-attention-signs
+  - M4-grief-register
+  - P7-restoration-stops
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+---
+
 # P1 - Fitrah Restoration
 
 **For:** Interlocutors whose fitrah is significantly suppressed, typically through prolonged

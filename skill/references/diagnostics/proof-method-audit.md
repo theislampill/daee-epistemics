@@ -1,3 +1,26 @@
+---
+id: proof-method-audit
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/proof-method-audit.md
+contract_version: "0.2.0.0"
+load_when:
+  - arguments for God's existence being compared or contested
+  - proof grammar itself is the live issue
+  - necessity/contingency language functioning as tribunal
+routing_effects:
+  - classifies proof family before argument content is released
+  - identifies tribunal status before content dispatch
+blocks:
+  - treating proof grammar as neutral tribunal over revelation
+  - husn-al-nazar-arguments before proof-grammar audit when grammar is the live issue
+companions:
+  - causal-series-taxonomy
+  - husn-al-nazar-arguments
+output_shapes:
+  - pass-through
+layer_constraint: layer-b-permitted
+---
+
 > role: diagnostic audit — proof families, imported proof grammar, and necessity/contingency overreach
 > use when: arguments for God's existence, proof-family comparison, or proof grammar itself is the live issue
 > do not use when: ḥusn al-naẓar has already been selected and the practitioner only needs inferential content — use husn-al-nazar-arguments.md then

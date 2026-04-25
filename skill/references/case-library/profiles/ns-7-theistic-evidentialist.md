@@ -1,3 +1,20 @@
+---
+id: ns-7-theistic-evidentialist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-7 (Theistic Evidentialist) confirmed via Quick NS Identification
+routing_effects:
+  - V9 necessary-knowledge priority mandatory first move
+companions:
+  - V9-necessary-knowledge-priority
+  - V7-taqlid-check
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-7 Theistic Evidentialist
 > use when: NS-7 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-11 (Fideist — opposite stance on argument's role)
 > IR field: NS code = NS-7

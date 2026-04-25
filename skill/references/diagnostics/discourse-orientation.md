@@ -1,3 +1,17 @@
+---
+id: discourse-orientation
+module_class: governance
+canonical_path: skill/references/diagnostics/discourse-orientation.md
+contract_version: "0.2.0.0"
+load_when:
+  - any case before selecting any intellectual response or case-library module
+routing_effects:
+  - determines whether intellectual engagement is the right instrument at all
+emits:
+  - discourse_orientation
+catalogue_registered: false
+---
+
 > role: diagnostic classifier — discourse orientation (DO-orient axis); determines what the engagement is ordered toward before any content module is selected
 > use when: any case; run this classifier before selecting any intellectual response or case-library module — it determines whether intellectual engagement is the right instrument at all
 > do not use when: discourse orientation is already established from prior context and has not shifted

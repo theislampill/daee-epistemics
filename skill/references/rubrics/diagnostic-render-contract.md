@@ -1,3 +1,13 @@
+---
+id: diagnostic-render-contract
+module_class: governance
+canonical_path: skill/references/rubrics/diagnostic-render-contract.md
+contract_version: "0.2.0.0"
+load_when:
+  - deciding how visibly structured the response should be (Level 1/2/3)
+catalogue_registered: false
+---
+
 > role: governs visible render shape (Level 1 / 2 / 3); runs after output-release rubric, before public response; does not substitute for diagnosis or routing
 > use when: deciding how visibly structured the response should be — ordinary prose, compact diagnostic, or full audit render
 > do not use when: routing and owner selection are still in progress; render shape does not determine routing

@@ -1,3 +1,15 @@
+---
+id: fitrah-perspectives
+module_class: governance
+canonical_path: skill/references/diagnostics/fitrah-perspectives.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
+emits:
+  - fitrah_view
+catalogue_registered: false
+---
+
 > role: specialty diagnostic — fiṭrah-content taxonomy; classifies the interlocutor's operative conception of the fiṭrah for NS-12 cases and Muslim-internal fiṭrah disputes
 > use when: NS-12 confirmed (blank-slate or dual-nature fiṭrah holder); or when any interlocutor denies that the fiṭrah is innate, claims it is environmentally determined, or presents a dual-nature (equal inclinations) account; or when a Muslim-internal dispute about the nature of the fiṭrah is operative
 > do not use when: the interlocutor accepts the fiṭrah's theistic orientation and the dispute is about something else

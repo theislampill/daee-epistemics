@@ -1,3 +1,27 @@
+---
+id: do-core
+module_class: case-library
+canonical_path: skill/references/case-library/do-core.md
+contract_version: "0.2.0.0"
+load_when:
+  - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
+  - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family
+routing_effects:
+  - activates family-local load floor (V1, Phase 2 passes, IR, routing-precedence, P7 check)
+  - does not authorize content release — output discipline remains live
+blocks:
+  - content release without confirmed case-state
+companions:
+  - do-attribute-precision
+  - V2-reconstituting-reason
+  - M4-grief-register
+  - M9-predication-mode
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+---
+
 # Case Library — Doctrinal Objections: Core Set (DO-1 through DO-6)
 
 > **role:** DO pressure family owner — DO-1 through DO-6
@@ -226,6 +250,12 @@ Full CSR taxonomy; detailed self-refutation chain — held until pressure type c
 #### Minimal discriminator/probe
 Does the argument claim belief is caused by evolution (genetic fallacy candidate — M1) or that evolution makes belief unreliable (self-refutation / necessary-knowledge attack — V9)?
 
+#### Failure test
+This entry has not governed the response if:
+- The genetic-fallacy or foundation/superstructure reply is deployed without first running M1 to check for self-refutation in the argument's structure.
+- The "targeted defeater" form of the strongest rebuttal (CSR debunks HADD specifically without global skepticism) is not addressed — it is the standard sophisticated reply and must be named.
+- The response treats "evolution explains belief" as refuted merely by pointing to secondary causation without distinguishing what CSR actually explains (superstructural attribution elaboration) from what it does not explain (foundational fiṭrī recognition).
+
 ---
 
 **The objection:** Religious belief can be fully explained by evolutionary processes that enhanced
@@ -294,6 +324,12 @@ Full comparative analysis; particular tradition arguments; V10 full chain — he
 
 #### Minimal discriminator/probe
 Is this "diversity proves no religion is true" (epistemic argument), "I might believe differently if born elsewhere" (contingency reflection), or "which book is reliable" (authority/canon question)?
+
+#### Failure test
+This entry has not governed the response if:
+- DO-4 diversity content is deployed before running a discourse-orientation check — the diversity argument is frequently used as an exit (identity-performance or autotelic) rather than a genuine epistemic argument, and content engagement into that register is DO-4 misfiring.
+- A canon or authority question ("which book is reliable?") is answered with DO-4 diversity content rather than being routed to V10 / DO-14.
+- The "diversity proves no specific religion is true" rebuttal is given without explicitly distinguishing genesis-of-belief from justification, or without checking whether a foreign criterion (liberal pluralism, genetic egalitarianism about traditions) is governing the diversity argument and needs FPD + V2 first.
 
 ---
 
@@ -367,6 +403,12 @@ Full V8 content; DO-5 substantive arguments — held until predication terms are
 
 #### Minimal discriminator/probe
 Are "anthropomorphic," "literal," and "metaphorical" being used in contested or loaded ways? If yes: M9 first.
+
+#### Failure test
+This entry has not governed the response if:
+- V8 or DO-5 transcendence content is deployed while "literal," "anthropomorphic," or "metaphorical" remain semantically contested — the semantic blocker must clear before V8 or attribute content loads.
+- DO-5 and DO-13 are not discriminated: if the pressure is about a competing philosophical ontological model (which God is the correct one) rather than whether divine language is coherent at all, the case is DO-13, not DO-5.
+- The bilā kayf discipline is presented as a strategy of evasion rather than as the epistemically honest acknowledgment of the limit of creaturely cognition — if it appears as an opt-out, M1 has not been run to name the self-refutation in "God is incomprehensible."
 
 ---
 
@@ -449,6 +491,12 @@ Full attribute-coherence analysis; divine simplicity doctrine; reconciliation of
 
 #### Minimal discriminator/probe
 Does this objection require "real attributes = discrete parts" (categorical confusion → M9/do-attribute-precision) or "perfection requires simplicity/impassibility" (perfection tribunal → perfection-criterion-usurpation)?
+
+#### Failure test
+This entry has not governed the response if:
+- Attribute-coherence content (DO-6) is deployed before M9 splits the predication terms "real," "attribute," and "composition" — answering the composition objection without the M9 split accepts the objector's hidden ontological assumption.
+- The DO-13 discriminator is not run: if the attribute-coherence objection is driven by a philosopher's-God frame (non-eventfulness, impassibility, or pure actuality as perfection criteria), it is DO-13, not DO-6.
+- The omnipotence or omniscience puzzle is engaged as if the tradition depends on the Anselmian ontological argument — the tradition's primary grounds are fiṭrah and āyāt, not the ontological argument, and treating this as a knockout blow accepts the wrong framing.
 
 ---
 

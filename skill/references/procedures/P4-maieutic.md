@@ -1,3 +1,20 @@
+---
+id: P4-maieutic
+module_class: procedure
+canonical_path: skill/references/procedures/P4-maieutic.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor in inkār mode — qalb has already registered what the tongue denies
+  - recognition is present but suppressed; not the case where genuine inquiry is absent
+companions:
+  - R2-the-reminder
+  - V5-directing-attention-signs
+output_shapes:
+  - bounded-single-pass
+  - recursive-traversal-permitted
+layer_constraint: layer-b-permitted
+---
+
 # P4 — The Socratic-Maieutic Procedure
 
 **For:** Interlocutors in inkār mode — where the qalb has already registered what the

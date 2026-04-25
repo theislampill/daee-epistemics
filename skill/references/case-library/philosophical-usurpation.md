@@ -1,3 +1,26 @@
+---
+id: philosophical-usurpation
+module_class: case-library
+canonical_path: skill/references/case-library/philosophical-usurpation.md
+contract_version: "0.2.0.0"
+load_when:
+  - imported philosophical framework functioning as upstream tribunal over revelation
+  - framework is not merely present but operating as court of appeal (Types A–D)
+routing_effects:
+  - five-step sequence (name → refuse → V2 on framework → restore authority order → engage content)
+  - holds first-order content pending tribunal identification and refusal
+blocks:
+  - first-order content engagement before tribunal is named and refused
+companions:
+  - V2-reconstituting-reason
+  - perfection-criterion-usurpation
+  - M9-predication-mode
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+---
+
 > role: named case family - philosophical usurpation; governs the usurpation types and their routing responses
 > use when: an imported philosophical framework is operating as the upstream authority that revelation is being forced to satisfy
 > do not use when: the framework is present but not yet functioning as tribunal

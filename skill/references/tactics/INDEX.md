@@ -1,3 +1,13 @@
+---
+id: tactics-index
+module_class: governance
+canonical_path: skill/references/tactics/INDEX.md
+contract_version: "0.2.0.0"
+load_when:
+  - selecting a tactic after V1 case-classification
+catalogue_registered: false
+---
+
 # Tactics - Index
 
 Tactics are immediate conversational moves. They are not the whole response architecture. Start with V1, use M5 inside its triage phase, and do not treat a tactic as a substitute for diagnosis.

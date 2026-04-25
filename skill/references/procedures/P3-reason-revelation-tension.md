@@ -1,3 +1,19 @@
+---
+id: P3-reason-revelation-tension
+module_class: procedure
+canonical_path: skill/references/procedures/P3-reason-revelation-tension.md
+contract_version: "0.2.0.0"
+load_when:
+  - intellectually serious interlocutor stuck on perceived fundamental conflict between rational/scientific standards and religious belief
+  - often combined with kalāmic interlocutor profile (NS-6, NS-10)
+companions:
+  - V2-reconstituting-reason
+  - F1-supra-vs-antirational
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # P3 — Resolving the Reason-Revelation Tension
 
 **For:** Intellectually serious interlocutors stuck on a perceived fundamental conflict

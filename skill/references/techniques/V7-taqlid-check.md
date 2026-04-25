@@ -1,3 +1,21 @@
+---
+id: V7-taqlid-check
+module_class: technique
+canonical_path: skill/references/techniques/V7-taqlid-check.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor's skepticism appears assumed-by-default rather than genuinely examined
+  - position held by uncritical imitation of intellectual environment
+routing_effects:
+  - V11-taqlid-transition must be ready before deploying V7 — opening destabilization without a transition path harms the subject
+companions:
+  - symmetric-taqlid-check
+  - V11-taqlid-transition
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # V7 — The Taqlīd Check
 
 **Deploy when:** The interlocutor's skepticism appears assumed-by-default rather than genuinely examined; before pressing V7 outward, apply the symmetric check inward (see `references/tactics/symmetric-taqlid-check.md`).

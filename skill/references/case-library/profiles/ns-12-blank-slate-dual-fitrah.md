@@ -1,3 +1,18 @@
+---
+id: ns-12-blank-slate-dual-fitrah
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification
+companions:
+  - V5-directing-attention-signs
+  - E4-cross-cultural-check
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-12 Blank-Slate or Dual-Nature Fiṭrah Holder
 > use when: NS-12 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-1 or NS-2 (those deny the fiṭrah entirely; NS-12 disputes its content)
 > IR field: NS code = NS-12

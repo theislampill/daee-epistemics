@@ -1,3 +1,15 @@
+---
+id: prophecy-wahy-supremacy
+module_class: governance
+canonical_path: skill/references/prophecy-wahy-supremacy.md
+contract_version: "0.2.0.0"
+load_when:
+  - case treats philosophical systems as legitimate arbiter of revelation
+  - interlocutor requires revelation to satisfy a prior rational standard
+  - epistemic authority of waḥy needs positive articulation
+catalogue_registered: false
+---
+
 > role: doctrinal governance — epistemic authority of prophecy and waḥy; supplies the positive doctrinal case where philosophical-usurpation.md supplies the routing structure
 > use when: the case explicitly or implicitly treats philosophical systems as the legitimate arbiter of revelation's content; when the interlocutor requires revelation to satisfy a prior rational standard before it may be credited; when the practitioner needs to articulate why waḥy is not an optional supplement to philosophy but the primary and superior source in precisely the domains where philosophy is weakest
 > do not use when: the case is purely transmission-related with no authority-ordering dispute, or when the interlocutor already accepts waḥy as primary

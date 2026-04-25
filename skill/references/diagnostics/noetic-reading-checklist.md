@@ -1,3 +1,14 @@
+---
+id: noetic-reading-checklist
+module_class: governance
+canonical_path: skill/references/diagnostics/noetic-reading-checklist.md
+contract_version: "0.2.0.0"
+load_when:
+  - diagnosing worldview structure
+  - NS code still provisional or basis is thin (excerpt mode)
+catalogue_registered: false
+---
+
 > role: core diagnostic
 > use when: diagnosing worldview structure, not merely answering a single proposition
 > do not use when: the task is a narrow factual clarification with no need for noetic classification
@@ -194,10 +205,32 @@ claiming a settled read.
 
 When the basis is only a slogan, short excerpt, or one-turn prompt:
 
-- do not emit a single confident NS code unless Dimensions 1, 4, and 8 each carry convergent signal
-- prefer `NS-X | NS-Y` or `NS-?` over a forced single-profile lock
-- populate the decisive missing differentiator explicitly
-- if the recurring family is clearer than the noetic profile, surface a `pattern_profile` from `pattern-profiling.md` while keeping the NS read provisional
+**Minimum-basis rule before confident single NS emission:**
+
+All three of the following dimensions must carry independent convergent signal before a single NS code may be emitted with confidence:
+
+1. **Dimension 1** — What the subject treats as basic or non-inferential is discernible, not merely assumed from surface vocabulary.
+2. **Dimension 4** — The governing worldview commitment acting as an interpretive filter is discernible, not inferred by pattern-match to a stereotype.
+3. **Dimension 8** — The discourse orientation (truth-seeking vs. identity-performance vs. autotelic vs. conjecture) is discernible from the input.
+
+If any of these three dimensions is under-signalled, the NS code is provisional, not confirmed.
+
+**Fields that must remain provisional until basis is confirmed:**
+
+- `NS code` — emit as `NS-X | NS-Y` or `NS-?` when fewer than all three dimensions carry convergent signal
+- `Deformation type` — do not commit to a primary deformation when only surface language is available
+- `Concealment mode` — do not assign a specific concealment mode from a single utterance
+- `Discourse orientation` — mark as `underdetermined` when the input does not distinguish truth-seek from identity-performance or autotelic
+
+**Decisive missing differentiator: mandatory, not optional.**
+
+When any of the three minimum-basis dimensions is under-signalled, the `Decisive missing differentiator` field must be populated. It is not optional. State explicitly what additional signal would resolve the ambiguity — this is both a self-audit guard and a routing instruction for the next exchange.
+
+**Pattern-profile as substitute diagnosis:**
+
+If the recurring case family is clearer than the noetic profile, surface a `pattern_profile` from `pattern-profiling.md` while keeping the NS read provisional. Routing to the right family is often more tractable from a thin excerpt than assigning a complete noetic profile.
+
+**Failure test:** Excerpt mode did not govern the response if a single NS code was emitted confidently from a slogan or one-turn excerpt without independent convergent signal across Dimensions 1, 4, and 8 — or if the decisive missing differentiator was omitted because the response felt complete without it.
 
 Excerpt mode does not suspend diagnosis. It suspends overcommitment.
 

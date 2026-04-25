@@ -1,3 +1,22 @@
+---
+id: ns-9-historical-critical-skeptic
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-9 (Historical-Critical Skeptic) confirmed via Quick NS Identification
+routing_effects:
+  - V2 mandatory first on imported historical-critical framework
+  - V10 mandatory for separating artifact from authenticated transmission
+companions:
+  - V2-reconstituting-reason
+  - V10-transmission-content-vetting
+  - revelation-transmission
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-9 Historical-Critical Skeptic
 > use when: NS-9 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
 > IR field: NS code = NS-9

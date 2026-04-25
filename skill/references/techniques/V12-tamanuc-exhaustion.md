@@ -1,3 +1,21 @@
+---
+id: V12-tamanuc-exhaustion
+module_class: technique
+canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
+contract_version: "0.2.0.0"
+load_when:
+  - any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords
+  - regardless of interlocutor tradition (structural trigger, not tradition-specific)
+routing_effects:
+  - base procedure — DO-11 and DO-13 are Christian-specific overlays loaded after V12, not alternatives
+companions:
+  - V8-bila-kayf-anchor
+  - do-christian-extensions
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # V12 — Burhān al-Tamānuʿ: Logical Exhaustion of Divine Plurality
 
 **Deploy when:** Any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords — regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent, prior to and independent of any interlocutor's specific doctrinal commitments.

@@ -1,3 +1,13 @@
+---
+id: pattern-family-audit
+module_class: governance
+canonical_path: skill/references/diagnostics/pattern-family-audit.md
+contract_version: "0.2.0.0"
+load_when:
+  - auditing pattern-family coverage, routing discipline, or running regression tests
+catalogue_registered: false
+---
+
 # Pattern-Family Robustness and Multi-Module Routing Discipline Audit
 
 > role: audit artifact / regression suite

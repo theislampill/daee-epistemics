@@ -1,3 +1,21 @@
+---
+id: P5-already-believing
+module_class: procedure
+canonical_path: skill/references/procedures/P5-already-believing.md
+contract_version: "0.2.0.0"
+load_when:
+  - believer whose belief is shallow, untested, or held by taqlīd
+  - belief fragile under pressure; moving from inherited assumption to examined conviction
+companions:
+  - V11-taqlid-transition
+  - F3-practice-epistemic-access
+  - P7-restoration-stops
+output_shapes:
+  - bounded-single-pass
+  - recursive-traversal-permitted
+layer_constraint: layer-b-permitted
+---
+
 # P5 - Working with the Already-Believing
 
 **For:** Believers whose belief is shallow, untested, or held by taqlīd - inherited without

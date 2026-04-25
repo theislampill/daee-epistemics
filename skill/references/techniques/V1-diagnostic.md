@@ -1,3 +1,36 @@
+---
+id: V1-diagnostic
+module_class: technique
+canonical_path: skill/references/techniques/V1-diagnostic.md
+contract_version: "0.2.0.0"
+load_when:
+  - beginning any engagement before substantive content
+  - interlocutor shifts register
+  - upstream barrier cleared and new downstream issue exposed
+routing_effects:
+  - establishes case-state required before any other module loads
+  - runs M5-deformation-triage as internal subroutine
+emits:
+  - case_family
+  - ns_code
+  - discourse_orientation
+  - concealment_mode
+  - deformation_type
+  - matched_modules
+blocks:
+  - any tactic, technique, procedure, or case-library module before case-state is produced
+companions:
+  - M5-deformation-triage
+  - prophetic-discourse-neutralization
+  - causal-series-taxonomy
+  - definition-discipline
+  - proof-method-audit
+  - perfection-criterion-usurpation
+output_shapes:
+  - pass-through
+layer_constraint: layer-a-only
+---
+
 # V1 - The Diagnostic Technique
 
 > role: entry gate for all substantive engagements

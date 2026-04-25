@@ -1,3 +1,13 @@
+---
+id: module-codes
+module_class: governance
+canonical_path: skill/references/module-codes.md
+contract_version: "0.2.0.0"
+load_when:
+  - ambiguity arises about what a code names or where its full treatment lives
+catalogue_registered: false
+---
+
 # Module Codes — Canonical Reference
 
 > role: single source for every code the skill emits

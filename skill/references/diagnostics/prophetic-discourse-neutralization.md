@@ -1,3 +1,27 @@
+---
+id: prophetic-discourse-neutralization
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/prophetic-discourse-neutralization.md
+contract_version: "0.2.0.0"
+load_when:
+  - revealed or prophetic speech redirected, semantically overridden, or evacuated
+  - semantic recontenting or determinate-guidance denial active before doctrinal dispatch
+routing_effects:
+  - holds doctrinal content dispatch while semantic-neutralization move is unaddressed
+  - route-back gate after clearing — requires case-state refresh before next move
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - doctrinal content dispatch while recontenting or evacuation mode is unaddressed
+companions:
+  - V8-bila-kayf-anchor
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+---
+
 > role: diagnostic pass — prophetic-discourse neutralization
 > use when: revealed or prophetic speech is being redirected into another content, emptied of determinate meaning, or treated as non-guiding at the semantic level
 > do not use when: the case is purely about transmission authenticity with no dispute over whether prophetic discourse yields determinate guidance

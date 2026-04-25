@@ -1,3 +1,20 @@
+---
+id: ns-2-agnostic-evidentialist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-2 (Agnostic Evidentialist) confirmed via Quick NS Identification
+routing_effects:
+  - E2 inferential criterion before evidence content; V3 when regress demand active
+companions:
+  - E2-inferential-criterion
+  - V3-regress-dissolution
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-2 Agnostic Evidentialist
 > use when: NS-2 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
 > IR field: NS code = NS-2

@@ -1,3 +1,24 @@
+---
+id: ns-5-habituated-atheist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-5-habituated-atheist.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-5 (Habituated Atheist) confirmed via Quick NS Identification
+routing_effects:
+  - F2 volitional dimensions mandatory first move before intellectual content
+companions:
+  - F2-volitional-dimensions
+  - M4-grief-register
+  - R2-the-reminder
+  - V7-taqlid-check
+  - M2-prior-probability
+  - M1-self-refutation
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-5 Habituated Atheist
 > use when: NS-5 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
 > IR field: NS code = NS-5

@@ -1,3 +1,23 @@
+---
+id: causal-series-taxonomy
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/causal-series-taxonomy.md
+contract_version: "0.2.0.0"
+load_when:
+  - case turns on infinite regress, causal-series classification, or circularity
+  - claims that natural or secondary causes are self-sufficient
+  - simultaneous vs. successive series distinction needed
+blocks:
+  - treating all regress, infinity, and causation claims as the same problem
+  - routing causal-series cases to V3-regress-dissolution (epistemic regress only)
+companions:
+  - proof-method-audit
+  - V3-regress-dissolution
+output_shapes:
+  - pass-through
+layer_constraint: layer-b-permitted
+---
+
 > role: diagnostic taxonomy — causal series, regress, circularity, and secondary-cause status
 > use when: the case turns on infinite regress, causal-series classification, circularity, or claims that natural or secondary causes are self-sufficient
 > do not use when: the live issue is justificatory regress only — route to V3-regress-dissolution.md for epistemic regress

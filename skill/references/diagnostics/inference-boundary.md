@@ -1,3 +1,13 @@
+---
+id: inference-boundary
+module_class: governance
+canonical_path: skill/references/diagnostics/inference-boundary.md
+contract_version: "0.2.0.0"
+load_when:
+  - response draws on more than one file, extends file content, or risks overclaiming
+catalogue_registered: false
+---
+
 # Inference Boundary Markers
 
 > role: diagnostic-governance

@@ -1,3 +1,13 @@
+---
+id: arabic-backbone-predicates
+module_class: governance
+canonical_path: skill/references/diagnostics/arabic-backbone-predicates.md
+contract_version: "0.2.0.0"
+load_when:
+  - V1 Phase 2; criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element visible
+catalogue_registered: false
+---
+
 > role: operational predicate library - typed checks that fire when a structurally important violation of the tradition's epistemic order is present
 > use when: V1 Phase 2 axis classification is underway and a criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element is visible
 > do not use when: the case is already fully diagnosed and the upstream blocker is established

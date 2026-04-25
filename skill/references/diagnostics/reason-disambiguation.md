@@ -1,3 +1,15 @@
+---
+id: reason-disambiguation
+module_class: governance
+canonical_path: skill/references/diagnostics/reason-disambiguation.md
+contract_version: "0.2.0.0"
+load_when:
+  - any case with DO-orient = truth-seek or mixed; Mandatory Pass P-A in V1 Phase 2
+emits:
+  - reason_category
+catalogue_registered: false
+---
+
 > role: typed diagnostic substrate — Mandatory Pass [P-A] in V1 Phase 2; classifies reason-category before any content gate can open
 > use when: any case where the interlocutor is pressing an intellectual argument (DO-orient = truth-seek or mixed); this pass runs by default — it is not conditional on "whether reason is at issue," because that question cannot be answered without running the pass
 > do not use when: P7 Stop-1 is active (grief-primary case where no content gate is being assessed yet), or when the case is register-only with no intellectual content component pending

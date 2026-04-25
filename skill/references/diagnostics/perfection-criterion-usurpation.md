@@ -1,3 +1,29 @@
+---
+id: perfection-criterion-usurpation
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/perfection-criterion-usurpation.md
+contract_version: "0.2.0.0"
+load_when:
+  - philosophical perfection picture (immutability, simplicity, impassibility, non-eventfulness) functioning as tribunal
+  - attribute content being judged by prior metaphysical model presented as neutral reason
+routing_effects:
+  - requires detect-refuse-expose-engage sequence before attribute content released
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - engaging attribute content before imported perfection tribunal is refused
+  - routing to semantic clarification when tribunal-installation is the governing move
+companions:
+  - philosophical-usurpation
+  - V8-bila-kayf-anchor
+  - M9-predication-mode
+  - do-attribute-precision
+output_shapes:
+  - pass-through
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+---
+
 > role: diagnostic owner — imported perfection criterion / non-eventfulness tribunal family
 > use when: a metaphysical picture of perfection, immutability, simplicity, impassibility, or non-eventfulness is functioning as the court before which revelation must justify itself
 > do not use when: the live issue is only whether a term can be predicated coherently at all — route to V8 or M9 first if the problem is semantic rather than tribunal-level

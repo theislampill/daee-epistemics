@@ -1,3 +1,26 @@
+---
+id: V2-reconstituting-reason
+module_class: technique
+canonical_path: skill/references/techniques/V2-reconstituting-reason.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor's conception of reason is contaminated (bidʿī ʿaqlī)
+  - evidential content cannot land through the interlocutor's filter
+  - reason or evidence concept implicitly restricted to empirically testable or scientism-narrowed scope
+routing_effects:
+  - holds first-order content pending filter identification and loosening
+  - clears imported tribunal at ʿaql layer (tribunal-loosened)
+emits:
+  - what_is_withheld_and_why
+companions:
+  - V4-contamination-identification
+  - V5-directing-attention-signs
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+---
+
 # V2 — Reconstituting the Conception of Reason
 
 **Deploy when:** Interlocutor's conception of reason is contaminated (bidʿī ʿaqlī); before any evidential content can land through the contaminated filter.

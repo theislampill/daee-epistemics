@@ -1,3 +1,29 @@
+---
+id: do-christian-extensions
+module_class: case-library
+canonical_path: skill/references/case-library/do-christian-extensions.md
+contract_version: "0.2.0.0"
+load_when:
+  - Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion)
+  - model identification complete before DO-12 or DO-13
+routing_effects:
+  - V12 base procedure loads before Christian overlay
+  - model identification required before DO-12 routing
+blocks:
+  - loading as first responder to any theological question
+  - DO-12 before model identification complete
+companions:
+  - V12-tamanuc-exhaustion
+  - V8-bila-kayf-anchor
+  - V10-transmission-content-vetting
+  - M9-predication-mode
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+---
+
 # Case Library — Doctrinal Objections: Christian Extensions (DO-11 through DO-14)
 
 > **role:** DO pressure family owner — DO-11 through DO-14 (Christian theological extension cases)

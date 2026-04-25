@@ -1,3 +1,15 @@
+---
+id: operative-contracts
+module_class: governance
+canonical_path: skill/references/diagnostics/operative-contracts.md
+contract_version: "0.2.0.0"
+load_when:
+  - adding or auditing YAML operative front matter on any skill file
+  - migrating a module class to the contract layer
+  - implementing a linter or checking catalogue/path alignment
+catalogue_registered: false
+---
+
 > role: architecture spec for per-file machine-readable operative contracts — defines purpose, required/optional YAML front matter keys, allowed values, examples, failure modes, migration strategy, and linting plan
 > use when: adding or auditing YAML operative front matter on any skill file; migrating a module class to the contract layer; implementing a linter; checking catalogue/path alignment
 > do not use when: routing a live case — this file does not govern dispatch; it governs static file-level metadata

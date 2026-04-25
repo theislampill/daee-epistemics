@@ -1,3 +1,24 @@
+---
+id: revelation-transmission
+module_class: case-library
+canonical_path: skill/references/case-library/revelation-transmission.md
+contract_version: "0.2.0.0"
+load_when:
+  - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
+  - V10 sequence complete and transmission burden typed
+routing_effects:
+  - handles RT-1 through RT-4 after V10 provenance/contents/authority sequence
+blocks:
+  - loading for generic theism, grief, Trinity, ḥadīth corpus/authentication, or generic prophetic-mission cases
+companions:
+  - V10-transmission-content-vetting
+  - hadith-authentication-epistemology
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+---
+
 > role: case-library
 > use when: revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims have already been distinguished as the live family
 > do not use when: generic theism, grief, Trinity pressure, ḥadīth corpus/authentication pressure, or generic prophetic-mission / moral-luck pressure is primary and the text-history layer is incidental

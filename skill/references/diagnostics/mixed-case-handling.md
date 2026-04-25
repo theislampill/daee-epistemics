@@ -1,3 +1,14 @@
+---
+id: mixed-case-handling
+module_class: governance
+canonical_path: skill/references/diagnostics/mixed-case-handling.md
+contract_version: "0.2.0.0"
+load_when:
+  - multiple diagnoses compete
+  - case is thin or orientation/deformation underdetermined
+catalogue_registered: false
+---
+
 # Mixed Cases and Insufficient Basis
 
 > role: diagnostic-governance
@@ -102,6 +113,7 @@ These playbooks are mandatory routing logic for cases where two deformation fami
 - Non-Christian inherited-tradition boundary: if the case needs family-specific authorization content beyond V10 Step 3 and no dedicated downstream DO owner exists, stop at the structural form, name the boundary, and do not borrow DO-14 by analogy.
 - Restoration framing: P1/P4 may support the response when the register is open, but they do not substitute for the live epistemic module.
 - Failure tests: restoration-first collapse, Christology preemption, RT-2 substitution, and criterion grant. If any occurs, reroute to the upstream blocker and hold downstream content.
+- NS-11 routing note: if the case combines inherited-Christian background with NS-11 (fideist — commitments held on faith, rational examination refused), register-hold governs before any DO, V12, or RT content regardless of which downstream sub-question is active. DO-14 and DO-10 are both held. The fideist-closed posture means doctrinal engagement cannot land; the correct move is pastoral/invitational until the register shifts from fideist-closed to inquiry-open. NS-11 does not change sub-question identification — it changes the precondition for content release.
 
 ### (vi) Doctrinal Complexity / Disagreement Pressure
 

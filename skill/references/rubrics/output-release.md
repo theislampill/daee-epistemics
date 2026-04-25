@@ -1,3 +1,15 @@
+---
+id: output-release
+module_class: governance
+canonical_path: skill/references/rubrics/output-release.md
+contract_version: "0.2.0.0"
+load_when:
+  - any response about to be shaped or released
+routing_effects:
+  - governs how much may be released, in what order, and under what case-state conditions
+catalogue_registered: false
+---
+
 > role: runtime output-release governance rubric — runs after routing/owner-selection and before final render
 > use when: any response is about to be shaped or released; governs how much may be released, in what order, and under what case-state conditions
 > do not use when: routing is still in progress and the dispatch gate has not yet opened

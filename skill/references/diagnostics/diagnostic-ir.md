@@ -1,3 +1,17 @@
+---
+id: diagnostic-ir
+module_class: governance
+canonical_path: skill/references/diagnostics/diagnostic-ir.md
+contract_version: "0.2.0.0"
+load_when:
+  - any substantive engagement requiring routing — IR is not optional
+routing_effects:
+  - gates all module dispatch before any content module loads
+emits:
+  - routing_gate
+catalogue_registered: false
+---
+
 > role: dispatch gate and typed diagnostic intermediate representation - the constrained layer that module dispatch must pass through before any content module is loaded
 > use when: any substantive engagement requiring routing; the IR is not optional for these cases
 > do not use when: the task is a narrow conversational sub-answer with no case classification required

@@ -1,3 +1,13 @@
+---
+id: sound-reason-epistemology
+module_class: governance
+canonical_path: skill/references/sound-reason-epistemology.md
+contract_version: "0.2.0.0"
+load_when:
+  - case needs full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
+catalogue_registered: false
+---
+
 > role: theoretical substrate
 > use when: the case needs the full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
 > do not use when: a lighter diagnostic or tactical file already gives the needed routing guidance

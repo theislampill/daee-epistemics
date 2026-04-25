@@ -1,3 +1,17 @@
+---
+id: pattern-profiling
+module_class: governance
+canonical_path: skill/references/diagnostics/pattern-profiling.md
+contract_version: "0.2.0.0"
+load_when:
+  - recurring cross-volume family identified
+  - live burden concerns standards of knowing, ontological categories, or noetic structure
+emits:
+  - claim_level
+  - pattern_profile
+catalogue_registered: false
+---
+
 > role: diagnostic-governance
 > use when: a case instantiates a recurring cross-volume family, or the live burden is about standards of knowing, ontological categories, or noetic structure rather than first-order content alone
 > do not use when: a narrow single-point reply does not benefit from surfacing a reusable pattern or claim-level distinction

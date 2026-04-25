@@ -1,3 +1,23 @@
+---
+id: V5-directing-attention-signs
+module_class: technique
+canonical_path: skill/references/techniques/V5-directing-attention-signs.md
+contract_version: "0.2.0.0"
+load_when:
+  - framework cleared (V2 deployed and filter loosened)
+  - directing attention to specific āyāt calibrated to this interlocutor's sensibility
+blocks:
+  - constructing logical inference from the sign ("this design requires a designer therefore God exists") — signs are presented, not argued
+companions:
+  - V2-reconstituting-reason
+  - M3-orphaned-intuition
+  - M4-grief-register
+  - R2-the-reminder
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # V5 — Directing Attention to Signs
 
 **Deploy when:** Framework has been cleared (V2 deployed); directing attention to specific āyāt calibrated to this interlocutor.

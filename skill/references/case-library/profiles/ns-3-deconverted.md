@@ -1,3 +1,21 @@
+---
+id: ns-3-deconverted
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-3-deconverted.md
+contract_version: "0.2.0.0"
+load_when:
+  - NS-3 (Deconverted / Post-Religious) confirmed via Quick NS Identification
+routing_effects:
+  - M4 grief-register gate before any DO content if grief-primary
+companions:
+  - M3-orphaned-intuition
+  - P4-maieutic
+  - M4-grief-register
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 > role: noetic structure profile — NS-3 Deconverted (Post-Religious)
 > use when: NS-3 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
 > IR field: NS code = NS-3

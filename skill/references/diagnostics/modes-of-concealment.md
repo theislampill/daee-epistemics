@@ -1,3 +1,15 @@
+---
+id: modes-of-concealment
+module_class: governance
+canonical_path: skill/references/diagnostics/modes-of-concealment.md
+contract_version: "0.2.0.0"
+load_when:
+  - any case after DO-orient is established; concealment mode governs what engagement can land
+emits:
+  - concealment_mode
+catalogue_registered: false
+---
+
 > role: diagnostic classifier — modes of concealment (A3 axis); identifies the relationship between inner state and outer expression that governs what kind of engagement can land at all
 > use when: any case; run after DO-orient is established; concealment mode governs register — it answers what kind of engagement can land, which is distinct from what has suppressed the fiṭrah (seven-deformations.md) and what the discourse is for (discourse-orientation.md)
 > do not use when: concealment mode is already established and has not shifted

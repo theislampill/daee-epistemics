@@ -1,3 +1,15 @@
+---
+id: foreign-premise-detection
+module_class: governance
+canonical_path: skill/references/diagnostics/foreign-premise-detection.md
+contract_version: "0.2.0.0"
+load_when:
+  - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
+emits:
+  - upstream_findings
+catalogue_registered: false
+---
+
 > role: diagnostic pipeline pass - detects and classifies imported premises, criteria, and tribunals
 > use when: V1 Phase 2 axis classification is underway and the interlocutor's framework, criterion, or prior probability assignment is not yet examined
 > do not use when: the claim is purely transmission-related with no criterion-importing element

@@ -1,3 +1,24 @@
+---
+id: V11-taqlid-transition
+module_class: technique
+canonical_path: skill/references/techniques/V11-taqlid-transition.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor has recognized position is held by taqlīd and asks (explicitly or implicitly) how to move toward taḥqīq
+  - truth-seek discourse orientation confirmed
+blocks:
+  - interlocutor still defending their taqlīd (V7 check still required first)
+  - subject under acute destabilization (route to P6-universal-aqidah-principle or mixed-case-handling first)
+companions:
+  - V7-taqlid-check
+  - symmetric-taqlid-check
+  - V5-directing-attention-signs
+  - V10-transmission-content-vetting
+output_shapes:
+  - recursive-traversal-permitted
+layer_constraint: layer-b-permitted
+---
+
 # V11 — Taqlīd Recognition and Transition to Taḥqīq
 
 > role: standalone module for cases where the live issue is transition from imitation to examination, not a shubhah to dissolve

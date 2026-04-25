@@ -1,3 +1,20 @@
+---
+id: V3-regress-dissolution
+module_class: technique
+canonical_path: skill/references/techniques/V3-regress-dissolution.md
+contract_version: "0.2.0.0"
+load_when:
+  - interlocutor generates justificatory regress objections ("but what justifies that?")
+  - infinite regress demand against foundational or basic beliefs
+blocks:
+  - causal-series, simultaneous/successive series, or proof-grammar issues — route to causal-series-taxonomy instead
+companions:
+  - causal-series-taxonomy
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+---
+
 # V3 - Regress-Dissolution
 
 **Deploy when:** the interlocutor generates justificatory regress objections ("but what justifies that?").

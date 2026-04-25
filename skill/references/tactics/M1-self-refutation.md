@@ -1,3 +1,38 @@
+---
+id: M1-self-refutation
+module_class: tactic
+canonical_path: skill/references/tactics/M1-self-refutation.md
+contract_version: "0.2.0.0"
+load_when:
+  - before constructing any response — check whether objection premises undermine the objection itself
+routing_effects:
+  - run first among downstream moves when self-refutation is present
+companions:
+  - M1P-performative-self-refutation
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+load_class: routed
+bundle: none
+execution_phase: render
+governs: []
+must_precede: [render]
+blocks_if_missing: false
+trigger_conditions:
+  - before constructing any response — check whether objection premises undermine the objection itself
+operator_pack: []
+source_status: canonical
+verification_status: L_check
+direct_read_required: true
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # M1 - Self-Refutation Check
 
 **Type:** Meta-tactic
