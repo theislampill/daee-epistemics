@@ -1,11 +1,32 @@
-# M5 — Deformation Triage
+---
+id: M5-deformation-triage
+module_class: tactic
+canonical_path: skill/references/tactics/M5-deformation-triage.md
+contract_version: "0.2.2.0"
+load_when:
+  - during V1's triage phase (internal subroutine)
+  - narrow single-exchange case where live question is already reduced to which deformation governs the next move
+blocks:
+  - NS, DO-orient, or concealment axis still under-signalled — V1 is the gate, not M5
+emits:
+  - deformation_type
+companions:
+  - V1-diagnostic
+output_shapes:
+  - pass-through
+layer_constraint: layer-a-only
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
-> role: V1 triage subroutine; standalone only for narrow local sorting
-> use when: during V1's triage phase, or in a narrow single-exchange case where the live
-> question is already reduced to which deformation governs the next move
-> do not use when: the NS, DO-orient, or concealment axis is still under-signalled — V1 is
-> the right gate, not M5
-> output: primary deformation code, first matched instrument, sequencing note if compound
+# M5 — Deformation Triage
 
 ## Role of M5 in V1
 

@@ -1,3 +1,30 @@
+---
+id: M7-definition-anchor
+module_class: tactic
+canonical_path: skill/references/tactics/M7-definition-anchor.md
+contract_version: "0.2.2.0"
+load_when:
+  - interlocutor challenges a word rather than engaging the underlying claim
+  - terminological dispute used to avoid substantive engagement
+blocks:
+  - broader conception-capture problems (silent redefinition, public-language capture, universals/particulars confusion) — route to definition-discipline instead
+companions:
+  - definition-discipline
+  - M6-excluded-middle
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # M7 - The Definition Anchor
 
 **Type:** Meta-tactic

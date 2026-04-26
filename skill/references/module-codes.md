@@ -1,9 +1,22 @@
-# Module Codes — Canonical Reference
+---
+id: module-codes
+module_class: governance
+canonical_path: skill/references/module-codes.md
+contract_version: "0.2.2.0"
+load_when:
+  - ambiguity arises about what a code names or where its full treatment lives
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
-> role: single source for every code the skill emits
-> use when: any ambiguity arises about what a code names or where its full treatment lives
-> do not use when: the code is already fully specified in the file being consulted
-> output: code → name → full-treatment location, plus worked examples of composed case-state lines
+# Module Codes — Canonical Reference
 
 The skill emits codes on several orthogonal axes. Each code has exactly one canonical
 file; other files refer to the code but do not re-specify it. If this reference
@@ -100,11 +113,11 @@ Source: `references/diagnostics/discourse-orientation.md`.
 | `zann-mode` | Assertions without discipline of warrant | Press one specific claim at a time |
 | `mixed` | Predominant + minority channel | Respond to predominant; track for shift |
 
-## Axis 3 — Doctrinal DO-1..14 (Problem Family)
+## Axis 3 — Doctrinal DO-1..15 (Problem Family)
 
 Source: `references/case-library/INDEX.md` §Quick DO Identification.
 Full treatment: `case-library/do-core.md` (DO-1..6), `case-library/do-second-loop.md`
-(DO-7..10), `case-library/do-christian-extensions.md` (DO-11..14).
+(DO-7..10 and DO-15), `case-library/do-christian-extensions.md` (DO-11..14).
 
 | Code | Objection family |
 |------|------------------|
@@ -122,9 +135,10 @@ Full treatment: `case-library/do-core.md` (DO-1..6), `case-library/do-second-loo
 | DO-12 | Logical problem of the Trinity; model-identification |
 | DO-13 | Philosopher's God vs. God of revelation; incarnation coherence |
 | DO-14 | Christian canon selection: which Bible, and why |
+| DO-15 | Islamic-specific moral objections: imported-criterion form |
 
-DO-1..14 are a different axis from DO-orient; they share the prefix because both live
-on the discourse axis. DO-orient answers *what the discourse is for*; DO-1..14 answers
+DO-1..15 are a different axis from DO-orient; they share the prefix because both live
+on the discourse axis. DO-orient answers *what the discourse is for*; DO-1..15 answers
 *what objection family is live inside it*.
 
 ## Axis 4 — Concealment Mode
@@ -252,6 +266,14 @@ Historical note for the worked case-state lines below:
 - keep `Next` to one live move only; later routes belong in reasoning or `What remains live`, not in the active next step
 - when a gloss is helpful for a human reader, keep the validator-backed IR value canonical and move the gloss into the explanation
 - when a landed move changes the state, do not queue the refreshed continuation in the same line; re-entry belongs to a later case-state after refreshed V1, even if the differentiating signal appears inside the same message
+
+## Coverage Verification
+
+- Failure condition: Any emitted code not listed here or in the coverage manifest is invalid unless it is explicitly marked as provisional syntax such as `NS-?` or `mode-?`.
+- IR-visible consequence: `matched_modules` and case-state code emissions must resolve to the canonical owner named by this file and `module-catalogue.json`.
+- Minimal pair: `DO-orient` names what the discourse is for; `DO-1..15` names the objection family live inside the discourse.
+- Hold/release rule: Hold any response content that depends on an ambiguous or unknown code until the owner and axis are resolved.
+- Anti-pattern guard: Do not invent a new numbered code for a nearby idea; route through an existing owner, TODO needs-review item, or explicit out-of-scope note.
 
 Third-wave normalization note:
 

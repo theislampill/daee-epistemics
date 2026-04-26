@@ -1,0 +1,470 @@
+schema_version: "1"
+manifest_role: "Machine-readable enumeration of recognized coverage claims."
+authority_note: >
+  Diagnostic IR remains the runtime dispatch authority. This manifest is a
+  validation surface only: it enumerates public/routing scope claims and maps
+  each in-scope claim to its governed owner.
+
+known_non_runtime_references:
+  - claim_id: RT-5
+    status: prohibited-code
+    note: RT-5 is mentioned only as a forbidden inflation; hadith authentication has its own diagnostic owner.
+
+scope_claims:
+  # Noetic profiles
+  - claim_id: NS-1
+    owner_id: ns-1-naturalist
+    in_scope: true
+  - claim_id: NS-2
+    owner_id: ns-2-agnostic-evidentialist
+    in_scope: true
+  - claim_id: NS-3
+    owner_id: ns-3-deconverted
+    in_scope: true
+  - claim_id: NS-4
+    owner_id: ns-4-secular-moral-realist
+    in_scope: true
+  - claim_id: NS-5
+    owner_id: ns-5-habituated-atheist
+    in_scope: true
+  - claim_id: NS-6
+    owner_id: ns-6-kalamic-evidentialist
+    in_scope: true
+  - claim_id: NS-7
+    owner_id: ns-7-theistic-evidentialist
+    in_scope: true
+  - claim_id: NS-8
+    owner_id: ns-8-muslim-internal-crisis
+    in_scope: true
+  - claim_id: NS-9
+    owner_id: ns-9-historical-critical-skeptic
+    in_scope: true
+  - claim_id: NS-10
+    owner_id: ns-10-maturidi-evidentialist
+    in_scope: true
+  - claim_id: NS-11
+    owner_id: ns-11-fideist-reformed
+    in_scope: true
+  - claim_id: NS-12
+    owner_id: ns-12-blank-slate-dual-fitrah
+    in_scope: true
+
+  # Doctrinal objection families
+  - claim_id: DO-1
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-2
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-3
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-4
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-5
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-6
+    owner_id: do-core
+    in_scope: true
+  - claim_id: DO-7
+    owner_id: do-second-loop
+    in_scope: true
+  - claim_id: DO-8
+    owner_id: do-second-loop
+    in_scope: true
+  - claim_id: DO-9
+    owner_id: do-second-loop
+    in_scope: true
+  - claim_id: DO-10
+    owner_id: do-second-loop
+    in_scope: true
+  - claim_id: DO-11
+    owner_id: do-christian-extensions
+    in_scope: true
+  - claim_id: DO-12
+    owner_id: do-christian-extensions
+    in_scope: true
+  - claim_id: DO-13
+    owner_id: do-christian-extensions
+    in_scope: true
+  - claim_id: DO-14
+    owner_id: do-christian-extensions
+    in_scope: true
+  - claim_id: DO-15
+    owner_id: do-second-loop
+    in_scope: true
+
+  # Revelation / transmission families
+  - claim_id: RT-1
+    owner_id: revelation-transmission
+    in_scope: true
+  - claim_id: RT-2
+    owner_id: revelation-transmission
+    in_scope: true
+  - claim_id: RT-3
+    owner_id: revelation-transmission
+    in_scope: true
+  - claim_id: RT-4
+    owner_id: revelation-transmission
+    in_scope: true
+
+  # Procedures
+  - claim_id: P1
+    owner_id: P1-fitrah-restoration
+    in_scope: true
+  - claim_id: P2
+    owner_id: P2-objection-mapping
+    in_scope: true
+  - claim_id: P3
+    owner_id: P3-reason-revelation-tension
+    in_scope: true
+  - claim_id: P4
+    owner_id: P4-maieutic
+    in_scope: true
+  - claim_id: P5
+    owner_id: P5-already-believing
+    in_scope: true
+  - claim_id: P6
+    owner_id: P6-universal-aqidah-principle
+    in_scope: true
+  - claim_id: P7
+    owner_id: P7-restoration-stops
+    in_scope: true
+
+  # Techniques
+  - claim_id: V1
+    owner_id: V1-diagnostic
+    in_scope: true
+  - claim_id: V2
+    owner_id: V2-reconstituting-reason
+    in_scope: true
+  - claim_id: V3
+    owner_id: V3-regress-dissolution
+    in_scope: true
+  - claim_id: V4
+    owner_id: V4-contamination-identification
+    in_scope: true
+  - claim_id: V5
+    owner_id: V5-directing-attention-signs
+    in_scope: true
+  - claim_id: V6
+    owner_id: V6-convergence
+    in_scope: true
+  - claim_id: V7
+    owner_id: V7-taqlid-check
+    in_scope: true
+  - claim_id: V8
+    owner_id: V8-bila-kayf-anchor
+    in_scope: true
+  - claim_id: V9
+    owner_id: V9-necessary-knowledge-priority
+    in_scope: true
+  - claim_id: V10
+    owner_id: V10-transmission-content-vetting
+    in_scope: true
+  - claim_id: V11
+    owner_id: V11-taqlid-transition
+    in_scope: true
+  - claim_id: V12
+    owner_id: V12-tamanuc-exhaustion
+    in_scope: true
+
+  # Tactics
+  - claim_id: E1
+    owner_id: E1-broadening-evidence
+    in_scope: true
+  - claim_id: E2
+    owner_id: E2-inferential-criterion
+    in_scope: true
+  - claim_id: E3
+    owner_id: E3-cumulative-case
+    in_scope: true
+  - claim_id: E4
+    owner_id: E4-cross-cultural-check
+    in_scope: true
+  - claim_id: F1
+    owner_id: F1-supra-vs-antirational
+    in_scope: true
+  - claim_id: F2
+    owner_id: F2-volitional-dimensions
+    in_scope: true
+  - claim_id: F3
+    owner_id: F3-practice-epistemic-access
+    in_scope: true
+  - claim_id: M1
+    owner_id: M1-self-refutation
+    in_scope: true
+  - claim_id: M1-P
+    aliases:
+      - M1P
+    owner_id: M1P-performative-self-refutation
+    in_scope: true
+  - claim_id: M2
+    owner_id: M2-prior-probability
+    in_scope: true
+  - claim_id: M3
+    owner_id: M3-orphaned-intuition
+    in_scope: true
+  - claim_id: M4
+    owner_id: M4-grief-register
+    in_scope: true
+  - claim_id: M5
+    owner_id: M5-deformation-triage
+    in_scope: true
+  - claim_id: M6
+    owner_id: M6-excluded-middle
+    in_scope: true
+  - claim_id: M7
+    owner_id: M7-definition-anchor
+    in_scope: true
+  - claim_id: M8
+    owner_id: M8-reductio
+    in_scope: true
+  - claim_id: M9
+    owner_id: M9-predication-mode
+    in_scope: true
+  - claim_id: R1
+    owner_id: R1-internalist-criterion
+    in_scope: true
+  - claim_id: R2
+    owner_id: R2-the-reminder
+    in_scope: true
+  - claim_id: R3
+    owner_id: R3-warranted-basic-belief
+    in_scope: true
+
+  # Auxiliary tactics and always-active operator helpers
+  - claim_id: auxiliary:doubt-vs-skepticism
+    owner_id: doubt-vs-skepticism
+    in_scope: true
+  - claim_id: auxiliary:husn-al-nazar-arguments
+    owner_id: husn-al-nazar-arguments
+    in_scope: true
+  - claim_id: auxiliary:inductive-fitri-method
+    owner_id: inductive-fitri-method
+    in_scope: true
+  - claim_id: auxiliary:symmetric-taqlid-check
+    owner_id: symmetric-taqlid-check
+    in_scope: true
+  - claim_id: operator:heuristics
+    owner_id: heuristics
+    in_scope: true
+
+  # PF overlays and claim-level routing
+  - claim_id: PF-1
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-2
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-3
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-4
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-5
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-6
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-7
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-8
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-9
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-10
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-11
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: PF-12
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: claim-level-overlays
+    owner_id: pattern-profiling
+    in_scope: true
+
+  # Diagnostic overlays listed in module-catalogue.json
+  - claim_id: diagnostic:prophetic-discourse-neutralization
+    owner_id: prophetic-discourse-neutralization
+    in_scope: true
+  - claim_id: diagnostic:causal-series-taxonomy
+    owner_id: causal-series-taxonomy
+    in_scope: true
+  - claim_id: diagnostic:definition-discipline
+    owner_id: definition-discipline
+    in_scope: true
+  - claim_id: diagnostic:hadith-authentication-epistemology
+    owner_id: hadith-authentication-epistemology
+    in_scope: true
+  - claim_id: diagnostic:proof-method-audit
+    owner_id: proof-method-audit
+    in_scope: true
+  - claim_id: diagnostic:perfection-criterion-usurpation
+    owner_id: perfection-criterion-usurpation
+    in_scope: true
+
+  # Other routed case and restoration owners
+  - claim_id: case:do-attribute-precision
+    owner_id: do-attribute-precision
+    in_scope: true
+  - claim_id: case:philosophical-usurpation
+    owner_id: philosophical-usurpation
+    in_scope: true
+  - claim_id: philosophical-usurpation:A
+    owner_id: philosophical-usurpation
+    in_scope: true
+  - claim_id: philosophical-usurpation:B
+    owner_id: philosophical-usurpation
+    in_scope: true
+  - claim_id: philosophical-usurpation:C
+    owner_id: philosophical-usurpation
+    in_scope: true
+  - claim_id: philosophical-usurpation:D
+    owner_id: philosophical-usurpation
+    in_scope: true
+
+  # Governance and rubric files with YAML front matter
+  - claim_id: governance:case-library-index
+    owner_id: case-library-index
+    in_scope: true
+  - claim_id: governance:profiles-index
+    owner_id: profiles-index
+    in_scope: true
+  - claim_id: governance:anti-patterns
+    owner_id: anti-patterns
+    in_scope: true
+  - claim_id: governance:arabic-backbone-predicates
+    owner_id: arabic-backbone-predicates
+    in_scope: true
+  - claim_id: governance:case-state-schema
+    owner_id: case-state-schema
+    in_scope: true
+  - claim_id: governance:coverage-ledger
+    owner_id: coverage-ledger
+    in_scope: true
+  - claim_id: governance:diagnostic-ir
+    owner_id: diagnostic-ir
+    in_scope: true
+  - claim_id: governance:discourse-orientation
+    owner_id: discourse-orientation
+    in_scope: true
+  - claim_id: governance:fitrah-perspectives
+    owner_id: fitrah-perspectives
+    in_scope: true
+  - claim_id: governance:foreign-premise-detection
+    owner_id: foreign-premise-detection
+    in_scope: true
+  - claim_id: governance:framework-pipeline
+    owner_id: framework-pipeline
+    in_scope: true
+  - claim_id: governance:diagnostics-index
+    owner_id: diagnostics-index
+    in_scope: true
+  - claim_id: governance:inference-boundary
+    owner_id: inference-boundary
+    in_scope: true
+  - claim_id: governance:kalamic-interlocutor
+    owner_id: kalamic-interlocutor
+    in_scope: true
+  - claim_id: governance:mixed-case-handling
+    owner_id: mixed-case-handling
+    in_scope: true
+  - claim_id: governance:modes-of-concealment
+    owner_id: modes-of-concealment
+    in_scope: true
+  - claim_id: governance:noetic-reading-checklist
+    owner_id: noetic-reading-checklist
+    in_scope: true
+  - claim_id: governance:operative-contracts
+    owner_id: operative-contracts
+    in_scope: true
+  - claim_id: governance:pattern-family-audit
+    owner_id: pattern-family-audit
+    in_scope: true
+  - claim_id: governance:pattern-profiling
+    owner_id: pattern-profiling
+    in_scope: true
+  - claim_id: governance:reason-disambiguation
+    owner_id: reason-disambiguation
+    in_scope: true
+  - claim_id: governance:routing-precedence
+    owner_id: routing-precedence
+    in_scope: true
+  - claim_id: governance:seven-deformations
+    owner_id: seven-deformations
+    in_scope: true
+  - claim_id: governance:kernel-thesis
+    owner_id: kernel-thesis
+    in_scope: true
+  - claim_id: governance:metaphysical-architecture
+    owner_id: metaphysical-architecture
+    in_scope: true
+  - claim_id: governance:module-codes
+    owner_id: module-codes
+    in_scope: true
+  - claim_id: governance:procedures-index
+    owner_id: procedures-index
+    in_scope: true
+  - claim_id: governance:prophecy-wahy-supremacy
+    owner_id: prophecy-wahy-supremacy
+    in_scope: true
+  - claim_id: governance:diagnostic-render-contract
+    owner_id: diagnostic-render-contract
+    in_scope: true
+  - claim_id: governance:output-release
+    owner_id: output-release
+    in_scope: true
+  - claim_id: governance:sound-reason-epistemology
+    owner_id: sound-reason-epistemology
+    in_scope: true
+  - claim_id: governance:tactics-index
+    owner_id: tactics-index
+    in_scope: true
+  - claim_id: governance:techniques-index
+    owner_id: techniques-index
+    in_scope: true
+  - claim_id: governance:terminology
+    owner_id: terminology
+    in_scope: true
+
+  # Explicitly not covered without human source/scope decisions
+  - claim_id: Buddhist-anatta-no-soul
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Bespoke religion-specific families
+  - claim_id: Buddhist-impermanence-creation-constancy
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Bespoke religion-specific families
+  - claim_id: Hindu-Advaita-rival-ontology
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Bespoke religion-specific families
+  - claim_id: Jewish-final-prophethood-Torah-completeness
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Bespoke religion-specific families
+  - claim_id: Sufism-contested-practices
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Sufism-related crises
+  - claim_id: Sufism-tariqah-authority-claims
+    owner_id: null
+    in_scope: false
+    status: needs-review
+    todo_anchor: Sufism-related crises

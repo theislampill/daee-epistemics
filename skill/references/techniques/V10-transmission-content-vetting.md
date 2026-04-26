@@ -1,9 +1,30 @@
-> role: technique
-> use when: the case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
-> do not use when: the live issue is generic theism, grief-primary protest, or attribute language rather than transmission and authority
-> overlaps: P2, P5, `sound-reason-epistemology.md` §4.3
-> output: a fixed sequence for separating provenance, contents, and authority before response
-> scope: cross-traditional — the provenance → contents → authority sequence is triggered by the structural condition of a transmission or canonical-authority claim being pressed, not by the tradition of origin. Branch operators below distinguish what changes per tradition; the three-step sequence is shared across all tradition-specific instances.
+---
+id: V10-transmission-content-vetting
+module_class: technique
+canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
+contract_version: "0.2.2.0"
+load_when:
+  - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
+blocks:
+  - when live issue is generic theism rather than transmission or authority
+  - when live issue is grief-primary protest using text-history as vehicle
+  - when live issue is attribute language rather than testimony
+  - starting with contents while provenance is still undefined
+routing_effects:
+  - fixes provenance → contents → authority sequence before any response
+  - holds content dispatch until each step cleared
+emits:
+  - what_is_withheld_and_why
+companions:
+  - revelation-transmission
+  - hadith-authentication-epistemology
+  - do-christian-extensions
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
 
 # V10 - Transmission / Content Vetting
 
@@ -82,6 +103,21 @@ it has not passed the first two checks.
 - *Hindu śruti/smṛti hierarchy* rests on Vedic apauruṣeya (non-human-origin) status; establishing that classification for specific texts requires a non-circular criterion.
 
 The tradition-specific corpora, formation events, and arguments differ; the logical form of the criterion problem does not. For the Christian canon-selection and authorization case specifically, see DO-14 (sub-question (c) and the authorization analysis), which is this file's Christian-instance. Route from DO-14 sub-question (c) → DO-10 Tier 2 for the positive Islamic epistemological account.
+
+**People-of-the-Book prooftext discipline:** When Torah, Injil, rabbinic, or biblical
+material appears in a final-prophethood, canon, or authority case, classify the move
+before using any text:
+
+- Qur'an-grounded report about prior revelation
+- current-text corroboration
+- argument from an interlocutor-granted canon
+- internal inconsistency refutation
+- unsupported apologetic prooftexting
+
+Do not make external scriptures a clean independent foundation before provenance,
+contents, authority, translation, canon, and interpretive standing have been typed.
+If the live pressure is closed-canon veto or selective scriptural arbitrage, route
+authority order first; prooftexts are held until source-use discipline clears.
 
 ## Tradition-Specific Branch Operators
 

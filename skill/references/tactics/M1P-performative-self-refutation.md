@@ -1,3 +1,26 @@
+---
+id: M1P-performative-self-refutation
+module_class: tactic
+canonical_path: skill/references/tactics/M1P-performative-self-refutation.md
+contract_version: "0.2.2.0"
+load_when:
+  - act of asserting a position enacts what the position denies
+companions:
+  - M1-self-refutation
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # M1-P — Performative Self-Refutation
 
 **Type:** Meta-tactic

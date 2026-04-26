@@ -1,9 +1,14 @@
-> role: diagnostic classifier — modes of concealment (A3 axis); identifies the relationship between inner state and outer expression that governs what kind of engagement can land at all
-> use when: any case; run after DO-orient is established; concealment mode governs register — it answers what kind of engagement can land, which is distinct from what has suppressed the fiṭrah (seven-deformations.md) and what the discourse is for (discourse-orientation.md)
-> do not use when: concealment mode is already established and has not shifted
-> IR field: Concealment mode code = irad | juhud | inkar | istikbar | nifaq | mode-? (emitted to case-state)
-> output: Concealment mode code + Register + RT code if applicable; consumed by case-state-schema.md
-> paired files: seven-deformations.md (deformation governs instrument; concealment governs register — both are needed); discourse-orientation.md (DO-orient governs whether intellectual engagement is appropriate at all; concealment governs how it must be delivered); P4-maieutic.md (inkār and juhūd with seam of recognition); P5-already-believing.md (nifāq)
+---
+id: modes-of-concealment
+module_class: governance
+canonical_path: skill/references/diagnostics/modes-of-concealment.md
+contract_version: "0.2.2.0"
+load_when:
+  - any case after DO-orient is established; concealment mode governs what engagement can land
+emits:
+  - concealment_mode
+catalogue_registered: false
+---
 
 # Modes of Concealment — Full Treatment
 

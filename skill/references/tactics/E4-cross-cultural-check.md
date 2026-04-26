@@ -1,3 +1,27 @@
+---
+id: E4-cross-cultural-check
+module_class: tactic
+canonical_path: skill/references/tactics/E4-cross-cultural-check.md
+contract_version: "0.2.2.0"
+load_when:
+  - interlocutor denies or needs grounding for cross-cultural theistic recognition
+  - diversity objection conflates foundation with superstructure
+companions:
+  - inductive-fitri-method
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # E4 — The Cross-Cultural Check
 
 **Register:** Evidentialist

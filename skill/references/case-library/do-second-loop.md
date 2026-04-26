@@ -1,13 +1,58 @@
-# Case Library — Doctrinal Objections: Second Loop (DO-7 through DO-10)
+---
+id: do-second-loop
+module_class: case-library
+canonical_path: skill/references/case-library/do-second-loop.md
+contract_version: "0.2.2.0"
+load_when:
+  - DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes
+  - HADD/cognitive-science, prophetic-moral-luck, Great Pumpkin, three-tier epistemology, or Islamic-specific moral objections is the live family
+routing_effects:
+  - activates family-local load floor (V1, Phase 2 passes, IR, routing-precedence, P7 check)
+  - does not authorize content release — output discipline remains live
+blocks:
+  - content release without confirmed case-state
+companions:
+  - do-core
+  - philosophical-usurpation
+  - M4-grief-register
+  - M9-predication-mode
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
-Load this file when one of the following objections arises:
-DO-7 (cognitive science of religion / HADD), DO-8 (prophetic mission and moral luck),
-DO-9 (universality-condition challenge to proper functionalism),
-DO-10 (three-tiered epistemological structure formalized).
+# Case Library — Doctrinal Objections: Second Loop (DO-7 through DO-15)
 
-These sharpen recurring second-order and reflexive pressures on the fiṭrah-based account.
+> **role:** DO pressure family owner — DO-7 through DO-15
+> **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
+> **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
+> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
 
-Use the case-library routing table when you need the broader family map.
+**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-7 through DO-10 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
+
+**DO-second-loop family-local load floor** (conditional on confirmed case-state, not global ambient):
+- V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
+- matched TTP owner(s) justified by confirmed case-state
+- P7 stop check before Layer B release
+- For proof-method/necessary-knowledge pressure (DO-7, DO-10): proof-method-audit.md, V9, kalamic-interlocutor.md as triggered
+- For moral-protest/grief pressure (DO-8): M4-grief-register.md, P7-restoration-stops.md first
+
+---
+
+## DO-second-loop Fan-Out Table
+
+| Pressure signal | Required owner route |
+|---|---|
+| evolutionary/cognitive self-refutation form | M1 first; V9 if necessary-knowledge form |
+| cognitive faculties under attack | V9 before DO-7; proof-method-audit.md if proof-grammar pressure live |
+| moral protest / grief | M4-grief-register.md, P7-restoration-stops.md; DO-8 content held |
+| prophetic authority / information asymmetry | DO-8 ḥujjah principle route; distinguish from moral-protest register |
+| Great Pumpkin / reformed epistemology | tawātur-fiṭrī + universality route before basic-belief equivalence claim |
+| naẓar-priority / proof demand | proof-method-audit.md; kalamic-interlocutor.md; reason-disambiguation.md before DO-10 content |
+| necessary-knowledge attack | V9 first; DO-10 after epistemic-order owners clear |
+| moral-criterion usurpation / imported ethical framework | philosophical-usurpation.md Type D + V2 + FPD; DO-15 after criterion cleared |
 
 ---
 
@@ -56,6 +101,46 @@ account. Each contains the strongest rebuttal and the response.
 
 ### DO-7 — The Cognitive Science of Religion / HADD Objection
 
+#### Pressure type
+Cognitive-science debunking of religion — CSR explains theistic belief as a natural phenomenon, undermining its epistemic status.
+
+#### Trigger signals
+"Religious belief is explained by agent-detection, HADD, tribal bonding"; CSR literature as a defeater for religious knowledge; "we know why people believe, so the content doesn't matter."
+
+#### Do-not-route-here / near-miss rules
+- Self-refutation form (CSR debunks the very cognitive faculties needed to evaluate CSR): M1 first
+- Necessary-knowledge attack form (argument implies our cognitive access to any necessary truth is unreliable): V9 first
+- Generic naturalism as governing filter: V2 upstream if NS-x governs
+
+#### Mandatory family-local load floor
+M1 (self-refutation check), V9 (necessary-knowledge attack check), proof-method-audit.md if proof-grammar pressure live.
+
+#### Ordered TTP route
+1. M1 if the argument is structurally self-undermining
+2. V9 if the argument undermines necessary knowledge (not just contingent belief)
+3. proof-method-audit.md if CSR is deployed as a proof-grammar requirement
+4. DO-7 substantive after diagnostic owners clear
+
+#### Semantic/register blockers
+Standard gate discipline; no category-specific semantic blocker.
+
+#### Allowed Layer B move
+Name the foundation/superstructure distinction: CSR explains the cognitive substrate, not the truth-value; name the self-refutation structure if live.
+
+#### Held downstream material
+Full CSR taxonomy; detailed evolutionary-religious account analysis — held until pressure type confirmed.
+
+#### Minimal discriminator/probe
+Is this argument that CSR explains religion (genetic fallacy candidate — M1) or that CSR shows religious belief is unreliable (necessary-knowledge attack — V9)?
+
+#### Failure test
+This entry has not governed the response if:
+- The foundation/superstructure distinction (what HADD actually explains vs. what it doesn't explain) is deployed without first running M1 to check whether the argument is self-undermining.
+- The "targeted defeater" form of the strongest rebuttal — CSR debunks HADD specifically without requiring global skepticism — is not addressed; it is the standard sophisticated response to the self-refutation move and must be named when live.
+- DO-7 and DO-10 are not discriminated: if the interlocutor is willing to apply the CSR critique to their own cognitive faculties generally (not just theistic belief), the case is DO-10 and the engagement must shift to V9 on necessary-knowledge priority.
+
+---
+
 **The objection:** Evolutionary cognitive science explains the universality of theistic
 belief without invoking truth. Human minds have a Hyperactive Agency Detection Device
 (HADD) — an evolved tendency to attribute agency to events, which enhanced survival by
@@ -74,7 +159,7 @@ is unreliable for tracking metaphysical truth. I retain the cognitive faculties 
 to evaluate evolutionary psychology while identifying HADD as a specific faculty that
 over-generates. This is not global skepticism; it is targeted cognitive defeater."
 
-**Operative response to the refined rebuttal:**
+#### Existing substantive content (route-governed):
 The targeted-defeater version is more careful but fails on examination. The claim that
 HADD specifically tracks fitness rather than truth requires a principled account of
 which cognitive modules are truth-tracking and which are not — an account generated
@@ -112,6 +197,46 @@ fiṭrī recognition* — and the interlocutor must be pressed on this distincti
 
 ### DO-8 — The Prophetic Mission and the Moral-Luck Objection
 
+#### Pressure type
+Prophetic mission and moral luck — it is unfair that access to authentic religious knowledge depends on where you were born.
+
+#### Trigger signals
+"Why is salvation geography-dependent?"; "those who never heard can't be held responsible"; moral-lottery objections to prophetic authority; "your God plays favorites."
+
+#### Do-not-route-here / near-miss rules
+- Moral protest/grief register: emotionally driven → M4/P7 before DO-8; do not deploy ḥujjah analysis into protest
+- Generic diversity argument: if underlying claim is about religious pluralism → DO-4 discriminator
+- Pastoral/existential pressure about a specific deceased person: M4/P7, DO-8 content held
+
+#### Mandatory family-local load floor
+M4-grief-register.md (discriminator), P7-restoration-stops.md (if grief/protest governs), discourse-orientation check.
+
+#### Ordered TTP route
+1. V1 discourse-orientation: is this a philosophical argument or a protest?
+2. M4 if grief or protest register governs
+3. If philosophical: ḥujjah principle (accountability requires prior communication); exposure/information asymmetry analysis
+4. DO-8 substantive after register confirmed as truth-seeking
+
+#### Semantic/register blockers
+Protest/grief register blocks DO-8 doctrinal content.
+
+#### Allowed Layer B move
+Acknowledge the moral intuition; distinguish geographical accident of birth (which affects the form of knowledge, not its availability via fiṭrah and universal signs) from the accountability question.
+
+#### Held downstream material
+Full ḥujjah analysis; detailed prophetic-authority chain; comparative accountability frameworks — held until philosophical register confirmed.
+
+#### Minimal discriminator/probe
+Is this "how can a specific person be accountable" (personal/existential, possible grief register) or "the ḥujjah principle is incoherent as a general claim" (philosophical form)?
+
+#### Failure test
+This entry has not governed the response if:
+- Ḥujjah-principle analysis or the "messengers sent to every people" response is deployed into grief or moral-protest register without M4 discriminator — this anti-pattern treats a protest as a philosophical argument and drives content into a closed register.
+- The "uneven access" strongest rebuttal — even the prophetic correction mechanism was empirically uneven, relocating not dissolving the moral-luck problem — is not explicitly addressed; leaving it unaddressed leaves the case incomplete.
+- The maintained-corruption distinction (initial environmental corruption vs. continued maintenance through hawā/gharaḍ once inquiry is available) is omitted: this is the operative move that limits the moral-luck objection to initial states rather than ongoing responsibility.
+
+---
+
 **The objection:** Whether a person's fiṭrah is sound or corrupted depends on factors
 entirely outside their control — where they were born, what family raised them, what
 intellectual environment they encountered. A God who designed this system, knowing it
@@ -127,7 +252,7 @@ versions. If the correction mechanism itself is uneven and unreliable, it doesn'
 the moral-luck problem — it relocates it. Some people happen to encounter the authentic
 prophetic message; others don't. That's still moral luck."
 
-**Operative response to the refined rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal correctly identifies that the prophetic mission, empirically, was not
 uniformly accessible to all people at all times. The tradition does not deny this —
 it affirms it and addresses it through two distinct theological resources:
@@ -164,13 +289,51 @@ the ongoing condition of one who has access to honest inquiry but refuses it.
 
 ### DO-9 — The Universality-Condition Challenge to Proper Functionalism
 
+#### Pressure type
+Great Pumpkin objection — reformed epistemology's basic-belief move makes any belief properly basic; therefore it proves too much.
+
+#### Trigger signals
+"By your logic, anything could be properly basic"; "you can't use basic belief to privilege theism"; treating all religious traditions as epistemically equivalent.
+
+#### Do-not-route-here / near-miss rules
+- Generic diversity argument: → DO-4 discriminator
+- R3 reformed epistemology is not the active route: if the interlocutor is not pressing basic belief specifically, do not import R3 framing
+
+#### Mandatory family-local load floor
+Universality / tawātur-fiṭrī route; sound-reason-epistemology.md if its load condition is met.
+
+#### Ordered TTP route
+1. Confirm whether the objection targets R3 specifically or generic religious epistemology
+2. Distinguish Islamic epistemic account: fiṭra-based theism is dispositional and universal, not a personal doxastic state
+3. Name the universality standard as the discriminator
+4. DO-9 substantive after route is confirmed
+
+#### Semantic/register blockers
+None category-specific.
+
+#### Allowed Layer B move
+Distinguish tawātur-fiṭrī (universally embedded knowledge) from individual proper basicality; name the universality criterion as the discriminator.
+
+#### Held downstream material
+Full reformed epistemology analysis; detailed tawātur taxonomy.
+
+#### Minimal discriminator/probe
+Is the interlocutor targeting the reformed-epistemology move specifically, or using "basic belief" as a proxy for any religious epistemology?
+
+#### Failure test
+This entry has not governed the response if:
+- The tawātur-fiṭrī universality criterion is not deployed as the explicit discriminator between fiṭrah-based theism and truly idiosyncratic basic beliefs (e.g., Great Pumpkin belief) — the response fails if it relies on generic proper-function language without naming the universality condition.
+- R3 (reformed epistemology) is brought in when the interlocutor is not pressing basic belief specifically: the DO-9 route presupposes R3 is the live framing; if it isn't, loading the reformed-epistemology reply answers a question not asked.
+
+---
+
 **The objection:** On the externalist proper-function account you offer, a child
 sincerely raised to believe in the Great Pumpkin would have properly basic belief in
 the Great Pumpkin if that belief were produced by properly functioning faculties. The
 account cannot distinguish genuine religious knowledge from well-produced delusion.
 Basic belief is too permissive.
 
-**Operative response:**
+#### Existing substantive content (route-governed):
 The objection mistakes the universality condition. Proper functionalism does not say
 that any belief produced by any functioning faculty in any environment is warranted.
 It says that a belief is warranted when produced by faculties functioning properly,
@@ -237,13 +400,54 @@ attacked necessary knowledge; V9 overshoots and the engagement loses traction.
 
 ### DO-10 — The Three-Tiered Epistemological Structure (Formalized)
 
+#### Pressure type
+Three-tier epistemology attacks — demanding proof for fiṭra or khabar-based knowledge as if they were third-tier speculative conclusions; conflating epistemic tiers.
+
+#### Trigger signals
+"You need to prove God exists before talking about revelation"; kalāmic proof-priority demands; treating fiṭra as a mere feeling requiring external verification; "extraordinary claims require extraordinary evidence."
+
+#### Do-not-route-here / near-miss rules
+- Kalāmic naẓar-priority from a specific school: kalamic-interlocutor.md required
+- Necessary-knowledge attack form: V9 required
+- Proof-grammar as criterion: proof-method-audit.md required
+
+#### Mandatory family-local load floor
+proof-method-audit.md (for naẓar-priority demands); kalamic-interlocutor.md (for school-specific proof requirements); V9 (for necessary-knowledge-priority arguments); reason-disambiguation.md.
+
+#### Ordered TTP route
+1. proof-method-audit.md: what proof-grammar is being demanded?
+2. kalamic-interlocutor.md if school-specific naẓar-priority is live
+3. V9 if necessary knowledge is being attacked
+4. reason-disambiguation.md if "reason" is being used with a single meaning that flattens the three tiers
+5. DO-10 substantive after diagnostic owners clear
+
+#### Semantic/register blockers
+"Proof" and "reason" must be disambiguated before any epistemic-tier content is released.
+
+#### Allowed Layer B move
+Distinguish epistemic tiers; name that demanding proof for fiṭra is a tier-collapse; the question is not whether theism needs proof but which epistemic tier theistic knowledge occupies.
+
+#### Held downstream material
+Full three-tier taxonomy; detailed kalāmic epistemology; fiṭra/khabar/naẓar distinction — held until proof-grammar is diagnosed.
+
+#### Minimal discriminator/probe
+Is this a demand that fiṭra-based knowledge be verified by naẓar (tier-collapse), an attack on necessary knowledge (V9), or a specific kalāmic school's proof requirement (kalamic-interlocutor.md)?
+
+#### Failure test
+This entry has not governed the response if:
+- The three-tier structure (fiṭrah → khabar → naẓar) is presented without first disambiguating "proof" and "reason" — the semantic blocker must clear before any tier content is released, because the interlocutor who uses "reason" to mean only naẓar will hear the tier-distinction as a concession, not a clarification.
+- A kalāmic school-specific proof demand (wujūb al-naẓar individually obligatory, school-specific epistemic conditions) is answered with the generic three-tier structure without loading kalamic-interlocutor.md — the school-specific conditions may not be dissolved by the generic account.
+- Tier-2 khabar content (prophetic credentials, transmission) is released before Tier-1 fiṭrah recognition is established — the demand for prophetic credentials before theistic foundation is a tier-collapse that DO-10 governs, and the sequence matters.
+
+---
+
 **The objection:** "The fiṭrah-based account at its best produces a justified opening
 toward generic theism — a Creator, moral accountability, the inadequacy of the material.
 But the tradition requires specific Islamic commitment. The jump from generic theism to
 specifically Islamic commitment is not explained by the fiṭrah account. The account is
 too thin to produce warranted Islamic belief."
 
-**Operative response — the three-tiered structure:**
+#### Existing substantive content (route-governed):
 
 The tradition does not claim that a single faculty produces all warranted religious
 commitment. It claims a *layered epistemological structure* in which different kinds
@@ -276,5 +480,79 @@ and content of the final prophetic message is a claim appropriate to testimony a
 its rational evaluation. The tradition offers both — and the demand that the fiṭrah
 alone must establish all three tiers, or the account "fails," misunderstands the
 tradition's epistemological structure.
+
+---
+
+### DO-15 — Islamic-Specific Moral Objections (Imported-Criterion Form)
+
+**NS pairing:** NS-8 primary (Muslim-internal moral recoil + authority-wound); NS-4 secondary (secular moral realist asserting moral facts as basic while rejecting theism)
+
+#### Pressure type
+An imported ethical criterion — liberal political philosophy, secular human-rights framework, utilitarian calculus, or cognate philosophical tradition — is installed as the arbiter of specific Islamic legal positions (ḥudūd penalties, gender jurisprudence, the historical permission of slavery in the classical corpus). The interlocutor treats their criterion as self-evidently correct and uses it to generate a dilemma: either Islamic law is unjust or God is not just.
+
+#### Trigger signals
+"Islamic penal law is cruel / barbaric"; "Islam's treatment of women is oppressive"; "Islamic law permitted slavery"; "How can a just God command X?"; "I can't believe in a religion that allows Y"; "Islam is incompatible with human rights"; combined moral-recoil + ex-Muslim biographical framing where specific juristic positions function as exit triggers.
+
+#### Do-not-route-here / near-miss rules
+- If grief, moral-recoil, or authority-wound is primary (NS-8 with affective register dominant): M4-grief-register.md governs first; DO-15 content is held until register shifts from affect-laden to propositional
+- If the objection is specifically about God's existence grounded in moral evil (the problem of evil, theodicy form): DO-15 is not the owner — route to the theodicy module
+- If discourse orientation is identity-performance or autotelic: do not engage the philosophical argument; DO-15 content cannot land in that register
+- If the interlocutor has not yet exhibited Type D usurpation explicitly (the criterion is latent, not stated): FPD + philosophical-usurpation.md governs the diagnostic phase before DO-15 content is released
+
+#### Mandatory family-local load floor
+philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).
+
+#### Ordered TTP route
+1. M4-grief-register.md if affective register is primary — hold all doctrinal content until register shifts
+2. FPD: identify the implicit moral criterion the interlocutor is applying
+3. philosophical-usurpation.md Type D: name the usurpation — a historically contingent philosophical tradition is functioning as the tribunal over revelation
+4. V2: surface that the criterion is not genuine ṣarīḥ al-maʿqūl (Level A fiṭrī recognition) but a Level B system-specific philosophical conclusion
+5. Level A / Level B distinction: establish which moral recognitions are genuinely universal (independent of any particular philosophical tradition) and which are inferences drawn from within a specific tradition
+6. Four-foundations criterion: introduce the tradition's internal operative standard — the divine law achieves ʿadl, raḥma, maṣlaḥa, ḥikma; this is the self-correcting standard against which specific rulings are assessed
+7. DO-15 substantive (conditions-application analysis, specific case structure) — only after criterion cleared and Level A / Level B distinction established
+
+#### Semantic/register blockers
+- **NS-8 affective gate:** When moral-recoil, betrayal-affect, or authority-wound is primary, DO-15 content must be held. Releasing philosophical argument before relational register is established produces the content-delivery failure pattern.
+- **Identity-performance gate:** If the discourse orientation is not truth-seeking, DO-15 content is not the right instrument. Name the distinction between the intellectual and social layers and hold doctrinal engagement.
+- **Apology-collapse blocker:** Do not apologize for, minimize, or concede the interlocutor's criterion as normative. Treating "clearly immoral by modern standards" as a settled datum before running the Level A / Level B test imports the foreign standard as a concession.
+- **Authority-order guard:** Do not classify the case as "reason vs. revelation" until the criterion has been typed. Sound reason may recognize moral reality, but a historically contingent moral framework does not become sound reason by presenting its conclusion as obvious. The load-bearing node is the validation order: whether the specific ruling, under its full conditions, violates the shari'ah's internal criterion of `adl, rahmah, maslahah, and hikmah, or whether a foreign tribunal is being installed over revelation.
+
+#### Allowed Layer B move
+Name the Level A / Level B distinction. Establish that genuinely universal fiṭrī moral recognitions — that gross cruelty causes harm, that betrayal of trust wrongs persons, that basic dignity is real — are not what is contested. What the distinction surfaces is whether the specific juristic conclusion (that the classical ruling, under its full conditions of application, constitutes a moral failure) follows from Level A recognition or requires Level B scaffolding from a particular philosophical tradition. This is not evasion — it is diagnostic.
+
+#### Held downstream material
+Specific juristic analysis of ḥudūd conditions and evidentiary thresholds; historical analysis of the Islamic legal framework on slavery including manumission obligations and categories of automatic freedom; gender jurisprudence analysis of the classical corpus; comparative ethical analysis of the four-foundations criterion against rival moral frameworks — all held until criterion cleared and Level A / Level B distinction established.
+
+#### Minimal discriminator/probe
+Is the interlocutor invoking a Level A fiṭrī recognition (a harm-type that is universally recognized independent of any particular philosophical tradition) or a Level B conclusion that requires the scaffolding of a specific philosophical framework (liberal rights theory, utilitarian calculus, secular humanism) to generate the judgment that the specific ruling fails? The answer changes the response: Level A invocations require honest engagement with the conditions-application analysis; Level B invocations require the Type D usurpation to be named first.
+
+#### Failure test
+This entry has not governed the response if:
+- The substantive response (conditions of application, historical analysis, juristic detail) is provided without first identifying the specific criterion the interlocutor is applying — FPD and Type D usurpation check must precede all doctrinal content.
+- The Level A / Level B distinction is not established — "this seems obviously wrong" is treated as a settled moral datum without distinguishing genuine ṣarīḥ al-maʿqūl from a historically-specific philosophical conclusion.
+- The four-foundations criterion is not introduced — if the reply evaluates Islamic law by the interlocutor's imported criterion rather than the tradition's own internal operative standard (ʿadl, raḥma, maṣlaḥa, ḥikma), the usurpation has been granted rather than dissolved.
+- The conditions-application distinction is omitted — discussing specific rulings without establishing the full conditions of application and distinguishing a ruling's presence in the classical corpus from its active execution under those conditions.
+- Real fitri moral recognition is denied instead of preserved and routed — the response treats moral perception itself as the problem rather than testing the inference from recognized harm to the specific legal conclusion.
+- Detailed fiqh, hudud practice, gender jurisprudence, or slavery-history material is released before the validation-order node has cleared.
+- Source-audit material is used as an argument bank or citation dump rather than as structural framing for FPD, Type D usurpation, V2, and the Level A / Level B distinction.
+- Any of the collapse moves occur: apologizing for or minimizing a specific ruling; treating "that was just a product of its time" as the complete response when the objection has a live doctrinal component; importing the liberal standard as a concession; or granting that the classical position is morally failed before the Level A / Level B analysis has been run.
+
+---
+
+**The objection:** Islamic law — specifically ḥudūd penalties, its historical jurisprudence on women's testimony and inheritance, and the classical permission of slavery — is morally indefensible. A just God cannot have commanded these things. Either Islamic law does not represent divine command, or the God who commanded it is not morally authoritative. This objection does not rest on any exotic philosophical theory; it rests on recognitions available to any person of ordinary moral seriousness. The tradition's responses (historical context, conditions of application, interpretive revision) are post-hoc rationalizations of what any honest moral appraisal condemns.
+
+**Strongest rebuttal to the operative response:**
+After the Level A / Level B distinction is introduced — distinguishing genuine ṣarīḥ al-maʿqūl (universal fiṭrī recognitions, ḍarūrī, available to all) from Level B philosophical conclusions that require a specific framework — the sophisticated interlocutor replies: "You are using the Level A / Level B distinction to dismiss the objection as philosophically parochial, when I am in fact invoking Level A recognition. Physical suffering, denial of freedom, unequal treatment of persons — these are not conclusions of liberal political philosophy. They are harms recognizable to anyone with ordinary moral perception. The distinction you are drawing is itself a form of evasion: it lets you avoid engaging the substance by reclassifying my objection as philosophically loaded when it is actually universally accessible. The real test is simple: would a person with no exposure to any philosophical tradition, confronted with these rulings, recognize them as harmful? The answer is yes."
+
+**Operative response:**
+The Level A / Level B distinction does not dismiss the objection — it sharpens the diagnostic. The question is not whether physical harm and denial of freedom are recognizable as harmful (Level A — this is conceded). The question is whether the specific juristic conclusion follows: that the classical ruling, properly applied under its full conditions of application, constitutes a net harm that violates ʿadl, raḥma, maṣlaḥa, and ḥikma.
+
+This is where the conditions-application analysis is decisive. Take ḥudūd penalties: the evidentiary conditions for execution in classical jurisprudence — four eyewitnesses to the act of penetration for adultery, near-impossibility of establishing the required certainty for theft amputation — make the deterrent function primary and the execution function secondary. The classical jurists were explicit: the conditions exist not to facilitate punishment but to make it nearly impossible. A ruling extracted from its conditions-structure and presented as "Islam prescribes stoning for adultery" is not an honest report of what the classical corpus actually establishes under application.
+
+Take historical slavery: the classical Islamic legal framework on slavery includes explicit manumission obligations, prohibitions on the enslavement of free persons, categories of automatic freedom (umm al-walad), and a consistent juristic trajectory that constrained and limited the institution far beyond the ancient world's norms. This does not make it morally unproblematic — and the tradition's own four-foundations criterion (does this achieve ʿadl, raḥma, maṣlaḥa, ḥikma?) permits reassessment through juristic ijtihād and maṣlaḥa-based reasoning as conditions change. What it means is that the objection "Islam permitted slavery" is not the same as the conclusion "therefore Islamic law is committed to the moral acceptability of slavery as a permanent institution." The tradition's own internal resources work against that conclusion.
+
+The four-foundations criterion is not a defense by any means necessary. It is the tradition's self-correcting standard — the test against which any specific juristic position must be assessed. Where a position fails that test honestly applied, the tradition has internal mechanisms for reassessment that do not require importing the foreign criterion. The interlocutor who insists that the foreign criterion (liberal rights framework, utilitarian calculus) must govern is not applying Level A recognition — they are requiring that the tradition's internal standard be replaced by an external one. That is Type D usurpation: a historically contingent philosophical tradition installed as the tribunal over revelation.
+
+The operative response does not require claiming that every classical juristic position is beyond reassessment. It requires that the reassessment be conducted against the tradition's own operative standard — ʿadl, raḥma, maṣlaḥa, ḥikma — and not by importing a criterion whose own foundations (the ontological status of rights, the normative force of utility, the grounding of equal dignity) are themselves unresolved within the tradition that generated them.
 
 ---

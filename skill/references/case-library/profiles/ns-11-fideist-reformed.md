@@ -1,8 +1,28 @@
-> role: noetic structure profile — NS-11 Fideist / Reformed Basic-Belief Holder
-> use when: NS-11 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-7 (opposite stance on argument's role)
-> IR field: NS code = NS-11
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: R3 (warranted basic belief — mandatory first move); V5 (directing attention to signs); reason-disambiguation.md Category 4 (if proper-function account is inherited framework)
+---
+id: ns-11-fideist-reformed
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-11-fideist-reformed.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-11 (Fideist / Reformed Basic-Belief Holder) confirmed via Quick NS Identification
+routing_effects:
+  - R3 warranted-basic-belief mandatory first move
+companions:
+  - R3-warranted-basic-belief
+  - V5-directing-attention-signs
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-11 — The Fideist / Reformed Basic-Belief Holder
 
@@ -56,3 +76,11 @@ what epistemic status (ḍarūrī), and what is required for its deliverances to
    the Islamic specification of what "appropriate epistemic environment" means.
 3. Only then, if the interlocutor presses on the distinction between Reformed and fiṭrī accounts,
    use the distinguishing argument above.
+
+## Coverage Verification
+
+- Failure condition: Do not use NS-11 for a theist who thinks belief must be inferentially proven before it is warranted; that is NS-7 and routes through V9.
+- IR-visible consequence: Emit `NS: NS-11`, match R3 first, and treat V5 as the follow-up environment/signs move rather than an initial evidential demand.
+- Minimal pair: NS-11 differs from NS-7 because NS-11 affirms basic belief while NS-7 treats inference as the universal precondition of warrant.
+- Hold/release rule: Hold direct critique of basic belief; release the fitrah comparison only by affirming the basic-belief structure and then specifying it more precisely.
+- Anti-pattern guard: Do not collapse Reformed basic belief into irrationalism; the profile's point is to refine a partly correct warrant structure.

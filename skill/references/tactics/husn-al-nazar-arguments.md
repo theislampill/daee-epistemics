@@ -1,3 +1,37 @@
+---
+id: husn-al-nazar-arguments
+module_class: tactic
+canonical_path: skill/references/tactics/husn-al-nazar-arguments.md
+contract_version: "0.2.2.0"
+load_when:
+  - ḥusn al-naẓar pathway already selected
+  - framework cleared enough for inferential work
+  - fiṭrah too impaired to respond directly to signs; secondary inferential path needed
+blocks:
+  - deploying before V2 framework-clearing, proof-method-audit, and causal-series classification where needed
+routing_effects:
+  - downstream of V2, M1, proof-method-audit, causal-series-taxonomy; return to V5/R2 once obstacle cleared
+companions:
+  - V2-reconstituting-reason
+  - M1-self-refutation
+  - proof-method-audit
+  - causal-series-taxonomy
+  - V5-directing-attention-signs
+  - R2-the-reminder
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # Ḥusn al-Naẓar - Inferential Arguments for the Impaired Fiṭrah
 
 Load when `ḥusn al-naẓar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond directly to signs.

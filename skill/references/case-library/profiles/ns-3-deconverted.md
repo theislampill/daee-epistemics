@@ -1,8 +1,29 @@
-> role: noetic structure profile — NS-3 Deconverted (Post-Religious)
-> use when: NS-3 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-3
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: M3 (orphaned intuition probe); P4 (maieutic); M4 (grief register if grief-primary)
+---
+id: ns-3-deconverted
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-3-deconverted.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-3 (Deconverted / Post-Religious) confirmed via Quick NS Identification
+routing_effects:
+  - M4 grief-register gate before any DO content if grief-primary
+companions:
+  - M3-orphaned-intuition
+  - P4-maieutic
+  - M4-grief-register
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-3 — The Deconverted (Post-Religious)
 
@@ -29,3 +50,11 @@ experienced as an attack on the self. Instead, M3 (orphaned intuition probe): at
 narrative does not explain. The Socratic-maieutic procedure (P4) is the appropriate extended
 framework. Ask about what persists involuntarily — what arises in moments of beauty, loss, or
 moral weight that the narrative cannot account for.
+
+## Coverage Verification
+
+- Failure condition: Do not use NS-3 merely because someone was formerly religious; the deconversion narrative must be the operative filter rather than a biographical fact.
+- IR-visible consequence: Emit `NS: NS-3`; hold direct doctrinal rebuttal when grief, identity-performance, or narrative self-defense is primary; match M3/P4 and M4 where the affective register governs.
+- Minimal pair: NS-3 differs from NS-5 because the load-bearing anchor is a departure story, not habituated atheism stabilized by the problem of evil and long-term intellectual habit.
+- Hold/release rule: Hold attacks on the narrative itself; release M3 only through what the narrative fails to explain and release P4 when a seam of involuntary recognition is visible.
+- Anti-pattern guard: Do not treat the deconversion story as an argument to refute directly; that hardens the identity frame the profile is meant to diagnose.

@@ -1,18 +1,103 @@
-# Case Library - Doctrinal Objections: Christian Extensions (DO-11 through DO-14)
+---
+id: do-christian-extensions
+module_class: case-library
+canonical_path: skill/references/case-library/do-christian-extensions.md
+contract_version: "0.2.2.0"
+load_when:
+  - Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion)
+  - model identification complete before DO-12 or DO-13
+routing_effects:
+  - V12 base procedure loads before Christian overlay
+  - model identification required before DO-12 routing
+blocks:
+  - loading as first responder to any theological question
+  - DO-12 before model identification complete
+companions:
+  - V12-tamanuc-exhaustion
+  - V8-bila-kayf-anchor
+  - V10-transmission-content-vetting
+  - M9-predication-mode
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
-Load this file when one of the following objections arises:
-DO-11 (Trinity from divine perfection), DO-12 (logical problem of the Trinity),
-DO-13 (God of the philosophers vs. God of revelation), DO-14 (Christian canon selection),
-or incarnation coherence pressure that
-is really asking whether divine self-disclosure can be coherent without creaturely-mode smuggling.
+# Case Library — Doctrinal Objections: Christian Extensions (DO-11 through DO-14)
 
-Use the case-library routing table when you need the broader family map. When the pressure is really
-about divine attributes, perfection, transcendence, or creaturely-mode smuggling, pair this file
-with V8 (`references/techniques/V8-bila-kayf-anchor.md`).
+> **role:** DO pressure family owner — DO-11 through DO-14 (Christian theological extension cases)
+> **use when:** Christian theological pressure family confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion); model identification complete; routing state justifies this file's load condition
+> **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script; do not load as first responder to any theological question
+> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+
+**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-11 through DO-14 family activates this file's load floor; it does not authorize content release. Model identification is required before DO-12 and DO-13 routing.
+
+**Under-load guard:** DO-12 Trinity requires at minimum: model identification + definition-discipline/M9 for identity/counting terms + do-attribute-precision for person/nature pressure + V12 if multiple-independent-lords pressure precedes Christian overlay + V8 only after semantic/model discipline clears. Loading only this file plus V8 is a gate-integrity failure.
+
+**DO-christian-extensions family-local load floor** (conditional on confirmed case-state, not global ambient):
+- V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
+- Model identification before DO-12 and DO-13
+- M9-predication-mode.md when identity, counting, predication, or God-language terms are unstable
+- do-attribute-precision.md when person/nature/attribute multiplicity pressure is live
+- V12-tamanuc-exhaustion.md when multiple-independent-lords or divine plurality pressure precedes Christian overlay
+- perfection-criterion-usurpation.md when static-perfection or non-eventfulness tribunal governs (DO-11, DO-13)
+- V10-transmission-content-vetting.md when canon authority, revelation, or church-certification pressure is live (DO-14)
+- prophetic-discourse-neutralization.md when revelation is formally honored but functionally emptied
+- P7 stop check before Layer B release
 
 ---
 
-## DO-11 - Trinity from Divine Perfection
+## DO-christian-extensions Fan-Out Table
+
+| Pressure signal | Required owner route |
+|---|---|
+| Trinity: identity/counting/multiplicity terms unstable | definition-discipline.md, M9-predication-mode.md before DO-12; V12 if divine-plurality pressure precedes Christian overlay |
+| Trinity: person/nature attribute multiplicity | do-attribute-precision.md; model identification required before DO-12 content |
+| Trinity: divine plurality broader than Christian model | V12-tamanuc-exhaustion.md before DO-12 overlay |
+| Perfection / non-eventfulness / timelessness as tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; DO-11/DO-13 after tribunal cleared |
+| Philosopher's-God: static simplicity / non-relational framing | perfection-criterion-usurpation.md; prophetic-discourse-neutralization.md if revelation emptied; DO-13 after semantic/tribunal owners clear |
+| Revelation affirmed but functionally neutralized | prophetic-discourse-neutralization.md before DO-13 content |
+| Canon / church authority fallback | V10-transmission-content-vetting.md; DO-14 for selection/formation/authorization; do NOT collapse into Qur'anic RT unless RT pressure independently live |
+| "Mystery" invoked as coherence substitute | Semantic blocker: mystery-invocation blocks coherence analysis; flag and hold until model is specified |
+
+---
+
+## DO-11 — Trinity from Divine Perfection
+
+### Pressure type
+Trinitarian derivation from divine perfection — the Trinity is entailed by or consistent with perfect-being theology.
+
+### Trigger signals
+Perfect-being theology used to motivate Trinity; "love requires an other"; "necessary being must be maximally relational"; Anselmian perfection as generating Trinitarian structure.
+
+### Do-not-route-here / near-miss rules
+- Multiple-independent-lords pressure: if the argument's force depends on divine plurality being incoherent rather than on perfection-motivation → V12 before this entry
+- DO-13 discriminator: if the perfection frame is primarily defensive (blocking Islamic attributes) rather than generative (motivating Trinity) → route through DO-13
+
+### Mandatory family-local load floor
+perfection-criterion-usurpation.md (perfection tribunal governing), foreign-premise-detection.md, V12-tamanuc-exhaustion.md when divine-plurality coherence is live. V10 if argument retreats to revelation/canon/church authority.
+
+### Ordered TTP route
+1. perfection-criterion-usurpation.md: is "perfect being requires relation/plurality" being asserted as a neutral philosophical constraint? → detect and route
+2. V12 if divine-plurality coherence is the pressure before Trinitarian specifics
+3. DO-11 substantive after upstream owners clear
+4. V10 if interlocutor retreats to revelation/canon when philosophical argument is pressed
+
+### Semantic/register blockers
+Perfect-being tribunal blocks doctrinal content until cleared. V8 deploys only after perfection-criterion-usurpation.md analysis clears the ground.
+
+### Allowed Layer B move
+Name that "perfect being requires relation/multiplicity" is a contested philosophical claim; open question whether tawḥīd-based divine unity has a perfection deficit that the Trinity resolves.
+
+### Held downstream material
+Full Trinity analysis; V8 content; comparative perfection-theology; tawḥīd positive reconstruction — held until perfection tribunal cleared.
+
+### Minimal discriminator/probe
+Is the claim that perfection *generates* Trinitarian structure (motivational), or that Trinitarian structure is *consistent with* perfection (defensive)? Different routes.
+
+---
 
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
@@ -32,7 +117,7 @@ always fully actual. Creation-dependent manifestation also appears problematic: 
 God only loves creatures, then one of the highest divine perfections seems to await
 creation in order to be fully real.
 
-**Operative response:**
+### Existing substantive content (route-governed):
 Force the hidden premise into the open: the argument does not merely say love is a perfection. It
 says a perfection is incomplete unless eternally exercised in one determinate relational mode
 against an equal internal other. That premise is doing the real work, and it is not self-evident.
@@ -59,7 +144,43 @@ Those are different claims and must not be smuggled into one another.
 
 ---
 
-## DO-12 - The Logical Problem of the Trinity
+## DO-12 — The Logical Problem of the Trinity
+
+### Pressure type
+Logical problem of the Trinity — Trinitarian doctrine is internally incoherent under standard identity and predication analysis.
+
+### Trigger signals
+"If Father, Son, and Holy Spirit are each fully God and numerically distinct, then there are three gods"; Leibniz's Law applied to Trinitarian claims; count-noun analysis of "is God."
+
+### Do-not-route-here / near-miss rules
+- Multiple-independent-lords pressure without Christian overlay: V12 before this entry; confirm Christian theological context before DO-12 framing
+- Attribute-precision without model identification: do-attribute-precision.md applies; model identification determines which Trinitarian model is operative
+
+### Mandatory family-local load floor
+Model identification (Social Trinitarianism, Latin/psychological, relative-identity, mystery/apophatic). definition-discipline.md + M9 for identity/counting/predication terms. do-attribute-precision.md when person/nature/attribute precision live. V12 if broader divine-plurality coherence precedes Christian overlay. V8 only after semantic/model discipline clears.
+
+### Ordered TTP route
+1. Model identification: which Trinitarian model is operative?
+2. M9: stabilize identity/counting/predication terms ("is God" as count noun vs. predicate; classical identity vs. relative identity)
+3. definition-discipline.md: map predication terms before evaluating logical form
+4. do-attribute-precision.md: person/nature/attribute multiplicity analysis
+5. V12 if divine plurality (not specifically Trinitarian) is the pressure
+6. DO-12 substantive after semantic/model discipline clears
+7. V8 after predication analysis
+
+### Semantic/register blockers
+"Mystery" as a coherence substitute is a semantic blocker — the coherence question must be engaged at its level, not deferred.
+
+### Allowed Layer B move
+Name the model-identification requirement; show that the objection's force varies by model; if model is unspecified, request specification before content release.
+
+### Held downstream material
+Full logical analysis by model; bilā kayf content; positive tawḥīd comparison — held until model identification and semantic discipline clear.
+
+### Minimal discriminator/probe
+Which Trinitarian model is operative? (Social Trinitarianism, Latin/psychological, relative-identity, or mystery/apophatic invocation?)
+
+---
 
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
@@ -77,7 +198,7 @@ intra-divine reality. Even if no simple model resolves the issue, the Trinitaria
 argue that independent revelatory evidence justifies holding the doctrine despite unresolved
 conceptual tension.
 
-**Operative response:**
+### Existing substantive content (route-governed):
 The first obligation is model-identification. Do not answer "the Trinity" in the abstract.
 Require the interlocutor to state which family of model they mean, because each family fails in a
 different way:
@@ -112,7 +233,41 @@ creaturely in order to be real?
 
 ---
 
-## DO-13 - The God of the Philosophers and the God of Revelation
+## DO-13 — The God of the Philosophers and the God of Revelation
+
+### Pressure type
+Philosopher's-God objection — the God of revelation (acting, speaking, relating, willing) is incoherent under classical philosophical criteria for perfect being.
+
+### Trigger signals
+"A perfect being cannot change, act, or have contingent properties"; "divine speech/will events make God temporal and dependent"; neo-Platonic divine simplicity as standard; divine action/revelation treated as impossible for a metaphysically perfect being.
+
+### Do-not-route-here / near-miss rules
+- DO-11 discriminator: if the philosopher's-God frame is being used to *generate* Trinity rather than to *block* Islamic attributes → DO-11 not DO-13
+- DO-6 discriminator: if the objection is about attribute-coherence internal to Islamic theology rather than imposing an external philosophical criterion → DO-6
+
+### Mandatory family-local load floor
+perfection-criterion-usurpation.md (imported perfection criterion must be examined as a foreign tribunal). prophetic-discourse-neutralization.md if revelation is formally acknowledged but its content is being emptied by the philosophical frame. V8-bila-kayf-anchor.md after semantic/tribunal owners clear.
+
+### Ordered TTP route
+1. perfection-criterion-usurpation.md: the neo-Platonic/perfect-being criterion is a contingent philosophical framework, not neutral reason
+2. foreign-premise-detection.md: detect and name the tribunal functioning as upstream authority
+3. prophetic-discourse-neutralization.md if revelation is being acknowledged but emptied ("of course you can believe in revelation, but it must mean something compatible with divine simplicity")
+4. V8 after semantic/tribunal owners clear
+5. DO-13 substantive
+
+### Semantic/register blockers
+Unexamined philosopher's-God criterion is the semantic blocker — it must be examined before content deployment.
+
+### Allowed Layer B move
+Name that "perfect being" criteria are not neutral; show that neo-Platonic static-simplicity is one philosophical tradition among others, not the deliverances of pure reason.
+
+### Held downstream material
+Full V8 content; comparative perfection analysis; detailed attribute reconciliation — held until criterion examination clears.
+
+### Minimal discriminator/probe
+Is the "perfect being requires X" premise presented as a neutral philosophical truth or as a theological commitment of the interlocutor's tradition?
+
+---
 
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
@@ -133,7 +288,7 @@ distinctions, real acts, or temporally indexed action seem to introduce composit
 becoming, and likeness to creatures. If one refuses the static philosophical conception, it
 may look as though one has safeguarded divine action only by diminishing divine perfection.
 
-**Operative response:**
+### Existing substantive content (route-governed):
 The objection assumes without demonstration that perfection is identical to Aristotelian
 stasis. That is the crucial move to name. A static self-thinking absolute is not automatically
 the highest concept of deity; it is one philosophical model among others. The God of

@@ -1,8 +1,20 @@
-> role: noetic structure profile — NS-10 Māturīdī Evidentialist
-> use when: NS-10 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-6 (see minimal-pair discriminator in profiles/INDEX.md)
-> IR field: NS code = NS-10
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: diagnostics/kalamic-interlocutor.md (mandatory — load Māturīdī-specific section); V9 (necessary-knowledge priority — primary technique); P3 (reason-revelation tension if the framing is set up that way)
+---
+id: ns-10-maturidi-evidentialist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-10 (Māturīdī Evidentialist) confirmed via Quick NS Identification
+routing_effects:
+  - Māturīdī-specific school section required before V9; V9 primary technique
+companions:
+  - V9-necessary-knowledge-priority
+  - P3-reason-revelation-tension
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
 # NS-10 — The Māturīdī Evidentialist
 

@@ -1,7 +1,13 @@
-> role: metaphysical-architecture layer — the ontological and epistemic order being restored
-> use when: the practitioner needs to articulate what is actually being restored and why that order is the correct one — not the workflow architecture (routing procedure) but the substance of what the workflow is in service of
-> do not use when: the task is purely workflow governance or routing mechanics
-> output: the ordered account of the epistemic and ontological structure the skill is working to restore; pairs with diagnostic-ir.md which binds this layer to the workflow layer
+---
+id: metaphysical-architecture
+module_class: governance
+canonical_path: skill/references/metaphysical-architecture.md
+contract_version: "0.2.2.0"
+load_when:
+  - practitioner needs to articulate what is being restored and why
+  - substance of the restoration target needs grounding
+catalogue_registered: false
+---
 
 # Metaphysical Architecture — The Order Being Restored
 

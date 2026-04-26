@@ -1,3 +1,21 @@
+---
+id: terminology
+module_class: governance
+canonical_path: skill/references/terminology.md
+contract_version: "0.2.2.0"
+load_when:
+  - Arabic term usage needs discipline or enforcement
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # Terminology Discipline
 
 ## Arabic-Use Enforcement Rule
@@ -298,8 +316,22 @@ Use these only when they change routing or scope:
   violating ulūhiyyah through devotion, mediation, or unseen-authority claims.
 - `ʿibādah` / worship: drawing near in devotion to one believed to bear unseen authority over
   benefit, harm, protection, or access to them. Do not reduce worship to outward ritual alone.
-- `maʿbūd` / `ilāh`: an object of worship - that to which nearness is sought because it is believed to
-  affect reality beyond ordinary visible causation.
+- `maʿbūd` / `ilāh` (إله): an object of worship — any entity treated as an object of worship,
+  rightly or falsely. Worship (`ʿibādah`) is not merely vague devotion or "ultimate concern."
+  It is the orientation of seeking benefit and warding off harm from the worshiped object,
+  together with dependence, devotion, submission, fear, hope, love, sacrifice, obedience,
+  or invocation as appropriate to the case.
+  - A **false `ilāh`** is treated as an object of worship but is dependent, deficient, created,
+    limited, or unable to independently attain benefit or ward off harm.
+  - **`Allāh`** is the `ilāh` who alone truly deserves all worship: the One with maximally great
+    properties, all attributes of perfection, without partner, likeness, dependency, or shortcoming;
+    the independent Creator, Provider, and Lord of the Worlds, upon whom all depend.
+  - **Routing significance (PF-6):** When the structural question is whether a posited object of
+    worship can truly bear worship-status — whether it is independent or dependent, whether it
+    can genuinely attain benefit and ward off harm — route through `pattern_profile: PF-6` and
+    the worship-status structural analysis before any tradition-specific content. Do not reduce
+    divine-plurality pressure to merely counting supernatural beings; the structural question is
+    whether each posited object can genuinely and independently bear the `ilāh` relation.
 - `shirk`: assigning worship or worship-functions to other than Allah, whether by attributing
   independent efficacy or intermediary efficacy.
 - `intermediation`: approaching an object not as independently sovereign, but as a means of
@@ -332,3 +364,11 @@ Use these only when they change routing or scope:
 | تزكية | Tazkiyah | Purification — the moral-spiritual process of clearing the qalb for reception of truth |
 | صلاح الباطن | Ṣalāḥ al-bāṭin | Inward rectitude — the condition of the qalb when free of the seven deformations |
 | وسواس | Waswās | Whispered doubt — the category into which sophistry that casts doubt on established knowledge falls; a disease of the heart, not a genuine epistemic challenge |
+
+## Coverage Verification
+
+- Failure condition: Any Arabic or technical term used for atmosphere, status, or untranslated flourish fails this file's enforcement rule.
+- IR-visible consequence: Each surfaced term must be justified by routing distinction, doctrinal distinction, or scope-control distinction, with a plain-English gloss where needed.
+- Minimal pair: A route-critical term changes diagnosis or next move; an atmospheric term can be replaced without loss and must be removed.
+- Hold/release rule: Hold a technical term from visible output until its operational work and gloss are clear.
+- Anti-pattern guard: Do not use terminology density as a proxy for precision; precision is measured by routing, doctrinal, or scope-control function.

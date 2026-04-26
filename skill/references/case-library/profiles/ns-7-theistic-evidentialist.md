@@ -1,8 +1,28 @@
-> role: noetic structure profile — NS-7 Theistic Evidentialist
-> use when: NS-7 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-11 (Fideist — opposite stance on argument's role)
-> IR field: NS code = NS-7
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: V9 (necessary-knowledge priority — mandatory first move); V7 (symmetric taqlīd check); reason-disambiguation.md Category 3 or 4
+---
+id: ns-7-theistic-evidentialist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-7 (Theistic Evidentialist) confirmed via Quick NS Identification
+routing_effects:
+  - V9 necessary-knowledge priority mandatory first move
+companions:
+  - V9-necessary-knowledge-priority
+  - V7-taqlid-check
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-7 — The Theistic Evidentialist
 
@@ -46,3 +66,11 @@ evidentialist restriction: have you examined the restriction itself, or inherite
 1. V9 first: establish that non-inferential warrant is the norm, not the exception.
 2. Then V7 symmetric: examine the evidentialist restriction itself.
 3. Only after 1–2 do the apologetic arguments get re-positioned as scaffolding, not foundation.
+
+## Coverage Verification
+
+- Failure condition: Do not use NS-7 for a fideist or Reformed basic-belief holder who denies the need for inferential proof; that is NS-11 and routes first through R3.
+- IR-visible consequence: Emit `NS: NS-7`, match V9 before apologetic argumentation, and record the evidentialist restriction as the live routing gate.
+- Minimal pair: NS-7 and NS-11 are opposite theistic profiles: NS-7 over-requires inference, while NS-11 rightly affirms basic belief but may use a weaker proper-function frame.
+- Hold/release rule: Hold critique of theism's arguments; release them only after V9 and V7 reposition inference as scaffolding rather than foundation.
+- Anti-pattern guard: Do not attack cosmological or fine-tuning arguments first; the interlocutor may hear that as an attack on theism rather than on the evidentialist restriction.

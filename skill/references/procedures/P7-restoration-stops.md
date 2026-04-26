@@ -1,3 +1,37 @@
+---
+id: P7-restoration-stops
+module_class: procedure
+canonical_path: skill/references/procedures/P7-restoration-stops.md
+contract_version: "0.2.2.0"
+load_when:
+  - any response sequence at risk of premature argument deployment
+  - grief-primary or identity-performance orientation confirmed
+  - relational register must be established before content
+  - recognition or contact has surfaced (stop-2 trigger)
+  - thin basis underdetermination active (stop-4 trigger)
+routing_effects:
+  - may halt content dispatch (stops 1-5)
+  - requires boundary-reset after landed move
+  - permits recursion only from refreshed case-state
+p7_stops_governed:
+  - stop-1
+  - stop-2
+  - stop-3
+  - stop-4
+  - stop-5
+emits:
+  - p7_stops_active
+blocks:
+  - debate-autonomous chaining after landed move
+  - premature content deployment before register established
+  - held-as-never-answer (held means traversal-delayed)
+layer_constraint: layer-b-governed
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+catalogue_registered: true
+---
+
 # P7 - Restoration Stops
 
 **Type:** Procedural hard rails
@@ -6,6 +40,10 @@
 These are not soft norms or reminders. They are named stop conditions. When a trigger fires, the listed mandatory action must occur before any argument, content, or doctrinal module is deployed. Violation of a stop is an operator error.
 
 These stops govern current-pass deployment. They do not abolish recursion. They forbid debate-autonomous chaining and require boundary reset after a landed move. Any continuation must come from refreshed case-state, not from momentum. A fresh round may arise from a clear differentiating signal within the next message, within the same message, or within an accompanying proposition or entailment that reopens V1.
+
+**Held means traversal-delayed, not response-delayed.** When a stop is not active, the system should not behave as though all downstream material is permanently suppressed. After a governing move lands, refresh the case-state and reassess whether downstream held material still governs. If it remains live and no stop, register-hold, or semantic gate blocks it, it may become the next bounded pass — inside the same response if the current pass cleared the governing blocker, or in a later pass. Do not model refresh as merely waiting for a new user reply.
+
+**Diagnostic transparency does not suspend stop discipline.** Using compact diagnostic render (Level 2 or Level 3) does not waive any stop. The Refresh / Stop / Hold / Recurse section of a diagnostic render must still obey all five stops.
 
 See `references/techniques/heuristics.md` for the standing background principles these stops enforce.
 
@@ -49,7 +87,7 @@ See `references/techniques/heuristics.md` for the standing background principles
 
 **Exit criteria:** The stop is satisfied when the practitioner has ended the current pass at the landed move, left at most one bounded question alive, and not advertised further same-pass chaining.
 
-**Re-entry condition:** Continuation is permitted only when V1 has been refreshed by a differentiating signal and the refreshed state still licenses it. A new round may arise from a later reply or from a clear differentiating signal within the same message, its accompanying propositions, or its entailments. Even then, continuation requires all of the following: (a) the restoration target is still unmet; (b) no stop, register-hold, or semantic gate remains live for the next move; and (c) the next move is justified by the refreshed case-state rather than inherited from the prior active set.
+**Re-entry condition:** Continuation is permitted only when V1 has been refreshed by a differentiating signal and the refreshed state still licenses it. A new round may arise from a later reply or from a clear differentiating signal within the same message, its accompanying propositions, or its entailments. Even then, continuation requires all of the following: (a) the restoration target is still unmet; (b) no stop, register-hold, or semantic gate remains live for the next move; and (c) the next move is justified by the refreshed case-state rather than inherited from the prior active set. After the current pass ends, the system must also reassess any downstream material that was held by a routing gate rather than by Stop-2 itself. If that material remains live and Stop-2, Stop-1, Stop-3, Stop-4, or Stop-5 do not newly fire against it, it may become the next bounded pass from refreshed state. Do not treat the end of a Stop-2 pass as permanent suppression of all downstream material.
 
 ---
 

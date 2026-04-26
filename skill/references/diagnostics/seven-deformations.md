@@ -1,7 +1,12 @@
-> role: deformation classifier
-> use when: the upstream obstruction must be identified precisely before responding
-> do not use when: grief or non-truth-seeking orientation already suspends normal tactic selection
-> output: primary deformation, common confusion, and first intervention
+---
+id: seven-deformations
+module_class: governance
+canonical_path: skill/references/diagnostics/seven-deformations.md
+contract_version: "0.2.2.0"
+load_when:
+  - upstream obstruction must be identified precisely before responding
+catalogue_registered: false
+---
 
 # Seven Deformations of the Fiṭrah — Full Treatment
 

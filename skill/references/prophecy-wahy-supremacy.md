@@ -1,9 +1,14 @@
-> role: doctrinal governance — epistemic authority of prophecy and waḥy; supplies the positive doctrinal case where philosophical-usurpation.md supplies the routing structure
-> use when: the case explicitly or implicitly treats philosophical systems as the legitimate arbiter of revelation's content; when the interlocutor requires revelation to satisfy a prior rational standard before it may be credited; when the practitioner needs to articulate why waḥy is not an optional supplement to philosophy but the primary and superior source in precisely the domains where philosophy is weakest
-> do not use when: the case is purely transmission-related with no authority-ordering dispute, or when the interlocutor already accepts waḥy as primary
-> load-after: philosophical-usurpation.md (Type A or Type B confirmed); foreign-premise-detection.md (when a philosophical tribunal is confirmed); connects to DO-13, kernel-thesis.md Commitment 2 and 5, and V2
-> ownership note: philosophical-usurpation.md governs detection and routing for all four usurpation types; this file governs the doctrinal content specifically needed when the live question is why waḥy has authority the philosophical system cannot confer — it is the doctrinal counterpart to PU's routing structure, not a substitute for it
-> output: the doctrinal ground for prophetic supremacy in ilāhiyyāt and nubuwwāt, with routing consequences for each major challenge pattern
+---
+id: prophecy-wahy-supremacy
+module_class: governance
+canonical_path: skill/references/prophecy-wahy-supremacy.md
+contract_version: "0.2.2.0"
+load_when:
+  - case treats philosophical systems as legitimate arbiter of revelation
+  - interlocutor requires revelation to satisfy a prior rational standard
+  - epistemic authority of waḥy needs positive articulation
+catalogue_registered: false
+---
 
 # Prophecy and Waḥy — Doctrinal Governance File
 

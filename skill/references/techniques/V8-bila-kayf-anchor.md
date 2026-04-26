@@ -1,3 +1,27 @@
+---
+id: V8-bila-kayf-anchor
+module_class: technique
+canonical_path: skill/references/techniques/V8-bila-kayf-anchor.md
+contract_version: "0.2.2.0"
+load_when:
+  - transcendence objections or attribute-coherence pressure
+  - language-and-God problems
+  - Trinity-adjacent divine-perfection arguments or incarnation-coherence pressure
+  - philosopher's-God challenges
+blocks:
+  - opening move while loaded negative theological terms (body, direction, place, limit, composition) are semantically unresolved — M9 must clear first
+companions:
+  - M9-predication-mode
+  - perfection-criterion-usurpation
+  - V12-tamanuc-exhaustion
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
+
 # V8 - The Bila Kayf Anchor
 
 **Deploy when:** transcendence objections, attribute-coherence objections, language-and-God problems, Trinity-adjacent divine-perfection arguments, incarnation-coherence pressure, or philosopher's-God challenges.

@@ -1,9 +1,22 @@
-> role: typed diagnostic substrate — Mandatory Pass [P-A] in V1 Phase 2; classifies reason-category before any content gate can open
-> use when: any case where the interlocutor is pressing an intellectual argument (DO-orient = truth-seek or mixed); this pass runs by default — it is not conditional on "whether reason is at issue," because that question cannot be answered without running the pass
-> do not use when: P7 Stop-1 is active (grief-primary case where no content gate is being assessed yet), or when the case is register-only with no intellectual content component pending
-> output: four typed categories, their routing consequences, and the restoration move each implies; emits reason-category field to the case-state
-> load-after: V1 Phase 2 axis classification, before any content module is selected; reason-category output feeds the diagnostic IR's Gate Check 1 (mandatory minimum) and Gate Check 3 (suppression rules)
-> failure test: if a content module was dispatched without a reason-category field in the case-state, this pass was skipped; the routing gate was opened without the mandatory minimum fields populated
+---
+id: reason-disambiguation
+module_class: governance
+canonical_path: skill/references/diagnostics/reason-disambiguation.md
+contract_version: "0.2.2.0"
+load_when:
+  - any case with DO-orient = truth-seek or mixed; Mandatory Pass P-A in V1 Phase 2
+emits:
+  - reason_category
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # Reason-Disambiguation — Typed Diagnostic Categories
 
@@ -67,6 +80,13 @@ Categories 3 and 4 surface a meta-epistemic claim-level: the live burden is abou
 
 **Phenomenology:** When pressed to articulate the criterion, the interlocutor cannot do so clearly — it feels like common sense rather than a philosophical stance. Challenges to it feel like challenges to sanity or basic competence rather than challenges to a particular epistemological framework. The person may say "everyone knows that..." or "it's just obvious that..." — both are signatures of Category 4.
 
+Diagnostic note:
+
+"Reason", "common sense", and "what any honest person sees" may be sound reason, but they
+may also be a school-bound criterion operating below explicit commitment. In moral objections,
+Arya Samaj-style Qur'an critiques, closed-canon objections, and philosophical category-set
+pressures, do not classify the appeal as Category 1 until the criterion has been disclosed.
+
 **Routing consequence:** V2, but with additional attention to the process of *naming* the framework as the primary first move. Because the framework is below the level of explicit commitment, naming it is itself the main intervention — creating the distance between the interlocutor and the assumption that allows it to be examined. V7 (taqlīd check applied symmetrically) is a useful accompaniment: the same demand for examined belief that the tradition applies to inherited religious taqlīd applies to inherited secular skepticism.
 
 **Permitted operations:** V2; V7; asking "have you examined this, or is this what your intellectual milieu assumes?"; the symmetric taqlīd check from `tactics/symmetric-taqlid-check.md`.
@@ -101,3 +121,12 @@ Reason-category and deformation are orthogonal. The full compound:
 | 3 (Pseudo-neutral) | Shubhah | V2 first; shubhah addressed only after framework is loosened |
 | 3 (Pseudo-neutral) | Hawā + iʿtiqādāt mawrūtha | V2 after hawā addressed; compound is the most resistant pattern |
 | 4 (Inherited) | Ẓann or taqlīd | V2 + V7 together; framework-naming and taqlīd-check compose naturally |
+
+## Coverage Verification
+
+- Failure condition: If a truth-seeking or mixed intellectual case reaches content dispatch without `Reason-category` and routing-gate output, the mandatory pass was skipped.
+- IR-visible consequence: Emit `Reason-category: 1|2|3|4`, `Routing gate: open|V2-required|deformation-first`, and the restoration target that must clear before first-order content.
+- Minimal pair: Category 3 is an explicit pseudo-neutral tribunal; Category 4 is an inherited criterion operating below explicit commitment.
+- Hold/release rule: Hold first-order content under Category 2 until deformation-first work clears, and under Category 3/4 until V2 or V2+V7 loosens the criterion.
+- Anti-pattern guard: Do not praise a contaminated criterion as "reason itself"; the pass exists to decide which sense of reason is operative.
+- Pattern-framing guard: If optional IR framing notes are present, they must preserve this distinction rather than using "reason" or "common sense" as an unanalyzed public-output label.

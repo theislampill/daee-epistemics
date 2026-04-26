@@ -1,3 +1,33 @@
+---
+id: M4-grief-register
+module_class: tactic
+canonical_path: skill/references/tactics/M4-grief-register.md
+contract_version: "0.2.2.0"
+load_when:
+  - problem of evil is a personal moral protest arising from genuine suffering (not a philosophical argument)
+  - grief or betrayal is primary
+blocks:
+  - intellectual content, theodicy, or doctrinal content while grief is primary
+routing_effects:
+  - triggers P7 Stop-1 (Content-Withholding Stop) automatically
+p7_stops_governed:
+  - stop-1
+companions:
+  - P7-restoration-stops
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-governed
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # M4 — Grief Register
 
 **Type:** Meta-tactic

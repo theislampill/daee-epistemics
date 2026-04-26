@@ -1,11 +1,22 @@
-> role: specialty diagnostic — fiṭrah-content taxonomy; classifies the interlocutor's operative conception of the fiṭrah for NS-12 cases and Muslim-internal fiṭrah disputes
-> use when: NS-12 confirmed (blank-slate or dual-nature fiṭrah holder); or when any interlocutor denies that the fiṭrah is innate, claims it is environmentally determined, or presents a dual-nature (equal inclinations) account; or when a Muslim-internal dispute about the nature of the fiṭrah is operative
-> do not use when: the interlocutor accepts the fiṭrah's theistic orientation and the dispute is about something else
-> IR field: Fiṭrah-view = sound (operative default, no special action) | tabula-rasa | dual-nature; governs which engagement path from this file applies
-> section-to-view mapping:
->   §Tabula Rasa (Neutral Perspective) → tabula-rasa view; V5 primary; E2/V3 secondary clearing when phenomenology is refused; E4 cross-cultural check supporting
->   §Dual Perspective → dual-nature view; nafs/fiṭrah distinction primary; V5 secondary
-> paired files: NS-12 profile (case-library/profiles/ns-12-blank-slate-dual-fitrah.md); V5 (directing attention to signs — primary); E4 (cross-cultural check — secondary)
+---
+id: fitrah-perspectives
+module_class: governance
+canonical_path: skill/references/diagnostics/fitrah-perspectives.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
+emits:
+  - fitrah_view
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # Fiṭrah Perspectives — Three-View Taxonomy
 
@@ -206,3 +217,11 @@ When diagnosing an interlocutor:
   alternatives. Show internal incoherence; redirect to the single-orientation account.
 - **Positive-perspective interlocutor:** The skill's own position. Proceed with the
   fiṭrah-restoration framework (P1) and the standard tactic set.
+
+## Coverage Verification
+
+- Failure condition: Do not load this file merely because the word fitrah appears; the disputed issue must be the fitrah's content, neutrality, dual-nature account, or NS-12 routing.
+- IR-visible consequence: Emit `Fitrah-view: sound|tabula-rasa|dual-nature` and route to V5/E4 or the nafs/fitrah distinction according to that view.
+- Minimal pair: Tabula-rasa denies determinate native content; dual-nature posits equal contrary tendencies and must be answered through the nafs/fitrah distinction.
+- Hold/release rule: Hold ordinary theism-denial counters until the fitrah-view is classified; release the positive-orientation account only after the relevant confusion is named.
+- Anti-pattern guard: Do not collapse nafs and fitrah into one neutral psychological field.

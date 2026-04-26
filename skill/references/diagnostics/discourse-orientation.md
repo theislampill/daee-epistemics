@@ -1,9 +1,24 @@
-> role: diagnostic classifier — discourse orientation (DO-orient axis); determines what the engagement is ordered toward before any content module is selected
-> use when: any case; run this classifier before selecting any intellectual response or case-library module — it determines whether intellectual engagement is the right instrument at all
-> do not use when: discourse orientation is already established from prior context and has not shifted
-> IR field: DO-orient code = truth-seek | identity-perf | autotelic | zann-mode | mixed
-> output: DO-orient code emitted to case-state; governs suppression rules S-1 and S-3 in routing-precedence.md and P7 Stop-1 trigger
-> paired files: routing-precedence.md (S-1: non-truth-seek suppresses all doctrinal modules); P7-restoration-stops.md (Stop-1: identity-perf and grief trigger content-withhold); seven-deformations.md (DO-orient and deformation are orthogonal axes — run both)
+---
+id: discourse-orientation
+module_class: governance
+canonical_path: skill/references/diagnostics/discourse-orientation.md
+contract_version: "0.2.2.0"
+load_when:
+  - any case before selecting any intellectual response or case-library module
+routing_effects:
+  - determines whether intellectual engagement is the right instrument at all
+emits:
+  - discourse_orientation
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # Discourse Orientation — Full Treatment
 
@@ -133,9 +148,9 @@ The practitioner should:
 ## DO-Orient Code Emission
 
 The orientation read terminates in a short code (`DO-orient`) that routes downstream. It
-is not the same as the doctrinal DO-1..14 codes in `case-library/INDEX.md`; it rides
+is not the same as the doctrinal DO-1..15 codes in `case-library/INDEX.md`; it rides
 beside them. Both are named with the "DO" prefix because both belong to the discourse
-axis: DO-orient answers *what the discourse is for*; DO-1..14 answers *what objection
+axis: DO-orient answers *what the discourse is for*; DO-1..15 answers *what objection
 family is live inside that discourse*.
 
 | Orientation read | DO-orient code | What it governs |
@@ -154,9 +169,9 @@ the fiṭrah to do its work.
 
 ---
 
-## Doctrinal DO-1..14 Routing Note
+## Doctrinal DO-1..15 Routing Note
 
-The DO-1..14 codes in `case-library/INDEX.md` live on a different axis. They are emitted
+The DO-1..15 codes in `case-library/INDEX.md` live on a different axis. They are emitted
 from the NS + problem-family diagnostic, not from this file. When scripture-history pressure
 is live the corresponding axis is RT-1..4. This file's job is the orientation read; other
 files emit the doctrinal and transmission codes. All three axes — NS code, DO-orient, and
@@ -196,3 +211,11 @@ the other emissions remain available but not acted on until the register shifts.
 *Right correct (identity-performance):* Interlocutor is a university student who signals their atheism prominently, has no professional stake, but treats every exchange as an opportunity to perform their identity before implicit social witnesses. Every intellectual point is absorbed into self-presentation. The orientation is identity-performance; gharaḍ is minimal. Correct instrument: name the register, defer content; not F2 (there is no specific cost to name).
 
 *Differentiating signal:* Is there a concrete external stake — professional, social, financial, relational — that would be materially threatened by inquiry? If yes, gharaḍ is operative. If the position functions primarily as self-presentation without a concrete external stake, identity-performance governs.
+
+## Coverage Verification
+
+- Failure condition: Do not select an intellectual content module before establishing whether the discourse is truth-seeking, identity-performance, autotelic, zann-mode, or mixed.
+- IR-visible consequence: Emit `DO-orient` and the resulting register/hold implication; non-truth-seeking orientations hold doctrinal content even when the NS or DO family is otherwise clear.
+- Minimal pair: Gharaḍ is a deformation with a concrete stake; identity-performance is an orientation where the position functions as self-presentation.
+- Hold/release rule: Hold doctrinal modules while identity-performance, autotelic, or zann-mode governs; release content only after orientation shifts toward truth-seeking or a bounded question becomes the permissible move.
+- Anti-pattern guard: Do not misread lively engagement as inquiry when the exchange is being consumed for identity, novelty, or unanchored assertion.

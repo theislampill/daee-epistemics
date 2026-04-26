@@ -1,8 +1,32 @@
-> role: noetic structure profile — NS-5 Habituated Atheist
-> use when: NS-5 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-5
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: F2 (volitional dimension — mandatory first move); M4 (grief register if grief-primary); R2 (reminder if involuntary recognition near surface); V7 (taqlīd check); M2 (prior probability probe); M1 (self-refutation — use only after opening move has landed)
+---
+id: ns-5-habituated-atheist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-5-habituated-atheist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-5 (Habituated Atheist) confirmed via Quick NS Identification
+routing_effects:
+  - F2 volitional dimensions mandatory first move before intellectual content
+companions:
+  - F2-volitional-dimensions
+  - M4-grief-register
+  - R2-the-reminder
+  - V7-taqlid-check
+  - M2-prior-probability
+  - M1-self-refutation
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-5 — The Habituated Atheist
 
@@ -39,3 +63,11 @@ argument deepens resistance rather than clearing it.
 3. Otherwise use V7 (taqlīd check) to test whether the atheism being defended is actually
    examined rather than absorbed-by-default.
 Use M2 or M1 only after the opening move has changed the next live differentiator.
+
+## Coverage Verification
+
+- Failure condition: Do not use NS-5 for a truth-seeking naturalist whose atheism is still an argued framework; that is normally NS-1, with V2/E1 rather than F2 as the opening move.
+- IR-visible consequence: Emit `NS: NS-5`, mark F2 or M4/R2/V7 as the current matched opening, and keep M1/M2 held until the volitional or grief register no longer governs.
+- Minimal pair: NS-5 differs from NS-3 because the stabilizer is habituated atheistic default and will-investment, not a deconversion narrative functioning as identity.
+- Hold/release rule: Hold intellectual counters while hawa, gharad, or grief-primary posture governs; release M2/M1 only after the opening move creates a fresh differentiating signal.
+- Anti-pattern guard: Do not reward habituated resistance with an argument dump; more content can deepen the very resistance the profile diagnoses.

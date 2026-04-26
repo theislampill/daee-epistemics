@@ -1,8 +1,26 @@
-> role: noetic structure profile — NS-4 Secular Moral Realist
-> use when: NS-4 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-4
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: M3 (orphaned intuition probe); V5 (signs — fiṭrah moral recognition as āyah)
+---
+id: ns-4-secular-moral-realist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-4 (Secular Moral Realist) confirmed via Quick NS Identification
+companions:
+  - M3-orphaned-intuition
+  - V5-directing-attention-signs
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-4 — The Secular Moral Realist
 
@@ -28,3 +46,11 @@ categorically binding, and reliably tracked by properly functioning human cognit
 universe makes this explicable? The secular options carry costs that become visible under
 examination. This is not an argument against moral realism but an argument that moral realism's
 most coherent grounding is theistic.
+
+## Coverage Verification
+
+- Failure condition: Do not emit NS-4 for ordinary ethical disagreement or moral relativism; the marker is firm objective moral realism held inside a secular metaphysical frame.
+- IR-visible consequence: Emit `NS: NS-4`, match M3 and V5, and frame the live burden as grounding the moral fact the interlocutor already recognizes rather than attacking the moral judgment.
+- Minimal pair: NS-4 differs from NS-8 moral recoil because NS-4 is external secular moral realism, while NS-8 is an internal believer crisis where pastoral disaggregation and P6/P7 may govern first.
+- Hold/release rule: Hold critique of the moral intuition itself; release the grounding question only after affirming the moral recognition as genuine.
+- Anti-pattern guard: Do not answer by weakening moral realism or treating the intuition as a projection; that destroys the profile's load-bearing anchor.

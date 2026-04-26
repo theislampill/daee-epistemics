@@ -1,9 +1,22 @@
-> role: diagnostic pipeline pass - detects and classifies imported premises, criteria, and tribunals
-> use when: V1 Phase 2 axis classification is underway and the interlocutor's framework, criterion, or prior probability assignment is not yet examined
-> do not use when: the claim is purely transmission-related with no criterion-importing element
-> output: a structured diagnostic pass with a defined output shape
-> pipeline position: runs as part of V1 Phase 2 alongside the deformation and concealment reads
-> ownership note: this file is the detection pass; `arabic-backbone-predicates.md` is the broader predicate library
+---
+id: foreign-premise-detection
+module_class: governance
+canonical_path: skill/references/diagnostics/foreign-premise-detection.md
+contract_version: "0.2.2.0"
+load_when:
+  - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
+emits:
+  - upstream_findings
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # Foreign-Premise Detection - Explicit Diagnostic Pass
 
@@ -39,6 +52,15 @@ If `Premise status: none-detected`, fill only the first two fields and proceed. 
 
 Ask: what standard is being applied to the religious position? Not "what objection is being made?" but "what would count as a satisfying answer, and who set that standard?"
 
+External-criterion disclosure probe:
+
+```text
+What standard is being used to declare the revelation irrational, immoral, impossible,
+inauthentic, or lower-order: sound reason, a revealed criterion, a school tradition,
+modern moral intuition, Vedic reformism, historical-critical neutrality, rabbinic or
+canon closure, charismatic authority, or social identity pressure?
+```
+
 Common tribunal types:
 
 - empirical verifiability
@@ -46,6 +68,9 @@ Common tribunal types:
 - pure rational necessity
 - liberal autonomy
 - Aristotelian / neo-Platonic theism
+- closed-canon or rabbinic closure used as veto over later divine speech
+- Vedic-reformist "reason/common sense" used as tribunal over Qur'an or prophecy
+- kashf, shaykh, or tariqah authority used as jurisdiction over revelation
 
 ### Step 2 - Identify the Source Tradition
 
@@ -139,6 +164,18 @@ The visible objection is anthropomorphism or imperfection, but the real issue is
 **Near-miss 4 - validation inversion disguised as respect for reason.**
 The speaker says reason merely "checks" revelation, but the actual structure is that revelation has no standing until reason has ruled. This is tribunal installation, not neutral review.
 
+**Near-miss 5 - tradition label hiding tribunal function.**
+The surface looks like a Jewish, Hindu, Sufi, Buddhist, or moral topic, but the active
+node is a criterion or authority order. Do not route by tradition label. Classify
+whether the live burden is closed-canon veto, external criterion as tribunal,
+kashf-as-jurisdiction, nondual category-set, identity-continuity pressure, or
+source-use discipline.
+
+**Near-miss 6 - source material invites citation dumping.**
+A dossier or source trail is available, but the live structural burden has not been
+typed. Do not list arguments, prooftexts, or citations until the premise status,
+source tradition, functional role, and upstream position have been identified.
+
 ---
 
 ## Integration with V1 Phase 2
@@ -152,3 +189,12 @@ This pass runs in V1 Phase 2. Its output updates case-state and IR as follows:
 - If `Premise status: uncertain`: mark confidence as provisional and name the decisive missing differentiator.
 
 This pass is the detection layer. V2 is the intervention it triggers. They are not interchangeable.
+
+## Coverage Verification
+
+- Failure condition: If the visible objection is answered while an imported criterion or tribunal remains unexamined upstream, the pass failed.
+- IR-visible consequence: Emit the Foreign Premise Detection block, add upstream findings such as `criterion-import`, `tribunal-installation`, or `transmission-demotion`, and set the route consequence before content engagement.
+- Minimal pair: Criterion import sets the bar; tribunal installation gives that bar jurisdiction; transmission demotion makes revelation derivative after rational vetting.
+- Hold/release rule: Hold content that would answer inside the imported court until the source, function, and jurisdiction of the premise have been named and refused where necessary.
+- Anti-pattern guard: Do not confuse this detection pass with V2; detection identifies the premise, V2 performs the restorative intervention.
+- Source-audit guard: Do not treat available source-audit material as permission for argument-bank or citation-dump response. The pass uses such material only to identify the structural premise and route consequence.

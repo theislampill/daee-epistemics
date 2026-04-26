@@ -1,3 +1,28 @@
+---
+id: symmetric-taqlid-check
+module_class: tactic
+canonical_path: skill/references/tactics/symmetric-taqlid-check.md
+contract_version: "0.2.2.0"
+load_when:
+  - before applying the outward taqlīd check (V7)
+  - interlocutor asks whether the practitioner has examined their own position
+companions:
+  - V7-taqlid-check
+  - V11-taqlid-transition
+output_shapes:
+  - pass-through
+layer_constraint: layer-a-only
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # Symmetric Taqlīd Check
 
 **Deploy when:** Before applying the outward taqlīd check; or when the interlocutor asks whether the practitioner has examined their own position.

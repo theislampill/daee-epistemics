@@ -1,8 +1,20 @@
-> role: noetic structure profile — NS-1 Naturalist
-> use when: NS-1 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-1
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: V2 (mandatory entry); reason-disambiguation.md Category 3 or 4; foreign-premise-detection.md (empirical verifiability tribunal); philosophical-usurpation.md Type B
+---
+id: ns-1-naturalist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-1-naturalist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-1 (Naturalist) confirmed via Quick NS Identification
+routing_effects:
+  - V2 mandatory entry — empirical verifiability tribunal cleared before content
+companions:
+  - V2-reconstituting-reason
+  - philosophical-usurpation
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
 # NS-1 — The Naturalist
 

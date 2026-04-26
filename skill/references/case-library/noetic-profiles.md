@@ -1,3 +1,17 @@
+---
+id: noetic-profiles
+module_class: case-library
+canonical_path: skill/references/case-library/noetic-profiles.md
+contract_version: "0.2.2.0"
+load_when:
+  - redirect only — do not load for profile content; use individual profiles/ files
+routing_effects:
+  - routes to per-profile files in profiles/
+output_shapes:
+  - pass-through
+catalogue_registered: true
+---
+
 > REDIRECT — this file has been replaced by individual per-profile files under `profiles/`
 > Do not load this file for profile content. Load the matched profile file from the table below.
 

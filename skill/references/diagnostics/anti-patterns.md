@@ -1,9 +1,14 @@
-# Anti-Patterns
+---
+id: anti-patterns
+module_class: governance
+canonical_path: skill/references/diagnostics/anti-patterns.md
+contract_version: "0.2.2.0"
+load_when:
+  - preparing, reviewing, or correcting a response path
+catalogue_registered: false
+---
 
-> role: self-audit
-> use when: preparing, reviewing, or correcting a response path
-> do not use when: the case is trivial and no diagnostic routing is being performed
-> output: compact checks against misuse, forced fit, and rhetorical drift
+# Anti-Patterns
 
 ## Core Anti-Patterns
 
@@ -47,7 +52,7 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Type the recognition strength, stop the current pass, and reassess. Continue only if a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move. Medium or strong recognition may justify a pause; weak signals do not license either celebration or renewed pressure.
 *Self-audit question:* Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
 *Why it damages the skill:* It turns selective recursion into debate momentum. The practitioner mistakes movement for permission and converts restoration into chain-dumping. This is precisely how a selective state machine decays into a sophisticated answer bank: the live state stops governing once the first move feels successful.
-*Prevented by:* `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
+*Prevented by:* `framework-pipeline.md §Recursive State-Transition View` (canonical owner of the STOP / PAUSE / RECURSE state model and recursive re-entry conditions); `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
 
 ---
 
@@ -78,6 +83,46 @@ The following entries expand the compressed table into full audit-grade entries.
 *Self-audit question:* If I used higher-order vocabulary, have I said what it changes in routing and what layer is being restored, or did I only name the vocabulary?
 *Why it damages the skill:* It makes the architecture sound sophisticated while hiding the actual work. The interlocutor hears labels; the operator never commits to whether the burden is about content, criterion, category, noetic condition, or the restoration layer. Higher-order language is then used as prestige-register compression rather than as auditable routing discipline.
 *Prevented by:* `pattern-profiling.md` (claim-level and PF discipline), `noetic-reading-checklist.md` (higher-order assessment -> restoration hand-off), `case-state-schema.md` and `diagnostic-ir.md` (restoration-target typing), `heuristics.md` rule 29 (keep burden, pattern, and target distinct).
+
+---
+
+**Pattern-Print Theater**
+*Definition:* Emitting a structural pattern print, load-bearing phrase, or source-audit-derived topic shape without making it govern routing, suppression, release, or the next bounded move.
+*Pattern appearing in output:* "This is a closed-canon veto / selective scriptural arbitrage pattern" appears in the analysis, but the response immediately lists prooftexts without typing whether authority, evidence, canon, interpretation, or identity wound is the live node.
+*Correct behavior in the same case:* Use the optional IR fields only when they constrain action: name the load-bearing node, the intervention target, what is held, and which existing owner governs the next move.
+*Self-audit question:* Did the pattern print change what I held, routed, or released, or did it only decorate the diagnosis?
+*Why it damages the skill:* Pattern print can become a more sophisticated version of topic labeling. It sounds diagnostic while leaving the live burden untouched, allowing downstream content to leak before the upstream node is cleared.
+*Prevented by:* `diagnostic-ir.md` optional structural framing field rules; `pattern-profiling.md` Structural Pattern Print Discipline; `routing-precedence.md` Rule S-8 and Rule P-1a.
+
+---
+
+**Argument-Bank / Citation-Dump Substitution**
+*Definition:* Treating a source-audit-derived topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
+*Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
+*Correct behavior in the same case:* Use source-audit findings to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
+*Self-audit question:* Am I using source-audit material to decide what must clear first, or am I using it as an answer bank?
+*Why it damages the skill:* It converts source-audit work into rhetorical ammunition. The answer may look well supplied, but it bypasses the actual diagnostic burden and can create false coverage impressions for scope-gated families.
+*Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` needs-review entries.
+
+---
+
+**Tradition-Label Routing**
+*Definition:* Routing by the named tradition rather than by the structural pressure that is doing the work.
+*Pattern appearing in output:* The response treats "Hindu" as if it already means Advaita, Arya Samaj, popular polytheism, or perennialism; treats "Buddhist" as if it already means materialism; treats "Sufism" as if it already means either heresy or spirituality; treats "Jewish" and "Christian" canon objections as identical.
+*Correct behavior in the same case:* Type the structure first: external criterion as tribunal, nondual ontology, identity-continuity pressure, kashf-as-tribunal, authority wound, closed-canon veto, or source-use problem. Then route to the existing owner that governs that structure.
+*Self-audit question:* Did I classify the live node, or did I let the tradition label choose the answer?
+*Why it damages the skill:* Tradition-label routing creates both overreach and underreach. It misses governed structural routes when they exist and implies bespoke coverage where the repo has intentionally left a needs-review scope boundary.
+*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Source-Audit Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` needs-review boundaries.
+
+---
+
+**Abuse-Wound / Doctrine Collapse**
+*Definition:* Treating a harmful historical, institutional, teacher, family, or community wound as though it were already a doctrinal argument, or treating a doctrinal authority-order claim as though pastoral acknowledgement alone resolves it.
+*Pattern appearing in output:* A person says they were harmed by a teacher or institution, and the response defends the doctrine. Or a person says a shaykh's kashf outranks hadith, and the response only empathizes with bad experiences without addressing the claimed authority inversion.
+*Correct behavior in the same case:* Separate wound from tribunal. If wound is primary, route relational safety, NS-8, and P7 before content. If tribunal is primary, route FPD/usurpation/source-use discipline while keeping pastoral register humane.
+*Self-audit question:* Am I answering a wound as doctrine, or answering a tribunal claim as if it were only a wound?
+*Why it damages the skill:* Wounds harden when answered with doctrine, and authority inversions persist when treated only as emotional distress. Both errors lose the load-bearing node.
+*Prevented by:* `mixed-case-handling.md` Authority Wound + Authority Tribunal playbook; `P7-restoration-stops.md`; `foreign-premise-detection.md`; `diagnostic-ir.md` framing notes.
 
 ---
 
@@ -153,6 +198,86 @@ The following entries expand the compressed table into full audit-grade entries.
 
 ---
 
+**Ghost-Load**
+*Definition:* Listing a module in `matched_modules` and loading its governing file, but writing output that does not demonstrably use that file — no `source_basis` entry with `source_kind: "module"` links any output claim or routing decision back to it.
+*Pattern appearing in output:* A DO-12 case loads M9-predication-mode.md and lists M9 in `matched_modules`, but the `[Source Basis]` block contains no entry with `source_kind: module, module_id: M9`. The predication analysis in the response is plausible and consistent with M9 but is not traceable to it.
+*Correct behavior in the same case:* After loading M9, record at least one `source_basis` entry: `source_kind: "module"`, `module_id: "M9"`, `basis_type: "anchored"` or `"inference"`, and `claim` naming the specific output claim or routing fork M9 governed. If M9 governed only a routing decision (e.g., "run count-noun analysis before Trinitarian overlay"), name that decision as the claim.
+*Self-audit question:* For each entry in `matched_modules`, does a `source_basis` entry with `source_kind: module` and matching `module_id` exist? If not, either add it or move the module to `What is withheld and why`.
+*Why it damages the skill:* Ghost-loading makes the activation record unfalsifiable. A module appears active but leaves no audit trail; the load-floor patch (Rule 13) enforced that files are loaded, but ghost-loading defeats that guarantee by leaving no evidence the loading constrained the output. Over many passes, `matched_modules` becomes a plausible-sounding decoration rather than a governance record. The practitioner can list a module to appear thorough while writing output that ignores its governing constraints — inverting the purpose of case-state-justified coordination.
+*Prevented by:* `SKILL.md` Rule 14 (source_basis entry required for every matched_modules entry); `diagnostic-ir.md` §Current-pass activation rule ghost-load prohibition bullet; `diagnostic-ir.schema.json` §source_basis allOf constraint (module_id required when source_kind is "module").
+
+---
+
+**Transcendence Default / Abstraction-as-Cure**
+*Definition:* Responding to a specific attribute, coherence, or predication objection by invoking divine transcendence, bilā kayf, or mystery language as the primary move — before the semantic splitting, predication-mode analysis, and analytical distinction work the objection actually requires.
+*Pattern appearing in output:* An interlocutor asks whether God's knowledge of particulars implies dependence on them. The response deploys bilā kayf and transcendence language immediately without first running M9 on the loaded term "dependence," distinguishing ontological from logical dependence, or engaging the composition / dependence distinction the objection requires. The interlocutor's specific confusion is unaddressed; the same objection regenerates downstream.
+*Correct behavior in the same case:* Run M9 on the loaded term first. Distinguish ontological dependence (implying incompleteness) from logical distinction (not implying dependence). After the specific analytical work is done, bilā kayf may anchor the result — as a genuine doctrinal anchor after the problem is identified, not as a shortcut around identifying it.
+*Self-audit question:* Am I deploying transcendence or bilā kayf because the specific analytical work has been completed and this is its honest conclusion, or am I using it to bypass the work the objection actually requires?
+*Why it damages the skill:* Transcendence-as-default appears to honor divine greatness while leaving the specific confusion intact. The interlocutor's objection regenerates because its underlying predication structure was never examined. Repeated use trains the practitioner to treat bilā kayf as an escape hatch, inverting its function: V8-bilā kayf is an anchor for a claim after its predication has been stabilized, not a response to a question whose predication structure is unexamined. The do-attribute-precision.md route order (M9 → definition-discipline → attribute-precision → V8) exists precisely to prevent this premature deployment.
+*Prevented by:* `V8-bila-kayf-anchor.md` (bilā kayf anchors after semantic and predication work, not instead of it); `M9-predication-mode.md` Function 4 (semantic split required before yes/no answer on a loaded term); `do-attribute-precision.md` §Three-Layer Owner Distinction (route order M9 → definition-discipline → attribute-precision → V8); `routing-precedence.md` Rule S-6 (semantic gate must clear before doctrinal release).
+
+---
+
+**Held-but-Answered Contradiction**
+*Definition:* Declaring that a downstream issue is held by register, semantic, or stop governance, then effectively answering it in the same pass under a different heading or as part of the "bounded answer."
+*Pattern appearing in output:* A response states "composition/dependence pressure governs first; downstream coherence question is held." The response then proceeds to answer whether the doctrine is coherent in the [Restorative Response] section, under the label "preliminary clarification."
+*Correct behavior in the same case:* If composition/dependence governs first, the coherence answer stays held. It may be named as downstream but not answered. After the governing move clears, refresh state; if the coherence question remains live, it becomes the next bounded pass.
+*Self-audit question:* Did I name something as held and then answer it under a different label in the same pass?
+*Why it damages the skill:* It defeats hold discipline entirely while appearing to respect it. The interlocutor receives the downstream content without the upstream clearing that makes it meaningful, and the routing trace becomes fraudulent: held is recorded but not respected.
+*Prevented by:* `references/rubrics/output-release.md` §4 (held material actually held); `routing-precedence.md` Rule P-1 (upstream-blocker priority); `SKILL.md` Rule 8 (no held-as-never-answer — but also no held-while-answering).
+
+---
+
+**Held-as-Never-Answer**
+*Definition:* Treating a hold at the current traversal point as permanent suppression — never reassessing the held material after the governing blocker is cleared, and never releasing it even when the refreshed case-state would permit it.
+*Pattern appearing in output:* Upstream blocker X is addressed. The response ends. Downstream material Y was correctly held during X's pass, but no reassessment is performed. If the interlocutor asks Y directly, the response still treats Y as held without checking whether X's clearing removed the basis for the hold.
+*Correct behavior in the same case:* After X clears, refresh state. If Y remains live and no stop, register-hold, or semantic gate now blocks it, release the bounded Y move. If Y no longer governs (because X's clearing dissolved it), compress or drop it explicitly.
+*Self-audit question:* Is any material I am holding still actually blocked by a live gate, or am I continuing to hold it by inertia after the governing blocker was cleared?
+*Why it damages the skill:* It converts the holding discipline into a content-suppression mechanism. The interlocutor is denied downstream content that is now legitimately releasable, and the practitioner treats "held" as equivalent to "forbidden" rather than "traversal-delayed."
+*Prevented by:* `references/rubrics/output-release.md` §4 (held material reassessed after refresh); `P7-restoration-stops.md` (stops govern current pass, not all future passes); `framework-pipeline.md §Recursive State-Transition View` (RECURSE is licensed after refresh when target remains unmet).
+
+---
+
+**State-Refresh-as-User-Reply-Only**
+*Definition:* Treating state refresh as an operation that can only happen when the interlocutor sends a new message — never allowing same-response recursion even when the current pass itself has cleared the governing blocker and the next live burden is now visible.
+*Pattern appearing in output:* An imported tribunal is named and refused within the response. The response correctly identifies that the downstream positive reconstruction is now eligible, but says "I will address this in my next reply after you respond." The interlocutor's next message only repeats the question; no new signal was needed.
+*Correct behavior in the same case:* Tribunal refusal clears the upstream blocker. Refresh state internally. If the downstream reconstruction remains live and no stop/hold/gate blocks it, release the bounded next move within the same response. Do not manufacture a dependency on a new user turn.
+*Self-audit question:* Am I waiting for a user reply because a stop, register-hold, or semantic gate genuinely requires one — or because I am modeling refresh as only conversational turn-taking?
+*Why it damages the skill:* It introduces artificial latency into restoration. Cases where one response could complete a full restoration sequence are fractured into multiple turns, each requiring the interlocutor to re-engage. This is a form of false passivity that can feel like epistemic caution while actually suppressing legitimate continuation.
+*Prevented by:* `references/rubrics/output-release.md` §7 (same-response recursion bounded but permitted); `SKILL.md` Rule 15 (state refresh may occur inside the same response); `P7-restoration-stops.md` (stops govern deployment; not requiring external reply before every bounded next move).
+
+---
+
+**Recursive Dump**
+*Definition:* Treating the permission for governed recursive traversal as license to release every downstream burden, argument, and module at the moment of a single state refresh — answering all detected issues simultaneously without ordered traversal.
+*Pattern appearing in output:* An interlocutor asks about divine direction. A loaded spatial term governs. It is cleared. The response then immediately releases: attribute content, composition analysis, bilā kayf anchor, philosophical-usurpation framing, and a cosmological argument — because all were detected as downstream during the initial diagnostic pass.
+*Correct behavior in the same case:* Clear the loaded spatial term. Refresh state. Identify whether composition/dependence pressure remains live and now governs. If yes, release only that bounded move. Refresh again. Each door is opened in order, not simultaneously.
+*Self-audit question:* Am I releasing all detected downstream items at once, or am I moving door-by-door with a state refresh before each release?
+*Why it damages the skill:* It converts governed recursion into an argument dump. The interlocutor receives a treatise when they asked a question. The successive-door discipline — the primary virtue of the recursive state model — is lost. Same-response recursion is permitted only as a bounded next pass, not as total downstream release.
+*Prevented by:* `references/rubrics/output-release.md` §5 (recursive traversal discipline: 7-step ordered process); `framework-pipeline.md §Recursive State-Transition View` (RECURSE is governed re-entry, not autonomous looping); `P7-restoration-stops.md` Stop 2 (boundary reset after landing).
+
+---
+
+**Fixed Full-Field Template Materialization**
+*Definition:* Printing every section of the full diagnostic template in every response by default — regardless of whether each section is materially needed for the current case — because the template structure has become the practitioner's routine output format.
+*Pattern appearing in output:* A simple loaded-term question receives a response with [Case State] (all fields), [Source Basis] (all four lines), [Restoration Trace], [Restorative Response], [Core Formulation], [Engagement Register], [Pastoral/Relational Note], [Refresh / Stop / Hold / Recurse] — all populated, because the practitioner applies Level 3 audit render by default.
+*Correct behavior in the same case:* A loaded-term question whose governing burden is clear, whose interlocutor is truth-seeking, and whose required move is semantic disaggregation → Level 1 or Level 2 render. Surface only the materially governing fields. The full template is reserved for audit, pass-review, and explicitly diagnostic tasks.
+*Self-audit question:* Is each section I am including materially governing this response, or am I filling it in because the template expects it?
+*Why it damages the skill:* It inverts the purpose of the render contract. Diagnostic structure should appear when it serves the case; making it default inverts this, turning every ordinary response into an audit report. The interlocutor encounters bureaucratic structure rather than a response calibrated to their question. It also trains the practitioner to confuse structural completeness with diagnostic rigor.
+*Prevented by:* `references/rubrics/diagnostic-render-contract.md` §Render Levels (Level 3 is not default); `references/rubrics/output-release.md` §9 (rubric is not a mandatory full-field template); `SKILL.md §V` (surfaced-mode policy: ordinary mode compresses inactive fields).
+
+---
+
+**Template-Driven Routing**
+*Definition:* Allowing the visible render format or the sections that appear in a template to determine what is diagnosed or routed — substituting a structurally complete template for an actually validated IR.
+*Pattern appearing in output:* A response fills in every field of the Level 3 render template, including [Case State], [Matched Modules], and [Source Basis], as part of the response-generation process rather than as the output of a prior validated diagnostic pass. The fields are populated by reasoning backward from the answer — what modules would make this response look well-formed? — rather than forward from the diagnostic pass.
+*Correct behavior in the same case:* Diagnostic IR is formed and validated before any render template is populated. The render template is populated from the validated IR, not constructed in parallel with it. If the IR was not formed, the template sections are fabricated rather than derived.
+*Self-audit question:* Did my render template sections emerge from a validated IR, or did I construct them alongside writing the answer?
+*Why it damages the skill:* This is the render-side complement to IR fabrication. A templated response can look like a correctly diagnosed response while the actual diagnostic gate was bypassed. The governance record is structurally present but causally reversed — the template shaped the routing rather than the routing shaping the template. This re-introduces the exact failure mode that Rule 10 (IR retrospective documentation) prohibits, at the render level.
+*Prevented by:* `SKILL.md §V` Rule 7 (governance blocks rendered from validated IR, not improvised); `diagnostic-ir.md` §How the IR Prevents Cosmetic Compliance; `references/rubrics/diagnostic-render-contract.md` §Prohibited Render Moves; `framework-pipeline.md` forbidden shortcut: "[IR formed retrospectively] → [counts as gate pass]".
+
+---
+
 ## Quick Self-Audit
 
 - Have I diagnosed before rebutting?
@@ -165,4 +290,15 @@ The following entries expand the compressed table into full audit-grade entries.
 - Did I confirm the concealment × orientation matrix cell shows the register is open before loading any content module?
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?
 - If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
+- If I used a structural pattern print, did it change routing, hold/release, or the next bounded move?
+- Am I using a source-audit-derived topic as an answer bank instead of as framing intelligence?
+- Did I route by tradition label, or did I identify the live structural node first?
+- Did I separate an abuse or authority wound from a doctrinal or tribunal claim?
 - Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
+- For each entry in `matched_modules`, does a `source_basis` entry with `source_kind: module` name what it governed?
+- Am I invoking transcendence or bilā kayf because the specific analytical work is done, or as a substitute for it?
+- Did I say something was held and then answer it anyway under a different label?
+- After the governing blocker cleared, did I reassess held downstream material or treat it as permanently suppressed?
+- Am I waiting for a user reply when internal state refresh already permits the next bounded pass?
+- Am I releasing all detected downstream burdens at once, or moving door-by-door with state refresh between each?
+- Am I printing a full audit template when the case only requires a compact or ordinary response?

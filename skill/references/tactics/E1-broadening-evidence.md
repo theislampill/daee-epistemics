@@ -1,3 +1,31 @@
+---
+id: E1-broadening-evidence
+module_class: tactic
+canonical_path: skill/references/tactics/E1-broadening-evidence.md
+contract_version: "0.2.2.0"
+load_when:
+  - interlocutor insists "there is no evidence" for God's existence
+  - evidential scope needs widening beyond empirical-only criterion
+blocks:
+  - run doubt-vs-skepticism first when interlocutor's rule is "belief requires evidence, absence is disproof" — E1 inside an uncleared evidentialist framework is absorbed
+companions:
+  - doubt-vs-skepticism
+  - V5-directing-attention-signs
+  - E3-cumulative-case
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # E1 — Broadening the Evidential Scope
 
 **Register:** Evidentialist

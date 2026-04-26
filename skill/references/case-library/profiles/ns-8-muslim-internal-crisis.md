@@ -1,8 +1,31 @@
-> role: noetic structure profile — NS-8 Muslim-Internal Crisis (Modernist Revisionism / Authority-Fatigue Compound)
-> use when: NS-8 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-8
-> do not use when: NS code is still provisional — route through mixed-case-handling.md; do not route directly to doctrinal modules before disaggregation
-> paired files: P6 (universal ʿaqīdah principle — governs disaggregation); mixed-case-handling.md; P7-restoration-stops.md (Stop-1 and Stop-3 commonly active); V10 + revelation-transmission.md (for taʿāruḍ/textual component after disaggregation)
+---
+id: ns-8-muslim-internal-crisis
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-8 (Muslim-Internal Crisis) confirmed via Quick NS Identification
+routing_effects:
+  - disaggregation via P6 required before routing to doctrinal modules
+  - P7 Stop-1 and Stop-3 commonly active
+companions:
+  - P6-universal-aqidah-principle
+  - P7-restoration-stops
+  - V10-transmission-content-vetting
+  - revelation-transmission
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-8 — The Muslim-Internal Crisis (Modernist Revisionism / Authority-Fatigue Compound)
 
@@ -102,3 +125,11 @@ for mandatory and prohibited actions under each stop.
 **Stopping condition:** If V2 produces no movement and the evidential demand remains fixed, check whether the demand is covering gharaḍ or hawā. If so, route to Stop 1.
 
 **P7 stop:** Stop 4 (Underdetermined-Case Stop) applies if the read between genuine evidentialist and trust-collapse is not yet settled. Do not supply evidential content before the diagnosis is confirmed.
+
+## Coverage Verification
+
+- Failure condition: Do not route directly to a doctrinal module when the case is still a compound authority-fatigue, moral-recoil, and textual-pressure crisis; disaggregation is the owner-local first move.
+- IR-visible consequence: Emit `NS: NS-8`, match P6 or mixed-case-handling first, surface any P7 Stop-1/Stop-3/Stop-4 condition, and mark downstream V10/RT/M3 content as held until the component read is stable.
+- Minimal pair: NS-8 differs from NS-4 because moral pressure is internal to a destabilized believer's authority relation, not secular moral realism outside the tradition.
+- Hold/release rule: Hold textual or moral counter-content until the playbook's reassessment trigger separates the wound, moral recoil, and transmission issue.
+- Anti-pattern guard: Do not defend everything at once; simultaneous content release reinforces the compound rather than resolving it.

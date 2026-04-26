@@ -1,7 +1,16 @@
-> role: diagnostic-governance
-> use when: a case instantiates a recurring cross-volume family, or the live burden is about standards of knowing, ontological categories, or noetic structure rather than first-order content alone
-> do not use when: a narrow single-point reply does not benefit from surfacing a reusable pattern or claim-level distinction
-> output: `claim_level`, `pattern_profile`, and the routing consequence they impose on module dispatch
+---
+id: pattern-profiling
+module_class: governance
+canonical_path: skill/references/diagnostics/pattern-profiling.md
+contract_version: "0.2.2.0"
+load_when:
+  - recurring cross-volume family identified
+  - live burden concerns standards of knowing, ontological categories, or noetic structure
+emits:
+  - claim_level
+  - pattern_profile
+catalogue_registered: false
+---
 
 # Pattern Profiling
 
@@ -15,6 +24,13 @@ This file is the canonical owner for two governance fields:
 
 - `claim_level`
 - `pattern_profile`
+
+Diagnostic IR may also carry optional structural framing fields such as
+`structural_pattern_print`, `load_bearing_node`, `collapse_radius`,
+`intervention_target`, and `framing_notes`. Those fields are subordinate to this
+file's `claim_level` / `pattern_profile` discipline. They describe the local
+practical shape of a case after the governing level and PF overlay have been
+typed; they do not create a new PF code, a new V-pass, or a new case-family owner.
 
 `pattern-family-audit.md` remains the historical audit and regression document. This file
 is the operational owner used by the live DSL/IR.
@@ -51,8 +67,8 @@ Keep one primary profile. Carry secondary candidates in `Live alternatives`.
 | `PF-3` | Canon formation / text selection / authority certification | `V10-transmission-content-vetting.md`, `do-christian-extensions.md` DO-14, `revelation-transmission.md` RT-2 |
 | `PF-4` | Transmission / preservation / authentication | `V10-transmission-content-vetting.md`, `revelation-transmission.md`, `hadith-authentication-epistemology.md` |
 | `PF-5` | Doctrinal complexity / disagreement pressure | `mixed-case-handling.md` |
-| `PF-6` | Christology / Trinity / Jesus-status pressure | `V12-tamanuc-exhaustion.md`, `do-christian-extensions.md` |
-| `PF-7` | Comparative prophethood / why this revelation | `do-second-loop.md`, `prophecy-wahy-supremacy.md` |
+| `PF-6` | Divine plurality / person-multiplicity / worship-status coherence pressure — requires model identification and semantic gate before coherence, attribute, authority-ordering, or worship-status content is released | `V12-tamanuc-exhaustion.md`, `do-attribute-precision.md`; tradition-specific overlay files only after confirmed match |
+| `PF-7` | Prophetic credential / authority-ordering challenge — DO-10 ḍarūrī check precedes comparative-tradition engagement | `do-second-loop.md` DO-10, `prophecy-wahy-supremacy.md` |
 | `PF-8` | Positive restoration / opening framing | `P1-fitrah-restoration.md`, `P4-maieutic.md` |
 | `PF-9` | Self-refutation / performative incoherence | `M1-self-refutation.md`, `M1P-performative-self-refutation.md` |
 | `PF-10` | Grief / existential pressure / evil register-hold | `M4-grief-register.md`, `mixed-case-handling.md` |
@@ -65,6 +81,22 @@ that family is recurring in this form.
 
 ---
 
+## PF-6 Scope — Divine Plurality and Worship-Status
+
+PF-6 is a meta-noetic memetic route for identifying the load-bearing worship-status node in a noetic structure that posits multiple objects of worship or divine agents. It is not a comparative-religion topic label; it names the structural pressure that obtains whenever multiple entities are treated as genuine objects of worship or independent lords.
+
+**Cross-tradition scope:** PF-6 applies regardless of tradition — Christian Trinity, Shinto kami / hierarchy / worship-status cases, Zoroastrian dualism or yazata / ahura ordering, Hindu deva / avatāra / divine-manifestation, divine council, semi-divine mediator, lesser-deity systems generally. Christian Trinity cases **instantiate** PF-6 as one overlay; they do not **define** it. `do-christian-extensions.md` is the tradition-specific file for Christian vocabulary, model commitments, and internal Trinitarian structure. It is not the primary owner of divine-plurality, person-multiplicity, worship-status, or coherence pressure.
+
+**Structural question PF-6 routes to:** Can the posited object(s) coherently bear true worship-status? Are they independent or dependent? Can they genuinely and independently attain benefit and ward off harm? A false `ilāh` is treated as an object of worship but is dependent, deficient, created, limited, or unable to independently attain benefit or ward off harm. The structure of PF-6 targets the reproductive rule of the plurality-claim — what lets many alleged objects continue being treated as worship-worthy — not merely the count of supernatural beings posited.
+
+**V12 (tamānuʿ) as primary tool:** `V12-tamanuc-exhaustion.md` shows why genuine independent multiplicity at the level of true lordship and worship-worthiness is impossible. If multiple alleged deities are dependent, limited, deficient, subordinate, composite, rival, or unable independently to attain benefit and ward off harm, then they cannot be `ilāh` in truth — they may be treated as objects of worship, but the structure fails to establish worship-worthiness. V12 is deployed before any tradition-specific overlay.
+
+**Collapse radius:** Once the worship-status node is exposed as dependent or incoherent, downstream claims about plurality, hierarchy, mediation, divine persons, kami, devas, yazata, lesser deities, or divine councils must be re-evaluated. Record the collapse radius explicitly in `What remains live` — do not treat each downstream tradition-specific claim as an isolated topic after the node has been cleared.
+
+**Terminology anchor:** See `terminology.md §Route-Critical Worship Terms` for the `ilāh` / `Allāh` / false-`ilāh` distinction and the fuller definition of worship that governs what it means for an object to "bear worship-status."
+
+---
+
 ## Meta-Noetic Regularities
 
 Pattern profiles cluster into a small reusable grammar. Surface this only when it clarifies
@@ -73,7 +105,7 @@ the case.
 - `tribunal-installing` regularity: `PF-1`, `PF-2`, `PF-12`
 - `authority-certification` regularity: `PF-3`, `PF-4`, `PF-7`, `PF-11`
 - `register-hold / restoration-order` regularity: `PF-5`, `PF-8`, `PF-10`
-- `coherence / predication / self-undermining` regularity: `PF-6`, `PF-9`
+- `coherence / predication / self-undermining` regularity: `PF-6` (divine plurality / worship-status — V12 exhausts independent-lordship coherence; worship-status node identified; once exposed as dependent or incoherent, downstream tradition-specific claims are re-evaluated — track collapse radius in `What remains live`), `PF-9`
 
 These regularities do not add new routing families. They show how a case's local burden
 propagates upward into the repo's diagnostic grammar.
@@ -86,9 +118,19 @@ non-eventfulness language appears. That burden is already owned by
 carried through loaded terms, and by V8 / `sound-reason-epistemology.md` after the
 upstream gate clears.
 
-Emission rule: use `claim_level: meta-ontological`; use `pattern_profile: PF-6` only
-when the case is specifically a Christian Trinity / perfection overlay. Otherwise emit
-`pattern_profile: none` and route by the diagnostic owner.
+Emission rule: use `claim_level: meta-ontological`; use `pattern_profile: PF-6` when the
+live pressure is divine plurality / person-multiplicity / worship-status coherence — across
+any tradition. Use `pattern_profile: none` and route by the canonical diagnostic owner when
+the pressure is perfection/immutability/simplicity/non-eventfulness without a plurality or
+worship-status dimension.
+
+The same principle extends to other structural metaphysical pressure patterns:
+composition-panic, occurrence/createdness collapse (ḥudūth/khalq distinction),
+authority-order inversion (O-1 / transmission-demotion), semantic neutralization,
+necessity/contingency overreach, and causal-regress confusion do not require PF codes. Each
+is already owned by a canonical diagnostic file and routes through `claim_level:
+meta-ontological` or `meta-epistemic` plus that file's upstream-findings emission. Adding a
+PF code for these patterns would create a topic label over an already-wired canonical route.
 
 ---
 
@@ -115,3 +157,28 @@ Discipline:
 4. If the case is too thin for a stable profile, emit `pattern_profile: none` in the internal IR
    rather than forcing one. A compressed surfaced case-state may omit the field, but the
    validator-backed IR should stay explicit.
+
+## Structural Pattern Print Discipline
+
+Use `structural_pattern_print` only when it adds routing leverage beyond the PF code.
+It is most useful when a topic label would mislead the response, but a local
+description preserves the active node:
+
+- closed-canon veto rather than "a Jewish topic"
+- Vedic-reformist criterion as tribunal rather than "a Hinduism topic"
+- kashf-as-tribunal rather than "a Sufism topic"
+- identity-continuity pressure rather than "a Buddhist topic"
+- imported moral tribunal rather than "a fiqh topic"
+- nondual ontology as upstream category-set rather than "ordinary polytheism"
+
+Pattern print must be paired with a routing consequence in the IR: a load-bearing
+node, an intervention target, held downstream material, or a framing note. If it
+does not change sequencing, suppression, release, or owner selection, omit it.
+
+Failure tests:
+
+- Fails if the pattern print becomes a prettier tradition label.
+- Fails if it is populated from thin input.
+- Fails if it replaces `pattern_profile` or PF discipline.
+- Fails if it licenses new coverage content or argument/citation dumping.
+- Fails if the response names the pattern but does not identify what must clear first.

@@ -1,3 +1,33 @@
+---
+id: doubt-vs-skepticism
+module_class: tactic
+canonical_path: skill/references/tactics/doubt-vs-skepticism.md
+contract_version: "0.2.2.0"
+load_when:
+  - interlocutor demands evidence for God as precondition for engagement
+  - extraordinary-claims-require-extraordinary-evidence principle invoked as tribunal
+  - evidence demand treated as the neutral default epistemological position
+routing_effects:
+  - first-line meta-clearing move before E1 when the interlocutor's operative rule treats absence of evidence as disproof
+companions:
+  - E2-inferential-criterion
+  - M1P-performative-self-refutation
+  - M2-prior-probability
+  - E1-broadening-evidence
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # Doubt vs. Skepticism — Evidence Is Not the Default Requirement
 
 **Deploy when:** Interlocutor demands evidence for God as a precondition for engagement;

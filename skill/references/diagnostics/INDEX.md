@@ -1,3 +1,13 @@
+---
+id: diagnostics-index
+module_class: governance
+canonical_path: skill/references/diagnostics/INDEX.md
+contract_version: "0.2.2.0"
+load_when:
+  - selecting a diagnostic file after V1 case-classification
+catalogue_registered: false
+---
+
 # Diagnostics - Index
 
 Diagnostics classify the case before rebuttal. They determine what the engagement is, what is actually obstructing recognition, and whether intellectual engagement is even the right instrument.

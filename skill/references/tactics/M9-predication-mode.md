@@ -1,3 +1,41 @@
+---
+id: M9-predication-mode
+module_class: tactic
+canonical_path: skill/references/tactics/M9-predication-mode.md
+contract_version: "0.2.2.0"
+load_when:
+  - equivocation across term occurrences
+  - domain-boundary failure (empirical method on non-empirical subject)
+  - univocal/equivocal/analogical predication question active
+  - loaded negative-theological term operative
+  - semantic-discipline-required gate active
+routing_effects:
+  - semantic-discipline-required
+  - holds doctrinal-release pending predication clearance
+emits:
+  - ontological_disorder
+  - what_is_withheld_and_why
+blocks:
+  - doctrinal-release before semantic clearing
+  - yes/no answer on loaded term before sense-split
+companions:
+  - definition-discipline
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # M9 - Predication-Mode Analysis
 
 **Type:** Meta-tactic

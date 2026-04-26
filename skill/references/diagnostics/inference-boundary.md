@@ -1,9 +1,22 @@
-# Inference Boundary Markers
+---
+id: inference-boundary
+module_class: governance
+canonical_path: skill/references/diagnostics/inference-boundary.md
+contract_version: "0.2.2.0"
+load_when:
+  - response draws on more than one file, extends file content, or risks overclaiming
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
-> role: diagnostic-governance
-> use when: the response draws on more than one file, extends the file content, or risks overclaiming
-> do not use when: every material claim is directly grounded and no metadiscursive marking is needed
-> output: source-status labels that separate anchored skill content from model-added reasoning
+# Inference Boundary Markers
 
 This file governs the difference between what the repository says, what multiple files jointly
 support, what the model is inferring, and what remains speculative.
@@ -127,3 +140,11 @@ Before finalizing any response, confirm:
 ## Integration with [Source Basis] Block
 
 The `[Source Basis]` block in `case-state-schema.md` requires source-weight annotation when unlike source types are joined. The inference-boundary markers feed directly into that block: a claim marked `[inference]` must be listed as inference-weight in `[Source Basis]`, not as anchored. A claim marked `[synthesis]` must name the files being combined. The markers in the response body and the weight annotations in `[Source Basis]` must be consistent — they are two surfaces of the same audit trail.
+
+## Coverage Verification
+
+- Failure condition: Any inferred, speculative, or cross-file synthesis claim presented as directly anchored violates this file even if the final answer is substantively plausible.
+- IR-visible consequence: Mark source status as anchored, synthesis, inference, or speculative and keep the Source Basis block consistent with that marking.
+- Minimal pair: Synthesis combines loaded files without adding a new thesis; inference extends beyond what the loaded files jointly state.
+- Hold/release rule: Hold speculative extensions from governing diagnosis or module selection until confirmed by additional case signals.
+- Anti-pattern guard: Do not use source markers as decoration after the fact; they must control claim strength before release.

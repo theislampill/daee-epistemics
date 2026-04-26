@@ -1,7 +1,29 @@
-> role: specialty diagnostic
-> use when: ḥadīth corpus reliability, isnād or narrator-evaluation criticism, āḥād-vs-mutawātir epistemic-yield questions, or grade-language rhetoric is the live pressure
-> do not use when: the live pressure is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely downstream doctrine
-> output: ḥadīth-authentication burden family, minimal discriminator, route consequence, and hold/release rule
+---
+id: hadith-authentication-epistemology
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/hadith-authentication-epistemology.md
+contract_version: "0.2.2.0"
+load_when:
+  - ḥadīth corpus reliability or isnād criticism is live pressure
+  - āḥād-vs-mutawātir epistemic-yield question active
+  - grade-language rhetoric operative
+routing_effects:
+  - holds downstream doctrinal rebuttal until transmission burden is typed
+  - prohibits RT-5 label
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - downstream doctrinal release before ḥadīth burden typed
+  - RT-5 inflation
+companions:
+  - V10-transmission-content-vetting
+  - revelation-transmission
+output_shapes:
+  - pass-through
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
 
 # Ḥadīth Authentication and Epistemic Yield
 

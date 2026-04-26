@@ -1,10 +1,14 @@
-# Pattern-Family Robustness and Multi-Module Routing Discipline Audit
+---
+id: pattern-family-audit
+module_class: governance
+canonical_path: skill/references/diagnostics/pattern-family-audit.md
+contract_version: "0.2.2.0"
+load_when:
+  - auditing pattern-family coverage, routing discipline, or running regression tests
+catalogue_registered: false
+---
 
-> role: audit artifact / regression suite
-> produced by: comprehensive audit pass — file bodies read directly, not inferred from README summaries
-> anchor case: "I was raised as a Christian, I don't have any reason to be Muslim, and I'm not sure which Bible version such as Protestant or Catholic to choose from, or why these topics seem complicated."
-> represents: inherited-framework, evidentialist-demand/pre-inquiry, canon-formation/authority-certification, transmission/authentication, doctrinal-complexity, Christology/later-doctrinal-settlement, positive-restoration-framing pressures
-> do not optimize around: the anchor case is one instance of multi-family pressure, not the target
+# Pattern-Family Robustness and Multi-Module Routing Discipline Audit
 
 ---
 

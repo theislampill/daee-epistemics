@@ -1,8 +1,30 @@
-> role: noetic structure profile — NS-9 Historical-Critical Skeptic
-> use when: NS-9 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only
-> IR field: NS code = NS-9
-> do not use when: NS code is still provisional — route through mixed-case-handling.md; backbone predicate K-1 mandatory check for this profile
-> paired files: V2 (mandatory first — on the imported framework); V10 (separate artifact from authenticated transmission); case-library/revelation-transmission.md (RT-1/RT-2/RT-3); arabic-backbone-predicates.md K-1 check mandatory
+---
+id: ns-9-historical-critical-skeptic
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-9 (Historical-Critical Skeptic) confirmed via Quick NS Identification
+routing_effects:
+  - V2 mandatory first on imported historical-critical framework
+  - V10 mandatory for separating artifact from authenticated transmission
+companions:
+  - V2-reconstituting-reason
+  - V10-transmission-content-vetting
+  - revelation-transmission
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-9 — The Historical-Critical Skeptic
 
@@ -53,3 +75,11 @@ artifact from authenticated transmission). The NS-9 profile alone is insufficien
 **Register note:** The interlocutor often presents as truth-seeking (`truth-seek` DO-orient) and
 the scholarship is real. The diagnostic is not suspicion of the interlocutor but of the imported
 framework. V2 is applied to the method, not to the person.
+
+## Coverage Verification
+
+- Failure condition: Do not emit NS-9 for any manuscript question by itself; the historical-critical method must be functioning as an imported neutral tribunal.
+- IR-visible consequence: Emit `NS: NS-9`, match V2 before V10/RT, and keep the specific RT route held until the imported method's jurisdiction is named.
+- Minimal pair: NS-9 differs from an RT-only case because NS-9 is about the governing method and its imported conditions, while RT-1 through RT-4 classify the transmission pressure after the method is cleared.
+- Hold/release rule: Hold artifact-level rebuttal until V2 has named the method's source-conditions and V10 has separated artifact from authenticated transmission.
+- Anti-pattern guard: Do not defend isolated fragments inside the historical-critical frame as though that frame were the neutral court.

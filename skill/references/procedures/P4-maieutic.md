@@ -1,3 +1,38 @@
+---
+id: P4-maieutic
+module_class: procedure
+canonical_path: skill/references/procedures/P4-maieutic.md
+contract_version: "0.2.2.0"
+load_when:
+  - interlocutor in inkār mode — qalb has already registered what the tongue denies
+  - recognition is present but suppressed; not the case where genuine inquiry is absent
+companions:
+  - R2-the-reminder
+  - V5-directing-attention-signs
+routing_effects:
+  - sustains recognition-eliciting questioning when inkar is the governing mode
+  - holds argumentative assertion while recognition is being invited to surface
+emits:
+  - recognition_strength
+  - what_is_withheld_and_why
+blocks:
+  - rhetorical trap-questioning presented as maieutic inquiry
+  - pressing for conclusion after recognition surfaces
+output_shapes:
+  - bounded-single-pass
+  - recursive-traversal-permitted
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
 # P4 — The Socratic-Maieutic Procedure
 
 **For:** Interlocutors in inkār mode — where the qalb has already registered what the
@@ -43,3 +78,64 @@ disjunction surfaces, do not press. Leave it present.
 
 **Connection:** R2 (`references/tactics/R2-the-reminder.md`) is the tactic-level version of the same
 move. P4 is the sustained procedure; R2 is the single-exchange deployment.
+
+## Failure Conditions
+
+Do not deploy P4 when there is no evidence that recognition is near the surface. If the
+interlocutor is simply asking for information, presenting a clean objection, or operating
+from an unexamined criterion, the right route is P2, P3, R1, E2, DO, RT, or another matched
+owner.
+
+P4 fails when questioning becomes a trap, a cross-examination, or a disguised argument. It
+also fails when the practitioner presses the interlocutor to verbalize recognition after it
+has surfaced. The procedure is meant to let the interlocutor notice what is already present;
+turning that moment into a demand for concession corrupts the mode.
+
+If grief-primary, identity-performance, or relational harm governs, P7 Stop 1 or Stop 3
+precedes P4. If recognition is not available after bounded questioning, do not force the
+read; mark the case underdetermined or route toward P1, F3, or the relevant intellectual
+owner depending on the refreshed signal.
+
+## IR-Visible Consequences
+
+When P4 is active, the IR should mark recognition-elicitation as the current procedure and
+track `recognition_strength` as weak, medium, strong, or not-yet-visible. Argumentative and
+doctrinal content should be recorded in `held_material` while the question-space is open.
+
+If recognition surfaces at medium or strong strength, P7 Stop 2 governs the current pass:
+stop, leave at most one live question, and refresh before any further content. If no
+recognition surfaces and the questioning basis remains thin, P7 Stop 4 may govern rather
+than permitting more maieutic pressure.
+
+## Minimal-Pair Discriminators
+
+P4 vs. R2: R2 is a single reminder-tactic; P4 is the sustained procedure when multiple
+careful questions are needed and the register permits them.
+
+P4 vs. P1: choose P4 when recognition appears present but suppressed; choose P1 when the
+conditions for recognition themselves must be restored over time.
+
+P4 vs. P2: choose P4 when objection-language is secondary to suppressed recognition; choose
+P2 when the objections remain honest critical burdens that should be mapped.
+
+P4 vs. M3/V5: M3 probes an orphaned intuition; V5 directs attention to signs. P4 governs the
+questioning posture that may use such material only if it serves recognition rather than
+argument accumulation.
+
+## Hold/Release Discipline
+
+Hold assertions, doctrinal explanations, and cumulative proof while the maieutic space is
+open. Release only one question or one brief reflection at a time. The release signal is not
+that the practitioner sees the next clever question; it is that the interlocutor's answer
+reveals a live path that V1 can refresh.
+
+When recognition appears, stop pressing. If the recognition is weak, leave it present without
+forcing a conclusion. If it is medium or strong, record the strength and let P7 Stop 2 govern
+the boundary.
+
+## Anti-Pattern Guard
+
+The primary misuse is Socratic domination: using questions to corner rather than to midwife.
+If the questions are designed to make the practitioner win, P4 has already failed. The guard
+is whether the question creates space for the interlocutor's own recognition, not whether it
+sets up the next answer.

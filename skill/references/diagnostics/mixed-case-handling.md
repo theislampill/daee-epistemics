@@ -1,9 +1,15 @@
-# Mixed Cases and Insufficient Basis
+---
+id: mixed-case-handling
+module_class: governance
+canonical_path: skill/references/diagnostics/mixed-case-handling.md
+contract_version: "0.2.2.0"
+load_when:
+  - multiple diagnoses compete
+  - case is thin or orientation/deformation underdetermined
+catalogue_registered: false
+---
 
-> role: diagnostic-governance
-> use when: multiple diagnoses compete, the case is thin, or orientation and deformation remain underdetermined
-> do not use when: a clean primary read is already well established
-> output: rules for provisional routing, mixed reads, and proportional response under uncertainty
+# Mixed Cases and Insufficient Basis
 
 ## Mixed-Case Rules
 
@@ -14,6 +20,7 @@
 - When a higher-order burden is primary, type the restoration target at that same layer before selecting downstream content. Do not let `pattern_profile` stand in for the layer being restored.
 - When an imported tribunal and a semantic blocker are both live, preserve both. Sequence tribunal-clearing first, then semantic clarification, then doctrinal engagement. Do not collapse the case into one label.
 - If grief, vested interest, or identity-performance may be primary, do not treat the case as a pure `shubha` until that possibility has been tested.
+- If a tradition-labeled case carries family, communal identity, institutional betrayal, teacher abuse, caste/social belonging, or authority wound, do not treat the formal objection as primary until the wound-vs-tribunal distinction is tested.
 - Treat `do not use when` as a precondition: this file is not the opening move when a clean primary read is already well established.
 
 ## Dominant vs Distributed Reads
@@ -81,6 +88,14 @@ These playbooks are mandatory routing logic for cases where two deformation fami
 - Intervention order: identify whether the textual claim is genuinely the source of doubt or a rationalization; if authority-fatigue is primary, do not engage the textual argument first.
 - Reassessment trigger: the interlocutor distinguishes between the institutional wound and the textual question.
 
+### (ii-a) Authority Wound + Authority Tribunal
+
+- Dominant read depends on which layer is carrying the pressure.
+- Authority wound: the shaykh, institution, family, caste/community, or teacher harmed me; route relational safety, NS-8/P7, and do not force doctrinal verdicts into the wound.
+- Authority tribunal: the shaykh, tariqah, kashf, canon closure, inherited community, or social identity claims jurisdiction over revelation or sound reason; route FPD/usurpation or source-use discipline before downstream content.
+- Intervention order: test jurisdiction before occurrence. Do not debate whether an experience happened before asking whether it has authority over revelation.
+- Failure test: if the response collapses abuse wound into doctrine, or treats an authority-tribunal claim as a pastoral wound only, this playbook did not govern.
+
 ### (iii) Identity-Cost + Historical Criticism
 
 - Dominant read: identity-performance, not truth-seeking discourse.
@@ -102,6 +117,7 @@ These playbooks are mandatory routing logic for cases where two deformation fami
 - Non-Christian inherited-tradition boundary: if the case needs family-specific authorization content beyond V10 Step 3 and no dedicated downstream DO owner exists, stop at the structural form, name the boundary, and do not borrow DO-14 by analogy.
 - Restoration framing: P1/P4 may support the response when the register is open, but they do not substitute for the live epistemic module.
 - Failure tests: restoration-first collapse, Christology preemption, RT-2 substitution, and criterion grant. If any occurs, reroute to the upstream blocker and hold downstream content.
+- NS-11 routing note: if the case combines inherited-Christian background with NS-11 (fideist — commitments held on faith, rational examination refused), register-hold governs before any DO, V12, or RT content regardless of which downstream sub-question is active. DO-14 and DO-10 are both held. The fideist-closed posture means doctrinal engagement cannot land; the correct move is pastoral/invitational until the register shifts from fideist-closed to inquiry-open. NS-11 does not change sub-question identification — it changes the precondition for content release.
 
 ### (vi) Doctrinal Complexity / Disagreement Pressure
 

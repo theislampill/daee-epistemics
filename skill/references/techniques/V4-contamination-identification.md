@@ -1,3 +1,22 @@
+---
+id: V4-contamination-identification
+module_class: technique
+canonical_path: skill/references/techniques/V4-contamination-identification.md
+contract_version: "0.2.2.0"
+load_when:
+  - fiṭrah appears suppressed
+  - interlocutor has access to theistic signs but does not respond
+  - nature of contamination (rational or transmission) needs to be named before progress is possible
+companions:
+  - V2-reconstituting-reason
+  - V8-bila-kayf-anchor
+output_shapes:
+  - pass-through
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
+
 # V4 — Contamination Identification
 
 **Deploy when:** The fiṭrah appears suppressed — when the interlocutor has access to theistic signs but does not respond; or when the nature of the contamination needs to be named before progress is possible.

@@ -1,8 +1,20 @@
-> role: noetic structure profile — NS-6 Kalāmic Evidentialist
-> use when: NS-6 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-2 (see minimal-pair discriminator in profiles/INDEX.md) or NS-10 (Māturīdī variant)
-> IR field: NS code = NS-6
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: diagnostics/kalamic-interlocutor.md (mandatory — load to identify school position before V2); V2; P3 (reason-revelation tension)
+---
+id: ns-6-kalamic-evidentialist
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-6 (Kalāmic Evidentialist) confirmed via Quick NS Identification
+routing_effects:
+  - school identification required before V2; V2 mandatory after school confirmed
+companions:
+  - V2-reconstituting-reason
+  - P3-reason-revelation-tension
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
 # NS-6 — The Kalāmic Evidentialist
 

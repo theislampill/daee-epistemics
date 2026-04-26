@@ -1,9 +1,27 @@
-> role: diagnostic pass — prophetic-discourse neutralization
-> use when: revealed or prophetic speech is being redirected into another content, emptied of determinate meaning, or treated as non-guiding at the semantic level
-> do not use when: the case is purely about transmission authenticity with no dispute over whether prophetic discourse yields determinate guidance
-> output: structured detection of semantic-neutralization mode, what is being suppressed, and what must load next
-> pipeline position: V1 Phase 2, after foreign-premise-detection.md when prophetic or revealed discourse is live, before doctrinal content dispatch
-> paired files: foreign-premise-detection.md; prophecy-wahy-supremacy.md; V8-bila-kayf-anchor.md; do-attribute-precision.md; P3-reason-revelation-tension.md
+---
+id: prophetic-discourse-neutralization
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/prophetic-discourse-neutralization.md
+contract_version: "0.2.2.0"
+load_when:
+  - revealed or prophetic speech redirected, semantically overridden, or evacuated
+  - semantic recontenting or determinate-guidance denial active before doctrinal dispatch
+routing_effects:
+  - holds doctrinal content dispatch while semantic-neutralization move is unaddressed
+  - route-back gate after clearing — requires case-state refresh before next move
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - doctrinal content dispatch while recontenting or evacuation mode is unaddressed
+companions:
+  - V8-bila-kayf-anchor
+  - do-attribute-precision
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
 
 # Prophetic Discourse Neutralization
 

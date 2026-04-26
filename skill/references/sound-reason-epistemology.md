@@ -1,7 +1,20 @@
-> role: theoretical substrate
-> use when: the case needs the full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
-> do not use when: a lighter diagnostic or tactical file already gives the needed routing guidance
-> output: anchored theory for deeper grounding, not a default response script
+---
+id: sound-reason-epistemology
+module_class: governance
+canonical_path: skill/references/sound-reason-epistemology.md
+contract_version: "0.2.2.0"
+load_when:
+  - case needs full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 **Theory-Bleed Prevention:** This file is a matched-load substrate. Load it only when the case genuinely requires theoretical depth. V1 diagnosis, mixed-case handling, and lighter matched modules must precede this file. If a case can be handled by V8 alone (bilā kayf without the full warrant account), by DO-5 alone (transcendence and language without the tawātur thesis), or by a tactical triage file, do not load this file. Over-loading this file adds theoretical weight to cases that need routing precision, and it risks substituting theory-display for the smallest matched move.
 
@@ -660,3 +673,11 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 **Cross-references:** `references/tactics/M9-predication-mode.md` (Functions 1, 2, and 3);
 `references/techniques/V8-bila-kayf-anchor.md`; `references/terminology.md`
 (Ṣifa qāʾima bi-dhātihi, Tāʿṭīl, Tashbīh, Talāzum — add if not present).
+
+## Coverage Verification
+
+- Failure condition: Do not load this file as ambient philosophical display when V8, DO-5, a tactic, or a profile file already supplies the smallest matched move.
+- IR-visible consequence: When loaded, name the specific section doing work and keep it in Source Basis as theoretical substrate rather than as an automatic runtime router.
+- Minimal pair: V8 handles a bounded bila kayf attribute move; this file is required only when the deeper warrant, tawatur, fitrah, husn al-nazar, or attribute-metaphysics substrate is live.
+- Hold/release rule: Hold theoretical depth until a named downstream use requires it; release only the section needed by the current validated case-state.
+- Anti-pattern guard: Do not let philosophical vocabulary trigger theory-bleed; Diagnostic IR and matched lighter files still govern first.

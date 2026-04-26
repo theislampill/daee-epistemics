@@ -1,7 +1,17 @@
-> role: always-active analyst discipline
-> use when: throughout every engagement as background governance
-> do not use when: you need a case-specific move rather than standing operator discipline
-> output: routing discipline, restoration discipline, and standing operator checks
+---
+id: heuristics
+module_class: technique
+canonical_path: skill/references/techniques/heuristics.md
+contract_version: "0.2.2.0"
+load_when:
+  - throughout every engagement as background governance
+blocks:
+  - case-specific moves (require dedicated modules, not heuristics)
+output_shapes:
+  - pass-through
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
 
 # Discursive Heuristics — Operative Principles
 

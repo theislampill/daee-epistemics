@@ -1,14 +1,61 @@
+---
+id: do-core
+module_class: case-library
+canonical_path: skill/references/case-library/do-core.md
+contract_version: "0.2.2.0"
+load_when:
+  - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
+  - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family
+routing_effects:
+  - activates family-local load floor (V1, Phase 2 passes, IR, routing-precedence, P7 check)
+  - does not authorize content release — output discipline remains live
+blocks:
+  - content release without confirmed case-state
+companions:
+  - do-attribute-precision
+  - V2-reconstituting-reason
+  - M4-grief-register
+  - M9-predication-mode
+output_shapes:
+  - bounded-single-pass
+  - held-pending-upstream
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
+
 # Case Library — Doctrinal Objections: Core Set (DO-1 through DO-6)
 
-Load this file when one of the following objections arises:
-DO-1 (divine hiddenness), DO-2 (problem of evil — evidential),
-DO-3 (evolutionary debunking), DO-4 (religious diversity),
-DO-5 (transcendence and language), DO-6 (attribute coherence).
+> **role:** DO pressure family owner — DO-1 through DO-6
+> **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
+> **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
+> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
 
-Each entry gives: the objection stated strongly, the strongest rebuttal
-to the Islamic response, and the full rebuttal chain.
+**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-1 through DO-6 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
 
-Use the case-library routing table when you need the broader family map.
+**Under-load guard:** A confirmed DO route involving semantic, register, authority, proof-method, or tribunal pressure requires loading and representing those owners in the IR — even when Layer B output remains short. Loading only this file plus one technique is insufficient for a complex case.
+
+**DO-core family-local load floor** (conditional on confirmed case-state, not global ambient):
+- V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
+- matched TTP owner(s) justified by confirmed case-state
+- P7 stop check before Layer B release
+- For doctrinal/metaphysical pressure (DO-5, DO-6): M9-predication-mode.md, do-attribute-precision.md, definition-discipline.md, perfection-criterion-usurpation.md before attribute/predication content
+- For grief/register-primary pressure (DO-1, DO-2): M4-grief-register.md, P7-restoration-stops.md before DO content
+
+---
+
+## DO-core Fan-Out Table
+
+| Pressure signal | Required owner route |
+|---|---|
+| grief/deconversion/register wound on hiddenness | M4-grief-register.md, P7-restoration-stops.md; DO-1 content held |
+| philosophical hiddenness (search genuinely live) | DO-1; P4 maieutic after search-history confirmed |
+| grief/protest on evil | M4-grief-register.md, P7-restoration-stops.md; DO-2 content held |
+| evidential/probabilistic evil argument | M2; DO-2 after register confirmed as truth-seeking |
+| self-refutation / evolutionary debunking | M1 first; V9 if necessary-knowledge attack; causal-series-taxonomy.md if secondary-cause self-sufficiency live |
+| diversity as evidence or exit | V10 if authority/text transmission live; criterion-import form routes through V2/FPD if criterion governs |
+| divine predication / loaded terms in attribute objection | M9-predication-mode.md before V8; definition-discipline.md if technical capture live |
+| attribute coherence / composition | M9, definition-discipline.md, do-attribute-precision.md, perfection-criterion-usurpation.md; V8 only after semantic discipline clears |
+| transcendence language / loaded negative theological terms | M9 before V8; DO-13 discriminator: if philosopher's-God tribunal governs → do-christian-extensions.md DO-13 |
 
 ---
 
@@ -17,6 +64,41 @@ Use the case-library routing table when you need the broader family map.
 ---
 
 ### DO-1 — Divine Hiddenness
+
+#### Pressure type
+Philosophical divine hiddenness — why would a God who desires relationship remain hidden from sincere seekers?
+
+#### Trigger signals
+Sincere-search narrative with no tangible divine response; hiddenness framed as evidence against theism; "if God wanted us to know him, he would be clearer."
+
+#### Do-not-route-here / near-miss rules
+- Grief-primary hiddenness: register is wound/lament, not philosophical argument → M4/P7 first; do not deploy DO-1 into grief
+- Deconversion narrative: hidden-God is emotional backdrop, not live argument → mixed-case-handling.md
+- Autotelic discourse orientation → register check before DO-1
+
+#### Mandatory family-local load floor
+M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs). DO-1 substantive content loads only when philosophical register is confirmed.
+
+#### Ordered TTP route
+1. V1 → confirm philosophical vs. grief register
+2. M4 discriminator: grief-primary → hold DO content, deploy pastoral
+3. P4 maieutic: if actual search history is live, bring it into view before argument content
+4. DO-1 substantive after register and basis confirmed
+5. P7 stop check before Layer B release
+
+#### Semantic/register blockers
+Grief or lament register blocks DO-1 content; must clear before deployment.
+
+#### Allowed Layer B move
+Acknowledge the search; distinguish hiddenness types; note that the Islamic account of proximity (qurb) and response to sincere seeking differs structurally from the model the objection assumes.
+
+#### Held downstream material
+Full hiddenness rebuttal chain; probabilistic analysis; V6 positive reconstruction — all held until philosophical register is confirmed and prior-search history is live.
+
+#### Minimal discriminator/probe
+Is this a statement of felt absence (grief register) or an argument that hiddenness constitutes evidence against theism (philosophical register)?
+
+---
 
 **The objection:** God, if he exists, desires relationship with all human beings. A loving God
 would ensure that all sincere seekers come to know him. But many sincere seekers remain
@@ -30,7 +112,7 @@ sincere seekers have a functioning fiṭrah available. For someone who has genui
 found nothing, attributing the failure to a defect in the seeker rather than absence of the sought
 object is an unfalsifiable immunizing move. It appears to make the theory non-disconfirmable.
 
-**Operative response to the rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal misidentifies the structure of the argument. The claim is not a psychological
 generalization that could be falsified by counter-examples — it is a claim about the conditions
 of proper function. The fiṭrah's correct operation requires not merely cognitive effort but a
@@ -59,6 +141,41 @@ remembered through the lens of a deconversion narrative.
 
 ### DO-2 — The Problem of Evil (Evidential)
 
+#### Pressure type
+Evidential problem of evil — suffering/evil as evidence against an omnipotent, omniscient, perfectly good God.
+
+#### Trigger signals
+"If God existed and were good, he would not permit X"; probabilistic/Bayesian evil arguments; natural evil as counter-evidence; gratuitous suffering claims.
+
+#### Do-not-route-here / near-miss rules
+- Grief-primary evil: loss, lament, pastoral wound → M4/P7 before DO-2; avoid theodicy into grief
+- Protest orientation: not argument but moral accusation → register holds DO-2 content
+- Thin basis: one sentence expressing pain is not a live evidential argument
+
+#### Mandatory family-local load floor
+M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs), M2 (when evidential/probabilistic pressure is actually live).
+
+#### Ordered TTP route
+1. V1 → confirm evidential vs. grief/protest register
+2. M4 discriminator before any theodicy content
+3. M2 when evidential pressure confirmed
+4. DO-2 substantive after register and pressure type confirmed
+5. P7 stop check
+
+#### Semantic/register blockers
+Grief, protest, or pastoral register blocks DO-2 content. "Why does God allow suffering?" in grief register ≠ evidential argument.
+
+#### Allowed Layer B move
+Acknowledge the weight of the question; distinguish registers; if philosophical, name that the Islamic account does not require good-outcomes-only and that the framing imports specific assumptions about divine obligations.
+
+#### Held downstream material
+Full evidential rebuttal; soul-making theodicy; greater-good defenses — all held until evidential register is confirmed.
+
+#### Minimal discriminator/probe
+Is this presented as an argument that evil constitutes evidence against God, or as an expression of suffering that seeks response?
+
+---
+
 **The objection:** The amount, intensity, and distribution of suffering — especially natural evil
 not caused by human choice — constitutes strong evidence against an all-powerful, all-knowing,
 perfectly good God. Even if not strictly logically incompatible, it significantly lowers the
@@ -71,7 +188,7 @@ suffering to its actual pointlessness because God might have reasons we cannot f
 reason inductively at all — this undercuts the evidential base for science, history, and ordinary
 life. Skeptical theism purchases theodicy at the cost of reason itself.
 
-**Operative response to the rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal conflates two distinct epistemic claims. The claim "we cannot always know God's
 reasons for permitting suffering" is a claim about the limits of human knowledge of divine
 purposes, grounded in the ontological distance between Creator and creature. The claim "we cannot
@@ -103,6 +220,45 @@ grief is often very close to the surface — argument cannot reach it; genuine p
 
 ### DO-3 — The Evolutionary Debunking of Religious Belief
 
+#### Pressure type
+Evolutionary/cognitive debunking arguments — evolution explains belief, therefore belief is false or unjustified.
+
+#### Trigger signals
+"Religion is an evolutionary byproduct"; "we believe because we were designed to believe, not because it's true"; cognitive science of religion as defeater.
+
+#### Do-not-route-here / near-miss rules
+- NS naturalism governing: if interlocutor's entire worldview is under NS-x governing filter, V2 clears upstream before DO-3
+- Secondary-cause self-sufficiency as separate claim: routes through causal-series-taxonomy.md if naturalistic causal sufficiency becomes live independently
+
+#### Mandatory family-local load floor
+M1 (self-refutation check), V9 if necessary-knowledge-attack form live, causal-series-taxonomy.md when secondary-cause sufficiency claim live.
+
+#### Ordered TTP route
+1. M1 if argument is self-undermining (evolutionary naturalism debunks the faculties used to evaluate it)
+2. V9 if argument attacks the reliability of necessary knowledge
+3. causal-series-taxonomy.md if natural selection is claimed as self-sufficient causal account
+4. DO-3 substantive after diagnostic owners clear
+
+#### Semantic/register blockers
+None category-specific; standard gate discipline applies.
+
+#### Allowed Layer B move
+Name the self-refutation structure; ask what the evolutionary account actually establishes vs. what it debunks.
+
+#### Held downstream material
+Full CSR taxonomy; detailed self-refutation chain — held until pressure type confirmed.
+
+#### Minimal discriminator/probe
+Does the argument claim belief is caused by evolution (genetic fallacy candidate — M1) or that evolution makes belief unreliable (self-refutation / necessary-knowledge attack — V9)?
+
+#### Failure test
+This entry has not governed the response if:
+- The genetic-fallacy or foundation/superstructure reply is deployed without first running M1 to check for self-refutation in the argument's structure.
+- The "targeted defeater" form of the strongest rebuttal (CSR debunks HADD specifically without global skepticism) is not addressed — it is the standard sophisticated reply and must be named.
+- The response treats "evolution explains belief" as refuted merely by pointing to secondary causation without distinguishing what CSR actually explains (superstructural attribution elaboration) from what it does not explain (foundational fiṭrī recognition).
+
+---
+
 **The objection:** Religious belief can be fully explained by evolutionary processes that enhanced
 survival and reproductive fitness, without reference to truth. If a belief is fully explained by
 a process not aimed at truth, the belief is epistemically unreliable. Therefore religious belief
@@ -114,7 +270,7 @@ reliability. The rebuttal: scientific beliefs have external verification through
 that religious beliefs lack. The evolutionary debunking argument is therefore more damaging to
 religious belief than to scientific belief, even if both are evolutionary products.
 
-**Operative response to the rebuttal (M1 — self-refutation):**
+#### Existing substantive content (route-governed):
 The supposed asymmetry does not hold. The claim that "external verification" means "empirically
 testable against physical-world data" smuggles in the naturalist's evidential criterion as if
 established, when it is precisely the premise under dispute.
@@ -137,6 +293,47 @@ biological structures of human cognition, to produce the dispositions he intends
 
 ### DO-4 — The Problem of Religious Diversity
 
+#### Pressure type
+Religious diversity — multiple religions exist, so no single religion has a claim to truth.
+
+#### Trigger signals
+"If you were born elsewhere you'd believe differently"; "all religions make similar claims so none is privileged"; diversity as defeater for religious knowledge.
+
+#### Do-not-route-here / near-miss rules
+- Diversity-as-exit (identity orientation): not argument but social pressure → register check first
+- Canon/authority form: "how do you know your book is right?" → V10 / DO-14 before diversity content
+- Generic fitrah/superstructure claim: if interlocutor asserts all religions share a common source, distinguish from the epistemic-defeat form
+
+#### Mandatory family-local load floor
+Discourse-orientation check (truth-seeking vs. identity-exit vs. autotelic); V10 if authority/canon pressure becomes live; V2/FPD if criterion-import governs the diversity argument.
+
+#### Ordered TTP route
+1. V1 discourse-orientation: is this an argument or an exit?
+2. If diversity-as-evidence: distinguish genesis-of-belief from justification
+3. If canon/authority: V10 before text-content analysis
+4. If criterion-import: reason-disambiguation + FPD + V2 before diversity content
+5. DO-4 substantive after orientation confirmed
+
+#### Semantic/register blockers
+Identity-exit or autotelic orientation blocks evidential deployment; register check required.
+
+#### Allowed Layer B move
+Distinguish genesis of belief from justification; note that the diversity argument would also defeat the challenger's epistemology if applied consistently; invite precision about which form of the argument is live.
+
+#### Held downstream material
+Full comparative analysis; particular tradition arguments; V10 full chain — held until basis and orientation confirmed.
+
+#### Minimal discriminator/probe
+Is this "diversity proves no religion is true" (epistemic argument), "I might believe differently if born elsewhere" (contingency reflection), or "which book is reliable" (authority/canon question)?
+
+#### Failure test
+This entry has not governed the response if:
+- DO-4 diversity content is deployed before running a discourse-orientation check — the diversity argument is frequently used as an exit (identity-performance or autotelic) rather than a genuine epistemic argument, and content engagement into that register is DO-4 misfiring.
+- A canon or authority question ("which book is reliable?") is answered with DO-4 diversity content rather than being routed to V10 / DO-14.
+- The "diversity proves no specific religion is true" rebuttal is given without explicitly distinguishing genesis-of-belief from justification, or without checking whether a foreign criterion (liberal pluralism, genetic egalitarianism about traditions) is governing the diversity argument and needs FPD + V2 first.
+
+---
+
 **The objection:** Many mutually incompatible religious traditions exist, each producing sincere
 believers. If the fiṭrah were a reliable guide to religious truth, we would expect convergence
 rather than divergence. Diversity is evidence that religious belief is culturally produced, not
@@ -150,7 +347,7 @@ of Islam — the prophethood of Muḥammad, the Qurʾān as divine revelation. T
 theism to specifically Islamic commitments requires independent justification the fiṭrah cannot
 provide.
 
-**Operative response to the rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal correctly identifies the epistemological structure — and the tradition's actual
 account matches it. The fiṭrah delivers generic theistic recognition: the existence of a Creator,
 the reality of moral obligation, human accountability. The specific claims of the Islamic
@@ -176,6 +373,46 @@ where occlusion is widespread.
 
 ### DO-5 — The Argument from Divine Transcendence Against Language
 
+#### Pressure type
+Divine transcendence and language — if God is transcendent, all religious language about God must be false, metaphorical, or incoherent.
+
+#### Trigger signals
+"God is beyond description, so your theology is just projection"; loaded uses of "anthropomorphic," "literal," "metaphor"; claims that divine language is meaningless or contradictory.
+
+#### Do-not-route-here / near-miss rules
+- Loaded-term usage ("anthropomorphic," "literal," "metaphorical" used as weapons): M9 before V8 — stabilize predication terms first
+- Technical capture of theological language: definition-discipline.md before doctrine release
+- Philosopher's-God framing (non-eventful, timeless, non-relational as perfection criteria): DO-13 discriminator — if the objection comes from a static-perfection tribunal, route through perfection-criterion-usurpation.md first
+
+#### Mandatory family-local load floor
+M9-predication-mode.md when predication terms are unstable or loaded; definition-discipline.md when public-language capture is live; V8-bila-kayf-anchor.md after predication is stabilized.
+
+#### Ordered TTP route
+1. M9 if predication terms (literal/metaphorical/body/direction) are being used as weapons or are semantically unstable
+2. definition-discipline.md if technical-language capture is occurring
+3. V8 after predication terms are stabilized
+4. DO-5 substantive after semantic discipline has cleared
+
+#### Semantic/register blockers
+Unstable predication terms block V8 and DO-5 content. Do not release transcendence doctrine while "literal," "anthropomorphic," or "body" remain semantically contested.
+
+#### Allowed Layer B move
+M9 lexical-ontological split: name that the key terms need stabilizing before the argument can be evaluated; show that the bilā kayf discipline pre-answers the anthropomorphism charge.
+
+#### Held downstream material
+Full V8 content; DO-5 substantive arguments — held until predication terms are stable.
+
+#### Minimal discriminator/probe
+Are "anthropomorphic," "literal," and "metaphorical" being used in contested or loaded ways? If yes: M9 first.
+
+#### Failure test
+This entry has not governed the response if:
+- V8 or DO-5 transcendence content is deployed while "literal," "anthropomorphic," or "metaphorical" remain semantically contested — the semantic blocker must clear before V8 or attribute content loads.
+- DO-5 and DO-13 are not discriminated: if the pressure is about a competing philosophical ontological model (which God is the correct one) rather than whether divine language is coherent at all, the case is DO-13, not DO-5.
+- The bilā kayf discipline is presented as a strategy of evasion rather than as the epistemically honest acknowledgment of the limit of creaturely cognition — if it appears as an opt-out, M1 has not been run to name the self-refutation in "God is incomprehensible."
+
+---
+
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
 Routing precondition: if the pressure is phrased through body, direction, place, limit,
@@ -196,7 +433,7 @@ escape the problem. If human concepts are formed from creaturely experience, the
 without distortion, apply to an infinite being. If the concepts are systematically disanalogous,
 propositional content becomes either false or empty.
 
-**Operative response to the rebuttal (M1 — self-refutation + V8 — bilā kayf):**
+#### Existing substantive content (route-governed):
 The rebuttal assumes that language is meaningful only if it refers by identical correspondence —
 that "knowledge" applied to God must mean exactly what it means applied to a human being, and
 any deviation from this makes the application empty. This assumption is false.
@@ -222,6 +459,48 @@ epistemically honest acknowledgment of the limit of creaturely cognition applied
 
 ### DO-6 — The Coherence of the Classical Concept of God
 
+#### Pressure type
+Divine attribute coherence — divine attributes are internally contradictory or compose God in a problematic way.
+
+#### Trigger signals
+"How can God be all-powerful and all-good given evil?"; "simplicity contradicts having distinct attributes"; "omniscience/omnipotence/omnipresence form a contradictory set"; "real attributes make God composite."
+
+#### Do-not-route-here / near-miss rules
+- Composition/dependence objection: requires M9 + do-attribute-precision.md before any content response — do not answer until categorical confusion is diagnosed
+- Perfection-tribunal governing: if the objection imports "real properties = composition = imperfection," route through perfection-criterion-usurpation.md first
+- DO-13 discriminator: if the "composed attribute" objection is a philosopher's-God frame (non-eventful, non-relational as perfection standard), route through DO-13 rather than DO-6
+
+#### Mandatory family-local load floor
+M9-predication-mode.md, definition-discipline.md, do-attribute-precision.md — all three before attribute-content response. Perfection-criterion-usurpation.md when "composition = imperfection" tribunal is active.
+
+#### Ordered TTP route
+1. M9: split the predication terms (what does "real" / "attribute" / "composition" mean?)
+2. definition-discipline.md: is the objection exploiting technical-language confusion?
+3. do-attribute-precision.md: identify the specific confusion fixture active
+4. Perfection-criterion-usurpation.md if perfection tribunal governs the "composition" premise
+5. V8 after semantic and categorical discipline clear
+6. DO-6 substantive after all upstream gates clear
+
+#### Semantic/register blockers
+"Composite" and "real attributes" must be semantically stabilized before any doctrinal response. Answering composition/dependence objections before M9 splits the terms accepts the objector's hidden ontological assumptions.
+
+#### Allowed Layer B move
+M9 lexical-ontological split: name the equivocation on "real" / "attribute" / "composition" before doctrinal content is released.
+
+#### Held downstream material
+Full attribute-coherence analysis; divine simplicity doctrine; reconciliation of attributes — held until semantic/categorical discipline clears.
+
+#### Minimal discriminator/probe
+Does this objection require "real attributes = discrete parts" (categorical confusion → M9/do-attribute-precision) or "perfection requires simplicity/impassibility" (perfection tribunal → perfection-criterion-usurpation)?
+
+#### Failure test
+This entry has not governed the response if:
+- Attribute-coherence content (DO-6) is deployed before M9 splits the predication terms "real," "attribute," and "composition" — answering the composition objection without the M9 split accepts the objector's hidden ontological assumption.
+- The DO-13 discriminator is not run: if the attribute-coherence objection is driven by a philosopher's-God frame (non-eventfulness, impassibility, or pure actuality as perfection criteria), it is DO-13, not DO-6.
+- The omnipotence or omniscience puzzle is engaged as if the tradition depends on the Anselmian ontological argument — the tradition's primary grounds are fiṭrah and āyāt, not the ontological argument, and treating this as a knockout blow accepts the wrong framing.
+
+---
+
 Technique: V8-bila-kayf-anchor.md governs attribute-discipline and transcendence framing for this objection.
 
 Routing precondition: if the puzzle depends on body, direction, place, limit, composition,
@@ -241,7 +520,7 @@ theology as a distortion not representative of the Qurʾānic account. The rebut
 internally consistent but it is evasive. If the Islamic tradition has a coherent account of divine
 knowledge, power, and goodness, it must engage the logical puzzles on their own terms.
 
-**Operative response to the rebuttal:**
+#### Existing substantive content (route-governed):
 The rebuttal is correct that the tradition must engage the puzzles. The engagement reveals that
 each puzzle rests on an equivocation.
 

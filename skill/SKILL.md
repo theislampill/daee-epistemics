@@ -13,6 +13,7 @@ description: >
 |------|---------|
 | `references/terminology.md` | Arabic and technical terms. Load unconditionally — Arabic glossing is required on first use in any response |
 | `references/case-library/INDEX.md` | First router for recurring case families, Quick NS/DO/RT identification, and specialty markers |
+| `references/module-codes.md` | Canonical module ID reference; required for `matched_modules` field of the diagnostic IR — load unconditionally alongside the module catalogue |
 | `references/techniques/heuristics.md` | Always-active operator discipline governing sequence, restoration, and source-status marking |
 
 ### Mandatory Diagnostic Core
@@ -43,8 +44,16 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
+### Output-Release Governance — Applied After Gate-Open
+These files govern release amount, order, and visible render shape. They are not topic files and are not loaded for routing. They apply after the dispatch gate opens and before the public response is shaped.
+
+| File | Role |
+|------|------|
+| `references/rubrics/output-release.md` | Runtime governance rubric: checks whether proposed output releases too much, too little, in the wrong order, or before upstream blockers clear; governs held-material reassessment and recursive traversal discipline |
+| `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape: Level 1 (ordinary prose), Level 2 (compact diagnostic / lab-report), Level 3 (full audit render); does not replace routing; render shape does not determine routing |
+
 ### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
-These passes are mandatory within V1 Phase 2. They are not conditional on topic. Run them in sequence on any case with an intellectual-content component. Skip only if P7 Stop-1 is active (no content gate is being assessed).
+These passes are mandatory within V1 Phase 2. They are not conditional on topic. **Load and run** each triggered file in sequence on any case with an intellectual-content component. Loading the governing file is required — running a pass from memory without loading its file is a gate-compliance failure equivalent to skipping the pass entirely. Skip only if P7 Stop-1 is active (no content gate is being assessed).
 
 | Pass | File | Emit |
 |------|------|------|
@@ -61,18 +70,59 @@ The diagnostic IR must be formed and all gate checks must pass before any conten
 | `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
 
 Architectural clarification: the diagnostic IR is the canonical audited control surface of the
-skill. The framework treats discourse as an analysand to be formally diagnosed before it is
-answered. The IR formalizes the live noetic state, higher-order burden, restoration target, and
-current release permissions before content dispatch. Each pass ends in bounded manifestation plus
-restoration trace; refreshed state then determines whether the governed outcome is stop, hold, or
-recursive re-entry.
+skill — the gate through which all content dispatch must pass. For the authoritative definition,
+gate protocol, field rules, and failure tests, see
+`references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization Layer`.
+
+### Per-File Operative Contracts — Static Metadata Layer
+These files define and validate the per-file machine-readable contract architecture. They are static metadata tools; they do not govern runtime routing or substitute for the diagnostic IR. YAML operative front matter (between `---` delimiters) is for machine parsing; human-readable prose below remains authoritative for judgment.
+
+| File | Role |
+|------|------|
+| `references/diagnostics/operative-contracts.md` | Architecture spec: purpose, required/optional keys, allowed values, pilot examples, failure modes, migration strategy, linting plan |
+| `references/diagnostics/operative-contract.schema.json` | JSON schema for YAML operative front matter; validates `id`, `module_class`, `canonical_path`, `contract_version`, and all optional fields |
+
+### Minimum Execution Load Floor — Required After Gate Open
+
+Passing all six dispatch gate checks is necessary but not sufficient. After gate-open,
+the following files must be loaded before any response content is dispatched. Absent
+governing files are gate-integrity violations, not conservative loading choices.
+
+1. **V1-diagnostic.md:** Must be loaded at the start of any substantive engagement.
+   Do not treat its protocol as ambient background — load the file.
+
+2. **P-A (reason-disambiguation.md):** Always-load within Phase 2 for any
+   intellectual-content case. The reason-category field of the IR must be backed by this
+   file, not inferred from context.
+
+3. **P-B through P-D governing files:** If a mandatory pass condition fired during
+   Phase 2, the governing file was loaded as part of running that pass. The corresponding
+   IR output block (e.g., `[Foreign Premise Detection]`) is evidence the file was loaded.
+   If the block appears in the IR without the file having been loaded, the IR is fabricated.
+
+4. **All confirmed case-library files:** Every case file whose load condition in the
+   "Load on Confirmed Match Only" table was satisfied by the confirmed case-state must be
+   loaded. A confirmed DO-12 mandates loading `do-christian-extensions.md`,
+   `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
+   and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
+   files is diagnosis without execution.
+
+5. **All matched_modules governing files:** Every entry in `matched_modules` corresponds
+   to a file in the skill package. That file must be loaded before dispatch. An entry in
+   `matched_modules` whose governing file was not loaded is a gate-integrity violation
+   identical to a gate miss.
+
+This floor does not relax the ceiling: files whose load condition was NOT met must not be
+loaded merely to appear thorough. The floor and ceiling together define the minimum and
+maximum load boundaries for any governed pass.
 
 ### JSON / IR Adherence (hard requirement)
 
 The diagnostic IR is not complete unless it conforms to `references/diagnostics/diagnostic-ir.schema.json`.
+Note: `diagnostic-ir.schema.json` is a constraint specification. Compliance is a conceptual check against the schema's rules; the schema is not mechanically validated at inference time. Enforcement depends on practitioner discipline.
 
 Rules:
-1. Before any content module is dispatched, construct a diagnostic IR object that validates against `references/diagnostics/diagnostic-ir.schema.json`.
+1. Before any content module is dispatched, construct a diagnostic IR object that validates against `references/diagnostics/diagnostic-ir.schema.json` (compliance check against the schema's constraints, not runtime machine validation).
 2. Any `matched_modules` entry must use an `id` and `module_class` that exactly match `module-catalogue.json`.
 3. Do not invent module ids, module classes, routing fields, or source-basis categories outside the schema and catalogue.
 4. If the IR is underdetermined, keep it underdetermined in-schema rather than forcing a stronger read in prose.
@@ -89,6 +139,21 @@ Rules:
     has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic
     gate remains live. A fresh round may arise inside the same message when the differentiating
     signal appears in an accompanying proposition or entailment.
+13. Every entry in `matched_modules` must be backed by a loaded governing file.
+    If a module appears in `matched_modules` but its governing file was not loaded,
+    the IR is non-compliant regardless of whether the content looks plausible. Plausible
+    content without file-backed activation is the failure mode this rule prevents.
+14. Every entry in `matched_modules` must have at least one corresponding `source_basis`
+    entry with `source_kind: "module"` and `module_id` matching the entry's `id`. A module
+    listed in `matched_modules` that has no such `source_basis` entry is a ghost-load: the
+    file was loaded but did not demonstrably govern any claim in this pass. Ghost-loads are
+    gate-integrity failures equivalent to IR fabrication. If a matched module governed only
+    a routing decision (not a named output claim), record that routing decision as a
+    `source_kind: "module"` entry with `basis_type: "inference"` and `claim` naming the
+    routing fork it governed.
+15. After the dispatch gate opens, the output-release rubric (`references/rubrics/output-release.md`) governs how much content may be released, in what order, and whether held downstream material has been reassessed after a governing move clears. Held means traversal-delayed, not response-delayed. State refresh is an internal state-transition operation; it may occur inside the same response when the current pass has cleared the governing blocker and the next live burden is now eligible. Same-response recursion must remain bounded by P7 and output-release discipline.
+16. Optional structural framing fields in `diagnostic-ir.md` (`structural_pattern_print`, `load_bearing_node`, `collapse_radius`, `intervention_target`, `framing_notes`) are internal control fields only. They may clarify the practical shape of a higher-order or cross-level case, but they do not create new routes, new coverage claims, or permission to release topic content.
+17. When a source-audit-derived or tradition-labeled topic appears, identify the live structural node before content: authority order, epistemic criterion, validation order, semantic hinge, category-set, identity wound, or transmission/source-use layer. Do not answer by argument bank, citation dump, prooftext list, or broad comparative-religion treatment before the validated IR has selected the existing owner and release gate.
 
 
 ### Specialty Diagnostics
@@ -114,7 +179,7 @@ Do not load unless the stated condition is confirmed by the router or the diagno
 | `references/sound-reason-epistemology.md` | Noetic checklist dimensions 1, 3, 6, or 9 require the full account; philosophically trained interlocutor; kalāmic/Māturīdī engagement; ḥusn al-naẓar; divine attribute objections; bilā kayf; DO-5, DO-6, DO-11, DO-12, DO-13; attribute-multiplicity / tarkīb-iftiqār shubhah (§6.3) |
 | `references/case-library/profiles/[matched-ns-code].md` | Interlocutor confirmed as NS-1 through NS-12; load only the file matching the confirmed NS code — see `references/case-library/profiles/INDEX.md` for routing table |
 | `references/case-library/do-core.md` | DO-1 through DO-6 confirmed |
-| `references/case-library/do-second-loop.md` | DO-7 through DO-10 confirmed |
+| `references/case-library/do-second-loop.md` | DO-7 through DO-10 or DO-15 confirmed |
 | `references/case-library/do-christian-extensions.md` | DO-11 through DO-14 confirmed |
 | `references/case-library/revelation-transmission.md` | RT-1 through RT-4 confirmed |
 | `references/case-library/do-attribute-precision.md` | DO-6, DO-11, DO-12, or DO-13 confirmed AND the live pressure involves predication-type, analogy validity, equivocation, composition, or person-multiplicity |
@@ -206,6 +271,7 @@ These are not soft norms. Violation of any of these is a routing error, not a st
 5. **No debate-autonomous continuation after a landed move:** When recognition has surfaced or a key move has landed, Stop 2 governs the current pass. Additional content at that moment converts a restorative contact into a verbal concession press. Boundary reset follows. Further continuation is permitted only after a fresh differentiating signal reopens V1, the restoration target still remains unmet, and no stop, register-hold, or semantic gate is live. A fresh round may arise inside the same message when that differentiating signal appears in an accompanying proposition or entailment.
 6. **No nonconforming IR dispatch:** Do not dispatch modules or surface governance state from an IR that fails `diagnostic-ir.schema.json`, and do not cite or surface module ids/classes not present in `module-catalogue.json`.
 7. **No content-before-semantic-discipline:** Do not release doctrinal or attribute content while prophetic discourse is still being recontented or evacuated, or while a loaded lexical-ontological term remains unresolved. Clear the semantic blocker first.
+8. **No held-as-never-answer:** When a downstream issue is held by register, semantic, or stop governance, holding means it is traversal-delayed at the current point — not permanently suppressed. After the governing move is applied, refresh the case-state and reassess whether the held material still governs. If it remains live and no gate blocks it, it may become the next bounded pass without requiring a new user reply.
 
 See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
 
@@ -709,6 +775,10 @@ that is the next live burden; inferential elaboration only if the interlocutor h
 minimal positive reconstruction of the restored order; V5 / sign-directed attention; one bounded
 diagnostic question only if it still advances the live target. If the target is no longer unmet, or
 the refreshed state does not license continuation, stop.
+
+The canonical stop / pause / recurse state model — including the STOP / PAUSE / RECURSE
+transition semantics and recursive re-entry conditions — is owned by
+`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
 
 Do not let structural discipline (Case State, Source Basis, routing blocks) crowd out this
 synthesis. The governance blocks are upstream tools. The restoration is the destination.

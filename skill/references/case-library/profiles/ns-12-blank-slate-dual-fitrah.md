@@ -1,8 +1,26 @@
-> role: noetic structure profile — NS-12 Blank-Slate or Dual-Nature Fiṭrah Holder
-> use when: NS-12 confirmed via case-library/INDEX.md §Quick NS Identification; load this file only; do not confuse with NS-1 or NS-2 (those deny the fiṭrah entirely; NS-12 disputes its content)
-> IR field: NS code = NS-12
-> do not use when: NS code is still provisional — route through mixed-case-handling.md
-> paired files: fitrah-perspectives.md (mandatory — load for full blank-slate and dual-nature treatment); V5 (phenomenological signs argument — primary technique); E4 (cross-cultural check — secondary)
+---
+id: ns-12-blank-slate-dual-fitrah
+module_class: case-library
+canonical_path: skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+contract_version: "0.2.2.0"
+load_when:
+  - NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification
+companions:
+  - V5-directing-attention-signs
+  - E4-cross-cultural-check
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
 
 # NS-12 — The Blank-Slate or Dual-Nature Fiṭrah Holder
 
@@ -57,3 +75,11 @@ impersonal grounds of being.
 dispute is exegetical and psychological, not theological at the root level. The goal is not to
 overcome resistance to theism but to restore the tradition's own more precise account of the
 fiṭrah's faculty and its determinate deliverances.
+
+## Coverage Verification
+
+- Failure condition: Do not use NS-12 for an external naturalist or agnostic who denies the fitrah altogether; NS-12 requires acceptance of the fitrah with dispute over its content.
+- IR-visible consequence: Emit `NS: NS-12`, match fitrah-perspectives.md, and route to V5/E4 only after identifying whether the view is tabula-rasa or dual-nature.
+- Minimal pair: NS-12 differs from NS-1/NS-2 because the interlocutor accepts a fitrah-like faculty and contests its determinate deliverance, rather than rejecting the faculty or suspending judgment.
+- Hold/release rule: Hold broad anti-naturalist framework critique; release the positive-orientation account once the tabula-rasa or dual-nature confusion is identified.
+- Anti-pattern guard: Do not treat the case as basic theism denial; it is a precision dispute inside or near the tradition's anthropology.

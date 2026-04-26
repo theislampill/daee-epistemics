@@ -1,8 +1,28 @@
-> role: diagnostic owner — definition capture, public-language narrowing, and mental/extra-mental confusion
-> use when: the case turns on silent redefinition, specialist capture of ordinary language, universals/particulars confusion, or mental/notional versus extra-mental distinction
-> do not use when: the issue is only a rhetorical term dispute that M7-definition-anchor.md can settle without conceptual narrowing
-> output: the operative definition shift, the level-confusion involved, and the route consequence
-> paired files: M7-definition-anchor.md; M9-predication-mode.md; proof-method-audit.md; sound-reason-epistemology.md §6.3
+---
+id: definition-discipline
+module_class: diagnostic
+canonical_path: skill/references/diagnostics/definition-discipline.md
+contract_version: "0.2.2.0"
+load_when:
+  - silent redefinition or specialist capture of ordinary language operative
+  - universals/particulars confusion active
+  - mental/notional versus extra-mental distinction needed
+routing_effects:
+  - holds content dispatch pending definition-discipline pass
+emits:
+  - what_is_withheld_and_why
+blocks:
+  - content dispatch before definition-discipline pass complete
+companions:
+  - M7-definition-anchor
+  - M9-predication-mode
+  - proof-method-audit
+output_shapes:
+  - pass-through
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
 
 # Definition Discipline
 

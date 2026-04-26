@@ -1,7 +1,22 @@
-> role: technique
-> use when: several epistemic registers are genuinely live and their convergence is itself the needed point
-> do not use when: one upstream barrier still dominates or only one register is actually doing real work
-> output: a cross-register synthesis showing non-collusive convergence without overlayering
+---
+id: V6-convergence
+module_class: technique
+canonical_path: skill/references/techniques/V6-convergence.md
+contract_version: "0.2.2.0"
+load_when:
+  - several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live
+  - interlocutor sets registers against one another
+  - cross-register convergence is itself the needed point
+blocks:
+  - when one upstream barrier still dominates
+  - when only one register is doing real work — use E3 within that register instead
+companions:
+  - E3-cumulative-case
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
 
 # V6 - The Convergence Technique
 

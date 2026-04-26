@@ -1,3 +1,13 @@
+---
+id: procedures-index
+module_class: governance
+canonical_path: skill/references/procedures/INDEX.md
+contract_version: "0.2.2.0"
+load_when:
+  - selecting a procedure after V1 case-classification
+catalogue_registered: false
+---
+
 # Procedures — Index
 
 Procedures are multi-stage engagement frameworks. Use them when the case cannot be handled

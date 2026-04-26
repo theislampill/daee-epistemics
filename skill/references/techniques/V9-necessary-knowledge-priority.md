@@ -1,3 +1,20 @@
+---
+id: V9-necessary-knowledge-priority
+module_class: technique
+canonical_path: skill/references/techniques/V9-necessary-knowledge-priority.md
+contract_version: "0.2.2.0"
+load_when:
+  - philosophical argument produces conclusion contradicting a universally-held fiṭrī intuition
+  - attack on necessary knowledge (ʿilm ḍarūrī) active
+  - argument concludes external world unreal, moral obligation illusory, consciousness has no first-person character, or theistic recognition is systematic cognitive error
+routing_effects:
+  - reverses standard burden — necessary knowledge takes priority over discursive inference; argument's premises declared defective before counter-argument is constructed
+output_shapes:
+  - bounded-single-pass
+layer_constraint: layer-b-permitted
+catalogue_registered: true
+---
+
 # V9 — Necessary Knowledge Takes Priority Over Discursive Reasoning
 
 **Deploy when:** A philosophical argument produces a conclusion that contradicts a universally-held fiṭrī intuition.

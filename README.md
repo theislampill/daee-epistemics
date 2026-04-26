@@ -8,7 +8,7 @@ The package is grounded in the coherence and convergence of a common sense accou
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
-> Release scope for `v0.1.0.3`: this corrective patch release preserves the bounded initial-release scope while repairing transliteration / Unicode integrity misses from `v0.1.0.2` in package-facing and release-facing text. It does not broaden the governed architecture or claim new coverage. Bounded remaining gaps stay tracked in [`skill/references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md).
+Runtime coverage and scope in the packaged skill are represented by `SKILL.md`, module front matter, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
 
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
@@ -85,7 +85,7 @@ what must be clarified first,
 what routing follows, and 
 how a case moves from deformation toward restored order.
 
-In that sense, the framework is not just organising content; it is formalising a meta-epistemology and an operative map of noetic, epistemic, ontological, and meta-level states and transitions. That makes the system more deterministic at runtime, more portable across models, more compressible across context windows, and potentially usable not only as reference material but as a training grammar for diagnosis, analysis, and restoration.
+In that sense, the framework is not just organising content; it is formalising a meta-epistemology and an operative map of noetic, epistemic, ontological, and meta-level states and transitions. That makes the system more disciplined at runtime, more portable across models, more compressible across context windows, and potentially usable not only as reference material but as a training grammar for diagnosis, analysis, and restoration. Governance determinacy is practitioner-compliance-based: enforcement depends on the practitioner following the governance files, not on a mechanical runtime validator. The `diagnostic-ir.schema.json` is a constraint specification; its compliance is checked conceptually against the schema's rules, not validated automatically at inference time.
 
 This makes it desirable for both frontier and quantised LLMs, though for different reasons. 
 For frontier models, it functions as external discipline: it reduces drift, forces explicit case-typing and routing, and makes outputs more auditable and reproducible rather than leaving the model to generate persuasive but structurally ungoverned prose. 
@@ -183,6 +183,8 @@ The repository is not only a content store. It carries an explicit governance la
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
 - an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
 
+**Pass model (orientation for first-contact readers):** The skill is not a one-shot pipeline. Each governed pass runs diagnosis, forms the Diagnostic IR, passes it through the six-check dispatch gate, then produces a bounded manifestation consisting of the complete Layer A diagnostic record, the deployable Layer B engagement (held or compressed when the gate has not fully cleared), and a restoration trace. Refreshed state computed from that manifestation then governs whether the outcome is stop, hold/pause, or recursive re-entry. Module dispatch is blocked until all six gate checks pass; content is not released while concealment, orientation, stop conditions, or semantic blockers remain live. The authoritative detail for these mechanics is in [`references/diagnostics/diagnostic-ir.md`](skill/references/diagnostics/diagnostic-ir.md) (the dispatch gate), [`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`](skill/references/diagnostics/framework-pipeline.md) (the stop/pause/recurse model), and [`SKILL.md §V.A`](skill/SKILL.md) (Layer A / Layer B definition). This paragraph is orientation only; those files govern.
+
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
 
@@ -216,7 +218,7 @@ The repository operationalizes the thesis through a layered structure:
 | [`references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
 | [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
 | [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass. |
-| [`references/diagnostics/coverage-ledger.md`](skill/references/diagnostics/coverage-ledger.md) | Audit/parity governance ledger: tracks what is landed, compressed, partial, or historical; audits repo truthfulness and recency, but does not route live cases. |
+| [`references/diagnostics/module-catalogue.json`](skill/references/diagnostics/module-catalogue.json) | Static packaged registry for module ids, paths, and classes. It constrains valid module references but does not route live cases. |
 | [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Historical PF-family regression and coverage audit for the higher-order layer; used to check drift, not as a live router. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
@@ -251,6 +253,7 @@ direction TB
   direction LR
     TERM["Terminology<br/>shared vocabulary<br/>[terminology.md]"]
     CASEINDEX["Case-library index<br/>first router / specialty markers<br/>[case-library/INDEX.md]"]
+    MODCODES["Module codes<br/>canonical module ID reference<br/>[module-codes.md]"]
     HEUR["Heuristics<br/>always-active operator discipline<br/>[heuristics.md]"]
   end
   subgraph FANCHOR["Architectural anchors / trigger governance"]
@@ -304,9 +307,10 @@ direction LR
   REST["Restoration trace / next move<br/>stop-governed close"]
 end
 
-subgraph AUDIT["Audit / parity governance (non-dispatch)"]
+subgraph STATICMETA["Static metadata / historical audit (non-dispatch)"]
 direction LR
-  LEDGER["Coverage ledger<br/>parity / scope audit<br/>[coverage-ledger.md]"]
+  CATALOGUE["Module catalogue<br/>id / path / class registry<br/>[module-catalogue.json]"]
+  FRONTMATTER["Module front matter<br/>owner metadata<br/>[per-file YAML]"]
   PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[pattern-family-audit.md]"]
 end
 
@@ -316,6 +320,7 @@ SKILLROOT -->|contains| SKILL
 
 SKILL -->|always loads| TERM
 SKILL -->|always loads| CASEINDEX
+SKILL -->|always loads| MODCODES
 SKILL -->|always loads| HEUR
 KERNEL -->|anchors| SKILL
 META -->|anchors| SKILL
@@ -369,8 +374,8 @@ P7 -->|can hold / compress Layer B| LAYERS
 CASEOUT -. accompanies surfaced output .-> LAYERS
 LAYERS --> REST
 
-LEDGER -. parity-audits .-> README
-LEDGER -. checks live claims against .-> IR
+CATALOGUE -. constrains module ids/classes .-> IR
+FRONTMATTER -. declares owner metadata .-> MODULES
 PFAUDIT -. historical regression for .-> PATTERN
 
 classDef blue fill:#eef6ff,stroke:#4f8cff,stroke-width:1.5px,color:#173a74;
@@ -383,11 +388,11 @@ classDef slate fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#334155;
 
 class INPUT,README blue;
 class SKILLROOT,SKILL amber;
-class TERM,CASEINDEX,HEUR,KERNEL,META,WAHY cerulean;
+class TERM,CASEINDEX,MODCODES,HEUR,KERNEL,META,WAHY cerulean;
 class V1,DINDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,PATTERN,IR,PRECED,MIXED,ANTI,P7 dgreen;
 class PROFILES,DOCTRINE indigo;
 class MODULES,SOUND red;
-class CASEOUT,LAYERS,REST,LEDGER,PFAUDIT slate;
+class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 ```
 
 ## Install / Package (Claude-First)
