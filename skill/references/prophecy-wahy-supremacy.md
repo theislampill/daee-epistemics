@@ -2,7 +2,7 @@
 id: prophecy-wahy-supremacy
 module_class: governance
 canonical_path: skill/references/prophecy-wahy-supremacy.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - case treats philosophical systems as legitimate arbiter of revelation
   - interlocutor requires revelation to satisfy a prior rational standard

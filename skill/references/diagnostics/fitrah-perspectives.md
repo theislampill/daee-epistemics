@@ -2,7 +2,7 @@
 id: fitrah-perspectives
 module_class: governance
 canonical_path: skill/references/diagnostics/fitrah-perspectives.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
 emits:

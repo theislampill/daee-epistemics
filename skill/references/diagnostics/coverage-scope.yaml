@@ -437,34 +437,129 @@ scope_claims:
     owner_id: terminology
     in_scope: true
 
-  # Explicitly not covered without human source/scope decisions
+  # Explicitly out of scope for source-content owner coverage
   - claim_id: Buddhist-anatta-no-soul
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Bespoke religion-specific families
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Bespoke religion-specific source-content owners
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when the live burden is identity-continuity
+      pressure, self-predication equivocation, two-level discourse, or
+      moral-accountability structure. Route through Diagnostic IR, M9, V9,
+      metaphysical-architecture, and definition discipline as applicable. This
+      does not create Buddhist-source owner coverage.
   - claim_id: Buddhist-impermanence-creation-constancy
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Bespoke religion-specific families
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Bespoke religion-specific source-content owners
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when impermanence functions as a
+      meta-ontological category pressure over creation, divine constancy, or
+      moral continuity. Route through Diagnostic IR, M9, V9, and
+      metaphysical-architecture as applicable. This does not create
+      Buddhist-source owner coverage.
   - claim_id: Hindu-Advaita-rival-ontology
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Bespoke religion-specific families
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Bespoke religion-specific source-content owners
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when nondual ontology functions as an
+      upstream category-set, Creator-creation collapse, or higher/lower truth
+      tribunal. Route through Diagnostic IR, M9, metaphysical-architecture,
+      perfection-criterion-usurpation, and philosophical-usurpation as
+      applicable. This does not create Advaita-source owner coverage.
+  - claim_id: Hindu-Arya-Samaj-Quran-critique
+    owner_id: null
+    in_scope: false
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Bespoke religion-specific source-content owners
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when Vedic-reformist "reason/common
+      sense" functions as a tribunal over Qur'an, prophecy, divine attributes,
+      resurrection, or law. Route through FPD, reason-disambiguation, V2,
+      DO-15, M9, and RT/V10 as applicable. This does not create Hindu or Arya
+      Samaj source-owner coverage.
   - claim_id: Jewish-final-prophethood-Torah-completeness
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Bespoke religion-specific families
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Bespoke religion-specific source-content owners
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when the live burden is closed-canon veto,
+      selective scriptural arbitrage, source-use discipline, or prophetic
+      authority ordering. Route through PF-3, PF-7, FPD, V10/RT, and DO-10 as
+      applicable. This does not create Jewish-source owner coverage.
   - claim_id: Sufism-contested-practices
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Sufism-related crises
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Sufism-related source-content adjudication
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when a contested practice case is actually
+      an authority wound, vocabulary confusion, source-use dispute, or
+      authority-order question. Route through NS-8, PF-11, mixed-case-handling,
+      M4/P7, M7/M9, FPD, and RT/V10 as applicable. This does not create
+      practice-specific Sufism owner coverage.
   - claim_id: Sufism-tariqah-authority-claims
     owner_id: null
     in_scope: false
-    status: needs-review
-    todo_anchor: Sufism-related crises
+    status: out-of-scope
+    scope_decision: no-authorized-source-owner
+    coverage_mode: family-transfer-only
+    todo_anchor: Sufism-related source-content adjudication
+    note: >
+      Bespoke source-content owner coverage is out of scope for the current
+      release because no authorized primary/source-audit basis is available.
+      Cases may still be handled through existing family-transfer routes when
+      the live burden instantiates a governed structural pattern.
+    family_transfer_note: >
+      Structural framing is governed when kashf, shaykh, or tariqah authority
+      is functioning as jurisdiction over revelation, or when the case instead
+      presents an authority wound. Route through mixed-case-handling, FPD,
+      philosophical-usurpation, NS-8/P7, M7/M9, and RT/V10 as applicable. This
+      does not create a broad Sufism owner.

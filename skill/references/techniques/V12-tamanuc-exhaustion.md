@@ -2,7 +2,7 @@
 id: V12-tamanuc-exhaustion
 module_class: technique
 canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords
   - regardless of interlocutor tradition (structural trigger, not tradition-specific)
@@ -116,7 +116,7 @@ The two move together: the rational argument shows the plurality is logically in
 
 **Base procedure:** V12 triggers on any divine plurality pressure — philosophical, popular, comparative-religion, or Trinitarian. Run V12 first to establish that no plurality of independent lords is rationally coherent.
 
-**Cross-tradition scope:** V12 is triggered by the structural feature of divine plurality pressure — not by any tradition-specific terminology or the interlocutor's religious background. It applies regardless of whether the interlocutor is Trinitarian Christian, holds popular Hindu polytheism, operates with a philosophical pluralism, or is asking an abstract question about whether divine plurality is coherent. The trigger is the structural claim (multiple independent lords / divine agents), not the vocabulary in which it is expressed. For Advaita monism (one ultimate reality with many manifestations, not multiple independent lords), V12 partially applies but the interlocutor would correctly note their framework is not polytheism in V12's sense — this variant requires acknowledgment that the Advaita framework is a distinct metaphysical position, not a sub-case of the tamānuʿ target; see `TODO.md` for the bespoke religion-specific needs-review boundary.
+**Cross-tradition scope:** V12 is triggered by the structural feature of divine plurality pressure — not by any tradition-specific terminology or the interlocutor's religious background. It applies regardless of whether the interlocutor is Trinitarian Christian, holds popular Hindu polytheism, operates with a philosophical pluralism, or is asking an abstract question about whether divine plurality is coherent. The trigger is the structural claim (multiple independent lords / divine agents), not the vocabulary in which it is expressed. For Advaita monism (one ultimate reality with many manifestations, not multiple independent lords), V12 partially applies but the interlocutor would correctly note their framework is not polytheism in V12's sense — this variant requires acknowledgment that the Advaita framework is a distinct metaphysical position, not a sub-case of the tamānuʿ target; see `TODO.md` for the bespoke religion-specific out-of-scope source-owner boundary.
 
 **Christian overlay — DO-11 and DO-13:** After V12 is in place, the Trinitarian case adds specific questions: whether perfect-being reasoning forces multipersonality (DO-11) and whether three persons with one nature generates an irreducible logical problem (DO-12). These are additional layers, not substitutes. Load `references/case-library/do-christian-extensions.md` when the interlocutor is specifically Trinitarian.
 

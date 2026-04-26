@@ -2,7 +2,7 @@
 id: foreign-premise-detection
 module_class: governance
 canonical_path: skill/references/diagnostics/foreign-premise-detection.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
 emits:

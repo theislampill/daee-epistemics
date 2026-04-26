@@ -2,7 +2,7 @@
 id: ns-9-historical-critical-skeptic
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-9 (Historical-Critical Skeptic) confirmed via Quick NS Identification
 routing_effects:

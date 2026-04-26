@@ -2,7 +2,7 @@
 id: case-library-index
 module_class: governance
 canonical_path: skill/references/case-library/INDEX.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - selecting or confirming a case-library module after V1 diagnosis
 catalogue_registered: false
@@ -73,7 +73,7 @@ the case still requires.
 3. the family-local load floor;
 4. all matched TTP / diagnostic owners justified by the current case-state;
 5. output-release / Layer B discipline;
-6. P7 stop/hold/recurse discipline.
+6. P7 STOP / HOLD / RECURSE / PARTIAL discipline.
 
 A confirmed topic family activates its load floor, not merely its named case file.
 

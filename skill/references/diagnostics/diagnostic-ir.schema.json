@@ -23,7 +23,8 @@
     "matched_modules",
     "restoration_target",
     "next_move",
-    "output_shape"
+    "output_shape",
+    "post_render_gate"
   ],
   "properties": {
     "case_family": {
@@ -359,6 +360,53 @@
     },
     "what_remains_live": {
       "type": "string"
+    },
+    "post_render_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mandatory post-render state refresh / re-entry gate. It must run after every bounded restorative move and before any STOP decision.",
+      "required": [
+        "cleared_this_pass",
+        "remaining_live_distortions",
+        "held_routes_rechecked",
+        "newly_released_routes",
+        "next_eligible_pass",
+        "recursion_decision"
+      ],
+      "properties": {
+        "cleared_this_pass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "remaining_live_distortions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "held_routes_rechecked": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "newly_released_routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "next_eligible_pass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recursion_decision": {
+          "type": "string",
+          "enum": ["STOP", "HOLD", "RECURSE", "PARTIAL"]
+        }
+      }
     }
   },
   "allOf": [

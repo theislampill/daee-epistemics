@@ -2,7 +2,7 @@
 id: output-release
 module_class: governance
 canonical_path: skill/references/rubrics/output-release.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any response about to be shaped or released
 routing_effects:
@@ -14,7 +14,7 @@ catalogue_registered: false
 
 ## Function
 
-This is a runtime governance rubric. It runs after the dispatch gate has opened and routing has identified the governing burden, active claim-level / PF overlay, canonical owners, matched modules, and family-local load floor. It runs before final public render. It governs: (1) how much content may be released; (2) in what order; (3) under what case-state constraints; (4) when downstream content must remain held; (5) when held content must be reassessed after refresh; (6) when compact diagnostic render is appropriate; and (7) when recursive traversal is permitted inside the same response. It is not a topic bank, not an argument bank, not a mandate to expose all internal diagnostic fields, and it does not require every answer to visibly print every template section.
+This is a runtime governance rubric. It runs after the dispatch gate has opened and routing has identified the governing burden, active claim-level / PF overlay, canonical owners, matched modules, and family-local load floor. It runs before final public render, and it forces a post-render re-entry gate before closure. It governs: (1) how much content may be released; (2) in what order; (3) under what case-state constraints; (4) when downstream content must remain held; (5) when held content must be reassessed after refresh; (6) when compact diagnostic render is appropriate; (7) when recursive traversal is required inside the same response; and (8) why STOP, HOLD, RECURSE, or PARTIAL is the correct closure state. It is not a topic bank, not an argument bank, not a mandate to expose all internal diagnostic fields, and it does not require every answer to visibly print every template section.
 
 ## Pipeline Position
 
@@ -29,8 +29,8 @@ raw discourse
 → output-release rubric        ← THIS FILE
 → diagnostic render contract
 → bounded public response
-→ refreshed state
-→ P7 stop/hold/recurse
+→ post-render state refresh / re-entry gate
+→ STOP / HOLD / RECURSE / PARTIAL
 → next governed pass if eligible
 ```
 
@@ -40,8 +40,8 @@ raw discourse
 - Family-local load floor decides what must be loaded.
 - Output-release rubric decides what may be released now.
 - Diagnostic render contract decides how visibly structured the output is.
-- State refresh reassesses what remains live, drops, compresses, or becomes eligible.
-- P7 decides whether to stop, hold, or recurse.
+- Post-render gate reassesses what remains live, drops, compresses, or becomes eligible.
+- P7 stop discipline constrains the gate's STOP, HOLD, RECURSE, or PARTIAL decision.
 
 Do not collapse these into one step. Do not let visible render shape determine routing.
 
@@ -62,6 +62,7 @@ Recursive traversal ≠ argument dump.
 Source basis ≠ proof bank.
 Layer B release ≠ total framework materialization.
 P7 stop ≠ failure to answer.
+STOP ≠ valid before post-render gate.
 Abstraction ≠ restoration.
 Patch report ≠ runtime output.
 ```
@@ -74,11 +75,48 @@ Patch report ≠ runtime output.
 
 > State refresh is not identical to waiting for a new user response. A fresh differentiating signal may arise inside the same response when the prior governing blocker has been cleared by the response itself and the next live burden is now visible. However, same-response recursion must remain bounded by P7, release discipline, and the smallest sufficient restorative move.
 
+> STOP is invalid unless the post-render gate has run. If the gate finds another live distortion in the same input or a held route newly eligible, RECURSE is required. If the route remains live but blocked, HOLD is required. If limits prevent the next eligible pass, PARTIAL is required.
+
 ---
 
 ## Release Question
 
 Before releasing any content, ask: *Is this response releasing the right content, in the right order, for the current refreshed case-state — no more, no less, not before upstream blockers clear?*
+
+---
+
+## Post-Render Re-Entry Gate
+
+After every bounded restorative move, before closing the response, run the State Refresh /
+Re-Entry Gate and populate the IR `post_render_gate`:
+
+```text
+post_render_gate:
+  cleared_this_pass:
+  remaining_live_distortions:
+  held_routes_rechecked:
+  newly_released_routes:
+  next_eligible_pass:
+  recursion_decision: STOP | HOLD | RECURSE | PARTIAL
+```
+
+The gate must answer:
+
+1. What was cleared this pass?
+2. What remains live in the same input?
+3. Which held routes were rechecked?
+4. Did any held route become newly eligible?
+5. Is there a next eligible pass?
+6. Is the correct governance decision STOP, HOLD, RECURSE, or PARTIAL?
+
+Decision rules:
+
+- `STOP`: valid only if no live distortion remains and no held route has become eligible.
+- `HOLD`: valid only if remaining material exists but its release signal is absent.
+- `RECURSE`: required if another live distortion remains in the same input or a held route becomes eligible.
+- `PARTIAL`: required if token, tool, or interaction limits prevent completion while recursive pressure remains.
+
+STOP cannot be emitted before this gate runs. Held material must be rechecked after each pass.
 
 ---
 
@@ -192,7 +230,8 @@ After X is addressed, refresh the case-state. If Y remains live, it becomes elig
 4. Refresh case-state.
 5. Re-run matched TTP logic over remaining upstream, downstream, first-order, and higher-order burdens.
 6. Release next item only if it remains live and now governs.
-7. Stop when P7 stop conditions are met.
+7. Run the post-render gate before closure.
+8. STOP only when P7 / register / semantic / sufficiency governance permits it and no next eligible pass remains.
 
 **Fail:**
 - The response collapses recursive traversal into a single argumentative dump.
@@ -200,6 +239,7 @@ After X is addressed, refresh the case-state. If Y remains live, it becomes elig
 - The response fails to explain how the movement restores order.
 - The response keeps visiting downstream doors after restoration or contact has already landed.
 - The response holds downstream material but never reassesses it after a governing blocker clears.
+- The response stops after one strong move without running the post-render gate.
 
 ---
 
@@ -219,13 +259,15 @@ After X is addressed, refresh the case-state. If Y remains live, it becomes elig
 
 ---
 
-### 7. Stop / Hold / Recurse Decision
+### 7. Post-Render STOP / HOLD / RECURSE / PARTIAL Decision
 
 **Pass:**
-- The response checks whether to stop, hold, or recurse.
-- If recognition or contact has surfaced, stop.
-- If the case needs another pass, mark it as held or recursive rather than dumping everything.
-- If the current pass itself clears an upstream blocker and another burden remains live, same-response recursion is permitted only as a bounded next pass.
+- The response runs the post-render gate before any closure decision.
+- It records what cleared, what remains live, which held routes were rechecked, and whether any route became newly eligible.
+- If recognition or contact has surfaced and no next live distortion remains, STOP may be recorded.
+- If the case needs another pass but release is blocked, mark it as HOLD rather than dumping everything.
+- If the current pass itself clears an upstream blocker and another burden remains live, same-response recursion is required as a bounded next pass unless a stop, register-hold, semantic gate, thin-basis rule, or limit blocks it.
+- If limits prevent the next eligible pass, mark PARTIAL and name the next eligible pass.
 - The response preserves P7 stop discipline.
 - The response does not continue merely because additional related issues are available.
 
@@ -234,6 +276,8 @@ After X is addressed, refresh the case-state. If Y remains live, it becomes elig
 - The response answers every related issue because it is available, rather than because the refreshed case-state requires it.
 - The response turns a restorative contact into a verbal concession press.
 - The response treats stop discipline as permanent refusal when a refreshed state would permit a later bounded pass.
+- The response emits STOP while `remaining_live_distortions` or `newly_released_routes` is non-empty.
+- The response emits STOP because of token/tool limits while recursive pressure remains; this must be PARTIAL.
 
 ---
 
@@ -258,7 +302,7 @@ After X is addressed, refresh the case-state. If Y remains live, it becomes elig
 
 ### 9. Not a Mandatory Full-Field Template
 
-This rubric governs output release. It does not impose a mandatory full-field public format. Runtime output remains governed by validated IR, bounded Layer B, diagnostic render eligibility, recursive state refresh, and stop/hold/recurse discipline.
+This rubric governs output release. It does not impose a mandatory full-field public format. Runtime output remains governed by validated IR, bounded Layer B, diagnostic render eligibility, recursive state refresh, and STOP / HOLD / RECURSE / PARTIAL discipline.
 
 Do not convert patch-report requirements into the skill's normal runtime response format.
 
@@ -348,6 +392,11 @@ Compact diagnostic structure is permitted when it serves the case. Exhaustive fi
 **Bad output:** Launches a long cumulative proof stack.
 **Required behavior:** Recognition/contact has surfaced. Stop concession pressure. Offer one bounded next move or one clarifying invitation.
 
+### FT-17 — Premature closure without re-entry
+**Input:** /daee-epistemics The moral objection is really that modern liberal equality is the judge of revelation. Also, if that standard falls, what should govern the question instead?
+**Bad output:** Correctly exposes the imported tribunal, then closes as though the whole case is complete.
+**Required behavior:** Clear the imported tribunal, run the post-render gate, recheck held routes, and identify whether the positive criterion-order pass is now eligible. If eligible and no stop/hold/gate blocks it, RECURSE into one bounded next move. If limits prevent it, mark PARTIAL rather than STOP.
+
 ---
 
 ## Related Files
@@ -355,10 +404,10 @@ Compact diagnostic structure is permitted when it serves the case. Exhaustive fi
 | File | Relation |
 |------|----------|
 | `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape after this rubric passes |
-| `references/diagnostics/framework-pipeline.md` | Canonical pipeline; §Recursive State-Transition View owns STOP/PAUSE/RECURSE semantics |
+| `references/diagnostics/framework-pipeline.md` | Canonical pipeline; §Recursive State-Transition View owns STOP / HOLD / RECURSE / PARTIAL semantics |
 | `references/diagnostics/routing-precedence.md` | §VII distinguishes routing precedence from output-release and render |
 | `references/procedures/P7-restoration-stops.md` | P7 stops govern current-pass deployment; this rubric governs release discipline |
-| `references/diagnostics/diagnostic-ir.md` | IR fields `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `continuation_eligibility` carry the release state |
+| `references/diagnostics/diagnostic-ir.md` | IR fields `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `continuation_eligibility`, and `post_render_gate` carry the release state |
 | `references/diagnostics/case-state-schema.md` | Concealment × orientation matrix governs register-hold discipline |
 | `references/diagnostics/anti-patterns.md` | Anti-patterns for failure modes this rubric prevents |
 | `skill/SKILL.md §V.A` | Two-Layer Output Contract (Layer A / Layer B) |

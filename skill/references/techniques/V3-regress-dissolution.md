@@ -2,7 +2,7 @@
 id: V3-regress-dissolution
 module_class: technique
 canonical_path: skill/references/techniques/V3-regress-dissolution.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor generates justificatory regress objections ("but what justifies that?")
   - infinite regress demand against foundational or basic beliefs

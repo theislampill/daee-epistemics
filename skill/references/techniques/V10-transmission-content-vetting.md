@@ -2,7 +2,7 @@
 id: V10-transmission-content-vetting
 module_class: technique
 canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 blocks:

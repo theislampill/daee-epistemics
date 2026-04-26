@@ -2,7 +2,7 @@
 id: reason-disambiguation
 module_class: governance
 canonical_path: skill/references/diagnostics/reason-disambiguation.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any case with DO-orient = truth-seek or mixed; Mandatory Pass P-A in V1 Phase 2
 emits:

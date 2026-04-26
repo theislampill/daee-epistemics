@@ -2,7 +2,7 @@
 id: E3-cumulative-case
 module_class: tactic
 canonical_path: skill/references/tactics/E3-cumulative-case.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - no single argument is decisive; independent considerations need bounded assembly
   - upstream blockers (framework, criterion, grief, motive) already cleared

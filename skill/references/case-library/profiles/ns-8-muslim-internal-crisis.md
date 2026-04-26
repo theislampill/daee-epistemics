@@ -2,7 +2,7 @@
 id: ns-8-muslim-internal-crisis
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-8 (Muslim-Internal Crisis) confirmed via Quick NS Identification
 routing_effects:

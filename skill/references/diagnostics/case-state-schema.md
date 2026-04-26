@@ -2,7 +2,7 @@
 id: case-state-schema
 module_class: governance
 canonical_path: skill/references/diagnostics/case-state-schema.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any substantive response needs explicit routing state
 catalogue_registered: false
@@ -50,6 +50,13 @@ the surfaced block must be traceable to an IR source. This table is the tracing 
 | `Register-hold` | `Routing gate: register-hold` + `What is withheld and why` | surfaced expansion — populate only when IR has register-hold gate and withheld content |
 | `Deployable on shift to` | `What is withheld and why` | surfaced expansion — names the release condition stated in the IR withheld field |
 | `Decisive missing differentiator` | `What remains live` | surfaced expansion — names one specific signal from the IR's open-axis list |
+| `Post-render gate` | `post_render_gate` | direct — mandatory State Refresh / Re-Entry Gate after each bounded move |
+| `Cleared this pass` | `post_render_gate.cleared_this_pass` | direct |
+| `Remaining live distortions` | `post_render_gate.remaining_live_distortions` | direct |
+| `Held routes rechecked` | `post_render_gate.held_routes_rechecked` | direct |
+| `Newly released routes` | `post_render_gate.newly_released_routes` | direct |
+| `Next eligible pass` | `post_render_gate.next_eligible_pass` | direct |
+| `Recursion decision` | `post_render_gate.recursion_decision` | direct — STOP / HOLD / RECURSE / PARTIAL |
 | `Live alternatives` | `Read status: distributed` + competing NS/deformation reads in the IR | case-state-schema-native — tracks competing candidate reads alongside underdetermined IR; must not assert a read stronger than the IR's `Read status` |
 | `Reassessment` | `Continuation eligibility` + `Alignment state` | case-state-schema-native — states the refresh trigger; must not license continuation the IR's `continuation_eligibility` field has not licensed |
 | `Convergence requirement` | `Matched modules` + routing-precedence state | case-state-schema-native — expresses whether multiple non-redundant routes are warranted; must remain consistent with IR-level module selection |
@@ -97,6 +104,9 @@ Use this block when diagnosis matters to the response:
 - Continuation eligibility:         # not-assessed / blocked / eligible-on-refresh
 - Confidence:
 - Decisive missing differentiator:
+- Post-render gate:
+- Recursion decision:               # STOP / HOLD / RECURSE / PARTIAL
+- Next eligible pass:
 ```
 
 ```text
@@ -171,6 +181,31 @@ Compression rule: populate only the fields that had operative content. A restora
 
 Integration with `[Source Basis]`: the restoration trace is downstream of the case-state and source-basis blocks. It does not replace them. Case-state names what was diagnosed; source-basis names where claims are grounded; restoration trace names what was done to create the conditions under which the response could land.
 Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not carry forward automatically. A fresh round may be opened by a later reply or by a clear differentiating signal inside the same message, its accompanying propositions, or its entailments, but only when the refreshed case-state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
+
+## Post-Render Gate Block
+
+Use this block after every bounded restorative move before STOP, HOLD, RECURSE, or PARTIAL is
+declared. It is the surfaced form of the IR `post_render_gate`; it may be compact in ordinary
+responses, but it must exist in the governing state.
+
+```text
+[Post-Render Gate]
+- Cleared this pass:
+- Remaining live distortions:
+- Held routes rechecked:
+- Newly released routes:
+- Next eligible pass:
+- Recursion decision: STOP | HOLD | RECURSE | PARTIAL
+```
+
+Field discipline:
+
+- `Cleared this pass` names the bounded move that actually landed; do not restate the whole response.
+- `Remaining live distortions` names same-input live pressure after the move. Use `none` only when none remains.
+- `Held routes rechecked` names the previously held routes that were tested after refresh; use an empty list only when no routes were held.
+- `Newly released routes` names only routes whose release signal is now present. If any are present, STOP is invalid.
+- `Next eligible pass` names the next bounded pass or explicitly says `none`.
+- `Recursion decision` governs closure: STOP only when no live distortion or newly eligible held route remains; HOLD when live material is still blocked; RECURSE when another bounded pass is eligible; PARTIAL when limits prevent eligible continuation.
 
 ## Strength Rules
 

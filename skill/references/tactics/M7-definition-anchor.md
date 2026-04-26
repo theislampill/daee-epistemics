@@ -2,7 +2,7 @@
 id: M7-definition-anchor
 module_class: tactic
 canonical_path: skill/references/tactics/M7-definition-anchor.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor challenges a word rather than engaging the underlying claim
   - terminological dispute used to avoid substantive engagement

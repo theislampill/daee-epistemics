@@ -2,7 +2,7 @@
 id: perfection-criterion-usurpation
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/perfection-criterion-usurpation.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - philosophical perfection picture (immutability, simplicity, impassibility, non-eventfulness) functioning as tribunal
   - attribute content being judged by prior metaphysical model presented as neutral reason

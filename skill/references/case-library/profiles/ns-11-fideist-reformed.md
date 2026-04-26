@@ -2,7 +2,7 @@
 id: ns-11-fideist-reformed
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-11-fideist-reformed.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-11 (Fideist / Reformed Basic-Belief Holder) confirmed via Quick NS Identification
 routing_effects:

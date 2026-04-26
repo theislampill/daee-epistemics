@@ -2,7 +2,7 @@
 id: revelation-transmission
 module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed

@@ -2,7 +2,7 @@
 id: prophetic-discourse-neutralization
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/prophetic-discourse-neutralization.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - revealed or prophetic speech redirected, semantically overridden, or evacuated
   - semantic recontenting or determinate-guidance denial active before doctrinal dispatch

@@ -2,7 +2,7 @@
 id: M2-prior-probability
 module_class: tactic
 canonical_path: skill/references/tactics/M2-prior-probability.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - evidential arguments appear (problem of evil, divine hiddenness, religious diversity)
   - probabilistic argument assumes an implicit near-zero prior for God's existence

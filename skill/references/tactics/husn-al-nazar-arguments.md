@@ -2,7 +2,7 @@
 id: husn-al-nazar-arguments
 module_class: tactic
 canonical_path: skill/references/tactics/husn-al-nazar-arguments.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - ḥusn al-naẓar pathway already selected
   - framework cleared enough for inferential work

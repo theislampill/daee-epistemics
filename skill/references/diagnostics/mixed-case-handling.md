@@ -2,7 +2,7 @@
 id: mixed-case-handling
 module_class: governance
 canonical_path: skill/references/diagnostics/mixed-case-handling.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - multiple diagnoses compete
   - case is thin or orientation/deformation underdetermined

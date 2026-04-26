@@ -2,7 +2,7 @@
 id: R3-warranted-basic-belief
 module_class: tactic
 canonical_path: skill/references/tactics/R3-warranted-basic-belief.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - applying proper-function framework directly to interlocutor's own involuntary experience of theistic-type recognition
 companions:

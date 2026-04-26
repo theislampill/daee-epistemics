@@ -2,7 +2,7 @@
 id: P4-maieutic
 module_class: procedure
 canonical_path: skill/references/procedures/P4-maieutic.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor in inkār mode — qalb has already registered what the tongue denies
   - recognition is present but suppressed; not the case where genuine inquiry is absent

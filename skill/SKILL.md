@@ -6,6 +6,19 @@ description: >
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
 
+## Scope Boundary
+
+### Comparative-Religion Scope Boundary
+
+The skill may handle comparative-religion cases when the live burden instantiates an
+existing governed structure: authority-order challenge, source-use discipline, prophetic
+credential pressure, imported criterion, semantic/predication confusion,
+meta-ontological category pressure, or noetic/register crisis.
+
+It does not provide bespoke tradition-specific source adjudication for Jewish, Hindu,
+Buddhist, Arya Samaj, Advaita, Sufism, or tariqah-specific claims unless a dedicated
+owner is later authorized and added.
+
 ## Reference Architecture
 
 ### Always Load
@@ -154,6 +167,7 @@ Rules:
 15. After the dispatch gate opens, the output-release rubric (`references/rubrics/output-release.md`) governs how much content may be released, in what order, and whether held downstream material has been reassessed after a governing move clears. Held means traversal-delayed, not response-delayed. State refresh is an internal state-transition operation; it may occur inside the same response when the current pass has cleared the governing blocker and the next live burden is now eligible. Same-response recursion must remain bounded by P7 and output-release discipline.
 16. Optional structural framing fields in `diagnostic-ir.md` (`structural_pattern_print`, `load_bearing_node`, `collapse_radius`, `intervention_target`, `framing_notes`) are internal control fields only. They may clarify the practical shape of a higher-order or cross-level case, but they do not create new routes, new coverage claims, or permission to release topic content.
 17. When a source-audit-derived or tradition-labeled topic appears, identify the live structural node before content: authority order, epistemic criterion, validation order, semantic hinge, category-set, identity wound, or transmission/source-use layer. Do not answer by argument bank, citation dump, prooftext list, or broad comparative-religion treatment before the validated IR has selected the existing owner and release gate.
+18. After every bounded restorative move and before any closing STOP decision, run the IR `post_render_gate`: record what was cleared, what remains live, which held routes were rechecked, which routes became newly releasable, the next eligible pass, and the recursion decision (`STOP`, `HOLD`, `RECURSE`, or `PARTIAL`). STOP is invalid unless this gate has run and `next_eligible_pass` is `none`; RECURSE is required when a same-input distortion remains live or a held route becomes eligible; PARTIAL is required when limits prevent the next eligible pass.
 
 
 ### Specialty Diagnostics
@@ -670,6 +684,7 @@ the interlocutor now.
 **Always present**
 - `[Restorative Response]`
 - The closing formulation
+- `[Post-Render Gate]` or a compact `[Final Governance]` block naming `recursion_decision` and `next_eligible_pass`
 - When Stop-2 or Stop-5 governs, the closing formulation compresses to the landed move or one bounded question. It does not reopen layering after the stop has fired.
 
 **Conditional governance blocks**
@@ -766,17 +781,22 @@ chain does not continue in the same round.
 The closing must be the sharpest, most economical formulation of the restoring point — something
 a dāʿī can carry out of the room. Not a summary of what was argued; the point itself, compressed.
 
-*D. Refresh before further release.*
+*D. Post-render gate before further release or closure.*
 When framework-clearing, tribunal-clearing, semantic-clearing, transmission vetting, M1, M8, or
 another upstream move has landed, do not treat that by itself as blanket permission to keep
-releasing content. Refresh the case-state first. If the restoration target is still unmet and no
-stop, register-hold, or semantic gate is live, proceed in this order: transmission / authority if
+releasing content. Refresh the case-state through the post-render gate before any STOP decision.
+The gate must state what cleared, what remains live, which held routes were rechecked, whether a
+held route became newly eligible, and the next eligible pass. If the restoration target is still
+unmet and no stop, register-hold, or semantic gate is live, proceed in this order: transmission / authority if
 that is the next live burden; inferential elaboration only if the interlocutor has asked for it;
 minimal positive reconstruction of the restored order; V5 / sign-directed attention; one bounded
 diagnostic question only if it still advances the live target. If the target is no longer unmet, or
-the refreshed state does not license continuation, stop.
+the refreshed state does not license continuation, record `recursion_decision: STOP` with
+`next_eligible_pass: none`. If a route remains live but blocked, record `HOLD`. If another pass is
+eligible in the same input, record `RECURSE` and run only the next bounded pass. If limits prevent
+that pass, record `PARTIAL`, not false closure.
 
-The canonical stop / pause / recurse state model — including the STOP / PAUSE / RECURSE
+The canonical stop / hold / recurse / partial state model — including the STOP / HOLD / RECURSE / PARTIAL
 transition semantics and recursive re-entry conditions — is owned by
 `references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
 

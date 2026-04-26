@@ -2,7 +2,7 @@
 id: noetic-profiles
 module_class: case-library
 canonical_path: skill/references/case-library/noetic-profiles.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - redirect only — do not load for profile content; use individual profiles/ files
 routing_effects:

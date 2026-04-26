@@ -2,7 +2,7 @@
 id: inductive-fitri-method
 module_class: tactic
 canonical_path: skill/references/tactics/inductive-fitri-method.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - grounding E4 or any tawātur fiṭrī claim
   - determining what is genuinely fiṭrī vs. culturally variable

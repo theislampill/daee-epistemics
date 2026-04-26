@@ -2,7 +2,7 @@
 id: profiles-index
 module_class: governance
 canonical_path: skill/references/case-library/profiles/INDEX.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS code identified and canonical profile file location needed
 catalogue_registered: false

@@ -2,7 +2,7 @@
 id: V9-necessary-knowledge-priority
 module_class: technique
 canonical_path: skill/references/techniques/V9-necessary-knowledge-priority.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - philosophical argument produces conclusion contradicting a universally-held fiṭrī intuition
   - attack on necessary knowledge (ʿilm ḍarūrī) active

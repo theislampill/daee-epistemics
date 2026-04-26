@@ -2,7 +2,7 @@
 id: noetic-reading-checklist
 module_class: governance
 canonical_path: skill/references/diagnostics/noetic-reading-checklist.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - diagnosing worldview structure
   - NS code still provisional or basis is thin (excerpt mode)

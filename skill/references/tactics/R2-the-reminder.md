@@ -2,7 +2,7 @@
 id: R2-the-reminder
 module_class: tactic
 canonical_path: skill/references/tactics/R2-the-reminder.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - internalist criterion cleared or not the barrier
   - directing attention to pre-argumentative recognition

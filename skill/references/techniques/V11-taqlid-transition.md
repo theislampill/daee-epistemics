@@ -2,7 +2,7 @@
 id: V11-taqlid-transition
 module_class: technique
 canonical_path: skill/references/techniques/V11-taqlid-transition.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor has recognized position is held by taqlīd and asks (explicitly or implicitly) how to move toward taḥqīq
   - truth-seek discourse orientation confirmed

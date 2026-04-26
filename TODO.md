@@ -12,33 +12,56 @@ Current packaged-skill coverage and scope are represented by module front matter
 
 ## Active
 
-No active unresolved technical pass is currently assigned. The only remaining open items require human scope/source decisions.
+No active unresolved technical pass is currently assigned.
 
 ---
 
-## Needs Human Review
+## Closed Scope Decisions
 
-### Bespoke religion-specific families — scope and content decision
-- Status: needs-review
-- Source: current needs-review scope boundary; no dedicated owner in `module-catalogue.json` or routing indexes
-- Why uncertain: Bespoke argument structures remain outside governed current scope: Buddhist anatta/no-soul as direct challenge to the Islamic account of the nafs; Buddhist impermanence as rival account of creation/divine constancy; Hindu non-dualist (Advaita Vedanta) as rival theological ontology; Jewish final-prophethood argument grounded in Torah's self-characterization as complete. Cross-tradition family-transfer coverage is operative (C rating) for cases that instantiate a governed family. The bespoke gap is for argument structures requiring religion-specific content that cannot be resolved through family transfer. Adding these requires dedicated case files and a scope decision about whether they belong in the current SKILL.md activation scope.
-- Research framing note: external source-audit material and its integration plan now provide structural framing seeds, not coverage. They support pattern-first recognition for Jewish Torah-completeness, Hindu Arya Samaj Qur'an critique, Advaita pressure, and Buddhist anatta/impermanence pressure while preserving the needs-review scope boundary. Hindu Arya Samaj should be tracked separately from Advaita if it is ever brought into scope.
-- Decision needed: Decide whether to expand SKILL.md activation scope to include these bespoke families explicitly.
-- If in scope: Author dedicated case files from authorized comparative-religion sources; add them to coverage-scope.yaml; update SKILL.md, routing/index files, module-catalogue if dispatched, and coverage validation.
-- If out of scope: Add an explicit scope-exclusion note to SKILL.md/README or the relevant router explaining that only family-transfer cases are governed.
+### Bespoke religion-specific source-content owners — out of scope
+- Status: closed / out-of-scope for the current release
+- Decision: do not add bespoke Jewish, Hindu Arya Samaj, Advaita, Buddhist, or other religion-specific source-content owners without a later authorized source-audit task.
+- Reason: no authorized primary/source-audit basis is available for tradition-specific source adjudication.
+- What is governed: existing Diagnostic IR, PF/claim-level routing, structural pattern print, FPD, RT/V10, DO, M9, V9, metaphysical-architecture, philosophical-usurpation, and hold/release discipline govern cases when the live burden instantiates an existing structure.
+- What is not governed: tradition-specific source adjudication, primary-text exegesis, historical polemic reconstruction, or broad comparative-religion coverage.
+- Boundary: pattern-print / family-transfer coverage is not the same as bespoke source-content coverage.
 
-### Sufism-related crises — scope decision
-- Status: needs-review
-- Source: current needs-review scope boundary; no dedicated Sufism owner in `module-catalogue.json` or routing indexes
-- Why uncertain: Contested Sufi practices and ṭarīqah authority claims are not governed and not explicitly in SKILL.md activation scope. They could arise in NS-8 Muslim-internal cases. Whether these belong in scope requires a deliberate decision before any content is written.
-- Research framing note: external source-audit material supplies structural distinctions for kashf-as-tribunal, tariqah authority, wali criteria, authority wound vs authority tribunal, and vocabulary discipline. These are integrated only as IR framing intelligence unless a later task approves a bounded NS-8 owner.
-- Decision needed: Determine whether Sufism-related crises fall within current activation scope or should remain outside this skill.
-- If in scope: Perform a source-audit pass before writing; create a dedicated case family or NS-8 subroute with failure conditions, IR consequences, discriminators, and hold/release rules.
-- If out of scope: Add an explicit scope-exclusion note to `skill/SKILL.md`, NS-8, or the case-library router so public scope claims cannot imply coverage.
+#### Jewish Torah-completeness / final-prophethood
+- Governed structurally when the live burden is closed-canon veto, selective scriptural arbitrage, source-use discipline, or prophetic authority-order challenge.
+- Routed through PF-3, PF-7, FPD, V10/RT, and DO-10.
+- Not governed as a bespoke Jewish source-content owner.
+
+#### Hindu Arya Samaj Qur'an critique
+- Governed structurally when the live burden is a Vedic-reformist criterion functioning as tribunal.
+- Routed through FPD, reason-disambiguation, V2, DO-15 where moral/legal pressure is live, M9 where divine predication or speech-language is live, and RT/V10 where source authority is live.
+- Not governed as a bespoke Arya Samaj / Sanaullah-style source-content owner.
+
+#### Hindu Advaita / nondual ontology pressure
+- Governed structurally when the live burden is nondual ontology as upstream category-set, Creator-creation collapse, or higher/lower truth tribunal.
+- Routed through claim_level `meta-ontological`, M9, metaphysical-architecture, perfection-criterion-usurpation, and philosophical-usurpation when tribunal pressure is live.
+- Not governed as a bespoke Advaita source-content owner.
+
+#### Buddhist anatta / impermanence pressure
+- Governed structurally when the live burden is identity-continuity pressure, self-predication equivocation, two-level discourse, or impermanence category pressure.
+- Routed through claim_level `meta-ontological` or `cross-level`, M9, V9, metaphysical-architecture, and definition-discipline where "self" is equivocal.
+- Not governed as a bespoke Buddhist source-content owner.
+
+### Sufism-related source-content adjudication — out of scope
+- Status: closed / out-of-scope for the current release
+- Decision: do not add broad Sufism, tariqah-specific, practice-specific, or kashf-source adjudication owners without a later authorized source-audit task.
+- Reason: no authorized primary/source-audit basis is available for practice-specific or tariqah-specific adjudication.
+- What is governed: existing NS-8, PF-11, FPD, philosophical-usurpation, mixed-case authority-wound / authority-tribunal handling, M4/P7, M7/M9, and RT/V10 routes govern the family-transfer form when the live burden is authority order, wound, vocabulary, or source-use discipline.
+- What is not governed: broad Sufism taxonomy, contested-practice fiqh, tariqah-specific history, or source-specific adjudication.
+- Boundary: the skill may identify kashf-as-tribunal, tariqah authority override, charismatic jurisdiction over revelation, authority wound, vocabulary confusion, or source-use discipline. It must not issue source-specific verdicts beyond the existing governed route.
 
 ---
 
 ## Resolved / Consolidated
+
+### Post-render State Refresh / Re-Entry Gate
+- Status: resolved
+- Source: `skill/references/diagnostics/diagnostic-ir.md`, `skill/references/diagnostics/diagnostic-ir.schema.json`, `skill/references/diagnostics/framework-pipeline.md`, `skill/references/rubrics/output-release.md`, `skill/references/rubrics/diagnostic-render-contract.md`, and `skill/references/procedures/P7-restoration-stops.md`
+- Resolution: Added mandatory `post_render_gate` governance after every bounded restorative move. STOP is invalid until held routes are rechecked and `next_eligible_pass` is named as `none`; HOLD, RECURSE, and PARTIAL now preserve blocked, eligible, and limit-bounded recursive pressure without false closure.
 
 ### Tactic direct-read verification (E/M/R/F + auxiliary)
 - Status: resolved
@@ -53,7 +76,7 @@ No active unresolved technical pass is currently assigned. The only remaining op
 ### Coverage-validation direct-read closure
 - Status: resolved
 - Source: module front matter, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes
-- Resolution: Session 20 upgraded remaining NS profile and governance/restoration L(~) rows to L(✓), corrected stale DO-15 and V10 public/router references, and moved non-covered bespoke religion/Sufism claims to explicit needs-review scope status.
+- Resolution: Session 20 upgraded remaining NS profile and governance/restoration L(~) rows to L(✓), corrected stale DO-15 and V10 public/router references, and moved non-covered bespoke religion/Sufism claims to explicit non-covered scope status.
 
 ### GAP-A: Christian canon-selection confusion as opening frame (DO-14)
 - Status: resolved

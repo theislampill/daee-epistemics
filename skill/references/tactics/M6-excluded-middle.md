@@ -2,7 +2,7 @@
 id: M6-excluded-middle
 module_class: tactic
 canonical_path: skill/references/tactics/M6-excluded-middle.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor retreats into indefiniteness, evasion, or refusal to commit
   - evasive stock phrases used as conversational exits

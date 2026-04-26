@@ -2,7 +2,7 @@
 id: V4-contamination-identification
 module_class: technique
 canonical_path: skill/references/techniques/V4-contamination-identification.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - fiṭrah appears suppressed
   - interlocutor has access to theistic signs but does not respond

@@ -2,7 +2,7 @@
 id: philosophical-usurpation
 module_class: case-library
 canonical_path: skill/references/case-library/philosophical-usurpation.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - imported philosophical framework functioning as upstream tribunal over revelation
   - framework is not merely present but operating as court of appeal (Types A–D)

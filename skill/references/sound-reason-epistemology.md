@@ -2,7 +2,7 @@
 id: sound-reason-epistemology
 module_class: governance
 canonical_path: skill/references/sound-reason-epistemology.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - case needs full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
 catalogue_registered: false

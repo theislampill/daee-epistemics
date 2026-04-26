@@ -2,7 +2,7 @@
 id: V7-taqlid-check
 module_class: technique
 canonical_path: skill/references/techniques/V7-taqlid-check.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor's skepticism appears assumed-by-default rather than genuinely examined
   - position held by uncritical imitation of intellectual environment

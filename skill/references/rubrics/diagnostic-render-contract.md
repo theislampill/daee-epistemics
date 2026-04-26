@@ -2,7 +2,7 @@
 id: diagnostic-render-contract
 module_class: governance
 canonical_path: skill/references/rubrics/diagnostic-render-contract.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - deciding how visibly structured the response should be (Level 1/2/3)
 catalogue_registered: false
@@ -12,7 +12,7 @@ catalogue_registered: false
 
 ## Function
 
-This file governs how visibly structured the output is. It runs after the output-release rubric has confirmed what may be released, and before the public response is shaped. It does not replace routing, does not determine what is diagnosed, and does not determine what is eligible for release. Render shape follows diagnosis; it does not govern it. Three levels are defined below. The default is Level 1 (ordinary bounded response). Levels 2 and 3 apply only when their specific conditions are met.
+This file governs how visibly structured the output is. It runs after the output-release rubric has confirmed what may be released, and before the public response is shaped. It also requires a post-render gate or compact final governance block before closure. It does not replace routing, does not determine what is diagnosed, and does not determine what is eligible for release. Render shape follows diagnosis; it does not govern it. Three levels are defined below. The default is Level 1 (ordinary bounded response). Levels 2 and 3 apply only when their specific conditions are met.
 
 ---
 
@@ -45,14 +45,16 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 - Upstream blocker cleared or named.
 - Downstream held if unresolved.
 - Output-release rubric passed.
-- Stop/hold/recurse decision made.
-- State refresh considered before ending.
+- STOP / HOLD / RECURSE / PARTIAL decision made.
+- Post-render gate run before ending.
+- Compact final governance block rendered when the full gate is not surfaced.
 
 **Must not:**
 - Pretend diagnosis was unnecessary.
 - Release downstream content before upstream blockers clear.
 - Hide held material when the user needs to know why the answer is bounded.
 - Treat state refresh as only waiting for a user response.
+- Close with STOP before the post-render gate has rechecked held material.
 
 ---
 
@@ -94,11 +96,13 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 ## Restorative Response
 <bounded answer>
 
-## Refresh / Stop / Hold / Recurse
-- Refreshed state:
-- Stop:
-- Hold:
-- Recurse only if:
+## Post-Render Gate
+- Cleared this pass:
+- Remaining live distortions:
+- Held routes rechecked:
+- Newly released routes:
+- Next eligible pass:
+- Recursion decision: STOP | HOLD | RECURSE | PARTIAL
 ```
 
 **Rules:**
@@ -107,7 +111,7 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 - Do not let the diagnostic section become longer than the restorative answer unless the task is explicitly diagnostic/audit.
 - Do not release downstream content merely because it is named in a section header.
 - Do not treat compact diagnostic render as permission to dump all internal machinery.
-- Do not treat the Refresh / Stop / Hold / Recurse section as merely waiting for user response. State whether same-response recursion is permitted and why.
+- Do not treat the Post-Render Gate section as merely waiting for user response. State whether same-response recursion is required, blocked, partial, or complete and why.
 
 ---
 
@@ -181,8 +185,8 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 ## [Pastoral/Relational Note]
 <Only include when non-intellectual conditions materially govern follow-through.>
 
-## [Refresh / Stop / Hold / Recurse]
-<Only include full detail when recursion, state-refresh, or pass-review materially governs the case.>
+## [Post-Render Gate]
+<Required before closure; full detail is visible in Level 3.>
 
 ## Closing Formulation
 <Sharp restorative closing.>
@@ -199,7 +203,7 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 - `[Core Formulation]` is conditional on whether the argument structure requires explicit unpacking.
 - `[Engagement Register]` is conditional on whether concealment mode or orientation materially governs.
 - `[Pastoral/Relational Note]` is conditional on whether non-intellectual conditions are operative.
-- `[Refresh / Stop / Hold / Recurse]` is conditional on whether recursion or state-refresh governs the case.
+- `[Post-Render Gate]` is mandatory in Level 3 and is derived from `post_render_gate`, not improvised after writing the answer.
 - Pass-Scoped Revision Notes are for audit/pass-review only — not ordinary runtime.
 
 ---
@@ -212,7 +216,7 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 
 **When to surface backbone predicates:** Only when a backbone predicate emission (C, T, O, or K group) materially changed the routing gate or suppression rule in this pass.
 
-**When to suppress all internal fields:** Level 1 ordinary response — always.
+**When to suppress all internal fields:** Level 1 ordinary response suppresses diagnostic machinery, but it still surfaces a compact final governance block when the full post-render gate is not shown.
 
 ---
 
@@ -255,19 +259,31 @@ In a Level 3 full render, the `[Restorative Response]` must mark held Layer B de
 
 ---
 
-## Refresh / Stop / Hold / Recurse Section
+## Post-Render Gate / Final Governance Section
 
-This section appears in Level 2 and Level 3 when recursion, state-refresh, or the continuation decision materially governs the case.
+This section is mandatory in the governing state after every bounded restorative move. Level 2 and
+Level 3 surface the full gate when recursion, state-refresh, or the continuation decision materially
+governs the visible answer. Level 1 may compress it into a final governance block, but the block
+must still name the recursion decision and next eligible pass.
 
 It must answer:
-- **Refreshed state:** What changed after the governing move? What remains live?
-- **Stop:** Is there a stop condition active? Which one?
-- **Hold:** What is held and why? Is the hold pass-scoped (traversal-delayed) or externally gated (requires user reply because a stop or register condition fires)?
-- **Recurse only if:** What condition would license same-response recursion or a next bounded pass?
+- **Cleared this pass:** What did the bounded move actually clear?
+- **Remaining live distortions:** What pressure remains live in the same input?
+- **Held routes rechecked:** Which held routes were tested after refresh?
+- **Newly released routes:** Did any held route become newly eligible?
+- **Next eligible pass:** What is the next bounded pass, or is there none?
+- **Recursion decision:** STOP, HOLD, RECURSE, or PARTIAL.
+
+Decision rules:
+- **STOP** is valid only if no live distortion remains and no held route has become eligible.
+- **HOLD** is valid only if remaining material exists but its release signal is absent.
+- **RECURSE** is required if another live distortion remains in the same input or a held route becomes eligible.
+- **PARTIAL** is required if token, tool, or interaction limits prevent completion while recursive pressure remains.
 
 **Do not:**
 - Treat this section as merely "I will continue in the next reply." State whether same-response recursion is permitted or blocked, and why.
-- List this section when no recursion or stop/hold decision is live. Omit if Level 1 suffices.
+- Emit STOP without this section or its compact final-governance equivalent.
+- Use PARTIAL as an excuse to dump a queue. It names the next eligible pass that limits prevented.
 
 ---
 
@@ -281,6 +297,7 @@ It must answer:
 6. **Codex patch-report format as runtime output:** Patch-report structure (files inspected, implementation verdict, changelog) is not a runtime response format.
 7. **Suppressing Level 2 when diagnostic transparency is needed:** If the user invoked `/daee-epistemics` or explicitly asked for diagnostic output, withholding Level 2 structure without a clear reason harms routing legibility.
 8. **Hiding refreshed-state decision:** If a governing blocker was cleared in this pass and a downstream burden remains live, the response must show the refreshed-state decision — not silently hold the downstream material as though the blocker had not cleared.
+9. **Premature closure without re-entry:** Do not render one strong move and close without running the post-render gate, rechecking held routes, and naming STOP, HOLD, RECURSE, or PARTIAL.
 
 ---
 
@@ -292,7 +309,7 @@ It must answer:
 | `references/diagnostics/framework-pipeline.md` | Canonical pipeline; ℛ (bounded render) sits here in the architecture |
 | `references/diagnostics/case-state-schema.md` | `[Case State]`, `[Source Basis]`, `[Restoration Trace]` block schemas |
 | `references/diagnostics/inference-boundary.md` | Source-basis marker legend (anchored / synthesis / inference / speculative) |
-| `references/diagnostics/diagnostic-ir.md` | `output_shape`, `what_is_withheld_and_why`, `what_remains_live` — IR fields carrying release/render state |
-| `references/procedures/P7-restoration-stops.md` | Stop discipline governs the Refresh / Stop / Hold / Recurse section |
+| `references/diagnostics/diagnostic-ir.md` | `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `post_render_gate` — IR fields carrying release/render state |
+| `references/procedures/P7-restoration-stops.md` | Stop discipline governs the Post-Render Gate / Final Governance section |
 | `skill/SKILL.md §V` | Surfaced-mode policy (ordinary vs. advanced mode); Two-Layer Output Contract |
 | `references/diagnostics/anti-patterns.md` | `§Fixed Full-Field Template Materialization`, `§Template-Driven Routing` for prohibited failure modes |

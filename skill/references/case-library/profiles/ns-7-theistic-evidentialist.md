@@ -2,7 +2,7 @@
 id: ns-7-theistic-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-7 (Theistic Evidentialist) confirmed via Quick NS Identification
 routing_effects:

@@ -2,7 +2,7 @@
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - throughout every engagement as background governance
 blocks:
@@ -49,7 +49,7 @@ These are always-active background rules, not case-specific moves.
 
 16. **Character is evidence — actively, not passively.** The absence of defensiveness, the quality of listening, the genuine care for the interlocutor rather than the argument — these are epistemically operative, not decorative.
 
-17. **Know when to pause, and know when a refreshed continuation is actually licensed.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. A landed move ends the current pass; continuation is permitted only when refreshed case-state shows a still-unmet restoration target and no stop, register-hold, or semantic gate bars the next move. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. Heuristics states the principle; P7 enforces it procedurally.
+17. **Know when to pause, and know when a refreshed continuation is actually licensed.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. A landed move ends the current pass; before STOP, the post-render gate must refresh case-state, recheck held routes, and decide STOP, HOLD, RECURSE, or PARTIAL. Continuation is required when refreshed case-state shows a still-unmet restoration target and no stop, register-hold, semantic gate, or limit bars the next move. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. Heuristics states the principle; P7 enforces it procedurally.
 
 18. **Do not grant scientism upstream-tribunal status.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
 
@@ -84,3 +84,5 @@ These are always-active background rules, not case-specific moves.
 33. **Let restorative structural viability outrank bare formal stability.** A structure may look locally coherent while still being tribunal-captured, semantically trapped, or held together by imported criteria. The goal is not merely to preserve consistency, but to restore a configuration whose grounding, routing, release, and continuation remain aligned to restored order.
 
 34. **Let the validated IR govern recursive re-entry.** If a further move cannot be justified from refreshed state inside the audited control surface, it is not licensed. Re-enter only through a still-live restoration target and a newly permitted route, never from momentum alone.
+
+35. **Do not close before the post-render gate.** A strong bounded move is not self-closing. After it renders, ask what cleared, what remains live, what held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. STOP is honest only when that answer is none; otherwise HOLD, RECURSE, or PARTIAL governs.

@@ -2,7 +2,7 @@
 id: M5-deformation-triage
 module_class: tactic
 canonical_path: skill/references/tactics/M5-deformation-triage.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - during V1's triage phase (internal subroutine)
   - narrow single-exchange case where live question is already reduced to which deformation governs the next move

@@ -2,7 +2,7 @@
 id: arabic-backbone-predicates
 module_class: governance
 canonical_path: skill/references/diagnostics/arabic-backbone-predicates.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - V1 Phase 2; criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element visible
 catalogue_registered: false

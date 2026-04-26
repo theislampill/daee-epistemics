@@ -2,7 +2,7 @@
 id: F3-practice-epistemic-access
 module_class: tactic
 canonical_path: skill/references/tactics/F3-practice-epistemic-access.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor genuinely open to inquiry; intellectual arguments acknowledged but insufficient
   - F2 has created openness

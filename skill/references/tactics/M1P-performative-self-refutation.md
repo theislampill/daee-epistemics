@@ -2,7 +2,7 @@
 id: M1P-performative-self-refutation
 module_class: tactic
 canonical_path: skill/references/tactics/M1P-performative-self-refutation.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - act of asserting a position enacts what the position denies
 companions:

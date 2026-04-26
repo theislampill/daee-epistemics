@@ -2,7 +2,7 @@
 id: M1-self-refutation
 module_class: tactic
 canonical_path: skill/references/tactics/M1-self-refutation.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - before constructing any response — check whether objection premises undermine the objection itself
 routing_effects:

@@ -2,7 +2,7 @@
 id: ns-10-maturidi-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-10 (Māturīdī Evidentialist) confirmed via Quick NS Identification
 routing_effects:

@@ -2,7 +2,7 @@
 id: do-core
 module_class: case-library
 canonical_path: skill/references/case-library/do-core.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
   - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family

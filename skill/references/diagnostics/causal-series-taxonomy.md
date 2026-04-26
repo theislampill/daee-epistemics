@@ -2,7 +2,7 @@
 id: causal-series-taxonomy
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/causal-series-taxonomy.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - case turns on infinite regress, causal-series classification, or circularity
   - claims that natural or secondary causes are self-sufficient

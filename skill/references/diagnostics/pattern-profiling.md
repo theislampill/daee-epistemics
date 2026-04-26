@@ -2,7 +2,7 @@
 id: pattern-profiling
 module_class: governance
 canonical_path: skill/references/diagnostics/pattern-profiling.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - recurring cross-volume family identified
   - live burden concerns standards of knowing, ontological categories, or noetic structure

@@ -2,7 +2,7 @@
 id: R1-internalist-criterion
 module_class: tactic
 canonical_path: skill/references/tactics/R1-internalist-criterion.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor holds that knowledge of God requires inferential argument
 companions:

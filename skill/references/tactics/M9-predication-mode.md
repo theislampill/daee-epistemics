@@ -2,7 +2,7 @@
 id: M9-predication-mode
 module_class: tactic
 canonical_path: skill/references/tactics/M9-predication-mode.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - equivocation across term occurrences
   - domain-boundary failure (empirical method on non-empirical subject)

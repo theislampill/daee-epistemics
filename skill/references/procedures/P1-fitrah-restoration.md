@@ -2,7 +2,7 @@
 id: P1-fitrah-restoration
 module_class: procedure
 canonical_path: skill/references/procedures/P1-fitrah-restoration.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment
   - goal is to create conditions for fiṭrah recovery, not to win an argument

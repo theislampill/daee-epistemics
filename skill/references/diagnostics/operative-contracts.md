@@ -2,7 +2,7 @@
 id: operative-contracts
 module_class: governance
 canonical_path: skill/references/diagnostics/operative-contracts.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - adding or auditing YAML operative front matter on any skill file
   - migrating a module class to the contract layer
@@ -171,7 +171,7 @@ When `verification_status: L_check` is present, the verification booleans must a
 id: M9-predication-mode
 module_class: tactic
 canonical_path: skill/references/tactics/M9-predication-mode.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - equivocation across term occurrences
   - domain-boundary failure (empirical method on non-empirical subject)
@@ -204,7 +204,7 @@ catalogue_registered: true
 id: P7-restoration-stops
 module_class: procedure
 canonical_path: skill/references/procedures/P7-restoration-stops.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any response sequence at risk of premature argument deployment
   - grief-primary or identity-performance orientation confirmed
@@ -240,7 +240,7 @@ catalogue_registered: true
 id: routing-precedence
 module_class: governance
 canonical_path: skill/references/diagnostics/routing-precedence.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - multiple diagnostic axes produce competing signals
   - suppression rules needed to prevent invalid routing combinations
@@ -264,7 +264,7 @@ catalogue_registered: false
 id: do-attribute-precision
 module_class: case-library
 canonical_path: skill/references/case-library/do-attribute-precision.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - live pressure involves how divine attributes are predicated
   - DO-6, DO-11, DO-12, or DO-13 confirmed in case-state

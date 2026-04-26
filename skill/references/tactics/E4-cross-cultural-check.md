@@ -2,7 +2,7 @@
 id: E4-cross-cultural-check
 module_class: tactic
 canonical_path: skill/references/tactics/E4-cross-cultural-check.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor denies or needs grounding for cross-cultural theistic recognition
   - diversity objection conflates foundation with superstructure

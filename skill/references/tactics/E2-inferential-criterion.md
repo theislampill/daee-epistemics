@@ -2,7 +2,7 @@
 id: E2-inferential-criterion
 module_class: tactic
 canonical_path: skill/references/tactics/E2-inferential-criterion.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor holds that inferential argument is necessary for warranted theistic belief
 blocks:

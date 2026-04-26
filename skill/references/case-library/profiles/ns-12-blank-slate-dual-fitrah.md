@@ -2,7 +2,7 @@
 id: ns-12-blank-slate-dual-fitrah
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification
 companions:

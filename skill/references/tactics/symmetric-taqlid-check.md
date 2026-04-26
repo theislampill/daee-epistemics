@@ -2,7 +2,7 @@
 id: symmetric-taqlid-check
 module_class: tactic
 canonical_path: skill/references/tactics/symmetric-taqlid-check.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - before applying the outward taqlīd check (V7)
   - interlocutor asks whether the practitioner has examined their own position

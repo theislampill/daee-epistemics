@@ -2,7 +2,7 @@
 id: V8-bila-kayf-anchor
 module_class: technique
 canonical_path: skill/references/techniques/V8-bila-kayf-anchor.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - transcendence objections or attribute-coherence pressure
   - language-and-God problems

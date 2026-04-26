@@ -2,7 +2,7 @@
 id: F2-volitional-dimensions
 module_class: tactic
 canonical_path: skill/references/tactics/F2-volitional-dimensions.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor appears intellectually moved but remains volitionally resistant
   - deformation triage (M5) identifies gharaḍ or hawā as primary

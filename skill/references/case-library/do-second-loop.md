@@ -2,7 +2,7 @@
 id: do-second-loop
 module_class: case-library
 canonical_path: skill/references/case-library/do-second-loop.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes
   - HADD/cognitive-science, prophetic-moral-luck, Great Pumpkin, three-tier epistemology, or Islamic-specific moral objections is the live family

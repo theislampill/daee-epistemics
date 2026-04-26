@@ -2,7 +2,7 @@
 id: M3-orphaned-intuition
 module_class: tactic
 canonical_path: skill/references/tactics/M3-orphaned-intuition.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - post-religious or secular moral realist position
   - interlocutor retains moral, aesthetic, or meaning commitments whose grounding their stated framework cannot supply

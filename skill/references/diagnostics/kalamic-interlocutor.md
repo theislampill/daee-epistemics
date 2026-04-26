@@ -2,7 +2,7 @@
 id: kalamic-interlocutor
 module_class: governance
 canonical_path: skill/references/diagnostics/kalamic-interlocutor.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-6 or NS-10 confirmed; kalamic evidentialism surface markers present
 emits:

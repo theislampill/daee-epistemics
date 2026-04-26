@@ -2,7 +2,7 @@
 id: P3-reason-revelation-tension
 module_class: procedure
 canonical_path: skill/references/procedures/P3-reason-revelation-tension.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - intellectually serious interlocutor stuck on perceived fundamental conflict between rational/scientific standards and religious belief
   - often combined with kalāmic interlocutor profile (NS-6, NS-10)

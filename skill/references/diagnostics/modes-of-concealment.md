@@ -2,7 +2,7 @@
 id: modes-of-concealment
 module_class: governance
 canonical_path: skill/references/diagnostics/modes-of-concealment.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any case after DO-orient is established; concealment mode governs what engagement can land
 emits:

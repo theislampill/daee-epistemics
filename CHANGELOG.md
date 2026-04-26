@@ -1,5 +1,51 @@
 # Changelog
 
+## [v0.2.3.0] - 2026-04-26
+
+v0.2.3.0 is the post-render recursion governance release after v0.2.2.0.
+
+### Added
+
+- Mandatory Diagnostic IR `post_render_gate` with `cleared_this_pass`, `remaining_live_distortions`, `held_routes_rechecked`, `newly_released_routes`, `next_eligible_pass`, and `recursion_decision`.
+- Four-state post-render decision vocabulary: `STOP`, `HOLD`, `RECURSE`, and `PARTIAL`.
+- Named anti-pattern `Premature Closure Without Re-Entry` for responses that land one strong move and stop without refreshing case-state or reassessing held material.
+- Output-release failure test for false closure after an imported-tribunal move when a positive criterion-order pass remains eligible.
+- Development validator `tools/check_framework_pipeline.py` to check the framework-pipeline ASCII audit chart against `SKILL.md`, YAML front matter, `module-catalogue.json`, `coverage-scope.yaml`, mandatory-pass order, forbidden shortcuts, and recursive state vocabulary.
+
+### Changed
+
+- `diagnostic-ir.schema.json` now makes `post_render_gate` schema-visible and required for a completed governed pass record.
+- `diagnostic-ir.md`, `framework-pipeline.md`, `case-state-schema.md`, `diagnostic-render-contract.md`, `output-release.md`, `P7-restoration-stops.md`, and `heuristics.md` now require the post-render State Refresh / Re-Entry Gate before closure.
+- Render governance now requires either a visible `[Post-Render Gate]` or compact `[Final Governance]` block naming the recursion decision and next eligible pass.
+- P7 and output-release rules now distinguish blocked live material (`HOLD`), required same-input continuation (`RECURSE`), and limit-bounded incomplete traversal (`PARTIAL`).
+- `contract_version` markers updated to `0.2.3.0` for the current packaged reference surface.
+
+### Fixed
+
+- Prevented false STOP after one strong bounded move when same-input distortions or newly eligible held routes remain live.
+- Prevented token/tool/interaction limits from being represented as completion; such cases now require `PARTIAL`.
+- Updated public orientation text so the README reflects the current STOP / HOLD / RECURSE / PARTIAL pass model.
+
+### Removed
+
+- No files were consolidated, no runtime/omnibus files were generated, and no canonical atomic source files were replaced.
+
+### Validation
+
+- `python tools/check_frontmatter.py` - PASS
+- `python tools/check_coverage.py` - PASS
+- `python tools/check_framework_pipeline.py` - PASS
+- `python -m json.tool skill/references/diagnostics/diagnostic-ir.schema.json` - PASS
+- `python -m json.tool skill/references/diagnostics/operative-contract.schema.json` - PASS
+- `python -m json.tool skill/references/diagnostics/module-catalogue.json` - PASS
+
+### Scope Boundaries
+
+- No new bespoke religion-specific owner files were created.
+- No new public coverage claims were added.
+- Diagnostic IR remains the runtime dispatch authority; YAML/front matter and development validators remain validation surfaces, not live routing engines.
+- Canonical source remains atomized under `skill/references/`; future bundles may be added separately without replacing canonical source ownership.
+
 ## [v0.2.2.0] - 2026-04-26
 
 v0.2.2.0 is the stabilization, packaging, and validation release after v0.2.1.0.
@@ -45,6 +91,8 @@ v0.2.2.0 is the stabilization, packaging, and validation release after v0.2.1.0.
 
 - No new bespoke religion-specific owner files were created.
 - No new public coverage claims were added from source-audit material.
-- Bespoke Jewish, Sufism, Hindu Arya Samaj, Advaita, and Buddhist owner work remains scope-gated / needs-review unless separately authorized.
+- Bespoke religion-specific source-content owners are out of scope for v0.2.2.0 because no authorized primary/source-audit basis is available.
+- Existing family-transfer and Diagnostic IR architecture remains sufficient for structural response handling when the live burden instantiates a governed route.
+- Jewish, Sufism, Hindu Arya Samaj, Advaita, and Buddhist cases may be handled only at the governed structural level unless a dedicated source-content owner is later authorized and added.
 - Canonical source remains atomized files under `skill/references/`.
 - No consolidation or bundle/read-view system is shipped in v0.2.2.0; future packaging bundles may be added separately without replacing canonical source ownership.

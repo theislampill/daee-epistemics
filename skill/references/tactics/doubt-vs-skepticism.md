@@ -2,7 +2,7 @@
 id: doubt-vs-skepticism
 module_class: tactic
 canonical_path: skill/references/tactics/doubt-vs-skepticism.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor demands evidence for God as precondition for engagement
   - extraordinary-claims-require-extraordinary-evidence principle invoked as tribunal

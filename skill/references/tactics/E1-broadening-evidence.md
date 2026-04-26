@@ -2,7 +2,7 @@
 id: E1-broadening-evidence
 module_class: tactic
 canonical_path: skill/references/tactics/E1-broadening-evidence.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor insists "there is no evidence" for God's existence
   - evidential scope needs widening beyond empirical-only criterion

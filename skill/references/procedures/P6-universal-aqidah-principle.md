@@ -2,7 +2,7 @@
 id: P6-universal-aqidah-principle
 module_class: procedure
 canonical_path: skill/references/procedures/P6-universal-aqidah-principle.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor claims no religion, no worldview, no ʿaqīdah
   - the claim that there is no righteous guidance asserted as a position

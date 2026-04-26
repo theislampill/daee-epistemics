@@ -2,7 +2,7 @@
 id: V5-directing-attention-signs
 module_class: technique
 canonical_path: skill/references/techniques/V5-directing-attention-signs.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - framework cleared (V2 deployed and filter loosened)
   - directing attention to specific āyāt calibrated to this interlocutor's sensibility

@@ -2,7 +2,7 @@
 id: M4-grief-register
 module_class: tactic
 canonical_path: skill/references/tactics/M4-grief-register.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - problem of evil is a personal moral protest arising from genuine suffering (not a philosophical argument)
   - grief or betrayal is primary

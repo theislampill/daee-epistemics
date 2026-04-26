@@ -2,7 +2,7 @@
 id: framework-pipeline
 module_class: governance
 canonical_path: skill/references/diagnostics/framework-pipeline.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - auditing the decision circuit or forbidden-shortcut check
   - surfacing where a response went wrong
@@ -10,14 +10,17 @@ load_when:
 routing_effects:
   - validates pipeline order before render
   - blocks forbidden shortcuts
-  - defines STOP / PAUSE / RECURSE state-transition semantics
+  - defines STOP / HOLD / RECURSE / PARTIAL state-transition semantics
+  - requires post-render re-entry gate before closure
 emits:
   - pipeline_integrity_check
   - recursive_state_transition
+  - post_render_gate
 blocks:
   - retrospective IR formation
   - direct doctrinal rebuttal before diagnostic gate
   - recursive dump after a landed move
+  - premature closure without re-entry
 companions:
   - diagnostic-ir
   - routing-precedence
@@ -155,7 +158,7 @@ operator_pack_eligible: true
 | - Held material is held — not answered, not permanent?     |
 | - Recursive traversal ordered, bounded, refreshed?         |
 | - Release amount: not too much, not too little?            |
-| - Stop / hold / recurse decision grounded in refreshed IR? |
+| - Stop / hold / recurse / partial grounded in refreshed IR?|
 | Held means traversal-delayed, not response-delayed.        |
 +------------------------------------------------------------+
                   |
@@ -177,6 +180,17 @@ operator_pack_eligible: true
 | - What correction was applied                              |
 | - Route that became permissible after correction           |
 | - What remains live / unresolved                           |
++------------------------------------------------------------+
+                  |
+                  v
++------------------------------------------------------------+
+| POST-RENDER RE-ENTRY GATE                                  |
+| - What cleared this pass?                                  |
+| - What remains live in the same input?                     |
+| - Which held routes were rechecked?                        |
+| - Did any route become newly eligible?                     |
+| - Next eligible pass: named or none                        |
+| - Decision: STOP / HOLD / RECURSE / PARTIAL                |
 +------------------------------------------------------------+
                   |
                   v
@@ -232,6 +246,8 @@ a shortcut around the diagnostic gate.
   State refresh is an internal operation; it may occur inside the same response.
 - `[recursive traversal permitted] -> [argument dump at one refresh]`
   Recursion is door-by-door, not total-downstream release at one state refresh.
+- `[bounded move rendered] -> [STOP without post-render gate]`
+  Premature closure. The state refresh / re-entry gate must recheck held routes before STOP.
 - `[diagnostic transparency allowed] -> [machinery dump]`
   Diagnostic render eligibility does not suspend output-release rubric.
 - `[source-audit-derived topic appears] -> [argument bank / citation dump]`
@@ -242,21 +258,22 @@ a shortcut around the diagnostic gate.
   Structural pattern print is an optional IR descriptor, not a new V-pass, PF replacement, or coverage claim.
 
 Compact pipeline (rubric/render placement):
-`IR → PF/claim-level → owners → TTP → load floor → release rubric → render contract → bounded output → refreshed state → stop/hold/recurse`
+`IR → PF/claim-level → owners → TTP → load floor → release rubric → render contract → bounded output → post-render gate → STOP/HOLD/RECURSE/PARTIAL`
 
 ## Recursive State-Transition View
 
-**Canonical owner:** This section is the authoritative definition of the STOP / PAUSE / RECURSE
+**Canonical owner:** This section is the authoritative definition of the STOP / HOLD / RECURSE / PARTIAL
 state model. All other files that govern recursive continuation (`SKILL.md §V.D`,
 `diagnostic-ir.md §Current-pass activation rule`, `routing-precedence.md Rule P-3`,
 `anti-patterns.md §False Landing`) cross-reference this section rather than re-stating the model
-independently. `P7-restoration-stops.md` is the concrete instantiation of the PAUSE / STOP
+independently. `P7-restoration-stops.md` is the concrete instantiation of the HOLD / STOP
 states (Stops 1–5); this section owns the abstract state-transition semantics.
 
 The framework is not a one-shot pipeline. Each pass produces bounded manifestation first, then
-refreshes state. Only the refreshed state may authorize further release. `STOP` and `PAUSE` are
+refreshes state through the post-render gate. Only the refreshed state may authorize further release. `STOP` and `HOLD` are
 governed output states, not empty terminals. `RECURSE` means governed re-entry over the
-still-live burden, not autonomous looping.
+still-live burden, not autonomous looping. `PARTIAL` means the next eligible pass remains live but
+token, tool, or interaction limits prevent completion in this response.
 
 ```mermaid
 flowchart TD
@@ -273,13 +290,14 @@ flowchart TD
     T --> R["Bounded Render R"]
     R --> PSI["Bounded Manifestation Psi_t = Layer A + Layer B + Trace"]
 
-    PSI --> X["State Refresh chi using sigma-check, Psi_t, eta"]
+    PSI --> X["Post-render State Refresh chi using sigma-check, Psi_t, eta"]
     X --> SN["Refreshed State sigma-plus"]
 
-    SN --> G2["Recursive Governance over refreshed state"]
+    SN --> G2["Re-Entry Gate over refreshed state"]
     G2 -->|STOP| OS["Terminal bounded state"]
-    G2 -->|PAUSE / HOLD| OP["Held or compressed state"]
+    G2 -->|HOLD| OP["Held or compressed state"]
     G2 -->|RECURSE| RE["Governed recursive re-entry"]
+    G2 -->|PARTIAL| PL["Limit-bounded partial state"]
 
     RE --> O
 ```
@@ -287,6 +305,10 @@ flowchart TD
 In operator terms, the route does not become recursive because the system keeps talking. It
 becomes recursive only when a bounded move has landed, the state has refreshed, the restoration
 target remains unmet, and governance still permits another pass.
+
+The post-render gate must run before STOP. It asks what cleared this pass, what remains live in the
+same input, which held routes were rechecked, whether any held route became newly eligible, what the
+next eligible pass is, and whether the decision is STOP, HOLD, RECURSE, or PARTIAL.
 
 ## Noetic Structure and Meta-Noetic Memetics
 
@@ -377,7 +399,7 @@ $$
 $$
 
 $$
-\kappa(\sigma_{t+1}, \eta_t) \in \{\texttt{STOP}, \texttt{PAUSE}, \texttt{RECURSE}\}
+\kappa(\sigma_{t+1}, \eta_t) \in \{\texttt{STOP}, \texttt{HOLD}, \texttt{RECURSE}, \texttt{PARTIAL}\}
 $$
 
 This is the quantized general framework in repo-native form: diagnostic reduction, governance,
@@ -408,7 +430,7 @@ re-entry.
 | λ<sub>B</sub> | Layer B deployable move |
 | τ<sub>t</sub> | restoration trace for the pass |
 | χ | refreshed-state update after bounded manifestation |
-| κ | recursive governance output: stop, pause, or recurse |
+| κ | recursive governance output: stop, hold, recurse, or partial |
 
 The ASCII chart, recursive state-transition view, and Mermaid graph above remain the primary audit
 surfaces. The formal view below makes the same governed interpretive framework explicit in operator
@@ -557,13 +579,18 @@ After each bounded manifestation, refreshed state is computed:
 \sigma_{t+1}^{+} = \chi(\sigma_t^{\checkmark},\Psi_t,\eta_t)
 ```
 
-Recursive governance then determines whether the framework stops, pauses, or re-enters:
+Recursive governance then determines whether the framework stops, holds, re-enters, or marks a limit-bounded partial:
 
 ```math
 \kappa(\sigma_{t+1}^{+},\Psi_t,\eta_t)
 \in
-\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
 ```
+
+The post-render gate is the concrete runtime carrier of `χ` and `κ`. It must recheck held routes
+and name `next_eligible_pass` before STOP. `STOP` requires no live distortion and no newly eligible
+held route. `HOLD` means the route remains live but blocked. `RECURSE` means the next bounded pass
+is eligible now. `PARTIAL` means the next pass is eligible but response limits prevent traversal.
 
 If recursive re-entry is licensed, the next pass begins from refreshed state under renewed
 governance rather than from unguided carry-forward:
@@ -659,7 +686,7 @@ Output is rendered under current permissions, not from total available knowledge
 \text{selected} \to \text{manifest}
 ```
 
-#### VI. Refreshed Recursive Decision
+#### VI. Post-Render Re-Entry Decision
 
 After a landed move:
 
@@ -672,7 +699,7 @@ Then:
 ```math
 \kappa(\sigma_1^{+},\Psi_0,\eta_0)
 \in
-\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
 ```
 
 If recursive re-entry is licensed:
@@ -784,7 +811,7 @@ trace under governance.
 | Routing        | `σ₀✓, η₀`           | `Ω`      | `(ρ₀, μ₀)`             | available → selected    |
 | Rendering      | `(ρ₀, μ₀), σ₀✓, η₀` | `ℛ`      | `Ψ₀`                   | selected → manifest     |
 | Refresh        | `σ₀✓, Ψ₀, η₀`       | `χ`      | `σ₁⁺`                  | manifest → updated      |
-| Continuation   | `σ₁⁺, Ψ₀, η₀`       | `κ`      | stop / pause / recurse | updated → directed      |
+| Continuation   | `σ₁⁺, Ψ₀, η₀`       | `κ`      | stop / hold / recurse / partial | updated → directed      |
 
 ### Compact Summary Equation
 
@@ -813,7 +840,7 @@ subject to:
 ```math
 \kappa(\sigma_t^{+},\Psi_t,\eta_t)
 \in
-\{\texttt{STOP},\texttt{PAUSE},\texttt{RECURSE}\}
+\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
 ```
 
 and with each Layer B manifestation bounded by current permissions:
@@ -853,7 +880,7 @@ $$
 $$
 \text{Refreshed State}
 \to
-\text{Recurse / Pause / Stop}
+\text{Recurse / Hold / Partial / Stop}
 $$
 
 ## Coverage Verification

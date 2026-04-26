@@ -2,7 +2,7 @@
 id: ns-3-deconverted
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-3-deconverted.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - NS-3 (Deconverted / Post-Religious) confirmed via Quick NS Identification
 routing_effects:

@@ -2,7 +2,7 @@
 id: M8-reductio
 module_class: tactic
 canonical_path: skill/references/tactics/M8-reductio.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - interlocutor's position, followed consistently, produces formally contradictory, obviously absurd, or manifestly rejected consequences
 companions:

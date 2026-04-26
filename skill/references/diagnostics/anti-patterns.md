@@ -2,7 +2,7 @@
 id: anti-patterns
 module_class: governance
 canonical_path: skill/references/diagnostics/anti-patterns.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - preparing, reviewing, or correcting a response path
 catalogue_registered: false
@@ -52,7 +52,17 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* Type the recognition strength, stop the current pass, and reassess. Continue only if a fresh differentiating signal has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic gate remains live for the next move. Medium or strong recognition may justify a pause; weak signals do not license either celebration or renewed pressure.
 *Self-audit question:* Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
 *Why it damages the skill:* It turns selective recursion into debate momentum. The practitioner mistakes movement for permission and converts restoration into chain-dumping. This is precisely how a selective state machine decays into a sophisticated answer bank: the live state stops governing once the first move feels successful.
-*Prevented by:* `framework-pipeline.md §Recursive State-Transition View` (canonical owner of the STOP / PAUSE / RECURSE state model and recursive re-entry conditions); `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
+*Prevented by:* `framework-pipeline.md §Recursive State-Transition View` (canonical owner of the STOP / HOLD / RECURSE / PARTIAL state model and recursive re-entry conditions); `P7-restoration-stops.md` Stop 2 (one-live-question stop and recognition ladder); `diagnostic-ir.md` acceptance-state fields (`alignment_state`, `recognition_strength`, `continuation_eligibility`, `post_render_gate`); `routing-precedence.md` Rule P-3 (boundary reset); `heuristics.md` rule 17 (pause and refresh before further release).
+
+---
+
+**Premature Closure Without Re-Entry**
+*Definition:* Rendering one strong bounded move and stopping without refreshing case-state, rechecking held material, and recording the post-render STOP / HOLD / RECURSE / PARTIAL decision.
+*Pattern appearing in output:* The response exposes an imported tribunal, clears a loaded term, or lands a transmission-source discipline point, then ends as though closure were automatic. It does not ask what remains live in the same input, does not recheck held routes, and does not name the next eligible pass or explicitly say none.
+*Correct behavior in the same case:* After the bounded move, run the post-render gate: identify what cleared, what remains live, which held routes were rechecked, which routes became newly eligible, the next eligible pass, and the recursion decision. STOP only when no live distortion remains and no held route became eligible. HOLD blocked material. RECURSE into the next bounded pass when eligible. Use PARTIAL when limits prevent eligible continuation.
+*Self-audit question:* Did I stop because the gate found nothing live and no newly eligible route, or because the first move felt complete?
+*Why it damages the skill:* It makes the Diagnostic IR retrospective again. The first move may be correct, but the governing surface stops governing after render, so same-input live burdens and newly eligible held routes are silently dropped. Recursion is then merely permitted in theory, not enforced in practice.
+*Prevented by:* `diagnostic-ir.md` `post_render_gate`; `output-release.md` Post-Render Re-Entry Gate; `diagnostic-render-contract.md` Post-Render Gate / Final Governance section; `P7-restoration-stops.md` post-render gate rule; `heuristics.md` rule 35.
 
 ---
 
@@ -101,8 +111,8 @@ The following entries expand the compressed table into full audit-grade entries.
 *Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
 *Correct behavior in the same case:* Use source-audit findings to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
 *Self-audit question:* Am I using source-audit material to decide what must clear first, or am I using it as an answer bank?
-*Why it damages the skill:* It converts source-audit work into rhetorical ammunition. The answer may look well supplied, but it bypasses the actual diagnostic burden and can create false coverage impressions for scope-gated families.
-*Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` needs-review entries.
+*Why it damages the skill:* It converts source-audit work into rhetorical ammunition. The answer may look well supplied, but it bypasses the actual diagnostic burden and can create false coverage impressions for out-of-scope source-owner families.
+*Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` out-of-scope entries.
 
 ---
 
@@ -111,8 +121,8 @@ The following entries expand the compressed table into full audit-grade entries.
 *Pattern appearing in output:* The response treats "Hindu" as if it already means Advaita, Arya Samaj, popular polytheism, or perennialism; treats "Buddhist" as if it already means materialism; treats "Sufism" as if it already means either heresy or spirituality; treats "Jewish" and "Christian" canon objections as identical.
 *Correct behavior in the same case:* Type the structure first: external criterion as tribunal, nondual ontology, identity-continuity pressure, kashf-as-tribunal, authority wound, closed-canon veto, or source-use problem. Then route to the existing owner that governs that structure.
 *Self-audit question:* Did I classify the live node, or did I let the tradition label choose the answer?
-*Why it damages the skill:* Tradition-label routing creates both overreach and underreach. It misses governed structural routes when they exist and implies bespoke coverage where the repo has intentionally left a needs-review scope boundary.
-*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Source-Audit Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` needs-review boundaries.
+*Why it damages the skill:* Tradition-label routing creates both overreach and underreach. It misses governed structural routes when they exist and implies bespoke coverage where the repo has intentionally recorded an out-of-scope source-owner boundary.
+*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Source-Audit Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` closed scope decisions.
 
 ---
 
@@ -260,7 +270,7 @@ The following entries expand the compressed table into full audit-grade entries.
 
 **Fixed Full-Field Template Materialization**
 *Definition:* Printing every section of the full diagnostic template in every response by default — regardless of whether each section is materially needed for the current case — because the template structure has become the practitioner's routine output format.
-*Pattern appearing in output:* A simple loaded-term question receives a response with [Case State] (all fields), [Source Basis] (all four lines), [Restoration Trace], [Restorative Response], [Core Formulation], [Engagement Register], [Pastoral/Relational Note], [Refresh / Stop / Hold / Recurse] — all populated, because the practitioner applies Level 3 audit render by default.
+*Pattern appearing in output:* A simple loaded-term question receives a response with [Case State] (all fields), [Source Basis] (all four lines), [Restoration Trace], [Restorative Response], [Core Formulation], [Engagement Register], [Pastoral/Relational Note], [Post-Render Gate] — all populated, because the practitioner applies Level 3 audit render by default.
 *Correct behavior in the same case:* A loaded-term question whose governing burden is clear, whose interlocutor is truth-seeking, and whose required move is semantic disaggregation → Level 1 or Level 2 render. Surface only the materially governing fields. The full template is reserved for audit, pass-review, and explicitly diagnostic tasks.
 *Self-audit question:* Is each section I am including materially governing this response, or am I filling it in because the template expects it?
 *Why it damages the skill:* It inverts the purpose of the render contract. Diagnostic structure should appear when it serves the case; making it default inverts this, turning every ordinary response into an audit report. The interlocutor encounters bureaucratic structure rather than a response calibrated to their question. It also trains the practitioner to confuse structural completeness with diagnostic rigor.
@@ -295,6 +305,7 @@ The following entries expand the compressed table into full audit-grade entries.
 - Did I route by tradition label, or did I identify the live structural node first?
 - Did I separate an abuse or authority wound from a doctrinal or tribunal claim?
 - Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
+- Did I run the post-render gate before STOP, recheck held routes, and name the next eligible pass or `none`?
 - For each entry in `matched_modules`, does a `source_basis` entry with `source_kind: module` name what it governed?
 - Am I invoking transcendence or bilā kayf because the specific analytical work is done, or as a substitute for it?
 - Did I say something was held and then answer it anyway under a different label?

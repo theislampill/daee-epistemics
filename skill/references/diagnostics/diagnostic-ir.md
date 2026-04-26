@@ -2,7 +2,7 @@
 id: diagnostic-ir
 module_class: governance
 canonical_path: skill/references/diagnostics/diagnostic-ir.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - any substantive engagement requiring routing — IR is not optional
 routing_effects:
@@ -19,7 +19,11 @@ This file defines the complete typed state that must be formed before any conten
 1. Gate module dispatch. Dispatch is blocked until the mandatory minimum fields are populated and consistency checks pass.
 2. Make routing auditable independently of prose quality.
 
-The IR is not a retrospective record. Writing the IR after the response is cosmetic compliance. If the IR cannot be formed because mandatory fields cannot be populated, the correct action is Stop-4, not a response with a post-hoc IR.
+The IR is not a retrospective record. Writing the IR after the response is cosmetic compliance. The
+initial IR must govern dispatch before content release; the `post_render_gate` then refreshes that
+same live control surface after a bounded move and before closure. If the initial IR cannot be
+formed because mandatory fields cannot be populated, the correct action is Stop-4, not a response
+with a post-hoc IR.
 
 The IR composes fields from several sources:
 
@@ -61,7 +65,7 @@ explanatory frame for the already-named dynamics. Its live IR surface is:
 - `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture moves
 - `Claim-level` and `Pattern-profile`: governing PF overlay and higher-order burden when these change routing or sequencing
 - `Concealment mode`: how recognition is being suppressed
-- `What is withheld and why` and `What remains live`: held routes and collapse radius after a load-bearing node is cleared
+- `What is withheld and why`, `What remains live`, and `Post-render gate`: held routes, collapse radius, refreshed-state recheck, and the forced re-entry judgment after a load-bearing node is cleared
 
 **Negative rule:** When the concept "meta-noetic memetics" is invoked in a response without any
 of the above fields carrying a live read (no tribunal-installation in `Upstream findings`, no
@@ -76,7 +80,7 @@ decoratively. Decorative use is the anti-pattern named in
 Before any content module is dispatched, the following checks must pass in order. If any check fails, dispatch is blocked; the blocking condition is named explicitly rather than silently resolved.
 
 **Gate Check 1 - Mandatory minimum fields populated.**
-All fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a partial IR.
+All pre-dispatch fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated before module dispatch. `Post-render gate` is mandatory for the complete pass record, but it is populated after the bounded restorative move and before closure. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a forced read.
 
 **Gate Check 2 - Consistency rules pass.**
 None of the invalid combinations may be present. An IR with an invalid combination is a misread. Re-run Phase 2 before dispatching.
@@ -156,13 +160,20 @@ Output shape:                        # Layer B only: content | relational | maie
 Next move:                           # one specific action the response takes next
 What is withheld and why:            # Layer B hold only; never used to omit Layer A diagnosis or matched modules
 What remains live:                   # open differentiators, unresolved axes, or questions the next exchange must answer
+Post-render gate:                    # mandatory State Refresh / Re-Entry Gate before STOP, HOLD, RECURSE, or PARTIAL
+  Cleared this pass:
+  Remaining live distortions:
+  Held routes rechecked:
+  Newly released routes:
+  Next eligible pass:
+  Recursion decision:                 # STOP | HOLD | RECURSE | PARTIAL
 ```
 
 ---
 
 ## Field Rules
 
-Compression rule: the IR is not a checklist to be filled performatively. Populate only fields with operative content.
+Compression rule: the IR is not a checklist to be filled performatively. Populate only fields with operative content, except for mandatory control fields such as `post_render_gate`, which must record the governance decision even when its result is `none` / STOP.
 
 Noetic-object rule: populate the IR as a state of the structure, not as a paraphrase of the
 discourse. The point is to formalize what configuration is live, what governs release now, and
@@ -194,8 +205,12 @@ For any substantive response claiming to have done V1, the following fields must
 - Restoration target
 - Next move
 - Output shape
+- Post-render gate
 - Claim-level
 - Pattern-profile
+
+`Post-render gate` is mandatory for a completed pass, not for initial dispatch. It is populated
+after the bounded move and before STOP, HOLD, RECURSE, or PARTIAL is declared.
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
@@ -211,6 +226,7 @@ Populate these whenever their trigger is live:
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
+- `Post-render gate` after every bounded restorative move and before any closing decision. It is mandatory even when the decision is STOP; STOP is invalid unless the gate has run.
 
 **Optional structural framing fields**
 
@@ -261,7 +277,29 @@ contract permits a diagnostic or audit-style response.
   re-evaluation before further routing.
 - When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the refreshed state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
-**Recursive-state model:** `references/diagnostics/framework-pipeline.md §Recursive State-Transition View` is the canonical owner of the STOP / PAUSE / RECURSE state model. The fields `continuation_eligibility`, `alignment_state`, and `recognition_strength` are this IR's typed carriers of that model. State-transition semantics and recursive re-entry conditions are defined in `framework-pipeline.md`; this section governs only how those states are represented in the IR record.
+**Post-render State Refresh / Re-Entry Gate**
+
+After every bounded restorative move, and before any closing or STOP decision, the IR must run
+`post_render_gate`. The gate asks:
+
+1. What was cleared this pass?
+2. What remains live in the same input?
+3. Which held routes were rechecked?
+4. Did any held route become newly eligible?
+5. Is there a next eligible pass?
+6. Is the correct governance decision STOP, HOLD, RECURSE, or PARTIAL?
+
+Decision semantics:
+
+- `STOP` is valid only if the gate has run, no live distortion remains, no held route has become newly eligible, and `next_eligible_pass` explicitly records `none`.
+- `HOLD` is valid only when remaining material exists but its release signal is absent because a stop, register-hold, semantic gate, thin-basis rule, or other hard rail still blocks it.
+- `RECURSE` is required when another live distortion remains in the same input, or when a held route becomes newly eligible after the current pass clears its blocker.
+- `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive pressure remains. Do not emit a false STOP in that condition.
+
+The gate is not a new routing pass. It is the post-render enforcement point that makes the
+validated IR remain live after the response has made its bounded move.
+
+**Recursive-state model:** `references/diagnostics/framework-pipeline.md §Recursive State-Transition View` is the canonical owner of the STOP / HOLD / RECURSE / PARTIAL state model. The fields `continuation_eligibility`, `alignment_state`, `recognition_strength`, and `post_render_gate` are this IR's typed carriers of that model. State-transition semantics and recursive re-entry conditions are defined in `framework-pipeline.md`; this section governs only how those states are represented in the IR record.
 
 **State-carry partition:** The consolidated table of what χ (state refresh) retains, resets, and re-evaluates across a pass boundary is in `references/diagnostics/framework-pipeline.md §Recursive Layer — State Carry Table`. The boundary-reset rule for matched modules after Stop-2 and the current-pass activation rule above are prose expressions of that same partition.
 
@@ -329,6 +367,11 @@ The following inconsistencies are invalid:
 - `Framing notes` used to introduce new coverage content, prooftexts, or citations rather than to constrain release. Framing notes are not a citation bank.
 - Source-audit-derived tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
 - One upstream node cleared + all downstream material dumped at once. Refresh state and release only the next bounded move.
+- Missing `Post-render gate` after a bounded restorative move. STOP, HOLD, RECURSE, and PARTIAL decisions are invalid until the gate has run.
+- `Post-render gate: recursion_decision: STOP` while `remaining_live_distortions` names a live distortion, `newly_released_routes` is non-empty, or `next_eligible_pass` is anything other than `none`.
+- `Post-render gate: recursion_decision: HOLD` while the remaining material has a present release signal and no stop, register-hold, semantic gate, thin-basis rule, or other hard rail blocks it.
+- `Post-render gate: recursion_decision: RECURSE` while `next_eligible_pass` is `none`, or while the response fails to release the next eligible bounded pass.
+- `Post-render gate: recursion_decision: PARTIAL` without naming the remaining live distortion and the next eligible pass that limits prevented.
 
 An IR with any of the above combinations has drifted.
 
@@ -340,7 +383,7 @@ For cases where a subset of fields is sufficient, the compressed form may be use
 
 ```text
 [IR - compressed]
-Case: [family] | Claim: [type @ level?] | Pattern: [PF-x | none] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Align: [state] | Rec: [strength] | Continue: [status] | Module: [matched] | Target: [restoration] | Next: [one move]
+Case: [family] | Claim: [type @ level?] | Pattern: [PF-x | none] | NS: [code] | Def: [code] | Conc: [mode] | Orient: [DO] | Gate: [routing gate] | Align: [state] | Rec: [strength] | Continue: [status] | Module: [matched] | Target: [restoration] | Next: [one move] | Post: [STOP|HOLD|RECURSE|PARTIAL; next=...]
 ```
 
 The compressed form is not acceptable when architectural-layer fields are active. If the
@@ -475,3 +518,5 @@ This file has not governed the response if any of the following is true:
 - A consistency-rule violation is present but the response proceeded anyway.
 - A semantic-discipline blocker was present but doctrinal content still released.
 - The IR carried the previous round's matched modules forward after Stop-2 or another boundary reset without re-running V1.
+- A bounded restorative move rendered, then the response closed without populating `post_render_gate`.
+- `recursion_decision: STOP` was emitted before the gate rechecked held routes and confirmed `next_eligible_pass: none`.

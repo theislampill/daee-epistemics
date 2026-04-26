@@ -2,7 +2,7 @@
 id: routing-precedence
 module_class: governance
 canonical_path: skill/references/diagnostics/routing-precedence.md
-contract_version: "0.2.2.0"
+contract_version: "0.2.3.0"
 load_when:
   - multiple diagnostic axes produce competing signals
   - suppression rules needed to prevent invalid routing combinations
@@ -123,7 +123,7 @@ When the case-state has been established and multiple modules could plausibly be
 
 **Rule P-2a (current-pass activation):** `Matched modules` records only the modules whose governing work is active in the present pass. Diagnosed downstream routes that are held by register, semantic, or stop governance stay explicit as held; they do not become ambient simultaneous loads.
 
-**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 governs the current pass. No additional module is deployed from momentum alone. Any later round re-enters from refreshed V1 rather than inheriting the previous active set by default. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the restoration target remains unmet and no stop, register-hold, or semantic gate remains live for the next move. Canonical state-transition model for STOP / PAUSE / RECURSE: `references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
+**Rule P-3 (no stacking after landing / boundary reset):** Once a module has produced visible recognition or movement, Stop-2 governs the current pass. No additional module is deployed from momentum alone. Any later round re-enters from refreshed V1 rather than inheriting the previous active set by default. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the restoration target remains unmet and no stop, register-hold, or semantic gate remains live for the next move. Canonical state-transition model for STOP / HOLD / RECURSE / PARTIAL: `references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
 
 **Rule P-4 (register before content):** When the concealment x orientation matrix indicates a register-hold, no content module is loaded into Layer B regardless of how strong the NS or deformation read is. The diagnosed downstream route remains explicit in Layer A / the diagnostic IR as held, not discarded or treated as simultaneously active.
 
