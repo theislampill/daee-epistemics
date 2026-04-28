@@ -1,5 +1,55 @@
 # Changelog
 
+## [v0.3.0.0] - 2026-04-28
+
+v0.3.0.0 is the compiled runtime architecture release.
+
+### Added
+
+- Compiler/checker toolchain for generated runtime builds, freshness checks, module-boundary checks, source/stub integrity, call-budget modeling, routing parity, path resolution, and recursive traversal governance.
+- Generated compiled Claude runtime package root under `skill/`.
+- Static routing parity fixtures under `tests/routing-fixtures/`.
+- Compiled runtime path-resolution checks for inherited atomized paths in generated `skill/SKILL.md`.
+- Sub-20 normal case-class call-budget checker.
+- Root `AGENTS.md` contributor guide for source/runtime workflow.
+- Recursive traversal governance: State Refresh after bounded moves, no premature STOP while an eligible live door remains, HOLD/PARTIAL/RECURSE discipline, and recursion-as-one-door-at-a-time.
+- Render-mode checker for clean default mode, compact DSL/lab-report mode, fuller audit mode, and grim-reaper prompt deprecation.
+
+### Changed
+
+- Canonical atomized source moved to `atomics/skill/`.
+- `skill/` is now generated compiled Claude package root, not the canonical editable source tree.
+- Claude packaging now packages the contents of `skill/`, so `SKILL.md` is at archive root.
+- Runtime uses five core runtime bundles plus selective omnibus bundles and `compiled-module-map.json` for path/module resolution.
+- README, TODO, and architecture docs now describe the source/runtime split.
+- Render behavior is clarified: `/daee-epistemics` is clean prose-first, `/daee-epistemics:dsl` is compact diagnostic/lab-report mode, and `/daee-epistemics:audit` is fuller procedural audit mode.
+
+### Preserved
+
+- Original module IDs.
+- YAML operative contracts in atomized source.
+- Diagnostic IR discipline.
+- Source-basis traceability.
+- P7 STOP/HOLD/RECURSE/PARTIAL discipline.
+- Atomized source authority under `atomics/skill/`.
+
+### Not asserted
+
+- Exact prose parity.
+- Live model behavioral equivalence beyond static routing parity and static recursive-governance checks.
+
+### Validation
+
+- `python tools/build_compiled_runtime.py` - PASS
+- `python tools/check_compiled_runtime_freshness.py` - PASS
+- `python tools/check_compiled_module_boundaries.py` - PASS
+- `python tools/check_stub_integrity.py` - PASS
+- `python tools/check_consolidation_call_budget.py` - PASS
+- `python tools/check_routing_parity.py` - PASS
+- `python tools/check_routing_parity.py --strict` - PASS
+- `python tools/check_recursive_traversal_governance.py` - PASS
+- `python tools/check_render_modes.py` - PASS
+
 ## [v0.2.3.0] - 2026-04-26
 
 v0.2.3.0 is the post-render recursion governance release after v0.2.2.0.

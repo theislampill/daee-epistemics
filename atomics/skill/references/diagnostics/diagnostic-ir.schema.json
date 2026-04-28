@@ -1,0 +1,675 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skill/references/diagnostics/diagnostic-ir.schema.json",
+  "title": "Diagnostic IR",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_family",
+    "claim_type",
+    "claim_level",
+    "pattern_profile",
+    "deformation",
+    "concealment_mode",
+    "do_orient",
+    "read_status",
+    "confidence",
+    "alignment_state",
+    "recognition_strength",
+    "continuation_eligibility",
+    "p7_stops_active",
+    "reason_category",
+    "routing_gate",
+    "matched_modules",
+    "restoration_target",
+    "next_move",
+    "output_shape",
+    "post_render_gate"
+  ],
+  "properties": {
+    "case_family": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "logical",
+        "metaphysical",
+        "moral",
+        "historical",
+        "transmission",
+        "phenomenological",
+        "authority"
+      ]
+    },
+    "claim_level": {
+      "type": "string",
+      "default": "first-order",
+      "enum": [
+        "first-order",
+        "meta-epistemic",
+        "meta-ontological",
+        "meta-noetic",
+        "cross-level"
+      ]
+    },
+    "pattern_profile": {
+      "type": "string",
+      "pattern": "^(PF-(?:[1-9]|1[0-2])|none)$"
+    },
+    "deformation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "concealment_mode": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "irad",
+        "juhud",
+        "inkar",
+        "istikbar",
+        "nifaq",
+        "mode-?",
+        "compound"
+      ]
+    },
+    "do_orient": {
+      "type": "string",
+      "enum": [
+        "truth-seek",
+        "identity-perf",
+        "autotelic",
+        "zann-mode",
+        "mixed"
+      ]
+    },
+    "reason_category": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "enum": [1, 2, 3, 4]
+        },
+        {
+          "type": "string",
+          "enum": ["1", "2", "3", "4"]
+        }
+      ]
+    },
+    "routing_gate": {
+      "type": "string",
+      "enum": [
+        "open",
+        "V2-required",
+        "deformation-first",
+        "semantic-discipline-required",
+        "register-hold",
+        "stop-condition"
+      ]
+    },
+    "gate_trigger": {
+      "type": "string",
+      "description": "Identifies which of the six dispatch gate checks fired and blocked module activation. Format: 'check [1-6] — [rule id or stop id]', e.g. 'check 3 — S-2' or 'check 4 — Stop-2'. Omit when routing_gate is 'open'.",
+      "minLength": 1
+    },
+    "matched_modules": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "module_class"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module_class": {
+            "type": "string",
+            "enum": ["case-library", "tactic", "procedure", "technique", "diagnostic"]
+          }
+        }
+      }
+    },
+    "restoration_target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "structural_pattern_print": {
+      "type": "string",
+      "description": "Optional compact local description of the active structural pattern when PF code alone is too coarse to preserve practical framing. It is subordinate to claim_level, pattern_profile, and routing precedence.",
+      "minLength": 1
+    },
+    "load_bearing_node": {
+      "type": "string",
+      "description": "Optional criterion, authority rule, semantic hinge, category-set, or noetic blocker currently carrying the pressure.",
+      "minLength": 1
+    },
+    "collapse_radius": {
+      "type": "string",
+      "description": "Optional downstream claims, routes, or held content whose status depends on clearing the load-bearing node.",
+      "minLength": 1
+    },
+    "intervention_target": {
+      "type": "string",
+      "description": "Optional bounded operation that clears the load-bearing node before downstream content can release.",
+      "minLength": 1
+    },
+    "framing_notes": {
+      "type": "string",
+      "description": "Optional internal renderer constraint that prevents argument-bank, citation-dump, or wrong-family release behavior. Not public boilerplate.",
+      "minLength": 1
+    },
+    "next_move": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ns_code": {
+      "type": "string"
+    },
+    "rt_marker": {
+      "type": "string",
+      "enum": ["RT-1", "RT-2", "RT-3", "RT-4", "none"]
+    },
+    "read_status": {
+      "type": "string",
+      "enum": ["dominant", "distributed", "underdetermined"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["strong", "provisional", "low"]
+    },
+    "alignment_state": {
+      "type": "string",
+      "enum": [
+        "blocked",
+        "tribunal-loosened",
+        "frame-cleared",
+        "recognition-surfaced",
+        "alignment-advanced"
+      ]
+    },
+    "recognition_strength": {
+      "type": "string",
+      "enum": ["none", "weak", "medium", "strong"]
+    },
+    "continuation_eligibility": {
+      "type": "string",
+      "enum": ["not-assessed", "blocked", "eligible-on-refresh"]
+    },
+    "p7_stops_active": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5", "none"]
+      },
+      "uniqueItems": true
+    },
+    "prohibited_moves": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "backbone_predicates_active": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["C-1", "C-2", "C-3", "T-1", "T-2", "T-3", "O-1", "O-2", "O-3", "K-1", "K-2"]
+      },
+      "uniqueItems": true
+    },
+    "foreign_premise": {
+      "type": "string"
+    },
+    "upstream_findings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "criterion-import",
+          "tribunal-installation",
+          "transmission-demotion",
+          "semantic-neutralization-recontenting",
+          "semantic-neutralization-evacuation",
+          "lexical-ontological-trap"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "philosophical_usurpation": {
+      "type": "string"
+    },
+    "architectural_layer_disrupted": {
+      "type": "string",
+      "enum": [
+        "fitrah",
+        "sound-reason",
+        "authentic-transmission",
+        "inferential-route",
+        "transcendence-immanence",
+        "prophetic-authority",
+        "none"
+      ]
+    },
+    "ontological_disorder": {
+      "type": "string",
+      "enum": [
+        "category-mistake",
+        "illicit-analogy",
+        "equivocal-predication",
+        "composition-panic",
+        "person-multiplicity-conflation",
+        "perfect-being-usurpation",
+        "none"
+      ]
+    },
+    "source_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entries"],
+      "properties": {
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["basis_type", "claim", "source_kind"],
+            "properties": {
+              "basis_type": {
+                "type": "string",
+                "enum": ["anchored", "inference", "speculative", "synthesis"]
+              },
+              "claim": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_kind": {
+                "type": "string",
+                "enum": ["input", "module", "schema", "catalogue", "operator"]
+              },
+              "module_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "type": "string"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "source_kind": {
+                      "const": "module"
+                    }
+                  },
+                  "required": ["source_kind"]
+                },
+                "then": {
+                  "required": ["module_id"]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "basis_type": {
+                      "enum": ["anchored", "inference", "speculative"]
+                    }
+                  },
+                  "required": ["basis_type"]
+                },
+                "then": {
+                  "required": ["source_ref"]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "inference_boundary_active": {
+      "type": "string",
+      "enum": ["yes", "no"]
+    },
+    "output_shape": {
+      "type": "string",
+      "enum": [
+        "content",
+        "relational",
+        "maieutic",
+        "invitational",
+        "single-response",
+        "held-pending"
+      ]
+    },
+    "what_is_withheld_and_why": {
+      "type": "string"
+    },
+    "what_remains_live": {
+      "type": "string"
+    },
+    "post_render_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mandatory post-render state refresh / re-entry gate. It must run after every bounded restorative move and before any STOP decision.",
+      "required": [
+        "cleared_this_pass",
+        "remaining_live_distortions",
+        "held_routes_rechecked",
+        "newly_released_routes",
+        "next_eligible_pass",
+        "recursion_decision"
+      ],
+      "properties": {
+        "cleared_this_pass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "remaining_live_distortions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "held_routes_rechecked": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "newly_released_routes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "next_eligible_pass": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recursion_decision": {
+          "type": "string",
+          "enum": ["STOP", "HOLD", "RECURSE", "PARTIAL"]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "read_status": {
+            "const": "underdetermined"
+          },
+          "confidence": {
+            "const": "strong"
+          }
+        },
+        "required": ["read_status", "confidence"]
+      },
+      "then": false
+    },
+    {
+      "if": {
+        "properties": {
+          "do_orient": {
+            "enum": ["identity-perf", "autotelic"]
+          }
+        },
+        "required": ["do_orient"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": {
+              "const": "open"
+            }
+          },
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reason_category": {
+            "enum": [3, 4, "3", "4"]
+          }
+        },
+        "required": ["reason_category"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": {
+              "const": "open"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "register-hold"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "semantic-discipline-required"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          },
+          "matched_modules": {
+            "items": {
+              "properties": {
+                "module_class": {
+                  "enum": ["diagnostic", "tactic", "procedure"]
+                }
+              },
+              "required": ["module_class"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "routing_gate": {
+            "const": "stop-condition"
+          }
+        },
+        "required": ["routing_gate"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"],
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "output_shape": {
+            "const": "held-pending"
+          }
+        },
+        "required": ["output_shape"]
+      },
+      "then": {
+        "required": ["what_is_withheld_and_why"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "concealment_mode": {
+            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mode-?", "compound"]
+          }
+        },
+        "required": ["concealment_mode"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "p7_stops_active": {
+            "contains": {
+              "const": "Stop-1"
+            }
+          }
+        },
+        "required": ["p7_stops_active"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "p7_stops_active": {
+            "contains": {
+              "const": "Stop-2"
+            }
+          }
+        },
+        "required": ["p7_stops_active"]
+      },
+      "then": {
+        "properties": {
+          "output_shape": {
+            "not": {
+              "const": "content"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "upstream_findings": {
+            "contains": {
+              "enum": [
+                "semantic-neutralization-recontenting",
+                "semantic-neutralization-evacuation",
+                "lexical-ontological-trap"
+              ]
+            }
+          }
+        },
+        "required": ["upstream_findings"]
+      },
+      "then": {
+        "properties": {
+          "routing_gate": {
+            "not": {
+              "const": "open"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "alignment_state": {
+            "const": "alignment-advanced"
+          }
+        },
+        "required": ["alignment_state"]
+      },
+      "then": {
+        "properties": {
+          "recognition_strength": {
+            "const": "strong"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "continuation_eligibility": {
+            "const": "eligible-on-refresh"
+          }
+        },
+        "required": ["continuation_eligibility"]
+      },
+      "then": {
+        "required": ["what_remains_live"],
+        "properties": {
+          "routing_gate": {
+            "const": "open"
+          }
+        }
+      }
+    }
+  ]
+}

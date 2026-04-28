@@ -31,6 +31,14 @@ if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "references"))) {
     Fail "Missing skill/references. Cannot build a valid skill archive."
 }
 
+if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "compiled-module-map.json"))) {
+    Fail "Missing skill/compiled-module-map.json. Regenerate the compiled runtime first."
+}
+
+if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "build-manifest.json"))) {
+    Fail "Missing skill/build-manifest.json. Regenerate the compiled runtime first."
+}
+
 if (-not ($OutputName.EndsWith(".skill.zip", [System.StringComparison]::OrdinalIgnoreCase))) {
     Fail "Output name must end with .skill.zip, for example: daee-epistemics-v0.2.3.0.skill.zip"
 }
@@ -62,12 +70,16 @@ if not (skill / "SKILL.md").is_file():
     raise SystemExit("missing skill/SKILL.md")
 if not (skill / "references").is_dir():
     raise SystemExit("missing skill/references")
+if not (skill / "compiled-module-map.json").is_file():
+    raise SystemExit("missing skill/compiled-module-map.json")
+if not (skill / "build-manifest.json").is_file():
+    raise SystemExit("missing skill/build-manifest.json")
 
 out.parent.mkdir(parents=True, exist_ok=True)
 if out.exists():
     out.unlink()
 
-paths = [skill / "SKILL.md", *sorted((skill / "references").rglob("*"))]
+paths = sorted(path for path in skill.rglob("*") if path.is_file())
 
 with ZipFile(out, "w", ZIP_DEFLATED) as zf:
     for path in paths:
@@ -82,11 +94,19 @@ with ZipFile(out, "w", ZIP_DEFLATED) as zf:
 with ZipFile(out) as zf:
     names = zf.namelist()
 
-bad = [name for name in names if name.startswith("skill/") or name.startswith("./") or "\\" in name]
+forbidden_prefixes = ("skill/", "atomics/", "tools/", "docs/", "tests/", "build/", ".git/")
+bad = [
+    name for name in names
+    if name.startswith(forbidden_prefixes) or name.startswith("./") or "\\" in name
+]
 if "SKILL.md" not in names:
     raise SystemExit("archive missing SKILL.md at root")
 if not any(name.startswith("references/") for name in names):
     raise SystemExit("archive missing references/ at root")
+if "compiled-module-map.json" not in names:
+    raise SystemExit("archive missing compiled-module-map.json at root")
+if "build-manifest.json" not in names:
+    raise SystemExit("archive missing build-manifest.json at root")
 if bad:
     raise SystemExit("archive has invalid root or separators: " + ", ".join(bad[:10]))
 
@@ -94,6 +114,7 @@ print(f"Archive: {out}")
 print(f"Entries: {len(names)}")
 print("Root check: PASS")
 print("Separator check: PASS")
+print("Compiled metadata check: PASS")
 '@
 
 $PythonScript | & wsl python3 - $RepoWsl $OutputWsl
@@ -110,4 +131,4 @@ Write-Host "  Path:   $($Item.FullName)"
 Write-Host "  Size:   $($Item.Length) bytes"
 Write-Host "  SHA256: $($Hash.Hash)"
 Write-Host ""
-Write-Host "Archive root contains SKILL.md and references/."
+Write-Host "Archive root contains SKILL.md, references/, compiled-module-map.json, and build-manifest.json."

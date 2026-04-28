@@ -3,6 +3,79 @@ name: daee-epistemics
 description: >
   Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers aqidah/noetic-structure diagnosis; shubuhat and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhat; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “aqidah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
 ---
+<!--
+GENERATED FILE.
+Do not edit directly.
+Canonical atomized source lives under atomics/skill/.
+Regenerate with tools/build_compiled_runtime.py.
+-->
+
+# Compiled Runtime Routing Addendum
+
+Canonical atomized source remains under `atomics/skill/`. This generated runtime is the low-call Claude package root built from that source.
+
+## Compiled Runtime Path Resolution
+
+This compiled runtime package does not contain every atomized source file as a standalone runtime file.
+
+When this SKILL.md or a routing table names an atomized source path such as:
+
+`references/tactics/M9-predication-mode.md`
+
+treat that path as a canonical source identity, not as a literal runtime file-load target.
+
+Resolve the original module ID or source path through:
+
+`compiled-module-map.json`
+
+then load the containing runtime bundle and section, for example:
+
+`references/omnibus/OMNIBUS-tactics.md` -> section `MODULE_ID: M9-predication-mode`.
+
+Do not attempt to load missing atomized files from the compiled package.
+
+Do not use omnibus filenames as `matched_modules`.
+
+Use original module IDs in `matched_modules` and `source_basis`.
+
+Bundle co-location means availability, not activation.
+
+Load path for substantive cases:
+
+1. `references/runtime-foundation.md`
+2. `references/runtime-diagnostic-core.md`
+3. `references/runtime-phase2-passes.md`
+4. `references/runtime-dispatch-gate.md`
+5. `references/runtime-output-governance.md`
+
+Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner.
+
+Compiled-runtime rules:
+
+- Treat inherited atomized/source paths in the tables below as original source module references, not literal files to chase inside this package.
+- Resolve an inherited path by normalizing it to `atomics/skill/...`, finding that entry in `compiled-module-map.json`, loading the listed `bundle_path`, and using only the section whose `<!-- MODULE_ID: ... -->` matches the map entry.
+- Do not load missing atomized/source paths literally. If a path cannot be resolved by `compiled-module-map.json` or by a copied runtime metadata file under `references/diagnostics/`, hold it as a runtime resolution failure.
+- Bundle names never appear in `matched_modules`.
+- Every `matched_modules` entry uses the original module ID from `module-catalogue.json`.
+- Every module-backed `source_basis` entry cites the original module ID and the compiled bundle section that was used.
+- Bundle co-location does not activate sibling sections.
+- Preserve post-render gate discipline: every bounded move must retain the `STOP`, `HOLD`, `RECURSE`, or `PARTIAL` decision model from the diagnostic IR and output governance.
+- If a generated bundle conflicts with `atomics/skill/`, the atomized source wins and this runtime must be rebuilt.
+
+Routing governance invariants:
+
+- diagnosis before answer.
+- IR before routing.
+- routing before render.
+- post-render gate.
+- STOP / HOLD / RECURSE / PARTIAL.
+- bundle availability is not activation.
+- matched_modules use original module IDs.
+- source_basis records original module or section.
+
+The generated bundle map is `compiled-module-map.json`.
+
+---
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
 
@@ -120,10 +193,13 @@ governing files are gate-integrity violations, not conservative loading choices.
    and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
    files is diagnosis without execution.
 
-5. **All matched_modules governing files:** Every entry in `matched_modules` corresponds
-   to a file in the skill package. That file must be loaded before dispatch. An entry in
-   `matched_modules` whose governing file was not loaded is a gate-integrity violation
-   identical to a gate miss.
+5. **All matched_modules governing source identities:** Every entry in `matched_modules`
+   corresponds to an original module ID and canonical source identity. In atomized source
+   mode, load the owning source file before dispatch. In the compiled runtime, resolve the
+   original module ID or atomized path through `compiled-module-map.json`, then load the
+   containing runtime bundle section with the matching `MODULE_ID`. An entry in
+   `matched_modules` whose governing source file or compiled section was not loaded is a
+   gate-integrity violation identical to a gate miss.
 
 This floor does not relax the ceiling: files whose load condition was NOT met must not be
 loaded merely to appear thorough. The floor and ceiling together define the minimum and
@@ -152,10 +228,13 @@ Rules:
     has reopened V1, the restoration target remains unmet, and no stop, register-hold, or semantic
     gate remains live. A fresh round may arise inside the same message when the differentiating
     signal appears in an accompanying proposition or entailment.
-13. Every entry in `matched_modules` must be backed by a loaded governing file.
-    If a module appears in `matched_modules` but its governing file was not loaded,
-    the IR is non-compliant regardless of whether the content looks plausible. Plausible
-    content without file-backed activation is the failure mode this rule prevents.
+13. Every entry in `matched_modules` must be backed by a loaded governing source file
+    or, in the compiled runtime, by the resolved compiled section with the same original
+    `MODULE_ID`.
+    If a module appears in `matched_modules` but its governing source file or compiled
+    section was not loaded, the IR is non-compliant regardless of whether the content
+    looks plausible. Plausible content without source-backed activation is the failure
+    mode this rule prevents.
 14. Every entry in `matched_modules` must have at least one corresponding `source_basis`
     entry with `source_kind: "module"` and `module_id` matching the entry's `id`. A module
     listed in `matched_modules` that has no such `source_basis` entry is a ghost-load: the
@@ -168,6 +247,7 @@ Rules:
 16. Optional structural framing fields in `diagnostic-ir.md` (`structural_pattern_print`, `load_bearing_node`, `collapse_radius`, `intervention_target`, `framing_notes`) are internal control fields only. They may clarify the practical shape of a higher-order or cross-level case, but they do not create new routes, new coverage claims, or permission to release topic content.
 17. When a source-audit-derived or tradition-labeled topic appears, identify the live structural node before content: authority order, epistemic criterion, validation order, semantic hinge, category-set, identity wound, or transmission/source-use layer. Do not answer by argument bank, citation dump, prooftext list, or broad comparative-religion treatment before the validated IR has selected the existing owner and release gate.
 18. After every bounded restorative move and before any closing STOP decision, run the IR `post_render_gate`: record what was cleared, what remains live, which held routes were rechecked, which routes became newly releasable, the next eligible pass, and the recursion decision (`STOP`, `HOLD`, `RECURSE`, or `PARTIAL`). STOP is invalid unless this gate has run and `next_eligible_pass` is `none`; RECURSE is required when a same-input distortion remains live or a held route becomes eligible; PARTIAL is required when limits prevent the next eligible pass.
+19. **No premature STOP while an eligible live door remains:** after every bounded restorative move, run State Refresh. A pass may end in STOP only when the current governing blocker has been addressed, no eligible live door already present in the original input remains live, no held route became releasable after the move, continuing would be argument-stacking rather than governed traversal, and P7 permits stopping. If another eligible live door remains in the same input, choose RECURSE or PARTIAL, not STOP. If a door remains live but needs an absent release signal, choose HOLD.
 
 
 ### Specialty Diagnostics
@@ -286,6 +366,7 @@ These are not soft norms. Violation of any of these is a routing error, not a st
 6. **No nonconforming IR dispatch:** Do not dispatch modules or surface governance state from an IR that fails `diagnostic-ir.schema.json`, and do not cite or surface module ids/classes not present in `module-catalogue.json`.
 7. **No content-before-semantic-discipline:** Do not release doctrinal or attribute content while prophetic discourse is still being recontented or evacuated, or while a loaded lexical-ontological term remains unresolved. Clear the semantic blocker first.
 8. **No held-as-never-answer:** When a downstream issue is held by register, semantic, or stop governance, holding means it is traversal-delayed at the current point — not permanently suppressed. After the governing move is applied, refresh the case-state and reassess whether the held material still governs. If it remains live and no gate blocks it, it may become the next bounded pass without requiring a new user reply.
+9. **No premature STOP:** A strong landed move is not proof of completion. STOP requires the post-render gate to confirm no eligible live door remains, no held routes became newly releasable, and no same-input downstream distortion now qualifies for a bounded next pass. Recursion is not argument dump: traverse one door at a time, upstream before downstream, with State Refresh after each move.
 
 See `references/diagnostics/framework-pipeline.md` for the canonical visual of these constraints and their shortcut paths.
 
@@ -645,10 +726,53 @@ Full treatment: `references/diagnostics/mixed-case-handling.md`
 
 Keep the surfaced state as short as possible while still making the next move governable.
 
+**Render mode invocation syntax**
+- `/daee-epistemics` = default render mode: clean prose, readable sectioning, good final synthesis, and no giant load ledger by default.
+- `/daee-epistemics:dsl` = compact DSL / lab-report render: compressed Case State or Diagnostic IR, live doors, matched modules by original module IDs, held routes, State Refresh, and STOP / HOLD / RECURSE / PARTIAL.
+- `/daee-epistemics:audit` = fuller procedural audit render: may expose runtime/bundle ledger, Diagnostic IR gate, routing gate, render permission, source-basis, recursive passes, state refreshes, and final governance.
+
+Optional natural-language requests map to those modes: "diagnose this" or "show the DSL" maps to `:dsl`; "audit the route", "show the ledger", or "did the skill route correctly?" maps to `:audit`. Plain `/daee-epistemics` does not request a lab report by itself.
+
 **Surfaced-mode policy**
-- **Ordinary mode:** keep surfaced governance concise. Compress inactive routine fields and state only what materially governs the next move.
-- **Advanced mode:** when the task is audit-facing, analytic, or explicitly asks for architecture visibility, surface the richer governance state directly from the validated IR: `claim_level`, `pattern_profile`, `routing_gate`, `alignment_state`, `recognition_strength`, `continuation_eligibility`, current-pass `matched_modules`, relevant `Source Basis`, and one brief theory-to-routing bridge.
-- The two modes change surfaced explicitness, not the internal IR. The validator-backed IR stays fully typed in both modes.
+- **Default mode:** keep surfaced governance concise. Use clean prose and readable formatting. Compress inactive routine fields, avoid full IR dumps, avoid giant load ledgers, and state only what materially governs the next move.
+- **DSL mode:** surface the compact diagnostic/lab-report shape from the validated IR. Show only the governing fields and current live-door sequence; do not expand into the full procedural ledger unless the user asks.
+- **Audit mode:** surface the richer governance state directly from the validated IR: `claim_level`, `pattern_profile`, `routing_gate`, `alignment_state`, `recognition_strength`, `continuation_eligibility`, current-pass `matched_modules`, relevant `Source Basis`, runtime bundle/source-basis resolution when useful, and one brief theory-to-routing bridge.
+- These modes change surfaced explicitness, not the internal IR. The validator-backed IR, recursive traversal governance, and post-render gate stay fully active in every mode.
+
+**Default Recursion Clarification**
+Clean prose must not mean single-pass summary. In default `/daee-epistemics` mode, apply the grim-reaper traversal internally over the assessed noetic structure:
+
+```text
+claim being assessed
+-> upstream criterion / tribunal / hidden premise
+-> first-order content
+-> higher-order burden
+-> downstream entailments
+-> adjacent already-present distortions
+-> state refresh
+-> STOP / HOLD / RECURSE / PARTIAL
+```
+
+Default mode does not print the full ledger, IR, or every door label. It must not stop after the first good move if the original input already contains another eligible live door. It should continue the next eligible bounded pass, or mark HOLD, STOP, or PARTIAL under the refreshed post-render gate.
+
+**Default mode must not print:**
+- The `[Diagnostic IR]` code-fenced block or any `## Diagnostic IR` section header.
+- A Load Ledger or bundle resolution table.
+- A Render Permission Check or source-basis printout.
+- The full grim-reaper procedural template or any code-fenced IR listing.
+
+These belong to `:audit` only. **Discipline is universal; printout is mode-specific.**
+The grim-reaper discipline — IR formation, recursive traversal, post-render gate,
+STOP / HOLD / RECURSE / PARTIAL — applies in every mode. The grim-reaper printout —
+IR block, ledger, source-basis table, routing gate section — belongs to `:audit`.
+
+In default mode, when the post-render gate recursion decision materially governs the
+answer, a single compact governance sentence (e.g., "Recursion decision: RECURSE —
+next pass: [X]") is permitted at the close. That sentence is the only permissible
+surface of the post-render gate in default mode. It must not be accompanied by a
+visible IR dump, load ledger, or full code-fenced schema block.
+
+Follow-up prompts such as "continue" resume from the previous state-refresh boundary. They do not restart as unrelated answers and do not merely add arguments; they continue the next eligible live door or explain why remaining material is HOLD, STOP, or PARTIAL governed.
 
 ### V.A - Two-Layer Output Contract
 
@@ -681,11 +805,12 @@ the interlocutor now.
   it for Layer A.
 - Layer B may name what is held and what would release it, but it does not preview held doctrinal substance, queued downstream modules, or future-round sequences as though they were already live.
 
-**Always present**
+**Always present internally**
 - `[Restorative Response]`
 - The closing formulation
-- `[Post-Render Gate]` or a compact `[Final Governance]` block naming `recursion_decision` and `next_eligible_pass`
+- `[Post-Render Gate]` or a compact `[Final Governance]` block naming `recursion_decision` and `next_eligible_pass`; in default mode this may be compressed to a short sentence when a visible block would overburden the answer
 - When Stop-2 or Stop-5 governs, the closing formulation compresses to the landed move or one bounded question. It does not reopen layering after the stop has fired.
+- When recursive traversal must be visible, use the compact audit pass shape: `Live door`, `Why already present`, `Released module(s)`, `Bounded move`, `State refresh`, and `Governance: STOP / HOLD / RECURSE / PARTIAL`. Ordinary answers may compress this shape, but the internal governance must still run.
 
 **Conditional governance blocks**
 - `[Case State]` when routing legibility, mixed reads, or module discipline need to be made explicit
@@ -796,6 +921,11 @@ the refreshed state does not license continuation, record `recursion_decision: S
 eligible in the same input, record `RECURSE` and run only the next bounded pass. If limits prevent
 that pass, record `PARTIAL`, not false closure.
 
+No premature STOP: if the original input already contains another eligible live door whose upstream
+blocker has cleared, the correct decision is RECURSE for the next bounded pass or PARTIAL if limits
+prevent it. HOLD is valid only when release depends on an absent signal not present in the input.
+Recursion is not argument dump; it is one door at a time under refreshed governance.
+
 The canonical stop / hold / recurse / partial state model — including the STOP / HOLD / RECURSE / PARTIAL
 transition semantics and recursive re-entry conditions — is owned by
 `references/diagnostics/framework-pipeline.md §Recursive State-Transition View`.
@@ -841,25 +971,4 @@ Deliver with M1's own economy: cleanly, early, and stop. This applies to M1 and 
 Surface the hidden moves of the shubhah as explicit numbered claims, each labeled and shown to
 fail on its own terms. Not a summary of the response — a standalone block that strips the
 argument of its rhetorical packaging and names what it was actually asserting. Placed after
-restorative content, before the closing.
-Use this block when the input is a named shubhah, a structured position, an objection battery, or a
-revelation/transmission case whose force depends on several hidden premises or level-confusions. It is
-especially apt with P2, V10, M1/M1-P, and V8.
-
-**[Pastoral/Relational Note]** — Append when obstinacy, vested interest, entrenched bias, grief, or
-identity-performance are materially operative; specify what kind of engagement is needed beyond argument.
-
----
-
-## VI. Arabic and Technical Terminology
-
-See `references/terminology.md` — organised by domain:
-- Epistemological Foundations
-- Knowledge Sources and Testimony
-- Signs and Evidence
-- Deformations of the Fiṭrah (all seven)
-- Modes of Concealment (iʿrāḍ, juḥūd, inkār, istikbār, nifāq) — with sharʿī vs. lexical note on *k-f-r*
-- Epistemological Virtues and Vices (including yaqīn, safsaṭa, qarmata, ikhtilāf)
-- Divine Attributes and the Bilā Kayf Doctrine
-- Kalāmic and Theological Vocabulary
-- Daʿwah Register (including ʿaqīdah, waswās)
+restorative content, before the closing

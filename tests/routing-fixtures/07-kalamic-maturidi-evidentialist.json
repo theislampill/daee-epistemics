@@ -1,0 +1,57 @@
+{
+  "id": "kalamic-maturidi-evidentialist",
+  "prompt": "Belief in God is not knowledge unless it is established by dalīl and naẓar.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "reason-disambiguation",
+      "kalamic-interlocutor",
+      "proof-method-audit",
+      "V2-reconstituting-reason",
+      "V9-necessary-knowledge-priority"
+    ],
+    "optional_modules": [
+      "ns-6-kalamic-evidentialist",
+      "ns-10-maturidi-evidentialist",
+      "husn-al-nazar-arguments",
+      "causal-series-taxonomy"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-profiles",
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics"
+    ],
+    "required_governance": [
+      "diagnosis before answer",
+      "IR before routing",
+      "criterion before evidence dump",
+      "matched_modules use original module IDs"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-profiles.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "profiles",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics"
+    ],
+    "max_calls": 12
+  }
+}

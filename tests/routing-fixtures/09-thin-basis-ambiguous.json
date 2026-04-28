@@ -1,0 +1,47 @@
+{
+  "id": "thin-basis-ambiguous",
+  "prompt": "This just does not make sense.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "mixed-case-handling",
+      "P7-restoration-stops",
+      "case-state-schema"
+    ],
+    "optional_modules": [
+      "V1-diagnostic",
+      "M5-deformation-triage"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-profiles",
+      "OMNIBUS-do-families",
+      "ns-1-naturalist",
+      "do-core"
+    ],
+    "required_governance": [
+      "low confidence / underdetermined read",
+      "no confident NS/DO lock",
+      "IR before routing",
+      "post-render gate",
+      "no premature STOP"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "dispatch-gate"
+    ],
+    "max_calls": 12
+  }
+}

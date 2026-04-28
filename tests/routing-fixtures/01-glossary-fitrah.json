@@ -1,0 +1,37 @@
+{
+  "id": "glossary-fitrah",
+  "prompt": "What does fiṭrah mean in this skill?",
+  "case_class": "simple",
+  "expected": {
+    "required_modules": [
+      "terminology",
+      "case-library-index",
+      "module-codes",
+      "heuristics"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "OMNIBUS-profiles",
+      "OMNIBUS-do-families",
+      "OMNIBUS-rt-transmission",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "bundle availability is not activation",
+      "matched_modules use original module IDs",
+      "source_basis records original module or section"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation"
+    ],
+    "max_calls": 5
+  }
+}

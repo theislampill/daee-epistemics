@@ -1,0 +1,52 @@
+{
+  "id": "grief-primary-evil",
+  "prompt": "After what happened to me, I cannot accept that God is merciful.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "discourse-orientation",
+      "P7-restoration-stops",
+      "M4-grief-register",
+      "output-release"
+    ],
+    "optional_modules": [
+      "mixed-case-handling",
+      "P4-maieutic"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "required_governance": [
+      "register-hold",
+      "no theodicy dump",
+      "P7 stop/hold/recurse discipline",
+      "post-render gate",
+      "one door at a time",
+      "traversal-delayed, not permanently suppressed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 12
+  }
+}

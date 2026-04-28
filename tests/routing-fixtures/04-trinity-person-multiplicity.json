@@ -1,0 +1,60 @@
+{
+  "id": "trinity-person-multiplicity",
+  "prompt": "The Father is God, the Son is God, and the Spirit is God. They are distinct persons. So by identity there are three Gods.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "do-christian-extensions",
+      "do-attribute-precision",
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "V12-tamanuc-exhaustion"
+    ],
+    "optional_modules": [
+      "definition-discipline",
+      "perfection-criterion-usurpation",
+      "philosophical-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "required_governance": [
+      "semantic discipline before doctrinal release",
+      "bundle availability is not activation",
+      "matched_modules use original module IDs",
+      "post-render gate",
+      "eligible live door",
+      "recursion is not argument dump"
+    ],
+    "allowed_post_render_decisions": [
+      "HOLD",
+      "RECURSE",
+      "PARTIAL",
+      "STOP"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "owner_clusters": [
+      "do-families",
+      "tactics",
+      "techniques",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}

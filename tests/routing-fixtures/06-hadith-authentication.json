@@ -1,0 +1,48 @@
+{
+  "id": "hadith-authentication",
+  "prompt": "Hadith were collected late, so why trust the corpus?",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "hadith-authentication-epistemology",
+      "V10-transmission-content-vetting",
+      "inference-boundary"
+    ],
+    "optional_modules": [
+      "foreign-premise-detection",
+      "revelation-transmission"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-rt-transmission",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "required_governance": [
+      "diagnosis before answer",
+      "no generic RT collapse",
+      "matched_modules use original module IDs",
+      "source_basis records original module or section"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-rt-transmission.md"
+    ],
+    "owner_clusters": [
+      "specialty-diagnostics",
+      "rt-transmission"
+    ],
+    "max_calls": 12
+  }
+}

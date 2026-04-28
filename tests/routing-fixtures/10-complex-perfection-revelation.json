@@ -1,0 +1,63 @@
+{
+  "id": "complex-perfection-revelation",
+  "prompt": "Reason shows divine perfection means God cannot have real attributes, cannot speak in time, and revelation must be interpreted through that standard.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "philosophical-usurpation",
+      "perfection-criterion-usurpation",
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision",
+      "prophecy-wahy-supremacy"
+    ],
+    "optional_modules": [
+      "reason-disambiguation",
+      "proof-method-audit",
+      "definition-discipline",
+      "metaphysical-architecture",
+      "kernel-thesis"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "claim_level",
+      "pattern_profile",
+      "semantic/tribunal gate before content release",
+      "routing before render",
+      "STOP / HOLD / RECURSE / PARTIAL",
+      "eligible live door",
+      "one door at a time"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "do-families",
+      "specialty-diagnostics",
+      "tactics",
+      "techniques"
+    ],
+    "max_calls": 20
+  }
+}

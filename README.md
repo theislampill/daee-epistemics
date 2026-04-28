@@ -2,13 +2,13 @@
 
 `daee-epistemics` is a modular LLM skill and governed diagnostic framework for epistemic operations and noetic analysis: analogous to a cognitive-security framework for classifying discourse, diagnosing Orientation, Deformation, and Concealment, and routing engagements through matched Tactics, Techniques, Procedures, and Case Modules.
 
-This repository is organized as a GitHub landing page plus a self-contained skill package under [`skill/`](skill/). 
+This repository now has two deliberate layers: canonical atomized source under [`atomics/skill/`](atomics/skill/) and a generated compiled Claude runtime under [`skill/`](skill/).
 
 The package is grounded in the coherence and convergence of a common sense account of sound reason, the *fiṭrah* (the innate normative disposition toward truth), and revelation. 
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
-Runtime coverage and scope in the packaged skill are represented by `SKILL.md`, module front matter, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
+Runtime coverage and scope in the packaged skill are represented by generated `skill/SKILL.md`, module front matter preserved from source, `compiled-module-map.json`, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
 
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
@@ -18,7 +18,9 @@ Runtime coverage and scope in the packaged skill are represented by `SKILL.md`, 
 - [What the Skill Protects](#what-the-skill-protects)
 - [Threat Model](#threat-model)
 - [Operational Governance](#operational-governance)
+- [Render Modes](#render-modes)
 - [Integration Boundary](#integration-boundary)
+- [Source / Runtime Layout](#source--runtime-layout)
 - [Repository Architecture](#repository-architecture)
 - [Repository Diagram](#repository-diagram)
 - [Install / Package (Claude-First)](#install--package-claude-first)
@@ -61,7 +63,7 @@ Dimension 8 (discourse orientation) is especially apt: determine whether your ow
 ## Terminology Note
 
 The repository uses Arabic and philosophical vocabulary because the framework itself is articulated in those terms. 
-For fuller definitions, see [`references/terminology.md`](skill/references/terminology.md).
+For fuller definitions, see [`references/terminology.md`](atomics/skill/references/terminology.md).
 
 Readers unfamiliar with the vocabulary should treat these terms as named components of the framework. 
 The repository's own method requires clarity before response, and that applies to terminology as well.
@@ -124,7 +126,7 @@ It maps:
 So, noetic structure is not just "their worldview"; it is more like the **ontology of their epistemic operating environment.**
 
 The repository begins with diagnosis before rebuttal. 
-[`SKILL.md`](skill/SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. 
+[`atomics/skill/SKILL.md`](atomics/skill/SKILL.md) instructs the practitioner to identify input type, epistemological position, mode of concealment, deformation, and discourse orientation before selecting any deeper module. 
 That posture is the opposite of generic polemics, which often move straight to proposition-level refutation.
 
 This matters because the framework treats falsehood as more than a bad conclusion. 
@@ -183,10 +185,26 @@ The repository is not only a content store. It carries an explicit governance la
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
 - an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
 
-**Pass model (orientation for first-contact readers):** The skill is not a one-shot pipeline. Each governed pass runs diagnosis, forms the Diagnostic IR, passes it through the six-check dispatch gate, then produces a bounded manifestation consisting of the complete Layer A diagnostic record, the deployable Layer B engagement (held or compressed when the gate has not fully cleared), and a restoration trace. A mandatory post-render State Refresh / Re-Entry Gate then rechecks held material and governs whether the outcome is STOP, HOLD, RECURSE, or PARTIAL. Module dispatch is blocked until all six gate checks pass; content is not released while concealment, orientation, stop conditions, or semantic blockers remain live; STOP is not valid until the post-render gate names `next_eligible_pass` as `none`. The authoritative detail for these mechanics is in [`references/diagnostics/diagnostic-ir.md`](skill/references/diagnostics/diagnostic-ir.md) (the dispatch gate and `post_render_gate`), [`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`](skill/references/diagnostics/framework-pipeline.md) (the STOP / HOLD / RECURSE / PARTIAL model), and [`SKILL.md §V.A`](skill/SKILL.md) (Layer A / Layer B definition). This paragraph is orientation only; those files govern.
+**Pass model (orientation for first-contact readers):** The skill is not a one-shot pipeline. Each governed pass runs diagnosis, forms the Diagnostic IR, passes it through the six-check dispatch gate, then produces a bounded manifestation consisting of the complete Layer A diagnostic record, the deployable Layer B engagement (held or compressed when the gate has not fully cleared), and a restoration trace. A mandatory post-render State Refresh / Re-Entry Gate then rechecks held material and governs whether the outcome is STOP, HOLD, RECURSE, or PARTIAL. Module dispatch is blocked until all six gate checks pass; content is not released while concealment, orientation, stop conditions, or semantic blockers remain live; STOP is not valid until the post-render gate names `next_eligible_pass` as `none`. The authoritative detail for these mechanics is in [`references/diagnostics/diagnostic-ir.md`](atomics/skill/references/diagnostics/diagnostic-ir.md) (the dispatch gate and `post_render_gate`), [`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`](atomics/skill/references/diagnostics/framework-pipeline.md) (the STOP / HOLD / RECURSE / PARTIAL model), and [`SKILL.md §V.A`](atomics/skill/SKILL.md) (Layer A / Layer B definition). This paragraph is orientation only; those files govern.
 
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
+
+## Render Modes
+
+Canonical invocation forms:
+
+```text
+/daee-epistemics
+/daee-epistemics:dsl
+/daee-epistemics:audit
+```
+
+- `/daee-epistemics` is the clean default response mode: good prose, readable formatting, internal recursive governance, and no giant load ledger by default.
+- `/daee-epistemics:dsl` is compact diagnostic / lab-report mode: compressed Case State or Diagnostic IR, live doors, matched original module IDs, held routes, State Refresh, and STOP / HOLD / RECURSE / PARTIAL.
+- `/daee-epistemics:audit` is fuller procedural audit mode: it may expose runtime/bundle ledger, source-basis, routing gate, render permission, recursive passes, state refreshes, and final governance.
+
+The old grim-reaper prompt is deprecated for normal use. Its useful traversal discipline is now internal governance; use `:dsl` or `:audit` only when visible diagnostic structure is wanted.
 
 ## Integration Boundary
 
@@ -198,28 +216,56 @@ The goal is to extract durable distinctions and convert them into reusable archi
 
 If material does not alter how the skill classifies, sequences, or restores, it should usually stay outside the live skill surface.
 
-## Repository Architecture
+## Source / Runtime Layout
 
-The repository operationalizes the thesis through a layered structure:
+The editable source and deployable runtime are intentionally separate:
 
 | Path | Role |
 |------|------|
-| [`SKILL.md`](skill/SKILL.md) | Governing protocol and routing logic. Defines activation conditions, epistemological standpoint, diagnostic protocol, and response format. |
-| [`references/diagnostics/`](skill/references/diagnostics/) | Classifies the epistemic condition before argument: noetic reading, deformations, concealment modes, discourse orientation, and related diagnostic lenses. |
-| [`references/tactics/`](skill/references/tactics/) | Context-triggered maneuvers for live objection patterns and argumentative behaviors. |
-| [`references/techniques/`](skill/references/techniques/) | Reusable diagnostic and restorative methods that can be applied across multiple kinds of case. Includes both diagnostic-restorative methods and rational argument procedures (e.g., logical exhaustion of competing ontological independence claims). |
-| [`references/procedures/`](skill/references/procedures/) | Ordered multi-stage workflows for recurring engagement classes, including cases that require sustained restoration rather than a single reply. |
-| [`references/case-library/`](skill/references/case-library/) | Playbooks for recurring noetic profiles and doctrinal objection families. |
-| [`references/terminology.md`](skill/references/terminology.md) | Glossary of Arabic and technical vocabulary used across the framework. |
-| [`references/sound-reason-epistemology.md`](skill/references/sound-reason-epistemology.md) | Fuller theoretical account for cases requiring heavier philosophical treatment. |
-| [`references/diagnostics/case-state-schema.md`](skill/references/diagnostics/case-state-schema.md) | Surfaced routing-state contract: case type, gating state, confidence, and restoration target, with `claim_level` / `pattern_profile` shown when higher-order burdens are live. |
-| [`references/diagnostics/diagnostic-ir.md`](skill/references/diagnostics/diagnostic-ir.md) | Typed dispatch gate and auditable routing record; paired with `diagnostic-ir.schema.json` to keep emitted IR constrained and reviewable. |
-| [`references/diagnostics/pattern-profiling.md`](skill/references/diagnostics/pattern-profiling.md) | Operational owner for emitted `claim_level` and `pattern_profile`: classifies higher-order burden and recurring PF family only when that changes routing, sequencing, or owner selection. |
-| [`references/diagnostics/inference-boundary.md`](skill/references/diagnostics/inference-boundary.md) | Standard markers for separating file-grounded claims, cross-file synthesis, model inference, and speculative extension. |
-| [`references/diagnostics/mixed-case-handling.md`](skill/references/diagnostics/mixed-case-handling.md) | Rules for underdetermined diagnoses, mixed cases, and insufficient-basis conditions. |
-| [`references/diagnostics/anti-patterns.md`](skill/references/diagnostics/anti-patterns.md) | Self-audit checks against diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass. |
-| [`references/diagnostics/module-catalogue.json`](skill/references/diagnostics/module-catalogue.json) | Static packaged registry for module ids, paths, and classes. It constrains valid module references but does not route live cases. |
-| [`references/diagnostics/pattern-family-audit.md`](skill/references/diagnostics/pattern-family-audit.md) | Historical PF-family regression and coverage audit for the higher-order layer; used to check drift, not as a live router. |
+| [`atomics/skill/`](atomics/skill/) | Canonical atomized skill source. Edit this tree. |
+| [`skill/`](skill/) | Generated compiled Claude package root. Do not hand-edit this tree. |
+| [`tools/`](tools/) | Compiler and checker scripts. |
+| [`tests/routing-fixtures/`](tests/routing-fixtures/) | Static routing parity fixtures. |
+| [`docs/`](docs/) | Architecture notes, audits, and verification reports. |
+| [`build/`](build/) | Optional local package/release outputs. |
+
+Normal source workflow:
+
+```bash
+python tools/build_compiled_runtime.py
+python tools/check_compiled_runtime_freshness.py
+python tools/check_compiled_module_boundaries.py
+python tools/check_stub_integrity.py
+python tools/check_consolidation_call_budget.py
+python tools/check_routing_parity.py
+python tools/check_routing_parity.py --strict
+python tools/check_recursive_traversal_governance.py
+```
+
+The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
+Inside `skill/`, those are canonical source identities unless the file actually exists there.
+Resolve missing atomized paths through `skill/compiled-module-map.json` to the containing runtime
+bundle and `MODULE_ID` section.
+
+## Repository Architecture
+
+The canonical source under `atomics/skill/` operationalizes the thesis through a layered structure.
+The generated runtime under `skill/` compiles these sources into runtime bundles while preserving
+original module IDs and source-basis traceability.
+
+| Path | Role |
+|------|------|
+| [`atomics/skill/SKILL.md`](atomics/skill/SKILL.md) | Canonical governing protocol and routing logic. |
+| [`atomics/skill/references/diagnostics/`](atomics/skill/references/diagnostics/) | Canonical diagnostic source: noetic reading, deformations, concealment modes, discourse orientation, and routing governance. |
+| [`atomics/skill/references/tactics/`](atomics/skill/references/tactics/) | Canonical tactics for live objection patterns and argumentative behaviors. |
+| [`atomics/skill/references/techniques/`](atomics/skill/references/techniques/) | Canonical reusable diagnostic and restorative methods. |
+| [`atomics/skill/references/procedures/`](atomics/skill/references/procedures/) | Canonical ordered workflows, including sustained restoration procedures. |
+| [`atomics/skill/references/case-library/`](atomics/skill/references/case-library/) | Canonical playbooks for recurring profiles and doctrinal objection families. |
+| [`skill/SKILL.md`](skill/SKILL.md) | Generated runtime entrypoint with compiled path-resolution addendum. |
+| [`skill/references/runtime-*.md`](skill/references/) | Generated always/near-always runtime bundles. |
+| [`skill/references/omnibus/`](skill/references/omnibus/) | Generated selective omnibus bundles. Availability is not activation. |
+| [`skill/compiled-module-map.json`](skill/compiled-module-map.json) | Runtime resolver from original module ID/source path to bundle section. |
+| [`skill/build-manifest.json`](skill/build-manifest.json) | Generated freshness and source-checksum manifest. |
 
 Read behaviorally as well as structurally, the architecture works like this: 
 
@@ -230,11 +276,11 @@ identify the Primary Deformation,
 classify Concealment and Discourse Orientation, 
 and only then select the relevant Tactic, Technique, Procedure, or Case Module. 
 
-[`references/techniques/heuristics.md`](skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
+[`atomics/skill/references/techniques/heuristics.md`](atomics/skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Repository Diagram
 
-Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal audit surface remains [`framework-pipeline.md`](skill/references/diagnostics/framework-pipeline.md).
+Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal audit surface remains [`framework-pipeline.md`](atomics/skill/references/diagnostics/framework-pipeline.md).
 
 ```mermaid
 flowchart TB
@@ -398,12 +444,19 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 ## Install / Package (Claude-First)
 
 The distributable artifact for this repository is `daee-epistemics.skill`. 
-Its archive root must contain `SKILL.md` and `references/` directly. 
+Its archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json` directly. 
 Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
+Package the contents of the generated `skill/` directory, not the directory itself.
+
+Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-runtime.skill.zip
+```
 
 For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.
 
-From any folder, open a Bash-compatible terminal and paste the following. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the `skill/` subtree, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
+From any folder, open a Bash-compatible terminal and paste the following if you want a clone-and-package flow. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the generated `skill/` contents, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 
 ```bash
 repo="https://github.com/theislampill/daee-epistemics.git"
@@ -418,7 +471,7 @@ mv -f "$tmp_zip" "$out_skill" &&
 rm -rf "$tmp"
 ```
 
-If you open `daee-epistemics.skill`, you should see `SKILL.md` and `references/` at the top level of the archive.
+If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json` at the top level of the archive.
 
 Claude-first installation flow:
 

@@ -1,0 +1,56 @@
+{
+  "id": "naturalist-evidence-objection",
+  "prompt": "There is no evidence for God, so belief is irrational.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "V1-diagnostic",
+      "reason-disambiguation",
+      "foreign-premise-detection",
+      "diagnostic-ir",
+      "V2-reconstituting-reason",
+      "E1-broadening-evidence",
+      "doubt-vs-skepticism"
+    ],
+    "optional_modules": [
+      "E2-inferential-criterion",
+      "M1-self-refutation",
+      "V7-taqlid-check"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "required_governance": [
+      "diagnosis before answer",
+      "criterion before evidence dump",
+      "IR before routing",
+      "matched_modules use original module IDs"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "tactics",
+      "techniques"
+    ],
+    "max_calls": 12
+  }
+}

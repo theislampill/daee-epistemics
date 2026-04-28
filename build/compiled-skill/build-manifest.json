@@ -1,0 +1,958 @@
+{
+  "bundle_mapping_version": "2026-04-27.phase2",
+  "bundles": {
+    "references/omnibus/OMNIBUS-do-families.md": [
+      "skill/references/case-library/do-core.md",
+      "skill/references/case-library/do-second-loop.md",
+      "skill/references/case-library/do-christian-extensions.md",
+      "skill/references/case-library/do-attribute-precision.md",
+      "skill/references/case-library/philosophical-usurpation.md",
+      "skill/references/sound-reason-epistemology.md",
+      "skill/references/prophecy-wahy-supremacy.md"
+    ],
+    "references/omnibus/OMNIBUS-procedures.md": [
+      "skill/references/procedures/INDEX.md",
+      "skill/references/procedures/P1-fitrah-restoration.md",
+      "skill/references/procedures/P2-objection-mapping.md",
+      "skill/references/procedures/P3-reason-revelation-tension.md",
+      "skill/references/procedures/P4-maieutic.md",
+      "skill/references/procedures/P5-already-believing.md",
+      "skill/references/procedures/P6-universal-aqidah-principle.md"
+    ],
+    "references/omnibus/OMNIBUS-profiles.md": [
+      "skill/references/case-library/profiles/INDEX.md",
+      "skill/references/case-library/noetic-profiles.md",
+      "skill/references/case-library/profiles/ns-1-naturalist.md",
+      "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "skill/references/case-library/profiles/ns-3-deconverted.md",
+      "skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md"
+    ],
+    "references/omnibus/OMNIBUS-rt-transmission.md": [
+      "skill/references/case-library/revelation-transmission.md",
+      "skill/references/techniques/V10-transmission-content-vetting.md"
+    ],
+    "references/omnibus/OMNIBUS-specialty-diagnostics.md": [
+      "skill/references/diagnostics/INDEX.md",
+      "skill/references/diagnostics/kalamic-interlocutor.md",
+      "skill/references/diagnostics/fitrah-perspectives.md",
+      "skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "skill/references/diagnostics/causal-series-taxonomy.md",
+      "skill/references/diagnostics/definition-discipline.md",
+      "skill/references/diagnostics/proof-method-audit.md",
+      "skill/references/diagnostics/perfection-criterion-usurpation.md"
+    ],
+    "references/omnibus/OMNIBUS-tactics.md": [
+      "skill/references/tactics/INDEX.md",
+      "skill/references/tactics/E1-broadening-evidence.md",
+      "skill/references/tactics/E2-inferential-criterion.md",
+      "skill/references/tactics/E3-cumulative-case.md",
+      "skill/references/tactics/E4-cross-cultural-check.md",
+      "skill/references/tactics/F1-supra-vs-antirational.md",
+      "skill/references/tactics/F2-volitional-dimensions.md",
+      "skill/references/tactics/F3-practice-epistemic-access.md",
+      "skill/references/tactics/R1-internalist-criterion.md",
+      "skill/references/tactics/R2-the-reminder.md",
+      "skill/references/tactics/R3-warranted-basic-belief.md",
+      "skill/references/tactics/M1-self-refutation.md",
+      "skill/references/tactics/M1P-performative-self-refutation.md",
+      "skill/references/tactics/M2-prior-probability.md",
+      "skill/references/tactics/M3-orphaned-intuition.md",
+      "skill/references/tactics/M4-grief-register.md",
+      "skill/references/tactics/M6-excluded-middle.md",
+      "skill/references/tactics/M7-definition-anchor.md",
+      "skill/references/tactics/M8-reductio.md",
+      "skill/references/tactics/M9-predication-mode.md",
+      "skill/references/tactics/doubt-vs-skepticism.md",
+      "skill/references/tactics/husn-al-nazar-arguments.md",
+      "skill/references/tactics/inductive-fitri-method.md",
+      "skill/references/tactics/symmetric-taqlid-check.md"
+    ],
+    "references/omnibus/OMNIBUS-techniques.md": [
+      "skill/references/techniques/INDEX.md",
+      "skill/references/techniques/V2-reconstituting-reason.md",
+      "skill/references/techniques/V3-regress-dissolution.md",
+      "skill/references/techniques/V4-contamination-identification.md",
+      "skill/references/techniques/V5-directing-attention-signs.md",
+      "skill/references/techniques/V6-convergence.md",
+      "skill/references/techniques/V7-taqlid-check.md",
+      "skill/references/techniques/V8-bila-kayf-anchor.md",
+      "skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "skill/references/techniques/V11-taqlid-transition.md",
+      "skill/references/techniques/V12-tamanuc-exhaustion.md"
+    ],
+    "references/runtime-diagnostic-core.md": [
+      "skill/references/techniques/V1-diagnostic.md",
+      "skill/references/diagnostics/noetic-reading-checklist.md",
+      "skill/references/diagnostics/seven-deformations.md",
+      "skill/references/diagnostics/modes-of-concealment.md",
+      "skill/references/diagnostics/discourse-orientation.md",
+      "skill/references/tactics/M5-deformation-triage.md"
+    ],
+    "references/runtime-dispatch-gate.md": [
+      "skill/references/diagnostics/diagnostic-ir.md",
+      "skill/references/diagnostics/case-state-schema.md",
+      "skill/references/diagnostics/pattern-profiling.md",
+      "skill/references/diagnostics/inference-boundary.md",
+      "skill/references/diagnostics/mixed-case-handling.md",
+      "skill/references/diagnostics/anti-patterns.md",
+      "skill/references/diagnostics/framework-pipeline.md",
+      "skill/references/diagnostics/routing-precedence.md",
+      "skill/references/kernel-thesis.md",
+      "skill/references/metaphysical-architecture.md",
+      "skill/references/procedures/P7-restoration-stops.md"
+    ],
+    "references/runtime-foundation.md": [
+      "skill/references/terminology.md",
+      "skill/references/case-library/INDEX.md",
+      "skill/references/module-codes.md",
+      "skill/references/techniques/heuristics.md"
+    ],
+    "references/runtime-output-governance.md": [
+      "skill/references/rubrics/output-release.md",
+      "skill/references/rubrics/diagnostic-render-contract.md"
+    ],
+    "references/runtime-phase2-passes.md": [
+      "skill/references/diagnostics/reason-disambiguation.md",
+      "skill/references/diagnostics/foreign-premise-detection.md",
+      "skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "skill/references/diagnostics/arabic-backbone-predicates.md"
+    ]
+  },
+  "canonical_source_root": "skill",
+  "compiler_version": "0.1.0",
+  "extra_inputs": {
+    "skill/SKILL.md": "08a4ae2bb725087e720fcc8dd0e27da2d5212d99852edab36ea7c614a415bbce",
+    "skill/references/diagnostics/diagnostic-ir.schema.json": "3215c40d2135d355252b1eaa97d9c6f85af17843c4c29677b6d1c480492e973c",
+    "skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
+    "skill/references/diagnostics/operative-contract.schema.json": "e3cc96da5ba6d51fbe31fdf36eeb5699ea43da8d0340790f2ca709611c3a18de"
+  },
+  "generated": true,
+  "generated_files": [
+    "build/compiled-skill/SKILL.md",
+    "build/compiled-skill/build-manifest.json",
+    "build/compiled-skill/compiled-module-map.json",
+    "build/compiled-skill/references/omnibus/OMNIBUS-do-families.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-procedures.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-profiles.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-rt-transmission.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-specialty-diagnostics.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-tactics.md",
+    "build/compiled-skill/references/omnibus/OMNIBUS-techniques.md",
+    "build/compiled-skill/references/runtime-diagnostic-core.md",
+    "build/compiled-skill/references/runtime-dispatch-gate.md",
+    "build/compiled-skill/references/runtime-foundation.md",
+    "build/compiled-skill/references/runtime-output-governance.md",
+    "build/compiled-skill/references/runtime-phase2-passes.md"
+  ],
+  "output_root": "build/compiled-skill",
+  "sources": {
+    "E1-broadening-evidence": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/E1-broadening-evidence.md",
+      "module_class": "tactic",
+      "module_id": "E1-broadening-evidence",
+      "source": "skill/references/tactics/E1-broadening-evidence.md",
+      "source_sha256": "ac2610b1c4aac84bd4bf88f8016143f1a3d71a735c300e999d4a9d4e1286c4a7"
+    },
+    "E2-inferential-criterion": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/E2-inferential-criterion.md",
+      "module_class": "tactic",
+      "module_id": "E2-inferential-criterion",
+      "source": "skill/references/tactics/E2-inferential-criterion.md",
+      "source_sha256": "f479ea674ea351a89625024127da5eec18caeedd7c37134750c259ae8b10dd15"
+    },
+    "E3-cumulative-case": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/E3-cumulative-case.md",
+      "module_class": "tactic",
+      "module_id": "E3-cumulative-case",
+      "source": "skill/references/tactics/E3-cumulative-case.md",
+      "source_sha256": "2b283664f877651cdd3937f863e0f372688ad694018bb9033a2e69de3b27fee7"
+    },
+    "E4-cross-cultural-check": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/E4-cross-cultural-check.md",
+      "module_class": "tactic",
+      "module_id": "E4-cross-cultural-check",
+      "source": "skill/references/tactics/E4-cross-cultural-check.md",
+      "source_sha256": "6c5ff3ff1922337619a40b08d0dc2d3e83172b6975b47092925548733f2dc841"
+    },
+    "F1-supra-vs-antirational": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/F1-supra-vs-antirational.md",
+      "module_class": "tactic",
+      "module_id": "F1-supra-vs-antirational",
+      "source": "skill/references/tactics/F1-supra-vs-antirational.md",
+      "source_sha256": "2ef57e7c0d68fe9e04cfaf49b136794e2a295fb71cad18e7e416956e2a6582d7"
+    },
+    "F2-volitional-dimensions": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/F2-volitional-dimensions.md",
+      "module_class": "tactic",
+      "module_id": "F2-volitional-dimensions",
+      "source": "skill/references/tactics/F2-volitional-dimensions.md",
+      "source_sha256": "c9c7d570a0095e9330d1ecfe64372c2168c4164d7a8409002eb4fce795c65e34"
+    },
+    "F3-practice-epistemic-access": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/F3-practice-epistemic-access.md",
+      "module_class": "tactic",
+      "module_id": "F3-practice-epistemic-access",
+      "source": "skill/references/tactics/F3-practice-epistemic-access.md",
+      "source_sha256": "2b696dc64d7649b56f507456dfee0bcb4212f9befc3c928a3fa8d8e9eeb46bf0"
+    },
+    "M1-self-refutation": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M1-self-refutation.md",
+      "module_class": "tactic",
+      "module_id": "M1-self-refutation",
+      "source": "skill/references/tactics/M1-self-refutation.md",
+      "source_sha256": "5709ff9e30010f024ad012d92d9f00a015f246e87122095df59cdca7b457716c"
+    },
+    "M1P-performative-self-refutation": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M1P-performative-self-refutation.md",
+      "module_class": "tactic",
+      "module_id": "M1P-performative-self-refutation",
+      "source": "skill/references/tactics/M1P-performative-self-refutation.md",
+      "source_sha256": "65fe68c5c57c7c82ded86ba142e33cd9e34a7ad2d9c61b8a608ecd9a8b8ffbb7"
+    },
+    "M2-prior-probability": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M2-prior-probability.md",
+      "module_class": "tactic",
+      "module_id": "M2-prior-probability",
+      "source": "skill/references/tactics/M2-prior-probability.md",
+      "source_sha256": "58cc9ae4a25c10c60efe8018ead8a49c94fa41f2b59f360dacdf905c59493ad1"
+    },
+    "M3-orphaned-intuition": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M3-orphaned-intuition.md",
+      "module_class": "tactic",
+      "module_id": "M3-orphaned-intuition",
+      "source": "skill/references/tactics/M3-orphaned-intuition.md",
+      "source_sha256": "6d4e177ef7dfc3a12e5e4fff5aa750904e3f6fed4f2103108edb76d2bda31ad9"
+    },
+    "M4-grief-register": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M4-grief-register.md",
+      "module_class": "tactic",
+      "module_id": "M4-grief-register",
+      "source": "skill/references/tactics/M4-grief-register.md",
+      "source_sha256": "9e361f85a3a03baac3ead414cbf18b60d49b703e7e6867b5b603bc34eecccfc5"
+    },
+    "M5-deformation-triage": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/tactics/M5-deformation-triage.md",
+      "module_class": "tactic",
+      "module_id": "M5-deformation-triage",
+      "source": "skill/references/tactics/M5-deformation-triage.md",
+      "source_sha256": "f224651b05428184eea4102a6d7506a340524b6652b8c9254d394d3febaaed3c"
+    },
+    "M6-excluded-middle": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M6-excluded-middle.md",
+      "module_class": "tactic",
+      "module_id": "M6-excluded-middle",
+      "source": "skill/references/tactics/M6-excluded-middle.md",
+      "source_sha256": "4bc70173ba61506bfa86f5e5372c1c901f6ec87881ebe00a5399e394ae1b9ca6"
+    },
+    "M7-definition-anchor": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M7-definition-anchor.md",
+      "module_class": "tactic",
+      "module_id": "M7-definition-anchor",
+      "source": "skill/references/tactics/M7-definition-anchor.md",
+      "source_sha256": "d74fca3cbfd707cd45132a93d758c2e945936c0a3d9de8ef5a3b79bc6de90883"
+    },
+    "M8-reductio": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M8-reductio.md",
+      "module_class": "tactic",
+      "module_id": "M8-reductio",
+      "source": "skill/references/tactics/M8-reductio.md",
+      "source_sha256": "5e5aa100cada143608a217a7a4c321e6a1d194407da687b2cdf787b2021cc57b"
+    },
+    "M9-predication-mode": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/M9-predication-mode.md",
+      "module_class": "tactic",
+      "module_id": "M9-predication-mode",
+      "source": "skill/references/tactics/M9-predication-mode.md",
+      "source_sha256": "e440e0d7c9e7016cbb0df7187fcb7d1a1c62b19588f24d69ca67d67169e6a3fb"
+    },
+    "P1-fitrah-restoration": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P1-fitrah-restoration.md",
+      "module_class": "procedure",
+      "module_id": "P1-fitrah-restoration",
+      "source": "skill/references/procedures/P1-fitrah-restoration.md",
+      "source_sha256": "7fca134807b330417fd5ccbc54360263f43f39512275bb49c2e2abc7808df658"
+    },
+    "P2-objection-mapping": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P2-objection-mapping.md",
+      "module_class": "procedure",
+      "module_id": "P2-objection-mapping",
+      "source": "skill/references/procedures/P2-objection-mapping.md",
+      "source_sha256": "1456d708231aac700b35f1891ac1cedbe57c4e6cd3245114397915d57c19e28d"
+    },
+    "P3-reason-revelation-tension": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P3-reason-revelation-tension.md",
+      "module_class": "procedure",
+      "module_id": "P3-reason-revelation-tension",
+      "source": "skill/references/procedures/P3-reason-revelation-tension.md",
+      "source_sha256": "bbfcb2107fb7268daf23e8bb83a88c2ed8c2dcf65896789f3312cffee40d9f5f"
+    },
+    "P4-maieutic": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P4-maieutic.md",
+      "module_class": "procedure",
+      "module_id": "P4-maieutic",
+      "source": "skill/references/procedures/P4-maieutic.md",
+      "source_sha256": "0bcd20269f80e0a10cfa828fabea98cff77ae7c9e587e56b87998e9a3d3f1280"
+    },
+    "P5-already-believing": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P5-already-believing.md",
+      "module_class": "procedure",
+      "module_id": "P5-already-believing",
+      "source": "skill/references/procedures/P5-already-believing.md",
+      "source_sha256": "f8d7a73f3bcc71ad522ebe9d271445339ae1be4b954d6f9016a34ff26bf02a42"
+    },
+    "P6-universal-aqidah-principle": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/P6-universal-aqidah-principle.md",
+      "module_class": "procedure",
+      "module_id": "P6-universal-aqidah-principle",
+      "source": "skill/references/procedures/P6-universal-aqidah-principle.md",
+      "source_sha256": "50e9a1bd3d9bf3dc0644698ab17a3c6c039e501ba79a4ded4ae36be9003682c8"
+    },
+    "P7-restoration-stops": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/procedures/P7-restoration-stops.md",
+      "module_class": "procedure",
+      "module_id": "P7-restoration-stops",
+      "source": "skill/references/procedures/P7-restoration-stops.md",
+      "source_sha256": "a5e66519657fe61d780f89ad3a025b96cda671bf0c06dea1e8f5968437a6a875"
+    },
+    "R1-internalist-criterion": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/R1-internalist-criterion.md",
+      "module_class": "tactic",
+      "module_id": "R1-internalist-criterion",
+      "source": "skill/references/tactics/R1-internalist-criterion.md",
+      "source_sha256": "8e131c815e84289dffa22f0efc45cef000b9ab77dd5463de92d920c08f5d4db0"
+    },
+    "R2-the-reminder": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/R2-the-reminder.md",
+      "module_class": "tactic",
+      "module_id": "R2-the-reminder",
+      "source": "skill/references/tactics/R2-the-reminder.md",
+      "source_sha256": "4b71c605e09b8f26b4b6ff3f599334b52e94743a2d81d170abc6d5aef7cd1405"
+    },
+    "R3-warranted-basic-belief": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/R3-warranted-basic-belief.md",
+      "module_class": "tactic",
+      "module_id": "R3-warranted-basic-belief",
+      "source": "skill/references/tactics/R3-warranted-basic-belief.md",
+      "source_sha256": "4e5265baea510caf37e4282842466e4ebcba52556f3a2f7307a07cc886c5aa83"
+    },
+    "V1-diagnostic": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/techniques/V1-diagnostic.md",
+      "module_class": "technique",
+      "module_id": "V1-diagnostic",
+      "source": "skill/references/techniques/V1-diagnostic.md",
+      "source_sha256": "7d0777c421bc6aafb96c4416a0c26c0a8e751239bd4b20db02c4dca9225c9641"
+    },
+    "V10-transmission-content-vetting": {
+      "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",
+      "canonical_path": "skill/references/techniques/V10-transmission-content-vetting.md",
+      "module_class": "technique",
+      "module_id": "V10-transmission-content-vetting",
+      "source": "skill/references/techniques/V10-transmission-content-vetting.md",
+      "source_sha256": "e0b982f91e66751e77b7e8c7bd725d92226d500c96946c03cebf195b24b589ac"
+    },
+    "V11-taqlid-transition": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V11-taqlid-transition.md",
+      "module_class": "technique",
+      "module_id": "V11-taqlid-transition",
+      "source": "skill/references/techniques/V11-taqlid-transition.md",
+      "source_sha256": "2c66c73686474fab4653667b51663bad79b50b64d8efb907cbeeabae19a4ea5d"
+    },
+    "V12-tamanuc-exhaustion": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V12-tamanuc-exhaustion.md",
+      "module_class": "technique",
+      "module_id": "V12-tamanuc-exhaustion",
+      "source": "skill/references/techniques/V12-tamanuc-exhaustion.md",
+      "source_sha256": "816ef133bf3a94c7b7acae041ddfe10e8ec1d218d265199365bcdb065bb079a7"
+    },
+    "V2-reconstituting-reason": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V2-reconstituting-reason.md",
+      "module_class": "technique",
+      "module_id": "V2-reconstituting-reason",
+      "source": "skill/references/techniques/V2-reconstituting-reason.md",
+      "source_sha256": "b59382e5db47b2c8c691c3b3599efd2d2d6a50f346b0812396c04b1ab73a102e"
+    },
+    "V3-regress-dissolution": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V3-regress-dissolution.md",
+      "module_class": "technique",
+      "module_id": "V3-regress-dissolution",
+      "source": "skill/references/techniques/V3-regress-dissolution.md",
+      "source_sha256": "77a7aec1e0f954e6005ee80e27f2a036a812ca656a4f4ed91b387f735224f843"
+    },
+    "V4-contamination-identification": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V4-contamination-identification.md",
+      "module_class": "technique",
+      "module_id": "V4-contamination-identification",
+      "source": "skill/references/techniques/V4-contamination-identification.md",
+      "source_sha256": "23337a4aeb03d76bb636c24d62f3abcba64e34b7a6b7dce08717eed9b8d64a5c"
+    },
+    "V5-directing-attention-signs": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V5-directing-attention-signs.md",
+      "module_class": "technique",
+      "module_id": "V5-directing-attention-signs",
+      "source": "skill/references/techniques/V5-directing-attention-signs.md",
+      "source_sha256": "0a81326dafa3eea231d61d283e0ac1336780f3817c0b45ae695ff5677fe2c263"
+    },
+    "V6-convergence": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V6-convergence.md",
+      "module_class": "technique",
+      "module_id": "V6-convergence",
+      "source": "skill/references/techniques/V6-convergence.md",
+      "source_sha256": "f01a545a6744b738e62ec90b38288e1f538bd4436ded2e03c0c017899ade6655"
+    },
+    "V7-taqlid-check": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V7-taqlid-check.md",
+      "module_class": "technique",
+      "module_id": "V7-taqlid-check",
+      "source": "skill/references/techniques/V7-taqlid-check.md",
+      "source_sha256": "e39a35d4f0b151c4c88fc9a903ed3a941abd4c873cfec1f3503b4fbbf7edfc9f"
+    },
+    "V8-bila-kayf-anchor": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V8-bila-kayf-anchor.md",
+      "module_class": "technique",
+      "module_id": "V8-bila-kayf-anchor",
+      "source": "skill/references/techniques/V8-bila-kayf-anchor.md",
+      "source_sha256": "a91a5770fc1e3e49dea1229c2f6ea771dfbe1cb8d2f3905002cc8f9821b9ed65"
+    },
+    "V9-necessary-knowledge-priority": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "module_class": "technique",
+      "module_id": "V9-necessary-knowledge-priority",
+      "source": "skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "source_sha256": "244f7089c51b7263822466b22f827c3d7c43cca906c1af9af4e29c511a279613"
+    },
+    "anti-patterns": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/anti-patterns.md",
+      "module_class": "governance",
+      "module_id": "anti-patterns",
+      "source": "skill/references/diagnostics/anti-patterns.md",
+      "source_sha256": "2151b94e1247f11202248815398f3058f521d08bb78eb60a6ff274c5b52224f5"
+    },
+    "arabic-backbone-predicates": {
+      "bundle_path": "references/runtime-phase2-passes.md",
+      "canonical_path": "skill/references/diagnostics/arabic-backbone-predicates.md",
+      "module_class": "governance",
+      "module_id": "arabic-backbone-predicates",
+      "source": "skill/references/diagnostics/arabic-backbone-predicates.md",
+      "source_sha256": "2220d8fdefa58b40180766db877e16a3d06d425344e0ac39bdb386208eeda71f"
+    },
+    "case-library-index": {
+      "bundle_path": "references/runtime-foundation.md",
+      "canonical_path": "skill/references/case-library/INDEX.md",
+      "module_class": "governance",
+      "module_id": "case-library-index",
+      "source": "skill/references/case-library/INDEX.md",
+      "source_sha256": "c68206cd107924597f1ad73394c4789ecb43cb01b37df571f6e880556f33323c"
+    },
+    "case-state-schema": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/case-state-schema.md",
+      "module_class": "governance",
+      "module_id": "case-state-schema",
+      "source": "skill/references/diagnostics/case-state-schema.md",
+      "source_sha256": "17621167ce352fd94407da9c581ad328b175ac3be59870bc879495c61f4faaf9"
+    },
+    "causal-series-taxonomy": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/causal-series-taxonomy.md",
+      "module_class": "diagnostic",
+      "module_id": "causal-series-taxonomy",
+      "source": "skill/references/diagnostics/causal-series-taxonomy.md",
+      "source_sha256": "38a76c36c14c173572215afe7282258ae54e5e45b011472cd288b6c7ba952516"
+    },
+    "definition-discipline": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/definition-discipline.md",
+      "module_class": "diagnostic",
+      "module_id": "definition-discipline",
+      "source": "skill/references/diagnostics/definition-discipline.md",
+      "source_sha256": "29d60592d2049a116a8949fafee0f3bf1f8cb6dc1657ff5073d74b35ea62c7da"
+    },
+    "diagnostic-ir": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/diagnostic-ir.md",
+      "module_class": "governance",
+      "module_id": "diagnostic-ir",
+      "source": "skill/references/diagnostics/diagnostic-ir.md",
+      "source_sha256": "871cb8c975548678e1af007fad0c16f8128f3c10d25a560d630e339094622c75"
+    },
+    "diagnostic-render-contract": {
+      "bundle_path": "references/runtime-output-governance.md",
+      "canonical_path": "skill/references/rubrics/diagnostic-render-contract.md",
+      "module_class": "governance",
+      "module_id": "diagnostic-render-contract",
+      "source": "skill/references/rubrics/diagnostic-render-contract.md",
+      "source_sha256": "88e9521ab7045c666c2469e2824438a60360529fa7065b9cefb81c2b65addac6"
+    },
+    "diagnostics-index": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/INDEX.md",
+      "module_class": "governance",
+      "module_id": "diagnostics-index",
+      "source": "skill/references/diagnostics/INDEX.md",
+      "source_sha256": "e3e22fea12ddf75083df8f28a855fef9509d76574de32b1a1ae851698e605387"
+    },
+    "discourse-orientation": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/diagnostics/discourse-orientation.md",
+      "module_class": "governance",
+      "module_id": "discourse-orientation",
+      "source": "skill/references/diagnostics/discourse-orientation.md",
+      "source_sha256": "9f0c9b4af161d65a4c471be3698ee3efaa61c8a7474b4ed2fb14af0c56e1116b"
+    },
+    "do-attribute-precision": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/case-library/do-attribute-precision.md",
+      "module_class": "case-library",
+      "module_id": "do-attribute-precision",
+      "source": "skill/references/case-library/do-attribute-precision.md",
+      "source_sha256": "f29a2851c02dfaa777530929105efcf008a9545845336cec6167020a7c4c79d0"
+    },
+    "do-christian-extensions": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/case-library/do-christian-extensions.md",
+      "module_class": "case-library",
+      "module_id": "do-christian-extensions",
+      "source": "skill/references/case-library/do-christian-extensions.md",
+      "source_sha256": "acc8793203741ae096cb312163cb879f923b30db63edf45e9b05463c64f266e7"
+    },
+    "do-core": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/case-library/do-core.md",
+      "module_class": "case-library",
+      "module_id": "do-core",
+      "source": "skill/references/case-library/do-core.md",
+      "source_sha256": "e3e0e90be8a50d56cda3cdc57c90fb982a3fb9d6cb3b39191c41a8906123136b"
+    },
+    "do-second-loop": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/case-library/do-second-loop.md",
+      "module_class": "case-library",
+      "module_id": "do-second-loop",
+      "source": "skill/references/case-library/do-second-loop.md",
+      "source_sha256": "4fe5def1a312d8b1080b7fc361876d7d5cc9d9de808ac52fb2c9befe8e6fce14"
+    },
+    "doubt-vs-skepticism": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/doubt-vs-skepticism.md",
+      "module_class": "tactic",
+      "module_id": "doubt-vs-skepticism",
+      "source": "skill/references/tactics/doubt-vs-skepticism.md",
+      "source_sha256": "12a04094aae74da657fe76b6ec8009ed9d241d7951821a2caaa41afe3a349670"
+    },
+    "fitrah-perspectives": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/fitrah-perspectives.md",
+      "module_class": "governance",
+      "module_id": "fitrah-perspectives",
+      "source": "skill/references/diagnostics/fitrah-perspectives.md",
+      "source_sha256": "5f03ffb9acacc8261ad7db26f1e6e424c93b2a5a88934aae47d6dfc4a63aad2e"
+    },
+    "foreign-premise-detection": {
+      "bundle_path": "references/runtime-phase2-passes.md",
+      "canonical_path": "skill/references/diagnostics/foreign-premise-detection.md",
+      "module_class": "governance",
+      "module_id": "foreign-premise-detection",
+      "source": "skill/references/diagnostics/foreign-premise-detection.md",
+      "source_sha256": "3d0245b356457479b035ca20ca13265ef56c92517dcf15033ddd746beaedf521"
+    },
+    "framework-pipeline": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/framework-pipeline.md",
+      "module_class": "governance",
+      "module_id": "framework-pipeline",
+      "source": "skill/references/diagnostics/framework-pipeline.md",
+      "source_sha256": "96c96c1718b588ed4dca7deb7ce8cb00e186a76f079b7da3dc06172e7cab8eba"
+    },
+    "hadith-authentication-epistemology": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "module_class": "diagnostic",
+      "module_id": "hadith-authentication-epistemology",
+      "source": "skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "source_sha256": "9ed6020ed90b9fd5062440f15a1643e23927378a250b3e36d067cc2c7a16f9ec"
+    },
+    "heuristics": {
+      "bundle_path": "references/runtime-foundation.md",
+      "canonical_path": "skill/references/techniques/heuristics.md",
+      "module_class": "technique",
+      "module_id": "heuristics",
+      "source": "skill/references/techniques/heuristics.md",
+      "source_sha256": "88403765f4a6732f536aec58216dac48ac0ac618364471f9bd1aaa1daaf87e7a"
+    },
+    "husn-al-nazar-arguments": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/husn-al-nazar-arguments.md",
+      "module_class": "tactic",
+      "module_id": "husn-al-nazar-arguments",
+      "source": "skill/references/tactics/husn-al-nazar-arguments.md",
+      "source_sha256": "ae6005453fb55c8dbd3f0bf7aff08e30c4631901c773dd8adf1ae499185dd605"
+    },
+    "inductive-fitri-method": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/inductive-fitri-method.md",
+      "module_class": "tactic",
+      "module_id": "inductive-fitri-method",
+      "source": "skill/references/tactics/inductive-fitri-method.md",
+      "source_sha256": "c7e8c5ad5806f3f68dc48f59abf5837c99528d7c4e37dd4d3b4f78ec0257f4d3"
+    },
+    "inference-boundary": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/inference-boundary.md",
+      "module_class": "governance",
+      "module_id": "inference-boundary",
+      "source": "skill/references/diagnostics/inference-boundary.md",
+      "source_sha256": "1c096f910e212b0df6cabd5e693786a8c94d3a36b5256a1338cceeff6e04f3c7"
+    },
+    "kalamic-interlocutor": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/kalamic-interlocutor.md",
+      "module_class": "governance",
+      "module_id": "kalamic-interlocutor",
+      "source": "skill/references/diagnostics/kalamic-interlocutor.md",
+      "source_sha256": "55a102a0834b89914089f426a25212666e738263ab6af63d785ee29c11f9acc6"
+    },
+    "kernel-thesis": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/kernel-thesis.md",
+      "module_class": "governance",
+      "module_id": "kernel-thesis",
+      "source": "skill/references/kernel-thesis.md",
+      "source_sha256": "2282eca53329335da78fe00176b10ce47a65e43ed36e30339dad5673efec1e9a"
+    },
+    "metaphysical-architecture": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/metaphysical-architecture.md",
+      "module_class": "governance",
+      "module_id": "metaphysical-architecture",
+      "source": "skill/references/metaphysical-architecture.md",
+      "source_sha256": "8259f0d96b223acae32bdcbfd0032745510ff1c008b5fb12a4584a7022d0a3f2"
+    },
+    "mixed-case-handling": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/mixed-case-handling.md",
+      "module_class": "governance",
+      "module_id": "mixed-case-handling",
+      "source": "skill/references/diagnostics/mixed-case-handling.md",
+      "source_sha256": "92b3431c3221dd69045cfdf69cffd0ba244e929f6307a45cf2605cd15b4f7998"
+    },
+    "modes-of-concealment": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/diagnostics/modes-of-concealment.md",
+      "module_class": "governance",
+      "module_id": "modes-of-concealment",
+      "source": "skill/references/diagnostics/modes-of-concealment.md",
+      "source_sha256": "9d84d4ad0fa8981e0ee838980c58d6c72556fe495fcadaa339de2756435c112e"
+    },
+    "module-codes": {
+      "bundle_path": "references/runtime-foundation.md",
+      "canonical_path": "skill/references/module-codes.md",
+      "module_class": "governance",
+      "module_id": "module-codes",
+      "source": "skill/references/module-codes.md",
+      "source_sha256": "77c0a00bb843b33901e57c7a461eae7484c9d4e21180972770b5682183a05358"
+    },
+    "noetic-profiles": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/noetic-profiles.md",
+      "module_class": "case-library",
+      "module_id": "noetic-profiles",
+      "source": "skill/references/case-library/noetic-profiles.md",
+      "source_sha256": "54980185b7468d1da7dc1529324077b505cb68a7ee615bbea384ec2d8d0b4069"
+    },
+    "noetic-reading-checklist": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/diagnostics/noetic-reading-checklist.md",
+      "module_class": "governance",
+      "module_id": "noetic-reading-checklist",
+      "source": "skill/references/diagnostics/noetic-reading-checklist.md",
+      "source_sha256": "8a4e539d6b6ca4b18d16b72cfdf8c606bf72ae1308ce9f1196ae8f464c02fb72"
+    },
+    "ns-1-naturalist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-1-naturalist.md",
+      "module_class": "case-library",
+      "module_id": "ns-1-naturalist",
+      "source": "skill/references/case-library/profiles/ns-1-naturalist.md",
+      "source_sha256": "d2bd301b83f058780b8ae33bd0f2a9b832f5bab26c3e8f8ce3b63baa4690e12c"
+    },
+    "ns-10-maturidi-evidentialist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "module_class": "case-library",
+      "module_id": "ns-10-maturidi-evidentialist",
+      "source": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "source_sha256": "6090011e09abd38e8622229a6ff5a0c3b3b44bd50f5359434026e402611dd98a"
+    },
+    "ns-11-fideist-reformed": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "module_class": "case-library",
+      "module_id": "ns-11-fideist-reformed",
+      "source": "skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "source_sha256": "ec69601eef5dfdfc9a862fd94c5e1575be79617b8c33bb35da329c9812ab5ec8"
+    },
+    "ns-12-blank-slate-dual-fitrah": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
+      "module_class": "case-library",
+      "module_id": "ns-12-blank-slate-dual-fitrah",
+      "source": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
+      "source_sha256": "0b64781b5ecc6b3e1fad02cdcd2feeb32cf5e84f17cba24e7bba53799980a87c"
+    },
+    "ns-2-agnostic-evidentialist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "module_class": "case-library",
+      "module_id": "ns-2-agnostic-evidentialist",
+      "source": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "source_sha256": "6e9f164818afd96aa55253da17f0bfded3f4dc804a25fed59096a160c19305ff"
+    },
+    "ns-3-deconverted": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-3-deconverted.md",
+      "module_class": "case-library",
+      "module_id": "ns-3-deconverted",
+      "source": "skill/references/case-library/profiles/ns-3-deconverted.md",
+      "source_sha256": "de6eccc56c232f94c2f8f4db5f74ee9ab254557d2210f42252f620c776ddf96a"
+    },
+    "ns-4-secular-moral-realist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "module_class": "case-library",
+      "module_id": "ns-4-secular-moral-realist",
+      "source": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "source_sha256": "beba15ec712ba39038098e38858308893f7c924da747ec97d276d2f76c6341ed"
+    },
+    "ns-5-habituated-atheist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "module_class": "case-library",
+      "module_id": "ns-5-habituated-atheist",
+      "source": "skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "source_sha256": "d16b4fca7e2f7aa06530f6b16196dfcaa909d49ebe1b296a9aca51a2cf868880"
+    },
+    "ns-6-kalamic-evidentialist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "module_class": "case-library",
+      "module_id": "ns-6-kalamic-evidentialist",
+      "source": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "source_sha256": "a7394ec84dedaca2d262c03e72976227447f75662a8bfeae27f3abbd46fa9608"
+    },
+    "ns-7-theistic-evidentialist": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "module_class": "case-library",
+      "module_id": "ns-7-theistic-evidentialist",
+      "source": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "source_sha256": "07cd5bb66e074fca1e0c6deee6b881921e02b398ba57bf7273ae28ed2bd6bf4c"
+    },
+    "ns-8-muslim-internal-crisis": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "module_class": "case-library",
+      "module_id": "ns-8-muslim-internal-crisis",
+      "source": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "source_sha256": "3f8ea19a79829c60e2bff334bd7bb195d768ae0582fe5c017fb969f0e9faa996"
+    },
+    "ns-9-historical-critical-skeptic": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "module_class": "case-library",
+      "module_id": "ns-9-historical-critical-skeptic",
+      "source": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "source_sha256": "5de86e367f355cf9880391c10b7e4d2e492f194450f486a1dc4aa964f6c9fd3b"
+    },
+    "output-release": {
+      "bundle_path": "references/runtime-output-governance.md",
+      "canonical_path": "skill/references/rubrics/output-release.md",
+      "module_class": "governance",
+      "module_id": "output-release",
+      "source": "skill/references/rubrics/output-release.md",
+      "source_sha256": "1b37ba7c884d6d232cc4c3e1c72c495e0f0a891d5c369ecb6f75bcff0d9bdd52"
+    },
+    "pattern-profiling": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/pattern-profiling.md",
+      "module_class": "governance",
+      "module_id": "pattern-profiling",
+      "source": "skill/references/diagnostics/pattern-profiling.md",
+      "source_sha256": "67b3303a506fc7672fdecb1e0bf73a0f5afb3395f5154c1272bd05ada90016cf"
+    },
+    "perfection-criterion-usurpation": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/perfection-criterion-usurpation.md",
+      "module_class": "diagnostic",
+      "module_id": "perfection-criterion-usurpation",
+      "source": "skill/references/diagnostics/perfection-criterion-usurpation.md",
+      "source_sha256": "7dc2a1586681cdc6dc0deed228c693c7c3ae1e210682d14524e521e1f2e33eaa"
+    },
+    "philosophical-usurpation": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/case-library/philosophical-usurpation.md",
+      "module_class": "case-library",
+      "module_id": "philosophical-usurpation",
+      "source": "skill/references/case-library/philosophical-usurpation.md",
+      "source_sha256": "f6ffdcdf742804557c912d5b6a7a1a1f036ff1563eeaa218fb8b73004419d2f8"
+    },
+    "procedures-index": {
+      "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
+      "canonical_path": "skill/references/procedures/INDEX.md",
+      "module_class": "governance",
+      "module_id": "procedures-index",
+      "source": "skill/references/procedures/INDEX.md",
+      "source_sha256": "cf5ffeae5a4333c1884d10c2efab92d0e4c413b905caacfdfce10eec9a5c40ba"
+    },
+    "profiles-index": {
+      "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
+      "canonical_path": "skill/references/case-library/profiles/INDEX.md",
+      "module_class": "governance",
+      "module_id": "profiles-index",
+      "source": "skill/references/case-library/profiles/INDEX.md",
+      "source_sha256": "5c98e88d66465f59425bf3c1e404ec0633f006f917c9edf5a34a0bf532a8f094"
+    },
+    "proof-method-audit": {
+      "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "canonical_path": "skill/references/diagnostics/proof-method-audit.md",
+      "module_class": "diagnostic",
+      "module_id": "proof-method-audit",
+      "source": "skill/references/diagnostics/proof-method-audit.md",
+      "source_sha256": "86816455d1bf89897c56f6bb810c8ea54069d04fbb8258419ce169c5a4585d5d"
+    },
+    "prophecy-wahy-supremacy": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/prophecy-wahy-supremacy.md",
+      "module_class": "governance",
+      "module_id": "prophecy-wahy-supremacy",
+      "source": "skill/references/prophecy-wahy-supremacy.md",
+      "source_sha256": "459d0c2e617392b8ab82118e2c091506ce06a9ced572df37e237dcd8e21f4bdf"
+    },
+    "prophetic-discourse-neutralization": {
+      "bundle_path": "references/runtime-phase2-passes.md",
+      "canonical_path": "skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "module_class": "diagnostic",
+      "module_id": "prophetic-discourse-neutralization",
+      "source": "skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "source_sha256": "fea24ced9f12e71dca2a75182788e6c1ce02018f5f95cdb7a8c48d8ad191b2f2"
+    },
+    "reason-disambiguation": {
+      "bundle_path": "references/runtime-phase2-passes.md",
+      "canonical_path": "skill/references/diagnostics/reason-disambiguation.md",
+      "module_class": "governance",
+      "module_id": "reason-disambiguation",
+      "source": "skill/references/diagnostics/reason-disambiguation.md",
+      "source_sha256": "93f07b8707ba0c5c69c5a7cc473fadf684bbdeec23db2c0cffbea7c84e8c8244"
+    },
+    "revelation-transmission": {
+      "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",
+      "canonical_path": "skill/references/case-library/revelation-transmission.md",
+      "module_class": "case-library",
+      "module_id": "revelation-transmission",
+      "source": "skill/references/case-library/revelation-transmission.md",
+      "source_sha256": "4b0e40905945e1134ef3483c1bb3e4372a70c8422d530bfd447fee1032ac8c7c"
+    },
+    "routing-precedence": {
+      "bundle_path": "references/runtime-dispatch-gate.md",
+      "canonical_path": "skill/references/diagnostics/routing-precedence.md",
+      "module_class": "governance",
+      "module_id": "routing-precedence",
+      "source": "skill/references/diagnostics/routing-precedence.md",
+      "source_sha256": "1289b9dd04b52312f7918925c60dbd426102fc36f9966385c64a99e9a8cfc91f"
+    },
+    "seven-deformations": {
+      "bundle_path": "references/runtime-diagnostic-core.md",
+      "canonical_path": "skill/references/diagnostics/seven-deformations.md",
+      "module_class": "governance",
+      "module_id": "seven-deformations",
+      "source": "skill/references/diagnostics/seven-deformations.md",
+      "source_sha256": "daff8f325e3b8616c1ed59f9892c0cd37fa216b2f01a16235de1513d14cabd06"
+    },
+    "sound-reason-epistemology": {
+      "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
+      "canonical_path": "skill/references/sound-reason-epistemology.md",
+      "module_class": "governance",
+      "module_id": "sound-reason-epistemology",
+      "source": "skill/references/sound-reason-epistemology.md",
+      "source_sha256": "2f4a3518d8ea6043d90b97b978d24b9f23ab1af01e7b5b8ec12554bd740433cc"
+    },
+    "symmetric-taqlid-check": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/symmetric-taqlid-check.md",
+      "module_class": "tactic",
+      "module_id": "symmetric-taqlid-check",
+      "source": "skill/references/tactics/symmetric-taqlid-check.md",
+      "source_sha256": "9cd9a6f7ed31c3344a28321eb5d35bd605e270d5164f52a792011afa13ee9a34"
+    },
+    "tactics-index": {
+      "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
+      "canonical_path": "skill/references/tactics/INDEX.md",
+      "module_class": "governance",
+      "module_id": "tactics-index",
+      "source": "skill/references/tactics/INDEX.md",
+      "source_sha256": "35d36f202b939053a4abd7c6ac299abacb814236dda56e579c409d431549183f"
+    },
+    "techniques-index": {
+      "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
+      "canonical_path": "skill/references/techniques/INDEX.md",
+      "module_class": "governance",
+      "module_id": "techniques-index",
+      "source": "skill/references/techniques/INDEX.md",
+      "source_sha256": "316f880e27c64e09ddb048a1903a00d470f2dab960cf22cfdaf9b37374aaf5d2"
+    },
+    "terminology": {
+      "bundle_path": "references/runtime-foundation.md",
+      "canonical_path": "skill/references/terminology.md",
+      "module_class": "governance",
+      "module_id": "terminology",
+      "source": "skill/references/terminology.md",
+      "source_sha256": "89f2f1f0f82383117e21d277d472e05d102b604a642f2b3d41d09c8b52e33eb9"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "revelation-transmission",
+  "prompt": "How do you know the Qur'an was preserved and not reconstructed like other ancient texts?",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "V10-transmission-content-vetting",
+      "revelation-transmission",
+      "inference-boundary"
+    ],
+    "optional_modules": [
+      "ns-9-historical-critical-skeptic",
+      "prophetic-discourse-neutralization",
+      "prophecy-wahy-supremacy"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-rt-transmission",
+      "OMNIBUS-profiles",
+      "references/omnibus/OMNIBUS-rt-transmission.md"
+    ],
+    "required_governance": [
+      "diagnosis before answer",
+      "artifact vs authenticated transmission distinction",
+      "IR before routing",
+      "source_basis records original module or section"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-rt-transmission.md",
+      "references/omnibus/OMNIBUS-profiles.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "rt-transmission",
+      "profiles",
+      "do-families"
+    ],
+    "max_calls": 12
+  }
+}

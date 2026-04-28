@@ -1,0 +1,88 @@
+---
+id: heuristics
+module_class: technique
+canonical_path: skill/references/techniques/heuristics.md
+contract_version: "0.3.0.0"
+load_when:
+  - throughout every engagement as background governance
+blocks:
+  - case-specific moves (require dedicated modules, not heuristics)
+output_shapes:
+  - pass-through
+layer_constraint: layer-b-governed
+catalogue_registered: true
+---
+
+# Discursive Heuristics — Operative Principles
+
+These are always-active background rules, not case-specific moves.
+
+1. **Clear the framework before the content.** The most common failure: both parties argue within different epistemological frameworks and neither notices. Establish shared ground on what counts as evidence and rational belief before moving to first-order content.
+
+2. **Start with V1, and use M5 inside its triage phase.** The response appropriate for inherited doxastic rules is categorically different from the response appropriate for vested interest. Misdiagnosis is the most common reason epistemological conversations fail.
+
+3. **After the diagnostic gate, run M1 (self-refutation check) first among downstream moves when it is actually present.** Before constructing any longer response, examine whether the objection's premises undermine the objection itself. When present, deliver it cleanly and early.
+
+4. **Presenting content to an entrenched will hardens resistance.** When the barrier is gharaḍ or hawā, additional intellectual content does not fail to persuade — it gives the resistance more material to organize around. Diagnose before deploying.
+
+5. **Distinguish the register of the objection.** Epistemological (conditions for knowledge), metaphysical (what exists), moral (whether it is right to believe), social (identity and belonging), or grief (personal moral protest). The register of the response must match.
+
+6. **The cross-cultural convergence is underused.** Ground it in the tawātur fiṭrī thesis and the foundation/superstructure distinction — not bare appeal to numbers.
+
+7. **Knowledge comes through a diversity of pathways.** Confining the interlocutor to a single route reflects the contamination of the narrow evidential criterion, not genuine epistemology. The convergence of multiple independent pathways on the same recognition is evidence of the recognition's truth.
+
+8. **Work from the inside out.** The fiṭrah is internal; arguments are external occasions for it to recognize, not sufficient causes of belief. Attend to the interior state of the interlocutor, not only the propositional content of the exchange.
+
+9. **The reminder is the deepest move.** Directing someone's attention to what is already present in their own experience is the prophetic mode.
+
+10. **Remember the direction of proof.** Theistic recognition is the natural, involuntary output of properly functioning human nature — the default orientation. The burden falls equally on those who deny it to explain why normal human cognition should be overridden.
+
+11. **Surface the prior probability.** Evidential arguments are probabilistic. The prior the interlocutor is assuming is not neutral — surface it.
+
+12. **Frame everything as restoration, not construction.** Every argument, every sign, every question is clearing a path back — not building a case from zero. *Exception:* when the case carries a live epistemic question — evidentialist criterion, canon or authority confusion, doctrinal complexity structured as argument — restoration framing supports but does not substitute the matched content module. Deploy the epistemic content first; add restoration framing as accompanying register only once the epistemic question has been met. This is the restoration-first regression named in `references/diagnostics/mixed-case-handling.md` playbook (v) and `references/diagnostics/anti-patterns.md` §Restoration-First Default.
+
+13. **When an argument conflicts with universal innate intuition, the intuition wins (V9).** Locate the error in the argument's premises; do not suspend the universal deliverable.
+
+14. **Signs are presented, not argued.** When directing attention to an āyah, do not construct the inference — present the sign and let the fiṭrah make the connection. The practitioner who explains the logical implication has converted the sign into a premise and bypassed the mechanism.
+
+15. **Prefer simplicity.** Complexity gives complex frameworks more to work with. The sharpest move over the most elaborate one.
+
+16. **Character is evidence — actively, not passively.** The absence of defensiveness, the quality of listening, the genuine care for the interlocutor rather than the argument — these are epistemically operative, not decorative.
+
+17. **Know when to pause, and know when a refreshed continuation is actually licensed.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. A landed move ends the current pass; before STOP, the post-render gate must refresh case-state, recheck held routes, and decide STOP, HOLD, RECURSE, or PARTIAL. Continuation is required when refreshed case-state shows a still-unmet restoration target and no stop, register-hold, semantic gate, or limit bars the next move. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. Heuristics states the principle; P7 enforces it procedurally.
+
+18. **Do not grant scientism upstream-tribunal status.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
+
+19. **In Christian doctrinal cases, classify the objection family first.** Distinguish divine-perfection arguments, formal Trinity-coherence arguments, mystery appeals, and philosopher's-God appeals before loading a rebuttal chain.
+
+20. **Distinguish contradiction from mystery.** Mystery may mark the limit of comprehension; it does not by itself rescue a position from a contradiction generated by its own governing claims.
+
+21. **Do not collapse the God of revelation into the god of the philosophers.** A static self-thinking absolute is not automatically the highest or truest conception of God.
+
+22. **Experiential damage needs experiential repair.** When doubt is tangled with bad religious experience, healthier practice, better company, and restored trust may be more necessary than more premises.
+
+23. **Keep the claim-type clean.** Logical contradiction, probabilistic pressure, grief, historical challenge, and authority recoil are different objections and must not be answered as though they were one.
+
+24. **Revelation cases are layered.** Distinguish possibility of revelation, credibility of testimony, textual integrity, specific prophetic claim, and moral recoil from the content before answering.
+
+25. **Do not let hostile historical criticism pose as an upstream tribunal.** It often imports a narrowed theory of testimony and a naturalistic prior before the argument even begins.
+
+26. **In Muslim-internal cases, separate authority fatigue from shubhah.** Betrayal, hypocrisy of representatives, revisionist moral filtering, and genuine textual-historical doubt are not the same thing.
+
+27. **Where public identity-cost is high, aim first at unclenching.** In those cases the first win is claim-separation and reduced defensiveness, not immediate verbal surrender.
+
+28. **Select the case-state-justified coordination.** A response using three well-matched modules can be stronger than one advertising nine, but do not force a single-module answer when the live case genuinely requires layered coordination.
+
+29. **Make the routing state legible when it matters.** In ordinary mode, surface only the routing state needed to govern the next move. In advanced mode, make the richer IR state explicit: case type, claim level, pattern profile, routing gate, alignment state, recognition strength, continuation eligibility, module choice, confidence, and restoration target. When a higher-order PF family is live, keep the burden, the pattern, and the restoration target distinct. If a brief theory-to-routing bridge clarifies the move, use one; do not turn the output into transparency theater.
+
+30. **Mark where inference begins.** If a move is model inference rather than file-grounded or cross-file synthesis, say so using the source-status legend: `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]` with their definitions.
+
+31. **Treat discourse as an analysand, not a blob.** Read claims, criteria, testimonial posture, slogan families, and register cues as separable surfaces that may require different intervention order. Do not force the whole burden into one flat answer when the case is structurally decomposable.
+
+32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, and filters. Meta-noetic memetics is how semantic-intellectual units dock, stabilize, distort, or lose force within that configuration. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding.
+
+33. **Let restorative structural viability outrank bare formal stability.** A structure may look locally coherent while still being tribunal-captured, semantically trapped, or held together by imported criteria. The goal is not merely to preserve consistency, but to restore a configuration whose grounding, routing, release, and continuation remain aligned to restored order.
+
+34. **Let the validated IR govern recursive re-entry.** If a further move cannot be justified from refreshed state inside the audited control surface, it is not licensed. Re-enter only through a still-live restoration target and a newly permitted route, never from momentum alone.
+
+35. **Do not close before the post-render gate.** A strong bounded move is not self-closing. After it renders, ask what cleared, what remains live, what held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. STOP is honest only when that answer is none; otherwise HOLD, RECURSE, or PARTIAL governs.
