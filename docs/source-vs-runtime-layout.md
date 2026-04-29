@@ -36,4 +36,6 @@ Package/deploy from `skill/`. A Claude-compatible `.skill` archive must contain 
 
 Generated `skill/SKILL.md` intentionally preserves inherited atomized load-table paths. At runtime those paths are not literal file loads: resolve them through `skill/compiled-module-map.json` to the compiled bundle section with the matching original `MODULE_ID`. Static metadata paths that remain literal, such as the module catalogue and schemas, are copied under `skill/references/diagnostics/`.
 
-Routing parity fixtures live in `tests/routing-fixtures/` and are checked by `tools/check_routing_parity.py`.
+## Runtime Metadata Copies
+
+The compiled runtime package intentionally includes four metadata files under `ref

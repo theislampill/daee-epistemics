@@ -153,10 +153,13 @@ def check_canonical_path(data: dict, actual_path: str) -> list[str]:
     stated = data.get("canonical_path", "")
     if not stated:
         return []
-    # canonical_path values use repo-root-relative paths (e.g. skill/references/...)
-    # compute relative to cwd, which should be repo root
+    # canonical_path in frontmatter is the compiled-runtime path (skill/references/...).
+    # When scanning atomics/skill/references/, strip the atomics/ prefix before comparing.
     rel = os.path.relpath(actual_path, os.getcwd()).replace("\\", "/")
-    if stated != rel:
+    normalized = rel
+    if normalized.startswith("atomics/"):
+        normalized = normalized[len("atomics/"):]
+    if stated != normalized:
         return [f"canonical_path mismatch: stated '{stated}' vs. actual '{rel}'"]
     return []
 
@@ -250,8 +253,8 @@ def scan_dir(root: str, verbose: bool) -> tuple[int, int, int, int, int]:
 
 def main():
     parser = argparse.ArgumentParser(description="Validate YAML operative front matter")
-    parser.add_argument("--dir", default="skill/references",
-                        help="Directory to scan (default: skill/references)")
+    parser.add_argument("--dir", default="atomics/skill/references",
+                        help="Directory to scan (default: atomics/skill/references)")
     parser.add_argument("--verbose", action="store_true",
                         help="Print OK lines")
     args = parser.parse_args()

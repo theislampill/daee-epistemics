@@ -129,7 +129,7 @@
   "canonical_source_root": "atomics/skill",
   "compiler_version": "0.3.0",
   "extra_inputs": {
-    "atomics/skill/SKILL.md": "6630997ba20d82f70e43185151c12ad81aab701c01df089dd6b04f333969e4a8",
+    "atomics/skill/SKILL.md": "64760c090de79d1062d92d8d4cf9fa35b9d79eb345a58f9a9ed6fa08b21c85d9",
     "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "3215c40d2135d355252b1eaa97d9c6f85af17843c4c29677b6d1c480492e973c",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
     "atomics/skill/references/diagnostics/operative-contract.schema.json": "e3cc96da5ba6d51fbe31fdf36eeb5699ea43da8d0340790f2ca709611c3a18de"
@@ -531,7 +531,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "559c2495f43404c12c0c325164350bc232c7283f1d2013227dfb46a23e41d460"
+      "source_sha256": "055bfd922f0cd155c555de132dacbbf2375145ba81f7b604f98730ec3899d954"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -539,7 +539,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "4cfe838708d635d6a1353e4b174f117b716c6a4e3f7f33b903862a2e2dc52ac8"
+      "source_sha256": "d1b33cbbc51f2d66daab05291fc927bb50a47999d2129de5205708f87febd89d"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",

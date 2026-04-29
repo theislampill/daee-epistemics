@@ -682,22 +682,56 @@ claim being assessed
 
 Default mode does not print the full ledger, IR, or every door label. It must not stop after the first good move if the original input already contains another eligible live door. It should continue the next eligible bounded pass, or mark HOLD, STOP, or PARTIAL under the refreshed post-render gate.
 
+**Default mode — Layer A light surface (permitted):**
+Layer A governs in every mode. The doctor uses the full chart before treating; the doctor
+does not recite the full chart to the patient, nor treats blindly without one. In default
+mode, a compact Layer A surface is permitted and often useful:
+- A brief "Diagnostic Reading" or "What kind of argument this is" opener.
+- The hidden criterion, upstream burden, or tribunal installation named concisely.
+- "What is being addressed first" and "what is held" briefly named when the user needs
+  to understand why the answer is bounded.
+- The governing foreign premise or concealment mode, when naming it changes what the
+  interlocutor can hear.
+
+This compact Layer A light surface is not the same as the full Layer A audit machinery.
+
 **Default mode must not print:**
 - The `[Diagnostic IR]` code-fenced block or any `## Diagnostic IR` section header.
+- A full `[Case State]` block with all IR fields populated.
 - A Load Ledger or bundle resolution table.
 - A Render Permission Check or source-basis printout.
 - The full grim-reaper procedural template or any code-fenced IR listing.
 
-These belong to `:audit` only. **Discipline is universal; printout is mode-specific.**
+These belong to `:dsl` (compact) or `:audit` (full). **Discipline is universal; printout
+is mode-specific. Full recursion in every mode; full ledger only in audit.**
 The grim-reaper discipline — IR formation, recursive traversal, post-render gate,
 STOP / HOLD / RECURSE / PARTIAL — applies in every mode. The grim-reaper printout —
-IR block, ledger, source-basis table, routing gate section — belongs to `:audit`.
+IR block, full Case State, ledger, source-basis table, routing gate section — belongs
+to `:dsl` or `:audit`. Do not implement `:audit` as the only mode that actually recurses;
+implement `:audit` as the only mode that exposes the full recursion ledger.
 
-In default mode, when the post-render gate recursion decision materially governs the
-answer, a single compact governance sentence (e.g., "Recursion decision: RECURSE —
-next pass: [X]") is permitted at the close. That sentence is the only permissible
-surface of the post-render gate in default mode. It must not be accompanied by a
-visible IR dump, load ledger, or full code-fenced schema block.
+**Default mode recursion shape (visible through section progression):**
+The traversal must be visible through how the response is structured, not through printed
+gate machinery. The response should progress through live doors before final synthesis:
+
+```text
+bounded move
+→ state refresh: what cleared
+→ what remains live
+→ next eligible door
+→ decision: STOP / HOLD / RECURSE / PARTIAL
+→ next bounded move (if RECURSE or PARTIAL and eligible)
+```
+
+This progression may appear as prose sections with short readable headers
+(e.g., "Diagnostic Reading", "Upstream Burden", "First-Order Response",
+"What Remains"). It must not appear as a code-fenced IR block, Load Ledger,
+or full Case State dump.
+
+When the post-render gate recursion decision materially governs the answer, a single
+compact governance sentence (e.g., "Recursion decision: RECURSE — next pass: [X]")
+is permitted at the close. It must not be accompanied by a visible IR dump, load
+ledger, or full code-fenced schema block.
 
 Follow-up prompts such as "continue" resume from the previous state-refresh boundary. They do not restart as unrelated answers and do not merely add arguments; they continue the next eligible live door or explain why remaining material is HOLD, STOP, or PARTIAL governed.
 

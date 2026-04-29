@@ -1,6 +1,87 @@
 # Changelog
 
+## [v0.3.1.0] - 2026-04-28
+
+v0.3.1.0 is the render-mode governance patch release. It fixes a regression in which the default
+`/daee-epistemics` invocation was emitting full `[Diagnostic IR]` code-fenced blocks and `[Case State]`
+machinery — audit-mode behavior — in ordinary prose responses. It also adds four runtime metadata
+files that were declared in `RUNTIME_METADATA_COPIES` but absent from the v0.3.0.0 package.
+
+### Fixed
+
+- Default `/daee-epistemics` no longer emits `## Diagnostic IR`, full `[Case State]`, `Load Ledger`,
+  or `Render Permission Check` blocks in public responses regardless of case complexity.
+- Default `/daee-epistemics` recursion shape is now visible through section progression, not printed
+  gate machinery.
+- Stale Level 2 "Use when" rule removed: plain `/daee-epistemics` no longer triggers Level 2
+  lab-report format solely because the case has multiple live burdens.
+- `check_render_modes.py` rewritten to enforce all render-mode invariants, including:
+  `"full recursion in every mode"`, `"full ledger only in audit"`, `"compact Layer A"`,
+  `"gating condition"`, and forbidden stale Level 2 mappings.
+- `check_frontmatter.py` now scans `atomics/skill/references` (canonical source) and correctly
+  strips the `atomics/` prefix when validating `canonical_path`.
+- `check_coverage.py` and `check_framework_pipeline.py` now target `atomics/skill/references`.
+
+### Added
+
+- Core render invariant established in three canonical source files: **"Full recursion in every mode;
+  full ledger only in audit."**
+- Default mode Layer A light surface: compact items that may appear in prose responses defined
+  (Discourse Orientation, matched module IDs, next eligible door, recursion decision, bounded move
+  label, and compact State Refresh).
+- Default mode recursion shape: bounded move → state refresh (what cleared / what remains / next
+  door / decision / next move if eligible) — visible through section progression, not ledger print.
+- Distinction between grim-reaper discipline (universal across all modes) and grim-reaper printout
+  (`:audit` only).
+- Per-mode render table and named invariant block in `diagnostic-ir.md` and
+  `diagnostic-render-contract.md`.
+- Four runtime metadata copies now present in compiled package (were declared in
+  `RUNTIME_METADATA_COPIES` but missing from v0.3.0.0 artifact):
+  `module-catalogue.json`, `diagnostic-ir.schema.json`, `operative-contract.schema.json`,
+  `operative-contracts.md`.
+- `docs/source-vs-runtime-layout.md` documents the four runtime metadata copies and their purpose.
+
+### Changed
+
+- `atomics/skill/SKILL.md`: expanded render-mode policy with Layer A light surface section,
+  default mode must-not list, and named invariant.
+- `atomics/skill/references/diagnostics/diagnostic-ir.md`: expanded Render-Mode Policy section
+  with per-mode table, default prohibition list, and compact Layer A permitted items.
+- `atomics/skill/references/rubrics/diagnostic-render-contract.md`: Level 1 "Use when" no longer
+  gated on case complexity; Level 2 now requires `:dsl` invocation or explicit request.
+
+### Package
+
+| Field | Value |
+|-------|-------|
+| Filename | `daee-epistemics-v0.3.1.0.skill.zip` |
+| SHA256 | `c1f7c90039a9219fb2a1c79a8020705b6459d00946c7f1462196a3b2f55ade8c` |
+| Entries | 19 |
+| Size | 432,582 bytes |
+| Archive root | `SKILL.md`, `compiled-module-map.json`, `build-manifest.json`, `references/` |
+
+### Validation
+
+- `python tools/build_compiled_runtime.py` - PASS
+- `python tools/check_compiled_runtime_freshness.py` - PASS
+- `python tools/check_compiled_module_boundaries.py` - PASS
+- `python tools/check_stub_integrity.py` - PASS
+- `python tools/check_consolidation_call_budget.py` - PASS
+- `python tools/check_routing_parity.py` - PASS
+- `python tools/check_routing_parity.py --strict` - PASS
+- `python tools/check_recursive_traversal_governance.py` - PASS
+- `python tools/check_render_modes.py` - PASS
+- `python tools/check_frontmatter.py` - PASS
+- `python tools/check_coverage.py` - PASS
+- `python tools/check_framework_pipeline.py` - PASS
+
+---
+
 ## [v0.3.0.0] - 2026-04-28
+
+> **Superseded by v0.3.1.0.** The v0.3.0.0 package was missing four runtime metadata files declared
+> in `RUNTIME_METADATA_COPIES` and contained a render-mode regression in which the default
+> `/daee-epistemics` invocation could emit audit-mode machinery. Use v0.3.1.0.
 
 v0.3.0.0 is the compiled runtime architecture release.
 
@@ -85,64 +166,4 @@ v0.2.3.0 is the post-render recursion governance release after v0.2.2.0.
 - `python tools/check_frontmatter.py` - PASS
 - `python tools/check_coverage.py` - PASS
 - `python tools/check_framework_pipeline.py` - PASS
-- `python -m json.tool skill/references/diagnostics/diagnostic-ir.schema.json` - PASS
-- `python -m json.tool skill/references/diagnostics/operative-contract.schema.json` - PASS
-- `python -m json.tool skill/references/diagnostics/module-catalogue.json` - PASS
-
-### Scope Boundaries
-
-- No new bespoke religion-specific owner files were created.
-- No new public coverage claims were added.
-- Diagnostic IR remains the runtime dispatch authority; YAML/front matter and development validators remain validation surfaces, not live routing engines.
-- Canonical source remains atomized under `skill/references/`; future bundles may be added separately without replacing canonical source ownership.
-
-## [v0.2.2.0] - 2026-04-26
-
-v0.2.2.0 is the stabilization, packaging, and validation release after v0.2.1.0.
-
-### Added
-
-- Optional Diagnostic IR fields for structural pattern print, load-bearing node, collapse radius, intervention target, and framing notes.
-- Source-audit-derived structural framing support for DO-15 moral objections, Sufi kashf/tariqah authority, Jewish Torah-completeness, Arya Samaj critique, Advaita pressure, and Buddhist anatta/impermanence pressure.
-- Pattern-first validation notes that route source-audit-derived topics through existing Diagnostic IR owners instead of treating them as new coverage sources.
-- Anti-pattern coverage for argument-bank/citation-dump substitution, tradition-label routing, abuse-doctrine collapse, and pattern theater.
-
-### Changed
-
-- YAML front matter normalized as the single packaged metadata regime for reference files.
-- Desired verification metadata preserved in headers: `verification_status`, `direct_read_verified`, `failure_conditions_present`, `ir_consequences_present`, `minimal_pairs_present`, `hold_release_rules_present`, `compiled_runtime_eligible`, and `operator_pack_eligible`.
-- Runtime metadata expressed through `load_when`, `routing_effects`, `emits`, `blocks`, `companions`, `output_shapes`, `p7_stops_governed`, `layer_constraint`, and `catalogue_registered`.
-- `framework-pipeline.md` normalized under the current metadata regime.
-- Validators aligned with the current operative-contract model, including verification-aware front matter and legacy-blockquote rejection.
-- `contract_version` markers updated to `0.2.2.0` for the current normalized packaged reference surface.
-
-### Fixed
-
-- Stale version prose that treated the completed v0.2.2.0 release set as `v0.2.1.0` or earlier pre-release work.
-- Stale local/scratch path references and repo-facing task-log wording from earlier hygiene passes.
-- Duplicate metadata systems in Markdown reference files.
-- Source-audit framing paths that could otherwise invite prooftext dumping, citation-bank behavior, or tradition-label routing.
-
-### Removed
-
-- Manual coverage-ledger behavior as current authority; the old ledger is retained only as a retired tombstone.
-- Legacy post-frontmatter blockquote metadata blocks such as `> role:`, `> use when:`, `> do not use when:`, and `> output:`.
-- Repo-facing progress/changelog/task prose outside the canonical audit/future-work surfaces.
-
-### Validation
-
-- `python tools/check_frontmatter.py` - PASS
-- `python tools/check_coverage.py` - PASS
-- `python -m json.tool skill/references/diagnostics/diagnostic-ir.schema.json` - PASS
-- `python -m json.tool skill/references/diagnostics/operative-contract.schema.json` - PASS
-- Bundle compiler smoke tests - not applicable; no bundle compiler or packaged context-bundle support exists in this release.
-
-### Scope Boundaries
-
-- No new bespoke religion-specific owner files were created.
-- No new public coverage claims were added from source-audit material.
-- Bespoke religion-specific source-content owners are out of scope for v0.2.2.0 because no authorized primary/source-audit basis is available.
-- Existing family-transfer and Diagnostic IR architecture remains sufficient for structural response handling when the live burden instantiates a governed route.
-- Jewish, Sufism, Hindu Arya Samaj, Advaita, and Buddhist cases may be handled only at the governed structural level unless a dedicated source-content owner is later authorized and added.
-- Canonical source remains atomized files under `skill/references/`.
-- No consolidation or bundle/read-view system is shipped in v0.2.2.0; future packaging bundles may be added separately without replacing canonical source ownership.
+- `python -m json.tool skill/references/diagnostics/diagno

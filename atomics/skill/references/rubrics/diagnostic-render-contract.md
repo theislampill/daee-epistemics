@@ -28,6 +28,17 @@ This file governs how visibly structured the output is. It runs after the output
 
 The old grim-reaper prompt is deprecated as a normal invocation pattern. Its useful discipline is internalized into the skill; use `:dsl` or `:audit` only when visible diagnostic structure is desired.
 
+**Core render invariant:** Full grim-reaper recursion runs in every mode. The level determines how much diagnostic machinery is printed, not whether recursion occurs.
+
+```text
+/daee-epistemics  = full grim-reaper traversal operationally + prose-first Layer B response
+                  + compact Layer A may be lightly surfaced + no full ledger / no full IR dump
+/daee-epistemics:dsl    = full grim-reaper traversal operationally + compact formal Layer A visibility
+/daee-epistemics:audit  = full grim-reaper traversal operationally + full grim-reaper printout / procedural ledger
+```
+
+**Named invariant:** Full recursion in every mode; full ledger only in audit.
+
 ---
 
 ## Relation to Output-Release Rubric
@@ -45,14 +56,44 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 ### Level 1 — Ordinary Bounded Response
 
 **Use when:**
-- The user invokes plain `/daee-epistemics`.
-- The case has one clear governing burden.
-- The user did not request diagnostic trace.
-- No significant held/downstream distinction needs to be exposed.
-- The corrective move is simple.
-- P7 stop discipline favors brevity.
+- The user invokes plain `/daee-epistemics` — regardless of case complexity.
+- The user did not invoke `:dsl` or `:audit`.
+- The user did not explicitly request diagnostic trace, DSL output, audit output, lab-report render, source-basis trace, or pass-review.
 
-**Visible shape:** Ordinary prose. No diagnostic headers required. No template sections visible. Default mode is prose-first, but it still runs state refresh and recursive traversal internally.
+Case complexity alone does not trigger Level 2. A case with multiple live burdens and a plain `/daee-epistemics` invocation still runs at Level 1. The full grim-reaper traversal runs internally; only the visible machinery differs.
+
+**Full recursion still required at Level 1:**
+The grim-reaper traversal runs in every mode. Level determines how much diagnostic machinery is printed, not whether recursion occurs.
+
+```text
+claim being assessed
+→ upstream criterion / tribunal / hidden premise
+→ first-order content
+→ higher-order burden
+→ downstream entailments
+→ adjacent already-present distortions
+→ state refresh
+→ STOP / HOLD / RECURSE / PARTIAL
+```
+
+This traversal must be visible through **section progression**, not printed gate machinery. The response progresses through live doors before final synthesis:
+
+```text
+bounded move
+→ state refresh: what cleared
+→ what remains live
+→ next eligible door
+→ decision
+→ next bounded move (if RECURSE or PARTIAL and eligible)
+```
+
+**Visible shape:** Prose-first. No code-fenced IR. No full diagnostic headers required. A compact Layer A light surface is permitted when useful:
+- A brief "Diagnostic Reading" or "What kind of argument this is" opener.
+- The hidden criterion, upstream burden, or tribunal installation named concisely.
+- "What is being held" briefly named when bounding the answer.
+- The governing foreign premise or concealment mode, when naming it changes what the interlocutor can hear.
+
+This light surface is explicitly not the full Layer A audit machinery.
 
 **Internal requirements still apply even when not visible:**
 - Case-state resolved internally.
@@ -71,14 +112,24 @@ A response may pass the output-release rubric at Level 1 (compact answer needed)
 - Treat state refresh as only waiting for a user response.
 - Close with STOP before the post-render gate has rechecked held material.
 - Stop after the first good move when the original input contains another eligible live door.
-- Print a load ledger or full IR just because the skill was invoked.
+- Print the `[Diagnostic IR]` code-fenced block or any `## Diagnostic IR` section header.
+- Print a full `[Case State]` block with all IR fields populated.
+- Print a Load Ledger or bundle resolution table.
+- Print a Render Permission Check or source-basis printout.
+- Print the full grim-reaper procedural template or any code-fenced IR listing.
+- Apply Level 2 or Level 3 render shape solely because the case has multiple live burdens.
 
 ---
 
 ### Level 2 — Compact Diagnostic / Lab-Report Response
 
-**Use when:**
-- The user invokes `/daee-epistemics:dsl`.
+**Use when (invocation gating required — secondary conditions alone do not trigger Level 2):**
+- The user invokes `/daee-epistemics:dsl`. **This is the gating condition.**
+- OR the user explicitly asks for compact diagnostic output, DSL render, or lab-report format.
+
+Plain `/daee-epistemics` never triggers Level 2, regardless of case complexity, number of live burdens, or whether diagnostic transparency would be useful. If the invocation is plain, Level 1 applies. Full recursion still runs; only the visible machinery differs.
+
+Secondary conditions (apply only when the gating condition above is met):
 - The case has multiple live burdens.
 - Diagnostic transparency materially helps.
 - The answer must show what is governing first.

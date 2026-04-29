@@ -115,25 +115,72 @@ The Full IR Schema below is the **internal state object** for the dispatch gate 
 pipeline. It governs dispatch, routing, and recursion from inside. It is not a printout template
 for the public response.
 
-**Core invariant:** Discipline is universal across all modes. Printout is mode-specific.
-The grim-reaper discipline applies in every mode; the grim-reaper printout belongs to `:audit`.
+**Core invariants:**
+- Discipline is universal across all modes. Printout is mode-specific.
+- The grim-reaper discipline applies in every mode; the grim-reaper printout belongs to `:audit`.
+- Full recursion in every mode; full ledger only in audit.
+
+The grim-reaper traversal runs in full in every mode. The mode determines how much diagnostic
+machinery is printed, not whether recursion occurs:
+
+```text
+/daee-epistemics        = full grim-reaper traversal operationally
+                          prose-first Layer B response
+                          compact Layer A may be lightly surfaced
+                          no full ledger / no full Diagnostic IR dump
+/daee-epistemics:dsl    = full grim-reaper traversal operationally
+                          compact formal Layer A visibility
+/daee-epistemics:audit  = full grim-reaper traversal operationally
+                          full grim-reaper printout / procedural ledger
+```
 
 **Default mode (`/daee-epistemics`):**
-- The `## Diagnostic IR` section header MUST NOT appear in the public response.
-- The code-fenced `[Diagnostic IR]` block MUST NOT appear in the public response.
-- The full IR listing MUST NOT be printed as a visible output section.
-- The IR runs internally. The visible output is clean prose. A compact final-governance
-  sentence naming the recursion decision may appear when it materially governs the answer.
-- "Recursion decision: RECURSE" may appear as a compact governance line — but it is not
-  accompanied by a visible IR dump, load ledger, or full code-fenced schema block.
+The skill operates like a doctor with a full chart: Layer A — the complete diagnostic record
+(IR, upstream map, noetic diagnosis, held routes, restoration plan) — governs the response in
+every mode. The doctor does not recite the full chart to the patient, and does not treat without
+diagnosis. Layer A governs; its full printout is mode-specific.
+
+*Prohibited in default mode — must not appear in the public response:*
+- The `## Diagnostic IR` section header.
+- The code-fenced `[Diagnostic IR]` block.
+- A full `[Case State]` block with all IR fields populated.
+- A Load Ledger or bundle resolution table.
+- A Render Permission Check or full source-basis printout.
+- The full grim-reaper procedural template.
+These items are prohibited regardless of case complexity. Plain `/daee-epistemics` does not become
+Level 2 or Level 3 merely because the case has multiple live burdens.
+
+*Compact Layer A light surface — permitted in default mode:*
+- A brief "Diagnostic Reading" or "What kind of argument this is" opener.
+- The hidden criterion, upstream burden, or tribunal installation named concisely.
+- "What is being held" briefly named when the user needs to understand why the answer is bounded.
+- The governing foreign premise or concealment mode, when naming it changes what the interlocutor
+  can hear.
+The problem is not Layer A being present in default mode. The problem is Layer A leaking in
+verbose DSL/audit form. This compact Layer A light surface is explicitly not the full Layer A
+audit machinery.
+
+*Recursion in default mode:*
+Full grim-reaper traversal runs. The traversal must be visible through section progression, not
+through printed gate machinery. The response progresses through live doors before final synthesis:
+
+```text
+bounded move → state refresh: what cleared → what remains live
+→ next eligible door → decision → next bounded move (if eligible)
+```
+
+"Recursion decision: RECURSE" may appear as a compact governance line at the close. It must not
+be accompanied by a visible IR dump, load ledger, or full code-fenced schema block.
 
 **DSL mode (`/daee-epistemics:dsl`):**
+- Full grim-reaper traversal runs operationally.
 - A compressed Case State block or selected IR fields may be shown using the Level 2
   shape from `diagnostic-render-contract.md`.
 - The full code-fenced `[Diagnostic IR]` schema block does not appear even in DSL mode.
 - Use original module IDs in any visible `matched_modules`; never use omnibus filenames.
 
 **Audit mode (`/daee-epistemics:audit`):**
+- Full grim-reaper traversal runs operationally.
 - The fuller IR governance state may be surfaced as a structured block.
 - Populate only fields with operative content; do not dump the full schema template.
 - Runtime/bundle ledger, when shown, must resolve atomized paths through

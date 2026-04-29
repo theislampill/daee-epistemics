@@ -35,21 +35,25 @@ except ImportError:
 
 
 ROOT = Path.cwd()
-REFERENCES_ROOT = ROOT / "skill" / "references"
-CATALOGUE_PATH = REFERENCES_ROOT / "diagnostics" / "module-catalogue.json"
-MANIFEST_PATH = REFERENCES_ROOT / "diagnostics" / "coverage-scope.yaml"
+# Atomics source is canonical; compiled runtime omits many standalone .md files.
+# Dev-time validators read atomics/skill/references for frontmatter and coverage checks.
+ATOMICS_REFERENCES_ROOT = ROOT / "atomics" / "skill" / "references"
+REFERENCES_ROOT = ATOMICS_REFERENCES_ROOT
+# module-catalogue.json is a runtime metadata copy; read from compiled skill/
+CATALOGUE_PATH = ROOT / "skill" / "references" / "diagnostics" / "module-catalogue.json"
+MANIFEST_PATH = ATOMICS_REFERENCES_ROOT / "diagnostics" / "coverage-scope.yaml"
 TODO_PATH = ROOT / "TODO.md"
 
 PUBLIC_ROUTER_FILES = [
     ROOT / "skill" / "SKILL.md",
     ROOT / "README.md",
-    REFERENCES_ROOT / "case-library" / "INDEX.md",
-    REFERENCES_ROOT / "case-library" / "profiles" / "INDEX.md",
-    REFERENCES_ROOT / "tactics" / "INDEX.md",
-    REFERENCES_ROOT / "techniques" / "INDEX.md",
-    REFERENCES_ROOT / "procedures" / "INDEX.md",
-    REFERENCES_ROOT / "diagnostics" / "INDEX.md",
-    REFERENCES_ROOT / "module-codes.md",
+    ATOMICS_REFERENCES_ROOT / "case-library" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "case-library" / "profiles" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "tactics" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "techniques" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "procedures" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "diagnostics" / "INDEX.md",
+    ATOMICS_REFERENCES_ROOT / "module-codes.md",
 ]
 
 VALID_MODULE_CLASS = {
@@ -188,8 +192,14 @@ def load_frontmatter(errors: list[str]) -> tuple[dict[str, list[tuple[Path, dict
         check_deprecated_fields(errors, path, data)
 
         stated_path = data.get("canonical_path")
-        if stated_path and stated_path != rel(path):
-            add_error(errors, f"{rel(path)}: canonical_path mismatch: {stated_path!r}")
+        if stated_path:
+            # canonical_path uses compiled runtime layout (skill/references/...).
+            # When scanning atomics/skill/references/, strip the atomics/ prefix
+            # from the actual path before comparing.
+            actual_rel = rel(path)
+            normalized_rel = actual_rel[len("atomics/"):] if actual_rel.startswith("atomics/") else actual_rel
+            if stated_path != normalized_rel:
+                add_error(errors, f"{rel(path)}: canonical_path mismatch: {stated_path!r}")
 
         module_id = data.get("id")
         if isinstance(module_id, str):
@@ -236,9 +246,15 @@ def check_catalogue_alignment(
             continue
         catalogue_ids.add(module_id)
         path = ROOT / path_text
+        # Catalogue paths use compiled runtime layout (skill/references/...).
+        # Source files live in atomics/skill/references/...; try that prefix as fallback.
         if not path.exists():
-            add_error(errors, f"catalogue entry {module_id}: path does not exist: {path_text}")
-            continue
+            atomics_path = ROOT / "atomics" / path_text
+            if atomics_path.exists():
+                path = atomics_path
+            else:
+                add_error(errors, f"catalogue entry {module_id}: path does not exist: {path_text}")
+                continue
         owners = by_id.get(module_id, [])
         if len(owners) != 1:
             add_error(errors, f"catalogue entry {module_id}: id appears {len(owners)} time(s) in YAML")
@@ -457,7 +473,7 @@ def main() -> int:
     errors: list[str] = []
 
     if not REFERENCES_ROOT.is_dir():
-        print("ERROR: skill/references not found. Run from repo root.")
+        print("ERROR: atomics/skill/references not found. Run from repo root.")
         return 1
 
     by_id, by_path = load_frontmatter(errors)
@@ -483,13 +499,15 @@ def main() -> int:
     print(f"Public/router files scanned:     {len(PUBLIC_ROUTER_FILES)}")
     print(f"Public code references found:    {len(overclaim_findings)}")
     print("------------------------------------------------------------")
-
+    for e in sorted(errors):
+        print(f"FAIL: {e}")
     if errors:
-        for error in errors:
-            print(f"FAIL: {error}")
-        print("RESULT: FAIL")
-        return 1
-
+        sys.exit(1)
+    print("------------------------------------------------------------")
+    for e in sorted(errors):
+        print(f"FAIL: {e}")
+    if errors:
+        sys.exit(1)
     print("RESULT: PASS")
     return 0
 

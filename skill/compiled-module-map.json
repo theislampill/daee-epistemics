@@ -370,7 +370,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "559c2495f43404c12c0c325164350bc232c7283f1d2013227dfb46a23e41d460"
+      "source_sha256": "055bfd922f0cd155c555de132dacbbf2375145ba81f7b604f98730ec3899d954"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -378,7 +378,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "4cfe838708d635d6a1353e4b174f117b716c6a4e3f7f33b903862a2e2dc52ac8"
+      "source_sha256": "d1b33cbbc51f2d66daab05291fc927bb50a47999d2129de5205708f87febd89d"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",

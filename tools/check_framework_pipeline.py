@@ -25,11 +25,16 @@ except ImportError:
 
 
 ROOT = Path.cwd()
+# framework-pipeline.md is a governance source file in atomics; it is compiled into
+# the runtime-dispatch-gate bundle (not as a standalone runtime file). This dev-time
+# validator reads the canonical atomics source directly.
 SKILL_PATH = ROOT / "skill" / "SKILL.md"
-REFERENCES_ROOT = ROOT / "skill" / "references"
-FRAMEWORK_PATH = REFERENCES_ROOT / "diagnostics" / "framework-pipeline.md"
-CATALOGUE_PATH = REFERENCES_ROOT / "diagnostics" / "module-catalogue.json"
-COVERAGE_PATH = REFERENCES_ROOT / "diagnostics" / "coverage-scope.yaml"
+ATOMICS_REFERENCES_ROOT = ROOT / "atomics" / "skill" / "references"
+REFERENCES_ROOT = ATOMICS_REFERENCES_ROOT
+FRAMEWORK_PATH = ATOMICS_REFERENCES_ROOT / "diagnostics" / "framework-pipeline.md"
+# module-catalogue.json and coverage-scope.yaml are runtime metadata copies; read from skill/
+CATALOGUE_PATH = ROOT / "skill" / "references" / "diagnostics" / "module-catalogue.json"
+COVERAGE_PATH = ATOMICS_REFERENCES_ROOT / "diagnostics" / "coverage-scope.yaml"
 
 VERIFICATION_FLAGS = [
     "direct_read_verified",
@@ -443,8 +448,13 @@ def check_referenced_files(text: str, by_path: dict[Path, dict[str, Any]], catal
             continue
         if data.get("catalogue_registered") is True and module_id in catalogue:
             expected_path = catalogue[module_id].get("path")
-            if expected_path and (ROOT / expected_path).resolve() != path:
-                errors.append(f"{rel(path)}: catalogue path mismatch for id {module_id}")
+            if expected_path:
+                # Catalogue paths use the compiled runtime layout (skill/references/...).
+                # When checking against atomics source, also try the atomics-prefixed path.
+                canonical_resolved = (ROOT / expected_path).resolve()
+                atomics_resolved = (ROOT / "atomics" / expected_path).resolve()
+                if canonical_resolved != path and atomics_resolved != path:
+                    errors.append(f"{rel(path)}: catalogue path mismatch for id {module_id}")
     return referenced
 
 
@@ -520,11 +530,4 @@ def main() -> int:
         print("framework-pipeline: FAIL")
         for error in errors:
             print(f"- {error}")
-        return 1
-
-    print("framework-pipeline: PASS")
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+     

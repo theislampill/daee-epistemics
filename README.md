@@ -240,6 +240,7 @@ python tools/check_consolidation_call_budget.py
 python tools/check_routing_parity.py
 python tools/check_routing_parity.py --strict
 python tools/check_recursive_traversal_governance.py
+python tools/check_render_modes.py
 ```
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
@@ -480,4 +481,4 @@ Claude-first installation flow:
 3. Upload `daee-epistemics.skill`.
 4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
 
-The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.
+The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the uploa

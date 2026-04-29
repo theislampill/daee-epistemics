@@ -18,7 +18,7 @@ Completed historical gaps, coverage passes, routing parity work, and recursive t
 
 No active unresolved release-blocking technical pass is currently assigned.
 
-## Post-v0.3.0.0 Candidates
+## Post-v0.3.1.0 Candidates
 
 ### Live model regression testing
 - Build a small live-run suite that compares actual Claude outputs against the static routing fixtures.
@@ -53,11 +53,10 @@ No active unresolved release-blocking technical pass is currently assigned.
 ## Closed Scope Decisions
 
 ### Bespoke religion-specific source-content owners
-- Status: closed / out of scope for v0.3.0.0.
+- Status: closed / out of scope for v0.3.1.0.
 - Decision: do not add bespoke Jewish, Hindu Arya Samaj, Advaita, Buddhist, Sufi, tariqah-specific, or other tradition-specific source-content owners without a later authorized source-audit task.
 - Existing coverage is structural. The skill may route authority-order, criterion, semantic, category-set, transmission, and register cases through existing owners, but it must not claim bespoke source-content adjudication.
 
-### Generated runtime as source
-- Status: closed / prohibited.
-- Decision: `skill/` is generated runtime output. Edit `atomics/skill/`, rebuild, and run the checker suite.
-- Do not hand-edit generated runtime files, do not treat omnibus bundles as canonical source, and do not use omnibus filenames as `matched_modules`.
+### Sufism-related source-content adjudication
+- Status: closed / out of scope. No bespoke Sufism, tariqah-authority, or contested-practices source-content owner is authorized.
+- Cases involving Sufism-contested-practices or Sufism-tariqah-authority-claims may route through existing family-transfer and structural patter
