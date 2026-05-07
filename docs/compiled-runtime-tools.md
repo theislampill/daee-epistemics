@@ -61,7 +61,7 @@ same checker. This is schema-adjacent/custom validation rather than a `jsonschem
 it checks schema-like fields plus catalogue membership, compiled-module-map resolution,
 source-basis coverage, ghost-load rejection, and post-render decision consistency.
 Future schema changes must be mirrored in `schema_errors()` and the embedded bad samples.
-The checker discovers `smokes/runtime-grounding-v5/*/ir.json` sidecars by default and reports
+The checker discovers `smokes/runtime-grounding-v*/<fixture>/ir.json` sidecars by default and reports
 separate counts for embedded bad samples, valid fixtures, expected-invalid fixtures, smoke
 sidecars, and ignored non-IR JSON.
 
@@ -69,6 +69,10 @@ Smoke artifact evidence is checked by `tools/check_smoke_artifacts.py`. In addit
 depth, bounded-completeness, contamination, and provenance checks, it compares smoke package
 filename/SHA256 provenance against `docs/release-artifacts.md` and rejects unmarked package-hash
 drift. Historical regression smokes must be explicitly marked as such.
+`tools/check_smoke_artifacts.py --require-current-release-smokes` is a stricter release-promotion
+check: it requires at least one hard and one bounded current-release PASS smoke with matching
+RC filename/SHA and `ir.json`. Do not wire that flag into CI unless a current-release smoke suite
+exists and the command passes.
 
 Encoding hygiene is checked by `tools/check_encoding_hygiene.py`. It scans current docs and
 `smokes/runtime-grounding-v5/` for common mojibake and visible BOM residue.

@@ -34,7 +34,9 @@ Historical release docs and older rc archives are not current smoke inputs unles
 explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-RC00005-v0.3.1.0.skill.zip`. That archive already is the skill payload:
+`build/daee-epistemics-v0.3.1.0.skill.zip`. The internal RC evidence package
+`build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built from this source
+state. The archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
 If a host expects a `.skill` upload, rename the checked `.skill.zip` payload to
 `daee-epistemics.skill`; do not zip the repository root or the top-level `skill/` directory.
@@ -104,11 +106,52 @@ itself as historical regression evidence.
   `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
   historical regression evidence, not current-release package evidence for SHA256
   `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44`.
+- Current-package smoke evidence for RC00005 / SHA256
+  `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44` is not present unless the
+  smoke suite is regenerated against that package.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
 - `ir.json` smoke sidecars prove typed Diagnostic IR/source_basis integrity for the same fixture.
 - Neither Markdown smoke artifacts nor `ir.json` sidecars prove independent live host replay unless a
   future live-runner is implemented.
+
+## Current-Release Smoke Evidence
+
+- `runtime-grounding-v5` is historical regression evidence unless regenerated against the current
+  RC package.
+- `runtime-grounding-v6`, if added, is reserved for current-release evidence.
+- Current-release smoke evidence requires package filename/SHA match against
+  `docs/release-artifacts.md`.
+- Current-release smoke evidence requires both markers:
+
+```text
+release-artifact relation: current-release
+current-release evidence: yes
+```
+
+- Current-release smoke evidence requires `ir.json` sidecars for every current-release fixture.
+- Historical smokes remain useful regression evidence but do not prove the current package.
+- `tools/check_smoke_artifacts.py` validates package/smoke provenance consistency.
+- `tools/check_smoke_artifacts.py --require-current-release-smokes` is the stricter release check:
+  it requires at least one hard current-release PASS smoke and at least one bounded current-release
+  PASS smoke, each with matching package provenance and `ir.json`.
+- The strict flag is a release-promotion check in this source state. It is expected to fail until a
+  truthfully regenerated current-release smoke suite exists, so it is not wired into mandatory CI.
+- Neither historical nor current smoke artifacts independently prove live-host replay unless a future
+  live-runner is implemented.
+
+## How to Promote Historical Smokes to Current-Package Evidence
+
+1. Build RC00005 with `package.ps1` and create/copy the public asset
+   `build/daee-epistemics-v0.3.1.0.skill.zip`.
+2. Run the smoke prompts against that package.
+3. Replace trace/verdict provenance with the public release asset filename and SHA.
+4. Set `release-artifact relation: current-release`.
+5. Set `current-release evidence: yes`.
+6. Ensure `ir.json` sidecars exist for every promoted current-release smoke fixture.
+7. Re-run `python tools/check_smoke_artifacts.py`.
+8. Re-run `python tools/check_smoke_artifacts.py --require-current-release-smokes`.
+9. Re-run `python tools/check_ir_instance_integrity.py`.
 
 ## Proof Boundary
 
@@ -127,8 +170,8 @@ Structured Diagnostic IR fixtures live under `tests/ir-fixtures/`. Positive fixt
 schema-adjacent/custom rather than a `jsonschema` runtime; future schema changes must be mirrored in
 `schema_errors()` and embedded bad samples. The checker covers schema enums and
 required/conditional fields, then adds catalogue, compiled-module-map, source-basis, ghost-load, and
-post-render decision checks. It discovers `smokes/runtime-grounding-v5/<fixture>/ir.json` sidecars by
-default and treats them as expected-valid.
+post-render decision checks. It discovers `smokes/runtime-grounding-v*/<fixture>/ir.json` sidecars
+by default and treats them as expected-valid.
 
 Current committed smoke sidecars exist for:
 

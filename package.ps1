@@ -40,7 +40,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "build-manifest.json"))) 
 }
 
 if (-not ($OutputName.EndsWith(".skill.zip", [System.StringComparison]::OrdinalIgnoreCase))) {
-    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-RC00005-v0.3.1.0.skill.zip. If a host expects .skill, rename the checked .skill.zip payload after packaging; do not re-zip the repo root."
+    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.3.1.0.skill.zip. If a host expects .skill, rename the checked .skill.zip payload after packaging; do not re-zip the repo root."
 }
 
 $Wsl = Get-Command wsl -ErrorAction SilentlyContinue

@@ -9,7 +9,7 @@ resolution, source_basis coverage, ghost-load rejection, and post-render
 decision consistency. It validates any IR fixture/artifact passed by --file or
 discovered under --root, and treats files under tests/ir-fixtures/invalid/ as
 expected-invalid regression fixtures. Smoke sidecars named
-smokes/runtime-grounding-v5/*/ir.json are expected-valid by default.
+smokes/runtime-grounding-v*/<fixture>/ir.json are expected-valid by default.
 """
 
 from __future__ import annotations
@@ -435,10 +435,14 @@ def expected_invalid_fixture(path: Path, root: Path) -> bool:
 
 def smoke_sidecar(path: Path, root: Path) -> bool:
     try:
-        relative = path.resolve().relative_to((root / "smokes/runtime-grounding-v5").resolve())
+        relative = path.resolve().relative_to((root / "smokes").resolve())
     except ValueError:
         return False
-    return len(relative.parts) == 2 and relative.name == "ir.json"
+    return (
+        len(relative.parts) == 3
+        and re.fullmatch(r"runtime-grounding-v\d+", relative.parts[0]) is not None
+        and relative.name == "ir.json"
+    )
 
 
 def valid_fixture(path: Path, root: Path) -> bool:
@@ -459,7 +463,7 @@ def main(argv: list[str] | None = None) -> int:
         dest="include_smoke_sidecars",
         action="store_true",
         default=True,
-        help="Include smokes/runtime-grounding-v5/*/ir.json sidecars when scanning defaults.",
+        help="Include smokes/runtime-grounding-v*/<fixture>/ir.json sidecars when scanning defaults.",
     )
     parser.add_argument(
         "--no-include-smoke-sidecars",
@@ -496,9 +500,9 @@ def main(argv: list[str] | None = None) -> int:
         default_root = root / "tests/ir-fixtures"
         paths.extend(iter_json_files(default_root))
         if args.include_smoke_sidecars:
-            smoke_root = root / "smokes/runtime-grounding-v5"
+            smoke_root = root / "smokes"
             if smoke_root.exists():
-                paths.extend(sorted(smoke_root.glob("*/ir.json")))
+                paths.extend(sorted(smoke_root.glob("runtime-grounding-v*/*/ir.json")))
 
     if not args.samples_only:
         for path in paths:

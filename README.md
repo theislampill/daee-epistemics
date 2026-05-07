@@ -494,8 +494,10 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 
 ## Install / Package (Claude-First)
 
-The canonical user-facing upload name is `daee-epistemics.skill`. The canonical local RC build
-filename is `build/daee-epistemics-RC00005-v0.3.1.0.skill.zip`.
+The canonical user-facing upload name is `daee-epistemics.skill`. The public GitHub Release asset
+filename is `build/daee-epistemics-v0.3.1.0.skill.zip`. The internal RC evidence package
+`build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built from this source
+state.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. If a host expects `.skill`, rename that checked `.skill.zip` payload to
 `daee-epistemics.skill`; do not re-zip it.
@@ -511,7 +513,7 @@ itself.
 Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-RC00005-v0.3.1.0.skill.zip
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.1.0.skill.zip
 ```
 
 Smoke tests should use the latest explicitly named rc package and hash from the current run.
@@ -520,6 +522,10 @@ artifact suite is committed under `smokes/runtime-grounding-v5/` as regression e
 live runs may regenerate it, but the checker defaults to that repo-local root.
 `tools/check_smoke_artifacts.py` also compares smoke package provenance against
 `docs/release-artifacts.md` and rejects unmarked package-hash drift.
+When a current-release smoke suite is truthfully regenerated, run
+`python tools/check_smoke_artifacts.py --require-current-release-smokes` as a release-promotion
+check. In this source state, the committed `runtime-grounding-v5` suite is historical regression
+evidence, so the strict flag is expected to fail until current-release smokes exist.
 Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
 
 For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.

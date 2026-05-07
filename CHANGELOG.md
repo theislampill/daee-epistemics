@@ -34,6 +34,10 @@
   adding encoding hygiene checks, clarifying binary archive availability, preserving the
   schema-adjacent IR validation boundary, and adding typed smoke IR sidecars for representative
   hard and bounded fixtures.
+- Clarified historical v0.3.1.0 RC00001 package evidence versus current RC00005 local build
+  evidence, documented that committed `runtime-grounding-v5` smokes are historical regression
+  evidence unless regenerated, and added `tools/check_smoke_artifacts.py --require-current-release-smokes`
+  as the stricter current-package smoke promotion gate.
 - Clarified package naming: PowerShell packaging emits the canonical RC `.skill.zip`; upload hosts
   that require `.skill` should receive the same checked payload renamed, not a re-zipped repo root.
 - Added post-readiness audit hardening for source-basis schema comments, IR fixture integrity,
