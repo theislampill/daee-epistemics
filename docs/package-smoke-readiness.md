@@ -119,7 +119,11 @@ itself as historical regression evidence.
 
 - `runtime-grounding-v5` is historical regression evidence unless regenerated against the current
   RC package.
-- `runtime-grounding-v6`, if added, is reserved for current-release evidence.
+- `runtime-grounding-v6` or later is the preferred place for regenerated current-package smoke
+  evidence; `runtime-grounding-v6`, if added, is reserved for current-release evidence.
+- Current v0.3.1.0 source state: current-release smoke suite is absent, so
+  `python tools/check_smoke_artifacts.py --require-current-release-smokes` is expected to fail until
+  package-bound current-release smoke artifacts are truthfully regenerated.
 - Current-release smoke evidence requires package filename/SHA match against
   `docs/release-artifacts.md`.
 - Current-release smoke evidence requires both markers:
@@ -172,6 +176,9 @@ schema-adjacent/custom rather than a `jsonschema` runtime; future schema changes
 required/conditional fields, then adds catalogue, compiled-module-map, source-basis, ghost-load, and
 post-render decision checks. It discovers `smokes/runtime-grounding-v*/<fixture>/ir.json` sidecars
 by default and treats them as expected-valid.
+
+The historical `runtime-grounding-v5` suite has representative sidecar coverage only. Current-release
+smoke suites, starting with `runtime-grounding-v6` if added, require `ir.json` for every fixture.
 
 Current committed smoke sidecars exist for:
 

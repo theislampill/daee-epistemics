@@ -10,6 +10,18 @@
 
 ## [Unreleased] - current-canon metacompliance convergence
 
+### Post-v0.3.1.0 evidence track
+
+- v0.3.1.0 is released. New evidence-chain improvements after the release target v0.3.1.1 or
+  v0.3.2.0, except for factual corrections to release-artifact wording, evidence status, or
+  evidence links.
+- Verified the public `v0.3.1.0` GitHub Release asset surface for
+  `daee-epistemics-v0.3.1.0.skill.zip`, while preserving the boundary that `runtime-grounding-v5`
+  smokes are historical regression evidence unless regenerated against the current package.
+- Kept current-package smoke replay absent in this source state; the
+  `--require-current-release-smokes` gate remains the release-promotion path for v0.3.1.1 or
+  v0.3.2.0 current-package smoke evidence.
+
 ### Changed
 
 - Added `tools/check_metacompliance_current_canon.py` to guard the current docs, root control plane,
