@@ -12,6 +12,7 @@ import argparse
 import re
 import sys
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -19,6 +20,23 @@ ROOT = Path(__file__).resolve().parents[1]
 
 HARD_MIN_BYTES = 20_000
 DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
+DEFAULT_RELEASE_ARTIFACTS = ROOT / "docs" / "release-artifacts.md"
+PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill\.zip$")
+HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
+RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
+RELEASE_SHA_ROW_RE = re.compile(r"(?im)^\|\s*SHA256\s*\|\s*([^|\r\n]+?)\s*\|")
+SMOKE_FILENAME_LINE_RE = re.compile(r"(?im)^\s*-\s*package filename\s*:\s*(.+?)\s*$")
+SMOKE_SHA_LINE_RE = re.compile(r"(?im)^\s*-\s*package SHA256\s*:\s*(.+?)\s*$")
+CURRENT_PACKAGE_SHA_LINE_RE = re.compile(r"(?im)^\s*-\s*current source package SHA256\s*:\s*(.+?)\s*$")
+CURRENT_PACKAGE_FILENAME_LINE_RE = re.compile(r"(?im)^\s*-\s*current source package filename\s*:\s*(.+?)\s*$")
+HISTORICAL_MARKER_RE = re.compile(
+    r"(?im)^\s*-\s*(?:package provenance class|release-artifact relation)\s*:\s*"
+    r"historical-regression\s*$|^\s*-\s*current-release evidence\s*:\s*no\s*$"
+)
+CURRENT_MARKER_RE = re.compile(
+    r"(?im)^\s*-\s*(?:package provenance class|release-artifact relation)\s*:\s*"
+    r"current-release\s*$|^\s*-\s*current-release evidence\s*:\s*yes\s*$"
+)
 
 ORIGINALLY_HARD_INTENDED = {
     "04-comparative-neutral-flattening-bait",
@@ -180,6 +198,62 @@ BAD_SAMPLES = {
         "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "missing package SHA256 provenance",
     },
+    "malformed_package_hash": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: not-a-hash\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "malformed package SHA256 provenance",
+    },
+    "current_release_hash_mismatch_without_marker": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "package SHA256 differs from release artifact without historical-regression marker",
+    },
+    "historical_hash_without_classification": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "package SHA256 differs from release artifact without historical-regression marker",
+    },
+    "package_filename_mismatch": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: wrong-RC.skill.zip\n- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "package filename differs from release artifact",
+    },
+    "ambiguous_current_and_historical_claims": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "ambiguous current-release and historical-regression provenance",
+    },
+    "current_release_claim_with_mismatching_sha": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "current-release provenance carries non-current package SHA256",
+    },
+    "historical_hash_with_marker_allowed": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip\n- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected_pass": True,
+    },
     "missing_live_run_classification": {
         "fixture": "01-trinitarian-claim-cluster",
         "input": "Trinity hard smoke.",
@@ -215,8 +289,64 @@ BAD_SAMPLES = {
 }
 
 
+@dataclass(frozen=True)
+class ReleaseArtifact:
+    filename: str
+    sha256: str
+
+
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.exists() else ""
+
+
+def clean_field_value(value: str) -> str:
+    return value.strip().strip("|").strip().strip("`").strip()
+
+
+def extract_hash(value: str) -> str | None:
+    match = HASH_64_RE.search(value)
+    return match.group(0).upper() if match else None
+
+
+def parse_release_artifacts_text(text: str) -> tuple[ReleaseArtifact | None, list[str]]:
+    errors: list[str] = []
+    filename_match = RELEASE_FILENAME_ROW_RE.search(text)
+    sha_match = RELEASE_SHA_ROW_RE.search(text)
+    filename = clean_field_value(filename_match.group(1)) if filename_match else ""
+    if not filename:
+        errors.append("release artifact evidence lacks package filename")
+    elif not PACKAGE_FILENAME_CANONICAL_RE.match(filename):
+        errors.append(f"release artifact package filename is malformed: {filename}")
+
+    raw_sha = clean_field_value(sha_match.group(1)) if sha_match else ""
+    sha = extract_hash(raw_sha) if raw_sha else None
+    if not raw_sha:
+        errors.append("release artifact evidence lacks current package SHA256")
+    elif not sha:
+        errors.append("release artifact evidence has malformed current package SHA256")
+    if errors:
+        return None, errors
+    return ReleaseArtifact(filename=filename, sha256=sha or ""), []
+
+
+def parse_release_artifacts(path: Path) -> tuple[ReleaseArtifact | None, list[str]]:
+    if not path.exists():
+        return None, [f"release artifact evidence file is absent: {path}"]
+    return parse_release_artifacts_text(read(path))
+
+
+def smoke_package_filename(text: str) -> str | None:
+    match = SMOKE_FILENAME_LINE_RE.search(text)
+    return clean_field_value(match.group(1)) if match else None
+
+
+def smoke_package_sha(text: str) -> tuple[str | None, bool]:
+    match = SMOKE_SHA_LINE_RE.search(text)
+    if not match:
+        return None, False
+    value = clean_field_value(match.group(1))
+    sha = extract_hash(value)
+    return sha, bool(sha)
 
 
 def fixture_class(verdict: str) -> str:
@@ -304,16 +434,70 @@ def trace_errors(output_text: str, trace_text: str) -> list[str]:
     return errors
 
 
-def provenance_errors(trace_text: str, verdict_text: str) -> list[str]:
+def release_artifact_consistency_errors(
+    trace_text: str,
+    verdict_text: str,
+    release_artifact: ReleaseArtifact | None,
+) -> list[str]:
+    if release_artifact is None:
+        return []
+    errors: list[str] = []
+    provenance_text = f"{trace_text}\n{verdict_text}"
+    filename = smoke_package_filename(provenance_text)
+    sha, sha_valid = smoke_package_sha(provenance_text)
+    historical = bool(HISTORICAL_MARKER_RE.search(provenance_text))
+    current = bool(CURRENT_MARKER_RE.search(provenance_text))
+
+    if not filename:
+        errors.append("missing package filename provenance")
+    elif filename != release_artifact.filename and not historical:
+        errors.append("package filename differs from release artifact")
+    if sha is None:
+        if SMOKE_SHA_LINE_RE.search(provenance_text):
+            errors.append("malformed package SHA256 provenance")
+    elif not sha_valid:
+        errors.append("malformed package SHA256 provenance")
+
+    if historical and current:
+        errors.append("ambiguous current-release and historical-regression provenance")
+    if current and sha and sha != release_artifact.sha256:
+        errors.append("current-release provenance carries non-current package SHA256")
+    if sha and sha != release_artifact.sha256 and not historical:
+        errors.append("package SHA256 differs from release artifact without historical-regression marker")
+    if historical:
+        current_source_filename_match = CURRENT_PACKAGE_FILENAME_LINE_RE.search(provenance_text)
+        current_source_filename = clean_field_value(current_source_filename_match.group(1)) if current_source_filename_match else None
+        if not current_source_filename:
+            errors.append("historical smoke lacks current source package filename")
+        elif current_source_filename != release_artifact.filename:
+            errors.append("historical smoke current source package filename differs from release artifact")
+        current_source_match = CURRENT_PACKAGE_SHA_LINE_RE.search(provenance_text)
+        current_source_hash = extract_hash(clean_field_value(current_source_match.group(1))) if current_source_match else None
+        if not current_source_hash:
+            errors.append("historical smoke lacks current source package SHA256")
+        if current_source_hash and current_source_hash != release_artifact.sha256:
+            errors.append("historical smoke current source package SHA256 differs from release artifact")
+    return errors
+
+
+def provenance_errors(
+    trace_text: str,
+    verdict_text: str,
+    release_artifact: ReleaseArtifact | None = None,
+) -> list[str]:
     errors: list[str] = []
     provenance = f"{trace_text}\n{verdict_text}".lower()
     for field in PROVENANCE_FIELDS:
         if field not in provenance:
             errors.append(f"missing provenance field: {field}")
     if not PACKAGE_HASH_RE.search(f"{trace_text}\n{verdict_text}"):
-        errors.append("missing package SHA256 provenance")
+        if SMOKE_SHA_LINE_RE.search(f"{trace_text}\n{verdict_text}"):
+            errors.append("malformed package SHA256 provenance")
+        else:
+            errors.append("missing package SHA256 provenance")
     if not LIVE_RUN_RE.search(f"{trace_text}\n{verdict_text}"):
         errors.append("missing live-run classification provenance")
+    errors.extend(release_artifact_consistency_errors(trace_text, verdict_text, release_artifact))
     return errors
 
 
@@ -334,6 +518,7 @@ def validate_artifact(
     verdict_text: str,
     trace_text: str = "",
     global_fixtures: dict[str, set[str]] | None = None,
+    release_artifact: ReleaseArtifact | None = None,
 ) -> list[str]:
     errors: list[str] = []
     cls = fixture_class(verdict_text)
@@ -358,7 +543,7 @@ def validate_artifact(
     errors.extend(bounded_completeness_errors(fixture_name, verdict_text))
     errors.extend(bounded_output_support_errors(output_text, verdict_text))
     errors.extend(trace_errors(output_text, trace_text))
-    errors.extend(provenance_errors(trace_text, verdict_text))
+    errors.extend(provenance_errors(trace_text, verdict_text, release_artifact))
 
     if global_fixtures:
         repeated = [
@@ -371,7 +556,7 @@ def validate_artifact(
     return errors
 
 
-def validate_root(root: Path) -> list[str]:
+def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -> list[str]:
     errors: list[str] = []
     fixture_dirs = sorted(path for path in root.iterdir() if path.is_dir()) if root.exists() else []
     if not root.exists():
@@ -405,12 +590,13 @@ def validate_root(root: Path) -> list[str]:
             verdict_text,
             trace_text,
             all_paragraphs,
+            release_artifact,
         ):
             errors.append(f"{fixture_name}: {error}")
     return errors
 
 
-def validate_bad_samples() -> list[str]:
+def validate_bad_samples(release_artifact: ReleaseArtifact) -> list[str]:
     errors: list[str] = []
     for name, sample in BAD_SAMPLES.items():
         found = validate_artifact(
@@ -419,11 +605,23 @@ def validate_bad_samples() -> list[str]:
             sample["output"],
             sample["verdict"],
             sample.get("trace", ""),
+            release_artifact=release_artifact,
         )
+        if sample.get("expected_pass"):
+            if found:
+                errors.append(f"historical-allowed sample {name!r} was rejected; got {found!r}")
+            continue
         if not any(sample["expected"] in item for item in found):
             errors.append(
                 f"bad sample {name!r} was not rejected with {sample['expected']!r}; got {found!r}"
             )
+    missing_doc_release, missing_doc_errors = parse_release_artifacts(ROOT / "docs" / "__missing_release_artifacts__.md")
+    if missing_doc_release is not None or not any("release artifact evidence file is absent" in item for item in missing_doc_errors):
+        errors.append("bad sample missing release-artifacts.md was not rejected")
+    malformed_text = "| Field | Value |\n| --- | --- |\n| Package filename | `daee-epistemics-RC00001-v0.3.1.0.skill.zip` |\n| SHA256 | `not-a-hash` |\n"
+    _, malformed_errors = parse_release_artifacts_text(malformed_text)
+    if not any("malformed current package SHA256" in item for item in malformed_errors):
+        errors.append("bad sample malformed release-artifacts SHA was not rejected")
     return errors
 
 
@@ -442,11 +640,33 @@ def main(argv: list[str]) -> int:
         action="store_true",
         help="Only run embedded bad-sample checks.",
     )
+    parser.add_argument(
+        "--release-artifacts",
+        default=str(DEFAULT_RELEASE_ARTIFACTS),
+        help="Release artifact evidence markdown to compare smoke provenance against.",
+    )
+    parser.add_argument(
+        "--no-release-artifacts",
+        action="store_true",
+        help="Disable release-artifact filename/SHA consistency checks intentionally.",
+    )
     args = parser.parse_args(argv)
 
-    errors = validate_bad_samples()
+    release_artifact = ReleaseArtifact(
+        filename="daee-epistemics-RC00005-v0.3.1.0.skill.zip",
+        sha256="08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44",
+    )
+    release_errors: list[str] = []
+    if not args.no_release_artifacts:
+        release_artifact, release_errors = parse_release_artifacts(Path(args.release_artifacts))
+
+    errors = validate_bad_samples(release_artifact or ReleaseArtifact(
+        filename="daee-epistemics-RC00005-v0.3.1.0.skill.zip",
+        sha256="08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44",
+    ))
+    errors.extend(release_errors)
     if not args.samples_only:
-        errors.extend(validate_root(Path(args.root)))
+        errors.extend(validate_root(Path(args.root), None if args.no_release_artifacts else release_artifact))
 
     if errors:
         print("smoke artifact validation: FAIL")

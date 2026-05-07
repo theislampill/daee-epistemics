@@ -5,6 +5,7 @@ The compiler/checker suite treats `atomics/skill/` as canonical source and `skil
 Run from the repository root:
 
 ```bash
+python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_compiled_runtime_freshness.py
 python tools/check_compiled_module_boundaries.py
@@ -22,6 +23,7 @@ python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
+python tools/check_encoding_hygiene.py
 ```
 
 Operating rules:
@@ -58,5 +60,17 @@ Diagnostic IR instance integrity is checked by `tools/check_ir_instance_integrit
 same checker. This is schema-adjacent/custom validation rather than a `jsonschema` dependency:
 it checks schema-like fields plus catalogue membership, compiled-module-map resolution,
 source-basis coverage, ghost-load rejection, and post-render decision consistency.
+Future schema changes must be mirrored in `schema_errors()` and the embedded bad samples.
+The checker discovers `smokes/runtime-grounding-v5/*/ir.json` sidecars by default and reports
+separate counts for embedded bad samples, valid fixtures, expected-invalid fixtures, smoke
+sidecars, and ignored non-IR JSON.
+
+Smoke artifact evidence is checked by `tools/check_smoke_artifacts.py`. In addition to render-shape,
+depth, bounded-completeness, contamination, and provenance checks, it compares smoke package
+filename/SHA256 provenance against `docs/release-artifacts.md` and rejects unmarked package-hash
+drift. Historical regression smokes must be explicitly marked as such.
+
+Encoding hygiene is checked by `tools/check_encoding_hygiene.py`. It scans current docs and
+`smokes/runtime-grounding-v5/` for common mojibake and visible BOM residue.
 
 The checkers verify generated freshness, section boundary metadata, original module ID preservation, source/YAML/catalogue integrity, modeled file-call budgets, runtime path resolution, and routing-parity fixtures.

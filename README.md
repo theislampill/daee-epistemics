@@ -290,6 +290,7 @@ python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
+python tools/check_encoding_hygiene.py
 ```
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
@@ -494,10 +495,13 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 ## Install / Package (Claude-First)
 
 The canonical user-facing upload name is `daee-epistemics.skill`. The canonical local RC build
-filename is `build/daee-epistemics-RC00001-v0.3.1.0.skill.zip`.
+filename is `build/daee-epistemics-RC00005-v0.3.1.0.skill.zip`.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. If a host expects `.skill`, rename that checked `.skill.zip` payload to
 `daee-epistemics.skill`; do not re-zip it.
+
+Binary skill archives are not committed to this repository. Build locally with `package.ps1` from
+the generated `skill/` root, or use a GitHub Release asset if one is published.
 
 The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and
 `build-manifest.json` directly. Do not zip the whole repo root, and do not produce a bundle whose
@@ -507,13 +511,15 @@ itself.
 Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-RC00001-v0.3.1.0.skill.zip
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-RC00005-v0.3.1.0.skill.zip
 ```
 
 Smoke tests should use the latest explicitly named rc package and hash from the current run.
 Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs. The release smoke
 artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
 live runs may regenerate it, but the checker defaults to that repo-local root.
+`tools/check_smoke_artifacts.py` also compares smoke package provenance against
+`docs/release-artifacts.md` and rejects unmarked package-hash drift.
 Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
 
 For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.

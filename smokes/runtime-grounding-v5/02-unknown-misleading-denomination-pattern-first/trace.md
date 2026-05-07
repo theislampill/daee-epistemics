@@ -1,6 +1,10 @@
-﻿## Provenance
+## Provenance
 - package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
+- release-artifact relation: historical-regression
+- current-release evidence: no
+- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip
+- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
 - prompt: see input.md
@@ -31,9 +35,9 @@
 - atomics/skill/references/diagnostics/routing-precedence.md
 
 ## Owner anchors used
-- routing-precedence.md Â§Rule P-1a
-- foreign-premise-detection.md Â§Step 1
-- V2-reconstituting-reason.md Â§Exit criteria
+- routing-precedence.md §Rule P-1a
+- foreign-premise-detection.md §Step 1
+- V2-reconstituting-reason.md §Exit criteria
 
 ## Causal proof
 - Burden-Cycle 1: pattern-first routing despite unknown or misleading denomination -> pattern-first routing with foreign-premise tribunal detection -> the case is typed by warrant disorder, not identity label.

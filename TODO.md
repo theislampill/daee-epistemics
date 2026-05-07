@@ -24,7 +24,8 @@ No active unresolved release-blocking technical pass is currently assigned.
   `tools/check_ir_instance_integrity.py` and
   `tools/check_diagnostic_ir_catalogue_integrity.py`.
 - Runtime-grounding smoke artifacts are canonical at repo-local
-  `smokes/runtime-grounding-v5/`; release traces/verdicts carry package/hash/run provenance.
+  `smokes/runtime-grounding-v5/`; release traces/verdicts carry package/hash/run provenance, and
+  `tools/check_smoke_artifacts.py` rejects unmarked drift from `docs/release-artifacts.md`.
 - Package naming is split deliberately: `package.ps1` emits a checked local `.skill.zip` RC archive,
   while host uploads that require `.skill` may use the same payload renamed to `daee-epistemics.skill`.
 

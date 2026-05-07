@@ -1,6 +1,10 @@
-﻿## Provenance
+## Provenance
 - package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
+- release-artifact relation: historical-regression
+- current-release evidence: no
+- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip
+- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
 - prompt: see input.md
@@ -32,9 +36,9 @@
 - atomics/skill/references/diagnostics/definition-discipline.md
 
 ## Owner anchors used
-- M9-predication-mode.md Â§Trinity/person-nature minimum
-- do-christian-extensions.md Â§Execution floor, not load floor
-- V12-tamanuc-exhaustion.md Â§Routing note - Trinity overlay
+- M9-predication-mode.md §Trinity/person-nature minimum
+- do-christian-extensions.md §Execution floor, not load floor
+- V12-tamanuc-exhaustion.md §Routing note - Trinity overlay
 
 ## Causal proof
 - Burden-Cycle 1: relative-identity model and predication discipline -> M9 predication repair / definition discipline -> the burden narrowed to the model's counting rule and worship referent.

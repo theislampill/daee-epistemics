@@ -37,4 +37,5 @@ jobs:
           python tools/check_smoke_artifacts.py
           python tools/check_ir_instance_integrity.py
           python tools/check_diagnostic_ir_catalogue_integrity.py
+          python tools/check_encoding_hygiene.py
           git diff --check

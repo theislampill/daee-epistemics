@@ -1,4 +1,4 @@
-﻿## Burden-Cycle 1
+## Burden-Cycle 1
 ### Layer A - Compact DSL/IR header
 - read status: dominant
 - confidence: strong

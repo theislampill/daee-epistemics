@@ -29,6 +29,11 @@
   prompt pointer, timestamp, and live-run classification.
 - Hardened render/release governance so output files remain clean user-facing default render
   artifacts while runtime proof and grading stay in trace/verdict artifacts.
+- Aligned package/smoke provenance policy by binding smoke SHA evidence to
+  `docs/release-artifacts.md`, marking older package smokes as historical regression evidence,
+  adding encoding hygiene checks, clarifying binary archive availability, preserving the
+  schema-adjacent IR validation boundary, and adding typed smoke IR sidecars for representative
+  hard and bounded fixtures.
 - Clarified package naming: PowerShell packaging emits the canonical RC `.skill.zip`; upload hosts
   that require `.skill` should receive the same checked payload renamed, not a re-zipped repo root.
 - Added post-readiness audit hardening for source-basis schema comments, IR fixture integrity,

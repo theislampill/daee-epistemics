@@ -1,0 +1,153 @@
+[
+  {
+    "case_family": "trinitarian-claim-cluster/perfection-criterion",
+    "claim_type": "metaphysical",
+    "claim_level": "meta-ontological",
+    "pattern_profile": "PF-6",
+    "deformation": "perfection tribunal installed over divine unity",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "not-assessed",
+    "p7_stops_active": ["none"],
+    "reason_category": 3,
+    "routing_gate": "deformation-first",
+    "matched_modules": [
+      {"id": "perfection-criterion-usurpation", "module_class": "diagnostic"},
+      {"id": "do-christian-extensions", "module_class": "case-library"}
+    ],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: perfect-love tribunal requires perfection-criterion owner before Christian-extension model release",
+          "source_kind": "module",
+          "module_id": "perfection-criterion-usurpation",
+          "source_ref": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md"
+        },
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: Trinitarian material remains sequenced by Christian-extension burden ordering",
+          "source_kind": "module",
+          "module_id": "do-christian-extensions",
+          "source_ref": "atomics/skill/references/case-library/do-christian-extensions.md"
+        }
+      ]
+    },
+    "restoration_target": "separate divine perfection from an imported demand for eternal internal plurality",
+    "next_move": "release model/predication only after the perfection criterion loses tribunal authority",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "perfect-love tribunal no longer governs divine unity as a neutral criterion",
+      "remaining_live_distortions": "model/predication burden remains live after criterion land",
+      "held_routes_rechecked": ["mystery/source-prestige", "independent lordship / worship-status plurality"],
+      "newly_released_routes": ["model/predication burden"],
+      "next_eligible_pass": "model/predication burden",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  {
+    "case_family": "trinitarian-claim-cluster/model-predication",
+    "claim_type": "metaphysical",
+    "claim_level": "cross-level",
+    "pattern_profile": "PF-6",
+    "deformation": "person, nature, one, three, and is God move across predication senses",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "frame-cleared",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "not-assessed",
+    "p7_stops_active": ["none"],
+    "reason_category": 3,
+    "routing_gate": "deformation-first",
+    "matched_modules": [
+      {"id": "M9-predication-mode", "module_class": "tactic"},
+      {"id": "do-christian-extensions", "module_class": "case-library"}
+    ],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "claim: one-three formulation requires M9 predication discipline before plurality pressure can release",
+          "source_kind": "module",
+          "module_id": "M9-predication-mode",
+          "source_ref": "atomics/skill/references/tactics/M9-predication-mode.md"
+        },
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: Christian-extension sequence holds V12 until worship-status plurality becomes live",
+          "source_kind": "module",
+          "module_id": "do-christian-extensions",
+          "source_ref": "atomics/skill/references/case-library/do-christian-extensions.md"
+        }
+      ]
+    },
+    "restoration_target": "identify what is counted and what bears worship-status before coherence is tested",
+    "what_is_withheld_and_why": "mystery/source-prestige and plurality exhaustion are held until the predication burden lands",
+    "next_move": "release independent lordship / worship-status plurality only if multiple divine referents remain after M9",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "one-three formula can no longer function through silent predication shifts",
+      "remaining_live_distortions": "independent lordship / worship-status plurality remains live if multiple full divine referents bear worship-status",
+      "held_routes_rechecked": ["mystery/source-prestige", "canon authority"],
+      "newly_released_routes": ["independent lordship / worship-status plurality"],
+      "next_eligible_pass": "independent lordship / worship-status plurality",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  {
+    "case_family": "trinitarian-claim-cluster/lordship-plurality",
+    "claim_type": "metaphysical",
+    "claim_level": "meta-ontological",
+    "pattern_profile": "PF-6",
+    "deformation": "full divine worship-status is multiplied while independent lordship is verbally preserved",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "frame-cleared",
+    "recognition_strength": "strong",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 3,
+    "routing_gate": "deformation-first",
+    "matched_modules": [
+      {"id": "V12-tamanuc-exhaustion", "module_class": "technique"},
+      {"id": "do-christian-extensions", "module_class": "case-library"}
+    ],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "claim: independent lordship plurality requires V12 tamanu exhaustion across dependency, equality, joint causation, influence, and unequal-lord alternatives",
+          "source_kind": "module",
+          "module_id": "V12-tamanuc-exhaustion",
+          "source_ref": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md"
+        },
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: Christian-extension owner permits V12 after model/predication pressure has exposed worship-status plurality",
+          "source_kind": "module",
+          "module_id": "do-christian-extensions",
+          "source_ref": "atomics/skill/references/case-library/do-christian-extensions.md"
+        }
+      ]
+    },
+    "restoration_target": "return worship-status and independent lordship to non-multiplied divine order",
+    "next_move": "close the current input unless the user releases source-prestige or mystery as a new burden",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "strong plurality route cannot preserve multiple independent worship-worthy lords",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": ["mystery/source-prestige", "canon authority", "pastoral expansion"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  }
+]

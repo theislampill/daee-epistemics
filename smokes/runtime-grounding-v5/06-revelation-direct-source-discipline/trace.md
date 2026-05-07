@@ -1,6 +1,10 @@
-﻿## Provenance
+## Provenance
 - package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
+- release-artifact relation: historical-regression
+- current-release evidence: no
+- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip
+- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
 - prompt: see input.md
@@ -31,8 +35,8 @@
 - atomics/skill/references/rubrics/diagnostic-render-contract.md
 
 ## Owner anchors used
-- diagnostic-render-contract.md Â§Default source/citation restriction
-- foreign-premise-detection.md Â§secular-humanist moral protest inventory
+- diagnostic-render-contract.md §Default source/citation restriction
+- foreign-premise-detection.md §secular-humanist moral protest inventory
 
 ## Causal proof
 - Burden-Cycle 1: accountability / clear-message burden -> hujjah/accountability correction with direct-source discipline -> the case now turns on receipt, capacity, and response, not on a label.

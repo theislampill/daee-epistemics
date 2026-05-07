@@ -1,6 +1,10 @@
-﻿## Provenance
+## Provenance
 - package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
+- release-artifact relation: historical-regression
+- current-release evidence: no
+- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip
+- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
 - prompt: see input.md
@@ -31,9 +35,9 @@
 - atomics/skill/references/techniques/V2-reconstituting-reason.md
 
 ## Owner anchors used
-- foreign-premise-detection.md Â§Validation Inversion
+- foreign-premise-detection.md §Validation Inversion
 - V10-transmission-content-vetting.md provenance/content/authority sequence
-- V2-reconstituting-reason.md Â§Exit criteria
+- V2-reconstituting-reason.md §Exit criteria
 
 ## Causal proof
 - Burden-Cycle 1: neutral-method tribunal over revelation -> foreign-premise detection / transmission-demotion check -> the case moved from content suspicion to authority-order inspection.

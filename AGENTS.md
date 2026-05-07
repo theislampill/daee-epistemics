@@ -36,12 +36,14 @@ python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
+python tools/check_encoding_hygiene.py
 ```
 
 Before packaging or pushing, run the full applicable checker suite and confirm the generated
 runtime is fresh. The canonical smoke artifact gate is repo-local
 `smokes/runtime-grounding-v5/`; it is committed regression evidence with trace/verdict
-provenance, and `tools/check_smoke_artifacts.py` defaults to that root.
+provenance, and `tools/check_smoke_artifacts.py` defaults to that root and compares package
+filename/SHA evidence against `docs/release-artifacts.md`.
 Package only when explicitly requested.
 
 ## Skill Architecture
@@ -101,7 +103,8 @@ False-compliance guards are executable, not merely prose:
   paragraphs across unrelated outputs must fail the smoke artifact checker.
 - Release smoke artifacts must carry provenance in `trace.md` or `verdict.md`: package filename,
   SHA256, model/host, invocation mode, prompt pointer, timestamp, and live-run versus
-  handcrafted-regression classification.
+  handcrafted-regression classification. SHA mismatches must be explicitly marked as historical
+  regression evidence.
 - `Operation:` lines must begin with the closed operative verbs named in
   `recursive-state-transitions.md`.
 - Non-operative source-status use requires the operative-warrant sentence with the

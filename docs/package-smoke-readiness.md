@@ -29,11 +29,12 @@ build/
 .git/
 ```
 
-Use only the latest package produced by the current run for smoke tests. Historical release docs and
-older rc archives are not current smoke inputs.
+Use only the latest package produced by the current run for new current-release smoke tests.
+Historical release docs and older rc archives are not current smoke inputs unless the artifact is
+explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-RC00001-v0.3.1.0.skill.zip`. That archive already is the skill payload:
+`build/daee-epistemics-RC00005-v0.3.1.0.skill.zip`. That archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
 If a host expects a `.skill` upload, rename the checked `.skill.zip` payload to
 `daee-epistemics.skill`; do not zip the repository root or the top-level `skill/` directory.
@@ -63,6 +64,7 @@ python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
+python tools/check_encoding_hygiene.py
 git diff --check
 ```
 
@@ -90,13 +92,30 @@ verdicts below the depth floor, and originally hard-intended fixtures reclassifi
 burden-completeness audit. Release smoke artifacts must also include provenance in `trace.md` or
 `verdict.md`: package filename, package SHA256, model/host, invocation mode, prompt pointer, run
 timestamp, and live-run versus handcrafted-regression classification.
+`tools/check_smoke_artifacts.py` compares each fixture's package filename and package SHA256 against
+`docs/release-artifacts.md` by default. A mismatch is allowed only when the fixture explicitly marks
+itself as historical regression evidence.
+
+## Current Release Artifact Binding
+
+- Current-release smoke evidence must match the package filename and SHA256 in
+  `docs/release-artifacts.md`.
+- The committed `runtime-grounding-v5` smoke artifacts currently use package SHA256
+  `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
+  historical regression evidence, not current-release package evidence for SHA256
+  `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44`.
+- Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
+  burden-completeness regression behavior.
+- `ir.json` smoke sidecars prove typed Diagnostic IR/source_basis integrity for the same fixture.
+- Neither Markdown smoke artifacts nor `ir.json` sidecars prove independent live host replay unless a
+  future live-runner is implemented.
 
 ## Proof Boundary
 
 | Evidence | What it proves | What it does not prove |
 | --- | --- | --- |
 | Static checkers | Source/runtime structural integrity, module boundaries, routing parity, render rules, IR fixture integrity, and compiled freshness. | Live host behavior or semantic equivalence across future model runs. |
-| Smoke artifact checker | Committed regression artifacts satisfy shape, provenance, contamination, depth, and bounded-completeness rules. | That the host replayed the skill live during this verification run. |
+| Smoke artifact checker | Committed regression artifacts satisfy shape, provenance, package-hash binding, contamination, depth, and bounded-completeness rules. | That the host replayed the skill live during this verification run. |
 | Smoke provenance | Package/model/run claims were recorded for each fixture. | Independent replay of the host invocation. |
 | Future live-runner | Would be the correct place to prove live host execution when such a runner exists. | Not currently implemented. |
 
@@ -104,12 +123,19 @@ timestamp, and live-run versus handcrafted-regression classification.
 
 Structured Diagnostic IR fixtures live under `tests/ir-fixtures/`. Positive fixtures belong under
 `tests/ir-fixtures/valid/`; expected-invalid regression fixtures belong under
-`tests/ir-fixtures/invalid/`. `tools/check_ir_instance_integrity.py` is a schema-adjacent/custom
-checker: it covers schema enums and required/conditional fields, then adds catalogue,
-compiled-module-map, source-basis, ghost-load, and post-render decision checks. If future live smoke
-runs emit structured IR sidecars, place them at `smokes/runtime-grounding-v5/<fixture>/ir.json` or
-under `tests/ir-fixtures/valid/` and validate them with `tools/check_ir_instance_integrity.py --file`
-or `--root`.
+`tests/ir-fixtures/invalid/`. `tools/check_ir_instance_integrity.py` is intentionally
+schema-adjacent/custom rather than a `jsonschema` runtime; future schema changes must be mirrored in
+`schema_errors()` and embedded bad samples. The checker covers schema enums and
+required/conditional fields, then adds catalogue, compiled-module-map, source-basis, ghost-load, and
+post-render decision checks. It discovers `smokes/runtime-grounding-v5/<fixture>/ir.json` sidecars by
+default and treats them as expected-valid.
+
+Current committed smoke sidecars exist for:
+
+```text
+smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/ir.json
+smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/ir.json
+```
 
 ### Default Compact DSL/IR
 

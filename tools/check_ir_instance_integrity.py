@@ -8,7 +8,8 @@ that JSON Schema alone cannot prove: catalogue membership, compiled-module-map
 resolution, source_basis coverage, ghost-load rejection, and post-render
 decision consistency. It validates any IR fixture/artifact passed by --file or
 discovered under --root, and treats files under tests/ir-fixtures/invalid/ as
-expected-invalid regression fixtures.
+expected-invalid regression fixtures. Smoke sidecars named
+smokes/runtime-grounding-v5/*/ir.json are expected-valid by default.
 """
 
 from __future__ import annotations
@@ -121,6 +122,10 @@ BAD_SAMPLES["source_basis_invalid_module"] = (
 BAD_SAMPLES["source_basis_without_claim"] = (
     _sample_with(lambda s: s["source_basis"]["entries"][0].update({"claim": ""})),
     "module source_basis entry lacks claim",
+)
+BAD_SAMPLES["source_basis_vague_claim"] = (
+    _sample_with(lambda s: s["source_basis"]["entries"][0].update({"claim": "module used"})),
+    "module source_basis entry uses vague claim",
 )
 BAD_SAMPLES["stop_with_next_pass"] = (
     _sample_with(lambda s: s["post_render_gate"].update({"next_eligible_pass": "model/predication"})),
@@ -312,6 +317,8 @@ def integrity_errors(
         claim = entry.get("claim")
         if not isinstance(claim, str) or not claim.strip():
             errors.append(f"module source_basis entry lacks claim/routing fork: {module_id}")
+        elif re.fullmatch(r"(?i)\s*(?:module used|supporting source|source|module|support)\s*\.?", claim):
+            errors.append(f"module source_basis entry uses vague claim/routing fork: {module_id}")
 
     for module_id in matched_ids:
         if not any(entry.get("module_id") == module_id for entry in module_entries):
@@ -418,8 +425,28 @@ def check_bad_samples(
     return errors
 
 
-def expected_invalid_fixture(path: Path) -> bool:
-    return any(part.lower() in {"invalid", "bad", "expected-invalid"} for part in path.parts)
+def expected_invalid_fixture(path: Path, root: Path) -> bool:
+    try:
+        relative = path.resolve().relative_to((root / "tests/ir-fixtures/invalid").resolve())
+    except ValueError:
+        return False
+    return relative.parts != ()
+
+
+def smoke_sidecar(path: Path, root: Path) -> bool:
+    try:
+        relative = path.resolve().relative_to((root / "smokes/runtime-grounding-v5").resolve())
+    except ValueError:
+        return False
+    return len(relative.parts) == 2 and relative.name == "ir.json"
+
+
+def valid_fixture(path: Path, root: Path) -> bool:
+    try:
+        relative = path.resolve().relative_to((root / "tests/ir-fixtures/valid").resolve())
+    except ValueError:
+        return False
+    return relative.parts != ()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -427,6 +454,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--file", action="append", default=[], help="IR JSON artifact to validate.")
     parser.add_argument("--root", action="append", default=[], help="Directory tree containing IR JSON artifacts.")
     parser.add_argument("--samples-only", action="store_true", help="Only run embedded sample checks.")
+    parser.add_argument(
+        "--include-smoke-sidecars",
+        dest="include_smoke_sidecars",
+        action="store_true",
+        default=True,
+        help="Include smokes/runtime-grounding-v5/*/ir.json sidecars when scanning defaults.",
+    )
+    parser.add_argument(
+        "--no-include-smoke-sidecars",
+        dest="include_smoke_sidecars",
+        action="store_false",
+        help="Do not include smoke ir.json sidecars in the default scan.",
+    )
     args = parser.parse_args(argv)
 
     root = repo_root()
@@ -437,7 +477,10 @@ def main(argv: list[str] | None = None) -> int:
     errors = check_bad_samples(schema, catalogue, compiled_modules)
     files_checked = 0
     instances_checked = 0
+    valid_fixtures_checked = 0
     expected_invalid_checked = 0
+    smoke_sidecars_checked = 0
+    smoke_sidecar_paths_checked: set[Path] = set()
     ignored = 0
 
     paths: list[Path] = []
@@ -452,6 +495,10 @@ def main(argv: list[str] | None = None) -> int:
     elif not args.samples_only:
         default_root = root / "tests/ir-fixtures"
         paths.extend(iter_json_files(default_root))
+        if args.include_smoke_sidecars:
+            smoke_root = root / "smokes/runtime-grounding-v5"
+            if smoke_root.exists():
+                paths.extend(sorted(smoke_root.glob("*/ir.json")))
 
     if not args.samples_only:
         for path in paths:
@@ -463,29 +510,37 @@ def main(argv: list[str] | None = None) -> int:
             files_checked += 1
             instances = as_instances(payload)
             if not instances:
-                if expected_invalid_fixture(path):
+                if expected_invalid_fixture(path, root):
                     errors.append(f"{path.relative_to(root).as_posix()}: expected-invalid fixture is not IR-like")
                 ignored += 1
                 continue
             for index, instance in enumerate(instances):
                 label = f"{path.relative_to(root).as_posix()}[{index}]"
                 found = validate_instance(label, instance, schema, catalogue, compiled_modules)
-                if expected_invalid_fixture(path):
+                if expected_invalid_fixture(path, root):
                     expected_invalid_checked += 1
                     if not found:
                         errors.append(f"{label}: expected-invalid fixture unexpectedly passed")
                 else:
                     errors.extend(found)
                     instances_checked += 1
+                    if valid_fixture(path, root):
+                        valid_fixtures_checked += 1
+                    elif smoke_sidecar(path, root):
+                        smoke_sidecar_paths_checked.add(path)
+                        smoke_sidecars_checked += 1
 
     if not errors:
         print("Diagnostic IR instance integrity summary")
         print("------------------------------------------------------------")
         print(f"Embedded bad samples checked: {len(BAD_SAMPLES) + len(COMPILED_MAP_BAD_SAMPLES)}")
-        print(f"JSON files scanned: {files_checked}")
-        print(f"IR instances checked: {instances_checked}")
-        print(f"Expected-invalid IR fixtures checked: {expected_invalid_checked}")
+        print(f"tests/ir-fixtures valid checked: {valid_fixtures_checked}")
+        print(f"tests/ir-fixtures invalid checked: {expected_invalid_checked}")
+        print(f"smoke sidecars checked: {len(smoke_sidecar_paths_checked)}")
+        print(f"smoke sidecar IR instances checked: {smoke_sidecars_checked}")
         print(f"Non-IR JSON files ignored: {ignored}")
+        print(f"Total JSON files scanned: {files_checked}")
+        print(f"Total expected-valid IR instances checked: {instances_checked}")
         print("------------------------------------------------------------")
     return fail_with_errors("diagnostic IR instance integrity", errors)
 

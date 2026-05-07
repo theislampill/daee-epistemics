@@ -1,6 +1,10 @@
-﻿## Provenance
+## Provenance
 - package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
+- release-artifact relation: historical-regression
+- current-release evidence: no
+- current source package filename: daee-epistemics-RC00005-v0.3.1.0.skill.zip
+- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
 - prompt: see input.md
@@ -32,9 +36,9 @@
 - atomics/skill/references/diagnostics/foreign-premise-detection.md
 
 ## Owner anchors used
-- recursive-state-transitions.md Â§Source-Status & Noetic-Frame Non-Equivalence Discipline
-- routing-precedence.md Â§Rule S-9
-- diagnostic-render-contract.md Â§Default source/citation restriction
+- recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline
+- routing-precedence.md §Rule S-9
+- diagnostic-render-contract.md §Default source/citation restriction
 
 ## Causal proof
 - Burden-Cycle 1: source-prestige/citation-parade bait -> source-status check / authority-order repair -> the answer must route through the live burden rather than through public authority display.
