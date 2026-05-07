@@ -112,12 +112,13 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   same live noetic burden; the released burden must be burden-complete before R,
   with materially necessary sub-burdens receiving matched TTP/operator treatment)
 - State/noetic re-read - compact (burden landed, remaining input-anchored burdens,
-  held routes rechecked, next live burden, governance)
+  held routes rechecked, next live burden, release status in prose)
 - Restorative Response - required once after state/noetic re-read
 - Closing Formulation - required once at the end after Restorative Response
 
-If state re-read governance = RECURSE, continue with the next burden-cycle.
-If state re-read governance = STOP / HOLD / PARTIAL, close with a brief prose reason.
+If internal state re-read licenses another bounded pass, continue with the next burden-cycle.
+If internal state re-read licenses closure, hold, or partial traversal, render the release
+status in prose rather than as a literal STOP / HOLD / RECURSE / PARTIAL label.
 No NewB is licensed by a headline-only answer, skipped internal sub-burdens, generic
 prose substitute, or broad-conclusion jump.
 
@@ -154,7 +155,7 @@ Layer A may name held routes for auditability; Layer B may release only the curr
 and its justified operative submoves.
 
 Restoration synthesis and pastoral note wait until the active burden lands and state re-read
-licenses closure, HOLD, PARTIAL, or the next input-anchored burden.
+licenses closure, hold, partial traversal, or the next input-anchored burden.
 
 Layer A must not show: the full internal diagnostic schema, full routing-state block,
 source-tracking fields, module-resolution fields, load ledger, route itinerary, NS codes

@@ -66,7 +66,7 @@ Case complexity alone does not trigger Level 2. A case with multiple live burden
 
 **Full recursion still required at Level 1:**
 Recursive-audit discipline runs in every mode. Level determines how much diagnostic machinery is printed, not whether recursion occurs.
-The same-response RECURSE trigger checklist still governs Level 1: if the current blocker cleared, another already-present burden remains live, and no stop/hold/gate/limit blocks it, the answer must continue through the next bounded prose move rather than closing with STOP.
+The same-response RECURSE trigger checklist still governs Level 1 internally: if the current blocker cleared, another already-present burden remains live, and no stop/hold/gate/limit blocks it, the answer must continue through the next bounded prose move rather than rendering prose closure.
 
 ```text
 claim being assessed
@@ -87,10 +87,10 @@ bounded move
 → what remains live
 → next eligible burden
 → decision
-→ next bounded move (if RECURSE or PARTIAL and eligible)
+→ next bounded move when internally licensed, or prose partial status when limits block it
 ```
 
-If same-response RECURSE occurs in Level 1, visible progression must include a short
+If same-response recursion is internally licensed in Level 1, visible progression must include a short
 prose state transition: what the prior move cleared, what remains live, why that live
 burden was already present in the original input, and why the next bounded move is now
 eligible. Bare essay headings such as "Move 1", "Move 2", or "Move 3" do not satisfy
@@ -145,6 +145,8 @@ Each default burden-cycle must follow this structure. Layer B is prose-first; La
 state/noetic re-read use compact entries. Default Layer A is fit-for-purpose but mandatory:
 it prints only the compact DSL/IR header needed to make the current pass governable. This
 Layer A block is the compact diagnostic frame for default mode; it is not raw Diagnostic IR.
+The full-field compact header is a deliberate anti-cosplay tradeoff: simple cases still show the
+minimum compiler trace needed to prove governed execution without exposing raw IR.
 
 ```text
 ## Burden-Cycle N
@@ -349,7 +351,7 @@ the prose reason for a hold or partial close.
 
 **Single-Pass Layer A/B Cosplay:** A response that prints Layer A + Layer B + state re-read
 exactly once and then stops — without proving no eligible input-anchored live burden remains,
-or without continuing when state re-read = RECURSE. This is a recursion failure, not a
+or without continuing when state re-read licenses another bounded pass. This is a recursion failure, not a
 structured response. The burden-cycle shape is not satisfied by printing it once. It must be
 repeated for each eligible input-anchored live burden until governed recursive sufficiency.
 
@@ -400,8 +402,8 @@ Preflight recursion check: after the first bounded move, ask what cleared, what 
 live, whether the remaining live burden was already present in the original input, whether it is
 now eligible, and whether any stop/register/semantic/thin-basis gate blocks it. If another
 eligible same-input live burden remains after the current blocker clears, default output must
-either RECURSE into one bounded next pass with a prose state transition, or mark PARTIAL if
-limits prevent doing so. It may not silently STOP.
+continue with one bounded next pass using a prose state transition, or render partial
+release-status prose if limits prevent doing so. It may not silently close.
 
 Preflight NewB check: a next burden-cycle is valid only if the prior burden landed through
 owner-specific operation, cumulative-state delta is visible, the proposed next burden was

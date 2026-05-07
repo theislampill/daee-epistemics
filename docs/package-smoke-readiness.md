@@ -37,6 +37,8 @@ older rc archives are not current smoke inputs.
 its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
 If a host expects a `.skill` upload, rename the checked `.skill.zip` payload to
 `daee-epistemics.skill`; do not zip the repository root or the top-level `skill/` directory.
+Current local release-artifact evidence is recorded in `docs/release-artifacts.md`; the binary
+archive is build output and is not committed.
 
 ## Readiness Verification
 
@@ -88,6 +90,26 @@ verdicts below the depth floor, and originally hard-intended fixtures reclassifi
 burden-completeness audit. Release smoke artifacts must also include provenance in `trace.md` or
 `verdict.md`: package filename, package SHA256, model/host, invocation mode, prompt pointer, run
 timestamp, and live-run versus handcrafted-regression classification.
+
+## Proof Boundary
+
+| Evidence | What it proves | What it does not prove |
+| --- | --- | --- |
+| Static checkers | Source/runtime structural integrity, module boundaries, routing parity, render rules, IR fixture integrity, and compiled freshness. | Live host behavior or semantic equivalence across future model runs. |
+| Smoke artifact checker | Committed regression artifacts satisfy shape, provenance, contamination, depth, and bounded-completeness rules. | That the host replayed the skill live during this verification run. |
+| Smoke provenance | Package/model/run claims were recorded for each fixture. | Independent replay of the host invocation. |
+| Future live-runner | Would be the correct place to prove live host execution when such a runner exists. | Not currently implemented. |
+
+## IR Instance Artifacts
+
+Structured Diagnostic IR fixtures live under `tests/ir-fixtures/`. Positive fixtures belong under
+`tests/ir-fixtures/valid/`; expected-invalid regression fixtures belong under
+`tests/ir-fixtures/invalid/`. `tools/check_ir_instance_integrity.py` is a schema-adjacent/custom
+checker: it covers schema enums and required/conditional fields, then adds catalogue,
+compiled-module-map, source-basis, ghost-load, and post-render decision checks. If future live smoke
+runs emit structured IR sidecars, place them at `smokes/runtime-grounding-v5/<fixture>/ir.json` or
+under `tests/ir-fixtures/valid/` and validate them with `tools/check_ir_instance_integrity.py --file`
+or `--root`.
 
 ### Default Compact DSL/IR
 

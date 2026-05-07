@@ -358,10 +358,10 @@ visible-format sanitizer. After the first bounded move, final-output preflight a
 - is any stop/register/semantic/thin-basis gate blocking it?
 
 If another eligible same-input live burden remains after the current blocker clears, default
-output must either RECURSE into one bounded next pass with a prose state transition, or
-mark PARTIAL if limits prevent doing so. It may not silently STOP. Silent STOP while
-eligible burden remains is invalid. Clean prose without this state re-read and
-STOP / HOLD / RECURSE / PARTIAL decision is still invalid.
+output must internally license recursion and continue with one bounded next pass using a prose
+state transition, or render a partial release-status reason in prose if limits prevent doing so.
+It may not silently close while an eligible burden remains. Clean prose without this state re-read
+and internal STOP / HOLD / RECURSE / PARTIAL decision is still invalid.
 
 This decision is not satisfied by a preplanned essay sequence. Headings such as "Step 1",
 "Step 2", "Step 3", "Step 4", "Move 1", "Move 2", or "Move 3" do not show state re-read.
@@ -391,7 +391,7 @@ and a renewed decision before releasing the next live burden.
 
 Default mode may compress that transition into ordinary prose, but it may not hide it. A
 valid default transition says what cleared, what remains live, why the next live burden is now
-eligible, and why the next state is RECURSE rather than STOP, HOLD, or PARTIAL.
+eligible, and why continuation rather than prose closure, hold, or partial traversal is licensed.
 
 Default governed prose follows the mandatory compact DSL/IR header + Layer B + State/noetic
 re-read burden-cycle shape in `diagnostic-render-contract.md`, then repeats only until governed

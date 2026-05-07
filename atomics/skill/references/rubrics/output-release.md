@@ -76,7 +76,7 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 2. Another already-present burden remains live in the original input.
 3. No P7 stop, register-hold, semantic gate, thin-basis rule, absent release signal, or limit blocks the next pass.
 
-When all three are true, `RECURSE` is required in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, use `HOLD`. If limits prevent the next eligible pass, use `PARTIAL`. `STOP` is invalid while this checklist is satisfied.
+When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied.
 
 **Minimum visible transition spine (mandatory in multi-burden default):**
 `B -> {s1...sn} -> Land(B) -> R -> Decision`. Gloss: a live burden is input-anchored
@@ -169,8 +169,8 @@ Preflight recursion check: after the first bounded move, ask what cleared, what 
 live, whether the remaining live burden was already present in the original input, whether it is
 now eligible, and whether any stop/register/semantic/thin-basis gate blocks it. If another
 eligible same-input live burden remains after the current blocker clears, default output must
-either RECURSE into one bounded next pass with a prose state transition, or mark PARTIAL if
-limits prevent doing so. It may not silently STOP.
+continue with one bounded next pass using a prose state transition, or render partial
+release-status prose if limits prevent doing so. It may not silently close.
 
 Preflight NewB check: the next burden may be released only when the re-read passes the
 NewB license test: prior burden landed through owner-specific operation, cumulative-state
@@ -363,7 +363,7 @@ emit it. Rewrite it into the mandatory compact DSL/IR header plus bounded govern
 Hidden Premises, per-operation Core Formulation, Bounded Response / operative submoves,
 State/noetic re-read, one Restorative Response, and one final Closing Formulation. Name the
 governing diagnostic fact, release only the current permitted move, include a prose state
-transition if same-response RECURSE is active, and omit the raw IR, case state, matched route,
+transition if same-response recursion is internally active, and omit the raw IR, case state, matched route,
 route plan, scholar/source parade, school-label context, genealogy, and public external-theorist support.
 
 ---
@@ -409,9 +409,9 @@ Decision rules:
 
 STOP cannot be emitted before this gate runs. Held material must be rechecked after each pass.
 
-Default mode must not print `Recursion decision: RECURSE` as proof of compliance. If RECURSE
-is active, the answer must perform the transition in prose and then execute one bounded next
-pass. If limits prevent that pass, mark the answer as PARTIAL in prose rather than dumping a
+Default mode must not print `Recursion decision: RECURSE` as proof of compliance. If internal
+recursion is active, the answer must perform the transition in prose and then execute one bounded
+next pass. If limits prevent that pass, render partial release-status prose rather than dumping a
 field label.
 
 ---
@@ -464,7 +464,7 @@ field label.
 - The response continues after recognition or contact has surfaced.
 - The response escalates into theoretical density when a bounded corrective move would suffice.
 - After FPD/M1 clears an imported criterion, the response automatically releases all
-  downstream doctrinal content rather than choosing STOP, RECURSE, HOLD, or PARTIAL at
+  downstream doctrinal content rather than internally choosing STOP, RECURSE, HOLD, or PARTIAL at
   the post-render gate.
 - The response ends default mode with a bibliography, source list, "Primary Sources
   Referenced", or source-basis ledger even though the user did not request sources and
@@ -711,11 +711,11 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 ### FT-17 — Premature closure without re-entry
 **Input:** /daee-epistemics The moral objection is really that modern liberal equality is the judge of revelation. Also, if that standard falls, what should govern the question instead?
 **Bad output:** Correctly exposes the imported tribunal, then closes as though the whole case is complete.
-**Required behavior:** Clear the imported tribunal, run the post-render gate, recheck held routes, and identify whether the positive criterion-order pass is now eligible. If eligible and no stop/hold/gate blocks it, RECURSE into one bounded next move. If limits prevent it, mark PARTIAL rather than STOP.
+**Required behavior:** Clear the imported tribunal, run the post-render gate, recheck held routes, and identify whether the positive criterion-order pass is now eligible. If eligible and no stop/hold/gate blocks it, continue with one bounded next move. If limits prevent it, render partial release-status prose rather than closing.
 
 ### FT-18 - Essay sequence mistaken for RECURSE
 **Input:** /daee-epistemics The objection says disbelief, hiddenness, accountability, punishment, and mercy all make Islam morally impossible.
-**Bad output:** The answer uses "Move 1", "Move 2", "Move 3", and "Move 4" headings, but no refreshed-state transition explains what cleared, what remains live, why the next live burden is eligible, or why RECURSE rather than STOP/HOLD/PARTIAL governs.
+**Bad output:** The answer uses "Move 1", "Move 2", "Move 3", and "Move 4" headings, but no refreshed-state transition explains what cleared, what remains live, why the next live burden is eligible, or why continuation rather than prose closure/hold/partial status governs.
 **Required behavior:** Use ordinary prose if in default mode, but include the state-change relation before the next pass. A short sentence is enough: "That clears the criterion question; the remaining already-present issue is X, so the next bounded move is Y."
 
 ### FT-19 - TTP label without TTP execution

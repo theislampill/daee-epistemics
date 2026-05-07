@@ -31,6 +31,9 @@
   artifacts while runtime proof and grading stay in trace/verdict artifacts.
 - Clarified package naming: PowerShell packaging emits the canonical RC `.skill.zip`; upload hosts
   that require `.skill` should receive the same checked payload renamed, not a re-zipped repo root.
+- Added post-readiness audit hardening for source-basis schema comments, IR fixture integrity,
+  bounded-complete smoke output support, release-artifact evidence, and public-safe prose release
+  status wording in default mode.
 
 ### Current guidance
 

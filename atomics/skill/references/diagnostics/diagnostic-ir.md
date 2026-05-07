@@ -257,8 +257,9 @@ Step 4" or "Move 1 / Move 2 / Move 3" sequencing does not satisfy RECURSE. Same-
 recursion in default mode requires a prose state transition naming what cleared, what remains
 live, why the next live burden was already present, and why the next bounded pass is permitted.
 If another eligible same-input live burden remains after the current blocker clears, default
-output must either RECURSE into one bounded next pass or mark PARTIAL if limits prevent it;
-silent STOP while eligible burden remains is invalid.
+output must internally license recursion and continue with one bounded next pass, or render a
+partial release-status reason in prose if limits prevent it; silent closure while an eligible
+burden remains is invalid.
 Use full internal state; render the mandatory fit-for-purpose Layer A compact DSL/IR header
 and mode-gated diagnostics. Layer A governs; its full printout is mode-specific.
 
@@ -376,8 +377,8 @@ downstream TTP releases.
 Render-mode scope: this template is an internal control shape and may be visible only in
 `:dsl`, internal/development audit, pass-review, or diagnostic trace. It is not a default output template.
 Visible block format is internal/development audit / diagnostic-trace only for the post-render gate fields below.
-In default mode this gate runs internally and renders only as prose transition or clean
-STOP/PARTIAL wording when needed.
+In default mode this gate runs internally and renders only as prose transition or prose
+closure/hold/partial wording when needed.
 
 ```text
 [Diagnostic IR]
@@ -561,6 +562,7 @@ contract permits a diagnostic or audit-style response.
 - Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
 - **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - **Ghost-load prohibition:** A `matched_modules` entry without a corresponding `source_basis` entry with `source_kind: "module"` and `module_id` matching the entry's `id` is a ghost-load: the source file or compiled runtime section was loaded but did not demonstrably govern any output claim or routing decision in this pass. Ghost-loads are gate-integrity failures equivalent to fabricated activation and must be corrected before dispatch — either by adding the missing `source_basis` entry (naming the specific claim or routing fork the module governed) or by moving the module from `matched_modules` to `What is withheld and why` with an explicit reason.
+- Schema note: `source_basis` is not an unconditional top-level required field for bare schema compatibility, but it is conditionally required whenever `matched_modules` is present and non-empty. Executable catalogue/source-basis coverage is enforced by `tools/check_ir_instance_integrity.py`.
 - `Next move` names one live move only. It is not a queue of later modules.
 - `Intervention target` and `Next move` name one burden-level function. They do not name a route
   chain, module itinerary, or list of internal TTP labels. Acceptable shape: `imported-criterion

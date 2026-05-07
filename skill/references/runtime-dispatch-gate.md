@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 37c58d77ed757364c8b7ac5c37000a4ffacb05314e96fbdab30bec024eebcb2c -->
+<!-- SOURCE_SHA256: da5311fd8c625007d3f54bf0cb35f5a57a123b32b5da87679922a6a294db84c6 -->
 
 ---
 id: diagnostic-ir
@@ -277,8 +277,9 @@ Step 4" or "Move 1 / Move 2 / Move 3" sequencing does not satisfy RECURSE. Same-
 recursion in default mode requires a prose state transition naming what cleared, what remains
 live, why the next live burden was already present, and why the next bounded pass is permitted.
 If another eligible same-input live burden remains after the current blocker clears, default
-output must either RECURSE into one bounded next pass or mark PARTIAL if limits prevent it;
-silent STOP while eligible burden remains is invalid.
+output must internally license recursion and continue with one bounded next pass, or render a
+partial release-status reason in prose if limits prevent it; silent closure while an eligible
+burden remains is invalid.
 Use full internal state; render the mandatory fit-for-purpose Layer A compact DSL/IR header
 and mode-gated diagnostics. Layer A governs; its full printout is mode-specific.
 
@@ -396,8 +397,8 @@ downstream TTP releases.
 Render-mode scope: this template is an internal control shape and may be visible only in
 `:dsl`, internal/development audit, pass-review, or diagnostic trace. It is not a default output template.
 Visible block format is internal/development audit / diagnostic-trace only for the post-render gate fields below.
-In default mode this gate runs internally and renders only as prose transition or clean
-STOP/PARTIAL wording when needed.
+In default mode this gate runs internally and renders only as prose transition or prose
+closure/hold/partial wording when needed.
 
 ```text
 [Diagnostic IR]
@@ -581,6 +582,7 @@ contract permits a diagnostic or audit-style response.
 - Diagnosed downstream content that is held by register, semantic, or stop governance remains explicit in Layer A through `What is withheld and why` / `What remains live`; it is not silently dropped, but it is also not treated as simultaneously active.
 - **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - **Ghost-load prohibition:** A `matched_modules` entry without a corresponding `source_basis` entry with `source_kind: "module"` and `module_id` matching the entry's `id` is a ghost-load: the source file or compiled runtime section was loaded but did not demonstrably govern any output claim or routing decision in this pass. Ghost-loads are gate-integrity failures equivalent to fabricated activation and must be corrected before dispatch — either by adding the missing `source_basis` entry (naming the specific claim or routing fork the module governed) or by moving the module from `matched_modules` to `What is withheld and why` with an explicit reason.
+- Schema note: `source_basis` is not an unconditional top-level required field for bare schema compatibility, but it is conditionally required whenever `matched_modules` is present and non-empty. Executable catalogue/source-basis coverage is enforced by `tools/check_ir_instance_integrity.py`.
 - `Next move` names one live move only. It is not a queue of later modules.
 - `Intervention target` and `Next move` name one burden-level function. They do not name a route
   chain, module itinerary, or list of internal TTP labels. Acceptable shape: `imported-criterion
@@ -2864,7 +2866,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: a3f03118ffaf097b38e43c1da09d7eebc697e97ba3caceea94279d02017490a0 -->
+<!-- SOURCE_SHA256: c4e2a95ba6097cf33e32a9790f1b4a2499ce147a1c2ce0013d110b699b531ce3 -->
 
 ---
 id: recursive-state-transitions
@@ -3226,10 +3228,10 @@ visible-format sanitizer. After the first bounded move, final-output preflight a
 - is any stop/register/semantic/thin-basis gate blocking it?
 
 If another eligible same-input live burden remains after the current blocker clears, default
-output must either RECURSE into one bounded next pass with a prose state transition, or
-mark PARTIAL if limits prevent doing so. It may not silently STOP. Silent STOP while
-eligible burden remains is invalid. Clean prose without this state re-read and
-STOP / HOLD / RECURSE / PARTIAL decision is still invalid.
+output must internally license recursion and continue with one bounded next pass using a prose
+state transition, or render a partial release-status reason in prose if limits prevent doing so.
+It may not silently close while an eligible burden remains. Clean prose without this state re-read
+and internal STOP / HOLD / RECURSE / PARTIAL decision is still invalid.
 
 This decision is not satisfied by a preplanned essay sequence. Headings such as "Step 1",
 "Step 2", "Step 3", "Step 4", "Move 1", "Move 2", or "Move 3" do not show state re-read.
@@ -3259,7 +3261,7 @@ and a renewed decision before releasing the next live burden.
 
 Default mode may compress that transition into ordinary prose, but it may not hide it. A
 valid default transition says what cleared, what remains live, why the next live burden is now
-eligible, and why the next state is RECURSE rather than STOP, HOLD, or PARTIAL.
+eligible, and why continuation rather than prose closure, hold, or partial traversal is licensed.
 
 Default governed prose follows the mandatory compact DSL/IR header + Layer B + State/noetic
 re-read burden-cycle shape in `diagnostic-render-contract.md`, then repeats only until governed

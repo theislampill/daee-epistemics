@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Validate Diagnostic IR instance integrity.
 
-This checker is schema-adjacent: it does not introduce new IR fields, but it
-turns prose governance into deterministic checks for any IR fixture/artifact
-passed by --file or discovered under --root.
+This checker is intentionally schema-adjacent/custom rather than a jsonschema
+runtime. It covers the schema enums, required fields, conditional
+decisive_missing_differentiator rule, and repo-specific executable constraints
+that JSON Schema alone cannot prove: catalogue membership, compiled-module-map
+resolution, source_basis coverage, ghost-load rejection, and post-render
+decision consistency. It validates any IR fixture/artifact passed by --file or
+discovered under --root, and treats files under tests/ir-fixtures/invalid/ as
+expected-invalid regression fixtures.
 """
 
 from __future__ import annotations
@@ -130,6 +135,14 @@ BAD_SAMPLES["distributed_read_without_differentiator"] = (
     "missing required field: decisive_missing_differentiator",
 )
 
+COMPILED_MAP_BAD_SAMPLES = {
+    "matched_module_absent_from_compiled_map": (
+        _sample_with(lambda s: None),
+        "matched module does not resolve in compiled-module-map.json",
+        "M1-self-refutation",
+    )
+}
+
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -213,6 +226,8 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
                 for field in ("id", "module_class"):
                     if not isinstance(item.get(field), str) or not item[field].strip():
                         errors.append(f"schema: matched_modules[{index}].{field} must be non-empty string")
+            if "source_basis" not in instance:
+                errors.append("schema: source_basis required when matched_modules present")
 
     source_basis = instance.get("source_basis")
     if source_basis is not None:
@@ -394,7 +409,17 @@ def check_bad_samples(
         found = validate_instance(name, sample, schema, catalogue, compiled_modules)
         if not any(expected in error for error in found):
             errors.append(f"bad sample {name!r} was not rejected with {expected!r}; got {found!r}")
+    for name, (sample, expected, missing_module_id) in COMPILED_MAP_BAD_SAMPLES.items():
+        compiled_without_module = dict(compiled_modules)
+        compiled_without_module.pop(missing_module_id, None)
+        found = validate_instance(name, sample, schema, catalogue, compiled_without_module)
+        if not any(expected in error for error in found):
+            errors.append(f"bad sample {name!r} was not rejected with {expected!r}; got {found!r}")
     return errors
+
+
+def expected_invalid_fixture(path: Path) -> bool:
+    return any(part.lower() in {"invalid", "bad", "expected-invalid"} for part in path.parts)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -412,6 +437,7 @@ def main(argv: list[str] | None = None) -> int:
     errors = check_bad_samples(schema, catalogue, compiled_modules)
     files_checked = 0
     instances_checked = 0
+    expected_invalid_checked = 0
     ignored = 0
 
     paths: list[Path] = []
@@ -437,19 +463,28 @@ def main(argv: list[str] | None = None) -> int:
             files_checked += 1
             instances = as_instances(payload)
             if not instances:
+                if expected_invalid_fixture(path):
+                    errors.append(f"{path.relative_to(root).as_posix()}: expected-invalid fixture is not IR-like")
                 ignored += 1
                 continue
             for index, instance in enumerate(instances):
                 label = f"{path.relative_to(root).as_posix()}[{index}]"
-                errors.extend(validate_instance(label, instance, schema, catalogue, compiled_modules))
-                instances_checked += 1
+                found = validate_instance(label, instance, schema, catalogue, compiled_modules)
+                if expected_invalid_fixture(path):
+                    expected_invalid_checked += 1
+                    if not found:
+                        errors.append(f"{label}: expected-invalid fixture unexpectedly passed")
+                else:
+                    errors.extend(found)
+                    instances_checked += 1
 
     if not errors:
         print("Diagnostic IR instance integrity summary")
         print("------------------------------------------------------------")
-        print(f"Embedded bad samples checked: {len(BAD_SAMPLES)}")
+        print(f"Embedded bad samples checked: {len(BAD_SAMPLES) + len(COMPILED_MAP_BAD_SAMPLES)}")
         print(f"JSON files scanned: {files_checked}")
         print(f"IR instances checked: {instances_checked}")
+        print(f"Expected-invalid IR fixtures checked: {expected_invalid_checked}")
         print(f"Non-IR JSON files ignored: {ignored}")
         print("------------------------------------------------------------")
     return fail_with_errors("diagnostic IR instance integrity", errors)

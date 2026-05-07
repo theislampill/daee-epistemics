@@ -72,6 +72,15 @@ LITERAL_GOVERNANCE_RE = re.compile(
     r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
     r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
 )
+BURDEN_CYCLE_RE = re.compile(r"(?im)^\ufeff?\s*#{1,6}\s*Burden-Cycle\b")
+STATE_REREAD_RE = re.compile(r"(?im)^\s*#{1,6}\s*State/noetic re-read\b")
+RELEASE_STATUS_PROSE_RE = re.compile(
+    r"(?im)^\s*-?\s*Release status\s*:\s*(?!(?:STOP|HOLD|RECURSE|PARTIAL)\b).+\S"
+)
+CUMULATIVE_DELTA_RE = re.compile(
+    r"(?i)\b(?:cumulative-state delta|what changed|state-change|claim-state|case-state delta)\b"
+)
+VERDICT_CYCLE_COUNT_RE = re.compile(r"(?im)^\s*-\s*burden-cycle count\s*:\s*(\d+)\b")
 
 SCAFFOLD_RE = re.compile(
     r"(?i)\b(?:this smoke artifact|runtime constraint being tested|owner floor is applied|"
@@ -187,6 +196,22 @@ BAD_SAMPLES = {
         "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "literal governance label in output",
     },
+    "bounded_pass_without_output_reread_support": {
+        "fixture": "04-comparative-neutral-flattening-bait",
+        "input": "Compare traditions without flattening.",
+        "output": "## Burden-Cycle 1\n### Layer A - Compact DSL/IR header\n### Layer B - bounded governed response\nThe answer is short.",
+        "verdict": "- fixture class: bounded\n- status: PASS\n- bounded-depth exception rationale: narrow.\n- bounded-complete\n- original hard intent: yes\n- first-order burdens handled: flattening\n- second-order burdens handled: tribunal\n- higher-order burdens handled: abstraction\n- held burdens and why: taxonomy held\n- skipped licensed burdens: none\n- another pass licensed: no\n- under-20 rationale: complete.\n- not suitable as a hard-depth smoke\n- burden-cycle count: 1\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "bounded PASS output lacks State/noetic re-read",
+    },
+    "bounded_pass_claims_two_cycles_output_one": {
+        "fixture": "04-comparative-neutral-flattening-bait",
+        "input": "Compare traditions without flattening.",
+        "output": "## Burden-Cycle 1\n### Layer A - Compact DSL/IR header\n### Layer B - bounded governed response\n### State/noetic re-read\n- What changed / cumulative-state delta: pattern is diagnostic data.\n- Release status: closed for this input.\n",
+        "verdict": "- fixture class: bounded\n- status: PASS\n- bounded-depth exception rationale: narrow.\n- bounded-complete\n- original hard intent: yes\n- first-order burdens handled: flattening\n- second-order burdens handled: tribunal\n- higher-order burdens handled: abstraction\n- held burdens and why: taxonomy held\n- skipped licensed burdens: none\n- another pass licensed: no\n- under-20 rationale: complete.\n- not suitable as a hard-depth smoke\n- burden-cycle count: 2\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "bounded PASS claims more cycles than output shows",
+    },
 }
 
 
@@ -242,6 +267,31 @@ def bounded_completeness_errors(fixture_name: str, verdict_text: str) -> list[st
             errors.append("originally hard-intended bounded PASS lacks original-hard marker")
         if "not suitable as a hard-depth smoke" not in verdict_lower:
             errors.append("originally hard-intended bounded PASS lacks hard-depth unsuitability note")
+    return errors
+
+
+def bounded_output_support_errors(output_text: str, verdict_text: str) -> list[str]:
+    errors: list[str] = []
+    cls = fixture_class(verdict_text)
+    status = verdict_status(verdict_text)
+    if cls != "bounded" or status != "PASS":
+        return errors
+
+    visible_cycles = len(BURDEN_CYCLE_RE.findall(output_text))
+    if visible_cycles < 1:
+        errors.append("bounded PASS output lacks burden-cycle section")
+    if not STATE_REREAD_RE.search(output_text):
+        errors.append("bounded PASS output lacks State/noetic re-read")
+    if not RELEASE_STATUS_PROSE_RE.search(output_text):
+        errors.append("bounded PASS output lacks prose Release status")
+    if not CUMULATIVE_DELTA_RE.search(output_text):
+        errors.append("bounded PASS output lacks cumulative-state delta")
+
+    cycle_match = VERDICT_CYCLE_COUNT_RE.search(verdict_text)
+    if not cycle_match:
+        errors.append("bounded PASS verdict lacks burden-cycle count")
+    elif int(cycle_match.group(1)) > visible_cycles:
+        errors.append("bounded PASS claims more cycles than output shows")
     return errors
 
 
@@ -306,6 +356,7 @@ def validate_artifact(
         errors.append("literal governance label in output")
     errors.extend(contamination_errors(fixture_name, input_text, output_text))
     errors.extend(bounded_completeness_errors(fixture_name, verdict_text))
+    errors.extend(bounded_output_support_errors(output_text, verdict_text))
     errors.extend(trace_errors(output_text, trace_text))
     errors.extend(provenance_errors(trace_text, verdict_text))
 

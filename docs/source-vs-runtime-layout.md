@@ -54,7 +54,7 @@ The compiled runtime package intentionally includes four metadata files under `r
 | `module-catalogue.json` | Authoritative registry of all module `id`/`module_class` pairs. Every `matched_modules` IR entry must match this catalogue exactly. Required by `check_compiled_module_boundaries.py`. |
 | `diagnostic-ir.schema.json` | JSON schema the Diagnostic IR must validate against before dispatch. Compliance is a conceptual check; presence enables practitioner and checker discipline. |
 | `operative-contract.schema.json` | JSON schema governing operative front-matter fields (`id`, `module_class`, `canonical_path`, `contract_version`, optional fields). |
-| `operative-contracts.md` | Architecture specification for operative contracts — purpose, required/optional keys, allowed values, failure modes, migration strategy. |
+| `operative-contracts.md` | Architecture specification for operative contracts - purpose, required/optional keys, allowed values, failure modes, migration strategy. |
 
 A `.skill` archive missing these four files has a stale or incomplete staging directory. Rebuild from `skill/` after running `python tools/build_compiled_runtime.py` to ensure all `RUNTIME_METADATA_COPIES` are present.
 

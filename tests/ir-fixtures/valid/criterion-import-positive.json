@@ -1,0 +1,56 @@
+{
+  "case_family": "criterion-import",
+  "claim_type": "moral",
+  "claim_level": "meta-epistemic",
+  "pattern_profile": "PF-10",
+  "deformation": "imported moral tribunal",
+  "concealment_mode": "clear",
+  "do_orient": "mixed",
+  "read_status": "dominant",
+  "confidence": "strong",
+  "alignment_state": "tribunal-loosened",
+  "recognition_strength": "medium",
+  "continuation_eligibility": "blocked",
+  "p7_stops_active": ["none"],
+  "reason_category": 3,
+  "routing_gate": "open",
+  "matched_modules": [
+    {
+      "id": "M1-self-refutation",
+      "module_class": "tactic"
+    },
+    {
+      "id": "M8-reductio",
+      "module_class": "tactic"
+    }
+  ],
+  "source_basis": {
+    "entries": [
+      {
+        "basis_type": "anchored",
+        "claim": "routing fork: imported criterion requires self-refutation pressure",
+        "source_kind": "module",
+        "module_id": "M1-self-refutation",
+        "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+      },
+      {
+        "basis_type": "anchored",
+        "claim": "claim: reductio traces the criterion's consequence",
+        "source_kind": "module",
+        "module_id": "M8-reductio",
+        "source_ref": "atomics/skill/references/tactics/M8-reductio.md"
+      }
+    ]
+  },
+  "restoration_target": "return moral criterion to warranted order",
+  "next_move": "test imported criterion before downstream content",
+  "output_shape": "single-response",
+  "post_render_gate": {
+    "cleared_this_pass": "imported tribunal no longer governs as neutral judge",
+    "remaining_live_distortions": "none",
+    "held_routes_rechecked": [],
+    "newly_released_routes": [],
+    "next_eligible_pass": "none",
+    "recursion_decision": "STOP"
+  }
+}

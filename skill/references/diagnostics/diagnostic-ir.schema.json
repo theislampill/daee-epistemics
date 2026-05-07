@@ -273,6 +273,7 @@
       ]
     },
     "source_basis": {
+      "$comment": "source_basis is schema-optional for bare schema compatibility, but checker-mandatory whenever matched_modules is present. The executable enforcement lives in tools/check_ir_instance_integrity.py.",
       "type": "object",
       "additionalProperties": false,
       "required": ["entries"],
@@ -457,6 +458,20 @@
       },
       "then": {
         "required": ["decisive_missing_differentiator"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "matched_modules": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": ["matched_modules"]
+      },
+      "then": {
+        "required": ["source_basis"]
       }
     },
     {

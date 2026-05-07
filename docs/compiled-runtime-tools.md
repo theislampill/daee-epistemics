@@ -53,4 +53,10 @@ Render-mode governance is checked separately by `tools/check_render_modes.py`. I
 
 Current-canon metacompliance is checked separately by `tools/check_metacompliance_current_canon.py`. It keeps root `SKILL.md` in control-plane shape, verifies that generated default output starts from compact DSL/IR plus bounded governed Layer B and state/noetic re-read, checks source-status/noetic-frame and held-release owner anchors, and rejects stale current guidance that revives public audit or prose-only default framing.
 
+Diagnostic IR instance integrity is checked by `tools/check_ir_instance_integrity.py`; the
+`tools/check_diagnostic_ir_catalogue_integrity.py` command is a compatibility entrypoint to the
+same checker. This is schema-adjacent/custom validation rather than a `jsonschema` dependency:
+it checks schema-like fields plus catalogue membership, compiled-module-map resolution,
+source-basis coverage, ghost-load rejection, and post-render decision consistency.
+
 The checkers verify generated freshness, section boundary metadata, original module ID preservation, source/YAML/catalogue integrity, modeled file-call budgets, runtime path resolution, and routing-parity fixtures.
