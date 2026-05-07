@@ -34,12 +34,13 @@ Historical release docs and older rc archives are not current smoke inputs unles
 explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-v0.3.1.0.skill.zip`. The internal RC evidence package
+`build/daee-epistemics-v0.3.1.0.skill.zip`. The public GitHub Release asset is the same checked
+payload renamed to `build/daee-epistemics-v0.3.1.0.skill`; publish/upload `.skill`, not both
+`.skill.zip` and `.skill`. The internal RC evidence package
 `build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built from this source
 state. The archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
-If a host expects a `.skill` upload, rename the checked `.skill.zip` payload to
-`daee-epistemics.skill`; do not zip the repository root or the top-level `skill/` directory.
+Do not zip the repository root or the top-level `skill/` directory.
 Current local release-artifact evidence is recorded in `docs/release-artifacts.md`; the binary
 archive is build output and is not committed.
 
@@ -147,7 +148,7 @@ current-release evidence: yes
 ## How to Promote Historical Smokes to Current-Package Evidence
 
 1. Build RC00005 with `package.ps1` and create/copy the public asset
-   `build/daee-epistemics-v0.3.1.0.skill.zip`.
+   `build/daee-epistemics-v0.3.1.0.skill`.
 2. Run the smoke prompts against that package.
 3. Replace trace/verdict provenance with the public release asset filename and SHA.
 4. Set `release-artifact relation: current-release`.

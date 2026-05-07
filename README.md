@@ -495,12 +495,12 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 ## Install / Package (Claude-First)
 
 The canonical user-facing upload name is `daee-epistemics.skill`. The public GitHub Release asset
-filename is `daee-epistemics-v0.3.1.0.skill.zip`, verified on the `v0.3.1.0` release. The internal
+filename is `daee-epistemics-v0.3.1.0.skill`, verified on the `v0.3.1.0` release. The internal
 RC evidence package `build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built
 from this source state.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
-at archive root. If a host expects `.skill`, rename that checked `.skill.zip` payload to
-`daee-epistemics.skill`; do not re-zip it.
+at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
+and `.skill`, and do not re-zip it.
 
 Binary skill archives are not committed to this repository. Build locally with `package.ps1` from
 the generated `skill/` root, or use the verified public GitHub Release asset.
@@ -514,6 +514,7 @@ Before release, regenerate and verify the runtime with the command set in [Sourc
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.1.0.skill.zip
+Copy-Item build\daee-epistemics-v0.3.1.0.skill.zip build\daee-epistemics-v0.3.1.0.skill
 ```
 
 Smoke tests should use the latest explicitly named rc package and hash from the current run.

@@ -3,7 +3,7 @@
 - package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8
 - release-artifact relation: historical-regression
 - current-release evidence: no
-- current source package filename: daee-epistemics-v0.3.1.0.skill.zip
+- current source package filename: daee-epistemics-v0.3.1.0.skill
 - current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44
 - model/host: Codex desktop local runtime
 - invocation mode: default /daee-epistemics
