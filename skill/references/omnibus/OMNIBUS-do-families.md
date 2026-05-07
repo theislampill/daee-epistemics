@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: do-core -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-core.md -->
-<!-- SOURCE_SHA256: f4901b4928bcdfd2f1548f4d4b8c6cc36e5e5b37f68b71717e3e7016b9f9f072 -->
+<!-- SOURCE_SHA256: e49ff622cf768a0d4ed6b20eaa79d2ae98f3a35f75c83f586194551c7c85be04 -->
 
 ---
 id: do-core
 module_class: case-library
 canonical_path: skill/references/case-library/do-core.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
   - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family
@@ -48,9 +48,9 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-1 through DO-6
 > **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-1 through DO-6 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-1 through DO-6 activates this load floor; `Load floor != release`. Gloss: release/render via `output-release.md` + `diagnostic-render-contract.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **Under-load guard:** A confirmed DO route involving semantic, register, authority, proof-method, or tribunal pressure requires loading and representing those owners in the IR — even when Layer B output remains short. Loading only this file plus one technique is insufficient for a complex case.
 
@@ -575,13 +575,13 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-second-loop.md -->
-<!-- SOURCE_SHA256: 9864a391cdbd2ab04b023ccefd427c441c1ce8bfe21482a91913e3dc6596c2e6 -->
+<!-- SOURCE_SHA256: 539c3fdb511a89711b3591542ffeb6beb950ef513e08ba8510034974a09a8181 -->
 
 ---
 id: do-second-loop
 module_class: case-library
 canonical_path: skill/references/case-library/do-second-loop.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes
   - HADD/cognitive-science, prophetic-moral-luck, Great Pumpkin, three-tier epistemology, or Islamic-specific moral objections is the live family
@@ -607,9 +607,9 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-7 through DO-15
 > **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-7 through DO-10 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-7 through DO-10 activates this load floor; `Load floor != release`. Gloss: release/render via `output-release.md` + `diagnostic-render-contract.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **DO-second-loop family-local load floor** (conditional on confirmed case-state, not global ambient):
 - V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
@@ -1078,6 +1078,27 @@ An imported ethical criterion — liberal political philosophy, secular human-ri
 - If discourse orientation is identity-performance or autotelic: do not engage the philosophical argument; DO-15 content cannot land in that register
 - If the interlocutor has not yet exhibited Type D usurpation explicitly (the criterion is latent, not stated): FPD + philosophical-usurpation.md governs the diagnostic phase before DO-15 content is released
 
+#### Moral-protest / hiddenness / worship-worthiness overlap rule
+
+For cases that combine moral protest, hiddenness, hell/accountability, and
+worship-worthiness protest, diagnose from the actual input. If an imported
+secular-humanist, liberal, or other worldview frame is present, type it through
+FPD and Level A / Level B discipline. Do not let DO-8 or identity-performance
+erase the surface burden.
+
+Correct classification:
+- Primary: DO-2 moral protest / evidential evil.
+- Primary: DO-1 divine hiddenness.
+- Secondary: DO-15 imported criterion.
+- Secondary: DO-8 hujjah/accountability as substantive correction.
+- Patterns: PF-10 moral protest where applicable; PF-2 evidentialist demand where applicable.
+- Frame: NS-4 / secular moral intuition as tribunal.
+
+Identity-performance may be noted with caution, but do not over-certify interior state.
+DO-8 is relevant when accountability or hujjah assumptions remain live, but it is a
+bounded downstream correction after FPD/M1/state re-read; it must not become the primary
+route merely because the prompt mentions worship or condemnation.
+
 #### Mandatory family-local load floor
 philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).
 
@@ -1145,13 +1166,13 @@ The operative response does not require claiming that every classical juristic p
 <!-- MODULE_ID: do-christian-extensions -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-christian-extensions.md -->
-<!-- SOURCE_SHA256: 8741c24920933aa28edb8a00b4bdf0c5c0efa96d93df0e8fa9102f4c10d31cc5 -->
+<!-- SOURCE_SHA256: 842d4d34d3abff56a9a04a94d03af800e72f550d1466cb7388e972fae635f7b2 -->
 
 ---
 id: do-christian-extensions
 module_class: case-library
 canonical_path: skill/references/case-library/do-christian-extensions.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion)
   - model identification complete before DO-12 or DO-13
@@ -1179,11 +1200,20 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-11 through DO-14 (Christian theological extension cases)
 > **use when:** Christian theological pressure family confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion); model identification complete; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script; do not load as first responder to any theological question
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-11 through DO-14 family activates this file's load floor; it does not authorize content release. Model identification is required before DO-12 and DO-13 routing.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-11 through DO-14 activates this load floor; `Load floor != release`. Gloss: model ID still gates DO-12/13; release via `output-release.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **Under-load guard:** DO-12 Trinity requires at minimum: model identification + definition-discipline/M9 for identity/counting terms + do-attribute-precision for person/nature pressure + V12 if multiple-independent-lords pressure precedes Christian overlay + V8 only after semantic/model discipline clears. Loading only this file plus V8 is a gate-integrity failure.
+
+**Execution floor, not load floor:** This file may authorize Christian-extension owners, but it does not license a component tour. For a released Trinitarian burden:
+- B1 perfection-criterion tribunal must be handled by `perfection-criterion-usurpation.md` when perfection, love, relation, maximality, or non-eventfulness is the governing pressure; downstream Trinity material remains held until the tribunal is refused or narrowed.
+- B2 model/predication must identify the operative model or the missing discriminator, then run `M9-predication-mode.md` on `person`, `nature`, `is God`, `one`, `three`, and worship/lordship referent if present or entailed.
+- Mystery, source prestige, canon authority, and comparative source claims remain held unless the state/noetic re-read licenses them as NewB.
+- B3 V12/tamanu releases only when independent lordship, worship-status plurality, or multiple-sovereign pressure is actually live after B2; otherwise V12 is held or returned as not-yet-target.
+- Each burden-cycle must show its state-change condition before the next cycle starts: what was cleared, what remains held, and why the next burden is materially different rather than another submove.
+
+**Failure conditions:** The extension fails if it answers "the Trinity" in the abstract, loads DO-12 before model/predication discipline, uses V12 before independence pressure is live, treats mystery/source prestige as a coherence repair, names many components without owner-specific operations, or collapses all Trinitarian material into one oversized burden.
 
 **DO-christian-extensions family-local load floor** (conditional on confirmed case-state, not global ambient):
 - V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
@@ -1574,13 +1604,13 @@ This is the operationally significant sub-question. The criterion for canonical 
 <!-- MODULE_ID: do-attribute-precision -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-attribute-precision.md -->
-<!-- SOURCE_SHA256: 5ea974385d019881cfd1fdff66f57f99ec98431dcc7a65bed0deadc8c049bf99 -->
+<!-- SOURCE_SHA256: 6b0c1fbcb7e40e0b6588f46f42215c6292b502beceec19457853159ad87ad0ab -->
 
 ---
 id: do-attribute-precision
 module_class: case-library
 canonical_path: skill/references/case-library/do-attribute-precision.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - live pressure involves how divine attributes are predicated
   - divine identity or essence/attribute relation is being argued
@@ -1722,13 +1752,13 @@ The following constitute gate-integrity failures for this file:
 <!-- MODULE_ID: philosophical-usurpation -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/philosophical-usurpation.md -->
-<!-- SOURCE_SHA256: b94286d453bd5e7f9b6298ed78d146d42f62d90abd8107b567b00a4f50758cee -->
+<!-- SOURCE_SHA256: d1b52587b510f0d8ded9273ca16377a681645b6c81b02002feb0346e6071b1c0 -->
 
 ---
 id: philosophical-usurpation
 module_class: case-library
 canonical_path: skill/references/case-library/philosophical-usurpation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - imported philosophical framework functioning as upstream tribunal over revelation
   - framework is not merely present but operating as court of appeal (Types A–D)
@@ -1864,13 +1894,13 @@ When usurpation is confirmed:
 <!-- MODULE_ID: sound-reason-epistemology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/sound-reason-epistemology.md -->
-<!-- SOURCE_SHA256: 21229d825efa27514bd2f2555707bf106c863b0861b305a861465143d7559157 -->
+<!-- SOURCE_SHA256: 7e7f3d238e194029a7d5f711f1dd50e9b64c9a95f8fe043748a6f4fc288156de -->
 
 ---
 id: sound-reason-epistemology
 module_class: governance
 canonical_path: skill/references/sound-reason-epistemology.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - case needs full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
 catalogue_registered: false
@@ -2559,13 +2589,13 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 <!-- MODULE_ID: prophecy-wahy-supremacy -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/prophecy-wahy-supremacy.md -->
-<!-- SOURCE_SHA256: 71e0fb57bb744c511db38bb94573296374bfb9057dd84a71473f95bbb5cc2bd3 -->
+<!-- SOURCE_SHA256: b1e1281d60c5dc05d1a5692dccf17456c3a23ef51d5fb6e84b2b72a94c89d01a -->
 
 ---
 id: prophecy-wahy-supremacy
 module_class: governance
 canonical_path: skill/references/prophecy-wahy-supremacy.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - case treats philosophical systems as legitimate arbiter of revelation
   - interlocutor requires revelation to satisfy a prior rational standard

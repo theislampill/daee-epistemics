@@ -2,7 +2,7 @@
 id: operative-contracts
 module_class: governance
 canonical_path: skill/references/diagnostics/operative-contracts.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - adding or auditing YAML operative front matter on any skill file
   - migrating a module class to the contract layer
@@ -75,7 +75,7 @@ Operative contracts declare what a file *is* and *should do*. The IR records wha
 
 `module-catalogue.json` is the master registry: three fields per entry (`id`, `path`, `module_class`) for all dispatched modules. When a module has an operative contract, the contract's `id`, `canonical_path`, and `module_class` must match the catalogue entry exactly.
 
-Governance files (framework-pipeline.md, routing-precedence.md, output-release.md, diagnostic-render-contract.md, operative-contracts.md, etc.) are not dispatched as modules and are not in the catalogue. They use `module_class: governance` and `catalogue_registered: false` in their contracts.
+Governance files (framework-pipeline.md, recursive-state-transitions.md, routing-precedence.md, output-release.md, diagnostic-render-contract.md, operative-contracts.md, etc.) are not dispatched as modules and are not in the catalogue. They use `module_class: governance` and `catalogue_registered: false` in their contracts.
 
 ---
 
@@ -171,7 +171,7 @@ When `verification_status: L_check` is present, the verification booleans must a
 id: M9-predication-mode
 module_class: tactic
 canonical_path: skill/references/tactics/M9-predication-mode.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - equivocation across term occurrences
   - domain-boundary failure (empirical method on non-empirical subject)
@@ -204,7 +204,7 @@ catalogue_registered: true
 id: P7-restoration-stops
 module_class: procedure
 canonical_path: skill/references/procedures/P7-restoration-stops.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any response sequence at risk of premature argument deployment
   - grief-primary or identity-performance orientation confirmed
@@ -240,7 +240,7 @@ catalogue_registered: true
 id: routing-precedence
 module_class: governance
 canonical_path: skill/references/diagnostics/routing-precedence.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - multiple diagnostic axes produce competing signals
   - suppression rules needed to prevent invalid routing combinations
@@ -264,7 +264,7 @@ catalogue_registered: false
 id: do-attribute-precision
 module_class: case-library
 canonical_path: skill/references/case-library/do-attribute-precision.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - live pressure involves how divine attributes are predicated
   - DO-6, DO-11, DO-12, or DO-13 confirmed in case-state
@@ -345,7 +345,7 @@ Listing a companion `id` that has no entry in `module-catalogue.json`. Companion
 Adding a `blocks` entry that contradicts the file's own prose routing rules. Front matter must not be used to tighten or loosen routing discipline beyond what the prose defines. If the prose says a route is permitted, `blocks` must not contradict it.
 
 **6. Governance files misclassified as dispatched modules**
-Assigning `module_class: diagnostic` (or any non-governance class) to a file like `framework-pipeline.md` or `routing-precedence.md` and setting `catalogue_registered: true`. These files are not dispatched as modules. Use `module_class: governance` and `catalogue_registered: false`.
+Assigning `module_class: diagnostic` (or any non-governance class) to a file like `framework-pipeline.md`, `recursive-state-transitions.md`, or `routing-precedence.md` and setting `catalogue_registered: true`. These files are not dispatched as modules. Use `module_class: governance` and `catalogue_registered: false`.
 
 **7. Verification fields used as coverage substitutes**
 Treating `verification_status` or the verification booleans as permission to claim a new topic is covered. Verification metadata only records the audited state of an existing file. Scope claims still require an owner route, catalogue/routing alignment where applicable, and explicit scope discipline.
@@ -364,7 +364,7 @@ Migration should proceed one module class per session, smallest class first, to 
 | 4 | `procedure` | P1–P6 | 6 files (P7 done in pilot) |
 | 5 | `diagnostic` | causal-series-taxonomy, definition-discipline, perfection-criterion-usurpation, proof-method-audit, etc. | ~10 files |
 | 6 | `case-library` | do-core, do-second-loop, do-christian-extensions, ns-* profiles, philosophical-usurpation, etc. | ~20+ files |
-| 7 | `governance` | framework-pipeline, SKILL.md, diagnostic-ir, output-release, diagnostic-render-contract, etc. | After all dispatched classes done |
+| 7 | `governance` | framework-pipeline, recursive-state-transitions, SKILL.md, diagnostic-ir, output-release, diagnostic-render-contract, etc. | After all dispatched classes done |
 
 Do not migrate an entire class in a single pass unless the class is small and the diffs are brief.
 
@@ -395,4 +395,5 @@ The development validators check these contract properties. The packaged skill d
 | `references/diagnostics/diagnostic-ir.schema.json` | Runtime IR schema; `matched_modules`, `routing_gate`, `output_shape` are IR fields — not contract fields |
 | `references/module-codes.md` | Canonical code reference for all code systems the skill emits; contract `id` values derive from these codes |
 | `skill/SKILL.md` | Reference Architecture; operative contracts table added |
-| `references/diagnostics/framework-pipeline.md` | Canonical pipeline; the contract layer sits upstream of runtime dispatch, not inside the pipeline execution path |
+| `references/diagnostics/framework-pipeline.md` | Operative pipeline audit surface; the contract layer sits upstream of runtime dispatch, not inside the pipeline execution path |
+| `references/diagnostics/recursive-state-transitions.md` | Abstract recursive-state owner; contract metadata is not the post-render decision itself |

@@ -1,0 +1,100 @@
+{
+  "id": "muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair",
+  "prompt": "Every teacher tells me classical Islamic theology answers this, but the Ashari, Maturidi, Athari, and Taymiyyan framings all seem to speak past each other. I still hear that God hides himself, condemns people to hell, and demands worship, and I am exhausted by authorities using those labels to silence sincere doubt. I am Muslim, but I no longer know whose criteria I am supposed to trust.",
+  "case_class": "complex",
+  "notes": "Third member of the hiddenness/hell/worship vocabulary minimal-pair triangle. The surface words overlap fixtures 11 and 12, but the structural read is Muslim-internal authority fatigue with source-status and authority-wound discrimination. This guards against topic-to-IR fingerprinting by requiring divergence from secular moral protest and grief-primary readings on existing diagnostic discriminators.",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "mixed-case-handling",
+      "ns-8-muslim-internal-crisis",
+      "P7-restoration-stops",
+      "recursive-state-transitions",
+      "output-release"
+    ],
+    "optional_modules": [
+      "discourse-orientation",
+      "noetic-reading-checklist",
+      "diagnostic-render-contract",
+      "routing-precedence",
+      "P6-universal-aqidah-principle",
+      "V7-taqlid-check",
+      "V11-taqlid-transition",
+      "symmetric-taqlid-check",
+      "M3-orphaned-intuition",
+      "V2-reconstituting-reason"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-profiles",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-procedures",
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-rt-transmission",
+      "ns-4-secular-moral-realist",
+      "M4-grief-register",
+      "M1-self-refutation",
+      "philosophical-usurpation"
+    ],
+    "required_governance": [
+      "Muslim-Internal Crisis",
+      "authority-fatigue",
+      "Disaggregation is the first move",
+      "authority wound",
+      "do not engage the textual argument first",
+      "Hold textual or moral counter-content",
+      "Do not defend everything at once",
+      "Authority Wound + Authority Tribunal",
+      "test jurisdiction before occurrence",
+      "wound-vs-tribunal distinction",
+      "Source-Status & Noetic-Frame Non-Equivalence Discipline",
+      "Rule S-9",
+      "classical-theology umbrella",
+      "operative noetic frame",
+      "compact DSL/IR header + Layer B + State/noetic re-read",
+      "read status",
+      "confidence",
+      "decisive missing differentiator",
+      "held routes rechecked",
+      "STOP / HOLD / RECURSE / PARTIAL"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-profiles.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "profiles",
+      "procedures",
+      "techniques",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "hiddenness-hell-worship-structural-triangle",
+    "minimal_pair_shared_surface_tokens": [
+      "hides himself",
+      "hell",
+      "demands worship"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "destabilized Muslim-internal crisis; no hidden motive certified",
+      "do_orient": "truth-seek plus authority-fatigue and destabilization",
+      "restoration_target": "disaggregate authority wound, school/source-status confusion, and doctrinal pressure before content",
+      "routing_gate": "NS-8 / mixed-case / P7 before doctrinal or school-comparison release"
+    }
+  }
+}

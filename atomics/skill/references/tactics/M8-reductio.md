@@ -2,7 +2,7 @@
 id: M8-reductio
 module_class: tactic
 canonical_path: skill/references/tactics/M8-reductio.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor's position, followed consistently, produces formally contradictory, obviously absurd, or manifestly rejected consequences
 companions:
@@ -54,4 +54,4 @@ Assume P. Show that P, followed consistently, produces conclusions the interlocu
 4. If they accept X: stop there or leave one bounded question alive. Do not continue down the chain automatically in the same round; P7 Stop-2 governs. Any further extension requires a fresh reassessment of case-state, register, concealment/orientation, and release conditions.
 5. If they reject X: "X follows necessarily from your position. You cannot reject X without rejecting the position that generated it."
 
-M8 is not a one-shot contradiction move and not an autonomous chain-dump. It is a selective recursive tactic: land one consequence, reassess the live state, and extend only if the restoration target still requires further compounding. Same-round continuation is governed by P7 stops, register discipline, and current release conditions.
+M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. Gloss: land one consequence, reassess live state, and extend only if the restoration target still requires further compounding under P7, register discipline, and current release conditions.

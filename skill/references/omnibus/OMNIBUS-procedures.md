@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: procedures-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/INDEX.md -->
-<!-- SOURCE_SHA256: 20e39bd5ed8b514b4f1093021ecff175ba06e5e6f1f9bd0b8809f3daba625438 -->
+<!-- SOURCE_SHA256: 87c0aabad0ced5982c4905787db632bd36ee9d7a47f587598dafcdd2d1a5b83e -->
 
 ---
 id: procedures-index
 module_class: governance
 canonical_path: skill/references/procedures/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a procedure after V1 case-classification
 catalogue_registered: false
@@ -38,6 +38,18 @@ well by a single tactic or technique.
 - Start with V1 before choosing a procedure, and use M5 inside V1's triage phase.
 - Procedures govern sequencing. They do not cancel the need for tactic and technique discipline.
 - If the case only needs one move, do not escalate it into a procedure.
+
+## Family Execution Floor
+
+Naming a procedure is never procedure execution. If the procedure file has an owner-specific operation floor, that floor governs. If it does not, this fallback floor governs:
+
+1. identify why the case needs multi-stage sequencing rather than one tactic or technique;
+2. release only the current stage's live burden and matched operation;
+3. show the result as a state-change before moving to the next stage;
+4. keep later procedural stages held unless `Land(B) -> R` licenses NewB;
+5. fail the release if the procedure becomes a topical outline or pastoral close without operation.
+
+Procedures do not suspend pattern-first routing, source-status restrictions, burden-complete treatment, or the one-final-Closing-Formulation rule.
 
 ## Procedures
 
@@ -68,13 +80,13 @@ well by a single tactic or technique.
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: f15158f03aab7a1800c00abb6f37a0e17e4b748562e31debaa3730ab1fa13384 -->
+<!-- SOURCE_SHA256: 4902cf93d6e581e1ff5d7c827aecf8851b0846065a5d292cac3c286f15ee4d81 -->
 
 ---
 id: P1-fitrah-restoration
 module_class: procedure
 canonical_path: skill/references/procedures/P1-fitrah-restoration.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment
   - goal is to create conditions for fiṭrah recovery, not to win an argument
@@ -288,13 +300,13 @@ active and what condition releases the next move, P1 is not yet lawfully deploye
 <!-- MODULE_ID: P2-objection-mapping -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P2-objection-mapping.md -->
-<!-- SOURCE_SHA256: e09d5eab29d9ef4ceb9c08f0f1d6b4cdf8f06cc10c233b2ec04174e624845718 -->
+<!-- SOURCE_SHA256: 0f37ddae1677edebe2e9121f0c87d84502802218ccb3335f800020c3176fabd1 -->
 
 ---
 id: P2-objection-mapping
 module_class: procedure
 canonical_path: skill/references/procedures/P2-objection-mapping.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor presenting a battery of intellectual objections
   - engagement is primarily critical rather than existential
@@ -444,10 +456,11 @@ avoidance, or a need for staged restoration rather than taxonomy.
 
 ## Hold/Release Discipline
 
-Hold all first-order answers until the map is complete enough to identify the upstream
-burden. Hold downstream DO/RT modules when a criterion, source-authority, or testimony
-standard is controlling their admissibility. Release only the first upstream item in the
-sequence, then refresh the case-state.
+Use `H(n+1) = (Hn ∪ InputLive_n) - Released_n` and `Land(B) -> R` from
+`recursive-state-transitions.md`; release amount/order remains owned by `output-release.md`.
+Gloss: hold first-order answers until the map identifies the upstream burden, and hold
+downstream DO/RT modules while criterion, source-authority, or testimony standard controls
+admissibility. Release only the first upstream item, then refresh case-state.
 
 If one objection is answered and the interlocutor shifts to a new objection from a different
 bucket, do not automatically release the next answer. Re-map the shift. If the shift reveals
@@ -469,13 +482,13 @@ and which material is held, the procedure has collapsed into answer-stacking.
 <!-- MODULE_ID: P3-reason-revelation-tension -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P3-reason-revelation-tension.md -->
-<!-- SOURCE_SHA256: e8f7c7d4651bf610e4b4b0544e2ad11f0844673b662b084381537669b141bd08 -->
+<!-- SOURCE_SHA256: 257ea00d96aed9f27b37dec30142c4a59bc6229a4c300ad45b494b0fc8cd8f03 -->
 
 ---
 id: P3-reason-revelation-tension
 module_class: procedure
 canonical_path: skill/references/procedures/P3-reason-revelation-tension.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - intellectually serious interlocutor stuck on perceived fundamental conflict between rational/scientific standards and religious belief
   - often combined with kalāmic interlocutor profile (NS-6, NS-10)
@@ -627,13 +640,13 @@ it restores the order between sound reason and revelation.
 <!-- MODULE_ID: P4-maieutic -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P4-maieutic.md -->
-<!-- SOURCE_SHA256: f5c841d0deac07f0c5ac90d689e3b8f0e45adc574511fa89bb471a1f68c6d301 -->
+<!-- SOURCE_SHA256: 3c672d58c5474c422749b5ec9c34b2f3cd42d06e203851a0e7ee74481ac76bea -->
 
 ---
 id: P4-maieutic
 module_class: procedure
 canonical_path: skill/references/procedures/P4-maieutic.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor in inkār mode — qalb has already registered what the tongue denies
   - recognition is present but suppressed; not the case where genuine inquiry is absent
@@ -780,13 +793,13 @@ sets up the next answer.
 <!-- MODULE_ID: P5-already-believing -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P5-already-believing.md -->
-<!-- SOURCE_SHA256: 0808d2d87a5d77cc8b0180dae50dd772450227ff9df2a4f03dfe553f889b854f -->
+<!-- SOURCE_SHA256: 27b9d742f733c0c291d6cbb17e81ec5be19cfe75f39435a303661b9716c0f1a9 -->
 
 ---
 id: P5-already-believing
 module_class: procedure
 canonical_path: skill/references/procedures/P5-already-believing.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - believer whose belief is shallow, untested, or held by taqlīd
   - belief fragile under pressure; moving from inherited assumption to examined conviction
@@ -921,9 +934,10 @@ pastoral and epistemic strengthening path after that pressure has been typed.
 
 ## Hold/Release Discipline
 
-Hold reassurance until the specific article of faith is named. Hold rebuttal until the source
-and pressure type are vetted. Hold F3 practice-consolidation until the strongest live pressure
-has been addressed proportionally; otherwise practice is misused as avoidance.
+Use `B -> {s1...sn} -> Land(B) -> R(H,Δ)` from `recursive-state-transitions.md`;
+release amount/order remains owned by `output-release.md`. Gloss: hold reassurance until
+the article of faith is named, rebuttal until source and pressure type are vetted, and F3
+practice-consolidation until the strongest live pressure has been addressed.
 
 Release one strengthening move at a time: source-vetting, objection classification, strongest
 answer, evidential broadening, or practice consolidation. After each landed move, refresh V1
@@ -945,13 +959,13 @@ pressure, lawful next owner, then practice and steadiness.
 <!-- MODULE_ID: P6-universal-aqidah-principle -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P6-universal-aqidah-principle.md -->
-<!-- SOURCE_SHA256: f235e48f50280c285538128016113e3f971d7f2800141c288f3eb87d4da18993 -->
+<!-- SOURCE_SHA256: 7b224b249cad79a46eda566b9b004a68159abb682355762bc6749ddbe0f1d373 -->
 
 ---
 id: P6-universal-aqidah-principle
 module_class: procedure
 canonical_path: skill/references/procedures/P6-universal-aqidah-principle.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor claims no religion, no worldview, no ʿaqīdah
   - the claim that there is no righteous guidance asserted as a position

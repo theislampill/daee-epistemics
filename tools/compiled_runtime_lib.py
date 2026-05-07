@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-COMPILER_VERSION = "0.3.0"
+COMPILER_VERSION = "0.3.1"
 BUNDLE_MAPPING_VERSION = "2026-04-28.phase5"
 SOURCE_ROOT_REL = "atomics/skill"
 OUTPUT_ROOT_REL = "skill"
@@ -215,6 +215,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
         "skill/references/diagnostics/mixed-case-handling.md",
         "skill/references/diagnostics/anti-patterns.md",
         "skill/references/diagnostics/framework-pipeline.md",
+        "skill/references/diagnostics/recursive-state-transitions.md",
         "skill/references/diagnostics/routing-precedence.md",
         "skill/references/kernel-thesis.md",
         "skill/references/metaphysical-architecture.md",
@@ -316,6 +317,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
 
 EXTRA_INPUTS = [
     "skill/SKILL.md",
+    "skill/references/diagnostics/framework-pipeline.yaml",
     "skill/references/diagnostics/module-catalogue.json",
     "skill/references/diagnostics/diagnostic-ir.schema.json",
     "skill/references/diagnostics/operative-contract.schema.json",

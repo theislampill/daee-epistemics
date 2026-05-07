@@ -2,7 +2,7 @@
 id: procedures-index
 module_class: governance
 canonical_path: skill/references/procedures/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a procedure after V1 case-classification
 catalogue_registered: false
@@ -18,6 +18,18 @@ well by a single tactic or technique.
 - Start with V1 before choosing a procedure, and use M5 inside V1's triage phase.
 - Procedures govern sequencing. They do not cancel the need for tactic and technique discipline.
 - If the case only needs one move, do not escalate it into a procedure.
+
+## Family Execution Floor
+
+Naming a procedure is never procedure execution. If the procedure file has an owner-specific operation floor, that floor governs. If it does not, this fallback floor governs:
+
+1. identify why the case needs multi-stage sequencing rather than one tactic or technique;
+2. release only the current stage's live burden and matched operation;
+3. show the result as a state-change before moving to the next stage;
+4. keep later procedural stages held unless `Land(B) -> R` licenses NewB;
+5. fail the release if the procedure becomes a topical outline or pastoral close without operation.
+
+Procedures do not suspend pattern-first routing, source-status restrictions, burden-complete treatment, or the one-final-Closing-Formulation rule.
 
 ## Procedures
 

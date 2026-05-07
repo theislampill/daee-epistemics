@@ -2,7 +2,7 @@
 id: terminology
 module_class: governance
 canonical_path: skill/references/terminology.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - Arabic term usage needs discipline or enforcement
 catalogue_registered: false
@@ -350,6 +350,51 @@ Use these only when they change routing or scope:
   created system, it is created with that system.
 - space: the spatial extension or location-property of particulars, not a self-standing container
   existing apart from them.
+
+---
+
+## Noetic and Meta-Noetic Vocabulary
+
+These are route-critical technical terms. Use them only when they change diagnosis, routing,
+scope control, or the visibility of a higher-order burden.
+
+- **Noetic structure:** the operative configuration of commitments, categories, inferential
+  norms, testimonial attitudes, interpretive filters, background assumptions, and
+  belief-relations by which a subject judges reality. It is not merely "what someone believes"
+  or a worldview label; it is the belief-operating structure by which the person treats some
+  things as basic, obvious, rational, neutral, evidential, authoritative, or interpretable.
+- **Governing epistemic rule:** a deeper rule inside a noetic structure that determines what
+  counts as knowledge, evidence, authority, inference, neutrality, rationality, or interpretation.
+  Examples include "only science counts as real evidence," "religious belief needs proof but
+  secular assumptions are default," or "testimony is weak unless reduced to neutral observation."
+  These are not merely beliefs; they are operating rules that govern which beliefs feel plausible.
+- **Noetic memetics:** the study of how a noetic structure, not merely one idea, spreads.
+- **Meta-noetic memetics:** the study of how noetic structures and their governing epistemic
+  rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and instantiate
+  linguistically across persons and communities. It tracks how whole belief-structures cohere,
+  how they reproduce as bundled ideologies, how groups stabilize shared interpretations of
+  reality, and how rules of knowledge, evidence, authority, neutrality, rationality, and
+  interpretation become repeatable through slogans, labels, arguments, habits, institutions,
+  identity patterns, and social pressure.
+- **Identity as modal/stabilizing node:** identity can be a modal node in a noetic structure:
+  not necessarily the conclusion, premise, or primary load-bearing node, but a stabilizing
+  condition that affects how premises, authorities, moral criteria, discourse roles, and
+  recognition-costs are held. Identity may be part of the noetic equilibrium, but it cannot by
+  itself carry the verdict.
+- **Linguistic instantiation:** the way a noetic structure becomes repeatable in words, slogans,
+  doubts, objections, labels, frames, and argument habits. A slogan is not a route by itself; it
+  is evidence to be typed through the existing Diagnostic IR and pattern-profile owners.
+- **Load-bearing node:** the criterion, authority rule, semantic hinge, category-set, or noetic
+  blocker that keeps regenerating downstream claims. Clearing a load-bearing node changes the
+  structure; answering one downstream sentence may not.
+- **Collapse radius:** the downstream beliefs, objections, routes, or social-linguistic patterns
+  that must be re-evaluated when a load-bearing node clears.
+
+Operational boundary: meta-noetic memetics gives an object-domain for diagnosis. The DSL/IR gives
+the operative representation. Identity-linked commitments, slogans, practices, communities, moral
+vocabularies, and authority postures may be read as stabilizing or reproducing a noetic structure
+only through existing diagnostic surfaces. This vocabulary does not create new routes, IR fields,
+PF codes, module activation rules, or source owners.
 
 ---
 

@@ -2,7 +2,7 @@
 id: F3-practice-epistemic-access
 module_class: tactic
 canonical_path: skill/references/tactics/F3-practice-epistemic-access.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor genuinely open to inquiry; intellectual arguments acknowledged but insufficient
   - F2 has created openness
@@ -24,6 +24,11 @@ operator_pack_eligible: true
 ---
 
 # F3 — Practice as Epistemic Access
+
+**Source-status note:** Named authors or inherited formulations in this file are internal
+orientation only. In default output, do not cite al-Ghazali or any named scholar as public
+support unless the user explicitly asks or validated IR requires source-comparison. The
+released operation is practice-as-access: target, operation, result, and state-change.
 
 **Register:** Fideist
 **Deploy when:** Interlocutor is genuinely open to inquiry; intellectual arguments have
@@ -74,7 +79,7 @@ the fruits of its own relationship with the Creator is not at the mercy of exter
 intellectual challenges in the same way as the soul that knows Islam only as a set of
 propositions. The experiential grounding is the deeper grounding.
 
-Al-Ghazali articulates the mechanism precisely:
+Internal source-status illustration of the mechanism:
 
 "When you have abundantly examined the Qurʾān and Sunnah, you will inevitably arrive
 at knowledge that the Prophet ﷺ embodied the highest levels of prophecy, and that is
@@ -114,7 +119,8 @@ engagement — it is what makes intellectual engagement able to go deeper.
 3. For the seeker: frame practices as investigation. "Try the prayer. See what happens
    to the quality of your attention. See whether the claims of the tradition about the
    qalb are borne out in your experience."
-4. For the already-believing: make the al-Ghazali account explicit — the accumulation
-   of experience is itself the epistemological path to certainty.
+4. For the already-believing: make the repeated-experience account explicit - the accumulation
+   of experience is itself the epistemological path to certainty. Keep the author name held
+   in default output unless source-comparison is requested or IR-required.
 5. Connect to V5 (directing attention to signs) and R2 (the reminder) — practice
    creates the conditions under which signs land as recognition rather than as premises.

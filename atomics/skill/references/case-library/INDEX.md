@@ -2,7 +2,7 @@
 id: case-library-index
 module_class: governance
 canonical_path: skill/references/case-library/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting or confirming a case-library module after V1 diagnosis
 catalogue_registered: false
@@ -19,6 +19,18 @@ the case still requires.
 - A case file sharpens a recurring objection family. It does not replace noetic diagnosis.
 - Load one case file at a time unless the case genuinely spans two confirmed families.
 - Pair case files with techniques and tactics; do not let the case file become the whole response.
+
+## Family Release Floor
+
+Loading a case-library file is not release permission. A case file may supply recognition, discriminators, and owner handoffs, but it does not authorize a topic-to-answer shortcut. Release requires:
+
+1. validated IR and pattern-first routing before the case family is used;
+2. the matched TTP/operator file actually performing the work;
+3. the case file's substantive material staying bounded to the released live burden;
+4. `Land(B)` supported by operation result and state/noetic re-read;
+5. held case material remaining held through Restorative Response and Closing Formulation unless NewB is licensed.
+
+Case-library content must not become an apologetic bank, denomination-specific answer script, source/context parade, or comparative-neutral survey. Case files sharpen routed execution; they do not override routing.
 
 ## Routing Table
 
@@ -67,15 +79,15 @@ the case still requires.
 
 **DO codes identify pressure families, not standalone rebuttal scripts. A DO code alone does not authorize answer release.**
 
-**DO dispatch rule — all six conditions required:**
-1. the global diagnostic floor (V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md);
-2. the confirmed DO family;
-3. the family-local load floor;
-4. all matched TTP / diagnostic owners justified by the current case-state;
-5. output-release / Layer B discipline;
-6. P7 STOP / HOLD / RECURSE / PARTIAL discipline.
+**DO dispatch invariant:** global diagnostic floor + confirmed DO family + family-local load floor
++ matched owners + release/P7 discipline, then:
 
-A confirmed topic family activates its load floor, not merely its named case file.
+```text
+B -> {matched s} -> Layer B(released) + H(held) -> R
+```
+
+Gloss: a confirmed topic family activates its load floor, not merely its named case file;
+release waits for `output-release.md`, `diagnostic-render-contract.md`, and P7.
 
 **Negative routing rules:**
 ```
@@ -85,18 +97,9 @@ Do not route as: "attribute coherence → do-core.md → V8 → answer."
 Do not route as: "canon authority → do-christian-extensions.md → answer."
 ```
 
-**Correct route shape:**
-```
-diagnostic gate
-→ claim-level / PF / upstream blocker read
-→ confirmed DO family
-→ family-local load floor
-→ matched semantic / authority / proof / register owners
-→ DO substantive insight only after upstream gates clear
-→ bounded Layer B
-→ held downstream material
-→ state refresh
-```
+**Correct route shape:** diagnostic gate -> claim/PF/upstream read -> confirmed DO family
+-> family-local load floor -> matched semantic/authority/proof/register owners ->
+`B -> {matched s} -> Layer B(released) + H(held) -> R`.
 
 **DO-family near-miss rules:**
 - hiddenness may be grief-primary (M4/P7) rather than DO-1 philosophical hiddenness; run M4 discriminator first

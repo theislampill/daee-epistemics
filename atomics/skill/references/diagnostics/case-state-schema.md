@@ -2,7 +2,7 @@
 id: case-state-schema
 module_class: governance
 canonical_path: skill/references/diagnostics/case-state-schema.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any substantive response needs explicit routing state
 catalogue_registered: false
@@ -10,21 +10,29 @@ catalogue_registered: false
 
 # Case State Schema
 
-This file governs how the skill surfaces its read of a case. It is not a separate tactic.
-It is the compact metadiscursive layer that makes routing legible and auditable.
-Use this file as the canonical case-state shape wherever routing legibility matters.
+This file governs the internal case-state record and visible case-state rendering when a
+diagnostic render is selected. It is not a separate tactic and it is not a default output
+template. Default mode is derived from this state internally but does not print the full
+`[Case State]` block.
 
-The case-state is the surfaced contract derived from the validated Diagnostic IR. It surfaces the
-live noetic configuration as the object of diagnosis, not a paraphrase of the whole discourse.
+The case-state is the control record derived from the validated Diagnostic IR. In `:dsl`,
+`:audit`, pass-review, or diagnostic trace, it may be surfaced to make routing legible and
+auditable. In default `/daee-epistemics`, it governs prose without becoming the prose.
+It tracks the live noetic configuration as the object of diagnosis, not a paraphrase of the whole discourse.
 Use it to keep two things distinct: the noetic structure itself, and the meta-noetic memetic
 dynamics shaping it. The former is the operative configuration of commitments, grounding,
-testimony, filters, and dependencies. The latter is how semantic-intellectual units dock,
-stabilize, distort, or lose force inside that configuration.
+testimony, filters, and dependencies. The latter is how whole noetic structures and their
+governing epistemic rules form, function, stabilize, defend themselves, mutate, reproduce,
+spread, and become linguistically instantiated through recurring slogans, labels, arguments,
+habits, and social patterns.
 
 ## IR Derivation Map
 
-The `[Case State]` block is the surfaced form of the validated Diagnostic IR. Every field in
-the surfaced block must be traceable to an IR source. This table is the tracing protocol.
+The `[Case State]` block is the diagnostic-render form of the validated Diagnostic IR. Every
+visible field in `:dsl`, `:audit`, pass-review, or diagnostic trace must be traceable to an IR
+source. In default mode, these fields remain internal unless a materially necessary distinction
+can be compressed into ordinary prose without printing the block. This table is the tracing
+protocol.
 
 | Surfaced `[Case State]` field | IR source field | Derivation type |
 |-------------------------------|----------------|-----------------|
@@ -50,7 +58,7 @@ the surfaced block must be traceable to an IR source. This table is the tracing 
 | `Register-hold` | `Routing gate: register-hold` + `What is withheld and why` | surfaced expansion — populate only when IR has register-hold gate and withheld content |
 | `Deployable on shift to` | `What is withheld and why` | surfaced expansion — names the release condition stated in the IR withheld field |
 | `Decisive missing differentiator` | `What remains live` | surfaced expansion — names one specific signal from the IR's open-axis list |
-| `Post-render gate` | `post_render_gate` | direct — mandatory State Refresh / Re-Entry Gate after each bounded move |
+| `Post-render gate` | `post_render_gate` | direct — mandatory state re-read / re-entry gate after each bounded move |
 | `Cleared this pass` | `post_render_gate.cleared_this_pass` | direct |
 | `Remaining live distortions` | `post_render_gate.remaining_live_distortions` | direct |
 | `Held routes rechecked` | `post_render_gate.held_routes_rechecked` | direct |
@@ -63,18 +71,23 @@ the surfaced block must be traceable to an IR source. This table is the tracing 
 | `Sequencing rationale` | `Matched modules` + `Routing gate` + routing-precedence rules | case-state-schema-native — explains module ordering; must not justify a sequence the IR's routing gate has blocked |
 
 **Governance rule:** A `[Case State]` field populated with content that has no IR source or
-surfaced expansion path is improvised output. Improvised output violates `SKILL.md` Rule 7.
+diagnostic-render expansion path is improvised output. Improvised output violates `SKILL.md` Rule 7.
 If the IR cannot support a field, either (a) populate the IR field first, or (b) leave the
 surfaced field blank rather than filling it from prose judgment.
 
-**Compression rule:** In ordinary mode, surfaced output may omit inactive or routine fields
-(e.g., `Claim level` when first-order, `Pattern profile` when `none`). Omission means the
-field was checked and found inactive, not that the IR was not typed. The internal IR must
-still carry `Claim-level: first-order` and `Pattern-profile: none` explicitly.
+**Default compression rule:** In default mode, do not print the full `[Case State]` block. The
+answer may mention only materially necessary distinctions in prose. Omission from visible prose
+means the field was checked and either inactive, routine, or not needed for public legibility;
+it does not mean the IR was untyped. The internal IR must still carry `Claim-level: first-order`
+and `Pattern-profile: none` explicitly when those are the validated values.
 
 ## Standard Form
 
-Use this block when diagnosis matters to the response:
+Render-mode scope: this template is an internal control shape and may be visible only in
+`:dsl`, `:audit`, pass-review, or diagnostic trace. It is not a default output template.
+
+Use this block only when diagnostic rendering is selected (`:dsl`, `:audit`, pass-review, or
+diagnostic trace). It is not the default `/daee-epistemics` output template:
 
 ```text
 [Case State]
@@ -122,8 +135,8 @@ Use this block when diagnosis matters to the response:
 ## Field Discipline
 
 - `Case family` names the class of case, not the whole argument history.
-- `Claim-level` is required when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the full Diagnostic IR is being surfaced. In narrow routine first-order cases it may be omitted from the surfaced case-state after the diagnostic pass has found no criterion, category, or noetic-order fight. Omission means "no higher-order burden detected," not "unknown."
-- `Reason-category` is required. Emit `1`, `2`, `3`, or `4` from `reason-disambiguation.md`. The routing gate depends on this field: category 3 or 4 blocks content until V2; category 2 requires deformation-first gate; category 1 leaves the gate open. Do not leave this field blank on any case where intellectual content is being pressed.
+- `Claim-level` is required internally when a higher-order burden is visible, when `cross-level` sequencing is needed, or when the full Diagnostic IR is being surfaced in `:dsl` or `:audit`. In narrow routine first-order cases it may be omitted from default prose after the diagnostic pass has found no criterion, category, or noetic-order fight. Omission means "no higher-order burden detected," not "unknown."
+- `Reason-category` is required in the internal case-state. Carry `1`, `2`, `3`, or `4` from `reason-disambiguation.md`. The routing gate depends on this field: category 3 or 4 blocks content until V2; category 2 requires deformation-first gate; category 1 leaves the gate open. Do not leave this field blank on any case where intellectual content is being pressed.
 - `Foreign-premise status` is required when criterion-importing, tribunal-installation, or framework-importing elements are visible. The `[Foreign Premise Detection]` block from `foreign-premise-detection.md` feeds this field. If FPD was not run and this field is blank, the `Primary upstream issue` field cannot be reliably populated.
 - `Upstream findings` is the compact owner hook for upstream burdens that must stay live across passes without collapsing into one label. Use only the canonical tags named in the standard form. When both an imported tribunal and a semantic-discipline problem are live, include both tags and let `Sequencing rationale` state the intervention order rather than erasing one into the other. This is also the surfaced home for tribunal installation, semantic capture, and related meta-noetic pressures when they are doing routing work.
 - `Primary upstream issue` must reflect FPD output when a foreign premise is live. Stating "the interlocutor doubts X" is not an upstream issue; naming the specific criterion, tribunal, prior probability assignment, or interpretive filter that is generating the objection is.
@@ -152,7 +165,7 @@ Use this block when diagnosis matters to the response:
 - `Sequencing rationale` should explain sequencing, not restate file names.
 - `Confidence` should be marked as `strong`, `provisional`, or `low`.
 - `Decisive missing differentiator` should name the one signal that would collapse the remaining ambiguity.
-- `[Source Basis]` is the companion block used when the reply combines files or needs explicit source-status marking. Omit empty lines rather than filling every marker slot performatively.
+- `[Source Basis]` is the companion diagnostic-render block used when the reply combines files or needs explicit source-status marking. In default mode, keep source-status internal or integrate a compact source note only when it materially improves the answer; do not print a source-basis ledger. Omit empty lines rather than filling every marker slot performatively.
 - `Source type / weight` is optional. Use it when unlike materials are joined or when a lighter source is being used only for sequencing, illustration, or operational reminder rather than for the core doctrinal or epistemic claim.
 - `Restoration source` is optional. Use it when the positive picture is being drawn from a clearly anchored higher-weight source rather than from free synthesis.
 
@@ -184,9 +197,13 @@ Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be
 
 ## Post-Render Gate Block
 
+Visible block format is `:audit` / diagnostic-trace only. In default mode this gate runs
+internally and renders only as prose transition or clean STOP/PARTIAL wording when needed.
+
 Use this block after every bounded restorative move before STOP, HOLD, RECURSE, or PARTIAL is
-declared. It is the surfaced form of the IR `post_render_gate`; it may be compact in ordinary
-responses, but it must exist in the governing state.
+declared when diagnostic rendering is selected. It is the diagnostic-render form of the IR
+`post_render_gate`; in default mode the state re-read must exist internally and any same-response
+RECURSE must be visible through a short prose transition, not through this block.
 
 ```text
 [Post-Render Gate]
@@ -215,13 +232,14 @@ Field discipline:
 
 ## Compression Rule
 
-Do not narrate every field in every answer. Surface only the fields that improve governance, legibility, or trust. The point is disciplined visibility, not transparency theater.
+Do not narrate every field in every answer. Surface only the fields that improve governance, legibility, or trust in the selected render mode. The point is disciplined visibility, not transparency theater.
 
 Surface-mode policy:
 
-- **Ordinary mode:** keep surfaced governance concise. Compress routine inactive fields and state only what materially governs the next move.
-- **Advanced mode:** when the task is audit-facing, analytic, or explicitly asks for architecture visibility, surface the richer state directly from the validated IR: `claim level`, `pattern profile`, `routing gate`, `alignment state`, `recognition strength`, `continuation eligibility`, current-pass `matched modules`, and one brief theory-to-routing bridge when it materially clarifies the live route.
-- The two modes change surfaced explicitness, not internal discipline. The internal IR stays fully typed in both.
+- **Default mode:** do not print the full `[Case State]`, `[Source Basis]`, `matched_modules`, route plan, or post-render ledger. Render governed prose from the internal state and mention only the distinctions needed for the bounded answer.
+- **DSL mode:** compact case-state may appear when it improves routing legibility; show only governing fields rather than the full audit ledger.
+- **Audit mode:** when the task is audit-facing, analytic, or explicitly asks for architecture visibility, surface the richer state directly from the validated IR: `claim level`, `pattern profile`, `routing gate`, `alignment state`, `recognition strength`, `continuation eligibility`, current-pass `matched modules`, and one brief theory-to-routing bridge when it materially clarifies the live route.
+- The modes change surfaced explicitness, not internal discipline. The internal IR stays fully typed in all modes.
 
 ## Concealment x Orientation Routing Matrix
 

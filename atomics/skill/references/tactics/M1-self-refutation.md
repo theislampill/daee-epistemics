@@ -2,7 +2,7 @@
 id: M1-self-refutation
 module_class: tactic
 canonical_path: skill/references/tactics/M1-self-refutation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - before constructing any response — check whether objection premises undermine the objection itself
 routing_effects:
@@ -64,12 +64,10 @@ what the interlocutor has just seen. If they have seen it, elaboration reduces t
 what they saw. If they have not seen it, more argument will not produce seeing, but it will
 let them find cover in the additional content.
 
-**Governed continuation note:** M1 is a selective recursive operator, not a license to keep
-driving once the collapse is visible. If the move lands, Stop-2 governs the current pass.
-Any continuation requires a refreshed V1 read showing the restoration target still unmet and
-no stop, register-hold, or semantic gate live for the next move. A fresh differentiating
-signal may arise in a later reply or inside the same message through an accompanying
-proposition or entailment; without that, stop.
+**Governed continuation note:** M1 follows `B -> Land(B) -> R -> Decision` from
+`recursive-state-transitions.md`. Gloss: if the collapse lands, Stop-2 governs; continue
+only from refreshed V1 with unmet `B`, no stop/register/semantic gate, and a fresh
+differentiating signal from a later reply or same-message proposition/entailment.
 
 If the interlocutor absorbs the move without movement, restates their position with small
 modifications, introduces a new objection, or changes the subject, the barrier is not

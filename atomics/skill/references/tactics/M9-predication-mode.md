@@ -2,7 +2,7 @@
 id: M9-predication-mode
 module_class: tactic
 canonical_path: skill/references/tactics/M9-predication-mode.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - equivocation across term occurrences
   - domain-boundary failure (empirical method on non-empirical subject)
@@ -43,10 +43,37 @@ operator_pack_eligible: true
 
 **Operates upstream of content-level response selection.** Before deciding what to say about a subject, M9 determines whether the predication structure of the claim - and the inferential structure of any argument about it - is well-formed.
 
-M9 is a selective recursive operator. A semantic or predicational clarification may clear the
-question without licensing doctrinal sprawl in the same pass. After the predication problem is
-typed, refresh the case-state. If another live burden now governs, route there explicitly. If
-not, release only the smallest restorative next move.
+M9 uses `B -> {semantic/predicational s} -> Land(B) -> R` from
+`recursive-state-transitions.md`. Gloss: a semantic or predicational clarification may clear
+the question without licensing doctrinal sprawl; after the problem is typed, refresh
+case-state and release only the smallest restorative next move unless another `B` governs.
+
+## Owner-Specific Operation Floor
+
+M9 is not executed by saying "there is equivocation" or "predication is unstable."
+Minimum operation requires:
+
+1. identify the exact term, predicate, count noun, identity claim, or negative label;
+2. state the relevant senses or meaning-conditions in the current argument;
+3. show which inference depends on those senses being identical or transferable;
+4. show where the identity, transfer, or category crossing fails;
+5. state the result: invalid inference, malformed predication, method-jurisdiction failure,
+   or a held downstream route.
+
+**Trinity/person-nature minimum:** when M9 is used on a Trinitarian model/predication burden,
+the operation must address the live uses of `person`, `nature`, `is God`, `one`, `three`,
+and worship/lordship referent when those terms are present or entailed. It must identify
+whether "God" is functioning as strict identity, nature predicate, count noun, title of
+worship/lordship, or relative-identity term. The burden does not land until the output
+shows which use fails, which use remains held, or which model-specific discriminator is missing.
+
+**State-change condition:** M9 lands only when the inference is blocked, the predication is
+made well-formed enough for the next route, or a missing discriminator is named. Merely
+listing possible meanings is not enough.
+
+**Failure condition:** using "M9", "predication repair", "person/nature distinction", or
+"one/three language" as a decorative trace without the sense split and inference test is
+TTP label cosplay.
 
 ---
 

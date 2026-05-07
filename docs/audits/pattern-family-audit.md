@@ -1,14 +1,13 @@
----
-id: pattern-family-audit
-module_class: governance
-canonical_path: skill/references/diagnostics/pattern-family-audit.md
-contract_version: "0.3.0.0"
-load_when:
-  - auditing pattern-family coverage, routing discipline, or running regression tests
-catalogue_registered: false
----
-
 # Pattern-Family Robustness and Multi-Module Routing Discipline Audit
+
+Historical audit / regression-probe material.
+Not live routing authority.
+Does not create routes, module activation rules, source owners, or fixture authority.
+
+This document was moved out of canonical atomized source. Live ownership remains
+with `atomics/skill/references/diagnostics/pattern-profiling.md`,
+`atomics/skill/references/diagnostics/routing-precedence.md`, the module
+catalogue, operative contracts, and the relevant case/procedure files.
 
 ---
 

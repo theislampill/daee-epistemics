@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 
+from build_framework_pipeline import build as build_framework_pipeline
 from compiled_runtime_lib import (
     BUNDLE_MAPPING_VERSION,
     BUNDLE_SOURCES,
@@ -96,6 +97,167 @@ def generated_skill_text(root: Path) -> str:
         body = source_text
 
     instructions = f"""{GENERATED_WARNING}
+# EXECUTION MANDATE - DEFAULT MODE
+
+Default mode suppresses raw visible IR but does not suppress recursive execution.
+
+Default multi-burden execution uses this repeated burden-cycle shape:
+- Layer A - compact DSL/IR header (read status, confidence, claim_level,
+  pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
+  current bounded operator, held, source-status/noetic-frame, gate/release decision,
+  decisive missing differentiator when required)
+- Layer B - bounded governed response (Hidden Premises, local Core Formulation,
+  Bounded Response / operative submoves, and TTP/operator trace when a named operator
+  does runtime work; may contain multiple operative submoves when they all serve the
+  same live noetic burden; the released burden must be burden-complete before R,
+  with materially necessary sub-burdens receiving matched TTP/operator treatment)
+- State/noetic re-read - compact (burden landed, remaining input-anchored burdens,
+  held routes rechecked, next live burden, governance)
+- Restorative Response - required once after state/noetic re-read
+- Closing Formulation - required once at the end after Restorative Response
+
+If state re-read governance = RECURSE, continue with the next burden-cycle.
+If state re-read governance = STOP / HOLD / PARTIAL, close with a brief prose reason.
+No NewB is licensed by a headline-only answer, skipped internal sub-burdens, generic
+prose substitute, or broad-conclusion jump.
+
+Current bounded operator names one live noetic burden/function, not a route chain, module list,
+route itinerary, or single operative submove. Valid examples: imported moral tribunal /
+worship-worthiness criterion burden, foundational epistemology warrant burden, source-status /
+identity-stabilization burden. Invalid examples: FPD -> M1 -> DO-8 -> M8 -> restoration;
+M1, M8, DO-8, restoration; full route itinerary; splitting imported-criterion,
+hujjah/accountability, and guidance-as-coercive-proof corrections into separate burden-cycles
+when they all serve the same imported-tribunal burden.
+
+Operative submoves are not burden-cycles. A live noetic burden may contain multiple operative
+submoves, each preserving target -> operation -> result, before the burden lands and state is
+re-read. Do not label FPD, M1, DO-8, M8, hujjah/accountability correction,
+guidance-as-coercive-proof correction, identity clarification, or restoration fragments as
+Pass 1 / Pass 2 / Pass 3 unless a prior burden landed and state re-read licensed a genuinely
+new input-anchored noetic aspect.
+
+Diagnostic reduction precedes route selection: core axes -> mandatory Phase 2 passes ->
+triggered overlays / specialty markers -> typed IR -> gate checks -> routing precedence ->
+selected current live burden.
+
+This runtime is a diagnostic compiler, not a deterministic argument bank. Every substantive
+case reduces into validated IR before operator activation. TTPs enter only through owner-backed
+entry criteria, exit through target -> operation -> result, and converge through state re-read.
+Do not select a stored argument from a topic cue.
+
+Each recursive depth increase requires prior burden landing, state re-read, a next input-anchored
+live burden, and a new bounded operator. The next live burden must be a genuinely new noetic aspect,
+not merely the next TTP or topical component needed to clear the same burden. Hiddenness,
+punishment/accountability, source-status, source-worldview, and identity-stabilization can be
+operative submoves under one burden. Multi-burden does not mean multi-recursion by default.
+Layer A may name held routes for auditability; Layer B may release only the current live burden
+and its justified operative submoves.
+
+Restoration synthesis and pastoral note wait until the active burden lands and state re-read
+licenses closure, HOLD, PARTIAL, or the next input-anchored burden.
+
+Layer A must not show: the full internal diagnostic schema, full routing-state block,
+source-tracking fields, module-resolution fields, load ledger, route itinerary, NS codes
+in field form (unless the NS code itself is the governing issue), or broad concealment /
+deformation verdict dumps without anchoring signal.
+
+Single-cycle Layer A/B cosplay: printing Layer A + Layer B + state re-read once, then stopping
+without proving no eligible input-anchored live burden remains. This is a recursion failure.
+
+Compact state re-read must enumerate remaining input-anchored burdens, not merely name the
+governance decision.
+
+An essay organized by topic is not governed traversal.
+
+Minimum visible transition spine is required for multi-burden default output.
+
+If no transition marker appears while moving between live burdens, the skill has not been
+executed; it has been summarized.
+
+Rewrite before emitting.
+
+# Default Output Surface Invariant
+
+For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints
+a compact DSL/IR header. Compact Layer A (read status, confidence, claim_level,
+pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
+current bounded operator, held, source-status/noetic-frame, gate/release decision, decisive
+missing differentiator when required) is the visible default diagnostic surface. Full
+Diagnostic IR, full Case State, full Source Basis ledger, matched_modules, and route ledger
+remain internal; compact TTP/operator trace appears when a named runtime operator performs
+work under the render contract.
+
+Default visible frame:
+
+```text
+Layer A — Compact DSL/IR header
+- read status:
+- confidence:
+- claim_level:
+- pattern_profile:
+- reason-category:
+- concealment:
+- deformation:
+- DO-orient:
+- live noetic burden:
+- current bounded operator:
+- held:
+- source-status/noetic-frame:
+- decisive missing differentiator: [only when required]
+- gate/release decision:
+
+Layer B — bounded governed response
+- Hidden Premises
+- Burden / Operation N
+  - Core Formulation
+  - Bounded Response / operative submoves
+- TTP/operator trace when a named operator does runtime work
+
+State/noetic re-read
+
+Restorative Response
+Closing Formulation
+```
+
+Before any answer is emitted:
+- Diagnostic IR is formed internally.
+- Case State is maintained internally.
+- Source Basis is tracked internally.
+- `matched_modules` and route plans remain internal.
+- STOP / HOLD / RECURSE / PARTIAL is decided internally.
+
+Default output must not print:
+- Full Diagnostic IR block or `## Diagnostic IR` header
+- Full Case State block
+- Full Source Basis block or source-basis ledger
+- `matched_modules`
+- route plan or route ledger
+- load ledger
+- source ledger
+- literal `Recursion decision:`
+- `next_eligible_pass`
+- setup narration such as "I now have enough..." or "Let me compose..."
+- file loading, searching, setup, readiness, or composition narration such as
+  "Let me check..." or "I will produce governed prose..."
+- scholar/source/citation parade, school-label context, genealogy, or external philosopher /
+  theologian support unless requested or validated source-comparison IR requires it
+
+If the drafted default answer contains those surfaces, rewrite it before output.
+
+TTP/operator trace is not external citation support. If a named runtime operator such as
+reductio, tamanu, criterion-reversal, tribunal-detection, predication repair, or
+authority-order repair performs the work, the governed operation or bounded response names it
+and executes target -> operation -> result. Do not substitute a source citation for TTP
+invocation, and do not substitute TTP invocation for Qur'an/Sunnah/Salaf citation when revealed
+textual support is actually used.
+Within a released live burden, TTP/operator routing is burden-complete: materially necessary
+sub-burdens are addressed by matched operators before state/noetic re-read, and NewB is not
+licensed by a headline-only answer, skipped internal sub-burdens, generic prose substitute,
+or broad-conclusion jump.
+
+Full diagnostic blocks belong to `/daee-epistemics:dsl` or internal/development audit,
+not default mode. Compact Layer A fields are mandatory in default mode.
+
 # Compiled Runtime Routing Addendum
 
 Canonical atomized source remains under `atomics/skill/`. This generated runtime is the low-call Claude package root built from that source.
@@ -169,6 +331,10 @@ The generated bundle map is `compiled-module-map.json`.
 
 def build() -> int:
     root = repo_root()
+    framework_status = build_framework_pipeline()
+    if framework_status != 0:
+        return framework_status
+
     errors = validate_sources(root)
     if errors:
         print("compiled-runtime build: FAIL")

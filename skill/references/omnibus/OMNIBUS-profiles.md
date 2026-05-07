@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: profiles-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/INDEX.md -->
-<!-- SOURCE_SHA256: 0796d5291616132cfeec46e9055bac5344bb5685bf5ffb1a8817a192e5cc254e -->
+<!-- SOURCE_SHA256: 949a23afc692a375df9ac1049c3569592eb2604a0aead56a17b6d631a38a8008 -->
 
 ---
 id: profiles-index
 module_class: governance
 canonical_path: skill/references/case-library/profiles/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS code identified and canonical profile file location needed
 catalogue_registered: false
@@ -152,13 +152,13 @@ procedure.
 <!-- MODULE_ID: noetic-profiles -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/noetic-profiles.md -->
-<!-- SOURCE_SHA256: 3b5a0dae3c19f568312557993012d4009c3d7c725243c984d8bfc145a1ac2787 -->
+<!-- SOURCE_SHA256: cfe5d9d8a899ca907f0d50cd8c77f4b72ebe3aa34a0dbafe406a54c467b33092 -->
 
 ---
 id: noetic-profiles
 module_class: case-library
 canonical_path: skill/references/case-library/noetic-profiles.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - redirect only — do not load for profile content; use individual profiles/ files
 routing_effects:
@@ -206,13 +206,13 @@ For the full directory index, minimal-pair discriminators, and load discipline, 
 <!-- MODULE_ID: ns-1-naturalist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-1-naturalist.md -->
-<!-- SOURCE_SHA256: c6299a75501f85207d00599634daaca52acbd4755a3883bb60f427c974f3326c -->
+<!-- SOURCE_SHA256: 862bc9f87750f99262dca14728565e7d4413a32d43ed3565b13cfea888a346d0 -->
 
 ---
 id: ns-1-naturalist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-1-naturalist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-1 (Naturalist) confirmed via Quick NS Identification
 routing_effects:
@@ -264,13 +264,13 @@ loosened can evidential content land.
 <!-- MODULE_ID: ns-2-agnostic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md -->
-<!-- SOURCE_SHA256: 34919ed9a893b3749c73275d24a6943f5229c2be5d31b17f88b620c2ed6742fb -->
+<!-- SOURCE_SHA256: b0c56312c09dce8e8c0dbde19f3194560503da8757ed491d30d948b7a3bb120c -->
 
 ---
 id: ns-2-agnostic-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-2 (Agnostic Evidentialist) confirmed via Quick NS Identification
 routing_effects:
@@ -336,13 +336,13 @@ basic belief — and theistic basic belief is in contention.
 <!-- MODULE_ID: ns-3-deconverted -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-3-deconverted.md -->
-<!-- SOURCE_SHA256: 51e39a740d4084e69d1883db96f7bcd088b9fc252a22379950e51e1abaf7c5fe -->
+<!-- SOURCE_SHA256: a9215affa9a10d91be6a5f5f0bc49a874b968f7e5ce4350a98cb2408f47c0d6e -->
 
 ---
 id: ns-3-deconverted
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-3-deconverted.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-3 (Deconverted / Post-Religious) confirmed via Quick NS Identification
 routing_effects:
@@ -408,13 +408,13 @@ moral weight that the narrative cannot account for.
 <!-- MODULE_ID: ns-4-secular-moral-realist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md -->
-<!-- SOURCE_SHA256: 316a583e7f70cdb3f7c40223c2879aa0335fea385072332d96c09a3aa9efe7eb -->
+<!-- SOURCE_SHA256: 896a2c78c169bd370b2234934a6a0144b2ca4190236c31bfd13fbd26d11239be -->
 
 ---
 id: ns-4-secular-moral-realist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-4-secular-moral-realist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-4 (Secular Moral Realist) confirmed via Quick NS Identification
 companions:
@@ -476,13 +476,13 @@ most coherent grounding is theistic.
 <!-- MODULE_ID: ns-5-habituated-atheist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md -->
-<!-- SOURCE_SHA256: 306e154ea38580b56bf8915b20266a9522c91bcb597c9805d8424c4ab52e42c9 -->
+<!-- SOURCE_SHA256: d98d2a7a368d2b6fa9057a21951cb629e0af4cddbbfa3bd6e6187df3b37e1cf7 -->
 
 ---
 id: ns-5-habituated-atheist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-5-habituated-atheist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-5 (Habituated Atheist) confirmed via Quick NS Identification
 routing_effects:
@@ -561,13 +561,13 @@ Use M2 or M1 only after the opening move has changed the next live differentiato
 <!-- MODULE_ID: ns-6-kalamic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md -->
-<!-- SOURCE_SHA256: 2f778ac312a5a48f557831c5e8e27922cddfec392a05de405c2c5cc22cd6128a -->
+<!-- SOURCE_SHA256: bdf8c1ccfd9b2a6106167db9a92de991e3dd3b985d3009aeacfcfd3fe3fc7b6a -->
 
 ---
 id: ns-6-kalamic-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-6 (Kalāmic Evidentialist) confirmed via Quick NS Identification
 routing_effects:
@@ -646,13 +646,13 @@ as the universal precondition of warranted belief.
 <!-- MODULE_ID: ns-7-theistic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md -->
-<!-- SOURCE_SHA256: 90f741583a2402bc2612d3b750f9e42fcf3609874198e507f52f64c56a04621e -->
+<!-- SOURCE_SHA256: ca0050b4409d60df90c02876863d73cc3ce6fa4cabcbe0ef6d2abf67b1940b5b -->
 
 ---
 id: ns-7-theistic-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-7 (Theistic Evidentialist) confirmed via Quick NS Identification
 routing_effects:
@@ -734,13 +734,13 @@ evidentialist restriction: have you examined the restriction itself, or inherite
 <!-- MODULE_ID: ns-8-muslim-internal-crisis -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md -->
-<!-- SOURCE_SHA256: 58cd566eeb45bd59c358d6e0cea74e761e65b5934a69b4270906ef6536d78fcf -->
+<!-- SOURCE_SHA256: c3d94e501c624e1ce7b2257e624e73097a39b751003978fb00c697011f02d8d3 -->
 
 ---
 id: ns-8-muslim-internal-crisis
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-8 (Muslim-Internal Crisis) confirmed via Quick NS Identification
 routing_effects:
@@ -881,13 +881,13 @@ for mandatory and prohibited actions under each stop.
 <!-- MODULE_ID: ns-9-historical-critical-skeptic -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md -->
-<!-- SOURCE_SHA256: 7f8a403be30d27fb9ff271e1b16ae0f25012775f5d03c11e1df632638699f19c -->
+<!-- SOURCE_SHA256: 28a16cf1ac2b6d0470246d1ad17bcad7b1cb013811fe7305ddccf655083e8099 -->
 
 ---
 id: ns-9-historical-critical-skeptic
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-9 (Historical-Critical Skeptic) confirmed via Quick NS Identification
 routing_effects:
@@ -978,13 +978,13 @@ framework. V2 is applied to the method, not to the person.
 <!-- MODULE_ID: ns-10-maturidi-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md -->
-<!-- SOURCE_SHA256: 2f657b6500946a3b53335455348945c177eb4e1a0cc97c37a07ff3236e89eaec -->
+<!-- SOURCE_SHA256: e45567a6768c194d8a33dc3cd191e504d3bc0801fc1c14b6ba4e12526a2d5385 -->
 
 ---
 id: ns-10-maturidi-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-10 (Māturīdī Evidentialist) confirmed via Quick NS Identification
 routing_effects:
@@ -1059,13 +1059,13 @@ winning an inter-school debate.
 <!-- MODULE_ID: ns-11-fideist-reformed -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md -->
-<!-- SOURCE_SHA256: 86c5409e2bd36297993768a0d4637fc6c2ebdb225a68fb1bd001e758d27be6ae -->
+<!-- SOURCE_SHA256: 33182e023c7bfcc80ec4d27f6ff94ce7e2b2f96790e1e6c440ec67e652333872 -->
 
 ---
 id: ns-11-fideist-reformed
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-11-fideist-reformed.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-11 (Fideist / Reformed Basic-Belief Holder) confirmed via Quick NS Identification
 routing_effects:
@@ -1157,13 +1157,13 @@ what epistemic status (ḍarūrī), and what is required for its deliverances to
 <!-- MODULE_ID: ns-12-blank-slate-dual-fitrah -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md -->
-<!-- SOURCE_SHA256: 6da0b0741398b08c8c100bd9f90fa4214c93ef62ff4d857b99833a28f0c17599 -->
+<!-- SOURCE_SHA256: 842ff5576773e73246cd0561f264cbaa39db9139d02b4a9e9ecc30e6f7f91802 -->
 
 ---
 id: ns-12-blank-slate-dual-fitrah
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification
 companions:

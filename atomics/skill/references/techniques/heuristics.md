@@ -2,7 +2,7 @@
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - throughout every engagement as background governance
 blocks:
@@ -49,7 +49,7 @@ These are always-active background rules, not case-specific moves.
 
 16. **Character is evidence — actively, not passively.** The absence of defensiveness, the quality of listening, the genuine care for the interlocutor rather than the argument — these are epistemically operative, not decorative.
 
-17. **Know when to pause, and know when a refreshed continuation is actually licensed.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. A landed move ends the current pass; before STOP, the post-render gate must refresh case-state, recheck held routes, and decide STOP, HOLD, RECURSE, or PARTIAL. Continuation is required when refreshed case-state shows a still-unmet restoration target and no stop, register-hold, semantic gate, or limit bars the next move. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. Heuristics states the principle; P7 enforces it procedurally.
+17. **Know when to pause, and know when refreshed continuation is licensed.** Use `Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE` from `references/diagnostics/recursive-state-transitions.md`. Gloss: a landed move ends the current pass; before STOP, refresh case-state, recheck held routes, and continue only when an unmet `B` remains live and no stop, register-hold, semantic gate, or limit blocks it. P7 enforces this procedurally.
 
 18. **Do not grant scientism upstream-tribunal status.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
 
@@ -79,10 +79,12 @@ These are always-active background rules, not case-specific moves.
 
 31. **Treat discourse as an analysand, not a blob.** Read claims, criteria, testimonial posture, slogan families, and register cues as separable surfaces that may require different intervention order. Do not force the whole burden into one flat answer when the case is structurally decomposable.
 
-32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, and filters. Meta-noetic memetics is how semantic-intellectual units dock, stabilize, distort, or lose force within that configuration. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding.
+32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, categories, inferential norms, and interpretive filters. Meta-noetic memetics is how whole noetic structures and their governing epistemic rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and instantiate linguistically through recurring slogans, labels, arguments, habits, institutions, identity patterns, and social pressure. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding or route authority.
 
 33. **Let restorative structural viability outrank bare formal stability.** A structure may look locally coherent while still being tribunal-captured, semantically trapped, or held together by imported criteria. The goal is not merely to preserve consistency, but to restore a configuration whose grounding, routing, release, and continuation remain aligned to restored order.
 
-34. **Let the validated IR govern recursive re-entry.** If a further move cannot be justified from refreshed state inside the audited control surface, it is not licensed. Re-enter only through a still-live restoration target and a newly permitted route, never from momentum alone.
+34. **Route by pattern, not label.** A denomination, source label, author, genealogy, or topic name may orient source-status, but it cannot select the response. Route by detected deformation, concealment, criterion import, tribunal installation, predication error, authority-order disorder, warrant failure, `claim_level`, and `pattern_profile`. Do not paste scholar stacks, source lists, denomination apologetics, or argument banks unless the validated IR selected and released that content.
 
-35. **Do not close before the post-render gate.** A strong bounded move is not self-closing. After it renders, ask what cleared, what remains live, what held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. STOP is honest only when that answer is none; otherwise HOLD, RECURSE, or PARTIAL governs.
+34. **Let the validated IR govern recursive re-entry.** `IR -> B -> Land(B) -> R -> Decision`. Gloss: if refreshed state cannot license a still-live `B` and permitted route, there is no re-entry; never continue from momentum alone.
+
+35. **Do not close before the post-render gate.** `R(H,Δ)` asks what cleared, what remains live, which held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. Gloss: STOP is honest only when none remains; otherwise HOLD, RECURSE, or PARTIAL governs.

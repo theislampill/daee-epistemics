@@ -2,7 +2,7 @@
 id: ns-2-agnostic-evidentialist
 module_class: case-library
 canonical_path: skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-2 (Agnostic Evidentialist) confirmed via Quick NS Identification
 routing_effects:

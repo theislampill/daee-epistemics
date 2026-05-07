@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Phase 5 routing-parity and compiled path-resolution checker.
 
-This checker is intentionally static. It proves that fixture expectations use
-original module IDs, that those IDs still resolve to compiled bundle sections,
-and that legacy atomized paths in the generated runtime are not missing-file
-load risks.
+This checker is intentionally static. Fixtures are regression checks against
+rules already present in the canonical source/runtime surfaces; they are not
+routing authority and must not introduce new case families, routing categories,
+or required modules. The checker proves that fixture expectations use original
+module IDs, that those IDs still resolve to compiled bundle sections, and that
+legacy atomized paths in the generated runtime are not missing-file load risks.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ import argparse
 import json
 import re
 import sys
+from itertools import combinations
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -53,6 +56,9 @@ GLOBAL_GOVERNANCE_PHRASES = [
     "bundle availability is not activation",
     "matched_modules use original module IDs",
     "source_basis records original module or section",
+    "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
+    "named denomination/source identity is never sufficient to route content",
+    "named frameworks/schools/authors/genealogies are not public-render material by default",
 ]
 
 GOVERNANCE_ALIASES = {
@@ -84,6 +90,16 @@ GOVERNANCE_ALIASES = {
     ],
     "source_basis records original module or section": [
         "source_basis records original module or section",
+    ],
+    "Pattern(deformation/concealment/unsoundness) > denomination/source-label": [
+        "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
+    ],
+    "named denomination/source identity is never sufficient to route content": [
+        "Named denomination/source identity is never sufficient to route content",
+    ],
+    "named frameworks/schools/authors/genealogies are not public-render material by default": [
+        "Named frameworks/schools/authors/genealogies are not public-render material",
+        "Only Qur'an, Sunnah, and sound Salaf narrations may be cited by default",
     ],
     "criterion before evidence dump": [
         "criterion",
@@ -135,6 +151,45 @@ GOVERNANCE_ALIASES = {
         "tribunal",
         "content release",
     ],
+    "V1 diagnosis": [
+        "V1 DIAGNOSTIC GATE",
+    ],
+    "Phase 2 passes including FPD": [
+        "PHASE 2",
+        "foreign-premise-detection",
+    ],
+    "Level A / Level B separation": [
+        "Level A / Level B distinction",
+    ],
+    "M1 criterion self-refutation": [
+        "M1-self-refutation",
+    ],
+    "DO-core / DO-second-loop substantive": [
+        "DO-core",
+        "DO-second-loop",
+    ],
+    "M8 consequence tracing": [
+        "M8-reductio",
+    ],
+    "P1 / M3 restoration": [
+        "P1-fitrah-restoration",
+        "M3-orphaned-intuition",
+    ],
+    "grief / register hold": [
+        "Grief / register hold",
+    ],
+    "Stop-1": [
+        "Stop-1",
+    ],
+    "M4-grief-register": [
+        "M4-grief-register",
+    ],
+    "do not deploy intellectual content as though it were a seminar question": [
+        "do not deploy intellectual content as though it were a seminar question",
+    ],
+    "minimal-pair partner of fixture 11": [
+        "Minimal-pair partner",
+    ],
 }
 
 OWNER_CLUSTER_BUNDLES = {
@@ -157,6 +212,13 @@ LEGACY_PATH_RE = re.compile(
     r"((?:atomics/skill/|skill/)?references/"
     r"(?:tactics|techniques|diagnostics|case-library|procedures|rubrics|omnibus)"
     r"/[A-Za-z0-9_./\[\]-]+\.(?:md|json|yaml))"
+)
+
+MINIMAL_PAIR_DISCRIMINATOR_KEYS = (
+    "concealment_mode",
+    "do_orient",
+    "restoration_target",
+    "routing_gate",
 )
 
 
@@ -251,6 +313,20 @@ def phrase_present(corpus: str, phrase: str) -> bool:
         return False
     lowered = corpus.lower()
     return all(token.lower() in lowered for token in tokens)
+
+
+def forbidden_governance_supported(corpus: str, phrase: str) -> bool:
+    """Return whether a forbidden live-output move is represented as prohibited.
+
+    The fixture field names output behaviors that must not appear in a live answer.
+    The runtime is allowed, and often required, to mention those behaviors in
+    anti-pattern, fail-condition, or prohibition language.
+    """
+    lowered = corpus.lower()
+    phrase_lower = phrase.lower()
+    if phrase_lower in lowered:
+        return True
+    return phrase_present(corpus, phrase)
 
 
 def load_fixtures(root: Path, errors: list[str]) -> list[tuple[Path, dict[str, Any]]]:
@@ -412,6 +488,8 @@ def check_fixtures(
         "required_modules": 0,
         "optional_modules": 0,
         "governance_phrases": 0,
+        "forbidden_governance": 0,
+        "route_order": 0,
     }
     for path, fixture in fixtures:
         rel = path.relative_to(root).as_posix()
@@ -485,6 +563,29 @@ def check_fixtures(
             if not phrase_present(corpus, phrase):
                 errors.append(f"{context}: governance phrase not found in runtime corpus: {phrase!r}")
 
+        for phrase in expected.get("forbidden_governance") or []:
+            if not isinstance(phrase, str):
+                errors.append(f"{context}: forbidden_governance contains a non-string value")
+                continue
+            stats["forbidden_governance"] += 1
+            if not forbidden_governance_supported(corpus, phrase):
+                errors.append(f"{context}: forbidden governance expectation lacks runtime prohibition support: {phrase!r}")
+
+        route_order = expected.get("required_route_order") or []
+        if route_order:
+            if not isinstance(route_order, list):
+                errors.append(f"{context}: required_route_order must be a list")
+            else:
+                for item in route_order:
+                    if not isinstance(item, str):
+                        errors.append(f"{context}: required_route_order contains a non-string value")
+                        continue
+                    stats["route_order"] += 1
+                    if item.startswith(OMNIBUS_PREFIX) or item.startswith("references/omnibus/"):
+                        errors.append(f"{context}: required_route_order uses omnibus route owner: {item}")
+                    if not phrase_present(corpus, item):
+                        errors.append(f"{context}: required route-order support not found in runtime corpus: {item!r}")
+
         decisions = expected.get("allowed_post_render_decisions") or []
         if not isinstance(decisions, list) or not decisions:
             errors.append(f"{context}: allowed_post_render_decisions must be a non-empty list")
@@ -504,6 +605,157 @@ def check_fixtures(
                 if not any(entry.get("bundle_path") == bundle_rel for entry in modules.values()):
                     errors.append(f"{context}: strict owner cluster has no mapped modules: {cluster}")
     return stats
+
+
+def check_minimal_pairs(
+    fixtures: list[tuple[Path, dict[str, Any]]],
+    errors: list[str],
+) -> int:
+    """Verify that paired fixtures actually diverge on routing-discriminating signals.
+
+    A minimal-pair fixture pair shares surface vocabulary but differs in noetic
+    structure. The pair guards meta-noetic memetics from collapsing into
+    topic-to-IR pattern-matching: if the IR fingerprints the topic, both fixtures'
+    expected reads will be identical, and the must_appear_only_here / must_not_share
+    constraints will fail.
+    """
+    by_id: dict[str, dict[str, Any]] = {}
+    for _path, fixture in fixtures:
+        fixture_id = fixture.get("id")
+        if isinstance(fixture_id, str) and fixture_id:
+            by_id[fixture_id] = fixture
+
+    pairs_checked = 0
+    pair_keys_checked: set[tuple[str, str]] = set()
+    for path, fixture in fixtures:
+        expected = fixture.get("expected") or {}
+        partner_id = expected.get("minimal_pair_with")
+        if not partner_id:
+            continue
+        rel = path.name
+        partner = by_id.get(partner_id)
+        if partner is None:
+            errors.append(f"{rel}: minimal_pair_with references unknown fixture: {partner_id}")
+            continue
+        partner_expected = partner.get("expected") or {}
+        if partner_expected.get("minimal_pair_with") != fixture.get("id"):
+            errors.append(
+                f"{rel}: minimal_pair_with is not symmetric — partner {partner_id} does not point back"
+            )
+        divergence = expected.get("minimal_pair_divergence_required") or {}
+        if not isinstance(divergence, dict):
+            errors.append(f"{rel}: minimal_pair_divergence_required must be an object")
+            continue
+
+        own_modules = set()
+        for field in ("required_modules", "optional_modules"):
+            for mod in expected.get(field) or []:
+                if isinstance(mod, str):
+                    own_modules.add(mod)
+        partner_modules = set()
+        for field in ("required_modules", "optional_modules"):
+            for mod in partner_expected.get(field) or []:
+                if isinstance(mod, str):
+                    partner_modules.add(mod)
+        own_governance = set(g for g in (expected.get("required_governance") or []) if isinstance(g, str))
+        partner_governance = set(g for g in (partner_expected.get("required_governance") or []) if isinstance(g, str))
+
+        own_signals = own_modules | own_governance
+        partner_signals = partner_modules | partner_governance
+
+        for token in divergence.get("must_appear_only_here") or []:
+            if not isinstance(token, str):
+                continue
+            if token not in own_signals:
+                errors.append(
+                    f"{rel}: minimal-pair token must_appear_only_here is not present in this fixture: {token!r}"
+                )
+            if token in partner_signals:
+                errors.append(
+                    f"{rel}: minimal-pair token must_appear_only_here is shared with partner {partner_id}: {token!r}"
+                )
+
+        for token in divergence.get("must_not_share") or []:
+            if not isinstance(token, str):
+                continue
+            if token in own_signals and token in partner_signals:
+                errors.append(
+                    f"{rel}: minimal-pair token must_not_share appears in both fixtures: {token!r}"
+                )
+
+        if own_modules == partner_modules and own_governance == partner_governance:
+            errors.append(
+                f"{rel}: minimal-pair fixtures collapse to identical expected reads — "
+                "the IR shape would fingerprint topic vocabulary rather than diagnose structure"
+            )
+        pairs_checked += 1
+        own_id = fixture.get("id")
+        if isinstance(own_id, str):
+            pair_keys_checked.add(tuple(sorted((own_id, partner_id))))
+
+    groups: dict[str, list[tuple[Path, dict[str, Any]]]] = {}
+    for path, fixture in fixtures:
+        expected = fixture.get("expected") or {}
+        group_id = expected.get("minimal_pair_group")
+        if isinstance(group_id, str) and group_id:
+            groups.setdefault(group_id, []).append((path, fixture))
+
+    for group_id, members in groups.items():
+        if len(members) < 2:
+            errors.append(f"minimal-pair group {group_id!r} has fewer than two fixtures")
+            continue
+
+        shared_tokens: set[str] = set()
+        for path, fixture in members:
+            expected = fixture.get("expected") or {}
+            for token in expected.get("minimal_pair_shared_surface_tokens") or []:
+                if isinstance(token, str) and token:
+                    shared_tokens.add(token)
+            discriminators = expected.get("minimal_pair_discriminators") or {}
+            if not isinstance(discriminators, dict):
+                errors.append(f"{path.name}: minimal_pair_discriminators must be an object")
+                continue
+            for key in MINIMAL_PAIR_DISCRIMINATOR_KEYS:
+                value = discriminators.get(key)
+                if not isinstance(value, str) or not value.strip():
+                    errors.append(
+                        f"{path.name}: minimal-pair group {group_id!r} lacks discriminator {key!r}"
+                    )
+
+        for token in sorted(shared_tokens):
+            for path, fixture in members:
+                prompt = fixture.get("prompt")
+                if not isinstance(prompt, str) or token.lower() not in prompt.lower():
+                    errors.append(
+                        f"{path.name}: minimal-pair group {group_id!r} prompt lacks shared token {token!r}"
+                    )
+
+        for (path_a, fixture_a), (path_b, fixture_b) in combinations(members, 2):
+            id_a = fixture_a.get("id")
+            id_b = fixture_b.get("id")
+            if not isinstance(id_a, str) or not isinstance(id_b, str):
+                continue
+            expected_a = fixture_a.get("expected") or {}
+            expected_b = fixture_b.get("expected") or {}
+            disc_a = expected_a.get("minimal_pair_discriminators") or {}
+            disc_b = expected_b.get("minimal_pair_discriminators") or {}
+            if not isinstance(disc_a, dict) or not isinstance(disc_b, dict):
+                continue
+            diverged = any(
+                disc_a.get(key) != disc_b.get(key)
+                for key in MINIMAL_PAIR_DISCRIMINATOR_KEYS
+                if disc_a.get(key) and disc_b.get(key)
+            )
+            if not diverged:
+                errors.append(
+                    f"{path_a.name} / {path_b.name}: minimal-pair group {group_id!r} "
+                    "does not diverge on concealment_mode, do_orient, restoration_target, or routing_gate"
+                )
+            pair_key = tuple(sorted((id_a, id_b)))
+            if pair_key not in pair_keys_checked:
+                pairs_checked += 1
+                pair_keys_checked.add(pair_key)
+    return pairs_checked
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -548,6 +800,7 @@ def main(argv: list[str] | None = None) -> int:
     path_counts = audit_path_resolution(root, compiled_root, skill_text, modules, sections, errors)
     fixtures = load_fixtures(root, errors)
     fixture_stats = check_fixtures(root, compiled_root, fixtures, modules, sections, corpus, args.strict, errors)
+    minimal_pairs = check_minimal_pairs(fixtures, errors)
 
     print("Routing parity summary")
     print("------------------------------------------------------------")
@@ -555,6 +808,9 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Required module assertions: {fixture_stats['required_modules']}")
     print(f"Optional module assertions: {fixture_stats['optional_modules']}")
     print(f"Governance phrase assertions: {fixture_stats['governance_phrases']}")
+    print(f"Forbidden governance assertions: {fixture_stats['forbidden_governance']}")
+    print(f"Route-order support assertions: {fixture_stats['route_order']}")
+    print(f"Minimal-pair divergence checks: {minimal_pairs}")
     print(f"Strict mode: {'on' if args.strict else 'off'}")
     print("Path-resolution status")
     for key in ("exists-in-runtime", "mapped-to-compiled-section", "source-identity-only", "unresolved-risk"):

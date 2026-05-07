@@ -2,7 +2,7 @@
 id: pattern-profiling
 module_class: governance
 canonical_path: skill/references/diagnostics/pattern-profiling.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - recurring cross-volume family identified
   - live burden concerns standards of knowing, ontological categories, or noetic structure
@@ -20,6 +20,17 @@ shape that keeps recurring across governed families so the operator can see whet
 is first-order content, a meta-epistemic criterion fight, a meta-ontological category
 fight, or a meta-noetic pattern in how the case is framed.
 
+Meta-noetic memetics is the wider object-domain: how whole noetic structures and their governing
+epistemic rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and
+instantiate linguistically. Pattern profiling does not own that whole theory. It owns the
+operational PF overlay and `claim_level` field used when those recurring higher-order patterns
+change routing, sequencing, owner selection, or hold/release discipline.
+
+Operationally, meta-noetic memetics tracks how claims, criteria, authorities, and
+identity-stabilizers dock into a noetic structure, propagate, conceal, deform, or stabilize
+unsoundness. It is used to identify the live burden and matched TTP/operator route, not to
+produce sociological commentary or source-label classification.
+
 This file is the canonical owner for two governance fields:
 
 - `claim_level`
@@ -32,8 +43,10 @@ file's `claim_level` / `pattern_profile` discipline. They describe the local
 practical shape of a case after the governing level and PF overlay have been
 typed; they do not create a new PF code, a new V-pass, or a new case-family owner.
 
-`pattern-family-audit.md` remains the historical audit and regression document. This file
-is the operational owner used by the live DSL/IR.
+The repository document `docs/audits/pattern-family-audit.md` remains the
+historical audit and regression-probe document. It is not a runtime load target
+and does not create routes, module activation rules, source owners, or fixture
+authority. This file is the operational owner used by the live DSL/IR.
 
 ---
 
@@ -52,6 +65,13 @@ Use one code for the governing level of the live pressure:
 Rule: `claim_level` names the governing level, not every level present in the conversation.
 If the case opens with first-order vocabulary but its force depends on a criterion, category,
 or noetic-order claim, do not mark it `first-order`.
+
+Meta-noetic memetics may observe the spread of meta-epistemic rules, but `claim_level` must still
+type the active burden precisely. If the live fight is over what counts as evidence, knowledge,
+neutrality, authority, or warrant, use `meta-epistemic`. If the live fight is over recognition,
+suppression, deformation, concealment, identity-stabilized posture, or whether content can land,
+use `meta-noetic`. If both govern, use `cross-level` and sequence the higher-order clearing before
+first-order content.
 
 ---
 
@@ -108,7 +128,9 @@ the case.
 - `coherence / predication / self-undermining` regularity: `PF-6` (divine plurality / worship-status — V12 exhausts independent-lordship coherence; worship-status node identified; once exposed as dependent or incoherent, downstream tradition-specific claims are re-evaluated — track collapse radius in `What remains live`), `PF-9`
 
 These regularities do not add new routing families. They show how a case's local burden
-propagates upward into the repo's diagnostic grammar.
+propagates upward into the repo's diagnostic grammar and how a noetic structure becomes
+repeatable through language, slogans, frames, arguments, labels, habits, and group-stabilized
+interpretations.
 
 ## Owner Exception: Imported Perfection / Non-Eventfulness
 

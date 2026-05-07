@@ -2,7 +2,7 @@
 id: framework-pipeline
 module_class: governance
 canonical_path: skill/references/diagnostics/framework-pipeline.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - auditing the decision circuit or forbidden-shortcut check
   - surfacing where a response went wrong
@@ -10,12 +10,11 @@ load_when:
 routing_effects:
   - validates pipeline order before render
   - blocks forbidden shortcuts
-  - defines STOP / HOLD / RECURSE / PARTIAL state-transition semantics
-  - requires post-render re-entry gate before closure
+  - indexes canonical recursive-state governance without owning concrete routing rules
 emits:
   - pipeline_integrity_check
-  - recursive_state_transition
-  - post_render_gate
+  - forbidden_shortcut_check
+  - post_render_gate_reference
 blocks:
   - retrospective IR formation
   - direct doctrinal rebuttal before diagnostic gate
@@ -23,7 +22,10 @@ blocks:
   - premature closure without re-entry
 companions:
   - diagnostic-ir
+  - recursive-state-transitions
   - routing-precedence
+  - output-release
+  - diagnostic-render-contract
   - anti-patterns
   - P7-restoration-stops
 catalogue_registered: false
@@ -37,171 +39,408 @@ compiled_runtime_eligible: true
 operator_pack_eligible: true
 ---
 
-# Framework Pipeline - Governed Interpretive Machine
+# Framework Pipeline - Operative Audit Surface
 
-(visual audit surface; not independent ground-truth - canonical files govern where they conflict)
+This file is an operative compiled governance/audit surface. It is not independent
+ground truth for every rule it depicts. The source files named at each stage govern
+where they conflict with this chart.
 
+Authority boundary:
+
+- This file owns the compact pipeline order and forbidden-shortcut audit surface.
+- It owns only semantics explicitly marked here as framework-pipeline semantics.
+- `references/diagnostics/recursive-state-transitions.md` owns the abstract
+  STOP / HOLD / RECURSE / PARTIAL model and state carry/reset/re-evaluation semantics.
+- `references/diagnostics/diagnostic-ir.md` owns typed IR fields, schema carriers,
+  and the dispatch gate.
+- `references/diagnostics/routing-precedence.md` owns route order, suppression,
+  and precedence.
+- `references/rubrics/output-release.md` owns release amount, order, and hold/release
+  discipline before render.
+- `references/rubrics/diagnostic-render-contract.md` owns visible render mode.
+- `references/procedures/P7-restoration-stops.md` owns concrete stop instances.
+
+Diagrams, slogans, examples, tradition labels, pattern prints, and source-audit-derived
+topics in this file are audit aids. They do not create routes, module activation rules,
+IR fields, coverage claims, or source owners.
+
+## Default Final-Output Pipeline Validity
+
+Default Final-Output Preflight Gate is not merely a visible-format sanitizer. It checks
+that the proposed default answer actually passed the framework pipeline:
+
+internal diagnosis -> diagnostic reduction -> validated IR -> gate checks ->
+routing precedence -> selected live burden -> operative submove(s) -> burden landing ->
+output-release rubric -> diagnostic-render-contract -> state re-read -> post-render gate
+-> STOP / HOLD / RECURSE / PARTIAL decision
+
+Output-release decides what may be released. Diagnostic-render-contract decides how it
+appears. Default final-output preflight checks that the final answer obeys both at the
+last mile.
+
+Diagnostic reduction means core axes, mandatory Phase 2 passes, triggered overlays /
+specialty markers, Diagnostic IR formation, gate checks, and routing precedence all ran before
+the current bounded operator was named. A route chain is not diagnostic reduction.
+
+If a response is clean prose but was produced by topical essay sequencing, it is invalid
+and must be rewritten. Clean prose without pipeline validity is still a pipeline failure:
+V1 / diagnosis must precede answer; Phase 2 passes must run where triggered; Diagnostic
+IR must form internally before routing; routing must come from validated IR; the current
+bounded operator must be one selected live-burden function rather than a route chain; TTPs
+must be executed as target -> operation -> result inside the selected burden; the burden
+must land before state re-read; output-release must run before visible render; the render
+contract must shape final prose; state re-read must run after bounded moves; the post-render
+gate must run before closure; and STOP / HOLD / RECURSE / PARTIAL must be decided before
+ending.
+
+If another eligible same-input live burden remains after the current blocker clears, default
+output must either RECURSE into one bounded next pass with a prose state transition, or
+mark PARTIAL if limits prevent it. It may not silently STOP.
+
+## Pipeline Audit Chart
+
+<!-- BEGIN GENERATED FRAMEWORK PIPELINE -->
 ```text
 [USER INPUT / CLAIM / EXCERPT]
              |
              v
-+----------------------------------------------+
-| ALWAYS-LOAD BACKGROUND                       |
-| terminology.md | case-library/INDEX.md       |
-| module-codes.md | heuristics.md              |
-+----------------------------------------------+
++--------------------------------------------------+
+| ALWAYS-LOAD BACKGROUND                           |
+|                                                  |
+| terminology.md | case-library/INDEX.md           |
+| module-codes.md | heuristics.md                  |
+| owner: SKILL.md                                  |
++--------------------------------------------------+
              |
              v
-+----------------------------------------------+
-| V1 DIAGNOSTIC GATE                           |
-| "No module before case-state"                |
-| listen -> classify -> form IR -> dispatch    |
-+----------------------------------------------+
++--------------------------------------------------+
+| V1 DIAGNOSTIC GATE                               |
+|                                                  |
+| diagnosis before answer                          |
+| no module before case-state                      |
+| listen -> classify -> form IR -> dispatch        |
+| owner: techniques/V1-diagnostic.md               |
++--------------------------------------------------+
              |
              v
-+----------------------------------------------+
-| PHASE 1: LISTENING                           |
-| - map noetic structure                       |
-| - track anchor / warrant / affective weight  |
-| - do NOT answer yet                          |
-+----------------------------------------------+
++--------------------------------------------------+
+| PHASE 1: LISTENING                               |
+|                                                  |
+| map noetic structure                             |
+| track anchor / warrant / affective weight        |
+| do not answer yet                                |
+| owner: diagnostics/noetic-reading-checklist.md   |
++--------------------------------------------------+
              |
              v
-+------------------------------------------------------------+
-| PHASE 2: AXIS CLASSIFICATION + MANDATORY PASSES            |
-|                                                            |
-| CORE AXES (source -> emit):                                |
-| A1  NS code         noetic-reading-checklist.md            |
-| A2  DO-orient       discourse-orientation.md               |
-| A3  Concealment     modes-of-concealment.md                |
-| A4  Deformation     seven-deformations.md                  |
-| A5  Claim-type      case-state-schema.md field             |
-| A6  Reason-cat      reason-disambiguation.md [P-A]         |
-|                                                            |
-| CONDITIONAL OVERLAYS:                                      |
-| O1  Claim-level     pattern-profiling.md when higher-order |
-| O2  Pattern profile pattern-profiling.md when recurring PF |
-|                                                            |
-| MANDATORY PASSES - run in sequence:                        |
-| [P-A] reason-disambiguation.md                             |
-|       emit: reason-category (1-4) + routing gate           |
-| [P-B] foreign-premise-detection.md                         |
-|       emit: [Foreign Premise Detection] block              |
-| [P-C] prophetic-discourse-neutralization.md                |
-|       emit: semantic-neutralization mode or "none active"  |
-| [P-D] arabic-backbone-predicates.md                        |
-|       emit: active predicates or "none active"             |
-|                                                            |
-| Specialty markers surfaced here if present:                |
-| kalamic / fitrah / RT pressure / usurpation type /         |
-| causal-series / definition-capture / proof-grammar         |
-+------------------------------------------------------------+
++-----------------------------------------------------------+
+| DIAGNOSTIC REDUCTION - PHASE 2 AXES + MANDATORY PASSES    |
+|                                                           |
+| core axes emit case-state features before route selection |
+| mandatory passes run inside the diagnostic gate           |
+| overlays / specialty markers checked before dispatch      |
+| no route itinerary before diagnostic reduction completes  |
+| owner: SKILL.md                                           |
+|                                                           |
+| MANDATORY PASSES - run in sequence:                       |
+| [P-A] reason-disambiguation.md                            |
+|   emit: reason-category (1-4) + routing gate              |
+| [P-B] foreign-premise-detection.md                        |
+|   emit: Foreign Premise Detection result                  |
+| [P-C] prophetic-discourse-neutralization.md               |
+|   emit: semantic-neutralization mode or none active       |
+| [P-D] arabic-backbone-predicates.md                       |
+|   emit: active predicates or none active                  |
+|                                                           |
+| Specialty markers surface here only if present.           |
++-----------------------------------------------------------+
              |
              v
-+------------------------------------------------------------+
-| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                  |
-|                                                            |
-| Compose IR from Phase 2 outputs.                           |
-| Meta-level burdens clear here: if claim-level is not       |
-| first-order, the governing higher-order owner must clear   |
-| before first-order DO / RT dispatch.                       |
-|                                                            |
-| GATE CHECKS (all must pass before dispatch):               |
-| 1. Mandatory minimum fields populated?                     |
-| 2. Consistency rules pass?                                 |
-| 3. routing-precedence.md suppression rules S-1..S-7?       |
-| 4. P7 stops checked?                                       |
-| 5. Architectural integrity check passed?                   |
-| 6. Concealment x orientation matrix permits content now?   |
-|                                                            |
-| *** Module dispatch is BLOCKED until all 6 checks pass *** |
-+------------------------------------------------------------+
++----------------------------------------------------+
+| DIAGNOSTIC IR - FORMATION + DISPATCH GATE          |
+|                                                    |
+| compose IR from Phase 2 outputs                    |
+| validated IR is runtime compiler state             |
+| IR before routing                                  |
+| module dispatch blocked until all gate checks pass |
+| owner: diagnostics/diagnostic-ir.md                |
++----------------------------------------------------+
              |
+             v
        +-----+-----+
        |           |
        v           v
-+-------------+  +-----------------------------------------------+
-| GATE BLOCKED|  | GATE OPEN                                     |
-|             |  |                                               |
-| P7 stops,   |  | Routing-precedence levels 1-10 applied.       |
-| semantic    |  | Case-state-justified coordination only.       |
-| blockers,   |  |                                               |
-| or register |  | MATCHED MODULE ENTRY:                         |
-| holds block |  | Techniques: V2/V3/V5/V8/V9/V10/V12...         |
-| or compress |  | Tactics: M1-M9 / E1-E4 / F1-F3 / R1-R3        |
-| Layer B.    |  | Procedures: P1-P6                             |
-| Layer A     |  | Case files: NS/DO/RT on confirmed match only  |
-| stays live. |  |                                               |
-+-------------+  +-----------------------------------------------+
-       |                       |
-       +----------+------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| OUTPUT GOVERNANCE                                          |
-| - Layer A: complete diagnostic output retained             |
-| - Layer B: deployable engagement only if gate permits      |
-| - Case-state / Source Basis rendered from validated IR     |
-| - Claim-level / pattern-profile emitted only when live     |
-| - Inference-boundary markers kept distinct                 |
-| - Diagnostic IR remains the auditable gate record          |
-| - Source-weight/status kept distinct                       |
-| - Do not advertise unused modules or future stacks         |
-+------------------------------------------------------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| OUTPUT-RELEASE RUBRIC                                      |
-| Checks (run after gate-open, before render):               |
-| - Governing burden identified?                             |
-| - All live upstream blockers cleared?                      |
-| - Held material is held — not answered, not permanent?     |
-| - Recursive traversal ordered, bounded, refreshed?         |
-| - Release amount: not too much, not too little?            |
-| - Stop / hold / recurse / partial grounded in refreshed IR?|
-| Held means traversal-delayed, not response-delayed.        |
-+------------------------------------------------------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| DIAGNOSTIC RENDER CONTRACT                                 |
-| Level 1 — Default /daee-epistemics clean bounded response  |
-| Level 2 — /daee-epistemics:dsl compact lab-report          |
-| Level 3 — /daee-epistemics:audit procedural audit render   |
-| Render level selected from case-state + user signal.       |
-| Render shape does not determine routing.                   |
-+------------------------------------------------------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| RESTORATION TRACE                                          |
-| - Governing misread risk                                   |
-| - What was withheld and why                                |
-| - What correction was applied                              |
-| - Route that became permissible after correction           |
-| - What remains live / unresolved                           |
-+------------------------------------------------------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| POST-RENDER RE-ENTRY GATE                                  |
-| - What cleared this pass?                                  |
-| - What remains live in the same input?                     |
-| - Which held routes were rechecked?                        |
-| - Did any route become newly eligible?                     |
-| - Next eligible pass: named or none                        |
-| - Decision: STOP / HOLD / RECURSE / PARTIAL                |
-+------------------------------------------------------------+
-                  |
-                  v
-+------------------------------------------------------------+
-| BOTTOM-LINE SYNTHESIS / NEXT MOVE                          |
-| - Conclusion relative to restored order                    |
-| - One actionable next move                                 |
-| - No maximal layering after a landed move                  |
-| - Stop if next step would overpress or outrun the case     |
-+------------------------------------------------------------+
++-----------------------------------------------------------------------+  +----------------------------------------------------+
+| GATE BLOCKED                                                          |  | GATE OPEN                                          |
+|                                                                       |  |                                                    |
+| P7 stops, semantic blockers, or register holds block/compress Layer B |  | gate checks passed; routing precedence may now run |
+| Layer A stays live                                                    |  | route cleared for one current live burden          |
+| owner: diagnostics/diagnostic-ir.md                                   |  | owner: diagnostics/routing-precedence.md           |
++-----------------------------------------------------------------------+  +----------------------------------------------------+
+       |           |
+       +-----+-----+
+             |
+             v
++--------------------------------------------------+
+| ROUTING PRECEDENCE                               |
+|                                                  |
+| levels 1-10 applied after gate checks            |
+| upstream blocker before downstream topic         |
+| route chain is not bounded operator              |
+| TTP entry before activation                      |
+| owner: diagnostics/routing-precedence.md         |
++--------------------------------------------------+
+             |
+             v
++---------------------------------------------------------------------------------------------------------------------------------+
+| SELECTED CURRENT LIVE BURDEN                                                                                                    |
+|                                                                                                                                 |
+| one live noetic burden/function selected                                                                                        |
+| broad enough to contain justified operative submove sequence                                                                    |
+| current bounded operator is not a route chain                                                                                   |
+| invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                 |
+| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                 |
+| invalid split: imported tribunal / hiddenness / punishment / TST source-worldview as serial burden-cycles without re-read proof |
+| not deterministic argument-bank selection                                                                                       |
+| owner: rubrics/diagnostic-render-contract.md                                                                                    |
++---------------------------------------------------------------------------------------------------------------------------------+
+             |
+             v
++--------------------------------------------------------------------------------+
+| OPERATIVE SUBMOVE(S)                                                           |
+|                                                                                |
+| inside selected live burden only                                               |
+| entry criteria: validated IR + owner + bounded target                          |
+| target -> operation -> result                                                  |
+| hujjah/accountability can be operative submove                                 |
+| guidance-as-coercive-proof can be operative submove                            |
+| hiddenness/punishment/source-status can be operative submoves under one burden |
+| exit criteria: result + state delta + held-route recheck                       |
+| operative submoves do not count as recursion                                   |
+| owner: diagnostics/recursive-state-transitions.md                              |
++--------------------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| BURDEN LANDED                                                    |
+|                                                                  |
+| selected burden lands or remains held                            |
+| burden landing precedes state re-read                            |
+| state re-read waits for whole burden, not each operative submove |
+| depth/stop guards checked before next pass                       |
+| restoration/pastoral waits for refresh license                   |
+| owner: diagnostics/recursive-state-transitions.md                |
++------------------------------------------------------------------+
+             |
+             v
++----------------------------------------------------------------+
+| OUTPUT GOVERNANCE                                              |
+|                                                                |
+| default visible Layer A stays compact DSL/IR / fit-for-purpose |
+| bounded Layer B only if gate permits                           |
+| Layer A / Layer B release checks                               |
+| no raw IR / full Case State / matched_modules dump in default  |
+| owner: SKILL.md                                                |
++----------------------------------------------------------------+
+             |
+             v
++-----------------------------------------------------------------------+
+| OUTPUT-RELEASE RUBRIC                                                 |
+|                                                                       |
+| release amount, order, held material, and recursive traversal checked |
+| output-release before visible response                                |
+| owner: rubrics/output-release.md                                      |
++-----------------------------------------------------------------------+
+             |
+             v
++----------------------------------------------------------------------+
+| DIAGNOSTIC RENDER CONTRACT                                           |
+|                                                                      |
+| Level 1 default compact DSL/IR header plus bounded governed response |
+| Level 2 compact DSL / lab-report                                     |
+| Level 3 internal/development audit compatibility                     |
+| diagnostic-render-contract before final shape                        |
+| owner: rubrics/diagnostic-render-contract.md                         |
++----------------------------------------------------------------------+
+             |
+             v
++---------------------------------------------------------------------------+
+| LAYER A -> LAYER B -> STATE RE-READ                                       |
+|                                                                           |
+| one burden-cycle = one live burden -> Layer A -> Layer B -> state re-read |
+| one burden-cycle may contain multiple operative submoves                  |
+| RECURSE repeats the burden-cycle shape                                    |
+| recursion goes through state re-read, not topic transition                |
+| multi-burden does not mean multi-recursion by default                     |
+| owner: rubrics/diagnostic-render-contract.md                              |
++---------------------------------------------------------------------------+
+             |
+             v
++-------------------------------------------------------+
+| POST-RENDER RE-ENTRY GATE                             |
+|                                                       |
+| state re-read asks what cleared and what remains live |
+| held routes rechecked                                 |
+| convergence through controlled state transitions      |
+| decision = STOP / HOLD / RECURSE / PARTIAL            |
+| owner: diagnostics/recursive-state-transitions.md     |
++-------------------------------------------------------+
+             |
+             v
++--------------------------------------------------+
+| RESTORATION TRACE                                |
+|                                                  |
+| governing misread risk                           |
+| what was withheld and why                        |
+| correction applied and what remains live         |
+| owner: rubrics/diagnostic-render-contract.md     |
++--------------------------------------------------+
+             |
+             v
++------------------------------------------------------+
+| BOTTOM-LINE SYNTHESIS / NEXT MOVE                    |
+|                                                      |
+| conclusion relative to restored order                |
+| one actionable next move                             |
+| stop only after the post-render gate permits closure |
+| owner: SKILL.md                                      |
++------------------------------------------------------+
+
+RECURSION LOOP
+- post_render_gate -> v1_diagnostic_gate [RECURSE through state re-read, not topic transition]
+- one bounded live burden per burden-cycle
+- burden-cycle begins only after burden landing + state re-read
+- depth guard: no next operator without refreshed warrant
+- if RECURSE: next input-anchored burden is routed from refreshed state
+- STOP only with no eligible burden, or HOLD/PARTIAL reason
+
+PASS SHAPE
+- Layer A -> Layer B -> state re-read
+- RECURSE repeats the pass shape
+- release check: Layer A identifies live burden without route ledger
+- release check: Layer B answers only permitted current live burden and operative submoves
+- release check: state re-read decides next transition
+- release check: topical components remain submoves until re-read licenses a new burden
+
+TTP EXECUTION
+- target -> operation -> result -> state re-read
+- entry criteria: validated IR exists
+- entry criteria: owner-backed selection
+- entry criteria: bounded target
+- entry criteria: release permission
+- exit criteria: result
+- exit criteria: state delta
+- exit criteria: held-route recheck
+- depth guard: no depth increase without burden landing and state re-read
+- depth guard: no depth increase for next operative submove under same burden
+- depth guard: no depth increase for hiddenness/punishment/source-status when subordinate to same burden
+- depth guard: no repeated operator without refreshed warrant
+- depth guard: PARTIAL when limits block next eligible burden
+- one selected live burden may contain multiple operative submoves
+- operative submoves do not count as recursion
+
+GATE CHECKS
+1. Mandatory minimum fields populated?
+2. Consistency rules pass?
+3. routing-precedence.md suppression rules S-1..S-8?
+4. P7 stops checked?
+5. Architectural integrity check passed?
+6. Concealment x orientation matrix permits content now?
+
+TRANSITIONS
+- STOP: no eligible live burden remains after state re-read, no held route became eligible, and P7 permits stopping
+- HOLD: remaining material exists but its release signal is absent or a hard rail still blocks it
+- RECURSE: another same-input live burden remains or a held route becomes newly eligible after the current blocker clears
+- PARTIAL: limits prevent completion while recursive pressure remains
+
+EDGE INDEX
+- user_input -> always_load
+- always_load -> v1_diagnostic_gate
+- v1_diagnostic_gate -> phase1_listening
+- phase1_listening -> phase2_mandatory_passes
+- phase2_mandatory_passes -> diagnostic_ir
+- diagnostic_ir -> gate_blocked
+- diagnostic_ir -> gate_open
+- gate_blocked -> output_governance
+- gate_open -> routing_precedence
+- routing_precedence -> selected_live_burden
+- selected_live_burden -> operative_submoves
+- operative_submoves -> burden_result
+- burden_result -> output_governance
+- output_governance -> output_release
+- output_release -> render_contract
+- render_contract -> pass_shape
+- pass_shape -> post_render_gate
+- post_render_gate -> restoration_trace
+- restoration_trace -> bottom_line
+- post_render_gate -> v1_diagnostic_gate [RECURSE through state re-read, not topic transition]
+
+FORBIDDEN SHORTCUTS (generated index)
+- [INPUT] -> [direct doctrinal rebuttal]
+- [philosophical vocabulary appears] -> [auto-load sound-reason-epistemology.md]
+- [grief / wound / identity-perf] -> [argument / theodicy / doctrinal counter]
+- [thin basis / one sentence] -> [confident motive read or family lock]
+- [RT pressure appears] -> [broad doctrinal rebuttal first]
+- [landed move] -> [stack next argument immediately]
+- [IR formed retrospectively] -> [counts as gate pass]
+- [usurpation visible] -> [defend revelation within usurping framework]
+- [backbone predicate trigger present] -> [none active emitted without checking]
+- [semantic neutralization / loaded anti-attribute term] -> [release doctrinal content anyway]
+- [downstream content detected] -> [held but never reassessed after blocker clears]
+- [held = wait for user reply] -> [no same-response recursion ever]
+- [recursive traversal permitted] -> [argument dump at one refresh]
+- [same-response recursion] -> [Move 1 / Move 2 / Move 3 essay ladder]
+- [route itinerary formed before diagnostic reduction] -> [current bounded operator]
+- [Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration] -> [valid live burden]
+- [Burden-1 operative submoves] -> [Pass 1 / Pass 2 / Pass 3 recursion]
+- [imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]
+- [TTP named in prose] -> [TTP treated as executed]
+- [topic cue] -> [deterministic argument bank]
+- [TTP route itinerary] -> [recursion without entry / exit criteria]
+- [Layer A held route] -> [Layer B answers held content]
+- [recursive depth] -> [prose momentum without state re-read]
+- [restoration / pastoral note] -> [before state re-read]
+- [bounded move rendered] -> [STOP without post-render gate]
+- [diagnostic transparency allowed] -> [machinery dump]
+- [default response complete] -> [bibliography / source dump]
+- [source-audit-derived topic appears] -> [argument bank / citation dump]
+- [tradition label appears] -> [tradition-specific answer]
+- [pattern print emitted] -> [PF / routing precedence bypassed]
+- [Ashʿarī / Māturīdī / Atharī / Taymiyyan / kalāmic / falsafah cited together] -> [one unified operative authority]
+- [classical theology / classical tradition / mainstream kalam] -> [peer-valid operative support across contradictory schools]
+- [source marked contrast / opponent-position / historical note / held] -> [operative warrant in the same burden-cycle without reclassification]
+- [school-sensitive claim] -> [Ashʿarī / Māturīdī teaches X as settled]
+- [agreement asserted across frames] -> [operative support without substantive vs. verbal marking]
+- [state re-read / noetic re-read block printed] -> [burden landed asserted without preceding operative submove result]
+- [still live entry in re-read block] -> [material not present in input / held / preceding collapse radius]
+- [next licensed live burden] -> [not anchored in still live / held / original input]
+- [re-read block alone] -> [new burden-cycle without prior burden result]
+
+CONCEPT OWNERSHIP (owner-backed)
+- IR formation: diagnostics/diagnostic-ir.md
+- routing: diagnostics/routing-precedence.md
+- selected current live burden: rubrics/diagnostic-render-contract.md
+- render shape: rubrics/diagnostic-render-contract.md
+- output release: rubrics/output-release.md
+- recursion: diagnostics/recursive-state-transitions.md
+- framework-pipeline audit surface: diagnostics/framework-pipeline.md
+- DSL/IR representation: diagnostics/diagnostic-ir.md
+- meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
+- runtime diagnostic compiler contract: diagnostics/diagnostic-ir.md
+- TTP entry / exit criteria: diagnostics/recursive-state-transitions.md
+- Layer A / Layer B release checks: rubrics/output-release.md
+- source-status & noetic-frame non-equivalence: diagnostics/recursive-state-transitions.md
+- grounded noetic re-read shape: diagnostics/recursive-state-transitions.md
+
+REQUIRED ORDER
+- user_input -> always_load -> v1_diagnostic_gate -> phase1_listening -> phase2_mandatory_passes -> diagnostic_ir -> gate_blocked -> gate_open -> routing_precedence -> selected_live_burden -> operative_submoves -> burden_result -> output_governance -> output_release -> render_contract -> pass_shape -> post_render_gate -> restoration_trace -> bottom_line
 ```
+<!-- END GENERATED FRAMEWORK PIPELINE -->
+
+
+## Compact Pipeline Order
+
+`diagnostic reduction -> IR -> gate checks -> routing precedence -> selected live burden -> operative submove(s) -> burden landing -> output-release -> render contract -> bounded output -> state re-read -> recursive-state-transitions decision`
 
 ## Selective Deployment Branch
 
@@ -213,10 +452,12 @@ already-installed tribunal rather than a formed inquiry.
 
 Run the full Phase 2 stack and form the full IR exactly as usual. Then, if the case-state
 shows reason-category 3 or 4 together with foreign premise / tribunal installation and a
-live concealment or register-control read, keep the whole diagnosis in Layer A while
-compressing Layer B to one bounded question or minimal tribunal-clearing. This branch exists
-to preserve memetic precision and avoid rewarding deflection with over-disclosure; it is not
-a shortcut around the diagnostic gate.
+live concealment or register-control read, retain the full diagnosis internally for
+audit-capable render modes while compressing Layer B to one bounded question or minimal
+tribunal-clearing. Default visible
+Layer A remains fit-for-purpose and bounded by `diagnostic-render-contract.md`; it does not
+become a whole-diagnosis dump. This branch exists to preserve memetic precision and avoid
+rewarding deflection with over-disclosure; it is not a shortcut around the diagnostic gate.
 
 ## Forbidden Shortcut Paths
 
@@ -231,7 +472,7 @@ a shortcut around the diagnostic gate.
 - `[RT pressure appears] -> [broad doctrinal rebuttal first]`
   Skips V10 transmission vetting and the FPD pass.
 - `[landed move] -> [stack next argument immediately]`
-  Violates Stop-2.
+  Violates Stop-2 and recursive-state boundary reset.
 - `[IR formed retrospectively] -> [counts as gate pass]`
   IR written after dispatch is cosmetic compliance.
 - `[usurpation visible] -> [defend revelation within usurping framework]`
@@ -243,668 +484,129 @@ a shortcut around the diagnostic gate.
 - `[downstream content detected] -> [held but never reassessed after blocker clears]`
   Treats held as permanent suppression rather than traversal-delayed.
 - `[held = wait for user reply] -> [no same-response recursion ever]`
-  State refresh is an internal operation; it may occur inside the same response.
+  State re-read is an internal operation; it may occur inside the same response.
 - `[recursive traversal permitted] -> [argument dump at one refresh]`
-  Recursion is door-by-door, not total-downstream release at one state refresh.
+  Recursion is burden-cycle by burden-cycle, not total-downstream release at one state re-read.
+- `[same-response recursion] -> ["Move 1 / Move 2 / Move 3" essay ladder]`
+  Numbered essay sequencing is not state re-read. RECURSE requires a prose state
+  transition naming what cleared, what remains live, why the next burden was already
+  present, and why the next bounded pass is eligible.
+- `[route itinerary formed before diagnostic reduction] -> [current bounded operator]`
+  Diagnostic reduction must complete before routing. A route itinerary formed early is a
+  bypass of axes, mandatory passes, IR formation, gate checks, and routing precedence.
+- `[Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration] -> [valid live burden]`
+  The current bounded operator is one selected live-burden function, not a module itinerary.
+- `[Burden-1 operative submoves] -> ["Pass 1 / Pass 2 / Pass 3" recursion]`
+  Operative submoves under the same burden are not burden-cycles. Recursion begins only
+  after burden landing and state re-read license the next input-anchored burden.
+- `[imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]`
+  Same-cluster facets stay inside one live burden as operative submoves unless `R` licenses
+  a genuinely new input-anchored burden.
+- `[TTP named in prose] -> [TTP treated as executed]`
+  TTP activation is selected by validated IR and performed as a bounded operation. A
+  phrase such as "the M1 move" or "the M8 move" is not source-backed execution by itself.
+- `[topic cue] -> [deterministic argument bank]`
+  The skill is a runtime-verifiable diagnostic compiler, not a deterministic answer
+  selector. Topic recognition does not replace diagnostic reduction, validated IR, and
+  operator activation.
+- `[TTP route itinerary] -> [recursion without entry / exit criteria]`
+  TTP recursion requires entry criteria, operation criteria, exit criteria, and refreshed
+  state selection at each depth. An initial itinerary cannot license downstream operators.
+- `[Layer A held route] -> [Layer B answers held content]`
+  Layer A may name held routes for auditability; Layer B may not answer them until state
+  re-read licenses release.
+- `[recursive depth] -> [prose momentum without state re-read]`
+  Depth increases only after burden landing and state re-read. Continuing because another
+  topic is nearby, or stopping because the first argument landed, violates convergence.
+- `[restoration / pastoral note] -> [before state re-read]`
+  Restoration synthesis and pastoral note wait until the active burden lands and state re-read
+  licenses closure, HOLD, PARTIAL, or the next live burden.
 - `[bounded move rendered] -> [STOP without post-render gate]`
-  Premature closure. The state refresh / re-entry gate must recheck held routes before STOP.
+  Premature closure. The state re-read / re-entry gate must recheck held routes before STOP.
 - `[diagnostic transparency allowed] -> [machinery dump]`
   Diagnostic render eligibility does not suspend output-release rubric.
+- `[default response complete] -> [bibliography / source dump]`
+  Default mode suppresses source-basis ledgers and bibliography/source-list endings unless
+  the user requested sources or the task is audit/research.
 - `[source-audit-derived topic appears] -> [argument bank / citation dump]`
   External source-audit material supplies structural framing only. It does not bypass IR formation, source-use discipline, owner selection, or release limits.
 - `[tradition label appears] -> [tradition-specific answer]`
   "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a route. Type the load-bearing node first: authority order, criterion, semantic hinge, category-set, identity wound, or transmission layer.
 - `[pattern print emitted] -> [PF / routing precedence bypassed]`
   Structural pattern print is an optional IR descriptor, not a new V-pass, PF replacement, or coverage claim.
+- `[Ashʿarī / Māturīdī / Atharī / Taymiyyan / kalāmic / falsafah cited together] -> [one unified operative authority]`
+  Contradictory noetic structures cannot be released as one operative authority. Each
+  burden-cycle proceeds from one selected operative noetic frame; other frames may be
+  named only under non-operative source-status.
+- `[classical theology / classical tradition / mainstream kalam] -> [peer-valid operative support across contradictory schools]`
+  Umbrella terms that flatten contradictory schools are forbidden when the claim is
+  school-sensitive or disputed. Identify the selected operative frame.
+- `[source marked contrast / opponent-position / historical note / held] -> [operative warrant in the same burden-cycle without reclassification]`
+  A source carrying a non-operative status must not become operative warrant without an
+  explicit reclassification sentence naming the reason and preserving the selected frame.
+- `[school-sensitive claim] -> [Ashʿarī / Māturīdī teaches X as settled]`
+  Intra-school flattening hides internal disagreement. Mark school-sensitive claims as
+  disputed or use them only under contrast / historical-note status.
+- `[agreement asserted across frames] -> [operative support without substantive vs. verbal marking]`
+  Verbal-only agreement across frames is not operative support. If agreement is asserted,
+  mark whether it is substantive or merely verbal/surface-level.
+- `[state re-read / noetic re-read block printed] -> [burden landed asserted without preceding operative submove result]`
+  The re-read block must be grounded in an immediately preceding operative submove with
+  `target -> operation -> result`.
+- `[still live entry in re-read block] -> [material not present in input / held / preceding collapse radius]`
+  `still live` must be anchored in the original input, prior held material, or the
+  preceding burden-cycle's collapse radius.
+- `[next licensed live burden] -> [not anchored in still live / held / original input]`
+  A new burden cannot be invented at the re-read step.
+- `[re-read block alone] -> [new burden-cycle without prior burden result]`
+  A new burden-cycle requires a grounded re-read whose `burden landed` traces to a real
+  operative result.
 
-Compact pipeline (rubric/render placement):
-`IR → PF/claim-level → owners → TTP → load floor → release rubric → render contract → bounded output → post-render gate → STOP/HOLD/RECURSE/PARTIAL`
+## Recursive State-Transition Reference
+
+The abstract recursive state-transition model is owned by
+`references/diagnostics/recursive-state-transitions.md`. This pipeline chart must show the
+post-render re-entry position, but it does not independently define STOP, HOLD, RECURSE,
+PARTIAL, state carry/reset/re-evaluation, or same-response recursion conditions.
+
+The post-render gate is the circuit position. `recursive-state-transitions.md` is the abstract
+semantic owner. `diagnostic-ir.md` is the typed carrier. `output-release.md` governs release
+amount/order. `diagnostic-render-contract.md` governs visible render mode. `routing-precedence.md`
+governs route order and suppression. `P7-restoration-stops.md` owns concrete stop instances.
+
+## Noetic / Meta-Noetic Vocabulary Scope
+
+Noetic structure is the object of diagnosis. It is the operative configuration by which a subject
+judges reality: commitments, categories, inferential norms, testimonial attitudes, interpretive
+filters, background assumptions, and belief-relations.
+
+Meta-noetic memetics describes how whole noetic structures and their governing epistemic rules
+form, function, stabilize, defend themselves, mutate, reproduce, spread, and instantiate
+linguistically across persons and communities. It asks how a structure treats things as basic,
+obvious, rational, neutral, evidential, authoritative, or interpretable; how its beliefs support
+each other; which social and linguistic patterns reproduce it; and what load-bearing node keeps
+regenerating the same downstream claims.
+
+DSL/IR operationalizes these readings through existing fields and owners. This vocabulary does
+not create a new routing pass, does not create new IR fields by itself, and does not override
+`noetic-reading-checklist.md`, `diagnostic-ir.md`, `pattern-profiling.md`, or
+`routing-precedence.md`. Examples, slogans, tradition labels, and pattern prints do not create
+routes.
 
 ## Compiled Runtime Note
 
-In the compiled Claude runtime, atomized paths named in this pipeline are source identities. They
-do not require the standalone atomized file to exist under the generated runtime root. Resolve the
+In the compiled runtime, atomized paths named in this pipeline are source identities. They do
+not require the standalone atomized file to exist under the generated runtime root. Resolve the
 original module ID or source path through `compiled-module-map.json`, load the containing runtime
 bundle or omnibus file, and use only the section with the matching `MODULE_ID`. Matched modules
 remain original module IDs; omnibus filenames are containers, not active dispatch.
 
-## Recursive State-Transition View
-
-**Canonical owner:** This section is the authoritative definition of the STOP / HOLD / RECURSE / PARTIAL
-state model. All other files that govern recursive continuation (`SKILL.md §V.D`,
-`diagnostic-ir.md §Current-pass activation rule`, `routing-precedence.md Rule P-3`,
-`anti-patterns.md §False Landing`) cross-reference this section rather than re-stating the model
-independently. `P7-restoration-stops.md` is the concrete instantiation of the HOLD / STOP
-states (Stops 1–5); this section owns the abstract state-transition semantics.
-
-The framework is not a one-shot pipeline. Each pass produces bounded manifestation first, then
-refreshes state through the post-render gate. Only the refreshed state may authorize further release. `STOP` and `HOLD` are
-governed output states, not empty terminals. `RECURSE` means governed re-entry over the
-still-live burden, not autonomous looping. `PARTIAL` means the next eligible pass remains live but
-token, tool, or interaction limits prevent completion in this response.
-
-```mermaid
-flowchart TD
-    I["Discourse Analysand I"] --> P["Always-Load Foundation Phi = alpha + beta"]
-    P --> D["Diagnostic Reduction D via passes delta"]
-    D --> S["Raw Diagnostic State sigma"]
-
-    S --> G1["Governance Gate G under constraints gamma"]
-    G1 --> SV["Validated IR State sigma-check"]
-
-    SV --> ETA["Restoration Target eta"]
-    ETA --> O["Selective Routing Omega"]
-    O --> T["Activated Profiles rho and TTP Operators mu"]
-    T --> R["Bounded Render R"]
-    R --> PSI["Bounded Manifestation Psi_t = Layer A + Layer B + Trace"]
-
-    PSI --> X["Post-render State Refresh chi using sigma-check, Psi_t, eta"]
-    X --> SN["Refreshed State sigma-plus"]
-
-    SN --> G2["Re-Entry Gate over refreshed state"]
-    G2 -->|STOP| OS["Terminal bounded state"]
-    G2 -->|HOLD| OP["Held or compressed state"]
-    G2 -->|RECURSE| RE["Governed recursive re-entry"]
-    G2 -->|PARTIAL| PL["Limit-bounded partial state"]
-
-    RE --> O
-```
-
-In operator terms, the route does not become recursive because the system keeps talking. It
-becomes recursive only when a bounded move has landed, the state has refreshed, the restoration
-target remains unmet, and governance still permits another pass.
-
-The post-render gate must run before STOP. It asks what cleared this pass, what remains live in the
-same input, which held routes were rechecked, whether any held route became newly eligible, what the
-next eligible pass is, and whether the decision is STOP, HOLD, RECURSE, or PARTIAL.
-
-No premature STOP: STOP is licensed only when State Refresh confirms that no eligible live door
-already present in the original input remains live, no held route became releasable, and P7 permits
-stopping. If another eligible live door remains, the framework must choose RECURSE for the next
-bounded pass or PARTIAL when response limits prevent that pass. HOLD is valid only when the
-remaining door is blocked by an absent release signal, stop, register-hold, semantic gate, or
-thin-basis rule.
-
-Recursion is not argument dump. It is one door at a time: upstream before downstream, current-pass
-modules only, State Refresh after each move, and no total downstream release at one refresh.
-
-## Noetic Structure and Meta-Noetic Memetics
-
-**Canonical owner:** This section is the authoritative definition of noetic structure and
-meta-noetic memetics as they function in this architecture. Files that engage the dynamics
-of criterion-docking, tribunal-installation, semantic-capture persistence, defensive
-stabilization, and collapse-radius should cross-reference this section rather than
-re-stating the conceptual framework independently. The DSL-IR operationalization of these
-dynamics lives in `references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization
-Layer`. This section names the conceptual architecture; that file makes it actionable.
-
-Noetic structure is the object of diagnosis. It is not merely a list of claims or a worldview
-label. It is the operative configuration of commitments, grounding relations, inferential norms,
-testimonial posture, interpretive filters, stabilization structure, and routing-relevant
-dependencies by which a case is actually being carried. Those grounding relations are often
-graph-like, and locally may be read in DAG-like form, but the live control surface is richer
-than a pure graph because it must also carry weighting, suppression, underdetermination,
-concealment, and release conditions.
-
-Meta-noetic memetics names the dynamic behavior of semantic-intellectual units within and around
-that structure. It does not replace the repo's existing distinctions around concealment,
-criterion-smuggling, semantic capture, tribunal importation, or defensive stabilization; it
-clarifies how those already-named dynamics dock, persist, mutate, and propagate. It therefore is
-not enough to know that a node is present. The operator must also read why it is present, how it
-is being held in place, and what downstream dependencies will fail if a load-bearing premise,
-criterion, or authority node is cleared.
-
-The DSL-IR is the canonical audited formalization layer where those readings become governable.
-For the authoritative definition of what the DSL-IR is, its gate protocol, field rules, and
-failure tests, see `references/diagnostics/diagnostic-ir.md §DSL-IR as Audited Formalization
-Layer`. That file is the canonical prose owner; this section names the pipeline surface where
-the IR sits.
-
-## Interpretive Note
-
-The framework does not treat discourse as a blob to ingest and answer in one pass. It treats
-discourse as an external analysand that can be inspected, decomposed, routed, manifested in
-bounded form, and revisited under refreshed governance. That clarification does not rename the
-repo into another vocabulary; it simply makes explicit what route-first discipline, DSL-IR
-governance, and refreshed-state continuation already require.
-
-The operative success condition is restorative structural viability: a noetic configuration whose
-grounding, routing, release, and recursive continuation remain ordered toward restoration rather
-than tribunal capture, semantic trap, memetic persistence, or brittle pseudo-stability.
-
-For the canonical definition of the Diagnostic IR, see `references/diagnostics/diagnostic-ir.md`.
-
-## Formal Operator View
-
-The ASCII chart above remains the primary audit surface. The formal view below makes the same
-governed interpretive framework explicit in compact form. It does not replace repo-native routing
-language, and it does not reduce the ontology to a pure graph. It states where discourse is
-formalized, validated, manifested, refreshed, and re-entered.
-
-Let the always-load foundation be:
-
-$$
-\Phi = \{\alpha,\beta\}
-$$
-
-where `\alpha` names the kernel commitments and `\beta` names the always-load substrate.
-
-For each governed pass `t`, the framework can be stated as:
-
-$$
-\sigma_t = D(I_t, \Phi; \delta)
-$$
-
-$$
-\sigma_t^{\checkmark} = G(\sigma_t \mid \gamma)
-$$
-
-$$
-\eta_t = \operatorname{Target}(\sigma_t^{\checkmark})
-$$
-
-$$
-(\rho_t,\mu_t) = \Omega(\sigma_t^{\checkmark}, \eta_t)
-$$
-
-$$
-\Psi_t = \mathcal{R}(\rho_t,\mu_t,\sigma_t^{\checkmark},\eta_t)
-= \langle \lambda_{A,t}, \lambda_{B,t}, \tau_t \rangle
-$$
-
-$$
-\sigma_{t+1} = \chi(\sigma_t^{\checkmark}, \Psi_t, \eta_t)
-$$
-
-$$
-\kappa(\sigma_{t+1}, \eta_t) \in \{\texttt{STOP}, \texttt{HOLD}, \texttt{RECURSE}, \texttt{PARTIAL}\}
-$$
-
-This is the quantized general framework in repo-native form: diagnostic reduction, governance,
-restoration targeting, selective routing, bounded manifestation, state refresh, and governed
-re-entry.
-
-### Symbol Legend
-
-| Symbol | Repo-native meaning |
-|---|---|
-| I<sub>t</sub> | current discourse analysand for the pass |
-| Φ | always-load foundation carried into the pass |
-| α | kernel commitments / non-negotiable architecture |
-| β | always-load substrate: terminology, indices, heuristics, and standing background |
-| D | diagnostic reduction through V1 and the mandatory passes |
-| δ | the ordered pass family extracting the live state |
-| σ<sub>t</sub> | raw diagnostic state before validation |
-| G | governance / validation gate |
-| γ | routing precedence, stops, semantic discipline, register constraints, and related hard rails |
-| σ<sub>t</sub><sup>✓</sup> | validated actionable IR state |
-| η<sub>t</sub> | live restoration target named from the validated state |
-| Ω | selective routing / owner activation |
-| ρ<sub>t</sub> | activated routed profile set |
-| μ<sub>t</sub> | activated TTP operator set |
-| ℛ | bounded render under current permissions |
-| Ψ<sub>t</sub> | bounded manifestation for the pass |
-| λ<sub>A</sub> | Layer A retained diagnosis |
-| λ<sub>B</sub> | Layer B deployable move |
-| τ<sub>t</sub> | restoration trace for the pass |
-| χ | refreshed-state update after bounded manifestation |
-| κ | recursive governance output: stop, hold, recurse, or partial |
-
-The ASCII chart, recursive state-transition view, and Mermaid graph above remain the primary audit
-surfaces. The formal view below makes the same governed interpretive framework explicit in operator
-form. It does not replace repo-native routing language, and it does not reduce the ontology to a
-pure graph. It identifies where discourse is formalized, validated, selectively activated,
-manifested under bounded permissions, refreshed, and re-entered under governance.
-
-At the highest level, the framework is not a one-shot router. It is a governed selective-recursive
-diagnostic architecture whose continuation is rejudged after every bounded move.
-
-### Global Operator
-
-Let the total system be:
-
-```math
-\hat{\mathcal{S}}_{\eta,\kappa}
-=
-\mathrm{Iterate}_{\kappa,\eta}
-\Big[
-\chi
-\circ
-\mathcal{R}
-\circ
-\Omega
-\circ
-G
-\circ
-D
-\Big]
-```
-
-Applied to raw discourse `I` under the always-load foundation `Φ`:
-
-```math
-\Psi^{*}
-=
-\hat{\mathcal{S}}_{\eta,\kappa}(I,\Phi)
-```
-
-Here, `Ψ*` is the final bounded restorative output across one or more governed rounds.
-The composition reads right-to-left: D first, then G, then Ω, then ℛ, then χ — matching
-the execution order in §Functional Pipeline (steps II through VI).
-
-This makes explicit that the framework is not a free-running recursion engine and not a static
-routing table. It is a stateful iterative operator whose continuation is governed after each landed
-move.
-
-### Symbol Legend
-
-#### Foundation Layer
-
-```math
-\Phi = \{\alpha,\beta\}
-```
-
-where:
-
-```math
-\alpha = \{\texttt{KERNEL},\texttt{META},\texttt{WAHY}\}
-\qquad
-\beta = \{\texttt{TERM},\texttt{HEUR},\texttt{CASEINDEX}\}
-```
-
-* `α`: kernel commitments / governing anchors
-* `β`: always-load substrate: terminology, heuristics, case indexing, and standing background
-
-#### Diagnostic Layer
-
-The discourse is first bound to the governing foundation:
-
-```math
-S_0 = I \otimes (\alpha + \beta)
-```
-
-Diagnostic reduction then maps governed input into raw diagnostic state:
-
-```math
-\sigma_t = D(S_t;\delta)
-```
-
-Here, `δ` names the ordered diagnostic pass family extracting the live state, including the
-noetic, orientation, deformation, reason, foreign-premise, prophetic-discourse, and backbone checks
-as governed by the canonical diagnostics.
-
-#### Governance Layer
-
-Validation and suppression are then applied:
-
-```math
-\sigma_t^{\checkmark} = G(\sigma_t \mid \gamma)
-```
-
-Here, `γ` names the hard rails carried by routing precedence, stops, semantic discipline,
-register constraints, and related governance checks.
-
-This is not merely a transition from possible to actual. It is a transition from possible to
-permitted.
-
-#### Routing Layer
-
-From the validated state, the live restoration target is selected:
-
-```math
-\eta_t = \mathrm{Target}(\sigma_t^{\checkmark})
-```
-
-Selective routing then activates only the profiles and operator surfaces justified by the current
-validated state and restoration target:
-
-```math
-(\rho_t,\mu_t) = \Omega(\sigma_t^{\checkmark},\eta_t)
-```
-
-where:
-
-* `ρ_t`: activated routed profile set
-* `μ_t`: activated TTP operator set
-
-Routing is therefore state-conditioned, not merely topic-conditioned.
-
-#### Bounded Manifestation Layer
-
-Bounded manifestation is rendered under current permissions:
-
-```math
-\Psi_t =
-\mathcal{R}(\rho_t,\mu_t,\sigma_t^{\checkmark},\eta_t)
-=
-\langle \lambda_{A,t}, \lambda_{B,t}, \tau_t \rangle
-```
-
-where:
-
-* `λ_A,t`: Layer A retained diagnosis
-* `λ_B,t`: Layer B deployable move
-* `τ_t`: restoration trace for the pass
-
-This makes explicit that the framework does not emit undifferentiated output. It renders retained
-diagnosis, deployable engagement, and restoration trace under bounded permissions.
-
-#### Recursive Layer
-
-After each bounded manifestation, refreshed state is computed:
-
-```math
-\sigma_{t+1}^{+} = \chi(\sigma_t^{\checkmark},\Psi_t,\eta_t)
-```
-
-Recursive governance then determines whether the framework stops, holds, re-enters, or marks a limit-bounded partial:
-
-```math
-\kappa(\sigma_{t+1}^{+},\Psi_t,\eta_t)
-\in
-\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
-```
-
-The post-render gate is the concrete runtime carrier of `χ` and `κ`. It must recheck held routes
-and name `next_eligible_pass` before STOP. `STOP` requires no live distortion and no newly eligible
-held route. `HOLD` means the route remains live but blocked. `RECURSE` means the next bounded pass
-is eligible now. `PARTIAL` means the next pass is eligible but response limits prevent traversal.
-
-An eligible live door is a same-input distortion, held route, or downstream burden that was already
-present in the original input and becomes releasable after the current blocker clears. The system
-must not call this complete merely because the first strong move landed. Held material is
-traversal-delayed, not permanently suppressed.
-
-If recursive re-entry is licensed, the next pass begins from refreshed state under renewed
-governance rather than from unguided carry-forward:
-
-```math
-S_{t+1} = \sigma_{t+1}^{+} \otimes \Phi
-```
-
-Bounded deployment therefore governs how recursion unfolds; it does not abolish recursion.
-
-**State Carry Table** — what χ retains, resets, and re-evaluates across a pass boundary:
-
-| State component | Carry rule |
-|----------------|------------|
-| NS code, deformation, concealment mode, DO-orient | **Carried** — stable diagnostic read persists until a fresh differentiating signal changes it |
-| Restoration target η | **Carried** if still unmet; **updated** if the landed move partially resolved it |
-| Alignment state, Recognition strength | **Carried as-is** — these progress across passes; they do not reset |
-| `What remains live` differentiators | **Carried** as the live input to the next V1 opening |
-| Matched modules (ρ_t, μ_t) | **Reset** — re-derived from refreshed state; not carried from the prior pass |
-| Layer B content (λ_{B,t}) | **Reset** — re-derived from refreshed state |
-| Next move | **Reset** — re-derived from refreshed state |
-| Continuation eligibility | **Re-evaluated fresh** from the refreshed state; not inherited from the prior pass |
-
-The prose governance for these rules is distributed across `diagnostic-ir.md §Current-pass
-activation rule` (matched modules reset, boundary reset after Stop-2) and
-`diagnostic-ir.md §Acceptance-state rules` (alignment/recognition progression). This table
-is the single consolidated reference for the carry semantics of χ.
-
-### Functional Pipeline
-
-#### I. Initialization
-
-```math
-S_0 = I \otimes (\alpha + \beta)
-```
-
-Raw discourse is bound to governing anchors and substrate.
-
-```math
-\text{raw} \to \text{governed}
-```
-
-#### II. Diagnostic Reduction
-
-```math
-\sigma_0 = D(S_0;\delta)
-```
-
-The discourse is reduced into diagnostic markers and structured state.
-
-```math
-\text{subjective} \to \text{classified}
-```
-
-#### III. Gated Validation
-
-```math
-\sigma_0^{\checkmark} = G(\sigma_0 \mid \gamma)
-```
-
-The state is checked against routing precedence, anti-pattern discipline, stop conditions, semantic
-holds, register holds, and related hard rails.
-
-```math
-\text{possible} \to \text{permitted}
-```
-
-#### IV. Selective Routing
-
-```math
-(\rho_0,\mu_0) = \Omega(\sigma_0^{\checkmark},\eta_0)
-```
-
-Only the live profiles and TTP surfaces are activated.
-
-```math
-\text{available} \to \text{selected}
-```
-
-#### V. Bounded Manifestation
-
-```math
-\Psi_0
-=
-\mathcal{R}(\rho_0,\mu_0,\sigma_0^{\checkmark},\eta_0)
-=
-\langle \lambda_{A,0}, \lambda_{B,0}, \tau_0 \rangle
-```
-
-Output is rendered under current permissions, not from total available knowledge.
-
-```math
-\text{selected} \to \text{manifest}
-```
-
-#### VI. Post-Render Re-Entry Decision
-
-After a landed move:
-
-```math
-\sigma_1^{+} = \chi(\sigma_0^{\checkmark},\Psi_0,\eta_0)
-```
-
-Then:
-
-```math
-\kappa(\sigma_1^{+},\Psi_0,\eta_0)
-\in
-\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
-```
-
-If recursive re-entry is licensed:
-
-```math
-S_1 = \sigma_1^{+} \otimes \Phi
-```
-
-and the cycle proceeds only under renewed governance.
-
-### TTPs as Selective Recursive Operators
-
-The routed TTP layer is not merely a list of response modules. Each active TTP functions as a
-bounded state-conditioned operator ordered toward the current restoration target.
-
-Let `T_i ∈ μ_t`. Then:
-
-```math
-T_i : (\sigma_t^{\checkmark},\eta_t) \to \Delta\Psi_t
-```
-
-Meaning:
-
-* a TTP acts only on validated current state,
-* it produces a bounded delta in manifestation,
-* it remains ordered toward a restoration target rather than free expansion.
-
-So a governed pass may be extended as:
-
-```math
-\Psi_{t+1} = \Psi_t \oplus \Delta\Psi_t
-\qquad
-\text{where}
-\qquad
-\Delta\Psi_t = T_i(\sigma_t^{\checkmark},\eta_t)
-```
-
-But continuation remains governed by refreshed state:
-
-```math
-\kappa(\chi(\sigma_t^{\checkmark},\Psi_t,\eta_t),\Psi_t,\eta_t)
-```
-
-This makes explicit that TTPs are selective recursive operators whose continuation is judged only
-after refresh. They are not autonomous chains and not ambient always-on expansions.
-
-### State Taxonomy
-
-To avoid conflating state levels, the framework distinguishes:
-
-```math
-\sigma_t
-\qquad
-\text{raw diagnostic state}
-```
-
-```math
-\sigma_t^{\checkmark}
-\qquad
-\text{validated actionable state}
-```
-
-```math
-\sigma_t^{+}
-=
-\chi(\sigma_t^{\checkmark},\Psi_t,\eta_t)
-\qquad
-\text{refreshed post-move state}
-```
-
-The architecture is therefore not a single collapse event. It is a sequence of temporary
-stabilizations into actionable states under renewed governance.
-
-### Layer Semantics
-
-Canonical definition: `SKILL.md §V.A — Two-Layer Output Contract` is the governing prose
-definition of Layer A and Layer B. The operator notation below is a compact formal summary of
-the same distinction; it does not introduce independent semantics.
-
-Layer A retains diagnostic truth-state for control integrity:
-
-```math
-\lambda_{A,t} = f_A(\sigma_t^{\checkmark})
-```
-
-Layer B manifests the deployable move under current permissions:
-
-```math
-\lambda_{B,t} = f_B(\sigma_t^{\checkmark},\eta_t,\gamma)
-```
-
-The restoration trace records the path of bounded restorative movement:
-
-```math
-\tau_t \subseteq
-\{\sigma_t^{\checkmark} \to \Psi_t \to \sigma_{t+1}^{+}\}
-```
-
-So the output is not merely answer-content. It is diagnosis, bounded engagement, and restorative
-trace under governance.
-
-### State Transition Table
-
-| Phase          | Input               | Operator | Output                 | Ontological shift       |
-| -------------- | ------------------- | -------- | ---------------------- | ----------------------- |
-| Initialization | `I`                 | `Φ`      | `S₀`                   | raw → governed          |
-| Diagnosis      | `S₀`                | `D`      | `σ₀`                   | subjective → classified |
-| Validation     | `σ₀`                | `G`      | `σ₀✓`                  | possible → permitted    |
-| Routing        | `σ₀✓, η₀`           | `Ω`      | `(ρ₀, μ₀)`             | available → selected    |
-| Rendering      | `(ρ₀, μ₀), σ₀✓, η₀` | `ℛ`      | `Ψ₀`                   | selected → manifest     |
-| Refresh        | `σ₀✓, Ψ₀, η₀`       | `χ`      | `σ₁⁺`                  | manifest → updated      |
-| Continuation   | `σ₁⁺, Ψ₀, η₀`       | `κ`      | stop / hold / recurse / partial | updated → directed      |
-
-### Compact Summary Equation
-
-The full architecture may be stated compactly as:
-
-```math
-\Psi^{*}
-=
-\mathrm{Iterate}_{\kappa,\eta}
-\Big[
-\chi
-\circ
-\mathcal{R}
-\circ
-\Omega
-\circ
-G
-\circ
-D
-\Big]
-(I,\Phi)
-```
-
-subject to:
-
-```math
-\kappa(\sigma_t^{+},\Psi_t,\eta_t)
-\in
-\{\texttt{STOP},\texttt{HOLD},\texttt{RECURSE},\texttt{PARTIAL}\}
-```
-
-and with each Layer B manifestation bounded by current permissions:
-
-```math
-\lambda_{B,t} \subseteq \mathrm{Permitted}(\sigma_t^{\checkmark},\gamma)
-```
-
-### Interpretive Conclusion
-
-This formalization treats the framework not as a static pipeline, but as a governed
-selective-recursive architecture:
-
-* the Diagnostic IR is the actionable audited control surface;
-* routing is selective activation from validated state;
-* output is bounded manifestation, not unconstrained discharge;
-* recursion is permitted only through refreshed state;
-* TTPs are selective recursive operators rather than ambient expansion rules;
-* the end is restorative structural viability, not mere contradiction-production.
-
-In compact form:
-
-$$
-\text{Input}
-\to
-\text{Governed State}
-\to
-\text{Validated IR}
-\to
-$$
-$$
-\text{Selective TTP Activation}
-\to
-\text{Bounded Move}
-\to
-$$
-$$
-\text{Refreshed State}
-\to
-\text{Recurse / Hold / Partial / Stop}
-$$
+## Formalization Pointer
+
+The former formal operator notation, Mermaid graph, symbol legends, functional pipeline
+explanation, and interpretive conclusion live in `docs/audits/framework-pipeline-formalization.md`.
+That document is explanatory / audit formalization only. It is not live routing authority and
+does not create routes, module activation rules, IR fields, or source owners.
 
 ## Coverage Verification
 

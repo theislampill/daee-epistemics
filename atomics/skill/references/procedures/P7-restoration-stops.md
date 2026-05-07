@@ -2,7 +2,7 @@
 id: P7-restoration-stops
 module_class: procedure
 canonical_path: skill/references/procedures/P7-restoration-stops.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any response sequence at risk of premature argument deployment
   - grief-primary or identity-performance orientation confirmed
@@ -42,15 +42,17 @@ catalogue_registered: true
 
 These are not soft norms or reminders. They are named stop conditions. When a trigger fires, the listed mandatory action must occur before any argument, content, or doctrinal module is deployed. Violation of a stop is an operator error.
 
-These stops govern current-pass deployment. They do not abolish recursion. They forbid debate-autonomous chaining and require boundary reset after a landed move. Any continuation must come from refreshed case-state, not from momentum. A fresh round may arise from a clear differentiating signal within the next message, within the same message, or within an accompanying proposition or entailment that reopens V1.
+These stops govern current-pass deployment; they do not abolish recursion. Use the owner notation from `references/diagnostics/recursive-state-transitions.md`: `B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE`. Gloss: continuation comes from refreshed case-state, not momentum; a fresh round requires a differentiating signal in the next message, same message, or accompanying proposition/entailment that reopens V1.
 
-**Held means traversal-delayed, not response-delayed.** When a stop is not active, the system should not behave as though all downstream material is permanently suppressed. After a governing move lands, refresh the case-state and reassess whether downstream held material still governs. If it remains live and no stop, register-hold, or semantic gate blocks it, it may become the next bounded pass — inside the same response if the current pass cleared the governing blocker, or in a later pass. Do not model refresh as merely waiting for a new user reply.
+**Held means traversal-delayed, not response-delayed.** `H(n+1) = (Hn ∪ InputLive_n) - Released_n`. Gloss: held downstream material is reassessed after `R`; if still live and unblocked, it may become the next bounded pass in the same response or later. Do not model refresh as merely waiting for a new user reply.
 
-**Post-render gate is mandatory before closure.** After every bounded restorative move, P7 requires the State Refresh / Re-Entry Gate before any STOP. The gate must name what cleared, what remains live, which held routes were rechecked, whether any held route became newly eligible, the next eligible pass, and the decision: STOP, HOLD, RECURSE, or PARTIAL. STOP is valid only when no live distortion remains and no held route became eligible. HOLD is used for blocked remaining material. RECURSE is required for an eligible same-input next pass. PARTIAL is required when limits prevent eligible continuation.
+**Post-render gate is mandatory before closure.** `Land(B) -> R`. The gate must name what cleared, what remains live, held routes rechecked, newly eligible routes, next eligible pass, and STOP/HOLD/PARTIAL/RECURSE. STOP requires no live distortion and no newly eligible held route; HOLD blocks remaining material; RECURSE handles an eligible same-input next pass; PARTIAL marks limits.
 
-**No premature STOP while an eligible live door remains.** A landed move can satisfy the current pass without completing the original input. STOP is valid only when State Refresh confirms that the current blocker has been addressed, no eligible live door already present in the input remains live, no held route became releasable, and P7 permits stopping. If another eligible live door remains, choose RECURSE or PARTIAL rather than STOP. If the door remains live but the release signal is absent, choose HOLD.
+P7 owns the concrete stop instances below. The abstract STOP / HOLD / RECURSE / PARTIAL state model, same-response recursion condition, and state carry/reset/re-evaluation partition are owned by `references/diagnostics/recursive-state-transitions.md`.
 
-**Recursion is not argument dump.** It is one door at a time: upstream before downstream, current-pass deployment only, boundary reset after a landed move, held routes rechecked after refresh, and no total downstream release at one state refresh. Held means traversal-delayed, not permanently suppressed.
+**No premature STOP while an eligible live burden remains.** A landed move can satisfy the current pass without completing the input. STOP requires `R` to confirm no input-anchored eligible `B` remains and no held route became releasable. Otherwise choose RECURSE, PARTIAL, or HOLD as governed.
+
+**Recursion is not argument dump.** One `B` at a time: upstream before downstream, current-pass deployment only, boundary reset after `Land(B)`, held routes rechecked after `R`, and no total downstream release at one state re-read. Held means traversal-delayed, not permanently suppressed.
 
 **Diagnostic transparency does not suspend stop discipline.** Using compact diagnostic render (Level 2 or Level 3) does not waive any stop. The Post-Render Gate / Final Governance section of a diagnostic render must still obey all five stops.
 
@@ -124,9 +126,9 @@ See `references/techniques/heuristics.md` for the standing background principles
 
 **Mandatory action:** Leave the case explicitly underdetermined. State what would resolve the read. Respond to the established claim-type only. Do not assign a deformation or concealment code without sufficient signal.
 
-**Prohibited action:** Forcing a single read when the basis is insufficient. Assigning a high-confidence NS code from a thin excerpt. Choosing between two live reads arbitrarily rather than holding the pair. Treating provisional diagnosis as confirmed diagnosis.
+**Prohibited action:** Forcing a single read when the basis is insufficient. Assigning a high-confidence NS code from a thin excerpt. Choosing between two live reads arbitrarily rather than holding the pair. Treating provisional diagnosis as confirmed diagnosis. Treating protected, personal, sexual-identity, or biographical labels as proof of noetic deformation, `hawa`, `gharad`, `irad`, bad faith, culpability, interior motive, or primary load-bearing status.
 
-**Correct underdetermined output looks like:** Answering the specific claim made without assigning a governing read to the whole case. Noting what additional signals would differentiate the candidates. Leaving the NS or deformation code with a `?` rather than forcing.
+**Correct underdetermined output looks like:** Answering the specific claim made without assigning a governing read to the whole case. Noting what additional signals would differentiate the candidates. Leaving the NS or deformation code with a `?` rather than forcing. If an identity label is present, it may be named as a possible modal/stabilizing node only when anchored in public words, explicit self-description, stated framework, explicit affiliation, or visible discourse performance. Mark any stabilizing role as inference, keep motive/sincerity/culpability as speculative/held, and do not make the label a load-bearing proof of motive.
 
 **Forced-read output looks like:** Confidently diagnosing grief-primary from a single sentence that expresses frustration. Assigning NS-1 because the interlocutor mentioned evolution. Choosing between `juhud` and `irad` without evidence of prior engagement.
 

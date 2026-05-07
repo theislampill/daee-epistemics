@@ -2,12 +2,13 @@
 id: V12-tamanuc-exhaustion
 module_class: technique
 canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
-  - any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords
+  - any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live
+  - divine plurality language only after model/predication discipline shows independent-lordship pressure is actually operative
   - regardless of interlocutor tradition (structural trigger, not tradition-specific)
 routing_effects:
-  - base procedure — DO-11 and DO-13 are Christian-specific overlays loaded after V12, not alternatives
+  - base procedure for independent-lordship pressure; Christian overlays load before or after V12 according to released burden, not by topic label
 companions:
   - V8-bila-kayf-anchor
   - do-christian-extensions
@@ -19,13 +20,34 @@ catalogue_registered: true
 
 # V12 — Burhān al-Tamānuʿ: Logical Exhaustion of Divine Plurality
 
-**Deploy when:** Any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords — regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent, prior to and independent of any interlocutor's specific doctrinal commitments.
+**Deploy when:** A claim of multiple independent deities, multiple independent lords, or worship-status plurality is live regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent. Divine-plurality vocabulary alone is insufficient; if independence is unclear, model/predication discipline runs first and V12 remains held.
 
-**Routing note — Trinity overlay:** When the interlocutor is specifically Trinitarian, V12 is the first procedure; DO-11 and DO-13 are the Christian-specific overlay, deployed on top of V12 once the base logical exhaustion is in place. They are not alternatives — they are sequential. V12 first establishes that no plurality of *independent* lords is coherent. DO-11 and DO-13 then address the additional internal-structure questions raised specifically by the three-in-one claim: whether multipersonality is rationally forced by perfect-being reasoning (DO-11), and whether three distinct persons with one divine nature generates irreducible logical problems (DO-12). V12 does not replace those cases; they presuppose it.
+**Routing note - Trinity overlay:** When the interlocutor is specifically Trinitarian, do not route by the topic label. If the live pressure is perfection-criterion, model-identification, or person/nature predication, load the Christian overlay and M9/definition discipline first while V12 is held. V12 releases only when the state/noetic re-read exposes independent-lordship, worship-status plurality, or multiple-sovereign pressure as the next live burden. V12 does not replace DO-11/DO-12; it also must not be forced before those gates make independence live.
 
 ---
 
 ## The Argument's Structure
+
+## Owner-Specific Operation Floor
+
+V12 is not executed by naming tamanu, divine plurality, or mutual prevention. A released V12 burden must:
+
+1. Identify the operative plurality claim and whether the claimed agents are independent lords, derivative agents, manifestations, persons under one will, or an under-specified model.
+2. Refuse V12 landing if independence is not yet live; route back to model/predication or source-status discipline rather than forcing a plurality argument.
+3. When independent lordship is live, run the dimensions needed by the burden, not a label-summary. A full independent-lordship release requires at least:
+   - dependency / derivation pressure,
+   - equality or unequal-lord pressure,
+   - joint causation over one ordered world,
+   - influence over another lord's creation or will,
+   - the terminal collapse of the independent-plurality claim.
+4. State the result of each dimension as a burden-state change, not merely as a conclusion.
+5. Hold Christian overlay, worship-status, or authority/canon burdens unless the state/noetic re-read licenses them as NewB.
+
+**State-change condition:** V12 lands only when the released plurality claim has either collapsed to one independent lord, been returned as not-a-V12 target because independence was denied/unclear, or exposed a materially different downstream burden for the next cycle.
+
+**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qur'anic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
+
+---
 
 The burhān al-tamānuʿ (برهان التمانع — the argument from mutual prevention/contention) exhausts the logical space available to any hypothetical plurality of independent lords. "Independent" is the load-bearing term: the argument targets lordship (*rubūbiyyah* — the complete sovereign power to create, sustain, and govern) claimed by multiple agents who do not derive their power from one another and are not subordinate to a single source. Five dimensions are examined in sequence; each terminates in impossibility or contradiction. No exit is available across all five jointly.
 
@@ -114,13 +136,13 @@ The two move together: the rational argument shows the plurality is logically in
 
 ## Routing
 
-**Base procedure:** V12 triggers on any divine plurality pressure — philosophical, popular, comparative-religion, or Trinitarian. Run V12 first to establish that no plurality of independent lords is rationally coherent.
+**Base procedure:** V12 triggers on independent-lordship pressure - philosophical, popular, comparative-religion, or Trinitarian only when independence is live. Do not run V12 first merely because the surface topic says "plurality" or "Trinity"; run model/predication or perfection-criterion gates first when they are the released burden.
 
-**Cross-tradition scope:** V12 is triggered by the structural feature of divine plurality pressure — not by any tradition-specific terminology or the interlocutor's religious background. It applies regardless of whether the interlocutor is Trinitarian Christian, holds popular Hindu polytheism, operates with a philosophical pluralism, or is asking an abstract question about whether divine plurality is coherent. The trigger is the structural claim (multiple independent lords / divine agents), not the vocabulary in which it is expressed. For Advaita monism (one ultimate reality with many manifestations, not multiple independent lords), V12 partially applies but the interlocutor would correctly note their framework is not polytheism in V12's sense — this variant requires acknowledgment that the Advaita framework is a distinct metaphysical position, not a sub-case of the tamānuʿ target; see `TODO.md` for the bespoke religion-specific out-of-scope source-owner boundary.
+**Cross-tradition scope:** V12 is triggered by the structural feature of independent-lordship pressure, not by any tradition-specific terminology or the interlocutor's religious background. It applies when a Trinitarian Christian, popular polytheist, philosophical pluralist, or abstract questioner makes multiple independent lords/divine agents operative. If a system denies independent plurality, treats multiplicity as manifestation, or leaves person/nature/worship referent under-specified, V12 is held or returned as not-yet-target. Pattern-first routing may compare operative structures only as diagnosis requires; it must not flatten different systems into one neutral comparative category.
 
-**Christian overlay — DO-11 and DO-13:** After V12 is in place, the Trinitarian case adds specific questions: whether perfect-being reasoning forces multipersonality (DO-11) and whether three persons with one nature generates an irreducible logical problem (DO-12). These are additional layers, not substitutes. Load `references/case-library/do-christian-extensions.md` when the interlocutor is specifically Trinitarian.
+**Christian overlay - DO-11 and DO-13:** Trinitarian cases add specific questions: whether perfect-being reasoning forces multipersonality (DO-11), whether three persons with one nature generates a predication/model problem (DO-12), and whether philosopher's-God criteria govern revelation (DO-13). These are not substitutes for V12, but they may be upstream of V12 when independence is not yet live. Load `references/case-library/do-christian-extensions.md` when the interlocutor is specifically Trinitarian.
 
-**DO-11 → DO-12 stopping conditions:** These are sequential, not simultaneous. After V12 establishes that no plurality of independent lords is rationally coherent, deploy DO-11 (whether perfect-being reasoning forces multipersonality) and hold DO-12. Do not load DO-12 until the interlocutor has visibly engaged DO-11. If DO-11 lands and the interlocutor accepts that perfect-being reasoning does not force multipersonality, DO-12 (the logical three-in-one problem) becomes the next live issue. If DO-11 has not yet engaged and you load DO-12, you have violated P-3 (no stacking after a live move). If after DO-11 the interlocutor appeals to authority ("but the tradition requires it") rather than philosophical reasoning, the case has shifted from philosophical to authority-based — route to V10 + RT-2, not DO-12. DO-13 (philosopher's God vs. God of revelation) is a separate pressure that can co-occur with DO-11 but is not downstream of it — confirm whether DO-13 pressure is independently active before loading it.
+**DO-11 -> DO-12 -> V12 stopping conditions:** These are sequential by live burden, not simultaneous by topic. If the live burden is perfection-criterion, deploy DO-11/perfection-criterion discipline and hold DO-12/V12. If model/predication is then licensed, deploy DO-12/M9 and hold V12 unless independent lordship or worship-status plurality becomes live. If after DO-11 the interlocutor appeals to authority ("but the tradition requires it") rather than philosophical reasoning, the case has shifted from philosophical to authority-based - route to V10 + RT-2, not DO-12 or V12. DO-13 (philosopher's God vs. God of revelation) is a separate pressure that can co-occur with DO-11 but is not downstream of it - confirm whether DO-13 pressure is independently active before loading it.
 
 **V8 pairing:** When divine plurality pressure is entangled with attribute-language or transcendence-coherence pressure, load V8 alongside V12 to maintain the bilā kayf discipline on how divine predicates apply.
 

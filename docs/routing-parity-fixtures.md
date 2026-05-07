@@ -6,6 +6,8 @@ Routing parity means the compiled low-call runtime under `skill/` preserves the 
 
 The checker verifies that expected routes still point to original module IDs, that those IDs resolve through `skill/compiled-module-map.json`, and that compiled bundle sections preserve source identity markers.
 
+Fixtures are not routing authority. Routing is governed by the canonical source, diagnostic schema, module catalogue, operative contracts, and routing/governance files. A fixture may only verify that a source-defined rule is still present after compilation; it must not introduce a named-example route, a new case family, or a required module that the source itself does not justify.
+
 ## What It Does Not Mean
 
 Routing parity does not mean exact prose equivalence. The compiled runtime may rearrange source text into runtime bundles, and model outputs may vary in wording. The invariant is the control surface:
@@ -68,6 +70,8 @@ tests/routing-fixtures/
 
 Each fixture is JSON and uses original module IDs, not omnibus filenames.
 
+Concrete names in prompts are sample text only. Do not turn a named person, organization, or event into a routing primitive inside `id`, `required_modules`, `required_governance`, or checker logic. Generalize through the DSL/IR fields already owned by the canonical source: case family, pattern profile, deformation, discourse orientation, upstream gate, and post-render decision.
+
 ## Fixture Shape
 
 ```json
@@ -108,6 +112,15 @@ Each fixture is JSON and uses original module IDs, not omnibus filenames.
 ```
 
 `required_modules` and `optional_modules` must be original module IDs that exist in `compiled-module-map.json`. `forbidden_matched_modules` may name omnibus files or ordinary IDs that must not appear in that fixture's active module set.
+
+Before adding a `required_governance` phrase, confirm the rule already exists in `atomics/skill/` and is compiled into `skill/`. The test detects drift; it does not create the rule.
+
+Minimal-pair fixtures may also declare a `minimal_pair_group`,
+`minimal_pair_shared_surface_tokens`, and `minimal_pair_discriminators`. These fields are
+checker metadata only. They do not create new IR fields; they verify that fixtures with
+the same surface vocabulary still diverge on existing discriminators such as concealment
+mode, DO-orient, restoration target, or routing gate. Use them to prevent topic-to-IR
+fingerprinting, not to encode a named-example route.
 
 ## Omnibus Bundles
 

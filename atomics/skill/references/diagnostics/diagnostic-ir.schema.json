@@ -364,7 +364,7 @@
     "post_render_gate": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Mandatory post-render state refresh / re-entry gate. It must run after every bounded restorative move and before any STOP decision.",
+      "description": "Mandatory post-render state re-read / re-entry gate. It must run after every bounded restorative move and before any STOP decision.",
       "required": [
         "cleared_this_pass",
         "remaining_live_distortions",

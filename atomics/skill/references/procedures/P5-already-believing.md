@@ -2,7 +2,7 @@
 id: P5-already-believing
 module_class: procedure
 canonical_path: skill/references/procedures/P5-already-believing.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - believer whose belief is shallow, untested, or held by taqlīd
   - belief fragile under pressure; moving from inherited assumption to examined conviction
@@ -137,9 +137,10 @@ pastoral and epistemic strengthening path after that pressure has been typed.
 
 ## Hold/Release Discipline
 
-Hold reassurance until the specific article of faith is named. Hold rebuttal until the source
-and pressure type are vetted. Hold F3 practice-consolidation until the strongest live pressure
-has been addressed proportionally; otherwise practice is misused as avoidance.
+Use `B -> {s1...sn} -> Land(B) -> R(H,Δ)` from `recursive-state-transitions.md`;
+release amount/order remains owned by `output-release.md`. Gloss: hold reassurance until
+the article of faith is named, rebuttal until source and pressure type are vetted, and F3
+practice-consolidation until the strongest live pressure has been addressed.
 
 Release one strengthening move at a time: source-vetting, objection classification, strongest
 answer, evidential broadening, or practice consolidation. After each landed move, refresh V1

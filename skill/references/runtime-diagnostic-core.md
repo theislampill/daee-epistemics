@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: V1-diagnostic -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V1-diagnostic.md -->
-<!-- SOURCE_SHA256: 781f07b436c4c596a11c5734e6367b0c4dd49cded4e780f55029847b806478a3 -->
+<!-- SOURCE_SHA256: 3e1db2954bc5dfcaf36f5a9d49cbd852a3a53cc15806b44c4565c09e70407715 -->
 
 ---
 id: V1-diagnostic
 module_class: technique
 canonical_path: skill/references/techniques/V1-diagnostic.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - beginning any engagement before substantive content
   - interlocutor shifts register
@@ -57,6 +57,12 @@ catalogue_registered: true
 ## Role of V1 in the Skill
 
 V1 is the entry gate. No tactic, technique, procedure, or case-library module is selected before V1 has produced a case-state. V1 does not answer the interlocutor; it produces the routing artifact that makes a matched answer possible.
+
+V1 routes by noetic pattern, not denomination/source label. Named school, author, genealogy,
+topic, or identity terms may be recorded as source-status context, but they do not select the
+module and do not release an argument bank. The routed artifact must identify the live
+deformation, concealment, criterion/tribunal, authority-order, warrant, claim-level, and
+pattern-profile signals that justify the next bounded operator.
 
 ## The Three Phases
 
@@ -166,13 +172,13 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: a7b7038066e6bb6e52944347088f0dd5e6e733ce7064c2aedd270cc91c86aed3 -->
+<!-- SOURCE_SHA256: 18d7f9774cc79f5e96ffb48f2c8bd0a5791361decaad797828462e97d9b614d0 -->
 
 ---
 id: noetic-reading-checklist
 module_class: governance
 canonical_path: skill/references/diagnostics/noetic-reading-checklist.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - diagnosing worldview structure
   - NS code still provisional or basis is thin (excerpt mode)
@@ -196,6 +202,12 @@ pre-filters what counts as evidence, blocks certain inferential moves, and holds
 set of worldview commitments as invisible foundations. The stated epistemology and the
 operative noetic structure can be substantially different. The analysis targets the operative
 structure.
+
+Read the structure together with its governing epistemic rules: what it treats as basic,
+obvious, rational, neutral, evidential, authoritative, or interpretable; which testimony it
+trusts or rejects; which inferences it permits; how its beliefs support each other; and what
+load-bearing node keeps regenerating the same downstream claims. This is the belief-operating
+level, not a list of isolated propositions.
 
 ## When to Run This Checklist
 
@@ -229,6 +241,30 @@ proposition-level content. Classify the meta-noetic posture:
 - deployment discipline: let the stronger present cue govern; ask one bounded diagnostic
   question first; if the same blocker stays live, add only minimal tribunal-clearing; then
   pause rather than jumping to full discharge
+
+### Meta-Noetic Memetic Read
+
+When a recurring slogan, objection, label, or argument family appears, do not ask only how one
+idea spreads. Ask how the whole noetic structure and its governing epistemic rules are being
+formed, stabilized, defended, mutated, reproduced, or linguistically instantiated.
+
+Track only what is diagnostically relevant:
+
+- what counts as knowledge, evidence, authority, inference, neutrality, rationality, or
+  interpretation inside the structure
+- which commitments function as basic or obvious
+- how the beliefs support each other
+- which social or linguistic patterns reproduce the structure
+- what defensive move protects the structure against challenge
+- whether identity-linked commitments, community belonging, ritual/practice, moral vocabulary,
+  or self-narrative function as modal/stabilizing nodes in the noetic equilibrium
+- what load-bearing node must be cleared for the structure to change rather than merely absorb
+  one answered sentence
+
+Operational boundary: this read feeds existing fields such as `Foreign premise`, `Upstream
+findings`, `Claim-level`, `Pattern-profile`, `Load-bearing node`, `Collapse radius`, and
+`What remains live`. It does not create a new routing pass, new IR fields, or a route from a
+slogan by itself.
 
 ## The Nine Analytical Dimensions
 
@@ -380,6 +416,36 @@ All three of the following dimensions must carry independent convergent signal b
 
 If any of these three dimensions is under-signalled, the NS code is provisional, not confirmed.
 
+Personal or protected identity markers do not satisfy these dimensions by themselves, but they
+are not excluded from noetic diagnosis. Identity markers, public self-positioning, and community
+or ideological affiliation may be diagnostically relevant as modal/stabilizing nodes inside a
+noetic equilibrium: they may help explain how a criterion, authority posture, moral vocabulary,
+discourse role, or recognition-cost is stabilized, defended, reproduced, or made costly to
+abandon. Identity may be part of the noetic equilibrium, but it cannot by itself carry the
+verdict.
+
+Do not infer noetic deformation, concealment mode, vested interest, culpability, or discourse
+orientation from a biographical label alone. Treat such labels as diagnostically relevant only
+when the statement itself uses them as public identity-performance framing, criterion import,
+explicit stake, stated ideology, or visible discourse performance. The target is the structure
+of the utterance, not a verdict on the person's interior motive.
+
+Default-mode language rule: it is allowed to say "the public identity-frame may stabilize the
+criterion or affect discourse orientation" when anchored. It is unsafe to say "the identity
+layer is heavily load-bearing," "his identity is the framework through which every claim is
+processed," "it is hawa," or "it is irad" unless the statement itself makes that role primary
+and the source-status is marked. Identity is a modal/stabilizing node, not the primary
+verdict-bearing load-bearer unless the statement itself makes it primary.
+
+When identity is diagnostically used, mark source-status:
+
+- anchored: public words, explicit self-description, stated framework, explicit affiliation, or
+  visible discourse performance
+- inference: likely stabilizing role in the noetic equilibrium, such as stabilizing a criterion,
+  authority posture, moral vocabulary, or discourse orientation
+- speculative/held: interior motive, sincerity, culpability, soul-state, or whether identity is
+  the primary load-bearing node
+
 **Fields that must remain provisional until basis is confirmed:**
 
 - `NS code` — emit as `NS-X | NS-Y` or `NS-?` when fewer than all three dimensions carry convergent signal
@@ -402,6 +468,12 @@ Excerpt mode does not suspend diagnosis. It suspends overcommitment.
 ## NS Code Emission
 
 The checklist terminates with an NS-code assignment. This is what feeds the matched profile file in `case-library/profiles/` and the Quick NS table in `case-library/INDEX.md`. Without this emission the case library cannot be routed to; the diagnostic stops at prose.
+
+Emission means internal case-state / IR update for routing. It does not mean visible output in
+default mode. Printing NS/PF codes without showing the actual burden remains Higher-Order
+Vocabulary Theater; in default prose, the code may stay hidden while the governing noetic fact is
+rendered in ordinary language. In `:dsl` or `:audit`, the code may be shown when it improves the
+state/pass trace.
 
 Emit a single NS code when the nine dimensions converge on one profile. Emit `NS-X | NS-Y` when the subject genuinely straddles two profiles (for example, a habituated atheism shot through with an evidentialist demand: `NS-5 | NS-2`), and name the intervention-order consequence rather than forcing collapse to one code. Emit `NS-?` only when Dimensions 1, 4, and 6 are jointly under-signalled — and in that case, route through `mixed-case-handling.md` before proceeding.
 
@@ -471,13 +543,13 @@ case-state or Diagnostic IR.
 <!-- MODULE_ID: seven-deformations -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/seven-deformations.md -->
-<!-- SOURCE_SHA256: ab1d9bf73982bac22586ccc686a9e02304461fb3950cf76bd38ef2735065554a -->
+<!-- SOURCE_SHA256: 0991bf48d00bb7e0782d35272c6851d1362236260c7a7f7a38cebe5fd1cbb67d -->
 
 ---
 id: seven-deformations
 module_class: governance
 canonical_path: skill/references/diagnostics/seven-deformations.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - upstream obstruction must be identified precisely before responding
 catalogue_registered: false
@@ -1004,13 +1076,13 @@ can be loaded with confidence.
 <!-- MODULE_ID: modes-of-concealment -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/modes-of-concealment.md -->
-<!-- SOURCE_SHA256: 04f936fce96335bc1ba62fd00d8a1a414f5eaf5492f9922dc5c2451acdfac5b1 -->
+<!-- SOURCE_SHA256: ae20639328c3b54704d69019168e3c644e348e65e68862b38ad98cbfc68173c6 -->
 
 ---
 id: modes-of-concealment
 module_class: governance
 canonical_path: skill/references/diagnostics/modes-of-concealment.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any case after DO-orient is established; concealment mode governs what engagement can land
 emits:
@@ -1338,13 +1410,13 @@ routing decision; the case-state line composes them.
 <!-- MODULE_ID: discourse-orientation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/discourse-orientation.md -->
-<!-- SOURCE_SHA256: 151e4d2936e499c49d6ee976676976fb215840f1bc0e9fef1a2c2c567ce4c101 -->
+<!-- SOURCE_SHA256: 54252ef59cda8f95e975317805469ef7f0d6c515774527fbf21af7c74e7a4b61 -->
 
 ---
 id: discourse-orientation
 module_class: governance
 canonical_path: skill/references/diagnostics/discourse-orientation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any case before selecting any intellectual response or case-library module
 routing_effects:
@@ -1400,6 +1472,38 @@ engagement is the right register.
 belonging, group membership, or self-concept. The intellectual content of the position
 is secondary to the act of holding and displaying it. The position functions as a
 credential, an affiliation signal, or a component of self-presentation.
+
+**Identity-marker caution:** Personal, protected, biographical, or sexual-identity labels
+are not proof of noetic deformation, `hawa`, `gharad`, `irad`, bad faith, culpability, or
+interior motive. They also are not irrelevant. Identity can function as a modal/stabilizing
+node inside a noetic equilibrium: it may affect moral vocabulary, authority posture,
+recognition/rejection incentives, community belonging, self-narrative, ritual/practice,
+perceived threat-cost of belief change, criterion selection, discourse orientation, defensive
+stabilization, semantic persistence, and collapse radius. Identity may be part of the noetic
+equilibrium, but it cannot by itself carry the verdict.
+
+Diagnose the public discourse act, not the person's soul. Publicly stated ideological
+commitments may inform discourse orientation only when the utterance itself makes them
+function as a criterion, affiliation performance, explicit stake, or stabilizing pressure.
+Use cautious language such as "may indicate a register risk," "the statement performs this
+frame," or "the public identity-frame appears to stabilize the criterion being used"; do not
+say "his sexual identity is the criterion," "because he is X, the argument is `hawa`," or make
+a personal label the load-bearing proof.
+
+Default-mode phrasing: "the public identity-frame may stabilize the criterion or affect discourse
+orientation" is allowed when anchored. Unsafe default verdicts include "the identity layer is
+heavily load-bearing," "his identity is the framework through which every claim is processed,"
+"it is hawa," or "it is irad," unless independently grounded and source-status marked. Identity
+is a modal/stabilizing node, not the primary verdict-bearing load-bearer unless the statement
+itself makes it primary.
+
+Source-status discipline:
+
+- anchored: public words, explicit self-description, stated framework, explicit affiliation, or
+  visible discourse performance
+- inference: likely stabilizing role in the noetic equilibrium
+- speculative/held: interior motive, sincerity, culpability, soul-state, or primary
+  load-bearing status
 
 **Distinguishing from gharaḍ:** Gharaḍ involves something external at stake — a cost
 to be avoided. Identity-performance is constitutive — the position is part of who the
@@ -1571,13 +1675,13 @@ the other emissions remain available but not acted on until the register shifts.
 <!-- MODULE_ID: M5-deformation-triage -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M5-deformation-triage.md -->
-<!-- SOURCE_SHA256: cd6e91758754675c18683fdc1ed345fac8d43225b9434a73f31231a0962cf47b -->
+<!-- SOURCE_SHA256: cfc3df0bad5242fa7b50345cc450035b4f52770df518acfbcc56e8957bad8cb3 -->
 
 ---
 id: M5-deformation-triage
 module_class: tactic
 canonical_path: skill/references/tactics/M5-deformation-triage.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - during V1's triage phase (internal subroutine)
   - narrow single-exchange case where live question is already reduced to which deformation governs the next move

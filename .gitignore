@@ -12,3 +12,8 @@ build/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Test scratch/output artifacts
+tests/tmp/
+tests/output/
+tests/smoke-output/

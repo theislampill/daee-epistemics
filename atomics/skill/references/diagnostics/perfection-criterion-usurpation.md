@@ -2,7 +2,7 @@
 id: perfection-criterion-usurpation
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/perfection-criterion-usurpation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - philosophical perfection picture (immutability, simplicity, impassibility, non-eventfulness) functioning as tribunal
   - attribute content being judged by prior metaphysical model presented as neutral reason
@@ -48,6 +48,28 @@ This is not reducible to a generic anthropomorphism objection. The governing mov
 4. **Only then engage attribute content.** Route to the matched downstream file.
 
 If step 1 is skipped, the rest of the engagement is already inside the wrong court.
+
+## Owner-Specific Operation Floor
+
+This TTP is not executed by merely saying "an imported perfection criterion is present."
+Minimum operation requires:
+
+1. state the specific perfection rule doing the work;
+2. identify what that rule makes deficient, impossible, or lower-order;
+3. refuse the rule's tribunal status by asking why it has authority over the divine case;
+4. expose contingency by showing at least one alternative or cost that the rule must bear;
+5. where the rule requires eternal actualization of a perfection, distinguish possession
+   of the perfection from one required mode of manifestation;
+6. when the rule is general, run a parity or overgeneration test against parallel perfections;
+7. state the burden-state delta: what downstream route is now cleared, held, or newly eligible.
+
+**State-change condition:** the burden lands only if the criterion is no longer functioning
+as an unexamined judge. If the output only names the criterion but still answers inside its
+court, the burden has not landed.
+
+**Failure condition:** naming "perfect-being theology", "static perfection", or
+"non-eventfulness" without applying the specific rule, possession/manifestation distinction
+where relevant, and burden-state delta is TTP label cosplay.
 
 ---
 

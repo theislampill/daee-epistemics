@@ -2,7 +2,7 @@
 id: V6-convergence
 module_class: technique
 canonical_path: skill/references/techniques/V6-convergence.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live
   - interlocutor sets registers against one another

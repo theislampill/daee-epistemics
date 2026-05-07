@@ -9,6 +9,9 @@ known_non_runtime_references:
   - claim_id: RT-5
     status: prohibited-code
     note: RT-5 is mentioned only as a forbidden inflation; hadith authentication has its own diagnostic owner.
+  - claim_id: audit:pattern-family-audit
+    status: historical-audit
+    note: Pattern-family audit material lives in docs/audits/ and is not an operative source owner.
 
 scope_claims:
   # Noetic profiles
@@ -367,6 +370,9 @@ scope_claims:
   - claim_id: governance:framework-pipeline
     owner_id: framework-pipeline
     in_scope: true
+  - claim_id: governance:recursive-state-transitions
+    owner_id: recursive-state-transitions
+    in_scope: true
   - claim_id: governance:diagnostics-index
     owner_id: diagnostics-index
     in_scope: true
@@ -387,9 +393,6 @@ scope_claims:
     in_scope: true
   - claim_id: governance:operative-contracts
     owner_id: operative-contracts
-    in_scope: true
-  - claim_id: governance:pattern-family-audit
-    owner_id: pattern-family-audit
     in_scope: true
   - claim_id: governance:pattern-profiling
     owner_id: pattern-profiling

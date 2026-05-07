@@ -1,0 +1,873 @@
+schema_version: 1
+
+scope:
+  owns:
+    - structured control-plane map for the generated framework-pipeline ASCII chart
+    - generated chart node order, edge index, gate index, shortcut index, and owner index
+  does_not_own:
+    - doctrinal content
+    - runtime route creation
+    - PF codes, IR fields, or module activation rules
+    - concrete STOP semantics beyond indexing the recursive-state owner
+
+generated_region:
+  begin: "<!-- BEGIN GENERATED FRAMEWORK PIPELINE -->"
+  end: "<!-- END GENERATED FRAMEWORK PIPELINE -->"
+
+nodes:
+  - id: user_input
+    label: USER INPUT / CLAIM / EXCERPT
+    owner: skill/references/diagnostics/framework-pipeline.md
+    lines:
+      - intake surface only; not a route
+      - not a deterministic argument bank key
+    support_claim: framework_pipeline_audit_surface
+
+  - id: always_load
+    label: ALWAYS-LOAD BACKGROUND
+    owner: skill/SKILL.md
+    lines:
+      - terminology.md | case-library/INDEX.md
+      - module-codes.md | heuristics.md
+    support_claim: always_load_background
+
+  - id: v1_diagnostic_gate
+    label: V1 DIAGNOSTIC GATE
+    owner: skill/references/techniques/V1-diagnostic.md
+    lines:
+      - diagnosis before answer
+      - no module before case-state
+      - listen -> classify -> form IR -> dispatch
+    support_claim: diagnosis_before_answer
+
+  - id: phase1_listening
+    label: "PHASE 1: LISTENING"
+    owner: skill/references/diagnostics/noetic-reading-checklist.md
+    lines:
+      - map noetic structure
+      - track anchor / warrant / affective weight
+      - do not answer yet
+    support_claim: noetic_read_before_response
+
+  - id: phase2_mandatory_passes
+    label: "DIAGNOSTIC REDUCTION - PHASE 2 AXES + MANDATORY PASSES"
+    owner: skill/SKILL.md
+    lines:
+      - core axes emit case-state features before route selection
+      - mandatory passes run inside the diagnostic gate
+      - overlays / specialty markers checked before dispatch
+      - no route itinerary before diagnostic reduction completes
+    mandatory_passes:
+      - label: "[P-A]"
+        file: skill/references/diagnostics/reason-disambiguation.md
+        emits: reason-category (1-4) + routing gate
+      - label: "[P-B]"
+        file: skill/references/diagnostics/foreign-premise-detection.md
+        emits: Foreign Premise Detection result
+      - label: "[P-C]"
+        file: skill/references/diagnostics/prophetic-discourse-neutralization.md
+        emits: semantic-neutralization mode or none active
+      - label: "[P-D]"
+        file: skill/references/diagnostics/arabic-backbone-predicates.md
+        emits: active predicates or none active
+    support_claim: mandatory_phase2_passes
+
+  - id: diagnostic_ir
+    label: DIAGNOSTIC IR - FORMATION + DISPATCH GATE
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    lines:
+      - compose IR from Phase 2 outputs
+      - validated IR is runtime compiler state
+      - IR before routing
+      - module dispatch blocked until all gate checks pass
+    support_claim: runtime_diagnostic_compiler
+
+  - id: gate_blocked
+    label: GATE BLOCKED
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    lines:
+      - P7 stops, semantic blockers, or register holds block/compress Layer B
+      - Layer A stays live
+    support_claim: gate_blocked_semantics
+
+  - id: gate_open
+    label: GATE OPEN
+    owner: skill/references/diagnostics/routing-precedence.md
+    lines:
+      - gate checks passed; routing precedence may now run
+      - route cleared for one current live burden
+    support_claim: routing_before_render
+
+  - id: routing_precedence
+    label: ROUTING PRECEDENCE
+    owner: skill/references/diagnostics/routing-precedence.md
+    lines:
+      - levels 1-10 applied after gate checks
+      - upstream blocker before downstream topic
+      - route chain is not bounded operator
+      - TTP entry before activation
+    support_claim: routing_before_render
+
+  - id: selected_live_burden
+    label: SELECTED CURRENT LIVE BURDEN
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    lines:
+      - one live noetic burden/function selected
+      - broad enough to contain justified operative submove sequence
+      - current bounded operator is not a route chain
+      - "invalid: FPD -> M1 -> DO-8 -> M8 -> restoration"
+      - "invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs"
+      - "invalid split: imported tribunal / hiddenness / punishment / TST source-worldview as serial burden-cycles without re-read proof"
+      - not deterministic argument-bank selection
+    support_claim: selected_live_burden_operator
+
+  - id: operative_submoves
+    label: OPERATIVE SUBMOVE(S)
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - inside selected live burden only
+      - "entry criteria: validated IR + owner + bounded target"
+      - target -> operation -> result
+      - hujjah/accountability can be operative submove
+      - guidance-as-coercive-proof can be operative submove
+      - hiddenness/punishment/source-status can be operative submoves under one burden
+      - "exit criteria: result + state delta + held-route recheck"
+      - operative submoves do not count as recursion
+    support_claim: ttp_entry_exit_criteria
+
+  - id: burden_result
+    label: BURDEN LANDED
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - selected burden lands or remains held
+      - burden landing precedes state re-read
+      - state re-read waits for whole burden, not each operative submove
+      - depth/stop guards checked before next pass
+      - restoration/pastoral waits for refresh license
+    support_claim: depth_stop_guards
+
+  - id: output_governance
+    label: OUTPUT GOVERNANCE
+    owner: skill/SKILL.md
+    lines:
+      - default visible Layer A stays compact DSL/IR / fit-for-purpose
+      - bounded Layer B only if gate permits
+      - Layer A / Layer B release checks
+      - no raw IR / full Case State / matched_modules dump in default
+    support_claim: layer_ab_release_checks
+
+  - id: output_release
+    label: OUTPUT-RELEASE RUBRIC
+    owner: skill/references/rubrics/output-release.md
+    lines:
+      - release amount, order, held material, and recursive traversal checked
+      - output-release before visible response
+    support_claim: output_release_before_render
+
+  - id: render_contract
+    label: DIAGNOSTIC RENDER CONTRACT
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    lines:
+      - Level 1 default compact DSL/IR header plus bounded governed response
+      - Level 2 compact DSL / lab-report
+      - Level 3 internal/development audit compatibility
+      - diagnostic-render-contract before final shape
+    support_claim: render_contract_before_final_shape
+
+  - id: pass_shape
+    label: "LAYER A -> LAYER B -> STATE RE-READ"
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    lines:
+      - one burden-cycle = one live burden -> Layer A -> Layer B -> state re-read
+      - one burden-cycle may contain multiple operative submoves
+      - RECURSE repeats the burden-cycle shape
+      - recursion goes through state re-read, not topic transition
+      - multi-burden does not mean multi-recursion by default
+    support_claim: layer_a_layer_b_state_refresh
+
+  - id: restoration_trace
+    label: RESTORATION TRACE
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    lines:
+      - governing misread risk
+      - what was withheld and why
+      - correction applied and what remains live
+    support_claim: restoration_trace_shape
+
+  - id: post_render_gate
+    label: POST-RENDER RE-ENTRY GATE
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - state re-read asks what cleared and what remains live
+      - held routes rechecked
+      - convergence through controlled state transitions
+      - decision = STOP / HOLD / RECURSE / PARTIAL
+    support_claim: post_render_gate_before_closure
+
+  - id: bottom_line
+    label: BOTTOM-LINE SYNTHESIS / NEXT MOVE
+    owner: skill/SKILL.md
+    lines:
+      - conclusion relative to restored order
+      - one actionable next move
+      - stop only after the post-render gate permits closure
+    support_claim: bottom_line_closure
+
+required_order:
+  - user_input
+  - always_load
+  - v1_diagnostic_gate
+  - phase1_listening
+  - phase2_mandatory_passes
+  - diagnostic_ir
+  - gate_blocked
+  - gate_open
+  - routing_precedence
+  - selected_live_burden
+  - operative_submoves
+  - burden_result
+  - output_governance
+  - output_release
+  - render_contract
+  - pass_shape
+  - post_render_gate
+  - restoration_trace
+  - bottom_line
+
+edges:
+  - from: user_input
+    to: always_load
+    support_claim: always_load_background
+  - from: always_load
+    to: v1_diagnostic_gate
+    support_claim: diagnosis_before_answer
+  - from: v1_diagnostic_gate
+    to: phase1_listening
+    support_claim: noetic_read_before_response
+  - from: phase1_listening
+    to: phase2_mandatory_passes
+    support_claim: mandatory_phase2_passes
+  - from: phase2_mandatory_passes
+    to: diagnostic_ir
+    support_claim: ir_before_routing
+  - from: diagnostic_ir
+    to: gate_blocked
+    support_claim: gate_blocked_semantics
+  - from: diagnostic_ir
+    to: gate_open
+    support_claim: routing_before_render
+  - from: gate_blocked
+    to: output_governance
+    support_claim: default_output_surface
+  - from: gate_open
+    to: routing_precedence
+    support_claim: routing_before_render
+  - from: routing_precedence
+    to: selected_live_burden
+    support_claim: selected_live_burden_operator
+  - from: selected_live_burden
+    to: operative_submoves
+    support_claim: operative_submoves_not_recursion
+  - from: operative_submoves
+    to: burden_result
+    support_claim: burden_result_before_refresh
+  - from: burden_result
+    to: output_governance
+    support_claim: default_output_surface
+  - from: output_governance
+    to: output_release
+    support_claim: output_release_before_render
+  - from: output_release
+    to: render_contract
+    support_claim: output_release_before_render
+  - from: render_contract
+    to: pass_shape
+    support_claim: layer_a_layer_b_state_refresh
+  - from: pass_shape
+    to: post_render_gate
+    support_claim: post_render_gate_before_closure
+  - from: post_render_gate
+    to: restoration_trace
+    support_claim: restoration_trace_shape
+  - from: restoration_trace
+    to: bottom_line
+    support_claim: post_render_gate_before_closure
+  - from: post_render_gate
+    to: v1_diagnostic_gate
+    label: RECURSE through state re-read, not topic transition
+    support_claim: recursion_through_state_refresh
+
+gate_checks:
+  - id: mandatory_minimum_fields
+    label: Mandatory minimum fields populated?
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: diagnostic_ir_gate_checks
+  - id: consistency_rules
+    label: Consistency rules pass?
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: diagnostic_ir_gate_checks
+  - id: routing_suppression
+    label: routing-precedence.md suppression rules S-1..S-8?
+    owner: skill/references/diagnostics/routing-precedence.md
+    support_claim: diagnostic_ir_gate_checks
+  - id: p7_stops
+    label: P7 stops checked?
+    owner: skill/references/procedures/P7-restoration-stops.md
+    support_claim: diagnostic_ir_gate_checks
+  - id: architectural_integrity
+    label: Architectural integrity check passed?
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: diagnostic_ir_gate_checks
+  - id: concealment_orientation_matrix
+    label: Concealment x orientation matrix permits content now?
+    owner: skill/references/diagnostics/case-state-schema.md
+    support_claim: diagnostic_ir_gate_checks
+
+forbidden_shortcuts:
+  - id: direct_doctrinal_rebuttal
+    from: INPUT
+    to: direct doctrinal rebuttal
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: auto_load_sound_reason
+    from: philosophical vocabulary appears
+    to: auto-load sound-reason-epistemology.md
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: grief_to_argument
+    from: grief / wound / identity-perf
+    to: argument / theodicy / doctrinal counter
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: thin_basis_motive_lock
+    from: thin basis / one sentence
+    to: confident motive read or family lock
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: rt_broad_rebuttal
+    from: RT pressure appears
+    to: broad doctrinal rebuttal first
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: stack_after_landed_move
+    from: landed move
+    to: stack next argument immediately
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: retrospective_ir
+    from: IR formed retrospectively
+    to: counts as gate pass
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: usurpation_defense_inside_usurping_frame
+    from: usurpation visible
+    to: defend revelation within usurping framework
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: skipped_backbone_predicate_check
+    from: backbone predicate trigger present
+    to: none active emitted without checking
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: semantic_bypass
+    from: semantic neutralization / loaded anti-attribute term
+    to: release doctrinal content anyway
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: held_never_reassessed
+    from: downstream content detected
+    to: held but never reassessed after blocker clears
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: held_wait_only
+    from: held = wait for user reply
+    to: no same-response recursion ever
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: recursive_dump
+    from: recursive traversal permitted
+    to: argument dump at one refresh
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: essay_ladder
+    from: same-response recursion
+    to: Move 1 / Move 2 / Move 3 essay ladder
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: route_itinerary_before_reduction
+    from: route itinerary formed before diagnostic reduction
+    to: current bounded operator
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: route_chain_current_operator
+    from: "Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration"
+    to: valid live burden
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: door_internal_steps_as_passes
+    from: Burden-1 operative submoves
+    to: Pass 1 / Pass 2 / Pass 3 recursion
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: topical_component_recursion_split
+    from: imported tribunal / hiddenness / punishment / TST source-worldview topical components
+    to: serial burden-cycles without state/noetic re-read proof
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: ttp_label_as_execution
+    from: TTP named in prose
+    to: TTP treated as executed
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: deterministic_argument_bank
+    from: topic cue
+    to: deterministic argument bank
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: unguarded_ttp_recursion
+    from: TTP route itinerary
+    to: recursion without entry / exit criteria
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: layer_ab_smuggling
+    from: Layer A held route
+    to: Layer B answers held content
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: depth_drift
+    from: recursive depth
+    to: prose momentum without state re-read
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: restoration_before_refresh
+    from: restoration / pastoral note
+    to: before state re-read
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: stop_without_post_render_gate
+    from: bounded move rendered
+    to: STOP without post-render gate
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: machinery_dump
+    from: diagnostic transparency allowed
+    to: machinery dump
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: default_source_dump
+    from: default response complete
+    to: bibliography / source dump
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: source_audit_argument_bank
+    from: source-audit-derived topic appears
+    to: argument bank / citation dump
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: tradition_label_route
+    from: tradition label appears
+    to: tradition-specific answer
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: pattern_print_bypass
+    from: pattern print emitted
+    to: PF / routing precedence bypassed
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: noetic_frame_equivalence_stack
+    from: Ashʿarī / Māturīdī / Atharī / Taymiyyan / kalāmic / falsafah cited together
+    to: one unified operative authority
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: classical_theology_umbrella
+    from: "classical theology / classical tradition / mainstream kalam"
+    to: peer-valid operative support across contradictory schools
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: contrast_as_operative_support
+    from: source marked contrast / opponent-position / historical note / held
+    to: operative warrant in the same burden-cycle without reclassification
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: intra_school_flattening
+    from: school-sensitive claim
+    to: "Ashʿarī / Māturīdī teaches X as settled"
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: verbal_agreement_smuggling
+    from: agreement asserted across frames
+    to: operative support without substantive vs. verbal marking
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: ungrounded_noetic_re_read
+    from: state re-read / noetic re-read block printed
+    to: burden landed asserted without preceding operative submove result
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: still_live_unanchored
+    from: still live entry in re-read block
+    to: material not present in input / held / preceding collapse radius
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: next_burden_unanchored
+    from: next licensed live burden
+    to: not anchored in still live / held / original input
+    owner: skill/references/diagnostics/framework-pipeline.md
+  - id: new_burden_cycle_from_re_read_alone
+    from: re-read block alone
+    to: new burden-cycle without prior burden result
+    owner: skill/references/diagnostics/framework-pipeline.md
+
+transitions:
+  - state: STOP
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    condition: no eligible live burden remains after state re-read, no held route became eligible, and P7 permits stopping
+    support_claim: stop_hold_recurse_partial
+  - state: HOLD
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    condition: remaining material exists but its release signal is absent or a hard rail still blocks it
+    support_claim: stop_hold_recurse_partial
+  - state: RECURSE
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    condition: another same-input live burden remains or a held route becomes newly eligible after the current blocker clears
+    support_claim: stop_hold_recurse_partial
+  - state: PARTIAL
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    condition: limits prevent completion while recursive pressure remains
+    support_claim: stop_hold_recurse_partial
+
+pass_shape:
+  owner: skill/references/rubrics/diagnostic-render-contract.md
+  sequence:
+    - Layer A
+    - Layer B
+    - state re-read
+  recurse_repeats: true
+  release_checks:
+    - Layer A identifies live burden without route ledger
+    - Layer B answers only permitted current live burden and operative submoves
+    - state re-read decides next transition
+    - topical components remain submoves until re-read licenses a new burden
+  support_claim: layer_a_layer_b_state_refresh
+
+ttp_execution:
+  owner: skill/references/diagnostics/recursive-state-transitions.md
+  sequence:
+    - target
+    - operation
+    - result
+    - state re-read
+  entry_criteria:
+    - validated IR exists
+    - owner-backed selection
+    - bounded target
+    - release permission
+  exit_criteria:
+    - result
+    - state delta
+    - held-route recheck
+  depth_guards:
+    - no depth increase without burden landing and state re-read
+    - no depth increase for next operative submove under same burden
+    - no depth increase for hiddenness/punishment/source-status when subordinate to same burden
+    - no repeated operator without refreshed warrant
+    - PARTIAL when limits block next eligible burden
+  support_claim: ttp_target_operation_result_refresh
+
+concept_ownership:
+  - id: ir_formation
+    label: IR formation
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: ir_before_routing
+  - id: routing
+    label: routing
+    owner: skill/references/diagnostics/routing-precedence.md
+    support_claim: routing_before_render
+  - id: selected_live_burden
+    label: selected current live burden
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    support_claim: selected_live_burden_operator
+  - id: render_shape
+    label: render shape
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    support_claim: render_contract_before_final_shape
+  - id: output_release
+    label: output release
+    owner: skill/references/rubrics/output-release.md
+    support_claim: output_release_before_render
+  - id: recursion
+    label: recursion
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: stop_hold_recurse_partial
+  - id: framework_pipeline_audit_surface
+    label: framework-pipeline audit surface
+    owner: skill/references/diagnostics/framework-pipeline.md
+    support_claim: framework_pipeline_audit_surface
+  - id: dsl_ir_representation
+    label: DSL/IR representation
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: dsl_ir_representation
+  - id: meta_noetic_memetics_object_domain
+    label: meta-noetic memetics object-domain
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: meta_noetic_object_domain
+  - id: runtime_diagnostic_compiler
+    label: runtime diagnostic compiler contract
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: runtime_diagnostic_compiler
+  - id: ttp_entry_exit_criteria
+    label: TTP entry / exit criteria
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: ttp_entry_exit_criteria
+  - id: layer_ab_release_checks
+    label: Layer A / Layer B release checks
+    owner: skill/references/rubrics/output-release.md
+    support_claim: layer_ab_release_checks
+  - id: source_status_discipline
+    label: source-status & noetic-frame non-equivalence
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: source_status_discipline
+  - id: grounded_noetic_re_read
+    label: grounded noetic re-read shape
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: grounded_noetic_re_read
+
+support_claims:
+  always_load_background:
+    owners:
+      - source: skill/SKILL.md
+        tokens:
+          - "### Always Load"
+          - "references/terminology.md"
+          - "references/case-library/INDEX.md"
+          - "references/module-codes.md"
+          - "references/techniques/heuristics.md"
+
+  diagnosis_before_answer:
+    owners:
+      - source: skill/SKILL.md
+        tokens:
+          - "Named Routing Constraints"
+          - "Diagnostic-reduction order is hard"
+          - "No current bounded operator or route itinerary may be"
+
+  noetic_read_before_response:
+    owners:
+      - source: skill/references/diagnostics/noetic-reading-checklist.md
+        tokens:
+          - "noetic"
+          - "belief"
+          - "warrant"
+
+  mandatory_phase2_passes:
+    owners:
+      - source: skill/SKILL.md
+        tokens:
+          - "### V1 Phase 2 Mandatory Passes"
+          - "[P-A] mandatory"
+          - "[P-B] mandatory"
+          - "[P-C] mandatory"
+          - "[P-D] mandatory"
+
+  ir_before_routing:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "must be formed before any content module is dispatched"
+          - "IR is not a retrospective record"
+          - "Only after all six checks pass does module dispatch proceed"
+
+  runtime_diagnostic_compiler:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "Runtime Diagnostic Compiler Contract"
+          - "runtime-verifiable diagnostic compiler"
+          - "not a deterministic argument bank"
+          - "validated IR is the compiler state"
+          - "TTP entry criteria"
+          - "TTP exit criteria"
+
+  diagnostic_ir_gate_checks:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "Gate Check 1 - Mandatory minimum fields populated"
+          - "Gate Check 2 - Consistency rules pass"
+          - "Gate Check 3 - Routing-precedence suppression rules applied"
+          - "Gate Check 4 - P7 stops checked"
+          - "Gate Check 5 - Architectural integrity check"
+          - "Gate Check 6 - Route cleared for content"
+
+  gate_blocked_semantics:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "If any check fails, dispatch is blocked"
+          - "register-hold"
+          - "held from direct deployment"
+
+  routing_before_render:
+    owners:
+      - source: skill/references/diagnostics/routing-precedence.md
+        tokens:
+          - "what runs and in what order"
+          - "Routing precedence"
+          - "output-release rubric"
+          - "Rule P-7 (TTP entry before activation)"
+
+  selected_live_burden_operator:
+    owners:
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "Current bounded operator is one live noetic burden/function"
+          - "A route chain is not a bounded operator"
+          - "single operative submove"
+      - source: skill/SKILL.md
+        tokens:
+          - "Current bounded operator is one live noetic burden/function"
+          - "not a route chain"
+
+  operative_submoves_not_recursion:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "A live noetic burden is not a topic count"
+          - "Operative submoves are not burden-cycles"
+          - "Recursion begins only after that burden lands"
+          - "Live-burden boundary is set by the noetic burden"
+
+  burden_result_before_refresh:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "burden landing -> state re-read"
+          - "state re-read follows the burden landing"
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "burden landing"
+          - "Restoration synthesis"
+
+  default_output_surface:
+    owners:
+      - source: skill/SKILL.md
+        tokens:
+          - "compact DSL/IR visibility"
+          - "Diagnostic IR, Case State, Source Basis, `matched_modules`, and routing plan are mandatory"
+          - "must not print full Diagnostic IR"
+          - "Default output is governed prose"
+
+  output_release_before_render:
+    owners:
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "runs after dispatch and before final public render"
+          - "Output-release rubric decides what may be released now"
+          - "output-release rubric -> diagnostic-render-contract"
+
+  render_contract_before_final_shape:
+    owners:
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "runs after the output-release rubric"
+          - "before the public response is shaped"
+          - "Render shape follows diagnosis"
+
+  layer_a_layer_b_state_refresh:
+    owners:
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "Required compact DSL/IR header for default"
+          - "Layer A"
+          - "Layer B"
+          - "state re-read"
+          - "If Governance = RECURSE, continue with Burden-Cycle N+1"
+
+  restoration_trace_shape:
+    owners:
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "Restoration Trace"
+          - "What was withheld and why"
+          - "What correction was applied"
+          - "What remains live or unresolved"
+
+  post_render_gate_before_closure:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "After every bounded restorative move, run state re-read before closure"
+          - "What cleared this pass"
+          - "What remains live in the same input"
+          - "STOP / HOLD / RECURSE / PARTIAL"
+
+  recursion_through_state_refresh:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "topic transition"
+          - "State re-read enumeration of remaining input-anchored live burdens"
+          - "one newly routed bounded pass per refresh = recursion"
+
+  stop_hold_recurse_partial:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "`STOP` is valid only"
+          - "`HOLD` is valid only"
+          - "`RECURSE` is required"
+          - "`PARTIAL` is required"
+
+  ttp_target_operation_result_refresh:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "target -> operation -> result -> state re-read"
+          - "TTP labels do not satisfy execution"
+
+  ttp_entry_exit_criteria:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "TTP Entry / Exit Criteria"
+          - "TTP entry criteria"
+          - "TTP operation criteria"
+          - "TTP exit criteria"
+          - "Depth And Stop Guards"
+          - "No recursive depth increase without a burden landing and state re-read"
+
+  depth_stop_guards:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Depth And Stop Guards"
+          - "No recursive depth increase without a burden landing and state re-read"
+          - "STOP requires proof that no eligible same-input live burden remains"
+
+  layer_ab_release_checks:
+    owners:
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "Layer A / Layer B release checks"
+          - "Layer A may expose only enough diagnostic state"
+          - "Layer B answers only the permitted current live burden"
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "Layer A / Layer B release check"
+          - "Layer A/B smuggling"
+
+  framework_pipeline_audit_surface:
+    owners:
+      - source: skill/references/diagnostics/framework-pipeline.md
+        tokens:
+          - "This file owns the compact pipeline order and forbidden-shortcut audit surface"
+          - "It owns only semantics explicitly marked here as framework-pipeline semantics"
+
+  dsl_ir_representation:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "DSL-IR as Audited Formalization Layer"
+          - "The IR gives the operative representation"
+
+  meta_noetic_object_domain:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "Meta-noetic memetics gives the object-domain"
+          - "The IR gives the operative representation"
+
+  bottom_line_closure:
+    owners:
+      - source: skill/SKILL.md
+        tokens:
+          - "Economical - the sharpest move, not the most elaborate one"
+          - "post-render gate stay fully active in every mode"
+
+  source_status_discipline:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Source-Status & Noetic-Frame Non-Equivalence Discipline"
+          - "noetic-equivalence prestige stack"
+          - "classical-theology umbrella"
+          - "contrast-as-operative-support"
+          - "intra-school flattening"
+          - "verbal-agreement smuggling"
+      - source: skill/references/diagnostics/routing-precedence.md
+        tokens:
+          - "Rule S-9"
+          - "Rule P-8"
+
+  grounded_noetic_re_read:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Grounded Noetic Re-Read Shape"
+          - "burden landed"
+          - "still live"
+          - "next licensed live burden"
+          - "Field-grounding rules"

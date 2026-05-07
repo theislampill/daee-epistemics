@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: revelation-transmission -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/revelation-transmission.md -->
-<!-- SOURCE_SHA256: 07d52ddff8d6b75fb857f959e0ae906a60c8b14d136e6fe9ecda4d6b81cd138a -->
+<!-- SOURCE_SHA256: 4f574e1010cff1221b96bc8c88a4819b0eb3b5b27d0f2f5d505854234a2001f3 -->
 
 ---
 id: revelation-transmission
 module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed
@@ -53,6 +53,14 @@ This family does not authorize debate-autonomous chaining after V10 or an RT sub
 Refresh the case-state after each cleared burden. If another live burden now governs, route
 there explicitly. If not, release only the smallest restorative next move rather than treating
 RT progression as permission to spill every downstream answer in one pass.
+
+**Default source/render restriction:** RT material is source-heavy, but source heaviness is
+not public-render permission. In default output, do not cite scholarly tradition, named
+schools, manuscript authorities, critics, church bodies, or text-critical frameworks as
+support/context unless the user explicitly asks or validated IR requires source-comparison.
+If Qur'an, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
+transmission categories as bounded operative distinctions: provenance, contents, authority,
+and state-change.
 
 ## Ḥadīth Routing Note
 
@@ -254,13 +262,13 @@ category; RT-4 is about register (internal crisis). Do not collapse them.
 <!-- MODULE_ID: V10-transmission-content-vetting -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V10-transmission-content-vetting.md -->
-<!-- SOURCE_SHA256: de0bc90a92f1f82d6c77a4c4e2e9bb0385ccc91769b614e65895b20397b5ed59 -->
+<!-- SOURCE_SHA256: f7917c145bf7fe7910c0c1e6135a2878ba46ecba2a88d213319d225ee9696782 -->
 
 ---
 id: V10-transmission-content-vetting
 module_class: technique
 canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 blocks:
@@ -290,11 +298,10 @@ Use this technique when the pressure is not merely "is this claim persuasive?" b
 thing, how did it reach us, and what authority does it actually carry?" The sequence is fixed.
 Do not begin with contents while provenance is still undefined.
 
-V10 is a selective recursive operator. Each step may clear one burden without licensing a
-content dump. After provenance, contents, or authority has been clarified, refresh the
-case-state. If another live burden now governs, route there. If not, release only the
-smallest restorative next move. Bounded deployment governs the sequence; it does not abolish
-further rounds when refreshed state still requires them.
+V10 uses `B -> {provenance/content/authority s} -> Land(B) -> R` from
+`recursive-state-transitions.md`. Gloss: each step may clear one transmission burden without
+licensing a content dump; after provenance, contents, or authority is clarified, refresh
+case-state and release only the smallest restorative next move unless another `B` governs.
 
 This technique operationalizes a fixed transmission / contents split: first ask how the item
 reached us, then ask what it actually shows. Historical criticism, manuscript reconstruction,

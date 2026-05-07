@@ -2,7 +2,7 @@
 id: do-core
 module_class: case-library
 canonical_path: skill/references/case-library/do-core.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
   - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family
@@ -28,9 +28,9 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-1 through DO-6
 > **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-1 through DO-6 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-1 through DO-6 activates this load floor; `Load floor != release`. Gloss: release/render via `output-release.md` + `diagnostic-render-contract.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **Under-load guard:** A confirmed DO route involving semantic, register, authority, proof-method, or tribunal pressure requires loading and representing those owners in the IR — even when Layer B output remains short. Loading only this file plus one technique is insufficient for a complex case.
 

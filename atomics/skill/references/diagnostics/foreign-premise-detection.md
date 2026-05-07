@@ -2,7 +2,7 @@
 id: foreign-premise-detection
 module_class: governance
 canonical_path: skill/references/diagnostics/foreign-premise-detection.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
 emits:
@@ -31,10 +31,15 @@ at the faculty level can still be presented through an imported tribunal at the 
 
 ## Required Output Shape
 
+Render-mode scope: this shape is an internal pass result and may be visible only in `:dsl`,
+`:audit`, pass-review, or diagnostic trace. It is not a default output template; default prose
+may name the imported criterion compactly when it governs the answer.
+
 ```text
 [Foreign Premise Detection]
 - Premise status: <detected | none-detected | uncertain>
 - Premise (if detected): <one sentence statement of the imported claim>
+- Premise inventory (if multiple): <numbered premise-by-premise list; do not collapse into one generic "self as criterion" claim>
 - Source tradition: <scientism | narrow evidentialism | historical-critical methodology | Aristotelian metaphysics | secular liberal autonomy | Mu'tazili rationalism | other: specify>
 - Functional role in this case: <criterion | tribunal | prior probability assignment | definitional constraint | background assumption>
 - Upstream position: <is this premise operating above or below the level of the visible objection?>
@@ -43,6 +48,28 @@ at the faculty level can still be presented through an imported tribunal at the 
 ```
 
 If `Premise status: none-detected`, fill only the first two fields and proceed. If `uncertain`, fill through `Upstream position` and name the decisive missing differentiator.
+
+When the input contains multiple imported criteria or hidden premises, the pass must remain
+premise-by-premise enough to govern downstream release. A single summary such as "the self is
+made the criterion" may be true, but it is insufficient when different premises route to
+different gates.
+
+For secular-humanist moral protest / hiddenness / hell / worship-worthiness cases, the
+minimum premise inventory normally includes:
+1. Non-belief alone is insufficient ground for punishment.
+2. God is morally obligated to convince every person in the manner the speaker accepts.
+3. Secular-liberal moral intuitions are binding over divine action.
+4. Eternal punishment is necessarily disproportionate to temporal non-belief.
+5. "Worthy of worship" is being judged by an imported criterion rather than by lordship,
+   truth, beneficence, justice, mercy, and right of command.
+
+The route consequence is not to dump doctrine after naming this list. Clear the criterion,
+then refresh state, then release only the next bounded doctrinal correction that remains live.
+After FPD/M1 clears an imported criterion, the post-render gate must choose STOP,
+RECURSE, HOLD, or PARTIAL. Do not automatically expand into hiddenness, hell,
+accountability, mercy, consequence tracing, pastoral synthesis, and source lists merely
+because those topics were detected downstream. Each downstream item needs renewed
+eligibility from refreshed state.
 
 ---
 
@@ -60,6 +87,12 @@ inauthentic, or lower-order: sound reason, a revealed criterion, a school tradit
 modern moral intuition, Vedic reformism, historical-critical neutrality, rabbinic or
 canon closure, charismatic authority, or social identity pressure?
 ```
+
+Identity-linked pressure may be diagnostically relevant here as a modal/stabilizing node:
+community belonging, self-narrative, public affiliation, or moral vocabulary may help explain
+why a criterion is defended or costly to abandon. But identity alone is not the tribunal and does
+not prove motive, deformation, culpability, or primary load-bearing status. Treat the source-status
+as anchored, inference, or speculative/held before making it part of the foreign-premise read.
 
 Common tribunal types:
 

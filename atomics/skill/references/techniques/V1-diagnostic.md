@@ -2,7 +2,7 @@
 id: V1-diagnostic
 module_class: technique
 canonical_path: skill/references/techniques/V1-diagnostic.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - beginning any engagement before substantive content
   - interlocutor shifts register
@@ -37,6 +37,12 @@ catalogue_registered: true
 ## Role of V1 in the Skill
 
 V1 is the entry gate. No tactic, technique, procedure, or case-library module is selected before V1 has produced a case-state. V1 does not answer the interlocutor; it produces the routing artifact that makes a matched answer possible.
+
+V1 routes by noetic pattern, not denomination/source label. Named school, author, genealogy,
+topic, or identity terms may be recorded as source-status context, but they do not select the
+module and do not release an argument bank. The routed artifact must identify the live
+deformation, concealment, criterion/tribunal, authority-order, warrant, claim-level, and
+pattern-profile signals that justify the next bounded operator.
 
 ## The Three Phases
 

@@ -2,7 +2,7 @@
 id: proof-method-audit
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/proof-method-audit.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - arguments for God's existence being compared or contested
   - proof grammar itself is the live issue

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/INDEX.md -->
-<!-- SOURCE_SHA256: 83a23283c24fcd801db2850d071f35cffef64ff1eea46fdb0916745a71d2f673 -->
+<!-- SOURCE_SHA256: 9d4e810f06578597dfcc48fc1096cd6129aceb2e97647ff0413fcab7090be43a -->
 
 ---
 id: diagnostics-index
 module_class: governance
 canonical_path: skill/references/diagnostics/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a diagnostic file after V1 case-classification
 catalogue_registered: false
@@ -31,6 +31,18 @@ catalogue_registered: false
 # Diagnostics - Index
 
 Diagnostics classify the case before rebuttal. They determine what the engagement is, what is actually obstructing recognition, and whether intellectual engagement is even the right instrument.
+
+## Diagnostic Execution Floor
+
+Diagnostic labels are not execution. A diagnostic file may classify, gate, emit IR values, or select an owner, but it does not by itself land a burden. A diagnostic owner is used correctly only when:
+
+1. the detected pattern changes routing, release, hold, or stop behavior;
+2. the matched TTP/operator or case owner then performs the released operation;
+3. source, school, author, genealogy, and context markers remain internal source-status unless explicitly requested or IR-required;
+4. classification is followed by `B -> {s} -> Land(B) -> R`, not by label-to-answer output;
+5. the output fails if the diagnostic label could be removed without changing the operation.
+
+Specialty diagnostics may preserve rich recognition substance, but they must not become public source prestige, denomination-first routing, comparative-neutral flattening, or argument-bank release.
 
 ## Use Order
 
@@ -59,7 +71,8 @@ Diagnostics classify the case before rebuttal. They determine what the engagemen
 | `references/diagnostics/inference-boundary.md` | Source-status governance | A reply combines files or extends beyond them | Every material claim is directly grounded and no boundary-marking is needed | Anchored / synthesis / inference / speculative markers |
 | `references/diagnostics/mixed-case-handling.md` | Undertermination governance | Multiple reads compete or the basis is thin | The primary read is already strong | Provisional routing and insufficient-basis discipline |
 | `references/diagnostics/anti-patterns.md` | Self-audit | You need to check for forced fit, rhetorical drift, or over-selection | The case is trivial and no routing work is being done | Misuse warnings and operator checks |
-| `references/diagnostics/framework-pipeline.md` | Canonical pipeline audit chart | Auditing the decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate | The routing sequence is already clean and no audit is needed | Single ASCII chart of the governed pipeline |
+| `references/diagnostics/framework-pipeline.md` | Operative pipeline audit chart | Auditing the decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate | The routing sequence is already clean and no audit is needed | Compiled chart of the governed pipeline and forbidden shortcuts |
+| `references/diagnostics/recursive-state-transitions.md` | Recursive state-transition semantics | Deciding STOP / HOLD / RECURSE / PARTIAL after a bounded move or auditing state re-read | Concrete stop instances, typed IR schema, release amount/order, or visible render mode are the question | Abstract recursive state model and state carry/reset/re-evaluation rules |
 | `references/diagnostics/reason-disambiguation.md` | Reason-category classifier | The case turns on what counts as reason, rationality, or rational evidence | The case is purely transmission-related, grief-primary, or reason-category is already established as sound | Four typed categories with routing consequences |
 | `references/diagnostics/foreign-premise-detection.md` | Foreign-premise pass | V1 Phase 2 is underway and the interlocutor's criterion or framework is not yet examined | The claim is purely transmission-related with no criterion-importing element | Structured output: premise status, source tradition, functional role, route consequence, prohibited move |
 | `references/diagnostics/prophetic-discourse-neutralization.md` | Semantic-neutralization pass | Prophetic speech is being redirected, recontented, evacuated, or treated as non-determinate guidance | The case does not involve revelation-bearing speech or semantic handling of prophetic discourse | Neutralization mode, discriminator, failure test, next diagnostic load |
@@ -89,13 +102,13 @@ This index expands the root skill's routing summaries with the discriminating de
 <!-- MODULE_ID: kalamic-interlocutor -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
-<!-- SOURCE_SHA256: 47c46c3eba79b8f7e7eebd78fa338434c218967914d16645312a904a57e909ab -->
+<!-- SOURCE_SHA256: 83f2db5633d260a6cda901fd3d805e9cf1b55ffa995f6ee762a0621869300cee -->
 
 ---
 id: kalamic-interlocutor
 module_class: governance
 canonical_path: skill/references/diagnostics/kalamic-interlocutor.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-6 or NS-10 confirmed; kalamic evidentialism surface markers present
 emits:
@@ -104,6 +117,13 @@ catalogue_registered: false
 ---
 
 # Kalamic Interlocutor - Engagement Strategy
+
+**Source-status note:** School names and variants in this file are internal routing
+discriminators, not public-render support. In default output, do not use school labels,
+named scholars, or kalamic genealogy as context or warrant unless the user explicitly
+asks or validated IR requires source-comparison. Route by the live proof-method,
+predication, or authority-order pattern.
+
 
 Load when the interlocutor uses markers of kalāmic evidentialism: `dalīl` demand, `wujūb al-naẓar`, `taqlīd` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Muʿtazilī / Ashʿarī / Māturīdī framing.
 
@@ -205,13 +225,13 @@ When the pressure is carried by loaded terms such as body, direction, place, or 
 <!-- MODULE_ID: fitrah-perspectives -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/fitrah-perspectives.md -->
-<!-- SOURCE_SHA256: ae195afca65f9aa0b4660fd333a06590f03b967a58a9ffac58c966e55e901192 -->
+<!-- SOURCE_SHA256: 358f9c52202652f884dde587202cde873f097c404a380104e579386bb18d5383 -->
 
 ---
 id: fitrah-perspectives
 module_class: governance
 canonical_path: skill/references/diagnostics/fitrah-perspectives.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
 emits:
@@ -228,6 +248,12 @@ operator_pack_eligible: true
 ---
 
 # Fiṭrah Perspectives — Three-View Taxonomy
+
+**Source-status note:** Named representatives and tradition labels in this file are
+internal classification/contrast only. In default output, do not use them as public
+support or scholar-context unless the user explicitly asks or validated IR requires
+source-comparison. Route by the detected fitrah-view pattern and its state-change.
+
 
 Load when an interlocutor's conception of the fiṭrah is itself in question — when they deny
 that the fiṭrah is innate, claim it is a blank slate, present a dual-nature view, or when
@@ -444,13 +470,13 @@ When diagnosing an interlocutor:
 <!-- MODULE_ID: hadith-authentication-epistemology -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
-<!-- SOURCE_SHA256: 93bc272c172fdb79d32227666aa4e6adc4f34846322cdf1c093cc92da824ba35 -->
+<!-- SOURCE_SHA256: 13cb316dce216fb051fde5340d32b9afb70e3ef1d000a19e9f3d8d8205284282 -->
 
 ---
 id: hadith-authentication-epistemology
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/hadith-authentication-epistemology.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - ḥadīth corpus reliability or isnād criticism is live pressure
   - āḥād-vs-mutawātir epistemic-yield question active
@@ -660,13 +686,13 @@ This file has not governed the response if any of the following occur:
 <!-- MODULE_ID: causal-series-taxonomy -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/causal-series-taxonomy.md -->
-<!-- SOURCE_SHA256: 42e298f8853cb07c641e1ca433fb1d4ac9e71a20b23942f887e1d5de61da959f -->
+<!-- SOURCE_SHA256: 16887d7c46a3a6f88e76f475da08840dcaafdaa8cbb979b5ae179d1672f53bad -->
 
 ---
 id: causal-series-taxonomy
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/causal-series-taxonomy.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - case turns on infinite regress, causal-series classification, or circularity
   - claims that natural or secondary causes are self-sufficient
@@ -812,13 +838,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: definition-discipline -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/definition-discipline.md -->
-<!-- SOURCE_SHA256: c947dec9e8c3fb27c5d61d27b5bc34431772cf967fe7740cc8cf7767484d0fde -->
+<!-- SOURCE_SHA256: 5f587983884d71aa461299e10423b0ddc0f6f1a1466ec87ebf6161352f124b69 -->
 
 ---
 id: definition-discipline
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/definition-discipline.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - silent redefinition or specialist capture of ordinary language operative
   - universals/particulars confusion active
@@ -930,13 +956,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/proof-method-audit.md -->
-<!-- SOURCE_SHA256: 5dd3415f005054a4ad7354610d7ea748ebbfd432957d434819236bc0077b5082 -->
+<!-- SOURCE_SHA256: bbb29fe779087938614fbd6bda0eb00d4a4734ba3c415f35ca06c670f2092917 -->
 
 ---
 id: proof-method-audit
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/proof-method-audit.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - arguments for God's existence being compared or contested
   - proof grammar itself is the live issue
@@ -1038,13 +1064,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: perfection-criterion-usurpation -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
-<!-- SOURCE_SHA256: 0fbbce667126364ea27f36c2665ed3dac8b6c4ac63c53caf042d00a102004759 -->
+<!-- SOURCE_SHA256: 04c9d139f4d19cdc87b407f85842624bbc1aa7be087bbefb8d2a9631ac5c6626 -->
 
 ---
 id: perfection-criterion-usurpation
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/perfection-criterion-usurpation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - philosophical perfection picture (immutability, simplicity, impassibility, non-eventfulness) functioning as tribunal
   - attribute content being judged by prior metaphysical model presented as neutral reason
@@ -1090,6 +1116,28 @@ This is not reducible to a generic anthropomorphism objection. The governing mov
 4. **Only then engage attribute content.** Route to the matched downstream file.
 
 If step 1 is skipped, the rest of the engagement is already inside the wrong court.
+
+## Owner-Specific Operation Floor
+
+This TTP is not executed by merely saying "an imported perfection criterion is present."
+Minimum operation requires:
+
+1. state the specific perfection rule doing the work;
+2. identify what that rule makes deficient, impossible, or lower-order;
+3. refuse the rule's tribunal status by asking why it has authority over the divine case;
+4. expose contingency by showing at least one alternative or cost that the rule must bear;
+5. where the rule requires eternal actualization of a perfection, distinguish possession
+   of the perfection from one required mode of manifestation;
+6. when the rule is general, run a parity or overgeneration test against parallel perfections;
+7. state the burden-state delta: what downstream route is now cleared, held, or newly eligible.
+
+**State-change condition:** the burden lands only if the criterion is no longer functioning
+as an unexamined judge. If the output only names the criterion but still answers inside its
+court, the burden has not landed.
+
+**Failure condition:** naming "perfect-being theology", "static perfection", or
+"non-eventfulness" without applying the specific rule, possession/manifestation distinction
+where relevant, and burden-state delta is TTP label cosplay.
 
 ---
 

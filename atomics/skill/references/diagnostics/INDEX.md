@@ -2,7 +2,7 @@
 id: diagnostics-index
 module_class: governance
 canonical_path: skill/references/diagnostics/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a diagnostic file after V1 case-classification
 catalogue_registered: false
@@ -11,6 +11,18 @@ catalogue_registered: false
 # Diagnostics - Index
 
 Diagnostics classify the case before rebuttal. They determine what the engagement is, what is actually obstructing recognition, and whether intellectual engagement is even the right instrument.
+
+## Diagnostic Execution Floor
+
+Diagnostic labels are not execution. A diagnostic file may classify, gate, emit IR values, or select an owner, but it does not by itself land a burden. A diagnostic owner is used correctly only when:
+
+1. the detected pattern changes routing, release, hold, or stop behavior;
+2. the matched TTP/operator or case owner then performs the released operation;
+3. source, school, author, genealogy, and context markers remain internal source-status unless explicitly requested or IR-required;
+4. classification is followed by `B -> {s} -> Land(B) -> R`, not by label-to-answer output;
+5. the output fails if the diagnostic label could be removed without changing the operation.
+
+Specialty diagnostics may preserve rich recognition substance, but they must not become public source prestige, denomination-first routing, comparative-neutral flattening, or argument-bank release.
 
 ## Use Order
 
@@ -39,7 +51,8 @@ Diagnostics classify the case before rebuttal. They determine what the engagemen
 | `references/diagnostics/inference-boundary.md` | Source-status governance | A reply combines files or extends beyond them | Every material claim is directly grounded and no boundary-marking is needed | Anchored / synthesis / inference / speculative markers |
 | `references/diagnostics/mixed-case-handling.md` | Undertermination governance | Multiple reads compete or the basis is thin | The primary read is already strong | Provisional routing and insufficient-basis discipline |
 | `references/diagnostics/anti-patterns.md` | Self-audit | You need to check for forced fit, rhetorical drift, or over-selection | The case is trivial and no routing work is being done | Misuse warnings and operator checks |
-| `references/diagnostics/framework-pipeline.md` | Canonical pipeline audit chart | Auditing the decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate | The routing sequence is already clean and no audit is needed | Single ASCII chart of the governed pipeline |
+| `references/diagnostics/framework-pipeline.md` | Operative pipeline audit chart | Auditing the decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate | The routing sequence is already clean and no audit is needed | Compiled chart of the governed pipeline and forbidden shortcuts |
+| `references/diagnostics/recursive-state-transitions.md` | Recursive state-transition semantics | Deciding STOP / HOLD / RECURSE / PARTIAL after a bounded move or auditing state re-read | Concrete stop instances, typed IR schema, release amount/order, or visible render mode are the question | Abstract recursive state model and state carry/reset/re-evaluation rules |
 | `references/diagnostics/reason-disambiguation.md` | Reason-category classifier | The case turns on what counts as reason, rationality, or rational evidence | The case is purely transmission-related, grief-primary, or reason-category is already established as sound | Four typed categories with routing consequences |
 | `references/diagnostics/foreign-premise-detection.md` | Foreign-premise pass | V1 Phase 2 is underway and the interlocutor's criterion or framework is not yet examined | The claim is purely transmission-related with no criterion-importing element | Structured output: premise status, source tradition, functional role, route consequence, prohibited move |
 | `references/diagnostics/prophetic-discourse-neutralization.md` | Semantic-neutralization pass | Prophetic speech is being redirected, recontented, evacuated, or treated as non-determinate guidance | The case does not involve revelation-bearing speech or semantic handling of prophetic discourse | Neutralization mode, discriminator, failure test, next diagnostic load |

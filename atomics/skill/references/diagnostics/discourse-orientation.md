@@ -2,7 +2,7 @@
 id: discourse-orientation
 module_class: governance
 canonical_path: skill/references/diagnostics/discourse-orientation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any case before selecting any intellectual response or case-library module
 routing_effects:
@@ -58,6 +58,38 @@ engagement is the right register.
 belonging, group membership, or self-concept. The intellectual content of the position
 is secondary to the act of holding and displaying it. The position functions as a
 credential, an affiliation signal, or a component of self-presentation.
+
+**Identity-marker caution:** Personal, protected, biographical, or sexual-identity labels
+are not proof of noetic deformation, `hawa`, `gharad`, `irad`, bad faith, culpability, or
+interior motive. They also are not irrelevant. Identity can function as a modal/stabilizing
+node inside a noetic equilibrium: it may affect moral vocabulary, authority posture,
+recognition/rejection incentives, community belonging, self-narrative, ritual/practice,
+perceived threat-cost of belief change, criterion selection, discourse orientation, defensive
+stabilization, semantic persistence, and collapse radius. Identity may be part of the noetic
+equilibrium, but it cannot by itself carry the verdict.
+
+Diagnose the public discourse act, not the person's soul. Publicly stated ideological
+commitments may inform discourse orientation only when the utterance itself makes them
+function as a criterion, affiliation performance, explicit stake, or stabilizing pressure.
+Use cautious language such as "may indicate a register risk," "the statement performs this
+frame," or "the public identity-frame appears to stabilize the criterion being used"; do not
+say "his sexual identity is the criterion," "because he is X, the argument is `hawa`," or make
+a personal label the load-bearing proof.
+
+Default-mode phrasing: "the public identity-frame may stabilize the criterion or affect discourse
+orientation" is allowed when anchored. Unsafe default verdicts include "the identity layer is
+heavily load-bearing," "his identity is the framework through which every claim is processed,"
+"it is hawa," or "it is irad," unless independently grounded and source-status marked. Identity
+is a modal/stabilizing node, not the primary verdict-bearing load-bearer unless the statement
+itself makes it primary.
+
+Source-status discipline:
+
+- anchored: public words, explicit self-description, stated framework, explicit affiliation, or
+  visible discourse performance
+- inference: likely stabilizing role in the noetic equilibrium
+- speculative/held: interior motive, sincerity, culpability, soul-state, or primary
+  load-bearing status
 
 **Distinguishing from gharaḍ:** Gharaḍ involves something external at stake — a cost
 to be avoided. Identity-performance is constitutive — the position is part of who the

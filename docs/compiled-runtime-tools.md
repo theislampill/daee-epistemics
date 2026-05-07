@@ -14,6 +14,11 @@ python tools/check_routing_parity.py
 python tools/check_routing_parity.py --strict
 python tools/check_recursive_traversal_governance.py
 python tools/check_render_modes.py
+python tools/check_framework_pipeline.py
+python tools/check_frontmatter.py
+python tools/check_coverage.py
+python tools/check_recursion_collapse_noetic_frame.py
+python tools/check_metacompliance_current_canon.py
 ```
 
 Operating rules:
@@ -34,8 +39,15 @@ Runtime path resolution:
 
 Routing parity fixtures live under `tests/routing-fixtures/`. Add or update those fixtures when a routing-owner expectation changes.
 
-Recursive traversal governance is checked separately by `tools/check_recursive_traversal_governance.py`. It verifies that State Refresh, eligible-live-door handling, no-premature-STOP discipline, and STOP / HOLD / RECURSE / PARTIAL semantics are present in both atomized source and generated runtime.
+Recursive traversal governance is checked separately by `tools/check_recursive_traversal_governance.py`. It verifies that state/noetic re-read, eligible live noetic burden handling, no-premature-STOP discipline, and STOP / HOLD / RECURSE / PARTIAL semantics are present in both atomized source and generated runtime, with `recursive-state-transitions.md` as the abstract owner.
 
-Render-mode governance is checked separately by `tools/check_render_modes.py`. It verifies that the generated runtime documents clean default `/daee-epistemics` mode, compact `/daee-epistemics:dsl` lab-report mode, fuller `/daee-epistemics:audit` mode, grim-reaper prompt deprecation, and compiled path-resolution invariants.
+The recursive checker also treats the runtime as a diagnostic compiler: each substantive input
+must reduce to validated IR, activate TTPs only through entry criteria, exit through a result and
+state/noetic re-read, and obey depth/stop guards. This prevents deterministic argument-bank behavior,
+unguarded TTP recursion, Layer A/B smuggling, and prose-momentum depth drift.
+
+Render-mode governance is checked separately by `tools/check_render_modes.py`. It verifies that the generated runtime documents default compact DSL/IR visibility for `/daee-epistemics`, bounded governed Layer B with Hidden Premises, local Core Formulation, bounded operative submoves, compact TTP/operator trace when used, state/noetic re-read, one Restorative Response, one final Closing Formulation, concise `/daee-epistemics:dsl` DSL/IR printout mode, deprecated internal/development `/daee-epistemics:audit` compatibility, legacy recursive-audit prompt deprecation, and compiled path-resolution invariants.
+
+Current-canon metacompliance is checked separately by `tools/check_metacompliance_current_canon.py`. It keeps root `SKILL.md` in control-plane shape, verifies that generated default output starts from compact DSL/IR plus bounded governed Layer B and state/noetic re-read, checks source-status/noetic-frame and held-release owner anchors, and rejects stale current guidance that revives public audit or prose-only default framing.
 
 The checkers verify generated freshness, section boundary metadata, original module ID preservation, source/YAML/catalogue integrity, modeled file-call budgets, runtime path resolution, and routing-parity fixtures.

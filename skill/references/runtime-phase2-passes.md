@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: reason-disambiguation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/reason-disambiguation.md -->
-<!-- SOURCE_SHA256: 329d9ae8e9ac4dc80b238cb0f4b7d68b9dc8d8e3aa1e10f7e7a6126d8336cb0f -->
+<!-- SOURCE_SHA256: 19dd1cd98de4ef1b057a110e1fa72206b2fec118803edad3926998a1ea56b4c8 -->
 
 ---
 id: reason-disambiguation
 module_class: governance
 canonical_path: skill/references/diagnostics/reason-disambiguation.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any case with DO-orient = truth-seek or mixed; Mandatory Pass P-A in V1 Phase 2
 emits:
@@ -160,13 +160,13 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/foreign-premise-detection.md -->
-<!-- SOURCE_SHA256: 6cf7d58c499d66da6fabf347db8ee59dda913300e640e1a2f850e597590ce3fb -->
+<!-- SOURCE_SHA256: 7384c7c5514ab732e91577af465933eb48c9a987dc13d1cdbbb4ffa1dd5824b5 -->
 
 ---
 id: foreign-premise-detection
 module_class: governance
 canonical_path: skill/references/diagnostics/foreign-premise-detection.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
 emits:
@@ -195,10 +195,15 @@ at the faculty level can still be presented through an imported tribunal at the 
 
 ## Required Output Shape
 
+Render-mode scope: this shape is an internal pass result and may be visible only in `:dsl`,
+`:audit`, pass-review, or diagnostic trace. It is not a default output template; default prose
+may name the imported criterion compactly when it governs the answer.
+
 ```text
 [Foreign Premise Detection]
 - Premise status: <detected | none-detected | uncertain>
 - Premise (if detected): <one sentence statement of the imported claim>
+- Premise inventory (if multiple): <numbered premise-by-premise list; do not collapse into one generic "self as criterion" claim>
 - Source tradition: <scientism | narrow evidentialism | historical-critical methodology | Aristotelian metaphysics | secular liberal autonomy | Mu'tazili rationalism | other: specify>
 - Functional role in this case: <criterion | tribunal | prior probability assignment | definitional constraint | background assumption>
 - Upstream position: <is this premise operating above or below the level of the visible objection?>
@@ -207,6 +212,28 @@ at the faculty level can still be presented through an imported tribunal at the 
 ```
 
 If `Premise status: none-detected`, fill only the first two fields and proceed. If `uncertain`, fill through `Upstream position` and name the decisive missing differentiator.
+
+When the input contains multiple imported criteria or hidden premises, the pass must remain
+premise-by-premise enough to govern downstream release. A single summary such as "the self is
+made the criterion" may be true, but it is insufficient when different premises route to
+different gates.
+
+For secular-humanist moral protest / hiddenness / hell / worship-worthiness cases, the
+minimum premise inventory normally includes:
+1. Non-belief alone is insufficient ground for punishment.
+2. God is morally obligated to convince every person in the manner the speaker accepts.
+3. Secular-liberal moral intuitions are binding over divine action.
+4. Eternal punishment is necessarily disproportionate to temporal non-belief.
+5. "Worthy of worship" is being judged by an imported criterion rather than by lordship,
+   truth, beneficence, justice, mercy, and right of command.
+
+The route consequence is not to dump doctrine after naming this list. Clear the criterion,
+then refresh state, then release only the next bounded doctrinal correction that remains live.
+After FPD/M1 clears an imported criterion, the post-render gate must choose STOP,
+RECURSE, HOLD, or PARTIAL. Do not automatically expand into hiddenness, hell,
+accountability, mercy, consequence tracing, pastoral synthesis, and source lists merely
+because those topics were detected downstream. Each downstream item needs renewed
+eligibility from refreshed state.
 
 ---
 
@@ -224,6 +251,12 @@ inauthentic, or lower-order: sound reason, a revealed criterion, a school tradit
 modern moral intuition, Vedic reformism, historical-critical neutrality, rabbinic or
 canon closure, charismatic authority, or social identity pressure?
 ```
+
+Identity-linked pressure may be diagnostically relevant here as a modal/stabilizing node:
+community belonging, self-narrative, public affiliation, or moral vocabulary may help explain
+why a criterion is defended or costly to abandon. But identity alone is not the tribunal and does
+not prove motive, deformation, culpability, or primary load-bearing status. Treat the source-status
+as anchored, inference, or speculative/held before making it part of the foreign-premise read.
 
 Common tribunal types:
 
@@ -372,13 +405,13 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 <!-- MODULE_ID: prophetic-discourse-neutralization -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md -->
-<!-- SOURCE_SHA256: 76de9cc1ed69b88be90a92956122d7dc7ad11d11519e46565345a5515e2ec364 -->
+<!-- SOURCE_SHA256: 64ca23075b3e2efceb2cca02ca1c720d9e4acab93a6e60c6eb768c0d3cf07705 -->
 
 ---
 id: prophetic-discourse-neutralization
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/prophetic-discourse-neutralization.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - revealed or prophetic speech redirected, semantically overridden, or evacuated
   - semantic recontenting or determinate-guidance denial active before doctrinal dispatch
@@ -527,13 +560,13 @@ The tribunal explains why the semantic move is being made. The neutralization pa
 <!-- MODULE_ID: arabic-backbone-predicates -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/arabic-backbone-predicates.md -->
-<!-- SOURCE_SHA256: dd7fd2186edd636d43aa62098c39c51ea6d0632a4cc04b4285dd69326f05fa52 -->
+<!-- SOURCE_SHA256: 61cb74a2b2cc79d129c5e647581fdb4f6e897073331ad20b7903ff4768f2a4a3 -->
 
 ---
 id: arabic-backbone-predicates
 module_class: governance
 canonical_path: skill/references/diagnostics/arabic-backbone-predicates.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - V1 Phase 2; criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element visible
 catalogue_registered: false

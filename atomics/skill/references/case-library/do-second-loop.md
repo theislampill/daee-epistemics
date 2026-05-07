@@ -2,7 +2,7 @@
 id: do-second-loop
 module_class: case-library
 canonical_path: skill/references/case-library/do-second-loop.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes
   - HADD/cognitive-science, prophetic-moral-luck, Great Pumpkin, three-tier epistemology, or Islamic-specific moral objections is the live family
@@ -28,9 +28,9 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-7 through DO-15
 > **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-7 through DO-10 family activates this file's load floor; it does not authorize content release. All output discipline in `SKILL.md`, `diagnostic-ir.md`, `routing-precedence.md`, and `P7-restoration-stops.md` remains live.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-7 through DO-10 activates this load floor; `Load floor != release`. Gloss: release/render via `output-release.md` + `diagnostic-render-contract.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **DO-second-loop family-local load floor** (conditional on confirmed case-state, not global ambient):
 - V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always
@@ -498,6 +498,27 @@ An imported ethical criterion — liberal political philosophy, secular human-ri
 - If the objection is specifically about God's existence grounded in moral evil (the problem of evil, theodicy form): DO-15 is not the owner — route to the theodicy module
 - If discourse orientation is identity-performance or autotelic: do not engage the philosophical argument; DO-15 content cannot land in that register
 - If the interlocutor has not yet exhibited Type D usurpation explicitly (the criterion is latent, not stated): FPD + philosophical-usurpation.md governs the diagnostic phase before DO-15 content is released
+
+#### Moral-protest / hiddenness / worship-worthiness overlap rule
+
+For cases that combine moral protest, hiddenness, hell/accountability, and
+worship-worthiness protest, diagnose from the actual input. If an imported
+secular-humanist, liberal, or other worldview frame is present, type it through
+FPD and Level A / Level B discipline. Do not let DO-8 or identity-performance
+erase the surface burden.
+
+Correct classification:
+- Primary: DO-2 moral protest / evidential evil.
+- Primary: DO-1 divine hiddenness.
+- Secondary: DO-15 imported criterion.
+- Secondary: DO-8 hujjah/accountability as substantive correction.
+- Patterns: PF-10 moral protest where applicable; PF-2 evidentialist demand where applicable.
+- Frame: NS-4 / secular moral intuition as tribunal.
+
+Identity-performance may be noted with caution, but do not over-certify interior state.
+DO-8 is relevant when accountability or hujjah assumptions remain live, but it is a
+bounded downstream correction after FPD/M1/state re-read; it must not become the primary
+route merely because the prompt mentions worship or condemnation.
 
 #### Mandatory family-local load floor
 philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).

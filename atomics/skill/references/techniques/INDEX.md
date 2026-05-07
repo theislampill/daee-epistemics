@@ -2,7 +2,7 @@
 id: techniques-index
 module_class: governance
 canonical_path: skill/references/techniques/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a technique after V1 case-classification
 catalogue_registered: false
@@ -19,6 +19,18 @@ Techniques govern a stretch of conversation. A technique is broader than a tacti
 - When in doubt, prefer the earlier clearing technique over the later sign-direction technique.
 - V1 is the umbrella entrypoint for substantive cases; M5 operates inside V1 rather than beside it.
 - In revelation, scripture, transmission, canon, preservation, and text-history cases, run V10 before broader doctrinal rebuttal or case-library deployment.
+
+## Family Execution Floor
+
+Naming a technique is never technique execution. If the technique file has an owner-specific operation floor, that floor governs. If it does not, this fallback floor governs:
+
+1. identify the live burden and the technique's distinctive target;
+2. perform the technique's actual clearing, sequencing, disambiguating, or directing operation;
+3. record what changed in the burden-state before release or recursion;
+4. hold later techniques, case-library content, and source/context material unless `Land(B) -> R` licenses NewB;
+5. fail the release if the technique becomes a heading, label, or essay frame rather than an operation.
+
+Techniques are not route itineraries or argument banks. A technique may structure a stretch of conversation, but each released pass still obeys the owner-specific operation floor, submove saturation gate, and NewB license test.
 
 ## Techniques
 

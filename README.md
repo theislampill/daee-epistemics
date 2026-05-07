@@ -143,6 +143,27 @@ For that reason, the repository routes engagements by condition, not only by top
 In some cases the appropriate move is inferential; in others it is classificatory, clarificatory, or *maieutic* (a method of drawing out latent recognition rather than supplying wholly new content). 
 The underlying assumption is that truth is often already signified but occluded, displaced, or misread.
 
+Pattern-first routing is diagnostic precedence, not abstract universalism. It means the live
+deformation, concealment, warrant disorder, or authority-order problem governs before superficial
+denomination/topic labels. It does not make traditions interchangeable under neutral comparative
+categories, and it does not claim arbitrary pattern-analysis generates truth. Restoration remains
+ordered toward sound *fiṭrah*, sound reason, revelation, and their non-contradictory ordered
+convergence.
+
+Runtime routing is therefore:
+
+```text
+Pattern(deformation/concealment/unsoundness) > denomination/source-label
+```
+
+A named framework, school, source, author, genealogy, or identity may supply internal
+source-status context, but it is not public-render material by default and is never sufficient to
+route content or release an apologetic argument bank. Default citation is restricted to Qur'an,
+Sunnah, and sound Salaf narrations with direct source reference. The DSL/IR routes by the detected
+noetic operation: criterion import, tribunal installation, predication error, authority-order
+disorder, warrant failure, concealment, deformation, and the active `claim_level` /
+`pattern_profile`.
+
 ## What the Skill Protects
 
 The protected asset is not "belief" in a thin or merely verbal sense. 
@@ -185,7 +206,15 @@ The repository is not only a content store. It carries an explicit governance la
 - mixed-case and insufficient-basis rules to keep the model from overclassifying thin or ambiguous cases
 - an anti-pattern sheet to catch diagnosis collapse, forced fit, tactic over-selection, decorative terminology, higher-order vocabulary theater, rhetorical overreach, excerpt over-read, and register-hold bypass before they harden into output
 
-**Pass model (orientation for first-contact readers):** The skill is not a one-shot pipeline. Each governed pass runs diagnosis, forms the Diagnostic IR, passes it through the six-check dispatch gate, then produces a bounded manifestation consisting of the complete Layer A diagnostic record, the deployable Layer B engagement (held or compressed when the gate has not fully cleared), and a restoration trace. A mandatory post-render State Refresh / Re-Entry Gate then rechecks held material and governs whether the outcome is STOP, HOLD, RECURSE, or PARTIAL. Module dispatch is blocked until all six gate checks pass; content is not released while concealment, orientation, stop conditions, or semantic blockers remain live; STOP is not valid until the post-render gate names `next_eligible_pass` as `none`. The authoritative detail for these mechanics is in [`references/diagnostics/diagnostic-ir.md`](atomics/skill/references/diagnostics/diagnostic-ir.md) (the dispatch gate and `post_render_gate`), [`references/diagnostics/framework-pipeline.md §Recursive State-Transition View`](atomics/skill/references/diagnostics/framework-pipeline.md) (the STOP / HOLD / RECURSE / PARTIAL model), and [`SKILL.md §V.A`](atomics/skill/SKILL.md) (Layer A / Layer B definition). This paragraph is orientation only; those files govern.
+**Burden-cycle model (orientation for first-contact readers):** The skill is not a one-shot
+pipeline. It reduces a live burden into internal Diagnostic IR, routes only after the
+dispatch gate, renders the permitted surface, then re-reads state before STOP, HOLD,
+RECURSE, or PARTIAL. Runtime detail is owned by
+[`diagnostic-ir.md`](atomics/skill/references/diagnostics/diagnostic-ir.md),
+[`recursive-state-transitions.md`](atomics/skill/references/diagnostics/recursive-state-transitions.md),
+[`routing-precedence.md`](atomics/skill/references/diagnostics/routing-precedence.md),
+[`diagnostic-render-contract.md`](atomics/skill/references/rubrics/diagnostic-render-contract.md),
+and [`output-release.md`](atomics/skill/references/rubrics/output-release.md).
 
 This matters because the repository's thesis is restorative, not merely polemical. 
 The framework should make it easy for a model to say, succinctly, "this is the kind of case I think this is, this is why I am taking this path, this is how sure I am, and this is where I am inferring beyond the file set."
@@ -197,14 +226,25 @@ Canonical invocation forms:
 ```text
 /daee-epistemics
 /daee-epistemics:dsl
-/daee-epistemics:audit
 ```
 
-- `/daee-epistemics` is the clean default response mode: good prose, readable formatting, internal recursive governance, and no giant load ledger by default.
-- `/daee-epistemics:dsl` is compact diagnostic / lab-report mode: compressed Case State or Diagnostic IR, live doors, matched original module IDs, held routes, State Refresh, and STOP / HOLD / RECURSE / PARTIAL.
-- `/daee-epistemics:audit` is fuller procedural audit mode: it may expose runtime/bundle ledger, source-basis, routing gate, render permission, recursive passes, state refreshes, and final governance.
+- `/daee-epistemics` is the default diagnostic compiler mode:
+  `Layer A(compact DSL/IR header) + Layer B(bounded governed response) + State/noetic re-read`.
+  Layer B visibly includes Hidden Premises, local Core Formulation per released operation,
+  bounded operative submoves, and compact TTP/operator trace when a named operator performs
+  work. State/noetic re-read comes before the single Restorative Response and final Closing Formulation.
+  It does not print raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
+  or load ledger.
+- `/daee-epistemics:dsl` is concise DSL / IR printout mode: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested.
 
-The old grim-reaper prompt is deprecated for normal use. Its useful traversal discipline is now internal governance; use `:dsl` or `:audit` only when visible diagnostic structure is wanted.
+Default output must visibly instantiate compact compiler state enough to prevent clean essay
+cosplay. The exact field list and failure modes are owned by
+[`diagnostic-render-contract.md`](atomics/skill/references/rubrics/diagnostic-render-contract.md)
+and the root control plane in [`atomics/skill/SKILL.md`](atomics/skill/SKILL.md).
+
+`/daee-epistemics:audit` is deprecated as a public render mode and retained only as an internal/development compatibility surface for regression review, bundle/source-basis inspection, and procedural debugging. Default mode must not depend on `:audit` for governance visibility.
+
+The former external recursive-audit prompt is deprecated for normal use. Its useful traversal discipline is now internal governance; use `:dsl` for compact visible diagnostic structure.
 
 ## Integration Boundary
 
@@ -232,6 +272,7 @@ The editable source and deployable runtime are intentionally separate:
 Normal source workflow:
 
 ```bash
+python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_compiled_runtime_freshness.py
 python tools/check_compiled_module_boundaries.py
@@ -241,6 +282,12 @@ python tools/check_routing_parity.py
 python tools/check_routing_parity.py --strict
 python tools/check_recursive_traversal_governance.py
 python tools/check_render_modes.py
+python tools/check_frontmatter.py
+python tools/check_coverage.py
+python tools/check_framework_pipeline.py
+python tools/check_recursion_collapse_noetic_frame.py
+python tools/check_metacompliance_current_canon.py
+python tools/check_smoke_artifacts.py
 ```
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
@@ -281,7 +328,7 @@ and only then select the relevant Tactic, Technique, Procedure, or Case Module.
 
 ## Repository Diagram
 
-Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal audit surface remains [`framework-pipeline.md`](atomics/skill/references/diagnostics/framework-pipeline.md).
+Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal pipeline audit surface remains [`framework-pipeline.md`](atomics/skill/references/diagnostics/framework-pipeline.md); abstract recursive state-transition semantics live in [`recursive-state-transitions.md`](atomics/skill/references/diagnostics/recursive-state-transitions.md).
 
 ```mermaid
 flowchart TB
@@ -350,15 +397,15 @@ end
 subgraph OUTPUT["Output structure"]
 direction LR
   CASEOUT["Case State / Source Basis<br/>rendered from validated IR when needed<br/>[case-state-schema.md + inference-boundary.md]"]
-  LAYERS["Layer A complete diagnosis<br/>Layer B deployable engagement<br/>(held / minimal when gated)"]
-  REST["Restoration trace / next move<br/>stop-governed close"]
+  LAYERS["Layer A compact DSL/IR header<br/>Layer B bounded governed response<br/>(held / minimal when gated)"]
+  REST["State/noetic re-read<br/>stop-governed close"]
 end
 
 subgraph STATICMETA["Static metadata / historical audit (non-dispatch)"]
 direction LR
   CATALOGUE["Module catalogue<br/>id / path / class registry<br/>[module-catalogue.json]"]
   FRONTMATTER["Module front matter<br/>owner metadata<br/>[per-file YAML]"]
-  PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[pattern-family-audit.md]"]
+  PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[docs/audits/pattern-family-audit.md]"]
 end
 
 INPUT -->|enters| SKILL
@@ -452,8 +499,12 @@ Package the contents of the generated `skill/` directory, not the directory itse
 Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-runtime.skill.zip
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-RC00001-v0.3.1.0.skill.zip
 ```
+
+Smoke tests should use the latest explicitly named rc package and hash from the current run.
+Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs.
+Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
 
 For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.
 
@@ -481,4 +532,4 @@ Claude-first installation flow:
 3. Upload `daee-epistemics.skill`.
 4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
 
-The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the uploa
+The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/terminology.md -->
-<!-- SOURCE_SHA256: 18ac90220f53c97afd6fbe002243bc28e713ea93984ae6c2b8f25e82cdbbec96 -->
+<!-- SOURCE_SHA256: f61632c6d63c0011cda0c32065ec100e14908a4fe93188b206372821ddd344d9 -->
 
 ---
 id: terminology
 module_class: governance
 canonical_path: skill/references/terminology.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - Arabic term usage needs discipline or enforcement
 catalogue_registered: false
@@ -373,6 +373,51 @@ Use these only when they change routing or scope:
 
 ---
 
+## Noetic and Meta-Noetic Vocabulary
+
+These are route-critical technical terms. Use them only when they change diagnosis, routing,
+scope control, or the visibility of a higher-order burden.
+
+- **Noetic structure:** the operative configuration of commitments, categories, inferential
+  norms, testimonial attitudes, interpretive filters, background assumptions, and
+  belief-relations by which a subject judges reality. It is not merely "what someone believes"
+  or a worldview label; it is the belief-operating structure by which the person treats some
+  things as basic, obvious, rational, neutral, evidential, authoritative, or interpretable.
+- **Governing epistemic rule:** a deeper rule inside a noetic structure that determines what
+  counts as knowledge, evidence, authority, inference, neutrality, rationality, or interpretation.
+  Examples include "only science counts as real evidence," "religious belief needs proof but
+  secular assumptions are default," or "testimony is weak unless reduced to neutral observation."
+  These are not merely beliefs; they are operating rules that govern which beliefs feel plausible.
+- **Noetic memetics:** the study of how a noetic structure, not merely one idea, spreads.
+- **Meta-noetic memetics:** the study of how noetic structures and their governing epistemic
+  rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and instantiate
+  linguistically across persons and communities. It tracks how whole belief-structures cohere,
+  how they reproduce as bundled ideologies, how groups stabilize shared interpretations of
+  reality, and how rules of knowledge, evidence, authority, neutrality, rationality, and
+  interpretation become repeatable through slogans, labels, arguments, habits, institutions,
+  identity patterns, and social pressure.
+- **Identity as modal/stabilizing node:** identity can be a modal node in a noetic structure:
+  not necessarily the conclusion, premise, or primary load-bearing node, but a stabilizing
+  condition that affects how premises, authorities, moral criteria, discourse roles, and
+  recognition-costs are held. Identity may be part of the noetic equilibrium, but it cannot by
+  itself carry the verdict.
+- **Linguistic instantiation:** the way a noetic structure becomes repeatable in words, slogans,
+  doubts, objections, labels, frames, and argument habits. A slogan is not a route by itself; it
+  is evidence to be typed through the existing Diagnostic IR and pattern-profile owners.
+- **Load-bearing node:** the criterion, authority rule, semantic hinge, category-set, or noetic
+  blocker that keeps regenerating downstream claims. Clearing a load-bearing node changes the
+  structure; answering one downstream sentence may not.
+- **Collapse radius:** the downstream beliefs, objections, routes, or social-linguistic patterns
+  that must be re-evaluated when a load-bearing node clears.
+
+Operational boundary: meta-noetic memetics gives an object-domain for diagnosis. The DSL/IR gives
+the operative representation. Identity-linked commitments, slogans, practices, communities, moral
+vocabularies, and authority postures may be read as stabilizing or reproducing a noetic structure
+only through existing diagnostic surfaces. This vocabulary does not create new routes, IR fields,
+PF codes, module activation rules, or source owners.
+
+---
+
 ## Da'wah Register
 
 | Arabic | Transliteration | Meaning |
@@ -402,13 +447,13 @@ Use these only when they change routing or scope:
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/INDEX.md -->
-<!-- SOURCE_SHA256: ede6224cda6ba4cd8a021cf16c85b7ba7038ba846fe7af7086e8a47756bfda10 -->
+<!-- SOURCE_SHA256: 9558312b5b88cff8f465ee7011490c1f73af97dac6a64c97c3d11716b9c345a2 -->
 
 ---
 id: case-library-index
 module_class: governance
 canonical_path: skill/references/case-library/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting or confirming a case-library module after V1 diagnosis
 catalogue_registered: false
@@ -425,6 +470,18 @@ the case still requires.
 - A case file sharpens a recurring objection family. It does not replace noetic diagnosis.
 - Load one case file at a time unless the case genuinely spans two confirmed families.
 - Pair case files with techniques and tactics; do not let the case file become the whole response.
+
+## Family Release Floor
+
+Loading a case-library file is not release permission. A case file may supply recognition, discriminators, and owner handoffs, but it does not authorize a topic-to-answer shortcut. Release requires:
+
+1. validated IR and pattern-first routing before the case family is used;
+2. the matched TTP/operator file actually performing the work;
+3. the case file's substantive material staying bounded to the released live burden;
+4. `Land(B)` supported by operation result and state/noetic re-read;
+5. held case material remaining held through Restorative Response and Closing Formulation unless NewB is licensed.
+
+Case-library content must not become an apologetic bank, denomination-specific answer script, source/context parade, or comparative-neutral survey. Case files sharpen routed execution; they do not override routing.
 
 ## Routing Table
 
@@ -473,15 +530,15 @@ the case still requires.
 
 **DO codes identify pressure families, not standalone rebuttal scripts. A DO code alone does not authorize answer release.**
 
-**DO dispatch rule — all six conditions required:**
-1. the global diagnostic floor (V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md);
-2. the confirmed DO family;
-3. the family-local load floor;
-4. all matched TTP / diagnostic owners justified by the current case-state;
-5. output-release / Layer B discipline;
-6. P7 STOP / HOLD / RECURSE / PARTIAL discipline.
+**DO dispatch invariant:** global diagnostic floor + confirmed DO family + family-local load floor
++ matched owners + release/P7 discipline, then:
 
-A confirmed topic family activates its load floor, not merely its named case file.
+```text
+B -> {matched s} -> Layer B(released) + H(held) -> R
+```
+
+Gloss: a confirmed topic family activates its load floor, not merely its named case file;
+release waits for `output-release.md`, `diagnostic-render-contract.md`, and P7.
 
 **Negative routing rules:**
 ```
@@ -491,18 +548,9 @@ Do not route as: "attribute coherence → do-core.md → V8 → answer."
 Do not route as: "canon authority → do-christian-extensions.md → answer."
 ```
 
-**Correct route shape:**
-```
-diagnostic gate
-→ claim-level / PF / upstream blocker read
-→ confirmed DO family
-→ family-local load floor
-→ matched semantic / authority / proof / register owners
-→ DO substantive insight only after upstream gates clear
-→ bounded Layer B
-→ held downstream material
-→ state refresh
-```
+**Correct route shape:** diagnostic gate -> claim/PF/upstream read -> confirmed DO family
+-> family-local load floor -> matched semantic/authority/proof/register owners ->
+`B -> {matched s} -> Layer B(released) + H(held) -> R`.
 
 **DO-family near-miss rules:**
 - hiddenness may be grief-primary (M4/P7) rather than DO-1 philosophical hiddenness; run M4 discriminator first
@@ -644,13 +692,13 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/module-codes.md -->
-<!-- SOURCE_SHA256: 794b2ec952dad7d7ba7d846138c7d947e03b6cb88fa4244a29cd45110c59a6e8 -->
+<!-- SOURCE_SHA256: 708dec2e822bac0fea8042dc1aa5edc81a6aa940351fa3fd0b27f31667d9d9be -->
 
 ---
 id: module-codes
 module_class: governance
 canonical_path: skill/references/module-codes.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - ambiguity arises about what a code names or where its full treatment lives
 catalogue_registered: false
@@ -1047,13 +1095,13 @@ shifts with it.
 <!-- MODULE_ID: heuristics -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/heuristics.md -->
-<!-- SOURCE_SHA256: 3553bd894cb33864863b1e96ee2139020d6b2b3b0bfe5ab3223562e55d29711f -->
+<!-- SOURCE_SHA256: 0149c33d0327871d6a7082b7175b990e344fee5abda746e2f99fe4bd5b3577f8 -->
 
 ---
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - throughout every engagement as background governance
 blocks:
@@ -1100,7 +1148,7 @@ These are always-active background rules, not case-specific moves.
 
 16. **Character is evidence — actively, not passively.** The absence of defensiveness, the quality of listening, the genuine care for the interlocutor rather than the argument — these are epistemically operative, not decorative.
 
-17. **Know when to pause, and know when a refreshed continuation is actually licensed.** Pressing when conditions are not right hardens resistance. Leave a question open, alive, and present. The fiṭrah continues to work in the intervals between conversations. A landed move ends the current pass; before STOP, the post-render gate must refresh case-state, recheck held routes, and decide STOP, HOLD, RECURSE, or PARTIAL. Continuation is required when refreshed case-state shows a still-unmet restoration target and no stop, register-hold, semantic gate, or limit bars the next move. The restoration stops in `references/procedures/P7-restoration-stops.md` compile these norms into named hard rails. Heuristics states the principle; P7 enforces it procedurally.
+17. **Know when to pause, and know when refreshed continuation is licensed.** Use `Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE` from `references/diagnostics/recursive-state-transitions.md`. Gloss: a landed move ends the current pass; before STOP, refresh case-state, recheck held routes, and continue only when an unmet `B` remains live and no stop, register-hold, semantic gate, or limit blocks it. P7 enforces this procedurally.
 
 18. **Do not grant scientism upstream-tribunal status.** When "science" is being used as an exhaustive theory of knowledge, widen the epistemic frame before arguing within it.
 
@@ -1130,12 +1178,14 @@ These are always-active background rules, not case-specific moves.
 
 31. **Treat discourse as an analysand, not a blob.** Read claims, criteria, testimonial posture, slogan families, and register cues as separable surfaces that may require different intervention order. Do not force the whole burden into one flat answer when the case is structurally decomposable.
 
-32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, and filters. Meta-noetic memetics is how semantic-intellectual units dock, stabilize, distort, or lose force within that configuration. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding.
+32. **Distinguish noetic structure from meta-noetic memetics.** The noetic structure is the operative configuration of commitments, grounding relations, testimony, categories, inferential norms, and interpretive filters. Meta-noetic memetics is how whole noetic structures and their governing epistemic rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and instantiate linguistically through recurring slogans, labels, arguments, habits, institutions, identity patterns, and social pressure. It clarifies the dynamics of the repo's existing distinctions; it does not replace them, and it does not let mere persistence masquerade as grounding or route authority.
 
 33. **Let restorative structural viability outrank bare formal stability.** A structure may look locally coherent while still being tribunal-captured, semantically trapped, or held together by imported criteria. The goal is not merely to preserve consistency, but to restore a configuration whose grounding, routing, release, and continuation remain aligned to restored order.
 
-34. **Let the validated IR govern recursive re-entry.** If a further move cannot be justified from refreshed state inside the audited control surface, it is not licensed. Re-enter only through a still-live restoration target and a newly permitted route, never from momentum alone.
+34. **Route by pattern, not label.** A denomination, source label, author, genealogy, or topic name may orient source-status, but it cannot select the response. Route by detected deformation, concealment, criterion import, tribunal installation, predication error, authority-order disorder, warrant failure, `claim_level`, and `pattern_profile`. Do not paste scholar stacks, source lists, denomination apologetics, or argument banks unless the validated IR selected and released that content.
 
-35. **Do not close before the post-render gate.** A strong bounded move is not self-closing. After it renders, ask what cleared, what remains live, what held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. STOP is honest only when that answer is none; otherwise HOLD, RECURSE, or PARTIAL governs.
+34. **Let the validated IR govern recursive re-entry.** `IR -> B -> Land(B) -> R -> Decision`. Gloss: if refreshed state cannot license a still-live `B` and permitted route, there is no re-entry; never continue from momentum alone.
+
+35. **Do not close before the post-render gate.** `R(H,Δ)` asks what cleared, what remains live, which held routes were rechecked, whether any route became newly eligible, and what the next eligible pass is. Gloss: STOP is honest only when none remains; otherwise HOLD, RECURSE, or PARTIAL governs.
 
 <!-- END_SOURCE: heuristics -->

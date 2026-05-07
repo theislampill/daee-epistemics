@@ -2,7 +2,7 @@
 id: tactics-index
 module_class: governance
 canonical_path: skill/references/tactics/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a tactic after V1 case-classification
 catalogue_registered: false
@@ -18,6 +18,18 @@ Tactics are immediate conversational moves. They are not the whole response arch
 - Treat `do not use when` as a precondition.
 - Do not use a tactic when the case is primarily grief, identity-performance, or entrenched will unless the tactic itself is built for that condition.
 - Pair tactics with techniques or procedures when the case requires a longer arc.
+
+## Family Execution Floor
+
+Naming a tactic is never tactic execution. If the tactic file has its own owner-specific operation floor, that floor governs. If it does not, this fallback floor governs:
+
+1. state the live target the tactic is operating on;
+2. perform the tactic's distinctive operation from validated IR rather than generic prose;
+3. show the result as a burden-state change;
+4. keep downstream tactic/case material held unless `Land(B) -> R` licenses NewB;
+5. fail the release if the tactic name could be removed without changing the operation.
+
+Tactics do not authorize argument banks, source/context prestige, or extra burden-cycles. They are operative submoves unless the state/noetic re-read licenses a materially different burden.
 
 ## Tactics
 

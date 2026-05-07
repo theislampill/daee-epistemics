@@ -2,7 +2,7 @@
 id: kalamic-interlocutor
 module_class: governance
 canonical_path: skill/references/diagnostics/kalamic-interlocutor.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-6 or NS-10 confirmed; kalamic evidentialism surface markers present
 emits:
@@ -11,6 +11,13 @@ catalogue_registered: false
 ---
 
 # Kalamic Interlocutor - Engagement Strategy
+
+**Source-status note:** School names and variants in this file are internal routing
+discriminators, not public-render support. In default output, do not use school labels,
+named scholars, or kalamic genealogy as context or warrant unless the user explicitly
+asks or validated IR requires source-comparison. Route by the live proof-method,
+predication, or authority-order pattern.
+
 
 Load when the interlocutor uses markers of kalāmic evidentialism: `dalīl` demand, `wujūb al-naẓar`, `taqlīd` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Muʿtazilī / Ashʿarī / Māturīdī framing.
 

@@ -2,7 +2,7 @@
 id: V2-reconstituting-reason
 module_class: technique
 canonical_path: skill/references/techniques/V2-reconstituting-reason.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor's conception of reason is contaminated (bidʿī ʿaqlī)
   - evidential content cannot land through the interlocutor's filter
@@ -46,4 +46,4 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 
 If none of these has occurred, stay with V2 or return to noetic/deformation diagnosis rather than pretending the framework has cleared.
 
-**Governed continuation note:** V2 is a selective recursive operator, not a chain license. One cleared tribunal or one landed consequence ends the current pass. Continue only if refreshed V1 shows the restoration target still unmet and no stop, register-hold, or semantic gate bars the next move. A fresh differentiating signal may arise in a later reply or inside the same message through an accompanying proposition or entailment.
+**Governed continuation note:** V2 follows `B -> Land(B) -> R -> Decision` from `recursive-state-transitions.md`. Gloss: one cleared tribunal/filter consequence ends the pass; continue only if refreshed V1 licenses an unmet `B` with no stop, register-hold, or semantic gate. A fresh differentiating signal may arise later or inside the same message through a proposition/entailment.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-check_frontmatter.py — Validate YAML operative front matter across skill module files.
+check_frontmatter.py - Validate YAML operative front matter across skill module files.
 
 Checks:
   1. YAML parses cleanly (no syntax errors)
@@ -26,7 +26,7 @@ except ImportError:
     print("ERROR: PyYAML not installed. Run: pip install pyyaml")
     sys.exit(1)
 
-# ── Enums ──────────────────────────────────────────────────────────────────────
+# Enums
 
 VALID_MODULE_CLASS = {
     "tactic", "technique", "procedure", "diagnostic",
@@ -69,7 +69,7 @@ DEPRECATED_FIELDS = {
     "direct_read_required",
 }
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
+# Helpers
 
 def extract_frontmatter(path: str) -> tuple[dict | None, list[str]]:
     """Return (parsed_yaml, errors). errors is a list of string messages."""
@@ -199,7 +199,7 @@ def check_legacy_blockquote_metadata(path: str) -> list[str]:
     return errors
 
 
-# ── Main ───────────────────────────────────────────────────────────────────────
+# Main
 
 def scan_dir(root: str, verbose: bool) -> tuple[int, int, int, int, int]:
     """Return (files_checked, files_with_errors, files_with_deprecated_fields, files_with_verification_fields, files_with_legacy_blocks)."""
@@ -267,16 +267,16 @@ def main():
     print(f"Scanning: {root}")
     checked, errors, deprecated, verification, legacy_blocks = scan_dir(root, args.verbose)
 
-    print(f"\n{'─'*60}")
+    print("-" * 60)
     print(f"Files checked:              {checked}")
     print(f"Files with errors:          {errors}")
     print(f"Files with deprecated keys: {deprecated}")
     print(f"Files with verification:    {verification}")
     print(f"Files with legacy blocks:   {legacy_blocks}")
-    print(f"{'─'*60}")
+    print("-" * 60)
 
     if errors:
-        print("RESULT: FAIL — fix errors above before operator pack compilation")
+        print("RESULT: FAIL - fix errors above before operator pack compilation")
         sys.exit(1)
     else:
         print("RESULT: PASS")

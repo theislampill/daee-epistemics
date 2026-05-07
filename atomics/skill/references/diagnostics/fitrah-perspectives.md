@@ -2,7 +2,7 @@
 id: fitrah-perspectives
 module_class: governance
 canonical_path: skill/references/diagnostics/fitrah-perspectives.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
 emits:
@@ -19,6 +19,12 @@ operator_pack_eligible: true
 ---
 
 # Fiṭrah Perspectives — Three-View Taxonomy
+
+**Source-status note:** Named representatives and tradition labels in this file are
+internal classification/contrast only. In default output, do not use them as public
+support or scholar-context unless the user explicitly asks or validated IR requires
+source-comparison. Route by the detected fitrah-view pattern and its state-change.
+
 
 Load when an interlocutor's conception of the fiṭrah is itself in question — when they deny
 that the fiṭrah is innate, claim it is a blank slate, present a dual-nature view, or when

@@ -2,7 +2,7 @@
 id: V10-transmission-content-vetting
 module_class: technique
 canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 blocks:
@@ -32,11 +32,10 @@ Use this technique when the pressure is not merely "is this claim persuasive?" b
 thing, how did it reach us, and what authority does it actually carry?" The sequence is fixed.
 Do not begin with contents while provenance is still undefined.
 
-V10 is a selective recursive operator. Each step may clear one burden without licensing a
-content dump. After provenance, contents, or authority has been clarified, refresh the
-case-state. If another live burden now governs, route there. If not, release only the
-smallest restorative next move. Bounded deployment governs the sequence; it does not abolish
-further rounds when refreshed state still requires them.
+V10 uses `B -> {provenance/content/authority s} -> Land(B) -> R` from
+`recursive-state-transitions.md`. Gloss: each step may clear one transmission burden without
+licensing a content dump; after provenance, contents, or authority is clarified, refresh
+case-state and release only the smallest restorative next move unless another `B` governs.
 
 This technique operationalizes a fixed transmission / contents split: first ask how the item
 reached us, then ask what it actually shows. Historical criticism, manuscript reconstruction,

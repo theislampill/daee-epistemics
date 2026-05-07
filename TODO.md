@@ -18,12 +18,46 @@ Completed historical gaps, coverage passes, routing parity work, and recursive t
 
 No active unresolved release-blocking technical pass is currently assigned.
 
-## Post-v0.3.1.0 Candidates
+## Completed Metaaudit Repair Catalogue (2026-05-02)
+
+The `C:\ai\current\metaaudit.md` report found the skill partially compliant: the
+diagnostic compiler existed, but default output risked hiding too much governance behind
+`:audit` or a prose-only default. This pass catalogued and closed the reported risks as follows:
+
+- Diagnostic reduction, IR formation, IR validation, and six-check gate visibility were
+  too easy to assert invisibly in default mode. Closed by making the default compact
+  DSL/IR header mandatory and checker-enforced while keeping raw Diagnostic IR,
+  full Case State, `matched_modules`, and route ledger out of default output.
+- The public `:audit` split risked making default too bare. Closed by deprecating
+  `:audit` as public output and retaining it only as internal/development audit
+  compatibility; `:dsl` remains the concise IR/lab-report mode.
+- Routing precedence and TTP entry were only partially auditable. Closed by requiring
+  the current bounded operator to be one burden-level function and by adding operation
+  criteria that reject route chains, TTP labels, and generic `Operation:` prose.
+- Operative submoves could be syntactic dressing. Closed by requiring `Operation:`
+  lines to begin with the existing closed operative verbs and adding structural checker
+  samples for non-operative operation verbs.
+- Source-status labels could be emitted while contrast material silently became a
+  premise. Closed by strengthening the operative-warrant sentence with a specific
+  non-premise clause and adding checker coverage.
+- Held routes could leak semantically into Layer B. Closed by requiring explicit
+  `Released: <item>` / equivalent release markers before held material can be answered,
+  plus structural checker coverage for held-route semantic leakage.
+- Topic-to-IR fingerprinting remained possible with the two-fixture hiddenness pair.
+  Closed by adding a third same-vocabulary Muslim-internal authority-fatigue fixture and
+  extending routing parity checks so the minimal-pair triangle diverges on existing
+  discriminators: concealment mode, DO-orient, restoration target, or routing gate.
+- Grounded state/noetic re-read, STOP/HOLD/PARTIAL/RECURSE, and Layer A/B release
+  discipline were preserved and tied to the new false-compliance guards.
+
+No new IR fields, route IDs, PF codes, owners, or architecture were introduced.
+
+## Post-current-canon / post-v0.3.1.0 Candidates
 
 ### Live model regression testing
 - Build a small live-run suite that compares actual Claude outputs against the static routing fixtures.
 - Track whether outputs preserve Diagnostic IR, matched original module IDs, post-render gate discipline, and recursive traversal decisions.
-- Track default-vs-DSL-vs-audit render behavior: default should not become a giant ledger; `:dsl` should expose compact diagnostic state; `:audit` should expose fuller procedure only when invoked.
+- Track default-vs-DSL-vs-audit render behavior: default should expose the compact DSL/IR header plus bounded governed Layer B (Hidden Premises, local Core Formulation, bounded operative submoves, compact TTP/operator trace when used), then state/noetic re-read, one Restorative Response, and one final Closing Formulation without becoming a giant ledger or essay-only output; `:dsl` should expose concise DSL/IR or lab-report state; `:audit` should remain internal/development-only compatibility rather than public governance visibility.
 - Do not treat static routing parity as live behavioral equivalence.
 
 ### Broader routing fixture coverage
@@ -31,8 +65,8 @@ No active unresolved release-blocking technical pass is currently assigned.
 - Keep fixture expectations structural: module IDs, governance phrases, path resolution, and call budgets, not exact prose.
 
 ### Recursive traversal fixtures
-- Add focused fixtures for same-input multi-door traversal, newly eligible held routes, HOLD because release signal is absent, and PARTIAL because limits block the next eligible pass.
-- Preserve the rule that recursion is one governed door at a time, not argument dumping.
+- Add focused fixtures for same-input multi-burden traversal, newly eligible held routes, HOLD because release signal is absent, and PARTIAL because limits block the next eligible burden-cycle.
+- Preserve the rule that recursion is one governed burden-cycle at a time, not argument dumping.
 
 ### File-call telemetry
 - Consider optional telemetry or manual audit notes for actual runtime file-call counts in live hosts.
@@ -44,7 +78,9 @@ No active unresolved release-blocking technical pass is currently assigned.
 
 ### CI integration
 - Add a CI job for the compiler/checker suite if repository automation is desired.
-- Include `tools/check_routing_parity.py --strict` and `tools/check_recursive_traversal_governance.py`.
+- Include `tools/check_routing_parity.py --strict`, `tools/check_recursive_traversal_governance.py`,
+  `tools/check_recursion_collapse_noetic_frame.py`, and
+  `tools/check_metacompliance_current_canon.py`.
 
 ### Release artifact checksum policy
 - Decide whether release artifacts should publish SHA256 checksums, signatures, both, or neither.
@@ -59,4 +95,10 @@ No active unresolved release-blocking technical pass is currently assigned.
 
 ### Sufism-related source-content adjudication
 - Status: closed / out of scope. No bespoke Sufism, tariqah-authority, or contested-practices source-content owner is authorized.
-- Cases involving Sufism-contested-practices or Sufism-tariqah-authority-claims may route through existing family-transfer and structural patter
+- Cases involving Sufism-contested-practices or Sufism-tariqah-authority-claims may route through existing family-transfer and structural pattern owners only.
+- Do not add bespoke Sufism owners without an authorized source-audit task.
+
+### Generated runtime as source
+- Status: closed / prohibited.
+- Decision: `skill/` is generated runtime output. Edit `atomics/skill/`, rebuild, and run the checker suite.
+- Do not hand-edit generated runtime files, do not treat omnibus bundles as canonical source, and do not use omnibus filenames as `matched_modules`.

@@ -2,7 +2,7 @@
 id: diagnostic-ir
 module_class: governance
 canonical_path: skill/references/diagnostics/diagnostic-ir.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - any substantive engagement requiring routing — IR is not optional
 routing_effects:
@@ -43,29 +43,53 @@ The IR composes fields from several sources:
 ## DSL-IR as Audited Formalization Layer
 
 The Diagnostic IR is the repo's canonical audited formalization layer. It is where the live
-noetic structure becomes actionable: claims, criteria, grounding relations, testimonial posture,
-interpretive filters, held routes, and restoration target are rendered into one governable state
-before any content release.
+noetic structure becomes actionable: claims, criteria, grounding relations, governing epistemic
+rules, testimonial posture, interpretive filters, held routes, and restoration target are rendered
+into one governable state before any content release.
 
 This formalization does not claim that the whole structure is exhausted by a pure proposition
 graph. Grounding relations may be read graph-like, and often locally DAG-like, but the audited
 control surface must also carry weighting, suppression, underdetermination, semantic holds,
 register holds, and release permissions.
 
+Meta-noetic memetics gives the object-domain: how noetic structures and their governing
+epistemic rules form, function, stabilize, defend themselves, mutate, reproduce, spread, and
+instantiate linguistically through recurring slogans, labels, arguments, habits, institutions,
+identity patterns, and social pressure. The IR gives the operative representation. It does not
+encode the whole structure exhaustively; it encodes diagnostically relevant features of that
+structure so routing, comparison, release, and restoration can be governed.
+
+Identity-linked commitments may be represented only as part of that structure, not as a separate
+route. Identity may be part of the noetic equilibrium, but it cannot by itself carry the verdict:
+it may stabilize a criterion, authority posture, moral vocabulary, discourse orientation, or
+collapse radius, while interior motive, sincerity, culpability, soul-state, and primary
+load-bearing status remain held unless independently grounded.
+
 Meta-noetic memetics becomes operational here through fields such as `Foreign premise`,
-`Upstream findings`, `Claim-level`, `Pattern-profile`, `Concealment mode`, `DO-orient`,
+`Upstream findings`, `Claim-level`, `Pattern-profile`, `Structural pattern print`,
+`Load-bearing node`, `Collapse radius`, `Concealment mode`, `DO-orient`,
 `What is withheld and why`, and `What remains live`. Those fields do not replace the repo's
-existing owners; they make their dynamic interaction auditable by tracking docking, tribunal
-installation, semantic capture, defensive persistence, and the collapse radius that follows when
-a load-bearing node is cleared.
+existing owners; they make dynamic interaction auditable by tracking what the structure treats
+as basic, what counts as evidence or authority inside it, which inferences are permitted, how
+beliefs support each other, how the structure defends itself, and what downstream claims must be
+re-evaluated when a load-bearing node is cleared.
 
 **Operationalization rule:** Meta-noetic memetics does not add a new routing pass. It is the
 explanatory frame for the already-named dynamics. Its live IR surface is:
 
-- `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture moves
+- `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture, source-of-authority, and neutrality-rule moves
 - `Claim-level` and `Pattern-profile`: governing PF overlay and higher-order burden when these change routing or sequencing
-- `Concealment mode`: how recognition is being suppressed
+- `Structural pattern print`, `Load-bearing node`, and `Collapse radius`: the local belief-machine, the node that keeps regenerating downstream claims, and the dependent claims/routes that must be re-evaluated when it clears
+- `Concealment mode` and `DO-orient`: how recognition is being suppressed or how the discourse is socially/affectively stabilized
 - `What is withheld and why`, `What remains live`, and `Post-render gate`: held routes, collapse radius, refreshed-state recheck, and the forced re-entry judgment after a load-bearing node is cleared
+
+Identity use must be source-status marked in the existing surfaces:
+
+- anchored: public words, explicit self-description, stated framework, explicit affiliation, or
+  visible discourse performance
+- inference: likely stabilizing role in the noetic equilibrium
+- speculative/held: interior motive, sincerity, culpability, soul-state, or primary
+  load-bearing status
 
 **Negative rule:** When the concept "meta-noetic memetics" is invoked in a response without any
 of the above fields carrying a live read (no tribunal-installation in `Upstream findings`, no
@@ -78,6 +102,12 @@ decoratively. Decorative use is the anti-pattern named in
 ## Gate Protocol - Required Before Module Dispatch
 
 Before any content module is dispatched, the following checks must pass in order. If any check fails, dispatch is blocked; the blocking condition is named explicitly rather than silently resolved.
+
+The IR is formed after diagnostic reduction, not after route selection. The required order is
+core axes -> mandatory Phase 2 passes -> triggered overlays / specialty markers -> Diagnostic
+IR -> gate checks -> routing precedence -> selected current bounded operation. A route
+itinerary is not a valid IR substitute, and `Next move` / `Intervention target` must not be
+populated with a chain such as `FPD -> M1 -> DO-8 -> M8 -> restoration`.
 
 **Gate Check 1 - Mandatory minimum fields populated.**
 All pre-dispatch fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated before module dispatch. `Post-render gate` is mandatory for the complete pass record, but it is populated after the bounded restorative move and before closure. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a forced read.
@@ -107,6 +137,67 @@ triggered the block using the `Gate trigger` field in the IR (e.g., `check 3 —
 This makes routing failures auditable without re-running the full gate protocol: the IR
 record names the blocking check, not just the resulting gate state.
 
+## Runtime Diagnostic Compiler Contract
+
+The skill is a runtime-verifiable diagnostic compiler, not a deterministic argument bank.
+Every substantive input case reduces into validated IR before any operator is activated.
+The validated IR is the compiler state: it stores the reduced noetic structure, gate status, held
+routes, source-status, current restoration target, and the single current bounded operation.
+
+TTP routing proceeds from existing IR fields, not denomination lookup:
+
+```text
+IR(pattern_profile, claim_level, reason-category, concealment, deformation, DO-orient)
+-> matched TTP/operator
+```
+
+Named denomination, school, author, source label, or genealogy may be recorded only as
+source-status context when the IR requires it. It is not operative warrant, not public-render
+material by default, and not permission to paste a topic-specific argument bank. Default public
+source citation is restricted to Qur'an, Sunnah, and sound Salaf narrations, and each such use
+requires a direct source reference.
+
+Compiler lifecycle:
+
+```text
+input case
+-> diagnostic reduction
+-> validated IR
+-> routing precedence
+-> selected current live burden
+-> TTP entry criteria
+-> bounded TTP operation
+-> TTP exit criteria
+-> burden landing
+-> state re-read
+-> STOP / HOLD / RECURSE / PARTIAL
+```
+
+This lifecycle is runtime-verifiable because each transition has an owner-backed check:
+diagnostic reduction must populate the IR before routing; routing precedence may activate
+only one current live burden; each TTP must enter through validated IR, not topical association;
+each TTP must exit with an operator result; state re-read must re-evaluate held routes and
+remaining same-input live burdens before closure or recursion.
+
+TTP activation record is a conceptual audit obligation, not a new IR field. For each active
+TTP, the pass must preserve:
+
+```text
+entry: validated IR + owner + bounded target + release permission
+operation: the owning TTP's specific intervention
+exit: result + state delta + held-route recheck
+```
+
+If any part is absent, the operator has not executed. Naming M1, M8, M9, FPD, DO-8, or any
+other route label is not activation. A route label becomes runtime work only when validated
+IR selects it for the current bounded target and the pass records a result that can feed
+state re-read.
+
+The compiler must converge through controlled state transitions rather than linear argument
+delivery. Convergence means the live same-input noetic structure is restored as far as gates,
+stops, release permissions, and response limits permit. It does not mean every detected topic
+is answered, nor does it mean the first strong argument licenses STOP.
+
 ---
 
 ## Render-Mode Policy — IR as Internal State, Not Printout Template
@@ -117,28 +208,103 @@ for the public response.
 
 **Core invariants:**
 - Discipline is universal across all modes. Printout is mode-specific.
-- The grim-reaper discipline applies in every mode; the grim-reaper printout belongs to `:audit`.
-- Full recursion in every mode; full ledger only in audit.
+- Recursive-audit discipline applies in every mode; the full audit printout belongs only to internal/development audit.
+- Full recursion in every mode; compact DSL/IR header in default; full ledger only in internal/development audit.
 
-The grim-reaper traversal runs in full in every mode. The mode determines how much diagnostic
+Recursive traversal runs in full in every mode. The mode determines how much diagnostic
 machinery is printed, not whether recursion occurs:
 
 ```text
-/daee-epistemics        = full grim-reaper traversal operationally
-                          prose-first Layer B response
-                          compact Layer A may be lightly surfaced
+/daee-epistemics        = full recursive traversal operationally
+                          mandatory compact DSL/IR header
+                          prose-first bounded governed Layer B response
+                          State/noetic re-read
                           no full ledger / no full Diagnostic IR dump
-/daee-epistemics:dsl    = full grim-reaper traversal operationally
+/daee-epistemics:dsl    = full recursive traversal operationally
                           compact formal Layer A visibility
-/daee-epistemics:audit  = full grim-reaper traversal operationally
-                          full grim-reaper printout / procedural ledger
+/daee-epistemics:audit  = deprecated internal/development audit compatibility only
 ```
 
 **Default mode (`/daee-epistemics`):**
-The skill operates like a doctor with a full chart: Layer A — the complete diagnostic record
-(IR, upstream map, noetic diagnosis, held routes, restoration plan) — governs the response in
-every mode. The doctor does not recite the full chart to the patient, and does not treat without
-diagnosis. Layer A governs; its full printout is mode-specific.
+
+Default Final-Output Preflight Gate (mandatory): before emitting a default answer, scan
+the proposed final response. This is the last-mile rewrite gate for the IR owner: forming
+the IR is mandatory, but printing the IR is prohibited unless the user invoked `:dsl`,
+internal/development audit, or explicitly requested diagnostic trace. If the proposed response contains
+prohibited scaffolding, route planning, or meta-composition narration, the response is
+invalid and must be rewritten before output.
+
+The Default Final-Output Preflight Gate is not merely a visible-format sanitizer. It also
+checks pipeline validity: internal diagnosis -> validated IR -> routed operator selection
+-> output-release rubric -> diagnostic-render-contract -> state re-read -> post-render
+gate -> STOP / HOLD / RECURSE / PARTIAL decision. Clean prose without pipeline validity is
+invalid. The final answer must reflect that Diagnostic IR was formed internally before
+routing, that routing came from validated IR, that any TTP was selected as an operator
+rather than a prose label, and that output-release and render-contract governance both ran.
+
+Default final-output failure tokens include `## Diagnostic IR`, `[Diagnostic IR]`,
+`Case State:`, a full IR/case-state field block, `matched_modules`, `source_basis`, load
+ledger, route ledger, planned route list, `Next: FPD -> ...`, strong interior-classification
+verdict dumps such as `Concealment: irad primary`, `Deformation: hawa primary`, or
+`NS-4/NS-5 compound`, "Now I
+have enough", "I now have enough", "I now have sufficient", "Let me compose", "Let me write",
+"Let me craft", "Let me construct the diagnostic IR", literal `Recursion decision:`,
+`next_eligible_pass:`, and visible `post_render_gate:` fields. Rewrite as clean governed
+prose that names only the governing diagnostic fact needed for the answer.
+
+Default recursion must also pass this preflight scan. Bare "Step 1 / Step 2 / Step 3 /
+Step 4" or "Move 1 / Move 2 / Move 3" sequencing does not satisfy RECURSE. Same-response
+recursion in default mode requires a prose state transition naming what cleared, what remains
+live, why the next live burden was already present, and why the next bounded pass is permitted.
+If another eligible same-input live burden remains after the current blocker clears, default
+output must either RECURSE into one bounded next pass or mark PARTIAL if limits prevent it;
+silent STOP while eligible burden remains is invalid.
+Use full internal state; render the mandatory fit-for-purpose Layer A compact DSL/IR header
+and mode-gated diagnostics. Layer A governs; its full printout is mode-specific.
+
+Default visible frame:
+
+```text
+Layer A — Compact DSL/IR header
+- read status:
+- confidence:
+- claim_level:
+- pattern_profile:
+- reason-category:
+- concealment:
+- deformation:
+- DO-orient:
+- live noetic burden:
+- current bounded operator:
+- held:
+- source-status/noetic-frame:
+- decisive missing differentiator: [only when required]
+- gate/release decision:
+
+Layer B — bounded governed response
+- Hidden Premises
+- Burden / Operation N
+  - Core Formulation
+  - Bounded Response / operative submoves
+- TTP/operator trace when a named operator does runtime work
+
+State/noetic re-read
+
+Restorative Response
+Closing Formulation
+```
+
+This is a compact DSL/IR printout, not a full raw IR dump. The visible fields above are
+render-time aliases of existing IR, case-state, source-status, and output-governance fields;
+they add no new IR fields. Default still suppresses `matched_modules`, route ledger, full
+Case State, and the raw `[Diagnostic IR]` block.
+
+Submove-vs-recursion rule:
+`Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
+Gloss: hiddenness, punishment/accountability, source-status, source-worldview, and
+identity-stabilization can be operative submoves under one governing burden; they become
+separate burden-cycles only after `Land(B) -> R` licenses a genuinely new input-anchored `B`.
+Notation owner: `recursive-state-transitions.md`.
 
 *Prohibited in default mode — must not appear in the public response:*
 - The `## Diagnostic IR` section header.
@@ -146,41 +312,57 @@ diagnosis. Layer A governs; its full printout is mode-specific.
 - A full `[Case State]` block with all IR fields populated.
 - A Load Ledger or bundle resolution table.
 - A Render Permission Check or full source-basis printout.
-- The full grim-reaper procedural template.
+- A bibliography, "Primary Sources Referenced", external research-style source list, or
+  source-basis ledger unless the user requested sources/citations or the task is
+  internal/development audit or research.
+- The full procedural audit template.
 These items are prohibited regardless of case complexity. Plain `/daee-epistemics` does not become
 Level 2 or Level 3 merely because the case has multiple live burdens.
 
-*Compact Layer A light surface — permitted in default mode:*
-- A brief "Diagnostic Reading" or "What kind of argument this is" opener.
-- The hidden criterion, upstream burden, or tribunal installation named concisely.
-- "What is being held" briefly named when the user needs to understand why the answer is bounded.
-- The governing foreign premise or concealment mode, when naming it changes what the interlocutor
-  can hear.
-The problem is not Layer A being present in default mode. The problem is Layer A leaking in
-verbose DSL/audit form. This compact Layer A light surface is explicitly not the full Layer A
-audit machinery.
+*Default compact DSL/IR header — mandatory in default mode:*
+Default Layer A surfaces only the compact compiler trace: read status, confidence,
+claim_level, pattern_profile, reason-category, concealment, deformation, DO-orient,
+live noetic burden, current bounded operator, held, source-status/noetic-frame,
+gate/release decision, and decisive missing differentiator when required. It must not
+leak verbose DSL/audit machinery; use
+`references/rubrics/diagnostic-render-contract.md` for the canonical frame and contrast pairs.
 
 *Recursion in default mode:*
-Full grim-reaper traversal runs. The traversal must be visible through section progression, not
-through printed gate machinery. The response progresses through live doors before final synthesis:
+Full recursive traversal runs. The traversal must be visible through the compact DSL/IR
+header and state-transition progression, not through printed gate machinery. The response
+progresses through live burdens before final synthesis:
 
 ```text
-bounded move → state refresh: what cleared → what remains live
-→ next eligible door → decision → next bounded move (if eligible)
+bounded move → state re-read: what cleared → what remains live
+→ next eligible burden → decision → next bounded move (if eligible)
 ```
 
-"Recursion decision: RECURSE" may appear as a compact governance line at the close. It must not
-be accompanied by a visible IR dump, load ledger, or full code-fenced schema block.
+Literal `Recursion decision:` and `next_eligible_pass:` fields must not appear in default
+output. They belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. In default mode,
+RECURSE appears as a prose transition plus one bounded next pass, not as a state label.
+
+Numbered essay headings do not substitute for this progression. "Move 1 / Move 2 /
+Move 3" is not a post-render gate unless the response also shows, in ordinary prose,
+what cleared, what remains live, why the next live burden was already present, and why the
+next bounded pass is eligible.
+
+TTP activation must be source-backed and operational. A label such as "the M1 move" or
+"the M8 move" is not enough: the TTP must be selected by the validated IR, assigned a
+bounded target, used to perform its operation, and followed by state re-read before any
+downstream TTP releases.
 
 **DSL mode (`/daee-epistemics:dsl`):**
-- Full grim-reaper traversal runs operationally.
+- Full recursive traversal runs operationally.
 - A compressed Case State block or selected IR fields may be shown using the Level 2
   shape from `diagnostic-render-contract.md`.
 - The full code-fenced `[Diagnostic IR]` schema block does not appear even in DSL mode.
+- Do not show the full load ledger, full source-basis table, or full routing-gate section
+  unless the task explicitly escalates to internal/development audit.
 - Use original module IDs in any visible `matched_modules`; never use omnibus filenames.
 
-**Audit mode (`/daee-epistemics:audit`):**
-- Full grim-reaper traversal runs operationally.
+**Internal/development audit compatibility (`/daee-epistemics:audit`):**
+- Deprecated as a public render mode; do not rely on it for default governance visibility.
+- Full recursive traversal runs operationally.
 - The fuller IR governance state may be surfaced as a structured block.
 - Populate only fields with operative content; do not dump the full schema template.
 - Runtime/bundle ledger, when shown, must resolve atomized paths through
@@ -189,6 +371,12 @@ be accompanied by a visible IR dump, load ledger, or full code-fenced schema blo
 ---
 
 ## Full IR Schema
+
+Render-mode scope: this template is an internal control shape and may be visible only in
+`:dsl`, internal/development audit, pass-review, or diagnostic trace. It is not a default output template.
+Visible block format is internal/development audit / diagnostic-trace only for the post-render gate fields below.
+In default mode this gate runs internally and renders only as prose transition or clean
+STOP/PARTIAL wording when needed.
 
 ```text
 [Diagnostic IR]
@@ -230,16 +418,21 @@ Intervention target:                 # optional; the bounded operation that clea
 Framing notes:                       # optional; internal renderer constraints preventing citation dump, argument bank, or wrong-family release
 
 --- Output Governance ---
-                                  # Canonical Layer A / Layer B definition: `SKILL.md §V.A — Two-Layer Output Contract`.
-                                  # Output-governance fields govern Layer B only.
-                                  # Layer A always preserves the complete diagnostic output.
+                                  # Canonical internal/audit diagnostic record and Layer B definition:
+                                  # `SKILL.md §V.A — Two-Layer Output Contract`.
+                                  # Output-governance fields govern deployable Layer B. They do not
+                                  # define or expand the default visible Layer A surface.
+                                  # The complete diagnostic record is retained internally
+                                  # for audit-capable render modes.
+                                  # Default visible Layer A is the compact fit-for-purpose surface
+                                  # governed by `diagnostic-render-contract.md`.
 Source basis:                        # anchored | synthesis | inference | speculative - per claim
 Inference boundary active:           # yes | no
-Output shape:                        # Layer B only: content | relational | maieutic | invitational | single-response | held-pending
+Deployable Layer B output shape:     # content | relational | maieutic | invitational | single-response | held-pending
 Next move:                           # one specific action the response takes next
-What is withheld and why:            # Layer B hold only; never used to omit Layer A diagnosis or matched modules
+What is withheld and why:            # Layer B hold only; never used to omit the internal/audit diagnosis or matched modules
 What remains live:                   # open differentiators, unresolved axes, or questions the next exchange must answer
-Post-render gate:                    # mandatory State Refresh / Re-Entry Gate before STOP, HOLD, RECURSE, or PARTIAL
+Post-render gate:                    # mandatory state re-read / Re-Entry Gate before STOP, HOLD, RECURSE, or PARTIAL
   Cleared this pass:
   Remaining live distortions:
   Held routes rechecked:
@@ -248,19 +441,19 @@ Post-render gate:                    # mandatory State Refresh / Re-Entry Gate b
   Recursion decision:                 # STOP | HOLD | RECURSE | PARTIAL
 ```
 
-For `/daee-epistemics:dsl` or `/daee-epistemics:audit` render, a recursive pass may be compactly surfaced as:
+For `/daee-epistemics:dsl` or internal/development audit render, a burden-cycle may be compactly surfaced as:
 
 ```text
-Live door:
+Live noetic burden:
 Why already present:
 Released module(s):
 Bounded move:
-State refresh:
+state re-read:
 Governance: STOP | HOLD | RECURSE | PARTIAL
 ```
 
 This is a DSL/audit shape, not a normal-answer ledger. Ordinary default answers may compress it,
-but the fields remain the internal state-refresh contract.
+but the fields remain the internal state re-read contract.
 
 ---
 
@@ -270,7 +463,9 @@ Compression rule: the IR is not a checklist to be filled performatively. Populat
 
 Noetic-object rule: populate the IR as a state of the structure, not as a paraphrase of the
 discourse. The point is to formalize what configuration is live, what governs release now, and
-what depends on what - not merely to restate the surface wording.
+what depends on what - not merely to restate the surface wording. When a meta-noetic memetic
+read is live, formalize the governing epistemic rule, linguistic pattern, load-bearing node, and
+collapse radius through existing fields rather than inventing a new route or field.
 
 Concealment mode is mandatory. Use `clear` when no active concealment mode is positively read.
 Use `mode-?` when the axis remains unresolved. Blank values, em dashes, or placeholders such as
@@ -320,6 +515,7 @@ Populate these whenever their trigger is live:
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
 - `Post-render gate` after every bounded restorative move and before any closing decision. It is mandatory even when the decision is STOP; STOP is invalid unless the gate has run.
+- `Decisive missing differentiator` is conditional-mandatory whenever `Confidence` is anything other than `strong` *or* `Read status` is anything other than `dominant`. The field names the one signal that would refine, falsify, or collapse the remaining ambiguity in the read. This is a falsifiability anchor against cosmetic IR formation: a paraphrase of the input cannot fill it without exposing itself, while a structural read can. The field comes from `references/diagnostics/case-state-schema.md §Decisive missing differentiator`; this rule promotes it from optional to conditional-mandatory inside the validator-backed internal IR. If the basis is too thin to name a differentiating signal at all, the correct output is Stop-4, not a forced read.
 
 **Optional structural framing fields**
 
@@ -365,12 +561,19 @@ contract permits a diagnostic or audit-style response.
 - **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - **Ghost-load prohibition:** A `matched_modules` entry without a corresponding `source_basis` entry with `source_kind: "module"` and `module_id` matching the entry's `id` is a ghost-load: the source file or compiled runtime section was loaded but did not demonstrably govern any output claim or routing decision in this pass. Ghost-loads are gate-integrity failures equivalent to fabricated activation and must be corrected before dispatch — either by adding the missing `source_basis` entry (naming the specific claim or routing fork the module governed) or by moving the module from `matched_modules` to `What is withheld and why` with an explicit reason.
 - `Next move` names one live move only. It is not a queue of later modules.
+- `Intervention target` and `Next move` name one burden-level function. They do not name a route
+  chain, module itinerary, or list of internal TTP labels. Acceptable shape: `imported-criterion
+  tribunal test` or `worship-worthiness criterion test`. Invalid shape: `FPD -> M1 -> DO-8 ->
+  M8 -> restoration`.
+- When several TTPs are required to land that one live burden, record them internally as
+  operative submoves, each with target -> operation -> result. They remain under the same
+  current-pass activation until the burden landing is reached and state re-read runs.
 - When a load-bearing premise, criterion, or authority node has been cleared, `What remains live`
   should mark any dependent claims whose support has collapsed or whose status now requires
   re-evaluation before further routing.
 - When Stop-2 fires or a move has landed, boundary reset applies: later activation begins from a fresh V1-governed round rather than from carried-forward module state. A fresh round may be opened by a later reply or by a clear differentiating signal within the same message, its accompanying propositions, or its entailments, but only when the refreshed state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
-**Post-render State Refresh / Re-Entry Gate**
+**Post-render state re-read / Re-Entry Gate**
 
 After every bounded restorative move, and before any closing or STOP decision, the IR must run
 `post_render_gate`. The gate asks:
@@ -389,23 +592,23 @@ Decision semantics:
 - `RECURSE` is required when another live distortion remains in the same input, or when a held route becomes newly eligible after the current pass clears its blocker.
 - `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive pressure remains. Do not emit a false STOP in that condition.
 
-Core recursive traversal rule: no premature STOP while an eligible live door remains. After every
-bounded restorative move, run State Refresh. STOP is valid only when the current governing blocker
-has been addressed, no eligible live door already present in the original input remains live, no
+Core recursive traversal rule: no premature STOP while an eligible live burden remains. After every
+bounded restorative move, run state re-read. STOP is valid only when the current governing blocker
+has been addressed, no eligible live burden already present in the original input remains live, no
 held route became releasable after the move, continuing would be argument-stacking rather than
-governed traversal, and P7 permits stopping. If another eligible live door remains in the same
-input, choose RECURSE or PARTIAL, not STOP. HOLD is valid only when the remaining door needs an
+governed traversal, and P7 permits stopping. If another eligible live burden remains in the same
+input, choose RECURSE or PARTIAL, not STOP. HOLD is valid only when the remaining burden needs an
 absent release signal not present in the input.
 
-Recursion is not argument dump. It releases one door at a time, upstream before downstream, with
+Recursion is not argument dump. It releases one live burden per burden-cycle, upstream before downstream, with
 matched modules reset and re-derived from the refreshed state after each bounded move.
 
 The gate is not a new routing pass. It is the post-render enforcement point that makes the
 validated IR remain live after the response has made its bounded move.
 
-**Recursive-state model:** `references/diagnostics/framework-pipeline.md §Recursive State-Transition View` is the canonical owner of the STOP / HOLD / RECURSE / PARTIAL state model. The fields `continuation_eligibility`, `alignment_state`, `recognition_strength`, and `post_render_gate` are this IR's typed carriers of that model. State-transition semantics and recursive re-entry conditions are defined in `framework-pipeline.md`; this section governs only how those states are represented in the IR record.
+**Recursive-state model:** `references/diagnostics/recursive-state-transitions.md` is the canonical abstract owner of the STOP / HOLD / RECURSE / PARTIAL state model. The fields `continuation_eligibility`, `alignment_state`, `recognition_strength`, and `post_render_gate` are this IR's typed carriers of that model. State-transition semantics and recursive re-entry conditions are defined in `recursive-state-transitions.md`; this section governs only how those states are represented in the IR record.
 
-**State-carry partition:** The consolidated table of what χ (state refresh) retains, resets, and re-evaluates across a pass boundary is in `references/diagnostics/framework-pipeline.md §Recursive Layer — State Carry Table`. The boundary-reset rule for matched modules after Stop-2 and the current-pass activation rule above are prose expressions of that same partition.
+**State-carry partition:** The consolidated table of what state re-read retains, resets, and re-evaluates across a pass boundary is in `references/diagnostics/recursive-state-transitions.md §State Carry / Reset / Re-Evaluation Table`. The boundary-reset rule for matched modules after Stop-2 and the current-pass activation rule above are prose expressions of that same partition.
 
 **Acceptance-state rules**
 
@@ -471,11 +674,28 @@ The following inconsistencies are invalid:
 - `Framing notes` used to introduce new coverage content, prooftexts, or citations rather than to constrain release. Framing notes are not a citation bank.
 - Source-audit-derived tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
 - One upstream node cleared + all downstream material dumped at once. Refresh state and release only the next bounded move.
+- `Next move` or visible output uses "Move 1 / Move 2 / Move 3" as essay sequencing
+  without a prose state-change transition. Numbered headings are not RECURSE.
+- `Matched modules` or visible prose names an M/E/F/R/V/P label, but `source_basis`
+  and the bounded output do not show what operation the TTP actually performed.
+- A visible `Operation:` line begins with generic prose (`address`, `discuss`, `explore`,
+  `engage`, `consider`) instead of the closed operative verbs owned by
+  `recursive-state-transitions.md`.
+- A non-operative source-status is named in Layer B, but the operative-warrant sentence
+  lacks the specific non-premise clause naming which contrast/opponent/history/genealogy/
+  held/comparison element is not used as a premise.
+- A held route or compact `held` noun phrase appears in Layer B as an answered topical
+  commitment before a preceding state/noetic re-read explicitly releases it with
+  `Released: <item>` or an equivalent release marker.
+- Default-mode output ends with a bibliography, source list, or source-basis ledger
+  without an explicit source/citation/audit request.
 - Missing `Post-render gate` after a bounded restorative move. STOP, HOLD, RECURSE, and PARTIAL decisions are invalid until the gate has run.
 - `Post-render gate: recursion_decision: STOP` while `remaining_live_distortions` names a live distortion, `newly_released_routes` is non-empty, or `next_eligible_pass` is anything other than `none`.
 - `Post-render gate: recursion_decision: HOLD` while the remaining material has a present release signal and no stop, register-hold, semantic gate, thin-basis rule, or other hard rail blocks it.
 - `Post-render gate: recursion_decision: RECURSE` while `next_eligible_pass` is `none`, or while the response fails to release the next eligible bounded pass.
 - `Post-render gate: recursion_decision: PARTIAL` without naming the remaining live distortion and the next eligible pass that limits prevented.
+- `Confidence` is anything other than `strong` *or* `Read status` is anything other than `dominant`, while `Decisive missing differentiator` is absent. This is the cosmetic-IR-formation guard: an IR that cannot name what would refine the read is paraphrase, not diagnosis.
+- `Claim-level` is `meta-epistemic`, `meta-ontological`, `meta-noetic`, or `cross-level`, while `Current bounded operator` (or `Intervention target` / `Next move`) names a first-order doctrinal target rather than a higher-order function such as criterion test, tribunal test, authority-order correction, semantic / predication discipline, source-status / identity stabilization, foundational warrant, validation order, or category-set discipline. Higher-order vocabulary in the IR must be matched by a higher-order operator in the bounded move; otherwise the higher-order claim_level is decorative.
 
 An IR with any of the above combinations has drifted.
 

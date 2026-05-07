@@ -2,7 +2,7 @@
 id: V11-taqlid-transition
 module_class: technique
 canonical_path: skill/references/techniques/V11-taqlid-transition.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor has recognized position is held by taqlīd and asks (explicitly or implicitly) how to move toward taḥqīq
   - truth-seek discourse orientation confirmed
@@ -22,6 +22,12 @@ catalogue_registered: true
 
 # V11 — Taqlīd Recognition and Transition to Taḥqīq
 
+## Source-Status Note
+
+Tradition-language in this file is internal orientation only. In default output, do
+not cite "the classical tradition" or named scholars as public support. Render the
+operative warning as destabilization/transition-path discipline.
+
 ## Role of V11 in the Skill
 
 V7 is the *check* — the move that exposes taqlīd as taqlīd and demands taḥqīq. V11 is the
@@ -31,7 +37,7 @@ examined position without the inherited position collapsing during the transitio
 The two are separate moves. V7 deployed without a V11 follow-through can produce
 destabilization: the subject sees their belief is held by taqlīd, but has no path to
 taḥqīq, and the belief falls from under them before any examined ground is available. The
-classical tradition treats this as a danger — the questioner who "opens a door he cannot
+Operationally, this is a danger: the questioner who "opens a door he cannot close" has harmed the subject, not helped them.
 close" has harmed the subject, not helped them.
 
 V11 is what follows V7 when the subject is willing to transition. It is also the module

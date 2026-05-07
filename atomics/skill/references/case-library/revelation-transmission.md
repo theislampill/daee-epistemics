@@ -2,7 +2,7 @@
 id: revelation-transmission
 module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed
@@ -33,6 +33,14 @@ This family does not authorize debate-autonomous chaining after V10 or an RT sub
 Refresh the case-state after each cleared burden. If another live burden now governs, route
 there explicitly. If not, release only the smallest restorative next move rather than treating
 RT progression as permission to spill every downstream answer in one pass.
+
+**Default source/render restriction:** RT material is source-heavy, but source heaviness is
+not public-render permission. In default output, do not cite scholarly tradition, named
+schools, manuscript authorities, critics, church bodies, or text-critical frameworks as
+support/context unless the user explicitly asks or validated IR requires source-comparison.
+If Qur'an, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
+transmission categories as bounded operative distinctions: provenance, contents, authority,
+and state-change.
 
 ## Ḥadīth Routing Note
 

@@ -2,7 +2,7 @@
 id: P2-objection-mapping
 module_class: procedure
 canonical_path: skill/references/procedures/P2-objection-mapping.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor presenting a battery of intellectual objections
   - engagement is primarily critical rather than existential
@@ -152,10 +152,11 @@ avoidance, or a need for staged restoration rather than taxonomy.
 
 ## Hold/Release Discipline
 
-Hold all first-order answers until the map is complete enough to identify the upstream
-burden. Hold downstream DO/RT modules when a criterion, source-authority, or testimony
-standard is controlling their admissibility. Release only the first upstream item in the
-sequence, then refresh the case-state.
+Use `H(n+1) = (Hn ∪ InputLive_n) - Released_n` and `Land(B) -> R` from
+`recursive-state-transitions.md`; release amount/order remains owned by `output-release.md`.
+Gloss: hold first-order answers until the map identifies the upstream burden, and hold
+downstream DO/RT modules while criterion, source-authority, or testimony standard controls
+admissibility. Release only the first upstream item, then refresh case-state.
 
 If one objection is answered and the interlocutor shifts to a new objection from a different
 bucket, do not automatically release the next answer. Re-map the shift. If the shift reveals

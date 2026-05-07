@@ -2,7 +2,7 @@
 id: do-christian-extensions
 module_class: case-library
 canonical_path: skill/references/case-library/do-christian-extensions.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion)
   - model identification complete before DO-12 or DO-13
@@ -30,11 +30,20 @@ catalogue_registered: true
 > **role:** DO pressure family owner — DO-11 through DO-14 (Christian theological extension cases)
 > **use when:** Christian theological pressure family confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion); model identification complete; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script; do not load as first responder to any theological question
-> **output:** family-local load floor, ordered TTP routes, semantic/register blockers, bounded Layer B moves, held downstream material
+> **output:** family-local load floor; `B -> {matched s} -> Layer B(released) + H(held) -> R`
 
-**This file is a family routing surface, not a topic-bank rebuttal page.** A confirmed DO-11 through DO-14 family activates this file's load floor; it does not authorize content release. Model identification is required before DO-12 and DO-13 routing.
+**Family routing surface, not topic-bank rebuttal page.** Confirmed DO-11 through DO-14 activates this load floor; `Load floor != release`. Gloss: model ID still gates DO-12/13; release via `output-release.md`; STOP/HOLD/PARTIAL/RECURSE via `recursive-state-transitions.md` / P7.
 
 **Under-load guard:** DO-12 Trinity requires at minimum: model identification + definition-discipline/M9 for identity/counting terms + do-attribute-precision for person/nature pressure + V12 if multiple-independent-lords pressure precedes Christian overlay + V8 only after semantic/model discipline clears. Loading only this file plus V8 is a gate-integrity failure.
+
+**Execution floor, not load floor:** This file may authorize Christian-extension owners, but it does not license a component tour. For a released Trinitarian burden:
+- B1 perfection-criterion tribunal must be handled by `perfection-criterion-usurpation.md` when perfection, love, relation, maximality, or non-eventfulness is the governing pressure; downstream Trinity material remains held until the tribunal is refused or narrowed.
+- B2 model/predication must identify the operative model or the missing discriminator, then run `M9-predication-mode.md` on `person`, `nature`, `is God`, `one`, `three`, and worship/lordship referent if present or entailed.
+- Mystery, source prestige, canon authority, and comparative source claims remain held unless the state/noetic re-read licenses them as NewB.
+- B3 V12/tamanu releases only when independent lordship, worship-status plurality, or multiple-sovereign pressure is actually live after B2; otherwise V12 is held or returned as not-yet-target.
+- Each burden-cycle must show its state-change condition before the next cycle starts: what was cleared, what remains held, and why the next burden is materially different rather than another submove.
+
+**Failure conditions:** The extension fails if it answers "the Trinity" in the abstract, loads DO-12 before model/predication discipline, uses V12 before independence pressure is live, treats mystery/source prestige as a coherence repair, names many components without owner-specific operations, or collapses all Trinitarian material into one oversized burden.
 
 **DO-christian-extensions family-local load floor** (conditional on confirmed case-state, not global ambient):
 - V1, mandatory Phase 2 passes, diagnostic IR, routing-precedence.md — always

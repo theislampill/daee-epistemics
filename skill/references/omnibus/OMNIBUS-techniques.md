@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: techniques-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/INDEX.md -->
-<!-- SOURCE_SHA256: 8d0cf99a82cff9943405994493f8d0ec1caba2d0cef978d333e60ae9471b1201 -->
+<!-- SOURCE_SHA256: fa1bfc1294c268c9c7764d77bbed8c76087d636ccbd310263e808c20fc916281 -->
 
 ---
 id: techniques-index
 module_class: governance
 canonical_path: skill/references/techniques/INDEX.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - selecting a technique after V1 case-classification
 catalogue_registered: false
@@ -39,6 +39,18 @@ Techniques govern a stretch of conversation. A technique is broader than a tacti
 - When in doubt, prefer the earlier clearing technique over the later sign-direction technique.
 - V1 is the umbrella entrypoint for substantive cases; M5 operates inside V1 rather than beside it.
 - In revelation, scripture, transmission, canon, preservation, and text-history cases, run V10 before broader doctrinal rebuttal or case-library deployment.
+
+## Family Execution Floor
+
+Naming a technique is never technique execution. If the technique file has an owner-specific operation floor, that floor governs. If it does not, this fallback floor governs:
+
+1. identify the live burden and the technique's distinctive target;
+2. perform the technique's actual clearing, sequencing, disambiguating, or directing operation;
+3. record what changed in the burden-state before release or recursion;
+4. hold later techniques, case-library content, and source/context material unless `Land(B) -> R` licenses NewB;
+5. fail the release if the technique becomes a heading, label, or essay frame rather than an operation.
+
+Techniques are not route itineraries or argument banks. A technique may structure a stretch of conversation, but each released pass still obeys the owner-specific operation floor, submove saturation gate, and NewB license test.
 
 ## Techniques
 
@@ -72,13 +84,13 @@ Techniques govern a stretch of conversation. A technique is broader than a tacti
 <!-- MODULE_ID: V2-reconstituting-reason -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V2-reconstituting-reason.md -->
-<!-- SOURCE_SHA256: 89dfe63250656984fbd9404f01ab06d1f7d54931c4c95bb0a8612ab833b2b3c2 -->
+<!-- SOURCE_SHA256: ac140d568753191558be5e3c558175c4590c72ef059563d606e1cea56a57e845 -->
 
 ---
 id: V2-reconstituting-reason
 module_class: technique
 canonical_path: skill/references/techniques/V2-reconstituting-reason.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor's conception of reason is contaminated (bidʿī ʿaqlī)
   - evidential content cannot land through the interlocutor's filter
@@ -122,7 +134,7 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 
 If none of these has occurred, stay with V2 or return to noetic/deformation diagnosis rather than pretending the framework has cleared.
 
-**Governed continuation note:** V2 is a selective recursive operator, not a chain license. One cleared tribunal or one landed consequence ends the current pass. Continue only if refreshed V1 shows the restoration target still unmet and no stop, register-hold, or semantic gate bars the next move. A fresh differentiating signal may arise in a later reply or inside the same message through an accompanying proposition or entailment.
+**Governed continuation note:** V2 follows `B -> Land(B) -> R -> Decision` from `recursive-state-transitions.md`. Gloss: one cleared tribunal/filter consequence ends the pass; continue only if refreshed V1 licenses an unmet `B` with no stop, register-hold, or semantic gate. A fresh differentiating signal may arise later or inside the same message through a proposition/entailment.
 
 <!-- END_SOURCE: V2-reconstituting-reason -->
 
@@ -133,13 +145,13 @@ If none of these has occurred, stay with V2 or return to noetic/deformation diag
 <!-- MODULE_ID: V3-regress-dissolution -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V3-regress-dissolution.md -->
-<!-- SOURCE_SHA256: fb823f2f6ddfc9fbc6994dc543c92669aa1be0044ec61f4960840894100484cd -->
+<!-- SOURCE_SHA256: 0798f792d705e6e5a2010f44c998b2eafde6ba8a424565d12394c343f2411a9f -->
 
 ---
 id: V3-regress-dissolution
 module_class: technique
 canonical_path: skill/references/techniques/V3-regress-dissolution.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor generates justificatory regress objections ("but what justifies that?")
   - infinite regress demand against foundational or basic beliefs
@@ -197,13 +209,13 @@ stop, register-hold, or semantic gate live for the next move.
 <!-- MODULE_ID: V4-contamination-identification -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V4-contamination-identification.md -->
-<!-- SOURCE_SHA256: 926bb3eaa082bf2f11f95f63601b6a74ef60e688f6f870df6c931a35a03d758f -->
+<!-- SOURCE_SHA256: c21a18d0f6d4e22017c4c5e729b9c5d44f19cf91a09106977e13ad53f62325e4 -->
 
 ---
 id: V4-contamination-identification
 module_class: technique
 canonical_path: skill/references/techniques/V4-contamination-identification.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - fiṭrah appears suppressed
   - interlocutor has access to theistic signs but does not respond
@@ -241,13 +253,13 @@ Two forms:
 <!-- MODULE_ID: V5-directing-attention-signs -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V5-directing-attention-signs.md -->
-<!-- SOURCE_SHA256: 08714c2b8951dab9175df3231d71e005ab61d18508012a1d2c22140dda4ecdb1 -->
+<!-- SOURCE_SHA256: 1ecc8084c2a194f4989f3063471b0403a8329b0e9cc6031626ba3c5b04d3944c -->
 
 ---
 id: V5-directing-attention-signs
 module_class: technique
 canonical_path: skill/references/techniques/V5-directing-attention-signs.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - framework cleared (V2 deployed and filter loosened)
   - directing attention to specific āyāt calibrated to this interlocutor's sensibility
@@ -311,13 +323,13 @@ Track (b): "Human consciousness has a specific *normative* character — irreduc
 <!-- MODULE_ID: V6-convergence -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V6-convergence.md -->
-<!-- SOURCE_SHA256: b590815646afc7822d61ebfbc980a228e29e3b72d96594e8f6ee114b32f945fc -->
+<!-- SOURCE_SHA256: 8daf03f0cbad8713accdf7be439a1f414b6f22bd5bfe9795ae65c66def103e39 -->
 
 ---
 id: V6-convergence
 module_class: technique
 canonical_path: skill/references/techniques/V6-convergence.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live
   - interlocutor sets registers against one another
@@ -378,13 +390,13 @@ itself is what changes the case.
 <!-- MODULE_ID: V7-taqlid-check -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V7-taqlid-check.md -->
-<!-- SOURCE_SHA256: c9dc6e9516b95b278fbd4c5018088ae07d785be887d14fdbe048762e78419c22 -->
+<!-- SOURCE_SHA256: 2d9ba06da1a8b524d6c06a69e993b45ab58c197766ed555cc3ea3086be9e7ef4 -->
 
 ---
 id: V7-taqlid-check
 module_class: technique
 canonical_path: skill/references/techniques/V7-taqlid-check.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor's skepticism appears assumed-by-default rather than genuinely examined
   - position held by uncritical imitation of intellectual environment
@@ -401,6 +413,10 @@ catalogue_registered: true
 
 # V7 — The Taqlīd Check
 
+**Source-status note:** Tradition-language in this file is internal orientation only. In
+default output, do not cite "the classical tradition" or named scholars as public support.
+Render the operative warning as destabilization/transition-path discipline.
+
 **Deploy when:** The interlocutor's skepticism appears assumed-by-default rather than genuinely examined; before pressing V7 outward, apply the symmetric check inward (see `references/tactics/symmetric-taqlid-check.md`).
 
 Taqlīd — holding a position by uncritical imitation of one's intellectual environment — is epistemically deficient regardless of whether the position being imitated is right or wrong. Getting to truth by taqlīd is getting to truth by chance.
@@ -411,7 +427,7 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 
 **Symmetric application:** This check applies equally to the practitioner's own position. See `references/tactics/symmetric-taqlid-check.md`. The practitioner who has not genuinely examined their own position has no standing to deploy V7 outward.
 
-**Follow-through:** V7 exposes taqlīd; it does not itself accomplish the transition to taḥqīq. If the subject recognizes the taqlīd and is willing to transition, route to `references/techniques/V11-taqlid-transition.md`. V7 without a V11 follow-through can produce destabilization — the subject sees their position is held by taqlīd but has no structured path forward, and the position may fall before examined ground is available. The classical tradition treats the questioner who opens a door they cannot close as having harmed the subject, not helped them.
+**Follow-through:** V7 exposes taqlīd; it does not itself accomplish the transition to taḥqīq. If the subject recognizes the taqlīd and is willing to transition, route to `references/techniques/V11-taqlid-transition.md`. V7 without a V11 follow-through can produce destabilization — the subject sees their position is held by taqlīd but has no structured path forward, and the position may fall before examined ground is available. Operationally, do not open a destabilizing door unless the transition path is also governed and available.
 
 <!-- END_SOURCE: V7-taqlid-check -->
 
@@ -422,13 +438,13 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V8-bila-kayf-anchor.md -->
-<!-- SOURCE_SHA256: 96038b4d39454e60e18f1666cec686435d8dc173c78c0fedb7028098ff0bb924 -->
+<!-- SOURCE_SHA256: a9b0e78c60c7b1bf9a1171c7664fc21ffce83c33ef8be387946ebbbd4be31f2b -->
 
 ---
 id: V8-bila-kayf-anchor
 module_class: technique
 canonical_path: skill/references/techniques/V8-bila-kayf-anchor.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - transcendence objections or attribute-coherence pressure
   - language-and-God problems
@@ -496,13 +512,13 @@ For fuller treatment:
 <!-- MODULE_ID: V9-necessary-knowledge-priority -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V9-necessary-knowledge-priority.md -->
-<!-- SOURCE_SHA256: 1ff246a7ccc6f27c9392fdb0ea5b1c852393250241950528cc7ce2f91f43ee60 -->
+<!-- SOURCE_SHA256: d70d4f5a5d400243062539f30eec9e4b99a03ca062898d4b4157aa2713e187f0 -->
 
 ---
 id: V9-necessary-knowledge-priority
 module_class: technique
 canonical_path: skill/references/techniques/V9-necessary-knowledge-priority.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - philosophical argument produces conclusion contradicting a universally-held fiṭrī intuition
   - attack on necessary knowledge (ʿilm ḍarūrī) active
@@ -549,13 +565,13 @@ catalogue_registered: true
 <!-- MODULE_ID: V11-taqlid-transition -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V11-taqlid-transition.md -->
-<!-- SOURCE_SHA256: 6a64fd8d6220d834758a7b33d3990fa740b53bc0bfae8cdd6860015ea15723b8 -->
+<!-- SOURCE_SHA256: 23391440bc4fa1d5be3d55c753dda052148f4c0e5cd2d7f58bab4460480413e4 -->
 
 ---
 id: V11-taqlid-transition
 module_class: technique
 canonical_path: skill/references/techniques/V11-taqlid-transition.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
   - interlocutor has recognized position is held by taqlīd and asks (explicitly or implicitly) how to move toward taḥqīq
   - truth-seek discourse orientation confirmed
@@ -575,6 +591,12 @@ catalogue_registered: true
 
 # V11 — Taqlīd Recognition and Transition to Taḥqīq
 
+## Source-Status Note
+
+Tradition-language in this file is internal orientation only. In default output, do
+not cite "the classical tradition" or named scholars as public support. Render the
+operative warning as destabilization/transition-path discipline.
+
 ## Role of V11 in the Skill
 
 V7 is the *check* — the move that exposes taqlīd as taqlīd and demands taḥqīq. V11 is the
@@ -584,7 +606,7 @@ examined position without the inherited position collapsing during the transitio
 The two are separate moves. V7 deployed without a V11 follow-through can produce
 destabilization: the subject sees their belief is held by taqlīd, but has no path to
 taḥqīq, and the belief falls from under them before any examined ground is available. The
-classical tradition treats this as a danger — the questioner who "opens a door he cannot
+Operationally, this is a danger: the questioner who "opens a door he cannot close" has harmed the subject, not helped them.
 close" has harmed the subject, not helped them.
 
 V11 is what follows V7 when the subject is willing to transition. It is also the module
@@ -727,18 +749,19 @@ procedure, not a tactical move; it may unfold across many exchanges, sometimes y
 <!-- MODULE_ID: V12-tamanuc-exhaustion -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V12-tamanuc-exhaustion.md -->
-<!-- SOURCE_SHA256: 4f39dd25d993758a622edb7fece8390c4d5cf03d5c7a2486ada69a8c8201b806 -->
+<!-- SOURCE_SHA256: da4e8d246444a26586a0811993e6196755b92817063cf2eeb49c0483e1dff9f9 -->
 
 ---
 id: V12-tamanuc-exhaustion
 module_class: technique
 canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
-contract_version: "0.3.0.0"
+contract_version: "0.3.1.0"
 load_when:
-  - any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords
+  - any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live
+  - divine plurality language only after model/predication discipline shows independent-lordship pressure is actually operative
   - regardless of interlocutor tradition (structural trigger, not tradition-specific)
 routing_effects:
-  - base procedure — DO-11 and DO-13 are Christian-specific overlays loaded after V12, not alternatives
+  - base procedure for independent-lordship pressure; Christian overlays load before or after V12 according to released burden, not by topic label
 companions:
   - V8-bila-kayf-anchor
   - do-christian-extensions
@@ -750,13 +773,34 @@ catalogue_registered: true
 
 # V12 — Burhān al-Tamānuʿ: Logical Exhaustion of Divine Plurality
 
-**Deploy when:** Any claim of divine plurality, polytheism, multiple independent deities, or multiple independent lords — regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent, prior to and independent of any interlocutor's specific doctrinal commitments.
+**Deploy when:** A claim of multiple independent deities, multiple independent lords, or worship-status plurality is live regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent. Divine-plurality vocabulary alone is insufficient; if independence is unclear, model/predication discipline runs first and V12 remains held.
 
-**Routing note — Trinity overlay:** When the interlocutor is specifically Trinitarian, V12 is the first procedure; DO-11 and DO-13 are the Christian-specific overlay, deployed on top of V12 once the base logical exhaustion is in place. They are not alternatives — they are sequential. V12 first establishes that no plurality of *independent* lords is coherent. DO-11 and DO-13 then address the additional internal-structure questions raised specifically by the three-in-one claim: whether multipersonality is rationally forced by perfect-being reasoning (DO-11), and whether three distinct persons with one divine nature generates irreducible logical problems (DO-12). V12 does not replace those cases; they presuppose it.
+**Routing note - Trinity overlay:** When the interlocutor is specifically Trinitarian, do not route by the topic label. If the live pressure is perfection-criterion, model-identification, or person/nature predication, load the Christian overlay and M9/definition discipline first while V12 is held. V12 releases only when the state/noetic re-read exposes independent-lordship, worship-status plurality, or multiple-sovereign pressure as the next live burden. V12 does not replace DO-11/DO-12; it also must not be forced before those gates make independence live.
 
 ---
 
 ## The Argument's Structure
+
+## Owner-Specific Operation Floor
+
+V12 is not executed by naming tamanu, divine plurality, or mutual prevention. A released V12 burden must:
+
+1. Identify the operative plurality claim and whether the claimed agents are independent lords, derivative agents, manifestations, persons under one will, or an under-specified model.
+2. Refuse V12 landing if independence is not yet live; route back to model/predication or source-status discipline rather than forcing a plurality argument.
+3. When independent lordship is live, run the dimensions needed by the burden, not a label-summary. A full independent-lordship release requires at least:
+   - dependency / derivation pressure,
+   - equality or unequal-lord pressure,
+   - joint causation over one ordered world,
+   - influence over another lord's creation or will,
+   - the terminal collapse of the independent-plurality claim.
+4. State the result of each dimension as a burden-state change, not merely as a conclusion.
+5. Hold Christian overlay, worship-status, or authority/canon burdens unless the state/noetic re-read licenses them as NewB.
+
+**State-change condition:** V12 lands only when the released plurality claim has either collapsed to one independent lord, been returned as not-a-V12 target because independence was denied/unclear, or exposed a materially different downstream burden for the next cycle.
+
+**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qur'anic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
+
+---
 
 The burhān al-tamānuʿ (برهان التمانع — the argument from mutual prevention/contention) exhausts the logical space available to any hypothetical plurality of independent lords. "Independent" is the load-bearing term: the argument targets lordship (*rubūbiyyah* — the complete sovereign power to create, sustain, and govern) claimed by multiple agents who do not derive their power from one another and are not subordinate to a single source. Five dimensions are examined in sequence; each terminates in impossibility or contradiction. No exit is available across all five jointly.
 
@@ -845,13 +889,13 @@ The two move together: the rational argument shows the plurality is logically in
 
 ## Routing
 
-**Base procedure:** V12 triggers on any divine plurality pressure — philosophical, popular, comparative-religion, or Trinitarian. Run V12 first to establish that no plurality of independent lords is rationally coherent.
+**Base procedure:** V12 triggers on independent-lordship pressure - philosophical, popular, comparative-religion, or Trinitarian only when independence is live. Do not run V12 first merely because the surface topic says "plurality" or "Trinity"; run model/predication or perfection-criterion gates first when they are the released burden.
 
-**Cross-tradition scope:** V12 is triggered by the structural feature of divine plurality pressure — not by any tradition-specific terminology or the interlocutor's religious background. It applies regardless of whether the interlocutor is Trinitarian Christian, holds popular Hindu polytheism, operates with a philosophical pluralism, or is asking an abstract question about whether divine plurality is coherent. The trigger is the structural claim (multiple independent lords / divine agents), not the vocabulary in which it is expressed. For Advaita monism (one ultimate reality with many manifestations, not multiple independent lords), V12 partially applies but the interlocutor would correctly note their framework is not polytheism in V12's sense — this variant requires acknowledgment that the Advaita framework is a distinct metaphysical position, not a sub-case of the tamānuʿ target; see `TODO.md` for the bespoke religion-specific out-of-scope source-owner boundary.
+**Cross-tradition scope:** V12 is triggered by the structural feature of independent-lordship pressure, not by any tradition-specific terminology or the interlocutor's religious background. It applies when a Trinitarian Christian, popular polytheist, philosophical pluralist, or abstract questioner makes multiple independent lords/divine agents operative. If a system denies independent plurality, treats multiplicity as manifestation, or leaves person/nature/worship referent under-specified, V12 is held or returned as not-yet-target. Pattern-first routing may compare operative structures only as diagnosis requires; it must not flatten different systems into one neutral comparative category.
 
-**Christian overlay — DO-11 and DO-13:** After V12 is in place, the Trinitarian case adds specific questions: whether perfect-being reasoning forces multipersonality (DO-11) and whether three persons with one nature generates an irreducible logical problem (DO-12). These are additional layers, not substitutes. Load `references/case-library/do-christian-extensions.md` when the interlocutor is specifically Trinitarian.
+**Christian overlay - DO-11 and DO-13:** Trinitarian cases add specific questions: whether perfect-being reasoning forces multipersonality (DO-11), whether three persons with one nature generates a predication/model problem (DO-12), and whether philosopher's-God criteria govern revelation (DO-13). These are not substitutes for V12, but they may be upstream of V12 when independence is not yet live. Load `references/case-library/do-christian-extensions.md` when the interlocutor is specifically Trinitarian.
 
-**DO-11 → DO-12 stopping conditions:** These are sequential, not simultaneous. After V12 establishes that no plurality of independent lords is rationally coherent, deploy DO-11 (whether perfect-being reasoning forces multipersonality) and hold DO-12. Do not load DO-12 until the interlocutor has visibly engaged DO-11. If DO-11 lands and the interlocutor accepts that perfect-being reasoning does not force multipersonality, DO-12 (the logical three-in-one problem) becomes the next live issue. If DO-11 has not yet engaged and you load DO-12, you have violated P-3 (no stacking after a live move). If after DO-11 the interlocutor appeals to authority ("but the tradition requires it") rather than philosophical reasoning, the case has shifted from philosophical to authority-based — route to V10 + RT-2, not DO-12. DO-13 (philosopher's God vs. God of revelation) is a separate pressure that can co-occur with DO-11 but is not downstream of it — confirm whether DO-13 pressure is independently active before loading it.
+**DO-11 -> DO-12 -> V12 stopping conditions:** These are sequential by live burden, not simultaneous by topic. If the live burden is perfection-criterion, deploy DO-11/perfection-criterion discipline and hold DO-12/V12. If model/predication is then licensed, deploy DO-12/M9 and hold V12 unless independent lordship or worship-status plurality becomes live. If after DO-11 the interlocutor appeals to authority ("but the tradition requires it") rather than philosophical reasoning, the case has shifted from philosophical to authority-based - route to V10 + RT-2, not DO-12 or V12. DO-13 (philosopher's God vs. God of revelation) is a separate pressure that can co-occur with DO-11 but is not downstream of it - confirm whether DO-13 pressure is independently active before loading it.
 
 **V8 pairing:** When divine plurality pressure is entangled with attribute-language or transcendence-coherence pressure, load V8 alongside V12 to maintain the bilā kayf discipline on how divine predicates apply.
 

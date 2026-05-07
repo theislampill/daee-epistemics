@@ -1,0 +1,88 @@
+{
+  "id": "grief-primary-hiddenness-vocabulary-minimal-pair",
+  "prompt": "I keep being told God hides himself, condemns people to hell, and demands worship. My dad just died last month and I cannot pretend any of this feels right anymore. I do not even know if I am asking a real question.",
+  "case_class": "ordinary",
+  "notes": "Minimal-pair partner of fixture 11 (secular-moral-protest-hiddenness-imported-criterion). Same surface vocabulary (hides, hell, demands worship) but the live burden is grief-primary register, not imported moral tribunal. The fixture exists so that the routing-parity check can verify the runtime/checker discriminates noetic structure from topic vocabulary: an IR shape that fingerprints the topic family will produce identical reads for both prompts, while a structural read will produce divergent reads on at least one of register, restoration target, or routing gate. This guards meta-noetic memetics from collapsing into topic-to-IR pattern-matching.",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "discourse-orientation",
+      "P7-restoration-stops",
+      "M4-grief-register",
+      "output-release"
+    ],
+    "optional_modules": [
+      "mixed-case-handling",
+      "P4-maieutic",
+      "noetic-reading-checklist",
+      "modes-of-concealment"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures",
+      "M1-self-refutation",
+      "foreign-premise-detection",
+      "philosophical-usurpation"
+    ],
+    "required_governance": [
+      "register-hold",
+      "no theodicy dump",
+      "P7 stop/hold/recurse discipline",
+      "post-render gate",
+      "one live burden",
+      "traversal-delayed, not permanently suppressed",
+      "grief / register hold",
+      "Stop-1",
+      "M4-grief-register",
+      "do not deploy intellectual content as though it were a seminar question"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 12,
+    "minimal_pair_with": "secular-moral-protest-hiddenness-imported-criterion",
+    "minimal_pair_divergence_required": {
+      "must_appear_only_here": [
+        "M4-grief-register",
+        "P7-restoration-stops",
+        "register-hold",
+        "Stop-1"
+      ],
+      "must_not_share": [
+        "M1-self-refutation",
+        "foreign-premise-detection",
+        "philosophical-usurpation"
+      ]
+    },
+    "minimal_pair_group": "hiddenness-hell-worship-structural-triangle",
+    "minimal_pair_shared_surface_tokens": [
+      "hides himself",
+      "hell",
+      "demands worship"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "grief-primary register; concealment not certified",
+      "do_orient": "grief / register hold",
+      "restoration_target": "establish relational register before intellectual content",
+      "routing_gate": "M4-grief-register and P7 Stop-1 before theodicy or tribunal content"
+    }
+  }
+}
