@@ -181,6 +181,11 @@
       "type": "string",
       "enum": ["strong", "provisional", "low"]
     },
+    "decisive_missing_differentiator": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Conditional-mandatory when confidence is not strong or read_status is not dominant; names the signal that would refine, falsify, or collapse the remaining ambiguity."
+    },
     "alignment_state": {
       "type": "string",
       "enum": [
@@ -423,6 +428,36 @@
         "required": ["read_status", "confidence"]
       },
       "then": false
+    },
+    {
+      "if": {
+        "properties": {
+          "confidence": {
+            "not": {
+              "const": "strong"
+            }
+          }
+        },
+        "required": ["confidence"]
+      },
+      "then": {
+        "required": ["decisive_missing_differentiator"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "read_status": {
+            "not": {
+              "const": "dominant"
+            }
+          }
+        },
+        "required": ["read_status"]
+      },
+      "then": {
+        "required": ["decisive_missing_differentiator"]
+      }
     },
     {
       "if": {

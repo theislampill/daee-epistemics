@@ -32,6 +32,12 @@ build/
 Use only the latest package produced by the current run for smoke tests. Historical release docs and
 older rc archives are not current smoke inputs.
 
+`package.ps1` emits a local `.skill.zip` archive, for example
+`build/daee-epistemics-RC00001-v0.3.1.0.skill.zip`. That archive already is the skill payload:
+its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
+If a host expects a `.skill` upload, rename the checked `.skill.zip` payload to
+`daee-epistemics.skill`; do not zip the repository root or the top-level `skill/` directory.
+
 ## Readiness Verification
 
 Run from repository root before any package request:
@@ -53,6 +59,8 @@ python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_framework_pipeline.py
 python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
+python tools/check_ir_instance_integrity.py
+python tools/check_diagnostic_ir_catalogue_integrity.py
 git diff --check
 ```
 
@@ -64,17 +72,22 @@ Each smoke test checks shape and governance, not exact prose.
 
 ## Runtime-Grounding Smoke Artifact Gate
 
-Current release readiness uses `smokes/runtime-grounding-v5/` as the hard/bounded smoke artifact
-suite. Hard fixtures must meet the 20 KB depth gate. Bounded fixtures may remain below that gate
-only when the verdict explicitly marks them bounded-complete and records first-order, second-order,
-higher-order, handled, held, skipped, and no-further-pass burden findings.
+Current release readiness uses the repo-local `smokes/runtime-grounding-v5/` as the hard/bounded
+smoke artifact suite. These artifacts are committed regression evidence for release gating. Future
+live runs may regenerate them, but `tools/check_smoke_artifacts.py` defaults to this repo-local
+root and fails clearly if it is absent. Hard fixtures must meet the 20 KB depth gate. Bounded
+fixtures may remain below that gate only when the verdict explicitly marks them bounded-complete
+and records first-order, second-order, higher-order, handled, held, skipped, and no-further-pass
+burden findings.
 
 Every fixture must include `input.md`, `output.md`, `trace.md`, and `verdict.md`. The output file is
 clean default-render skill output only; runtime proof belongs in `trace.md`, and grading belongs in
 `verdict.md`. `tools/check_smoke_artifacts.py` rejects cross-fixture contamination, scaffold/test
 language in `output.md`, repeated generic paragraphs across unrelated fixtures, hard-smoke PASS
 verdicts below the depth floor, and originally hard-intended fixtures reclassified without a
-burden-completeness audit.
+burden-completeness audit. Release smoke artifacts must also include provenance in `trace.md` or
+`verdict.md`: package filename, package SHA256, model/host, invocation mode, prompt pointer, run
+timestamp, and live-run versus handcrafted-regression classification.
 
 ### Default Compact DSL/IR
 

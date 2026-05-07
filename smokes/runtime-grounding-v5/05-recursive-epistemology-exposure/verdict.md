@@ -1,0 +1,23 @@
+# verdict
+
+- fixture class: bounded
+- final classification: bounded-complete
+- status: PASS
+- output bytes: 10192
+- burden-cycle count: 2
+- depth is runtime-licensed: runtime-licensed bounded depth
+- fixture-contamination terms detected: no
+- static render/governance expectation: output.md must pass render, recursive, and smoke-artifact checker functions
+- common-sense audit result: PASS: burden-complete under the original input; no contamination, no boilerplate, no fake recursion, and no skipped licensed burden
+- bounded-depth exception rationale: the output is bounded because state/noetic re-read found no further licensed same-input burden after the handled cycles.
+- bounded-complete
+- original hard intent: yes
+- first-order burdens handled: the blanket suspicion toward transmitted claims was narrowed to a specific transmission-warrant question.
+- second-order burdens handled: neutral historical method as final tribunal was exposed, then V10 sequenced provenance/content/authority.
+- higher-order burdens handled: authority-certification and transmission-demotion were re-read recursively from method sovereignty to source architecture.
+- held burdens and why: specific theology, proof-stack, and detailed transmission proof held because no named report, corpus, or doctrine was supplied.
+- skipped licensed burdens: none
+- another pass licensed: no
+- under-20 rationale: the input licenses two cycles and then stops at the need for a specific transmission target; further depth would invent a corpus or doctrine.
+- not suitable as a hard-depth smoke: it proves recursion exposure but lacks a specific corpus/doctrine needed for hard-depth execution.
+- fail if: scaffold/test language appears in output.md, fixture-specific language leaks across families, TTPs are named without operation, state re-read lacks claim-state change, a licensed burden remains unhandled, or an originally hard-intended fixture is reclassified without this burden-completeness explanation.

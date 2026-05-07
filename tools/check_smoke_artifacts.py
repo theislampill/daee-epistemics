@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 HARD_MIN_BYTES = 20_000
+DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
 
 ORIGINALLY_HARD_INTENDED = {
     "04-comparative-neutral-flattening-bait",
@@ -50,6 +51,26 @@ TRACE_REQUIREMENTS = (
     (re.compile(r"(?i)\bhiddenness correction\b|hiddenness criterion correction"), "do-core.md"),
     (re.compile(r"(?i)\bpattern-first routing\b"), "routing-precedence.md"),
     (re.compile(r"(?i)\bkernel-thesis guard\b"), "kernel-thesis.md"),
+)
+
+PROVENANCE_FIELDS = (
+    "package filename:",
+    "package sha256:",
+    "model/host:",
+    "invocation mode:",
+    "prompt:",
+    "run timestamp:",
+    "live-run vs handcrafted-regression classification:",
+)
+
+PACKAGE_HASH_RE = re.compile(r"(?im)^\s*-\s*package sha256:\s*[0-9a-f]{64}\s*$")
+LIVE_RUN_RE = re.compile(
+    r"(?im)^\s*-\s*live-run vs handcrafted-regression classification:\s*"
+    r"(?:live-run|handcrafted-regression)\b"
+)
+LITERAL_GOVERNANCE_RE = re.compile(
+    r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
+    r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
 )
 
 SCAFFOLD_RE = re.compile(
@@ -142,6 +163,30 @@ BAD_SAMPLES = {
         "trace": "- atomics/skill/references/diagnostics/foreign-premise-detection.md\n",
         "expected": "operator owner not loaded",
     },
+    "missing_package_hash": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "missing package SHA256 provenance",
+    },
+    "missing_live_run_classification": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "x" * 21000,
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n",
+        "expected": "missing live-run classification provenance",
+    },
+    "literal_governance_label": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Trinity hard smoke.",
+        "output": "- Governance: STOP\n" + ("x" * 21000),
+        "verdict": "- fixture class: hard\n- status: PASS\n",
+        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "expected": "literal governance label in output",
+    },
 }
 
 
@@ -209,6 +254,19 @@ def trace_errors(output_text: str, trace_text: str) -> list[str]:
     return errors
 
 
+def provenance_errors(trace_text: str, verdict_text: str) -> list[str]:
+    errors: list[str] = []
+    provenance = f"{trace_text}\n{verdict_text}".lower()
+    for field in PROVENANCE_FIELDS:
+        if field not in provenance:
+            errors.append(f"missing provenance field: {field}")
+    if not PACKAGE_HASH_RE.search(f"{trace_text}\n{verdict_text}"):
+        errors.append("missing package SHA256 provenance")
+    if not LIVE_RUN_RE.search(f"{trace_text}\n{verdict_text}"):
+        errors.append("missing live-run classification provenance")
+    return errors
+
+
 def paragraph_fingerprints(output_text: str) -> list[str]:
     parts = [p.strip() for p in re.split(r"\n\s*\n", output_text)]
     clean = []
@@ -244,9 +302,12 @@ def validate_artifact(
         errors.append("scaffold/formula language in output")
     if GENERIC_REUSE_RE.search(output_text):
         errors.append("reused generic paragraph")
+    if LITERAL_GOVERNANCE_RE.search(output_text):
+        errors.append("literal governance label in output")
     errors.extend(contamination_errors(fixture_name, input_text, output_text))
     errors.extend(bounded_completeness_errors(fixture_name, verdict_text))
     errors.extend(trace_errors(output_text, trace_text))
+    errors.extend(provenance_errors(trace_text, verdict_text))
 
     if global_fixtures:
         repeated = [
@@ -262,6 +323,11 @@ def validate_artifact(
 def validate_root(root: Path) -> list[str]:
     errors: list[str] = []
     fixture_dirs = sorted(path for path in root.iterdir() if path.is_dir()) if root.exists() else []
+    if not root.exists():
+        return [
+            f"smoke artifact root is absent: {root}. "
+            "Create repo-local smokes/runtime-grounding-v5/ or pass --root explicitly."
+        ]
     if not fixture_dirs:
         return [f"no fixture directories found under {root}"]
 
@@ -314,8 +380,11 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--root",
-        default=str(ROOT.parent / "smokes" / "runtime-grounding-v5"),
-        help="Smoke artifact root to validate.",
+        default=str(DEFAULT_ROOT),
+        help=(
+            "Smoke artifact root to validate. Defaults to repo-local "
+            "smokes/runtime-grounding-v5/."
+        ),
     )
     parser.add_argument(
         "--samples-only",

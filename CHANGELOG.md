@@ -15,13 +15,22 @@
 - Added `tools/check_metacompliance_current_canon.py` to guard the current docs, root control plane,
   generated default surface, source-status/noetic-frame anchors, and held-release anchors against
   metacompliance drift.
+- Added Diagnostic IR catalogue/source-basis integrity checking via
+  `tools/check_ir_instance_integrity.py` and
+  `tools/check_diagnostic_ir_catalogue_integrity.py`, including ghost-load, omnibus active-module,
+  class-mismatch, source-basis mismatch, and post-render decision-consistency bad samples.
 - Updated README, AGENTS, TODO, and tooling docs so the current checker suite includes the
   metacompliance current-canon guard.
 - Added `tools/check_smoke_artifacts.py` and the `runtime-grounding-v5` hard/bounded smoke gate to
   reject cross-fixture contamination, smoke/test scaffold language in default output, repeated
   generic paragraphs across unrelated smoke outputs, and hard PASS verdicts below the depth floor.
+- Aligned smoke artifacts to the repo-local `smokes/runtime-grounding-v5/` root and required
+  release-smoke provenance fields for package filename, SHA256, model/host, invocation mode,
+  prompt pointer, timestamp, and live-run classification.
 - Hardened render/release governance so output files remain clean user-facing default render
   artifacts while runtime proof and grading stay in trace/verdict artifacts.
+- Clarified package naming: PowerShell packaging emits the canonical RC `.skill.zip`; upload hosts
+  that require `.skill` should receive the same checked payload renamed, not a re-zipped repo root.
 
 ### Current guidance
 
@@ -45,6 +54,9 @@
 > Release-history note: this entry records v0.3.1.0 state. Terms such as `State Refresh`,
 > next eligible door, compact Layer A light surface, or full audit are historical wording when
 > they differ from the current compact DSL/IR + bounded governed response + state/noetic re-read canon.
+> Current mainline canon after v0.3.1.0 adds checker-backed IR source-basis integrity,
+> repo-local smoke artifact provenance, and default render wording that avoids literal
+> STOP/HOLD/RECURSE/PARTIAL governance labels in public output.
 
 v0.3.1.0 is the render-mode governance and release-hygiene patch release. It fixes a regression in
 which the default `/daee-epistemics` invocation was emitting full `[Diagnostic IR]` code-fenced

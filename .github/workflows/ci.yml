@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  runtime-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install checker dependencies
+        run: python -m pip install --upgrade pip PyYAML
+
+      - name: Build and verify runtime
+        run: |
+          python tools/build_framework_pipeline.py
+          python tools/build_compiled_runtime.py
+          python tools/check_compiled_runtime_freshness.py
+          python tools/check_compiled_module_boundaries.py
+          python tools/check_stub_integrity.py
+          python tools/check_consolidation_call_budget.py
+          python tools/check_routing_parity.py
+          python tools/check_routing_parity.py --strict
+          python tools/check_recursive_traversal_governance.py
+          python tools/check_render_modes.py
+          python tools/check_frontmatter.py
+          python tools/check_coverage.py
+          python tools/check_framework_pipeline.py
+          python tools/check_recursion_collapse_noetic_frame.py
+          python tools/check_metacompliance_current_canon.py
+          python tools/check_smoke_artifacts.py
+          python tools/check_ir_instance_integrity.py
+          python tools/check_diagnostic_ir_catalogue_integrity.py
+          git diff --check

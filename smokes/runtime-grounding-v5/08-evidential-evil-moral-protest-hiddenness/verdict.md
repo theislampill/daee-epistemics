@@ -1,0 +1,23 @@
+# verdict
+
+- fixture class: bounded
+- final classification: bounded-complete
+- status: PASS
+- output bytes: 12511
+- burden-cycle count: 2
+- depth is runtime-licensed: runtime-licensed bounded depth
+- fixture-contamination terms detected: no
+- static render/governance expectation: output.md must pass render, recursive, and smoke-artifact checker functions
+- common-sense audit result: PASS: burden-complete under the original input; no contamination, no boilerplate, no fake recursion, and no skipped licensed burden
+- bounded-depth exception rationale: the output is bounded because state/noetic re-read found no further licensed same-input burden after the handled cycles.
+- bounded-complete
+- original hard intent: yes
+- first-order burdens handled: suffering, mercy, and hiddenness were treated as moral protest/criterion burdens rather than a full evidential theodicy.
+- second-order burdens handled: the mercy-as-immediate-prevention criterion and coercive-certainty demand were exposed, then moral authority was tested.
+- higher-order burdens handled: borrowed moral tribunal and objective condemnation without warrant were handled through M8/M1.
+- held burdens and why: full theodicy, decree detail, and pastoral expansion held because the register is moral protest/anguish, not a developed probabilistic argument.
+- skipped licensed burdens: none
+- another pass licensed: no
+- under-20 rationale: the input licenses criterion and moral-authority repair; runtime DO/M4/P7 discipline blocks a full theodicy unless the register shifts or asks for evidential analysis.
+- not suitable as a hard-depth smoke unless the prompt supplies a developed evidential/probabilistic evil argument or explicitly licenses theodicy after register discrimination.
+- fail if: scaffold/test language appears in output.md, fixture-specific language leaks across families, TTPs are named without operation, state re-read lacks claim-state change, a licensed burden remains unhandled, or an originally hard-intended fixture is reclassified without this burden-completeness explanation.

@@ -744,7 +744,7 @@ support_claims:
           - "Layer A"
           - "Layer B"
           - "state re-read"
-          - "If Governance = RECURSE, continue with Burden-Cycle N+1"
+          - "If the release status says another bounded pass is licensed, continue with Burden-Cycle N+1"
 
   restoration_trace_shape:
     owners:

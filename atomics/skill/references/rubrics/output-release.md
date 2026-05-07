@@ -325,7 +325,7 @@ Default final-output failure tokens include:
   `matched_modules`, `source_basis`, load ledger, route ledger, planned route list, or
   a visible route plan such as `Next: FPD -> ...`.
 - Literal default governance fields such as `Recursion decision:`, `next_eligible_pass:`,
-  `post_render_gate:`, or STOP / HOLD / RECURSE / PARTIAL as a visible governance label.
+  `post_render_gate:`, `Governance:`, or STOP / HOLD / RECURSE / PARTIAL as a visible governance label.
   These labels are for `:dsl`, internal/development audit, pass-review, or diagnostic trace; default mode
   uses prose transition plus bounded next pass.
 - Smoke/runtime proof boilerplate such as "Smoke runtime note", "Runtime grounding detail",
@@ -542,7 +542,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP / HOLD / RECURSE / PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 Ordinary Level 1 answers may compress this shape, but the state re-read and decision still govern.

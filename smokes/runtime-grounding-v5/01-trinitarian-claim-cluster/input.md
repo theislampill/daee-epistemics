@@ -1,0 +1,1 @@
+/daee-epistemics A Trinitarian argues: a unipersonal God cannot be maximally perfect, because perfect love requires an eternal equal other. The Father is God, the Son is God, and the Spirit is God; they are three persons sharing one divine nature, not three gods. Mystery protects the doctrine from reduction. How should this be handled?

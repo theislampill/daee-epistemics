@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 77ed7b001bc1ee5d556429372cbe0557a33230f35c603ece9bc24db3d40be0d9 -->
+<!-- SOURCE_SHA256: d8e7d1f88dcca5fa09f0e867ea716b4de6a3188e81e7989a1a311f54d3ed529b -->
 
 ---
 id: output-release
@@ -345,7 +345,7 @@ Default final-output failure tokens include:
   `matched_modules`, `source_basis`, load ledger, route ledger, planned route list, or
   a visible route plan such as `Next: FPD -> ...`.
 - Literal default governance fields such as `Recursion decision:`, `next_eligible_pass:`,
-  `post_render_gate:`, or STOP / HOLD / RECURSE / PARTIAL as a visible governance label.
+  `post_render_gate:`, `Governance:`, or STOP / HOLD / RECURSE / PARTIAL as a visible governance label.
   These labels are for `:dsl`, internal/development audit, pass-review, or diagnostic trace; default mode
   uses prose transition plus bounded next pass.
 - Smoke/runtime proof boilerplate such as "Smoke runtime note", "Runtime grounding detail",
@@ -562,7 +562,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP / HOLD / RECURSE / PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 Ordinary Level 1 answers may compress this shape, but the state re-read and decision still govern.
@@ -788,7 +788,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: c45922de13d8bcfb713f78a5f113f695fff83da0fc7ae986655088f06b8a3dd0 -->
+<!-- SOURCE_SHA256: eed87d37f8f392117dae7de8a16820c0c6b5048b3a0f28c7203f155d6c5ba288 -->
 
 ---
 id: diagnostic-render-contract
@@ -975,8 +975,8 @@ Layer A block is the compact diagnostic frame for default mode; it is not raw Di
 - Cleared:                      [what this live burden cleared]
 - Remaining input-anchored burdens: [enumerated from original input, not a topic list]
 - Held routes rechecked:        [result after this pass]
-- Next bounded pass:            [if RECURSE]
-- Governance: RECURSE | HOLD | PARTIAL | STOP
+- Next bounded pass:            [prose reason if another bounded pass is licensed]
+- Release status:               [prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label]
 
 ### Restorative Response
 [Required once in default output after state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens.]
@@ -985,8 +985,9 @@ Layer A block is the compact diagnostic frame for default mode; it is not raw Di
 [Required once at the very end after Restorative Response. Synthesize what cleared, what remains held, and the final governed takeaway. Do not substitute for state/noetic re-read.]
 ```
 
-If Governance = RECURSE, continue with Burden-Cycle N+1. If STOP / HOLD / PARTIAL, close with a
-brief prose reason — no literal governance label in default mode.
+If the release status says another bounded pass is licensed, continue with Burden-Cycle N+1.
+If closure, hold, or partial traversal is correct, state the reason in prose — no literal
+STOP / HOLD / RECURSE / PARTIAL governance label in default mode.
 
 **Layer A required default fields:** read status, confidence, claim_level,
 pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic
@@ -1133,9 +1134,10 @@ required field set; everything else remains internal. It must surface enough gov
 diagnostic fact for the current pass to be auditable as compiler traversal rather than essay.
 
 **Compact state re-read:** The state re-read block above is compact. It must enumerate
-remaining input-anchored burdens, not merely state the governance decision. "Governance: STOP"
-alone is not a valid state re-read — it must show that no input-anchored eligible burden
-remains, or name the burden and the reason for HOLD / PARTIAL.
+remaining input-anchored burdens, not merely state a governance decision. A line such as
+"Governance: STOP" is forbidden in default output and is not a valid state re-read. The
+default must show that no input-anchored eligible burden remains, or name the burden and
+the prose reason for a hold or partial close.
 
 **Single-Pass Layer A/B Cosplay:** A response that prints Layer A + Layer B + state re-read
 exactly once and then stops — without proving no eligible input-anchored live burden remains,
@@ -1661,7 +1663,7 @@ Trace: M9-predication-mode + diagnostic-render-contract.
 - Cleared: composition / dependence pressure dissolved through the lexical and category split.
 - Remaining input-anchored burdens: none in this prompt.
 - Held routes rechecked: full attribute exposition and source-comparison remain held.
-- Governance: STOP
+- Release status: closed for this input; no same-input eligible burden remains after the category correction.
 
 ### Restorative Response
 The restored order is that real predication does not become dependency merely by being
@@ -1724,7 +1726,7 @@ Trace: FPD + M1 + output-release.
   as subordinate supports for that tribunal.
 - Remaining input-anchored burdens: none newly licensed in this prompt.
 - Held routes rechecked: broad punishment doctrine and pastoral expansion remain held.
-- Governance: STOP unless a later prompt supplies a burden not already handled as a submove.
+- Release status: closed for this input unless a later prompt supplies a burden not already handled as a submove.
 
 #### Restorative Response
 The restored order is that mercy, guidance, accountability, and worship-worthiness cannot be

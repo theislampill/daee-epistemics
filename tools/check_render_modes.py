@@ -67,7 +67,7 @@ REQUIRED_TOKENS = [
     "literal `Recursion decision:`",
     "`next_eligible_pass`",
     "Full diagnostic blocks belong to `/daee-epistemics:dsl` or internal/development audit",
-    "Layer A — Compact DSL/IR header",
+    "compact DSL/IR header",
     "- read status:",
     "- confidence:",
     "- claim_level:",
@@ -82,7 +82,7 @@ REQUIRED_TOKENS = [
     "- source-status/noetic-frame:",
     "- decisive missing differentiator: [only when required]",
     "- gate/release decision:",
-    "Layer B — bounded governed response",
+    "bounded governed response",
     "Hidden Premises",
     "Burden / Operation",
     "Restorative Response",
@@ -150,7 +150,9 @@ REQUIRED_TOKENS = [
     "Default output is governed prose rendered from the internal state plus the mandatory compact",
     "not an optional internal gate or control surface",
     "Literal default governance fields",
+    "`Governance:`",
     "literal governance labels such as `Recursion decision:` and `next_eligible_pass:` are prohibited",
+    "no literal STOP/HOLD/RECURSE/PARTIAL label",
     "Render-mode scope: this template is an internal control shape",
     "Route Cosplay Failure",
     "visible recursion label != recursive traversal",
@@ -287,7 +289,7 @@ REQUIRED_TOKENS = [
     "compiled-module-map.json",
     # Deprecated legacy recursive-audit prompt
     "former external recursive-audit prompt is deprecated",
-    # rc12: Execution mandate — minimum visible transition spine
+    # rc12: Execution mandate ? minimum visible transition spine
     "Default mode suppresses raw visible IR but does not suppress recursive execution",
     "If no transition marker appears",
     "essay organized by topic is not governed traversal",
@@ -371,7 +373,7 @@ REQUIRED_TOKENS = [
     "closed operative verbs",
     "Released: <item>",
     # rc16: positive submove-boundary worked-example anchors
-    "Default-Mode Worked Example — Submove Boundary",
+    "Submove Boundary",
     "imported moral tribunal judging divine action",
     "burden-complete",
     "no headline-only answer",
@@ -496,7 +498,7 @@ DISPATCH_GATE_REQUIRED = [
     "printout is mode-specific",
     "full recursion in every mode",
     "compact Layer A",
-    "Layer A — Compact DSL/IR header",
+    "compact DSL/IR header",
     "- read status:",
     "- confidence:",
     "- claim_level:",
@@ -510,7 +512,7 @@ DISPATCH_GATE_REQUIRED = [
     "- held:",
     "- source-status/noetic-frame:",
     "- gate/release decision:",
-    "Layer B — bounded governed response",
+    "bounded governed response",
     "Hidden Premises",
     "Bounded Response / operative submoves",
     "TTP/operator trace",
@@ -556,6 +558,45 @@ DISPATCH_GATE_REQUIRED = [
 
 
 RENDER_SHAPE_BAD_OUTPUTS = {
+    "literal_governance_label": (
+        """### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: PF-10
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported criterion
+- current bounded operator: tribunal-detection
+- held: none
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The imported criterion is treated as judge.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement; the restoration vector returns criterion to warrant.
+##### Bounded Response / operative submoves
+Target: imported criterion.
+Operation: test whether it has authority.
+Result: the criterion no longer governs.
+##### TTP/operator trace
+- tribunal-detection: Target: criterion. Operation: test its authority. Result: narrowed.
+### State/noetic re-read
+- What changed: the imported criterion no longer governs.
+- Remaining input-anchored burdens: none
+- Governance: STOP
+### Restorative Response
+The criterion returns to warrant.
+### Closing Formulation
+The case is closed.
+""",
+        "literal governance label in default output",
+    ),
     "missing_core_formulation": (
         """### Layer A - Compact DSL/IR header
 - read status: dominant
@@ -581,7 +622,7 @@ The restored frame lands.
 ### State/noetic re-read
 - Cleared: imported tribunal
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 """,
         "missing Core Formulation",
     ),
@@ -611,7 +652,7 @@ The tribunal is tested and loosened.
 ### State/noetic re-read
 - Cleared: imported tribunal
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 """,
         "missing Closing Formulation",
     ),
@@ -650,7 +691,7 @@ The frame lands.
 ### State/noetic re-read
 - Cleared: imported tribunal
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 """,
         "meta narration opening",
     ),
@@ -690,7 +731,7 @@ Result: owner floor is applied and the operation is bounded to the target named 
 - Cleared: the criterion is no longer treated as self-authorizing.
 - Cumulative-state delta: what changed is that the moral tribunal is narrowed from judge to claim requiring warrant.
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 
 ### Restorative Response
 The proper order is returned to warrant before accusation.
@@ -731,7 +772,7 @@ Trace: tribunal-detection.
 - What changed: the criterion is narrowed.
 - Cleared: criterion
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The criterion is returned to warrant.
 ### Closing Formulation
@@ -769,7 +810,7 @@ The answer dumps arguments.
 ### State/noetic re-read
 - Cleared: unclear
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 """,
         "excessive submoves released",
     ),
@@ -800,7 +841,7 @@ The frame lands.
 ### State/noetic re-read
 - Cleared: imported tribunal
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 """,
         "missing TTP/operator trace",
     ),
@@ -833,7 +874,7 @@ Trace: FPD.
 ### State/noetic re-read
 - Cleared: self-defeating criterion
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The criterion no longer governs.
 ### Closing Formulation
@@ -871,7 +912,7 @@ Trace: tribunal-detection.
 ### State/noetic re-read
 - Cleared: whole burden
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The burden is treated as cleared.
 ### Closing Formulation
@@ -909,7 +950,7 @@ Trace: source-status check.
 ### State/noetic re-read
 - Cleared: claimed source context
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The source context is treated as support.
 ### Closing Formulation
@@ -947,7 +988,7 @@ Trace: source-status check.
 ### State/noetic re-read
 - Cleared: claimed brand identity
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The method is presented as a branded school.
 ### Closing Formulation
@@ -985,7 +1026,7 @@ Trace: pattern-first routing.
 ### State/noetic re-read
 - Cleared: tradition difference
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 All systems are treated as interchangeable.
 ### Closing Formulation
@@ -1023,7 +1064,7 @@ Trace: source-status check.
 ### State/noetic re-read
 - Cleared: textual support
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The answer relies on an unreferenced textual support.
 ### Closing Formulation
@@ -1061,7 +1102,7 @@ Trace: denomination lookup.
 ### State/noetic re-read
 - Cleared: topic label
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The label is treated as restored order.
 ### Closing Formulation
@@ -1099,7 +1140,7 @@ Trace: topic bank.
 ### State/noetic re-read
 - Cleared: topic
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The topic receives stock content.
 ### Closing Formulation
@@ -1137,7 +1178,7 @@ Trace: tribunal-detection.
 ### State/noetic re-read
 - Cleared: criterion
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The proper warrant order is restored; the criterion is returned to its proper place; the imported deformation is relieved; downstream doctrine remains held.
 ### Closing Formulation
@@ -1183,7 +1224,7 @@ Trace: tribunal-detection + authority-order repair.
 ### State/noetic re-read
 - Cleared: criterion and warrant order
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The proper warrant order is restored; the imported criterion is returned to its proper place; the deformation is relieved; nothing remains held.
 ### Closing Formulation
@@ -1220,7 +1261,7 @@ Trace: reductio.
 ### State/noetic re-read
 - Cleared: unclear
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The criterion no longer governs.
 ### Closing Formulation
@@ -1261,7 +1302,7 @@ Trace: tribunal-detection.
 - What changed: the criterion no longer governs.
 - Cleared: criterion
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The criterion is returned to its proper place.
 ### Closing Formulation
@@ -1299,7 +1340,7 @@ Trace: tribunal-detection.
 ### State/noetic re-read
 - Cleared: criterion
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 The restored order is restored.
 ### Closing Formulation
@@ -1337,7 +1378,7 @@ Trace: tribunal-detection.
 ### State/noetic re-read
 - Cleared: criterion
 - Remaining input-anchored burdens: downstream doctrine
-- Governance: RECURSE
+- Release status: next bounded pass licensed because another input-anchored burden remains
 ### Restorative Response
 The criterion is returned to its proper place.
 ### Closing Formulation
@@ -1376,7 +1417,7 @@ Trace: V12-tamanuc-exhaustion.
 - What changed: the plurality claim is said to fail.
 - Cleared: multiple lords
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 Unity of lordship is restored.
 ### Closing Formulation
@@ -1415,7 +1456,7 @@ Trace: M9-predication-mode.
 - What changed: predication is mentioned.
 - Cleared: Trinity predication
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 Predication is restored.
 ### Closing Formulation
@@ -1454,7 +1495,7 @@ Trace: V12-tamanuc-exhaustion.
 - What changed: V12 was run from the Trinity label.
 - Cleared: Trinity
 - Remaining input-anchored burdens: none
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 ### Restorative Response
 Plurality is rejected.
 ### Closing Formulation
@@ -1500,7 +1541,7 @@ Trace: tribunal-detection + FPD + M1 + diagnostic-render-contract.
 - Cleared: imported tribunal
 - Remaining input-anchored burdens: none
 - Held routes rechecked: downstream doctrine remains held
-- Governance: STOP
+- Release status: closed; no same-input eligible burden remains
 
 ### Restorative Response
 The restored order is that the tribunal must be judged before it judges.
@@ -1518,8 +1559,8 @@ HIDDEN_PREMISES_RE = re.compile(r"(?im)^\s*#{3,5}\s*Hidden Premises\b")
 CORE_RE = re.compile(r"(?im)^\s*#{3,6}\s*(?:\d+\.\s*)?Core Formulation\b")
 CLOSING_RE = re.compile(r"(?im)^\s*#{3,5}\s*(?:\d+\.\s*)?Closing Formulation\b")
 STATE_RE = re.compile(r"(?im)^\s*#{3,5}\s*State/noetic re-read\b")
-LAYER_A_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer A\s*(?:—|-)\s*Compact DSL/IR header\b")
-LAYER_B_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer B\s*(?:—|-)\s*bounded governed response\b")
+LAYER_A_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer A\s*(?:\u2014|-)\s*Compact DSL/IR header\b")
+LAYER_B_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer B\s*(?:\u2014|-)\s*bounded governed response\b")
 NON_TRIVIAL_OPERATOR_RE = re.compile(
     r"(?im)^\s*-?\s*current bounded operator\s*:\s*.*"
     r"(?:criterion|tribunal|composition|predication|source-status|warrant|worship-worthiness)"
@@ -1531,7 +1572,7 @@ MAJOR_SUBMOVE_RE = re.compile(
     r"(?im)^\s*(?:Operative submove target:|(?:Move|Step)\s+\d+\s*:|#{3,6}\s*(?:Move|Submove)\s+\d+\b)"
 )
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamānuʿ|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tamÄnuÊ¿|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -1616,10 +1657,14 @@ STATE_DELTA_RE = re.compile(
     r"narrowed|no longer governs|now exposed|now licensed|now blocked|"
     r"returned as not-yet-target)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÄnuÊ¿|multiple independent lords?)\b")
+LITERAL_DEFAULT_GOVERNANCE_RE = re.compile(
+    r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
+    r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
+)
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÄnuÊ¿)\b"
+    r"\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",
@@ -1665,6 +1710,8 @@ def render_shape_violations(text: str) -> list[str]:
 
     if META_NARRATION_OPENING_RE.search(text):
         violations.append("meta narration opening")
+    if LITERAL_DEFAULT_GOVERNANCE_RE.search(text):
+        violations.append("literal governance label in default output")
     if AUDIT_PROOF_BOILERPLATE_RE.search(text):
         violations.append("audit/proof boilerplate in default output")
     if SCAFFOLD_LANGUAGE_RE.search(text):

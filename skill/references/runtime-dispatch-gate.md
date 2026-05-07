@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 0228e5094b55381ed7dabcb74a1272ec66d9c7537bae9748a63ecdfacf60ffb6 -->
+<!-- SOURCE_SHA256: 37c58d77ed757364c8b7ac5c37000a4ffacb05314e96fbdab30bec024eebcb2c -->
 
 ---
 id: diagnostic-ir
@@ -357,9 +357,10 @@ bounded move → state re-read: what cleared → what remains live
 → next eligible burden → decision → next bounded move (if eligible)
 ```
 
-Literal `Recursion decision:` and `next_eligible_pass:` fields must not appear in default
-output. They belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. In default mode,
-RECURSE appears as a prose transition plus one bounded next pass, not as a state label.
+Literal `Recursion decision:`, `next_eligible_pass:`, `Governance:`, or visible
+STOP / HOLD / RECURSE / PARTIAL governance labels must not appear in default output. They
+belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. In default
+mode, continuation appears as a prose transition plus one bounded next pass, not as a state label.
 
 Numbered essay headings do not substitute for this progression. "Move 1 / Move 2 /
 Move 3" is not a post-render gate unless the response also shows, in ordinary prose,
@@ -469,7 +470,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP | HOLD | RECURSE | PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 This is a DSL/audit shape, not a normal-answer ledger. Ordinary default answers may compress it,
@@ -2863,7 +2864,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 9197cb4ebba78127239cf716edc60e32a2d1f1d9ed534e9c6fd6a1fdb4dc6677 -->
+<!-- SOURCE_SHA256: a3f03118ffaf097b38e43c1da09d7eebc697e97ba3caceea94279d02017490a0 -->
 
 ---
 id: recursive-state-transitions
@@ -3265,10 +3266,11 @@ re-read burden-cycle shape in `diagnostic-render-contract.md`, then repeats only
 recursive sufficiency.
 
 Default mode must not print literal state fields such as `Recursion decision:`,
-`next_eligible_pass:`, `post_render_gate:`, or STOP / HOLD / RECURSE / PARTIAL as a visible
-governance label. Literal state labels and post-render fields are for `:dsl`, internal/development audit,
-pass-review, or diagnostic trace. Default RECURSE is valid only when the answer visibly
-performs the transition and the one bounded next pass; naming the decision is not execution.
+`next_eligible_pass:`, `post_render_gate:`, `Governance:`, or STOP / HOLD / RECURSE / PARTIAL
+as a visible governance label. Literal state labels and post-render fields are for `:dsl`,
+internal/development audit, pass-review, or diagnostic trace. Default continuation is valid
+only when the answer visibly performs the transition and the one bounded next pass; naming the
+decision is not execution.
 
 ### Minimum Visible Transition Spine
 
@@ -3418,7 +3420,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP / HOLD / RECURSE / PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 ## Grounded Noetic Re-Read Shape

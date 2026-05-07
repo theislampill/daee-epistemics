@@ -288,6 +288,8 @@ python tools/check_framework_pipeline.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_metacompliance_current_canon.py
 python tools/check_smoke_artifacts.py
+python tools/check_ir_instance_integrity.py
+python tools/check_diagnostic_ir_catalogue_integrity.py
 ```
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
@@ -491,10 +493,16 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 
 ## Install / Package (Claude-First)
 
-The distributable artifact for this repository is `daee-epistemics.skill`. 
-Its archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json` directly. 
-Do not zip the whole repo root, and do not produce a bundle whose top level is `skill/`.
-Package the contents of the generated `skill/` directory, not the directory itself.
+The canonical user-facing upload name is `daee-epistemics.skill`. The canonical local RC build
+filename is `build/daee-epistemics-RC00001-v0.3.1.0.skill.zip`.
+`package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
+at archive root. If a host expects `.skill`, rename that checked `.skill.zip` payload to
+`daee-epistemics.skill`; do not re-zip it.
+
+The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and
+`build-manifest.json` directly. Do not zip the whole repo root, and do not produce a bundle whose
+top level is `skill/`. Package the contents of the generated `skill/` directory, not the directory
+itself.
 
 Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
 
@@ -503,7 +511,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epi
 ```
 
 Smoke tests should use the latest explicitly named rc package and hash from the current run.
-Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs.
+Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs. The release smoke
+artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
+live runs may regenerate it, but the checker defaults to that repo-local root.
 Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
 
 For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.

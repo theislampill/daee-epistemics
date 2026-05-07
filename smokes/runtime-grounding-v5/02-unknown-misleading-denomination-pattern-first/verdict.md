@@ -1,0 +1,22 @@
+# verdict
+
+- fixture class: bounded
+- final classification: bounded-complete
+- status: PASS
+- output bytes: 10399
+- burden-cycle count: 2
+- depth is runtime-licensed: runtime-licensed bounded depth
+- fixture-contamination terms detected: no
+- static render/governance expectation: output.md must pass render, recursive, and smoke-artifact checker functions
+- common-sense audit result: PASS: burden-complete under the original input; no contamination, no boilerplate, no fake recursion, and no skipped licensed burden
+- bounded-depth exception rationale: the output is bounded because state/noetic re-read found no further licensed same-input burden after the handled cycles.
+- bounded-complete
+- original hard intent: no
+- first-order burdens handled: the named/unknown identity label was held; no first-order doctrinal answer was released because no concrete doctrine was supplied.
+- second-order burdens handled: autonomous reason as certification tribunal was exposed and repaired through FPD/V2.
+- higher-order burdens handled: pattern-first routing over denomination/source-label was executed.
+- held burdens and why: denomination genealogy and topic-specific doctrine held because the input gave no stable label or concrete doctrine.
+- skipped licensed burdens: none
+- another pass licensed: no
+- under-20 rationale: the original input licenses pattern-first authority-order repair, not a broad tradition or doctrine tour.
+- fail if: scaffold/test language appears in output.md, fixture-specific language leaks across families, TTPs are named without operation, state re-read lacks claim-state change, a licensed burden remains unhandled, or an originally hard-intended fixture is reclassified without this burden-completeness explanation.

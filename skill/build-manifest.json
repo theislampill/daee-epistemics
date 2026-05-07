@@ -131,8 +131,8 @@
   "compiler_version": "0.3.1",
   "extra_inputs": {
     "atomics/skill/SKILL.md": "bf233ccef6bc3c1ab6276f65170028903682ab49654a855ffab31910290c127e",
-    "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "e5389698408c20966e2ed9f7a8fa19eb594255d0de6f23a2bab5acdc90d718a2",
-    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "1c9536839939a5b3aedc6bae736f96152f1a18a668c4bde500478677fe1b1a5b",
+    "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "fb9d572488cec0fab4c6faec4700f227d396a97c1405c1c78af9d76e73839373",
+    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "db945aba926eb05034e5c022f79bbd8cea684825847749a1fdc93b95fba22cad",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
     "atomics/skill/references/diagnostics/operative-contract.schema.json": "9ce60e9574115cd68bc9018733af0602c93f8eae50421909baa425bbfe11e4d5"
   },
@@ -533,7 +533,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "0228e5094b55381ed7dabcb74a1272ec66d9c7537bae9748a63ecdfacf60ffb6"
+      "source_sha256": "37c58d77ed757364c8b7ac5c37000a4ffacb05314e96fbdab30bec024eebcb2c"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -541,7 +541,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "c45922de13d8bcfb713f78a5f113f695fff83da0fc7ae986655088f06b8a3dd0"
+      "source_sha256": "eed87d37f8f392117dae7de8a16820c0c6b5048b3a0f28c7203f155d6c5ba288"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -829,7 +829,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "77ed7b001bc1ee5d556429372cbe0557a33230f35c603ece9bc24db3d40be0d9"
+      "source_sha256": "d8e7d1f88dcca5fa09f0e867ea716b4de6a3188e81e7989a1a311f54d3ed529b"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
@@ -909,7 +909,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "9197cb4ebba78127239cf716edc60e32a2d1f1d9ed534e9c6fd6a1fdb4dc6677"
+      "source_sha256": "a3f03118ffaf097b38e43c1da09d7eebc697e97ba3caceea94279d02017490a0"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

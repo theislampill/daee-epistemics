@@ -1,0 +1,1 @@
+/daee-epistemics Since religions share recurring symbols and noetic patterns, should we treat Islam, Christianity, Hinduism, and secular humanism as interchangeable expressions of one neutral spiritual grammar?

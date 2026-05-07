@@ -63,10 +63,11 @@ Why already present:
 Released module(s):
 Bounded operation:
 State/noetic re-read:
-Governance: STOP / HOLD / RECURSE / PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label in default
 ```
 
-Ordinary answers may compress this shape. The internal governance still runs.
+Ordinary answers may compress this shape. The internal STOP/HOLD/RECURSE/PARTIAL decision still
+runs, but default output uses prose release-status wording rather than literal governance labels.
 
 ## Not An Argument Dump
 

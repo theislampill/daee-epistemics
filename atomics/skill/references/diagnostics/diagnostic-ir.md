@@ -337,9 +337,10 @@ bounded move → state re-read: what cleared → what remains live
 → next eligible burden → decision → next bounded move (if eligible)
 ```
 
-Literal `Recursion decision:` and `next_eligible_pass:` fields must not appear in default
-output. They belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. In default mode,
-RECURSE appears as a prose transition plus one bounded next pass, not as a state label.
+Literal `Recursion decision:`, `next_eligible_pass:`, `Governance:`, or visible
+STOP / HOLD / RECURSE / PARTIAL governance labels must not appear in default output. They
+belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. In default
+mode, continuation appears as a prose transition plus one bounded next pass, not as a state label.
 
 Numbered essay headings do not substitute for this progression. "Move 1 / Move 2 /
 Move 3" is not a post-render gate unless the response also shows, in ordinary prose,
@@ -449,7 +450,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP | HOLD | RECURSE | PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 This is a DSL/audit shape, not a normal-answer ledger. Ordinary default answers may compress it,

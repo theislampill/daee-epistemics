@@ -19,6 +19,9 @@ python tools/check_frontmatter.py
 python tools/check_coverage.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_metacompliance_current_canon.py
+python tools/check_smoke_artifacts.py
+python tools/check_ir_instance_integrity.py
+python tools/check_diagnostic_ir_catalogue_integrity.py
 ```
 
 Operating rules:

@@ -18,6 +18,16 @@ Completed historical gaps, coverage passes, routing parity work, and recursive t
 
 No active unresolved release-blocking technical pass is currently assigned.
 
+## Completed Mainline Audit Patch Catalogue (post-v0.3.1.0)
+
+- Diagnostic IR ghost-load/source-basis enforcement is checker-backed by
+  `tools/check_ir_instance_integrity.py` and
+  `tools/check_diagnostic_ir_catalogue_integrity.py`.
+- Runtime-grounding smoke artifacts are canonical at repo-local
+  `smokes/runtime-grounding-v5/`; release traces/verdicts carry package/hash/run provenance.
+- Package naming is split deliberately: `package.ps1` emits a checked local `.skill.zip` RC archive,
+  while host uploads that require `.skill` may use the same payload renamed to `daee-epistemics.skill`.
+
 ## Completed Metaaudit Repair Catalogue (2026-05-02)
 
 The `C:\ai\current\metaaudit.md` report found the skill partially compliant: the

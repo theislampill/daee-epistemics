@@ -1,0 +1,1 @@
+/daee-epistemics A Christian says relative identity solves the Trinity: the Father and Son are the same God but not the same person, so one and three are not contradictory. Love does not create plurality; the model is just a refined identity relation.

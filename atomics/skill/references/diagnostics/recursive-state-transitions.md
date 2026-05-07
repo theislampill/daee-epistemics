@@ -398,10 +398,11 @@ re-read burden-cycle shape in `diagnostic-render-contract.md`, then repeats only
 recursive sufficiency.
 
 Default mode must not print literal state fields such as `Recursion decision:`,
-`next_eligible_pass:`, `post_render_gate:`, or STOP / HOLD / RECURSE / PARTIAL as a visible
-governance label. Literal state labels and post-render fields are for `:dsl`, internal/development audit,
-pass-review, or diagnostic trace. Default RECURSE is valid only when the answer visibly
-performs the transition and the one bounded next pass; naming the decision is not execution.
+`next_eligible_pass:`, `post_render_gate:`, `Governance:`, or STOP / HOLD / RECURSE / PARTIAL
+as a visible governance label. Literal state labels and post-render fields are for `:dsl`,
+internal/development audit, pass-review, or diagnostic trace. Default continuation is valid
+only when the answer visibly performs the transition and the one bounded next pass; naming the
+decision is not execution.
 
 ### Minimum Visible Transition Spine
 
@@ -551,7 +552,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Governance: STOP / HOLD / RECURSE / PARTIAL
+Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
 ## Grounded Noetic Re-Read Shape
