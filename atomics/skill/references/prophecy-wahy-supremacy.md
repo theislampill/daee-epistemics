@@ -50,6 +50,14 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 
 **The consequence for authority:** On questions about God's nature, the soul, the afterlife, and the complete moral order, the prophet's report has a standing that no philosophical argument can displace. Philosophical argument is appropriate for establishing that a First Cause exists, for dissolving apparent contradictions in revealed content, for exposing imported foreign frameworks, for remedial restoration of fiṭrī recognition. It is not the standard against which prophetic content must be measured.
 
+**Miracle-signification and divine truthfulness:** Prophetic signs (`muʿjizāt`) are not bare
+power-events floating without meaning. They function as signs because the Creator is truthful,
+wise, and purposive in guidance. If a theological framework denies that divine acts are tied to
+wisdom, purpose, or fittingness in any real sense, it cannot then borrow the sign-value of a
+miracle as though the act intentionally validates the prophet. The live burden is not whether
+God lacks power; it is whether the framework still preserves signification, truthful guidance,
+and the link between a prophetic claim and the divine act that certifies it.
+
 ---
 
 ## IV. Named Challenge Patterns and Routing Responses
@@ -100,6 +108,36 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 
 ---
 
+### Challenge Pattern D: Miracle Signification Without Divine Purpose
+
+**Presentation:** "A miracle proves prophethood by necessity," while the same framework denies
+that divine action is tied to wisdom, purpose, truthful guidance, or any reason why this act
+rather than another is fitting.
+
+**Diagnostic:** proof-method-audit + reason-disambiguation Category 3/4 when school-bound
+proof grammar is treated as obvious; prophetic authority layer when the sign-value of miracles
+is being used; M1/M8 if the framework uses miracle evidence while removing the conditions that
+make miracles evidence.
+
+**Response route:**
+1. Identify whether the miracle's signification is grounded in divine wisdom/purpose, in
+   intrinsic logical entailment (`talāzum`), or in an unexplained assertion of necessity.
+2. If wisdom/purpose is denied, show that the miracle's evidentiary role has been undercut:
+   a sign cannot certify truth if the framework forbids purposive certification.
+3. If `talāzum` is asserted, require the necessary connection to be shown. A miracle does not
+   intrinsically mean prophetic truthfulness merely as a power-event; its sign-value depends on
+   divine assignment and truthful guidance.
+4. If false-prophet miracles are treated as possible but unfitting, the framework has conceded
+   a fittingness/wisdom distinction. If treated as impossible despite being possible in itself,
+   the framework must explain why divine power does not attach without turning the issue into a
+   bare contradiction label.
+
+**Prohibited move:** Do not answer this as a generic "miracles prove prophethood" proof while
+leaving the framework's no-purpose account of divine action untouched. That grants the sign
+while erasing the ground of signification.
+
+---
+
 ## V. Connection to Kernel Thesis
 
 Commitment 2 of `references/kernel-thesis.md`: sound reason and authentic transmission never truly conflict — the apparent conflict is in contaminated reason, weak transmission, or the wrong rational criterion applied. This file supplies the doctrinal grounding for that commitment: when reason (in its contaminated or pseudo-neutral form) appears to conflict with prophetic content, the conflict is always located in the criterion being applied to reason's deliverances — not in a genuine tension between the faculty of reason and the content of revelation. The faculty of sound reason is capable of recognizing prophetic truth; what blocks it is the inherited criterion that has been substituted for it.
@@ -117,6 +155,11 @@ This file has not governed the response if any of the following occurred:
 - **Revealed attributes were assimilated to the philosopher's God.** The response defended divine responsiveness, speech, or engagement by reinterpreting them as metaphors for philosophical properties (will, eternal decree, etc.). This accepts the perfect-being framework's authority and abandons the revealed description. This is Challenge Pattern B's prohibited move.
 
 - **The prophetic knowledge claim was defended as a subjective experience.** The response treated prophetic reception as one psychological event among others, rather than as a categorically distinct epistemic event that cannot be evaluated by the naturalist criterion. This is Challenge Pattern C's failure mode.
+
+- **Miracle signification was borrowed after purpose was denied.** The response used miracles
+  as proof of prophethood while leaving intact a framework in which divine acts are not tied to
+  wisdom, purpose, truthful guidance, or fittingness. This is Challenge Pattern D's failure
+  mode.
 
 - **The kalāmic demonstration was offered before the inversion was named.** The interlocutor demanded a rational demonstration of prophetic credentials; the response immediately produced the demonstration. This places the remedial apparatus in the gatekeeper position that this file exists to correct. The inversion must be named before the demonstration is offered (if offered at all).
 

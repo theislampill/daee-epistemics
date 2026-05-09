@@ -132,8 +132,9 @@ Use the runtime notation owned by `recursive-state-transitions.md`:
 `B -> {s1...sn} -> Land(B) -> R -> Decision`; `sᵢ != Bᵢ`.
 Gloss: one selected live noetic burden may contain multiple operative submoves; each `s`
 preserves target -> operation -> result, then the whole `B` lands before state re-read.
-Hiddenness, punishment/accountability, source-status, source-worldview, and identity-stabilization
-may be bounded submoves when needed to land the same governing burden.
+Hiddenness, punishment/accountability, source-status, source-worldview, consequence tracing,
+and identity-stabilization may belong to the same governing burden only as distinct bounded
+submoves. Do not consolidate active TTP/operator functions into one generic operation block.
 Restoration synthesis and any pastoral note release only after the active burden lands and
 state re-read licenses closure, HOLD, PARTIAL, or the next input-anchored burden.
 Identity-stabilization or source-status that is live and input-anchored must feed the
@@ -148,13 +149,16 @@ licensed a genuinely new noetic aspect.
 Multi-burden does not mean multi-recursion by default:
 `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 They become separate burden-cycles only if `R` shows a new input-anchored `B` not already handled
-as `s`.
+as `s`. But `s` remains plural and operative: each active TTP receives a distinct target,
+operation, and result before `Land(B)`.
 
 Before a fourth major operative submove is released inside one Layer B, run the submove
 saturation gate from `recursive-state-transitions.md`. If the next move changes target-family,
 claim-level, source/noetic frame, claim cluster, or restoration vector, the current burden must
 land and state must be re-read before the next burden is released. If the fourth move is merely
-available rather than materially necessary, HOLD or PARTIAL rather than inflating Layer B.
+available rather than materially necessary, HOLD or PARTIAL rather than inflating Layer B. This
+gate prevents argument dumping; it must not be used to erase a materially necessary TTP submove
+or to demote a live identity/source-status implication into a label.
 
 **Default Final-Output Preflight Gate (mandatory):**
 Before emitting any default `/daee-epistemics` answer, scan the proposed final response
@@ -235,10 +239,16 @@ Before releasing any source-backed claim, confirm:
   requested by the user or required by validated source-comparison IR
 - source-heavy files do not create source-heavy default output; source heaviness is not
   public-render permission
-- default citation allowance is restricted to Qur'an, Sunnah, and sound narrations from the
+- default citation allowance is restricted to Qurʾān, Sunnah, and sound narrations from the
   Salaf, and any such use is directly referenced through an external source
-- umbrella terms (`classical theology`, `the classical tradition`, `mainstream kalam`,
-  `Ashari/Maturidi tradition`) are not used as if they named one operative authority on
+- Qurʾānic or ḥadīth evidence quoted for operative work is formatted cleanly where practical:
+  Arabic when useful, translation, source/reference, then its diagnostic or restorative function.
+  Prefer precision texts that name the mechanism; do not add citation padding, and do not collapse
+  a central revealed text into a long prose sentence.
+- `Islamic scholar` and `Islamic scholarship` are not umbrella terms for kalām, falsafah, or
+  later speculative-theological figures; use specific source-status labels instead.
+- umbrella terms (`classical theology`, `the classical tradition`, `mainstream kalām`,
+  `Ashʿarī/Māturīdī tradition`) are not used as if they named one operative authority on
   a school-sensitive claim
 - intra-school flattening is not used on a claim that is internally disputed
 - agreement across frames, when asserted, is marked as substantive or verbal
@@ -314,6 +324,7 @@ Closing Formulation does not substitute for state/noetic re-read or self-close e
 non-trivial operators include compact TTP/operator trace when needed
 no more than three major operative submoves are released inside one Layer B unless R licenses a new burden-cycle
 fourth-submove release is blocked unless the submove saturation gate records necessity and cohesion
+submove saturation is not a merge license; active TTP/operator functions remain distinct or the output is PARTIAL
 TTP entry criteria were met
 TTP exit criteria produced a result
 TTP owner-specific operation floor was satisfied
@@ -381,8 +392,8 @@ Default final-output failure tokens include:
   accountability/punishment/hell, source-biography, moral-protest, or hiddenness
   language from another example unless the current input and validated IR release
   that burden-family.
-- Strong interior-classification verdict dumps such as `Concealment: irad primary`,
-  `Deformation: hawa primary`, or `NS-4/NS-5 compound` unless the user invoked `:dsl`
+- Strong interior-classification verdict dumps such as `Concealment: iʿrāḍ primary`,
+  `Deformation: hawā primary`, or `NS-4/NS-5 compound` unless the user invoked `:dsl`
   or the task is internal/development audit. The compact lowercase Layer A fields are
   allowed only as bounded DSL/IR anchors.
 - A bibliography, "Primary Sources Referenced", external research-style source list, or

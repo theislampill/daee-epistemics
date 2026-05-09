@@ -117,7 +117,7 @@ REQUIRED_TOKENS = [
     "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
     "Named denomination/source identity is never sufficient to route content",
     "Named frameworks/schools/authors/genealogies are not public-render material",
-    "Only Qur'an, Sunnah, and sound Salaf narrations may be cited by default",
+    "Only Qurʾān, Sunnah, and sound Salaf narrations may be cited by default",
     "how sound/innate reason has been deformed",
     "what criterion/source/warrant is returned to its proper place",
     "State/noetic re-read",
@@ -1064,7 +1064,7 @@ The answer closes as neutral comparison.
 The deformation is unsupported textual citation; the restoration vector is direct source discipline.
 ##### Bounded Response / operative submoves
 Operator: source-status check.
-Target: textual support. Operation: invoke the Qur'an and Sunnah as direct support without any external reference. Result: source discipline is missing.
+Target: textual support. Operation: invoke the Qurʾān and Sunnah as direct support without any external reference. Result: source discipline is missing.
 ##### TTP/operator trace
 Trace: source-status check.
 ### State/noetic re-read

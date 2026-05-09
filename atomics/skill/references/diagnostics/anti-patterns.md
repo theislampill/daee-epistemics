@@ -111,7 +111,7 @@ Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/
 
 **Argument-Bank / Citation-Dump Substitution**
 *Definition:* Treating a background topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
-*Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
+*Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qurʾān defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
 *Correct behavior in the same case:* Use background material only to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
 *Self-audit question:* Am I using background material to decide what must clear first, or am I using it as an answer bank?
 *Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` out-of-scope entries.
@@ -129,7 +129,7 @@ Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/
 
 **Abuse-Wound / Doctrine Collapse**
 *Definition:* Treating a harmful historical, institutional, teacher, family, or community wound as though it were already a doctrinal argument, or treating a doctrinal authority-order claim as though pastoral acknowledgement alone resolves it.
-*Pattern appearing in output:* A person says they were harmed by a teacher or institution, and the response defends the doctrine. Or a person says a shaykh's kashf outranks hadith, and the response only empathizes with bad experiences without addressing the claimed authority inversion.
+*Pattern appearing in output:* A person says they were harmed by a teacher or institution, and the response defends the doctrine. Or a person says a shaykh's kashf outranks ḥadīth, and the response only empathizes with bad experiences without addressing the claimed authority inversion.
 *Correct behavior in the same case:* Separate wound from tribunal. If wound is primary, route relational safety, NS-8, and P7 before content. If tribunal is primary, route FPD/usurpation/source-use discipline while keeping pastoral register humane.
 *Self-audit question:* Am I answering a wound as doctrine, or answering a tribunal claim as if it were only a wound?
 *Prevented by:* `mixed-case-handling.md` Authority Wound + Authority Tribunal playbook; `P7-restoration-stops.md`; `foreign-premise-detection.md`; `diagnostic-ir.md` framing notes.

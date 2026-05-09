@@ -97,7 +97,7 @@ types detect the tribunal function before any topic-specific owner exists.
 
 - Closed-canon veto: a received canon or interpretive closure functions as a veto over later divine speech. Route through FPD, V10/RT source-use discipline, and comparative-prophethood routes as appropriate before any prooftext content.
 - Kashf-as-tribunal: an experience, shaykh, or tariqah claim is granted jurisdiction over revelation. Route authority order first; do not debate whether the experience occurred before classifying its authority.
-- Vedic-reformist criterion: "reason/common sense" or Vedic reformist categories judge Qur'an, prophecy, attributes, resurrection, or law as an external tribunal. Route FPD + V2 + reason-disambiguation before verse-level response.
+- Vedic-reformist criterion: "reason/common sense" or Vedic reformist categories judge Qurʾān, prophecy, attributes, resurrection, or law as an external tribunal. Route FPD + V2 + reason-disambiguation before verse-level response.
 - Nondual category-set: Advaita-like nonduality or higher/lower truth hierarchy is installed above Islamic tawhid. Route M9 and metaphysical architecture before ordinary polytheism or devotional critique.
 
 ---

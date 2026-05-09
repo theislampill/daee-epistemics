@@ -1,7 +1,7 @@
 ---
 name: daee-epistemics
 description: >
-  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers aqidah/noetic-structure diagnosis; shubuhat and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhat; structured positions such as naturalism, scientism, kalamic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “aqidah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
+  Activate when any person — believer, agnostic, atheist, student of knowledge, philosopher, or daee presents a theological, epistemological, or philosophical inquiry, objection, crisis, or worldview claim. Covers ʿaqīdah/noetic-structure diagnosis; shubuhāt and structured objections; evil, hiddenness, Trinity, philosopher’s-God, divine multiplicity, idolatry, desire-worship, comparative-religion cases governed by existing families; revelation, scripture, Qur’anic transmission, final-prophethood challenges; Muslim-internal crises such as authority fatigue, modernist revision, textual shubuhāt; structured positions such as naturalism, scientism, kalāmic evidentialism, historical-critical skepticism; and DSL IR. Diagnose noetic structure and deformations, then respond from sound reason and prophetic tradition to remove occlusion rather than construct novelty. Gloss Arabic on first use. Activate on cues like: “aqidah/ʿaqīdah,” “shubhah,” “objection,” “respond to this,” “diagnose,” “refute,” or “what’s wrong with this?”
 ---
 <!--
 GENERATED FILE.
@@ -246,8 +246,11 @@ TTP/operator trace is not external citation support. If a named runtime operator
 reductio, tamanu, criterion-reversal, tribunal-detection, predication repair, or
 authority-order repair performs the work, the governed operation or bounded response names it
 and executes target -> operation -> result. Do not substitute a source citation for TTP
-invocation, and do not substitute TTP invocation for Qur'an/Sunnah/Salaf citation when revealed
-textual support is actually used.
+invocation, and do not substitute TTP invocation for Qurʾān/Sunnah/Salaf citation when revealed
+textual support is actually used. When revealed text is quoted for operative diagnostic or
+restorative work, present it cleanly as quotation, translation, and source/reference where
+useful, then state the function it performs; do not collapse central revealed evidence into a
+long prose sentence or use it as citation padding.
 Within a released live burden, TTP/operator routing is burden-complete: materially necessary
 sub-burdens are addressed by matched operators before state/noetic re-read, and NewB is not
 licensed by a headline-only answer, skipped internal sub-burdens, generic prose substitute,
@@ -388,7 +391,13 @@ Top-salient invariants:
 - A burden-cycle begins only after the current burden lands.
 - `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 - Imported-criterion testing, hujjah/accountability correction, guidance-as-coercive-proof
-  correction, and identity-frame may stabilize as `s` inside one imported-tribunal `B`.
+  correction, source/noetic-frame discipline, consequence tracing, and identity-frame must
+  remain distinct `B.s` submoves when they are active TTP/operator functions, even when they
+  serve the same live `B`. Same burden-cycle does not mean consolidated operation: each active
+  TTP receives its own target -> operation -> result. If an input-anchored
+  facet has its own criterion, claim-level, source/noetic frame, theological target, or
+  restoration vector that is not fully landed as `s`, it remains live for a later `B` after
+  `R(H,Delta)`.
 - Released `B` must be burden-complete before `R`: materially necessary `s` receive matched
   TTP/operator treatment; no headline-only answer or broad-conclusion jump licenses `NewB`.
 - Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`;
@@ -404,6 +413,10 @@ Top-salient invariants:
   owner-floor faithful, and restoration-directed. `B.s -> Land(B) -> R` is additive
   to noetic depth, not a substitute for active deformations, criterion structure,
   identity/source-status implications, or necessary theological/restorative force.
+  Per-burden Layer A is a diagnostic re-entry, not a shortening signal for the next
+  Layer B. A hard case may be long because each input-anchored burden is actually
+  landed; length is wrong only when it comes from padding, framework dumping, or
+  unlicensed downstream release.
 - Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
   awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
   compiled bundle section containing the active TTP's operation floor, unless that exact
@@ -531,7 +544,7 @@ owner is later authorized and added.
 
 Pattern-first routing is not comparative-neutral flattening. It means the live
 deformation/concealment/warrant disorder governs diagnosis before superficial
-denomination/topic labels. Restoration remains ordered toward sound fitrah, sound reason,
+denomination/topic labels. Restoration remains ordered toward sound fiṭrah, sound reason,
 revelation, and their non-contradictory ordered convergence. Similar features may be
 compared only as diagnosis requires; divergent source, function, warrant, criterion,
 authority-order, or noetic structure remains distinct.
@@ -789,7 +802,7 @@ voice, Arabic accessibility, and character-as-evidence material are owned by:
 
 - `references/kernel-thesis.md` for non-negotiable architecture and violation signatures.
 - `references/sound-reason-epistemology.md` for full theory of sound reason, warrant,
-  tawatur, fitrah, husn al-nazar, and bila kayf substrates.
+  tawātur, fiṭrah, ḥusn al-naẓar, and bilā kayf substrates.
 - `references/techniques/heuristics.md` for always-active operator discipline, voice-adjacent
   execution principles, character-as-evidence, and restoration-before-construction discipline.
 - `references/terminology.md` for Arabic and technical glossary discipline.
@@ -888,13 +901,25 @@ internal/development compatibility.
 Default also forbids public scholar/source/citation parade, school-label context, genealogy, or
 external philosopher/theologian support unless the user asks or validated IR requires
 source-comparison. Named frameworks/schools/authors/genealogies are not public-render material
-by default. Only Qur'an, Sunnah, and sound Salaf narrations may be cited by default, and each
+by default. Only Qurʾān, Sunnah, and sound Salaf narrations may be cited by default, and each
 must be directly sourced. TTP/operator trace is different: when a named operator such as reductio,
 tamanu, criterion-reversal, tribunal-detection, predication repair, or authority-order repair
 does runtime work, name the operator in the governed operation or bounded response and execute
 target -> operation -> result. Do not use a source citation as a substitute for TTP invocation,
-and do not use TTP invocation as a substitute for Qur'an/Sunnah/Salaf citation when revealed
+and do not use TTP invocation as a substitute for Qurʾān/Sunnah/Salaf citation when revealed
 textual support is actually used.
+When Qurʾānic or ḥadīth evidence is doing operative work, present it cleanly and then state
+what it does diagnostically or restoratively. Preferred shape:
+```text
+> <Arabic text when useful>
+>
+> "Translation."
+>
+> -- <source/reference>
+```
+Do not turn this into a source parade. Prefer one text that names the mechanism to several
+texts that merely substantiate a conclusion. Do not collapse a central revealed text into a
+long prose sentence; if it is quoted, make it visually readable and immediately operationalize it.
 
 Owners:
 - `references/rubrics/diagnostic-render-contract.md` owns visible render shape,

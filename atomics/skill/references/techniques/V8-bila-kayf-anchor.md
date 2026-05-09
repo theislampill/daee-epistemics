@@ -40,9 +40,33 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 - Affirm the meaning carried by the revealed wording after M9 has stabilized the term.
 - Deny creaturely likeness, similitude, and containment.
 - Withhold modality (`kayf`) rather than inventing a how.
+- Refuse imagination-as-criterion: the fact that a human mind pictures extension,
+  displacement, bodily motion, or containment when hearing a revealed attribute does not make
+  that imagined modality an entailment of the attribute.
 
 V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
 as a license to bypass M9's loaded-term split.
+
+Tanzīh discipline is not only the denial of resemblance after a bodily image has been formed.
+It also refuses the hidden assumption that the imagination can dictate what a divine predicate
+must entail. For revealed attributes such as ʿulūw (aboveness/exaltedness) or nuzūl (descent),
+do not infer extension, ḥulūl, displacement, or creaturely relocation unless the term's sense
+has been stabilized and the alleged entailment has actually been shown. The one who imports the
+body-image into the predicate has already supplied the tashbīh premise.
+
+This is not a free-for-all. V8 does not permit affirming arbitrary predicates. Intrinsic
+deficiencies such as ignorance, injustice, forgetfulness, incapacity, or need are negated
+because they are deficiencies in themselves; logical contradictions are rejected because they
+are incoherent in themselves. Bilā kayf governs the mode of revealed perfections and actions,
+not the affirmation of defects or contradictions.
+
+**Nuzūl / rotating-night objection:** When the objection says "it is always night somewhere"
+or claims simultaneous descent/ascent contradiction, first expose the hidden model: descent is
+being imagined as a creaturely body-motion that can address only one place, one relation, or
+one task at a time. Relational variation in created things does not by itself alter their
+essence, and created analogies are not transferred upward as a divine modality. The response
+affirms the revealed nuzūl, denies the creaturely image, withholds the how, and refuses the
+claim that physical imagination can invalidate the report.
 
 **Positive content - analogical predication:** the tradition holds analogical predication, not univocal or purely equivocal predication. Terms carry a semantic core that applies genuinely across different instances while the mode of instantiation varies.
 

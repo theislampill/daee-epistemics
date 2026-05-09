@@ -102,7 +102,7 @@ Common tribunal types:
 - liberal autonomy
 - Aristotelian / neo-Platonic theism
 - closed-canon or rabbinic closure used as veto over later divine speech
-- Vedic-reformist "reason/common sense" used as tribunal over Qur'an or prophecy
+- Vedic-reformist "reason/common sense" used as tribunal over Qurʾān or prophecy
 - kashf, shaykh, or tariqah authority used as jurisdiction over revelation
 
 ### Step 2 - Identify the Source Tradition

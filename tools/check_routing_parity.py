@@ -99,7 +99,7 @@ GOVERNANCE_ALIASES = {
     ],
     "named frameworks/schools/authors/genealogies are not public-render material by default": [
         "Named frameworks/schools/authors/genealogies are not public-render material",
-        "Only Qur'an, Sunnah, and sound Salaf narrations may be cited by default",
+        "Only Qurʾān, Sunnah, and sound Salaf narrations may be cited by default",
     ],
     "criterion before evidence dump": [
         "criterion",

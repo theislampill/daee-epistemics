@@ -41,7 +41,7 @@ Case-library content must not become an apologetic bank, denomination-specific a
 | DO-7 through DO-10 or DO-15 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-14 | `case-library/do-christian-extensions.md` | Trinity, philosopher's-God, or Christian canon-authority pressure has not been classified precisely | V8, V10, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
-| Ḥadīth corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
+| Ḥadīth corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qurʾānic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
 | DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
 | Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
 
@@ -117,7 +117,7 @@ Do not route as: "canon authority → do-christian-extensions.md → answer."
 | Base substantive | confirmed ordinary DO pressure, no higher-order blocker | V1 + Phase 2 passes, IR, routing-precedence.md, matched DO file, matched TTP owner(s), P7 stop check |
 | Doctrinal/metaphysical objection | divine attributes, Trinity, incarnation, philosopher's-God, predication, or composition pressure live | M9-predication-mode.md, V8-bila-kayf-anchor.md, do-attribute-precision.md, definition-discipline.md, perfection-criterion-usurpation.md, foreign-premise-detection.md |
 | Higher-order / criterion-import | tribunal, criterion, neutrality claim, proof-method requirement, or imported standard governs | reason-disambiguation.md, foreign-premise-detection.md, V2-reconstituting-reason.md, philosophical-usurpation.md, proof-method-audit.md, perfection-criterion-usurpation.md, routing-precedence.md, pattern-profiling.md |
-| Transmission / authority | scripture, canon, preservation, church authority, Qur'an transmission, hadith, or authority certification live | V10-transmission-content-vetting.md, revelation-transmission.md, hadith-authentication-epistemology.md, prophetic-discourse-neutralization.md (if revelation formally honored but functionally emptied), do-christian-extensions.md DO-14 for Christian canon |
+| Transmission / authority | scripture, canon, preservation, church authority, Qurʾān transmission, ḥadīth, or authority certification live | V10-transmission-content-vetting.md, revelation-transmission.md, hadith-authentication-epistemology.md, prophetic-discourse-neutralization.md (if revelation formally honored but functionally emptied), do-christian-extensions.md DO-14 for Christian canon |
 | Mixed / thin-basis / register-governance | thin basis, grief/identity/autotelic register, or multiple live reads compete | mixed-case-handling.md, case-state-schema.md, P7-restoration-stops.md, M4-grief-register.md, discourse-orientation.md, modes-of-concealment.md, anti-patterns.md |
 
 **Pressure-type → owner routing table:**
@@ -128,7 +128,7 @@ Do not route as: "canon authority → do-christian-extensions.md → answer."
 | divine predication / God-language | M9-predication-mode.md; V8-bila-kayf-anchor.md |
 | person/nature or attribute multiplicity | do-attribute-precision.md; do-christian-extensions.md after model identification |
 | perfection/simplicity/immutability/non-eventfulness tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; philosophical-usurpation.md when tribunal confirmed |
-| revelation/canon/church-authority fallback | V10-transmission-content-vetting.md; do-christian-extensions.md DO-14; revelation-transmission.md only when RT pressure is Qur'anic |
+| revelation/canon/church-authority fallback | V10-transmission-content-vetting.md; do-christian-extensions.md DO-14; revelation-transmission.md only when RT pressure is Qurʾānic |
 | multiple independent deities/lords | V12-tamanuc-exhaustion.md before Trinity-specific overlays |
 | grief-primary evil/hiddenness | M4-grief-register.md; P7-restoration-stops.md; DO content held |
 | moral ontology / orphaned moral intuition | M3-orphaned-intuition.md before evidential moral debate |
@@ -225,7 +225,7 @@ Required: V1 → Phase 2 passes → IR → routing-precedence → M9/definition-
 |------|-----------|----------|-----------------|
 | RT-1 | Viral manuscript / fragment / citation overturns everything | Separate artifact from authenticated transmission with V10 | Treating visual or ancient material as self-authenticating |
 | RT-2 | Canon formation destabilizes revelation | Separate canon recognition from inspired authority | Treating list-formation as identical to revelation-status |
-| RT-3 | Qur'anic preservation fails because of qirāʾāt / aḥruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
+| RT-3 | Qurʾānic preservation fails because of qirāʾāt / aḥruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
 | RT-4 | Believer destabilized by text-history pressure | Distinguish text-history confusion from authority fatigue and panic | Answering an internal crisis as if it were only a debate prompt |
 
 Ḥadīth corpus/authentication pressures route through

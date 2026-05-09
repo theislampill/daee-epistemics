@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/terminology.md -->
-<!-- SOURCE_SHA256: 2f41ea920aaad981953993b3451b0f4f5dd7ae1c4e20e68131ac8ab14d9424c6 -->
+<!-- SOURCE_SHA256: 8f9ae923d16eb3859cd677a6582e457f2579b23e1a1d5776858276b09beffbba -->
 
 ---
 id: terminology
@@ -239,12 +239,51 @@ output: the closing formulation is *restoration language*, not *argument conclus
 
 ---
 
+## Judgment, Criterion, and Proposition Terms
+
+- criterion: the standard or principle by which a judgment is made; a criterion can be sound,
+  imported, inherited, or self-undermining.
+- critical thinking: thinking according to a criterion. It is therefore a kind of judgment,
+  not the suspension of all judgment.
+- judgment: the responsible act of affirming a proposition, denying it, or suspending judgment
+  because the evidence or criterion has not licensed affirmation or denial.
+- suspension of judgment: a judgment about epistemic status, not proof that the proposition is
+  neither true nor false.
+- proposition: a truth-apt claim with subject and predicate content. Questions, commands, and
+  exclamations are not propositions unless converted into truth-apt claim form.
+- same-sense rule: no proposition is both true and false in the same sense at the same time.
+  Apparent counterexamples often trade on an unmarked shift in the sense of a predicate.
+- truth vs. known truth: a proposition's being true or false is not identical to any person's
+  current decision about it. Some propositions are known only to Allah; that does not make them
+  neither true nor false.
+- intellect: a divine gift whose proper use is truth-directed judgment. Its misuse is a form of
+  self-deception or deception of others; diagnostic routing should therefore ask which criterion
+  is governing the act of judgment.
+
+---
+
+## Semantic and Interpretive Terms
+
+- `ẓāhir`: apparent received meaning; not a crude surface-literalism and not a creaturely
+  modality. It is the meaning carried by usage, context, speaker intent, and audience reception.
+- `taʾwīl`: can mean explanation/clarification (`tafsīr`/`bayān`) or a semantic override driven
+  by an external criterion. Split those senses before answering.
+- `majāz`: figurative usage. A figurative reading is valid only when the speech situation and
+  usage support it; bare possibility that a word can be figurative does not establish that it is
+  figurative here.
+- `dalālah`: indication or signification. Do not detach indication from the communicative setting
+  that made the speech intelligible to its direct audience.
+- application vs. meaning: later applications can extend a received meaning to new cases; they do
+  not create a new original meaning for the speech.
+
+---
+
 ## Divine Attributes and the Bilā Kayf Doctrine
 
 | Arabic | Transliteration | Meaning |
 |--------|----------------|---------|
 | ذات | Dhāt | Divine essence — necessarily existing, unknowable in itself; distinct from acts and attributes |
-| فعل / أفعال | Fiʿl / Afʿāl | Divine act(s) — what God does; free, not necessary; the product of divine will, not divine nature |
+| فعل / أفعال | Fiʿl / Afʿāl | Divine act(s) — what God does; free and by will, not a necessary emanation from the divine essence. Created effects are external products; the divine act itself is not treated as a created external product when it subsists in God. |
 | صفات | Ṣifāt | Divine attributes — the real properties of the divine essence affirmed in revelation |
 | كيفية | Kayfiyyah | Mode — the how of an attribute's instantiation; differs categorically between Creator and creature |
 | بلا كيف | Bilā kayf | Without asking how — affirming the reality of divine attributes while declining to specify their creaturely mode |
@@ -256,6 +295,11 @@ output: the closing formulation is *restoration language*, not *argument conclus
 
 ## Kalāmic and Theological Vocabulary
 
+Controlled English label: kalām is Speculative Theology, not Rational Theology. In operative
+source-status fields, avoid umbrella `Islamic scholar/scholarship` warrant labels for
+non-Atharī kalām figures; prefer `kalām theologian`, `speculative theologian`, `mutakallim`,
+`school theologian`, or `later theological figure`.
+
 | Arabic | Transliteration | Meaning |
 |--------|----------------|---------|
 | حادث | Ḥādith | Temporally originated — anything that came into existence after not existing |
@@ -265,6 +309,7 @@ output: the closing formulation is *restoration language*, not *argument conclus
 | تلازم | Talāzum | Mutual necessitation or ontological co-entailment — the inseparable co-presence of essence and essential attribute without implying assembled parts, external dependence, or separable composition. |
 | واجب الوجود | Wājib al-wujūd | Necessarily existing — that whose non-existence is impossible; God alone |
 | ممكن الوجود | Mumkin al-wujūd | Contingently existing — that whose existence or non-existence is equally possible in itself |
+| المؤثر التام | Al-muʾaththir al-tāmm | Complete determining influence — the full cause-condition for a particular effect once its conditions are present and impediments removed. Use carefully: it does not make Allah an "act" or necessary emanation, and it does not make any particular created effect eternal alongside Him. |
 | علم الكلام | ʿIlm al-kalām | A historically constituted discipline of Islamic scholastic theology that applied Hellenistic philosophical categories to theological questions. From the standpoint of this skill — grounded in ʿaql ṣarīḥ and naql ṣaḥīḥ — kalāmic conclusions on ontological matters (divine attributes, divine speech, the nature of origination) are treated as subject to the criterion of sound reason and authentic revelation, not as authoritative. The discipline's systematic pressure was toward importing bidʿī ʿaqlī (contaminated rationality) as though it were pure reason; the operative diagnostic framework here names and resists that pressure without attaching authority to the imported system itself. |
 | متكلمون | Mutakallimūn | Practitioners of kalām — the Muʿtazilī, Ashʿarī, and Māturīdī schools. These schools developed legitimate motivations (defending tawḥīd, refuting materialists and skeptics) but imported Hellenistic ontological categories that produced systematic errors in their accounts of divine being, divine attributes, and the nature of divine speech. Their positions on ontology are not treated by this skill as valid alternatives within a spectrum of legitimate Islamic positions; they are diagnoses — positions identifiable by their deviation from ʿaql ṣarīḥ and naql ṣaḥīḥ. The Muʿtazila represent the most radical deviation; the Ashʿarī school retains significant Muʿtazilī inheritance from earlier kalāmic premises; the Māturīdī school occupies a distinct position with its own errors. None of these school ontologies are grounded in the position this skill deploys. |
 | إجتهاد | Ijtihād | Independent juridical or intellectual investigation |
@@ -315,11 +360,11 @@ Use these only when they change routing or scope:
   V10 because an isolated text-artifact is not the same thing as transmitted khabar.
 - `wijādah`: finding a text without a live transmission-chain. It may preserve historical
   material, but it does not automatically carry the authority of authenticated transmission.
-- `qirāʾāt`: canonically transmitted modes of Qur'anic recitation. Do not treat the term as a
+- `qirāʾāt`: canonically transmitted modes of Qurʾānic recitation. Do not treat the term as a
   synonym for uncontrolled textual corruption.
-- `aḥruf`: the revealed range or modes associated with Qur'anic recitation. Do not collapse aḥruf
+- `aḥruf`: the revealed range or modes associated with Qurʾānic recitation. Do not collapse aḥruf
   discussion into any single manuscript question.
-- `muṣḥaf`: a written codex or written copy of the Qur'an. A muṣḥaf is a textual witness, not the
+- `muṣḥaf`: a written codex or written copy of the Qurʾān. A muṣḥaf is a textual witness, not the
   whole transmission system by itself.
 - `canon` / `canonicity`: the recognized corpus treated as scriptural and normatively
   authoritative. Distinguish canon recognition from inspiration and from textual reconstruction.
@@ -365,11 +410,21 @@ Use these only when they change routing or scope:
 ## Time, Space, and Motion Terms
 
 - temporal relation: the relation between events considered as before/after. This is not a
-  separately subsisting thing.
-- `zamān`: time as the measure of motion subsisting in a moving substrate. When it belongs to a
-  created system, it is created with that system.
+  separately subsisting thing, so created/uncreated predicates do not apply to it as if it
+  were an entity.
+- `zamān`: time as the measure of motion subsisting in a moving substrate. It is an
+  extra-mental attribute of the particular whose motion it measures. When it belongs to a
+  created system, it is created with that system: days and years are created because their
+  moving substrate is created.
+- divine action/duration: do not infer from "God creates zamān" that God is timeless,
+  motionless, or without real action. The created measures of motion in created systems are
+  created; divine acts and their duration, insofar as they subsist in God and are not external
+  products, are not created. Atharī ontology does not hold that everything temporal, in time,
+  in space, or directionally described is therefore created.
 - space: the spatial extension or location-property of particulars, not a self-standing container
-  existing apart from them.
+  existing apart from them. Created spatiality belongs to created particulars; this does not
+  license denying God's ʿulūw by treating created space as a container that first makes
+  aboveness meaningful.
 
 ---
 
@@ -447,7 +502,7 @@ PF codes, module activation rules, or source owners.
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/INDEX.md -->
-<!-- SOURCE_SHA256: d1fb50fea01c268429168b175b32772c571814766de5e7325f15e54e20483c78 -->
+<!-- SOURCE_SHA256: 22dd7694877d5f60c7376e3a99fb3a240d01d216cb221133bbaa57f3fa8854ce -->
 
 ---
 id: case-library-index
@@ -492,7 +547,7 @@ Case-library content must not become an apologetic bank, denomination-specific a
 | DO-7 through DO-10 or DO-15 | `case-library/do-second-loop.md` | The case is still at first-order objection level | M1, V9, P2 |
 | DO-11 through DO-14 | `case-library/do-christian-extensions.md` | Trinity, philosopher's-God, or Christian canon-authority pressure has not been classified precisely | V8, V10, P2 |
 | RT-1 through RT-4 | `case-library/revelation-transmission.md` | The case has not yet been separated into testimony, text, canon, prophetic-claim, or believer-destabilization layers | V10, P2, P5 |
-| Ḥadīth corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qur'anic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
+| Ḥadīth corpus / authentication pressure | `diagnostics/hadith-authentication-epistemology.md` | The case is Qurʾānic RT-1..RT-4, or the transmission burden has already been typed and the remaining issue is purely doctrinal | V10, V2, P5 |
 | DO-6, DO-11–13 with predication/composition/analogy pressure | `case-library/do-attribute-precision.md` | The attribute objection is a straightforward coherence claim with no predication-type subtlety | V8, sound-reason-epistemology §6.3 |
 | Philosophical framework confirmed as upstream tribunal | `case-library/philosophical-usurpation.md` | A framework is held but not yet functioning as an upstream authority — use foreign-premise-detection first | V2, prophecy-wahy-supremacy.md, DO-13 |
 
@@ -568,7 +623,7 @@ Do not route as: "canon authority → do-christian-extensions.md → answer."
 | Base substantive | confirmed ordinary DO pressure, no higher-order blocker | V1 + Phase 2 passes, IR, routing-precedence.md, matched DO file, matched TTP owner(s), P7 stop check |
 | Doctrinal/metaphysical objection | divine attributes, Trinity, incarnation, philosopher's-God, predication, or composition pressure live | M9-predication-mode.md, V8-bila-kayf-anchor.md, do-attribute-precision.md, definition-discipline.md, perfection-criterion-usurpation.md, foreign-premise-detection.md |
 | Higher-order / criterion-import | tribunal, criterion, neutrality claim, proof-method requirement, or imported standard governs | reason-disambiguation.md, foreign-premise-detection.md, V2-reconstituting-reason.md, philosophical-usurpation.md, proof-method-audit.md, perfection-criterion-usurpation.md, routing-precedence.md, pattern-profiling.md |
-| Transmission / authority | scripture, canon, preservation, church authority, Qur'an transmission, hadith, or authority certification live | V10-transmission-content-vetting.md, revelation-transmission.md, hadith-authentication-epistemology.md, prophetic-discourse-neutralization.md (if revelation formally honored but functionally emptied), do-christian-extensions.md DO-14 for Christian canon |
+| Transmission / authority | scripture, canon, preservation, church authority, Qurʾān transmission, ḥadīth, or authority certification live | V10-transmission-content-vetting.md, revelation-transmission.md, hadith-authentication-epistemology.md, prophetic-discourse-neutralization.md (if revelation formally honored but functionally emptied), do-christian-extensions.md DO-14 for Christian canon |
 | Mixed / thin-basis / register-governance | thin basis, grief/identity/autotelic register, or multiple live reads compete | mixed-case-handling.md, case-state-schema.md, P7-restoration-stops.md, M4-grief-register.md, discourse-orientation.md, modes-of-concealment.md, anti-patterns.md |
 
 **Pressure-type → owner routing table:**
@@ -579,7 +634,7 @@ Do not route as: "canon authority → do-christian-extensions.md → answer."
 | divine predication / God-language | M9-predication-mode.md; V8-bila-kayf-anchor.md |
 | person/nature or attribute multiplicity | do-attribute-precision.md; do-christian-extensions.md after model identification |
 | perfection/simplicity/immutability/non-eventfulness tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; philosophical-usurpation.md when tribunal confirmed |
-| revelation/canon/church-authority fallback | V10-transmission-content-vetting.md; do-christian-extensions.md DO-14; revelation-transmission.md only when RT pressure is Qur'anic |
+| revelation/canon/church-authority fallback | V10-transmission-content-vetting.md; do-christian-extensions.md DO-14; revelation-transmission.md only when RT pressure is Qurʾānic |
 | multiple independent deities/lords | V12-tamanuc-exhaustion.md before Trinity-specific overlays |
 | grief-primary evil/hiddenness | M4-grief-register.md; P7-restoration-stops.md; DO content held |
 | moral ontology / orphaned moral intuition | M3-orphaned-intuition.md before evidential moral debate |
@@ -676,7 +731,7 @@ Required: V1 → Phase 2 passes → IR → routing-precedence → M9/definition-
 |------|-----------|----------|-----------------|
 | RT-1 | Viral manuscript / fragment / citation overturns everything | Separate artifact from authenticated transmission with V10 | Treating visual or ancient material as self-authenticating |
 | RT-2 | Canon formation destabilizes revelation | Separate canon recognition from inspired authority | Treating list-formation as identical to revelation-status |
-| RT-3 | Qur'anic preservation fails because of qirāʾāt / aḥruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
+| RT-3 | Qurʾānic preservation fails because of qirāʾāt / aḥruf / manuscripts | Separate reading categories before drawing corruption claims | Treating recitational plurality as uncontrolled textual collapse |
 | RT-4 | Believer destabilized by text-history pressure | Distinguish text-history confusion from authority fatigue and panic | Answering an internal crisis as if it were only a debate prompt |
 
 Ḥadīth corpus/authentication pressures route through

@@ -8,7 +8,7 @@ authority_note: >
 known_non_runtime_references:
   - claim_id: RT-5
     status: prohibited-code
-    note: RT-5 is mentioned only as a forbidden inflation; hadith authentication has its own diagnostic owner.
+    note: RT-5 is mentioned only as a forbidden inflation; ḥadīth authentication has its own diagnostic owner.
   - claim_id: audit:pattern-family-audit
     status: historical-audit
     note: Pattern-family audit material lives in docs/audits/ and is not an operative source owner.
@@ -509,7 +509,7 @@ scope_claims:
       the live burden instantiates a governed structural pattern.
     family_transfer_note: >
       Structural framing is governed when Vedic-reformist "reason/common
-      sense" functions as a tribunal over Qur'an, prophecy, divine attributes,
+      sense" functions as a tribunal over Qurʾān, prophecy, divine attributes,
       resurrection, or law. Route through FPD, reason-disambiguation, V2,
       DO-15, M9, and RT/V10 as applicable. This does not create Hindu or Arya
       Samaj source-owner coverage.

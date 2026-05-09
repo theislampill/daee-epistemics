@@ -35,6 +35,8 @@ The family includes pressures like:
 - "Real responsiveness implies deficiency."
 - "Events subsisting in God are impossible."
 - "If attributes are real, God must be composite and therefore dependent."
+- "If God is really above or descends, that must mean extension, containment, ḥulūl,
+  displacement, or body-like motion."
 
 This is not reducible to a generic anthropomorphism objection. The governing move is tribunal-installation.
 
@@ -83,6 +85,13 @@ The pressure often borrows the vocabulary of transcendence, but its real work is
 
 That makes it a criterion-family problem before it becomes a content-family problem.
 
+**Imagination-as-criterion subcase:** Sometimes the imported criterion is not a formal
+perfection rule but the imagination of creaturely modality. The objector imagines how
+aboveness, descent, action, or speech would occur in bodies, then treats that imagined mode as
+the necessary entailment of the revealed predicate. That is not stronger tanzīh. It is a
+hidden tashbīh premise operating as a tribunal. Refuse the imagination's tribunal status before
+engaging attribute content.
+
 ---
 
 ## Minimal-Pair Discriminator
@@ -107,6 +116,10 @@ That makes it a criterion-family problem before it becomes a content-family prob
 - "A perfect God cannot be above, act, speak, or respond." -> this file first
 - "Does affirming above/action/speech make God like creation?" -> M9/V8 first, unless a prior perfection criterion is also governing
 
+**6. Revealed predicate vs. imagined modality**
+- "Nuzūl means the displacement of a body." -> M9 sense/entailment split, then V8
+- "Any real divine act in sequence is less perfect than timeless stasis." -> this file first
+
 Rule: if the case starts with what perfection must be, do not collapse it into a downstream predication or composition debate. Direction, place, exaltedness, action, and speech language must not be reduced to generic anthropomorphism talk when the real pressure is a prior static-perfection filter.
 
 ---
@@ -122,6 +135,25 @@ Treat the following as one recurring restoration target:
 - the false collapse from "occurs by will" to "created external product"
 
 The burden here is to refuse the imported perfection criterion first, then restore that real action is not a defect and real speech is not equivalent to creaturely composition.
+
+**Created-effect vs. divine-act rule:** If the objection says that any act occurring in time
+must be created, require the missing step. Created effects of divine action are created and
+external; the divine act itself is not thereby a created external product when it truly belongs
+to God. A framework that detaches every temporal act from God while still using action-language
+has reduced action to metaphor and has not preserved the attribute it names.
+
+**Falsafī necessitation contrast:** If the case denies real will, power, life, or action and
+treats the world as a necessary emanation from the divine essence, do not handle it as a mere
+wording dispute. Route the case through this perfection-criterion family and the
+dhāt/fiʿl distinction in `sound-reason-epistemology.md`: the problem is the loss of free divine
+agency and the collapse of creation into necessity.
+
+**Ever-active / no co-eternal effect discriminator:** If a pressure says God must either have
+been inactive before creating or else have an eternal created effect alongside Him, refuse the
+binary. The restored account is everlasting power, will, sovereignty, and voluntary action,
+with each created effect originated when its determining conditions obtain. No specific
+creature is eternally concomitant with God, and no new ability begins in Him. This discriminator
+prevents both errors: static divine inactivity and necessary emanation.
 
 ---
 

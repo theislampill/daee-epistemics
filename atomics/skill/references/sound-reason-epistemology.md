@@ -456,6 +456,13 @@ to specify their creaturely mode; refuse both errors:
 
 Bilā kayf is not evasion — it is precision about what can and cannot be known.
 
+Tanzīh is not completed by first imagining a body-like mode and then denying the revealed
+predicate because of that imagination. The imagination itself is not a reliable theological
+standard. When aboveness, descent, speech, action, or responsiveness is live, separate the
+revealed meaning from the creaturely modality the mind supplies; deny the modality, not the
+meaning. This boundary also has limits: intrinsic deficiencies and logical contradictions are
+rejected because of what they are, not because their modality is unknown.
+
 **The positive content — analogical predication:** The objection that bilā kayf is
 "epistemically empty" (you are saying 'God has X' where X is entirely unlike anything
 we mean by X) is answered by the positive account. Terms carry a semantic core that
@@ -481,13 +488,34 @@ and theodicy questions conflating God's necessary existence with God's creative 
 - **Dhāt (ذات — essence):** What God is — necessarily existing. His existence is
   necessary; he could not not exist.
 - **Fiʿl (فعل — act):** What God does — creates, sustains, decrees. Divine acts are
-  products of a free divine will, not necessary consequences of the divine nature.
+  free and by will, not necessary emanations from the divine essence. Created effects are
+  external products; the divine act itself is not treated as a created external product when it
+  subsists in God.
 
 The created world is genuinely contingent: it could have been otherwise, being the
 product of free divine agency, not necessary emanation. The tradition rejects the
 Neoplatonic emanation model — on which the world flows from the divine nature by
 necessity — precisely because it would make contingency illusory and collapse all modal
 distinctions.
+
+**Action-createdness parity rule:** Do not infer "divine action is temporal" plus "everything
+temporal is created" into the conclusion that God's acts are created external products. The
+load-bearing distinction is the same one required in the speech case: created effects are
+created and external, while an act or attribute truly belonging to God is not severed from Him
+and reassigned to creation. If a position protects divine speech from being detached from the
+speaker, apply that parity to divine action as well.
+
+**Ever-active without an eternal created effect:** Sound reason distinguishes everlasting
+divine capability and action from any claim that a specific created effect is eternal alongside
+God. God has not become able after incapacity; He has always been knowing, powerful, sovereign,
+and acting by will, without likeness or modality. Yet the agent precedes each particular act
+and effect: every created effect is originated, preceded by nonexistence, and brought about
+when its complete determining influence obtains. Saying that God is always Creator does not
+make any creature co-eternal with Him. Conversely, making one specific created object
+eternally concomitant with Him negates genuine creating and acting rather than preserving it.
+Do not collapse this into the philosopher's claim that God is an act or into necessary
+emanation from the essence; the relevant surface is voluntary divine acts subsisting in the
+divine essence, by power and will.
 
 **The ipseity corollary — ontological dependence without identity:** Created persons are
 genuinely real, genuinely distinct from God, and genuinely capable of relationship with
@@ -517,9 +545,14 @@ systems.
 
 Keep the operative distinction short:
 
-- temporal relation between events: a relation, not a separately subsisting entity
+- temporal relation between events: a relation, not a separately subsisting entity; created
+  and uncreated are not predicated of it as though it were a thing
 - time as the measure of motion in a moving substrate (`zamān`): an extra-mental attribute that
-  exists only in particulars
+  exists only in particulars; if the moving substrate is created, that measure is created with it
+- divine action/duration: God's creating created-system `zamān` does not imply that God is
+  timeless, motionless, or without real action. Divine acts and their duration are not created
+  products when they subsist in God; Atharī ontology does not make "temporal," "in time,"
+  "in space," or directional language sufficient by itself to infer createdness.
 
 Days, years, and created spatiality belong to created particulars. God's creating them does not
 force a static or timeless deity; it only forbids transferring the created system's mode to God or

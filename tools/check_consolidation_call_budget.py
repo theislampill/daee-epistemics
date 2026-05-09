@@ -50,8 +50,8 @@ CASES = [
     CaseClass("Atheist / naturalist objection", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROFILES, TACTICS, TECHNIQUES)),
     CaseClass("Christian Trinity / incarnation / philosopher's-God case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, DO, TACTICS, TECHNIQUES, SPECIALTY)),
     CaseClass("Revelation / transmission / canon case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, RT, TECHNIQUES, TACTICS)),
-    CaseClass("Hadith-authentication case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, SPECIALTY, RT)),
-    CaseClass("Kalamic / Maturidi evidentialist case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROFILES, SPECIALTY, TECHNIQUES, TACTICS)),
+    CaseClass("Ḥadīth-authentication case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, SPECIALTY, RT)),
+    CaseClass("Kalāmic / Māturīdī evidentialist case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROFILES, SPECIALTY, TECHNIQUES, TACTICS)),
     CaseClass("Grief-primary / identity-performance / thin-basis case", "ordinary", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROCEDURES, TACTICS)),
     CaseClass("Complex mixed higher-order case", "complex", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROFILES, DO, RT, TACTICS, TECHNIQUES, PROCEDURES, SPECIALTY)),
     CaseClass("Maximal audit / regression case", "audit", (SKILL, FOUNDATION, CORE, PHASE2, GATE, OUTPUT, PROFILES, DO, RT, TACTICS, TECHNIQUES, PROCEDURES, SPECIALTY), normal=False),
@@ -59,6 +59,8 @@ CASES = [
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     root = repo_root()
     errors: list[str] = []
     if not out_dir(root).is_dir():

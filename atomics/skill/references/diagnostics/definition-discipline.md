@@ -51,6 +51,8 @@ A public term is quietly given a specialist meaning and the argument proceeds as
 **Examples:**
 - "Body," "substance," "accident," or "composition" are used with technical ontological meanings while the conclusion trades on ordinary-language force.
 - "Necessary" and "contingent" are treated as exhaustive public categories without argument for the imported proof grammar.
+- "Tajsim," "tashbīh," "takhsis," "tarkīb," "parts," or "limited" are used as verdict labels
+  while the definition, proof framework, and alleged entailment are left unstated.
 
 **Route consequence:** Name the narrowing, restore the public/shared sense, then decide whether M9, proof-method-audit.md, or do-attribute-precision.md is next.
 
@@ -59,6 +61,11 @@ A public term is quietly given a specialist meaning and the argument proceeds as
 The interlocutor treats an elite school term as though it were the ordinary content of the discourse being analyzed.
 
 **Example:** Prophetic or scriptural language is judged through a technical metaphysical lexicon that was not the discourse's own semantic register.
+
+**Semantic discipline:** "Literal" and "figurative" are not free-standing verdicts. They are
+useful only when they name how the speech actually functioned in its usage, context, speaker
+intent, and direct audience reception. A later technical category cannot be made the court of
+appeal for meaning unless it is shown to belong to that speech situation.
 
 **Route consequence:** Restore the discourse to the level at which it was speaking before importing the elite term as the court of appeal.
 
@@ -78,6 +85,28 @@ A distinction that exists only conceptually is treated as though it proved an ex
 
 **Route consequence:** Route to M9 or sound-reason-epistemology.md §6.3 only after the level-confusion is named.
 
+### 5. Proposition / judgment confusion
+
+The argument confuses a proposition's truth-status with a person's current decision to affirm,
+deny, or suspend judgment about it.
+
+**Example:** "Nobody knows whether X is true; therefore X is neither true nor false."
+
+**Route consequence:** Restore the distinction between (a) the truth-apt proposition and (b)
+the knower's judgment-state. Suspension of judgment is itself a responsible epistemic judgment;
+it is not a third truth-value for the proposition.
+
+### 6. Sense-shift contradiction
+
+The argument claims a proposition is both true and false while shifting the predicate's sense.
+
+**Example:** "reckless" used once for dangerous driving abstracted from circumstances and once
+for unjustified conduct under the full circumstances.
+
+**Route consequence:** Re-state the proposition in one sense at one time before M1, M8, or
+predication analysis is released. No contradiction has been established until the same predicate
+sense is held fixed.
+
 ---
 
 ## Minimal-Pair Discriminators
@@ -94,7 +123,21 @@ A distinction that exists only conceptually is treated as though it proved an ex
 - "These are distinguishable in thought." → conceptual distinction only
 - "Therefore they are separable in reality." → extra-mental overreach
 
----
+**Minimal pair 4 - proposition vs. judgment**
+- "I do not yet know whether X is true." -> suspension of judgment
+- "X is neither true nor false." -> truth-status claim requiring separate justification
+
+**Minimal pair 5 - contradiction vs. predicate-sense shift**
+- "X is true and false in the same sense at the same time." -> contradiction pressure
+- "X is true under one sense of the predicate and false under another." -> definition discipline before contradiction routing
+
+**Minimal pair 6 - label vs. argument**
+- "This is tajsīm/tarkīb/limited." -> label only; ask definition and entailment
+- "By this defined sense of tarkīb, the claim entails separable parts because..." -> argument form available for M9 / attribute-precision routing
+
+**Minimal pair 7 - reception-grounded meaning vs. category override**
+- "This expression was used by that audience in this context for X." -> semantic grounding
+- "This expression must mean Y because our later metaphysical category forbids X." -> definition discipline before doctrine
 
 ## Failure Tests
 
@@ -103,4 +146,8 @@ This file has not governed the response if:
 - the answer argues inside a specialist narrowing without naming it
 - public language is allowed to be captured by a technical lexicon without disclosure
 - conceptual distinction is answered as if extra-mental separation had already been established
+- suspension of judgment is treated as proof that the proposition lacks truth-value
+- a predicate-sense shift is treated as a same-sense contradiction
+- loaded school labels are treated as settled arguments before their definitions and entailments are exposed
+- literal/figurative labels are treated as substitutes for usage, context, speaker intent, and audience reception
 - M7 or M9 is loaded while the prior definition-capture generating the case remains unnamed

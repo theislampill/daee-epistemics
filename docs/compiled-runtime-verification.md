@@ -49,8 +49,8 @@ PASS  8 calls (<= 12): Ordinary theological or philosophical objection
 PASS  9 calls (<= 12): Atheist / naturalist objection
 PASS 10 calls (<= 12): Christian Trinity / incarnation / philosopher's-God case
 PASS  9 calls (<= 12): Revelation / transmission / canon case
-PASS  8 calls (<= 12): Hadith-authentication case
-PASS 10 calls (<= 12): Kalamic / Maturidi evidentialist case
+PASS  8 calls (<= 12): Ḥadīth-authentication case
+PASS 10 calls (<= 12): Kalāmic / Māturīdī evidentialist case
 PASS  8 calls (<= 12): Grief-primary / identity-performance / thin-basis case
 PASS 13 calls (<= 20): Complex mixed higher-order case
 PASS 13 calls (non-normal): Maximal audit / regression case
@@ -173,14 +173,14 @@ The package script was run with PowerShell execution-policy bypass because direc
 
 ```text
 COMMAND: powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-runtime.skill.zip
-Archive: /mnt/c/workspace/ai/daee-epistemics/daee-epistemics/build/daee-epistemics-runtime.skill.zip
+Archive: <repo>/build/daee-epistemics-runtime.skill.zip
 Entries: 19
 Root check: PASS
 Separator check: PASS
 Compiled metadata check: PASS
 
 Packaged skill archive:
-  Path:   C:\workspace\ai\daee-epistemics\daee-epistemics\build\daee-epistemics-runtime.skill.zip
+  Path:   <repo>\build\daee-epistemics-runtime.skill.zip
   Size:   429966 bytes
   SHA256: 10A227E99310423E27282E9E6BD27EFB7CAA410687493AAF5A3699D560851E17
 

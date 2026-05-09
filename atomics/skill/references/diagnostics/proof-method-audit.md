@@ -7,6 +7,7 @@ load_when:
   - arguments for God's existence being compared or contested
   - proof grammar itself is the live issue
   - necessity/contingency language functioning as tribunal
+  - temporal-origination and contingency proof routes are being compared
 routing_effects:
   - classifies proof family before argument content is released
   - identifies tribunal status before content dispatch
@@ -53,8 +54,8 @@ status, this owner has not executed.
 | Family | Assumes | Typically establishes | Hidden load risk | Correct status |
 |--------|---------|-----------------------|------------------|----------------|
 | Fiṭrah / reminder / āyāt | recognition can be awakened once occlusion is reduced | restored attention, not discursive closure | being dismissed as "not proof" by an imported criterion | primary route in healthy cases |
-| Cosmological / temporal origination | causal intelligibility; temporal origination or explanatory insufficiency of regress | uncaused source or first cause in a limited sense | collapse of successive and simultaneous series | secondary restorative route |
-| Necessity / contingency | modal grammar is valid and not silently overextended | a necessary ground or non-contingent explanatory terminus | necessity/contingency treated as the only admissible proof language | secondary, not tribunal |
+| Cosmological / ḥudūth / temporal origination | causal intelligibility; a temporally originated thing's existence rather than non-existence requires a determining ground | uncaused source or first cause in a limited sense | collapse of successive and simultaneous series; being unnecessarily replaced by wider modal grammar | secondary restorative route; often clearer than modal contingency where temporal origination is common ground |
+| Necessity / contingency | modal grammar is valid and not silently overextended | a necessary ground or non-contingent explanatory terminus | necessity/contingency treated as the only admissible proof language; possible-but-not-originated category assumed rather than established | secondary, not tribunal |
 | Teleological / design | purposive order is explanatorily salient | intelligence or purposive source | argument from current explanatory best fit inflated into exhaustive metaphysics | secondary restorative route |
 | Moral grounding | objective normativity requires adequate ontological ground | moral-source pressure toward theism | moral realism simply presupposed as neutral starting point | secondary restorative route |
 | Consciousness / normative character | first-person awareness, truth-orientation, and normativity are real | pressure against reductive naturalism | gap-argument inflation or category drift | secondary restorative route |
@@ -80,6 +81,41 @@ and route:
 
 - "Contingent things call for explanation." → ordinary inferential claim
 - "Only necessity/contingency grammar counts as real reason about God." → overreach
+
+### Temporal-Origination Priority Rule
+
+When the comparison is between:
+
+- a temporally originated thing whose existence after non-existence is being preferred over
+  its non-existence; and
+- a merely possible existent (`mumkin`) considered through a wider modal taxonomy,
+
+do not automatically treat the wider modal taxonomy as the clearer or more basic route.
+When temporal origination is common ground, the need of the temporally originated thing for
+a determining ground (`murajjiḥ`) is the more immediately evident rational burden. By
+contrast, a possible-but-not-temporally-originated existent is a contested category: its
+reality, its being an effect, and its route to a necessary ground must be established rather
+than assumed.
+
+**Route consequence:** If the input's live signal is ḥudūth/preponderance, keep the proof
+there unless the interlocutor has actually made modal contingency grammar the live burden.
+If `mumkin` grammar appears, audit whether it is serving as a local proof tool or as a
+tribunal that displaces the clearer temporal-origination burden.
+
+### Ever-Active Creator / No Eternal Effect Rule
+
+When a proof dispute presses the sequence of divine acts and created effects, distinguish:
+
+- everlasting divine power, will, and action;
+- each particular created effect coming into existence after nonexistence;
+- the complete determining influence for that effect when its conditions are present and
+  impediments removed; and
+- the rejected claim that any specific created object is eternally concomitant with God.
+
+The agent precedes every act and effect. Therefore continual divine action does not license an
+eternal creature, and rejecting an eternal creature does not require saying God was once
+inactive, incapable, or only later able to act. If the argument collapses these, route to
+`perfection-criterion-usurpation.md` and `sound-reason-epistemology.md` §6 before content.
 
 ### Failure test
 

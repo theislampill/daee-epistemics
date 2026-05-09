@@ -4,7 +4,7 @@ This file records the current v0.3.2.0 GitHub Release package artifact. Binary s
 are not committed to the source repository; GitHub Releases are the binary distribution surface
 for the published `.skill` asset.
 
-Build the release candidate locally from the generated `skill/` package root:
+Build the package locally from the generated `skill/` package root:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
@@ -14,16 +14,17 @@ Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.
 The package script archives the contents of `skill/`, not the repository root and not the
 top-level `skill/` directory. It writes a local `.skill.zip` payload; the published GitHub Release
 asset is the same checked payload renamed to `.skill`. Do not re-zip the repository root.
+On Windows, `package.ps1` uses WSL Python to preserve archive path separators.
 
 ## Current Package / Release Asset Evidence
 
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `A501F0FD15AF7374619A311BB0D5D75973239F0F613ECAB53E81DCE039F92EC2` |
-| Size | `528460` bytes |
+| SHA256 | `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` |
+| Size | `543129` bytes |
 | Entries | `45` |
-| GitHub Release visibility | Published; asset rebaked for recursive render / state re-read hardening |
+| GitHub Release visibility | Published; asset rebaked for recursive render, Qurʾān/ḥadīth formatting, kalām terminology, operative-distinction, and release-protocol hardening |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
@@ -52,7 +53,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`A501F0FD15AF7374619A311BB0D5D75973239F0F613ECAB53E81DCE039F92EC2` are not present unless a smoke
+`3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
@@ -71,7 +72,7 @@ Evidence boundaries:
 source repo -> current atomics, tools, docs, generated skill/ runtime
 local package build output -> ignored build/*.skill.zip archive built from skill/
 historical smoke regression artifacts -> committed runtime-grounding-v5 Markdown/IR artifacts
-current package evidence -> public GitHub Release .skill asset, local/internal RC .skill.zip filename, SHA256, size, entries, and archive-root checks above
+current package evidence -> public GitHub Release .skill asset, local/internal .skill.zip filename, SHA256, size, entries, and archive-root checks above
 current-package smoke evidence -> none in this source state
 live-host behavior -> not independently replayed by this repo without a future live-runner
 ```
@@ -86,6 +87,7 @@ scripts/
 tests/
 compiled-module-map.json
 build-manifest.json
+README.md
 ```
 
 Forbidden top-level archive entries:

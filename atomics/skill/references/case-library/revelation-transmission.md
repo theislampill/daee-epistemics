@@ -4,7 +4,7 @@ module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
 contract_version: "0.3.2.0"
 load_when:
-  - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
+  - revelation, scripture, Qurʾānic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed
 routing_effects:
   - handles RT-1 through RT-4 after V10 provenance/contents/authority sequence
@@ -38,7 +38,7 @@ RT progression as permission to spill every downstream answer in one pass.
 not public-render permission. In default output, do not cite scholarly tradition, named
 schools, manuscript authorities, critics, church bodies, or text-critical frameworks as
 support/context unless the user explicitly asks or validated IR requires source-comparison.
-If Qur'an, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
+If Qurʾān, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
 transmission categories as bounded operative distinctions: provenance, contents, authority,
 and state-change.
 
@@ -139,7 +139,7 @@ V10 sequence governs: maintain provenance → contents → authority ordering (`
 *Cross-tradition contamination guard:* NT manuscript variants include scribal harmonization, doctrinal adjustments, and copyist errors documented across a fragmentary manuscript tradition without a living oral transmission. Qurʾānic qirāʾāt are not this — they are authorized modes of recitation traced through named chains to the Prophet, chosen by authoritative reciters from authentic options, not scribal accidents. Reading qirāʾāt as equivalent to NT manuscript variants is a category error. The method of NT textual criticism (reconstructing an "original text" from divergent manuscript witnesses) was built for conditions that do not obtain here.
 
 **Worked example — correctly routed:**
-Interlocutor cites variation between Ḥafṣ and Warsh readings as evidence of "two different Qurʾāns." Correct provenance step: both are named qirāʾāt traced through mutawātir chains — authorized recitational traditions. Correct contents step: the differences are phonological and recitational, not doctrinal. Correct authority step: both readings are recognized as authentic by the Islamic scholarly tradition; the plurality is authorized, not uncontrolled.
+Interlocutor cites variation between Ḥafṣ and Warsh readings as evidence of "two different Qurʾāns." Correct provenance step: both are named qirāʾāt traced through mutawātir chains — authorized recitational traditions. Correct contents step: the differences are phonological and recitational, not doctrinal. Correct authority step: both readings are recognized as authentic within canonical qirāʾāt transmission discipline; the plurality is authorized, not uncontrolled.
 
 **Worked example — incorrectly routed (NT text-critical heuristics imported):**
 Response treats Ḥafṣ vs. Warsh variation as equivalent to a Codex Sinaiticus vs. Codex Vaticanus discrepancy in NT manuscripts — implying that one is more "original" and the other is a later scribal development, and that a "critical text" should be reconstructed from the divergent witnesses. Error: this imports NT text-critical methodology (reconstruction of an "original" from divergent manuscripts) onto a tradition that does not have divergent manuscripts in that sense — it has authorized recitational plurality within a disciplined transmission system.

@@ -405,7 +405,7 @@ The interlocutor who conflates diversity of superstructure with diversity of fou
 <!-- MODULE_ID: F1-supra-vs-antirational -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/F1-supra-vs-antirational.md -->
-<!-- SOURCE_SHA256: a96358adba0d3aedc5d51eab9ba8a05de9d97e1ebfb482aca4990fca0fd5e4e6 -->
+<!-- SOURCE_SHA256: 131d3279405346338e9acbaee7a4481ec3a53362e4c2beb5089ac3fc95b71b68 -->
 
 ---
 id: F1-supra-vs-antirational
@@ -447,7 +447,7 @@ Many things rightly committed to — love, trust, moral principle, the worth of 
 ## Failure Conditions
 
 **Do not deploy when:**
-- The objection is a specific substantive challenge framed in the rhetoric of reason vs. religion. If the interlocutor says "Islam abandons reason" but is actually pressing a specific claim (evolution conflicts with scriptural cosmology, penal rulings conflict with human rights norms, a specific hadith contradicts scientific consensus), F1 clears the rhetorical framing but cannot substitute for addressing the substantive content. F1 is needed, but the substantive objection must be routed to the appropriate DO/RT entry after. Deploying F1 and stopping there — as if clearing the framing resolves the substantive objection — is the primary anti-pattern.
+- The objection is a specific substantive challenge framed in the rhetoric of reason vs. religion. If the interlocutor says "Islam abandons reason" but is actually pressing a specific claim (evolution conflicts with scriptural cosmology, penal rulings conflict with human rights norms, a specific ḥadīth contradicts scientific consensus), F1 clears the rhetorical framing but cannot substitute for addressing the substantive content. F1 is needed, but the substantive objection must be routed to the appropriate DO/RT entry after. Deploying F1 and stopping there — as if clearing the framing resolves the substantive objection — is the primary anti-pattern.
 - Hawā or gharaḍ is the primary deformation. When the "religion abandons reason" characterization is functioning as a rationalization for volitional resistance, F1's conceptual distinction will be acknowledged and set aside without movement. The distinction lands philosophically but generates no traction. F2 must surface the volitional dimension; clearing the characterization without addressing the resistance beneath it does nothing.
 - V2 is needed first. If the interlocutor's conception of reason is contaminated (bidʿī ʿaqlī — reason implicitly restricted to empirically verifiable claims, or to a prior metaphysical picture presented as neutral), then establishing the supra/anti distinction within that contaminated framework achieves little — "supra-rational" will be heard as "beyond what reason can verify," which, under the contaminated conception, is the same as anti-rational. V2 must reconstitute the conception of reason first so that "supra-rational" can be properly understood as "exceeding formal proof" rather than "contradicting genuine reason."
 - The interlocutor is defending Hard Fideism themselves. If the case involves someone from within a tradition who holds that faith operates independently of and against reason — that intellectual submission is the proper response to revelation regardless of what reason says — F1 is not the move. The structure of that conversation is different; the supra/anti distinction is not the operative question.
@@ -1712,7 +1712,7 @@ M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. 
 <!-- MODULE_ID: M9-predication-mode -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M9-predication-mode.md -->
-<!-- SOURCE_SHA256: 53f0822bb456da8dafe73290c520edd314bcf2e1e071ff4aeda5d5299732c053 -->
+<!-- SOURCE_SHA256: 44e1bba7009af5bf4243f28292c767ee9fafea9e4e43158c50c44f39cfb81db1 -->
 
 ---
 id: M9-predication-mode
@@ -1800,10 +1800,12 @@ split before V8 or doctrinal content can be released.
 
 | Term / pressure | Required split | First owner | Held route |
 |---|---|---|---|
-| `ta'wil` | tafsir/bayan vs semantic override by external criterion | M9 | V8/do-attribute after split |
-| `zahir` | apparent meaning fitting Allah vs creaturely mode | M9/V8 | doctrinal defense held |
+| `taʾwīl` / `ta'wil` | tafsīr/bayān vs semantic override by external criterion | M9 | V8/do-attribute after split |
+| `ẓāhir` / `zahir` | apparent meaning fitting Allah vs creaturely mode | M9/V8 | doctrinal defense held |
+| `literal/figurative` | reception-grounded meaning vs later category override | M9/definition-discipline | prophetic-discourse-neutralization |
 | `jism/body` | false creaturely body vs smuggled technical negation | M9 | V8/do-attribute |
-| `jihah/direction` | created spatial containment vs uluww/exaltedness | M9 | V8 |
+| `jihah/direction` | created spatial containment vs ʿulūw/exaltedness | M9 | V8 |
+| `nuzūl` / `nuzul/descent` | creaturely displacement/ḥulūl vs real divine act with modality withheld | M9/V8 | perfection-criterion if static-perfection tribunal governs |
 | `tarkib/composition` | separable parts/dependence vs multiplicity of attributes | M9/do-attribute | sound-reason section 6.3 |
 | `hadd/limit` | created boundary vs undefined technical negation | M9 | V8 |
 | `person/nature/is God` | identity, nature predicate, count noun, title of worship/lordship | M9 | DO-Christian/V12 |
@@ -1812,10 +1814,16 @@ split before V8 or doctrinal content can be released.
 
 ### Ta'wil-sense split
 
-Before answering "do you accept ta'wil?", split tafsir/bayan, which explains meaning, from
+Before answering "do you accept taʾwīl?", split tafsīr/bayān (`tafsir/bayan`), which explains meaning, from
 semantic override, which diverts wording from its apparent sense because an external criterion
 has forbidden it. The first does not license the second. A yes/no answer before this split
 concedes an equivocation.
+
+Literal/figurative labels do not settle the case by themselves. A figurative reading can be
+valid when the speech situation, usage, and audience reception support it; a literal reading
+can be false when it imports a creaturely modality not carried by the wording. The M9 burden
+is to identify the received meaning and the alleged entailment, not to win by attaching a
+label.
 
 ### Communication-trust test
 
@@ -1823,6 +1831,12 @@ When the proposed rule says core revealed descriptions systematically intend the
 non-apparent sense, test the cost to guidance, clarity, pedagogy, and public address. Broad
 semantic override remains held unless it can explain why core guidance would be delivered
 through systematically misleading surfaces.
+
+Meaning is anchored in communication: speaker intent, usage, context, and the direct audience's
+linguistic frame. Later metaphysical concerns can affect application or downstream defense, but
+they do not create the original meaning of the speech. If an interpretation could not have been
+available to the addressed audience except by importing a later technical framework, semantic
+discipline has not landed.
 
 ### Dalalah triad
 
@@ -1836,6 +1850,26 @@ When the move is "your view entails X," do not publicly assign X to the human in
 until the entailment is presented and the speaker accepts it, denies the relation, or remains
 silent. The entailment may remain a critique of the position; it is not automatically an
 attribution to the person.
+
+### Imagination-as-entailment caution
+
+When the objector says an affirmed revealed predicate "must entail" extension, containment,
+ḥulūl, displacement, bodily motion, or creaturely relocation, separate:
+
+1. the semantic core of the predicate;
+2. the imagined creaturely modality attached to it;
+3. the alleged logical entailment from the first to the second.
+
+The imagination of a body-like mode is not an entailment. If the entailment is not shown,
+route to V8 after the split: meaning affirmed, likeness denied, modality withheld. If the
+objection is instead that any real act or attribute is beneath divine perfection, route first
+to `perfection-criterion-usurpation.md`.
+
+For nuzūl objections built on changing night-times, distinguish created relational variation
+from divine modality. "It is night for one region and day for another" may be a true relational
+fact about creatures; it does not prove that divine descent must be a body traveling through
+created positions or alternating tasks. If the argument needs that creaturely model, M9 has not
+landed until the model is named and refused.
 
 ---
 
@@ -1937,8 +1971,10 @@ Until that split is made, the yes/no answer you want has not been earned.
 - If the response answers "God is not a body" or "God is not in a direction" without first clarifying what the speaker means, M9 did not govern.
 - If the response accepts "composite" or "dependent" as a settled category before distinguishing kinds of composition and dependence, M9 did not govern.
 - If the reply reaches V8, `do-attribute-precision.md`, or kalamic school-routing without first splitting the loaded term, the semantic gate was bypassed.
-- If the reply answers broad ta'wil claims without splitting tafsir/bayan from tribunal-driven
+- If the reply answers broad taʾwīl claims without splitting tafsīr/bayān from tribunal-driven
   semantic override, M9 did not govern.
+- If the reply treats "literal" or "figurative" as the controlling verdict without testing
+  usage, context, audience reception, and entailment, M9 did not govern.
 - If the reply attributes an unaccepted entailment to a person rather than the position, M9 did
   not govern.
 

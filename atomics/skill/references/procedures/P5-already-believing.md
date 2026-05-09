@@ -56,7 +56,7 @@ faithful; the issue is not fidelity but epistemic grounding.
 
 **2. Name the article of faith and source of pressure precisely.**
 Do not strengthen "belief in general." Ask which article is actually thin, inherited, or under
-pressure: God's existence, revelation, the Qur'an, final prophethood, divine attributes,
+pressure: God's existence, revelation, the Qurʾān, final prophethood, divine attributes,
 afterlife, or trust in the tradition's transmitters and teachers. Then classify the pressure:
 text-history, moral recoil, philosophical objection, authority fatigue, betrayal, or panic after
 viral material. Examined conviction grows by specificity, not by vague encouragement.
@@ -110,7 +110,7 @@ companion transition and should not be skipped.
 ## IR-Visible Consequences
 
 When P5 is active, the IR should mark an internal-strengthening route and identify the
-article of faith under pressure: God's existence, revelation, Qur'an, final prophethood,
+article of faith under pressure: God's existence, revelation, Qurʾān, final prophethood,
 attributes, afterlife, transmission, or trust in tradition. It should also record the pressure
 type: text-history, moral recoil, philosophical objection, authority fatigue, betrayal, or
 panic after viral material.

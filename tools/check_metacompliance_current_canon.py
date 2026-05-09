@@ -89,7 +89,7 @@ OWNER_REQUIRED = {
         "Method-source non-branding rule",
         "default output",
         "not public-render material",
-        "Default citation allowance is restricted to Qur'an",
+        "Default citation allowance is restricted to Qurʾān",
     ],
     "atomics/skill/references/diagnostics/diagnostic-ir.md": [
         "IR(pattern_profile, claim_level, reason-category, concealment, deformation, DO-orient)",

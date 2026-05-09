@@ -45,7 +45,7 @@ V12 is not executed by naming tamanu, divine plurality, or mutual prevention. A 
 
 **State-change condition:** V12 lands only when the released plurality claim has either collapsed to one independent lord, been returned as not-a-V12 target because independence was denied/unclear, or exposed a materially different downstream burden for the next cycle.
 
-**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qur'anic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
+**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qurʾānic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
 
 ---
 

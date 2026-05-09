@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/INDEX.md -->
-<!-- SOURCE_SHA256: 27e5fde51ef6f2b1aa8cc29fda428fb48e63a4b256302290cc378cf9bfea6293 -->
+<!-- SOURCE_SHA256: e5d1b5dbb09cf4327ae35018d4a4de25bcd3b91b2e1336a275df59317e12a40a -->
 
 ---
 id: diagnostics-index
@@ -86,7 +86,7 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
 | `references/metaphysical-architecture.md` | Metaphysical architecture layer | Auditing what is being restored and why | Task is purely routing mechanics | Ordered account of epistemic and ontological structure |
 | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic | `dalīl`, `wujūb al-naẓar`, taqlīd-as-non-knowledge, Māturīdī concession language, or a narrow necessary-knowledge class is surfacing | The case is ordinary evidentialism without kalāmic structure | Kalāmic-specific critique and routing |
 | `references/diagnostics/fitrah-perspectives.md` | Specialty diagnostic | The `fiṭrah` is described as blank-slate, morally neutral, or as equal dual tendencies | The case does not turn on `fiṭrah` taxonomy | `fiṭrah`-view classification and implications |
-| `references/diagnostics/hadith-authentication-epistemology.md` | Specialty diagnostic | Ḥadīth corpus reliability, isnād / jarḥ wa taʿdīl criticism, āḥād-vs-mutawātir epistemic-yield questions, or grading rhetoric is live | The case is Qur'anic RT-1..RT-4, or the ḥadīth burden is already typed and only downstream doctrine remains | Ḥadīth burden family, route consequence, and hold/release rule |
+| `references/diagnostics/hadith-authentication-epistemology.md` | Specialty diagnostic | Ḥadīth corpus reliability, isnād / jarḥ wa taʿdīl criticism, āḥād-vs-mutawātir epistemic-yield questions, or grading rhetoric is live | The case is Qurʾānic RT-1..RT-4, or the ḥadīth burden is already typed and only downstream doctrine remains | Ḥadīth burden family, route consequence, and hold/release rule |
 | `references/diagnostics/causal-series-taxonomy.md` | Specialty diagnostic | Regress, infinity, simultaneous or successive causal series, circularity, or secondary-cause self-sufficiency is the live structure | The case is ordinary evidentialism with no causal-series burden | Classified series type, route consequence, and owner handoff |
 | `references/diagnostics/definition-discipline.md` | Specialty diagnostic | Public-language capture, silent redefinition, universals/particulars confusion, or mental/extra-mental confusion is driving the contradiction claim | The dispute is a straightforward lexical question already governed by M7 | Definition-capture diagnosis and restoration target |
 | `references/diagnostics/proof-method-audit.md` | Specialty diagnostic | Proof-family audit, necessity/contingency grammar, or philosophically trained proof-overreach is live | The case is a simple reminder/sign case with no proof-family pressure | Proof-family classification, imported load audit, and route consequence |
@@ -105,7 +105,7 @@ This index expands the root skill's routing summaries with the discriminating de
 <!-- MODULE_ID: kalamic-interlocutor -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
-<!-- SOURCE_SHA256: fea80270be1a33b441e33e10ebde704e869d1de4f14b551bd91f6e1a2e486315 -->
+<!-- SOURCE_SHA256: a9a0bfc09d76a9edf9d007361c979c96cdae32d68827e2fbe8459862fd006148 -->
 
 ---
 id: kalamic-interlocutor
@@ -119,16 +119,17 @@ emits:
 catalogue_registered: false
 ---
 
-# Kalamic Interlocutor - Engagement Strategy
+# Kalāmic Interlocutor - Engagement Strategy
 
 **Source-status note:** School names and variants in this file are internal routing
 discriminators, not public-render support. In default output, do not use school labels,
-named scholars, or kalamic genealogy as context or warrant unless the user explicitly
+named scholars, or kalāmic genealogy as context or warrant unless the user explicitly
 asks or validated IR requires source-comparison. Route by the live proof-method,
 predication, or authority-order pattern.
 
-
-Load when the interlocutor uses markers of kalāmic evidentialism: `dalīl` demand, `wujūb al-naẓar`, `taqlīd` treated as non-knowledge, `fiṭrah` denied epistemic standing without propositional ratification, or explicit Muʿtazilī / Ashʿarī / Māturīdī framing.
+Load when the interlocutor uses markers of kalāmic evidentialism: `dalīl` demand,
+`wujūb al-naẓar`, `taqlīd` treated as non-knowledge, `fiṭrah` denied epistemic standing
+without propositional ratification, or explicit Muʿtazilī / Ashʿarī / Māturīdī framing.
 
 ---
 
@@ -139,23 +140,38 @@ School identification is not optional. Once this file is loaded, identify the sc
 ### Burden identification rule
 
 - **Epistemological burden:** the live pressure is `wujūb al-naẓar`, `taqlīd`-as-non-knowledge, or narrow necessary-knowledge restriction.
-- **Ontological burden:** the live pressure is divine attributes, divine speech, the status of the Quran, or any claim governed by the `huduth/khalq` distinction or `kalam nafsi`.
+- **Ontological burden:** the live pressure is divine attributes, divine speech, divine action,
+  the status of the Qurʾān, or any claim governed by the `ḥudūth/khalq` distinction or
+  `kalām nafsī`.
 - **Mixed burden:** both are simultaneously live. Sequence epistemological first; ontological second.
 
 ### Semantic gate for ontological burdens
 
 When the ontological pressure is phrased through loaded terms such as body, direction, place, limit, composition, or their Arabic technical correlates, run `references/tactics/M9-predication-mode.md` first. School-specific ontological routing begins only after that term has been semantically split.
 
+### Loaded-label rhetoric gate
+
+When kalāmic labels such as `tashbīh`, `tajsim`, `takhsis`, `tarkīb`, `parts`, `limited`,
+`direction`, or similar terms are used as instant verdicts, do not treat the label as an
+argument. Ask what definition is being used, what framework makes the label probative, and
+what entailment allegedly follows from the affirmed wording. If the speaker cannot supply the
+machinery, route through `definition-discipline.md`, M9, and V2/V7 as inherited-criterion
+work before any school-specific ontological correction is released.
+
+This gate applies beyond Ashʿarī cases: any school-bound conclusion repeated as "obvious"
+while its proof machinery is unexamined is a noetic-state signal, not a free pass to answer
+inside that school's labels.
+
 | School variant | NS code | Burden | Restoration target | Must load | Prohibited move |
 |---------------|---------|--------|--------------------|-----------|-----------------|
 | Muʿtazilī | NS-6 | Epistemological | Show that `wujūb al-naẓar` presupposes the very fiṭrī reliability it demotes | V2; backbone predicates T-2, T-3 | Do not concede fiṭrī recognition as sub-epistemic |
-| Mu'tazili | NS-6 | Ontological | Deploy the `huduth/khalq` distinction explicitly; expose the collapse from temporal origination to created external product | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not leave the `huduth` premise standing as concession |
-| Ash'ari | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not personally demonstrate, their belief already has non-inferential standing | V2 | Do not treat the softening as resolution of the framework error |
-| Ashʿarī | NS-6 | Ontological | Target `kalām nafsī` specifically and the denial of volitional acts subsisting in God | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bilā kayf` language |
-| Maturidi | NS-10 | Epistemological | Press the instability of the concessionary inferential framework | V9 plus this file | Do not endorse the position as a valid midpoint |
-| Maturidi | NS-10 | Ontological | Shared Ash'ari inheritance on the ontological burden | `sound-reason-epistemology.md`; V8 | Do not treat it as a distinct third ontological pole |
+| Muʿtazilī | NS-6 | Ontological | Deploy the `ḥudūth/khalq` distinction explicitly; expose the collapse from temporal origination to created external product | `sound-reason-epistemology.md` section on divine speech; V8; `do-attribute-precision.md` | Do not leave the `ḥudūth` premise standing as concession |
+| Ashʿarī | NS-6 | Epistemological | Press the communal-obligation softening toward its structural crack: if ordinary believers need not personally demonstrate, their belief already has non-inferential standing | V2 | Do not treat the softening as resolution of the framework error |
+| Ashʿarī | NS-6 | Ontological | Target `kalām nafsī` specifically and the denial of volitional speech or action subsisting in God | `sound-reason-epistemology.md` section on divine speech/action; V8; `do-attribute-precision.md` | Do not hide the school-specific error under generic `bilā kayf` language |
+| Māturīdī | NS-10 | Epistemological | Press the instability of the concessionary inferential framework | V9 plus this file | Do not endorse the position as a valid midpoint |
+| Māturīdī | NS-10 | Ontological | Shared Ashʿarī inheritance on the ontological burden | `sound-reason-epistemology.md`; V8 | Do not treat it as a distinct third ontological pole |
 | School unclear | NS-6 provisional | Epistemological | Hold provisional read and deploy the school-neutral circularity criticism first | V2 | Do not commit to school-specific restoration target yet |
-| Mixed | NS-6 or NS-10 | Both | Sequence epistemological first, ontological second | Per relevant row | Do not flatten both burdens into one generic "kalamic engagement" |
+| Mixed | NS-6 or NS-10 | Both | Sequence epistemological first, ontological second | Per relevant row | Do not flatten both burdens into one generic "kalāmic engagement" |
 
 ---
 
@@ -163,18 +179,18 @@ When the ontological pressure is phrased through loaded terms such as body, dire
 
 Common markers:
 
-- "You need a `dalil` for belief."
+- "You need a `dalīl` for belief."
 - "`Taqlīd` is not knowledge."
 - "`Wujūb al-naẓar` applies to every rational person."
 - "`Fiṭrah` alone is not epistemically sufficient."
 - Narrow restriction of non-inferential knowledge to logic, sense-perception, and similarly limited classes.
-- Maturidi concession language about communal obligation or partial allowance for non-propositional evidence.
+- Māturīdī concession language about communal obligation or partial allowance for non-propositional evidence.
 
 ---
 
 ## The Shared Critique
 
-Four recurring critiques govern the kalamic evidentialist family:
+Four recurring critiques govern the kalāmic evidentialist family:
 
 1. **The foundationalist restriction is arbitrarily narrow.**
    The framework restricts non-inferential knowledge too tightly without principled justification.
@@ -183,36 +199,39 @@ Four recurring critiques govern the kalamic evidentialist family:
 3. **`Wujūb al-naẓar` is circular.**
    The reliability of `naẓar` cannot be grounded by `naẓar` from nowhere.
 4. **The prophetic method is misrepresented.**
-   The prophets did not begin by making later kalamic demonstration the universal gate to revelation.
+   The prophets did not begin by making later kalāmic demonstration the universal gate to revelation.
 
 ---
 
 ## Distinct Engagement Paths
 
-### Mu'tazili
+### Muʿtazilī
 
 - Epistemological track: press the circularity and the demotion of fiṭrī recognition.
-- Ontological track: insist on the `huduth/khalq` distinction and refuse the move from temporal origination to created external product.
+- Ontological track: insist on the `ḥudūth/khalq` distinction and refuse the move from temporal origination to created external product.
 
-### Ash'ari
+### Ashʿarī
 
 - Epistemological track: use the communal-obligation concession as a pressure point. If ordinary believers need not personally perform inferential demonstration, the framework has already conceded non-inferential standing in practice.
-- Ontological track: target `kalam nafsi` directly. The error is not generic caution about divine language; it is a specific severing of the expressed Quran from genuine divine speech in the required sense.
+- Ontological track: target `kalām nafsī` and action-createdness pressure directly. The error is
+  not generic caution about divine language; it is a specific severing of expressed Qurʾān from
+  genuine divine speech, and of divine action from the One who acts, in the required sense.
 
-### Maturidi
+### Māturīdī
 
 - Epistemological track: treat the concessionary structure as instability, not progress. The framework quietly opens the door to the very fiṭrī account it still refuses to acknowledge clearly.
-- Ontological track: route with the Ash'ari ontological burden where the live issue is divine speech or attributes.
+- Ontological track: route with the Ashʿarī ontological burden where the live issue is divine speech or attributes.
 
 ---
 
 ## Ontological Dimension
 
-Load the ontological track only when divine attributes, divine speech, the status of the Quran, or related anti-attribute arguments are actually live.
+Load the ontological track only when divine attributes, divine speech, divine action, the status
+of the Qurʾān, or related anti-attribute arguments are actually live.
 
 The governing corrections are:
 
-- `huduth` does not automatically mean `khalq`
+- `ḥudūth` does not automatically mean `khalq`
 - real divine action and speech are not automatically defects
 - creaturely predication structures are not neutral tribunals over divine discourse
 - school-specific errors must stay school-specific; do not flatten them into generic abstraction
@@ -473,7 +492,7 @@ When diagnosing an interlocutor:
 <!-- MODULE_ID: hadith-authentication-epistemology -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
-<!-- SOURCE_SHA256: 06a98e89441ed9b417bb037dda7565723f18a1c2270c7643a8872e86ba5e7b14 -->
+<!-- SOURCE_SHA256: 15632875f7f5b6cfb8247dabe57917ad5e98b29c3d2afbc2bfa2792b2d085384 -->
 
 ---
 id: hadith-authentication-epistemology
@@ -505,7 +524,7 @@ catalogue_registered: true
 # Ḥadīth Authentication and Epistemic Yield
 
 This file is the canonical owner for ḥadīth corpus transmission/authentication epistemology.
-It exists to keep ḥadīth pressures from being blurred together with Qur'anic RT cases and to
+It exists to keep ḥadīth pressures from being blurred together with Qurʾānic RT cases and to
 stop downstream doctrinal rebuttal from being released before the transmission burden is typed.
 
 This is not a full ʿulūm al-ḥadīth manual. It does not attempt to teach the whole history of
@@ -518,7 +537,7 @@ Runtime discipline:
 - Keep `Claim-type: transmission`.
 - Do not invent `RT-5`.
 - Use `Case family` and `Matched modules` to surface the ḥadīth burden.
-- Keep `RT marker: none` unless a separate Qur'anic RT-1..RT-4 pressure is also live.
+- Keep `RT marker: none` unless a separate Qurʾānic RT-1..RT-4 pressure is also live.
 
 ## Standard Read
 
@@ -667,13 +686,13 @@ This file has not governed the response if any of the following occur:
 - "Not mutawātir" is treated as equivalent to "epistemically worthless."
 - A weak or disputed report is used to collapse the whole ḥadīth corpus without the response
   naming that leap.
-- Qur'anic RT material is imported as though ḥadīth transmission and Qur'anic transmission were
+- Qurʾānic RT material is imported as though ḥadīth transmission and Qurʾānic transmission were
   one undifferentiated architecture.
 
 ## Connection to Existing Owners
 
 - V10 remains the structural provenance -> contents -> authority technique.
-- `revelation-transmission.md` remains the RT-1..RT-4 owner for Qur'anic/scriptural text-history
+- `revelation-transmission.md` remains the RT-1..RT-4 owner for Qurʾānic/scriptural text-history
   cases and believer-destabilization in that family.
 - `foreign-premise-detection.md` and V2 govern imported historical-critical or rationalist
   tribunals when they are functioning upstream of the ḥadīth challenge.
@@ -841,7 +860,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: definition-discipline -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/definition-discipline.md -->
-<!-- SOURCE_SHA256: 61cfb944308246efc465be5ce4e98bc3368c1ae57b773d82e12f3cb828627245 -->
+<!-- SOURCE_SHA256: 3f10d4100f31b41eee064b4d5361d1ae781b2def448521f3414cc45688f25f92 -->
 
 ---
 id: definition-discipline
@@ -896,6 +915,8 @@ A public term is quietly given a specialist meaning and the argument proceeds as
 **Examples:**
 - "Body," "substance," "accident," or "composition" are used with technical ontological meanings while the conclusion trades on ordinary-language force.
 - "Necessary" and "contingent" are treated as exhaustive public categories without argument for the imported proof grammar.
+- "Tajsim," "tashbīh," "takhsis," "tarkīb," "parts," or "limited" are used as verdict labels
+  while the definition, proof framework, and alleged entailment are left unstated.
 
 **Route consequence:** Name the narrowing, restore the public/shared sense, then decide whether M9, proof-method-audit.md, or do-attribute-precision.md is next.
 
@@ -904,6 +925,11 @@ A public term is quietly given a specialist meaning and the argument proceeds as
 The interlocutor treats an elite school term as though it were the ordinary content of the discourse being analyzed.
 
 **Example:** Prophetic or scriptural language is judged through a technical metaphysical lexicon that was not the discourse's own semantic register.
+
+**Semantic discipline:** "Literal" and "figurative" are not free-standing verdicts. They are
+useful only when they name how the speech actually functioned in its usage, context, speaker
+intent, and direct audience reception. A later technical category cannot be made the court of
+appeal for meaning unless it is shown to belong to that speech situation.
 
 **Route consequence:** Restore the discourse to the level at which it was speaking before importing the elite term as the court of appeal.
 
@@ -923,6 +949,28 @@ A distinction that exists only conceptually is treated as though it proved an ex
 
 **Route consequence:** Route to M9 or sound-reason-epistemology.md §6.3 only after the level-confusion is named.
 
+### 5. Proposition / judgment confusion
+
+The argument confuses a proposition's truth-status with a person's current decision to affirm,
+deny, or suspend judgment about it.
+
+**Example:** "Nobody knows whether X is true; therefore X is neither true nor false."
+
+**Route consequence:** Restore the distinction between (a) the truth-apt proposition and (b)
+the knower's judgment-state. Suspension of judgment is itself a responsible epistemic judgment;
+it is not a third truth-value for the proposition.
+
+### 6. Sense-shift contradiction
+
+The argument claims a proposition is both true and false while shifting the predicate's sense.
+
+**Example:** "reckless" used once for dangerous driving abstracted from circumstances and once
+for unjustified conduct under the full circumstances.
+
+**Route consequence:** Re-state the proposition in one sense at one time before M1, M8, or
+predication analysis is released. No contradiction has been established until the same predicate
+sense is held fixed.
+
 ---
 
 ## Minimal-Pair Discriminators
@@ -939,7 +987,21 @@ A distinction that exists only conceptually is treated as though it proved an ex
 - "These are distinguishable in thought." → conceptual distinction only
 - "Therefore they are separable in reality." → extra-mental overreach
 
----
+**Minimal pair 4 - proposition vs. judgment**
+- "I do not yet know whether X is true." -> suspension of judgment
+- "X is neither true nor false." -> truth-status claim requiring separate justification
+
+**Minimal pair 5 - contradiction vs. predicate-sense shift**
+- "X is true and false in the same sense at the same time." -> contradiction pressure
+- "X is true under one sense of the predicate and false under another." -> definition discipline before contradiction routing
+
+**Minimal pair 6 - label vs. argument**
+- "This is tajsīm/tarkīb/limited." -> label only; ask definition and entailment
+- "By this defined sense of tarkīb, the claim entails separable parts because..." -> argument form available for M9 / attribute-precision routing
+
+**Minimal pair 7 - reception-grounded meaning vs. category override**
+- "This expression was used by that audience in this context for X." -> semantic grounding
+- "This expression must mean Y because our later metaphysical category forbids X." -> definition discipline before doctrine
 
 ## Failure Tests
 
@@ -948,9 +1010,189 @@ This file has not governed the response if:
 - the answer argues inside a specialist narrowing without naming it
 - public language is allowed to be captured by a technical lexicon without disclosure
 - conceptual distinction is answered as if extra-mental separation had already been established
+- suspension of judgment is treated as proof that the proposition lacks truth-value
+- a predicate-sense shift is treated as a same-sense contradiction
+- loaded school labels are treated as settled arguments before their definitions and entailments are exposed
+- literal/figurative labels are treated as substitutes for usage, context, speaker intent, and audience reception
 - M7 or M9 is loaded while the prior definition-capture generating the case remains unnamed
 
 <!-- END_SOURCE: definition-discipline -->
+
+
+## SOURCE MODULE: nomenclature-normalization
+
+<!-- SOURCE: atomics/skill/references/diagnostics/nomenclature-normalization.md -->
+<!-- MODULE_ID: nomenclature-normalization -->
+<!-- MODULE_CLASS: governance -->
+<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/nomenclature-normalization.md -->
+<!-- SOURCE_SHA256: 650ff824e5a930d8be1f2d7ab3a730e742ed02528520f2a45a19b72dfb87c78e -->
+
+---
+id: nomenclature-normalization
+module_class: governance
+canonical_path: skill/references/diagnostics/nomenclature-normalization.md
+contract_version: "0.3.2.0"
+load_when:
+  - release or maintainer review needs canonical naming for noetic state, DSL/IR, TTP, owner, or Level 3 terms
+  - a term alias could affect routing, proof denominator, render governance, or public release claims
+emits:
+  - nomenclature_normalization
+catalogue_registered: false
+verification_status: L_check
+direct_read_verified: true
+failure_conditions_present: true
+ir_consequences_present: true
+minimal_pairs_present: true
+hold_release_rules_present: true
+compiled_runtime_eligible: true
+operator_pack_eligible: true
+---
+
+# Nomenclature Normalization
+
+This file fixes names. It does not add routes, owners, IR fields, PF codes, source-basis
+categories, codons, or a second DSL. When a code key already exists, preserve the ASCII key
+and treat readable theological forms as prose aliases.
+
+## Noetic-State Notation
+
+| Canonical term | Accepted aliases | Status |
+|---|---|---|
+| `N_AT` | `N_Athari`, `N_Salafi`, `N_Taymiyyan`, `N_Wahhabi`, `N_Atharī`, `N_Salafī`, `N_Wahhābī` | Documentation shorthand for one Atharī/Salafī/Taymiyyan/Wahhābī noetic frame family; not multiple warrants. |
+| `N_Ashari` | `N_Ash'ari`, `N_Ashʿarī`, `Ashari family`, `Ashʿarī family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
+| `N_Maturidi` | `N_Māturīdī`, `Maturidi family`, `Māturīdī family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
+| `N_kalamic_evidentialist` | `kalāmic evidentialist`, `kalamic evidentialist` | Operative profile shorthand when the proof-status burden, necessary-knowledge boundary, or naẓar demand is live. |
+| `N_theistic_evidentialist` | `theistic evidentialist` | Operative profile shorthand when the interlocutor is theistic but routes warrant primarily through evidentialist proof demand. |
+| `NS-*` | `noetic-state profile code` | Profile/support shorthand. It is not by itself an operative TTP or proof-denominator owner. |
+
+These symbolic forms are compact routing and documentation notation. Public output should not
+brand the interlocutor with a code unless diagnostic render or user request makes it useful.
+
+## ʿAqīdah Family Terms
+
+- Canonical readable family: `Atharī/Salafī`.
+- Accepted aliases: `Atharī`, `Salafī`, `Taymiyyan`, `Wahhābī`; ASCII aliases
+  `Athari`, `Salafi`, and `Wahhabi` are code/search-friendly variants.
+- Routing normalization: these aliases can identify the same broad noetic frame family for
+  internal normalization. They do not create a public source parade or named-school proof.
+- `Ashʿarī` and `Māturīdī` name varied families, not monoliths. If a case turns on a
+  particular subfamily, premise, proof method, or taʾwīl rule, preserve that distinction.
+- Pattern and deformation outrank school/source label: `Pattern > denomination/source-label`.
+
+## Kalām / Speculative Theology Terms
+
+- Canonical English label for `kalām`: `Speculative Theology`.
+- Accepted prose aliases: `kalām`, `kalāmic`, `speculative-theological`, and
+  `speculative-theological schools`; ASCII `kalam` / `kalamic` remain code/search aliases.
+- Do not use `Rational Theology` as the controlled label for kalām in operative,
+  release-facing, or public documentation surfaces. If a historical quote uses rational-language,
+  mark it as historical rather than making it the repo's terminology.
+- `Ashʿarī` and `Māturīdī` remain varied speculative-theological families, not monoliths and
+  not automatic operative noetic states.
+
+## Scholarship / Source-Status Labels
+
+- In operative source-status fields, reserve `Islamic scholar` and `Islamic scholarship`
+  for Salafī/Atharī-aligned scholarship; do not use them as umbrella warrant labels.
+- For non-Atharī kalām or falsafah figures, use specific labels such as `kalām theologian`,
+  `speculative theologian`, `school theologian`, `Ashʿarī theologian`,
+  `Māturīdī theologian`, `mutakallim`, `school authority`, `philosopher`, or
+  `later theological figure`, as appropriate.
+- This is source-status and noetic-frame discipline, not a public denunciation rule. Do not
+  add polemical clutter, scholar/source parade, or authority-by-association branding.
+
+## DSL/IR Terms
+
+| Canonical field/term | Accepted aliases | Note |
+|---|---|---|
+| `Diagnostic IR` | `IR`, `typed IR` | Structured bottleneck for case state and routing. |
+| `case_state` | `Case State` | Runtime/prose view of typed state; not a replacement for Diagnostic IR. |
+| `typed noetic state` | `noetic state`, `N` | The diagnosed noetic frame, not a personal verdict. |
+| `live_burden` | `live burden`, `B` | Current input-anchored burden. |
+| `matched_modules` | `matched modules` | Module IDs selected by validated routing; labels alone are not execution. |
+| `restoration_target` | `target restoration`, `what must land` | The state to restore or clear before release. |
+| `deformation` | `noetic deformation` | The operative obstruction family. |
+| `concealment_mode` | `mode of concealment` | How the obstruction hides or presents. |
+| `discourse_orientation` | `orientation` | What the discourse is ordered toward. |
+| `reconstruction_fidelity` | none | `pass`, `partial`, or `fail`; do not rename in schema/data. |
+| `reconstructor_notes` | reconstruction notes | Brief note for partial/fail or compact neighbor contrast. |
+| `post_render_gate` | post-render gate | STOP/HOLD/RECURSE/PARTIAL decision after Land(B) and state re-read. |
+
+## Level 3 Terms
+
+| Canonical term | Accepted aliases | Note |
+|---|---|---|
+| `feature` | `signal` when prose-only | Use `feature` in JSON and scripts. |
+| `span-backed feature` | `span-backed signal` | A feature with original-input span support. |
+| `deterministic feature` | `mechanical feature` | Regex/parser-derived local feature. |
+| `LLM-assisted feature` | `span-backed interpretive slot` | Accepted only with span and confidence; can fall back to ambiguous. |
+| `ambiguous fallback` | `ambiguous` | Low-confidence interpretive result that does not route. |
+| `route_plan` | `route plan` | Binding Level 3 routing artifact. |
+| `first_live` | `first-live` in prose | Code/API key remains `first_live`; prose may say first-live. |
+| `continuation_queue` | `continuation queue` | Code/API key remains `continuation_queue`; prose may use spaced form. |
+| `held` | `held owner`, `held route` | Not released in the current pass. |
+| `deferred` | `deferred owner`, `yielded route` | Plausible neighbor delayed by precedence or first-live blocker. |
+| `rejected` | `not routed` | Trigger conditions not satisfied. |
+| `validation_report` | `validation.json` | Integrity and ontology licensing result. |
+| `reconstruction_report` | `reconstruction.json` | Route reconstructibility result. |
+| `execution_fidelity` | execution check verdict | Post-output validation result. |
+
+Level 3 gives deterministic routing given features. It does not claim deterministic feature
+extraction or deterministic transformer execution.
+
+## TTP / Owner / Operator Terms
+
+- `TTP`: the named technique/tactic/procedure pattern.
+- `owner`: the file or compiled section that owns the TTP's execution floor.
+- `operator`: the currently active runtime function when a TTP is actually doing work.
+- `owner-floor`: owner-specific `target -> operation -> result` evidence.
+- `submove`: one bounded operation inside the current burden.
+- `B.s`: code/prose shorthand for burden submoves (`B.s1`, `B.s2`, ...).
+- `Land(B)`: the landed state change for the current burden.
+- `R(H,Delta)`: the state re-read after Land(B). ASCII `Delta` is canonical in code and
+  checker text; the Greek delta form may appear in historical prose.
+
+TTP, owner, and operator are not interchangeable in strict proof. A TTP may be selected, an
+owner may be loaded, and an operator may execute. Strict execution requires owner-floor evidence
+and Land(B)/R(H,Delta), not label presence.
+
+## Transliteration
+
+Use ASCII-friendly keys in code/YAML/JSON. In prose, readable transliteration may be used only
+where the file encoding already supports it cleanly; release data and schema keys remain ASCII.
+
+| Canonical prose | ASCII/code-friendly alias | Notes |
+|---|---|---|
+| `fiṭrah` | `fitrah` | Innate normative disposition; do not reduce to culture or mood. |
+| `ḍarūrī` | `daruri` | Necessary/non-discursive knowledge. |
+| `naẓarī` | `nazari` | Discursive/inferential reasoning. |
+| `waḥy` | `wahy` | Revelation. |
+| `shubhah` | `shubha`, plural `shubuhat` | Doubt/objection; do not route all objections as genuine shubhah before deformation/register checks. |
+| `mushābara fāsida` | `mushabara fasida` | False resemblance; code/data use ASCII. |
+| `ʿaqīdah` | `aqidah` | Creed/doctrinal frame. |
+| `kalām` | `kalam` | Speculative Theology; do not use `Rational Theology` as the repo-controlled English label. |
+
+## Smoke and Campaign Names
+
+Named hard-smoke labels, named interlocutor labels, and comparison-standard labels are not
+operative nomenclature. They may appear in fixtures, tests, smoke reports, and audit history.
+Operative scripts, trigger-matrix rules, runtime governance, and public user-facing docs
+should use genus-level terms such as `named source-worldview`, `imported criterion`,
+`opponent worldview frame`, or `moral tribunal`.
+
+## Release-Claim Boundary
+
+The normalized release claim is:
+
+- Level 3 is additive to Level 1/2.
+- Codex-capable script runtimes should invoke Level 3 by default when scripts are available.
+- Scriptless runtimes visibly fall back to Level 1/2.
+- Routing is deterministic given extracted features.
+- Feature extraction includes span-backed interpretive components and can vary.
+- Transformer execution remains probabilistic and high-complexity render-through can still fail.
+- Pure-Hermes parity, codons, owner packs, and catalogue-wide deterministic routing are not claimed.
+
+<!-- END_SOURCE: nomenclature-normalization -->
 
 
 ## SOURCE MODULE: proof-method-audit
@@ -959,7 +1201,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/proof-method-audit.md -->
-<!-- SOURCE_SHA256: 0c56fb801ac0fd96310b11e8b1eda4f61c00a0320a785cfc3a14401efa3f6485 -->
+<!-- SOURCE_SHA256: 50c66c879eaeb5e9bfb73d5bb7e258f1e73f66fa6397fd4422dbbab9a10e78dc -->
 
 ---
 id: proof-method-audit
@@ -970,6 +1212,7 @@ load_when:
   - arguments for God's existence being compared or contested
   - proof grammar itself is the live issue
   - necessity/contingency language functioning as tribunal
+  - temporal-origination and contingency proof routes are being compared
 routing_effects:
   - classifies proof family before argument content is released
   - identifies tribunal status before content dispatch
@@ -1016,8 +1259,8 @@ status, this owner has not executed.
 | Family | Assumes | Typically establishes | Hidden load risk | Correct status |
 |--------|---------|-----------------------|------------------|----------------|
 | Fiṭrah / reminder / āyāt | recognition can be awakened once occlusion is reduced | restored attention, not discursive closure | being dismissed as "not proof" by an imported criterion | primary route in healthy cases |
-| Cosmological / temporal origination | causal intelligibility; temporal origination or explanatory insufficiency of regress | uncaused source or first cause in a limited sense | collapse of successive and simultaneous series | secondary restorative route |
-| Necessity / contingency | modal grammar is valid and not silently overextended | a necessary ground or non-contingent explanatory terminus | necessity/contingency treated as the only admissible proof language | secondary, not tribunal |
+| Cosmological / ḥudūth / temporal origination | causal intelligibility; a temporally originated thing's existence rather than non-existence requires a determining ground | uncaused source or first cause in a limited sense | collapse of successive and simultaneous series; being unnecessarily replaced by wider modal grammar | secondary restorative route; often clearer than modal contingency where temporal origination is common ground |
+| Necessity / contingency | modal grammar is valid and not silently overextended | a necessary ground or non-contingent explanatory terminus | necessity/contingency treated as the only admissible proof language; possible-but-not-originated category assumed rather than established | secondary, not tribunal |
 | Teleological / design | purposive order is explanatorily salient | intelligence or purposive source | argument from current explanatory best fit inflated into exhaustive metaphysics | secondary restorative route |
 | Moral grounding | objective normativity requires adequate ontological ground | moral-source pressure toward theism | moral realism simply presupposed as neutral starting point | secondary restorative route |
 | Consciousness / normative character | first-person awareness, truth-orientation, and normativity are real | pressure against reductive naturalism | gap-argument inflation or category drift | secondary restorative route |
@@ -1043,6 +1286,41 @@ and route:
 
 - "Contingent things call for explanation." → ordinary inferential claim
 - "Only necessity/contingency grammar counts as real reason about God." → overreach
+
+### Temporal-Origination Priority Rule
+
+When the comparison is between:
+
+- a temporally originated thing whose existence after non-existence is being preferred over
+  its non-existence; and
+- a merely possible existent (`mumkin`) considered through a wider modal taxonomy,
+
+do not automatically treat the wider modal taxonomy as the clearer or more basic route.
+When temporal origination is common ground, the need of the temporally originated thing for
+a determining ground (`murajjiḥ`) is the more immediately evident rational burden. By
+contrast, a possible-but-not-temporally-originated existent is a contested category: its
+reality, its being an effect, and its route to a necessary ground must be established rather
+than assumed.
+
+**Route consequence:** If the input's live signal is ḥudūth/preponderance, keep the proof
+there unless the interlocutor has actually made modal contingency grammar the live burden.
+If `mumkin` grammar appears, audit whether it is serving as a local proof tool or as a
+tribunal that displaces the clearer temporal-origination burden.
+
+### Ever-Active Creator / No Eternal Effect Rule
+
+When a proof dispute presses the sequence of divine acts and created effects, distinguish:
+
+- everlasting divine power, will, and action;
+- each particular created effect coming into existence after nonexistence;
+- the complete determining influence for that effect when its conditions are present and
+  impediments removed; and
+- the rejected claim that any specific created object is eternally concomitant with God.
+
+The agent precedes every act and effect. Therefore continual divine action does not license an
+eternal creature, and rejecting an eternal creature does not require saying God was once
+inactive, incapable, or only later able to act. If the argument collapses these, route to
+`perfection-criterion-usurpation.md` and `sound-reason-epistemology.md` §6 before content.
 
 ### Failure test
 
@@ -1110,7 +1388,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: perfection-criterion-usurpation -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
-<!-- SOURCE_SHA256: 2ef5e43c564ae03b7e12782cac9fa009f4270594a44534d2d1f0d7cf2a8847c3 -->
+<!-- SOURCE_SHA256: 4d50dfe7a4508c3caf568a0a27dcfde23661d2bfa8ca09555a09263f752db2c9 -->
 
 ---
 id: perfection-criterion-usurpation
@@ -1149,6 +1427,8 @@ The family includes pressures like:
 - "Real responsiveness implies deficiency."
 - "Events subsisting in God are impossible."
 - "If attributes are real, God must be composite and therefore dependent."
+- "If God is really above or descends, that must mean extension, containment, ḥulūl,
+  displacement, or body-like motion."
 
 This is not reducible to a generic anthropomorphism objection. The governing move is tribunal-installation.
 
@@ -1197,6 +1477,13 @@ The pressure often borrows the vocabulary of transcendence, but its real work is
 
 That makes it a criterion-family problem before it becomes a content-family problem.
 
+**Imagination-as-criterion subcase:** Sometimes the imported criterion is not a formal
+perfection rule but the imagination of creaturely modality. The objector imagines how
+aboveness, descent, action, or speech would occur in bodies, then treats that imagined mode as
+the necessary entailment of the revealed predicate. That is not stronger tanzīh. It is a
+hidden tashbīh premise operating as a tribunal. Refuse the imagination's tribunal status before
+engaging attribute content.
+
 ---
 
 ## Minimal-Pair Discriminator
@@ -1221,6 +1508,10 @@ That makes it a criterion-family problem before it becomes a content-family prob
 - "A perfect God cannot be above, act, speak, or respond." -> this file first
 - "Does affirming above/action/speech make God like creation?" -> M9/V8 first, unless a prior perfection criterion is also governing
 
+**6. Revealed predicate vs. imagined modality**
+- "Nuzūl means the displacement of a body." -> M9 sense/entailment split, then V8
+- "Any real divine act in sequence is less perfect than timeless stasis." -> this file first
+
 Rule: if the case starts with what perfection must be, do not collapse it into a downstream predication or composition debate. Direction, place, exaltedness, action, and speech language must not be reduced to generic anthropomorphism talk when the real pressure is a prior static-perfection filter.
 
 ---
@@ -1236,6 +1527,25 @@ Treat the following as one recurring restoration target:
 - the false collapse from "occurs by will" to "created external product"
 
 The burden here is to refuse the imported perfection criterion first, then restore that real action is not a defect and real speech is not equivalent to creaturely composition.
+
+**Created-effect vs. divine-act rule:** If the objection says that any act occurring in time
+must be created, require the missing step. Created effects of divine action are created and
+external; the divine act itself is not thereby a created external product when it truly belongs
+to God. A framework that detaches every temporal act from God while still using action-language
+has reduced action to metaphor and has not preserved the attribute it names.
+
+**Falsafī necessitation contrast:** If the case denies real will, power, life, or action and
+treats the world as a necessary emanation from the divine essence, do not handle it as a mere
+wording dispute. Route the case through this perfection-criterion family and the
+dhāt/fiʿl distinction in `sound-reason-epistemology.md`: the problem is the loss of free divine
+agency and the collapse of creation into necessity.
+
+**Ever-active / no co-eternal effect discriminator:** If a pressure says God must either have
+been inactive before creating or else have an eternal created effect alongside Him, refuse the
+binary. The restored account is everlasting power, will, sovereignty, and voluntary action,
+with each created effect originated when its determining conditions obtain. No specific
+creature is eternally concomitant with God, and no new ability begins in Him. This discriminator
+prevents both errors: static divine inactivity and necessary emanation.
 
 ---
 

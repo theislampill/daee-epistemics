@@ -219,12 +219,51 @@ output: the closing formulation is *restoration language*, not *argument conclus
 
 ---
 
+## Judgment, Criterion, and Proposition Terms
+
+- criterion: the standard or principle by which a judgment is made; a criterion can be sound,
+  imported, inherited, or self-undermining.
+- critical thinking: thinking according to a criterion. It is therefore a kind of judgment,
+  not the suspension of all judgment.
+- judgment: the responsible act of affirming a proposition, denying it, or suspending judgment
+  because the evidence or criterion has not licensed affirmation or denial.
+- suspension of judgment: a judgment about epistemic status, not proof that the proposition is
+  neither true nor false.
+- proposition: a truth-apt claim with subject and predicate content. Questions, commands, and
+  exclamations are not propositions unless converted into truth-apt claim form.
+- same-sense rule: no proposition is both true and false in the same sense at the same time.
+  Apparent counterexamples often trade on an unmarked shift in the sense of a predicate.
+- truth vs. known truth: a proposition's being true or false is not identical to any person's
+  current decision about it. Some propositions are known only to Allah; that does not make them
+  neither true nor false.
+- intellect: a divine gift whose proper use is truth-directed judgment. Its misuse is a form of
+  self-deception or deception of others; diagnostic routing should therefore ask which criterion
+  is governing the act of judgment.
+
+---
+
+## Semantic and Interpretive Terms
+
+- `ẓāhir`: apparent received meaning; not a crude surface-literalism and not a creaturely
+  modality. It is the meaning carried by usage, context, speaker intent, and audience reception.
+- `taʾwīl`: can mean explanation/clarification (`tafsīr`/`bayān`) or a semantic override driven
+  by an external criterion. Split those senses before answering.
+- `majāz`: figurative usage. A figurative reading is valid only when the speech situation and
+  usage support it; bare possibility that a word can be figurative does not establish that it is
+  figurative here.
+- `dalālah`: indication or signification. Do not detach indication from the communicative setting
+  that made the speech intelligible to its direct audience.
+- application vs. meaning: later applications can extend a received meaning to new cases; they do
+  not create a new original meaning for the speech.
+
+---
+
 ## Divine Attributes and the Bilā Kayf Doctrine
 
 | Arabic | Transliteration | Meaning |
 |--------|----------------|---------|
 | ذات | Dhāt | Divine essence — necessarily existing, unknowable in itself; distinct from acts and attributes |
-| فعل / أفعال | Fiʿl / Afʿāl | Divine act(s) — what God does; free, not necessary; the product of divine will, not divine nature |
+| فعل / أفعال | Fiʿl / Afʿāl | Divine act(s) — what God does; free and by will, not a necessary emanation from the divine essence. Created effects are external products; the divine act itself is not treated as a created external product when it subsists in God. |
 | صفات | Ṣifāt | Divine attributes — the real properties of the divine essence affirmed in revelation |
 | كيفية | Kayfiyyah | Mode — the how of an attribute's instantiation; differs categorically between Creator and creature |
 | بلا كيف | Bilā kayf | Without asking how — affirming the reality of divine attributes while declining to specify their creaturely mode |
@@ -236,6 +275,11 @@ output: the closing formulation is *restoration language*, not *argument conclus
 
 ## Kalāmic and Theological Vocabulary
 
+Controlled English label: kalām is Speculative Theology, not Rational Theology. In operative
+source-status fields, avoid umbrella `Islamic scholar/scholarship` warrant labels for
+non-Atharī kalām figures; prefer `kalām theologian`, `speculative theologian`, `mutakallim`,
+`school theologian`, or `later theological figure`.
+
 | Arabic | Transliteration | Meaning |
 |--------|----------------|---------|
 | حادث | Ḥādith | Temporally originated — anything that came into existence after not existing |
@@ -245,6 +289,7 @@ output: the closing formulation is *restoration language*, not *argument conclus
 | تلازم | Talāzum | Mutual necessitation or ontological co-entailment — the inseparable co-presence of essence and essential attribute without implying assembled parts, external dependence, or separable composition. |
 | واجب الوجود | Wājib al-wujūd | Necessarily existing — that whose non-existence is impossible; God alone |
 | ممكن الوجود | Mumkin al-wujūd | Contingently existing — that whose existence or non-existence is equally possible in itself |
+| المؤثر التام | Al-muʾaththir al-tāmm | Complete determining influence — the full cause-condition for a particular effect once its conditions are present and impediments removed. Use carefully: it does not make Allah an "act" or necessary emanation, and it does not make any particular created effect eternal alongside Him. |
 | علم الكلام | ʿIlm al-kalām | A historically constituted discipline of Islamic scholastic theology that applied Hellenistic philosophical categories to theological questions. From the standpoint of this skill — grounded in ʿaql ṣarīḥ and naql ṣaḥīḥ — kalāmic conclusions on ontological matters (divine attributes, divine speech, the nature of origination) are treated as subject to the criterion of sound reason and authentic revelation, not as authoritative. The discipline's systematic pressure was toward importing bidʿī ʿaqlī (contaminated rationality) as though it were pure reason; the operative diagnostic framework here names and resists that pressure without attaching authority to the imported system itself. |
 | متكلمون | Mutakallimūn | Practitioners of kalām — the Muʿtazilī, Ashʿarī, and Māturīdī schools. These schools developed legitimate motivations (defending tawḥīd, refuting materialists and skeptics) but imported Hellenistic ontological categories that produced systematic errors in their accounts of divine being, divine attributes, and the nature of divine speech. Their positions on ontology are not treated by this skill as valid alternatives within a spectrum of legitimate Islamic positions; they are diagnoses — positions identifiable by their deviation from ʿaql ṣarīḥ and naql ṣaḥīḥ. The Muʿtazila represent the most radical deviation; the Ashʿarī school retains significant Muʿtazilī inheritance from earlier kalāmic premises; the Māturīdī school occupies a distinct position with its own errors. None of these school ontologies are grounded in the position this skill deploys. |
 | إجتهاد | Ijtihād | Independent juridical or intellectual investigation |
@@ -295,11 +340,11 @@ Use these only when they change routing or scope:
   V10 because an isolated text-artifact is not the same thing as transmitted khabar.
 - `wijādah`: finding a text without a live transmission-chain. It may preserve historical
   material, but it does not automatically carry the authority of authenticated transmission.
-- `qirāʾāt`: canonically transmitted modes of Qur'anic recitation. Do not treat the term as a
+- `qirāʾāt`: canonically transmitted modes of Qurʾānic recitation. Do not treat the term as a
   synonym for uncontrolled textual corruption.
-- `aḥruf`: the revealed range or modes associated with Qur'anic recitation. Do not collapse aḥruf
+- `aḥruf`: the revealed range or modes associated with Qurʾānic recitation. Do not collapse aḥruf
   discussion into any single manuscript question.
-- `muṣḥaf`: a written codex or written copy of the Qur'an. A muṣḥaf is a textual witness, not the
+- `muṣḥaf`: a written codex or written copy of the Qurʾān. A muṣḥaf is a textual witness, not the
   whole transmission system by itself.
 - `canon` / `canonicity`: the recognized corpus treated as scriptural and normatively
   authoritative. Distinguish canon recognition from inspiration and from textual reconstruction.
@@ -345,11 +390,21 @@ Use these only when they change routing or scope:
 ## Time, Space, and Motion Terms
 
 - temporal relation: the relation between events considered as before/after. This is not a
-  separately subsisting thing.
-- `zamān`: time as the measure of motion subsisting in a moving substrate. When it belongs to a
-  created system, it is created with that system.
+  separately subsisting thing, so created/uncreated predicates do not apply to it as if it
+  were an entity.
+- `zamān`: time as the measure of motion subsisting in a moving substrate. It is an
+  extra-mental attribute of the particular whose motion it measures. When it belongs to a
+  created system, it is created with that system: days and years are created because their
+  moving substrate is created.
+- divine action/duration: do not infer from "God creates zamān" that God is timeless,
+  motionless, or without real action. The created measures of motion in created systems are
+  created; divine acts and their duration, insofar as they subsist in God and are not external
+  products, are not created. Atharī ontology does not hold that everything temporal, in time,
+  in space, or directionally described is therefore created.
 - space: the spatial extension or location-property of particulars, not a self-standing container
-  existing apart from them.
+  existing apart from them. Created spatiality belongs to created particulars; this does not
+  license denying God's ʿulūw by treating created space as a container that first makes
+  aboveness meaningful.
 
 ---
 

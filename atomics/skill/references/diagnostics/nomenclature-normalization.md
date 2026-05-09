@@ -29,25 +29,48 @@ and treat readable theological forms as prose aliases.
 
 | Canonical term | Accepted aliases | Status |
 |---|---|---|
-| `N_AT` | `N_Athari`, `N_Salafi`, `N_Taymiyyan`, `N_Wahhabi` | Documentation shorthand for one Athari/Salafi/Taymiyyan/Wahhabi noetic frame family; not multiple warrants. |
-| `N_Ashari` | `N_Ash'ari`, `Ashari family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
-| `N_Maturidi` | `Maturidi family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
-| `N_kalamic_evidentialist` | `kalamic evidentialist` | Operative profile shorthand when the proof-status burden, necessary-knowledge boundary, or nazar demand is live. |
+| `N_AT` | `N_Athari`, `N_Salafi`, `N_Taymiyyan`, `N_Wahhabi`, `N_Atharī`, `N_Salafī`, `N_Wahhābī` | Documentation shorthand for one Atharī/Salafī/Taymiyyan/Wahhābī noetic frame family; not multiple warrants. |
+| `N_Ashari` | `N_Ash'ari`, `N_Ashʿarī`, `Ashari family`, `Ashʿarī family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
+| `N_Maturidi` | `N_Māturīdī`, `Maturidi family`, `Māturīdī family` | Family label only. Do not flatten variants into one operative noetic state when a case requires distinction. |
+| `N_kalamic_evidentialist` | `kalāmic evidentialist`, `kalamic evidentialist` | Operative profile shorthand when the proof-status burden, necessary-knowledge boundary, or naẓar demand is live. |
 | `N_theistic_evidentialist` | `theistic evidentialist` | Operative profile shorthand when the interlocutor is theistic but routes warrant primarily through evidentialist proof demand. |
 | `NS-*` | `noetic-state profile code` | Profile/support shorthand. It is not by itself an operative TTP or proof-denominator owner. |
 
 These symbolic forms are compact routing and documentation notation. Public output should not
 brand the interlocutor with a code unless diagnostic render or user request makes it useful.
 
-## Aqidah Family Terms
+## ʿAqīdah Family Terms
 
-- Canonical readable family: `Athari/Salafi`.
-- Accepted aliases: `Athari`, `Salafi`, `Taymiyyan`, `Wahhabi`.
+- Canonical readable family: `Atharī/Salafī`.
+- Accepted aliases: `Atharī`, `Salafī`, `Taymiyyan`, `Wahhābī`; ASCII aliases
+  `Athari`, `Salafi`, and `Wahhabi` are code/search-friendly variants.
 - Routing normalization: these aliases can identify the same broad noetic frame family for
   internal normalization. They do not create a public source parade or named-school proof.
-- `Ashari` and `Maturidi` name varied families, not monoliths. If a case turns on a
-  particular subfamily, premise, proof method, or ta'wil rule, preserve that distinction.
+- `Ashʿarī` and `Māturīdī` name varied families, not monoliths. If a case turns on a
+  particular subfamily, premise, proof method, or taʾwīl rule, preserve that distinction.
 - Pattern and deformation outrank school/source label: `Pattern > denomination/source-label`.
+
+## Kalām / Speculative Theology Terms
+
+- Canonical English label for `kalām`: `Speculative Theology`.
+- Accepted prose aliases: `kalām`, `kalāmic`, `speculative-theological`, and
+  `speculative-theological schools`; ASCII `kalam` / `kalamic` remain code/search aliases.
+- Do not use `Rational Theology` as the controlled label for kalām in operative,
+  release-facing, or public documentation surfaces. If a historical quote uses rational-language,
+  mark it as historical rather than making it the repo's terminology.
+- `Ashʿarī` and `Māturīdī` remain varied speculative-theological families, not monoliths and
+  not automatic operative noetic states.
+
+## Scholarship / Source-Status Labels
+
+- In operative source-status fields, reserve `Islamic scholar` and `Islamic scholarship`
+  for Salafī/Atharī-aligned scholarship; do not use them as umbrella warrant labels.
+- For non-Atharī kalām or falsafah figures, use specific labels such as `kalām theologian`,
+  `speculative theologian`, `school theologian`, `Ashʿarī theologian`,
+  `Māturīdī theologian`, `mutakallim`, `school authority`, `philosopher`, or
+  `later theological figure`, as appropriate.
+- This is source-status and noetic-frame discipline, not a public denunciation rule. Do not
+  add polemical clutter, scholar/source parade, or authority-by-association branding.
 
 ## DSL/IR Terms
 
@@ -111,13 +134,14 @@ where the file encoding already supports it cleanly; release data and schema key
 
 | Canonical prose | ASCII/code-friendly alias | Notes |
 |---|---|---|
-| `fitrah` | `fitrah` | Innate normative disposition; do not reduce to culture or mood. |
-| `daruri` | `daruri` | Necessary/non-discursive knowledge. |
-| `nazari` | `nazari` | Discursive/inferential reasoning. |
-| `wahy` | `wahy` | Revelation. |
+| `fiṭrah` | `fitrah` | Innate normative disposition; do not reduce to culture or mood. |
+| `ḍarūrī` | `daruri` | Necessary/non-discursive knowledge. |
+| `naẓarī` | `nazari` | Discursive/inferential reasoning. |
+| `waḥy` | `wahy` | Revelation. |
 | `shubhah` | `shubha`, plural `shubuhat` | Doubt/objection; do not route all objections as genuine shubhah before deformation/register checks. |
-| `mushabara fasida` | `mushabara fasida` | False resemblance; code/data use ASCII. |
-| `aqidah` | `aqidah` | Creed/doctrinal frame. |
+| `mushābara fāsida` | `mushabara fasida` | False resemblance; code/data use ASCII. |
+| `ʿaqīdah` | `aqidah` | Creed/doctrinal frame. |
+| `kalām` | `kalam` | Speculative Theology; do not use `Rational Theology` as the repo-controlled English label. |
 
 ## Smoke and Campaign Names
 

@@ -28,7 +28,7 @@ catalogue_registered: true
 # Ḥadīth Authentication and Epistemic Yield
 
 This file is the canonical owner for ḥadīth corpus transmission/authentication epistemology.
-It exists to keep ḥadīth pressures from being blurred together with Qur'anic RT cases and to
+It exists to keep ḥadīth pressures from being blurred together with Qurʾānic RT cases and to
 stop downstream doctrinal rebuttal from being released before the transmission burden is typed.
 
 This is not a full ʿulūm al-ḥadīth manual. It does not attempt to teach the whole history of
@@ -41,7 +41,7 @@ Runtime discipline:
 - Keep `Claim-type: transmission`.
 - Do not invent `RT-5`.
 - Use `Case family` and `Matched modules` to surface the ḥadīth burden.
-- Keep `RT marker: none` unless a separate Qur'anic RT-1..RT-4 pressure is also live.
+- Keep `RT marker: none` unless a separate Qurʾānic RT-1..RT-4 pressure is also live.
 
 ## Standard Read
 
@@ -190,13 +190,13 @@ This file has not governed the response if any of the following occur:
 - "Not mutawātir" is treated as equivalent to "epistemically worthless."
 - A weak or disputed report is used to collapse the whole ḥadīth corpus without the response
   naming that leap.
-- Qur'anic RT material is imported as though ḥadīth transmission and Qur'anic transmission were
+- Qurʾānic RT material is imported as though ḥadīth transmission and Qurʾānic transmission were
   one undifferentiated architecture.
 
 ## Connection to Existing Owners
 
 - V10 remains the structural provenance -> contents -> authority technique.
-- `revelation-transmission.md` remains the RT-1..RT-4 owner for Qur'anic/scriptural text-history
+- `revelation-transmission.md` remains the RT-1..RT-4 owner for Qurʾānic/scriptural text-history
   cases and believer-destabilization in that family.
 - `foreign-premise-detection.md` and V2 govern imported historical-critical or rationalist
   tribunals when they are functioning upstream of the ḥadīth challenge.

@@ -310,6 +310,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
         "skill/references/diagnostics/hadith-authentication-epistemology.md",
         "skill/references/diagnostics/causal-series-taxonomy.md",
         "skill/references/diagnostics/definition-discipline.md",
+        "skill/references/diagnostics/nomenclature-normalization.md",
         "skill/references/diagnostics/proof-method-audit.md",
         "skill/references/diagnostics/perfection-criterion-usurpation.md",
     ],

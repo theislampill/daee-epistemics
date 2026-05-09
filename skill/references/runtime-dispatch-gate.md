@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 761bc8a7c1eecc16c0cd6d7aa396a3a6af34686529249542ec5d27ee0f22b9b8 -->
+<!-- SOURCE_SHA256: ebabdd8888605731785d424a94a2b5c6b7e8333afe8625c8152403128be0c733 -->
 
 ---
 id: diagnostic-ir
@@ -191,7 +191,7 @@ IR(pattern_profile, claim_level, reason-category, concealment, deformation, DO-o
 Named denomination, school, author, source label, or genealogy may be recorded only as
 source-status context when the IR requires it. It is not operative warrant, not public-render
 material by default, and not permission to paste a topic-specific argument bank. Default public
-source citation is restricted to Qur'an, Sunnah, and sound Salaf narrations, and each such use
+source citation is restricted to Qurʾān, Sunnah, and sound Salaf narrations, and each such use
 requires a direct source reference.
 
 Compiler lifecycle:
@@ -430,7 +430,7 @@ NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
 Concealment mode:                    # clear | irad | juhud | inkar | istikbar | nifaq | mode-? | compound
 DO-orient:                           # truth-seek | identity-perf | autotelic | zann-mode | mixed
-RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qur'anic RT family is also live
+RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qurʾānic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
 Alignment state:                     # blocked | tribunal-loosened | frame-cleared | recognition-surfaced | alignment-advanced
@@ -554,7 +554,7 @@ Populate these whenever their trigger is live:
 - `Foreign premise` and `Upstream findings` when criterion import, tribunal installation, transmission demotion, or framework import is visible
 - `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
-- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
+- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qurʾānic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
@@ -826,12 +826,12 @@ Held: biblical prooftext dump, broad Judaism coverage, new Jewish owner content
 Must not dump: lists of prooftexts or citations before source-use discipline
 ```
 
-### 4. Arya Samaj Qur'an critique
+### 4. Arya Samaj Qurʾān critique
 
 ```text
 Structural pattern print: external criterion as tribunal / Vedic-reformist reason claim / Satyarth-Prakash-style polemical standard
-Load-bearing node: criterion used to judge Qur'an, prophecy, divine attributes, resurrection, or law
-Collapse radius: verse-by-verse Qur'an defense, Hindu owner content, exact Sanaullah citations
+Load-bearing node: criterion used to judge Qurʾān, prophecy, divine attributes, resurrection, or law
+Collapse radius: verse-by-verse Qurʾān defense, Hindu owner content, exact Sanaullah citations
 Intervention target: disclose whether "reason/common sense" is sound reason or a school-bound polemical criterion
 Framing notes: do not treat Arya Samaj as Advaita; do not quote noisy Urdu OCR as exact source
 Existing route: FPD + V2 + reason-disambiguation + M9 if divine predication is live + RT if source authority becomes central
@@ -1847,7 +1847,7 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/anti-patterns.md -->
-<!-- SOURCE_SHA256: cded2a1c66252e0555daef0c22d9457a8ccdf63eb933a831d2ff0fd516c25ebe -->
+<!-- SOURCE_SHA256: cae7ede14c9aabc5374323f6b76d6beec89fcd355c345b2cb11d638164ccabf1 -->
 
 ---
 id: anti-patterns
@@ -1962,7 +1962,7 @@ Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/
 
 **Argument-Bank / Citation-Dump Substitution**
 *Definition:* Treating a background topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
-*Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
+*Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qurʾān defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
 *Correct behavior in the same case:* Use background material only to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
 *Self-audit question:* Am I using background material to decide what must clear first, or am I using it as an answer bank?
 *Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` out-of-scope entries.
@@ -1980,7 +1980,7 @@ Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/
 
 **Abuse-Wound / Doctrine Collapse**
 *Definition:* Treating a harmful historical, institutional, teacher, family, or community wound as though it were already a doctrinal argument, or treating a doctrinal authority-order claim as though pastoral acknowledgement alone resolves it.
-*Pattern appearing in output:* A person says they were harmed by a teacher or institution, and the response defends the doctrine. Or a person says a shaykh's kashf outranks hadith, and the response only empathizes with bad experiences without addressing the claimed authority inversion.
+*Pattern appearing in output:* A person says they were harmed by a teacher or institution, and the response defends the doctrine. Or a person says a shaykh's kashf outranks ḥadīth, and the response only empathizes with bad experiences without addressing the claimed authority inversion.
 *Correct behavior in the same case:* Separate wound from tribunal. If wound is primary, route relational safety, NS-8, and P7 before content. If tribunal is primary, route FPD/usurpation/source-use discipline while keeping pastoral register humane.
 *Self-audit question:* Am I answering a wound as doctrine, or answering a tribunal claim as if it were only a wound?
 *Prevented by:* `mixed-case-handling.md` Authority Wound + Authority Tribunal playbook; `P7-restoration-stops.md`; `foreign-premise-detection.md`; `diagnostic-ir.md` framing notes.
@@ -3065,7 +3065,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 226f14a31ef197d5ee6b47ea051206807eac34bccd5684f57bdf94fdf6c409ad -->
+<!-- SOURCE_SHA256: c59576660f831bd70ac9dbea8dfc047a4b7dffaa875e8dff5b275d9220b92024 -->
 
 ---
 id: recursive-state-transitions
@@ -3408,6 +3408,9 @@ More than three major operative submoves inside one burden-cycle is allowed only
 submove saturation gate records necessity and cohesion. Otherwise the fourth major move is
 either a licensed NewB after re-read, held, or PARTIAL. Size, component availability, or a
 desire for a fuller answer never licenses a fourth major submove by itself.
+The gate is never a consolidation license: active TTP/operator functions must remain distinct
+submoves or later burden-cycles. If runtime limits prevent that distinct execution, mark PARTIAL
+with the specific unlanded submove rather than merging it into a generic operation.
 
 The convergence target is governed recursive sufficiency: the live same-input noetic structure has
 been restored as far as the current gates permit. The target is not maximal topic coverage and not
@@ -3559,19 +3562,30 @@ the released `B` and its necessary `s` have actually been operated on.
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
 Named source-worldview source-status discipline and identity-stabilization caution are `s` when
-they serve the same imported-tribunal `B`. They become later burden-cycles only if `R` licenses a
-genuinely new input-anchored `B`.
+they serve the same imported-tribunal `B`. They must remain distinct operative submoves with
+their own target -> operation -> result; same `B` does not mean collapsed prose. They become
+later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a distinct
+claim-level, source/noetic frame, theological target, or restoration vector that was not fully
+landed as `s`.
 
 Multi-burden does not mean multi-recursion by default. The model must not split topical components
 into new burden-cycles merely because they name hiddenness, punishment, source-status,
 source-worldview, or identity-stabilization.
-Forbidden failure name: topical components split into burden-cycles.
-Short form: hiddenness/punishment/source-status can be operative submoves under one burden.
-Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview.
+Forbidden failure name: topical components split into burden-cycles without a state/noetic re-read.
+Opposite failure name: topical components consolidated into one generic submove.
+Short form: hiddenness/punishment/source-status can be operative submoves under one burden, but
+each active TTP/operator remains a distinct `s`.
+Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview without
+state-re-read licensing.
+Bad collapse pattern: imported tribunal answer that names hiddenness, accountability,
+source-worldview, or identity-stabilization but does not execute each active function as a
+separate target -> operation -> result submove or later burden.
 
 Recursion begins only when `Land(B) -> R` licenses a new input-anchored live burden that remains
 after the submoves have done their work. If the facet has already been handled as `s`, it cannot
 be promoted into the next cycle just to create serial depth.
+If the facet has not been materially handled as a distinct `s`, it has not been handled.
+Do not count a label, route-code mention, or compressed sentence as a landed submove.
 Anchor wording: Recursion begins only when the current gated operation lands.
 Equivalent legacy wording: Recursion begins only after that burden lands, the state is re-read,
 and another input-anchored burden is licensed.
@@ -3630,6 +3644,9 @@ Invalid default-mode recursion shapes:
 - "Burden 1 / Burden 2 / Burden 3 / Burden 4" used for imported tribunal, hiddenness,
   punishment, and named source-worldview without a state/noetic re-read proving that each is a
   new live burden rather than a subordinate submove under the same tribunal burden.
+- One imported-tribunal burden that mentions hiddenness, punishment/accountability, consequence
+  tracing, source-worldview, or identity-stabilization without rendering them as distinct
+  operative submoves when they are active.
 - `Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration`.
 - silently stopping after criterion correction when another eligible live burden remains.
 - restoration synthesis or pastoral note before the active burden lands and state is re-read.
@@ -3773,7 +3790,7 @@ fields, or module owners; it formalizes existing requirements.
 Atharī/Taymiyyan/Salafī/Wahhābī operative frame for repo routing, while
 `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
 Umbrella terms such as `classical theology`, `classical theologies`, `classical Islamic
-theology`, `the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition`
+theology`, `the classical tradition`, `mainstream kalām`, or `Ashʿarī/Māturīdī tradition`
 must not flatten rival frames into one operative authority. The rule applies inter-school
 and intra-school: `family label != operative N`; `shared vocabulary != shared warrant`.
 
@@ -3800,16 +3817,23 @@ contradictory schools side-by-side as one authority) is forbidden in every mode.
 **Default public-render source restriction.** In default output, school, author, citation,
 genealogy, external philosopher, theologian, framework, or contextual-source references are
 not public-render material unless the user explicitly asks for them or validated IR
-specifically requires source-comparison. Default citation allowance is restricted to Qur'an,
+specifically requires source-comparison. Default citation allowance is restricted to Qurʾān,
 Sunnah, and sound narrations from the Salaf; if any of these are used, each must be directly
 referenced through an external source. Do not use named scholars, named schools, external
 philosophers, external theorists, or contextual authority labels as public-render support in
 default mode. Do not use `Wahhābī` as default public terminology unless the user's input
 uses it and the label itself must be clarified.
 
+Controlled scholarship labels: in operative source-status fields, reserve `Islamic scholar`
+and `Islamic scholarship` for Salafī/Atharī-aligned scholarship; do not use them as umbrella
+warrant labels. For Ashʿarī, Māturīdī, Muʿtazilī, kalām, or falsafah figures, use labels such as
+`kalām theologian`, `speculative theologian`, `school theologian`, `mutakallim`,
+`philosopher`, or `later theological figure`. This is noetic-frame control, not public
+denunciation or scholar/source parade.
+
 **Method-source non-branding rule.** The framework is not publicly framed as belonging to,
 deriving from, or being branded under a named scholar, named school, newly coined methodology,
-new creed, new aqidah, or new noetics. Public/default framing remains sound noetic diagnosis
+new creed, new ʿaqīdah, or new noetics. Public/default framing remains sound noetic diagnosis
 -> detection of deformation/concealment/criterion import -> restoration of proper
 warrant/order and proper cognitive function in a congenial epistemic milieu. Methodological
 consonance may be preserved internally without source-branding.
@@ -3892,10 +3916,10 @@ that the contrast was held to its named status.
 - A list of sources hides disagreement behind breadth.
 - `Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological
   routes here.`
-- `Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities here.`
+- `Atharī, Taymiyyan, Salafī, and Wahhābī ʿaqīdah are four independent authorities here.`
 - A contrast-marked source is named, then immediately used as evidence for the operative
   conclusion in the next sentence under the same burden-cycle.
-- `This is the daee-epistemics method of [named scholar/school]`, `a new aqidah/noetics`,
+- `This is the daee-epistemics method of [named scholar/school]`, `a new ʿaqīdah/noetics`,
   or any authority-by-association method branding.
 - Default output uses named scholars, named schools, external theorists, genealogy, or
   school-label context as support without explicit user request or validated
@@ -3994,7 +4018,7 @@ permission; an argument dump accumulates downstream content without refreshed go
   authority for a school-sensitive claim.
 - Failure condition: classical-theology umbrella — `classical theology`,
   `classical theologies`, `classical Islamic theology`, `the classical tradition`,
-  `mainstream kalam`, or `Ashari/Maturidi tradition` used as if it named one operative
+  `mainstream kalām`, or `Ashʿarī/Māturīdī tradition` used as if it named one operative
   frame across contradictory schools.
 - Failure condition: contrast-as-operative-support — a source first marked `contrast`,
   `opponent-position`, `historical note`, `genealogy`, or `held material` is then used
@@ -4256,7 +4280,7 @@ not use lab-report sections or downstream fields to release what routing keeps h
 <!-- MODULE_ID: kernel-thesis -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/kernel-thesis.md -->
-<!-- SOURCE_SHA256: 6f5f55d8c815cb5ba460db87f74ce9b66b8ecf88ae07a15edd58b67e04ee5cb8 -->
+<!-- SOURCE_SHA256: 10156bc16ca201ad844d76bfe59ea1fc2ddeacdf3cbd50a5a7639f7cf4ebf4b3 -->
 
 ---
 id: kernel-thesis
@@ -4279,7 +4303,7 @@ This file states the skill's governing commitments in one place. These are not h
 
 The live target is not a proposition but a noetic state. Arguments fail not because they are logically weak but because they are deployed against the wrong layer of the interlocutor's obstruction. The workflow exists to prevent this: V1 runs before any content module; the case-state is produced before the matched response; the upstream blocker is identified before the instrument is selected.
 
-**Routing consequence:** No content module before V1 has been run. No argument deployment before deformation, concealment mode, and discourse orientation are established. Named denomination/source identity is never sufficient to route content: `Pattern(deformation/concealment/unsoundness) > denomination/source-label`. A source, school, author, framework, or genealogy may supply source-status context internally when needed, but it is not public-render material by default, not operative warrant, and does not release a topic-specific argument bank. Default citation is restricted to Qur'an, Sunnah, and sound Salaf narrations with direct source reference. Skipping this is not efficiency — it is deploying against the wrong target.
+**Routing consequence:** No content module before V1 has been run. No argument deployment before deformation, concealment mode, and discourse orientation are established. Named denomination/source identity is never sufficient to route content: `Pattern(deformation/concealment/unsoundness) > denomination/source-label`. A source, school, author, framework, or genealogy may supply source-status context internally when needed, but it is not public-render material by default, not operative warrant, and does not release a topic-specific argument bank. Default citation is restricted to Qurʾān, Sunnah, and sound Salaf narrations with direct source reference. Skipping this is not efficiency — it is deploying against the wrong target.
 
 **Violation signature:** A response that begins with "the answer to this objection is..." without a preceding diagnostic pass.
 

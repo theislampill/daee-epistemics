@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: reason-disambiguation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/reason-disambiguation.md -->
-<!-- SOURCE_SHA256: 2100a0ae767ce8b01f82abfb2f4245d76422f88067f3609590d448a6addadcb8 -->
+<!-- SOURCE_SHA256: da876545ffca1d9baa48220bb921bcb4c6cc02da424d5658975f7e91ccc49af5 -->
 
 ---
 id: reason-disambiguation
@@ -50,6 +50,15 @@ alleged proof is typed as decisive or speculative and its premises are exposed. 
 "reason contradicts revelation" language routes as Category 3 or 4 until P3/V2 classify the
 proof-status cell (`qati/qati`, `qati/zanni`, or `zanni/zanni`) or decompose the issue into a
 local semantic, transmission, proof-strength, or philosophical-premise owner.
+
+---
+
+Criterion/judgment rule: "critical thinking" is not criterion-free neutrality. It is
+judgment according to a standard. This pass therefore asks which standard is governing the
+act of judgment: sound reason, corrupted reason, a pseudo-neutral tribunal, or an inherited
+criterion. Suspending judgment can be sound when the evidence has not licensed affirmation
+or denial, but it is still a judgment about epistemic status; it is not a permission to treat
+truth as absent, relative, or undecidable in itself.
 
 ---
 
@@ -107,11 +116,17 @@ local semantic, transmission, proof-strength, or philosophical-premise owner.
 
 **Phenomenology:** When pressed to articulate the criterion, the interlocutor cannot do so clearly — it feels like common sense rather than a philosophical stance. Challenges to it feel like challenges to sanity or basic competence rather than challenges to a particular epistemological framework. The person may say "everyone knows that..." or "it's just obvious that..." — both are signatures of Category 4.
 
+School-bound label rhetoric can be Category 4 even when it uses inherited theological
+vocabulary rather than secular vocabulary. If a person repeats loaded school labels as
+self-evident verdicts while the underlying proof machinery is unexamined or unavailable,
+do not treat the tone of obviousness as sound reason. Route through definition discipline,
+M9, and V2/V7 until the governing criterion is disclosed.
+
 Diagnostic note:
 
 "Reason", "common sense", and "what any honest person sees" may be sound reason, but they
 may also be a school-bound criterion operating below explicit commitment. In moral objections,
-Arya Samaj-style Qur'an critiques, closed-canon objections, and philosophical category-set
+Arya Samaj-style Qurʾān critiques, closed-canon objections, and philosophical category-set
 pressures, do not classify the appeal as Category 1 until the criterion has been disclosed.
 
 **Routing consequence:** V2, but with additional attention to the process of *naming* the framework as the primary first move. Because the framework is below the level of explicit commitment, naming it is itself the main intervention — creating the distance between the interlocutor and the assumption that allows it to be examined. V7 (taqlīd check applied symmetrically) is a useful accompaniment: the same demand for examined belief that the tradition applies to inherited religious taqlīd applies to inherited secular skepticism.
@@ -170,7 +185,7 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/foreign-premise-detection.md -->
-<!-- SOURCE_SHA256: 5cb39118951b08395934f8ebe91ce7183780367f94be9f4986f8c333d1597bbe -->
+<!-- SOURCE_SHA256: 24592f015cf26cf0cd55d5b10e19379d8e4e6c44466b1d5c20887b2ef28646b6 -->
 
 ---
 id: foreign-premise-detection
@@ -276,7 +291,7 @@ Common tribunal types:
 - liberal autonomy
 - Aristotelian / neo-Platonic theism
 - closed-canon or rabbinic closure used as veto over later divine speech
-- Vedic-reformist "reason/common sense" used as tribunal over Qur'an or prophecy
+- Vedic-reformist "reason/common sense" used as tribunal over Qurʾān or prophecy
 - kashf, shaykh, or tariqah authority used as jurisdiction over revelation
 
 ### Step 2 - Identify the Source Tradition
@@ -420,7 +435,7 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 <!-- MODULE_ID: prophetic-discourse-neutralization -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md -->
-<!-- SOURCE_SHA256: 90c9b6bf8230c751c7338e41fec4ce9df052eef7c27c5f0db49b3d72ebe737e9 -->
+<!-- SOURCE_SHA256: 3bb3dd6e38ed66696d8241fb881fee0af4ac0e05e9ff64f530f0c3d451e5daab -->
 
 ---
 id: prophetic-discourse-neutralization
@@ -455,6 +470,14 @@ This pass governs cases where the live move is not yet a first-order doctrinal o
 2. **Evacuation / agnosticism / determinate-guidance denial:** the discourse is denied any determinate semantic yield, so it can no longer guide, settle, or restore.
 
 Both are upstream failures. They are not resolved by answering the downstream doctrinal topic while the semantic move remains unaddressed.
+
+**Reception-grounded meaning rule:** Prophetic discourse is interpreted through the
+speech situation in which it was addressed: the language, usage, context, speaker intent,
+and direct audience's uptake. The operative question is not what a word could mean in
+theory, nor whether a later system can label a reading "literal" or "figurative." The
+operative question is what the addressed audience would have understood the speech to
+communicate in that setting. Later metaphysical categories may clarify a new application,
+but they cannot override the received meaning or create a new one.
 
 This pass is also a route-back control surface. Clearing the semantic neutralization does not
 by itself license full doctrinal release. After the semantic move is addressed, refresh the
@@ -493,6 +516,8 @@ and set `Routing gate: semantic-discipline-required` until the move is addressed
 - "What the text really means is X," where X replaces the surface semantic core with a different content rather than clarifying mode.
 - "Speech" becomes mere creation, decree, power, or inner meaning without showing why that replacement follows from the wording.
 - Revealed predicates are kept only as rhetorical shells while the real content is transferred elsewhere.
+- "This can be metaphorical" is used as a bare possibility rather than a meaning grounded in
+  the original usage, context, and audience reception.
 
 **What it suppresses:** The determinate semantic content of the discourse and its ability to establish real divine predicates, acts, or guidance.
 
@@ -552,6 +577,8 @@ This file has not governed the response if:
 - The reply moves straight to the doctrinal topic while the semantic move is still live.
 - Recontenting is treated as mere clarification of mode.
 - Evacuation is treated as a harmless suspension of detail rather than a denial of determinate guidance.
+- A later philosophical or school-theological category is allowed to decide the meaning of
+  prophetic speech without first showing that this meaning belonged to the speech situation.
 - A case with active neutralization is surfaced with `Routing gate: open`.
 
 ---

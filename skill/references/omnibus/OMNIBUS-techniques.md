@@ -486,7 +486,7 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V8-bila-kayf-anchor.md -->
-<!-- SOURCE_SHA256: db9631271b9f2eac2fa894afefc620f9b828faf0b0f9038b4a0610de84be973b -->
+<!-- SOURCE_SHA256: 7c5bc7d960e95566f0c9a8b0cab34d0e87e39f66c1e7cf1310e3ad65b0e19d2d -->
 
 ---
 id: V8-bila-kayf-anchor
@@ -530,9 +530,33 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 - Affirm the meaning carried by the revealed wording after M9 has stabilized the term.
 - Deny creaturely likeness, similitude, and containment.
 - Withhold modality (`kayf`) rather than inventing a how.
+- Refuse imagination-as-criterion: the fact that a human mind pictures extension,
+  displacement, bodily motion, or containment when hearing a revealed attribute does not make
+  that imagined modality an entailment of the attribute.
 
 V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
 as a license to bypass M9's loaded-term split.
+
+Tanzīh discipline is not only the denial of resemblance after a bodily image has been formed.
+It also refuses the hidden assumption that the imagination can dictate what a divine predicate
+must entail. For revealed attributes such as ʿulūw (aboveness/exaltedness) or nuzūl (descent),
+do not infer extension, ḥulūl, displacement, or creaturely relocation unless the term's sense
+has been stabilized and the alleged entailment has actually been shown. The one who imports the
+body-image into the predicate has already supplied the tashbīh premise.
+
+This is not a free-for-all. V8 does not permit affirming arbitrary predicates. Intrinsic
+deficiencies such as ignorance, injustice, forgetfulness, incapacity, or need are negated
+because they are deficiencies in themselves; logical contradictions are rejected because they
+are incoherent in themselves. Bilā kayf governs the mode of revealed perfections and actions,
+not the affirmation of defects or contradictions.
+
+**Nuzūl / rotating-night objection:** When the objection says "it is always night somewhere"
+or claims simultaneous descent/ascent contradiction, first expose the hidden model: descent is
+being imagined as a creaturely body-motion that can address only one place, one relation, or
+one task at a time. Relational variation in created things does not by itself alter their
+essence, and created analogies are not transferred upward as a divine modality. The response
+affirms the revealed nuzūl, denies the creaturely image, withholds the how, and refuses the
+claim that physical imagination can invalidate the report.
 
 **Positive content - analogical predication:** the tradition holds analogical predication, not univocal or purely equivocal predication. Terms carry a semantic core that applies genuinely across different instances while the mode of instantiation varies.
 
@@ -806,7 +830,7 @@ procedure, not a tactical move; it may unfold across many exchanges, sometimes y
 <!-- MODULE_ID: V12-tamanuc-exhaustion -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V12-tamanuc-exhaustion.md -->
-<!-- SOURCE_SHA256: e2ffb1d1eed072b9100b55d18946c213b26ed66ad5c8ad30cbe28ffba995171b -->
+<!-- SOURCE_SHA256: 5310e5202365337ba6214301f21d9861fd5895ed66f9a474c1d544c6b954fd2e -->
 
 ---
 id: V12-tamanuc-exhaustion
@@ -855,7 +879,7 @@ V12 is not executed by naming tamanu, divine plurality, or mutual prevention. A 
 
 **State-change condition:** V12 lands only when the released plurality claim has either collapsed to one independent lord, been returned as not-a-V12 target because independence was denied/unclear, or exposed a materially different downstream burden for the next cycle.
 
-**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qur'anic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
+**Failure condition:** A response fails this owner if it names V12/tamanu, says "multiple independent lords are incoherent," or cites the Qurʾānic convergence without running the needed dimension-specific pressure and recording the burden-state delta.
 
 ---
 

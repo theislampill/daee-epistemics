@@ -134,6 +134,21 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
   re-enter compact Layer A after `Land(B)` / `R(H,Delta)` when another
   input-anchored burden is released; and `R(H,Delta)` is a state-transition
   judgment, not a formatting marker.
+- Added a final spec-side hardening pass for Level 1/2 recursive render
+  regressions: active TTP/operator submoves must not be consolidated, compact
+  Layer A re-entry must not shorten Layer B, identity/source-status markers must
+  feed restoration when live, Qurʾān/ḥadīth evidence must be cleanly and
+  operatively presented when quoted, and `R(H,Delta)` remains a real state
+  re-read rather than a continuation checklist.
+- Normalized kalām terminology and source-status labels after release:
+  `kalām` is controlled as Speculative Theology, not Rational Theology;
+  Ashʿarī/Māturīdī labels remain varied speculative-theological families; and
+  repo operative use of Islamic scholar/scholarship remains reserved for the
+  Salafī/Atharī-aligned source-status convention.
+- Added release-protocol memory to `AGENTS.md` so future release passes preserve
+  source-of-truth discipline, version/contract coherence, encoding hygiene,
+  package-shape validation, smoke/evidence boundaries, explicit staging, and
+  GitHub Release asset replacement after package rebakes.
 - Hardened Level 3 execution prompts and checks so `continuation_queue` remains
   a planned route rather than an unconditional checklist: each executed queued
   burden requires Layer A / Layer B structure, owner-floor evidence, Land/R, and
@@ -171,6 +186,9 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
 - Feature extraction still includes span-backed interpretive components.
 - Transformer execution remains probabilistic; fixture-18-style highest
   complexity render-through limits remain capability-bound.
+- Manual Claude Level 1/2 rerun remains required before claiming behavioral
+  recovery of the TST-style Level 1/2 regression; this release line claims
+  spec-side hardening, not proven live-host recovery.
 - Pure-Hermes parity is not claimed.
 - Level 3 does not guarantee every runtime can execute bundled scripts.
 - Level 3 does not claim that every TTP in the catalogue has full executable

@@ -18,6 +18,7 @@ scripts/
 tests/
 compiled-module-map.json
 build-manifest.json
+README.md
 ```
 
 Archive root must not contain:
@@ -36,11 +37,13 @@ Historical release docs and older rc archives are not current smoke inputs unles
 explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-v0.3.2.0.skill.zip` for the next v0.3.2.0 release candidate. The public
+`build/daee-epistemics-v0.3.2.0.skill.zip` for a v0.3.2.0 package rebake. On Windows,
+the script uses WSL Python to preserve archive path separators. The public
 GitHub Release asset is the same checked payload renamed to `.skill`; publish/upload `.skill`, not
 both `.skill.zip` and `.skill`. The archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
-`compiled-module-map.json`, and `build-manifest.json`.
+`compiled-module-map.json`, `build-manifest.json`, and `README.md` when generated
+by the current package convention.
 Do not zip the repository root or the top-level `skill/` directory.
 Current local release-artifact evidence is recorded in `docs/release-artifacts.md`; the binary
 archive is build output and is not committed.
@@ -135,9 +138,9 @@ executed, not because it has the expected headings.
 - The committed `runtime-grounding-v5` smoke artifacts currently use package SHA256
   `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
   historical regression evidence, not current-release package evidence for SHA256
-  `06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98`.
+  `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE`.
 - Current-package smoke evidence for `daee-epistemics-v0.3.2.0.skill` / SHA256
-  `06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98` is not present unless the
+  `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` is not present unless the
   smoke suite is regenerated against that package.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
@@ -148,7 +151,7 @@ executed, not because it has the expected headings.
 ## Current-Release Smoke Evidence
 
 - `runtime-grounding-v5` is historical regression evidence unless regenerated against the current
-  RC package.
+  release package.
 - `runtime-grounding-v6` or later is the preferred place for regenerated current-package smoke
   evidence; `runtime-grounding-v6`, if added, is reserved for current-release evidence.
 - Current source state after the v0.3.2.0 candidate work: current-release smoke suite is

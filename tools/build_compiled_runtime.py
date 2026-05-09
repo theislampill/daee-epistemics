@@ -333,8 +333,11 @@ TTP/operator trace is not external citation support. If a named runtime operator
 reductio, tamanu, criterion-reversal, tribunal-detection, predication repair, or
 authority-order repair performs the work, the governed operation or bounded response names it
 and executes target -> operation -> result. Do not substitute a source citation for TTP
-invocation, and do not substitute TTP invocation for Qur'an/Sunnah/Salaf citation when revealed
-textual support is actually used.
+invocation, and do not substitute TTP invocation for Qurʾān/Sunnah/Salaf citation when revealed
+textual support is actually used. When revealed text is quoted for operative diagnostic or
+restorative work, present it cleanly as quotation, translation, and source/reference where
+useful, then state the function it performs; do not collapse central revealed evidence into a
+long prose sentence or use it as citation padding.
 Within a released live burden, TTP/operator routing is burden-complete: materially necessary
 sub-burdens are addressed by matched operators before state/noetic re-read, and NewB is not
 licensed by a headline-only answer, skipped internal sub-burdens, generic prose substitute,

@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: revelation-transmission -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/revelation-transmission.md -->
-<!-- SOURCE_SHA256: 2acc4c11a6434ae46897d2c861306e60c3797cb931131cf5d816addfce88cf69 -->
+<!-- SOURCE_SHA256: 2e2d5d75ba69877c48d073d2864d12ac0509ad6d5d783521c156dd2e5b44d8dc -->
 
 ---
 id: revelation-transmission
@@ -24,7 +24,7 @@ module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
 contract_version: "0.3.2.0"
 load_when:
-  - revelation, scripture, Qur'anic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
+  - revelation, scripture, Qurʾānic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed
 routing_effects:
   - handles RT-1 through RT-4 after V10 provenance/contents/authority sequence
@@ -58,7 +58,7 @@ RT progression as permission to spill every downstream answer in one pass.
 not public-render permission. In default output, do not cite scholarly tradition, named
 schools, manuscript authorities, critics, church bodies, or text-critical frameworks as
 support/context unless the user explicitly asks or validated IR requires source-comparison.
-If Qur'an, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
+If Qurʾān, Sunnah, or sound Salaf narration is cited, directly source it. Otherwise keep
 transmission categories as bounded operative distinctions: provenance, contents, authority,
 and state-change.
 
@@ -159,7 +159,7 @@ V10 sequence governs: maintain provenance → contents → authority ordering (`
 *Cross-tradition contamination guard:* NT manuscript variants include scribal harmonization, doctrinal adjustments, and copyist errors documented across a fragmentary manuscript tradition without a living oral transmission. Qurʾānic qirāʾāt are not this — they are authorized modes of recitation traced through named chains to the Prophet, chosen by authoritative reciters from authentic options, not scribal accidents. Reading qirāʾāt as equivalent to NT manuscript variants is a category error. The method of NT textual criticism (reconstructing an "original text" from divergent manuscript witnesses) was built for conditions that do not obtain here.
 
 **Worked example — correctly routed:**
-Interlocutor cites variation between Ḥafṣ and Warsh readings as evidence of "two different Qurʾāns." Correct provenance step: both are named qirāʾāt traced through mutawātir chains — authorized recitational traditions. Correct contents step: the differences are phonological and recitational, not doctrinal. Correct authority step: both readings are recognized as authentic by the Islamic scholarly tradition; the plurality is authorized, not uncontrolled.
+Interlocutor cites variation between Ḥafṣ and Warsh readings as evidence of "two different Qurʾāns." Correct provenance step: both are named qirāʾāt traced through mutawātir chains — authorized recitational traditions. Correct contents step: the differences are phonological and recitational, not doctrinal. Correct authority step: both readings are recognized as authentic within canonical qirāʾāt transmission discipline; the plurality is authorized, not uncontrolled.
 
 **Worked example — incorrectly routed (NT text-critical heuristics imported):**
 Response treats Ḥafṣ vs. Warsh variation as equivalent to a Codex Sinaiticus vs. Codex Vaticanus discrepancy in NT manuscripts — implying that one is more "original" and the other is a later scribal development, and that a "critical text" should be reconstructed from the divergent witnesses. Error: this imports NT text-critical methodology (reconstruction of an "original" from divergent manuscripts) onto a tradition that does not have divergent manuscripts in that sense — it has authorized recitational plurality within a disciplined transmission system.
@@ -262,7 +262,7 @@ category; RT-4 is about register (internal crisis). Do not collapse them.
 <!-- MODULE_ID: V10-transmission-content-vetting -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V10-transmission-content-vetting.md -->
-<!-- SOURCE_SHA256: 8355b30fbbbb78cf19f5aa1ce3ba34a35d33425e4f6ab12df398d049c8c7b95a -->
+<!-- SOURCE_SHA256: 30c9b0be42233e4dc1a26cc8c453a89bf46bf74c56b800e2494badbac7506446 -->
 
 ---
 id: V10-transmission-content-vetting
@@ -373,7 +373,7 @@ The tradition-specific corpora, formation events, and arguments differ; the logi
 material appears in a final-prophethood, canon, or authority case, classify the move
 before using any text:
 
-- Qur'an-grounded report about prior revelation
+- Qurʾān-grounded report about prior revelation
 - current-text corroboration
 - argument from an interlocutor-granted canon
 - internal inconsistency refutation
@@ -454,7 +454,7 @@ For recurring family treatments after this sequence, see
 - Historical criticism / original-text skepticism -> start here, then route to RT-1 if the live
   issue is manuscript reconstruction, or RT-2 if the live issue is canon formation
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2
-- Qur'anic preservation / qirāʾāt / manuscript confusion -> start here, then route to RT-3
+- Qurʾānic preservation / qirāʾāt / manuscript confusion -> start here, then route to RT-3
 - Ḥadīth corpus rejection / isnād criticism / āḥād-vs-mutawātir / grade-confusion pressure -> start here, then route to `diagnostics/hadith-authentication-epistemology.md`
 - Muslim-internal panic over text-history material -> start here, then route to RT-4
 - Final-prophethood challenges entangled with text-history or testimony -> use here before broader

@@ -18,6 +18,12 @@ Completed historical gaps, coverage passes, routing parity work, and recursive t
 
 No active unresolved release-blocking technical pass is currently assigned.
 
+Before claiming behavioral recovery of the Level 1/2 TST-style regression, run a
+manual Claude Level 1/2 rerun and compare it against the v0.3.1.0 golden for
+diagnostic depth, recursive per-burden Layer A re-entry, distinct TTP submoves,
+operative Qurʾān/ḥadīth deployment, and restorative force. The current repo
+state only claims spec-side hardening.
+
 ## Completed Mainline Audit Patch Catalogue (post-v0.3.1.0)
 
 - v0.3.2.0 Level 3 executable routing adds an additive route-first path for
@@ -31,6 +37,11 @@ No active unresolved release-blocking technical pass is currently assigned.
   hard/compound/deformed recursive cases, treats `R(H,Delta)` as a real
   state-transition judgment, and keeps Level 3 `continuation_queue` traversal
   conditional on state re-read.
+- v0.3.2.0 final spec-side hardening prevents active TTP/operator submove
+  consolidation, preserves distinct `Target -> Operation -> Result` execution,
+  tightens Qurʾān/ḥadīth operative formatting, normalizes kalām and
+  source-status terminology, and records durable release-cycle protocol in
+  `AGENTS.md`.
 - v0.3.2.0 nomenclature normalization records canonical noetic-state, DSL/IR,
   Level 3, TTP/owner/operator, and transliteration names under
   `references/diagnostics/nomenclature-normalization.md`.
@@ -84,13 +95,15 @@ No new IR fields, route IDs, PF codes, owners, or architecture were introduced.
 ## Post-v0.3.2.0 Candidates
 
 ### Live model regression testing
+- Manually rerun the Level 1/2 TST-style case in Claude before claiming behavioral
+  recovery from the v0.3.2.0 thinning regression.
 - Build a small live-run suite that compares actual Claude outputs against the static routing fixtures.
 - Track whether outputs preserve Diagnostic IR, matched original module IDs, post-render gate discipline, and recursive traversal decisions.
 - Track default-vs-DSL-vs-audit render behavior: default should expose the compact DSL/IR header plus bounded governed Layer B (Hidden Premises, local Core Formulation, bounded operative submoves, compact TTP/operator trace when used), then state/noetic re-read, one Restorative Response, and one final Closing Formulation without becoming a giant ledger or essay-only output; `:dsl` should expose concise DSL/IR or lab-report state; `:audit` should remain internal/development-only compatibility rather than public governance visibility.
 - Do not treat static routing parity as live behavioral equivalence.
 
 ### Broader routing fixture coverage
-- Add fixtures for more mixed higher-order cases, comparative-religion structural transfers, grief-primary cases, hadith cases, and thin-basis ambiguity.
+- Add fixtures for more mixed higher-order cases, comparative-religion structural transfers, grief-primary cases, ḥadīth cases, and thin-basis ambiguity.
 - Keep fixture expectations structural: module IDs, governance phrases, path resolution, and call budgets, not exact prose.
 
 ### Recursive traversal fixtures

@@ -326,7 +326,7 @@ active and what condition releases the next move, P1 is not yet lawfully deploye
 <!-- MODULE_ID: P2-objection-mapping -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P2-objection-mapping.md -->
-<!-- SOURCE_SHA256: 5da10fb1b223a720e9729fb0f5a71332b0bbf8ab14a440c08467090f5684604e -->
+<!-- SOURCE_SHA256: 51212724654af5658a0f4272322e02bf11f0e5a89842c3df226082fb3cf06765 -->
 
 ---
 id: P2-objection-mapping
@@ -397,7 +397,7 @@ Before addressing any objection, map all of them. Distinguish rigorously:
   Revelation routing is fixed:
   - testimony / manuscript / source claims -> V10 first, then RT-1
   - canon formation / "who chose scripture?" -> V10 first, then RT-2
-- Qur'anic preservation / qirāʾāt / manuscript confusion -> V10 first, then RT-3
+- Qurʾānic preservation / qirāʾāt / manuscript confusion -> V10 first, then RT-3
   - Muslim-internal textual-historical destabilization -> V10 first, then RT-4 and often P5
   - specific prophetic-claim objections -> separate the transmission issue from the prophetic
     claim itself before broader doctrinal rebuttal
@@ -888,7 +888,7 @@ sets up the next answer.
 <!-- MODULE_ID: P5-already-believing -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P5-already-believing.md -->
-<!-- SOURCE_SHA256: dd4960240ae5f9e8726d0e4e29a1a2b7b07b74f8677f9483702cf7f84c4d6514 -->
+<!-- SOURCE_SHA256: bbccc2a701ae0e15707d19752e64cd610f0fda19ee2617d50892e5e7e25acaf6 -->
 
 ---
 id: P5-already-believing
@@ -948,7 +948,7 @@ faithful; the issue is not fidelity but epistemic grounding.
 
 **2. Name the article of faith and source of pressure precisely.**
 Do not strengthen "belief in general." Ask which article is actually thin, inherited, or under
-pressure: God's existence, revelation, the Qur'an, final prophethood, divine attributes,
+pressure: God's existence, revelation, the Qurʾān, final prophethood, divine attributes,
 afterlife, or trust in the tradition's transmitters and teachers. Then classify the pressure:
 text-history, moral recoil, philosophical objection, authority fatigue, betrayal, or panic after
 viral material. Examined conviction grows by specificity, not by vague encouragement.
@@ -1002,7 +1002,7 @@ companion transition and should not be skipped.
 ## IR-Visible Consequences
 
 When P5 is active, the IR should mark an internal-strengthening route and identify the
-article of faith under pressure: God's existence, revelation, Qur'an, final prophethood,
+article of faith under pressure: God's existence, revelation, Qurʾān, final prophethood,
 attributes, afterlife, transmission, or trust in tradition. It should also record the pressure
 type: text-history, moral recoil, philosophical objection, authority fatigue, betrayal, or
 panic after viral material.

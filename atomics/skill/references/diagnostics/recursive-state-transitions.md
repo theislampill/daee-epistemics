@@ -339,6 +339,9 @@ More than three major operative submoves inside one burden-cycle is allowed only
 submove saturation gate records necessity and cohesion. Otherwise the fourth major move is
 either a licensed NewB after re-read, held, or PARTIAL. Size, component availability, or a
 desire for a fuller answer never licenses a fourth major submove by itself.
+The gate is never a consolidation license: active TTP/operator functions must remain distinct
+submoves or later burden-cycles. If runtime limits prevent that distinct execution, mark PARTIAL
+with the specific unlanded submove rather than merging it into a generic operation.
 
 The convergence target is governed recursive sufficiency: the live same-input noetic structure has
 been restored as far as the current gates permit. The target is not maximal topic coverage and not
@@ -490,19 +493,30 @@ the released `B` and its necessary `s` have actually been operated on.
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
 Named source-worldview source-status discipline and identity-stabilization caution are `s` when
-they serve the same imported-tribunal `B`. They become later burden-cycles only if `R` licenses a
-genuinely new input-anchored `B`.
+they serve the same imported-tribunal `B`. They must remain distinct operative submoves with
+their own target -> operation -> result; same `B` does not mean collapsed prose. They become
+later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a distinct
+claim-level, source/noetic frame, theological target, or restoration vector that was not fully
+landed as `s`.
 
 Multi-burden does not mean multi-recursion by default. The model must not split topical components
 into new burden-cycles merely because they name hiddenness, punishment, source-status,
 source-worldview, or identity-stabilization.
-Forbidden failure name: topical components split into burden-cycles.
-Short form: hiddenness/punishment/source-status can be operative submoves under one burden.
-Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview.
+Forbidden failure name: topical components split into burden-cycles without a state/noetic re-read.
+Opposite failure name: topical components consolidated into one generic submove.
+Short form: hiddenness/punishment/source-status can be operative submoves under one burden, but
+each active TTP/operator remains a distinct `s`.
+Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview without
+state-re-read licensing.
+Bad collapse pattern: imported tribunal answer that names hiddenness, accountability,
+source-worldview, or identity-stabilization but does not execute each active function as a
+separate target -> operation -> result submove or later burden.
 
 Recursion begins only when `Land(B) -> R` licenses a new input-anchored live burden that remains
 after the submoves have done their work. If the facet has already been handled as `s`, it cannot
 be promoted into the next cycle just to create serial depth.
+If the facet has not been materially handled as a distinct `s`, it has not been handled.
+Do not count a label, route-code mention, or compressed sentence as a landed submove.
 Anchor wording: Recursion begins only when the current gated operation lands.
 Equivalent legacy wording: Recursion begins only after that burden lands, the state is re-read,
 and another input-anchored burden is licensed.
@@ -561,6 +575,9 @@ Invalid default-mode recursion shapes:
 - "Burden 1 / Burden 2 / Burden 3 / Burden 4" used for imported tribunal, hiddenness,
   punishment, and named source-worldview without a state/noetic re-read proving that each is a
   new live burden rather than a subordinate submove under the same tribunal burden.
+- One imported-tribunal burden that mentions hiddenness, punishment/accountability, consequence
+  tracing, source-worldview, or identity-stabilization without rendering them as distinct
+  operative submoves when they are active.
 - `Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration`.
 - silently stopping after criterion correction when another eligible live burden remains.
 - restoration synthesis or pastoral note before the active burden lands and state is re-read.
@@ -704,7 +721,7 @@ fields, or module owners; it formalizes existing requirements.
 Atharī/Taymiyyan/Salafī/Wahhābī operative frame for repo routing, while
 `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
 Umbrella terms such as `classical theology`, `classical theologies`, `classical Islamic
-theology`, `the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition`
+theology`, `the classical tradition`, `mainstream kalām`, or `Ashʿarī/Māturīdī tradition`
 must not flatten rival frames into one operative authority. The rule applies inter-school
 and intra-school: `family label != operative N`; `shared vocabulary != shared warrant`.
 
@@ -731,16 +748,23 @@ contradictory schools side-by-side as one authority) is forbidden in every mode.
 **Default public-render source restriction.** In default output, school, author, citation,
 genealogy, external philosopher, theologian, framework, or contextual-source references are
 not public-render material unless the user explicitly asks for them or validated IR
-specifically requires source-comparison. Default citation allowance is restricted to Qur'an,
+specifically requires source-comparison. Default citation allowance is restricted to Qurʾān,
 Sunnah, and sound narrations from the Salaf; if any of these are used, each must be directly
 referenced through an external source. Do not use named scholars, named schools, external
 philosophers, external theorists, or contextual authority labels as public-render support in
 default mode. Do not use `Wahhābī` as default public terminology unless the user's input
 uses it and the label itself must be clarified.
 
+Controlled scholarship labels: in operative source-status fields, reserve `Islamic scholar`
+and `Islamic scholarship` for Salafī/Atharī-aligned scholarship; do not use them as umbrella
+warrant labels. For Ashʿarī, Māturīdī, Muʿtazilī, kalām, or falsafah figures, use labels such as
+`kalām theologian`, `speculative theologian`, `school theologian`, `mutakallim`,
+`philosopher`, or `later theological figure`. This is noetic-frame control, not public
+denunciation or scholar/source parade.
+
 **Method-source non-branding rule.** The framework is not publicly framed as belonging to,
 deriving from, or being branded under a named scholar, named school, newly coined methodology,
-new creed, new aqidah, or new noetics. Public/default framing remains sound noetic diagnosis
+new creed, new ʿaqīdah, or new noetics. Public/default framing remains sound noetic diagnosis
 -> detection of deformation/concealment/criterion import -> restoration of proper
 warrant/order and proper cognitive function in a congenial epistemic milieu. Methodological
 consonance may be preserved internally without source-branding.
@@ -823,10 +847,10 @@ that the contrast was held to its named status.
 - A list of sources hides disagreement behind breadth.
 - `Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological
   routes here.`
-- `Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities here.`
+- `Atharī, Taymiyyan, Salafī, and Wahhābī ʿaqīdah are four independent authorities here.`
 - A contrast-marked source is named, then immediately used as evidence for the operative
   conclusion in the next sentence under the same burden-cycle.
-- `This is the daee-epistemics method of [named scholar/school]`, `a new aqidah/noetics`,
+- `This is the daee-epistemics method of [named scholar/school]`, `a new ʿaqīdah/noetics`,
   or any authority-by-association method branding.
 - Default output uses named scholars, named schools, external theorists, genealogy, or
   school-label context as support without explicit user request or validated
@@ -925,7 +949,7 @@ permission; an argument dump accumulates downstream content without refreshed go
   authority for a school-sensitive claim.
 - Failure condition: classical-theology umbrella — `classical theology`,
   `classical theologies`, `classical Islamic theology`, `the classical tradition`,
-  `mainstream kalam`, or `Ashari/Maturidi tradition` used as if it named one operative
+  `mainstream kalām`, or `Ashʿarī/Māturīdī tradition` used as if it named one operative
   frame across contradictory schools.
 - Failure condition: contrast-as-operative-support — a source first marked `contrast`,
   `opponent-position`, `historical note`, `genealogy`, or `held material` is then used

@@ -33,6 +33,15 @@ local semantic, transmission, proof-strength, or philosophical-premise owner.
 
 ---
 
+Criterion/judgment rule: "critical thinking" is not criterion-free neutrality. It is
+judgment according to a standard. This pass therefore asks which standard is governing the
+act of judgment: sound reason, corrupted reason, a pseudo-neutral tribunal, or an inherited
+criterion. Suspending judgment can be sound when the evidence has not licensed affirmation
+or denial, but it is still a judgment about epistemic status; it is not a permission to treat
+truth as absent, relative, or undecidable in itself.
+
+---
+
 ## Category 1 — Sound Reason (ʿAql Ṣarīḥ)
 
 **Definition:** Reason operating without ideological contamination, without a historically contingent framework internalized as necessary, and in alignment with the fiṭrah's orientation. Sound reason does not require that the person be a theologian — it requires that they are not filtering out whole categories of evidence by prior commitment. Sound reason is capable of apprehending theistic truth, recognizing signs, and following demonstration where it leads.
@@ -87,11 +96,17 @@ local semantic, transmission, proof-strength, or philosophical-premise owner.
 
 **Phenomenology:** When pressed to articulate the criterion, the interlocutor cannot do so clearly — it feels like common sense rather than a philosophical stance. Challenges to it feel like challenges to sanity or basic competence rather than challenges to a particular epistemological framework. The person may say "everyone knows that..." or "it's just obvious that..." — both are signatures of Category 4.
 
+School-bound label rhetoric can be Category 4 even when it uses inherited theological
+vocabulary rather than secular vocabulary. If a person repeats loaded school labels as
+self-evident verdicts while the underlying proof machinery is unexamined or unavailable,
+do not treat the tone of obviousness as sound reason. Route through definition discipline,
+M9, and V2/V7 until the governing criterion is disclosed.
+
 Diagnostic note:
 
 "Reason", "common sense", and "what any honest person sees" may be sound reason, but they
 may also be a school-bound criterion operating below explicit commitment. In moral objections,
-Arya Samaj-style Qur'an critiques, closed-canon objections, and philosophical category-set
+Arya Samaj-style Qurʾān critiques, closed-canon objections, and philosophical category-set
 pressures, do not classify the appeal as Category 1 until the criterion has been disclosed.
 
 **Routing consequence:** V2, but with additional attention to the process of *naming* the framework as the primary first move. Because the framework is below the level of explicit commitment, naming it is itself the main intervention — creating the distance between the interlocutor and the assumption that allows it to be examined. V7 (taqlīd check applied symmetrically) is a useful accompaniment: the same demand for examined belief that the tradition applies to inherited religious taqlīd applies to inherited secular skepticism.

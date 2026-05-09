@@ -1185,7 +1185,7 @@ The operative response does not require claiming that every classical juristic p
 <!-- MODULE_ID: do-christian-extensions -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-christian-extensions.md -->
-<!-- SOURCE_SHA256: d378104296edd006ab2bd0de6b9674ccfa877353c90e599a0a875e349654278f -->
+<!-- SOURCE_SHA256: e56a83443cfcc17f1532f8a35c22e4f8dfeafda4f7e16f7ff4d4ff1074193d12 -->
 
 ---
 id: do-christian-extensions
@@ -1257,7 +1257,7 @@ catalogue_registered: true
 | Perfection / non-eventfulness / timelessness as tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; DO-11/DO-13 after tribunal cleared |
 | Philosopher's-God: static simplicity / non-relational framing | perfection-criterion-usurpation.md; prophetic-discourse-neutralization.md if revelation emptied; DO-13 after semantic/tribunal owners clear |
 | Revelation affirmed but functionally neutralized | prophetic-discourse-neutralization.md before DO-13 content |
-| Canon / church authority fallback | V10-transmission-content-vetting.md; DO-14 for selection/formation/authorization; do NOT collapse into Qur'anic RT unless RT pressure independently live |
+| Canon / church authority fallback | V10-transmission-content-vetting.md; DO-14 for selection/formation/authorization; do NOT collapse into Qurʾānic RT unless RT pressure independently live |
 | "Mystery" invoked as coherence substitute | Semantic blocker: mystery-invocation blocks coherence analysis; flag and hold until model is specified |
 
 ---
@@ -1506,9 +1506,11 @@ A common modern pressure says that if God created time and space, then there is 
 "before" creation or "above" the world, so revelation's language about divine action and
 exaltedness must be translated away. That move assumes time and space are self-standing
 containers. The skill's route is different: created days and years are measures of motion in
-created systems, and created spatiality belongs to created particulars. God's creating these does
-not force a timeless, nowhere, relationless deity. It only forbids projecting creaturely mode
-onto God.
+created systems, and created spatiality belongs to created particulars. A temporal relation is
+not itself a separately subsisting thing; `zamān` as a measure of motion is an attribute of the
+moving substrate. God's creating created-system `zamān` does not force a timeless, nowhere,
+relationless deity, nor does Atharī ontology treat every temporal, spatial, or directional
+description as created by that fact alone. It only forbids projecting creaturely mode onto God.
 
 Once these distinctions are in place, the choice is not between Aristotelian abstraction and
 crude creatureliness. The revealed God is neither a creature nor a philosophical remainder. He
@@ -1797,7 +1799,7 @@ to interlocutors.
 <!-- MODULE_ID: philosophical-usurpation -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/philosophical-usurpation.md -->
-<!-- SOURCE_SHA256: 7519424e053d9bf7f96e96deecd5bfeeccc4577f7126fc82328b043c2f44f776 -->
+<!-- SOURCE_SHA256: c228c3a8d55669090d08ce11ec3d64715b521d43939c13d8183132d584dc5145 -->
 
 ---
 id: philosophical-usurpation
@@ -1898,7 +1900,7 @@ types detect the tribunal function before any topic-specific owner exists.
 
 - Closed-canon veto: a received canon or interpretive closure functions as a veto over later divine speech. Route through FPD, V10/RT source-use discipline, and comparative-prophethood routes as appropriate before any prooftext content.
 - Kashf-as-tribunal: an experience, shaykh, or tariqah claim is granted jurisdiction over revelation. Route authority order first; do not debate whether the experience occurred before classifying its authority.
-- Vedic-reformist criterion: "reason/common sense" or Vedic reformist categories judge Qur'an, prophecy, attributes, resurrection, or law as an external tribunal. Route FPD + V2 + reason-disambiguation before verse-level response.
+- Vedic-reformist criterion: "reason/common sense" or Vedic reformist categories judge Qurʾān, prophecy, attributes, resurrection, or law as an external tribunal. Route FPD + V2 + reason-disambiguation before verse-level response.
 - Nondual category-set: Advaita-like nonduality or higher/lower truth hierarchy is installed above Islamic tawhid. Route M9 and metaphysical architecture before ordinary polytheism or devotional critique.
 
 ---
@@ -1953,7 +1955,7 @@ approves each item.
 <!-- MODULE_ID: sound-reason-epistemology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/sound-reason-epistemology.md -->
-<!-- SOURCE_SHA256: a7f69ca3d82b709322935d8058d77213faaf955dbf2d40511cbe2de61ed9d306 -->
+<!-- SOURCE_SHA256: 660f49b6195710f3e828a93dfd26a5e1e02ef6a30bf8e94796f8c6f9c2ba63bd -->
 
 ---
 id: sound-reason-epistemology
@@ -2413,6 +2415,13 @@ to specify their creaturely mode; refuse both errors:
 
 Bilā kayf is not evasion — it is precision about what can and cannot be known.
 
+Tanzīh is not completed by first imagining a body-like mode and then denying the revealed
+predicate because of that imagination. The imagination itself is not a reliable theological
+standard. When aboveness, descent, speech, action, or responsiveness is live, separate the
+revealed meaning from the creaturely modality the mind supplies; deny the modality, not the
+meaning. This boundary also has limits: intrinsic deficiencies and logical contradictions are
+rejected because of what they are, not because their modality is unknown.
+
 **The positive content — analogical predication:** The objection that bilā kayf is
 "epistemically empty" (you are saying 'God has X' where X is entirely unlike anything
 we mean by X) is answered by the positive account. Terms carry a semantic core that
@@ -2438,13 +2447,34 @@ and theodicy questions conflating God's necessary existence with God's creative 
 - **Dhāt (ذات — essence):** What God is — necessarily existing. His existence is
   necessary; he could not not exist.
 - **Fiʿl (فعل — act):** What God does — creates, sustains, decrees. Divine acts are
-  products of a free divine will, not necessary consequences of the divine nature.
+  free and by will, not necessary emanations from the divine essence. Created effects are
+  external products; the divine act itself is not treated as a created external product when it
+  subsists in God.
 
 The created world is genuinely contingent: it could have been otherwise, being the
 product of free divine agency, not necessary emanation. The tradition rejects the
 Neoplatonic emanation model — on which the world flows from the divine nature by
 necessity — precisely because it would make contingency illusory and collapse all modal
 distinctions.
+
+**Action-createdness parity rule:** Do not infer "divine action is temporal" plus "everything
+temporal is created" into the conclusion that God's acts are created external products. The
+load-bearing distinction is the same one required in the speech case: created effects are
+created and external, while an act or attribute truly belonging to God is not severed from Him
+and reassigned to creation. If a position protects divine speech from being detached from the
+speaker, apply that parity to divine action as well.
+
+**Ever-active without an eternal created effect:** Sound reason distinguishes everlasting
+divine capability and action from any claim that a specific created effect is eternal alongside
+God. God has not become able after incapacity; He has always been knowing, powerful, sovereign,
+and acting by will, without likeness or modality. Yet the agent precedes each particular act
+and effect: every created effect is originated, preceded by nonexistence, and brought about
+when its complete determining influence obtains. Saying that God is always Creator does not
+make any creature co-eternal with Him. Conversely, making one specific created object
+eternally concomitant with Him negates genuine creating and acting rather than preserving it.
+Do not collapse this into the philosopher's claim that God is an act or into necessary
+emanation from the essence; the relevant surface is voluntary divine acts subsisting in the
+divine essence, by power and will.
 
 **The ipseity corollary — ontological dependence without identity:** Created persons are
 genuinely real, genuinely distinct from God, and genuinely capable of relationship with
@@ -2474,9 +2504,14 @@ systems.
 
 Keep the operative distinction short:
 
-- temporal relation between events: a relation, not a separately subsisting entity
+- temporal relation between events: a relation, not a separately subsisting entity; created
+  and uncreated are not predicated of it as though it were a thing
 - time as the measure of motion in a moving substrate (`zamān`): an extra-mental attribute that
-  exists only in particulars
+  exists only in particulars; if the moving substrate is created, that measure is created with it
+- divine action/duration: God's creating created-system `zamān` does not imply that God is
+  timeless, motionless, or without real action. Divine acts and their duration are not created
+  products when they subsist in God; Atharī ontology does not make "temporal," "in time,"
+  "in space," or directional language sufficient by itself to infer createdness.
 
 Days, years, and created spatiality belong to created particulars. God's creating them does not
 force a static or timeless deity; it only forbids transferring the created system's mode to God or
@@ -2648,7 +2683,7 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 <!-- MODULE_ID: prophecy-wahy-supremacy -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/prophecy-wahy-supremacy.md -->
-<!-- SOURCE_SHA256: f888b4bd23745b47d8f55c7cf28170d3e5c4abe41cba79b753a57bb2b5aeb394 -->
+<!-- SOURCE_SHA256: 681e1c5ab5356cd197732182978311f1196f2cea4a90897226955cdb4891fd9d -->
 
 ---
 id: prophecy-wahy-supremacy
@@ -2702,6 +2737,14 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 
 **The consequence for authority:** On questions about God's nature, the soul, the afterlife, and the complete moral order, the prophet's report has a standing that no philosophical argument can displace. Philosophical argument is appropriate for establishing that a First Cause exists, for dissolving apparent contradictions in revealed content, for exposing imported foreign frameworks, for remedial restoration of fiṭrī recognition. It is not the standard against which prophetic content must be measured.
 
+**Miracle-signification and divine truthfulness:** Prophetic signs (`muʿjizāt`) are not bare
+power-events floating without meaning. They function as signs because the Creator is truthful,
+wise, and purposive in guidance. If a theological framework denies that divine acts are tied to
+wisdom, purpose, or fittingness in any real sense, it cannot then borrow the sign-value of a
+miracle as though the act intentionally validates the prophet. The live burden is not whether
+God lacks power; it is whether the framework still preserves signification, truthful guidance,
+and the link between a prophetic claim and the divine act that certifies it.
+
 ---
 
 ## IV. Named Challenge Patterns and Routing Responses
@@ -2752,6 +2795,36 @@ The kalāmic demonstration apparatus (the atomism, the temporal-origination argu
 
 ---
 
+### Challenge Pattern D: Miracle Signification Without Divine Purpose
+
+**Presentation:** "A miracle proves prophethood by necessity," while the same framework denies
+that divine action is tied to wisdom, purpose, truthful guidance, or any reason why this act
+rather than another is fitting.
+
+**Diagnostic:** proof-method-audit + reason-disambiguation Category 3/4 when school-bound
+proof grammar is treated as obvious; prophetic authority layer when the sign-value of miracles
+is being used; M1/M8 if the framework uses miracle evidence while removing the conditions that
+make miracles evidence.
+
+**Response route:**
+1. Identify whether the miracle's signification is grounded in divine wisdom/purpose, in
+   intrinsic logical entailment (`talāzum`), or in an unexplained assertion of necessity.
+2. If wisdom/purpose is denied, show that the miracle's evidentiary role has been undercut:
+   a sign cannot certify truth if the framework forbids purposive certification.
+3. If `talāzum` is asserted, require the necessary connection to be shown. A miracle does not
+   intrinsically mean prophetic truthfulness merely as a power-event; its sign-value depends on
+   divine assignment and truthful guidance.
+4. If false-prophet miracles are treated as possible but unfitting, the framework has conceded
+   a fittingness/wisdom distinction. If treated as impossible despite being possible in itself,
+   the framework must explain why divine power does not attach without turning the issue into a
+   bare contradiction label.
+
+**Prohibited move:** Do not answer this as a generic "miracles prove prophethood" proof while
+leaving the framework's no-purpose account of divine action untouched. That grants the sign
+while erasing the ground of signification.
+
+---
+
 ## V. Connection to Kernel Thesis
 
 Commitment 2 of `references/kernel-thesis.md`: sound reason and authentic transmission never truly conflict — the apparent conflict is in contaminated reason, weak transmission, or the wrong rational criterion applied. This file supplies the doctrinal grounding for that commitment: when reason (in its contaminated or pseudo-neutral form) appears to conflict with prophetic content, the conflict is always located in the criterion being applied to reason's deliverances — not in a genuine tension between the faculty of reason and the content of revelation. The faculty of sound reason is capable of recognizing prophetic truth; what blocks it is the inherited criterion that has been substituted for it.
@@ -2769,6 +2842,11 @@ This file has not governed the response if any of the following occurred:
 - **Revealed attributes were assimilated to the philosopher's God.** The response defended divine responsiveness, speech, or engagement by reinterpreting them as metaphors for philosophical properties (will, eternal decree, etc.). This accepts the perfect-being framework's authority and abandons the revealed description. This is Challenge Pattern B's prohibited move.
 
 - **The prophetic knowledge claim was defended as a subjective experience.** The response treated prophetic reception as one psychological event among others, rather than as a categorically distinct epistemic event that cannot be evaluated by the naturalist criterion. This is Challenge Pattern C's failure mode.
+
+- **Miracle signification was borrowed after purpose was denied.** The response used miracles
+  as proof of prophethood while leaving intact a framework in which divine acts are not tied to
+  wisdom, purpose, truthful guidance, or fittingness. This is Challenge Pattern D's failure
+  mode.
 
 - **The kalāmic demonstration was offered before the inversion was named.** The interlocutor demanded a rational demonstration of prophetic credentials; the response immediately produced the demonstration. This places the remedial apparatus in the gatekeeper position that this file exists to correct. The inversion must be named before the demonstration is offered (if offered at all).
 

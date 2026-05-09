@@ -68,7 +68,7 @@ catalogue_registered: true
 | Perfection / non-eventfulness / timelessness as tribunal | perfection-criterion-usurpation.md; foreign-premise-detection.md; DO-11/DO-13 after tribunal cleared |
 | Philosopher's-God: static simplicity / non-relational framing | perfection-criterion-usurpation.md; prophetic-discourse-neutralization.md if revelation emptied; DO-13 after semantic/tribunal owners clear |
 | Revelation affirmed but functionally neutralized | prophetic-discourse-neutralization.md before DO-13 content |
-| Canon / church authority fallback | V10-transmission-content-vetting.md; DO-14 for selection/formation/authorization; do NOT collapse into Qur'anic RT unless RT pressure independently live |
+| Canon / church authority fallback | V10-transmission-content-vetting.md; DO-14 for selection/formation/authorization; do NOT collapse into Qurʾānic RT unless RT pressure independently live |
 | "Mystery" invoked as coherence substitute | Semantic blocker: mystery-invocation blocks coherence analysis; flag and hold until model is specified |
 
 ---
@@ -317,9 +317,11 @@ A common modern pressure says that if God created time and space, then there is 
 "before" creation or "above" the world, so revelation's language about divine action and
 exaltedness must be translated away. That move assumes time and space are self-standing
 containers. The skill's route is different: created days and years are measures of motion in
-created systems, and created spatiality belongs to created particulars. God's creating these does
-not force a timeless, nowhere, relationless deity. It only forbids projecting creaturely mode
-onto God.
+created systems, and created spatiality belongs to created particulars. A temporal relation is
+not itself a separately subsisting thing; `zamān` as a measure of motion is an attribute of the
+moving substrate. God's creating created-system `zamān` does not force a timeless, nowhere,
+relationless deity, nor does Atharī ontology treat every temporal, spatial, or directional
+description as created by that fact alone. It only forbids projecting creaturely mode onto God.
 
 Once these distinctions are in place, the choice is not between Aristotelian abstraction and
 crude creatureliness. The revealed God is neither a creature nor a philosophical remainder. He

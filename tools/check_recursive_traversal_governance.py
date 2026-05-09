@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Check Phase 6 recursive traversal governance in source and runtime."""
 
 from __future__ import annotations

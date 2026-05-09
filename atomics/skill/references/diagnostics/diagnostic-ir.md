@@ -171,7 +171,7 @@ IR(pattern_profile, claim_level, reason-category, concealment, deformation, DO-o
 Named denomination, school, author, source label, or genealogy may be recorded only as
 source-status context when the IR requires it. It is not operative warrant, not public-render
 material by default, and not permission to paste a topic-specific argument bank. Default public
-source citation is restricted to Qur'an, Sunnah, and sound Salaf narrations, and each such use
+source citation is restricted to Qurʾān, Sunnah, and sound Salaf narrations, and each such use
 requires a direct source reference.
 
 Compiler lifecycle:
@@ -410,7 +410,7 @@ NS code:                             # NS-1 through NS-12, or provisional
 Deformation:                         # primary [| secondary], in intervention order
 Concealment mode:                    # clear | irad | juhud | inkar | istikbar | nifaq | mode-? | compound
 DO-orient:                           # truth-seek | identity-perf | autotelic | zann-mode | mixed
-RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qur'anic RT family is also live
+RT marker (if active):               # RT-1 | RT-2 | RT-3 | RT-4 | none; keep `none` for ḥadīth-authentication cases unless a separate Qurʾānic RT family is also live
 Read status:                         # dominant | distributed | underdetermined
 Confidence:                          # strong | provisional | low
 Alignment state:                     # blocked | tribunal-loosened | frame-cleared | recognition-surfaced | alignment-advanced
@@ -534,7 +534,7 @@ Populate these whenever their trigger is live:
 - `Foreign premise` and `Upstream findings` when criterion import, tribunal installation, transmission demotion, or framework import is visible
 - `Backbone predicates active` when trigger mapping in `references/diagnostics/arabic-backbone-predicates.md` calls for checks
 - `Philosophical usurpation` when an imported framework is functioning as upstream tribunal
-- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qur'anic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
+- `RT marker` when the live transmission pressure instantiates RT-1 through RT-4. Ḥadīth-authentication cases without a separate Qurʾānic RT family keep `RT marker: none` and route through `references/diagnostics/hadith-authentication-epistemology.md`
 - `What is withheld and why` when register-hold, semantic gate, or stop governance keeps a diagnosed downstream route from current deployment
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
@@ -806,12 +806,12 @@ Held: biblical prooftext dump, broad Judaism coverage, new Jewish owner content
 Must not dump: lists of prooftexts or citations before source-use discipline
 ```
 
-### 4. Arya Samaj Qur'an critique
+### 4. Arya Samaj Qurʾān critique
 
 ```text
 Structural pattern print: external criterion as tribunal / Vedic-reformist reason claim / Satyarth-Prakash-style polemical standard
-Load-bearing node: criterion used to judge Qur'an, prophecy, divine attributes, resurrection, or law
-Collapse radius: verse-by-verse Qur'an defense, Hindu owner content, exact Sanaullah citations
+Load-bearing node: criterion used to judge Qurʾān, prophecy, divine attributes, resurrection, or law
+Collapse radius: verse-by-verse Qurʾān defense, Hindu owner content, exact Sanaullah citations
 Intervention target: disclose whether "reason/common sense" is sound reason or a school-bound polemical criterion
 Framing notes: do not treat Arya Samaj as Advaita; do not quote noisy Urdu OCR as exact source
 Existing route: FPD + V2 + reason-disambiguation + M9 if divine predication is live + RT if source authority becomes central

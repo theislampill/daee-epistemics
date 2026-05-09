@@ -107,7 +107,7 @@ The tradition-specific corpora, formation events, and arguments differ; the logi
 material appears in a final-prophethood, canon, or authority case, classify the move
 before using any text:
 
-- Qur'an-grounded report about prior revelation
+- Qurʾān-grounded report about prior revelation
 - current-text corroboration
 - argument from an interlocutor-granted canon
 - internal inconsistency refutation
@@ -188,7 +188,7 @@ For recurring family treatments after this sequence, see
 - Historical criticism / original-text skepticism -> start here, then route to RT-1 if the live
   issue is manuscript reconstruction, or RT-2 if the live issue is canon formation
 - Canon-formation pressure or "who chose scripture?" -> start here, then route to RT-2
-- Qur'anic preservation / qirāʾāt / manuscript confusion -> start here, then route to RT-3
+- Qurʾānic preservation / qirāʾāt / manuscript confusion -> start here, then route to RT-3
 - Ḥadīth corpus rejection / isnād criticism / āḥād-vs-mutawātir / grade-confusion pressure -> start here, then route to `diagnostics/hadith-authentication-epistemology.md`
 - Muslim-internal panic over text-history material -> start here, then route to RT-4
 - Final-prophethood challenges entangled with text-history or testimony -> use here before broader

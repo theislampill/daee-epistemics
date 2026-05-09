@@ -32,6 +32,14 @@ This pass governs cases where the live move is not yet a first-order doctrinal o
 
 Both are upstream failures. They are not resolved by answering the downstream doctrinal topic while the semantic move remains unaddressed.
 
+**Reception-grounded meaning rule:** Prophetic discourse is interpreted through the
+speech situation in which it was addressed: the language, usage, context, speaker intent,
+and direct audience's uptake. The operative question is not what a word could mean in
+theory, nor whether a later system can label a reading "literal" or "figurative." The
+operative question is what the addressed audience would have understood the speech to
+communicate in that setting. Later metaphysical categories may clarify a new application,
+but they cannot override the received meaning or create a new one.
+
 This pass is also a route-back control surface. Clearing the semantic neutralization does not
 by itself license full doctrinal release. After the semantic move is addressed, refresh the
 case-state. If another live burden now governs, route there. If not, release only the
@@ -69,6 +77,8 @@ and set `Routing gate: semantic-discipline-required` until the move is addressed
 - "What the text really means is X," where X replaces the surface semantic core with a different content rather than clarifying mode.
 - "Speech" becomes mere creation, decree, power, or inner meaning without showing why that replacement follows from the wording.
 - Revealed predicates are kept only as rhetorical shells while the real content is transferred elsewhere.
+- "This can be metaphorical" is used as a bare possibility rather than a meaning grounded in
+  the original usage, context, and audience reception.
 
 **What it suppresses:** The determinate semantic content of the discourse and its ability to establish real divine predicates, acts, or guidance.
 
@@ -128,6 +138,8 @@ This file has not governed the response if:
 - The reply moves straight to the doctrinal topic while the semantic move is still live.
 - Recontenting is treated as mere clarification of mode.
 - Evacuation is treated as a harmless suspension of detail rather than a denial of determinate guidance.
+- A later philosophical or school-theological category is allowed to decide the meaning of
+  prophetic speech without first showing that this meaning belonged to the speech situation.
 - A case with active neutralization is surfaced with `Routing gate: open`.
 
 ---

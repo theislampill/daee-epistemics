@@ -158,7 +158,7 @@ Pattern(deformation/concealment/unsoundness) > denomination/source-label
 
 A named framework, school, source, author, genealogy, or identity may supply internal
 source-status context, but it is not public-render material by default and is never sufficient to
-route content or release an apologetic argument bank. Default citation is restricted to Qur'an,
+route content or release an apologetic argument bank. Default citation is restricted to Qurʾān,
 Sunnah, and sound Salaf narrations with direct source reference. The DSL/IR routes by the detected
 noetic operation: criterion import, tribunal installation, predication error, authority-order
 disorder, warrant failure, concealment, deformation, and the active `claim_level` /
@@ -423,8 +423,8 @@ EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
 The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.3.2.0 release line,
 the package artifact is built from the generated `skill/` root and recorded in
 [`docs/release-artifacts.md`](docs/release-artifacts.md). GitHub Releases are the binary
-distribution surface; if v0.3.2.0 has not yet been posted, the older v0.3.1.0 asset remains
-historical release evidence rather than current-package evidence.
+distribution surface; older v0.3.1.0 assets and smokes are historical evidence, not
+current-package evidence for v0.3.2.0.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
@@ -433,14 +433,15 @@ Binary skill archives are not committed to this repository. Build locally with `
 the generated `skill/` root, or use the verified public GitHub Release asset.
 
 The archive root must contain `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
-`compiled-module-map.json`, and `build-manifest.json` directly. Do not zip the whole repo root,
-and do not produce a bundle whose top level is `skill/`. Package the contents of the generated
-`skill/` directory, not the directory itself.
+`compiled-module-map.json`, `build-manifest.json`, and `README.md` directly. Do not zip the
+whole repo root, and do not produce a bundle whose top level is `skill/`. Package the contents
+of the generated `skill/` directory, not the directory itself.
 
 For path fidelity, build the archive with tooling that preserves slash-safe archive entry names for
 skill hosts that inspect the bundle structure directly.
 
-For a v0.3.2.0 release candidate, the local packaging command should be:
+On Windows, `package.ps1` uses WSL Python to preserve slash-safe archive entries. For a
+v0.3.2.0 local package rebake, the command is:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
@@ -463,8 +464,8 @@ rm -rf "$tmp"
 ```
 
 If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `data/`,
-`scripts/`, `tests/`, `compiled-module-map.json`, and `build-manifest.json` at the top level
-of the archive.
+`scripts/`, `tests/`, `compiled-module-map.json`, `build-manifest.json`, and `README.md` at
+the top level of the archive.
 
 ### Claude Installation
 
@@ -555,8 +556,9 @@ python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stabilit
 
 ### Release Smoke Boundary
 
-Smoke tests should use the latest explicitly named rc package and hash from the current run.
-Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs. The release smoke
+Smoke tests should use the current package filename and SHA recorded in
+[`docs/release-artifacts.md`](docs/release-artifacts.md).
+Do not use `build/compiled-skill/` or older local archives as smoke-test inputs. The release smoke
 artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
 live runs may regenerate it, but the checker defaults to that repo-local root.
 `tools/check_smoke_artifacts.py` also compares smoke package provenance against
