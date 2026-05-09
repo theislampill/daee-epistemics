@@ -69,7 +69,7 @@
   adding encoding hygiene checks, clarifying binary archive availability, preserving the
   schema-adjacent IR validation boundary, and adding typed smoke IR sidecars for representative
   hard and bounded fixtures.
-- Clarified historical v0.3.1.0 RC00001 package evidence versus current RC00005 local build
+- Clarified historical v0.3.1.0 RC00001 package evidence versus the v0.3.2.0 local package build
   evidence, documented that committed `runtime-grounding-v5` smokes are historical regression
   evidence unless regenerated, and added `tools/check_smoke_artifacts.py --require-current-release-smokes`
   as the stricter current-package smoke promotion gate.
@@ -135,6 +135,9 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
 - Updated generated `skill/` package output from atomics so bundled scripts,
   data, tests, and runtime references are available to Codex-capable skill
   runtimes.
+- Updated operative `contract_version` markers to `"0.3.2.0"` across canonical
+  atomics source and rebuilt generated runtime bundles with `compiler_version`
+  `0.3.2`.
 - Updated README/onboarding docs to describe basic Codex use, maintainer debug
   commands, Level 3 default-when-available behavior, and visible Level 1/2
   fallback.

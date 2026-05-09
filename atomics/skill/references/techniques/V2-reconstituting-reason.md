@@ -2,7 +2,7 @@
 id: V2-reconstituting-reason
 module_class: technique
 canonical_path: skill/references/techniques/V2-reconstituting-reason.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor's conception of reason is contaminated (bidʿī ʿaqlī)
   - evidential content cannot land through the interlocutor's filter

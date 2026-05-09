@@ -30,6 +30,7 @@ jobs:
           python tools/check_recursive_traversal_governance.py
           python tools/check_render_modes.py
           python tools/check_frontmatter.py
+          python tools/check_frontmatter.py --contract-version 0.3.2.0
           python tools/check_coverage.py
           python tools/check_framework_pipeline.py
           python tools/check_recursion_collapse_noetic_frame.py

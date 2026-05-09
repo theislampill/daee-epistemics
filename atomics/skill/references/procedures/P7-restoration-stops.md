@@ -2,7 +2,7 @@
 id: P7-restoration-stops
 module_class: procedure
 canonical_path: skill/references/procedures/P7-restoration-stops.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - any response sequence at risk of premature argument deployment
   - grief-primary or identity-performance orientation confirmed

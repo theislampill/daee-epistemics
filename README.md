@@ -418,10 +418,11 @@ EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
 
 ### Package Boundary
 
-The canonical user-facing upload name is `daee-epistemics.skill`. The current public GitHub Release
-asset filename is `daee-epistemics-v0.3.1.0.skill`, verified on the historical `v0.3.1.0` release.
-The v0.3.2.0 source candidate is not a package-bound release asset until an explicit packaging pass
-builds and records a new package hash.
+The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.3.2.0 release line,
+the package artifact is built from the generated `skill/` root and recorded in
+[`docs/release-artifacts.md`](docs/release-artifacts.md). GitHub Releases are the binary
+distribution surface; if v0.3.2.0 has not yet been posted, the older v0.3.1.0 asset remains
+historical release evidence rather than current-package evidence.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
@@ -429,10 +430,10 @@ and `.skill`, and do not re-zip it.
 Binary skill archives are not committed to this repository. Build locally with `package.ps1` from
 the generated `skill/` root, or use the verified public GitHub Release asset.
 
-The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and
-`build-manifest.json` directly. Do not zip the whole repo root, and do not produce a bundle whose
-top level is `skill/`. Package the contents of the generated `skill/` directory, not the directory
-itself.
+The archive root must contain `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
+`compiled-module-map.json`, and `build-manifest.json` directly. Do not zip the whole repo root,
+and do not produce a bundle whose top level is `skill/`. Package the contents of the generated
+`skill/` directory, not the directory itself.
 
 For path fidelity, build the archive with tooling that preserves slash-safe archive entry names for
 skill hosts that inspect the bundle structure directly.
@@ -459,7 +460,9 @@ mv -f "$tmp_zip" "$out_skill" &&
 rm -rf "$tmp"
 ```
 
-If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json` at the top level of the archive.
+If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `data/`,
+`scripts/`, `tests/`, `compiled-module-map.json`, and `build-manifest.json` at the top level
+of the archive.
 
 ### Claude Installation
 

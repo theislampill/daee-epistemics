@@ -2,7 +2,7 @@
 id: hadith-authentication-epistemology
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/hadith-authentication-epistemology.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - ḥadīth corpus reliability or isnād criticism is live pressure
   - āḥād-vs-mutawātir epistemic-yield question active

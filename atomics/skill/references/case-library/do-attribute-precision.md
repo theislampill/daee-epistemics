@@ -2,7 +2,7 @@
 id: do-attribute-precision
 module_class: case-library
 canonical_path: skill/references/case-library/do-attribute-precision.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - live pressure involves how divine attributes are predicated
   - divine identity or essence/attribute relation is being argued

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-COMPILER_VERSION = "0.3.1"
+COMPILER_VERSION = "0.3.2"
 BUNDLE_MAPPING_VERSION = "2026-04-28.phase5"
 SOURCE_ROOT_REL = "atomics/skill"
 OUTPUT_ROOT_REL = "skill"

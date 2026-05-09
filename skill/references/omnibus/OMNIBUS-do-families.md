@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: do-core -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-core.md -->
-<!-- SOURCE_SHA256: 142f0122e8317d22185d4af2b711498d9e0868899034e1787ee454f3da9f9a46 -->
+<!-- SOURCE_SHA256: 720a432175ec81034cabaa2b7c644aa5997e9aa2274d51c21c184e3fb37f4b75 -->
 
 ---
 id: do-core
 module_class: case-library
 canonical_path: skill/references/case-library/do-core.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - DO family confirmed (DO-1 through DO-6) via V1 and mandatory Phase 2 passes
   - divine hiddenness, evidential evil, evolutionary debunking, religious diversity, transcendence/language, or attribute coherence is the live family
@@ -594,13 +594,13 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-second-loop.md -->
-<!-- SOURCE_SHA256: ce694d0f5f02931ab4c1d64f72eac9f9c35d5bedd87da96571d146c37af078c7 -->
+<!-- SOURCE_SHA256: d95302cf97d56e6b024585c039cda2639552bd2fa5f11544eb662416362d5573 -->
 
 ---
 id: do-second-loop
 module_class: case-library
 canonical_path: skill/references/case-library/do-second-loop.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes
   - HADD/cognitive-science, prophetic-moral-luck, Great Pumpkin, three-tier epistemology, or Islamic-specific moral objections is the live family
@@ -1185,13 +1185,13 @@ The operative response does not require claiming that every classical juristic p
 <!-- MODULE_ID: do-christian-extensions -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-christian-extensions.md -->
-<!-- SOURCE_SHA256: 59c6534753f3162859c19cc9f2dac906788aad3bd7beb1b862670a1a8a776579 -->
+<!-- SOURCE_SHA256: d378104296edd006ab2bd0de6b9674ccfa877353c90e599a0a875e349654278f -->
 
 ---
 id: do-christian-extensions
 module_class: case-library
 canonical_path: skill/references/case-library/do-christian-extensions.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion)
   - model identification complete before DO-12 or DO-13
@@ -1623,13 +1623,13 @@ This is the operationally significant sub-question. The criterion for canonical 
 <!-- MODULE_ID: do-attribute-precision -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-attribute-precision.md -->
-<!-- SOURCE_SHA256: 2089afa122dd84c673deaaad1461254a5b2a7b31f10af59b6e79ec47bab4eb41 -->
+<!-- SOURCE_SHA256: e4c9dbb1f7690ca8b8b085d69edfd6b2c4c50f080235a6664dd0f4af03aefed2 -->
 
 ---
 id: do-attribute-precision
 module_class: case-library
 canonical_path: skill/references/case-library/do-attribute-precision.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - live pressure involves how divine attributes are predicated
   - divine identity or essence/attribute relation is being argued
@@ -1797,13 +1797,13 @@ to interlocutors.
 <!-- MODULE_ID: philosophical-usurpation -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/philosophical-usurpation.md -->
-<!-- SOURCE_SHA256: 992cfed5d6bc2275a5e00b1d184fe5fc639c2853282de5d1f14576130d648e9b -->
+<!-- SOURCE_SHA256: 7519424e053d9bf7f96e96deecd5bfeeccc4577f7126fc82328b043c2f44f776 -->
 
 ---
 id: philosophical-usurpation
 module_class: case-library
 canonical_path: skill/references/case-library/philosophical-usurpation.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - imported philosophical framework functioning as upstream tribunal over revelation
   - framework is not merely present but operating as court of appeal (Types A–D)
@@ -1953,13 +1953,13 @@ approves each item.
 <!-- MODULE_ID: sound-reason-epistemology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/sound-reason-epistemology.md -->
-<!-- SOURCE_SHA256: 8dd849953e280dea6667f2e2853b2a6be59fa5a3d4857a1c999058da6ef049bc -->
+<!-- SOURCE_SHA256: a7f69ca3d82b709322935d8058d77213faaf955dbf2d40511cbe2de61ed9d306 -->
 
 ---
 id: sound-reason-epistemology
 module_class: governance
 canonical_path: skill/references/sound-reason-epistemology.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - case needs full account of warrant, proper function, tawātur, ḥusn al-naẓar, or bilā kayf
 catalogue_registered: false
@@ -2648,13 +2648,13 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 <!-- MODULE_ID: prophecy-wahy-supremacy -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/prophecy-wahy-supremacy.md -->
-<!-- SOURCE_SHA256: babacf769e63759a652c77db7c8d1df53edd45e7516102198682ecb51f741469 -->
+<!-- SOURCE_SHA256: f888b4bd23745b47d8f55c7cf28170d3e5c4abe41cba79b753a57bb2b5aeb394 -->
 
 ---
 id: prophecy-wahy-supremacy
 module_class: governance
 canonical_path: skill/references/prophecy-wahy-supremacy.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - case treats philosophical systems as legitimate arbiter of revelation
   - interlocutor requires revelation to satisfy a prior rational standard

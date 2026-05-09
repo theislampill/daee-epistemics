@@ -39,8 +39,14 @@ if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "build-manifest.json"))) 
     Fail "Missing skill/build-manifest.json. Regenerate the compiled runtime first."
 }
 
+foreach ($Level3Dir in @("data", "scripts", "tests")) {
+    if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot $Level3Dir))) {
+        Fail "Missing skill/$Level3Dir. Regenerate the compiled runtime first."
+    }
+}
+
 if (-not ($OutputName.EndsWith(".skill.zip", [System.StringComparison]::OrdinalIgnoreCase))) {
-    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.3.1.0.skill.zip. GitHub Release assets should be the checked payload renamed to .skill; do not publish both .skill.zip and .skill, and do not re-zip the repo root."
+    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.3.2.0.skill.zip. GitHub Release assets should be the checked payload renamed to .skill; do not publish both .skill.zip and .skill, and do not re-zip the repo root."
 }
 
 $Wsl = Get-Command wsl -ErrorAction SilentlyContinue
@@ -74,6 +80,9 @@ if not (skill / "compiled-module-map.json").is_file():
     raise SystemExit("missing skill/compiled-module-map.json")
 if not (skill / "build-manifest.json").is_file():
     raise SystemExit("missing skill/build-manifest.json")
+for required_dir in ("data", "scripts", "tests"):
+    if not (skill / required_dir).is_dir():
+        raise SystemExit(f"missing skill/{required_dir}")
 
 out.parent.mkdir(parents=True, exist_ok=True)
 if out.exists():
@@ -94,7 +103,7 @@ with ZipFile(out, "w", ZIP_DEFLATED) as zf:
 with ZipFile(out) as zf:
     names = zf.namelist()
 
-forbidden_prefixes = ("skill/", "atomics/", "tools/", "docs/", "tests/", "build/", ".git/")
+forbidden_prefixes = ("skill/", "atomics/", "tools/", "docs/", "build/", ".git/")
 bad = [
     name for name in names
     if name.startswith(forbidden_prefixes) or name.startswith("./") or "\\" in name
@@ -107,6 +116,9 @@ if "compiled-module-map.json" not in names:
     raise SystemExit("archive missing compiled-module-map.json at root")
 if "build-manifest.json" not in names:
     raise SystemExit("archive missing build-manifest.json at root")
+for required_prefix in ("data/", "scripts/", "tests/"):
+    if not any(name.startswith(required_prefix) for name in names):
+        raise SystemExit(f"archive missing {required_prefix} at root")
 if bad:
     raise SystemExit("archive has invalid root or separators: " + ", ".join(bad[:10]))
 
@@ -131,4 +143,4 @@ Write-Host "  Path:   $($Item.FullName)"
 Write-Host "  Size:   $($Item.Length) bytes"
 Write-Host "  SHA256: $($Hash.Hash)"
 Write-Host ""
-Write-Host "Archive root contains SKILL.md, references/, compiled-module-map.json, and build-manifest.json."
+Write-Host "Archive root contains SKILL.md, references/, data/, scripts/, tests/, compiled-module-map.json, and build-manifest.json."

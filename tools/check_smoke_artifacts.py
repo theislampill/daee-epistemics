@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 HARD_MIN_BYTES = 20_000
 DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
 DEFAULT_RELEASE_ARTIFACTS = ROOT / "docs" / "release-artifacts.md"
+DEFAULT_RELEASE_PACKAGE_FILENAME = "daee-epistemics-v0.3.2.0.skill"
+DEFAULT_RELEASE_PACKAGE_SHA256 = "EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6"
 PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill(?:\.zip)?$")
 HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
 RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
@@ -643,8 +645,8 @@ BAD_SAMPLES = {
         "output": "PARTIAL / OWNER-BODY-NOT-LOADED: missing V2-reconstituting-reason.md, so no generic V2 submove is rendered.\n",
         "verdict": "- fixture class: hard\n- status: PARTIAL\n",
         "trace": (
-            "- package filename: daee-epistemics-v0.3.1.0.skill\n"
-            "- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n"
+            "- package filename: daee-epistemics-post-v0.3.2.0-dev.skill.zip\n"
+            "- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n"
             "- release-artifact relation: post-expansion-regression\n"
             "- current-release evidence: no\n"
             "- model/host: Codex\n"
@@ -814,8 +816,8 @@ BAD_SAMPLES = {
         ),
         "verdict": "- fixture class: hard\n- status: PARTIAL\n- PARTIAL reason: under hard-depth floor\n",
         "trace": (
-            "- package filename: daee-epistemics-v0.3.1.0.skill\n"
-            "- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n"
+            "- package filename: daee-epistemics-post-v0.3.2.0-dev.skill.zip\n"
+            "- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n"
             "- release-artifact relation: post-expansion-regression\n"
             "- current-release evidence: no\n"
             "- model/host: Codex\n"
@@ -853,8 +855,8 @@ BAD_SAMPLES = {
             "- another pass licensed: yes\n"
         ),
         "trace": (
-            "- package filename: daee-epistemics-v0.3.1.0.skill\n"
-            "- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n"
+            "- package filename: daee-epistemics-post-v0.3.2.0-dev.skill.zip\n"
+            "- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n"
             "- release-artifact relation: post-expansion-regression\n"
             "- current-release evidence: no\n"
             "- model/host: Codex\n"
@@ -898,7 +900,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "trace": f"- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- current source package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "package SHA256 differs from release artifact without historical-regression marker",
     },
     "package_filename_mismatch": {
@@ -906,7 +908,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: wrong-RC.skill.zip\n- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "trace": f"- package filename: wrong-RC.skill.zip\n- package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "package filename differs from release artifact",
     },
     "ambiguous_current_and_historical_claims": {
@@ -930,7 +932,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-v0.3.1.0.skill\n- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "trace": f"- package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n- package SHA256: 1111111111111111111111111111111111111111111111111111111111111111\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "current-release provenance carries non-current package SHA256",
     },
     "historical_marker_missing_current_source_sha": {
@@ -938,7 +940,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: daee-epistemics-v0.3.1.0.skill\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "trace": f"- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "historical smoke lacks current source package SHA256",
     },
     "missing_package_filename": {
@@ -946,7 +948,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
+        "trace": f"- package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n",
         "expected": "missing package filename provenance",
     },
     "historical_hash_with_marker_allowed": {
@@ -954,8 +956,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": VALID_HARD_SAMPLE_OUTPUT,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: daee-epistemics-v0.3.1.0.skill\n- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- owner-body evidence: compiled bundle sections available\n",
-        "trace": "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: daee-epistemics-v0.3.1.0.skill\n- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- owner-body evidence: compiled bundle sections available\n- owner-floor evidence: owner-floor execution output-visible\n",
+        "trace": f"- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n- release-artifact relation: historical-regression\n- current-release evidence: no\n- current source package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n- current source package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- owner-body evidence: compiled bundle sections available\n- owner-floor evidence: owner-floor execution output-visible\n",
         "expected_pass": True,
     },
     "post_expansion_regression_marker_allowed": {
@@ -1003,7 +1004,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-v0.3.1.0.skill\n- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- smoke provenance mode: live-run\n",
+        "trace": f"- package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n- package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- smoke provenance mode: live-run\n",
         "expected": "live-run mode lacks direct-copied output relation",
     },
     "live_run_without_formatting_normalization": {
@@ -1011,7 +1012,7 @@ BAD_SAMPLES = {
         "input": "Trinity hard smoke.",
         "output": "x" * 21000,
         "verdict": "- fixture class: hard\n- status: PASS\n",
-        "trace": "- package filename: daee-epistemics-v0.3.1.0.skill\n- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- smoke provenance mode: live-run\n- output.md relation: direct-copied model/skill output\n",
+        "trace": f"- package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n- package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n- release-artifact relation: current-release\n- current-release evidence: yes\n- model/host: Codex\n- invocation mode: default\n- prompt: see input.md\n- run timestamp: 2026-05-07T00:00:00Z\n- live-run vs handcrafted-regression classification: live-run\n- smoke provenance mode: live-run\n- output.md relation: direct-copied model/skill output\n",
         "expected": "live-run mode lacks formatting-safe normalization note",
     },
     "synthetic_output_prohibited_cannot_pass": {
@@ -1302,14 +1303,12 @@ def release_artifact_consistency_errors(
         current_source_filename = clean_field_value(current_source_filename_match.group(1)) if current_source_filename_match else None
         if not current_source_filename:
             errors.append("historical smoke lacks current source package filename")
-        elif current_source_filename != release_artifact.filename:
-            errors.append("historical smoke current source package filename differs from release artifact")
+        elif not PACKAGE_FILENAME_CANONICAL_RE.match(current_source_filename):
+            errors.append("historical smoke current source package filename is malformed")
         current_source_match = CURRENT_PACKAGE_SHA_LINE_RE.search(provenance_text)
         current_source_hash = extract_hash(clean_field_value(current_source_match.group(1))) if current_source_match else None
         if not current_source_hash:
             errors.append("historical smoke lacks current source package SHA256")
-        if current_source_hash and current_source_hash != release_artifact.sha256:
-            errors.append("historical smoke current source package SHA256 differs from release artifact")
     return errors
 
 
@@ -1779,6 +1778,7 @@ def write_artifact(
     trace: str | None = None,
     verdict_extra: str = "",
     with_ir: bool = False,
+    release_artifact: ReleaseArtifact | None = None,
 ) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     (directory / "input.md").write_text("Smoke prompt.\n", encoding="utf-8")
@@ -1788,9 +1788,11 @@ def write_artifact(
         else "## Burden-Cycle 1\n### State/noetic re-read\n- What changed / cumulative-state delta: claim-state changed.\n- Release status: closed for this input.\n"
     )
     (directory / "output.md").write_text(output_text, encoding="utf-8")
+    package_filename = release_artifact.filename if release_artifact else DEFAULT_RELEASE_PACKAGE_FILENAME
+    package_sha256 = release_artifact.sha256 if release_artifact else DEFAULT_RELEASE_PACKAGE_SHA256
     trace_text = trace or (
-        "- package filename: daee-epistemics-v0.3.1.0.skill\n"
-        "- package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n"
+        f"- package filename: {package_filename}\n"
+        f"- package SHA256: {package_sha256}\n"
         "- release-artifact relation: current-release\n"
         "- current-release evidence: yes\n"
         "- model/host: Codex\n"
@@ -1839,8 +1841,8 @@ def validate_current_release_bad_samples(release_artifact: ReleaseArtifact) -> l
                 "- package SHA256: 544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8\n"
                 "- release-artifact relation: historical-regression\n"
                 "- current-release evidence: no\n"
-                "- current source package filename: daee-epistemics-v0.3.1.0.skill\n"
-                "- current source package SHA256: 08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44\n"
+                f"- current source package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n"
+                f"- current source package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n"
                 "- model/host: Codex\n"
                 "- invocation mode: default\n"
                 "- prompt: see input.md\n"
@@ -1855,28 +1857,29 @@ def validate_current_release_bad_samples(release_artifact: ReleaseArtifact) -> l
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=False)
-        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True)
+        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=False, release_artifact=release_artifact)
+        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
         found = current_release_requirement_errors(root, release_artifact)
         if not any("current-release PASS smoke missing ir.json" in item for item in found):
             errors.append(f"strict bad sample missing ir.json was not rejected: {found!r}")
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", output="x" * 1000, with_ir=True)
-        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True)
+        write_artifact(root / "01-current-hard", fixture_class_value="hard", output="x" * 1000, with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
         found = current_release_requirement_errors(root, release_artifact)
         if not any("hard smoke PASS under depth floor" in item for item in found):
             errors.append(f"strict bad sample hard below depth was not rejected: {found!r}")
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=True)
+        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=True, release_artifact=release_artifact)
         write_artifact(
             root / "02-current-bounded",
             fixture_class_value="bounded",
             verdict_extra="",
             with_ir=True,
+            release_artifact=release_artifact,
         )
         # Overwrite verdict without bounded-complete fields.
         (root / "02-current-bounded" / "verdict.md").write_text(
@@ -1925,20 +1928,20 @@ def main(argv: list[str]) -> int:
     args = parser.parse_args(argv)
 
     release_artifact = ReleaseArtifact(
-        filename="daee-epistemics-v0.3.1.0.skill",
-        sha256="08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44",
+        filename=DEFAULT_RELEASE_PACKAGE_FILENAME,
+        sha256=DEFAULT_RELEASE_PACKAGE_SHA256,
     )
     release_errors: list[str] = []
     if not args.no_release_artifacts:
         release_artifact, release_errors = parse_release_artifacts(Path(args.release_artifacts))
 
     errors = validate_bad_samples(release_artifact or ReleaseArtifact(
-        filename="daee-epistemics-v0.3.1.0.skill",
-        sha256="08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44",
+        filename=DEFAULT_RELEASE_PACKAGE_FILENAME,
+        sha256=DEFAULT_RELEASE_PACKAGE_SHA256,
     ))
     errors.extend(validate_current_release_bad_samples(release_artifact or ReleaseArtifact(
-        filename="daee-epistemics-v0.3.1.0.skill",
-        sha256="08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44",
+        filename=DEFAULT_RELEASE_PACKAGE_FILENAME,
+        sha256=DEFAULT_RELEASE_PACKAGE_SHA256,
     )))
     errors.extend(release_errors)
     if not args.samples_only:

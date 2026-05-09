@@ -2,7 +2,7 @@
 id: diagnostic-render-contract
 module_class: governance
 canonical_path: skill/references/rubrics/diagnostic-render-contract.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - deciding how visibly structured the response should be (Level 1/2/3)
 catalogue_registered: false

@@ -103,6 +103,15 @@ def check_required(data: dict) -> list[str]:
     return [f"Missing required field: '{f}'" for f in REQUIRED_FIELDS if f not in data]
 
 
+def check_contract_version(data: dict, expected_version: str | None) -> list[str]:
+    if not expected_version or "contract_version" not in data:
+        return []
+    actual = data.get("contract_version")
+    if actual != expected_version:
+        return [f"contract_version = {actual!r}; expected {expected_version!r}"]
+    return []
+
+
 def check_enum(data: dict, field: str, valid: set) -> list[str]:
     if field not in data:
         return []
@@ -201,7 +210,7 @@ def check_legacy_blockquote_metadata(path: str) -> list[str]:
 
 # Main
 
-def scan_dir(root: str, verbose: bool) -> tuple[int, int, int, int, int]:
+def scan_dir(root: str, verbose: bool, expected_contract_version: str | None) -> tuple[int, int, int, int, int]:
     """Return (files_checked, files_with_errors, files_with_deprecated_fields, files_with_verification_fields, files_with_legacy_blocks)."""
     files_checked = 0
     files_with_errors = 0
@@ -221,6 +230,7 @@ def scan_dir(root: str, verbose: bool) -> tuple[int, int, int, int, int]:
 
             if data is not None:
                 all_errors += check_required(data)
+                all_errors += check_contract_version(data, expected_contract_version)
                 all_errors += check_enum(data, "module_class", VALID_MODULE_CLASS)
                 all_errors += check_enum(data, "output_shapes", VALID_OUTPUT_SHAPES)
                 all_errors += check_enum(data, "layer_constraint", VALID_LAYER_CONSTRAINT)
@@ -257,6 +267,8 @@ def main():
                         help="Directory to scan (default: atomics/skill/references)")
     parser.add_argument("--verbose", action="store_true",
                         help="Print OK lines")
+    parser.add_argument("--contract-version",
+                        help="Require every YAML-bearing module to use this contract_version")
     args = parser.parse_args()
 
     root = args.dir
@@ -265,7 +277,11 @@ def main():
         sys.exit(1)
 
     print(f"Scanning: {root}")
-    checked, errors, deprecated, verification, legacy_blocks = scan_dir(root, args.verbose)
+    checked, errors, deprecated, verification, legacy_blocks = scan_dir(
+        root,
+        args.verbose,
+        args.contract_version,
+    )
 
     print("-" * 60)
     print(f"Files checked:              {checked}")

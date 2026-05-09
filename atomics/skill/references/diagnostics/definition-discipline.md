@@ -2,7 +2,7 @@
 id: definition-discipline
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/definition-discipline.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - silent redefinition or specialist capture of ordinary language operative
   - universals/particulars confusion active

@@ -2,7 +2,7 @@
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - throughout every engagement as background governance
 blocks:

@@ -2,7 +2,7 @@
 id: P2-objection-mapping
 module_class: procedure
 canonical_path: skill/references/procedures/P2-objection-mapping.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor presenting a battery of intellectual objections
   - engagement is primarily critical rather than existential

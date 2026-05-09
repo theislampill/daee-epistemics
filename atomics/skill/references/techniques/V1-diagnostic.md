@@ -2,7 +2,7 @@
 id: V1-diagnostic
 module_class: technique
 canonical_path: skill/references/techniques/V1-diagnostic.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - beginning any engagement before substantive content
   - interlocutor shifts register

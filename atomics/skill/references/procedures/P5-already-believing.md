@@ -2,7 +2,7 @@
 id: P5-already-believing
 module_class: procedure
 canonical_path: skill/references/procedures/P5-already-believing.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - believer whose belief is shallow, untested, or held by taqlīd
   - belief fragile under pressure; moving from inherited assumption to examined conviction

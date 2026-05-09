@@ -2,7 +2,7 @@
 id: routing-precedence
 module_class: governance
 canonical_path: skill/references/diagnostics/routing-precedence.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - multiple diagnostic axes produce competing signals
   - suppression rules needed to prevent invalid routing combinations

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: V1-diagnostic -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V1-diagnostic.md -->
-<!-- SOURCE_SHA256: d58dbd9fd584e965671c3be71bb26124ff84651d3958914882c710c200223654 -->
+<!-- SOURCE_SHA256: 0ec9494dbd11635565c6d33cb3acb4df9f0304f0ffd19e83f3e18ec5b732139b -->
 
 ---
 id: V1-diagnostic
 module_class: technique
 canonical_path: skill/references/techniques/V1-diagnostic.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - beginning any engagement before substantive content
   - interlocutor shifts register
@@ -172,13 +172,13 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: 30be64f0e8033126b4fc3b6a7aa6c56d9b5842991b777f8e14cf6548edfe6157 -->
+<!-- SOURCE_SHA256: de3f8796abf05208b85f8a20af873c012458d58b2b7d5f0dea0a67b6d1269bdd -->
 
 ---
 id: noetic-reading-checklist
 module_class: governance
 canonical_path: skill/references/diagnostics/noetic-reading-checklist.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - diagnosing worldview structure
   - NS code still provisional or basis is thin (excerpt mode)
@@ -543,13 +543,13 @@ case-state or Diagnostic IR.
 <!-- MODULE_ID: seven-deformations -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/seven-deformations.md -->
-<!-- SOURCE_SHA256: 6f412758a2f3bdcbf01e5fcc2d3a5389efaf0ab8a52c401efa3cae7a19da8da0 -->
+<!-- SOURCE_SHA256: d8ef4442f8b2c0fc3a0ff40ec446823f18707d8f87b9280a3f0db5a5a6036439 -->
 
 ---
 id: seven-deformations
 module_class: governance
 canonical_path: skill/references/diagnostics/seven-deformations.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - upstream obstruction must be identified precisely before responding
 catalogue_registered: false
@@ -1076,13 +1076,13 @@ can be loaded with confidence.
 <!-- MODULE_ID: modes-of-concealment -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/modes-of-concealment.md -->
-<!-- SOURCE_SHA256: 81fa1aefcda5d7dc02636a62d2bb588d2b09b5c1d73f013bb5cc4b31d8098b60 -->
+<!-- SOURCE_SHA256: f3916c1b0780819591318c95c5dd8d585025baf2804b2aeb00212a5ffb30f0c5 -->
 
 ---
 id: modes-of-concealment
 module_class: governance
 canonical_path: skill/references/diagnostics/modes-of-concealment.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - any case after DO-orient is established; concealment mode governs what engagement can land
 emits:
@@ -1410,13 +1410,13 @@ routing decision; the case-state line composes them.
 <!-- MODULE_ID: discourse-orientation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/discourse-orientation.md -->
-<!-- SOURCE_SHA256: 3a96d6b6585523e1dc442ae8b41d98983d4e58d8d0ae8b5bc4229eb2bd81365a -->
+<!-- SOURCE_SHA256: f3e536e978defa22cf21338f99c392b80b11a264ee6467414b95adfe8e1c8e21 -->
 
 ---
 id: discourse-orientation
 module_class: governance
 canonical_path: skill/references/diagnostics/discourse-orientation.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - any case before selecting any intellectual response or case-library module
 routing_effects:
@@ -1675,13 +1675,13 @@ the other emissions remain available but not acted on until the register shifts.
 <!-- MODULE_ID: M5-deformation-triage -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M5-deformation-triage.md -->
-<!-- SOURCE_SHA256: a1cf5cfbbd1adbbf5fd8b7f9e607d58223f8ad5ab71b4dc1a9aca4acc11bcfbe -->
+<!-- SOURCE_SHA256: c2c2f0279efd0cd35d329e5340f27b734d7dcb6d0978ce3e29ab3b24a8dcc20f -->
 
 ---
 id: M5-deformation-triage
 module_class: tactic
 canonical_path: skill/references/tactics/M5-deformation-triage.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - during V1's triage phase (internal subroutine)
   - narrow single-exchange case where live question is already reduced to which deformation governs the next move

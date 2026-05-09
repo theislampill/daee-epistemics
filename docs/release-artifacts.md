@@ -1,11 +1,10 @@
 # Release Artifacts
 
-This file currently records the last public package artifact, v0.3.1.0. The v0.3.2.0 source
-candidate is not package-bound release evidence until an explicit packaging pass builds a new
-`.skill` payload, records its hash here, and regenerates matching current-release smoke evidence.
+This file records the current v0.3.2.0 release-candidate package artifact. Binary skill archives
+are not committed to the source repository; GitHub Releases are the binary distribution surface
+once a release is explicitly posted.
 
-Binary skill archives are not committed to this repository. Build the release candidate locally
-from the generated `skill/` package root:
+Build the release candidate locally from the generated `skill/` package root:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
@@ -20,28 +19,31 @@ asset is the same checked payload renamed to `.skill`. Do not re-zip the reposit
 
 | Field | Value |
 | --- | --- |
-| Package filename | `daee-epistemics-v0.3.1.0.skill` |
-| SHA256 | `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44` |
-| Size | `474357` bytes |
-| Entries | `19` |
-| GitHub Release visibility | Public verified |
-| Release tag | `v0.3.1.0` |
-| Release name | `v0.3.1.0 - Render Governance and Evidence-Chain Readiness` |
-| Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.1.0` |
-| Verification date | `2026-05-07` |
-| Availability | Not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
+| Package filename | `daee-epistemics-v0.3.2.0.skill` |
+| SHA256 | `EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6` |
+| Size | `522890` bytes |
+| Entries | `45` |
+| GitHub Release visibility | Not yet published; public release target |
+| Release tag | `v0.3.2.0` |
+| Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
+| Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
+| Verification date | `2026-05-09` |
+| Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset after release posting. |
 
-Internal/local RC evidence package: `daee-epistemics-RC00005-v0.3.1.0.skill.zip`. It is
-byte-identical to the public GitHub Release asset when copied/renamed from the same build output.
-Public GitHub Release binary distribution asset: `daee-epistemics-v0.3.1.0.skill`. The source
-repository does not commit the binary archive; the GitHub Release is the binary distribution surface.
+Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
+public GitHub Release asset when copied/renamed from the same build output.
+Planned GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
+repository does not commit the binary archive; the GitHub Release is the binary distribution surface
+only after explicit release posting.
 
 Committed `runtime-grounding-v5` smoke artifacts are historical regression evidence for package
 `daee-epistemics-RC00001-v0.3.1.0.skill.zip` / SHA256
 `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8`, not current-release
-package evidence for the RC00005 SHA listed above. Their trace files explicitly mark
-`release-artifact relation: historical-regression`, `current-release evidence: no`, and the
-current RC00005 source package filename/SHA.
+package evidence for the v0.3.2.0 SHA listed above. Their trace files explicitly mark
+`release-artifact relation: historical-regression` and `current-release evidence: no`; any
+`current source package` lines inside those historical traces record the release-candidate source
+package known when the historical regression artifacts were written, not the current package
+artifact in this file.
 
 Current-release smoke suite: none.
 
@@ -50,8 +52,8 @@ post-expansion regression evidence in this source state. They are not current-pa
 evidence unless regenerated against the release package recorded in this file and marked with
 current-release package provenance.
 
-Current-package smoke replay artifacts for `daee-epistemics-v0.3.1.0.skill` / SHA256
-`08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44` is not present unless a smoke
+Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
+`EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
@@ -80,6 +82,9 @@ Expected archive root:
 ```text
 SKILL.md
 references/
+data/
+scripts/
+tests/
 compiled-module-map.json
 build-manifest.json
 ```
@@ -91,7 +96,6 @@ skill/
 atomics/
 tools/
 docs/
-tests/
 build/
 .git/
 ```

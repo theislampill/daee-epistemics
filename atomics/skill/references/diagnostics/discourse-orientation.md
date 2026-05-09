@@ -2,7 +2,7 @@
 id: discourse-orientation
 module_class: governance
 canonical_path: skill/references/diagnostics/discourse-orientation.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - any case before selecting any intellectual response or case-library module
 routing_effects:

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: procedures-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/INDEX.md -->
-<!-- SOURCE_SHA256: 5de7f9c2343bc022cb674329494e608d7988f9ac7924968af3498dcfce9dfc3e -->
+<!-- SOURCE_SHA256: e054428394d72b241170f0e79f85ebb7a76a818af053d5530e81faa80b52b917 -->
 
 ---
 id: procedures-index
 module_class: governance
 canonical_path: skill/references/procedures/INDEX.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - selecting a procedure after V1 case-classification
 catalogue_registered: false
@@ -80,13 +80,13 @@ Procedures do not suspend pattern-first routing, source-status restrictions, bur
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: f8a22889b0b799d02694769bb04130f9939447ec479f5d9530f969535513966d -->
+<!-- SOURCE_SHA256: f433275ea98d62666826e5872402ff29922d5df228e70f567f8551f909e76b53 -->
 
 ---
 id: P1-fitrah-restoration
 module_class: procedure
 canonical_path: skill/references/procedures/P1-fitrah-restoration.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment
   - goal is to create conditions for fiṭrah recovery, not to win an argument
@@ -326,13 +326,13 @@ active and what condition releases the next move, P1 is not yet lawfully deploye
 <!-- MODULE_ID: P2-objection-mapping -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P2-objection-mapping.md -->
-<!-- SOURCE_SHA256: f8ba3bf886f6a656c3705c058a58af412e9ee214f8fd93289f1347d0a1133473 -->
+<!-- SOURCE_SHA256: 5da10fb1b223a720e9729fb0f5a71332b0bbf8ab14a440c08467090f5684604e -->
 
 ---
 id: P2-objection-mapping
 module_class: procedure
 canonical_path: skill/references/procedures/P2-objection-mapping.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor presenting a battery of intellectual objections
   - engagement is primarily critical rather than existential
@@ -508,13 +508,13 @@ and which material is held, the procedure has collapsed into answer-stacking.
 <!-- MODULE_ID: P3-reason-revelation-tension -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P3-reason-revelation-tension.md -->
-<!-- SOURCE_SHA256: 8a6c01f179b058176199c573884edb3c31ebd31b28070de2b84d95a5222a8757 -->
+<!-- SOURCE_SHA256: 6d80e5b7f3fe1908b081b53e1c96fadc475f5504ad195cd77edeb775ff156acb -->
 
 ---
 id: P3-reason-revelation-tension
 module_class: procedure
 canonical_path: skill/references/procedures/P3-reason-revelation-tension.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - intellectually serious interlocutor stuck on perceived fundamental conflict between rational/scientific standards and religious belief
   - often combined with kalāmic interlocutor profile (NS-6, NS-10)
@@ -730,13 +730,13 @@ Additional v0.3.2.0 anti-patterns:
 <!-- MODULE_ID: P4-maieutic -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P4-maieutic.md -->
-<!-- SOURCE_SHA256: 947053f5406200cc9bb4422ac315de8cc0558856af70c5957f20015eac1263b8 -->
+<!-- SOURCE_SHA256: 01727b28d6798dc420e2a904119661f8abc2fbc3ddcbd9403d56d0cfa3c4f7dd -->
 
 ---
 id: P4-maieutic
 module_class: procedure
 canonical_path: skill/references/procedures/P4-maieutic.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor in inkār mode — qalb has already registered what the tongue denies
   - recognition is present but suppressed; not the case where genuine inquiry is absent
@@ -888,13 +888,13 @@ sets up the next answer.
 <!-- MODULE_ID: P5-already-believing -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P5-already-believing.md -->
-<!-- SOURCE_SHA256: 7908fecfded17f977d1bc13bbe042099430a89b2c224cf794d6600d3610b1a5d -->
+<!-- SOURCE_SHA256: dd4960240ae5f9e8726d0e4e29a1a2b7b07b74f8677f9483702cf7f84c4d6514 -->
 
 ---
 id: P5-already-believing
 module_class: procedure
 canonical_path: skill/references/procedures/P5-already-believing.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - believer whose belief is shallow, untested, or held by taqlīd
   - belief fragile under pressure; moving from inherited assumption to examined conviction
@@ -1054,13 +1054,13 @@ pressure, lawful next owner, then practice and steadiness.
 <!-- MODULE_ID: P6-universal-aqidah-principle -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P6-universal-aqidah-principle.md -->
-<!-- SOURCE_SHA256: 04bdd1e9c74a8f0a76403e6d2edd1df378203be9d34a27e10954a602b8cbb891 -->
+<!-- SOURCE_SHA256: 6276aaf3d8ea9cc123e2cad7a1080f25bb5092e3ba006147915a78eca3695c65 -->
 
 ---
 id: P6-universal-aqidah-principle
 module_class: procedure
 canonical_path: skill/references/procedures/P6-universal-aqidah-principle.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - interlocutor claims no religion, no worldview, no ʿaqīdah
   - the claim that there is no righteous guidance asserted as a position

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/terminology.md -->
-<!-- SOURCE_SHA256: 8fd681bc4a2e2929ec5edbbbcdb8bcbe1d2b2ccd29399c02ef2a9344f192fd16 -->
+<!-- SOURCE_SHA256: 2f41ea920aaad981953993b3451b0f4f5dd7ae1c4e20e68131ac8ab14d9424c6 -->
 
 ---
 id: terminology
 module_class: governance
 canonical_path: skill/references/terminology.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - Arabic term usage needs discipline or enforcement
 catalogue_registered: false
@@ -447,13 +447,13 @@ PF codes, module activation rules, or source owners.
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/INDEX.md -->
-<!-- SOURCE_SHA256: 2738724f5ad1a1f8d272e7e86825fd86d61d090832310ebee533a299d2e26e59 -->
+<!-- SOURCE_SHA256: d1fb50fea01c268429168b175b32772c571814766de5e7325f15e54e20483c78 -->
 
 ---
 id: case-library-index
 module_class: governance
 canonical_path: skill/references/case-library/INDEX.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - selecting or confirming a case-library module after V1 diagnosis
 catalogue_registered: false
@@ -692,13 +692,13 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/module-codes.md -->
-<!-- SOURCE_SHA256: 5f00a4d6d3d598aa3315bf9176abb4c2394a9fd3c917460627965f6ae197edf5 -->
+<!-- SOURCE_SHA256: 8cf38be137708ed950fd5eb1b4c4b581e106ffb154ac1fc52ad31367a9085dcc -->
 
 ---
 id: module-codes
 module_class: governance
 canonical_path: skill/references/module-codes.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - ambiguity arises about what a code names or where its full treatment lives
 catalogue_registered: false
@@ -1095,13 +1095,13 @@ shifts with it.
 <!-- MODULE_ID: heuristics -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/heuristics.md -->
-<!-- SOURCE_SHA256: b8de30190a202381dc083539afaa4dead9b14536740973c0805a1a2918a1f479 -->
+<!-- SOURCE_SHA256: a034275877307f58c4e4a04e8d15afcd454b443e2668ed884e4e15118fd462ce -->
 
 ---
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - throughout every engagement as background governance
 blocks:

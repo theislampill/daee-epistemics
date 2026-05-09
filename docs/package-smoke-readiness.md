@@ -13,6 +13,9 @@ Archive root must contain:
 ```text
 SKILL.md
 references/
+data/
+scripts/
+tests/
 compiled-module-map.json
 build-manifest.json
 ```
@@ -24,7 +27,6 @@ skill/
 atomics/
 tools/
 docs/
-tests/
 build/
 .git/
 ```
@@ -37,7 +39,8 @@ explicitly marked as historical regression evidence.
 `build/daee-epistemics-v0.3.2.0.skill.zip` for the next v0.3.2.0 release candidate. The public
 GitHub Release asset is the same checked payload renamed to `.skill`; publish/upload `.skill`, not
 both `.skill.zip` and `.skill`. The archive already is the skill payload:
-its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
+its root contains `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
+`compiled-module-map.json`, and `build-manifest.json`.
 Do not zip the repository root or the top-level `skill/` directory.
 Current local release-artifact evidence is recorded in `docs/release-artifacts.md`; the binary
 archive is build output and is not committed.
@@ -58,6 +61,7 @@ python tools/check_compiled_module_boundaries.py
 python tools/check_stub_integrity.py
 python tools/check_consolidation_call_budget.py
 python tools/check_frontmatter.py
+python tools/check_frontmatter.py --contract-version 0.3.2.0
 python tools/check_coverage.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_framework_pipeline.py
@@ -131,9 +135,9 @@ executed, not because it has the expected headings.
 - The committed `runtime-grounding-v5` smoke artifacts currently use package SHA256
   `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
   historical regression evidence, not current-release package evidence for SHA256
-  `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44`.
-- Current-package smoke evidence for RC00005 / SHA256
-  `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44` is not present unless the
+  `EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6`.
+- Current-package smoke evidence for `daee-epistemics-v0.3.2.0.skill` / SHA256
+  `EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6` is not present unless the
   smoke suite is regenerated against that package.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
@@ -176,9 +180,8 @@ current-release evidence: yes
 ## How to Promote Historical Smokes to Current-Package Evidence
 
 1. Build the target release package with `package.ps1` and create/copy the public `.skill`
-   asset. For the currently documented v0.3.1.0 asset this is
-   `build/daee-epistemics-v0.3.1.0.skill`; for a future v0.3.2.0 release, use the new
-   package filename and hash recorded in `docs/release-artifacts.md`.
+   asset. For v0.3.2.0 this is `build/daee-epistemics-v0.3.2.0.skill`; use the package
+   filename and hash recorded in `docs/release-artifacts.md`.
 2. Run the smoke prompts against that package.
 3. Replace trace/verdict provenance with the public release asset filename and SHA.
 4. Set `release-artifact relation: current-release`.

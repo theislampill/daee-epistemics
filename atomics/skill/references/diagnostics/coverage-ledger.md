@@ -2,7 +2,7 @@
 id: coverage-ledger
 module_class: governance
 canonical_path: skill/references/diagnostics/coverage-ledger.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - historical coverage-ledger references need redirecting
 catalogue_registered: false

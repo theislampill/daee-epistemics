@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 26decbc4b42bd9a6a2b8f695c5b70ccb31fb625dd3ba3ad69789be0dee6fdb63 -->
+<!-- SOURCE_SHA256: 763e98580ba9acb27cf93b22cd15370689d915b546fa4727c4792d80b3cecd0e -->
 
 ---
 id: output-release
 module_class: governance
 canonical_path: skill/references/rubrics/output-release.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - any response about to be shaped or released
 routing_effects:
@@ -809,13 +809,13 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: 80d5c53c2740e777b50631cb72e360b491beb84b337c76ba673e47dc8612ba76 -->
+<!-- SOURCE_SHA256: 8a4de5399fe7c24e6fb031482819fd907873f7ec2ff3adaa33951800651f6196 -->
 
 ---
 id: diagnostic-render-contract
 module_class: governance
 canonical_path: skill/references/rubrics/diagnostic-render-contract.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - deciding how visibly structured the response should be (Level 1/2/3)
 catalogue_registered: false

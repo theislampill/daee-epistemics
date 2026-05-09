@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/INDEX.md -->
-<!-- SOURCE_SHA256: 835cec46ce73b6458118560d953d4b049b781f0fcd40230c15d1dd5af00e9d82 -->
+<!-- SOURCE_SHA256: 27e5fde51ef6f2b1aa8cc29fda428fb48e63a4b256302290cc378cf9bfea6293 -->
 
 ---
 id: diagnostics-index
 module_class: governance
 canonical_path: skill/references/diagnostics/INDEX.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - selecting a diagnostic file after V1 case-classification
 catalogue_registered: false
@@ -105,13 +105,13 @@ This index expands the root skill's routing summaries with the discriminating de
 <!-- MODULE_ID: kalamic-interlocutor -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
-<!-- SOURCE_SHA256: 2e3f398395b2d73d3599e17f498386d24e8973f6ca6a71e43023c7bc2a8e9d88 -->
+<!-- SOURCE_SHA256: fea80270be1a33b441e33e10ebde704e869d1de4f14b551bd91f6e1a2e486315 -->
 
 ---
 id: kalamic-interlocutor
 module_class: governance
 canonical_path: skill/references/diagnostics/kalamic-interlocutor.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - NS-6 or NS-10 confirmed; kalamic evidentialism surface markers present
 emits:
@@ -228,13 +228,13 @@ When the pressure is carried by loaded terms such as body, direction, place, or 
 <!-- MODULE_ID: fitrah-perspectives -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/fitrah-perspectives.md -->
-<!-- SOURCE_SHA256: 369c3e2c94af3fcf58002b5f399a540d656236d46895c07bd8b4e888e0ee9633 -->
+<!-- SOURCE_SHA256: be6914b272c25ec58cf36e67b23594566cd1ed6c9bbbcb8ab7c7fc4bf2cfe475 -->
 
 ---
 id: fitrah-perspectives
 module_class: governance
 canonical_path: skill/references/diagnostics/fitrah-perspectives.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - NS-12 confirmed; or interlocutor disputes fiṭrah content or denies innate theistic orientation
 emits:
@@ -473,13 +473,13 @@ When diagnosing an interlocutor:
 <!-- MODULE_ID: hadith-authentication-epistemology -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
-<!-- SOURCE_SHA256: 5b5267613e976e1f50fbc48f8d1684e2ffdb1a78f35e9dd06df1acb5f7a77bf7 -->
+<!-- SOURCE_SHA256: 06a98e89441ed9b417bb037dda7565723f18a1c2270c7643a8872e86ba5e7b14 -->
 
 ---
 id: hadith-authentication-epistemology
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/hadith-authentication-epistemology.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - ḥadīth corpus reliability or isnād criticism is live pressure
   - āḥād-vs-mutawātir epistemic-yield question active
@@ -689,13 +689,13 @@ This file has not governed the response if any of the following occur:
 <!-- MODULE_ID: causal-series-taxonomy -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/causal-series-taxonomy.md -->
-<!-- SOURCE_SHA256: 94760cbb0fd193062014709fb91fb8fba1ca61c6d082996d7a956a332588f95f -->
+<!-- SOURCE_SHA256: c60b16b00ccc03f3ceda0d7444bcfbc4831281b563c7beeac053bdb73d57fbe6 -->
 
 ---
 id: causal-series-taxonomy
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/causal-series-taxonomy.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - case turns on infinite regress, causal-series classification, or circularity
   - claims that natural or secondary causes are self-sufficient
@@ -841,13 +841,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: definition-discipline -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/definition-discipline.md -->
-<!-- SOURCE_SHA256: 0a657460c1d2afc492ee2dbdb86ea9c967a7578ea5c942a737a3f679ff822446 -->
+<!-- SOURCE_SHA256: 61cfb944308246efc465be5ce4e98bc3368c1ae57b773d82e12f3cb828627245 -->
 
 ---
 id: definition-discipline
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/definition-discipline.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - silent redefinition or specialist capture of ordinary language operative
   - universals/particulars confusion active
@@ -959,13 +959,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/proof-method-audit.md -->
-<!-- SOURCE_SHA256: 1103f3542c937603f9a82125496149f23570f6391a3e64642ebc542abba2e8dc -->
+<!-- SOURCE_SHA256: 0c56fb801ac0fd96310b11e8b1eda4f61c00a0320a785cfc3a14401efa3f6485 -->
 
 ---
 id: proof-method-audit
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/proof-method-audit.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - arguments for God's existence being compared or contested
   - proof grammar itself is the live issue
@@ -1110,13 +1110,13 @@ This file has not governed the response if:
 <!-- MODULE_ID: perfection-criterion-usurpation -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
-<!-- SOURCE_SHA256: 9f79dfa99bdfded29f2f223be0cf0591d7426f8d8f35c0990892304b1ed142e4 -->
+<!-- SOURCE_SHA256: 2ef5e43c564ae03b7e12782cac9fa009f4270594a44534d2d1f0d7cf2a8847c3 -->
 
 ---
 id: perfection-criterion-usurpation
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/perfection-criterion-usurpation.md
-contract_version: "0.3.1.0"
+contract_version: "0.3.2.0"
 load_when:
   - philosophical perfection picture (immutability, simplicity, impassibility, non-eventfulness) functioning as tribunal
   - attribute content being judged by prior metaphysical model presented as neutral reason
