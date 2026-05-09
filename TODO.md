@@ -42,6 +42,9 @@ state only claims spec-side hardening.
   tightens Qurʾān/ḥadīth operative formatting, normalizes kalām and
   source-status terminology, and records durable release-cycle protocol in
   `AGENTS.md`.
+- v0.3.2.0 package metadata hardening keeps the `SKILL.md` description within
+  the 1024-character host limit and checks that limit in both frontmatter
+  validation and package construction.
 - v0.3.2.0 nomenclature normalization records canonical noetic-state, DSL/IR,
   Level 3, TTP/owner/operator, and transliteration names under
   `references/diagnostics/nomenclature-normalization.md`.

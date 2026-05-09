@@ -84,6 +84,37 @@ for required_dir in ("data", "scripts", "tests"):
     if not (skill / required_dir).is_dir():
         raise SystemExit(f"missing skill/{required_dir}")
 
+def skill_description_length(path):
+    text = path.read_text(encoding="utf-8-sig")
+    if not text.startswith("---"):
+        raise SystemExit("skill/SKILL.md missing YAML front matter")
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        raise SystemExit("skill/SKILL.md has malformed YAML front matter")
+    lines = parts[1].splitlines()
+    for idx, line in enumerate(lines):
+        if not line.startswith("description:"):
+            continue
+        value = line.split(":", 1)[1].strip()
+        if value in {">", "|", ">-", "|-", ">+", "|+"}:
+            collected = []
+            for continuation in lines[idx + 1:]:
+                if continuation.startswith((" ", "\t")):
+                    collected.append(continuation.strip())
+                    continue
+                if continuation.strip():
+                    break
+            # YAML folded block scalars keep a trailing newline by default.
+            return len(" ".join(collected).strip()) + 1
+        return len(value.strip().strip('"\''))
+    raise SystemExit("skill/SKILL.md missing description metadata")
+
+description_len = skill_description_length(skill / "SKILL.md")
+if description_len > 1024:
+    raise SystemExit(
+        f"skill/SKILL.md description is {description_len} characters; maximum is 1024"
+    )
+
 out.parent.mkdir(parents=True, exist_ok=True)
 if out.exists():
     out.unlink()
@@ -137,6 +168,7 @@ print(f"Entries: {len(names)}")
 print("Root check: PASS")
 print("Separator check: PASS")
 print("Compiled metadata check: PASS")
+print(f"Description length check: PASS ({description_len}/1024)")
 '@
 
 $PythonScript | & wsl python3 - $RepoWsl $OutputWsl

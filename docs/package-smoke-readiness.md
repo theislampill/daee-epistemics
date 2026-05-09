@@ -138,9 +138,9 @@ executed, not because it has the expected headings.
 - The committed `runtime-grounding-v5` smoke artifacts currently use package SHA256
   `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
   historical regression evidence, not current-release package evidence for SHA256
-  `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE`.
+  `9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7`.
 - Current-package smoke evidence for `daee-epistemics-v0.3.2.0.skill` / SHA256
-  `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` is not present unless the
+  `9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7` is not present unless the
   smoke suite is regenerated against that package.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.

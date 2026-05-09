@@ -21,10 +21,10 @@ On Windows, `package.ps1` uses WSL Python to preserve archive path separators.
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` |
-| Size | `543129` bytes |
+| SHA256 | `9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7` |
+| Size | `543117` bytes |
 | Entries | `45` |
-| GitHub Release visibility | Published; asset rebaked for recursive render, Qurʾān/ḥadīth formatting, kalām terminology, operative-distinction, and release-protocol hardening |
+| GitHub Release visibility | Published; asset rebaked for recursive render, Qurʾān/ḥadīth formatting, kalām terminology, operative-distinction, release-protocol hardening, and SKILL metadata description-limit compliance |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
@@ -53,7 +53,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`3824CC0A1E54C7B136A9C48B8FF48A1AC6528C3CA6052ECFD07A62F7139C40AE` are not present unless a smoke
+`9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 

@@ -149,6 +149,10 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
   source-of-truth discipline, version/contract coherence, encoding hygiene,
   package-shape validation, smoke/evidence boundaries, explicit staging, and
   GitHub Release asset replacement after package rebakes.
+- Corrected the packaged `SKILL.md` metadata description to remain within the
+  1024-character host limit while preserving the broad activation surface, and
+  added `check_frontmatter.py` / `package.ps1` guards so overlong skill
+  descriptions fail before release.
 - Hardened Level 3 execution prompts and checks so `continuation_queue` remains
   a planned route rather than an unconditional checklist: each executed queued
   burden requires Layer A / Layer B structure, owner-floor evidence, Land/R, and

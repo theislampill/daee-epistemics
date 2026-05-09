@@ -10,6 +10,7 @@ Checks:
   5. Verification/status fields, when present, are internally consistent
   6. Deprecated transitional fields are absent from packaged front matter
   7. Legacy post-YAML blockquote metadata blocks are absent
+  8. Skill metadata descriptions fit package limits
 
 Usage:
   python3 tools/check_frontmatter.py [--dir skill/references] [--verbose]
@@ -45,6 +46,8 @@ VALID_LAYER_CONSTRAINT = {
 VALID_VERIFICATION_STATUS = {"L_check", "L_tilde"}
 
 REQUIRED_FIELDS = ["id", "module_class", "canonical_path", "contract_version"]
+SKILL_DESCRIPTION_LIMIT = 1024
+SKILL_METADATA_FILES = ("atomics/skill/SKILL.md", "skill/SKILL.md")
 
 VERIFICATION_FLAGS = [
     "direct_read_verified",
@@ -208,6 +211,44 @@ def check_legacy_blockquote_metadata(path: str) -> list[str]:
     return errors
 
 
+def check_skill_description_limit(data: dict, path: str) -> list[str]:
+    description = data.get("description")
+    if description is None:
+        return ["Missing required skill metadata field: 'description'"]
+    if not isinstance(description, str):
+        return ["Skill metadata field 'description' must be a string"]
+    length = len(description)
+    if length > SKILL_DESCRIPTION_LIMIT:
+        return [
+            f"Skill metadata description is {length} characters; "
+            f"maximum is {SKILL_DESCRIPTION_LIMIT}"
+        ]
+    return []
+
+
+def check_skill_metadata_files(verbose: bool) -> tuple[int, int]:
+    files_checked = 0
+    files_with_errors = 0
+
+    for path in SKILL_METADATA_FILES:
+        if not os.path.exists(path):
+            continue
+        data, parse_errors = extract_frontmatter(path)
+        files_checked += 1
+        all_errors = list(parse_errors)
+        if data is not None:
+            all_errors += check_skill_description_limit(data, path)
+        if all_errors:
+            files_with_errors += 1
+            print(f"\nERROR in {path}:")
+            for error in all_errors:
+                print(f"  - {error}")
+        elif verbose:
+            print(f"  OK  {path}")
+
+    return files_checked, files_with_errors
+
+
 # Main
 
 def scan_dir(root: str, verbose: bool, expected_contract_version: str | None) -> tuple[int, int, int, int, int]:
@@ -282,9 +323,12 @@ def main():
         args.verbose,
         args.contract_version,
     )
+    skill_checked, skill_errors = check_skill_metadata_files(args.verbose)
+    errors += skill_errors
 
     print("-" * 60)
     print(f"Files checked:              {checked}")
+    print(f"Skill metadata checked:     {skill_checked}")
     print(f"Files with errors:          {errors}")
     print(f"Files with deprecated keys: {deprecated}")
     print(f"Files with verification:    {verification}")

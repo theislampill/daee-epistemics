@@ -301,6 +301,9 @@ __pycache__/
 Package the contents of `skill/`, not the `skill/` directory itself.
 Local Hermes helpers, temporary owner lists, raw campaign artifacts, local absolute paths, and
 machine-specific files are not package content.
+The `SKILL.md` frontmatter `description` must be 1024 characters or fewer; keep metadata concise
+and put richer terminology in the body/reference surfaces. `tools/check_frontmatter.py` and
+`package.ps1` must catch this before release.
 
 ## Common Failure Modes
 
