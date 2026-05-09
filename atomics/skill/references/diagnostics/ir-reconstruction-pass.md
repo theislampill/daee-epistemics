@@ -154,6 +154,12 @@ tokens appearing somewhere in a trace do not prove reconstruction faithfulness. 
 must remain locally replayable as `B.s -> owner-floor Target/Operation/Result -> Land(B) ->
 R(H,Delta) -> next state decision`. A response that separates labels into global blobs has lost
 the attachment needed to govern the next burden, even when the vocabulary looks correct.
+For hard/compound/deformed Level 2 output, reconstruction faithfulness also asks whether the
+owner's pressure dimensions can be recovered from the prose without printing a raw route field:
+what premise, criterion, warrant, source-frame, predicate, testimony question, register, or
+restoration vector was actually pressured, and what claim-state changed. If only owner labels,
+generic Target/Operation/Result syntax, source citations, or closing restoration language can be
+recovered, the render is plausible typed commentary rather than faithful compressed control state.
 
 ## Render Discipline
 

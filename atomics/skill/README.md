@@ -46,6 +46,11 @@ Maintainer fixture command:
 python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
 ```
 
+Any run using `--simulate-output` is a simulated structural route/check verification only.
+It proves route generation, route-plan validation, reconstruction, and checker scaffold behavior;
+it does not prove model execution quality, behavioral smoke recovery, or Level 1/2 shrinkage
+recovery.
+
 Honest claim boundary:
 - Routing is deterministic given extracted features.
 - Feature extraction includes span-backed interpretive slots and can still vary

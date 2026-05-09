@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 8f88e970ee7dd6d2a72214357ab6bb5ed610236f561c0bb20ca7866eb8c87160 -->
+<!-- SOURCE_SHA256: 4ef3579a630eabc6b7e1728577001a0b722349fdee04007601ade0d52869e595 -->
 
 ---
 id: output-release
@@ -134,6 +134,20 @@ The specific operation is owner-specific. A generic Target/Operation/Result line
 release a TTP unless the operation satisfies the owner-specific operation floor in the
 owning file. The result must change burden-state; it cannot merely restate that the TTP
 was applied.
+For hard/compound/deformed cases, release also requires enough owner-floor pressure to land
+the profile actually routed: moral protest, imported criteria, source-worldview transfer,
+higher-order reason or authority, testimony/transmission, predication/attribute pressure,
+necessary-knowledge disputes, grief/register holds, and source-request cases each have their
+own depth floor. Compactness removes padding, source parade, and framework dumping; it does
+not license a smallest-compliant route-shaped answer. If the user asks for sources and a
+routed burden depends on Qur'an/hadith evidence, use the text as an operator: quote or
+precisely cite it, then state what diagnostic or restorative work it performs.
+Level 2/default render must not print raw `pressure_dimensions`, but it must satisfy the
+same owner-floor idea in prose. Release fails when the answer names FPD, M1, V2, M8, P1,
+a transmission owner, a predication owner, or a grief/register owner while leaving the
+actual imported criterion, self-ground test, proof-status/warrant repair, source-frame
+consequence, restoration vector, testimony/authentication pressure, predicate/category
+pressure, or register-hold sequence unoperated.
 
 Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
 owner body or compiled bundle section to be loaded/read before the submove renders, unless
@@ -852,7 +866,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: facdba0b2c630855d866c27faea0956787da2a594a44fcf429f4518a350cbebc -->
+<!-- SOURCE_SHA256: 9b96a952b7ab5c50888db5def4d0591096e90760c5ca2aa6b3f5f35162e3dd95 -->
 
 ---
 id: diagnostic-render-contract
@@ -980,6 +994,24 @@ operation must pressure a live premise, predicate, criterion, warrant, or branch
 must change burden-state; and the state/noetic re-read must show the cumulative-state delta.
 If the section shape is present but the claim-state does not narrow, collapse, clear, hold,
 or become partial, the output is rubric-schematic and must be rewritten before emission.
+Hard/compound/deformed cases have a depth floor across their own noetic structure: moral
+protest, imported criteria, accountability/hiddenness, source-worldview transfer,
+higher-order reason or authority, testimony/transmission, predication/attribute pressure,
+necessary-knowledge disputes, and grief/register holds all require owner-faithful pressure.
+A non-PARTIAL answer must be rich enough to land each released burden, not merely short
+enough to pass marker checks. When the user explicitly asks for sources, revealed texts must
+be quoted or precisely cited as operative instruments and immediately explained; bare citation
+labels are source-thin surface compliance. Golden-depth execution is not length for its own
+sake; it is the amount of owner-floor, source-operative, restoration-directed work needed to
+make the burden actually land.
+Level 3 `pressure_dimensions` are an implementation analogue for this rule, not a default
+public-output field. In Level 2/scriptless render, the pressure dimensions remain internal:
+the prose must execute them by narrowing the actual premise, criterion, warrant, source-frame,
+theological predicate, testimony question, register-hold, or restoration vector. An output
+fails hard-case render if it names an owner but omits that owner's pressure, uses generic
+Target/Operation/Result verbs, cites sources without making them operate on the active burden,
+reaches `Land(B)` without a changed claim-state, or performs restoration without tying it to
+the landed burden.
 Structural attachment is part of this requirement: the right labels appearing somewhere is
 not enough. `Owner-floor`, `Target`, `Operation`, `Result`, `Land(B)`, and `R(H,Delta)` must
 remain locally attached to the burden step they govern. Grouped owner lines followed later by

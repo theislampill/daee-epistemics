@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from level3_lib import default_skill_root, owner_ids, read_json, write_json
+from level3_lib import condition_satisfied, default_skill_root, owner_ids, read_json, write_json
 
 
 def _has_owner_floor(output: str, owner_id: str) -> bool:
@@ -42,6 +42,270 @@ _ORDINAL_WORDS = {
 
 
 _STATE_REREAD_RE = re.compile("R\\(H,\\s*(?:Delta|\u0394)\\)", flags=re.IGNORECASE)
+
+
+def _is_simulated_output(output: str) -> bool:
+    return output.lstrip("\ufeff").startswith("# Level 3 Simulated Validator Output")
+
+
+def _route_feature_ids(route_plan: dict[str, Any]) -> set[str]:
+    feature_ids = {str(item) for item in route_plan.get("feature_ids", [])}
+    for item in route_plan.get("candidate_ttps", []):
+        feature_ids.update(str(value) for value in item.get("triggered_by", []))
+    for entry in route_plan.get("continuation_queue", []):
+        for span in entry.get("input_spans", []):
+            if span.get("feature_id"):
+                feature_ids.add(str(span["feature_id"]))
+    return feature_ids
+
+
+def _hard_case_quality_required(route_plan: dict[str, Any]) -> bool:
+    feature_ids = _route_feature_ids(route_plan)
+    hard_signals = {
+        "feature.moral_tribunal",
+        "feature.imported_criterion",
+        "feature.accountability_compression",
+        "feature.coercive_guidance_demand",
+        "feature.criterion_bearing_source_worldview",
+        "feature.source_substantiation_request",
+        "feature.mercy_worthiness_protest",
+        "feature.worldview_refutation_request",
+        "feature.predication_confusion",
+        "feature.attribute_resemblance",
+        "feature.false_resemblance",
+        "feature.deformation_signal",
+        "feature.necessary_knowledge_shubhah",
+        "feature.grief_register",
+        "feature.trauma_register",
+        "feature.imported_tribunal_pressure",
+    }
+    compound_route = len(route_plan.get("continuation_queue", [])) >= 2 or len(route_plan.get("first_live", [])) > 1
+    return compound_route and bool(feature_ids.intersection(hard_signals))
+
+
+def _source_requested(route_plan: dict[str, Any]) -> bool:
+    return bool(_route_feature_ids(route_plan).intersection({"feature.source_substantiation_request", "feature.source_request"}))
+
+
+def _direct_source_quote_lines(output: str) -> list[str]:
+    lines: list[str] = []
+    for line in output.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith(">"):
+            continue
+        has_source = re.search(
+            r"Qur'?an|S[uū]rat|hadith|Bukhari|Muslim|\b\d{1,3}:\d{1,3}\b",
+            stripped,
+            flags=re.IGNORECASE,
+        )
+        has_direct_text = (
+            re.search(r"[\u0600-\u06ff]", stripped) is not None
+            or '"' in stripped
+            or "\u201c" in stripped
+            or "\u201d" in stripped
+        )
+        if has_source and has_direct_text:
+            lines.append(line)
+    return lines
+
+
+def _route_step_map(route_plan: dict[str, Any]) -> dict[int, dict[str, Any]]:
+    first = route_plan.get("first_live_burden")
+    steps: dict[int, dict[str, Any]] = {
+        1: first if isinstance(first, dict) else {
+            "owners": route_plan.get("first_live", []),
+            "input_spans": [],
+            "land_requirements": route_plan.get("land_requirements", []),
+        }
+    }
+    for index, entry in enumerate(route_plan.get("continuation_queue", []), start=2):
+        if isinstance(entry, dict):
+            steps[index] = entry
+    return steps
+
+
+def _owner_item(step: dict[str, Any], owner_id: str) -> dict[str, Any]:
+    for item in step.get("owners", []):
+        if str(item.get("id")) == owner_id:
+            return item
+    return {}
+
+
+def _normalize_pressure_text(value: str) -> str:
+    return (
+        value.lower()
+        .replace("\u02bf", "'")
+        .replace("\u2018", "'")
+        .replace("\u2019", "'")
+        .replace("\u201c", '"')
+        .replace("\u201d", '"')
+    )
+
+
+def _dimension_satisfied(window: str, dimension: dict[str, Any]) -> bool:
+    normalized = _normalize_pressure_text(_operation_result_window(window) or window)
+    for token in dimension.get("requires_any", []):
+        token_text = _normalize_pressure_text(str(token)).strip()
+        if token_text and token_text in normalized:
+            return True
+    return False
+
+
+def _dimension_requires_source_quote(dimension: dict[str, Any], route_feature_ids: set[str]) -> bool:
+    return any(condition_satisfied(str(condition), route_feature_ids) for condition in dimension.get("source_quote_when_features", []))
+
+
+def _owner_work_window(owner_window: str) -> str:
+    """Return the Target/Operation/Result body, excluding the owner label itself."""
+
+    target_pos = owner_window.find("Target:")
+    return owner_window[target_pos:] if target_pos >= 0 else owner_window
+
+
+def _operation_result_window(owner_window: str) -> str:
+    operation_pos = owner_window.find("Operation:")
+    result_pos = owner_window.find("Result:")
+    start_candidates = [pos for pos in (operation_pos, result_pos) if pos >= 0]
+    return owner_window[min(start_candidates):] if start_candidates else ""
+
+
+GENERIC_OWNER_WINDOW_RE = re.compile(
+    r"(?i)\b(?:"
+    r"Operation:\s*(?:perform|apply|execute|do|run|address|discuss|consider|engage|handle)\b"
+    r"(?:\W+\w+){0,12}\W+(?:owner|route|burden|claim|objection|case|broadly|generically)|"
+    r"Result:\s*(?:owner-floor result|this burden lands|burden lands|route satisfied|pressure dimensions (?:are )?(?:satisfied|applied))|"
+    r"pressure dimensions (?:are )?(?:satisfied|applied)|"
+    r"owner pressure dimensions"
+    r")"
+)
+
+
+_ANCHOR_STOPWORDS = {
+    "about",
+    "after",
+    "against",
+    "also",
+    "because",
+    "before",
+    "being",
+    "bring",
+    "could",
+    "every",
+    "from",
+    "have",
+    "into",
+    "just",
+    "like",
+    "more",
+    "only",
+    "over",
+    "that",
+    "their",
+    "there",
+    "these",
+    "this",
+    "those",
+    "when",
+    "with",
+    "would",
+}
+
+
+def _has_input_anchor(window: str, step: dict[str, Any]) -> bool:
+    spans = [str(span.get("text", "")) for span in step.get("input_spans", []) if isinstance(span, dict)]
+    if not spans:
+        return True
+    normalized_window = _normalize_pressure_text(" ".join(window.split()))
+    window_tokens = set(re.findall(r"[a-z][a-z'-]{3,}", normalized_window))
+    for span in spans[:8]:
+        normalized_span = _normalize_pressure_text(" ".join(span.split()))
+        if not normalized_span:
+            continue
+        if len(normalized_span) >= 12 and normalized_span[:80] in normalized_window:
+            return True
+        span_tokens = [
+            token
+            for token in re.findall(r"[a-z][a-z'-]{3,}", normalized_span)
+            if token not in _ANCHOR_STOPWORDS
+        ]
+        if not span_tokens:
+            continue
+        required = 1 if len(span_tokens) == 1 else min(3, len(set(span_tokens)))
+        if len(set(span_tokens).intersection(window_tokens)) >= required:
+            return True
+    return False
+
+
+def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps: list[tuple[int, list[str]]]) -> tuple[list[str], dict[str, Any]]:
+    words = len(re.findall(r"\S+", output))
+    source_quote_lines = _direct_source_quote_lines(output)
+    operative_submoves = len(re.findall(r"\bB\d+\.s\d*\b|Operative Submove", output, flags=re.IGNORECASE))
+    route_feature_ids = _route_feature_ids(route_plan)
+    metrics = {
+        "hard_case_quality_required": _hard_case_quality_required(route_plan),
+        "source_requested": _source_requested(route_plan),
+        "word_count": words,
+        "direct_source_quote_lines": len(source_quote_lines),
+        "operative_submove_markers": operative_submoves,
+        "pressure_dimension_failures": [],
+        "source_quote_failures": [],
+        "input_anchor_failures": [],
+        "generic_owner_window_failures": [],
+    }
+    if _is_simulated_output(output):
+        metrics["quality_gate"] = "not-applicable-simulated-route-check"
+        return [], metrics
+
+    errors: list[str] = []
+    if metrics["hard_case_quality_required"]:
+        if operative_submoves < sum(len(owner_list) for _, owner_list in executed_steps):
+            errors.append("hard-case output lacks distinct operative submove evidence for each executed owner")
+        route_steps = _route_step_map(route_plan)
+        for burden_index, owner_list in executed_steps:
+            step = route_steps.get(burden_index, {})
+            for owner_id in owner_list:
+                owner = _owner_item(step, owner_id)
+                window = _owner_operation_window(output, burden_index, owner_id)
+                work_window = _owner_work_window(window)
+                if GENERIC_OWNER_WINDOW_RE.search(work_window):
+                    failure = f"B{burden_index}/{owner_id}: owner-floor window is generic/checker-shaped rather than pressure-bearing"
+                    metrics["generic_owner_window_failures"].append(failure)
+                    errors.append(failure)
+                if not _has_input_anchor(work_window, step):
+                    failure = f"B{burden_index}/{owner_id}: owner-floor window lacks input-anchor pressure"
+                    metrics["input_anchor_failures"].append(failure)
+                    errors.append(failure)
+                dimensions = owner.get("pressure_dimensions", [])
+                if not dimensions:
+                    failure = f"B{burden_index}/{owner_id}: routed hard-case owner lacks pressure_dimensions in route data"
+                    metrics["pressure_dimension_failures"].append(failure)
+                    errors.append(failure)
+                    continue
+                satisfied_any = False
+                for dimension in dimensions:
+                    if _dimension_satisfied(work_window, dimension):
+                        satisfied_any = True
+                    else:
+                        failure = f"B{burden_index}/{owner_id}: pressure dimension not landed: {dimension.get('id')}"
+                        metrics["pressure_dimension_failures"].append(failure)
+                        errors.append(failure)
+                    if _dimension_requires_source_quote(dimension, route_feature_ids) and not _direct_source_quote_lines(work_window):
+                        failure = f"B{burden_index}/{owner_id}: source-operative dimension lacks burden-local direct quotation: {dimension.get('id')}"
+                        metrics["source_quote_failures"].append(failure)
+                        errors.append(failure)
+                if not satisfied_any:
+                    failure = f"B{burden_index}/{owner_id}: owner-floor window names route markers but lands no configured pressure dimension"
+                    metrics["pressure_dimension_failures"].append(failure)
+                    errors.append(failure)
+
+    if metrics["source_requested"]:
+        if not source_quote_lines:
+            errors.append("source-request route lacks any direct operative source quotation")
+        if "Operative source" not in output and "operative source" not in output.lower():
+            errors.append("source-request route lacks explicit operative source deployment section")
+
+    metrics["quality_gate"] = "pass" if not errors else "fail"
+    return errors, metrics
 
 
 def _has_burden_marker(output: str, burden_index: int) -> bool:
@@ -122,16 +386,22 @@ def _owner_floor_match(segment: str, owner_id: str) -> re.Match[str] | None:
     return re.search(rf"Owner-floor:\s*{re.escape(owner_id)}\b", segment, flags=re.IGNORECASE)
 
 
-def _has_local_owner_operation(output: str, burden_index: int, owner_id: str) -> bool:
-    """Require owner-floor and Target/Operation/Result to stay in the same burden step."""
-
+def _owner_operation_window(output: str, burden_index: int, owner_id: str) -> str:
     segment = _burden_segment(output, burden_index)
     owner_match = _owner_floor_match(segment, owner_id)
     if owner_match is None:
-        return False
+        return ""
     next_owner = re.search(r"(?im)^\s*Owner-floor:\s*", segment[owner_match.end():])
-    end = owner_match.end() + next_owner.start() if next_owner else min(len(segment), owner_match.end() + 1400)
-    window = segment[owner_match.end():end]
+    end = owner_match.end() + next_owner.start() if next_owner else min(len(segment), owner_match.end() + 2800)
+    return segment[owner_match.start():end]
+
+
+def _has_local_owner_operation(output: str, burden_index: int, owner_id: str) -> bool:
+    """Require owner-floor and Target/Operation/Result to stay in the same burden step."""
+
+    window = _owner_operation_window(output, burden_index, owner_id)
+    if not window:
+        return False
     return all(marker in window for marker in ("Target:", "Operation:", "Result:"))
 
 
@@ -344,6 +614,9 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
     if continuation_entries and not _STATE_REREAD_RE.search(output):
         errors.append("continuation queue present but state re-read marker absent")
 
+    quality_errors, quality_metrics = _quality_gate_errors(route_plan, output, executed_steps)
+    errors.extend(quality_errors)
+
     fidelity = "fail" if errors else ("partial" if warnings else "pass")
     state_envelopes = _execution_state_envelopes(route_plan, output, nonexecuted_continuation_ids)
     failed_burdens = sorted(set(re.findall(r"\bB\d+\b", "\n".join(errors + warnings))))
@@ -379,6 +652,7 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         "failed_owner_ids": failed_owner_ids,
         "errors": errors,
         "warnings": warnings,
+        "quality_gate": quality_metrics,
         "user_visible_banner": user_visible_banner,
         "retry_prompt": retry_prompt,
     }

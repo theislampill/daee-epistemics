@@ -124,6 +124,24 @@ operation must pressure a live premise, predicate, criterion, warrant, or branch
 must change burden-state; and the state/noetic re-read must show the cumulative-state delta.
 If the section shape is present but the claim-state does not narrow, collapse, clear, hold,
 or become partial, the output is rubric-schematic and must be rewritten before emission.
+Hard/compound/deformed cases have a depth floor across their own noetic structure: moral
+protest, imported criteria, accountability/hiddenness, source-worldview transfer,
+higher-order reason or authority, testimony/transmission, predication/attribute pressure,
+necessary-knowledge disputes, and grief/register holds all require owner-faithful pressure.
+A non-PARTIAL answer must be rich enough to land each released burden, not merely short
+enough to pass marker checks. When the user explicitly asks for sources, revealed texts must
+be quoted or precisely cited as operative instruments and immediately explained; bare citation
+labels are source-thin surface compliance. Golden-depth execution is not length for its own
+sake; it is the amount of owner-floor, source-operative, restoration-directed work needed to
+make the burden actually land.
+Level 3 `pressure_dimensions` are an implementation analogue for this rule, not a default
+public-output field. In Level 2/scriptless render, the pressure dimensions remain internal:
+the prose must execute them by narrowing the actual premise, criterion, warrant, source-frame,
+theological predicate, testimony question, register-hold, or restoration vector. An output
+fails hard-case render if it names an owner but omits that owner's pressure, uses generic
+Target/Operation/Result verbs, cites sources without making them operate on the active burden,
+reaches `Land(B)` without a changed claim-state, or performs restoration without tying it to
+the landed burden.
 Structural attachment is part of this requirement: the right labels appearing somewhere is
 not enough. `Owner-floor`, `Target`, `Operation`, `Result`, `Land(B)`, and `R(H,Delta)` must
 remain locally attached to the burden step they govern. Grouped owner lines followed later by

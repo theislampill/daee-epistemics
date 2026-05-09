@@ -381,6 +381,11 @@ Fixture/stability command:
 python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
 ```
 
+Runs using `--simulate-output` are simulated structural route/check verification only.
+They may be reported as route generation, validation, reconstruction, and simulated checker
+scaffold evidence; they do not satisfy behavioral smoke, model execution smoke, or Level 1/2
+shrinkage-regression recovery.
+
 ## EXECUTION SPINE
 
 Canonical execution, using the notation owned by
@@ -434,6 +439,19 @@ Top-salient invariants:
   `R(H,Delta)` explicitly holds, skips, reroutes, or marks PARTIAL with the named live
   burden. Compactness removes padding; it does not reduce warranted burden volume,
   per-burden Layer A visibility, operative citation density, or restoration force.
+- Pressure-dimension execution rule: Level 2/scriptless output must carry the active
+  owner's pressure dimensions into the visible operation without printing raw
+  `pressure_dimensions` fields. A valid `Target -> Operation -> Result` pressures the
+  actual premise, criterion, warrant, source-frame, theological predicate, testimony
+  question, register-hold, or restoration vector named by the owner. Naming the owner,
+  saying the owner-floor was applied, or writing generic Target/Operation/Result prose
+  is not execution. Examples: FPD exposes imported criterion authority and role; M1
+  tests the criterion against its own grounds; do-second-loop narrows hujjah/accountability
+  compression and coercive-guidance demand; V2 repairs sound reason versus reason-as-
+  tribunal; M8 traces consequence from the actual noetic/source frame; P1 restores only
+  from landed burdens; transmission owners pressure testimony/tawatur/authentication;
+  predication owners pressure category, zahir/ta'wil/majaz/haqiqah, and predicate use;
+  grief/register owners hold argument release and sequence pastoral response.
 - Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
   awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
   compiled bundle section containing the active TTP's operation floor, unless that exact

@@ -563,6 +563,10 @@ For package-root debugging, the equivalent in-package command shape is:
 python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
 ```
 
+Any `--simulate-output` run is simulated structural route/check verification only. It must not
+be reported as behavioral smoke, real model execution, or Level 1/2 shrinkage-regression
+recovery.
+
 ### Release Smoke Boundary
 
 Smoke tests should use the current package filename and SHA recorded in

@@ -1356,6 +1356,44 @@ The burden lands.
 """,
         "rubric-schematic output",
     ),
+    "pressure_dimension_label_only": (
+        """### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: predication/category pressure
+- reason-category: 3
+- concealment: clear
+- deformation: category pressure
+- DO-orient: truth-seek
+- live noetic burden: attribute predication
+- current bounded operator: predication-mode repair
+- held: broad attribute exposition
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- Predication is being treated as if every real attribute becomes a separable part.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is predication confusion; the noetic pattern is category pressure; the restoration vector is to clear terms.
+##### Bounded Response / operative submoves
+Operator: M9-predication-mode.
+Target: attribute terms. Operation: pressure dimensions are satisfied. Result: owner pressure dimensions applied.
+##### TTP/operator trace
+Trace: M9-predication-mode.
+### State/noetic re-read
+- Cleared: predication
+- Remaining input-anchored burdens: none
+- Release status: closed; no same-input eligible burden remains
+### Restorative Response
+The terms are now in order.
+### Closing Formulation
+The burden closes.
+""",
+        "scaffold/test-harness language in default output",
+    ),
     "weak_state_reread_no_delta": (
         """### Layer A - Compact DSL/IR header
 - read status: dominant
@@ -1699,6 +1737,8 @@ SCAFFOLD_LANGUAGE_RE = re.compile(
     r"generic target/operation/result boilerplate|repeated generic paragraphs|"
     r"that test changes the force of the case|the result is a real state change|"
     r"what remains after that change is not forgotten|filled compliance frame|"
+    r"pressure dimensions are satisfied|pressure dimension is satisfied|"
+    r"pressure dimensions applied|owner pressure dimensions|"
     r"load-bearing point|if that point is left vague|this exact pressure can stand|"
     r"surrounding topic is held back|the live hinge can be tested|live hinge can be tested|"
     r"case-state after this pressure|the move forces the inference to carry its own burden)\b"

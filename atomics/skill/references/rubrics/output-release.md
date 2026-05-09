@@ -114,6 +114,20 @@ The specific operation is owner-specific. A generic Target/Operation/Result line
 release a TTP unless the operation satisfies the owner-specific operation floor in the
 owning file. The result must change burden-state; it cannot merely restate that the TTP
 was applied.
+For hard/compound/deformed cases, release also requires enough owner-floor pressure to land
+the profile actually routed: moral protest, imported criteria, source-worldview transfer,
+higher-order reason or authority, testimony/transmission, predication/attribute pressure,
+necessary-knowledge disputes, grief/register holds, and source-request cases each have their
+own depth floor. Compactness removes padding, source parade, and framework dumping; it does
+not license a smallest-compliant route-shaped answer. If the user asks for sources and a
+routed burden depends on Qur'an/hadith evidence, use the text as an operator: quote or
+precisely cite it, then state what diagnostic or restorative work it performs.
+Level 2/default render must not print raw `pressure_dimensions`, but it must satisfy the
+same owner-floor idea in prose. Release fails when the answer names FPD, M1, V2, M8, P1,
+a transmission owner, a predication owner, or a grief/register owner while leaving the
+actual imported criterion, self-ground test, proof-status/warrant repair, source-frame
+consequence, restoration vector, testimony/authentication pressure, predicate/category
+pressure, or register-hold sequence unoperated.
 
 Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
 owner body or compiled bundle section to be loaded/read before the submove renders, unless

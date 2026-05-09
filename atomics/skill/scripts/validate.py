@@ -66,6 +66,7 @@ OWNER_ITEM_KEYS = {
     "source_basis_role",
     "noetic_categories",
     "fallback_reason_code",
+    "pressure_dimensions",
 }
 
 BURDEN_STEP_KEYS = {
@@ -82,7 +83,7 @@ BURDEN_STEP_KEYS = {
 }
 
 SPAN_KEYS = {"feature_id", "text", "start", "end", "source"}
-LAND_KEYS = {"owner", "requires"}
+LAND_KEYS = {"owner", "requires", "pressure_dimensions"}
 STATE_ENVELOPE_KEYS = {
     "current_burden_id",
     "owner_ids",
@@ -200,11 +201,59 @@ def _validate_owner_item(
         errors.append(f"{label}: unlicensed governance class for {owner_id}: {governance}")
     for field in ("triggered_by", "requires_any", "requires_all", "land_requires"):
         _string_list(item.get(field, []), f"{label}.{field}", errors)
+    if "pressure_dimensions" in item:
+        _validate_pressure_dimensions(
+            f"{label}.pressure_dimensions",
+            item.get("pressure_dimensions"),
+            feature_ids=set(ontology.get("licensed_feature_prefixes", [])),
+            errors=errors,
+            validate_feature_prefixes=True,
+        )
     if "priority" in item and not isinstance(item.get("priority"), int):
         errors.append(f"{label}: priority must be integer")
     if "aliases" in item:
         _string_list(item.get("aliases"), f"{label}.aliases", errors, non_empty=True)
     return owner_id
+
+
+def _validate_pressure_dimensions(
+    label: str,
+    dimensions: Any,
+    *,
+    feature_ids: set[str],
+    errors: list[str],
+    validate_feature_prefixes: bool = False,
+) -> None:
+    if dimensions in (None, []):
+        return
+    if not isinstance(dimensions, list):
+        errors.append(f"{label}: pressure_dimensions must be an array")
+        return
+    for index, dimension in enumerate(dimensions):
+        dim_label = f"{label}[{index}]"
+        if not isinstance(dimension, dict):
+            errors.append(f"{dim_label}: pressure dimension must be object")
+            continue
+        extra = sorted(set(dimension) - {"id", "label", "requires_any", "source_quote_when_features"})
+        if extra:
+            errors.append(f"{dim_label}: unknown key(s): {', '.join(extra)}")
+        if not isinstance(dimension.get("id"), str) or not dimension.get("id", "").strip():
+            errors.append(f"{dim_label}.id must be non-empty string")
+        if not isinstance(dimension.get("label"), str) or not dimension.get("label", "").strip():
+            errors.append(f"{dim_label}.label must be non-empty string")
+        tokens = _string_list(dimension.get("requires_any", []), f"{dim_label}.requires_any", errors, non_empty=True)
+        if not tokens:
+            errors.append(f"{dim_label}.requires_any must not be empty")
+        source_when = _string_list(
+            dimension.get("source_quote_when_features", []),
+            f"{dim_label}.source_quote_when_features",
+            errors,
+        )
+        if validate_feature_prefixes:
+            prefixes = feature_ids
+            for condition in source_when:
+                if not any(condition.startswith(prefix) for prefix in prefixes):
+                    errors.append(f"{dim_label}.source_quote_when_features unlicensed condition: {condition}")
 
 
 def _validate_land_requirements(
@@ -229,6 +278,12 @@ def _validate_land_requirements(
         requires = _string_list(land.get("requires", []), f"{item_label}.requires", errors, non_empty=True)
         if not requires:
             errors.append(f"{item_label}: land requirement empty for {owner_id}")
+        _validate_pressure_dimensions(
+            f"{item_label}.pressure_dimensions",
+            land.get("pressure_dimensions", []),
+            feature_ids=set(),
+            errors=errors,
+        )
 
 
 def _validate_state_envelope(

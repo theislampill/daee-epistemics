@@ -32,11 +32,67 @@ def _json_text(payload: Any) -> str:
     return json.dumps(payload, indent=2, sort_keys=True)
 
 
+def _hard_case_quality_guidance(route_plan: dict[str, Any]) -> str:
+    feature_ids = {str(item) for item in route_plan.get("feature_ids", [])}
+    continuation = route_plan.get("continuation_queue", [])
+    hard_signals = {
+        "feature.moral_tribunal",
+        "feature.imported_criterion",
+        "feature.accountability_compression",
+        "feature.coercive_guidance_demand",
+        "feature.criterion_bearing_source_worldview",
+        "feature.source_substantiation_request",
+        "feature.mercy_worthiness_protest",
+        "feature.worldview_refutation_request",
+        "feature.predication_confusion",
+        "feature.attribute_resemblance",
+        "feature.false_resemblance",
+        "feature.deformation_signal",
+        "feature.necessary_knowledge_shubhah",
+        "feature.grief_register",
+        "feature.trauma_register",
+        "feature.imported_tribunal_pressure",
+    }
+    hard_case = (len(continuation) >= 2 or len(route_plan.get("first_live", [])) > 1) and bool(feature_ids.intersection(hard_signals))
+    source_requested = bool(feature_ids.intersection({"feature.source_substantiation_request", "feature.source_request"}))
+    worldview_live = bool(feature_ids.intersection({"feature.criterion_bearing_source_worldview", "feature.opponent_worldview_frame"}))
+    if not hard_case and not source_requested and not worldview_live:
+        return ""
+
+    lines = [
+        "Hard-case qualitative execution floor:",
+        "- Do not optimize for the smallest checker-compliant answer. Marker presence is not execution.",
+        "- A non-PARTIAL hard/compound/deformed answer must be burden-complete, owner-floor faithful, source-operative where needed, and restorative enough for a da'i to use.",
+        "- This applies across moral protest, imported-criterion, higher-order reason/authority, transmission/testimony, predication/attribute, source-worldview transfer, necessary-knowledge, and grief/register cases.",
+        "- Each routed owner may carry pressure_dimensions in the route plan. Land those dimensions inside that owner's local Target/Operation/Result window, or mark PARTIAL with the missing dimension.",
+        "- Within each executed burden, split materially active mechanisms into visible operative submoves under the routed owner instead of compressing them into one generic Target/Operation/Result paragraph.",
+        "- Target/Operation/Result must pressure the input's actual premise, criterion, warrant, or source-worldview role; generic route-proving prose is PARTIAL.",
+        "- Layer B may be longer than compact prose when the burden needs it. Compactness removes padding and source parade; it does not remove warranted diagnosis, source operation, or restoration force.",
+    ]
+    if source_requested:
+        lines.extend([
+            "- Because the input explicitly asks for sources, include direct quoted or precisely cited Qur'an/hadith evidence where it performs diagnostic or restorative work.",
+            "- For each operative source, quote enough of the text to make its mechanism visible, then immediately explain what burden it lands. Do not use bare citation labels as source padding.",
+            "- If source deployment is held by a valid gate, say which gate holds it and what remains live; otherwise a citation-thin answer is PARTIAL.",
+        ])
+    if worldview_live:
+        lines.extend([
+            "- Treat source-status and personal identity as non-operative for ad hominem judgment, but treat an input-anchored worldview frame as operative when it supplies the criterion or tribunal.",
+            "- Source-worldview analysis tied to input spans is FPD/M8 work, not source parade. Dismantle the criterion-bearing belief structure without making interior motive claims.",
+        ])
+    lines.extend([
+        "- The final restoration must do more than summarize. It should convert the cleared burdens into a da'wah-facing invitation and worship-worthiness re-ordering.",
+        "- If you cannot meet this qualitative floor in the current runtime, mark PARTIAL and name the first missing burden or submove.",
+    ])
+    return "\n".join(lines) + "\n\n"
+
+
 def execution_prompt(route_plan: dict[str, Any], reconstruction: dict[str, Any]) -> str:
     first_live = owner_ids(route_plan.get("first_live", []))
     held = owner_ids(route_plan.get("held", []))
     deferred = owner_ids(route_plan.get("deferred", []))
     continuation = route_plan.get("continuation_queue", [])
+    hard_case_guidance = _hard_case_quality_guidance(route_plan)
     return f"""# Level 3 Binding Execution Prompt
 
 Execute the route plan below. Do not reroute from topic cues.
@@ -68,6 +124,12 @@ Burden-local state envelopes:
 Closure gate:
 {_json_text(route_plan.get("closure_gate", {}))}
 
+{hard_case_guidance}Anti-checker-shaped execution rule:
+- Passing `check_execution.py` is necessary but not sufficient for hard cases.
+- Do not write a route-shaped answer whose main achievement is that every label appears.
+- `Owner-floor`, `Target`, `Operation`, and `Result` are control surfaces for substantive work: each must visibly narrow, expose, disambiguate, test, or restore the live claim-state.
+- A hard case fails qualitatively if it contains all route labels but lacks direct burden pressure, operative source deployment when requested, and restoration force.
+
 Required execution shape:
 1. Emit `Layer A - Compact DSL/IR Header [Burden 1]` before executing the first-live owner(s).
    It must name the current live noetic burden, active deformation/pattern signals, selected owner(s),
@@ -78,6 +140,8 @@ Required execution shape:
    Target: <input-grounded target>
    Operation: <case-specific operation>
    Result: <changed claim-state>
+   If the route owner lists pressure_dimensions, land each dimension in this local
+   Target/Operation/Result window; do not rely on the owner label itself to satisfy it.
 4. Render B1.s -> Land(B1) -> R(H,Delta).
 5. If the continuation queue is non-empty, treat it as a planned route, not an unconditional command.
    After each Land(B<N>) and R(H,Delta), re-read the state before B<N+1>.
@@ -89,6 +153,7 @@ Required execution shape:
    - emit `Layer B - Governed Response [Burden N]`;
    - for each queued owner, emit exactly `Owner-floor: <owner-id> - <owner-specific floor>`;
    - then emit Target:, Operation:, and Result: lines for the same owner;
+   - land any listed pressure_dimensions inside those same Target/Operation/Result lines;
    - render B<N>.s -> Land(B<N>) -> R(H,Delta);
    - say what the prior burden cleared and why this burden is now licensed.
 7. Do not execute held/deferred owners outside first-live or continuation_queue.
@@ -231,7 +296,17 @@ def run_single(
             _write_text(output_dir / "partial_banner.md", str(execution.get("user_visible_banner", "")) + "\n")
             _write_text(output_dir / "retry_prompt.md", str(execution.get("retry_prompt", "")))
 
+    if blocked:
+        smoke_kind = "route-blocked"
+    elif simulate_output_flag:
+        smoke_kind = "simulated-route-check"
+    elif model_output is not None:
+        smoke_kind = "model-execution-check"
+    else:
+        smoke_kind = "route-generation-only"
+
     summary = {
+        "smoke_kind": smoke_kind,
         "input": str(input_path),
         "output_dir": str(output_dir),
         "route_state": route_state_signature(route_plan),
@@ -315,13 +390,20 @@ def _shallow_first_burden_output(route_plan: dict[str, Any]) -> str:
 def _closure_matcher_regressions() -> list[str]:
     errors: list[str] = []
 
-    def owner(owner_id: str) -> dict[str, Any]:
-        return {"id": owner_id, "land_requires": [f"{owner_id} owner-floor result"]}
+    def owner(owner_id: str, pressure_dimensions: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+        item = {"id": owner_id, "land_requires": [f"{owner_id} owner-floor result"]}
+        if pressure_dimensions is not None:
+            item["pressure_dimensions"] = pressure_dimensions
+        return item
 
-    def queue_entry(name: str, owner_id: str) -> dict[str, Any]:
+    def queue_entry(
+        name: str,
+        owner_id: str,
+        pressure_dimensions: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         return {
             "name": name,
-            "owners": [owner(owner_id)],
+            "owners": [owner(owner_id, pressure_dimensions)],
             "input_spans": [{"text": f"span for {name}"}],
             "land_requirements": [{"owner": owner_id, "requires": [f"{owner_id} owner-floor result"]}],
         }
@@ -605,6 +687,114 @@ Closing Formulation: no remaining input-anchored burden.
     simple_verdict = check_execution(simple_plan, simple_output)
     if simple_verdict.get("execution_fidelity") != "pass":
         errors.append(f"closure-regression simple B1 output failed: {simple_verdict}")
+
+    non_tst_hard_plan = {
+        "feature_ids": ["term.trinity", "feature.predication_confusion", "feature.attribute_resemblance"],
+        "live_burden": "synthetic predication and attribute burden",
+        "governance_verdict": "RECURSE",
+        "first_live": [
+            owner(
+                "M9-predication-mode",
+                [
+                    {
+                        "id": "predication-mode",
+                        "label": "predication mode named before verdict",
+                        "requires_any": ["predication", "mode", "predicate", "equivocal", "category"],
+                    }
+                ],
+            )
+        ],
+        "first_live_burden": {
+            "name": "synthetic predication and attribute burden",
+            "owners": [
+                owner(
+                    "M9-predication-mode",
+                    [
+                        {
+                            "id": "predication-mode",
+                            "label": "predication mode named before verdict",
+                            "requires_any": ["predication", "mode", "predicate", "equivocal", "category"],
+                        }
+                    ],
+                )
+            ],
+            "input_spans": [{"text": "The Trinity is three persons but one God, so predication seems incoherent."}],
+            "land_requirements": [{"owner": "M9-predication-mode", "requires": ["predication mode named"]}],
+        },
+        "continuation_queue": [
+            queue_entry(
+                "attribute precision",
+                "do-attribute-precision",
+                [
+                    {
+                        "id": "predicate-identity-separation",
+                        "label": "predicate terms separated from identity collapse",
+                        "requires_any": ["predicate", "attribute", "identity", "collapse", "term"],
+                    }
+                ],
+            ),
+            queue_entry(
+                "bila kayf anchor",
+                "V8-bila-kayf-anchor",
+                [
+                    {
+                        "id": "modality-blocked",
+                        "label": "creaturely modality blocked",
+                        "requires_any": ["modality", "how", "creaturely", "bila kayf", "without asking how"],
+                    }
+                ],
+            ),
+        ],
+        "held": [],
+        "deferred": [],
+    }
+    non_tst_thin_output = """# Synthetic non-TST hard route execution
+Layer A - Compact DSL/IR Header [Burden 1]
+- current live noetic burden: synthetic predication and attribute burden
+- selected owner(s): M9-predication-mode
+- release condition / governance verdict: RECURSE
+Layer B - Governed Response [Burden 1]
+First Burden: synthetic predication and attribute burden
+B1.s1: execute first-live owner
+Owner-floor: M9-predication-mode - predication mode named
+Target: the claim is addressed.
+Operation: perform the owner.
+Result: owner-floor result.
+Land(B1): first burden landed
+R(H,Delta): RECURSE - next burden released
+
+Layer A - Compact DSL/IR Header [Burden 2]
+- current live noetic burden: attribute precision
+- selected owner(s): do-attribute-precision
+- release condition / governance verdict: B1 landed; B2 remains licensed
+Layer B - Governed Response [Burden 2]
+Second Burden: attribute precision
+Operative Submove: execute queued owner
+Owner-floor: do-attribute-precision - attribute/predicate terms separated from identity collapse
+Target: the claim is addressed.
+Operation: perform the owner.
+Result: owner-floor result.
+Land(B2): second burden landed
+R(H,Delta): RECURSE - next burden released
+
+Layer A - Compact DSL/IR Header [Burden 3]
+- current live noetic burden: bila kayf anchor
+- selected owner(s): V8-bila-kayf-anchor
+- release condition / governance verdict: B2 landed; B3 remains licensed
+Layer B - Governed Response [Burden 3]
+Third Burden: bila kayf anchor
+Operative Submove: execute queued owner
+Owner-floor: V8-bila-kayf-anchor - creaturely modality blocked
+Target: the claim is addressed.
+Operation: perform the owner.
+Result: owner-floor result.
+Land(B3): third burden landed
+R(H,Delta): RECURSE - no remaining input-anchored burdens
+Closing Formulation: closure licensed; no remaining input-anchored burden.
+"""
+    non_tst_thin_verdict = check_execution(non_tst_hard_plan, non_tst_thin_output)
+    if non_tst_thin_verdict.get("execution_fidelity") == "pass":
+        errors.append("hard-case quality regression: non-TST checker-shaped predication output unexpectedly passed")
 
     return errors
 

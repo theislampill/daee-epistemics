@@ -101,6 +101,9 @@ Release claims must stay narrow and honest:
 - Scriptless runtimes visibly fall back to Level 1/2.
 - Pure-Hermes parity, fixture-18 resolution, all-runtime Level 3, current-release smokes,
   broad codons, and owner packs are not claimed unless explicitly proven and documented.
+- Any run using `--simulate-output` is only simulated structural route/check verification. It
+  must not be reported as a behavioral smoke, model-execution smoke, or Level 1/2 shrinkage
+  recovery.
 
 ## Regression Audit Etiquette
 

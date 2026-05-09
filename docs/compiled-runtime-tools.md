@@ -72,6 +72,26 @@ settings, verbosity, context accounting, tool-output truncation, parallel tool c
 response payload shape, so parity claims must verify burden-local state attachment rather than
 only checking that labels or owner names appear somewhere.
 
+Level 3 smoke kinds must be named precisely. A run using `--simulate-output` is only an
+installed-package Level 3 simulated route/check smoke: it verifies route generation,
+route-plan validation, reconstruction, and the simulated checker scaffold. It does not prove
+real model execution, substantive owner-floor content, operative citations, restoration force,
+or Level 1/2 behavioral shrinkage recovery.
+
+A real Level 3 model-execution smoke uses this path:
+
+```bash
+python scripts/daee_level3.py --input <input.md> --output-dir <run-dir> --skill-root <installed-skill-root>
+# Feed <run-dir>/execution_prompt.md to the intended model/runtime.
+# Save the model answer as <run-dir>/output.model.md.
+python scripts/check_execution.py --route-plan <run-dir>/route_plan.json --model-output <run-dir>/output.model.md --verdict-output <run-dir>/execution_verdict.json --fail-on-partial
+```
+
+Then inspect `output.model.md`, `route_plan.json`, and `execution_verdict.json` for substantive
+owner-floor execution, burden-local structural attachment, sources, restoration force, and no
+shrinkage. Passing the checker is necessary evidence, not a substitute for that behavioral
+inspection.
+
 Diagnostic IR instance integrity is checked by `tools/check_ir_instance_integrity.py`; the
 `tools/check_diagnostic_ir_catalogue_integrity.py` command is a compatibility entrypoint to the
 same checker. This is schema-adjacent/custom validation rather than a `jsonschema` dependency:

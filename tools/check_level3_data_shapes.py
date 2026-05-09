@@ -47,6 +47,7 @@ RULE_KEYS = {
     "source_marker",
     "marker_kind",
     "aliases",
+    "pressure_dimensions",
 }
 RULE_REQUIRED_KEYS = {
     "id",
@@ -236,6 +237,38 @@ def validate_trigger_matrix(
                 for item in values:
                     if not any(item.startswith(prefix) for prefix in licensed_prefixes):
                         errors.append(f"{label}.{field}: unlicensed feature condition {item!r}")
+        dimensions = rule.get("pressure_dimensions", [])
+        if dimensions is not None:
+            if not isinstance(dimensions, list):
+                errors.append(f"{label}.pressure_dimensions: must be array")
+            for dim_index, dimension in enumerate(dimensions):
+                dim_label = f"{label}.pressure_dimensions[{dim_index}]"
+                if not isinstance(dimension, dict):
+                    errors.append(f"{dim_label}: must be object")
+                    continue
+                dim_extra = set(dimension) - {"id", "label", "requires_any", "source_quote_when_features"}
+                if dim_extra:
+                    errors.append(f"{dim_label}: unknown key(s): {', '.join(sorted(dim_extra))}")
+                for required in ("id", "label", "requires_any"):
+                    if required not in dimension:
+                        errors.append(f"{dim_label}: missing {required}")
+                if not isinstance(dimension.get("id"), str) or not SHA_SCOPE_RE.match(str(dimension.get("id", ""))):
+                    errors.append(f"{dim_label}.id: invalid id")
+                if not isinstance(dimension.get("label"), str) or not dimension.get("label"):
+                    errors.append(f"{dim_label}.label: must be non-empty string")
+                dim_values, dim_errors = string_list(f"{dim_label}.requires_any", dimension.get("requires_any", []), allow_empty=False)
+                errors.extend(dim_errors)
+                for value in dim_values:
+                    if len(value.strip()) < 3:
+                        errors.append(f"{dim_label}.requires_any: token too short: {value!r}")
+                source_when, source_when_errors = string_list(
+                    f"{dim_label}.source_quote_when_features",
+                    dimension.get("source_quote_when_features", []),
+                )
+                errors.extend(source_when_errors)
+                for feature in source_when:
+                    if not any(feature.startswith(prefix) for prefix in licensed_prefixes):
+                        errors.append(f"{dim_label}.source_quote_when_features: unlicensed feature condition {feature!r}")
         if not isinstance(rule.get("priority"), int):
             errors.append(f"{label}: priority must be integer")
         if rule.get("governance_class") not in governance_classes:

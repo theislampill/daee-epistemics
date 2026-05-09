@@ -64,6 +64,7 @@ OPTIONAL_RULE_TRACE_FIELDS = (
     "source_marker",
     "marker_kind",
     "aliases",
+    "pressure_dimensions",
 )
 
 
@@ -132,7 +133,11 @@ def _make_burden_step(
         "input_spans": input_spans,
         "release_conditions": release_conditions,
         "land_requirements": [
-            {"owner": str(owner.get("id")), "requires": owner.get("land_requires", [])}
+            {
+                "owner": str(owner.get("id")),
+                "requires": owner.get("land_requires", []),
+                "pressure_dimensions": owner.get("pressure_dimensions", []),
+            }
             for owner in owners
         ],
         "reread_required": True,
@@ -259,7 +264,11 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
         )
 
     land_requirements: list[dict[str, Any]] = [
-        {"owner": str(item["id"]), "requires": item.get("land_requires", [])}
+        {
+            "owner": str(item["id"]),
+            "requires": item.get("land_requires", []),
+            "pressure_dimensions": item.get("pressure_dimensions", []),
+        }
         for item in first_live
     ]
     verdict = governance_verdict([str(item.get("governance_class", "routes")) for item in first_live], precedence)

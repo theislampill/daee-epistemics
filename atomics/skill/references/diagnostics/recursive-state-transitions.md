@@ -282,6 +282,16 @@ definition splits, or criterion tests required by that owner. A TTP named withou
 owner-specific operation floor is label surface-compliance failure even when a Target/Operation/Result line
 is present.
 
+In Level 3, `pressure_dimensions` may appear as structured route/check data. In Level 2
+or other scriptless execution, the same idea remains an internal render-governance floor,
+not a public field to print. The output must visibly execute the relevant pressure:
+imported criterion authority for FPD, self-ground testing for M1, hujjah/accountability
+and coercive-guidance narrowing for do-second-loop, sound-reason/proof-status repair for
+V2, source/noetic-frame consequence for M8, restoration bounded to landed burdens for P1,
+testimony/tawatur/authentication pressure for transmission owners, predicate/category
+pressure for predication owners, and register-hold/pastoral sequencing for grief owners.
+If those pressures do not change claim-state before `Land(B)`, the burden has not landed.
+
 Default output must not narrate that an owner floor was applied. Phrases such as "owner
 floor is applied", "owner-floor pressure", "the TTP has to change something",
 "burden-completeness check", or "the operation is bounded to the target named above" are

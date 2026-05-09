@@ -11,6 +11,18 @@
       "yields_to": [],
       "priority": 90,
       "land_requires": ["Christian/person-language frame identified before contradiction answer"],
+      "pressure_dimensions": [
+        {
+          "id": "person-language-frame",
+          "label": "person-language frame separated from numerical contradiction claim",
+          "requires_any": ["person-language", "Father", "Son", "Spirit", "relation", "category"]
+        },
+        {
+          "id": "source-frame-comparison",
+          "label": "comparative source-worldview transfer named without source parade",
+          "requires_any": ["source frame", "worldview", "criterion", "transfer", "comparison"]
+        }
+      ],
       "governance_class": "recurses"
     },
     {
@@ -21,6 +33,18 @@
       "yields_to": [],
       "priority": 95,
       "land_requires": ["attribute/predicate terms separated from identity collapse"],
+      "pressure_dimensions": [
+        {
+          "id": "predicate-identity-separation",
+          "label": "predicate terms separated from identity collapse",
+          "requires_any": ["predicate", "attribute", "identity", "collapse", "term"]
+        },
+        {
+          "id": "creaturely-resemblance-block",
+          "label": "creaturely resemblance pressure blocked without evacuating meaning",
+          "requires_any": ["resemblance", "creaturely", "meaning", "modality", "block"]
+        }
+      ],
       "governance_class": "recurses"
     },
     {
@@ -31,6 +55,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["predication mode named", "equivocal identity pressure resolved"],
+      "pressure_dimensions": [
+        {
+          "id": "predication-mode",
+          "label": "predication mode named before verdict",
+          "requires_any": ["predication", "mode", "predicate", "equivocal", "category"]
+        },
+        {
+          "id": "identity-pressure-resolution",
+          "label": "identity-pressure consequence resolved locally",
+          "requires_any": ["identity", "same", "different", "collapse", "distinction"]
+        }
+      ],
       "governance_class": "recurses"
     },
     {
@@ -41,6 +77,18 @@
       "yields_to": ["mushabara-fasida"],
       "priority": 100,
       "land_requires": ["creaturely modality blocked", "affirmed meaning preserved"],
+      "pressure_dimensions": [
+        {
+          "id": "affirmed-meaning-preserved",
+          "label": "affirmed meaning preserved",
+          "requires_any": ["affirm", "meaning", "preserve", "text", "attribute"]
+        },
+        {
+          "id": "modality-blocked",
+          "label": "creaturely modality blocked",
+          "requires_any": ["modality", "how", "creaturely", "bila kayf", "without asking how"]
+        }
+      ],
       "governance_class": "recurses"
     },
     {
@@ -51,6 +99,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["imported criterion identified", "criterion functional role named"],
+      "pressure_dimensions": [
+        {
+          "id": "imported-criterion-authority",
+          "label": "imported criterion authority named",
+          "requires_any": ["criterion", "tribunal", "standard", "authority", "jurisdiction"]
+        },
+        {
+          "id": "functional-role",
+          "label": "criterion functional role tied to input",
+          "requires_any": ["judge", "measure", "verdict", "warrant", "role"]
+        }
+      ],
       "governance_class": "holds"
     },
     {
@@ -61,6 +121,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["criterion tested against its own grounds"],
+      "pressure_dimensions": [
+        {
+          "id": "self-ground-test",
+          "label": "criterion tested against its own grounds",
+          "requires_any": ["own grounds", "self-refutation", "borrow", "ground", "authority", "standard"]
+        },
+        {
+          "id": "borrowed-standard-exposed",
+          "label": "borrowed standard or unsupported tribunal exposed",
+          "requires_any": ["borrowed", "unsupported", "standard", "tribunal", "cannot supply"]
+        }
+      ],
       "governance_class": "holds"
     },
     {
@@ -71,6 +143,19 @@
       "yields_to": ["foreign-premise-detection", "M1-self-refutation"],
       "priority": 85,
       "land_requires": ["hujjah/accountability compression narrowed", "coercive-guidance demand disambiguated"],
+      "pressure_dimensions": [
+        {
+          "id": "accountability-hujjah-compression",
+          "label": "hujjah/accountability compression narrowed",
+          "requires_any": ["hujjah", "accountability", "warning", "messenger", "proof", "rejection"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
+          "id": "coercive-guidance-demand",
+          "label": "coercive guidance distinguished from sufficient guidance",
+          "requires_any": ["coercive", "compulsion", "force", "irresistible", "guidance", "convince"]
+        }
+      ],
       "governance_class": "routes"
     },
     {
@@ -81,6 +166,18 @@
       "yields_to": ["foreign-premise-detection", "M1-self-refutation"],
       "priority": 70,
       "land_requires": ["consequence traced only after imported criterion is exposed"],
+      "pressure_dimensions": [
+        {
+          "id": "source-frame-consequence",
+          "label": "source/noetic frame consequence traced",
+          "requires_any": ["consequence", "worldview", "source", "frame", "criterion", "authority"]
+        },
+        {
+          "id": "non-ad-hominem-boundary",
+          "label": "source-status not used as ad hominem",
+          "requires_any": ["not an attack", "not proof", "not ad hominem", "identity", "source-status", "person"]
+        }
+      ],
       "governance_class": "routes"
     },
     {
@@ -91,6 +188,18 @@
       "yields_to": ["foreign-premise-detection", "M1-self-refutation", "M9-predication-mode", "V8-bila-kayf-anchor", "P7-restoration-stops", "M4-grief-register", "M5-deformation-triage", "mushabara-fasida", "V9-necessary-knowledge-priority"],
       "priority": 40,
       "land_requires": ["generic reason repair only after first-live blocker clears"],
+      "pressure_dimensions": [
+        {
+          "id": "reason-role-repair",
+          "label": "reason role repaired in the case's own terms",
+          "requires_any": ["sound reason", "reason-as-tribunal", "tribunal", "proof", "evidence", "category", "criterion"]
+        },
+        {
+          "id": "proof-burden-order",
+          "label": "proof burden order restored after imported tribunal pressure",
+          "requires_any": ["burden", "proof", "evidence", "standard", "warrant", "order"]
+        }
+      ],
       "governance_class": "routes"
     },
     {
@@ -101,6 +210,19 @@
       "yields_to": ["foreign-premise-detection", "M1-self-refutation", "do-second-loop", "V2-reconstituting-reason", "M8-reductio"],
       "priority": 20,
       "land_requires": ["restored worship-worthiness order rendered after upstream criteria land", "restorative synthesis bounded to landed burdens"],
+      "pressure_dimensions": [
+        {
+          "id": "restoration-bounded-landed-burdens",
+          "label": "restoration bounded to landed burdens",
+          "requires_any": ["restore", "restoration", "landed", "burdens", "da'wah", "invite"]
+        },
+        {
+          "id": "worship-worthiness-order",
+          "label": "worship-worthiness mercy/justice order restored when live",
+          "requires_any": ["worship-worthiness", "worthy of worship", "mercy", "justice", "Allah", "Creator"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        }
+      ],
       "governance_class": "routes"
     },
     {
@@ -111,6 +233,13 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["register hold named", "content rebuttal withheld"],
+      "pressure_dimensions": [
+        {
+          "id": "register-hold",
+          "label": "grief/register hold named before content rebuttal",
+          "requires_any": ["register", "grief", "hold", "withhold", "care"]
+        }
+      ],
       "governance_class": "holds"
     },
     {
@@ -121,6 +250,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["grief-coded register acknowledged", "argument-bank release blocked"],
+      "pressure_dimensions": [
+        {
+          "id": "grief-coded-register",
+          "label": "grief-coded register acknowledged",
+          "requires_any": ["grief", "wound", "trauma", "register", "pastoral"]
+        },
+        {
+          "id": "argument-bank-block",
+          "label": "argument-bank release blocked",
+          "requires_any": ["withhold", "blocked", "not release", "argument-bank", "register"]
+        }
+      ],
       "governance_class": "holds"
     },
     {
@@ -131,6 +272,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["necessary knowledge priority stated", "cleared deformation not reopened"],
+      "pressure_dimensions": [
+        {
+          "id": "daruri-priority",
+          "label": "necessary/daruri knowledge priority stated",
+          "requires_any": ["necessary knowledge", "daruri", "self-evident", "priority", "bedrock"]
+        },
+        {
+          "id": "cleared-deformation-not-reopened",
+          "label": "cleared deformation not reopened",
+          "requires_any": ["cleared", "not reopened", "deformation", "after clearing", "priority"]
+        }
+      ],
       "governance_class": "routes"
     },
     {
@@ -141,6 +294,18 @@
       "yields_to": ["V9-necessary-knowledge-priority"],
       "priority": 95,
       "land_requires": ["first-live deformation named", "generic reason repair held"],
+      "pressure_dimensions": [
+        {
+          "id": "first-live-deformation",
+          "label": "first-live deformation named",
+          "requires_any": ["deformation", "false resemblance", "concealment", "live", "named"]
+        },
+        {
+          "id": "generic-reason-held",
+          "label": "generic reason repair held until deformation clears",
+          "requires_any": ["generic reason", "held", "until", "deformation", "clears"]
+        }
+      ],
       "governance_class": "holds"
     },
     {
@@ -151,6 +316,18 @@
       "yields_to": [],
       "priority": 100,
       "land_requires": ["false resemblance / mushabara fasida marked as the live deformation"],
+      "pressure_dimensions": [
+        {
+          "id": "false-resemblance-live",
+          "label": "false resemblance marked as live deformation",
+          "requires_any": ["false resemblance", "mushabara fasida", "live deformation", "resemblance", "deformation"]
+        },
+        {
+          "id": "parent-deformation-order",
+          "label": "parent inherited-belief deformation order preserved",
+          "requires_any": ["i'tiqadat", "inherited", "parent", "order", "deformation"]
+        }
+      ],
       "governance_class": "holds",
       "canonical_deformation_code": "mushabara-fasida",
       "parent_deformation_code": "i'tiqadat-mawrutha",
