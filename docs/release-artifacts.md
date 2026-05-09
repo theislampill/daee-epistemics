@@ -1,8 +1,8 @@
 # Release Artifacts
 
-This file records the current v0.3.2.0 release-candidate package artifact. Binary skill archives
+This file records the current v0.3.2.0 GitHub Release package artifact. Binary skill archives
 are not committed to the source repository; GitHub Releases are the binary distribution surface
-once a release is explicitly posted.
+for the published `.skill` asset.
 
 Build the release candidate locally from the generated `skill/` package root:
 
@@ -20,21 +20,20 @@ asset is the same checked payload renamed to `.skill`. Do not re-zip the reposit
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6` |
-| Size | `522890` bytes |
+| SHA256 | `06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98` |
+| Size | `524363` bytes |
 | Entries | `45` |
-| GitHub Release visibility | Not yet published; public release target |
+| GitHub Release visibility | Published; asset replaced after post-release Level 3 polish |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
 | Verification date | `2026-05-09` |
-| Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset after release posting. |
+| Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
 public GitHub Release asset when copied/renamed from the same build output.
-Planned GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
-repository does not commit the binary archive; the GitHub Release is the binary distribution surface
-only after explicit release posting.
+GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
+repository does not commit the binary archive; the GitHub Release is the binary distribution surface.
 
 Committed `runtime-grounding-v5` smoke artifacts are historical regression evidence for package
 `daee-epistemics-RC00001-v0.3.1.0.skill.zip` / SHA256
@@ -53,7 +52,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`EE1A90C7ABBCC06A7C6098903E73FFD69872D65E5FF84D0C84FD5AAAE46E7EE6` are not present unless a smoke
+`06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 

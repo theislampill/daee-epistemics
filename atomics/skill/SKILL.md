@@ -8,11 +8,12 @@ description: >
 
 ## LEVEL 3 EXECUTABLE ROUTING - DEFAULT WHEN AVAILABLE
 
-For ordinary Codex skill use, `/daee-epistemics [input]` uses Level 3 whenever
-the bundled Python scripts are available. Do not first decide whether the case
-is serious enough for Level 3; light cases may spend a few extra seconds in the
-wrapper, and heavy cases need the same binding route discipline. The user should
-not need to know the internal commands.
+Level 3 is the default path for `/daee-epistemics [input]` in Codex/script-capable
+runtimes when bundled scripts are available. Runtimes that cannot execute
+bundled scripts must visibly fall back to Level 1/2 behavior. Do not first
+decide whether the case is serious enough for Level 3; light cases may spend a
+few extra seconds in the wrapper, and heavy cases need the same binding route
+discipline. The user should not need to know the internal commands.
 
 Codex invocation flow:
 1. Save the user input to a run-local `input.md`.
@@ -37,8 +38,8 @@ and concealment reads remain partly model-assisted and must be input-span
 justified. It does not remove transformer execution ceilings; highest-complexity
 burdens such as fixture 18 may still fail or compress under model limits. It
 also cannot force external users to run the wrapper; runtimes that cannot execute
-bundled scripts fall back honestly to Level 1/2 behavior under the governance
-below and must visibly mark the response:
+bundled scripts must visibly fall back to Level 1/2 behavior under the
+governance below and must visibly mark the response:
 `Level 1/2 invocation - Level 3 wrapper unavailable in this runtime`.
 
 Maintainer/debugging command:

@@ -17,13 +17,55 @@ def _has_owner_floor(output: str, owner_id: str) -> bool:
     return re.search(rf"Owner-floor:\s*{re.escape(owner_id)}\b", output, flags=re.IGNORECASE) is not None
 
 
+_ORDINAL_WORDS = {
+    1: "first",
+    2: "second",
+    3: "third",
+    4: "fourth",
+    5: "fifth",
+    6: "sixth",
+    7: "seventh",
+    8: "eighth",
+    9: "ninth",
+    10: "tenth",
+    11: "eleventh",
+    12: "twelfth",
+    13: "thirteenth",
+    14: "fourteenth",
+    15: "fifteenth",
+    16: "sixteenth",
+    17: "seventeenth",
+    18: "eighteenth",
+    19: "nineteenth",
+    20: "twentieth",
+}
+
+
+def _has_burden_marker(output: str, burden_index: int) -> bool:
+    """Detect a visible burden-structure label for burden N.
+
+    Keep this anchored to line-level structure so a stray ordinal word or a
+    `Land(BN)` citation does not satisfy traversal by itself.
+    """
+
+    ordinal = _ORDINAL_WORDS.get(burden_index)
+    labels = [
+        rf"B{burden_index}(?:\.s\d*)?\b",
+        rf"[Bb]urden\s+{burden_index}\b",
+    ]
+    if ordinal:
+        labels.append(rf"{ordinal}\s+[Bb]urden\b")
+    pattern = rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:{'|'.join(labels)})"
+    return re.search(pattern, output) is not None
+
+
 def _closure_gate_satisfied(output: str, continuation_entries: list[dict[str, Any]]) -> bool:
     """Allow final close only when queued burdens visibly landed and no burden remains."""
     if continuation_entries:
         last_index = 1 + len(continuation_entries)
         if f"Land(B{last_index}" not in output:
             return False
-        if f"B{last_index}.s" not in output and f"Burden {last_index}" not in output:
+        if not _has_burden_marker(output, last_index):
             return False
     closure_markers = (
         r"no remaining input-anchored burden",
@@ -71,7 +113,7 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
 
     required_steps = 1 + len(continuation_entries)
     for index in range(2, required_steps + 1):
-        if f"B{index}.s" not in output and f"Burden {index}" not in output:
+        if not _has_burden_marker(output, index):
             errors.append(f"B{index}: continuation queue entry not visibly traversed")
         if f"Land(B{index}" not in output:
             errors.append(f"B{index}: continuation Land(B) evidence absent")
@@ -104,7 +146,8 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         retry_prompt = (
             "Retry from the existing Level 3 route plan. Execute first_live owners, "
             "then execute continuation_queue entries in order when release conditions are met. "
-            "Emit Owner-floor, Target, Operation, Result, B.s, Land(B), and R(H,Delta), "
+            "For every executed owner emit `Owner-floor: <owner-id>` followed by "
+            "Target, Operation, Result, B.s, Land(B), and R(H,Delta), "
             "and do not close unless R(H,Delta) names no remaining input-anchored burdens."
         )
 

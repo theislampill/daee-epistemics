@@ -480,9 +480,11 @@ platforms. In Codex, ordinary use should stay simple:
 /daee-epistemics [input]
 ```
 
-When bundled scripts are available, Codex should treat that invocation as Level
-3 by default for every case. Light cases spend a few extra seconds in the
-wrapper; hard cases get the same binding route discipline.
+Level 3 is the default path for `/daee-epistemics [input]` in Codex/script-capable
+runtimes when bundled scripts are available. Runtimes that cannot execute
+bundled scripts must visibly fall back to Level 1/2 behavior. Light cases spend
+a few extra seconds in the wrapper; hard cases get the same binding route
+discipline.
 
 ### Codex Level 3 Runtime Path
 
@@ -521,7 +523,8 @@ owner packs are not claimed.
 
 ### Scriptless Runtime Fallback
 
-If a runtime cannot execute bundled scripts, it must visibly label fallback:
+Runtimes that cannot execute bundled scripts must visibly fall back to Level 1/2
+behavior and label that fallback:
 
 ```text
 Level 1/2 invocation - Level 3 wrapper unavailable in this runtime

@@ -88,7 +88,15 @@ out.parent.mkdir(parents=True, exist_ok=True)
 if out.exists():
     out.unlink()
 
-paths = sorted(path for path in skill.rglob("*") if path.is_file())
+def package_file(path):
+    rel_parts = path.relative_to(skill).parts
+    if "__pycache__" in rel_parts:
+        return False
+    if path.suffix in {".pyc", ".pyo"}:
+        return False
+    return path.is_file()
+
+paths = sorted(path for path in skill.rglob("*") if package_file(path))
 
 with ZipFile(out, "w", ZIP_DEFLATED) as zf:
     for path in paths:
@@ -107,6 +115,8 @@ forbidden_prefixes = ("skill/", "atomics/", "tools/", "docs/", "build/", ".git/"
 bad = [
     name for name in names
     if name.startswith(forbidden_prefixes) or name.startswith("./") or "\\" in name
+    or "/__pycache__/" in name or name.startswith("__pycache__/")
+    or name.endswith((".pyc", ".pyo"))
 ]
 if "SKILL.md" not in names:
     raise SystemExit("archive missing SKILL.md at root")

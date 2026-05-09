@@ -68,14 +68,15 @@ Closure gate:
 Required execution shape:
 1. Execute the first-live owner(s) as Burden 1.
 2. For each first-live owner, emit owner-floor evidence as:
-   Owner-floor: <owner id> - <owner-specific floor>
+   Owner-floor: <owner-id> - <owner-specific floor>
    Target: <input-grounded target>
    Operation: <case-specific operation>
    Result: <changed claim-state>
 3. Render B1.s -> Land(B1) -> R(H,Delta).
 4. If the continuation queue is non-empty, continue in order. For each queued burden:
    - cite the input span(s) that anchor it;
-   - emit Owner-floor / Target / Operation / Result for the queued owner(s);
+   - for each queued owner, emit exactly `Owner-floor: <owner-id> - <owner-specific floor>`;
+   - then emit Target:, Operation:, and Result: lines for the same owner;
    - render B<N>.s -> Land(B<N>) -> R(H,Delta);
    - say what the prior burden cleared and why this burden is now licensed.
 5. Do not execute held/deferred owners outside first-live or continuation_queue.
@@ -283,6 +284,161 @@ def _shallow_first_burden_output(route_plan: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _closure_matcher_regressions() -> list[str]:
+    errors: list[str] = []
+
+    def owner(owner_id: str) -> dict[str, Any]:
+        return {"id": owner_id, "land_requires": [f"{owner_id} owner-floor result"]}
+
+    def queue_entry(name: str, owner_id: str) -> dict[str, Any]:
+        return {
+            "name": name,
+            "owners": [owner(owner_id)],
+            "input_spans": [{"text": f"span for {name}"}],
+            "land_requirements": [{"owner": owner_id, "requires": [f"{owner_id} owner-floor result"]}],
+        }
+
+    b3_plan = {
+        "live_burden": "synthetic imported criterion burden",
+        "governance_verdict": "RECURSE",
+        "first_live": [owner("foreign-premise-detection")],
+        "continuation_queue": [
+            queue_entry("reason-repair", "V2-reconstituting-reason"),
+            queue_entry("moral-tribunal-check", "M8-reductio"),
+        ],
+        "held": [],
+        "deferred": [],
+    }
+    b3_output = """# Synthetic route execution
+First Burden: synthetic imported criterion burden
+B1.s1: execute first-live owner
+Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
+Target: first span
+Operation: expose the imported criterion
+Result: foreign-premise-detection owner-floor result
+Land(B1): first burden landed
+R(H,Delta): RECURSE - next span-backed burden released
+
+Second Burden: reason-repair
+Operative Submove: execute queued owner
+Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
+Target: second span
+Operation: repair the proof-status inversion
+Result: V2-reconstituting-reason owner-floor result
+Land(B2): second burden landed
+R(H,Delta): RECURSE - next span-backed burden released
+
+Third Burden: moral-tribunal-check
+Operative Submove: execute queued owner
+Owner-floor: M8-reductio - M8-reductio owner-floor result
+Target: third span
+Operation: check the moral tribunal against its own premise
+Result: M8-reductio owner-floor result
+Land(B3): third burden landed
+R(H,Delta): RECURSE - no remaining input-anchored burdens
+Closing Formulation: closure licensed; no remaining input-anchored burden.
+"""
+    b3_verdict = check_execution(b3_plan, b3_output)
+    if b3_verdict.get("execution_fidelity") != "pass":
+        errors.append(f"closure-regression B3 ordinal output failed: {b3_verdict}")
+
+    b3_missing_final = b3_output.split("Third Burden:", 1)[0] + (
+        "R(H,Delta): HOLD - final queued burden omitted.\n"
+    )
+    b3_missing_verdict = check_execution(b3_plan, b3_missing_final)
+    if b3_missing_verdict.get("execution_fidelity") == "pass":
+        errors.append("closure-regression missing B3 content unexpectedly passed")
+
+    b5_plan = {
+        "live_burden": "synthetic multi-burden route",
+        "governance_verdict": "RECURSE",
+        "first_live": [owner("foreign-premise-detection")],
+        "continuation_queue": [
+            queue_entry("second-loop", "do-second-loop"),
+            queue_entry("reason-repair", "V2-reconstituting-reason"),
+            queue_entry("internal-check", "M8-reductio"),
+            queue_entry("restoration", "P1-fitrah-restoration"),
+        ],
+        "held": [],
+        "deferred": [],
+    }
+    b5_output = """# Synthetic five-burden route execution
+First Burden: first-live burden
+B1.s1: execute first-live owner
+Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
+Target: first span
+Operation: expose the imported criterion
+Result: foreign-premise-detection owner-floor result
+Land(B1): first burden landed
+R(H,Delta): RECURSE - next burden released
+
+Second Burden: second-loop
+Operative Submove: execute queued owner
+Owner-floor: do-second-loop - do-second-loop owner-floor result
+Target: second span
+Operation: run the second loop
+Result: do-second-loop owner-floor result
+Land(B2): second burden landed
+R(H,Delta): RECURSE - next burden released
+
+Third Burden: reason-repair
+Operative Submove: execute queued owner
+Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
+Target: third span
+Operation: repair the proof-status inversion
+Result: V2-reconstituting-reason owner-floor result
+Land(B3): third burden landed
+R(H,Delta): RECURSE - next burden released
+
+Fourth Burden: internal-check
+Operative Submove: execute queued owner
+Owner-floor: M8-reductio - M8-reductio owner-floor result
+Target: fourth span
+Operation: test the internal criterion
+Result: M8-reductio owner-floor result
+Land(B4): fourth burden landed
+R(H,Delta): RECURSE - next burden released
+
+Fifth Burden: restoration
+Operative Submove: execute queued owner
+Owner-floor: P1-fitrah-restoration - P1-fitrah-restoration owner-floor result
+Target: fifth span
+Operation: restore the fitrah-facing landing
+Result: P1-fitrah-restoration owner-floor result
+Land(B5): fifth burden landed
+R(H,Delta): RECURSE - no remaining input-anchored burdens
+Closing Formulation: closure gate satisfied; remaining input-anchored burdens: none.
+"""
+    b5_verdict = check_execution(b5_plan, b5_output)
+    if b5_verdict.get("execution_fidelity") != "pass":
+        errors.append(f"closure-regression B5 ordinal output failed: {b5_verdict}")
+
+    simple_plan = {
+        "live_burden": "synthetic single burden",
+        "governance_verdict": "STOP",
+        "first_live": [owner("V2-reconstituting-reason")],
+        "continuation_queue": [],
+        "held": [],
+        "deferred": [],
+    }
+    simple_output = """# Synthetic single-burden route execution
+Burden 1: synthetic single burden
+B1.s1: execute first-live owner
+Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
+Target: first span
+Operation: repair the proof-status inversion
+Result: V2-reconstituting-reason owner-floor result
+Land(B1): first burden landed
+R(H,Delta): STOP - no remaining input-anchored burden
+Closing Formulation: no remaining input-anchored burden.
+"""
+    simple_verdict = check_execution(simple_plan, simple_output)
+    if simple_verdict.get("execution_fidelity") != "pass":
+        errors.append(f"closure-regression simple B1 output failed: {simple_verdict}")
+
+    return errors
+
+
 def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simulate_output_flag: bool) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     errors: list[str] = []
@@ -335,6 +491,8 @@ def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simu
             errors.append(f"stability-repetition: routing drift across {repeat_stability} repetitions")
     else:
         errors.append("stability-repetition fixture missing")
+
+    errors.extend(_closure_matcher_regressions())
 
     write_json(output_dir / "fixture_summary.json", {"summaries": summaries, "errors": errors})
     if errors:
