@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/techniques/V1-diagnostic.md -->
 <!-- MODULE_ID: V1-diagnostic -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V1-diagnostic.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V1-diagnostic.md -->
 <!-- SOURCE_SHA256: 0ec9494dbd11635565c6d33cb3acb4df9f0304f0ffd19e83f3e18ec5b732139b -->
 
 ---
@@ -171,7 +171,7 @@ Re-run or update the case-state whenever:
 <!-- SOURCE: atomics/skill/references/diagnostics/noetic-reading-checklist.md -->
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/noetic-reading-checklist.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/noetic-reading-checklist.md -->
 <!-- SOURCE_SHA256: de3f8796abf05208b85f8a20af873c012458d58b2b7d5f0dea0a67b6d1269bdd -->
 
 ---
@@ -542,7 +542,7 @@ case-state or Diagnostic IR.
 <!-- SOURCE: atomics/skill/references/diagnostics/seven-deformations.md -->
 <!-- MODULE_ID: seven-deformations -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/seven-deformations.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/seven-deformations.md -->
 <!-- SOURCE_SHA256: d8ef4442f8b2c0fc3a0ff40ec446823f18707d8f87b9280a3f0db5a5a6036439 -->
 
 ---
@@ -1075,7 +1075,7 @@ can be loaded with confidence.
 <!-- SOURCE: atomics/skill/references/diagnostics/modes-of-concealment.md -->
 <!-- MODULE_ID: modes-of-concealment -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/modes-of-concealment.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/modes-of-concealment.md -->
 <!-- SOURCE_SHA256: f3916c1b0780819591318c95c5dd8d585025baf2804b2aeb00212a5ffb30f0c5 -->
 
 ---
@@ -1409,7 +1409,7 @@ routing decision; the case-state line composes them.
 <!-- SOURCE: atomics/skill/references/diagnostics/discourse-orientation.md -->
 <!-- MODULE_ID: discourse-orientation -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/discourse-orientation.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/discourse-orientation.md -->
 <!-- SOURCE_SHA256: f3e536e978defa22cf21338f99c392b80b11a264ee6467414b95adfe8e1c8e21 -->
 
 ---
@@ -1674,7 +1674,7 @@ the other emissions remain available but not acted on until the register shifts.
 <!-- SOURCE: atomics/skill/references/tactics/M5-deformation-triage.md -->
 <!-- MODULE_ID: M5-deformation-triage -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M5-deformation-triage.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M5-deformation-triage.md -->
 <!-- SOURCE_SHA256: c2c2f0279efd0cd35d329e5340f27b734d7dcb6d0978ce3e29ab3b24a8dcc20f -->
 
 ---

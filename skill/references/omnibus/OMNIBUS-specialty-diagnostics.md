@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/diagnostics/INDEX.md -->
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/INDEX.md -->
 <!-- SOURCE_SHA256: e5d1b5dbb09cf4327ae35018d4a4de25bcd3b91b2e1336a275df59317e12a40a -->
 
 ---
@@ -104,7 +104,7 @@ This index expands the root skill's routing summaries with the discriminating de
 <!-- SOURCE: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
 <!-- MODULE_ID: kalamic-interlocutor -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/kalamic-interlocutor.md -->
 <!-- SOURCE_SHA256: a9a0bfc09d76a9edf9d007361c979c96cdae32d68827e2fbe8459862fd006148 -->
 
 ---
@@ -246,7 +246,7 @@ When the pressure is carried by loaded terms such as body, direction, place, or 
 <!-- SOURCE: atomics/skill/references/diagnostics/fitrah-perspectives.md -->
 <!-- MODULE_ID: fitrah-perspectives -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/fitrah-perspectives.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/fitrah-perspectives.md -->
 <!-- SOURCE_SHA256: be6914b272c25ec58cf36e67b23594566cd1ed6c9bbbcb8ab7c7fc4bf2cfe475 -->
 
 ---
@@ -491,7 +491,7 @@ When diagnosing an interlocutor:
 <!-- SOURCE: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
 <!-- MODULE_ID: hadith-authentication-epistemology -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/hadith-authentication-epistemology.md -->
 <!-- SOURCE_SHA256: 15632875f7f5b6cfb8247dabe57917ad5e98b29c3d2afbc2bfa2792b2d085384 -->
 
 ---
@@ -707,7 +707,7 @@ This file has not governed the response if any of the following occur:
 <!-- SOURCE: atomics/skill/references/diagnostics/causal-series-taxonomy.md -->
 <!-- MODULE_ID: causal-series-taxonomy -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/causal-series-taxonomy.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/causal-series-taxonomy.md -->
 <!-- SOURCE_SHA256: c60b16b00ccc03f3ceda0d7444bcfbc4831281b563c7beeac053bdb73d57fbe6 -->
 
 ---
@@ -859,7 +859,7 @@ This file has not governed the response if:
 <!-- SOURCE: atomics/skill/references/diagnostics/definition-discipline.md -->
 <!-- MODULE_ID: definition-discipline -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/definition-discipline.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/definition-discipline.md -->
 <!-- SOURCE_SHA256: 3f10d4100f31b41eee064b4d5361d1ae781b2def448521f3414cc45688f25f92 -->
 
 ---
@@ -1024,8 +1024,8 @@ This file has not governed the response if:
 <!-- SOURCE: atomics/skill/references/diagnostics/nomenclature-normalization.md -->
 <!-- MODULE_ID: nomenclature-normalization -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/nomenclature-normalization.md -->
-<!-- SOURCE_SHA256: 650ff824e5a930d8be1f2d7ab3a730e742ed02528520f2a45a19b72dfb87c78e -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/nomenclature-normalization.md -->
+<!-- SOURCE_SHA256: c0daa0760ebac1ee68ce25ed55936ab4992919ebfe756dffd0344afbc6952ef1 -->
 
 ---
 id: nomenclature-normalization
@@ -1171,6 +1171,17 @@ where the file encoding already supports it cleanly; release data and schema key
 | `mushābara fāsida` | `mushabara fasida` | False resemblance; code/data use ASCII. |
 | `ʿaqīdah` | `aqidah` | Creed/doctrinal frame. |
 | `kalām` | `kalam` | Speculative Theology; do not use `Rational Theology` as the repo-controlled English label. |
+| `ẓāhir` | `zahir` | Apparent/manifest wording; preserve the semantic gate before any ta'wil discussion. |
+| `taʾwīl` | `tawil`, `ta'wil` | Interpretive turning; do not treat every explanation as licensed ta'wil. |
+| `majāz` | `majaz` | Figurative usage claim; keep it distinct from haqiqah/haqiqi and from modality questions. |
+| `ḥaqīqah` | `haqiqah` | Reality/literal truth claim; code/data use ASCII alias when needed. |
+| `ḥaqīqī` | `haqiqi` | Real/literal qualifier; keep separate from merely emphatic prose. |
+| `hawā` | `hawa` | Desire/inclination pressure; never infer interior motive without input anchor. |
+| `gharaḍ` | `gharad` | Aim/purpose/agenda pressure; keep it input-anchored and governance-bounded. |
+| `ʿāda` | `ada` | Habit/custom; distinguish habit-pressure from proof-status. |
+| `iʿrāḍ` | `irad` | Turning away; ASCII key remains `irad` in code/data. |
+| `juḥūd` | `juhud` | Denial after recognition; requires stronger evidence than ordinary disagreement. |
+| `istikbār` | `istikbar` | Arrogant refusal; do not collapse into generic objection. |
 
 ## Smoke and Campaign Names
 
@@ -1200,7 +1211,7 @@ The normalized release claim is:
 <!-- SOURCE: atomics/skill/references/diagnostics/proof-method-audit.md -->
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/proof-method-audit.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/proof-method-audit.md -->
 <!-- SOURCE_SHA256: 50c66c879eaeb5e9bfb73d5bb7e258f1e73f66fa6397fd4422dbbab9a10e78dc -->
 
 ---
@@ -1387,7 +1398,7 @@ This file has not governed the response if:
 <!-- SOURCE: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
 <!-- MODULE_ID: perfection-criterion-usurpation -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/perfection-criterion-usurpation.md -->
 <!-- SOURCE_SHA256: 4d50dfe7a4508c3caf568a0a27dcfde23661d2bfa8ca09555a09263f752db2c9 -->
 
 ---

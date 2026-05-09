@@ -41,6 +41,11 @@ also cannot force external users to run the wrapper; runtimes that cannot execut
 bundled scripts must visibly fall back to Level 1/2 behavior under the
 governance below and must visibly mark the response:
 `Level 1/2 invocation - Level 3 wrapper unavailable in this runtime`.
+That label is a capability/provenance note, not a downgrade, summary mode, or
+permission to skip hard-case depth. Scriptless Level 1/2 still executes the
+full diagnostic and render contract: as many input-anchored live burdens and
+materially active submoves as the case can responsibly release must be addressed,
+or the answer must mark the next live burden PARTIAL with a concrete limit.
 
 Maintainer/debugging command:
 
@@ -78,6 +83,12 @@ Top-salient invariants:
   `R(H,Delta)`.
 - Released `B` must be burden-complete before `R`: materially necessary `s` receive matched
   TTP/operator treatment; no headline-only answer or broad-conclusion jump licenses `NewB`.
+- Exhaust live structure rather than compressing it away. On every skill invocation, address
+  as many input-anchored live burdens and materially active submoves as the response can
+  responsibly execute under release gates. Do not merge distinct active burdens, criteria,
+  source/noetic frames, theological targets, restoration vectors, or TTP/operator functions
+  into one generic block for brevity. If limits prevent traversal, mark PARTIAL with the
+  next live burden and the blocked submove(s), not a rhetorical closure.
 - Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`;
   `AtomicB -> B.s1 -> Land(B) -> R`. Compact default may not collapse a complex
   `B` into one generic operation block. Render materially necessary `s` as case-specific
@@ -95,6 +106,12 @@ Top-salient invariants:
   Layer B. A hard case may be long because each input-anchored burden is actually
   landed; length is wrong only when it comes from padding, framework dumping, or
   unlicensed downstream release.
+- Hard-case depth floor: for hard, compound, or deformed Level 1/2 cases, the target is
+  sufficient recursive restoration, not the smallest compliant-looking answer. Continue
+  until each input-anchored burden has enough owner-floor execution to land, or until
+  `R(H,Delta)` explicitly holds, skips, reroutes, or marks PARTIAL with the named live
+  burden. Compactness removes padding; it does not reduce warranted burden volume,
+  per-burden Layer A visibility, operative citation density, or restoration force.
 - Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
   awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
   compiled bundle section containing the active TTP's operation floor, unless that exact
@@ -341,7 +358,7 @@ These files define and validate the per-file machine-readable contract architect
 
 | File | Role |
 |------|------|
-| `references/diagnostics/operative-contracts.md` | Architecture spec: purpose, required/optional keys, allowed values, pilot examples, failure modes, migration strategy, linting plan |
+| `references/diagnostics/operative-contracts.md` | Architecture spec: purpose, required/optional keys, allowed values, covered-scope examples, failure modes, migration strategy, linting plan |
 | `references/diagnostics/operative-contract.schema.json` | JSON schema for YAML operative front matter; validates `id`, `module_class`, `canonical_path`, `contract_version`, and all optional fields |
 
 ### Minimum Execution Load Floor — Required After Gate Open
@@ -529,6 +546,13 @@ Run the diagnostic gate rather than re-reading root taxonomy summaries:
 Identity may be part of the noetic equilibrium, but it cannot by itself carry the verdict.
 Identity alone does not prove motive, deformation, culpability, or primary load-bearing
 status. When used diagnostically, mark source-status. This creates no new route, PF code, IR field, or module owner.
+When the input itself publicly anchors a worldview or identity frame and that frame supplies
+the criterion, authority-order, discourse posture, or restoration vector, it is structurally
+load-bearing for analysis without becoming proof of interior motive. Do not demote it to a
+non-primary source label merely because motive and soul-state remain held. Analyze the
+worldview/frame as FPD, consequence trace, source-status discipline, or restoration support
+as warranted, and feed it into practitioner instruction with motive, culpability, and sincerity
+still held.
 
 ## V. Minimal Render Protocol
 
@@ -586,6 +610,9 @@ does runtime work, name the operator in the governed operation or bounded respon
 target -> operation -> result. Do not use a source citation as a substitute for TTP invocation,
 and do not use TTP invocation as a substitute for Qurʾān/Sunnah/Salaf citation when revealed
 textual support is actually used.
+Analyzing an input-anchored worldview frame as the source of a criterion is not a scholar/source
+parade and not named-source contamination. It is operative source-status, FPD, or consequence
+trace work when tied to the user's own surface discourse and the active burden.
 When Qurʾānic or ḥadīth evidence is doing operative work, present it cleanly and then state
 what it does diagnostically or restoratively. Preferred shape:
 ```text
@@ -598,6 +625,9 @@ what it does diagnostically or restoratively. Preferred shape:
 Do not turn this into a source parade. Prefer one text that names the mechanism to several
 texts that merely substantiate a conclusion. Do not collapse a central revealed text into a
 long prose sentence; if it is quoted, make it visually readable and immediately operationalize it.
+For hard cases, do not omit a revealed text that directly names the live mechanism merely to
+keep the answer short. Use enough precision texts to operate the released burdens, while still
+rejecting decorative citation padding.
 
 Owners:
 - `references/rubrics/diagnostic-render-contract.md` owns visible render shape,

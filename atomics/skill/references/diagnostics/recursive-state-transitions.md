@@ -85,13 +85,33 @@ Core runtime:
 Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
+Burden/submove notation:
+
+```text
+ⁿBᵢ = i-th operative submove inside the n-th burden-cycle
+nBi = plain-text equivalent
+B1.s1 = accepted legacy/checker alias for ¹B₁ where needed
+```
+
+Examples:
+
+```text
+¹B₁ = 1B1 = burden 1, submove 1
+¹B₂ = 1B2 = burden 1, submove 2
+²B₁ = 2B1 = burden 2, submove 1
+```
+
 Submove / recursion:
 
 ```text
 sᵢ != Bᵢ
+¹B₁ -> ¹B₂ -> ... -> Land(¹B) -> R(H,Δ)
+Land(¹B) -> R(H,Δ) -> ²B₁
 ```
 
-Gloss: an operative submove inside one burden is not a new burden-cycle.
+Gloss: `ⁿBᵢ` names the i-th operative submove inside the n-th burden-cycle. A burden may
+contain multiple operative submoves before it lands; a submove is not automatically a new
+burden-cycle. A new burden begins only when `Land(B)` and `R(H,Δ)` license it.
 
 Collapse:
 
@@ -190,6 +210,19 @@ diagnostic judgment directly under SKILL/governance. In Level 3, `continuation_q
 planned route; each queued burden still remains conditional on the preceding `Land(B) -> R`
 confirming that the next burden is still input-anchored, live, and unblocked.
 
+Structural attachment fidelity is part of this transition rule. The runtime must preserve the
+local sequence and attachment of each burden step:
+
+```text
+ⁿBᵢ / nBi -> owner-floor Target/Operation/Result -> Land(ⁿB) -> R(H,Delta) -> next state decision
+```
+
+Marker presence is not execution. A trace or response that groups all reasoning first, all
+owner/checker markers afterward, or all state decisions at the end has flattened the control
+state even if the same labels appear somewhere. Each marker must govern the burden step next to
+it; `Land(ⁿB)` must summarize the cumulative state delta from its submoves. Otherwise the
+output is a component-tour / structural-flattening failure.
+
 In hard/default output, Restorative Response and Closing Formulation are licensed only after
 the final state re-read for the answer. If `R(H,Delta)` names a remaining input-anchored
 burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
@@ -246,7 +279,7 @@ or visible default-mode template slots.
 Generic `target -> operation -> result` syntax is not enough. The operation must apply the
 owning file's minimum operation floor: the specific pressure dimensions, branch tests,
 definition splits, or criterion tests required by that owner. A TTP named without its
-owner-specific operation floor is label cosplay even when a Target/Operation/Result line
+owner-specific operation floor is label surface-compliance failure even when a Target/Operation/Result line
 is present.
 
 Default output must not narrate that an owner floor was applied. Phrases such as "owner
@@ -291,12 +324,16 @@ A sentence such as "this burden lands" after generic prose is invalid unless the
 operation supplies the cumulative-state delta.
 
 If entry criteria are missing, the TTP is not activated. If operation criteria are missing, the
-TTP is label cosplay. If exit criteria are missing, recursion is unauditable and closure is
+TTP is label surface-compliance failure. If exit criteria are missing, recursion is unauditable and closure is
 premature.
 
 ## Depth And Stop Guards
 
 Depth is governed by live-burden traversal, not by how many arguments or headings can be written.
+This is not a shortness rule. In hard, compound, or deformed cases, each released depth
+increment must receive enough owner-floor execution, theological substance, and restoration
+work to land before state re-read. A single compact Layer A plus thin topical sections is a
+false depth signal, not governed traversal.
 Each recursive depth increment requires:
 
 ```text
@@ -309,8 +346,10 @@ Depth guard rules:
 - No repeated operator at the next depth unless refreshed state supplies a new bounded target.
 - No downstream release from the initial itinerary; refreshed state must license every next pass.
 - No total downstream dump after one refresh.
-- No submove explosion: if a burden requires more than three major operative submoves, the
-  runtime must run the submove saturation gate before releasing the fourth.
+- No submove blur or explosion: if a burden requires more than three major operative submoves,
+  the runtime must run the submove saturation gate as a cohesion audit. The gate decides
+  whether the next move remains a distinct `s`, becomes a NewB after `R`, is held, or is
+  PARTIAL; it is not a count cap and not a merge license.
 - If response, tool, or interaction limits prevent the next eligible burden, use PARTIAL with the
   concrete limit and the named next live burden.
 - If the next live burden remains live but a release signal is absent, use HOLD with the blocker.
@@ -335,10 +374,11 @@ If the answer is yes, the submove may remain internal to `B` when it is material
 for burden completeness. If the answer is no, do not keep expanding the submove list. Run
 `Land(B) -> R` and let the re-read decide STOP, HOLD, PARTIAL, or NewB.
 
-More than three major operative submoves inside one burden-cycle is allowed only when the
-submove saturation gate records necessity and cohesion. Otherwise the fourth major move is
-either a licensed NewB after re-read, held, or PARTIAL. Size, component availability, or a
-desire for a fuller answer never licenses a fourth major submove by itself.
+More than three major operative submoves inside one burden-cycle triggers the submove
+saturation gate. If the gate records necessity and cohesion, the additional submove remains
+inside the burden as its own distinct target -> operation -> result. Otherwise the additional
+move is either a licensed NewB after re-read, held, or PARTIAL. Size, component availability,
+or a desire for a fuller answer never licenses an additional major submove by itself.
 The gate is never a consolidation license: active TTP/operator functions must remain distinct
 submoves or later burden-cycles. If runtime limits prevent that distinct execution, mark PARTIAL
 with the specific unlanded submove rather than merging it into a generic operation.
@@ -489,6 +529,11 @@ objection, skip internal sub-burdens, replace routed execution with generic pros
 broad conclusion. `R` may then expose deeper governing epistemology as `NewB`, first-order
 repairs, held higher-order rebuttals, or STOP/HOLD/PARTIAL/RECURSE; `NewB` is not licensed until
 the released `B` and its necessary `s` have actually been operated on.
+The execution bias is toward exhausting input-anchored live structure, not minimizing it. Address
+as many released burdens and materially active submoves as the gates permit; do not consolidate
+distinct active operator functions into a shorter generic response. If the model cannot finish
+the remaining live structure in the current response, the correct state is PARTIAL with the next
+live burden and blocked submove(s) named.
 
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
@@ -498,6 +543,11 @@ their own target -> operation -> result; same `B` does not mean collapsed prose.
 later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a distinct
 claim-level, source/noetic frame, theological target, or restoration vector that was not fully
 landed as `s`.
+When the user's input publicly anchors a worldview or identity frame and that frame supplies
+the moral criterion, authority-order, discourse posture, or restoration vector, it is not merely
+biographical source-status. It remains operative until consequence trace, source-status
+discipline, and restoration/practitioner implication have landed or have been explicitly held.
+Keep motive and soul-state held; do not drop the burden.
 
 Multi-burden does not mean multi-recursion by default. The model must not split topical components
 into new burden-cycles merely because they name hiddenness, punishment, source-status,
@@ -542,7 +592,8 @@ A recursive response must:
 1. Land the governing live noetic burden in the current burden-cycle.
 2. Run state re-read / noetic re-read.
 3. Enumerate remaining already-present live burdens from the original input.
-4. Route one bounded live burden per burden-cycle; a burden may contain multiple operative submoves.
+4. Route one bounded live burden per burden-cycle; a burden may contain multiple operative submoves,
+   and every materially active submove receives its own target -> operation -> result.
 5. After each burden-cycle, re-read state again and enumerate remaining burdens.
 6. STOP only after proving no input-anchored eligible burden remains, or remaining burdens are
    HELD with release conditions, or limits force PARTIAL with the next live burden named.
@@ -551,7 +602,7 @@ The transition spine must mark state re-read, not topical movement. Each transit
 (1) what the prior burden landed, including operative submove results, (2) what input-anchored
 live burden the noetic re-read identified as remaining, and (3) what the next burden-level
 function is. If no transition marker appears when re-read licenses another input-anchored live
-burden, the output is clean essay cosplay and must be rewritten before emission.
+burden, the output is clean essay surface-compliance failure and must be rewritten before emission.
 
 Valid internal progression for the first live burden:
 "The same tribunal test has three operative submoves. First, the secular moral criterion has to
@@ -613,9 +664,9 @@ noetic structure has been restored as far as the input and release gates permit:
 governing live burden, bounded TTP operation, result, state re-read, then the next eligible live
 burden or HOLD/PARTIAL/STOP.
 
-This is the recursive-state form of `anti-patterns.md` Route Cosplay Failure: visible
+This is the recursive-state form of `anti-patterns.md` Route Surface-Compliance Failure Failure: visible
 recursion label != recursive traversal; pass-by-pass state re-read = recursive traversal.
-It is also the recursive-state guard against Clean Essay Cosplay: every pass must show a
+It is also the recursive-state guard against Clean Essay Surface-Compliance Failure: every pass must show a
 transition before the next bounded operator starts.
 
 Compact audit shape when recursion must be visible in `:dsl`, internal/development audit, pass-review, or
@@ -879,7 +930,7 @@ This is the canonical State Carry Table for the abstract refresh operation.
 must be derivable from:
 
 ```text
-Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) − (items released by Burden N-1)
+Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) âˆ’ (items released by Burden N-1)
 ```
 
 New material introduced in Burden N's `Held routes` must be anchored in the original
@@ -932,37 +983,37 @@ Failure conditions:
 - Failure condition: PARTIAL is collapsed into STOP when limits prevent an eligible next pass.
 - Failure condition: multiple downstream arguments are dumped at one refresh instead of moving one
   live burden at a time.
-- Failure condition: Component-Tour Cosplay — the response covers all topics detected at initial
+- Failure condition: Component-Tour Surface-Compliance Failure ? the response covers all topics detected at initial
   read without state re-read between passes, without enumerating remaining input-anchored live
   burdens after each pass, and without routing one bounded live burden per burden-cycle. Covering all
   topics is not recursion. A response that covers all topics in one essay still fails recursion.
-  input-anchored eligibility after refresh ≠ topic presence in the prompt.
+  input-anchored eligibility after refresh â‰  topic presence in the prompt.
 
 Minimal pair: a governed same-response recursion follows a landed move plus refresh plus renewed
 permission; an argument dump accumulates downstream content without refreshed governance.
 
-- Failure condition: ungrounded noetic re-read — a `Noetic re-read` block whose
+- Failure condition: ungrounded noetic re-read ? a `Noetic re-read` block whose
   `burden landed` is asserted but the immediately preceding Layer B contains no operative
   submove with `target -> operation -> result` chain feeding the burden landing.
-- Failure condition: noetic-equivalence prestige stack — Ashʿarī, Māturīdī, Atharī,
+- Failure condition: noetic-equivalence prestige stack ? Ashʿarī, Māturīdī, Atharī,
   Taymiyyan, kalāmic, or falsafah-inflected sources cited as one unified operative
   authority for a school-sensitive claim.
-- Failure condition: classical-theology umbrella — `classical theology`,
+- Failure condition: classical-theology umbrella ? `classical theology`,
   `classical theologies`, `classical Islamic theology`, `the classical tradition`,
   `mainstream kalām`, or `Ashʿarī/Māturīdī tradition` used as if it named one operative
   frame across contradictory schools.
-- Failure condition: contrast-as-operative-support — a source first marked `contrast`,
+- Failure condition: contrast-as-operative-support ? a source first marked `contrast`,
   `opponent-position`, `historical note`, `genealogy`, or `held material` is then used
   as operative warrant in the same burden-cycle without explicit reclassification.
-- Failure condition: held-route semantic leakage — Layer A names material as held, then
+- Failure condition: held-route semantic leakage ? Layer A names material as held, then
   Layer B answers that material as topical commitment before a preceding state/noetic
   re-read explicitly releases it.
-- Failure condition: non-operative operation verb — an `Operation:` line begins with
+- Failure condition: non-operative operation verb ? an `Operation:` line begins with
   generic prose such as `address`, `discuss`, `explore`, `engage`, or `consider` rather
   than one of the closed operative verbs.
-- Failure condition: intra-school flattening — a school is named as internally uniform
+- Failure condition: intra-school flattening ? a school is named as internally uniform
   (`Ashʿarī theology teaches X`, `Māturīdī theology teaches X`) on a claim that is
   internally disputed or school-sensitive without that qualification appearing.
-- Failure condition: verbal-agreement smuggling — agreement across frames is asserted
+- Failure condition: verbal-agreement smuggling ? agreement across frames is asserted
   without marking whether the agreement is substantive or only verbal/surface-level,
   and the asserted agreement is then used as operative support.

@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/case-library/profiles/INDEX.md -->
 <!-- MODULE_ID: profiles-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/INDEX.md -->
 <!-- SOURCE_SHA256: 895426aaa2928af6a47a51c5df87ce2453cb58c422cb0f2264f2a70e51a3f3ed -->
 
 ---
@@ -151,7 +151,7 @@ procedure.
 <!-- SOURCE: atomics/skill/references/case-library/noetic-profiles.md -->
 <!-- MODULE_ID: noetic-profiles -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/noetic-profiles.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/noetic-profiles.md -->
 <!-- SOURCE_SHA256: 2a9777ca3d08aedae0a2c9ff56c6cbdebad06aa748ae856e0f4c9558d04656b8 -->
 
 ---
@@ -205,7 +205,7 @@ For the full directory index, minimal-pair discriminators, and load discipline, 
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-1-naturalist.md -->
 <!-- MODULE_ID: ns-1-naturalist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-1-naturalist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-1-naturalist.md -->
 <!-- SOURCE_SHA256: 6c8836b57ae5982134f2d1a9eb2ebb2e54530b0c0c36d0903be1f6a4e87ee753 -->
 
 ---
@@ -263,7 +263,7 @@ loosened can evidential content land.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md -->
 <!-- MODULE_ID: ns-2-agnostic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md -->
 <!-- SOURCE_SHA256: 78ed84d554628976b6cb345e9960d08f6fc587f30e38f7745379b4da3257c383 -->
 
 ---
@@ -335,7 +335,7 @@ basic belief — and theistic basic belief is in contention.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-3-deconverted.md -->
 <!-- MODULE_ID: ns-3-deconverted -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-3-deconverted.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-3-deconverted.md -->
 <!-- SOURCE_SHA256: 2d6ccd0a79d136d34342b16bb8c60df3096b469a98f545d979d2c7852a7d4efb -->
 
 ---
@@ -407,7 +407,7 @@ moral weight that the narrative cannot account for.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md -->
 <!-- MODULE_ID: ns-4-secular-moral-realist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-4-secular-moral-realist.md -->
 <!-- SOURCE_SHA256: 295f5c56ec858cdb1a51c686fdd66be1309e6bfc5afebf65aec0047aa362533f -->
 
 ---
@@ -475,7 +475,7 @@ most coherent grounding is theistic.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md -->
 <!-- MODULE_ID: ns-5-habituated-atheist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-5-habituated-atheist.md -->
 <!-- SOURCE_SHA256: abca459a37a7f9c351643e0c34a53ad25b0f587f9377391f23a7b844c4950d33 -->
 
 ---
@@ -560,7 +560,7 @@ Use M2 or M1 only after the opening move has changed the next live differentiato
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md -->
 <!-- MODULE_ID: ns-6-kalamic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md -->
 <!-- SOURCE_SHA256: 97d135ac9daa26c7c145024e2056a873d698e2b7cf1e0575725283e42066a76a -->
 
 ---
@@ -645,7 +645,7 @@ as the universal precondition of warranted belief.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md -->
 <!-- MODULE_ID: ns-7-theistic-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-7-theistic-evidentialist.md -->
 <!-- SOURCE_SHA256: 1c3f8a2022429d5c585c74ac6b5b5e34ad7ab932c9e36a99748aa30da017be2a -->
 
 ---
@@ -733,7 +733,7 @@ evidentialist restriction: have you examined the restriction itself, or inherite
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md -->
 <!-- MODULE_ID: ns-8-muslim-internal-crisis -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md -->
 <!-- SOURCE_SHA256: 2233a004af761cf18ecaf7c32a21701fb809a3685feae09915adc1e446deb941 -->
 
 ---
@@ -880,7 +880,7 @@ for mandatory and prohibited actions under each stop.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md -->
 <!-- MODULE_ID: ns-9-historical-critical-skeptic -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md -->
 <!-- SOURCE_SHA256: 4bf1622ef6b6bcb8121a0f45d863a9c7417b3178746169a7b2413111d47a3f1d -->
 
 ---
@@ -977,7 +977,7 @@ framework. V2 is applied to the method, not to the person.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md -->
 <!-- MODULE_ID: ns-10-maturidi-evidentialist -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md -->
 <!-- SOURCE_SHA256: bb11a9af505bad1d5ac554c98164c6e64485e9c1998c564ab036457c914bb7c8 -->
 
 ---
@@ -1058,7 +1058,7 @@ winning an inter-school debate.
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md -->
 <!-- MODULE_ID: ns-11-fideist-reformed -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-11-fideist-reformed.md -->
 <!-- SOURCE_SHA256: b95669972ed932ca3ef783f09b842baa8f9531e690b772d67efb4226270d9b83 -->
 
 ---
@@ -1156,7 +1156,7 @@ what epistemic status (ḍarūrī), and what is required for its deliverances to
 <!-- SOURCE: atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md -->
 <!-- MODULE_ID: ns-12-blank-slate-dual-fitrah -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md -->
 <!-- SOURCE_SHA256: 835522ebd0ae71469caf570456621b28a83c4c73401ad2a4b34f4b98fc13e0fb -->
 
 ---

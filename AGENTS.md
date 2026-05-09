@@ -117,6 +117,12 @@ required.
   output is PARTIAL if limits prevent distinct execution.
 - `R(H,Delta)` is a real state-transition judgment, not a formatting marker. It decides
   whether to continue, hold/defer, skip, reroute boundedly, or close.
+- Structural attachment fidelity is required. Marker presence is not execution, and the same
+  tokens in a different order do not preserve the same state. Keep each burden submove
+  (`ⁿBᵢ` / `nBi`, with `B1.s1` as checker-compatible alias) -> owner-floor `Target` /
+  `Operation` / `Result` -> `Land(B)` -> `R(H,Delta)` -> next decision locally attached;
+  grouped reasoning, grouped owner markers, or checker-shaped blobs are structural-flattening
+  failures even if every label appears somewhere.
 - Qurʾān/ḥadīth evidence, when operative, should be visually clean and immediately explained
   as diagnostic/restorative work; do not collapse central revealed text into prose or pad with
   citations.
@@ -156,6 +162,12 @@ Current runtime notation is owned by
 ```text
 Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
+
+Burden/submove notation uses `ⁿBᵢ` for the i-th operative submove inside the n-th burden-cycle,
+with `nBi` as the plain-text mirror. Example: `¹B₁` / `1B1` is burden 1, submove 1;
+`¹B₂` / `1B2` is burden 1, submove 2; `²B₁` / `2B1` begins only after `Land(¹B) ->
+R(H,Δ)` licenses burden 2. Existing `B1.s1` / `B1.s2` notation remains an accepted
+legacy/checker alias.
 
 The compiled runtime must preserve this route:
 

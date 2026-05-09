@@ -1,12 +1,12 @@
 schema_version: 1
-scope: level3-pilot
+scope: level3-covered-scope
 priority_order:
   - P7-restoration-stops
   - M4-grief-register
   - foreign-premise-detection
   - M1-self-refutation
   - do-second-loop
-  - seven-deformations:1-A
+  - mushabara-fasida
   - M9-predication-mode
   - V8-bila-kayf-anchor
   - V9-necessary-knowledge-priority

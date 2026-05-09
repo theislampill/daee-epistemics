@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Shared helpers for the daee-epistemics Level 3 pilot.
+"""Shared helpers for the daee-epistemics Level 3 covered-scope runtime.
 
-The pilot deliberately keeps routing deterministic after feature extraction.
+The covered scope deliberately keeps routing deterministic after feature extraction.
 Feature extraction can remain interpretive; route.py must not call an LLM.
 """
 
@@ -72,7 +72,7 @@ def load_trigger_matrix(skill_root: Path) -> dict[str, Any]:
 
 
 def parse_simple_yaml(path: Path) -> dict[str, Any]:
-    """Parse the small, list-only YAML files used by the Level 3 pilot.
+    """Parse the small, list-only YAML files used by the Level 3 covered scope.
 
     This is intentionally not a general YAML parser; keeping the data shape
     small avoids a runtime dependency inside the skill package.
@@ -95,8 +95,14 @@ def parse_simple_yaml(path: Path) -> dict[str, Any]:
                 result[key] = []
             continue
         if current_key and line.strip().startswith("- "):
+            if not isinstance(result.get(current_key), list):
+                raise ValueError(f"{path}: YAML key {current_key!r} mixes scalar and list values")
             result.setdefault(current_key, [])
             result[current_key].append(_yaml_scalar(line.strip()[2:].strip()))
+            continue
+        if line[:1].isspace():
+            raise ValueError(f"{path}: unsupported indented YAML shape: {line!r}")
+        raise ValueError(f"{path}: unsupported YAML line: {line!r}")
     return result
 
 

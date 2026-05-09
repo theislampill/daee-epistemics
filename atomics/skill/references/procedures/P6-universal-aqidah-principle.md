@@ -153,6 +153,36 @@ deflection rather than inquiry. They may also carry concealment, especially `ira
 deployed pre-inquiry or as register-control to stop the matter from pressing. In such cases,
 internal diagnosis remains full while external deployment remains bounded.
 
+### P6 Category Guards
+
+P6 must not flatten `aqidah`, `din/religion`, and pseudo-neutrality into one loose label:
+
+- `aqidah` is operative worldview-commitment: the binding criterion, warrant-order, value-order,
+  or source of practical dependence that shapes judgment.
+- `din/religion` may be a legal, social, inherited, or public label. It is not automatically
+  the live P6 node unless it is carrying criterion, authority, or worship-function pressure.
+- pseudo-neutrality is a noetic posture: it denies carrying a worldview while using one as the
+  standard of judgment.
+
+**Release P6** when the input itself anchors a binding criterion, pseudo-neutral tribunal,
+worldview-denial slogan, or authority-order inversion. **Hold P6** when the only signal is an
+incidental demographic/source label with no operative criterion. **Reject public deployment**
+of P6 when it would become ad hominem source-status commentary rather than criterion analysis.
+
+**Minimal pairs:**
+
+- "I am not religious; I only accept empirical proof" releases P6 because empirical proof is
+  functioning as an advance tribunal.
+- "My colleague is not religious" does not release P6 by itself; no criterion is active.
+- "Secular ethics is more humane than divine command" releases P6 with FPD/M1/M8 because a
+  source-worldview criterion is judging revelation.
+- "A secular historian asked for the manuscript evidence" remains source/request handling unless
+  the source-worldview frame becomes the criterion.
+
+**IR-visible consequences:** when released, record the live node as `aqidah/worldview-commitment`,
+`pseudo-neutrality`, or `criterion-bearing source-worldview`. When held, record the withheld
+state as `incidental source-status only` and name the missing criterion or tribunal signal.
+
 The correct first external move is often a single honest diagnostic question rather than a
 full argument dump. Canonical bounded questions for this family include:
 

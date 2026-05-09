@@ -488,6 +488,7 @@ def check_fixtures(
         "required_modules": 0,
         "optional_modules": 0,
         "governance_phrases": 0,
+        "prohibition_support": 0,
         "forbidden_governance": 0,
         "route_order": 0,
     }
@@ -562,6 +563,14 @@ def check_fixtures(
             stats["governance_phrases"] += 1
             if not phrase_present(corpus, phrase):
                 errors.append(f"{context}: governance phrase not found in runtime corpus: {phrase!r}")
+
+        for phrase in expected.get("prohibition_support_present") or []:
+            if not isinstance(phrase, str):
+                errors.append(f"{context}: prohibition_support_present contains a non-string value")
+                continue
+            stats["prohibition_support"] += 1
+            if not forbidden_governance_supported(corpus, phrase):
+                errors.append(f"{context}: prohibition support not found in runtime corpus: {phrase!r}")
 
         for phrase in expected.get("forbidden_governance") or []:
             if not isinstance(phrase, str):
@@ -808,6 +817,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Required module assertions: {fixture_stats['required_modules']}")
     print(f"Optional module assertions: {fixture_stats['optional_modules']}")
     print(f"Governance phrase assertions: {fixture_stats['governance_phrases']}")
+    print(f"Prohibition-support assertions: {fixture_stats['prohibition_support']}")
     print(f"Forbidden governance assertions: {fixture_stats['forbidden_governance']}")
     print(f"Route-order support assertions: {fixture_stats['route_order']}")
     print(f"Minimal-pair divergence checks: {minimal_pairs}")

@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/terminology.md -->
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/terminology.md -->
+<!-- CANONICAL_PATH: skill/references/terminology.md -->
 <!-- SOURCE_SHA256: 8f9ae923d16eb3859cd677a6582e457f2579b23e1a1d5776858276b09beffbba -->
 
 ---
@@ -501,7 +501,7 @@ PF codes, module activation rules, or source owners.
 <!-- SOURCE: atomics/skill/references/case-library/INDEX.md -->
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/INDEX.md -->
 <!-- SOURCE_SHA256: 22dd7694877d5f60c7376e3a99fb3a240d01d216cb221133bbaa57f3fa8854ce -->
 
 ---
@@ -746,7 +746,7 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- SOURCE: atomics/skill/references/module-codes.md -->
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/module-codes.md -->
+<!-- CANONICAL_PATH: skill/references/module-codes.md -->
 <!-- SOURCE_SHA256: 8cf38be137708ed950fd5eb1b4c4b581e106ffb154ac1fc52ad31367a9085dcc -->
 
 ---
@@ -1149,7 +1149,7 @@ shifts with it.
 <!-- SOURCE: atomics/skill/references/techniques/heuristics.md -->
 <!-- MODULE_ID: heuristics -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/heuristics.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/heuristics.md -->
 <!-- SOURCE_SHA256: a034275877307f58c4e4a04e8d15afcd454b443e2668ed884e4e15118fd462ce -->
 
 ---

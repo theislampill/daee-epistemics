@@ -97,7 +97,7 @@ def non_catalogue_owner_supported(owner: str, ir: dict[str, Any]) -> bool:
     foreign_premise = str(ir.get("foreign_premise", "")).strip().lower()
     if owner == "foreign-premise-detection":
         return bool(foreign_premise) or bool({"criterion-import", "tribunal-installation"} & upstream)
-    if owner == "seven-deformations:1-A":
+    if owner in {"mushabara-fasida", "seven-deformations:1-A"}:
         return "mushabara" in deformation or "false resemblance" in deformation or "seven-deformations 1-a" in deformation
     return False
 

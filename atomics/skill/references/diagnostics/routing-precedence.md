@@ -149,11 +149,12 @@ existing owner-backed function.
 -> R`. Gloss: multiple TTP operative submoves may be needed to land one selected live
 burden. They do not become burden-cycles merely because they are FPD, M1, DO-8, M8,
 source-status clarification, restoration framing, or another recognizable route leg.
-Submoves also do not multiply without limit. Before a fourth major operative submove is
-released, run the submove saturation gate: the next submove must share the same target-family,
-claim-level, source/noetic frame, claim cluster, and restoration vector, and it must be
-materially necessary for the current burden landing. If that cohesion fails, route to `Land(B) -> R`
-before releasing more material.
+Submoves also do not blur into one another or multiply without boundary checks. When one burden
+requires more than three major operative submoves, run the submove saturation gate: the next
+submove must share the same target-family, claim-level, source/noetic frame, claim cluster, and
+restoration vector, and it must be materially necessary for the current burden landing. If that
+cohesion holds, release it as its own distinct target -> operation -> result. If that cohesion
+fails, route to `Land(B) -> R` before releasing more material.
 
 **Rule P-7 (TTP entry before activation):** Routing precedence does not activate a TTP because
 the TTP is topically adjacent. The TTP must satisfy entry criteria: validated IR, owner-backed
@@ -185,7 +186,7 @@ unclear, model/predication discipline runs first and V12 remains held.
 `shared vocabulary != shared warrant`; `verbal agreement != operative support`;
 `σ_context != σ_warrant` unless explicitly reclassified. `N_AT` aliases are one operative
 frame, not a prestige stack. Authoritative wording is in
-`recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline`.
+`recursive-state-transitions.md ?Source-Status & Noetic-Frame Non-Equivalence Discipline`.
 
 ---
 
@@ -197,7 +198,7 @@ This file specifies the rules that govern the routing branches shown in `framewo
 
 ## VII. Routing Precedence vs. Output-Release Rubric
 
-Routing precedence (§I–§V above) governs owner order: which file addresses the case first, which suppression rules apply, which upstream blocker takes priority. It answers: *what runs and in what order?*
+Routing precedence (?I–?V above) governs owner order: which file addresses the case first, which suppression rules apply, which upstream blocker takes priority. It answers: *what runs and in what order?*
 
 The output-release rubric (`references/rubrics/output-release.md`) governs visible release order and amount. It runs after routing and owner selection. It answers: *how much of what routing selected may be visibly released now, given the current case-state?*
 

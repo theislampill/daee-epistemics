@@ -73,7 +73,7 @@
   evidence, documented that committed `runtime-grounding-v5` smokes are historical regression
   evidence unless regenerated, and added `tools/check_smoke_artifacts.py --require-current-release-smokes`
   as the stricter current-package smoke promotion gate.
-- Clarified package naming: PowerShell packaging emits the canonical RC `.skill.zip`; upload hosts
+- Clarified package naming: PowerShell packaging emits the checked local `.skill.zip`; upload hosts
   that require `.skill` should receive the same checked payload renamed, not a re-zipped repo root.
 - Added post-readiness audit hardening for source-basis schema comments, IR fixture integrity,
   bounded-complete smoke output support, release-artifact evidence, and public-safe prose release
@@ -98,7 +98,7 @@
 
 ## [v0.3.2.0] - 2026-05-09
 
-v0.3.2.0 is the Level 3 route-first source-readiness release candidate. It adds
+v0.3.2.0 is the Level 3 route-first published release line. It adds
 an additive executable routing path for Codex-capable script runtimes while
 preserving Level 1/2 fallback behavior for scriptless runtimes.
 
@@ -177,7 +177,7 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
   support/index surfaces are durably classified as non-operative support
   surfaces, the 34 strict PARTIAL owner gaps were adjudicated, and no
   release-blocking routing/loadform gap remained.
-- The codon pilot was rejected/not needed. No owner packs, broad codon DSL, new
+- The codon expansion was rejected/not needed. No owner packs, broad codon DSL, new
   route IDs, new PF codes, or broad new TTP taxonomy were introduced.
 - Large smoke directories, raw Hermes transcripts, temporary owner lists, and
   developer live-run helper scripts were intentionally left unstaged and out of
@@ -196,7 +196,7 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
 - Pure-Hermes parity is not claimed.
 - Level 3 does not guarantee every runtime can execute bundled scripts.
 - Level 3 does not claim that every TTP in the catalogue has full executable
-  Level 3 rules beyond the implemented pilot/covered scope.
+  Level 3 rules beyond the implemented fixture-backed covered scope.
 - No TST-specific operative logic is claimed or introduced; named hard-smoke
   material remains regression fixture/audit evidence, not runtime routing logic.
 

@@ -1,3 +1,6 @@
+# Template only: this file is not active GitHub Actions CI unless copied under
+# .github/workflows/. Keep setup aligned with the active workflow before use.
+
 name: Level 3 fixture pass
 
 on:
@@ -12,9 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install checker dependencies
+        run: python -m pip install --upgrade pip PyYAML
       - name: Build generated skill
         run: |
           python tools/build_framework_pipeline.py
           python tools/build_compiled_runtime.py
+          python tools/check_compiled_runtime_freshness.py
+          python tools/check_level3_data_shapes.py --include-generated
+          python tools/check_package_shape.py
       - name: Run Level 3 fixture suite
-        run: python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5 --output-dir build/level3-fixtures
+        run: python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5 --fail-on-partial --output-dir build/level3-fixtures

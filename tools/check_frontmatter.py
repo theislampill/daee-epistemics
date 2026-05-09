@@ -31,7 +31,7 @@ except ImportError:
 
 VALID_MODULE_CLASS = {
     "tactic", "technique", "procedure", "diagnostic",
-    "case-library", "case_library", "governance", "rubric"
+    "case-library", "governance", "rubric"
 }
 
 VALID_OUTPUT_SHAPES = {
@@ -46,6 +46,29 @@ VALID_LAYER_CONSTRAINT = {
 VALID_VERIFICATION_STATUS = {"L_check", "L_tilde"}
 
 REQUIRED_FIELDS = ["id", "module_class", "canonical_path", "contract_version"]
+VALID_FRONTMATTER_FIELDS = {
+    "id",
+    "module_class",
+    "canonical_path",
+    "contract_version",
+    "load_when",
+    "routing_effects",
+    "emits",
+    "blocks",
+    "companions",
+    "output_shapes",
+    "p7_stops_governed",
+    "layer_constraint",
+    "catalogue_registered",
+    "verification_status",
+    "direct_read_verified",
+    "failure_conditions_present",
+    "ir_consequences_present",
+    "minimal_pairs_present",
+    "hold_release_rules_present",
+    "compiled_runtime_eligible",
+    "operator_pack_eligible",
+}
 SKILL_DESCRIPTION_LIMIT = 1024
 SKILL_METADATA_FILES = ("atomics/skill/SKILL.md", "skill/SKILL.md")
 
@@ -135,6 +158,20 @@ def check_deprecated_fields(data: dict) -> list[str]:
         "Deprecated transitional field(s) present in packaged front matter: "
         + ", ".join(found)
     ]
+
+
+def check_unknown_fields(data: dict) -> list[str]:
+    found = sorted(set(data) - VALID_FRONTMATTER_FIELDS)
+    if not found:
+        return []
+    return ["Unknown front matter field(s): " + ", ".join(found)]
+
+
+def check_catalogue_registration(data: dict) -> list[str]:
+    module_class = data.get("module_class")
+    if module_class in {"governance", "rubric"} and data.get("catalogue_registered") is not False:
+        return [f"{module_class} files must set catalogue_registered: false"]
+    return []
 
 
 def check_verification_fields(data: dict) -> list[str]:
@@ -276,6 +313,8 @@ def scan_dir(root: str, verbose: bool, expected_contract_version: str | None) ->
                 all_errors += check_enum(data, "output_shapes", VALID_OUTPUT_SHAPES)
                 all_errors += check_enum(data, "layer_constraint", VALID_LAYER_CONSTRAINT)
                 all_errors += check_enum(data, "verification_status", VALID_VERIFICATION_STATUS)
+                all_errors += check_unknown_fields(data)
+                all_errors += check_catalogue_registration(data)
                 verification_errors = check_verification_fields(data)
                 files_with_verification += 1 if any(
                     field in data for field in ["verification_status", *VERIFICATION_FLAGS]

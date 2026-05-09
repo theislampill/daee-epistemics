@@ -361,7 +361,7 @@ Migration should proceed one module class per session, smallest class first, to 
 | 1 | Pilot (done) | M9, P7, routing-precedence, do-attribute-precision | 4 representative files |
 | 2 | `technique` | V1–V12, heuristics | 13 files; compact; highest reuse |
 | 3 | `tactic` | M1–M9+variants, E1–E4, F1–F3, R1–R3, + unlisted | ~25 files |
-| 4 | `procedure` | P1–P6 | 6 files (P7 done in pilot) |
+| 4 | `procedure` | P1–P6 | 6 files (P7 already covered) |
 | 5 | `diagnostic` | causal-series-taxonomy, definition-discipline, perfection-criterion-usurpation, proof-method-audit, etc. | ~10 files |
 | 6 | `case-library` | do-core, do-second-loop, do-christian-extensions, ns-* profiles, philosophical-usurpation, etc. | ~20+ files |
 | 7 | `governance` | framework-pipeline, recursive-state-transitions, SKILL.md, diagnostic-ir, output-release, diagnostic-render-contract, etc. | After all dispatched classes done |

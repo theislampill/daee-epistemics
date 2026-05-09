@@ -96,7 +96,7 @@ REQUIRED_TOKENS = [
     "missing Core Formulation",
     "Closing Formulation is required once",
     "essay-only Layer B",
-    "at most three major operative submoves",
+    "more-than-three major operative submoves trigger",
     "no invisible TTP execution",
     "source citation substituted for TTP invocation",
     "scholar/source/citation parade",
@@ -289,19 +289,19 @@ REQUIRED_TOKENS = [
     "compiled-module-map.json",
     # Deprecated legacy recursive-audit prompt
     "former external recursive-audit prompt is deprecated",
-    # rc12: Execution mandate ? minimum visible transition spine
+    # execution mandate: minimum visible transition spine
     "Default mode suppresses raw visible IR but does not suppress recursive execution",
     "If no transition marker appears",
     "essay organized by topic is not governed traversal",
     "minimum visible transition spine",
     "no further same-input eligible burden remains",
-    # rc12 follow-up: input-anchored recursion discipline
+    # input-anchored recursion discipline
     "input-anchored",
     "component-tour cosplay",
     "topic transition",
     "enumerate remaining",
     "one bounded live burden per burden-cycle",
-    # rc13: compact Layer A / Layer B / state re-read pass shape
+    # compact Layer A / Layer B / state re-read pass shape
     "single-pass layer a/b cosplay",
     "governing burden",
     "remaining input-anchored burdens",
@@ -331,7 +331,7 @@ REQUIRED_TOKENS = [
     "Layer A / Layer B release checks",
     "Layer A/B smuggling",
     "converge through controlled state transitions",
-    # rc14: source-status & noetic-frame non-equivalence in render
+    # source-status and noetic-frame non-equivalence in render
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
     "Rule S-9",
     "Rule P-8",
@@ -358,12 +358,12 @@ REQUIRED_TOKENS = [
     "still live",
     "next licensed live burden",
     "burden landed",
-    # rc14: positive default-mode worked example anchors
+    # positive default-mode worked-example anchors
     "Default-Mode Worked Example",
     "composition / dependence pressure",
     "TTP/operator trace",
     "source-status discipline",
-    # rc15: cosmetic-IR / higher-order-theater / held-amnesia / operative-warrant
+    # cosmetic IR, higher-order warrant, held-material, and operative-warrant guards
     "Decisive missing differentiator",
     "cosmetic-IR-formation guard",
     "higher-order vocabulary in the IR must be matched by a higher-order operator",
@@ -375,7 +375,7 @@ REQUIRED_TOKENS = [
     "specific non-premise clause",
     "closed operative verbs",
     "Released: <item>",
-    # rc16: positive submove-boundary worked-example anchors
+    # positive submove-boundary worked-example anchors
     "Submove Boundary",
     "imported moral tribunal judging divine action",
     "burden-complete",
@@ -408,6 +408,8 @@ FORBIDDEN_TOKENS = [
     "compact governance sentence (e.g., \"Recursion decision: RECURSE",
     "may appear as a compact governance line at the close",
     "compact final-governance sentence naming the recursion decision is permitted",
+    "at most three major operative submoves",
+    "fourth-submove release is blocked",
     "must still name the recursion decision and next eligible pass",
     "Recursion decision: RECURSE may appear as a compact governance line at the close",
     "FPD/M1 landed",
@@ -446,10 +448,10 @@ FIXTURE_REQUIRED_TOKENS = [
     # rc12: transition spine behavior shape
     "minimum visible transition spine",
     "no further same-input eligible burden remains",
-    # rc12 follow-up: input-anchored recursion discipline
+    # input-anchored recursion discipline
     "component-tour cosplay",
     "input-anchored",
-    # rc13: compact Layer A / Layer B / state re-read pass shape
+    # compact Layer A / Layer B / state re-read pass shape
     "single-pass layer a/b cosplay",
     "governing burden",
     "remaining input-anchored burdens",
@@ -469,7 +471,7 @@ FIXTURE_REQUIRED_TOKENS = [
     "Layer A / Layer B release checks",
     "deterministic argument bank",
     "Layer A/B smuggling",
-    # rc14: source-status & grounded re-read fixture tokens
+    # source-status and grounded re-read fixture tokens
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
     "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
     "N_Ashʿarī[*]",
@@ -537,11 +539,11 @@ DISPATCH_GATE_REQUIRED = [
     # rc12: transition spine in dispatch gate
     "minimum visible transition spine",
     "If no transition marker appears",
-    # rc12 follow-up: input-anchored recursion discipline
+    # input-anchored recursion discipline
     "input-anchored",
     "component-tour cosplay",
     "topic transition",
-    # rc13: compact Layer A / Layer B / state re-read pass shape
+    # compact Layer A / Layer B / state re-read pass shape
     "single-pass layer a/b cosplay",
     "remaining input-anchored burdens",
     "route-chain collapse",
@@ -553,7 +555,7 @@ DISPATCH_GATE_REQUIRED = [
     "TTP exit criteria",
     "Depth And Stop Guards",
     "Layer A / Layer B release checks",
-    # rc14: source-status & noetic-frame non-equivalence in dispatch gate
+    # source-status and noetic-frame non-equivalence in dispatch gate
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
     "operative noetic frame",
     "Rule S-9",
@@ -818,7 +820,7 @@ The answer dumps arguments.
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
 """,
-        "excessive submoves released",
+        "more-than-three submoves without cohesion gate",
     ),
     "missing_ttp_trace": (
         """### Layer A - Compact DSL/IR header
@@ -1555,6 +1557,53 @@ The restored order is that the tribunal must be judged before it judges.
 ### Closing Formulation
 What cleared is the imported criterion's authority; what remains held is downstream doctrine; the governed takeaway is bounded restoration rather than argument dump.
 """,
+    "governed_more_than_three_submoves": """### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: compound moral protest
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported tribunal
+- current bounded operator: imported tribunal test
+- held: broad doctrine; interior motive certification
+- source-status/noetic-frame: operative criterion frame selected
+- gate/release decision: release one burden with distinct subordinate submoves
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports a moral criterion as tribunal.
+
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement through several active supports; the restoration vector is to keep each support distinct while landing the governing imported-criterion burden.
+
+##### Bounded Response / operative submoves
+Operator: tribunal-detection.
+Operative submove target: tribunal. Operation: test whether the criterion has justified authority over revelation. Result: the tribunal cannot remain unexamined.
+Operative submove target: hiddenness. Operation: test whether guidance is being redefined as coercive proof. Result: hiddenness cannot by itself judge worship-worthiness.
+Operative submove target: accountability. Operation: test whether accountability is being treated as cruelty before justice is defined. Result: the objection has not established its standard.
+Operative submove target: source-worldview. Operation: test whether the public worldview supplies a binding moral criterion. Result: the source-worldview consequence trace remains live for the state re-read.
+Submove saturation cohesion audit: the fourth submove shares the same target-family, source/noetic frame, claim cluster, and restoration vector, so it remains distinct inside this burden instead of being consolidated or falsely capped.
+
+##### TTP/operator trace
+Trace: tribunal-detection + FPD + M1 + M8 + diagnostic-render-contract.
+
+### State/noetic re-read
+- What changed: the imported criterion no longer governs as the judge of the answer.
+- Cleared: imported tribunal as governing burden
+- Remaining input-anchored burdens: source-worldview consequence trace remains live if not landed in this pass.
+- Held routes rechecked: downstream doctrine and interior motive certification remain held.
+- Release status: continue or mark partial if the remaining burden cannot be landed.
+
+### Restorative Response
+The restored order is that the tribunal must be judged before it judges, and every active support must be named without turning into an argument dump.
+
+### Closing Formulation
+The governed result is not a three-submove cap; it is enough distinct operation for the live burden to land.
+""",
 }
 
 META_NARRATION_OPENING_RE = re.compile(
@@ -1577,8 +1626,12 @@ TRACE_RE = re.compile(
 MAJOR_SUBMOVE_RE = re.compile(
     r"(?im)^\s*(?:Operative submove target:|(?:Move|Step)\s+\d+\s*:|#{3,6}\s*(?:Move|Submove)\s+\d+\b)"
 )
+SUBMOVE_COHESION_GATE_RE = re.compile(
+    r"(?i)\b(?:submove saturation(?: cohesion audit| gate)?|cohesion audit|"
+    r"cohesion gate|more-than-three)\b"
+)
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamÄnuÊ¿|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tamÃƒâ€žÃ‚ÂnuÃƒÅ Ã‚Â¿|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -1667,10 +1720,10 @@ LITERAL_DEFAULT_GOVERNANCE_RE = re.compile(
     r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
     r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿|multiple independent lords?)\b")
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿)\b"
+    r"\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",
@@ -1738,8 +1791,8 @@ def render_shape_violations(text: str) -> list[str]:
         violations.append("missing state/noetic re-read")
     if "layer a" not in lower and "restorative response" not in lower and len(text) > 80:
         violations.append("essay-only output")
-    if len(MAJOR_SUBMOVE_RE.findall(text)) > 3:
-        violations.append("excessive submoves released")
+    if len(MAJOR_SUBMOVE_RE.findall(text)) > 3 and not SUBMOVE_COHESION_GATE_RE.search(text):
+        violations.append("more-than-three submoves without cohesion gate")
     if RUBRIC_SCHEMATIC_RE.search(layer_b_text):
         violations.append("rubric-schematic output")
     if NON_TRIVIAL_OPERATOR_RE.search(text) and not TRACE_RE.search(text):
@@ -1858,6 +1911,50 @@ def check_current_doc_staleness(root: Path, errors: list) -> None:
                 )
 
 
+SUBMOVE_BOUNDARY_EXAMPLE_RE = re.compile(
+    r"(?ims)^## Default-Mode Worked Example\s+.*?Submove Boundary\b(?P<body>.*?)(?=^---\s*$|^##\s|\Z)"
+)
+OLD_HARD_SMOKE_EXAMPLE_RE = re.compile(
+    r"(?i)\bThe Satanic Temple'?s tenets are more humane\b"
+)
+
+
+def check_submove_boundary_worked_example(corpus: str, errors: list) -> None:
+    match = SUBMOVE_BOUNDARY_EXAMPLE_RE.search(corpus)
+    if not match:
+        errors.append("missing submove-boundary worked example")
+        return
+
+    body = match.group("body")
+    normalized_body = " ".join(body.split())
+    layer_a_count = len(re.findall(r"(?im)^#{3,5}\s*Layer A\b", body))
+    if layer_a_count < 2:
+        errors.append("submove-boundary worked example does not show per-burden Layer A")
+    if OLD_HARD_SMOKE_EXAMPLE_RE.search(body):
+        errors.append("submove-boundary worked example uses named hard-smoke wording")
+    if "source-worldview consequence trace remains live" not in body:
+        errors.append(
+            "submove-boundary worked example does not keep source-worldview burden live"
+        )
+    if "Next bounded pass: source-worldview consequence trace" not in body:
+        errors.append(
+            "submove-boundary worked example does not license the next bounded pass"
+        )
+    burden_2_idx = body.find("### Burden-Cycle 2")
+    premature_close_idx = body.find("Remaining input-anchored burdens: none")
+    if premature_close_idx != -1 and (burden_2_idx == -1 or premature_close_idx < burden_2_idx):
+        errors.append(
+            "submove-boundary worked example closes before the second burden-cycle"
+        )
+    if (
+        "source-worldview frame that supplies the criterion may therefore become a later burden"
+        not in normalized_body
+    ):
+        errors.append(
+            "submove-boundary worked example lacks source-worldview load-bearing rule"
+        )
+
+
 def main() -> int:
     root = repo_root()
     errors = []
@@ -1867,6 +1964,7 @@ def main() -> int:
 
     corpus = read_runtime(root, errors)
     lower = corpus.lower()
+    check_submove_boundary_worked_example(corpus, errors)
 
     for token in REQUIRED_TOKENS:
         if token.lower() not in lower:

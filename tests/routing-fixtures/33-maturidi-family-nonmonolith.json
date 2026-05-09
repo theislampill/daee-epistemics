@@ -23,8 +23,10 @@
       "N_Māturīdī[*]",
       "family label != operative N",
       "live predicate/warrant/criterion/authority-order",
-      "intra-school flattening",
       "source-status/noetic-frame"
+    ],
+    "prohibition_support_present": [
+      "intra-school flattening"
     ],
     "forbidden_governance": [
       "intra-school flattening"

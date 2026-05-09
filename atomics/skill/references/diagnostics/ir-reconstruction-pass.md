@@ -137,6 +137,24 @@ driver/mode.
 A stability failure is a routing defect even when each individual run has
 `reconstruction_fidelity: pass`.
 
+## Reconstruction Faithfulness Through Render And Replay
+
+The reconstruction bottleneck continues after initial IR formation:
+
+```text
+surface discourse
+-> DSL/IR
+-> reconstructed live noetic burden / selected operator / held-deferred alternatives / expected Land(B) / governance verdict
+-> routed burden-cycle execution
+```
+
+Plausible typed commentary is not faithful compression unless the runtime can reconstruct the
+burden-local control state it came from. Route labels, owner names, checker markers, or state
+tokens appearing somewhere in a trace do not prove reconstruction faithfulness. The burden step
+must remain locally replayable as `B.s -> owner-floor Target/Operation/Result -> Land(B) ->
+R(H,Delta) -> next state decision`. A response that separates labels into global blobs has lost
+the attachment needed to govern the next burden, even when the vocabulary looks correct.
+
 ## Render Discipline
 
 Default public output should not print the reconstruction ledger. The visible answer may show the

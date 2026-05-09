@@ -48,6 +48,10 @@ class SourceDoc:
 
     @property
     def canonical_path(self) -> str:
+        return str(self.frontmatter.get("canonical_path", ""))
+
+    @property
+    def source_rel_path(self) -> str:
         return self.rel_path
 
 
@@ -104,12 +108,33 @@ def parse_simple_yaml(raw: str) -> dict[str, Any]:
 
     This intentionally avoids a PyYAML dependency so the phase-2 tools run in
     stripped-down Python environments. It supports top-level scalars and
-    top-level lists of scalar strings, which is enough for identity and bundle
-    checks.
+    top-level lists of scalar strings, plus folded/literal block scalars used
+    by skill metadata descriptions.
     """
     data: dict[str, Any] = {}
     current_key: str | None = None
+    block_key: str | None = None
+    block_style = ""
+    block_lines: list[str] = []
+
+    def flush_block() -> None:
+        nonlocal block_key, block_style, block_lines
+        if block_key is None:
+            return
+        if block_style.startswith(">"):
+            data[block_key] = " ".join(line.strip() for line in block_lines if line.strip())
+        else:
+            data[block_key] = "\n".join(line.rstrip() for line in block_lines)
+        block_key = None
+        block_style = ""
+        block_lines = []
+
     for raw_line in raw.splitlines():
+        if block_key is not None:
+            if not raw_line.strip() or raw_line[:1].isspace():
+                block_lines.append(raw_line.strip())
+                continue
+            flush_block()
         if not raw_line.strip() or raw_line.lstrip().startswith("#"):
             continue
         line = raw_line.rstrip()
@@ -117,20 +142,25 @@ def parse_simple_yaml(raw: str) -> dict[str, Any]:
         if stripped.startswith("- ") and current_key:
             data.setdefault(current_key, [])
             if not isinstance(data[current_key], list):
-                data[current_key] = []
+                raise ValueError(f"YAML key {current_key!r} mixes scalar and list values")
             data[current_key].append(_parse_scalar(stripped[2:].strip()))
             continue
         if line[:1].isspace():
-            continue
+            raise ValueError(f"unsupported indented YAML shape: {line!r}")
         if ":" not in line:
-            continue
+            raise ValueError(f"unsupported YAML line: {line!r}")
         key, value = line.split(":", 1)
         current_key = key.strip()
         value = value.strip()
-        if value == "":
+        if value in {">", ">-", "|", "|-"}:
+            block_key = current_key
+            block_style = value
+            block_lines = []
+        elif value == "":
             data[current_key] = []
         else:
             data[current_key] = _parse_scalar(value)
+    flush_block()
     return data
 
 
@@ -348,14 +378,14 @@ RUNTIME_METADATA_COPIES = [
     "skill/tests/expected/mushabara-fasida.json",
     "skill/tests/expected/stability-repetition.json",
     "skill/tests/expected/trinitarian-claim-cluster.json",
-    "skill/tests/expected/tst-richard-lael-lillard.json",
+    "skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json",
     "skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md",
     "skill/tests/fixtures/grief-coded-objection/input.md",
     "skill/tests/fixtures/imported-tribunal-protest/input.md",
     "skill/tests/fixtures/mushabara-fasida/input.md",
     "skill/tests/fixtures/stability-repetition/input.md",
     "skill/tests/fixtures/trinitarian-claim-cluster/input.md",
-    "skill/tests/fixtures/tst-richard-lael-lillard/input.md",
+    "skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md",
 ]
 
 
@@ -370,12 +400,13 @@ def out_dir(root: Path) -> Path:
     return root / OUTPUT_ROOT_REL
 
 
-def _rmtree_resilient(path: Path) -> None:
+def _rmtree_resilient(path: Path) -> list[Path]:
     """Remove a directory tree, tolerating filesystems that reject unlink (e.g. virtiofs).
 
     On virtiofs mounts, os.unlink raises PermissionError even for files the process owns.
     We detect this and fall back to truncating files in place so the build can overwrite them.
-    Directories that cannot be removed are left; the build uses exist_ok=True when creating them.
+    Any remaining files are returned so release/check builds fail instead of silently
+    carrying stale output.
     """
     def _onerror(func, fpath, _excinfo):  # noqa: ANN001
         pass  # ignore errors in rmtree so we can fall through to truncation pass
@@ -393,6 +424,9 @@ def _rmtree_resilient(path: Path) -> None:
                     child.write_bytes(b"")
                 except (PermissionError, OSError):
                     pass
+    if not path.exists():
+        return []
+    return sorted(child for child in path.rglob("*") if child.is_file())
 
 
 def clean_compiled_dir(root: Path) -> Path:
@@ -404,7 +438,10 @@ def clean_compiled_dir(root: Path) -> Path:
         marker = target / "SKILL.md"
         if marker.is_file() and "GENERATED FILE." not in marker.read_text(encoding="utf-8", errors="ignore"):
             raise RuntimeError(f"refusing to clean non-generated runtime root: {target}")
-        _rmtree_resilient(target)
+        leftovers = _rmtree_resilient(target)
+        if leftovers:
+            rels = ", ".join(str(path.relative_to(target)).replace("\\", "/") for path in leftovers[:20])
+            raise RuntimeError(f"failed to clean generated runtime root; stale file(s) remain: {rels}")
     target.mkdir(parents=True, exist_ok=True)
     return target
 

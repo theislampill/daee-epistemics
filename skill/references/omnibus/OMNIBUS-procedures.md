@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/procedures/INDEX.md -->
 <!-- MODULE_ID: procedures-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/INDEX.md -->
 <!-- SOURCE_SHA256: e054428394d72b241170f0e79f85ebb7a76a818af053d5530e81faa80b52b917 -->
 
 ---
@@ -79,8 +79,8 @@ Procedures do not suspend pattern-first routing, source-status restrictions, bur
 <!-- SOURCE: atomics/skill/references/procedures/P1-fitrah-restoration.md -->
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: f433275ea98d62666826e5872402ff29922d5df228e70f567f8551f909e76b53 -->
+<!-- CANONICAL_PATH: skill/references/procedures/P1-fitrah-restoration.md -->
+<!-- SOURCE_SHA256: 9bac222634cd74b24b60da94a8abc2c9c04d79028076f7feae12fc2ce9728e4b -->
 
 ---
 id: P1-fitrah-restoration
@@ -170,6 +170,12 @@ default public output must not label the person as dead, diseased, corrupt, or h
 | "I know but cannot accept" | will/aim | F2/P4/P1 depending signal | argument dump | admission of barrier or willingness to examine |
 | absorbs every answer as new objection | argument-absorbent | stop/hold/question-only | further proofs | stable differentiator appears |
 | non-specialist confusion | clarity need | define/split/example | technical genealogy | user shows readiness for technical layer |
+
+Identity-performance holds proof-and-debate only when the posture itself is the governing
+blocker. If a publicly anchored worldview or identity frame supplies the moral criterion,
+authority-order, or restoration vector, do not treat source-status caution as a reason to drop
+the frame. Hold interior motive and culpability, but route the criterion/worldview analysis and
+feed the result into gentle practitioner instruction.
 
 ### Readiness-state guard
 
@@ -325,7 +331,7 @@ active and what condition releases the next move, P1 is not yet lawfully deploye
 <!-- SOURCE: atomics/skill/references/procedures/P2-objection-mapping.md -->
 <!-- MODULE_ID: P2-objection-mapping -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P2-objection-mapping.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/P2-objection-mapping.md -->
 <!-- SOURCE_SHA256: 51212724654af5658a0f4272322e02bf11f0e5a89842c3df226082fb3cf06765 -->
 
 ---
@@ -507,7 +513,7 @@ and which material is held, the procedure has collapsed into answer-stacking.
 <!-- SOURCE: atomics/skill/references/procedures/P3-reason-revelation-tension.md -->
 <!-- MODULE_ID: P3-reason-revelation-tension -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P3-reason-revelation-tension.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/P3-reason-revelation-tension.md -->
 <!-- SOURCE_SHA256: 6d80e5b7f3fe1908b081b53e1c96fadc475f5504ad195cd77edeb775ff156acb -->
 
 ---
@@ -729,7 +735,7 @@ Additional v0.3.2.0 anti-patterns:
 <!-- SOURCE: atomics/skill/references/procedures/P4-maieutic.md -->
 <!-- MODULE_ID: P4-maieutic -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P4-maieutic.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/P4-maieutic.md -->
 <!-- SOURCE_SHA256: 01727b28d6798dc420e2a904119661f8abc2fbc3ddcbd9403d56d0cfa3c4f7dd -->
 
 ---
@@ -887,7 +893,7 @@ sets up the next answer.
 <!-- SOURCE: atomics/skill/references/procedures/P5-already-believing.md -->
 <!-- MODULE_ID: P5-already-believing -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P5-already-believing.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/P5-already-believing.md -->
 <!-- SOURCE_SHA256: bbccc2a701ae0e15707d19752e64cd610f0fda19ee2617d50892e5e7e25acaf6 -->
 
 ---
@@ -1053,8 +1059,8 @@ pressure, lawful next owner, then practice and steadiness.
 <!-- SOURCE: atomics/skill/references/procedures/P6-universal-aqidah-principle.md -->
 <!-- MODULE_ID: P6-universal-aqidah-principle -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P6-universal-aqidah-principle.md -->
-<!-- SOURCE_SHA256: 6276aaf3d8ea9cc123e2cad7a1080f25bb5092e3ba006147915a78eca3695c65 -->
+<!-- CANONICAL_PATH: skill/references/procedures/P6-universal-aqidah-principle.md -->
+<!-- SOURCE_SHA256: 5bdc9c0497b0bb5011084d2a8eb6463bcde7717fa7f2a3c79f80e4420406a7b6 -->
 
 ---
 id: P6-universal-aqidah-principle
@@ -1210,6 +1216,36 @@ These slogans may instantiate imported criterion-smuggling. They may function as
 deflection rather than inquiry. They may also carry concealment, especially `irad`, when
 deployed pre-inquiry or as register-control to stop the matter from pressing. In such cases,
 internal diagnosis remains full while external deployment remains bounded.
+
+### P6 Category Guards
+
+P6 must not flatten `aqidah`, `din/religion`, and pseudo-neutrality into one loose label:
+
+- `aqidah` is operative worldview-commitment: the binding criterion, warrant-order, value-order,
+  or source of practical dependence that shapes judgment.
+- `din/religion` may be a legal, social, inherited, or public label. It is not automatically
+  the live P6 node unless it is carrying criterion, authority, or worship-function pressure.
+- pseudo-neutrality is a noetic posture: it denies carrying a worldview while using one as the
+  standard of judgment.
+
+**Release P6** when the input itself anchors a binding criterion, pseudo-neutral tribunal,
+worldview-denial slogan, or authority-order inversion. **Hold P6** when the only signal is an
+incidental demographic/source label with no operative criterion. **Reject public deployment**
+of P6 when it would become ad hominem source-status commentary rather than criterion analysis.
+
+**Minimal pairs:**
+
+- "I am not religious; I only accept empirical proof" releases P6 because empirical proof is
+  functioning as an advance tribunal.
+- "My colleague is not religious" does not release P6 by itself; no criterion is active.
+- "Secular ethics is more humane than divine command" releases P6 with FPD/M1/M8 because a
+  source-worldview criterion is judging revelation.
+- "A secular historian asked for the manuscript evidence" remains source/request handling unless
+  the source-worldview frame becomes the criterion.
+
+**IR-visible consequences:** when released, record the live node as `aqidah/worldview-commitment`,
+`pseudo-neutrality`, or `criterion-bearing source-worldview`. When held, record the withheld
+state as `incidental source-status only` and name the missing criterion or tribunal signal.
 
 The correct first external move is often a single honest diagnostic question rather than a
 full argument dump. Canonical bounded questions for this family include:

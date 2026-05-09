@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/case-library/do-core.md -->
 <!-- MODULE_ID: do-core -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/do-core.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/do-core.md -->
 <!-- SOURCE_SHA256: 720a432175ec81034cabaa2b7c644aa5997e9aa2274d51c21c184e3fb37f4b75 -->
 
 ---
@@ -593,7 +593,7 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- SOURCE: atomics/skill/references/case-library/do-second-loop.md -->
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/do-second-loop.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/do-second-loop.md -->
 <!-- SOURCE_SHA256: d95302cf97d56e6b024585c039cda2639552bd2fa5f11544eb662416362d5573 -->
 
 ---
@@ -1184,7 +1184,7 @@ The operative response does not require claiming that every classical juristic p
 <!-- SOURCE: atomics/skill/references/case-library/do-christian-extensions.md -->
 <!-- MODULE_ID: do-christian-extensions -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/do-christian-extensions.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/do-christian-extensions.md -->
 <!-- SOURCE_SHA256: e56a83443cfcc17f1532f8a35c22e4f8dfeafda4f7e16f7ff4d4ff1074193d12 -->
 
 ---
@@ -1624,7 +1624,7 @@ This is the operationally significant sub-question. The criterion for canonical 
 <!-- SOURCE: atomics/skill/references/case-library/do-attribute-precision.md -->
 <!-- MODULE_ID: do-attribute-precision -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/do-attribute-precision.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/do-attribute-precision.md -->
 <!-- SOURCE_SHA256: e4c9dbb1f7690ca8b8b085d69edfd6b2c4c50f080235a6664dd0f4af03aefed2 -->
 
 ---
@@ -1798,7 +1798,7 @@ to interlocutors.
 <!-- SOURCE: atomics/skill/references/case-library/philosophical-usurpation.md -->
 <!-- MODULE_ID: philosophical-usurpation -->
 <!-- MODULE_CLASS: case-library -->
-<!-- CANONICAL_PATH: atomics/skill/references/case-library/philosophical-usurpation.md -->
+<!-- CANONICAL_PATH: skill/references/case-library/philosophical-usurpation.md -->
 <!-- SOURCE_SHA256: c228c3a8d55669090d08ce11ec3d64715b521d43939c13d8183132d584dc5145 -->
 
 ---
@@ -1954,7 +1954,7 @@ approves each item.
 <!-- SOURCE: atomics/skill/references/sound-reason-epistemology.md -->
 <!-- MODULE_ID: sound-reason-epistemology -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/sound-reason-epistemology.md -->
+<!-- CANONICAL_PATH: skill/references/sound-reason-epistemology.md -->
 <!-- SOURCE_SHA256: 660f49b6195710f3e828a93dfd26a5e1e02ef6a30bf8e94796f8c6f9c2ba63bd -->
 
 ---
@@ -2682,7 +2682,7 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 <!-- SOURCE: atomics/skill/references/prophecy-wahy-supremacy.md -->
 <!-- MODULE_ID: prophecy-wahy-supremacy -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/prophecy-wahy-supremacy.md -->
+<!-- CANONICAL_PATH: skill/references/prophecy-wahy-supremacy.md -->
 <!-- SOURCE_SHA256: 681e1c5ab5356cd197732182978311f1196f2cea4a90897226955cdb4891fd9d -->
 
 ---

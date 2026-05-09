@@ -215,12 +215,27 @@
       "enum": ["not-assessed", "blocked", "eligible-on-refresh"]
     },
     "p7_stops_active": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": ["Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5", "none"]
-      },
-      "uniqueItems": true
+      "oneOf": [
+        {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "none"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 1
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["Stop-1", "Stop-2", "Stop-3", "Stop-4", "Stop-5"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      ]
     },
     "prohibited_moves": {
       "type": "array",

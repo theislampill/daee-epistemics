@@ -835,7 +835,7 @@ def check_compiled_runtime_pipeline_surface(framework_text: str, errors: list[st
         r"<!-- SOURCE:\s*atomics/skill/references/diagnostics/framework-pipeline\.md\s*-->\s*\n"
         r"<!-- MODULE_ID:\s*framework-pipeline\s*-->\s*\n"
         r"<!-- MODULE_CLASS:\s*governance\s*-->\s*\n"
-        r"<!-- CANONICAL_PATH:\s*atomics/skill/references/diagnostics/framework-pipeline\.md\s*-->\s*\n"
+        r"<!-- CANONICAL_PATH:\s*skill/references/diagnostics/framework-pipeline\.md\s*-->\s*\n"
         r"<!-- SOURCE_SHA256:\s*(?P<sha>[0-9a-fA-F]+)\s*-->\s*\n\n"
         r"(?P<body>.*?)\n\n<!-- END_SOURCE:\s*framework-pipeline\s*-->",
         flags=re.DOTALL,

@@ -8,6 +8,8 @@ Run from the repository root:
 python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_compiled_runtime_freshness.py
+python tools/check_level3_data_shapes.py --include-generated
+python tools/check_package_shape.py
 python tools/check_compiled_module_boundaries.py
 python tools/check_stub_integrity.py
 python tools/check_consolidation_call_budget.py
@@ -33,7 +35,9 @@ Operating rules:
 - Run `tools/build_compiled_runtime.py` to regenerate `skill/`.
 - Package/deploy from `skill/`.
 - Package the contents of `skill/`, not the `skill/` directory itself.
-- The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
+- The archive root must contain `SKILL.md`, `README.md`, `references/`, `data/`, `scripts/`,
+  `tests/`, `compiled-module-map.json`, and `build-manifest.json`.
+- `tools/check_package_shape.py` rejects unexpected generated-package files before packaging.
 
 Runtime path resolution:
 
@@ -55,6 +59,19 @@ Render-mode governance is checked separately by `tools/check_render_modes.py`. I
 
 Current-canon metacompliance is checked separately by `tools/check_metacompliance_current_canon.py`. It keeps root `SKILL.md` in control-plane shape, verifies that generated default output starts from compact DSL/IR plus bounded governed Layer B and state/noetic re-read, checks source-status/noetic-frame and held-release owner anchors, and rejects stale current guidance that revives public audit or prose-only default framing.
 
+Level 3 data shape is checked by `tools/check_level3_data_shapes.py`. It validates the executable
+module catalogue, trigger matrix, routing precedence, and ontology-license files in atomics and,
+with `--include-generated`, in the generated runtime.
+
+Harness/replay guidance: keep daee's stable runtime instructions in the prefix and put user
+input, current state envelopes, and checker/tool results in a variable suffix. Route plans,
+validation results, execution checks, and `R(H,Delta)` state decisions should re-enter the next
+burden as structured state, not as untyped prose. Custom Codex/Hermes endpoints or model
+catalogue metadata can affect base instructions, history formatting, tool registry, reasoning
+settings, verbosity, context accounting, tool-output truncation, parallel tool calls, and final
+response payload shape, so parity claims must verify burden-local state attachment rather than
+only checking that labels or owner names appear somewhere.
+
 Diagnostic IR instance integrity is checked by `tools/check_ir_instance_integrity.py`; the
 `tools/check_diagnostic_ir_catalogue_integrity.py` command is a compatibility entrypoint to the
 same checker. This is schema-adjacent/custom validation rather than a `jsonschema` dependency:
@@ -71,10 +88,11 @@ filename/SHA256 provenance against `docs/release-artifacts.md` and rejects unmar
 drift. Historical regression smokes must be explicitly marked as such.
 `tools/check_smoke_artifacts.py --require-current-release-smokes` is a stricter release-promotion
 check: it requires at least one hard and one bounded current-release PASS smoke with matching
-RC filename/SHA and `ir.json`. Do not wire that flag into CI unless a current-release smoke suite
+release filename/SHA and `ir.json`. Do not wire that flag into CI unless a current-release smoke suite
 exists and the command passes.
 
-Encoding hygiene is checked by `tools/check_encoding_hygiene.py`. It scans current docs and
-`smokes/runtime-grounding-v5/` for common mojibake and visible BOM residue.
+Encoding hygiene is checked by `tools/check_encoding_hygiene.py`. It scans release-facing docs,
+tooling, atomics source, generated runtime, tests, and `smokes/runtime-grounding-v5/` for common
+mojibake and visible BOM residue.
 
 The checkers verify generated freshness, section boundary metadata, original module ID preservation, source/YAML/catalogue integrity, modeled file-call budgets, runtime path resolution, and routing-parity fixtures.

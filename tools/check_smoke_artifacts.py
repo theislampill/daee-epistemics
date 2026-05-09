@@ -333,6 +333,9 @@ VALID_HARD_SAMPLE_OUTPUT = (
 )
 
 
+# Negative checker fixtures intentionally contain bad sample text, including
+# filler markers, stale package names, and contamination terms that valid smoke
+# artifacts must reject.
 BAD_SAMPLES = {
     "non_tst_fixture_with_tst_contamination": {
         "fixture": "03-source-prestige-citation-bait",
@@ -1826,6 +1829,8 @@ def write_artifact(
         encoding="utf-8",
     )
     if with_ir:
+        # Intentionally minimal bad fixture: this checks IR presence handling,
+        # not full IR schema validity.
         (directory / "ir.json").write_text('{"case_family":"placeholder"}\n', encoding="utf-8")
 
 

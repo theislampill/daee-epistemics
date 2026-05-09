@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "level3-pilot-fixtures-plus-hard-regression",
-  "note": "Executable pilot rules. Routing is deterministic given feature_ids; feature extraction remains bounded by the diagnose.py extractor.",
+  "scope": "level3-covered-scope-fixtures-plus-hard-regression",
+  "note": "Executable covered-scope rules. Routing is deterministic given feature_ids; feature extraction remains bounded by the diagnose.py extractor.",
   "rules": [
     {
       "id": "do-christian-extensions",
@@ -38,7 +38,7 @@
       "requires_any": ["feature.predication_confusion", "feature.attribute_resemblance"],
       "requires_all": [],
       "blocks": [],
-      "yields_to": ["seven-deformations:1-A"],
+      "yields_to": ["mushabara-fasida"],
       "priority": 100,
       "land_requires": ["creaturely modality blocked", "affirmed meaning preserved"],
       "governance_class": "recurses"
@@ -85,10 +85,10 @@
     },
     {
       "id": "V2-reconstituting-reason",
-      "requires_any": ["feature.reason_repair_pressure", "feature.predication_confusion", "feature.moral_tribunal", "feature.attribute_resemblance", "feature.grief_register", "feature.accountability_compression", "feature.coercive_guidance_demand", "feature.source_substantiation_request"],
+      "requires_any": ["feature.reason_repair_pressure", "feature.imported_tribunal_pressure", "feature.predication_confusion", "feature.moral_tribunal", "feature.attribute_resemblance", "feature.grief_register", "feature.accountability_compression", "feature.coercive_guidance_demand", "feature.worldview_refutation_request"],
       "requires_all": [],
       "blocks": [],
-      "yields_to": ["foreign-premise-detection", "M1-self-refutation", "M9-predication-mode", "V8-bila-kayf-anchor", "P7-restoration-stops", "M4-grief-register", "M5-deformation-triage", "seven-deformations:1-A", "V9-necessary-knowledge-priority"],
+      "yields_to": ["foreign-premise-detection", "M1-self-refutation", "M9-predication-mode", "V8-bila-kayf-anchor", "P7-restoration-stops", "M4-grief-register", "M5-deformation-triage", "mushabara-fasida", "V9-necessary-knowledge-priority"],
       "priority": 40,
       "land_requires": ["generic reason repair only after first-live blocker clears"],
       "governance_class": "routes"
@@ -144,14 +144,19 @@
       "governance_class": "holds"
     },
     {
-      "id": "seven-deformations:1-A",
+      "id": "mushabara-fasida",
       "requires_any": ["feature.false_resemblance"],
       "requires_all": [],
       "blocks": ["V2-reconstituting-reason"],
       "yields_to": [],
       "priority": 100,
-      "land_requires": ["false resemblance / mushabara fasida marked as seven-deformations 1-A"],
-      "governance_class": "holds"
+      "land_requires": ["false resemblance / mushabara fasida marked as the live deformation"],
+      "governance_class": "holds",
+      "canonical_deformation_code": "mushabara-fasida",
+      "parent_deformation_code": "i'tiqadat-mawrutha",
+      "source_marker": "seven-deformations:1-A",
+      "marker_kind": "subdeformation-marker",
+      "aliases": ["seven-deformations:1-A"]
     }
   ]
 }

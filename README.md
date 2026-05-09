@@ -277,6 +277,8 @@ Normal source workflow:
 python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_compiled_runtime_freshness.py
+python tools/check_level3_data_shapes.py --include-generated
+python tools/check_package_shape.py
 python tools/check_compiled_module_boundaries.py
 python tools/check_stub_integrity.py
 python tools/check_consolidation_call_budget.py
@@ -437,11 +439,12 @@ The archive root must contain `SKILL.md`, `references/`, `data/`, `scripts/`, `t
 whole repo root, and do not produce a bundle whose top level is `skill/`. Package the contents
 of the generated `skill/` directory, not the directory itself.
 
-For path fidelity, build the archive with tooling that preserves slash-safe archive entry names for
-skill hosts that inspect the bundle structure directly.
+For path fidelity, build the archive with the manifest-backed package script. It validates the
+generated `skill/` tree, rejects unexpected packageable files, and writes slash-safe archive entry
+names for skill hosts that inspect the bundle structure directly.
 
-On Windows, `package.ps1` uses WSL Python to preserve slash-safe archive entries. For a
-v0.3.2.0 local package rebake, the command is:
+On Windows, `package.ps1` calls the Python packager in `tools/package_skill.py`. For a v0.3.2.0
+local package rebake, the command is:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
@@ -458,7 +461,13 @@ out_skill="daee-epistemics.skill"
 
 rm -rf "$tmp" "$tmp_zip" "$out_skill"
 git clone "$repo" "$tmp" &&
-(cd "$tmp" && git archive --format=zip -o "../$tmp_zip" HEAD:skill) &&
+(cd "$tmp" &&
+  python tools/build_framework_pipeline.py &&
+  python tools/build_compiled_runtime.py &&
+  python tools/check_compiled_runtime_freshness.py &&
+  python tools/check_level3_data_shapes.py --include-generated &&
+  python tools/check_package_shape.py &&
+  python tools/package_skill.py "../$tmp_zip") &&
 mv -f "$tmp_zip" "$out_skill" &&
 rm -rf "$tmp"
 ```

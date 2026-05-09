@@ -57,8 +57,12 @@ def validate_sources(root: Path) -> list[str]:
             for field in ("id", "module_class", "canonical_path"):
                 if not doc.frontmatter.get(field):
                     errors.append(f"{rel_path}: missing front matter field {field}")
-            if doc.canonical_path != canonical_source_rel(rel_path):
-                errors.append(f"{rel_path}: canonical_path mismatch: {doc.canonical_path!r}")
+            expected_canonical_path = f"{OUTPUT_ROOT_REL}/{source_rel_from_legacy(rel_path)}"
+            if doc.canonical_path != expected_canonical_path:
+                errors.append(
+                    f"{rel_path}: canonical_path mismatch: "
+                    f"{doc.canonical_path!r} != {expected_canonical_path!r}"
+                )
             if doc.module_id in seen_ids:
                 errors.append(
                     f"module id appears in multiple compiled sources: {doc.module_id} "
@@ -455,7 +459,7 @@ def build() -> int:
                 "module_id": doc.module_id,
                 "module_class": doc.module_class,
                 "canonical_path": doc.canonical_path,
-                "source": doc.rel_path,
+                "source": doc.source_rel_path,
                 "source_sha256": doc.sha256,
                 "bundle_path": bundle_rel,
             }

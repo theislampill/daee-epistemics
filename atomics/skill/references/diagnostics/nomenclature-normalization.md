@@ -142,6 +142,17 @@ where the file encoding already supports it cleanly; release data and schema key
 | `mushābara fāsida` | `mushabara fasida` | False resemblance; code/data use ASCII. |
 | `ʿaqīdah` | `aqidah` | Creed/doctrinal frame. |
 | `kalām` | `kalam` | Speculative Theology; do not use `Rational Theology` as the repo-controlled English label. |
+| `ẓāhir` | `zahir` | Apparent/manifest wording; preserve the semantic gate before any ta'wil discussion. |
+| `taʾwīl` | `tawil`, `ta'wil` | Interpretive turning; do not treat every explanation as licensed ta'wil. |
+| `majāz` | `majaz` | Figurative usage claim; keep it distinct from haqiqah/haqiqi and from modality questions. |
+| `ḥaqīqah` | `haqiqah` | Reality/literal truth claim; code/data use ASCII alias when needed. |
+| `ḥaqīqī` | `haqiqi` | Real/literal qualifier; keep separate from merely emphatic prose. |
+| `hawā` | `hawa` | Desire/inclination pressure; never infer interior motive without input anchor. |
+| `gharaḍ` | `gharad` | Aim/purpose/agenda pressure; keep it input-anchored and governance-bounded. |
+| `ʿāda` | `ada` | Habit/custom; distinguish habit-pressure from proof-status. |
+| `iʿrāḍ` | `irad` | Turning away; ASCII key remains `irad` in code/data. |
+| `juḥūd` | `juhud` | Denial after recognition; requires stronger evidence than ordinary disagreement. |
+| `istikbār` | `istikbar` | Arrogant refusal; do not collapse into generic objection. |
 
 ## Smoke and Campaign Names
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Extract Level 3 pilot features with input-span justification.
+"""Extract Level 3 covered-scope features with input-span justification.
 
 Mechanical features are regex/parser based. The interpretive slots are
-represented as LLM-assisted feature classes, but this local pilot uses bounded
+represented as LLM-assisted feature classes, but this local runtime uses bounded
 span-backed heuristics so CI can run without network or model access. A future
 LLM extractor may replace these heuristics only if it preserves span,
 confidence, and ambiguous-fallback discipline.
@@ -26,10 +26,29 @@ MECHANICAL_PATTERNS: dict[str, list[str]] = {
     "term.secularism": [r"\bsecularism\b", r"\bsecularist\b", r"\bnaturalism\b", r"\batheism\b"],
     "term.shubhah": [r"\bshubhah\b", r"\bdoubt\b", r"\bobjection\b"],
     "term.necessary_knowledge": [r"\bnecessary\s+knowledge\b", r"\bself[- ]evident\b", r"\bbedrock\b"],
+    "term.kalam": [r"\bkalam\b", r"\bspeculative\s+theolog(?:y|ical)\b"],
+    "term.zahir_tawil": [r"\bzahir\b", r"\btawil\b", r"\bta'wil\b"],
+    "term.majaz_haqiqah": [r"\bmajaz\b", r"\bhaqiqah\b", r"\bhaqiqi\b"],
+    "term.reason_roles": [
+        r"\bsound\s+reason\b",
+        r"\breason\s+as\s+(?:tribunal|judge)\b",
+        r"\bspeculative\s+inference\b",
+        r"\bimported\s+criterion\b",
+        r"\bfitri\s+recognition\b",
+        r"\bdaruri\b",
+        r"\bnazari\b",
+    ],
     "feature.quoted_assertion": [r"\"[^\"]+\"", r"'[^']+'"],
     "feature.negation_protest": [r"\bnever\s+worship\b", r"\bwould\s+not\s+worship\b", r"\bcannot\b", r"\bcan't\b"],
     "feature.worldview_refutation_request": [r"\brefute\b", r"\bdismantle\b", r"\brespond\s+to\b"],
     "feature.authority_claim": [r"\bauthority\b", r"\bultimate\s+judge\b", r"\bverdict\b", r"\btribunal\b"],
+    "feature.proof_status_pressure": [
+        r"\bwarrant(?:ed)?\b",
+        r"\bjustif(?:y|ied|ication)\b",
+        r"\bproof[- ]status\b",
+        r"\beviden(?:ce|tial)\s+(?:burden|status|warrant|criterion)\b",
+        r"\brational(?:ly)?\s+(?:warranted|justified|required)\b",
+    ],
     "feature.moral_tribunal": [
         r"\bnever\s+worship\b",
         r"\bmorally\s+(?:unacceptable|wrong|cruel)\b",
@@ -117,7 +136,7 @@ def add_feature(
 
 
 def extract(text: str, skill_root: Path) -> dict[str, Any]:
-    del skill_root  # Reserved for future model-backed extractors.
+    del skill_root  # Keep CLI signature aligned with the other Level 3 commands.
     mechanical: list[dict[str, Any]] = []
     assisted: list[dict[str, Any]] = []
     feature_ids: set[str] = set()
@@ -142,20 +161,48 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
     if span_cache["feature.grief_keyword"]:
         add_feature(mechanical, feature_ids, "span.register", span_cache["feature.grief_keyword"], source="mechanical")
 
-    reason_spans = (
-        span_cache["term.god"]
-        + span_cache["term.secularism"]
-        + span_cache["feature.quoted_assertion"]
-        + span_cache["feature.negation_protest"]
+    criterion_spans = (
+        span_cache["feature.negation_protest"]
         + span_cache["feature.authority_claim"]
+        + span_cache["feature.proof_status_pressure"]
         + span_cache["feature.worldview_refutation_request"]
         + span_cache["feature.accountability_compression"]
         + span_cache["feature.coercive_guidance_demand"]
-        + span_cache["feature.opponent_worldview_frame"]
         + span_cache["feature.mercy_worthiness_protest"]
-        + span_cache["feature.source_substantiation_request"]
+        + span_cache["term.reason_roles"]
     )
-    add_feature(mechanical, feature_ids, "feature.reason_repair_pressure", reason_spans, source="mechanical", confidence=0.9)
+    theological_topic_spans = (
+        span_cache["term.god"]
+        + span_cache["term.secularism"]
+        + span_cache["feature.quoted_assertion"]
+        + span_cache["term.kalam"]
+        + span_cache["term.zahir_tawil"]
+        + span_cache["term.majaz_haqiqah"]
+    )
+    source_request_spans = span_cache["feature.source_substantiation_request"]
+    worldview_context_spans = span_cache["feature.opponent_worldview_frame"]
+    add_feature(mechanical, feature_ids, "feature.reason_repair_pressure", criterion_spans, source="mechanical", confidence=0.9)
+    add_feature(mechanical, feature_ids, "feature.theological_topic_context", theological_topic_spans, source="mechanical", confidence=0.7)
+    add_feature(mechanical, feature_ids, "feature.source_request", source_request_spans, source="mechanical", confidence=0.8)
+    add_feature(mechanical, feature_ids, "feature.worldview_context_marker", worldview_context_spans, source="mechanical", confidence=0.75)
+    if criterion_spans and worldview_context_spans:
+        add_feature(
+            mechanical,
+            feature_ids,
+            "feature.criterion_bearing_source_worldview",
+            (criterion_spans + worldview_context_spans)[:8],
+            source="mechanical",
+            confidence=0.84,
+        )
+    if span_cache["feature.authority_claim"] or span_cache["feature.moral_tribunal"]:
+        add_feature(
+            mechanical,
+            feature_ids,
+            "feature.imported_tribunal_pressure",
+            span_cache["feature.authority_claim"] + span_cache["feature.moral_tribunal"],
+            source="mechanical",
+            confidence=0.84,
+        )
 
     shubhah_spans = span_cache["term.shubhah"] + span_cache["term.necessary_knowledge"]
     if span_cache["term.necessary_knowledge"] and (span_cache["term.shubhah"] or span_cache["feature.deformation_cleared"]):
@@ -181,6 +228,7 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
             "confidence": 0.51,
             "spans": [],
             "accepted_by_router": False,
+            "reason_code": "ambiguous",
             "reason": "No register span; ambiguous fallback.",
         })
 
@@ -202,6 +250,7 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
             "confidence": 0.45,
             "spans": [],
             "accepted_by_router": False,
+            "reason_code": "insufficient-evidence",
             "reason": "No imported-criterion span.",
         })
 
@@ -217,7 +266,7 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
             classification="false_resemblance",
         )
 
-    orientation_spans = reason_spans + imported_spans + grief_spans
+    orientation_spans = criterion_spans + theological_topic_spans + source_request_spans + worldview_context_spans + imported_spans + grief_spans
     if orientation_spans:
         if grief_spans:
             classification = "register-first"

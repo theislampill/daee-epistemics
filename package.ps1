@@ -10,48 +10,10 @@ function Fail($Message) {
     exit 1
 }
 
-function ConvertTo-WslPath($WindowsPath) {
-    $FullPath = [System.IO.Path]::GetFullPath($WindowsPath)
-    if ($FullPath -notmatch '^[A-Za-z]:\\') {
-        Fail "Only drive-letter Windows paths can be converted to WSL paths: $FullPath"
-    }
-    $Drive = $FullPath.Substring(0, 1).ToLowerInvariant()
-    $Rest = $FullPath.Substring(2).Replace('\', '/')
-    return "/mnt/$Drive$Rest"
-}
-
 $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$SkillRoot = Join-Path $RepoRoot "skill"
-
-if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "SKILL.md"))) {
-    Fail "Missing skill/SKILL.md. Run this script from the daee-epistemics repository."
-}
-
-if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "references"))) {
-    Fail "Missing skill/references. Cannot build a valid skill archive."
-}
-
-if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "compiled-module-map.json"))) {
-    Fail "Missing skill/compiled-module-map.json. Regenerate the compiled runtime first."
-}
-
-if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot "build-manifest.json"))) {
-    Fail "Missing skill/build-manifest.json. Regenerate the compiled runtime first."
-}
-
-foreach ($Level3Dir in @("data", "scripts", "tests")) {
-    if (-not (Test-Path -LiteralPath (Join-Path $SkillRoot $Level3Dir))) {
-        Fail "Missing skill/$Level3Dir. Regenerate the compiled runtime first."
-    }
-}
 
 if (-not ($OutputName.EndsWith(".skill.zip", [System.StringComparison]::OrdinalIgnoreCase))) {
     Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.3.2.0.skill.zip. GitHub Release assets should be the checked payload renamed to .skill; do not publish both .skill.zip and .skill, and do not re-zip the repo root."
-}
-
-$Wsl = Get-Command wsl -ErrorAction SilentlyContinue
-if (-not $Wsl) {
-    Fail "WSL is required but was not found on PATH."
 }
 
 if ([System.IO.Path]::IsPathRooted($OutputName)) {
@@ -60,118 +22,18 @@ if ([System.IO.Path]::IsPathRooted($OutputName)) {
     $OutputPath = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $OutputName))
 }
 
-$RepoWsl = ConvertTo-WslPath $RepoRoot
-$OutputWsl = ConvertTo-WslPath $OutputPath
+$PythonCommand = Get-Command python -ErrorAction SilentlyContinue
+$PythonArgs = @()
+if (-not $PythonCommand) {
+    $PythonCommand = Get-Command py -ErrorAction SilentlyContinue
+    $PythonArgs = @("-3")
+}
+if (-not $PythonCommand) {
+    Fail "Python 3 is required but neither python nor py was found on PATH."
+}
 
-$PythonScript = @'
-from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
-import sys
-
-repo = Path(sys.argv[1])
-out = Path(sys.argv[2])
-skill = repo / "skill"
-
-if not (skill / "SKILL.md").is_file():
-    raise SystemExit("missing skill/SKILL.md")
-if not (skill / "references").is_dir():
-    raise SystemExit("missing skill/references")
-if not (skill / "compiled-module-map.json").is_file():
-    raise SystemExit("missing skill/compiled-module-map.json")
-if not (skill / "build-manifest.json").is_file():
-    raise SystemExit("missing skill/build-manifest.json")
-for required_dir in ("data", "scripts", "tests"):
-    if not (skill / required_dir).is_dir():
-        raise SystemExit(f"missing skill/{required_dir}")
-
-def skill_description_length(path):
-    text = path.read_text(encoding="utf-8-sig")
-    if not text.startswith("---"):
-        raise SystemExit("skill/SKILL.md missing YAML front matter")
-    parts = text.split("---", 2)
-    if len(parts) < 3:
-        raise SystemExit("skill/SKILL.md has malformed YAML front matter")
-    lines = parts[1].splitlines()
-    for idx, line in enumerate(lines):
-        if not line.startswith("description:"):
-            continue
-        value = line.split(":", 1)[1].strip()
-        if value in {">", "|", ">-", "|-", ">+", "|+"}:
-            collected = []
-            for continuation in lines[idx + 1:]:
-                if continuation.startswith((" ", "\t")):
-                    collected.append(continuation.strip())
-                    continue
-                if continuation.strip():
-                    break
-            # YAML folded block scalars keep a trailing newline by default.
-            return len(" ".join(collected).strip()) + 1
-        return len(value.strip().strip('"\''))
-    raise SystemExit("skill/SKILL.md missing description metadata")
-
-description_len = skill_description_length(skill / "SKILL.md")
-if description_len > 1024:
-    raise SystemExit(
-        f"skill/SKILL.md description is {description_len} characters; maximum is 1024"
-    )
-
-out.parent.mkdir(parents=True, exist_ok=True)
-if out.exists():
-    out.unlink()
-
-def package_file(path):
-    rel_parts = path.relative_to(skill).parts
-    if "__pycache__" in rel_parts:
-        return False
-    if path.suffix in {".pyc", ".pyo"}:
-        return False
-    return path.is_file()
-
-paths = sorted(path for path in skill.rglob("*") if package_file(path))
-
-with ZipFile(out, "w", ZIP_DEFLATED) as zf:
-    for path in paths:
-        if path.is_dir():
-            continue
-        rel = path.relative_to(skill).as_posix()
-        info = ZipInfo(rel)
-        info.compress_type = ZIP_DEFLATED
-        info.external_attr = (0o644 & 0xFFFF) << 16
-        zf.writestr(info, path.read_bytes())
-
-with ZipFile(out) as zf:
-    names = zf.namelist()
-
-forbidden_prefixes = ("skill/", "atomics/", "tools/", "docs/", "build/", ".git/")
-bad = [
-    name for name in names
-    if name.startswith(forbidden_prefixes) or name.startswith("./") or "\\" in name
-    or "/__pycache__/" in name or name.startswith("__pycache__/")
-    or name.endswith((".pyc", ".pyo"))
-]
-if "SKILL.md" not in names:
-    raise SystemExit("archive missing SKILL.md at root")
-if not any(name.startswith("references/") for name in names):
-    raise SystemExit("archive missing references/ at root")
-if "compiled-module-map.json" not in names:
-    raise SystemExit("archive missing compiled-module-map.json at root")
-if "build-manifest.json" not in names:
-    raise SystemExit("archive missing build-manifest.json at root")
-for required_prefix in ("data/", "scripts/", "tests/"):
-    if not any(name.startswith(required_prefix) for name in names):
-        raise SystemExit(f"archive missing {required_prefix} at root")
-if bad:
-    raise SystemExit("archive has invalid root or separators: " + ", ".join(bad[:10]))
-
-print(f"Archive: {out}")
-print(f"Entries: {len(names)}")
-print("Root check: PASS")
-print("Separator check: PASS")
-print("Compiled metadata check: PASS")
-print(f"Description length check: PASS ({description_len}/1024)")
-'@
-
-$PythonScript | & wsl python3 - $RepoWsl $OutputWsl
+$PackageScript = Join-Path $RepoRoot "tools\package_skill.py"
+& $PythonCommand.Source @PythonArgs $PackageScript $OutputPath
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
@@ -185,4 +47,4 @@ Write-Host "  Path:   $($Item.FullName)"
 Write-Host "  Size:   $($Item.Length) bytes"
 Write-Host "  SHA256: $($Hash.Hash)"
 Write-Host ""
-Write-Host "Archive root contains SKILL.md, references/, data/, scripts/, tests/, compiled-module-map.json, build-manifest.json, and README.md when present in generated skill/."
+Write-Host "Archive root contains SKILL.md, README.md, references/, data/, scripts/, tests/, compiled-module-map.json, and build-manifest.json from generated skill/."

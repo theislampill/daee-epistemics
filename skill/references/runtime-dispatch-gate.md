@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/diagnostics/diagnostic-ir.md -->
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/diagnostic-ir.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
 <!-- SOURCE_SHA256: ebabdd8888605731785d424a94a2b5c6b7e8333afe8625c8152403128be0c733 -->
 
 ---
@@ -869,8 +869,8 @@ Framing notes: do not treat anatta as simple mate
 <!-- SOURCE: atomics/skill/references/diagnostics/ir-reconstruction-pass.md -->
 <!-- MODULE_ID: ir-reconstruction-pass -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/ir-reconstruction-pass.md -->
-<!-- SOURCE_SHA256: 973534e92defdb45ac7fe055875fce80b40cce33bcc333c141537690bcf21081 -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/ir-reconstruction-pass.md -->
+<!-- SOURCE_SHA256: 5c5bd8e691c6430fbb38677b1904f2c1c3706825b3b01b048225ffec723e4e2e -->
 
 ---
 id: ir-reconstruction-pass
@@ -1011,6 +1011,24 @@ driver/mode.
 A stability failure is a routing defect even when each individual run has
 `reconstruction_fidelity: pass`.
 
+## Reconstruction Faithfulness Through Render And Replay
+
+The reconstruction bottleneck continues after initial IR formation:
+
+```text
+surface discourse
+-> DSL/IR
+-> reconstructed live noetic burden / selected operator / held-deferred alternatives / expected Land(B) / governance verdict
+-> routed burden-cycle execution
+```
+
+Plausible typed commentary is not faithful compression unless the runtime can reconstruct the
+burden-local control state it came from. Route labels, owner names, checker markers, or state
+tokens appearing somewhere in a trace do not prove reconstruction faithfulness. The burden step
+must remain locally replayable as `B.s -> owner-floor Target/Operation/Result -> Land(B) ->
+R(H,Delta) -> next state decision`. A response that separates labels into global blobs has lost
+the attachment needed to govern the next burden, even when the vocabulary looks correct.
+
 ## Render Discipline
 
 Default public output should not print the reconstruction ledger. The visible answer may show the
@@ -1026,7 +1044,7 @@ diagnostic or audit render.
 <!-- SOURCE: atomics/skill/references/diagnostics/case-state-schema.md -->
 <!-- MODULE_ID: case-state-schema -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/case-state-schema.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/case-state-schema.md -->
 <!-- SOURCE_SHA256: 5556485f73dc316e53d12f7e2703a5bd58255b871dd9ed6ce132a132838bc47a -->
 
 ---
@@ -1309,7 +1327,7 @@ This is consumed by V1's re-run condition and by M5's register-hold field.
 <!-- SOURCE: atomics/skill/references/diagnostics/pattern-profiling.md -->
 <!-- MODULE_ID: pattern-profiling -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/pattern-profiling.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/pattern-profiling.md -->
 <!-- SOURCE_SHA256: 54041f91f1d60ec2503827ea8dbdc87491d3e1a3c310ad81b75896f911c3c0db -->
 
 ---
@@ -1527,7 +1545,7 @@ Failure tests:
 <!-- SOURCE: atomics/skill/references/diagnostics/inference-boundary.md -->
 <!-- MODULE_ID: inference-boundary -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/inference-boundary.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/inference-boundary.md -->
 <!-- SOURCE_SHA256: ee0643414df507f362f9e794ff33db3d9f374099e1af36254b211b65222b2a8d -->
 
 ---
@@ -1689,8 +1707,8 @@ The `[Source Basis]` block in `case-state-schema.md` requires source-weight anno
 <!-- SOURCE: atomics/skill/references/diagnostics/mixed-case-handling.md -->
 <!-- MODULE_ID: mixed-case-handling -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/mixed-case-handling.md -->
-<!-- SOURCE_SHA256: 7f78e975f0e190abe5e87da80dd425af3d2e09acb5c0cf11ab3f4c9619a50ed0 -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/mixed-case-handling.md -->
+<!-- SOURCE_SHA256: 80504de509d93f81d55b0ad926f3238888151879e3c07dc8d21da5a8a7a6aed5 -->
 
 ---
 id: mixed-case-handling
@@ -1764,6 +1782,10 @@ Do not claim a settled read of discourse orientation, concealment mode, or motiv
 - the evidence for hidden motive is only model intuition
 
 In these cases, give the smallest matched response and avoid motive-laundering.
+Smallest matched response does not mean single-burden response. If the input publicly anchors
+a worldview or identity frame that supplies the criterion, authority-order, discourse posture,
+or restoration vector, keep interior motive held while still analyzing that frame as operative
+source-status, FPD, consequence trace, or practitioner-restoration material as warranted.
 
 ## Compound Case Sequencing Playbooks
 
@@ -1811,7 +1833,7 @@ These playbooks are mandatory routing logic for cases where two deformation fami
 - Non-Christian inherited-tradition boundary: if the case needs family-specific authorization content beyond V10 Step 3 and no dedicated downstream DO owner exists, stop at the structural form, name the boundary, and do not borrow DO-14 by analogy.
 - Restoration framing: P1/P4 may support the response when the register is open, but they do not substitute for the live epistemic module.
 - Failure tests: restoration-first collapse, Christology preemption, RT-2 substitution, and criterion grant. If any occurs, reroute to the upstream blocker and hold downstream content.
-- NS-11 routing note: if the case combines inherited-Christian background with NS-11 (fideist — commitments held on faith, rational examination refused), register-hold governs before any DO, V12, or RT content regardless of which downstream sub-question is active. DO-14 and DO-10 are both held. The fideist-closed posture means doctrinal engagement cannot land; the correct move is pastoral/invitational until the register shifts from fideist-closed to inquiry-open. NS-11 does not change sub-question identification — it changes the precondition for content release.
+- NS-11 routing note: if the case combines inherited-Christian background with NS-11 (fideist ? commitments held on faith, rational examination refused), register-hold governs before any DO, V12, or RT content regardless of which downstream sub-question is active. DO-14 and DO-10 are both held. The fideist-closed posture means doctrinal engagement cannot land; the correct move is pastoral/invitational until the register shifts from fideist-closed to inquiry-open. NS-11 does not change sub-question identification ? it changes the precondition for content release.
 
 ### (vi) Doctrinal Complexity / Disagreement Pressure
 
@@ -1846,7 +1868,7 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- SOURCE: atomics/skill/references/diagnostics/anti-patterns.md -->
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/anti-patterns.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/anti-patterns.md -->
 <!-- SOURCE_SHA256: cae7ede14c9aabc5374323f6b76d6beec89fcd355c345b2cb11d638164ccabf1 -->
 
 ---
@@ -2435,7 +2457,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- SOURCE: atomics/skill/references/diagnostics/framework-pipeline.md -->
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/framework-pipeline.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
 <!-- SOURCE_SHA256: 29e85cc56b77dca864ae58eec2c01d8ed0fa3801cfd5dba991521f438bb8285c -->
 
 ---
@@ -3064,8 +3086,8 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- SOURCE: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: c59576660f831bd70ac9dbea8dfc047a4b7dffaa875e8dff5b275d9220b92024 -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
+<!-- SOURCE_SHA256: bcf6a11fa4e4607a4634d8a9bdc9ea1d085dc01ff0520bb70fd324093cf2e7fc -->
 
 ---
 id: recursive-state-transitions
@@ -3154,13 +3176,33 @@ Core runtime:
 Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
+Burden/submove notation:
+
+```text
+ⁿBᵢ = i-th operative submove inside the n-th burden-cycle
+nBi = plain-text equivalent
+B1.s1 = accepted legacy/checker alias for ¹B₁ where needed
+```
+
+Examples:
+
+```text
+¹B₁ = 1B1 = burden 1, submove 1
+¹B₂ = 1B2 = burden 1, submove 2
+²B₁ = 2B1 = burden 2, submove 1
+```
+
 Submove / recursion:
 
 ```text
 sᵢ != Bᵢ
+¹B₁ -> ¹B₂ -> ... -> Land(¹B) -> R(H,Δ)
+Land(¹B) -> R(H,Δ) -> ²B₁
 ```
 
-Gloss: an operative submove inside one burden is not a new burden-cycle.
+Gloss: `ⁿBᵢ` names the i-th operative submove inside the n-th burden-cycle. A burden may
+contain multiple operative submoves before it lands; a submove is not automatically a new
+burden-cycle. A new burden begins only when `Land(B)` and `R(H,Δ)` license it.
 
 Collapse:
 
@@ -3259,6 +3301,19 @@ diagnostic judgment directly under SKILL/governance. In Level 3, `continuation_q
 planned route; each queued burden still remains conditional on the preceding `Land(B) -> R`
 confirming that the next burden is still input-anchored, live, and unblocked.
 
+Structural attachment fidelity is part of this transition rule. The runtime must preserve the
+local sequence and attachment of each burden step:
+
+```text
+ⁿBᵢ / nBi -> owner-floor Target/Operation/Result -> Land(ⁿB) -> R(H,Delta) -> next state decision
+```
+
+Marker presence is not execution. A trace or response that groups all reasoning first, all
+owner/checker markers afterward, or all state decisions at the end has flattened the control
+state even if the same labels appear somewhere. Each marker must govern the burden step next to
+it; `Land(ⁿB)` must summarize the cumulative state delta from its submoves. Otherwise the
+output is a component-tour / structural-flattening failure.
+
 In hard/default output, Restorative Response and Closing Formulation are licensed only after
 the final state re-read for the answer. If `R(H,Delta)` names a remaining input-anchored
 burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
@@ -3315,7 +3370,7 @@ or visible default-mode template slots.
 Generic `target -> operation -> result` syntax is not enough. The operation must apply the
 owning file's minimum operation floor: the specific pressure dimensions, branch tests,
 definition splits, or criterion tests required by that owner. A TTP named without its
-owner-specific operation floor is label cosplay even when a Target/Operation/Result line
+owner-specific operation floor is label surface-compliance failure even when a Target/Operation/Result line
 is present.
 
 Default output must not narrate that an owner floor was applied. Phrases such as "owner
@@ -3360,12 +3415,16 @@ A sentence such as "this burden lands" after generic prose is invalid unless the
 operation supplies the cumulative-state delta.
 
 If entry criteria are missing, the TTP is not activated. If operation criteria are missing, the
-TTP is label cosplay. If exit criteria are missing, recursion is unauditable and closure is
+TTP is label surface-compliance failure. If exit criteria are missing, recursion is unauditable and closure is
 premature.
 
 ## Depth And Stop Guards
 
 Depth is governed by live-burden traversal, not by how many arguments or headings can be written.
+This is not a shortness rule. In hard, compound, or deformed cases, each released depth
+increment must receive enough owner-floor execution, theological substance, and restoration
+work to land before state re-read. A single compact Layer A plus thin topical sections is a
+false depth signal, not governed traversal.
 Each recursive depth increment requires:
 
 ```text
@@ -3378,8 +3437,10 @@ Depth guard rules:
 - No repeated operator at the next depth unless refreshed state supplies a new bounded target.
 - No downstream release from the initial itinerary; refreshed state must license every next pass.
 - No total downstream dump after one refresh.
-- No submove explosion: if a burden requires more than three major operative submoves, the
-  runtime must run the submove saturation gate before releasing the fourth.
+- No submove blur or explosion: if a burden requires more than three major operative submoves,
+  the runtime must run the submove saturation gate as a cohesion audit. The gate decides
+  whether the next move remains a distinct `s`, becomes a NewB after `R`, is held, or is
+  PARTIAL; it is not a count cap and not a merge license.
 - If response, tool, or interaction limits prevent the next eligible burden, use PARTIAL with the
   concrete limit and the named next live burden.
 - If the next live burden remains live but a release signal is absent, use HOLD with the blocker.
@@ -3404,10 +3465,11 @@ If the answer is yes, the submove may remain internal to `B` when it is material
 for burden completeness. If the answer is no, do not keep expanding the submove list. Run
 `Land(B) -> R` and let the re-read decide STOP, HOLD, PARTIAL, or NewB.
 
-More than three major operative submoves inside one burden-cycle is allowed only when the
-submove saturation gate records necessity and cohesion. Otherwise the fourth major move is
-either a licensed NewB after re-read, held, or PARTIAL. Size, component availability, or a
-desire for a fuller answer never licenses a fourth major submove by itself.
+More than three major operative submoves inside one burden-cycle triggers the submove
+saturation gate. If the gate records necessity and cohesion, the additional submove remains
+inside the burden as its own distinct target -> operation -> result. Otherwise the additional
+move is either a licensed NewB after re-read, held, or PARTIAL. Size, component availability,
+or a desire for a fuller answer never licenses an additional major submove by itself.
 The gate is never a consolidation license: active TTP/operator functions must remain distinct
 submoves or later burden-cycles. If runtime limits prevent that distinct execution, mark PARTIAL
 with the specific unlanded submove rather than merging it into a generic operation.
@@ -3558,6 +3620,11 @@ objection, skip internal sub-burdens, replace routed execution with generic pros
 broad conclusion. `R` may then expose deeper governing epistemology as `NewB`, first-order
 repairs, held higher-order rebuttals, or STOP/HOLD/PARTIAL/RECURSE; `NewB` is not licensed until
 the released `B` and its necessary `s` have actually been operated on.
+The execution bias is toward exhausting input-anchored live structure, not minimizing it. Address
+as many released burdens and materially active submoves as the gates permit; do not consolidate
+distinct active operator functions into a shorter generic response. If the model cannot finish
+the remaining live structure in the current response, the correct state is PARTIAL with the next
+live burden and blocked submove(s) named.
 
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
@@ -3567,6 +3634,11 @@ their own target -> operation -> result; same `B` does not mean collapsed prose.
 later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a distinct
 claim-level, source/noetic frame, theological target, or restoration vector that was not fully
 landed as `s`.
+When the user's input publicly anchors a worldview or identity frame and that frame supplies
+the moral criterion, authority-order, discourse posture, or restoration vector, it is not merely
+biographical source-status. It remains operative until consequence trace, source-status
+discipline, and restoration/practitioner implication have landed or have been explicitly held.
+Keep motive and soul-state held; do not drop the burden.
 
 Multi-burden does not mean multi-recursion by default. The model must not split topical components
 into new burden-cycles merely because they name hiddenness, punishment, source-status,
@@ -3611,7 +3683,8 @@ A recursive response must:
 1. Land the governing live noetic burden in the current burden-cycle.
 2. Run state re-read / noetic re-read.
 3. Enumerate remaining already-present live burdens from the original input.
-4. Route one bounded live burden per burden-cycle; a burden may contain multiple operative submoves.
+4. Route one bounded live burden per burden-cycle; a burden may contain multiple operative submoves,
+   and every materially active submove receives its own target -> operation -> result.
 5. After each burden-cycle, re-read state again and enumerate remaining burdens.
 6. STOP only after proving no input-anchored eligible burden remains, or remaining burdens are
    HELD with release conditions, or limits force PARTIAL with the next live burden named.
@@ -3620,7 +3693,7 @@ The transition spine must mark state re-read, not topical movement. Each transit
 (1) what the prior burden landed, including operative submove results, (2) what input-anchored
 live burden the noetic re-read identified as remaining, and (3) what the next burden-level
 function is. If no transition marker appears when re-read licenses another input-anchored live
-burden, the output is clean essay cosplay and must be rewritten before emission.
+burden, the output is clean essay surface-compliance failure and must be rewritten before emission.
 
 Valid internal progression for the first live burden:
 "The same tribunal test has three operative submoves. First, the secular moral criterion has to
@@ -3682,9 +3755,9 @@ noetic structure has been restored as far as the input and release gates permit:
 governing live burden, bounded TTP operation, result, state re-read, then the next eligible live
 burden or HOLD/PARTIAL/STOP.
 
-This is the recursive-state form of `anti-patterns.md` Route Cosplay Failure: visible
+This is the recursive-state form of `anti-patterns.md` Route Surface-Compliance Failure Failure: visible
 recursion label != recursive traversal; pass-by-pass state re-read = recursive traversal.
-It is also the recursive-state guard against Clean Essay Cosplay: every pass must show a
+It is also the recursive-state guard against Clean Essay Surface-Compliance Failure: every pass must show a
 transition before the next bounded operator starts.
 
 Compact audit shape when recursion must be visible in `:dsl`, internal/development audit, pass-review, or
@@ -3948,7 +4021,7 @@ This is the canonical State Carry Table for the abstract refresh operation.
 must be derivable from:
 
 ```text
-Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) − (items released by Burden N-1)
+Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) âˆ’ (items released by Burden N-1)
 ```
 
 New material introduced in Burden N's `Held routes` must be anchored in the original
@@ -4001,38 +4074,38 @@ Failure conditions:
 - Failure condition: PARTIAL is collapsed into STOP when limits prevent an eligible next pass.
 - Failure condition: multiple downstream arguments are dumped at one refresh instead of moving one
   live burden at a time.
-- Failure condition: Component-Tour Cosplay — the response covers all topics detected at initial
+- Failure condition: Component-Tour Surface-Compliance Failure ? the response covers all topics detected at initial
   read without state re-read between passes, without enumerating remaining input-anchored live
   burdens after each pass, and without routing one bounded live burden per burden-cycle. Covering all
   topics is not recursion. A response that covers all topics in one essay still fails recursion.
-  input-anchored eligibility after refresh ≠ topic presence in the prompt.
+  input-anchored eligibility after refresh â‰  topic presence in the prompt.
 
 Minimal pair: a governed same-response recursion follows a landed move plus refresh plus renewed
 permission; an argument dump accumulates downstream content without refreshed governance.
 
-- Failure condition: ungrounded noetic re-read — a `Noetic re-read` block whose
+- Failure condition: ungrounded noetic re-read ? a `Noetic re-read` block whose
   `burden landed` is asserted but the immediately preceding Layer B contains no operative
   submove with `target -> operation -> result` chain feeding the burden landing.
-- Failure condition: noetic-equivalence prestige stack — Ashʿarī, Māturīdī, Atharī,
+- Failure condition: noetic-equivalence prestige stack ? Ashʿarī, Māturīdī, Atharī,
   Taymiyyan, kalāmic, or falsafah-inflected sources cited as one unified operative
   authority for a school-sensitive claim.
-- Failure condition: classical-theology umbrella — `classical theology`,
+- Failure condition: classical-theology umbrella ? `classical theology`,
   `classical theologies`, `classical Islamic theology`, `the classical tradition`,
   `mainstream kalām`, or `Ashʿarī/Māturīdī tradition` used as if it named one operative
   frame across contradictory schools.
-- Failure condition: contrast-as-operative-support — a source first marked `contrast`,
+- Failure condition: contrast-as-operative-support ? a source first marked `contrast`,
   `opponent-position`, `historical note`, `genealogy`, or `held material` is then used
   as operative warrant in the same burden-cycle without explicit reclassification.
-- Failure condition: held-route semantic leakage — Layer A names material as held, then
+- Failure condition: held-route semantic leakage ? Layer A names material as held, then
   Layer B answers that material as topical commitment before a preceding state/noetic
   re-read explicitly releases it.
-- Failure condition: non-operative operation verb — an `Operation:` line begins with
+- Failure condition: non-operative operation verb ? an `Operation:` line begins with
   generic prose such as `address`, `discuss`, `explore`, `engage`, or `consider` rather
   than one of the closed operative verbs.
-- Failure condition: intra-school flattening — a school is named as internally uniform
+- Failure condition: intra-school flattening ? a school is named as internally uniform
   (`Ashʿarī theology teaches X`, `Māturīdī theology teaches X`) on a claim that is
   internally disputed or school-sensitive without that qualification appearing.
-- Failure condition: verbal-agreement smuggling — agreement across frames is asserted
+- Failure condition: verbal-agreement smuggling ? agreement across frames is asserted
   without marking whether the agreement is substantive or only verbal/surface-level,
   and the asserted agreement is then used as operative support.
 
@@ -4044,8 +4117,8 @@ permission; an argument dump accumulates downstream content without refreshed go
 <!-- SOURCE: atomics/skill/references/diagnostics/routing-precedence.md -->
 <!-- MODULE_ID: routing-precedence -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/routing-precedence.md -->
-<!-- SOURCE_SHA256: c47000fd2af2991517c04136fa96625daf4cef5ece1289bae1d5d057a5633f01 -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/routing-precedence.md -->
+<!-- SOURCE_SHA256: 9442f13d134b881eca89bbe619a495c85460dd92b2df9053630c9f5738afd5f3 -->
 
 ---
 id: routing-precedence
@@ -4198,11 +4271,12 @@ existing owner-backed function.
 -> R`. Gloss: multiple TTP operative submoves may be needed to land one selected live
 burden. They do not become burden-cycles merely because they are FPD, M1, DO-8, M8,
 source-status clarification, restoration framing, or another recognizable route leg.
-Submoves also do not multiply without limit. Before a fourth major operative submove is
-released, run the submove saturation gate: the next submove must share the same target-family,
-claim-level, source/noetic frame, claim cluster, and restoration vector, and it must be
-materially necessary for the current burden landing. If that cohesion fails, route to `Land(B) -> R`
-before releasing more material.
+Submoves also do not blur into one another or multiply without boundary checks. When one burden
+requires more than three major operative submoves, run the submove saturation gate: the next
+submove must share the same target-family, claim-level, source/noetic frame, claim cluster, and
+restoration vector, and it must be materially necessary for the current burden landing. If that
+cohesion holds, release it as its own distinct target -> operation -> result. If that cohesion
+fails, route to `Land(B) -> R` before releasing more material.
 
 **Rule P-7 (TTP entry before activation):** Routing precedence does not activate a TTP because
 the TTP is topically adjacent. The TTP must satisfy entry criteria: validated IR, owner-backed
@@ -4234,7 +4308,7 @@ unclear, model/predication discipline runs first and V12 remains held.
 `shared vocabulary != shared warrant`; `verbal agreement != operative support`;
 `σ_context != σ_warrant` unless explicitly reclassified. `N_AT` aliases are one operative
 frame, not a prestige stack. Authoritative wording is in
-`recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline`.
+`recursive-state-transitions.md ?Source-Status & Noetic-Frame Non-Equivalence Discipline`.
 
 ---
 
@@ -4246,7 +4320,7 @@ This file specifies the rules that govern the routing branches shown in `framewo
 
 ## VII. Routing Precedence vs. Output-Release Rubric
 
-Routing precedence (§I–§V above) governs owner order: which file addresses the case first, which suppression rules apply, which upstream blocker takes priority. It answers: *what runs and in what order?*
+Routing precedence (?I–?V above) governs owner order: which file addresses the case first, which suppression rules apply, which upstream blocker takes priority. It answers: *what runs and in what order?*
 
 The output-release rubric (`references/rubrics/output-release.md`) governs visible release order and amount. It runs after routing and owner selection. It answers: *how much of what routing selected may be visibly released now, given the current case-state?*
 
@@ -4279,7 +4353,7 @@ not use lab-report sections or downstream fields to release what routing keeps h
 <!-- SOURCE: atomics/skill/references/kernel-thesis.md -->
 <!-- MODULE_ID: kernel-thesis -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/kernel-thesis.md -->
+<!-- CANONICAL_PATH: skill/references/kernel-thesis.md -->
 <!-- SOURCE_SHA256: 10156bc16ca201ad844d76bfe59ea1fc2ddeacdf3cbd50a5a7639f7cf4ebf4b3 -->
 
 ---
@@ -4373,7 +4447,7 @@ A response passes the workflow but violates the architecture when it satisfies t
 <!-- SOURCE: atomics/skill/references/metaphysical-architecture.md -->
 <!-- MODULE_ID: metaphysical-architecture -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/metaphysical-architecture.md -->
+<!-- CANONICAL_PATH: skill/references/metaphysical-architecture.md -->
 <!-- SOURCE_SHA256: b64073abc0449ee34ffab0c9477f7fddc2bf370da39c3ac97e9384525c904f72 -->
 
 ---
@@ -4502,7 +4576,7 @@ A restoration target stated only as "correct the argument" or "demonstrate X" is
 <!-- SOURCE: atomics/skill/references/procedures/P7-restoration-stops.md -->
 <!-- MODULE_ID: P7-restoration-stops -->
 <!-- MODULE_CLASS: procedure -->
-<!-- CANONICAL_PATH: atomics/skill/references/procedures/P7-restoration-stops.md -->
+<!-- CANONICAL_PATH: skill/references/procedures/P7-restoration-stops.md -->
 <!-- SOURCE_SHA256: 7f1551d050be88a50672f4e0828fcd06ce6a08d276bcb9ea7c111a0214ade14a -->
 
 ---

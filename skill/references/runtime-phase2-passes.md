@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/diagnostics/reason-disambiguation.md -->
 <!-- MODULE_ID: reason-disambiguation -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/reason-disambiguation.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/reason-disambiguation.md -->
 <!-- SOURCE_SHA256: da876545ffca1d9baa48220bb921bcb4c6cc02da424d5658975f7e91ccc49af5 -->
 
 ---
@@ -184,7 +184,7 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- SOURCE: atomics/skill/references/diagnostics/foreign-premise-detection.md -->
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/foreign-premise-detection.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/foreign-premise-detection.md -->
 <!-- SOURCE_SHA256: 24592f015cf26cf0cd55d5b10e19379d8e4e6c44466b1d5c20887b2ef28646b6 -->
 
 ---
@@ -434,7 +434,7 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 <!-- SOURCE: atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md -->
 <!-- MODULE_ID: prophetic-discourse-neutralization -->
 <!-- MODULE_CLASS: diagnostic -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/prophetic-discourse-neutralization.md -->
 <!-- SOURCE_SHA256: 3bb3dd6e38ed66696d8241fb881fee0af4ac0e05e9ff64f530f0c3d451e5daab -->
 
 ---
@@ -601,7 +601,7 @@ The tribunal explains why the semantic move is being made. The neutralization pa
 <!-- SOURCE: atomics/skill/references/diagnostics/arabic-backbone-predicates.md -->
 <!-- MODULE_ID: arabic-backbone-predicates -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/arabic-backbone-predicates.md -->
+<!-- CANONICAL_PATH: skill/references/diagnostics/arabic-backbone-predicates.md -->
 <!-- SOURCE_SHA256: 796d6284558adf25888c0ca9cc11a55e0bebe97ea29c052b0de72a3c609cfea4 -->
 
 ---

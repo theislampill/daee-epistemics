@@ -14,7 +14,8 @@ Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.
 The package script archives the contents of `skill/`, not the repository root and not the
 top-level `skill/` directory. It writes a local `.skill.zip` payload; the published GitHub Release
 asset is the same checked payload renamed to `.skill`. Do not re-zip the repository root.
-On Windows, `package.ps1` uses WSL Python to preserve archive path separators.
+`package.ps1` calls the manifest-backed Python packager, validates generated package shape, and
+writes slash-safe archive entries.
 
 ## Current Package / Release Asset Evidence
 

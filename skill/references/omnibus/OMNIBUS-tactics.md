@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/tactics/INDEX.md -->
 <!-- MODULE_ID: tactics-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/INDEX.md -->
 <!-- SOURCE_SHA256: 12372396c5bf20376e8ca127350f39fde8bd59c30b889decf6544861be3db841 -->
 
 ---
@@ -93,7 +93,7 @@ Tactics do not authorize argument banks, source/context prestige, or extra burde
 <!-- SOURCE: atomics/skill/references/tactics/E1-broadening-evidence.md -->
 <!-- MODULE_ID: E1-broadening-evidence -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/E1-broadening-evidence.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/E1-broadening-evidence.md -->
 <!-- SOURCE_SHA256: fb4ead6b4a188cde59e6a56923a557d85bd8d4591c5d93cb73c50c9471e47732 -->
 
 ---
@@ -176,7 +176,7 @@ accepts theism; V9 (necessary-knowledge priority) is what relocates warrant.
 <!-- SOURCE: atomics/skill/references/tactics/E2-inferential-criterion.md -->
 <!-- MODULE_ID: E2-inferential-criterion -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/E2-inferential-criterion.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/E2-inferential-criterion.md -->
 <!-- SOURCE_SHA256: 4934b2fb099071d16e7fd196fea3e58d2096bc1bbfd315febc5def883cafebcc -->
 
 ---
@@ -283,7 +283,7 @@ E2 does not hold downstream content. It clears a single upstream barrier — the
 <!-- SOURCE: atomics/skill/references/tactics/E3-cumulative-case.md -->
 <!-- MODULE_ID: E3-cumulative-case -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/E3-cumulative-case.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/E3-cumulative-case.md -->
 <!-- SOURCE_SHA256: 55d829a1b522edb9ec28720994cfc7f42437c1e1f098d06a6dddebadb6e0d67c -->
 
 ---
@@ -350,7 +350,7 @@ content.
 <!-- SOURCE: atomics/skill/references/tactics/E4-cross-cultural-check.md -->
 <!-- MODULE_ID: E4-cross-cultural-check -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/E4-cross-cultural-check.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/E4-cross-cultural-check.md -->
 <!-- SOURCE_SHA256: 75922130a2821d8d0c6e9155de45b9ac8af8173c9643d84e393c8becee66df23 -->
 
 ---
@@ -404,7 +404,7 @@ The interlocutor who conflates diversity of superstructure with diversity of fou
 <!-- SOURCE: atomics/skill/references/tactics/F1-supra-vs-antirational.md -->
 <!-- MODULE_ID: F1-supra-vs-antirational -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/F1-supra-vs-antirational.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/F1-supra-vs-antirational.md -->
 <!-- SOURCE_SHA256: 131d3279405346338e9acbaee7a4481ec3a53362e4c2beb5089ac3fc95b71b68 -->
 
 ---
@@ -504,7 +504,7 @@ F1 holds all positive-case content (R1, E3, V5) pending the characterization cor
 <!-- SOURCE: atomics/skill/references/tactics/F2-volitional-dimensions.md -->
 <!-- MODULE_ID: F2-volitional-dimensions -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/F2-volitional-dimensions.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/F2-volitional-dimensions.md -->
 <!-- SOURCE_SHA256: b21d95b65ea801941d7d70fce38b27babe624f715e85f7309edba1b8e199dc0a -->
 
 ---
@@ -556,7 +556,7 @@ When an interlocutor appears intellectually moved but remains volitionally resis
 <!-- SOURCE: atomics/skill/references/tactics/F3-practice-epistemic-access.md -->
 <!-- MODULE_ID: F3-practice-epistemic-access -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/F3-practice-epistemic-access.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/F3-practice-epistemic-access.md -->
 <!-- SOURCE_SHA256: f218f9552a301a77f3d0610f0b811fbc0b757c8b18c23d0a0936d3c191d31f0e -->
 
 ---
@@ -694,7 +694,7 @@ engagement — it is what makes intellectual engagement able to go deeper.
 <!-- SOURCE: atomics/skill/references/tactics/R1-internalist-criterion.md -->
 <!-- MODULE_ID: R1-internalist-criterion -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/R1-internalist-criterion.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/R1-internalist-criterion.md -->
 <!-- SOURCE_SHA256: cfb0e9188198fa1b9dbf9f9d41a09286db0058ca7c4aa40568b48ab3b136b7b3 -->
 
 ---
@@ -792,7 +792,7 @@ R2 and R3 are held pending R1. R2 (the reminder — eliciting basic theistic bel
 <!-- SOURCE: atomics/skill/references/tactics/R2-the-reminder.md -->
 <!-- MODULE_ID: R2-the-reminder -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/R2-the-reminder.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/R2-the-reminder.md -->
 <!-- SOURCE_SHA256: 48bc46f66d97cc65e5132cf2118c0fd1306ac1f6ee1be1097f2f0c94abd9d630 -->
 
 ---
@@ -902,7 +902,7 @@ The hold is released by the interlocutor, not by the dāʿī. The interlocutor's
 <!-- SOURCE: atomics/skill/references/tactics/R3-warranted-basic-belief.md -->
 <!-- MODULE_ID: R3-warranted-basic-belief -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/R3-warranted-basic-belief.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/R3-warranted-basic-belief.md -->
 <!-- SOURCE_SHA256: 6732fa0e70b5bcd7eb55184e514d59293895d613b0029d2de74b2c579190659b -->
 
 ---
@@ -1003,7 +1003,7 @@ P7 Stop-2 governs R3. R3 makes one analytical move — asks what produced the in
 <!-- SOURCE: atomics/skill/references/tactics/M1-self-refutation.md -->
 <!-- MODULE_ID: M1-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M1-self-refutation.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M1-self-refutation.md -->
 <!-- SOURCE_SHA256: e44ddf35da79df8861bc4fbee125cedfa1ff0d71069e66c0018570e757817d54 -->
 
 ---
@@ -1129,7 +1129,7 @@ especially useful: the opponent's own authorities acknowledge the datum.
 <!-- SOURCE: atomics/skill/references/tactics/M1P-performative-self-refutation.md -->
 <!-- MODULE_ID: M1P-performative-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M1P-performative-self-refutation.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M1P-performative-self-refutation.md -->
 <!-- SOURCE_SHA256: 37eb34951e9286829b3130e8cf1c509cfeb4f4a6aeb2824c06fca857a2a78cfc -->
 
 ---
@@ -1211,7 +1211,7 @@ into a named barrier and hardens it.
 <!-- SOURCE: atomics/skill/references/tactics/M2-prior-probability.md -->
 <!-- MODULE_ID: M2-prior-probability -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M2-prior-probability.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M2-prior-probability.md -->
 <!-- SOURCE_SHA256: 3b4eb8f4b9bbc3ab5b1d85505e31d3d9ba147be469abfe0c5545e335bf6e9574 -->
 
 ---
@@ -1312,7 +1312,7 @@ M2 holds DO-1, DO-2, and DO-4 substantive response content. These arguments pres
 <!-- SOURCE: atomics/skill/references/tactics/M3-orphaned-intuition.md -->
 <!-- MODULE_ID: M3-orphaned-intuition -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M3-orphaned-intuition.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M3-orphaned-intuition.md -->
 <!-- SOURCE_SHA256: 66b3bfadfe956a79ae7adfeb0a261d0b600d0335c38f39be8db4a829ff5490f1 -->
 
 ---
@@ -1419,7 +1419,7 @@ M3 issues a single bounded probe — affirm the commitment, ask the grounding qu
 <!-- SOURCE: atomics/skill/references/tactics/M4-grief-register.md -->
 <!-- MODULE_ID: M4-grief-register -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M4-grief-register.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M4-grief-register.md -->
 <!-- SOURCE_SHA256: 5ae678aa663bdfe773c029fd4013853d8cedcac4b0e2861736d4618012118091 -->
 
 ---
@@ -1477,7 +1477,7 @@ When this is operative, the argumentative register must be entirely suspended. E
 <!-- SOURCE: atomics/skill/references/tactics/M6-excluded-middle.md -->
 <!-- MODULE_ID: M6-excluded-middle -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M6-excluded-middle.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M6-excluded-middle.md -->
 <!-- SOURCE_SHA256: 402e32a47d5c2a6b6e097c717d906882efb545a9508d1d95b1cbac0986ce25fe -->
 
 ---
@@ -1582,7 +1582,7 @@ M6 holds no downstream content. It clears an evasion that was blocking the quest
 <!-- SOURCE: atomics/skill/references/tactics/M7-definition-anchor.md -->
 <!-- MODULE_ID: M7-definition-anchor -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M7-definition-anchor.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M7-definition-anchor.md -->
 <!-- SOURCE_SHA256: 99df465ba5a6e4f69304e6b0b342a41db1c38a4606e02e7d3e8eba76dd652e3e -->
 
 ---
@@ -1642,7 +1642,7 @@ M7 is not the owner of broader conception-capture problems. When contradiction p
 <!-- SOURCE: atomics/skill/references/tactics/M8-reductio.md -->
 <!-- MODULE_ID: M8-reductio -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M8-reductio.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M8-reductio.md -->
 <!-- SOURCE_SHA256: 45040b07ee2bb1d4d100dcd7db7d51c242192c5d618c64008ea0eb6794af88ab -->
 
 ---
@@ -1711,7 +1711,7 @@ M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. 
 <!-- SOURCE: atomics/skill/references/tactics/M9-predication-mode.md -->
 <!-- MODULE_ID: M9-predication-mode -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/M9-predication-mode.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/M9-predication-mode.md -->
 <!-- SOURCE_SHA256: 44e1bba7009af5bf4243f28292c767ee9fafea9e4e43158c50c44f39cfb81db1 -->
 
 ---
@@ -1998,7 +1998,7 @@ Until that split is made, the yes/no answer you want has not been earned.
 <!-- SOURCE: atomics/skill/references/tactics/doubt-vs-skepticism.md -->
 <!-- MODULE_ID: doubt-vs-skepticism -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/doubt-vs-skepticism.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/doubt-vs-skepticism.md -->
 <!-- SOURCE_SHA256: 9887bd790d3e830f86c05e4c281c0fb390959404f4b0accb4190f8aa70da4654 -->
 
 ---
@@ -2182,7 +2182,7 @@ the unexamined evidential criterion and will fail to land.
 <!-- SOURCE: atomics/skill/references/tactics/husn-al-nazar-arguments.md -->
 <!-- MODULE_ID: husn-al-nazar-arguments -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/husn-al-nazar-arguments.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/husn-al-nazar-arguments.md -->
 <!-- SOURCE_SHA256: a410ff972e1b33f8c21d02ae0c5bbf1f4369547d17c6a8513dcb623553225c30 -->
 
 ---
@@ -2294,7 +2294,7 @@ Return immediately to fiṭrah-activation mode. The argument cleared a path; it 
 <!-- SOURCE: atomics/skill/references/tactics/inductive-fitri-method.md -->
 <!-- MODULE_ID: inductive-fitri-method -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/inductive-fitri-method.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/inductive-fitri-method.md -->
 <!-- SOURCE_SHA256: 7af3578a93de2b9cf16b0af5e47b5cc57d4c1e75a09c5261cc73bcd19a410016 -->
 
 ---
@@ -2408,7 +2408,7 @@ cognitive science's reach — the specification is prior, not reactive.
 <!-- SOURCE: atomics/skill/references/tactics/symmetric-taqlid-check.md -->
 <!-- MODULE_ID: symmetric-taqlid-check -->
 <!-- MODULE_CLASS: tactic -->
-<!-- CANONICAL_PATH: atomics/skill/references/tactics/symmetric-taqlid-check.md -->
+<!-- CANONICAL_PATH: skill/references/tactics/symmetric-taqlid-check.md -->
 <!-- SOURCE_SHA256: 71c90a845af4e7384dddff644826883c7f5f70e68efd12a04a93af2591622d70 -->
 
 ---

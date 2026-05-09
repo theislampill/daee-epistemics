@@ -34,7 +34,7 @@ raw discourse
 -> internal TTP step(s): target -> operation -> result
 -> burden landing
 → family-local load floor
-→ output-release rubric        ← THIS FILE
+→ output-release rubric        â† THIS FILE
 → diagnostic render contract
 → bounded public response
 → post-render state re-read / re-entry gate
@@ -61,7 +61,7 @@ This rubric governs release order and re-entry. It is not a render template, rou
 proof bank, or permission to dump held downstream material.
 
 **Core principle:** use the runtime notation owned by `recursive-state-transitions.md`:
-`H(n+1) = (Hn ∪ InputLive_n) - Released_n`; `Land(B) -> R`; `R required before STOP/RECURSE`.
+`H(n+1) = (Hn âˆª InputLive_n) - Released_n`; `Land(B) -> R`; `R required before STOP/RECURSE`.
 Gloss: Held means traversal-delayed, not response-delayed. Apply the governing TTP, refresh
 state, reassess upstream/downstream and first-/higher-order burdens, then continue only if another
 permitted `B` remains live. STOP is invalid unless the post-render gate has run; if another live
@@ -93,7 +93,7 @@ no input-anchored burden remains. A planned continuation queue proposes order; i
 override this state-transition judgment.
 
 For the required compact DSL/IR header + Layer B + State/noetic re-read shape, Layer A limits, and
-single-pass Layer A/B cosplay guard, use `diagnostic-render-contract.md`. For the
+single-pass Layer A/B surface-compliance failure guard, use `diagnostic-render-contract.md`. For the
 minimum visible transition spine and valid transition example, use
 `recursive-state-transitions.md`.
 
@@ -152,13 +152,15 @@ They become separate burden-cycles only if `R` shows a new input-anchored `B` no
 as `s`. But `s` remains plural and operative: each active TTP receives a distinct target,
 operation, and result before `Land(B)`.
 
-Before a fourth major operative submove is released inside one Layer B, run the submove
-saturation gate from `recursive-state-transitions.md`. If the next move changes target-family,
-claim-level, source/noetic frame, claim cluster, or restoration vector, the current burden must
-land and state must be re-read before the next burden is released. If the fourth move is merely
-available rather than materially necessary, HOLD or PARTIAL rather than inflating Layer B. This
-gate prevents argument dumping; it must not be used to erase a materially necessary TTP submove
-or to demote a live identity/source-status implication into a label.
+When one burden requires more than three major operative submoves, run the submove saturation
+gate from `recursive-state-transitions.md` as a cohesion audit, not as a count cap. If the next
+move changes target-family, claim-level, source/noetic frame, claim cluster, or restoration
+vector, the current burden must land and state must be re-read before the next burden is
+released. If the additional move is merely available rather than materially necessary, HOLD or
+PARTIAL rather than inflating Layer B. If it is materially necessary and cohesive, release it
+as its own distinct target -> operation -> result. This gate prevents argument dumping; it must
+not be used to erase a materially necessary TTP submove, consolidate active functions, or demote
+a live identity/source-status implication into a label.
 
 **Default Final-Output Preflight Gate (mandatory):**
 Before emitting any default `/daee-epistemics` answer, scan the proposed final response
@@ -260,7 +262,7 @@ Before releasing any source-backed claim, confirm:
 
 If any line fails, rewrite before output. This is a release failure even when the prose is
 clean. Authoritative wording is in
-`references/diagnostics/recursive-state-transitions.md §Source-Status & Noetic-Frame
+`references/diagnostics/recursive-state-transitions.md ?Source-Status & Noetic-Frame
 Non-Equivalence Discipline`. This release check is universal across modes.
 
 **Grounded noetic re-read release check:**
@@ -282,7 +284,7 @@ equivalent), confirm:
 
 A formatted but ungrounded noetic re-read fails this check even when each field appears
 populated. Authoritative wording is in
-`references/diagnostics/recursive-state-transitions.md §Grounded Noetic Re-Read Shape`.
+`references/diagnostics/recursive-state-transitions.md ?Grounded Noetic Re-Read Shape`.
 
 **Layer A / Layer B release checks:**
 Layer A may expose only enough diagnostic state to make the current pass auditable. It names the
@@ -306,7 +308,7 @@ leakage.
 Before emitting a default response, check:
 
 ```text
-Layer A — Compact DSL/IR header is present
+Layer A ? Compact DSL/IR header is present
 read status, confidence, claim_level, pattern_profile, reason-category, concealment,
 deformation, DO-orient, live noetic burden, current bounded operator, held,
 source-status/noetic-frame, and gate/release decision are present
@@ -322,8 +324,8 @@ Restorative Response identifies restored order, restored criterion/source/warran
 Closing Formulation appears once at the end after Restorative Response
 Closing Formulation does not substitute for state/noetic re-read or self-close each burden
 non-trivial operators include compact TTP/operator trace when needed
-no more than three major operative submoves are released inside one Layer B unless R licenses a new burden-cycle
-fourth-submove release is blocked unless the submove saturation gate records necessity and cohesion
+more-than-three major operative submoves trigger the submove saturation cohesion audit
+additional cohesive necessary submoves remain distinct target -> operation -> result units
 submove saturation is not a merge license; active TTP/operator functions remain distinct or the output is PARTIAL
 TTP entry criteria were met
 TTP exit criteria produced a result
@@ -337,6 +339,11 @@ Bounded does not mean tiny; clean prose does not mean shallow; no ledger does no
 Do not optimize for shortness by skipping an eligible same-input burden. Default output
 may be longer in complex cases when the refreshed gate requires multiple bounded passes, but it
 must remain pass-by-pass and may not become a comprehensive essay dump.
+For hard, compound, or deformed Level 1/2 cases, release sufficiency requires enough rendered
+diagnostic, theological, and restorative substance for each input-anchored burden to land.
+Anti-padding language cannot be used as a shortest-output target, cannot hide a warranted
+per-burden Layer A re-entry, and cannot turn a materially live worldview/identity criterion
+into a brief source-status label.
 Do not close with Restorative Response or Closing Formulation while `R(H,Delta)` names a
 remaining input-anchored burden that is now eligible. Continue with the next bounded pass,
 or mark PARTIAL with the next live burden when response/tool/interaction limits block it.
@@ -349,10 +356,15 @@ is a continuation or PARTIAL reason, not a closure reason.
 The release target is governed recursive sufficiency: complete-enough restoration of the live
 same-input noetic structure under the DSL/IR gates, not shortness, length, or topic coverage for
 its own sake.
+Within those gates, the skill should address as many input-anchored live burdens and materially
+active submoves as the case makes available. No-excess release forbids padding, owner dumps, and
+unlicensed doctrine; it does not license consolidation of active burdens or TTP/operator
+functions into fewer operations. If the output cannot traverse the remaining live structure, it
+must name the next live burden and blocked submove(s) as PARTIAL rather than close.
 PARTIAL requires concrete limit reason: name the live burden and the response/tool/interaction
 limit preventing traversal. A bare PARTIAL label is not a release decision.
-This is the output-release form of `anti-patterns.md` Route Cosplay Failure.
-It also prevents `anti-patterns.md` Clean Essay Cosplay: clean prose is valid only if pipeline
+This is the output-release form of `anti-patterns.md` Route Surface-Compliance Failure Failure.
+It also prevents `anti-patterns.md` Clean Essay Surface-Compliance Failure: clean prose is valid only if pipeline
 execution is visible through prose, not through a topical itinerary.
 Moving from the current live burden to downstream doctrine requires state re-read prose; hidden premises
 listed without operator result do not satisfy the release gate. Moving from imported criterion
@@ -413,7 +425,7 @@ route plan, scholar/source parade, school-label context, genealogy, and public e
 
 ## Release Question
 
-Before releasing any content, ask: *Is this response releasing the right content, in the right order, for the current refreshed case-state — no more, no less, not before upstream blockers clear?*
+Before releasing any content, ask: *Is this response releasing the right content, in the right order, for the current refreshed case-state ? no more, no less, not before upstream blockers clear?*
 
 ---
 
@@ -478,7 +490,7 @@ field label.
 |---------|-------------|
 | Lexical-ontological trap / loaded term | `tactics/M9-predication-mode.md` |
 | Semantic neutralization (recontenting / evacuation) | `diagnostics/prophetic-discourse-neutralization.md` |
-| Authority-order inversion | `diagnostics/foreign-premise-detection.md` §O-1 |
+| Authority-order inversion | `diagnostics/foreign-premise-detection.md` ?O-1 |
 | Imported criterion or tribunal | `diagnostics/foreign-premise-detection.md` |
 | Static-perfection tribunal | `diagnostics/perfection-criterion-usurpation.md` |
 | Proof-method overreach | `diagnostics/proof-method-audit.md` |
@@ -487,7 +499,7 @@ field label.
 | Necessity/contingency proof-grammar overreach | `diagnostics/proof-method-audit.md` |
 | Composition / dependence pressure | `case-library/do-attribute-precision.md` via `tactics/M9-predication-mode.md` |
 | Occurrence-to-createdness collapse | `diagnostics/kalamic-interlocutor.md` |
-| Over-intellectualization / abstraction-as-cure pressure | `anti-patterns.md §Transcendence Default / Abstraction-as-Cure` |
+| Over-intellectualization / abstraction-as-cure pressure | `anti-patterns.md ?Transcendence Default / Abstraction-as-Cure` |
 | Grief / register hold | `procedures/P7-restoration-stops.md` Stop 1 |
 | Thin-basis underdetermination | `procedures/P7-restoration-stops.md` Stop 4 |
 
@@ -497,6 +509,13 @@ field label.
 
 **Pass:**
 - The response releases only the smallest sufficient corrective move for the current refreshed state.
+- "Sufficient" is measured by landed live burden-state, not by brevity. In a hard, compound,
+  or deformed case, the smallest sufficient corrective move may be a full burden-cycle with
+  several operative submoves, revealed-text operation where the mechanism is named, and a
+  visible re-entry before the next released burden.
+- "Smallest sufficient" never means consolidating distinct active submoves. If several
+  input-anchored operator functions are materially active inside the current burden, each
+  receives its own target -> operation -> result or the response marks PARTIAL.
 - It does not expose more framework machinery than the case requires.
 - It does not stack arguments after the governing move has landed.
 - It does not convert restoration into a concession press.
@@ -541,7 +560,7 @@ Downstream content must remain held while any of the following are active:
 **Pass:**
 - Downstream material may be named as downstream but not fully released before its governing conditions are met.
 - Holding is pass-scoped and traversal-scoped, not permanent suppression.
-- `H(n+1) = (Hn ∪ InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
+- `H(n+1) = (Hn âˆª InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
 - After the current `B` lands, `R` reassesses held material.
 - If held material remains live and now governs, it becomes the next bounded pass; if not, it is dropped, compressed, or resolved.
 
@@ -604,6 +623,8 @@ Ordinary Level 1 answers may compress this shape, but the state re-read and deci
 
 **Pass:**
 - The public answer gives the smallest sufficient Layer B corrective move for the current pass.
+- In hard cases, the sufficient Layer B move is the amount needed to perform the active
+  owner-floor operation(s), not the shortest paragraph compatible with the heading.
 - It avoids unnecessary diagnostic labels, owner names, PF codes, or theoretical explanation unless the case or user request calls for diagnostic visibility.
 - It remains case-sensitive rather than globally templated.
 - It may use compact lab-report form, but only with fields that materially serve the case.
@@ -640,7 +661,7 @@ Ordinary Level 1 answers may compress this shape, but the state re-read and deci
 
 ### 8. Diagnostic Render Eligibility
 
-**Pass — compact diagnostic render is allowed or preferred when:**
+**Pass ? compact diagnostic render is allowed or preferred when:**
 - The user invokes `/daee-epistemics:dsl`.
 - The user asks for diagnostic transparency.
 - The user invokes plain `/daee-epistemics`; the default compact DSL/IR header is mandatory.
@@ -671,87 +692,87 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 
 ## Failure Tests
 
-### FT-1 — Loaded term
+### FT-1 ? Loaded term
 **Input:** Is God a body?
 **Bad output:** Yes/no answer before disambiguating body/jism.
 **Required behavior:** Split the loaded term (ordinary and technical senses) before doctrinal answer; block false sense-shift; hold downstream attribute content until cleared.
 
-### FT-2 — Static perfection tribunal
+### FT-2 ? Static perfection tribunal
 **Input:** A God who speaks or acts in time cannot be perfect.
 **Bad output:** Generic attribute answer or anthropomorphism answer before handling imported perfection tribunal.
 **Required behavior:** Identify imported/static perfection tribunal; refuse tribunal-status; then route downstream to speech/action, predication, composition, or attribute content as appropriate.
 
-### FT-3 — Semantic neutralization
+### FT-3 ? Semantic neutralization
 **Input:** We affirm the text, but it gives no determinate guidance here.
 **Bad output:** First-order interpretation before handling semantic neutralization.
 **Required behavior:** Distinguish ordinary interpretation from guidance-nullification; handle semantic neutralization before downstream interpretive content.
 
-### FT-4 — Authority-order inversion
+### FT-4 ? Authority-order inversion
 **Input:** Reason validates transmission, so reason can overrule transmission.
 **Bad output:** Treating this as ordinary reason/revelation tension.
 **Required behavior:** Route through authority-order inversion (O-1); distinguish sound reason supporting transmission from imported rational tribunal subordinating it.
 
-### FT-5 — Composition/dependence pressure
+### FT-5 ? Composition/dependence pressure
 **Input:** Real attributes make God composite and dependent.
 **Bad output:** Doctrinal attribute answer before clearing lexical/category/definition pressure.
 **Required behavior:** Identify loaded terms (composition, parts, dependence, other-than); check ordinary/technical/equivocal use; block illicit move from conceptual distinction to separable parts; only then release attribute content.
 
-### FT-6 — Causal regress
+### FT-6 ? Causal regress
 **Input:** An infinite causal regress is impossible, therefore...
 **Bad output:** Cosmological-argument prose before classifying the regress.
 **Required behavior:** Classify causal-series / infinity / dependency claim; distinguish simultaneous vs. successive series; distinguish causal regress from numerical infinity; then decide whether proof prose is permitted.
 
-### FT-7 — Necessity/contingency overreach
+### FT-7 ? Necessity/contingency overreach
 **Input:** The necessary existent proof establishes the whole doctrine.
 **Bad output:** Allowing proof grammar to become total doctrine.
 **Required behavior:** Audit proof-method; identify what the proof can establish and what it cannot; prevent proof-method from becoming primary epistemic basis.
 
-### FT-8 — Over-intellectualization
+### FT-8 ? Over-intellectualization
 **Input:** Give a deeper theoretical answer.
 **Bad output:** Escalating abstraction automatically.
 **Required behavior:** Check whether live need is restoration, recognition, testimony, practice, or order of the knower; do not answer with more abstraction if abstraction-as-cure pressure is live.
 
-### FT-9 — Diagnostic machinery dump
+### FT-9 ? Diagnostic machinery dump
 **Input:** /daee-epistemics Is God in a direction?
 **Bad output:** Full exhaustive template with every case-state field, all modules, and long proof expansion.
 **Required behavior:** Compact DSL/IR header required; loaded term governs first; downstream attribute content held; only materially relevant fields shown.
 
-### FT-10 — Held-but-answered contradiction
+### FT-10 ? Held-but-answered contradiction
 **Input:** Do attributes imply composition? Also answer whether the doctrine is coherent.
 **Bad output:** Says composition is upstream and held, then answers full coherence downstream.
 **Required behavior:** Composition/dependence pressure governs first; coherence answer downstream and held until lexical/category discipline clears.
 
-### FT-11 — Patch-report leakage
+### FT-11 ? Patch-report leakage
 **Input:** /daee-epistemics Why is secular neutrality not neutral?
 **Bad output:** Full changelog-style report with files inspected, proof table, and implementation verdict.
 **Required behavior:** Runtime compact diagnostic response, not patch report.
 
-### FT-12 — Template-driven routing
+### FT-12 ? Template-driven routing
 **Input:** /daee-epistemics Is God a body?
 **Bad output:** Fills every field in the diagnostic template and thereby implies routing was done.
 **Required behavior:** Validated IR/routing first, render second; fields only surfaced if materially helpful.
 
-### FT-13 — Held-as-never-answer
+### FT-13 ? Held-as-never-answer
 **Input:** /daee-epistemics Is God a body? Also explain whether divine attributes imply composition.
 **Bad output:** Loaded term governs first. Composition is downstream and held. Response ends permanently with no reassessment rule.
 **Required behavior:** Disambiguate body/jism first. Refresh state. If composition/dependence pressure remains live, it becomes the next bounded pass. If the loaded-term clarification dissolves the composition pressure, compress or drop it.
 
-### FT-14 — Recursive dump
+### FT-14 ? Recursive dump
 **Input:** /daee-epistemics Is God in a direction? Also, doesn't that imply body, place, limit, and composition?
 **Bad output:** Answers direction, body, place, limit, and composition all at once with a full attribute treatise.
 **Required behavior:** Identify the governing loaded spatial term. Clear semantic/lexical discipline first. Refresh state. Only release the next pressure if it remains live and no stop/hold/gate blocks it.
 
-### FT-15 — State re-read-as-user-reply-only
+### FT-15 ? State re-read-as-user-reply-only
 **Input:** /daee-epistemics Refute secular neutrality.
 **Bad output:** Names imported tribunal, says all downstream positive reconstruction is held, and refuses to proceed unless the user replies.
 **Required behavior:** Clear the false neutrality tribunal. Refresh state inside the response if the current answer itself sufficiently clears the criterion. If sovereignty-regress or authority-order remains live and eligible, release a bounded next move. Do not dump every political-theology argument.
 
-### FT-16 — Stop discipline after recognition/contact
+### FT-16 ? Stop discipline after recognition/contact
 **Input:** Interlocutor admits: "Okay, I see secular neutrality is not neutral. What follows?"
 **Bad output:** Launches a long cumulative proof stack.
 **Required behavior:** Recognition/contact has surfaced. Stop concession pressure. Offer one bounded next move or one clarifying invitation.
 
-### FT-17 — Premature closure without re-entry
+### FT-17 ? Premature closure without re-entry
 **Input:** /daee-epistemics The moral objection is really that modern liberal equality is the judge of revelation. Also, if that standard falls, what should govern the question instead?
 **Bad output:** Correctly exposes the imported tribunal, then closes as though the whole case is complete.
 **Required behavior:** Clear the imported tribunal, run the post-render gate, recheck held routes, and identify whether the positive criterion-order pass is now eligible. If eligible and no stop/hold/gate blocks it, continue with one bounded next move. If limits prevent it, render partial release-status prose rather than closing.
@@ -795,9 +816,9 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 | `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape after this rubric passes |
 | `references/diagnostics/framework-pipeline.md` | Operative pipeline audit surface; shows release and post-render gate placement |
 | `references/diagnostics/recursive-state-transitions.md` | Canonical abstract owner for STOP / HOLD / RECURSE / PARTIAL semantics |
-| `references/diagnostics/routing-precedence.md` | §VII distinguishes routing precedence from output-release and render |
+| `references/diagnostics/routing-precedence.md` | ?VII distinguishes routing precedence from output-release and render |
 | `references/procedures/P7-restoration-stops.md` | P7 stops govern current-pass deployment; this rubric governs release discipline |
 | `references/diagnostics/diagnostic-ir.md` | IR fields `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `continuation_eligibility`, and `post_render_gate` carry the release state |
-| `references/diagnostics/case-state-schema.md` | Concealment × orientation matrix governs register-hold discipline |
+| `references/diagnostics/case-state-schema.md` | Concealment Ã— orientation matrix governs register-hold discipline |
 | `references/diagnostics/anti-patterns.md` | Anti-patterns for failure modes this rubric prevents |
-| `skill/SKILL.md §V.A` | Control-plane pointer to the owner files; this file owns release amount and held/released discipline |
+| `skill/SKILL.md ?V.A` | Control-plane pointer to the owner files; this file owns release amount and held/released discipline |

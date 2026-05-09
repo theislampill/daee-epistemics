@@ -15,7 +15,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- SOURCE: atomics/skill/references/techniques/INDEX.md -->
 <!-- MODULE_ID: techniques-index -->
 <!-- MODULE_CLASS: governance -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/INDEX.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/INDEX.md -->
 <!-- SOURCE_SHA256: 1cc5f6bb1338f0e68c8bf0fc5e121c786955b216ee4e42a698b3b3cbfa56787b -->
 
 ---
@@ -83,7 +83,7 @@ Techniques are not route itineraries or argument banks. A technique may structur
 <!-- SOURCE: atomics/skill/references/techniques/V2-reconstituting-reason.md -->
 <!-- MODULE_ID: V2-reconstituting-reason -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V2-reconstituting-reason.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V2-reconstituting-reason.md -->
 <!-- SOURCE_SHA256: ac54b05dfca3684c775be49aa5047c7428f9b37bfb6be36620597831fb3778ef -->
 
 ---
@@ -165,7 +165,7 @@ If none of these has occurred, stay with V2 or return to noetic/deformation diag
 <!-- SOURCE: atomics/skill/references/techniques/V3-regress-dissolution.md -->
 <!-- MODULE_ID: V3-regress-dissolution -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V3-regress-dissolution.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V3-regress-dissolution.md -->
 <!-- SOURCE_SHA256: ed53038de13bf63eab25d737307d690762abcab8d95d91536aaf826924d64707 -->
 
 ---
@@ -229,7 +229,7 @@ stop, register-hold, or semantic gate live for the next move.
 <!-- SOURCE: atomics/skill/references/techniques/V4-contamination-identification.md -->
 <!-- MODULE_ID: V4-contamination-identification -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V4-contamination-identification.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V4-contamination-identification.md -->
 <!-- SOURCE_SHA256: 8e9c922a6dc5875fe5ecf8c2a12b65c792871aceed1771f047de9e689cd0c925 -->
 
 ---
@@ -273,7 +273,7 @@ Two forms:
 <!-- SOURCE: atomics/skill/references/techniques/V5-directing-attention-signs.md -->
 <!-- MODULE_ID: V5-directing-attention-signs -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V5-directing-attention-signs.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V5-directing-attention-signs.md -->
 <!-- SOURCE_SHA256: dee7aa0a0b8a8ff0759494a7aa063d636db3342cc01f9b515ff085075dbcb5f1 -->
 
 ---
@@ -370,7 +370,7 @@ Track (b): "Human consciousness has a specific *normative* character — irreduc
 <!-- SOURCE: atomics/skill/references/techniques/V6-convergence.md -->
 <!-- MODULE_ID: V6-convergence -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V6-convergence.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V6-convergence.md -->
 <!-- SOURCE_SHA256: 19e53c17d8a1f659bdd817051ccea652fa0eda8bdd69b133c2195c841ca7880d -->
 
 ---
@@ -437,7 +437,7 @@ itself is what changes the case.
 <!-- SOURCE: atomics/skill/references/techniques/V7-taqlid-check.md -->
 <!-- MODULE_ID: V7-taqlid-check -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V7-taqlid-check.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V7-taqlid-check.md -->
 <!-- SOURCE_SHA256: 061575b560936da9699e7508df025bf762e8683127a8e17101df47debc77d2fc -->
 
 ---
@@ -485,7 +485,7 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- SOURCE: atomics/skill/references/techniques/V8-bila-kayf-anchor.md -->
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V8-bila-kayf-anchor.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V8-bila-kayf-anchor.md -->
 <!-- SOURCE_SHA256: 7c5bc7d960e95566f0c9a8b0cab34d0e87e39f66c1e7cf1310e3ad65b0e19d2d -->
 
 ---
@@ -592,7 +592,7 @@ For fuller treatment:
 <!-- SOURCE: atomics/skill/references/techniques/V9-necessary-knowledge-priority.md -->
 <!-- MODULE_ID: V9-necessary-knowledge-priority -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V9-necessary-knowledge-priority.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V9-necessary-knowledge-priority.md -->
 <!-- SOURCE_SHA256: 27bb00fd8b14098adef79d1c3544ecd86bff0ead863feeb729ba2f65e72e4b0f -->
 
 ---
@@ -645,7 +645,7 @@ catalogue_registered: true
 <!-- SOURCE: atomics/skill/references/techniques/V11-taqlid-transition.md -->
 <!-- MODULE_ID: V11-taqlid-transition -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V11-taqlid-transition.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V11-taqlid-transition.md -->
 <!-- SOURCE_SHA256: 597373d8235228f4b68c638fb14de69011c010428effba20316e49eef5719ea2 -->
 
 ---
@@ -829,7 +829,7 @@ procedure, not a tactical move; it may unfold across many exchanges, sometimes y
 <!-- SOURCE: atomics/skill/references/techniques/V12-tamanuc-exhaustion.md -->
 <!-- MODULE_ID: V12-tamanuc-exhaustion -->
 <!-- MODULE_CLASS: technique -->
-<!-- CANONICAL_PATH: atomics/skill/references/techniques/V12-tamanuc-exhaustion.md -->
+<!-- CANONICAL_PATH: skill/references/techniques/V12-tamanuc-exhaustion.md -->
 <!-- SOURCE_SHA256: 5310e5202365337ba6214301f21d9861fd5895ed66f9a474c1d544c6b954fd2e -->
 
 ---

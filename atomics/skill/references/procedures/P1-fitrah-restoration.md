@@ -87,6 +87,12 @@ default public output must not label the person as dead, diseased, corrupt, or h
 | absorbs every answer as new objection | argument-absorbent | stop/hold/question-only | further proofs | stable differentiator appears |
 | non-specialist confusion | clarity need | define/split/example | technical genealogy | user shows readiness for technical layer |
 
+Identity-performance holds proof-and-debate only when the posture itself is the governing
+blocker. If a publicly anchored worldview or identity frame supplies the moral criterion,
+authority-order, or restoration vector, do not treat source-status caution as a reason to drop
+the frame. Hold interior motive and culpability, but route the criterion/worldview analysis and
+feed the result into gentle practitioner instruction.
+
 ### Readiness-state guard
 
 Read heart-readiness as release state: receptive once truth is perceived, mixed with competing

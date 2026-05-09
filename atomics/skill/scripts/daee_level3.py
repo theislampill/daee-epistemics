@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-command Level 3 pilot runner for daee-epistemics.
+"""One-command Level 3 covered-scope route runner for daee-epistemics.
 
 This wrapper turns an input into:
 features.json -> route_plan.json -> validation/reconstruction verdicts ->
@@ -62,6 +62,9 @@ Land(B) requirements:
 Continuation queue:
 {_json_text(continuation)}
 
+Burden-local state envelopes:
+{_json_text([route_plan.get("first_live_burden", {}).get("state_envelope", {})] + [entry.get("state_envelope", {}) for entry in continuation])}
+
 Closure gate:
 {_json_text(route_plan.get("closure_gate", {}))}
 
@@ -97,7 +100,7 @@ Required execution shape:
 
 def simulated_output(route_plan: dict[str, Any]) -> str:
     lines = [
-        "# Level 3 Simulated Execution Scaffold",
+        "# Level 3 Simulated Validator Output",
         "",
         "Layer A - Compact DSL/IR Header [Burden 1]",
         f"- current live noetic burden: {route_plan.get('live_burden')}",
@@ -235,6 +238,7 @@ def run_single(
         "validation_fidelity": validation.get("validation_fidelity"),
         "reconstruction_fidelity": reconstruction.get("reconstruction_fidelity"),
         "execution_fidelity": execution.get("execution_fidelity") if execution else "not-run",
+        "execution_state_envelopes": execution.get("state_envelopes", []) if execution else [],
     }
     write_json(output_dir / "summary.json", summary)
     return summary
@@ -247,10 +251,10 @@ def _fixture_dirs(skill_root: Path) -> list[Path]:
     return sorted(path for path in fixtures_root.iterdir() if (path / "input.md").is_file())
 
 
-def _load_expected(skill_root: Path, fixture_id: str) -> dict[str, Any]:
+def _load_expected(skill_root: Path, fixture_id: str) -> dict[str, Any] | None:
     path = skill_root / "tests" / "expected" / f"{fixture_id}.json"
     if not path.is_file():
-        return {}
+        return None
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -396,6 +400,62 @@ Closing Formulation: closure licensed; no remaining input-anchored burden.
     if b3_missing_layer_verdict.get("execution_fidelity") == "pass":
         errors.append("layer-regression missing B2 Layer A unexpectedly passed")
 
+    b3_detached_owners = """# Synthetic detached marker route execution
+Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
+Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
+Owner-floor: M8-reductio - M8-reductio owner-floor result
+
+Layer A - Compact DSL/IR Header [Burden 1]
+- current live noetic burden: synthetic imported criterion burden
+- selected owner(s): foreign-premise-detection
+Layer B - Governed Response [Burden 1]
+First Burden: synthetic imported criterion burden
+B1.s1: execute first-live owner
+Target: first span
+Operation: expose the imported criterion
+Result: foreign-premise-detection owner-floor result
+Land(B1): first burden landed
+R(H,Delta): RECURSE - next span-backed burden released
+
+Layer A - Compact DSL/IR Header [Burden 2]
+- current live noetic burden: reason-repair
+- selected owner(s): V2-reconstituting-reason
+Layer B - Governed Response [Burden 2]
+Second Burden: reason-repair
+Target: second span
+Operation: repair the proof-status inversion
+Result: V2-reconstituting-reason owner-floor result
+Land(B2): second burden landed
+R(H,Delta): RECURSE - next span-backed burden released
+
+Layer A - Compact DSL/IR Header [Burden 3]
+- current live noetic burden: moral-tribunal-check
+- selected owner(s): M8-reductio
+Layer B - Governed Response [Burden 3]
+Third Burden: moral-tribunal-check
+Target: third span
+Operation: check the moral tribunal against its own premise
+Result: M8-reductio owner-floor result
+Land(B3): third burden landed
+R(H,Delta): RECURSE - no remaining input-anchored burdens
+Closing Formulation: closure licensed; no remaining input-anchored burden.
+"""
+    b3_detached_verdict = check_execution(b3_plan, b3_detached_owners)
+    if b3_detached_verdict.get("execution_fidelity") == "pass":
+        errors.append("structural-attachment detached owner-floor markers unexpectedly passed")
+    retry_prompt = str(b3_detached_verdict.get("retry_prompt", ""))
+    if "B1" not in retry_prompt or "foreign-premise-detection" not in retry_prompt:
+        errors.append("structural-attachment retry prompt lost failed burden/owner identity")
+
+    b3_single_reread = b3_output.replace(
+        "R(H,Delta): RECURSE - next span-backed burden released",
+        "State read: next span-backed burden released",
+        2,
+    )
+    b3_single_reread_verdict = check_execution(b3_plan, b3_single_reread)
+    if b3_single_reread_verdict.get("execution_fidelity") == "pass":
+        errors.append("structural-attachment multi-burden output with one R(H,Delta) unexpectedly passed")
+
     b3_no_reread = b3_output.replace("R(H,Delta): RECURSE - next span-backed burden released\n\nLayer A - Compact DSL/IR Header [Burden 2]", "Layer A - Compact DSL/IR Header [Burden 2]", 1)
     b3_no_reread_verdict = check_execution(b3_plan, b3_no_reread)
     if b3_no_reread_verdict.get("execution_fidelity") == "pass":
@@ -422,6 +482,12 @@ Layer A - Compact DSL/IR Header [Burden 2]
 - release condition / governance verdict: HOLD because refreshed state shows the queued burden is not licensed after B1 landed
 - held/deferred/rejected alternatives: V2-reconstituting-reason held by state delta
 HOLD: B2 is held with a state-delta reason, not mechanically executed.
+
+Layer A - Compact DSL/IR Header [Burden 3]
+- current live noetic burden: moral-tribunal-check
+- release condition / governance verdict: HOLD because refreshed state says M8-reductio is not licensed after B2 hold
+- held/deferred/rejected alternatives: M8-reductio held by state delta
+HOLD: B3 / M8-reductio is held with a state-delta reason; next-live state remains capability-bound.
 """
     b3_valid_hold_verdict = check_execution(b3_plan, b3_valid_hold)
     if b3_valid_hold_verdict.get("execution_fidelity") == "fail":
@@ -543,7 +609,14 @@ Closing Formulation: no remaining input-anchored burden.
     return errors
 
 
-def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simulate_output_flag: bool) -> int:
+def run_fixtures(
+    skill_root: Path,
+    output_dir: Path,
+    repeat_stability: int,
+    simulate_output_flag: bool,
+    *,
+    fail_on_partial: bool = False,
+) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     errors: list[str] = []
     summaries: list[dict[str, Any]] = []
@@ -558,6 +631,9 @@ def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simu
         )
         summaries.append({"fixture": fixture_id, **summary})
         expected = _load_expected(skill_root, fixture_id)
+        if expected is None:
+            errors.append(f"{fixture_id}: expected fixture file missing")
+            continue
         errors.extend([f"{fixture_id}: {error}" for error in _compare_expected(summary, expected)])
         if expected.get("shallow_output_must_fail"):
             route_plan = json.loads((output_dir / fixture_id / "run-1" / "route_plan.json").read_text(encoding="utf-8"))
@@ -570,6 +646,10 @@ def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simu
                 errors.append(f"{fixture_id}: {key} is {summary.get(key)}")
         if simulate_output_flag and summary.get("execution_fidelity") != "pass":
             errors.append(f"{fixture_id}: execution_fidelity is {summary.get('execution_fidelity')}")
+        if fail_on_partial:
+            for key in ("validation_fidelity", "reconstruction_fidelity", "execution_fidelity"):
+                if summary.get(key) in {"partial", "not-run"}:
+                    errors.append(f"{fixture_id}: {key} is {summary.get(key)} under --fail-on-partial")
 
     stability_fixture = skill_root / "tests" / "fixtures" / "stability-repetition" / "input.md"
     if stability_fixture.is_file():
@@ -611,7 +691,7 @@ def run_fixtures(skill_root: Path, output_dir: Path, repeat_stability: int, simu
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run the daee-epistemics Level 3 pilot pipeline.")
+    parser = argparse.ArgumentParser(description="Run the daee-epistemics Level 3 covered-scope pipeline.")
     parser.add_argument("--input", help="Single input.md path.")
     parser.add_argument("--output-dir", "--out", dest="output_dir", default="level3-runs", help="Output directory.")
     parser.add_argument("--skill-root", default=str(default_skill_root()), help="Skill package root.")
@@ -619,12 +699,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--simulate-output", action="store_true", help="Generate deterministic simulated output for validator testing.")
     parser.add_argument("--run-fixtures", action="store_true", help="Run all bundled Level 3 fixtures.")
     parser.add_argument("--repeat-stability", type=int, default=5, help="Stability repetitions for stability-repetition fixture.")
+    parser.add_argument(
+        "--fail-on-partial",
+        action="store_true",
+        help="Fail when validation/reconstruction/execution is partial, not-run, or unvalidated.",
+    )
     args = parser.parse_args(argv)
 
     skill_root = Path(args.skill_root).resolve()
     output_dir = Path(args.output_dir).resolve()
     if args.run_fixtures:
-        return run_fixtures(skill_root, output_dir, args.repeat_stability, args.simulate_output)
+        return run_fixtures(
+            skill_root,
+            output_dir,
+            args.repeat_stability,
+            args.simulate_output,
+            fail_on_partial=args.fail_on_partial,
+        )
     if not args.input:
         print("daee_level3: --input is required unless --run-fixtures is used", file=sys.stderr)
         return 2
@@ -640,6 +731,10 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     if summary.get("execution_fidelity") == "fail":
         return 1
+    if args.fail_on_partial:
+        for key in ("validation_fidelity", "reconstruction_fidelity", "execution_fidelity"):
+            if summary.get(key) in {"partial", "not-run"}:
+                return 1
     return 0
 
 

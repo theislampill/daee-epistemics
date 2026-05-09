@@ -23,8 +23,10 @@
       "N_Ashʿarī[*]",
       "family label != operative N",
       "live predicate/warrant/criterion/authority-order",
-      "classical-theology umbrella",
       "intra-school flattening"
+    ],
+    "prohibition_support_present": [
+      "classical-theology umbrella"
     ],
     "forbidden_governance": [
       "classical-theology umbrella"

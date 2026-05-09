@@ -18,6 +18,7 @@ from compiled_runtime_lib import (
     repo_root,
     sha256_file,
 )
+from package_shape import validate_skill_tree
 
 
 def main() -> int:
@@ -46,6 +47,7 @@ def main() -> int:
             "bundle mapping version drift: "
             f"manifest {manifest.get('bundle_mapping_version')!r}, tool {BUNDLE_MAPPING_VERSION!r}"
         )
+    errors.extend(validate_skill_tree(root))
 
     metadata_copies = manifest.get("runtime_metadata_copies") or {}
     if not isinstance(metadata_copies, dict):

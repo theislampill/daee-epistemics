@@ -28,6 +28,20 @@ from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 OMNIBUS_RE = re.compile(r"(?i)(?:^OMNIBUS-|/omnibus/|\\omnibus\\|\.md$|\.json$|\.ya?ml$|/|\\)")
 NONE_VALUES = {"", "none", "none.", "n/a", "no", "null"}
 DECISIONS = {"STOP", "HOLD", "RECURSE", "PARTIAL"}
+REASON_CATEGORY_VALUES = {1, 2, 3, 4, "1", "2", "3", "4"}
+MATCHED_MODULE_KEYS = {"id", "module_class"}
+SOURCE_BASIS_KEYS = {"entries"}
+SOURCE_BASIS_ENTRY_KEYS = {"basis_type", "claim", "source_kind", "module_id", "source_ref", "section", "notes"}
+SOURCE_BASIS_TYPES = {"anchored", "inference", "speculative", "synthesis"}
+SOURCE_KINDS = {"input", "module", "schema", "catalogue", "operator"}
+POST_RENDER_GATE_KEYS = {
+    "cleared_this_pass",
+    "remaining_live_distortions",
+    "held_routes_rechecked",
+    "newly_released_routes",
+    "next_eligible_pass",
+    "recursion_decision",
+}
 
 
 POSITIVE_SAMPLE: dict[str, Any] = {
@@ -145,6 +159,30 @@ BAD_SAMPLES["reconstruction_partial_without_notes"] = (
     _sample_with(lambda s: (s.update({"reconstruction_fidelity": "partial"}), s.pop("reconstructor_notes", None))),
     "missing required field: reconstructor_notes",
 )
+BAD_SAMPLES["p7_none_combined_with_stop"] = (
+    _sample_with(lambda s: s.update({"p7_stops_active": ["none", "Stop-1"]})),
+    "p7_stops_active cannot combine none with active stops",
+)
+BAD_SAMPLES["invalid_reason_category"] = (
+    _sample_with(lambda s: s.update({"reason_category": "unknown"})),
+    "reason_category invalid oneOf value",
+)
+BAD_SAMPLES["matched_module_extra_key"] = (
+    _sample_with(lambda s: s["matched_modules"][0].update({"extra": "leak"})),
+    "matched_modules[0] additional property not allowed",
+)
+BAD_SAMPLES["source_basis_extra_key"] = (
+    _sample_with(lambda s: s["source_basis"].update({"extra": "leak"})),
+    "source_basis additional property not allowed",
+)
+BAD_SAMPLES["source_basis_entry_extra_key"] = (
+    _sample_with(lambda s: s["source_basis"]["entries"][0].update({"extra": "leak"})),
+    "source_basis.entries[0] additional property not allowed",
+)
+BAD_SAMPLES["post_render_gate_extra_key"] = (
+    _sample_with(lambda s: s["post_render_gate"].update({"extra": "leak"})),
+    "post_render_gate additional property not allowed",
+)
 
 COMPILED_MAP_BAD_SAMPLES = {
     "matched_module_absent_from_compiled_map": (
@@ -218,6 +256,15 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
         if spec.get("type") == "object" and not isinstance(value, dict):
             errors.append(f"schema: {field} must be object")
 
+    if "reason_category" in instance and instance.get("reason_category") not in REASON_CATEGORY_VALUES:
+        errors.append(f"schema: reason_category invalid oneOf value: {instance.get('reason_category')!r}")
+    p7_stops = instance.get("p7_stops_active")
+    if isinstance(p7_stops, list):
+        if "none" in p7_stops and len(p7_stops) > 1:
+            errors.append("schema: p7_stops_active cannot combine none with active stops")
+        if len(set(p7_stops)) != len(p7_stops):
+            errors.append("schema: p7_stops_active must have unique items")
+
     if instance.get("confidence") != "strong" and "decisive_missing_differentiator" not in instance:
         errors.append("schema: missing required field: decisive_missing_differentiator")
     if instance.get("read_status") != "dominant" and "decisive_missing_differentiator" not in instance:
@@ -236,6 +283,9 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
                 if not isinstance(item, dict):
                     errors.append(f"schema: matched_modules[{index}] must be object")
                     continue
+                extra = sorted(set(item) - MATCHED_MODULE_KEYS)
+                if extra:
+                    errors.append(f"schema: matched_modules[{index}] additional property not allowed: {', '.join(extra)}")
                 for field in ("id", "module_class"):
                     if not isinstance(item.get(field), str) or not item[field].strip():
                         errors.append(f"schema: matched_modules[{index}].{field} must be non-empty string")
@@ -245,6 +295,10 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
     source_basis = instance.get("source_basis")
     if source_basis is not None:
         entries = source_basis.get("entries") if isinstance(source_basis, dict) else None
+        if isinstance(source_basis, dict):
+            extra = sorted(set(source_basis) - SOURCE_BASIS_KEYS)
+            if extra:
+                errors.append("schema: source_basis additional property not allowed: " + ", ".join(extra))
         if not isinstance(entries, list) or not entries:
             errors.append("schema: source_basis.entries must be a non-empty array")
         else:
@@ -252,18 +306,40 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
                 if not isinstance(entry, dict):
                     errors.append(f"schema: source_basis.entries[{index}] must be object")
                     continue
+                extra = sorted(set(entry) - SOURCE_BASIS_ENTRY_KEYS)
+                if extra:
+                    errors.append(f"schema: source_basis.entries[{index}] additional property not allowed: {', '.join(extra)}")
                 for field in ("basis_type", "claim", "source_kind"):
                     if not isinstance(entry.get(field), str) or not entry[field].strip():
                         errors.append(f"schema: source_basis.entries[{index}].{field} must be non-empty string")
+                if entry.get("basis_type") not in SOURCE_BASIS_TYPES:
+                    errors.append(f"schema: source_basis.entries[{index}].basis_type invalid enum value: {entry.get('basis_type')!r}")
+                if entry.get("source_kind") not in SOURCE_KINDS:
+                    errors.append(f"schema: source_basis.entries[{index}].source_kind invalid enum value: {entry.get('source_kind')!r}")
                 if entry.get("source_kind") == "module" and not isinstance(entry.get("module_id"), str):
                     errors.append(f"schema: source_basis.entries[{index}].module_id required for module source")
+                if entry.get("basis_type") in {"anchored", "inference", "speculative"} and not isinstance(entry.get("source_ref"), str):
+                    errors.append(f"schema: source_basis.entries[{index}].source_ref required for anchored/inference/speculative basis")
 
     post_gate = instance.get("post_render_gate")
     if isinstance(post_gate, dict):
+        extra = sorted(set(post_gate) - POST_RENDER_GATE_KEYS)
+        if extra:
+            errors.append("schema: post_render_gate additional property not allowed: " + ", ".join(extra))
         required_gate = (properties.get("post_render_gate", {}).get("required") or [])
         for field in required_gate:
             if field not in post_gate:
                 errors.append(f"schema: post_render_gate missing required field: {field}")
+        for field in ("cleared_this_pass", "remaining_live_distortions", "next_eligible_pass"):
+            if field in post_gate and (not isinstance(post_gate.get(field), str) or not post_gate[field].strip()):
+                errors.append(f"schema: post_render_gate.{field} must be non-empty string")
+        for field in ("held_routes_rechecked", "newly_released_routes"):
+            if field in post_gate:
+                values = post_gate.get(field)
+                if not isinstance(values, list):
+                    errors.append(f"schema: post_render_gate.{field} must be array")
+                elif len(set(values)) != len(values):
+                    errors.append(f"schema: post_render_gate.{field} must have unique items")
         decision = post_gate.get("recursion_decision")
         if decision not in DECISIONS:
             errors.append(f"schema: post_render_gate.recursion_decision invalid: {decision!r}")

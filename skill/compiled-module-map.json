@@ -6,7 +6,7 @@
   "modules": {
     "E1-broadening-evidence": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/E1-broadening-evidence.md",
+      "canonical_path": "skill/references/tactics/E1-broadening-evidence.md",
       "module_class": "tactic",
       "module_id": "E1-broadening-evidence",
       "source": "atomics/skill/references/tactics/E1-broadening-evidence.md",
@@ -14,7 +14,7 @@
     },
     "E2-inferential-criterion": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/E2-inferential-criterion.md",
+      "canonical_path": "skill/references/tactics/E2-inferential-criterion.md",
       "module_class": "tactic",
       "module_id": "E2-inferential-criterion",
       "source": "atomics/skill/references/tactics/E2-inferential-criterion.md",
@@ -22,7 +22,7 @@
     },
     "E3-cumulative-case": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/E3-cumulative-case.md",
+      "canonical_path": "skill/references/tactics/E3-cumulative-case.md",
       "module_class": "tactic",
       "module_id": "E3-cumulative-case",
       "source": "atomics/skill/references/tactics/E3-cumulative-case.md",
@@ -30,7 +30,7 @@
     },
     "E4-cross-cultural-check": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/E4-cross-cultural-check.md",
+      "canonical_path": "skill/references/tactics/E4-cross-cultural-check.md",
       "module_class": "tactic",
       "module_id": "E4-cross-cultural-check",
       "source": "atomics/skill/references/tactics/E4-cross-cultural-check.md",
@@ -38,7 +38,7 @@
     },
     "F1-supra-vs-antirational": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/F1-supra-vs-antirational.md",
+      "canonical_path": "skill/references/tactics/F1-supra-vs-antirational.md",
       "module_class": "tactic",
       "module_id": "F1-supra-vs-antirational",
       "source": "atomics/skill/references/tactics/F1-supra-vs-antirational.md",
@@ -46,7 +46,7 @@
     },
     "F2-volitional-dimensions": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/F2-volitional-dimensions.md",
+      "canonical_path": "skill/references/tactics/F2-volitional-dimensions.md",
       "module_class": "tactic",
       "module_id": "F2-volitional-dimensions",
       "source": "atomics/skill/references/tactics/F2-volitional-dimensions.md",
@@ -54,7 +54,7 @@
     },
     "F3-practice-epistemic-access": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/F3-practice-epistemic-access.md",
+      "canonical_path": "skill/references/tactics/F3-practice-epistemic-access.md",
       "module_class": "tactic",
       "module_id": "F3-practice-epistemic-access",
       "source": "atomics/skill/references/tactics/F3-practice-epistemic-access.md",
@@ -62,7 +62,7 @@
     },
     "M1-self-refutation": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M1-self-refutation.md",
+      "canonical_path": "skill/references/tactics/M1-self-refutation.md",
       "module_class": "tactic",
       "module_id": "M1-self-refutation",
       "source": "atomics/skill/references/tactics/M1-self-refutation.md",
@@ -70,7 +70,7 @@
     },
     "M1P-performative-self-refutation": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M1P-performative-self-refutation.md",
+      "canonical_path": "skill/references/tactics/M1P-performative-self-refutation.md",
       "module_class": "tactic",
       "module_id": "M1P-performative-self-refutation",
       "source": "atomics/skill/references/tactics/M1P-performative-self-refutation.md",
@@ -78,7 +78,7 @@
     },
     "M2-prior-probability": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M2-prior-probability.md",
+      "canonical_path": "skill/references/tactics/M2-prior-probability.md",
       "module_class": "tactic",
       "module_id": "M2-prior-probability",
       "source": "atomics/skill/references/tactics/M2-prior-probability.md",
@@ -86,7 +86,7 @@
     },
     "M3-orphaned-intuition": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M3-orphaned-intuition.md",
+      "canonical_path": "skill/references/tactics/M3-orphaned-intuition.md",
       "module_class": "tactic",
       "module_id": "M3-orphaned-intuition",
       "source": "atomics/skill/references/tactics/M3-orphaned-intuition.md",
@@ -94,7 +94,7 @@
     },
     "M4-grief-register": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M4-grief-register.md",
+      "canonical_path": "skill/references/tactics/M4-grief-register.md",
       "module_class": "tactic",
       "module_id": "M4-grief-register",
       "source": "atomics/skill/references/tactics/M4-grief-register.md",
@@ -102,7 +102,7 @@
     },
     "M5-deformation-triage": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/tactics/M5-deformation-triage.md",
+      "canonical_path": "skill/references/tactics/M5-deformation-triage.md",
       "module_class": "tactic",
       "module_id": "M5-deformation-triage",
       "source": "atomics/skill/references/tactics/M5-deformation-triage.md",
@@ -110,7 +110,7 @@
     },
     "M6-excluded-middle": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M6-excluded-middle.md",
+      "canonical_path": "skill/references/tactics/M6-excluded-middle.md",
       "module_class": "tactic",
       "module_id": "M6-excluded-middle",
       "source": "atomics/skill/references/tactics/M6-excluded-middle.md",
@@ -118,7 +118,7 @@
     },
     "M7-definition-anchor": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M7-definition-anchor.md",
+      "canonical_path": "skill/references/tactics/M7-definition-anchor.md",
       "module_class": "tactic",
       "module_id": "M7-definition-anchor",
       "source": "atomics/skill/references/tactics/M7-definition-anchor.md",
@@ -126,7 +126,7 @@
     },
     "M8-reductio": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M8-reductio.md",
+      "canonical_path": "skill/references/tactics/M8-reductio.md",
       "module_class": "tactic",
       "module_id": "M8-reductio",
       "source": "atomics/skill/references/tactics/M8-reductio.md",
@@ -134,7 +134,7 @@
     },
     "M9-predication-mode": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/M9-predication-mode.md",
+      "canonical_path": "skill/references/tactics/M9-predication-mode.md",
       "module_class": "tactic",
       "module_id": "M9-predication-mode",
       "source": "atomics/skill/references/tactics/M9-predication-mode.md",
@@ -142,15 +142,15 @@
     },
     "P1-fitrah-restoration": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P1-fitrah-restoration.md",
+      "canonical_path": "skill/references/procedures/P1-fitrah-restoration.md",
       "module_class": "procedure",
       "module_id": "P1-fitrah-restoration",
       "source": "atomics/skill/references/procedures/P1-fitrah-restoration.md",
-      "source_sha256": "f433275ea98d62666826e5872402ff29922d5df228e70f567f8551f909e76b53"
+      "source_sha256": "9bac222634cd74b24b60da94a8abc2c9c04d79028076f7feae12fc2ce9728e4b"
     },
     "P2-objection-mapping": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P2-objection-mapping.md",
+      "canonical_path": "skill/references/procedures/P2-objection-mapping.md",
       "module_class": "procedure",
       "module_id": "P2-objection-mapping",
       "source": "atomics/skill/references/procedures/P2-objection-mapping.md",
@@ -158,7 +158,7 @@
     },
     "P3-reason-revelation-tension": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P3-reason-revelation-tension.md",
+      "canonical_path": "skill/references/procedures/P3-reason-revelation-tension.md",
       "module_class": "procedure",
       "module_id": "P3-reason-revelation-tension",
       "source": "atomics/skill/references/procedures/P3-reason-revelation-tension.md",
@@ -166,7 +166,7 @@
     },
     "P4-maieutic": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P4-maieutic.md",
+      "canonical_path": "skill/references/procedures/P4-maieutic.md",
       "module_class": "procedure",
       "module_id": "P4-maieutic",
       "source": "atomics/skill/references/procedures/P4-maieutic.md",
@@ -174,7 +174,7 @@
     },
     "P5-already-believing": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P5-already-believing.md",
+      "canonical_path": "skill/references/procedures/P5-already-believing.md",
       "module_class": "procedure",
       "module_id": "P5-already-believing",
       "source": "atomics/skill/references/procedures/P5-already-believing.md",
@@ -182,15 +182,15 @@
     },
     "P6-universal-aqidah-principle": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md",
+      "canonical_path": "skill/references/procedures/P6-universal-aqidah-principle.md",
       "module_class": "procedure",
       "module_id": "P6-universal-aqidah-principle",
       "source": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md",
-      "source_sha256": "6276aaf3d8ea9cc123e2cad7a1080f25bb5092e3ba006147915a78eca3695c65"
+      "source_sha256": "5bdc9c0497b0bb5011084d2a8eb6463bcde7717fa7f2a3c79f80e4420406a7b6"
     },
     "P7-restoration-stops": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/procedures/P7-restoration-stops.md",
+      "canonical_path": "skill/references/procedures/P7-restoration-stops.md",
       "module_class": "procedure",
       "module_id": "P7-restoration-stops",
       "source": "atomics/skill/references/procedures/P7-restoration-stops.md",
@@ -198,7 +198,7 @@
     },
     "R1-internalist-criterion": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/R1-internalist-criterion.md",
+      "canonical_path": "skill/references/tactics/R1-internalist-criterion.md",
       "module_class": "tactic",
       "module_id": "R1-internalist-criterion",
       "source": "atomics/skill/references/tactics/R1-internalist-criterion.md",
@@ -206,7 +206,7 @@
     },
     "R2-the-reminder": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/R2-the-reminder.md",
+      "canonical_path": "skill/references/tactics/R2-the-reminder.md",
       "module_class": "tactic",
       "module_id": "R2-the-reminder",
       "source": "atomics/skill/references/tactics/R2-the-reminder.md",
@@ -214,7 +214,7 @@
     },
     "R3-warranted-basic-belief": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/R3-warranted-basic-belief.md",
+      "canonical_path": "skill/references/tactics/R3-warranted-basic-belief.md",
       "module_class": "tactic",
       "module_id": "R3-warranted-basic-belief",
       "source": "atomics/skill/references/tactics/R3-warranted-basic-belief.md",
@@ -222,7 +222,7 @@
     },
     "V1-diagnostic": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/techniques/V1-diagnostic.md",
+      "canonical_path": "skill/references/techniques/V1-diagnostic.md",
       "module_class": "technique",
       "module_id": "V1-diagnostic",
       "source": "atomics/skill/references/techniques/V1-diagnostic.md",
@@ -230,7 +230,7 @@
     },
     "V10-transmission-content-vetting": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",
-      "canonical_path": "atomics/skill/references/techniques/V10-transmission-content-vetting.md",
+      "canonical_path": "skill/references/techniques/V10-transmission-content-vetting.md",
       "module_class": "technique",
       "module_id": "V10-transmission-content-vetting",
       "source": "atomics/skill/references/techniques/V10-transmission-content-vetting.md",
@@ -238,7 +238,7 @@
     },
     "V11-taqlid-transition": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V11-taqlid-transition.md",
+      "canonical_path": "skill/references/techniques/V11-taqlid-transition.md",
       "module_class": "technique",
       "module_id": "V11-taqlid-transition",
       "source": "atomics/skill/references/techniques/V11-taqlid-transition.md",
@@ -246,7 +246,7 @@
     },
     "V12-tamanuc-exhaustion": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md",
+      "canonical_path": "skill/references/techniques/V12-tamanuc-exhaustion.md",
       "module_class": "technique",
       "module_id": "V12-tamanuc-exhaustion",
       "source": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md",
@@ -254,7 +254,7 @@
     },
     "V2-reconstituting-reason": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V2-reconstituting-reason.md",
+      "canonical_path": "skill/references/techniques/V2-reconstituting-reason.md",
       "module_class": "technique",
       "module_id": "V2-reconstituting-reason",
       "source": "atomics/skill/references/techniques/V2-reconstituting-reason.md",
@@ -262,7 +262,7 @@
     },
     "V3-regress-dissolution": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V3-regress-dissolution.md",
+      "canonical_path": "skill/references/techniques/V3-regress-dissolution.md",
       "module_class": "technique",
       "module_id": "V3-regress-dissolution",
       "source": "atomics/skill/references/techniques/V3-regress-dissolution.md",
@@ -270,7 +270,7 @@
     },
     "V4-contamination-identification": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V4-contamination-identification.md",
+      "canonical_path": "skill/references/techniques/V4-contamination-identification.md",
       "module_class": "technique",
       "module_id": "V4-contamination-identification",
       "source": "atomics/skill/references/techniques/V4-contamination-identification.md",
@@ -278,7 +278,7 @@
     },
     "V5-directing-attention-signs": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V5-directing-attention-signs.md",
+      "canonical_path": "skill/references/techniques/V5-directing-attention-signs.md",
       "module_class": "technique",
       "module_id": "V5-directing-attention-signs",
       "source": "atomics/skill/references/techniques/V5-directing-attention-signs.md",
@@ -286,7 +286,7 @@
     },
     "V6-convergence": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V6-convergence.md",
+      "canonical_path": "skill/references/techniques/V6-convergence.md",
       "module_class": "technique",
       "module_id": "V6-convergence",
       "source": "atomics/skill/references/techniques/V6-convergence.md",
@@ -294,7 +294,7 @@
     },
     "V7-taqlid-check": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V7-taqlid-check.md",
+      "canonical_path": "skill/references/techniques/V7-taqlid-check.md",
       "module_class": "technique",
       "module_id": "V7-taqlid-check",
       "source": "atomics/skill/references/techniques/V7-taqlid-check.md",
@@ -302,7 +302,7 @@
     },
     "V8-bila-kayf-anchor": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md",
+      "canonical_path": "skill/references/techniques/V8-bila-kayf-anchor.md",
       "module_class": "technique",
       "module_id": "V8-bila-kayf-anchor",
       "source": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md",
@@ -310,7 +310,7 @@
     },
     "V9-necessary-knowledge-priority": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "canonical_path": "skill/references/techniques/V9-necessary-knowledge-priority.md",
       "module_class": "technique",
       "module_id": "V9-necessary-knowledge-priority",
       "source": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md",
@@ -318,7 +318,7 @@
     },
     "anti-patterns": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/anti-patterns.md",
+      "canonical_path": "skill/references/diagnostics/anti-patterns.md",
       "module_class": "governance",
       "module_id": "anti-patterns",
       "source": "atomics/skill/references/diagnostics/anti-patterns.md",
@@ -326,7 +326,7 @@
     },
     "arabic-backbone-predicates": {
       "bundle_path": "references/runtime-phase2-passes.md",
-      "canonical_path": "atomics/skill/references/diagnostics/arabic-backbone-predicates.md",
+      "canonical_path": "skill/references/diagnostics/arabic-backbone-predicates.md",
       "module_class": "governance",
       "module_id": "arabic-backbone-predicates",
       "source": "atomics/skill/references/diagnostics/arabic-backbone-predicates.md",
@@ -334,7 +334,7 @@
     },
     "case-library-index": {
       "bundle_path": "references/runtime-foundation.md",
-      "canonical_path": "atomics/skill/references/case-library/INDEX.md",
+      "canonical_path": "skill/references/case-library/INDEX.md",
       "module_class": "governance",
       "module_id": "case-library-index",
       "source": "atomics/skill/references/case-library/INDEX.md",
@@ -342,7 +342,7 @@
     },
     "case-state-schema": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/case-state-schema.md",
+      "canonical_path": "skill/references/diagnostics/case-state-schema.md",
       "module_class": "governance",
       "module_id": "case-state-schema",
       "source": "atomics/skill/references/diagnostics/case-state-schema.md",
@@ -350,7 +350,7 @@
     },
     "causal-series-taxonomy": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/causal-series-taxonomy.md",
+      "canonical_path": "skill/references/diagnostics/causal-series-taxonomy.md",
       "module_class": "diagnostic",
       "module_id": "causal-series-taxonomy",
       "source": "atomics/skill/references/diagnostics/causal-series-taxonomy.md",
@@ -358,7 +358,7 @@
     },
     "definition-discipline": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/definition-discipline.md",
+      "canonical_path": "skill/references/diagnostics/definition-discipline.md",
       "module_class": "diagnostic",
       "module_id": "definition-discipline",
       "source": "atomics/skill/references/diagnostics/definition-discipline.md",
@@ -366,7 +366,7 @@
     },
     "diagnostic-ir": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/diagnostic-ir.md",
+      "canonical_path": "skill/references/diagnostics/diagnostic-ir.md",
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
@@ -374,15 +374,15 @@
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
-      "canonical_path": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+      "canonical_path": "skill/references/rubrics/diagnostic-render-contract.md",
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "57e6801be4e96c9df946b96f238a92023c6dc1bc2e8e131a4054f3d5e0595464"
+      "source_sha256": "facdba0b2c630855d866c27faea0956787da2a594a44fcf429f4518a350cbebc"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/INDEX.md",
+      "canonical_path": "skill/references/diagnostics/INDEX.md",
       "module_class": "governance",
       "module_id": "diagnostics-index",
       "source": "atomics/skill/references/diagnostics/INDEX.md",
@@ -390,7 +390,7 @@
     },
     "discourse-orientation": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/diagnostics/discourse-orientation.md",
+      "canonical_path": "skill/references/diagnostics/discourse-orientation.md",
       "module_class": "governance",
       "module_id": "discourse-orientation",
       "source": "atomics/skill/references/diagnostics/discourse-orientation.md",
@@ -398,7 +398,7 @@
     },
     "do-attribute-precision": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/case-library/do-attribute-precision.md",
+      "canonical_path": "skill/references/case-library/do-attribute-precision.md",
       "module_class": "case-library",
       "module_id": "do-attribute-precision",
       "source": "atomics/skill/references/case-library/do-attribute-precision.md",
@@ -406,7 +406,7 @@
     },
     "do-christian-extensions": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/case-library/do-christian-extensions.md",
+      "canonical_path": "skill/references/case-library/do-christian-extensions.md",
       "module_class": "case-library",
       "module_id": "do-christian-extensions",
       "source": "atomics/skill/references/case-library/do-christian-extensions.md",
@@ -414,7 +414,7 @@
     },
     "do-core": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/case-library/do-core.md",
+      "canonical_path": "skill/references/case-library/do-core.md",
       "module_class": "case-library",
       "module_id": "do-core",
       "source": "atomics/skill/references/case-library/do-core.md",
@@ -422,7 +422,7 @@
     },
     "do-second-loop": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/case-library/do-second-loop.md",
+      "canonical_path": "skill/references/case-library/do-second-loop.md",
       "module_class": "case-library",
       "module_id": "do-second-loop",
       "source": "atomics/skill/references/case-library/do-second-loop.md",
@@ -430,7 +430,7 @@
     },
     "doubt-vs-skepticism": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/doubt-vs-skepticism.md",
+      "canonical_path": "skill/references/tactics/doubt-vs-skepticism.md",
       "module_class": "tactic",
       "module_id": "doubt-vs-skepticism",
       "source": "atomics/skill/references/tactics/doubt-vs-skepticism.md",
@@ -438,7 +438,7 @@
     },
     "fitrah-perspectives": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/fitrah-perspectives.md",
+      "canonical_path": "skill/references/diagnostics/fitrah-perspectives.md",
       "module_class": "governance",
       "module_id": "fitrah-perspectives",
       "source": "atomics/skill/references/diagnostics/fitrah-perspectives.md",
@@ -446,7 +446,7 @@
     },
     "foreign-premise-detection": {
       "bundle_path": "references/runtime-phase2-passes.md",
-      "canonical_path": "atomics/skill/references/diagnostics/foreign-premise-detection.md",
+      "canonical_path": "skill/references/diagnostics/foreign-premise-detection.md",
       "module_class": "governance",
       "module_id": "foreign-premise-detection",
       "source": "atomics/skill/references/diagnostics/foreign-premise-detection.md",
@@ -454,7 +454,7 @@
     },
     "framework-pipeline": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/framework-pipeline.md",
+      "canonical_path": "skill/references/diagnostics/framework-pipeline.md",
       "module_class": "governance",
       "module_id": "framework-pipeline",
       "source": "atomics/skill/references/diagnostics/framework-pipeline.md",
@@ -462,7 +462,7 @@
     },
     "hadith-authentication-epistemology": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "canonical_path": "skill/references/diagnostics/hadith-authentication-epistemology.md",
       "module_class": "diagnostic",
       "module_id": "hadith-authentication-epistemology",
       "source": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md",
@@ -470,7 +470,7 @@
     },
     "heuristics": {
       "bundle_path": "references/runtime-foundation.md",
-      "canonical_path": "atomics/skill/references/techniques/heuristics.md",
+      "canonical_path": "skill/references/techniques/heuristics.md",
       "module_class": "technique",
       "module_id": "heuristics",
       "source": "atomics/skill/references/techniques/heuristics.md",
@@ -478,7 +478,7 @@
     },
     "husn-al-nazar-arguments": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/husn-al-nazar-arguments.md",
+      "canonical_path": "skill/references/tactics/husn-al-nazar-arguments.md",
       "module_class": "tactic",
       "module_id": "husn-al-nazar-arguments",
       "source": "atomics/skill/references/tactics/husn-al-nazar-arguments.md",
@@ -486,7 +486,7 @@
     },
     "inductive-fitri-method": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/inductive-fitri-method.md",
+      "canonical_path": "skill/references/tactics/inductive-fitri-method.md",
       "module_class": "tactic",
       "module_id": "inductive-fitri-method",
       "source": "atomics/skill/references/tactics/inductive-fitri-method.md",
@@ -494,7 +494,7 @@
     },
     "inference-boundary": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/inference-boundary.md",
+      "canonical_path": "skill/references/diagnostics/inference-boundary.md",
       "module_class": "governance",
       "module_id": "inference-boundary",
       "source": "atomics/skill/references/diagnostics/inference-boundary.md",
@@ -502,15 +502,15 @@
     },
     "ir-reconstruction-pass": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/ir-reconstruction-pass.md",
+      "canonical_path": "skill/references/diagnostics/ir-reconstruction-pass.md",
       "module_class": "governance",
       "module_id": "ir-reconstruction-pass",
       "source": "atomics/skill/references/diagnostics/ir-reconstruction-pass.md",
-      "source_sha256": "973534e92defdb45ac7fe055875fce80b40cce33bcc333c141537690bcf21081"
+      "source_sha256": "5c5bd8e691c6430fbb38677b1904f2c1c3706825b3b01b048225ffec723e4e2e"
     },
     "kalamic-interlocutor": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/kalamic-interlocutor.md",
+      "canonical_path": "skill/references/diagnostics/kalamic-interlocutor.md",
       "module_class": "governance",
       "module_id": "kalamic-interlocutor",
       "source": "atomics/skill/references/diagnostics/kalamic-interlocutor.md",
@@ -518,7 +518,7 @@
     },
     "kernel-thesis": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/kernel-thesis.md",
+      "canonical_path": "skill/references/kernel-thesis.md",
       "module_class": "governance",
       "module_id": "kernel-thesis",
       "source": "atomics/skill/references/kernel-thesis.md",
@@ -526,7 +526,7 @@
     },
     "metaphysical-architecture": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/metaphysical-architecture.md",
+      "canonical_path": "skill/references/metaphysical-architecture.md",
       "module_class": "governance",
       "module_id": "metaphysical-architecture",
       "source": "atomics/skill/references/metaphysical-architecture.md",
@@ -534,15 +534,15 @@
     },
     "mixed-case-handling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/mixed-case-handling.md",
+      "canonical_path": "skill/references/diagnostics/mixed-case-handling.md",
       "module_class": "governance",
       "module_id": "mixed-case-handling",
       "source": "atomics/skill/references/diagnostics/mixed-case-handling.md",
-      "source_sha256": "7f78e975f0e190abe5e87da80dd425af3d2e09acb5c0cf11ab3f4c9619a50ed0"
+      "source_sha256": "80504de509d93f81d55b0ad926f3238888151879e3c07dc8d21da5a8a7a6aed5"
     },
     "modes-of-concealment": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/diagnostics/modes-of-concealment.md",
+      "canonical_path": "skill/references/diagnostics/modes-of-concealment.md",
       "module_class": "governance",
       "module_id": "modes-of-concealment",
       "source": "atomics/skill/references/diagnostics/modes-of-concealment.md",
@@ -550,7 +550,7 @@
     },
     "module-codes": {
       "bundle_path": "references/runtime-foundation.md",
-      "canonical_path": "atomics/skill/references/module-codes.md",
+      "canonical_path": "skill/references/module-codes.md",
       "module_class": "governance",
       "module_id": "module-codes",
       "source": "atomics/skill/references/module-codes.md",
@@ -558,7 +558,7 @@
     },
     "noetic-profiles": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/noetic-profiles.md",
+      "canonical_path": "skill/references/case-library/noetic-profiles.md",
       "module_class": "case-library",
       "module_id": "noetic-profiles",
       "source": "atomics/skill/references/case-library/noetic-profiles.md",
@@ -566,7 +566,7 @@
     },
     "noetic-reading-checklist": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/diagnostics/noetic-reading-checklist.md",
+      "canonical_path": "skill/references/diagnostics/noetic-reading-checklist.md",
       "module_class": "governance",
       "module_id": "noetic-reading-checklist",
       "source": "atomics/skill/references/diagnostics/noetic-reading-checklist.md",
@@ -574,15 +574,15 @@
     },
     "nomenclature-normalization": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/nomenclature-normalization.md",
+      "canonical_path": "skill/references/diagnostics/nomenclature-normalization.md",
       "module_class": "governance",
       "module_id": "nomenclature-normalization",
       "source": "atomics/skill/references/diagnostics/nomenclature-normalization.md",
-      "source_sha256": "650ff824e5a930d8be1f2d7ab3a730e742ed02528520f2a45a19b72dfb87c78e"
+      "source_sha256": "c0daa0760ebac1ee68ce25ed55936ab4992919ebfe756dffd0344afbc6952ef1"
     },
     "ns-1-naturalist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-1-naturalist.md",
       "module_class": "case-library",
       "module_id": "ns-1-naturalist",
       "source": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md",
@@ -590,7 +590,7 @@
     },
     "ns-10-maturidi-evidentialist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
       "module_class": "case-library",
       "module_id": "ns-10-maturidi-evidentialist",
       "source": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
@@ -598,7 +598,7 @@
     },
     "ns-11-fideist-reformed": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md",
       "module_class": "case-library",
       "module_id": "ns-11-fideist-reformed",
       "source": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md",
@@ -606,7 +606,7 @@
     },
     "ns-12-blank-slate-dual-fitrah": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
       "module_class": "case-library",
       "module_id": "ns-12-blank-slate-dual-fitrah",
       "source": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
@@ -614,7 +614,7 @@
     },
     "ns-2-agnostic-evidentialist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
       "module_class": "case-library",
       "module_id": "ns-2-agnostic-evidentialist",
       "source": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
@@ -622,7 +622,7 @@
     },
     "ns-3-deconverted": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-3-deconverted.md",
       "module_class": "case-library",
       "module_id": "ns-3-deconverted",
       "source": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md",
@@ -630,7 +630,7 @@
     },
     "ns-4-secular-moral-realist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
       "module_class": "case-library",
       "module_id": "ns-4-secular-moral-realist",
       "source": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
@@ -638,7 +638,7 @@
     },
     "ns-5-habituated-atheist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md",
       "module_class": "case-library",
       "module_id": "ns-5-habituated-atheist",
       "source": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md",
@@ -646,7 +646,7 @@
     },
     "ns-6-kalamic-evidentialist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
       "module_class": "case-library",
       "module_id": "ns-6-kalamic-evidentialist",
       "source": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
@@ -654,7 +654,7 @@
     },
     "ns-7-theistic-evidentialist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
       "module_class": "case-library",
       "module_id": "ns-7-theistic-evidentialist",
       "source": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
@@ -662,7 +662,7 @@
     },
     "ns-8-muslim-internal-crisis": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
       "module_class": "case-library",
       "module_id": "ns-8-muslim-internal-crisis",
       "source": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
@@ -670,7 +670,7 @@
     },
     "ns-9-historical-critical-skeptic": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "canonical_path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
       "module_class": "case-library",
       "module_id": "ns-9-historical-critical-skeptic",
       "source": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
@@ -678,15 +678,15 @@
     },
     "output-release": {
       "bundle_path": "references/runtime-output-governance.md",
-      "canonical_path": "atomics/skill/references/rubrics/output-release.md",
+      "canonical_path": "skill/references/rubrics/output-release.md",
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "4579b7170c6db35fc1e7facfad42fb1758b2b1c3726a90df16dddd09cdfcd0a7"
+      "source_sha256": "8f88e970ee7dd6d2a72214357ab6bb5ed610236f561c0bb20ca7866eb8c87160"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/pattern-profiling.md",
+      "canonical_path": "skill/references/diagnostics/pattern-profiling.md",
       "module_class": "governance",
       "module_id": "pattern-profiling",
       "source": "atomics/skill/references/diagnostics/pattern-profiling.md",
@@ -694,7 +694,7 @@
     },
     "perfection-criterion-usurpation": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md",
+      "canonical_path": "skill/references/diagnostics/perfection-criterion-usurpation.md",
       "module_class": "diagnostic",
       "module_id": "perfection-criterion-usurpation",
       "source": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md",
@@ -702,7 +702,7 @@
     },
     "philosophical-usurpation": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/case-library/philosophical-usurpation.md",
+      "canonical_path": "skill/references/case-library/philosophical-usurpation.md",
       "module_class": "case-library",
       "module_id": "philosophical-usurpation",
       "source": "atomics/skill/references/case-library/philosophical-usurpation.md",
@@ -710,7 +710,7 @@
     },
     "procedures-index": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
-      "canonical_path": "atomics/skill/references/procedures/INDEX.md",
+      "canonical_path": "skill/references/procedures/INDEX.md",
       "module_class": "governance",
       "module_id": "procedures-index",
       "source": "atomics/skill/references/procedures/INDEX.md",
@@ -718,7 +718,7 @@
     },
     "profiles-index": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
-      "canonical_path": "atomics/skill/references/case-library/profiles/INDEX.md",
+      "canonical_path": "skill/references/case-library/profiles/INDEX.md",
       "module_class": "governance",
       "module_id": "profiles-index",
       "source": "atomics/skill/references/case-library/profiles/INDEX.md",
@@ -726,7 +726,7 @@
     },
     "proof-method-audit": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
-      "canonical_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "canonical_path": "skill/references/diagnostics/proof-method-audit.md",
       "module_class": "diagnostic",
       "module_id": "proof-method-audit",
       "source": "atomics/skill/references/diagnostics/proof-method-audit.md",
@@ -734,7 +734,7 @@
     },
     "prophecy-wahy-supremacy": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/prophecy-wahy-supremacy.md",
+      "canonical_path": "skill/references/prophecy-wahy-supremacy.md",
       "module_class": "governance",
       "module_id": "prophecy-wahy-supremacy",
       "source": "atomics/skill/references/prophecy-wahy-supremacy.md",
@@ -742,7 +742,7 @@
     },
     "prophetic-discourse-neutralization": {
       "bundle_path": "references/runtime-phase2-passes.md",
-      "canonical_path": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "canonical_path": "skill/references/diagnostics/prophetic-discourse-neutralization.md",
       "module_class": "diagnostic",
       "module_id": "prophetic-discourse-neutralization",
       "source": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md",
@@ -750,7 +750,7 @@
     },
     "reason-disambiguation": {
       "bundle_path": "references/runtime-phase2-passes.md",
-      "canonical_path": "atomics/skill/references/diagnostics/reason-disambiguation.md",
+      "canonical_path": "skill/references/diagnostics/reason-disambiguation.md",
       "module_class": "governance",
       "module_id": "reason-disambiguation",
       "source": "atomics/skill/references/diagnostics/reason-disambiguation.md",
@@ -758,15 +758,15 @@
     },
     "recursive-state-transitions": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+      "canonical_path": "skill/references/diagnostics/recursive-state-transitions.md",
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "c59576660f831bd70ac9dbea8dfc047a4b7dffaa875e8dff5b275d9220b92024"
+      "source_sha256": "bcf6a11fa4e4607a4634d8a9bdc9ea1d085dc01ff0520bb70fd324093cf2e7fc"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",
-      "canonical_path": "atomics/skill/references/case-library/revelation-transmission.md",
+      "canonical_path": "skill/references/case-library/revelation-transmission.md",
       "module_class": "case-library",
       "module_id": "revelation-transmission",
       "source": "atomics/skill/references/case-library/revelation-transmission.md",
@@ -774,15 +774,15 @@
     },
     "routing-precedence": {
       "bundle_path": "references/runtime-dispatch-gate.md",
-      "canonical_path": "atomics/skill/references/diagnostics/routing-precedence.md",
+      "canonical_path": "skill/references/diagnostics/routing-precedence.md",
       "module_class": "governance",
       "module_id": "routing-precedence",
       "source": "atomics/skill/references/diagnostics/routing-precedence.md",
-      "source_sha256": "c47000fd2af2991517c04136fa96625daf4cef5ece1289bae1d5d057a5633f01"
+      "source_sha256": "9442f13d134b881eca89bbe619a495c85460dd92b2df9053630c9f5738afd5f3"
     },
     "seven-deformations": {
       "bundle_path": "references/runtime-diagnostic-core.md",
-      "canonical_path": "atomics/skill/references/diagnostics/seven-deformations.md",
+      "canonical_path": "skill/references/diagnostics/seven-deformations.md",
       "module_class": "governance",
       "module_id": "seven-deformations",
       "source": "atomics/skill/references/diagnostics/seven-deformations.md",
@@ -790,7 +790,7 @@
     },
     "sound-reason-epistemology": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
-      "canonical_path": "atomics/skill/references/sound-reason-epistemology.md",
+      "canonical_path": "skill/references/sound-reason-epistemology.md",
       "module_class": "governance",
       "module_id": "sound-reason-epistemology",
       "source": "atomics/skill/references/sound-reason-epistemology.md",
@@ -798,7 +798,7 @@
     },
     "symmetric-taqlid-check": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/symmetric-taqlid-check.md",
+      "canonical_path": "skill/references/tactics/symmetric-taqlid-check.md",
       "module_class": "tactic",
       "module_id": "symmetric-taqlid-check",
       "source": "atomics/skill/references/tactics/symmetric-taqlid-check.md",
@@ -806,7 +806,7 @@
     },
     "tactics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
-      "canonical_path": "atomics/skill/references/tactics/INDEX.md",
+      "canonical_path": "skill/references/tactics/INDEX.md",
       "module_class": "governance",
       "module_id": "tactics-index",
       "source": "atomics/skill/references/tactics/INDEX.md",
@@ -814,7 +814,7 @@
     },
     "techniques-index": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
-      "canonical_path": "atomics/skill/references/techniques/INDEX.md",
+      "canonical_path": "skill/references/techniques/INDEX.md",
       "module_class": "governance",
       "module_id": "techniques-index",
       "source": "atomics/skill/references/techniques/INDEX.md",
@@ -822,7 +822,7 @@
     },
     "terminology": {
       "bundle_path": "references/runtime-foundation.md",
-      "canonical_path": "atomics/skill/references/terminology.md",
+      "canonical_path": "skill/references/terminology.md",
       "module_class": "governance",
       "module_id": "terminology",
       "source": "atomics/skill/references/terminology.md",
@@ -849,16 +849,16 @@
     "tests/expected/genuine-shubhah-after-deformation-clearing.json": "atomics/skill/tests/expected/genuine-shubhah-after-deformation-clearing.json",
     "tests/expected/grief-coded-objection.json": "atomics/skill/tests/expected/grief-coded-objection.json",
     "tests/expected/imported-tribunal-protest.json": "atomics/skill/tests/expected/imported-tribunal-protest.json",
+    "tests/expected/moral-protest-nonbelief-worship-worthiness.json": "atomics/skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json",
     "tests/expected/mushabara-fasida.json": "atomics/skill/tests/expected/mushabara-fasida.json",
     "tests/expected/stability-repetition.json": "atomics/skill/tests/expected/stability-repetition.json",
     "tests/expected/trinitarian-claim-cluster.json": "atomics/skill/tests/expected/trinitarian-claim-cluster.json",
-    "tests/expected/tst-richard-lael-lillard.json": "atomics/skill/tests/expected/tst-richard-lael-lillard.json",
     "tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md": "atomics/skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md",
     "tests/fixtures/grief-coded-objection/input.md": "atomics/skill/tests/fixtures/grief-coded-objection/input.md",
     "tests/fixtures/imported-tribunal-protest/input.md": "atomics/skill/tests/fixtures/imported-tribunal-protest/input.md",
+    "tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md": "atomics/skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md",
     "tests/fixtures/mushabara-fasida/input.md": "atomics/skill/tests/fixtures/mushabara-fasida/input.md",
     "tests/fixtures/stability-repetition/input.md": "atomics/skill/tests/fixtures/stability-repetition/input.md",
-    "tests/fixtures/trinitarian-claim-cluster/input.md": "atomics/skill/tests/fixtures/trinitarian-claim-cluster/input.md",
-    "tests/fixtures/tst-richard-lael-lillard/input.md": "atomics/skill/tests/fixtures/tst-richard-lael-lillard/input.md"
+    "tests/fixtures/trinitarian-claim-cluster/input.md": "atomics/skill/tests/fixtures/trinitarian-claim-cluster/input.md"
   }
 }

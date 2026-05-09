@@ -230,7 +230,7 @@
       "prompt": "God cannot be utterly unlike creatures because every meaningful attribute must resemble the cases we already know.",
       "expected": {
         "first_live_burden": "mushabara fasida false-resemblance deformation",
-        "selected_owners": ["seven-deformations:1-A", "M5-deformation-triage"],
+        "selected_owners": ["mushabara-fasida", "M5-deformation-triage"],
         "held_or_deferred": ["V2-reconstituting-reason"],
         "expected_land": "false resemblance is named and triaged before generic V2",
         "governance_verdict": "HOLD",

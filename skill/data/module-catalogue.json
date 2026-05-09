@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "scope": "level3-pilot",
-  "note": "Pilot catalogue for executable Level 3 routing. It covers the owners implicated by the six Level 3 fixtures and does not claim full catalogue coverage.",
+  "scope": "level3-covered-scope",
+  "note": "Covered-scope catalogue for executable Level 3 routing. It covers the fixture-backed owners implicated by the Level 3 suite and does not claim full noetic catalogue coverage.",
   "owners": [
     {
       "id": "do-christian-extensions",
@@ -88,10 +88,15 @@
       "owner_floor": "Classify and clear the first-live deformation before generic argument repair."
     },
     {
-      "id": "seven-deformations:1-A",
+      "id": "mushabara-fasida",
       "module_class": "diagnostic-marker",
       "path": "references/runtime-diagnostic-core.md#seven-deformations",
-      "owner_floor": "Mark false resemblance / mushabara fasida as the specific deformation, not generic V2 collapse."
+      "owner_floor": "Mark false resemblance / mushabara fasida as the specific deformation, not generic V2 collapse.",
+      "canonical_deformation_code": "mushabara-fasida",
+      "parent_deformation_code": "i'tiqadat-mawrutha",
+      "source_marker": "seven-deformations:1-A",
+      "marker_kind": "subdeformation-marker",
+      "aliases": ["seven-deformations:1-A"]
     }
   ]
 }

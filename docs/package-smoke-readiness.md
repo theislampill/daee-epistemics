@@ -37,8 +37,9 @@ Historical release docs and older rc archives are not current smoke inputs unles
 explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-v0.3.2.0.skill.zip` for a v0.3.2.0 package rebake. On Windows,
-the script uses WSL Python to preserve archive path separators. The public
+`build/daee-epistemics-v0.3.2.0.skill.zip` for a v0.3.2.0 package rebake. The script calls
+the manifest-backed Python packager, validates generated package shape, and preserves slash-safe
+archive entry names. The public
 GitHub Release asset is the same checked payload renamed to `.skill`; publish/upload `.skill`, not
 both `.skill.zip` and `.skill`. The archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
@@ -56,6 +57,8 @@ Run from repository root before any package request:
 python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_compiled_runtime_freshness.py
+python tools/check_level3_data_shapes.py --include-generated
+python tools/check_package_shape.py
 python tools/check_render_modes.py
 python tools/check_recursive_traversal_governance.py
 python tools/check_routing_parity.py

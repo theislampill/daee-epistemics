@@ -53,10 +53,18 @@ CONTINUATION_ORDER = {
 HARD_HOLD_BLOCKERS = {
     "P7-restoration-stops",
     "M4-grief-register",
-    "seven-deformations:1-A",
+    "mushabara-fasida",
     "M5-deformation-triage",
     "V9-necessary-knowledge-priority",
 }
+
+OPTIONAL_RULE_TRACE_FIELDS = (
+    "canonical_deformation_code",
+    "parent_deformation_code",
+    "source_marker",
+    "marker_kind",
+    "aliases",
+)
 
 
 def _spans_for(item: dict[str, Any], spans: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
@@ -106,20 +114,40 @@ def _make_burden_step(
     spans: dict[str, list[dict[str, Any]]],
     relation: str,
     release_conditions: list[str],
+    continuation_queue_remaining: list[str] | None = None,
+    next_required_action: str = "execute-if-licensed",
+    checker_status: str = "not-run",
+    landed: bool = False,
+    hold_or_partial_reason: str | None = None,
+    state_delta: str = "pending",
 ) -> dict[str, Any]:
+    step_owner_ids = owner_ids(owners)
+    input_spans = [span for owner in owners for span in _spans_for(owner, spans)]
     return {
         "id": step_id,
         "name": name,
         "relation": relation,
         "owners": owners,
-        "owner_ids": owner_ids(owners),
-        "input_spans": [span for owner in owners for span in _spans_for(owner, spans)],
+        "owner_ids": step_owner_ids,
+        "input_spans": input_spans,
         "release_conditions": release_conditions,
         "land_requirements": [
             {"owner": str(owner.get("id")), "requires": owner.get("land_requires", [])}
             for owner in owners
         ],
         "reread_required": True,
+        "state_envelope": {
+            "current_burden_id": step_id,
+            "owner_ids": step_owner_ids,
+            "input_span_refs": input_spans,
+            "landed": landed,
+            "checker_status": checker_status,
+            "continuation_queue_remaining": continuation_queue_remaining or [],
+            "hold_or_partial_reason": hold_or_partial_reason,
+            "next_required_action": next_required_action,
+            "state_delta": state_delta,
+            "reread_required": True,
+        },
     }
 
 
@@ -142,6 +170,9 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
             "requires_all": rule.get("requires_all", []),
             "land_requires": rule.get("land_requires", []),
         }
+        for field in OPTIONAL_RULE_TRACE_FIELDS:
+            if field in rule:
+                entry[field] = rule[field]
         if ok:
             candidates.append(entry)
         else:
@@ -211,17 +242,21 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
             str(item.get("id")),
         ),
     )
-    continuation_queue = [
-        _make_burden_step(
-            step_id=f"B{index}",
-            name=_continuation_name(str(item.get("id"))),
-            owners=[item],
-            spans=spans,
-            relation="same-input continuation after refreshed state",
-            release_conditions=_continuation_release(str(item.get("id")), first_live_ids),
+    continuation_queue: list[dict[str, Any]] = []
+    for index, item in enumerate(continuation_source, start=2):
+        remaining = [f"B{next_index}" for next_index in range(index + 1, len(continuation_source) + 2)]
+        continuation_queue.append(
+            _make_burden_step(
+                step_id=f"B{index}",
+                name=_continuation_name(str(item.get("id"))),
+                owners=[item],
+                spans=spans,
+                relation="same-input continuation after refreshed state",
+                release_conditions=_continuation_release(str(item.get("id")), first_live_ids),
+                continuation_queue_remaining=remaining,
+                next_required_action="execute-if-still-licensed-after-reread",
+            )
         )
-        for index, item in enumerate(continuation_source, start=2)
-    ]
 
     land_requirements: list[dict[str, Any]] = [
         {"owner": str(item["id"]), "requires": item.get("land_requires", [])}
@@ -246,6 +281,8 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
             spans=spans,
             relation="first-live burden",
             release_conditions=["selected by deterministic route precedence from span-backed features"],
+            continuation_queue_remaining=[str(entry.get("id")) for entry in continuation_queue],
+            next_required_action="execute-first-live-then-reread",
         ),
         "candidate_ttps": candidates,
         "first_live": first_live,
@@ -268,6 +305,8 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
             "emit Layer A compact diagnostic control state and Layer B governed response for every executed burden",
             "render visible owner-floor Target -> Operation -> Result evidence",
             "render B.s -> Land(B) -> R(H,Delta) for every burden entry",
+            "preserve burden-local structural attachment; do not flatten owners, checker markers, or state decisions into global blobs",
+            "carry state_envelope fields across route_plan, validation, execution check, and retry output",
             "close only if R(H,Delta) names no remaining input-anchored burdens",
         ],
     }

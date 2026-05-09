@@ -7,6 +7,7 @@ import json
 import sys
 
 from compiled_runtime_lib import (
+    OUTPUT_ROOT_REL,
     SECTION_FIELDS,
     catalogue_by_id,
     canonical_source_rel,
@@ -15,6 +16,7 @@ from compiled_runtime_lib import (
     out_dir,
     parse_compiled_sections,
     repo_root,
+    source_rel_from_legacy,
 )
 
 
@@ -59,10 +61,11 @@ def main() -> int:
             if module_id in seen:
                 errors.append(f"duplicate module id in compiled bundles: {module_id} ({seen[module_id]}, {rel_bundle})")
             seen[module_id] = rel_bundle
-            if section["CANONICAL_PATH"] != source:
+            expected_canonical_path = f"{OUTPUT_ROOT_REL}/{source_rel_from_legacy(source)}"
+            if section["CANONICAL_PATH"] != expected_canonical_path:
                 errors.append(
                     f"{rel_bundle}: canonical path does not match source for {module_id}: "
-                    f"{section['CANONICAL_PATH']} != {source}"
+                    f"{section['CANONICAL_PATH']} != {expected_canonical_path}"
                 )
             catalogue_entry = catalogue.get(module_id)
             if catalogue_entry:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check canonical source integrity for future compiled stubs/maps."""
+"""Check canonical atomics source and compiled map integrity."""
 
 from __future__ import annotations
 

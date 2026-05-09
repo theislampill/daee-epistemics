@@ -87,7 +87,55 @@ def _has_transition_reread(output: str, prior_burden_index: int, next_burden_ind
     return _STATE_REREAD_RE.search(segment) is not None
 
 
-def _valid_nonexecution_decision(output: str, burden_index: int) -> bool:
+def _burden_marker_pos(output: str, burden_index: int) -> int:
+    ordinal = _ORDINAL_WORDS.get(burden_index)
+    labels = [
+        rf"B{burden_index}(?:\.s\d*)?\b",
+        rf"[Bb]urden\s+{burden_index}\b",
+    ]
+    if ordinal:
+        labels.append(rf"{ordinal}\s+[Bb]urden\b")
+    pattern = rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:{'|'.join(labels)})"
+    match = re.search(pattern, output)
+    return match.start() if match else -1
+
+
+def _burden_segment(output: str, burden_index: int) -> str:
+    starts = [
+        _first_layer_pos(output, "A", burden_index),
+        _first_layer_pos(output, "B", burden_index),
+        _burden_marker_pos(output, burden_index),
+    ]
+    start = min([pos for pos in starts if pos >= 0], default=0 if burden_index == 1 else -1)
+    if start < 0:
+        return ""
+    next_starts = [
+        _first_layer_pos(output, "A", burden_index + 1),
+        _first_layer_pos(output, "B", burden_index + 1),
+        _burden_marker_pos(output, burden_index + 1),
+    ]
+    next_start = min([pos for pos in next_starts if pos > start], default=len(output))
+    return output[start:next_start]
+
+
+def _owner_floor_match(segment: str, owner_id: str) -> re.Match[str] | None:
+    return re.search(rf"Owner-floor:\s*{re.escape(owner_id)}\b", segment, flags=re.IGNORECASE)
+
+
+def _has_local_owner_operation(output: str, burden_index: int, owner_id: str) -> bool:
+    """Require owner-floor and Target/Operation/Result to stay in the same burden step."""
+
+    segment = _burden_segment(output, burden_index)
+    owner_match = _owner_floor_match(segment, owner_id)
+    if owner_match is None:
+        return False
+    next_owner = re.search(r"(?im)^\s*Owner-floor:\s*", segment[owner_match.end():])
+    end = owner_match.end() + next_owner.start() if next_owner else min(len(segment), owner_match.end() + 1400)
+    window = segment[owner_match.end():end]
+    return all(marker in window for marker in ("Target:", "Operation:", "Result:"))
+
+
+def _valid_nonexecution_decision(output: str, burden_index: int, queue_entry: dict[str, Any] | None = None) -> bool:
     """Detect a governed decision not to execute a queued burden.
 
     This must be tied to the burden's Layer A/state read; a stray HOLD/SKIP word
@@ -107,11 +155,73 @@ def _valid_nonexecution_decision(output: str, burden_index: int) -> bool:
         flags=re.IGNORECASE,
     )
     reason = re.search(
-        r"\b(?:because|reason|state|delta|after|landed|blocked|no longer|not input-anchored|not licensed|hold gate|register|semantic|thin-basis)\b",
+        r"\b(?:because|reason|state|delta|state-delta|after|landed|blocked|no longer|not input-anchored|not licensed|hold gate|register|semantic|thin-basis|source-use|capability-bound|insufficient evidence|unsupported|ambiguous|failed extraction)\b",
         segment,
         flags=re.IGNORECASE,
     )
-    return bool(decision and reason)
+    burden_named = re.search(rf"\b(?:B{burden_index}|Burden\s+{burden_index})\b", segment, flags=re.IGNORECASE)
+    queued_ids = owner_ids((queue_entry or {}).get("owners", []))
+    owner_named = any(owner_id in segment for owner_id in queued_ids)
+    specific_reason = re.search(
+        r"\b(?:state-delta|register|semantic|thin-basis|source-use|capability-bound|insufficient evidence|not input-anchored|not licensed|hold gate|unsupported|ambiguous|failed extraction|next live burden|next-live)\b",
+        segment,
+        flags=re.IGNORECASE,
+    )
+    return bool(decision and reason and burden_named and (owner_named or specific_reason))
+
+
+def _route_envelope(step: dict[str, Any] | None, burden_index: int, owner_id_list: list[str]) -> dict[str, Any]:
+    envelope = dict((step or {}).get("state_envelope", {}))
+    envelope.setdefault("current_burden_id", f"B{burden_index}")
+    envelope.setdefault("owner_ids", owner_id_list)
+    envelope.setdefault("input_span_refs", (step or {}).get("input_spans", []))
+    envelope.setdefault("continuation_queue_remaining", [])
+    envelope.setdefault("hold_or_partial_reason", None)
+    envelope.setdefault("next_required_action", "execute-if-licensed")
+    envelope.setdefault("state_delta", "pending")
+    envelope.setdefault("reread_required", True)
+    return envelope
+
+
+def _execution_state_envelopes(
+    route_plan: dict[str, Any],
+    output: str,
+    nonexecuted_continuation_ids: set[str],
+) -> list[dict[str, Any]]:
+    steps: list[tuple[int, dict[str, Any] | None, list[str]]] = [
+        (1, route_plan.get("first_live_burden"), owner_ids(route_plan.get("first_live", []))),
+    ]
+    for index, entry in enumerate(route_plan.get("continuation_queue", []), start=2):
+        steps.append((index, entry, owner_ids(entry.get("owners", []))))
+
+    envelopes: list[dict[str, Any]] = []
+    for index, step, step_owner_ids in steps:
+        envelope = _route_envelope(step, index, step_owner_ids)
+        segment = _burden_segment(output, index)
+        nonexecuted = index > 1 and all(owner_id in nonexecuted_continuation_ids for owner_id in step_owner_ids)
+        landed = f"Land(B{index}" in segment
+        local_owner_ok = all(_has_local_owner_operation(output, index, owner_id) for owner_id in step_owner_ids)
+        reread_present = _STATE_REREAD_RE.search(segment) is not None
+        if nonexecuted:
+            status = "held"
+            reason = envelope.get("hold_or_partial_reason") or "burden-local nonexecution decision present"
+        elif landed and local_owner_ok and reread_present:
+            status = "pass"
+            reason = None
+        elif not segment.strip():
+            status = "not-run"
+            reason = "burden segment absent"
+        else:
+            status = "fail"
+            reason = "burden-local owner/TOR/Land/R attachment incomplete"
+        envelope.update({
+            "landed": landed,
+            "checker_status": status,
+            "hold_or_partial_reason": reason,
+            "state_delta": "reread-present" if reread_present else "missing-burden-local-reread",
+        })
+        envelopes.append(envelope)
+    return envelopes
 
 
 def _closure_gate_satisfied(output: str, continuation_entries: list[dict[str, Any]]) -> bool:
@@ -149,8 +259,8 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
     deferred_ids = owner_ids(route_plan.get("deferred", []))
     verdict = str(route_plan.get("governance_verdict", "PARTIAL"))
     nonexecuted_continuation_ids: set[str] = set()
+    executed_steps: list[tuple[int, list[str]]] = [(1, first_live_ids)]
 
-    queue_blocked_from: int | None = None
     for index, entry in enumerate(continuation_entries, start=2):
         queued_ids = owner_ids(entry.get("owners", []))
         has_execution_evidence = (
@@ -158,17 +268,21 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
             or f"Land(B{index}" in output
             or any(_has_owner_floor(output, owner_id) for owner_id in queued_ids)
         )
-        if not has_execution_evidence and _valid_nonexecution_decision(output, index):
-            queue_blocked_from = index
-            for remaining in continuation_entries[index - 2:]:
-                nonexecuted_continuation_ids.update(owner_ids(remaining.get("owners", [])))
-            break
+        if not has_execution_evidence and _valid_nonexecution_decision(output, index, entry):
+            nonexecuted_continuation_ids.update(queued_ids)
+        else:
+            executed_steps.append((index, queued_ids))
 
-    for owner_id in first_live_ids + [owner_id for owner_id in continuation_ids if owner_id not in nonexecuted_continuation_ids]:
-        if owner_id not in output:
-            errors.append(f"{owner_id}: routed owner absent from output")
-        if not _has_owner_floor(output, owner_id):
-            errors.append(f"{owner_id}: visible owner-floor evidence absent")
+    for burden_index, step_owner_ids in executed_steps:
+        for owner_id in step_owner_ids:
+            if owner_id not in output:
+                errors.append(f"B{burden_index}/{owner_id}: routed owner absent from output")
+            if not _has_owner_floor(output, owner_id):
+                errors.append(f"B{burden_index}/{owner_id}: visible owner-floor evidence absent")
+            elif not _has_local_owner_operation(output, burden_index, owner_id):
+                errors.append(
+                    f"B{burden_index}/{owner_id}: owner-floor Target/Operation/Result evidence detached from burden"
+                )
 
     for marker in ("Target:", "Operation:", "Result:"):
         if marker not in output:
@@ -188,13 +302,15 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         if not _has_layer_marker(output, "B", 1):
             errors.append("B1: Layer B governed response absent")
     for index in range(2, required_steps + 1):
-        if queue_blocked_from is not None and index > queue_blocked_from:
-            break
+        entry = continuation_entries[index - 2]
         if not _has_layer_marker(output, "A", index):
             errors.append(f"B{index}: Layer A compact diagnostic control state absent")
         elif not _has_transition_reread(output, index - 1, index):
-            errors.append(f"B{index}: prior Land(B) lacks R(H,Delta) state re-read before Layer A")
-        if _valid_nonexecution_decision(output, index):
+            prior_entry = continuation_entries[index - 3] if index > 2 else None
+            prior_was_held = bool(prior_entry and _valid_nonexecution_decision(output, index - 1, prior_entry))
+            if not prior_was_held:
+                errors.append(f"B{index}: prior Land(B) lacks R(H,Delta) state re-read before Layer A")
+        if _valid_nonexecution_decision(output, index, entry):
             continue
         if not _has_layer_marker(output, "B", index):
             errors.append(f"B{index}: Layer B governed response absent")
@@ -202,6 +318,12 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
             errors.append(f"B{index}: continuation queue entry not visibly traversed")
         if f"Land(B{index}" not in output:
             errors.append(f"B{index}: continuation Land(B) evidence absent")
+
+    reread_count = len(_STATE_REREAD_RE.findall(output))
+    if len(executed_steps) > 1 and reread_count < len(executed_steps):
+        errors.append(
+            f"R(H,Delta) state re-read appears {reread_count} time(s) for {len(executed_steps)} executed burden(s)"
+        )
 
     for owner_id in held_ids + deferred_ids:
         if owner_id in continuation_ids:
@@ -223,6 +345,13 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         errors.append("continuation queue present but state re-read marker absent")
 
     fidelity = "fail" if errors else ("partial" if warnings else "pass")
+    state_envelopes = _execution_state_envelopes(route_plan, output, nonexecuted_continuation_ids)
+    failed_burdens = sorted(set(re.findall(r"\bB\d+\b", "\n".join(errors + warnings))))
+    failed_owner_ids = sorted({
+        owner_id
+        for owner_id in first_live_ids + continuation_ids
+        if any(owner_id in message for message in errors + warnings)
+    })
     retry_prompt = ""
     user_visible_banner = ""
     if fidelity != "pass":
@@ -236,13 +365,18 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
             "For every executed owner emit `Owner-floor: <owner-id>` followed by "
             "Target, Operation, Result, B.s, Land(B), and R(H,Delta), "
             "and do not close unless R(H,Delta) names no remaining input-anchored burdens. "
-            "If a queued burden is no longer live, mark HOLD/SKIP/PARTIAL/reroute need with the state-delta reason."
+            "If a queued burden is no longer live, mark HOLD/SKIP/PARTIAL/reroute need with the state-delta reason. "
+            f"Failed burden(s): {', '.join(failed_burdens) if failed_burdens else 'unspecified'}. "
+            f"Failed owner(s): {', '.join(failed_owner_ids) if failed_owner_ids else 'unspecified'}."
         )
 
     return {
         "checker": "check_execution.py",
         "execution_fidelity": fidelity,
         "governance_verdict": verdict,
+        "state_envelopes": state_envelopes,
+        "failed_burdens": failed_burdens,
+        "failed_owner_ids": failed_owner_ids,
         "errors": errors,
         "warnings": warnings,
         "user_visible_banner": user_visible_banner,
@@ -256,6 +390,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model-output", "--output", dest="model_output", required=True, help="Model output markdown path.")
     parser.add_argument("--verdict-output", help="execution_verdict.json path.")
     parser.add_argument("--skill-root", default=str(default_skill_root()), help="Skill package root.")
+    parser.add_argument("--fail-on-partial", action="store_true", help="Exit nonzero on partial execution fidelity.")
     args = parser.parse_args(argv)
 
     del args.skill_root
@@ -272,7 +407,11 @@ def main(argv: list[str] | None = None) -> int:
         write_json(Path(args.verdict_output), verdict)
     else:
         print(json.dumps(verdict, indent=2, sort_keys=True))
-    return 0 if verdict["execution_fidelity"] != "fail" else 1
+    if verdict["execution_fidelity"] == "fail":
+        return 1
+    if args.fail_on_partial and verdict["execution_fidelity"] == "partial":
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
