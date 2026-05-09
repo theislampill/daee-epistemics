@@ -3065,7 +3065,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 34c0904b5a12fe93d132c9f86d24c26c1010e045a97c78dc189878b4a902c274 -->
+<!-- SOURCE_SHA256: 226f14a31ef197d5ee6b47ea051206807eac34bccd5684f57bdf94fdf6c409ad -->
 
 ---
 id: recursive-state-transitions
@@ -3221,6 +3221,11 @@ R required before STOP/RECURSE
 ```
 
 Gloss: a burden must land before re-read; re-read must license closure or recursion.
+`R(H,Delta)` is a state-transition judgment, not a formatting marker. After each `Land(B)`,
+refresh the current noetic state and decide whether to continue to the next already-present
+burden, hold/defer it, skip it because it no longer applies, mark PARTIAL/limit, trigger a
+bounded reroute need because the live state materially changed, or close because no
+input-anchored burden remains.
 
 B-complexity:
 
@@ -3248,6 +3253,11 @@ becomes newly eligible after the current pass clears its blocker.
 
 `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive
 pressure remains. Do not emit a false STOP in that condition.
+
+Planned continuation is never unconditional. In Level 1/2, the model performs this refreshed
+diagnostic judgment directly under SKILL/governance. In Level 3, `continuation_queue` is a
+planned route; each queued burden still remains conditional on the preceding `Land(B) -> R`
+confirming that the next burden is still input-anchored, live, and unblocked.
 
 In hard/default output, Restorative Response and Closing Formulation are licensed only after
 the final state re-read for the answer. If `R(H,Delta)` names a remaining input-anchored

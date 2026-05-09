@@ -79,6 +79,12 @@ Top-salient invariants:
 - Render-through rule: in hard output, the burden grammar is part of the answer,
   not commentary about the answer. If a runtime can quote the spine but compresses
   `ComplexB` into a concise result, the render is malformed.
+- Compact does not mean thin. Governance discipline forbids padding, dumping, and
+  uncontrolled sprawl; it does not permit diagnostic impoverishment. Layer A remains
+  compact but load-bearing, and Layer B remains burden-complete, case-specific,
+  owner-floor faithful, and restoration-directed. `B.s -> Land(B) -> R` is additive
+  to noetic depth, not a substitute for active deformations, criterion structure,
+  identity/source-status implications, or necessary theological/restorative force.
 - Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
   awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
   compiled bundle section containing the active TTP's operation floor, unless that exact
@@ -133,7 +139,12 @@ Top-salient invariants:
   Post-burden continuation gate: after every `R(H,Delta)`, if the state re-read names a
   remaining input-anchored burden and no hold, register, semantic, thin-basis, source-use,
   or limit gate blocks it, do not emit Restorative Response or Closing Formulation yet.
-  Continue with the next `Burden N+1`. Restorative Response and Closing Formulation are
+  Re-enter a compact Layer A for `Burden N+1` before Layer B continues. That Layer A is a
+  state re-read, not a global reset: name the current live noetic burden, active
+  deformation/pattern signals, current bounded operator, held/deferred routes, and
+  gate/release decision. `R(H,Delta)` is a state-transition judgment, not a formatting
+  marker: continue only if the next burden remains input-anchored and licensed; otherwise
+  HOLD, SKIP, PARTIAL, bounded-reroute, or close as the refreshed state requires. Continue with the next `Burden N+1`. Restorative Response and Closing Formulation are
   final-only for the current answer; if limits prevent the next burden, emit `PARTIAL`
   with the next live burden instead of closing.
   Input-anchored means any explicit claim, supporting premise, contrast, public/private

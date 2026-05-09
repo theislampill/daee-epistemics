@@ -26,6 +26,11 @@ No active unresolved release-blocking technical pass is currently assigned.
   continuation_queue traversal, and stable fixture tests. It does not claim
   deterministic feature extraction, pure-Hermes parity, codons, owner packs, or
   guaranteed transformer execution.
+- v0.3.2.0 recursive render hardening clarifies that compact governance means
+  concise richness rather than thinness, requires per-burden Layer A re-entry in
+  hard/compound/deformed recursive cases, treats `R(H,Delta)` as a real
+  state-transition judgment, and keeps Level 3 `continuation_queue` traversal
+  conditional on state re-read.
 - v0.3.2.0 nomenclature normalization records canonical noetic-state, DSL/IR,
   Level 3, TTP/owner/operator, and transliteration names under
   `references/diagnostics/nomenclature-normalization.md`.

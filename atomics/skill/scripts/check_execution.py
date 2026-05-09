@@ -41,6 +41,9 @@ _ORDINAL_WORDS = {
 }
 
 
+_STATE_REREAD_RE = re.compile("R\\(H,\\s*(?:Delta|\u0394)\\)", flags=re.IGNORECASE)
+
+
 def _has_burden_marker(output: str, burden_index: int) -> bool:
     """Detect a visible burden-structure label for burden N.
 
@@ -57,6 +60,58 @@ def _has_burden_marker(output: str, burden_index: int) -> bool:
         labels.append(rf"{ordinal}\s+[Bb]urden\b")
     pattern = rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:{'|'.join(labels)})"
     return re.search(pattern, output) is not None
+
+
+def _layer_marker_pattern(layer: str, burden_index: int) -> str:
+    return (
+        rf"(?im)^\s*(?:#{{1,6}}\s*)?"
+        rf"Layer\s+{re.escape(layer)}\b[^\n]*(?:Burden\s+{burden_index}\b|B{burden_index}\b)"
+    )
+
+
+def _has_layer_marker(output: str, layer: str, burden_index: int) -> bool:
+    return re.search(_layer_marker_pattern(layer, burden_index), output) is not None
+
+
+def _first_layer_pos(output: str, layer: str, burden_index: int) -> int:
+    match = re.search(_layer_marker_pattern(layer, burden_index), output)
+    return match.start() if match else -1
+
+
+def _has_transition_reread(output: str, prior_burden_index: int, next_burden_index: int) -> bool:
+    land_pos = output.find(f"Land(B{prior_burden_index}")
+    next_layer_pos = _first_layer_pos(output, "A", next_burden_index)
+    if land_pos < 0 or next_layer_pos < 0 or next_layer_pos <= land_pos:
+        return False
+    segment = output[land_pos:next_layer_pos]
+    return _STATE_REREAD_RE.search(segment) is not None
+
+
+def _valid_nonexecution_decision(output: str, burden_index: int) -> bool:
+    """Detect a governed decision not to execute a queued burden.
+
+    This must be tied to the burden's Layer A/state read; a stray HOLD/SKIP word
+    elsewhere is not enough.
+    """
+
+    start = _first_layer_pos(output, "A", burden_index)
+    if start < 0:
+        return False
+    next_layer = _first_layer_pos(output, "B", burden_index)
+    end_candidates = [pos for pos in [next_layer, _first_layer_pos(output, "A", burden_index + 1)] if pos > start]
+    end = min(end_candidates) if end_candidates else min(len(output), start + 1200)
+    segment = output[start:end]
+    decision = re.search(
+        r"\b(?:HOLD|HELD|DEFER|DEFERRED|SKIP|SKIPPED|PARTIAL|REROUTE|not licensed|no longer live|blocked)\b",
+        segment,
+        flags=re.IGNORECASE,
+    )
+    reason = re.search(
+        r"\b(?:because|reason|state|delta|after|landed|blocked|no longer|not input-anchored|not licensed|hold gate|register|semantic|thin-basis)\b",
+        segment,
+        flags=re.IGNORECASE,
+    )
+    return bool(decision and reason)
 
 
 def _closure_gate_satisfied(output: str, continuation_entries: list[dict[str, Any]]) -> bool:
@@ -93,8 +148,23 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
     held_ids = owner_ids(route_plan.get("held", []))
     deferred_ids = owner_ids(route_plan.get("deferred", []))
     verdict = str(route_plan.get("governance_verdict", "PARTIAL"))
+    nonexecuted_continuation_ids: set[str] = set()
 
-    for owner_id in first_live_ids + continuation_ids:
+    queue_blocked_from: int | None = None
+    for index, entry in enumerate(continuation_entries, start=2):
+        queued_ids = owner_ids(entry.get("owners", []))
+        has_execution_evidence = (
+            _has_layer_marker(output, "B", index)
+            or f"Land(B{index}" in output
+            or any(_has_owner_floor(output, owner_id) for owner_id in queued_ids)
+        )
+        if not has_execution_evidence and _valid_nonexecution_decision(output, index):
+            queue_blocked_from = index
+            for remaining in continuation_entries[index - 2:]:
+                nonexecuted_continuation_ids.update(owner_ids(remaining.get("owners", [])))
+            break
+
+    for owner_id in first_live_ids + [owner_id for owner_id in continuation_ids if owner_id not in nonexecuted_continuation_ids]:
         if owner_id not in output:
             errors.append(f"{owner_id}: routed owner absent from output")
         if not _has_owner_floor(output, owner_id):
@@ -108,11 +178,26 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         errors.append("visible B.s submove evidence absent")
     if "Land(B" not in output:
         errors.append("Land(B) evidence absent")
-    if "R(H,Delta)" not in output and "R(H, Delta)" not in output:
+    if not _STATE_REREAD_RE.search(output):
         errors.append("R(H,Delta) state re-read evidence absent")
 
     required_steps = 1 + len(continuation_entries)
+    if continuation_entries:
+        if not _has_layer_marker(output, "A", 1):
+            errors.append("B1: Layer A compact diagnostic control state absent")
+        if not _has_layer_marker(output, "B", 1):
+            errors.append("B1: Layer B governed response absent")
     for index in range(2, required_steps + 1):
+        if queue_blocked_from is not None and index > queue_blocked_from:
+            break
+        if not _has_layer_marker(output, "A", index):
+            errors.append(f"B{index}: Layer A compact diagnostic control state absent")
+        elif not _has_transition_reread(output, index - 1, index):
+            errors.append(f"B{index}: prior Land(B) lacks R(H,Delta) state re-read before Layer A")
+        if _valid_nonexecution_decision(output, index):
+            continue
+        if not _has_layer_marker(output, "B", index):
+            errors.append(f"B{index}: Layer B governed response absent")
         if not _has_burden_marker(output, index):
             errors.append(f"B{index}: continuation queue entry not visibly traversed")
         if f"Land(B{index}" not in output:
@@ -134,7 +219,7 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         errors.append("public close emitted before non-STOP governance cleared")
     if verdict != "STOP" and not closure_satisfied and "PARTIAL" not in output and "HOLD" not in output and "RECURSE" not in output:
         warnings.append("non-STOP governance lacks visible continuation/hold/partial marker")
-    if continuation_entries and "R(H,Delta)" not in output:
+    if continuation_entries and not _STATE_REREAD_RE.search(output):
         errors.append("continuation queue present but state re-read marker absent")
 
     fidelity = "fail" if errors else ("partial" if warnings else "pass")
@@ -145,10 +230,13 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
         user_visible_banner = f"PARTIAL - Level 3 execution check: {specific_defect}"
         retry_prompt = (
             "Retry from the existing Level 3 route plan. Execute first_live owners, "
-            "then execute continuation_queue entries in order when release conditions are met. "
+            "then re-read state after each Land(B) before executing continuation_queue entries. "
+            "For each executed burden emit `Layer A - Compact DSL/IR Header [Burden N]` "
+            "and `Layer B - Governed Response [Burden N]`. "
             "For every executed owner emit `Owner-floor: <owner-id>` followed by "
             "Target, Operation, Result, B.s, Land(B), and R(H,Delta), "
-            "and do not close unless R(H,Delta) names no remaining input-anchored burdens."
+            "and do not close unless R(H,Delta) names no remaining input-anchored burdens. "
+            "If a queued burden is no longer live, mark HOLD/SKIP/PARTIAL/reroute need with the state-delta reason."
         )
 
     return {

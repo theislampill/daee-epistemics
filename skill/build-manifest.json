@@ -131,7 +131,7 @@
   "canonical_source_root": "atomics/skill",
   "compiler_version": "0.3.2",
   "extra_inputs": {
-    "atomics/skill/SKILL.md": "519b06f81f63087638c7fdedc3e29832eb8d7d5eb9c2db1a835ec6fbb4ac9068",
+    "atomics/skill/SKILL.md": "de34ee280a181f01db23dc9e10240334a7a59d4f8460bc5179ceaf27c44481df",
     "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "6c203e84e710156577adb3d730c7b16b3bede28cfd3d89232d51915b9df59dc5",
     "atomics/skill/references/diagnostics/framework-pipeline.yaml": "288f01f1a4656325e02e281b004b9cbbcd9f10157a28066dd251e6a4f2e5132b",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
@@ -594,7 +594,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "8a4de5399fe7c24e6fb031482819fd907873f7ec2ff3adaa33951800651f6196"
+      "source_sha256": "be1b2d4985b1387e475c54e567f24bb46df58a0488b0259a73be210c116baac5"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -890,7 +890,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "763e98580ba9acb27cf93b22cd15370689d915b546fa4727c4792d80b3cecd0e"
+      "source_sha256": "41f11c1be8b62940b916a4cd9dd3c80b154c92b09e18242e32bb07dd2b0284d0"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
@@ -970,7 +970,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "34c0904b5a12fe93d132c9f86d24c26c1010e045a97c78dc189878b4a902c274"
+      "source_sha256": "226f14a31ef197d5ee6b47ea051206807eac34bccd5684f57bdf94fdf6c409ad"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

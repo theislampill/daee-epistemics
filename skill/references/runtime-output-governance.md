@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 763e98580ba9acb27cf93b22cd15370689d915b546fa4727c4792d80b3cecd0e -->
+<!-- SOURCE_SHA256: 41f11c1be8b62940b916a4cd9dd3c80b154c92b09e18242e32bb07dd2b0284d0 -->
 
 ---
 id: output-release
@@ -103,6 +103,14 @@ When all three are true, `RECURSE` is required internally in the same response. 
 noetic state, not topic count; topic transition != recursion; component tour != recursion.
 State re-read enumeration of remaining input-anchored live burdens plus one newly routed bounded
 pass = recursion.
+For hard, compound, or deformed recursive cases, the next bounded pass begins with a fresh
+compact Layer A for that burden before Layer B resumes. Layer A is the live diagnostic control
+state; Layer B is the governed intervention. This keeps continuation from becoming a checklist
+or route queue without renewed noetic assessment.
+`R(H,Delta)` must judge the refreshed state: continue, hold/defer, skip as no longer live,
+mark PARTIAL, request bounded reroute when the live state materially changed, or close when
+no input-anchored burden remains. A planned continuation queue proposes order; it does not
+override this state-transition judgment.
 
 For the required compact DSL/IR header + Layer B + State/noetic re-read shape, Layer A limits, and
 single-pass Layer A/B cosplay guard, use `diagnostic-render-contract.md`. For the
@@ -148,6 +156,9 @@ Hiddenness, punishment/accountability, source-status, source-worldview, and iden
 may be bounded submoves when needed to land the same governing burden.
 Restoration synthesis and any pastoral note release only after the active burden lands and
 state re-read licenses closure, HOLD, PARTIAL, or the next input-anchored burden.
+Identity-stabilization or source-status that is live and input-anchored must feed the
+restoration vector or practitioner instruction; it must not remain a diagnostic orphan, and it
+must not become speculative interior judgment.
 
 Live-burden boundary is governed by the noetic burden being cleared. Imported-criterion tribunal
 testing, hujjah/accountability correction, and guidance-as-coercive-proof correction can all be
@@ -809,7 +820,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: 8a4de5399fe7c24e6fb031482819fd907873f7ec2ff3adaa33951800651f6196 -->
+<!-- SOURCE_SHA256: be1b2d4985b1387e475c54e567f24bb46df58a0488b0259a73be210c116baac5 -->
 
 ---
 id: diagnostic-render-contract
@@ -1025,6 +1036,16 @@ If the release status says another bounded pass is licensed, continue with Burde
 If closure, hold, or partial traversal is correct, state the reason in prose — no literal
 STOP / HOLD / RECURSE / PARTIAL governance label in default mode.
 
+**Per-burden Layer A re-entry:** In hard, compound, or deformed cases, every released
+burden after `R(H,Delta)` re-enters a compact Layer A before Layer B continues. This is a
+state re-read, not a global reset. The new Layer A names what is now live, what landed,
+what remains held/deferred, which bounded operator is current, and what gate/release decision
+licenses the next burden. Without this re-entry, continuation has degraded into a queue rather
+than governed diagnostic control.
+`R(H,Delta)` must decide whether the planned next burden remains licensed, is held/deferred,
+is skipped because the prior burden changed the state, requires bounded reroute, or permits
+closure. Do not render the next Layer B merely because it was plausible in the initial route.
+
 **Layer A required default fields:** read status, confidence, claim_level,
 pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic
 burden, current bounded operator (by function), held, source-status/noetic-frame, and
@@ -1033,6 +1054,12 @@ include it when confidence is not `strong` or read status is not `dominant`, or 
 case is otherwise thin, mixed, distributed, or underdetermined. These fields are render-time
 aliases of existing diagnostic state; they add no IR fields, routes, PF codes, or owners.
 Do not omit the compact DSL/IR header in default mode.
+
+When multiple deformations or modal pressures are active, Layer A names the compound rather
+than flattening it into one module label. Preserve load-bearing distinctions among
+desire-as-criterion, identity-stabilization, imported framework, concealment, register
+mismatch, and pride/refusal signals when the input warrants them. A compact field can still
+carry the case-specific diagnostic reading.
 
 Current bounded operator is one live noetic burden/function: `B`, not a route chain,
 module list, route itinerary, single operative submove, or lone `s`. Allowed examples: `imported moral tribunal /
@@ -1638,9 +1665,9 @@ Decision rules:
 15. **Route Cosplay Failure:** Do not print route machinery as proof of compliance. In default mode, Diagnostic IR, Case State, `matched_modules`, literal `Recursion decision:`, and TTP labels do not substitute for target -> operation -> result -> state re-read.
 16. **One-time TTP itinerary:** Do not apply TTPs only once against the initial case-state and then answer every detected topic. TTPs execute across refreshed case-states: after each bounded operator lands, the refreshed state determines whether an already-present same-input burden is eligible, held, partial, or closed. Eligible same-input burdens must be traversed or marked PARTIAL; untriggered future contingencies stay held with a release condition.
 17. **Premature compression:** Do not shorten default output by skipping an eligible same-input burden. The failure is essay sprawl without refresh, not governed recursive sufficiency.
-18. **Wrong optimization target:** Do not optimize for short output or long output. Optimize the render for governed recursive sufficiency: compact DSL/IR header plus bounded prose in default mode, compact pass trace in `:dsl`, full ledger only in internal/development audit.
+18. **Wrong optimization target:** Do not optimize for short output or long output. Optimize the render for governed recursive sufficiency: compact DSL/IR header plus bounded prose in default mode, compact pass trace in `:dsl`, full ledger only in internal/development audit. Compact does not mean thin: governance rejects padding, dumping, and sprawl, but it does not authorize diagnostic impoverishment. Layer A stays compact but load-bearing; Layer B stays burden-complete, case-specific, owner-floor faithful, and restoration-directed. `B.s` / `Land(B)` / `R` structure is additive to noetic depth, not a substitute for active deformations, live criterion structure, identity/source-status implications, or necessary theological/restorative force.
 19. **Clean Essay Cosplay:** Every pass must show a transition before the next bounded operator starts. Multiple topical sections without state re-read transitions, hidden premises listed without operator result, doctrine dumped after criterion correction, or a pastoral close added without final state re-read are default-mode failures.
-20. **Identity over-certification:** In default mode, "the public identity-frame may stabilize the criterion or affect discourse orientation" is permitted when grounded. Unsafe default verdicts include "the identity layer is heavily load-bearing," "his identity is the framework through which every claim is processed," "it is hawa," or "it is irad," unless independently grounded and source-status marked.
+20. **Identity over-certification:** In default mode, "the public identity-frame may stabilize the criterion or affect discourse orientation" is permitted when grounded. Unsafe default verdicts include "the identity layer is heavily load-bearing," "his identity is the framework through which every claim is processed," "it is hawa," or "it is irad," unless independently grounded and source-status marked. When an identity/source-status marker is live and input-anchored, do not leave it as a diagnostic orphan: feed it into the restoration vector or practitioner instruction while keeping interior motive, sincerity, culpability, and soul-state speculative or held.
 21. **Route-chain bounded operator:** Do not render `Current bounded operator` as `FPD -> M1 -> DO-8 -> M8 -> restoration`, `M1, M8, DO-8, restoration`, or any module itinerary. The field names one burden-level function selected after diagnostic reduction and routing precedence.
 22. **Route-chain recursion cosplay:** Do not turn route legs into `Pass 1`, `Pass 2`, and `Pass 3`. Those are operative submoves unless a prior burden landed, state re-read ran, and the next input-anchored burden was licensed.
 23. **Restoration before state re-read:** Do not append restoration synthesis or pastoral note before the active burden has landed and state re-read licenses closure, HOLD, PARTIAL, or the next live burden.
@@ -1648,7 +1675,7 @@ Decision rules:
 25. **Contrast-source-as-operative-support:** Do not name a source as `contrast`, `opponent-position`, `historical note`, `genealogy`, `held material`, or `bounded comparison` and then use the same source as operative warrant in the same burden-cycle without explicit reclassification.
 26. **Ungrounded noetic re-read:** Do not render a `state re-read` / `noetic re-read` whose `burden landed` is asserted without an immediately preceding operative submove with `target -> operation -> result`, or whose `still live` / `next licensed live burden` is not anchored in the original input, prior held material, or the preceding collapse radius. Field-grounding rules are in `references/diagnostics/recursive-state-transitions.md §Grounded Noetic Re-Read Shape`.
 27. **Method-source branding:** Do not publicly frame daee-epistemics as a named-school methodology, new creed, new aqidah, new noetics, named-scholar method, or authority-by-association project. Default/public framing is sound noetic diagnosis -> detection of deformation/concealment/criterion import -> restoration of proper warrant/order and proper cognitive function in a congenial epistemic milieu.
-28. **Default source/citation restriction:** In default output, school, author, citation, genealogy, external philosopher, theologian, or framework references are not public-render material unless the user explicitly asks for them or validated IR specifically requires source-comparison. Default citation allowance is restricted to Qur'an, Sunnah, and sound narrations from the Salaf, and any such use must be directly referenced through an external source.
+28. **Default source/citation restriction:** In default output, school, author, citation, genealogy, external philosopher, theologian, or framework references are not public-render material unless the user explicitly asks for them or validated IR specifically requires source-comparison. Default citation allowance is restricted to Qur'an, Sunnah, and sound narrations from the Salaf, and any such use must be directly referenced through an external source. Use revealed evidence as an operative diagnostic or restorative instrument where it names the mechanism; do not append it as decorative substantiation or citation padding.
 
 ---
 

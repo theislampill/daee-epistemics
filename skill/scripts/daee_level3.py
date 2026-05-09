@@ -66,23 +66,32 @@ Closure gate:
 {_json_text(route_plan.get("closure_gate", {}))}
 
 Required execution shape:
-1. Execute the first-live owner(s) as Burden 1.
-2. For each first-live owner, emit owner-floor evidence as:
+1. Emit `Layer A - Compact DSL/IR Header [Burden 1]` before executing the first-live owner(s).
+   It must name the current live noetic burden, active deformation/pattern signals, selected owner(s),
+   held/deferred/rejected alternatives, release condition, and governance verdict.
+2. Emit `Layer B - Governed Response [Burden 1]`.
+3. For each first-live owner, emit owner-floor evidence as:
    Owner-floor: <owner-id> - <owner-specific floor>
    Target: <input-grounded target>
    Operation: <case-specific operation>
    Result: <changed claim-state>
-3. Render B1.s -> Land(B1) -> R(H,Delta).
-4. If the continuation queue is non-empty, continue in order. For each queued burden:
-   - cite the input span(s) that anchor it;
+4. Render B1.s -> Land(B1) -> R(H,Delta).
+5. If the continuation queue is non-empty, treat it as a planned route, not an unconditional command.
+   After each Land(B<N>) and R(H,Delta), re-read the state before B<N+1>.
+   Continue only if the next queued burden remains input-anchored and licensed.
+   If it is no longer live or is blocked, mark HOLD, SKIP, PARTIAL, or bounded-reroute need with the state-delta reason.
+6. For each queued burden that remains licensed:
+   - emit `Layer A - Compact DSL/IR Header [Burden N]` before Layer B;
+   - cite the input span(s) that anchor it and the release condition still satisfied after R(H,Delta);
+   - emit `Layer B - Governed Response [Burden N]`;
    - for each queued owner, emit exactly `Owner-floor: <owner-id> - <owner-specific floor>`;
    - then emit Target:, Operation:, and Result: lines for the same owner;
    - render B<N>.s -> Land(B<N>) -> R(H,Delta);
    - say what the prior burden cleared and why this burden is now licensed.
-5. Do not execute held/deferred owners outside first-live or continuation_queue.
-6. Do not pad: if a queued burden lacks a real input span, mark PARTIAL instead of inventing it.
-7. Do not emit Closing Formulation unless the closure gate is satisfied and R(H,Delta) names no remaining input-anchored burdens.
-8. If transformer limits prevent a queued burden, emit a visible PARTIAL banner naming the exact missing queue entry.
+7. Do not execute held/deferred owners outside first-live or continuation_queue.
+8. Do not pad: if a queued burden lacks a real input span, mark PARTIAL instead of inventing it.
+9. Do not emit Closing Formulation unless the closure gate is satisfied and R(H,Delta) names no remaining input-anchored burdens.
+10. If transformer limits prevent a queued burden, emit a visible PARTIAL banner naming the exact missing queue entry.
 """
 
 
@@ -90,6 +99,13 @@ def simulated_output(route_plan: dict[str, Any]) -> str:
     lines = [
         "# Level 3 Simulated Execution Scaffold",
         "",
+        "Layer A - Compact DSL/IR Header [Burden 1]",
+        f"- current live noetic burden: {route_plan.get('live_burden')}",
+        f"- selected owner(s): {', '.join(owner_ids(route_plan.get('first_live', [])))}",
+        f"- held/deferred/rejected alternatives: {', '.join(owner_ids(route_plan.get('held', [])) + owner_ids(route_plan.get('deferred', [])) + owner_ids(route_plan.get('rejected', []))) or 'none'}",
+        f"- release condition / governance verdict: {route_plan.get('governance_verdict')}",
+        "",
+        "Layer B - Governed Response [Burden 1]",
         f"Burden 1: {route_plan.get('live_burden')}",
     ]
     for index, item in enumerate(route_plan.get("first_live", []), start=1):
@@ -114,6 +130,14 @@ def simulated_output(route_plan: dict[str, Any]) -> str:
     for burden_index, entry in enumerate(route_plan.get("continuation_queue", []), start=2):
         lines.extend([
             "",
+            f"Layer A - Compact DSL/IR Header [Burden {burden_index}]",
+            f"- current live noetic burden: {entry.get('name')}",
+            "- active deformation / pattern signals: span-backed continuation burden",
+            f"- selected owner(s): {', '.join(owner_ids(entry.get('owners', [])))}",
+            "- held/deferred/rejected alternatives: rechecked from route plan",
+            f"- release condition / governance verdict: {', '.join(str(value) for value in entry.get('release_conditions', []))}",
+            "",
+            f"Layer B - Governed Response [Burden {burden_index}]",
             f"Burden {burden_index}: {entry.get('name')}",
             f"State transition: B{burden_index - 1} landed; this queued burden is input-anchored and released by the route plan.",
         ])
@@ -310,6 +334,12 @@ def _closure_matcher_regressions() -> list[str]:
         "deferred": [],
     }
     b3_output = """# Synthetic route execution
+Layer A - Compact DSL/IR Header [Burden 1]
+- current live noetic burden: synthetic imported criterion burden
+- selected owner(s): foreign-premise-detection
+- held/deferred/rejected alternatives: V2-reconstituting-reason, M8-reductio
+- release condition / governance verdict: RECURSE
+Layer B - Governed Response [Burden 1]
 First Burden: synthetic imported criterion burden
 B1.s1: execute first-live owner
 Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
@@ -319,6 +349,12 @@ Result: foreign-premise-detection owner-floor result
 Land(B1): first burden landed
 R(H,Delta): RECURSE - next span-backed burden released
 
+Layer A - Compact DSL/IR Header [Burden 2]
+- current live noetic burden: reason-repair
+- selected owner(s): V2-reconstituting-reason
+- held/deferred/rejected alternatives: M8-reductio
+- release condition / governance verdict: B1 landed; B2 remains input-anchored and licensed
+Layer B - Governed Response [Burden 2]
 Second Burden: reason-repair
 Operative Submove: execute queued owner
 Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
@@ -328,6 +364,12 @@ Result: V2-reconstituting-reason owner-floor result
 Land(B2): second burden landed
 R(H,Delta): RECURSE - next span-backed burden released
 
+Layer A - Compact DSL/IR Header [Burden 3]
+- current live noetic burden: moral-tribunal-check
+- selected owner(s): M8-reductio
+- held/deferred/rejected alternatives: none
+- release condition / governance verdict: B2 landed; B3 remains input-anchored and licensed
+Layer B - Governed Response [Burden 3]
 Third Burden: moral-tribunal-check
 Operative Submove: execute queued owner
 Owner-floor: M8-reductio - M8-reductio owner-floor result
@@ -349,6 +391,42 @@ Closing Formulation: closure licensed; no remaining input-anchored burden.
     if b3_missing_verdict.get("execution_fidelity") == "pass":
         errors.append("closure-regression missing B3 content unexpectedly passed")
 
+    b3_missing_layer_a = b3_output.replace("Layer A - Compact DSL/IR Header [Burden 2]", "Diagnostic header omitted [Burden 2]")
+    b3_missing_layer_verdict = check_execution(b3_plan, b3_missing_layer_a)
+    if b3_missing_layer_verdict.get("execution_fidelity") == "pass":
+        errors.append("layer-regression missing B2 Layer A unexpectedly passed")
+
+    b3_no_reread = b3_output.replace("R(H,Delta): RECURSE - next span-backed burden released\n\nLayer A - Compact DSL/IR Header [Burden 2]", "Layer A - Compact DSL/IR Header [Burden 2]", 1)
+    b3_no_reread_verdict = check_execution(b3_plan, b3_no_reread)
+    if b3_no_reread_verdict.get("execution_fidelity") == "pass":
+        errors.append("layer-regression B2 without prior R(H,Delta) unexpectedly passed")
+
+    b3_valid_hold = """# Synthetic governed hold
+Layer A - Compact DSL/IR Header [Burden 1]
+- current live noetic burden: synthetic imported criterion burden
+- selected owner(s): foreign-premise-detection
+- held/deferred/rejected alternatives: V2-reconstituting-reason, M8-reductio
+- release condition / governance verdict: RECURSE
+Layer B - Governed Response [Burden 1]
+First Burden: synthetic imported criterion burden
+B1.s1: execute first-live owner
+Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
+Target: first span
+Operation: expose the imported criterion
+Result: foreign-premise-detection owner-floor result
+Land(B1): first burden landed
+R(H,Delta): RECURSE - next span-backed burden rechecked
+
+Layer A - Compact DSL/IR Header [Burden 2]
+- current live noetic burden: reason-repair
+- release condition / governance verdict: HOLD because refreshed state shows the queued burden is not licensed after B1 landed
+- held/deferred/rejected alternatives: V2-reconstituting-reason held by state delta
+HOLD: B2 is held with a state-delta reason, not mechanically executed.
+"""
+    b3_valid_hold_verdict = check_execution(b3_plan, b3_valid_hold)
+    if b3_valid_hold_verdict.get("execution_fidelity") == "fail":
+        errors.append(f"layer-regression valid governed hold failed: {b3_valid_hold_verdict}")
+
     b5_plan = {
         "live_burden": "synthetic multi-burden route",
         "governance_verdict": "RECURSE",
@@ -363,6 +441,12 @@ Closing Formulation: closure licensed; no remaining input-anchored burden.
         "deferred": [],
     }
     b5_output = """# Synthetic five-burden route execution
+Layer A - Compact DSL/IR Header [Burden 1]
+- current live noetic burden: first-live burden
+- selected owner(s): foreign-premise-detection
+- held/deferred/rejected alternatives: queued owners
+- release condition / governance verdict: RECURSE
+Layer B - Governed Response [Burden 1]
 First Burden: first-live burden
 B1.s1: execute first-live owner
 Owner-floor: foreign-premise-detection - foreign-premise-detection owner-floor result
@@ -372,6 +456,11 @@ Result: foreign-premise-detection owner-floor result
 Land(B1): first burden landed
 R(H,Delta): RECURSE - next burden released
 
+Layer A - Compact DSL/IR Header [Burden 2]
+- current live noetic burden: second-loop
+- selected owner(s): do-second-loop
+- release condition / governance verdict: B1 landed; B2 remains licensed
+Layer B - Governed Response [Burden 2]
 Second Burden: second-loop
 Operative Submove: execute queued owner
 Owner-floor: do-second-loop - do-second-loop owner-floor result
@@ -381,6 +470,11 @@ Result: do-second-loop owner-floor result
 Land(B2): second burden landed
 R(H,Delta): RECURSE - next burden released
 
+Layer A - Compact DSL/IR Header [Burden 3]
+- current live noetic burden: reason-repair
+- selected owner(s): V2-reconstituting-reason
+- release condition / governance verdict: B2 landed; B3 remains licensed
+Layer B - Governed Response [Burden 3]
 Third Burden: reason-repair
 Operative Submove: execute queued owner
 Owner-floor: V2-reconstituting-reason - V2-reconstituting-reason owner-floor result
@@ -390,6 +484,11 @@ Result: V2-reconstituting-reason owner-floor result
 Land(B3): third burden landed
 R(H,Delta): RECURSE - next burden released
 
+Layer A - Compact DSL/IR Header [Burden 4]
+- current live noetic burden: internal-check
+- selected owner(s): M8-reductio
+- release condition / governance verdict: B3 landed; B4 remains licensed
+Layer B - Governed Response [Burden 4]
 Fourth Burden: internal-check
 Operative Submove: execute queued owner
 Owner-floor: M8-reductio - M8-reductio owner-floor result
@@ -399,6 +498,11 @@ Result: M8-reductio owner-floor result
 Land(B4): fourth burden landed
 R(H,Delta): RECURSE - next burden released
 
+Layer A - Compact DSL/IR Header [Burden 5]
+- current live noetic burden: restoration
+- selected owner(s): P1-fitrah-restoration
+- release condition / governance verdict: B4 landed; B5 remains licensed
+Layer B - Governed Response [Burden 5]
 Fifth Burden: restoration
 Operative Submove: execute queued owner
 Owner-floor: P1-fitrah-restoration - P1-fitrah-restoration owner-floor result

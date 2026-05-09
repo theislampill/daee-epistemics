@@ -262,8 +262,10 @@ def compute_route(features: dict[str, Any], skill_root: Path) -> dict[str, Any]:
         "governance_verdict": verdict,
         "execution_constraints": [
             "execute first_live owners first",
-            "after Land(B) and R(H,Delta), execute continuation_queue entries in order when release conditions are met",
+            "continuation_queue is planned, not unconditional; after each Land(B) and R(H,Delta), continue only when the next entry remains input-anchored and licensed",
+            "if refreshed state no longer licenses a queued burden, mark HOLD, SKIP, PARTIAL, or bounded-reroute need with the state-delta reason",
             "do not execute held or deferred owners outside first_live or continuation_queue",
+            "emit Layer A compact diagnostic control state and Layer B governed response for every executed burden",
             "render visible owner-floor Target -> Operation -> Result evidence",
             "render B.s -> Land(B) -> R(H,Delta) for every burden entry",
             "close only if R(H,Delta) names no remaining input-anchored burdens",

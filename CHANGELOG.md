@@ -129,6 +129,16 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
 
 - Strengthened TTP routing, owner-floor execution, render-through, and
   continuation governance in source owners, runtime bundles, and checkers.
+- Clarified recursive render governance after release: compact/governed output
+  means concise richness, not thin diagnosis; hard, compound, or deformed cases
+  re-enter compact Layer A after `Land(B)` / `R(H,Delta)` when another
+  input-anchored burden is released; and `R(H,Delta)` is a state-transition
+  judgment, not a formatting marker.
+- Hardened Level 3 execution prompts and checks so `continuation_queue` remains
+  a planned route rather than an unconditional checklist: each executed queued
+  burden requires Layer A / Layer B structure, owner-floor evidence, Land/R, and
+  state re-read, while valid HOLD/SKIP/PARTIAL/reroute decisions remain
+  governed.
 - Hardened smoke-artifact validation to reject label-only/generic owner-floor
   evidence, shallow first-burden-only output when continuation is licensed,
   premature closure, and unsupported release-smoke claims.

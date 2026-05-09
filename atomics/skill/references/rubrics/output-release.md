@@ -83,6 +83,14 @@ When all three are true, `RECURSE` is required internally in the same response. 
 noetic state, not topic count; topic transition != recursion; component tour != recursion.
 State re-read enumeration of remaining input-anchored live burdens plus one newly routed bounded
 pass = recursion.
+For hard, compound, or deformed recursive cases, the next bounded pass begins with a fresh
+compact Layer A for that burden before Layer B resumes. Layer A is the live diagnostic control
+state; Layer B is the governed intervention. This keeps continuation from becoming a checklist
+or route queue without renewed noetic assessment.
+`R(H,Delta)` must judge the refreshed state: continue, hold/defer, skip as no longer live,
+mark PARTIAL, request bounded reroute when the live state materially changed, or close when
+no input-anchored burden remains. A planned continuation queue proposes order; it does not
+override this state-transition judgment.
 
 For the required compact DSL/IR header + Layer B + State/noetic re-read shape, Layer A limits, and
 single-pass Layer A/B cosplay guard, use `diagnostic-render-contract.md`. For the
@@ -128,6 +136,9 @@ Hiddenness, punishment/accountability, source-status, source-worldview, and iden
 may be bounded submoves when needed to land the same governing burden.
 Restoration synthesis and any pastoral note release only after the active burden lands and
 state re-read licenses closure, HOLD, PARTIAL, or the next input-anchored burden.
+Identity-stabilization or source-status that is live and input-anchored must feed the
+restoration vector or practitioner instruction; it must not remain a diagnostic orphan, and it
+must not become speculative interior judgment.
 
 Live-burden boundary is governed by the noetic burden being cleared. Imported-criterion tribunal
 testing, hujjah/accountability correction, and guidance-as-coercive-proof correction can all be

@@ -20,10 +20,10 @@ asset is the same checked payload renamed to `.skill`. Do not re-zip the reposit
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98` |
-| Size | `524363` bytes |
+| SHA256 | `A501F0FD15AF7374619A311BB0D5D75973239F0F613ECAB53E81DCE039F92EC2` |
+| Size | `528460` bytes |
 | Entries | `45` |
-| GitHub Release visibility | Published; asset replaced after post-release Level 3 polish |
+| GitHub Release visibility | Published; asset rebaked for recursive render / state re-read hardening |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
@@ -52,7 +52,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`06C3DACC5AAAD61E7B4FF6243E6F7EE57B3FFF40ED5345A950B763A94EE23A98` are not present unless a smoke
+`A501F0FD15AF7374619A311BB0D5D75973239F0F613ECAB53E81DCE039F92EC2` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 

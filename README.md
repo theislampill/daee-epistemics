@@ -241,6 +241,8 @@ Default output must visibly instantiate compact compiler state enough to prevent
 cosplay. The exact field list and failure modes are owned by
 [`diagnostic-render-contract.md`](atomics/skill/references/rubrics/diagnostic-render-contract.md)
 and the root control plane in [`atomics/skill/SKILL.md`](atomics/skill/SKILL.md).
+Recursive render details are governed by the runtime references, not by the
+README; compact output is a concise governed surface, not a thin mode.
 
 `/daee-epistemics:audit` is deprecated as a public render mode and retained only as an internal/development compatibility surface for regression review, bundle/source-basis inspection, and procedural debugging. Default mode must not depend on `:audit` for governance visibility.
 
