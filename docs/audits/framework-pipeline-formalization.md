@@ -19,6 +19,23 @@ This document is the correct home for richer formal-operator language because it
 preserve the conceptual architecture without making the live pipeline look like a second routing
 grammar. If this document and an operative source disagree, the operative source wins.
 
+## Rendering and Parity Boundary
+
+GitHub-rendered math in this document uses conservative KaTeX-compatible textual operators such as
+`\mathrm{Target}`. The notation is explanatory only; it does not create executable routing grammar.
+
+Framework-pipeline parity remains owned by the repo-native generated chain:
+
+- `atomics/skill/references/diagnostics/framework-pipeline.yaml` is the structured source for the
+  generated audit chart.
+- `tools/build_framework_pipeline.py` regenerates
+  `atomics/skill/references/diagnostics/framework-pipeline.md`.
+- `tools/check_framework_pipeline.py` verifies required nodes, mandatory-pass order, gate checks,
+  forbidden shortcuts, recursive-state ownership, support-claim backing, coverage alignment, and
+  compiled runtime parity.
+- `tools/build_compiled_runtime.py` carries the checked framework-pipeline surface into the generated
+  runtime bundle.
+
 ## Authority Boundaries
 
 This formalization is safe to use for:
@@ -167,7 +184,7 @@ For each governed pass `t`, the framework can be stated as:
 ```
 
 ```math
-\eta_t = \operatorname{Target}(\sigma_t^{\checkmark})
+\eta_t = \mathrm{Target}(\sigma_t^{\checkmark})
 ```
 
 ```math
