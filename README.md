@@ -10,56 +10,6 @@ Its governing aim is not to manufacture novelty or simply accumulate clever refu
 
 Runtime coverage and scope in the packaged skill are represented by generated `skill/SKILL.md`, module front matter preserved from source, `compiled-module-map.json`, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
 
-## Level 3 Executable Routing
-
-For Codex runtimes that can execute bundled skill scripts, `/daee-epistemics [input]`
-should use the packaged Level 3 wrapper by default for every case. Light cases
-spend a few extra seconds in the wrapper; hard cases get the same binding route
-discipline. The wrapper makes routing executable rather than merely interpretive:
-
-```text
-python scripts/daee_level3.py --input <input.md> --out <run-dir>
-```
-
-It produces `features.json`, `route_plan.json`, reconstruction/validation
-verdicts, and, when the route is valid, `execution_prompt.md`. If route
-generation writes `execution_blocked.md`, return that visible PARTIAL/block
-note and do not execute an ordinary answer. After the model answers from a
-valid execution prompt, validate the answer against the route plan:
-
-```text
-python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md
-```
-
-If execution validation returns `partial` or `fail`, the user-facing response
-should include:
-
-```text
-PARTIAL - Level 3 execution check: <specific defect>
-```
-
-If a runtime cannot execute bundled scripts, it must visibly label fallback:
-
-```text
-Level 1/2 invocation - Level 3 wrapper unavailable in this runtime
-```
-
-Maintainers can run the required contrast/stability fixtures plus the hard
-regression fixture locally with:
-
-```text
-python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
-```
-
-Honest release claim: daee-epistemics ships with deterministic routing
-(`route.py`) over span-backed feature extraction (`diagnose.py`), with route
-plans validated by reconstruction (`reconstruct.py`) and post-output execution
-checked (`check_execution.py`). Routing is deterministic given features. Feature
-extraction has interpretive components with input-span validation. The full
-Level 3 pipeline is invoked via `scripts/daee_level3.py`; users invoking the
-skill without the wrapper get visibly labeled Level 1/2 behavior. Highest-complexity burdens
-remain bounded by transformer execution capability even under Level 3 routing.
-
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
 - [Terminology Note](#terminology-note)
@@ -73,7 +23,7 @@ remain bounded by transformer execution capability even under Level 3 routing.
 - [Source / Runtime Layout](#source--runtime-layout)
 - [Repository Architecture](#repository-architecture)
 - [Repository Diagram](#repository-diagram)
-- [Install / Package (Claude-First)](#install--package-claude-first)
+- [Install, Package, and Runtime Use](#install-package-and-runtime-use)
 
 ## Before You Use This Skill
 The skill needs a practitioner whose own *fiṭrah* is in reasonable health.
@@ -350,199 +300,123 @@ bundle and `MODULE_ID` section.
 
 ## Repository Architecture
 
-The canonical source under `atomics/skill/` operationalizes the thesis through a layered structure.
-The generated runtime under `skill/` compiles these sources into runtime bundles while preserving
-original module IDs and source-basis traceability.
+The repo is organized around one source-of-truth tree, one generated runtime
+tree, and several verification surfaces. Edit canonical source under
+`atomics/skill/`, then regenerate `skill/`; do not hand-edit generated runtime
+files as the source of truth.
 
 | Path | Role |
 |------|------|
-| [`atomics/skill/SKILL.md`](atomics/skill/SKILL.md) | Canonical governing protocol and routing logic. |
-| [`atomics/skill/references/diagnostics/`](atomics/skill/references/diagnostics/) | Canonical diagnostic source: noetic reading, deformations, concealment modes, discourse orientation, and routing governance. |
-| [`atomics/skill/references/tactics/`](atomics/skill/references/tactics/) | Canonical tactics for live objection patterns and argumentative behaviors. |
-| [`atomics/skill/references/techniques/`](atomics/skill/references/techniques/) | Canonical reusable diagnostic and restorative methods. |
-| [`atomics/skill/references/procedures/`](atomics/skill/references/procedures/) | Canonical ordered workflows, including sustained restoration procedures. |
-| [`atomics/skill/references/case-library/`](atomics/skill/references/case-library/) | Canonical playbooks for recurring profiles and doctrinal objection families. |
-| [`skill/SKILL.md`](skill/SKILL.md) | Generated runtime entrypoint with compiled path-resolution addendum. |
-| [`skill/references/runtime-*.md`](skill/references/) | Generated always/near-always runtime bundles. |
-| [`skill/references/omnibus/`](skill/references/omnibus/) | Generated selective omnibus bundles. Availability is not activation. |
-| [`skill/compiled-module-map.json`](skill/compiled-module-map.json) | Runtime resolver from original module ID/source path to bundle section. |
+| [`atomics/skill/`](atomics/skill/) | Canonical editable skill source: root instructions, references, Level 3 data/scripts/tests, and owner files. |
+| [`atomics/skill/references/`](atomics/skill/references/) | Canonical noetic, diagnostic, TTP/owner, procedure, rubric, and case-library source. |
+| [`atomics/skill/data/`](atomics/skill/data/) | Level 3 executable routing data: trigger matrix, precedence, module catalogue, and ontology licenses. |
+| [`atomics/skill/scripts/`](atomics/skill/scripts/) | Level 3 source scripts for diagnosis, deterministic routing-given-features, validation, reconstruction, orchestration, and execution checking. |
+| [`atomics/skill/tests/`](atomics/skill/tests/) | Package-local Level 3 fixtures and expected route plans. |
+| [`skill/`](skill/) | Generated package/runtime root. Build from atomics; upload/package this tree's contents. |
+| [`skill/data/`](skill/data/) and [`skill/scripts/`](skill/scripts/) | Generated Level 3 runtime data and scripts bundled with the skill package. |
+| [`skill/references/`](skill/references/) | Generated runtime and omnibus bundles. Availability is not activation. |
+| [`skill/compiled-module-map.json`](skill/compiled-module-map.json) | Runtime resolver from original module ID/source path to generated bundle section. |
 | [`skill/build-manifest.json`](skill/build-manifest.json) | Generated freshness and source-checksum manifest. |
+| [`tools/`](tools/) | Build, checker, smoke-artifact, IR, routing, reconstruction, and hygiene tooling. |
+| [`tests/`](tests/) | Static routing, IR, and reconstruction fixtures for maintainers. |
+| [`ci/`](ci/) and [`.github/workflows/`](.github/workflows/) | Maintainer CI wrappers around local checks. |
+| [`docs/`](docs/) | Architecture notes, onboarding, release logs, and audit evidence; not runtime source. |
 
-Read behaviorally as well as structurally, the architecture works like this: 
-
-Diagnose the Noetic Structure, 
-identify any live higher-order burden, 
-type the restoration target at that same layer, 
-identify the Primary Deformation, 
-classify Concealment and Discourse Orientation, 
-and only then select the relevant Tactic, Technique, Procedure, or Case Module. 
+Read behaviorally, the architecture works like this: diagnose the noetic state,
+identify the live burden and restoration target, classify deformation,
+concealment, and discourse orientation, route only through licensed owners, land
+the current burden, re-read state, then stop, hold, recurse, or mark partial.
+In Level 3-capable runtimes, the route plan makes that sequence executable and
+checkable; in scriptless runtimes, the same governance remains instructional.
 
 [`atomics/skill/references/techniques/heuristics.md`](atomics/skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Repository Diagram
 
-Public structural view: the diagram below shows how an input prompt enters the governed skill, passes through governance, diagnosis, and selective routing, and surfaces through the repo's output structure. The full internal pipeline audit surface remains [`framework-pipeline.md`](atomics/skill/references/diagnostics/framework-pipeline.md); abstract recursive state-transition semantics live in [`recursive-state-transitions.md`](atomics/skill/references/diagnostics/recursive-state-transitions.md).
+The diagrams below split the repo into three views: source layout, runtime
+invocation, and maintainer verification. The full internal pipeline audit
+surface remains [`framework-pipeline.md`](atomics/skill/references/diagnostics/framework-pipeline.md);
+abstract recursive state-transition semantics live in
+[`recursive-state-transitions.md`](atomics/skill/references/diagnostics/recursive-state-transitions.md).
+
+### Repository Layout
 
 ```mermaid
 flowchart TB
 
-INPUT["INPUT PROMPT<br/>claim / question / excerpt"]
+SRC["atomics/skill<br/>canonical source"]
+SRCREF["references<br/>owners / diagnostics / rubrics"]
+SRCL3["data + scripts + tests<br/>Level 3 source"]
+BUILD["tools/build_compiled_runtime.py<br/>compiler"]
+RUNTIME["skill<br/>generated package root"]
+RTREF["runtime + omnibus references"]
+RTL3["data + scripts + tests<br/>packaged Level 3"]
+TESTS["tests<br/>routing / IR / reconstruction fixtures"]
+CI["ci + .github/workflows<br/>maintainer checks"]
+DOCS["docs<br/>onboarding / audits / release evidence"]
 
-subgraph FOUNDATION["Governing entry + architecture"]
-direction TB
-  subgraph FTOP[" "]
-  direction LR
-    README["README<br/>landing / docs<br/>[README.md]"]
-    SKILLROOT["Skill root<br/>deployable artifact"]
-    SKILL["SKILL.md<br/>governing entry / control plane<br/>[SKILL.md]"]
-  end
-  subgraph FALWAYS["Always-load background"]
-  direction LR
-    TERM["Terminology<br/>shared vocabulary<br/>[terminology.md]"]
-    CASEINDEX["Case-library index<br/>first router / specialty markers<br/>[case-library/INDEX.md]"]
-    MODCODES["Module codes<br/>canonical module ID reference<br/>[module-codes.md]"]
-    HEUR["Heuristics<br/>always-active operator discipline<br/>[heuristics.md]"]
-  end
-  subgraph FANCHOR["Architectural anchors / trigger governance"]
-  direction LR
-    KERNEL["Kernel thesis<br/>architectural anchor<br/>[kernel-thesis.md]"]
-    META["Metaphysical architecture<br/>restoration target typing<br/>[metaphysical-architecture.md]"]
-    WAHY["Wahy supremacy<br/>authority-order governance<br/>[prophecy-wahy-supremacy.md]"]
-  end
-end
-
-subgraph DIAG["Diagnosis + dispatch gate"]
-direction TB
-  V1["V1 diagnostic gate<br/>listen / classify / triage<br/>[V1-diagnostic.md + M5]"]
-  DINDEX["Diagnostics index<br/>reference / use order<br/>[diagnostics/INDEX.md]"]
-
-  subgraph PASSES["Axes + triggered passes"]
-  direction LR
-    NOETIC["Noetic reading<br/>diagnostic lens"]
-    ORIENT["Discourse orientation<br/>diagnostic classification"]
-    DEF["Deformations<br/>diagnostic classification"]
-    CONC["Concealment modes<br/>diagnostic classification"]
-    REASON["Reason disambiguation<br/>mandatory pass [P-A]"]
-    FPD["Foreign-premise detection<br/>triggered pass [P-B]"]
-    PDN["Prophetic discourse neutralization<br/>triggered pass [P-C]"]
-    ABP["Backbone predicates<br/>trigger-mapped pass [P-D]"]
-    PATTERN["Pattern profiling<br/>claim_level / pattern_profile when live"]
-  end
-
-  subgraph GATE["Gate governance"]
-  direction LR
-    PRECED["Routing precedence<br/>suppression / tie-breaks"]
-    IR["Diagnostic IR<br/>schema-backed dispatch gate<br/>[diagnostic-ir.md]"]
-    MIXED["Mixed cases<br/>thin-basis governance"]
-    ANTI["Anti-patterns<br/>failure checks<br/>[anti-patterns.md]"]
-    P7["P7 restoration stops<br/>hard rails / boundary reset"]
-  end
-end
-
-subgraph LOWER["Selective routing / confirmed loads"]
-direction LR
-  PROFILES["Profiles<br/>NS-1 ... NS-12<br/>confirmed match only"]
-  DOCTRINE["DO / RT / specialty owners<br/>confirmed match only"]
-  MODULES["Matched techniques / tactics / procedures<br/>current-pass selective activation"]
-  SOUND["Sound reason epistemology<br/>deep grounding on confirmed match"]
-end
-
-subgraph OUTPUT["Output structure"]
-direction LR
-  CASEOUT["Case State / Source Basis<br/>rendered from validated IR when needed<br/>[case-state-schema.md + inference-boundary.md]"]
-  LAYERS["Layer A compact DSL/IR header<br/>Layer B bounded governed response<br/>(held / minimal when gated)"]
-  REST["State/noetic re-read<br/>stop-governed close"]
-end
-
-subgraph STATICMETA["Static metadata / historical audit (non-dispatch)"]
-direction LR
-  CATALOGUE["Module catalogue<br/>id / path / class registry<br/>[module-catalogue.json]"]
-  FRONTMATTER["Module front matter<br/>owner metadata<br/>[per-file YAML]"]
-  PFAUDIT["Pattern-family audit<br/>historical PF regression<br/>[docs/audits/pattern-family-audit.md]"]
-end
-
-INPUT -->|enters| SKILL
-README -. documents .-> SKILLROOT
-SKILLROOT -->|contains| SKILL
-
-SKILL -->|always loads| TERM
-SKILL -->|always loads| CASEINDEX
-SKILL -->|always loads| MODCODES
-SKILL -->|always loads| HEUR
-KERNEL -->|anchors| SKILL
-META -->|anchors| SKILL
-WAHY -->|anchors| SKILL
-META -->|binds architectural layer| IR
-
-SKILL -->|starts with| V1
-DINDEX -. reference / specialty map .-> V1
-CASEINDEX -. first router / surface markers .-> V1
-HEUR -. operator discipline .-> V1
-
-V1 --> NOETIC
-V1 --> ORIENT
-V1 --> DEF
-V1 --> CONC
-V1 --> REASON
-V1 -->|when live| FPD
-V1 -->|when live| PDN
-V1 -->|per trigger mapping| ABP
-
-NOETIC -->|higher-order burden when live| PATTERN
-FPD -->|criterion / tribunal burden when live| PATTERN
-NOETIC --> IR
-ORIENT --> IR
-DEF --> IR
-CONC --> IR
-REASON --> IR
-FPD --> IR
-PDN --> IR
-ABP --> IR
-PATTERN --> IR
-
-IR -->|must validate before dispatch| PRECED
-IR -->|thin / mixed basis stays governed| MIXED
-IR -->|checked against| ANTI
-IR -->|checks hard rails| P7
-
-PRECED -->|opens confirmed family loads through| CASEINDEX
-CASEINDEX -->|confirmed NS match| PROFILES
-CASEINDEX -->|confirmed DO / RT / specialty match| DOCTRINE
-PRECED -->|opens only case-state-justified activation| MODULES
-
-MODULES -->|may include on confirmed match| SOUND
-DOCTRINE -->|may require| SOUND
-
-IR -->|renders when needed| CASEOUT
-PROFILES --> LAYERS
-DOCTRINE --> LAYERS
-MODULES --> LAYERS
-P7 -->|can hold / compress Layer B| LAYERS
-CASEOUT -. accompanies surfaced output .-> LAYERS
-LAYERS --> REST
-
-CATALOGUE -. constrains module ids/classes .-> IR
-FRONTMATTER -. declares owner metadata .-> MODULES
-PFAUDIT -. historical regression for .-> PATTERN
-
-classDef blue fill:#eef6ff,stroke:#4f8cff,stroke-width:1.5px,color:#173a74;
-classDef amber fill:#fff7ed,stroke:#f59e0b,stroke-width:1.5px,color:#92400e;
-classDef cerulean fill:#e7f3ff,stroke:#2f7fd8,stroke-width:1.5px,color:#184e8c;
-classDef dgreen fill:#e8f7ef,stroke:#20965f,stroke-width:1.5px,color:#0f5132;
-classDef red fill:#fff1f2,stroke:#fb7185,stroke-width:1.5px,color:#9f1239;
-classDef indigo fill:#eef2ff,stroke:#818cf8,stroke-width:1.5px,color:#3730a3;
-classDef slate fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#334155;
-
-class INPUT,README blue;
-class SKILLROOT,SKILL amber;
-class TERM,CASEINDEX,MODCODES,HEUR,KERNEL,META,WAHY cerulean;
-class V1,DINDEX,NOETIC,ORIENT,DEF,CONC,REASON,FPD,PDN,ABP,PATTERN,IR,PRECED,MIXED,ANTI,P7 dgreen;
-class PROFILES,DOCTRINE indigo;
-class MODULES,SOUND red;
-class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
+SRC --> SRCREF
+SRC --> SRCL3
+SRC --> BUILD
+BUILD --> RUNTIME
+RUNTIME --> RTREF
+RUNTIME --> RTL3
+SRC --> TESTS
+TESTS --> CI
+RUNTIME --> CI
+DOCS -. explains .-> SRC
+DOCS -. records evidence .-> RUNTIME
 ```
 
-## Install / Package (Claude-First)
+### Runtime Invocation
+
+```mermaid
+flowchart TB
+
+USER["User invokes /daee-epistemics"]
+SKILL["Packaged SKILL.md"]
+SCRIPTQ{"Bundled scripts available?"}
+L3["Level 3 wrapper<br/>daee_level3.py"]
+DIAG["diagnose.py<br/>span-backed features"]
+ROUTE["route.py<br/>deterministic routing given features"]
+VALIDATE["validate.py + reconstruct.py<br/>integrity and reconstruction"]
+PROMPTQ{"Route valid?"}
+BLOCK["execution_blocked.md<br/>visible PARTIAL/block note"]
+EXEC["execution_prompt.md<br/>model executes route plan"]
+CHECK["check_execution.py<br/>post-output validation"]
+OUTPUT["Governed output<br/>or visible PARTIAL defect"]
+FALLBACK["Level 1/2 fallback<br/>visibly labeled"]
+
+USER --> SKILL
+SKILL --> SCRIPTQ
+SCRIPTQ -->|yes| L3
+SCRIPTQ -->|no| FALLBACK
+L3 --> DIAG --> ROUTE --> VALIDATE --> PROMPTQ
+PROMPTQ -->|no| BLOCK --> OUTPUT
+PROMPTQ -->|yes| EXEC --> CHECK --> OUTPUT
+FALLBACK --> OUTPUT
+```
+
+### Maintainer Verification
+
+```mermaid
+flowchart LR
+
+EDIT["Edit atomics/skill"]
+BUILDPIPE["build_framework_pipeline<br/>build_compiled_runtime"]
+FRESH["freshness + module boundaries<br/>stub integrity"]
+ROUTING["routing parity<br/>reconstruction fixtures"]
+GOV["render / recursion / metacompliance<br/>IR integrity"]
+L3FIX["Level 3 fixture runner<br/>stability repetitions"]
+SMOKE["smoke artifact checks<br/>release evidence boundary"]
+PACKAGE["optional package build<br/>hash + current-release smokes"]
+
+EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
+```
+
+## Install, Package, and Runtime Use
+
+### Package Boundary
 
 The canonical user-facing upload name is `daee-epistemics.skill`. The current public GitHub Release
 asset filename is `daee-epistemics-v0.3.1.0.skill`, verified on the historical `v0.3.1.0` release.
@@ -560,26 +434,15 @@ The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.js
 top level is `skill/`. Package the contents of the generated `skill/` directory, not the directory
 itself.
 
-Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). For a v0.3.2.0 release candidate, the local packaging command should be:
+For path fidelity, build the archive with tooling that preserves slash-safe archive entry names for
+skill hosts that inspect the bundle structure directly.
+
+For a v0.3.2.0 release candidate, the local packaging command should be:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
 Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.0.skill
 ```
-
-Smoke tests should use the latest explicitly named rc package and hash from the current run.
-Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs. The release smoke
-artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
-live runs may regenerate it, but the checker defaults to that repo-local root.
-`tools/check_smoke_artifacts.py` also compares smoke package provenance against
-`docs/release-artifacts.md` and rejects unmarked package-hash drift.
-When a current-release smoke suite is truthfully regenerated, run
-`python tools/check_smoke_artifacts.py --require-current-release-smokes` as a release-promotion
-check. In this source state, the committed `runtime-grounding-v5` suite is historical regression
-evidence, so the strict flag is expected to fail until current-release smokes exist.
-Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
-
-For path fidelity, build the archive from a POSIX-style shell or other tooling that preserves slash-safe archive entry names for skill hosts that inspect the bundle structure directly.
 
 From any folder, open a Bash-compatible terminal and paste the following if you want a clone-and-package flow. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the generated `skill/` contents, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 
@@ -598,11 +461,100 @@ rm -rf "$tmp"
 
 If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json` at the top level of the archive.
 
-Claude-first installation flow:
+### Claude Installation
 
 1. Package the skill from this repository.
 2. Open Claude.ai and go to Settings > Skills, or open [Claude Skills](https://claude.ai/customize/skills).
 3. Upload `daee-epistemics.skill`.
 4. Enable the skill and test it with a query that should trigger epistemic diagnosis or objection handling.
 
-The same `.skill` bundle may also work in other agent platforms that support the open skill format, but the upload steps outside Claude may differ.
+### Codex Invocation
+
+The same `.skill` bundle may also work in Codex and other skill-capable agent
+platforms. In Codex, ordinary use should stay simple:
+
+```text
+/daee-epistemics [input]
+```
+
+When bundled scripts are available, Codex should treat that invocation as Level
+3 by default for every case. Light cases spend a few extra seconds in the
+wrapper; hard cases get the same binding route discipline.
+
+### Codex Level 3 Runtime Path
+
+Level 3 makes routing executable rather than merely interpretive:
+
+```text
+python scripts/daee_level3.py --input <input.md> --out <run-dir>
+```
+
+It produces `features.json`, `route_plan.json`, reconstruction/validation
+verdicts, and, when the route is valid, `execution_prompt.md`. If route
+generation writes `execution_blocked.md`, return that visible PARTIAL/block
+note and do not execute an ordinary answer. After the model answers from a
+valid execution prompt, validate the answer against the route plan:
+
+```text
+python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md
+```
+
+If execution validation returns `partial` or `fail`, the user-facing response
+should include:
+
+```text
+PARTIAL - Level 3 execution check: <specific defect>
+```
+
+Honest release claim: daee-epistemics ships with deterministic routing
+(`route.py`) over span-backed feature extraction (`diagnose.py`), with route
+plans validated by reconstruction (`reconstruct.py`) and post-output execution
+checked (`check_execution.py`). Routing is deterministic given features.
+Feature extraction has interpretive components with input-span validation.
+Transformer execution remains probabilistic; highest-complexity burdens remain
+bounded by model capability even under Level 3 routing. Pure-Hermes parity,
+fixture-18 resolution, catalogue-wide executable Level 3 coverage, codons, and
+owner packs are not claimed.
+
+### Scriptless Runtime Fallback
+
+If a runtime cannot execute bundled scripts, it must visibly label fallback:
+
+```text
+Level 1/2 invocation - Level 3 wrapper unavailable in this runtime
+```
+
+Scriptless fallback preserves the instructional governance in `SKILL.md`, but
+it does not claim Level 3 route-plan validation or post-output execution
+checking.
+
+### Maintainer Commands
+
+Before release, regenerate and verify the runtime with the command set in
+[Source / Runtime Layout](#source--runtime-layout). Maintainers can run the
+required contrast/stability fixtures plus the hard regression fixture locally
+with:
+
+```text
+python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
+```
+
+For package-root debugging, the equivalent in-package command shape is:
+
+```text
+python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
+```
+
+### Release Smoke Boundary
+
+Smoke tests should use the latest explicitly named rc package and hash from the current run.
+Do not use `build/compiled-skill/` or older rc archives as smoke-test inputs. The release smoke
+artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
+live runs may regenerate it, but the checker defaults to that repo-local root.
+`tools/check_smoke_artifacts.py` also compares smoke package provenance against
+`docs/release-artifacts.md` and rejects unmarked package-hash drift.
+When a current-release smoke suite is truthfully regenerated, run
+`python tools/check_smoke_artifacts.py --require-current-release-smokes` as a release-promotion
+check. In this source state, the committed `runtime-grounding-v5` suite is historical regression
+evidence, so the strict flag is expected to fail until current-release smokes exist.
+Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
