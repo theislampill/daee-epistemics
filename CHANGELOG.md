@@ -96,6 +96,75 @@
 - Release-history terms such as clean default, live door, State Refresh, and full audit do not
   describe current runtime guidance unless explicitly marked historical.
 
+## [v0.3.2.0] - 2026-05-09
+
+v0.3.2.0 is the Level 3 route-first source-readiness release candidate. It adds
+an additive executable routing path for Codex-capable script runtimes while
+preserving Level 1/2 fallback behavior for scriptless runtimes.
+
+### Added
+
+- Additive Level 3 execution path for Codex-capable script runtimes:
+  `diagnose.py` extracts span-backed features, `route.py` deterministically
+  routes given those features, `validate.py` checks route-plan integrity and
+  ontology licensing, `reconstruct.py` checks route reconstructibility, and
+  `check_execution.py` validates post-output execution fidelity.
+- `/daee-epistemics [input]` is documented to use Level 3 by default in Codex
+  when bundled scripts are available. Scriptless runtimes visibly fall back to
+  Level 1/2 behavior.
+- Level 3 data surfaces under `atomics/skill/data/` and generated `skill/data/`:
+  executable trigger matrix, routing precedence, module catalogue, and ontology
+  licensing.
+- Level 3 local fixture runner and maintainer CI wrappers for fixture pass and
+  routing stability checks.
+- Span-backed `continuation_queue` support so routed cases can continue after
+  `Land(B)` and `R(H,Delta)` into licensed downstream burdens instead of
+  treating the first-live burden as the whole case.
+- IR reconstruction and contrast/stability fixtures, including required
+  neighboring-TTP and repeatability checks.
+- Nomenclature normalization surface for noetic-state, aqidah-family, DSL/IR,
+  Level 3, TTP/owner/operator, and transliteration terms.
+
+### Changed
+
+- Strengthened TTP routing, owner-floor execution, render-through, and
+  continuation governance in source owners, runtime bundles, and checkers.
+- Hardened smoke-artifact validation to reject label-only/generic owner-floor
+  evidence, shallow first-burden-only output when continuation is licensed,
+  premature closure, and unsupported release-smoke claims.
+- Updated generated `skill/` package output from atomics so bundled scripts,
+  data, tests, and runtime references are available to Codex-capable skill
+  runtimes.
+- Updated README/onboarding docs to describe basic Codex use, maintainer debug
+  commands, Level 3 default-when-available behavior, and visible Level 1/2
+  fallback.
+
+### Evidence and Governance
+
+- v15 owner adjudication resolved the old owner-proof denominator problem:
+  support/index surfaces are durably classified as non-operative support
+  surfaces, the 34 strict PARTIAL owner gaps were adjudicated, and no
+  release-blocking routing/loadform gap remained.
+- The codon pilot was rejected/not needed. No owner packs, broad codon DSL, new
+  route IDs, new PF codes, or broad new TTP taxonomy were introduced.
+- Large smoke directories, raw Hermes transcripts, temporary owner lists, and
+  developer live-run helper scripts were intentionally left unstaged and out of
+  the readiness commit.
+
+### Limits and Non-Claims
+
+- Level 3 provides deterministic routing given extracted features. It does not
+  claim deterministic feature extraction.
+- Feature extraction still includes span-backed interpretive components.
+- Transformer execution remains probabilistic; fixture-18-style highest
+  complexity render-through limits remain capability-bound.
+- Pure-Hermes parity is not claimed.
+- Level 3 does not guarantee every runtime can execute bundled scripts.
+- Level 3 does not claim that every TTP in the catalogue has full executable
+  Level 3 rules beyond the implemented pilot/covered scope.
+- No TST-specific operative logic is claimed or introduced; named hard-smoke
+  material remains regression fixture/audit evidence, not runtime routing logic.
+
 ## [v0.3.1.0] - 2026-05-01
 
 > Release-history note: this entry records v0.3.1.0 state. Terms such as `State Refresh`,
