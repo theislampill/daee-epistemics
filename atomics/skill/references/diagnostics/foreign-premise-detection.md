@@ -197,6 +197,11 @@ The visible objection is anthropomorphism or imperfection, but the real issue is
 **Near-miss 4 - validation inversion disguised as respect for reason.**
 The speaker says reason merely "checks" revelation, but the actual structure is that revelation has no standing until reason has ruled. This is tribunal installation, not neutral review.
 
+**Near-miss 4b - verifier-veto disguised as responsible authentication.**
+The speaker grants that reason validates revelation or the Messenger, but keeps an indefinite
+veto over every report without naming a local authenticity, semantic, or proof-strength problem.
+Record `verifier-veto` with `tribunal-installation`; route P3/V2 before content.
+
 **Near-miss 5 - tradition label hiding tribunal function.**
 The surface looks like a Jewish, Hindu, Sufi, Buddhist, or moral topic, but the active
 node is a criterion or authority order. Do not route by tradition label. Classify
@@ -230,4 +235,4 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 - Minimal pair: Criterion import sets the bar; tribunal installation gives that bar jurisdiction; transmission demotion makes revelation derivative after rational vetting.
 - Hold/release rule: Hold content that would answer inside the imported court until the source, function, and jurisdiction of the premise have been named and refused where necessary.
 - Anti-pattern guard: Do not confuse this detection pass with V2; detection identifies the premise, V2 performs the restorative intervention.
-- Source-audit guard: Do not treat available source-audit material as permission for argument-bank or citation-dump response. The pass uses such material only to identify the structural premise and route consequence.
+- Background-material guard: Do not treat available background material as permission for argument-bank or citation-dump response. Use such material only to identify the structural premise and route consequence.

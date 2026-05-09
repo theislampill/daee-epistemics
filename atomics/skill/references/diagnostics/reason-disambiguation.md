@@ -24,6 +24,13 @@ This file does not describe reason abstractly. It classifies four empirically di
 
 Categories 3 and 4 surface a meta-epistemic claim-level: the live burden is about what may count as reason, evidence, or warranted belief before any first-order content can land.
 
+Reason/revelation conflict claims require a proof-status discriminator before the
+rational/transmitted label can govern. "Reason says X" may be Category 1 only after the
+alleged proof is typed as decisive or speculative and its premises are exposed. Untyped
+"reason contradicts revelation" language routes as Category 3 or 4 until P3/V2 classify the
+proof-status cell (`qati/qati`, `qati/zanni`, or `zanni/zanni`) or decompose the issue into a
+local semantic, transmission, proof-strength, or philosophical-premise owner.
+
 ---
 
 ## Category 1 — Sound Reason (ʿAql Ṣarīḥ)
@@ -130,3 +137,6 @@ Reason-category and deformation are orthogonal. The full compound:
 - Hold/release rule: Hold first-order content under Category 2 until deformation-first work clears, and under Category 3/4 until V2 or V2+V7 loosens the criterion.
 - Anti-pattern guard: Do not praise a contaminated criterion as "reason itself"; the pass exists to decide which sense of reason is operative.
 - Pattern-framing guard: If optional IR framing notes are present, they must preserve this distinction rather than using "reason" or "common sense" as an unanalyzed public-output label.
+- Proof-status guard: Do not emit Category 1 merely because the speaker says "reason" or
+  "common sense"; if a revealed claim is being vetoed, classify the alleged proof-status or hold
+  the content pending P3/V2.

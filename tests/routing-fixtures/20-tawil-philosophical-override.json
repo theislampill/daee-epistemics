@@ -1,0 +1,64 @@
+{
+  "id": "tawil-philosophical-override",
+  "prompt": "I accept ta'wil because philosophy forbids the zahir of attribute texts, so revelation has to mean something else.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "M9-predication-mode",
+      "V2-reconstituting-reason",
+      "perfection-criterion-usurpation"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "philosophical-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "Ta'wil-sense split",
+      "semantic override",
+      "Communication-trust test",
+      "perfection-criterion import",
+      "semantic/tribunal gate before content release"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "techniques",
+      "specialty-diagnostics",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "tawil-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "ta'wil"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "philosophical override",
+      "do_orient": "semantic override by external tribunal",
+      "restoration_target": "refuse imported tribunal and test communication trust",
+      "routing_gate": "FPD/V2/perfection before V8 content"
+    }
+  }
+}

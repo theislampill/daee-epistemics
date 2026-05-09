@@ -85,14 +85,14 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* State the first-order claim if there is one, name the higher-order burden precisely, name the deformation or noetic pattern separately, and state the restoration target in the architecture's own grammar. Example: "First-order claim: revelation is under attack. Higher-order burden: meta-epistemic criterion import. Pattern: PF-2 inherited evidential pressure. Restoration target: sound reason / authentic-transmission order. So V2 or V10 clears first."
 Emission means internal case-state / IR update for routing.
 Internal NS/PF emission for routing means case-state / IR update, not visible default output.
-Printing NS/PF codes without showing the actual burden remains Higher-Order Vocabulary Theater.
+Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/hold-release consequence remains Higher-Order Vocabulary Theater.
 *Self-audit question:* If I used higher-order vocabulary, have I said what it changes in routing and what layer is being restored, or did I only name the vocabulary?
 *Prevented by:* `pattern-profiling.md` (claim-level and PF discipline), `noetic-reading-checklist.md` (higher-order assessment -> restoration hand-off), `case-state-schema.md` and `diagnostic-ir.md` (restoration-target typing), `heuristics.md` rule 29 (keep burden, pattern, and target distinct).
 
 ---
 
 **Pattern-Print Theater**
-*Definition:* Emitting a structural pattern print, load-bearing phrase, or source-audit-derived topic shape without making it govern routing, suppression, release, or the next bounded move.
+*Definition:* Emitting a structural pattern print, load-bearing phrase, or background-topic shape without making it govern routing, suppression, release, or the next bounded move.
 *Pattern appearing in output:* "This is a closed-canon veto / selective scriptural arbitrage pattern" appears in the analysis, but the response immediately lists prooftexts without typing whether authority, evidence, canon, interpretation, or identity wound is the live node.
 *Correct behavior in the same case:* Use the optional IR fields only when they constrain action: name the load-bearing node, the intervention target, what is held, and which existing owner governs the next move.
 *Self-audit question:* Did the pattern print change what I held, routed, or released, or did it only decorate the diagnosis?
@@ -110,10 +110,10 @@ Printing NS/PF codes without showing the actual burden remains Higher-Order Voca
 ---
 
 **Argument-Bank / Citation-Dump Substitution**
-*Definition:* Treating a source-audit-derived topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
+*Definition:* Treating a background topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
 *Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
-*Correct behavior in the same case:* Use source-audit findings to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
-*Self-audit question:* Am I using source-audit material to decide what must clear first, or am I using it as an answer bank?
+*Correct behavior in the same case:* Use background material only to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
+*Self-audit question:* Am I using background material to decide what must clear first, or am I using it as an answer bank?
 *Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` out-of-scope entries.
 
 ---
@@ -123,7 +123,7 @@ Printing NS/PF codes without showing the actual burden remains Higher-Order Voca
 *Pattern appearing in output:* The response treats "Hindu" as if it already means Advaita, Arya Samaj, popular polytheism, or perennialism; treats "Buddhist" as if it already means materialism; treats "Sufism" as if it already means either heresy or spirituality; treats "Jewish" and "Christian" canon objections as identical.
 *Correct behavior in the same case:* Type the structure first: external criterion as tribunal, nondual ontology, identity-continuity pressure, kashf-as-tribunal, authority wound, closed-canon veto, or source-use problem. Then route to the existing owner that governs that structure.
 *Self-audit question:* Did I classify the live node, or did I let the tradition label choose the answer?
-*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Source-Audit Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` closed scope decisions.
+*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` closed scope decisions.
 
 ---
 
@@ -307,6 +307,15 @@ the noetic-state source-status rules supply input evidence for a verdict.
 
 ---
 
+**Owner-Body Not Loaded Compression**
+*Definition:* Rendering a hard or complex burden from root SKILL recognition, TTP label memory, or `matched_modules` naming without loading or having access to the active owner body / compiled bundle section.
+*Pattern appearing in output:* The response names `V2`, `M9`, `P3`, or another owner label, then emits a broad Target/Operation/Result block that could fit many cases and never demonstrates the owner-specific operation floor.
+*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `B.s<i>` submoves, then `Land(B)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
+*Self-audit question:* Am I executing the owner body, or substituting root-summary recognition for Level 2 owner access?
+*Prevented by:* `SKILL.md` owner-loadform map; `recursive-state-transitions.md` TTP entry criteria; `diagnostic-render-contract.md` hard-output render-through template; `output-release.md` owner-loadform gate.
+
+---
+
 **Diagnostic-Reduction Bypass**
 *Definition:* Jumping from input/global Layer A to a selected route, module list, doctrinal answer, or restoration frame before completing the diagnostic reduction sequence: core axes -> mandatory Phase 2 passes -> overlays/specialty markers -> Diagnostic IR -> gate checks -> routing precedence.
 *Pattern appearing in output:* The answer reads the case, names `FPD -> M1 -> DO-8 -> M8 -> restoration`, and begins answering from that itinerary without showing or internally preserving the required Phase 2 pass emissions/clearances.
@@ -354,6 +363,15 @@ the noetic-state source-status rules supply input evidence for a verdict.
 *Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins only if a genuinely new noetic aspect remains eligible.
 *Self-audit question:* Am I crossing into a new live noetic burden, or did I only finish one operative submove inside the same burden?
 *Prevented by:* `recursive-state-transitions.md` live-burden boundary rule; `diagnostic-render-contract.md` current bounded operator rule; `output-release.md` Layer A / Layer B release checks.
+
+---
+
+**Burden-Cycle Compression Failure**
+*Definition:* A hard output names a complex `B` but renders it as one broad Target/Operation/Result block, then moves to `R`, leaving materially necessary submoves implicit.
+*Malformed shape:* `Burden 1: imported tribunal -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed -> state/noetic re-read`.
+*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `B1.s1`, `B1.s2`, etc.; `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
+*Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only for a genuinely atomic burden.
+*Prevented by:* `SKILL.md` execution spine; `diagnostic-render-contract.md` hard-output render-through template; `recursive-state-transitions.md` B-complexity test.
 
 ---
 
@@ -418,7 +436,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Names M1, M8, M9, or another TTP without target -> operation -> result -> state re-read.
 - Uses `matched_modules` as public proof of routing.
 - Turns probable module order into an essay itinerary.
-- Guesses structure from topic cues such as moral protest, hiddenness, hell, TST, or secular humanism.
+- Guesses structure from topic cues such as moral protest, hiddenness, hell, a named source-worldview frame, or secular humanism.
 - Applies TTPs only once against the initial case-state, then stops or dumps every detected topic.
 - Compresses the default answer to avoid recursion even though eligible same-input burdens remain.
 
@@ -460,10 +478,10 @@ the noetic-state source-status rules supply input evidence for a verdict.
 ---
 
 **Noetic-Frame Equivalence Stack**
-*Definition:* Violating `N_Ashʿarī != N_Māturīdī != N_Taymiyyan` by treating contradictory theological or noetic structures (Ashʿarī, Māturīdī, Atharī, Taymiyyan, kalāmic, falsafah-inflected) as peer-valid operative supports for the same conclusion in one burden-cycle.
-*Pattern appearing in output:* "The classical theological tradition, from al-Juwaynī and al-Ghazālī to Ibn Taymiyyah and Ibn al-Qayyim, agrees that ...", or "Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological routes here."
-*Bad signs:* contradictory authorities cited side-by-side as one unified support; the operative frame is not identified; verbal agreement is treated as substantive without marking; intra-school disputes are hidden by breadth.
-*Correct behavior in the same case:* Select one operative `N`; other frames are only `σ` = contrast / opponent-position / historical note / genealogy / held / bounded comparison. If agreement across frames is asserted, mark substantive vs. verbal/surface-level.
+*Definition:* Violating `N_AT`, `N_Ashʿarī[*]`, `N_Māturīdī[*]`, or `σ_context != σ_warrant` discipline by treating rival or family-level frames as peer-valid operative supports in one burden-cycle.
+*Pattern appearing in output:* "The whole classical tradition agrees that ...", "multiple school approaches are all classically acceptable theological routes here," or "Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities."
+*Bad signs:* `N_AT` aliases counted as separate warrants; contradictory authorities cited side-by-side as one unified support; the operative frame is not identified; verbal agreement is treated as substantive without marking; intra-school disputes are hidden by breadth.
+*Correct behavior in the same case:* Select one operative `N`; `N_AT` aliases count once; `N_Ashʿarī[*]` and `N_Māturīdī[*]` require the live predicate/warrant/criterion/authority-order; other frames are only `σ` = contrast / opponent-position / historical note / genealogy / held / bounded comparison. If agreement across frames is asserted, mark substantive vs. verbal/surface-level.
 *Self-audit question:* Did I select one operative noetic frame, or did I stack contradictory schools as one authority?
 *Prevented by:* `recursive-state-transitions.md` §Source-Status & Noetic-Frame Non-Equivalence Discipline; `routing-precedence.md` Rule S-9 and Rule P-8.
 
@@ -481,7 +499,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 
 **Contrast-Source-as-Operative-Support**
 *Definition:* Violating `σ != operative warrant` by naming a source under non-operative status (`contrast`, `opponent-position`, `historical note`, `genealogy`, `held material`) and then using it as operative warrant in the same burden-cycle without explicit reclassification.
-*Pattern appearing in output:* "Source-status: contrast only. Al-Juwaynī's kalāmic formulation is mentioned only as contrast. Therefore, the operative answer is established by al-Juwaynī, al-Ghazālī, Ibn Taymiyyah, and Ibn al-Qayyim together."
+*Pattern appearing in output:* "Source-status: contrast only. A rival formulation is mentioned only as contrast. Therefore, the operative answer is established by that contrast source together with the selected frame."
 *Bad signs:* the same source carries two statuses in one burden-cycle; reclassification is not justified; the operative conclusion depends on the contrast source.
 *Correct behavior in the same case:* Keep the source in non-operative `σ`, or reclassify explicitly with a named reason and a sentence preserving the selected operative frame.
 *Self-audit question:* Did I name a source as contrast and then use it as warrant in the same burden-cycle?
@@ -532,7 +550,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?
 - If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
 - If I used a structural pattern print, did it change routing, hold/release, or the next bounded move?
-- Am I using a source-audit-derived topic as an answer bank instead of as framing intelligence?
+- Am I using a background topic as an answer bank instead of as framing intelligence?
 - Did I route by tradition label, or did I identify the live structural node first?
 - Did I separate an abuse or authority wound from a doctrinal or tribunal claim?
 - Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?

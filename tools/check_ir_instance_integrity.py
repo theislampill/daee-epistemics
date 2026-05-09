@@ -69,6 +69,8 @@ POSITIVE_SAMPLE: dict[str, Any] = {
         ]
     },
     "restoration_target": "return moral criterion to warranted order",
+    "reconstruction_fidelity": "pass",
+    "reconstructor_notes": "burden, owner contrast, Land(B), and STOP verdict recover from input plus IR",
     "next_move": "test imported criterion before downstream content",
     "output_shape": "single-response",
     "post_render_gate": {
@@ -138,6 +140,10 @@ BAD_SAMPLES["weak_confidence_without_differentiator"] = (
 BAD_SAMPLES["distributed_read_without_differentiator"] = (
     _sample_with(lambda s: s.update({"read_status": "distributed"})),
     "missing required field: decisive_missing_differentiator",
+)
+BAD_SAMPLES["reconstruction_partial_without_notes"] = (
+    _sample_with(lambda s: (s.update({"reconstruction_fidelity": "partial"}), s.pop("reconstructor_notes", None))),
+    "missing required field: reconstructor_notes",
 )
 
 COMPILED_MAP_BAD_SAMPLES = {
@@ -218,6 +224,8 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
         errors.append("schema: missing required field: decisive_missing_differentiator")
     if instance.get("read_status") == "underdetermined" and instance.get("confidence") == "strong":
         errors.append("schema: read_status underdetermined cannot pair with strong confidence")
+    if instance.get("reconstruction_fidelity") in {"partial", "fail"} and "reconstructor_notes" not in instance:
+        errors.append("schema: missing required field: reconstructor_notes")
 
     matched = instance.get("matched_modules")
     if matched is not None:

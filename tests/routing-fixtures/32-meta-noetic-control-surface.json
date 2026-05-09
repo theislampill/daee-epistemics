@@ -1,0 +1,66 @@
+{
+  "id": "meta-noetic-control-surface",
+  "prompt": "Everyone says neutral people follow the evidence, but religion is only acceptable if it can pass the secular public standard first.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "reason-disambiguation",
+      "V2-reconstituting-reason",
+      "recursive-state-transitions",
+      "routing-precedence",
+      "diagnostic-render-contract",
+      "output-release",
+      "anti-patterns"
+    ],
+    "optional_modules": [
+      "M1-self-refutation",
+      "proof-method-audit",
+      "pattern-profiling"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "surface discourse -> IR(N,m,τ,σ) -> B -> TTP/operator -> R(H,Δ)",
+      "Control-surface test",
+      "routing suppression",
+      "hold/release decision",
+      "load-bearing node",
+      "Higher-Order Vocabulary Theater",
+      "IR before routing"
+    ],
+    "forbidden_governance": [
+      "meta-noetic memetics"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "techniques",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20
+  }
+}

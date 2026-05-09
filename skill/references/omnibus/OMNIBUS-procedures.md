@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: procedures-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/INDEX.md -->
-<!-- SOURCE_SHA256: 87c0aabad0ced5982c4905787db632bd36ee9d7a47f587598dafcdd2d1a5b83e -->
+<!-- SOURCE_SHA256: 5de7f9c2343bc022cb674329494e608d7988f9ac7924968af3498dcfce9dfc3e -->
 
 ---
 id: procedures-index
@@ -80,7 +80,7 @@ Procedures do not suspend pattern-first routing, source-status restrictions, bur
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: 4902cf93d6e581e1ff5d7c827aecf8851b0846065a5d292cac3c286f15ee4d81 -->
+<!-- SOURCE_SHA256: f8a22889b0b799d02694769bb04130f9939447ec479f5d9530f969535513966d -->
 
 ---
 id: P1-fitrah-restoration
@@ -155,6 +155,28 @@ Filter-loosening is real progress, but it is not yet full alignment. Distinguish
 - positive recognition plus willingness to inhabit the restored order
 
 Do not treat the first as though it already guarantees the third.
+
+## v0.3.2.0 Noetic Restoration Table
+
+This table governs release/readiness, not condemnation. It is internal diagnostic language;
+default public output must not label the person as dead, diseased, corrupt, or hypocritical.
+
+| Live signal | Likely axis | First move | Held material | Release signal |
+|---|---|---|---|---|
+| honest conceptual confusion | shubhah / knowledge | clarify term, proof-status, or semantic discipline | proof stack | user grants distinction or asks next local question |
+| repeated standard-shifting | tribunal / inherited filter | V2 / proof-status / FPD | doctrinal defense | standard named as contestable |
+| moral outrage with personal wound | grief/moral protest | M4/P7 presence | theodicy detail | register clears, user asks conceptual question |
+| identity-performance | DO-orient | hold argument; name posture gently | proof and debate route | truth-seeking signal appears |
+| "I know but cannot accept" | will/aim | F2/P4/P1 depending signal | argument dump | admission of barrier or willingness to examine |
+| absorbs every answer as new objection | argument-absorbent | stop/hold/question-only | further proofs | stable differentiator appears |
+| non-specialist confusion | clarity need | define/split/example | technical genealogy | user shows readiness for technical layer |
+
+### Readiness-state guard
+
+Read heart-readiness as release state: receptive once truth is perceived, mixed with competing
+supplies, or currently inaccessible to discursive pressure. Do not surface "dead heart" or
+similar labels in default output. If the evidence is inferential, phrase it as "this may be
+functioning as..." and keep motive, culpability, and soul-state held.
 
 **4. Direct attention to signs.**
 Once the filter is loosened, use V5
@@ -235,6 +257,10 @@ names a deformation before candor has been earned, or reads a loosened tribunal 
 alignment. A softened inherited filter permits the next bounded move; it does not prove that
 recognition, willingness, or practice-readiness has arrived.
 
+P1 also fails when argument-absorbent behavior is fed with more proofs. If every answer becomes
+new stimulation or resistance material, hold further proof and release only register repair,
+character-as-evidence, or one question.
+
 If grief-primary or relational injury is governing, P7 Stop 1 or Stop 3 fires before P1 can
 advance beyond presence and repair. If the case is non-contractual, P7 Stop 5 limits P1 to a
 single humane opening rather than a full staged procedure. If the interlocutor remains
@@ -300,7 +326,7 @@ active and what condition releases the next move, P1 is not yet lawfully deploye
 <!-- MODULE_ID: P2-objection-mapping -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P2-objection-mapping.md -->
-<!-- SOURCE_SHA256: 0f37ddae1677edebe2e9121f0c87d84502802218ccb3335f800020c3176fabd1 -->
+<!-- SOURCE_SHA256: f8ba3bf886f6a656c3705c058a58af412e9ee214f8fd93289f1347d0a1133473 -->
 
 ---
 id: P2-objection-mapping
@@ -482,7 +508,7 @@ and which material is held, the procedure has collapsed into answer-stacking.
 <!-- MODULE_ID: P3-reason-revelation-tension -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P3-reason-revelation-tension.md -->
-<!-- SOURCE_SHA256: 257ea00d96aed9f27b37dec30142c4a59bc6229a4c300ad45b494b0fc8cd8f03 -->
+<!-- SOURCE_SHA256: 8a6c01f179b058176199c573884edb3c31ebd31b28070de2b84d95a5222a8757 -->
 
 ---
 id: P3-reason-revelation-tension
@@ -538,6 +564,39 @@ What specifically does the interlocutor's conception of "reason" say that theist
 conflicts with? Many apparent conflicts evaporate under examination. Do not grant the conflict
 until its specific form is established.
 
+**Operator floor: proof-status triage.**
+The phrase "reason contradicts revelation" is not typed enough to route. Classify the two
+alleged proofs before any doctrinal content lands:
+
+| Claimed proof-status cell | P3 operation | Release result |
+|---|---|---|
+| `qati/qati` | Refuse real contradiction; locate misclassification, invalid inference, or semantic error. | No global tribunal; next move is the local error. |
+| `qati/zanni` | The decisive proof governs regardless of whether it is rational or transmitted. | Hold the speculative side for audit. |
+| `zanni/zanni` | Require tarjih between speculative proofs. | No universal reason/revelation hierarchy is licensed. |
+
+P3 has not landed if it merely says "sound reason and revelation agree" while leaving the
+alleged proof status untyped.
+
+**Operator floor: verification-consistency.**
+If the interlocutor says reason validates the Messenger or revelation in general, but then
+reserves an indefinite veto over every transmitted content item, expose the witness-reversal:
+the validating reason cannot both certify the source and keep every report hostage to an
+unbounded future "rational" objection. The exit options are bounded: deny prophetic authority
+openly, name a local authenticity/semantic/proof-strength issue, or hold a speculative premise
+for audit. Do not let a general verifier become an unlimited veto.
+
+**Operator floor: local issue decomposition.**
+A reason/revelation slogan may hide four different local burdens:
+
+- transmission or authenticity;
+- semantic indication;
+- proof strength;
+- speculative philosophical premise.
+
+Route to the local owner when the burden is local: V10/RT for transmission, M9/definition
+discipline for semantic claims, proof-method-audit for proof grammar, and
+perfection-criterion-usurpation when a perfection premise governs.
+
 **2. Examine the conception of reason (V2).**
 Where did the operative conception come from? Is it itself self-evident? Was it always
 dominant? Can it establish itself by its own standards? Scientism cannot validate itself
@@ -584,6 +643,10 @@ diagnostic and the relevant sound-reason material rather than treating all ratio
 as modern scientism. If grief, identity-performance, or relational harm is primary, P7 fires
 before P3 content can be released.
 
+P3 fails when it treats a local semantic, transmission, proof-strength, or perfection-premise
+issue as a global reason/revelation conflict. It also fails when it lets "reason validates
+revelation" become an unbounded veto over any revealed content the interlocutor dislikes.
+
 ## IR-Visible Consequences
 
 When P3 is active, the IR should mark a framework-level reason/revelation tension and record
@@ -596,6 +659,12 @@ First-order doctrinal defense, revelation reinterpretation, and proof accumulati
 in `held_material` until the conception of reason is articulated and audited. `matched_modules`
 normally includes P3 with V2 and, where the issue is faith-as-irrational rhetoric, F1. E4 and
 V5 are downstream releases only after the reason-filter is no longer controlling admissibility.
+
+When proof-status triage governs, `upstream_findings` should name the governing cell
+(`qati/qati`, `qati/zanni`, or `zanni/zanni`) or state that the conflict is untyped and
+therefore held. When verification-consistency governs, `upstream_findings` should name
+`tribunal-installation` or `verifier-veto`, and `what_is_withheld_and_why` should identify
+the held doctrinal content.
 
 ## Minimal-Pair Discriminators
 
@@ -613,6 +682,14 @@ P3 vs. NS-6/NS-10 handling: choose the NS route when the decisive issue is schoo
 burden, necessary-knowledge priority, or attribute ontology; choose P3 when the pressure is
 the general reason/revelation conflict.
 
+Global tribunal vs. local issue: choose P3 when "reason" is claiming jurisdiction over
+revelation as such; choose M9/definition discipline for local semantic indication, V10/RT for
+transmission/authenticity, and proof-method-audit for a local proof-strength challenge.
+
+Proof-status minimal pair: same phrase, "reason contradicts revelation"; if the conflict is
+untyped, P3 must classify before content. If the user names a local report, word, or premise,
+P3 either remains secondary or holds while the local owner leads.
+
 ## Hold/Release Discipline
 
 Hold revelation reinterpretation, apologetic proof-stacking, and positive-sign deployment
@@ -624,12 +701,25 @@ Do not loop the same reason-audit if the interlocutor acknowledges the standard 
 neutral. That acknowledgment is a release signal for the next matched burden, not permission
 to keep pressing the same point.
 
+Hold first-order content when the alleged conflict is unclassified by proof status. Release
+only the operator trace until the cell is named or the issue decomposes into a local owner.
+If the interlocutor supplies a local authenticity, semantic, or speculative-premise claim,
+release that owner instead of continuing a global P3 frame.
+
 ## Anti-Pattern Guard
 
 The central anti-pattern is accommodation-as-cure: altering revelation to satisfy an
 unexamined tribunal while calling the result rational engagement. The paired danger is
 fideist retreat. P3 must neither surrender revelation to corrupted reason nor abandon reason;
 it restores the order between sound reason and revelation.
+
+Additional v0.3.2.0 anti-patterns:
+
+- Reason/revelation slogan: declaring harmony without classifying the alleged proofs.
+- Verifier-veto collapse: reason validates revelation, then becomes an unlimited veto over it.
+- Certainty cosplay: a contested school premise is treated as reason itself.
+- Theodicy dump: a logical problem-of-evil claim receives wisdom lists before hidden premises
+  and necessity status are exposed.
 
 <!-- END_SOURCE: P3-reason-revelation-tension -->
 
@@ -640,7 +730,7 @@ it restores the order between sound reason and revelation.
 <!-- MODULE_ID: P4-maieutic -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P4-maieutic.md -->
-<!-- SOURCE_SHA256: 3c672d58c5474c422749b5ec9c34b2f3cd42d06e203851a0e7ee74481ac76bea -->
+<!-- SOURCE_SHA256: 947053f5406200cc9bb4422ac315de8cc0558856af70c5957f20015eac1263b8 -->
 
 ---
 id: P4-maieutic
@@ -704,6 +794,11 @@ Questions must be:
 - Directed at experience, not at positions: "what arises, pre-argumentatively, when you
   face genuine mortality?" not "do you believe God exists?"
 - Patient — allow the response to arise without rushing to capture it in a conclusion
+
+**Clarity discipline for non-specialists:** define -> split -> example -> boundary ->
+hold/release. Define the term in ordinary language, split the relevant senses, give one
+small example, state the boundary, then stop or release only the next stage-specific move.
+Do not use technical vocabulary as theater when a simple split would clear the burden.
 
 Gentle questioning creates space in which the disjunction between inner recognition and
 outer denial becomes visible — not because the dāʿī has argued the interlocutor into a
@@ -793,7 +888,7 @@ sets up the next answer.
 <!-- MODULE_ID: P5-already-believing -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P5-already-believing.md -->
-<!-- SOURCE_SHA256: 27b9d742f733c0c291d6cbb17e81ec5be19cfe75f39435a303661b9716c0f1a9 -->
+<!-- SOURCE_SHA256: 7908fecfded17f977d1bc13bbe042099430a89b2c224cf794d6600d3610b1a5d -->
 
 ---
 id: P5-already-believing
@@ -959,7 +1054,7 @@ pressure, lawful next owner, then practice and steadiness.
 <!-- MODULE_ID: P6-universal-aqidah-principle -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P6-universal-aqidah-principle.md -->
-<!-- SOURCE_SHA256: 7b224b249cad79a46eda566b9b004a68159abb682355762bc6749ddbe0f1d373 -->
+<!-- SOURCE_SHA256: 04bdd1e9c74a8f0a76403e6d2edd1df378203be9d34a27e10954a602b8cbb891 -->
 
 ---
 id: P6-universal-aqidah-principle

@@ -209,6 +209,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
     ],
     "references/runtime-dispatch-gate.md": [
         "skill/references/diagnostics/diagnostic-ir.md",
+        "skill/references/diagnostics/ir-reconstruction-pass.md",
         "skill/references/diagnostics/case-state-schema.md",
         "skill/references/diagnostics/pattern-profiling.md",
         "skill/references/diagnostics/inference-boundary.md",
@@ -324,10 +325,36 @@ EXTRA_INPUTS = [
 ]
 
 RUNTIME_METADATA_COPIES = [
+    "skill/README.md",
+    "skill/data/module-catalogue.json",
+    "skill/data/ontology-licenses.yaml",
+    "skill/data/routing-precedence.yaml",
+    "skill/data/trigger-matrix.json",
     "skill/references/diagnostics/module-catalogue.json",
     "skill/references/diagnostics/diagnostic-ir.schema.json",
     "skill/references/diagnostics/operative-contracts.md",
     "skill/references/diagnostics/operative-contract.schema.json",
+    "skill/scripts/check_execution.py",
+    "skill/scripts/daee_level3.py",
+    "skill/scripts/diagnose.py",
+    "skill/scripts/level3_lib.py",
+    "skill/scripts/reconstruct.py",
+    "skill/scripts/route.py",
+    "skill/scripts/validate.py",
+    "skill/tests/expected/genuine-shubhah-after-deformation-clearing.json",
+    "skill/tests/expected/grief-coded-objection.json",
+    "skill/tests/expected/imported-tribunal-protest.json",
+    "skill/tests/expected/mushabara-fasida.json",
+    "skill/tests/expected/stability-repetition.json",
+    "skill/tests/expected/trinitarian-claim-cluster.json",
+    "skill/tests/expected/tst-richard-lael-lillard.json",
+    "skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md",
+    "skill/tests/fixtures/grief-coded-objection/input.md",
+    "skill/tests/fixtures/imported-tribunal-protest/input.md",
+    "skill/tests/fixtures/mushabara-fasida/input.md",
+    "skill/tests/fixtures/stability-repetition/input.md",
+    "skill/tests/fixtures/trinitarian-claim-cluster/input.md",
+    "skill/tests/fixtures/tst-richard-lael-lillard/input.md",
 ]
 
 

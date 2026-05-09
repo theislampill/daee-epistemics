@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/INDEX.md -->
-<!-- SOURCE_SHA256: 9d4e810f06578597dfcc48fc1096cd6129aceb2e97647ff0413fcab7090be43a -->
+<!-- SOURCE_SHA256: 835cec46ce73b6458118560d953d4b049b781f0fcd40230c15d1dd5af00e9d82 -->
 
 ---
 id: diagnostics-index
@@ -55,8 +55,9 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
    `[P-C]` `prophetic-discourse-neutralization.md` -> emit semantic-neutralization mode or `none active`
    `[P-D]` `arabic-backbone-predicates.md` -> emit active predicates or `none active`
 5. Form the diagnostic IR (`diagnostic-ir.md`). All gate checks must pass before module dispatch.
-6. If the case is mixed or thin, use mixed-case rules before selecting downstream modules.
-7. Surface case state, confidence, and inference boundary when routing legibility is needed.
+6. Run the reconstruction pass (`ir-reconstruction-pass.md`) before ordinary owner dispatch.
+7. If the case is mixed or thin, use mixed-case rules before selecting downstream modules.
+8. Surface case state, confidence, and inference boundary when routing legibility is needed.
 
 ## Files
 
@@ -80,6 +81,8 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
 | `references/kernel-thesis.md` | Canonical architecture anchor | Auditing whether a response or routing decision is consistent with the skill's governing commitments | Narrow sub-answers that do not require architecture-level grounding | Non-negotiable commitments with routing consequences |
 | `references/diagnostics/arabic-backbone-predicates.md` | Operational predicate layer | V1 Phase 2 and criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation elements are present | Case is single-axis `shubha` with no framework or ordering issue | Typed predicates with route consequences |
 | `references/diagnostics/diagnostic-ir.md` | Typed diagnostic IR | Full auditable case-state required; multi-axis case; routing must be checked against workflow and architectural layers | Narrow conversational sub-answer with no case classification | Complete typed IR binding workflow and architectural layers |
+| `references/diagnostics/ir-reconstruction-pass.md` | Reconstruction check | A populated IR must prove that live burden, selected owner/TTP, nearest held alternatives, Land(B), and verdict are recoverable before dispatch | You are trying to create new routes, owner packs, or public-output machinery | `reconstruction_fidelity` and compact notes for partial/fail |
+| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, Level 3, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
 | `references/metaphysical-architecture.md` | Metaphysical architecture layer | Auditing what is being restored and why | Task is purely routing mechanics | Ordered account of epistemic and ontological structure |
 | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic | `dalīl`, `wujūb al-naẓar`, taqlīd-as-non-knowledge, Māturīdī concession language, or a narrow necessary-knowledge class is surfacing | The case is ordinary evidentialism without kalāmic structure | Kalāmic-specific critique and routing |
 | `references/diagnostics/fitrah-perspectives.md` | Specialty diagnostic | The `fiṭrah` is described as blank-slate, morally neutral, or as equal dual tendencies | The case does not turn on `fiṭrah` taxonomy | `fiṭrah`-view classification and implications |
@@ -102,7 +105,7 @@ This index expands the root skill's routing summaries with the discriminating de
 <!-- MODULE_ID: kalamic-interlocutor -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/kalamic-interlocutor.md -->
-<!-- SOURCE_SHA256: 83f2db5633d260a6cda901fd3d805e9cf1b55ffa995f6ee762a0621869300cee -->
+<!-- SOURCE_SHA256: 2e3f398395b2d73d3599e17f498386d24e8973f6ca6a71e43023c7bc2a8e9d88 -->
 
 ---
 id: kalamic-interlocutor
@@ -225,7 +228,7 @@ When the pressure is carried by loaded terms such as body, direction, place, or 
 <!-- MODULE_ID: fitrah-perspectives -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/fitrah-perspectives.md -->
-<!-- SOURCE_SHA256: 358f9c52202652f884dde587202cde873f097c404a380104e579386bb18d5383 -->
+<!-- SOURCE_SHA256: 369c3e2c94af3fcf58002b5f399a540d656236d46895c07bd8b4e888e0ee9633 -->
 
 ---
 id: fitrah-perspectives
@@ -470,7 +473,7 @@ When diagnosing an interlocutor:
 <!-- MODULE_ID: hadith-authentication-epistemology -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/hadith-authentication-epistemology.md -->
-<!-- SOURCE_SHA256: 13cb316dce216fb051fde5340d32b9afb70e3ef1d000a19e9f3d8d8205284282 -->
+<!-- SOURCE_SHA256: 5b5267613e976e1f50fbc48f8d1684e2ffdb1a78f35e9dd06df1acb5f7a77bf7 -->
 
 ---
 id: hadith-authentication-epistemology
@@ -686,7 +689,7 @@ This file has not governed the response if any of the following occur:
 <!-- MODULE_ID: causal-series-taxonomy -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/causal-series-taxonomy.md -->
-<!-- SOURCE_SHA256: 16887d7c46a3a6f88e76f475da08840dcaafdaa8cbb979b5ae179d1672f53bad -->
+<!-- SOURCE_SHA256: 94760cbb0fd193062014709fb91fb8fba1ca61c6d082996d7a956a332588f95f -->
 
 ---
 id: causal-series-taxonomy
@@ -838,7 +841,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: definition-discipline -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/definition-discipline.md -->
-<!-- SOURCE_SHA256: 5f587983884d71aa461299e10423b0ddc0f6f1a1466ec87ebf6161352f124b69 -->
+<!-- SOURCE_SHA256: 0a657460c1d2afc492ee2dbdb86ea9c967a7578ea5c942a737a3f679ff822446 -->
 
 ---
 id: definition-discipline
@@ -956,7 +959,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/proof-method-audit.md -->
-<!-- SOURCE_SHA256: bbb29fe779087938614fbd6bda0eb00d4a4734ba3c415f35ca06c670f2092917 -->
+<!-- SOURCE_SHA256: 1103f3542c937603f9a82125496149f23570f6391a3e64642ebc542abba2e8dc -->
 
 ---
 id: proof-method-audit
@@ -994,6 +997,19 @@ The governing question is not "which proof wins?" but:
 4. Is it being used as a secondary restorative route, or as an imported grammar that claims tribunal status over all God-talk?
 
 ---
+
+## Owner-Specific Operation Floor
+
+Minimum operation:
+
+1. identify the proof family and the exact claim it is asked to carry;
+2. state the premise, inference form, and conclusion scope;
+3. classify whether it is secondary support, local proof-strength comparison, or tribunal claim;
+4. name what changes in burden-state and what remains held.
+
+Exit condition: the proof grammar no longer functions as unnamed neutral tribunal. If the
+response only says that the "proof was audited" without changing premise, scope, or tribunal
+status, this owner has not executed.
 
 ## Proof-Family Audit Table
 
@@ -1034,6 +1050,36 @@ This file has not governed if a necessity/contingency proof is answered as thoug
 
 ---
 
+## Claimed-Certainty Audit
+
+When an objection says "reason decisively proves X," "philosophy demonstrates X," or "a
+perfect being necessarily cannot X," do not treat the certainty label as operative warrant.
+Require:
+
+1. the stated premises;
+2. the inference form;
+3. the scope of the conclusion;
+4. whether competent rational schools contest the alleged decisiveness;
+5. whether the proof is being used as a local argument or as a tribunal over revelation.
+
+If the argument is contested, school-bound, or only speculative, record `claimed-certainty
+audit` and route through V2, FPD, or perfection-criterion-usurpation as appropriate. The result
+is not "reason lost"; it is that the proposed proof cannot govern as reason itself.
+
+### Minimal pair
+
+- "This premise appears stronger than that report in this local case." -> local proof-strength
+  audit.
+- "Reason itself proves revelation must be reinterpreted wherever it conflicts with this
+  premise." -> tribunal claim; P3/V2/FPD before content.
+
+### Failure test
+
+This file has not governed if a contested necessity or perfection premise is accepted as
+decisive without exposing its premises and tribunal function.
+
+---
+
 ## Route-Back Rule
 
 Even when a proof family is appropriate, the route does not end inside the proof.
@@ -1064,7 +1110,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: perfection-criterion-usurpation -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/perfection-criterion-usurpation.md -->
-<!-- SOURCE_SHA256: 04c9d139f4d19cdc87b407f85842624bbc1aa7be087bbefb8d2a9631ac5c6626 -->
+<!-- SOURCE_SHA256: 9f79dfa99bdfded29f2f223be0cf0591d7426f8d8f35c0990892304b1ed142e4 -->
 
 ---
 id: perfection-criterion-usurpation

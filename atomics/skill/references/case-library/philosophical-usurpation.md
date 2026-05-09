@@ -112,6 +112,20 @@ When usurpation is confirmed:
 4. restore the correct authority ordering
 5. engage the content question only after the framework has been moved from the chair to the table
 
+### Verification-consistency submove
+
+When the usurping framework says reason validates revelation or the Messenger, then reserves an
+indefinite veto over every transmitted content item, name the verifier-veto. The validating
+reason cannot certify the source generally and simultaneously make each report defeasible by an
+unbounded future rational objection. The case must become one of three local burdens:
+
+- denial of prophetic authority;
+- local authenticity or semantic challenge;
+- held speculative premise requiring proof-method audit.
+
+Do not answer inside the veto as though revelation has standing only after the imported court
+approves each item.
+
 ---
 
 ## Prohibited Moves

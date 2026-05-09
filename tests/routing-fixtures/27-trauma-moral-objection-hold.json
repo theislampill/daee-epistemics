@@ -1,0 +1,46 @@
+{
+  "id": "trauma-moral-objection-hold",
+  "prompt": "After what happened to me, I don't care about logical theodicies; calling this good feels cruel.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M4-grief-register",
+      "P7-restoration-stops",
+      "discourse-orientation"
+    ],
+    "optional_modules": [
+      "P1-fitrah-restoration",
+      "P4-maieutic"
+    ],
+    "forbidden_matched_modules": [
+      "do-core",
+      "M2-prior-probability"
+    ],
+    "required_governance": [
+      "moral outrage with personal wound",
+      "grief/moral protest",
+      "theodicy detail",
+      "register clears",
+      "no theodicy dump"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 12
+  }
+}

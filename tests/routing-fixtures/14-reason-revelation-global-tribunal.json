@@ -1,0 +1,70 @@
+{
+  "id": "reason-revelation-global-tribunal",
+  "prompt": "Reason contradicts revelation: reason proves revelation must submit to philosophy whenever the two conflict.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "reason-disambiguation",
+      "foreign-premise-detection",
+      "P3-reason-revelation-tension",
+      "V2-reconstituting-reason",
+      "proof-method-audit",
+      "philosophical-usurpation"
+    ],
+    "optional_modules": [
+      "sound-reason-epistemology",
+      "F1-supra-vs-antirational"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-procedures",
+      "OMNIBUS-techniques",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "proof-status triage",
+      "claimed-certainty audit",
+      "verifier-veto",
+      "routing before render",
+      "matched_modules use original module IDs",
+      "source_basis records original module or section"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "procedures",
+      "techniques",
+      "specialty-diagnostics",
+      "do-families",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "reason-revelation-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "reason",
+      "revelation"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "pseudo-neutral reason as tribunal",
+      "do_orient": "framework-level reason/revelation conflict",
+      "restoration_target": "classify proof status and loosen the tribunal before content",
+      "routing_gate": "P3 plus V2 before doctrinal release"
+    }
+  }
+}

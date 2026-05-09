@@ -15,7 +15,7 @@ ROOT_REQUIRED = [
     "## EXECUTION SPINE",
     "Input -> IR(N,m,",
     "Top-salient invariants",
-    "Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R + Restorative Response + Closing Formulation",
+    "Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R",
     "Tactics / Techniques / Procedures Owner Map",
     "## I. Thesis / Epistemological Standpoint Pointers",
     "## V. Minimal Render Protocol",
@@ -23,6 +23,10 @@ ROOT_REQUIRED = [
     "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
     "Named frameworks/schools/authors/genealogies are not public-render material",
     "all gate checks must pass before any content",
+    "Owner-loadform map for common hard-output owners",
+    "TTP label recognition is not owner-body execution",
+    "matched module label is not owner floor loaded",
+    "OWNER-BODY-NOT-LOADED",
 ]
 
 ROOT_FORBIDDEN_REEXPANSION = [
@@ -62,11 +66,18 @@ GENERATED_REQUIRED = [
     "route ledger",
     "load ledger",
     "composition narration",
+    "Owner-loadform map for common hard-output owners",
+    "TTP label recognition is not owner-body execution",
+    "matched module label is not owner floor loaded",
+    "OWNER-BODY-NOT-LOADED",
 ]
 
 OWNER_REQUIRED = {
     "atomics/skill/references/diagnostics/recursive-state-transitions.md": [
         "Source-Status & Noetic-Frame Non-Equivalence Discipline",
+        "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+        "family label != operative N",
+        "shared vocabulary != shared warrant",
         "source-status discipline and noetic-frame non-equivalence",
         "Operative warrant:",
         "specific non-premise clause",

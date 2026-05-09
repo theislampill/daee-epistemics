@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: do-core -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-core.md -->
-<!-- SOURCE_SHA256: e49ff622cf768a0d4ed6b20eaa79d2ae98f3a35f75c83f586194551c7c85be04 -->
+<!-- SOURCE_SHA256: 142f0122e8317d22185d4af2b711498d9e0868899034e1787ee454f3da9f9a46 -->
 
 ---
 id: do-core
@@ -71,6 +71,8 @@ catalogue_registered: true
 | philosophical hiddenness (search genuinely live) | DO-1; P4 maieutic after search-history confirmed |
 | grief/protest on evil | M4-grief-register.md, P7-restoration-stops.md; DO-2 content held |
 | evidential/probabilistic evil argument | M2; DO-2 after register confirmed as truth-seeking |
+| logical problem of evil | FPD hidden-premise exposure, M1 or M8; possibility-defeats-logical-necessity before theodicy |
+| moral evil as objection from naturalism | M3 or M8 moral-standard reversal before full DO-2 |
 | self-refutation / evolutionary debunking | M1 first; V9 if necessary-knowledge attack; causal-series-taxonomy.md if secondary-cause self-sufficiency live |
 | diversity as evidence or exit | V10 if authority/text transmission live; criterion-import form routes through V2/FPD if criterion governs |
 | divine predication / loaded terms in attribute objection | M9-predication-mode.md before V8; definition-discipline.md if technical capture live |
@@ -171,22 +173,39 @@ Evidential problem of evil — suffering/evil as evidence against an omnipotent,
 - Grief-primary evil: loss, lament, pastoral wound → M4/P7 before DO-2; avoid theodicy into grief
 - Protest orientation: not argument but moral accusation → register holds DO-2 content
 - Thin basis: one sentence expressing pain is not a live evidential argument
+- Logical contradiction form: "God and any evil cannot both exist" -> expose hidden premises
+  and necessity status before evidential DO-2 or theodicy content
+- Moral-standard reversal form: if a naturalist uses evil as an objective objection, route M3
+  or M8 before assuming the moral standard is grounded
 
 #### Mandatory family-local load floor
-M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs), M2 (when evidential/probabilistic pressure is actually live).
+M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs), M2
+(when evidential/probabilistic pressure is actually live), FPD/M1/M8 when a logical
+contradiction claim requires hidden-premise exposure.
 
 #### Ordered TTP route
 1. V1 → confirm evidential vs. grief/protest register
 2. M4 discriminator before any theodicy content
-3. M2 when evidential pressure confirmed
-4. DO-2 substantive after register and pressure type confirmed
-5. P7 stop check
+3. If logical contradiction is claimed, expose hidden premises and ask whether they are
+   necessarily true; a possible morally sufficient reason defeats strict logical necessity
+4. If objective moral protest is used from naturalism, run moral-standard reversal or
+   good-as-origin before DO-2 content
+5. M2 when evidential pressure confirmed
+6. DO-2 substantive after register and pressure type confirmed
+7. P7 stop check
 
 #### Semantic/register blockers
 Grief, protest, or pastoral register blocks DO-2 content. "Why does God allow suffering?" in grief register ≠ evidential argument.
 
 #### Allowed Layer B move
 Acknowledge the weight of the question; distinguish registers; if philosophical, name that the Islamic account does not require good-outcomes-only and that the framing imports specific assumptions about divine obligations.
+
+Logical form allowed move: "The contradiction claim needs hidden premises that are not merely
+true-looking but necessarily true. If a possible morally sufficient reason remains coherent,
+the strict logical contradiction has not been shown."
+
+Naturalist moral form allowed move: "The objection treats evil as objectively wrong; that
+standard itself needs grounding before it can be used to disprove the ground of moral reality."
 
 #### Held downstream material
 Full evidential rebuttal; soul-making theodicy; greater-good defenses — all held until evidential register is confirmed.
@@ -575,7 +594,7 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-second-loop.md -->
-<!-- SOURCE_SHA256: 539c3fdb511a89711b3591542ffeb6beb950ef513e08ba8510034974a09a8181 -->
+<!-- SOURCE_SHA256: ce694d0f5f02931ab4c1d64f72eac9f9c35d5bedd87da96571d146c37af078c7 -->
 
 ---
 id: do-second-loop
@@ -1134,7 +1153,7 @@ This entry has not governed the response if:
 - The conditions-application distinction is omitted — discussing specific rulings without establishing the full conditions of application and distinguishing a ruling's presence in the classical corpus from its active execution under those conditions.
 - Real fitri moral recognition is denied instead of preserved and routed — the response treats moral perception itself as the problem rather than testing the inference from recognized harm to the specific legal conclusion.
 - Detailed fiqh, hudud practice, gender jurisprudence, or slavery-history material is released before the validation-order node has cleared.
-- Source-audit material is used as an argument bank or citation dump rather than as structural framing for FPD, Type D usurpation, V2, and the Level A / Level B distinction.
+- Background material is used as an argument bank or citation dump rather than as structural framing for FPD, Type D usurpation, V2, and the Level A / Level B distinction.
 - Any of the collapse moves occur: apologizing for or minimizing a specific ruling; treating "that was just a product of its time" as the complete response when the objection has a live doctrinal component; importing the liberal standard as a concession; or granting that the classical position is morally failed before the Level A / Level B analysis has been run.
 
 ---
@@ -1166,7 +1185,7 @@ The operative response does not require claiming that every classical juristic p
 <!-- MODULE_ID: do-christian-extensions -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-christian-extensions.md -->
-<!-- SOURCE_SHA256: 842d4d34d3abff56a9a04a94d03af800e72f550d1466cb7388e972fae635f7b2 -->
+<!-- SOURCE_SHA256: 59c6534753f3162859c19cc9f2dac906788aad3bd7beb1b862670a1a8a776579 -->
 
 ---
 id: do-christian-extensions
@@ -1604,7 +1623,7 @@ This is the operationally significant sub-question. The criterion for canonical 
 <!-- MODULE_ID: do-attribute-precision -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/do-attribute-precision.md -->
-<!-- SOURCE_SHA256: 6b0c1fbcb7e40e0b6588f46f42215c6292b502beceec19457853159ad87ad0ab -->
+<!-- SOURCE_SHA256: 2089afa122dd84c673deaaad1461254a5b2a7b31f10af59b6e79ec47bab4eb41 -->
 
 ---
 id: do-attribute-precision
@@ -1715,6 +1734,11 @@ The following constitute gate-integrity failures for this file:
 
 **Corrected fixture:** Ask which kind of composition is being asserted and which dependence claim allegedly follows. The move from logical distinction to ontological dependence must be earned, not assumed.
 
+**Scope-consistency test:** If the anti-attribute principle is general, apply it across the
+speaker's admitted field of names, attributes, acts, will, love, speech, nearness, and other
+accepted predicates. The criterion either overreaches or must supply a principled boundary.
+Do not let selective anxiety negate one class while the same rule is ignored elsewhere.
+
 **Routing note:** For explicit `tarkib / iftiqar / parts / otherness` pressure, pair this confusion with M9 and `sound-reason-epistemology.md` section 6.3.
 
 ---
@@ -1737,11 +1761,32 @@ The following constitute gate-integrity failures for this file:
 
 ---
 
+## Human Entailment Attribution Caution
+
+When an attribute objection says "your view entails X," distinguish:
+
+1. valid implication of Allah's or the Messenger's speech, when established;
+2. alleged implication of a human opponent's statement;
+3. public attribution to that human opponent.
+
+For human statements, present the entailment and record the attribution status:
+
+- accepts the entailment;
+- denies the relation and gives a reason;
+- remains silent or unexamined, so X is not publicly attributed to the person.
+
+This protects the response from both under-reading revelation and over-attributing consequences
+to interlocutors.
+
+---
+
 ## Self-Audit
 
 - Am I correcting the predication move, or only adjusting the conclusion after conceding the move?
 - Did M9 already split the loaded term, or am I answering a semantically unstable label?
 - Am I treating the imported perfection framework as tribunal rather than as a contestable position?
+- Did I test scope-consistency before accepting selective attribute anxiety?
+- Did I separate critique of a position's entailment from public attribution to the person?
 
 <!-- END_SOURCE: do-attribute-precision -->
 
@@ -1752,7 +1797,7 @@ The following constitute gate-integrity failures for this file:
 <!-- MODULE_ID: philosophical-usurpation -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/philosophical-usurpation.md -->
-<!-- SOURCE_SHA256: d1b52587b510f0d8ded9273ca16377a681645b6c81b02002feb0346e6071b1c0 -->
+<!-- SOURCE_SHA256: 992cfed5d6bc2275a5e00b1d184fe5fc639c2853282de5d1f14576130d648e9b -->
 
 ---
 id: philosophical-usurpation
@@ -1868,6 +1913,20 @@ When usurpation is confirmed:
 4. restore the correct authority ordering
 5. engage the content question only after the framework has been moved from the chair to the table
 
+### Verification-consistency submove
+
+When the usurping framework says reason validates revelation or the Messenger, then reserves an
+indefinite veto over every transmitted content item, name the verifier-veto. The validating
+reason cannot certify the source generally and simultaneously make each report defeasible by an
+unbounded future rational objection. The case must become one of three local burdens:
+
+- denial of prophetic authority;
+- local authenticity or semantic challenge;
+- held speculative premise requiring proof-method audit.
+
+Do not answer inside the veto as though revelation has standing only after the imported court
+approves each item.
+
 ---
 
 ## Prohibited Moves
@@ -1894,7 +1953,7 @@ When usurpation is confirmed:
 <!-- MODULE_ID: sound-reason-epistemology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/sound-reason-epistemology.md -->
-<!-- SOURCE_SHA256: 7e7f3d238e194029a7d5f711f1dd50e9b64c9a95f8fe043748a6f4fc288156de -->
+<!-- SOURCE_SHA256: 8dd849953e280dea6667f2e2853b2a6be59fa5a3d4857a1c999058da6ef049bc -->
 
 ---
 id: sound-reason-epistemology
@@ -2589,7 +2648,7 @@ be refused: *tāʿṭīl* (stripping the attributes to preserve simplicity) and 
 <!-- MODULE_ID: prophecy-wahy-supremacy -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/prophecy-wahy-supremacy.md -->
-<!-- SOURCE_SHA256: b1e1281d60c5dc05d1a5692dccf17456c3a23ef51d5fb6e84b2b72a94c89d01a -->
+<!-- SOURCE_SHA256: babacf769e63759a652c77db7c8d1df53edd45e7516102198682ecb51f741469 -->
 
 ---
 id: prophecy-wahy-supremacy

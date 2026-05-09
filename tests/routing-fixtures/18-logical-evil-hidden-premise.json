@@ -1,0 +1,54 @@
+{
+  "id": "logical-evil-hidden-premise",
+  "prompt": "If God is all-good and all-powerful, any evil is a logical contradiction. Evil exists, so God cannot exist, and without God evil is still objectively wrong.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "do-core",
+      "M1-self-refutation",
+      "M3-orphaned-intuition"
+    ],
+    "optional_modules": [
+      "M8-reductio",
+      "M2-prior-probability",
+      "philosophical-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-tactics",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "hidden-premise exposure",
+      "possibility-defeats-logical-necessity",
+      "moral-standard reversal",
+      "good-as-origin",
+      "no theodicy dump",
+      "routing before render"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "owner_clusters": [
+      "do-families",
+      "tactics",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}

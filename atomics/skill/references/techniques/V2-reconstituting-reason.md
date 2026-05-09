@@ -33,6 +33,25 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 2. *Show the framework is one position among several.* It was not always dominant, is not universal, and is not established by the methods it recommends. Scientism cannot validate itself scientifically. A self-styled "universal law" that revelation must submit to a prior rational filter still needs justification for that filter. A worldview that can only be accepted by its own standards is circular, not foundational.
 3. *Propose the alternative.* ʿAql ṣarīḥ — genuine reason, operating without historically contingent distortions — is fully capable of apprehending theistic truth.
 
+**Claimed-certainty audit:** When the filter says "reason decisively proves X," require the
+specific proof to disclose its premises, scope, and contested status. A school premise,
+perfection criterion, simplicity claim, or philosophical necessity claim does not become
+"reason itself" by being called decisive. If the proof is contested or speculative, V2 marks the
+filter as pseudo-neutral or inherited and routes to proof-method-audit or
+perfection-criterion-usurpation before any revelation reinterpretation is released.
+
+Minimal operation:
+
+```text
+Target: claimed rational certainty.
+Operation: expose premises, scope, and contested status.
+Result: if speculative or school-bound, it cannot govern as reason itself.
+```
+
+Failure condition: V2 has not executed if the response merely says the interlocutor has a
+"contaminated conception of reason" without naming the active filter, testing its self-warrant,
+and stating what content remains held or newly releasable after the filter loosens.
+
 > The question is never "can you believe in God despite what reason says?" It is: "are you using a conception of reason adequate to the full range of what human beings can know?"
 
 **Deeper rationale:** The contaminated conception of reason is not just a bad epistemological theory. It is the fiṭrah's guiding function to the intellect (ʿaql) being occluded. Sound reason (ʿaql ṣarīḥ) depends on the fiṭrah's health: when the fiṭrah is sound, it provides the intellect with its orientation toward truth. When a historically contingent philosophical framework has been internalized as reason itself, the fiṭrah's guidance is blocked at the level of the intellect — the filter corrupts the faculty's directedness before any content is evaluated. This means V2 is a form of fiṭrah-restoration at the level of ʿaql. It is not independent of P1 (fiṭrah restoration); it is P1 operating at the specific layer where the blockage is conceptual-intellectual rather than affective or habitual.
@@ -43,6 +62,8 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 - the operative conception of reason has been named as a contestable framework rather than as neutral reason itself
 - the interlocutor grants that their criterion is not self-grounding or not consistently applied
 - the next live question has shifted from defending the filter to examining what the filter had been excluding
+- a claimed certainty has disclosed its premises and no longer functions as an unexamined
+  tribunal over revelation
 
 If none of these has occurred, stay with V2 or return to noetic/deformation diagnosis rather than pretending the framework has cleared.
 

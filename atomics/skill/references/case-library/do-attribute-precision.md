@@ -107,6 +107,11 @@ The following constitute gate-integrity failures for this file:
 
 **Corrected fixture:** Ask which kind of composition is being asserted and which dependence claim allegedly follows. The move from logical distinction to ontological dependence must be earned, not assumed.
 
+**Scope-consistency test:** If the anti-attribute principle is general, apply it across the
+speaker's admitted field of names, attributes, acts, will, love, speech, nearness, and other
+accepted predicates. The criterion either overreaches or must supply a principled boundary.
+Do not let selective anxiety negate one class while the same rule is ignored elsewhere.
+
 **Routing note:** For explicit `tarkib / iftiqar / parts / otherness` pressure, pair this confusion with M9 and `sound-reason-epistemology.md` section 6.3.
 
 ---
@@ -129,8 +134,29 @@ The following constitute gate-integrity failures for this file:
 
 ---
 
+## Human Entailment Attribution Caution
+
+When an attribute objection says "your view entails X," distinguish:
+
+1. valid implication of Allah's or the Messenger's speech, when established;
+2. alleged implication of a human opponent's statement;
+3. public attribution to that human opponent.
+
+For human statements, present the entailment and record the attribution status:
+
+- accepts the entailment;
+- denies the relation and gives a reason;
+- remains silent or unexamined, so X is not publicly attributed to the person.
+
+This protects the response from both under-reading revelation and over-attributing consequences
+to interlocutors.
+
+---
+
 ## Self-Audit
 
 - Am I correcting the predication move, or only adjusting the conclusion after conceding the move?
 - Did M9 already split the loaded term, or am I answering a semantically unstable label?
 - Am I treating the imported perfection framework as tribunal rather than as a contestable position?
+- Did I test scope-consistency before accepting selective attribute anxiety?
+- Did I separate critique of a position's entailment from public attribution to the person?

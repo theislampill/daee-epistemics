@@ -1,0 +1,53 @@
+{
+  "id": "composition-dependence-scope",
+  "prompt": "Real attributes entail composition and dependence, so divine speech and will must be denied even though knowledge and power are admitted.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "do-attribute-precision",
+      "perfection-criterion-usurpation",
+      "V8-bila-kayf-anchor"
+    ],
+    "optional_modules": [
+      "sound-reason-epistemology",
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "tarkib/composition",
+      "scope-consistency test",
+      "attribute-content held pending",
+      "perfection-criterion import",
+      "meaning affirmed / likeness denied / modality withheld"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "do-families",
+      "specialty-diagnostics",
+      "techniques"
+    ],
+    "max_calls": 20
+  }
+}

@@ -25,6 +25,33 @@ catalogue_registered: true
 
 The fiṭrah is activated by signs (āyāt), not by arguments. The dāʿī's role is to direct attention.
 
+## Owner-Specific Operation Floor
+
+Minimum operation:
+
+1. name the exact attention-block or false-cause pressure that V5 is answering;
+2. select the sign-domain calibrated to that pressure;
+3. present it as attention, not as a forced syllogism or invented causal mechanism;
+4. state the result as opened recognition, held response, or need for prior V2/P1 work.
+
+Exit condition: the sign has been placed before the relevant noetic blockage without turning into
+a proof-bank argument. If the response says "notice signs" without a calibrated sign-domain and
+release/hold result, V5 has not executed.
+
+## Sign vs. False-Cause Discipline
+
+A sign directs attention; it is not an invented causal mechanism. V5 may invite the
+interlocutor to attend to order, beauty, moral normativity, mortality, gratitude, and need,
+but it must not claim a cause without either shar'i warrant or sensory warrant. This protects
+V5 from two opposite failures:
+
+- converting signs into forced syllogisms;
+- treating superstition, astrology, or unsupported causal claims as signs.
+
+When science-language is live, distinguish "science describes a proximate process" from
+"therefore the sign is explained away." A process can be the place where attention is directed
+without becoming a self-sufficient cause or a false causal warrant.
+
 ## The Critical Operational Distinction: Indication vs. Argument
 
 A sign is not a premise. It does not function by giving the interlocutor material from which they infer God's existence. It functions because the fiṭrah apprehends it and — when functioning correctly — the very thing indicated becomes directly present. This is istidlāl bi'l-āyāt, distinct from qiyās.

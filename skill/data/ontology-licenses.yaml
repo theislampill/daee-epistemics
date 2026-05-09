@@ -1,0 +1,23 @@
+schema_version: 1
+scope: level3-pilot
+licensed_feature_prefixes:
+  - term.
+  - feature.
+  - span.
+licensed_governance_classes:
+  - routes
+  - holds
+  - recurses
+  - partials
+licensed_verdicts:
+  - STOP
+  - HOLD
+  - RECURSE
+  - PARTIAL
+licensed_noetic_categories:
+  - predication-mode-boundary
+  - imported-moral-tribunal
+  - grief-register-hold
+  - genuine-shubhah-after-clearing
+  - false-resemblance-deformation
+  - reason-repair-secondary

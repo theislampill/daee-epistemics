@@ -1,0 +1,59 @@
+{
+  "id": "tawil-tafsir-bayan",
+  "prompt": "I accept ta'wil if by that you mean explaining the meaning of the attribute text clearly.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "Ta'wil-sense split",
+      "tafsir/bayan",
+      "semantic discipline before doctrinal release",
+      "routing before render"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "tawil-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "ta'wil"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "explanation request",
+      "do_orient": "semantic clarification",
+      "restoration_target": "split meaning of ta'wil before attribute content",
+      "routing_gate": "M9 sense split, V8 optional after split"
+    }
+  }
+}

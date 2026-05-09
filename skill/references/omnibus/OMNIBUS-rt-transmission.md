@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: revelation-transmission -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/revelation-transmission.md -->
-<!-- SOURCE_SHA256: 4f574e1010cff1221b96bc8c88a4819b0eb3b5b27d0f2f5d505854234a2001f3 -->
+<!-- SOURCE_SHA256: bd2ae519e5e26bdb8cf8a8856699b6c6bc569f26c3160ccca58fbe2c5063c873 -->
 
 ---
 id: revelation-transmission
@@ -262,7 +262,7 @@ category; RT-4 is about register (internal crisis). Do not collapse them.
 <!-- MODULE_ID: V10-transmission-content-vetting -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V10-transmission-content-vetting.md -->
-<!-- SOURCE_SHA256: f7917c145bf7fe7910c0c1e6135a2878ba46ecba2a88d213319d225ee9696782 -->
+<!-- SOURCE_SHA256: 60188a4340301de92b5d99ca18f963852bd7d68a38c95d2065c760e02683a08c -->
 
 ---
 id: V10-transmission-content-vetting

@@ -6,6 +6,53 @@ description: >
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
 
+## LEVEL 3 EXECUTABLE ROUTING - DEFAULT WHEN AVAILABLE
+
+For ordinary Codex skill use, `/daee-epistemics [input]` uses Level 3 whenever
+the bundled Python scripts are available. Do not first decide whether the case
+is serious enough for Level 3; light cases may spend a few extra seconds in the
+wrapper, and heavy cases need the same binding route discipline. The user should
+not need to know the internal commands.
+
+Codex invocation flow:
+1. Save the user input to a run-local `input.md`.
+2. Run `python scripts/daee_level3.py --input <input.md> --out <run-dir>`.
+3. If the wrapper writes `<run-dir>/execution_blocked.md`, return that visible
+   PARTIAL/block note and do not execute an ordinary answer.
+4. Otherwise read `<run-dir>/execution_prompt.md` and execute the binding route plan.
+5. Save the governed answer as `<run-dir>/output.md`.
+6. Run `python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md`.
+7. Return the governed answer. If validation returns `partial` or `fail`,
+   return the output with a visible banner:
+   `PARTIAL - Level 3 execution check: <specific defect>`.
+   If a retry is attempted and fails again, preserve the banner and name the
+   defect from `execution_verdict.json` rather than pretending the route plan
+   was honored.
+
+Level 3 is additive and binding only when correctly invoked. It provides
+deterministic routing given extracted features through `data/trigger-matrix.json`
+and `scripts/route.py`, then validates reconstruction and output execution.
+It does not claim deterministic feature extraction, because semantic register
+and concealment reads remain partly model-assisted and must be input-span
+justified. It does not remove transformer execution ceilings; highest-complexity
+burdens such as fixture 18 may still fail or compress under model limits. It
+also cannot force external users to run the wrapper; runtimes that cannot execute
+bundled scripts fall back honestly to Level 1/2 behavior under the governance
+below and must visibly mark the response:
+`Level 1/2 invocation - Level 3 wrapper unavailable in this runtime`.
+
+Maintainer/debugging command:
+
+```text
+python scripts/daee_level3.py --input <path> --out <run-dir>
+```
+
+Fixture/stability command:
+
+```text
+python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
+```
+
 ## EXECUTION SPINE
 
 Canonical execution, using the notation owned by
@@ -24,13 +71,107 @@ Top-salient invariants:
   correction, and identity-frame may stabilize as `s` inside one imported-tribunal `B`.
 - Released `B` must be burden-complete before `R`: materially necessary `s` receive matched
   TTP/operator treatment; no headline-only answer or broad-conclusion jump licenses `NewB`.
+- Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`;
+  `AtomicB -> B.s1 -> Land(B) -> R`. Compact default may not collapse a complex
+  `B` into one generic operation block. Render materially necessary `s` as case-specific
+  `Target -> Operation -> Result` units, using `Operative Submove` labels when needed.
+- Render-through rule: in hard output, the burden grammar is part of the answer,
+  not commentary about the answer. If a runtime can quote the spine but compresses
+  `ComplexB` into a concise result, the render is malformed.
+- Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
+  awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
+  compiled bundle section containing the active TTP's operation floor, unless that exact
+  section is already present in active context. Package availability, map presence, or
+  bundle co-location is not access. TTP label recognition is not owner-body execution;
+  matched module label is not owner floor loaded.
+  If the needed owner body or compiled bundle section is unavailable,
+  do not compress into generic prose; mark `PARTIAL / OWNER-BODY-NOT-LOADED` and name
+  the missing owner/path. This marker is a required hard-output failure marker and is
+  an exception to the default prohibition on visible STOP/HOLD/RECURSE/PARTIAL labels.
+- Owner-loadform map for common hard-output owners:
+  - recursive state re-read -> `references/runtime-dispatch-gate.md`
+    (`recursive-state-transitions`);
+  - diagnostic render contract and output release/hold -> `references/runtime-output-governance.md`
+    (`diagnostic-render-contract`, `output-release`);
+  - reason/revelation proof-status triage -> `references/omnibus/OMNIBUS-procedures.md`
+    (`P3-reason-revelation-tension`) plus `references/omnibus/OMNIBUS-specialty-diagnostics.md`
+    (`proof-method-audit`) when proof-family status governs;
+  - predication-mode analysis -> `references/omnibus/OMNIBUS-tactics.md`
+    (`M9-predication-mode`);
+  - readiness/deformation triage -> `references/runtime-diagnostic-core.md`
+    (`M5-deformation-triage`);
+  - reason-category prerequisite or foreign-premise split -> `references/runtime-phase2-passes.md`
+    (`reason-disambiguation`, `foreign-premise-detection`);
+  - imported tribunal, moral-framework, or case-family routing ->
+    `references/omnibus/OMNIBUS-do-families.md`
+    (`philosophical-usurpation`, `do-core`) plus `references/omnibus/OMNIBUS-profiles.md`
+    when a noetic profile must be confirmed;
+  - self-refutation, reductio, orphaned intuition, or predication tactics ->
+    `references/omnibus/OMNIBUS-tactics.md`
+    (`M1-self-refutation`, `M8-reductio`, `M3-orphaned-intuition`, `M9-predication-mode`);
+  - restorative or maieutic follow-through -> `references/omnibus/OMNIBUS-procedures.md`
+    (`P1-fitrah-restoration`, `P4-maieutic`);
+  - sign-direction or reason-reconstitution techniques ->
+    `references/omnibus/OMNIBUS-techniques.md`
+    (`V2-reconstituting-reason`, `V5-directing-attention-signs`).
+- Hard-output procedural template for complex burdens:
+  ```text
+  Burden N: <name>
+    Operative Submove B<N>.s1:
+      Target: <exact premise / criterion / predicate / warrant>
+      Operation: <closed operative verb>
+      Result: <changed claim-state>
+    Operative Submove B<N>.s2:
+      Target: <exact premise / criterion / predicate / warrant>
+      Operation: <closed operative verb>
+      Result: <changed claim-state>
+    [continue until all materially necessary s are rendered]
+    Land(B<N>): <cumulative state delta from s1...sn>
+    R(H,Δ): <held/released/next-live-burden decision>
+  ```
+  Post-burden continuation gate: after every `R(H,Delta)`, if the state re-read names a
+  remaining input-anchored burden and no hold, register, semantic, thin-basis, source-use,
+  or limit gate blocks it, do not emit Restorative Response or Closing Formulation yet.
+  Continue with the next `Burden N+1`. Restorative Response and Closing Formulation are
+  final-only for the current answer; if limits prevent the next burden, emit `PARTIAL`
+  with the next live burden instead of closing.
+  Input-anchored means any explicit claim, supporting premise, contrast, public/private
+  partition, source-status rule, translation demand, or moral/epistemic criterion already
+  present in the user's input. Do not reclassify those as future questions merely because
+  the user did not phrase each one as a separate request.
+  If `R(H,Delta)` enumerates remaining input-anchored burdens, the next live burden cannot be
+  "only if requested" unless a named hold gate blocks it. "Requires its own bounded pass" is
+  a reason to RECURSE or mark PARTIAL, not a reason to close.
+  `AtomicB` may use one submove only when the burden has one target, one operation,
+  and no distinct internal predicates, criteria, source-status forks, or release gates.
+- Hard-output miniature, structure only:
+  ```text
+  Burden 1: imported moral tribunal
+    B1.s1 — expose the tribunal
+      Target: hidden moral judge | Operation: expose | Result: criterion is no longer neutral
+    B1.s2 — test the criterion against its own grounds
+      Target: self-authorizing standard | Operation: test | Result: standard cannot condemn while self-grounded
+    Land(B1): the imported tribunal no longer governs as unquestioned judge
+    R(H,Δ): accountability and guidance-demand burdens remain held/live; release next B only if still input-anchored
+
+  Burden 2: accountability compression
+    B2.s1 — distinguish bare non-exposure from culpable rejection
+    B2.s2 — hold individual fate while correcting the general rule
+    Land(B2): "simple non-belief" no longer names the accountability structure
+    R(H,Δ): guidance-demand burden remains live; release next B
+  ```
+  This is permitted default hard-output shape, not raw IR or route ledger, when each
+  submove is case-specific and serves the same `B`.
 - `σ != operative warrant` when `σ` is contrast / opponent-position / genealogy / historical note / held material / bounded comparison.
-- `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`; only selected `N` may warrant the move.
+- `N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī`; aliases are not multiple warrants.
+- `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
+- `family label != operative N`; `shared vocabulary != shared warrant`; only selected `N` may warrant the move.
 - `H(n+1) = (Hn ∪ InputLive_n) - Released_n`; held material carries until released or resolved.
 - `Land(B) -> R`; `R` is required before STOP or RECURSE.
 
 **DEFAULT RENDER INVARIANT.** Default prints compact DSL/IR visibility, not clean prose
-alone and not raw Diagnostic IR: `Default = Layer A(compact DSL/IR) + Layer B + R + Restorative Response + Closing Formulation`.
+alone and not raw Diagnostic IR: `Default = Layer A(compact DSL/IR) + Layer B + R
+(+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation`.
 Full IR, full Case State, `matched_modules`, route ledger, load ledger, and
 source/bibliography ledger stay out of default.
 Current bounded operator is one live noetic burden/function, not a route chain.
@@ -41,7 +182,8 @@ Canonical owners: recursion/submove/held-route/noetic-frame details live in
 `references/rubrics/diagnostic-render-contract.md`; release amount/order lives in
 `references/rubrics/output-release.md`; IR/schema dispatch lives in
 `references/diagnostics/diagnostic-ir.md`; routing precedence lives in
-`references/diagnostics/routing-precedence.md`.
+`references/diagnostics/routing-precedence.md`; reconstruction fidelity lives in
+`references/diagnostics/ir-reconstruction-pass.md`.
 
 ## Scope Boundary
 
@@ -102,6 +244,7 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/framework-pipeline.md` | Auditing the operative decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate — compiled chart and forbidden-shortcut audit surface, not a route creator |
 | `references/diagnostics/recursive-state-transitions.md` | Deciding or auditing STOP / HOLD / RECURSE / PARTIAL after a bounded move — abstract recursive-state semantics and state carry/reset/re-evaluation |
 | `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
+| `references/diagnostics/nomenclature-normalization.md` | Canonical names and accepted aliases for noetic-state notation, DSL/IR fields, Level 3 route-plan terms, TTP/owner/operator terms, and transliteration boundaries |
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
 ### Output-Release Governance — Applied After Gate-Open
@@ -164,6 +307,7 @@ not default visible output; default mode must not print the full IR unless the u
 | File | Role |
 |------|------|
 | `references/diagnostics/diagnostic-ir.md` | Dispatch gate: mandatory minimum fields populated; consistency rules checked; routing-precedence suppression rules applied; P7 stops checked; restoration target typed against metaphysical-architecture.md; kernel-thesis.md violations absent; register-hold confirmed or cleared |
+| `references/diagnostics/ir-reconstruction-pass.md` | Reconstruction gate: original input plus populated IR/trace candidate recovers live burden, selected operator/TTP, nearest held/deferred alternatives, expected Land(B), and governance verdict before ordinary dispatch |
 
 Architectural clarification: the diagnostic IR is the canonical audited control surface of the
 skill — the gate through which all content dispatch must pass. For the authoritative definition,
@@ -221,7 +365,7 @@ The diagnostic IR must conform conceptually to
 `references/diagnostics/diagnostic-ir.schema.json` before any content module dispatches.
 Use `references/diagnostics/diagnostic-ir.md` as the canonical owner for diagnostic IR,
 dispatch-gate rules, schema/catalogue matching, `matched_modules`, `source_basis`,
-`output_shape`, restoration-state fields, `post_render_gate`, and ghost-load failures.
+`output_shape`, reconstruction fidelity, restoration-state fields, `post_render_gate`, and ghost-load failures.
 
 Root control-plane rule: no invented IR fields, module ids, route ids, source-basis
 categories, or catalogue entries; if the read is underdetermined, keep it underdetermined
@@ -369,7 +513,8 @@ status. When used diagnostically, mark source-status. This creates no new route,
 Default render remains:
 
 ```text
-Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R + Restorative Response + Closing Formulation
+Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
+(+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation
 ```
 
 Default visible frame:

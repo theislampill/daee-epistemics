@@ -117,7 +117,7 @@ nodes:
       - current bounded operator is not a route chain
       - "invalid: FPD -> M1 -> DO-8 -> M8 -> restoration"
       - "invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs"
-      - "invalid split: imported tribunal / hiddenness / punishment / TST source-worldview as serial burden-cycles without re-read proof"
+      - "invalid split: imported tribunal / hiddenness / punishment / named source-worldview as serial burden-cycles without re-read proof"
       - not deterministic argument-bank selection
     support_claim: selected_live_burden_operator
 
@@ -393,7 +393,7 @@ forbidden_shortcuts:
     to: Pass 1 / Pass 2 / Pass 3 recursion
     owner: skill/references/diagnostics/framework-pipeline.md
   - id: topical_component_recursion_split
-    from: imported tribunal / hiddenness / punishment / TST source-worldview topical components
+    from: imported tribunal / hiddenness / punishment / named source-worldview topical components
     to: serial burden-cycles without state/noetic re-read proof
     owner: skill/references/diagnostics/framework-pipeline.md
   - id: ttp_label_as_execution
@@ -432,8 +432,8 @@ forbidden_shortcuts:
     from: default response complete
     to: bibliography / source dump
     owner: skill/references/diagnostics/framework-pipeline.md
-  - id: source_audit_argument_bank
-    from: source-audit-derived topic appears
+  - id: background_topic_argument_bank
+    from: background topic appears
     to: argument bank / citation dump
     owner: skill/references/diagnostics/framework-pipeline.md
   - id: tradition_label_route

@@ -26,6 +26,27 @@
 
 ### Changed
 
+- Added the v0.3.2.0 Level 3 executable routing path for Codex-capable script
+  runtimes: span-backed feature extraction, deterministic routing given
+  features, route-plan validation, reconstruction checking, execution-prompt
+  generation, post-output execution checking, and a fixture/stability runner.
+- Added span-backed `continuation_queue` routing so complex imported-criterion
+  and source-worldview cases can continue after `Land(B)` and `R(H,Delta)`
+  instead of treating the first-live burden as the whole case.
+- Documented Level 3 invocation and fallback boundaries: `/daee-epistemics
+  [input]` should use Level 3 by default when bundled scripts are available;
+  scriptless runtimes visibly fall back to Level 1/2; deterministic routing is
+  claimed only given extracted features; transformer execution remains
+  probabilistic; pure-Hermes parity and codon/owner-pack rollout are not
+  claimed.
+- Added the v0.3.2.0 nomenclature normalization surface for noetic-state,
+  DSL/IR, Level 3, TTP/owner/operator, and transliteration terms so release
+  docs and runtime governance use one compact vocabulary.
+- Implemented the v0.3.2.0 operator strengthening pass by sharpening existing
+  reason/revelation, attribute-predication, and noetic-restoration owners with
+  compact operator floors and minimal-pair routing fixtures, while preserving
+  Diagnostic IR, source_basis, route precedence, state/noetic re-read, and
+  default render discipline.
 - Added `tools/check_metacompliance_current_canon.py` to guard the current docs, root control plane,
   generated default surface, source-status/noetic-frame anchors, and held-release anchors against
   metacompliance drift.

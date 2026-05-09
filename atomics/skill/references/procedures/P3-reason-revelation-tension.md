@@ -52,6 +52,39 @@ What specifically does the interlocutor's conception of "reason" say that theist
 conflicts with? Many apparent conflicts evaporate under examination. Do not grant the conflict
 until its specific form is established.
 
+**Operator floor: proof-status triage.**
+The phrase "reason contradicts revelation" is not typed enough to route. Classify the two
+alleged proofs before any doctrinal content lands:
+
+| Claimed proof-status cell | P3 operation | Release result |
+|---|---|---|
+| `qati/qati` | Refuse real contradiction; locate misclassification, invalid inference, or semantic error. | No global tribunal; next move is the local error. |
+| `qati/zanni` | The decisive proof governs regardless of whether it is rational or transmitted. | Hold the speculative side for audit. |
+| `zanni/zanni` | Require tarjih between speculative proofs. | No universal reason/revelation hierarchy is licensed. |
+
+P3 has not landed if it merely says "sound reason and revelation agree" while leaving the
+alleged proof status untyped.
+
+**Operator floor: verification-consistency.**
+If the interlocutor says reason validates the Messenger or revelation in general, but then
+reserves an indefinite veto over every transmitted content item, expose the witness-reversal:
+the validating reason cannot both certify the source and keep every report hostage to an
+unbounded future "rational" objection. The exit options are bounded: deny prophetic authority
+openly, name a local authenticity/semantic/proof-strength issue, or hold a speculative premise
+for audit. Do not let a general verifier become an unlimited veto.
+
+**Operator floor: local issue decomposition.**
+A reason/revelation slogan may hide four different local burdens:
+
+- transmission or authenticity;
+- semantic indication;
+- proof strength;
+- speculative philosophical premise.
+
+Route to the local owner when the burden is local: V10/RT for transmission, M9/definition
+discipline for semantic claims, proof-method-audit for proof grammar, and
+perfection-criterion-usurpation when a perfection premise governs.
+
 **2. Examine the conception of reason (V2).**
 Where did the operative conception come from? Is it itself self-evident? Was it always
 dominant? Can it establish itself by its own standards? Scientism cannot validate itself
@@ -98,6 +131,10 @@ diagnostic and the relevant sound-reason material rather than treating all ratio
 as modern scientism. If grief, identity-performance, or relational harm is primary, P7 fires
 before P3 content can be released.
 
+P3 fails when it treats a local semantic, transmission, proof-strength, or perfection-premise
+issue as a global reason/revelation conflict. It also fails when it lets "reason validates
+revelation" become an unbounded veto over any revealed content the interlocutor dislikes.
+
 ## IR-Visible Consequences
 
 When P3 is active, the IR should mark a framework-level reason/revelation tension and record
@@ -110,6 +147,12 @@ First-order doctrinal defense, revelation reinterpretation, and proof accumulati
 in `held_material` until the conception of reason is articulated and audited. `matched_modules`
 normally includes P3 with V2 and, where the issue is faith-as-irrational rhetoric, F1. E4 and
 V5 are downstream releases only after the reason-filter is no longer controlling admissibility.
+
+When proof-status triage governs, `upstream_findings` should name the governing cell
+(`qati/qati`, `qati/zanni`, or `zanni/zanni`) or state that the conflict is untyped and
+therefore held. When verification-consistency governs, `upstream_findings` should name
+`tribunal-installation` or `verifier-veto`, and `what_is_withheld_and_why` should identify
+the held doctrinal content.
 
 ## Minimal-Pair Discriminators
 
@@ -127,6 +170,14 @@ P3 vs. NS-6/NS-10 handling: choose the NS route when the decisive issue is schoo
 burden, necessary-knowledge priority, or attribute ontology; choose P3 when the pressure is
 the general reason/revelation conflict.
 
+Global tribunal vs. local issue: choose P3 when "reason" is claiming jurisdiction over
+revelation as such; choose M9/definition discipline for local semantic indication, V10/RT for
+transmission/authenticity, and proof-method-audit for a local proof-strength challenge.
+
+Proof-status minimal pair: same phrase, "reason contradicts revelation"; if the conflict is
+untyped, P3 must classify before content. If the user names a local report, word, or premise,
+P3 either remains secondary or holds while the local owner leads.
+
 ## Hold/Release Discipline
 
 Hold revelation reinterpretation, apologetic proof-stacking, and positive-sign deployment
@@ -138,9 +189,22 @@ Do not loop the same reason-audit if the interlocutor acknowledges the standard 
 neutral. That acknowledgment is a release signal for the next matched burden, not permission
 to keep pressing the same point.
 
+Hold first-order content when the alleged conflict is unclassified by proof status. Release
+only the operator trace until the cell is named or the issue decomposes into a local owner.
+If the interlocutor supplies a local authenticity, semantic, or speculative-premise claim,
+release that owner instead of continuing a global P3 frame.
+
 ## Anti-Pattern Guard
 
 The central anti-pattern is accommodation-as-cure: altering revelation to satisfy an
 unexamined tribunal while calling the result rational engagement. The paired danger is
 fideist retreat. P3 must neither surrender revelation to corrupted reason nor abandon reason;
 it restores the order between sound reason and revelation.
+
+Additional v0.3.2.0 anti-patterns:
+
+- Reason/revelation slogan: declaring harmony without classifying the alleged proofs.
+- Verifier-veto collapse: reason validates revelation, then becomes an unlimited veto over it.
+- Certainty cosplay: a contested school premise is treated as reason itself.
+- Theodicy dump: a logical problem-of-evil claim receives wisdom lists before hidden premises
+  and necessity status are exposed.

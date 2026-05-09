@@ -132,6 +132,19 @@ default answer without transition spine is invalid even if it is clean, accurate
 well-written. Minimum visible transition spine is required for multi-burden default output.
 Topic-organized output without state re-read transitions fails governed traversal.
 
+When state re-read names a remaining input-anchored burden and no named gate blocks it,
+Restorative Response and Closing Formulation are not yet licensed. Continue with the next
+bounded burden-cycle. If response limits prevent that continuation, mark PARTIAL with the
+next live burden instead of closing rhetorically.
+
+For this gate, "input-anchored" includes supporting premises and contrast rules already
+present in the user's surface discourse, not only separate requested questions. A public/private
+partition, source-status rule, translation demand, or moral/epistemic criterion named in the
+input remains eligible for recheck after the upstream blocker lands.
+If the state re-read enumerates such remaining burdens, the render may not say "only if
+requested" and then close unless it also names the hold gate blocking release. "This needs its
+own bounded pass" means continue with that pass or mark PARTIAL.
+
 **Final closure in multi-burden default (mandatory):**
 In multi-burden default responses, final closure must include a brief prose confirmation that
 no further same-input eligible burden remains, or must mark HOLD/PARTIAL with reason.
@@ -189,7 +202,7 @@ minimum compiler trace needed to prove governed execution without exposing raw I
 - Release status:               [prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label]
 
 ### Restorative Response
-[Required once in default output after state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens.]
+[Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]
 
 ### Closing Formulation
 [Required once at the very end after Restorative Response. Synthesize what cleared, what remains held, and the final governed takeaway. Do not substitute for state/noetic re-read.]
@@ -232,6 +245,43 @@ result; those results must feed a burden landing; and the next live burden trans
 state re-read. A response that names a TTP, then moves to a downstream topic without burden landing
 and refresh, is invalid even if it is accurate.
 
+Hard default output may expose `Operative Submove` or `B<N>.s<i>` labels under one burden.
+This is not a raw IR, route ledger, or load ledger when each submove is case-specific and
+feeds `Land(B)` before `R(H,Δ)`. A complex `B` rendered as one generic
+Target/Operation/Result block while necessary submoves remain implicit is hard-output
+compression failure; a single block is sufficient only for a genuinely atomic burden.
+
+Hard-output render-through template:
+
+```text
+Burden N: <name>
+  Operative Submove B<N>.s1:
+    Target: <exact premise / criterion / predicate / warrant>
+    Operation: <closed operative verb>
+    Result: <changed claim-state>
+  Operative Submove B<N>.s2:
+    Target: <exact premise / criterion / predicate / warrant>
+    Operation: <closed operative verb>
+    Result: <changed claim-state>
+  [continue until all materially necessary s are rendered]
+  Land(B<N>): <cumulative state delta from s1...sn>
+  R(H,Δ): <held/released/next-live-burden decision>
+```
+
+This template is the visible hard-output form for `ComplexB`; it is not a full procedural
+audit, raw IR dump, or route ledger when the fields are case-specific and serve the same
+live burden. `AtomicB` may render one submove only when the burden has one target, one
+operation, and no distinct internal predicates, criteria, source-status forks, or release gates.
+For hard smoke or hard default execution, visible submoves must be backed by owner-body access:
+root summary recognition, module-label memory, or `matched_modules` naming is not enough.
+Before rendering a complex `B.s<i>`, the active TTP owner body or compiled bundle section
+containing its operation floor must be loaded/read, unless that exact section is already present
+in active context. Package availability, map presence, or bundle co-location is not access, and
+trace/verdict evidence must not overclaim beyond that access. If the owner body or compiled bundle section cannot be
+loaded or identified, the hard output must mark `PARTIAL / OWNER-BODY-NOT-LOADED` with
+the missing owner/path rather than rendering a generic Target/Operation/Result block. This marker
+is a required hard-output failure marker and is permitted in default/hard output.
+
 **Layer B governed-response shape (mandatory):** Default Layer B must visibly contain Hidden
 Premises and one Core Formulation for each released live noetic burden / governed operation.
 Core Formulation is local to the released operation: it is a compact operative formulation
@@ -241,7 +291,7 @@ noetic structure is resolved or returned toward sound order. It is not a summary
 bibliography, or rhetorical flourish. The bounded response / operative submoves execute that Core Formulation.
 Missing Core Formulation or essay-only Layer B is a render failure.
 
-Restorative Response is required once in default output after state/noetic re-read. It is bounded
+Restorative Response is required once in default output after the final state/noetic re-read. It is bounded
 to what the current operation(s) actually landed; it is not optional, not pastoral expansion, not
 a new burden-cycle by default, and not a license to release held downstream burdens. It identifies
 what order is restored, what criterion/source/warrant is returned to its proper place, what
@@ -310,11 +360,12 @@ proof-of-execution, not the case itself. They belong, if at all, in `trace.md` o
 `verdict.md`, never in user-facing default output.
 
 **Fixture/case contamination failure:** Default output must not import case-specific
-language from another fixture, example, or smoke family. TST, Richard-Lael Lillard,
-"simple fact of non-belief", accountability/punishment/hell language, source-status
-biography language, or moral-protest/hiddenness language may appear only when the
-current input and validated IR release that burden-family. Cross-fixture prose reuse
-is a render failure even when headings and operator trace are present.
+language from another fixture, example, or smoke family. Named source-worldview
+hard-smoke frames, quoted hard-smoke phrases, accountability/punishment/hell
+language, source-status biography language, or moral-protest/hiddenness language
+may appear only when the current input and validated IR release that burden-family.
+Cross-fixture prose reuse is a render failure even when headings and operator trace
+are present.
 
 **Artifact separation:** default output is the user-facing runtime result. It is not the trace
 file and not the verdict file. Runtime proof, loaded-file proof, checker proof, smoke execution
@@ -500,7 +551,9 @@ plan.
 - Print a bibliography, "Primary Sources Referenced", external research-style source
   list, or source-basis ledger unless the user explicitly requested citations/sources
   or the task is internal/development audit or research.
-- Print the full procedural audit template or any code-fenced IR listing.
+- Print the full procedural audit template or any code-fenced IR listing. The compact
+  hard-output render-through template above is allowed when it renders case-specific
+  submoves under the same live burden.
 - Print smoke/runtime proof boilerplate, loaded-file proof, checker proof, or verdict
   material inside default output.
 - Apply Level 2 or Level 3 render shape solely because the case has multiple live burdens.
@@ -778,7 +831,7 @@ Decision rules:
 21. **Route-chain bounded operator:** Do not render `Current bounded operator` as `FPD -> M1 -> DO-8 -> M8 -> restoration`, `M1, M8, DO-8, restoration`, or any module itinerary. The field names one burden-level function selected after diagnostic reduction and routing precedence.
 22. **Route-chain recursion cosplay:** Do not turn route legs into `Pass 1`, `Pass 2`, and `Pass 3`. Those are operative submoves unless a prior burden landed, state re-read ran, and the next input-anchored burden was licensed.
 23. **Restoration before state re-read:** Do not append restoration synthesis or pastoral note before the active burden has landed and state re-read licenses closure, HOLD, PARTIAL, or the next live burden.
-24. **Noetic-frame equivalence stack:** Do not render Ashʿarī, Māturīdī, Atharī, Taymiyyan, kalāmic, falsafah-inflected, or generic "classical Islamic theology" frames as peer-valid operative supports. Do not flatten them under umbrella terms (`classical theology`, `the classical tradition`, `mainstream kalam`, `Ashari/Maturidi tradition`) when the claim is school-sensitive or disputed. Authoritative wording is in `references/diagnostics/recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline`.
+24. **Noetic-frame equivalence stack:** Use the canonical notation in `references/diagnostics/recursive-state-transitions.md`: `N_AT` aliases count once; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`; `family label != operative N`; `shared vocabulary != shared warrant`; `σ_context != σ_warrant`. Do not flatten rival frames under umbrella terms (`classical theology`, `the classical tradition`, `mainstream kalam`, `Ashari/Maturidi tradition`) when the claim is school-sensitive or disputed.
 25. **Contrast-source-as-operative-support:** Do not name a source as `contrast`, `opponent-position`, `historical note`, `genealogy`, `held material`, or `bounded comparison` and then use the same source as operative warrant in the same burden-cycle without explicit reclassification.
 26. **Ungrounded noetic re-read:** Do not render a `state re-read` / `noetic re-read` whose `burden landed` is asserted without an immediately preceding operative submove with `target -> operation -> result`, or whose `still live` / `next licensed live burden` is not anchored in the original input, prior held material, or the preceding collapse radius. Field-grounding rules are in `references/diagnostics/recursive-state-transitions.md §Grounded Noetic Re-Read Shape`.
 27. **Method-source branding:** Do not publicly frame daee-epistemics as a named-school methodology, new creed, new aqidah, new noetics, named-scholar method, or authority-by-association project. Default/public framing is sound noetic diagnosis -> detection of deformation/concealment/criterion import -> restoration of proper warrant/order and proper cognitive function in a congenial epistemic milieu.
@@ -811,10 +864,11 @@ rechecked`, `Next bounded pass`, `Governance`) are equivalent surface forms; the
 the same grounded shape and are subject to the same grounding rules.
 
 **Source-status discipline in render:** use `recursive-state-transitions.md` notation:
-`N_Ashʿarī != N_Māturīdī != N_Taymiyyan`; `σ != operative warrant` for contrast,
-opponent-position, historical note, genealogy, held material, or bounded comparison.
-Gloss: each burden-cycle renders one operative noetic frame; contradictory frames may appear
-only under non-operative source-status. Render shapes such as "the classical tradition agrees"
+`N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī`; `N_Ashʿarī[*]` and
+`N_Māturīdī[*]` are family labels, not automatic operative `N`; `σ_context != σ_warrant`.
+Gloss: each burden-cycle renders one operative noetic frame; `N_AT` aliases are not multiple
+warrants, family labels are not operative support, and contradictory frames may appear only
+under non-operative source-status. Render shapes such as "the classical tradition agrees"
 or "Islamic tradition says" are forbidden in default mode when school-sensitive or disputed.
 Default output normally does not render non-operative `σ` sources at all. School, author,
 genealogy, external philosopher/theologian, framework, or contextual-source references are held

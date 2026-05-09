@@ -43,6 +43,8 @@
     ]
   },
   "restoration_target": "return moral criterion to warranted order",
+  "reconstruction_fidelity": "pass",
+  "reconstructor_notes": "burden, owner contrast, Land(B), and STOP verdict recover from input plus IR",
   "next_move": "test imported criterion before downstream content",
   "output_shape": "single-response",
   "post_render_gate": {

@@ -94,7 +94,7 @@ FORBIDDEN_SHORTCUT_PATTERNS = [
     r"\[INPUT\]\s*->\s*\[direct\s+doctrinal\s+rebuttal\]",
     r"\[IR\s+formed\s+retrospectively\]\s*->\s*\[counts\s+as\s+gate\s+pass\]",
     r"\[landed\s+move\]\s*->\s*\[stack\s+next\s+argument\s+immediately\]",
-    r"\[source-audit-derived\s+topic\s+appears\]\s*->\s*\[argument\s+bank\s*/\s*citation\s+dump\]",
+    r"\[background\s+topic\s+appears\]\s*->\s*\[argument\s+bank\s*/\s*citation\s+dump\]",
     r"\[tradition\s+label\s+appears\]\s*->\s*\[tradition-specific\s+answer\]",
     r"\[pattern\s+print\s+emitted\]\s*->\s*\[PF\s*/\s*routing\s+precedence\s+bypassed\]",
     r"\[bounded\s+move\s+rendered\]\s*->\s*\[STOP\s+without\s+post-render\s+gate\]",

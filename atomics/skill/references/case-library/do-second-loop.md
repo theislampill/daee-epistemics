@@ -555,7 +555,7 @@ This entry has not governed the response if:
 - The conditions-application distinction is omitted — discussing specific rulings without establishing the full conditions of application and distinguishing a ruling's presence in the classical corpus from its active execution under those conditions.
 - Real fitri moral recognition is denied instead of preserved and routed — the response treats moral perception itself as the problem rather than testing the inference from recognized harm to the specific legal conclusion.
 - Detailed fiqh, hudud practice, gender jurisprudence, or slavery-history material is released before the validation-order node has cleared.
-- Source-audit material is used as an argument bank or citation dump rather than as structural framing for FPD, Type D usurpation, V2, and the Level A / Level B distinction.
+- Background material is used as an argument bank or citation dump rather than as structural framing for FPD, Type D usurpation, V2, and the Level A / Level B distinction.
 - Any of the collapse moves occur: apologizing for or minimizing a specific ruling; treating "that was just a product of its time" as the complete response when the objection has a live doctrinal component; importing the liberal standard as a concession; or granting that the classical position is morally failed before the Level A / Level B analysis has been run.
 
 ---

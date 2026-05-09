@@ -35,6 +35,15 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 - `tashbih` - importing creaturely mode into divine attributes
 - `ta'til` - denying the reality of divine attributes altogether
 
+**Minimal operator form:** meaning affirmed / likeness denied / modality withheld.
+
+- Affirm the meaning carried by the revealed wording after M9 has stabilized the term.
+- Deny creaturely likeness, similitude, and containment.
+- Withhold modality (`kayf`) rather than inventing a how.
+
+V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
+as a license to bypass M9's loaded-term split.
+
 **Positive content - analogical predication:** the tradition holds analogical predication, not univocal or purely equivocal predication. Terms carry a semantic core that applies genuinely across different instances while the mode of instantiation varies.
 
 For the generalized predication-mode framework across non-divine domains, load M9. V8 governs the divine-attribute subcase; M9 routes that subcase back here.

@@ -1,0 +1,59 @@
+{
+  "id": "cross-frame-verbal-agreement",
+  "prompt": "Asharis, Maturidis, and Salafis all use the word attribute, so their agreement proves this argument.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "routing-precedence",
+      "M9-predication-mode",
+      "diagnostic-render-contract",
+      "output-release",
+      "anti-patterns"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision",
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics"
+    ],
+    "required_governance": [
+      "shared vocabulary != shared warrant",
+      "verbal agreement != operative support",
+      "source-status/noetic-frame",
+      "selected frame only",
+      "verbal-agreement smuggling"
+    ],
+    "forbidden_governance": [
+      "verbal-agreement smuggling"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "techniques",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}

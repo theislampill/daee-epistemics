@@ -1,0 +1,20 @@
+name: Level 3 routing stability
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  level3-stability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build generated skill
+        run: |
+          python tools/build_framework_pipeline.py
+          python tools/build_compiled_runtime.py
+      - name: Run Level 3 stability check
+        run: python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5 --output-dir build/level3-stability

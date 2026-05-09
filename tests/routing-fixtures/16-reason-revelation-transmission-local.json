@@ -1,0 +1,65 @@
+{
+  "id": "reason-revelation-transmission-local",
+  "prompt": "Reason contradicts revelation because this report seems unreliable; I do not trust that it was actually transmitted.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "reason-disambiguation",
+      "revelation-transmission",
+      "V10-transmission-content-vetting",
+      "hadith-authentication-epistemology"
+    ],
+    "optional_modules": [
+      "P3-reason-revelation-tension",
+      "foreign-premise-detection"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-rt-transmission",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "artifact vs authenticated transmission distinction",
+      "Validation Inversion / Transmission Demotion Check",
+      "Global tribunal vs. local issue",
+      "matched_modules use original module IDs"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-rt-transmission.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "do-families",
+      "rt-transmission",
+      "techniques",
+      "specialty-diagnostics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "reason-revelation-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "reason",
+      "revelation"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "local transmission/authenticity concern",
+      "do_orient": "source-use and authentication issue",
+      "restoration_target": "audit transmission before content",
+      "routing_gate": "V10/RT lead; global P3 held unless tribunal appears"
+    }
+  }
+}

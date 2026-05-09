@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: reason-disambiguation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/reason-disambiguation.md -->
-<!-- SOURCE_SHA256: 19dd1cd98de4ef1b057a110e1fa72206b2fec118803edad3926998a1ea56b4c8 -->
+<!-- SOURCE_SHA256: b1fb68f407455867bc89edb74468a45835024587c0ac8b0f10e6dfcbb176e298 -->
 
 ---
 id: reason-disambiguation
@@ -43,6 +43,13 @@ operator_pack_eligible: true
 This file does not describe reason abstractly. It classifies four empirically distinguishable states of the rational faculty and specifies what each state does to routing, what operations it permits or forbids, and what restoration move it implies. The four categories are orthogonal to deformation-type: a person can operate from pseudo-neutral reason (Category 3) with genuine shubhah as their deformation, or from corrupted reason (Category 2) with hawā as their deformation. Both axes are needed.
 
 Categories 3 and 4 surface a meta-epistemic claim-level: the live burden is about what may count as reason, evidence, or warranted belief before any first-order content can land.
+
+Reason/revelation conflict claims require a proof-status discriminator before the
+rational/transmitted label can govern. "Reason says X" may be Category 1 only after the
+alleged proof is typed as decisive or speculative and its premises are exposed. Untyped
+"reason contradicts revelation" language routes as Category 3 or 4 until P3/V2 classify the
+proof-status cell (`qati/qati`, `qati/zanni`, or `zanni/zanni`) or decompose the issue into a
+local semantic, transmission, proof-strength, or philosophical-premise owner.
 
 ---
 
@@ -150,6 +157,9 @@ Reason-category and deformation are orthogonal. The full compound:
 - Hold/release rule: Hold first-order content under Category 2 until deformation-first work clears, and under Category 3/4 until V2 or V2+V7 loosens the criterion.
 - Anti-pattern guard: Do not praise a contaminated criterion as "reason itself"; the pass exists to decide which sense of reason is operative.
 - Pattern-framing guard: If optional IR framing notes are present, they must preserve this distinction rather than using "reason" or "common sense" as an unanalyzed public-output label.
+- Proof-status guard: Do not emit Category 1 merely because the speaker says "reason" or
+  "common sense"; if a revealed claim is being vetoed, classify the alleged proof-status or hold
+  the content pending P3/V2.
 
 <!-- END_SOURCE: reason-disambiguation -->
 
@@ -160,7 +170,7 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/foreign-premise-detection.md -->
-<!-- SOURCE_SHA256: 7384c7c5514ab732e91577af465933eb48c9a987dc13d1cdbbb4ffa1dd5824b5 -->
+<!-- SOURCE_SHA256: 878f1c39bb272deb43cc5df7c58ec0abc2fae25704ba3a449b9ed3bbf66449e7 -->
 
 ---
 id: foreign-premise-detection
@@ -361,6 +371,11 @@ The visible objection is anthropomorphism or imperfection, but the real issue is
 **Near-miss 4 - validation inversion disguised as respect for reason.**
 The speaker says reason merely "checks" revelation, but the actual structure is that revelation has no standing until reason has ruled. This is tribunal installation, not neutral review.
 
+**Near-miss 4b - verifier-veto disguised as responsible authentication.**
+The speaker grants that reason validates revelation or the Messenger, but keeps an indefinite
+veto over every report without naming a local authenticity, semantic, or proof-strength problem.
+Record `verifier-veto` with `tribunal-installation`; route P3/V2 before content.
+
 **Near-miss 5 - tradition label hiding tribunal function.**
 The surface looks like a Jewish, Hindu, Sufi, Buddhist, or moral topic, but the active
 node is a criterion or authority order. Do not route by tradition label. Classify
@@ -394,7 +409,7 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 - Minimal pair: Criterion import sets the bar; tribunal installation gives that bar jurisdiction; transmission demotion makes revelation derivative after rational vetting.
 - Hold/release rule: Hold content that would answer inside the imported court until the source, function, and jurisdiction of the premise have been named and refused where necessary.
 - Anti-pattern guard: Do not confuse this detection pass with V2; detection identifies the premise, V2 performs the restorative intervention.
-- Source-audit guard: Do not treat available source-audit material as permission for argument-bank or citation-dump response. The pass uses such material only to identify the structural premise and route consequence.
+- Background-material guard: Do not treat available background material as permission for argument-bank or citation-dump response. Use such material only to identify the structural premise and route consequence.
 
 <!-- END_SOURCE: foreign-premise-detection -->
 
@@ -405,7 +420,7 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 <!-- MODULE_ID: prophetic-discourse-neutralization -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md -->
-<!-- SOURCE_SHA256: 64ca23075b3e2efceb2cca02ca1c720d9e4acab93a6e60c6eb768c0d3cf07705 -->
+<!-- SOURCE_SHA256: 3561a79547ea730214bcb7ad25efa9acc375901fed29651230a9157aec0b2dee -->
 
 ---
 id: prophetic-discourse-neutralization
@@ -560,7 +575,7 @@ The tribunal explains why the semantic move is being made. The neutralization pa
 <!-- MODULE_ID: arabic-backbone-predicates -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/arabic-backbone-predicates.md -->
-<!-- SOURCE_SHA256: 61cb74a2b2cc79d129c5e647581fdb4f6e897073331ad20b7903ff4768f2a4a3 -->
+<!-- SOURCE_SHA256: c196208dc4a7da2ce993cfbe9fc6156ece55c9c1f073e0612b55a865bb517690 -->
 
 ---
 id: arabic-backbone-predicates

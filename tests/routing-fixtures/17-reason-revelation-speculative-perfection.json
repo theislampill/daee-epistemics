@@ -1,0 +1,73 @@
+{
+  "id": "reason-revelation-speculative-perfection",
+  "prompt": "Reason contradicts revelation: a perfect God cannot act, speak, or respond, so all such revelation must be reinterpreted.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "reason-disambiguation",
+      "P3-reason-revelation-tension",
+      "V2-reconstituting-reason",
+      "proof-method-audit",
+      "perfection-criterion-usurpation",
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "philosophical-usurpation",
+      "sound-reason-epistemology"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-procedures",
+      "OMNIBUS-techniques",
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "claimed-certainty audit",
+      "perfection-criterion import",
+      "semantic/tribunal gate before content release",
+      "proof-status triage",
+      "routing before render"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "procedures",
+      "techniques",
+      "specialty-diagnostics",
+      "tactics",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "reason-revelation-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "reason",
+      "revelation"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "speculative perfection premise presented as reason",
+      "do_orient": "attribute/perfection tribunal",
+      "restoration_target": "audit claimed certainty and predication terms",
+      "routing_gate": "P3/V2 plus perfection and M9/V8 owners before content"
+    }
+  }
+}

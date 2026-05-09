@@ -26,7 +26,7 @@ operator_pack_eligible: true
 # F3 — Practice as Epistemic Access
 
 **Source-status note:** Named authors or inherited formulations in this file are internal
-orientation only. In default output, do not cite al-Ghazali or any named scholar as public
+orientation only. In default output, do not cite any named scholar as public
 support unless the user explicitly asks or validated IR requires source-comparison. The
 released operation is practice-as-access: target, operation, result, and state-change.
 

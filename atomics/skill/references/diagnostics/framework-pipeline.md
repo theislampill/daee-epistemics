@@ -60,7 +60,7 @@ Authority boundary:
 - `references/rubrics/diagnostic-render-contract.md` owns visible render mode.
 - `references/procedures/P7-restoration-stops.md` owns concrete stop instances.
 
-Diagrams, slogans, examples, tradition labels, pattern prints, and source-audit-derived
+Diagrams, slogans, examples, tradition labels, pattern prints, and background-topic
 topics in this file are audit aids. They do not create routes, module activation rules,
 IR fields, coverage claims, or source owners.
 
@@ -192,18 +192,18 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +--------------------------------------------------+
              |
              v
-+---------------------------------------------------------------------------------------------------------------------------------+
-| SELECTED CURRENT LIVE BURDEN                                                                                                    |
-|                                                                                                                                 |
-| one live noetic burden/function selected                                                                                        |
-| broad enough to contain justified operative submove sequence                                                                    |
-| current bounded operator is not a route chain                                                                                   |
-| invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                 |
-| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                 |
-| invalid split: imported tribunal / hiddenness / punishment / TST source-worldview as serial burden-cycles without re-read proof |
-| not deterministic argument-bank selection                                                                                       |
-| owner: rubrics/diagnostic-render-contract.md                                                                                    |
-+---------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------------------+
+| SELECTED CURRENT LIVE BURDEN                                                                                                      |
+|                                                                                                                                   |
+| one live noetic burden/function selected                                                                                          |
+| broad enough to contain justified operative submove sequence                                                                      |
+| current bounded operator is not a route chain                                                                                     |
+| invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                   |
+| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                   |
+| invalid split: imported tribunal / hiddenness / punishment / named source-worldview as serial burden-cycles without re-read proof |
+| not deterministic argument-bank selection                                                                                         |
+| owner: rubrics/diagnostic-render-contract.md                                                                                      |
++-----------------------------------------------------------------------------------------------------------------------------------+
              |
              v
 +--------------------------------------------------------------------------------+
@@ -393,7 +393,7 @@ FORBIDDEN SHORTCUTS (generated index)
 - [route itinerary formed before diagnostic reduction] -> [current bounded operator]
 - [Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration] -> [valid live burden]
 - [Burden-1 operative submoves] -> [Pass 1 / Pass 2 / Pass 3 recursion]
-- [imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]
+- [imported tribunal / hiddenness / punishment / named source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]
 - [TTP named in prose] -> [TTP treated as executed]
 - [topic cue] -> [deterministic argument bank]
 - [TTP route itinerary] -> [recursion without entry / exit criteria]
@@ -403,7 +403,7 @@ FORBIDDEN SHORTCUTS (generated index)
 - [bounded move rendered] -> [STOP without post-render gate]
 - [diagnostic transparency allowed] -> [machinery dump]
 - [default response complete] -> [bibliography / source dump]
-- [source-audit-derived topic appears] -> [argument bank / citation dump]
+- [background topic appears] -> [argument bank / citation dump]
 - [tradition label appears] -> [tradition-specific answer]
 - [pattern print emitted] -> [PF / routing precedence bypassed]
 - [Ashʿarī / Māturīdī / Atharī / Taymiyyan / kalāmic / falsafah cited together] -> [one unified operative authority]
@@ -499,7 +499,7 @@ rewarding deflection with over-disclosure; it is not a shortcut around the diagn
 - `[Burden-1 operative submoves] -> ["Pass 1 / Pass 2 / Pass 3" recursion]`
   Operative submoves under the same burden are not burden-cycles. Recursion begins only
   after burden landing and state re-read license the next input-anchored burden.
-- `[imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]`
+- `[imported tribunal / hiddenness / punishment / named source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]`
   Same-cluster facets stay inside one live burden as operative submoves unless `R` licenses
   a genuinely new input-anchored burden.
 - `[TTP named in prose] -> [TTP treated as executed]`
@@ -528,8 +528,8 @@ rewarding deflection with over-disclosure; it is not a shortcut around the diagn
 - `[default response complete] -> [bibliography / source dump]`
   Default mode suppresses source-basis ledgers and bibliography/source-list endings unless
   the user requested sources or the task is audit/research.
-- `[source-audit-derived topic appears] -> [argument bank / citation dump]`
-  External source-audit material supplies structural framing only. It does not bypass IR formation, source-use discipline, owner selection, or release limits.
+- `[background topic appears] -> [argument bank / citation dump]`
+  Background material supplies structural framing only. It does not bypass IR formation, source-use discipline, owner selection, or release limits.
 - `[tradition label appears] -> [tradition-specific answer]`
   "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a route. Type the load-bearing node first: authority order, criterion, semantic hinge, category-set, identity wound, or transmission layer.
 - `[pattern print emitted] -> [PF / routing precedence bypassed]`

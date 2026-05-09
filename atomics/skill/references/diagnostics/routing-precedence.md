@@ -74,17 +74,13 @@ These rules specify when one axis suppresses or delays another:
 **Rule S-8:** Upstream load-bearing nodes suppress downstream topic release. If the live node is an authority rule, epistemic criterion, validation order, semantic hinge, or category-set, downstream doctrinal, fiqh, prooftext, or metaphysical content is held until that node is addressed. Tradition labels do not override this rule.
 
 **Rule S-9 (source-status / noetic-frame non-equivalence):** Use
-`recursive-state-transitions.md` notation: `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`;
-`σ != operative warrant` for non-operative source-status. Gloss: Ashʿarī, Māturīdī,
-Atharī, Taymiyyan, kalāmic, falsafah-inflected, and generic "classical Islamic theology"
-frames are not peer-valid operative supports. A burden-cycle proceeds from one selected
-operative noetic frame; other frames may be named only as `contrast`, `opponent-position`,
-`historical note`, `genealogy`, `held material`, or `bounded comparison`. Suppress
-`classical theology`, `classical theologies`, `classical Islamic theology`, `the classical
-tradition`, `mainstream kalam`, and `Ashari/Maturidi tradition` when the claim is
-school-sensitive or disputed. A contrast-marked source becomes operative support only after
-explicit reclassification with named justification; suppress intra-school flattening when
-the named school is internally disputed.
+`recursive-state-transitions.md` notation: `N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡
+N_Wahhābī`; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative
+`N`; `σ_context != σ_warrant`. Local consequence: one selected operative noetic frame governs
+the burden-cycle; non-operative source-status (`contrast`, `opponent-position`, `historical
+note`, `genealogy`, `held material`, `bounded comparison`) cannot become warrant without
+explicit reclassification. Suppress umbrella and intra-school flattening when the claim is
+school-sensitive or disputed.
 
 ---
 
@@ -165,6 +161,12 @@ selection, bounded target, release permission, and no active stop/hold/gate. If 
 are absent, the route remains held or unresolved. After the TTP exits, the next TTP is selected
 only from refreshed state, not from an inherited initial route itinerary.
 
+For hard/multi-burden execution, owner-backed selection requires loadform evidence: the
+selected owner body or compiled bundle section is loaded/available before `B.s<i>` renders.
+`matched_modules` and TTP labels are routing metadata, not proof that the owner floor loaded.
+If the owner cannot be loaded or identified, return `PARTIAL / OWNER-BODY-NOT-LOADED`
+instead of compressing the burden into generic prose.
+
 **Rule P-7a (owner-specific exit before recursion):** A TTP exit is not valid until the
 owning file's minimum operation floor has been executed and its state-change condition is
 known. A named operator with generic prose, a route label, or a summary result cannot make
@@ -179,16 +181,11 @@ land a burden, and case-library recognition does not release an answer bank.
 multiple-sovereign, or worship-status plurality pressure is live. If independence is
 unclear, model/predication discipline runs first and V12 remains held.
 
-**Rule P-8 (operative-frame discipline):** `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`;
-`σ != operative warrant` unless explicitly reclassified. Gloss: each burden-cycle proceeds
-from one selected operative noetic frame. Sources from contradictory frames may be named only
-under non-operative source-status; a contrast-marked or opponent-position source must not
-become operative support in the same burden-cycle without explicit reclassification and named
-reason. Citing contradictory authorities (e.g., al-Juwaynī / al-Ghazālī alongside Ibn
-Taymiyyah / Ibn al-Qayyim) as one unified operative authority is invalid. Verbal-only
-agreement across frames is not operative support; if cited, mark it substantive vs. verbal.
-Authoritative wording is in `recursive-state-transitions.md §Source-Status & Noetic-Frame
-Non-Equivalence Discipline`.
+**Rule P-8 (operative-frame discipline):** `family label != operative N`;
+`shared vocabulary != shared warrant`; `verbal agreement != operative support`;
+`σ_context != σ_warrant` unless explicitly reclassified. `N_AT` aliases are one operative
+frame, not a prestige stack. Authoritative wording is in
+`recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline`.
 
 ---
 

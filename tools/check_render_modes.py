@@ -316,7 +316,7 @@ REQUIRED_TOKENS = [
     "Operative submoves are not burden-cycles",
     "hiddenness/punishment/source-status can be operative submoves under one burden",
     "multi-burden does not mean multi-recursion by default",
-    "imported tribunal / hiddenness / punishment / TST source-worldview",
+    "imported tribunal / hiddenness / punishment / named source-worldview",
     "A burden-cycle begins only after the current burden lands",
     "burden landing -> state re-read",
     "Restoration synthesis",
@@ -335,6 +335,9 @@ REQUIRED_TOKENS = [
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
     "Rule S-9",
     "Rule P-8",
+    "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+    "family label != operative N",
+    "shared vocabulary != shared warrant",
     "operative noetic frame",
     "noetic-equivalence prestige stack",
     "classical-theology umbrella",
@@ -468,6 +471,9 @@ FIXTURE_REQUIRED_TOKENS = [
     "Layer A/B smuggling",
     # rc14: source-status & grounded re-read fixture tokens
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
+    "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+    "N_Ashʿarī[*]",
+    "family label != operative N",
     "operative noetic frame",
     "Grounded Noetic Re-Read Shape",
     "ungrounded noetic re-read",
@@ -944,7 +950,7 @@ The bounded takeaway is a broad conclusion.
 The deformation is source-prestige support; the restoration vector is source-status repair.
 ##### Bounded Response / operative submoves
 Operator: source-status check.
-Target: public support. Operation: cite al-Ghazali, the Ashari school, and Christian philosophers as context that supports the answer. Result: the public frame relies on source prestige.
+Target: public support. Operation: cite named authorities, a named school, and external theorists as context that supports the answer. Result: the public frame relies on source prestige.
 ##### TTP/operator trace
 Trace: source-status check.
 ### State/noetic re-read
@@ -1602,8 +1608,8 @@ TOPIC_ARGUMENT_BANK_RE = re.compile(
     r"standard arguments|stock content|pasted arguments)\b"
 )
 DEFAULT_SOURCE_PARADE_RE = re.compile(
-    r"(?i)\b(?:al-?ghazali|ash'?ari|maturidi|ibn taymiyyah|aquinas|augustine|"
-    r"christian philosophers?|external theorists?|school-label|classical tradition)\b"
+    r"(?i)\b(?:named authorities?|named scholars?|contradictory authorities?|"
+    r"school-label|classical tradition|whole classical tradition)\b"
 )
 METHOD_SOURCE_BRANDING_RE = re.compile(
     r"(?i)\bdaee-epistemics\b.{0,120}\b(?:named scholar|named school|ash'?ari|"

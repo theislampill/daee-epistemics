@@ -1,0 +1,60 @@
+{
+  "id": "honest-shubhah-evidence",
+  "prompt": "I need evidence because I am honestly stuck on whether the argument works; if the premise is clear, I can reconsider.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M5-deformation-triage",
+      "P4-maieutic"
+    ],
+    "optional_modules": [
+      "proof-method-audit",
+      "M1-self-refutation",
+      "V9-necessary-knowledge-priority"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "Shubhah/Shahwah Two-Axis Floor",
+      "honest conceptual confusion",
+      "clarity discipline for non-specialists",
+      "define -> split -> example -> boundary"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "procedures",
+      "specialty-diagnostics",
+      "techniques"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "evidence-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "evidence"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "honest shubhah",
+      "do_orient": "truth-seek",
+      "restoration_target": "clarify one live premise",
+      "routing_gate": "M5 allows intellectual clarification"
+    }
+  }
+}

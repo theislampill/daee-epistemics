@@ -35,8 +35,9 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
    `[P-C]` `prophetic-discourse-neutralization.md` -> emit semantic-neutralization mode or `none active`
    `[P-D]` `arabic-backbone-predicates.md` -> emit active predicates or `none active`
 5. Form the diagnostic IR (`diagnostic-ir.md`). All gate checks must pass before module dispatch.
-6. If the case is mixed or thin, use mixed-case rules before selecting downstream modules.
-7. Surface case state, confidence, and inference boundary when routing legibility is needed.
+6. Run the reconstruction pass (`ir-reconstruction-pass.md`) before ordinary owner dispatch.
+7. If the case is mixed or thin, use mixed-case rules before selecting downstream modules.
+8. Surface case state, confidence, and inference boundary when routing legibility is needed.
 
 ## Files
 
@@ -60,6 +61,8 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
 | `references/kernel-thesis.md` | Canonical architecture anchor | Auditing whether a response or routing decision is consistent with the skill's governing commitments | Narrow sub-answers that do not require architecture-level grounding | Non-negotiable commitments with routing consequences |
 | `references/diagnostics/arabic-backbone-predicates.md` | Operational predicate layer | V1 Phase 2 and criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation elements are present | Case is single-axis `shubha` with no framework or ordering issue | Typed predicates with route consequences |
 | `references/diagnostics/diagnostic-ir.md` | Typed diagnostic IR | Full auditable case-state required; multi-axis case; routing must be checked against workflow and architectural layers | Narrow conversational sub-answer with no case classification | Complete typed IR binding workflow and architectural layers |
+| `references/diagnostics/ir-reconstruction-pass.md` | Reconstruction check | A populated IR must prove that live burden, selected owner/TTP, nearest held alternatives, Land(B), and verdict are recoverable before dispatch | You are trying to create new routes, owner packs, or public-output machinery | `reconstruction_fidelity` and compact notes for partial/fail |
+| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, Level 3, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
 | `references/metaphysical-architecture.md` | Metaphysical architecture layer | Auditing what is being restored and why | Task is purely routing mechanics | Ordered account of epistemic and ontological structure |
 | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic | `dalīl`, `wujūb al-naẓar`, taqlīd-as-non-knowledge, Māturīdī concession language, or a narrow necessary-knowledge class is surfacing | The case is ordinary evidentialism without kalāmic structure | Kalāmic-specific critique and routing |
 | `references/diagnostics/fitrah-perspectives.md` | Specialty diagnostic | The `fiṭrah` is described as blank-slate, morally neutral, or as equal dual tendencies | The case does not turn on `fiṭrah` taxonomy | `fiṭrah`-view classification and implications |

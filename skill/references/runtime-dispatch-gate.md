@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: da5311fd8c625007d3f54bf0cb35f5a57a123b32b5da87679922a6a294db84c6 -->
+<!-- SOURCE_SHA256: 4a9664ee22ab1e97d8892d888d140b258d760ed899087fb56342721a55458cb1 -->
 
 ---
 id: diagnostic-ir
@@ -57,6 +57,7 @@ The IR composes fields from several sources:
 - Architectural layer disruption from `references/metaphysical-architecture.md`
 - P7 stop status from `references/procedures/P7-restoration-stops.md`
 - Routing-precedence state from `references/diagnostics/routing-precedence.md`
+- Reconstruction verdict from `references/diagnostics/ir-reconstruction-pass.md`
 
 ---
 
@@ -97,6 +98,13 @@ re-evaluated when a load-bearing node is cleared.
 **Operationalization rule:** Meta-noetic memetics does not add a new routing pass. It is the
 explanatory frame for the already-named dynamics. Its live IR surface is:
 
+```text
+surface discourse -> IR(N,m,τ,σ) -> B -> TTP/operator -> R(H,Δ)
+```
+
+Control-surface test: the vocabulary is valid only when it changes an existing field,
+hold/release decision, collapse radius, load-bearing node, operator choice, or state re-read.
+
 - `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture, source-of-authority, and neutrality-rule moves
 - `Claim-level` and `Pattern-profile`: governing PF overlay and higher-order burden when these change routing or sequencing
 - `Structural pattern print`, `Load-bearing node`, and `Collapse radius`: the local belief-machine, the node that keeps regenerating downstream claims, and the dependent claims/routes that must be re-evaluated when it clears
@@ -111,10 +119,9 @@ Identity use must be source-status marked in the existing surfaces:
 - speculative/held: interior motive, sincerity, culpability, soul-state, or primary
   load-bearing status
 
-**Negative rule:** When the concept "meta-noetic memetics" is invoked in a response without any
-of the above fields carrying a live read (no tribunal-installation in `Upstream findings`, no
-active PF overlay, no collapse-radius note in `What remains live`), the concept is being used
-decoratively. Decorative use is the anti-pattern named in
+**Negative rule:** "Meta-noetic memetics" without a control-surface consequence is decorative:
+no changed IR/case-state field, no routing suppression, no held material, no collapse radius,
+no operator selection, and no state re-read delta. Decorative use is the anti-pattern named in
 `references/diagnostics/anti-patterns.md §Higher-Order Vocabulary Theater`.
 
 ---
@@ -128,6 +135,16 @@ core axes -> mandatory Phase 2 passes -> triggered overlays / specialty markers 
 IR -> gate checks -> routing precedence -> selected current bounded operation. A route
 itinerary is not a valid IR substitute, and `Next move` / `Intervention target` must not be
 populated with a chain such as `FPD -> M1 -> DO-8 -> M8 -> restoration`.
+
+After the IR is formed and before routing precedence may dispatch owners, run
+`references/diagnostics/ir-reconstruction-pass.md`. The reconstructor receives only the original
+input, the populated IR or trace candidate, and reconstruction criteria; it must not reload
+`SKILL.md`, the module catalogue, the routing catalogue, owner files, or compiled maps. This is
+not a seventh route family. It is a dispatch precondition that checks whether the IR can recover
+the live noetic burden, selected operator/TTP, nearest held or deferred alternatives, expected
+Land(B), and governance verdict. `reconstruction_fidelity: fail` blocks ordinary module dispatch.
+`reconstruction_fidelity: partial` permits only bounded HOLD/PARTIAL output with the reason in
+`reconstructor_notes`.
 
 **Gate Check 1 - Mandatory minimum fields populated.**
 All pre-dispatch fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated before module dispatch. `Post-render gate` is mandatory for the complete pass record, but it is populated after the bounded restorative move and before closure. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a forced read.
@@ -183,6 +200,7 @@ Compiler lifecycle:
 input case
 -> diagnostic reduction
 -> validated IR
+-> reconstruction pass
 -> routing precedence
 -> selected current live burden
 -> TTP entry criteria
@@ -438,6 +456,8 @@ Load-bearing node:                   # optional; criterion, authority rule, sema
 Collapse radius:                     # optional; downstream claims/routes that depend on the load-bearing node and must be re-evaluated when it clears
 Intervention target:                 # optional; the bounded operation that clears the load-bearing node
 Framing notes:                       # optional; internal renderer constraints preventing citation dump, argument bank, or wrong-family release
+Reconstruction fidelity:             # pass | partial | fail; internal/trace field from ir-reconstruction-pass.md
+Reconstructor notes:                  # required when reconstruction_fidelity is partial/fail; compact neighbor contrast when useful
 
 --- Output Governance ---
                                   # Canonical internal/audit diagnostic record and Layer B definition:
@@ -521,6 +541,8 @@ For any substantive response claiming to have done V1, the following fields must
 
 `Post-render gate` is mandatory for a completed pass, not for initial dispatch. It is populated
 after the bounded move and before STOP, HOLD, RECURSE, or PARTIAL is declared.
+`Reconstruction fidelity` is mandatory before ordinary module dispatch in new release-grade
+trace/verdict evidence. It is schema-optional only so legacy smoke artifacts remain readable.
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
@@ -537,6 +559,7 @@ Populate these whenever their trigger is live:
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
 - `Post-render gate` after every bounded restorative move and before any closing decision. It is mandatory even when the decision is STOP; STOP is invalid unless the gate has run.
+- `Reconstruction fidelity` after initial IR formation and before routing precedence. `partial` or `fail` requires `Reconstructor notes`; `partial` permits only bounded HOLD/PARTIAL output, and `fail` blocks ordinary module dispatch.
 - `Decisive missing differentiator` is conditional-mandatory whenever `Confidence` is anything other than `strong` *or* `Read status` is anything other than `dominant`. The field names the one signal that would refine, falsify, or collapse the remaining ambiguity in the read. This is a falsifiability anchor against cosmetic IR formation: a paraphrase of the input cannot fill it without exposing itself, while a structural read can. The field comes from `references/diagnostics/case-state-schema.md §Decisive missing differentiator`; this rule promotes it from optional to conditional-mandatory inside the validator-backed internal IR. If the basis is too thin to name a differentiating signal at all, the correct output is Stop-4, not a forced read.
 
 **Optional structural framing fields**
@@ -583,6 +606,7 @@ contract permits a diagnostic or audit-style response.
 - **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - **Ghost-load prohibition:** A `matched_modules` entry without a corresponding `source_basis` entry with `source_kind: "module"` and `module_id` matching the entry's `id` is a ghost-load: the source file or compiled runtime section was loaded but did not demonstrably govern any output claim or routing decision in this pass. Ghost-loads are gate-integrity failures equivalent to fabricated activation and must be corrected before dispatch — either by adding the missing `source_basis` entry (naming the specific claim or routing fork the module governed) or by moving the module from `matched_modules` to `What is withheld and why` with an explicit reason.
 - Schema note: `source_basis` is not an unconditional top-level required field for bare schema compatibility, but it is conditionally required whenever `matched_modules` is present and non-empty. Executable catalogue/source-basis coverage is enforced by `tools/check_ir_instance_integrity.py`.
+- **Reconstruction prohibition:** A `matched_modules` entry that cannot be reconstructed from the input burden through existing IR fields is label-only or topic-only routing even when its owner file exists. Correct by re-running diagnostic reduction, moving the owner to `What is withheld and why`, or emitting bounded HOLD/PARTIAL with `reconstruction_fidelity: partial/fail`.
 - `Next move` names one live move only. It is not a queue of later modules.
 - `Intervention target` and `Next move` name one burden-level function. They do not name a route
   chain, module itinerary, or list of internal TTP labels. Acceptable shape: `imported-criterion
@@ -695,7 +719,7 @@ The following inconsistencies are invalid:
 - `Structural pattern print` present + no routing, hold, release, or framing consequence. Pattern print without consequence is pattern theater.
 - `Load-bearing node` present + downstream content released before the node is addressed. This violates upstream-node priority.
 - `Framing notes` used to introduce new coverage content, prooftexts, or citations rather than to constrain release. Framing notes are not a citation bank.
-- Source-audit-derived tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
+- Tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
 - One upstream node cleared + all downstream material dumped at once. Refresh state and release only the next bounded move.
 - `Next move` or visible output uses "Move 1 / Move 2 / Move 3" as essay sequencing
   without a prose state-change transition. Numbered headings are not RECURSE.
@@ -752,11 +776,11 @@ Specific failure modes:
 - **Architectural drift:** the response satisfies workflow checks but states the restoration target argumentatively rather than restoratively.
 - **Semantic-bypass compliance:** semantic neutralization or a lexical-ontological trap is active, but doctrinal content is released anyway. The IR catches this by requiring `semantic-discipline-required`.
 - **Pattern-print theater:** the response names a structural pattern but does not identify the load-bearing node, intervention target, held downstream material, or existing route.
-- **Argument-bank substitution:** the response treats a source-audit-derived topic as permission to list arguments, prooftexts, or citations before the live authority rule, criterion, or semantic blocker has been typed.
+- **Argument-bank substitution:** the response treats a background topic as permission to list arguments, prooftexts, or citations before the live authority rule, criterion, or semantic blocker has been typed.
 
 ---
 
-## Source-Audit Structural Validation Notes
+## Structural Validation Notes
 
 These notes validate structural framing only. They do not create new coverage claims,
 new case-family owners, or permission to release comparative-religion content. Each
@@ -822,7 +846,7 @@ Structural pattern print: non-duality / illusion ontology / Creator-creation col
 Load-bearing node: whether nondual ontology is functioning as the upstream category-set over Islamic tawhid
 Collapse radius: ordinary polytheism response, Advaita owner content, Hinduism coverage claim
 Intervention target: distinguish Islamic tawhid, monism/nonduality, and mystical or poetic language before content release
-Framing notes: do not collapse Advaita into popular idol worship; do not claim source-audited Advaita coverage
+Framing notes: do not collapse Advaita into popular idol worship; do not claim authorized Advaita coverage
 Existing route: M9 + metaphysical-architecture + philosophical-usurpation if nondual ontology is installed as tribunal
 Held: Advaita owner content and broad Hinduism coverage
 Must not dump: generic idol-worship answer when nondual ontology is live
@@ -840,13 +864,170 @@ Framing notes: do not treat anatta as simple mate
 <!-- END_SOURCE: diagnostic-ir -->
 
 
+## SOURCE MODULE: ir-reconstruction-pass
+
+<!-- SOURCE: atomics/skill/references/diagnostics/ir-reconstruction-pass.md -->
+<!-- MODULE_ID: ir-reconstruction-pass -->
+<!-- MODULE_CLASS: governance -->
+<!-- CANONICAL_PATH: atomics/skill/references/diagnostics/ir-reconstruction-pass.md -->
+<!-- SOURCE_SHA256: 973534e92defdb45ac7fe055875fce80b40cce33bcc333c141537690bcf21081 -->
+
+---
+id: ir-reconstruction-pass
+module_class: governance
+canonical_path: skill/references/diagnostics/ir-reconstruction-pass.md
+contract_version: "0.3.2.0"
+load_when:
+  - after Diagnostic IR formation and before routing precedence is allowed to dispatch modules
+routing_effects:
+  - blocks ordinary module dispatch when the populated IR cannot reconstruct the live burden, selected operator, and governance verdict
+emits:
+  - reconstruction_fidelity
+catalogue_registered: false
+---
+
+# IR Reconstruction Pass
+
+This file owns the reconstruction check between Diagnostic IR formation and module dispatch.
+It does not create routes, owners, PF codes, render modes, or a second DSL. It tests whether
+the existing IR is faithful compression of the live noetic burden rather than plausible typed
+commentary.
+
+## Reconstructor
+
+Self-reconstruction by the same runtime that formed the IR is not sufficient evidence. It may
+inherit the same prose-shape prior that produced the IR. The default release-grade design is a
+mechanical + LLM hybrid:
+
+1. Mechanical check: parse the populated IR and verify schema shape, catalogue-valid
+   `matched_modules`, `source_basis` coverage, post-render gate consistency, and any explicit
+   input-anchored lexical or structural signals available without loading the skill.
+2. Semantic check: use a separate no-skill reconstruction pass that receives only the original
+   input, the populated IR or trace candidate, and the criteria below. It must not receive
+   `SKILL.md`, `module-catalogue.json`, the routing catalogue, owner files, or compiled maps.
+
+Cross-model reconstruction is allowed for release-grade audits when available: Hermes IRs may
+be reconstructed by Sonnet and Sonnet IRs by Hermes. Cross-model agreement is stronger evidence,
+but it is not required for the baseline repository check because it is operationally heavier and
+runtime-dependent.
+
+The reconstructor asks whether the populated IR alone recovers:
+
+- case shape,
+- live noetic burden,
+- operative deformation or concealment,
+- discourse orientation,
+- selected operator/TTP,
+- nearest plausible held, rejected, or deferred alternatives,
+- expected Land(B),
+- governance verdict.
+
+## Inputs
+
+The reconstruction pass uses existing IR fields only:
+
+- `case_family`
+- `claim_type`
+- `claim_level`
+- `matched_modules`
+- `deformation`
+- `concealment_mode`
+- `do_orient`
+- `restoration_target`
+- `next_move`
+- `post_render_gate`
+- optional structural fields such as `load_bearing_node`, `collapse_radius`,
+  `intervention_target`, `what_is_withheld_and_why`, and `what_remains_live`
+
+No broad semantic field expansion is authorized here. The pass may add only:
+
+```text
+reconstruction_fidelity: pass | partial | fail
+reconstructor_notes: brief note naming what could not be recovered when partial/fail
+```
+
+`reconstructor_notes` may also be present on a pass when it records a compact neighbor
+contrast, but it must not become a hidden route ledger.
+
+## Verdict Semantics
+
+- `pass`: the original input plus populated IR can reconstruct the live burden, selected
+  operator/TTP, nearest held or deferred alternatives, expected Land(B), and governance verdict.
+- `partial`: some burden or neighbor contrast is recoverable but one required element is
+  underdetermined. Ordinary content dispatch is not licensed; only bounded HOLD/PARTIAL output
+  with explicit reason is licensed.
+- `fail`: the IR cannot recover the live burden/operator/verdict relation. Ordinary dispatch is
+  blocked. Re-run diagnostic reduction or emit Stop-4 / PARTIAL with the missing differentiator.
+
+`fail` blocks ordinary module dispatch. `partial` permits only bounded PARTIAL/HOLD output. `pass`
+permits normal routed execution, subject to routing precedence, owner-load, output-release, and
+recursive-state rules.
+
+## TTP Selection Reconstruction Check
+
+For every selected operator/TTP, the trace or verdict evidence must preserve this compact chain:
+
+```text
+burden signal
+-> IR field(s)
+-> owner trigger
+-> selected TTP/operator
+-> nearest plausible alternatives
+-> why selected TTP is first-live
+-> why alternatives are held/rejected/deferred
+-> expected Land(B)
+-> governance verdict
+```
+
+The chain may live in trace/verdict artifacts or internal diagnostic evidence. It is not a
+default public-output ledger. A selected TTP without a recoverable burden signal and owner-floor
+operation is label-only routing and fails this pass.
+
+## Ontological Accuracy Check
+
+The reconstruction pass also flags invented noetic categories. `restoration_target`,
+`deformation`, selected TTP, and governance verdict must correspond to licensed structures in the
+existing architecture: case-state, diagnostic IR, metaphysical architecture, routing precedence,
+recursive state transitions, and output governance. Do not add a new `ontological_audit` IR field;
+record any flag or failure in `reconstructor_notes` and route to `partial` or `fail` when the
+restoration target or operator cannot be licensed.
+
+## Stability Thresholds
+
+Routing determinism is tested as within-model repeatability, not full cross-model equivalence.
+The architecture is deterministic once IR axes are set, but those axes still require interpretive
+diagnosis.
+
+For a stability fixture, run five repetitions with the same prompt, skill build, model, and
+driver/mode.
+
+- Stable: `case_family`, `claim_type`, and `claim_level` are identical across all five; the live
+  burden is identical or semantically equivalent across all five.
+- Near-stable: selected TTP differs by no more than one neighboring owner across the five runs,
+  and the alternative is documented as a plausible neighbor while the live burden remains stable.
+- Drift: more than one owner difference, burden differences, claim-type or claim-level
+  differences, or governance verdict differences without input-sensitive reason.
+
+A stability failure is a routing defect even when each individual run has
+`reconstruction_fidelity: pass`.
+
+## Render Discipline
+
+Default public output should not print the reconstruction ledger. The visible answer may show the
+existing compact Layer A signal and case-specific B.s -> Land(B) -> R(H,Delta) work when needed.
+The reconstruction witness belongs in trace/verdict evidence unless the user explicitly requests
+diagnostic or audit render.
+
+<!-- END_SOURCE: ir-reconstruction-pass -->
+
+
 ## SOURCE MODULE: case-state-schema
 
 <!-- SOURCE: atomics/skill/references/diagnostics/case-state-schema.md -->
 <!-- MODULE_ID: case-state-schema -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/case-state-schema.md -->
-<!-- SOURCE_SHA256: f2f86d10846a0ad001788794aa49ff1168899c40fdad780130bed5943a0724dc -->
+<!-- SOURCE_SHA256: 3e3950ac28c9434d5ddd2ec49d2e9e20a89b27a3e631ace13d696a6b9fae013c -->
 
 ---
 id: case-state-schema
@@ -1129,7 +1310,7 @@ This is consumed by V1's re-run condition and by M5's register-hold field.
 <!-- MODULE_ID: pattern-profiling -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/pattern-profiling.md -->
-<!-- SOURCE_SHA256: 049da0a3400f40d738bac499400e96fec8788e428946e05c108802cce5acdf77 -->
+<!-- SOURCE_SHA256: f45c06692e48e31a8eb2334d943edb15ea6ba7166c364888e1d98d85b2f7bf7c -->
 
 ---
 id: pattern-profiling
@@ -1347,7 +1528,7 @@ Failure tests:
 <!-- MODULE_ID: inference-boundary -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/inference-boundary.md -->
-<!-- SOURCE_SHA256: 00ba926cd271f309aa16b6606d6dd4f22c58332cb7191e9712440d1d011edb79 -->
+<!-- SOURCE_SHA256: e9384876133b8ca7caafbccc7b03e74666046546f4e117dae793c887881c3371 -->
 
 ---
 id: inference-boundary
@@ -1509,7 +1690,7 @@ The `[Source Basis]` block in `case-state-schema.md` requires source-weight anno
 <!-- MODULE_ID: mixed-case-handling -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/mixed-case-handling.md -->
-<!-- SOURCE_SHA256: c175549ffd4f67a7f506cd04366bd2a5b69d3328b9ebd56a2191241dc09169e7 -->
+<!-- SOURCE_SHA256: 09fdd5f5da01fa11788c1c2905db25bcc08d5b9f1cacb0d5fc9248d08f526754 -->
 
 ---
 id: mixed-case-handling
@@ -1666,7 +1847,7 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/anti-patterns.md -->
-<!-- SOURCE_SHA256: d87c0920400d046b87ab196896fb547f62ee07335c6f16f2dd924e0f53cdd2c7 -->
+<!-- SOURCE_SHA256: cffaba68c0df2ffb3f7f02229959a2ce1a446d5d559ba511240b21171f4e5d2d -->
 
 ---
 id: anti-patterns
@@ -1755,14 +1936,14 @@ The following entries expand the compressed table into full audit-grade entries.
 *Correct behavior in the same case:* State the first-order claim if there is one, name the higher-order burden precisely, name the deformation or noetic pattern separately, and state the restoration target in the architecture's own grammar. Example: "First-order claim: revelation is under attack. Higher-order burden: meta-epistemic criterion import. Pattern: PF-2 inherited evidential pressure. Restoration target: sound reason / authentic-transmission order. So V2 or V10 clears first."
 Emission means internal case-state / IR update for routing.
 Internal NS/PF emission for routing means case-state / IR update, not visible default output.
-Printing NS/PF codes without showing the actual burden remains Higher-Order Vocabulary Theater.
+Printing NS/PF codes or "meta-noetic memetics" without an IR/case-state/routing/hold-release consequence remains Higher-Order Vocabulary Theater.
 *Self-audit question:* If I used higher-order vocabulary, have I said what it changes in routing and what layer is being restored, or did I only name the vocabulary?
 *Prevented by:* `pattern-profiling.md` (claim-level and PF discipline), `noetic-reading-checklist.md` (higher-order assessment -> restoration hand-off), `case-state-schema.md` and `diagnostic-ir.md` (restoration-target typing), `heuristics.md` rule 29 (keep burden, pattern, and target distinct).
 
 ---
 
 **Pattern-Print Theater**
-*Definition:* Emitting a structural pattern print, load-bearing phrase, or source-audit-derived topic shape without making it govern routing, suppression, release, or the next bounded move.
+*Definition:* Emitting a structural pattern print, load-bearing phrase, or background-topic shape without making it govern routing, suppression, release, or the next bounded move.
 *Pattern appearing in output:* "This is a closed-canon veto / selective scriptural arbitrage pattern" appears in the analysis, but the response immediately lists prooftexts without typing whether authority, evidence, canon, interpretation, or identity wound is the live node.
 *Correct behavior in the same case:* Use the optional IR fields only when they constrain action: name the load-bearing node, the intervention target, what is held, and which existing owner governs the next move.
 *Self-audit question:* Did the pattern print change what I held, routed, or released, or did it only decorate the diagnosis?
@@ -1780,10 +1961,10 @@ Printing NS/PF codes without showing the actual burden remains Higher-Order Voca
 ---
 
 **Argument-Bank / Citation-Dump Substitution**
-*Definition:* Treating a source-audit-derived topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
+*Definition:* Treating a background topic as permission to unload arguments, citations, prooftexts, or comparative-religion content before the live structural burden has been typed and routed.
 *Pattern appearing in output:* A question about Torah-completeness receives a list of biblical prooftexts; a Sufi kashf claim receives a broad anti-Sufism polemic; an Arya Samaj critique receives verse-by-verse Qur'an defense; an anatta question receives a generic Buddhism rebuttal. In each case, the authority rule, criterion, semantic blocker, or identity-continuity node remains unidentified.
-*Correct behavior in the same case:* Use source-audit findings to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
-*Self-audit question:* Am I using source-audit material to decide what must clear first, or am I using it as an answer bank?
+*Correct behavior in the same case:* Use background material only to frame the case structurally, then route through existing owners and TTPs. Cite, quote, or release detailed content only if the refreshed IR state makes that the next bounded move and the source-use discipline permits it.
+*Self-audit question:* Am I using background material to decide what must clear first, or am I using it as an answer bank?
 *Prevented by:* `diagnostic-ir.md` framing notes; `routing-precedence.md` upstream-node priority; `V10-transmission-content-vetting.md` source-use discipline; `inference-boundary.md`; `coverage-scope.yaml` out-of-scope entries.
 
 ---
@@ -1793,7 +1974,7 @@ Printing NS/PF codes without showing the actual burden remains Higher-Order Voca
 *Pattern appearing in output:* The response treats "Hindu" as if it already means Advaita, Arya Samaj, popular polytheism, or perennialism; treats "Buddhist" as if it already means materialism; treats "Sufism" as if it already means either heresy or spirituality; treats "Jewish" and "Christian" canon objections as identical.
 *Correct behavior in the same case:* Type the structure first: external criterion as tribunal, nondual ontology, identity-continuity pressure, kashf-as-tribunal, authority wound, closed-canon veto, or source-use problem. Then route to the existing owner that governs that structure.
 *Self-audit question:* Did I classify the live node, or did I let the tradition label choose the answer?
-*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Source-Audit Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` closed scope decisions.
+*Prevented by:* `pattern-profiling.md`; `diagnostic-ir.md` Structural Validation Notes; `coverage-scope.yaml` non-covered claim entries; `TODO.md` closed scope decisions.
 
 ---
 
@@ -1977,6 +2158,15 @@ the noetic-state source-status rules supply input evidence for a verdict.
 
 ---
 
+**Owner-Body Not Loaded Compression**
+*Definition:* Rendering a hard or complex burden from root SKILL recognition, TTP label memory, or `matched_modules` naming without loading or having access to the active owner body / compiled bundle section.
+*Pattern appearing in output:* The response names `V2`, `M9`, `P3`, or another owner label, then emits a broad Target/Operation/Result block that could fit many cases and never demonstrates the owner-specific operation floor.
+*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `B.s<i>` submoves, then `Land(B)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
+*Self-audit question:* Am I executing the owner body, or substituting root-summary recognition for Level 2 owner access?
+*Prevented by:* `SKILL.md` owner-loadform map; `recursive-state-transitions.md` TTP entry criteria; `diagnostic-render-contract.md` hard-output render-through template; `output-release.md` owner-loadform gate.
+
+---
+
 **Diagnostic-Reduction Bypass**
 *Definition:* Jumping from input/global Layer A to a selected route, module list, doctrinal answer, or restoration frame before completing the diagnostic reduction sequence: core axes -> mandatory Phase 2 passes -> overlays/specialty markers -> Diagnostic IR -> gate checks -> routing precedence.
 *Pattern appearing in output:* The answer reads the case, names `FPD -> M1 -> DO-8 -> M8 -> restoration`, and begins answering from that itinerary without showing or internally preserving the required Phase 2 pass emissions/clearances.
@@ -2024,6 +2214,15 @@ the noetic-state source-status rules supply input evidence for a verdict.
 *Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins only if a genuinely new noetic aspect remains eligible.
 *Self-audit question:* Am I crossing into a new live noetic burden, or did I only finish one operative submove inside the same burden?
 *Prevented by:* `recursive-state-transitions.md` live-burden boundary rule; `diagnostic-render-contract.md` current bounded operator rule; `output-release.md` Layer A / Layer B release checks.
+
+---
+
+**Burden-Cycle Compression Failure**
+*Definition:* A hard output names a complex `B` but renders it as one broad Target/Operation/Result block, then moves to `R`, leaving materially necessary submoves implicit.
+*Malformed shape:* `Burden 1: imported tribunal -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed -> state/noetic re-read`.
+*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `B1.s1`, `B1.s2`, etc.; `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
+*Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only for a genuinely atomic burden.
+*Prevented by:* `SKILL.md` execution spine; `diagnostic-render-contract.md` hard-output render-through template; `recursive-state-transitions.md` B-complexity test.
 
 ---
 
@@ -2088,7 +2287,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Names M1, M8, M9, or another TTP without target -> operation -> result -> state re-read.
 - Uses `matched_modules` as public proof of routing.
 - Turns probable module order into an essay itinerary.
-- Guesses structure from topic cues such as moral protest, hiddenness, hell, TST, or secular humanism.
+- Guesses structure from topic cues such as moral protest, hiddenness, hell, a named source-worldview frame, or secular humanism.
 - Applies TTPs only once against the initial case-state, then stops or dumps every detected topic.
 - Compresses the default answer to avoid recursion even though eligible same-input burdens remain.
 
@@ -2130,10 +2329,10 @@ the noetic-state source-status rules supply input evidence for a verdict.
 ---
 
 **Noetic-Frame Equivalence Stack**
-*Definition:* Violating `N_Ashʿarī != N_Māturīdī != N_Taymiyyan` by treating contradictory theological or noetic structures (Ashʿarī, Māturīdī, Atharī, Taymiyyan, kalāmic, falsafah-inflected) as peer-valid operative supports for the same conclusion in one burden-cycle.
-*Pattern appearing in output:* "The classical theological tradition, from al-Juwaynī and al-Ghazālī to Ibn Taymiyyah and Ibn al-Qayyim, agrees that ...", or "Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological routes here."
-*Bad signs:* contradictory authorities cited side-by-side as one unified support; the operative frame is not identified; verbal agreement is treated as substantive without marking; intra-school disputes are hidden by breadth.
-*Correct behavior in the same case:* Select one operative `N`; other frames are only `σ` = contrast / opponent-position / historical note / genealogy / held / bounded comparison. If agreement across frames is asserted, mark substantive vs. verbal/surface-level.
+*Definition:* Violating `N_AT`, `N_Ashʿarī[*]`, `N_Māturīdī[*]`, or `σ_context != σ_warrant` discipline by treating rival or family-level frames as peer-valid operative supports in one burden-cycle.
+*Pattern appearing in output:* "The whole classical tradition agrees that ...", "multiple school approaches are all classically acceptable theological routes here," or "Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities."
+*Bad signs:* `N_AT` aliases counted as separate warrants; contradictory authorities cited side-by-side as one unified support; the operative frame is not identified; verbal agreement is treated as substantive without marking; intra-school disputes are hidden by breadth.
+*Correct behavior in the same case:* Select one operative `N`; `N_AT` aliases count once; `N_Ashʿarī[*]` and `N_Māturīdī[*]` require the live predicate/warrant/criterion/authority-order; other frames are only `σ` = contrast / opponent-position / historical note / genealogy / held / bounded comparison. If agreement across frames is asserted, mark substantive vs. verbal/surface-level.
 *Self-audit question:* Did I select one operative noetic frame, or did I stack contradictory schools as one authority?
 *Prevented by:* `recursive-state-transitions.md` §Source-Status & Noetic-Frame Non-Equivalence Discipline; `routing-precedence.md` Rule S-9 and Rule P-8.
 
@@ -2151,7 +2350,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 
 **Contrast-Source-as-Operative-Support**
 *Definition:* Violating `σ != operative warrant` by naming a source under non-operative status (`contrast`, `opponent-position`, `historical note`, `genealogy`, `held material`) and then using it as operative warrant in the same burden-cycle without explicit reclassification.
-*Pattern appearing in output:* "Source-status: contrast only. Al-Juwaynī's kalāmic formulation is mentioned only as contrast. Therefore, the operative answer is established by al-Juwaynī, al-Ghazālī, Ibn Taymiyyah, and Ibn al-Qayyim together."
+*Pattern appearing in output:* "Source-status: contrast only. A rival formulation is mentioned only as contrast. Therefore, the operative answer is established by that contrast source together with the selected frame."
 *Bad signs:* the same source carries two statuses in one burden-cycle; reclassification is not justified; the operative conclusion depends on the contrast source.
 *Correct behavior in the same case:* Keep the source in non-operative `σ`, or reclassify explicitly with a named reason and a sentence preserving the selected operative frame.
 *Self-audit question:* Did I name a source as contrast and then use it as warrant in the same burden-cycle?
@@ -2202,7 +2401,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Does this case carry a live epistemic question, and if so have I deployed the matched content module before loading any restoration frame?
 - If I used higher-order vocabulary, did I distinguish burden, pattern, and restoration target rather than just naming them?
 - If I used a structural pattern print, did it change routing, hold/release, or the next bounded move?
-- Am I using a source-audit-derived topic as an answer bank instead of as framing intelligence?
+- Am I using a background topic as an answer bank instead of as framing intelligence?
 - Did I route by tradition label, or did I identify the live structural node first?
 - Did I separate an abuse or authority wound from a doctrinal or tribunal claim?
 - Am I continuing because the state actually refreshed, or because I do not want to leave a landed move alone?
@@ -2237,7 +2436,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: d32e3750258aa5b48fdbcb03f951225968d56612c3fe472768ceb61c5c1d6299 -->
+<!-- SOURCE_SHA256: c292a61a4db75e1f92f1977e0ef3072824d9b9fda478980428a601246dfdb6bb -->
 
 ---
 id: framework-pipeline
@@ -2301,7 +2500,7 @@ Authority boundary:
 - `references/rubrics/diagnostic-render-contract.md` owns visible render mode.
 - `references/procedures/P7-restoration-stops.md` owns concrete stop instances.
 
-Diagrams, slogans, examples, tradition labels, pattern prints, and source-audit-derived
+Diagrams, slogans, examples, tradition labels, pattern prints, and background-topic
 topics in this file are audit aids. They do not create routes, module activation rules,
 IR fields, coverage claims, or source owners.
 
@@ -2433,18 +2632,18 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +--------------------------------------------------+
              |
              v
-+---------------------------------------------------------------------------------------------------------------------------------+
-| SELECTED CURRENT LIVE BURDEN                                                                                                    |
-|                                                                                                                                 |
-| one live noetic burden/function selected                                                                                        |
-| broad enough to contain justified operative submove sequence                                                                    |
-| current bounded operator is not a route chain                                                                                   |
-| invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                 |
-| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                 |
-| invalid split: imported tribunal / hiddenness / punishment / TST source-worldview as serial burden-cycles without re-read proof |
-| not deterministic argument-bank selection                                                                                       |
-| owner: rubrics/diagnostic-render-contract.md                                                                                    |
-+---------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------------------+
+| SELECTED CURRENT LIVE BURDEN                                                                                                      |
+|                                                                                                                                   |
+| one live noetic burden/function selected                                                                                          |
+| broad enough to contain justified operative submove sequence                                                                      |
+| current bounded operator is not a route chain                                                                                     |
+| invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                   |
+| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                   |
+| invalid split: imported tribunal / hiddenness / punishment / named source-worldview as serial burden-cycles without re-read proof |
+| not deterministic argument-bank selection                                                                                         |
+| owner: rubrics/diagnostic-render-contract.md                                                                                      |
++-----------------------------------------------------------------------------------------------------------------------------------+
              |
              v
 +--------------------------------------------------------------------------------+
@@ -2634,7 +2833,7 @@ FORBIDDEN SHORTCUTS (generated index)
 - [route itinerary formed before diagnostic reduction] -> [current bounded operator]
 - [Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration] -> [valid live burden]
 - [Burden-1 operative submoves] -> [Pass 1 / Pass 2 / Pass 3 recursion]
-- [imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]
+- [imported tribunal / hiddenness / punishment / named source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]
 - [TTP named in prose] -> [TTP treated as executed]
 - [topic cue] -> [deterministic argument bank]
 - [TTP route itinerary] -> [recursion without entry / exit criteria]
@@ -2644,7 +2843,7 @@ FORBIDDEN SHORTCUTS (generated index)
 - [bounded move rendered] -> [STOP without post-render gate]
 - [diagnostic transparency allowed] -> [machinery dump]
 - [default response complete] -> [bibliography / source dump]
-- [source-audit-derived topic appears] -> [argument bank / citation dump]
+- [background topic appears] -> [argument bank / citation dump]
 - [tradition label appears] -> [tradition-specific answer]
 - [pattern print emitted] -> [PF / routing precedence bypassed]
 - [Ashʿarī / Māturīdī / Atharī / Taymiyyan / kalāmic / falsafah cited together] -> [one unified operative authority]
@@ -2740,7 +2939,7 @@ rewarding deflection with over-disclosure; it is not a shortcut around the diagn
 - `[Burden-1 operative submoves] -> ["Pass 1 / Pass 2 / Pass 3" recursion]`
   Operative submoves under the same burden are not burden-cycles. Recursion begins only
   after burden landing and state re-read license the next input-anchored burden.
-- `[imported tribunal / hiddenness / punishment / TST source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]`
+- `[imported tribunal / hiddenness / punishment / named source-worldview topical components] -> [serial burden-cycles without state/noetic re-read proof]`
   Same-cluster facets stay inside one live burden as operative submoves unless `R` licenses
   a genuinely new input-anchored burden.
 - `[TTP named in prose] -> [TTP treated as executed]`
@@ -2769,8 +2968,8 @@ rewarding deflection with over-disclosure; it is not a shortcut around the diagn
 - `[default response complete] -> [bibliography / source dump]`
   Default mode suppresses source-basis ledgers and bibliography/source-list endings unless
   the user requested sources or the task is audit/research.
-- `[source-audit-derived topic appears] -> [argument bank / citation dump]`
-  External source-audit material supplies structural framing only. It does not bypass IR formation, source-use discipline, owner selection, or release limits.
+- `[background topic appears] -> [argument bank / citation dump]`
+  Background material supplies structural framing only. It does not bypass IR formation, source-use discipline, owner selection, or release limits.
 - `[tradition label appears] -> [tradition-specific answer]`
   "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a route. Type the load-bearing node first: authority order, criterion, semantic hinge, category-set, identity wound, or transmission layer.
 - `[pattern print emitted] -> [PF / routing precedence bypassed]`
@@ -2866,7 +3065,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: c4e2a95ba6097cf33e32a9790f1b4a2499ce147a1c2ce0013d110b699b531ce3 -->
+<!-- SOURCE_SHA256: f53f20d89172ede8023faca5b94541286ebff97c95dd91cd2dbc271e5195cc25 -->
 
 ---
 id: recursive-state-transitions
@@ -2939,7 +3138,7 @@ This notation is operative compression for existing runtime behavior, not decora
 It creates no IR fields, route IDs, PF codes, module owners, or schema keys.
 
 Legend:
-- `N` = noetic structure.
+- `N` = noetic structure / operative noetic frame.
 - `m` = memetic claim / criterion / authority-node.
 - `τ` = tribunal / evaluative criterion.
 - `σ` = source-status.
@@ -2978,6 +3177,7 @@ Source-status:
 
 ```text
 σ ∈ {contrast, opponent-position, genealogy, historical note, held material, bounded comparison}
+-> σ_context != σ_warrant
 -> σ != operative warrant
 ```
 
@@ -2986,11 +3186,24 @@ Gloss: non-operative sources cannot become proof without explicit reclassificati
 Noetic-frame non-equivalence:
 
 ```text
+N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī
 N_Ashʿarī != N_Māturīdī != N_Taymiyyan
+N_AT != N_Ashʿarī[*]
+N_AT != N_Māturīdī[*]
+N_Ashʿarī[*], N_Māturīdī[*] = family labels, not automatic operative N
+N_Ashʿarī[x] != N_Ashʿarī[y] when the live predicate/warrant/criterion/authority-order differs
+N_Māturīdī[x] != N_Māturīdī[y] when the live predicate/warrant/criterion/authority-order differs
+family label != operative N
+shared vocabulary != shared warrant
+shared conclusion != shared warrant
+verbal agreement != operative support
 ```
 
-Gloss: contradictory noetic frames are not co-valid operative supports; only the selected
-operative `N` may warrant the move.
+Gloss: `N_AT` canonicalizes repo routing aliases for the Atharī/Taymiyyan/Salafī/Wahhābī
+operative frame; aliases are not counted as multiple warrants. This is not a historical,
+sociological, polemical, individual, movement, or institutional identity claim. Contradictory
+or family-level noetic frames are not co-valid operative supports; only the selected operative
+`N` may warrant the move.
 
 Held carry:
 
@@ -3009,6 +3222,18 @@ R required before STOP/RECURSE
 
 Gloss: a burden must land before re-read; re-read must license closure or recursion.
 
+B-complexity:
+
+```text
+ComplexB -> {s1...sn} -> Land(B) -> R
+AtomicB -> s1 -> Land(B) -> R
+```
+
+Gloss: distinct hidden premises, criteria, predicates, source-status forks, release gates, or
+restoration vectors inside the same live burden make `B` complex. `AtomicB` is valid only when
+one owner-specific operation can change the burden-state without leaving internal premises,
+predicates, or gates unoperated.
+
 ## State Model
 
 `STOP` is valid only after state re-read confirms that the current governing blocker has been
@@ -3024,6 +3249,23 @@ becomes newly eligible after the current pass clears its blocker.
 `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive
 pressure remains. Do not emit a false STOP in that condition.
 
+In hard/default output, Restorative Response and Closing Formulation are licensed only after
+the final state re-read for the answer. If `R(H,Delta)` names a remaining input-anchored
+burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
+the next action is the next bounded burden-cycle, not rhetorical closure. If the next
+bounded pass cannot fit, mark PARTIAL with the next live burden.
+
+Input-anchored burden means more than an explicit question-marked subrequest. It includes
+supporting premises, contrasts, public/private partitions, source-status rules, translation
+demands, and moral or epistemic criteria already present in the user's surface discourse.
+After the blocker that held them clears, they must be rechecked as possible next burdens
+rather than dismissed as future topics.
+
+If a state re-read enumerates remaining input-anchored burdens, "only if requested" is not
+a valid STOP reason unless a named hold gate blocks release. The claim that remaining material
+requires its own bounded pass licenses RECURSE or PARTIAL; it does not license rhetorical
+closure.
+
 ## TTP Entry / Exit Criteria
 
 Recursion is auditable only when each TTP has entry criteria, operation criteria, and exit
@@ -3035,9 +3277,14 @@ or visible default-mode template slots.
 1. Validated IR exists and names the current live burden.
 2. Routing precedence selected one current bounded operator, not a route chain.
 3. The TTP owner is justified by the current IR state or by refreshed state after a prior burden-cycle.
-4. The TTP has a bounded target inside the active live noetic burden.
-5. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
-6. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.
+4. For hard/multi-burden `ComplexB.s<i>`, the active owner body or compiled bundle
+   section is loaded/read, unless that exact section is already present in active context.
+   Package availability, map presence, or bundle co-location is not access. If access is
+   absent, the route is `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path,
+   not generic prose.
+5. The TTP has a bounded target inside the active live noetic burden.
+6. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
+7. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.
 
 **TTP operation criteria:**
 
@@ -3301,7 +3548,7 @@ the released `B` and its necessary `s` have actually been operated on.
 
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
-TST/source-worldview source-status discipline, and identity-stabilization caution are `s` when
+Named source-worldview source-status discipline and identity-stabilization caution are `s` when
 they serve the same imported-tribunal `B`. They become later burden-cycles only if `R` licenses a
 genuinely new input-anchored `B`.
 
@@ -3310,7 +3557,7 @@ into new burden-cycles merely because they name hiddenness, punishment, source-s
 source-worldview, or identity-stabilization.
 Forbidden failure name: topical components split into burden-cycles.
 Short form: hiddenness/punishment/source-status can be operative submoves under one burden.
-Bad split pattern: imported tribunal / hiddenness / punishment / TST source-worldview.
+Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview.
 
 Recursion begins only when `Land(B) -> R` licenses a new input-anchored live burden that remains
 after the submoves have done their work. If the facet has already been handled as `s`, it cannot
@@ -3371,7 +3618,7 @@ Invalid default-mode recursion shapes:
 - "Pass 1 / Pass 2 / Pass 3" used for imported criterion, hujjah/accountability, and
   guidance-as-coercive-proof corrections that all serve the same imported-tribunal burden.
 - "Burden 1 / Burden 2 / Burden 3 / Burden 4" used for imported tribunal, hiddenness,
-  punishment, and TST/source-worldview without a state/noetic re-read proving that each is a
+  punishment, and named source-worldview without a state/noetic re-read proving that each is a
   new live burden rather than a subordinate submove under the same tribunal burden.
 - `Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration`.
 - silently stopping after criterion correction when another eligible live burden remains.
@@ -3512,15 +3759,13 @@ This section is canonical for source-status discipline and noetic-frame non-equi
 It governs how sources are used inside burden-cycles. It introduces no new routes, IR
 fields, or module owners; it formalizes existing requirements.
 
-**Thesis-protection rule.** The framework must not treat contradictory theological or
-noetic structures as equally acceptable operative frames. Umbrella terms such as
-`classical theology`, `classical theologies`, `classical Islamic theology`,
-`the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition` must not
-be used to flatten Ashʿarī, Māturīdī, Atharī, Taymiyyan, kalāmic, falsafah-inflected, or
-generic "classical Islamic theology" frames into one unified operative authority. This
-rule applies inter-school (across Ashʿarī / Māturīdī / Atharī / Taymiyyan / falsafah)
-and intra-school (treating a named school as internally uniform on a school-sensitive or
-disputed claim).
+**Thesis-protection rule.** The notation layer above is canonical: `N_AT` aliases the
+Atharī/Taymiyyan/Salafī/Wahhābī operative frame for repo routing, while
+`N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
+Umbrella terms such as `classical theology`, `classical theologies`, `classical Islamic
+theology`, `the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition`
+must not flatten rival frames into one operative authority. The rule applies inter-school
+and intra-school: `family label != operative N`; `shared vocabulary != shared warrant`.
 
 **Source-status taxonomy.** Every source used in a burden-cycle is marked with one of
 the following statuses; a source may appear in only one status per burden-cycle:
@@ -3547,9 +3792,10 @@ genealogy, external philosopher, theologian, framework, or contextual-source ref
 not public-render material unless the user explicitly asks for them or validated IR
 specifically requires source-comparison. Default citation allowance is restricted to Qur'an,
 Sunnah, and sound narrations from the Salaf; if any of these are used, each must be directly
-referenced through an external source. Do not use al-Ghazali, Ash'ari, Maturidi, Christian
-philosophers, external theorists, or any named scholar/school as public-render support in
-default mode.
+referenced through an external source. Do not use named scholars, named schools, external
+philosophers, external theorists, or contextual authority labels as public-render support in
+default mode. Do not use `Wahhābī` as default public terminology unless the user's input
+uses it and the label itself must be clarified.
 
 **Method-source non-branding rule.** The framework is not publicly framed as belonging to,
 deriving from, or being branded under a named scholar, named school, newly coined methodology,
@@ -3578,6 +3824,10 @@ the operative grounding differs). Verbal agreement is not operative support.
   Taymiyyan / Atharī operative conclusion (or vice versa) without source-status marking.
 - A response asserts `the classical tradition agrees` for a school-sensitive claim.
 - A response asserts agreement across frames without marking substantive vs. verbal.
+- `N_AT` aliases are counted as four independent authorities or separate warrants.
+- `N_Ashʿarī[*]` or `N_Māturīdī[*]` is used as operative support without the selected
+  live predicate/warrant/criterion/authority-order.
+- Shared vocabulary or shared conclusion is treated as shared warrant.
 - Identity-frame is treated as operative support for a content claim without
   source-status caution.
 
@@ -3606,6 +3856,8 @@ that the contrast was held to its named status.
 
 - `Source-status: operative support. The selected operative frame is X; the conclusion
   holds inside that frame.`
+- `Source-status: operative support. Selected frame: N_AT; alias labels are not counted
+  as multiple warrants.`
 - `Source-status: contrast only. This Ashʿarī formulation is named only to mark a
   differing noetic structure. It is not used as warrant for the operative conclusion.`
 - `Source-status: historical note. Some later kalāmic treatments frame the issue
@@ -3621,8 +3873,7 @@ that the contrast was held to its named status.
 
 - `Classical Islamic theologies, including Ashʿarī, Māturīdī, and Taymiyyan approaches,
   all provide acceptable ways to ground the answer.`
-- `The classical theological tradition, from al-Juwaynī and al-Ghazālī to Ibn Taymiyyah
-  and Ibn al-Qayyim, agrees that ...`
+- `The whole classical tradition agrees that ...`
 - `Ashʿarī theology teaches X` when the point is internally disputed within Ashʿarī or
   is school-sensitive across kalāmic and Atharī frames.
 - `Māturīdī theology teaches X` under the same conditions.
@@ -3631,13 +3882,14 @@ that the contrast was held to its named status.
 - A list of sources hides disagreement behind breadth.
 - `Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological
   routes here.`
+- `Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities here.`
 - A contrast-marked source is named, then immediately used as evidence for the operative
   conclusion in the next sentence under the same burden-cycle.
 - `This is the daee-epistemics method of [named scholar/school]`, `a new aqidah/noetics`,
   or any authority-by-association method branding.
-- Default output uses al-Ghazali, Ash'ari, Maturidi, Christian philosophers, external
-  theorists, genealogy, or school-label context as support without explicit user request
-  or validated source-comparison IR.
+- Default output uses named scholars, named schools, external theorists, genealogy, or
+  school-label context as support without explicit user request or validated
+  source-comparison IR.
 
 These failures are not citation-style errors. They are thesis-protection failures: the
 skill's diagnostic compiler must discriminate noetic structures, not flatten them.
@@ -3759,7 +4011,7 @@ permission; an argument dump accumulates downstream content without refreshed go
 <!-- MODULE_ID: routing-precedence -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/routing-precedence.md -->
-<!-- SOURCE_SHA256: 9352477d4e175c07e673210e5d851e70c61d3efa7f07acd0dc770e84ca34086c -->
+<!-- SOURCE_SHA256: 93f8896cc9be2719dc69d1e79bbf6f80bb10c1b21cb832139e8899c226ba6cb9 -->
 
 ---
 id: routing-precedence
@@ -3837,17 +4089,13 @@ These rules specify when one axis suppresses or delays another:
 **Rule S-8:** Upstream load-bearing nodes suppress downstream topic release. If the live node is an authority rule, epistemic criterion, validation order, semantic hinge, or category-set, downstream doctrinal, fiqh, prooftext, or metaphysical content is held until that node is addressed. Tradition labels do not override this rule.
 
 **Rule S-9 (source-status / noetic-frame non-equivalence):** Use
-`recursive-state-transitions.md` notation: `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`;
-`σ != operative warrant` for non-operative source-status. Gloss: Ashʿarī, Māturīdī,
-Atharī, Taymiyyan, kalāmic, falsafah-inflected, and generic "classical Islamic theology"
-frames are not peer-valid operative supports. A burden-cycle proceeds from one selected
-operative noetic frame; other frames may be named only as `contrast`, `opponent-position`,
-`historical note`, `genealogy`, `held material`, or `bounded comparison`. Suppress
-`classical theology`, `classical theologies`, `classical Islamic theology`, `the classical
-tradition`, `mainstream kalam`, and `Ashari/Maturidi tradition` when the claim is
-school-sensitive or disputed. A contrast-marked source becomes operative support only after
-explicit reclassification with named justification; suppress intra-school flattening when
-the named school is internally disputed.
+`recursive-state-transitions.md` notation: `N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡
+N_Wahhābī`; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative
+`N`; `σ_context != σ_warrant`. Local consequence: one selected operative noetic frame governs
+the burden-cycle; non-operative source-status (`contrast`, `opponent-position`, `historical
+note`, `genealogy`, `held material`, `bounded comparison`) cannot become warrant without
+explicit reclassification. Suppress umbrella and intra-school flattening when the claim is
+school-sensitive or disputed.
 
 ---
 
@@ -3928,6 +4176,12 @@ selection, bounded target, release permission, and no active stop/hold/gate. If 
 are absent, the route remains held or unresolved. After the TTP exits, the next TTP is selected
 only from refreshed state, not from an inherited initial route itinerary.
 
+For hard/multi-burden execution, owner-backed selection requires loadform evidence: the
+selected owner body or compiled bundle section is loaded/available before `B.s<i>` renders.
+`matched_modules` and TTP labels are routing metadata, not proof that the owner floor loaded.
+If the owner cannot be loaded or identified, return `PARTIAL / OWNER-BODY-NOT-LOADED`
+instead of compressing the burden into generic prose.
+
 **Rule P-7a (owner-specific exit before recursion):** A TTP exit is not valid until the
 owning file's minimum operation floor has been executed and its state-change condition is
 known. A named operator with generic prose, a route label, or a summary result cannot make
@@ -3942,16 +4196,11 @@ land a burden, and case-library recognition does not release an answer bank.
 multiple-sovereign, or worship-status plurality pressure is live. If independence is
 unclear, model/predication discipline runs first and V12 remains held.
 
-**Rule P-8 (operative-frame discipline):** `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`;
-`σ != operative warrant` unless explicitly reclassified. Gloss: each burden-cycle proceeds
-from one selected operative noetic frame. Sources from contradictory frames may be named only
-under non-operative source-status; a contrast-marked or opponent-position source must not
-become operative support in the same burden-cycle without explicit reclassification and named
-reason. Citing contradictory authorities (e.g., al-Juwaynī / al-Ghazālī alongside Ibn
-Taymiyyah / Ibn al-Qayyim) as one unified operative authority is invalid. Verbal-only
-agreement across frames is not operative support; if cited, mark it substantive vs. verbal.
-Authoritative wording is in `recursive-state-transitions.md §Source-Status & Noetic-Frame
-Non-Equivalence Discipline`.
+**Rule P-8 (operative-frame discipline):** `family label != operative N`;
+`shared vocabulary != shared warrant`; `verbal agreement != operative support`;
+`σ_context != σ_warrant` unless explicitly reclassified. `N_AT` aliases are one operative
+frame, not a prestige stack. Authoritative wording is in
+`recursive-state-transitions.md §Source-Status & Noetic-Frame Non-Equivalence Discipline`.
 
 ---
 
@@ -3997,7 +4246,7 @@ not use lab-report sections or downstream fields to release what routing keeps h
 <!-- MODULE_ID: kernel-thesis -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/kernel-thesis.md -->
-<!-- SOURCE_SHA256: 388944986d56e8d29d4fbd613e39019d49402a54794b7c6a8e2d67e956e7cb43 -->
+<!-- SOURCE_SHA256: 084e8e86eb7cd4cf05936e9cf3f31c311d853e207b7f97872b4fe6e172328b1c -->
 
 ---
 id: kernel-thesis
@@ -4091,7 +4340,7 @@ A response passes the workflow but violates the architecture when it satisfies t
 <!-- MODULE_ID: metaphysical-architecture -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/metaphysical-architecture.md -->
-<!-- SOURCE_SHA256: 2b452c787354b618db575b093d056db9f008398f68e5af9ac1faee8d9a971710 -->
+<!-- SOURCE_SHA256: 03929e5a3cc78aff2cdcb7a6b1a2fb9dd8c5b58fabe0380d4194b19deeca6bc4 -->
 
 ---
 id: metaphysical-architecture
@@ -4220,7 +4469,7 @@ A restoration target stated only as "correct the argument" or "demonstrate X" is
 <!-- MODULE_ID: P7-restoration-stops -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: atomics/skill/references/procedures/P7-restoration-stops.md -->
-<!-- SOURCE_SHA256: ff9cb9296e92622b79ca78dc4faeb3c19e2b46edf79c1f58169c1489d0819fca -->
+<!-- SOURCE_SHA256: d3db256f3913466459a3806090577a5b3a08080c3eee54456f55bbd4d5bb3af8 -->
 
 ---
 id: P7-restoration-stops
@@ -4319,6 +4568,11 @@ See `references/techniques/heuristics.md` for the standing background principles
 **Correct output looks like:** Stopping after the landed move. Asking one bounded question or none. Allowing silence. Not previewing the next chain. Marking what remains live without converting it into current-pass release.
 
 **Premature pressing looks like:** After a sign has activated recognition, continuing with "and furthermore, consider that..." Adding more content the moment the previous content appears to have had effect. Converting recognition into debate victory.
+
+**Argument-absorbent case:** If the interlocutor consumes every answer as new objection
+material, novelty, or identity performance, Stop 2 may fire even without positive recognition:
+the current pass has landed enough to show that more content will feed absorption rather than
+clarity. Leave one bounded question or hold further proof until a stable differentiator appears.
 
 **Exit criteria:** The stop is satisfied when the practitioner has ended the current pass at the landed move, left at most one bounded question alive, and not advertised further same-pass chaining.
 

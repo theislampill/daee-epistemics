@@ -51,6 +51,8 @@ catalogue_registered: true
 | philosophical hiddenness (search genuinely live) | DO-1; P4 maieutic after search-history confirmed |
 | grief/protest on evil | M4-grief-register.md, P7-restoration-stops.md; DO-2 content held |
 | evidential/probabilistic evil argument | M2; DO-2 after register confirmed as truth-seeking |
+| logical problem of evil | FPD hidden-premise exposure, M1 or M8; possibility-defeats-logical-necessity before theodicy |
+| moral evil as objection from naturalism | M3 or M8 moral-standard reversal before full DO-2 |
 | self-refutation / evolutionary debunking | M1 first; V9 if necessary-knowledge attack; causal-series-taxonomy.md if secondary-cause self-sufficiency live |
 | diversity as evidence or exit | V10 if authority/text transmission live; criterion-import form routes through V2/FPD if criterion governs |
 | divine predication / loaded terms in attribute objection | M9-predication-mode.md before V8; definition-discipline.md if technical capture live |
@@ -151,22 +153,39 @@ Evidential problem of evil — suffering/evil as evidence against an omnipotent,
 - Grief-primary evil: loss, lament, pastoral wound → M4/P7 before DO-2; avoid theodicy into grief
 - Protest orientation: not argument but moral accusation → register holds DO-2 content
 - Thin basis: one sentence expressing pain is not a live evidential argument
+- Logical contradiction form: "God and any evil cannot both exist" -> expose hidden premises
+  and necessity status before evidential DO-2 or theodicy content
+- Moral-standard reversal form: if a naturalist uses evil as an objective objection, route M3
+  or M8 before assuming the moral standard is grounded
 
 #### Mandatory family-local load floor
-M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs), M2 (when evidential/probabilistic pressure is actually live).
+M4-grief-register.md (discriminator), P7-restoration-stops.md (hold if grief governs), M2
+(when evidential/probabilistic pressure is actually live), FPD/M1/M8 when a logical
+contradiction claim requires hidden-premise exposure.
 
 #### Ordered TTP route
 1. V1 → confirm evidential vs. grief/protest register
 2. M4 discriminator before any theodicy content
-3. M2 when evidential pressure confirmed
-4. DO-2 substantive after register and pressure type confirmed
-5. P7 stop check
+3. If logical contradiction is claimed, expose hidden premises and ask whether they are
+   necessarily true; a possible morally sufficient reason defeats strict logical necessity
+4. If objective moral protest is used from naturalism, run moral-standard reversal or
+   good-as-origin before DO-2 content
+5. M2 when evidential pressure confirmed
+6. DO-2 substantive after register and pressure type confirmed
+7. P7 stop check
 
 #### Semantic/register blockers
 Grief, protest, or pastoral register blocks DO-2 content. "Why does God allow suffering?" in grief register ≠ evidential argument.
 
 #### Allowed Layer B move
 Acknowledge the weight of the question; distinguish registers; if philosophical, name that the Islamic account does not require good-outcomes-only and that the framing imports specific assumptions about divine obligations.
+
+Logical form allowed move: "The contradiction claim needs hidden premises that are not merely
+true-looking but necessarily true. If a possible morally sufficient reason remains coherent,
+the strict logical contradiction has not been shown."
+
+Naturalist moral form allowed move: "The objection treats evil as objectively wrong; that
+standard itself needs grounding before it can be used to disprove the ground of moral reality."
 
 #### Held downstream material
 Full evidential rebuttal; soul-making theodicy; greater-good defenses — all held until evidential register is confirmed.

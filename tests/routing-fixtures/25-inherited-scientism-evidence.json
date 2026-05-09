@@ -1,0 +1,61 @@
+{
+  "id": "inherited-scientism-evidence",
+  "prompt": "I need evidence, and by evidence I mean only what natural science can measure; anything else is not rational.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "reason-disambiguation",
+      "M5-deformation-triage",
+      "V2-reconstituting-reason",
+      "foreign-premise-detection"
+    ],
+    "optional_modules": [
+      "P1-fitrah-restoration",
+      "V5-directing-attention-signs"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "Shubhah/Shahwah Two-Axis Floor",
+      "repeated standard-shifting",
+      "standard named as contestable",
+      "V2 first"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "techniques",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "evidence-v0320",
+    "minimal_pair_shared_surface_tokens": [
+      "evidence"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "inherited scientism filter",
+      "do_orient": "truth-seek with criterion import",
+      "restoration_target": "loosen evidence criterion before content",
+      "routing_gate": "V2/FPD before proof release"
+    }
+  }
+}

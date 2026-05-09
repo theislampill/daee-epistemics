@@ -107,6 +107,13 @@ release a TTP unless the operation satisfies the owner-specific operation floor 
 owning file. The result must change burden-state; it cannot merely restate that the TTP
 was applied.
 
+Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
+owner body or compiled bundle section to be loaded/read before the submove renders, unless
+that exact section is already present in active context. Package availability, map presence,
+or bundle co-location is not access. If the owner cannot be loaded or identified, do not
+release a generic substitute; mark `PARTIAL / OWNER-BODY-NOT-LOADED` and name the
+missing owner/path. This marker is permitted in default/hard output.
+
 Family floor parity: `Family Execution Floor`, `Family Release Floor`, and
 `Diagnostic Execution Floor` are release gates, not catalogue notes. If an individual
 owner lacks a bespoke floor, the relevant family index supplies the fallback floor. A
@@ -204,6 +211,10 @@ Before releasing any source-backed claim, confirm:
 
 ```text
 - one operative noetic frame is selected for this burden-cycle
+- N_AT aliases count once; they are not multiple warrants
+- N_Ashʿarī[*] and N_Māturīdī[*] are family labels, not automatic operative N
+- family label != operative N
+- shared vocabulary != shared warrant
 - contradictory schools are not stacked as one operative authority
 - contrast / opponent-position / historical-note / genealogy / held / bounded-comparison
   sources are not used as operative warrant in the same burden-cycle without explicit
@@ -285,7 +296,7 @@ Core Formulation identifies how sound/innate reason was deformed/concealed/devia
 released burden is burden-complete: materially necessary sub-burdens receive matched TTP/operator treatment before R
 no headline-only answer, skipped internal sub-burdens, generic prose substitute, or broad-conclusion jump
 Land(B) is supported by owner-specific operation and cumulative-state delta
-Restorative Response appears once after state/noetic re-read and releases no held downstream burden
+Restorative Response appears once after the final state/noetic re-read and releases no held downstream burden
 Restorative Response identifies restored order, restored criterion/source/warrant placement, relieved deformation/concealment, and what remains held
 Closing Formulation appears once at the end after Restorative Response
 Closing Formulation does not substitute for state/noetic re-read or self-close each burden
@@ -304,6 +315,15 @@ Bounded does not mean tiny; clean prose does not mean shallow; no ledger does no
 Do not optimize for shortness by skipping an eligible same-input burden. Default output
 may be longer in complex cases when the refreshed gate requires multiple bounded passes, but it
 must remain pass-by-pass and may not become a comprehensive essay dump.
+Do not close with Restorative Response or Closing Formulation while `R(H,Delta)` names a
+remaining input-anchored burden that is now eligible. Continue with the next bounded pass,
+or mark PARTIAL with the next live burden when response/tool/interaction limits block it.
+For release purposes, supporting premises and contrast rules named in the user's input count
+as input-anchored material once the blocker that held them clears; do not treat them as new
+future questions solely because they were not phrased as separate requests.
+If the state re-read lists remaining input-anchored burdens, "only if requested" is not a
+release decision unless a named hold gate blocks release. "Requires its own bounded pass"
+is a continuation or PARTIAL reason, not a closure reason.
 The release target is governed recursive sufficiency: complete-enough restoration of the live
 same-input noetic structure under the DSL/IR gates, not shortness, length, or topic coverage for
 its own sake.
@@ -345,10 +365,11 @@ Default final-output failure tokens include:
   "the live hinge can be tested", "case-state after this pressure", or "the move
   forces the inference to carry its own burden". These are proof-of-execution phrases,
   not user-facing default answer language.
-- Cross-fixture or copied-example contamination. Default output must not import TST,
-  Richard-Lael Lillard, "simple fact of non-belief", accountability/punishment/hell,
-  source-biography, moral-protest, or hiddenness language from another example unless
-  the current input and validated IR release that burden-family.
+- Cross-fixture or copied-example contamination. Default output must not import a
+  named source-worldview hard-smoke frame, quoted hard-smoke phrases,
+  accountability/punishment/hell, source-biography, moral-protest, or hiddenness
+  language from another example unless the current input and validated IR release
+  that burden-family.
 - Strong interior-classification verdict dumps such as `Concealment: irad primary`,
   `Deformation: hawa primary`, or `NS-4/NS-5 compound` unless the user invoked `:dsl`
   or the task is internal/development audit. The compact lowercase Layer A fields are

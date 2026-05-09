@@ -34,11 +34,9 @@ Historical release docs and older rc archives are not current smoke inputs unles
 explicitly marked as historical regression evidence.
 
 `package.ps1` emits a local `.skill.zip` archive, for example
-`build/daee-epistemics-v0.3.1.0.skill.zip`. The public GitHub Release asset is the same checked
-payload renamed to `build/daee-epistemics-v0.3.1.0.skill`; publish/upload `.skill`, not both
-`.skill.zip` and `.skill`. The internal RC evidence package
-`build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built from this source
-state. The archive already is the skill payload:
+`build/daee-epistemics-v0.3.2.0.skill.zip` for the next v0.3.2.0 release candidate. The public
+GitHub Release asset is the same checked payload renamed to `.skill`; publish/upload `.skill`, not
+both `.skill.zip` and `.skill`. The archive already is the skill payload:
 its root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
 Do not zip the repository root or the top-level `skill/` directory.
 Current local release-artifact evidence is recorded in `docs/release-artifacts.md`; the binary
@@ -99,6 +97,33 @@ timestamp, and live-run versus handcrafted-regression classification.
 `docs/release-artifacts.md` by default. A mismatch is allowed only when the fixture explicitly marks
 itself as historical regression evidence.
 
+New or regenerated current-release and post-expansion smoke suites must also declare a smoke
+provenance mode:
+
+```text
+smoke provenance mode: live-run
+smoke provenance mode: live-run/hermes-local
+smoke provenance mode: handcrafted-regression
+smoke provenance mode: pending-live-output
+smoke provenance mode: synthetic-output-prohibited
+```
+
+`live-run` and `live-run/hermes-local` mean `output.md` is direct-copied output from the invoked
+model/skill. The Hermes-local variant is for local Hermes/OAuth agent-harness captures. Its trace
+must identify model/host/invocation, include `output.md relation: direct-copied model/skill output`,
+and record any formatting-safe normalization; rewriting the answer after the run is not allowed.
+`handcrafted-regression` means the artifact is a case-specific regression exemplar, not a live model
+claim. Its `verdict.md` must say `handcrafted-regression`, it may not claim live-run provenance, and
+it may not say `SKILL.md loaded: yes` unless that load actually occurred. `synthetic-output-prohibited`
+is a rejection sentinel, not PASS/PARTIAL evidence. `pending-live-output` reserves the fixture path
+for a future pasted or captured run; it may not be marked PASS or PARTIAL and it does not satisfy a
+hard-depth smoke gate.
+
+Forbidden smoke output patterns include Codex-generated smoke-shaped filler, `Licensed traversal
+detail`, `apply the owner floor`, `selected operator is not decorative`, repeated stock burden
+paragraphs, compact artifact prose, and byte-padding. A smoke passes because the burden is actually
+executed, not because it has the expected headings.
+
 ## Current Release Artifact Binding
 
 - Current-release smoke evidence must match the package filename and SHA256 in
@@ -122,9 +147,12 @@ itself as historical regression evidence.
   RC package.
 - `runtime-grounding-v6` or later is the preferred place for regenerated current-package smoke
   evidence; `runtime-grounding-v6`, if added, is reserved for current-release evidence.
-- Current v0.3.1.0 source state: current-release smoke suite is absent, so
-  `python tools/check_smoke_artifacts.py --require-current-release-smokes` is expected to fail until
-  package-bound current-release smoke artifacts are truthfully regenerated.
+- Current source state after the v0.3.2.0 candidate work: current-release smoke suite is
+  absent, so `python tools/check_smoke_artifacts.py --require-current-release-smokes` is
+  expected to fail until package-bound current-release smoke artifacts are truthfully regenerated.
+- `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe folders are development /
+  post-expansion regression evidence unless explicitly regenerated against a release package and
+  re-marked with current-release package provenance.
 - Current-release smoke evidence requires package filename/SHA match against
   `docs/release-artifacts.md`.
 - Current-release smoke evidence requires both markers:
@@ -147,8 +175,10 @@ current-release evidence: yes
 
 ## How to Promote Historical Smokes to Current-Package Evidence
 
-1. Build RC00005 with `package.ps1` and create/copy the public asset
-   `build/daee-epistemics-v0.3.1.0.skill`.
+1. Build the target release package with `package.ps1` and create/copy the public `.skill`
+   asset. For the currently documented v0.3.1.0 asset this is
+   `build/daee-epistemics-v0.3.1.0.skill`; for a future v0.3.2.0 release, use the new
+   package filename and hash recorded in `docs/release-artifacts.md`.
 2. Run the smoke prompts against that package.
 3. Replace trace/verdict provenance with the public release asset filename and SHA.
 4. Set `release-artifact relation: current-release`.

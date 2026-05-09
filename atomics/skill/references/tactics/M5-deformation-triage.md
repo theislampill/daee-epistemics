@@ -108,6 +108,20 @@ new material for resistance or stimulation to organize around and actively harde
 barrier. The most common failure mode in sustained epistemological engagement is
 failing to triage.
 
+## Shubhah/Shahwah Two-Axis Floor
+
+Before treating a doubt as intellectual, distinguish:
+
+| Axis | Corruption mode | First move | Hold |
+|---|---|---|---|
+| shubhah | knowledge/belief confused by an unresolved objection | clarification, proof-status, M9/V9/M1/M8 as matched | proof-stacking beyond the live objection |
+| shahwah / hawa / gharad | will/aim/cost governs inquiry | F2, P1, P7, relational repair | intellectual content until the will/aim barrier is acknowledged |
+| compound | both are live | outside-in sequencing; will/aim or inherited filter before shubhah | shubhah engagement until upstream layer clears |
+
+Fitnah absorption test: if an answer is not rejected after consideration but absorbed as new
+material for objection-generation, stimulation, or identity-performance, mark the case
+argument-absorbent. Do not feed it with more intellectual content.
+
 ## Router Guardrails
 
 M5 sorts deformation; it does not overrule family routing once the live case-type is

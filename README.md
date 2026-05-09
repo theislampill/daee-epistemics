@@ -10,6 +10,56 @@ Its governing aim is not to manufacture novelty or simply accumulate clever refu
 
 Runtime coverage and scope in the packaged skill are represented by generated `skill/SKILL.md`, module front matter preserved from source, `compiled-module-map.json`, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
 
+## Level 3 Executable Routing
+
+For Codex runtimes that can execute bundled skill scripts, `/daee-epistemics [input]`
+should use the packaged Level 3 wrapper by default for every case. Light cases
+spend a few extra seconds in the wrapper; hard cases get the same binding route
+discipline. The wrapper makes routing executable rather than merely interpretive:
+
+```text
+python scripts/daee_level3.py --input <input.md> --out <run-dir>
+```
+
+It produces `features.json`, `route_plan.json`, reconstruction/validation
+verdicts, and, when the route is valid, `execution_prompt.md`. If route
+generation writes `execution_blocked.md`, return that visible PARTIAL/block
+note and do not execute an ordinary answer. After the model answers from a
+valid execution prompt, validate the answer against the route plan:
+
+```text
+python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md
+```
+
+If execution validation returns `partial` or `fail`, the user-facing response
+should include:
+
+```text
+PARTIAL - Level 3 execution check: <specific defect>
+```
+
+If a runtime cannot execute bundled scripts, it must visibly label fallback:
+
+```text
+Level 1/2 invocation - Level 3 wrapper unavailable in this runtime
+```
+
+Maintainers can run the required contrast/stability fixtures plus the hard
+regression fixture locally with:
+
+```text
+python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
+```
+
+Honest release claim: daee-epistemics ships with deterministic routing
+(`route.py`) over span-backed feature extraction (`diagnose.py`), with route
+plans validated by reconstruction (`reconstruct.py`) and post-output execution
+checked (`check_execution.py`). Routing is deterministic given features. Feature
+extraction has interpretive components with input-span validation. The full
+Level 3 pipeline is invoked via `scripts/daee_level3.py`; users invoking the
+skill without the wrapper get visibly labeled Level 1/2 behavior. Highest-complexity burdens
+remain bounded by transformer execution capability even under Level 3 routing.
+
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
 - [Terminology Note](#terminology-note)
@@ -494,10 +544,10 @@ class CASEOUT,LAYERS,REST,CATALOGUE,FRONTMATTER,PFAUDIT slate;
 
 ## Install / Package (Claude-First)
 
-The canonical user-facing upload name is `daee-epistemics.skill`. The public GitHub Release asset
-filename is `daee-epistemics-v0.3.1.0.skill`, verified on the `v0.3.1.0` release. The internal
-RC evidence package `build/daee-epistemics-RC00005-v0.3.1.0.skill.zip` is byte-identical when built
-from this source state.
+The canonical user-facing upload name is `daee-epistemics.skill`. The current public GitHub Release
+asset filename is `daee-epistemics-v0.3.1.0.skill`, verified on the historical `v0.3.1.0` release.
+The v0.3.2.0 source candidate is not a package-bound release asset until an explicit packaging pass
+builds and records a new package hash.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
@@ -510,11 +560,11 @@ The archive root must contain `SKILL.md`, `references/`, `compiled-module-map.js
 top level is `skill/`. Package the contents of the generated `skill/` directory, not the directory
 itself.
 
-Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). The checked local packaging command is:
+Before release, regenerate and verify the runtime with the command set in [Source / Runtime Layout](#source--runtime-layout). For a v0.3.2.0 release candidate, the local packaging command should be:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.1.0.skill.zip
-Copy-Item build\daee-epistemics-v0.3.1.0.skill.zip build\daee-epistemics-v0.3.1.0.skill
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
+Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.0.skill
 ```
 
 Smoke tests should use the latest explicitly named rc package and hash from the current run.
@@ -529,7 +579,7 @@ check. In this source state, the committed `runtime-grounding-v5` suite is histo
 evidence, so the strict flag is expected to fail until current-release smokes exist.
 Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).
 
-For path fidelity, build the archive from Bash / WSL / Linux rather than Windows zip tooling. This keeps archive entry names slash-safe for skill hosts that inspect the bundle structure directly.
+For path fidelity, build the archive from a POSIX-style shell or other tooling that preserves slash-safe archive entry names for skill hosts that inspect the bundle structure directly.
 
 From any folder, open a Bash-compatible terminal and paste the following if you want a clone-and-package flow. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the generated `skill/` contents, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.
 

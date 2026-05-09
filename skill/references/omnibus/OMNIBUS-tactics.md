@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: tactics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/INDEX.md -->
-<!-- SOURCE_SHA256: 97e5cea5c48f48a01e8249fb4a9b1157896652520031f096d99eb649c74bfa18 -->
+<!-- SOURCE_SHA256: 2f1d82b09cf53b98bfda4235c5e71ae8d3cfae5ba555da9ea31c8f7c5ee31081 -->
 
 ---
 id: tactics-index
@@ -94,7 +94,7 @@ Tactics do not authorize argument banks, source/context prestige, or extra burde
 <!-- MODULE_ID: E1-broadening-evidence -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/E1-broadening-evidence.md -->
-<!-- SOURCE_SHA256: 8e41b56a946ed50b6d577567e701faf53dd16e03565337c9c9ad1b76f3500c01 -->
+<!-- SOURCE_SHA256: 968c34b213003e7488a203694420f828222b42c9c4d087d55ca13a0f7ad03d92 -->
 
 ---
 id: E1-broadening-evidence
@@ -177,7 +177,7 @@ accepts theism; V9 (necessary-knowledge priority) is what relocates warrant.
 <!-- MODULE_ID: E2-inferential-criterion -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/E2-inferential-criterion.md -->
-<!-- SOURCE_SHA256: 9738d713239165929ba52d28d2f29770e1bb015055690aa0754ebeb2902cf546 -->
+<!-- SOURCE_SHA256: b32c1ae1b1927bebca368778aacd6fb778a256273b77494347da93579841cc42 -->
 
 ---
 id: E2-inferential-criterion
@@ -284,7 +284,7 @@ E2 does not hold downstream content. It clears a single upstream barrier — the
 <!-- MODULE_ID: E3-cumulative-case -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/E3-cumulative-case.md -->
-<!-- SOURCE_SHA256: f656d55944b4b7d0b828200c7db6dff1c8bc32bfb048a66662a90fadc28aba62 -->
+<!-- SOURCE_SHA256: 43cad071fe8cc8ad10fd3fb4bafc2adeca4b58d026ba8cdfc46d9831d5305b0e -->
 
 ---
 id: E3-cumulative-case
@@ -351,7 +351,7 @@ content.
 <!-- MODULE_ID: E4-cross-cultural-check -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/E4-cross-cultural-check.md -->
-<!-- SOURCE_SHA256: b4cd63d5b5cca4c96d63d70382e0b4d8ac69adff6ea574524dc709f552301e7a -->
+<!-- SOURCE_SHA256: 82f1ab8526534a139eee510f1a1fdc4572c6f720a8a470baed49a0619eeea79d -->
 
 ---
 id: E4-cross-cultural-check
@@ -405,7 +405,7 @@ The interlocutor who conflates diversity of superstructure with diversity of fou
 <!-- MODULE_ID: F1-supra-vs-antirational -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/F1-supra-vs-antirational.md -->
-<!-- SOURCE_SHA256: 3b016d556a652a80badb1e8e9e9905ab7ba7473bb58ddc7e0ddc8d74cec50727 -->
+<!-- SOURCE_SHA256: 81a7eaf6e91c9b42ea67818e9e42052e7a07063de2df5d505adb65a1ad2d94a3 -->
 
 ---
 id: F1-supra-vs-antirational
@@ -505,7 +505,7 @@ F1 holds all positive-case content (R1, E3, V5) pending the characterization cor
 <!-- MODULE_ID: F2-volitional-dimensions -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/F2-volitional-dimensions.md -->
-<!-- SOURCE_SHA256: 08427f9cf329b029ea5ae55e09b8a616d59d6204bb7a30471e1cd7c8033d9a42 -->
+<!-- SOURCE_SHA256: d817029f2c54051fdeb32ccc495bea7f924939f1c8ea53fe16b8d5cf0da93d35 -->
 
 ---
 id: F2-volitional-dimensions
@@ -557,7 +557,7 @@ When an interlocutor appears intellectually moved but remains volitionally resis
 <!-- MODULE_ID: F3-practice-epistemic-access -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/F3-practice-epistemic-access.md -->
-<!-- SOURCE_SHA256: 32abee9e14106b8facc5fbcab6bb2dbdb52e2c934440a690f7e5ad83f90d6b95 -->
+<!-- SOURCE_SHA256: 9d4a8552b73b5f1b4eed27f3db5f30f3813fafdbb3faf2d2884386f286cd827b -->
 
 ---
 id: F3-practice-epistemic-access
@@ -587,7 +587,7 @@ operator_pack_eligible: true
 # F3 — Practice as Epistemic Access
 
 **Source-status note:** Named authors or inherited formulations in this file are internal
-orientation only. In default output, do not cite al-Ghazali or any named scholar as public
+orientation only. In default output, do not cite any named scholar as public
 support unless the user explicitly asks or validated IR requires source-comparison. The
 released operation is practice-as-access: target, operation, result, and state-change.
 
@@ -695,7 +695,7 @@ engagement — it is what makes intellectual engagement able to go deeper.
 <!-- MODULE_ID: R1-internalist-criterion -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/R1-internalist-criterion.md -->
-<!-- SOURCE_SHA256: ad9dbc7512b568380aa9b8a474dc34bd079c1ecc0628c1098dadbc0d78da41c3 -->
+<!-- SOURCE_SHA256: 8422d5243bcdc8c6941508527d5fbcf2646c983b2323c3b32c6653cb9a8f686c -->
 
 ---
 id: R1-internalist-criterion
@@ -793,7 +793,7 @@ R2 and R3 are held pending R1. R2 (the reminder — eliciting basic theistic bel
 <!-- MODULE_ID: R2-the-reminder -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/R2-the-reminder.md -->
-<!-- SOURCE_SHA256: 2c2d3710d22a0da67df6f30a98ea73f351eb565581aba7e3c8b6d6d82e25840b -->
+<!-- SOURCE_SHA256: 9f4a60f20223428cd207600821ff8e69a7a96be26424a586d3631131fbc83fac -->
 
 ---
 id: R2-the-reminder
@@ -903,7 +903,7 @@ The hold is released by the interlocutor, not by the dāʿī. The interlocutor's
 <!-- MODULE_ID: R3-warranted-basic-belief -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/R3-warranted-basic-belief.md -->
-<!-- SOURCE_SHA256: b1b9600c6ca700b04e464349dc550580bc9f5e3dd146bfc60bf46b2e939c7187 -->
+<!-- SOURCE_SHA256: 5e63cf6edb53f985f567ecd1c49d0dbcdc0c52a893a5c738818f7b184a4b7117 -->
 
 ---
 id: R3-warranted-basic-belief
@@ -1004,7 +1004,7 @@ P7 Stop-2 governs R3. R3 makes one analytical move — asks what produced the in
 <!-- MODULE_ID: M1-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M1-self-refutation.md -->
-<!-- SOURCE_SHA256: 0708cd9c9cfc48809eee853c42d600215d7d78230977a82f74f07d9ec1f03764 -->
+<!-- SOURCE_SHA256: a3935edfb869c492fd671102b92651ebf229929034dac34016f6284ca4f723aa -->
 
 ---
 id: M1-self-refutation
@@ -1130,7 +1130,7 @@ especially useful: the opponent's own authorities acknowledge the datum.
 <!-- MODULE_ID: M1P-performative-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M1P-performative-self-refutation.md -->
-<!-- SOURCE_SHA256: 7c23ff1e6f7aacef676ed269b8af701aa593267d956d75db47fb7c7e4ce5c0eb -->
+<!-- SOURCE_SHA256: 6db6075c4ed900fd0093fd9ead3208e5df8546fc15c2ae4e94b8e6a6eaaa24d8 -->
 
 ---
 id: M1P-performative-self-refutation
@@ -1212,7 +1212,7 @@ into a named barrier and hardens it.
 <!-- MODULE_ID: M2-prior-probability -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M2-prior-probability.md -->
-<!-- SOURCE_SHA256: 358adb481ceadd0f1048cff4e46bbcecdbd9e2c996aee2eb4e35a7040edecff5 -->
+<!-- SOURCE_SHA256: f4b5a9e49e03189def2a09dcf4197b5fa275c600af83e569e6ddd8b60c3b904a -->
 
 ---
 id: M2-prior-probability
@@ -1313,7 +1313,7 @@ M2 holds DO-1, DO-2, and DO-4 substantive response content. These arguments pres
 <!-- MODULE_ID: M3-orphaned-intuition -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M3-orphaned-intuition.md -->
-<!-- SOURCE_SHA256: d7ad655cda0886a9cfb87664d22a8f2b0c9679f2149244be31407b81ba2136bd -->
+<!-- SOURCE_SHA256: 4be9af420b81e5277daa9905e3cfcb84491f6e7653409c5b3bbec765cef5c272 -->
 
 ---
 id: M3-orphaned-intuition
@@ -1350,6 +1350,12 @@ Identify the commitments they retain from a framework they have abandoned or nev
 **The move:** Affirm the commitment without qualification — it is genuine and correct. Then ask: "What kind of universe makes this explicable? Your framework is committed to moral realism — but what grounds it?" This is not an attack on their moral commitments. It is an invitation to follow those commitments to their proper grounding.
 
 **The orphaned intuitions as fiṭrah deliverances:** These commitments are not residue or coincidence — they are the fiṭrah operating in the domain of moral knowledge, producing recognition that has outlasted the explicit religious framework the interlocutor has abandoned. They are signs (āyāt al-anfus — signs within the soul).
+
+**Moral-standard reversal:** When evil is used as an objective objection from within a
+naturalist or materialist frame, do not treat the moral standard as free equipment. First ask
+what grounds the obligation that evil really should not be. If the standard is objective, M3
+asks what kind of world makes that objectivity intelligible; if the standard is denied, the
+objection loses its force and M8 may govern instead.
 
 **Connection:** M3 is the entry point for NS-4 (secular moral realist); see `references/case-library/profiles/ns-4-secular-moral-realist.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).
 
@@ -1414,7 +1420,7 @@ M3 issues a single bounded probe — affirm the commitment, ask the grounding qu
 <!-- MODULE_ID: M4-grief-register -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M4-grief-register.md -->
-<!-- SOURCE_SHA256: 680e552e99936c552e14a116447fc2ab5baaf0063e44b181179b7eb69c87350f -->
+<!-- SOURCE_SHA256: 0749705fc4aa93f37010b601ed4ed10fef3a62e8ccb9b38d6ce774740783765c -->
 
 ---
 id: M4-grief-register
@@ -1472,7 +1478,7 @@ When this is operative, the argumentative register must be entirely suspended. E
 <!-- MODULE_ID: M6-excluded-middle -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M6-excluded-middle.md -->
-<!-- SOURCE_SHA256: 55c159c5d59758a9b6d17fdefbdf5ca9c438b2ac38e6f375e0eaeff2f755dd86 -->
+<!-- SOURCE_SHA256: 83091b527ed10b4366a8fb23be5279b4e9fa741351a8787312449c71bd3cfb7b -->
 
 ---
 id: M6-excluded-middle
@@ -1577,7 +1583,7 @@ M6 holds no downstream content. It clears an evasion that was blocking the quest
 <!-- MODULE_ID: M7-definition-anchor -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M7-definition-anchor.md -->
-<!-- SOURCE_SHA256: 8fb15d53ee6c3d78ead741fbb8ad441ad98c2fece769fe3b3c896fe9df4d377e -->
+<!-- SOURCE_SHA256: cf0c7a83ac0381dcc0c5572d2ccd01b2c858514c5c9d5eb5e0b99c1e3e1109f6 -->
 
 ---
 id: M7-definition-anchor
@@ -1637,7 +1643,7 @@ M7 is not the owner of broader conception-capture problems. When contradiction p
 <!-- MODULE_ID: M8-reductio -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M8-reductio.md -->
-<!-- SOURCE_SHA256: f72a9f86f247857ed2805197f2d9b28ea150379f5f09a39845ad9f2571c35813 -->
+<!-- SOURCE_SHA256: 25f511c7dbc6a9f2b83e2742002bd3e94ed6acfd07f8cebf45826208a929042d -->
 
 ---
 id: M8-reductio
@@ -1706,7 +1712,7 @@ M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. 
 <!-- MODULE_ID: M9-predication-mode -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M9-predication-mode.md -->
-<!-- SOURCE_SHA256: f13af9dd57f5e8ceb8d6b3937de1835500b5c8461be07c61438242a0b36fa6bc -->
+<!-- SOURCE_SHA256: 5ffedb66710da7a55c8ee21daa9444cef1704a4713bbd82e92bf7c60e2c52cee -->
 
 ---
 id: M9-predication-mode
@@ -1784,6 +1790,52 @@ listing possible meanings is not enough.
 **Failure condition:** using "M9", "predication repair", "person/nature distinction", or
 "one/three language" as a decorative trace without the sense split and inference test is
 TTP label cosplay.
+
+---
+
+## v0.3.2.0 Attribute-Predication Matrix
+
+This matrix is an operator map, not an attribute catalogue. Use it to decide what must be
+split before V8 or doctrinal content can be released.
+
+| Term / pressure | Required split | First owner | Held route |
+|---|---|---|---|
+| `ta'wil` | tafsir/bayan vs semantic override by external criterion | M9 | V8/do-attribute after split |
+| `zahir` | apparent meaning fitting Allah vs creaturely mode | M9/V8 | doctrinal defense held |
+| `jism/body` | false creaturely body vs smuggled technical negation | M9 | V8/do-attribute |
+| `jihah/direction` | created spatial containment vs uluww/exaltedness | M9 | V8 |
+| `tarkib/composition` | separable parts/dependence vs multiplicity of attributes | M9/do-attribute | sound-reason section 6.3 |
+| `hadd/limit` | created boundary vs undefined technical negation | M9 | V8 |
+| `person/nature/is God` | identity, nature predicate, count noun, title of worship/lordship | M9 | DO-Christian/V12 |
+| `perfection` | revealed perfection vs imported philosophical condition | perfection-criterion | V8/do-attribute after tribunal test |
+| `immutability/eventfulness` | imperfection-change vs free divine action | perfection-criterion/V8 | P3 if tribunal over revelation |
+
+### Ta'wil-sense split
+
+Before answering "do you accept ta'wil?", split tafsir/bayan, which explains meaning, from
+semantic override, which diverts wording from its apparent sense because an external criterion
+has forbidden it. The first does not license the second. A yes/no answer before this split
+concedes an equivocation.
+
+### Communication-trust test
+
+When the proposed rule says core revealed descriptions systematically intend the opposite or
+non-apparent sense, test the cost to guidance, clarity, pedagogy, and public address. Broad
+semantic override remains held unless it can explain why core guidance would be delivered
+through systematically misleading surfaces.
+
+### Dalalah triad
+
+For names, attributes, and predicates, distinguish `mutabaqah` (full meaning), `tadammun`
+(included part), and `iltizam` (necessary implication). Valid implications may be retained,
+but the inference must name which dalalah type is doing the work.
+
+### Entailment attribution caution
+
+When the move is "your view entails X," do not publicly assign X to the human interlocutor
+until the entailment is presented and the speaker accepts it, denies the relation, or remains
+silent. The entailment may remain a critique of the position; it is not automatically an
+attribution to the person.
 
 ---
 
@@ -1885,6 +1937,10 @@ Until that split is made, the yes/no answer you want has not been earned.
 - If the response answers "God is not a body" or "God is not in a direction" without first clarifying what the speaker means, M9 did not govern.
 - If the response accepts "composite" or "dependent" as a settled category before distinguishing kinds of composition and dependence, M9 did not govern.
 - If the reply reaches V8, `do-attribute-precision.md`, or kalamic school-routing without first splitting the loaded term, the semantic gate was bypassed.
+- If the reply answers broad ta'wil claims without splitting tafsir/bayan from tribunal-driven
+  semantic override, M9 did not govern.
+- If the reply attributes an unaccepted entailment to a person rather than the position, M9 did
+  not govern.
 
 ---
 
@@ -1907,7 +1963,7 @@ Until that split is made, the yes/no answer you want has not been earned.
 <!-- MODULE_ID: doubt-vs-skepticism -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/doubt-vs-skepticism.md -->
-<!-- SOURCE_SHA256: a7339d6aad204f947d7bd006344e213260e8050a011d2daf0bd7d0d60b859b91 -->
+<!-- SOURCE_SHA256: 258a8df2187e0f5c4d2d467ec91789deecb9d76f94a429701142abd6a43f9777 -->
 
 ---
 id: doubt-vs-skepticism
@@ -2091,7 +2147,7 @@ the unexamined evidential criterion and will fail to land.
 <!-- MODULE_ID: husn-al-nazar-arguments -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/husn-al-nazar-arguments.md -->
-<!-- SOURCE_SHA256: e6f9f873086b9e0af24635f747a438817b2dbbd4b62383478807e263c51bca22 -->
+<!-- SOURCE_SHA256: e1825c84447c1c57c1d3f2155653b6365c0695e4efaea9617e9d16ba973e5ec9 -->
 
 ---
 id: husn-al-nazar-arguments
@@ -2203,7 +2259,7 @@ Return immediately to fiṭrah-activation mode. The argument cleared a path; it 
 <!-- MODULE_ID: inductive-fitri-method -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/inductive-fitri-method.md -->
-<!-- SOURCE_SHA256: 061510a751a92e3b7cbac78f50933ad38e964cb395c74456e206afa0cbea1f52 -->
+<!-- SOURCE_SHA256: 52d226067a7e4cabfc099c19bdf68304639eeee86af71e29c391ae547a6b6020 -->
 
 ---
 id: inductive-fitri-method
@@ -2317,7 +2373,7 @@ cognitive science's reach — the specification is prior, not reactive.
 <!-- MODULE_ID: symmetric-taqlid-check -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/symmetric-taqlid-check.md -->
-<!-- SOURCE_SHA256: e50d6e60b90a3f4dcf20fec7475eb1143f0339bcf0cf824899cc1bacf7dc9983 -->
+<!-- SOURCE_SHA256: 48e2427bcc5131ac3151132250f331f1b5c839915f9a605119273747513d6737 -->
 
 ---
 id: symmetric-taqlid-check

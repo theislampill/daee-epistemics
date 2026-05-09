@@ -35,6 +35,19 @@ The governing question is not "which proof wins?" but:
 
 ---
 
+## Owner-Specific Operation Floor
+
+Minimum operation:
+
+1. identify the proof family and the exact claim it is asked to carry;
+2. state the premise, inference form, and conclusion scope;
+3. classify whether it is secondary support, local proof-strength comparison, or tribunal claim;
+4. name what changes in burden-state and what remains held.
+
+Exit condition: the proof grammar no longer functions as unnamed neutral tribunal. If the
+response only says that the "proof was audited" without changing premise, scope, or tribunal
+status, this owner has not executed.
+
 ## Proof-Family Audit Table
 
 | Family | Assumes | Typically establishes | Hidden load risk | Correct status |
@@ -71,6 +84,36 @@ and route:
 ### Failure test
 
 This file has not governed if a necessity/contingency proof is answered as though its grammar were neutral and exhaustive without first auditing that claim.
+
+---
+
+## Claimed-Certainty Audit
+
+When an objection says "reason decisively proves X," "philosophy demonstrates X," or "a
+perfect being necessarily cannot X," do not treat the certainty label as operative warrant.
+Require:
+
+1. the stated premises;
+2. the inference form;
+3. the scope of the conclusion;
+4. whether competent rational schools contest the alleged decisiveness;
+5. whether the proof is being used as a local argument or as a tribunal over revelation.
+
+If the argument is contested, school-bound, or only speculative, record `claimed-certainty
+audit` and route through V2, FPD, or perfection-criterion-usurpation as appropriate. The result
+is not "reason lost"; it is that the proposed proof cannot govern as reason itself.
+
+### Minimal pair
+
+- "This premise appears stronger than that report in this local case." -> local proof-strength
+  audit.
+- "Reason itself proves revelation must be reinterpreted wherever it conflicts with this
+  premise." -> tribunal claim; P3/V2/FPD before content.
+
+### Failure test
+
+This file has not governed if a contested necessity or perfection premise is accepted as
+decisive without exposing its premises and tribunal function.
 
 ---
 

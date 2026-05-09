@@ -72,6 +72,28 @@ Filter-loosening is real progress, but it is not yet full alignment. Distinguish
 
 Do not treat the first as though it already guarantees the third.
 
+## v0.3.2.0 Noetic Restoration Table
+
+This table governs release/readiness, not condemnation. It is internal diagnostic language;
+default public output must not label the person as dead, diseased, corrupt, or hypocritical.
+
+| Live signal | Likely axis | First move | Held material | Release signal |
+|---|---|---|---|---|
+| honest conceptual confusion | shubhah / knowledge | clarify term, proof-status, or semantic discipline | proof stack | user grants distinction or asks next local question |
+| repeated standard-shifting | tribunal / inherited filter | V2 / proof-status / FPD | doctrinal defense | standard named as contestable |
+| moral outrage with personal wound | grief/moral protest | M4/P7 presence | theodicy detail | register clears, user asks conceptual question |
+| identity-performance | DO-orient | hold argument; name posture gently | proof and debate route | truth-seeking signal appears |
+| "I know but cannot accept" | will/aim | F2/P4/P1 depending signal | argument dump | admission of barrier or willingness to examine |
+| absorbs every answer as new objection | argument-absorbent | stop/hold/question-only | further proofs | stable differentiator appears |
+| non-specialist confusion | clarity need | define/split/example | technical genealogy | user shows readiness for technical layer |
+
+### Readiness-state guard
+
+Read heart-readiness as release state: receptive once truth is perceived, mixed with competing
+supplies, or currently inaccessible to discursive pressure. Do not surface "dead heart" or
+similar labels in default output. If the evidence is inferential, phrase it as "this may be
+functioning as..." and keep motive, culpability, and soul-state held.
+
 **4. Direct attention to signs.**
 Once the filter is loosened, use V5
 (`references/techniques/V5-directing-attention-signs.md`), calibrated to this particular
@@ -150,6 +172,10 @@ P1 fails when the practitioner treats trust-building as a preface to a hidden ar
 names a deformation before candor has been earned, or reads a loosened tribunal as full
 alignment. A softened inherited filter permits the next bounded move; it does not prove that
 recognition, willingness, or practice-readiness has arrived.
+
+P1 also fails when argument-absorbent behavior is fed with more proofs. If every answer becomes
+new stimulation or resistance material, hold further proof and release only register repair,
+character-as-evidence, or one question.
 
 If grief-primary or relational injury is governing, P7 Stop 1 or Stop 3 fires before P1 can
 advance beyond presence and repair. If the case is non-contractual, P7 Stop 5 limits P1 to a

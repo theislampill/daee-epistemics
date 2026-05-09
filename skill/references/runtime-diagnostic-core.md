@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: V1-diagnostic -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V1-diagnostic.md -->
-<!-- SOURCE_SHA256: 3e1db2954bc5dfcaf36f5a9d49cbd852a3a53cc15806b44c4565c09e70407715 -->
+<!-- SOURCE_SHA256: d58dbd9fd584e965671c3be71bb26124ff84651d3958914882c710c200223654 -->
 
 ---
 id: V1-diagnostic
@@ -172,7 +172,7 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: 18d7f9774cc79f5e96ffb48f2c8bd0a5791361decaad797828462e97d9b614d0 -->
+<!-- SOURCE_SHA256: 30be64f0e8033126b4fc3b6a7aa6c56d9b5842991b777f8e14cf6548edfe6157 -->
 
 ---
 id: noetic-reading-checklist
@@ -543,7 +543,7 @@ case-state or Diagnostic IR.
 <!-- MODULE_ID: seven-deformations -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/seven-deformations.md -->
-<!-- SOURCE_SHA256: 0991bf48d00bb7e0782d35272c6851d1362236260c7a7f7a38cebe5fd1cbb67d -->
+<!-- SOURCE_SHA256: 6f412758a2f3bdcbf01e5fcc2d3a5389efaf0ab8a52c401efa3cae7a19da8da0 -->
 
 ---
 id: seven-deformations
@@ -1076,7 +1076,7 @@ can be loaded with confidence.
 <!-- MODULE_ID: modes-of-concealment -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/modes-of-concealment.md -->
-<!-- SOURCE_SHA256: ae20639328c3b54704d69019168e3c644e348e65e68862b38ad98cbfc68173c6 -->
+<!-- SOURCE_SHA256: 81fa1aefcda5d7dc02636a62d2bb588d2b09b5c1d73f013bb5cc4b31d8098b60 -->
 
 ---
 id: modes-of-concealment
@@ -1410,7 +1410,7 @@ routing decision; the case-state line composes them.
 <!-- MODULE_ID: discourse-orientation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/diagnostics/discourse-orientation.md -->
-<!-- SOURCE_SHA256: 54252ef59cda8f95e975317805469ef7f0d6c515774527fbf21af7c74e7a4b61 -->
+<!-- SOURCE_SHA256: 3a96d6b6585523e1dc442ae8b41d98983d4e58d8d0ae8b5bc4229eb2bd81365a -->
 
 ---
 id: discourse-orientation
@@ -1675,7 +1675,7 @@ the other emissions remain available but not acted on until the register shifts.
 <!-- MODULE_ID: M5-deformation-triage -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: atomics/skill/references/tactics/M5-deformation-triage.md -->
-<!-- SOURCE_SHA256: cfc3df0bad5242fa7b50345cc450035b4f52770df518acfbcc56e8957bad8cb3 -->
+<!-- SOURCE_SHA256: a1cf5cfbbd1adbbf5fd8b7f9e607d58223f8ad5ab71b4dc1a9aca4acc11bcfbe -->
 
 ---
 id: M5-deformation-triage
@@ -1786,6 +1786,20 @@ will, identity-performance, or ẓann-mode discourse does not merely fail — it
 new material for resistance or stimulation to organize around and actively hardens the
 barrier. The most common failure mode in sustained epistemological engagement is
 failing to triage.
+
+## Shubhah/Shahwah Two-Axis Floor
+
+Before treating a doubt as intellectual, distinguish:
+
+| Axis | Corruption mode | First move | Hold |
+|---|---|---|---|
+| shubhah | knowledge/belief confused by an unresolved objection | clarification, proof-status, M9/V9/M1/M8 as matched | proof-stacking beyond the live objection |
+| shahwah / hawa / gharad | will/aim/cost governs inquiry | F2, P1, P7, relational repair | intellectual content until the will/aim barrier is acknowledged |
+| compound | both are live | outside-in sequencing; will/aim or inherited filter before shubhah | shubhah engagement until upstream layer clears |
+
+Fitnah absorption test: if an answer is not rejected after consideration but absorbed as new
+material for objection-generation, stimulation, or identity-performance, mark the case
+argument-absorbent. Do not feed it with more intellectual content.
 
 ## Router Guardrails
 

@@ -1,11 +1,15 @@
 # Release Artifacts
 
+This file currently records the last public package artifact, v0.3.1.0. The v0.3.2.0 source
+candidate is not package-bound release evidence until an explicit packaging pass builds a new
+`.skill` payload, records its hash here, and regenerates matching current-release smoke evidence.
+
 Binary skill archives are not committed to this repository. Build the release candidate locally
 from the generated `skill/` package root:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.1.0.skill.zip
-Copy-Item build\daee-epistemics-v0.3.1.0.skill.zip build\daee-epistemics-v0.3.1.0.skill
+powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
+Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.0.skill
 ```
 
 The package script archives the contents of `skill/`, not the repository root and not the
@@ -40,6 +44,11 @@ package evidence for the RC00005 SHA listed above. Their trace files explicitly 
 current RC00005 source package filename/SHA.
 
 Current-release smoke suite: none.
+
+`runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe artifacts are development /
+post-expansion regression evidence in this source state. They are not current-package smoke
+evidence unless regenerated against the release package recorded in this file and marked with
+current-release package provenance.
 
 Current-package smoke replay artifacts for `daee-epistemics-v0.3.1.0.skill` / SHA256
 `08AD1BD7CEFC23EFF9C97BFED37986B9E4BAB634772F77BE8EEC48C38EC08E44` is not present unless a smoke

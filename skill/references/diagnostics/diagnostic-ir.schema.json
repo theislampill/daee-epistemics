@@ -137,6 +137,16 @@
       "type": "string",
       "minLength": 1
     },
+    "reconstruction_fidelity": {
+      "type": "string",
+      "enum": ["pass", "partial", "fail"],
+      "description": "Reconstruction verdict from original input plus populated IR/trace candidate. Optional for legacy artifacts; required by the reconstruction pass before ordinary dispatch."
+    },
+    "reconstructor_notes": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Brief note naming what could not be recovered when reconstruction_fidelity is partial/fail, or compact neighbor contrast when present on pass."
+    },
     "structural_pattern_print": {
       "type": "string",
       "description": "Optional compact local description of the active structural pattern when PF code alone is too coarse to preserve practical framing. It is subordinate to claim_level, pattern_profile, and routing precedence.",
@@ -472,6 +482,19 @@
       },
       "then": {
         "required": ["source_basis"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reconstruction_fidelity": {
+            "enum": ["partial", "fail"]
+          }
+        },
+        "required": ["reconstruction_fidelity"]
+      },
+      "then": {
+        "required": ["reconstructor_notes"]
       }
     },
     {

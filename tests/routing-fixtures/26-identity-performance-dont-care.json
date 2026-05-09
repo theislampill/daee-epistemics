@@ -1,0 +1,46 @@
+{
+  "id": "identity-performance-dont-care",
+  "prompt": "I don't care what argument you give; this is who I am and I am not giving that up.",
+  "case_class": "ordinary",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "discourse-orientation",
+      "M5-deformation-triage",
+      "P7-restoration-stops"
+    ],
+    "optional_modules": [
+      "F2-volitional-dimensions",
+      "P1-fitrah-restoration"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "identity-performance",
+      "argument-absorbent",
+      "hold argument",
+      "truth-seeking signal appears",
+      "do not feed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 12
+  }
+}

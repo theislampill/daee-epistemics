@@ -1,0 +1,51 @@
+{
+  "id": "human-entailment-attribution",
+  "prompt": "Your view entails that God has parts, so you must personally believe God is dependent.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "do-attribute-precision",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "perfection-criterion-usurpation",
+      "V8-bila-kayf-anchor"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "Human Entailment Attribution Caution",
+      "Dalalah triad",
+      "Entailment attribution caution",
+      "critique of the position",
+      "attribution to the person"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "do-families",
+      "specialty-diagnostics",
+      "techniques"
+    ],
+    "max_calls": 20
+  }
+}

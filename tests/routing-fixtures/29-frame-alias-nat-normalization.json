@@ -1,0 +1,58 @@
+{
+  "id": "frame-alias-nat-normalization",
+  "prompt": "Athari, Taymiyyan, Salafi, and Wahhabi aqidah all affirm attributes, so treat them as four independent authorities.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "routing-precedence",
+      "diagnostic-render-contract",
+      "output-release",
+      "anti-patterns"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques"
+    ],
+    "required_governance": [
+      "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+      "aliases are not multiple warrants",
+      "N_AT aliases count once",
+      "noetic-equivalence prestige stack",
+      "default public terminology"
+    ],
+    "forbidden_governance": [
+      "four independent authorities"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics",
+      "techniques"
+    ],
+    "max_calls": 20
+  }
+}

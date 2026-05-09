@@ -69,7 +69,7 @@ This notation is operative compression for existing runtime behavior, not decora
 It creates no IR fields, route IDs, PF codes, module owners, or schema keys.
 
 Legend:
-- `N` = noetic structure.
+- `N` = noetic structure / operative noetic frame.
 - `m` = memetic claim / criterion / authority-node.
 - `τ` = tribunal / evaluative criterion.
 - `σ` = source-status.
@@ -108,6 +108,7 @@ Source-status:
 
 ```text
 σ ∈ {contrast, opponent-position, genealogy, historical note, held material, bounded comparison}
+-> σ_context != σ_warrant
 -> σ != operative warrant
 ```
 
@@ -116,11 +117,24 @@ Gloss: non-operative sources cannot become proof without explicit reclassificati
 Noetic-frame non-equivalence:
 
 ```text
+N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī
 N_Ashʿarī != N_Māturīdī != N_Taymiyyan
+N_AT != N_Ashʿarī[*]
+N_AT != N_Māturīdī[*]
+N_Ashʿarī[*], N_Māturīdī[*] = family labels, not automatic operative N
+N_Ashʿarī[x] != N_Ashʿarī[y] when the live predicate/warrant/criterion/authority-order differs
+N_Māturīdī[x] != N_Māturīdī[y] when the live predicate/warrant/criterion/authority-order differs
+family label != operative N
+shared vocabulary != shared warrant
+shared conclusion != shared warrant
+verbal agreement != operative support
 ```
 
-Gloss: contradictory noetic frames are not co-valid operative supports; only the selected
-operative `N` may warrant the move.
+Gloss: `N_AT` canonicalizes repo routing aliases for the Atharī/Taymiyyan/Salafī/Wahhābī
+operative frame; aliases are not counted as multiple warrants. This is not a historical,
+sociological, polemical, individual, movement, or institutional identity claim. Contradictory
+or family-level noetic frames are not co-valid operative supports; only the selected operative
+`N` may warrant the move.
 
 Held carry:
 
@@ -139,6 +153,18 @@ R required before STOP/RECURSE
 
 Gloss: a burden must land before re-read; re-read must license closure or recursion.
 
+B-complexity:
+
+```text
+ComplexB -> {s1...sn} -> Land(B) -> R
+AtomicB -> s1 -> Land(B) -> R
+```
+
+Gloss: distinct hidden premises, criteria, predicates, source-status forks, release gates, or
+restoration vectors inside the same live burden make `B` complex. `AtomicB` is valid only when
+one owner-specific operation can change the burden-state without leaving internal premises,
+predicates, or gates unoperated.
+
 ## State Model
 
 `STOP` is valid only after state re-read confirms that the current governing blocker has been
@@ -154,6 +180,23 @@ becomes newly eligible after the current pass clears its blocker.
 `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive
 pressure remains. Do not emit a false STOP in that condition.
 
+In hard/default output, Restorative Response and Closing Formulation are licensed only after
+the final state re-read for the answer. If `R(H,Delta)` names a remaining input-anchored
+burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
+the next action is the next bounded burden-cycle, not rhetorical closure. If the next
+bounded pass cannot fit, mark PARTIAL with the next live burden.
+
+Input-anchored burden means more than an explicit question-marked subrequest. It includes
+supporting premises, contrasts, public/private partitions, source-status rules, translation
+demands, and moral or epistemic criteria already present in the user's surface discourse.
+After the blocker that held them clears, they must be rechecked as possible next burdens
+rather than dismissed as future topics.
+
+If a state re-read enumerates remaining input-anchored burdens, "only if requested" is not
+a valid STOP reason unless a named hold gate blocks release. The claim that remaining material
+requires its own bounded pass licenses RECURSE or PARTIAL; it does not license rhetorical
+closure.
+
 ## TTP Entry / Exit Criteria
 
 Recursion is auditable only when each TTP has entry criteria, operation criteria, and exit
@@ -165,9 +208,14 @@ or visible default-mode template slots.
 1. Validated IR exists and names the current live burden.
 2. Routing precedence selected one current bounded operator, not a route chain.
 3. The TTP owner is justified by the current IR state or by refreshed state after a prior burden-cycle.
-4. The TTP has a bounded target inside the active live noetic burden.
-5. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
-6. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.
+4. For hard/multi-burden `ComplexB.s<i>`, the active owner body or compiled bundle
+   section is loaded/read, unless that exact section is already present in active context.
+   Package availability, map presence, or bundle co-location is not access. If access is
+   absent, the route is `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path,
+   not generic prose.
+5. The TTP has a bounded target inside the active live noetic burden.
+6. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
+7. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.
 
 **TTP operation criteria:**
 
@@ -431,7 +479,7 @@ the released `B` and its necessary `s` have actually been operated on.
 
 In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
-TST/source-worldview source-status discipline, and identity-stabilization caution are `s` when
+Named source-worldview source-status discipline and identity-stabilization caution are `s` when
 they serve the same imported-tribunal `B`. They become later burden-cycles only if `R` licenses a
 genuinely new input-anchored `B`.
 
@@ -440,7 +488,7 @@ into new burden-cycles merely because they name hiddenness, punishment, source-s
 source-worldview, or identity-stabilization.
 Forbidden failure name: topical components split into burden-cycles.
 Short form: hiddenness/punishment/source-status can be operative submoves under one burden.
-Bad split pattern: imported tribunal / hiddenness / punishment / TST source-worldview.
+Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview.
 
 Recursion begins only when `Land(B) -> R` licenses a new input-anchored live burden that remains
 after the submoves have done their work. If the facet has already been handled as `s`, it cannot
@@ -501,7 +549,7 @@ Invalid default-mode recursion shapes:
 - "Pass 1 / Pass 2 / Pass 3" used for imported criterion, hujjah/accountability, and
   guidance-as-coercive-proof corrections that all serve the same imported-tribunal burden.
 - "Burden 1 / Burden 2 / Burden 3 / Burden 4" used for imported tribunal, hiddenness,
-  punishment, and TST/source-worldview without a state/noetic re-read proving that each is a
+  punishment, and named source-worldview without a state/noetic re-read proving that each is a
   new live burden rather than a subordinate submove under the same tribunal burden.
 - `Current bounded operator: FPD -> M1 -> DO-8 -> M8 -> restoration`.
 - silently stopping after criterion correction when another eligible live burden remains.
@@ -642,15 +690,13 @@ This section is canonical for source-status discipline and noetic-frame non-equi
 It governs how sources are used inside burden-cycles. It introduces no new routes, IR
 fields, or module owners; it formalizes existing requirements.
 
-**Thesis-protection rule.** The framework must not treat contradictory theological or
-noetic structures as equally acceptable operative frames. Umbrella terms such as
-`classical theology`, `classical theologies`, `classical Islamic theology`,
-`the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition` must not
-be used to flatten Ashʿarī, Māturīdī, Atharī, Taymiyyan, kalāmic, falsafah-inflected, or
-generic "classical Islamic theology" frames into one unified operative authority. This
-rule applies inter-school (across Ashʿarī / Māturīdī / Atharī / Taymiyyan / falsafah)
-and intra-school (treating a named school as internally uniform on a school-sensitive or
-disputed claim).
+**Thesis-protection rule.** The notation layer above is canonical: `N_AT` aliases the
+Atharī/Taymiyyan/Salafī/Wahhābī operative frame for repo routing, while
+`N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
+Umbrella terms such as `classical theology`, `classical theologies`, `classical Islamic
+theology`, `the classical tradition`, `mainstream kalam`, or `Ashari/Maturidi tradition`
+must not flatten rival frames into one operative authority. The rule applies inter-school
+and intra-school: `family label != operative N`; `shared vocabulary != shared warrant`.
 
 **Source-status taxonomy.** Every source used in a burden-cycle is marked with one of
 the following statuses; a source may appear in only one status per burden-cycle:
@@ -677,9 +723,10 @@ genealogy, external philosopher, theologian, framework, or contextual-source ref
 not public-render material unless the user explicitly asks for them or validated IR
 specifically requires source-comparison. Default citation allowance is restricted to Qur'an,
 Sunnah, and sound narrations from the Salaf; if any of these are used, each must be directly
-referenced through an external source. Do not use al-Ghazali, Ash'ari, Maturidi, Christian
-philosophers, external theorists, or any named scholar/school as public-render support in
-default mode.
+referenced through an external source. Do not use named scholars, named schools, external
+philosophers, external theorists, or contextual authority labels as public-render support in
+default mode. Do not use `Wahhābī` as default public terminology unless the user's input
+uses it and the label itself must be clarified.
 
 **Method-source non-branding rule.** The framework is not publicly framed as belonging to,
 deriving from, or being branded under a named scholar, named school, newly coined methodology,
@@ -708,6 +755,10 @@ the operative grounding differs). Verbal agreement is not operative support.
   Taymiyyan / Atharī operative conclusion (or vice versa) without source-status marking.
 - A response asserts `the classical tradition agrees` for a school-sensitive claim.
 - A response asserts agreement across frames without marking substantive vs. verbal.
+- `N_AT` aliases are counted as four independent authorities or separate warrants.
+- `N_Ashʿarī[*]` or `N_Māturīdī[*]` is used as operative support without the selected
+  live predicate/warrant/criterion/authority-order.
+- Shared vocabulary or shared conclusion is treated as shared warrant.
 - Identity-frame is treated as operative support for a content claim without
   source-status caution.
 
@@ -736,6 +787,8 @@ that the contrast was held to its named status.
 
 - `Source-status: operative support. The selected operative frame is X; the conclusion
   holds inside that frame.`
+- `Source-status: operative support. Selected frame: N_AT; alias labels are not counted
+  as multiple warrants.`
 - `Source-status: contrast only. This Ashʿarī formulation is named only to mark a
   differing noetic structure. It is not used as warrant for the operative conclusion.`
 - `Source-status: historical note. Some later kalāmic treatments frame the issue
@@ -751,8 +804,7 @@ that the contrast was held to its named status.
 
 - `Classical Islamic theologies, including Ashʿarī, Māturīdī, and Taymiyyan approaches,
   all provide acceptable ways to ground the answer.`
-- `The classical theological tradition, from al-Juwaynī and al-Ghazālī to Ibn Taymiyyah
-  and Ibn al-Qayyim, agrees that ...`
+- `The whole classical tradition agrees that ...`
 - `Ashʿarī theology teaches X` when the point is internally disputed within Ashʿarī or
   is school-sensitive across kalāmic and Atharī frames.
 - `Māturīdī theology teaches X` under the same conditions.
@@ -761,13 +813,14 @@ that the contrast was held to its named status.
 - A list of sources hides disagreement behind breadth.
 - `Ashʿarī, Māturīdī, and Taymiyyan approaches are all classically acceptable theological
   routes here.`
+- `Atharī, Taymiyyan, Salafī, and Wahhābī aqidah are four independent authorities here.`
 - A contrast-marked source is named, then immediately used as evidence for the operative
   conclusion in the next sentence under the same burden-cycle.
 - `This is the daee-epistemics method of [named scholar/school]`, `a new aqidah/noetics`,
   or any authority-by-association method branding.
-- Default output uses al-Ghazali, Ash'ari, Maturidi, Christian philosophers, external
-  theorists, genealogy, or school-label context as support without explicit user request
-  or validated source-comparison IR.
+- Default output uses named scholars, named schools, external theorists, genealogy, or
+  school-label context as support without explicit user request or validated
+  source-comparison IR.
 
 These failures are not citation-style errors. They are thesis-protection failures: the
 skill's diagnostic compiler must discriminate noetic structures, not flatten them.

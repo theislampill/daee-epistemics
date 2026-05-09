@@ -37,6 +37,7 @@ The IR composes fields from several sources:
 - Architectural layer disruption from `references/metaphysical-architecture.md`
 - P7 stop status from `references/procedures/P7-restoration-stops.md`
 - Routing-precedence state from `references/diagnostics/routing-precedence.md`
+- Reconstruction verdict from `references/diagnostics/ir-reconstruction-pass.md`
 
 ---
 
@@ -77,6 +78,13 @@ re-evaluated when a load-bearing node is cleared.
 **Operationalization rule:** Meta-noetic memetics does not add a new routing pass. It is the
 explanatory frame for the already-named dynamics. Its live IR surface is:
 
+```text
+surface discourse -> IR(N,m,τ,σ) -> B -> TTP/operator -> R(H,Δ)
+```
+
+Control-surface test: the vocabulary is valid only when it changes an existing field,
+hold/release decision, collapse radius, load-bearing node, operator choice, or state re-read.
+
 - `Foreign premise` and `Upstream findings`: tribunal-installation, criterion-smuggling, semantic-capture, source-of-authority, and neutrality-rule moves
 - `Claim-level` and `Pattern-profile`: governing PF overlay and higher-order burden when these change routing or sequencing
 - `Structural pattern print`, `Load-bearing node`, and `Collapse radius`: the local belief-machine, the node that keeps regenerating downstream claims, and the dependent claims/routes that must be re-evaluated when it clears
@@ -91,10 +99,9 @@ Identity use must be source-status marked in the existing surfaces:
 - speculative/held: interior motive, sincerity, culpability, soul-state, or primary
   load-bearing status
 
-**Negative rule:** When the concept "meta-noetic memetics" is invoked in a response without any
-of the above fields carrying a live read (no tribunal-installation in `Upstream findings`, no
-active PF overlay, no collapse-radius note in `What remains live`), the concept is being used
-decoratively. Decorative use is the anti-pattern named in
+**Negative rule:** "Meta-noetic memetics" without a control-surface consequence is decorative:
+no changed IR/case-state field, no routing suppression, no held material, no collapse radius,
+no operator selection, and no state re-read delta. Decorative use is the anti-pattern named in
 `references/diagnostics/anti-patterns.md §Higher-Order Vocabulary Theater`.
 
 ---
@@ -108,6 +115,16 @@ core axes -> mandatory Phase 2 passes -> triggered overlays / specialty markers 
 IR -> gate checks -> routing precedence -> selected current bounded operation. A route
 itinerary is not a valid IR substitute, and `Next move` / `Intervention target` must not be
 populated with a chain such as `FPD -> M1 -> DO-8 -> M8 -> restoration`.
+
+After the IR is formed and before routing precedence may dispatch owners, run
+`references/diagnostics/ir-reconstruction-pass.md`. The reconstructor receives only the original
+input, the populated IR or trace candidate, and reconstruction criteria; it must not reload
+`SKILL.md`, the module catalogue, the routing catalogue, owner files, or compiled maps. This is
+not a seventh route family. It is a dispatch precondition that checks whether the IR can recover
+the live noetic burden, selected operator/TTP, nearest held or deferred alternatives, expected
+Land(B), and governance verdict. `reconstruction_fidelity: fail` blocks ordinary module dispatch.
+`reconstruction_fidelity: partial` permits only bounded HOLD/PARTIAL output with the reason in
+`reconstructor_notes`.
 
 **Gate Check 1 - Mandatory minimum fields populated.**
 All pre-dispatch fields in the mandatory minimum, plus any live conditional mandatory fields, must be populated before module dispatch. `Post-render gate` is mandatory for the complete pass record, but it is populated after the bounded restorative move and before closure. Fields that cannot be populated because the basis is too thin route to Stop-4, not to a forced read.
@@ -163,6 +180,7 @@ Compiler lifecycle:
 input case
 -> diagnostic reduction
 -> validated IR
+-> reconstruction pass
 -> routing precedence
 -> selected current live burden
 -> TTP entry criteria
@@ -418,6 +436,8 @@ Load-bearing node:                   # optional; criterion, authority rule, sema
 Collapse radius:                     # optional; downstream claims/routes that depend on the load-bearing node and must be re-evaluated when it clears
 Intervention target:                 # optional; the bounded operation that clears the load-bearing node
 Framing notes:                       # optional; internal renderer constraints preventing citation dump, argument bank, or wrong-family release
+Reconstruction fidelity:             # pass | partial | fail; internal/trace field from ir-reconstruction-pass.md
+Reconstructor notes:                  # required when reconstruction_fidelity is partial/fail; compact neighbor contrast when useful
 
 --- Output Governance ---
                                   # Canonical internal/audit diagnostic record and Layer B definition:
@@ -501,6 +521,8 @@ For any substantive response claiming to have done V1, the following fields must
 
 `Post-render gate` is mandatory for a completed pass, not for initial dispatch. It is populated
 after the bounded move and before STOP, HOLD, RECURSE, or PARTIAL is declared.
+`Reconstruction fidelity` is mandatory before ordinary module dispatch in new release-grade
+trace/verdict evidence. It is schema-optional only so legacy smoke artifacts remain readable.
 
 If these fields cannot be populated because the basis is too thin, the correct output is Stop-4 plus the specific missing differentiator.
 
@@ -517,6 +539,7 @@ Populate these whenever their trigger is live:
 - `What remains live` when live alternatives, held routes, a boundary-reset condition, or a load-bearing dependency with downstream collapse radius must stay visible
 - `Alignment state`, `Recognition strength`, and `Continuation eligibility` whenever restoration progress, stop thresholds, or refreshed continuation are doing real routing work. In the validator-backed internal IR these fields should be explicit whenever a landed move, recognition judgment, or recurse-vs-stop decision is live.
 - `Post-render gate` after every bounded restorative move and before any closing decision. It is mandatory even when the decision is STOP; STOP is invalid unless the gate has run.
+- `Reconstruction fidelity` after initial IR formation and before routing precedence. `partial` or `fail` requires `Reconstructor notes`; `partial` permits only bounded HOLD/PARTIAL output, and `fail` blocks ordinary module dispatch.
 - `Decisive missing differentiator` is conditional-mandatory whenever `Confidence` is anything other than `strong` *or* `Read status` is anything other than `dominant`. The field names the one signal that would refine, falsify, or collapse the remaining ambiguity in the read. This is a falsifiability anchor against cosmetic IR formation: a paraphrase of the input cannot fill it without exposing itself, while a structural read can. The field comes from `references/diagnostics/case-state-schema.md §Decisive missing differentiator`; this rule promotes it from optional to conditional-mandatory inside the validator-backed internal IR. If the basis is too thin to name a differentiating signal at all, the correct output is Stop-4, not a forced read.
 
 **Optional structural framing fields**
@@ -563,6 +586,7 @@ contract permits a diagnostic or audit-style response.
 - **Three-way activation partition:** Absence from both `Matched modules` and `What is withheld and why` means the module was never triggered by the current case-state — it is not in scope given the diagnostic read. Presence in `What is withheld and why` alone means the module was triggered but blocked by governance. Presence in `Matched modules` means the module is active in this pass. These three states must not be collapsed; an auditor must be able to distinguish "never in scope" from "triggered and suppressed" without re-running the diagnostic gate.
 - **Ghost-load prohibition:** A `matched_modules` entry without a corresponding `source_basis` entry with `source_kind: "module"` and `module_id` matching the entry's `id` is a ghost-load: the source file or compiled runtime section was loaded but did not demonstrably govern any output claim or routing decision in this pass. Ghost-loads are gate-integrity failures equivalent to fabricated activation and must be corrected before dispatch — either by adding the missing `source_basis` entry (naming the specific claim or routing fork the module governed) or by moving the module from `matched_modules` to `What is withheld and why` with an explicit reason.
 - Schema note: `source_basis` is not an unconditional top-level required field for bare schema compatibility, but it is conditionally required whenever `matched_modules` is present and non-empty. Executable catalogue/source-basis coverage is enforced by `tools/check_ir_instance_integrity.py`.
+- **Reconstruction prohibition:** A `matched_modules` entry that cannot be reconstructed from the input burden through existing IR fields is label-only or topic-only routing even when its owner file exists. Correct by re-running diagnostic reduction, moving the owner to `What is withheld and why`, or emitting bounded HOLD/PARTIAL with `reconstruction_fidelity: partial/fail`.
 - `Next move` names one live move only. It is not a queue of later modules.
 - `Intervention target` and `Next move` name one burden-level function. They do not name a route
   chain, module itinerary, or list of internal TTP labels. Acceptable shape: `imported-criterion
@@ -675,7 +699,7 @@ The following inconsistencies are invalid:
 - `Structural pattern print` present + no routing, hold, release, or framing consequence. Pattern print without consequence is pattern theater.
 - `Load-bearing node` present + downstream content released before the node is addressed. This violates upstream-node priority.
 - `Framing notes` used to introduce new coverage content, prooftexts, or citations rather than to constrain release. Framing notes are not a citation bank.
-- Source-audit-derived tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
+- Tradition label used as the route while the structural node remains untyped. "Jewish", "Hindu", "Sufi", or "Buddhist" is not itself a routing owner.
 - One upstream node cleared + all downstream material dumped at once. Refresh state and release only the next bounded move.
 - `Next move` or visible output uses "Move 1 / Move 2 / Move 3" as essay sequencing
   without a prose state-change transition. Numbered headings are not RECURSE.
@@ -732,11 +756,11 @@ Specific failure modes:
 - **Architectural drift:** the response satisfies workflow checks but states the restoration target argumentatively rather than restoratively.
 - **Semantic-bypass compliance:** semantic neutralization or a lexical-ontological trap is active, but doctrinal content is released anyway. The IR catches this by requiring `semantic-discipline-required`.
 - **Pattern-print theater:** the response names a structural pattern but does not identify the load-bearing node, intervention target, held downstream material, or existing route.
-- **Argument-bank substitution:** the response treats a source-audit-derived topic as permission to list arguments, prooftexts, or citations before the live authority rule, criterion, or semantic blocker has been typed.
+- **Argument-bank substitution:** the response treats a background topic as permission to list arguments, prooftexts, or citations before the live authority rule, criterion, or semantic blocker has been typed.
 
 ---
 
-## Source-Audit Structural Validation Notes
+## Structural Validation Notes
 
 These notes validate structural framing only. They do not create new coverage claims,
 new case-family owners, or permission to release comparative-religion content. Each
@@ -802,7 +826,7 @@ Structural pattern print: non-duality / illusion ontology / Creator-creation col
 Load-bearing node: whether nondual ontology is functioning as the upstream category-set over Islamic tawhid
 Collapse radius: ordinary polytheism response, Advaita owner content, Hinduism coverage claim
 Intervention target: distinguish Islamic tawhid, monism/nonduality, and mystical or poetic language before content release
-Framing notes: do not collapse Advaita into popular idol worship; do not claim source-audited Advaita coverage
+Framing notes: do not collapse Advaita into popular idol worship; do not claim authorized Advaita coverage
 Existing route: M9 + metaphysical-architecture + philosophical-usurpation if nondual ontology is installed as tribunal
 Held: Advaita owner content and broad Hinduism coverage
 Must not dump: generic idol-worship answer when nondual ontology is live

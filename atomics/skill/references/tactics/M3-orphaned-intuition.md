@@ -34,6 +34,12 @@ Identify the commitments they retain from a framework they have abandoned or nev
 
 **The orphaned intuitions as fiṭrah deliverances:** These commitments are not residue or coincidence — they are the fiṭrah operating in the domain of moral knowledge, producing recognition that has outlasted the explicit religious framework the interlocutor has abandoned. They are signs (āyāt al-anfus — signs within the soul).
 
+**Moral-standard reversal:** When evil is used as an objective objection from within a
+naturalist or materialist frame, do not treat the moral standard as free equipment. First ask
+what grounds the obligation that evil really should not be. If the standard is objective, M3
+asks what kind of world makes that objectivity intelligible; if the standard is denied, the
+objection loses its force and M8 may govern instead.
+
 **Connection:** M3 is the entry point for NS-4 (secular moral realist); see `references/case-library/profiles/ns-4-secular-moral-realist.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).
 
 ## Failure Conditions

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Check Phase 6 recursive traversal governance in source and runtime."""
 
 from __future__ import annotations
@@ -114,9 +114,9 @@ DECISION_INVARIANTS = [
     "A burden-cycle begins only after the current burden lands",
     "hiddenness/punishment/source-status can be operative submoves under one burden",
     "multi-burden does not mean multi-recursion by default",
-    "imported tribunal / hiddenness / punishment / TST source-worldview",
+    "imported tribunal / hiddenness / punishment / named source-worldview",
     "burden landing -> state re-read",
-    "Restorative Response appears once after state/noetic re-read",
+    "Restorative Response appears once after the final state/noetic re-read",
     "runtime-verifiable diagnostic compiler",
     "not a deterministic argument bank",
     "TTP Entry / Exit Criteria",
@@ -151,6 +151,9 @@ DECISION_INVARIANTS = [
     "Operative-Submove Burden Split",
     # rc14: source-status & noetic-frame non-equivalence
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
+    "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+    "family label != operative N",
+    "shared vocabulary != shared warrant",
     "operative noetic frame",
     "noetic-equivalence prestige stack",
     "classical-theology umbrella",
@@ -303,6 +306,9 @@ FIXTURE_REQUIRED_TOKENS = [
     "topical components split into burden-cycles",
     # rc14: source-status & grounded re-read fixture tokens
     "Source-Status & Noetic-Frame Non-Equivalence Discipline",
+    "N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī",
+    "N_Ashʿarī[*]",
+    "family label != operative N",
     "operative noetic frame",
     "Grounded Noetic Re-Read Shape",
     "ungrounded noetic re-read",
@@ -799,7 +805,7 @@ Public response.
 ### Layer A
 The identity-performance layer is governing.
 ### Layer B
-This is hawÄ primary, iÊ¿rÄá¸ primary, and possible juá¸¥Å«d.
+This is hawÃ„Â primary, iÃŠÂ¿rÃ„ÂÃ¡Â¸Â primary, and possible juÃ¡Â¸Â¥Ã…Â«d.
 ### state re-read
 - Release status: closed; no same-input eligible burden remains
 """,
@@ -903,16 +909,16 @@ Hiddenness is corrected as a third pass.
 - DO-orient: mixed moral protest / evidential demand
 - live noetic burden: imported tribunal
 - current bounded operator: imported criterion / moral tribunal
-- held: hiddenness; punishment; TST source-worldview
-- source-status/noetic-frame: TST tenets held as opponent-position
+- held: hiddenness; punishment; named source-worldview
+- source-status/noetic-frame: named source-worldview tenets held as opponent-position
 - gate/release decision: release tribunal test
 ### Layer B - bounded response
 Operative submove. Target: tribunal authority. Operation: test against own grounds whether the imported criterion can judge divine action. Result: tribunal loosened.
 Burden landed: imported tribunal no longer governs.
 ### State/noetic re-read
 - Cleared: imported tribunal.
-- Remaining input-anchored burdens: hiddenness, punishment, TST source-worldview.
-- Held routes rechecked: hiddenness, punishment, and TST source-worldview are all promoted as separate next burdens without showing they survived as new burdens rather than submoves.
+- Remaining input-anchored burdens: hiddenness, punishment, named source-worldview.
+- Held routes rechecked: hiddenness, punishment, and named source-worldview are all promoted as separate next burdens without showing they survived as new burdens rather than submoves.
 - Next bounded pass: hiddenness.
 
 ## Burden-Cycle 2
@@ -927,7 +933,7 @@ Burden landed: imported tribunal no longer governs.
 - DO-orient: mixed moral protest / evidential demand
 - live noetic burden: hiddenness
 - current bounded operator: hiddenness-as-coercive-proof correction
-- held: punishment; TST source-worldview
+- held: punishment; named source-worldview
 - source-status/noetic-frame: no source-status discipline yet
 - gate/release decision: release hiddenness
 ### Layer B - bounded response
@@ -935,7 +941,7 @@ Operative submove. Target: hiddenness. Operation: distinguish guidance from coer
 Burden landed: hiddenness handled.
 ### State/noetic re-read
 - Cleared: hiddenness.
-- Remaining input-anchored burdens: punishment, TST source-worldview.
+- Remaining input-anchored burdens: punishment, named source-worldview.
 - Held routes rechecked: punishment is next.
 - Next bounded pass: punishment.
 
@@ -951,7 +957,7 @@ Burden landed: hiddenness handled.
 - DO-orient: mixed moral protest / evidential demand
 - live noetic burden: punishment
 - current bounded operator: punishment/accountability correction
-- held: TST source-worldview
+- held: named source-worldview
 - source-status/noetic-frame: no source-status discipline yet
 - gate/release decision: release punishment
 ### Layer B - bounded response
@@ -959,9 +965,9 @@ Operative submove. Target: punishment. Operation: narrow through hujjah/accounta
 Burden landed: punishment handled.
 ### State/noetic re-read
 - Cleared: punishment.
-- Remaining input-anchored burdens: TST source-worldview.
-- Held routes rechecked: TST source-worldview is next.
-- Next bounded pass: TST source-worldview.
+- Remaining input-anchored burdens: named source-worldview.
+- Held routes rechecked: named source-worldview is next.
+- Next bounded pass: named source-worldview.
 
 ## Burden-Cycle 4
 ### Layer A - Compact DSL/IR header
@@ -973,17 +979,17 @@ Burden landed: punishment handled.
 - concealment: clear
 - deformation: source-status confusion
 - DO-orient: mixed
-- live noetic burden: TST source-worldview
+- live noetic burden: named source-worldview
 - current bounded operator: source-status discipline
 - held: none
-- source-status/noetic-frame: TST source-worldview opponent-position
+- source-status/noetic-frame: named source-worldview opponent-position
 - gate/release decision: release source-status note
 ### Layer B - bounded response
-Operative submove. Target: TST source-worldview. Operation: classify it as opponent-position. Result: source-status marked.
-Operative warrant: selected source-status discipline; the opponent-position source above does not contribute to this warrant; specifically, the TST source-worldview is not used as a premise here.
-Burden landed: TST source-worldview classified.
+Operative submove. Target: named source-worldview. Operation: classify it as opponent-position. Result: source-status marked.
+Operative warrant: selected source-status discipline; the opponent-position source above does not contribute to this warrant; specifically, the named source-worldview is not used as a premise here.
+Burden landed: named source-worldview classified.
 ### State/noetic re-read
-- Cleared: TST source-worldview.
+- Cleared: named source-worldview.
 - Remaining input-anchored burdens: none.
 - Held routes rechecked: none.
 - Next bounded pass: none.
@@ -1011,7 +1017,7 @@ Noetic re-read:
 ### Layer A
 - Governing burden: attribute predication
 ### Layer B
-The classical theological tradition, from al-JuwaynÄ« and al-GhazÄlÄ« to Ibn Taymiyyah and Ibn al-Qayyim, agrees that this conclusion is correct.
+The whole classical tradition agrees that this conclusion is correct.
 ### state re-read
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
@@ -1023,7 +1029,7 @@ The classical theological tradition, from al-JuwaynÄ« and al-GhazÄlÄ« to 
 ### Layer A
 - Governing burden: imported moral criterion
 ### Layer B
-AshÊ¿arÄ«, MÄturÄ«dÄ«, and Taymiyyan approaches are all classically acceptable theological routes here.
+AshÃŠÂ¿arÃ„Â«, MÃ„ÂturÃ„Â«dÃ„Â«, and Taymiyyan approaches are all classically acceptable theological routes here.
 ### state re-read
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
@@ -1035,9 +1041,9 @@ AshÊ¿arÄ«, MÄturÄ«dÄ«, and Taymiyyan approaches are all classically a
 ### Layer A
 - Governing burden: attribute predication
 ### Layer B
-Source-status: contrast only. Al-JuwaynÄ«'s kalÄmic formulation is mentioned only as contrast.
+Source-status: contrast only. A rival formulation is mentioned only as contrast.
 
-Therefore, the operative answer is established by al-JuwaynÄ«, al-GhazÄlÄ«, Ibn Taymiyyah, and Ibn al-Qayyim together.
+Therefore, the operative answer is established by a contrast source together with the selected operative frame.
 ### state re-read
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
@@ -1543,7 +1549,7 @@ TOPICAL_COMPONENT_RECURSION_SPLIT_RE = re.compile(
     r".*?##\s*(?:Pass|Burden-Cycle)\s+3\b"
     r"(?:(?!##\s*(?:Pass|Burden-Cycle)\s+4\b).)*(?:punishment|accountability|hell)"
     r".*?##\s*(?:Pass|Burden-Cycle)\s+4\b"
-    r"(?:(?!##\s*(?:Pass|Burden-Cycle)\s+5\b).)*(?:TST|source-worldview|source-status|tenets)"
+    r"(?:(?!##\s*(?:Pass|Burden-Cycle)\s+5\b).)*(?:source-worldview|source-status|tenets)"
 )
 
 NOETIC_RE_READ_BLOCK_RE = re.compile(
@@ -1553,14 +1559,15 @@ CLASSICAL_UMBRELLA_RE = re.compile(
     r"(?i)\b("
     r"classical (?:islamic )?theological tradition"
     r"|classical (?:islamic )?theologies"
+    r"|whole classical tradition"
     r"|the classical tradition"
     r"|mainstream kalam"
     r"|ashari/maturidi tradition"
     r")\b"
 )
 NOETIC_EQUIVALENCE_STACK_RE = re.compile(
-    r"(?is)(?:Ash[Ê¿']?ar[Ä«i].{0,40}M[Äa]tur[Ä«i]d[Ä«i].{0,40}"
-    r"(?:Taymiyy|AtharÄ«|atharÄ«|atharÄ«|kal[Äa]mic).{0,80}"
+    r"(?is)(?:Ash[ÃŠÂ¿']?ar[Ã„Â«i].{0,40}M[Ã„Âa]tur[Ã„Â«i]d[Ã„Â«i].{0,40}"
+    r"(?:Taymiyy|AtharÃ„Â«|atharÃ„Â«|atharÃ„Â«|kal[Ã„Âa]mic).{0,80}"
     r"(?:classically acceptable|all (?:classically )?acceptable|peer[- ]valid|equally acceptable|all provide acceptable|one unified)"
     r"|classically acceptable theological routes)"
 )
@@ -1649,7 +1656,7 @@ TRACE_RE = re.compile(
     r"(?im)^\s*(?:#{3,6}\s*)?(?:TTP/operator trace|TTP/module trace|Owner trace|Trace)\b"
 )
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamÄnuÊ¿|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tamÃ„ÂnuÃŠÂ¿|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -1698,10 +1705,10 @@ STATE_DELTA_RE = re.compile(
     r"narrowed|no longer governs|now exposed|now licensed|now blocked|"
     r"returned as not-yet-target)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿|multiple independent lords?)\b")
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃƒâ€žÃ‚ÂnuÃƒÅ Ã‚Â¿|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÃ„ÂnuÃŠÂ¿)\b"
+    r"\b(?:V12|tamanu|tamÃƒâ€žÃ‚ÂnuÃƒÅ Ã‚Â¿)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",
@@ -1740,8 +1747,8 @@ UNRESOLVED_CHECKER_GAP_RE = re.compile(
     r".{0,240}(?:no checker|not currently enforced|missing checker|gap|unresolved)"
 )
 DEFAULT_SOURCE_PARADE_RE = re.compile(
-    r"(?i)\b(?:al-?ghazali|ash'?ari|maturidi|ibn taymiyyah|aquinas|augustine|"
-    r"christian philosophers?|external theorists?|school-label|classical tradition)\b"
+    r"(?i)\b(?:named authorities?|named scholars?|contradictory authorities?|"
+    r"school-label|classical tradition|whole classical tradition)\b"
 )
 METHOD_SOURCE_BRANDING_RE = re.compile(
     r"(?i)\bdaee-epistemics\b.{0,120}\b(?:named scholar|named school|ash'?ari|"
@@ -1801,11 +1808,11 @@ RAW_DEFAULT_MARKERS = [
     "Governance: PARTIAL",
 ]
 OVER_CERTIFICATION_MARKERS = [
-    "hawÄ primary",
+    "hawÃ„Â primary",
     "hawa primary",
-    "iÊ¿rÄá¸ primary",
+    "iÃŠÂ¿rÃ„ÂÃ¡Â¸Â primary",
     "irad primary",
-    "possible juá¸¥Å«d",
+    "possible juÃ¡Â¸Â¥Ã…Â«d",
     "possible juhud",
     "identity-performance layer is governing",
 ]

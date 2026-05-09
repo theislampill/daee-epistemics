@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/terminology.md -->
-<!-- SOURCE_SHA256: f61632c6d63c0011cda0c32065ec100e14908a4fe93188b206372821ddd344d9 -->
+<!-- SOURCE_SHA256: 8fd681bc4a2e2929ec5edbbbcdb8bcbe1d2b2ccd29399c02ef2a9344f192fd16 -->
 
 ---
 id: terminology
@@ -447,7 +447,7 @@ PF codes, module activation rules, or source owners.
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/case-library/INDEX.md -->
-<!-- SOURCE_SHA256: 9558312b5b88cff8f465ee7011490c1f73af97dac6a64c97c3d11716b9c345a2 -->
+<!-- SOURCE_SHA256: 2738724f5ad1a1f8d272e7e86825fd86d61d090832310ebee533a299d2e26e59 -->
 
 ---
 id: case-library-index
@@ -692,7 +692,7 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/module-codes.md -->
-<!-- SOURCE_SHA256: 708dec2e822bac0fea8042dc1aa5edc81a6aa940351fa3fd0b27f31667d9d9be -->
+<!-- SOURCE_SHA256: 5f00a4d6d3d598aa3315bf9176abb4c2394a9fd3c917460627965f6ae197edf5 -->
 
 ---
 id: module-codes
@@ -1095,7 +1095,7 @@ shifts with it.
 <!-- MODULE_ID: heuristics -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/heuristics.md -->
-<!-- SOURCE_SHA256: 0149c33d0327871d6a7082b7175b990e344fee5abda746e2f99fe4bd5b3577f8 -->
+<!-- SOURCE_SHA256: b8de30190a202381dc083539afaa4dead9b14536740973c0805a1a2918a1f479 -->
 
 ---
 id: heuristics

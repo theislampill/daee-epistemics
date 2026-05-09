@@ -61,6 +61,11 @@ Questions must be:
   face genuine mortality?" not "do you believe God exists?"
 - Patient — allow the response to arise without rushing to capture it in a conclusion
 
+**Clarity discipline for non-specialists:** define -> split -> example -> boundary ->
+hold/release. Define the term in ordinary language, split the relevant senses, give one
+small example, state the boundary, then stop or release only the next stage-specific move.
+Do not use technical vocabulary as theater when a simple split would clear the burden.
+
 Gentle questioning creates space in which the disjunction between inner recognition and
 outer denial becomes visible — not because the dāʿī has argued the interlocutor into a
 corner, but because the interlocutor's own inner life has been allowed to speak. When that

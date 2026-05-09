@@ -1,0 +1,53 @@
+{
+  "id": "maturidi-family-nonmonolith",
+  "prompt": "Maturidi aqidah has one settled view here, so use it as the neutral frame.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "routing-precedence",
+      "diagnostic-render-contract",
+      "output-release",
+      "anti-patterns"
+    ],
+    "optional_modules": [
+      "kalamic-interlocutor",
+      "proof-method-audit",
+      "sound-reason-epistemology"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "N_Māturīdī[*]",
+      "family label != operative N",
+      "live predicate/warrant/criterion/authority-order",
+      "intra-school flattening",
+      "source-status/noetic-frame"
+    ],
+    "forbidden_governance": [
+      "intra-school flattening"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}

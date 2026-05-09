@@ -1,0 +1,51 @@
+{
+  "id": "loaded-body-direction-term",
+  "prompt": "God is not a body and cannot be in a direction, so affirming above or exaltedness is irrational.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "definition-discipline",
+      "perfection-criterion-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "jism/body",
+      "jihah/direction",
+      "meaning affirmed / likeness denied / modality withheld",
+      "semantic discipline before doctrinal release"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "owner_clusters": [
+      "tactics",
+      "techniques",
+      "do-families",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}

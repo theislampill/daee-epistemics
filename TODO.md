@@ -20,6 +20,19 @@ No active unresolved release-blocking technical pass is currently assigned.
 
 ## Completed Mainline Audit Patch Catalogue (post-v0.3.1.0)
 
+- v0.3.2.0 Level 3 executable routing adds an additive route-first path for
+  Codex-capable script runtimes: span-backed feature extraction, deterministic
+  routing given features, reconstruction/validation checks, execution checking,
+  continuation_queue traversal, and stable fixture tests. It does not claim
+  deterministic feature extraction, pure-Hermes parity, codons, owner packs, or
+  guaranteed transformer execution.
+- v0.3.2.0 nomenclature normalization records canonical noetic-state, DSL/IR,
+  Level 3, TTP/owner/operator, and transliteration names under
+  `references/diagnostics/nomenclature-normalization.md`.
+- v0.3.2.0 operator strengthening sharpened existing reason/revelation,
+  attribute-predication, and noetic-restoration owners with compact floors,
+  minimal-pair fixture expectations, source_basis discipline, and render
+  restrictions while keeping runtime output source-neutral.
 - Diagnostic IR ghost-load/source-basis enforcement is checker-backed by
   `tools/check_ir_instance_integrity.py` and
   `tools/check_diagnostic_ir_catalogue_integrity.py`.
@@ -31,7 +44,7 @@ No active unresolved release-blocking technical pass is currently assigned.
 
 ## Completed Metaaudit Repair Catalogue (2026-05-02)
 
-The `C:\ai\current\metaaudit.md` report found the skill partially compliant: the
+The repo-local metaaudit report found the skill partially compliant: the
 diagnostic compiler existed, but default output risked hiding too much governance behind
 `:audit` or a prose-only default. This pass catalogued and closed the reported risks as follows:
 
@@ -63,7 +76,7 @@ diagnostic compiler existed, but default output risked hiding too much governanc
 
 No new IR fields, route IDs, PF codes, owners, or architecture were introduced.
 
-## Post-current-canon / post-v0.3.1.0 Candidates
+## Post-v0.3.2.0 Candidates
 
 ### Live model regression testing
 - Build a small live-run suite that compares actual Claude outputs against the static routing fixtures.
@@ -101,13 +114,13 @@ No new IR fields, route IDs, PF codes, owners, or architecture were introduced.
 
 ### Bespoke religion-specific source-content owners
 - Status: closed / out of scope for v0.3.1.0.
-- Decision: do not add bespoke Jewish, Hindu Arya Samaj, Advaita, Buddhist, Sufi, tariqah-specific, or other tradition-specific source-content owners without a later authorized source-audit task.
+- Decision: do not add bespoke Jewish, Hindu Arya Samaj, Advaita, Buddhist, Sufi, tariqah-specific, or other tradition-specific source-content owners without a later authorized coverage task.
 - Existing coverage is structural. The skill may route authority-order, criterion, semantic, category-set, transmission, and register cases through existing owners, but it must not claim bespoke source-content adjudication.
 
 ### Sufism-related source-content adjudication
 - Status: closed / out of scope. No bespoke Sufism, tariqah-authority, or contested-practices source-content owner is authorized.
 - Cases involving Sufism-contested-practices or Sufism-tariqah-authority-claims may route through existing family-transfer and structural pattern owners only.
-- Do not add bespoke Sufism owners without an authorized source-audit task.
+- Do not add bespoke Sufism owners without an authorized coverage task.
 
 ### Generated runtime as source
 - Status: closed / prohibited.

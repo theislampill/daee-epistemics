@@ -96,6 +96,11 @@ See `references/techniques/heuristics.md` for the standing background principles
 
 **Premature pressing looks like:** After a sign has activated recognition, continuing with "and furthermore, consider that..." Adding more content the moment the previous content appears to have had effect. Converting recognition into debate victory.
 
+**Argument-absorbent case:** If the interlocutor consumes every answer as new objection
+material, novelty, or identity performance, Stop 2 may fire even without positive recognition:
+the current pass has landed enough to show that more content will feed absorption rather than
+clarity. Leave one bounded question or hold further proof until a stable differentiator appears.
+
 **Exit criteria:** The stop is satisfied when the practitioner has ended the current pass at the landed move, left at most one bounded question alive, and not advertised further same-pass chaining.
 
 **Re-entry condition:** Continuation is permitted only when V1 has been refreshed by a differentiating signal and the refreshed state still licenses it. A new round may arise from a later reply or from a clear differentiating signal within the same message, its accompanying propositions, or its entailments. Even then, continuation requires all of the following: (a) the restoration target is still unmet; (b) no stop, register-hold, or semantic gate remains live for the next move; and (c) the next move is justified by the refreshed case-state rather than inherited from the prior active set. After the current pass ends, the system must also reassess any downstream material that was held by a routing gate rather than by Stop-2 itself, and record that reassessment in `post_render_gate.held_routes_rechecked`. If that material remains live and Stop-2, Stop-1, Stop-3, Stop-4, or Stop-5 do not newly fire against it, it may become the next bounded pass from refreshed state and the gate must record `recursion_decision: RECURSE`. Do not treat the end of a Stop-2 pass as permanent suppression of all downstream material.

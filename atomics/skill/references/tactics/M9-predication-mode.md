@@ -77,6 +77,52 @@ TTP label cosplay.
 
 ---
 
+## v0.3.2.0 Attribute-Predication Matrix
+
+This matrix is an operator map, not an attribute catalogue. Use it to decide what must be
+split before V8 or doctrinal content can be released.
+
+| Term / pressure | Required split | First owner | Held route |
+|---|---|---|---|
+| `ta'wil` | tafsir/bayan vs semantic override by external criterion | M9 | V8/do-attribute after split |
+| `zahir` | apparent meaning fitting Allah vs creaturely mode | M9/V8 | doctrinal defense held |
+| `jism/body` | false creaturely body vs smuggled technical negation | M9 | V8/do-attribute |
+| `jihah/direction` | created spatial containment vs uluww/exaltedness | M9 | V8 |
+| `tarkib/composition` | separable parts/dependence vs multiplicity of attributes | M9/do-attribute | sound-reason section 6.3 |
+| `hadd/limit` | created boundary vs undefined technical negation | M9 | V8 |
+| `person/nature/is God` | identity, nature predicate, count noun, title of worship/lordship | M9 | DO-Christian/V12 |
+| `perfection` | revealed perfection vs imported philosophical condition | perfection-criterion | V8/do-attribute after tribunal test |
+| `immutability/eventfulness` | imperfection-change vs free divine action | perfection-criterion/V8 | P3 if tribunal over revelation |
+
+### Ta'wil-sense split
+
+Before answering "do you accept ta'wil?", split tafsir/bayan, which explains meaning, from
+semantic override, which diverts wording from its apparent sense because an external criterion
+has forbidden it. The first does not license the second. A yes/no answer before this split
+concedes an equivocation.
+
+### Communication-trust test
+
+When the proposed rule says core revealed descriptions systematically intend the opposite or
+non-apparent sense, test the cost to guidance, clarity, pedagogy, and public address. Broad
+semantic override remains held unless it can explain why core guidance would be delivered
+through systematically misleading surfaces.
+
+### Dalalah triad
+
+For names, attributes, and predicates, distinguish `mutabaqah` (full meaning), `tadammun`
+(included part), and `iltizam` (necessary implication). Valid implications may be retained,
+but the inference must name which dalalah type is doing the work.
+
+### Entailment attribution caution
+
+When the move is "your view entails X," do not publicly assign X to the human interlocutor
+until the entailment is presented and the speaker accepts it, denies the relation, or remains
+silent. The entailment may remain a critique of the position; it is not automatically an
+attribution to the person.
+
+---
+
 ## Function 1 - Equivocation Exposure
 
 **Trigger:** An argument's inference depends on a term carrying the same sense across two or more of its occurrences, but the sense of the term shifts between them.
@@ -175,6 +221,10 @@ Until that split is made, the yes/no answer you want has not been earned.
 - If the response answers "God is not a body" or "God is not in a direction" without first clarifying what the speaker means, M9 did not govern.
 - If the response accepts "composite" or "dependent" as a settled category before distinguishing kinds of composition and dependence, M9 did not govern.
 - If the reply reaches V8, `do-attribute-precision.md`, or kalamic school-routing without first splitting the loaded term, the semantic gate was bypassed.
+- If the reply answers broad ta'wil claims without splitting tafsir/bayan from tribunal-driven
+  semantic override, M9 did not govern.
+- If the reply attributes an unaccepted entailment to a person rather than the position, M9 did
+  not govern.
 
 ---
 

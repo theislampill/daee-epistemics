@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: techniques-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/INDEX.md -->
-<!-- SOURCE_SHA256: fa1bfc1294c268c9c7764d77bbed8c76087d636ccbd310263e808c20fc916281 -->
+<!-- SOURCE_SHA256: 5e1f29417426bbcc3ea0745be61682872de4bb3166500799bfa104ee31162bbf -->
 
 ---
 id: techniques-index
@@ -84,7 +84,7 @@ Techniques are not route itineraries or argument banks. A technique may structur
 <!-- MODULE_ID: V2-reconstituting-reason -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V2-reconstituting-reason.md -->
-<!-- SOURCE_SHA256: ac140d568753191558be5e3c558175c4590c72ef059563d606e1cea56a57e845 -->
+<!-- SOURCE_SHA256: db89346baa49dec5d47040cd61d67675292ccc5c8c0adebca2cdffe6d130cbd5 -->
 
 ---
 id: V2-reconstituting-reason
@@ -121,6 +121,25 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 2. *Show the framework is one position among several.* It was not always dominant, is not universal, and is not established by the methods it recommends. Scientism cannot validate itself scientifically. A self-styled "universal law" that revelation must submit to a prior rational filter still needs justification for that filter. A worldview that can only be accepted by its own standards is circular, not foundational.
 3. *Propose the alternative.* ʿAql ṣarīḥ — genuine reason, operating without historically contingent distortions — is fully capable of apprehending theistic truth.
 
+**Claimed-certainty audit:** When the filter says "reason decisively proves X," require the
+specific proof to disclose its premises, scope, and contested status. A school premise,
+perfection criterion, simplicity claim, or philosophical necessity claim does not become
+"reason itself" by being called decisive. If the proof is contested or speculative, V2 marks the
+filter as pseudo-neutral or inherited and routes to proof-method-audit or
+perfection-criterion-usurpation before any revelation reinterpretation is released.
+
+Minimal operation:
+
+```text
+Target: claimed rational certainty.
+Operation: expose premises, scope, and contested status.
+Result: if speculative or school-bound, it cannot govern as reason itself.
+```
+
+Failure condition: V2 has not executed if the response merely says the interlocutor has a
+"contaminated conception of reason" without naming the active filter, testing its self-warrant,
+and stating what content remains held or newly releasable after the filter loosens.
+
 > The question is never "can you believe in God despite what reason says?" It is: "are you using a conception of reason adequate to the full range of what human beings can know?"
 
 **Deeper rationale:** The contaminated conception of reason is not just a bad epistemological theory. It is the fiṭrah's guiding function to the intellect (ʿaql) being occluded. Sound reason (ʿaql ṣarīḥ) depends on the fiṭrah's health: when the fiṭrah is sound, it provides the intellect with its orientation toward truth. When a historically contingent philosophical framework has been internalized as reason itself, the fiṭrah's guidance is blocked at the level of the intellect — the filter corrupts the faculty's directedness before any content is evaluated. This means V2 is a form of fiṭrah-restoration at the level of ʿaql. It is not independent of P1 (fiṭrah restoration); it is P1 operating at the specific layer where the blockage is conceptual-intellectual rather than affective or habitual.
@@ -131,6 +150,8 @@ Most often deployed before any other technique. Many contemporary interlocutors 
 - the operative conception of reason has been named as a contestable framework rather than as neutral reason itself
 - the interlocutor grants that their criterion is not self-grounding or not consistently applied
 - the next live question has shifted from defending the filter to examining what the filter had been excluding
+- a claimed certainty has disclosed its premises and no longer functions as an unexamined
+  tribunal over revelation
 
 If none of these has occurred, stay with V2 or return to noetic/deformation diagnosis rather than pretending the framework has cleared.
 
@@ -145,7 +166,7 @@ If none of these has occurred, stay with V2 or return to noetic/deformation diag
 <!-- MODULE_ID: V3-regress-dissolution -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V3-regress-dissolution.md -->
-<!-- SOURCE_SHA256: 0798f792d705e6e5a2010f44c998b2eafde6ba8a424565d12394c343f2411a9f -->
+<!-- SOURCE_SHA256: 9b79b7ee97d28551ec15d637f06c1b51a674a45df1adb44e93321d0211900807 -->
 
 ---
 id: V3-regress-dissolution
@@ -209,7 +230,7 @@ stop, register-hold, or semantic gate live for the next move.
 <!-- MODULE_ID: V4-contamination-identification -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V4-contamination-identification.md -->
-<!-- SOURCE_SHA256: c21a18d0f6d4e22017c4c5e729b9c5d44f19cf91a09106977e13ad53f62325e4 -->
+<!-- SOURCE_SHA256: 1a34ac024fca66031efc4be6a8c5ee2e9d0acccad8f0a5a69ae13b1c143b4a27 -->
 
 ---
 id: V4-contamination-identification
@@ -253,7 +274,7 @@ Two forms:
 <!-- MODULE_ID: V5-directing-attention-signs -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V5-directing-attention-signs.md -->
-<!-- SOURCE_SHA256: 1ecc8084c2a194f4989f3063471b0403a8329b0e9cc6031626ba3c5b04d3944c -->
+<!-- SOURCE_SHA256: b953bf1b44c2d49e9d0a18b4554832103ed918edb991f3a440091f98123f8bb5 -->
 
 ---
 id: V5-directing-attention-signs
@@ -281,6 +302,33 @@ catalogue_registered: true
 **Deploy when:** Framework has been cleared (V2 deployed); directing attention to specific āyāt calibrated to this interlocutor.
 
 The fiṭrah is activated by signs (āyāt), not by arguments. The dāʿī's role is to direct attention.
+
+## Owner-Specific Operation Floor
+
+Minimum operation:
+
+1. name the exact attention-block or false-cause pressure that V5 is answering;
+2. select the sign-domain calibrated to that pressure;
+3. present it as attention, not as a forced syllogism or invented causal mechanism;
+4. state the result as opened recognition, held response, or need for prior V2/P1 work.
+
+Exit condition: the sign has been placed before the relevant noetic blockage without turning into
+a proof-bank argument. If the response says "notice signs" without a calibrated sign-domain and
+release/hold result, V5 has not executed.
+
+## Sign vs. False-Cause Discipline
+
+A sign directs attention; it is not an invented causal mechanism. V5 may invite the
+interlocutor to attend to order, beauty, moral normativity, mortality, gratitude, and need,
+but it must not claim a cause without either shar'i warrant or sensory warrant. This protects
+V5 from two opposite failures:
+
+- converting signs into forced syllogisms;
+- treating superstition, astrology, or unsupported causal claims as signs.
+
+When science-language is live, distinguish "science describes a proximate process" from
+"therefore the sign is explained away." A process can be the place where attention is directed
+without becoming a self-sufficient cause or a false causal warrant.
 
 ## The Critical Operational Distinction: Indication vs. Argument
 
@@ -323,7 +371,7 @@ Track (b): "Human consciousness has a specific *normative* character — irreduc
 <!-- MODULE_ID: V6-convergence -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V6-convergence.md -->
-<!-- SOURCE_SHA256: 8daf03f0cbad8713accdf7be439a1f414b6f22bd5bfe9795ae65c66def103e39 -->
+<!-- SOURCE_SHA256: dc7bdf3bde4bc0c3618f3bbf6be8afd01d372723453141a811249bc027cf4715 -->
 
 ---
 id: V6-convergence
@@ -390,7 +438,7 @@ itself is what changes the case.
 <!-- MODULE_ID: V7-taqlid-check -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V7-taqlid-check.md -->
-<!-- SOURCE_SHA256: 2d9ba06da1a8b524d6c06a69e993b45ab58c197766ed555cc3ea3086be9e7ef4 -->
+<!-- SOURCE_SHA256: 0a87bea54b012b76c01d1fb2da830f3be54b2f698d0b5874072f6e7644757376 -->
 
 ---
 id: V7-taqlid-check
@@ -438,7 +486,7 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V8-bila-kayf-anchor.md -->
-<!-- SOURCE_SHA256: a9b0e78c60c7b1bf9a1171c7664fc21ffce83c33ef8be387946ebbbd4be31f2b -->
+<!-- SOURCE_SHA256: 0af4f339e155dc77bd520a339072f138347b31b9747145a4fa0f233f128e08c9 -->
 
 ---
 id: V8-bila-kayf-anchor
@@ -477,6 +525,15 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 - `tashbih` - importing creaturely mode into divine attributes
 - `ta'til` - denying the reality of divine attributes altogether
 
+**Minimal operator form:** meaning affirmed / likeness denied / modality withheld.
+
+- Affirm the meaning carried by the revealed wording after M9 has stabilized the term.
+- Deny creaturely likeness, similitude, and containment.
+- Withhold modality (`kayf`) rather than inventing a how.
+
+V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
+as a license to bypass M9's loaded-term split.
+
 **Positive content - analogical predication:** the tradition holds analogical predication, not univocal or purely equivocal predication. Terms carry a semantic core that applies genuinely across different instances while the mode of instantiation varies.
 
 For the generalized predication-mode framework across non-divine domains, load M9. V8 governs the divine-attribute subcase; M9 routes that subcase back here.
@@ -512,7 +569,7 @@ For fuller treatment:
 <!-- MODULE_ID: V9-necessary-knowledge-priority -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V9-necessary-knowledge-priority.md -->
-<!-- SOURCE_SHA256: d70d4f5a5d400243062539f30eec9e4b99a03ca062898d4b4157aa2713e187f0 -->
+<!-- SOURCE_SHA256: ab1c1c08f8b380edf6ec41f95f1ba9bd156b0833f750002df55b3294a5d98d2e -->
 
 ---
 id: V9-necessary-knowledge-priority
@@ -565,7 +622,7 @@ catalogue_registered: true
 <!-- MODULE_ID: V11-taqlid-transition -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V11-taqlid-transition.md -->
-<!-- SOURCE_SHA256: 23391440bc4fa1d5be3d55c753dda052148f4c0e5cd2d7f58bab4460480413e4 -->
+<!-- SOURCE_SHA256: 1998fcc33924973c179879ba553520d9bfdbfcb0327ffcb61ea8219b8ab9e889 -->
 
 ---
 id: V11-taqlid-transition
@@ -749,7 +806,7 @@ procedure, not a tactical move; it may unfold across many exchanges, sometimes y
 <!-- MODULE_ID: V12-tamanuc-exhaustion -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: atomics/skill/references/techniques/V12-tamanuc-exhaustion.md -->
-<!-- SOURCE_SHA256: da4e8d246444a26586a0811993e6196755b92817063cf2eeb49c0483e1dff9f9 -->
+<!-- SOURCE_SHA256: efeee08526ec43c20153cf6a21d4a7c2ad9ae3f0f5be08acbb16cd84702934dc -->
 
 ---
 id: V12-tamanuc-exhaustion

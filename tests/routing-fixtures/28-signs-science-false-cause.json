@@ -1,0 +1,49 @@
+{
+  "id": "signs-science-false-cause",
+  "prompt": "Science explains the process, so signs are explained away; also astrology proves hidden causes if you read the signs right.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "V5-directing-attention-signs",
+      "V2-reconstituting-reason",
+      "M5-deformation-triage"
+    ],
+    "optional_modules": [
+      "causal-series-taxonomy",
+      "M3-orphaned-intuition"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics"
+    ],
+    "required_governance": [
+      "Sign vs. False-Cause Discipline",
+      "shar'i warrant or sensory warrant",
+      "science describes a proximate process",
+      "false causal warrant",
+      "directs attention"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "owner_clusters": [
+      "techniques",
+      "tactics",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20
+  }
+}
