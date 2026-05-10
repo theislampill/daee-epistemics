@@ -22,10 +22,10 @@ writes slash-safe archive entries.
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `DA77F524A56EE3179C78AEE2202D892A4E82A1B351A683DC37B89A283F8A09E2` |
-| Size | `571310` bytes |
+| SHA256 | `D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B` |
+| Size | `571309` bytes |
 | Entries | `45` |
-| Source commit | `663f762d1c56fc6ae804a47978d46a08b3aa9a95` |
+| Source commit | `a62bbdc534a7de958882d6cfd864db5831fe0f3f` |
 | GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, Level 1/2 scriptless governance lift, and canary-name hygiene |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
@@ -61,7 +61,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Committed current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`DA77F524A56EE3179C78AEE2202D892A4E82A1B351A683DC37B89A283F8A09E2` are not present unless a smoke
+`D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
