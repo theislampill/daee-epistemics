@@ -150,10 +150,11 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
   package-shape validation, smoke/evidence boundaries, explicit staging, and
   GitHub Release asset replacement after package rebakes.
 - Refreshed the same-version v0.3.2.0 `.skill` asset from commit
-  `a62bbdc534a7de958882d6cfd864db5831fe0f3f`, with SHA256
-  `D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B`,
-  571309 bytes, and 45 entries. This records source/package/release evidence
-  for the generalized pressure-dimension hardening while preserving the
+  `b0bad507d3e0115a6ae57fc5a2e0e45e3eee944c`, with SHA256
+  `1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10`,
+  572004 bytes, and 45 entries. This records source/package/release evidence
+  for the generalized pressure-dimension hardening and frontloaded Level 1/2
+  burden-depth governance while preserving the
   boundary that Claude Level 1/2 scriptless shrinkage recovery remains a
   separate manual rerun gate.
 - Corrected the packaged `SKILL.md` metadata description to remain within the

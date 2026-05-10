@@ -22,11 +22,11 @@ writes slash-safe archive entries.
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B` |
-| Size | `571309` bytes |
+| SHA256 | `1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10` |
+| Size | `572004` bytes |
 | Entries | `45` |
-| Source commit | `a62bbdc534a7de958882d6cfd864db5831fe0f3f` |
-| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, Level 1/2 scriptless governance lift, and canary-name hygiene |
+| Source commit | `b0bad507d3e0115a6ae57fc5a2e0e45e3eee944c` |
+| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, Level 1/2 scriptless governance lift, canary-name hygiene, and frontloaded Level 1/2 burden-depth governance |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
@@ -61,7 +61,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Committed current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B` are not present unless a smoke
+`1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
