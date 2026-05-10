@@ -134,7 +134,7 @@
   "extra_inputs": {
     "atomics/skill/SKILL.md": "d8d0f71a35b574db94776e22245ce0dd939f334ce6c7cb43eb8e961bcfb7cbbd",
     "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "87d4142dde8443c1e2aa9f5370a8b9494c57bf9d7b8f6cdb15ba444ee77deff3",
-    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "288f01f1a4656325e02e281b004b9cbbcd9f10157a28066dd251e6a4f2e5132b",
+    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "31ef41631dfaab4b590e181757b5d94dbf9c65634e6784e4c7dc55d7d3d672ec",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
     "atomics/skill/references/diagnostics/operative-contract.schema.json": "c85eb9b50defe4a8d2872f80711b8d7cb6d5626c37dd927b888d9e6de7cfe2ef"
   },
