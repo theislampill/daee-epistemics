@@ -149,6 +149,13 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
   source-of-truth discipline, version/contract coherence, encoding hygiene,
   package-shape validation, smoke/evidence boundaries, explicit staging, and
   GitHub Release asset replacement after package rebakes.
+- Refreshed the same-version v0.3.2.0 `.skill` asset from commit
+  `60899f792abb3b09ad02ef37b6fda8257e868254`, with SHA256
+  `50D5C2AA5365EE7B50743F586A3D582B5CD4AF02143A16704977BDEDD9056584`,
+  571306 bytes, and 45 entries. This records source/package/release evidence
+  for the generalized pressure-dimension hardening while preserving the
+  boundary that Claude Level 1/2 scriptless shrinkage recovery remains a
+  separate manual rerun gate.
 - Corrected the packaged `SKILL.md` metadata description to remain within the
   1024-character host limit while preserving the broad activation surface, and
   added `check_frontmatter.py` / `package.ps1` guards so overlong skill

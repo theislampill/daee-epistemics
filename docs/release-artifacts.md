@@ -1,8 +1,8 @@
 # Release Artifacts
 
-This file records the current v0.3.2.0 GitHub Release package artifact. Binary skill archives
-are not committed to the source repository; GitHub Releases are the binary distribution surface
-for the published `.skill` asset.
+This file records the current v0.3.2.0 release package artifact used for the same-version
+GitHub Release asset refresh. Binary skill archives are not committed to the source repository;
+GitHub Releases are the binary distribution surface for the published `.skill` asset.
 
 Build the package locally from the generated `skill/` package root:
 
@@ -22,14 +22,15 @@ writes slash-safe archive entries.
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7` |
-| Size | `543117` bytes |
+| SHA256 | `50D5C2AA5365EE7B50743F586A3D582B5CD4AF02143A16704977BDEDD9056584` |
+| Size | `571306` bytes |
 | Entries | `45` |
-| GitHub Release visibility | Published; asset rebaked for recursive render, Qurʾān/ḥadīth formatting, kalām terminology, operative-distinction, release-protocol hardening, and SKILL metadata description-limit compliance |
+| Source commit | `60899f792abb3b09ad02ef37b6fda8257e868254` |
+| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, and Level 1/2 scriptless governance lift |
 | Release tag | `v0.3.2.0` |
-| Release name | `v0.3.2.0 - Level 3 Route-First Runtime` |
+| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
-| Verification date | `2026-05-09` |
+| Verification date | `2026-05-10` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
@@ -46,15 +47,20 @@ package evidence for the v0.3.2.0 SHA listed above. Their trace files explicitly
 package known when the historical regression artifacts were written, not the current package
 artifact in this file.
 
-Current-release smoke suite: none.
+Current-release committed smoke suite: none.
+
+Local retained real Codex CLI Level 3 TST canary evidence exists under ignored `.daee/`
+for this source/package rebake. It proves the installed Level 3 path on that canary only;
+raw smoke artifacts are not committed, not packaged, and do not prove Claude Level 1/2
+scriptless behavioral recovery.
 
 `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe artifacts are development /
 post-expansion regression evidence in this source state. They are not current-package smoke
 evidence unless regenerated against the release package recorded in this file and marked with
 current-release package provenance.
 
-Current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`9F21FA1E5FC1188CB7DB51F614BBE7BCB3EEB9A3BF820C62E521EAC94F9BCBA7` are not present unless a smoke
+Committed current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
+`50D5C2AA5365EE7B50743F586A3D582B5CD4AF02143A16704977BDEDD9056584` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
