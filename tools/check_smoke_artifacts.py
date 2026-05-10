@@ -23,7 +23,7 @@ HARD_MIN_BYTES = 20_000
 DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
 DEFAULT_RELEASE_ARTIFACTS = ROOT / "docs" / "release-artifacts.md"
 DEFAULT_RELEASE_PACKAGE_FILENAME = "daee-epistemics-v0.3.2.0.skill"
-DEFAULT_RELEASE_PACKAGE_SHA256 = "D765EDE56506E9F8E88D16455B0FE1E556EDD5A2AD5FDEDFE73CC93526848D8B"
+DEFAULT_RELEASE_PACKAGE_SHA256 = "1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10"
 PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill(?:\.zip)?$")
 HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
 RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
@@ -206,6 +206,16 @@ BURDEN_START_RE = re.compile(
 LAYER_A_START_RE = re.compile(r"(?im)^\ufeff?\s*(?:#{1,6}\s*)?Layer A\b")
 STATE_REREAD_RE = re.compile(r"(?im)^\s*(?:#{1,6}\s*)?(?:State/noetic re-read\b|R\(H\b)")
 LANDING_RE = re.compile(r"(?im)\b(?:Land\(B(?:\d+)?\)|burden landed)(?=\W|$)|^\s*-\s*Cleared\s*:")
+RESTORATIVE_RESPONSE_RE = re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\b")
+FINAL_SOURCE_FUNCTION_RE = re.compile(
+    r"(?i)\b(?:mercy|guidance|hujjah|accountability|worship-worthiness|"
+    r"worthy of worship|testimony|tawatur|transmission|predication|predicate|"
+    r"source architecture|qur'?an\s+\d+:\d+|hadith|sunnah)\b"
+)
+FINAL_DIRECT_SOURCE_RE = re.compile(
+    r"(?i)\b(?:qur'?an\s+\d+:\d+|hadith|sunnah|bukhari|muslim|tirmidhi|"
+    r"abu dawud|nasai|ibn majah)\b"
+)
 TARGET_LINE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?target\s*:")
 OPERATION_LINE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?operation\s*:")
 RESULT_LINE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?result\s*:")
@@ -222,11 +232,13 @@ LABEL_ONLY_RESULT_RE = re.compile(
     r"[A-Z]\d+[A-Z]?(?:-[A-Za-z0-9-]+)?)\s+"
     r"(?:used|named|invoked|applied)\b"
 )
-ATOMIC_BURDEN_EXPLANATION_RE = re.compile(
-    r"(?im)^\s*-\s*(?:all burdens atomic|atomic-burden status)\s*:\s*yes\b"
+BURDEN_ACCOUNTED_SINGLE_SUBMOVE_RE = re.compile(
+    r"(?im)^\s*-\s*(?:diagnostic-burden-accounting|burden-accounted structure)\s*:\s*"
+    r"(?:single-submove|one-live-burden|atomic-after-diagnosis)\b"
 )
-SECTION_ATOMIC_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?(?:atomic burden|atomic-burden|burden atomic)\s*:\s*yes\b"
+SECTION_BURDEN_ACCOUNTED_SINGLE_SUBMOVE_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:diagnostic-burden-accounting|burden-accounted structure)\s*:\s*"
+    r"(?:single-submove|one-live-burden|atomic-after-diagnosis)\b"
 )
 RELEASE_STATUS_PROSE_RE = re.compile(
     r"(?im)^\s*-?\s*Release status\s*:\s*(?!(?:STOP|HOLD|RECURSE|PARTIAL)\b).+\S"
@@ -421,7 +433,7 @@ BAD_SAMPLES = {
             + ("case-specific filler placeholder " * 900)
         ),
         "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 3\n",
-        "expected": "hard PASS has non-atomic burden sections without multi-submove support",
+        "expected": "hard PASS has sections without burden-accounted multi-submove support",
     },
     "known_complex_atomic_escape": {
         "fixture": "11-refute-secularism-hard",
@@ -449,8 +461,8 @@ BAD_SAMPLES = {
             "- Release status: closed for this input.\n\n"
             + ("case-specific filler placeholder " * 900)
         ),
-        "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 2\n- all burdens atomic: yes\n",
-        "expected": "known complex or multi-cycle hard PASS cannot use all-burdens-atomic escape",
+        "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 2\n- diagnostic-burden-accounting: single-submove\n",
+        "expected": "known complex or multi-cycle hard PASS cannot use burden-accounting single-submove escape",
     },
     "label_only_operation_pass": {
         "fixture": "11-refute-secularism-hard",
@@ -487,6 +499,34 @@ BAD_SAMPLES = {
         "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 2\n",
         "trace": "- owner-body evidence: compiled bundle sections available\n",
         "expected": "hard PASS contains label-only operation or result line",
+    },
+    "final_source_synthesis_pass": {
+        "fixture": "08-evidential-evil-moral-protest-hiddenness",
+        "input": "Why would God punish people? Bring sources.",
+        "output": (
+            "Layer A - Compact DSL/IR header\n"
+            "- live noetic burden: moral protest source request\n"
+            "Layer B - bounded governed response\n"
+            "Target: imported moral tribunal.\n"
+            "Operation: expose the hidden criterion.\n"
+            "Result: the burden landed.\n"
+            "Target: hiddenness demand.\n"
+            "Operation: disambiguate guidance from coercion.\n"
+            "Result: the burden landed.\n"
+            "State/noetic re-read\n"
+            "- burden landed: tribunal exposed.\n"
+            "- What changed / cumulative-state delta: source work is claimed closed.\n"
+            "- Release status: closed for this input.\n\n"
+            "Restorative Response\n"
+            "Qur'an 17:15 proves no punishment without a messenger; Qur'an 2:286 proves mercy and accountability; guidance, hujjah, and worship-worthiness are therefore restored.\n\n"
+            + ("case-specific filler placeholder " * 900)
+        ),
+        "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 1\n- diagnostic-burden-accounting: single-submove\n",
+        "trace": (
+            "- owner-body evidence: compiled bundle sections available\n"
+            "- owner-floor evidence: operation-specific target/result evidence present\n"
+        ),
+        "expected": "hard PASS first introduces source function in final restoration",
     },
     "owner_label_without_floor_evidence": {
         "fixture": "11-refute-secularism-hard",
@@ -1462,6 +1502,18 @@ def owner_body_not_loaded_claim(text: str) -> bool:
     return bool(OWNER_BODY_NOT_LOADED_RE.search(without_negated_lines))
 
 
+def source_function_first_appears_in_restoration(output_text: str) -> bool:
+    """Detect source-governed material being introduced first in final restoration."""
+    restorative = RESTORATIVE_RESPONSE_RE.search(output_text)
+    if restorative is None:
+        return False
+    prior = output_text[: restorative.start()]
+    final = output_text[restorative.start() :]
+    direct_source_first = bool(FINAL_DIRECT_SOURCE_RE.search(final)) and not bool(FINAL_DIRECT_SOURCE_RE.search(prior))
+    function_first = bool(FINAL_SOURCE_FUNCTION_RE.search(final)) and not bool(FINAL_SOURCE_FUNCTION_RE.search(prior))
+    return direct_source_first or function_first
+
+
 def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text: str) -> list[str]:
     errors: list[str] = []
     if fixture_class(verdict_text) != "hard" or verdict_status(verdict_text) != "PASS":
@@ -1491,26 +1543,31 @@ def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text
         errors.append("hard PASS lacks visible burden landing for every claimed burden")
 
     unit_counts = [operation_unit_count(section) for section in sections]
-    global_atomic = bool(ATOMIC_BURDEN_EXPLANATION_RE.search(verdict_text))
-    if global_atomic and (fixture_name in KNOWN_COMPLEX_HARD_FIXTURES or expected_cycles > 1):
-        errors.append("known complex or multi-cycle hard PASS cannot use all-burdens-atomic escape")
-        global_atomic = False
-    if sections and not global_atomic:
-        section_atomic = [bool(SECTION_ATOMIC_RE.search(section)) for section in sections]
+    burden_accounted_single_submove = bool(BURDEN_ACCOUNTED_SINGLE_SUBMOVE_RE.search(verdict_text))
+    if burden_accounted_single_submove and (fixture_name in KNOWN_COMPLEX_HARD_FIXTURES or expected_cycles > 1):
+        errors.append("known complex or multi-cycle hard PASS cannot use burden-accounting single-submove escape")
+        burden_accounted_single_submove = False
+    if sections and not burden_accounted_single_submove:
+        section_single_submove = [
+            bool(SECTION_BURDEN_ACCOUNTED_SINGLE_SUBMOVE_RE.search(section))
+            for section in sections
+        ]
         weak_sections = [
             index + 1
-            for index, (count, atomic) in enumerate(zip(unit_counts, section_atomic))
-            if count < 2 and not atomic
+            for index, (count, single_submove) in enumerate(zip(unit_counts, section_single_submove))
+            if count < 2 and not single_submove
         ]
         if weak_sections:
             errors.append(
-                "hard PASS has non-atomic burden sections without multi-submove support: "
+                "hard PASS has sections without burden-accounted multi-submove support: "
                 + ", ".join(str(index) for index in weak_sections)
             )
     if fixture_name in KNOWN_COMPLEX_HARD_FIXTURES and sections and not any(count >= 2 for count in unit_counts):
         errors.append("known complex hard PASS lacks a complex burden with multiple operative units")
     if sections and any(count == 0 for count in unit_counts):
         errors.append("hard PASS has a visible burden without target-operation-result support")
+    if source_function_first_appears_in_restoration(output_text):
+        errors.append("hard PASS first introduces source function in final restoration")
     return errors
 
 
@@ -1693,7 +1750,7 @@ def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -
     if not root.exists():
         return [
             f"smoke artifact root is absent: {root}. "
-            "Create repo-local smokes/runtime-grounding-v5/ or pass --root explicitly."
+            "Pass --root explicitly when validating a local smoke suite."
         ]
     if not fixture_dirs:
         return [f"no fixture directories found under {root}"]
@@ -1912,8 +1969,8 @@ def main(argv: list[str]) -> int:
         "--root",
         default=str(DEFAULT_ROOT),
         help=(
-            "Smoke artifact root to validate. Defaults to repo-local "
-            "smokes/runtime-grounding-v5/."
+            "Smoke artifact root to validate. Defaults to the legacy repo-local "
+            "smokes/runtime-grounding-v5/ only when that root is present."
         ),
     )
     parser.add_argument(
@@ -1960,7 +2017,8 @@ def main(argv: list[str]) -> int:
     errors.extend(release_errors)
     if not args.samples_only:
         artifact_root = Path(args.root)
-        errors.extend(validate_root(artifact_root, None if args.no_release_artifacts else release_artifact))
+        if artifact_root.exists() or artifact_root != DEFAULT_ROOT or args.require_current_release_smokes:
+            errors.extend(validate_root(artifact_root, None if args.no_release_artifacts else release_artifact))
         if args.require_current_release_smokes:
             if release_artifact is None:
                 errors.append("--require-current-release-smokes requires release-artifacts evidence")

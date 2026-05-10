@@ -870,7 +870,7 @@ Framing notes: do not treat anatta as simple mate
 <!-- MODULE_ID: ir-reconstruction-pass -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/ir-reconstruction-pass.md -->
-<!-- SOURCE_SHA256: 542f815eb47b4d27b3bdebbcdb0dd55e523e7d2ca969e9a40a0c35ad0210edab -->
+<!-- SOURCE_SHA256: 7c142aa0aee4ff9e29f8dcb014c372d07667cd58a05f032a60453ac98b6a896f -->
 
 ---
 id: ir-reconstruction-pass
@@ -1034,6 +1034,10 @@ what premise, criterion, warrant, source-frame, predicate, testimony question, r
 restoration vector was actually pressured, and what claim-state changed. If only owner labels,
 generic Target/Operation/Result syntax, source citations, or closing restoration language can be
 recovered, the render is plausible typed commentary rather than faithful compressed control state.
+The same test applies to release sequencing: an auditor should be able to recover the nearest
+held/deferred alternatives, any source-governed functions that were landed or held, and why the
+next state is STOP, HOLD, PARTIAL, or RECURSE. If a compact render preserves only the first active
+route and a final synthesis, it has not reconstructed the compound burden faithfully.
 
 ## Render Discipline
 
@@ -1051,7 +1055,7 @@ diagnostic or audit render.
 <!-- MODULE_ID: case-state-schema -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/case-state-schema.md -->
-<!-- SOURCE_SHA256: 5556485f73dc316e53d12f7e2703a5bd58255b871dd9ed6ce132a132838bc47a -->
+<!-- SOURCE_SHA256: 20aeb2daf7f170151a0b50b474def44951bfe1f0584e2c1fbbbfc61a0e315d4b -->
 
 ---
 id: case-state-schema
@@ -1248,7 +1252,7 @@ Field discipline:
 Compression rule: populate only the fields that had operative content. A restoration trace with two populated fields is more honest than one that fills all five performatively. If no correction was required, omit the block entirely.
 
 Integration with `[Source Basis]`: the restoration trace is downstream of the case-state and source-basis blocks. It does not replace them. Case-state names what was diagnosed; source-basis names where claims are grounded; restoration trace names what was done to create the conditions under which the response could land.
-Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not carry forward automatically. A fresh round may be opened by a later reply or by a clear differentiating signal inside the same message, its accompanying propositions, or its entailments, but only when the refreshed case-state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
+Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not become deployable automatically, but they do carry forward as held until explicitly released, resolved, skipped, or marked PARTIAL. A fresh round may be opened by a later reply or by a clear differentiating signal inside the same message, its accompanying propositions, or its entailments, but only when the refreshed case-state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
 ## Post-Render Gate Block
 
@@ -1714,7 +1718,7 @@ The `[Source Basis]` block in `case-state-schema.md` requires source-weight anno
 <!-- MODULE_ID: mixed-case-handling -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/mixed-case-handling.md -->
-<!-- SOURCE_SHA256: 80504de509d93f81d55b0ad926f3238888151879e3c07dc8d21da5a8a7a6aed5 -->
+<!-- SOURCE_SHA256: 3a5992efe3db3c84c19dab2fede5700472b46f09265afe761634ec6d213133fe -->
 
 ---
 id: mixed-case-handling
@@ -1737,6 +1741,12 @@ catalogue_registered: false
 - When a higher-order burden and a first-order burden are both live, keep both explicit and sequence the higher-order burden first.
 - When a higher-order burden is primary, type the restoration target at that same layer before selecting downstream content. Do not let `pattern_profile` stand in for the layer being restored.
 - When an imported tribunal and a semantic blocker are both live, preserve both. Sequence tribunal-clearing first, then semantic clarification, then doctrinal engagement. Do not collapse the case into one label.
+- When a noetic-family frame and another live pressure are both present, preserve the family-local
+  pressure. Do not flatten Ashʿarī/Māturīdī variants, kalām, falsafah, ilḥād/naturalism,
+  secular moral realism, Christian source-worldview transfer, predication, transmission/testimony,
+  or grief/register into a generic "worldview" or "source status" move. Sequence the upstream
+  blocker first, but keep the family-specific predicate, proof-method, testimony, authority, or
+  register question recoverable for later release or explicit HOLD/PARTIAL.
 - If grief, vested interest, or identity-performance may be primary, do not treat the case as a pure `shubha` until that possibility has been tested.
 - If a tradition-labeled case carries family, communal identity, institutional betrayal, teacher abuse, caste/social belonging, or authority wound, do not treat the formal objection as primary until the wound-vs-tribunal distinction is tested.
 - Treat `do not use when` as a precondition: this file is not the opening move when a clean primary read is already well established.
@@ -1875,7 +1885,7 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/anti-patterns.md -->
-<!-- SOURCE_SHA256: cae7ede14c9aabc5374323f6b76d6beec89fcd355c345b2cb11d638164ccabf1 -->
+<!-- SOURCE_SHA256: 888d924a1152dcc51b438d666f4128bc34df1fb6442f3eee4f555184634289d1 -->
 
 ---
 id: anti-patterns
@@ -2249,7 +2259,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 *Definition:* A hard output names a complex `B` but renders it as one broad Target/Operation/Result block, then moves to `R`, leaving materially necessary submoves implicit.
 *Malformed shape:* `Burden 1: imported tribunal -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed -> state/noetic re-read`.
 *Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `B1.s1`, `B1.s2`, etc.; `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
-*Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only for a genuinely atomic burden.
+*Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only when diagnostic burden accounting shows one live burden with one materially necessary submove.
 *Prevented by:* `SKILL.md` execution spine; `diagnostic-render-contract.md` hard-output render-through template; `recursive-state-transitions.md` B-complexity test.
 
 ---
@@ -3093,7 +3103,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 86406ded03442ee1da08cf9669569572cb3f81d24019048f5155fd7f93ee8645 -->
+<!-- SOURCE_SHA256: 7e38c61bcab01a808184c5e3f1df83617b4036796f07cc11349cc9272d7f6b6b -->
 
 ---
 id: recursive-state-transitions
@@ -3392,6 +3402,11 @@ If a source-request burden has several source functions, each function must rema
 to the submove it governs. A global source list or one generic revealed text does not preserve
 state when the route needs separate hujjah, guidance/non-compulsion, fitrah/ayat,
 mercy/justice, repentance/return, testimony, or predicate-source operations.
+Final restoration is licensed only after those source functions have either landed or been
+held. A closing synthesis cannot be the first place where mercy/justice, Creator-right,
+repentance/return, worship-worthiness order, testimony, or predicate-source pressure is
+operatively supplied. If such a function remains live at `R(H,Delta)`, it is a next
+burden-local `s`, a licensed `NewB`, HOLD, or PARTIAL--not final closure.
 Hard/compound recursion also requires a reconstruction-faithful Layer A before execution:
 claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
 source-status/noetic-frame, held/released state, and gate/release decision. Without that
@@ -3777,6 +3792,10 @@ contingencies stay held with a release condition.
 Length is governed by burden-cycle live-burden traversal: bounded pass, state re-read, next
 eligible same-input burden, bounded pass, refresh again, then STOP, HOLD, RECURSE, or PARTIAL.
 Do not compress default output into premature STOP merely to keep it short.
+Extensive output is required when the live noetic structure requires extensive traversal; no
+live burden, active TTP, source function, family distinction, held-route re-read, or restoration
+vector may be omitted merely to keep the response below an implicit size ceiling. If limits prevent
+full traversal, the correct state is PARTIAL with the named next burden or blocked submove.
 PARTIAL requires concrete limit reason: name the live burden and the response/tool/interaction
 limit preventing traversal. A bare PARTIAL label is not a release decision.
 
@@ -4607,7 +4626,7 @@ A restoration target stated only as "correct the argument" or "demonstrate X" is
 <!-- MODULE_ID: P7-restoration-stops -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: skill/references/procedures/P7-restoration-stops.md -->
-<!-- SOURCE_SHA256: 7f1551d050be88a50672f4e0828fcd06ce6a08d276bcb9ea7c111a0214ade14a -->
+<!-- SOURCE_SHA256: d04f973cfae61d3faad6065b7e5b5087ad8a37b293b944b6f74ab8ec9f8a7e1b -->
 
 ---
 id: P7-restoration-stops
@@ -4662,6 +4681,13 @@ These stops govern current-pass deployment; they do not abolish recursion. Use t
 P7 owns the concrete stop instances below. The abstract STOP / HOLD / RECURSE / PARTIAL state model, same-response recursion condition, and state carry/reset/re-evaluation partition are owned by `references/diagnostics/recursive-state-transitions.md`.
 
 **No premature STOP while an eligible live burden remains.** A landed move can satisfy the current pass without completing the input. STOP requires `R` to confirm no input-anchored eligible `B` remains and no held route became releasable. Otherwise choose RECURSE, PARTIAL, or HOLD as governed.
+
+**Stop 2 is local, not a blanket closure rule.** In one-shot hard-case answers, especially where the
+prompt explicitly asks for sources, hiddenness/accountability, source-worldview consequence,
+predication, transmission, or restoration, the model does not have fresh interlocutor recognition
+unless it is present in the input. A good local move may end its own pass, but it cannot suppress
+same-input burdens that `R` still finds eligible. If recognition is absent or only inferred, continue
+to the next licensed burden, or mark HOLD/PARTIAL with the specific stop reason.
 
 **Recursion is not argument dump.** One `B` at a time: upstream before downstream, current-pass deployment only, boundary reset after `Land(B)`, held routes rechecked after `R`, and no total downstream release at one state re-read. Held means traversal-delayed, not permanently suppressed.
 

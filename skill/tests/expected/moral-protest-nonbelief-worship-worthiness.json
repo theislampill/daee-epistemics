@@ -3,6 +3,15 @@
   "held_contains": ["V2-reconstituting-reason"],
   "deferred_contains": ["do-second-loop", "M8-reductio", "P1-fitrah-restoration"],
   "continuation_queue_contains": ["do-second-loop", "V2-reconstituting-reason", "M8-reductio", "P1-fitrah-restoration"],
+  "feature_ids_contains": ["feature.source_request", "feature.criterion_bearing_source_worldview"],
+  "owner_pressure_dimensions_contains": {
+    "foreign-premise-detection": ["imported-criterion-authority", "functional-role"],
+    "M1-self-refutation": ["self-ground-test", "borrowed-standard-exposed"],
+    "do-second-loop": ["accountability-hujjah-compression", "coercive-guidance-demand", "fitrah-ayat-baseline"],
+    "V2-reconstituting-reason": ["reason-role-repair", "proof-burden-order"],
+    "M8-reductio": ["source-frame-consequence", "criterion-frame-description", "non-ad-hominem-boundary"],
+    "P1-fitrah-restoration": ["creator-right-order", "mercy-justice-architecture", "worship-worthiness-order"]
+  },
   "governance_verdict": "RECURSE",
   "live_burden_contains": "imported moral tribunal",
   "shallow_output_must_fail": true

@@ -55,3 +55,12 @@ Assume P. Show that P, followed consistently, produces conclusions the interlocu
 5. If they reject X: "X follows necessarily from your position. You cannot reject X without rejecting the position that generated it."
 
 M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. Gloss: land one consequence, reassess live state, and extend only if the restoration target still requires further compounding under P7, register discipline, and current release conditions.
+
+Source-worldview consequence traces must be concrete, not labels. When a public worldview,
+school frame, ideology, or noetic-family frame supplies the criterion, M8 must assume the
+actual operative commitment, trace what that commitment can and cannot warrant, name the
+unacceptable or self-defeating consequence, and keep source-status discipline intact. A
+generic "worldview consequence" paragraph fails M8 if it does not identify the criterion
+being assumed and the burden-state changed by the consequence trace. If the live pressure is
+predication, transmission, kalamic proof-order, grief/register, or another family-local frame,
+do not relabel it as source-worldview; trace the consequence in that family's own terms.

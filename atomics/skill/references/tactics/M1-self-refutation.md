@@ -38,6 +38,13 @@ When present, deliver this move cleanly and early. Do not bury it. The interlocu
 
 **Delivery:** State the objection at its strongest. Then: "But notice that the premises of this argument, applied consistently, also undermine the argument itself." Show the move cleanly. Stop. Do not pile on.
 
+Hard-case scope note: this stop is local to the M1 operation, not a license for premature
+closure of a compound same-input response. In a hard or multi-burden render, M1 must still
+show its target, operation, and result, then feed `Land(B) -> R(H,Delta)`. If the refreshed
+state names another input-anchored burden, continue or mark PARTIAL as governed; do not use
+M1's local-stop discipline to suppress hujjah, source-worldview, predication, transmission, or
+restoration pressures that remain live.
+
 ## The Staged-Visibility Protocol
 
 The move lands at the moment it becomes visible to the interlocutor, and is destroyed by

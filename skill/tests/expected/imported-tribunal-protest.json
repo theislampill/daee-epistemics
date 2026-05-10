@@ -3,6 +3,15 @@
   "held_contains": ["V2-reconstituting-reason"],
   "deferred_contains": ["M8-reductio"],
   "continuation_queue_contains": ["do-second-loop", "V2-reconstituting-reason", "M8-reductio", "P1-fitrah-restoration"],
+  "feature_ids_contains": ["feature.imported_criterion", "feature.moral_tribunal"],
+  "owner_pressure_dimensions_contains": {
+    "foreign-premise-detection": ["imported-criterion-authority", "functional-role"],
+    "M1-self-refutation": ["self-ground-test", "borrowed-standard-exposed"],
+    "do-second-loop": ["accountability-hujjah-compression", "coercive-guidance-demand"],
+    "V2-reconstituting-reason": ["reason-role-repair", "proof-burden-order"],
+    "M8-reductio": ["source-frame-consequence"],
+    "P1-fitrah-restoration": ["restoration-bounded-landed-burdens", "mercy-justice-architecture"]
+  },
   "governance_verdict": "RECURSE",
   "live_burden_contains": "imported moral tribunal"
 }

@@ -421,6 +421,7 @@ def run_single(
         "smoke_kind": smoke_kind,
         "input": str(input_path),
         "output_dir": str(output_dir),
+        "feature_ids": sorted(str(item) for item in features.get("feature_ids", [])),
         "route_state": route_state_signature(route_plan),
         "validation_fidelity": validation.get("validation_fidelity"),
         "reconstruction_fidelity": reconstruction.get("reconstruction_fidelity"),
@@ -456,6 +457,18 @@ def _compare_expected(summary: dict[str, Any], expected: dict[str, Any]) -> list
         for entry in route_state.get("continuation_queue", [])
         for owner_id in owner_ids(entry.get("owners", []))
     ]
+    feature_ids = {str(item) for item in summary.get("feature_ids", [])}
+
+    def route_owner_items() -> dict[str, dict[str, Any]]:
+        items: dict[str, dict[str, Any]] = {}
+        for item in route_state.get("first_live", []):
+            items[str(item.get("id"))] = item
+        for entry in route_state.get("continuation_queue", []):
+            for item in entry.get("owners", []):
+                items[str(item.get("id"))] = item
+        for item in route_state.get("held", []) + route_state.get("deferred", []):
+            items.setdefault(str(item.get("id")), item)
+        return items
 
     if expected.get("first_live") is not None and actual_first != expected["first_live"]:
         errors.append(f"first_live expected {expected['first_live']} got {actual_first}")
@@ -468,6 +481,31 @@ def _compare_expected(summary: dict[str, Any], expected: dict[str, Any]) -> list
     for owner_id in expected.get("continuation_queue_contains", []):
         if owner_id not in actual_queue:
             errors.append(f"continuation queue missing expected owner {owner_id}; got {actual_queue}")
+    for owner_id in expected.get("continuation_queue_not_contains", []):
+        if owner_id in actual_queue:
+            errors.append(f"continuation queue unexpectedly contains owner {owner_id}; got {actual_queue}")
+    for feature_id in expected.get("feature_ids_contains", []):
+        if feature_id not in feature_ids:
+            errors.append(f"feature_ids missing expected feature {feature_id}; got {sorted(feature_ids)}")
+    for feature_id in expected.get("feature_ids_absent", []):
+        if feature_id in feature_ids:
+            errors.append(f"feature_ids unexpectedly contains {feature_id}; got {sorted(feature_ids)}")
+    owner_items = route_owner_items()
+    for owner_id, dimension_ids in expected.get("owner_pressure_dimensions_contains", {}).items():
+        item = owner_items.get(owner_id)
+        if item is None:
+            errors.append(f"pressure dimension check owner missing from route state: {owner_id}")
+            continue
+        actual_dimensions = {
+            str(dimension.get("id"))
+            for dimension in item.get("pressure_dimensions", [])
+            if isinstance(dimension, dict)
+        }
+        for dimension_id in dimension_ids:
+            if dimension_id not in actual_dimensions:
+                errors.append(
+                    f"{owner_id}: pressure dimension missing {dimension_id}; got {sorted(actual_dimensions)}"
+                )
     if expected.get("governance_verdict") and route_state.get("governance_verdict") != expected["governance_verdict"]:
         errors.append(f"governance expected {expected['governance_verdict']} got {route_state.get('governance_verdict')}")
     contains = expected.get("live_burden_contains")
@@ -907,6 +945,189 @@ Closing Formulation: closure licensed; no remaining input-anchored burden.
     non_canary_thin_verdict = check_execution(predication_hard_plan, non_canary_thin_output)
     if non_canary_thin_verdict.get("execution_fidelity") == "pass":
         errors.append("hard-case quality regression: generic checker-shaped predication output unexpectedly passed")
+
+    source_leak_plan = {
+        "feature_ids": ["feature.source_request", "feature.source_substantiation_request"],
+        "live_burden": "synthetic source-request route",
+        "governance_verdict": "STOP",
+        "first_live": [
+            owner(
+                "do-second-loop",
+                [
+                    {
+                        "id": "accountability-hujjah-compression",
+                        "label": "hujjah/accountability compression narrowed",
+                        "requires_any": ["hujjah", "accountability", "messenger", "warning"],
+                        "requires_all": ["hujjah"],
+                        "source_quote_when_features": ["feature.source_request"],
+                    }
+                ],
+            )
+        ],
+        "first_live_burden": {
+            "name": "synthetic source-request route",
+            "owners": [
+                owner(
+                    "do-second-loop",
+                    [
+                        {
+                            "id": "accountability-hujjah-compression",
+                            "label": "hujjah/accountability compression narrowed",
+                            "requires_any": ["hujjah", "accountability", "messenger", "warning"],
+                            "requires_all": ["hujjah"],
+                            "source_quote_when_features": ["feature.source_request"],
+                        }
+                    ],
+                )
+            ],
+            "input_spans": [{"text": "Bring sources about punishment and accountability."}],
+            "land_requirements": [{"owner": "do-second-loop", "requires": ["hujjah/accountability compression narrowed"]}],
+        },
+        "continuation_queue": [],
+        "held": [],
+        "deferred": [],
+    }
+    final_source_leak_output = """# Synthetic final-source leak
+Layer A - Compact DSL/IR Header [Burden 1]
+- claim_level: hard source request
+- pattern_profile: accountability compression
+- reason-category: source-governed burden
+- concealment: none
+- deformation: none
+- DO-orient: source-operation
+- current live noetic burden: synthetic source-request route
+- source-status/noetic-frame: source request
+- held/released: released
+- gate/release decision: STOP
+Layer B - Governed Response [Burden 1]
+Hidden Premises
+HP-1: punishment is treated as bare non-belief.
+HP-2: source architecture is requested.
+HP-3: accountability requires hujjah.
+Core Formulation: the answer must land accountability before closing.
+B1.s1: execute first-live owner do-second-loop
+Owner-floor: do-second-loop - hujjah/accountability compression narrowed
+Target: Bring sources about punishment and accountability.
+Operation: narrow the accountability issue.
+Pressure accountability-hujjah-compression: hujjah accountability messenger warning.
+Result: hujjah/accountability compression narrowed.
+Land(B1): do-second-loop landed.
+R(H,Delta): STOP - no remaining input-anchored burden.
+Restorative Response:
+Operative source deployment:
+> Qur'an 17:15: "We never punish until We send a messenger."
+This source finally explains hujjah, but it first appears in final restoration.
+Closing Formulation: no remaining input-anchored burden.
+"""
+    final_source_leak_verdict = check_execution(source_leak_plan, final_source_leak_output)
+    if final_source_leak_verdict.get("execution_fidelity") == "pass":
+        errors.append("source-function regression: final-restoration source leak unexpectedly passed")
+
+    v2_generic_pressure_plan = {
+        "feature_ids": ["feature.reason_repair_pressure"],
+        "live_burden": "synthetic reason-role repair route",
+        "governance_verdict": "STOP",
+        "first_live": [
+            owner(
+                "V2-reconstituting-reason",
+                [
+                    {
+                        "id": "reason-role-repair",
+                        "label": "reason role repaired",
+                        "requires_any": ["reason-as-tribunal", "sound reason", "proof burden", "warrant order"],
+                    }
+                ],
+            )
+        ],
+        "first_live_burden": {
+            "name": "synthetic reason-role repair route",
+            "owners": [
+                owner(
+                    "V2-reconstituting-reason",
+                    [
+                        {
+                            "id": "reason-role-repair",
+                            "label": "reason role repaired",
+                            "requires_any": ["reason-as-tribunal", "sound reason", "proof burden", "warrant order"],
+                        }
+                    ],
+                )
+            ],
+            "input_spans": [{"text": "Reason itself decides whether revelation may count as evidence."}],
+            "land_requirements": [{"owner": "V2-reconstituting-reason", "requires": ["reason role repaired"]}],
+        },
+        "continuation_queue": [],
+        "held": [],
+        "deferred": [],
+    }
+    v2_generic_pressure_output = """# Synthetic generic reason-pressure route
+Burden 1: synthetic reason-role repair route
+B1.s1: execute first-live owner
+Owner-floor: V2-reconstituting-reason - reason role repaired
+Target: Reason itself decides whether revelation may count as evidence.
+Operation: address the reason issue.
+Pressure reason-role-repair: reason-as-tribunal sound reason proof burden warrant order.
+Result: reason role repaired.
+Land(B1): first burden landed
+R(H,Delta): STOP - no remaining input-anchored burden
+Closing Formulation: no remaining input-anchored burden.
+"""
+    v2_generic_pressure_verdict = check_execution(v2_generic_pressure_plan, v2_generic_pressure_output)
+    if v2_generic_pressure_verdict.get("execution_fidelity") == "pass":
+        errors.append("pressure-regression generic V2 pressure-token list unexpectedly passed")
+
+    m8_generic_pressure_plan = {
+        "feature_ids": ["feature.criterion_bearing_source_worldview"],
+        "live_burden": "synthetic source-worldview consequence route",
+        "governance_verdict": "STOP",
+        "first_live": [
+            owner(
+                "M8-reductio",
+                [
+                    {
+                        "id": "source-frame-consequence",
+                        "label": "source-frame consequence traced",
+                        "requires_any": ["source-frame", "criterion", "worldview", "consequence"],
+                    }
+                ],
+            )
+        ],
+        "first_live_burden": {
+            "name": "synthetic source-worldview consequence route",
+            "owners": [
+                owner(
+                    "M8-reductio",
+                    [
+                        {
+                            "id": "source-frame-consequence",
+                            "label": "source-frame consequence traced",
+                            "requires_any": ["source-frame", "criterion", "worldview", "consequence"],
+                        }
+                    ],
+                )
+            ],
+            "input_spans": [{"text": "My worldview gives the criterion for judging divine claims."}],
+            "land_requirements": [{"owner": "M8-reductio", "requires": ["source-frame consequence traced"]}],
+        },
+        "continuation_queue": [],
+        "held": [],
+        "deferred": [],
+    }
+    m8_generic_pressure_output = """# Synthetic generic source-worldview route
+Burden 1: synthetic source-worldview consequence route
+B1.s1: execute first-live owner
+Owner-floor: M8-reductio - source-frame consequence traced
+Target: My worldview gives the criterion for judging divine claims.
+Operation: address the worldview issue.
+Pressure source-frame-consequence: source-frame criterion worldview consequence.
+Result: source-frame consequence traced.
+Land(B1): first burden landed
+R(H,Delta): STOP - no remaining input-anchored burden
+Closing Formulation: no remaining input-anchored burden.
+"""
+    m8_generic_pressure_verdict = check_execution(m8_generic_pressure_plan, m8_generic_pressure_output)
+    if m8_generic_pressure_verdict.get("execution_fidelity") == "pass":
+        errors.append("pressure-regression generic M8 source-worldview token list unexpectedly passed")
 
     return errors
 

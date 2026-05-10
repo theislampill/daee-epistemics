@@ -80,7 +80,7 @@ Procedures do not suspend pattern-first routing, source-status restrictions, bur
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: c2803fdf108766b26e8a84ecc8c45241d16cb2f7417c610ea084906df9d6c17b -->
+<!-- SOURCE_SHA256: 6c5d004915eb118994a4ac2c4e13c38e9df2ee694a1d6c0ab00a17c7a9639042 -->
 
 ---
 id: P1-fitrah-restoration
@@ -254,6 +254,15 @@ and do not turn the suspension of pressure into a verdict on the person's standi
 
 ## Failure Conditions
 
+### Hard-case restoration source floor
+
+When P1 appears in a hard, source-request, or worship-worthiness case after upstream burdens
+have landed, restoration must return the noetic order rather than merely summarize the answer.
+Name the restored criterion, the source/warrant placement, and the specific restoration
+vector now released. If the live pressure includes mercy/justice, Creator-right,
+repentance/return, guidance/non-compulsion, fitrah/ayat, testimony, or predicate-source
+discipline, P1 must either operate the relevant text or hold the function with a reason.
+A warm pastoral close does not satisfy P1 when those source functions remain unlanded.
 Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
 it must land burden-locally or be explicitly held/PARTIAL.
 

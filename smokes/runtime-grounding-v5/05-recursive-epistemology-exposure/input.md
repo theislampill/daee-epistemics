@@ -1,1 +1,0 @@
-/daee-epistemics I will consider revelation only after neutral historical method proves it without relying on religious premises. Until then, all transmitted claims are suspect. But if it passes, I might accept the theology.

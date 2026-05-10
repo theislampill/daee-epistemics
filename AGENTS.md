@@ -42,11 +42,12 @@ python tools/check_encoding_hygiene.py
 ```
 
 Before packaging or pushing, run the full applicable checker suite and confirm the generated
-runtime is fresh. The canonical smoke artifact gate is repo-local
-`smokes/runtime-grounding-v5/`; it is committed regression evidence with trace/verdict
-provenance, and `tools/check_smoke_artifacts.py` defaults to that root and compares package
-filename/SHA evidence against `docs/release-artifacts.md`.
-Package only when explicitly requested.
+runtime is fresh. Smoke artifacts are local evidence unless a task explicitly authorizes a
+tracked fixture suite. Do not commit `smokes/`, `.daee/`, `level3-runs/`, raw model outputs,
+or local transcripts. `tools/check_smoke_artifacts.py` runs embedded regression samples by
+default; pass `--root` for a local smoke suite, and use `--require-current-release-smokes`
+only when package-bound current-release smokes have been truthfully regenerated. Package
+only when explicitly requested.
 
 Current release-line contract: operative front matter must use `contract_version: "0.3.2.0"`
 until the project intentionally moves to a later release line. Run:
@@ -119,44 +120,66 @@ Release claims must stay narrow and honest:
 When a model-output regression is reported, do not declare it fixed because the spec allows
 the desired behavior. Compare the relevant outputs, classify likely causes, patch only
 source-of-truth surfaces, rebuild, verify, and state whether a manual model rerun is still
-required.
+required. For Level 1/2 behavioral regressions, inspect the actual model output against the
+golden or comparison anchor for burden count, per-burden Layer A re-entry, state/noetic
+re-reads, source-operation burdening, owner/TTP pressure, and restoration force. Level 3
+checker success or spec permission does not prove scriptless Level 1/2 recovery.
 
 ### Level 1/2 Behavioral Coercion Memory
 
 v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless
-Level 1/2. Default scriptless output is burden-governed, not
-concise-answer-governed. Compact means after burden accounting; it never
-licenses fewer live burdens, fewer necessary TTP submoves, thinner source
-operation, or final-restoration source dumping.
+Level 1/2. Default scriptless output is burden-governed, not concise-answer-governed.
+Compact means after burden accounting; it never licenses fewer live burdens, fewer necessary
+TTP submoves, thinner source operation, or final-restoration source dumping.
 
-For every released burden-cycle, compact Layer A -> governed Layer B ->
-state/noetic reread must remain locally attached. If reread leaves another
-input-anchored burden live and no HOLD/PARTIAL/limit/register gate blocks it,
-continue in the same response. Same-burden collapse does not collapse active
-submoves. Imported tribunal pressure, hujjah/accountability, coercive-guidance
-pressure, source-worldview consequence, mercy/justice, fiṭrah/āyāt,
-Creator-right, repentance/return, testimony, and predicate-source work must
-either land burden-locally or be explicitly held/PARTIAL.
+For every released burden-cycle, compact Layer A -> governed Layer B -> state/noetic reread
+must remain locally attached. If reread leaves another input-anchored burden live and no
+HOLD/PARTIAL/limit/register gate blocks it, continue in the same response. Same-burden
+collapse does not collapse active submoves. Imported tribunal pressure, hujjah/accountability,
+coercive-guidance pressure, source-worldview consequence, mercy/justice, fitrah/ayat,
+Creator-right, repentance/return, testimony, and predicate-source work must either land
+burden-locally or be explicitly held/PARTIAL.
 
-Final restoration cannot be the first place live source architecture appears.
-The Richard-Lael/TST hard moral-protest smoke is a canary, not architecture.
-Do not add named-person, TST-specific, or Satanism-specific runtime logic
-unless explicitly instructed.
+Final restoration cannot be the first place live source architecture appears. Named hard-case
+smokes are canaries, not architecture. Do not add named-person, movement-specific, or
+one-golden-output-specific runtime logic unless explicitly instructed.
 
 - For Level 1/2 render regressions, preserve both governance and depth: compact does not mean
   thin; Layer A must stay compact but load-bearing; Layer B must stay burden-complete,
   case-specific, owner-floor faithful, and restoration-directed.
+- Compactness removes padding, source parade, and framework dumping. It does not reduce live
+  burden count, distinct TTP submoves, source-operation density, per-burden Layer A re-entry,
+  or state/noetic re-reads.
+- Hard noetic cases may require long outputs. Length is not the target; burden-complete
+  restoration is. A 20-25kb answer that closes with live burdens still unlanded is a failure,
+  while a 30-80kb answer can be correct when it is source-operative, TTP-complete, and not
+  padded. If response/runtime limits prevent full traversal, mark PARTIAL and name the next
+  live burden or blocked submove rather than closing thinly.
+- Output depth is determined by live noetic burden, not prompt length, apparent simplicity, or
+  surface size. Short slogans and small questions may contain dense inherited assumptions,
+  proof-order inversions, source-status confusion, predication pressure, deformation, grief/register
+  signals, or concealed worldview criteria. Brevity is licensed only after diagnostic burden
+  accounting; compact output is compression after burden accounting, not shortcut before diagnosis.
 - Active TTP/operator submoves must not be consolidated. Same burden-cycle does not mean a
   merged operation: each active TTP receives its own target -> operation -> result, or the
   output is PARTIAL if limits prevent distinct execution.
+- Active TTP/owner invocation is not satisfied by naming the owner, tactic, specialty marker,
+  or operation family. The operation must produce a local Target -> Operation -> Result, change
+  claim-state, and then pass through `Land(B)` / `R(H,Delta)` before it can be counted as
+  executed.
+- Final-synthesis loophole: hard-case source architecture, mercy/worship-worthiness,
+  testimony/transmission, predication/category, source-worldview consequence, and other
+  source-governed material cannot first appear as final restoration. If that material is live,
+  it must land as a burden-local submove or licensed next burden, or be explicitly held/PARTIAL
+  before closure.
 - `R(H,Delta)` is a real state-transition judgment, not a formatting marker. It decides
   whether to continue, hold/defer, skip, reroute boundedly, or close.
 - Structural attachment fidelity is required. Marker presence is not execution, and the same
   tokens in a different order do not preserve the same state. Keep each burden submove
-  (`ⁿBᵢ` / `nBi`, with `B1.s1` as checker-compatible alias) -> owner-floor `Target` /
-  `Operation` / `Result` -> `Land(B)` -> `R(H,Delta)` -> next decision locally attached;
-  grouped reasoning, grouped owner markers, or checker-shaped blobs are structural-flattening
-  failures even if every label appears somewhere.
+  (`nBi`, with `B1.s1` as checker-compatible alias) -> owner-floor `Target` / `Operation` /
+  `Result` -> `Land(B)` -> `R(H,Delta)` -> next decision locally attached; grouped reasoning,
+  grouped owner markers, or checker-shaped blobs are structural-flattening failures even if
+  every label appears somewhere.
 - Hard-case pressure execution is required. Labels, owner IDs, Target/Operation/Result syntax,
   and route markers count only when the prose pressures the actual premise, criterion, warrant,
   source-frame, theological predicate, testimony question, register-hold, or restoration vector.
@@ -166,33 +189,39 @@ unless explicitly instructed.
   claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
   source-status/noetic-frame, held/released state, and gate/release decision. A checker-shaped
   route answer without that frame is PARTIAL even if it names the right owners.
-- Named hard-case smokes are canaries, not the architecture. Do not add canary-person,
-  movement-specific, or one-golden-output-specific routing unless a future task explicitly
-  authorizes a bespoke owner. Fixes should generalize across hard/compound/deformed noetic structures and
-  preserve family-local pressure rather than flattening kalam, falsafah, predication,
-  transmission, grief/register, naturalist, or source-worldview cases into one blob.
+- Named hard-case smokes are canaries, not the architecture. Fixes should state the general
+  noetic/family class they strengthen, generalize across hard/compound/deformed noetic
+  structures, and preserve family-local pressure rather than flattening kalam, falsafah,
+  predication, transmission, grief/register, naturalist, or source-worldview cases into one blob.
 - These checks are not generic answer-polish. They actualize the skill thesis:
   surface discourse -> typed noetic state -> pressure-dimensioned owner execution -> `Land(B)`
   -> `R(H,Delta)` -> STOP/HOLD/PARTIAL/RECURSE. The aim is to prevent collapse into
   argument-bank prose, detached route labels, checker-shaped scaffolding, source lists without
   operation, or restoration summaries without noetic state change.
-- Qurʾān/ḥadīth evidence, when operative, should be visually clean and immediately explained
+- DSL/IR is a reconstruction-faithful control bottleneck. If the rendered prose or trace cannot
+  recover the live burden, selected operator, nearest held/deferred alternatives, expected
+  `Land(B)`, and governance verdict, the output is plausible commentary rather than governed
+  execution.
+- Level 1/2 regression findings should be mapped to Level 3 route/check/fixture coverage wherever
+  the failure can be expressed as route state, owner pressure, source function, held-route behavior,
+  or negative output checking. "Manual rerun required" does not defer machine-testable analogues.
+- Terminology boundary: specialist audit passes may use SPECOP-style lenses, but SPECOP is not a
+  runtime owner, TTP family, route class, module class, or user-visible skill grammar. Keep audit-side
+  specialist operation language separate from daee TTP/owner execution.
+- Qur'an/hadith evidence, when operative, should be visually clean and immediately explained
   as diagnostic/restorative work; do not collapse central revealed text into prose or pad with
   citations.
-- Use normalized transliteration in prose where the file supports Unicode: fiṭrah, ʿaqīdah,
-  ḍarūrī, naẓarī, waḥy, kalām, Ashʿarī, Māturīdī, Muʿtazilī, Qurʾān, ḥadīth, ḥudūth,
-  bilā kayf, hawā, and iʿrāḍ. Preserve ASCII keys, filenames, schema fields, YAML/JSON keys,
-  and code identifiers unless a migration is explicitly requested.
-- Run `python tools/check_encoding_hygiene.py` after transliteration or diacritic edits. Mojibake,
-  UTF-8 BOM residue, malformed YAML front matter, and non-ASCII YAML/JSON keys in code/data are
-  release blockers unless intentionally and safely migrated.
-- Controlled terminology: `kalām` is Speculative Theology in this repo, not "Rational Theology".
-  Ashʿarī and Māturīdī labels are varied speculative-theological families, not monoliths. In
+- Preserve ASCII keys, filenames, schema fields, YAML/JSON keys, and code identifiers unless a
+  migration is explicitly requested. Run `python tools/check_encoding_hygiene.py` after
+  transliteration or diacritic edits. Mojibake, UTF-8 BOM residue, malformed YAML front matter,
+  and non-ASCII YAML/JSON keys in code/data are release blockers unless intentionally and safely
+  migrated.
+- Controlled terminology: `kalam` is Speculative Theology in this repo, not "Rational Theology".
+  Ash'ari and Maturidi labels are varied speculative-theological families, not monoliths. In
   operative repo terminology, reserve "Islamic scholar" / "Islamic scholarship" for
-  Salafī/Atharī-aligned scholarship; use labels such as kalām theologian, speculative theologian,
+  Salafi/Athari-aligned scholarship; use labels such as kalam theologian, speculative theologian,
   school theologian, mutakallim, philosopher, school authority, or later theological figure for
-  non-Atharī kalām/falsafah figures. Keep this as source-status discipline, not polemical clutter.
-
+  non-Athari kalam/falsafah figures. Keep this as source-status discipline, not polemical clutter.
 ## Level 3 Protocol
 
 Level 3 is additive route-first execution for Codex/script-capable runtimes.
@@ -213,14 +242,16 @@ Current runtime notation is owned by
 `atomics/skill/references/diagnostics/recursive-state-transitions.md`.
 
 ```text
-Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
-Burden/submove notation uses `ⁿBᵢ` for the i-th operative submove inside the n-th burden-cycle,
-with `nBi` as the plain-text mirror. Example: `¹B₁` / `1B1` is burden 1, submove 1;
-`¹B₂` / `1B2` is burden 1, submove 2; `²B₁` / `2B1` begins only after `Land(¹B) ->
-R(H,Δ)` licenses burden 2. Existing `B1.s1` / `B1.s2` notation remains an accepted
-legacy/checker alias.
+Burden/submove notation uses `nBi` as the plain-text mirror for the i-th operative submove inside
+the n-th burden-cycle. Example: `1B1` is burden 1, submove 1; `1B2` is burden 1, submove 2;
+`2B1` begins only after `Land(1B) -> R(H,Delta)` licenses burden 2. Existing `B1.s1` / `B1.s2`
+notation remains an accepted legacy/checker alias. In Level 1/2 default hard-case output, absence of the superscript/subscript
+form is not by itself a failure when `nBi`, `B1.s1`, or readable "Burden N / operative
+submove" language preserves submove-vs-burden grammar and local attachment. Require the
+superscript/subscript form only when a task or trace mode explicitly asks for that notation.
 
 The compiled runtime must preserve this route:
 

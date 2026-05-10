@@ -19,6 +19,12 @@ catalogue_registered: false
 - When a higher-order burden and a first-order burden are both live, keep both explicit and sequence the higher-order burden first.
 - When a higher-order burden is primary, type the restoration target at that same layer before selecting downstream content. Do not let `pattern_profile` stand in for the layer being restored.
 - When an imported tribunal and a semantic blocker are both live, preserve both. Sequence tribunal-clearing first, then semantic clarification, then doctrinal engagement. Do not collapse the case into one label.
+- When a noetic-family frame and another live pressure are both present, preserve the family-local
+  pressure. Do not flatten Ashʿarī/Māturīdī variants, kalām, falsafah, ilḥād/naturalism,
+  secular moral realism, Christian source-worldview transfer, predication, transmission/testimony,
+  or grief/register into a generic "worldview" or "source status" move. Sequence the upstream
+  blocker first, but keep the family-specific predicate, proof-method, testimony, authority, or
+  register question recoverable for later release or explicit HOLD/PARTIAL.
 - If grief, vested interest, or identity-performance may be primary, do not treat the case as a pure `shubha` until that possibility has been tested.
 - If a tradition-labeled case carries family, communal identity, institutional betrayal, teacher abuse, caste/social belonging, or authority wound, do not treat the formal objection as primary until the wound-vs-tribunal distinction is tested.
 - Treat `do not use when` as a precondition: this file is not the opening move when a clean primary read is already well established.

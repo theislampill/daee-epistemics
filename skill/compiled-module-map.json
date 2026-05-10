@@ -66,7 +66,7 @@
       "module_class": "tactic",
       "module_id": "M1-self-refutation",
       "source": "atomics/skill/references/tactics/M1-self-refutation.md",
-      "source_sha256": "e44ddf35da79df8861bc4fbee125cedfa1ff0d71069e66c0018570e757817d54"
+      "source_sha256": "760d63e3754dca239d5ff885a580cd238aded2314ad83850d669046102c4a296"
     },
     "M1P-performative-self-refutation": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
@@ -130,7 +130,7 @@
       "module_class": "tactic",
       "module_id": "M8-reductio",
       "source": "atomics/skill/references/tactics/M8-reductio.md",
-      "source_sha256": "45040b07ee2bb1d4d100dcd7db7d51c242192c5d618c64008ea0eb6794af88ab"
+      "source_sha256": "b7936d37b0f918bf62bba08cde990f5c5941ef52c036476152eb50da7e4b6e84"
     },
     "M9-predication-mode": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
@@ -146,7 +146,7 @@
       "module_class": "procedure",
       "module_id": "P1-fitrah-restoration",
       "source": "atomics/skill/references/procedures/P1-fitrah-restoration.md",
-      "source_sha256": "c2803fdf108766b26e8a84ecc8c45241d16cb2f7417c610ea084906df9d6c17b"
+      "source_sha256": "6c5d004915eb118994a4ac2c4e13c38e9df2ee694a1d6c0ab00a17c7a9639042"
     },
     "P2-objection-mapping": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
@@ -194,7 +194,7 @@
       "module_class": "procedure",
       "module_id": "P7-restoration-stops",
       "source": "atomics/skill/references/procedures/P7-restoration-stops.md",
-      "source_sha256": "7f1551d050be88a50672f4e0828fcd06ce6a08d276bcb9ea7c111a0214ade14a"
+      "source_sha256": "d04f973cfae61d3faad6065b7e5b5087ad8a37b293b944b6f74ab8ec9f8a7e1b"
     },
     "R1-internalist-criterion": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
@@ -258,7 +258,7 @@
       "module_class": "technique",
       "module_id": "V2-reconstituting-reason",
       "source": "atomics/skill/references/techniques/V2-reconstituting-reason.md",
-      "source_sha256": "ac54b05dfca3684c775be49aa5047c7428f9b37bfb6be36620597831fb3778ef"
+      "source_sha256": "13c4b88c3a7578f352f6a0037f7a44759b57a9bba585e90c2e007996db562c4e"
     },
     "V3-regress-dissolution": {
       "bundle_path": "references/omnibus/OMNIBUS-techniques.md",
@@ -322,7 +322,7 @@
       "module_class": "governance",
       "module_id": "anti-patterns",
       "source": "atomics/skill/references/diagnostics/anti-patterns.md",
-      "source_sha256": "cae7ede14c9aabc5374323f6b76d6beec89fcd355c345b2cb11d638164ccabf1"
+      "source_sha256": "888d924a1152dcc51b438d666f4128bc34df1fb6442f3eee4f555184634289d1"
     },
     "arabic-backbone-predicates": {
       "bundle_path": "references/runtime-phase2-passes.md",
@@ -346,7 +346,7 @@
       "module_class": "governance",
       "module_id": "case-state-schema",
       "source": "atomics/skill/references/diagnostics/case-state-schema.md",
-      "source_sha256": "5556485f73dc316e53d12f7e2703a5bd58255b871dd9ed6ce132a132838bc47a"
+      "source_sha256": "20aeb2daf7f170151a0b50b474def44951bfe1f0584e2c1fbbbfc61a0e315d4b"
     },
     "causal-series-taxonomy": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -378,7 +378,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "ebf3ae1d78c7cd857f62b8ed5da7aa0361e30ecd3a6f83984354419d158cb915"
+      "source_sha256": "45007125cacec020292e8f2323bea27a45299bfc555070b0135de1da74885552"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -426,7 +426,7 @@
       "module_class": "case-library",
       "module_id": "do-second-loop",
       "source": "atomics/skill/references/case-library/do-second-loop.md",
-      "source_sha256": "5b6f3c2a796aa1bc6a680626d823ee3334ffbd5e7737a6b3d0f956a0e703691c"
+      "source_sha256": "5a68c66b578cac4f640151b4a8dda70b19550924c7b2714bff1b292fbd11d0bb"
     },
     "doubt-vs-skepticism": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
@@ -506,7 +506,7 @@
       "module_class": "governance",
       "module_id": "ir-reconstruction-pass",
       "source": "atomics/skill/references/diagnostics/ir-reconstruction-pass.md",
-      "source_sha256": "542f815eb47b4d27b3bdebbcdb0dd55e523e7d2ca969e9a40a0c35ad0210edab"
+      "source_sha256": "7c142aa0aee4ff9e29f8dcb014c372d07667cd58a05f032a60453ac98b6a896f"
     },
     "kalamic-interlocutor": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -538,7 +538,7 @@
       "module_class": "governance",
       "module_id": "mixed-case-handling",
       "source": "atomics/skill/references/diagnostics/mixed-case-handling.md",
-      "source_sha256": "80504de509d93f81d55b0ad926f3238888151879e3c07dc8d21da5a8a7a6aed5"
+      "source_sha256": "3a5992efe3db3c84c19dab2fede5700472b46f09265afe761634ec6d213133fe"
     },
     "modes-of-concealment": {
       "bundle_path": "references/runtime-diagnostic-core.md",
@@ -682,7 +682,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "ddcf83adda5428744089f4594ef37727bb866b5147e5567ad7a495da56c89dd7"
+      "source_sha256": "fe8cf1aa80a5f55891fafa2b39610a03098d9a2a491c539377596b0619f9deb2"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
@@ -762,7 +762,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "86406ded03442ee1da08cf9669569572cb3f81d24019048f5155fd7f93ee8645"
+      "source_sha256": "7e38c61bcab01a808184c5e3f1df83617b4036796f07cc11349cc9272d7f6b6b"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",
@@ -851,6 +851,7 @@
     "tests/expected/imported-tribunal-protest.json": "atomics/skill/tests/expected/imported-tribunal-protest.json",
     "tests/expected/moral-protest-nonbelief-worship-worthiness.json": "atomics/skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json",
     "tests/expected/mushabara-fasida.json": "atomics/skill/tests/expected/mushabara-fasida.json",
+    "tests/expected/naturalist-evidential-tribunal.json": "atomics/skill/tests/expected/naturalist-evidential-tribunal.json",
     "tests/expected/stability-repetition.json": "atomics/skill/tests/expected/stability-repetition.json",
     "tests/expected/trinitarian-claim-cluster.json": "atomics/skill/tests/expected/trinitarian-claim-cluster.json",
     "tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md": "atomics/skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md",
@@ -858,6 +859,7 @@
     "tests/fixtures/imported-tribunal-protest/input.md": "atomics/skill/tests/fixtures/imported-tribunal-protest/input.md",
     "tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md": "atomics/skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md",
     "tests/fixtures/mushabara-fasida/input.md": "atomics/skill/tests/fixtures/mushabara-fasida/input.md",
+    "tests/fixtures/naturalist-evidential-tribunal/input.md": "atomics/skill/tests/fixtures/naturalist-evidential-tribunal/input.md",
     "tests/fixtures/stability-repetition/input.md": "atomics/skill/tests/fixtures/stability-repetition/input.md",
     "tests/fixtures/trinitarian-claim-cluster/input.md": "atomics/skill/tests/fixtures/trinitarian-claim-cluster/input.md"
   }

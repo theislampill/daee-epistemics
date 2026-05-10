@@ -160,6 +160,10 @@ what premise, criterion, warrant, source-frame, predicate, testimony question, r
 restoration vector was actually pressured, and what claim-state changed. If only owner labels,
 generic Target/Operation/Result syntax, source citations, or closing restoration language can be
 recovered, the render is plausible typed commentary rather than faithful compressed control state.
+The same test applies to release sequencing: an auditor should be able to recover the nearest
+held/deferred alternatives, any source-governed functions that were landed or held, and why the
+next state is STOP, HOLD, PARTIAL, or RECURSE. If a compact render preserves only the first active
+route and a final synthesis, it has not reconstructed the compound burden faithfully.
 
 ## Render Discipline
 

@@ -10,10 +10,11 @@ description: >
 
 Level 3 is the default path for `/daee-epistemics [input]` in Codex/script-capable
 runtimes when bundled scripts are available. Runtimes that cannot execute
-bundled scripts must visibly fall back to Level 1/2 behavior. Do not first
-decide whether the case is serious enough for Level 3; light cases may spend a
-few extra seconds in the wrapper, and heavy cases need the same binding route
-discipline. The user should not need to know the internal commands.
+bundled scripts must visibly fall back to Level 1/2 behavior. Do not decide
+route depth from prompt length, apparent simplicity, or surface size. Short
+slogans and small questions may carry dense noetic structure; brevity is
+licensed only after diagnostic burden accounting. The user should not need to
+know the internal commands.
 
 Codex invocation flow:
 1. Save the user input to a run-local `input.md`.
@@ -102,12 +103,14 @@ Top-salient invariants:
   as many input-anchored live burdens and materially active submoves as the response can
   responsibly execute under release gates. Do not merge distinct active burdens, criteria,
   source/noetic frames, theological targets, restoration vectors, or TTP/operator functions
-  into one generic block for brevity. If limits prevent traversal, mark PARTIAL with the
-  next live burden and the blocked submove(s), not a rhetorical closure.
-- Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`;
-  `AtomicB -> B.s1 -> Land(B) -> R`. Compact default may not collapse a complex
-  `B` into one generic operation block. Render materially necessary `s` as case-specific
-  `Target -> Operation -> Result` units, using `Operative Submove` labels when needed.
+  into one generic block before burden accounting. If limits prevent traversal, mark PARTIAL
+  with the next live burden and the blocked submove(s), not a rhetorical closure.
+- Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`.
+  A one-submove burden (`B -> B.s1 -> Land(B) -> R`) is licensed only after
+  diagnostic burden accounting shows no hidden burden density remains. Compact default may
+  not collapse a complex `B` into one generic operation block. Render materially necessary
+  `s` as case-specific `Target -> Operation -> Result` units, using `Operative Submove`
+  labels when needed.
 - Render-through rule: in hard output, the burden grammar is part of the answer,
   not commentary about the answer. If a runtime can quote the spine but compresses
   `ComplexB` into a concise result, the render is malformed.
@@ -121,6 +124,16 @@ Top-salient invariants:
   Layer B. A hard case may be long because each input-anchored burden is actually
   landed; length is wrong only when it comes from padding, framework dumping, or
   unlicensed downstream release.
+- Output depth is determined by live noetic burden, not prompt length or apparent
+  simplicity. Compact output is compression after burden accounting, not shortcut before
+  diagnosis.
+- Hard noetic cases may require extensive output when live burden traversal requires it.
+  The target is not a word count, but a 20-25kb answer that closes while live burdens,
+  active TTPs, source functions, family distinctions, held-route re-reads, or restoration
+  vectors remain unlanded is a failure; a 30-80kb answer can be correct when it is
+  source-operative, TTP-complete, and not padded. If response or runtime limits prevent
+  full traversal, mark PARTIAL with the next live burden or blocked submove rather than
+  closing thinly.
 - Hard-case depth floor: for hard, compound, or deformed Level 1/2 cases, the target is
   sufficient recursive restoration, not the smallest compliant-looking answer. Continue
   until each input-anchored burden has enough owner-floor execution to land, or until
@@ -144,7 +157,11 @@ Top-salient invariants:
   routed--for example hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
   repentance/return, testimony, or predicate discipline. One generic proof text or source
   label cannot stand in for several distinct pressure functions, and source density is not
-  a substitute for burden-local operation.
+  a substitute for burden-local operation. Final Restorative Response cannot be used to
+  smuggle a source or mercy architecture that never landed as a burden-local submove or
+  later burden-cycle. If worship-worthiness, mercy/justice, repentance/return, Creator-right,
+  testimony, or predicate-source work remains live after the prior `R(H,Delta)`, continue
+  with that bounded pressure or mark PARTIAL; do not close by summarizing it.
   In hard/compound cases, Layer A must reconstruct the governing noetic frame before
   argument begins: claim level, pattern/deformation, reason category, concealment,
   DO-orient, live burden, source-status/noetic-frame, held/released burdens, and
@@ -596,7 +613,7 @@ worldview/frame as FPD, consequence trace, source-status discipline, or restorat
 as warranted, and feed it into practitioner instruction with motive, culpability, and sincerity
 still held.
 
-## V. Minimal Render Protocol
+## V. Burden-Governed Render Protocol
 
 Default render remains:
 

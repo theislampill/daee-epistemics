@@ -295,6 +295,11 @@ If a source-request burden has several source functions, each function must rema
 to the submove it governs. A global source list or one generic revealed text does not preserve
 state when the route needs separate hujjah, guidance/non-compulsion, fitrah/ayat,
 mercy/justice, repentance/return, testimony, or predicate-source operations.
+Final restoration is licensed only after those source functions have either landed or been
+held. A closing synthesis cannot be the first place where mercy/justice, Creator-right,
+repentance/return, worship-worthiness order, testimony, or predicate-source pressure is
+operatively supplied. If such a function remains live at `R(H,Delta)`, it is a next
+burden-local `s`, a licensed `NewB`, HOLD, or PARTIAL--not final closure.
 Hard/compound recursion also requires a reconstruction-faithful Layer A before execution:
 claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
 source-status/noetic-frame, held/released state, and gate/release decision. Without that
@@ -680,6 +685,10 @@ contingencies stay held with a release condition.
 Length is governed by burden-cycle live-burden traversal: bounded pass, state re-read, next
 eligible same-input burden, bounded pass, refresh again, then STOP, HOLD, RECURSE, or PARTIAL.
 Do not compress default output into premature STOP merely to keep it short.
+Extensive output is required when the live noetic structure requires extensive traversal; no
+live burden, active TTP, source function, family distinction, held-route re-read, or restoration
+vector may be omitted merely to keep the response below an implicit size ceiling. If limits prevent
+full traversal, the correct state is PARTIAL with the named next burden or blocked submove.
 PARTIAL requires concrete limit reason: name the live burden and the response/tool/interaction
 limit preventing traversal. A bare PARTIAL label is not a release decision.
 

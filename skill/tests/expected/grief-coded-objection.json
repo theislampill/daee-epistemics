@@ -2,6 +2,11 @@
   "first_live": ["P7-restoration-stops", "M4-grief-register"],
   "held_contains": ["V2-reconstituting-reason"],
   "deferred_contains": [],
+  "feature_ids_contains": ["feature.grief_register", "span.register"],
+  "owner_pressure_dimensions_contains": {
+    "P7-restoration-stops": ["register-hold"],
+    "M4-grief-register": ["grief-coded-register", "argument-bank-block"]
+  },
   "governance_verdict": "HOLD",
   "live_burden_contains": "grief-coded register hold"
 }

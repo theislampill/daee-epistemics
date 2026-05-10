@@ -20,7 +20,15 @@ from level3_lib import LEVEL3_VERSION, default_skill_root, find_spans, sha256_te
 
 MECHANICAL_PATTERNS: dict[str, list[str]] = {
     "term.trinity": [r"\btrinit(?:y|arian)\b", r"\bthree\s+persons?\b"],
-    "term.father_son_spirit": [r"\bfather\b", r"\bson\b", r"\bspirit\b", r"\bholy\s+spirit\b"],
+    "term.father_son_spirit": [
+        r"\bfather\b.{0,120}\bson\b",
+        r"\bson\b.{0,120}\bfather\b",
+        r"\bfather\b.{0,120}\b(?:holy\s+)?spirit\b",
+        r"\b(?:holy\s+)?spirit\b.{0,120}\bfather\b",
+        r"\bson\b.{0,120}\b(?:holy\s+)?spirit\b",
+        r"\b(?:holy\s+)?spirit\b.{0,120}\bson\b",
+        r"\bholy\s+spirit\b",
+    ],
     "term.attribute": [r"\battribute\b", r"\battributes\b", r"\bpredicate\b", r"\bpredication\b"],
     "term.god": [r"\bgod\b", r"\bdivine\b", r"\bcreator\b"],
     "term.secularism": [r"\bsecularism\b", r"\bsecularist\b", r"\bnaturalism\b", r"\batheism\b"],
@@ -95,7 +103,15 @@ MECHANICAL_PATTERNS: dict[str, list[str]] = {
         r"\bsubstantiate\b",
         r"\bdismantle\b",
     ],
-    "feature.grief_keyword": [r"\bgrief\b", r"\bwound\b", r"\btrauma\b", r"\bfamily\b", r"\bdied\b", r"\bhurt\b"],
+    "feature.grief_keyword": [
+        r"\bgrief\b",
+        r"\bwound\b",
+        r"\btrauma\b",
+        r"\bfamily\s+(?:wound|trauma|harm|grief|death|died|loss)\b",
+        r"\b(?:lost|loss\s+of|death\s+of)\s+(?:my\s+|a\s+|the\s+)?family\b",
+        r"\bdied\b",
+        r"\bhurt\b",
+    ],
     "feature.attribute_resemblance": [
         r"\bresemble\b",
         r"\bsimilar\s+to\s+creatures?\b",
@@ -165,7 +181,6 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
         span_cache["feature.negation_protest"]
         + span_cache["feature.authority_claim"]
         + span_cache["feature.proof_status_pressure"]
-        + span_cache["feature.worldview_refutation_request"]
         + span_cache["feature.accountability_compression"]
         + span_cache["feature.coercive_guidance_demand"]
         + span_cache["feature.mercy_worthiness_protest"]

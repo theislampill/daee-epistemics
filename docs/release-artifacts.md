@@ -38,14 +38,8 @@ public GitHub Release asset when copied/renamed from the same build output.
 GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
 repository does not commit the binary archive; the GitHub Release is the binary distribution surface.
 
-Committed `runtime-grounding-v5` smoke artifacts are historical regression evidence for package
-`daee-epistemics-RC00001-v0.3.1.0.skill.zip` / SHA256
-`544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8`, not current-release
-package evidence for the v0.3.2.0 SHA listed above. Their trace files explicitly mark
-`release-artifact relation: historical-regression` and `current-release evidence: no`; any
-`current source package` lines inside those historical traces record the release-candidate source
-package known when the historical regression artifacts were written, not the current package
-artifact in this file.
+Committed smoke suite: none. Historical `runtime-grounding-v5` artifacts were removed from the
+source repository; local retained smoke evidence may exist only in ignored working directories.
 
 Current-release committed smoke suite: none.
 
@@ -60,15 +54,9 @@ post-expansion regression evidence in this source state. They are not current-pa
 evidence unless regenerated against the release package recorded in this file and marked with
 current-release package provenance.
 
-Committed current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10` are not present unless a smoke
-suite is regenerated against that package and marked `release-artifact relation: current-release`
-with `current-release evidence: yes`.
-
-Current-package smoke evidence requires either regenerating those smoke artifacts against the
-package SHA listed above or marking any older package SHA as historical regression evidence.
-`tools/check_smoke_artifacts.py` compares committed smoke provenance against this file and fails
-unmarked package-hash drift.
+Current-package smoke evidence requires regenerating local smoke artifacts against the package SHA
+listed above and validating them with `tools/check_smoke_artifacts.py --root <local-smoke-root>`.
+`--require-current-release-smokes` remains a release-promotion gate when such a suite exists.
 
 Binary skill archives are not committed. The source repository records local build evidence and
 regression artifacts; it does not independently replay live host behavior unless a future live-runner
@@ -79,7 +67,7 @@ Evidence boundaries:
 ```text
 source repo -> current atomics, tools, docs, generated skill/ runtime
 local package build output -> ignored build/*.skill.zip archive built from skill/
-historical smoke regression artifacts -> committed runtime-grounding-v5 Markdown/IR artifacts
+local smoke regression artifacts -> ignored smokes/ or .daee/ working directories
 current package evidence -> public GitHub Release .skill asset, local/internal .skill.zip filename, SHA256, size, entries, and archive-root checks above
 current-package smoke evidence -> none in this source state
 live-host behavior -> not independently replayed by this repo without a future live-runner

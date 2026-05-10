@@ -172,7 +172,7 @@
     },
     {
       "id": "M8-reductio",
-      "requires_any": ["feature.moral_tribunal", "feature.hiddenness_punishment_cluster", "feature.opponent_worldview_frame", "feature.mercy_worthiness_protest"],
+      "requires_any": ["feature.moral_tribunal", "feature.hiddenness_punishment_cluster", "feature.criterion_bearing_source_worldview", "feature.mercy_worthiness_protest"],
       "requires_all": [],
       "blocks": [],
       "yields_to": ["foreign-premise-detection", "M1-self-refutation"],
@@ -190,20 +190,20 @@
           "label": "criterion-bearing source/worldview frame concretely described from input or bounded source knowledge without biography-as-proof",
           "requires_any": ["criterion-source", "source frame", "worldview", "public", "tenet", "commitment", "non-theistic", "authority"],
           "requires_all": ["worldview"],
-          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview", "feature.worldview_refutation_request"]
+          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview"]
         },
         {
           "id": "non-ad-hominem-boundary",
           "label": "source-status not used as ad hominem",
           "requires_any": ["not an attack", "not proof", "not ad hominem", "identity", "source-status", "person"],
-          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview", "feature.worldview_refutation_request"]
+          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview"]
         }
       ],
       "governance_class": "routes"
     },
     {
       "id": "V2-reconstituting-reason",
-      "requires_any": ["feature.reason_repair_pressure", "feature.imported_tribunal_pressure", "feature.predication_confusion", "feature.moral_tribunal", "feature.attribute_resemblance", "feature.grief_register", "feature.accountability_compression", "feature.coercive_guidance_demand", "feature.worldview_refutation_request"],
+      "requires_any": ["feature.reason_repair_pressure", "feature.imported_tribunal_pressure", "feature.predication_confusion", "feature.moral_tribunal", "feature.attribute_resemblance", "feature.grief_register", "feature.accountability_compression", "feature.coercive_guidance_demand"],
       "requires_all": [],
       "blocks": [],
       "yields_to": ["foreign-premise-detection", "M1-self-refutation", "M9-predication-mode", "V8-bila-kayf-anchor", "P7-restoration-stops", "M4-grief-register", "M5-deformation-triage", "mushabara-fasida", "V9-necessary-knowledge-priority"],

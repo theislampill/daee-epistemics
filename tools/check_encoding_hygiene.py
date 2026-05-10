@@ -20,7 +20,6 @@ DEFAULT_TARGETS = (
     "atomics/skill",
     "skill",
     "tests",
-    "smokes/runtime-grounding-v5",
 )
 
 MOJIBAKE_TOKENS = {

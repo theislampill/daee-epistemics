@@ -2,6 +2,11 @@
   "first_live": ["V9-necessary-knowledge-priority"],
   "held_contains": ["V2-reconstituting-reason"],
   "deferred_contains": ["M5-deformation-triage"],
+  "feature_ids_contains": ["feature.necessary_knowledge_shubhah", "feature.deformation_cleared"],
+  "owner_pressure_dimensions_contains": {
+    "V9-necessary-knowledge-priority": ["daruri-priority", "cleared-deformation-not-reopened"],
+    "M5-deformation-triage": ["first-live-deformation", "generic-reason-held"]
+  },
   "governance_verdict": "STOP",
   "live_burden_contains": "genuine shubhah"
 }

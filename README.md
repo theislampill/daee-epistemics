@@ -571,13 +571,13 @@ recovery.
 
 Smoke tests should use the current package filename and SHA recorded in
 [`docs/release-artifacts.md`](docs/release-artifacts.md).
-Do not use `build/compiled-skill/` or older local archives as smoke-test inputs. The release smoke
-artifact suite is committed under `smokes/runtime-grounding-v5/` as regression evidence; future
-live runs may regenerate it, but the checker defaults to that repo-local root.
+Do not use `build/compiled-skill/` or older local archives as smoke-test inputs. Smoke suites are
+local evidence by default and should remain ignored unless a task explicitly authorizes a tracked
+fixture suite.
 `tools/check_smoke_artifacts.py` also compares smoke package provenance against
-`docs/release-artifacts.md` and rejects unmarked package-hash drift.
+`docs/release-artifacts.md` when a smoke root is supplied and rejects unmarked package-hash drift.
 When a current-release smoke suite is truthfully regenerated, run
 `python tools/check_smoke_artifacts.py --require-current-release-smokes` as a release-promotion
-check. In this source state, the committed `runtime-grounding-v5` suite is historical regression
-evidence, so the strict flag is expected to fail until current-release smokes exist.
+check. In this source state, no committed smoke suite exists, so the strict flag is expected to fail
+until current-release smokes exist.
 Current readiness checks and smoke prompts live in [`docs/package-smoke-readiness.md`](docs/package-smoke-readiness.md).

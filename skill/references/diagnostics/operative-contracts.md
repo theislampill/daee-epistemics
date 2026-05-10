@@ -27,6 +27,13 @@ The operative-contract layer is not a runtime dispatch substitute. Its operation
 
 A complex Trinitarian, kalāmic, atheist, secular, or mixed higher-order case may surface many candidate modules through contracts and companions. That does not mean all candidates are active. The diagnostic IR still decides current-pass activation. The contract layer makes the candidate field auditable; the IR makes dispatch lawful.
 
+A declared load condition, companion, emitted field, or specialty marker is not execution evidence.
+When a TTP or owner actually activates at runtime, execution must still be visible in the owner
+body or routed trace as Target -> Operation -> Result, changed claim-state, `Land(B)`, and the
+next `R(H,Delta)` decision. Specialty markers may surface candidate context; they are not runtime
+operations or execution evidence by themselves. Contract metadata can help find the relevant owner;
+it cannot stand in for owner-floor pressure.
+
 ---
 
 ## Architecture Position

@@ -18,7 +18,7 @@ ROOT_REQUIRED = [
     "Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R",
     "Tactics / Techniques / Procedures Owner Map",
     "## I. Thesis / Epistemological Standpoint Pointers",
-    "## V. Minimal Render Protocol",
+    "## V. Burden-Governed Render Protocol",
     "Default forbids raw Diagnostic IR, full Case State",
     "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
     "Named frameworks/schools/authors/genealogies are not public-render material",

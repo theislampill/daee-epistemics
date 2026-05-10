@@ -112,7 +112,7 @@ release filename/SHA and `ir.json`. Do not wire that flag into CI unless a curre
 exists and the command passes.
 
 Encoding hygiene is checked by `tools/check_encoding_hygiene.py`. It scans release-facing docs,
-tooling, atomics source, generated runtime, tests, and `smokes/runtime-grounding-v5/` for common
-mojibake and visible BOM residue.
+tooling, atomics source, generated runtime, and tests for common mojibake and visible BOM residue.
+Local smoke folders remain ignored unless a task explicitly authorizes tracked fixtures.
 
 The checkers verify generated freshness, section boundary metadata, original module ID preservation, source/YAML/catalogue integrity, modeled file-call budgets, runtime path resolution, and routing-parity fixtures.

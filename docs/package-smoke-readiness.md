@@ -87,13 +87,12 @@ Each smoke test checks shape and governance, not exact prose.
 
 ## Runtime-Grounding Smoke Artifact Gate
 
-Current release readiness uses the repo-local `smokes/runtime-grounding-v5/` as the hard/bounded
-smoke artifact suite. These artifacts are committed regression evidence for release gating. Future
-live runs may regenerate them, but `tools/check_smoke_artifacts.py` defaults to this repo-local
-root and fails clearly if it is absent. Hard fixtures must meet the 20 KB depth gate. Bounded
-fixtures may remain below that gate only when the verdict explicitly marks them bounded-complete
-and records first-order, second-order, higher-order, handled, held, skipped, and no-further-pass
-burden findings.
+Smoke artifact suites are local evidence by default and should remain ignored unless a task
+explicitly authorizes tracked fixtures. `tools/check_smoke_artifacts.py` runs embedded regression
+samples by default; pass `--root <local-smoke-root>` to validate a retained smoke suite. Hard
+fixtures must meet the 20 KB depth gate. Bounded fixtures may remain below that gate only when the
+verdict explicitly marks them bounded-complete and records first-order, second-order, higher-order,
+handled, held, skipped, and no-further-pass burden findings.
 
 Every fixture must include `input.md`, `output.md`, `trace.md`, and `verdict.md`. The output file is
 clean default-render skill output only; runtime proof belongs in `trace.md`, and grading belongs in
@@ -103,9 +102,9 @@ verdicts below the depth floor, and originally hard-intended fixtures reclassifi
 burden-completeness audit. Release smoke artifacts must also include provenance in `trace.md` or
 `verdict.md`: package filename, package SHA256, model/host, invocation mode, prompt pointer, run
 timestamp, and live-run versus handcrafted-regression classification.
-`tools/check_smoke_artifacts.py` compares each fixture's package filename and package SHA256 against
-`docs/release-artifacts.md` by default. A mismatch is allowed only when the fixture explicitly marks
-itself as historical regression evidence.
+When a smoke root is supplied, `tools/check_smoke_artifacts.py` compares each fixture's package
+filename and package SHA256 against `docs/release-artifacts.md` by default. A mismatch is allowed
+only when the fixture explicitly marks itself as historical regression evidence.
 
 New or regenerated current-release and post-expansion smoke suites must also declare a smoke
 provenance mode:
@@ -138,13 +137,10 @@ executed, not because it has the expected headings.
 
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
-- The committed `runtime-grounding-v5` smoke artifacts currently use package SHA256
-  `544580B244BA27439F92177BA6EE0BADF580DD4CFEA1FD987E13D5861EA714B8` and are marked as
-  historical regression evidence, not current-release package evidence for SHA256
-  `1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10`.
+- No smoke artifact suite is committed in this source state.
 - Current-package smoke evidence for `daee-epistemics-v0.3.2.0.skill` / SHA256
   `1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10` is not present unless the
-  smoke suite is regenerated against that package.
+  smoke suite is regenerated locally against that package.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
 - `ir.json` smoke sidecars prove typed Diagnostic IR/source_basis integrity for the same fixture.
@@ -153,16 +149,14 @@ executed, not because it has the expected headings.
 
 ## Current-Release Smoke Evidence
 
-- `runtime-grounding-v5` is historical regression evidence unless regenerated against the current
-  release package.
-- `runtime-grounding-v6` or later is the preferred place for regenerated current-package smoke
-  evidence; `runtime-grounding-v6`, if added, is reserved for current-release evidence.
+- Local smoke folders such as `runtime-grounding-v5` or later may be used for regenerated
+  package-bound evidence, but they remain ignored unless a task explicitly authorizes tracking.
 - Current source state after the v0.3.2.0 candidate work: current-release smoke suite is
   absent, so `python tools/check_smoke_artifacts.py --require-current-release-smokes` is
   expected to fail until package-bound current-release smoke artifacts are truthfully regenerated.
-- `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe folders are development /
-  post-expansion regression evidence unless explicitly regenerated against a release package and
-  re-marked with current-release package provenance.
+- `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe folders, if present locally, are
+  development / post-expansion regression evidence unless explicitly regenerated against a release
+  package and re-marked with current-release package provenance.
 - Current-release smoke evidence requires package filename/SHA match against
   `docs/release-artifacts.md`.
 - Current-release smoke evidence requires both markers:
@@ -214,18 +208,11 @@ Structured Diagnostic IR fixtures live under `tests/ir-fixtures/`. Positive fixt
 schema-adjacent/custom rather than a `jsonschema` runtime; future schema changes must be mirrored in
 `schema_errors()` and embedded bad samples. The checker covers schema enums and
 required/conditional fields, then adds catalogue, compiled-module-map, source-basis, ghost-load, and
-post-render decision checks. It discovers `smokes/runtime-grounding-v*/<fixture>/ir.json` sidecars
-by default and treats them as expected-valid.
+post-render decision checks. It discovers local `smokes/runtime-grounding-v*/<fixture>/ir.json`
+sidecars when present and treats them as expected-valid.
 
-The historical `runtime-grounding-v5` suite has representative sidecar coverage only. Current-release
-smoke suites, starting with `runtime-grounding-v6` if added, require `ir.json` for every fixture.
-
-Current committed smoke sidecars exist for:
-
-```text
-smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/ir.json
-smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/ir.json
-```
+Current-release smoke suites require `ir.json` for every fixture. No committed smoke sidecars exist
+in this source state.
 
 ### Default Compact DSL/IR
 

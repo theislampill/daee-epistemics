@@ -522,6 +522,16 @@ route merely because the prompt mentions worship or condemnation.
 Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
 it must land burden-locally or be explicitly held/PARTIAL.
 
+When the register permits DO-8 content in a hard hiddenness/accountability case, one
+generic citation or paraphrase does not land the burden. The operation must distinguish:
+bare non-exposure from culpable rejection; hujjah as proof/warning actually made available;
+no-compulsion from a demand for coercive individualized proof; ahl al-fatrah or access
+limits from normal rejection; and fitrah/ayat as universal signs without using them to erase
+accountability calibration. If any of these pressure functions remains live but unoperated,
+hold it or mark PARTIAL rather than collapsing it into a mercy or guidance summary.
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
+
 #### Mandatory family-local load floor
 philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).
 

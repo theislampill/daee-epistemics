@@ -170,6 +170,15 @@ and do not turn the suspension of pressure into a verdict on the person's standi
 
 ## Failure Conditions
 
+### Hard-case restoration source floor
+
+When P1 appears in a hard, source-request, or worship-worthiness case after upstream burdens
+have landed, restoration must return the noetic order rather than merely summarize the answer.
+Name the restored criterion, the source/warrant placement, and the specific restoration
+vector now released. If the live pressure includes mercy/justice, Creator-right,
+repentance/return, guidance/non-compulsion, fitrah/ayat, testimony, or predicate-source
+discipline, P1 must either operate the relevant text or hold the function with a reason.
+A warm pastoral close does not satisfy P1 when those source functions remain unlanded.
 Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
 it must land burden-locally or be explicitly held/PARTIAL.
 

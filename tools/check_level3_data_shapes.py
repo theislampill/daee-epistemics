@@ -286,6 +286,13 @@ def validate_trigger_matrix(
             errors.append(f"{label}: priority must be integer")
         if rule.get("governance_class") not in governance_classes:
             errors.append(f"{label}: governance_class not licensed: {rule.get('governance_class')!r}")
+        if rule_id in {"M8-reductio", "V2-reconstituting-reason"}:
+            if "feature.worldview_refutation_request" in set(rule.get("requires_any", [])):
+                errors.append(f"{label}: request verbs must not route {rule_id} as noetic pressure by themselves")
+        if rule_id == "M8-reductio" and "feature.opponent_worldview_frame" in set(rule.get("requires_any", [])):
+            errors.append(f"{label}: source-worldview label alone must not route M8-reductio")
+        if not rule.get("pressure_dimensions"):
+            errors.append(f"{label}: Level 3 covered-scope rule must define pressure_dimensions")
     return by_id, errors
 
 

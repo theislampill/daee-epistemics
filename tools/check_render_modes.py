@@ -99,6 +99,9 @@ REQUIRED_TOKENS = [
     "more-than-three major operative submoves trigger",
     "no invisible TTP execution",
     "source citation substituted for TTP invocation",
+    "Source architecture collapsed into final restoration",
+    "Family-local pressure flattened into generic worldview response",
+    "source-thin surface compliance",
     "scholar/source/citation parade",
     "burden-complete",
     "submove saturation gate",
@@ -669,6 +672,51 @@ The tribunal is tested and loosened.
 That tribunal is not neutral. Islam has a different account of mercy, guidance, accountability,
 and worship-worthiness. Therefore the objection fails once the imported standard is exposed.""",
         "essay-only output",
+    ),
+    "source_function_first_appears_in_restoration": (
+        """### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: hard source-request
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported tribunal
+- current bounded operator: imported tribunal test
+- held: source architecture
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports a moral criterion.
+
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement; the restoration vector is to test the tribunal before downstream source work is released.
+
+##### Bounded Response / operative submoves
+Operator: tribunal-detection.
+Target: imported tribunal. Operation: test whether the criterion has justified authority. Result: the tribunal cannot remain unexamined.
+
+##### TTP/operator trace
+Trace: tribunal-detection + FPD + M1.
+
+### State/noetic re-read
+- What changed: the imported criterion no longer governs.
+- Remaining input-anchored burdens: none
+- Held routes rechecked: none
+- Release status: closed; no same-input eligible burden remains
+
+### Restorative Response
+The Qur'an 17:15 proves no punishment without a messenger; Qur'an 2:286 proves mercy and accountability; guidance, hujjah, and worship-worthiness are therefore restored.
+
+### Closing Formulation
+The answer is complete.
+""",
+        "source function first appears in final restoration",
     ),
     "meta_narration_opening": (
         """Now I will build the governed answer.
@@ -1716,6 +1764,11 @@ DIRECT_SOURCE_RE = re.compile(
     r"(?i)\b(?:https?://|quran\.com|sunnah\.com|sahih|surah|qur'?an\s+\d+:\d+|"
     r"bukhari|muslim|tirmidhi|abu dawud|nasai|ibn majah)\b"
 )
+FINAL_SOURCE_FUNCTION_RE = re.compile(
+    r"(?i)\b(?:mercy|guidance|hujjah|accountability|worship-worthiness|"
+    r"worthy of worship|testimony|tawatur|transmission|predication|predicate|"
+    r"source architecture|qur'?an\s+\d+:\d+|hadith|sunnah)\b"
+)
 CORE_BLOCK_RE = re.compile(
     r"(?ims)^\s*#{3,6}\s*(?:\d+\.\s*)?Core Formulation\b(?P<body>.*?)"
     r"(?=^\s*#{3,6}\s*(?:Bounded Response|TTP/operator trace|State/noetic re-read|"
@@ -1801,6 +1854,17 @@ def first_pos(pattern: re.Pattern[str], text: str) -> int:
     return match.start() if match else -1
 
 
+def final_source_function_first_appears(text: str) -> bool:
+    restorative = RESTORATIVE_RE.search(text)
+    if restorative is None:
+        return False
+    prior = text[: restorative.start()]
+    final = text[restorative.start() :]
+    direct_source_first = bool(DIRECT_SOURCE_RE.search(final)) and not bool(DIRECT_SOURCE_RE.search(prior))
+    function_first = bool(FINAL_SOURCE_FUNCTION_RE.search(final)) and not bool(FINAL_SOURCE_FUNCTION_RE.search(prior))
+    return direct_source_first or function_first
+
+
 def render_shape_violations(text: str) -> list[str]:
     violations: list[str] = []
     lower = text.lower()
@@ -1855,6 +1919,8 @@ def render_shape_violations(text: str) -> list[str]:
         violations.append("comparative-neutral flattening")
     if REVEALED_TEXT_RE.search(layer_b_text) and not DIRECT_SOURCE_RE.search(layer_b_text):
         violations.append("revealed source without direct reference")
+    if final_source_function_first_appears(text):
+        violations.append("source function first appears in final restoration")
     for state in STATE_BLOCK_RE.finditer(text):
         if not STATE_DELTA_RE.search(state.group("body")):
             violations.append("weak state/noetic re-read")

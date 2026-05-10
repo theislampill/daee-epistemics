@@ -52,6 +52,13 @@ P7 owns the concrete stop instances below. The abstract STOP / HOLD / RECURSE / 
 
 **No premature STOP while an eligible live burden remains.** A landed move can satisfy the current pass without completing the input. STOP requires `R` to confirm no input-anchored eligible `B` remains and no held route became releasable. Otherwise choose RECURSE, PARTIAL, or HOLD as governed.
 
+**Stop 2 is local, not a blanket closure rule.** In one-shot hard-case answers, especially where the
+prompt explicitly asks for sources, hiddenness/accountability, source-worldview consequence,
+predication, transmission, or restoration, the model does not have fresh interlocutor recognition
+unless it is present in the input. A good local move may end its own pass, but it cannot suppress
+same-input burdens that `R` still finds eligible. If recognition is absent or only inferred, continue
+to the next licensed burden, or mark HOLD/PARTIAL with the specific stop reason.
+
 **Recursion is not argument dump.** One `B` at a time: upstream before downstream, current-pass deployment only, boundary reset after `Land(B)`, held routes rechecked after `R`, and no total downstream release at one state re-read. Held means traversal-delayed, not permanently suppressed.
 
 **Diagnostic transparency does not suspend stop discipline.** Using compact diagnostic render (Level 2 or Level 3) does not waive any stop. The Post-Render Gate / Final Governance section of a diagnostic render must still obey all five stops.

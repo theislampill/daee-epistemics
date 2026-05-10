@@ -10,19 +10,22 @@
 
 ## [Unreleased] - current-canon metacompliance convergence
 
-### Post-v0.3.1.0 evidence track
+### Post-v0.3.2.0 evidence track
 
-- v0.3.1.0 is released. New evidence-chain improvements after the release target v0.3.1.1 or
-  v0.3.2.0, except for factual corrections to release-artifact wording, evidence status, or
-  evidence links.
+- v0.3.2.0 is released. New evidence-chain improvements after that release remain unreleased
+  source work until a same-version asset refresh or later release line is explicitly authorized.
+  Factual corrections to release-artifact wording, evidence status, or evidence links may still
+  be made without implying a new behavioral claim.
 - Verified the public `v0.3.1.0` GitHub Release asset surface for
   `daee-epistemics-v0.3.1.0.skill`, while preserving the boundary that `runtime-grounding-v5`
   smokes are historical regression evidence unless regenerated against the current package.
 - Corrected the published asset convention: GitHub Releases expose the `.skill` asset only; local
   `.skill.zip` files remain package-script intermediates and ignored build artifacts.
 - Kept current-package smoke replay absent in this source state; the
-  `--require-current-release-smokes` gate remains the release-promotion path for v0.3.1.1 or
-  v0.3.2.0 current-package smoke evidence.
+  `--require-current-release-smokes` gate remains the release-promotion path for any future
+  current-package smoke evidence claim.
+- Removed tracked `smokes/runtime-grounding-v5/` artifacts from the source repository; smoke
+  evidence is local/ignored by default unless a future task explicitly authorizes tracked fixtures.
 
 ### Changed
 

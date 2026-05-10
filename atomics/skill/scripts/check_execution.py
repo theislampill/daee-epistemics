@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -79,7 +80,7 @@ def _hard_case_quality_required(route_plan: dict[str, Any]) -> bool:
         "feature.trauma_register",
         "feature.imported_tribunal_pressure",
     }
-    compound_route = len(route_plan.get("continuation_queue", [])) >= 2 or len(route_plan.get("first_live", [])) > 1
+    compound_route = bool(route_plan.get("continuation_queue")) or len(route_plan.get("first_live", [])) > 1
     return compound_route and bool(feature_ids.intersection(hard_signals))
 
 
@@ -159,6 +160,50 @@ SOURCE_OPERATION_RE = re.compile(
     r"criterion|justice|mercy|worship|accountability|source-frame"
     r")\b"
 )
+
+FINAL_SECTION_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?(?:Restorative Response|Closing Formulation)\s*:?"
+)
+
+SOURCE_FUNCTION_RE = re.compile(
+    r"(?i)\b(?:"
+    r"Qur['\u2019\u02bc\u02be]?an|S[uū]rat|hadith|Bukhari|Muslim|"
+    r"hujjah|proof|messenger|warning|fitrah|ayat|signs|"
+    r"mercy|justice|repentance|worship-worthiness|testimony|tawatur|"
+    r"predication|attribute|predicate|modality"
+    r")\b"
+)
+
+
+def _source_function_first_appears_in_final(output: str) -> bool:
+    """Detect source-governed material introduced first in final synthesis."""
+
+    final_match = FINAL_SECTION_RE.search(output)
+    if final_match is None:
+        return False
+    for line_match in re.finditer(r"(?m)^\s*>.*$", output):
+        line = line_match.group(0)
+        if _direct_source_quote_lines(line):
+            return line_match.start() >= final_match.start()
+    before_final = output[: final_match.start()]
+    final_segment = output[final_match.start():]
+    if SOURCE_FUNCTION_RE.search(_fold_source_terms(before_final)):
+        return False
+    return SOURCE_FUNCTION_RE.search(_fold_source_terms(final_segment)) is not None
+
+
+def _fold_source_terms(value: str) -> str:
+    folded = unicodedata.normalize("NFKD", value)
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    return (
+        folded
+        .replace("ḥ", "h")
+        .replace("Ḥ", "H")
+        .replace("ṭ", "t")
+        .replace("Ṭ", "T")
+        .replace("ā", "a")
+        .replace("Ā", "A")
+    )
 
 
 def _source_quote_operation_failures(window: str) -> list[str]:
@@ -246,6 +291,32 @@ def _dimension_marker_present(window: str, dimension: dict[str, Any]) -> bool:
     return re.search(rf"(?im)^\s*Pressure\s+{re.escape(dim_id)}\s*:", window) is not None
 
 
+PRESSURE_OPERATION_RE = re.compile(
+    r"(?i)\b(?:"
+    r"exposes?|tests?|narrows?|distinguishes?|traces?|grounds?|blocks?|restores?|"
+    r"reorders?|changes?|lands?|corrects?|disambiguates?|separates?|preserves?|"
+    r"withholds?|holds?|shows?|establishes?|returns?|licenses?|releases?"
+    r")\b"
+)
+
+
+def _pressure_line_body(window: str, dimension: dict[str, Any]) -> str:
+    dim_id = str(dimension.get("id", "")).strip()
+    if not dim_id:
+        return ""
+    match = re.search(rf"(?im)^\s*Pressure\s+{re.escape(dim_id)}\s*:\s*(?P<body>.+)$", window)
+    return match.group("body").strip() if match else ""
+
+
+def _pressure_line_is_generic(window: str, dimension: dict[str, Any]) -> bool:
+    body = _pressure_line_body(window, dimension)
+    if not body:
+        return False
+    # A pressure line that only lists required tokens can fake dimension coverage
+    # without showing the local operation that changed the claim-state.
+    return PRESSURE_OPERATION_RE.search(body) is None
+
+
 def _dimension_requires_source_quote(dimension: dict[str, Any], route_feature_ids: set[str]) -> bool:
     return any(condition_satisfied(str(condition), route_feature_ids) for condition in dimension.get("source_quote_when_features", []))
 
@@ -255,6 +326,22 @@ def _dimension_active(dimension: dict[str, Any], route_feature_ids: set[str]) ->
     if not conditions:
         return True
     return any(condition_satisfied(condition, route_feature_ids) for condition in conditions)
+
+
+def _executed_route_has_active_pressure_dimensions(
+    route_plan: dict[str, Any],
+    executed_steps: list[tuple[int, list[str]]],
+    route_feature_ids: set[str],
+) -> bool:
+    route_steps = _route_step_map(route_plan)
+    for burden_index, owner_list in executed_steps:
+        step = route_steps.get(burden_index, {})
+        for owner_id in owner_list:
+            owner = _owner_item(step, owner_id)
+            for dimension in owner.get("pressure_dimensions", []):
+                if isinstance(dimension, dict) and _dimension_active(dimension, route_feature_ids):
+                    return True
+    return False
 
 
 def _owner_work_window(owner_window: str) -> str:
@@ -352,8 +439,10 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
         "content_unit_failures": [],
         "pressure_dimension_failures": [],
         "pressure_dimension_marker_failures": [],
+        "generic_pressure_line_failures": [],
         "source_quote_failures": [],
         "source_operation_failures": [],
+        "source_function_final_leak_failures": [],
         "input_anchor_failures": [],
         "generic_owner_window_failures": [],
         "diagnostic_opening_failures": [],
@@ -363,6 +452,11 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
         return [], metrics
 
     errors: list[str] = []
+    enforce_owner_pressure = (
+        metrics["hard_case_quality_required"]
+        or metrics["source_requested"]
+        or _executed_route_has_active_pressure_dimensions(route_plan, executed_steps, route_feature_ids)
+    )
     if metrics["hard_case_quality_required"]:
         if "Hidden Premises" not in output:
             failure = "hard-case output lacks Hidden Premises content unit"
@@ -390,6 +484,7 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
             errors.append(failure)
         if operative_submoves < sum(len(owner_list) for _, owner_list in executed_steps):
             errors.append("hard-case output lacks distinct operative submove evidence for each executed owner")
+    if enforce_owner_pressure:
         route_steps = _route_step_map(route_plan)
         for burden_index, owner_list in executed_steps:
             step = route_steps.get(burden_index, {})
@@ -411,7 +506,7 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
                     if isinstance(dimension, dict) and _dimension_active(dimension, route_feature_ids)
                 ]
                 if not dimensions:
-                    failure = f"B{burden_index}/{owner_id}: routed hard-case owner lacks pressure_dimensions in route data"
+                    failure = f"B{burden_index}/{owner_id}: routed source/hard-case owner lacks pressure_dimensions in route data"
                     metrics["pressure_dimension_failures"].append(failure)
                     errors.append(failure)
                     continue
@@ -436,6 +531,10 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
                     if not _dimension_marker_present(work_window, dimension):
                         failure = f"B{burden_index}/{owner_id}: pressure dimension lacks local Pressure line: {dimension.get('id')}"
                         metrics["pressure_dimension_marker_failures"].append(failure)
+                        errors.append(failure)
+                    elif _pressure_line_is_generic(work_window, dimension):
+                        failure = f"B{burden_index}/{owner_id}: pressure line is token-list/checker-shaped rather than operative: {dimension.get('id')}"
+                        metrics["generic_pressure_line_failures"].append(failure)
                         errors.append(failure)
                     if _dimension_satisfied(work_window, dimension):
                         satisfied_any = True
@@ -462,6 +561,10 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
                     errors.append(failure)
 
     if metrics["source_requested"]:
+        if _source_function_first_appears_in_final(output):
+            failure = "source-function material first appears in final restoration/closing instead of a burden-local owner window"
+            metrics["source_function_final_leak_failures"].append(failure)
+            errors.append(failure)
         if not source_quote_lines:
             errors.append("source-request route lacks any direct operative source quotation")
         if re.search(r"(?im)^\s*Operative source deployment\s*:", output) is None:

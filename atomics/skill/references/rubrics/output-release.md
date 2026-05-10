@@ -132,6 +132,11 @@ When sources are requested, release also checks source-function coverage: the an
 use one decorative verse, hadith, or citation list to cover several routed functions. Each
 source text must be tied to the pressure it lands, and missing hujjah, guidance, fitrah/ayat,
 mercy/justice, repentance/return, testimony, or predicate-source functions remain PARTIAL.
+Restoration and closing may synthesize only source functions that have already landed or
+been explicitly held. They may not introduce the first operative mercy/justice,
+worship-worthiness, repentance/return, testimony, or predicate-source correction after the
+last state re-read. If that source function is still live, release it as a distinct
+burden-local submove or next licensed burden before final response.
 Hard-case release also checks the compact diagnostic opening: Layer A must reconstruct the
 claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
 source-status/noetic-frame, held/released state, and gate/release decision before Layer B
@@ -537,12 +542,12 @@ field label.
 ### 2. No Excess Release
 
 **Pass:**
-- The response releases only the smallest sufficient corrective move for the current refreshed state.
+- The response releases a bounded but burden-complete corrective move for the current refreshed state.
 - "Sufficient" is measured by landed live burden-state, not by brevity. In a hard, compound,
-  or deformed case, the smallest sufficient corrective move may be a full burden-cycle with
+  or deformed case, the required corrective move may be a full burden-cycle with
   several operative submoves, revealed-text operation where the mechanism is named, and a
   visible re-entry before the next released burden.
-- "Smallest sufficient" never means consolidating distinct active submoves. If several
+- "Bounded" never means consolidating distinct active submoves. If several
   input-anchored operator functions are materially active inside the current burden, each
   receives its own target -> operation -> result or the response marks PARTIAL.
 - It does not expose more framework machinery than the case requires.
@@ -651,7 +656,7 @@ Ordinary Level 1 answers may compress this shape, but the state re-read and deci
 ### 6. Bounded Layer B
 
 **Pass:**
-- The public answer gives the smallest sufficient Layer B corrective move for the current pass.
+- The public answer gives the bounded but burden-complete Layer B corrective move for the current pass.
 - In hard cases, the sufficient Layer B move is the amount needed to perform the active
   owner-floor operation(s), not the shortest paragraph compatible with the heading.
 - It avoids unnecessary diagnostic labels, owner names, PF codes, or theoretical explanation unless the case or user request calls for diagnostic visibility.
@@ -660,7 +665,8 @@ Ordinary Level 1 answers may compress this shape, but the state re-read and deci
 
 **Fail:**
 - The response turns internal machinery into the public answer without need.
-- The response prints a full diagnostic structure by default even when only a compact answer is needed.
+- The response prints a full diagnostic structure by default when burden-accounted release only needs
+  compact governance visibility.
 - The response confuses patch-report format with runtime skill output.
 - The response treats diagnostic transparency as permission for exhaustive machinery exposure.
 
@@ -702,7 +708,7 @@ Ordinary Level 1 answers may compress this shape, but the state re-read and deci
 - The user is testing whether the skill routed correctly.
 
 **Fail:**
-- The response uses a full lab-report layout when the case only requires a short bounded corrective answer.
+- The response uses a full lab-report layout when burden accounting only requires a bounded corrective answer.
 - The response hides necessary routing information when the user explicitly asked for diagnostic skill execution.
 - Plain `/daee-epistemics` is treated as a giant ledger or full IR dump by default.
 - The response exposes all possible fields rather than the materially governing fields.
@@ -835,6 +841,16 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 **Input:** /daee-epistemics This proves God is not worthy of worship.
 **Bad output:** The answer gives restoration synthesis and a pastoral note before the worship-worthiness criterion has landed and before state re-read runs.
 **Required behavior:** Land the active burden, run state re-read, and only then release restoration synthesis, pastoral note, closure, HOLD, PARTIAL, or the next input-anchored burden.
+
+### FT-24 - Source architecture collapsed into final restoration
+**Input:** /daee-epistemics A hard moral protest asks for sources and says divine mercy, justice, guidance, and worship-worthiness fail.
+**Bad output:** The answer quotes one source during an upstream criterion pass, then closes with a warm paragraph about mercy and worship-worthiness without any burden-local source operation for mercy/justice, repentance/return, or the restored worship order.
+**Required behavior:** Treat source functions as routed pressure, not closing color. If mercy/justice, repentance/return, guidance/non-compulsion, fitrah/ayat, testimony, or predicate-source work remains live after state re-read, render it as a distinct operative submove or licensed next burden with the source text immediately doing diagnostic or restorative work. If limits prevent that, mark PARTIAL with the unlanded source function.
+
+### FT-25 - Family-local pressure flattened into generic worldview response
+**Input:** /daee-epistemics A report-authentication objection, a divine-attribute predication objection, or a kalamic proof-order objection is presented with source/status language.
+**Bad output:** The answer treats the case as a generic source-worldview or reason-repair problem, then gives a broad closing synthesis without testimony/tawatur, predicate/category, or proof-order operation.
+**Required behavior:** Keep the pressure family local. Transmission cases must pressure testimony, tawatur, and authentication; predication cases must pressure category, zahir/ta'wil/majaz/haqiqah, and predicate use; kalamic/falsafi proof-order cases must pressure the claimed proof method and tribunal role. Do not flatten those families into moral-protest or source-worldview language merely because source-status language appears.
 
 ---
 

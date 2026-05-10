@@ -1,1 +1,0 @@
-/daee-epistemics Someone says they follow 'the old wisdom path,' but their actual claim is: no revelation can bind unless my autonomous reason first certifies it as morally acceptable. They deny belonging to any known school and ask for an answer without labels.

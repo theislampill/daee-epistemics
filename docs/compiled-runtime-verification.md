@@ -184,7 +184,8 @@ Packaged skill archive:
   Size:   429966 bytes
   SHA256: 10A227E99310423E27282E9E6BD27EFB7CAA410687493AAF5A3699D560851E17
 
-Archive root contains SKILL.md, references/, compiled-module-map.json, and build-manifest.json.
+Archive root contains `SKILL.md`, `README.md`, `references/`, `data/`, `scripts/`,
+`tests/`, `compiled-module-map.json`, and `build-manifest.json`.
 EXIT: 0
 ```
 
@@ -212,13 +213,14 @@ references/runtime-output-governance.md
 references/runtime-phase2-passes.md
 ```
 
-Confirmed:
+Current v0.3.2.0 package-shape confirmation:
 
-- `SKILL.md` is at archive root.
-- There is no top-level `skill/` folder.
-- `atomics/`, `tools/`, `docs/`, `build/`, and `.git/` are excluded from the archive.
-- `tests/` is excluded from the archive.
+- `SKILL.md` and `README.md` are at archive root.
+- `references/`, `data/`, `scripts/`, and `tests/` are package root directories.
 - `compiled-module-map.json` and `build-manifest.json` are at archive root.
+- There is no top-level `skill/` folder.
+- `atomics/`, `tools/`, `docs/`, `build/`, `.git/`, `smokes/`, `level3-runs/`,
+  `.daee/`, and `__pycache__/` are excluded from the archive.
 
 ## Packaging Readiness
 

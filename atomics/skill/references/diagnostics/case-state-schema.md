@@ -193,7 +193,7 @@ Field discipline:
 Compression rule: populate only the fields that had operative content. A restoration trace with two populated fields is more honest than one that fills all five performatively. If no correction was required, omit the block entirely.
 
 Integration with `[Source Basis]`: the restoration trace is downstream of the case-state and source-basis blocks. It does not replace them. Case-state names what was diagnosed; source-basis names where claims are grounded; restoration trace names what was done to create the conditions under which the response could land.
-Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not carry forward automatically. A fresh round may be opened by a later reply or by a clear differentiating signal inside the same message, its accompanying propositions, or its entailments, but only when the refreshed case-state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
+Boundary reset rule: once a move lands or Stop-2 fires, later deployment must be re-justified from the current case-state. Held routes do not become deployable automatically, but they do carry forward as held until explicitly released, resolved, skipped, or marked PARTIAL. A fresh round may be opened by a later reply or by a clear differentiating signal inside the same message, its accompanying propositions, or its entailments, but only when the refreshed case-state still shows an unmet restoration target and no stop, register-hold, or semantic gate bars the next move.
 
 ## Post-Render Gate Block
 

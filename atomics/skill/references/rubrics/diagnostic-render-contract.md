@@ -110,7 +110,7 @@ Default render should exhaust the live structure made available by the user's in
 minimize visible execution. Address as many input-anchored live burdens and materially active
 submoves as release gates permit. Distinct active burdens, criteria, source/noetic frames,
 theological targets, restoration vectors, and TTP/operator functions must not be merged into
-a generic paragraph or a single all-purpose operation for brevity. If runtime, response, or
+a generic paragraph or a single all-purpose operation before burden accounting. If runtime, response, or
 interaction limits prevent completion, mark the next live burden PARTIAL instead of closing.
 Visible `Operation:` lines must begin with a closed operative verb from the existing
 operator grammar: `split`, `distinguish`, `test against own grounds`, `disambiguate`,
@@ -146,6 +146,12 @@ For source-request hard cases, source operation must cover the routed source fun
 just produce a source list. If hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
 repentance/return, testimony, or predicate discipline are distinct pressure points, the render
 must make the relevant text operate on each pressure point or mark the omitted pressure PARTIAL.
+Final restoration is not a back door for omitted source functions. If mercy/justice,
+Creator-right, repentance/return, testimony, predication, or another source-governed
+pressure remains live after state re-read, it must appear as a burden-local operative
+submove or licensed next burden before closure. A closing paragraph that merely invokes
+mercy, guidance, worship, authenticity, or textual precision without showing what source
+work changed the claim-state is source-thin surface compliance.
 Structural attachment is part of this requirement: the right labels appearing somewhere is
 not enough. `Owner-floor`, `Target`, `Operation`, `Result`, `Land(B)`, and `R(H,Delta)` must
 remain locally attached to the burden step they govern. Grouped owner lines followed later by
@@ -201,8 +207,10 @@ Each default burden-cycle must follow this structure. Layer B is prose-first; La
 state/noetic re-read use compact entries. Default Layer A is fit-for-purpose but mandatory:
 it prints only the compact DSL/IR header needed to make the current pass governable. This
 Layer A block is the compact diagnostic frame for default mode; it is not raw Diagnostic IR.
-The full-field compact header is a deliberate anti-surface-compliance failure tradeoff: simple cases still show the
-minimum compiler trace needed to prove governed execution without exposing raw IR.
+The full-field compact header is a deliberate anti-surface-compliance failure tradeoff:
+even outputs that become brief after diagnosis still show the minimum compiler trace needed
+to prove governed execution without exposing raw IR. Brevity is licensed only after
+diagnostic burden accounting.
 
 ```text
 ## Burden-Cycle N
@@ -326,7 +334,8 @@ Hard default output may expose `Operative Submove` or `B<N>.s<i>` labels under o
 This is not a raw IR, route ledger, or load ledger when each submove is case-specific and
 feeds `Land(B)` before `R(H,Δ)`. A complex `B` rendered as one generic
 Target/Operation/Result block while necessary submoves remain implicit is hard-output
-compression failure; a single block is sufficient only for a genuinely atomic burden.
+compression failure. A single block is sufficient only when diagnostic burden accounting
+shows one live burden with one materially necessary submove.
 
 Hard-output render-through template:
 
@@ -905,6 +914,7 @@ Decision rules:
 16. **One-time TTP itinerary:** Do not apply TTPs only once against the initial case-state and then answer every detected topic. TTPs execute across refreshed case-states: after each bounded operator lands, the refreshed state determines whether an already-present same-input burden is eligible, held, partial, or closed. Eligible same-input burdens must be traversed or marked PARTIAL; untriggered future contingencies stay held with a release condition.
 17. **Premature compression:** Do not shorten default output by skipping an eligible same-input burden. The failure is essay sprawl without refresh, not governed recursive sufficiency.
 18. **Wrong optimization target:** Do not optimize for short output or long output. Optimize the render for governed recursive sufficiency: compact DSL/IR header plus bounded prose in default mode, compact pass trace in `:dsl`, full ledger only in internal/development audit. Compact does not mean thin: governance rejects padding, dumping, and sprawl, but it does not authorize diagnostic impoverishment. Layer A stays compact but load-bearing; Layer B stays burden-complete, case-specific, owner-floor faithful, and restoration-directed. `B.s` / `Land(B)` / `R` structure is additive to noetic depth, not a substitute for active deformations, live criterion structure, identity/source-status implications, or necessary theological/restorative force. Per-burden Layer A must not shorten Layer B; each active TTP/operator function must remain a distinct submove with target -> operation -> result. In hard Level 1/2 cases, the failure mode to avoid is the smallest compliant-looking response; the target is enough rendered substance for every released burden to land, with as many input-anchored burdens and active submoves addressed as the release gates permit.
+    Hard noetic cases may therefore produce extensive output when the live burden requires it. A 20-25kb answer that closes while live burdens remain unlanded is still a failure; a 30-80kb answer can be correct when it is source-operative, TTP-complete, and not padded. If response/runtime limits prevent traversal, mark PARTIAL with the next live burden or blocked submove rather than closing thinly.
 19. **Clean Essay Surface-Compliance Failure:** Every pass must show a transition before the next bounded operator starts. Multiple topical sections without state re-read transitions, hidden premises listed without operator result, doctrine dumped after criterion correction, or a pastoral close added without final state re-read are default-mode failures.
 20. **Identity over-certification:** In default mode, "the public identity-frame may stabilize the criterion or affect discourse orientation" is permitted when grounded. Unsafe default verdicts include "the identity layer is heavily load-bearing," "his identity is the framework through which every claim is processed," "it is hawā," or "it is iʿrāḍ," unless independently grounded and source-status marked. When an identity/source-status marker is live and input-anchored, do not leave it as a diagnostic orphan: feed it into the restoration vector or practitioner instruction while keeping interior motive, sincerity, culpability, and soul-state speculative or held. Do not misread motive caution as a ban on source-worldview analysis when the input itself makes that worldview criterion-bearing.
 21. **Route-chain bounded operator:** Do not render `Current bounded operator` as `FPD -> M1 -> DO-8 -> M8 -> restoration`, `M1, M8, DO-8, restoration`, or any module itinerary. The field names one burden-level function selected after diagnostic reduction and routing precedence.
@@ -1123,9 +1133,9 @@ Trace: source-status discipline + M8 consequence trace.
   what the two burden-cycles landed.
 
 #### Restorative Response
-The restored order is that mercy, guidance, accountability, and worship-worthiness cannot be
-judged from an imported tribunal that has not itself been warranted. The public worldview frame
-may be analyzed as the criterion-source while the person's interior remains held from judgment.
+The restored order is that the imported tribunal and the named criterion-source no longer judge
+the case without warrant. Broader mercy, guidance, accountability, and worship-worthiness doctrine
+remains held unless it was separately operated as a burden-local source function.
 
 #### Closing Formulation
 What cleared is the borrowed tribunal's authority and the named worldview's claim to supply an

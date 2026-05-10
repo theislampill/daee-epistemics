@@ -51,6 +51,11 @@ Result: if speculative or school-bound, it cannot govern as reason itself.
 Failure condition: V2 has not executed if the response merely says the interlocutor has a
 "contaminated conception of reason" without naming the active filter, testing its self-warrant,
 and stating what content remains held or newly releasable after the filter loosens.
+In hard cases, V2 also fails if it repairs "reason" generically while leaving the operative
+role of reason untyped. Distinguish sound reason, reason-as-tribunal, speculative inference,
+imported criterion, fitri recognition, daruri knowledge, nazari proof, testimony
+authentication, or predication discipline as the case requires. The result must say what
+proof-status or warrant order changed before the next burden is released.
 
 > The question is never "can you believe in God despite what reason says?" It is: "are you using a conception of reason adequate to the full range of what human beings can know?"
 

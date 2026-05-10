@@ -594,7 +594,7 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: skill/references/case-library/do-second-loop.md -->
-<!-- SOURCE_SHA256: 5b6f3c2a796aa1bc6a680626d823ee3334ffbd5e7737a6b3d0f956a0e703691c -->
+<!-- SOURCE_SHA256: 5a68c66b578cac4f640151b4a8dda70b19550924c7b2714bff1b292fbd11d0bb -->
 
 ---
 id: do-second-loop
@@ -1117,6 +1117,16 @@ Identity-performance may be noted with caution, but do not over-certify interior
 DO-8 is relevant when accountability or hujjah assumptions remain live, but it is a
 bounded downstream correction after FPD/M1/state re-read; it must not become the primary
 route merely because the prompt mentions worship or condemnation.
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
+
+When the register permits DO-8 content in a hard hiddenness/accountability case, one
+generic citation or paraphrase does not land the burden. The operation must distinguish:
+bare non-exposure from culpable rejection; hujjah as proof/warning actually made available;
+no-compulsion from a demand for coercive individualized proof; ahl al-fatrah or access
+limits from normal rejection; and fitrah/ayat as universal signs without using them to erase
+accountability calibration. If any of these pressure functions remains live but unoperated,
+hold it or mark PARTIAL rather than collapsing it into a mercy or guidance summary.
 Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
 it must land burden-locally or be explicitly held/PARTIAL.
 

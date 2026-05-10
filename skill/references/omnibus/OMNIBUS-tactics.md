@@ -1004,7 +1004,7 @@ P7 Stop-2 governs R3. R3 makes one analytical move — asks what produced the in
 <!-- MODULE_ID: M1-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M1-self-refutation.md -->
-<!-- SOURCE_SHA256: e44ddf35da79df8861bc4fbee125cedfa1ff0d71069e66c0018570e757817d54 -->
+<!-- SOURCE_SHA256: 760d63e3754dca239d5ff885a580cd238aded2314ad83850d669046102c4a296 -->
 
 ---
 id: M1-self-refutation
@@ -1045,6 +1045,13 @@ When present, deliver this move cleanly and early. Do not bury it. The interlocu
 - The claim "only empirically testable propositions are meaningful" is not itself empirically testable.
 
 **Delivery:** State the objection at its strongest. Then: "But notice that the premises of this argument, applied consistently, also undermine the argument itself." Show the move cleanly. Stop. Do not pile on.
+
+Hard-case scope note: this stop is local to the M1 operation, not a license for premature
+closure of a compound same-input response. In a hard or multi-burden render, M1 must still
+show its target, operation, and result, then feed `Land(B) -> R(H,Delta)`. If the refreshed
+state names another input-anchored burden, continue or mark PARTIAL as governed; do not use
+M1's local-stop discipline to suppress hujjah, source-worldview, predication, transmission, or
+restoration pressures that remain live.
 
 ## The Staged-Visibility Protocol
 
@@ -1643,7 +1650,7 @@ M7 is not the owner of broader conception-capture problems. When contradiction p
 <!-- MODULE_ID: M8-reductio -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M8-reductio.md -->
-<!-- SOURCE_SHA256: 45040b07ee2bb1d4d100dcd7db7d51c242192c5d618c64008ea0eb6794af88ab -->
+<!-- SOURCE_SHA256: b7936d37b0f918bf62bba08cde990f5c5941ef52c036476152eb50da7e4b6e84 -->
 
 ---
 id: M8-reductio
@@ -1702,6 +1709,15 @@ Assume P. Show that P, followed consistently, produces conclusions the interlocu
 5. If they reject X: "X follows necessarily from your position. You cannot reject X without rejecting the position that generated it."
 
 M8 uses `B -> {s1...sn} -> Land(B) -> R` from `recursive-state-transitions.md`. Gloss: land one consequence, reassess live state, and extend only if the restoration target still requires further compounding under P7, register discipline, and current release conditions.
+
+Source-worldview consequence traces must be concrete, not labels. When a public worldview,
+school frame, ideology, or noetic-family frame supplies the criterion, M8 must assume the
+actual operative commitment, trace what that commitment can and cannot warrant, name the
+unacceptable or self-defeating consequence, and keep source-status discipline intact. A
+generic "worldview consequence" paragraph fails M8 if it does not identify the criterion
+being assumed and the burden-state changed by the consequence trace. If the live pressure is
+predication, transmission, kalamic proof-order, grief/register, or another family-local frame,
+do not relabel it as source-worldview; trace the consequence in that family's own terms.
 
 <!-- END_SOURCE: M8-reductio -->
 
