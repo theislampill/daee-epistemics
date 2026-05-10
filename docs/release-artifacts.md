@@ -1,6 +1,6 @@
 # Release Artifacts
 
-This file records the current local v0.3.2.0 package artifact prepared for a same-version
+This file records the current v0.3.2.0 package artifact used for the same-version
 GitHub Release asset refresh. Binary skill archives are not committed to the source repository;
 GitHub Releases are the binary distribution surface for the published `.skill` asset.
 
@@ -22,22 +22,21 @@ writes slash-safe archive entries.
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `50D5C2AA5365EE7B50743F586A3D582B5CD4AF02143A16704977BDEDD9056584` |
-| Size | `571306` bytes |
+| SHA256 | `DA77F524A56EE3179C78AEE2202D892A4E82A1B351A683DC37B89A283F8A09E2` |
+| Size | `571310` bytes |
 | Entries | `45` |
-| Source commit | `60899f792abb3b09ad02ef37b6fda8257e868254` |
-| GitHub Release visibility | Pending manual asset replacement; `gh` was unavailable in the release workspace, so the GitHub Release asset has not yet been refreshed from this package |
+| Source commit | `663f762d1c56fc6ae804a47978d46a08b3aa9a95` |
+| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, Level 1/2 scriptless governance lift, and canary-name hygiene |
 | Release tag | `v0.3.2.0` |
-| Intended release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
+| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
 | Verification date | `2026-05-10` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
-intended public GitHub Release asset when copied/renamed from the same build output.
-Intended GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
-repository does not commit the binary archive; GitHub Release replacement remains pending until
-the asset is uploaded and verified.
+public GitHub Release asset when copied/renamed from the same build output.
+GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
+repository does not commit the binary archive; the GitHub Release is the binary distribution surface.
 
 Committed `runtime-grounding-v5` smoke artifacts are historical regression evidence for package
 `daee-epistemics-RC00001-v0.3.1.0.skill.zip` / SHA256
@@ -62,7 +61,7 @@ evidence unless regenerated against the release package recorded in this file an
 current-release package provenance.
 
 Committed current-package smoke replay artifacts for `daee-epistemics-v0.3.2.0.skill` / SHA256
-`50D5C2AA5365EE7B50743F586A3D582B5CD4AF02143A16704977BDEDD9056584` are not present unless a smoke
+`DA77F524A56EE3179C78AEE2202D892A4E82A1B351A683DC37B89A283F8A09E2` are not present unless a smoke
 suite is regenerated against that package and marked `release-artifact relation: current-release`
 with `current-release evidence: yes`.
 
