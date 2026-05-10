@@ -1,6 +1,6 @@
 # Release Artifacts
 
-This file records the current v0.3.2.0 release package artifact used for the same-version
+This file records the current local v0.3.2.0 package artifact prepared for a same-version
 GitHub Release asset refresh. Binary skill archives are not committed to the source repository;
 GitHub Releases are the binary distribution surface for the published `.skill` asset.
 
@@ -26,17 +26,18 @@ writes slash-safe archive entries.
 | Size | `571306` bytes |
 | Entries | `45` |
 | Source commit | `60899f792abb3b09ad02ef37b6fda8257e868254` |
-| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, and Level 1/2 scriptless governance lift |
+| GitHub Release visibility | Pending manual asset replacement; `gh` was unavailable in the release workspace, so the GitHub Release asset has not yet been refreshed from this package |
 | Release tag | `v0.3.2.0` |
-| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
+| Intended release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
 | Verification date | `2026-05-10` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
-public GitHub Release asset when copied/renamed from the same build output.
-GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
-repository does not commit the binary archive; the GitHub Release is the binary distribution surface.
+intended public GitHub Release asset when copied/renamed from the same build output.
+Intended GitHub Release binary distribution asset: `daee-epistemics-v0.3.2.0.skill`. The source
+repository does not commit the binary archive; GitHub Release replacement remains pending until
+the asset is uploaded and verified.
 
 Committed `runtime-grounding-v5` smoke artifacts are historical regression evidence for package
 `daee-epistemics-RC00001-v0.3.1.0.skill.zip` / SHA256
