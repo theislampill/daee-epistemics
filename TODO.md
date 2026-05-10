@@ -31,7 +31,7 @@ docs/                   = architecture, audit, and workflow notes
 
 ### Manual Level 1/2 Behavioral Rerun
 
-- Problem: the Level 1/2 TST-style output previously shrank against the
+- Problem: the Level 1/2 hard moral-protest / worship-worthiness output previously shrank against the
   v0.3.1.0 golden. Spec and checker hardening does not prove live model recovery.
 - Source surfaces: `atomics/skill/SKILL.md`,
   `atomics/skill/references/rubrics/diagnostic-render-contract.md`,
@@ -43,7 +43,7 @@ docs/                   = architecture, audit, and workflow notes
   `tools/check_recursive_traversal_governance.py`,
   `skill/` generated runtime output.
 - Evidence surfaces: repo-local smoke files under `../smokes/`.
-- Remaining verification: manually rerun Claude Level 1/2 on the TST-style case
+- Remaining verification: manually rerun Claude Level 1/2 on the hard moral-protest canary
   and compare against the v0.3.1.0 golden for diagnostic depth, visible
   per-burden Layer A re-entry, distinct TTP submoves, operative Qur'an/hadith
   formatting, identity/worldview restoration, and rhetorical/restorative force.

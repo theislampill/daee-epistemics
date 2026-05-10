@@ -198,13 +198,13 @@ preserving Level 1/2 fallback behavior for scriptless runtimes.
 - Transformer execution remains probabilistic; fixture-18-style highest
   complexity render-through limits remain capability-bound.
 - Manual Claude Level 1/2 rerun remains required before claiming behavioral
-  recovery of the TST-style Level 1/2 regression; this release line claims
+  recovery of the hard moral-protest / worship-worthiness Level 1/2 regression; this release line claims
   spec-side hardening, not proven live-host recovery.
 - Pure-Hermes parity is not claimed.
 - Level 3 does not guarantee every runtime can execute bundled scripts.
 - Level 3 does not claim that every TTP in the catalogue has full executable
   Level 3 rules beyond the implemented fixture-backed covered scope.
-- No TST-specific operative logic is claimed or introduced; named hard-smoke
+- No canary-specific operative logic is claimed or introduced; named hard-smoke
   material remains regression fixture/audit evidence, not runtime routing logic.
 
 ## [v0.3.1.0] - 2026-05-01

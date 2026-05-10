@@ -50,8 +50,9 @@ artifact in this file.
 
 Current-release committed smoke suite: none.
 
-Local retained real Codex CLI Level 3 TST canary evidence exists under ignored `.daee/`
-for this source/package rebake. It proves the installed Level 3 path on that canary only;
+Local retained real Codex CLI Level 3 hard moral-protest / worship-worthiness /
+source-worldview canary evidence exists under ignored `.daee/` for this source/package rebake.
+It proves the installed Level 3 path on that canary only;
 raw smoke artifacts are not committed, not packaged, and do not prove Claude Level 1/2
 scriptless behavioral recovery.
 

@@ -800,7 +800,7 @@ Closing Formulation: no remaining input-anchored burden.
     if simple_verdict.get("execution_fidelity") != "pass":
         errors.append(f"closure-regression simple B1 output failed: {simple_verdict}")
 
-    non_tst_hard_plan = {
+    predication_hard_plan = {
         "feature_ids": ["term.trinity", "feature.predication_confusion", "feature.attribute_resemblance"],
         "live_burden": "synthetic predication and attribute burden",
         "governance_verdict": "RECURSE",
@@ -860,7 +860,7 @@ Closing Formulation: no remaining input-anchored burden.
         "held": [],
         "deferred": [],
     }
-    non_tst_thin_output = """# Synthetic non-TST hard route execution
+    non_canary_thin_output = """# Synthetic non-canary hard route execution
 Layer A - Compact DSL/IR Header [Burden 1]
 - current live noetic burden: synthetic predication and attribute burden
 - selected owner(s): M9-predication-mode
@@ -904,9 +904,9 @@ Land(B3): third burden landed
 R(H,Delta): RECURSE - no remaining input-anchored burdens
 Closing Formulation: closure licensed; no remaining input-anchored burden.
 """
-    non_tst_thin_verdict = check_execution(non_tst_hard_plan, non_tst_thin_output)
-    if non_tst_thin_verdict.get("execution_fidelity") == "pass":
-        errors.append("hard-case quality regression: non-TST checker-shaped predication output unexpectedly passed")
+    non_canary_thin_verdict = check_execution(predication_hard_plan, non_canary_thin_output)
+    if non_canary_thin_verdict.get("execution_fidelity") == "pass":
+        errors.append("hard-case quality regression: generic checker-shaped predication output unexpectedly passed")
 
     return errors
 

@@ -267,13 +267,13 @@ SCAFFOLD_RE = re.compile(
 
 GENERIC_REUSE_RE = re.compile(
     r"(?i)\b(?:The hidden premise is not accepted just because the sentence sounds morally urgent|"
-    r"In the TST case, the source label could tempt the answer into a belief-system tour|"
+    r"In the local hard canary, the source label could tempt the answer into a belief-system tour|"
     r"The pressure applied here is not decorative naming|The answer does not step around the claim)\b"
 )
 
-TST_TERMS_RE = re.compile(
-    r"(?i)\b(?:TST|The Satanist Temple|Satanist|Richard(?:-Lael)? Lillard|"
-    r"simple fact of non-belief|TST case)\b"
+SOURCE_WORLDVIEW_CANARY_TERMS_RE = re.compile(
+    r"(?i)\b(?:local hard canary|source-worldview canary|hard moral-protest canary|"
+    r"named hard-smoke canary|source label could tempt the answer)\b"
 )
 
 ACCOUNTABILITY_TERMS_RE = re.compile(
@@ -286,13 +286,17 @@ MORAL_PROTEST_TERMS_RE = re.compile(
 )
 
 WORSHIP_WORTHINESS_TERMS_RE = re.compile(
-    r"(?i)\b(?:worship-worthiness|not worthy of worship)\b"
+    r"(?i)\b(?:worship-worthiness|not worthy of worship|worthy of worship)\b"
 )
 
 
 FIXTURE_ALLOWANCES = {
-    "tst": (TST_TERMS_RE, ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE),
-    "richard": (TST_TERMS_RE, ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE),
+    "source-worldview-canary": (
+        SOURCE_WORLDVIEW_CANARY_TERMS_RE,
+        ACCOUNTABILITY_TERMS_RE,
+        MORAL_PROTEST_TERMS_RE,
+        WORSHIP_WORTHINESS_TERMS_RE,
+    ),
     "trinitarian": (WORSHIP_WORTHINESS_TERMS_RE,),
     "trinity": (WORSHIP_WORTHINESS_TERMS_RE,),
     "revelation-direct-source": (ACCOUNTABILITY_TERMS_RE,),
@@ -337,10 +341,10 @@ VALID_HARD_SAMPLE_OUTPUT = (
 # filler markers, stale package names, and contamination terms that valid smoke
 # artifacts must reject.
 BAD_SAMPLES = {
-    "non_tst_fixture_with_tst_contamination": {
+    "non_canary_fixture_with_source_worldview_contamination": {
         "fixture": "03-source-prestige-citation-bait",
         "input": "Give me citations and authorities.",
-        "output": "In the TST case, the source label could tempt the answer into a belief-system tour.",
+        "output": "In the local hard canary, the source label could tempt the answer into a belief-system tour.",
         "verdict": "- fixture class: bounded\n- status: PASS\n",
         "expected": "fixture contamination",
     },
@@ -585,7 +589,7 @@ BAD_SAMPLES = {
     },
     "anti_example_rendered_as_answer": {
         "fixture": "10-richard-lael-lillard-tst-exact",
-        "input": "TST hard smoke.",
+        "input": "Hard moral-protest canary smoke.",
         "output": "Burden-Cycle Compression Failure: Malformed shape: Burden 1 -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed.\n",
         "verdict": "- fixture class: hard\n- status: PASS\n",
         "expected": "scaffold/formula language in output",
@@ -1181,6 +1185,11 @@ def allowed_patterns(fixture_name: str, input_text: str) -> tuple[re.Pattern[str
     for token, patterns in FIXTURE_ALLOWANCES.items():
         if token in text:
             allowed.extend(patterns)
+    # Content-shaped allowances keep historical hard canaries from depending on
+    # named-person or movement-specific fixture paths.
+    for pattern in (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE):
+        if pattern.search(input_text):
+            allowed.append(pattern)
     return tuple(allowed)
 
 
@@ -1188,7 +1197,7 @@ def contamination_errors(fixture_name: str, input_text: str, output_text: str) -
     errors: list[str] = []
     allowed = allowed_patterns(fixture_name, input_text)
     checks = [
-        ("fixture contamination: TST/source-label terms", TST_TERMS_RE),
+        ("fixture contamination: source-worldview canary/source-label terms", SOURCE_WORLDVIEW_CANARY_TERMS_RE),
         ("fixture contamination: accountability/punishment terms", ACCOUNTABILITY_TERMS_RE),
         ("fixture contamination: moral-protest/hiddenness terms", MORAL_PROTEST_TERMS_RE),
         ("fixture contamination: worship-worthiness terms", WORSHIP_WORTHINESS_TERMS_RE),

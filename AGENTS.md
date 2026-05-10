@@ -144,9 +144,9 @@ required.
   claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
   source-status/noetic-frame, held/released state, and gate/release decision. A checker-shaped
   route answer without that frame is PARTIAL even if it names the right owners.
-- TST-style hard smokes are canaries, not the architecture. Do not add TST, Richard-Lael,
-  Satanism, or one-golden-output-specific routing unless a future task explicitly authorizes a
-  bespoke owner. Fixes should generalize across hard/compound/deformed noetic structures and
+- Named hard-case smokes are canaries, not the architecture. Do not add canary-person,
+  movement-specific, or one-golden-output-specific routing unless a future task explicitly
+  authorizes a bespoke owner. Fixes should generalize across hard/compound/deformed noetic structures and
   preserve family-local pressure rather than flattening kalam, falsafah, predication,
   transmission, grief/register, naturalist, or source-worldview cases into one blob.
 - These checks are not generic answer-polish. They actualize the skill thesis:
