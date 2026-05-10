@@ -519,6 +519,8 @@ Identity-performance may be noted with caution, but do not over-certify interior
 DO-8 is relevant when accountability or hujjah assumptions remain live, but it is a
 bounded downstream correction after FPD/M1/state re-read; it must not become the primary
 route merely because the prompt mentions worship or condemnation.
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
 
 #### Mandatory family-local load floor
 philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).

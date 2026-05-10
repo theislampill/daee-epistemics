@@ -177,6 +177,8 @@ When state re-read names a remaining input-anchored burden and no named gate blo
 Restorative Response and Closing Formulation are not yet licensed. Continue with the next
 bounded burden-cycle. If response limits prevent that continuation, mark PARTIAL with the
 next live burden instead of closing rhetorically.
+Missing per-burden Layer A -> governed Layer B -> state/noetic re-read is a Level 1/2
+render failure whenever another input-anchored burden remains live and unblocked.
 
 For this gate, "input-anchored" includes supporting premises and contrast rules already
 present in the user's surface discourse, not only separate requested questions. A public/private

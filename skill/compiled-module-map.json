@@ -146,7 +146,7 @@
       "module_class": "procedure",
       "module_id": "P1-fitrah-restoration",
       "source": "atomics/skill/references/procedures/P1-fitrah-restoration.md",
-      "source_sha256": "9bac222634cd74b24b60da94a8abc2c9c04d79028076f7feae12fc2ce9728e4b"
+      "source_sha256": "c2803fdf108766b26e8a84ecc8c45241d16cb2f7417c610ea084906df9d6c17b"
     },
     "P2-objection-mapping": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
@@ -378,7 +378,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "1e50749117355a4e32bdbc0780c6837fe4043436e083cc2ba516c284e13ce8ee"
+      "source_sha256": "ebf3ae1d78c7cd857f62b8ed5da7aa0361e30ecd3a6f83984354419d158cb915"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -426,7 +426,7 @@
       "module_class": "case-library",
       "module_id": "do-second-loop",
       "source": "atomics/skill/references/case-library/do-second-loop.md",
-      "source_sha256": "d95302cf97d56e6b024585c039cda2639552bd2fa5f11544eb662416362d5573"
+      "source_sha256": "5b6f3c2a796aa1bc6a680626d823ee3334ffbd5e7737a6b3d0f956a0e703691c"
     },
     "doubt-vs-skepticism": {
       "bundle_path": "references/omnibus/OMNIBUS-tactics.md",
@@ -682,7 +682,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "b3bb1ff92d18e40c8796e0cd880d5c0384cef1263a7d85ba0a25751aeb700d28"
+      "source_sha256": "ddcf83adda5428744089f4594ef37727bb866b5147e5567ad7a495da56c89dd7"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",

@@ -170,6 +170,9 @@ and do not turn the suspension of pressure into a verdict on the person's standi
 
 ## Failure Conditions
 
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
+
 Do not deploy P1 merely because the case is difficult, slow, or emotionally textured. If the
 interlocutor is still in a stable truth-seeking intellectual exchange, use P2 or the matched
 case-library owner rather than replacing the live objection with a broad restoration arc.

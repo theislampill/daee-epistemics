@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: b3bb1ff92d18e40c8796e0cd880d5c0384cef1263a7d85ba0a25751aeb700d28 -->
+<!-- SOURCE_SHA256: ddcf83adda5428744089f4594ef37727bb866b5147e5567ad7a495da56c89dd7 -->
 
 ---
 id: output-release
@@ -96,7 +96,7 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 2. Another already-present burden remains live in the original input.
 3. No P7 stop, register-hold, semantic gate, thin-basis rule, absent release signal, or limit blocks the next pass.
 
-When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied.
+When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless Level 1/2 obligation, not merely Level 3 route behavior.
 
 **Minimum visible transition spine (mandatory in multi-burden default):**
 `B -> {s1...sn} -> Land(B) -> R -> Decision`. Gloss: a live burden is input-anchored
@@ -881,7 +881,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: 1e50749117355a4e32bdbc0780c6837fe4043436e083cc2ba516c284e13ce8ee -->
+<!-- SOURCE_SHA256: ebf3ae1d78c7cd857f62b8ed5da7aa0361e30ecd3a6f83984354419d158cb915 -->
 
 ---
 id: diagnostic-render-contract
@@ -1062,6 +1062,8 @@ When state re-read names a remaining input-anchored burden and no named gate blo
 Restorative Response and Closing Formulation are not yet licensed. Continue with the next
 bounded burden-cycle. If response limits prevent that continuation, mark PARTIAL with the
 next live burden instead of closing rhetorically.
+Missing per-burden Layer A -> governed Layer B -> state/noetic re-read is a Level 1/2
+render failure whenever another input-anchored burden remains live and unblocked.
 
 For this gate, "input-anchored" includes supporting premises and contrast rules already
 present in the user's surface discourse, not only separate requested questions. A public/private

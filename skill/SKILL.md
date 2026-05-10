@@ -369,6 +369,16 @@ full diagnostic and render contract: as many input-anchored live burdens and
 materially active submoves as the case can responsibly release must be addressed,
 or the answer must mark the next live burden PARTIAL with a concrete limit.
 
+## Level 1/2 Default Behavioral Coercion
+
+Default scriptless output is burden-governed, not concise-answer-governed.
+
+For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic reread. If the reread leaves another input-anchored burden live and no HOLD, PARTIAL, limit, or register gate blocks it, continue in the same response.
+
+Same-burden collapse does not collapse active submoves. Imported tribunal pressure, hujjah/accountability, coercive-guidance pressure, source-worldview consequence, mercy/justice, fitrah/ayat, Creator-right, repentance/return, testimony, and predicate-source work must either land burden-locally or be explicitly held/PARTIAL.
+
+Final restoration cannot be the first place live source architecture appears. If runtime/context limits prevent full traversal, mark PARTIAL and name the next live burden rather than closing thinly.
+
 Maintainer/debugging command:
 
 ```text

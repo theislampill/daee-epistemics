@@ -121,6 +121,28 @@ the desired behavior. Compare the relevant outputs, classify likely causes, patc
 source-of-truth surfaces, rebuild, verify, and state whether a manual model rerun is still
 required.
 
+### Level 1/2 Behavioral Coercion Memory
+
+v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless
+Level 1/2. Default scriptless output is burden-governed, not
+concise-answer-governed. Compact means after burden accounting; it never
+licenses fewer live burdens, fewer necessary TTP submoves, thinner source
+operation, or final-restoration source dumping.
+
+For every released burden-cycle, compact Layer A -> governed Layer B ->
+state/noetic reread must remain locally attached. If reread leaves another
+input-anchored burden live and no HOLD/PARTIAL/limit/register gate blocks it,
+continue in the same response. Same-burden collapse does not collapse active
+submoves. Imported tribunal pressure, hujjah/accountability, coercive-guidance
+pressure, source-worldview consequence, mercy/justice, fiṭrah/āyāt,
+Creator-right, repentance/return, testimony, and predicate-source work must
+either land burden-locally or be explicitly held/PARTIAL.
+
+Final restoration cannot be the first place live source architecture appears.
+The Richard-Lael/TST hard moral-protest smoke is a canary, not architecture.
+Do not add named-person, TST-specific, or Satanism-specific runtime logic
+unless explicitly instructed.
+
 - For Level 1/2 render regressions, preserve both governance and depth: compact does not mean
   thin; Layer A must stay compact but load-bearing; Layer B must stay burden-complete,
   case-specific, owner-floor faithful, and restoration-directed.

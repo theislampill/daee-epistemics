@@ -594,7 +594,7 @@ tradition does not primarily rely upon; redirect to the actual grounds.
 <!-- MODULE_ID: do-second-loop -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: skill/references/case-library/do-second-loop.md -->
-<!-- SOURCE_SHA256: d95302cf97d56e6b024585c039cda2639552bd2fa5f11544eb662416362d5573 -->
+<!-- SOURCE_SHA256: 5b6f3c2a796aa1bc6a680626d823ee3334ffbd5e7737a6b3d0f956a0e703691c -->
 
 ---
 id: do-second-loop
@@ -1117,6 +1117,8 @@ Identity-performance may be noted with caution, but do not over-certify interior
 DO-8 is relevant when accountability or hujjah assumptions remain live, but it is a
 bounded downstream correction after FPD/M1/state re-read; it must not become the primary
 route merely because the prompt mentions worship or condemnation.
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
 
 #### Mandatory family-local load floor
 philosophical-usurpation.md (Type D — liberal political philosophy / secular moral framework as moral arbiter), V2 (foreign criterion identification and reconstitution), FPD (foreign premise detection), M4-grief-register.md (if NS-8 affective register is live).

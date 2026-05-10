@@ -76,7 +76,7 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 2. Another already-present burden remains live in the original input.
 3. No P7 stop, register-hold, semantic gate, thin-basis rule, absent release signal, or limit blocks the next pass.
 
-When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied.
+When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless Level 1/2 obligation, not merely Level 3 route behavior.
 
 **Minimum visible transition spine (mandatory in multi-burden default):**
 `B -> {s1...sn} -> Land(B) -> R -> Decision`. Gloss: a live burden is input-anchored

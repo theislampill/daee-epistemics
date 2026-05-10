@@ -80,7 +80,7 @@ Procedures do not suspend pattern-first routing, source-status restrictions, bur
 <!-- MODULE_ID: P1-fitrah-restoration -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: skill/references/procedures/P1-fitrah-restoration.md -->
-<!-- SOURCE_SHA256: 9bac222634cd74b24b60da94a8abc2c9c04d79028076f7feae12fc2ce9728e4b -->
+<!-- SOURCE_SHA256: c2803fdf108766b26e8a84ecc8c45241d16cb2f7417c610ea084906df9d6c17b -->
 
 ---
 id: P1-fitrah-restoration
@@ -253,6 +253,9 @@ what a person actually has access to (`hujjah`). Engage humanly; do not press ep
 and do not turn the suspension of pressure into a verdict on the person's standing before God.
 
 ## Failure Conditions
+
+Live mercy/hujjah/fitrah/source architecture cannot be deferred into final synthesis;
+it must land burden-locally or be explicitly held/PARTIAL.
 
 Do not deploy P1 merely because the case is difficult, slow, or emotionally textured. If the
 interlocutor is still in a stable truth-seeking intellectual exchange, use P2 or the matched
