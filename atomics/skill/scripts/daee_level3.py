@@ -17,7 +17,7 @@ from typing import Any
 
 from check_execution import check_execution
 from diagnose import extract
-from level3_lib import default_skill_root, owner_ids, route_state_signature, write_json
+from level3_lib import condition_satisfied, default_skill_root, owner_ids, route_state_signature, write_json
 from reconstruct import reconstruct
 from route import compute_route
 from validate import validate as validate_route
@@ -65,14 +65,30 @@ def _hard_case_quality_guidance(route_plan: dict[str, Any]) -> str:
         "- A non-PARTIAL hard/compound/deformed answer must be burden-complete, owner-floor faithful, source-operative where needed, and restorative enough for a da'i to use.",
         "- This applies across moral protest, imported-criterion, higher-order reason/authority, transmission/testimony, predication/attribute, source-worldview transfer, necessary-knowledge, and grief/register cases.",
         "- Each routed owner may carry pressure_dimensions in the route plan. Land those dimensions inside that owner's local Target/Operation/Result window, or mark PARTIAL with the missing dimension.",
+        "- Every executed owner gets its own submove marker before its owner-floor, such as `B1.s1:` then `B1.s2:` for two first-live owners. Do not merge multiple owners into one `B1.s` summary.",
+        "- The Target line for every owner must quote or closely repeat at least one route input span for that burden. If the owner window has no input-anchor pressure, the burden is PARTIAL.",
         "- Within each executed burden, split materially active mechanisms into visible operative submoves under the routed owner instead of compressing them into one generic Target/Operation/Result paragraph.",
         "- Target/Operation/Result must pressure the input's actual premise, criterion, warrant, or source-worldview role; generic route-proving prose is PARTIAL.",
+        "- In hard/compound cases, include a visible `Hidden Premises` section and a burden-local `Core Formulation` before owner execution. These are content units, not word-count padding.",
+        "- Hidden Premises should surface the actual suppressed warrants as HP-1, HP-2, etc.; a single umbrella sentence is not enough for a hard/compound case.",
+        "- Each burden's Core Formulation should name the exact claim-state being transformed before the owner submoves begin.",
+        "- Each pressure_dimension should become its own `Pressure <dimension-id>:` execution line inside the owner window, with case-specific pressure rather than a dimension-name restatement.",
+        "- A `Pressure <dimension-id>:` line may be paragraph-level when needed. It should carry the input anchor, the noetic control point, the corrective operation, and the state delta produced by that pressure.",
+        "- If a pressure dimension includes required terms, treat them as source-function coverage, not word-count targets: the owner window must perform that doctrinal/noetic function or mark PARTIAL.",
+        "- The diagnostic opening must do real case typing, not merely restate the route. In hard cases Layer A must name claim_level, pattern_profile, reason-category, concealment, deformation, DO-orient, current live noetic burden, source-status/noetic-frame if input-anchored, held/released burdens, and the gate/release decision.",
+        "- Those Layer A fields are compact control state: they reconstruct how the surface discourse became a typed noetic burden before argument begins. A thin list of route labels is PARTIAL in hard cases.",
         "- Layer B may be longer than compact prose when the burden needs it. Compactness removes padding and source parade; it does not remove warranted diagnosis, source operation, or restoration force.",
     ]
     if source_requested:
         lines.extend([
             "- Because the input explicitly asks for sources, include direct quoted or precisely cited Qur'an/hadith evidence where it performs diagnostic or restorative work.",
             "- For each operative source, quote enough of the text to make its mechanism visible, then immediately explain what burden it lands. Do not use bare citation labels as source padding.",
+            "- Put operative source texts on visually distinct blockquote lines beginning with `>`, using `Qur'an`, `hadith`, `Bukhari`, `Muslim`, or a surah/ayah citation on the same quoted line. Inline paraphrases alone are PARTIAL for source-request burdens.",
+            "- Put those quote lines under an `Operative source deployment:` label inside the burden where the source lands.",
+            "- Do not concentrate all source texts in the final restoration. When a routed pressure dimension is source-operative, the quote belongs in that owner submove and must be explained there.",
+            "- Source operation should follow the burden it governs: accountability texts land accountability, guidance texts land guidance, reason/proof texts land reason-order, source-frame texts land criterion/source consequences, and restoration texts land mercy/justice/worship-worthiness.",
+            "- For source-request hard cases, cover the source functions that the route actually calls for. Do not use one generic proof text to stand in for hujjah, fitrah/ayat, guidance/non-compulsion, mercy/justice, repentance, and worship-worthiness if those are separate pressure dimensions.",
+            "- Include hadith where a routed burden turns on prophetic clarification, fitrah, repentance, mercy, or accountable practice and a directly operative hadith is available; otherwise do not pad.",
             "- If source deployment is held by a valid gate, say which gate holds it and what remains live; otherwise a citation-thin answer is PARTIAL.",
         ])
     if worldview_live:
@@ -82,8 +98,82 @@ def _hard_case_quality_guidance(route_plan: dict[str, Any]) -> str:
         ])
     lines.extend([
         "- The final restoration must do more than summarize. It should convert the cleared burdens into a da'wah-facing invitation and worship-worthiness re-ordering.",
+        "- Hard cases with P1/final restoration require a separate `Restorative Response` section before `Closing Formulation`; closure must not do all restorative work by itself.",
+        "- Include a compact `TTP/operator trace` after the burden traversal to show which owner operations actually transformed the state.",
         "- If you cannot meet this qualitative floor in the current runtime, mark PARTIAL and name the first missing burden or submove.",
     ])
+    return "\n".join(lines) + "\n\n"
+
+
+def _short_span_list(spans: list[Any], *, limit: int = 4) -> str:
+    texts: list[str] = []
+    for span in spans:
+        if not isinstance(span, dict):
+            continue
+        text = " ".join(str(span.get("text", "")).split())
+        if text and text not in texts:
+            texts.append(text)
+        if len(texts) >= limit:
+            break
+    return "; ".join(f'"{text}"' for text in texts) if texts else "no explicit span listed"
+
+
+def _dimension_line(dimension: dict[str, Any], route_feature_ids: set[str]) -> str:
+    label = str(dimension.get("label") or dimension.get("id") or "pressure dimension")
+    dim_id = str(dimension.get("id") or label)
+    required_tokens = ", ".join(str(token) for token in dimension.get("requires_any", [])[:6])
+    required_all = ", ".join(str(token) for token in dimension.get("requires_all", [])[:6])
+    source_quote_conditions = {str(item) for item in dimension.get("source_quote_when_features", [])}
+    quote_required = bool(route_feature_ids.intersection(source_quote_conditions))
+    suffix = "; blockquoted operative source required" if quote_required else ""
+    required_text = f"; required coverage: {required_all}" if required_all else ""
+    return f"{dim_id}: {label}; pressure terms: {required_tokens}{required_text}{suffix}"
+
+
+def _dimension_active(dimension: dict[str, Any], route_feature_ids: set[str]) -> bool:
+    conditions = [str(condition) for condition in dimension.get("when_features", [])]
+    if not conditions:
+        return True
+    return any(condition_satisfied(condition, route_feature_ids) for condition in conditions)
+
+
+def _owner_execution_checklist(route_plan: dict[str, Any]) -> str:
+    route_feature_ids = {str(item) for item in route_plan.get("feature_ids", [])}
+    lines = [
+        "Owner execution checklist (binding, not public commentary):",
+        "- Use this checklist to execute the response; do not print raw JSON or call it a checklist in the final answer.",
+        "- For each row, emit the named B.s marker before `Owner-floor`, quote one listed input anchor in `Target:`, land every pressure dimension as `Pressure <dimension-id>:` inside `Operation:`/`Result:`, and add a `>` operative source quote where marked.",
+    ]
+    first_live_burden = route_plan.get("first_live_burden")
+    if isinstance(first_live_burden, dict):
+        steps: list[tuple[int, dict[str, Any]]] = [(1, first_live_burden)]
+    else:
+        steps = [(1, {
+            "owners": route_plan.get("first_live", []),
+            "input_spans": [],
+            "land_requirements": route_plan.get("land_requirements", []),
+        })]
+    for index, entry in enumerate(route_plan.get("continuation_queue", []), start=2):
+        if isinstance(entry, dict):
+            steps.append((index, entry))
+
+    for burden_index, step in steps:
+        owners = [owner for owner in step.get("owners", []) if isinstance(owner, dict)]
+        if not owners:
+            continue
+        lines.append(f"- B{burden_index}: anchors: {_short_span_list(step.get('input_spans', []))}")
+        for submove_index, owner in enumerate(owners, start=1):
+            owner_id = str(owner.get("id", "unknown-owner"))
+            dimensions = [
+                _dimension_line(dimension, route_feature_ids)
+                for dimension in owner.get("pressure_dimensions", [])
+                if isinstance(dimension, dict) and _dimension_active(dimension, route_feature_ids)
+            ]
+            dimension_text = " | ".join(dimensions) if dimensions else "no pressure dimensions listed; execute owner floor literally"
+            floor = "; ".join(str(item) for item in owner.get("land_requires", [])) or "owner-specific floor"
+            lines.append(
+                f"  - B{burden_index}.s{submove_index} owner `{owner_id}`; floor: {floor}; pressure: {dimension_text}"
+            )
     return "\n".join(lines) + "\n\n"
 
 
@@ -93,6 +183,7 @@ def execution_prompt(route_plan: dict[str, Any], reconstruction: dict[str, Any])
     deferred = owner_ids(route_plan.get("deferred", []))
     continuation = route_plan.get("continuation_queue", [])
     hard_case_guidance = _hard_case_quality_guidance(route_plan)
+    owner_checklist = _owner_execution_checklist(route_plan)
     return f"""# Level 3 Binding Execution Prompt
 
 Execute the route plan below. Do not reroute from topic cues.
@@ -130,36 +221,57 @@ Closure gate:
 - `Owner-floor`, `Target`, `Operation`, and `Result` are control surfaces for substantive work: each must visibly narrow, expose, disambiguate, test, or restore the live claim-state.
 - A hard case fails qualitatively if it contains all route labels but lacks direct burden pressure, operative source deployment when requested, and restoration force.
 
+{owner_checklist}Pre-final self-check:
+- Before finalizing, verify every routed owner has a distinct `B<N>.s<M>:` marker, `Owner-floor`, `Target`, `Operation`, and `Result` in the same burden.
+- Verify every `Target:` quotes or closely repeats a listed input anchor for that burden.
+- Verify every pressure dimension in the checklist has its own `Pressure <dimension-id>:` line and is visibly landed by specific claim-state work, not by saying "pressure dimensions satisfied."
+- If a checklist row says blockquoted operative source required, include a `>` quote line inside that same owner window and immediately explain what it lands.
+- Verify source quotes are not parked in a global list: each quote should sit inside the burden/owner that uses it and be followed by its diagnostic or restorative operation.
+- Verify hard/compound output includes HP-numbered Hidden Premises, Core Formulation content units, a TTP/operator trace, and a separate Restorative Response where restoration is routed.
+- If any row cannot be met, mark PARTIAL and name the missing burden/owner/dimension instead of closing.
+
 Required execution shape:
 1. Emit `Layer A - Compact DSL/IR Header [Burden 1]` before executing the first-live owner(s).
-   It must name the current live noetic burden, active deformation/pattern signals, selected owner(s),
-   held/deferred/rejected alternatives, release condition, and governance verdict.
+   For hard/compound/deformed cases, include compact field lines for:
+   `claim_level`, `pattern_profile`, `reason-category`, `concealment`, `deformation`,
+   `DO-orient`, `current live noetic burden`, `source-status/noetic-frame`, `held/released`,
+   and `gate/release decision`. These are not raw IR; they are the reconstruction-faithful
+   noetic control frame that licenses Layer B.
+   It must also name selected owner(s), held/deferred/rejected alternatives, release condition,
+   and governance verdict.
 2. Emit `Layer B - Governed Response [Burden 1]`.
-3. For each first-live owner, emit owner-floor evidence as:
+3. In hard/compound cases, emit `Hidden Premises` and `Core Formulation` before the first owner-floor.
+4. For each first-live owner, emit owner-floor evidence as:
+   B1.s<M>: execute first-live owner <owner-id>
    Owner-floor: <owner-id> - <owner-specific floor>
-   Target: <input-grounded target>
+   Target: <input-grounded target that quotes or closely repeats a listed route input span>
    Operation: <case-specific operation>
+   Pressure <dimension-id>: <case-specific pressure execution for each listed pressure dimension>
    Result: <changed claim-state>
    If the route owner lists pressure_dimensions, land each dimension in this local
    Target/Operation/Result window; do not rely on the owner label itself to satisfy it.
-4. Render B1.s -> Land(B1) -> R(H,Delta).
-5. If the continuation queue is non-empty, treat it as a planned route, not an unconditional command.
+5. Render Land(B1) -> R(H,Delta) after all B1.s<M> owner submoves are complete.
+6. If the continuation queue is non-empty, treat it as a planned route, not an unconditional command.
    After each Land(B<N>) and R(H,Delta), re-read the state before B<N+1>.
    Continue only if the next queued burden remains input-anchored and licensed.
    If it is no longer live or is blocked, mark HOLD, SKIP, PARTIAL, or bounded-reroute need with the state-delta reason.
-6. For each queued burden that remains licensed:
+7. For each queued burden that remains licensed:
    - emit `Layer A - Compact DSL/IR Header [Burden N]` before Layer B;
-   - cite the input span(s) that anchor it and the release condition still satisfied after R(H,Delta);
+   - cite the input span(s), noetic frame update, held/released burden state, and release condition still satisfied after R(H,Delta);
    - emit `Layer B - Governed Response [Burden N]`;
+   - in hard/compound cases, emit `Core Formulation` before owner execution for this burden;
+   - before each queued owner, emit `B<N>.s<M>: execute queued owner <owner-id>`;
    - for each queued owner, emit exactly `Owner-floor: <owner-id> - <owner-specific floor>`;
    - then emit Target:, Operation:, and Result: lines for the same owner;
-   - land any listed pressure_dimensions inside those same Target/Operation/Result lines;
-   - render B<N>.s -> Land(B<N>) -> R(H,Delta);
+   - land any listed pressure_dimensions as separate `Pressure <dimension-id>:` lines inside those same Target/Operation/Result lines;
+   - render Land(B<N>) -> R(H,Delta) after all B<N>.s<M> owner submoves are complete;
    - say what the prior burden cleared and why this burden is now licensed.
-7. Do not execute held/deferred owners outside first-live or continuation_queue.
-8. Do not pad: if a queued burden lacks a real input span, mark PARTIAL instead of inventing it.
-9. Do not emit Closing Formulation unless the closure gate is satisfied and R(H,Delta) names no remaining input-anchored burdens.
-10. If transformer limits prevent a queued burden, emit a visible PARTIAL banner naming the exact missing queue entry.
+8. After traversal, emit `TTP/operator trace` naming each executed owner and its state change.
+9. If restoration owner P1-fitrah-restoration executed, emit `Restorative Response` before `Closing Formulation`.
+10. Do not execute held/deferred owners outside first-live or continuation_queue.
+11. Do not pad: if a queued burden lacks a real input span, mark PARTIAL instead of inventing it.
+12. Do not emit Closing Formulation unless the closure gate is satisfied and R(H,Delta) names no remaining input-anchored burdens.
+13. If transformer limits prevent a queued burden, emit a visible PARTIAL banner naming the exact missing queue entry.
 """
 
 

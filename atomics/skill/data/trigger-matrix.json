@@ -103,7 +103,8 @@
         {
           "id": "imported-criterion-authority",
           "label": "imported criterion authority named",
-          "requires_any": ["criterion", "tribunal", "standard", "authority", "jurisdiction"]
+          "requires_any": ["criterion", "tribunal", "standard", "authority", "jurisdiction"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         },
         {
           "id": "functional-role",
@@ -130,7 +131,8 @@
         {
           "id": "borrowed-standard-exposed",
           "label": "borrowed standard or unsupported tribunal exposed",
-          "requires_any": ["borrowed", "unsupported", "standard", "tribunal", "cannot supply"]
+          "requires_any": ["borrowed", "unsupported", "standard", "tribunal", "cannot supply"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         }
       ],
       "governance_class": "holds"
@@ -146,14 +148,24 @@
       "pressure_dimensions": [
         {
           "id": "accountability-hujjah-compression",
-          "label": "hujjah/accountability compression narrowed",
+          "label": "hujjah/accountability compression narrowed from bare label to proof, warning, capacity, and rejection",
           "requires_any": ["hujjah", "accountability", "warning", "messenger", "proof", "rejection"],
+          "requires_all": ["hujjah"],
           "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         },
         {
           "id": "coercive-guidance-demand",
-          "label": "coercive guidance distinguished from sufficient guidance",
-          "requires_any": ["coercive", "compulsion", "force", "irresistible", "guidance", "convince"]
+          "label": "coercive guidance distinguished from sufficient ayat, warning, fitri recognition, and non-compelled agency",
+          "requires_any": ["coercive", "compulsion", "force", "irresistible", "guidance", "convince"],
+          "requires_all": ["guidance"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
+          "id": "fitrah-ayat-baseline",
+          "label": "fitrah and ayat baseline distinguished from absence-of-evidence framing",
+          "requires_any": ["fitrah", "ayat", "signs", "horizons", "souls", "created disposition"],
+          "requires_all": ["fitrah"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         }
       ],
       "governance_class": "routes"
@@ -169,13 +181,22 @@
       "pressure_dimensions": [
         {
           "id": "source-frame-consequence",
-          "label": "source/noetic frame consequence traced",
-          "requires_any": ["consequence", "worldview", "source", "frame", "criterion", "authority"]
+          "label": "source/noetic or criterion-frame consequence traced from claimed authority to its ability to ground the verdict",
+          "requires_any": ["consequence", "worldview", "source", "frame", "criterion", "authority"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
+          "id": "criterion-frame-description",
+          "label": "criterion-bearing source/worldview frame concretely described from input or bounded source knowledge without biography-as-proof",
+          "requires_any": ["criterion-source", "source frame", "worldview", "public", "tenet", "commitment", "non-theistic", "authority"],
+          "requires_all": ["worldview"],
+          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview", "feature.worldview_refutation_request"]
         },
         {
           "id": "non-ad-hominem-boundary",
           "label": "source-status not used as ad hominem",
-          "requires_any": ["not an attack", "not proof", "not ad hominem", "identity", "source-status", "person"]
+          "requires_any": ["not an attack", "not proof", "not ad hominem", "identity", "source-status", "person"],
+          "when_features": ["feature.opponent_worldview_frame", "feature.criterion_bearing_source_worldview", "feature.worldview_refutation_request"]
         }
       ],
       "governance_class": "routes"
@@ -191,12 +212,14 @@
       "pressure_dimensions": [
         {
           "id": "reason-role-repair",
-          "label": "reason role repaired in the case's own terms",
-          "requires_any": ["sound reason", "reason-as-tribunal", "tribunal", "proof", "evidence", "category", "criterion"]
+          "label": "reason role repaired as proof/ayat recognition rather than self-sovereign tribunal",
+          "requires_any": ["sound reason", "reason-as-tribunal", "tribunal", "proof", "evidence", "category", "criterion"],
+          "requires_all": ["reason"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         },
         {
           "id": "proof-burden-order",
-          "label": "proof burden order restored after imported tribunal pressure",
+          "label": "proof burden order restored for both doctrine representation and the condemning criterion",
           "requires_any": ["burden", "proof", "evidence", "standard", "warrant", "order"]
         }
       ],
@@ -213,13 +236,35 @@
       "pressure_dimensions": [
         {
           "id": "restoration-bounded-landed-burdens",
-          "label": "restoration bounded to landed burdens",
+          "label": "restoration bounded to landed burdens and turned into da'wah-facing noetic reorder",
           "requires_any": ["restore", "restoration", "landed", "burdens", "da'wah", "invite"]
         },
         {
+          "id": "creator-right-order",
+          "label": "worship restored through Creator-right and created purpose",
+          "requires_any": ["Creator", "created", "worship", "Lord", "right", "purpose"],
+          "requires_all": ["Creator"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
+          "id": "mercy-justice-architecture",
+          "label": "mercy and justice architecture rendered without cancelling either",
+          "requires_any": ["mercy", "justice", "wrath", "forgive", "warning", "accountability"],
+          "requires_all": ["mercy", "justice"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
+          "id": "repentance-return-invitation",
+          "label": "repentance and return invitation made operative",
+          "requires_any": ["repentance", "return", "forgive", "near", "call", "despair"],
+          "requires_all": ["return"],
+          "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
+        },
+        {
           "id": "worship-worthiness-order",
-          "label": "worship-worthiness mercy/justice order restored when live",
+          "label": "worship-worthiness reordered through Creator-right, mercy, justice, hujjah, repentance, and invitation",
           "requires_any": ["worship-worthiness", "worthy of worship", "mercy", "justice", "Allah", "Creator"],
+          "requires_all": ["mercy", "justice"],
           "source_quote_when_features": ["feature.source_substantiation_request", "feature.source_request"]
         }
       ],

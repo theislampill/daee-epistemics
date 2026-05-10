@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 4ef3579a630eabc6b7e1728577001a0b722349fdee04007601ade0d52869e595 -->
+<!-- SOURCE_SHA256: b3bb1ff92d18e40c8796e0cd880d5c0384cef1263a7d85ba0a25751aeb700d28 -->
 
 ---
 id: output-release
@@ -148,6 +148,21 @@ a transmission owner, a predication owner, or a grief/register owner while leavi
 actual imported criterion, self-ground test, proof-status/warrant repair, source-frame
 consequence, restoration vector, testimony/authentication pressure, predicate/category
 pressure, or register-hold sequence unoperated.
+When sources are requested, release also checks source-function coverage: the answer may not
+use one decorative verse, hadith, or citation list to cover several routed functions. Each
+source text must be tied to the pressure it lands, and missing hujjah, guidance, fitrah/ayat,
+mercy/justice, repentance/return, testimony, or predicate-source functions remain PARTIAL.
+Hard-case release also checks the compact diagnostic opening: Layer A must reconstruct the
+claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
+source-status/noetic-frame, held/released state, and gate/release decision before Layer B
+argues. A route-shaped answer with labels but no noetic frame is PARTIAL.
+If a source-worldview frame supplies the criterion, release requires concrete frame
+description from input anchors or bounded source knowledge before consequence trace. A
+generic label such as "opponent worldview" without the operative commitment is source-frame
+surface compliance, not M8 execution.
+If the routed family pressure is not source-worldview, release must not manufacture a
+worldview frame; testimony, predication, grief/register, kalamic proof-order, and other
+family-local consequence traces remain distinct.
 
 Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
 owner body or compiled bundle section to be loaded/read before the submove renders, unless
@@ -866,7 +881,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: 9b96a952b7ab5c50888db5def4d0591096e90760c5ca2aa6b3f5f35162e3dd95 -->
+<!-- SOURCE_SHA256: 1e50749117355a4e32bdbc0780c6837fe4043436e083cc2ba516c284e13ce8ee -->
 
 ---
 id: diagnostic-render-contract
@@ -1012,6 +1027,10 @@ fails hard-case render if it names an owner but omits that owner's pressure, use
 Target/Operation/Result verbs, cites sources without making them operate on the active burden,
 reaches `Land(B)` without a changed claim-state, or performs restoration without tying it to
 the landed burden.
+For source-request hard cases, source operation must cover the routed source functions, not
+just produce a source list. If hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
+repentance/return, testimony, or predicate discipline are distinct pressure points, the render
+must make the relevant text operate on each pressure point or mark the omitted pressure PARTIAL.
 Structural attachment is part of this requirement: the right labels appearing somewhere is
 not enough. `Owner-floor`, `Target`, `Operation`, `Result`, `Land(B)`, and `R(H,Delta)` must
 remain locally attached to the burden step they govern. Grouped owner lines followed later by
@@ -1153,6 +1172,9 @@ If a public worldview or identity marker supplies the criterion, authority-order
 posture, or restoration vector, Layer A may mark it as structurally load-bearing while still
 holding interior motive, culpability, sincerity, and soul-state. Source-status caution prevents
 ad hominem verdicts; it does not make input-anchored worldview analysis optional.
+The converse is also part of family fidelity: do not turn testimony, predication,
+grief/register, kalamic proof-order, or another anchored family pressure into a generic
+source-worldview frame when the input has not made that frame operative.
 
 Current bounded operator is one live noetic burden/function: `B`, not a route chain,
 module list, route itinerary, single operative submove, or lone `s`. Allowed examples: `imported moral tribunal /

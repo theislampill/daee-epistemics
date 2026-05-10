@@ -246,7 +246,7 @@ def validate_trigger_matrix(
                 if not isinstance(dimension, dict):
                     errors.append(f"{dim_label}: must be object")
                     continue
-                dim_extra = set(dimension) - {"id", "label", "requires_any", "source_quote_when_features"}
+                dim_extra = set(dimension) - {"id", "label", "requires_any", "requires_all", "source_quote_when_features", "when_features"}
                 if dim_extra:
                     errors.append(f"{dim_label}: unknown key(s): {', '.join(sorted(dim_extra))}")
                 for required in ("id", "label", "requires_any"):
@@ -261,6 +261,11 @@ def validate_trigger_matrix(
                 for value in dim_values:
                     if len(value.strip()) < 3:
                         errors.append(f"{dim_label}.requires_any: token too short: {value!r}")
+                dim_all_values, dim_all_errors = string_list(f"{dim_label}.requires_all", dimension.get("requires_all", []))
+                errors.extend(dim_all_errors)
+                for value in dim_all_values:
+                    if len(value.strip()) < 3:
+                        errors.append(f"{dim_label}.requires_all: token too short: {value!r}")
                 source_when, source_when_errors = string_list(
                     f"{dim_label}.source_quote_when_features",
                     dimension.get("source_quote_when_features", []),
@@ -269,6 +274,14 @@ def validate_trigger_matrix(
                 for feature in source_when:
                     if not any(feature.startswith(prefix) for prefix in licensed_prefixes):
                         errors.append(f"{dim_label}.source_quote_when_features: unlicensed feature condition {feature!r}")
+                active_when, active_when_errors = string_list(
+                    f"{dim_label}.when_features",
+                    dimension.get("when_features", []),
+                )
+                errors.extend(active_when_errors)
+                for feature in active_when:
+                    if not any(feature.startswith(prefix) for prefix in licensed_prefixes):
+                        errors.append(f"{dim_label}.when_features: unlicensed feature condition {feature!r}")
         if not isinstance(rule.get("priority"), int):
             errors.append(f"{label}: priority must be integer")
         if rule.get("governance_class") not in governance_classes:

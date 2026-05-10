@@ -452,6 +452,20 @@ Top-salient invariants:
   from landed burdens; transmission owners pressure testimony/tawatur/authentication;
   predication owners pressure category, zahir/ta'wil/majaz/haqiqah, and predicate use;
   grief/register owners hold argument release and sequence pastoral response.
+  When a source-request burden is live, the prose must cover the source functions actually
+  routed--for example hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
+  repentance/return, testimony, or predicate discipline. One generic proof text or source
+  label cannot stand in for several distinct pressure functions, and source density is not
+  a substitute for burden-local operation.
+  In hard/compound cases, Layer A must reconstruct the governing noetic frame before
+  argument begins: claim level, pattern/deformation, reason category, concealment,
+  DO-orient, live burden, source-status/noetic-frame, held/released burdens, and
+  gate/release decision. Route labels without this compact frame are not enough.
+  When a source-worldview frame is criterion-bearing, the response must describe the
+  actual public/source-frame commitment doing the work from input anchors or bounded
+  source knowledge. A generic "worldview frame" label is not consequence trace; do not
+  force source-worldview framing where the input anchors a different family pressure
+  such as testimony, predication, grief/register, or kalamic proof-order.
 - Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
   awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
   compiled bundle section containing the active TTP's operation floor, unless that exact

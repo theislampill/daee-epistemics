@@ -291,6 +291,20 @@ V2, source/noetic-frame consequence for M8, restoration bounded to landed burden
 testimony/tawatur/authentication pressure for transmission owners, predicate/category
 pressure for predication owners, and register-hold/pastoral sequencing for grief owners.
 If those pressures do not change claim-state before `Land(B)`, the burden has not landed.
+If a source-request burden has several source functions, each function must remain attached
+to the submove it governs. A global source list or one generic revealed text does not preserve
+state when the route needs separate hujjah, guidance/non-compulsion, fitrah/ayat,
+mercy/justice, repentance/return, testimony, or predicate-source operations.
+Hard/compound recursion also requires a reconstruction-faithful Layer A before execution:
+claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
+source-status/noetic-frame, held/released state, and gate/release decision. Without that
+compact noetic frame, `Layer B` is arguing before the state has been typed.
+When source-worldview is the live frame, `s` must name the concrete criterion-bearing
+commitment being traced from input anchors or bounded source knowledge. A generic
+source-worldview label without the operative commitment does not preserve state attachment.
+When the live pressure is testimony, predication, grief/register, kalamic proof-order, or
+another family-specific burden, do not relabel it as source-worldview merely to satisfy M8;
+the consequence trace must stay family-local.
 
 Default output must not narrate that an owner floor was applied. Phrases such as "owner
 floor is applied", "owner-floor pressure", "the TTP has to change something",

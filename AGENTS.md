@@ -104,6 +104,15 @@ Release claims must stay narrow and honest:
 - Any run using `--simulate-output` is only simulated structural route/check verification. It
   must not be reported as a behavioral smoke, model-execution smoke, or Level 1/2 shrinkage
   recovery.
+- Codex CLI final-answer output may compress hard Level 3 executions. For golden-depth real
+  model-execution smokes, retain the governed response in an ignored `output.model.md` file
+  written by the runtime, then run `check_execution.py` against that file. This is real model
+  output, not simulated evidence, but it is still local smoke evidence unless package/release
+  provenance is explicitly recorded.
+- Passing `check_execution.py` and any `quality_gate` is necessary but not sufficient for a
+  golden-depth claim. Golden-depth claims require adversarial content review against the
+  relevant anchor output across owner/TTP execution, operative sources, noetic diagnosis,
+  restoration force, source-status discipline, and da'wah usefulness.
 
 ## Regression Audit Etiquette
 
@@ -126,6 +135,25 @@ required.
   `Operation` / `Result` -> `Land(B)` -> `R(H,Delta)` -> next decision locally attached;
   grouped reasoning, grouped owner markers, or checker-shaped blobs are structural-flattening
   failures even if every label appears somewhere.
+- Hard-case pressure execution is required. Labels, owner IDs, Target/Operation/Result syntax,
+  and route markers count only when the prose pressures the actual premise, criterion, warrant,
+  source-frame, theological predicate, testimony question, register-hold, or restoration vector.
+  Level 3 may expose this as `pressure_dimensions`; Level 1/2 must obey the same internal
+  governance principle without printing raw `pressure_dimensions` in public/default output.
+- For hard Level 3 cases, the execution must reconstruct the noetic frame before argument:
+  claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
+  source-status/noetic-frame, held/released state, and gate/release decision. A checker-shaped
+  route answer without that frame is PARTIAL even if it names the right owners.
+- TST-style hard smokes are canaries, not the architecture. Do not add TST, Richard-Lael,
+  Satanism, or one-golden-output-specific routing unless a future task explicitly authorizes a
+  bespoke owner. Fixes should generalize across hard/compound/deformed noetic structures and
+  preserve family-local pressure rather than flattening kalam, falsafah, predication,
+  transmission, grief/register, naturalist, or source-worldview cases into one blob.
+- These checks are not generic answer-polish. They actualize the skill thesis:
+  surface discourse -> typed noetic state -> pressure-dimensioned owner execution -> `Land(B)`
+  -> `R(H,Delta)` -> STOP/HOLD/PARTIAL/RECURSE. The aim is to prevent collapse into
+  argument-bank prose, detached route labels, checker-shaped scaffolding, source lists without
+  operation, or restoration summaries without noetic state change.
 - Qurʾān/ḥadīth evidence, when operative, should be visually clean and immediately explained
   as diagnostic/restorative work; do not collapse central revealed text into prose or pad with
   citations.

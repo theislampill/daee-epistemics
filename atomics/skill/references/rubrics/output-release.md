@@ -128,6 +128,21 @@ a transmission owner, a predication owner, or a grief/register owner while leavi
 actual imported criterion, self-ground test, proof-status/warrant repair, source-frame
 consequence, restoration vector, testimony/authentication pressure, predicate/category
 pressure, or register-hold sequence unoperated.
+When sources are requested, release also checks source-function coverage: the answer may not
+use one decorative verse, hadith, or citation list to cover several routed functions. Each
+source text must be tied to the pressure it lands, and missing hujjah, guidance, fitrah/ayat,
+mercy/justice, repentance/return, testimony, or predicate-source functions remain PARTIAL.
+Hard-case release also checks the compact diagnostic opening: Layer A must reconstruct the
+claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
+source-status/noetic-frame, held/released state, and gate/release decision before Layer B
+argues. A route-shaped answer with labels but no noetic frame is PARTIAL.
+If a source-worldview frame supplies the criterion, release requires concrete frame
+description from input anchors or bounded source knowledge before consequence trace. A
+generic label such as "opponent worldview" without the operative commitment is source-frame
+surface compliance, not M8 execution.
+If the routed family pressure is not source-worldview, release must not manufacture a
+worldview frame; testimony, predication, grief/register, kalamic proof-order, and other
+family-local consequence traces remain distinct.
 
 Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
 owner body or compiled bundle section to be loaded/read before the submove renders, unless

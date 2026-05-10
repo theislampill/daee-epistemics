@@ -378,7 +378,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "9b96a952b7ab5c50888db5def4d0591096e90760c5ca2aa6b3f5f35162e3dd95"
+      "source_sha256": "1e50749117355a4e32bdbc0780c6837fe4043436e083cc2ba516c284e13ce8ee"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -682,7 +682,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "4ef3579a630eabc6b7e1728577001a0b722349fdee04007601ade0d52869e595"
+      "source_sha256": "b3bb1ff92d18e40c8796e0cd880d5c0384cef1263a7d85ba0a25751aeb700d28"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
@@ -762,7 +762,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "aaf83dae0c337ec45dd9eafed5c011d48e6b46813e7c72819a77c7faef19d9a1"
+      "source_sha256": "86406ded03442ee1da08cf9669569572cb3f81d24019048f5155fd7f93ee8645"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

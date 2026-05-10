@@ -234,7 +234,7 @@ def _validate_pressure_dimensions(
         if not isinstance(dimension, dict):
             errors.append(f"{dim_label}: pressure dimension must be object")
             continue
-        extra = sorted(set(dimension) - {"id", "label", "requires_any", "source_quote_when_features"})
+        extra = sorted(set(dimension) - {"id", "label", "requires_any", "requires_all", "source_quote_when_features", "when_features"})
         if extra:
             errors.append(f"{dim_label}: unknown key(s): {', '.join(extra)}")
         if not isinstance(dimension.get("id"), str) or not dimension.get("id", "").strip():
@@ -244,16 +244,26 @@ def _validate_pressure_dimensions(
         tokens = _string_list(dimension.get("requires_any", []), f"{dim_label}.requires_any", errors, non_empty=True)
         if not tokens:
             errors.append(f"{dim_label}.requires_any must not be empty")
+        _string_list(dimension.get("requires_all", []), f"{dim_label}.requires_all", errors)
         source_when = _string_list(
             dimension.get("source_quote_when_features", []),
             f"{dim_label}.source_quote_when_features",
             errors,
         )
+        active_when = _string_list(
+            dimension.get("when_features", []),
+            f"{dim_label}.when_features",
+            errors,
+        )
         if validate_feature_prefixes:
             prefixes = feature_ids
-            for condition in source_when:
-                if not any(condition.startswith(prefix) for prefix in prefixes):
-                    errors.append(f"{dim_label}.source_quote_when_features unlicensed condition: {condition}")
+            for field, conditions in (
+                ("source_quote_when_features", source_when),
+                ("when_features", active_when),
+            ):
+                for condition in conditions:
+                    if not any(condition.startswith(prefix) for prefix in prefixes):
+                        errors.append(f"{dim_label}.{field} unlicensed condition: {condition}")
 
 
 def _validate_land_requirements(

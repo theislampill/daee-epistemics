@@ -87,6 +87,49 @@ def _source_requested(route_plan: dict[str, Any]) -> bool:
     return bool(_route_feature_ids(route_plan).intersection({"feature.source_substantiation_request", "feature.source_request"}))
 
 
+def _diagnostic_opening_failures(output: str) -> list[str]:
+    """Return missing hard-case Layer A diagnostic-control fields.
+
+    This is intentionally field-class based rather than prose-snapshot based:
+    hard cases need a reconstruction-faithful noetic frame before Layer B, but
+    the checker should not force any one golden wording.
+    """
+
+    match = re.search(
+        r"(?im)^\s*(?:#{{1,6}}\s*)?Layer\s+A\b[^\n]*(?:Burden\s+1\b|B1\b)",
+        output,
+    )
+    if match is None:
+        return ["diagnostic opening lacks Burden 1 Layer A control frame"]
+    tail = output[match.start():]
+    next_layer = re.search(
+        r"(?im)^\s*(?:#{{1,6}}\s*)?Layer\s+B\b[^\n]*(?:Burden\s+1\b|B1\b)",
+        tail,
+    )
+    segment = tail[: next_layer.start()] if next_layer else tail[:2000]
+    normalized = _normalize_pressure_text(segment)
+    required_fields: list[tuple[str, tuple[str, ...]]] = [
+        ("claim_level", (r"claim[_\s-]?level",)),
+        ("pattern_profile", (r"pattern[_\s-]?profile", r"pattern/deformation")),
+        ("reason-category", (r"reason[_\s-]?category",)),
+        ("concealment", (r"\bconcealment\b",)),
+        ("deformation", (r"\bdeformation\b",)),
+        ("DO-orient", (r"\bdo[_\s-]?orient\b", r"discourse\s+orientation")),
+        ("live noetic burden", (r"live\s+noetic\s+burden",)),
+        (
+            "source-status/noetic-frame",
+            (r"source[_\s/-]?status", r"noetic[_\s/-]?frame", r"source/worldview", r"source-worldview"),
+        ),
+        ("held/released", (r"\bheld\b", r"\breleased\b")),
+        ("gate/release decision", (r"\bgate\b", r"release\s+decision", r"release\s+condition", r"governance\s+verdict")),
+    ]
+    failures: list[str] = []
+    for label, patterns in required_fields:
+        if not any(re.search(pattern, normalized, flags=re.IGNORECASE) for pattern in patterns):
+            failures.append(f"diagnostic opening lacks {label}")
+    return failures
+
+
 def _direct_source_quote_lines(output: str) -> list[str]:
     lines: list[str] = []
     for line in output.splitlines():
@@ -94,7 +137,7 @@ def _direct_source_quote_lines(output: str) -> list[str]:
         if not stripped.startswith(">"):
             continue
         has_source = re.search(
-            r"Qur'?an|S[uū]rat|hadith|Bukhari|Muslim|\b\d{1,3}:\d{1,3}\b",
+            r"Qur['\u2019\u02bc\u02be]?an|S[uū]rat|hadith|Bukhari|Muslim|\b\d{1,3}:\d{1,3}\b",
             stripped,
             flags=re.IGNORECASE,
         )
@@ -107,6 +150,36 @@ def _direct_source_quote_lines(output: str) -> list[str]:
         if has_source and has_direct_text:
             lines.append(line)
     return lines
+
+
+SOURCE_OPERATION_RE = re.compile(
+    r"(?i)\b(?:"
+    r"lands?|shows?|establishes?|corrects?|narrows?|distinguishes?|traces?|restores?|"
+    r"therefore|so|burden|pressure|diagnostic|restorative|hujjah|proof|guidance|"
+    r"criterion|justice|mercy|worship|accountability|source-frame"
+    r")\b"
+)
+
+
+def _source_quote_operation_failures(window: str) -> list[str]:
+    """Return source quote lines that are quoted but not locally operationalized."""
+
+    failures: list[str] = []
+    lines = window.splitlines()
+    for index, line in enumerate(lines):
+        if not _direct_source_quote_lines(line):
+            continue
+        followup: list[str] = []
+        for next_line in lines[index + 1:index + 5]:
+            stripped = next_line.strip()
+            if not stripped or stripped.startswith(">"):
+                continue
+            followup.append(stripped)
+            if len(followup) >= 2:
+                break
+        if not followup or not SOURCE_OPERATION_RE.search(" ".join(followup)):
+            failures.append(line.strip())
+    return failures
 
 
 def _route_step_map(route_plan: dict[str, Any]) -> dict[int, dict[str, Any]]:
@@ -144,15 +217,44 @@ def _normalize_pressure_text(value: str) -> str:
 
 def _dimension_satisfied(window: str, dimension: dict[str, Any]) -> bool:
     normalized = _normalize_pressure_text(_operation_result_window(window) or window)
-    for token in dimension.get("requires_any", []):
-        token_text = _normalize_pressure_text(str(token)).strip()
+    required_all = [
+        _normalize_pressure_text(str(token)).strip()
+        for token in dimension.get("requires_all", [])
+        if _normalize_pressure_text(str(token)).strip()
+    ]
+    if required_all and any(token_text not in normalized for token_text in required_all):
+        return False
+    tokens = [
+        _normalize_pressure_text(str(token)).strip()
+        for token in dimension.get("requires_any", [])
+        if _normalize_pressure_text(str(token)).strip()
+    ]
+    matches = 0
+    for token_text in tokens:
         if token_text and token_text in normalized:
-            return True
-    return False
+            matches += 1
+    if not tokens:
+        return bool(required_all)
+    required = 1 if len(tokens) <= 2 else 2
+    return matches >= required
+
+
+def _dimension_marker_present(window: str, dimension: dict[str, Any]) -> bool:
+    dim_id = str(dimension.get("id", "")).strip()
+    if not dim_id:
+        return True
+    return re.search(rf"(?im)^\s*Pressure\s+{re.escape(dim_id)}\s*:", window) is not None
 
 
 def _dimension_requires_source_quote(dimension: dict[str, Any], route_feature_ids: set[str]) -> bool:
     return any(condition_satisfied(str(condition), route_feature_ids) for condition in dimension.get("source_quote_when_features", []))
+
+
+def _dimension_active(dimension: dict[str, Any], route_feature_ids: set[str]) -> bool:
+    conditions = [str(condition) for condition in dimension.get("when_features", [])]
+    if not conditions:
+        return True
+    return any(condition_satisfied(condition, route_feature_ids) for condition in conditions)
 
 
 def _owner_work_window(owner_window: str) -> str:
@@ -247,10 +349,14 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
         "word_count": words,
         "direct_source_quote_lines": len(source_quote_lines),
         "operative_submove_markers": operative_submoves,
+        "content_unit_failures": [],
         "pressure_dimension_failures": [],
+        "pressure_dimension_marker_failures": [],
         "source_quote_failures": [],
+        "source_operation_failures": [],
         "input_anchor_failures": [],
         "generic_owner_window_failures": [],
+        "diagnostic_opening_failures": [],
     }
     if _is_simulated_output(output):
         metrics["quality_gate"] = "not-applicable-simulated-route-check"
@@ -258,6 +364,30 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
 
     errors: list[str] = []
     if metrics["hard_case_quality_required"]:
+        if "Hidden Premises" not in output:
+            failure = "hard-case output lacks Hidden Premises content unit"
+            metrics["content_unit_failures"].append(failure)
+            errors.append(failure)
+        elif len(re.findall(r"\bHP-\d+\b", output)) < 3:
+            failure = "hard-case Hidden Premises unit is too compressed; expected at least three HP-numbered premises"
+            metrics["content_unit_failures"].append(failure)
+            errors.append(failure)
+        if "Core Formulation" not in output:
+            failure = "hard-case output lacks Core Formulation content unit"
+            metrics["content_unit_failures"].append(failure)
+            errors.append(failure)
+        if re.search(r"(?im)^\s*TTP/operator trace\s*:?", output) is None:
+            failure = "hard-case output lacks TTP/operator trace content unit"
+            metrics["content_unit_failures"].append(failure)
+            errors.append(failure)
+        for failure in _diagnostic_opening_failures(output):
+            metrics["diagnostic_opening_failures"].append(failure)
+            errors.append(failure)
+        routed_owner_ids = {owner_id for _, owner_list in executed_steps for owner_id in owner_list}
+        if "P1-fitrah-restoration" in routed_owner_ids and re.search(r"(?im)^\s*Restorative Response\s*:?", output) is None:
+            failure = "P1 restoration route lacks separate Restorative Response section"
+            metrics["content_unit_failures"].append(failure)
+            errors.append(failure)
         if operative_submoves < sum(len(owner_list) for _, owner_list in executed_steps):
             errors.append("hard-case output lacks distinct operative submove evidence for each executed owner")
         route_steps = _route_step_map(route_plan)
@@ -275,14 +405,38 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
                     failure = f"B{burden_index}/{owner_id}: owner-floor window lacks input-anchor pressure"
                     metrics["input_anchor_failures"].append(failure)
                     errors.append(failure)
-                dimensions = owner.get("pressure_dimensions", [])
+                dimensions = [
+                    dimension
+                    for dimension in owner.get("pressure_dimensions", [])
+                    if isinstance(dimension, dict) and _dimension_active(dimension, route_feature_ids)
+                ]
                 if not dimensions:
                     failure = f"B{burden_index}/{owner_id}: routed hard-case owner lacks pressure_dimensions in route data"
                     metrics["pressure_dimension_failures"].append(failure)
                     errors.append(failure)
                     continue
+                source_required_dimensions = [
+                    dimension
+                    for dimension in dimensions
+                    if _dimension_requires_source_quote(dimension, route_feature_ids)
+                ]
+                if source_required_dimensions:
+                    quote_count = len(_direct_source_quote_lines(work_window))
+                    required_quote_count = min(len(source_required_dimensions), 3)
+                    if quote_count < required_quote_count:
+                        failure = (
+                            f"B{burden_index}/{owner_id}: source-operative pressure coverage too thin; "
+                            f"expected at least {required_quote_count} burden-local source quote(s) "
+                            f"for {len(source_required_dimensions)} source-operative dimension(s), found {quote_count}"
+                        )
+                        metrics["source_quote_failures"].append(failure)
+                        errors.append(failure)
                 satisfied_any = False
                 for dimension in dimensions:
+                    if not _dimension_marker_present(work_window, dimension):
+                        failure = f"B{burden_index}/{owner_id}: pressure dimension lacks local Pressure line: {dimension.get('id')}"
+                        metrics["pressure_dimension_marker_failures"].append(failure)
+                        errors.append(failure)
                     if _dimension_satisfied(work_window, dimension):
                         satisfied_any = True
                     else:
@@ -293,6 +447,15 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
                         failure = f"B{burden_index}/{owner_id}: source-operative dimension lacks burden-local direct quotation: {dimension.get('id')}"
                         metrics["source_quote_failures"].append(failure)
                         errors.append(failure)
+                    if _dimension_requires_source_quote(dimension, route_feature_ids):
+                        for quote_line in _source_quote_operation_failures(work_window):
+                            failure = (
+                                f"B{burden_index}/{owner_id}: source quote is not immediately operationalized "
+                                f"for dimension {dimension.get('id')}: {quote_line}"
+                            )
+                            if failure not in metrics["source_operation_failures"]:
+                                metrics["source_operation_failures"].append(failure)
+                                errors.append(failure)
                 if not satisfied_any:
                     failure = f"B{burden_index}/{owner_id}: owner-floor window names route markers but lands no configured pressure dimension"
                     metrics["pressure_dimension_failures"].append(failure)
@@ -301,7 +464,7 @@ def _quality_gate_errors(route_plan: dict[str, Any], output: str, executed_steps
     if metrics["source_requested"]:
         if not source_quote_lines:
             errors.append("source-request route lacks any direct operative source quotation")
-        if "Operative source" not in output and "operative source" not in output.lower():
+        if re.search(r"(?im)^\s*Operative source deployment\s*:", output) is None:
             errors.append("source-request route lacks explicit operative source deployment section")
 
     metrics["quality_gate"] = "pass" if not errors else "fail"
@@ -391,8 +554,17 @@ def _owner_operation_window(output: str, burden_index: int, owner_id: str) -> st
     owner_match = _owner_floor_match(segment, owner_id)
     if owner_match is None:
         return ""
-    next_owner = re.search(r"(?im)^\s*Owner-floor:\s*", segment[owner_match.end():])
-    end = owner_match.end() + next_owner.start() if next_owner else min(len(segment), owner_match.end() + 2800)
+    tail = segment[owner_match.end():]
+    boundaries: list[int] = []
+    for pattern in (
+        r"(?im)^\s*B\d+\.s\d+\s*:",
+        r"(?im)^\s*Owner-floor:\s*",
+        rf"(?im)^\s*Land\(B{burden_index}\)",
+    ):
+        match = re.search(pattern, tail)
+        if match:
+            boundaries.append(match.start())
+    end = owner_match.end() + min(boundaries) if boundaries else len(segment)
     return segment[owner_match.start():end]
 
 
@@ -635,8 +807,11 @@ def check_execution(route_plan: dict[str, Any], output: str) -> dict[str, Any]:
             "then re-read state after each Land(B) before executing continuation_queue entries. "
             "For each executed burden emit `Layer A - Compact DSL/IR Header [Burden N]` "
             "and `Layer B - Governed Response [Burden N]`. "
-            "For every executed owner emit `Owner-floor: <owner-id>` followed by "
-            "Target, Operation, Result, B.s, Land(B), and R(H,Delta), "
+            "Hard/compound cases must include Hidden Premises and Core Formulation content units before owner execution. "
+            "For every executed owner emit a distinct `B<N>.s<M>:` marker, then `Owner-floor: <owner-id>` followed by "
+            "Target, Operation, and Result in the same burden window. Target must quote or closely repeat an input span, "
+            "Operation/Result must land each configured pressure dimension, source-request dimensions need `Operative source deployment:` plus a local `>` blockquote, "
+            "then Land(B) and R(H,Delta), "
             "and do not close unless R(H,Delta) names no remaining input-anchored burdens. "
             "If a queued burden is no longer live, mark HOLD/SKIP/PARTIAL/reroute need with the state-delta reason. "
             f"Failed burden(s): {', '.join(failed_burdens) if failed_burdens else 'unspecified'}. "

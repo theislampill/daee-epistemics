@@ -142,6 +142,10 @@ fails hard-case render if it names an owner but omits that owner's pressure, use
 Target/Operation/Result verbs, cites sources without making them operate on the active burden,
 reaches `Land(B)` without a changed claim-state, or performs restoration without tying it to
 the landed burden.
+For source-request hard cases, source operation must cover the routed source functions, not
+just produce a source list. If hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
+repentance/return, testimony, or predicate discipline are distinct pressure points, the render
+must make the relevant text operate on each pressure point or mark the omitted pressure PARTIAL.
 Structural attachment is part of this requirement: the right labels appearing somewhere is
 not enough. `Owner-floor`, `Target`, `Operation`, `Result`, `Land(B)`, and `R(H,Delta)` must
 remain locally attached to the burden step they govern. Grouped owner lines followed later by
@@ -283,6 +287,9 @@ If a public worldview or identity marker supplies the criterion, authority-order
 posture, or restoration vector, Layer A may mark it as structurally load-bearing while still
 holding interior motive, culpability, sincerity, and soul-state. Source-status caution prevents
 ad hominem verdicts; it does not make input-anchored worldview analysis optional.
+The converse is also part of family fidelity: do not turn testimony, predication,
+grief/register, kalamic proof-order, or another anchored family pressure into a generic
+source-worldview frame when the input has not made that frame operative.
 
 Current bounded operator is one live noetic burden/function: `B`, not a route chain,
 module list, route itinerary, single operative submove, or lone `s`. Allowed examples: `imported moral tribunal /
