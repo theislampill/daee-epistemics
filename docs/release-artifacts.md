@@ -4,11 +4,6 @@ This file records the last published v0.3.2.0 package artifact used for the same
 GitHub Release asset refresh. Binary skill archives are not committed to the source repository;
 GitHub Releases are the binary distribution surface for the published `.skill` asset.
 
-Note: after the canonical compact-DSL package-shape refactor, a future authorized package/release
-refresh is required before the SHA256, size, entry count, and GitHub Release asset below represent
-the current source tree. Do not treat these historical artifact fields as current-source package
-evidence until a rebake is explicitly performed.
-
 Build the package locally from the generated `skill/` package root:
 
 ```powershell
@@ -27,15 +22,15 @@ package shape, excludes repo/dev harness roots, and writes slash-safe archive en
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `1C1C3E59E72366689926922BE2117FF477B66E6A35B53004210E55A19559AA10` |
-| Size | `572004` bytes |
-| Entries | `45` |
-| Source commit | `b0bad507d3e0115a6ae57fc5a2e0e45e3eee944c` |
-| GitHub Release visibility | Last published same-version asset refresh before the canonical compact-DSL package-shape refactor; future release notes should update this framing if a new asset is authorized |
+| SHA256 | `6331A1EBFD7962F3AA38CE503ED0B2D7C4BE2C350B8D34A432714B26B850CB71` |
+| Size | `535410` bytes |
+| Entries | `20` |
+| Source commit | `6636c4b22c0dbfdd90faa743e6832c91abf3e715` |
+| GitHub Release visibility | Current same-version asset refresh after canonical compact-DSL package-shape refactor |
 | Release tag | `v0.3.2.0` |
-| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` (historical title; future authorized release notes should reframe the script harness as optional dev/CI machinery) |
+| Release name | `v0.3.2.0 - Canonical compact DSL runtime recovery` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
-| Verification date | `2026-05-10` |
+| Verification date | `2026-05-11` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
@@ -48,11 +43,18 @@ source repository; local retained smoke evidence may exist only in ignored worki
 
 Current-release committed smoke suite: none.
 
-Local retained real Codex CLI optional script-harness hard moral-protest / worship-worthiness /
-source-worldview canary evidence exists under ignored `.daee/` for this source/package rebake.
-It proves the installed optional script-harness path on that canary only;
-raw smoke artifacts are not committed, not packaged, and do not prove Claude scriptless
-compact-DSL behavioral recovery.
+Local retained direct current-session installed-skill smoke evidence exists under ignored `.daee/`
+for this source/package rebake:
+
+- hard moral-protest / worship-worthiness / source-worldview canary: `50.5k` characters, owner/TTP
+  visible, source-operative, superscript/subscript labels present, no route-check harness refs;
+- predication/attribute support smoke: M9/V8/source-status execution visible;
+- naturalist/transmission support smoke: FPD/V2/M1/M8 plus testimony/tawatur work visible.
+
+These smokes prove current-session installed-skill file-retained behavior only. They do not prove
+Claude, nested `codex exec`, or all-host parity. Hosted nested `codex exec` was quota-blocked during
+the recovery pass, and the local OSS probe timed out without a completed output. Raw smoke artifacts
+are not committed and not packaged.
 
 `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe artifacts are development /
 post-expansion regression evidence in this source state. They are not current-package smoke
