@@ -20,3 +20,14 @@ tests/smoke-output/
 .daee/
 level3-runs/
 smokes/
+route_plan.json
+features.json
+validation.json
+reconstruction.json
+execution_verdict.json
+execution_prompt.md
+execution_blocked.md
+partial_banner.md
+retry_prompt.md
+output.simulated.md
+output.model.md

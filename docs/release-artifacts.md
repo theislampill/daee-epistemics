@@ -1,8 +1,13 @@
 # Release Artifacts
 
-This file records the current v0.3.2.0 package artifact used for the same-version
+This file records the last published v0.3.2.0 package artifact used for the same-version
 GitHub Release asset refresh. Binary skill archives are not committed to the source repository;
 GitHub Releases are the binary distribution surface for the published `.skill` asset.
+
+Note: after the canonical compact-DSL package-shape refactor, a future authorized package/release
+refresh is required before the SHA256, size, entry count, and GitHub Release asset below represent
+the current source tree. Do not treat these historical artifact fields as current-source package
+evidence until a rebake is explicitly performed.
 
 Build the package locally from the generated `skill/` package root:
 
@@ -11,11 +16,11 @@ powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.
 Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.0.skill
 ```
 
-The package script archives the contents of `skill/`, not the repository root and not the
-top-level `skill/` directory. It writes a local `.skill.zip` payload; the published GitHub Release
-asset is the same checked payload renamed to `.skill`. Do not re-zip the repository root.
-`package.ps1` calls the manifest-backed Python packager, validates generated package shape, and
-writes slash-safe archive entries.
+The package script archives the canonical packageable contents selected from `skill/`, not the
+repository root and not the top-level `skill/` directory. It writes a local `.skill.zip` payload;
+the published GitHub Release asset is the same checked payload renamed to `.skill`. Do not re-zip
+the repository root. `package.ps1` calls the manifest-backed Python packager, validates generated
+package shape, excludes repo/dev harness roots, and writes slash-safe archive entries.
 
 ## Current Package / Release Asset Evidence
 
@@ -26,9 +31,9 @@ writes slash-safe archive entries.
 | Size | `572004` bytes |
 | Entries | `45` |
 | Source commit | `b0bad507d3e0115a6ae57fc5a2e0e45e3eee944c` |
-| GitHub Release visibility | Published same-version asset refresh for golden-depth Level 3 hard-case governance, pressure-dimension execution, Level 1/2 scriptless governance lift, canary-name hygiene, and frontloaded Level 1/2 burden-depth governance |
+| GitHub Release visibility | Last published same-version asset refresh before the canonical compact-DSL package-shape refactor; future release notes should update this framing if a new asset is authorized |
 | Release tag | `v0.3.2.0` |
-| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` |
+| Release name | `v0.3.2.0 - Golden-depth Level 3 hard-case governance` (historical title; future authorized release notes should reframe the script harness as optional dev/CI machinery) |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
 | Verification date | `2026-05-10` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
@@ -43,11 +48,11 @@ source repository; local retained smoke evidence may exist only in ignored worki
 
 Current-release committed smoke suite: none.
 
-Local retained real Codex CLI Level 3 hard moral-protest / worship-worthiness /
+Local retained real Codex CLI optional script-harness hard moral-protest / worship-worthiness /
 source-worldview canary evidence exists under ignored `.daee/` for this source/package rebake.
-It proves the installed Level 3 path on that canary only;
-raw smoke artifacts are not committed, not packaged, and do not prove Claude Level 1/2
-scriptless behavioral recovery.
+It proves the installed optional script-harness path on that canary only;
+raw smoke artifacts are not committed, not packaged, and do not prove Claude scriptless
+compact-DSL behavioral recovery.
 
 `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe artifacts are development /
 post-expansion regression evidence in this source state. They are not current-package smoke
@@ -73,14 +78,11 @@ current-package smoke evidence -> none in this source state
 live-host behavior -> not independently replayed by this repo without a future live-runner
 ```
 
-Expected archive root:
+Expected canonical archive root:
 
 ```text
 SKILL.md
 references/
-data/
-scripts/
-tests/
 compiled-module-map.json
 build-manifest.json
 README.md
@@ -95,4 +97,22 @@ tools/
 docs/
 build/
 .git/
+data/
+scripts/
+tests/
+smokes/
+.daee/
+level3-runs/
+__pycache__/
+route_plan.json
+features.json
+validation.json
+reconstruction.json
+execution_verdict.json
+execution_prompt.md
+execution_blocked.md
+partial_banner.md
+retry_prompt.md
+output.simulated.md
+output.model.md
 ```

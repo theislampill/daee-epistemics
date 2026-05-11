@@ -22,6 +22,8 @@ The skill emits codes on several orthogonal axes. Each code has exactly one cano
 file; other files refer to the code but do not re-specify it. If this reference
 disagrees with the canonical file, the canonical file governs — this reference indexes
 and summarizes.
+Code lookup is not owner activation. A code identifies the owner or axis to consult; release still
+requires validated state, owner-specific operation, burden-local result, and `Land(B) -> R`.
 
 ## Axis 0 — Claim Level and Pattern Profile
 

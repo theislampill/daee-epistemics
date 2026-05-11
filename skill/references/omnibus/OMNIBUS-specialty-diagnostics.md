@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/INDEX.md -->
-<!-- SOURCE_SHA256: e5d1b5dbb09cf4327ae35018d4a4de25bcd3b91b2e1336a275df59317e12a40a -->
+<!-- SOURCE_SHA256: 17f01b422952bca4ab54213289ef173c5b43acb0525d9c4e93c2fb38a22ab863 -->
 
 ---
 id: diagnostics-index
@@ -31,6 +31,9 @@ catalogue_registered: false
 # Diagnostics - Index
 
 Diagnostics classify the case before rebuttal. They determine what the engagement is, what is actually obstructing recognition, and whether intellectual engagement is even the right instrument.
+This index routes to diagnostic owners; it does not make every co-located diagnostic row active.
+Canonical execution rules live in the named owner file and in the dispatch / release / recursion
+governance surfaces.
 
 ## Diagnostic Execution Floor
 
@@ -82,7 +85,7 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
 | `references/diagnostics/arabic-backbone-predicates.md` | Operational predicate layer | V1 Phase 2 and criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation elements are present | Case is single-axis `shubha` with no framework or ordering issue | Typed predicates with route consequences |
 | `references/diagnostics/diagnostic-ir.md` | Typed diagnostic IR | Full auditable case-state required; multi-axis case; routing must be checked against workflow and architectural layers | Narrow conversational sub-answer with no case classification | Complete typed IR binding workflow and architectural layers |
 | `references/diagnostics/ir-reconstruction-pass.md` | Reconstruction check | A populated IR must prove that live burden, selected owner/TTP, nearest held alternatives, Land(B), and verdict are recoverable before dispatch | You are trying to create new routes, owner packs, or public-output machinery | `reconstruction_fidelity` and compact notes for partial/fail |
-| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, Level 3, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
+| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, optional route/check harness, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
 | `references/metaphysical-architecture.md` | Metaphysical architecture layer | Auditing what is being restored and why | Task is purely routing mechanics | Ordered account of epistemic and ontological structure |
 | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic | `dalīl`, `wujūb al-naẓar`, taqlīd-as-non-knowledge, Māturīdī concession language, or a narrow necessary-knowledge class is surfacing | The case is ordinary evidentialism without kalāmic structure | Kalāmic-specific critique and routing |
 | `references/diagnostics/fitrah-perspectives.md` | Specialty diagnostic | The `fiṭrah` is described as blank-slate, morally neutral, or as equal dual tendencies | The case does not turn on `fiṭrah` taxonomy | `fiṭrah`-view classification and implications |
@@ -1025,7 +1028,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: nomenclature-normalization -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/nomenclature-normalization.md -->
-<!-- SOURCE_SHA256: c0daa0760ebac1ee68ce25ed55936ab4992919ebfe756dffd0344afbc6952ef1 -->
+<!-- SOURCE_SHA256: 7ff238b26e17926a0da00979c0d61c048637d4280cfaa547bae9d3242ce07212 -->
 
 ---
 id: nomenclature-normalization
@@ -1033,7 +1036,7 @@ module_class: governance
 canonical_path: skill/references/diagnostics/nomenclature-normalization.md
 contract_version: "0.3.2.0"
 load_when:
-  - release or maintainer review needs canonical naming for noetic state, DSL/IR, TTP, owner, or Level 3 terms
+  - release or maintainer review needs canonical naming for noetic state, DSL/IR, TTP, owner, or optional route/check harness terms
   - a term alias could affect routing, proof denominator, render governance, or public release claims
 emits:
   - nomenclature_normalization
@@ -1118,7 +1121,7 @@ brand the interlocutor with a code unless diagnostic render or user request make
 | `reconstructor_notes` | reconstruction notes | Brief note for partial/fail or compact neighbor contrast. |
 | `post_render_gate` | post-render gate | STOP/HOLD/RECURSE/PARTIAL decision after Land(B) and state re-read. |
 
-## Level 3 Terms
+## Optional Route/Check Harness Terms
 
 | Canonical term | Accepted aliases | Note |
 |---|---|---|
@@ -1127,7 +1130,7 @@ brand the interlocutor with a code unless diagnostic render or user request make
 | `deterministic feature` | `mechanical feature` | Regex/parser-derived local feature. |
 | `LLM-assisted feature` | `span-backed interpretive slot` | Accepted only with span and confidence; can fall back to ambiguous. |
 | `ambiguous fallback` | `ambiguous` | Low-confidence interpretive result that does not route. |
-| `route_plan` | `route plan` | Binding Level 3 routing artifact. |
+| `route_plan` | `route plan` | Binding optional route/check harness artifact. |
 | `first_live` | `first-live` in prose | Code/API key remains `first_live`; prose may say first-live. |
 | `continuation_queue` | `continuation queue` | Code/API key remains `continuation_queue`; prose may use spaced form. |
 | `held` | `held owner`, `held route` | Not released in the current pass. |
@@ -1137,8 +1140,10 @@ brand the interlocutor with a code unless diagnostic render or user request make
 | `reconstruction_report` | `reconstruction.json` | Route reconstructibility result. |
 | `execution_fidelity` | execution check verdict | Post-output validation result. |
 
-Level 3 gives deterministic routing given features. It does not claim deterministic feature
-extraction or deterministic transformer execution.
+The optional route/check harness gives deterministic routing given features. It does not claim
+deterministic feature extraction or deterministic transformer execution. It is repo/dev/CI
+machinery unless a maintainer explicitly requests it; it is not the canonical package identity
+and not the ordinary scriptless runtime.
 
 ## TTP / Owner / Operator Terms
 
@@ -1147,7 +1152,8 @@ extraction or deterministic transformer execution.
 - `operator`: the currently active runtime function when a TTP is actually doing work.
 - `owner-floor`: owner-specific `target -> operation -> result` evidence.
 - `submove`: one bounded operation inside the current burden.
-- `B.s`: code/prose shorthand for burden submoves (`B.s1`, `B.s2`, ...).
+- `ⁿBᵢ`: preferred public/governance shorthand for burden submoves (`¹B₁`, `¹B₂`, `²B₁`, ...).
+  `1B1`, `1B2`, `2B1` are ASCII fallbacks; `B1.s1` / `B<N>.s<M>` are legacy/checker aliases.
 - `Land(B)`: the landed state change for the current burden.
 - `R(H,Delta)`: the state re-read after Land(B). ASCII `Delta` is canonical in code and
   checker text; the Greek delta form may appear in historical prose.
@@ -1195,10 +1201,11 @@ should use genus-level terms such as `named source-worldview`, `imported criteri
 
 The normalized release claim is:
 
-- Level 3 is additive to Level 1/2.
-- Codex-capable script runtimes should invoke Level 3 by default when scripts are available.
-- Scriptless runtimes visibly fall back to Level 1/2.
-- Routing is deterministic given extracted features.
+- Default `/daee-epistemics` is the canonical compact DSL-governed runtime, not prose-only mode.
+- `/daee-epistemics:dsl` is expanded diagnostic/IR visibility, not the first place DSL appears.
+- The optional script-capable route/check harness is repo/dev/CI machinery, historically called
+  Level 3, and is not canonical package content or the public identity of the skill.
+- Maintainer-requested script-capable harness runs are deterministic in routing given extracted features.
 - Feature extraction includes span-backed interpretive components and can vary.
 - Transformer execution remains probabilistic and high-complexity render-through can still fail.
 - Pure-Hermes parity, codons, owner packs, and catalogue-wide deterministic routing are not claimed.

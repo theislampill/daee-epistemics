@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: profiles-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/case-library/profiles/INDEX.md -->
-<!-- SOURCE_SHA256: 895426aaa2928af6a47a51c5df87ce2453cb58c422cb0f2264f2a70e51a3f3ed -->
+<!-- SOURCE_SHA256: 2fda768cba7f7660ec5ff58a3f5f5494ec84ad3da9f59ce63332e50fd3b2fe6a -->
 
 ---
 id: profiles-index
@@ -33,6 +33,9 @@ catalogue_registered: false
 Each NS profile is individually owned, individually IR-addressable, and never co-loaded with
 another profile. Confirm the NS code via `case-library/INDEX.md §Quick NS Identification`, then
 load the matched file below. Do not load this index file as a substitute for the profile.
+This index locates the profile owner. It does not activate profile content by table match alone:
+V1, the noetic-reading checklist, and the matched profile must still identify the live noetic
+function, held material, and owner handoff before Layer B release.
 
 ## Routing Table
 

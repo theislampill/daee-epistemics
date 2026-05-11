@@ -12,6 +12,13 @@ known_non_runtime_references:
   - claim_id: audit:pattern-family-audit
     status: historical-audit
     note: Pattern-family audit material lives in docs/audits/ and is not an operative source owner.
+  - claim_id: governance:coverage-ledger
+    status: retired-ledger
+    note: >
+      The old coverage-ledger owner was retired. Current coverage authority is
+      this manifest plus owner/router files, module front matter, module
+      catalogue metadata, generated runtime checks, and TODO/audit notes for
+      unresolved scope decisions.
 
 scope_claims:
   # Noetic profiles
@@ -351,9 +358,6 @@ scope_claims:
     in_scope: true
   - claim_id: governance:case-state-schema
     owner_id: case-state-schema
-    in_scope: true
-  - claim_id: governance:coverage-ledger
-    owner_id: coverage-ledger
     in_scope: true
   - claim_id: governance:diagnostic-ir
     owner_id: diagnostic-ir

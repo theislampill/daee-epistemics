@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: tactics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/tactics/INDEX.md -->
-<!-- SOURCE_SHA256: 12372396c5bf20376e8ca127350f39fde8bd59c30b889decf6544861be3db841 -->
+<!-- SOURCE_SHA256: 83be90751d687658085ffbc5a34a7e40521b1f9bb98a866f0ff15b83d3c8ba2e -->
 
 ---
 id: tactics-index
@@ -50,6 +50,8 @@ Naming a tactic is never tactic execution. If the tactic file has its own owner-
 5. fail the release if the tactic name could be removed without changing the operation.
 
 Tactics do not authorize argument banks, source/context prestige, or extra burden-cycles. They are operative submoves unless the state/noetic re-read licenses a materially different burden.
+Table presence, typical pairing, or folder co-location is not activation; the matched tactic must
+still satisfy entry criteria and execute as a Layer B operation before `Land(B) -> R`.
 
 ## Tactics
 
@@ -1004,7 +1006,7 @@ P7 Stop-2 governs R3. R3 makes one analytical move — asks what produced the in
 <!-- MODULE_ID: M1-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M1-self-refutation.md -->
-<!-- SOURCE_SHA256: 760d63e3754dca239d5ff885a580cd238aded2314ad83850d669046102c4a296 -->
+<!-- SOURCE_SHA256: 4dcde1df45bf4fd12641c7664cc94cd4142ba9fe5f0e64214296441732aa9d03 -->
 
 ---
 id: M1-self-refutation
@@ -1037,6 +1039,16 @@ operator_pack_eligible: true
 **Deploy when:** Before constructing any response, examine whether the objection's premises undermine the objection itself.
 
 When present, deliver this move cleanly and early. Do not bury it. The interlocutor who grasps it grasps it immediately; elaboration allows them to find somewhere to hide.
+
+## Layer B Activation Floor
+
+M1 is not satisfied by saying "test the standard" or by listing self-refutation in a trace.
+When the live burden contains a self-authorizing criterion, self-grounding moral court,
+universal rule that exempts itself, or epistemic standard that would defeat the objection if
+applied consistently, Layer B must show: why M1 is structurally live, the exact target rule,
+the self-application operation, the resulting collapse or narrowing of claim-state, and how
+that result contributes to `Land(B)`. If the self-refutation is not actually present, clear M1
+internally rather than forcing it.
 
 **Examples:**
 - The evolutionary debunking argument uses the cognitive faculties it declares unreliable.
@@ -1137,7 +1149,7 @@ especially useful: the opponent's own authorities acknowledge the datum.
 <!-- MODULE_ID: M1P-performative-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M1P-performative-self-refutation.md -->
-<!-- SOURCE_SHA256: 37eb34951e9286829b3130e8cf1c509cfeb4f4a6aeb2824c06fca857a2a78cfc -->
+<!-- SOURCE_SHA256: 6cc1e64dfd90925614cb4a364196ee6d93056202c27205a3ecefccc4497c9bff -->
 
 ---
 id: M1P-performative-self-refutation
@@ -1178,6 +1190,13 @@ Standard M1 examines whether an argument's *premises*, applied consistently, und
 - "All truth is relative" — offered as an absolute truth
 
 **Delivery:** Economy is essential. State the position. Name the self-enactment. Stop. The move is either seen immediately or it is not seen — elaboration only provides cover.
+
+Hard-case scope note: this stop is local to the M1-P operation, not a license for whole-answer
+closure in a compound same-input response. When M1-P is structurally live inside a burden,
+Layer B must still show the quoted assertion or speech act, the denied condition it enacts,
+the resulting self-undercut, and how that state change contributes to `Land(B)`. If the
+refreshed state leaves another input-anchored burden live, continue or mark PARTIAL as
+governed rather than treating M1-P's economy as final closure.
 
 ## The Staged-Visibility Protocol
 
@@ -1320,7 +1339,7 @@ M2 holds DO-1, DO-2, and DO-4 substantive response content. These arguments pres
 <!-- MODULE_ID: M3-orphaned-intuition -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M3-orphaned-intuition.md -->
-<!-- SOURCE_SHA256: 66b3bfadfe956a79ae7adfeb0a261d0b600d0335c38f39be8db4a829ff5490f1 -->
+<!-- SOURCE_SHA256: a60c8ab33167af07bd9fad3d08eb2996dc3cf10027cd8e0b4d3270f4a7c933c0 -->
 
 ---
 id: M3-orphaned-intuition
@@ -1363,6 +1382,15 @@ naturalist or materialist frame, do not treat the moral standard as free equipme
 what grounds the obligation that evil really should not be. If the standard is objective, M3
 asks what kind of world makes that objectivity intelligible; if the standard is denied, the
 objection loses its force and M8 may govern instead.
+
+**M3 does not replace tribunal-pressure owners:** When moral language is functioning as an
+imported tribunal over Allah, a worship-veto, or a self-authorizing moral court, M3 may affirm
+real moral residue but it does not satisfy FPD, M1/M1-P, M8, or M9. In that case, first expose
+the tribunal, test the self-grounding or performed veto where live, trace the source-frame
+consequence where live, and repair predicate transfer where live. If a Layer B burden uses M3
+for such a case without executing or explicitly clearing M1/M1-P, the burden has not landed.
+Use M3 only as the orphaned-intuition probe if the case-state shows the interlocutor actually
+holds objective moral commitments whose grounding their stated frame cannot supply.
 
 **Connection:** M3 is the entry point for NS-4 (secular moral realist); see `references/case-library/profiles/ns-4-secular-moral-realist.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).
 
@@ -1650,7 +1678,7 @@ M7 is not the owner of broader conception-capture problems. When contradiction p
 <!-- MODULE_ID: M8-reductio -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M8-reductio.md -->
-<!-- SOURCE_SHA256: b7936d37b0f918bf62bba08cde990f5c5941ef52c036476152eb50da7e4b6e84 -->
+<!-- SOURCE_SHA256: 3fe0c05e6e08ff906b5a0d4e61d4b12c9a0e0b0e2252748fc0a1025bf6c10097 -->
 
 ---
 id: M8-reductio
@@ -1682,6 +1710,23 @@ operator_pack_eligible: true
 **Deploy when:** Interlocutor's position, followed consistently, produces consequences that are formally contradictory, obviously absurd, or that the interlocutor manifestly rejects.
 
 Distinct from M1 (premises undermine conclusion) and M1-P (speech act enacts what it denies): M8 assumes the position, traces its consequences, and shows the consequences are unacceptable.
+
+## Layer B Activation Floor
+
+M8 is not executed by writing a generic consequence paragraph. When M8 is structurally live,
+Layer B must show:
+
+1. why the reductio is live for the present burden;
+2. the target criterion, premise, source-frame, or proof-rule being assumed for the trace;
+3. the operation: follow that commitment by valid or locally accepted steps;
+4. the result/state change: the consequence contradicts the claim, defeats the criterion on
+   its own grounds, or forces an unacceptable commitment;
+5. how the consequence contributes to `Land(B)` without turning every further implication
+   into a new burden-cycle.
+
+If the consequence trace belongs to predication, transmission, proof-method, grief/register,
+or another family-local owner, M8 must stay inside that owner's live burden rather than
+relabeling the case as generic worldview critique.
 
 ## Formal Reductio
 
@@ -1728,7 +1773,7 @@ do not relabel it as source-worldview; trace the consequence in that family's ow
 <!-- MODULE_ID: M9-predication-mode -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M9-predication-mode.md -->
-<!-- SOURCE_SHA256: 44e1bba7009af5bf4243f28292c767ee9fafea9e4e43158c50c44f39cfb81db1 -->
+<!-- SOURCE_SHA256: 2d9d167eee456c061ddd6f655c1ba2116d545cc7ad82b34d599cc10b99f43e7d -->
 
 ---
 id: M9-predication-mode
@@ -1740,6 +1785,7 @@ load_when:
   - domain-boundary failure (empirical method on non-empirical subject)
   - univocal/equivocal/analogical predication question active
   - loaded negative-theological term operative
+  - divine moral-predicate verdict active, including cruel, inhumane, unkind, ungenerous, or unworthy of worship language where the sense depends on creaturely limitation, human sentiment, or imported moral court
   - semantic-discipline-required gate active
 routing_effects:
   - semantic-discipline-required
@@ -1779,6 +1825,14 @@ M9 uses `B -> {semantic/predicational s} -> Land(B) -> R` from
 `recursive-state-transitions.md`. Gloss: a semantic or predicational clarification may clear
 the question without licensing doctrinal sprawl; after the problem is typed, refresh
 case-state and release only the smallest restorative next move unless another `B` governs.
+
+Moral-predicate verdicts about Allah can trigger M9 when the predicate's sense is being carried
+from human limitation or creaturely court into divine judgment. Terms such as cruel, inhumane,
+unkind, ungenerous, or unworthy of worship must be split when the argument depends on treating
+human emotional approval, human due-process limits, or creaturely vulnerability as the measure
+of Allah's justice, mercy, or right to command. M9 does not cancel the moral concern; it repairs
+the predicate mode before accountability, mercy/justice, or worship-worthiness content is
+released.
 
 ## Owner-Specific Operation Floor
 

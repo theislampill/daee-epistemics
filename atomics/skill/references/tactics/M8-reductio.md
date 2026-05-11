@@ -29,6 +29,23 @@ operator_pack_eligible: true
 
 Distinct from M1 (premises undermine conclusion) and M1-P (speech act enacts what it denies): M8 assumes the position, traces its consequences, and shows the consequences are unacceptable.
 
+## Layer B Activation Floor
+
+M8 is not executed by writing a generic consequence paragraph. When M8 is structurally live,
+Layer B must show:
+
+1. why the reductio is live for the present burden;
+2. the target criterion, premise, source-frame, or proof-rule being assumed for the trace;
+3. the operation: follow that commitment by valid or locally accepted steps;
+4. the result/state change: the consequence contradicts the claim, defeats the criterion on
+   its own grounds, or forces an unacceptable commitment;
+5. how the consequence contributes to `Land(B)` without turning every further implication
+   into a new burden-cycle.
+
+If the consequence trace belongs to predication, transmission, proof-method, grief/register,
+or another family-local owner, M8 must stay inside that owner's live burden rather than
+relabeling the case as generic worldview critique.
+
 ## Formal Reductio
 
 Assume P. Derive from P, by valid steps, both Q and not-Q. Conclude not-P.

@@ -543,7 +543,7 @@ case-state or Diagnostic IR.
 <!-- MODULE_ID: seven-deformations -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/seven-deformations.md -->
-<!-- SOURCE_SHA256: d8ef4442f8b2c0fc3a0ff40ec446823f18707d8f87b9280a3f0db5a5a6036439 -->
+<!-- SOURCE_SHA256: f37f24f451e5167c0482b165ab04c10afda22a060f5db4be3b95040014a7f214 -->
 
 ---
 id: seven-deformations
@@ -641,6 +641,12 @@ again. The dāʿī must work upstream.
 and not examined — from which the interlocutor's other positions follow necessarily? If
 addressing a derived conclusion produces agreement but no movement (the interlocutor re-derives
 the same conclusion from the same premise), the premise is mushābara fāsida.
+
+**Marker-only execution caution:** `mushabara-fasida` marks a subdeformation under
+`i'tiqadat-mawrutha`; it is not a standalone runtime owner. Its presence licenses surgical
+premise work by the matched TTP/operator. Layer B must still execute the relevant owner
+(for example M1/M1-P, M8, M9, V2, or V9 as structurally warranted) with target, operation,
+result, and `Land(B)`. A marker label by itself is not execution.
 
 **Common forms:**
 - "The only things that exist are things that could in principle be detected by scientific
@@ -1675,7 +1681,7 @@ the other emissions remain available but not acted on until the register shifts.
 <!-- MODULE_ID: M5-deformation-triage -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M5-deformation-triage.md -->
-<!-- SOURCE_SHA256: c2c2f0279efd0cd35d329e5340f27b734d7dcb6d0978ce3e29ab3b24a8dcc20f -->
+<!-- SOURCE_SHA256: ab6514d49ff51c5f89560f0557da4e0c727ec9dfc5ab541828c3a1c20db157a1 -->
 
 ---
 id: M5-deformation-triage
@@ -1712,6 +1718,22 @@ operator_pack_eligible: true
 M5 is the deformation-sorting subroutine called inside V1 Phase 3 (triage). It does not
 replace V1 as the entry gate. The canonical compound-case sequence lives in
 `references/diagnostics/seven-deformations.md` §The Compound Case; M5 applies it.
+
+M5 is normally Layer A diagnostic/control work: it selects the deformation read, sequencing
+order, first instrument, and any register-hold. It is not a rival answer owner and not a
+license to replace the matched TTP with a deformation label.
+
+When M5 is exposed in Layer B for a narrow deformation-sorting task, activation requires:
+
+1. target: the specific deformation signal being sorted;
+2. operation: distinguish it from nearby deformation reads and select the smallest matched
+   instrument;
+3. result: route, hold, or hand back to V1 with the decisive missing axis named;
+4. land contribution: the next owner is licensed, delayed, or blocked by the triage result.
+
+`mushabara-fasida` is a subdeformation marker under `i'tiqadat-mawrutha`, not a standalone
+argument. Marking it only licenses surgical premise work by the matched owner; it does not
+itself count as M1, V2, M8, M9, or V9 execution.
 
 ## The Triage Sequence
 

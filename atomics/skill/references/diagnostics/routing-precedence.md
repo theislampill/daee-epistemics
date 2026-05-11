@@ -163,7 +163,7 @@ are absent, the route remains held or unresolved. After the TTP exits, the next 
 only from refreshed state, not from an inherited initial route itinerary.
 
 For hard/multi-burden execution, owner-backed selection requires loadform evidence: the
-selected owner body or compiled bundle section is loaded/available before `B.s<i>` renders.
+selected owner body or compiled bundle section is loaded/available before `ⁿBᵢ` renders.
 `matched_modules` and TTP labels are routing metadata, not proof that the owner floor loaded.
 If the owner cannot be loaded or identified, return `PARTIAL / OWNER-BODY-NOT-LOADED`
 instead of compressing the burden into generic prose.

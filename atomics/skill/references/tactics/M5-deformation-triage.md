@@ -34,6 +34,22 @@ M5 is the deformation-sorting subroutine called inside V1 Phase 3 (triage). It d
 replace V1 as the entry gate. The canonical compound-case sequence lives in
 `references/diagnostics/seven-deformations.md` §The Compound Case; M5 applies it.
 
+M5 is normally Layer A diagnostic/control work: it selects the deformation read, sequencing
+order, first instrument, and any register-hold. It is not a rival answer owner and not a
+license to replace the matched TTP with a deformation label.
+
+When M5 is exposed in Layer B for a narrow deformation-sorting task, activation requires:
+
+1. target: the specific deformation signal being sorted;
+2. operation: distinguish it from nearby deformation reads and select the smallest matched
+   instrument;
+3. result: route, hold, or hand back to V1 with the decisive missing axis named;
+4. land contribution: the next owner is licensed, delayed, or blocked by the triage result.
+
+`mushabara-fasida` is a subdeformation marker under `i'tiqadat-mawrutha`, not a standalone
+argument. Marking it only licenses surgical premise work by the matched owner; it does not
+itself count as M1, V2, M8, M9, or V9 execution.
+
 ## The Triage Sequence
 
 1. Confirm the NS code from `references/diagnostics/noetic-reading-checklist.md`. The NS

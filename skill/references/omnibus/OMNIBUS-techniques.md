@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: techniques-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/techniques/INDEX.md -->
-<!-- SOURCE_SHA256: 1cc5f6bb1338f0e68c8bf0fc5e121c786955b216ee4e42a698b3b3cbfa56787b -->
+<!-- SOURCE_SHA256: e9861ad9020498de06e9e3f16898c9464537ada7946e41d55d3b5bb310e19ac4 -->
 
 ---
 id: techniques-index
@@ -51,6 +51,8 @@ Naming a technique is never technique execution. If the technique file has an ow
 5. fail the release if the technique becomes a heading, label, or essay frame rather than an operation.
 
 Techniques are not route itineraries or argument banks. A technique may structure a stretch of conversation, but each released pass still obeys the owner-specific operation floor, submove saturation gate, and NewB license test.
+Table presence, typical pairing, or folder co-location is not activation; the matched technique
+must still satisfy entry criteria and execute as a Layer B operation before `Land(B) -> R`.
 
 ## Techniques
 
@@ -491,7 +493,7 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V8-bila-kayf-anchor.md -->
-<!-- SOURCE_SHA256: 7c5bc7d960e95566f0c9a8b0cab34d0e87e39f66c1e7cf1310e3ad65b0e19d2d -->
+<!-- SOURCE_SHA256: 2210339df0067ccd481d23d97561ea885e4727726f3475fe943c11350588a6da -->
 
 ---
 id: V8-bila-kayf-anchor
@@ -538,6 +540,12 @@ The tradition affirms divine attributes as genuinely real while maintaining that
 - Refuse imagination-as-criterion: the fact that a human mind pictures extension,
   displacement, bodily motion, or containment when hearing a revealed attribute does not make
   that imagined modality an entailment of the attribute.
+
+**Layer B activation floor:** V8 lands only when the output identifies the live attribute or
+predicate pressure, preserves the affirmed meaning after M9 has cleared the term, blocks the
+creaturely modality or resemblance being imported, withholds the how, and states the resulting
+claim-state. "Bila kayf" or "nothing is like Him" alone is not execution if the target
+predicate, imagined mode, and land contribution are not shown.
 
 V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
 as a license to bypass M9's loaded-term split.
@@ -598,7 +606,7 @@ For fuller treatment:
 <!-- MODULE_ID: V9-necessary-knowledge-priority -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V9-necessary-knowledge-priority.md -->
-<!-- SOURCE_SHA256: 27bb00fd8b14098adef79d1c3544ecd86bff0ead863feeb729ba2f65e72e4b0f -->
+<!-- SOURCE_SHA256: e786e6713bc9ade04d8ca9e0b3e85be60010ff17293d1f32f52a639dd1009b3e -->
 
 ---
 id: V9-necessary-knowledge-priority
@@ -624,6 +632,13 @@ catalogue_registered: true
 **The principle:** The results of discursive reasoning (naẓar) must be checked against necessary knowledge (ʿilm ḍarūrī), not the other way around. When an argument's conclusion contradicts a fiṭrī-ḍarūrī intuition — one universal among those whose cognition is not distorted by specious philosophizing — declare the argument has erred and locate the flaw in its premises.
 
 "Necessary knowledge cannot be contradicted by discursive inference. Where such a conflict arises, a critical review of the terms and premises will always reveal that it is the discursive reasoning that has gone astray — not the underlying intuitions of the native intellect."
+
+**Layer B activation floor:** V9 is not a generic appeal to fitrah or intuition. When V9 is
+structurally live, Layer B must show the necessary/basic knowledge being attacked, the
+discursive inference or criterion trying to overrule it, the operation that restores
+basic-before-inferred order, the defective premise or domain-crossing to inspect, and the
+resulting state change for `Land(B)`. If the needed premise cannot yet be located, mark
+HOLD/PARTIAL rather than claiming the burden landed.
 
 **When to deploy:** When an argument concludes:
 - The external world does not exist

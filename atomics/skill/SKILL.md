@@ -6,51 +6,51 @@ description: >
 
 # Epistemological Diagnostic — Sound Reason and the Prophetic Tradition
 
-## LEVEL 3 EXECUTABLE ROUTING - DEFAULT WHEN AVAILABLE
+## CANONICAL COMPACT DSL-GOVERNED RUNTIME
 
-Level 3 is the default path for `/daee-epistemics [input]` in Codex/script-capable
-runtimes when bundled scripts are available. Runtimes that cannot execute
-bundled scripts must visibly fall back to Level 1/2 behavior. Do not decide
-route depth from prompt length, apparent simplicity, or surface size. Short
-slogans and small questions may carry dense noetic structure; brevity is
-licensed only after diagnostic burden accounting. The user should not need to
-know the internal commands.
+Default `/daee-epistemics [input]` is the canonical compact
+DSL-governed surface, not prose-only mode or debug scaffolding. DSL/IR is
+integral to anti-hallucination, routing, burden accounting, and restoration:
+compact diagnostic state -> governed Layer B -> `Land(B)` -> `R(H,Delta)` ->
+continue/HOLD/PARTIAL/close. `/daee-epistemics:dsl` exposes expanded diagnostic/IR
+visibility; it is not the first place DSL governance appears.
 
-Codex invocation flow:
-1. Save the user input to a run-local `input.md`.
-2. Run `python scripts/daee_level3.py --input <input.md> --out <run-dir>`.
-3. If the wrapper writes `<run-dir>/execution_blocked.md`, return that visible
-   PARTIAL/block note and do not execute an ordinary answer.
-4. Otherwise read `<run-dir>/execution_prompt.md` and execute the binding route plan.
-5. Save the governed answer as `<run-dir>/output.md`.
-6. Run `python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md`.
-7. Return the governed answer. If validation returns `partial` or `fail`,
-   return the output with a visible banner:
-   `PARTIAL - Level 3 execution check: <specific defect>`.
-   If a retry is attempted and fails again, preserve the banner and name the
-   defect from `execution_verdict.json` rather than pretending the route plan
-   was honored.
+Layer A is the compact diagnostic/control surface: it identifies and licenses the current live
+noetic burden, source/noetic frame, held material, release decision, and current bounded operator.
+Layer B is the governed operation/release surface: it performs active TTP/operator submoves,
+then hands state to `Land(B) -> R(H,Delta)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
+overgrowth and Layer B flattening.
 
-Level 3 is additive and binding only when correctly invoked. It provides
-deterministic routing given extracted features through `data/trigger-matrix.json`
-and `scripts/route.py`, then validates reconstruction and output execution.
-It does not claim deterministic feature extraction, because semantic register
-and concealment reads remain partly model-assisted and must be input-span
-justified. It does not remove transformer execution ceilings; highest-complexity
-burdens such as fixture 18 may still fail or compress under model limits. It
-also cannot force external users to run the wrapper; runtimes that cannot execute
-bundled scripts must visibly fall back to Level 1/2 behavior under the
-governance below and must visibly mark the response:
-`Level 1/2 invocation - Level 3 wrapper unavailable in this runtime`.
-That label is a capability/provenance note, not a downgrade, summary mode, or
-permission to skip hard-case depth. Scriptless Level 1/2 still executes the
-full diagnostic and render contract: as many input-anchored live burdens and
-materially active submoves as the case can responsibly release must be addressed,
-or the answer must mark the next live burden PARTIAL with a concrete limit.
+Burden-cycle recursion follows live noetic order, not topic count: first-order surface claim,
+second-order criterion/warrant/proof-method/source-authority/testimony standard/moral tribunal,
+and higher-order/meta-noetic source-worldview/register/source-status/noetic-frame pressure.
+This protects truth-directed noetic function, reliable warrant-process, and foundational order.
+If `R(H,Delta)` shows only more content inside the same order/function/source-frame, keep it as
+Layer B submove or application. If another order remains live, release the next burden-cycle or
+HOLD/PARTIAL it.
 
-## Level 1/2 Default Behavioral Coercion
+Runtimes that cannot produce the full hard-case answer in final chat must use
+canonical file-retained execution rather than compressing the answer. This is
+not prompt engineering and not the optional script-capable route/check harness;
+it is the same canonical compact DSL-governed runtime with a safer output
+transport.
 
-Default scriptless output is burden-governed, not concise-answer-governed.
+File-retained syntax: `/daee-epistemics < C:\path\input.md > C:\path\output.md`.
+Where the host/agent supports file reads/writes, read the case from `< input.md` and write the
+full governed answer to `> output.md`. This is skill-level file-retained syntax, not a guarantee
+of native shell behavior in every host. Bash-style shells use `<`/`>`; PowerShell output
+redirection differs for stdin. Chat reports only file/status/length/completion, never the answer,
+source links, sanity scans, checker notes, or commentary.
+
+Do not use the optional script-capable route/check harness unless the user or maintainer
+explicitly asks for developer validation. It is repo/dev/CI machinery, not the public runtime.
+File-retained execution must not run repo checkers, route tools, smoke-artifact tools, or
+execution-fidelity checks; hard/multi-burden files keep explicit `Land(Bn)` and `R(H,Delta)`.
+
+## Scriptless Compact DSL Behavioral Coercion
+
+Default scriptless compact DSL output is burden-governed, not concise-answer-governed.
+The PARTIAL guard is built into normal invocation; the user should not need to add it.
 
 For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic reread. If the reread leaves another input-anchored burden live and no HOLD, PARTIAL, limit, or register gate blocks it, continue in the same response.
 
@@ -58,22 +58,106 @@ Same-burden collapse does not collapse active submoves. Imported tribunal pressu
 
 Final restoration cannot be the first place live source architecture appears. If runtime/context limits prevent full traversal, mark PARTIAL and name the next live burden rather than closing thinly.
 
-Maintainer/debugging command:
+Before any final Restorative Response or Closing Formulation in a hard compound/source-request
+case, run a closure audit: have all live owner/TTP families either executed locally, been
+cleared as not live, been held with reason, or been named in PARTIAL? If restoration, warning,
+invitation, closure, HOLD, or stop discipline is doing work, `P1`/`P7` must be locally executed
+or explicitly cleared. If any live owner, source function, or next input-anchored burden remains
+missing, do not close; continue or write PARTIAL with the missing burden/TTP/source function.
 
-```text
-python scripts/daee_level3.py --input <path> --out <run-dir>
-```
+## Hard Compound Source-Request Release Floor
 
-Fixture/stability command:
+Hard compound cases that ask to respond, dismantle, or bring sources must not collapse all
+source-governed material into one umbrella burden. After each `Land(B) -> R(H,Delta)`, if a
+distinct input-anchored noetic function remains live, release the next burden-cycle or mark
+PARTIAL. Do not close merely because the first tribunal, criterion, or worldview burden was
+addressed.
 
-```text
-python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
-```
+Common distinct functions include imported tribunal/criterion pressure, M1/M1-P self-grounding
+or performative pressure, M8 consequence trace, M9 predication/category pressure,
+accountability/hujjah, hiddenness/coercive-guidance demand, punishment/proportionality,
+mercy/justice/source architecture, testimony/transmission, predicate-source work,
+family-local proof-method pressure, grief/register HOLD, source-worldview consequence, and
+restoration/warning. They may consolidate only when they are the same function in the same
+source-frame and claim-cluster; topic availability alone does not create a burden, and umbrella
+topic labels do not collapse distinct noetic orders.
 
-Runs using `--simulate-output` are simulated structural route/check verification only.
-They may be reported as route generation, validation, reconstruction, and simulated checker
-scaffold evidence; they do not satisfy behavioral smoke, model execution smoke, or Level 1/2
-shrinkage-regression recovery.
+For moral-protest / hiddenness / accountability clusters, the default hard-case presumption is
+separate release for the imported tribunal or worship-worthiness criterion, accountability or
+hujjah compression, hiddenness or coercive-guidance demand, punishment/proportionality with
+mercy-justice source architecture, source-worldview consequence when criterion-bearing, and
+final restoration/application. Collapse any of these only after `R(H,Delta)` explicitly proves
+same function, same source-frame, and same claim-cluster. Divine moral-predicate language such
+as cruel, inhumane, unkind, ungenerous, or unworthy of worship is not only affective protest:
+when it transfers creaturely/human predicate conditions onto Allah or makes human sentiment the
+measure of divine action, run M9/predication discipline inside the relevant burden.
+If the input asks to dismantle a named belief system or the named frame supplies the operative
+criterion, do not hide source-worldview consequence under "full taxonomy held" or final
+practical advice. Full movement taxonomy may remain held, but the bounded source-worldview
+burden must land, be explicitly held with reason, or be marked PARTIAL.
+M3 orphaned-intuition probing may accompany moral-realist residue, but it must not replace
+FPD/M1/M1-P/M8/M9 when the live burden is a self-authorizing tribunal, worship-veto, or
+predicate judgment over Allah. A statement that withholds worship until Allah satisfies the
+speaker's own court makes M1/M1-P structurally live unless Layer A explicitly clears
+self-grounding / performative-veto pressure. If M3 appears in that burden without M1/M1-P
+execution or clearance, the burden is not landed.
+
+Owner trace lines do not count as owner execution. Each active owner must operate locally in
+Layer B with target, operation, result/state change, and contribution to `Land(B)`. Each
+operative source must do local source-function work inside the burden it lands; a final source
+map or restorative recap cannot replace that operation. If a hard file-retained answer would
+need extensive output to land the burdens, write the extensive output. If limits prevent full
+traversal, write PARTIAL with the next live burden rather than reporting completion.
+
+Where a burden uses a module-backed operator, the local submove label/body must preserve the
+owner ID plus the plain-language operation: `FPD` for imported tribunal/criterion exposure,
+`M1` or `M1-P` for self-grounding or performative collapse, `M8` for consequence trace, `M9`
+for predicate mode repair, `V2`/`V8`/`V9` where reason, modality, or basic-knowledge ordering is
+live, and `P1`/`P7` where restoration or stop/hold discipline is doing work. Prefer labels such
+as `¹B₁ [FPD] - expose the imported tribunal` or `¹B₃ [M9] - repair predicate mode`; this is
+compact owner identity, not a route ledger. Generic verbs such as "test", "clarify", or "warn"
+do not replace the matched owner action.
+`Owner-floor:` and `B<N>.s<M>` are repo/dev-harness or legacy/checker shapes, not preferred
+canonical public labels. In canonical scriptless output, use `¹B₁ [owner ID] - plain operation`;
+use `1B1` only as an ASCII fallback when superscript/subscript characters are unsupported.
+Do not print `Owner-floor:` lines in the public answer.
+Do not label module-backed work only as "Operative submove 1", "submove 2", or a later
+"TTP/operator trace". If an owner has an ID and is structurally live, the operative submove
+line itself must carry that ID, e.g. `¹B₁ [FPD] - expose the imported tribunal`. A post-hoc
+trace naming "foreign-premise detection, M1, M8" does not count unless those owners also appear
+on their local operative submoves with target, operation, result, and contribution to `Land(B)`.
+Final practitioner/restorative handling is also owner-governed: when restoration, warning,
+invitation, HOLD, STOP, or closure discipline is doing real work, surface `P1`/`P7` or the
+relevant procedure owner locally. A warm closing, source map, or da'wah advice without the
+restoration/stop owner where structurally live is not enough.
+When creaturely predicates such as cruel, inhumane, ungenerous, unkind, unworthy, composed,
+dependent, embodied, divided, or person-like are used to judge Allah, M9/predication discipline
+is structurally live unless Layer A explicitly clears predicate pressure. When final restoration,
+warning, invitation, or closure discipline does real work, P1/P7 is structurally live unless
+Layer A explicitly clears restoration/stop pressure. Missing M9 or P1/P7 in such cases means the
+burden is PARTIAL, not complete.
+Do not render harness-shaped owner execution phrases such as "execute queued owner",
+"execute first-live owner", "owner-floor passed", "validation passed", `smoke_kind`,
+`execution_fidelity`, `route_plan`, or `features.json` in canonical scriptless output. Use
+human-facing submove labels with owner IDs instead: `¹B₁ [FPD] - expose the imported tribunal`.
+
+This activation standard is catalogue-wide. For each released burden-cycle, check the live
+noetic structure against the relevant TTP/owner families: E1-E4, F1-F3, husn-al-nazar arguments,
+inductive-fitri method, M1-M9, M1-P, R1-R3, symmetric-taqlid-check, V1-V12, heuristics,
+P1-P7, transmission/testimony owners, predication owners, grief/register owners, source-worldview
+owners, and family-local proof-method owners. Do not print a route list. Execute every
+structurally live owner as a local Layer B submove with target, operation, result/state change,
+and contribution to `Land(B)`, or explicitly clear/hold/PARTIAL it when the trigger is absent,
+blocked, or underdetermined. Surface only the active/held/cleared owner families needed for the
+burden; do not print the entire catalogue, but do not hide a structurally live owner behind an
+unowned verb.
+
+Accountability/hujjah and coercive-guidance/hiddenness are not automatically one burden. If the
+input separately claims "mere non-belief" and "God should know/produce what would convince," the
+first pressures culpability, access, warning, and proof, while the second pressures guidance,
+compulsion, and demanded evidence-form. Keep them distinct burdens or distinct owner submoves
+only after `R(H,Delta)` proves same noetic function, same target-family, and same restoration
+vector; otherwise release, HOLD, or PARTIAL each in order.
 
 ## EXECUTION SPINE
 
@@ -89,137 +173,35 @@ Top-salient invariants:
 - `sᵢ != Bᵢ`: submoves are not burden-cycles.
 - A burden-cycle begins only after the current burden lands.
 - `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
-- Imported-criterion testing, hujjah/accountability correction, guidance-as-coercive-proof
-  correction, source/noetic-frame discipline, consequence tracing, and identity-frame must
-  remain distinct `B.s` submoves when they are active TTP/operator functions, even when they
-  serve the same live `B`. Same burden-cycle does not mean consolidated operation: each active
-  TTP receives its own target -> operation -> result. If an input-anchored
-  facet has its own criterion, claim-level, source/noetic frame, theological target, or
-  restoration vector that is not fully landed as `s`, it remains live for a later `B` after
-  `R(H,Delta)`.
-- Released `B` must be burden-complete before `R`: materially necessary `s` receive matched
-  TTP/operator treatment; no headline-only answer or broad-conclusion jump licenses `NewB`.
-- Exhaust live structure rather than compressing it away. On every skill invocation, address
-  as many input-anchored live burdens and materially active submoves as the response can
-  responsibly execute under release gates. Do not merge distinct active burdens, criteria,
-  source/noetic frames, theological targets, restoration vectors, or TTP/operator functions
-  into one generic block before burden accounting. If limits prevent traversal, mark PARTIAL
-  with the next live burden and the blocked submove(s), not a rhetorical closure.
-- Hard/multi-burden default output: `ComplexB -> {B.s1...B.sn} -> Land(B) -> R`.
-  A one-submove burden (`B -> B.s1 -> Land(B) -> R`) is licensed only after
-  diagnostic burden accounting shows no hidden burden density remains. Compact default may
-  not collapse a complex `B` into one generic operation block. Render materially necessary
-  `s` as case-specific `Target -> Operation -> Result` units, using `Operative Submove`
-  labels when needed.
-- Render-through rule: in hard output, the burden grammar is part of the answer,
-  not commentary about the answer. If a runtime can quote the spine but compresses
-  `ComplexB` into a concise result, the render is malformed.
-- Compact does not mean thin. Governance discipline forbids padding, dumping, and
-  uncontrolled sprawl; it does not permit diagnostic impoverishment. Layer A remains
-  compact but load-bearing, and Layer B remains burden-complete, case-specific,
-  owner-floor faithful, and restoration-directed. `B.s -> Land(B) -> R` is additive
-  to noetic depth, not a substitute for active deformations, criterion structure,
-  identity/source-status implications, or necessary theological/restorative force.
-  Per-burden Layer A is a diagnostic re-entry, not a shortening signal for the next
-  Layer B. A hard case may be long because each input-anchored burden is actually
-  landed; length is wrong only when it comes from padding, framework dumping, or
-  unlicensed downstream release.
-- Output depth is determined by live noetic burden, not prompt length or apparent
-  simplicity. Compact output is compression after burden accounting, not shortcut before
-  diagnosis.
-- Hard noetic cases may require extensive output when live burden traversal requires it.
-  The target is not a word count, but a 20-25kb answer that closes while live burdens,
-  active TTPs, source functions, family distinctions, held-route re-reads, or restoration
-  vectors remain unlanded is a failure; a 30-80kb answer can be correct when it is
-  source-operative, TTP-complete, and not padded. If response or runtime limits prevent
-  full traversal, mark PARTIAL with the next live burden or blocked submove rather than
-  closing thinly.
-- Hard-case depth floor: for hard, compound, or deformed Level 1/2 cases, the target is
-  sufficient recursive restoration, not the smallest compliant-looking answer. Continue
-  until each input-anchored burden has enough owner-floor execution to land, or until
-  `R(H,Delta)` explicitly holds, skips, reroutes, or marks PARTIAL with the named live
-  burden. Compactness removes padding; it does not reduce warranted burden volume,
-  per-burden Layer A visibility, operative citation density, or restoration force.
-- Pressure-dimension execution rule: Level 2/scriptless output must carry the active
-  owner's pressure dimensions into the visible operation without printing raw
-  `pressure_dimensions` fields. A valid `Target -> Operation -> Result` pressures the
-  actual premise, criterion, warrant, source-frame, theological predicate, testimony
-  question, register-hold, or restoration vector named by the owner. Naming the owner,
-  saying the owner-floor was applied, or writing generic Target/Operation/Result prose
-  is not execution. Examples: FPD exposes imported criterion authority and role; M1
-  tests the criterion against its own grounds; do-second-loop narrows hujjah/accountability
-  compression and coercive-guidance demand; V2 repairs sound reason versus reason-as-
-  tribunal; M8 traces consequence from the actual noetic/source frame; P1 restores only
-  from landed burdens; transmission owners pressure testimony/tawatur/authentication;
-  predication owners pressure category, zahir/ta'wil/majaz/haqiqah, and predicate use;
-  grief/register owners hold argument release and sequence pastoral response.
-  When a source-request burden is live, the prose must cover the source functions actually
-  routed--for example hujjah, guidance/non-compulsion, fitrah/ayat, mercy/justice,
-  repentance/return, testimony, or predicate discipline. One generic proof text or source
-  label cannot stand in for several distinct pressure functions, and source density is not
-  a substitute for burden-local operation. Final Restorative Response cannot be used to
-  smuggle a source or mercy architecture that never landed as a burden-local submove or
-  later burden-cycle. If worship-worthiness, mercy/justice, repentance/return, Creator-right,
-  testimony, or predicate-source work remains live after the prior `R(H,Delta)`, continue
-  with that bounded pressure or mark PARTIAL; do not close by summarizing it.
-  In hard/compound cases, Layer A must reconstruct the governing noetic frame before
-  argument begins: claim level, pattern/deformation, reason category, concealment,
-  DO-orient, live burden, source-status/noetic-frame, held/released burdens, and
-  gate/release decision. Route labels without this compact frame are not enough.
-  When a source-worldview frame is criterion-bearing, the response must describe the
-  actual public/source-frame commitment doing the work from input anchors or bounded
-  source knowledge. A generic "worldview frame" label is not consequence trace; do not
-  force source-worldview framing where the input anchors a different family pressure
-  such as testimony, predication, grief/register, or kalamic proof-order.
-- Owner-body access rule: hard/multi-burden execution must not proceed from root-summary
-  awareness alone. Before rendering a complex `B.s<i>`, load/read the owner body or
-  compiled bundle section containing the active TTP's operation floor, unless that exact
-  section is already present in active context. Package availability, map presence, or
-  bundle co-location is not access. TTP label recognition is not owner-body execution;
-  matched module label is not owner floor loaded.
-  If the needed owner body or compiled bundle section is unavailable,
-  do not compress into generic prose; mark `PARTIAL / OWNER-BODY-NOT-LOADED` and name
-  the missing owner/path. This marker is a required hard-output failure marker and is
-  an exception to the default prohibition on visible STOP/HOLD/RECURSE/PARTIAL labels.
-- Owner-loadform map for common hard-output owners:
-  - recursive state re-read -> `references/runtime-dispatch-gate.md`
-    (`recursive-state-transitions`);
-  - diagnostic render contract and output release/hold -> `references/runtime-output-governance.md`
-    (`diagnostic-render-contract`, `output-release`);
-  - reason/revelation proof-status triage -> `references/omnibus/OMNIBUS-procedures.md`
-    (`P3-reason-revelation-tension`) plus `references/omnibus/OMNIBUS-specialty-diagnostics.md`
-    (`proof-method-audit`) when proof-family status governs;
-  - predication-mode analysis -> `references/omnibus/OMNIBUS-tactics.md`
-    (`M9-predication-mode`);
-  - readiness/deformation triage -> `references/runtime-diagnostic-core.md`
-    (`M5-deformation-triage`);
-  - reason-category prerequisite or foreign-premise split -> `references/runtime-phase2-passes.md`
-    (`reason-disambiguation`, `foreign-premise-detection`);
-  - imported tribunal, moral-framework, or case-family routing ->
-    `references/omnibus/OMNIBUS-do-families.md`
-    (`philosophical-usurpation`, `do-core`) plus `references/omnibus/OMNIBUS-profiles.md`
-    when a noetic profile must be confirmed;
-  - self-refutation, reductio, orphaned intuition, or predication tactics ->
-    `references/omnibus/OMNIBUS-tactics.md`
-    (`M1-self-refutation`, `M8-reductio`, `M3-orphaned-intuition`, `M9-predication-mode`);
-  - restorative or maieutic follow-through -> `references/omnibus/OMNIBUS-procedures.md`
-    (`P1-fitrah-restoration`, `P4-maieutic`);
-  - sign-direction or reason-reconstitution techniques ->
-    `references/omnibus/OMNIBUS-techniques.md`
-    (`V2-reconstituting-reason`, `V5-directing-attention-signs`).
+- Active TTP/operator submoves remain visible under Layer B: each materially active FPD, M1/M1P,
+  M8, M9, V2, P1/P7, transmission/testimony, predication, register-hold, or family-local
+  operator gets an owner-ID-bearing submove with target, operation, result/state change, and
+  contribution to `Land(B)`.
+- New burden-cycle licensing requires a distinct input-anchored noetic function after
+  `Land(B) -> R(H,Delta)`. Topic availability, source maps, warnings, "how to answer," and
+  recaps are Layer B or Restorative/Application material unless `R` proves a new live burden.
+- Anti-overcollapse: do not absorb distinct first-order, second-order, or higher-order burdens
+  into one omnibus burden. Hard source-request cases must not compress distinct source functions
+  into one citation stack.
+- Output depth follows live burden, not prompt length. Compact means no padding or route dump,
+  not fewer live burdens. If limits block traversal, mark PARTIAL with the next live burden.
+- Owner-body access remains required for hard/multi-burden execution. TTP label recognition is not owner-body execution;
+  matched module label is not owner floor loaded. If needed owner
+  detail is unavailable, mark `PARTIAL / OWNER-BODY-NOT-LOADED` instead of generic prose.
+  Owner-loadform map for common hard-output owners lives in the compiled runtime references.
 - Hard-output procedural template for complex burdens:
   ```text
   Burden N: <name>
-    Operative Submove B<N>.s1:
+  ¹B₁ [owner ID] - <plain operation name>:
       Target: <exact premise / criterion / predicate / warrant>
       Operation: <closed operative verb>
       Result: <changed claim-state>
-    Operative Submove B<N>.s2:
+  ¹B₂ [owner ID] - <plain operation name>:
       Target: <exact premise / criterion / predicate / warrant>
       Operation: <closed operative verb>
       Result: <changed claim-state>
     [continue until all materially necessary s are rendered]
-    Land(B<N>): <cumulative state delta from s1...sn>
+  Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
     R(H,Δ): <held/released/next-live-burden decision>
   ```
   Post-burden continuation gate: after every `R(H,Delta)`, if the state re-read names a
@@ -245,16 +227,16 @@ Top-salient invariants:
 - Hard-output miniature, structure only:
   ```text
   Burden 1: imported moral tribunal
-    B1.s1 — expose the tribunal
+    ¹B₁ — expose the tribunal
       Target: hidden moral judge | Operation: expose | Result: criterion is no longer neutral
-    B1.s2 — test the criterion against its own grounds
+    ¹B₂ — test the criterion against its own grounds
       Target: self-authorizing standard | Operation: test | Result: standard cannot condemn while self-grounded
     Land(B1): the imported tribunal no longer governs as unquestioned judge
     R(H,Δ): accountability and guidance-demand burdens remain held/live; release next B only if still input-anchored
 
   Burden 2: accountability compression
-    B2.s1 — distinguish bare non-exposure from culpable rejection
-    B2.s2 — hold individual fate while correcting the general rule
+    ²B₁ — distinguish bare non-exposure from culpable rejection
+    ²B₂ — hold individual fate while correcting the general rule
     Land(B2): "simple non-belief" no longer names the accountability structure
     R(H,Δ): guidance-demand burden remains live; release next B
   ```
@@ -342,7 +324,7 @@ These are not topic files. They become mandatory once the named governance condi
 | `references/diagnostics/framework-pipeline.md` | Auditing the operative decision circuit for routing bleed, shortcut paths, or bypass of the diagnostic gate — compiled chart and forbidden-shortcut audit surface, not a route creator |
 | `references/diagnostics/recursive-state-transitions.md` | Deciding or auditing STOP / HOLD / RECURSE / PARTIAL after a bounded move — abstract recursive-state semantics and state carry/reset/re-evaluation |
 | `references/diagnostics/routing-precedence.md` | Multiple diagnostic axes produce competing signals — deterministic precedence hierarchy, suppression rules, tie-break rules, invalid combinations |
-| `references/diagnostics/nomenclature-normalization.md` | Canonical names and accepted aliases for noetic-state notation, DSL/IR fields, Level 3 route-plan terms, TTP/owner/operator terms, and transliteration boundaries |
+| `references/diagnostics/nomenclature-normalization.md` | Canonical names and accepted aliases for noetic-state notation, DSL/IR fields, optional script-harness route-plan terms, TTP/owner/operator terms, and transliteration boundaries |
 | `references/kernel-thesis.md` | Auditing architectural integrity — five non-negotiable commitments with routing consequences and violation signatures |
 
 ### Output-Release Governance — Applied After Gate-Open
@@ -351,7 +333,7 @@ These files govern release amount, order, and visible render shape. They are not
 | File | Role |
 |------|------|
 | `references/rubrics/output-release.md` | Runtime governance rubric: checks whether proposed output releases too much, too little, in the wrong order, or before upstream blockers clear; governs held-material reassessment and recursive traversal discipline |
-| `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape: Level 1 (default compact DSL/IR header plus bounded prose), Level 2 (`:dsl` concise IR / lab-report), Level 3 (internal/development audit only); does not replace routing; render shape does not determine routing |
+| `references/rubrics/diagnostic-render-contract.md` | Governs visible render shape: default canonical compact DSL-governed surface, `:dsl` expanded diagnostic/IR surface, and internal/development audit surface; does not replace routing; render shape does not determine routing |
 
 ### Source-Status & Noetic-Frame Non-Equivalence
 
@@ -561,7 +543,9 @@ voice, Arabic accessibility, and character-as-evidence material are owned by:
   execution principles, character-as-evidence, and restoration-before-construction discipline.
 - `references/terminology.md` for Arabic and technical glossary discipline.
 
-Voice/economy anchor: Economical - the sharpest move, not the most elaborate one.
+Voice/economy anchor: Economical means the sharpest burden-complete move: no padding,
+no source parade, no route dump, and no duplicate prose. It never licenses fewer live
+burdens, hidden operators, thinner source operation, or thin closure.
 
 ## I-B. Operative Definitions Pointers
 
@@ -656,17 +640,19 @@ Closing Formulation
 
 Default forbids raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
 load ledger, source/bibliography ledger, giant load ledger by default, and meta-composition
-narration. `:dsl` remains concise DSL/IR mode. `:audit` is deprecated as public output and retained only for
+narration. `:dsl` is the expanded diagnostic/IR visibility mode, not the first place DSL
+governance appears. `:audit` is deprecated as public output and retained only for
 internal/development compatibility.
 
 Default also forbids public scholar/source/citation parade, school-label context, genealogy, or
 external philosopher/theologian support unless the user asks or validated IR requires
 source-comparison. Named frameworks/schools/authors/genealogies are not public-render material
 by default. Only Qurʾān, Sunnah, and sound Salaf narrations may be cited by default, and each
-must be directly sourced. TTP/operator trace is different: when a named operator such as reductio,
-tamanu, criterion-reversal, tribunal-detection, predication repair, or authority-order repair
-does runtime work, name the operator in the governed operation or bounded response and execute
-target -> operation -> result. Do not use a source citation as a substitute for TTP invocation,
+must be directly sourced. TTP/operator trace is different: when a named operator such as FPD,
+M1, M1-P, M8 reductio, M9 predication repair, tamanu, criterion-reversal, tribunal-detection,
+P1/P7 restoration or hold discipline, or authority-order repair does runtime work, name the
+operator in the governed operation or bounded response and execute target -> operation -> result.
+Do not use a source citation as a substitute for TTP invocation,
 and do not use TTP invocation as a substitute for Qurʾān/Sunnah/Salaf citation when revealed
 textual support is actually used.
 Analyzing an input-anchored worldview frame as the source of a criterion is not a scholar/source

@@ -13,6 +13,9 @@ catalogue_registered: false
 Each NS profile is individually owned, individually IR-addressable, and never co-loaded with
 another profile. Confirm the NS code via `case-library/INDEX.md §Quick NS Identification`, then
 load the matched file below. Do not load this index file as a substitute for the profile.
+This index locates the profile owner. It does not activate profile content by table match alone:
+V1, the noetic-reading checklist, and the matched profile must still identify the live noetic
+function, held material, and owner handoff before Layer B release.
 
 ## Routing Table
 

@@ -169,6 +169,12 @@ The generated `SKILL.md` preserves post-render gate discipline with the `STOP`, 
 
 ## Packaging Verification
 
+This section records the historical Phase 4 package verification that predates
+the canonical slim package selector. The current canonical user-facing package
+root is `SKILL.md`, `README.md`, `references/`, `compiled-module-map.json`, and
+`build-manifest.json`. Optional route/check harness `data/`, `scripts/`, and
+`tests/` are repo/dev material and are not canonical package content.
+
 The package script was run with PowerShell execution-policy bypass because direct script execution is disabled on this machine:
 
 ```text
@@ -184,8 +190,8 @@ Packaged skill archive:
   Size:   429966 bytes
   SHA256: 10A227E99310423E27282E9E6BD27EFB7CAA410687493AAF5A3699D560851E17
 
-Archive root contains `SKILL.md`, `README.md`, `references/`, `data/`, `scripts/`,
-`tests/`, `compiled-module-map.json`, and `build-manifest.json`.
+Archive root contained the then-current full package shape. That shape is
+superseded by the canonical slim package selector described above.
 EXIT: 0
 ```
 
@@ -213,10 +219,11 @@ references/runtime-output-governance.md
 references/runtime-phase2-passes.md
 ```
 
-Current v0.3.2.0 package-shape confirmation:
+Historical package-shape confirmation from the Phase 4 run:
 
 - `SKILL.md` and `README.md` are at archive root.
-- `references/`, `data/`, `scripts/`, and `tests/` are package root directories.
+- `references/`, `data/`, `scripts/`, and `tests/` were package root
+  directories for that historical full package shape.
 - `compiled-module-map.json` and `build-manifest.json` are at archive root.
 - There is no top-level `skill/` folder.
 - `atomics/`, `tools/`, `docs/`, `build/`, `.git/`, `smokes/`, `level3-runs/`,
@@ -224,9 +231,12 @@ Current v0.3.2.0 package-shape confirmation:
 
 ## Packaging Readiness
 
-`skill/` is ready to be the packaging root for the compiled low-call Claude runtime.
+`skill/` is ready to be the source tree for the canonical package selector.
 
-`package.ps1` now packages the contents of `skill/`, including root generated metadata, and validates that the archive root contains `SKILL.md`, `references/`, `compiled-module-map.json`, and `build-manifest.json`.
+`package.ps1` now packages only canonical selected contents from `skill/`,
+including root generated metadata, and validates that the archive root contains
+`SKILL.md`, `README.md`, `references/`, `compiled-module-map.json`, and
+`build-manifest.json`.
 
 Source/debug and compiled/runtime package modes can still be added later if needed, but the current repository layout makes `skill/` the compiled runtime package root and `atomics/skill/` the source/debug root.
 

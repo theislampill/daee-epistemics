@@ -44,6 +44,12 @@ The tradition affirms divine attributes as genuinely real while maintaining that
   displacement, bodily motion, or containment when hearing a revealed attribute does not make
   that imagined modality an entailment of the attribute.
 
+**Layer B activation floor:** V8 lands only when the output identifies the live attribute or
+predicate pressure, preserves the affirmed meaning after M9 has cleared the term, blocks the
+creaturely modality or resemblance being imported, withholds the how, and states the resulting
+claim-state. "Bila kayf" or "nothing is like Him" alone is not execution if the target
+predicate, imagined mode, and land contribution are not shown.
+
 V8 fails if it empties the meaning, imports a creaturely mode, or treats withholding modality
 as a license to bypass M9's loaded-term split.
 

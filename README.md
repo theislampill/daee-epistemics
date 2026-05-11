@@ -8,7 +8,10 @@ The package is grounded in the coherence and convergence of a common sense accou
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
 Its governing aim is not to manufacture novelty or simply accumulate clever refutations, but to restore sound cognition so that foundational knowledge, inference, testimony, signs, and revelation are encountered in their proper order.
 
-Runtime coverage and scope in the packaged skill are represented by generated `skill/SKILL.md`, module front matter preserved from source, `compiled-module-map.json`, `module-catalogue.json`, routing indexes, and explicit owner/router scope notes. Future scope decisions live in [`TODO.md`](TODO.md).
+Runtime coverage and scope in the repository are represented by generated `skill/SKILL.md`,
+module front matter preserved from source, `compiled-module-map.json`, repo-only catalogue and
+routing indexes, and explicit owner/router scope notes. Future scope decisions live in
+[`TODO.md`](TODO.md).
 
 ## Table of Contents
 - [Before You Use This Skill](#before-you-use-this-skill)
@@ -226,16 +229,19 @@ Canonical invocation forms:
 ```text
 /daee-epistemics
 /daee-epistemics:dsl
+/daee-epistemics < C:\path\input.md > C:\path\output.md
 ```
 
-- `/daee-epistemics` is the default diagnostic compiler mode:
+- `/daee-epistemics` is the canonical compact DSL-governed runtime:
   `Layer A(compact DSL/IR header) + Layer B(bounded governed response) + State/noetic re-read`.
   Layer B visibly includes Hidden Premises, local Core Formulation per released operation,
   bounded operative submoves, and compact TTP/operator trace when a named operator performs
   work. State/noetic re-read comes before the single Restorative Response and final Closing Formulation.
   It does not print raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
-  or load ledger.
-- `/daee-epistemics:dsl` is concise DSL / IR printout mode: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested.
+  or load ledger. It is not prose-only mode; DSL/IR is integral to the skill's
+  anti-hallucination, routing, burden-accounting, and restoration discipline.
+- `/daee-epistemics:dsl` is expanded diagnostic/IR visibility: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested. It is not the first place DSL governance appears.
+- `/daee-epistemics < input.md > output.md` is canonical file-retained execution. It reads the case from `input.md`, writes the full canonical compact DSL-governed answer to `output.md`, and keeps the chat response to status only. This is not the optional script-capable route/check harness; it is the canonical runtime using a safer output transport for hosts whose final-chat channel compresses hard cases.
 
 Default output must visibly instantiate compact compiler state enough to prevent clean essay
 cosplay. The exact field list and failure modes are owned by
@@ -246,7 +252,36 @@ README; compact output is a concise governed surface, not a thin mode.
 
 `/daee-epistemics:audit` is deprecated as a public render mode and retained only as an internal/development compatibility surface for regression review, bundle/source-basis inspection, and procedural debugging. Default mode must not depend on `:audit` for governance visibility.
 
-The former external recursive-audit prompt is deprecated for normal use. Its useful traversal discipline is now internal governance; use `:dsl` for compact visible diagnostic structure.
+The former external recursive-audit prompt is deprecated for normal use. Its useful traversal discipline is now internal governance; use `:dsl` for expanded diagnostic/IR visibility.
+
+### Canonical File-Retained Execution
+
+Use file-retained execution when the host can read/write files or when hard cases would be
+compressed in final chat:
+
+```text
+/daee-epistemics < C:\path\input.md > C:\path\output.md
+```
+
+- `< input.md`: read the case/input from this markdown file.
+- `> output.md`: write the full governed answer to this markdown file.
+- `output.md` must contain the canonical compact DSL-governed surface: compact Layer A,
+  governed Layer B, burden-local operation, `Land(B)`, `R(H,Delta)`,
+  continue/HOLD/PARTIAL/close, and restoration.
+- The chat response must not replace the file output. It should only report the input file
+  read, output file written, approximate output length, and completion status. It should not
+  add source links, sanity scans, checker notes, verification claims, or commentary.
+- File-retained execution does not run repo checkers, route tools, smoke-artifact tools, or
+  execution-fidelity checks unless developer validation is explicitly requested. The chat status
+  should not add harness verdicts, route-plan claims, or source-audit commentary.
+- Hard or multi-burden file-retained answers should keep explicit `Land(Bn)` and
+  `R(H,Delta)` attachment per released burden rather than replacing them with a generic
+  state paragraph.
+
+Bash-style shells use `<` and `>` for redirection. PowerShell supports `>` for output
+redirection, but stdin behavior differs. Because `/daee-epistemics` is a skill invocation,
+not necessarily a real shell command in every host, `< >` is skill-level file-retained
+execution syntax where the host/agent supports file reads/writes.
 
 ## Integration Boundary
 
@@ -311,13 +346,13 @@ files as the source of truth.
 
 | Path | Role |
 |------|------|
-| [`atomics/skill/`](atomics/skill/) | Canonical editable skill source: root instructions, references, Level 3 data/scripts/tests, and owner files. |
+| [`atomics/skill/`](atomics/skill/) | Canonical editable skill source: root instructions, references, owner files, and repo-only optional harness material. |
 | [`atomics/skill/references/`](atomics/skill/references/) | Canonical noetic, diagnostic, TTP/owner, procedure, rubric, and case-library source. |
-| [`atomics/skill/data/`](atomics/skill/data/) | Level 3 executable routing data: trigger matrix, precedence, module catalogue, and ontology licenses. |
-| [`atomics/skill/scripts/`](atomics/skill/scripts/) | Level 3 source scripts for diagnosis, deterministic routing-given-features, validation, reconstruction, orchestration, and execution checking. |
-| [`atomics/skill/tests/`](atomics/skill/tests/) | Package-local Level 3 fixtures and expected route plans. |
-| [`skill/`](skill/) | Generated package/runtime root. Build from atomics; upload/package this tree's contents. |
-| [`skill/data/`](skill/data/) and [`skill/scripts/`](skill/scripts/) | Generated Level 3 runtime data and scripts bundled with the skill package. |
+| [`atomics/skill/data/`](atomics/skill/data/) | Repo-only optional route/check harness data: trigger matrix, precedence, module catalogue, and ontology licenses. |
+| [`atomics/skill/scripts/`](atomics/skill/scripts/) | Repo-only optional harness source scripts for diagnosis, deterministic routing-given-features, validation, reconstruction, orchestration, and execution checking. |
+| [`atomics/skill/tests/`](atomics/skill/tests/) | Repo-only optional harness fixtures and expected route plans. |
+| [`skill/`](skill/) | Generated runtime root. The canonical user-facing package archives only scriptless runtime material from this tree. |
+| [`skill/data/`](skill/data/), [`skill/scripts/`](skill/scripts/), and [`skill/tests/`](skill/tests/) | Generated optional harness view for repo/dev validation when present; excluded from the canonical user-facing package. |
 | [`skill/references/`](skill/references/) | Generated runtime and omnibus bundles. Availability is not activation. |
 | [`skill/compiled-module-map.json`](skill/compiled-module-map.json) | Runtime resolver from original module ID/source path to generated bundle section. |
 | [`skill/build-manifest.json`](skill/build-manifest.json) | Generated freshness and source-checksum manifest. |
@@ -330,12 +365,18 @@ Read behaviorally, the architecture works like this: diagnose the noetic state,
 identify the live burden and restoration target, classify deformation,
 concealment, and discourse orientation, route only through licensed owners, land
 the current burden, re-read state, then stop, hold, recurse, or mark partial.
-In Level 3-capable runtimes, the route plan makes that sequence executable and
-checkable; in scriptless runtimes, the same governance remains instructional.
+In script-capable runtimes, the optional route/check harness can make that sequence executable
+and checkable; in scriptless runtimes, the canonical compact DSL-governed surface remains the
+portable runtime, not a prose fallback.
 
 [`atomics/skill/references/techniques/heuristics.md`](atomics/skill/references/techniques/heuristics.md) functions as the analyst-discipline layer governing how the framework is used.
 
 ## Repository Diagram
+
+The repo also carries a visual architecture reference:
+[`docs/daee-epistemics-pipeline.html`](docs/daee-epistemics-pipeline.html). It is a
+navigation aid, not a new source of truth, and should stay in parity with the canonical
+compact DSL-governed runtime, canonical package boundary, and repo/dev harness boundary.
 
 The diagrams below split the repo into three views: source layout, runtime
 invocation, and maintainer verification. The full internal pipeline audit
@@ -350,11 +391,11 @@ flowchart TB
 
 SRC["atomics/skill<br/>canonical source"]
 SRCREF["references<br/>owners / diagnostics / rubrics"]
-SRCL3["data + scripts + tests<br/>Level 3 source"]
+SRCL3["data + scripts + tests<br/>repo-only optional harness source"]
 BUILD["tools/build_compiled_runtime.py<br/>compiler"]
 RUNTIME["skill<br/>generated package root"]
 RTREF["runtime + omnibus references"]
-RTL3["data + scripts + tests<br/>packaged Level 3"]
+RTL3["data + scripts + tests<br/>generated optional harness view<br/>not canonical package"]
 TESTS["tests<br/>routing / IR / reconstruction fixtures"]
 CI["ci + .github/workflows<br/>maintainer checks"]
 DOCS["docs<br/>onboarding / audits / release evidence"]
@@ -364,7 +405,7 @@ SRC --> SRCL3
 SRC --> BUILD
 BUILD --> RUNTIME
 RUNTIME --> RTREF
-RUNTIME --> RTL3
+RUNTIME -. dev/CI only .-> RTL3
 SRC --> TESTS
 TESTS --> CI
 RUNTIME --> CI
@@ -379,26 +420,20 @@ flowchart TB
 
 USER["User invokes /daee-epistemics"]
 SKILL["Packaged SKILL.md"]
-SCRIPTQ{"Bundled scripts available?"}
-L3["Level 3 wrapper<br/>daee_level3.py"]
-DIAG["diagnose.py<br/>span-backed features"]
-ROUTE["route.py<br/>deterministic routing given features"]
-VALIDATE["validate.py + reconstruct.py<br/>integrity and reconstruction"]
-PROMPTQ{"Route valid?"}
-BLOCK["execution_blocked.md<br/>visible PARTIAL/block note"]
-EXEC["execution_prompt.md<br/>model executes route plan"]
-CHECK["check_execution.py<br/>post-output validation"]
-OUTPUT["Governed output<br/>or visible PARTIAL defect"]
-FALLBACK["Level 1/2 fallback<br/>visibly labeled"]
+CANONICAL["canonical compact DSL-governed surface<br/>Layer A -> Layer B -> Land(B) -> R(H,Delta)"]
+FILEQ{"file-retained syntax?"}
+CHAT["chat response<br/>governed answer when host permits"]
+FILEOUT["output.md<br/>full governed answer"]
+STATUS["brief chat status<br/>input / output / length / complete-HOLD-PARTIAL"]
+DEVREQ{"explicit maintainer harness request?"}
+HARNESS["repo/dev route-check harness<br/>scripts + tests, not canonical package"]
 
 USER --> SKILL
-SKILL --> SCRIPTQ
-SCRIPTQ -->|yes| L3
-SCRIPTQ -->|no| FALLBACK
-L3 --> DIAG --> ROUTE --> VALIDATE --> PROMPTQ
-PROMPTQ -->|no| BLOCK --> OUTPUT
-PROMPTQ -->|yes| EXEC --> CHECK --> OUTPUT
-FALLBACK --> OUTPUT
+SKILL --> CANONICAL --> FILEQ
+FILEQ -->|no| CHAT
+FILEQ -->|yes| FILEOUT --> STATUS
+SKILL -. explicit dev/CI request only .-> DEVREQ
+DEVREQ -. yes .-> HARNESS
 ```
 
 ### Maintainer Verification
@@ -411,7 +446,7 @@ BUILDPIPE["build_framework_pipeline<br/>build_compiled_runtime"]
 FRESH["freshness + module boundaries<br/>stub integrity"]
 ROUTING["routing parity<br/>reconstruction fixtures"]
 GOV["render / recursion / metacompliance<br/>IR integrity"]
-L3FIX["Level 3 fixture runner<br/>stability repetitions"]
+L3FIX["script-harness fixture runner<br/>stability repetitions"]
 SMOKE["smoke artifact checks<br/>release evidence boundary"]
 PACKAGE["optional package build<br/>hash + current-release smokes"]
 
@@ -434,10 +469,14 @@ and `.skill`, and do not re-zip it.
 Binary skill archives are not committed to this repository. Build locally with `package.ps1` from
 the generated `skill/` root, or use the verified public GitHub Release asset.
 
-The archive root must contain `SKILL.md`, `references/`, `data/`, `scripts/`, `tests/`,
-`compiled-module-map.json`, `build-manifest.json`, and `README.md` directly. Do not zip the
-whole repo root, and do not produce a bundle whose top level is `skill/`. Package the contents
-of the generated `skill/` directory, not the directory itself.
+The canonical archive root must contain `SKILL.md`, `references/`,
+`compiled-module-map.json`, `build-manifest.json`, and `README.md` directly. It must not
+contain the repo/dev harness roots `data/`, `scripts/`, or `tests/`. This returns the
+user-facing package shape to the scriptless runtime boundary used before the optional
+route/check harness was introduced, while retaining the harness in the repository for
+maintainer validation. Do not zip the whole repo root, and do not produce a bundle whose top
+level is `skill/`. Package the canonical contents selected from the generated `skill/`
+directory, not the directory itself.
 
 For path fidelity, build the archive with the manifest-backed package script. It validates the
 generated `skill/` tree, rejects unexpected packageable files, and writes slash-safe archive entry
@@ -465,16 +504,19 @@ git clone "$repo" "$tmp" &&
   python tools/build_framework_pipeline.py &&
   python tools/build_compiled_runtime.py &&
   python tools/check_compiled_runtime_freshness.py &&
-  python tools/check_level3_data_shapes.py --include-generated &&
   python tools/check_package_shape.py &&
   python tools/package_skill.py "../$tmp_zip") &&
 mv -f "$tmp_zip" "$out_skill" &&
 rm -rf "$tmp"
 ```
 
-If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`, `data/`,
-`scripts/`, `tests/`, `compiled-module-map.json`, `build-manifest.json`, and `README.md` at
-the top level of the archive.
+If you open `daee-epistemics.skill`, you should see `SKILL.md`, `references/`,
+`compiled-module-map.json`, `build-manifest.json`, and `README.md` at the top level of the
+archive. You should not see `data/`, `scripts/`, `tests/`, `atomics/`, `tools/`, `docs/`,
+`build/`, `.git/`, `smokes/`, `.daee/`, `level3-runs/`, `__pycache__/`,
+`route_plan.json`, `features.json`, `validation.json`, `reconstruction.json`,
+`execution_verdict.json`, `execution_prompt.md`, `execution_blocked.md`, `partial_banner.md`,
+`retry_prompt.md`, `output.simulated.md`, or `output.model.md`.
 
 ### Claude Installation
 
@@ -492,18 +534,26 @@ platforms. In Codex, ordinary use should stay simple:
 /daee-epistemics [input]
 ```
 
-Level 3 is the default path for `/daee-epistemics [input]` in Codex/script-capable
-runtimes when bundled scripts are available. Runtimes that cannot execute
-bundled scripts must visibly fall back to Level 1/2 behavior. Light cases spend
-a few extra seconds in the wrapper; hard cases get the same binding route
-discipline.
-
-### Codex Level 3 Runtime Path
-
-Level 3 makes routing executable rather than merely interpretive:
+The canonical portable behavior for `/daee-epistemics [input]` is the compact
+DSL-governed surface. Runtimes produce that surface directly; there is no prose-only
+fallback and the user should not need a special long prompt to activate it. When a host's
+final-chat channel compresses hard cases, use the canonical file-retained syntax:
 
 ```text
-python scripts/daee_level3.py --input <input.md> --out <run-dir>
+/daee-epistemics < C:\path\input.md > C:\path\output.md
+```
+
+That syntax is an output transport mode, not prompt engineering and not the optional
+route/check harness.
+
+### Maintainer Optional Route/Check Harness
+
+The optional script-capable route/check harness is repo/dev/CI machinery. It can make
+routing executable rather than merely interpretive for maintainers, but it is not the
+public identity of the skill and is not packaged in the canonical user-facing artifact:
+
+```text
+python skill/scripts/daee_level3.py --input <input.md> --out <run-dir>
 ```
 
 It produces `features.json`, `route_plan.json`, reconstruction/validation
@@ -516,34 +566,35 @@ valid execution prompt, validate the answer against the route plan:
 python scripts/check_execution.py --route <run-dir>/route_plan.json --output <run-dir>/output.md
 ```
 
-If execution validation returns `partial` or `fail`, the user-facing response
+If execution validation returns `partial` or `fail`, a maintainer-facing report
 should include:
 
 ```text
-PARTIAL - Level 3 execution check: <specific defect>
+PARTIAL - script-harness execution check: <specific defect>
 ```
 
-Honest release claim: daee-epistemics ships with deterministic routing
+Honest maintainer claim: the repository includes deterministic routing
 (`route.py`) over span-backed feature extraction (`diagnose.py`), with route
 plans validated by reconstruction (`reconstruct.py`) and post-output execution
-checked (`check_execution.py`). Routing is deterministic given features.
+checked (`check_execution.py`). That route/check harness is excluded from the canonical
+user-facing package unless a future dev artifact is explicitly created. Routing is deterministic given features.
 Feature extraction has interpretive components with input-span validation.
 Transformer execution remains probabilistic; highest-complexity burdens remain
-bounded by model capability even under Level 3 routing. Pure-Hermes parity,
-fixture-18 resolution, catalogue-wide executable Level 3 coverage, codons, and
+bounded by model capability even under optional script-harness routing. Pure-Hermes parity,
+fixture-18 resolution, catalogue-wide executable harness coverage, codons, and
 owner packs are not claimed.
 
-### Scriptless Runtime Fallback
+### Scriptless Compact DSL Runtime
 
-Runtimes that cannot execute bundled scripts must visibly fall back to Level 1/2
-behavior and label that fallback:
+Runtimes that cannot execute repo/dev harness scripts must still produce the canonical compact
+DSL-governed surface. If they label the harness boundary, use a provenance note like:
 
 ```text
-Level 1/2 invocation - Level 3 wrapper unavailable in this runtime
+Optional script route/check harness unavailable - using canonical compact DSL-governed surface
 ```
 
-Scriptless fallback preserves the instructional governance in `SKILL.md`, but
-it does not claim Level 3 route-plan validation or post-output execution
+Scriptless compact DSL runtime preserves the governance in `SKILL.md`, but
+it does not claim optional harness route-plan validation or post-output execution
 checking.
 
 ### Maintainer Commands
@@ -557,14 +608,8 @@ with:
 python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
 ```
 
-For package-root debugging, the equivalent in-package command shape is:
-
-```text
-python scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
-```
-
 Any `--simulate-output` run is simulated structural route/check verification only. It must not
-be reported as behavioral smoke, real model execution, or Level 1/2 shrinkage-regression
+be reported as behavioral smoke, real model execution, or scriptless shrinkage-regression
 recovery.
 
 ### Release Smoke Boundary

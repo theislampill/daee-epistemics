@@ -68,7 +68,7 @@ permitted `B` remains live. STOP is invalid unless the post-render gate has run;
 distortion or newly eligible held route remains, choose RECURSE, HOLD, or PARTIAL as governed.
 No premature STOP: do not close while an eligible live burden remains.
 
-> Render mode does not change governance. Default `/daee-epistemics` mode keeps the answer readable while visibly printing a mandatory compact DSL/IR header, bounded response, and state/noetic re-read. `/daee-epistemics:dsl` exposes concise Diagnostic IR / live-burden state. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
+> Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
 
 **Same-response RECURSE trigger checklist:**
 After every bounded move, `Land(B) -> R` decides whether recursion is active now:
@@ -76,7 +76,18 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 2. Another already-present burden remains live in the original input.
 3. No P7 stop, register-hold, semantic gate, thin-basis rule, absent release signal, or limit blocks the next pass.
 
-When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless Level 1/2 obligation, not merely Level 3 route behavior.
+When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless compact-DSL obligation, not merely optional script-harness route behavior.
+
+For file-retained execution, the same release decision governs the file, not the final chat
+message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat
+response reports only status, path, and approximate length; it must not become a shorter
+replacement for the governed answer. File-retained execution must not run repo checkers, route
+tools, smoke-artifact tools, or execution-fidelity checks unless the user explicitly requests
+developer validation; do not add harness verdicts, `execution_fidelity`, route-plan claims, or
+source-audit commentary to the status report. Do not add source links, sanity scans, checker
+notes, or extra commentary. For hard or multi-burden file-retained answers, keep explicit
+`Land(Bn)` and `R(H,Delta)` attachment per released burden; do not replace them with a generic
+state paragraph.
 
 **Minimum visible transition spine (mandatory in multi-burden default):**
 `B -> {s1...sn} -> Land(B) -> R -> Decision`. Gloss: a live burden is input-anchored
@@ -87,6 +98,21 @@ For hard, compound, or deformed recursive cases, the next bounded pass begins wi
 compact Layer A for that burden before Layer B resumes. Layer A is the live diagnostic control
 state; Layer B is the governed intervention. This keeps continuation from becoming a checklist
 or route queue without renewed noetic assessment.
+Layer A diagnoses and licenses; it does not argue, become a proof-chain, or create a further
+burden. Layer B operates and releases; it performs the active TTP/operator submoves needed to
+land the current burden and does not automatically create new burdens. `Land(B) -> R(H,Delta)`
+is the principled stop/continue/hold/partial gate that prevents regress, arbitrary stopping,
+Layer A overgrowth, and Layer B flattening.
+That gate is ordered by noetic structure: first-order surface claim, second-order criterion/
+warrant/proof-method/source-authority/testimony standard/moral tribunal, and higher-order or
+meta-noetic source-worldview/register/source-status/noetic-frame pressure. Recurse when a
+distinct order remains live after landing; do not recurse because more content is available,
+and do not collapse distinct orders into one omnibus burden.
+This ordering protects noetic function, reliable warrant-process, and foundational order:
+what is being treated as basic, what is inferred, which hidden premise or source-rule is acting
+as foundation, and whether the claim-assessing process is truth-conducive or deformed by an
+imported tribunal, selective testimony rule, scientistic filter, anti-revelation prior, grief/
+identity pressure, source inversion, or desire.
 `R(H,Delta)` must judge the refreshed state: continue, hold/defer, skip as no longer live,
 mark PARTIAL, request bounded reroute when the live state materially changed, or close when
 no input-anchored burden remains. A planned continuation queue proposes order; it does not
@@ -122,7 +148,7 @@ own depth floor. Compactness removes padding, source parade, and framework dumpi
 not license a smallest-compliant route-shaped answer. If the user asks for sources and a
 routed burden depends on Qur'an/hadith evidence, use the text as an operator: quote or
 precisely cite it, then state what diagnostic or restorative work it performs.
-Level 2/default render must not print raw `pressure_dimensions`, but it must satisfy the
+Scriptless/default render must not print raw `pressure_dimensions`, but it must satisfy the
 same owner-floor idea in prose. Release fails when the answer names FPD, M1, V2, M8, P1,
 a transmission owner, a predication owner, or a grief/register owner while leaving the
 actual imported criterion, self-ground test, proof-status/warrant repair, source-frame
@@ -149,7 +175,7 @@ If the routed family pressure is not source-worldview, release must not manufact
 worldview frame; testimony, predication, grief/register, kalamic proof-order, and other
 family-local consequence traces remain distinct.
 
-Owner-loadform gate: hard/multi-burden `ComplexB.s<i>` release requires the selected
+Owner-loadform gate: hard/multi-burden `ⁿBᵢ` release requires the selected
 owner body or compiled bundle section to be loaded/read before the submove renders, unless
 that exact section is already present in active context. Package availability, map presence,
 or bundle co-location is not access. If the owner cannot be loaded or identified, do not
@@ -175,16 +201,33 @@ Identity-stabilization or source-status that is live and input-anchored must fee
 restoration vector or practitioner instruction; it must not remain a diagnostic orphan, and it
 must not become speculative interior judgment.
 
-Live-burden boundary is governed by the noetic burden being cleared. Imported-criterion tribunal
-testing, hujjah/accountability correction, and guidance-as-coercive-proof correction can all be
-Burden-1 `s` when they serve the same worship-worthiness tribunal question. Do not split those
-internal operators into Pass 1 / Pass 2 / Pass 3 unless `R` has already landed Burden 1 and
-licensed a genuinely new noetic aspect.
+Live-burden boundary is governed by the noetic burden being cleared. In a genuinely atomic
+case, imported-criterion tribunal testing may include narrow hujjah/accountability or
+guidance-as-coercive-proof submoves when their only function is to expose that tribunal. In a
+dense hard case, do not presume those all belong to Burden 1 merely because they support the
+same final indictment. If the input separately anchors accountability compression, hiddenness/
+coercive-guidance demand, punishment/mercy/justice architecture, source-worldview consequence,
+or worship-worthiness/predication pressure, the current burden must land and `R(H,Delta)` must
+decide whether to release the next burden-cycle, HOLD/PARTIAL it, or close.
 Multi-burden does not mean multi-recursion by default:
 `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 They become separate burden-cycles only if `R` shows a new input-anchored `B` not already handled
 as `s`. But `s` remains plural and operative: each active TTP receives a distinct target,
 operation, and result before `Land(B)`.
+
+Anti-overcollapse guard: the release gate must not turn a dense hard case into one omnibus
+burden merely because several pressures support the same final indictment. If accountability
+compression, hiddenness/coercive-guidance pressure, punishment/mercy/justice architecture,
+source-worldview consequence, predication, transmission/testimony, grief/register, or
+family-local proof-method pressure carries a distinct input-anchored target/function/restoration
+vector, it must be released as its own burden after `Land(B) -> R(H,Delta)`, or explicitly
+HOLD/PARTIAL. Compactness never licenses dropping that burden to keep the answer short.
+First-order, second-order, and higher-order pressures are distinct release candidates when
+they remain live: e.g. surface doctrine/report/predication objections; criteria or standards
+judging those objections; and the meta-noetic source-worldview/register/source-status frame
+that keeps governing after the local claim lands.
+If the surface proposition is answered while its unreliable warrant-process or corrupt
+foundation remains in place, release is incomplete.
 
 When one burden requires more than three major operative submoves, run the submove saturation
 gate from `recursive-state-transitions.md` as a cohesion audit, not as a count cap. If the next
@@ -235,6 +278,37 @@ NewB license test: prior burden landed through owner-specific operation, cumulat
 delta is visible, the next burden is input-anchored or held, the next burden differs from
 the prior burden by live target/function rather than topic label alone, and no gate blocks
 release. If the next material does not pass this test, it remains a submove, HOLD, or PARTIAL.
+Practical application, source maps, concise response wording, do/don't guardrails, warning
+paragraphs, and recaps of material that already landed are not NewB by default. Attach them to
+the current Layer B when they pressure the current burden, or place them in Restorative/Application
+Response or Closing Formulation when they package landed material. Release a new burden only
+when `Land(B) -> R(H,Delta)` proves a distinct unresolved noetic function remains.
+The user's request to "respond," "deal with this," "bring sources," or "dismantle the belief
+system" does not by itself create a late practical-handling burden. It requires source-operation
+inside the relevant burdens and a usable Restorative/Application Response. Practical handling is
+NewB only when the input itself contains an unresolved practitioner constraint that cannot be
+handled by the earlier burden and final response.
+A belief-system/source-worldview request is different from practical handling. If the named
+frame supplies the criterion, source-authority, or moral/evidential court, or the user explicitly
+asks to dismantle that belief system, bounded source-worldview consequence must land as a local
+submove or licensed burden, be explicitly held with reason, or be marked PARTIAL. Holding "full
+movement taxonomy" does not hold the operative source-worldview burden.
+Hard source-request cases must not compress distinct source functions into one citation stack.
+If one burden uses multiple sources for materially different functions, separate their operation:
+why the source is live, what premise/criterion/warrant it pressures, and what state change it
+produces. A source map belongs after the functions land; it cannot substitute for them.
+
+Same-burden collapse must preserve operator identity. If multiple TTPs/operators are live
+inside a valid burden, each materially active submove remains visible under Layer B with:
+why it is live for that burden, its target, its operation, its result/state change, and how
+the result contributes to `Land(B)`. Do not replace actual matched owners/TTPs with generic
+verbs. FPD, M1/M1P, M8, M9/predication discipline, V2, P1/P7, transmission/testimony,
+grief/register, and family-local proof-method operators stay distinct where structurally active.
+In moral-tribunal or worship-veto burdens, M3 can accompany orphaned moral intuition analysis
+only after M1/M1-P is executed or explicitly cleared. If the burden uses M3 while skipping
+self-grounding / performative-veto pressure, release fails. In final practitioner/restorative
+handling, P1/P7 or the relevant procedure owner must surface when restoration, warning,
+invitation, HOLD, STOP, or closure discipline is doing real work.
 
 For the canonical valid default-mode transition example, use
 `recursive-state-transitions.md`.
@@ -357,7 +431,10 @@ Restorative Response appears once after the final state/noetic re-read and relea
 Restorative Response identifies restored order, restored criterion/source/warrant placement, relieved deformation/concealment, and what remains held
 Closing Formulation appears once at the end after Restorative Response
 Closing Formulation does not substitute for state/noetic re-read or self-close each burden
-non-trivial operators include compact TTP/operator trace when needed
+non-trivial operators include compact owner-ID-bearing TTP/operator trace when needed
+active owner/TTP submoves label the local owner ID where one exists (for example, `¹B₁ [FPD]`, `¹B₂ [M1]`, `¹B₃ [M9]`; ASCII `1B1` fallback only if needed)
+generic "Operative submove N" labels do not satisfy module-backed owner execution when an owner ID exists
+post-hoc TTP trace lists do not satisfy execution unless owner IDs already appeared on the local submoves
 more-than-three major operative submoves trigger the submove saturation cohesion audit
 additional cohesive necessary submoves remain distinct target -> operation -> result units
 submove saturation is not a merge license; active TTP/operator functions remain distinct or the output is PARTIAL
@@ -373,7 +450,7 @@ Bounded does not mean tiny; clean prose does not mean shallow; no ledger does no
 Do not optimize for shortness by skipping an eligible same-input burden. Default output
 may be longer in complex cases when the refreshed gate requires multiple bounded passes, but it
 must remain pass-by-pass and may not become a comprehensive essay dump.
-For hard, compound, or deformed Level 1/2 cases, release sufficiency requires enough rendered
+For hard, compound, or deformed scriptless compact-DSL cases, release sufficiency requires enough rendered
 diagnostic, theological, and restorative substance for each input-anchored burden to land.
 Anti-padding language cannot be used as a shortest-output target, cannot hide a warranted
 per-burden Layer A re-entry, and cannot turn a materially live worldview/identity criterion
@@ -424,6 +501,15 @@ Default final-output failure tokens include:
   something", "burden-completeness check", or "the operation is bounded to the target
   named above" in the public default output. These are verdict/trace language, not
   runtime answer language.
+- Route/check harness phrases such as "execute queued owner", "execute first-live owner",
+  "owner-floor passed", "validation passed", `smoke_kind`, `validation_fidelity`,
+  `execution_fidelity`, `route_plan`, `features.json`, `check_execution`, or repo/dev
+  harness proof claims in canonical scriptless output. Owner identity may appear only as
+  a human-facing local submove anchor, not as a harness command or validation verdict.
+- Literal `Owner-floor:` lines and `B<N>.s<M>` legacy/checker markers as the primary public
+  notation. Canonical scriptless output should use `¹B₁ [owner ID] - plain operation`;
+  use `1B1` only as an ASCII fallback when Unicode is unsupported, with target,
+  operation, and result in case-specific prose.
 - Formula boilerplate such as "That test changes the force of the case", "The result is
   a real state change", "What remains after that change is not forgotten", or reusable
   target/operation/result prose repeated across burdens. Default output must answer the
@@ -630,7 +716,7 @@ state, release the next item only if it remains live and now governs, and run th
 gate before closure. STOP only when P7 / register / semantic / sufficiency governance permits it
 and no next eligible pass remains.
 
-Recursive burden-cycle shape for Level 2/3 audit render:
+Recursive burden-cycle shape for expanded diagnostic/internal audit render:
 
 ```text
 Live noetic burden:
@@ -641,7 +727,7 @@ state re-read:
 Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
 ```
 
-Ordinary Level 1 answers may compress this shape, but the state re-read and decision still govern.
+Default compact DSL-governed answers may compress this shape, but the state re-read and decision still govern.
 
 **Fail:**
 - The response collapses recursive traversal into a single argumentative dump.
@@ -830,7 +916,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 ### FT-21 - Operative submoves mislabeled as burden-cycles
 **Input:** /daee-epistemics Same moral protest, with hiddenness and accountability assumptions.
 **Bad output:** Pass 1 is FPD, Pass 2 is M1, Pass 3 is DO-8, Pass 4 is M8, and Pass 5 is restoration, all before any Burden-1 state re-read.
-**Required behavior:** Treat those as operative submoves under Burden 1 when they serve the same imported-criterion tribunal test. Burden 2 begins only after Burden 1 lands, state re-read runs, and a next input-anchored burden is licensed.
+**Required behavior:** Treat owner/TTP route legs as operative submoves under the current burden only when `R(H,Delta)` or submove saturation proves the same target/function/source-frame/restoration vector. Same moral indictment is not enough. In hard compound source-request cases, accountability/hujjah, hiddenness/coercive-guidance, punishment/mercy/justice, predication, source-worldview, testimony, or family-local proof-method pressure must be released as a later burden-cycle, HOLD/PARTIAL, or kept as a local submove with that same-function proof. Burden 2 begins after Burden 1 lands, state re-read runs, and a next input-anchored noetic function is licensed.
 
 ### FT-22 - Shallow live-burden execution
 **Input:** /daee-epistemics Use FPD and M1 on this criterion objection.

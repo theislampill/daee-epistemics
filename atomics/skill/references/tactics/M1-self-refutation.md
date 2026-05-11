@@ -30,6 +30,16 @@ operator_pack_eligible: true
 
 When present, deliver this move cleanly and early. Do not bury it. The interlocutor who grasps it grasps it immediately; elaboration allows them to find somewhere to hide.
 
+## Layer B Activation Floor
+
+M1 is not satisfied by saying "test the standard" or by listing self-refutation in a trace.
+When the live burden contains a self-authorizing criterion, self-grounding moral court,
+universal rule that exempts itself, or epistemic standard that would defeat the objection if
+applied consistently, Layer B must show: why M1 is structurally live, the exact target rule,
+the self-application operation, the resulting collapse or narrowing of claim-state, and how
+that result contributes to `Land(B)`. If the self-refutation is not actually present, clear M1
+internally rather than forcing it.
+
 **Examples:**
 - The evolutionary debunking argument uses the cognitive faculties it declares unreliable.
 - The divine transcendence objection cannot be stated without using creaturely language to make claims about what exceeds creaturely language.

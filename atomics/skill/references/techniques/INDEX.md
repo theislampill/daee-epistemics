@@ -31,6 +31,8 @@ Naming a technique is never technique execution. If the technique file has an ow
 5. fail the release if the technique becomes a heading, label, or essay frame rather than an operation.
 
 Techniques are not route itineraries or argument banks. A technique may structure a stretch of conversation, but each released pass still obeys the owner-specific operation floor, submove saturation gate, and NewB license test.
+Table presence, typical pairing, or folder co-location is not activation; the matched technique
+must still satisfy entry criteria and execute as a Layer B operation before `Land(B) -> R`.
 
 ## Techniques
 

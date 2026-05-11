@@ -8,6 +8,7 @@ load_when:
   - domain-boundary failure (empirical method on non-empirical subject)
   - univocal/equivocal/analogical predication question active
   - loaded negative-theological term operative
+  - divine moral-predicate verdict active, including cruel, inhumane, unkind, ungenerous, or unworthy of worship language where the sense depends on creaturely limitation, human sentiment, or imported moral court
   - semantic-discipline-required gate active
 routing_effects:
   - semantic-discipline-required
@@ -47,6 +48,14 @@ M9 uses `B -> {semantic/predicational s} -> Land(B) -> R` from
 `recursive-state-transitions.md`. Gloss: a semantic or predicational clarification may clear
 the question without licensing doctrinal sprawl; after the problem is typed, refresh
 case-state and release only the smallest restorative next move unless another `B` governs.
+
+Moral-predicate verdicts about Allah can trigger M9 when the predicate's sense is being carried
+from human limitation or creaturely court into divine judgment. Terms such as cruel, inhumane,
+unkind, ungenerous, or unworthy of worship must be split when the argument depends on treating
+human emotional approval, human due-process limits, or creaturely vulnerability as the measure
+of Allah's justice, mercy, or right to command. M9 does not cancel the moral concern; it repairs
+the predicate mode before accountability, mercy/justice, or worship-worthiness content is
+released.
 
 ## Owner-Specific Operation Floor
 

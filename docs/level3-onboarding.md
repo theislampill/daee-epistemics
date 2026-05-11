@@ -1,57 +1,57 @@
-# Level 3 Onboarding
+# Optional Route/Check Harness Onboarding
 
-## Ordinary Codex Use
+This file keeps the historical onboarding path for the optional script-capable
+route/check harness formerly called Level 3. The harness is repo/dev/CI
+machinery. It is not the canonical user-facing runtime and is not canonical
+package content.
 
-Install the `daee-epistemics.skill` package and invoke:
+## Ordinary Skill Use
+
+Install the canonical `daee-epistemics.skill` package and invoke:
 
 ```text
 /daee-epistemics <input>
 ```
 
-When bundled scripts are available, Codex should use Level 3 by default for
-every invocation:
+Default `/daee-epistemics` is the compact DSL-governed scriptless runtime. It
+must not be described as prose-only fallback. `/daee-epistemics:dsl` is expanded
+diagnostic/IR visibility, not the first place DSL governance appears.
+
+When a host's final chat channel compresses hard cases, use canonical
+file-retained execution where supported:
 
 ```text
-diagnose -> route -> validate/reconstruct -> execution_prompt -> check_execution
+/daee-epistemics < C:\path\input.md > C:\path\output.md
 ```
 
-The user does not need to inspect `features.json`, `route_plan.json`, or other
-internal artifacts during ordinary use.
+This is output transport for the same canonical runtime, not a prompt-engineered
+harness run.
 
-## Scriptless Runtime Fallback
+## Maintainer Harness Use
 
-If a runtime cannot execute bundled Python scripts, the response must visibly
-label fallback:
-
-```text
-Level 1/2 invocation - Level 3 wrapper unavailable in this runtime
-```
-
-This is not an error in the skill package; it is an invocation-boundary note.
-
-## Maintainer Command
-
-For local diagnostics:
+Use the optional route/check harness only when a maintainer explicitly wants
+repo/dev validation:
 
 ```text
 python skill/scripts/daee_level3.py --input <path> --out <run-dir>
 ```
 
-For the fixture and stability suite:
+For the repo/dev fixture and stability suite:
 
 ```text
 python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
 ```
 
-## Honest Claim
+The user does not need to inspect `features.json`, `route_plan.json`, or other
+harness artifacts during ordinary skill use.
 
-Level 3 gives deterministic routing given extracted features. It does not claim
-deterministic feature extraction, because span-backed semantic features can vary
-when a model-assisted extractor is used.
+## Honest Claim Boundary
 
-Level 3 validates route-plan reconstruction and checks whether output honors the
-plan. It does not guarantee long-output success or remove transformer execution
-ceilings such as the fixture 18 depth limit.
+The optional route/check harness gives deterministic routing given extracted
+features. It does not claim deterministic feature extraction, because
+span-backed semantic features can vary when a model-assisted extractor is used.
 
-Level 3 is not a substitute for package-bound release smokes. Release smokes
-must still show that the runtime actually executes the generated route plan.
+The harness validates route-plan reconstruction and checks whether output honors
+the plan. It does not guarantee long-output success, remove transformer
+execution ceilings, prove scriptless behavioral recovery, or substitute for
+package-bound release smokes.

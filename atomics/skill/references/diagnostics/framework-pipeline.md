@@ -199,26 +199,27 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | broad enough to contain justified operative submove sequence                                                                      |
 | current bounded operator is not a route chain                                                                                     |
 | invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                   |
-| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                   |
+| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles before same-function or new-burden proof           |
 | invalid split: imported tribunal / hiddenness / punishment / named source-worldview as serial burden-cycles without re-read proof |
 | not deterministic argument-bank selection                                                                                         |
 | owner: rubrics/diagnostic-render-contract.md                                                                                      |
 +-----------------------------------------------------------------------------------------------------------------------------------+
              |
              v
-+--------------------------------------------------------------------------------+
-| OPERATIVE SUBMOVE(S)                                                           |
-|                                                                                |
-| inside selected live burden only                                               |
-| entry criteria: validated IR + owner + bounded target                          |
-| target -> operation -> result                                                  |
-| hujjah/accountability can be operative submove                                 |
-| guidance-as-coercive-proof can be operative submove                            |
-| hiddenness/punishment/source-status can be operative submoves under one burden |
-| exit criteria: result + state delta + held-route recheck                       |
-| operative submoves do not count as recursion                                   |
-| owner: diagnostics/recursive-state-transitions.md                              |
-+--------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------------+
+| OPERATIVE SUBMOVE(S)                                                                                          |
+|                                                                                                               |
+| inside selected live burden only                                                                              |
+| entry criteria: validated IR + owner + bounded target                                                         |
+| target -> operation -> result                                                                                 |
+| hujjah/accountability can be operative submove only after same-function proof                                 |
+| guidance-as-coercive-proof can be operative submove only after same-function proof                            |
+| hiddenness/punishment/source-status can be operative submoves under one burden only after same-function proof |
+| distinct input-anchored noetic functions require next burden, HOLD, or PARTIAL                                |
+| exit criteria: result + state delta + held-route recheck                                                      |
+| operative submoves do not count as recursion                                                                  |
+| owner: diagnostics/recursive-state-transitions.md                                                             |
++---------------------------------------------------------------------------------------------------------------+
              |
              v
 +------------------------------------------------------------------+

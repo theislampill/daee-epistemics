@@ -30,6 +30,8 @@ Naming a tactic is never tactic execution. If the tactic file has its own owner-
 5. fail the release if the tactic name could be removed without changing the operation.
 
 Tactics do not authorize argument banks, source/context prestige, or extra burden-cycles. They are operative submoves unless the state/noetic re-read licenses a materially different burden.
+Table presence, typical pairing, or folder co-location is not activation; the matched tactic must
+still satisfy entry criteria and execute as a Layer B operation before `Land(B) -> R`.
 
 ## Tactics
 

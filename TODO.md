@@ -29,9 +29,9 @@ docs/                   = architecture, audit, and workflow notes
 - Checker/runtime surfaces: `tools/check_metacompliance_current_canon.py`.
 - Status: active checker anchor only; not a completed-work catalogue.
 
-### Manual Level 1/2 Behavioral Rerun
+### Manual Scriptless Compact DSL Behavioral Rerun
 
-- Problem: the Level 1/2 hard moral-protest / worship-worthiness output previously shrank against the
+- Problem: the scriptless compact DSL hard moral-protest / worship-worthiness output previously shrank against the
   v0.3.1.0 golden. Spec and checker hardening does not prove live model recovery.
 - Source surfaces: `atomics/skill/SKILL.md`,
   `atomics/skill/references/rubrics/diagnostic-render-contract.md`,
@@ -46,7 +46,7 @@ docs/                   = architecture, audit, and workflow notes
   `tools/check_recursive_traversal_governance.py`,
   `skill/` generated runtime output.
 - Evidence surfaces: repo-local smoke files under `../smokes/`.
-- Remaining verification: manually rerun Claude Level 1/2 on the hard moral-protest canary
+- Remaining verification: manually rerun Claude scriptless compact DSL output on the hard moral-protest canary
   and compare against the v0.3.1.0 golden for diagnostic depth, visible
   per-burden Layer A re-entry, distinct TTP submoves, operative Qur'an/hadith
   formatting, source-function coverage before final restoration, identity/worldview
@@ -68,6 +68,22 @@ docs/                   = architecture, audit, and workflow notes
 - Status: active only if release rebake is authorized. Do not tag, push, package,
   or update GitHub Release from this TODO alone.
 
+### Optional Harness Dev Artifact Decision
+
+- Problem: the canonical user-facing package shape now excludes the optional
+  route/check harness roots (`data/`, `scripts/`, `tests/`), restoring the
+  scriptless compact-DSL package boundary while keeping harness source in the repo
+  for maintainer validation.
+- Future patch surface: design a separate dev/script-harness artifact only if the
+  user explicitly authorizes publishing Codex/CI harness machinery as a second
+  artifact. Tracked repo-side harness roots that remain for now are
+  `atomics/skill/data/`, `atomics/skill/scripts/`, `atomics/skill/tests/`,
+  and their generated `skill/data/`, `skill/scripts/`, `skill/tests/` views.
+  They are excluded from the canonical package selector; deletion or branch
+  extraction is a separate repo-history/dev-artifact decision.
+- Status: future artifact-profile decision. Do not create a dev artifact, tag,
+  package, or release from this TODO alone.
+
 ### Audit Report Tracking Decision
 
 - Problem: `docs/audits/v0.3.2.0-*.md` is ignored by `.git/info/exclude`.
@@ -79,43 +95,43 @@ docs/                   = architecture, audit, and workflow notes
 
 ### Coverage Scope Owner Review Anchors
 
-#### Level 3 family/transmission coverage expansion
+#### Optional script-harness family/transmission coverage expansion
 
 - Problem: RC4 regression findings for testimony/transmission/tawatur and
-  Ash'ari/Maturidi family-variant kalam pressure have Level 3 analogues, but the
-  current covered-scope Level 3 catalogue does not include dedicated
+  Ash'ari/Maturidi family-variant kalam pressure have optional script-harness
+  analogues, but the current covered-scope script-harness catalogue does not include dedicated
   testimony/transmission or family-variant owners. This pass added generic
   source-function leakage checks and non-TST pressure fixtures, but it did not
   add broad new owners outside the covered scope.
 - Source surfaces: `atomics/skill/data/module-catalogue.json`,
   `atomics/skill/data/trigger-matrix.json`,
   `atomics/skill/references/diagnostics/coverage-scope.yaml`, and the relevant
-  transmission/family owner source files if later authorized. Current Level 3
+  transmission/family owner source files if later authorized. Current script-harness
   checker coverage now rejects generic pressure-token lists for covered owners,
   but that does not create missing family/transmission owner coverage.
 - Checker/runtime surfaces: `atomics/skill/scripts/route.py`,
   `atomics/skill/scripts/check_execution.py`,
   `atomics/skill/tests/fixtures/`, generated `skill/`, and routing parity
   fixtures under `tests/routing-fixtures/`.
-- Remaining verification: decide whether to expand Level 3 covered scope with
+- Remaining verification: decide whether to expand script-harness covered scope with
   owner-file-faithful transmission/testimony/tawatur and family-variant kalam
-  owners, or keep those as Level 1/2 governance plus routing-parity coverage.
-- Status: future coverage / user decision. Do not imply Level 3 fully covers
+  owners, or keep those as scriptless governance plus routing-parity coverage.
+- Status: future coverage / user decision. Do not imply the optional script harness fully covers
   these families until dedicated owners and fixtures exist.
 
-#### Level 3 catalogue-wide non-covered owner expansion
+#### Optional script-harness catalogue-wide non-covered owner expansion
 
-- Problem: the full runtime catalogue contains many Level 1/2-governed owners,
-  profiles, diagnostics, and auxiliary TTPs that are not executable Level 3
-  route/check owners in v0.3.2.0. Current Level 3 coverage is intentionally
+- Problem: the full runtime catalogue contains many scriptless-governed owners,
+  profiles, diagnostics, and auxiliary TTPs that are not executable optional script-harness
+  route/check owners in v0.3.2.0. Current script-harness coverage is intentionally
   limited to the fixture-backed covered-scope owners in
   `atomics/skill/data/module-catalogue.json`.
-- Level 1/2 status: covered by scriptless governance, routing parity,
+- Scriptless status: covered by compact DSL governance, routing parity,
   render/recursive checks, and owner source files. Active owners still must
   execute Target/Operation/Result, pressure the case-specific burden, land,
   and pass state/noetic re-read.
-- Level 3 status by family:
-  - Evidence/fitrah/attention owners not executable in Level 3 yet:
+- Optional script-harness status by family:
+  - Evidence/fitrah/attention owners not executable in the script harness yet:
     `E1-broadening-evidence`, `E2-inferential-criterion`,
     `E3-cumulative-case`, `E4-cross-cultural-check`, `M2-prior-probability`,
     `M3-orphaned-intuition`, `R1-internalist-criterion`,
@@ -123,7 +139,7 @@ docs/                   = architecture, audit, and workflow notes
     `V5-directing-attention-signs`, `V6-convergence`,
     `husn-al-nazar-arguments`, and `inductive-fitri-method`.
   - Definition, logic, doubt, taqlid, contamination, and maieutic owners not
-    executable in Level 3 yet: `M1P-performative-self-refutation`,
+    executable in the script harness yet: `M1P-performative-self-refutation`,
     `M6-excluded-middle`, `M7-definition-anchor`,
     `doubt-vs-skepticism`, `symmetric-taqlid-check`,
     `F1-supra-vs-antirational`, `F2-volitional-dimensions`,
@@ -132,15 +148,15 @@ docs/                   = architecture, audit, and workflow notes
     `V11-taqlid-transition`, `V12-tamanuc-exhaustion`,
     `P2-objection-mapping`, `P4-maieutic`, and
     `P5-already-believing`.
-  - Transmission/authentication owners not executable in Level 3 yet:
+  - Transmission/authentication owners not executable in the script harness yet:
     `revelation-transmission`, `V10-transmission-content-vetting`, and
     `hadith-authentication-epistemology`.
   - Kalam/family/proof-method and philosophical-frame owners not executable
-    in Level 3 yet: `kalamic-interlocutor`, `proof-method-audit`,
+    in the script harness yet: `kalamic-interlocutor`, `proof-method-audit`,
     `philosophical-usurpation`, `P3-reason-revelation-tension`,
     `P6-universal-aqidah-principle`, `ns-6-kalamic-evidentialist`,
     and `ns-10-maturidi-evidentialist`.
-  - Noetic-profile and broad case-library modules not executable as Level 3
+  - Noetic-profile and broad case-library modules not executable as script-harness
     owners yet: `do-core`, `noetic-profiles`, `ns-1-naturalist`,
     `ns-2-agnostic-evidentialist`, `ns-3-deconverted`,
     `ns-4-secular-moral-realist`, `ns-5-habituated-atheist`,
@@ -150,21 +166,21 @@ docs/                   = architecture, audit, and workflow notes
   - Diagnostic/governance surfaces such as `definition-discipline`,
     `causal-series-taxonomy`, `perfection-criterion-usurpation`,
     `prophetic-discourse-neutralization`, `reason-disambiguation`,
-    `pattern-profiling`, and `mixed-case-handling` govern Level 1/2 and
-    routing parity but are not direct Level 3 owner routes unless promoted
+    `pattern-profiling`, and `mixed-case-handling` govern scriptless compact DSL output and
+    routing parity but are not direct script-harness owner routes unless promoted
     by an explicit covered-scope design.
-- Exact blocker: each family needs owner-file-faithful Level 3 extractor
+- Exact blocker: each family needs owner-file-faithful script-harness extractor
   features, trigger-matrix rules, pressure dimensions, expected fixtures,
   negative compression fixtures, and check-execution gates. Adding these
-  casually would broaden the executable Level 3 claim beyond the covered scope.
+  casually would broaden the executable script-harness claim beyond the covered scope.
 - Future file/data/check needed: extend `atomics/skill/data/module-catalogue.json`,
   `atomics/skill/data/trigger-matrix.json`, `atomics/skill/scripts/diagnose.py`,
   `atomics/skill/tests/fixtures/`, `atomics/skill/tests/expected/`,
   `atomics/skill/scripts/check_execution.py`, and generated `skill/` for each
   authorized owner family.
 - Status: future coverage / user decision. This is not a release blocker as
-  long as docs and release claims say these owners are Level 1/2-governed or
-  routing-parity covered, not executable Level 3 covered-scope owners.
+  long as docs and release claims say these owners are scriptless-governed or
+  routing-parity covered, not executable script-harness covered-scope owners.
 
 #### Bespoke religion-specific source-content owners
 
@@ -199,7 +215,7 @@ docs/audits/v0.3.2.0-systemic-hardening-closure.md
 ```
 
 Do not use this closed list as release proof. It records source/checker/runtime
-hardening only; live Level 1/2 behavior remains gated by the manual rerun above.
+hardening only; live scriptless compact DSL behavior remains gated by the manual rerun above.
 
 ### Structural Attachment / Reconstruction-Faithfulness Hardening
 

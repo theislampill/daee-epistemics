@@ -11,6 +11,9 @@ catalogue_registered: false
 # Diagnostics - Index
 
 Diagnostics classify the case before rebuttal. They determine what the engagement is, what is actually obstructing recognition, and whether intellectual engagement is even the right instrument.
+This index routes to diagnostic owners; it does not make every co-located diagnostic row active.
+Canonical execution rules live in the named owner file and in the dispatch / release / recursion
+governance surfaces.
 
 ## Diagnostic Execution Floor
 
@@ -62,7 +65,7 @@ Specialty diagnostics may preserve rich recognition substance, but they must not
 | `references/diagnostics/arabic-backbone-predicates.md` | Operational predicate layer | V1 Phase 2 and criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation elements are present | Case is single-axis `shubha` with no framework or ordering issue | Typed predicates with route consequences |
 | `references/diagnostics/diagnostic-ir.md` | Typed diagnostic IR | Full auditable case-state required; multi-axis case; routing must be checked against workflow and architectural layers | Narrow conversational sub-answer with no case classification | Complete typed IR binding workflow and architectural layers |
 | `references/diagnostics/ir-reconstruction-pass.md` | Reconstruction check | A populated IR must prove that live burden, selected owner/TTP, nearest held alternatives, Land(B), and verdict are recoverable before dispatch | You are trying to create new routes, owner packs, or public-output machinery | `reconstruction_fidelity` and compact notes for partial/fail |
-| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, Level 3, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
+| `references/diagnostics/nomenclature-normalization.md` | Nomenclature map | Release, maintainer, or runtime review needs canonical names and accepted aliases for noetic-state, DSL/IR, optional route/check harness, TTP/owner, and transliteration terms | You are trying to add routes, owners, codons, or a second DSL | Canonical term map and alias boundaries |
 | `references/metaphysical-architecture.md` | Metaphysical architecture layer | Auditing what is being restored and why | Task is purely routing mechanics | Ordered account of epistemic and ontological structure |
 | `references/diagnostics/kalamic-interlocutor.md` | Specialty diagnostic | `dalīl`, `wujūb al-naẓar`, taqlīd-as-non-knowledge, Māturīdī concession language, or a narrow necessary-knowledge class is surfacing | The case is ordinary evidentialism without kalāmic structure | Kalāmic-specific critique and routing |
 | `references/diagnostics/fitrah-perspectives.md` | Specialty diagnostic | The `fiṭrah` is described as blank-slate, morally neutral, or as equal dual tendencies | The case does not turn on `fiṭrah` taxonomy | `fiṭrah`-view classification and implications |

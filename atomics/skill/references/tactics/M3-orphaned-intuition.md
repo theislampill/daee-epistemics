@@ -40,6 +40,15 @@ what grounds the obligation that evil really should not be. If the standard is o
 asks what kind of world makes that objectivity intelligible; if the standard is denied, the
 objection loses its force and M8 may govern instead.
 
+**M3 does not replace tribunal-pressure owners:** When moral language is functioning as an
+imported tribunal over Allah, a worship-veto, or a self-authorizing moral court, M3 may affirm
+real moral residue but it does not satisfy FPD, M1/M1-P, M8, or M9. In that case, first expose
+the tribunal, test the self-grounding or performed veto where live, trace the source-frame
+consequence where live, and repair predicate transfer where live. If a Layer B burden uses M3
+for such a case without executing or explicitly clearing M1/M1-P, the burden has not landed.
+Use M3 only as the orphaned-intuition probe if the case-state shows the interlocutor actually
+holds objective moral commitments whose grounding their stated frame cannot supply.
+
 **Connection:** M3 is the entry point for NS-4 (secular moral realist); see `references/case-library/profiles/ns-4-secular-moral-realist.md`. Typically followed by E3 (cumulative case including moral track) and V5 (directing attention to signs).
 
 ## Failure Conditions

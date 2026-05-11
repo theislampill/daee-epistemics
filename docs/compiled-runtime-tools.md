@@ -34,9 +34,12 @@ Operating rules:
 - Do not edit `skill/` directly.
 - Run `tools/build_compiled_runtime.py` to regenerate `skill/`.
 - Package/deploy from `skill/`.
-- Package the contents of `skill/`, not the `skill/` directory itself.
-- The archive root must contain `SKILL.md`, `README.md`, `references/`, `data/`, `scripts/`,
-  `tests/`, `compiled-module-map.json`, and `build-manifest.json`.
+- Package the canonical selected contents of `skill/`, not the `skill/`
+  directory itself.
+- The canonical archive root must contain `SKILL.md`, `README.md`,
+  `references/`, `compiled-module-map.json`, and `build-manifest.json`.
+- `data/`, `scripts/`, and `tests/` may remain generated/repo-side for optional
+  route/check harness work, but they are not canonical package content.
 - `tools/check_package_shape.py` rejects unexpected generated-package files before packaging.
 
 Runtime path resolution:
@@ -59,9 +62,12 @@ Render-mode governance is checked separately by `tools/check_render_modes.py`. I
 
 Current-canon metacompliance is checked separately by `tools/check_metacompliance_current_canon.py`. It keeps root `SKILL.md` in control-plane shape, verifies that generated default output starts from compact DSL/IR plus bounded governed Layer B and state/noetic re-read, checks source-status/noetic-frame and held-release owner anchors, and rejects stale current guidance that revives public audit or prose-only default framing.
 
-Level 3 data shape is checked by `tools/check_level3_data_shapes.py`. It validates the executable
-module catalogue, trigger matrix, routing precedence, and ontology-license files in atomics and,
-with `--include-generated`, in the generated runtime.
+Optional route/check harness data shape is checked by
+`tools/check_level3_data_shapes.py`. The tool name is historical; it validates
+the executable module catalogue, trigger matrix, routing precedence, and
+ontology-license files in atomics and, with `--include-generated`, in the
+generated runtime. These checks preserve repo/dev harness integrity without
+making harness files canonical package content.
 
 Harness/replay guidance: keep daee's stable runtime instructions in the prefix and put user
 input, current state envelopes, and checker/tool results in a variable suffix. Route plans,
@@ -72,13 +78,14 @@ settings, verbosity, context accounting, tool-output truncation, parallel tool c
 response payload shape, so parity claims must verify burden-local state attachment rather than
 only checking that labels or owner names appear somewhere.
 
-Level 3 smoke kinds must be named precisely. A run using `--simulate-output` is only an
-installed-package Level 3 simulated route/check smoke: it verifies route generation,
-route-plan validation, reconstruction, and the simulated checker scaffold. It does not prove
-real model execution, substantive owner-floor content, operative citations, restoration force,
-or Level 1/2 behavioral shrinkage recovery.
+Optional route/check harness smoke kinds must be named precisely. A run using
+`--simulate-output` is only a simulated route/check smoke: it verifies route
+generation, route-plan validation, reconstruction, and the simulated checker
+scaffold. It does not prove real model execution, substantive owner-floor
+content, operative citations, restoration force, or scriptless behavioral
+shrinkage recovery.
 
-A real Level 3 model-execution smoke uses this path:
+A real optional harness model-execution smoke uses this path:
 
 ```bash
 python scripts/daee_level3.py --input <input.md> --output-dir <run-dir> --skill-root <installed-skill-root>

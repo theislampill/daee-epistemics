@@ -40,9 +40,11 @@ python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
 ```
 
-Package/deploy from `skill/`. A `.skill` archive must contain `SKILL.md` at archive root, not a
-top-level `skill/` directory. For v0.3.2.0, the archive also includes packaged Level 3 `data/`,
-`scripts/`, and `tests/` directories at archive root.
+Package/deploy from the canonical package selector over `skill/`. A `.skill`
+archive must contain `SKILL.md` at archive root, not a top-level `skill/`
+directory. For the canonical user-facing artifact, `data/`, `scripts/`, and
+`tests/` are excluded; optional route/check harness material is repo/dev-only
+unless a separate dev artifact is explicitly created.
 Current readiness checks and smoke prompts are documented in `docs/package-smoke-readiness.md`.
 
 Generated `skill/SKILL.md` intentionally preserves inherited atomized load-table paths. At runtime those paths are not literal file loads: resolve them through `skill/compiled-module-map.json` to the compiled bundle section with the matching original `MODULE_ID`. Static metadata paths that remain literal, such as the module catalogue and schemas, are copied under `skill/references/diagnostics/`.
@@ -50,7 +52,7 @@ Generated `skill/SKILL.md` intentionally preserves inherited atomized load-table
 ## Runtime Metadata Copies
 
 The compiled runtime package intentionally includes metadata files under `references/diagnostics/`
-plus packaged Level 3 data, scripts, and fixtures. These are declared in `RUNTIME_METADATA_COPIES`
+for scriptless runtime discipline. These are declared in `RUNTIME_METADATA_COPIES`
 in `tools/compiled_runtime_lib.py` and are recorded in `build-manifest.json` under
 `runtime_metadata_copies`. They are not source leakage.
 
@@ -61,8 +63,10 @@ in `tools/compiled_runtime_lib.py` and are recorded in `build-manifest.json` und
 | `operative-contract.schema.json` | JSON schema governing operative front-matter fields (`id`, `module_class`, `canonical_path`, `contract_version`, optional fields). |
 | `operative-contracts.md` | Architecture specification for operative contracts - purpose, required/optional keys, allowed values, failure modes, migration strategy. |
 
-A `.skill` archive missing these runtime metadata files or Level 3 package directories has a stale
-or incomplete staging directory. Rebuild from `skill/` after running
-`python tools/build_compiled_runtime.py` to ensure all `RUNTIME_METADATA_COPIES` are present.
+An archive missing these runtime metadata files has a stale or incomplete
+staging directory. Rebuild from `skill/` after running
+`python tools/build_compiled_runtime.py` to ensure all `RUNTIME_METADATA_COPIES`
+are present. Optional route/check harness directories are not part of the
+canonical package-shape contract.
 
 Routing parity fixtures live in `tests/routing-fixtures/` and are checked by `tools/check_routing_parity.py`.

@@ -95,6 +95,12 @@ and not examined — from which the interlocutor's other positions follow necess
 addressing a derived conclusion produces agreement but no movement (the interlocutor re-derives
 the same conclusion from the same premise), the premise is mushābara fāsida.
 
+**Marker-only execution caution:** `mushabara-fasida` marks a subdeformation under
+`i'tiqadat-mawrutha`; it is not a standalone runtime owner. Its presence licenses surgical
+premise work by the matched TTP/operator. Layer B must still execute the relevant owner
+(for example M1/M1-P, M8, M9, V2, or V9 as structurally warranted) with target, operation,
+result, and `Land(B)`. A marker label by itself is not execution.
+
 **Common forms:**
 - "The only things that exist are things that could in principle be detected by scientific
   instruments" — held as a definition of reality, not a claim about it. Everything follows.

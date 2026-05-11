@@ -30,6 +30,9 @@ Naming a procedure is never procedure execution. If the procedure file has an ow
 5. fail the release if the procedure becomes a topical outline or pastoral close without operation.
 
 Procedures do not suspend pattern-first routing, source-status restrictions, burden-complete treatment, or the one-final-Closing-Formulation rule.
+Table presence, typical pairing, or folder co-location is not activation; the matched procedure
+must still satisfy entry criteria and execute the current stage's Layer B operation before
+`Land(B) -> R`.
 
 ## Procedures
 

@@ -310,7 +310,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Owner-Body Not Loaded Compression**
 *Definition:* Rendering a hard or complex burden from root SKILL recognition, TTP label memory, or `matched_modules` naming without loading or having access to the active owner body / compiled bundle section.
 *Pattern appearing in output:* The response names `V2`, `M9`, `P3`, or another owner label, then emits a broad Target/Operation/Result block that could fit many cases and never demonstrates the owner-specific operation floor.
-*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `B.s<i>` submoves, then `Land(B)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
+*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `ⁿBᵢ` submoves, then `Land(ⁿB)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
 *Self-audit question:* Am I executing the owner body, or substituting root-summary recognition for Level 2 owner access?
 *Prevented by:* `SKILL.md` owner-loadform map; `recursive-state-transitions.md` TTP entry criteria; `diagnostic-render-contract.md` hard-output render-through template; `output-release.md` owner-loadform gate.
 
@@ -358,9 +358,9 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Operative-Submove Burden Split**
 *Definition:* Splitting a single live noetic burden into several burden-cycles because its operative submoves have different names.
 *Expected checker violation:* operative submoves split into recursive burden-cycles.
-*Pattern appearing in output:* Pass 1 is `imported-criterion tribunal test`, Pass 2 is `hujjah/accountability correction`, and Pass 3 is `guidance-as-coercive-proof correction`, even though all three operations are clearing Burden 1: the imported tribunal judging divine worship-worthiness.
-*Bad signs:* the "next pass" is only the next sub-operation required by the same tribunal test; hujjah/accountability corrects the tribunal's accusation rather than opening a new burden; hiddenness correction narrows the same worship-worthiness complaint; state re-read appears between operative submoves instead of after the whole burden landing.
-*Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins only if a genuinely new noetic aspect remains eligible.
+*Pattern appearing in output:* Pass 1 is `imported-criterion tribunal test`, Pass 2 is `hujjah/accountability correction`, and Pass 3 is `guidance-as-coercive-proof correction`, with no proof that each pass is a distinct input-anchored noetic burden rather than a same-function submove.
+*Bad signs:* the "next pass" is only the next sub-operation required by the same tribunal test; state re-read appears between operative submoves instead of after the whole burden landing; or the output assumes hujjah/accountability and hiddenness are automatically subordinate because they support the same final indictment.
+*Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1 only when same-function proof holds, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins when a genuinely new noetic function remains eligible; hard compound source-request cases must release, HOLD/PARTIAL, or explicitly justify any accountability, hiddenness, punishment/mercy, source-worldview, predication, testimony, or family-local proof-method pressure kept inside the current burden.
 *Self-audit question:* Am I crossing into a new live noetic burden, or did I only finish one operative submove inside the same burden?
 *Prevented by:* `recursive-state-transitions.md` live-burden boundary rule; `diagnostic-render-contract.md` current bounded operator rule; `output-release.md` Layer A / Layer B release checks.
 
@@ -369,7 +369,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Burden-Cycle Compression Failure**
 *Definition:* A hard output names a complex `B` but renders it as one broad Target/Operation/Result block, then moves to `R`, leaving materially necessary submoves implicit.
 *Malformed shape:* `Burden 1: imported tribunal -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed -> state/noetic re-read`.
-*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `B1.s1`, `B1.s2`, etc.; `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
+*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `¹B₁`, `¹B₂`, etc. (or ASCII fallback `1B1`, `1B2`); `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
 *Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only when diagnostic burden accounting shows one live burden with one materially necessary submove.
 *Prevented by:* `SKILL.md` execution spine; `diagnostic-render-contract.md` hard-output render-through template; `recursive-state-transitions.md` B-complexity test.
 
@@ -566,7 +566,10 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Is the current bounded operator one burden-level function, not a route chain?
 - Are the numbered passes true post-refresh burdens, or merely operative submoves?
 - Did I split imported criterion, hujjah/accountability, and hiddenness-frame correction into
-  fake recursive burden-cycles when they are all serving the same tribunal burden?
+  fake recursive burden-cycles without same-function / new-burden proof?
+- Did I collapse accountability, hiddenness, punishment/mercy, source-worldview, predication,
+  testimony, or family-local proof-method pressure into Burden 1 merely because all supported
+  one final indictment?
 - Did each TTP inside the active burden preserve target -> operation -> result before burden landing and state re-read?
 - Did this input compile into validated IR, or did I select a deterministic argument-bank answer?
 - Did every TTP pass entry criteria and exit criteria before the next depth?

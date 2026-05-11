@@ -185,7 +185,7 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/foreign-premise-detection.md -->
-<!-- SOURCE_SHA256: 24592f015cf26cf0cd55d5b10e19379d8e4e6c44466b1d5c20887b2ef28646b6 -->
+<!-- SOURCE_SHA256: 16b800006386757a74da5587c554688ec37d70a12da2fb3a67a628dafe3b125f -->
 
 ---
 id: foreign-premise-detection
@@ -215,6 +215,27 @@ Its purpose is to prevent the most common structural failure: a response that ad
 
 Category 1 does not waive this pass if a criterion-importing element is visible. Sound reason
 at the faculty level can still be presented through an imported tribunal at the case level.
+
+---
+
+## Layer B Activation Floor
+
+When FPD is structurally live inside a released burden, naming "foreign premise" is not
+execution. Layer B must show:
+
+1. why the imported criterion, tribunal, source-worldview, or authority-order is governing
+   the present burden;
+2. the target it pressures: the exact criterion, prior, definitional constraint, or
+   authority-order inversion;
+3. the operation performed: expose its source, function, upstream position, and jurisdiction;
+4. the result/state change: the criterion is refused, demoted, held, or handed to the next
+   owner such as V2/M1/M8/M9;
+5. how that result contributes to `Land(B)` so downstream content no longer answers inside
+   the imported court.
+
+If identity, school, ideology, or worldview language is present, FPD may use it only as
+source-status evidence for the operative criterion. It must not treat the label itself as
+proof of motive, culpability, or claim failure.
 
 ---
 

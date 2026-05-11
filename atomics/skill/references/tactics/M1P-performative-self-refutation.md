@@ -38,6 +38,13 @@ Standard M1 examines whether an argument's *premises*, applied consistently, und
 
 **Delivery:** Economy is essential. State the position. Name the self-enactment. Stop. The move is either seen immediately or it is not seen — elaboration only provides cover.
 
+Hard-case scope note: this stop is local to the M1-P operation, not a license for whole-answer
+closure in a compound same-input response. When M1-P is structurally live inside a burden,
+Layer B must still show the quoted assertion or speech act, the denied condition it enacts,
+the resulting self-undercut, and how that state change contributes to `Land(B)`. If the
+refreshed state leaves another input-anchored burden live, continue or mark PARTIAL as
+governed rather than treating M1-P's economy as final closure.
+
 ## The Staged-Visibility Protocol
 
 M1-P is even more sensitive to economy than M1. Four stages:

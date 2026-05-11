@@ -23,6 +23,13 @@ catalogue_registered: true
 
 "Necessary knowledge cannot be contradicted by discursive inference. Where such a conflict arises, a critical review of the terms and premises will always reveal that it is the discursive reasoning that has gone astray — not the underlying intuitions of the native intellect."
 
+**Layer B activation floor:** V9 is not a generic appeal to fitrah or intuition. When V9 is
+structurally live, Layer B must show the necessary/basic knowledge being attacked, the
+discursive inference or criterion trying to overrule it, the operation that restores
+basic-before-inferred order, the defective premise or domain-crossing to inspect, and the
+resulting state change for `Land(B)`. If the needed premise cannot yet be located, mark
+HOLD/PARTIAL rather than claiming the burden landed.
+
 **When to deploy:** When an argument concludes:
 - The external world does not exist
 - Moral obligation is illusory

@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: procedures-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/procedures/INDEX.md -->
-<!-- SOURCE_SHA256: e054428394d72b241170f0e79f85ebb7a76a818af053d5530e81faa80b52b917 -->
+<!-- SOURCE_SHA256: 469183edf9f003c3620f9bc18450e30178ba7b69baa0bf418bfe00cdb3288689 -->
 
 ---
 id: procedures-index
@@ -50,6 +50,9 @@ Naming a procedure is never procedure execution. If the procedure file has an ow
 5. fail the release if the procedure becomes a topical outline or pastoral close without operation.
 
 Procedures do not suspend pattern-first routing, source-status restrictions, burden-complete treatment, or the one-final-Closing-Formulation rule.
+Table presence, typical pairing, or folder co-location is not activation; the matched procedure
+must still satisfy entry criteria and execute the current stage's Layer B operation before
+`Land(B) -> R`.
 
 ## Procedures
 

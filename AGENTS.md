@@ -24,6 +24,7 @@ python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
 python tools/check_framework_pipeline.py
 python tools/check_compiled_runtime_freshness.py
+python tools/check_package_shape.py
 python tools/check_compiled_module_boundaries.py
 python tools/check_stub_integrity.py
 python tools/check_consolidation_call_budget.py
@@ -72,6 +73,12 @@ state.
   raw model transcripts, local helper scripts, `.daee/`, `level3-runs/`, temporary owner
   lists, local machine paths, and scratch artifacts unstaged unless the user explicitly
   says otherwise.
+- Do not stage canonical-package-excluded harness roots or run artifacts unless a task explicitly
+  authorizes repo/dev harness work: `skill/data/`, `skill/scripts/`, `skill/tests/`,
+  `atomics/skill/data/`, `atomics/skill/scripts/`, `atomics/skill/tests/`, `route_plan.json`,
+  `features.json`, `validation.json`, `reconstruction.json`, `execution_verdict.json`,
+  `execution_prompt.md`, `execution_blocked.md`, `partial_banner.md`, `retry_prompt.md`,
+  `output.simulated.md`, or `output.model.md`.
 - Historical smokes are historical regression evidence. Do not claim current-release
   package-bound smokes unless they were regenerated against the current package filename and
   SHA and are marked current-release.
@@ -97,15 +104,16 @@ state.
 
 Release claims must stay narrow and honest:
 
-- Level 3 is deterministic routing given extracted features, not deterministic feature
-  extraction or guaranteed transformer execution.
-- Scriptless runtimes visibly fall back to Level 1/2.
-- Pure-Hermes parity, fixture-18 resolution, all-runtime Level 3, current-release smokes,
+- The optional script-capable route/check harness is deterministic routing given extracted
+  features, not deterministic feature extraction or guaranteed transformer execution.
+- Scriptless runtimes use the canonical compact DSL-governed surface; they are not prose-only
+  fallback.
+- Pure-Hermes parity, fixture-18 resolution, all-runtime script-harness claims, current-release smokes,
   broad codons, and owner packs are not claimed unless explicitly proven and documented.
 - Any run using `--simulate-output` is only simulated structural route/check verification. It
-  must not be reported as a behavioral smoke, model-execution smoke, or Level 1/2 shrinkage
+  must not be reported as a behavioral smoke, model-execution smoke, or scriptless shrinkage
   recovery.
-- Codex CLI final-answer output may compress hard Level 3 executions. For golden-depth real
+- Codex CLI final-answer output may compress hard script-harness executions. For golden-depth real
   model-execution smokes, retain the governed response in an ignored `output.model.md` file
   written by the runtime, then run `check_execution.py` against that file. This is real model
   output, not simulated evidence, but it is still local smoke evidence unless package/release
@@ -120,15 +128,46 @@ Release claims must stay narrow and honest:
 When a model-output regression is reported, do not declare it fixed because the spec allows
 the desired behavior. Compare the relevant outputs, classify likely causes, patch only
 source-of-truth surfaces, rebuild, verify, and state whether a manual model rerun is still
-required. For Level 1/2 behavioral regressions, inspect the actual model output against the
+required. For scriptless compact-DSL behavioral regressions, inspect the actual model output against the
 golden or comparison anchor for burden count, per-burden Layer A re-entry, state/noetic
-re-reads, source-operation burdening, owner/TTP pressure, and restoration force. Level 3
-checker success or spec permission does not prove scriptless Level 1/2 recovery.
+re-reads, source-operation burdening, owner/TTP pressure, and restoration force. Script-harness
+checker success or spec permission does not prove scriptless compact-DSL recovery.
 
-### Level 1/2 Behavioral Coercion Memory
+### Atomic Audit And Refactor Discipline
 
-v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless
-Level 1/2. Default scriptless output is burden-governed, not concise-answer-governed.
+Atomics audits are power-first, not length-first. Do not mark a long, abstract, or repeated
+file as fluff unless the audit shows that it weakens execution, conflicts with an owner,
+buries the operative rule, causes topic-tour recursion, overcollapse, source-stack compression,
+Layer A overgrowth, Layer B flattening, or less visible TTP/operator activation.
+
+Before slimming or merging atomics, classify the file's operative role and power contribution:
+diagnostic/control surface, Layer B operation, `Land(B)` / `R(H,Delta)` governance,
+source-status/noetic-frame discipline, first-/second-/higher-order noetic ordering,
+TTP/operator owner floor, restoration, package metadata, or repo/dev harness. Classify overlap
+as load-bearing reinforcement, harmless duplication, confusing duplication, contradictory
+duplication, stale duplication, verbose-but-necessary, or removable fluff. Some reinforcement is
+intentional for weaker/scriptless runtimes and must not be removed unless the surviving owner is
+clear, earlier-loaded, and smoke-proven.
+
+Every dispatchable owner/TTP must have source-level trigger, target, operation, result, and
+exit/land clarity, or be explicitly marked pass-through, diagnostic-only, marker-only, or
+repo/dev-harness-only. Distinguish the broad compiled registry from the optional script-harness
+covered-scope catalogue. When the user forbids edits during an audit, record TODO-intended
+findings in the audit report instead of modifying `TODO.md`.
+
+### Scriptless Compact DSL Behavioral Coercion Memory
+
+v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless compact DSL
+governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface, not
+prose-only mode. DSL/IR is integral to the skill's anti-hallucination, routing,
+burden-accounting, and restoration discipline. `/daee-epistemics:dsl` is expanded
+diagnostic/IR visibility; it is not the first place DSL appears. The optional script-capable
+route/check harness can help Codex/dev/CI, but it is not the public identity of the skill and
+is not required for ordinary portability. If a model cannot produce the compact DSL-governed
+surface from the package alone, that is a runtime/model compliance limitation, not a reason
+to redefine the skill as prose-only.
+
+Default scriptless compact DSL output is burden-governed, not concise-answer-governed.
 Compact means after burden accounting; it never licenses fewer live burdens, fewer necessary
 TTP submoves, thinner source operation, or final-restoration source dumping.
 
@@ -144,7 +183,7 @@ Final restoration cannot be the first place live source architecture appears. Na
 smokes are canaries, not architecture. Do not add named-person, movement-specific, or
 one-golden-output-specific runtime logic unless explicitly instructed.
 
-- For Level 1/2 render regressions, preserve both governance and depth: compact does not mean
+- For scriptless compact-DSL render regressions, preserve both governance and depth: compact does not mean
   thin; Layer A must stay compact but load-bearing; Layer B must stay burden-complete,
   case-specific, owner-floor faithful, and restoration-directed.
 - Compactness removes padding, source parade, and framework dumping. It does not reduce live
@@ -174,18 +213,55 @@ one-golden-output-specific runtime logic unless explicitly instructed.
   before closure.
 - `R(H,Delta)` is a real state-transition judgment, not a formatting marker. It decides
   whether to continue, hold/defer, skip, reroute boundedly, or close.
+- New burden-cycle ordering: a new burden requires a distinct input-anchored noetic function
+  licensed by `Land(B) -> R(H,Delta)`. Practical application, source maps, concise wording,
+  warnings, do/don't guardrails, and recaps of already-landed material usually belong in the
+  current Layer B or final Restorative/Application Response unless the state re-read proves a
+  genuinely new unresolved noetic pressure. Source-worldview may become its own burden when
+  the worldview/source-frame itself is criterion-bearing or explicitly requested; practical
+  response guidance is not automatically a burden.
+- Anti-overcollapse guard: same-burden collapse is licensed only when same function/source-frame/
+  claim-cluster/noetic target really holds. Do not absorb distinct accountability, hiddenness/
+  coercive-guidance, punishment/mercy, source-worldview, predication, transmission/testimony,
+  grief/register, or family-local proof-method burdens into one omnibus tribunal. Release the
+  next burden after `Land(B) -> R(H,Delta)`, or explicitly HOLD/PARTIAL it.
+- Burden recursion follows live noetic order, not topic count. First-order surface claims,
+  second-order criteria/warrants/proof-methods/source-authority/testimony standards/moral
+  tribunals, and higher-order source-worldview/register/source-status/noetic-frame pressures
+  may each require release when they remain live after `Land(B) -> R(H,Delta)`. Do not recurse
+  because more content is available; do not collapse distinct orders into one omnibus burden.
+  This protects noetic function, reliable warrant-process, and foundational ordering: what is
+  treated as basic, what is inferred, which hidden premise/source-rule/tribunal is acting as a
+  foundation, and whether the operation is truth-directed or deformed by hawā, inherited
+  assumptions, identity pressure, grief, source inversion, desire, imported criteria, selective
+  testimony rules, scientistic filters, or anti-revelation priors.
+- Practitioner framing is not automatically NewB. Requests to respond, deal with a claim,
+  bring sources, or dismantle a belief system require source-operation inside the relevant
+  burdens and a usable Restorative/Application Response; they do not by themselves license a
+  late practical-handling burden unless an unresolved practitioner constraint remains live.
+- Hard source-request cases must not compress distinct source functions into one citation stack.
+  Each materially distinct source function must operate locally on the burden before `Land(B)`;
+  source maps summarize after landing and do not replace source operation.
+- Same-burden collapse must preserve operator identity. Inside a valid burden-cycle, every
+  materially active TTP/operator still executes visibly as a local submove: why this operator
+  is live for the current burden, its target, its operation, its result/state change, and how
+  that result contributes to `Land(B)`. Use the actual matched owner/TTP where structurally
+  warranted; do not replace FPD, M1/M1P, M8, M9, V2, P1/P7, transmission, predication,
+  register-hold, or family-local operators with generic verbs such as expose, correct, warn,
+  or clarify.
 - Structural attachment fidelity is required. Marker presence is not execution, and the same
   tokens in a different order do not preserve the same state. Keep each burden submove
-  (`nBi`, with `B1.s1` as checker-compatible alias) -> owner-floor `Target` / `Operation` /
+  (`¹B₁` preferred, `1B1` fallback, `B1.s1` checker-compatible alias) -> owner-floor `Target` / `Operation` /
   `Result` -> `Land(B)` -> `R(H,Delta)` -> next decision locally attached; grouped reasoning,
   grouped owner markers, or checker-shaped blobs are structural-flattening failures even if
   every label appears somewhere.
 - Hard-case pressure execution is required. Labels, owner IDs, Target/Operation/Result syntax,
   and route markers count only when the prose pressures the actual premise, criterion, warrant,
   source-frame, theological predicate, testimony question, register-hold, or restoration vector.
-  Level 3 may expose this as `pressure_dimensions`; Level 1/2 must obey the same internal
-  governance principle without printing raw `pressure_dimensions` in public/default output.
-- For hard Level 3 cases, the execution must reconstruct the noetic frame before argument:
+  The optional script harness may expose this as `pressure_dimensions`; scriptless compact DSL
+  output must obey the same internal governance principle without printing raw
+  `pressure_dimensions` in public/default output.
+- For hard script-harness cases, the execution must reconstruct the noetic frame before argument:
   claim level, pattern/deformation, reason category, concealment, DO-orient, live burden,
   source-status/noetic-frame, held/released state, and gate/release decision. A checker-shaped
   route answer without that frame is PARTIAL even if it names the right owners.
@@ -202,7 +278,8 @@ one-golden-output-specific runtime logic unless explicitly instructed.
   recover the live burden, selected operator, nearest held/deferred alternatives, expected
   `Land(B)`, and governance verdict, the output is plausible commentary rather than governed
   execution.
-- Level 1/2 regression findings should be mapped to Level 3 route/check/fixture coverage wherever
+- Scriptless compact-DSL regression findings should be mapped to optional script-harness
+  route/check/fixture coverage wherever
   the failure can be expressed as route state, owner pressure, source function, held-route behavior,
   or negative output checking. "Manual rerun required" does not defer machine-testable analogues.
 - Terminology boundary: specialist audit passes may use SPECOP-style lenses, but SPECOP is not a
@@ -222,16 +299,20 @@ one-golden-output-specific runtime logic unless explicitly instructed.
   Salafi/Athari-aligned scholarship; use labels such as kalam theologian, speculative theologian,
   school theologian, mutakallim, philosopher, school authority, or later theological figure for
   non-Athari kalam/falsafah figures. Keep this as source-status discipline, not polemical clutter.
-## Level 3 Protocol
+## Optional Script-Capable Route/Check Harness
 
-Level 3 is additive route-first execution for Codex/script-capable runtimes.
+The optional script-capable route/check harness (formerly called "Level 3") is additive
+route-first execution for Codex/dev/CI validation.
 
-- `/daee-epistemics [input]` should use Level 3 by default in Codex when bundled scripts are
-  available.
-- Scriptless runtimes must visibly fall back to Level 1/2 behavior.
+- Default `/daee-epistemics [input]` remains the canonical compact DSL-governed surface.
+  Codex/script-capable runtimes may use repo-local `skill/scripts/daee_level3.py` as a harness
+  around that surface when explicitly requested by a maintainer, but the harness is not the
+  public identity of the skill and is not part of the canonical user-facing package.
+- Scriptless runtimes must produce the canonical compact DSL-governed surface; do not invent
+  script results if scripts are unavailable.
 - `route.py` is deterministic given extracted features; feature extraction includes span-backed
   interpretive components, and transformer execution remains probabilistic.
-- Level 3 does not solve fixture-18 capability ceilings and does not justify pure-Hermes parity
+- The optional script harness does not solve fixture-18 capability ceilings and does not justify pure-Hermes parity
   claims.
 - `continuation_queue` is a planned route, not an unconditional checklist. After each `Land(B)`,
   `R(H,Delta)` must decide whether to continue, hold/defer, skip, bounded-reroute, or close.
@@ -245,13 +326,23 @@ Current runtime notation is owned by
 Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
-Burden/submove notation uses `nBi` as the plain-text mirror for the i-th operative submove inside
-the n-th burden-cycle. Example: `1B1` is burden 1, submove 1; `1B2` is burden 1, submove 2;
-`2B1` begins only after `Land(1B) -> R(H,Delta)` licenses burden 2. Existing `B1.s1` / `B1.s2`
-notation remains an accepted legacy/checker alias. In Level 1/2 default hard-case output, absence of the superscript/subscript
-form is not by itself a failure when `nBi`, `B1.s1`, or readable "Burden N / operative
-submove" language preserves submove-vs-burden grammar and local attachment. Require the
-superscript/subscript form only when a task or trace mode explicitly asks for that notation.
+Visual architecture reference:
+`docs/daee-epistemics-pipeline.html`. Treat it as a repo-navigation aid, not a
+new source of truth. Keep it in parity with the canonical compact DSL-governed
+runtime, the canonical package boundary, and the repo/dev-only route/check harness
+boundary. It must describe the design-space requirement: the framework is engineered
+to operate across every possible live noetic-structure selection before the chosen
+runtime route is known; meta-noetic memetics becomes executable only through DSL/IR
+state, owner/TTP activation, burden landing, state re-read, and restoration.
+
+Burden/submove notation in public canonical output prefers the compact human/math form:
+`¹B₁`, `¹B₂`, `²B₁` = burden 1 submoves 1/2, then burden 2 submove 1. Plain `1B1`,
+`1B2`, `2B1` is the ASCII fallback. Existing `B1.s1` / `B1.s2` notation remains an
+accepted legacy/checker alias, but public canonical output should not primarily use the
+`B<N>.s<M>` style unless a checker/dev harness context requires it. In default compact DSL
+hard-case output, absence of the superscript/subscript form is not by itself a failure when
+the ASCII fallback or readable "Burden N / operative submove" language preserves
+submove-vs-burden grammar and local attachment.
 
 The compiled runtime must preserve this route:
 
@@ -286,7 +377,8 @@ mode become clean essay cosplay.
   Layer B, State/noetic re-read, one Restorative Response, and one final Closing Formulation.
 - Default Layer B includes Hidden Premises, Core Formulation local to each released operation,
   bounded operative submoves, and TTP/operator trace when a named operator performs work.
-- `/daee-epistemics:dsl` is the concise DSL / IR printout mode.
+- `/daee-epistemics:dsl` is the expanded diagnostic/IR visibility mode, not the first place
+  DSL governance appears.
 - `/daee-epistemics:audit` is deprecated as public output and retained only for
   internal/development audit compatibility.
 - Default output must not expose raw Diagnostic IR, full Case State, `matched_modules`,
@@ -366,17 +458,34 @@ Never change module IDs casually.
 
 ## Package Shape Rule
 
-For the v0.3.2.0 package shape, the `.skill` archive root may contain:
+For the v0.3.2.0 canonical user-facing package shape, the `.skill` archive root may contain:
 
 ```text
 SKILL.md
 references/
-data/
-scripts/
-tests/
 compiled-module-map.json
 build-manifest.json
 README.md
+```
+
+This mirrors the pre-harness scriptless package boundary, with `README.md` retained as current
+package metadata. The canonical package must not contain repo/dev harness roots:
+
+```text
+data/
+scripts/
+tests/
+route_plan.json
+features.json
+validation.json
+reconstruction.json
+execution_verdict.json
+execution_prompt.md
+execution_blocked.md
+partial_banner.md
+retry_prompt.md
+output.simulated.md
+output.model.md
 ```
 
 The archive must not contain:

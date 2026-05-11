@@ -12,10 +12,10 @@ Invariants verified:
   - :audit is deprecated as public output and retained for internal/development audit compatibility.
   - recursive-audit discipline applies universally; full audit printout belongs only to internal/development audit.
   - Recursive traversal governance is universal across modes.
-  - Plain /daee-epistemics does NOT map to Level 2 lab-report.
+  - Plain /daee-epistemics does NOT map to expanded diagnostic lab-report.
   - Compact Layer A DSL/IR header is required in default mode.
   - Layer A full audit machinery is prohibited in default mode.
-  - Forbidden claims (behavioral parity, mandatory ledger, stale Level 2 mapping) are absent.
+  - Forbidden claims (behavioral parity, mandatory ledger, stale expanded-diagnostic mapping) are absent.
 """
 
 from __future__ import annotations
@@ -124,7 +124,7 @@ REQUIRED_TOKENS = [
     "how sound/innate reason has been deformed",
     "what criterion/source/warrant is returned to its proper place",
     "State/noetic re-read",
-    "default render mode",
+    "default compact DSL-governed surface",
     "giant load ledger by default",
     "prose-first",
     # Last-mile default output preflight
@@ -169,7 +169,7 @@ REQUIRED_TOKENS = [
     "The objection imports a moral tribunal",
     "Visible block format is internal/development audit / diagnostic-trace only",
     "The imported criterion no longer governs as judge",
-    "Imported-criterion testing, hujjah/accountability correction",
+    "hujjah/accountability correction",
     "guidance-as-coercive-proof correction",
     "identity-frame may stabilize",
     "held downstream content",
@@ -190,6 +190,10 @@ REQUIRED_TOKENS = [
     "Let me check",
     "I will produce governed prose",
     "file loading, searching, setup, readiness, or composition",
+    "do not run repo checkers, route tools, smoke-artifact",
+    "do not add harness verdicts",
+    "Do not add source links, sanity scans",
+    "keep explicit `Land(Bn)`",
     "The public identity-frame may stabilize the criterion or affect discourse orientation",
     "Identity is a modal/stabilizing node",
     "not the primary verdict-bearing load-bearer",
@@ -256,6 +260,18 @@ REQUIRED_TOKENS = [
     "state-transition progression",
     "prose state-change transition",
     "module stacking",
+    "Layer A is the compact diagnostic/control surface",
+    "governed operation/release surface",
+    "Layer A overgrowth",
+    "Layer B flattening",
+    "Burden-cycle recursion follows live noetic order",
+    "Burden recursion is licensed by live noetic order",
+    "first-order",
+    "second-order",
+    "higher-order/meta-noetic",
+    "truth-directed",
+    "reliable warrant-process",
+    "foundational order",
     "Move 1 / Move 2 / Move 3",
     "Step 1",
     "essay sequencing",
@@ -319,6 +335,14 @@ REQUIRED_TOKENS = [
     "Operative submoves are not burden-cycles",
     "hiddenness/punishment/source-status can be operative submoves under one burden",
     "multi-burden does not mean multi-recursion by default",
+    "Same-burden collapse must preserve operator identity",
+    "why it is live for that burden",
+    "Anti-overcollapse guard",
+    "Opposite guard: do not overcollapse distinct input-anchored burden families",
+    "Practical handling becomes NewB only",
+    "must not compress distinct source functions into one citation stack",
+    "it cannot substitute for",
+    "burden-local source operation",
     "imported tribunal / hiddenness / punishment / named source-worldview",
     "A burden-cycle begins only after the current burden lands",
     "burden landing -> state re-read",
@@ -379,11 +403,12 @@ REQUIRED_TOKENS = [
     "closed operative verbs",
     "Released: <item>",
     # positive submove-boundary worked-example anchors
-    "Submove Boundary",
-    "imported moral tribunal judging divine action",
+    "Boundary Discipline",
+    "imported compassion/autonomy tribunal",
+    "¹B₁ [FPD]",
     "burden-complete",
     "no headline-only answer",
-    "handled inside the tribunal operation",
+    "release the next burden-cycle",
 ]
 
 # Tokens that must NOT appear in the generated runtime.
@@ -393,7 +418,7 @@ FORBIDDEN_TOKENS = [
     "omnibus names as matched_modules",
     "behavioral parity guaranteed",
     "full audit render is the default",
-    # Stale Level 2 mapping: plain /daee-epistemics must NOT map to Level 2/lab-report
+    # Stale expanded-diagnostic mapping: plain /daee-epistemics must NOT map to lab-report
     "plain /daee-epistemics = level 2",
     "plain /daee-epistemics = lab-report",
     "plain /daee-epistemics = full diagnostic ir",
@@ -2018,7 +2043,7 @@ def check_current_doc_staleness(root: Path, errors: list) -> None:
 
 
 SUBMOVE_BOUNDARY_EXAMPLE_RE = re.compile(
-    r"(?ims)^## Default-Mode Worked Example\s+.*?Submove Boundary\b(?P<body>.*?)(?=^---\s*$|^##\s|\Z)"
+    r"(?ims)^## Default-Mode Worked Example\s+.*?Boundary Discipline\b(?P<body>.*?)(?=^---\s*$|^##\s|\Z)"
 )
 OLD_HARD_SMOKE_EXAMPLE_RE = re.compile(
     r"(?i)\bThe Satanic Temple'?s tenets are more humane\b"
@@ -2034,26 +2059,26 @@ def check_submove_boundary_worked_example(corpus: str, errors: list) -> None:
     body = match.group("body")
     normalized_body = " ".join(body.split())
     layer_a_count = len(re.findall(r"(?im)^#{3,5}\s*Layer A\b", body))
-    if layer_a_count < 2:
-        errors.append("submove-boundary worked example does not show per-burden Layer A")
+    if layer_a_count < 1:
+        errors.append("submove-boundary worked example does not show Layer A")
     if OLD_HARD_SMOKE_EXAMPLE_RE.search(body):
         errors.append("submove-boundary worked example uses named hard-smoke wording")
-    if "source-worldview consequence trace remains live" not in body:
+    if "source-worldview consequence" not in body:
         errors.append(
             "submove-boundary worked example does not keep source-worldview burden live"
         )
-    if "Next bounded pass: source-worldview consequence trace" not in body:
+    if "release the next burden-cycle" not in body:
         errors.append(
             "submove-boundary worked example does not license the next bounded pass"
         )
-    burden_2_idx = body.find("### Burden-Cycle 2")
+    r_idx = body.find("`R(H,Delta)`")
     premature_close_idx = body.find("Remaining input-anchored burdens: none")
-    if premature_close_idx != -1 and (burden_2_idx == -1 or premature_close_idx < burden_2_idx):
+    if premature_close_idx != -1 and (r_idx == -1 or premature_close_idx < r_idx):
         errors.append(
-            "submove-boundary worked example closes before the second burden-cycle"
+            "submove-boundary worked example closes before state re-read"
         )
     if (
-        "source-worldview frame that supplies the criterion may therefore become a later burden"
+        "Hard compound source-request cases often require several burden-cycles"
         not in normalized_body
     ):
         errors.append(

@@ -151,7 +151,7 @@ surface discourse
 Plausible typed commentary is not faithful compression unless the runtime can reconstruct the
 burden-local control state it came from. Route labels, owner names, checker markers, or state
 tokens appearing somewhere in a trace do not prove reconstruction faithfulness. The burden step
-must remain locally replayable as `B.s -> owner-floor Target/Operation/Result -> Land(B) ->
+must remain locally replayable as `ⁿBᵢ -> owner-floor Target/Operation/Result -> Land(ⁿB) ->
 R(H,Delta) -> next state decision`. A response that separates labels into global blobs has lost
 the attachment needed to govern the next burden, even when the vocabulary looks correct.
 For hard/compound/deformed Level 2 output, reconstruction faithfulness also asks whether the
@@ -168,6 +168,6 @@ route and a final synthesis, it has not reconstructed the compound burden faithf
 ## Render Discipline
 
 Default public output should not print the reconstruction ledger. The visible answer may show the
-existing compact Layer A signal and case-specific B.s -> Land(B) -> R(H,Delta) work when needed.
+existing compact Layer A signal and case-specific `ⁿBᵢ -> Land(ⁿB) -> R(H,Delta)` work when needed.
 The reconstruction witness belongs in trace/verdict evidence unless the user explicitly requests
 diagnostic or audit render.

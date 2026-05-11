@@ -8,26 +8,45 @@ import re
 from pathlib import Path
 
 
-ALLOWED_ROOT_ENTRIES = {
+CANONICAL_PACKAGE_ROOT_ENTRIES = {
     "SKILL.md",
     "README.md",
     "references",
-    "data",
-    "scripts",
-    "tests",
     "compiled-module-map.json",
     "build-manifest.json",
 }
 
-REQUIRED_ROOT_ENTRIES = {
+CANONICAL_REQUIRED_ROOT_ENTRIES = {
     "SKILL.md",
     "README.md",
     "references",
+    "compiled-module-map.json",
+    "build-manifest.json",
+}
+
+DEV_ONLY_ROOT_ENTRIES = {
     "data",
     "scripts",
     "tests",
-    "compiled-module-map.json",
-    "build-manifest.json",
+}
+
+ALLOWED_ROOT_ENTRIES = CANONICAL_PACKAGE_ROOT_ENTRIES | DEV_ONLY_ROOT_ENTRIES
+REQUIRED_ROOT_ENTRIES = CANONICAL_REQUIRED_ROOT_ENTRIES
+
+DEV_ONLY_PACKAGE_PREFIXES = tuple(f"{entry}/" for entry in sorted(DEV_ONLY_ROOT_ENTRIES))
+
+FORBIDDEN_ARTIFACT_NAMES = {
+    "route_plan.json",
+    "features.json",
+    "validation.json",
+    "reconstruction.json",
+    "execution_verdict.json",
+    "execution_prompt.md",
+    "execution_blocked.md",
+    "partial_banner.md",
+    "retry_prompt.md",
+    "output.simulated.md",
+    "output.model.md",
 }
 
 FORBIDDEN_ARCHIVE_PREFIXES = (
@@ -71,24 +90,43 @@ def expected_package_files(root: Path, manifest: dict | None = None) -> tuple[se
     generated_files = manifest.get("generated_files")
     if not isinstance(generated_files, list):
         return set(), ["manifest generated_files must be an array"]
+    canonical_package_files = manifest.get("canonical_package_files")
+    if canonical_package_files is None:
+        package_file_items = generated_files
+        field_name = "generated_files"
+    elif isinstance(canonical_package_files, list):
+        package_file_items = canonical_package_files
+        field_name = "canonical_package_files"
+    else:
+        return set(), ["manifest canonical_package_files must be an array when present"]
+    generated_set = {item for item in generated_files if isinstance(item, str)}
     expected: set[str] = set()
     seen: set[str] = set()
-    for item in generated_files:
+    for item in package_file_items:
         if not isinstance(item, str):
-            errors.append(f"manifest generated_files entry must be string: {item!r}")
+            errors.append(f"manifest {field_name} entry must be string: {item!r}")
             continue
         if item in seen:
-            errors.append(f"manifest generated_files duplicate: {item}")
+            errors.append(f"manifest {field_name} duplicate: {item}")
         seen.add(item)
+        if field_name == "canonical_package_files" and item not in generated_set:
+            errors.append(f"manifest canonical_package_files entry absent from generated_files: {item}")
         if "\\" in item or item.startswith("/") or item.startswith("./"):
-            errors.append(f"manifest generated_files path must be normalized relative POSIX: {item}")
+            errors.append(f"manifest {field_name} path must be normalized relative POSIX: {item}")
             continue
         if not item.startswith("skill/"):
-            errors.append(f"manifest generated_files path must start with skill/: {item}")
+            errors.append(f"manifest {field_name} path must start with skill/: {item}")
             continue
         rel = item[len("skill/"):]
         if not rel:
-            errors.append("manifest generated_files cannot include skill/ root")
+            errors.append(f"manifest {field_name} cannot include skill/ root")
+            continue
+        if rel.split("/", 1)[0] in DEV_ONLY_ROOT_ENTRIES:
+            if field_name == "canonical_package_files":
+                errors.append(f"manifest canonical_package_files must not include dev/harness path: {item}")
+            continue
+        if Path(rel).name in FORBIDDEN_ARTIFACT_NAMES:
+            errors.append(f"manifest {field_name} must not include run artifact: {item}")
             continue
         expected.add(rel)
     return expected, errors
@@ -127,6 +165,7 @@ def validate_manifest_shape(manifest: dict) -> list[str]:
         "canonical_source_root",
         "output_root",
         "generated_files",
+        "canonical_package_files",
         "bundles",
         "runtime_metadata_copies",
         "sources",
@@ -148,6 +187,9 @@ def validate_manifest_shape(manifest: dict) -> list[str]:
     for field in ("bundles", "runtime_metadata_copies", "sources", "extra_inputs"):
         if field in manifest and not isinstance(manifest[field], dict):
             errors.append(f"manifest {field} must be an object")
+    for field in ("generated_files", "canonical_package_files"):
+        if field in manifest and not isinstance(manifest[field], list):
+            errors.append(f"manifest {field} must be an array")
     for field in ("compiler_version", "bundle_mapping_version", "generated_warning"):
         if field in manifest and not isinstance(manifest[field], str):
             errors.append(f"manifest {field} must be a string")
@@ -237,6 +279,8 @@ def validate_skill_tree(root: Path) -> list[str]:
         if not path.is_file():
             continue
         rel = path.relative_to(base).as_posix()
+        if rel.startswith(DEV_ONLY_PACKAGE_PREFIXES):
+            continue
         if is_python_cache(path):
             continue
         actual_packageable.add(rel)
@@ -252,12 +296,15 @@ def validate_skill_tree(root: Path) -> list[str]:
 def validate_archive_names(names: list[str]) -> list[str]:
     errors: list[str] = []
     roots = {name.split("/", 1)[0] for name in names if name and not name.endswith("/")}
-    missing_roots = sorted(REQUIRED_ROOT_ENTRIES - roots)
-    unexpected_roots = sorted(roots - ALLOWED_ROOT_ENTRIES)
+    missing_roots = sorted(CANONICAL_REQUIRED_ROOT_ENTRIES - roots)
+    unexpected_roots = sorted(roots - CANONICAL_PACKAGE_ROOT_ENTRIES)
     if missing_roots:
         errors.append("archive missing required root entry(s): " + ", ".join(missing_roots))
     if unexpected_roots:
         errors.append("archive has unexpected root entry(s): " + ", ".join(unexpected_roots))
+    forbidden_dev_roots = sorted(roots.intersection(DEV_ONLY_ROOT_ENTRIES))
+    if forbidden_dev_roots:
+        errors.append("canonical archive must not include dev/harness root entry(s): " + ", ".join(forbidden_dev_roots))
     bad = [
         name for name in names
         if name.startswith(FORBIDDEN_ARCHIVE_PREFIXES)
@@ -266,6 +313,7 @@ def validate_archive_names(names: list[str]) -> list[str]:
         or "/__pycache__/" in name
         or name.startswith("__pycache__/")
         or name.endswith((".pyc", ".pyo"))
+        or Path(name).name in FORBIDDEN_ARTIFACT_NAMES
     ]
     if bad:
         errors.append("archive has invalid root, separator, or bytecode path(s): " + ", ".join(bad[:20]))

@@ -321,8 +321,11 @@ Case State, and the raw `[Diagnostic IR]` block.
 Submove-vs-recursion rule:
 `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 Gloss: hiddenness, punishment/accountability, source-status, source-worldview, and
-identity-stabilization can be operative submoves under one governing burden; they become
-separate burden-cycles only after `Land(B) -> R` licenses a genuinely new input-anchored `B`.
+identity-stabilization can be operative submoves under one governing burden only when the
+same-function gate holds; they become separate burden-cycles after `Land(B) -> R` licenses a
+genuinely new input-anchored `B`. Hard compound inputs must not collapse distinct
+accountability, hiddenness/coercive-guidance, punishment/mercy, source-worldview, predication,
+testimony, grief/register, or family-local proof-method pressure into one umbrella burden.
 Notation owner: `recursive-state-transitions.md`.
 
 *Prohibited in default mode — must not appear in the public response:*

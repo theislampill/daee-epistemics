@@ -30,6 +30,21 @@ from compiled_runtime_lib import (
     source_rel_from_legacy,
 )
 
+DEV_ONLY_GENERATED_ROOTS = {"data", "scripts", "tests"}
+
+
+def canonical_package_files_from_generated(generated_files: list[str]) -> list[str]:
+    """Return generated runtime files that belong in the canonical user-facing package."""
+    selected: list[str] = []
+    for item in generated_files:
+        if not item.startswith(f"{OUTPUT_ROOT_REL}/"):
+            continue
+        rel = item[len(f"{OUTPUT_ROOT_REL}/"):]
+        if rel.split("/", 1)[0] in DEV_ONLY_GENERATED_ROOTS:
+            continue
+        selected.append(item)
+    return sorted(selected)
+
 
 def validate_sources(root: Path) -> list[str]:
     errors: list[str] = []
@@ -123,13 +138,13 @@ Default multi-burden execution uses this repeated burden-cycle shape:
 - Closing Formulation - required once at the end after final Restorative Response
 
 Hard/multi-burden default output:
-ComplexB -> {{B.s1...B.sn}} -> Land(B) -> R(H,Delta).
-AtomicB -> B.s1 -> Land(B) -> R(H,Delta).
+ComplexB -> {{¹B₁...¹Bₙ}} -> Land(¹B) -> R(H,Delta).
+AtomicB -> ¹B₁ -> Land(¹B) -> R(H,Delta).
 Compact default may not collapse a complex B into one generic operation block. Render materially
 necessary submoves as case-specific target -> operation -> result units before burden landing.
 The burden grammar is part of the hard-output deliverable, not commentary about the deliverable.
 Hard/multi-burden execution must not proceed from root-summary awareness alone. Before
-rendering a complex B.s<i>, load/read the owner body or compiled bundle section containing
+rendering a complex ⁿBᵢ, load/read the owner body or compiled bundle section containing
 the active TTP's operation floor, unless that exact section is already present in active
 context. Package availability, map presence, or bundle co-location is not access. TTP label
 recognition is not owner-body execution; matched module label is not owner floor loaded.
@@ -162,16 +177,16 @@ Owner-loadform map for common hard-output owners:
 
 Render ComplexB in this order:
 Burden N: <name>
-  Operative Submove B<N>.s1:
+  Operative Submove ¹B₁:
     Target: <exact premise / criterion / predicate / warrant>
     Operation: <closed operative verb>
     Result: <changed claim-state>
-  Operative Submove B<N>.s2:
+  Operative Submove ¹B₂:
     Target: <exact premise / criterion / predicate / warrant>
     Operation: <closed operative verb>
     Result: <changed claim-state>
   [continue until all materially necessary s are rendered]
-  Land(B<N>): <cumulative state delta from s1...sn>
+  Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
   R(H,Delta): <held/released/next-live-burden decision>
 Post-burden continuation gate: after every R(H,Delta), if state re-read names a remaining
 input-anchored burden and no hold, register, semantic, thin-basis, source-use, or limit gate
@@ -189,15 +204,15 @@ internal predicates, criteria, source-status forks, or release gates.
 
 Miniature structure only:
 Burden 1: imported moral tribunal
-  B1.s1 - expose the tribunal
+  ¹B₁ - expose the tribunal
     Target: hidden moral judge | Operation: expose | Result: criterion is no longer neutral
-  B1.s2 - test the criterion against its own grounds
+  ¹B₂ - test the criterion against its own grounds
     Target: self-authorizing standard | Operation: test | Result: standard cannot condemn while self-grounded
   Land(B1): the imported tribunal no longer governs as unquestioned judge
   R(H,Delta): accountability and guidance-demand burdens remain held/live; release next B only if input-anchored
 Burden 2: accountability compression
-  B2.s1 - distinguish bare non-exposure from culpable rejection
-  B2.s2 - hold individual fate while correcting the general rule
+  ²B₁ - distinguish bare non-exposure from culpable rejection
+  ²B₂ - hold individual fate while correcting the general rule
   Land(B2): "simple non-belief" no longer names the accountability structure
   R(H,Delta): guidance-demand burden remains live; release next B
 This hard-output shape is not raw IR or a route ledger when each submove serves the same B.
@@ -210,18 +225,24 @@ prose substitute, or broad-conclusion jump.
 
 Current bounded operator names one live noetic burden/function, not a route chain, module list,
 route itinerary, or single operative submove. Valid examples: imported moral tribunal /
-worship-worthiness criterion burden, foundational epistemology warrant burden, source-status /
-identity-stabilization burden. Invalid examples: FPD -> M1 -> DO-8 -> M8 -> restoration;
-M1, M8, DO-8, restoration; full route itinerary; splitting imported-criterion,
-hujjah/accountability, and guidance-as-coercive-proof corrections into separate burden-cycles
-when they all serve the same imported-tribunal burden.
+worship-worthiness criterion burden, accountability or hujjah burden, hiddenness or
+coercive-guidance burden, punishment/proportionality with mercy-justice source architecture,
+foundational epistemology warrant burden, source-status / identity-stabilization burden.
+Invalid examples: FPD -> M1 -> DO-8 -> M8 -> restoration; M1, M8, DO-8, restoration; full
+route itinerary; making every source, warning, recap, practical wording, or individual TTP
+submove its own burden. Distinct first-order, second-order, or higher-order noetic functions
+must not be collapsed merely because they appear in the same prompt or bear on one broader
+objection.
 
 Operative submoves are not burden-cycles. A live noetic burden may contain multiple operative
 submoves, each preserving target -> operation -> result, before the burden lands and state is
-re-read. Do not label FPD, M1, DO-8, M8, hujjah/accountability correction,
-guidance-as-coercive-proof correction, identity clarification, or restoration fragments as
-Pass 1 / Pass 2 / Pass 3 unless a prior burden landed and state re-read licensed a genuinely
-new input-anchored noetic aspect.
+re-read. Do not label FPD, M1, DO-8, M8, identity clarification, source maps, warnings, or
+restoration fragments as Pass 1 / Pass 2 / Pass 3 unless a prior burden landed and state
+re-read licensed a genuinely new input-anchored noetic aspect. But if R(H,Delta) shows a
+different noetic order/function remains live--for example imported tribunal, accountability
+or hujjah compression, hiddenness or coercive-guidance demand, punishment/proportionality with
+mercy-justice source architecture, or criterion-bearing source-worldview--release the next
+burden rather than compressing it into a generic paragraph.
 
 Diagnostic reduction precedes route selection: core axes -> mandatory Phase 2 passes ->
 triggered overlays / specialty markers -> typed IR -> gate checks -> routing precedence ->
@@ -233,10 +254,13 @@ entry criteria, exit through target -> operation -> result, and converge through
 Do not select a stored argument from a topic cue.
 
 Each recursive depth increase requires prior burden landing, state re-read, a next input-anchored
-live burden, and a new bounded operator. The next live burden must be a genuinely new noetic aspect,
-not merely the next TTP or topical component needed to clear the same burden. Hiddenness,
-punishment/accountability, source-status, source-worldview, and identity-stabilization can be
-operative submoves under one burden. Multi-burden does not mean multi-recursion by default.
+live burden, and a new bounded operator. The next live burden must be a genuinely new noetic
+function/order, not merely the next TTP or topical component needed to clear the same burden.
+Hiddenness, punishment/accountability, source-status, source-worldview, and identity-stabilization
+can be operative submoves under one burden only when R(H,Delta) proves same function, same
+source-frame, and same claim-cluster. When they remain distinct first-order, second-order, or
+higher-order pressures, they require distinct burden-cycles or an explicit PARTIAL. Multi-burden
+does not mean topic tour; compactness means no padding, no burden loss.
 Layer A may name held routes for auditability; Layer B may release only the current live burden
 and its justified operative submoves.
 
@@ -334,18 +358,31 @@ Default output must not print:
 If the drafted default answer contains those surfaces, rewrite it before output.
 
 TTP/operator trace is not external citation support. If a named runtime operator such as
-reductio, tamanu, criterion-reversal, tribunal-detection, predication repair, or
-authority-order repair performs the work, the governed operation or bounded response names it
-and executes target -> operation -> result. Do not substitute a source citation for TTP
-invocation, and do not substitute TTP invocation for Qurʾān/Sunnah/Salaf citation when revealed
-textual support is actually used. When revealed text is quoted for operative diagnostic or
-restorative work, present it cleanly as quotation, translation, and source/reference where
-useful, then state the function it performs; do not collapse central revealed evidence into a
-long prose sentence or use it as citation padding.
+FPD, M1, M1-P, M8 reductio, M9 predication repair, tamanu, criterion-reversal,
+tribunal-detection, P1/P7 restoration or hold discipline, transmission/testimony, predication,
+grief/register, family-local proof-method, or authority-order repair performs the work, the
+governed operation or bounded response names it and executes target -> operation -> result.
+Do not substitute a source citation for TTP invocation, and do not substitute TTP invocation
+for Qurʾān/Sunnah/Salaf citation when revealed textual support is actually used. When revealed
+text is quoted for operative diagnostic or restorative work, present it cleanly as quotation,
+translation, and source/reference where useful, then state the function it performs; do not
+collapse central revealed evidence into a long prose sentence or use it as citation padding.
 Within a released live burden, TTP/operator routing is burden-complete: materially necessary
 sub-burdens are addressed by matched operators before state/noetic re-read, and NewB is not
 licensed by a headline-only answer, skipped internal sub-burdens, generic prose substitute,
-or broad-conclusion jump.
+or broad-conclusion jump. A self-authorizing criterion, self-grounding moral/epistemic court,
+source-worldview transfer, predicate/category transfer, testimony standard, grief/register
+gate, or family-local proof-method pressure requires its matched owner action when structurally
+live; generic "test", "clarify", "warn", or "address" language is not enough unless the
+target, operation, and claim-state change are visible.
+This activation standard is catalogue-wide. For each released burden-cycle, check the live
+noetic structure against the relevant TTP/owner families: E1-E4, F1-F3, husn-al-nazar
+arguments, inductive-fitri method, M1-M9, M1-P, R1-R3, symmetric-taqlid-check, V1-V12,
+heuristics, P1-P7, transmission/testimony owners, predication owners, grief/register owners,
+source-worldview owners, and family-local proof-method owners. Do not print a route list.
+Execute every structurally live owner as a local Layer B submove with target, operation,
+result/state change, and contribution to Land(B), or explicitly clear/hold/PARTIAL it when
+the trigger is absent, blocked, or underdetermined.
 
 Full diagnostic blocks belong to `/daee-epistemics:dsl` or internal/development audit,
 not default mode. Compact Layer A fields are mandatory in default mode.
@@ -476,12 +513,18 @@ def build() -> int:
         generated_files.append(posix_rel(metadata_out, root))
         runtime_metadata_copies[runtime_rel] = canonical_source_rel(rel_path)
 
+    canonical_runtime_metadata_copies = {
+        runtime_rel: source_rel
+        for runtime_rel, source_rel in runtime_metadata_copies.items()
+        if runtime_rel.split("/", 1)[0] not in DEV_ONLY_GENERATED_ROOTS
+    }
+
     compiled_map = {
         "generated": True,
         "generated_warning": "GENERATED FILE. Do not edit directly. Canonical atomized source lives under atomics/skill/. Regenerate with tools/build_compiled_runtime.py.",
         "compiler_version": COMPILER_VERSION,
         "bundle_mapping_version": BUNDLE_MAPPING_VERSION,
-        "runtime_metadata_copies": runtime_metadata_copies,
+        "runtime_metadata_copies": canonical_runtime_metadata_copies,
         "modules": dict(sorted(source_map.items())),
     }
     map_out = compiled_root / "compiled-module-map.json"
@@ -494,6 +537,7 @@ def build() -> int:
     }
     manifest_out = compiled_root / "build-manifest.json"
     generated_files_with_manifest = sorted([*generated_files, posix_rel(manifest_out, root)])
+    canonical_package_files = canonical_package_files_from_generated(generated_files_with_manifest)
     manifest = {
         "generated": True,
         "compiler_version": COMPILER_VERSION,
@@ -501,6 +545,7 @@ def build() -> int:
         "canonical_source_root": SOURCE_ROOT_REL,
         "output_root": OUTPUT_ROOT_REL,
         "generated_files": generated_files_with_manifest,
+        "canonical_package_files": canonical_package_files,
         "bundles": {
             bundle_rel: [canonical_source_rel(source_rel) for source_rel in sources]
             for bundle_rel, sources in BUNDLE_SOURCES.items()

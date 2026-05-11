@@ -747,7 +747,7 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/module-codes.md -->
-<!-- SOURCE_SHA256: 8cf38be137708ed950fd5eb1b4c4b581e106ffb154ac1fc52ad31367a9085dcc -->
+<!-- SOURCE_SHA256: 3200cfbc95e1f90a8a5759ea26d3ad64380ee37cd0796ee6665df1cffd147df4 -->
 
 ---
 id: module-codes
@@ -773,6 +773,8 @@ The skill emits codes on several orthogonal axes. Each code has exactly one cano
 file; other files refer to the code but do not re-specify it. If this reference
 disagrees with the canonical file, the canonical file governs — this reference indexes
 and summarizes.
+Code lookup is not owner activation. A code identifies the owner or axis to consult; release still
+requires validated state, owner-specific operation, burden-local result, and `Land(B) -> R`.
 
 ## Axis 0 — Claim Level and Pattern Profile
 

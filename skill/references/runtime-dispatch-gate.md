@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: ebabdd8888605731785d424a94a2b5c6b7e8333afe8625c8152403128be0c733 -->
+<!-- SOURCE_SHA256: 210f2c9abe869e10e2863d1210870041d3580d5da58185fc8602b6bd559f9c27 -->
 
 ---
 id: diagnostic-ir
@@ -341,8 +341,11 @@ Case State, and the raw `[Diagnostic IR]` block.
 Submove-vs-recursion rule:
 `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 Gloss: hiddenness, punishment/accountability, source-status, source-worldview, and
-identity-stabilization can be operative submoves under one governing burden; they become
-separate burden-cycles only after `Land(B) -> R` licenses a genuinely new input-anchored `B`.
+identity-stabilization can be operative submoves under one governing burden only when the
+same-function gate holds; they become separate burden-cycles after `Land(B) -> R` licenses a
+genuinely new input-anchored `B`. Hard compound inputs must not collapse distinct
+accountability, hiddenness/coercive-guidance, punishment/mercy, source-worldview, predication,
+testimony, grief/register, or family-local proof-method pressure into one umbrella burden.
 Notation owner: `recursive-state-transitions.md`.
 
 *Prohibited in default mode — must not appear in the public response:*
@@ -870,7 +873,7 @@ Framing notes: do not treat anatta as simple mate
 <!-- MODULE_ID: ir-reconstruction-pass -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/ir-reconstruction-pass.md -->
-<!-- SOURCE_SHA256: 7c142aa0aee4ff9e29f8dcb014c372d07667cd58a05f032a60453ac98b6a896f -->
+<!-- SOURCE_SHA256: 7c1324c86d1a92b37472b630ac3f3f7449c7927a0af117680d564c2b9967483c -->
 
 ---
 id: ir-reconstruction-pass
@@ -1025,7 +1028,7 @@ surface discourse
 Plausible typed commentary is not faithful compression unless the runtime can reconstruct the
 burden-local control state it came from. Route labels, owner names, checker markers, or state
 tokens appearing somewhere in a trace do not prove reconstruction faithfulness. The burden step
-must remain locally replayable as `B.s -> owner-floor Target/Operation/Result -> Land(B) ->
+must remain locally replayable as `ⁿBᵢ -> owner-floor Target/Operation/Result -> Land(ⁿB) ->
 R(H,Delta) -> next state decision`. A response that separates labels into global blobs has lost
 the attachment needed to govern the next burden, even when the vocabulary looks correct.
 For hard/compound/deformed Level 2 output, reconstruction faithfulness also asks whether the
@@ -1042,7 +1045,7 @@ route and a final synthesis, it has not reconstructed the compound burden faithf
 ## Render Discipline
 
 Default public output should not print the reconstruction ledger. The visible answer may show the
-existing compact Layer A signal and case-specific B.s -> Land(B) -> R(H,Delta) work when needed.
+existing compact Layer A signal and case-specific `ⁿBᵢ -> Land(ⁿB) -> R(H,Delta)` work when needed.
 The reconstruction witness belongs in trace/verdict evidence unless the user explicitly requests
 diagnostic or audit render.
 
@@ -1885,7 +1888,7 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/anti-patterns.md -->
-<!-- SOURCE_SHA256: 888d924a1152dcc51b438d666f4128bc34df1fb6442f3eee4f555184634289d1 -->
+<!-- SOURCE_SHA256: 29cec16bb830fa9c31eb71e1a1eb081b6ed05f09876ec653533fb45136d06431 -->
 
 ---
 id: anti-patterns
@@ -2199,7 +2202,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Owner-Body Not Loaded Compression**
 *Definition:* Rendering a hard or complex burden from root SKILL recognition, TTP label memory, or `matched_modules` naming without loading or having access to the active owner body / compiled bundle section.
 *Pattern appearing in output:* The response names `V2`, `M9`, `P3`, or another owner label, then emits a broad Target/Operation/Result block that could fit many cases and never demonstrates the owner-specific operation floor.
-*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `B.s<i>` submoves, then `Land(B)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
+*Correct behavior in the same case:* Load or consult the selected owner body / compiled bundle section, render owner-specific `ⁿBᵢ` submoves, then `Land(ⁿB)` and `R(H,Delta)`. If the owner body cannot be loaded or identified, mark `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path.
 *Self-audit question:* Am I executing the owner body, or substituting root-summary recognition for Level 2 owner access?
 *Prevented by:* `SKILL.md` owner-loadform map; `recursive-state-transitions.md` TTP entry criteria; `diagnostic-render-contract.md` hard-output render-through template; `output-release.md` owner-loadform gate.
 
@@ -2247,9 +2250,9 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Operative-Submove Burden Split**
 *Definition:* Splitting a single live noetic burden into several burden-cycles because its operative submoves have different names.
 *Expected checker violation:* operative submoves split into recursive burden-cycles.
-*Pattern appearing in output:* Pass 1 is `imported-criterion tribunal test`, Pass 2 is `hujjah/accountability correction`, and Pass 3 is `guidance-as-coercive-proof correction`, even though all three operations are clearing Burden 1: the imported tribunal judging divine worship-worthiness.
-*Bad signs:* the "next pass" is only the next sub-operation required by the same tribunal test; hujjah/accountability corrects the tribunal's accusation rather than opening a new burden; hiddenness correction narrows the same worship-worthiness complaint; state re-read appears between operative submoves instead of after the whole burden landing.
-*Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins only if a genuinely new noetic aspect remains eligible.
+*Pattern appearing in output:* Pass 1 is `imported-criterion tribunal test`, Pass 2 is `hujjah/accountability correction`, and Pass 3 is `guidance-as-coercive-proof correction`, with no proof that each pass is a distinct input-anchored noetic burden rather than a same-function submove.
+*Bad signs:* the "next pass" is only the next sub-operation required by the same tribunal test; state re-read appears between operative submoves instead of after the whole burden landing; or the output assumes hujjah/accountability and hiddenness are automatically subordinate because they support the same final indictment.
+*Correct behavior in the same case:* `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`. Gloss: use one Burden 1 only when same-function proof holds, preserve target -> operation -> result for each `s`, then land the burden and run state re-read. Burden 2 begins when a genuinely new noetic function remains eligible; hard compound source-request cases must release, HOLD/PARTIAL, or explicitly justify any accountability, hiddenness, punishment/mercy, source-worldview, predication, testimony, or family-local proof-method pressure kept inside the current burden.
 *Self-audit question:* Am I crossing into a new live noetic burden, or did I only finish one operative submove inside the same burden?
 *Prevented by:* `recursive-state-transitions.md` live-burden boundary rule; `diagnostic-render-contract.md` current bounded operator rule; `output-release.md` Layer A / Layer B release checks.
 
@@ -2258,7 +2261,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 **Burden-Cycle Compression Failure**
 *Definition:* A hard output names a complex `B` but renders it as one broad Target/Operation/Result block, then moves to `R`, leaving materially necessary submoves implicit.
 *Malformed shape:* `Burden 1: imported tribunal -> Target: imported criterion -> Operation: audit criterion -> Result: criterion changed -> state/noetic re-read`.
-*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `B1.s1`, `B1.s2`, etc.; `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
+*Bad signs:* distinct hidden premises, criteria, predicates, source-status forks, or release gates are mentioned but never rendered as `¹B₁`, `¹B₂`, etc. (or ASCII fallback `1B1`, `1B2`); `Land(B)` merely restates the broad conclusion; `R(H,Δ)` releases the next burden without showing the cumulative delta produced by submoves.
 *Correct behavior in the same case:* Render materially necessary submoves first, then `Land(B)`, then `R(H,Δ)`. A single Target/Operation/Result block is valid only when diagnostic burden accounting shows one live burden with one materially necessary submove.
 *Prevented by:* `SKILL.md` execution spine; `diagnostic-render-contract.md` hard-output render-through template; `recursive-state-transitions.md` B-complexity test.
 
@@ -2455,7 +2458,10 @@ the noetic-state source-status rules supply input evidence for a verdict.
 - Is the current bounded operator one burden-level function, not a route chain?
 - Are the numbered passes true post-refresh burdens, or merely operative submoves?
 - Did I split imported criterion, hujjah/accountability, and hiddenness-frame correction into
-  fake recursive burden-cycles when they are all serving the same tribunal burden?
+  fake recursive burden-cycles without same-function / new-burden proof?
+- Did I collapse accountability, hiddenness, punishment/mercy, source-worldview, predication,
+  testimony, or family-local proof-method pressure into Burden 1 merely because all supported
+  one final indictment?
 - Did each TTP inside the active burden preserve target -> operation -> result before burden landing and state re-read?
 - Did this input compile into validated IR, or did I select a deterministic argument-bank answer?
 - Did every TTP pass entry criteria and exit criteria before the next depth?
@@ -2474,7 +2480,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: 29e85cc56b77dca864ae58eec2c01d8ed0fa3801cfd5dba991521f438bb8285c -->
+<!-- SOURCE_SHA256: 0144c99e4650e0721e3dd0907e519108fdb146579e84b8b5005e12fe14801d50 -->
 
 ---
 id: framework-pipeline
@@ -2677,26 +2683,27 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | broad enough to contain justified operative submove sequence                                                                      |
 | current bounded operator is not a route chain                                                                                     |
 | invalid: FPD -> M1 -> DO-8 -> M8 -> restoration                                                                                   |
-| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles when one tribunal burden governs                   |
+| invalid split: imported criterion / hujjah / hiddenness as three burden-cycles before same-function or new-burden proof           |
 | invalid split: imported tribunal / hiddenness / punishment / named source-worldview as serial burden-cycles without re-read proof |
 | not deterministic argument-bank selection                                                                                         |
 | owner: rubrics/diagnostic-render-contract.md                                                                                      |
 +-----------------------------------------------------------------------------------------------------------------------------------+
              |
              v
-+--------------------------------------------------------------------------------+
-| OPERATIVE SUBMOVE(S)                                                           |
-|                                                                                |
-| inside selected live burden only                                               |
-| entry criteria: validated IR + owner + bounded target                          |
-| target -> operation -> result                                                  |
-| hujjah/accountability can be operative submove                                 |
-| guidance-as-coercive-proof can be operative submove                            |
-| hiddenness/punishment/source-status can be operative submoves under one burden |
-| exit criteria: result + state delta + held-route recheck                       |
-| operative submoves do not count as recursion                                   |
-| owner: diagnostics/recursive-state-transitions.md                              |
-+--------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------------------------------------+
+| OPERATIVE SUBMOVE(S)                                                                                          |
+|                                                                                                               |
+| inside selected live burden only                                                                              |
+| entry criteria: validated IR + owner + bounded target                                                         |
+| target -> operation -> result                                                                                 |
+| hujjah/accountability can be operative submove only after same-function proof                                 |
+| guidance-as-coercive-proof can be operative submove only after same-function proof                            |
+| hiddenness/punishment/source-status can be operative submoves under one burden only after same-function proof |
+| distinct input-anchored noetic functions require next burden, HOLD, or PARTIAL                                |
+| exit criteria: result + state delta + held-route recheck                                                      |
+| operative submoves do not count as recursion                                                                  |
+| owner: diagnostics/recursive-state-transitions.md                                                             |
++---------------------------------------------------------------------------------------------------------------+
              |
              v
 +------------------------------------------------------------------+
@@ -3103,7 +3110,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 7e38c61bcab01a808184c5e3f1df83617b4036796f07cc11349cc9272d7f6b6b -->
+<!-- SOURCE_SHA256: af29af7698f39b01cc87a90c41a88170552e84d194f0725bb7678bbf78683bcb -->
 
 ---
 id: recursive-state-transitions
@@ -3358,7 +3365,7 @@ or visible default-mode template slots.
 1. Validated IR exists and names the current live burden.
 2. Routing precedence selected one current bounded operator, not a route chain.
 3. The TTP owner is justified by the current IR state or by refreshed state after a prior burden-cycle.
-4. For hard/multi-burden `ComplexB.s<i>`, the active owner body or compiled bundle
+4. For hard/multi-burden `ⁿBᵢ`, the active owner body or compiled bundle
    section is loaded/read, unless that exact section is already present in active context.
    Package availability, map presence, or bundle co-location is not access. If access is
    absent, the route is `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path,
@@ -3370,7 +3377,13 @@ or visible default-mode template slots.
 **TTP operation criteria:**
 
 1. The operation must do the owning TTP's work, not merely name the TTP label.
-2. Operative submoves must preserve target -> operation -> result.
+2. Operative submoves must preserve owner identity plus target -> operation -> result.
+   Where the owner has a compact ID, attach it locally to the submove label/body (for example,
+   `¹B₁ [FPD]`, `¹B₂ [M1]`, `¹B₃ [M9]`; ASCII fallback only if needed) rather than hiding
+   it in a later trace line.
+   Generic "Operative submove N" labels are insufficient for module-backed owners unless the
+   owner ID is also local to that submove. A later trace list cannot retroactively attach an
+   owner to generic prose.
 3. `Operation:` lines must begin with one of the closed operative verbs already used by
    the framework: `split`, `distinguish`, `test against own grounds`, `disambiguate`,
    `classify`, `audit`, `reclassify`, `narrow`, `expose`, `re-read`, `sequence`,
@@ -3424,6 +3437,15 @@ floor is applied", "owner-floor pressure", "the TTP has to change something",
 test-harness proof, not TTP execution. If the public answer needs target -> operation ->
 result, the terms must be filled with case-specific pressure and visible state change,
 not compliance explanation.
+Canonical scriptless output must also avoid route/check harness commands or verdicts such as
+"execute queued owner", "execute first-live owner", "owner-floor passed", "validation passed",
+`smoke_kind`, `validation_fidelity`, `execution_fidelity`, `route_plan`, `features.json`,
+`check_execution`, or repo/dev harness proof claims. Owner identity is allowed only as a
+human-facing local submove anchor tied to operation and state change, not as a queue command.
+`Owner-floor:` lines and `B<N>.s<M>` markers remain repo/dev-harness or legacy/checker
+shapes; canonical scriptless output should prefer `¹B₁ [owner ID] - plain operation`, using
+ASCII `1B1` only when Unicode is unsupported, with the owner-specific operation shown in
+ordinary case prose.
 
 Each TTP owner used in a burden-cycle must be able to answer:
 
@@ -3585,6 +3607,19 @@ is absent, use HOLD. STOP is invalid.
 If any fact is missing, the next material is not NewB. It remains an operative submove,
 HOLD, or PARTIAL.
 
+Practical/application material is not NewB merely because it needs its own heading. Source
+maps, concise answer wording, "how to respond" sections, do/don't guardrails, warning
+paragraphs, and recaps of already-landed material belong in the current Layer B, the final
+Restorative/Application Response, or Closing Formulation unless the state re-read proves a
+distinct unresolved noetic function. Across case families, test the proposed new burden by
+function, not by topic: naturalist evidence criteria, testimony/tawatur pressure,
+predication/category pressure, Trinity/incarnation pressure, kalam/falsafah proof-method
+pressure, grief/register HOLD, authority fatigue, source-worldview transfer, moral protest,
+hiddenness, and worship-worthiness may each become a burden only when they remain
+input-anchored and unresolved after `Land(B) -> R(H,Delta)`. Source-worldview is allowed as a
+separate burden when the worldview/source-frame itself is criterion-bearing or explicitly
+requested for dismantling; practical response guidance is not automatically a burden.
+
 Default Final-Output Preflight Gate must enforce this decision. It is not merely a
 visible-format sanitizer. After the first bounded move, final-output preflight asks:
 
@@ -3671,14 +3706,17 @@ distinct active operator functions into a shorter generic response. If the model
 the remaining live structure in the current response, the correct state is PARTIAL with the next
 live burden and blocked submove(s) named.
 
-In moral-protest / hiddenness / worship-worthiness cases, Imported-criterion testing,
+In moral-protest / hiddenness / worship-worthiness cases, imported-criterion testing,
 hujjah/accountability correction, punishment narrowing, guidance-as-coercive-proof correction,
-Named source-worldview source-status discipline and identity-stabilization caution are `s` when
-they serve the same imported-tribunal `B`. They must remain distinct operative submoves with
-their own target -> operation -> result; same `B` does not mean collapsed prose. They become
-later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a distinct
-claim-level, source/noetic frame, theological target, or restoration vector that was not fully
-landed as `s`.
+named source-worldview source-status discipline, and identity-stabilization caution are `s`
+only when the state gate proves they share the same target-family, claim-level,
+source/noetic frame, claim cluster, and restoration vector. They must remain distinct
+operative submoves with their own target -> operation -> result; same `B` does not mean
+collapsed prose. In hard compound source-request cases, do not presume these functions all
+serve the first tribunal burden merely because they support the same final indictment. They
+become later burden-cycles if `R` licenses a genuinely new input-anchored `B`, including a
+distinct claim-level, source/noetic frame, theological target, or restoration vector that was
+not fully landed as `s`.
 When the user's input publicly anchors a worldview or identity frame and that frame supplies
 the moral criterion, authority-order, discourse posture, or restoration vector, it is not merely
 biographical source-status. It remains operative until consequence trace, source-status
@@ -3688,10 +3726,45 @@ Keep motive and soul-state held; do not drop the burden.
 Multi-burden does not mean multi-recursion by default. The model must not split topical components
 into new burden-cycles merely because they name hiddenness, punishment, source-status,
 source-worldview, or identity-stabilization.
+Opposite guard: do not overcollapse distinct input-anchored burden families into one first
+tribunal or one broad answer. Same-burden collapse is licensed only when `Sameτ`,
+`SameSourceFrame`, `SameClaimCluster`, and `¬NewB` actually hold. If accountability compression,
+hiddenness/coercive-guidance pressure, punishment/mercy/justice architecture, source-worldview
+consequence, predication, transmission/testimony, grief/register, or family-local proof-method
+pressure carries a distinct target/function/restoration vector, `R(H,Delta)` must release it as
+the next `B`, HOLD/PARTIAL it with reason, or mark a runtime limit. Dense hard cases may require
+extensive output; short closure with remaining live burden is invalid.
+Burden recursion follows noetic order, not topic count. A first-order burden is the surface
+claim or objection. A second-order burden is the criterion, warrant, proof-method,
+source-authority, testimony standard, moral tribunal, or epistemic rule judging that claim. A
+higher-order/meta-noetic burden is the governing source-worldview, autonomy/desire authority,
+identity-protective discourse, inherited default, grief/register pressure, source-status
+inversion, or noetic-frame collapse. If `R(H,Delta)` shows a different order remains live, the
+next `B` is licensed; if it shows only more content inside the same order/function/source-frame,
+keep it as `s`, application, HOLD, or PARTIAL.
+Reason for the rule: the skill protects noetic function, reliable warrant-process, and
+foundational order. It asks what is functioning as basic, what is inferred, whether the
+claim-assessing process is truth-conducive, and whether the noetic operation is deformed by
+hawā, inherited assumptions, identity pressure, grief, source inversion, desire, imported
+tribunal, selective testimony rule, scientistic filter, anti-revelation prior, or self-authorizing
+moral standard.
+The user's practical request to respond, deal with a claim, bring sources, or dismantle a belief
+system does not itself license a late practical-handling `B`. It requires source-operation inside
+the relevant burden-cycles and final Restorative/Application Response. Practical handling becomes
+`B` only when a distinct practitioner constraint remains live after `Land(B) -> R(H,Delta)`.
 Forbidden failure name: topical components split into burden-cycles without a state/noetic re-read.
 Opposite failure name: topical components consolidated into one generic submove.
-Short form: hiddenness/punishment/source-status can be operative submoves under one burden, but
-each active TTP/operator remains a distinct `s`.
+Short form: hiddenness/punishment/source-status can be operative submoves under one burden only
+after same-function proof; otherwise `R(H,Delta)` releases, HOLDS, or PARTIALs them as distinct
+burdens. In either case, each active TTP/operator remains a distinct `s` or later `B`.
+Same-burden collapse preserves TTP/operator identity: each materially active `s` must show why
+that operator is live for the current `B`, its target, its operation, its result/state change,
+and how the result contributes to `Land(B)`. Imported-criterion pressure keeps FPD-style
+criterion-import detection visible; self-grounding or self-defeating criteria keep M1/M1P-style
+pressure visible; worldview consequences keep M8-style reductio visible; divine-predicate
+errors keep M9/predication discipline visible; reason-role repair keeps V2 visible; restoration
+and stop discipline keep P1/P7 visible; transmission, predication, grief/register, and
+family-local proof-method pressures keep their relevant owner/TTP identity where active.
 Bad split pattern: imported tribunal / hiddenness / punishment / named source-worldview without
 state-re-read licensing.
 Bad collapse pattern: imported tribunal answer that names hiddenness, accountability,
@@ -3711,8 +3784,12 @@ A route chain is not a bounded operator. `FPD -> M1 -> DO-8 -> M8 -> restoration
 not a current live noetic burden. Current bounded operator names one burden-level function such as
 `imported moral tribunal / worship-worthiness criterion burden`. Smaller phrases such as
 `hujjah/accountability correction` or `guidance-as-coercive-proof correction` are operative
-submoves when they merely test or narrow that same burden.
-hujjah/accountability correction can be operative submove. guidance-as-coercive-proof correction can be operative submove.
+submoves only when they merely test or narrow that same burden. When the input anchors
+accountability/hujjah or hiddenness/coercive-guidance as its own noetic function,
+`R(H,Delta)` must release it as a next burden, HOLD/PARTIAL it, or state why the
+same-function gate kept it inside the current `B`.
+hujjah/accountability correction can be an operative submove after same-function proof.
+guidance-as-coercive-proof correction can be an operative submove after same-function proof.
 
 **Recursion defined (for default mode):**
 ```text
@@ -3758,7 +3835,8 @@ Invalid default-mode recursion shapes:
 - "Move 1 / Move 2 / Move 3" as fake recursion.
 - "Pass 1 / Pass 2 / Pass 3" used for FPD, M1, DO-8, M8, or restoration fragments inside one burden.
 - "Pass 1 / Pass 2 / Pass 3" used for imported criterion, hujjah/accountability, and
-  guidance-as-coercive-proof corrections that all serve the same imported-tribunal burden.
+  guidance-as-coercive-proof corrections before state re-read proves whether they are
+  same-function submoves or distinct input-anchored burdens.
 - "Burden 1 / Burden 2 / Burden 3 / Burden 4" used for imported tribunal, hiddenness,
   punishment, and named source-worldview without a state/noetic re-read proving that each is a
   new live burden rather than a subordinate submove under the same tribunal burden.
@@ -3778,10 +3856,12 @@ live noetic burden -> operative submove(s): target -> operation -> result -> bur
 ```
 
 State re-read follows the burden landing, not each route label in a preplanned itinerary. If the
-same imported tribunal remains the live target, FPD, M1, DO-8, M8, hujjah/accountability
-correction, guidance-as-coercive-proof correction, and identity/source-status clarification remain
-operative submoves under the first live burden. They are not burden-cycles until state re-read
-licenses a new input-anchored noetic aspect.
+same imported tribunal remains the live target after same-function proof, FPD, M1, DO-8, M8,
+hujjah/accountability correction, guidance-as-coercive-proof correction, and
+identity/source-status clarification remain operative submoves under the first live burden.
+They are not burden-cycles until state re-read licenses a new input-anchored noetic aspect.
+If the hard input separately anchors those pressures, they must not be collapsed into the
+tribunal burden without that proof.
 TTPs execute across refreshed case-states, not as a one-time itinerary from the initial read.
 The initial case-state selects only the current bounded operator. Once that operator lands,
 state re-read re-evaluates upstream/downstream, higher-order/first-order, and held material
@@ -4167,7 +4247,7 @@ permission; an argument dump accumulates downstream content without refreshed go
 <!-- MODULE_ID: routing-precedence -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/routing-precedence.md -->
-<!-- SOURCE_SHA256: 9442f13d134b881eca89bbe619a495c85460dd92b2df9053630c9f5738afd5f3 -->
+<!-- SOURCE_SHA256: 7e8797b66868c4be9be865b7b14265749b89cc2cd1d431895564fa319259a090 -->
 
 ---
 id: routing-precedence
@@ -4334,7 +4414,7 @@ are absent, the route remains held or unresolved. After the TTP exits, the next 
 only from refreshed state, not from an inherited initial route itinerary.
 
 For hard/multi-burden execution, owner-backed selection requires loadform evidence: the
-selected owner body or compiled bundle section is loaded/available before `B.s<i>` renders.
+selected owner body or compiled bundle section is loaded/available before `ⁿBᵢ` renders.
 `matched_modules` and TTP labels are routing metadata, not proof that the owner floor loaded.
 If the owner cannot be loaded or identified, return `PARTIAL / OWNER-BODY-NOT-LOADED`
 instead of compressing the burden into generic prose.
