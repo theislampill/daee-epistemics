@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>daee-epistemics - canonical compact DSL pipeline</title>
+<style>
+:root{
+  --bg:#f6f8fb; --paper:#fff; --ink:#101828; --muted:#5b687a; --line:#d8e1ec;
+  --blue:#2563eb; --blue2:#eaf2ff;
+  --teal:#0f8f9f; --teal2:#e8fbfc;
+  --green:#238636; --green2:#ecfdf3;
+  --orange:#e86d1f; --orange2:#fff3e9;
+  --purple:#7c3aed; --purple2:#f4efff;
+  --red:#dc2626; --red2:#fff1f2;
+  --slate:#334155; --slate2:#f1f5f9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:22px}
+.sheet{max-width:1920px;margin:auto;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid var(--line);border-radius:30px;padding:28px;box-shadow:0 18px 45px rgba(15,23,42,.09)}
+h1{margin:0;text-align:center;font-size:clamp(36px,4vw,72px);line-height:.94;letter-spacing:-.055em}
+.subtitle{max-width:1280px;margin:10px auto 22px;text-align:center;color:var(--muted);font-size:20px;line-height:1.35}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:22px 0}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
+.badge{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800;font-size:13px;color:var(--slate)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.section-title{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:24px;letter-spacing:-.03em}
+.section-title .num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff;font-weight:950}
+.panel{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(15,23,42,.045)}
+.panel h3{margin:0 0 8px;color:var(--c);font-size:18px;letter-spacing:-.025em}
+.panel p{margin:0;color:var(--muted);font-size:14px;line-height:1.38}
+.grid-4{display:grid;grid-template-columns:1fr 1.25fr 1.65fr 1.15fr;gap:14px;align-items:start}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start}
+.stack{display:grid;gap:12px}
+ul.clean{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+ul.clean li{display:flex;gap:9px;align-items:flex-start;background:#fff;border:1px solid #dbe6f2;border-radius:13px;padding:9px 10px;font-size:13.5px;line-height:1.26}
+.ico{width:23px;height:23px;border-radius:7px;border:1.5px solid var(--c);display:inline-grid;place-items:center;flex:0 0 auto;font-weight:950;font-size:12px;color:var(--c)}
+.note{border:1.5px dashed var(--c);background:#fff;border-radius:15px;padding:12px;font-size:13px;color:#334155;line-height:1.38}
+.note strong{color:var(--c)}
+.stage{border:2px solid var(--c);background:var(--b);border-radius:26px;padding:14px;min-height:760px}
+.stage h2{margin:0 0 12px;color:var(--c);display:flex;gap:10px;align-items:center;font-size:21px;letter-spacing:-.03em}
+.stage h2 span{width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:950}
+.warn{border-color:var(--red);color:#991b1b;background:#fff5f5}
+.warn h3{color:var(--red)}
+.warn .ico{color:var(--red);border-color:var(--red)}
+.arrow{font-weight:950;font-size:28px;color:var(--c);text-align:center}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:950;letter-spacing:-.045em}
+.bigformula{text-align:center;font-size:clamp(32px,3.2vw,56px);margin:8px 0;color:var(--green)}
+.fields{display:grid;gap:7px}
+.field{display:grid;grid-template-columns:42px 1fr;gap:8px;align-items:center;border:1px solid #b8ddb9;background:#f9fff9;border-radius:13px;padding:8px}
+.key{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--green);background:#e8f8eb;color:var(--green);display:grid;place-items:center;font-weight:950;font-family:ui-monospace,Menlo,monospace}
+.field strong{font-size:13.5px}.field span{display:block;font-size:12px;color:var(--muted);line-height:1.24}
+.process{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.proc{padding:10px;border:1.5px solid #b8e2e8;border-radius:14px;text-align:center;background:#fff;color:#155e75;font-weight:850;font-size:13px}
+.bundles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bundle{border:1px solid #cbd5e1;background:#fff;border-radius:14px;padding:10px;font-size:12.5px;line-height:1.25}
+.bundle b{display:block;color:#0f172a;margin-bottom:4px}
+.runtime-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:8px;align-items:stretch}
+.flowbox{background:#fff;border:1.5px solid #b4ddb8;border-radius:16px;padding:12px;min-height:122px}
+.flowbox h4{margin:0 0 6px;color:var(--green)}
+.flowbox p{font-size:13px;margin:0;color:var(--muted);line-height:1.35}
+.flowarrow{display:grid;place-items:center;font-size:28px;color:var(--green);font-weight:950}
+.decision-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.decision{border:1.5px solid currentColor;border-radius:14px;padding:9px 4px;text-align:center;font-weight:950;background:#fff;font-size:12px}
+.decision b{display:block;font-size:22px;margin-bottom:2px}
+.rail{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;border:2px dashed #94a3b8;background:#fff;border-radius:20px;padding:14px;margin-top:16px}
+.pill{border:2px solid var(--c);color:var(--c);background:#fff;border-radius:14px;padding:10px 14px;font-weight:950;white-space:nowrap}
+.arr{color:#64748b;font-weight:950;font-size:22px}
+.split{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;align-items:start}
+.small{font-size:12.5px!important}
+details{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px}
+summary{cursor:pointer;font-weight:950;color:var(--slate)}
+.source-list{columns:2;column-gap:24px;margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:12.5px;line-height:1.45}
+@media(max-width:1250px){body{padding:10px}.grid-4,.grid-3,.split,.runtime-flow{grid-template-columns:1fr}.bundles{grid-template-columns:1fr}.stage{min-height:auto}.process{grid-template-columns:1fr}.flowarrow{transform:rotate(90deg)}.source-list{columns:1}}
+@media print{body{background:#fff;padding:0}.sheet{box-shadow:none;border:0;border-radius:0}}
+</style>
+</head>
+<body>
+<div class="sheet">
+<h1>daee-epistemics pipeline</h1>
+<p class="subtitle">
+A repo-grounded architecture view: atomized source compiles into the canonical compact DSL-governed runtime; surface discourse is read as a manifestation of operative noetic structure; the framework is designed for every possible live noetic-structure selection before the chosen route is known; meta-noetic memetic dynamics become actionable through DSL/IR control state, owner/TTP activation, burden landing, state re-read, and restorative release.
+</p>
+<div class="badges">
+<span class="badge"><i class="dot" style="--c:var(--blue)"></i>canonical atomics</span>
+<span class="badge"><i class="dot" style="--c:var(--teal)"></i>noetic diagnosis</span>
+<span class="badge"><i class="dot" style="--c:var(--green)"></i>DSL/IR control state</span>
+<span class="badge"><i class="dot" style="--c:var(--green)"></i>selection-space coverage</span>
+<span class="badge"><i class="dot" style="--c:var(--orange)"></i>gated governance</span>
+<span class="badge"><i class="dot" style="--c:var(--purple)"></i>restorative release</span>
+</div>
+
+<section class="split">
+  <div class="panel" style="--c:var(--blue)">
+    <h3>Atomic source / compiled runtime</h3>
+    <p><b>Atomics</b> are the canonical source files under <span class="formula">atomics/skill/</span>. They are not just small files; each carries an operative contract or owner surface. The generated runtime under <span class="formula">skill/</span> is compiled from them. Runtime bundle availability is not activation, and direct invocation must not require extra prompt engineering to recover the owner/TTP floor.</p>
+    <div class="bundles" style="margin-top:12px">
+      <div class="bundle"><b>runtime-foundation</b>terminology, case index, module codes, heuristics</div>
+      <div class="bundle"><b>runtime-diagnostic-core</b>V1, noetic read, deformations, concealment, DO, M5</div>
+      <div class="bundle"><b>runtime-phase2-passes</b>reason category, foreign premise, prophetic neutralization, backbone predicates</div>
+      <div class="bundle"><b>runtime-dispatch-gate</b>Diagnostic IR, reconstruction, case-state, patterns, anti-patterns, pipeline, recursion, routing, kernel</div>
+      <div class="bundle"><b>runtime-output-governance</b>output-release + diagnostic-render contract</div>
+      <div class="bundle"><b>omnibus bundles</b>profiles, DO families, RT/transmission, tactics, techniques, procedures, specialty diagnostics</div>
+      <div class="bundle"><b>canonical package roots</b>SKILL.md, README.md, references/, compiled-module-map.json, build-manifest.json</div>
+      <div class="bundle"><b>repo/dev harness excluded</b>data/, scripts/, tests/, route plans, fixtures, and execution verdicts stay outside the canonical package</div>
+    </div>
+    <div class="note" style="--c:var(--blue);margin-top:12px"><strong>Invariant:</strong> original module IDs remain the operative identities. Omnibus filenames are containers, not matched modules.</div>
+  </div>
+  <div class="panel" style="--c:var(--orange)">
+    <h3>What this diagram is not</h3>
+    <ul class="clean">
+      <li><span class="ico" style="--c:var(--red)">×</span>Not a topic-to-answer flowchart.</li>
+      <li><span class="ico" style="--c:var(--red)">×</span>Not an argument bank selector.</li>
+      <li><span class="ico" style="--c:var(--red)">x</span>Not a prompt-engineering recipe for forcing the skill to behave.</li>
+      <li><span class="ico" style="--c:var(--red)">x</span>Not a diagram of only the route selected after the fact.</li>
+      <li><span class="ico" style="--c:var(--red)">×</span>Not “meta-noetic memetics” as a decorative extra module.</li>
+      <li><span class="ico" style="--c:var(--red)">×</span>Not a Toulmin graph implying a deformed structure has warrant.</li>
+      <li><span class="ico" style="--c:var(--red)">×</span>Not recursion as “go to final restoration and loop.”</li>
+    </ul>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="grid-4">
+  <article class="stage" style="--c:var(--blue);--b:var(--blue2)">
+    <h2><span>1</span>Input / Surface Discourse</h2>
+    <div class="stack">
+      <div class="panel" style="--c:var(--blue)">
+        <h3>Input is not the target yet</h3>
+        <ul class="clean">
+          <li><span class="ico">“</span>claims, objections, doubts</li>
+          <li><span class="ico">τ</span>criteria / tribunals being installed</li>
+          <li><span class="ico">σ</span>source-status and testimony posture</li>
+          <li><span class="ico">♡</span>register: grief, identity, performance, truth-seeking</li>
+          <li><span class="ico">↻</span>recurring slogans or memetic patterns</li>
+        </ul>
+      </div>
+      <div class="panel warn" style="--c:var(--red)">
+        <h3><span class="ico">!</span>Gate before rebuttal</h3>
+        <p>Direct content release before diagnosis is an architecture failure. The visible proposition may be downstream of a noetic blocker.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="stage" style="--c:var(--teal);--b:var(--teal2)">
+    <h2><span>2</span>Noetic / Meta-Noetic Read</h2>
+    <div class="stack">
+      <div class="panel" style="--c:var(--teal)">
+        <h3>Proper-functional noetic structure</h3>
+        <ul class="clean">
+          <li><span class="ico">F</span>fiṭrah / faculty orientation: sound, impaired, blocked, or underdetermined</li>
+          <li><span class="ico">E</span>epistemic environment: whether faculties operate under fitting conditions</li>
+          <li><span class="ico">R</span>reason role: sound reason, reason-as-tribunal, pseudo-neutral, inherited</li>
+          <li><span class="ico">T</span>testimony posture: trusted, demoted, flattened, suspicious, held</li>
+          <li><span class="ico">Ø</span>defeaters / deformation: what prevents proper recognition or assent</li>
+        </ul>
+        <div class="note" style="--c:var(--teal);margin-top:12px"><strong>Correction:</strong> noetic structure is the operative cognitive ecology by which assent is formed, resisted, or stabilized. It is not itself a warrant-conferring argument graph.</div>
+      </div>
+      <div class="panel" style="--c:var(--teal)">
+        <h3>Meta-noetic memetics as object-domain</h3>
+        <p>Tracks how the noetic structure and its governing epistemic rules stabilize, defend, mutate, reproduce, and instantiate through language, slogans, labels, institutions, identity pressure, and social habits.</p>
+        <ul class="clean" style="margin-top:10px">
+          <li><span class="ico">m</span>memetic node / recurring claim-shape</li>
+          <li><span class="ico">τ</span>criterion transfer or imported tribunal</li>
+          <li><span class="ico">LB</span>load-bearing node that regenerates downstream claims</li>
+          <li><span class="ico">CR</span>collapse radius: what must be re-evaluated if the node clears</li>
+        </ul>
+      </div>
+      <div class="note" style="--c:var(--teal)"><strong>Operational boundary:</strong> meta-noetic memetics does not create a new routing pass. It becomes real only when encoded into IR fields, suppression, held material, owner/TTP choice, collapse radius, or state re-read.</div>
+      <div class="panel" style="--c:var(--teal)">
+        <h3>Design-space invariant</h3>
+        <p>The framework is engineered before the selected noetic structure is known. Each owner family must be able to operate for any possible live first-order, second-order, or higher-order noetic structure; runtime selection then releases the current burden, clears or holds inactive owners, and re-reads state.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="stage" style="--c:var(--green);--b:var(--green2)">
+    <h2><span>3</span>DSL / IR + Gated Governance</h2>
+    <div class="stack">
+      <div class="panel" style="--c:var(--green)">
+        <h3>Diagnostic reduction order</h3>
+        <div class="process">
+          <div class="proc">core axes</div>
+          <div class="proc">mandatory Phase 2 passes</div>
+          <div class="proc">triggered overlays</div>
+          <div class="proc">validated IR</div>
+          <div class="proc">gate checks</div>
+          <div class="proc">routing precedence</div>
+        </div>
+      </div>
+      <div class="panel" style="--c:var(--green)">
+        <h3>DSL / IR control surface</h3>
+        <div class="bigformula formula">IR(N,m,τ,σ)</div>
+        <div class="fields">
+          <div class="field"><div class="key">N</div><div><strong>operative noetic frame</strong><span>selected frame governing this burden; family labels are not automatic operative N</span></div></div>
+          <div class="field"><div class="key">m</div><div><strong>memetic claim / node</strong><span>recurring slogan, authority-node, criterion, or stabilizer</span></div></div>
+          <div class="field"><div class="key">τ</div><div><strong>tribunal / criterion</strong><span>what judges what; often imported or pseudo-neutral</span></div></div>
+          <div class="field"><div class="key">σ</div><div><strong>source-status</strong><span>operative warrant vs contrast / context / held material</span></div></div>
+          <div class="field"><div class="key">LB</div><div><strong>load-bearing node</strong><span>what must clear before downstream claims can be re-read</span></div></div>
+          <div class="field"><div class="key">CR</div><div><strong>collapse radius</strong><span>dependent claims/routes re-evaluated after the node clears</span></div></div>
+          <div class="field"><div class="key">H</div><div><strong>held set</strong><span>live but unreleased material</span></div></div>
+          <div class="field"><div class="key">B</div><div><strong>current live burden</strong><span>one burden-level function, not a route chain</span></div></div>
+        </div>
+      </div>
+      <div class="runtime-flow">
+        <div class="flowbox"><h4>Gate</h4><p>Minimum fields, consistency, suppression rules, P7 stops, architecture target, release matrix.</p></div>
+        <div class="flowarrow">→</div>
+        <div class="flowbox"><h4>Routing precedence</h4><p>Concealment / DO / deformation / reason-category / foreign premise / load-bearing node / semantic blocker / claim level.</p></div>
+        <div class="flowarrow">→</div>
+        <div class="flowbox"><h4>Owner/TTP selection</h4><p>Every structurally possible owner family is design-supported; only live, bounded owners activate after diagnosis.</p></div>
+        <div class="flowarrow">→</div>
+        <div class="flowbox"><h4>Execute Layer B</h4><p>Active TTP submoves show owner identity, target, operation, result, and contribution to Land(B).</p></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="stage" style="--c:var(--purple);--b:var(--purple2)">
+    <h2><span>4</span>Burden Cycle / Release</h2>
+    <div class="stack">
+      <div class="panel" style="--c:var(--orange)">
+        <h3>Burden cycle</h3>
+        <div class="formula" style="font-size:18px;line-height:1.55;color:#9a3412">B → {s1...sn}<br>→ Land(B)<br>→ R(H,Δ)</div>
+        <p>Submoves are not burden-cycles. A new B is licensed only after burden landing and state re-read.</p>
+      </div>
+      <div class="panel" style="--c:var(--orange)">
+        <h3>Decision</h3>
+        <div class="decision-grid">
+          <div class="decision" style="color:var(--red)"><b>■</b>STOP</div>
+          <div class="decision" style="color:var(--orange)"><b>Ⅱ</b>HOLD</div>
+          <div class="decision" style="color:var(--green)"><b>↺</b>RECURSE</div>
+          <div class="decision" style="color:var(--purple)"><b>◌</b>PARTIAL</div>
+        </div>
+      </div>
+      <div class="note" style="--c:var(--green)"><strong>Correct recurse arrow:</strong> RECURSE returns to diagnostic/routing re-entry for the next input-anchored live burden. It does not point to Restorative Response.</div>
+      <div class="panel" style="--c:var(--purple);background:var(--purple2)">
+        <h3>Restorative Response</h3>
+        <ul class="clean">
+          <li><span class="ico" style="--c:var(--purple)">F</span>restored fiṭrah / proper-function orientation</li>
+          <li><span class="ico" style="--c:var(--purple)">⚖</span>restored criterion order</li>
+          <li><span class="ico" style="--c:var(--purple)">σ</span>corrected source-status placement</li>
+          <li><span class="ico" style="--c:var(--purple)">Ø</span>relieved deformation / concealment</li>
+          <li><span class="ico" style="--c:var(--purple)">H</span>held downstream material named where needed</li>
+        </ul>
+        <div class="note" style="--c:var(--purple);margin-top:10px">Terminal synthesis after final licensed state/noetic re-read. Incoming only.</div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<div class="rail">
+  <span class="pill" style="--c:var(--blue)">surface discourse</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--teal)">noetic / meta-noetic read</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--green)">IR(N,m,τ,σ)</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--green)">gate + routing precedence</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--green)">B → {s1...sn}</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--orange)">Land(B) → R(H,Δ)</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--orange)">STOP / HOLD / RECURSE / PARTIAL</span>
+</div>
+
+<div class="rule"></div>
+
+<section class="grid-3">
+  <div class="panel" style="--c:var(--blue)">
+    <h3>Layer A / Layer B surface</h3>
+    <ul class="clean">
+      <li><span class="ico">A</span><b>Layer A:</b> compact DSL/IR header, not full Diagnostic IR, not full Case State, not load ledger.</li>
+      <li><span class="ico">B</span><b>Layer B:</b> bounded governed response: Hidden Premises, Core Formulation, operative submoves, compact TTP trace if a named operator works.</li>
+      <li><span class="ico">R</span><b>State/noetic re-read:</b> what cleared, what remains live, held routes rechecked, next bounded pass or closure reason.</li>
+    </ul>
+  </div>
+  <div class="panel" style="--c:var(--green)">
+    <h3>Optional repo/dev route-check harness</h3>
+    <ul class="clean">
+      <li><span class="ico">D</span>Developer/CI validation only; not canonical runtime.</li>
+      <li><span class="ico">R</span>Can check route/state artifacts when explicitly run by maintainers.</li>
+      <li><span class="ico">P</span>data/, scripts/, tests/, fixtures, route plans, and execution verdicts are excluded from the canonical package.</li>
+      <li><span class="ico">U</span>User-facing invocation remains <span class="formula">/daee-epistemics [case]</span>.</li>
+    </ul>
+  </div>
+  <div class="panel" style="--c:var(--orange)">
+    <h3>Failure modes the design blocks</h3>
+    <ul class="clean">
+      <li><span class="ico">×</span>retrospective IR after the answer</li>
+      <li><span class="ico">×</span>route chain treated as current bounded operator</li>
+      <li><span class="ico">×</span>bundle co-location treated as activation</li>
+      <li><span class="ico">×</span>held route leaked into Layer B</li>
+      <li><span class="ico">×</span>first strong argument treated as STOP</li>
+      <li><span class="ico">×</span>meta-noetic vocabulary without control-surface consequence</li>
+    </ul>
+  </div>
+</section>
+
+<div class="rule"></div>
+<details>
+  <summary>Repo parity notes used for this diagram</summary>
+  <ul class="source-list">
+    <li>README: atomics/skill is canonical atomized source; skill/ is generated compiled runtime.</li>
+    <li>SKILL.md: default <span class="formula">/daee-epistemics</span> is canonical compact DSL-governed runtime; <span class="formula">:dsl</span> is expanded diagnostic/IR visibility; the optional route/check harness is repo/dev only.</li>
+    <li>diagnostic-ir.md: DSL/IR is audited formalization layer; meta-noetic memetics object-domain; gate protocol.</li>
+    <li>routing-precedence.md: route hierarchy, suppression, load-bearing node, no route-chain as bounded operator.</li>
+    <li>recursive-state-transitions.md: B, s, H, R, Δ; submove-vs-recursion; no premature STOP.</li>
+    <li>output-release.md: release amount/order; held means traversal-delayed; same-response recursion when eligible.</li>
+    <li>diagnostic-render-contract.md: Layer A / Layer B / state re-read / Restorative Response / Closing Formulation.</li>
+    <li>noetic-reading-checklist.md + sound-reason-epistemology.md: noetic structure and proper-function warrant account.</li>
+    <li>Compiled runtime: atomized owner files are bundled into runtime-foundation, runtime-diagnostic-core, runtime-phase2-passes, runtime-dispatch-gate, runtime-output-governance, and omnibus bundles; package selection excludes data/, scripts/, and tests/.</li>
+  </ul>
+</details>
+
+</div>
+</body>
+</html>
