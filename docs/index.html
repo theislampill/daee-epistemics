@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>DAEE Epistemics — Pipeline Control Wiki v19</title>
+<title>DAEE Epistemics — Pipeline Control Wiki v33</title>
 <style>
 :root{--bg:#080a10;--panel:#0f1320;--panel2:#141a2a;--ink:#e8edf7;--muted:#98a2b3;--line:#263044;--blue:#60a5fa;--green:#22c55e;--cyan:#22d3ee;--violet:#a78bfa;--orange:#fb923c;--red:#f87171;--pink:#f472b6;--yellow:#facc15}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(96,165,250,.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(34,197,94,.10),transparent 30%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
@@ -320,6 +320,964 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .controlCard.final .controlSym{font-size:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 @media(max-width:1250px){.controlOverviewGrid{grid-template-columns:repeat(2,minmax(220px,1fr))}}
 @media(max-width:720px){.controlOverviewGrid{grid-template-columns:1fr}}
+
+/* v20: deep pipeline stage cards restoring index9 architecture content */
+.pipelineDeepIntro{
+  border:1px dashed #334155;
+  background:#080d19;
+  border-radius:14px;
+  padding:12px;
+  margin:10px 0 14px;
+  color:#cbd5e1;
+  font-size:13px;
+}
+.deepStageGrid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+/* v28: .deepCard base moved to v28 CSS block (SOT); keeping positional span modifiers here */
+.deepCard.wide{grid-column:span 2}
+.deepCard.full{grid-column:1/-1}
+.deepCard.wide{grid-column:span 6}
+.deepCard.full{grid-column:1/-1}
+.deepCard h4{
+  margin:0 0 8px;
+  color:var(--accent,var(--cyan));
+  font-size:13px;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.deepCard p{margin:6px 0;color:#cbd5e1;font-size:13px}
+.deepList{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.deepList li{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:8px;
+  align-items:start;
+  border:1px solid #263044;
+  background:#080d19;
+  border-radius:11px;
+  padding:8px;
+  color:#cbd5e1;
+  font-size:13px;
+}
+.deepKey{
+  min-width:28px;
+  height:24px;
+  border:1px solid var(--accent,var(--cyan));
+  color:var(--accent,var(--cyan));
+  border-radius:8px;
+  display:inline-grid;
+  place-items:center;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-weight:900;
+  font-size:12px;
+}
+.deepFormula{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:#bbf7d0;
+  font-weight:900;
+  letter-spacing:-.02em;
+  line-height:1.65;
+  background:#050914;
+  border:1px solid #263044;
+  border-radius:12px;
+  padding:10px;
+  overflow:auto;
+}
+.deepFlow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+.deepPill{
+  border:1px solid var(--accent,var(--cyan));
+  color:#dbeafe;
+  background:#080d19;
+  border-radius:12px;
+  padding:8px 10px;
+  font-size:12px;
+  font-weight:800;
+}
+.deepArrow{color:#64748b;font-weight:900}
+.decisionMini{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.decisionMini div{
+  border:1px solid currentColor;
+  border-radius:12px;
+  padding:8px;
+  text-align:center;
+  font-weight:900;
+  background:#080d19;
+  font-size:12px;
+}
+.deepWarn{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.07)}
+.deepGood{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.07)}
+.deepTarget{border-color:rgba(250,204,21,.55);background:rgba(250,204,21,.06)}
+@media(max-width:1250px){
+  .deepCard,.deepCard.wide{grid-column:1/-1}
+  .decisionMini{grid-template-columns:1fr 1fr}
+}
+
+
+/* v21: direct index9-style pipeline diagramming */
+.v21-pipeline-panel{overflow:hidden}
+.v21-formula{
+  text-align:center;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--green);
+  font-size:clamp(15px,1.6vw,24px);
+  font-weight:950;
+  letter-spacing:-.03em;
+  margin:12px 0 18px;
+  padding:10px;
+  border:1px solid #263044;
+  border-radius:14px;
+  background:#070b14;
+  overflow:auto;
+}
+.v21-four-col,.v21-five-col{
+  display:grid;
+  gap:12px;
+  align-items:start;
+}
+.v21-four-col{grid-template-columns:repeat(4,minmax(260px,1fr))}
+.v21-five-col{grid-template-columns:repeat(5,minmax(240px,1fr))}
+.v21-stage{
+  border:2px solid var(--sc);
+  border-radius:20px;
+  padding:12px;
+  background:rgba(13,17,23,.72);
+  min-height:620px;
+}
+.v21-stage h2{
+  margin:0 0 10px;
+  color:var(--sc);
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-size:18px;
+  letter-spacing:-.03em;
+}
+.v21-stage h2 span{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:var(--sc);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:14px;
+}
+.v21-s1{--sc:var(--blue)}
+.v21-s2{--sc:var(--green)}
+.v21-s3{--sc:var(--cyan)}
+.v21-s4{--sc:var(--violet)}
+.v21-s5{--sc:var(--orange)}
+.v21-card{
+  background:#0d1117;
+  border:1.5px solid #263044;
+  border-radius:16px;
+  padding:10px;
+  margin-bottom:8px;
+}
+.v21-card h3{
+  margin:0 0 7px;
+  color:var(--sc);
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:-.02em;
+}
+.v21-card p{
+  margin:0;
+  color:#98a2b3;
+  font-size:12.5px;
+  line-height:1.4;
+}
+.v21-card ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:5px;
+}
+.v21-card li{
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+  background:#0b101b;
+  border:1px solid #263044;
+  border-radius:8px;
+  padding:6px 8px;
+  font-size:12px;
+  line-height:1.35;
+  color:#cbd5e1;
+}
+.v21-card li b{
+  min-width:22px;
+  color:var(--sc);
+  font-weight:900;
+}
+.v21-warn{border-color:var(--red);background:rgba(239,68,68,.06)}
+.v21-warn h3{color:var(--red)}
+.v21-purple{--sc:var(--violet);background:rgba(168,85,247,.06)}
+.v21-note{
+  border:1.5px dashed var(--sc);
+  background:rgba(34,197,94,.035);
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:11.5px;
+  color:#98a2b3;
+  line-height:1.4;
+  margin-top:6px;
+}
+.v21-note b{color:var(--sc)}
+.v21-proc-flow{
+  display:grid;
+  grid-template-columns:repeat(11,auto);
+  gap:4px;
+  align-items:center;
+  text-align:center;
+  font-size:11px;
+  font-weight:800;
+}
+.v21-proc-flow.target{grid-template-columns:repeat(15,auto)}
+.v21-proc-flow div{
+  padding:6px;
+  border:1.5px solid rgba(34,197,94,.25);
+  border-radius:8px;
+  color:var(--green);
+  background:rgba(34,197,94,.04);
+}
+.v21-proc-flow span{color:var(--green);font-weight:900}
+.v21-field-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:5px;
+}
+.v21-field-grid div{
+  display:grid;
+  grid-template-columns:36px 1fr;
+  gap:7px;
+  align-items:center;
+  border:1px solid rgba(34,197,94,.22);
+  background:rgba(34,197,94,.035);
+  border-radius:8px;
+  padding:6px;
+}
+.v21-field-grid b{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  border:1.5px solid var(--green);
+  color:var(--green);
+  display:grid;
+  place-items:center;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-weight:900;
+}
+.v21-field-grid span{font-size:12px;color:#e5e7eb;font-weight:800}
+.v21-field-grid small{display:block;font-size:10.5px;color:#98a2b3;line-height:1.25}
+.v21-flow-boxes{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;
+  gap:5px;
+  margin-top:8px;
+}
+.v21-flow-boxes div{
+  background:#0d1117;
+  border:1.5px solid #263044;
+  border-radius:12px;
+  padding:8px;
+  min-height:78px;
+}
+.v21-flow-boxes h4{margin:0 0 3px;color:var(--green);font-size:11px;font-weight:800}
+.v21-flow-boxes p{margin:0;color:#98a2b3;font-size:10.5px;line-height:1.3}
+.v21-flow-boxes span{display:grid;place-items:center;color:var(--green);font-weight:900}
+.v21-stage-formula{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--green);
+  font-weight:900;
+  font-size:14px;
+  text-align:center;
+  padding:8px;
+  border-radius:10px;
+  background:#070b14;
+  border:1px solid #263044;
+  margin:8px 0;
+  overflow:auto;
+}
+.v21-dec-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+.v21-dec-grid div{
+  padding:8px 4px;
+  border-radius:10px;
+  text-align:center;
+  font-weight:900;
+  font-size:11px;
+  border:1.5px solid currentColor;
+  background:#0b101b;
+}
+.v21-dec-grid .stop{color:var(--red)}
+.v21-dec-grid .hold{color:var(--orange)}
+.v21-dec-grid .recurse{color:var(--green)}
+.v21-dec-grid .partial{color:var(--violet)}
+.v21-three-col{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+@media(max-width:1600px){
+  .v21-five-col{grid-template-columns:repeat(3,minmax(240px,1fr))}
+}
+@media(max-width:1250px){
+  .v21-four-col,.v21-five-col,.v21-three-col{grid-template-columns:1fr 1fr}
+  .v21-stage{min-height:auto}
+}
+@media(max-width:760px){
+  .v21-four-col,.v21-five-col,.v21-three-col{grid-template-columns:1fr}
+  .v21-proc-flow,.v21-proc-flow.target{display:flex;flex-wrap:wrap}
+  .v21-flow-boxes{grid-template-columns:1fr}
+  .v21-flow-boxes span{transform:rotate(90deg)}
+}
+
+/* v22: restore landing page material removed in v21 */
+.v22-landing-deck{
+  border-color:rgba(34,197,94,.32);
+  background:linear-gradient(135deg,rgba(34,197,94,.055),rgba(96,165,250,.04));
+}
+.v22-deck-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(220px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.v22-deck-card{
+  border:1.5px solid var(--c);
+  background:#0c1220;
+  border-radius:18px;
+  padding:14px;
+}
+.v22-deck-card h3{
+  margin:0 0 8px;
+  color:var(--c);
+  font-size:16px;
+}
+.v22-deck-card ul{
+  margin:0;
+  padding-left:18px;
+  color:#cbd5e1;
+}
+.v22-deck-card li{
+  margin:6px 0;
+  font-size:13px;
+}
+.v22-deck-card.current{--c:var(--green)}
+.v22-deck-card.target{--c:var(--cyan)}
+.v22-deck-card.preserve{--c:var(--violet)}
+.v22-deck-card.patch{--c:var(--orange)}
+.v22-audit-panel,
+.v22-implementation-procedure{
+  margin-top:18px;
+}
+.v22-proc-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(260px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.v22-proc-step{
+  border:1px solid #334155;
+  background:#0a0f1d;
+  border-radius:16px;
+  padding:14px;
+}
+.v22-proc-step h3{
+  margin:0 0 8px;
+  color:#dbeafe;
+}
+.v22-proc-step ul{
+  margin:0;
+  padding-left:18px;
+}
+.v22-proc-step li{
+  margin:6px 0;
+  color:#cbd5e1;
+  font-size:13px;
+}
+@media(max-width:1250px){
+  .v22-deck-grid{grid-template-columns:repeat(2,minmax(220px,1fr))}
+  .v22-proc-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .v22-deck-grid{grid-template-columns:1fr}
+}
+
+/* v23: restore v19 stage inspector and stabilize architecture formatting */
+.v23-inspector{
+  border-color:rgba(96,165,250,.35);
+  background:linear-gradient(135deg,rgba(96,165,250,.055),rgba(34,197,94,.035));
+}
+.v23-inspector-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:12px;
+  align-items:start;
+}
+.v23-inspector-side{
+  border:1px solid #334155;
+  background:#0a0f1d;
+  border-radius:18px;
+  padding:14px;
+  min-width:0;
+}
+.v23-inspector-side h3{
+  margin:0 0 10px;
+  color:#dbeafe;
+}
+.v23-inspector-side .pipelineGrid{
+  grid-template-columns:repeat(2,minmax(180px,1fr));
+}
+.v23-inspector-side .stageCard{
+  min-height:132px;
+}
+.v23-inspector-side .stageCard h3{
+  color:var(--c);
+  font-size:13px;
+}
+.v23-stage-detail{
+  margin-top:12px!important;
+  max-height:520px;
+  overflow:auto;
+  scrollbar-gutter:stable;
+}
+.v23-stage-detail .detailGrid{
+  grid-template-columns:repeat(2,minmax(220px,1fr));
+}
+.v23-stage-detail .detailBox:last-child{
+  grid-column:1/-1;
+}
+.v22-landing-deck,
+.v21-pipeline-panel,
+.v22-audit-panel,
+.v22-implementation-procedure{
+  max-width:100%;
+}
+.v22-deck-card ul,
+.v22-proc-step ul{
+  list-style:disc;
+}
+@media(max-width:1250px){
+  .v23-inspector-grid{grid-template-columns:1fr}
+  .v23-inspector-side .pipelineGrid{grid-template-columns:repeat(3,minmax(180px,1fr))}
+}
+@media(max-width:760px){
+  .v23-inspector-side .pipelineGrid{grid-template-columns:1fr}
+  .v23-stage-detail .detailGrid{grid-template-columns:1fr}
+}
+
+/* v24: remove inspector artifacts and restore index9-like pipeline proportions */
+.v23-inspector{display:none!important}
+.v21-four-col{
+  grid-template-columns:minmax(250px,1fr) minmax(310px,1.25fr) minmax(460px,1.65fr) minmax(310px,1.15fr)!important;
+}
+.v21-field-grid{
+  gap:7px!important;
+}
+.v21-field-grid div{
+  grid-template-columns:42px minmax(0,1fr)!important;
+  align-items:start!important;
+  padding:8px!important;
+}
+.v21-field-grid span{
+  display:block!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.25!important;
+}
+.v21-field-grid small{
+  display:block!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.25!important;
+}
+.v22-deck-grid{
+  grid-template-columns:repeat(3,minmax(260px,1fr))!important;
+}
+@media(max-width:1500px){
+  .v21-four-col{grid-template-columns:1fr 1.2fr!important}
+}
+@media(max-width:900px){
+  .v21-four-col{grid-template-columns:1fr!important}
+  .v22-deck-grid{grid-template-columns:1fr!important}
+}
+
+/* v25: final formatting repair for DSL/IR field cards and 9-step procedure */
+.v21-field-grid > div{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:start!important;
+  padding:9px!important;
+  min-height:auto!important;
+}
+.v21-field-grid > div > div{
+  display:block!important;
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+  margin:0!important;
+  min-height:0!important;
+}
+.v21-field-grid > div > div span,
+.v21-field-grid > div > div small{
+  display:block!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.35!important;
+}
+.v21-field-grid > div > div span{
+  font-size:12.5px!important;
+}
+.v21-field-grid > div > div small{
+  font-size:11px!important;
+}
+.v21-five-col{
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important;
+}
+.v21-five-col .v21-stage{
+  min-height:auto!important;
+}
+.v21-proc-flow.target{
+  display:flex!important;
+  flex-wrap:wrap!important;
+}
+.v25-deck-grid{
+  grid-template-columns:repeat(4,minmax(240px,1fr))!important;
+}
+.v25-proc-grid{
+  grid-template-columns:repeat(3,minmax(280px,1fr))!important;
+}
+@media(max-width:1250px){
+  .v25-deck-grid{grid-template-columns:repeat(2,minmax(240px,1fr))!important}
+  .v25-proc-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  .v25-deck-grid{grid-template-columns:1fr!important}
+}
+
+/* v26: fix actual field-card grid placement; keep text in column 2, not under the key */
+#architecture .v21-field-grid > div{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  column-gap:10px!important;
+  row-gap:2px!important;
+  align-items:start!important;
+  padding:9px!important;
+  min-height:auto!important;
+}
+#architecture .v21-field-grid > div > b{
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+  align-self:start!important;
+  justify-self:start!important;
+  width:30px!important;
+  height:30px!important;
+  margin:0!important;
+}
+#architecture .v21-field-grid > div > span{
+  grid-column:2!important;
+  grid-row:1!important;
+  display:block!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.25!important;
+  min-width:0!important;
+}
+#architecture .v21-field-grid > div > small{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:block!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.25!important;
+  min-width:0!important;
+}
+#architecture .v21-stage-formula{
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  line-height:1.45!important;
+}
+#architecture .v21-five-col{
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr))!important;
+}
+#architecture .v26-proc-grid{
+  grid-template-columns:repeat(2,minmax(320px,1fr))!important;
+}
+@media(max-width:1100px){
+  #architecture .v26-proc-grid{grid-template-columns:1fr!important}
+}
+
+/* v28: restored interactive pipeline panels */
+.v28-pipeline-interactive{margin-bottom:14px}
+.v28-detail-panel{margin-top:10px;min-height:0;padding:14px}
+.v28-detail-panel:empty{display:none}
+.pipelineDeepIntro{color:var(--muted);font-size:13px;margin:6px 0 10px;border-left:3px solid var(--cyan);padding-left:10px}
+.deepStageGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-top:10px}
+.deepCard{border:1.5px solid var(--accent,var(--line));background:#070b14;border-radius:14px;padding:12px;transition:.15s border-color}
+.deepCard:hover{border-color:var(--accent,var(--cyan))}
+.deepCard.wide{grid-column:span 2}
+.deepCard.full{grid-column:1/-1}
+.deepCard h4{font-size:13px;color:var(--accent,var(--cyan));margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.deepCard p{font-size:12px;color:var(--muted);margin:4px 0}
+.deepFormula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ink);background:#0c1220;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:4px 0}
+.deepList{list-style:none;margin:4px 0;padding:0;display:grid;gap:4px}
+.deepList li{display:flex;gap:8px;font-size:12px;align-items:baseline}
+.deepKey{font-family:ui-monospace,SFMono-Regular,monospace;color:var(--accent,var(--cyan));background:#0c1220;border:1px solid var(--line);border-radius:5px;padding:1px 6px;flex-shrink:0;font-size:11px}
+.deepFlow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+.deepPill{background:#0c1220;border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:12px;color:var(--ink)}
+.deepArrow{color:#64748b;font-weight:900}
+.deepGood{border-color:rgba(34,197,94,.45)!important}
+.deepWarn{border-color:rgba(239,68,68,.4)!important}
+.deepTarget{border-color:rgba(167,139,250,.45)!important}
+.decisionMini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;font-size:13px;font-weight:700;margin:6px 0}
+.decisionMini div{background:#0c1220;border:1px solid var(--line);border-radius:10px;padding:8px 4px}
+@media(max-width:760px){.deepCard.wide,.deepCard.full{grid-column:1/-1}.decisionMini{grid-template-columns:1fr 1fr}}
+
+
+/* v29: combine interactive inspectors into their static baseline panels */
+.v29-integrated-inspector{
+  border:1px solid #334155;
+  background:linear-gradient(135deg,rgba(96,165,250,.055),rgba(34,197,94,.035));
+  border-radius:18px;
+  padding:14px;
+  margin:14px 0 16px;
+}
+.v29-inspector-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.v29-inspector-head h3{
+  margin:0;
+  color:#dbeafe;
+  font-size:18px;
+}
+.v29-inspector-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+  max-width:920px;
+}
+.v29-flowline{
+  margin:8px 0 12px!important;
+}
+.v29-pipeline-grid{
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr))!important;
+}
+.v29-pipeline-grid .stageCard{
+  min-height:140px!important;
+}
+.v29-detail-panel{
+  margin-top:12px!important;
+}
+.v29-detail-panel:empty{
+  display:none!important;
+}
+.v29-detail-panel .detailGrid{
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr))!important;
+}
+/* force Pipeline #2 visual reference to be a single row of five on desktop */
+@media(min-width:1180px){
+  #architecture .v29-target-panel > .v21-five-col{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:start!important;
+  }
+  #architecture .v29-target-panel > .v21-five-col > .v21-stage{
+    min-width:0!important;
+    min-height:620px!important;
+  }
+  #architecture .v29-target-panel .v21-stage h2{
+    font-size:16px!important;
+  }
+  #architecture .v29-target-panel .v21-card li{
+    font-size:11.5px!important;
+  }
+  #architecture .v29-target-panel .v21-stage-formula{
+    font-size:12px!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+  #architecture .v29-target-panel .v21-proc-flow.target{
+    display:flex!important;
+    flex-wrap:wrap!important;
+  }
+}
+@media(max-width:1179px){
+  #architecture .v29-target-panel > .v21-five-col{
+    grid-template-columns:repeat(2,minmax(260px,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  .v29-inspector-head{display:block}
+  .v29-pipeline-grid{grid-template-columns:1fr!important}
+  #architecture .v29-target-panel > .v21-five-col{grid-template-columns:1fr!important}
+}
+
+/* v30: DRY pipeline interactivity ported onto the graphics themselves */
+#architecture .v29-integrated-inspector,
+#architecture #currentPipeline,
+#architecture #currentDetail,
+#architecture #targetPipeline,
+#architecture #targetDetail{
+  display:none!important;
+}
+.v30-click-hint{
+  border:1px dashed #334155;
+  background:#080d19;
+  border-radius:12px;
+  padding:9px 11px;
+  margin:10px 0 14px;
+  color:#cbd5e1;
+  font-size:13px;
+}
+.v30-selectable-stage{
+  cursor:pointer;
+  position:relative;
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.v30-selectable-stage::after{
+  content:none;
+  position:absolute;
+  top:10px;
+  right:10px;
+  color:#94a3b8;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  opacity:.55;
+}
+.v30-selectable-stage:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--sc),transparent 78%);
+}
+.v30-selectable-stage.v30-active{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--sc),transparent 62%),0 12px 26px rgba(0,0,0,.18);
+  background:color-mix(in srgb,rgba(13,17,23,.72),var(--sc) 7%);
+}
+.v30-stage-detail{
+  margin-top:14px!important;
+  border-color:#334155!important;
+  background:linear-gradient(135deg,rgba(96,165,250,.055),rgba(34,197,94,.035))!important;
+}
+.v30-stage-detail:empty{
+  display:none!important;
+}
+.v30-stage-detail h3{
+  margin:0 0 8px;
+  color:#f8fafc;
+}
+.v30-detail-subtitle{
+  margin:0 0 12px!important;
+  color:#98a2b3!important;
+  font-size:13px!important;
+}
+.v30-audit-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(160px,1fr));
+  gap:10px;
+}
+.v30-audit-box{
+  border:1px solid #334155;
+  background:#0a0f1d;
+  border-radius:14px;
+  padding:10px;
+  min-width:0;
+}
+.v30-audit-box h4{
+  margin:0 0 6px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  font-size:11px;
+}
+.v30-audit-box ul{
+  margin:0;
+  padding-left:17px;
+}
+.v30-audit-box li{
+  font-size:12px;
+  margin:4px 0;
+  color:#cbd5e1;
+}
+.v30-stage-chiprow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin:8px 0 12px;
+}
+.v30-stage-chip{
+  border:1px solid #334155;
+  background:#0b1020;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:12px;
+  color:#dbeafe;
+}
+/* Pipeline #2 should be one row of five on desktop. */
+@media(min-width:1280px){
+  #architecture .v29-target-panel > .v21-five-col{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:start!important;
+  }
+  #architecture .v29-target-panel > .v21-five-col > .v21-stage{
+    min-width:0!important;
+    min-height:620px!important;
+  }
+  #architecture .v29-target-panel .v21-stage h2{
+    font-size:16px!important;
+  }
+  #architecture .v29-target-panel .v21-card li{
+    font-size:11.5px!important;
+  }
+  #architecture .v29-target-panel .v21-stage-formula{
+    font-size:12px!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+@media(max-width:1279px){
+  #architecture .v29-target-panel > .v21-five-col{
+    grid-template-columns:repeat(2,minmax(260px,1fr))!important;
+  }
+}
+@media(max-width:900px){
+  .v30-audit-grid{grid-template-columns:1fr}
+  #architecture .v29-target-panel > .v21-five-col{grid-template-columns:1fr!important}
+}
+
+/* v31: DRY click behavior + formatting repair */
+.v30-selectable-stage::after{
+  content:none!important;
+  display:none!important;
+}
+.v30-selectable-stage{
+  cursor:pointer;
+}
+.v21-card li{
+  align-items:flex-start!important;
+}
+.v21-card li b{
+  flex:0 0 auto!important;
+  min-width:22px;
+  white-space:nowrap!important;
+}
+.v21-s1 .v21-card li b{
+  min-width:8ch!important;
+}
+.v21-card li{
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+}
+.v30-stage-chiprow{
+  display:none!important;
+}
+.v31-stage-kicker{
+  display:inline-flex;
+  border:1px solid #334155;
+  background:#0b1020;
+  border-radius:999px;
+  padding:5px 9px;
+  color:#dbeafe;
+  font-size:12px;
+  font-weight:850;
+  margin-bottom:8px;
+}
+.v30-detail-subtitle strong{
+  color:#e8edf7;
+}
+
+/* v32: remove redundant drawer kicker and normalize final release-stage colour */
+.v31-stage-kicker{
+  display:none!important;
+}
+.v30-selectable-stage::after{
+  content:none!important;
+  display:none!important;
+}
+/* Align Pipeline #2 final Reread/Release stage with Pipeline #1 Burden Cycle/Release shell color. */
+#architecture .v29-target-panel .v21-s5{
+  --sc:var(--violet)!important;
+}
+#architecture .v29-target-panel .v21-s5 > h2 span{
+  background:var(--violet)!important;
+}
+#architecture .v29-target-panel .v21-s5 > h2{
+  color:var(--violet)!important;
+}
+
+/* v33: combine target stages 4+5 and remove register-to-owner panel from Pipeline #2 */
+@media(min-width:1280px){
+  #architecture .v29-target-panel > .v21-five-col{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:12px!important;
+    align-items:start!important;
+  }
+  #architecture .v29-target-panel > .v21-five-col > .v21-stage{
+    min-height:620px!important;
+  }
+}
+#architecture .v29-target-panel [data-stage-key="ownerRelease"]{
+  --sc:var(--violet)!important;
+}
+#architecture .v29-target-panel [data-stage-key="ownerRelease"] > h2,
+#architecture .v29-target-panel [data-stage-key="ownerRelease"] .v21-card h3{
+  color:var(--violet)!important;
+}
+#architecture .v29-target-panel [data-stage-key="ownerRelease"] > h2 span{
+  background:var(--violet)!important;
+}
+#architecture .v29-target-panel [data-stage-key="ownerRelease"] .v21-stage-formula{
+  font-size:12px!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:1279px){
+  #architecture .v29-target-panel > .v21-five-col{
+    grid-template-columns:repeat(2,minmax(260px,1fr))!important;
+  }
+}
+@media(max-width:760px){
+  #architecture .v29-target-panel > .v21-five-col{
+    grid-template-columns:1fr!important;
+  }
+}
 </style>
 </head>
 <body>
@@ -333,43 +1291,375 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <section class="tabsec active" id="architecture">
 <div class="hero">
 <h1>DAEE Epistemics Control Wiki</h1>
-<p>Pipeline #1 shows the current repo architecture; Pipeline #2 shows the next-state target. Both are interactive and use the same visual grammar.</p>
+<p>v33: Pipeline #2 now treats Owner/TTP execution, burden landing, reread, and release as one combined cycle while keeping the pipeline graphic itself clickable.</p>
 <div class="badges">
-<span class="badge"><i class="dot blue"></i>current repo state</span><span class="badge"><i class="dot green"></i>target architecture</span><span class="badge"><i class="dot cyan"></i>DSL/IR</span><span class="badge"><i class="dot violet"></i>owner/TTP</span><span class="badge"><i class="dot orange"></i>burden cycle</span><span class="badge"><i class="dot red"></i>reread/decision</span>
+<span class="badge"><i class="dot blue"></i>interactive + static panels</span>
+<span class="badge"><i class="dot green"></i>current repo state</span>
+<span class="badge"><i class="dot cyan"></i>target DSL/IR registers</span>
+<span class="badge"><i class="dot violet"></i>owner/TTP execution</span>
+<span class="badge"><i class="dot orange"></i>burden/reread release</span>
+<span class="badge"><i class="dot red"></i>noetic collapse / restoration</span>
 </div>
 </div>
-<div class="panel">
-<h2>Pipeline #1 — current repo state</h2>
-<p class="subtle">Current canonical compact DSL-governed runtime. Click each stage.</p>
-<div class="flowline"><span class="node">atomics/skill → skill/</span><span class="arrow">→</span><span class="node">D</span><span class="arrow">→</span><span class="node">Noetic read</span><span class="arrow">→</span><span class="node">IR(N,m,τ,σ)</span><span class="arrow">→</span><span class="node">B → {sᵢ}</span><span class="arrow">→</span><span class="node">Land(B) → R(H,Δ)</span></div>
-<div class="pipelineGrid" id="currentPipeline"></div>
-<div class="panel" id="currentDetail"></div>
-</div>
-<div class="panel">
-<h2>Pipeline #2 — target repo state</h2>
-<p class="subtle">Next-state architecture after ξ/Ω/μ/κ, strict notation, and collapse-radius governance are patched into canonical source.</p>
-<div class="flowline"><span class="node">D₀</span><span class="arrow">⇝</span><span class="node">Ψᴺ⟨N,m,τ,σ,ξ,Ω,μ,κ,H⟩</span><span class="arrow">→</span><span class="node">IR(N,m,τ,σ,ξ,Ω,μ,κ)</span><span class="arrow">→</span><span class="node">ⁿB → {ⁿBᵢ}</span><span class="arrow">→</span><span class="node">R(H,ΔⁿB,Δκ)</span><span class="arrow">→</span><span class="node">𝒞(Ψᴺ)</span></div>
-<div class="pipelineGrid" id="targetPipeline"></div>
-<div class="panel" id="targetDetail"></div>
-</div>
-<div class="compareGrid">
-<div class="card">
+<div class="panel v22-landing-deck">
+<h2>Architecture landing — current → target</h2>
+<p class="subtle">
+  This landing page should do three things at once: teach the current compact runtime, show the Pipeline #2 delta,
+  and give an implementation path for patching the repo without turning the wiki into a file browser.
+</p>
+<div class="v22-deck-grid v25-deck-grid">
+<div class="v22-deck-card current">
 <h3>Pipeline #1 already does</h3>
-<ul><li>Diagnosis before answer</li><li>Compact IR before routing</li><li>Owner-backed TTP execution</li><li>Burden landing and state reread</li><li>STOP/HOLD/RECURSE/PARTIAL governance</li></ul>
+<ul>
+<li>diagnosis before answer</li>
+<li>compact <code>IR(N,m,τ,σ)</code> before routing</li>
+<li>owner-backed TTP execution</li>
+<li>burden landing and state reread</li>
+<li>STOP / HOLD / RECURSE / PARTIAL governance</li>
+</ul>
 </div>
-<div class="card">
-<h3>Pipeline #2 adds to the repo</h3>
-<ul><li><code>ξ</code> epistemic/warrant grammar</li><li><code>Ω</code> ontological grammar</li><li><code>μ</code> memetic carrier/stabilizer</li><li><code>κ</code> collapse-radius/dependency register</li><li><code>Ψᴺ</code> encoded noetic signal-state and <code>𝒞(Ψᴺ)</code> constrained resolution</li></ul>
+<div class="v22-deck-card target">
+<h3>Pipeline #2 adds</h3>
+<ul>
+<li><code>D₀</code> explicit surface signal</li>
+<li><code>Ψᴺ</code> encoded noetic signal-state</li>
+<li><code>ξ/Ω/μ/κ</code> structural registers</li>
+<li><code>Δκ</code> collapse-radius reread</li>
+<li><code>𝒞(Ψᴺ)</code> constrained noetic resolution</li>
+</ul>
+</div>
+<div class="v22-deck-card preserve">
+<h3>Architecture invariants</h3>
+<ul>
+<li>surface discourse is not the target yet</li>
+<li>meta-noetic memetics is operational only through control state</li>
+<li>submoves are not burden-cycles</li>
+<li>recursion returns to diagnostic/routing re-entry</li>
+<li>final restoration is licensed only after reread</li>
+</ul>
+</div>
+<div class="v22-deck-card patch">
+<h3>Implementation path</h3>
+<ul>
+<li>patch atomics, not generated runtime</li>
+<li>normalize notation in governance files</li>
+<li>add <code>ξ/Ω/μ/κ</code> as optional registers first</li>
+<li>extend checkers/fixtures before schema hardening</li>
+<li>regenerate <code>skill/</code> and rerun governance checks</li>
+</ul>
 </div>
 </div>
-<div class="panel">
-<h2>Build / audit summary</h2>
-<pre class="command-block" id="auditSummary"></pre>
 </div>
-<div class="panel">
+<div class="panel v21-pipeline-panel v29-current-panel">
+<h2>Pipeline #1 — current repo baseline</h2>
+<p class="subtle">This is the current compact runtime shown in the index9 style: the internal sections are visible inside the pipeline itself, not hidden behind a generic stage summary.</p>
+<div class="v21-formula">Input → IR(N,m,τ,σ) → gate &amp; routing → B → {s₁..sₙ} → Land(B) → R(H,Δ) → Decision</div><div class="v30-click-hint">Click a stage panel below to inspect its audit trace. The graphic remains the source of truth; the drawer only explains the selected stage.</div>
+<div class="v21-four-col">
+<article class="v21-stage v21-s1 v30-selectable-stage" data-pipeline="current" data-stage-key="input" role="button" tabindex="0">
+<h2><span>1</span> Input / Surface Discourse</h2>
+<div class="v21-card">
+<h3>Input is not the target yet</h3>
+<ul>
+<li><b>💬</b> claims, objections, doubts, questions</li>
+<li><b>τ</b> criteria / tribunals being installed</li>
+<li><b>σ</b> source-status and testimony posture</li>
+<li><b>♥</b> register: grief, identity, performance, truth-seeking</li>
+<li><b>↻</b> recurring slogans or memetic patterns</li>
+</ul>
+</div>
+<div class="v21-card v21-warn">
+<h3>Gate before rebuttal</h3>
+<p>Direct content release before diagnosis is an architecture failure. The visible proposition may be downstream of a noetic blocker.</p>
+</div>
+</article>
+<article class="v21-stage v21-s2 v30-selectable-stage" data-pipeline="current" data-stage-key="noetic" role="button" tabindex="0">
+<h2><span>2</span> Noetic / Meta-Noetic Read</h2>
+<div class="v21-card">
+<h3>Proper-functional noetic structure</h3>
+<ul>
+<li><b>F</b> fiṭrah orientation: sound, impaired, blocked, underdetermined</li>
+<li><b>E</b> epistemic environment: whether faculties operate under fitting conditions</li>
+<li><b>R</b> reason role: sound reason, reason-as-tribunal, pseudo-neutral, inherited</li>
+<li><b>T</b> testimony posture: trusted, demoted, flattened, suspicious, held</li>
+<li><b>∅</b> defeaters / deformation: what prevents proper recognition or assent</li>
+</ul>
+</div>
+<div class="v21-card">
+<h3>Meta-noetic memetics as object-domain</h3>
+<p>How the noetic structure and its governing epistemic rules stabilize, defend, mutate, and reproduce through language, slogans, labels, institutions, identity pressure, and social habits.</p>
+<ul>
+<li><b>m</b> memetic node / recurring claim-shape</li>
+<li><b>τ</b> criterion transfer / imported tribunal</li>
+<li><b>LB</b> load-bearing node that regenerates downstream claims</li>
+<li><b>CR</b> collapse radius: what must be re-evaluated if the node clears</li>
+</ul>
+</div>
+<div class="v21-note"><b>Operational boundary:</b> meta-noetic memetics does not create a decorative route. It becomes real only when encoded into IR fields, suppression, held material, owner/TTP choice, collapse radius, or state re-read.</div>
+<div class="v21-note"><b>Design-space invariant:</b> the framework is engineered before the selected noetic structure is known. Each owner family must operate for any possible live structure.</div>
+</article>
+<article class="v21-stage v21-s3 v30-selectable-stage" data-pipeline="current" data-stage-key="irOwner" role="button" tabindex="0">
+<h2><span>3</span> DSL / IR &amp; Gated Governance</h2>
+<div class="v21-card">
+<h3>Diagnostic reduction order</h3>
+<div class="v21-proc-flow">
+<div>core axes</div><span>→</span>
+<div>Phase 2</div><span>→</span>
+<div>overlays</div><span>→</span>
+<div>validated IR</div><span>→</span>
+<div>gate checks</div><span>→</span>
+<div>routing</div>
+</div>
+</div>
+<div class="v21-card">
+<h3>DSL / IR control surface — IR(N,m,τ,σ)</h3>
+<div class="v21-field-grid">
+<div><b>N</b><span>operative noetic frame</span><small>selected frame governing this burden; family labels ≠ operative N</small></div>
+<div><b>m</b><span>memetic claim / node</span><small>recurring slogan, authority-node, criterion, stabilizer</small></div>
+<div><b>τ</b><span>tribunal / criterion</span><small>what judges what; often imported or pseudo-neutral</small></div>
+<div><b>σ</b><span>source-status</span><small>operative warrant vs contrast / context / held material</small></div>
+<div><b>LB</b><span>load-bearing node</span><small>must clear before downstream claims re-read</small></div>
+<div><b>CR</b><span>collapse radius</span><small>dependent claims re-evaluated after node clears</small></div>
+<div><b>H</b><span>held set</span><small>live but unreleased material</small></div>
+<div><b>B</b><span>live burden</span><small>one function, not a route chain</small></div>
+</div>
+</div>
+<div class="v21-flow-boxes">
+<div><h4>Gate</h4><p>fields, consistency, suppression rules, P7 stops, architecture target</p></div>
+<span>→</span>
+<div><h4>Precedence</h4><p>concealment / DO-orient / deformation / reason / foreign-premise / load-bearing</p></div>
+<span>→</span>
+<div><h4>Owner Select</h4><p>all structurally possible owner families design-supported; only live bounded activate</p></div>
+<span>→</span>
+<div><h4>Layer B</h4><p>TTP submoves with target / operation / result for active operators</p></div>
+</div>
+</article>
+<article class="v21-stage v21-s4 v30-selectable-stage" data-pipeline="current" data-stage-key="reread" role="button" tabindex="0">
+<h2><span>4</span> Burden Cycle &amp; Release</h2>
+<div class="v21-card">
+<h3>Burden cycle</h3>
+<div class="v21-stage-formula">B → {s₁..sₙ} → Land(B) → R(H,Δ)</div>
+<p>Submoves ≠ burden-cycles. New B is licensed only after burden landing and state re-read. Output depth follows live noetic burden, not prompt length.</p>
+</div>
+<div class="v21-card">
+<h3>Decision</h3>
+<div class="v21-dec-grid">
+<div class="stop">■<br/>STOP</div>
+<div class="hold">–<br/>HOLD</div>
+<div class="recurse">↻<br/>RECURSE</div>
+<div class="partial">○<br/>PARTIAL</div>
+</div>
+<div class="v21-note"><b>Correct recurse:</b> RECURSE returns to diagnostic/routing re-entry for next input-anchored live burden. It does not point to Restorative Response.</div>
+</div>
+<div class="v21-card v21-purple">
+<h3>Restorative Response</h3>
+<ul>
+<li><b>F</b> restored fiṭrah / proper-function orientation</li>
+<li><b>⚖</b> restored criterion order</li>
+<li><b>σ</b> corrected source-status placement</li>
+<li><b>∅</b> relieved deformation / concealment</li>
+<li><b>H</b> held downstream material named where needed</li>
+</ul>
+<div class="v21-note">Terminal synthesis after final licensed state/noetic re-read. Incoming only.</div>
+</div>
+</article>
+</div>
+<div aria-live="polite" class="v30-stage-detail panel" id="currentStaticStageDetail"></div>
+<div class="v21-three-col">
+<div class="v21-card"><h3>Layer A / B / R surface</h3><ul><li><b>A</b> compact DSL/IR header — not full IR, not case state</li><li><b>B</b> bounded governed response — Hidden Premises, Core Formulation, operative submoves, TTP trace</li><li><b>R</b> state/noetic re-read — what cleared, what remains live, next bound</li></ul></div>
+<div class="v21-card"><h3>What this is not</h3><ul><li>✗ not a topic-to-answer flowchart</li><li>✗ not an argument bank selector</li><li>✗ not a prompt-engineering recipe</li><li>✗ not a retrospective IR diagram</li><li>✗ not recursion as “go to restoration and loop”</li></ul></div>
+<div class="v21-card"><h3>Failure modes blocked</h3><ul><li>✗ retrospective IR after answer chosen</li><li>✗ route chain treated as current operator</li><li>✗ bundle co-location treated as activation</li><li>✗ held route leaked into Layer B</li><li>✗ first strong argument treated as STOP</li></ul></div>
+</div>
+</div>
+<div class="panel v21-pipeline-panel v29-target-panel">
+<h2>Pipeline #2 — target repo state with ξ/Ω/μ/κ + noetic collapse</h2>
+<p class="subtle">Same diagramming intuition, but upgraded: surface discourse is decoded into Ψᴺ, optional registers become structural control surfaces, and R(H,ΔⁿB,Δκ) governs recursion or final restoration.</p>
+<div class="v21-formula">D₀ ⇝ Ψᴺ⟨N,m,τ,σ,ξ,Ω,μ,κ,H⟩ → IR(N,m,τ,σ,ξ,Ω,μ,κ) → ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → R(H,ΔⁿB,Δκ) → 𝒞(Ψᴺ) / Decision</div><div class="v30-click-hint">Click a target stage panel below to inspect its audit trace. The four-stage graphic remains the source of truth; the drawer only explains the selected stage.</div>
+<div class="v21-five-col">
+<article class="v21-stage v21-s1 v30-selectable-stage" data-pipeline="target" data-stage-key="input" role="button" tabindex="0">
+<h2><span>1</span> D₀ / Surface Signal</h2>
+<div class="v21-card"><h3>Input as encoded signal</h3><ul>
+<li><b>D₀</b> visible surface discourse</li>
+<li><b>source</b> origin of claim / criterion / authority</li>
+<li><b>message</b> slogan, objection, proof-packet, request</li>
+<li><b>encoding</b> labels, examples, school identity, proof-denominators</li>
+<li><b>noise</b> deformation, equivocation, identity pressure, proof-method narrowing</li>
+</ul></div>
+<div class="v21-card v21-warn"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or register pressure.</p></div>
+</article>
+<article class="v21-stage v21-s2 v30-selectable-stage" data-pipeline="target" data-stage-key="psi" role="button" tabindex="0">
+<h2><span>2</span> Ψᴺ / Noetic Signal-State</h2>
+<div class="v21-card"><h3>Proper-functional read retained</h3><ul>
+<li><b>F</b> fiṭrah / proper-function orientation</li>
+<li><b>E</b> epistemic environment</li>
+<li><b>R</b> reason role</li>
+<li><b>T</b> testimony posture</li>
+<li><b>Ø</b> defeater / deformation status</li>
+</ul></div>
+<div class="v21-card"><h3>Structural registers</h3><ul>
+<li><b>N</b> operative noetic frame</li>
+<li><b>m</b> deformation / memetic mode</li>
+<li><b>τ</b> tribunal / burden-function</li>
+<li><b>σ</b> source / semantic / authority status</li>
+<li><b>ξ</b> epistemic / warrant grammar</li>
+<li><b>Ω</b> ontological grammar</li>
+<li><b>μ</b> memetic carrier / stabilizer</li>
+<li><b>κ</b> collapse radius</li>
+<li><b>H</b> held set</li>
+</ul></div>
+<div class="v21-note"><b>Operational boundary:</b> ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, or R.</div>
+</article>
+<article class="v21-stage v21-s3 v30-selectable-stage" data-pipeline="target" data-stage-key="ir" role="button" tabindex="0">
+<h2><span>3</span> Expanded IR / Gate</h2>
+<div class="v21-card"><h3>Diagnostic reduction order</h3>
+<div class="v21-proc-flow target">
+<div>D₀</div><span>→</span><div>Ψᴺ</div><span>→</span><div>core axes</div><span>→</span><div>Phase 2</div><span>→</span><div>overlays</div><span>→</span><div>validated IR</div><span>→</span><div>gate</div><span>→</span><div>routing</div>
+</div>
+</div>
+<div class="v21-card"><h3>Optional-register IR</h3>
+<div class="v21-stage-formula">IR(N,m,τ,σ,ξ,Ω,μ,κ)</div>
+<p>ξ/Ω/μ/κ are not schema bloat. They are optional structural registers when live, not mandatory fields in every case.</p>
+</div>
+<div class="v21-card"><h3>Gate checks</h3><ul>
+<li><b>fields</b> required controls and consistency</li>
+<li><b>σ</b> source-status non-equivalence</li>
+<li><b>H</b> held material governed</li>
+<li><b>P7</b> stop / hold / partial / recurse discipline</li>
+<li><b>owner</b> bounded activation only after gate</li>
+</ul></div>
+</article>
+<article class="v21-stage v21-s4 v30-selectable-stage" data-pipeline="target" data-stage-key="ownerRelease" role="button" tabindex="0">
+<h2><span>4</span> Owner/TTP + Burden / Reread Release</h2>
+<div class="v21-card"><h3>Operator signature</h3>
+<div class="v21-stage-formula">ⁿBᵢ[OP] : target → operation → result → ΔⁿB / Δκ</div>
+</div>
+
+<div class="v21-card"><h3>Strict burden cycle</h3>
+<div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB</div>
+<ul>
+<li><b>Δξ</b> epistemic grammar changed</li>
+<li><b>ΔΩ</b> ontological grammar changed</li>
+<li><b>Δμ</b> memetic stabilizer changed</li>
+<li><b>Δκ</b> dependency radius changed</li>
+</ul>
+</div>
+<div class="v21-card"><h3>Reread gate</h3>
+<div class="v21-stage-formula">R(H,ΔⁿB,Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B</div>
+</div><div class="v21-card"><h3>Decision</h3>
+<div class="v21-dec-grid">
+<div class="stop">■<br/>STOP</div>
+<div class="hold">–<br/>HOLD</div>
+<div class="recurse">↻<br/>RECURSE</div>
+<div class="partial">○<br/>PARTIAL</div>
+</div>
+<div class="v21-note"><b>Correct recurse:</b> ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ.</div>
+</div><div class="v21-card v21-purple"><h3>Noetic collapse / restoration</h3>
+<div class="v21-stage-formula">𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ</div>
+<ul>
+<li><b>N</b> restored noetic frame / fiṭrah orientation</li>
+<li><b>ξ</b> warrant grammar repaired</li>
+<li><b>Ω</b> ontology repaired or held</li>
+<li><b>μ</b> memetic stabilizer broken or reordered</li>
+<li><b>κ</b> dependency radius resolved / held / partialed</li>
+</ul>
+</div></article>
+
+</div>
+<div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>
+</div>
+<div class="panel v22-implementation-procedure">
 <h2>Agentic implementation procedure: patch repo Pipeline #1 → Pipeline #2</h2>
-<p>This is about patching the actual repo using the diagrams as execution maps, not about improving the wiki graphics.</p>
-<div class="procGrid" id="procedureGrid"></div>
+<p class="subtle">
+  This is about patching the actual repo using the diagrams as execution maps, not about improving the wiki graphics.
+</p>
+<div class="v22-proc-grid v26-proc-grid">
+<div class="v22-proc-step">
+<h3>0. Branch, baseline, and non-negotiables</h3>
+<ul>
+<li>Create a branch; do not commit to <code>main</code> directly.</li>
+<li>Work from canonical atomized source under <code>atomics/skill/</code>; regenerate <code>skill/</code>.</li>
+<li>Do not invent mandatory schema fields, owners, module IDs, or canonical claims.</li>
+<li>Preserve strict notation: <code>ⁿB</code>, <code>ⁿBᵢ</code>, <code>ΔⁿB</code>, <code>ⁿ⁺¹B</code>.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>1. Establish current Pipeline #1 evidence</h3>
+<ul>
+<li>Read <code>README.md</code>, <code>atomics/skill/SKILL.md</code>, <code>docs/daee-epistemics-pipeline.html</code>.</li>
+<li>Read <code>diagnostic-ir.md</code>, <code>recursive-state-transitions.md</code>, <code>routing-precedence.md</code>, <code>output-release.md</code>, <code>diagnostic-render-contract.md</code>, <code>noetic-reading-checklist.md</code>, <code>nomenclature-normalization.md</code>.</li>
+<li>Record current spine: <code>IR(N,m,τ,σ) → B → {sᵢ} → Land(B) → R(H,Δ)</code>.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>2. Normalize notation in canonical source</h3>
+<ul>
+<li>Patch <code>nomenclature-normalization.md</code> with strict burden/submove convention.</li>
+<li>Define <code>ξ</code> as epistemic/warrant grammar.</li>
+<li>Define <code>Ω</code> as ontological grammar.</li>
+<li>Define <code>μ</code> as meta-noetic memetic carrier/stabilizer/reproduction vector.</li>
+<li>Define <code>κ</code> as collapse radius/downstream dependency set.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>3. Patch recursive-state governance</h3>
+<ul>
+<li>Normalize <code>recursive-state-transitions.md</code> to <code>ⁿB</code>/<code>ⁿBᵢ</code>/<code>ΔⁿB</code>/<code>ⁿ⁺¹B</code>.</li>
+<li>Add <code>Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ</code> rule.</li>
+<li>Add <code>Δκ</code> as reread input when dependency radius changes.</li>
+<li>Separate <code>ΔⁿB</code> from next-burden license.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>4. Patch Diagnostic IR conservatively</h3>
+<ul>
+<li>Describe <code>ξ/Ω/μ/κ</code> as optional structural registers / derived analytic functions.</li>
+<li>Do not add them as mandatory schema fields yet.</li>
+<li>Register visibility depends on routing, suppression, held material, owner activation, collapse radius, or reread.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>5. Patch owner/TTP signatures</h3>
+<ul>
+<li>Allow <code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB / Δκ</code>.</li>
+<li>Map <code>V2/FPD/M1</code> to <code>Δξ/Δσ/Δμ</code> where live.</li>
+<li>Map <code>M9/V8/V9</code> to <code>ΔΩ</code> where live.</li>
+<li>Map <code>V10</code> to <code>Δσ/Δξ</code> and <code>P7/R-gate</code> to <code>Δκ</code>.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>6. Patch noetic reading and output governance</h3>
+<ul>
+<li>Add <code>ξ</code> prompts to <code>noetic-reading-checklist.md</code>.</li>
+<li>Add <code>Ω</code> prompts where ontology/predication is structurally live.</li>
+<li>Patch <code>output-release.md</code> to require <code>κ/Δκ</code> reread after load-bearing nodes land.</li>
+<li>Patch <code>diagnostic-render-contract.md</code> with compact examples, not raw IR dumps.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>7. Bake collapse algebra into architecture docs</h3>
+<ul>
+<li>Patch <code>framework-pipeline.md</code> and <code>docs/daee-epistemics-pipeline.html</code>.</li>
+<li>Define <code>Ψᴺ</code> as encoded noetic signal-state.</li>
+<li>Define <code>𝒞(Ψᴺ)</code> as constrained noetic collapse/discursive resolution.</li>
+<li>Keep it architecture notation, not mandatory visible runtime output in every response.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>8. Add checker and fixture coverage</h3>
+<ul>
+<li>Reject <code>Bⁿ</code>, <code>⁺ⁿ⁺¹B</code>, and burden numbers after <code>B</code>.</li>
+<li>Add fixtures for <code>ξ</code>, <code>Ω</code>, <code>μ</code>, and <code>κ</code> live cases.</li>
+<li>Assert <code>ΔⁿB</code> and <code>ⁿ⁺¹B</code> are not interchangeable.</li>
+</ul>
+</div>
+<div class="v22-proc-step">
+<h3>9. Regenerate and verify</h3>
+<ul>
+<li>Run <code>build_framework_pipeline.py</code> and <code>build_compiled_runtime.py</code>.</li>
+<li>Run freshness, package, render, recursion, IR, catalogue, routing, and encoding checks.</li>
+<li>Only then report repo-state delta.</li>
+</ul>
+</div>
+</div>
 </div>
 </section>
 <section class="tabsec" id="owners">
@@ -1368,19 +2658,41 @@ function highlightNotation(keys){
 }
 function clearNotation(){ highlightNotation([]); }
 
-function init(){renderPipeline(CURRENT_STAGES,'currentPipeline','currentDetail');renderPipeline(TARGET_STAGES,'targetPipeline','targetDetail');renderOwnerFamilies();renderOperatorGraph();renderOperatorMatrix();renderOwnerSourceTable();renderConcepts();renderRelations();renderProcedure();renderRefs();renderDocList();document.getElementById('auditSummary').textContent=`HTML generated from uploaded index.html DOCS + preview(3).html proposal + repo pipeline framing.
-Architecture-only build/audit/procedure placement: yes.
-Pipeline #1 and #2 interactive stage cards: yes.
-Owners & TTP page redesigned as activation/transformer map: yes.
-Theory worked transitions removed: yes.
-Previous-v9 separation removed from Owners/Theory: yes.
-DOCS embedded: 108.
-References mapped: 108.
-Concept entities: 12.
-Operators: 13.
-Owner families: 5.
-Strict notation included: ⁿB, ⁿBᵢ, ΔⁿB, ⁿ⁺¹B.
-Collapse algebra included: Ψᴺ and 𝒞(Ψᴺ).\nNotation board highlighting: concepts and relations highlight corresponding formula tokens.\nRelations map: clickable relation/operator view present.\nFull proposal annex layout: scoped grid/card formatting repaired.`;}
+function init(){
+  const safe=(label,fn)=>{try{fn()}catch(e){console.warn('DAEE wiki init skipped:',label,e)}};
+
+  if(document.getElementById('currentPipeline')) safe('current pipeline',()=>renderPipeline(CURRENT_STAGES,'currentPipeline','currentDetail'));
+  if(document.getElementById('targetPipeline')) safe('target pipeline',()=>renderPipeline(TARGET_STAGES,'targetPipeline','targetDetail'));
+
+  safe('owner families',()=>renderOwnerFamilies());
+  if(document.getElementById('operatorGraphList')) safe('operator graph',()=>renderOperatorGraph());
+  if(document.getElementById('operatorMatrix')) safe('operator matrix',()=>renderOperatorMatrix());
+  if(document.getElementById('ownerSourceTable')) safe('owner source table',()=>renderOwnerSourceTable());
+  if(document.getElementById('conceptList')) safe('concepts',()=>renderConcepts());
+  if(document.getElementById('relationPanel')) safe('relations',()=>renderRelations());
+  if(document.getElementById('procedureGrid')) safe('procedure grid',()=>renderProcedure());
+  if(document.getElementById('refTable')) safe('refs',()=>renderRefs());
+  if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
+
+  const audit=document.getElementById('auditSummary');
+  if(audit){
+    audit.textContent=`v28 merge:
+- removed the temporary v19 stage-inspector panel
+- landing deck retained without project-internal baseline wording
+- index9-style Pipeline #1 retained as the current repo baseline
+- Pipeline #2 target diagram retained
+- build/audit summary and implementation procedure retained on Architecture tab only
+- init remains guarded so optional panels cannot break the whole wiki
+- Owners & TTP, Theory, and Reference Library functionality preserved
+
+Checks expected:
+- node --check
+- Architecture tab has no temporary inspector panel
+- Pipeline #1 current repo baseline heading present
+- index9-style pipeline markers present
+- target ξ/Ω/μ/κ markers present`;
+  }
+}
 document.addEventListener('DOMContentLoaded',init);
 </script>
 <script id="sot-field-navigation-v15">
@@ -1896,7 +3208,6 @@ document.addEventListener('DOMContentLoaded',init);
   });
 })();
 </script>
-
 <script id="control-ontology-final-highlight-v19">
 /* v19: richer control ontology, D₀ visible, and final state highlights ξ/Ω/μ/κ as well as N. */
 (function(){
@@ -1990,6 +3301,388 @@ document.addEventListener('DOMContentLoaded',init);
       if(typeof renderConcepts === 'function') renderConcepts();
     }, 0);
   });
+})();
+</script>
+<script id="pipeline-depth-restoration-v20">
+/* v20: ACID/SOT/DRY deep pipeline renderer restoring index9's missing internal sections. */
+(function(){
+  const PIPELINE_DEEP = {
+    current: {
+      source: {
+        accent:'var(--blue)',
+        intro:'Current repo boundary: canonical atomized source compiles into generated runtime. This stage explains what the user runs versus what maintainers patch.',
+        cards:[
+          {title:'Atomic source / compiled runtime', wide:true, items:[
+            ['atomics','canonical source files under atomics/skill/'],
+            ['skill/','generated compiled runtime package'],
+            ['map','compiled-module-map resolves module IDs to bundled runtime locations'],
+            ['guard','bundle availability is not owner activation']
+          ]},
+          {title:'Current invariant', wide:true, cls:'deepGood', items:[
+            ['SOT','edit atomics, regenerate skill/'],
+            ['ID','original module IDs remain operative identities'],
+            ['scope','repo/dev harness stays outside canonical package']
+          ]}
+        ]
+      },
+      input: {
+        accent:'var(--blue)',
+        intro:'This restores the old index9 Input panel: surface discourse is not yet the target. The system first reads what the utterance is carrying.',
+        cards:[
+          {title:'Input is not the target yet', wide:true, items:[
+            ['“','claims, objections, doubts, questions'],
+            ['τ','criteria / tribunals being installed'],
+            ['σ','source-status and testimony posture'],
+            ['♡','register: grief, identity, performance, truth-seeking'],
+            ['↻','recurring slogans or memetic patterns']
+          ]},
+          {title:'Gate before rebuttal', wide:true, cls:'deepWarn', text:'Direct content release before diagnosis is an architecture failure. The visible proposition may be downstream of a noetic blocker.'}
+        ]
+      },
+      noetic: {
+        accent:'var(--green)',
+        intro:'This restores the old index9 Noetic / Meta-Noetic Read: proper-function orientation and memetic object-domain are both visible before IR.',
+        cards:[
+          {title:'Proper-functional noetic structure', wide:true, items:[
+            ['F','fiṭrah orientation: sound, impaired, blocked, underdetermined'],
+            ['E','epistemic environment: whether faculties operate under fitting conditions'],
+            ['R','reason role: sound reason, reason-as-tribunal, pseudo-neutral, inherited'],
+            ['T','testimony posture: trusted, demoted, flattened, suspicious, held'],
+            ['Ø','defeaters / deformation: what prevents proper recognition or assent']
+          ]},
+          {title:'Meta-noetic memetics as object-domain', wide:true, items:[
+            ['m','memetic node / recurring claim-shape'],
+            ['τ','criterion transfer / imported tribunal'],
+            ['LB','load-bearing node that regenerates downstream claims'],
+            ['CR','collapse radius: what must be re-evaluated if node clears']
+          ]},
+          {title:'Operational boundary', cls:'deepGood', text:'Meta-noetic memetics does not create a decorative extra pass. It becomes real only through IR fields, suppression, H, owner/TTP choice, collapse radius, or R.'},
+          {title:'Design-space invariant', cls:'deepGood', text:'The framework is engineered before the selected noetic structure is known. Each owner family must support possible live structures; runtime selection activates only bounded owners.'}
+        ]
+      },
+      ir: {
+        accent:'var(--cyan)',
+        intro:'This restores the old DSL/IR & Gated Governance card: diagnostic reduction order, compact control surface, and gate/routing/owner selection.',
+        cards:[
+          {title:'Diagnostic reduction order', full:true, flow:['core axes','Phase 2','overlays','validated IR','gate checks','routing']},
+          {title:'Current DSL / IR control surface', wide:true, formula:'IR(N,m,τ,σ)', items:[
+            ['N','operative noetic frame'],
+            ['m','memetic claim / node'],
+            ['τ','tribunal / criterion'],
+            ['σ','source-status'],
+            ['LB','load-bearing node'],
+            ['CR','collapse radius'],
+            ['H','held set'],
+            ['B','current live burden']
+          ]},
+          {title:'Gate → routing → owner → Layer B', wide:true, flow:['Gate: fields, consistency, suppression, P7 stops','Precedence: concealment / DO / deformation / reason / foreign premise / LB','Owner select: active owner only after diagnosis','Layer B: bounded target / operation / result']}
+        ]
+      },
+      owner: {
+        accent:'var(--violet)',
+        intro:'Current owner execution is already required by the repo, but v19 had it too compressed in the pipeline. This stage shows owner activation as control logic.',
+        cards:[
+          {title:'Owner activation floor', wide:true, flow:['validated IR','matched owner source','target','operation','result','state delta']},
+          {title:'What must be true', items:[
+            ['live','owner is structurally live, not just available in a bundle'],
+            ['body','owner body / section is actually loaded'],
+            ['local','operator performs local work under B'],
+            ['delta','work contributes to Land(B) or is held/partial']
+          ]},
+          {title:'Failure blocked', cls:'deepWarn', items:[
+            ['×','route chain treated as current bounded operator'],
+            ['×','bundle co-location treated as activation'],
+            ['×','generic prose replacing owner operation']
+          ]}
+        ]
+      },
+      reread: {
+        accent:'var(--orange)',
+        intro:'This restores the old Burden Cycle & Release card: burden cycle, decision, correct recurse, restorative response, and held downstream material.',
+        cards:[
+          {title:'Burden cycle', wide:true, formula:'B → {s₁...sₙ} → Land(B) → R(H,Δ)', text:'Submoves are not burden-cycles. A new B is licensed only after burden landing and state/noetic re-read.'},
+          {title:'Decision', wide:true, decision:true},
+          {title:'Correct recurse', cls:'deepGood', text:'RECURSE returns to diagnostic/routing re-entry for the next input-anchored live burden. It does not point to Restorative Response.'},
+          {title:'Restorative response', wide:true, items:[
+            ['F','restored fiṭrah / proper-function orientation'],
+            ['⚖','restored criterion order'],
+            ['σ','corrected source-status placement'],
+            ['Ø','relieved deformation / concealment'],
+            ['H','held downstream material named where needed']
+          ]}
+        ]
+      }
+    },
+    target: {
+      't-input': {
+        accent:'var(--blue)',
+        intro:'Pipeline #2 keeps the input discipline but names the signal object explicitly as D₀.',
+        cards:[
+          {title:'D₀ input object', wide:true, items:[
+            ['D₀','surface discourse as signal object'],
+            ['source','origin of claim / authority / semantic default'],
+            ['message','claim, slogan, proof-packet, objection'],
+            ['encoding','labels, examples, school identity, proof-denominators'],
+            ['noise','deformation, equivocation, identity pressure, proof-method narrowing']
+          ]},
+          {title:'Before next stage', cls:'deepGood', text:'D₀ must be read as encoded signal, not sent directly to an argument-bank response.'}
+        ]
+      },
+      't-psi': {
+        accent:'var(--green)',
+        intro:'Pipeline #2 upgrades the noetic read into an encoded noetic signal-state Ψᴺ with explicit structural registers.',
+        cards:[
+          {title:'Ψᴺ signal-state', wide:true, formula:'Ψᴺ⟨N,m,τ,σ,ξ,Ω,μ,κ,H⟩'},
+          {title:'Proper-function read retained', wide:true, items:[
+            ['F','fiṭrah / proper-function orientation'],
+            ['E','epistemic environment'],
+            ['R','reason role'],
+            ['T','testimony posture'],
+            ['Ø','defeater / deformation status']
+          ]},
+          {title:'New structural registers', wide:true, items:[
+            ['ξ','epistemic / warrant grammar'],
+            ['Ω','ontological grammar'],
+            ['μ','meta-noetic memetic carrier / stabilizer'],
+            ['κ','collapse radius / downstream dependency set']
+          ]},
+          {title:'Operational boundary', cls:'deepTarget', text:'ξ/Ω/μ/κ are not decorative. They matter only when they affect IR, suppression, H, owner choice, Δκ, or R.'}
+        ]
+      },
+      't-ir': {
+        accent:'var(--cyan)',
+        intro:'Pipeline #2 keeps IR compact but makes optional registers visible when structurally live.',
+        cards:[
+          {title:'Expanded optional-register IR', full:true, formula:'IR(N,m,τ,σ,ξ,Ω,μ,κ)'},
+          {title:'Diagnostic reduction order', full:true, flow:['D₀','Ψᴺ','core axes','Phase 2','overlays','validated IR','gate checks','routing']},
+          {title:'Gate checks', wide:true, items:[
+            ['fields','required fields and consistency'],
+            ['σ','source-status non-equivalence'],
+            ['H','held material named and governed'],
+            ['P7','stop/hold/recurse/partial controls'],
+            ['owner','only bounded owner activation after gate']
+          ]}
+        ]
+      },
+      't-owner': {
+        accent:'var(--violet)',
+        intro:'Pipeline #2 makes the owner/TTP submove shape explicit and auditable.',
+        cards:[
+          {title:'Operator signature', full:true, formula:'ⁿBᵢ[OP] : target → operation → result → ΔⁿB / Δκ'},
+          {title:'Register-to-owner examples', wide:true, items:[
+            ['ξ','V2 / FPD / M1 / R1 / R3 / V10'],
+            ['Ω','M9 / V8 / V9 / M8 / V12'],
+            ['μ','FPD / M1-P / F2 / V7 / V11'],
+            ['κ','P7 / M8 / any load-bearing owner that changes dependencies']
+          ]},
+          {title:'Failure blocked', cls:'deepWarn', text:'A TTP label is not execution. It must perform target → operation → result and produce a traceable state/dependency delta.'}
+        ]
+      },
+      't-burden': {
+        accent:'var(--orange)',
+        intro:'Pipeline #2 normalizes strict burden notation and separates burden landing from next-burden licensing.',
+        cards:[
+          {title:'Strict burden cycle', full:true, formula:'ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB'},
+          {title:'Deltas', wide:true, items:[
+            ['ΔⁿB','local burden-state delta'],
+            ['Δκ','downstream dependency / collapse-radius delta'],
+            ['Δξ','epistemic grammar changed'],
+            ['ΔΩ','ontological grammar changed'],
+            ['Δμ','memetic carrier/stabilizer changed']
+          ]},
+          {title:'Layer B release', wide:true, text:'Public answer remains bounded by the current burden. Held material is named, not dumped.'}
+        ]
+      },
+      't-decision': {
+        accent:'var(--red)',
+        intro:'Pipeline #2 extends the decision gate to R(H,ΔⁿB,Δκ), then only licenses next burden or final restoration if warranted.',
+        cards:[
+          {title:'Reread gate', full:true, formula:'R(H,ΔⁿB,Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B'},
+          {title:'Decision', wide:true, decision:true},
+          {title:'Correct recurse', cls:'deepGood', text:'ⁿ⁺¹B is licensed only if a distinct live τ/ξ/Ω/σ/κ remains. Same-burden facets stay as ⁿBᵢ submoves.'},
+          {title:'Noetic collapse / restoration', wide:true, formula:'𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ', items:[
+            ['N','restored noetic frame / fitrah orientation'],
+            ['ξ','warrant grammar repaired'],
+            ['Ω','ontological grammar repaired or held'],
+            ['μ','memetic stabilizer broken or reordered'],
+            ['κ','dependency radius resolved / held / partialed']
+          ]}
+        ]
+      }
+    }
+  };
+
+  function deepList(items){
+    return `<ul class="deepList">${(items||[]).map(([k,v])=>`<li><span class="deepKey">${esc(k)}</span><span>${esc(v)}</span></li>`).join('')}</ul>`;
+  }
+  function deepFlow(items){
+    return `<div class="deepFlow">${(items||[]).map((x,i)=>`${i?'<span class="deepArrow">→</span>':''}<span class="deepPill">${esc(x)}</span>`).join('')}</div>`;
+  }
+  function decisionBlock(){
+    return `<div class="decisionMini">
+      <div style="color:var(--red)">■<br>STOP</div>
+      <div style="color:var(--orange)">Ⅱ<br>HOLD</div>
+      <div style="color:var(--green)">↺<br>RECURSE</div>
+      <div style="color:var(--violet)">◌<br>PARTIAL</div>
+    </div>`;
+  }
+  function deepCard(c, accent){
+    const cls = `deepCard ${c.wide?'wide':''} ${c.full?'full':''} ${c.cls||''}`;
+    return `<div class="${cls}" style="--accent:${accent}">
+      <h4>${esc(c.title)}</h4>
+      ${c.formula?`<div class="deepFormula">${esc(c.formula)}</div>`:''}
+      ${c.text?`<p>${esc(c.text)}</p>`:''}
+      ${c.items?deepList(c.items):''}
+      ${c.flow?deepFlow(c.flow):''}
+      ${c.decision?decisionBlock():''}
+    </div>`;
+  }
+
+  const previousSelectStage = window.selectStage;
+  window.selectStage = function(gridId, detailId, id, el){
+    document.querySelectorAll(`#${gridId} .stageCard`).forEach(x=>x.classList.remove('active'));
+    if(el) el.classList.add('active');
+    const data = gridId === 'currentPipeline' ? CURRENT_STAGES : TARGET_STAGES;
+    const s = data.find(x => x.id === id);
+    if(!s) return;
+    const group = gridId === 'currentPipeline' ? 'current' : 'target';
+    const d = PIPELINE_DEEP[group][id];
+    const detail = document.getElementById(detailId);
+    if(!detail) return;
+    if(!d){
+      return previousSelectStage ? previousSelectStage(gridId, detailId, id, el) : null;
+    }
+    detail.innerHTML = `<h3>${esc(s.title)}</h3>
+      <div class="pipelineDeepIntro">${esc(d.intro)}</div>
+      <div class="detailGrid">${box('Receives',s.receives)}${box('Detects',s.detects)}${box('Writes / constrains',s.writes)}${box('Before next stage',s.next)}${box(gridId==='currentPipeline'?'Gap toward Pipeline #2':'Failure looks like',s.gap||s.failure)}</div>
+      <div class="deepStageGrid">${d.cards.map(c=>deepCard(c,d.accent)).join('')}</div>`;
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+      const currentBtn=[...document.querySelectorAll('#currentPipeline .stageCard')].find(b => (b.getAttribute('onclick')||'').includes("'input'")) || document.querySelector('#currentPipeline .stageCard');
+      if(currentBtn) selectStage('currentPipeline','currentDetail', (currentBtn.getAttribute('onclick')||'').includes("'input'") ? 'input' : 'source', currentBtn);
+      const targetBtn=[...document.querySelectorAll('#targetPipeline .stageCard')].find(b => (b.getAttribute('onclick')||'').includes("'t-input'")) || document.querySelector('#targetPipeline .stageCard');
+      if(targetBtn) selectStage('targetPipeline','targetDetail','t-input',targetBtn);
+    }, 0);
+  });
+})();
+</script>
+
+
+<script id="static-pipeline-interactivity-v33">
+(function(){
+  const STATIC_STAGE_MAP = {
+    current: {
+      input: {
+        title:'Input / Surface Discourse',
+        subtitle:'Surface discourse is decoded before rebuttal.',
+        ids:['input']
+      },
+      noetic: {
+        title:'Noetic / Meta-Noetic Read',
+        subtitle:'Proper-function orientation, memetic node, load-bearing node, and collapse radius are read before IR.',
+        ids:['noetic']
+      },
+      irOwner: {
+        title:'DSL / IR & Gated Governance',
+        subtitle:'IR/gate/routing and owner activation belong to this visible governance stage.',
+        ids:['ir','owner']
+      },
+      reread: {
+        title:'Burden Cycle & Release',
+        subtitle:'Burden landing, held material, reread, and STOP/HOLD/RECURSE/PARTIAL decision.',
+        ids:['reread']
+      }
+    },
+    target: {
+      input: {
+        title:'D₀ / Surface Signal',
+        subtitle:'The input becomes an explicit surface-discourse signal object.',
+        ids:['t-input']
+      },
+      psi: {
+        title:'Ψᴺ / Noetic Signal-State',
+        subtitle:'The noetic read becomes Ψᴺ with structural registers where live.',
+        ids:['t-psi']
+      },
+      ir: {
+        title:'Expanded IR / Gate',
+        subtitle:'Optional ξ/Ω/μ/κ registers enter the compact control surface when live.',
+        ids:['t-ir']
+      },
+      ownerRelease: {
+        title:'Owner/TTP + Burden / Reread Release',
+        subtitle:'Owner-backed submoves, strict burden notation, Land(ⁿB), R(H,ΔⁿB,Δκ), and final restoration form one release cycle.',
+        ids:['t-owner','t-burden','t-decision']
+      }
+    }
+  };
+
+  function sourceFor(pipeline){
+    return pipeline === 'current' ? CURRENT_STAGES : TARGET_STAGES;
+  }
+  function stageById(pipeline,id){
+    return sourceFor(pipeline).find(x => x.id === id);
+  }
+  function flatten(stages,key){
+    const out=[];
+    stages.forEach(s => (s[key]||[]).forEach(x => out.push(stages.length > 1 ? `${s.title}: ${x}` : x)));
+    return out;
+  }
+  function list(items){
+    if(!items.length) return '<p class="small">No explicit item.</p>';
+    return `<ul>${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  }
+  function auditBox(title, items){
+    return `<div class="v30-audit-box"><h4>${esc(title)}</h4>${list(items)}</div>`;
+  }
+
+  function renderStaticStage(pipeline,key){
+    const config = STATIC_STAGE_MAP[pipeline]?.[key];
+    if(!config) return;
+
+    const stages = config.ids.map(id => stageById(pipeline,id)).filter(Boolean);
+    if(!stages.length) return;
+
+    const panelId = pipeline === 'current' ? 'currentStaticStageDetail' : 'targetStaticStageDetail';
+    const panel = document.getElementById(panelId);
+    if(!panel) return;
+
+    document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(el => {
+      el.classList.toggle('v30-active', el.getAttribute('data-stage-key') === key);
+    });
+
+    const finalKey = pipeline === 'current' ? 'gap' : 'failure';
+    panel.innerHTML = `<h3>${esc(config.title)}</h3>
+      <p class="v30-detail-subtitle"><strong>Trace:</strong> ${esc(config.subtitle)}</p>
+      <div class="v30-audit-grid">
+        ${auditBox('Receives', flatten(stages,'receives'))}
+        ${auditBox('Detects', flatten(stages,'detects'))}
+        ${auditBox('Writes / constrains', flatten(stages,'writes'))}
+        ${auditBox('Before next stage', flatten(stages,'next'))}
+        ${auditBox(pipeline === 'current' ? 'Gap toward Pipeline #2' : 'Failure looks like', flatten(stages,finalKey))}
+      </div>`;
+  }
+
+  function attachStaticPipelineInteractivity(){
+    document.querySelectorAll('.v30-selectable-stage').forEach(el => {
+      const pipeline = el.getAttribute('data-pipeline');
+      const key = el.getAttribute('data-stage-key');
+      const handler = () => renderStaticStage(pipeline,key);
+      el.addEventListener('click', handler);
+      el.addEventListener('keydown', ev => {
+        if(ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          handler();
+        }
+      });
+    });
+    renderStaticStage('current','input');
+    renderStaticStage('target','input');
+  }
+
+  document.addEventListener('DOMContentLoaded', attachStaticPipelineInteractivity);
 })();
 </script>
 </body>
