@@ -95,6 +95,10 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 
 Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
 interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
+Pipeline #2 is the current baseline register formalism: schema-light means the registers govern
+existing IR/control surfaces when live, not that the registers are optional, future-parity, or a
+Pipeline #1 fallback. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
+separate contract migration decision.
 `D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
 encoded noetic signal-state produced when the diagnostic gate reads that surface through the
 available noetic-structure selection space `N_space` / `𝓝`. The live frame `N` is selected or

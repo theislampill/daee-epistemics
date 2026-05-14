@@ -101,6 +101,9 @@ mixed evidence, proposal, and release claims.
   recorded; the remaining decisions are whether to promote `heart` / `xi` / `Omega` /
   `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields, and
   whether to migrate contract/package/release-line state for v0.4.0.0.
+- Baseline wording: this is Pipeline #2 baseline register formalism over existing IR/control
+  surfaces. `Derived/conditional bridge` remains only the schema-light boundary term; it is not
+  future parity, Pipeline #1 fallback, or optional theory annex.
 - Source surfaces: `docs/algebraic-notation-and-noetic-formalism.md`,
   `docs/pipeline2-implementation-ledger.md`,
   `atomics/skill/references/diagnostics/nomenclature-normalization.md`,
@@ -130,6 +133,33 @@ mixed evidence, proposal, and release claims.
 - Status: user decision. Source/fixture/installed-skill smoke evidence supports
   v0.4.0.0 release consideration, but hard register schema migration, contract marker migration,
   package rebake, tag, and release remain blocked until explicitly authorized.
+
+### [SHOULD][source][fixture][checker] Operator Extraction Stage 1 Backlog
+
+- Problem: the 30-file operator extraction audit found real under-factorization, but the correct
+  implementation path is parent-owner child modes plus checker/fixture proof, not new owner packs
+  or corpus ingestion.
+- Stage 1 source surfaces: `atomics/skill/references/tactics/M9-predication-mode.md`,
+  `tests/routing-fixtures/`, and
+  `docs/audits/ns-ttp-meta-noetic-memetic-ontological-quantization-audit.md`.
+- Stage 1 decision: M9 is the first owner because it already owns semantic reception, ta'wil
+  sense-splitting, literal/figurative label discipline, loaded negative terms, imagination as
+  entailment, and category/domain failure.
+- Future stages: proof-method child modes under `proof-method-audit.md`; source-status child
+  modes under existing source-status/inference/nomenclature owners; doubt/wiswas stop-hold modes
+  under P7/doubt owners; divine action/speech/huduth modes under M9/V8/kalamic/do-attribute/
+  sound-reason owners; MM/OQ register hardening only after owner-backed smokes prove a gap.
+- Verification boundary: routing fixtures are static evidence only. They prove owner mapping and
+  label-stripped generalization expectations; they are not live execution smokes.
+- Stage-1.5/1.6 evidence boundary: retained local ignored M9 child-mode outputs under
+  `.daee/stage1.5-m9-child-live-smokes-20260514/` are semantic local evidence, not
+  package/release smoke proof. They are now machine-checkable by
+  `tools/check_m9_child_mode_execution_samples.py`, which validates child-specific target,
+  operation, result, Land(B), R(H,Delta), held/released routes, and anti-label-only safeguards.
+  `tools/check_smoke_artifacts.py --root` remains intentionally package/provenance oriented and
+  does not accept those local artifacts without release-style sidecars.
+- Status: Stage 1 source/fixture patch staged with static verification; Stage-1.6 local checker
+  added for M9 child-mode execution samples; package, tag, push, and release remain out of scope.
 
 ### [SHOULD][release][package][decision] Release Asset Rebake Decision
 

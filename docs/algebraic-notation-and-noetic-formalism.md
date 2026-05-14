@@ -10,11 +10,14 @@ canonical_runtime_owner: atomics/skill/references/diagnostics/diagnostic-ir.md
 
 This theory/specification surface preserves the algebraic formalism recovered from
 `docs/index.html` and states what is now canonical. Pipeline #2 is implemented in this repo as
-a derived/conditional bridge over the compact runtime: atomics and generated runtime define the
-bridge, and `tests/pipeline2-bridge-fixtures/` plus `tools/check_pipeline2_bridge.py` prove the
-register terms map to existing owner, hold/release, burden-selection, reread, PARTIAL, terminal,
-Shannon-boundary, and anti-symbol-theater controls. This is not a hard Diagnostic IR schema
-migration, a fresh live-smoke claim, or a v0.4.0.0 release marker.
+baseline register formalism with register-derived control over the compact runtime. In the narrow
+schema-boundary sense, it remains a derived/conditional bridge: atomics and generated runtime
+define the bridge, and `tests/pipeline2-bridge-fixtures/` plus `tools/check_pipeline2_bridge.py`
+prove the register terms map to existing owner, hold/release, burden-selection, reread, PARTIAL,
+terminal, Shannon-boundary, and anti-symbol-theater controls. Schema-light means baseline
+control without mandatory register fields; it does not mean optional theory, future parity, or
+permission to ignore live registers. This is not a hard Diagnostic IR schema migration, a fresh
+live-smoke claim, or a v0.4.0.0 release marker.
 
 Current compact runtime spine:
 
@@ -22,7 +25,7 @@ Current compact runtime spine:
 Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
-Pipeline #2 derived bridge:
+Pipeline #2 baseline register formalism:
 
 ```text
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>

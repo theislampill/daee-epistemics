@@ -1,0 +1,69 @@
+{
+  "id": "pm-proof-family-ambiguous-route",
+  "prompt": "A proof is being invoked, but it is not clear whether it is a reminder, a causal route, a modal contingency argument, or a moral argument; the conclusion is being treated as if it settles more than the proof type can carry.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "proof-method-audit"
+    ],
+    "optional_modules": [
+      "reason-disambiguation",
+      "M5-deformation-triage",
+      "causal-series-taxonomy",
+      "husn-al-nazar-arguments",
+      "V2-reconstituting-reason"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics"
+    ],
+    "required_governance": [
+      "PM-1 proof-family classification",
+      "classify proof family, premise form, inference form, and conclusion scope",
+      "Proof family and the claim it is asked to carry",
+      "proof is not over-credited",
+      "heart/register consequence",
+      "deformation release condition",
+      "source-worldview / tribunal consequence"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "pm-child-modes-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "proof"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "proof family ambiguous and proof type selecting route",
+      "do_orient": "classify proof family before content release",
+      "restoration_target": "select correct proof route without over-crediting the proof",
+      "routing_gate": "PM-1 before husn-al-nazar, causal-series, or V2 elaboration"
+    }
+  }
+}

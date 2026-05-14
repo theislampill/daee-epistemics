@@ -1028,7 +1028,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: nomenclature-normalization -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/nomenclature-normalization.md -->
-<!-- SOURCE_SHA256: 8dc8dc8d6b920ed4c3f2962ffcca76857455fb69f59aff191fd63a2b85cbb691 -->
+<!-- SOURCE_SHA256: a601946ccb6f73274ae0a0202685dfe4428b67dcfb46b908c92129b92f92fc25 -->
 
 ---
 id: nomenclature-normalization
@@ -1124,10 +1124,13 @@ brand the interlocutor with a code unless diagnostic render or user request make
 ## Algebraic Formalism Terms
 
 The expanded algebraic notation preserved in `docs/algebraic-notation-and-noetic-formalism.md`
-is a Pipeline #2 theory/specification bridge over the current runtime. Its derived/conditional
+is Pipeline #2 baseline register formalism over the current runtime. Its derived/conditional
 control semantics are canonical when they change existing diagnosis, routing, hold/release,
-collapse-radius, reread, or restoration behavior. It does not add routes, owners, mandatory
-IR fields, PF codes, source-basis categories, schema keys, or a second DSL.
+collapse-radius, reread, or restoration behavior. Schema-light means baseline control through
+existing IR/control surfaces, not optional theory or future parity. It does not add routes,
+owners, mandatory IR fields, PF codes, source-basis categories, schema keys, or a second DSL.
+The older phrase "Pipeline #2 theory/specification bridge" is retained only as a schema-boundary
+alias for this baseline register formalism.
 
 | Formal symbol | ASCII fallback | Status |
 |---|---|---|
@@ -1248,7 +1251,7 @@ The normalized release claim is:
 <!-- MODULE_ID: proof-method-audit -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/proof-method-audit.md -->
-<!-- SOURCE_SHA256: 50c66c879eaeb5e9bfb73d5bb7e258f1e73f66fa6397fd4422dbbab9a10e78dc -->
+<!-- SOURCE_SHA256: ff9db836041e5cdb9366a83f3bffb08559132c7eb1545240a5172881eef1f9ee -->
 
 ---
 id: proof-method-audit
@@ -1300,6 +1303,27 @@ Minimum operation:
 Exit condition: the proof grammar no longer functions as unnamed neutral tribunal. If the
 response only says that the "proof was audited" without changing premise, scope, or tribunal
 status, this owner has not executed.
+
+## Proof-Method Child Modes
+
+These are child modes under this owner, not standalone owners. They inherit the owner-specific
+operation floor above: proof family, premise form, inference form, conclusion scope, tribunal
+status, burden-state change, and held material must remain locally attached.
+
+Before any child mode releases proof content, preserve three execution floors:
+
+1. `heart` / `♥` register is checked as release posture, not as a mandatory schema field.
+2. M5/V1 deformation triage must have released the proof-method burden; a deformation label is
+   not owner execution.
+3. Source-worldview, imported-tribunal, and authority-order pressure remain upstream until named
+   and explicitly held or released.
+
+| mode_id | entry criterion | false trigger | target | operation | result | Land(B) effect | R(H,Delta)/kappa effect | heart/register consequence | deformation release condition | source-worldview / tribunal consequence | held route | smoke link |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| PM-1 proof-family classification | Proof family is doing route selection, or proof type is ambiguous. | The proof family is already typed and is not selecting the route. | Proof family and the claim it is asked to carry. | classify proof family, premise form, inference form, and conclusion scope. | Correct owner/proof route is selected; proof is not over-credited. | The burden lands as typed proof-status rather than argument dumping. | Collapse radius rereads husn-al-nazar, causal-series, V2, FPD, and route-back eligibility. | If grief, identity-performance, wiswas, shame/status, public pressure, or mixed register is live, mark proof content released, bounded, held, or PARTIAL before classification output. | M5/V1 must release a genuine proof-method burden; zann, taqlid, inherited framework, or volitional pressure holds ordinary proof comparison until its floor is named. | If proof family is acting as tribunal, classify only and HOLD content pending FPD/V2/source-status consequence. | husn-al-nazar, causal-series, V2, FPD, route-back held until family and scope are typed. | proof-family-ambiguous-route |
+| PM-2 denominator audit | Proof standard narrows what counts as warrant or treats one proof grammar as neutral tribunal. | The denominator is explicit, shared, and not excluding live warrant routes. | Admissibility rule / proof denominator. | audit what the denominator admits, excludes, and assumes. | Hidden criterion becomes contestable; signs, testimony, fitrah, and inferential routes are held or released correctly. | The burden lands when the denominator is exposed as a criterion rather than accepted as neutral reason. | Collapse radius rereads excluded warrant routes, testimony/source-status, V2, FPD, and proof-family deployment. | If proof demand is anxiety, overcomplexity, or destabilized truth-seeking, bound the audit to the denominator and do not feed proof-stacking. | M5/V1 must clear whether the denominator is shubhah, zann, taqlid, inherited framework, mushabara fasida, hawa/gharad, or ada before proof release. | Name the operative criterion-bearing commitment, such as empirical verification, academic method, reason-as-validator, transmission demotion, or source prestige as warrant. | Signs/testimony/fitrah routes remain held until the denominator no longer excludes them by fiat. | proof-denominator-narrowing |
+| PM-4 huduth/contingency proof-status audit | Temporal origination and contingency/mumkin grammar are being compared, or one is smuggled as superior. | The input only asks one established route without comparing or displacing the other. | Proof route and burden scope. | distinguish huduth/preponderance route from modal contingency route and audit what each establishes. | Direct huduth burden is preserved when live; modal taxonomy is held unless actually established. | The burden lands as route-status clarity: temporal origination is not displaced by a wider modal grammar without warrant. | Collapse radius rereads causal-series, husn-al-nazar, V2, and necessity/contingency overreach. | If the register is destabilized or overcomplexity is feeding doubt, keep the distinction bounded and hold speculative modal expansion. | M5/V1 must release comparison as genuine proof-method pressure, not inherited formalism, zann-mode, or prestige attachment. | If Aristotelian/Neoplatonic modal grammar is installed as tribunal, PM-4 holds content and hands upstream to FPD/V2 before ordinary proof deployment. | Modal-contingency elaboration held unless the live burden actually requires it. | huduth-contingency-route |
+| PM-6 proof-overreach / proof-substitution audit | A local proof tool becomes tribunal over revelation, source-status, or all God-talk. | The proof is explicitly local support and not governing revelation, source-status, or all theology. | Proof claim's scope and tribunal function. | audit premise, inference, conclusion scope, and tribunal status. | Proof is reclassified as local support, secondary route, or invalid tribunal. | The burden lands when the tool no longer substitutes for source-order, revelation, or the restored epistemic hierarchy. | Collapse radius rereads P3, V2, FPD, source-status, revelation, proof-family, and route-back consequences. | If the proof demand is public performance, shame/status pressure, or compulsive overproof, HOLD or PARTIAL proof expansion after scope is reclassified. | M5/V1 must release the proof claim as intellectual burden; hawa/gharad, ada, identity-performance, or inherited affiliation may hold content after the tribunal status is named. | If the tool functions as empirical verification tribunal, academic method tribunal, reason-as-validator over revelation, transmission demotion, closed-canon veto, or school/source prestige as warrant, refuse jurisdiction of the installed tribunal before content. | Revelation/source-status/downstream God-talk held until the proof tool's jurisdiction is narrowed. | proof-overreach-tool-tribunal |
 
 ## Proof-Family Audit Table
 

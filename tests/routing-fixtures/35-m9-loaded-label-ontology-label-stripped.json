@@ -1,0 +1,64 @@
+{
+  "id": "loaded-label-ontology-label-stripped",
+  "prompt": "The attribute makes God a body, because any real above-ness or action has to mean body-like composition.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "definition-discipline",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "perfection-criterion-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "M9-LD loaded-label deflation",
+      "loaded negative theological terms",
+      "semantic disaggregation before doctrinal engagement",
+      "Downstream content held until the label is deflated"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "m9-label-stripped-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "attribute"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "loaded label carrying hidden ontology",
+      "do_orient": "deflate label before doctrinal release",
+      "restoration_target": "split body/composition label from smuggled tribunal",
+      "routing_gate": "M9-LD before V8/do-attribute/perfection route"
+    }
+  }
+}

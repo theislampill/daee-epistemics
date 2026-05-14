@@ -80,6 +80,7 @@ nodes:
       - validated IR is runtime compiler state
       - IR before routing
       - Pipeline #2 derived bridge maps D0 -> PsiN -> IR without hard schema fields
+      - Baseline register formalism is schema-light, not optional or future parity
       - module dispatch blocked until all gate checks pass
     support_claim: runtime_diagnostic_compiler
 

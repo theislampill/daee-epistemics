@@ -1,0 +1,70 @@
+{
+  "id": "pm-proof-denominator-narrowing",
+  "prompt": "This proof standard says only demonstrative premises count as warrant, so testimony, signs, and fitrah cannot be considered until they pass that single proof grammar.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "proof-method-audit",
+      "foreign-premise-detection"
+    ],
+    "optional_modules": [
+      "reason-disambiguation",
+      "V2-reconstituting-reason",
+      "M5-deformation-triage",
+      "P7-restoration-stops"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "PM-2 denominator audit",
+      "audit what the denominator admits, excludes, and assumes",
+      "Admissibility rule / proof denominator",
+      "Hidden criterion becomes contestable",
+      "signs, testimony, fitrah",
+      "Name the operative criterion-bearing commitment"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "procedures",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "pm-child-modes-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "proof"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "proof denominator narrows admissible warrant",
+      "do_orient": "audit admissibility rule before evidence release",
+      "restoration_target": "expose hidden proof criterion and reread excluded warrant routes",
+      "routing_gate": "PM-2 with FPD/V2 held or released before ordinary proof deployment"
+    }
+  }
+}

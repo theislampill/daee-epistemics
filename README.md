@@ -381,6 +381,9 @@ The expanded algebraic notation and Pipeline #2 derived/conditional bridge are p
 [`docs/algebraic-notation-and-noetic-formalism.md`](docs/algebraic-notation-and-noetic-formalism.md)
 and tracked in
 [`docs/pipeline2-implementation-ledger.md`](docs/pipeline2-implementation-ledger.md).
+Read that wording as Pipeline #2 baseline register formalism with a schema-light implementation:
+the registers govern existing IR/control surfaces when live, while mandatory register fields
+remain a separate contract migration decision.
 The bridge is current where atomics, generated runtime text,
 `tests/pipeline2-bridge-fixtures/`, and the recorded installed-skill hard-smoke audit make
 `heart` / `xi` / `Omega` / `mu` / `kappa` govern existing IR, owner/TTP selection, hold/release,

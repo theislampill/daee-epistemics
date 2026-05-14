@@ -156,16 +156,17 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-----------------------------------------------------------+
              |
              v
-+----------------------------------------------------+
-| DIAGNOSTIC IR - FORMATION + DISPATCH GATE          |
-|                                                    |
-| compose IR from Phase 2 outputs                    |
-| validated IR is runtime compiler state             |
-| IR before routing                                  |
-| Pipeline                                           |
-| module dispatch blocked until all gate checks pass |
-| owner: diagnostics/diagnostic-ir.md                |
-+----------------------------------------------------+
++----------------------------------------------------------------------------+
+| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                  |
+|                                                                            |
+| compose IR from Phase 2 outputs                                            |
+| validated IR is runtime compiler state                                     |
+| IR before routing                                                          |
+| Pipeline                                                                   |
+| Baseline register formalism is schema-light, not optional or future parity |
+| module dispatch blocked until all gate checks pass                         |
+| owner: diagnostics/diagnostic-ir.md                                        |
++----------------------------------------------------------------------------+
              |
              v
        +-----+-----+

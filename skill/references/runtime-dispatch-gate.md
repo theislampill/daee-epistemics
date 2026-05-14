@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 7fb7e9c1d4956dfcd628e72c22ae6b9125e7a816af558a65786b353cd2a45a7e -->
+<!-- SOURCE_SHA256: 16f57525078d1941b9a9444de323c8b6e88ce1fd4692a61955a7f6d0e8961037 -->
 
 ---
 id: diagnostic-ir
@@ -115,6 +115,10 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 
 Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
 interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
+Pipeline #2 is the current baseline register formalism: schema-light means the registers govern
+existing IR/control surfaces when live, not that the registers are optional, future-parity, or a
+Pipeline #1 fallback. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
+separate contract migration decision.
 `D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
 encoded noetic signal-state produced when the diagnostic gate reads that surface through the
 available noetic-structure selection space `N_space` / `𝓝`. The live frame `N` is selected or
@@ -2526,7 +2530,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: 88e4c6a2d012e9ebe9b554917cf2c6e3bdc5f62c2b8b773ffcd8280a97ed04f8 -->
+<!-- SOURCE_SHA256: c5df837d9bad3d2e0dc3043d2fef4242ca22912b6e95362799e72e4b79afd14b -->
 
 ---
 id: framework-pipeline
@@ -2686,16 +2690,17 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-----------------------------------------------------------+
              |
              v
-+----------------------------------------------------+
-| DIAGNOSTIC IR - FORMATION + DISPATCH GATE          |
-|                                                    |
-| compose IR from Phase 2 outputs                    |
-| validated IR is runtime compiler state             |
-| IR before routing                                  |
-| Pipeline                                           |
-| module dispatch blocked until all gate checks pass |
-| owner: diagnostics/diagnostic-ir.md                |
-+----------------------------------------------------+
++----------------------------------------------------------------------------+
+| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                  |
+|                                                                            |
+| compose IR from Phase 2 outputs                                            |
+| validated IR is runtime compiler state                                     |
+| IR before routing                                                          |
+| Pipeline                                                                   |
+| Baseline register formalism is schema-light, not optional or future parity |
+| module dispatch blocked until all gate checks pass                         |
+| owner: diagnostics/diagnostic-ir.md                                        |
++----------------------------------------------------------------------------+
              |
              v
        +-----+-----+

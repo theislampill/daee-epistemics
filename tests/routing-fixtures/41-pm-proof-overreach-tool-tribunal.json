@@ -1,0 +1,71 @@
+{
+  "id": "pm-proof-overreach-tool-tribunal",
+  "prompt": "A proof tool first used as local support is now deciding what revelation may mean and which source claims are allowed to count as God-talk.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "V2-reconstituting-reason"
+    ],
+    "optional_modules": [
+      "reason-disambiguation",
+      "P3-reason-revelation-tension",
+      "M5-deformation-triage",
+      "P7-restoration-stops"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "PM-6 proof-overreach / proof-substitution audit",
+      "audit premise, inference, conclusion scope, and tribunal status",
+      "Proof claim's scope and tribunal function",
+      "reclassified as local support, secondary route, or invalid tribunal",
+      "refuse jurisdiction of the installed tribunal",
+      "Revelation/source-status/downstream God-talk held"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-procedures.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "procedures",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "pm-child-modes-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "proof"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "local proof tool converted into tribunal over revelation",
+      "do_orient": "audit scope and tribunal status before God-talk release",
+      "restoration_target": "reclassify proof tool and hold source/revelation content until jurisdiction is narrowed",
+      "routing_gate": "PM-6 with FPD/V2 before ordinary proof deployment"
+    }
+  }
+}

@@ -95,7 +95,8 @@ the provisional noetic signal-state as `PsiN` / `Ψᴺ`, and selects or holds th
 as `N in N_space` / `N∈𝓝`. Thin inputs do not force a family-lock; they remain held or partial
 until the differentiating signal is present.
 
-Derived register bridge: the expanded formalism may call the warrant/testimony/proof-method
+Derived register bridge: this is Pipeline #2 baseline register formalism, not an optional or
+future theory annex. The expanded formalism may call the warrant/testimony/proof-method
 side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
 stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream
 dependency set `κ`. These are analytic lenses over existing diagnosis, not replacement fields.

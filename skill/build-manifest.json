@@ -156,7 +156,7 @@
   "extra_inputs": {
     "atomics/skill/SKILL.md": "9d6a87436eac1e8e4cf462093e96e1cab5237ec1ec1e6b6ce2f9daad56964b5d",
     "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "87d4142dde8443c1e2aa9f5370a8b9494c57bf9d7b8f6cdb15ba444ee77deff3",
-    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "af7feec82428de69932aa3440462e3a503c58776a715a4ebb5a487bbb1cf12df",
+    "atomics/skill/references/diagnostics/framework-pipeline.yaml": "ba712630ea953d46c5554bd6508b8738427d28232ebfcb69970453467053e24f",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",
     "atomics/skill/references/diagnostics/operative-contract.schema.json": "c85eb9b50defe4a8d2872f80711b8d7cb6d5626c37dd927b888d9e6de7cfe2ef"
   },
@@ -381,7 +381,7 @@
       "module_class": "tactic",
       "module_id": "M9-predication-mode",
       "source": "atomics/skill/references/tactics/M9-predication-mode.md",
-      "source_sha256": "2d9d167eee456c061ddd6f655c1ba2116d545cc7ad82b34d599cc10b99f43e7d"
+      "source_sha256": "a6241e0131954e04d28d73a70fde1faa53994b338255c8c8529fe0e741ef9732"
     },
     "P1-fitrah-restoration": {
       "bundle_path": "references/omnibus/OMNIBUS-procedures.md",
@@ -613,7 +613,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "7fb7e9c1d4956dfcd628e72c22ae6b9125e7a816af558a65786b353cd2a45a7e"
+      "source_sha256": "16f57525078d1941b9a9444de323c8b6e88ce1fd4692a61955a7f6d0e8961037"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -701,7 +701,7 @@
       "module_class": "governance",
       "module_id": "framework-pipeline",
       "source": "atomics/skill/references/diagnostics/framework-pipeline.md",
-      "source_sha256": "88e4c6a2d012e9ebe9b554917cf2c6e3bdc5f62c2b8b773ffcd8280a97ed04f8"
+      "source_sha256": "c5df837d9bad3d2e0dc3043d2fef4242ca22912b6e95362799e72e4b79afd14b"
     },
     "hadith-authentication-epistemology": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -813,7 +813,7 @@
       "module_class": "governance",
       "module_id": "noetic-reading-checklist",
       "source": "atomics/skill/references/diagnostics/noetic-reading-checklist.md",
-      "source_sha256": "6be30e7f926d6c57212ac248541af7e1e04e28e6abb0a1632da72efdbd5136f6"
+      "source_sha256": "e0387f089aab61731ca34856183a66f7542914aeec10b55772d2d240c4672ac0"
     },
     "nomenclature-normalization": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -821,7 +821,7 @@
       "module_class": "governance",
       "module_id": "nomenclature-normalization",
       "source": "atomics/skill/references/diagnostics/nomenclature-normalization.md",
-      "source_sha256": "8dc8dc8d6b920ed4c3f2962ffcca76857455fb69f59aff191fd63a2b85cbb691"
+      "source_sha256": "a601946ccb6f73274ae0a0202685dfe4428b67dcfb46b908c92129b92f92fc25"
     },
     "ns-1-naturalist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
@@ -973,7 +973,7 @@
       "module_class": "diagnostic",
       "module_id": "proof-method-audit",
       "source": "atomics/skill/references/diagnostics/proof-method-audit.md",
-      "source_sha256": "50c66c879eaeb5e9bfb73d5bb7e258f1e73f66fa6397fd4422dbbab9a10e78dc"
+      "source_sha256": "ff9db836041e5cdb9366a83f3bffb08559132c7eb1545240a5172881eef1f9ee"
     },
     "prophecy-wahy-supremacy": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",

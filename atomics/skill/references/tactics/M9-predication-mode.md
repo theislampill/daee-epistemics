@@ -86,6 +86,24 @@ TTP label cosplay.
 
 ---
 
+## Child-Mode Execution Table
+
+These rows are child modes under the existing M9 owner. They are not standalone runtime owners.
+Use them when they sharpen the owner-floor operation without changing the parent module.
+
+| mode_id | entry criterion | false trigger | target | operation | result | Land(B) effect | R(H,Delta)/kappa effect | held route | smoke |
+|---|---|---|---|---|---|---|---|---|---|
+| M9-SR semantic reception before ta'wil | Later technical interpretation overrides a received meaning before audience reception, usage, and context are checked. | The case is only asking for tafsir/bayan clarification without external override pressure. | Apparent meaning as received by the addressed audience. | audit speaker intent, usage, context, and direct-audience availability before any semantic override. | Reception-grounded meaning is separated from later tribunal-driven reinterpretation. | The semantic blocker lands; doctrinal content remains held unless the reception test clears. | Collapse radius rereads later ta'wil, prophetic-discourse-neutralization, V8, and do-attribute routes. | V8/do-attribute/prophetic-discourse-neutralization held until semantic reception is stable. | semantic-reception-label-stripped |
+| M9-ZM zahir/majaz/haqiqah distinction | The argument treats zahir, majaz, haqiqah, literal, or figurative as verdict labels rather than tested semantic claims. | The label is merely descriptive and does not decide the inference or route. | The label doing argumentative work. | split received apparent sense, figurative usage claim, and claimed reality/literal truth; test which one carries the inference. | The label no longer decides the case by prestige or stigma. | The burden lands when the governing semantic function is identified or a missing discriminator is named. | Collapse radius rereads downstream attribute, communication-trust, and definition-discipline routes. | Doctrinal defense held if the label still carries mixed functions. | zahir-majaz-label-stripped |
+| M9-MQ modality quarantine | A revealed predicate or real attribute is made to entail a creaturely mode such as extension, containment, displacement, bodily motion, or relocation. | The objection supplies an actual logical entailment rather than an imagined mode. | The alleged creaturely entailment. | split semantic core, imagined modality, and asserted entailment; narrow the inference by refusing unsupported modality transfer. | Meaning can remain affirmed while likeness is denied and modality is withheld. | The predication burden lands; V8 becomes eligible only after the imagined modality is quarantined. | Collapse radius rereads V8, perfection-criterion, and do-attribute routes. | Perfection tribunal held unless the objection shifts from modality to perfection criterion. | creaturely-modality-label-stripped |
+| M9-LD loaded-label deflation | A loaded negative label such as body, direction, composition, parts, limit, anthropomorphic, literalist, or metaphorical carries hidden ontology as if neutral. | The term is already defined narrowly and both sides accept that definition for this pass. | The loaded label and its hidden ontology. | disambiguate intended sense, split true rejected meaning from smuggled technical negation, and refuse jurisdiction of the unresolved label. | The label stops functioning as a silent tribunal. | The semantic gate lands only when the hidden ontology is exposed or held as unresolved. | Collapse radius rereads V8, do-attribute, kalamic-interlocutor, perfection-criterion, and definition-discipline routes. | Downstream content held until the label is deflated. | loaded-label-ontology-label-stripped |
+
+Child-mode selection rule: pick the single row whose entry criterion names the pressure doing
+runtime work. If multiple rows seem live, execute the upstream semantic blocker first, record
+the downstream rows as held, and let `R(H,Delta)` decide whether the next row is newly eligible.
+
+---
+
 ## v0.3.2.0 Attribute-Predication Matrix
 
 This matrix is an operator map, not an attribute catalogue. Use it to decide what must be

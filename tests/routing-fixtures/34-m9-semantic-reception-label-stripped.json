@@ -1,0 +1,66 @@
+{
+  "id": "semantic-reception-label-stripped",
+  "prompt": "The attribute wording had a clear meaning for its first audience, but a later technical theory says the meaning must be reassigned.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "definition-discipline",
+      "prophetic-discourse-neutralization"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "M9-SR semantic reception before ta'wil",
+      "M9-ZM zahir/majaz/haqiqah distinction",
+      "Communication-trust test",
+      "semantic discipline before doctrinal release"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "m9-label-stripped-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "attribute"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "later technical reinterpretation without school label",
+      "do_orient": "semantic reception before override",
+      "restoration_target": "first-audience meaning and communication trust",
+      "routing_gate": "M9-SR and M9-ZM before V8/do-attribute content"
+    }
+  }
+}

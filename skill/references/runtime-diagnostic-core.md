@@ -172,7 +172,7 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: 6be30e7f926d6c57212ac248541af7e1e04e28e6abb0a1632da72efdbd5136f6 -->
+<!-- SOURCE_SHA256: e0387f089aab61731ca34856183a66f7542914aeec10b55772d2d240c4672ac0 -->
 
 ---
 id: noetic-reading-checklist
@@ -271,7 +271,8 @@ the provisional noetic signal-state as `PsiN` / `Ψᴺ`, and selects or holds th
 as `N in N_space` / `N∈𝓝`. Thin inputs do not force a family-lock; they remain held or partial
 until the differentiating signal is present.
 
-Derived register bridge: the expanded formalism may call the warrant/testimony/proof-method
+Derived register bridge: this is Pipeline #2 baseline register formalism, not an optional or
+future theory annex. The expanded formalism may call the warrant/testimony/proof-method
 side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
 stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream
 dependency set `κ`. These are analytic lenses over existing diagnosis, not replacement fields.

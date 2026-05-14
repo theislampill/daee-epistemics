@@ -1,0 +1,65 @@
+{
+  "id": "creaturely-modality-label-stripped",
+  "prompt": "The attribute must mean movement through locations, because that is the only mode the word can have.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "definition-discipline",
+      "perfection-criterion-usurpation"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "M9-MQ modality quarantine",
+      "Imagination-as-entailment caution",
+      "meaning affirmed / likeness denied / modality withheld",
+      "The imagination of a body-like mode is not an entailment"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "m9-label-stripped-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "attribute"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "creaturely modality imagined as entailment",
+      "do_orient": "quarantine modality before affirmation route",
+      "restoration_target": "separate semantic core from imagined creaturely mode",
+      "routing_gate": "M9-MQ before V8/do-attribute content"
+    }
+  }
+}

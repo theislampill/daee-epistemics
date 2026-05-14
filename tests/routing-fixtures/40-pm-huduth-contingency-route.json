@@ -1,0 +1,67 @@
+{
+  "id": "pm-huduth-contingency-route",
+  "prompt": "The proof route from things beginning to exist is being set aside because a wider possibility and necessity grammar is said to be more basic, but no one has shown that the modal taxonomy is established for this proof case.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "proof-method-audit",
+      "causal-series-taxonomy"
+    ],
+    "optional_modules": [
+      "reason-disambiguation",
+      "foreign-premise-detection",
+      "V2-reconstituting-reason",
+      "husn-al-nazar-arguments"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics"
+    ],
+    "required_governance": [
+      "PM-4 huduth/contingency proof-status audit",
+      "distinguish huduth/preponderance route from modal contingency route and audit what each establishes",
+      "Proof route and burden scope",
+      "Direct huduth burden is preserved when live",
+      "modal taxonomy is held unless actually established"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "pm-child-modes-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "proof"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "huduth route displaced by modal taxonomy without warrant",
+      "do_orient": "distinguish proof route and burden scope before modal expansion",
+      "restoration_target": "preserve direct huduth burden unless contingency grammar is actually established",
+      "routing_gate": "PM-4 before necessity/contingency overreach or causal-series elaboration"
+    }
+  }
+}

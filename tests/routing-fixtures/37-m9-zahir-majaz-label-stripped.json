@@ -1,0 +1,65 @@
+{
+  "id": "zahir-majaz-label-stripped",
+  "prompt": "The attribute wording is called figurative, but no one has shown whether the speech situation, usage, and first audience actually require a figurative reading rather than a received apparent meaning.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "M9-predication-mode",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "prophetic-discourse-neutralization",
+      "V8-bila-kayf-anchor"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "M9-ZM zahir/majaz/haqiqah distinction",
+      "Literal/figurative labels do not settle the case by themselves",
+      "usage, context, audience reception",
+      "The label is merely descriptive and does not decide the inference or route"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "m9-label-stripped-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "attribute"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "literal/figurative label used as verdict without semantic proof",
+      "do_orient": "split label function before doctrinal release",
+      "restoration_target": "separate received apparent meaning from figurative label claim",
+      "routing_gate": "M9-ZM before V8 or downstream attribute content"
+    }
+  }
+}

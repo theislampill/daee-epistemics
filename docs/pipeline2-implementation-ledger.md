@@ -9,6 +9,10 @@ smokes have passed, and it does not expand the Diagnostic IR JSON schema with ma
 `xi` / `Omega` / `mu` / `kappa` fields. Hard schema migration, package rebake, tag creation, and
 v0.4.0.0 release marking remain separate authorization decisions.
 
+Baseline wording rule: Pipeline #2 is the current baseline register formalism. Row labels such as
+`derived bridge` describe the schema-light control boundary only; they do not mean future parity,
+Pipeline #1 fallback, or optional runtime theory.
+
 | Pipeline #2 item | Source files touched | Runtime effect | Checker/fixture effect | Smoke implication | Status | Evidence |
 |---|---|---|---|---|---|---|
 | `𝓝` noetic-structure selection space | `nomenclature-normalization.md`; `diagnostic-ir.md`; `noetic-reading-checklist.md`; formalism spec; index; bridge fixtures | Governs design/read domain for possible noetic structures before a live frame is selected or held. | `check_pipeline2_bridge.py` requires bridge anchors and fixture coverage for `N_space`. | Hard smokes must not family-lock from thin input. | PROVEN IMPLEMENTED | Fixture `02-xi-warrant-owner-selection` proves the selection space remains open until warrant grammar distinguishes the operative frame. |
