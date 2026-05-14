@@ -1,0 +1,72 @@
+{
+  "id": "ds-speech-source-articulation",
+  "prompt": "Revealed speech is treated as either created sounds and letters or an internal meaning with no real speech, without distinguishing source, speech, articulation, and recitation.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "do-attribute-precision",
+      "M9-predication-mode"
+    ],
+    "optional_modules": [
+      "V8-bila-kayf-anchor",
+      "kalamic-interlocutor",
+      "prophetic-discourse-neutralization",
+      "recursive-state-transitions",
+      "foreign-premise-detection",
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "DS-1 speech/source/articulation distinction",
+      "distinguish speech source, revealed speech, human articulation/recitation, and created sound-event",
+      "createdness attribution is localized",
+      "speech/source/articulation distinction lands"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "da-ds-hk-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "treated"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "revealed speech collapsed into created sound or evacuated internal meaning",
+      "do_orient": "distinguish source/speech/articulation/recitation before createdness attribution",
+      "restoration_target": "localize createdness without denying real speech",
+      "routing_gate": "DS-1 under do-attribute precision with M9 semantic gate"
+    }
+  }
+}

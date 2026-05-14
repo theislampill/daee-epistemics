@@ -1,0 +1,71 @@
+{
+  "id": "da-purpose-without-need",
+  "prompt": "Divine purpose and wisdom are rejected because any purpose in action is treated as need, created motivation, or external cause.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "perfection-criterion-usurpation",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "DA-2 will/action/effect and purpose-without-need distinction",
+      "distinguish will, action, created effect, wisdom, purpose, and need",
+      "purpose no longer entails need or creaturely motivation",
+      "Extended wisdom/purpose arguments held until need/purpose distinction lands"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "da-ds-hk-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "treated"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "purpose and wisdom collapsed into need or external cause",
+      "do_orient": "distinguish will/action/effect/wisdom/purpose/need before purpose content",
+      "restoration_target": "block purpose-to-need inference",
+      "routing_gate": "DA-2 before perfection/proof-method elaboration"
+    }
+  }
+}

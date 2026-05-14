@@ -1,0 +1,72 @@
+{
+  "id": "da-action-actor-effect",
+  "prompt": "A real divine action is denied because action is treated as either a created external product or a creaturely change in the actor.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "do-attribute-precision"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "V8-bila-kayf-anchor",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "perfection-criterion-usurpation",
+      "kalamic-interlocutor",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures",
+      "OMNIBUS-do-families"
+    ],
+    "required_governance": [
+      "DA-1 action/actor/effect distinction",
+      "distinguish actor, action, and effect",
+      "action/actor/effect collapse is blocked",
+      "V8/do-attribute/kalamic/perfection routes held until action/actor/effect distinction is typed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "tactics",
+      "specialty-diagnostics",
+      "techniques",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "da-ds-hk-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "treated"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "divine action collapsed into created product or creaturely actor-change",
+      "do_orient": "distinguish actor/action/effect before V8 or kalamic release",
+      "restoration_target": "block action/actor/effect collapse without proof dump",
+      "routing_gate": "DA-1 under do-attribute precision before divine-action routes"
+    }
+  }
+}

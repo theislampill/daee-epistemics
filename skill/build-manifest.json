@@ -645,7 +645,7 @@
       "module_class": "case-library",
       "module_id": "do-attribute-precision",
       "source": "atomics/skill/references/case-library/do-attribute-precision.md",
-      "source_sha256": "e4c9dbb1f7690ca8b8b085d69edfd6b2c4c50f080235a6664dd0f4af03aefed2"
+      "source_sha256": "bac3ded9b0aa70324eea9789bfa5fa0baed5767696fab3c2686d376894b7dbcf"
     },
     "do-christian-extensions": {
       "bundle_path": "references/omnibus/OMNIBUS-do-families.md",
