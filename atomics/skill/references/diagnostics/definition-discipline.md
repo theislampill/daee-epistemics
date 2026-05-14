@@ -7,6 +7,8 @@ load_when:
   - silent redefinition or specialist capture of ordinary language operative
   - universals/particulars confusion active
   - mental/notional versus extra-mental distinction needed
+  - causal roles are flattened before metaphysical conclusions
+  - source/action/effect relation is severed or collapsed before proof release
 routing_effects:
   - holds content dispatch pending definition-discipline pass
 emits:
@@ -106,6 +108,30 @@ for unjustified conduct under the full circumstances.
 **Route consequence:** Re-state the proposition in one sense at one time before M1, M8, or
 predication analysis is released. No contradiction has been established until the same predicate
 sense is held fixed.
+
+---
+
+## OQ / Ontological Quantization Child Modes
+
+These child modes remain under `definition-discipline`: the parent already owns concept/reality
+confusion, term-function, category boundary, and mental versus extra-mental transfer before M9,
+proof-method, causal-series, or attribute precision is released. They are not standalone owners
+and do not create an OQ pack. Naming the mode is not execution; the response must type the
+ontological role, block the transfer or collapse, land the burden, and re-read held routes.
+
+| mode_id | entry criterion | false trigger | target | operation | result | Land(B) effect | R(H,Delta)/kappa effect | heart/register consequence | deformation release condition | source-worldview / tribunal consequence | held route | smoke link |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| OQ-5 universal/particular confusion | A concept, universal, class term, or mental category is treated as if it were identical to a concrete particular, real part, or extra-mental object. | The input only uses an ordinary universal term without drawing ontological conclusions from it. | Relation between universal, particular, concept, instance, and predication. | distinguish universal/class concept from particular instance and audit whether the inference transfers from mental classification to external ontology. | Universal/particular transfer is blocked or held with missing discriminator. | The burden lands when the concept/instance relation is typed. | Collapse radius rereads M9, definition, proof-method, and ontology routes depending on the transfer. | If technical-overcomplexity or prestige pressure is live, bound the distinction and avoid display-complexity. | M5/V1 must release genuine ontology/predication pressure, not inherited jargon or zann-mode. | If a philosophical framework installs universals as tribunal, hand to FPD/V2/PM before content. | Proof, predication, and category claims held until universal/particular status is typed. | `54-oq-universal-particular` |
+| OQ-6 mental/external ontology confusion | A mental distinction, conceptual separability, or imagined model is treated as extra-mental separability, real composition, or external existence. | The input only uses a mental distinction for explanation without externalizing it. | Relation between mental distinction, conceptual model, and external ontology. | distinguish mental/conceptual distinction from external ontological claim and audit what is actually instantiated. | Mental/external transfer is blocked or held. | The burden lands when conceptual distinction no longer proves external separability/composition. | Collapse radius rereads M9, do-attribute, proof-method, and source-status routes. | If anxiety around complexity or composition is live, bound release and avoid proof-stacking. | M5/V1 must release true ontology pressure rather than overcomplexity/wiswas. | If mental-modeling framework becomes tribunal, hand to FPD/V2/PM before content. | Composition, attribute, and proof routes held until mental/external status is typed. | `55-oq-mental-external` |
+| OQ-8 cause/condition/impediment flattening | Cause, condition, impediment, tendency, effect, and necessity are flattened into one relation. | The input only says that causes exist without drawing necessity or autonomy conclusions. | Causal relation among cause, condition, impediment, tendency, effect, and divine governance. | distinguish cause, condition, impediment, tendency, effect, and necessity before drawing metaphysical conclusions. | Causal relation is typed; autonomy, necessity, or occasionalist flattening is blocked unless separately argued. | The burden lands when cause/condition/impediment are no longer collapsed. | Collapse radius rereads proof-method, naturalism, divine action, causal-series, and OQ routes. | If proof anxiety or scientistic prestige pressure is live, bound expansion and avoid proof-dumping. | M5/V1 must release a causal ontology burden rather than proof prestige or inherited framework alone. | If naturalist or philosophical causal model is tribunal, hand to FPD/V2/PM before content. | Naturalism, proof-family, and divine-action routes held until causal role is typed. | `56-oq-cause-condition-impediment` |
+| OQ-9 source/action/effect severance | Source, action, intention, sign, effect, and created product are severed or collapsed so the effect no longer signifies its source/action properly. | The input only discusses a created effect without making source/action inference claims. | Relation among source, action, intention, sign, effect, and created product. | distinguish source, action, intention, sign, effect, and product; audit whether the effect is being severed from or collapsed into the source/action. | Sign/action/effect relation is restored, narrowed, or held. | The burden lands when source/action/effect relation is typed. | Collapse radius rereads DA/DS/HK, M9, PM, AS, and source-worldview routes. | If moral protest, spectacle demand, or identity pressure is live, bound release and avoid source parade. | M5/V1 must release genuine source/action/effect burden before content expansion. | If imported criterion denies signification or intention, hand to FPD/V2/PM before content. | Miracle, divine action, purpose, proof, and source-status routes held until relation is typed. | `57-oq-source-action-effect` |
+
+Child-mode routing guard: M9 stays upstream when predication, label, semantic bridge, or
+modality pressure governs. PM/V2/FPD stay upstream when proof grammar or tribunal pressure
+governs. AS/source-status stays upstream when label, source, or affiliation carries warrant.
+DW/P7 stays upstream when anxiety, overcomplexity, content escalation, or wiswas governs release.
+DA/DS/HK stays upstream when divine action, divine speech, or huduth specificity is live. Do
+not flatten those stable routes into generic ontology talk.
 
 ---
 

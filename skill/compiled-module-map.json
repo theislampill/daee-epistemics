@@ -362,7 +362,7 @@
       "module_class": "diagnostic",
       "module_id": "definition-discipline",
       "source": "atomics/skill/references/diagnostics/definition-discipline.md",
-      "source_sha256": "3f10d4100f31b41eee064b4d5361d1ae781b2def448521f3414cc45688f25f92"
+      "source_sha256": "03b47551bf9531fc7bc4c3ccb77b30411f6fe715a7bc6b5cf343740aed86bf61"
     },
     "diagnostic-ir": {
       "bundle_path": "references/runtime-dispatch-gate.md",

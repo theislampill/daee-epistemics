@@ -1,0 +1,62 @@
+{
+  "id": "oq-cause-condition-impediment",
+  "prompt": "A cause, condition, impediment, tendency, effect, and necessity are being treated as one relation, so the argument assumes the effect follows by autonomous necessity.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "causal-series-taxonomy",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "OQ-8 cause/condition/impediment flattening",
+      "distinguish cause, condition, impediment, tendency, effect, and necessity",
+      "Causal relation is typed",
+      "Naturalism, proof-family, and divine-action routes held until causal role is typed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "oq-ontology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "as"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "cause, condition, impediment, tendency, effect, and necessity flattened",
+      "do_orient": "distinguish causal roles before metaphysical conclusions",
+      "restoration_target": "block autonomous necessity or occasionalist flattening unless separately argued",
+      "routing_gate": "OQ-8 before naturalism, proof-family, or divine-action routes"
+    }
+  }
+}

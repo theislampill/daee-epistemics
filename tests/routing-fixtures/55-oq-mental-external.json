@@ -1,0 +1,67 @@
+{
+  "id": "oq-mental-external",
+  "prompt": "A distinction made in thought is treated as if it proves external separability or real composition, even though no external separability has been shown.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "do-attribute-precision",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "OQ-6 mental/external ontology confusion",
+      "distinguish mental/conceptual distinction from external ontological claim",
+      "conceptual distinction no longer proves external separability/composition",
+      "Composition, attribute, and proof routes held until mental/external status is typed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "oq-ontology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "as"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "mental distinction treated as external separability or real composition",
+      "do_orient": "distinguish conceptual distinction from external ontological claim",
+      "restoration_target": "block mental/external transfer",
+      "routing_gate": "OQ-6 before composition, attribute, or proof routes"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "oq-source-action-effect",
+  "prompt": "A created effect is discussed as if it were detached from source, action, intention, and signification, so the effect no longer points back to the action or source that made it meaningful.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "do-attribute-precision",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "OQ-9 source/action/effect severance",
+      "distinguish source, action, intention, sign, effect, and product",
+      "Sign/action/effect relation is restored, narrowed, or held",
+      "Miracle, divine action, purpose, proof, and source-status routes held until relation is typed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-do-families.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "do-families"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "oq-ontology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "as"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "effect severed from source, action, intention, and signification",
+      "do_orient": "distinguish source/action/intention/sign/effect/product",
+      "restoration_target": "restore, narrow, or hold sign/action/effect relation",
+      "routing_gate": "OQ-9 before miracle, divine-action, purpose, proof, or source-status release"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "oq-universal-particular",
+  "prompt": "A general concept is being treated as if it were a concrete thing inside the object, so the argument moves from classifying something under a term to claiming an extra entity or part exists.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "definition-discipline"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "recursive-state-transitions"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "OQ-5 universal/particular confusion",
+      "distinguish universal/class concept from particular instance",
+      "concept/instance relation is typed",
+      "Proof, predication, and category claims held until universal/particular status is typed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "oq-ontology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "as"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "concept/class term treated as concrete part or extra-mental object",
+      "do_orient": "distinguish universal/class concept from particular instance",
+      "restoration_target": "block transfer from mental classification to external ontology",
+      "routing_gate": "OQ-5 under definition discipline before proof or category routes release"
+    }
+  }
+}
