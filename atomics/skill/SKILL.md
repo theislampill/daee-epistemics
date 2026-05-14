@@ -46,11 +46,15 @@ Do not use the optional script-capable route/check harness unless the user or ma
 explicitly asks for developer validation. It is repo/dev/CI machinery, not the public runtime.
 File-retained execution must not run repo checkers, route tools, smoke-artifact tools, or
 execution-fidelity checks; hard/multi-burden files keep explicit `Land(Bn)` and `R(H,Delta)`.
+Harness-contaminated file smokes are advisory; rerun clean before release.
 
 ## Scriptless Compact DSL Behavioral Coercion
 
 Default scriptless compact DSL output is burden-governed, not concise-answer-governed.
 The PARTIAL guard is built into normal invocation; the user should not need to add it.
+Compact means no padding and no route dump; it does not mean short. Hard compound/source-request
+outputs below 30k fail unless PARTIAL names missing burdens/TTPs/source functions; 30k-35k
+is suspect and must pass the owner/source/closure matrix.
 
 For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic reread. If the reread leaves another input-anchored burden live and no HOLD, PARTIAL, limit, or register gate blocks it, continue in the same response.
 
@@ -64,6 +68,8 @@ cleared as not live, been held with reason, or been named in PARTIAL? If restora
 invitation, closure, HOLD, or stop discipline is doing work, `P1`/`P7` must be locally executed
 or explicitly cleared. If any live owner, source function, or next input-anchored burden remains
 missing, do not close; continue or write PARTIAL with the missing burden/TTP/source function.
+In hard compound/source-request cases, make that audit visible as `closure audit:` before
+restoration; otherwise write `PARTIAL` and name the missing owner, burden, or source function.
 
 ## Hard Compound Source-Request Release Floor
 
@@ -108,6 +114,7 @@ operative source must do local source-function work inside the burden it lands; 
 map or restorative recap cannot replace that operation. If a hard file-retained answer would
 need extensive output to land the burdens, write the extensive output. If limits prevent full
 traversal, write PARTIAL with the next live burden rather than reporting completion.
+Detached source/citation stacks carrying live source work are PARTIAL.
 
 Where a burden uses a module-backed operator, the local submove label/body must preserve the
 owner ID plus the plain-language operation: `FPD` for imported tribunal/criterion exposure,

@@ -13,6 +13,11 @@ Regenerate with tools/build_compiled_runtime.py.
 # EXECUTION MANDATE - DEFAULT MODE
 
 Default mode suppresses raw visible IR but does not suppress recursive execution.
+Default mode is scriptless compact DSL-governed execution. Do not call or simulate repo/dev
+route-check harnesses during canonical execution: no `daee_level3.py`, `route.py`,
+`check_execution.py`, `features.json`, `route_plan.json`, `execution_verdict.json`, or
+quality-gate claims. Those artifacts are optional developer validation, not public runtime
+evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
 Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,
@@ -28,8 +33,28 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   held routes rechecked, next live burden, release status in prose)
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
+- Final hard-case closure audit - in hard compound/source-request cases, the last
+  state/noetic re-read before any Restorative Response or Closing Formulation must visibly
+  include `closure audit:` and account for FPD, M1/M1-P, M8, M9, P1/P7, and source functions
+  as done, cleared, held, or PARTIAL. If any live item is missing, do not close; write
+  literal PARTIAL and name the missing burden/TTP/source function.
 - Restorative Response - required once after the final state/noetic re-read
 - Closing Formulation - required once at the end after final Restorative Response
+
+Hard compound source-request trigger floor:
+When an input combines divine-predicate accusation, worship-worthiness veto, accountability
+compression, guidance/hiddenness demand, punishment/mercy pressure, and an explicit
+source-worldview request, FPD, M1/M1-P, M8, M9, P1/P7, source-worldview, accountability,
+guidance, and mercy/justice owners are live unless Layer A explicitly clears one by name.
+Missing any live floor item means PARTIAL, not polished closure.
+
+Hard file-retained depth floor:
+Compact means no padding and no route dump; it does not mean short. In file-retained hard
+compound/source-request execution, output length follows live burden and source operation.
+A complete-looking hard answer below 30k characters is invalid unless it visibly says PARTIAL
+and names the missing burden/TTP/source function; 30k-35k remains suspect and must pass the
+owner/source/closure matrix. Do not satisfy the floor with citation stacks or recaps; expand
+the local Layer B operations that actually land the burdens.
 
 Hard/multi-burden default output:
 ComplexB -> {¹B₁...¹Bₙ} -> Land(¹B) -> R(H,Delta).
@@ -60,11 +85,12 @@ Owner-loadform map for common hard-output owners:
 - imported tribunal, moral-framework, or case-family routing ->
   references/omnibus/OMNIBUS-do-families.md (philosophical-usurpation, do-core) plus
   references/omnibus/OMNIBUS-profiles.md when a noetic profile must be confirmed
-- self-refutation, reductio, orphaned intuition, or predication tactics ->
+- self-refutation, performative veto, reductio, orphaned intuition, or predication tactics ->
   references/omnibus/OMNIBUS-tactics.md
-  (M1-self-refutation, M8-reductio, M3-orphaned-intuition, M9-predication-mode)
-- restorative or maieutic follow-through -> references/omnibus/OMNIBUS-procedures.md
-  (P1-fitrah-restoration, P4-maieutic)
+  (M1-self-refutation, M1P-performative-self-refutation, M8-reductio,
+  M3-orphaned-intuition, M9-predication-mode)
+- restorative, stop/hold, or maieutic follow-through -> references/omnibus/OMNIBUS-procedures.md
+  (P1-fitrah-restoration, P7-restoration-stops, P4-maieutic)
 - sign-direction or reason-reconstitution techniques ->
   references/omnibus/OMNIBUS-techniques.md
   (V2-reconstituting-reason, V5-directing-attention-signs)
@@ -112,8 +138,10 @@ Burden 2: accountability compression
 This hard-output shape is not raw IR or a route ledger when each submove serves the same B.
 
 If internal state re-read licenses another bounded pass, continue with the next burden-cycle.
-If internal state re-read licenses closure, hold, or partial traversal, render the release
-status in prose rather than as a literal STOP / HOLD / RECURSE / PARTIAL label.
+If internal state re-read licenses closure or hold, render the release status in prose rather
+than as a literal STOP / HOLD / RECURSE label. If the state is incomplete or limits block
+required traversal, the visible failure marker is literal PARTIAL with the missing live
+burden/TTP/source function named; do not hide PARTIAL as ordinary prose.
 No NewB is licensed by a headline-only answer, skipped internal sub-burdens, generic
 prose substitute, or broad-conclusion jump.
 
@@ -390,11 +418,15 @@ Do not use the optional script-capable route/check harness unless the user or ma
 explicitly asks for developer validation. It is repo/dev/CI machinery, not the public runtime.
 File-retained execution must not run repo checkers, route tools, smoke-artifact tools, or
 execution-fidelity checks; hard/multi-burden files keep explicit `Land(Bn)` and `R(H,Delta)`.
+Harness-contaminated file smokes are advisory; rerun clean before release.
 
 ## Scriptless Compact DSL Behavioral Coercion
 
 Default scriptless compact DSL output is burden-governed, not concise-answer-governed.
 The PARTIAL guard is built into normal invocation; the user should not need to add it.
+Compact means no padding and no route dump; it does not mean short. Hard compound/source-request
+outputs below 30k fail unless PARTIAL names missing burdens/TTPs/source functions; 30k-35k
+is suspect and must pass the owner/source/closure matrix.
 
 For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic reread. If the reread leaves another input-anchored burden live and no HOLD, PARTIAL, limit, or register gate blocks it, continue in the same response.
 
@@ -408,6 +440,8 @@ cleared as not live, been held with reason, or been named in PARTIAL? If restora
 invitation, closure, HOLD, or stop discipline is doing work, `P1`/`P7` must be locally executed
 or explicitly cleared. If any live owner, source function, or next input-anchored burden remains
 missing, do not close; continue or write PARTIAL with the missing burden/TTP/source function.
+In hard compound/source-request cases, make that audit visible as `closure audit:` before
+restoration; otherwise write `PARTIAL` and name the missing owner, burden, or source function.
 
 ## Hard Compound Source-Request Release Floor
 
@@ -452,6 +486,7 @@ operative source must do local source-function work inside the burden it lands; 
 map or restorative recap cannot replace that operation. If a hard file-retained answer would
 need extensive output to land the burdens, write the extensive output. If limits prevent full
 traversal, write PARTIAL with the next live burden rather than reporting completion.
+Detached source/citation stacks carrying live source work are PARTIAL.
 
 Where a burden uses a module-backed operator, the local submove label/body must preserve the
 owner ID plus the plain-language operation: `FPD` for imported tribunal/criterion exposure,

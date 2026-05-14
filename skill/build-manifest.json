@@ -154,7 +154,7 @@
   "canonical_source_root": "atomics/skill",
   "compiler_version": "0.3.2",
   "extra_inputs": {
-    "atomics/skill/SKILL.md": "b6448773765ff87db7d196c49458df44f6da80257242c352d15885660a385b1b",
+    "atomics/skill/SKILL.md": "9d6a87436eac1e8e4cf462093e96e1cab5237ec1ec1e6b6ce2f9daad56964b5d",
     "atomics/skill/references/diagnostics/diagnostic-ir.schema.json": "87d4142dde8443c1e2aa9f5370a8b9494c57bf9d7b8f6cdb15ba444ee77deff3",
     "atomics/skill/references/diagnostics/framework-pipeline.yaml": "c87f1b93280cc749256e6ac36a0530ea1dd1ea3934a4dde3687c4194c4ebde04",
     "atomics/skill/references/diagnostics/module-catalogue.json": "a1ce42fe00ad6103ec91b3072940a771c20d2b4764a0fd524ef1d3b1a344a0f0",

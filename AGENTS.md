@@ -118,6 +118,10 @@ Release claims must stay narrow and honest:
   written by the runtime, then run `check_execution.py` against that file. This is real model
   output, not simulated evidence, but it is still local smoke evidence unless package/release
   provenance is explicitly recorded.
+- For scriptless installed-skill hard canaries, `codex exec --output-last-message` writes only
+  the final agent message and is not proof of full-depth canonical execution. Use ignored
+  file-retained `output.md` artifacts for behavioral scoring, and treat terminal summaries as
+  provenance/status only.
 - Passing `check_execution.py` and any `quality_gate` is necessary but not sufficient for a
   golden-depth claim. Golden-depth claims require adversarial content review against the
   relevant anchor output across owner/TTP execution, operative sources, noetic diagnosis,
@@ -242,6 +246,17 @@ one-golden-output-specific runtime logic unless explicitly instructed.
 - Hard source-request cases must not compress distinct source functions into one citation stack.
   Each materially distinct source function must operate locally on the burden before `Land(B)`;
   source maps summarize after landing and do not replace source operation.
+- Hard canary recovery is a behavioral gate, not a static/package-shape gate. A complete-looking
+  hard compound/source-request smoke below 30k characters fails unless it visibly says `PARTIAL`
+  and names the missing live burden/TTP/source function. 30k-35k remains suspect and must pass
+  the owner/source/closure matrix. Above 35k is eligible for review, not automatic pass.
+- The v0.3.2.0 moral-protest/source-worldview canary showed two distinct regression modes:
+  smooth short closure and owner-label compliance without enough local Layer B depth. Keep the
+  depth floor early in the execution mandate: compact means no padding or route dump, not fewer
+  source-operative burden bodies. A recovered normal file-retained smoke must show real owner
+  execution, source-local work, P1/P7 closure discipline, M1/M1-P where worship-veto/self-grounding
+  is live, M9 where divine-predicate/category transfer is live, and a visible hard-case
+  `closure audit:` before final restoration.
 - Same-burden collapse must preserve operator identity. Inside a valid burden-cycle, every
   materially active TTP/operator still executes visibly as a local submove: why this operator
   is live for the current burden, its target, its operation, its result/state change, and how
@@ -308,6 +323,11 @@ route-first execution for Codex/dev/CI validation.
   Codex/script-capable runtimes may use repo-local `skill/scripts/daee_level3.py` as a harness
   around that surface when explicitly requested by a maintainer, but the harness is not the
   public identity of the skill and is not part of the canonical user-facing package.
+- Canonical behavioral smokes must not use `daee_level3.py`, `route.py`, `check_execution.py`,
+  generated `route_plan.json`, `features.json`, or `execution_verdict.json` as proof of default
+  scriptless execution. If a noninteractive Codex run creates or mentions harness artifacts while
+  testing an installed skill, mark that evidence advisory/contaminated for canonical-smoke
+  purposes and score the retained `output.md` itself against the owner/source/depth matrix.
 - Scriptless runtimes must produce the canonical compact DSL-governed surface; do not invent
   script results if scripts are unavailable.
 - `route.py` is deterministic given extracted features; feature extraction includes span-backed
@@ -334,6 +354,12 @@ boundary. It must describe the design-space requirement: the framework is engine
 to operate across every possible live noetic-structure selection before the chosen
 runtime route is known; meta-noetic memetics becomes executable only through DSL/IR
 state, owner/TTP activation, burden landing, state re-read, and restoration.
+
+Expanded visual/diagnostic wiki reference:
+`docs/index.html`. Treat the published GitHub Pages page as a navigation and diagnostic aid
+only. It may contain proposal or implementation-annex material; do not execute those proposed
+repo patches, schema changes, notation expansions, or release moves until the active recovery
+gate has been completed and the patch scope has been separately approved.
 
 Burden/submove notation in public canonical output prefers the compact human/math form:
 `¹B₁`, `¹B₂`, `²B₁` = burden 1 submoves 1/2, then burden 2 submove 1. Plain `1B1`,
