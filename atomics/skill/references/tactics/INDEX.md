@@ -2,7 +2,7 @@
 id: tactics-index
 module_class: governance
 canonical_path: skill/references/tactics/INDEX.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - selecting a tactic after V1 case-classification
 catalogue_registered: false

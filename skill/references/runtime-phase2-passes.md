@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: reason-disambiguation -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/reason-disambiguation.md -->
-<!-- SOURCE_SHA256: da876545ffca1d9baa48220bb921bcb4c6cc02da424d5658975f7e91ccc49af5 -->
+<!-- SOURCE_SHA256: 764f3125b81201bc4cd2a1aeb2d331ae1336d9da8730e014bc9803004e7905a1 -->
 
 ---
 id: reason-disambiguation
 module_class: governance
 canonical_path: skill/references/diagnostics/reason-disambiguation.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any case with DO-orient = truth-seek or mixed; Mandatory Pass P-A in V1 Phase 2
 emits:
@@ -185,13 +185,13 @@ Reason-category and deformation are orthogonal. The full compound:
 <!-- MODULE_ID: foreign-premise-detection -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/foreign-premise-detection.md -->
-<!-- SOURCE_SHA256: 16b800006386757a74da5587c554688ec37d70a12da2fb3a67a628dafe3b125f -->
+<!-- SOURCE_SHA256: 0c6ca7624584ffef219db17c5948170a6ce9195823317a9cb1369b6a94179ddb -->
 
 ---
 id: foreign-premise-detection
 module_class: governance
 canonical_path: skill/references/diagnostics/foreign-premise-detection.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
 emits:
@@ -456,13 +456,13 @@ This pass is the detection layer. V2 is the intervention it triggers. They are n
 <!-- MODULE_ID: prophetic-discourse-neutralization -->
 <!-- MODULE_CLASS: diagnostic -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/prophetic-discourse-neutralization.md -->
-<!-- SOURCE_SHA256: 3bb3dd6e38ed66696d8241fb881fee0af4ac0e05e9ff64f530f0c3d451e5daab -->
+<!-- SOURCE_SHA256: 1021212481b08f1f0d82d6f62b5806c74758aac4408fc019e2e7a9c7d3bb3d17 -->
 
 ---
 id: prophetic-discourse-neutralization
 module_class: diagnostic
 canonical_path: skill/references/diagnostics/prophetic-discourse-neutralization.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - revealed or prophetic speech redirected, semantically overridden, or evacuated
   - semantic recontenting or determinate-guidance denial active before doctrinal dispatch
@@ -623,13 +623,13 @@ The tribunal explains why the semantic move is being made. The neutralization pa
 <!-- MODULE_ID: arabic-backbone-predicates -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/arabic-backbone-predicates.md -->
-<!-- SOURCE_SHA256: 796d6284558adf25888c0ca9cc11a55e0bebe97ea29c052b0de72a3c609cfea4 -->
+<!-- SOURCE_SHA256: cb362c3a9b7c0fd0ce4f58729b611d5b9a264b34f833d89269cc2fb825ecc56e -->
 
 ---
 id: arabic-backbone-predicates
 module_class: governance
 canonical_path: skill/references/diagnostics/arabic-backbone-predicates.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - V1 Phase 2; criterion-importing, tribunal-installation, epistemic-ordering, or transmission-conflation element visible
 catalogue_registered: false

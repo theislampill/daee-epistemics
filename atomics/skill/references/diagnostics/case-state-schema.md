@@ -2,7 +2,7 @@
 id: case-state-schema
 module_class: governance
 canonical_path: skill/references/diagnostics/case-state-schema.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any substantive response needs explicit routing state
 catalogue_registered: false

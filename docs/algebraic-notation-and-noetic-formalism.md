@@ -1,7 +1,7 @@
 ---
 title: Algebraic Notation and Noetic Formalism
 status: theory-specification
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 source_of_truth: false
 canonical_runtime_owner: atomics/skill/references/diagnostics/diagnostic-ir.md
 ---
@@ -17,7 +17,7 @@ prove the register terms map to existing owner, hold/release, burden-selection, 
 terminal, Shannon-boundary, and anti-symbol-theater controls. Schema-light means baseline
 control without mandatory register fields; it does not mean optional theory, future parity, or
 permission to ignore live registers. This is not a hard Diagnostic IR schema migration, a fresh
-live-smoke claim, or a v0.4.0.0 release marker.
+live-smoke claim, or a package/release proof claim by itself.
 
 Current compact runtime spine:
 

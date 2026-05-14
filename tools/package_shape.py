@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared v0.3.2.0 generated skill package-shape checks."""
+"""Shared generated skill package-shape checks for the current release line."""
 
 from __future__ import annotations
 

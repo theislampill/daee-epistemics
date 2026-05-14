@@ -2,7 +2,7 @@
 id: V12-tamanuc-exhaustion
 module_class: technique
 canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live
   - divine plurality language only after model/predication discipline shows independent-lordship pressure is actually operative

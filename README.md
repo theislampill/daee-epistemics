@@ -389,8 +389,8 @@ The bridge is current where atomics, generated runtime text,
 `heart` / `xi` / `Omega` / `mu` / `kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration. This
 is a derived/conditional bridge over the compact runtime, not a mandatory register-field schema
-migration and not a v0.4.0.0 release/package readiness claim without authorized release-package
-artifact rebake and package-bound smokes.
+migration and not a v0.4.0.0 release/package readiness claim by itself without an authorized
+release-package artifact rebake and package-bound smokes.
 
 The diagrams below split the repo into three views: source layout, runtime
 invocation, and maintainer verification. The full internal pipeline audit
@@ -471,11 +471,11 @@ EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
 
 ### Package Boundary
 
-The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.3.2.0 release line,
+The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.4.0.0 release line,
 the package artifact is built from the generated `skill/` root and recorded in
 [`docs/release-artifacts.md`](docs/release-artifacts.md). GitHub Releases are the binary
 distribution surface; older v0.3.1.0 assets and smokes are historical evidence, not
-current-package evidence for v0.3.2.0.
+current-package evidence for v0.4.0.0.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
@@ -496,12 +496,12 @@ For path fidelity, build the archive with the manifest-backed package script. It
 generated `skill/` tree, rejects unexpected packageable files, and writes slash-safe archive entry
 names for skill hosts that inspect the bundle structure directly.
 
-On Windows, `package.ps1` calls the Python packager in `tools/package_skill.py`. For a v0.3.2.0
+On Windows, `package.ps1` calls the Python packager in `tools/package_skill.py`. For a v0.4.0.0
 local package rebake, the command is:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.3.2.0.skill.zip
-Copy-Item build\daee-epistemics-v0.3.2.0.skill.zip build\daee-epistemics-v0.3.2.0.skill
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.4.0.0.skill.zip
+Copy-Item build\daee-epistemics-v0.4.0.0.skill.zip build\daee-epistemics-v0.4.0.0.skill
 ```
 
 From any folder, open a Bash-compatible terminal and paste the following if you want a clone-and-package flow. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the generated `skill/` contents, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.

@@ -2,7 +2,7 @@
 id: nomenclature-normalization
 module_class: governance
 canonical_path: skill/references/diagnostics/nomenclature-normalization.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - release or maintainer review needs canonical naming for noetic state, DSL/IR, TTP, owner, or optional route/check harness terms
   - a term alias could affect routing, proof denominator, render governance, or public release claims

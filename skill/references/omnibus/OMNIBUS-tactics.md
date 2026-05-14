@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: tactics-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/tactics/INDEX.md -->
-<!-- SOURCE_SHA256: 83be90751d687658085ffbc5a34a7e40521b1f9bb98a866f0ff15b83d3c8ba2e -->
+<!-- SOURCE_SHA256: f178fe569d75e3d280a1db32b654acc05de9e658819dc7d79926cfbea3cc0726 -->
 
 ---
 id: tactics-index
 module_class: governance
 canonical_path: skill/references/tactics/INDEX.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - selecting a tactic after V1 case-classification
 catalogue_registered: false
@@ -96,13 +96,13 @@ still satisfy entry criteria and execute as a Layer B operation before `Land(B) 
 <!-- MODULE_ID: E1-broadening-evidence -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/E1-broadening-evidence.md -->
-<!-- SOURCE_SHA256: fb4ead6b4a188cde59e6a56923a557d85bd8d4591c5d93cb73c50c9471e47732 -->
+<!-- SOURCE_SHA256: 773796e4b71d54d1e0e33d667645d6972e633ac64785224ea5d6c98266acde92 -->
 
 ---
 id: E1-broadening-evidence
 module_class: tactic
 canonical_path: skill/references/tactics/E1-broadening-evidence.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor insists "there is no evidence" for God's existence
   - evidential scope needs widening beyond empirical-only criterion
@@ -179,13 +179,13 @@ accepts theism; V9 (necessary-knowledge priority) is what relocates warrant.
 <!-- MODULE_ID: E2-inferential-criterion -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/E2-inferential-criterion.md -->
-<!-- SOURCE_SHA256: 4934b2fb099071d16e7fd196fea3e58d2096bc1bbfd315febc5def883cafebcc -->
+<!-- SOURCE_SHA256: c99f79270e0e0898ca2fa0f40a24cfb297b8a00d5ae86318a3826e48d27636fa -->
 
 ---
 id: E2-inferential-criterion
 module_class: tactic
 canonical_path: skill/references/tactics/E2-inferential-criterion.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor holds that inferential argument is necessary for warranted theistic belief
 blocks:
@@ -286,13 +286,13 @@ E2 does not hold downstream content. It clears a single upstream barrier — the
 <!-- MODULE_ID: E3-cumulative-case -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/E3-cumulative-case.md -->
-<!-- SOURCE_SHA256: 55d829a1b522edb9ec28720994cfc7f42437c1e1f098d06a6dddebadb6e0d67c -->
+<!-- SOURCE_SHA256: b022b0fc48548f26f16428d91da8f89c63cc5ad7772d3bdbca339ef4966af09d -->
 
 ---
 id: E3-cumulative-case
 module_class: tactic
 canonical_path: skill/references/tactics/E3-cumulative-case.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - no single argument is decisive; independent considerations need bounded assembly
   - upstream blockers (framework, criterion, grief, motive) already cleared
@@ -353,13 +353,13 @@ content.
 <!-- MODULE_ID: E4-cross-cultural-check -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/E4-cross-cultural-check.md -->
-<!-- SOURCE_SHA256: 75922130a2821d8d0c6e9155de45b9ac8af8173c9643d84e393c8becee66df23 -->
+<!-- SOURCE_SHA256: 475e11703307c7c02f8ec3c3fabef853696afb096463087bb2350d1ee19be398 -->
 
 ---
 id: E4-cross-cultural-check
 module_class: tactic
 canonical_path: skill/references/tactics/E4-cross-cultural-check.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor denies or needs grounding for cross-cultural theistic recognition
   - diversity objection conflates foundation with superstructure
@@ -407,13 +407,13 @@ The interlocutor who conflates diversity of superstructure with diversity of fou
 <!-- MODULE_ID: F1-supra-vs-antirational -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/F1-supra-vs-antirational.md -->
-<!-- SOURCE_SHA256: 131d3279405346338e9acbaee7a4481ec3a53362e4c2beb5089ac3fc95b71b68 -->
+<!-- SOURCE_SHA256: 8d2c2f9ea0c23cb6b47946d84b092d6450f00af53b796e071727719c2296f3a9 -->
 
 ---
 id: F1-supra-vs-antirational
 module_class: tactic
 canonical_path: skill/references/tactics/F1-supra-vs-antirational.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor equates religious commitment with abandoning reason
 companions:
@@ -507,13 +507,13 @@ F1 holds all positive-case content (R1, E3, V5) pending the characterization cor
 <!-- MODULE_ID: F2-volitional-dimensions -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/F2-volitional-dimensions.md -->
-<!-- SOURCE_SHA256: b21d95b65ea801941d7d70fce38b27babe624f715e85f7309edba1b8e199dc0a -->
+<!-- SOURCE_SHA256: dca6bfbe43862c43cb962936d8e058514d6d945504a51a797899229966e0ab9c -->
 
 ---
 id: F2-volitional-dimensions
 module_class: tactic
 canonical_path: skill/references/tactics/F2-volitional-dimensions.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor appears intellectually moved but remains volitionally resistant
   - deformation triage (M5) identifies gharaḍ or hawā as primary
@@ -559,13 +559,13 @@ When an interlocutor appears intellectually moved but remains volitionally resis
 <!-- MODULE_ID: F3-practice-epistemic-access -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/F3-practice-epistemic-access.md -->
-<!-- SOURCE_SHA256: f218f9552a301a77f3d0610f0b811fbc0b757c8b18c23d0a0936d3c191d31f0e -->
+<!-- SOURCE_SHA256: de4a48842b1e34dc86232c008f20eef5b3a420ac45332c0ad59214a559602df3 -->
 
 ---
 id: F3-practice-epistemic-access
 module_class: tactic
 canonical_path: skill/references/tactics/F3-practice-epistemic-access.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor genuinely open to inquiry; intellectual arguments acknowledged but insufficient
   - F2 has created openness
@@ -697,13 +697,13 @@ engagement — it is what makes intellectual engagement able to go deeper.
 <!-- MODULE_ID: R1-internalist-criterion -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/R1-internalist-criterion.md -->
-<!-- SOURCE_SHA256: cfb0e9188198fa1b9dbf9f9d41a09286db0058ca7c4aa40568b48ab3b136b7b3 -->
+<!-- SOURCE_SHA256: 5aef70115223041eef54f4d1e7293e621be05814f3c446144dadc118e00e43bc -->
 
 ---
 id: R1-internalist-criterion
 module_class: tactic
 canonical_path: skill/references/tactics/R1-internalist-criterion.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor holds that knowledge of God requires inferential argument
 companions:
@@ -795,13 +795,13 @@ R2 and R3 are held pending R1. R2 (the reminder — eliciting basic theistic bel
 <!-- MODULE_ID: R2-the-reminder -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/R2-the-reminder.md -->
-<!-- SOURCE_SHA256: 48bc46f66d97cc65e5132cf2118c0fd1306ac1f6ee1be1097f2f0c94abd9d630 -->
+<!-- SOURCE_SHA256: 0310ee2425193b2cd459f5b59382f1551f6b8c3400e6318ee016d9e61d3a2e76 -->
 
 ---
 id: R2-the-reminder
 module_class: tactic
 canonical_path: skill/references/tactics/R2-the-reminder.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - internalist criterion cleared or not the barrier
   - directing attention to pre-argumentative recognition
@@ -905,13 +905,13 @@ The hold is released by the interlocutor, not by the dāʿī. The interlocutor's
 <!-- MODULE_ID: R3-warranted-basic-belief -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/R3-warranted-basic-belief.md -->
-<!-- SOURCE_SHA256: 6732fa0e70b5bcd7eb55184e514d59293895d613b0029d2de74b2c579190659b -->
+<!-- SOURCE_SHA256: 7521c5747075f24971d959cf386521adad439bd9f60d3a244ab42b6a928461ee -->
 
 ---
 id: R3-warranted-basic-belief
 module_class: tactic
 canonical_path: skill/references/tactics/R3-warranted-basic-belief.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - applying proper-function framework directly to interlocutor's own involuntary experience of theistic-type recognition
 companions:
@@ -1006,13 +1006,13 @@ P7 Stop-2 governs R3. R3 makes one analytical move — asks what produced the in
 <!-- MODULE_ID: M1-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M1-self-refutation.md -->
-<!-- SOURCE_SHA256: 4dcde1df45bf4fd12641c7664cc94cd4142ba9fe5f0e64214296441732aa9d03 -->
+<!-- SOURCE_SHA256: e8093b9aebce820dd62fff2ebd12ed5302c130dd11ebcd67f78533dbf0e47d00 -->
 
 ---
 id: M1-self-refutation
 module_class: tactic
 canonical_path: skill/references/tactics/M1-self-refutation.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - before constructing any response — check whether objection premises undermine the objection itself
 routing_effects:
@@ -1149,13 +1149,13 @@ especially useful: the opponent's own authorities acknowledge the datum.
 <!-- MODULE_ID: M1P-performative-self-refutation -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M1P-performative-self-refutation.md -->
-<!-- SOURCE_SHA256: 6cc1e64dfd90925614cb4a364196ee6d93056202c27205a3ecefccc4497c9bff -->
+<!-- SOURCE_SHA256: db08ccc1232a519003f2a4ccbeff41d69e20acb73539f9d231faaf91edc48a86 -->
 
 ---
 id: M1P-performative-self-refutation
 module_class: tactic
 canonical_path: skill/references/tactics/M1P-performative-self-refutation.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - act of asserting a position enacts what the position denies
 companions:
@@ -1238,13 +1238,13 @@ into a named barrier and hardens it.
 <!-- MODULE_ID: M2-prior-probability -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M2-prior-probability.md -->
-<!-- SOURCE_SHA256: 3b4eb8f4b9bbc3ab5b1d85505e31d3d9ba147be469abfe0c5545e335bf6e9574 -->
+<!-- SOURCE_SHA256: 25de701085e56bc5a347c9df5b316d7741b2618799b239bfa9c64b2b45edbc15 -->
 
 ---
 id: M2-prior-probability
 module_class: tactic
 canonical_path: skill/references/tactics/M2-prior-probability.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - evidential arguments appear (problem of evil, divine hiddenness, religious diversity)
   - probabilistic argument assumes an implicit near-zero prior for God's existence
@@ -1339,13 +1339,13 @@ M2 holds DO-1, DO-2, and DO-4 substantive response content. These arguments pres
 <!-- MODULE_ID: M3-orphaned-intuition -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M3-orphaned-intuition.md -->
-<!-- SOURCE_SHA256: a60c8ab33167af07bd9fad3d08eb2996dc3cf10027cd8e0b4d3270f4a7c933c0 -->
+<!-- SOURCE_SHA256: 82c61722e46597a8f6cbe3ffe2dd9bd3bba50d967332069f80ecbd4bc189215d -->
 
 ---
 id: M3-orphaned-intuition
 module_class: tactic
 canonical_path: skill/references/tactics/M3-orphaned-intuition.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - post-religious or secular moral realist position
   - interlocutor retains moral, aesthetic, or meaning commitments whose grounding their stated framework cannot supply
@@ -1455,13 +1455,13 @@ M3 issues a single bounded probe — affirm the commitment, ask the grounding qu
 <!-- MODULE_ID: M4-grief-register -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M4-grief-register.md -->
-<!-- SOURCE_SHA256: 5ae678aa663bdfe773c029fd4013853d8cedcac4b0e2861736d4618012118091 -->
+<!-- SOURCE_SHA256: a3a51654968832094425e222c4b1c847a9319f3fcbcefebbea56ada0bcdab6e9 -->
 
 ---
 id: M4-grief-register
 module_class: tactic
 canonical_path: skill/references/tactics/M4-grief-register.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - problem of evil is a personal moral protest arising from genuine suffering (not a philosophical argument)
   - grief or betrayal is primary
@@ -1513,13 +1513,13 @@ When this is operative, the argumentative register must be entirely suspended. E
 <!-- MODULE_ID: M6-excluded-middle -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M6-excluded-middle.md -->
-<!-- SOURCE_SHA256: 402e32a47d5c2a6b6e097c717d906882efb545a9508d1d95b1cbac0986ce25fe -->
+<!-- SOURCE_SHA256: 7d36d1f0b11c7f223dbe4a44355e4a241452ad4b79f6983dba08e46af919f70f -->
 
 ---
 id: M6-excluded-middle
 module_class: tactic
 canonical_path: skill/references/tactics/M6-excluded-middle.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor retreats into indefiniteness, evasion, or refusal to commit
   - evasive stock phrases used as conversational exits
@@ -1618,13 +1618,13 @@ M6 holds no downstream content. It clears an evasion that was blocking the quest
 <!-- MODULE_ID: M7-definition-anchor -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M7-definition-anchor.md -->
-<!-- SOURCE_SHA256: 99df465ba5a6e4f69304e6b0b342a41db1c38a4606e02e7d3e8eba76dd652e3e -->
+<!-- SOURCE_SHA256: 7b11fb836abbb90eb939936369257ddb2e224e412b433714d7110c0e32e51fbb -->
 
 ---
 id: M7-definition-anchor
 module_class: tactic
 canonical_path: skill/references/tactics/M7-definition-anchor.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor challenges a word rather than engaging the underlying claim
   - terminological dispute used to avoid substantive engagement
@@ -1678,13 +1678,13 @@ M7 is not the owner of broader conception-capture problems. When contradiction p
 <!-- MODULE_ID: M8-reductio -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M8-reductio.md -->
-<!-- SOURCE_SHA256: 3fe0c05e6e08ff906b5a0d4e61d4b12c9a0e0b0e2252748fc0a1025bf6c10097 -->
+<!-- SOURCE_SHA256: 3f80bf48f9491f0b7197aa42ca1abacbb9a9664195baba48b2a8baa871d20094 -->
 
 ---
 id: M8-reductio
 module_class: tactic
 canonical_path: skill/references/tactics/M8-reductio.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor's position, followed consistently, produces formally contradictory, obviously absurd, or manifestly rejected consequences
 companions:
@@ -1773,13 +1773,13 @@ do not relabel it as source-worldview; trace the consequence in that family's ow
 <!-- MODULE_ID: M9-predication-mode -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/M9-predication-mode.md -->
-<!-- SOURCE_SHA256: a6241e0131954e04d28d73a70fde1faa53994b338255c8c8529fe0e741ef9732 -->
+<!-- SOURCE_SHA256: d2ba40b1e741a39392b3bb650ec64766b7318c900be11b3c4d96dd604fff6141 -->
 
 ---
 id: M9-predication-mode
 module_class: tactic
 canonical_path: skill/references/tactics/M9-predication-mode.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - equivocation across term occurrences
   - domain-boundary failure (empirical method on non-empirical subject)
@@ -2087,13 +2087,13 @@ Until that split is made, the yes/no answer you want has not been earned.
 <!-- MODULE_ID: doubt-vs-skepticism -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/doubt-vs-skepticism.md -->
-<!-- SOURCE_SHA256: 5544f261df9c35ad70bcf0109b46a8a2d594a4e001df5f3152fa85bfc8e126fa -->
+<!-- SOURCE_SHA256: 091adde5a8f7c6637a4e04b534b5af26175f532e80d58c28e24cce97a0338dcb -->
 
 ---
 id: doubt-vs-skepticism
 module_class: tactic
 canonical_path: skill/references/tactics/doubt-vs-skepticism.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor demands evidence for God as precondition for engagement
   - extraordinary-claims-require-extraordinary-evidence principle invoked as tribunal
@@ -2286,13 +2286,13 @@ the unexamined evidential criterion and will fail to land.
 <!-- MODULE_ID: husn-al-nazar-arguments -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/husn-al-nazar-arguments.md -->
-<!-- SOURCE_SHA256: a410ff972e1b33f8c21d02ae0c5bbf1f4369547d17c6a8513dcb623553225c30 -->
+<!-- SOURCE_SHA256: adb9208b4e43ccd697210cc5dd80733148fc325c3ea416742dafe2c811c21736 -->
 
 ---
 id: husn-al-nazar-arguments
 module_class: tactic
 canonical_path: skill/references/tactics/husn-al-nazar-arguments.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - ḥusn al-naẓar pathway already selected
   - framework cleared enough for inferential work
@@ -2398,13 +2398,13 @@ Return immediately to fiṭrah-activation mode. The argument cleared a path; it 
 <!-- MODULE_ID: inductive-fitri-method -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/inductive-fitri-method.md -->
-<!-- SOURCE_SHA256: 7af3578a93de2b9cf16b0af5e47b5cc57d4c1e75a09c5261cc73bcd19a410016 -->
+<!-- SOURCE_SHA256: 8531942d327fbe1d3d4006251218f883ff52954baa8389ac5a452324efc923bb -->
 
 ---
 id: inductive-fitri-method
 module_class: tactic
 canonical_path: skill/references/tactics/inductive-fitri-method.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - grounding E4 or any tawātur fiṭrī claim
   - determining what is genuinely fiṭrī vs. culturally variable
@@ -2512,13 +2512,13 @@ cognitive science's reach — the specification is prior, not reactive.
 <!-- MODULE_ID: symmetric-taqlid-check -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/symmetric-taqlid-check.md -->
-<!-- SOURCE_SHA256: 71c90a845af4e7384dddff644826883c7f5f70e68efd12a04a93af2591622d70 -->
+<!-- SOURCE_SHA256: 5495f4c448f4b8bbf77f8a356a6a4146e3555db723822d9c475d5382405def09 -->
 
 ---
 id: symmetric-taqlid-check
 module_class: tactic
 canonical_path: skill/references/tactics/symmetric-taqlid-check.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - before applying the outward taqlīd check (V7)
   - interlocutor asks whether the practitioner has examined their own position

@@ -98,9 +98,10 @@ mixed evidence, proposal, and release claims.
   generated runtime text, and `tests/pipeline2-bridge-fixtures/`, with
   `tools/check_pipeline2_bridge.py` proving the derived registers against existing control
   effects rather than token presence alone. Fresh installed-skill hard smokes are now
-  recorded; the remaining decisions are whether to promote `heart` / `xi` / `Omega` /
-  `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields, and
-  whether to migrate contract/package/release-line state for v0.4.0.0.
+  recorded; the remaining schema decision is whether to promote `heart` / `xi` / `Omega` /
+  `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields.
+  The v0.4.0.0 contract/package/release-line migration is release-gated and separately
+  authorized only when package-bound current-release smokes pass.
 - Baseline wording: this is Pipeline #2 baseline register formalism over existing IR/control
   surfaces. `Derived/conditional bridge` remains only the schema-light boundary term; it is not
   future parity, Pipeline #1 fallback, or optional theory annex.
@@ -124,15 +125,15 @@ mixed evidence, proposal, and release claims.
 - Required verification for hard-schema promotion: schema/checker updates, positive and negative
   fixtures, contract/interface migration across producers and consumers, register stress smoke
   after schema migration, and explicit contract/version migration.
-- OODA/RACI: observe fixture/static/live smoke evidence, orient against the v0.3.2.0
+- OODA/RACI: observe fixture/static/live smoke evidence, orient against the current release-line
   contract and package boundary, decide hard-schema/release-line authorization with the
   maintainer Accountable, then act only after approval. Consult atomics, generated runtime,
   bridge fixtures, smoke artifacts, and release docs.
 - RFC/ADR status: derived/conditional bridge accepted for source/fixture governance;
-  hard mandatory schema fields and v0.4.0.0 contract migration remain separate ADR decisions.
+  hard mandatory schema fields remain a separate ADR decision after v0.4.0.0 release-line migration.
 - Status: user decision. Source/fixture/installed-skill smoke evidence supports
-  v0.4.0.0 release consideration, but hard register schema migration, contract marker migration,
-  package rebake, tag, and release remain blocked until explicitly authorized.
+  v0.4.0.0 release consideration; the current release gate is authorized, but package rebake,
+  tag, and release remain blocked until all v0.4.0.0 release checks and package-bound smokes pass.
 
 ### [SHOULD][source][fixture][checker] Operator Extraction Stage 1 Backlog
 

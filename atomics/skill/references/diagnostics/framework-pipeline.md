@@ -2,7 +2,7 @@
 id: framework-pipeline
 module_class: governance
 canonical_path: skill/references/diagnostics/framework-pipeline.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - auditing the decision circuit or forbidden-shortcut check
   - surfacing where a response went wrong

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: techniques-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/techniques/INDEX.md -->
-<!-- SOURCE_SHA256: e9861ad9020498de06e9e3f16898c9464537ada7946e41d55d3b5bb310e19ac4 -->
+<!-- SOURCE_SHA256: 1510fcc812d5ff78030ee325286081dff3abb65f27459a47d06d7d991cc02e83 -->
 
 ---
 id: techniques-index
 module_class: governance
 canonical_path: skill/references/techniques/INDEX.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - selecting a technique after V1 case-classification
 catalogue_registered: false
@@ -86,13 +86,13 @@ must still satisfy entry criteria and execute as a Layer B operation before `Lan
 <!-- MODULE_ID: V2-reconstituting-reason -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V2-reconstituting-reason.md -->
-<!-- SOURCE_SHA256: 13c4b88c3a7578f352f6a0037f7a44759b57a9bba585e90c2e007996db562c4e -->
+<!-- SOURCE_SHA256: 3318dc9dd58329d0825467b4542e0f49a45de967a6c59a49b3297db9d2500a95 -->
 
 ---
 id: V2-reconstituting-reason
 module_class: technique
 canonical_path: skill/references/techniques/V2-reconstituting-reason.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor's conception of reason is contaminated (bidʿī ʿaqlī)
   - evidential content cannot land through the interlocutor's filter
@@ -173,13 +173,13 @@ If none of these has occurred, stay with V2 or return to noetic/deformation diag
 <!-- MODULE_ID: V3-regress-dissolution -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V3-regress-dissolution.md -->
-<!-- SOURCE_SHA256: ed53038de13bf63eab25d737307d690762abcab8d95d91536aaf826924d64707 -->
+<!-- SOURCE_SHA256: c978c2f08acc3390a13b7fcc2047b236cc8cb7c72d9ba41879cc6973838f8001 -->
 
 ---
 id: V3-regress-dissolution
 module_class: technique
 canonical_path: skill/references/techniques/V3-regress-dissolution.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor generates justificatory regress objections ("but what justifies that?")
   - infinite regress demand against foundational or basic beliefs
@@ -237,13 +237,13 @@ stop, register-hold, or semantic gate live for the next move.
 <!-- MODULE_ID: V4-contamination-identification -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V4-contamination-identification.md -->
-<!-- SOURCE_SHA256: 8e9c922a6dc5875fe5ecf8c2a12b65c792871aceed1771f047de9e689cd0c925 -->
+<!-- SOURCE_SHA256: 95cbd0b82e66659354f79bd2b557978b23c3d4b95089c6f67b205950dc49bfb5 -->
 
 ---
 id: V4-contamination-identification
 module_class: technique
 canonical_path: skill/references/techniques/V4-contamination-identification.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - fiṭrah appears suppressed
   - interlocutor has access to theistic signs but does not respond
@@ -281,13 +281,13 @@ Two forms:
 <!-- MODULE_ID: V5-directing-attention-signs -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V5-directing-attention-signs.md -->
-<!-- SOURCE_SHA256: dee7aa0a0b8a8ff0759494a7aa063d636db3342cc01f9b515ff085075dbcb5f1 -->
+<!-- SOURCE_SHA256: 06139c5a66ebe017e53bad23401ce6124c4ca4422439ec86c192fab3d9f62620 -->
 
 ---
 id: V5-directing-attention-signs
 module_class: technique
 canonical_path: skill/references/techniques/V5-directing-attention-signs.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - framework cleared (V2 deployed and filter loosened)
   - directing attention to specific āyāt calibrated to this interlocutor's sensibility
@@ -378,13 +378,13 @@ Track (b): "Human consciousness has a specific *normative* character — irreduc
 <!-- MODULE_ID: V6-convergence -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V6-convergence.md -->
-<!-- SOURCE_SHA256: 19e53c17d8a1f659bdd817051ccea652fa0eda8bdd69b133c2195c841ca7880d -->
+<!-- SOURCE_SHA256: 037af3a148af5edf27528dd567307d3fa4d9c04d875cc330e5d1cbd205955414 -->
 
 ---
 id: V6-convergence
 module_class: technique
 canonical_path: skill/references/techniques/V6-convergence.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live
   - interlocutor sets registers against one another
@@ -445,13 +445,13 @@ itself is what changes the case.
 <!-- MODULE_ID: V7-taqlid-check -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V7-taqlid-check.md -->
-<!-- SOURCE_SHA256: 061575b560936da9699e7508df025bf762e8683127a8e17101df47debc77d2fc -->
+<!-- SOURCE_SHA256: ad2a7d0fb5fd3fb931d59c08775ec41ce82c4620fd3b085450d2c072b156a2e4 -->
 
 ---
 id: V7-taqlid-check
 module_class: technique
 canonical_path: skill/references/techniques/V7-taqlid-check.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor's skepticism appears assumed-by-default rather than genuinely examined
   - position held by uncritical imitation of intellectual environment
@@ -493,13 +493,13 @@ Taqlīd — holding a position by uncritical imitation of one's intellectual env
 <!-- MODULE_ID: V8-bila-kayf-anchor -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V8-bila-kayf-anchor.md -->
-<!-- SOURCE_SHA256: 2210339df0067ccd481d23d97561ea885e4727726f3475fe943c11350588a6da -->
+<!-- SOURCE_SHA256: 6ed1dde77e8c377a9d7efb78c5f0ad7204aa889602672b34e10fd2a3d268e433 -->
 
 ---
 id: V8-bila-kayf-anchor
 module_class: technique
 canonical_path: skill/references/techniques/V8-bila-kayf-anchor.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - transcendence objections or attribute-coherence pressure
   - language-and-God problems
@@ -606,13 +606,13 @@ For fuller treatment:
 <!-- MODULE_ID: V9-necessary-knowledge-priority -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V9-necessary-knowledge-priority.md -->
-<!-- SOURCE_SHA256: e786e6713bc9ade04d8ca9e0b3e85be60010ff17293d1f32f52a639dd1009b3e -->
+<!-- SOURCE_SHA256: a45d6b69dc4fe9af00164958e2b8f4f74c4fced4dbf068d03231e44e73e308c0 -->
 
 ---
 id: V9-necessary-knowledge-priority
 module_class: technique
 canonical_path: skill/references/techniques/V9-necessary-knowledge-priority.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - philosophical argument produces conclusion contradicting a universally-held fiṭrī intuition
   - attack on necessary knowledge (ʿilm ḍarūrī) active
@@ -666,13 +666,13 @@ HOLD/PARTIAL rather than claiming the burden landed.
 <!-- MODULE_ID: V11-taqlid-transition -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V11-taqlid-transition.md -->
-<!-- SOURCE_SHA256: 597373d8235228f4b68c638fb14de69011c010428effba20316e49eef5719ea2 -->
+<!-- SOURCE_SHA256: 33012df64d3c2a1505ef2e067f1768204179ea6606c63ecb0003e5b89e8c447a -->
 
 ---
 id: V11-taqlid-transition
 module_class: technique
 canonical_path: skill/references/techniques/V11-taqlid-transition.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - interlocutor has recognized position is held by taqlīd and asks (explicitly or implicitly) how to move toward taḥqīq
   - truth-seek discourse orientation confirmed
@@ -850,13 +850,13 @@ procedure, not a tactical move; it may unfold across many exchanges, sometimes y
 <!-- MODULE_ID: V12-tamanuc-exhaustion -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V12-tamanuc-exhaustion.md -->
-<!-- SOURCE_SHA256: 5310e5202365337ba6214301f21d9861fd5895ed66f9a474c1d544c6b954fd2e -->
+<!-- SOURCE_SHA256: 20087f6858da806f70259b0667d985817fbc3e2410232b67f3446b588423a4cc -->
 
 ---
 id: V12-tamanuc-exhaustion
 module_class: technique
 canonical_path: skill/references/techniques/V12-tamanuc-exhaustion.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live
   - divine plurality language only after model/predication discipline shows independent-lordship pressure is actually operative

@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: terminology -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/terminology.md -->
-<!-- SOURCE_SHA256: 8f9ae923d16eb3859cd677a6582e457f2579b23e1a1d5776858276b09beffbba -->
+<!-- SOURCE_SHA256: 87ce4434a1d8b6b990fd5ac894fc0cb663ed674ebcfbc582cbb73ff332a63924 -->
 
 ---
 id: terminology
 module_class: governance
 canonical_path: skill/references/terminology.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - Arabic term usage needs discipline or enforcement
 catalogue_registered: false
@@ -502,13 +502,13 @@ PF codes, module activation rules, or source owners.
 <!-- MODULE_ID: case-library-index -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/case-library/INDEX.md -->
-<!-- SOURCE_SHA256: 22dd7694877d5f60c7376e3a99fb3a240d01d216cb221133bbaa57f3fa8854ce -->
+<!-- SOURCE_SHA256: 73636ee9a5f7ec6711df8755fd8e2b0592a5ded3805b684aed52da21e704697e -->
 
 ---
 id: case-library-index
 module_class: governance
 canonical_path: skill/references/case-library/INDEX.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - selecting or confirming a case-library module after V1 diagnosis
 catalogue_registered: false
@@ -747,13 +747,13 @@ outside the RT code family unless a separate RT-1..RT-4 issue is also live.
 <!-- MODULE_ID: module-codes -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/module-codes.md -->
-<!-- SOURCE_SHA256: 3200cfbc95e1f90a8a5759ea26d3ad64380ee37cd0796ee6665df1cffd147df4 -->
+<!-- SOURCE_SHA256: b31281b8e7fda7462efbcbd53fed48ba3f40c1cf8aad7882752f06fcb7495613 -->
 
 ---
 id: module-codes
 module_class: governance
 canonical_path: skill/references/module-codes.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - ambiguity arises about what a code names or where its full treatment lives
 catalogue_registered: false
@@ -1152,13 +1152,13 @@ shifts with it.
 <!-- MODULE_ID: heuristics -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/heuristics.md -->
-<!-- SOURCE_SHA256: a034275877307f58c4e4a04e8d15afcd454b443e2668ed884e4e15118fd462ce -->
+<!-- SOURCE_SHA256: 346e465f6fb8bc53d7ddfd5bc5649258d3cc391c069f511c5984528473bbc683 -->
 
 ---
 id: heuristics
 module_class: technique
 canonical_path: skill/references/techniques/heuristics.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - throughout every engagement as background governance
 blocks:

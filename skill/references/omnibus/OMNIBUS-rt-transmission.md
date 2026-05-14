@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: revelation-transmission -->
 <!-- MODULE_CLASS: case-library -->
 <!-- CANONICAL_PATH: skill/references/case-library/revelation-transmission.md -->
-<!-- SOURCE_SHA256: 2e2d5d75ba69877c48d073d2864d12ac0509ad6d5d783521c156dd2e5b44d8dc -->
+<!-- SOURCE_SHA256: d0daef7c20a6a9cafd161c11b8e24acdfe7d2154f759ba4c17740d8a72945bd0 -->
 
 ---
 id: revelation-transmission
 module_class: case-library
 canonical_path: skill/references/case-library/revelation-transmission.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - revelation, scripture, Qurʾānic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family
   - V10 sequence complete and transmission burden typed
@@ -262,13 +262,13 @@ category; RT-4 is about register (internal crisis). Do not collapse them.
 <!-- MODULE_ID: V10-transmission-content-vetting -->
 <!-- MODULE_CLASS: technique -->
 <!-- CANONICAL_PATH: skill/references/techniques/V10-transmission-content-vetting.md -->
-<!-- SOURCE_SHA256: 30c9b0be42233e4dc1a26cc8c453a89bf46bf74c56b800e2494badbac7506446 -->
+<!-- SOURCE_SHA256: 39bdd62b76ae899c7ffb7decf020f75b4d7350a4c4b5a038476379be18dedc0d -->
 
 ---
 id: V10-transmission-content-vetting
 module_class: technique
 canonical_path: skill/references/techniques/V10-transmission-content-vetting.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - case turns on revelation, scripture, testimony, textual preservation, canon formation, manuscript claims, or viral source allegations
 blocks:

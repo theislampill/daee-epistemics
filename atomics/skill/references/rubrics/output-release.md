@@ -2,7 +2,7 @@
 id: output-release
 module_class: governance
 canonical_path: skill/references/rubrics/output-release.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any response about to be shaped or released
 routing_effects:

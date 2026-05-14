@@ -87,11 +87,11 @@ default; pass `--root` for a local smoke suite, and use `--require-current-relea
 only when package-bound current-release smokes have been truthfully regenerated. Package
 only when explicitly requested.
 
-Current release-line contract: operative front matter must use `contract_version: "0.3.2.0"`
+Current release-line contract: operative front matter must use `contract_version: "0.4.0.0"`
 until the project intentionally moves to a later release line. Run:
 
 ```bash
-python tools/check_frontmatter.py --contract-version 0.3.2.0
+python tools/check_frontmatter.py --contract-version 0.4.0.0
 ```
 
 Historical release references may remain only when they are clearly historical. Current-release
@@ -375,6 +375,14 @@ one-golden-output-specific runtime logic unless explicitly instructed.
   recover the live burden, selected operator, nearest held/deferred alternatives, expected
   `Land(B)`, and governance verdict, the output is plausible commentary rather than governed
   execution.
+- Natural-language diagnostic explanations must be reconstruction-faithful: state ->
+  explanation -> reconstructed state. A rendered diagnostic explanation, compact Layer A,
+  trace, audit panel, or local smoke output must be able to recover the relevant surface signal
+  (`D0`), selected or held `N`/`N_space`, live burden, claim level / pattern profile, live
+  registers (`heart`, `xi`, `Omega`, `mu`, `kappa`, `sigma`), selected owner/child mode,
+  target, operation, result, held routes, collapse radius / Delta-kappa, `Land(B)`,
+  `R(H,Delta)`, and STOP/HOLD/PARTIAL/RECURSE decision when those fields are live; otherwise it
+  is decorative prose, not governed diagnostic explanation.
 - Scriptless compact-DSL regression findings should be mapped to optional script-harness
   route/check/fixture coverage wherever
   the failure can be expressed as route state, owner pressure, source function, held-route behavior,
@@ -445,7 +453,7 @@ current where atomics, generated runtime text, and `tests/pipeline2-bridge-fixtu
 `heart`/`xi`/`Omega`/`mu`/`kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration.
 Bridge live-smoke proof must point to retained audit evidence, not the index page. Do not call
-v0.4.0.0 release/package readiness until the release-line, contract markers, package artifact,
+a later release/package readiness until the release-line, contract markers, package artifact,
 release docs, and current-release smoke requirements are migrated together. Do not make those
 registers mandatory runtime fields without a deliberate schema/checker/fixture/smoke migration,
 and do not claim a release-line migration from the index page alone.
@@ -573,7 +581,7 @@ Never change module IDs casually.
 
 ## Package Shape Rule
 
-For the v0.3.2.0 canonical user-facing package shape, the `.skill` archive root may contain:
+For the v0.4.0.0 canonical user-facing package shape, the `.skill` archive root may contain:
 
 ```text
 SKILL.md

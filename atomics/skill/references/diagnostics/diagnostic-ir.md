@@ -2,7 +2,7 @@
 id: diagnostic-ir
 module_class: governance
 canonical_path: skill/references/diagnostics/diagnostic-ir.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any substantive engagement requiring routing — IR is not optional
 routing_effects:

@@ -13,7 +13,7 @@ function Fail($Message) {
 $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if (-not ($OutputName.EndsWith(".skill.zip", [System.StringComparison]::OrdinalIgnoreCase))) {
-    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.3.2.0.skill.zip. GitHub Release assets should be the checked payload renamed to .skill; do not publish both .skill.zip and .skill, and do not re-zip the repo root."
+    Fail "Output name must end with .skill.zip, for example: build\daee-epistemics-v0.4.0.0.skill.zip. GitHub Release assets should be the checked payload renamed to .skill; do not publish both .skill.zip and .skill, and do not re-zip the repo root."
 }
 
 if ([System.IO.Path]::IsPathRooted($OutputName)) {

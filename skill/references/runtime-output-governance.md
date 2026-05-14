@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: fbe3150d4541aa0cc922ff465c29859dcf11d1fceb5e6bf664d24f1855f8fa7b -->
+<!-- SOURCE_SHA256: ed7fbf4ada47633303affe48110546777c4c9badaaa1740c534e6d82e50f28de -->
 
 ---
 id: output-release
 module_class: governance
 canonical_path: skill/references/rubrics/output-release.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any response about to be shaped or released
 routing_effects:
@@ -998,13 +998,13 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: c4034e331af30d54174d2c9f134226f05a60387974e97745b9bad651c6ba54f5 -->
+<!-- SOURCE_SHA256: 51442f57da996e82d4e0821fb70ee00273463b6af75c3444538ea09bb0946aee -->
 
 ---
 id: diagnostic-render-contract
 module_class: governance
 canonical_path: skill/references/rubrics/diagnostic-render-contract.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - deciding how visibly structured the response should be across default, :dsl, and internal audit surfaces
 catalogue_registered: false

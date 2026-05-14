@@ -2,7 +2,7 @@
 id: recursive-state-transitions
 module_class: governance
 canonical_path: skill/references/diagnostics/recursive-state-transitions.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - after a bounded restorative move has landed
   - deciding STOP / HOLD / RECURSE / PARTIAL

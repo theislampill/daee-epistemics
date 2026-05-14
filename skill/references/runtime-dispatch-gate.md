@@ -16,13 +16,13 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 14c007bf8336951ffe72cc8c395cc813824b4e192b78f4bc468719fd1980ebaa -->
+<!-- SOURCE_SHA256: 69158b8fd0d330f57f3d36385e768739e3a3f06bc6b1b69b17b0366285048530 -->
 
 ---
 id: diagnostic-ir
 module_class: governance
 canonical_path: skill/references/diagnostics/diagnostic-ir.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any substantive engagement requiring routing — IR is not optional
 routing_effects:
@@ -959,13 +959,13 @@ Framing notes: do not treat anatta as simple mate
 <!-- MODULE_ID: ir-reconstruction-pass -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/ir-reconstruction-pass.md -->
-<!-- SOURCE_SHA256: 7c1324c86d1a92b37472b630ac3f3f7449c7927a0af117680d564c2b9967483c -->
+<!-- SOURCE_SHA256: ca46a53d3ecfeb7ae397ecd3099fac906684d797384ff80ec41315be222e7c2e -->
 
 ---
 id: ir-reconstruction-pass
 module_class: governance
 canonical_path: skill/references/diagnostics/ir-reconstruction-pass.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - after Diagnostic IR formation and before routing precedence is allowed to dispatch modules
 routing_effects:
@@ -1144,13 +1144,13 @@ diagnostic or audit render.
 <!-- MODULE_ID: case-state-schema -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/case-state-schema.md -->
-<!-- SOURCE_SHA256: 20aeb2daf7f170151a0b50b474def44951bfe1f0584e2c1fbbbfc61a0e315d4b -->
+<!-- SOURCE_SHA256: d9c21a74adea2d67e1fe773a6d0a4f0a78b32d244b15f34a48d1f80306436206 -->
 
 ---
 id: case-state-schema
 module_class: governance
 canonical_path: skill/references/diagnostics/case-state-schema.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any substantive response needs explicit routing state
 catalogue_registered: false
@@ -1427,13 +1427,13 @@ This is consumed by V1's re-run condition and by M5's register-hold field.
 <!-- MODULE_ID: pattern-profiling -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/pattern-profiling.md -->
-<!-- SOURCE_SHA256: 7c96e02b993cd97807697feb13cab98bfba3a11ca6fb6406699822c6d05132d4 -->
+<!-- SOURCE_SHA256: 67e6d0e9baede43ca3953de15507b85e18b06c311d44902192ff44085bd93eb4 -->
 
 ---
 id: pattern-profiling
 module_class: governance
 canonical_path: skill/references/diagnostics/pattern-profiling.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - recurring cross-volume family identified
   - live burden concerns standards of knowing, ontological categories, or noetic structure
@@ -1675,13 +1675,13 @@ Cross-guardrails:
 <!-- MODULE_ID: inference-boundary -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/inference-boundary.md -->
-<!-- SOURCE_SHA256: ee0643414df507f362f9e794ff33db3d9f374099e1af36254b211b65222b2a8d -->
+<!-- SOURCE_SHA256: 3fddcf33db3281bf8e12dcaee58c6787b042f72ca54cfe61916dae984e7f29e3 -->
 
 ---
 id: inference-boundary
 module_class: governance
 canonical_path: skill/references/diagnostics/inference-boundary.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - response draws on more than one file, extends file content, or risks overclaiming
 catalogue_registered: false
@@ -1837,13 +1837,13 @@ The `[Source Basis]` block in `case-state-schema.md` requires source-weight anno
 <!-- MODULE_ID: mixed-case-handling -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/mixed-case-handling.md -->
-<!-- SOURCE_SHA256: 3a5992efe3db3c84c19dab2fede5700472b46f09265afe761634ec6d213133fe -->
+<!-- SOURCE_SHA256: 5f0ae754b39d8f75ab7927f17339d7bf68bfe23581cbcaede186dc25071b7d79 -->
 
 ---
 id: mixed-case-handling
 module_class: governance
 canonical_path: skill/references/diagnostics/mixed-case-handling.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - multiple diagnoses compete
   - case is thin or orientation/deformation underdetermined
@@ -2004,13 +2004,13 @@ When the case is still underdetermined, use the standard case-state schema and m
 <!-- MODULE_ID: anti-patterns -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/anti-patterns.md -->
-<!-- SOURCE_SHA256: 29cec16bb830fa9c31eb71e1a1eb081b6ed05f09876ec653533fb45136d06431 -->
+<!-- SOURCE_SHA256: a22ba08eef96bc078ab94551186764c97604aab99190b833765362608f3d74b7 -->
 
 ---
 id: anti-patterns
 module_class: governance
 canonical_path: skill/references/diagnostics/anti-patterns.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - preparing, reviewing, or correcting a response path
 catalogue_registered: false
@@ -2596,13 +2596,13 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: c5df837d9bad3d2e0dc3043d2fef4242ca22912b6e95362799e72e4b79afd14b -->
+<!-- SOURCE_SHA256: 94579a75087dce098c3fb3c130163267ac7016edd7268ed35883ef8c99810bb5 -->
 
 ---
 id: framework-pipeline
 module_class: governance
 canonical_path: skill/references/diagnostics/framework-pipeline.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - auditing the decision circuit or forbidden-shortcut check
   - surfacing where a response went wrong
@@ -3235,13 +3235,13 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: de4991ecbdafb9f91d7cc1c2051b48e413f54955058f7cceb32b24fa93cf8b77 -->
+<!-- SOURCE_SHA256: 57b2a8d9138ca6e10aad6f55543f1840334048493060616663ceb8c161940c4a -->
 
 ---
 id: recursive-state-transitions
 module_class: governance
 canonical_path: skill/references/diagnostics/recursive-state-transitions.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - after a bounded restorative move has landed
   - deciding STOP / HOLD / RECURSE / PARTIAL
@@ -4428,13 +4428,13 @@ permission; an argument dump accumulates downstream content without refreshed go
 <!-- MODULE_ID: routing-precedence -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/routing-precedence.md -->
-<!-- SOURCE_SHA256: 7e8797b66868c4be9be865b7b14265749b89cc2cd1d431895564fa319259a090 -->
+<!-- SOURCE_SHA256: 91ed208c0a9fb71f210fdc71ddce6b128cc0c9a2df28c0b70fe951972a6cf686 -->
 
 ---
 id: routing-precedence
 module_class: governance
 canonical_path: skill/references/diagnostics/routing-precedence.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - multiple diagnostic axes produce competing signals
   - suppression rules needed to prevent invalid routing combinations
@@ -4664,13 +4664,13 @@ not use lab-report sections or downstream fields to release what routing keeps h
 <!-- MODULE_ID: kernel-thesis -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/kernel-thesis.md -->
-<!-- SOURCE_SHA256: 10156bc16ca201ad844d76bfe59ea1fc2ddeacdf3cbd50a5a7639f7cf4ebf4b3 -->
+<!-- SOURCE_SHA256: 073c3eb18cff0c667840d83097b84b442d249d03386efee62042dad40898a36c -->
 
 ---
 id: kernel-thesis
 module_class: governance
 canonical_path: skill/references/kernel-thesis.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - auditing whether a response or routing decision violates governing commitments
   - Gate Check 5 in diagnostic-ir.md violation-signature check
@@ -4758,13 +4758,13 @@ A response passes the workflow but violates the architecture when it satisfies t
 <!-- MODULE_ID: metaphysical-architecture -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/metaphysical-architecture.md -->
-<!-- SOURCE_SHA256: b64073abc0449ee34ffab0c9477f7fddc2bf370da39c3ac97e9384525c904f72 -->
+<!-- SOURCE_SHA256: 07b230929edd9760529f0cf642c39ddf323a977445ba293413ef42ec0bb5ec2d -->
 
 ---
 id: metaphysical-architecture
 module_class: governance
 canonical_path: skill/references/metaphysical-architecture.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - practitioner needs to articulate what is being restored and why
   - substance of the restoration target needs grounding
@@ -4887,13 +4887,13 @@ A restoration target stated only as "correct the argument" or "demonstrate X" is
 <!-- MODULE_ID: P7-restoration-stops -->
 <!-- MODULE_CLASS: procedure -->
 <!-- CANONICAL_PATH: skill/references/procedures/P7-restoration-stops.md -->
-<!-- SOURCE_SHA256: d04f973cfae61d3faad6065b7e5b5087ad8a37b293b944b6f74ab8ec9f8a7e1b -->
+<!-- SOURCE_SHA256: e01f9164965d4b1a5ebd3f801ccc073681cdbb559459fb5e0eefc881a14627ca -->
 
 ---
 id: P7-restoration-stops
 module_class: procedure
 canonical_path: skill/references/procedures/P7-restoration-stops.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - any response sequence at risk of premature argument deployment
   - grief-primary or identity-performance orientation confirmed

@@ -2,7 +2,7 @@
 id: ir-reconstruction-pass
 module_class: governance
 canonical_path: skill/references/diagnostics/ir-reconstruction-pass.md
-contract_version: "0.3.2.0"
+contract_version: "0.4.0.0"
 load_when:
   - after Diagnostic IR formation and before routing precedence is allowed to dispatch modules
 routing_effects:
