@@ -1,0 +1,70 @@
+{
+  "id": "as-source-evidence-identity-signal",
+  "prompt": "A stack of names and quotations is being used ambiguously: sometimes as proof, sometimes as prestige, sometimes as identity signal, and sometimes as contrast.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "inference-boundary"
+    ],
+    "optional_modules": [
+      "nomenclature-normalization",
+      "noetic-reading-checklist",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "routing-precedence"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "AS-8 source as evidence vs source as identity signal",
+      "classify the source as evidence, contrast, genealogy, identity signal, prestige signal, held material, or bounded comparison",
+      "Source-use is reclassified before content release",
+      "argument-bank or source-parade release is blocked"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "as-source-status-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "being"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "source stack being used ambiguously as evidence, prestige, identity, and contrast",
+      "do_orient": "classify source-use function before content or proof release",
+      "restoration_target": "block argument-bank and source-parade release until source function and weight are typed",
+      "routing_gate": "AS-8 with inference-boundary/source-status discipline before proof or semantic content"
+    }
+  }
+}

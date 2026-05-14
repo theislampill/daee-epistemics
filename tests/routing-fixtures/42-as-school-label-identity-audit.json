@@ -1,0 +1,71 @@
+{
+  "id": "as-school-label-identity-audit",
+  "prompt": "A family label is being used as if it already proves the doctrine, the warrant, and the noetic frame, even though the actual operative claim has not been stated.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "noetic-reading-checklist",
+      "nomenclature-normalization"
+    ],
+    "optional_modules": [
+      "inference-boundary",
+      "routing-precedence",
+      "foreign-premise-detection",
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "AS-2 school-label identity audit",
+      "audit whether the label is functioning as identity signal, source-status context, operative warrant, or noetic-state lock",
+      "family label != operative N",
+      "family label is not operative warrant",
+      "label no longer decides the claim by identity/prestige"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "as-source-status-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "being"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "family label doing warrant and noetic-frame lock work",
+      "do_orient": "audit label function before doctrine or proof release",
+      "restoration_target": "return from label identity to operative claim, proof rule, or source-status evidence",
+      "routing_gate": "AS-2 under recursive-state source-status discipline before school profile or proof-method route"
+    }
+  }
+}

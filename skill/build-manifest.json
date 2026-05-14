@@ -1005,7 +1005,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "5eadcba29c6c2a3786da5d362a03d5627d44564a2c1fb101952f73a03469a824"
+      "source_sha256": "0567bcc67bdfaaa9571adafaec1b7cc6e47e0a05a26e998c60fbc8f0127e1ab3"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

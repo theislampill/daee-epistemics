@@ -149,6 +149,11 @@ mixed evidence, proposal, and release claims.
   modes under existing source-status/inference/nomenclature owners; doubt/wiswas stop-hold modes
   under P7/doubt owners; divine action/speech/huduth modes under M9/V8/kalamic/do-attribute/
   sound-reason owners; MM/OQ register hardening only after owner-backed smokes prove a gap.
+- Stage 3 adjacent source-status candidates intentionally remain TODO rather than runtime child
+  modes until owner tracing proves they are needed: AS-1 source-prestige audit, AS-5
+  scholar-error / position-error / public-use distinction, AS-6 testimony demotion / chain
+  flattening audit, and AS-7 academic-method tribunal audit. Current AS work should stay under
+  existing source-status / noetic-frame owners rather than becoming a broad AS pack.
 - Verification boundary: routing fixtures are static evidence only. They prove owner mapping and
   label-stripped generalization expectations; they are not live execution smokes.
 - Stage-1.5/1.6 evidence boundary: retained local ignored M9 child-mode outputs under

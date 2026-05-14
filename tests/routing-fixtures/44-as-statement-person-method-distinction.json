@@ -1,0 +1,69 @@
+{
+  "id": "as-statement-person-method-distinction",
+  "prompt": "A mistaken statement is being treated as if it automatically settles the person, the method, the public use, and the whole school-level verdict.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "inference-boundary"
+    ],
+    "optional_modules": [
+      "noetic-reading-checklist",
+      "nomenclature-normalization",
+      "routing-precedence",
+      "foreign-premise-detection"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "AS-4 statement/person/method distinction",
+      "distinguish statement, person, method, public use, and source-status function",
+      "verdict is narrowed to the correct locus",
+      "person-level and method-level claims remain held unless separately grounded"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "as-source-status-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "being"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "statement error being extended into person, method, and school verdict",
+      "do_orient": "type attribution locus before severity or public consequence",
+      "restoration_target": "narrow verdict to statement, person, method, public use, or source posture",
+      "routing_gate": "AS-4 under source-status discipline before public verdict or school-level conclusion"
+    }
+  }
+}

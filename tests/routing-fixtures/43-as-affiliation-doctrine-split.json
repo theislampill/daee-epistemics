@@ -1,0 +1,69 @@
+{
+  "id": "as-affiliation-doctrine-split",
+  "prompt": "People are being counted under a public affiliation, and that affiliation is treated as if it proves their conscious doctrine and actual operative creed.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "recursive-state-transitions",
+      "noetic-reading-checklist"
+    ],
+    "optional_modules": [
+      "nomenclature-normalization",
+      "inference-boundary",
+      "foreign-premise-detection",
+      "routing-precedence"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "AS-3 conscious doctrine vs inherited affiliation split",
+      "distinguish inherited affiliation, public identity, explicit doctrine, and operative noetic rule",
+      "affiliation no longer substitutes for doctrine",
+      "operative doctrine remains provisional unless anchored"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "as-source-status-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "being"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "affiliation being substituted for conscious doctrine",
+      "do_orient": "split inherited affiliation from explicit doctrine before public verdict",
+      "restoration_target": "keep operative doctrine provisional until actually anchored",
+      "routing_gate": "AS-3 with noetic-reading caution before school-specific content"
+    }
+  }
+}
