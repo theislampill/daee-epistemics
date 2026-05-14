@@ -196,6 +196,51 @@ repo/dev-harness-only. Distinguish the broad compiled registry from the optional
 covered-scope catalogue. When the user forbids edits during an audit, record TODO-intended
 findings in the audit report instead of modifying `TODO.md`.
 
+### Operator Child-Mode Hardening Protocol
+
+When a broad parent owner is correct but under-factorized, use the evidence-gated path before
+creating any new owner pack:
+
+1. Trace owner first.
+2. Patch the existing parent owner before creating a new owner.
+3. Add compact child-mode rows only when they sharpen entry criteria, false trigger, target,
+   operation, result, `Land(B)`, `R(H,Delta)`, collapse radius, held routes, and guardrail
+   consequences.
+4. Add label-stripped static routing fixtures.
+5. Rebuild generated runtime when atomics change.
+6. Run the applicable routing/checker suite.
+7. Add retained ignored local live samples only after static patch review.
+8. Add a dev-local checker only after live samples are semantically accepted.
+9. Require positive controls and negative controls before accepting the checker.
+10. Preserve the evidence boundary: local ignored samples are not package/release smoke proof.
+11. Do not proceed to the next owner family until the current family has an accepted static-only
+    boundary, accepted local execution evidence, or accepted dev-local checker evidence.
+
+TTP label presence is not execution. Child-mode row presence is not execution. Static fixture
+success is not live behavior proof. Local live smoke evidence is not package/release proof.
+Dev-local checker PASS is not universal semantic grading. Package/release smoke proof requires
+package-bound provenance and explicit release authorization. `.daee/` remains ignored local
+evidence unless explicitly authorized otherwise. Never use `git add .` for this work.
+
+SOLID / GRASP may be used as lightweight repo/dev design heuristics for owner placement,
+checker cohesion, and evidence boundaries. They are not runtime doctrine, public skill grammar,
+or substitutes for SSOT, owner-first tracing, ACID, and smoke-before-claim.
+
+SOLID mapping: Single Responsibility means each owner/checker has one evidence role; Open/Closed
+means extend parent owners through child modes before new owner packs; Liskov means child modes
+must satisfy the parent owner-floor; Interface Segregation means static fixtures, local live
+samples, dev-local checkers, and package smokes are separate evidence interfaces; Dependency
+Inversion means checkers depend on repo contracts and repo-relative paths, not local machine paths
+or summaries.
+
+GRASP mapping: Information Expert means patch the file that owns the operation; Controller means
+checkers/scripts validate evidence while owners do not become scripts; Low Coupling / High
+Cohesion means avoid broad packs when existing owners can carry child modes; Indirection means
+compiled-module-map, schema-light registers, and local checkers separate source/runtime/evidence;
+Protected Variations means do not hard-migrate schemas or release claims without explicit contract
+migration; Pure Fabrication means dev-local checkers are allowed repo tools but not package
+identity.
+
 ### Scriptless Compact DSL Behavioral Coercion Memory
 
 v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless compact DSL

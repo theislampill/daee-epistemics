@@ -156,14 +156,14 @@ GENERATED_REQUIRED = {
 INDEX_REQUIRED = [
     "algebraic-notation-and-noetic-formalism.md",
     "pipeline2-implementation-ledger.md",
-    "Retained compact runtime spine",
-    "historical baseline",
-    "Pipeline #2",
-    "derived/conditional bridge",
+    "Canonical Architecture Runtime",
+    "compact runtime spine",
+    "schema-light register bridge",
+    "baseline register formalism",
     "hard schema",
-    "current runtime state",
+    "diagnostic navigation aid",
     "source-governance",
-    "fixture-proven",
+    "fixture-backed",
     "Shannon entropy measures truth",
 ]
 
