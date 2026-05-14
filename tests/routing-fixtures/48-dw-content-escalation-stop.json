@@ -1,0 +1,70 @@
+{
+  "id": "dw-content-escalation-stop",
+  "prompt": "More answers are being absorbed as new material for objection-generation rather than being considered; the person asks for another proof list immediately.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "doubt-vs-skepticism",
+      "P7-restoration-stops"
+    ],
+    "optional_modules": [
+      "M5-deformation-triage",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "routing-precedence",
+      "output-release"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "DW-3 content-escalation stop",
+      "stop content escalation",
+      "hold or PARTIAL the downstream route",
+      "Escalation pressure lands as STOP/HOLD/PARTIAL discipline"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "dw-doubt-ecology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "answer"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "answers absorbed into objection-generation and immediate proof-list demand",
+      "do_orient": "stop content escalation and preserve next burden as held",
+      "restoration_target": "block proof/content sprawl while keeping the live route held",
+      "routing_gate": "DW-3 with P7 STOP/HOLD/PARTIAL before further proof lists"
+    }
+  }
+}

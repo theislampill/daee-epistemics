@@ -1,0 +1,70 @@
+{
+  "id": "dw-bounded-reassurance-hold",
+  "prompt": "The person needs reassurance, but a full technical answer would likely intensify the cycle; they need to know what can be safely held and what would release later.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "doubt-vs-skepticism",
+      "P7-restoration-stops"
+    ],
+    "optional_modules": [
+      "M5-deformation-triage",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "routing-precedence",
+      "output-release"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "DW-6 bounded reassurance / P7 hold integration",
+      "bound reassurance while explicitly holding unreleased proof/content",
+      "Confidence is restored enough for orientation without argument completion",
+      "Reassurance lands as bounded orientation, not argument completion"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "dw-doubt-ecology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "answer"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "reassurance needed while full technical answer would intensify the cycle",
+      "do_orient": "give bounded reassurance and name what remains held",
+      "restoration_target": "restore orientation without argument completion",
+      "routing_gate": "DW-6 with P7 hold integration before technical content release"
+    }
+  }
+}

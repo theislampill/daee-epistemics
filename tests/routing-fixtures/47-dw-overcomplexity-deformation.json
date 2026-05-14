@@ -1,0 +1,70 @@
+{
+  "id": "dw-overcomplexity-deformation",
+  "prompt": "Every answer is rejected as too simple, and the demand keeps escalating toward more technical proof even though the live issue has not changed.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "doubt-vs-skepticism"
+    ],
+    "optional_modules": [
+      "M5-deformation-triage",
+      "P7-restoration-stops",
+      "proof-method-audit",
+      "foreign-premise-detection",
+      "routing-precedence",
+      "output-release"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-specialty-diagnostics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-tactics",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "DW-2 overcomplexity as deformation",
+      "audit whether added complexity restores sound reason or feeds deformation",
+      "unnecessary proof expansion is held",
+      "Overcomplexity no longer functions as authority or rigor by itself"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "dw-doubt-ecology-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "answer"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "technical proof demand escalates while live issue has not changed",
+      "do_orient": "audit whether added complexity restores sound reason or feeds deformation",
+      "restoration_target": "narrow output to live burden and hold proof expansion",
+      "routing_gate": "DW-2 before PM proof-method expansion"
+    }
+  }
+}

@@ -2087,7 +2087,7 @@ Until that split is made, the yes/no answer you want has not been earned.
 <!-- MODULE_ID: doubt-vs-skepticism -->
 <!-- MODULE_CLASS: tactic -->
 <!-- CANONICAL_PATH: skill/references/tactics/doubt-vs-skepticism.md -->
-<!-- SOURCE_SHA256: 9887bd790d3e830f86c05e4c281c0fb390959404f4b0accb4190f8aa70da4654 -->
+<!-- SOURCE_SHA256: 5544f261df9c35ad70bcf0109b46a8a2d594a4e001df5f3152fa85bfc8e126fa -->
 
 ---
 id: doubt-vs-skepticism
@@ -2223,6 +2223,21 @@ For the full criterion-generates-regress execution, load E2 (`references/tactics
 5. Do not supply theistic evidence before completing steps 1–4. Evidence offered before
    the framework is cleared will be evaluated through the unexamined evidential criterion
    and will fail to land.
+
+## Doubt Ecology Child Modes
+
+These child modes remain under `doubt-vs-skepticism`: the parent owns doubt-function
+classification and evidence-demand burden inversion. P7 owns concrete STOP/HOLD/PARTIAL
+release, M5 owns deformation triage, and output-release governs final rendering. Naming a
+DW mode is not execution; the mode must type the doubt function, constrain content release,
+land the burden, and re-read held routes.
+
+| mode_id | entry criterion | false trigger | target | operation | result | Land(B) effect | R(H,Delta)/kappa effect | heart/register consequence | deformation release condition | source-worldview / tribunal consequence | held route | smoke link |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| DW-1 serious shubhah vs wiswas split | Doubt-language appears, but it is unclear whether this is a live unresolved objection or compulsive/ruminative doubt pressure. | The input gives a concrete objection with stable premises and no compulsive escalation signal. | Doubt function and release posture. | distinguish serious shubhah, ideological skepticism, compulsive doubt, and underdetermined register before content release | Content route is released, bounded, held, or PARTIAL based on doubt function. | Doubt type is typed; content no longer releases merely because doubt-language appears. | Re-read PM/M9/V2/P7/reassurance routes based on the split; kappa expands only around the typed doubt function, not every possible objection. | Anxiety, wiswas, or overcomplexity shifts release toward HOLD, bounded reassurance, or PARTIAL; stable truth-seeking can release the live objection. | M5/V1 names shubhah, zann, taqlid, hawa/gharad, inherited framework, or ada if live; the deformation label does not count as the DW operation. | If the doubt is actually an imported criterion or proof denominator, hold ordinary content and hand to FPD/V2/PM. | Proof-stacking, source parade, and doctrinal sprawl held until doubt function is typed. | `46-dw-shubhah-wiswas-split` |
+| DW-2 overcomplexity as deformation | Complexity, technicality, or proof proliferation is stabilizing doubt rather than clarifying the live burden. | The complexity is actually needed for the live burden and the interlocutor is stable enough to receive it. | Complexity pressure / proof-stacking loop. | audit whether added complexity restores sound reason or feeds deformation | Output is narrowed to the live burden; unnecessary proof expansion is held. | Overcomplexity no longer functions as authority or rigor by itself. | Re-read PM/V2/P7/DW-1 and held proof routes; kappa narrows to the burden that can actually land. | Anxiety, compulsion, or authority fatigue bounds the answer and blocks proof-dumping. | M5 marks zann, inherited framework, ada, or argument-absorbent pattern if live before further proof-method release. | If complex method installs a proof tribunal, hold content and hand to PM/V2/FPD. | Extra proofs, technical excursions, and source stacks held. | `47-dw-overcomplexity-deformation` |
+| DW-3 content-escalation stop | Answering more content is likely to feed the pathology, objection-generation, stimulation, or identity-performance. | The remaining content is a stable live burden and no stop/register gate blocks release. | Escalation loop and next-content release. | stop content escalation by naming why more answer now would feed the deformation, then hold or PARTIAL the downstream route | Output refuses proof/content sprawl while preserving the live next burden as held. | Escalation pressure lands as STOP/HOLD/PARTIAL discipline. | Re-read held routes and STOP/HOLD/PARTIAL eligibility; kappa prevents the same burden from returning as novelty. | Anxiety, grief, compulsion, or identity-performance governs tone, amount, and release. | M5/P7 control release; argument-absorbent or identity-performance cases do not receive more content by default. | If escalation is driven by imported criterion, hold it for FPD/V2 once the register allows. | Further proofs, sources, polemical content, and speculative theology held. | `48-dw-content-escalation-stop` |
+| DW-6 bounded reassurance / P7 hold integration | Reassurance is needed but full proof/content release is unsafe, excessive, or blocked. | The case requires a direct intellectual answer and no register or stop gate is live. | Reassurance boundary and held material. | bound reassurance while explicitly holding unreleased proof/content and naming what would release it | Confidence is restored enough for orientation without argument completion. | Reassurance lands as bounded orientation, not argument completion. | Re-read whether STOP, HOLD, PARTIAL, or one bounded next burden is licensed; kappa remains constrained to the safe next step. | Tone and amount are governed by anxiety, wiswas, grief, identity-cost, or truth-seeking stability. | M5/P7 control whether next content releases; reassurance cannot bypass deformation release. | If reassurance would concede an imported criterion, hold and route upstream to FPD/V2/PM. | Proof piles, source stacks, and disputed doctrinal content held unless release signal appears. | `49-dw-bounded-reassurance-hold` |
 
 ## The Two Formal Arguments (Deploy When Framework Is Clear)
 
