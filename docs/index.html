@@ -1468,7 +1468,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <section class="tabsec active" id="architecture">
 <div class="hero">
 <h1>DAEE Epistemics Control Wiki</h1>
-<p>v56: Smallest-slice ♥ hardening patch — ♥ is now delta-bearing in the formal operator/reread algebra, not merely a release-posture annotation.</p>
+<p>v57: Shannon-calibrated notation patch — ♥ remains grouped inside <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code>, κ remains downstream reread state, and the Shannon analogy is bounded to signal/encoding/capacity/error-correction rather than meaning or truth.</p>
 <div class="badges">
 <span class="badge"><i class="dot blue"></i>interactive + static panels</span>
 <span class="badge"><i class="dot green"></i>current repo state</span>
@@ -2158,29 +2158,37 @@ held state and dependency deltas, then stops, holds, recurses, or marks partial.
 </div>
 </section>
 <section id="pv-shannon">
-<h2>3. Shannon-informed analogy</h2>
+<h2>3. Shannon-calibrated analogy</h2>
 <p>
 Claude Shannon’s information-theoretic framing is useful as a notation-design analogy only. DAEE does not reduce fiṭrah,
-ʿaql, revelation, noetic structure, or restoration to Shannon information. The analogy helps normalize signal, encoding,
-noise, compression, transmission, decoding, redundancy, and error correction.
+ʿaql, revelation, noetic structure, or restoration to Shannon information. The analogy helps normalize source, signal,
+encoding, channel, noise, redundancy, capacity, error correction, and decoder behavior.
 </p>
+<div class="callout warn">
+<p><strong>Boundary rule:</strong> Shannon’s theory deliberately brackets semantic meaning for the engineering problem. DAEE may borrow the signal/encoding/channel/noise grammar, but must not claim Shannon entropy measures truth, warrant, fiṭrah, revelation, or semantic restoration. Meaning-bearing and truth-governed content remains handled by <code>ξ</code>, <code>Ω</code>, <code>σ</code>, <code>♥</code>, owners, and reread.</p>
+</div>
 <table>
 <thead><tr><th>Shannon term</th><th>Repo-native analogue</th><th>Notation consequence</th></tr></thead>
 <tbody>
 <tr><td>Source</td><td>origin of claim, criterion, authority, semantic default, or ontological rule</td><td>Feeds <code>σ</code>, <code>N</code>, <code>ξ</code>, <code>Ω</code></td></tr>
-<tr><td>Message</td><td>surface discourse, slogan, argument, proof-packet, objection</td><td><code>D</code></td></tr>
-<tr><td>Encoding</td><td>compression into labels, predicates, examples, identities, proof-denominators</td><td><code>μ(D)</code></td></tr>
-<tr><td>Channel</td><td>social, textual, institutional, affective, scholarly, online, polemical, pedagogical path</td><td>context for <code>μ</code> and <code>σ</code></td></tr>
-<tr><td>Noise</td><td>deformation, concealment, equivocation, semantic capture, identity pressure, proof-method narrowing</td><td><code>m</code>, <code>σ</code>, suppression gates</td></tr>
-<tr><td>Affective register</td><td>grief, identity, performance, truth-seeking, mixed/unclear posture carried by the signal</td><td><code>♥</code> as release-posture control, not mere noise</td></tr>
-<tr><td>Decoder</td><td>subject’s noetic structure and interpretive filters</td><td><code>N</code>, <code>ξ</code></td></tr>
-<tr><td>Redundancy</td><td>repeated slogans, inherited formulas, authority markers, proof packets</td><td><code>μ</code> stabilization signal</td></tr>
-<tr><td>Entropy</td><td>uncertainty or branching in possible noetic readings</td><td>confidence/underdetermination; HOLD/PARTIAL risk</td></tr>
-<tr><td>Mutual information</td><td>how much surface signal actually reveals underlying noetic structure</td><td>diagnostic confidence; whether <code>N/ξ/Ω/μ</code> may be asserted or only held</td></tr>
-<tr><td>Compression</td><td>complex noetic-ontological grammar packed into short public forms</td><td><code>μ</code> as carrier, not mere rhetoric</td></tr>
-<tr><td>Error correction</td><td>TTP/operator execution restoring semantic, epistemic, ontological, or authority order</td><td><code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ</code></td></tr>
+<tr><td>Message</td><td>surface discourse, slogan, argument, proof-packet, objection</td><td><code>D₀</code>, not yet the target</td></tr>
+<tr><td>Selection set</td><td>the space of possible noetic readings before the live frame is selected or held</td><td><code>𝓝 ⊢ D₀ ⇝ Ψᴺ</code>; design covers possible selections, not only the actual one</td></tr>
+<tr><td>Encoding</td><td>compression into labels, predicates, examples, identities, proof-denominators</td><td><code>μ(D₀)</code> as carrier/stabilizer, not mere rhetoric</td></tr>
+<tr><td>Channel</td><td>social, textual, institutional, affective, scholarly, online, polemical, pedagogical path</td><td>context for <code>μ</code>, <code>σ</code>, and possible distortion</td></tr>
+<tr><td>Noise</td><td>deformation, concealment, equivocation, semantic capture, identity pressure, proof-method narrowing</td><td><code>m</code>, <code>σ</code>, suppression gates; never identical to <code>♥</code></td></tr>
+<tr><td>Affective register</td><td>grief, identity, performance, truth-seeking, mixed/unclear posture carried by the signal</td><td><code>♥</code> is part of <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code>, not channel noise or sentiment metadata</td></tr>
+<tr><td>Decoder</td><td>subject’s noetic structure and interpretive filters</td><td><code>N</code>, <code>ξ</code>, and the transition from <code>D₀</code> to <code>Ψᴺ</code></td></tr>
+<tr><td>Redundancy</td><td>repeated slogans, inherited formulas, authority markers, proof packets</td><td><code>μ</code> stabilization signal; can help detection or reinforce deformation</td></tr>
+<tr><td>Entropy</td><td>uncertainty or branching in possible noetic readings</td><td>confidence/underdetermination; HOLD/PARTIAL risk, not moral or theological disorder by itself</td></tr>
+<tr><td>Mutual information</td><td>how much surface signal actually reveals underlying noetic structure</td><td>diagnostic confidence; whether <code>N/ξ/Ω/μ/♥</code> may be asserted or only held</td></tr>
+<tr><td>Capacity / rate</td><td>how much corrective content the present engagement can reliably carry without distortion</td><td>governs release depth: too much content for the channel/register increases HOLD/PARTIAL risk</td></tr>
+<tr><td>Error correction</td><td>TTP/operator execution restoring semantic, epistemic, ontological, affective-discursive, or authority order</td><td><code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ</code></td></tr>
+<tr><td>Finite blocklength</td><td>real engagements have limited context, time, patience, trust, attention, and model capacity</td><td>prefer bounded burdens and reread; do not assume asymptotic perfect correction in one response</td></tr>
 </tbody>
 </table>
+<div class="callout">
+<p><strong>Applied rule:</strong> use Shannon to discipline the control analogy: selected-from-possibilities, encoded signal, channel constraints, noise/distortion, redundancy, capacity, and error correction. Do not use Shannon as a proof that the noetic state is reducible to bits, or that semantic restoration is solved by compression alone.</p>
+</div>
 </section>
 <section id="pv-recommended">
 <h2>4. Recommended normalized notation</h2>
