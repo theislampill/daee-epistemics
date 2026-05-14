@@ -78,6 +78,21 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 
 When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless compact-DSL obligation, not merely optional script-harness route behavior.
 
+Derived register release discipline: when a response uses the expanded formalism from
+`docs/algebraic-notation-and-noetic-formalism.md`, each live register must change release
+behavior rather than decorate the prose. `♥` may affect hold, sequence, softness, directness,
+or closure posture; `ξ` may affect proof/warrant/testimony release; `Ω` may affect predicate,
+category, modality, or dependence release; `μ` may affect carrier/stabilizer handling; `κ` /
+`Δκ` may affect downstream reread. If none of these changes the governed burden, owner, held
+material, `Land(B)`, or `R(H,Delta)`, do not print the symbol. `κ` is not a TODO list, and
+`ΔⁿB` is not a shortcut to a new burden-cycle.
+
+Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named in formalism,
+`:dsl`, or audit surfaces only after the burden-state delta has landed and reread has decided
+there is no unhandled live distortion requiring another pass. They never license a restoration
+paragraph before owner/TTP execution, visible closure audit, P1/P7 closure, and live M1/M1-P or
+M9 obligations have been satisfied or held/PARTIALed.
+
 For file-retained execution, the same release decision governs the file, not the final chat
 message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat
 response reports only status, path, and approximate length; it must not become a shorter

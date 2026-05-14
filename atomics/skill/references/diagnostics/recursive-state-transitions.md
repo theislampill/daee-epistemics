@@ -124,6 +124,31 @@ Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB
 Gloss: same tribunal, source-frame, and claim-cluster collapse into one burden-cycle unless
 `R` licenses a genuinely new input-anchored `B`.
 
+Derived register bridge:
+
+```text
+Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ
+-> facets ⊂ {s1...sn}
+-> ¬RECURSE
+
+ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ
+Land(ⁿB) -> R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ) -> STOP/HOLD/PARTIAL/RECURSE or ⁿ⁺¹B
+```
+
+Gloss: this is a formal/specification bridge for current behavior. `ξ`, `Ω`, `♥`, `μ`, and
+`κ` are derived lenses over existing warrant, ontology, register, meta-noetic memetic, source,
+collapse-radius, and reread governance. They do not create mandatory IR fields. `ΔⁿB` is the
+local landed state change inside the current burden; `ⁿ⁺¹B` is a new burden-cycle only when
+`Land(B) -> R(H,Delta)` licenses it. `κ` is the downstream dependency set consumed by reread,
+not a generic TODO list.
+
+Terminal formalism: `𝒞(Ψᴺ)` names constrained noetic collapse / discursive resolution after
+the state re-read has consumed `ΔⁿB` and `Δκ`. It may describe closure only when the live burden
+has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has been decided.
+`N_fiṭrī ∧ ʿaql ṣarīḥ` names the restorative terminal orientation: fitri recognition plus sound
+reason after the governing misread loses control. It is not a shortcut around burden landing,
+and it is not a default visible marker in ordinary output.
+
 Source-status:
 
 ```text

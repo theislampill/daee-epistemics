@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: output-release -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/output-release.md -->
-<!-- SOURCE_SHA256: 7c29446623aaef28e8b7d0a126ccdc7a240cb162d84afb0c531dcd1ea175c617 -->
+<!-- SOURCE_SHA256: fbe3150d4541aa0cc922ff465c29859dcf11d1fceb5e6bf664d24f1855f8fa7b -->
 
 ---
 id: output-release
@@ -97,6 +97,21 @@ After every bounded move, `Land(B) -> R` decides whether recursion is active now
 3. No P7 stop, register-hold, semantic gate, thin-basis rule, absent release signal, or limit blocks the next pass.
 
 When all three are true, `RECURSE` is required internally in the same response. Do not convert this into an audit ledger in default mode; continue through the next bounded prose section. If the burden remains live but an absent release signal blocks it, hold in prose. If limits prevent the next eligible pass, render partial release-status prose. `STOP` remains the internal decision that is invalid while this checklist is satisfied. This same-response recursion requirement is a scriptless compact-DSL obligation, not merely optional script-harness route behavior.
+
+Derived register release discipline: when a response uses the expanded formalism from
+`docs/algebraic-notation-and-noetic-formalism.md`, each live register must change release
+behavior rather than decorate the prose. `♥` may affect hold, sequence, softness, directness,
+or closure posture; `ξ` may affect proof/warrant/testimony release; `Ω` may affect predicate,
+category, modality, or dependence release; `μ` may affect carrier/stabilizer handling; `κ` /
+`Δκ` may affect downstream reread. If none of these changes the governed burden, owner, held
+material, `Land(B)`, or `R(H,Delta)`, do not print the symbol. `κ` is not a TODO list, and
+`ΔⁿB` is not a shortcut to a new burden-cycle.
+
+Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named in formalism,
+`:dsl`, or audit surfaces only after the burden-state delta has landed and reread has decided
+there is no unhandled live distortion requiring another pass. They never license a restoration
+paragraph before owner/TTP execution, visible closure audit, P1/P7 closure, and live M1/M1-P or
+M9 obligations have been satisfied or held/PARTIALed.
 
 For file-retained execution, the same release decision governs the file, not the final chat
 message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat
@@ -983,7 +998,7 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 <!-- MODULE_ID: diagnostic-render-contract -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/rubrics/diagnostic-render-contract.md -->
-<!-- SOURCE_SHA256: 519776b1adec1a542f755d912ac0ffeab9e82e80e92de4ee163c1ffb99bad9c1 -->
+<!-- SOURCE_SHA256: c4034e331af30d54174d2c9f134226f05a60387974e97745b9bad651c6ba54f5 -->
 
 ---
 id: diagnostic-render-contract
@@ -1061,6 +1076,18 @@ notation is primarily for governance docs, hard-output templates, checker traces
 Public canonical output should prefer `¹B₁`, `¹B₂`, `²B₁`. Use `1B1`, `1B2`, `2B1`
 as the ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a legacy/checker alias and should not
 be the primary public notation unless the output is explicitly a checker/dev-harness trace.
+
+Expanded formalism render boundary: symbols such as `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`,
+`ΔⁿB`, `ⁿ⁺¹B`, `Ψᴺ`, and `𝒞(Ψᴺ)` belong by default to theory/specification docs,
+`:dsl` visibility, or internal audit surfaces. Default output may expose them only when the
+user asks for formalism or when the symbol materially clarifies an actually executed burden
+transition. Do not print `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, and do not treat
+expanded notation as proof that a register or owner has executed.
+
+Anti-symbol-theater rule: visible notation must be backed by a local control effect. If a
+render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `𝒞(Ψᴺ)`, or `N_fiṭrī ∧ ʿaql ṣarīḥ`, the same pass
+must show the burden, owner, hold/release decision, reread, or restoration boundary that the
+symbol changed. Otherwise use ordinary prose and keep the notation in the theory/spec layer.
 
 ---
 

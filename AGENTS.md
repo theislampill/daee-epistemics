@@ -36,6 +36,7 @@ python tools/check_frontmatter.py
 python tools/check_coverage.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_metacompliance_current_canon.py
+python tools/check_pipeline2_bridge.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
@@ -357,9 +358,12 @@ state, owner/TTP activation, burden landing, state re-read, and restoration.
 
 Expanded visual/diagnostic wiki reference:
 `docs/index.html`. Treat the published GitHub Pages page as a navigation and diagnostic aid
-only. It may contain proposal or implementation-annex material; do not execute those proposed
-repo patches, schema changes, notation expansions, or release moves until the active recovery
-gate has been completed and the patch scope has been separately approved.
+only. Durable formalism lives in `docs/algebraic-notation-and-noetic-formalism.md` and canonical
+runtime rules still live in atomics. Pipeline #2 derived/conditional bridge semantics are
+current only where atomics make them govern existing IR, owner/TTP selection, hold/release,
+collapse radius, burden landing, state re-read, or restoration. Do not make `heart`/`xi`/
+`Omega`/`mu`/`kappa` mandatory runtime fields without a deliberate schema/checker/fixture/
+smoke migration, and do not claim a release-line migration from the index page alone.
 
 Burden/submove notation in public canonical output prefers the compact human/math form:
 `¹B₁`, `¹B₂`, `²B₁` = burden 1 submoves 1/2, then burden 2 submove 1. Plain `1B1`,

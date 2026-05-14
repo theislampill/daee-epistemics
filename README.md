@@ -377,6 +377,13 @@ The repo also carries a visual architecture reference:
 [`docs/daee-epistemics-pipeline.html`](docs/daee-epistemics-pipeline.html). It is a
 navigation aid, not a new source of truth, and should stay in parity with the canonical
 compact DSL-governed runtime, canonical package boundary, and repo/dev harness boundary.
+The expanded algebraic notation and Pipeline #2 derived/conditional bridge are preserved in
+[`docs/algebraic-notation-and-noetic-formalism.md`](docs/algebraic-notation-and-noetic-formalism.md)
+and tracked in
+[`docs/pipeline2-implementation-ledger.md`](docs/pipeline2-implementation-ledger.md).
+The bridge is current only where atomics make `heart` / `xi` / `Omega` / `mu` / `kappa`
+govern existing IR, owner/TTP selection, hold/release, collapse radius, burden landing,
+state re-read, or restoration; those registers are not mandatory runtime schema fields.
 
 The diagrams below split the repo into three views: source layout, runtime
 invocation, and maintainer verification. The full internal pipeline audit

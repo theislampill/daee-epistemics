@@ -200,6 +200,24 @@ CURRENT_DOC_REQUIRED = {
         "/daee-epistemics:audit = deprecated internal/development compatibility surface",
         "not as the public place where governance becomes real",
     ],
+    "docs/algebraic-notation-and-noetic-formalism.md": [
+        "theory/specification surface",
+        "Current compact runtime spine",
+        "IR(N,m,tau,sigma)",
+        "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)",
+        "not mandatory schema fields",
+        "Delta-nB",
+        "n-plus-1B",
+        "`κ` as a generic TODO list",
+        "Shannon",
+        "Symbol theater",
+    ],
+    "docs/pipeline2-implementation-ledger.md": [
+        "Pipeline #2 Implementation Ledger",
+        "`IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` derived bridge",
+        "IMPLEMENTED",
+        "DEFERRED WITH BLOCKER",
+    ],
 }
 
 CURRENT_DOCS_FOR_STALE_SCAN = [

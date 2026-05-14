@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 210f2c9abe869e10e2863d1210870041d3580d5da58185fc8602b6bd559f9c27 -->
+<!-- SOURCE_SHA256: 7fb7e9c1d4956dfcd628e72c22ae6b9125e7a816af558a65786b353cd2a45a7e -->
 
 ---
 id: diagnostic-ir
@@ -110,6 +110,52 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 - `Structural pattern print`, `Load-bearing node`, and `Collapse radius`: the local belief-machine, the node that keeps regenerating downstream claims, and the dependent claims/routes that must be re-evaluated when it clears
 - `Concealment mode` and `DO-orient`: how recognition is being suppressed or how the discourse is socially/affectively stabilized
 - `What is withheld and why`, `What remains live`, and `Post-render gate`: held routes, collapse radius, refreshed-state recheck, and the forced re-entry judgment after a load-bearing node is cleared
+
+### Derived Register Formalism Boundary
+
+Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
+interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
+`D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
+encoded noetic signal-state produced when the diagnostic gate reads that surface through the
+available noetic-structure selection space `N_space` / `𝓝`. The live frame `N` is selected or
+held from that space as `N in N_space` / `N∈𝓝`; if the input is thin, the selection remains
+underdetermined and the case must be held or partialed rather than family-locked.
+
+Operationally:
+
+```text
+D0 -> PsiN<N,m,tau,sigma,H> -> IR(N,m,tau,sigma) -> B -> TTP/operator -> R(H,Delta)
+```
+
+The Unicode formalism is the theory/spec surface for the same bridge:
+
+```text
+𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
+```
+
+This makes Pipeline #2 real as a derived/conditional runtime bridge: the extra symbols must
+govern existing IR formation, owner eligibility, held material, collapse radius, release
+posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
+
+The expanded formalism `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` is a theory/specification bridge over this same
+Diagnostic IR. It names conditionally live analytic functions; it does not add mandatory schema
+fields by itself.
+
+- `♥` names affective-discursive register / release-posture pressure when grief, identity,
+  performance, truth-seeking, mixed, or unclear register changes hold/release, tone, sequence,
+  owner selection, or final release posture.
+- `ξ` names epistemic/warrant grammar when evidence, testimony, authority, proof-method,
+  proper function, prima facie status, or defeaters change routing or reread.
+- `Ω` names ontological grammar when predication, modality, dependence, causality, being, or
+  creator/creation distinction changes the active burden or operator.
+- `μ` names meta-noetic memetic vector when carrier, compression, stabilizer, defensive move,
+  reproduction, or mutation pattern changes an existing IR field, hold, owner, or reread.
+- `κ` names collapse radius / downstream dependency set; `Δκ` names the dependency-radius
+  change that the post-render state re-read must consume.
+
+Control-surface test: if a proposed register does not change an existing field, owner/TTP
+selection, release permission, collapse radius, held material, `Land(B)`, or `R(H,Delta)`,
+it is decorative and must not be promoted into runtime output or schema.
 
 Identity use must be source-status marked in the existing surfaces:
 
@@ -2480,7 +2526,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: 0144c99e4650e0721e3dd0907e519108fdb146579e84b8b5005e12fe14801d50 -->
+<!-- SOURCE_SHA256: 88e4c6a2d012e9ebe9b554917cf2c6e3bdc5f62c2b8b773ffcd8280a97ed04f8 -->
 
 ---
 id: framework-pipeline
@@ -2646,6 +2692,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | compose IR from Phase 2 outputs                    |
 | validated IR is runtime compiler state             |
 | IR before routing                                  |
+| Pipeline                                           |
 | module dispatch blocked until all gate checks pass |
 | owner: diagnostics/diagnostic-ir.md                |
 +----------------------------------------------------+
@@ -2696,6 +2743,8 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | inside selected live burden only                                                                              |
 | entry criteria: validated IR + owner + bounded target                                                         |
 | target -> operation -> result                                                                                 |
+| ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ                                                |
+| derived registers may change state delta / collapse radius when live                                          |
 | hujjah/accountability can be operative submove only after same-function proof                                 |
 | guidance-as-coercive-proof can be operative submove only after same-function proof                            |
 | hiddenness/punishment/source-status can be operative submoves under one burden only after same-function proof |
@@ -2711,6 +2760,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 |                                                                  |
 | selected burden lands or remains held                            |
 | burden landing precedes state re-read                            |
+| Delta-nB remains local; n-plus-1B requires re-read license       |
 | state re-read waits for whole burden, not each operative submove |
 | depth/stop guards checked before next pass                       |
 | restoration/pastoral waits for refresh license                   |
@@ -2733,6 +2783,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | OUTPUT-RELEASE RUBRIC                                                 |
 |                                                                       |
 | release amount, order, held material, and recursive traversal checked |
+| live registers alter release behavior or stay unprinted               |
 | output-release before visible response                                |
 | owner: rubrics/output-release.md                                      |
 +-----------------------------------------------------------------------+
@@ -2744,6 +2795,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | Level 1 default compact DSL/IR header plus bounded governed response |
 | Level 2 compact DSL / lab-report                                     |
 | Level 3 internal/development audit compatibility                     |
+| expanded notation is forbidden as decorative proof of execution      |
 | diagnostic-render-contract before final shape                        |
 | owner: rubrics/diagnostic-render-contract.md                         |
 +----------------------------------------------------------------------+
@@ -2761,15 +2813,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +---------------------------------------------------------------------------+
              |
              v
-+-------------------------------------------------------+
-| POST-RENDER RE-ENTRY GATE                             |
-|                                                       |
-| state re-read asks what cleared and what remains live |
-| held routes rechecked                                 |
-| convergence through controlled state transitions      |
-| decision = STOP / HOLD / RECURSE / PARTIAL            |
-| owner: diagnostics/recursive-state-transitions.md     |
-+-------------------------------------------------------+
++-------------------------------------------------------------------+
+| POST-RENDER RE-ENTRY GATE                                         |
+|                                                                   |
+| state re-read asks what cleared and what remains live             |
+| held routes rechecked                                             |
+| Delta-kappa dependency-radius changes are consumed before closure |
+| convergence through controlled state transitions                  |
+| decision = STOP / HOLD / RECURSE / PARTIAL                        |
+| owner: diagnostics/recursive-state-transitions.md                 |
++-------------------------------------------------------------------+
              |
              v
 +--------------------------------------------------+
@@ -2911,6 +2964,7 @@ CONCEPT OWNERSHIP (owner-backed)
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
 - DSL/IR representation: diagnostics/diagnostic-ir.md
 - meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
+- Pipeline: diagnostics/diagnostic-ir.md
 - runtime diagnostic compiler contract: diagnostics/diagnostic-ir.md
 - TTP entry / exit criteria: diagnostics/recursive-state-transitions.md
 - Layer A / Layer B release checks: rubrics/output-release.md
@@ -3110,7 +3164,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: af29af7698f39b01cc87a90c41a88170552e84d194f0725bb7678bbf78683bcb -->
+<!-- SOURCE_SHA256: 5eadcba29c6c2a3786da5d362a03d5627d44564a2c1fb101952f73a03469a824 -->
 
 ---
 id: recursive-state-transitions
@@ -3237,6 +3291,31 @@ Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB
 
 Gloss: same tribunal, source-frame, and claim-cluster collapse into one burden-cycle unless
 `R` licenses a genuinely new input-anchored `B`.
+
+Derived register bridge:
+
+```text
+Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ
+-> facets ⊂ {s1...sn}
+-> ¬RECURSE
+
+ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ
+Land(ⁿB) -> R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ) -> STOP/HOLD/PARTIAL/RECURSE or ⁿ⁺¹B
+```
+
+Gloss: this is a formal/specification bridge for current behavior. `ξ`, `Ω`, `♥`, `μ`, and
+`κ` are derived lenses over existing warrant, ontology, register, meta-noetic memetic, source,
+collapse-radius, and reread governance. They do not create mandatory IR fields. `ΔⁿB` is the
+local landed state change inside the current burden; `ⁿ⁺¹B` is a new burden-cycle only when
+`Land(B) -> R(H,Delta)` licenses it. `κ` is the downstream dependency set consumed by reread,
+not a generic TODO list.
+
+Terminal formalism: `𝒞(Ψᴺ)` names constrained noetic collapse / discursive resolution after
+the state re-read has consumed `ΔⁿB` and `Δκ`. It may describe closure only when the live burden
+has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has been decided.
+`N_fiṭrī ∧ ʿaql ṣarīḥ` names the restorative terminal orientation: fitri recognition plus sound
+reason after the governing misread loses control. It is not a shortcut around burden landing,
+and it is not a default visible marker in ordinary output.
 
 Source-status:
 

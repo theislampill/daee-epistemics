@@ -91,6 +91,52 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 - `Concealment mode` and `DO-orient`: how recognition is being suppressed or how the discourse is socially/affectively stabilized
 - `What is withheld and why`, `What remains live`, and `Post-render gate`: held routes, collapse radius, refreshed-state recheck, and the forced re-entry judgment after a load-bearing node is cleared
 
+### Derived Register Formalism Boundary
+
+Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
+interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
+`D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
+encoded noetic signal-state produced when the diagnostic gate reads that surface through the
+available noetic-structure selection space `N_space` / `𝓝`. The live frame `N` is selected or
+held from that space as `N in N_space` / `N∈𝓝`; if the input is thin, the selection remains
+underdetermined and the case must be held or partialed rather than family-locked.
+
+Operationally:
+
+```text
+D0 -> PsiN<N,m,tau,sigma,H> -> IR(N,m,tau,sigma) -> B -> TTP/operator -> R(H,Delta)
+```
+
+The Unicode formalism is the theory/spec surface for the same bridge:
+
+```text
+𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
+```
+
+This makes Pipeline #2 real as a derived/conditional runtime bridge: the extra symbols must
+govern existing IR formation, owner eligibility, held material, collapse radius, release
+posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
+
+The expanded formalism `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` is a theory/specification bridge over this same
+Diagnostic IR. It names conditionally live analytic functions; it does not add mandatory schema
+fields by itself.
+
+- `♥` names affective-discursive register / release-posture pressure when grief, identity,
+  performance, truth-seeking, mixed, or unclear register changes hold/release, tone, sequence,
+  owner selection, or final release posture.
+- `ξ` names epistemic/warrant grammar when evidence, testimony, authority, proof-method,
+  proper function, prima facie status, or defeaters change routing or reread.
+- `Ω` names ontological grammar when predication, modality, dependence, causality, being, or
+  creator/creation distinction changes the active burden or operator.
+- `μ` names meta-noetic memetic vector when carrier, compression, stabilizer, defensive move,
+  reproduction, or mutation pattern changes an existing IR field, hold, owner, or reread.
+- `κ` names collapse radius / downstream dependency set; `Δκ` names the dependency-radius
+  change that the post-render state re-read must consume.
+
+Control-surface test: if a proposed register does not change an existing field, owner/TTP
+selection, release permission, collapse radius, held material, `Land(B)`, or `R(H,Delta)`,
+it is decorative and must not be promoted into runtime output or schema.
+
 Identity use must be source-status marked in the existing surfaces:
 
 - anchored: public words, explicit self-description, stated framework, explicit affiliation, or

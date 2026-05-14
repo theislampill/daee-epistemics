@@ -1028,7 +1028,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: nomenclature-normalization -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/nomenclature-normalization.md -->
-<!-- SOURCE_SHA256: 7ff238b26e17926a0da00979c0d61c048637d4280cfaa547bae9d3242ce07212 -->
+<!-- SOURCE_SHA256: 8dc8dc8d6b920ed4c3f2962ffcca76857455fb69f59aff191fd63a2b85cbb691 -->
 
 ---
 id: nomenclature-normalization
@@ -1120,6 +1120,35 @@ brand the interlocutor with a code unless diagnostic render or user request make
 | `reconstruction_fidelity` | none | `pass`, `partial`, or `fail`; do not rename in schema/data. |
 | `reconstructor_notes` | reconstruction notes | Brief note for partial/fail or compact neighbor contrast. |
 | `post_render_gate` | post-render gate | STOP/HOLD/RECURSE/PARTIAL decision after Land(B) and state re-read. |
+
+## Algebraic Formalism Terms
+
+The expanded algebraic notation preserved in `docs/algebraic-notation-and-noetic-formalism.md`
+is a Pipeline #2 theory/specification bridge over the current runtime. Its derived/conditional
+control semantics are canonical when they change existing diagnosis, routing, hold/release,
+collapse-radius, reread, or restoration behavior. It does not add routes, owners, mandatory
+IR fields, PF codes, source-basis categories, schema keys, or a second DSL.
+
+| Formal symbol | ASCII fallback | Status |
+|---|---|---|
+| `𝓝` | `N_space`, `mathcal-N` | Noetic-structure selection space; design-space notation, not a schema field. |
+| `D₀` | `D0` | Surface discourse / input signal before diagnostic reduction. |
+| `Ψᴺ` | `PsiN` | Encoded noetic signal-state; represented operationally through current IR/case-state. |
+| `N∈𝓝` | `N in N_space` | Explanatory notation for the selected operative `N`; family labels still do not become warrant. |
+| `♥` | `heart` | Affective-discursive register / release-posture notation; derived from existing hold/release and register-governance surfaces. |
+| `ξ` | `xi` | Epistemic/warrant grammar: evidence, testimony, proof-method, authority, defeater, proper function. |
+| `Ω` | `Omega` | Ontological grammar: being, predication, modality, dependence, creator/creation distinction. |
+| `μ` | `mu` | Meta-noetic memetic vector; valid only when it changes an existing control surface. |
+| `κ` | `kappa` | Collapse radius / downstream dependency set; not a generic TODO list. |
+| `Δκ` | `Delta-kappa` | Dependency-radius delta consumed by state re-read. |
+| `ΔⁿB` | `Delta-nB` | Local burden-state change; not the next burden-cycle. |
+| `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle licensed only after `Land(B) -> R(H,Delta)`. |
+| `𝒞(Ψᴺ)` | `C(PsiN)` | Constrained noetic collapse / discursive resolution; architecture notation, not a default output marker. |
+
+Expanded `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` is accepted as formal/spec notation for conditionally live
+derived registers. Current hard schema remains `IR(N,m,τ,σ)`, but the derived bridge is current
+runtime-adjacent canon: any live register must affect an existing IR field, owner choice,
+hold/release decision, collapse radius, `Land(B)`, `R(H,Delta)`, or restoration boundary.
 
 ## Optional Route/Check Harness Terms
 

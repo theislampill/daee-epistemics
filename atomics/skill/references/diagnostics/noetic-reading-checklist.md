@@ -90,6 +90,16 @@ findings`, `Claim-level`, `Pattern-profile`, `Load-bearing node`, `Collapse radi
 `What remains live`. It does not create a new routing pass, new IR fields, or a route from a
 slogan by itself.
 
+Pipeline #2 signal-state bridge: the checklist reads `D0` / `D₀` as surface discourse, encodes
+the provisional noetic signal-state as `PsiN` / `Ψᴺ`, and selects or holds the operative frame
+as `N in N_space` / `N∈𝓝`. Thin inputs do not force a family-lock; they remain held or partial
+until the differentiating signal is present.
+
+Derived register bridge: the expanded formalism may call the warrant/testimony/proof-method
+side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
+stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream
+dependency set `κ`. These are analytic lenses over existing diagnosis, not replacement fields.
+
 ## The Nine Analytical Dimensions
 
 Run internally. Present findings, not the checklist itself.
@@ -114,6 +124,9 @@ Surface the implicit criteria:
 - What would count as an explanation? (Efficient-causal mechanism only? Or does
   teleological, rational, and personal explanation qualify?)
 - Are these criteria applied consistently across theistic and non-theistic questions?
+
+Formal lens: this dimension is where `ξ` becomes live if warrant, testimony, authority,
+proper-function, proof-method, or defeater grammar changes routing, hold/release, or reread.
 
 **Dimension 3 — Inferential norms:**
 - What inferential moves does the subject permit, deploy, deny, or treat as absent?
@@ -148,6 +161,11 @@ faculties are aimed at truth vs. filtered by survival or social commitments).*
   epistemological evaluation; importing Kantian epistemological categories into a
   context that does not share Kant's premises.
 - Name what has been imported, from where, and why it does not belong.
+
+Formal lens: this dimension may expose `Ω` when the import changes being, predication,
+modality, dependence, causality, or creator/creation grammar. It may expose `ξ` when the
+import changes proof or authority grammar. Keep the distinction; do not turn every foreign
+category into a generic metaphysics topic.
 
 **Dimension 6 — Relations among premises, conclusions, and modes of assent:**
 - Does the subject hold their conclusions with firmness proportioned to their premises?

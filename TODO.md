@@ -55,6 +55,29 @@ docs/                   = architecture, audit, and workflow notes
 - Status: active. Do not claim the behavioral regression fixed until this manual
   rerun passes.
 
+### Pipeline #2 Hard Schema / Release Migration Decision
+
+- Problem: Pipeline #2 derived/conditional bridge semantics are now canonical in atomics and
+  preserved in `docs/algebraic-notation-and-noetic-formalism.md` plus
+  `docs/pipeline2-implementation-ledger.md`. The remaining decision is whether to promote
+  `heart` / `xi` / `Omega` / `mu` / `kappa` from derived analytic lenses into hard Diagnostic
+  IR schema fields and release-line-visible runtime registers.
+- Source surfaces: `docs/algebraic-notation-and-noetic-formalism.md`,
+  `docs/pipeline2-implementation-ledger.md`,
+  `atomics/skill/references/diagnostics/nomenclature-normalization.md`,
+  `atomics/skill/references/diagnostics/diagnostic-ir.md`,
+  `atomics/skill/references/diagnostics/recursive-state-transitions.md`,
+  `atomics/skill/references/diagnostics/noetic-reading-checklist.md`,
+  `atomics/skill/references/diagnostics/framework-pipeline.yaml`,
+  `atomics/skill/references/rubrics/output-release.md`, and
+  `atomics/skill/references/rubrics/diagnostic-render-contract.md`.
+- Required verification for hard-schema promotion: schema/checker updates, positive and
+  negative fixtures, register stress smoke proving the fields alter owner choice,
+  hold/release, burden selection, reread, or restoration, full hard-regression smokes against
+  recovered v0.3.2.0 behavior, and explicit contract/version migration.
+- Status: user decision. Do not claim v0.4.0.0 readiness or hard register schema migration
+  from the derived bridge alone.
+
 ### Release Asset Rebake Decision
 
 - Problem: this hardening campaign changed source, tooling, tests, docs, and

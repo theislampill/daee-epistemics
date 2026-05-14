@@ -370,7 +370,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "210f2c9abe869e10e2863d1210870041d3580d5da58185fc8602b6bd559f9c27"
+      "source_sha256": "7fb7e9c1d4956dfcd628e72c22ae6b9125e7a816af558a65786b353cd2a45a7e"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -378,7 +378,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-render-contract",
       "source": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
-      "source_sha256": "519776b1adec1a542f755d912ac0ffeab9e82e80e92de4ee163c1ffb99bad9c1"
+      "source_sha256": "c4034e331af30d54174d2c9f134226f05a60387974e97745b9bad651c6ba54f5"
     },
     "diagnostics-index": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -458,7 +458,7 @@
       "module_class": "governance",
       "module_id": "framework-pipeline",
       "source": "atomics/skill/references/diagnostics/framework-pipeline.md",
-      "source_sha256": "0144c99e4650e0721e3dd0907e519108fdb146579e84b8b5005e12fe14801d50"
+      "source_sha256": "88e4c6a2d012e9ebe9b554917cf2c6e3bdc5f62c2b8b773ffcd8280a97ed04f8"
     },
     "hadith-authentication-epistemology": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -570,7 +570,7 @@
       "module_class": "governance",
       "module_id": "noetic-reading-checklist",
       "source": "atomics/skill/references/diagnostics/noetic-reading-checklist.md",
-      "source_sha256": "de3f8796abf05208b85f8a20af873c012458d58b2b7d5f0dea0a67b6d1269bdd"
+      "source_sha256": "6be30e7f926d6c57212ac248541af7e1e04e28e6abb0a1632da72efdbd5136f6"
     },
     "nomenclature-normalization": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -578,7 +578,7 @@
       "module_class": "governance",
       "module_id": "nomenclature-normalization",
       "source": "atomics/skill/references/diagnostics/nomenclature-normalization.md",
-      "source_sha256": "7ff238b26e17926a0da00979c0d61c048637d4280cfaa547bae9d3242ce07212"
+      "source_sha256": "8dc8dc8d6b920ed4c3f2962ffcca76857455fb69f59aff191fd63a2b85cbb691"
     },
     "ns-1-naturalist": {
       "bundle_path": "references/omnibus/OMNIBUS-profiles.md",
@@ -682,7 +682,7 @@
       "module_class": "governance",
       "module_id": "output-release",
       "source": "atomics/skill/references/rubrics/output-release.md",
-      "source_sha256": "7c29446623aaef28e8b7d0a126ccdc7a240cb162d84afb0c531dcd1ea175c617"
+      "source_sha256": "fbe3150d4541aa0cc922ff465c29859dcf11d1fceb5e6bf664d24f1855f8fa7b"
     },
     "pattern-profiling": {
       "bundle_path": "references/runtime-dispatch-gate.md",
@@ -762,7 +762,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "af29af7698f39b01cc87a90c41a88170552e84d194f0725bb7678bbf78683bcb"
+      "source_sha256": "5eadcba29c6c2a3786da5d362a03d5627d44564a2c1fb101952f73a03469a824"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

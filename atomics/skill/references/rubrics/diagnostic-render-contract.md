@@ -75,6 +75,18 @@ Public canonical output should prefer `¹B₁`, `¹B₂`, `²B₁`. Use `1B1`, `
 as the ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a legacy/checker alias and should not
 be the primary public notation unless the output is explicitly a checker/dev-harness trace.
 
+Expanded formalism render boundary: symbols such as `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`,
+`ΔⁿB`, `ⁿ⁺¹B`, `Ψᴺ`, and `𝒞(Ψᴺ)` belong by default to theory/specification docs,
+`:dsl` visibility, or internal audit surfaces. Default output may expose them only when the
+user asks for formalism or when the symbol materially clarifies an actually executed burden
+transition. Do not print `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, and do not treat
+expanded notation as proof that a register or owner has executed.
+
+Anti-symbol-theater rule: visible notation must be backed by a local control effect. If a
+render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `𝒞(Ψᴺ)`, or `N_fiṭrī ∧ ʿaql ṣarīḥ`, the same pass
+must show the burden, owner, hold/release decision, reread, or restoration boundary that the
+symbol changed. Otherwise use ordinary prose and keep the notation in the theory/spec layer.
+
 ---
 
 ## Relation to Output-Release Rubric

@@ -79,6 +79,7 @@ nodes:
       - compose IR from Phase 2 outputs
       - validated IR is runtime compiler state
       - IR before routing
+      - Pipeline #2 derived bridge maps D0 -> PsiN -> IR without hard schema fields
       - module dispatch blocked until all gate checks pass
     support_claim: runtime_diagnostic_compiler
 
@@ -128,6 +129,8 @@ nodes:
       - inside selected live burden only
       - "entry criteria: validated IR + owner + bounded target"
       - target -> operation -> result
+      - "ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ"
+      - derived registers may change state delta / collapse radius when live
       - hujjah/accountability can be operative submove only after same-function proof
       - guidance-as-coercive-proof can be operative submove only after same-function proof
       - hiddenness/punishment/source-status can be operative submoves under one burden only after same-function proof
@@ -142,6 +145,7 @@ nodes:
     lines:
       - selected burden lands or remains held
       - burden landing precedes state re-read
+      - Delta-nB remains local; n-plus-1B requires re-read license
       - state re-read waits for whole burden, not each operative submove
       - depth/stop guards checked before next pass
       - restoration/pastoral waits for refresh license
@@ -162,6 +166,7 @@ nodes:
     owner: skill/references/rubrics/output-release.md
     lines:
       - release amount, order, held material, and recursive traversal checked
+      - live registers alter release behavior or stay unprinted
       - output-release before visible response
     support_claim: output_release_before_render
 
@@ -172,6 +177,7 @@ nodes:
       - Level 1 default compact DSL/IR header plus bounded governed response
       - Level 2 compact DSL / lab-report
       - Level 3 internal/development audit compatibility
+      - expanded notation is forbidden as decorative proof of execution
       - diagnostic-render-contract before final shape
     support_claim: render_contract_before_final_shape
 
@@ -201,6 +207,7 @@ nodes:
     lines:
       - state re-read asks what cleared and what remains live
       - held routes rechecked
+      - Delta-kappa dependency-radius changes are consumed before closure
       - convergence through controlled state transitions
       - decision = STOP / HOLD / RECURSE / PARTIAL
     support_claim: post_render_gate_before_closure
@@ -575,6 +582,10 @@ concept_ownership:
     label: meta-noetic memetics object-domain
     owner: skill/references/diagnostics/diagnostic-ir.md
     support_claim: meta_noetic_object_domain
+  - id: pipeline2_derived_bridge
+    label: Pipeline #2 derived register bridge
+    owner: skill/references/diagnostics/diagnostic-ir.md
+    support_claim: pipeline2_derived_bridge
   - id: runtime_diagnostic_compiler
     label: runtime diagnostic compiler contract
     owner: skill/references/diagnostics/diagnostic-ir.md
@@ -651,6 +662,30 @@ support_claims:
           - "validated IR is the compiler state"
           - "TTP entry criteria"
           - "TTP exit criteria"
+
+  pipeline2_derived_bridge:
+    owners:
+      - source: skill/references/diagnostics/diagnostic-ir.md
+        tokens:
+          - "Pipeline #2 bridge status"
+          - "D0 -> PsiN<N,m,tau,sigma,H>"
+          - "derived/conditional runtime bridge"
+          - "mandatory JSON/schema fields"
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Derived register bridge"
+          - "Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ"
+          - "Δκ"
+          - "Terminal formalism"
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "Derived register release discipline"
+          - "Terminal release boundary"
+          - "owner/TTP execution"
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "Expanded formalism render boundary"
+          - "Anti-symbol-theater rule"
 
   diagnostic_ir_gate_checks:
     owners:

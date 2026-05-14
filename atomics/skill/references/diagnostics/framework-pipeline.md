@@ -162,6 +162,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | compose IR from Phase 2 outputs                    |
 | validated IR is runtime compiler state             |
 | IR before routing                                  |
+| Pipeline                                           |
 | module dispatch blocked until all gate checks pass |
 | owner: diagnostics/diagnostic-ir.md                |
 +----------------------------------------------------+
@@ -212,6 +213,8 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | inside selected live burden only                                                                              |
 | entry criteria: validated IR + owner + bounded target                                                         |
 | target -> operation -> result                                                                                 |
+| ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ                                                |
+| derived registers may change state delta / collapse radius when live                                          |
 | hujjah/accountability can be operative submove only after same-function proof                                 |
 | guidance-as-coercive-proof can be operative submove only after same-function proof                            |
 | hiddenness/punishment/source-status can be operative submoves under one burden only after same-function proof |
@@ -227,6 +230,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 |                                                                  |
 | selected burden lands or remains held                            |
 | burden landing precedes state re-read                            |
+| Delta-nB remains local; n-plus-1B requires re-read license       |
 | state re-read waits for whole burden, not each operative submove |
 | depth/stop guards checked before next pass                       |
 | restoration/pastoral waits for refresh license                   |
@@ -249,6 +253,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | OUTPUT-RELEASE RUBRIC                                                 |
 |                                                                       |
 | release amount, order, held material, and recursive traversal checked |
+| live registers alter release behavior or stay unprinted               |
 | output-release before visible response                                |
 | owner: rubrics/output-release.md                                      |
 +-----------------------------------------------------------------------+
@@ -260,6 +265,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | Level 1 default compact DSL/IR header plus bounded governed response |
 | Level 2 compact DSL / lab-report                                     |
 | Level 3 internal/development audit compatibility                     |
+| expanded notation is forbidden as decorative proof of execution      |
 | diagnostic-render-contract before final shape                        |
 | owner: rubrics/diagnostic-render-contract.md                         |
 +----------------------------------------------------------------------+
@@ -277,15 +283,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +---------------------------------------------------------------------------+
              |
              v
-+-------------------------------------------------------+
-| POST-RENDER RE-ENTRY GATE                             |
-|                                                       |
-| state re-read asks what cleared and what remains live |
-| held routes rechecked                                 |
-| convergence through controlled state transitions      |
-| decision = STOP / HOLD / RECURSE / PARTIAL            |
-| owner: diagnostics/recursive-state-transitions.md     |
-+-------------------------------------------------------+
++-------------------------------------------------------------------+
+| POST-RENDER RE-ENTRY GATE                                         |
+|                                                                   |
+| state re-read asks what cleared and what remains live             |
+| held routes rechecked                                             |
+| Delta-kappa dependency-radius changes are consumed before closure |
+| convergence through controlled state transitions                  |
+| decision = STOP / HOLD / RECURSE / PARTIAL                        |
+| owner: diagnostics/recursive-state-transitions.md                 |
++-------------------------------------------------------------------+
              |
              v
 +--------------------------------------------------+
@@ -427,6 +434,7 @@ CONCEPT OWNERSHIP (owner-backed)
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
 - DSL/IR representation: diagnostics/diagnostic-ir.md
 - meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
+- Pipeline: diagnostics/diagnostic-ir.md
 - runtime diagnostic compiler contract: diagnostics/diagnostic-ir.md
 - TTP entry / exit criteria: diagnostics/recursive-state-transitions.md
 - Layer A / Layer B release checks: rubrics/output-release.md
