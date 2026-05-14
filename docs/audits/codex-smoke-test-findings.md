@@ -76,3 +76,27 @@ Treat Codex smoke tests as host-aware behavioral probes. A failure is strong evi
 survives a clean installed-skill thread, final-answer-only grading, and prompts framed as daee
 runtime invocations. Development-thread failures may still be useful, but they should be labeled
 as Codex-host confounded until reproduced in that cleaner harness.
+
+## 2026-05-14 Pipeline #2 Bridge Live Smoke Proof
+
+This run is post-expansion installed-skill evidence, not a GitHub Release asset rebake. The local
+ignored artifact root is `.daee/pipeline2-live-smokes-2026-05-14/`. The installed skill
+`C:\Users\theis\.codex\skills\daee-epistemics\SKILL.md` and generated `skill/SKILL.md` had the
+same SHA256: `5a08e834887870d474ffc4f317419c07438d81b1dc63dea69e0fb193608bb58b`.
+
+Invocation: `codex exec --dangerously-bypass-approvals-and-sandbox --output-last-message` against
+the installed skill, with `output.md` retained directly. The failed Windows sandboxed attempt was
+not used as pass evidence. `tools/check_smoke_artifacts.py --root .daee/pipeline2-live-smokes-2026-05-14`
+passed after the checker learned the accepted algebraic `Land(ⁿB)` landing notation.
+
+| Smoke | Chars | Burdens | Land/R | FPD | M1/M1P | M8 | M9 | P1/P7 | Pipeline #2 register effects visible? | Source-local? | PARTIAL if incomplete? | Verdict |
+|---|---:|---:|---|---|---|---|---|---|---|---|---|---|
+| hard moral-protest/source-worldview | 50,984 | 6 | six landings and six rereads | yes | yes | yes | yes | yes | yes: source-worldview, predicate grammar, release posture, and downstream dependency rereads govern order/closure | yes | no; individual fate held by design | PASS |
+| predication/attribute | 41,282 | 5 | five landings with rereads | yes | not live | yes | yes | P7 visible; P1 not independently live | yes: predication/warrant grammar affects owner choice and reread | yes | no | PASS |
+| naturalist/scientistic | 50,540 | 6 | six landings and rereads | yes | yes | yes | yes | yes | yes: `xi`, `Omega`, `mu`, `kappa`, and `Delta-kappa` alter burden selection, hold/release, reread, and restoration | yes | no; named downstream proof-packets held as future local burdens | PASS |
+
+Readiness boundary: this proves the Pipeline #2 derived/conditional bridge at source/static-fixture/
+installed-skill behavioral-smoke level. It does not create a v0.4.0.0 release, tag, package asset,
+or hard mandatory Diagnostic IR schema migration. v0.4.0.0 is ready for release consideration only
+after the maintainer explicitly authorizes the release-line/package decision and the release
+artifact is built, hashed, documented, and checked against current-release smoke requirements.

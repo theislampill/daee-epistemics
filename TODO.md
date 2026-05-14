@@ -13,9 +13,42 @@ tests/routing-fixtures/ = static routing parity fixtures
 docs/                   = architecture, audit, and workflow notes
 ```
 
+## Work Item Protocol
+
+Use tagged context and structured TODO entries so active work does not drift into
+mixed evidence, proposal, and release claims.
+
+- RTFM: every TODO item must point to the repo manuals or canonical source surfaces
+  needed to finish it. If the answer is in atomics, generated runtime, checkers, or
+  package docs, read those before patching.
+- Tagged context: prefer tags such as `[source]`, `[runtime]`, `[checker]`,
+  `[fixture]`, `[smoke]`, `[docs]`, `[package]`, `[release]`, `[decision]`, and
+  `[blocker]` in headings or status lines.
+- Structured output: each active item should make the problem, source surfaces,
+  checker/runtime surfaces, remaining verification, status, and decision boundary
+  visible without requiring archaeology.
+- OODA: Observe the evidence, Orient against source-of-truth boundaries, Decide the
+  smallest honest patch/defer/reject path, then Act with source-first edits and
+  verification.
+- Default RACI: Responsible = patching agent; Accountable = user/maintainer for
+  schema, package, release, and scope decisions; Consulted = atomics, generated
+  runtime, checkers, fixtures, smoke artifacts, and release docs; Informed =
+  `TODO.md`, audit docs, `README.md`, and navigation docs when claims change.
+- MoSCoW: Must = release/truth-boundary blocker; Should = important hardening not
+  required for the current gate; Could = optional coverage or ergonomics; Won't =
+  intentionally out of scope for the current release line.
+- RFC/ADR: any architecture, schema, package-boundary, release-line, or public runtime
+  surface change needs a decision record here or in `docs/audits/` with status,
+  evidence, consequences, and explicit defer/reject criteria.
+- Interface contract discipline: if a contract changes, update producers, consumers,
+  schemas, tests, examples, and docs together, or mark the incomplete edge explicitly.
+  Keep parsing, validation, routing, execution, persistence, rendering, and documentation
+  separate unless an owning module justifies combining them. Owner first: name the owning
+  file/module/schema before patching symptoms.
+
 ## Active
 
-### Current Canon Checker Anchors
+### [MUST][checker][source] Current Canon Checker Anchors
 
 - Problem: current-canon metacompliance intentionally verifies that TODO still
   remembers the live render surface instead of drifting into stale public-audit
@@ -27,9 +60,11 @@ docs/                   = architecture, audit, and workflow notes
   `atomics/skill/references/rubrics/diagnostic-render-contract.md`, and
   generated `skill/SKILL.md`.
 - Checker/runtime surfaces: `tools/check_metacompliance_current_canon.py`.
+- OODA/RACI: observe checker drift, orient against render canon, patch source/checker
+  anchors as Responsible, and leave public render changes Accountable to the maintainer.
 - Status: active checker anchor only; not a completed-work catalogue.
 
-### Manual Scriptless Compact DSL Behavioral Rerun
+### [MUST][smoke][runtime] Manual Scriptless Compact DSL Behavioral Rerun
 
 - Problem: the scriptless compact DSL hard moral-protest / worship-worthiness output previously shrank against the
   v0.3.1.0 golden. Spec and checker hardening does not prove live model recovery.
@@ -52,18 +87,20 @@ docs/                   = architecture, audit, and workflow notes
   formatting, source-function coverage before final restoration, identity/worldview
   restoration, no premature Stop-2 closure, family-local pressure preservation,
   and rhetorical/restorative force.
+- RFC/ADR status: behavioral proof gate remains open until a retained live smoke
+  artifact, matrix, and audit note explicitly close it.
 - Status: active. Do not claim the behavioral regression fixed until this manual
   rerun passes.
 
-### Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision
+### [MUST][smoke][decision][release] Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision
 
 - Problem: Pipeline #2 derived/conditional bridge semantics are now canonical in atomics,
   generated runtime text, and `tests/pipeline2-bridge-fixtures/`, with
   `tools/check_pipeline2_bridge.py` proving the derived registers against existing control
-  effects rather than token presence alone. The remaining decision is whether to run/review
-  fresh live/package-bound smokes and, later, whether to promote `heart` / `xi` / `Omega` /
-  `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields and
-  release-line-visible runtime registers.
+  effects rather than token presence alone. Fresh installed-skill hard smokes are now
+  recorded; the remaining decisions are whether to promote `heart` / `xi` / `Omega` /
+  `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields, and
+  whether to migrate contract/package/release-line state for v0.4.0.0.
 - Source surfaces: `docs/algebraic-notation-and-noetic-formalism.md`,
   `docs/pipeline2-implementation-ledger.md`,
   `atomics/skill/references/diagnostics/nomenclature-normalization.md`,
@@ -78,13 +115,23 @@ docs/                   = architecture, audit, and workflow notes
   collapse formalism, Shannon-boundary discipline, and anti-symbol-theater behavior alter owner
   choice, hold/release, burden selection, reread, PARTIAL, or restoration instead of only
   appearing in governance prose.
+- Live smoke verification now recorded: fresh installed-skill hard smokes for moral-protest/
+  source-worldview, predication/attribute, and naturalist/scientistic canaries are recorded in
+  `docs/audits/codex-smoke-test-findings.md` with retained ignored artifacts under `.daee/`.
 - Required verification for hard-schema promotion: schema/checker updates, positive and negative
-  fixtures, register stress smoke, full hard-regression smokes against recovered v0.3.2.0 behavior,
-  and explicit contract/version migration.
-- Status: user decision. Do not claim v0.4.0.0 readiness, live/package-smoke proof, or hard
-  register schema migration from the derived bridge alone.
+  fixtures, contract/interface migration across producers and consumers, register stress smoke
+  after schema migration, and explicit contract/version migration.
+- OODA/RACI: observe fixture/static/live smoke evidence, orient against the v0.3.2.0
+  contract and package boundary, decide hard-schema/release-line authorization with the
+  maintainer Accountable, then act only after approval. Consult atomics, generated runtime,
+  bridge fixtures, smoke artifacts, and release docs.
+- RFC/ADR status: derived/conditional bridge accepted for source/fixture governance;
+  hard mandatory schema fields and v0.4.0.0 contract migration remain separate ADR decisions.
+- Status: user decision. Source/fixture/installed-skill smoke evidence supports
+  v0.4.0.0 release consideration, but hard register schema migration, contract marker migration,
+  package rebake, tag, and release remain blocked until explicitly authorized.
 
-### Release Asset Rebake Decision
+### [SHOULD][release][package][decision] Release Asset Rebake Decision
 
 - Problem: this hardening campaign changed source, tooling, tests, docs, and
   generated runtime output, but did not rebake or replace the v0.3.2.0 release
@@ -94,10 +141,12 @@ docs/                   = architecture, audit, and workflow notes
 - Remaining verification: if the user authorizes a release asset refresh, run the
   package workflow, update release-artifact docs and smoke/package SHA guards,
   replace the existing GitHub Release asset, download it back, and verify SHA.
+- RFC/ADR status: pending maintainer release authorization; package rebake is not implied
+  by source verification or git push.
 - Status: active only if release rebake is authorized. Do not tag, push, package,
   or update GitHub Release from this TODO alone.
 
-### Optional Harness Dev Artifact Decision
+### [COULD][package][decision] Optional Harness Dev Artifact Decision
 
 - Problem: the canonical user-facing package shape now excludes the optional
   route/check harness roots (`data/`, `scripts/`, `tests/`), restoring the
@@ -110,21 +159,24 @@ docs/                   = architecture, audit, and workflow notes
   and their generated `skill/data/`, `skill/scripts/`, `skill/tests/` views.
   They are excluded from the canonical package selector; deletion or branch
   extraction is a separate repo-history/dev-artifact decision.
+- MoSCoW/RACI: Could; Responsible patching agent drafts only if requested, and
+  Accountable maintainer decides whether a second dev artifact exists.
 - Status: future artifact-profile decision. Do not create a dev artifact, tag,
   package, or release from this TODO alone.
 
-### Audit Report Tracking Decision
+### [COULD][docs][decision] Audit Report Tracking Decision
 
 - Problem: `docs/audits/v0.3.2.0-*.md` is ignored by `.git/info/exclude`.
 - Source surfaces: `docs/audits/v0.3.2.0-systemic-hardening-closure.md` and the
   prior systemic audit reports.
 - Remaining verification: decide whether these reports should remain local-only
   or be force-added later with explicit staging.
+- RFC/ADR status: pending docs-retention decision.
 - Status: requires user decision.
 
-### Coverage Scope Owner Review Anchors
+### [SHOULD][coverage][decision] Coverage Scope Owner Review Anchors
 
-#### Optional script-harness family/transmission coverage expansion
+#### [SHOULD][checker][fixture] Optional script-harness family/transmission coverage expansion
 
 - Problem: RC4 regression findings for testimony/transmission/tawatur and
   Ash'ari/Maturidi family-variant kalam pressure have optional script-harness
@@ -145,10 +197,12 @@ docs/                   = architecture, audit, and workflow notes
 - Remaining verification: decide whether to expand script-harness covered scope with
   owner-file-faithful transmission/testimony/tawatur and family-variant kalam
   owners, or keep those as scriptless governance plus routing-parity coverage.
+- MoSCoW/RACI: Should if optional harness parity is claimed; Could otherwise.
+  Accountable maintainer decides covered-scope expansion before implementation.
 - Status: future coverage / user decision. Do not imply the optional script harness fully covers
   these families until dedicated owners and fixtures exist.
 
-#### Optional script-harness catalogue-wide non-covered owner expansion
+#### [COULD][checker][fixture] Optional script-harness catalogue-wide non-covered owner expansion
 
 - Problem: the full runtime catalogue contains many scriptless-governed owners,
   profiles, diagnostics, and auxiliary TTPs that are not executable optional script-harness
@@ -207,11 +261,13 @@ docs/                   = architecture, audit, and workflow notes
   `atomics/skill/tests/fixtures/`, `atomics/skill/tests/expected/`,
   `atomics/skill/scripts/check_execution.py`, and generated `skill/` for each
   authorized owner family.
+- RFC/ADR status: deferred covered-scope expansion; each family needs its own accepted
+  mini-ADR before executable script-harness claims broaden.
 - Status: future coverage / user decision. This is not a release blocker as
   long as docs and release claims say these owners are scriptless-governed or
   routing-parity covered, not executable script-harness covered-scope owners.
 
-#### Bespoke religion-specific source-content owners
+#### [COULD][coverage][decision] Bespoke religion-specific source-content owners
 
 - Problem: coverage-scope claims for Buddhist, Hindu, Jewish, and similar
   source-content cases are intentionally marked needs-review/out-of-scope rather
@@ -221,9 +277,11 @@ docs/                   = architecture, audit, and workflow notes
 - Remaining verification: decide whether to add owner-file-faithful source-content
   owners in a later release line, keep them out of scope, or add narrower hold
   rules without pretending coverage exists.
+- MoSCoW: Could for a later release line; Won't for current release claims unless
+  explicitly authorized.
 - Status: active review anchor for coverage integrity.
 
-#### Sufism-related source-content adjudication
+#### [COULD][coverage][decision] Sufism-related source-content adjudication
 
 - Problem: Sufism/tariqah authority and contested-practice cases require
   careful owner design before being treated as covered runtime source-content.
@@ -231,6 +289,8 @@ docs/                   = architecture, audit, and workflow notes
 - Checker/runtime surfaces: `tools/check_coverage.py`, generated coverage report.
 - Remaining verification: decide whether to add specific adjudication owners,
   keep the cases out of scope, or document a narrower source-status hold rule.
+- MoSCoW: Could for a later release line; Won't for current release claims unless
+  explicitly authorized.
 - Status: active review anchor for coverage integrity.
 
 ## Closed In Current Working Tree

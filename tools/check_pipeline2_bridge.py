@@ -124,13 +124,13 @@ REQUIRED_TOKENS = {
         "Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision",
         "tools/check_pipeline2_bridge.py",
         "Required verification already present for bridge behavior",
-        "v0.4.0.0 readiness",
+        "v0.4.0.0 release consideration",
     ],
     "AGENTS.md": [
         "python tools/check_pipeline2_bridge.py",
         "Pipeline #2 derived/conditional bridge semantics are",
         "tests/pipeline2-bridge-fixtures/",
-        "Do not call the bridge live-smoke proven",
+        "Bridge live-smoke proof",
         "do not claim a release-line migration from the index page",
     ],
 }
@@ -155,7 +155,8 @@ GENERATED_REQUIRED = {
 INDEX_REQUIRED = [
     "algebraic-notation-and-noetic-formalism.md",
     "pipeline2-implementation-ledger.md",
-    "Pipeline #1",
+    "Retained compact runtime spine",
+    "historical baseline",
     "Pipeline #2",
     "derived/conditional bridge",
     "hard schema",

@@ -205,7 +205,9 @@ BURDEN_START_RE = re.compile(
 )
 LAYER_A_START_RE = re.compile(r"(?im)^\ufeff?\s*(?:#{1,6}\s*)?Layer A\b")
 STATE_REREAD_RE = re.compile(r"(?im)^\s*(?:#{1,6}\s*)?(?:State/noetic re-read\b|R\(H\b)")
-LANDING_RE = re.compile(r"(?im)\b(?:Land\(B(?:\d+)?\)|burden landed)(?=\W|$)|^\s*-\s*Cleared\s*:")
+LANDING_RE = re.compile(
+    r"(?im)\b(?:Land\((?:B(?:\d+)?|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\)|burden landed)(?=\W|$)|^\s*-\s*Cleared\s*:"
+)
 RESTORATIVE_RESPONSE_RE = re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\b")
 FINAL_SOURCE_FUNCTION_RE = re.compile(
     r"(?i)\b(?:mercy|guidance|hujjah|accountability|worship-worthiness|"

@@ -15,6 +15,42 @@ Edit `atomics/skill/`, then regenerate `skill/`.
 After source changes, confirm the generated runtime is fresh; do not report success from
 atomics alone.
 
+## Operating Protocol
+
+Use RTFM, tagged context, structured output, OODA, RACI, MoSCoW, and RFC/ADR as
+lightweight governance, not extra ceremony.
+
+- RTFM means read the repository manuals first: `AGENTS.md`, `TODO.md`, `README.md`,
+  canonical atomics, generated runtime, checkers, and relevant docs before changing
+  architecture-facing behavior. For source/runtime disagreements, canonical atomics
+  plus passing generated-runtime freshness win over docs prose.
+- Tagged context means substantial audits and implementation reports should label the
+  working boundary: `[source]`, `[runtime]`, `[checker]`, `[fixture]`, `[smoke]`,
+  `[docs]`, `[package]`, `[release]`, `[decision]`, or `[blocker]` as applicable.
+- Structured output means reports should separate context, decision, changed files,
+  verification, smoke evidence, risks, and remaining blockers. Do not bury readiness
+  claims inside narrative prose.
+- OODA loop: Observe repo state and evidence; Orient against canonical package/runtime
+  boundaries; Decide the smallest honest patch or blocker classification; Act by
+  editing source first, rebuilding when needed, and running the matching checks.
+- RACI for nontrivial work: Responsible = the patching agent; Accountable = the user/
+  maintainer approving release and schema decisions; Consulted = canonical atomics,
+  generated runtime, checkers, fixtures, and smoke evidence; Informed = `TODO.md`,
+  audit docs, and navigation docs updated after the decision.
+- MoSCoW priority belongs in TODO/audit entries: Must = release or truth-boundary gate;
+  Should = important hardening that can miss the current commit; Could = optional
+  coverage or ergonomics; Won't = explicitly out of scope for the current release line.
+- RFC/ADR discipline: architecture, schema, package-boundary, release-line, or public
+  runtime-surface changes need a decision record in `TODO.md` or `docs/audits/` with
+  status, evidence, consequences, and rollback/defer criteria. `docs/index.html` is
+  never the sole RFC/ADR or source of truth.
+- Interface contracts are preserved unless intentionally migrated. If a contract changes,
+  update all producers, consumers, schemas, tests, examples, and docs together, or report
+  the exact incomplete edge. Keep parsing, validation, routing, execution, persistence,
+  rendering, and documentation separate unless a clear owning module has reason to combine
+  them. Owner first: identify the owning file, module, or schema before editing; patch the
+  owner rather than downstream symptoms.
+
 ## Normal Workflow
 
 After editing source files under `atomics/skill/`, run:
@@ -363,10 +399,11 @@ runtime rules still live in atomics. Pipeline #2 derived/conditional bridge sema
 current where atomics, generated runtime text, and `tests/pipeline2-bridge-fixtures/` make
 `heart`/`xi`/`Omega`/`mu`/`kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration.
-Do not call the bridge live-smoke proven or v0.4.0.0-ready until fresh package-bound smokes show
-no regression. Do not make those registers mandatory runtime fields without a deliberate schema/
-checker/fixture/smoke migration, and do not claim a release-line migration from the index page
-alone.
+Bridge live-smoke proof must point to retained audit evidence, not the index page. Do not call
+v0.4.0.0 release/package readiness until the release-line, contract markers, package artifact,
+release docs, and current-release smoke requirements are migrated together. Do not make those
+registers mandatory runtime fields without a deliberate schema/checker/fixture/smoke migration,
+and do not claim a release-line migration from the index page alone.
 
 Burden/submove notation in public canonical output prefers the compact human/math form:
 `¹B₁`, `¹B₂`, `²B₁` = burden 1 submoves 1/2, then burden 2 submove 1. Plain `1B1`,
