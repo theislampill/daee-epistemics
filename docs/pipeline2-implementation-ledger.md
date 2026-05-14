@@ -1,12 +1,13 @@
 # Pipeline #2 Implementation Ledger
 
 This ledger adjudicates the Pipeline #2 repo plan recovered from `docs/index.html`.
-`PROVEN IMPLEMENTED` means the item is present in canonical atomics/generated runtime and has
+`PROVEN IMPLEMENTED` means the item is present in canonical atomics/generated runtime, has
 dedicated static fixture/checker evidence in `tests/pipeline2-bridge-fixtures/` plus
-`tools/check_pipeline2_bridge.py`. It does not mean fresh live/package-bound smokes have passed,
-and it does not expand the Diagnostic IR JSON schema with mandatory `heart` / `xi` / `Omega` /
-`mu` / `kappa` fields. Hard schema migration and v0.4.0.0 release marking remain separate
-decisions.
+`tools/check_pipeline2_bridge.py`, and is backed by the installed-skill live smoke proof recorded
+in `docs/audits/codex-smoke-test-findings.md`. It does not mean current-release package artifact
+smokes have passed, and it does not expand the Diagnostic IR JSON schema with mandatory `heart` /
+`xi` / `Omega` / `mu` / `kappa` fields. Hard schema migration, package rebake, tag creation, and
+v0.4.0.0 release marking remain separate authorization decisions.
 
 | Pipeline #2 item | Source files touched | Runtime effect | Checker/fixture effect | Smoke implication | Status | Evidence |
 |---|---|---|---|---|---|---|
@@ -14,7 +15,7 @@ decisions.
 | `D₀` surface discourse / signal | `nomenclature-normalization.md`; `diagnostic-ir.md`; `noetic-reading-checklist.md`; formalism spec; index; bridge fixtures | Names surface discourse before diagnostic reduction. | Bridge checker requires `D0 -> PsiN` chain and D0 fixture coverage. | Smoke input remains source-local; no detached source-stack compression. | PROVEN IMPLEMENTED | Fixtures `01` through `05` project input as D0 before control effects are selected. |
 | `Ψᴺ` encoded noetic signal-state | `nomenclature-normalization.md`; `diagnostic-ir.md`; `noetic-reading-checklist.md`; formalism spec; index; bridge fixtures | Names encoded noetic signal-state over current IR/case-state. | Bridge checker requires `PsiN` anchors and fixture coverage. | Register stress should preserve encoded-state reread rather than thin labels. | PROVEN IMPLEMENTED | Fixtures encode grief, warrant, predication, carrier, and collapse-radius cases as PsiN before owner/reread decisions. |
 | `N∈𝓝` runtime-selected noetic frame | `nomenclature-normalization.md`; `diagnostic-ir.md`; `noetic-reading-checklist.md`; formalism spec; index; bridge fixtures | Makes selected `N` a runtime/held choice, not assumed by label. | Bridge checker requires selected-frame fixture coverage and no schema field. | Hard smokes must preserve source-status/noetic-frame non-equivalence. | PROVEN IMPLEMENTED | Fixtures `01` through `04` prove selected/held frame changes burden or owner choice rather than following a topic label. |
-| `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` derived bridge | `diagnostic-ir.md`; `nomenclature-normalization.md`; `framework-pipeline.yaml`; output/render docs; formalism spec; index; bridge fixtures | Registers are conditionally live analytic functions over existing IR; they affect owner eligibility, hold/release, collapse radius, reread, PARTIAL, or restoration when live. | Bridge checker enforces derived bridge, fixture behavior coverage, and absence of hard schema fields. | Live package smokes remain required before v0.4.0.0 readiness. | PROVEN IMPLEMENTED | Fixtures `01` through `08` map the expanded bridge to existing IR projections without hard schema fields. |
+| `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` derived bridge | `diagnostic-ir.md`; `nomenclature-normalization.md`; `framework-pipeline.yaml`; output/render docs; formalism spec; index; bridge fixtures | Registers are conditionally live analytic functions over existing IR; they affect owner eligibility, hold/release, collapse radius, reread, PARTIAL, or restoration when live. | Bridge checker enforces derived bridge, fixture behavior coverage, and absence of hard schema fields. | Installed-skill live hard smokes have passed; current-release package artifact smokes remain blocked until release/package authorization. | PROVEN IMPLEMENTED | Fixtures `01` through `08` map the expanded bridge to existing IR projections without hard schema fields. |
 | `♥` affective-discursive register / release-posture control | `diagnostic-ir.md`; `noetic-reading-checklist.md`; `output-release.md`; render contract; formalism spec; index; bridge fixtures | Governs hold, sequence, tone, directness, softness, closure posture when live. | Bridge checker requires `heart` fixture coverage with owner-choice and hold/release effects. | Hard moral-protest smoke should preserve grief/identity/performance holds where live. | PROVEN IMPLEMENTED | Fixture `01-heart-register-hold` routes through `M4-grief-register`/`P7-restoration-stops`, holds theodicy detail, and returns HOLD. |
 | `ξ` epistemic/warrant grammar | `diagnostic-ir.md`; `noetic-reading-checklist.md`; `recursive-state-transitions.md`; formalism spec; index; bridge fixtures | Tracks warrant/testimony/proof-method/authority/defeater grammar when it changes routing or reread. | Bridge checker requires `xi` fixture coverage with owner-choice and burden-selection effects. | Tawatur/scientism smoke should still show correct first-/higher-order warrant handling. | PROVEN IMPLEMENTED | Fixture `02-xi-warrant-owner-selection` selects `reason-disambiguation`, FPD, V2, and `proof-method-audit` before evidence release. |
 | `Ω` ontological/predication grammar | `diagnostic-ir.md`; `noetic-reading-checklist.md`; `recursive-state-transitions.md`; formalism spec; index; bridge fixtures | Tracks predication, modality, dependence, causality, and creator/creation grammar when live. | Bridge checker requires `Omega` fixture coverage with owner-choice and burden-selection effects. | Predication smoke should still show M9/V8 owner activation where live. | PROVEN IMPLEMENTED | Fixture `03-omega-predication-owner-selection` selects M9, attribute precision, perfection-criterion audit, and V8 before attribute content release. |
@@ -31,14 +32,15 @@ decisions.
 | Anti-symbol-theater guard | `diagnostic-ir.md`; render contract; output release; formalism spec; index; bridge fixtures | Notation may appear only when it changes routing, release, reread, owner selection, burden delta, or restoration. | Bridge checker requires visible-symbol policy or forbidden-symbol negative fixtures. | Targeted smoke/check assertion should keep unneeded symbols unprinted. | PROVEN IMPLEMENTED | Fixtures `04`, `06`, `07`, and `08` prove notation is permitted only with control effect and suppressed in default output otherwise. |
 | Anti-schema-bloat guard | `diagnostic-ir.md`; `nomenclature-normalization.md`; render contract; formalism spec; `AGENTS.md`; checker; bridge fixtures | Preserves compact Diagnostic IR schema while accepting derived bridge semantics. | Bridge checker fails if hard schema fields appear in canonical schemas or fixture projections. | Full suite must pass with v0.3.2.0 schema contract. | PROVEN IMPLEMENTED | `check_pipeline2_bridge.py` rejects hard register fields in schemas and bridge fixture projections. |
 | Hard mandatory schema fields for `heart`/`xi`/`Omega`/`mu`/`kappa` | `TODO.md`; `AGENTS.md`; formalism spec; checker | No runtime field migration in this slice; derived bridge maps to existing fields. | Bridge checker explicitly guards against accidental hard-field schema expansion. | Would require new schema migration and full hard smokes before release. | DEFERRED WITH BLOCKER | Blocker: breaks current Diagnostic IR schema and requires package/runtime version migration plus schema/checker/fixture/smoke migration. |
-| v0.4.0.0 contract/release marker migration | `TODO.md`; release docs unchanged | Not claimed by this patch. | Existing frontmatter contract check remains v0.3.2.0 unless explicitly migrated. | Release canaries must be re-run and reviewed before readiness claim. | DEFERRED WITH BLOCKER | Blocker: requires explicit release/version migration decision and fresh live/package-bound smoke evidence after user review. |
+| v0.4.0.0 contract/release marker migration | `TODO.md`; release docs unchanged | Not claimed by this patch. | Existing frontmatter contract check remains v0.3.2.0 unless explicitly migrated. | Release-package canaries must be re-run from the authorized package artifact before release/package readiness is claimed. | DEFERRED WITH BLOCKER | Blocker: requires explicit release/version migration decision, package artifact rebake, package-bound smoke provenance, and maintainer authorization. |
 
 ## Verification Plan
 
 - Build generated framework/runtime from atomics when atomics change.
 - Run the existing checker suite plus `tools/check_pipeline2_bridge.py`.
 - Parse `docs/index.html` and visually sanity-check the restored interactive page.
-- Preserve recovered v0.3.2.0 hard-canary behavior; do not claim v0.4.0.0 readiness until fresh
-  hard smokes are reviewed.
+- Preserve recovered v0.3.2.0 hard-canary behavior; installed-skill hard smokes are recorded as
+  passed, while release-package artifact smokes remain blocked until package/release authorization.
 - Treat the static bridge fixtures as proof of derived/conditional behavior against existing
-  controls, not proof of release readiness or hard schema migration.
+  controls; treat the installed-skill smokes as live behavioral proof; do not treat either as proof
+  of package artifact readiness or hard schema migration.

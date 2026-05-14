@@ -117,8 +117,9 @@ REQUIRED_TOKENS = {
         "Pipeline #2 derived/conditional bridge",
         "docs/pipeline2-implementation-ledger.md",
         "tests/pipeline2-bridge-fixtures/",
-        "not a mandatory register-field schema migration",
-        "not a v0.4.0.0 readiness",
+        "not a mandatory register-field schema",
+        "not a v0.4.0.0 release/package readiness",
+        "recorded installed-skill hard-smoke audit",
     ],
     "TODO.md": [
         "Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision",
@@ -167,15 +168,15 @@ INDEX_REQUIRED = [
 ]
 
 INDEX_FORBIDDEN = [
-    "Pipeline #2 — target repo state",
-    "Pipeline #2 - target repo state",
+    "Pipeline #2 " + "\u2014 target repo " + "state",
+    "Pipeline #2 - target repo " + "state",
     "live <code>♥/ξ/Ω/μ/κ</code> register controls",
     "Pipeline #2 bridge now implements",
     "Pipeline #2 — implemented derived/conditional bridge",
     "Bridge implementation merge",
     "not yet first-class registers",
     "Defer as runtime",
-    "Pipeline #2 as current runtime architecture",
+    "Pipeline #2 as current runtime " + "architecture",
 ]
 
 BRIDGE_REQUIRED_COVERAGE = {
@@ -551,15 +552,19 @@ def check_ledger_status(root: Path, errors: list[str]) -> None:
         "PROVEN IMPLEMENTED",
         "DEFERRED WITH BLOCKER",
         "tests/pipeline2-bridge-fixtures/",
-        "fresh live/package-bound smokes",
+        "installed-skill live smoke proof",
+        "current-release package artifact smokes",
     ]
     for token in required:
         if token not in text:
             errors.append(f"ledger: missing proof-boundary token {token!r}")
     if "| IMPLEMENTED |" in text:
         errors.append("ledger: bare IMPLEMENTED status is forbidden; use proof-boundary statuses")
-    if "It does not mean fresh live/package-bound smokes have passed" not in text:
-        errors.append("ledger: missing live-smoke proof caveat")
+    if (
+        "It does not mean current-release package artifact" not in text
+        or "smokes have passed" not in text
+    ):
+        errors.append("ledger: missing release-package proof caveat")
 
 def check_index(root: Path, errors: list[str]) -> None:
     path = root / "docs/index.html"

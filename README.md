@@ -381,12 +381,13 @@ The expanded algebraic notation and Pipeline #2 derived/conditional bridge are p
 [`docs/algebraic-notation-and-noetic-formalism.md`](docs/algebraic-notation-and-noetic-formalism.md)
 and tracked in
 [`docs/pipeline2-implementation-ledger.md`](docs/pipeline2-implementation-ledger.md).
-The bridge is current where atomics, generated runtime text, and
-`tests/pipeline2-bridge-fixtures/` make `heart` / `xi` / `Omega` / `mu` / `kappa` govern
-existing IR, owner/TTP selection, hold/release, collapse radius, burden landing, state re-read,
-PARTIAL, anti-symbol-theater, or restoration. This is a derived/conditional bridge over the
-compact runtime, not a mandatory register-field schema migration and not a v0.4.0.0 readiness
-claim without fresh package-bound smokes.
+The bridge is current where atomics, generated runtime text,
+`tests/pipeline2-bridge-fixtures/`, and the recorded installed-skill hard-smoke audit make
+`heart` / `xi` / `Omega` / `mu` / `kappa` govern existing IR, owner/TTP selection, hold/release,
+collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration. This
+is a derived/conditional bridge over the compact runtime, not a mandatory register-field schema
+migration and not a v0.4.0.0 release/package readiness claim without authorized release-package
+artifact rebake and package-bound smokes.
 
 The diagrams below split the repo into three views: source layout, runtime
 invocation, and maintainer verification. The full internal pipeline audit
