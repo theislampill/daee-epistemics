@@ -933,7 +933,7 @@
       "module_class": "governance",
       "module_id": "pattern-profiling",
       "source": "atomics/skill/references/diagnostics/pattern-profiling.md",
-      "source_sha256": "54041f91f1d60ec2503827ea8dbdc87491d3e1a3c310ad81b75896f911c3c0db"
+      "source_sha256": "7c96e02b993cd97807697feb13cab98bfba3a11ca6fb6406699822c6d05132d4"
     },
     "perfection-criterion-usurpation": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",

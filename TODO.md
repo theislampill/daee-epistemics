@@ -154,6 +154,12 @@ mixed evidence, proposal, and release claims.
   scholar-error / position-error / public-use distinction, AS-6 testimony demotion / chain
   flattening audit, and AS-7 academic-method tribunal audit. Current AS work should stay under
   existing source-status / noetic-frame owners rather than becoming a broad AS pack.
+- Stage 7 adjacent MM candidates intentionally remain TODO rather than runtime child modes until
+  owner tracing proves they are needed: MM-1 slogan unpacking, MM-3 prestige-authority
+  stabilization, MM-4 identity-cost / affiliation split, MM-6 semantic-default capture, MM-9
+  reproduction-vector hold/release, and MM-10 public-obviousness / inherited-default audit.
+  Current MM work should stay under `pattern-profiling.md` carrier/reproduction discipline
+  rather than becoming a broad MM pack or argument bank.
 - Verification boundary: routing fixtures are static evidence only. They prove owner mapping and
   label-stripped generalization expectations; they are not live execution smokes.
 - Stage-1.5/1.6 evidence boundary: retained local ignored M9 child-mode outputs under

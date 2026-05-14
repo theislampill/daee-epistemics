@@ -1,0 +1,66 @@
+{
+  "id": "mm-proof-packet-reconstruction",
+  "prompt": "A short inherited quote-fragment is treated as if it already contains the proof, the authority, the conclusion, and the method, but none of the premises have been made explicit.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "pattern-profiling"
+    ],
+    "optional_modules": [
+      "proof-method-audit",
+      "inference-boundary",
+      "recursive-state-transitions",
+      "nomenclature-normalization",
+      "foreign-premise-detection",
+      "M9-predication-mode"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "MM-5 proof-packet reconstruction",
+      "reconstruct the proof packet into premise, inference, conclusion scope, source-status, and tribunal function",
+      "The packet no longer functions as an opaque warrant",
+      "The burden lands when the proof packet is expanded enough to route",
+      "Proof answer, source stack, or doctrinal conclusion held until packet is reconstructed"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "mm-carrier-reproduction-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "quote fragment compresses proof, authority, conclusion, method, and hidden premises",
+      "do_orient": "reconstruct packet before routing content",
+      "restoration_target": "opaque warrant expanded enough for PM/AS/FPD/M9 routing",
+      "routing_gate": "MM-5 under pattern profiling before proof answer or source stack release"
+    }
+  }
+}

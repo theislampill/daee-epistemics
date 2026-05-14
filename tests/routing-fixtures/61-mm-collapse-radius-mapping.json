@@ -1,0 +1,65 @@
+{
+  "id": "mm-collapse-radius-mapping",
+  "prompt": "One loaded assumption is carrying several downstream claims. If that node is cleared, the downstream objections may no longer be live, but the response is tempted to answer every downstream topic anyway.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "pattern-profiling",
+      "recursive-state-transitions"
+    ],
+    "optional_modules": [
+      "routing-precedence",
+      "M5-deformation-triage",
+      "doubt-vs-skepticism",
+      "proof-method-audit",
+      "foreign-premise-detection"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "MM-8 collapse-radius mapping",
+      "by naming immediate and downstream routes that depend on the node",
+      "Downstream claims are not answered or left live silently",
+      "The burden lands when the node and dependency radius are typed",
+      "Reread all dependent claims/routes and decide STOP, HOLD, PARTIAL, RECURSE, or NewB"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "mm-carrier-reproduction-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "one loaded node carries several downstream objections",
+      "do_orient": "map immediate and downstream routes dependent on the node",
+      "restoration_target": "reread dependency radius before answering downstream topics",
+      "routing_gate": "MM-8 under pattern profiling with recursive-state reread before downstream release"
+    }
+  }
+}

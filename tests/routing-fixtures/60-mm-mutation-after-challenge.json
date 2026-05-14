@@ -1,0 +1,65 @@
+{
+  "id": "mm-mutation-after-challenge",
+  "prompt": "After the hidden premise is challenged, the wording changes, but the same burden returns through a new slogan and the same proof standard.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "pattern-profiling"
+    ],
+    "optional_modules": [
+      "recursive-state-transitions",
+      "M5-deformation-triage",
+      "proof-method-audit",
+      "doubt-vs-skepticism",
+      "foreign-premise-detection",
+      "M9-predication-mode"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "MM-7 mutation-after-challenge tracking",
+      "by comparing old carrier, new formulation, preserved function, and regenerated downstream burden",
+      "same noetic structure cannot escape correction by swapping slogans, proof packets, or authority markers",
+      "The burden lands when mutation is typed as same-function survival or genuinely new burden",
+      "Next topical answer held until mutation/new-burden status is decided"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "mm-carrier-reproduction-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "new slogan preserves the same burden and proof standard after challenge",
+      "do_orient": "track mutation by comparing old carrier, new wording, preserved function, and regenerated burden",
+      "restoration_target": "decide same-function survival versus genuinely new burden",
+      "routing_gate": "MM-7 under pattern profiling before next topical answer releases"
+    }
+  }
+}

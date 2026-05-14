@@ -1,0 +1,66 @@
+{
+  "id": "mm-loaded-label-carrier",
+  "prompt": "A label is doing more than naming a doctrine: it carries an ontology, a proof rule, an authority order, and a shame signal, so the claim keeps reproducing before any argument is stated.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "pattern-profiling"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "proof-method-audit",
+      "recursive-state-transitions",
+      "nomenclature-normalization",
+      "foreign-premise-detection",
+      "definition-discipline"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-tactics",
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "MM-2 loaded-label carrier audit",
+      "audit the label as a noetic carrier",
+      "by identifying what ontology, proof-denominator, source-status, or authority-order it transmits",
+      "The burden lands when the carrier function is typed, not merely when the word is defined",
+      "Topical rebuttal, doctrinal content, proof deployment, and public verdict held until carrier function lands"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "mm-carrier-reproduction-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "label carries hidden ontology, proof rule, authority order, and shame signal",
+      "do_orient": "audit label as noetic carrier rather than merely defining a term",
+      "restoration_target": "carrier function typed before topical rebuttal",
+      "routing_gate": "MM-2 under pattern profiling before downstream M9/PM/AS/OQ release"
+    }
+  }
+}

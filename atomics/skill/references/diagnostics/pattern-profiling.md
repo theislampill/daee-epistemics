@@ -204,3 +204,33 @@ Failure tests:
 - Fails if it replaces `pattern_profile` or PF discipline.
 - Fails if it licenses new coverage content or argument/citation dumping.
 - Fails if the response names the pattern but does not identify what must clear first.
+
+## MM / Meta-Noetic Memetic Child Modes
+
+These child modes refine this file's existing `claim_level`, `pattern_profile`,
+`structural_pattern_print`, `load_bearing_node`, `collapse_radius`, and
+`intervention_target` discipline. They do not create a new MM owner pack, topic
+library, argument bank, or public-rhetoric classifier. Use them only when carrier,
+compression, mutation, or dependency-radius behavior changes routing, sequencing,
+held material, reread, or release posture.
+
+| mode_id | entry criterion | false trigger | target | operation | result | Land(B) effect | R(H,Delta)/kappa effect | heart/register consequence | deformation release condition | source-worldview / tribunal consequence | held route | smoke link |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| MM-2 loaded-label carrier audit | A label or slogan transmits a hidden noetic grammar, not merely a local semantic ambiguity. | The term is only locally ambiguous and M9-LD can settle it without broader carrier or stabilizer analysis. | Label as carrier of ontology, proof rule, source-status posture, identity marker, or burden-shift. | audit the label as a noetic carrier by identifying what ontology, proof-denominator, source-status, or authority-order it transmits. | The label stops reproducing the hidden grammar cheaply; downstream M9, PM, AS, or OQ routes are held or released based on the exposed carrier. | The burden lands when the carrier function is typed, not merely when the word is defined. | Reread loaded-label, proof-method, source-status, ontology, identity, and collapse-radius routes. | If shame, public prestige, identity-cost, or polemical pressure is live, bound release. | M5/V1 must release a carrier/reproduction burden; do not infer motive or culpability. | If the label installs an imported tribunal or authority-order inversion, hand to FPD/V2/PM/AS. | Topical rebuttal, doctrinal content, proof deployment, and public verdict held until carrier function lands. | `58-mm-loaded-label-carrier` |
+| MM-5 proof-packet reconstruction | A compact inherited proof packet or quote fragment carries premises, proof family, authority order, and conclusion without exposing them. | The proof is explicit, premise-by-premise, and PM can audit it directly. | The compressed proof packet: hidden premises, proof family, source-status, conclusion scope, and authority function. | reconstruct the proof packet into premise, inference, conclusion scope, source-status, and tribunal function before routing content. | The packet no longer functions as an opaque warrant; PM, AS, FPD, or M9 routes are released or held based on reconstruction. | The burden lands when the proof packet is expanded enough to route. | Reread PM, AS, FPD, M9, OQ, and source-status routes. | If the proof packet carries prestige or shame pressure, bound release. | M5/V1 must distinguish inherited framework, taqlid, zann, or genuine shubhah. | If the packet installs a proof denominator or external tribunal, hand to PM/V2/FPD. | Proof answer, source stack, or doctrinal conclusion held until packet is reconstructed. | `59-mm-proof-packet-reconstruction` |
+| MM-7 mutation-after-challenge tracking | After a carrier or load-bearing node is challenged, the claim changes form while preserving the same noetic function. | The new claim is a genuinely distinct burden with new premises and not a mutated survival form. | Mutation rule: what changed, what remained functionally identical, and which burden regenerated. | track mutation after challenge by comparing old carrier, new formulation, preserved function, and regenerated downstream burden. | The same noetic structure cannot escape correction by swapping slogans, proof packets, or authority markers. | The burden lands when mutation is typed as same-function survival or genuinely new burden. | Reread held routes, NewB eligibility, P7/DW, M5, PM, AS, M9, and collapse radius. | If identity-performance, anxiety, or polemical pressure drives mutation, bound release and avoid escalation. | M5/V1 must decide whether mutation reflects zann, taqlid, inherited framework, hawa/gharad, or stable shubhah. | If mutation preserves the same tribunal, hold content and release FPD/V2/PM as appropriate. | Next topical answer held until mutation/new-burden status is decided. | `60-mm-mutation-after-challenge` |
+| MM-8 collapse-radius mapping | A load-bearing carrier/node supports multiple downstream claims, and the response risks answering downstream claims before mapping dependency. | The claim is isolated and has no meaningful downstream dependency set. | Load-bearing node and downstream dependency set. | map collapse radius by naming immediate and downstream routes that depend on the node, then bind reread to that dependency set. | Downstream claims are not answered or left live silently; R(H,Delta)/kappa knows what must be reread. | The burden lands when the node and dependency radius are typed. | Reread all dependent claims/routes and decide STOP, HOLD, PARTIAL, RECURSE, or NewB. | If mapping would overload the user or feed anxiety, bound or partial the dependency map. | M5/V1 must prevent collapse-radius mapping from becoming topic tour or argument dump. | If the node is an imported tribunal, route FPD/V2/PM before downstream content. | Downstream topic answers held until dependency map and reread permit release. | `61-mm-collapse-radius-mapping` |
+
+Cross-guardrails:
+
+- M9 remains upstream when the carrier problem is only semantic or predicational.
+- PM remains upstream when the carrier is a proof denominator or proof family.
+- AS remains upstream when the carrier is source-status, school label, affiliation, or prestige source.
+- DW/P7 remains upstream when mutation or reproduction is driven by anxiety, overcomplexity, or content escalation.
+- OQ remains upstream when the carrier transmits object, relation, or modality ontology.
+- DA/DS/HK remains upstream when the carrier is divine-action, divine-speech, or huduth/khalq specific.
+- MM must not become a catch-all explanation.
+- Do not infer interior motive, sincerity, culpability, or soul-state.
+- Do not turn memetic-carrier analysis into public denunciation.
+- Do not source-parade.
+- Do not add corpus quotations or topical refutations.
