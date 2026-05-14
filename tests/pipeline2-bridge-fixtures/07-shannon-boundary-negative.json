@@ -1,0 +1,48 @@
+{
+  "id": "shannon-boundary-negative",
+  "kind": "negative",
+  "input": "Can we model truth, meaning, and warrant as Shannon entropy and say Islam has lower truth entropy?",
+  "covers": ["shannon_boundary", "xi", "anti_symbol_theater"],
+  "bridge_terms": {
+    "shannon_boundary": "Signal/encoding/noise/error-correction analogy may orient D0 -> PsiN, but truth, meaning, and warrant are not entropy quantities.",
+    "anti_symbol_theater": "Information-theory symbols or formulas are not runtime proof unless they change a warrant or release decision.",
+    "xi": "The live burden is warrant grammar, not information-theory math."
+  },
+  "visible_symbol_policy": {
+    "default_output": "Do not print signal-theory math as a truth metric; keep analogy bounded to signal/encoding/noise/error-correction.",
+    "requires_control_effect": true
+  },
+  "control_effects": {
+    "owner_choice": ["reason-disambiguation", "proof-method-audit", "diagnostic-render-contract"],
+    "hold_release": "Hold Shannon math as proof-language; permit only bounded signal analogy.",
+    "burden_selection": "Select the warrant-boundary burden rather than a mathematical truth metric."
+  },
+  "forbidden_claims": [
+    "Shannon entropy measures truth",
+    "meaning entropy",
+    "warrant entropy",
+    "lower entropy proves Islam"
+  ],
+  "expected_blocker": "Shannon analogy boundary: signal/encoding/noise/error-correction only; no truth/meaning/warrant entropy.",
+  "ir_projection": {
+    "claim_level": "meta-epistemic",
+    "routing_gate": "open",
+    "matched_modules": ["reason-disambiguation", "proof-method-audit", "diagnostic-render-contract"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Information-theory vocabulary is withheld as proof language because xi/warrant grammar is not entropy.",
+    "post_render_gate": {
+      "cleared_this_pass": "Shannon analogy bounded to signal-language only",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "docs/algebraic-notation-and-noetic-formalism.md",
+    "atomics/skill/references/diagnostics/reason-disambiguation.md",
+    "atomics/skill/references/diagnostics/proof-method-audit.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md"
+  ]
+}

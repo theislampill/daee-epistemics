@@ -1,0 +1,38 @@
+{
+  "id": "heart-register-hold",
+  "kind": "positive",
+  "input": "After what happened to me, I do not care about logical theodicies; calling this good feels cruel.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "heart"],
+  "bridge_terms": {
+    "D0": "The surface discourse is a moral-protest sentence carried through an injury register.",
+    "PsiN": "The encoded state keeps grief and moral protest together instead of reducing the case to an abstract theodicy.",
+    "selected_N": "The operative noetic frame is held/provisional until the register clears.",
+    "expanded_IR": "The expanded bridge maps the live heart register to existing routing_gate, output_shape, held routes, and post_render_gate controls without a hard field.",
+    "heart": "The affective-discursive register governs release posture and suppresses argument-bank theodicy."
+  },
+  "control_effects": {
+    "owner_choice": ["M4-grief-register", "P7-restoration-stops"],
+    "hold_release": "HOLD theodicy detail and release relational acknowledgement first.",
+    "burden_selection": "The live burden is wound/register stabilization before doctrinal defense.",
+    "reread": "Recheck held doctrinal routes only after the register clears."
+  },
+  "ir_projection": {
+    "routing_gate": "register-hold",
+    "matched_modules": ["M4-grief-register", "P7-restoration-stops"],
+    "output_shape": "relational",
+    "what_is_withheld_and_why": "Theodicy detail is held because the heart register makes direct doctrinal release harmful and structurally premature.",
+    "post_render_gate": {
+      "cleared_this_pass": "relational safety named; intellectual theodicy not treated as live target yet",
+      "remaining_live_distortions": "grief-register primary; doctrinal burden held",
+      "held_routes_rechecked": ["do-core", "M2-prior-probability"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "HOLD"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/tactics/M4-grief-register.md",
+    "atomics/skill/references/procedures/P7-restoration-stops.md",
+    "atomics/skill/references/rubrics/output-release.md"
+  ]
+}

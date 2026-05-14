@@ -1,0 +1,42 @@
+{
+  "id": "omega-predication-owner-selection",
+  "kind": "positive",
+  "input": "Real attributes entail composition and dependence, so divine speech and will must be denied even if knowledge and power are admitted.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "Omega"],
+  "bridge_terms": {
+    "D0": "The surface discourse is an attribute objection.",
+    "PsiN": "The encoded state shows predication, modality, dependence, and creator/creation grammar as live.",
+    "selected_N": "The operative frame is the predication dispute, not a generic attributes essay.",
+    "expanded_IR": "The expanded bridge maps Omega to existing claim_level, ontological_disorder, load_bearing_node, matched_modules, and post_render_gate controls.",
+    "Omega": "The ontological grammar selects semantic/predication owners before attribute content releases."
+  },
+  "control_effects": {
+    "owner_choice": ["M9-predication-mode", "do-attribute-precision", "perfection-criterion-usurpation", "V8-bila-kayf-anchor"],
+    "hold_release": "Hold direct attribute proof until predication and composition grammar are corrected.",
+    "burden_selection": "Select the predication/composition burden before general doctrine.",
+    "reread": "After predication lands, reread whether attribute content is eligible or still held."
+  },
+  "ir_projection": {
+    "claim_level": "meta-ontological",
+    "routing_gate": "semantic-discipline-required",
+    "ontological_disorder": "composition-panic",
+    "load_bearing_node": "Omega: created-composition grammar is being transferred into divine predication",
+    "matched_modules": ["M9-predication-mode", "do-attribute-precision", "perfection-criterion-usurpation", "V8-bila-kayf-anchor"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Attribute content is held until the predication/category-transfer operation lands.",
+    "post_render_gate": {
+      "cleared_this_pass": "composition/dependence transfer named and refused",
+      "remaining_live_distortions": "attribute precision remains eligible after Omega reread",
+      "held_routes_rechecked": ["do-attribute-precision", "V8-bila-kayf-anchor"],
+      "newly_released_routes": ["do-attribute-precision"],
+      "next_eligible_pass": "affirm meaning and withhold modality under V8",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/tactics/M9-predication-mode.md",
+    "atomics/skill/references/case-library/do-attribute-precision.md",
+    "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md",
+    "atomics/skill/references/techniques/V8-bila-kayf-anchor.md"
+  ]
+}

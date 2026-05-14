@@ -360,10 +360,13 @@ Expanded visual/diagnostic wiki reference:
 `docs/index.html`. Treat the published GitHub Pages page as a navigation and diagnostic aid
 only. Durable formalism lives in `docs/algebraic-notation-and-noetic-formalism.md` and canonical
 runtime rules still live in atomics. Pipeline #2 derived/conditional bridge semantics are
-current only where atomics make them govern existing IR, owner/TTP selection, hold/release,
-collapse radius, burden landing, state re-read, or restoration. Do not make `heart`/`xi`/
-`Omega`/`mu`/`kappa` mandatory runtime fields without a deliberate schema/checker/fixture/
-smoke migration, and do not claim a release-line migration from the index page alone.
+current where atomics, generated runtime text, and `tests/pipeline2-bridge-fixtures/` make
+`heart`/`xi`/`Omega`/`mu`/`kappa` govern existing IR, owner/TTP selection, hold/release,
+collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration.
+Do not call the bridge live-smoke proven or v0.4.0.0-ready until fresh package-bound smokes show
+no regression. Do not make those registers mandatory runtime fields without a deliberate schema/
+checker/fixture/smoke migration, and do not claim a release-line migration from the index page
+alone.
 
 Burden/submove notation in public canonical output prefers the compact human/math form:
 `¹B₁`, `¹B₂`, `²B₁` = burden 1 submoves 1/2, then burden 2 submove 1. Plain `1B1`,

@@ -1,0 +1,52 @@
+{
+  "id": "xi-warrant-owner-selection",
+  "kind": "positive",
+  "input": "I need evidence, and by evidence I mean only what natural science can measure; testimony and fitrah do not count as rational.",
+  "covers": ["N_space", "D0", "PsiN", "selected_N", "expanded_IR", "xi", "same_burden_algebra"],
+  "bridge_terms": {
+    "N_space": "The selection space remains open until the warrant grammar distinguishes naturalism, agnostic evidentialism, or another operative frame.",
+    "D0": "The visible demand is for evidence.",
+    "PsiN": "The encoded signal shows an imported warrant grammar: measurable-only evidence and demoted testimony.",
+    "selected_N": "The frame is not selected by the word evidence alone; the warrant grammar must be typed.",
+    "expanded_IR": "The expanded bridge maps xi to existing reason_category, foreign_premise, load_bearing_node, held routes, and post_render_gate controls.",
+    "xi": "The epistemic grammar changes owner selection before any evidence bank may release.",
+    "same_burden_algebra": "The measurable-only standard and testimony-demotion are the same xi burden, not separate evidence topics."
+  },
+  "control_effects": {
+    "owner_choice": ["reason-disambiguation", "foreign-premise-detection", "V2-reconstituting-reason", "proof-method-audit"],
+    "hold_release": "Hold signs/testimony proof packets until the xi criterion is named as contestable.",
+    "burden_selection": "Select the proof-method/warrant burden before empirical evidence presentation.",
+    "reread": "After the criterion loosens, reread whether evidence routes are newly eligible."
+  },
+  "same_burden_test": {
+    "same_tau": true,
+    "same_xi": true,
+    "same_omega": true,
+    "same_sigma": true,
+    "same_kappa": true,
+    "expected": "stay inside the current burden cycle; do not split into a new burden before the warrant grammar lands"
+  },
+  "ir_projection": {
+    "claim_level": "meta-epistemic",
+    "routing_gate": "V2-required",
+    "foreign_premise": "empirical-measurement-only evidence criterion",
+    "load_bearing_node": "xi: warrant grammar excludes testimony and fitrah by stipulation",
+    "matched_modules": ["reason-disambiguation", "foreign-premise-detection", "V2-reconstituting-reason", "proof-method-audit"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Evidence examples are held until the warrant criterion is no longer acting as an imported tribunal.",
+    "post_render_gate": {
+      "cleared_this_pass": "the measurable-only criterion is named as a criterion rather than neutral reason",
+      "remaining_live_distortions": "evidence routes may become eligible after xi reread",
+      "held_routes_rechecked": ["E1-broadening-evidence", "V5-directing-attention-signs", "V10-transmission-content-vetting"],
+      "newly_released_routes": ["E1-broadening-evidence"],
+      "next_eligible_pass": "broaden evidence after xi criterion loosened",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/reason-disambiguation.md",
+    "atomics/skill/references/diagnostics/foreign-premise-detection.md",
+    "atomics/skill/references/techniques/V2-reconstituting-reason.md",
+    "atomics/skill/references/diagnostics/proof-method-audit.md"
+  ]
+}

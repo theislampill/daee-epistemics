@@ -1,0 +1,47 @@
+{
+  "id": "mu-carrier-burden-selection",
+  "kind": "positive",
+  "input": "Every answer just proves religion protects itself: if evidence favors Islam it is indoctrination, and if it does not, it is neutral scholarship.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "mu", "anti_symbol_theater"],
+  "bridge_terms": {
+    "D0": "The surface discourse is a repeated slogan about protected belief.",
+    "PsiN": "The encoded state shows a carrier/stabilizer that reproduces itself against contrary evidence.",
+    "selected_N": "The operative frame is the self-protective criterion, not a generic request for evidence.",
+    "expanded_IR": "The expanded bridge maps mu to existing claim_level, structural_pattern_print, load_bearing_node, held routes, and post_render_gate controls.",
+    "mu": "The memetic carrier changes burden selection by making the stabilizer itself the target.",
+    "anti_symbol_theater": "The mu label is permitted only because it changes owner choice and release."
+  },
+  "control_effects": {
+    "owner_choice": ["pattern-profiling", "foreign-premise-detection", "V2-reconstituting-reason", "anti-patterns"],
+    "hold_release": "Hold evidence dump because the carrier would absorb it as confirmation.",
+    "burden_selection": "Select the stabilizer/reproduction pattern as the bounded burden.",
+    "reread": "After the stabilizer is named, reread whether evidence can be released without absorption."
+  },
+  "visible_symbol_policy": {
+    "default_output": "Do not print mu or the expanded IR formula unless the output is an audit trace and the control effect is named.",
+    "requires_control_effect": true
+  },
+  "ir_projection": {
+    "claim_level": "meta-noetic",
+    "routing_gate": "V2-required",
+    "structural_pattern_print": "self-sealing carrier: all evidence is preclassified as indoctrination or neutrality",
+    "load_bearing_node": "mu: stabilizer/reproduction pattern governs evidence uptake",
+    "matched_modules": ["pattern-profiling", "foreign-premise-detection", "V2-reconstituting-reason", "anti-patterns"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Evidence list is held because it would be absorbed by the active carrier.",
+    "post_render_gate": {
+      "cleared_this_pass": "the self-sealing carrier is surfaced as the object of correction",
+      "remaining_live_distortions": "evidence routes remain held until uptake criterion shifts",
+      "held_routes_rechecked": ["E1-broadening-evidence", "E3-cumulative-case"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "HOLD"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/pattern-profiling.md",
+    "atomics/skill/references/diagnostics/foreign-premise-detection.md",
+    "atomics/skill/references/techniques/V2-reconstituting-reason.md",
+    "atomics/skill/references/diagnostics/anti-patterns.md"
+  ]
+}

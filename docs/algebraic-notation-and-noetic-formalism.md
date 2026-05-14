@@ -10,8 +10,11 @@ canonical_runtime_owner: atomics/skill/references/diagnostics/diagnostic-ir.md
 
 This theory/specification surface preserves the algebraic formalism recovered from
 `docs/index.html` and states what is now canonical. Pipeline #2 is implemented in this repo as
-a derived/conditional bridge over the compact runtime. It is not yet a hard Diagnostic IR
-schema migration or a v0.4.0.0 release marker.
+a derived/conditional bridge over the compact runtime: atomics and generated runtime define the
+bridge, and `tests/pipeline2-bridge-fixtures/` plus `tools/check_pipeline2_bridge.py` prove the
+register terms map to existing owner, hold/release, burden-selection, reread, PARTIAL, terminal,
+Shannon-boundary, and anti-symbol-theater controls. This is not a hard Diagnostic IR schema
+migration, a fresh live-smoke claim, or a v0.4.0.0 release marker.
 
 Current compact runtime spine:
 
@@ -48,12 +51,14 @@ Implemented now:
 - `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` as terminal formalism after burden landing and reread.
 - Shannon analogy boundaries and anti-symbol-theater / anti-schema-bloat guards.
 
-Deferred with blocker:
+Still deferred with blocker:
 
 - Hard mandatory schema fields for `heart`, `xi`, `Omega`, `mu`, or `kappa`.
 - v0.4.0.0 contract/release migration.
 
-Blocker: both require deliberate schema/checker/fixture/smoke migration and release review.
+Blocker: hard schema and release migration require deliberate schema/checker/fixture/smoke
+migration, reviewed fresh hard smokes, and release authorization. Static fixtures prove the
+derived bridge against current controls; they are not a substitute for package-bound live smokes.
 
 Rejected as runtime behavior:
 

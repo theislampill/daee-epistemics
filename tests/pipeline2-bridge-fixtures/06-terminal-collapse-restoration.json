@@ -1,0 +1,46 @@
+{
+  "id": "terminal-collapse-restoration",
+  "kind": "positive",
+  "input": "The imported criterion has been loosened, no held route remains live, and the final answer should restore the right orientation.",
+  "covers": ["PsiN", "C(PsiN)", "terminal_restoration", "anti_symbol_theater"],
+  "bridge_terms": {
+    "PsiN": "The encoded state has no remaining live distortion after reread.",
+    "C(PsiN)": "Constrained noetic collapse is licensed only after landed burden and gate decision.",
+    "terminal_restoration": "N_fitri and sound reason name the terminal orientation, not an opening shortcut.",
+    "anti_symbol_theater": "The terminal symbols are not printed in default output unless an audit trace requires them."
+  },
+  "control_effects": {
+    "restoration": "Final restorative response is licensed once no live distortion or held route remains.",
+    "reread": "STOP is valid only after held routes and newly released routes are empty.",
+    "hold_release": "Do not release terminal restoration before the post-render gate."
+  },
+  "terminal_formalism": {
+    "requires_stop_decision": true,
+    "default_visible_symbols": false,
+    "restoration_target": "fitri recognition plus sound reason after cleared/held/partialed burdens"
+  },
+  "visible_symbol_policy": {
+    "default_output": "Do not print C(PsiN) or terminal formalism by default; render the restorative response in prose after STOP.",
+    "requires_control_effect": true
+  },
+  "ir_projection": {
+    "routing_gate": "open",
+    "matched_modules": ["P1-fitrah-restoration", "P7-restoration-stops"],
+    "restoration_target": "fitri recognition plus sound reason after cleared burden",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "governing misread cleared and no held route became eligible",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/procedures/P1-fitrah-restoration.md",
+    "atomics/skill/references/procedures/P7-restoration-stops.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md"
+  ]
+}

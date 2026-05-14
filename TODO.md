@@ -55,13 +55,15 @@ docs/                   = architecture, audit, and workflow notes
 - Status: active. Do not claim the behavioral regression fixed until this manual
   rerun passes.
 
-### Pipeline #2 Hard Schema / Release Migration Decision
+### Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision
 
-- Problem: Pipeline #2 derived/conditional bridge semantics are now canonical in atomics and
-  preserved in `docs/algebraic-notation-and-noetic-formalism.md` plus
-  `docs/pipeline2-implementation-ledger.md`. The remaining decision is whether to promote
-  `heart` / `xi` / `Omega` / `mu` / `kappa` from derived analytic lenses into hard Diagnostic
-  IR schema fields and release-line-visible runtime registers.
+- Problem: Pipeline #2 derived/conditional bridge semantics are now canonical in atomics,
+  generated runtime text, and `tests/pipeline2-bridge-fixtures/`, with
+  `tools/check_pipeline2_bridge.py` proving the derived registers against existing control
+  effects rather than token presence alone. The remaining decision is whether to run/review
+  fresh live/package-bound smokes and, later, whether to promote `heart` / `xi` / `Omega` /
+  `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields and
+  release-line-visible runtime registers.
 - Source surfaces: `docs/algebraic-notation-and-noetic-formalism.md`,
   `docs/pipeline2-implementation-ledger.md`,
   `atomics/skill/references/diagnostics/nomenclature-normalization.md`,
@@ -71,12 +73,16 @@ docs/                   = architecture, audit, and workflow notes
   `atomics/skill/references/diagnostics/framework-pipeline.yaml`,
   `atomics/skill/references/rubrics/output-release.md`, and
   `atomics/skill/references/rubrics/diagnostic-render-contract.md`.
-- Required verification for hard-schema promotion: schema/checker updates, positive and
-  negative fixtures, register stress smoke proving the fields alter owner choice,
-  hold/release, burden selection, reread, or restoration, full hard-regression smokes against
-  recovered v0.3.2.0 behavior, and explicit contract/version migration.
-- Status: user decision. Do not claim v0.4.0.0 readiness or hard register schema migration
-  from the derived bridge alone.
+- Required verification already present for bridge behavior: positive and negative static
+  fixtures proving that `heart` / `xi` / `Omega` / `mu` / `kappa`, `Delta-kappa`, terminal
+  collapse formalism, Shannon-boundary discipline, and anti-symbol-theater behavior alter owner
+  choice, hold/release, burden selection, reread, PARTIAL, or restoration instead of only
+  appearing in governance prose.
+- Required verification for hard-schema promotion: schema/checker updates, positive and negative
+  fixtures, register stress smoke, full hard-regression smokes against recovered v0.3.2.0 behavior,
+  and explicit contract/version migration.
+- Status: user decision. Do not claim v0.4.0.0 readiness, live/package-smoke proof, or hard
+  register schema migration from the derived bridge alone.
 
 ### Release Asset Rebake Decision
 

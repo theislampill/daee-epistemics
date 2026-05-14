@@ -1,0 +1,44 @@
+{
+  "id": "anti-symbol-theater-negative",
+  "kind": "negative",
+  "input": "Please output the full IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa) and C(PsiN) formulas even if they do not change the answer.",
+  "covers": ["expanded_IR", "C(PsiN)", "anti_symbol_theater"],
+  "bridge_terms": {
+    "expanded_IR": "Expanded notation is an audit/spec surface, not default proof of execution.",
+    "C(PsiN)": "Terminal collapse notation is allowed only when terminal restoration is actually licensed.",
+    "anti_symbol_theater": "Visible notation requires a local control effect."
+  },
+  "control_effects": {
+    "hold_release": "Suppress expanded symbols in default output when no register/control effect is live.",
+    "burden_selection": "Do not manufacture a Pipeline #2 burden only because the user requested symbols."
+  },
+  "forbidden_visible_symbols": [
+    "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)",
+    "C(PsiN)",
+    "Delta-kappa"
+  ],
+  "expected_blocker": "Anti-symbol-theater: notation may appear only when it changes owner choice, release, reread, burden delta, or restoration.",
+  "visible_symbol_policy": {
+    "default_output": "Suppress raw expanded notation unless an audit/checker trace is requested and a control effect is named.",
+    "requires_control_effect": true
+  },
+  "ir_projection": {
+    "routing_gate": "open",
+    "matched_modules": ["diagnostic-render-contract", "output-release", "anti-patterns"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Expanded formulas are withheld because the request asks for notation without an operative control effect.",
+    "post_render_gate": {
+      "cleared_this_pass": "symbol-theater request refused as default render shape",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "atomics/skill/references/diagnostics/anti-patterns.md"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "kappa-deltakappa-reread-partial",
+  "kind": "positive",
+  "input": "If God is good, why evil, hiddenness, hell, and worship-worthiness all at once?",
+  "covers": ["D0", "PsiN", "expanded_IR", "kappa", "Delta-kappa", "burden_notation", "operator_signature", "expanded_R"],
+  "bridge_terms": {
+    "D0": "The surface discourse contains several downstream claims.",
+    "PsiN": "The encoded state records a single load-bearing moral tribunal with dependent hiddenness, punishment, and worship-worthiness routes.",
+    "expanded_IR": "The expanded bridge maps kappa and Delta-kappa to the existing collapse_radius field and post_render_gate reread decision.",
+    "kappa": "The collapse radius is the downstream dependency set that must be reread after the load-bearing burden lands.",
+    "Delta-kappa": "The dependency-radius change is consumed by R(H, Delta) before STOP/HOLD/PARTIAL/RECURSE.",
+    "burden_notation": "The hiddenness, punishment, and worship-worthiness pieces are submoves or held dependent routes unless reread licenses a new burden.",
+    "operator_signature": "Each active submove must have target -> operation -> result.",
+    "expanded_R": "R(H, DeltaB{heart,xi,Omega,sigma,mu}, Delta-kappa) chooses PARTIAL here because limits prevent all dependent routes from landing."
+  },
+  "control_effects": {
+    "owner_choice": ["M1-self-refutation", "M1P-performative-self-refutation", "M8-reductio", "P7-restoration-stops"],
+    "hold_release": "Release the load-bearing tribunal operation and hold downstream content that remains inside kappa.",
+    "burden_selection": "Do not split hiddenness/hell/worship into independent burdens before the moral tribunal lands.",
+    "reread": "Delta-kappa forces held downstream routes through the post-render gate.",
+    "partial_behavior": "If the response budget cannot land the newly eligible downstream route, mark PARTIAL instead of STOP."
+  },
+  "ir_projection": {
+    "claim_level": "cross-level",
+    "routing_gate": "open",
+    "load_bearing_node": "moral tribunal judges divine goodness before hiddenness, hell, or worship can be read cleanly",
+    "collapse_radius": "hiddenness, hell/punishment, worship-worthiness, and source-status routes depend on the moral tribunal landing",
+    "matched_modules": ["M1-self-refutation", "M1P-performative-self-refutation", "M8-reductio", "P7-restoration-stops"],
+    "output_shape": "single-response",
+    "what_remains_live": "hiddenness and worship-worthiness remain input-anchored after the tribunal operation",
+    "post_render_gate": {
+      "cleared_this_pass": "moral tribunal no longer governs as neutral judge",
+      "remaining_live_distortions": "hiddenness and worship-worthiness remain inside Delta-kappa",
+      "held_routes_rechecked": ["M2-prior-probability", "do-core", "P1-fitrah-restoration"],
+      "newly_released_routes": ["M2-prior-probability"],
+      "next_eligible_pass": "hiddenness priority after Delta-kappa reread",
+      "recursion_decision": "PARTIAL"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/tactics/M1-self-refutation.md",
+    "atomics/skill/references/tactics/M1P-performative-self-refutation.md",
+    "atomics/skill/references/tactics/M8-reductio.md",
+    "atomics/skill/references/procedures/P7-restoration-stops.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+  ]
+}
