@@ -370,7 +370,7 @@
       "module_class": "governance",
       "module_id": "diagnostic-ir",
       "source": "atomics/skill/references/diagnostics/diagnostic-ir.md",
-      "source_sha256": "16f57525078d1941b9a9444de323c8b6e88ce1fd4692a61955a7f6d0e8961037"
+      "source_sha256": "14c007bf8336951ffe72cc8c395cc813824b4e192b78f4bc468719fd1980ebaa"
     },
     "diagnostic-render-contract": {
       "bundle_path": "references/runtime-output-governance.md",
@@ -570,7 +570,7 @@
       "module_class": "governance",
       "module_id": "noetic-reading-checklist",
       "source": "atomics/skill/references/diagnostics/noetic-reading-checklist.md",
-      "source_sha256": "e0387f089aab61731ca34856183a66f7542914aeec10b55772d2d240c4672ac0"
+      "source_sha256": "128023794fe3a1e103efaf14097ae0fa78f36dd4d200d4fd57d39843cd30f6b1"
     },
     "nomenclature-normalization": {
       "bundle_path": "references/omnibus/OMNIBUS-specialty-diagnostics.md",
@@ -762,7 +762,7 @@
       "module_class": "governance",
       "module_id": "recursive-state-transitions",
       "source": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
-      "source_sha256": "0567bcc67bdfaaa9571adafaec1b7cc6e47e0a05a26e998c60fbc8f0127e1ab3"
+      "source_sha256": "de4991ecbdafb9f91d7cc1c2051b48e413f54955058f7cceb32b24fa93cf8b77"
     },
     "revelation-transmission": {
       "bundle_path": "references/omnibus/OMNIBUS-rt-transmission.md",

@@ -1,0 +1,70 @@
+{
+  "id": "register-composition-owner-handoff",
+  "prompt": "The same short claim carries anxiety pressure, a proof-denominator demand, a loaded semantic label, and a source-prestige cue.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "mixed-case-handling",
+      "recursive-state-transitions"
+    ],
+    "optional_modules": [
+      "noetic-reading-checklist",
+      "routing-precedence",
+      "proof-method-audit",
+      "M9-predication-mode",
+      "inference-boundary",
+      "nomenclature-normalization",
+      "doubt-vs-skepticism"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "live register set {heart, xi, Omega, mu, kappa, sigma}",
+      "owner eligibility aids, not automatic dispatch chains",
+      "preserve composition; do not stack routes automatically",
+      "R(H,Delta)/kappa"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md",
+      "references/omnibus/OMNIBUS-procedures.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics",
+      "procedures"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "ns-register-grammar-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "one short claim carries heart, xi, Omega, sigma, and kappa pressure",
+      "do_orient": "compose register-to-owner handoff without automatic route stacking",
+      "restoration_target": "reread held routes after burden landing",
+      "routing_gate": "mixed-case and recursive-state gates preserve register composition"
+    }
+  }
+}

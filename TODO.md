@@ -160,6 +160,11 @@ mixed evidence, proposal, and release claims.
   reproduction-vector hold/release, and MM-10 public-obviousness / inherited-default audit.
   Current MM work should stay under `pattern-profiling.md` carrier/reproduction discipline
   rather than becoming a broad MM pack or argument bank.
+- Stage 8 NS/register grammar follow-up remains TODO for checker design only: current static
+  hardening documents unknown-pattern-typed fallback, compositional N/NS/PF/TTP/IR/register
+  grammar, register-to-owner handoff, and child-family integration, but no checker yet enforces
+  the whole compositional state across arbitrary outputs. Do not promote hard register schema
+  fields or create release claims from this static grammar without explicit contract migration.
 - Verification boundary: routing fixtures are static evidence only. They prove owner mapping and
   label-stripped generalization expectations; they are not live execution smokes.
 - Stage-1.5/1.6 evidence boundary: retained local ignored M9 child-mode outputs under

@@ -1,0 +1,67 @@
+{
+  "id": "ns-unknown-pattern-typed-operator-route",
+  "prompt": "The input does not identify a school or noetic family, but it uses a loaded label, a proof standard, and a source-status cue that each need routing before any topic answer.",
+  "case_class": "complex",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "noetic-reading-checklist",
+      "pattern-profiling",
+      "routing-precedence"
+    ],
+    "optional_modules": [
+      "M9-predication-mode",
+      "proof-method-audit",
+      "recursive-state-transitions",
+      "inference-boundary",
+      "nomenclature-normalization"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-procedures"
+    ],
+    "required_governance": [
+      "unknown-pattern-typed rather than forcing a family label",
+      "A thin case may still route by typed",
+      "Do not family-lock thin cases",
+      "held N selection"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md",
+      "references/omnibus/OMNIBUS-tactics.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques",
+      "tactics"
+    ],
+    "max_calls": 20,
+    "minimal_pair_group": "ns-register-grammar-v1",
+    "minimal_pair_shared_surface_tokens": [
+      "the"
+    ],
+    "minimal_pair_discriminators": {
+      "concealment_mode": "thin case has operator pressure but no stable named N family",
+      "do_orient": "keep noetic family held while routing typed M9/PM/AS pressure",
+      "restoration_target": "unknown-pattern-typed fallback before topic answer",
+      "routing_gate": "noetic-reading checklist plus routing precedence before family-lock"
+    }
+  }
+}

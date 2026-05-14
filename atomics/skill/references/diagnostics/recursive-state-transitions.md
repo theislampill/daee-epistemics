@@ -149,6 +149,21 @@ has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has 
 reason after the governing misread loses control. It is not a shortcut around burden landing,
 and it is not a default visible marker in ordinary output.
 
+Cross-family child-mode landing:
+
+```text
+OP_family -> target -> operation -> result -> Land(B)
+-> R(H,Delta{heart,xi,Omega,sigma,mu},Delta-kappa)
+-> STOP/HOLD/PARTIAL/RECURSE or NewB
+```
+
+Gloss: M9, PM, AS, DW, DA/DS/HK, OQ, and MM child modes all land through the same state
+transition discipline. A child operator may clear one register while exposing another, but the
+next owner is licensed only by reread. If the noetic frame remains unknown-pattern-typed, `R`
+keeps `N` held while allowing the typed owner result to change `H`, `kappa`, source-status,
+release posture, or NewB eligibility. A named school, family, affiliation, or profile label
+does not become finite `N` merely because an operator landed.
+
 Source-status:
 
 ```text

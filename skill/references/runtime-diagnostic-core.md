@@ -172,7 +172,7 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: e0387f089aab61731ca34856183a66f7542914aeec10b55772d2d240c4672ac0 -->
+<!-- SOURCE_SHA256: 128023794fe3a1e103efaf14097ae0fa78f36dd4d200d4fd57d39843cd30f6b1 -->
 
 ---
 id: noetic-reading-checklist
@@ -276,6 +276,47 @@ future theory annex. The expanded formalism may call the warrant/testimony/proof
 side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
 stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream
 dependency set `κ`. These are analytic lenses over existing diagnosis, not replacement fields.
+
+### Unknown-Pattern-Typed / Provisional N Fallback
+
+When a named noetic family is underdetermined, keep the noetic read
+unknown-pattern-typed rather than forcing a family label. A thin case may still route by typed
+operator behavior:
+
+```text
+unknown/provisional N
++ claim_level
++ pattern_profile when it changes routing
++ live register set
++ owner/TTP child mode
++ held N selection
+```
+
+This is the preferred fallback when the input gives operator pressure but not enough signal for
+a stable `NS` profile. The response may execute M9, PM, AS, DW, DA/DS/HK, OQ, or MM behavior
+while the named noetic frame remains held. Do not family-lock thin cases, and do not treat a
+school, family, affiliation, public identity, or source label as finite noetic bucket.
+
+### Compositional Noetic-State Grammar
+
+Use this compact control grammar when multiple layers are live:
+
+```text
+N_space read
+-> selected/held N_frame
+-> NS intervention profile
+-> PF / pattern_profile
+-> live register set {heart, xi, Omega, mu, kappa, sigma}
+-> owner/TTP child mode
+-> Land(B)
+-> R(H,Delta)/kappa
+```
+
+The grammar is compositional, not deterministic route stacking. For example, a case can remain
+`unknown-pattern-typed` while PM handles proof-denominator pressure, AS holds a source-status
+stabilizer, M9 clears a loaded label, MM exposes a carrier, and `kappa` maps the collapse
+radius. This is formal/control grammar over existing owners and existing IR/case-state
+surfaces; it is not a hard schema migration and it does not make register fields mandatory.
 
 ## The Nine Analytical Dimensions
 

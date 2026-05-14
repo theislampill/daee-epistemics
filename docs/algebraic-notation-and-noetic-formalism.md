@@ -131,6 +131,27 @@ raw `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` unless the user asks for formalism or `:dsl`
   `Land(B) -> R(H,Delta)`.
 - Keep every `ⁿBᵢ[OP]` attached to target -> operation -> result.
 
+## Compositional Noetic-State Boundary
+
+Stage 8 hardening treats the implemented child-mode families as compositional owner surfaces,
+not isolated operator tables. The schema-light control grammar is:
+
+```text
+N_space read
+-> selected/held N_frame
+-> NS intervention profile
+-> PF / pattern_profile
+-> live register set {heart, xi, Omega, mu, kappa, sigma}
+-> owner/TTP child mode
+-> Land(B)
+-> R(H,Delta)/kappa
+```
+
+`unknown-pattern-typed` is valid when the case is too thin for a named `NS` profile but still
+contains typed operator pressure. In that state, the runtime may route by M9/PM/AS/DW/DA/DS/HK/
+OQ/MM behavior while keeping the named noetic frame held. This is not a hard schema migration:
+the registers remain derived control lenses over existing IR/case-state fields.
+
 ## Incorrect Use
 
 - Printing `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` while the response acts like a generic essay.

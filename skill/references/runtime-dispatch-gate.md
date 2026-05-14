@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 16f57525078d1941b9a9444de323c8b6e88ce1fd4692a61955a7f6d0e8961037 -->
+<!-- SOURCE_SHA256: 14c007bf8336951ffe72cc8c395cc813824b4e192b78f4bc468719fd1980ebaa -->
 
 ---
 id: diagnostic-ir
@@ -168,6 +168,42 @@ Identity use must be source-status marked in the existing surfaces:
 - inference: likely stabilizing role in the noetic equilibrium
 - speculative/held: interior motive, sincerity, culpability, soul-state, or primary
   load-bearing status
+
+### Register-To-Owner Handoff Map
+
+The derived registers are owner eligibility aids, not automatic dispatch chains. They help the
+IR preserve why an owner may be live while the gate still applies routing precedence,
+mixed-case handling, and held-route discipline.
+
+| register | live when | likely owner surfaces | boundary |
+|---|---|---|---|
+| `heart` | affective-discursive pressure changes tone, amount, hold/release, or closure posture | DW/P7, `output-release.md`, `diagnostic-render-contract.md` | register pressure does not by itself prove deformation or decide content |
+| `xi` | warrant, testimony, authority, proof-method, defeater, or proper-function grammar changes the burden | PM/V2, `proof-method-audit.md`, `reason-disambiguation.md` | proof pressure is not automatically an argument dump |
+| `Omega` | predication, modality, being, dependence, causality, or creator/creation grammar governs | M9, OQ, DA/DS/HK, V8 | ontology pressure must stay with the smallest owner |
+| `mu` | carrier, compression, stabilizer, defense, mutation, or reproduction changes routing or reread | MM / `pattern-profiling.md` | memetic language without control effect is decorative |
+| `kappa` | downstream dependency set or collapse radius must be reread after burden landing | `recursive-state-transitions.md`, `routing-precedence.md` | `kappa` is not a TODO list |
+| `sigma` | source, label, citation, affiliation, or authority marker changes warrant/source status | AS, `inference-boundary.md`, `nomenclature-normalization.md`, source-status discipline | source label is not operative warrant |
+| mixed registers | two or more registers are simultaneously live and compete for release order | `mixed-case-handling.md`, `routing-precedence.md` | preserve composition; do not stack routes automatically |
+
+### Implemented Child-Mode Family Integration
+
+The child-mode tables added through the evidence-gated hardening campaign are integrated into
+this noetic-state grammar as parent-owned operator surfaces, not isolated packs:
+
+| family | child modes | parent owner |
+|---|---|---|
+| M9 semantic/predication | M9-SR, M9-ZM, M9-MQ, M9-LD | `M9-predication-mode.md` |
+| PM proof-method | PM-1, PM-2, PM-4, PM-6 | `proof-method-audit.md` |
+| AS/source-status | AS-2, AS-3, AS-4, AS-8 | `recursive-state-transitions.md` source-status/noetic-frame discipline |
+| DW/doubt ecology | DW-1, DW-2, DW-3, DW-6 | `doubt-vs-skepticism.md` |
+| DA/DS/HK | DA-1, DA-2, DS-1, HK-1 | `do-attribute-precision.md` |
+| OQ ontological quantization | OQ-5, OQ-6, OQ-8, OQ-9 | `definition-discipline.md` |
+| MM carrier/reproduction | MM-2, MM-5, MM-7, MM-8 | `pattern-profiling.md` |
+
+Anti-overclaim guard: child-mode existence is not execution; fixture pass is not live behavior
+proof; retained local live samples are not package/release proof; dev-local checker pass is not
+universal semantic grading; schema-light register grammar is baseline control, not mandatory hard
+field migration.
 
 **Negative rule:** "Meta-noetic memetics" without a control-surface consequence is decorative:
 no changed IR/case-state field, no routing suppression, no held material, no collapse radius,
@@ -3199,7 +3235,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 0567bcc67bdfaaa9571adafaec1b7cc6e47e0a05a26e998c60fbc8f0127e1ab3 -->
+<!-- SOURCE_SHA256: de4991ecbdafb9f91d7cc1c2051b48e413f54955058f7cceb32b24fa93cf8b77 -->
 
 ---
 id: recursive-state-transitions
@@ -3351,6 +3387,21 @@ has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has 
 `N_fiṭrī ∧ ʿaql ṣarīḥ` names the restorative terminal orientation: fitri recognition plus sound
 reason after the governing misread loses control. It is not a shortcut around burden landing,
 and it is not a default visible marker in ordinary output.
+
+Cross-family child-mode landing:
+
+```text
+OP_family -> target -> operation -> result -> Land(B)
+-> R(H,Delta{heart,xi,Omega,sigma,mu},Delta-kappa)
+-> STOP/HOLD/PARTIAL/RECURSE or NewB
+```
+
+Gloss: M9, PM, AS, DW, DA/DS/HK, OQ, and MM child modes all land through the same state
+transition discipline. A child operator may clear one register while exposing another, but the
+next owner is licensed only by reread. If the noetic frame remains unknown-pattern-typed, `R`
+keeps `N` held while allowing the typed owner result to change `H`, `kappa`, source-status,
+release posture, or NewB eligibility. A named school, family, affiliation, or profile label
+does not become finite `N` merely because an operator landed.
 
 Source-status:
 
