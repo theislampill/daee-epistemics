@@ -22,15 +22,15 @@ package shape, excludes repo/dev harness roots, and writes slash-safe archive en
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.3.2.0.skill` |
-| SHA256 | `6331A1EBFD7962F3AA38CE503ED0B2D7C4BE2C350B8D34A432714B26B850CB71` |
-| Size | `535410` bytes |
+| SHA256 | `1C47CE08C19D4A6A3972FFFF4CBD78BE16BD72B773C0BDBD490399A1D6745071` |
+| Size | `536216` bytes |
 | Entries | `20` |
-| Source commit | `6636c4b22c0dbfdd90faa743e6832c91abf3e715` |
-| GitHub Release visibility | Current same-version asset refresh after canonical compact-DSL package-shape refactor |
+| Source commit | `36a98c3811280feb0ae2e5c6b55070d828ff2162` |
+| GitHub Release visibility | Current same-version asset refresh after canonical compact-DSL hard-canary recovery |
 | Release tag | `v0.3.2.0` |
 | Release name | `v0.3.2.0 - Canonical compact DSL runtime recovery` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.3.2.0` |
-| Verification date | `2026-05-11` |
+| Verification date | `2026-05-14` |
 | Availability | Binary archive not committed; build locally with `package.ps1` from this source state or download the public GitHub Release asset. |
 
 Local package build output: `daee-epistemics-v0.3.2.0.skill.zip`. It is byte-identical to the
@@ -43,17 +43,20 @@ source repository; local retained smoke evidence may exist only in ignored worki
 
 Current-release committed smoke suite: none.
 
-Local retained direct current-session installed-skill smoke evidence exists under ignored `.daee/`
-for this source/package rebake:
+Local retained installed-skill smoke evidence exists under ignored `.daee/` for this
+source/package rebake:
 
-- hard moral-protest / worship-worthiness / source-worldview canary: `50.5k` characters, owner/TTP
-  visible, source-operative, superscript/subscript labels present, no route-check harness refs;
-- predication/attribute support smoke: M9/V8/source-status execution visible;
-- naturalist/transmission support smoke: FPD/V2/M1/M8 plus testimony/tawatur work visible.
+- hard moral-protest / worship-worthiness / source-worldview canary: `45.6k` characters,
+  owner/TTP visible, source-operative, closure audit visible, P1/P7 present, no route-check
+  harness refs;
+- predication/attribute support smoke: `35.0k` characters, M9/V8 predication recursion visible,
+  no generic attribute essay, no route-check harness refs;
+- naturalist/transmission support smoke: `17.0k` characters, FPD/V2/V10/M1 plus
+  testimony/tawatur work visible, clean rerun after a prior harness-contaminated attempt.
 
-These smokes prove current-session installed-skill file-retained behavior only. They do not prove
-Claude, nested `codex exec`, or all-host parity. Hosted nested `codex exec` was quota-blocked during
-the recovery pass, and the local OSS probe timed out without a completed output. Raw smoke artifacts
+These smokes prove current installed-skill file-retained behavior only. They do not prove Claude,
+nested `codex exec`, or all-host parity. `codex exec --output-last-message` was confirmed to write
+only the final agent message/status, not a full-depth canonical smoke artifact. Raw smoke artifacts
 are not committed and not packaged.
 
 `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe artifacts are development /
