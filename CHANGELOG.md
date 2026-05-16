@@ -17,10 +17,11 @@ It consolidates docs/audit/release surfaces, deprecates active Level3 and
 branch-era pipeline terminology, untracks generated `skill/**` so atomics remain
 the repo source, and adds manual CI artifact-build automation.
 
-Release-claim integrity note: the currently published `v0.4.1.0` GitHub
-Release asset/provenance predates the generated-runtime untracking and final
-formalism/NLA claim-integrity corrections. Corrected replacement metadata is a
-local candidate until the release asset and provenance are explicitly replaced.
+Release-claim integrity note: the public `v0.4.1.0` GitHub Release
+asset/provenance was replaced after the generated-runtime untracking and final
+formalism/NLA claim-integrity corrections. The release asset is built from
+tracked atomics through ignored generated `skill/**`; raw atomics are not
+packaged.
 
 ### Added
 

@@ -52,6 +52,39 @@ lightweight governance, not extra ceremony.
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
 
+## Complementary SSOT and Truthmaker Trace
+
+SSOT does not mean one file contains all truth. Before selecting a source of truth,
+identify the claim's truthmaker, complement set, and owner map: one owner per
+responsibility. For composed claims, trace every public/runtime/release statement across
+all relevant owners before patching or reporting success.
+
+- Patch the owner of the wrong responsibility, not the nearest repeated sentence. If the
+  complement set disagrees, mark drift and reconcile through owners.
+- Pipeline truth is composed across `framework-pipeline.yaml`, `diagnostic-ir.md`,
+  `recursive-state-transitions.md`, and render/output owners.
+- Release artifact truth is composed across `docs/release-artifacts.md`, package workflow,
+  provenance JSON, tag state, and GitHub Release assets/body.
+- Formalism truth is composed across the algebraic spec, recursive-state semantics, render
+  boundaries, checkers, and fixtures.
+- Derived surfaces are not independent owners: `docs/index.html`, generated
+  `framework-pipeline.md`, release histories, and generated runtime must be traced back to
+  their owner files before patching.
+- Future release/report audits must use:
+  `claim -> complement set -> owner trace -> evidence -> checker/provenance -> qualifier`.
+
+## ANDON, 5 Whys, and Poka-yoke
+
+During Genchi Genbutsu / gemba work, inspect the actual files, diffs, artifacts, and release
+surfaces. If a contradiction appears, raise ANDON: stop the line, name the defect, identify
+the owner/complement set, and record current status before patching. Do not silently patch the
+nearest repeated sentence.
+
+Repeated defect classes require Poka-yoke: add or strengthen a checker, fixture, release gate,
+or provenance check. Typical recurrence blockers are symbol inventory + control-effect checks,
+Natural Language Autoencoder AV/AR fixtures, release-claim integrity audits, Complementary SSOT
+parity checks, and `git ls-files skill == 0` after generated-runtime migration.
+
 ## Formalism, NLA, and Operativity Discipline
 
 Broad prose-token presence is not proof. Any algebraic/register symbol, operator, or
@@ -66,10 +99,11 @@ outcome, classify it as docs-only or ornamental risk.
   checks as operativity proof. Negative controls should prove that removing a symbol,
   classification, or control effect causes checker failure.
 - `Delta-nB` and `Delta-kappa` are event-local transition operators. `∇·` and `∇×` are
-  audit/formalism diagnostics over the field produced by deltas; they do not replace
-  `Delta`. Divergence/curl visibility is audit/formalism-only and requires an effect on
-  dependency pressure, loop-breaking, `R(H,Delta)`, PARTIAL/RECURSE/COMPLETE, or checker
-  outcome. They are forbidden in default runtime output unless explicitly requested.
+  diagnostics over the field produced by deltas; they do not replace `Delta`. Default output
+  must print them when control-relevant, but only as compact governance state markers such as
+  `∇·κ: positive/live` or `∇×κ: unresolved loop`, tied to dependency pressure, loop-breaking,
+  `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE, or checker outcome. Long formalism exposition remains
+  audit/formalism-only and decorative proof-by-symbol is forbidden.
 - NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
   interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
   Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /
@@ -82,9 +116,10 @@ outcome, classify it as docs-only or ornamental risk.
   compression, and capacity. It must not claim entropy measures truth, meaning, warrant,
   revelation, fiṭrah, or sound reason. Shannon relates to package/runtime compression and
   diagnostic bottleneck fidelity, not metaphysical truth.
-- Default `/daee-epistemics` output must not print raw algebraic, NLA, or ∇ jargon unless
-  formalism/audit visibility is requested. Formalism can be held by owner docs and checkers
-  without being dumped into user-facing output.
+- Default `/daee-epistemics` output is governed, not governance-hidden. It may print compact
+  control-bound formal state markers such as `Δκ live`, `∇·κ positive/live`,
+  `∇×κ unresolved`, and `R(H,Δ): RECURSE` when they affect release, reread, or closure.
+  It must not dump long algebraic/NLA/∇ exposition unless formalism/audit visibility is requested.
 - Source/runtime layout: `atomics/skill/**` is tracked canonical source; `skill/**` is
   ignored generated runtime output; CI/local builds compile atomics into generated `skill/**`;
   the release `.skill` is the smaller compiled runtime artifact; raw atomics are not packaged
@@ -154,9 +189,6 @@ state.
 - `.github/workflows/release-skill.yml` is a manual artifact-build workflow only: it builds and
   uploads workflow artifacts, but must not be treated as tag creation, GitHub Release publishing,
   or package-bound smoke proof.
-- `.github/workflows/release-skill.yml` is a manual artifact-build workflow only: it builds and
-  uploads workflow artifacts, but must not be treated as tag creation, GitHub Release publishing,
-  or package-bound smoke proof.
 - Do not use `git add .` for release work. Stage an explicit file list. Keep large smokes,
   raw model transcripts, local helper scripts, `.daee/`, `level3-runs/`, temporary owner
   lists, local machine paths, and scratch artifacts unstaged unless the user explicitly
@@ -177,6 +209,9 @@ state.
 - Git pushes do not update GitHub Release assets. If `skill/` or package-facing docs change after
   a release, rebuild the package and explicitly replace the release asset before claiming the
   release page reflects the patched state.
+- If owner policy changes after a release body was synchronized, re-check the GitHub Release body
+  with `gh release view` before any asset/body replacement claim; local docs being correct is not
+  proof that the public release page is current.
 - Before any tag/release, run a hard-gate check: local/remote HEAD coherence, tag absence or
   intended tag state, GitHub Release absence or intended update state, version-marker search,
   frontmatter contract check, generated-from-atomics freshness, package-shape validation,

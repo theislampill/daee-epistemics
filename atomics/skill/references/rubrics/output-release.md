@@ -84,8 +84,19 @@ behavior rather than decorate the prose. `♥` may affect hold, sequence, softne
 or closure posture; `ξ` may affect proof/warrant/testimony release; `Ω` may affect predicate,
 category, modality, or dependence release; `μ` may affect carrier/stabilizer handling; `κ` /
 `Δκ` may affect downstream reread. If none of these changes the governed burden, owner, held
-material, `Land(B)`, or `R(H,Delta)`, do not print the symbol. `κ` is not a TODO list, and
+material, `Land(B)`, or `R(H,Δ)`, do not print the symbol. `κ` is not a TODO list, and
 `ΔⁿB` is not a shortcut to a new burden-cycle.
+
+Default governed render is not compact in the sense of hiding governance. It must surface the
+burden-cycle, operative submove, `Δκ`, `∇·` / `∇×` state, `R(H,Δ)`, and PARTIAL / RECURSE /
+COMPLETE decision when those markers are control-relevant. Use `R(H,Δ)` as the formal notation
+and `R(H,Delta)` only as the ASCII fallback. The expanded formal reread is
+`R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
+`R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. `∇·` and `∇×` remain forbidden as
+decorative proof of execution: they must be tied to `κ/H`, dependency pressure, loop-breaking,
+`R(H,Δ)`, PARTIAL, RECURSE, COMPLETE, or checker outcome. Allowed default: `State: Δκ live;
+∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.` Forbidden default: `The antisymmetric
+Jacobian of the noetic field shows...`
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. Do not put
@@ -522,9 +533,10 @@ Default final-output failure tokens include:
   `matched_modules`, `source_basis`, load ledger, route ledger, planned route list, or
   a visible route plan such as `Next: FPD -> ...`.
 - Literal default governance fields such as `Recursion decision:`, `next_eligible_pass:`,
-  `post_render_gate:`, `Governance:`, or STOP / HOLD / RECURSE / PARTIAL as a visible governance label.
-  These labels are for `:dsl`, internal/development audit, pass-review, or diagnostic trace; default mode
-  uses prose transition plus bounded next pass.
+  `post_render_gate:`, or `Governance:`. Raw field labels are for `:dsl`, internal/development
+  audit, pass-review, or diagnostic trace. Default mode uses prose transition plus bounded next
+  pass, and may use compact control-bound markers such as `R(H,Δ): RECURSE`, `Δκ live`,
+  `∇·κ positive/live`, or `∇×κ unresolved`.
 - Smoke/runtime proof boilerplate such as "Smoke runtime note", "Runtime grounding detail",
   "Skill invocation proof", "loaded before output", or "proof of loaded files" in the
   public default output. Runtime proof belongs in trace/verdict artifacts, not Layer B.
@@ -618,8 +630,8 @@ STOP cannot be emitted before this gate runs. Held material must be rechecked af
 
 Default mode must not print `Recursion decision: RECURSE` as proof of compliance. If internal
 recursion is active, the answer must perform the transition in prose and then execute one bounded
-next pass. If limits prevent that pass, render partial release-status prose rather than dumping a
-field label.
+next pass. If limits prevent that pass, render partial release-status prose or a compact
+control-bound marker such as `R(H,Δ): PARTIAL` rather than dumping a raw field label.
 
 ---
 
@@ -756,7 +768,7 @@ Why already present:
 Released module(s):
 Bounded move:
 state re-read:
-Release status: prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label
+Release status: prose closure/hold/partial/continuation status plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant
 ```
 
 Default compact DSL-governed answers may compress this shape, but the state re-read and decision still govern.

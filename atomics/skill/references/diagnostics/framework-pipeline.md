@@ -101,7 +101,7 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 
 <!-- BEGIN GENERATED FRAMEWORK PIPELINE -->
 ```text
-[USER INPUT / CLAIM / EXCERPT]
+[USER INPUT / D0 / CLAIM / EXCERPT]
              |
              v
 +--------------------------------------------------+
@@ -169,6 +169,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-------------------------------------------------------------------------------+
              |
              v
++--------------------------------------------------------------------------+
+| SELECTED/HELD N + LIVE REGISTERS                                         |
+|                                                                          |
+| selected/held noetic frames remain live control state                    |
+| live heart, xi, Omega, sigma, mu, kappa affect release or stay unprinted |
+| remaining kappa / H status must be recoverable before closure            |
+| owner: rubrics/output-release.md                                         |
++--------------------------------------------------------------------------+
+             |
+             v
        +-----+-----+
        |           |
        v           v
@@ -226,6 +236,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +---------------------------------------------------------------------------------------------------------------+
              |
              v
++--------------------------------------------------------------+
+| DELTA-NB / DELTA-KAPPA TRANSITION                            |
+|                                                              |
+| Delta-nB is event-local burden-state change                  |
+| Delta-kappa is event-local dependency/collapse-radius change |
+| deltas feed Land(B) -> R(H,Delta), not decorative notation   |
+| owner: diagnostics/recursive-state-transitions.md            |
++--------------------------------------------------------------+
+             |
+             v
 +------------------------------------------------------------------+
 | BURDEN LANDED                                                    |
 |                                                                  |
@@ -260,16 +280,26 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-----------------------------------------------------------------------+
              |
              v
-+----------------------------------------------------------------------+
-| DIAGNOSTIC RENDER CONTRACT                                           |
-|                                                                      |
-| Level 1 default compact DSL/IR header plus bounded governed response |
-| Level 2 compact DSL / lab-report                                     |
-| Level 3 internal/development audit compatibility                     |
-| expanded notation is forbidden as decorative proof of execution      |
-| diagnostic-render-contract before final shape                        |
-| owner: rubrics/diagnostic-render-contract.md                         |
-+----------------------------------------------------------------------+
++--------------------------------------------------------------------------------+
+| DIAGNOSTIC RENDER CONTRACT                                                     |
+|                                                                                |
+| Level 1 default compact DSL/IR header plus bounded governed response           |
+| Level 2 compact DSL / lab-report                                               |
+| legacy internal/development audit compatibility is not current render doctrine |
+| expanded notation is forbidden as decorative proof of execution                |
+| diagnostic-render-contract before final shape                                  |
+| owner: rubrics/diagnostic-render-contract.md                                   |
++--------------------------------------------------------------------------------+
+             |
+             v
++-----------------------------------------------------------------+
+| NOETIC-FIELD BANNER OBLIGATION                                  |
+|                                                                 |
+| mandatory noetic-field execution banner is first visible output |
+| produced from same classification state as Layer A              |
+| not a substitute for diagnostic reduction or owner execution    |
+| owner: rubrics/diagnostic-render-contract.md                    |
++-----------------------------------------------------------------+
              |
              v
 +---------------------------------------------------------------------------+
@@ -284,16 +314,27 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +---------------------------------------------------------------------------+
              |
              v
-+-------------------------------------------------------------------+
-| POST-RENDER RE-ENTRY GATE                                         |
-|                                                                   |
-| state re-read asks what cleared and what remains live             |
-| held routes rechecked                                             |
-| Delta-kappa dependency-radius changes are consumed before closure |
-| convergence through controlled state transitions                  |
-| decision = STOP / HOLD / RECURSE / PARTIAL                        |
-| owner: diagnostics/recursive-state-transitions.md                 |
-+-------------------------------------------------------------------+
++--------------------------------------------------------------+
+| BOUNDED LAYER B OPERATION                                    |
+|                                                              |
+| answers only the permitted current live burden               |
+| held material remains held until R(H,Delta) licenses release |
+| active submoves preserve target -> operation -> result       |
+| owner: rubrics/output-release.md                             |
++--------------------------------------------------------------+
+             |
+             v
++--------------------------------------------------------------------------+
+| R(H,Delta) RECONSTRUCTION / RE-ENTRY GATE                                |
+|                                                                          |
+| state re-read asks what cleared and what remains live                    |
+| reconstruct selected/held N, live registers, burden deltas, kappa, and H |
+| held routes rechecked                                                    |
+| Delta-kappa dependency-radius changes are consumed before closure        |
+| convergence through controlled state transitions                         |
+| decision = STOP / HOLD / RECURSE / PARTIAL                               |
+| owner: diagnostics/recursive-state-transitions.md                        |
++--------------------------------------------------------------------------+
              |
              v
 +--------------------------------------------------+
@@ -368,18 +409,22 @@ EDGE INDEX
 - v1_diagnostic_gate -> phase1_listening
 - phase1_listening -> phase2_mandatory_passes
 - phase2_mandatory_passes -> diagnostic_ir
-- diagnostic_ir -> gate_blocked
-- diagnostic_ir -> gate_open
+- diagnostic_ir -> selected_held_registers
+- selected_held_registers -> gate_blocked
+- selected_held_registers -> gate_open
 - gate_blocked -> output_governance
 - gate_open -> routing_precedence
 - routing_precedence -> selected_live_burden
 - selected_live_burden -> operative_submoves
-- operative_submoves -> burden_result
+- operative_submoves -> delta_transition
+- delta_transition -> burden_result
 - burden_result -> output_governance
 - output_governance -> output_release
 - output_release -> render_contract
-- render_contract -> pass_shape
-- pass_shape -> post_render_gate
+- render_contract -> noetic_field_banner
+- noetic_field_banner -> pass_shape
+- pass_shape -> bounded_layer_b
+- bounded_layer_b -> post_render_gate
 - post_render_gate -> restoration_trace
 - restoration_trace -> bottom_line
 - post_render_gate -> v1_diagnostic_gate [RECURSE through state re-read, not topic transition]
@@ -429,7 +474,11 @@ CONCEPT OWNERSHIP (owner-backed)
 - IR formation: diagnostics/diagnostic-ir.md
 - routing: diagnostics/routing-precedence.md
 - selected current live burden: rubrics/diagnostic-render-contract.md
+- selected/held N and live registers: rubrics/output-release.md
+- Delta-nB / Delta-kappa transition boundary: diagnostics/recursive-state-transitions.md
 - render shape: rubrics/diagnostic-render-contract.md
+- noetic-field banner obligation: rubrics/diagnostic-render-contract.md
+- bounded Layer B operation: rubrics/output-release.md
 - output release: rubrics/output-release.md
 - recursion: diagnostics/recursive-state-transitions.md
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
@@ -441,9 +490,10 @@ CONCEPT OWNERSHIP (owner-backed)
 - Layer A / Layer B release checks: rubrics/output-release.md
 - source-status & noetic-frame non-equivalence: diagnostics/recursive-state-transitions.md
 - grounded noetic re-read shape: diagnostics/recursive-state-transitions.md
+- source/runtime layout: docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md
 
 REQUIRED ORDER
-- user_input -> always_load -> v1_diagnostic_gate -> phase1_listening -> phase2_mandatory_passes -> diagnostic_ir -> gate_blocked -> gate_open -> routing_precedence -> selected_live_burden -> operative_submoves -> burden_result -> output_governance -> output_release -> render_contract -> pass_shape -> post_render_gate -> restoration_trace -> bottom_line
+- user_input -> always_load -> v1_diagnostic_gate -> phase1_listening -> phase2_mandatory_passes -> diagnostic_ir -> selected_held_registers -> gate_blocked -> gate_open -> routing_precedence -> selected_live_burden -> operative_submoves -> delta_transition -> burden_result -> output_governance -> output_release -> render_contract -> noetic_field_banner -> pass_shape -> bounded_layer_b -> post_render_gate -> restoration_trace -> bottom_line
 ```
 <!-- END GENERATED FRAMEWORK PIPELINE -->
 

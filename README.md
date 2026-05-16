@@ -333,7 +333,8 @@ python tools/check_encoding_hygiene.py
 ```
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
-Inside `skill/`, those are canonical source identities unless the file actually exists there.
+Inside generated `skill/`, those are canonical module/source identities, not a claim
+that `skill/` is tracked source, unless the file actually exists there.
 Resolve missing atomized paths through `skill/compiled-module-map.json` to the containing runtime
 bundle and `MODULE_ID` section.
 

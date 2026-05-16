@@ -263,11 +263,19 @@ def render_chart(data: dict[str, Any]) -> str:
     lines: list[str] = []
     order = list(data["required_order"])
 
-    lines.append("[USER INPUT / CLAIM / EXCERPT]")
+    user_node = nodes["user_input"]
+    lines.append(f"[{user_node['label']}]")
     lines.append("             |")
     lines.append("             v")
 
-    for node_id in ("always_load", "v1_diagnostic_gate", "phase1_listening", "phase2_mandatory_passes", "diagnostic_ir"):
+    for node_id in (
+        "always_load",
+        "v1_diagnostic_gate",
+        "phase1_listening",
+        "phase2_mandatory_passes",
+        "diagnostic_ir",
+        "selected_held_registers",
+    ):
         node = nodes[node_id]
         lines.extend(_box(node["label"], _node_lines(node)))
         lines.append("             |")
@@ -288,11 +296,14 @@ def render_chart(data: dict[str, Any]) -> str:
         "routing_precedence",
         "selected_live_burden",
         "operative_submoves",
+        "delta_transition",
         "burden_result",
         "output_governance",
         "output_release",
         "render_contract",
+        "noetic_field_banner",
         "pass_shape",
+        "bounded_layer_b",
         "post_render_gate",
         "restoration_trace",
         "bottom_line",

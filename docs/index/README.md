@@ -1,0 +1,31 @@
+# docs/index source tree
+
+`docs/index.html` is generated. Do not edit it directly.
+
+Build command:
+
+```powershell
+python tools/build_docs_index.py
+```
+
+Freshness/interaction check:
+
+```powershell
+python tools/check_docs_index_interactions.py
+```
+
+## Source ownership
+
+- `manifest.json` owns the tab registry, section order, and source map.
+- `sections/*.html` are bootstrap-preserved source fragments for the public wiki view. They are intentionally summarized and are not canonical runtime owners.
+- `templates/index.html.tpl` owns the shell, CSS, and JavaScript surface.
+- `templates/pipeline.html.tpl` owns the standalone generated `docs/daee-epistemics-pipeline.html` shell.
+- The Owner/TTP module table is derived from `atomics/skill/references/diagnostics/module-catalogue.json`; stale hand-authored module rows are not accepted.
+- Framework, render, notation, and release/runtime claims must trace back to the listed owner files in `manifest.json`; these generated pages are public navigation surfaces, not runtime authorities.
+
+`manifest.json` classifies every tab and major visible block as owner-derived,
+structured-source-derived, curated summary, static snapshot, or layout only.
+Curated/static blocks are allowed for browser parity, but they must not be
+treated as canonical proof when an owner file changes.
+
+Bootstrap note: the initial source tree was mechanically extracted from the repaired `docs/index.html` to preserve browser parity before replacing stale hand-authored module data with owner-derived generated data.

@@ -16,10 +16,10 @@ generated_region:
 
 nodes:
   - id: user_input
-    label: USER INPUT / CLAIM / EXCERPT
+    label: USER INPUT / D0 / CLAIM / EXCERPT
     owner: skill/references/diagnostics/framework-pipeline.md
     lines:
-      - intake surface only; not a route
+      - D0 / surface-discourse intake only; not a route
       - not a deterministic argument bank key
     support_claim: framework_pipeline_audit_surface
 
@@ -84,6 +84,15 @@ nodes:
       - module dispatch blocked until all gate checks pass
     support_claim: runtime_diagnostic_compiler
 
+  - id: selected_held_registers
+    label: SELECTED/HELD N + LIVE REGISTERS
+    owner: skill/references/rubrics/output-release.md
+    lines:
+      - selected/held noetic frames remain live control state
+      - live heart, xi, Omega, sigma, mu, kappa affect release or stay unprinted
+      - remaining kappa / H status must be recoverable before closure
+    support_claim: selected_held_registers
+
   - id: gate_blocked
     label: GATE BLOCKED
     owner: skill/references/diagnostics/diagnostic-ir.md
@@ -140,6 +149,15 @@ nodes:
       - operative submoves do not count as recursion
     support_claim: ttp_entry_exit_criteria
 
+  - id: delta_transition
+    label: DELTA-NB / DELTA-KAPPA TRANSITION
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - Delta-nB is event-local burden-state change
+      - Delta-kappa is event-local dependency/collapse-radius change
+      - deltas feed Land(B) -> R(H,Delta), not decorative notation
+    support_claim: delta_transition_boundary
+
   - id: burden_result
     label: BURDEN LANDED
     owner: skill/references/diagnostics/recursive-state-transitions.md
@@ -177,10 +195,19 @@ nodes:
     lines:
       - Level 1 default compact DSL/IR header plus bounded governed response
       - Level 2 compact DSL / lab-report
-      - Level 3 internal/development audit compatibility
+      - legacy internal/development audit compatibility is not current render doctrine
       - expanded notation is forbidden as decorative proof of execution
       - diagnostic-render-contract before final shape
     support_claim: render_contract_before_final_shape
+
+  - id: noetic_field_banner
+    label: NOETIC-FIELD BANNER OBLIGATION
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    lines:
+      - mandatory noetic-field execution banner is first visible output
+      - produced from same classification state as Layer A
+      - not a substitute for diagnostic reduction or owner execution
+    support_claim: noetic_field_banner_default
 
   - id: pass_shape
     label: "LAYER A -> LAYER B -> STATE RE-READ"
@@ -193,6 +220,15 @@ nodes:
       - multi-burden does not mean multi-recursion by default
     support_claim: layer_a_layer_b_state_refresh
 
+  - id: bounded_layer_b
+    label: BOUNDED LAYER B OPERATION
+    owner: skill/references/rubrics/output-release.md
+    lines:
+      - answers only the permitted current live burden
+      - held material remains held until R(H,Delta) licenses release
+      - active submoves preserve target -> operation -> result
+    support_claim: bounded_layer_b_release
+
   - id: restoration_trace
     label: RESTORATION TRACE
     owner: skill/references/rubrics/diagnostic-render-contract.md
@@ -203,10 +239,11 @@ nodes:
     support_claim: restoration_trace_shape
 
   - id: post_render_gate
-    label: POST-RENDER RE-ENTRY GATE
+    label: R(H,Delta) RECONSTRUCTION / RE-ENTRY GATE
     owner: skill/references/diagnostics/recursive-state-transitions.md
     lines:
       - state re-read asks what cleared and what remains live
+      - reconstruct selected/held N, live registers, burden deltas, kappa, and H
       - held routes rechecked
       - Delta-kappa dependency-radius changes are consumed before closure
       - convergence through controlled state transitions
@@ -229,16 +266,20 @@ required_order:
   - phase1_listening
   - phase2_mandatory_passes
   - diagnostic_ir
+  - selected_held_registers
   - gate_blocked
   - gate_open
   - routing_precedence
   - selected_live_burden
   - operative_submoves
+  - delta_transition
   - burden_result
   - output_governance
   - output_release
   - render_contract
+  - noetic_field_banner
   - pass_shape
+  - bounded_layer_b
   - post_render_gate
   - restoration_trace
   - bottom_line
@@ -260,9 +301,12 @@ edges:
     to: diagnostic_ir
     support_claim: ir_before_routing
   - from: diagnostic_ir
+    to: selected_held_registers
+    support_claim: selected_held_registers
+  - from: selected_held_registers
     to: gate_blocked
     support_claim: gate_blocked_semantics
-  - from: diagnostic_ir
+  - from: selected_held_registers
     to: gate_open
     support_claim: routing_before_render
   - from: gate_blocked
@@ -278,6 +322,9 @@ edges:
     to: operative_submoves
     support_claim: operative_submoves_not_recursion
   - from: operative_submoves
+    to: delta_transition
+    support_claim: delta_transition_boundary
+  - from: delta_transition
     to: burden_result
     support_claim: burden_result_before_refresh
   - from: burden_result
@@ -290,9 +337,15 @@ edges:
     to: render_contract
     support_claim: output_release_before_render
   - from: render_contract
+    to: noetic_field_banner
+    support_claim: noetic_field_banner_default
+  - from: noetic_field_banner
     to: pass_shape
     support_claim: layer_a_layer_b_state_refresh
   - from: pass_shape
+    to: bounded_layer_b
+    support_claim: bounded_layer_b_release
+  - from: bounded_layer_b
     to: post_render_gate
     support_claim: post_render_gate_before_closure
   - from: post_render_gate
@@ -559,10 +612,26 @@ concept_ownership:
     label: selected current live burden
     owner: skill/references/rubrics/diagnostic-render-contract.md
     support_claim: selected_live_burden_operator
+  - id: selected_held_registers
+    label: selected/held N and live registers
+    owner: skill/references/rubrics/output-release.md
+    support_claim: selected_held_registers
+  - id: delta_transition_boundary
+    label: Delta-nB / Delta-kappa transition boundary
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: delta_transition_boundary
   - id: render_shape
     label: render shape
     owner: skill/references/rubrics/diagnostic-render-contract.md
     support_claim: render_contract_before_final_shape
+  - id: noetic_field_banner
+    label: noetic-field banner obligation
+    owner: skill/references/rubrics/diagnostic-render-contract.md
+    support_claim: noetic_field_banner_default
+  - id: bounded_layer_b
+    label: bounded Layer B operation
+    owner: skill/references/rubrics/output-release.md
+    support_claim: bounded_layer_b_release
   - id: output_release
     label: output release
     owner: skill/references/rubrics/output-release.md
@@ -607,6 +676,10 @@ concept_ownership:
     label: grounded noetic re-read shape
     owner: skill/references/diagnostics/recursive-state-transitions.md
     support_claim: grounded_noetic_re_read
+  - id: source_runtime_layout
+    label: source/runtime layout
+    owner: docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md
+    support_claim: source_runtime_layout
 
 support_claims:
   always_load_background:
@@ -783,6 +856,39 @@ support_claims:
           - "state re-read"
           - "If the release status says another bounded pass is licensed, continue with Burden-Cycle N+1"
 
+  noetic_field_banner_default:
+    owners:
+      - source: skill/references/rubrics/diagnostic-render-contract.md
+        tokens:
+          - "mandatory noetic-field execution banner"
+          - "The banner is a render obligation"
+          - "same classification state as Layer A"
+
+  selected_held_registers:
+    owners:
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "selected/held noetic frames"
+          - "live heart, xi, Omega, sigma, mu, kappa"
+          - "remaining kappa / H status"
+
+  delta_transition_boundary:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Delta-nB"
+          - "Delta-kappa"
+          - "R(H,Delta)"
+          - "remaining `kappa` / `H` status"
+
+  bounded_layer_b_release:
+    owners:
+      - source: skill/references/rubrics/output-release.md
+        tokens:
+          - "Layer B answers only the permitted current live burden"
+          - "held material remains live"
+          - "target -> operation -> result"
+
   restoration_trace_shape:
     owners:
       - source: skill/references/rubrics/diagnostic-render-contract.md
@@ -898,6 +1004,15 @@ support_claims:
         tokens:
           - "Rule S-9"
           - "Rule P-8"
+
+  source_runtime_layout:
+    owners:
+      - source: docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md
+        tokens:
+          - "atomics/skill/** tracked in repo as canonical source"
+          - "skill/** ignored local/CI generated runtime output"
+          - "CI/local build compiles atomics -> generated skill/**"
+          - "raw atomics are not distributed as the .skill runtime"
 
   grounded_noetic_re_read:
     owners:

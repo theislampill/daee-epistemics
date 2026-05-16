@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "status": "generated-output-owner-map",
+  "output": "docs/index.html",
+  "template": "docs/index/templates/index.html.tpl",
+  "bootstrap_note": "Bootstrapped mechanically from the current intended docs/index.html after tab-regression repair; generated output is now rebuilt from docs/index/** plus owner-derived data.",
+  "derived_data": {
+    "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
+    "framework_pipeline": "atomics/skill/references/diagnostics/framework-pipeline.yaml",
+    "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
+    "audit_index": "docs/audits/INDEX.md"
+  },
+  "tabs": [
+    {
+      "id": "architecture",
+      "label": "Architecture",
+      "panel": "architecture",
+      "section_source": "docs/index/sections/architecture.html",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "static curated docs/index source with owner-derived cross-links",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "README.md",
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/framework-pipeline.yaml",
+        "atomics/skill/references/diagnostics/framework-pipeline.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md"
+      ],
+      "generated_blocks": [],
+      "folded_sections": [
+        {
+          "label": "Pipeline",
+          "reason": "The Architecture landing tab contains the current runtime spine and pipeline cards so the top navigation remains four tabs."
+        }
+      ]
+    },
+    {
+      "id": "owners",
+      "label": "Owners & TTP",
+      "panel": "owners",
+      "section_source": "docs/index/sections/owners.html",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "content_source_type": "static curated explanation plus generated module table",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "atomics/skill/references/diagnostics/module-catalogue.json",
+        "atomics/skill/references/diagnostics/coverage-scope.yaml",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md"
+      ],
+      "generated_blocks": [
+        {
+          "id": "module_catalogue_table",
+          "provider": "renderOwnerSourceTable",
+          "classification": "OWNER_DERIVED",
+          "owner_source": "atomics/skill/references/diagnostics/module-catalogue.json"
+        }
+      ]
+    },
+    {
+      "id": "theory",
+      "label": "Theory Deep Dive",
+      "panel": "theory",
+      "section_source": "docs/index/sections/theory.html",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "static curated docs/index source summarizing formalism owners",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "docs/algebraic-notation-and-noetic-formalism.md",
+        "docs/register-formalism-implementation-ledger.md",
+        "docs/audits/v0.4.1.0-nla-operativity-audit.md",
+        "docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+      ],
+      "generated_blocks": []
+    },
+    {
+      "id": "reference",
+      "label": "Reference Library",
+      "panel": "reference",
+      "section_source": "docs/index/sections/reference.html",
+      "classification": "STATIC_SNAPSHOT",
+      "content_source_type": "static curated reference browser with embedded owner document snapshots",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/**",
+        "docs/audits/INDEX.md"
+      ],
+      "generated_blocks": [],
+      "folded_sections": [
+        {
+          "label": "Case Library",
+          "reason": "Case Library material remains available through Reference Library entries and the Owner/TTP live module table rather than a separate top-level tab."
+        }
+      ]
+    }
+  ],
+  "visible_blocks": [
+    {
+      "id": "top_navigation_tabs",
+      "label": "Top navigation tabs",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "docs/index/manifest.json",
+      "owner_sources": []
+    },
+    {
+      "id": "formal_notation_banner_graph",
+      "label": "Formal notation banner / graph",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/sections/theory.html",
+      "owner_sources": [
+        "docs/algebraic-notation-and-noetic-formalism.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+      ]
+    },
+    {
+      "id": "concept_graph",
+      "label": "Concept graph",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "docs/algebraic-notation-and-noetic-formalism.md",
+        "docs/register-formalism-implementation-ledger.md"
+      ]
+    },
+    {
+      "id": "relation_map",
+      "label": "Relation map",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "docs/register-formalism-implementation-ledger.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+      ]
+    },
+    {
+      "id": "register_explanations",
+      "label": "Register explanations",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/sections/theory.html",
+      "owner_sources": [
+        "docs/register-formalism-implementation-ledger.md",
+        "docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md"
+      ]
+    },
+    {
+      "id": "owner_ttp_module_table",
+      "label": "Owner/TTP module table",
+      "classification": "OWNER_DERIVED",
+      "current_source": "tools/build_docs_index.py",
+      "provider": "renderOwnerSourceTable",
+      "owner_sources": [
+        "atomics/skill/references/diagnostics/module-catalogue.json"
+      ]
+    },
+    {
+      "id": "reference_library_entries",
+      "label": "Reference library entries",
+      "classification": "STATIC_SNAPSHOT",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "atomics/skill/references/**"
+      ]
+    },
+    {
+      "id": "embedded_viewer_snapshots",
+      "label": "Embedded viewer snapshots",
+      "classification": "STATIC_SNAPSHOT",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/**"
+      ]
+    },
+    {
+      "id": "scripts_tab_behavior",
+      "label": "Scripts / tab behavior",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": []
+    },
+    {
+      "id": "generated_banner_provenance",
+      "label": "Generated banner / provenance block",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "tools/build_docs_index.py",
+      "owner_sources": [
+        "docs/index/manifest.json"
+      ]
+    }
+  ],
+  "standalone_pages": [
+    {
+      "id": "pipeline_standalone",
+      "label": "Standalone pipeline page",
+      "output": "docs/daee-epistemics-pipeline.html",
+      "template": "docs/index/templates/pipeline.html.tpl",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "atomics/skill/references/diagnostics/framework-pipeline.yaml",
+        "atomics/skill/references/diagnostics/framework-pipeline.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md"
+      ],
+      "disposition": "generate",
+      "reason": "Still linked from AGENTS and docs/audits/INDEX as a public/navigation pipeline aid; keep as generated standalone deep-link rather than deleting."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+<div class="hero">
+<h1>Owners &amp; TTP</h1>
+<p>Owners are the control surfaces that make meta-noetic memetics executable. TTPs are state-transformers over diagnosed burdens, not black-box labels.</p>
+</div>
+<div class="panel">
+<h2>How to read an owner/TTP</h2>
+<div class="opGraph">
+<div class="opGraphNode" style="--c:var(--cyan)"><strong>1. Gate</strong><p>IR and routing authorize or suppress the move.</p></div>
+<div class="opGraphNode" style="--c:var(--green)"><strong>2. Trigger</strong><p>A live τ/ξ/Ω/σ/μ/κ condition activates an owner.</p></div>
+<div class="opGraphNode" style="--c:var(--violet)"><strong>3. Owner floor</strong><p>The file/section defines the operation.</p></div>
+<div class="opGraphNode" style="--c:var(--orange)"><strong>4. Submove</strong><p>ⁿBᵢ[OP] performs target → operation → result.</p></div>
+<div class="opGraphNode" style="--c:var(--red)"><strong>5. Delta / Reread</strong><p>ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ feeds R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ).</p></div>
+</div>
+<div class="callout"><strong>Operational test:</strong> A TTP is not “mentioned” until it changes target state. Each active operator should be readable as <code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</code>.</div>
+</div>
+<div class="panel">
+<h2>TTP/operator graph — click an operator</h2>
+<p class="subtle">These are the same labels that appear in the Concept Graph and Relations Map. Click any chip there to jump here.</p>
+<div class="filters">
+<input id="opSearch" oninput="renderOperatorGraph()" placeholder="Filter operators..."/>
+<select id="opFamily" onchange="renderOperatorGraph()">
+<option value="">All families</option>
+<option>Diagnostic owner</option>
+<option>Diagnostic pass</option>
+<option>Technique</option>
+<option>Tactic</option>
+<option>Procedure</option>
+</select>
+</div>
+<div class="opLayout">
+<div class="opList" id="operatorGraphList"></div>
+<div class="opDetail" id="operatorGraphDetail"></div>
+</div>
+</div>
+<div class="panel">
+<h2>Owner families — control layers</h2>
+<div class="ownerFamilies">
+<div class="ownerList" id="ownerFamilyList"></div>
+<div class="ownerDetail" id="ownerFamilyDetail"></div>
+</div>
+</div>
+<div class="panel">
+<h2>Operator transformation matrix</h2>
+<p class="subtle">Audit matrix: what each operator acts on, when it activates, and what state delta it should produce.</p>
+<div id="operatorMatrix"></div>
+</div>
+<div class="panel">
+<h2>Owner/source table</h2>
+<p class="subtle">For code auditors: file/source identities and what they govern.</p>
+<div id="ownerSourceTable"></div>
+</div>

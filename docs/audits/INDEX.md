@@ -21,6 +21,10 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-ci-release-operativity-audit.md` | CURRENT-CANDIDATE | Checks push/PR CI and manual artifact workflow against release-gate constraints. |
 | `docs/audits/v0.4.1.0-release-claim-inventory.md` | CURRENT-CANDIDATE | Enumerates local release-facing docs, Git tags, and GitHub Releases before claim classification. |
 | `docs/audits/v0.4.1.0-release-claim-integrity-audit.md` | CURRENT-CANDIDATE | Audits release-facing claims with claim/evidence/checker-or-provenance/qualifier discipline. |
+| `docs/audits/v0.4.1.0-complementary-ssot-pipeline-freshness-audit.md` | CURRENT-CANDIDATE | Traces pipeline/runtime/release claims through complement-bearing owners, patches stale public surfaces, and hardens framework freshness checks. |
+| `docs/audits/v0.4.1.0-history-regression-archaeology-audit.md` | CURRENT-CANDIDATE | Full Git-history regression archaeology with ANDON events, closure matrix, 5 Whys, and Poka-yoke lessons for recurring release/runtime drift. |
+| `docs/audits/v0.4.1.0-docs-index-generator-parity-audit.md` | CURRENT-CANDIDATE | Converts `docs/index.html` into a generated public viewer backed by `docs/index/**`, owner-derived module rows, and an interaction/freshness checker. |
+| `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | CURRENT-CANDIDATE | Classifies generated index and pipeline-page blocks by owner coupling, manifest provenance, notation coherence, and standalone-page disposition. |
 
 ## Consolidated Audit History
 
@@ -43,7 +47,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/compiled-runtime-tools.md` | CURRENT | Compiler/checker guide; notes historical harness naming. |
 | `docs/recursive-traversal-governance.md` | CURRENT | Reread and traversal governance. |
 | `docs/runtime-harness-onboarding.md` | CURRENT | Optional route/check harness maintainer guidance; legacy implementation filenames remain compatibility details. |
-| `docs/index.html` and `docs/daee-epistemics-pipeline.html` | CURRENT | Navigation/visual architecture aids, not runtime source. |
+| `docs/index.html` and `docs/daee-epistemics-pipeline.html` | CURRENT | Generated navigation/visual architecture aids, not runtime source. |
 
 ## Retention Rule
 

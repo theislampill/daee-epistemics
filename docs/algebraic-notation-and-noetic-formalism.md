@@ -22,7 +22,7 @@ live-smoke claim, or a package/release proof claim by itself.
 Current compact runtime spine:
 
 ```text
-Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 schema-light register bridge baseline:
@@ -95,7 +95,7 @@ Rejected as runtime behavior:
 | `ΔⁿB` | `Delta-nB` | Local landed state change | Implemented bridge | Local burden delta before reread. |
 | `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle | Implemented bridge | Licensed only after `Land(B) -> R(H,Delta)`. |
 | `ⁿBᵢ[OP]` | `nBi[OP]` | Operator signature | Implemented bridge | `target -> operation -> result -> Delta-nB / Delta-kappa`. |
-| `R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)` | `R(H,Delta-nB{heart,xi,Omega,sigma,mu},Delta-kappa)` | Expanded reread gate | Implemented bridge | Current `R(H,Delta)` plus live register/dependency deltas. |
+| `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)` | `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)` | Expanded reread gate | Implemented bridge | Current `R(H,Δ)` plus live register/dependency deltas; `R(H,Delta)` remains ASCII fallback. |
 | `𝒞(Ψᴺ)` | `C(PsiN)` | Constrained noetic collapse / discursive resolution | Implemented terminal formalism | Endpoint after landing, held-route reread, and decision. |
 | `N_fiṭrī ∧ ʿaql ṣarīḥ` | `N_fitri and aql_sarih` | Fitri/sound-reason restorative orientation | Implemented terminal formalism | Telos after governing misread loses control; not a shortcut marker. |
 
@@ -110,7 +110,7 @@ one of these:
 - hold/release posture,
 - burden selection,
 - collapse radius,
-- `Land(B)` or `R(H,Delta)`,
+- `Land(B)` or `R(H,Δ)`,
 - terminal restoration boundary.
 
 If a symbol does not change those controls, it belongs in this spec or an audit explanation,
@@ -120,7 +120,7 @@ raw `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` unless the user asks for formalism or `:dsl`
 ## Delta / Divergence / Curl Operator Distinction
 
 `Delta-nB` is the burden-event delta: the local landed state change after a bounded owner/TTP
-operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Delta)` before
+operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Δ)` before
 STOP/HOLD/PARTIAL/RECURSE. These are event-local transition operators.
 
 The field-level operators are different. `∇·` (del-dot, del dot, nabla dot, divergence)
@@ -140,11 +140,13 @@ PARTIAL/RECURSE; answering one local proposition does not discharge a curl-like 
 
 Neither `∇·` nor `∇×` replaces `Delta-nB` or `Delta-kappa`. Delta operators are computed at burden
 events; divergence/curl read the field those deltas have produced across the burden/dependency
-space. The operators are audit/formalism visibility only unless the user explicitly asks for
-algebra, formalism, or audit visibility; they are not default runtime notation.
+space. Default governed output must use `∇·κ` or `∇×κ` when the field diagnostic is
+control-relevant, but only as compact governance state markers tied to dependency pressure,
+loop-breaking, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE, or checker outcome.
+long formalism exposition and alias-heavy operator explanation remain audit/formalism visibility.
 
 The diagnostic is operative only when it changes owner/TTP eligibility, held material,
-hold/release posture, burden selection, dependency radius, `R(H,Delta)`, PARTIAL/RECURSE/COMPLETE,
+hold/release posture, burden selection, dependency radius, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE,
 or checker outcome. It is symbol theater if it merely decorates an audit or appears without a
 control effect. Shannon language remains bounded to signal, encoding, channel constraint,
 noise/distortion, redundancy/error correction, and capacity/compression-loss analogies; it never
@@ -153,10 +155,11 @@ measures truth, meaning, warrant, revelation, fitrah, or sound reason.
 ## Divergence / Curl Diagnostic Boundary
 
 Allowed forms: `∇·`, `∇×`, `del-dot`, `del dot`, `del-cross`, `del cross`, `nabla dot`,
-`nabla cross`, `divergence`, and `curl`. In default runtime output, the Unicode operators and
-ASCII operator names are forbidden unless algebra/formalism/audit visibility is explicitly
-requested. In audit/formalism surfaces, they are allowed only with the operator distinction and
-control-effect rule above.
+`nabla cross`, `divergence`, and `curl`. In default runtime output, compact Unicode markers
+must appear when control-relevant in state notation such as `State: Δκ live; ∇·κ positive;
+∇×κ unresolved; R(H,Δ): RECURSE.` ASCII aliases and long explanations are not default notation
+unless the user asks for algebra/formalism/audit visibility. In audit/formalism surfaces, all
+forms are allowed only with the operator distinction and control-effect rule above.
 
 ## Correct Use
 

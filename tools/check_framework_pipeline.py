@@ -67,19 +67,77 @@ REQUIRED_NODES = [
     "PHASE 1: LISTENING",
     "DIAGNOSTIC REDUCTION - PHASE 2 AXES + MANDATORY PASSES",
     "DIAGNOSTIC IR - FORMATION + DISPATCH GATE",
+    "SELECTED/HELD N + LIVE REGISTERS",
     "GATE BLOCKED",
     "GATE OPEN",
     "ROUTING PRECEDENCE",
     "SELECTED CURRENT LIVE BURDEN",
     "OPERATIVE SUBMOVE(S)",
+    "DELTA-NB / DELTA-KAPPA TRANSITION",
     "BURDEN LANDED",
     "OUTPUT GOVERNANCE",
     "OUTPUT-RELEASE RUBRIC",
     "DIAGNOSTIC RENDER CONTRACT",
+    "NOETIC-FIELD BANNER OBLIGATION",
+    "BOUNDED LAYER B OPERATION",
     "RESTORATION TRACE",
-    "POST-RENDER RE-ENTRY GATE",
+    "R(H,Delta) RECONSTRUCTION / RE-ENTRY GATE",
     "BOTTOM-LINE SYNTHESIS / NEXT MOVE",
 ]
+
+ACTIVE_SURFACE_PATHS = [
+    Path("README.md"),
+    Path("AGENTS.md"),
+    Path("docs/index.html"),
+    Path("docs/daee-epistemics-pipeline.html"),
+    Path("docs/release-artifacts.md"),
+    Path("docs/v0.4.1.0-release-log.md"),
+    Path("docs/v0.4.1.0-release-notes.md"),
+    Path(PIPELINE_YAML_REL),
+    Path(FRAMEWORK_MD_REL),
+]
+
+PUBLIC_ARCHITECTURE_PATHS = [
+    Path("docs/index.html"),
+    Path("docs/daee-epistemics-pipeline.html"),
+]
+
+LEGACY_CONTEXT_TOKENS = (
+    "legacy",
+    "historical",
+    "history",
+    "compatibility",
+    "formerly",
+    "deprecated",
+    "archive",
+    "filename",
+    "check_level3",
+    "daee_level3",
+    "level3-runs",
+)
+
+PIPELINE_LABEL_CONTEXT_TOKENS = (
+    "legacy",
+    "historical",
+    "history",
+    "compatibility",
+    "wrapper",
+    "deprecated",
+    "archive",
+    "filename",
+    "check_pipeline2_bridge",
+    "pipeline-label deprecation",
+)
+
+FRAMEWORK_RUNTIME_FORBIDDEN_TERMS = (
+    "Natural Language Autoencoder",
+    "activation verbalizer",
+    "activation reconstructor",
+    "del-dot",
+    "del-cross",
+    "antisymmetric Jacobian",
+    "exterior derivative",
+)
 
 GATE_CHECK_PATTERNS = [
     r"Mandatory\s+minimum\s+fields\s+populated",
@@ -276,6 +334,10 @@ def resolve_reference(raw_ref: str, errors: list[str]) -> Path | None:
         return None
     if ref.startswith("skill/"):
         candidate = ROOT / "atomics" / "skill" / ref.removeprefix("skill/")
+        if candidate.exists():
+            return candidate
+    if ref.startswith("docs/"):
+        candidate = ROOT / ref
         if candidate.exists():
             return candidate
     if "/" in ref:
@@ -803,12 +865,17 @@ def check_yaml_concept_ownership(pipeline_data: dict[str, Any], chart: str, erro
         "ir_formation",
         "routing",
         "selected_live_burden",
+        "selected_held_registers",
+        "delta_transition_boundary",
         "render_shape",
+        "noetic_field_banner",
+        "bounded_layer_b",
         "output_release",
         "recursion",
         "framework_pipeline_audit_surface",
         "dsl_ir_representation",
         "meta_noetic_memetics_object_domain",
+        "source_runtime_layout",
     }
     concepts = pipeline_data.get("concept_ownership") or []
     seen = {item.get("id") for item in concepts if isinstance(item, dict)}
@@ -824,6 +891,84 @@ def check_yaml_concept_ownership(pipeline_data: dict[str, Any], chart: str, erro
             errors.append(f"framework-pipeline.yaml: concept owner missing: {owner}")
         if isinstance(label, str) and label.lower() not in chart.lower():
             errors.append(f"generated chart missing concept ownership label: {label}")
+
+
+def _line_has_allowed_context(line: str, allowed_tokens: tuple[str, ...]) -> bool:
+    lower = line.lower()
+    return any(token.lower() in lower for token in allowed_tokens)
+
+
+def _read_surface(path: Path, errors: list[str]) -> str:
+    full_path = ROOT / path
+    if not full_path.is_file():
+        errors.append(f"active surface missing: {path.as_posix()}")
+        return ""
+    return read_text(full_path, errors)
+
+
+def check_active_surface_freshness(errors: list[str]) -> None:
+    """Guard public architecture surfaces against stale broad-token drift."""
+    texts: dict[Path, str] = {}
+    for path in ACTIVE_SURFACE_PATHS:
+        texts[path] = _read_surface(path, errors)
+
+    for path, text in texts.items():
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            if path == Path("docs/index.html") and line.startswith("const DOCS = "):
+                continue
+            if re.search(r"\b(?:Level3|Level 3|level3)\b", line) and not _line_has_allowed_context(line, LEGACY_CONTEXT_TOKENS):
+                errors.append(f"{path.as_posix()}:{line_no}: Level3 language must be legacy/historical/compatibility only")
+            if re.search(r"\b(?:Pipeline #1|Pipeline #2|Pipeline2|pipeline2)\b", line) and not _line_has_allowed_context(
+                line, PIPELINE_LABEL_CONTEXT_TOKENS
+            ):
+                errors.append(f"{path.as_posix()}:{line_no}: Pipeline #1/#2 language must be compatibility or historical only")
+            if re.search(r"(?<!atomics/)skill/\*\*.*tracked\s+source|(?<!atomics/)skill/.*canonical\s+source|generated\s+runtime.*tracked\s+source", line, re.I):
+                errors.append(f"{path.as_posix()}:{line_no}: generated skill/ must not be described as tracked/canonical source")
+
+    framework_text = "\n".join([texts.get(Path(PIPELINE_YAML_REL), ""), texts.get(Path(FRAMEWORK_MD_REL), "")])
+    for term in FRAMEWORK_RUNTIME_FORBIDDEN_TERMS:
+        if term.lower() in framework_text.lower():
+            errors.append(f"framework-pipeline runtime surface must not print audit-only/formalism term: {term}")
+
+    required_index_terms = [
+        "ignored generated runtime",
+        "raw atomics are not packaged",
+        "Natural Language Autoencoder",
+        "activation verbalizer",
+        "activation reconstructor",
+        "reconstruction fidelity",
+        "not generic linear algebra",
+        "not Shannon",
+        "Delta-nB",
+        "Delta-kappa",
+        "field diagnostics",
+        "compact governance markers",
+        "long formalism exposition",
+    ]
+    for path in PUBLIC_ARCHITECTURE_PATHS:
+        text = texts.get(path, "")
+        lower = text.lower()
+        for term in required_index_terms:
+            if term.lower() not in lower:
+                errors.append(f"{path.as_posix()}: public architecture surface missing freshness token: {term}")
+
+    release_text = "\n".join(
+        texts.get(path, "")
+        for path in (
+            Path("docs/release-artifacts.md"),
+            Path("docs/v0.4.1.0-release-log.md"),
+            Path("docs/v0.4.1.0-release-notes.md"),
+        )
+    )
+    release_required = [
+        "517a9f133b6bc11f7f9b4dc1160f461c58b9e94e",
+        "184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E",
+        "public v0.4.1.0 release asset/provenance replaced",
+        "raw atomics are not packaged",
+    ]
+    for term in release_required:
+        if term.lower() not in release_text.lower():
+            errors.append(f"v0.4.1.0 release surfaces missing provenance token: {term}")
 
 
 def check_compiled_runtime_pipeline_surface(framework_text: str, errors: list[str]) -> None:
@@ -927,6 +1072,7 @@ def main() -> int:
     check_yaml_transitions(pipeline_data, normalized_chart, errors)
     check_yaml_pass_shape_and_ttp(pipeline_data, normalized_chart, errors)
     check_yaml_concept_ownership(pipeline_data, normalized_chart, errors)
+    check_active_surface_freshness(errors)
     check_legacy_blockquote(framework_text, errors)
     check_required_nodes(normalized_chart, errors)
     check_always_load(skill_text, normalized_chart, errors)

@@ -41,6 +41,8 @@ APPROVED_SYMBOL_CLASSIFICATIONS = {
     "OPERATIVE",
     "AUDIT_DIAGNOSTIC_ALLOWED",
     "DEFAULT_RUNTIME_FORBIDDEN",
+    "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+    "DEFAULT_FORMALISM_EXPOSITION_FORBIDDEN",
     "DOCS_ONLY",
     "HISTORICAL_ONLY",
     "ORNAMENTAL_RISK",
@@ -244,10 +246,11 @@ SKILL_COMPLIANCE_LAYER_TERMS = {
         "owner/TTP eligibility",
     ),
     "Divergence/curl diagnostics": (
-        "field-level audit diagnostics",
+        "field-level diagnostics",
         "Delta-produced",
         "not Delta replacements",
-        "not default runtime notation",
+        "compact governance state markers",
+        "long formalism exposition",
     ),
     "NLA reconstruction fidelity": (
         "Natural Language Autoencoder",
@@ -303,7 +306,8 @@ DIVERGENCE_CURL_OPERATOR_FORMS = {
 
 DIVERGENCE_CURL_CLASSIFICATIONS = {
     "AUDIT_DIAGNOSTIC_ALLOWED",
-    "DEFAULT_RUNTIME_FORBIDDEN",
+    "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+    "DEFAULT_FORMALISM_EXPOSITION_FORBIDDEN",
     "HISTORICAL_ONLY",
     "ORNAMENTAL_RISK",
     "NEEDS_PATCH",
@@ -321,13 +325,42 @@ DIVERGENCE_CURL_CONTROL_TERMS = (
     "checker",
 )
 
-DEFAULT_RUNTIME_OPERATOR_FORBIDDEN = (
+DEFAULT_FIELD_DIAGNOSTIC_MARKERS = (
     "∇·",
     "∇×",
+)
+
+DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION = (
     "del-dot",
     "del-cross",
     "nabla dot",
     "nabla cross",
+    "antisymmetric jacobian",
+    "exterior derivative",
+)
+
+DEFAULT_FORMAL_MARKER_CONTROL_TERMS = (
+    "state",
+    "κ",
+    "kappa",
+    "r(h,δ)",
+    "r(h,delta)",
+    "δκ",
+    "delta-kappa",
+    "dependency",
+    "pressure",
+    "loop",
+    "partial",
+    "recurse",
+    "complete",
+    "closure",
+    "held",
+    "live",
+    "checker",
+    "control",
+    "land(b)",
+    "burden",
+    "governance",
 )
 
 DEFAULT_RUNTIME_CLAIM_FORBIDDEN = (
@@ -338,6 +371,12 @@ DEFAULT_RUNTIME_CLAIM_FORBIDDEN = (
     "entropy proves",
     "entropy measures warrant",
     "entropy measures meaning",
+    "divergence measures truth",
+    "divergence measures warrant",
+    "curl measures truth",
+    "curl measures warrant",
+    "nabla measures truth",
+    "nabla measures warrant",
 )
 
 DEFAULT_RUNTIME_NLA_FORBIDDEN = (
@@ -359,9 +398,12 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = (
     "do not print",
     "not default",
     "audit/formalism",
+    "forbidden default",
+    "forbidden example",
     "formal/spec notation",
     "expanded formalism render boundary",
     "anti-symbol-theater",
+    "long formalism exposition",
 )
 
 DIVERGENCE_CURL_AUDIT_DOCS = (
@@ -409,7 +451,8 @@ REQUIRED_TOKENS = {
         "nabla cross",
         "antisymmetric part of the Jacobian / exterior",
         "Neither `∇·` nor `∇×` replaces",
-        "not default runtime notation",
+        "compact governance state markers",
+        "long formalism exposition",
         "The diagnostic is operative only when it changes owner/TTP eligibility",
         "Shannon language remains bounded",
     ],
@@ -1004,14 +1047,23 @@ def check_default_runtime_operator_boundary(root: Path, errors: list[str]) -> No
             continue
         text = path.read_text(encoding="utf-8")
         lower = text.lower()
-        for token in DEFAULT_RUNTIME_OPERATOR_FORBIDDEN:
-            haystack = text if token.startswith("∇") else lower
-            needle = token if token.startswith("∇") else token.lower()
-            if needle in haystack:
-                errors.append(
-                    f"skill/{rel}: default runtime surface contains forbidden "
-                    f"divergence/curl operator form {token!r}"
-                )
+        lines = text.splitlines()
+        for index, line in enumerate(lines):
+            window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
+            window_lower = window.lower()
+            for token in DEFAULT_FIELD_DIAGNOSTIC_MARKERS:
+                if token in line and not any(term in window_lower for term in DEFAULT_FORMAL_MARKER_CONTROL_TERMS):
+                    errors.append(
+                        f"skill/{rel}: compact field diagnostic marker {token!r} "
+                        f"lacks control-bound context near line {index + 1}"
+                    )
+            line_lower = line.lower()
+            for token in DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION:
+                if token in line_lower and not any(context in window_lower for context in DEFAULT_RUNTIME_CONTEXT_REQUIRED):
+                    errors.append(
+                        f"skill/{rel}: formalism exposition token {token!r} appears "
+                        f"without explicit boundary/example context near line {index + 1}"
+                    )
         for claim in DEFAULT_RUNTIME_CLAIM_FORBIDDEN:
             if claim.lower() in lower:
                 errors.append(f"skill/{rel}: default runtime contains forbidden NLA/Shannon claim {claim!r}")

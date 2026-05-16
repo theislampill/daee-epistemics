@@ -1,0 +1,2905 @@
+COMMIT ad6da8008cf4a8d7bede002d458581cd1c746969 2026-04-14 16:03:41 -0400 Initial import of daee-epistemics skill
+A	.gitignore
+A	SKILL.md
+A	references/case-library/INDEX.md
+A	references/case-library/do-christian-extensions.md
+A	references/case-library/do-core.md
+A	references/case-library/do-second-loop.md
+A	references/case-library/noetic-profiles.md
+A	references/diagnostics/INDEX.md
+A	references/diagnostics/discourse-orientation.md
+A	references/diagnostics/fitrah-perspectives.md
+A	references/diagnostics/four-modes-concealment.md
+A	references/diagnostics/kalamic-interlocutor.md
+A	references/diagnostics/noetic-reading-checklist.md
+A	references/diagnostics/seven-deformations.md
+A	references/procedures/INDEX.md
+A	references/procedures/P1-fitrah-restoration.md
+A	references/procedures/P2-objection-mapping.md
+A	references/procedures/P3-reason-revelation-tension.md
+A	references/procedures/P4-maieutic.md
+A	references/procedures/P5-already-believing.md
+A	references/procedures/P6-universal-aqidah-principle.md
+A	references/sound-reason-epistemology.md
+A	references/tactics/E1-broadening-evidence.md
+A	references/tactics/E2-inferential-criterion.md
+A	references/tactics/E3-cumulative-case.md
+A	references/tactics/E4-cross-cultural-check.md
+A	references/tactics/F1-supra-vs-antirational.md
+A	references/tactics/F2-volitional-dimensions.md
+A	references/tactics/F3-practice-epistemic-access.md
+A	references/tactics/INDEX.md
+A	references/tactics/M1-self-refutation.md
+A	references/tactics/M1P-performative-self-refutation.md
+A	references/tactics/M2-prior-probability.md
+A	references/tactics/M3-orphaned-intuition.md
+A	references/tactics/M4-grief-register.md
+A	references/tactics/M5-deformation-triage.md
+A	references/tactics/M6-excluded-middle.md
+A	references/tactics/M7-definition-anchor.md
+A	references/tactics/M8-reductio.md
+A	references/tactics/R1-internalist-criterion.md
+A	references/tactics/R2-the-reminder.md
+A	references/tactics/R3-warranted-basic-belief.md
+A	references/tactics/doubt-vs-skepticism.md
+A	references/tactics/husn-al-nazar-arguments.md
+A	references/tactics/inductive-fitri-method.md
+A	references/tactics/symmetric-taqlid-check.md
+A	references/techniques/INDEX.md
+A	references/techniques/V1-diagnostic.md
+A	references/techniques/V2-reconstituting-reason.md
+A	references/techniques/V3-regress-dissolution.md
+A	references/techniques/V4-contamination-identification.md
+A	references/techniques/V5-directing-attention-signs.md
+A	references/techniques/V6-convergence.md
+A	references/techniques/V7-taqlid-check.md
+A	references/techniques/V8-bila-kayf-anchor.md
+A	references/techniques/V9-necessary-knowledge-priority.md
+A	references/techniques/heuristics.md
+A	references/terminology.md
+
+COMMIT 5a2bc19e767df824eebdbb290a8659777acada0f 2026-04-14 16:04:22 -0400 Add Git attributes for consistent Markdown line endings
+A	.gitattributes
+
+COMMIT a17453f1a348d860c9e4abbe10f571941b4a83ca 2026-04-14 16:28:10 -0400 Add repository README
+A	README.md
+
+COMMIT 3bf8c2c2736abf8ac16d3d677b598f47c5b0866c 2026-04-14 16:48:54 -0400 Reorganize repository into root README and skill package
+M	README.md
+R100	SKILL.md	skill/SKILL.md
+R100	references/case-library/INDEX.md	skill/references/case-library/INDEX.md
+R100	references/case-library/do-christian-extensions.md	skill/references/case-library/do-christian-extensions.md
+R100	references/case-library/do-core.md	skill/references/case-library/do-core.md
+R100	references/case-library/do-second-loop.md	skill/references/case-library/do-second-loop.md
+R100	references/case-library/noetic-profiles.md	skill/references/case-library/noetic-profiles.md
+R100	references/diagnostics/INDEX.md	skill/references/diagnostics/INDEX.md
+R100	references/diagnostics/discourse-orientation.md	skill/references/diagnostics/discourse-orientation.md
+R100	references/diagnostics/fitrah-perspectives.md	skill/references/diagnostics/fitrah-perspectives.md
+R100	references/diagnostics/four-modes-concealment.md	skill/references/diagnostics/four-modes-concealment.md
+R100	references/diagnostics/kalamic-interlocutor.md	skill/references/diagnostics/kalamic-interlocutor.md
+R100	references/diagnostics/noetic-reading-checklist.md	skill/references/diagnostics/noetic-reading-checklist.md
+R100	references/diagnostics/seven-deformations.md	skill/references/diagnostics/seven-deformations.md
+R100	references/procedures/INDEX.md	skill/references/procedures/INDEX.md
+R100	references/procedures/P1-fitrah-restoration.md	skill/references/procedures/P1-fitrah-restoration.md
+R100	references/procedures/P2-objection-mapping.md	skill/references/procedures/P2-objection-mapping.md
+R100	references/procedures/P3-reason-revelation-tension.md	skill/references/procedures/P3-reason-revelation-tension.md
+R100	references/procedures/P4-maieutic.md	skill/references/procedures/P4-maieutic.md
+R100	references/procedures/P5-already-believing.md	skill/references/procedures/P5-already-believing.md
+R100	references/procedures/P6-universal-aqidah-principle.md	skill/references/procedures/P6-universal-aqidah-principle.md
+R100	references/sound-reason-epistemology.md	skill/references/sound-reason-epistemology.md
+R100	references/tactics/E1-broadening-evidence.md	skill/references/tactics/E1-broadening-evidence.md
+R100	references/tactics/E2-inferential-criterion.md	skill/references/tactics/E2-inferential-criterion.md
+R100	references/tactics/E3-cumulative-case.md	skill/references/tactics/E3-cumulative-case.md
+R100	references/tactics/E4-cross-cultural-check.md	skill/references/tactics/E4-cross-cultural-check.md
+R100	references/tactics/F1-supra-vs-antirational.md	skill/references/tactics/F1-supra-vs-antirational.md
+R100	references/tactics/F2-volitional-dimensions.md	skill/references/tactics/F2-volitional-dimensions.md
+R100	references/tactics/F3-practice-epistemic-access.md	skill/references/tactics/F3-practice-epistemic-access.md
+R100	references/tactics/INDEX.md	skill/references/tactics/INDEX.md
+R100	references/tactics/M1-self-refutation.md	skill/references/tactics/M1-self-refutation.md
+R100	references/tactics/M1P-performative-self-refutation.md	skill/references/tactics/M1P-performative-self-refutation.md
+R100	references/tactics/M2-prior-probability.md	skill/references/tactics/M2-prior-probability.md
+R100	references/tactics/M3-orphaned-intuition.md	skill/references/tactics/M3-orphaned-intuition.md
+R100	references/tactics/M4-grief-register.md	skill/references/tactics/M4-grief-register.md
+R100	references/tactics/M5-deformation-triage.md	skill/references/tactics/M5-deformation-triage.md
+R100	references/tactics/M6-excluded-middle.md	skill/references/tactics/M6-excluded-middle.md
+R100	references/tactics/M7-definition-anchor.md	skill/references/tactics/M7-definition-anchor.md
+R100	references/tactics/M8-reductio.md	skill/references/tactics/M8-reductio.md
+R100	references/tactics/R1-internalist-criterion.md	skill/references/tactics/R1-internalist-criterion.md
+R100	references/tactics/R2-the-reminder.md	skill/references/tactics/R2-the-reminder.md
+R100	references/tactics/R3-warranted-basic-belief.md	skill/references/tactics/R3-warranted-basic-belief.md
+R100	references/tactics/doubt-vs-skepticism.md	skill/references/tactics/doubt-vs-skepticism.md
+R100	references/tactics/husn-al-nazar-arguments.md	skill/references/tactics/husn-al-nazar-arguments.md
+R100	references/tactics/inductive-fitri-method.md	skill/references/tactics/inductive-fitri-method.md
+R100	references/tactics/symmetric-taqlid-check.md	skill/references/tactics/symmetric-taqlid-check.md
+R100	references/techniques/INDEX.md	skill/references/techniques/INDEX.md
+R100	references/techniques/V1-diagnostic.md	skill/references/techniques/V1-diagnostic.md
+R100	references/techniques/V2-reconstituting-reason.md	skill/references/techniques/V2-reconstituting-reason.md
+R100	references/techniques/V3-regress-dissolution.md	skill/references/techniques/V3-regress-dissolution.md
+R100	references/techniques/V4-contamination-identification.md	skill/references/techniques/V4-contamination-identification.md
+R100	references/techniques/V5-directing-attention-signs.md	skill/references/techniques/V5-directing-attention-signs.md
+R100	references/techniques/V6-convergence.md	skill/references/techniques/V6-convergence.md
+R100	references/techniques/V7-taqlid-check.md	skill/references/techniques/V7-taqlid-check.md
+R100	references/techniques/V8-bila-kayf-anchor.md	skill/references/techniques/V8-bila-kayf-anchor.md
+R100	references/techniques/V9-necessary-knowledge-priority.md	skill/references/techniques/V9-necessary-knowledge-priority.md
+R100	references/techniques/heuristics.md	skill/references/techniques/heuristics.md
+R100	references/terminology.md	skill/references/terminology.md
+
+COMMIT 53a396a121e47a348f7dada8c1a90f285a52d286 2026-04-14 16:54:27 -0400 Add README install and packaging instructions
+M	README.md
+
+COMMIT 510e09b635c118215ab00c95834278c730edf197 2026-04-14 16:59:15 -0400 Trim redundant README sections
+M	README.md
+
+COMMIT 092281b267ad4b3a68bc3718f07f1523c48f5758 2026-04-14 17:05:52 -0400 Refine README install flow
+M	README.md
+
+COMMIT e135ea855c3437123a98bf13882659f11c50d171 2026-04-14 23:55:45 -0400 Refine routing, self-audit, and mixed-case handling
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/do-second-loop.md
+A	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+A	skill/references/diagnostics/anti-patterns.md
+A	skill/references/diagnostics/case-state-schema.md
+A	skill/references/diagnostics/inference-boundary.md
+A	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/techniques/INDEX.md
+A	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+
+COMMIT b8d01ca3d1e3afd7c3082f52f5a94201f2deb2e8 2026-04-15 00:47:47 -0400 fix: strengthen [Restorative Response] — coherent picture, criterion-collapse, M1 staging
+M	skill/SKILL.md
+
+COMMIT 8dc9eaa4f655410a259dd5b79c5ee5876f024772 2026-04-15 01:07:10 -0400 discipline to terminology
+M	skill/SKILL.md
+M	skill/references/terminology.md
+
+COMMIT e207735f6723524797e3598247fc5bfad76fcf18 2026-04-15 01:09:06 -0400 discipline to terminology
+M	skill/SKILL.md
+
+COMMIT a8d64448b28d1929db31c0ba48f4b62f1ddaaf8e 2026-04-15 01:23:46 -0400 core-point closing construct
+M	skill/SKILL.md
+
+COMMIT e7e3d0265d101d5377f9e87b6d02dade60ee009d 2026-04-15 01:47:34 -0400 refine closing
+M	skill/SKILL.md
+
+COMMIT 52094dfd85da692be6bb52a5943c29d422b6f820 2026-04-15 21:13:37 -0400 audit r2 regression fixes + structured skill audit (phase 1 & 2)
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/four-modes-concealment.md
+M	skill/references/diagnostics/inference-boundary.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P1-fitrah-restoration.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/M1P-performative-self-refutation.md
+M	skill/references/tactics/M5-deformation-triage.md
+M	skill/references/tactics/R2-the-reminder.md
+M	skill/references/tactics/doubt-vs-skepticism.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/tactics/symmetric-taqlid-check.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+
+COMMIT 00b38af17e1f961c1c05608f59d6c8d5483ed9ab 2026-04-15 21:18:58 -0400 restore README; add Before You Use This Tool section only
+M	README.md
+
+COMMIT f007e7778c8a723aa7a8796726ce8f1d794d6c9d 2026-04-15 22:19:34 -0400 refine README.md
+M	README.md
+
+COMMIT d1708e623a4ad434ce05ba2dde087ae8148fb762 2026-04-15 22:23:44 -0400 README
+M	README.md
+
+COMMIT 46c5b04188aefd505606672f9b83b018c7dea3a2 2026-04-16 00:14:19 -0400 large corpus integration via sub-agents
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/inference-boundary.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P3-reason-revelation-tension.md
+M	skill/references/tactics/M5-deformation-triage.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/terminology.md
+
+COMMIT 88a66593f8e0b6d19d2c106872bdfee28469ff38 2026-04-16 00:17:26 -0400 README
+M	README.md
+
+COMMIT 5e275458adbb3e8a05f098ec32e45e79b816a00b 2026-04-16 02:20:17 -0400 descriptor fix
+M	skill/SKILL.md
+
+COMMIT 28507ed1f1b90dbbfac138a4b8e98aa7b872f558 2026-04-16 22:36:11 -0400 refine concealment taxonomy and modular routing
+COMMIT 85f3c67f10754aca945cabfccf22aec46229d988 2026-04-17 12:50:56 -0400 ontology refinement
+M	skill/SKILL.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/terminology.md
+
+COMMIT f5410a852f67e46ad68e61882ea362b76884839c 2026-04-17 20:13:08 -0400 Add predication-mode analysis and ontological exhaustion procedure
+M	README.md
+M	skill/SKILL.md
+M	skill/references/module-codes.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/INDEX.md
+A	skill/references/tactics/M9-predication-mode.md
+M	skill/references/techniques/INDEX.md
+A	skill/references/techniques/V12-tamanuc-exhaustion.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+
+COMMIT 31d75132740411e9c1b79726272ed7e9ecc1eff9 2026-04-17 21:20:42 -0400 governance expansion, hardening, normalisation
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/inference-boundary.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/procedures/INDEX.md
+A	skill/references/procedures/P7-restoration-stops.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT e6b2bf69aee0a4f65be0fec428c5f293a7bc79fb 2026-04-18 00:32:36 -0400 Final delta hardening: operator densification, P7 integration, Ibn Taymiyyah containment, audit chart canonicalization
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/discourse-orientation.md
+A	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/procedures/P1-fitrah-restoration.md
+M	skill/references/procedures/P4-maieutic.md
+M	skill/references/tactics/E4-cross-cultural-check.md
+M	skill/references/tactics/F3-practice-epistemic-access.md
+M	skill/references/tactics/M4-grief-register.md
+M	skill/references/tactics/inductive-fitri-method.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/techniques/V9-necessary-knowledge-priority.md
+
+COMMIT ccbd3b00f701db0de0c79b7b51e1a2a911186024 2026-04-18 00:47:43 -0400 Restoration trace schema, routing constraints, anti-pattern governance, V2 deeper rationale
+M	skill/SKILL.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+
+COMMIT 5039c1ac4f180686c71a176f1e074ace342525c5 2026-04-18 01:43:20 -0400 Architecture deepening: kernel thesis, reason taxonomy, foreign-premise pass, routing precedence, P7 exit criteria, V10 branches, deformation discriminators
+M	skill/SKILL.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/case-state-schema.md
+A	skill/references/diagnostics/foreign-premise-detection.md
+A	skill/references/diagnostics/reason-disambiguation.md
+A	skill/references/diagnostics/routing-precedence.md
+M	skill/references/diagnostics/seven-deformations.md
+A	skill/references/kernel-thesis.md
+M	skill/references/procedures/P7-restoration-stops.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/terminology.md
+
+COMMIT d2539eba608963b273b755badf64a8bbc09d12c6 2026-04-18 01:55:41 -0400 Architecture deepening: backbone predicates, attribute precision, philosophical usurpation, prophecy supremacy, metaphysical architecture, diagnostic IR, P7 exit criteria, V10 branches, deformation discriminators, reason taxonomy, foreign-premise pass, routing precedence, kernel thesis, claim-type schema, terminology enforcement
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+A	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/noetic-profiles.md
+A	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/diagnostics/INDEX.md
+A	skill/references/diagnostics/arabic-backbone-predicates.md
+A	skill/references/diagnostics/diagnostic-ir.md
+A	skill/references/metaphysical-architecture.md
+A	skill/references/prophecy-wahy-supremacy.md
+
+COMMIT 23f7d180f739977ca06c8fa4b920747678526a28 2026-04-18 05:15:03 -0400 Tighten pipeline, case-state, and IR governance
+M	skill/SKILL.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/reason-disambiguation.md
+M	skill/references/kernel-thesis.md
+M	skill/references/metaphysical-architecture.md
+M	skill/references/module-codes.md
+M	skill/references/prophecy-wahy-supremacy.md
+
+COMMIT 9ecaea9d9f0e189112ef2c53a7710eea50a29e83 2026-04-18 05:33:55 -0400 File system uptick
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/philosophical-usurpation.md
+A	skill/references/case-library/profiles/INDEX.md
+A	skill/references/case-library/profiles/ns-1-naturalist.md
+A	skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+A	skill/references/case-library/profiles/ns-11-fideist-reformed.md
+A	skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+A	skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+A	skill/references/case-library/profiles/ns-3-deconverted.md
+A	skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+A	skill/references/case-library/profiles/ns-5-habituated-atheist.md
+A	skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+A	skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+A	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+A	skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/module-codes.md
+M	skill/references/tactics/M3-orphaned-intuition.md
+
+COMMIT 5a72f85d193e10d6fd13ecaa7fbe9106c7e38dc8 2026-04-18 05:48:59 -0400 Pipeline refresh
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/modes-of-concealment.md
+
+COMMIT e32e2c5c65c2db2d59e43ea45cfc69c3739113a8 2026-04-18 08:12:57 -0400 README.md reorder
+M	README.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+
+COMMIT f3748f1869ae0453572d7c026fc602fef2f91121 2026-04-18 10:06:47 -0400 NS and boundary overhaul
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/profiles/INDEX.md
+M	skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/diagnostic-ir.md
+
+COMMIT a0b130366b92e7c852abe4ca8a861946df974d56 2026-04-18 10:58:12 -0400 scope boundary frontmatter and coverage ledger evolution
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/anti-patterns.md
+A	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+
+COMMIT e485655b08e554684848519a3a55a780051a749a 2026-04-18 11:09:56 -0400 SKILL descript fix
+M	skill/SKILL.md
+
+COMMIT e86e0ef91a7c5669e75e15a4d7061a32ecd00e56 2026-04-18 15:50:31 -0400 coverage integration
+M	README.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/mixed-case-handling.md
+A	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V12-tamanuc-exhaustion.md
+
+COMMIT 2905f18b83d0207f1514ae7f1535e687cdc5ceb0 2026-04-19 05:05:42 -0400 heuristics hardening
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/module-codes.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT bc866c6f6a9cd94e6b976e0ee8c9b4e65611b0ab 2026-04-19 17:22:05 -0400 README.md thesis
+M	README.md
+
+COMMIT eeed754ff62f3c0f465e3d44e6ed6b969b612e5d 2026-04-20 02:18:59 -0400 json ir
+A	skill/references/diagnostics/diagnostic-ir.schema.json
+
+COMMIT b3350d121fd9c9675b26feb29977ecf4ef490b43 2026-04-20 03:17:44 -0400 json ir
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+A	skill/references/diagnostics/module-catalogue.json
+
+COMMIT 738ad93ad0e7e247f2002a48f97d4784ad2a2f11 2026-04-20 03:42:48 -0400 json ir
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+
+COMMIT 64d5b7a1f599b458bcdc3019f17df8a505e8ba20 2026-04-20 03:58:43 -0400 json ir
+M	skill/SKILL.md
+
+COMMIT 8f1f1ae473c18143b386309d4f99f6a8e6e028ca 2026-04-20 16:25:14 -0400 hardening pass in progress
+M	.gitattributes
+M	skill/SKILL.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/case-state-schema.md
+A	skill/references/diagnostics/causal-series-taxonomy.md
+A	skill/references/diagnostics/definition-discipline.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/module-catalogue.json
+A	skill/references/diagnostics/perfection-criterion-usurpation.md
+A	skill/references/diagnostics/proof-method-audit.md
+A	skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/M7-definition-anchor.md
+M	skill/references/tactics/M9-predication-mode.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V3-regress-dissolution.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+
+COMMIT b3efa155984e0eb0ea278152930fcbca5d3cfedf 2026-04-20 19:41:18 -0400 hardening pass further
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/causal-series-taxonomy.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/pattern-family-audit.md
+A	skill/references/diagnostics/pattern-profiling.md
+M	skill/references/diagnostics/perfection-criterion-usurpation.md
+M	skill/references/diagnostics/reason-disambiguation.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/metaphysical-architecture.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/prophecy-wahy-supremacy.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/M9-predication-mode.md
+M	skill/references/tactics/doubt-vs-skepticism.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+
+COMMIT f6e2841ef8fab705f276779bfafe6cc8b873f7f1 2026-04-20 20:45:37 -0400 hardening pass
+M	README.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT 6edd876293abb9591fd99c7e41bc5395b7b93feb 2026-04-20 21:08:56 -0400 hardening pass
+M	skill/references/diagnostics/coverage-ledger.md
+
+COMMIT 899c5a44b3585328147f2c3c2d1a99032b3ae18c 2026-04-20 21:41:48 -0400 release: v0.1.0.0
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+A	skill/references/diagnostics/hadith-authentication-epistemology.md
+M	skill/references/diagnostics/module-catalogue.json
+M	skill/references/diagnostics/pattern-profiling.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/module-codes.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+
+COMMIT 07aa40ff574ce54c1de5653eb652fd7b9fac12fe 2026-04-21 00:17:40 -0400 fix: diagnose iʿrāḍ correctly and preserve full diagnostic output with register-correct deployment
+M	README.md
+M	skill/SKILL.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+
+COMMIT 90473aa81ddeb0397aa7eaa2869343026fa5c7df 2026-04-21 14:40:16 -0400 chore: harden selective routing, portability framing, and text integrity
+M	README.md
+M	skill/SKILL.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT 95141a3d6b0084c04fcdcc0d6fff57a1246e9441 2026-04-21 15:36:28 -0400 fix: correct transliteration and unicode integrity missed in v0.1.0.2
+M	README.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/procedures/P3-reason-revelation-tension.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/terminology.md
+
+COMMIT f05e204d19e43a11f5188ad3d090195ed7cdf58e 2026-04-21 15:50:22 -0400 docs: align pipeline diagrams with repo architecture
+M	README.md
+M	skill/references/diagnostics/framework-pipeline.md
+
+COMMIT c74f4b567b5963037b4dd2faacc7491dfc821f7d 2026-04-21 16:02:48 -0400 chore: finalize selective-routing hardening and release integrity fixes
+COMMIT 62cae75a74bee452b87d83b63700c097e68f605d 2026-04-22 19:09:55 -0400 v0.1.1.0 ; see Releases for CHANGELOG
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/hadith-authentication-epistemology.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/proof-method-audit.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/M1-self-refutation.md
+M	skill/references/tactics/M5-deformation-triage.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V11-taqlid-transition.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+
+COMMIT c87eb971f28af101fa5806ccbccbcf3c1f92034e 2026-04-23 03:25:03 -0400 Selective-State Enforcement and Continuation Discipline
+M	skill/SKILL.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/causal-series-taxonomy.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/pattern-profiling.md
+M	skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/P1-fitrah-restoration.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/procedures/P7-restoration-stops.md
+M	skill/references/tactics/M1-self-refutation.md
+M	skill/references/tactics/M8-reductio.md
+M	skill/references/tactics/M9-predication-mode.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+M	skill/references/techniques/V3-regress-dissolution.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT 9502cbeb9cf03b180409a228dcfb7ab28e115330 2026-04-23 16:52:35 +0000 Release v0.1.3.0
+M	skill/SKILL.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/techniques/heuristics.md
+
+COMMIT 496492b7a5b012a21d35f254488e825b98b52f12 2026-04-23 13:10:52 -0400 framework append
+M	skill/references/diagnostics/framework-pipeline.md
+
+COMMIT 479f86b9e2ed9b284b1a9adcca04569cced56008 2026-04-26 11:09:05 -0400 v0.2.2.0 Runtime Metadata Stabilization
+A	CHANGELOG.md
+M	README.md
+A	TODO.md
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/case-library/profiles/INDEX.md
+M	skill/references/case-library/profiles/ns-1-naturalist.md
+M	skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	skill/references/case-library/profiles/ns-11-fideist-reformed.md
+M	skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+M	skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	skill/references/case-library/profiles/ns-3-deconverted.md
+M	skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+M	skill/references/case-library/profiles/ns-5-habituated-atheist.md
+M	skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+M	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/causal-series-taxonomy.md
+M	skill/references/diagnostics/coverage-ledger.md
+A	skill/references/diagnostics/coverage-scope.yaml
+M	skill/references/diagnostics/definition-discipline.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/hadith-authentication-epistemology.md
+M	skill/references/diagnostics/inference-boundary.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+A	skill/references/diagnostics/operative-contract.schema.json
+A	skill/references/diagnostics/operative-contracts.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/pattern-profiling.md
+M	skill/references/diagnostics/perfection-criterion-usurpation.md
+M	skill/references/diagnostics/proof-method-audit.md
+M	skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	skill/references/diagnostics/reason-disambiguation.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/kernel-thesis.md
+M	skill/references/metaphysical-architecture.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P1-fitrah-restoration.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/procedures/P3-reason-revelation-tension.md
+M	skill/references/procedures/P4-maieutic.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/procedures/P7-restoration-stops.md
+M	skill/references/prophecy-wahy-supremacy.md
+A	skill/references/rubrics/diagnostic-render-contract.md
+A	skill/references/rubrics/output-release.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E1-broadening-evidence.md
+M	skill/references/tactics/E2-inferential-criterion.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/E4-cross-cultural-check.md
+M	skill/references/tactics/F1-supra-vs-antirational.md
+M	skill/references/tactics/F2-volitional-dimensions.md
+M	skill/references/tactics/F3-practice-epistemic-access.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/M1-self-refutation.md
+M	skill/references/tactics/M1P-performative-self-refutation.md
+M	skill/references/tactics/M2-prior-probability.md
+M	skill/references/tactics/M3-orphaned-intuition.md
+M	skill/references/tactics/M4-grief-register.md
+M	skill/references/tactics/M5-deformation-triage.md
+M	skill/references/tactics/M6-excluded-middle.md
+M	skill/references/tactics/M7-definition-anchor.md
+M	skill/references/tactics/M8-reductio.md
+M	skill/references/tactics/M9-predication-mode.md
+M	skill/references/tactics/R1-internalist-criterion.md
+M	skill/references/tactics/R2-the-reminder.md
+M	skill/references/tactics/R3-warranted-basic-belief.md
+M	skill/references/tactics/doubt-vs-skepticism.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/tactics/inductive-fitri-method.md
+M	skill/references/tactics/symmetric-taqlid-check.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V11-taqlid-transition.md
+M	skill/references/techniques/V12-tamanuc-exhaustion.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+M	skill/references/techniques/V3-regress-dissolution.md
+M	skill/references/techniques/V4-contamination-identification.md
+M	skill/references/techniques/V5-directing-attention-signs.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/techniques/V7-taqlid-check.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/techniques/V9-necessary-knowledge-priority.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+A	tools/__pycache__/check_coverage.cpython-312.pyc
+A	tools/check_coverage.py
+A	tools/check_frontmatter.py
+
+COMMIT f6aeaa84bac4b47760850de42cb5372a7fe9f414 2026-04-26 16:31:17 -0400 v0.2.3.0
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+A	package.cmd
+A	package.ps1
+M	skill/SKILL.md
+M	skill/references/case-library/INDEX.md
+M	skill/references/case-library/do-attribute-precision.md
+M	skill/references/case-library/do-christian-extensions.md
+M	skill/references/case-library/do-core.md
+M	skill/references/case-library/do-second-loop.md
+M	skill/references/case-library/noetic-profiles.md
+M	skill/references/case-library/philosophical-usurpation.md
+M	skill/references/case-library/profiles/INDEX.md
+M	skill/references/case-library/profiles/ns-1-naturalist.md
+M	skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	skill/references/case-library/profiles/ns-11-fideist-reformed.md
+M	skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+M	skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	skill/references/case-library/profiles/ns-3-deconverted.md
+M	skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+M	skill/references/case-library/profiles/ns-5-habituated-atheist.md
+M	skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+M	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	skill/references/case-library/revelation-transmission.md
+M	skill/references/diagnostics/INDEX.md
+M	skill/references/diagnostics/anti-patterns.md
+M	skill/references/diagnostics/arabic-backbone-predicates.md
+M	skill/references/diagnostics/case-state-schema.md
+M	skill/references/diagnostics/causal-series-taxonomy.md
+M	skill/references/diagnostics/coverage-ledger.md
+M	skill/references/diagnostics/coverage-scope.yaml
+M	skill/references/diagnostics/definition-discipline.md
+M	skill/references/diagnostics/diagnostic-ir.md
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/discourse-orientation.md
+M	skill/references/diagnostics/fitrah-perspectives.md
+M	skill/references/diagnostics/foreign-premise-detection.md
+M	skill/references/diagnostics/framework-pipeline.md
+M	skill/references/diagnostics/hadith-authentication-epistemology.md
+M	skill/references/diagnostics/inference-boundary.md
+M	skill/references/diagnostics/kalamic-interlocutor.md
+M	skill/references/diagnostics/mixed-case-handling.md
+M	skill/references/diagnostics/modes-of-concealment.md
+M	skill/references/diagnostics/noetic-reading-checklist.md
+M	skill/references/diagnostics/operative-contract.schema.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/diagnostics/pattern-family-audit.md
+M	skill/references/diagnostics/pattern-profiling.md
+M	skill/references/diagnostics/perfection-criterion-usurpation.md
+M	skill/references/diagnostics/proof-method-audit.md
+M	skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	skill/references/diagnostics/reason-disambiguation.md
+M	skill/references/diagnostics/routing-precedence.md
+M	skill/references/diagnostics/seven-deformations.md
+M	skill/references/kernel-thesis.md
+M	skill/references/metaphysical-architecture.md
+M	skill/references/module-codes.md
+M	skill/references/procedures/INDEX.md
+M	skill/references/procedures/P1-fitrah-restoration.md
+M	skill/references/procedures/P2-objection-mapping.md
+M	skill/references/procedures/P3-reason-revelation-tension.md
+M	skill/references/procedures/P4-maieutic.md
+M	skill/references/procedures/P5-already-believing.md
+M	skill/references/procedures/P6-universal-aqidah-principle.md
+M	skill/references/procedures/P7-restoration-stops.md
+M	skill/references/prophecy-wahy-supremacy.md
+M	skill/references/rubrics/diagnostic-render-contract.md
+M	skill/references/rubrics/output-release.md
+M	skill/references/sound-reason-epistemology.md
+M	skill/references/tactics/E1-broadening-evidence.md
+M	skill/references/tactics/E2-inferential-criterion.md
+M	skill/references/tactics/E3-cumulative-case.md
+M	skill/references/tactics/E4-cross-cultural-check.md
+M	skill/references/tactics/F1-supra-vs-antirational.md
+M	skill/references/tactics/F2-volitional-dimensions.md
+M	skill/references/tactics/F3-practice-epistemic-access.md
+M	skill/references/tactics/INDEX.md
+M	skill/references/tactics/M1-self-refutation.md
+M	skill/references/tactics/M1P-performative-self-refutation.md
+M	skill/references/tactics/M2-prior-probability.md
+M	skill/references/tactics/M3-orphaned-intuition.md
+M	skill/references/tactics/M4-grief-register.md
+M	skill/references/tactics/M5-deformation-triage.md
+M	skill/references/tactics/M6-excluded-middle.md
+M	skill/references/tactics/M7-definition-anchor.md
+M	skill/references/tactics/M8-reductio.md
+M	skill/references/tactics/M9-predication-mode.md
+M	skill/references/tactics/R1-internalist-criterion.md
+M	skill/references/tactics/R2-the-reminder.md
+M	skill/references/tactics/R3-warranted-basic-belief.md
+M	skill/references/tactics/doubt-vs-skepticism.md
+M	skill/references/tactics/husn-al-nazar-arguments.md
+M	skill/references/tactics/inductive-fitri-method.md
+M	skill/references/tactics/symmetric-taqlid-check.md
+M	skill/references/techniques/INDEX.md
+M	skill/references/techniques/V1-diagnostic.md
+M	skill/references/techniques/V10-transmission-content-vetting.md
+M	skill/references/techniques/V11-taqlid-transition.md
+M	skill/references/techniques/V12-tamanuc-exhaustion.md
+M	skill/references/techniques/V2-reconstituting-reason.md
+M	skill/references/techniques/V3-regress-dissolution.md
+M	skill/references/techniques/V4-contamination-identification.md
+M	skill/references/techniques/V5-directing-attention-signs.md
+M	skill/references/techniques/V6-convergence.md
+M	skill/references/techniques/V7-taqlid-check.md
+M	skill/references/techniques/V8-bila-kayf-anchor.md
+M	skill/references/techniques/V9-necessary-knowledge-priority.md
+M	skill/references/techniques/heuristics.md
+M	skill/references/terminology.md
+A	tools/check_framework_pipeline.py
+
+COMMIT 8f6a6168f2a3408e55b292faaeb1fd636103c537 2026-04-28 18:10:28 -0400 v0.3.0.0
+A	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+A	atomics/skill/SKILL.md
+R099	skill/references/case-library/INDEX.md	atomics/skill/references/case-library/INDEX.md
+R099	skill/references/case-library/do-attribute-precision.md	atomics/skill/references/case-library/do-attribute-precision.md
+R099	skill/references/case-library/do-christian-extensions.md	atomics/skill/references/case-library/do-christian-extensions.md
+R099	skill/references/case-library/do-core.md	atomics/skill/references/case-library/do-core.md
+R099	skill/references/case-library/do-second-loop.md	atomics/skill/references/case-library/do-second-loop.md
+R098	skill/references/case-library/noetic-profiles.md	atomics/skill/references/case-library/noetic-profiles.md
+R099	skill/references/case-library/philosophical-usurpation.md	atomics/skill/references/case-library/philosophical-usurpation.md
+R099	skill/references/case-library/profiles/INDEX.md	atomics/skill/references/case-library/profiles/INDEX.md
+R098	skill/references/case-library/profiles/ns-1-naturalist.md	atomics/skill/references/case-library/profiles/ns-1-naturalist.md
+R099	skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md	atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+R099	skill/references/case-library/profiles/ns-11-fideist-reformed.md	atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md
+R099	skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md	atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+R099	skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md	atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+R099	skill/references/case-library/profiles/ns-3-deconverted.md	atomics/skill/references/case-library/profiles/ns-3-deconverted.md
+R099	skill/references/case-library/profiles/ns-4-secular-moral-realist.md	atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+R099	skill/references/case-library/profiles/ns-5-habituated-atheist.md	atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md
+R099	skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md	atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+R099	skill/references/case-library/profiles/ns-7-theistic-evidentialist.md	atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+R099	skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md	atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+R099	skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md	atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+R099	skill/references/case-library/revelation-transmission.md	atomics/skill/references/case-library/revelation-transmission.md
+R099	skill/references/diagnostics/INDEX.md	atomics/skill/references/diagnostics/INDEX.md
+R099	skill/references/diagnostics/anti-patterns.md	atomics/skill/references/diagnostics/anti-patterns.md
+R099	skill/references/diagnostics/arabic-backbone-predicates.md	atomics/skill/references/diagnostics/arabic-backbone-predicates.md
+R099	skill/references/diagnostics/case-state-schema.md	atomics/skill/references/diagnostics/case-state-schema.md
+R099	skill/references/diagnostics/causal-series-taxonomy.md	atomics/skill/references/diagnostics/causal-series-taxonomy.md
+R097	skill/references/diagnostics/coverage-ledger.md	atomics/skill/references/diagnostics/coverage-ledger.md
+R100	skill/references/diagnostics/coverage-scope.yaml	atomics/skill/references/diagnostics/coverage-scope.yaml
+R099	skill/references/diagnostics/definition-discipline.md	atomics/skill/references/diagnostics/definition-discipline.md
+R091	skill/references/diagnostics/diagnostic-ir.md	atomics/skill/references/diagnostics/diagnostic-ir.md
+A	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+R099	skill/references/diagnostics/discourse-orientation.md	atomics/skill/references/diagnostics/discourse-orientation.md
+R099	skill/references/diagnostics/fitrah-perspectives.md	atomics/skill/references/diagnostics/fitrah-perspectives.md
+R099	skill/references/diagnostics/foreign-premise-detection.md	atomics/skill/references/diagnostics/foreign-premise-detection.md
+R095	skill/references/diagnostics/framework-pipeline.md	atomics/skill/references/diagnostics/framework-pipeline.md
+R099	skill/references/diagnostics/hadith-authentication-epistemology.md	atomics/skill/references/diagnostics/hadith-authentication-epistemology.md
+R099	skill/references/diagnostics/inference-boundary.md	atomics/skill/references/diagnostics/inference-boundary.md
+R099	skill/references/diagnostics/kalamic-interlocutor.md	atomics/skill/references/diagnostics/kalamic-interlocutor.md
+R099	skill/references/diagnostics/mixed-case-handling.md	atomics/skill/references/diagnostics/mixed-case-handling.md
+R099	skill/references/diagnostics/modes-of-concealment.md	atomics/skill/references/diagnostics/modes-of-concealment.md
+A	atomics/skill/references/diagnostics/module-catalogue.json
+R099	skill/references/diagnostics/noetic-reading-checklist.md	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+A	atomics/skill/references/diagnostics/operative-contract.schema.json
+A	atomics/skill/references/diagnostics/operative-contracts.md
+R099	skill/references/diagnostics/pattern-family-audit.md	atomics/skill/references/diagnostics/pattern-family-audit.md
+R099	skill/references/diagnostics/pattern-profiling.md	atomics/skill/references/diagnostics/pattern-profiling.md
+R099	skill/references/diagnostics/perfection-criterion-usurpation.md	atomics/skill/references/diagnostics/perfection-criterion-usurpation.md
+R099	skill/references/diagnostics/proof-method-audit.md	atomics/skill/references/diagnostics/proof-method-audit.md
+R099	skill/references/diagnostics/prophetic-discourse-neutralization.md	atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md
+R099	skill/references/diagnostics/reason-disambiguation.md	atomics/skill/references/diagnostics/reason-disambiguation.md
+R099	skill/references/diagnostics/routing-precedence.md	atomics/skill/references/diagnostics/routing-precedence.md
+R099	skill/references/diagnostics/seven-deformations.md	atomics/skill/references/diagnostics/seven-deformations.md
+R099	skill/references/kernel-thesis.md	atomics/skill/references/kernel-thesis.md
+R099	skill/references/metaphysical-architecture.md	atomics/skill/references/metaphysical-architecture.md
+R099	skill/references/module-codes.md	atomics/skill/references/module-codes.md
+R099	skill/references/procedures/INDEX.md	atomics/skill/references/procedures/INDEX.md
+R099	skill/references/procedures/P1-fitrah-restoration.md	atomics/skill/references/procedures/P1-fitrah-restoration.md
+R099	skill/references/procedures/P2-objection-mapping.md	atomics/skill/references/procedures/P2-objection-mapping.md
+R099	skill/references/procedures/P3-reason-revelation-tension.md	atomics/skill/references/procedures/P3-reason-revelation-tension.md
+R099	skill/references/procedures/P4-maieutic.md	atomics/skill/references/procedures/P4-maieutic.md
+R099	skill/references/procedures/P5-already-believing.md	atomics/skill/references/procedures/P5-already-believing.md
+R099	skill/references/procedures/P6-universal-aqidah-principle.md	atomics/skill/references/procedures/P6-universal-aqidah-principle.md
+R094	skill/references/procedures/P7-restoration-stops.md	atomics/skill/references/procedures/P7-restoration-stops.md
+R099	skill/references/prophecy-wahy-supremacy.md	atomics/skill/references/prophecy-wahy-supremacy.md
+R079	skill/references/rubrics/diagnostic-render-contract.md	atomics/skill/references/rubrics/diagnostic-render-contract.md
+R094	skill/references/rubrics/output-release.md	atomics/skill/references/rubrics/output-release.md
+R099	skill/references/sound-reason-epistemology.md	atomics/skill/references/sound-reason-epistemology.md
+R099	skill/references/tactics/E1-broadening-evidence.md	atomics/skill/references/tactics/E1-broadening-evidence.md
+R099	skill/references/tactics/E2-inferential-criterion.md	atomics/skill/references/tactics/E2-inferential-criterion.md
+R098	skill/references/tactics/E3-cumulative-case.md	atomics/skill/references/tactics/E3-cumulative-case.md
+R099	skill/references/tactics/E4-cross-cultural-check.md	atomics/skill/references/tactics/E4-cross-cultural-check.md
+R099	skill/references/tactics/F1-supra-vs-antirational.md	atomics/skill/references/tactics/F1-supra-vs-antirational.md
+R098	skill/references/tactics/F2-volitional-dimensions.md	atomics/skill/references/tactics/F2-volitional-dimensions.md
+R099	skill/references/tactics/F3-practice-epistemic-access.md	atomics/skill/references/tactics/F3-practice-epistemic-access.md
+R099	skill/references/tactics/INDEX.md	atomics/skill/references/tactics/INDEX.md
+R099	skill/references/tactics/M1-self-refutation.md	atomics/skill/references/tactics/M1-self-refutation.md
+R099	skill/references/tactics/M1P-performative-self-refutation.md	atomics/skill/references/tactics/M1P-performative-self-refutation.md
+R099	skill/references/tactics/M2-prior-probability.md	atomics/skill/references/tactics/M2-prior-probability.md
+R099	skill/references/tactics/M3-orphaned-intuition.md	atomics/skill/references/tactics/M3-orphaned-intuition.md
+R099	skill/references/tactics/M4-grief-register.md	atomics/skill/references/tactics/M4-grief-register.md
+R099	skill/references/tactics/M5-deformation-triage.md	atomics/skill/references/tactics/M5-deformation-triage.md
+R099	skill/references/tactics/M6-excluded-middle.md	atomics/skill/references/tactics/M6-excluded-middle.md
+R098	skill/references/tactics/M7-definition-anchor.md	atomics/skill/references/tactics/M7-definition-anchor.md
+R099	skill/references/tactics/M8-reductio.md	atomics/skill/references/tactics/M8-reductio.md
+R099	skill/references/tactics/M9-predication-mode.md	atomics/skill/references/tactics/M9-predication-mode.md
+R099	skill/references/tactics/R1-internalist-criterion.md	atomics/skill/references/tactics/R1-internalist-criterion.md
+R099	skill/references/tactics/R2-the-reminder.md	atomics/skill/references/tactics/R2-the-reminder.md
+R099	skill/references/tactics/R3-warranted-basic-belief.md	atomics/skill/references/tactics/R3-warranted-basic-belief.md
+R099	skill/references/tactics/doubt-vs-skepticism.md	atomics/skill/references/tactics/doubt-vs-skepticism.md
+R099	skill/references/tactics/husn-al-nazar-arguments.md	atomics/skill/references/tactics/husn-al-nazar-arguments.md
+R099	skill/references/tactics/inductive-fitri-method.md	atomics/skill/references/tactics/inductive-fitri-method.md
+R098	skill/references/tactics/symmetric-taqlid-check.md	atomics/skill/references/tactics/symmetric-taqlid-check.md
+R099	skill/references/techniques/INDEX.md	atomics/skill/references/techniques/INDEX.md
+R099	skill/references/techniques/V1-diagnostic.md	atomics/skill/references/techniques/V1-diagnostic.md
+R099	skill/references/techniques/V10-transmission-content-vetting.md	atomics/skill/references/techniques/V10-transmission-content-vetting.md
+R099	skill/references/techniques/V11-taqlid-transition.md	atomics/skill/references/techniques/V11-taqlid-transition.md
+R099	skill/references/techniques/V12-tamanuc-exhaustion.md	atomics/skill/references/techniques/V12-tamanuc-exhaustion.md
+R099	skill/references/techniques/V2-reconstituting-reason.md	atomics/skill/references/techniques/V2-reconstituting-reason.md
+R098	skill/references/techniques/V3-regress-dissolution.md	atomics/skill/references/techniques/V3-regress-dissolution.md
+R098	skill/references/techniques/V4-contamination-identification.md	atomics/skill/references/techniques/V4-contamination-identification.md
+R099	skill/references/techniques/V5-directing-attention-signs.md	atomics/skill/references/techniques/V5-directing-attention-signs.md
+R099	skill/references/techniques/V6-convergence.md	atomics/skill/references/techniques/V6-convergence.md
+R098	skill/references/techniques/V7-taqlid-check.md	atomics/skill/references/techniques/V7-taqlid-check.md
+R099	skill/references/techniques/V8-bila-kayf-anchor.md	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+R099	skill/references/techniques/V9-necessary-knowledge-priority.md	atomics/skill/references/techniques/V9-necessary-knowledge-priority.md
+R099	skill/references/techniques/heuristics.md	atomics/skill/references/techniques/heuristics.md
+R099	skill/references/terminology.md	atomics/skill/references/terminology.md
+A	build/compiled-skill/SKILL.md
+A	build/compiled-skill/build-manifest.json
+A	build/compiled-skill/compiled-module-map.json
+A	build/compiled-skill/references/omnibus/OMNIBUS-do-families.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-procedures.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-profiles.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-rt-transmission.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-tactics.md
+A	build/compiled-skill/references/omnibus/OMNIBUS-techniques.md
+A	build/compiled-skill/references/runtime-diagnostic-core.md
+A	build/compiled-skill/references/runtime-dispatch-gate.md
+A	build/compiled-skill/references/runtime-foundation.md
+A	build/compiled-skill/references/runtime-output-governance.md
+A	build/compiled-skill/references/runtime-phase2-passes.md
+A	docs/compiled-runtime-tools.md
+A	docs/compiled-runtime-verification.md
+A	docs/consolidation-compiler-audit.md
+A	docs/recursive-traversal-governance.md
+A	docs/routing-parity-fixtures.md
+A	docs/source-vs-runtime-layout.md
+A	docs/v0.3.0.0-final-verification.md
+A	docs/v0.3.0.0-release-candidate.md
+A	docs/v0.3.0.0-release-log.md
+A	docs/v0.3.0.0-release-notes.md
+A	docs/v0.3.0.0-release-readiness.md
+M	package.ps1
+M	skill/SKILL.md
+A	skill/build-manifest.json
+A	skill/build-manifest.json.test
+A	skill/compiled-module-map.json
+M	skill/references/diagnostics/operative-contracts.md
+A	skill/references/omnibus/OMNIBUS-do-families.md
+A	skill/references/omnibus/OMNIBUS-procedures.md
+A	skill/references/omnibus/OMNIBUS-profiles.md
+A	skill/references/omnibus/OMNIBUS-rt-transmission.md
+A	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+A	skill/references/omnibus/OMNIBUS-tactics.md
+A	skill/references/omnibus/OMNIBUS-techniques.md
+A	skill/references/runtime-diagnostic-core.md
+A	skill/references/runtime-dispatch-gate.md
+A	skill/references/runtime-foundation.md
+A	skill/references/runtime-output-governance.md
+A	skill/references/runtime-phase2-passes.md
+A	tests/routing-fixtures/01-glossary-fitrah.json
+A	tests/routing-fixtures/02-naturalist-evidence-objection.json
+A	tests/routing-fixtures/03-naturalist-causal-closure.json
+A	tests/routing-fixtures/04-trinity-person-multiplicity.json
+A	tests/routing-fixtures/05-revelation-transmission.json
+A	tests/routing-fixtures/06-hadith-authentication.json
+A	tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json
+A	tests/routing-fixtures/08-grief-primary-evil.json
+A	tests/routing-fixtures/09-thin-basis-ambiguous.json
+A	tests/routing-fixtures/10-complex-perfection-revelation.json
+D	tools/__pycache__/check_coverage.cpython-312.pyc
+A	tools/__pycache__/compiled_runtime_lib.cpython-310.pyc
+A	tools/build_compiled_runtime.py
+A	tools/check_compiled_module_boundaries.py
+A	tools/check_compiled_runtime_freshness.py
+A	tools/check_consolidation_call_budget.py
+A	tools/check_recursive_traversal_governance.py
+A	tools/check_render_modes.py
+A	tools/check_routing_parity.py
+A	tools/check_stub_integrity.py
+A	tools/compiled_runtime_lib.py
+
+COMMIT 9c19a771e5dbf3cf88bdf847f9051b36fc228e91 2026-04-28 18:14:00 -0400 v0.3.0.0
+M	.gitignore
+
+COMMIT 15a6da38cc1fa24baa1ce1470b18b1508bbe809b 2026-04-28 18:15:17 -0400 Remove tracked build artifacts
+D	build/compiled-skill/SKILL.md
+D	build/compiled-skill/build-manifest.json
+D	build/compiled-skill/compiled-module-map.json
+D	build/compiled-skill/references/omnibus/OMNIBUS-do-families.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-procedures.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-profiles.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-rt-transmission.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-tactics.md
+D	build/compiled-skill/references/omnibus/OMNIBUS-techniques.md
+D	build/compiled-skill/references/runtime-diagnostic-core.md
+D	build/compiled-skill/references/runtime-dispatch-gate.md
+D	build/compiled-skill/references/runtime-foundation.md
+D	build/compiled-skill/references/runtime-output-governance.md
+D	build/compiled-skill/references/runtime-phase2-passes.md
+
+COMMIT 99082eb95bac2467c54e08d233bc7a1b920737f3 2026-04-29 02:55:48 +0000 v0.3.1.0: render-mode governance patch + fixture 11 (TST moral protest DO-2/DO-1/DO-15)
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.3.0.0-final-verification.md
+M	docs/v0.3.0.0-release-log.md
+M	docs/v0.3.0.0-release-notes.md
+A	docs/v0.3.1.0-release-notes.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+A	tests/routing-fixtures/11-tst-moral-protest-hiddenness-do2-do1-do15.json
+M	tools/check_coverage.py
+M	tools/check_framework_pipeline.py
+M	tools/check_frontmatter.py
+M	tools/check_render_modes.py
+
+COMMIT 773d92db083686ba9492a8875d46fb2acbf54705 2026-05-07 00:17:38 -0400 v0.3.1.0 readiness
+M	.gitignore
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/case-library/INDEX.md
+M	atomics/skill/references/case-library/do-attribute-precision.md
+M	atomics/skill/references/case-library/do-christian-extensions.md
+M	atomics/skill/references/case-library/do-core.md
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/case-library/noetic-profiles.md
+M	atomics/skill/references/case-library/philosophical-usurpation.md
+M	atomics/skill/references/case-library/profiles/INDEX.md
+M	atomics/skill/references/case-library/profiles/ns-1-naturalist.md
+M	atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md
+M	atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+M	atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-3-deconverted.md
+M	atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+M	atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md
+M	atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	atomics/skill/references/case-library/revelation-transmission.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/arabic-backbone-predicates.md
+M	atomics/skill/references/diagnostics/case-state-schema.md
+M	atomics/skill/references/diagnostics/causal-series-taxonomy.md
+M	atomics/skill/references/diagnostics/coverage-ledger.md
+M	atomics/skill/references/diagnostics/coverage-scope.yaml
+M	atomics/skill/references/diagnostics/definition-discipline.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+M	atomics/skill/references/diagnostics/discourse-orientation.md
+M	atomics/skill/references/diagnostics/fitrah-perspectives.md
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+A	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/hadith-authentication-epistemology.md
+M	atomics/skill/references/diagnostics/inference-boundary.md
+M	atomics/skill/references/diagnostics/kalamic-interlocutor.md
+M	atomics/skill/references/diagnostics/mixed-case-handling.md
+M	atomics/skill/references/diagnostics/modes-of-concealment.md
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/operative-contract.schema.json
+M	atomics/skill/references/diagnostics/operative-contracts.md
+M	atomics/skill/references/diagnostics/pattern-profiling.md
+M	atomics/skill/references/diagnostics/perfection-criterion-usurpation.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	atomics/skill/references/diagnostics/reason-disambiguation.md
+A	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/diagnostics/seven-deformations.md
+M	atomics/skill/references/kernel-thesis.md
+M	atomics/skill/references/metaphysical-architecture.md
+M	atomics/skill/references/module-codes.md
+M	atomics/skill/references/procedures/INDEX.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P2-objection-mapping.md
+M	atomics/skill/references/procedures/P3-reason-revelation-tension.md
+M	atomics/skill/references/procedures/P4-maieutic.md
+M	atomics/skill/references/procedures/P5-already-believing.md
+M	atomics/skill/references/procedures/P6-universal-aqidah-principle.md
+M	atomics/skill/references/procedures/P7-restoration-stops.md
+M	atomics/skill/references/prophecy-wahy-supremacy.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/sound-reason-epistemology.md
+M	atomics/skill/references/tactics/E1-broadening-evidence.md
+M	atomics/skill/references/tactics/E2-inferential-criterion.md
+M	atomics/skill/references/tactics/E3-cumulative-case.md
+M	atomics/skill/references/tactics/E4-cross-cultural-check.md
+M	atomics/skill/references/tactics/F1-supra-vs-antirational.md
+M	atomics/skill/references/tactics/F2-volitional-dimensions.md
+M	atomics/skill/references/tactics/F3-practice-epistemic-access.md
+M	atomics/skill/references/tactics/INDEX.md
+M	atomics/skill/references/tactics/M1-self-refutation.md
+M	atomics/skill/references/tactics/M1P-performative-self-refutation.md
+M	atomics/skill/references/tactics/M2-prior-probability.md
+M	atomics/skill/references/tactics/M3-orphaned-intuition.md
+M	atomics/skill/references/tactics/M4-grief-register.md
+M	atomics/skill/references/tactics/M5-deformation-triage.md
+M	atomics/skill/references/tactics/M6-excluded-middle.md
+M	atomics/skill/references/tactics/M7-definition-anchor.md
+M	atomics/skill/references/tactics/M8-reductio.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/tactics/R1-internalist-criterion.md
+M	atomics/skill/references/tactics/R2-the-reminder.md
+M	atomics/skill/references/tactics/R3-warranted-basic-belief.md
+M	atomics/skill/references/tactics/doubt-vs-skepticism.md
+M	atomics/skill/references/tactics/husn-al-nazar-arguments.md
+M	atomics/skill/references/tactics/inductive-fitri-method.md
+M	atomics/skill/references/tactics/symmetric-taqlid-check.md
+M	atomics/skill/references/techniques/INDEX.md
+M	atomics/skill/references/techniques/V1-diagnostic.md
+M	atomics/skill/references/techniques/V10-transmission-content-vetting.md
+M	atomics/skill/references/techniques/V11-taqlid-transition.md
+M	atomics/skill/references/techniques/V12-tamanuc-exhaustion.md
+M	atomics/skill/references/techniques/V2-reconstituting-reason.md
+M	atomics/skill/references/techniques/V3-regress-dissolution.md
+M	atomics/skill/references/techniques/V4-contamination-identification.md
+M	atomics/skill/references/techniques/V5-directing-attention-signs.md
+M	atomics/skill/references/techniques/V6-convergence.md
+M	atomics/skill/references/techniques/V7-taqlid-check.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+M	atomics/skill/references/techniques/V9-necessary-knowledge-priority.md
+M	atomics/skill/references/techniques/heuristics.md
+M	atomics/skill/references/terminology.md
+A	docs/audits/codex-smoke-test-findings.md
+A	docs/audits/framework-pipeline-formalization.md
+R099	atomics/skill/references/diagnostics/pattern-family-audit.md	docs/audits/pattern-family-audit.md
+M	docs/compiled-runtime-tools.md
+M	docs/consolidation-compiler-audit.md
+A	docs/package-smoke-readiness.md
+M	docs/recursive-traversal-governance.md
+M	docs/routing-parity-fixtures.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.3.0.0-final-verification.md
+M	docs/v0.3.0.0-release-candidate.md
+M	docs/v0.3.0.0-release-log.md
+M	docs/v0.3.0.0-release-notes.md
+M	docs/v0.3.0.0-release-readiness.md
+A	docs/v0.3.1.0-release-log.md
+M	docs/v0.3.1.0-release-notes.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+D	skill/build-manifest.json.test
+M	skill/compiled-module-map.json
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/operative-contract.schema.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	tests/routing-fixtures/04-trinity-person-multiplicity.json
+M	tests/routing-fixtures/08-grief-primary-evil.json
+M	tests/routing-fixtures/10-complex-perfection-revelation.json
+A	tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json
+D	tests/routing-fixtures/11-tst-moral-protest-hiddenness-do2-do1-do15.json
+A	tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json
+A	tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json
+M	tools/build_compiled_runtime.py
+A	tools/build_framework_pipeline.py
+M	tools/check_framework_pipeline.py
+M	tools/check_frontmatter.py
+A	tools/check_metacompliance_current_canon.py
+A	tools/check_recursion_collapse_noetic_frame.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_routing_parity.py
+A	tools/check_smoke_artifacts.py
+M	tools/compiled_runtime_lib.py
+
+COMMIT e4003271bbf13db7735da7a0dbffc896a3d20c3a 2026-05-07 00:57:55 -0400 v0.3.1.0 readiness
+A	.github/workflows/ci.yml
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	docs/compiled-runtime-tools.md
+M	docs/package-smoke-readiness.md
+M	docs/recursive-traversal-governance.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.3.1.0-release-log.md
+M	docs/v0.3.1.0-release-notes.md
+M	package.ps1
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+A	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/input.md
+A	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/output.md
+A	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/trace.md
+A	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/verdict.md
+A	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/input.md
+A	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/output.md
+A	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/trace.md
+A	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/verdict.md
+A	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/input.md
+A	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/output.md
+A	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/trace.md
+A	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/verdict.md
+A	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/input.md
+A	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/output.md
+A	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/trace.md
+A	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/verdict.md
+A	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/input.md
+A	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/output.md
+A	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/trace.md
+A	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/verdict.md
+A	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/input.md
+A	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/output.md
+A	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/trace.md
+A	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/verdict.md
+A	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/input.md
+A	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/output.md
+A	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/trace.md
+A	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/verdict.md
+A	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/input.md
+A	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/output.md
+A	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/trace.md
+A	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/verdict.md
+A	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/input.md
+A	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/output.md
+A	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/trace.md
+A	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/verdict.md
+A	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/input.md
+A	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/output.md
+A	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/trace.md
+A	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/verdict.md
+A	tools/check_diagnostic_ir_catalogue_integrity.py
+A	tools/check_ir_instance_integrity.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT 99f11244d1f5ca59d076256797d3ce67dac63c02 2026-05-07 01:25:15 -0400 v0.3.1.0 readiness followup
+M	CHANGELOG.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	docs/compiled-runtime-tools.md
+M	docs/package-smoke-readiness.md
+A	docs/release-artifacts.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.3.1.0-release-log.md
+M	docs/v0.3.1.0-release-notes.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+A	tests/ir-fixtures/README.md
+A	tests/ir-fixtures/invalid/ghost-load.json
+A	tests/ir-fixtures/invalid/invented-module-id.json
+A	tests/ir-fixtures/invalid/missing-source-basis.json
+A	tests/ir-fixtures/invalid/omnibus-active-module.json
+A	tests/ir-fixtures/invalid/stop-with-next-eligible-pass.json
+A	tests/ir-fixtures/invalid/weak-confidence-without-differentiator.json
+A	tests/ir-fixtures/valid/criterion-import-positive.json
+M	tools/build_compiled_runtime.py
+M	tools/check_diagnostic_ir_catalogue_integrity.py
+M	tools/check_ir_instance_integrity.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT d005ff4e55459422ceb3f823737f6c74234e72f2 2026-05-07 02:08:38 -0400 v0.3.1.0 readiness
+M	.github/workflows/ci.yml
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	docs/compiled-runtime-tools.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	package.ps1
+A	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/ir.json
+M	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/output.md
+M	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/trace.md
+M	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/output.md
+M	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/trace.md
+M	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/output.md
+M	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/trace.md
+A	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/ir.json
+M	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/output.md
+M	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/trace.md
+M	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/output.md
+M	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/trace.md
+M	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/output.md
+M	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/trace.md
+M	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/output.md
+M	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/trace.md
+M	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/output.md
+M	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/trace.md
+M	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/output.md
+M	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/trace.md
+M	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/output.md
+M	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/trace.md
+A	tools/check_encoding_hygiene.py
+M	tools/check_ir_instance_integrity.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT 807c26739a9f815b294a47611651b134084b704e 2026-05-07 02:50:20 -0400 v0.3.1.0 evidence cleanup
+M	CHANGELOG.md
+M	README.md
+M	docs/compiled-runtime-tools.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.1.0-release-log.md
+M	package.ps1
+M	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/trace.md
+M	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/trace.md
+M	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/trace.md
+M	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/trace.md
+M	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/trace.md
+M	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/trace.md
+M	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/trace.md
+M	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/trace.md
+M	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/trace.md
+M	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/trace.md
+M	tools/check_ir_instance_integrity.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT 879589172434a43b8e5aa3ec8176428eabef7db6 2026-05-07 15:57:22 -0400 v0.3.1.1 evidence boundary cleanup
+M	CHANGELOG.md
+M	README.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+
+COMMIT 30a03f18e48bdbaf4cdf8cf05e3c84e9e5a23861 2026-05-07 16:03:18 -0400 v0.3.1.1 published asset naming cleanup
+M	CHANGELOG.md
+M	README.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	package.ps1
+M	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/trace.md
+M	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/trace.md
+M	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/trace.md
+M	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/trace.md
+M	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/trace.md
+M	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/trace.md
+M	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/trace.md
+M	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/trace.md
+M	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/trace.md
+M	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/trace.md
+M	tools/check_smoke_artifacts.py
+
+COMMIT f8a1a0187e4a7edb051d22d19faf755878bf4e4c 2026-05-09 08:02:58 -0400 v0.3.2.0 readiness
+M	.github/workflows/ci.yml
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+A	atomics/skill/README.md
+M	atomics/skill/SKILL.md
+A	atomics/skill/data/module-catalogue.json
+A	atomics/skill/data/ontology-licenses.yaml
+A	atomics/skill/data/routing-precedence.yaml
+A	atomics/skill/data/trigger-matrix.json
+M	atomics/skill/references/case-library/do-attribute-precision.md
+M	atomics/skill/references/case-library/do-core.md
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/case-library/philosophical-usurpation.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/coverage-scope.yaml
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+A	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+A	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/diagnostics/reason-disambiguation.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P3-reason-revelation-tension.md
+M	atomics/skill/references/procedures/P4-maieutic.md
+M	atomics/skill/references/procedures/P7-restoration-stops.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/tactics/F3-practice-epistemic-access.md
+M	atomics/skill/references/tactics/M3-orphaned-intuition.md
+M	atomics/skill/references/tactics/M5-deformation-triage.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/techniques/V2-reconstituting-reason.md
+M	atomics/skill/references/techniques/V5-directing-attention-signs.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+A	atomics/skill/scripts/check_execution.py
+A	atomics/skill/scripts/daee_level3.py
+A	atomics/skill/scripts/diagnose.py
+A	atomics/skill/scripts/level3_lib.py
+A	atomics/skill/scripts/reconstruct.py
+A	atomics/skill/scripts/route.py
+A	atomics/skill/scripts/validate.py
+A	atomics/skill/tests/expected/genuine-shubhah-after-deformation-clearing.json
+A	atomics/skill/tests/expected/grief-coded-objection.json
+A	atomics/skill/tests/expected/imported-tribunal-protest.json
+A	atomics/skill/tests/expected/mushabara-fasida.json
+A	atomics/skill/tests/expected/stability-repetition.json
+A	atomics/skill/tests/expected/trinitarian-claim-cluster.json
+A	atomics/skill/tests/expected/tst-richard-lael-lillard.json
+A	atomics/skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md
+A	atomics/skill/tests/fixtures/grief-coded-objection/input.md
+A	atomics/skill/tests/fixtures/imported-tribunal-protest/input.md
+A	atomics/skill/tests/fixtures/mushabara-fasida/input.md
+A	atomics/skill/tests/fixtures/stability-repetition/input.md
+A	atomics/skill/tests/fixtures/trinitarian-claim-cluster/input.md
+A	atomics/skill/tests/fixtures/tst-richard-lael-lillard/input.md
+A	ci/level3-fixture-pass.yml
+A	ci/level3-routing-stability.yml
+A	docs/audits/v0.3.2.0-ir-reconstruction-ttp-selection-audit.md
+A	docs/audits/v0.3.2.0-level3-executable-routing-pilot.md
+A	docs/audits/v0.3.2.0-level3-golden-comparison.md
+A	docs/audits/v0.3.2.0-level3-release-hardening.md
+A	docs/audits/v0.3.2.0-level3-shortfall-diagnosis.md
+A	docs/audits/v0.3.2.0-nomenclature-normalization-audit.md
+A	docs/audits/v0.3.2.0-precommit-hygiene-audit.md
+A	docs/audits/v0.3.2.0-specialist-audit-findings.md
+A	docs/audits/v0.3.2.0-ttp-routing-catalogue.md
+A	docs/audits/v0.3.2.0-ttp-routing-trigger-matrix.md
+A	docs/audits/v0.3.2.0-v15-codon-pilot-decision.md
+A	docs/audits/v0.3.2.0-v15-owner-gap-adjudication.md
+A	docs/level3-onboarding.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+A	skill/README.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+A	skill/data/module-catalogue.json
+A	skill/data/ontology-licenses.yaml
+A	skill/data/routing-precedence.yaml
+A	skill/data/trigger-matrix.json
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+A	skill/scripts/check_execution.py
+A	skill/scripts/daee_level3.py
+A	skill/scripts/diagnose.py
+A	skill/scripts/level3_lib.py
+A	skill/scripts/reconstruct.py
+A	skill/scripts/route.py
+A	skill/scripts/validate.py
+A	skill/tests/expected/genuine-shubhah-after-deformation-clearing.json
+A	skill/tests/expected/grief-coded-objection.json
+A	skill/tests/expected/imported-tribunal-protest.json
+A	skill/tests/expected/mushabara-fasida.json
+A	skill/tests/expected/stability-repetition.json
+A	skill/tests/expected/trinitarian-claim-cluster.json
+A	skill/tests/expected/tst-richard-lael-lillard.json
+A	skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md
+A	skill/tests/fixtures/grief-coded-objection/input.md
+A	skill/tests/fixtures/imported-tribunal-protest/input.md
+A	skill/tests/fixtures/mushabara-fasida/input.md
+A	skill/tests/fixtures/stability-repetition/input.md
+A	skill/tests/fixtures/trinitarian-claim-cluster/input.md
+A	skill/tests/fixtures/tst-richard-lael-lillard/input.md
+M	tests/ir-fixtures/valid/criterion-import-positive.json
+A	tests/reconstruction-fixtures/required-contrast-and-stability.json
+M	tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json
+A	tests/routing-fixtures/14-reason-revelation-global-tribunal.json
+A	tests/routing-fixtures/15-reason-revelation-local-semantic.json
+A	tests/routing-fixtures/16-reason-revelation-transmission-local.json
+A	tests/routing-fixtures/17-reason-revelation-speculative-perfection.json
+A	tests/routing-fixtures/18-logical-evil-hidden-premise.json
+A	tests/routing-fixtures/19-tawil-tafsir-bayan.json
+A	tests/routing-fixtures/20-tawil-philosophical-override.json
+A	tests/routing-fixtures/21-loaded-body-direction-term.json
+A	tests/routing-fixtures/22-composition-dependence-scope.json
+A	tests/routing-fixtures/23-human-entailment-attribution.json
+A	tests/routing-fixtures/24-honest-shubhah-evidence.json
+A	tests/routing-fixtures/25-inherited-scientism-evidence.json
+A	tests/routing-fixtures/26-identity-performance-dont-care.json
+A	tests/routing-fixtures/27-trauma-moral-objection-hold.json
+A	tests/routing-fixtures/28-signs-science-false-cause.json
+A	tests/routing-fixtures/29-frame-alias-nat-normalization.json
+A	tests/routing-fixtures/30-ashari-family-nonmonolith.json
+A	tests/routing-fixtures/31-cross-frame-verbal-agreement.json
+A	tests/routing-fixtures/32-meta-noetic-control-surface.json
+A	tests/routing-fixtures/33-maturidi-family-nonmonolith.json
+D	tools/__pycache__/compiled_runtime_lib.cpython-310.pyc
+M	tools/build_compiled_runtime.py
+M	tools/check_framework_pipeline.py
+M	tools/check_ir_instance_integrity.py
+A	tools/check_ir_reconstruction_fixtures.py
+M	tools/check_metacompliance_current_canon.py
+M	tools/check_recursion_collapse_noetic_frame.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_smoke_artifacts.py
+M	tools/compiled_runtime_lib.py
+
+COMMIT 564f900e26099495e982d65d3d34c0b42ad1320d 2026-05-09 08:07:03 -0400 docs: update v0.3.2.0 release notes
+M	CHANGELOG.md
+A	docs/v0.3.2.0-release-log.md
+A	docs/v0.3.2.0-release-notes.md
+
+COMMIT a20bd832bba76c6950e07b135a2022591a30be20 2026-05-09 08:30:32 -0400 docs: keep campaign audits local
+D	docs/audits/v0.3.2.0-ir-reconstruction-ttp-selection-audit.md
+D	docs/audits/v0.3.2.0-level3-executable-routing-pilot.md
+D	docs/audits/v0.3.2.0-level3-golden-comparison.md
+D	docs/audits/v0.3.2.0-level3-release-hardening.md
+D	docs/audits/v0.3.2.0-level3-shortfall-diagnosis.md
+D	docs/audits/v0.3.2.0-nomenclature-normalization-audit.md
+D	docs/audits/v0.3.2.0-precommit-hygiene-audit.md
+D	docs/audits/v0.3.2.0-specialist-audit-findings.md
+D	docs/audits/v0.3.2.0-ttp-routing-catalogue.md
+D	docs/audits/v0.3.2.0-ttp-routing-trigger-matrix.md
+D	docs/audits/v0.3.2.0-v15-codon-pilot-decision.md
+D	docs/audits/v0.3.2.0-v15-owner-gap-adjudication.md
+M	docs/v0.3.2.0-release-log.md
+
+COMMIT 05bc934433079028f2fe65650adb98b5d57f3a33 2026-05-09 08:32:55 -0400 docs: fix framework-pipeline math rendering
+M	docs/audits/framework-pipeline-formalization.md
+
+COMMIT da23e4ec43f2b00a67303017669c55a96a970d91 2026-05-09 08:33:57 -0400 docs: reorganize runtime use and architecture README
+M	README.md
+
+COMMIT 80224d67547cf105a5c28a8bb66d4abd67d89cd4 2026-05-09 08:56:00 -0400 chore: harden v0.3.2.0 release gate
+M	.github/workflows/ci.yml
+M	CHANGELOG.md
+M	README.md
+M	atomics/skill/references/case-library/INDEX.md
+M	atomics/skill/references/case-library/do-attribute-precision.md
+M	atomics/skill/references/case-library/do-christian-extensions.md
+M	atomics/skill/references/case-library/do-core.md
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/case-library/noetic-profiles.md
+M	atomics/skill/references/case-library/philosophical-usurpation.md
+M	atomics/skill/references/case-library/profiles/INDEX.md
+M	atomics/skill/references/case-library/profiles/ns-1-naturalist.md
+M	atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md
+M	atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+M	atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-3-deconverted.md
+M	atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+M	atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md
+M	atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	atomics/skill/references/case-library/revelation-transmission.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/arabic-backbone-predicates.md
+M	atomics/skill/references/diagnostics/case-state-schema.md
+M	atomics/skill/references/diagnostics/causal-series-taxonomy.md
+M	atomics/skill/references/diagnostics/coverage-ledger.md
+M	atomics/skill/references/diagnostics/definition-discipline.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/discourse-orientation.md
+M	atomics/skill/references/diagnostics/fitrah-perspectives.md
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/hadith-authentication-epistemology.md
+M	atomics/skill/references/diagnostics/inference-boundary.md
+M	atomics/skill/references/diagnostics/kalamic-interlocutor.md
+M	atomics/skill/references/diagnostics/mixed-case-handling.md
+M	atomics/skill/references/diagnostics/modes-of-concealment.md
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/operative-contract.schema.json
+M	atomics/skill/references/diagnostics/operative-contracts.md
+M	atomics/skill/references/diagnostics/pattern-profiling.md
+M	atomics/skill/references/diagnostics/perfection-criterion-usurpation.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	atomics/skill/references/diagnostics/reason-disambiguation.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/diagnostics/seven-deformations.md
+M	atomics/skill/references/kernel-thesis.md
+M	atomics/skill/references/metaphysical-architecture.md
+M	atomics/skill/references/module-codes.md
+M	atomics/skill/references/procedures/INDEX.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P2-objection-mapping.md
+M	atomics/skill/references/procedures/P3-reason-revelation-tension.md
+M	atomics/skill/references/procedures/P4-maieutic.md
+M	atomics/skill/references/procedures/P5-already-believing.md
+M	atomics/skill/references/procedures/P6-universal-aqidah-principle.md
+M	atomics/skill/references/procedures/P7-restoration-stops.md
+M	atomics/skill/references/prophecy-wahy-supremacy.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/sound-reason-epistemology.md
+M	atomics/skill/references/tactics/E1-broadening-evidence.md
+M	atomics/skill/references/tactics/E2-inferential-criterion.md
+M	atomics/skill/references/tactics/E3-cumulative-case.md
+M	atomics/skill/references/tactics/E4-cross-cultural-check.md
+M	atomics/skill/references/tactics/F1-supra-vs-antirational.md
+M	atomics/skill/references/tactics/F2-volitional-dimensions.md
+M	atomics/skill/references/tactics/F3-practice-epistemic-access.md
+M	atomics/skill/references/tactics/INDEX.md
+M	atomics/skill/references/tactics/M1-self-refutation.md
+M	atomics/skill/references/tactics/M1P-performative-self-refutation.md
+M	atomics/skill/references/tactics/M2-prior-probability.md
+M	atomics/skill/references/tactics/M3-orphaned-intuition.md
+M	atomics/skill/references/tactics/M4-grief-register.md
+M	atomics/skill/references/tactics/M5-deformation-triage.md
+M	atomics/skill/references/tactics/M6-excluded-middle.md
+M	atomics/skill/references/tactics/M7-definition-anchor.md
+M	atomics/skill/references/tactics/M8-reductio.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/tactics/R1-internalist-criterion.md
+M	atomics/skill/references/tactics/R2-the-reminder.md
+M	atomics/skill/references/tactics/R3-warranted-basic-belief.md
+M	atomics/skill/references/tactics/doubt-vs-skepticism.md
+M	atomics/skill/references/tactics/husn-al-nazar-arguments.md
+M	atomics/skill/references/tactics/inductive-fitri-method.md
+M	atomics/skill/references/tactics/symmetric-taqlid-check.md
+M	atomics/skill/references/techniques/INDEX.md
+M	atomics/skill/references/techniques/V1-diagnostic.md
+M	atomics/skill/references/techniques/V10-transmission-content-vetting.md
+M	atomics/skill/references/techniques/V11-taqlid-transition.md
+M	atomics/skill/references/techniques/V12-tamanuc-exhaustion.md
+M	atomics/skill/references/techniques/V2-reconstituting-reason.md
+M	atomics/skill/references/techniques/V3-regress-dissolution.md
+M	atomics/skill/references/techniques/V4-contamination-identification.md
+M	atomics/skill/references/techniques/V5-directing-attention-signs.md
+M	atomics/skill/references/techniques/V6-convergence.md
+M	atomics/skill/references/techniques/V7-taqlid-check.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+M	atomics/skill/references/techniques/V9-necessary-knowledge-priority.md
+M	atomics/skill/references/techniques/heuristics.md
+M	atomics/skill/references/terminology.md
+A	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.3.1.0-release-log.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	package.ps1
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/diagnostics/operative-contract.schema.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	tools/check_frontmatter.py
+M	tools/check_smoke_artifacts.py
+M	tools/compiled_runtime_lib.py
+
+COMMIT fe09511b47981d70b64b3a2fafef3e3d7290e642 2026-05-09 09:46:25 -0400 fix: harden v0.3.2.0 Level 3 release polish
+M	README.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	package.ps1
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+
+COMMIT bdbfd8c45d79818c3e43f6832574a20b18283a17 2026-05-09 11:07:47 -0400 fix: harden v0.3.2.0 recursive render release
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/README.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	atomics/skill/scripts/route.py
+M	docs/release-artifacts.md
+M	skill/README.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+M	skill/scripts/route.py
+
+COMMIT 023abc0c68e88c909d280ae19cef1c653cc39923 2026-05-09 13:14:47 -0400 fix: harden v0.3.2.0 release behavior and protocol
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/case-library/INDEX.md
+M	atomics/skill/references/case-library/do-christian-extensions.md
+M	atomics/skill/references/case-library/philosophical-usurpation.md
+M	atomics/skill/references/case-library/revelation-transmission.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/coverage-scope.yaml
+M	atomics/skill/references/diagnostics/definition-discipline.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/hadith-authentication-epistemology.md
+M	atomics/skill/references/diagnostics/kalamic-interlocutor.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/perfection-criterion-usurpation.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	atomics/skill/references/diagnostics/reason-disambiguation.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/kernel-thesis.md
+M	atomics/skill/references/procedures/P2-objection-mapping.md
+M	atomics/skill/references/procedures/P5-already-believing.md
+M	atomics/skill/references/prophecy-wahy-supremacy.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/sound-reason-epistemology.md
+M	atomics/skill/references/tactics/F1-supra-vs-antirational.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/techniques/V10-transmission-content-vetting.md
+M	atomics/skill/references/techniques/V12-tamanuc-exhaustion.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+M	atomics/skill/references/terminology.md
+M	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+M	docs/compiled-runtime-verification.md
+M	docs/consolidation-compiler-audit.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	package.ps1
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	tools/build_compiled_runtime.py
+M	tools/check_consolidation_call_budget.py
+M	tools/check_metacompliance_current_canon.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_routing_parity.py
+M	tools/check_smoke_artifacts.py
+M	tools/compiled_runtime_lib.py
+
+COMMIT b25481b817f121570c883ad09891a6b04359ab15 2026-05-09 13:20:07 -0400 docs: record v0.3.2.0 final rebake
+A	docs/audits/v0.3.2.0-final-release-rebake-report.md
+
+COMMIT fbbaf90c4f3dd9ddfe19506cd9dc202a605b0afe 2026-05-09 13:40:54 -0400 fix: keep v0.3.2.0 skill metadata within host limits
+M	AGENTS.md
+M	CHANGELOG.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	package.ps1
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	tools/check_frontmatter.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT 9e52810c60d75312ed08aad4c51da2a98df63fcc 2026-05-09 16:53:42 -0400 fix: harden v0.3.2.0 runtime validation and render governance
+M	.github/workflows/ci.yml
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/data/module-catalogue.json
+M	atomics/skill/data/ontology-licenses.yaml
+M	atomics/skill/data/routing-precedence.yaml
+M	atomics/skill/data/trigger-matrix.json
+M	atomics/skill/references/diagnostics/diagnostic-ir.schema.json
+M	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+M	atomics/skill/references/diagnostics/mixed-case-handling.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/operative-contracts.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P6-universal-aqidah-principle.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	atomics/skill/scripts/diagnose.py
+M	atomics/skill/scripts/level3_lib.py
+M	atomics/skill/scripts/route.py
+M	atomics/skill/scripts/validate.py
+R100	atomics/skill/tests/expected/tst-richard-lael-lillard.json	atomics/skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json
+M	atomics/skill/tests/expected/mushabara-fasida.json
+A	atomics/skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md
+D	atomics/skill/tests/fixtures/tst-richard-lael-lillard/input.md
+M	ci/level3-fixture-pass.yml
+M	ci/level3-routing-stability.yml
+A	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+M	docs/compiled-runtime-tools.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	package.ps1
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/data/module-catalogue.json
+M	skill/data/ontology-licenses.yaml
+M	skill/data/routing-precedence.yaml
+M	skill/data/trigger-matrix.json
+M	skill/references/diagnostics/diagnostic-ir.schema.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+M	skill/scripts/diagnose.py
+M	skill/scripts/level3_lib.py
+M	skill/scripts/route.py
+M	skill/scripts/validate.py
+R100	skill/tests/expected/tst-richard-lael-lillard.json	skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json
+M	skill/tests/expected/mushabara-fasida.json
+A	skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md
+D	skill/tests/fixtures/tst-richard-lael-lillard/input.md
+M	tests/reconstruction-fixtures/required-contrast-and-stability.json
+M	tests/routing-fixtures/30-ashari-family-nonmonolith.json
+M	tests/routing-fixtures/31-cross-frame-verbal-agreement.json
+M	tests/routing-fixtures/33-maturidi-family-nonmonolith.json
+M	tools/build_compiled_runtime.py
+M	tools/check_compiled_module_boundaries.py
+M	tools/check_compiled_runtime_freshness.py
+M	tools/check_encoding_hygiene.py
+M	tools/check_framework_pipeline.py
+M	tools/check_frontmatter.py
+M	tools/check_ir_instance_integrity.py
+M	tools/check_ir_reconstruction_fixtures.py
+A	tools/check_level3_data_shapes.py
+A	tools/check_package_shape.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/check_routing_parity.py
+M	tools/check_smoke_artifacts.py
+M	tools/check_stub_integrity.py
+M	tools/compiled_runtime_lib.py
+A	tools/package_shape.py
+A	tools/package_skill.py
+
+COMMIT 8aeb0c6fe6e598fbc295285111b56856076de753 2026-05-09 18:00:19 -0400 fix: enforce pressure-dimension execution in hard cases
+M	AGENTS.md
+M	README.md
+M	atomics/skill/README.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/data/trigger-matrix.json
+M	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	atomics/skill/scripts/route.py
+M	atomics/skill/scripts/validate.py
+M	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+M	docs/compiled-runtime-tools.md
+M	skill/README.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/data/trigger-matrix.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+M	skill/scripts/route.py
+M	skill/scripts/validate.py
+M	tools/check_level3_data_shapes.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+
+COMMIT 60899f792abb3b09ad02ef37b6fda8257e868254 2026-05-10 01:34:09 -0400 fix: prove golden-depth Level 3 hard-case execution
+M	AGENTS.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/data/trigger-matrix.json
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	atomics/skill/scripts/validate.py
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/data/trigger-matrix.json
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+M	skill/scripts/validate.py
+M	tools/check_level3_data_shapes.py
+
+COMMIT cbe2a70ed50f8f1b14b7fc9711cf627a94f9cf8a 2026-05-10 01:40:52 -0400 docs: refresh v0.3.2.0 release artifact metadata
+M	CHANGELOG.md
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	tools/check_smoke_artifacts.py
+
+COMMIT 40c2f2b6680bb0c57a9ec6e628bfad2ccaee289c 2026-05-10 01:42:44 -0400 docs: mark v0.3.2.0 release asset refresh pending
+M	CHANGELOG.md
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+
+COMMIT 663f762d1c56fc6ae804a47978d46a08b3aa9a95 2026-05-10 01:55:18 -0400 fix: anonymize hard-case canary release surfaces
+M	AGENTS.md
+M	CHANGELOG.md
+M	TODO.md
+M	atomics/skill/scripts/daee_level3.py
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+M	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	skill/scripts/daee_level3.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT a38857fb021e77c2c7e8cdbb789f11e91dbe7c4f 2026-05-10 01:57:23 -0400 docs: refresh v0.3.2.0 release artifact metadata
+M	CHANGELOG.md
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	tools/check_smoke_artifacts.py
+
+COMMIT a62bbdc534a7de958882d6cfd864db5831fe0f3f 2026-05-10 02:00:58 -0400 fix: restore generated manifest freshness and release hygiene
+M	.gitattributes
+M	skill/build-manifest.json
+
+COMMIT a1f3903a8cbbec0ee8e0353d21a5541f8a03bca8 2026-05-10 02:02:53 -0400 docs: refresh v0.3.2.0 release artifact metadata
+M	CHANGELOG.md
+M	docs/audits/v0.3.2.0-final-release-rebake-report.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	tools/check_smoke_artifacts.py
+
+COMMIT b0bad507d3e0115a6ae57fc5a2e0e45e3eee944c 2026-05-10 04:40:10 -0400 fix: frontload Level 1/2 burden-depth governance
+M	AGENTS.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/runtime-output-governance.md
+
+COMMIT a7653281e124263f4f6df7625f98b830a0b940b0 2026-05-10 04:41:55 -0400 docs: refresh v0.3.2.0 release artifact metadata
+M	CHANGELOG.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+
+COMMIT 8b5b54590631bf33ba9ed187add991991af84551 2026-05-10 05:06:02 -0400 fix: harden TTP regression gates and untrack smokes
+M	.gitignore
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/data/trigger-matrix.json
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/case-state-schema.md
+M	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+M	atomics/skill/references/diagnostics/mixed-case-handling.md
+M	atomics/skill/references/diagnostics/operative-contracts.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P7-restoration-stops.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/tactics/M1-self-refutation.md
+M	atomics/skill/references/tactics/M8-reductio.md
+M	atomics/skill/references/techniques/V2-reconstituting-reason.md
+M	atomics/skill/scripts/check_execution.py
+M	atomics/skill/scripts/daee_level3.py
+M	atomics/skill/scripts/diagnose.py
+M	atomics/skill/tests/expected/genuine-shubhah-after-deformation-clearing.json
+M	atomics/skill/tests/expected/grief-coded-objection.json
+M	atomics/skill/tests/expected/imported-tribunal-protest.json
+M	atomics/skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json
+M	atomics/skill/tests/expected/mushabara-fasida.json
+A	atomics/skill/tests/expected/naturalist-evidential-tribunal.json
+M	atomics/skill/tests/expected/trinitarian-claim-cluster.json
+A	atomics/skill/tests/fixtures/naturalist-evidential-tribunal/input.md
+M	docs/compiled-runtime-tools.md
+M	docs/compiled-runtime-verification.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/v0.3.2.0-release-log.md
+M	docs/v0.3.2.0-release-notes.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/data/trigger-matrix.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+M	skill/scripts/check_execution.py
+M	skill/scripts/daee_level3.py
+M	skill/scripts/diagnose.py
+M	skill/tests/expected/genuine-shubhah-after-deformation-clearing.json
+M	skill/tests/expected/grief-coded-objection.json
+M	skill/tests/expected/imported-tribunal-protest.json
+M	skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json
+M	skill/tests/expected/mushabara-fasida.json
+A	skill/tests/expected/naturalist-evidential-tribunal.json
+M	skill/tests/expected/trinitarian-claim-cluster.json
+A	skill/tests/fixtures/naturalist-evidential-tribunal/input.md
+D	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/input.md
+D	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/ir.json
+D	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/output.md
+D	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/trace.md
+D	smokes/runtime-grounding-v5/01-trinitarian-claim-cluster/verdict.md
+D	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/input.md
+D	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/output.md
+D	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/trace.md
+D	smokes/runtime-grounding-v5/02-unknown-misleading-denomination-pattern-first/verdict.md
+D	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/input.md
+D	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/output.md
+D	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/trace.md
+D	smokes/runtime-grounding-v5/03-source-prestige-citation-bait/verdict.md
+D	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/input.md
+D	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/ir.json
+D	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/output.md
+D	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/trace.md
+D	smokes/runtime-grounding-v5/04-comparative-neutral-flattening-bait/verdict.md
+D	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/input.md
+D	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/output.md
+D	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/trace.md
+D	smokes/runtime-grounding-v5/05-recursive-epistemology-exposure/verdict.md
+D	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/input.md
+D	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/output.md
+D	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/trace.md
+D	smokes/runtime-grounding-v5/06-revelation-direct-source-discipline/verdict.md
+D	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/input.md
+D	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/output.md
+D	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/trace.md
+D	smokes/runtime-grounding-v5/07-secular-neutrality-worldview-default/verdict.md
+D	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/input.md
+D	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/output.md
+D	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/trace.md
+D	smokes/runtime-grounding-v5/08-evidential-evil-moral-protest-hiddenness/verdict.md
+D	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/input.md
+D	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/output.md
+D	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/trace.md
+D	smokes/runtime-grounding-v5/09-trinity-variant-relative-identity/verdict.md
+D	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/input.md
+D	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/output.md
+D	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/trace.md
+D	smokes/runtime-grounding-v5/10-richard-lael-lillard-tst-exact/verdict.md
+M	tools/check_encoding_hygiene.py
+M	tools/check_level3_data_shapes.py
+M	tools/check_metacompliance_current_canon.py
+M	tools/check_render_modes.py
+M	tools/check_smoke_artifacts.py
+M	tools/compiled_runtime_lib.py
+
+COMMIT 6636c4b22c0dbfdd90faa743e6832c91abf3e715 2026-05-11 16:39:19 -0400 fix: recover canonical compact DSL runtime depth
+M	.gitignore
+M	AGENTS.md
+M	README.md
+M	TODO.md
+M	atomics/skill/README.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/case-library/profiles/INDEX.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+D	atomics/skill/references/diagnostics/coverage-ledger.md
+M	atomics/skill/references/diagnostics/coverage-scope.yaml
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/diagnostics/seven-deformations.md
+M	atomics/skill/references/module-codes.md
+M	atomics/skill/references/procedures/INDEX.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/tactics/INDEX.md
+M	atomics/skill/references/tactics/M1-self-refutation.md
+M	atomics/skill/references/tactics/M1P-performative-self-refutation.md
+M	atomics/skill/references/tactics/M3-orphaned-intuition.md
+M	atomics/skill/references/tactics/M5-deformation-triage.md
+M	atomics/skill/references/tactics/M8-reductio.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/techniques/INDEX.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+M	atomics/skill/references/techniques/V9-necessary-knowledge-priority.md
+M	docs/compiled-runtime-tools.md
+M	docs/compiled-runtime-verification.md
+A	docs/daee-epistemics-pipeline.html
+M	docs/level3-onboarding.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/source-vs-runtime-layout.md
+M	package.ps1
+M	skill/README.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json
+M	tools/build_compiled_runtime.py
+M	tools/check_recursive_traversal_governance.py
+M	tools/check_render_modes.py
+M	tools/package_shape.py
+
+COMMIT 35e08d5265a4229510d044be36bc238233c08881 2026-05-11 16:45:02 -0400 docs: record v0.3.2.0 release asset refresh
+M	docs/release-artifacts.md
+
+COMMIT d7f851367b03c1392bab3bde6bc0b7086138bc79 2026-05-13 17:35:54 -0400 Publish project landing page
+A	docs/.nojekyll
+D	docs/audits/codex-smoke-test-findings.md
+D	docs/audits/framework-pipeline-formalization.md
+D	docs/audits/pattern-family-audit.md
+D	docs/audits/v0.3.2.0-final-release-rebake-report.md
+D	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+D	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+D	docs/compiled-runtime-tools.md
+D	docs/compiled-runtime-verification.md
+D	docs/consolidation-compiler-audit.md
+D	docs/daee-epistemics-pipeline.html
+A	docs/index.html
+D	docs/level3-onboarding.md
+D	docs/package-smoke-readiness.md
+D	docs/recursive-traversal-governance.md
+D	docs/release-artifacts.md
+D	docs/routing-parity-fixtures.md
+D	docs/source-vs-runtime-layout.md
+D	docs/v0.3.0.0-final-verification.md
+D	docs/v0.3.0.0-release-candidate.md
+D	docs/v0.3.0.0-release-log.md
+D	docs/v0.3.0.0-release-notes.md
+D	docs/v0.3.0.0-release-readiness.md
+D	docs/v0.3.1.0-release-log.md
+D	docs/v0.3.1.0-release-notes.md
+D	docs/v0.3.2.0-release-log.md
+D	docs/v0.3.2.0-release-notes.md
+
+COMMIT 979ddc6287d4d57ba237f3edd90564332a248f00 2026-05-13 17:36:46 -0400 Restore docs and keep published landing page
+A	docs/audits/codex-smoke-test-findings.md
+A	docs/audits/framework-pipeline-formalization.md
+A	docs/audits/pattern-family-audit.md
+A	docs/audits/v0.3.2.0-final-release-rebake-report.md
+A	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+A	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+A	docs/compiled-runtime-tools.md
+A	docs/compiled-runtime-verification.md
+A	docs/consolidation-compiler-audit.md
+A	docs/daee-epistemics-pipeline.html
+A	docs/level3-onboarding.md
+A	docs/package-smoke-readiness.md
+A	docs/recursive-traversal-governance.md
+A	docs/release-artifacts.md
+A	docs/routing-parity-fixtures.md
+A	docs/source-vs-runtime-layout.md
+A	docs/v0.3.0.0-final-verification.md
+A	docs/v0.3.0.0-release-candidate.md
+A	docs/v0.3.0.0-release-log.md
+A	docs/v0.3.0.0-release-notes.md
+A	docs/v0.3.0.0-release-readiness.md
+A	docs/v0.3.1.0-release-log.md
+A	docs/v0.3.1.0-release-notes.md
+A	docs/v0.3.2.0-release-log.md
+A	docs/v0.3.2.0-release-notes.md
+
+COMMIT 4a3806816f264d7002e6ccaaeded724f4c30361f 2026-05-13 19:42:51 -0400 Update published landing page
+M	docs/index.html
+
+COMMIT 5026a40a0d153fe16b8c1d4ed63d748f26fd3e68 2026-05-13 21:27:17 -0400 Update published landing page
+M	docs/index.html
+
+COMMIT 17ea4f6e06f5f7aa0db08a535d88c33fa8d783f2 2026-05-13 22:36:15 -0400 Update published landing page
+M	docs/index.html
+
+COMMIT c57055e5cea4eb2c7295c16420791652c689c6d6 2026-05-13 22:52:49 -0400 Update published landing page
+M	docs/index.html
+
+COMMIT 36a98c3811280feb0ae2e5c6b55070d828ff2162 2026-05-14 01:16:53 -0400 fix: recover canonical compact DSL runtime depth
+M	AGENTS.md
+M	atomics/skill/SKILL.md
+M	docs/index.html
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	tools/build_compiled_runtime.py
+
+COMMIT ab3bbeadb52fa63fecfcd0e5fb43a810bbb44081 2026-05-14 01:22:04 -0400 docs: record v0.3.2.0 hard-canary package refresh
+M	docs/release-artifacts.md
+
+COMMIT 77f41d6586641a994287e348dc7bb13a3abfb987 2026-05-14 03:01:08 -0400 feat: implement pipeline2 derived bridge formalism
+M	AGENTS.md
+M	README.md
+M	TODO.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+A	docs/algebraic-notation-and-noetic-formalism.md
+M	docs/index.html
+A	docs/pipeline2-implementation-ledger.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+M	tools/check_metacompliance_current_canon.py
+A	tools/check_pipeline2_bridge.py
+
+COMMIT 79a42095ffabe9088a5c8915bf73cd488d1845ea 2026-05-14 04:10:51 -0400 test: prove pipeline2 bridge behavior fixtures
+M	AGENTS.md
+M	README.md
+M	TODO.md
+M	docs/algebraic-notation-and-noetic-formalism.md
+M	docs/index.html
+M	docs/pipeline2-implementation-ledger.md
+A	tests/pipeline2-bridge-fixtures/01-heart-register-hold.json
+A	tests/pipeline2-bridge-fixtures/02-xi-warrant-owner-selection.json
+A	tests/pipeline2-bridge-fixtures/03-omega-predication-owner-selection.json
+A	tests/pipeline2-bridge-fixtures/04-mu-carrier-burden-selection.json
+A	tests/pipeline2-bridge-fixtures/05-kappa-deltakappa-reread-partial.json
+A	tests/pipeline2-bridge-fixtures/06-terminal-collapse-restoration.json
+A	tests/pipeline2-bridge-fixtures/07-shannon-boundary-negative.json
+A	tests/pipeline2-bridge-fixtures/08-anti-symbol-theater-negative.json
+M	tools/check_pipeline2_bridge.py
+
+COMMIT 1fbc453c8108c44b9dfc8f1491e6d23d14b42544 2026-05-14 05:19:51 -0400 chore: record pipeline2 live smoke proof
+M	AGENTS.md
+M	TODO.md
+M	docs/audits/codex-smoke-test-findings.md
+M	docs/index.html
+M	tools/check_pipeline2_bridge.py
+M	tools/check_smoke_artifacts.py
+
+COMMIT d0ad1ecdf690c863c2a6aefdb423a2ace9b586d4 2026-05-14 05:38:04 -0400 docs: finalize pipeline2 post-smoke proof boundary
+M	README.md
+M	docs/index.html
+M	docs/pipeline2-implementation-ledger.md
+M	tools/check_pipeline2_bridge.py
+
+COMMIT 31bd69965d6ed13556739efc7f6bbd72d3257552 2026-05-14 10:48:11 -0400 Harden operator child-mode evidence
+M	README.md
+M	TODO.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	docs/algebraic-notation-and-noetic-formalism.md
+A	docs/audits/ns-ttp-meta-noetic-memetic-ontological-quantization-audit.md
+M	docs/index.html
+M	docs/pipeline2-implementation-ledger.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+A	tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json
+A	tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json
+A	tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json
+A	tests/routing-fixtures/37-m9-zahir-majaz-label-stripped.json
+A	tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json
+A	tests/routing-fixtures/39-pm-proof-denominator-narrowing.json
+A	tests/routing-fixtures/40-pm-huduth-contingency-route.json
+A	tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json
+A	tools/check_m9_child_mode_execution_samples.py
+A	tools/check_pm_child_mode_execution_samples.py
+
+COMMIT 84604b68aac0ee025f8df436a9da60184a9c79df 2026-05-14 12:23:52 -0400 Restore architecture map and record child-mode protocol
+M	AGENTS.md
+M	docs/index.html
+M	tools/check_pipeline2_bridge.py
+
+COMMIT d70087bf05211cf88c05289cdedcbe240b6b9685 2026-05-14 12:23:57 -0400 Add static source-status child modes and fixtures
+M	TODO.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/runtime-dispatch-gate.md
+A	tests/routing-fixtures/42-as-school-label-identity-audit.json
+A	tests/routing-fixtures/43-as-affiliation-doctrine-split.json
+A	tests/routing-fixtures/44-as-statement-person-method-distinction.json
+A	tests/routing-fixtures/45-as-source-evidence-identity-signal.json
+
+COMMIT 2abe09021795aaee3ac992ddf38c7c64b4c08f38 2026-05-14 13:15:24 -0400 Add AS child-mode local execution checker
+A	tools/check_as_child_mode_execution_samples.py
+
+COMMIT 11bc46cc4d8d4f61031b6cf49c0275502bc4a617 2026-05-14 13:15:40 -0400 Add doubt ecology child modes and checker evidence
+M	atomics/skill/references/tactics/doubt-vs-skepticism.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-tactics.md
+A	tests/routing-fixtures/46-dw-shubhah-wiswas-split.json
+A	tests/routing-fixtures/47-dw-overcomplexity-deformation.json
+A	tests/routing-fixtures/48-dw-content-escalation-stop.json
+A	tests/routing-fixtures/49-dw-bounded-reassurance-hold.json
+A	tools/check_dw_child_mode_execution_samples.py
+
+COMMIT cd9eb356c78b484a2cececd2a377068dbac7d344 2026-05-14 14:29:12 -0400 Add divine action speech and huduth child-mode evidence
+M	atomics/skill/references/case-library/do-attribute-precision.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-do-families.md
+A	tests/routing-fixtures/50-da-action-actor-effect.json
+A	tests/routing-fixtures/51-da-purpose-without-need.json
+A	tests/routing-fixtures/52-ds-speech-source-articulation.json
+A	tests/routing-fixtures/53-hk-huduth-khalq-split.json
+A	tools/check_da_ds_hk_child_mode_execution_samples.py
+
+COMMIT 74730828bf5fb9adffc4000c2d7d3352b993b33f 2026-05-14 14:47:28 -0400 Add ontological quantization child-mode evidence
+M	atomics/skill/references/diagnostics/definition-discipline.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+A	tests/routing-fixtures/54-oq-universal-particular.json
+A	tests/routing-fixtures/55-oq-mental-external.json
+A	tests/routing-fixtures/56-oq-cause-condition-impediment.json
+A	tests/routing-fixtures/57-oq-source-action-effect.json
+A	tools/check_oq_child_mode_execution_samples.py
+
+COMMIT eb1cbf0fe43dfca939a1a2ec256051586b7ad01b 2026-05-14 15:06:05 -0400 Add meta-noetic memetic child-mode evidence
+M	TODO.md
+M	atomics/skill/references/diagnostics/pattern-profiling.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/runtime-dispatch-gate.md
+A	tests/routing-fixtures/58-mm-loaded-label-carrier.json
+A	tests/routing-fixtures/59-mm-proof-packet-reconstruction.json
+A	tests/routing-fixtures/60-mm-mutation-after-challenge.json
+A	tests/routing-fixtures/61-mm-collapse-radius-mapping.json
+A	tools/check_mm_child_mode_execution_samples.py
+
+COMMIT b1d70b59351a7ae2b357eb6aefa936c82bf7a65a 2026-05-14 15:15:21 -0400 Harden compositional NS register grammar
+M	TODO.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	docs/algebraic-notation-and-noetic-formalism.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+A	tests/routing-fixtures/62-ns-unknown-pattern-typed-operator-route.json
+A	tests/routing-fixtures/63-register-composition-owner-handoff.json
+
+COMMIT 030cbc6cb386ff0e731dc0d341d4e151d590ed8a 2026-05-14 16:45:13 -0400 Release v0.4.0.0 package metadata
+M	.github/workflows/ci.yml
+M	AGENTS.md
+M	README.md
+M	TODO.md
+M	atomics/skill/references/case-library/INDEX.md
+M	atomics/skill/references/case-library/do-attribute-precision.md
+M	atomics/skill/references/case-library/do-christian-extensions.md
+M	atomics/skill/references/case-library/do-core.md
+M	atomics/skill/references/case-library/do-second-loop.md
+M	atomics/skill/references/case-library/noetic-profiles.md
+M	atomics/skill/references/case-library/philosophical-usurpation.md
+M	atomics/skill/references/case-library/profiles/INDEX.md
+M	atomics/skill/references/case-library/profiles/ns-1-naturalist.md
+M	atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md
+M	atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md
+M	atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-3-deconverted.md
+M	atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md
+M	atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md
+M	atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md
+M	atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md
+M	atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md
+M	atomics/skill/references/case-library/revelation-transmission.md
+M	atomics/skill/references/diagnostics/INDEX.md
+M	atomics/skill/references/diagnostics/anti-patterns.md
+M	atomics/skill/references/diagnostics/arabic-backbone-predicates.md
+M	atomics/skill/references/diagnostics/case-state-schema.md
+M	atomics/skill/references/diagnostics/causal-series-taxonomy.md
+M	atomics/skill/references/diagnostics/definition-discipline.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/discourse-orientation.md
+M	atomics/skill/references/diagnostics/fitrah-perspectives.md
+M	atomics/skill/references/diagnostics/foreign-premise-detection.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/hadith-authentication-epistemology.md
+M	atomics/skill/references/diagnostics/inference-boundary.md
+M	atomics/skill/references/diagnostics/ir-reconstruction-pass.md
+M	atomics/skill/references/diagnostics/kalamic-interlocutor.md
+M	atomics/skill/references/diagnostics/mixed-case-handling.md
+M	atomics/skill/references/diagnostics/modes-of-concealment.md
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/operative-contracts.md
+M	atomics/skill/references/diagnostics/pattern-profiling.md
+M	atomics/skill/references/diagnostics/perfection-criterion-usurpation.md
+M	atomics/skill/references/diagnostics/proof-method-audit.md
+M	atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md
+M	atomics/skill/references/diagnostics/reason-disambiguation.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/diagnostics/routing-precedence.md
+M	atomics/skill/references/diagnostics/seven-deformations.md
+M	atomics/skill/references/kernel-thesis.md
+M	atomics/skill/references/metaphysical-architecture.md
+M	atomics/skill/references/module-codes.md
+M	atomics/skill/references/procedures/INDEX.md
+M	atomics/skill/references/procedures/P1-fitrah-restoration.md
+M	atomics/skill/references/procedures/P2-objection-mapping.md
+M	atomics/skill/references/procedures/P3-reason-revelation-tension.md
+M	atomics/skill/references/procedures/P4-maieutic.md
+M	atomics/skill/references/procedures/P5-already-believing.md
+M	atomics/skill/references/procedures/P6-universal-aqidah-principle.md
+M	atomics/skill/references/procedures/P7-restoration-stops.md
+M	atomics/skill/references/prophecy-wahy-supremacy.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	atomics/skill/references/sound-reason-epistemology.md
+M	atomics/skill/references/tactics/E1-broadening-evidence.md
+M	atomics/skill/references/tactics/E2-inferential-criterion.md
+M	atomics/skill/references/tactics/E3-cumulative-case.md
+M	atomics/skill/references/tactics/E4-cross-cultural-check.md
+M	atomics/skill/references/tactics/F1-supra-vs-antirational.md
+M	atomics/skill/references/tactics/F2-volitional-dimensions.md
+M	atomics/skill/references/tactics/F3-practice-epistemic-access.md
+M	atomics/skill/references/tactics/INDEX.md
+M	atomics/skill/references/tactics/M1-self-refutation.md
+M	atomics/skill/references/tactics/M1P-performative-self-refutation.md
+M	atomics/skill/references/tactics/M2-prior-probability.md
+M	atomics/skill/references/tactics/M3-orphaned-intuition.md
+M	atomics/skill/references/tactics/M4-grief-register.md
+M	atomics/skill/references/tactics/M5-deformation-triage.md
+M	atomics/skill/references/tactics/M6-excluded-middle.md
+M	atomics/skill/references/tactics/M7-definition-anchor.md
+M	atomics/skill/references/tactics/M8-reductio.md
+M	atomics/skill/references/tactics/M9-predication-mode.md
+M	atomics/skill/references/tactics/R1-internalist-criterion.md
+M	atomics/skill/references/tactics/R2-the-reminder.md
+M	atomics/skill/references/tactics/R3-warranted-basic-belief.md
+M	atomics/skill/references/tactics/doubt-vs-skepticism.md
+M	atomics/skill/references/tactics/husn-al-nazar-arguments.md
+M	atomics/skill/references/tactics/inductive-fitri-method.md
+M	atomics/skill/references/tactics/symmetric-taqlid-check.md
+M	atomics/skill/references/techniques/INDEX.md
+M	atomics/skill/references/techniques/V1-diagnostic.md
+M	atomics/skill/references/techniques/V10-transmission-content-vetting.md
+M	atomics/skill/references/techniques/V11-taqlid-transition.md
+M	atomics/skill/references/techniques/V12-tamanuc-exhaustion.md
+M	atomics/skill/references/techniques/V2-reconstituting-reason.md
+M	atomics/skill/references/techniques/V3-regress-dissolution.md
+M	atomics/skill/references/techniques/V4-contamination-identification.md
+M	atomics/skill/references/techniques/V5-directing-attention-signs.md
+M	atomics/skill/references/techniques/V6-convergence.md
+M	atomics/skill/references/techniques/V7-taqlid-check.md
+M	atomics/skill/references/techniques/V8-bila-kayf-anchor.md
+M	atomics/skill/references/techniques/V9-necessary-knowledge-priority.md
+M	atomics/skill/references/techniques/heuristics.md
+M	atomics/skill/references/terminology.md
+M	docs/algebraic-notation-and-noetic-formalism.md
+A	docs/audits/v0.4.0.0-release-manager-hard-gate-audit.md
+M	docs/package-smoke-readiness.md
+M	docs/pipeline2-implementation-ledger.md
+M	docs/release-artifacts.md
+A	docs/v0.4.0.0-release-log.md
+A	docs/v0.4.0.0-release-notes.md
+M	package.ps1
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/diagnostics/operative-contracts.md
+M	skill/references/omnibus/OMNIBUS-do-families.md
+M	skill/references/omnibus/OMNIBUS-procedures.md
+M	skill/references/omnibus/OMNIBUS-profiles.md
+M	skill/references/omnibus/OMNIBUS-rt-transmission.md
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/omnibus/OMNIBUS-tactics.md
+M	skill/references/omnibus/OMNIBUS-techniques.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-foundation.md
+M	skill/references/runtime-output-governance.md
+M	skill/references/runtime-phase2-passes.md
+M	tools/check_smoke_artifacts.py
+M	tools/package_shape.py
+
+COMMIT 1e5fdbce5d5a0a9484fea8ba2f900dfcfedb3782 2026-05-16 01:18:07 -0400 v0.4.1.0: cleanup docs, formalism gates, and CI artifacts
+M	.github/workflows/ci.yml
+A	.github/workflows/release-skill.yml
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+M	atomics/skill/SKILL.md
+M	atomics/skill/references/diagnostics/diagnostic-ir.md
+M	atomics/skill/references/diagnostics/framework-pipeline.md
+M	atomics/skill/references/diagnostics/framework-pipeline.yaml
+M	atomics/skill/references/diagnostics/noetic-reading-checklist.md
+M	atomics/skill/references/diagnostics/nomenclature-normalization.md
+M	atomics/skill/references/diagnostics/recursive-state-transitions.md
+M	atomics/skill/references/rubrics/diagnostic-render-contract.md
+M	atomics/skill/references/rubrics/output-release.md
+M	ci/level3-fixture-pass.yml
+M	ci/level3-routing-stability.yml
+M	docs/algebraic-notation-and-noetic-formalism.md
+A	docs/audits/INDEX.md
+A	docs/audits/audit-history-pre-v0.4.1.md
+A	docs/audits/audit-history-v0.3.md
+A	docs/audits/audit-history-v0.4.0.0.md
+D	docs/audits/codex-smoke-test-findings.md
+D	docs/audits/framework-pipeline-formalization.md
+D	docs/audits/ns-ttp-meta-noetic-memetic-ontological-quantization-audit.md
+D	docs/audits/pattern-family-audit.md
+D	docs/audits/v0.3.2.0-final-release-rebake-report.md
+D	docs/audits/v0.3.2.0-release-manager-hard-gate-audit.md
+D	docs/audits/v0.3.2.0-systemic-hardening-closure.md
+D	docs/audits/v0.4.0.0-release-manager-hard-gate-audit.md
+A	docs/audits/v0.4.1.0-ci-release-operativity-audit.md
+A	docs/audits/v0.4.1.0-cleanup-readiness-audit.md
+A	docs/audits/v0.4.1.0-conway-yagni-audit.md
+A	docs/audits/v0.4.1.0-docs-consolidation-inventory.md
+A	docs/audits/v0.4.1.0-formalism-operativity-audit.md
+A	docs/audits/v0.4.1.0-github-ci-release-automation-audit.md
+A	docs/audits/v0.4.1.0-level3-deprecation-audit.md
+A	docs/audits/v0.4.1.0-pipeline-label-deprecation-audit.md
+A	docs/audits/v0.4.1.0-skill-compliance-audit.md
+A	docs/audits/v0.4.1.0-ttp-operativity-audit.md
+M	docs/compiled-runtime-tools.md
+D	docs/compiled-runtime-verification.md
+D	docs/consolidation-compiler-audit.md
+M	docs/index.html
+R090	docs/pipeline2-implementation-ledger.md	docs/register-formalism-implementation-ledger.md
+M	docs/release-artifacts.md
+A	docs/releases/README.md
+A	docs/releases/release-history-v0.3.md
+A	docs/releases/release-history-v0.4.md
+R100	docs/level3-onboarding.md	docs/runtime-harness-onboarding.md
+D	docs/v0.3.0.0-final-verification.md
+D	docs/v0.3.0.0-release-candidate.md
+D	docs/v0.3.0.0-release-log.md
+D	docs/v0.3.0.0-release-notes.md
+D	docs/v0.3.0.0-release-readiness.md
+D	docs/v0.3.1.0-release-log.md
+D	docs/v0.3.1.0-release-notes.md
+D	docs/v0.3.2.0-release-log.md
+D	docs/v0.3.2.0-release-notes.md
+D	docs/v0.4.0.0-release-log.md
+D	docs/v0.4.0.0-release-notes.md
+A	docs/v0.4.1.0-release-log.md
+A	docs/v0.4.1.0-release-notes.md
+M	skill/SKILL.md
+M	skill/build-manifest.json
+M	skill/compiled-module-map.json
+M	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+M	skill/references/runtime-diagnostic-core.md
+M	skill/references/runtime-dispatch-gate.md
+M	skill/references/runtime-output-governance.md
+R100	tests/pipeline2-bridge-fixtures/01-heart-register-hold.json	tests/register-formalism-bridge-fixtures/01-heart-register-hold.json
+R100	tests/pipeline2-bridge-fixtures/02-xi-warrant-owner-selection.json	tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json
+R100	tests/pipeline2-bridge-fixtures/03-omega-predication-owner-selection.json	tests/register-formalism-bridge-fixtures/03-omega-predication-owner-selection.json
+R100	tests/pipeline2-bridge-fixtures/04-mu-carrier-burden-selection.json	tests/register-formalism-bridge-fixtures/04-mu-carrier-burden-selection.json
+R100	tests/pipeline2-bridge-fixtures/05-kappa-deltakappa-reread-partial.json	tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json
+R100	tests/pipeline2-bridge-fixtures/06-terminal-collapse-restoration.json	tests/register-formalism-bridge-fixtures/06-terminal-collapse-restoration.json
+R100	tests/pipeline2-bridge-fixtures/07-shannon-boundary-negative.json	tests/register-formalism-bridge-fixtures/07-shannon-boundary-negative.json
+R094	tests/pipeline2-bridge-fixtures/08-anti-symbol-theater-negative.json	tests/register-formalism-bridge-fixtures/08-anti-symbol-theater-negative.json
+M	tools/build_compiled_runtime.py
+M	tools/check_metacompliance_current_canon.py
+A	tools/check_noetic_field_banner_samples.py
+M	tools/check_pipeline2_bridge.py
+A	tools/check_register_formalism_bridge.py
+M	tools/check_render_modes.py
+
+COMMIT 5650e498bbe67bd92443c904d3392caed0d1eabc 2026-05-16 01:20:59 -0400 v0.4.1.0: release artifact metadata
+M	CHANGELOG.md
+M	docs/release-artifacts.md
+M	docs/v0.4.1.0-release-log.md
+M	docs/v0.4.1.0-release-notes.md
+
+COMMIT 18220845b07a948cf58f60beb687d98ccaae752b 2026-05-16 01:43:33 -0400 v0.4.1.0: untrack generated runtime and build skill in CI
+M	.github/workflows/ci.yml
+M	.github/workflows/release-skill.yml
+M	.gitignore
+M	AGENTS.md
+M	CHANGELOG.md
+M	README.md
+M	TODO.md
+A	docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md
+M	docs/audits/v0.4.1.0-github-ci-release-automation-audit.md
+M	docs/release-artifacts.md
+M	docs/source-vs-runtime-layout.md
+M	docs/v0.4.1.0-release-log.md
+M	docs/v0.4.1.0-release-notes.md
+D	skill/README.md
+D	skill/SKILL.md
+D	skill/build-manifest.json
+D	skill/compiled-module-map.json
+D	skill/data/module-catalogue.json
+D	skill/data/ontology-licenses.yaml
+D	skill/data/routing-precedence.yaml
+D	skill/data/trigger-matrix.json
+D	skill/references/diagnostics/diagnostic-ir.schema.json
+D	skill/references/diagnostics/module-catalogue.json
+D	skill/references/diagnostics/operative-contract.schema.json
+D	skill/references/diagnostics/operative-contracts.md
+D	skill/references/omnibus/OMNIBUS-do-families.md
+D	skill/references/omnibus/OMNIBUS-procedures.md
+D	skill/references/omnibus/OMNIBUS-profiles.md
+D	skill/references/omnibus/OMNIBUS-rt-transmission.md
+D	skill/references/omnibus/OMNIBUS-specialty-diagnostics.md
+D	skill/references/omnibus/OMNIBUS-tactics.md
+D	skill/references/omnibus/OMNIBUS-techniques.md
+D	skill/references/runtime-diagnostic-core.md
+D	skill/references/runtime-dispatch-gate.md
+D	skill/references/runtime-foundation.md
+D	skill/references/runtime-output-governance.md
+D	skill/references/runtime-phase2-passes.md
+D	skill/scripts/check_execution.py
+D	skill/scripts/daee_level3.py
+D	skill/scripts/diagnose.py
+D	skill/scripts/level3_lib.py
+D	skill/scripts/reconstruct.py
+D	skill/scripts/route.py
+D	skill/scripts/validate.py
+D	skill/tests/expected/genuine-shubhah-after-deformation-clearing.json
+D	skill/tests/expected/grief-coded-objection.json
+D	skill/tests/expected/imported-tribunal-protest.json
+D	skill/tests/expected/moral-protest-nonbelief-worship-worthiness.json
+D	skill/tests/expected/mushabara-fasida.json
+D	skill/tests/expected/naturalist-evidential-tribunal.json
+D	skill/tests/expected/stability-repetition.json
+D	skill/tests/expected/trinitarian-claim-cluster.json
+D	skill/tests/fixtures/genuine-shubhah-after-deformation-clearing/input.md
+D	skill/tests/fixtures/grief-coded-objection/input.md
+D	skill/tests/fixtures/imported-tribunal-protest/input.md
+D	skill/tests/fixtures/moral-protest-nonbelief-worship-worthiness/input.md
+D	skill/tests/fixtures/mushabara-fasida/input.md
+D	skill/tests/fixtures/naturalist-evidential-tribunal/input.md
+D	skill/tests/fixtures/stability-repetition/input.md
+D	skill/tests/fixtures/trinitarian-claim-cluster/input.md
+
+COMMIT a9e9121cdda52429de77dd5ade1d17657005eabb 2026-05-16 01:46:05 -0400 v0.4.1.0: update release artifact provenance
+M	docs/release-artifacts.md
+M	docs/v0.4.1.0-release-log.md
+M	docs/v0.4.1.0-release-notes.md
+
+COMMIT 0052855a5634d9d1bdc22e61a38401d6343d0971 2026-05-16 01:47:20 -0400 v0.4.1.0: avoid stale release source SHA
+M	docs/release-artifacts.md
+M	docs/v0.4.1.0-release-log.md
+
+COMMIT 517a9f133b6bc11f7f9b4dc1160f461c58b9e94e 2026-05-16 03:19:53 -0400 v0.4.1.0 final release-gate corrections
+M	AGENTS.md
+M	CHANGELOG.md
+M	docs/algebraic-notation-and-noetic-formalism.md
+M	docs/audits/INDEX.md
+A	docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md
+M	docs/audits/v0.4.1.0-ci-release-operativity-audit.md
+M	docs/audits/v0.4.1.0-cleanup-readiness-audit.md
+M	docs/audits/v0.4.1.0-formalism-operativity-audit.md
+M	docs/audits/v0.4.1.0-github-ci-release-automation-audit.md
+A	docs/audits/v0.4.1.0-nla-operativity-audit.md
+A	docs/audits/v0.4.1.0-release-claim-integrity-audit.md
+A	docs/audits/v0.4.1.0-release-claim-inventory.md
+M	docs/audits/v0.4.1.0-skill-compliance-audit.md
+M	docs/audits/v0.4.1.0-ttp-operativity-audit.md
+M	docs/package-smoke-readiness.md
+M	docs/release-artifacts.md
+M	docs/releases/README.md
+M	docs/v0.4.1.0-release-log.md
+M	docs/v0.4.1.0-release-notes.md
+M	tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json
+M	tests/register-formalism-bridge-fixtures/07-shannon-boundary-negative.json
+M	tests/register-formalism-bridge-fixtures/08-anti-symbol-theater-negative.json
+A	tests/register-formalism-bridge-fixtures/09-divergence-curl-operator-detection.json
+A	tests/register-formalism-bridge-fixtures/10-register-activation-multi-register.json
+A	tests/register-formalism-bridge-fixtures/11-held-frame-ambiguity.json
+A	tests/register-formalism-bridge-fixtures/12-local-transition-delta-distinction.json
+A	tests/register-formalism-bridge-fixtures/13-nla-verbalizer-reconstructor-mapping.json
+M	tools/check_noetic_field_banner_samples.py
+M	tools/check_register_formalism_bridge.py
+M	tools/check_render_modes.py

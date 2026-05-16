@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- GENERATED FILE: do not edit this HTML output directly. Edit docs/index/** or owner sources, then run python tools/build_docs_index.py. -->
+{{ GENERATED_BANNER }}
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -325,8 +325,6 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
 </details>
 
 </div>
-<script id="docs-pipeline-generated-provenance">
-window.DOCS_PIPELINE_PROVENANCE = {"classification": "STRUCTURED_SOURCE_DERIVED", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "output": "docs/daee-epistemics-pipeline.html", "owner_sources": ["atomics/skill/references/diagnostics/framework-pipeline.yaml", "atomics/skill/references/diagnostics/framework-pipeline.md", "atomics/skill/references/diagnostics/diagnostic-ir.md", "atomics/skill/references/diagnostics/recursive-state-transitions.md", "atomics/skill/references/rubrics/diagnostic-render-contract.md", "atomics/skill/references/rubrics/output-release.md"], "source_digest": "dc5113963660db2158e7553fa03410501fe93209581a3fe309fd40528347468c"};
-</script>
+{{ PIPELINE_PAGE_PROVENANCE }}
 </body>
 </html>

@@ -47,7 +47,11 @@ state: <RECURSE | PARTIAL | COMPLETE>
 ```
 
 Print exactly one value for each field; never print the choice list or combine values with `|`.
-Default release status uses prose closure/hold/partial/continuation language, with no literal STOP/HOLD/RECURSE/PARTIAL label outside the noetic-field banner.
+Default release status is governed, not shallow or governance-hidden. When control-relevant,
+it must include the burden-cycle, operative submove, `Δκ`, `∇·` / `∇×` state, `R(H,Δ)`, and
+PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure. It should still avoid
+long explanatory formalism unless that explanation is needed for the user-requested audit or
+formalism task.
 Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or depth
 licenses. Source request and authority frame are distinct: do not mark source request `IMPLICIT`
 merely because a worldview or authority frame is live. If a source-authentication case supplies
@@ -98,17 +102,24 @@ Public canonical output should prefer `¹B₁`, `¹B₂`, `²B₁`. Use `1B1`, `
 as the ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a legacy/checker alias and should not
 be the primary public notation unless the output is explicitly a checker/dev-harness trace.
 
-Expanded formalism render boundary: symbols such as `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`,
-`ΔⁿB`, `ⁿ⁺¹B`, `Ψᴺ`, and `𝒞(Ψᴺ)` belong by default to theory/specification docs,
-`:dsl` visibility, or internal audit surfaces. Default output may expose them only when the
-user asks for formalism or when the symbol materially clarifies an actually executed burden
-transition. Do not print `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, and do not treat
-expanded notation as proof that a register or owner has executed.
+Expanded formalism render boundary: full algebraic exposition belongs by default to
+theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
+print short formal governance markers when they are control-relevant to the current execution:
+`ΔⁿB`, `Δκ`, `∇·κ`, `∇×κ`, `R(H,Δ)`, `R(H,Delta)`, PARTIAL, RECURSE, or COMPLETE. Use
+`R(H,Δ)` as the formal notation and `R(H,Delta)` only as the ASCII fallback.
+The expanded formal reread is `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
+`R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. Do not print
+`IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, do not conflate Delta with del/nabla, and
+do not treat expanded notation as proof that a register or owner has executed.
+
+Allowed default compact marker example: `State: Δκ live; ∇·κ positive; ∇×κ unresolved; PARTIAL.`
+Forbidden default exposition example: `The antisymmetric Jacobian of the noetic field shows...`
 
 Anti-symbol-theater rule: visible notation must be backed by a local control effect. If a
-render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `𝒞(Ψᴺ)`, or `N_fiṭrī ∧ ʿaql ṣarīḥ`, the same pass
-must show the burden, owner, hold/release decision, reread, or restoration boundary that the
-symbol changed. Otherwise use ordinary prose and keep the notation in the theory/spec layer.
+render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `∇·`, `∇×`, `R(H,Δ)`, `𝒞(Ψᴺ)`, or
+`N_fiṭrī ∧ ʿaql ṣarīḥ`, the same pass must show the burden, owner, hold/release decision,
+reread, dependency pressure, loop-breaking, or restoration boundary that the symbol changed.
+Otherwise use ordinary prose and keep the notation in the theory/spec layer.
 
 ---
 
@@ -359,7 +370,7 @@ shown their owner IDs, targets, operations, and results.
 - Remaining input-anchored burdens: [enumerated from original input, not a topic list]
 - Held routes rechecked:        [result after this pass]
 - Next bounded pass:            [prose reason if another bounded pass is licensed]
-- Release status:               [prose closure/hold/partial/continuation status; no literal STOP/HOLD/RECURSE/PARTIAL label]
+- Release status:               [prose closure/hold/partial/continuation status, plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant; no raw `Recursion decision:` field]
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]
@@ -369,8 +380,9 @@ shown their owner IDs, targets, operations, and results.
 ```
 
 If the release status says another bounded pass is licensed, continue with Burden-Cycle N+1.
-If closure, hold, or partial traversal is correct, state the reason in prose ? no literal
-STOP / HOLD / RECURSE / PARTIAL governance label in default mode.
+If closure, hold, or partial traversal is correct, state the reason in prose and use compact
+state markers such as `R(H,Δ): RECURSE` when they prevent false closure. Do not print raw
+`Recursion decision:` / `next_eligible_pass:` fields in default mode.
 
 **Per-burden Layer A re-entry:** In hard, compound, or deformed cases, every released
 burden after `R(H,Delta)` re-enters a compact Layer A before Layer B continues. This is a
@@ -991,7 +1003,7 @@ for expanded diagnostic/IR visibility or default mode for governed response.
 
 **When to surface backbone predicates:** Only when a backbone predicate emission (C, T, O, or K group) materially changed the routing gate or suppression rule in this pass.
 
-**When to suppress raw internal fields:** Default compact response suppresses raw diagnostic machinery, but it must still print the compact DSL/IR header and state/noetic re-read. Literal labels such as `Recursion decision:`, `next_eligible_pass:`, `post_render_gate:`, and visible STOP / HOLD / RECURSE / PARTIAL governance fields belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace.
+**When to suppress raw internal fields:** Default governed response suppresses raw diagnostic machinery, but it must still print the compact DSL/IR header, state/noetic re-read, and control-relevant formal state markers. Literal field labels such as `Recursion decision:`, `next_eligible_pass:`, and `post_render_gate:` belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. Compact markers such as `R(H,Δ): RECURSE`, `Δκ live`, `∇·κ positive/live`, and `∇×κ unresolved` may appear by default only when they govern release, recursion, or closure.
 
 ---
 
@@ -1042,7 +1054,8 @@ continuation decision materially governs the visible answer. Default compact ren
 or literal field labels; it prints `State/noetic re-read` plus compact content. When the
 continuation decision materially governs a default answer, render it as a state transition:
 what cleared, what remains live, why that burden was already present, why it is now eligible, and
-the one bounded next pass.
+the one bounded next pass. A compact marker such as `R(H,Δ): RECURSE` is allowed when it names
+the actual closure decision; raw gate-field dumps remain disallowed.
 
 Internally, and visibly in `:dsl`, internal/development audit, pass-review, or diagnostic trace, it must answer:
 - **Cleared this pass:** What did the bounded move actually clear?
@@ -1076,7 +1089,7 @@ Decision rules:
 7. **Suppressing expanded diagnostic visibility when requested:** If the user invoked `/daee-epistemics:dsl` or explicitly asked for expanded diagnostic/IR output, withholding `:dsl` structure without a clear reason harms routing legibility.
 8. **Hiding refreshed-state decision:** If a governing blocker was cleared in this pass and a downstream burden remains live, the response must show the refreshed-state decision ? not silently hold the downstream material as though the blocker had not cleared.
 9. **Premature closure without re-entry:** Do not render one strong move and close without running the post-render gate, rechecking held routes, and internally deciding STOP, HOLD, RECURSE, or PARTIAL.
-10. **Printing the IR schema as the response:** Do not print the `[Diagnostic IR]` code-fenced block or a `## Diagnostic IR` section header in the public response in default mode. The Full IR Schema in `diagnostic-ir.md` is the internal state object for the dispatch gate - not a printout template. Discipline is universal; printout is mode-specific. Recursive-audit discipline applies in every mode; the full audit printout belongs only to internal/development audit. In default mode, literal governance labels such as `Recursion decision:` and `next_eligible_pass:` are prohibited; use the compact DSL/IR header and state/noetic re-read instead.
+10. **Printing the IR schema as the response:** Do not print the `[Diagnostic IR]` code-fenced block or a `## Diagnostic IR` section header in the public response in default mode. The Full IR Schema in `diagnostic-ir.md` is the internal state object for the dispatch gate - not a printout template. Discipline is universal; printout is mode-specific. Recursive-audit discipline applies in every mode; the full audit printout belongs only to internal/development audit. In default mode, literal governance fields such as `Recursion decision:` and `next_eligible_pass:` are prohibited; use the compact DSL/IR header, state/noetic re-read, and control-bound state markers instead.
 11. **Meta-composition leakage:** Do not show private drafting phrases such as "Now I have enough...", "Now I have enough to compose...", "I now have enough...", "I now have sufficient...", "I now have sufficient grounding...", "Let me compose...", "Let me write...", "Let me write it...", "Let me craft...", or "I'll now compose..." in any runtime answer. Those are composition notes, not skill output.
 12. **Stacking without transition:** If same-response recursion is required, the answer must include a prose state-change transition: what landed, what changed, and why the next bounded move is now eligible. Simply placing another module section after the first is not governed recursion.
 13. **Essay headings as fake recursion:** "Move 1 / Move 2 / Move 3" headings do not satisfy RECURSE unless the response shows state re-read between passes and explains why the next already-present burden is eligible.

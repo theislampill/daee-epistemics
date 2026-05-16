@@ -25,15 +25,14 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
-## v0.4.1.0 Corrected Local Replacement Candidate
+## v0.4.1.0 Corrected Published Release Asset
 
-This records the corrected local v0.4.1.0 replacement candidate prepared for
-the existing `v0.4.1.0` GitHub Release. The currently published v0.4.1.0
-asset/provenance predates the generated-runtime untracking correction and is
-marked superseded pending an explicitly authorized replacement. The corrected
-candidate is rebuilt from tracked atomics through ignored generated `skill/`;
-raw atomics are not packaged. After replacement, the public release asset should
-remain the checked `.skill` payload, not the `.skill.zip` build intermediate.
+This records the corrected v0.4.1.0 GitHub Release asset/provenance replaced
+after the generated-runtime untracking, formalism/NLA, and release-claim
+corrections. The public release asset is rebuilt from tracked atomics through
+ignored generated `skill/`; raw atomics are not packaged. The public release
+asset remains the checked `.skill` payload, not the `.skill.zip` build
+intermediate.
 
 | Field | Value |
 | --- | --- |
@@ -43,14 +42,14 @@ remain the checked `.skill` payload, not the `.skill.zip` build intermediate.
 | SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
 | Size | `557920` bytes |
 | Entries | `20` |
-| Source commit | Local replacement-candidate build commit; final replacement provenance must record the exact accepted source SHA |
-| Worktree state | Local package-candidate evidence; recheck before upload if source/docs changed |
+| Source commit | `517a9f133b6bc11f7f9b4dc1160f461c58b9e94e` |
+| Worktree state | Public v0.4.1.0 release asset/provenance replaced after final corrections |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | Corrected: `atomics/skill/**` tracked; `skill/**` ignored/generated |
 | Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
-| GitHub Release visibility | Existing published `v0.4.1.0` asset is superseded; corrected replacement is pending explicit authorization |
-| Provenance file | Local candidate: `build/daee-epistemics-v0.4.1.0.provenance.json`; final upload must include current provenance |
+| GitHub Release visibility | Public v0.4.1.0 release asset/provenance replaced; no `.skill.zip` asset uploaded |
+| Provenance file | Published asset: `daee-epistemics-v0.4.1.0.provenance.json` |
 
 Candidate package shape:
 

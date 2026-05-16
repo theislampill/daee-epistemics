@@ -185,7 +185,12 @@ def _audit_errors(path: Path, require_named_movement_overfit: bool = False) -> l
         "divergence diagnostic": ("divergence", "∇·"),
         "curl diagnostic": ("curl", "∇×"),
         "del/nabla aliases": ("del-dot", "del-cross", "nabla dot", "nabla cross"),
-        "operator classification": ("AUDIT_DIAGNOSTIC_ALLOWED", "DEFAULT_RUNTIME_FORBIDDEN", "ORNAMENTAL_RISK"),
+        "operator classification": (
+            "AUDIT_DIAGNOSTIC_ALLOWED",
+            "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+            "DEFAULT_FORMALISM_EXPOSITION_FORBIDDEN",
+            "ORNAMENTAL_RISK",
+        ),
         "operator control effect": ("R(H,Delta)", "PARTIAL", "RECURSE", "closure"),
         "dependency expansion/contraction": ("expand", "contract", "dependency"),
         "dependency circulation": ("circulation", "loop"),

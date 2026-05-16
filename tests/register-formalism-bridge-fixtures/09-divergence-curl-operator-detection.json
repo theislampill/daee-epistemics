@@ -33,7 +33,8 @@
       "∇×": "AUDIT_DIAGNOSTIC_ALLOWED",
       "del-dot": "AUDIT_DIAGNOSTIC_ALLOWED",
       "del-cross": "AUDIT_DIAGNOSTIC_ALLOWED",
-      "default runtime ∇·/∇×": "DEFAULT_RUNTIME_FORBIDDEN",
+      "default compact ∇·/∇×": "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+      "default long formalism exposition": "DEFAULT_FORMALISM_EXPOSITION_FORBIDDEN",
       "historical prose-only divergence/curl": "HISTORICAL_ONLY",
       "decorative math with no control effect": "ORNAMENTAL_RISK",
       "missing operator classification": "NEEDS_PATCH"
@@ -41,7 +42,7 @@
     "delta_distinction": "Delta-nB and Delta-kappa are event-local transition operators; ∇· and ∇× are not replacement notation.",
     "divergence_control": "Positive/live ∇·kappa means dependency expansion remains live and STOP/COMPLETE is not licensed; negative divergence means contraction toward closure.",
     "curl_control": "Nonzero ∇× means dependency circulation remains live, so the output must break the loop or mark PARTIAL/RECURSE before closure.",
-    "visibility": "Audit/formalism visibility only unless requested; default runtime must not print ∇· or ∇×."
+    "visibility": "Default runtime / default governed output may print compact ∇·κ / ∇×κ state markers when control-relevant; long formalism exposition remains audit/formalism-only."
   },
   "control_effects": {
     "reread": "R(H,Delta) must read the dependency field after Delta events before closure.",
@@ -50,18 +51,18 @@
     "burden_selection": "Select the loop-breaking or dependency-radius burden before terminal restoration."
   },
   "visible_symbol_policy": {
-    "default_output": "Do not print ∇·, ∇×, del-dot, del-cross, nabla dot, or nabla cross in default output.",
-    "audit_formalism_visibility": "May print the operator family only in audit/formalism visibility when algebra/formalism/audit visibility is requested and control effect is named.",
+    "default_output": "Print ∇·κ / ∇×κ only as compact state markers when control-relevant; do not print del-dot, del-cross, nabla dot, nabla cross, or long formalism exposition in default output.",
+    "audit_formalism_visibility": "May print the full operator family in audit/formalism visibility when algebra/formalism/audit visibility is requested and control effect is named.",
     "requires_control_effect": true
   },
-  "forbidden_visible_symbols": ["∇·", "∇×", "del-dot", "del-cross", "nabla dot", "nabla cross"],
+  "forbidden_default_exposition": ["del-dot", "del-cross", "nabla dot", "nabla cross", "antisymmetric Jacobian", "exterior derivative"],
   "ir_projection": {
     "claim_level": "formalism-audit",
     "routing_gate": "audit-formalism-visible",
     "collapse_radius": "dependency-radius remains live until expansion/contraction and circulation are read after Delta events",
     "matched_modules": ["diagnostic-render-contract", "output-release", "recursive-state-transitions"],
     "output_shape": "audit-only",
-    "what_is_withheld_and_why": "Default user-facing render withholds the operator notation; audit/formalism visibility may print it with control effects.",
+    "what_is_withheld_and_why": "Default user-facing render withholds long operator exposition; compact ∇·κ / ∇×κ state markers may print when control-relevant.",
     "post_render_gate": {
       "cleared_this_pass": "operator distinction recorded: Delta remains event-local; divergence/curl remain field-level diagnostics",
       "remaining_live_distortions": "none",

@@ -180,8 +180,8 @@ REQUIRED_TOKENS = [
     "not an optional internal gate or control surface",
     "Literal default governance fields",
     "`Governance:`",
-    "literal governance labels such as `Recursion decision:`",
-    "no literal STOP/HOLD/RECURSE/PARTIAL label outside the noetic-field banner",
+    "literal governance fields such as `Recursion decision:`",
+    "PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure",
     "Render-mode scope: this template is an internal control shape",
     "Route Cosplay Failure",
     "visible recursion label != recursive traversal",
@@ -540,13 +540,67 @@ FIXTURE_REQUIRED_TOKENS = [
     "Rule P-8",
 ]
 
-DEFAULT_RUNTIME_OPERATOR_FORBIDDEN = [
+DEFAULT_ALLOWED_FORMAL_STATE_MARKERS = [
+    "ΔⁿB",
+    "Δκ",
     "∇·",
     "∇×",
+    "R(H,Δ)",
+    "R(H,Delta)",
+    "PARTIAL",
+    "RECURSE",
+    "COMPLETE",
+]
+
+DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
+    "burden-cycle",
+    "operative submove",
+    "Δκ",
+    "∇·",
+    "∇×",
+    "R(H,Δ)",
+    "PARTIAL",
+    "RECURSE",
+    "COMPLETE",
+    "control-relevant",
+]
+
+DEFAULT_FIELD_DIAGNOSTIC_MARKERS = [
+    "∇·",
+    "∇×",
+]
+
+DEFAULT_FORMAL_MARKER_CONTROL_TERMS = [
+    "state",
+    "κ",
+    "kappa",
+    "r(h,δ)",
+    "r(h,delta)",
+    "δκ",
+    "delta-kappa",
+    "dependency",
+    "pressure",
+    "loop",
+    "partial",
+    "recurse",
+    "complete",
+    "closure",
+    "held",
+    "live",
+    "checker",
+    "control",
+    "land(b)",
+    "burden",
+    "governance",
+]
+
+DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION = [
     "del-dot",
     "del-cross",
     "nabla dot",
     "nabla cross",
+    "antisymmetric jacobian",
+    "exterior derivative",
 ]
 
 DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN = [
@@ -557,6 +611,12 @@ DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN = [
     "entropy proves",
     "entropy measures warrant",
     "entropy measures meaning",
+    "divergence measures truth",
+    "divergence measures warrant",
+    "curl measures truth",
+    "curl measures warrant",
+    "nabla measures truth",
+    "nabla measures warrant",
 ]
 
 DEFAULT_RUNTIME_NLA_FORBIDDEN = [
@@ -578,9 +638,12 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = [
     "do not print",
     "not default",
     "audit/formalism",
+    "forbidden default",
+    "forbidden example",
     "formal/spec notation",
     "expanded formalism render boundary",
     "anti-symbol-theater",
+    "long formalism exposition",
 ]
 
 FIXTURE_FORBIDDEN_TOKENS = [
@@ -2111,6 +2174,31 @@ def check_current_doc_staleness(root: Path, errors: list) -> None:
                 )
 
 
+def _has_any_context(text: str, contexts: list[str]) -> bool:
+    lower = text.lower()
+    return any(context.lower() in lower for context in contexts)
+
+
+def check_default_formal_marker_policy(corpus: str, errors: list[str], label: str = "default runtime surface") -> None:
+    """Allow compact control-bound state markers; reject exposition-as-governance."""
+    lines = corpus.splitlines()
+    for index, line in enumerate(lines):
+        window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
+        for marker in DEFAULT_FIELD_DIAGNOSTIC_MARKERS:
+            if marker in line and not _has_any_context(window, DEFAULT_FORMAL_MARKER_CONTROL_TERMS):
+                errors.append(
+                    f"{label} contains field diagnostic marker without compact control context: "
+                    f"{marker!r} on line {index + 1}"
+                )
+        lower_line = line.lower()
+        for term in DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION:
+            if term in lower_line and not _has_any_context(window, DEFAULT_RUNTIME_CONTEXT_REQUIRED):
+                errors.append(
+                    f"{label} contains default-forbidden formalism exposition without "
+                    f"an explicit boundary/example context: {term!r} on line {index + 1}"
+                )
+
+
 SUBMOVE_BOUNDARY_EXAMPLE_RE = re.compile(
     r"(?ims)^## Default-Mode Worked Example\s+.*?Boundary Discipline\b(?P<body>.*?)(?=^---\s*$|^##\s|\Z)"
 )
@@ -2170,18 +2258,17 @@ def main() -> int:
         if token.lower() not in lower:
             errors.append(f"missing render-mode invariant in generated runtime: {token!r}")
 
+    for token in DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS:
+        haystack = corpus if any(ord(ch) > 127 for ch in token) else lower
+        needle = token if any(ord(ch) > 127 for ch in token) else token.lower()
+        if needle not in haystack:
+            errors.append(f"missing default formal state-marker policy token in generated runtime: {token!r}")
+
     for token in FORBIDDEN_TOKENS:
         if token.lower() in lower:
             errors.append(f"forbidden render-mode claim in generated runtime: {token!r}")
 
-    for token in DEFAULT_RUNTIME_OPERATOR_FORBIDDEN:
-        haystack = corpus if token.startswith("∇") else lower
-        needle = token if token.startswith("∇") else token.lower()
-        if needle in haystack:
-            errors.append(
-                "default runtime surface contains forbidden divergence/curl "
-                f"operator form: {token!r}"
-            )
+    check_default_formal_marker_policy(corpus, errors)
 
     for token in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
         if token.lower() in lower:
