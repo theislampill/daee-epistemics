@@ -92,21 +92,21 @@ mixed evidence, proposal, and release claims.
 - Status: active. Do not claim the behavioral regression fixed until this manual
   rerun passes.
 
-### [MUST][smoke][decision][release] Pipeline #2 Live Smoke / Hard Schema / Release Migration Decision
+### [MUST][smoke][decision][release] Register-Formalism Live Smoke / Hard Schema / Release Migration Decision
 
-- Problem: Pipeline #2 derived/conditional bridge semantics are now canonical in atomics,
-  generated runtime text, and `tests/pipeline2-bridge-fixtures/`, with
-  `tools/check_pipeline2_bridge.py` proving the derived registers against existing control
+- Problem: schema-light register bridge semantics are now canonical in atomics,
+  generated runtime text, and `tests/register-formalism-bridge-fixtures/`, with
+  `tools/check_register_formalism_bridge.py` proving the derived registers against existing control
   effects rather than token presence alone. Fresh installed-skill hard smokes are now
   recorded; the remaining schema decision is whether to promote `heart` / `xi` / `Omega` /
   `mu` / `kappa` from derived analytic lenses into hard Diagnostic IR schema fields.
   The v0.4.0.0 contract/package/release-line migration is release-gated and separately
   authorized only when package-bound current-release smokes pass.
-- Baseline wording: this is Pipeline #2 baseline register formalism over existing IR/control
+- Baseline wording: this is schema-light register bridge baseline over existing IR/control
   surfaces. `Derived/conditional bridge` remains only the schema-light boundary term; it is not
-  future parity, Pipeline #1 fallback, or optional theory annex.
+  future parity, compact DSL/IR runtime spine, or optional theory annex.
 - Source surfaces: `docs/algebraic-notation-and-noetic-formalism.md`,
-  `docs/pipeline2-implementation-ledger.md`,
+  `docs/register-formalism-implementation-ledger.md`,
   `atomics/skill/references/diagnostics/nomenclature-normalization.md`,
   `atomics/skill/references/diagnostics/diagnostic-ir.md`,
   `atomics/skill/references/diagnostics/recursive-state-transitions.md`,
@@ -121,7 +121,8 @@ mixed evidence, proposal, and release claims.
   appearing in governance prose.
 - Live smoke verification now recorded: fresh installed-skill hard smokes for moral-protest/
   source-worldview, predication/attribute, and naturalist/scientistic canaries are recorded in
-  `docs/audits/codex-smoke-test-findings.md` with retained ignored artifacts under `.daee/`.
+  `docs/audits/audit-history-pre-v0.4.1.mdcodex-smoke-test-findings.md` with retained ignored artifacts
+  under `.daee/`.
 - Required verification for hard-schema promotion: schema/checker updates, positive and negative
   fixtures, contract/interface migration across producers and consumers, register stress smoke
   after schema migration, and explicit contract/version migration.
@@ -180,10 +181,12 @@ mixed evidence, proposal, and release claims.
 
 ### [SHOULD][release][package][decision] Release Asset Rebake Decision
 
-- Problem: this hardening campaign changed source, tooling, tests, docs, and
-  generated runtime output, but did not rebake or replace the v0.3.2.0 release
-  asset by instruction.
-- Source surfaces: `atomics/skill/`, `tools/`, `tests/`, release docs.
+- Problem: current dirty work after the `v0.4.0.0` tag is `v0.4.1.0` candidate
+  cleanup/hardening work. It changes governance, CI, audit, and generated-runtime
+  surfaces, but does not authorize a new package, tag, release, or GitHub Release
+  asset.
+- Source surfaces: `atomics/skill/`, `tools/`, `tests`, `.github/workflows/`,
+  release docs, and audit docs.
 - Runtime surfaces: generated `skill/`.
 - Remaining verification: if the user authorizes a release asset refresh, run the
   package workflow, update release-artifact docs and smoke/package SHA guards,
@@ -191,35 +194,38 @@ mixed evidence, proposal, and release claims.
 - RFC/ADR status: pending maintainer release authorization; package rebake is not implied
   by source verification or git push.
 - Status: active only if release rebake is authorized. Do not tag, push, package,
-  or update GitHub Release from this TODO alone.
+  or update GitHub Release from this TODO alone. Keep operative `contract_version`
+  at `0.4.0.0` unless the maintainer explicitly requests a release-line migration.
 
 ### [COULD][package][decision] Optional Harness Dev Artifact Decision
 
 - Problem: the canonical user-facing package shape now excludes the optional
   route/check harness roots (`data/`, `scripts/`, `tests/`), restoring the
   scriptless compact-DSL package boundary while keeping harness source in the repo
-  for maintainer validation.
+  for maintainer validation. Some harness files still carry historical `level3`
+  / `daee_level3` names.
 - Future patch surface: design a separate dev/script-harness artifact only if the
   user explicitly authorizes publishing Codex/CI harness machinery as a second
   artifact. Tracked repo-side harness roots that remain for now are
   `atomics/skill/data/`, `atomics/skill/scripts/`, `atomics/skill/tests/`,
   and their generated `skill/data/`, `skill/scripts/`, `skill/tests/` views.
   They are excluded from the canonical package selector; deletion or branch
-  extraction is a separate repo-history/dev-artifact decision.
+  extraction is a separate repo-history/dev-artifact decision. A future rename to
+  `runtime-harness`, `route-check-harness`, or similar should migrate atomics,
+  generated runtime, docs, CI, and checker names together rather than piecemeal.
 - MoSCoW/RACI: Could; Responsible patching agent drafts only if requested, and
   Accountable maintainer decides whether a second dev artifact exists.
 - Status: future artifact-profile decision. Do not create a dev artifact, tag,
   package, or release from this TODO alone.
 
-### [COULD][docs][decision] Audit Report Tracking Decision
+### [CLOSED][docs][decision] Audit Report Tracking Decision
 
-- Problem: `docs/audits/v0.3.2.0-*.md` is ignored by `.git/info/exclude`.
-- Source surfaces: `docs/audits/v0.3.2.0-systemic-hardening-closure.md` and the
-  prior systemic audit reports.
-- Remaining verification: decide whether these reports should remain local-only
-  or be force-added later with explicit staging.
-- RFC/ADR status: pending docs-retention decision.
-- Status: requires user decision.
+- Resolution: v0.4.1.0 docs consolidation archives historical audit surfaces under
+  `docs/audits/audit-history-*.md` and indexes them through `docs/audits/INDEX.md`.
+- Source surfaces: `docs/audits/audit-history-v0.3.md`,
+  `docs/audits/audit-history-v0.4.0.0.md`, and `docs/audits/audit-history-pre-v0.4.1.md`.
+- Status: closed for current cleanup. Future retention deletion still requires explicit
+  maintainer approval.
 
 ### [SHOULD][coverage][decision] Coverage Scope Owner Review Anchors
 
@@ -347,7 +353,7 @@ item and maps each to patched, partial, deferred, rejected, or user-decision
 status:
 
 ```text
-docs/audits/v0.3.2.0-systemic-hardening-closure.md
+docs/audits/audit-history-v0.3.mdv0.3.2.0-systemic-hardening-closure.md
 ```
 
 Do not use this closed list as release proof. It records source/checker/runtime
@@ -365,7 +371,7 @@ hardening only; live scriptless compact DSL behavior remains gated by the manual
   `atomics/skill/scripts/validate.py`, `atomics/skill/scripts/check_execution.py`,
   `atomics/skill/scripts/daee_level3.py`, and generated `skill/`.
 - Status: patched in source with burden-local `state_envelope` replay and targeted
-  structural-flattening checks. Follow-up notation normalization added `ⁿBᵢ` / `nBi`
+  structural-flattening checks. Follow-up notation normalization added `â¿Báµ¢` / `nBi`
   as the human/math and plain-text burden-submove notation while preserving `B1.s1`
   as a checker-compatible alias. Verification is recorded in the closure report after
   generated runtime rebuilds.

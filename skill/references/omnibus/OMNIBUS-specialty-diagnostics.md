@@ -1054,7 +1054,7 @@ This file has not governed the response if:
 <!-- MODULE_ID: nomenclature-normalization -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/nomenclature-normalization.md -->
-<!-- SOURCE_SHA256: ae84e50b772d91419d98446def6c92dcebed01d9d68cc048cffd5e138ea91d9d -->
+<!-- SOURCE_SHA256: 15d0c7e052f8d96dde401af0ff2a9d5042586275b7599450649a1b2d528fab72 -->
 
 ---
 id: nomenclature-normalization
@@ -1150,12 +1150,12 @@ brand the interlocutor with a code unless diagnostic render or user request make
 ## Algebraic Formalism Terms
 
 The expanded algebraic notation preserved in `docs/algebraic-notation-and-noetic-formalism.md`
-is Pipeline #2 baseline register formalism over the current runtime. Its derived/conditional
+is schema-light register bridge baseline over the current runtime. Its derived/conditional
 control semantics are canonical when they change existing diagnosis, routing, hold/release,
 collapse-radius, reread, or restoration behavior. Schema-light means baseline control through
 existing IR/control surfaces, not optional theory or future parity. It does not add routes,
 owners, mandatory IR fields, PF codes, source-basis categories, schema keys, or a second DSL.
-The older phrase "Pipeline #2 theory/specification bridge" is retained only as a schema-boundary
+The older phrase "schema-light register bridge" is retained only as a schema-boundary
 alias for this baseline register formalism.
 
 | Formal symbol | ASCII fallback | Status |

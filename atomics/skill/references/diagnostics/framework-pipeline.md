@@ -156,17 +156,17 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-----------------------------------------------------------+
              |
              v
-+----------------------------------------------------------------------------+
-| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                  |
-|                                                                            |
-| compose IR from Phase 2 outputs                                            |
-| validated IR is runtime compiler state                                     |
-| IR before routing                                                          |
-| Pipeline                                                                   |
-| Baseline register formalism is schema-light, not optional or future parity |
-| module dispatch blocked until all gate checks pass                         |
-| owner: diagnostics/diagnostic-ir.md                                        |
-+----------------------------------------------------------------------------+
++-------------------------------------------------------------------------------+
+| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                     |
+|                                                                               |
+| compose IR from Phase 2 outputs                                               |
+| validated IR is runtime compiler state                                        |
+| IR before routing                                                             |
+| schema-light register bridge maps D0 -> PsiN -> IR without hard schema fields |
+| Baseline register formalism is schema-light, not optional or future parity    |
+| module dispatch blocked until all gate checks pass                            |
+| owner: diagnostics/diagnostic-ir.md                                           |
++-------------------------------------------------------------------------------+
              |
              v
        +-----+-----+
@@ -435,7 +435,7 @@ CONCEPT OWNERSHIP (owner-backed)
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
 - DSL/IR representation: diagnostics/diagnostic-ir.md
 - meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
-- Pipeline: diagnostics/diagnostic-ir.md
+- schema-light register bridge derived register bridge: diagnostics/diagnostic-ir.md
 - runtime diagnostic compiler contract: diagnostics/diagnostic-ir.md
 - TTP entry / exit criteria: diagnostics/recursive-state-transitions.md
 - Layer A / Layer B release checks: rubrics/output-release.md

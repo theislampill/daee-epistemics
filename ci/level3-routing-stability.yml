@@ -1,7 +1,8 @@
-# Template only: this file is not active GitHub Actions CI unless copied under
-# .github/workflows/. Keep setup aligned with the active workflow before use.
+# Deprecated template only: this file is not active GitHub Actions CI unless copied under
+# .github/workflows/. Do not promote it as-is. The legacy-named Level 3 harness is
+# optional route/check machinery, not the active push/PR workflow or package smoke path.
 
-name: Level 3 routing stability
+name: Deprecated Level 3 routing stability template
 
 on:
   push:

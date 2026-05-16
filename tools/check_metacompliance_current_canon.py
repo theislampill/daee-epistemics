@@ -15,7 +15,7 @@ ROOT_REQUIRED = [
     "## EXECUTION SPINE",
     "Input -> IR(N,m,",
     "Top-salient invariants",
-    "Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R",
+    "Default = noetic-field banner + Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R",
     "Tactics / Techniques / Procedures Owner Map",
     "## I. Thesis / Epistemological Standpoint Pointers",
     "## V. Burden-Governed Render Protocol",
@@ -212,8 +212,8 @@ CURRENT_DOC_REQUIRED = {
         "Shannon",
         "Symbol theater",
     ],
-    "docs/pipeline2-implementation-ledger.md": [
-        "Pipeline #2 Implementation Ledger",
+    "docs/register-formalism-implementation-ledger.md": [
+        "schema-light register bridge Implementation Ledger",
         "`IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` derived bridge",
         "IMPLEMENTED",
         "DEFERRED WITH BLOCKER",

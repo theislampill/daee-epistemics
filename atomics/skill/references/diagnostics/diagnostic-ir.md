@@ -93,11 +93,11 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 
 ### Derived Register Formalism Boundary
 
-Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
+register-formalism bridge status: the signal-state and derived-register notation is canonical as an
 interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
-Pipeline #2 is the current baseline register formalism: schema-light means the registers govern
+The schema-light register bridge is the current baseline register formalism: schema-light means the registers govern
 existing IR/control surfaces when live, not that the registers are optional, future-parity, or a
-Pipeline #1 fallback. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
+compact DSL/IR runtime spine. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
 separate contract migration decision.
 `D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
 encoded noetic signal-state produced when the diagnostic gate reads that surface through the
@@ -117,7 +117,7 @@ The Unicode formalism is the theory/spec surface for the same bridge:
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
 ```
 
-This makes Pipeline #2 real as a derived/conditional runtime bridge: the extra symbols must
+This makes schema-light register bridge real as a derived/conditional runtime bridge: the extra symbols must
 govern existing IR formation, owner eligibility, held material, collapse radius, release
 posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
 

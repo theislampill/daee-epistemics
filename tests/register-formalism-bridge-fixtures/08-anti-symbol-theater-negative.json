@@ -10,7 +10,7 @@
   },
   "control_effects": {
     "hold_release": "Suppress expanded symbols in default output when no register/control effect is live.",
-    "burden_selection": "Do not manufacture a Pipeline #2 burden only because the user requested symbols."
+    "burden_selection": "Do not manufacture a schema-light register bridge burden only because the user requested symbols."
   },
   "forbidden_visible_symbols": [
     "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)",

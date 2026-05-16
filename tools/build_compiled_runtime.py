@@ -125,6 +125,44 @@ route-check harnesses during canonical execution: no `daee_level3.py`, `route.py
 quality-gate claims. Those artifacts are optional developer validation, not public runtime
 evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
+Every plain `/daee-epistemics` runtime output begins with this noetic-field execution banner
+before Layer A. The banner must be the first visible content in the answer: do not place prose,
+headings, apologies, Markdown fences, or clarifying questions before it, and do not wrap the
+banner in a code block. Clarifying or missing-input replies are still runtime outputs and must
+begin with the banner. The banner is generated from the same classification state used by Layer
+A. Print exactly one value for each field; never print the choice list, combine values with `|`,
+or invent a local synonym:
+
+```text
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>
+╚══════════════════════════════════════════════════════╝
+```
+
+Use only these banner values. All inputs are noetic fields; prompt brevity does not imply
+simple execution. `source request` tracks explicit or implicit demand for citations, textual
+proof, isnad/authentication, or external grounding; do not mark it `IMPLICIT` merely because a
+worldview or authority frame is live. If more than one field type is active, choose `MIXED
+NOETIC FIELD` as the single field value. `authority frame` is LIVE when the input contains or
+implies a criterion for authority, proof, legitimacy, moral standing, public admissibility,
+governance, coercion, or epistemic right. Do not use SIMPLE, COMPACT, CANONICAL, HARD, or
+SOURCE-ORDER as banner categories or depth licenses. `state` is the opening governance state,
+not a prediction that the answer may finish later: RECURSE means live burdens remain and the
+output must continue; PARTIAL means the output is stopping while live burdens remain unresolved,
+compressed, or unrendered; COMPLETE is allowed at the opening banner only for a bounded case
+whose live burden set is already dischargeable in one current pass. Named-worldview, mixed
+noetic field, source-authentication, or authority-frame cases with live kappa / held
+dependencies normally begin with RECURSE. Closure audit must match the banner state.
+
+If the user asks whether a report, text, narration, citation, attribution, or transmission claim
+is reliable but supplies no actual text/reference, classify the field as SOURCE-AUTHENTICATION,
+source request as IMPLICIT, authority frame as LIVE, and state as PARTIAL; then ask for the
+missing material after the banner. Missing material is not a license to omit the banner.
+
 Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,
   pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
@@ -139,6 +177,11 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   held routes rechecked, next live burden, release status in prose)
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
+- Named-worldview / source-authentication / mixed-field closure audit - before any final
+  Restorative Response or Closing Formulation in these field classes, visibly account for
+  candidate/held N frames, selected primary N, live registers, active or cleared owner/TTP child
+  modes, Delta-nB, Delta-kappa, and remaining kappa / H status. If any live dependency remains
+  unresolved, unrendered, or merely identified, write PARTIAL or continue under RECURSE.
 - Final hard-case closure audit - in hard compound/source-request cases, the last
   state/noetic re-read before any Restorative Response or Closing Formulation must visibly
   include `closure audit:` and account for FPD, M1/M1-P, M8, M9, P1/P7, and source functions
@@ -153,6 +196,36 @@ compression, guidance/hiddenness demand, punishment/mercy pressure, and an expli
 source-worldview request, FPD, M1/M1-P, M8, M9, P1/P7, source-worldview, accountability,
 guidance, and mercy/justice owners are live unless Layer A explicitly clears one by name.
 Missing any live floor item means PARTIAL, not polished closure.
+
+Short named-worldview hard-field gate:
+Noetic-structure hardness is not proportional to prompt length. A short input that names or
+implies a worldview, ideology, authority-order, epistemic regime, religious objection, or
+civilization-level criterion can instantiate a hard compound/source-request field even when the
+user does not enumerate every burden or ask for sources. Examples include "refute secularism",
+"respond to atheism", "answer liberalism", "dismantle naturalism", and "deal with this moral
+objection". Treat the named structure itself as source-status/noetic-frame material when it
+carries ontology, epistemology, authority order, moral tribunal, anthropology, proof standard,
+or public-reason criterion. Prompt brevity, generic wording, or absence of "bring sources" is
+not a STOP reason. Expand from the noetic structure, then execute, clear, hold, or mark PARTIAL
+for every structurally live owner family; do not print the whole catalogue and do not dump every
+topic merely because the name is broad.
+
+General noetic-selection / register-control reread gate:
+do not assume the selected N frame is known at design time. For any input D0, scan the
+noetic-structure selection space, select or hold candidate N frames, and treat heart, xi,
+Omega, sigma, mu, kappa, and H as live whenever the input supports them. After each `Land(B)`,
+`R(H,Delta)` must compute the local landed burden-state change (Delta-nB) and the
+dependency-radius delta (Delta-kappa). If kappa or H still contains unresolved dependencies, the
+response must release the next burden, HOLD, PARTIAL, or explicitly clear the dependency. It may
+not STOP or mark COMPLETE while downstream dependencies remain only named, compressed, or
+unrendered.
+
+For outputs that close, the closure audit must visibly account for the generalized algebraic
+control state in prose: candidate/held N frames, selected primary N, live registers, active or
+cleared owner/TTP child modes, Delta-nB, Delta-kappa, and remaining kappa / H status. The audit
+must remain case-shaped; dependencies appear only where structurally live. Do not mark COMPLETE
+unless the audit shows each live dependency executed, cleared, held with reason, or no longer
+structurally live.
 
 Hard file-retained depth floor:
 Compact means no padding and no route dump; it does not mean short. In file-retained hard
@@ -318,7 +391,7 @@ Rewrite before emitting.
 # Default Output Surface Invariant
 
 For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints
-a compact DSL/IR header. Compact Layer A (read status, confidence, claim_level,
+a noetic-field execution banner before the compact DSL/IR header. Compact Layer A (read status, confidence, claim_level,
 pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
 current bounded operator, held, source-status/noetic-frame, gate/release decision, decisive
 missing differentiator when required) is the visible default diagnostic surface. Full
@@ -329,6 +402,14 @@ work under the render contract.
 Default visible frame:
 
 ```text
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field:
+║ source request:
+║ authority frame:
+║ state:
+╚══════════════════════════════════════════════════════╝
+
 Layer A — Compact DSL/IR header
 - read status:
 - confidence:

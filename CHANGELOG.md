@@ -10,6 +10,38 @@
 
 ## [Unreleased] - current-canon metacompliance convergence
 
+## [v0.4.1.0] - local candidate
+
+v0.4.1.0 is cleanup/hardening work on the `0.4.0.0` operative contract line.
+It consolidates docs/audit/release surfaces, deprecates active Level3 and
+branch-era pipeline terminology, keeps generated `skill/**` tracked as generated
+runtime, and adds manual CI artifact-build automation without publishing a
+GitHub Release.
+
+### Added
+
+- Final-gate audits for formalism operativity, SKILL/DSL/IR/NLA compliance,
+  TTP/module operativity, and CI/release workflow behavior.
+- Manual `release-skill.yml` workflow that builds from atomics, validates the
+  consolidated runtime package, writes provenance, and uploads workflow
+  artifacts only.
+
+### Changed
+
+- Root `atomics/skill/SKILL.md` is kept below the control-plane drift budget by
+  delegating detailed banner, release, and reread rules to their owner files.
+- Active docs now use the schema-light register-formalism bridge and compact
+  DSL/IR runtime spine terminology.
+- Historical audits and release logs are consolidated into history files while
+  preserving provenance.
+
+### Non-Claims
+
+- No hard schema/register migration.
+- No generated `skill/**` untracking.
+- No GitHub Release publication or package/release proof before explicit
+  release authorization.
+
 ### Post-v0.3.2.0 evidence track
 
 - v0.3.2.0 is released. New evidence-chain improvements after that release remain unreleased

@@ -12,7 +12,7 @@ catalogue_registered: false
 
 ## Function
 
-This file governs how visibly structured the output is. It runs after the output-release rubric has confirmed what may be released, and before the public response is shaped. It also requires an internal post-render gate before closure; visible gate fields are surface-specific. It does not replace routing, does not determine what is diagnosed, and does not determine what is eligible for release. Render shape follows diagnosis; it does not govern it. The default `/daee-epistemics` surface is the canonical compact DSL-governed runtime: readable bounded governed response with a mandatory compact DSL/IR header, hidden premises, per-released-operation Core Formulation, bounded operation, state/noetic re-read, one Restorative Response, and one final Closing Formulation. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded diagnostic/IR visibility; it is not the first place DSL governance appears. Internal/development audit render is retained for regression, pass-review, and architecture testing compatibility.
+This file governs how visibly structured the output is. It runs after the output-release rubric has confirmed what may be released, and before the public response is shaped. It also requires an internal post-render gate before closure; visible gate fields are surface-specific. It does not replace routing, does not determine what is diagnosed, and does not determine what is eligible for release. Render shape follows diagnosis; it does not govern it. The default `/daee-epistemics` surface is the canonical compact DSL-governed runtime: readable bounded governed response with a mandatory noetic-field execution banner, compact DSL/IR header, hidden premises, per-released-operation Core Formulation, bounded operation, state/noetic re-read, one Restorative Response, and one final Closing Formulation. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded diagnostic/IR visibility; it is not the first place DSL governance appears. Internal/development audit render is retained for regression, pass-review, and architecture testing compatibility.
 
 ## Canonical Render Mode Syntax
 
@@ -22,7 +22,7 @@ This file governs how visibly structured the output is. It runs after the output
 /daee-epistemics < C:\path\input.md > C:\path\output.md
 ```
 
-- `/daee-epistemics` means the canonical compact DSL-governed surface: readable bounded governed prose plus a mandatory compact DSL/IR header and state/noetic re-read. It exposes enough compiler trace to prevent clean essay surface-compliance failure while still prohibiting raw Diagnostic IR, full Case State, `matched_modules`, route ledger, and load ledger.
+- `/daee-epistemics` means the canonical compact DSL-governed surface: readable bounded governed prose plus a mandatory noetic-field execution banner, compact DSL/IR header, and state/noetic re-read. It exposes enough compiler trace to prevent clean essay surface-compliance failure while still prohibiting raw Diagnostic IR, full Case State, `matched_modules`, route ledger, and load ledger.
 - `/daee-epistemics:dsl` means expanded diagnostic/IR visibility: compressed Diagnostic IR or Case State, live burden sequence, held routes, state re-read, and STOP / HOLD / RECURSE / PARTIAL.
 - `/daee-epistemics < input.md > output.md` means canonical file-retained execution: read the case from `input.md`, write the full canonical compact DSL-governed answer to `output.md`, and keep the chat response to status only. This is not the optional script-capable route/check harness; it is the default runtime using a file output transport for hosts whose final-chat channel compresses hard cases.
 
@@ -31,6 +31,28 @@ This file governs how visibly structured the output is. It runs after the output
 The former external recursive-audit prompt is deprecated as a normal invocation pattern. Its useful discipline is internalized into the skill; use `:dsl` when expanded diagnostic/IR visibility is desired.
 
 **Core render invariant:** Full recursive-audit discipline runs in every surface. The surface determines how much diagnostic machinery is printed, not whether recursion occurs.
+
+**Default Output Surface Invariant.** For plain `/daee-epistemics`, internal governance is
+mandatory and default visibly prints the noetic-field execution banner as first visible content,
+then the compact DSL/IR header and bounded governed response. Clarifying or missing-input replies
+are still runtime outputs and must begin with the banner. Do not put prose, headings, apologies,
+Markdown fences, or clarifying questions before it. The banner is a render obligation produced
+from the same classification state as Layer A:
+
+```text
+field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+authority frame: <NONE DETECTED | LIVE>
+state: <RECURSE | PARTIAL | COMPLETE>
+```
+
+Print exactly one value for each field; never print the choice list or combine values with `|`.
+Default release status uses prose closure/hold/partial/continuation language, with no literal STOP/HOLD/RECURSE/PARTIAL label outside the noetic-field banner.
+Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or depth
+licenses. Source request and authority frame are distinct: do not mark source request `IMPLICIT`
+merely because a worldview or authority frame is live. If a source-authentication case supplies
+no actual text/reference, classify source request as `IMPLICIT`, authority frame as `LIVE`, and
+state as `PARTIAL`.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the live noetic
 burden, source/noetic frame, held material, release decision, and current bounded operator. It
@@ -53,8 +75,9 @@ Layer B submove or application. If a different order remains live, release the n
 or explicitly HOLD/PARTIAL it.
 
 ```text
-/daee-epistemics  = full recursive traversal operationally + mandatory compact DSL/IR header
-                  + prose-first bounded governed response + state/noetic re-read
+/daee-epistemics  = full recursive traversal operationally + mandatory noetic-field banner
+                  + mandatory compact DSL/IR header + prose-first bounded governed response
+                  + state/noetic re-read
                   + one Restorative Response + one final Closing Formulation
                   + no full ledger / no full IR dump
 /daee-epistemics < input.md > output.md = same canonical surface written to file

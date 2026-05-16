@@ -1,8 +1,9 @@
 # Release Artifacts
 
-This file records the current v0.4.0.0 package artifact for the GitHub Release
-asset. Binary skill archives are not committed to the source repository; GitHub
-Releases are the binary distribution surface for the published `.skill` asset.
+This file records published package artifacts and local release-candidate
+package evidence. Binary skill archives are not committed to the source
+repository; GitHub Releases are the binary distribution surface for published
+`.skill` assets.
 
 Build the package locally from the generated `skill/` package root:
 
@@ -19,7 +20,55 @@ same checked payload renamed to `.skill`. Do not re-zip the repository root.
 package shape, excludes repo/dev harness roots, and writes slash-safe archive
 entries.
 
-## Current Package / Release Asset Evidence
+## Artifact Evidence
+
+## v0.4.1.0 Local Candidate Artifact
+
+This is local candidate evidence only. No v0.4.1.0 GitHub Release has been
+created, no v0.4.1.0 tag has been pushed, and the `.skill` asset has not been
+uploaded as a public release artifact.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.1.0.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.1.0.skill.zip` |
+| Local release asset copy | `build/daee-epistemics-v0.4.1.0.skill` |
+| SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
+| Size | `557920` bytes |
+| Entries | `20` |
+| Source commit | `030cbc6cb386ff0e731dc0d341d4e151d590ed8a` base commit for dirty local candidate |
+| Worktree state | Dirty v0.4.1.0 candidate worktree; final release requires rebuild after commit/tag |
+| Branch | `v0.4.1.0-cleanup-hardening` |
+| Contract version | `0.4.0.0` |
+| Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
+| GitHub Release visibility | Not published; local candidate artifact only |
+| Provenance file | `build/daee-epistemics-v0.4.1.0.provenance.json` |
+
+Candidate package shape:
+
+```text
+SKILL.md
+references/
+compiled-module-map.json
+build-manifest.json
+README.md
+```
+
+Forbidden top-level archive entries checked absent:
+
+```text
+skill/
+atomics/
+tools/
+docs/
+build/
+.git/
+data/
+scripts/
+tests/
+```
+
+## v0.4.0.0 Published Release Asset
 
 | Field | Value |
 | --- | --- |

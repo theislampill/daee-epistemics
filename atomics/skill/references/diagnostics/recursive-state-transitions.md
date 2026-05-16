@@ -142,6 +142,34 @@ local landed state change inside the current burden; `ⁿ⁺¹B` is a new burden
 `Land(B) -> R(H,Delta)` licenses it. `κ` is the downstream dependency set consumed by reread,
 not a generic TODO list.
 
+General noetic-selection / register-control reread gate:
+
+```text
+Land(ⁿB) -> R(H,ΔⁿB{heart,xi,Omega,sigma,mu},Δkappa)
+```
+
+This gate is mandatory whenever a live burden lands. It does not assume the selected N frame
+is known at design time: the runtime must scan the noetic-structure selection space, select or
+hold candidate/held N frames, activate live registers, and let `R` decide STOP, HOLD, PARTIAL,
+RECURSE, or NewB from the refreshed state. The formalism is valid only when it changes control:
+owner eligibility, held material, hold/release posture, burden selection, collapse radius,
+reread, or closure state.
+
+If `xi` (warrant / authority / proof-status), `Omega` (ontology / predication / dependence),
+`sigma` (discourse / pattern state), `mu` (carrier or reproduction vector), `kappa`
+(downstream dependency set), or `H` (held burdens) remain live after `Land(B)`, `R` must force
+another burden, HOLD, PARTIAL, or explicit clearance. It may not STOP or mark COMPLETE while
+downstream dependencies remain. Concrete dependencies are case-shaped: source-authentication
+may expose transmission/testimony routes; moral protest may expose predicate/tribunal routes;
+named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
+routes. These are control checks, not topical argument-bank entries.
+
+A COMPLETE closure in any multi-burden or register-active case must visibly account for
+selected and held `N` frames, live registers, active or cleared owner/TTP child modes,
+`Delta-nB`, `Delta-kappa`, and remaining `kappa` / `H` status. If the closure cannot account
+for these dependencies without turning into a topic dump, it must mark PARTIAL or RECURSE
+instead of COMPLETE.
+
 Terminal formalism: `𝒞(Ψᴺ)` names constrained noetic collapse / discursive resolution after
 the state re-read has consumed `ΔⁿB` and `Δκ`. It may describe closure only when the live burden
 has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has been decided.
