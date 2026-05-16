@@ -10,13 +10,12 @@
 
 ## [Unreleased] - current-canon metacompliance convergence
 
-## [v0.4.1.0] - local candidate
+## [v0.4.1.0] - 2026-05-16
 
 v0.4.1.0 is cleanup/hardening work on the `0.4.0.0` operative contract line.
 It consolidates docs/audit/release surfaces, deprecates active Level3 and
 branch-era pipeline terminology, keeps generated `skill/**` tracked as generated
-runtime, and adds manual CI artifact-build automation without publishing a
-GitHub Release.
+runtime, and adds manual CI artifact-build automation.
 
 ### Added
 
@@ -39,8 +38,7 @@ GitHub Release.
 
 - No hard schema/register migration.
 - No generated `skill/**` untracking.
-- No GitHub Release publication or package/release proof before explicit
-  release authorization.
+- No hard schema/register migration and no generated `skill/**` untracking.
 
 ### Post-v0.3.2.0 evidence track
 

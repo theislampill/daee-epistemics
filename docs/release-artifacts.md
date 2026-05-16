@@ -8,8 +8,8 @@ repository; GitHub Releases are the binary distribution surface for published
 Build the package locally from the generated `skill/` package root:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.4.0.0.skill.zip
-Copy-Item build\daee-epistemics-v0.4.0.0.skill.zip build\daee-epistemics-v0.4.0.0.skill
+python tools/package_skill.py build\daee-epistemics-v0.4.1.0.skill.zip
+Copy-Item build\daee-epistemics-v0.4.1.0.skill.zip build\daee-epistemics-v0.4.1.0.skill
 ```
 
 The package script archives the canonical packageable contents selected from
@@ -22,11 +22,12 @@ entries.
 
 ## Artifact Evidence
 
-## v0.4.1.0 Local Candidate Artifact
+## v0.4.1.0 Clean Main Final Candidate Artifact
 
-This is local candidate evidence only. No v0.4.1.0 GitHub Release has been
-created, no v0.4.1.0 tag has been pushed, and the `.skill` asset has not been
-uploaded as a public release artifact.
+This is clean-main final candidate evidence. At this source commit, no
+v0.4.1.0 GitHub Release upload is claimed yet; publication is the later tag and
+release step. The intended public release asset is the checked `.skill` payload,
+not the `.skill.zip` build intermediate.
 
 | Field | Value |
 | --- | --- |
@@ -36,12 +37,12 @@ uploaded as a public release artifact.
 | SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
 | Size | `557920` bytes |
 | Entries | `20` |
-| Source commit | `030cbc6cb386ff0e731dc0d341d4e151d590ed8a` base commit for dirty local candidate |
-| Worktree state | Dirty v0.4.1.0 candidate worktree; final release requires rebuild after commit/tag |
-| Branch | `v0.4.1.0-cleanup-hardening` |
+| Source commit | `1e5fdbce5d5a0a9484fea8ba2f900dfcfedb3782` |
+| Worktree state | Clean `main` at package build |
+| Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
-| GitHub Release visibility | Not published; local candidate artifact only |
+| GitHub Release visibility | Not uploaded yet at metadata commit time; intended asset for `v0.4.1.0` |
 | Provenance file | `build/daee-epistemics-v0.4.1.0.provenance.json` |
 
 Candidate package shape:
