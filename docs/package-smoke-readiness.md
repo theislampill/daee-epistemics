@@ -143,9 +143,9 @@ executed, not because it has the expected headings.
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
 - No smoke artifact suite is committed in this source state.
-- Current-package smoke evidence for `daee-epistemics-v0.4.0.0.skill` is not present unless the
-  smoke suite is regenerated locally against that package and the SHA256 recorded in
-  `docs/release-artifacts.md`.
+- v0.4.0.0 package smoke evidence is historical for the v0.4.1.0 correction line unless the
+  smoke suite is regenerated locally against the intended v0.4.1.0 replacement package and the
+  SHA256 recorded in `docs/release-artifacts.md`.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
 - `ir.json` smoke sidecars prove typed Diagnostic IR/source_basis integrity for the same fixture.
@@ -156,8 +156,8 @@ executed, not because it has the expected headings.
 
 - Local smoke folders such as `runtime-grounding-v5` or later may be used for regenerated
   package-bound evidence, but they remain ignored unless a task explicitly authorizes tracking.
-- Current source state after the v0.4.0.0 candidate work: current-release smoke suite is
-  absent, so `python tools/check_smoke_artifacts.py --require-current-release-smokes` is
+- Current source state for the v0.4.1.0 correction line: package-bound current-release smoke suite
+  is absent, so `python tools/check_smoke_artifacts.py --require-current-release-smokes` is
   expected to fail until package-bound current-release smoke artifacts are truthfully regenerated.
 - `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe folders, if present locally, are
   development / post-expansion regression evidence unless explicitly regenerated against a release
@@ -185,8 +185,7 @@ current-release evidence: yes
 ## How to Promote Historical Smokes to Current-Package Evidence
 
 1. Build the target release package with `package.ps1` and create/copy the public `.skill`
-   asset. For v0.4.0.0 this is `build/daee-epistemics-v0.4.0.0.skill`; use the package
-   filename and hash recorded in `docs/release-artifacts.md`.
+   asset; use the package filename and hash recorded in `docs/release-artifacts.md`.
 2. Run the smoke prompts against that package.
 3. Replace trace/verdict provenance with the public release asset filename and SHA.
 4. Set `release-artifact relation: current-release`.

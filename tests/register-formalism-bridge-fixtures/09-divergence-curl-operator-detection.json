@@ -1,0 +1,80 @@
+{
+  "id": "divergence-curl-operator-detection",
+  "kind": "positive",
+  "matrix_cases": ["divergence_curl"],
+  "input": "Given Delta-nB and Delta-kappa, describe the ∇· and ∇× diagnostics without replacing Delta.",
+  "covers": [
+    "D0",
+    "PsiN",
+    "expanded_IR",
+    "kappa",
+    "Delta-kappa",
+    "expanded_R",
+    "anti_symbol_theater",
+    "divergence_curl_operators"
+  ],
+  "bridge_terms": {
+    "D0": "The surface request is explicitly audit/formalism visibility for the divergence/curl operator family.",
+    "PsiN": "The encoded signal asks how field-level diagnostics read the state produced by event-local delta operators.",
+    "expanded_IR": "The expanded bridge keeps Delta-nB and Delta-kappa as event-local transitions and treats ∇·/∇× as field-level diagnostics over the accumulated state.",
+    "kappa": "The dependency-radius field is the live surface read by the diagnostics after burden landing and reread.",
+    "Delta-kappa": "Delta-kappa remains the dependency-radius delta after a burden lands; it is not replaced by ∇· or ∇×.",
+    "expanded_R": "R(H,Delta) consumes Delta-nB and Delta-kappa, then divergence/curl diagnostics can force PARTIAL/RECURSE when dependency pressure expands or circulates.",
+    "anti_symbol_theater": "The symbols are permitted only in audit/formalism visibility and only because they change closure gating.",
+    "divergence_curl_operators": "∇· reads expansion/contraction pressure; ∇× reads loop/circulation pressure. Both are diagnostic analogies over the field produced by Delta events, not replacement runtime notation."
+  },
+  "operator_detection": {
+    "unicode_divergence": "∇·",
+    "unicode_curl": "∇×",
+    "ascii_divergence": ["del-dot", "del dot", "divergence", "nabla dot"],
+    "ascii_curl": ["del-cross", "del cross", "curl", "nabla cross"],
+    "classification": {
+      "∇·": "AUDIT_DIAGNOSTIC_ALLOWED",
+      "∇×": "AUDIT_DIAGNOSTIC_ALLOWED",
+      "del-dot": "AUDIT_DIAGNOSTIC_ALLOWED",
+      "del-cross": "AUDIT_DIAGNOSTIC_ALLOWED",
+      "default runtime ∇·/∇×": "DEFAULT_RUNTIME_FORBIDDEN",
+      "historical prose-only divergence/curl": "HISTORICAL_ONLY",
+      "decorative math with no control effect": "ORNAMENTAL_RISK",
+      "missing operator classification": "NEEDS_PATCH"
+    },
+    "delta_distinction": "Delta-nB and Delta-kappa are event-local transition operators; ∇· and ∇× are not replacement notation.",
+    "divergence_control": "Positive/live ∇·kappa means dependency expansion remains live and STOP/COMPLETE is not licensed; negative divergence means contraction toward closure.",
+    "curl_control": "Nonzero ∇× means dependency circulation remains live, so the output must break the loop or mark PARTIAL/RECURSE before closure.",
+    "visibility": "Audit/formalism visibility only unless requested; default runtime must not print ∇· or ∇×."
+  },
+  "control_effects": {
+    "reread": "R(H,Delta) must read the dependency field after Delta events before closure.",
+    "partial_behavior": "Positive divergence or nonzero curl forces PARTIAL/RECURSE rather than COMPLETE.",
+    "hold_release": "Held burdens remain live when expansion/circulation is detected.",
+    "burden_selection": "Select the loop-breaking or dependency-radius burden before terminal restoration."
+  },
+  "visible_symbol_policy": {
+    "default_output": "Do not print ∇·, ∇×, del-dot, del-cross, nabla dot, or nabla cross in default output.",
+    "audit_formalism_visibility": "May print the operator family only in audit/formalism visibility when algebra/formalism/audit visibility is requested and control effect is named.",
+    "requires_control_effect": true
+  },
+  "forbidden_visible_symbols": ["∇·", "∇×", "del-dot", "del-cross", "nabla dot", "nabla cross"],
+  "ir_projection": {
+    "claim_level": "formalism-audit",
+    "routing_gate": "audit-formalism-visible",
+    "collapse_radius": "dependency-radius remains live until expansion/contraction and circulation are read after Delta events",
+    "matched_modules": ["diagnostic-render-contract", "output-release", "recursive-state-transitions"],
+    "output_shape": "audit-only",
+    "what_is_withheld_and_why": "Default user-facing render withholds the operator notation; audit/formalism visibility may print it with control effects.",
+    "post_render_gate": {
+      "cleared_this_pass": "operator distinction recorded: Delta remains event-local; divergence/curl remain field-level diagnostics",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": ["recursive-state-transitions", "output-release"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "docs/algebraic-notation-and-noetic-formalism.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md"
+  ]
+}

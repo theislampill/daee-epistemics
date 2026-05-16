@@ -13,10 +13,14 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-cleanup-readiness-audit.md` | CURRENT-CANDIDATE | Summarizes cleanup readiness, contract-version decision, checks, and remaining gates. |
 | `docs/audits/v0.4.1.0-conway-yagni-audit.md` | CURRENT-CANDIDATE | Carry-forward Conway/YAGNI constraints for v0.4.1.0 cleanup. |
 | `docs/audits/v0.4.1.0-github-ci-release-automation-audit.md` | CURRENT-CANDIDATE | Carry-forward CI/release automation constraints for v0.4.1.0 cleanup. |
-| `docs/audits/v0.4.1.0-formalism-operativity-audit.md` | CURRENT-CANDIDATE | Proves algebraic notation and divergence/curl diagnostics are tied to control effects. |
-| `docs/audits/v0.4.1.0-skill-compliance-audit.md` | CURRENT-CANDIDATE | Checks root SKILL, DSL/IR, NLA-inspired reconstruction, and formalism boundaries. |
+| `docs/audits/v0.4.1.0-formalism-operativity-audit.md` | CURRENT-CANDIDATE | Checker-bounds algebraic notation and divergence/curl diagnostics to owner/control-effect proof. |
+| `docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md` | CURRENT-CANDIDATE | Full checker-parsed algebraic/register/governance symbol inventory with owner, classification, control-effect, fixture, and default-runtime absence proof. |
+| `docs/audits/v0.4.1.0-nla-operativity-audit.md` | CURRENT-CANDIDATE | Natural Language Autoencoder mapping: Layer A/IR as verbalizer, reconstruction/reread as reconstructor, with fidelity and confabulation gates. |
+| `docs/audits/v0.4.1.0-skill-compliance-audit.md` | CURRENT-CANDIDATE | Checks root SKILL, DSL/IR, Natural Language Autoencoder reconstruction-fidelity discipline, and formalism boundaries. |
 | `docs/audits/v0.4.1.0-ttp-operativity-audit.md` | CURRENT-CANDIDATE | Audits compiled modules for owner body, routing effect, and coverage status. |
 | `docs/audits/v0.4.1.0-ci-release-operativity-audit.md` | CURRENT-CANDIDATE | Checks push/PR CI and manual artifact workflow against release-gate constraints. |
+| `docs/audits/v0.4.1.0-release-claim-inventory.md` | CURRENT-CANDIDATE | Enumerates local release-facing docs, Git tags, and GitHub Releases before claim classification. |
+| `docs/audits/v0.4.1.0-release-claim-integrity-audit.md` | CURRENT-CANDIDATE | Audits release-facing claims with claim/evidence/checker-or-provenance/qualifier discipline. |
 
 ## Consolidated Audit History
 

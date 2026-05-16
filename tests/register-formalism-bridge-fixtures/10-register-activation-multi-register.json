@@ -1,0 +1,47 @@
+{
+  "id": "register-activation-multi-register",
+  "kind": "positive",
+  "matrix_cases": ["register_activation"],
+  "input": "A community authority says only their proof method counts; attribute language is impossible, slogans keep absorbing objections, and every answer opens more dependencies.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "xi", "Omega", "mu", "kappa", "Delta-kappa"],
+  "bridge_terms": {
+    "D0": "The surface discourse contains authority, warrant, ontology, memetic pressure, and dependency signals.",
+    "PsiN": "The encoded state preserves those pressures as interacting controls rather than as decorative labels.",
+    "selected_N": "The selected noetic frame remains provisional until the live register mix identifies the governing burden.",
+    "expanded_IR": "The expanded bridge maps the live registers to existing owner choice, held material, burden selection, and reread controls.",
+    "xi": "The authority and proof-method pressure changes warrant owner eligibility before evidence release.",
+    "Omega": "The attribute-impossibility claim changes predication and ontology owner eligibility.",
+    "mu": "The slogan/stabilizer pressure changes burden selection and blocks proof dumping.",
+    "kappa": "The dependency pressure changes collapse radius and prevents premature closure.",
+    "Delta-kappa": "After the first burden lands, the dependency-radius delta must be reread before STOP/HOLD/PARTIAL/RECURSE."
+  },
+  "control_effects": {
+    "owner_choice": ["reason-disambiguation", "proof-method-audit", "M9-predication-mode", "pattern-profiling"],
+    "hold_release": "Hold evidence and attribute content until warrant, predication, and carrier controls are typed.",
+    "burden_selection": "Select the upstream proof-method and predication burden before downstream content.",
+    "reread": "After the first burden lands, reread whether the carrier and dependency radius still block release."
+  },
+  "ir_projection": {
+    "claim_level": "mixed-meta",
+    "routing_gate": "multi-register-activation",
+    "load_bearing_node": "authority/proof-method, predication, carrier, and dependency pressures are all live controls",
+    "matched_modules": ["reason-disambiguation", "proof-method-audit", "M9-predication-mode", "pattern-profiling", "recursive-state-transitions"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Proof packets, attribute exposition, and downstream evidence are held until the active register controls are ordered.",
+    "post_render_gate": {
+      "cleared_this_pass": "the proof-method and predication controls are identified as owners rather than topic labels",
+      "remaining_live_distortions": "carrier absorption and dependency-radius pressure remain live after the first control lands",
+      "held_routes_rechecked": ["E1-broadening-evidence", "do-attribute-precision", "anti-patterns"],
+      "newly_released_routes": ["proof-method-audit"],
+      "next_eligible_pass": "order the carrier/dependency burden after register reread",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/reason-disambiguation.md",
+    "atomics/skill/references/diagnostics/proof-method-audit.md",
+    "atomics/skill/references/tactics/M9-predication-mode.md",
+    "atomics/skill/references/diagnostics/pattern-profiling.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+  ]
+}

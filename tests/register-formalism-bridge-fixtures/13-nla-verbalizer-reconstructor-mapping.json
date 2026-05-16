@@ -1,0 +1,77 @@
+{
+  "id": "nla-verbalizer-reconstructor-mapping",
+  "kind": "positive",
+  "matrix_cases": ["nla_reconstruction"],
+  "input": "Explain how Natural Language Autoencoders apply to daee-epistemics without treating NLA as generic linear algebra or Shannon theory. Show AV/AR analogues and reconstruction failure modes.",
+  "covers": [
+    "D0",
+    "PsiN",
+    "selected_N",
+    "expanded_IR",
+    "kappa",
+    "expanded_R",
+    "shannon_boundary",
+    "anti_symbol_theater",
+    "nla_reconstruction"
+  ],
+  "bridge_terms": {
+    "D0": "The prompt explicitly asks for the Natural Language Autoencoder analogy and its boundary.",
+    "PsiN": "The noetic signal-state is the daee analogue of the state that must survive a natural-language bottleneck.",
+    "selected_N": "A faithful Layer A verbalization must preserve selected and held noetic-frame status for reconstruction.",
+    "expanded_IR": "The expanded bridge is not decorative notation; it names the state features that must be recoverable.",
+    "kappa": "The dependency/collapse radius must be reconstructed before closure.",
+    "shannon_boundary": "NLA is not generic linear algebra or Shannon theory and does not measure truth or warrant.",
+    "anti_symbol_theater": "NLA terms are permitted only when tied to reconstruction, routing, or closure control.",
+    "nla_reconstruction": "Natural Language Autoencoder mapping means AV/AR-style verbalization and reconstruction fidelity, not algebra branding."
+  },
+  "nla_mapping": {
+    "Natural Language Autoencoder": "NLA is a natural-language bottleneck for noetic-state reconstruction.",
+    "activation verbalizer_AV": "AV analogue = Layer A / Diagnostic IR / noetic-field banner; it is IR verbalization that verbalizes noetic state into compact natural language/IR.",
+    "activation reconstructor_AR": "AR analogue = IR reconstruction pass / reconstruction/reread / R(H,Delta); it reconstructs selected/held N, registers, live burdens, owners/TTPs, and dependency state.",
+    "reconstruction_failure": "If Layer A cannot reconstruct the operative state, the result is PARTIAL, RECURSE, or checker failure rather than COMPLETE.",
+    "confabulation": "Confabulation risk = overfit/noetic misclassification, including secularcompact/TST labels used without recoverable evidence.",
+    "boundary": "NLA is not generic linear algebra, not Shannon theory, and does not measure truth or warrant.",
+    "operative_condition": "NLA is operative only when it affects reconstruction, routing, or closure."
+  },
+  "control_effects": {
+    "owner_choice": ["ir-reconstruction-pass", "diagnostic-render-contract", "recursive-state-transitions"],
+    "burden_selection": "Layer A must preserve the live burden enough for reconstruction to select or hold the next pass.",
+    "reread": "R(H,Delta) reconstructs the operative state from the verbalized diagnosis before closure.",
+    "partial_behavior": "Reconstruction failure forces PARTIAL/RECURSE/checker failure rather than COMPLETE."
+  },
+  "visible_symbol_policy": {
+    "default_output": "Do not print NLA, Natural Language Autoencoder, activation verbalizer, activation reconstructor, reconstruction loss, FVE, or residual stream in default output.",
+    "audit_formalism_visibility": "May use NLA terms only when formalism/audit visibility is requested and reconstruction fidelity is the control effect.",
+    "requires_control_effect": true
+  },
+  "forbidden_claims": [
+    "NLA measures truth",
+    "NLA measures warrant",
+    "Natural Language Autoencoder is Shannon theory",
+    "NLA is generic linear algebra"
+  ],
+  "expected_blocker": "NLA boundary: it tests reconstruction fidelity through the natural-language bottleneck; it does not measure truth or warrant.",
+  "ir_projection": {
+    "claim_level": "formalism-audit",
+    "routing_gate": "audit-formalism-visible",
+    "collapse_radius": "closure is blocked unless the verbalized diagnosis reconstructs the operative burden field",
+    "matched_modules": ["ir-reconstruction-pass", "diagnostic-render-contract", "recursive-state-transitions", "output-release"],
+    "output_shape": "audit-only",
+    "what_is_withheld_and_why": "Default user-facing render withholds NLA jargon; audit/formalism visibility may expose it only as reconstruction-fidelity discipline.",
+    "post_render_gate": {
+      "cleared_this_pass": "AV/AR analogue recorded: Layer A verbalizes, reconstruction/reread recovers operative state",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": ["ir-reconstruction-pass", "recursive-state-transitions", "output-release"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/ir-reconstruction-pass.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "docs/audits/v0.4.1.0-nla-operativity-audit.md"
+  ]
+}

@@ -117,26 +117,46 @@ If a symbol does not change those controls, it belongs in this spec or an audit 
 not in default runtime output. The default user-facing render remains compact and does not print
 raw `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` unless the user asks for formalism or `:dsl` / audit visibility.
 
-## Divergence / Curl Diagnostic Boundary
+## Delta / Divergence / Curl Operator Distinction
 
 `Delta-nB` is the burden-event delta: the local landed state change after a bounded owner/TTP
 operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Delta)` before
-STOP/HOLD/PARTIAL/RECURSE. These are the operative control terms.
+STOP/HOLD/PARTIAL/RECURSE. These are event-local transition operators.
 
-The divergence diagnostic (`∇·`) and curl diagnostic (`∇×`) are audit/formalism visibility over
-the dependency/register field produced by those deltas; they are not replacements for `Delta-nB`
-or `Delta-kappa`, and they are not default runtime notation. Divergence asks whether a landed
-burden expands, contracts, or leaves unchanged the live dependency/register pressure. Curl asks
-whether warrant, ontology, discourse, affect, or memetic-carrier dependencies circulate back into
-one another as a loop that must be broken or marked PARTIAL/RECURSE.
+The field-level operators are different. `∇·` (del-dot, del dot, nabla dot, divergence)
+reads the burden/dependency/register field after one or more delta events and asks whether
+pressure is expanding, contracting, or neutral across the field. Positive divergence means the
+landed burden exposes more live dependency/register pressure; negative divergence means
+dependency pressure contracts toward closure; zero divergence means no meaningful control change.
+If `∇·kappa` remains positive/live, STOP/COMPLETE is not licensed.
 
-The diagnostic is valid only when it changes release, hold, burden selection, collapse-radius
-reread, closure state, or checker outcome. It is symbol theater if it merely decorates an audit.
-For field-language precision, the dependency pressure is read as vector-like: the delta terms are
-event-local changes, while divergence/curl describe whole-field expansion/contraction and
-circulation. Shannon language remains bounded to signal, encoding, channel constraint,
+`∇×` (del-cross, del cross, nabla cross, curl) reads circulation in that same field after delta
+events. It asks whether warrant, ontology, discourse state, affective posture, memetic carrier,
+and dependency radius loop back into one another. Standard curl is a 3D construction, but the
+high-dimensional analogue used here is the antisymmetric part of the Jacobian / exterior
+derivative: a noetic-state field over `N_space` can have circular dependency pressure without
+being a 3D physical field. If nonzero curl remains live, the output must break the loop or mark
+PARTIAL/RECURSE; answering one local proposition does not discharge a curl-like dependency loop.
+
+Neither `∇·` nor `∇×` replaces `Delta-nB` or `Delta-kappa`. Delta operators are computed at burden
+events; divergence/curl read the field those deltas have produced across the burden/dependency
+space. The operators are audit/formalism visibility only unless the user explicitly asks for
+algebra, formalism, or audit visibility; they are not default runtime notation.
+
+The diagnostic is operative only when it changes owner/TTP eligibility, held material,
+hold/release posture, burden selection, dependency radius, `R(H,Delta)`, PARTIAL/RECURSE/COMPLETE,
+or checker outcome. It is symbol theater if it merely decorates an audit or appears without a
+control effect. Shannon language remains bounded to signal, encoding, channel constraint,
 noise/distortion, redundancy/error correction, and capacity/compression-loss analogies; it never
 measures truth, meaning, warrant, revelation, fitrah, or sound reason.
+
+## Divergence / Curl Diagnostic Boundary
+
+Allowed forms: `∇·`, `∇×`, `del-dot`, `del dot`, `del-cross`, `del cross`, `nabla dot`,
+`nabla cross`, `divergence`, and `curl`. In default runtime output, the Unicode operators and
+ASCII operator names are forbidden unless algebra/formalism/audit visibility is explicitly
+requested. In audit/formalism surfaces, they are allowed only with the operator distinction and
+control-effect rule above.
 
 ## Correct Use
 
@@ -184,7 +204,7 @@ the registers remain derived control lenses over existing IR/case-state fields.
 - Using `ⁿ⁺¹B` for every topic shift.
 - Treating `ΔⁿB` and `ⁿ⁺¹B` as interchangeable.
 
-## Shannon Analogy Boundary
+## NLA / Shannon Analogy Boundary
 
 Useful analogy:
 
@@ -205,6 +225,18 @@ Do not claim:
 The analogy is a visual and engineering discipline: the input signal must be encoded without
 losing the governing noetic function, and the runtime must correct distortion by restoring the
 right warrant/order. It is not an ontology of truth.
+
+NLA means Natural Language Autoencoder in the narrow audit analogy: an activation verbalizer
+maps activation to natural-language explanation, and an activation reconstructor maps the
+explanation back to a reconstructed activation. In this repo, the daee analogue is Layer A /
+Diagnostic IR / noetic-field banner as verbalizer and IR reconstruction / `R(H,Delta)` as
+reconstructor. NLA is not generic linear algebra, nonlinear architecture, Shannon theory, or
+activation-level proof. It may describe whether a natural-language diagnostic bottleneck
+reconstructs the governed noetic state, but it does not prove that vectors, entropy, FVE,
+residual stream language, or linear algebra measure truth, meaning, warrant, revelation,
+fitrah, or sound reason. The complete algebraic-symbol operativity inventory is audited in
+`docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md`; the separate NLA fidelity gate is
+audited in `docs/audits/v0.4.1.0-nla-operativity-audit.md`.
 
 ## Checker and Smoke Implications
 

@@ -17,6 +17,11 @@ It consolidates docs/audit/release surfaces, deprecates active Level3 and
 branch-era pipeline terminology, untracks generated `skill/**` so atomics remain
 the repo source, and adds manual CI artifact-build automation.
 
+Release-claim integrity note: the currently published `v0.4.1.0` GitHub
+Release asset/provenance predates the generated-runtime untracking and final
+formalism/NLA claim-integrity corrections. Corrected replacement metadata is a
+local candidate until the release asset and provenance are explicitly replaced.
+
 ### Added
 
 - Final-gate audits for formalism operativity, SKILL/DSL/IR/NLA compliance,
@@ -39,7 +44,11 @@ the repo source, and adds manual CI artifact-build automation.
 ### Non-Claims
 
 - No hard schema/register migration.
-- No hard schema/register migration.
+- No universal semantic grading or all-host/model parity claim.
+- Algebraic, divergence/curl, NLA, and Shannon claims are checker/audit-bounded:
+  symbols require owner/control-effect proof; divergence/curl are audit/formalism
+  diagnostics; NLA means Natural Language Autoencoder reconstruction fidelity;
+  Shannon is a compression/signal boundary, not a truth or warrant metric.
 
 ### Post-v0.3.2.0 evidence track
 

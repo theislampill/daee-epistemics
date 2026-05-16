@@ -160,7 +160,11 @@ def _audit_errors(path: Path, require_named_movement_overfit: bool = False) -> l
     lower = text.lower()
     errors: list[str] = []
 
-    required_sections = ("## algebraic control audit", "## divergence / curl diagnostic")
+    required_sections = (
+        "## algebraic control audit",
+        "## divergence / curl diagnostic",
+        "## divergence / curl operator detection",
+    )
     for section in required_sections:
         pattern = rf"(?im)^\s*{re.escape(section)}\s*$"
         if not re.search(pattern, lower):
@@ -180,6 +184,9 @@ def _audit_errors(path: Path, require_named_movement_overfit: bool = False) -> l
         "anti-symbol-theater": ("symbol theater", "symbol-theater"),
         "divergence diagnostic": ("divergence", "∇·"),
         "curl diagnostic": ("curl", "∇×"),
+        "del/nabla aliases": ("del-dot", "del-cross", "nabla dot", "nabla cross"),
+        "operator classification": ("AUDIT_DIAGNOSTIC_ALLOWED", "DEFAULT_RUNTIME_FORBIDDEN", "ORNAMENTAL_RISK"),
+        "operator control effect": ("R(H,Delta)", "PARTIAL", "RECURSE", "closure"),
         "dependency expansion/contraction": ("expand", "contract", "dependency"),
         "dependency circulation": ("circulation", "loop"),
         "generalized not hardcoded": ("general", "not hardcoded"),

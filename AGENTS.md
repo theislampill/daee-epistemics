@@ -52,6 +52,44 @@ lightweight governance, not extra ceremony.
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
 
+## Formalism, NLA, and Operativity Discipline
+
+Broad prose-token presence is not proof. Any algebraic/register symbol, operator, or
+architecture claim must be classified, owned, and tied to a control effect before it can
+support a release claim. If it does not affect IR/case-state, noetic-frame selection,
+owner/TTP eligibility, held material, burden selection, dependency radius, `Land(B)`,
+`R(H,Delta)`, closure, terminal restoration, package/render admissibility, or checker
+outcome, classify it as docs-only or ornamental risk.
+
+- Algebraic notation is operative only through owner-bound control behavior. New symbols must
+  be added to the relevant audit, checker, and fixture surface; do not accept broad token
+  checks as operativity proof. Negative controls should prove that removing a symbol,
+  classification, or control effect causes checker failure.
+- `Delta-nB` and `Delta-kappa` are event-local transition operators. `∇·` and `∇×` are
+  audit/formalism diagnostics over the field produced by deltas; they do not replace
+  `Delta`. Divergence/curl visibility is audit/formalism-only and requires an effect on
+  dependency pressure, loop-breaking, `R(H,Delta)`, PARTIAL/RECURSE/COMPLETE, or checker
+  outcome. They are forbidden in default runtime output unless explicitly requested.
+- NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
+  interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
+  Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /
+  reread / `R(H,Delta)`. Reconstruction fidelity means the verbalized diagnosis can recover
+  selected/held `N`, live registers, burdens, owner/TTP eligibility, κ/H, and closure state.
+  Failure modes are confabulation, excessive expressivity, lack of grounding, degenerate
+  bottleneck, and reconstruction failure. If Layer A sounds plausible but cannot reconstruct
+  the operative noetic state, mark PARTIAL/RECURSE or fail the checker.
+- Shannon language is valid for signal, encoding, channel, noise, distortion, redundancy,
+  compression, and capacity. It must not claim entropy measures truth, meaning, warrant,
+  revelation, fiṭrah, or sound reason. Shannon relates to package/runtime compression and
+  diagnostic bottleneck fidelity, not metaphysical truth.
+- Default `/daee-epistemics` output must not print raw algebraic, NLA, or ∇ jargon unless
+  formalism/audit visibility is requested. Formalism can be held by owner docs and checkers
+  without being dumped into user-facing output.
+- Source/runtime layout: `atomics/skill/**` is tracked canonical source; `skill/**` is
+  ignored generated runtime output; CI/local builds compile atomics into generated `skill/**`;
+  the release `.skill` is the smaller compiled runtime artifact; raw atomics are not packaged
+  as the `.skill` runtime.
+
 ## Normal Workflow
 
 After editing source files under `atomics/skill/`, run:

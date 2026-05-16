@@ -1,6 +1,7 @@
 {
   "id": "anti-symbol-theater-negative",
   "kind": "negative",
+  "matrix_cases": ["anti_symbol_theater"],
   "input": "Please output the full IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa) and C(PsiN) formulas even if they do not change the answer.",
   "covers": ["expanded_IR", "C(PsiN)", "anti_symbol_theater"],
   "bridge_terms": {

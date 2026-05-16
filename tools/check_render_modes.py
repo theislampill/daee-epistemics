@@ -540,6 +540,49 @@ FIXTURE_REQUIRED_TOKENS = [
     "Rule P-8",
 ]
 
+DEFAULT_RUNTIME_OPERATOR_FORBIDDEN = [
+    "∇·",
+    "∇×",
+    "del-dot",
+    "del-cross",
+    "nabla dot",
+    "nabla cross",
+]
+
+DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN = [
+    "Shannon entropy measures truth",
+    "meaning entropy",
+    "warrant entropy",
+    "lower entropy proves",
+    "entropy proves",
+    "entropy measures warrant",
+    "entropy measures meaning",
+]
+
+DEFAULT_RUNTIME_NLA_FORBIDDEN = [
+    "NLA",
+    "Natural Language Autoencoder",
+    "activation verbalizer",
+    "activation reconstructor",
+    "reconstruction loss",
+    "FVE",
+    "residual stream",
+]
+
+DEFAULT_RUNTIME_CONTEXTUAL_FORMALISM = [
+    "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+    "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)",
+]
+
+DEFAULT_RUNTIME_CONTEXT_REQUIRED = [
+    "do not print",
+    "not default",
+    "audit/formalism",
+    "formal/spec notation",
+    "expanded formalism render boundary",
+    "anti-symbol-theater",
+]
+
 FIXTURE_FORBIDDEN_TOKENS = [
     "FPD/M1 landed",
     "the imported criterion has failed",
@@ -2130,6 +2173,35 @@ def main() -> int:
     for token in FORBIDDEN_TOKENS:
         if token.lower() in lower:
             errors.append(f"forbidden render-mode claim in generated runtime: {token!r}")
+
+    for token in DEFAULT_RUNTIME_OPERATOR_FORBIDDEN:
+        haystack = corpus if token.startswith("∇") else lower
+        needle = token if token.startswith("∇") else token.lower()
+        if needle in haystack:
+            errors.append(
+                "default runtime surface contains forbidden divergence/curl "
+                f"operator form: {token!r}"
+            )
+
+    for token in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
+        if token.lower() in lower:
+            errors.append(f"default runtime surface contains forbidden NLA/Shannon claim: {token!r}")
+
+    for token in DEFAULT_RUNTIME_NLA_FORBIDDEN:
+        haystack = corpus if token in {"NLA", "FVE"} else lower
+        needle = token if token in {"NLA", "FVE"} else token.lower()
+        if needle in haystack:
+            errors.append(f"default runtime surface contains forbidden NLA jargon: {token!r}")
+
+    if "symbol theater" in lower and "control effect" not in lower:
+        errors.append("default runtime surface contains symbol-theater language without control-effect boundary")
+
+    for token in DEFAULT_RUNTIME_CONTEXTUAL_FORMALISM:
+        if token in corpus and not any(context in lower for context in DEFAULT_RUNTIME_CONTEXT_REQUIRED):
+            errors.append(
+                "default runtime surface contains raw expanded formalism without "
+                f"a bounded audit/formalism context: {token!r}"
+            )
 
     generated_skill = out_dir(root) / "SKILL.md"
     if generated_skill.is_file():

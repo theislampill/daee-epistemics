@@ -1,0 +1,49 @@
+{
+  "id": "local-transition-delta-distinction",
+  "kind": "positive",
+  "matrix_cases": ["local_transition"],
+  "input": "After one burden lands, what exactly changes locally, and what has to be reread before the next operation?",
+  "covers": ["D0", "PsiN", "expanded_IR", "Delta-kappa", "burden_notation", "operator_signature", "expanded_R"],
+  "bridge_terms": {
+    "D0": "The surface request asks about the local transition after burden landing.",
+    "PsiN": "The encoded state distinguishes the landed local result from the downstream reread state.",
+    "expanded_IR": "The expanded bridge keeps local burden delta and dependency-radius delta separate without adding hard register fields.",
+    "Delta-kappa": "Delta-kappa is the dependency-radius change consumed by R(H,Delta), not the same thing as the local burden result.",
+    "burden_notation": "The landed burden-cycle is complete only after its submoves contribute to the local Delta-nB.",
+    "operator_signature": "Each local transition must preserve target -> operation -> result before naming Delta-nB.",
+    "expanded_R": "R(H,Delta) consumes local Delta-nB plus Delta-kappa before selecting STOP/HOLD/PARTIAL/RECURSE."
+  },
+  "control_effects": {
+    "owner_choice": ["recursive-state-transitions", "output-release", "diagnostic-render-contract"],
+    "hold_release": "Hold the next topic until the local transition and dependency reread are separated.",
+    "burden_selection": "Select the next burden only after R(H,Delta) consumes Delta-kappa.",
+    "reread": "The transition forces a post-burden reread before closure or recursion.",
+    "partial_behavior": "If the reread leaves unresolved dependency pressure, mark PARTIAL rather than COMPLETE."
+  },
+  "local_transition": {
+    "Delta-nB": "local landed state change from target -> operation -> result",
+    "Delta-kappa": "dependency-radius change reread before the next decision",
+    "distinction": "Delta-nB is not Delta-kappa; both feed R(H,Delta) before STOP/HOLD/PARTIAL/RECURSE"
+  },
+  "ir_projection": {
+    "claim_level": "formalism-audit",
+    "routing_gate": "transition-reread-required",
+    "load_bearing_node": "local transition cannot license next burden until dependency radius is reread",
+    "matched_modules": ["recursive-state-transitions", "output-release", "diagnostic-render-contract"],
+    "output_shape": "audit-only",
+    "what_is_withheld_and_why": "The next burden is held until Delta-nB and Delta-kappa are distinguished and consumed by R(H,Delta).",
+    "post_render_gate": {
+      "cleared_this_pass": "local Delta-nB versus Delta-kappa distinction recorded",
+      "remaining_live_distortions": "next operation remains dependent on post-delta reread",
+      "held_routes_rechecked": ["recursive-state-transitions", "output-release"],
+      "newly_released_routes": ["recursive-state-transitions"],
+      "next_eligible_pass": "apply post-delta reread to select the next burden",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md"
+  ]
+}

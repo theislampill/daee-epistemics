@@ -1,6 +1,7 @@
 {
   "id": "shannon-boundary-negative",
   "kind": "negative",
+  "matrix_cases": ["shannon_nla_boundary"],
   "input": "Can we model truth, meaning, and warrant as Shannon entropy and say Islam has lower truth entropy?",
   "covers": ["shannon_boundary", "xi", "anti_symbol_theater"],
   "bridge_terms": {

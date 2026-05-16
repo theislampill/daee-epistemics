@@ -25,15 +25,15 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
-## v0.4.1.0 Corrected Release Asset
+## v0.4.1.0 Corrected Local Replacement Candidate
 
-This records the corrected v0.4.1.0 replacement asset for the existing
-`v0.4.1.0` GitHub Release. The earlier v0.4.1.0 asset/provenance was built
-before generated `skill/**` was untracked and is superseded by this corrected
-artifact flow. The replacement asset is rebuilt from tracked atomics through
-ignored generated `skill/`; raw atomics are not packaged. The public release
-asset remains the checked `.skill` payload, not the `.skill.zip` build
-intermediate.
+This records the corrected local v0.4.1.0 replacement candidate prepared for
+the existing `v0.4.1.0` GitHub Release. The currently published v0.4.1.0
+asset/provenance predates the generated-runtime untracking correction and is
+marked superseded pending an explicitly authorized replacement. The corrected
+candidate is rebuilt from tracked atomics through ignored generated `skill/`;
+raw atomics are not packaged. After replacement, the public release asset should
+remain the checked `.skill` payload, not the `.skill.zip` build intermediate.
 
 | Field | Value |
 | --- | --- |
@@ -43,14 +43,14 @@ intermediate.
 | SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
 | Size | `557920` bytes |
 | Entries | `20` |
-| Source commit | Final `v0.4.1.0` tag commit; see the uploaded provenance asset for the exact SHA |
-| Worktree state | Clean `main` at package build |
+| Source commit | Local replacement-candidate build commit; final replacement provenance must record the exact accepted source SHA |
+| Worktree state | Local package-candidate evidence; recheck before upload if source/docs changed |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | Corrected: `atomics/skill/**` tracked; `skill/**` ignored/generated |
 | Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
-| GitHub Release visibility | Replacement asset for existing `v0.4.1.0` release after generated-runtime untracking correction |
-| Provenance file | `build/daee-epistemics-v0.4.1.0.provenance.json` |
+| GitHub Release visibility | Existing published `v0.4.1.0` asset is superseded; corrected replacement is pending explicit authorization |
+| Provenance file | Local candidate: `build/daee-epistemics-v0.4.1.0.provenance.json`; final upload must include current provenance |
 
 Candidate package shape:
 
@@ -85,7 +85,7 @@ tests/
 | Size | `554776` bytes |
 | Entries | `20` |
 | Source commit | `v0.4.0.0 release commit; see release tag` |
-| GitHub Release visibility | Current release artifact for evidence-gated operator runtime and NS/register hardening |
+| GitHub Release visibility | Published historical release artifact for evidence-gated operator runtime and NS/register hardening |
 | Release tag | `v0.4.0.0` |
 | Release name | `v0.4.0.0 - Register Grammar, Release-Boundary and Meta-Noetic Operator Hardening, Evidence-Gated Operator Runtime` |
 | Release URL | `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.0.0` |
@@ -137,17 +137,18 @@ output.simulated.md
 output.model.md
 ```
 
-## Current-Release Smoke Evidence
+## v0.4.0.0 Package-Bound Smoke Evidence
 
-Current-release package-bound smoke evidence is retained locally under ignored
+v0.4.0.0 package-bound smoke evidence is retained locally under ignored
 `.daee/v0.4.0.0-current-release-smokes/` and validated with:
 
 ```powershell
 python tools/check_smoke_artifacts.py --root .daee/v0.4.0.0-current-release-smokes --require-current-release-smokes
 ```
 
-The retained suite is local, package-bound evidence for this package SHA. It is
-not committed, not packaged, and not a universal semantic-grading claim.
+The retained suite is local, package-bound evidence for the v0.4.0.0 package
+SHA. It is not committed, not packaged, not v0.4.1.0 replacement proof, and not
+a universal semantic-grading claim.
 
 Smoke families:
 
@@ -162,10 +163,10 @@ Evidence boundaries:
 source repo -> current tracked atomics, tools, tests, docs, and workflows
 generated runtime -> ignored local/CI skill/ built from atomics
 local package build output -> ignored build/*.skill.zip archive built from generated skill/
-release asset -> checked build/*.skill payload uploaded to GitHub Release
+published release asset -> checked build/*.skill payload uploaded to GitHub Release
 local smoke regression artifacts -> ignored smokes/ or .daee/ working directories
-current package evidence -> public GitHub Release .skill asset, local/internal .skill.zip filename, SHA256, size, entries, and archive-root checks above
-current-package smoke evidence -> ignored .daee/v0.4.0.0-current-release-smokes package-bound suite
+published package evidence -> public GitHub Release .skill asset, local/internal .skill.zip filename, SHA256, size, entries, and archive-root checks above
+v0.4.0.0 package-smoke evidence -> ignored .daee/v0.4.0.0-current-release-smokes package-bound suite
 local child-mode samples -> ignored .daee retained evidence, not release proof
 dev-local checker PASS -> not universal semantic grading
 live-host behavior -> not all-host parity or deterministic transformer execution

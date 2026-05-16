@@ -1,6 +1,7 @@
 {
   "id": "kappa-deltakappa-reread-partial",
   "kind": "positive",
+  "matrix_cases": ["closure_prevention"],
   "input": "If God is good, why evil, hiddenness, hell, and worship-worthiness all at once?",
   "covers": ["D0", "PsiN", "expanded_IR", "kappa", "Delta-kappa", "burden_notation", "operator_signature", "expanded_R"],
   "bridge_terms": {
