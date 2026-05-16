@@ -69,6 +69,11 @@ ontology-license files in atomics and, with `--include-generated`, in the
 generated runtime. These checks preserve repo/dev harness integrity without
 making harness files canonical package content.
 
+The active push/PR workflow should keep the data-shape checker but should not run
+the legacy `daee_level3.py --run-fixtures` harness as package or behavioral smoke
+proof. That harness remains available for explicit maintainer debugging until a
+future rename migrates the legacy filenames and docs together.
+
 Harness/replay guidance: keep daee's stable runtime instructions in the prefix and put user
 input, current state envelopes, and checker/tool results in a variable suffix. Route plans,
 validation results, execution checks, and `R(H,Delta)` state decisions should re-enter the next

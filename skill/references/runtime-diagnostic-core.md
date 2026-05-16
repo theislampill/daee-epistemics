@@ -172,7 +172,7 @@ Re-run or update the case-state whenever:
 <!-- MODULE_ID: noetic-reading-checklist -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/noetic-reading-checklist.md -->
-<!-- SOURCE_SHA256: 36b010936126a6e5a503c22549d57cd185e738139bc89b926006a5b84487a989 -->
+<!-- SOURCE_SHA256: d190b661b063c58a3e29a24fb2cc47cb812931479a9598fcb5f2c57c5711328c -->
 
 ---
 id: noetic-reading-checklist
@@ -266,12 +266,12 @@ findings`, `Claim-level`, `Pattern-profile`, `Load-bearing node`, `Collapse radi
 `What remains live`. It does not create a new routing pass, new IR fields, or a route from a
 slogan by itself.
 
-Pipeline #2 signal-state bridge: the checklist reads `D0` / `D₀` as surface discourse, encodes
+register-formalism signal-state bridge: the checklist reads `D0` / `D₀` as surface discourse, encodes
 the provisional noetic signal-state as `PsiN` / `Ψᴺ`, and selects or holds the operative frame
 as `N in N_space` / `N∈𝓝`. Thin inputs do not force a family-lock; they remain held or partial
 until the differentiating signal is present.
 
-Derived register bridge: this is Pipeline #2 baseline register formalism, not an optional or
+Derived register bridge: this is schema-light register bridge baseline, not an optional or
 future theory annex. The expanded formalism may call the warrant/testimony/proof-method
 side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
 stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream

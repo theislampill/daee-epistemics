@@ -21,13 +21,19 @@ Layer B is the governed operation/release surface: it performs active TTP/operat
 then hands state to `Land(B) -> R(H,Delta)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
 overgrowth and Layer B flattening.
 
-Burden-cycle recursion follows live noetic order, not topic count: first-order surface claim,
-second-order criterion/warrant/proof-method/source-authority/testimony standard/moral tribunal,
-and higher-order/meta-noetic source-worldview/register/source-status/noetic-frame pressure.
-This protects truth-directed noetic function, reliable warrant-process, and foundational order.
-If `R(H,Delta)` shows only more content inside the same order/function/source-frame, keep it as
-Layer B submove or application. If another order remains live, release the next burden-cycle or
-HOLD/PARTIAL it.
+Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
+banner before Layer A. The short invariant is: all inputs are noetic fields; prompt brevity never
+licenses shallow execution; source request is not authority frame; and closure must match banner
+state. Banner shape, exact vocabulary, first-visible/no-code-fence rule, and missing-material
+source-authentication behavior are owned by `references/rubrics/diagnostic-render-contract.md`.
+`RECURSE` / `PARTIAL` / `COMPLETE` release semantics are owned by
+`references/rubrics/output-release.md`. `Land(B) -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
+`kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
+`references/diagnostics/recursive-state-transitions.md`.
+
+Burden-cycle recursion follows live noetic order, not topic count. Same-order material stays in
+Layer B; a distinct live order recurses or is held/PARTIALed under `R(H,Delta)`. Detailed order
+rules live in `recursive-state-transitions.md`.
 
 Runtimes that cannot produce the full hard-case answer in final chat must use
 canonical file-retained execution rather than compressing the answer. This is
@@ -56,37 +62,27 @@ Compact means no padding and no route dump; it does not mean short. Hard compoun
 outputs below 30k fail unless PARTIAL names missing burdens/TTPs/source functions; 30k-35k
 is suspect and must pass the owner/source/closure matrix.
 
-For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic reread. If the reread leaves another input-anchored burden live and no HOLD, PARTIAL, limit, or register gate blocks it, continue in the same response.
-
-Same-burden collapse does not collapse active submoves. Imported tribunal pressure, hujjah/accountability, coercive-guidance pressure, source-worldview consequence, mercy/justice, fitrah/ayat, Creator-right, repentance/return, testimony, and predicate-source work must either land burden-locally or be explicitly held/PARTIAL.
-
-Final restoration cannot be the first place live source architecture appears. If runtime/context limits prevent full traversal, mark PARTIAL and name the next live burden rather than closing thinly.
-
-Before any final Restorative Response or Closing Formulation in a hard compound/source-request
-case, run a closure audit: have all live owner/TTP families either executed locally, been
-cleared as not live, been held with reason, or been named in PARTIAL? If restoration, warning,
-invitation, closure, HOLD, or stop discipline is doing work, `P1`/`P7` must be locally executed
-or explicitly cleared. If any live owner, source function, or next input-anchored burden remains
-missing, do not close; continue or write PARTIAL with the missing burden/TTP/source function.
-In hard compound/source-request cases, make that audit visible as `closure audit:` before
-restoration; otherwise write `PARTIAL` and name the missing owner, burden, or source function.
+For every released burden-cycle, render compact Layer A -> governed Layer B -> state/noetic
+reread. Same-burden collapse does not hide active submoves. Before final restoration/closure in
+named-worldview, mixed-field, source-authentication, authority-frame, or source-request cases,
+run the closure audit owned by `diagnostic-render-contract.md` / `output-release.md`. If any
+live dependency remains unresolved, unrendered, or merely identified, continue under RECURSE or
+write PARTIAL with the missing burden/TTP/source function.
 
 ## Hard Compound Source-Request Release Floor
 
-Hard compound cases that ask to respond, dismantle, or bring sources must not collapse all
-source-governed material into one umbrella burden. After each `Land(B) -> R(H,Delta)`, if a
-distinct input-anchored noetic function remains live, release the next burden-cycle or mark
-PARTIAL. Do not close merely because the first tribunal, criterion, or worldview burden was
-addressed.
+Hard compound/source-request cases must not collapse all source-governed material into one
+umbrella burden. Noetic-structure density is not prompt length: short named or implied
+worldview, ideology, authority-order, epistemic-regime, religious-objection, or
+civilization-level-criterion inputs can instantiate dense noetic fields. Do not assume selected
+`N` is known at design time; scan and hold candidate frames, activate live registers, and let
+`R(H,Delta)` decide release, HOLD, PARTIAL, or closure. The detailed generalized noetic-selection
+and register-control rule lives in `recursive-state-transitions.md`; banner/render visibility
+lives in `diagnostic-render-contract.md`.
 
-Common distinct functions include imported tribunal/criterion pressure, M1/M1-P self-grounding
-or performative pressure, M8 consequence trace, M9 predication/category pressure,
-accountability/hujjah, hiddenness/coercive-guidance demand, punishment/proportionality,
-mercy/justice/source architecture, testimony/transmission, predicate-source work,
-family-local proof-method pressure, grief/register HOLD, source-worldview consequence, and
-restoration/warning. They may consolidate only when they are the same function in the same
-source-frame and claim-cluster; topic availability alone does not create a burden, and umbrella
-topic labels do not collapse distinct noetic orders.
+Distinct functions may consolidate only when they share function, source-frame, and claim-cluster;
+topic availability alone does not create a burden, and umbrella labels do not collapse distinct
+noetic orders.
 
 For moral-protest / hiddenness / accountability clusters, the default hard-case presumption is
 separate release for the imported tribunal or worship-worthiness criterion, accountability or
@@ -256,21 +252,14 @@ Top-salient invariants:
 - `H(n+1) = (Hn ∪ InputLive_n) - Released_n`; held material carries until released or resolved.
 - `Land(B) -> R`; `R` is required before STOP or RECURSE.
 
-**DEFAULT RENDER INVARIANT.** Default prints compact DSL/IR visibility, not clean prose
-alone and not raw Diagnostic IR: `Default = Layer A(compact DSL/IR) + Layer B + R
+**DEFAULT RENDER INVARIANT.** Default prints the noetic-field execution banner plus compact
+DSL/IR visibility, not clean prose alone and not raw Diagnostic IR:
+`Default = noetic-field banner + Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
 (+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation`.
-Full IR, full Case State, `matched_modules`, route ledger, load ledger, and
-source/bibliography ledger stay out of default.
+Full IR, Case State, `matched_modules`, route/source/load ledgers stay out of default.
 Current bounded operator is one live noetic burden/function, not a route chain.
 Diagnostic IR, recursive traversal governance, and post-render gate stay fully active in every mode.
-
-Canonical owners: recursion/submove/held-route/noetic-frame details live in
-`references/diagnostics/recursive-state-transitions.md`; render shape lives in
-`references/rubrics/diagnostic-render-contract.md`; release amount/order lives in
-`references/rubrics/output-release.md`; IR/schema dispatch lives in
-`references/diagnostics/diagnostic-ir.md`; routing precedence lives in
-`references/diagnostics/routing-precedence.md`; reconstruction fidelity lives in
-`references/diagnostics/ir-reconstruction-pass.md`.
+Owners remain in named reference files.
 
 ## Scope Boundary
 
@@ -609,41 +598,13 @@ still held.
 Default render remains:
 
 ```text
-Default = Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
+Default = noetic-field banner + Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
 (+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation
 ```
 
-Default visible frame:
-
-```text
-Layer A - Compact DSL/IR header
-- read status:
-- confidence:
-- claim_level:
-- pattern_profile:
-- reason-category:
-- concealment:
-- deformation:
-- DO-orient:
-- live noetic burden:
-- current bounded operator:
-- held:
-- source-status/noetic-frame:
-- decisive missing differentiator: [only when required]
-- gate/release decision:
-
-Layer B - bounded governed response
-- Hidden Premises
-- Burden / Operation N
-  - Core Formulation
-  - Bounded Response / operative submoves
-- TTP/operator trace when a named operator does runtime work
-
-State/noetic re-read
-
-Restorative Response
-Closing Formulation
-```
+Default visible frame is owned by `references/rubrics/diagnostic-render-contract.md`:
+noetic-field banner, compact Layer A, governed Layer B, state/noetic re-read, Restorative
+Response, and Closing Formulation.
 
 Default forbids raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
 load ledger, source/bibliography ledger, giant load ledger by default, and meta-composition

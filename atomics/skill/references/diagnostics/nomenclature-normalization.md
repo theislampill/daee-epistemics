@@ -92,12 +92,12 @@ brand the interlocutor with a code unless diagnostic render or user request make
 ## Algebraic Formalism Terms
 
 The expanded algebraic notation preserved in `docs/algebraic-notation-and-noetic-formalism.md`
-is Pipeline #2 baseline register formalism over the current runtime. Its derived/conditional
+is schema-light register bridge baseline over the current runtime. Its derived/conditional
 control semantics are canonical when they change existing diagnosis, routing, hold/release,
 collapse-radius, reread, or restoration behavior. Schema-light means baseline control through
 existing IR/control surfaces, not optional theory or future parity. It does not add routes,
 owners, mandatory IR fields, PF codes, source-basis categories, schema keys, or a second DSL.
-The older phrase "Pipeline #2 theory/specification bridge" is retained only as a schema-boundary
+The older phrase "schema-light register bridge" is retained only as a schema-boundary
 alias for this baseline register formalism.
 
 | Formal symbol | ASCII fallback | Status |

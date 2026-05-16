@@ -377,15 +377,15 @@ The repo also carries a visual architecture reference:
 [`docs/daee-epistemics-pipeline.html`](docs/daee-epistemics-pipeline.html). It is a
 navigation aid, not a new source of truth, and should stay in parity with the canonical
 compact DSL-governed runtime, canonical package boundary, and repo/dev harness boundary.
-The expanded algebraic notation and Pipeline #2 derived/conditional bridge are preserved in
+The expanded algebraic notation and schema-light register bridge are preserved in
 [`docs/algebraic-notation-and-noetic-formalism.md`](docs/algebraic-notation-and-noetic-formalism.md)
 and tracked in
-[`docs/pipeline2-implementation-ledger.md`](docs/pipeline2-implementation-ledger.md).
-Read that wording as Pipeline #2 baseline register formalism with a schema-light implementation:
+[`docs/register-formalism-implementation-ledger.md`](docs/register-formalism-implementation-ledger.md).
+Read that wording as schema-light register bridge baseline with a schema-light implementation:
 the registers govern existing IR/control surfaces when live, while mandatory register fields
 remain a separate contract migration decision.
 The bridge is current where atomics, generated runtime text,
-`tests/pipeline2-bridge-fixtures/`, and the recorded installed-skill hard-smoke audit make
+`tests/register-formalism-bridge-fixtures/`, and the recorded installed-skill hard-smoke audit make
 `heart` / `xi` / `Omega` / `mu` / `kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration. This
 is a derived/conditional bridge over the compact runtime, not a mandatory register-field schema
@@ -562,9 +562,11 @@ route/check harness.
 
 ### Maintainer Optional Route/Check Harness
 
-The optional script-capable route/check harness is repo/dev/CI machinery. It can make
+The optional script-capable route/check harness is repo/dev machinery. It can make
 routing executable rather than merely interpretive for maintainers, but it is not the
-public identity of the skill and is not packaged in the canonical user-facing artifact:
+public identity of the skill, is not packaged in the canonical user-facing artifact, and
+is not the active push/PR execution path. Some implementation files still use the
+historical `level3` / `daee_level3` names until a deliberate harness-rename migration:
 
 ```text
 python skill/scripts/daee_level3.py --input <input.md> --out <run-dir>
@@ -614,9 +616,8 @@ checking.
 ### Maintainer Commands
 
 Before release, regenerate and verify the runtime with the command set in
-[Source / Runtime Layout](#source--runtime-layout). Maintainers can run the
-required contrast/stability fixtures plus the hard regression fixture locally
-with:
+[Source / Runtime Layout](#source--runtime-layout). Maintainers may run the
+legacy-named optional harness fixtures locally for route/check debugging with:
 
 ```text
 python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-stability 5
@@ -624,7 +625,7 @@ python skill/scripts/daee_level3.py --run-fixtures --simulate-output --repeat-st
 
 Any `--simulate-output` run is simulated structural route/check verification only. It must not
 be reported as behavioral smoke, real model execution, or scriptless shrinkage-regression
-recovery.
+recovery. Active push/PR CI should not use this legacy harness run as release proof.
 
 ### Release Smoke Boundary
 

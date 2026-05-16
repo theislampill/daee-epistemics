@@ -16,7 +16,7 @@ This generated bundle is a runtime read view. Section presence does not imply ac
 <!-- MODULE_ID: diagnostic-ir -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/diagnostic-ir.md -->
-<!-- SOURCE_SHA256: 69158b8fd0d330f57f3d36385e768739e3a3f06bc6b1b69b17b0366285048530 -->
+<!-- SOURCE_SHA256: 6c70f12a60e28a247d3d23feb521de358a5febf830355c29c86cbe6deb2feaff -->
 
 ---
 id: diagnostic-ir
@@ -113,11 +113,11 @@ hold/release decision, collapse radius, load-bearing node, operator choice, or s
 
 ### Derived Register Formalism Boundary
 
-Pipeline #2 bridge status: the signal-state and derived-register notation is canonical as an
+register-formalism bridge status: the signal-state and derived-register notation is canonical as an
 interpretive control bridge over the existing Diagnostic IR. It is not a detached theory annex.
-Pipeline #2 is the current baseline register formalism: schema-light means the registers govern
+The schema-light register bridge is the current baseline register formalism: schema-light means the registers govern
 existing IR/control surfaces when live, not that the registers are optional, future-parity, or a
-Pipeline #1 fallback. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
+compact DSL/IR runtime spine. Mandatory `heart` / `xi` / `Omega` / `mu` / `kappa` JSON fields remain a
 separate contract migration decision.
 `D0` / `D₀` names the surface discourse before diagnostic reduction. `PsiN` / `Ψᴺ` names the
 encoded noetic signal-state produced when the diagnostic gate reads that surface through the
@@ -137,7 +137,7 @@ The Unicode formalism is the theory/spec surface for the same bridge:
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
 ```
 
-This makes Pipeline #2 real as a derived/conditional runtime bridge: the extra symbols must
+This makes schema-light register bridge real as a derived/conditional runtime bridge: the extra symbols must
 govern existing IR formation, owner eligibility, held material, collapse radius, release
 posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
 
@@ -2596,7 +2596,7 @@ the noetic-state source-status rules supply input evidence for a verdict.
 <!-- MODULE_ID: framework-pipeline -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/framework-pipeline.md -->
-<!-- SOURCE_SHA256: 94579a75087dce098c3fb3c130163267ac7016edd7268ed35883ef8c99810bb5 -->
+<!-- SOURCE_SHA256: cf3d31c46baff8751335cc0a09cb259173ae065486a9bb80db4536dd2ae80aff -->
 
 ---
 id: framework-pipeline
@@ -2756,17 +2756,17 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +-----------------------------------------------------------+
              |
              v
-+----------------------------------------------------------------------------+
-| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                  |
-|                                                                            |
-| compose IR from Phase 2 outputs                                            |
-| validated IR is runtime compiler state                                     |
-| IR before routing                                                          |
-| Pipeline                                                                   |
-| Baseline register formalism is schema-light, not optional or future parity |
-| module dispatch blocked until all gate checks pass                         |
-| owner: diagnostics/diagnostic-ir.md                                        |
-+----------------------------------------------------------------------------+
++-------------------------------------------------------------------------------+
+| DIAGNOSTIC IR - FORMATION + DISPATCH GATE                                     |
+|                                                                               |
+| compose IR from Phase 2 outputs                                               |
+| validated IR is runtime compiler state                                        |
+| IR before routing                                                             |
+| schema-light register bridge maps D0 -> PsiN -> IR without hard schema fields |
+| Baseline register formalism is schema-light, not optional or future parity    |
+| module dispatch blocked until all gate checks pass                            |
+| owner: diagnostics/diagnostic-ir.md                                           |
++-------------------------------------------------------------------------------+
              |
              v
        +-----+-----+
@@ -3035,7 +3035,7 @@ CONCEPT OWNERSHIP (owner-backed)
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
 - DSL/IR representation: diagnostics/diagnostic-ir.md
 - meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
-- Pipeline: diagnostics/diagnostic-ir.md
+- schema-light register bridge derived register bridge: diagnostics/diagnostic-ir.md
 - runtime diagnostic compiler contract: diagnostics/diagnostic-ir.md
 - TTP entry / exit criteria: diagnostics/recursive-state-transitions.md
 - Layer A / Layer B release checks: rubrics/output-release.md
@@ -3235,7 +3235,7 @@ does not create routes, module activation rules, IR fields, or source owners.
 <!-- MODULE_ID: recursive-state-transitions -->
 <!-- MODULE_CLASS: governance -->
 <!-- CANONICAL_PATH: skill/references/diagnostics/recursive-state-transitions.md -->
-<!-- SOURCE_SHA256: 57b2a8d9138ca6e10aad6f55543f1840334048493060616663ceb8c161940c4a -->
+<!-- SOURCE_SHA256: 56dacec8194977675c2561e9a6bac219bd12ddd7e4d960c8c205c28646a290cd -->
 
 ---
 id: recursive-state-transitions
@@ -3380,6 +3380,34 @@ collapse-radius, and reread governance. They do not create mandatory IR fields. 
 local landed state change inside the current burden; `ⁿ⁺¹B` is a new burden-cycle only when
 `Land(B) -> R(H,Delta)` licenses it. `κ` is the downstream dependency set consumed by reread,
 not a generic TODO list.
+
+General noetic-selection / register-control reread gate:
+
+```text
+Land(ⁿB) -> R(H,ΔⁿB{heart,xi,Omega,sigma,mu},Δkappa)
+```
+
+This gate is mandatory whenever a live burden lands. It does not assume the selected N frame
+is known at design time: the runtime must scan the noetic-structure selection space, select or
+hold candidate/held N frames, activate live registers, and let `R` decide STOP, HOLD, PARTIAL,
+RECURSE, or NewB from the refreshed state. The formalism is valid only when it changes control:
+owner eligibility, held material, hold/release posture, burden selection, collapse radius,
+reread, or closure state.
+
+If `xi` (warrant / authority / proof-status), `Omega` (ontology / predication / dependence),
+`sigma` (discourse / pattern state), `mu` (carrier or reproduction vector), `kappa`
+(downstream dependency set), or `H` (held burdens) remain live after `Land(B)`, `R` must force
+another burden, HOLD, PARTIAL, or explicit clearance. It may not STOP or mark COMPLETE while
+downstream dependencies remain. Concrete dependencies are case-shaped: source-authentication
+may expose transmission/testimony routes; moral protest may expose predicate/tribunal routes;
+named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
+routes. These are control checks, not topical argument-bank entries.
+
+A COMPLETE closure in any multi-burden or register-active case must visibly account for
+selected and held `N` frames, live registers, active or cleared owner/TTP child modes,
+`Delta-nB`, `Delta-kappa`, and remaining `kappa` / `H` status. If the closure cannot account
+for these dependencies without turning into a topic dump, it must mark PARTIAL or RECURSE
+instead of COMPLETE.
 
 Terminal formalism: `𝒞(Ψᴺ)` names constrained noetic collapse / discursive resolution after
 the state re-read has consumed `ΔⁿB` and `Δκ`. It may describe closure only when the live burden

@@ -90,12 +90,12 @@ findings`, `Claim-level`, `Pattern-profile`, `Load-bearing node`, `Collapse radi
 `What remains live`. It does not create a new routing pass, new IR fields, or a route from a
 slogan by itself.
 
-Pipeline #2 signal-state bridge: the checklist reads `D0` / `D₀` as surface discourse, encodes
+register-formalism signal-state bridge: the checklist reads `D0` / `D₀` as surface discourse, encodes
 the provisional noetic signal-state as `PsiN` / `Ψᴺ`, and selects or holds the operative frame
 as `N in N_space` / `N∈𝓝`. Thin inputs do not force a family-lock; they remain held or partial
 until the differentiating signal is present.
 
-Derived register bridge: this is Pipeline #2 baseline register formalism, not an optional or
+Derived register bridge: this is schema-light register bridge baseline, not an optional or
 future theory annex. The expanded formalism may call the warrant/testimony/proof-method
 side of this read `ξ`, the ontology/predication/modality side `Ω`, the meta-noetic carrier and
 stabilizer side `μ`, the affective-discursive release posture `♥`, and the downstream

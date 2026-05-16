@@ -3,7 +3,7 @@
 
 Invariants verified:
   - Public render modes and deprecated audit compatibility are named in the runtime.
-  - Default mode has a mandatory compact DSL/IR header with no giant ledger by default.
+  - Default mode has a mandatory noetic-field execution banner and compact DSL/IR header with no giant ledger by default.
   - [Diagnostic IR] code-fenced block is prohibited in default output.
   - Full [Case State] block is prohibited in default output.
   - Discipline-universal / printout-mode-specific invariant is present.
@@ -13,7 +13,7 @@ Invariants verified:
   - recursive-audit discipline applies universally; full audit printout belongs only to internal/development audit.
   - Recursive traversal governance is universal across modes.
   - Plain /daee-epistemics does NOT map to expanded diagnostic lab-report.
-  - Compact Layer A DSL/IR header is required in default mode.
+  - Noetic-field execution banner and compact Layer A DSL/IR header are required in default mode.
   - Layer A full audit machinery is prohibited in default mode.
   - Forbidden claims (behavioral parity, mandatory ledger, stale expanded-diagnostic mapping) are absent.
 """
@@ -60,9 +60,35 @@ REQUIRED_TOKENS = [
     "/daee-epistemics",
     "/daee-epistemics:dsl",
     "/daee-epistemics:audit",
-    # Default mode has a mandatory compact DSL/IR header
+    # Default mode has a mandatory noetic-field execution banner plus compact DSL/IR header
     "Default Output Surface Invariant",
     "For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints",
+    "noetic-field execution banner",
+    "NOETIC FIELD EXECUTION",
+    "first visible content",
+    "Markdown fences",
+    "Clarifying or missing-input replies are still runtime outputs",
+    "field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>",
+    "source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>",
+    "authority frame: <NONE DETECTED | LIVE>",
+    "state: <RECURSE | PARTIAL | COMPLETE>",
+    "Print exactly one value for each field",
+    "never print the choice list",
+    "combine values with `|`",
+    "do not mark it `IMPLICIT` merely because a",
+    "worldview or authority frame is live",
+    "supplies no actual text/reference",
+    "General noetic-selection / register-control reread gate",
+    "do not assume the selected N frame is known at design time",
+    "candidate/held N frames",
+    "Delta-nB",
+    "Delta-kappa",
+    "It may not STOP or mark COMPLETE while downstream dependencies remain",
+    "Prompt brevity does not imply simple execution",
+    "Do not use SIMPLE, COMPACT",
+    "banner categories or depth licenses",
+    "Closure audit must match the",
+    "banner state",
     "`matched_modules` and route plans remain internal",
     "literal `Recursion decision:`",
     "`next_eligible_pass`",
@@ -154,8 +180,8 @@ REQUIRED_TOKENS = [
     "not an optional internal gate or control surface",
     "Literal default governance fields",
     "`Governance:`",
-    "literal governance labels such as `Recursion decision:` and `next_eligible_pass:` are prohibited",
-    "no literal STOP/HOLD/RECURSE/PARTIAL label",
+    "literal governance labels such as `Recursion decision:`",
+    "no literal STOP/HOLD/RECURSE/PARTIAL label outside the noetic-field banner",
     "Render-mode scope: this template is an internal control shape",
     "Route Cosplay Failure",
     "visible recursion label != recursive traversal",

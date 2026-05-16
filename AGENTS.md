@@ -72,7 +72,7 @@ python tools/check_frontmatter.py
 python tools/check_coverage.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_metacompliance_current_canon.py
-python tools/check_pipeline2_bridge.py
+python tools/check_register_formalism_bridge.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
@@ -86,6 +86,9 @@ or local transcripts. `tools/check_smoke_artifacts.py` runs embedded regression 
 default; pass `--root` for a local smoke suite, and use `--require-current-release-smokes`
 only when package-bound current-release smokes have been truthfully regenerated. Package
 only when explicitly requested.
+`tools/check_noetic_field_banner_samples.py` is a tracked dev-local regression checker. When
+noetic-field banner or algebraic-control retained smokes are part of a patch, run it against
+those local artifacts. Its PASS is not package/release proof.
 
 Current release-line contract: operative front matter must use `contract_version: "0.4.0.0"`
 until the project intentionally moves to a later release line. Run:
@@ -98,6 +101,9 @@ Historical release references may remain only when they are clearly historical. 
 claims, package metadata, generated runtime metadata, and checker samples must not silently retain
 older version markers.
 
+Current dirty work after the `v0.4.0.0` tag is `v0.4.1.0` candidate cleanup/hardening work.
+That candidate label does not migrate operative `contract_version` by itself.
+
 ## Release Cycle Etiquette
 
 Do not make release moves casually. A release pass must distinguish source readiness,
@@ -106,6 +112,12 @@ state.
 
 - Do not tag, create a GitHub Release, upload/replace an asset, push, or publish unless the
   user explicitly approves that exact step.
+- `.github/workflows/release-skill.yml` is a manual artifact-build workflow only: it builds and
+  uploads workflow artifacts, but must not be treated as tag creation, GitHub Release publishing,
+  or package-bound smoke proof.
+- `.github/workflows/release-skill.yml` is a manual artifact-build workflow only: it builds and
+  uploads workflow artifacts, but must not be treated as tag creation, GitHub Release publishing,
+  or package-bound smoke proof.
 - Do not use `git add .` for release work. Stage an explicit file list. Keep large smokes,
   raw model transcripts, local helper scripts, `.daee/`, `level3-runs/`, temporary owner
   lists, local machine paths, and scratch artifacts unstaged unless the user explicitly
@@ -407,12 +419,16 @@ one-golden-output-specific runtime logic unless explicitly instructed.
 ## Optional Script-Capable Route/Check Harness
 
 The optional script-capable route/check harness (formerly called "Level 3") is additive
-route-first execution for Codex/dev/CI validation.
+route-first validation machinery for maintainers. The legacy filenames remain for compatibility,
+but active push/PR CI should prefer invariant checks and must not treat the legacy harness as the
+canonical execution surface.
 
 - Default `/daee-epistemics [input]` remains the canonical compact DSL-governed surface.
   Codex/script-capable runtimes may use repo-local `skill/scripts/daee_level3.py` as a harness
   around that surface when explicitly requested by a maintainer, but the harness is not the
   public identity of the skill and is not part of the canonical user-facing package.
+- `tools/check_level3_data_shapes.py` remains an active, legacy-named data-shape checker until a
+  deliberate harness rename migrates producers, generated runtime, docs, and CI together.
 - Canonical behavioral smokes must not use `daee_level3.py`, `route.py`, `check_execution.py`,
   generated `route_plan.json`, `features.json`, or `execution_verdict.json` as proof of default
   scriptless execution. If a noninteractive Codex run creates or mentions harness artifacts while
@@ -448,8 +464,8 @@ state, owner/TTP activation, burden landing, state re-read, and restoration.
 Expanded visual/diagnostic wiki reference:
 `docs/index.html`. Treat the published GitHub Pages page as a navigation and diagnostic aid
 only. Durable formalism lives in `docs/algebraic-notation-and-noetic-formalism.md` and canonical
-runtime rules still live in atomics. Pipeline #2 derived/conditional bridge semantics are
-current where atomics, generated runtime text, and `tests/pipeline2-bridge-fixtures/` make
+runtime rules still live in atomics. schema-light register bridge semantics are
+current where atomics, generated runtime text, and `tests/register-formalism-bridge-fixtures/` make
 `heart`/`xi`/`Omega`/`mu`/`kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration.
 Bridge live-smoke proof must point to retained audit evidence, not the index page. Do not call
@@ -581,7 +597,7 @@ Never change module IDs casually.
 
 ## Package Shape Rule
 
-For the v0.4.0.0 canonical user-facing package shape, the `.skill` archive root may contain:
+For the current canonical user-facing package shape, the `.skill` archive root may contain:
 
 ```text
 SKILL.md
@@ -675,5 +691,6 @@ For docs:
 docs/source-vs-runtime-layout.md
 docs/compiled-runtime-tools.md
 docs/routing-parity-fixtures.md
-docs/compiled-runtime-verification.md
+docs/runtime-harness-onboarding.md
+docs/audits/INDEX.md
 ```

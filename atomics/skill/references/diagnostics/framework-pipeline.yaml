@@ -79,7 +79,7 @@ nodes:
       - compose IR from Phase 2 outputs
       - validated IR is runtime compiler state
       - IR before routing
-      - Pipeline #2 derived bridge maps D0 -> PsiN -> IR without hard schema fields
+      - schema-light register bridge maps D0 -> PsiN -> IR without hard schema fields
       - Baseline register formalism is schema-light, not optional or future parity
       - module dispatch blocked until all gate checks pass
     support_claim: runtime_diagnostic_compiler
@@ -583,10 +583,10 @@ concept_ownership:
     label: meta-noetic memetics object-domain
     owner: skill/references/diagnostics/diagnostic-ir.md
     support_claim: meta_noetic_object_domain
-  - id: pipeline2_derived_bridge
-    label: Pipeline #2 derived register bridge
+  - id: register_formalism_bridge
+    label: schema-light register bridge derived register bridge
     owner: skill/references/diagnostics/diagnostic-ir.md
-    support_claim: pipeline2_derived_bridge
+    support_claim: register_formalism_bridge
   - id: runtime_diagnostic_compiler
     label: runtime diagnostic compiler contract
     owner: skill/references/diagnostics/diagnostic-ir.md
@@ -664,11 +664,11 @@ support_claims:
           - "TTP entry criteria"
           - "TTP exit criteria"
 
-  pipeline2_derived_bridge:
+  register_formalism_bridge:
     owners:
       - source: skill/references/diagnostics/diagnostic-ir.md
         tokens:
-          - "Pipeline #2 bridge status"
+          - "register-formalism bridge status"
           - "D0 -> PsiN<N,m,tau,sigma,H>"
           - "derived/conditional runtime bridge"
           - "mandatory JSON/schema fields"
@@ -777,7 +777,7 @@ support_claims:
     owners:
       - source: skill/references/rubrics/diagnostic-render-contract.md
         tokens:
-          - "Required compact DSL/IR header for default"
+          - "mandatory noetic-field execution banner, compact DSL/IR header"
           - "Layer A"
           - "Layer B"
           - "state re-read"

@@ -9,10 +9,10 @@ canonical_runtime_owner: atomics/skill/references/diagnostics/diagnostic-ir.md
 # Algebraic Notation and Noetic Formalism
 
 This theory/specification surface preserves the algebraic formalism recovered from
-`docs/index.html` and states what is now canonical. Pipeline #2 is implemented in this repo as
+`docs/index.html` and states what is now canonical. The schema-light register bridge is implemented in this repo as
 baseline register formalism with register-derived control over the compact runtime. In the narrow
 schema-boundary sense, it remains a derived/conditional bridge: atomics and generated runtime
-define the bridge, and `tests/pipeline2-bridge-fixtures/` plus `tools/check_pipeline2_bridge.py`
+define the bridge, and `tests/register-formalism-bridge-fixtures/` plus `tools/check_register_formalism_bridge.py`
 prove the register terms map to existing owner, hold/release, burden-selection, reread, PARTIAL,
 terminal, Shannon-boundary, and anti-symbol-theater controls. Schema-light means baseline
 control without mandatory register fields; it does not mean optional theory, future parity, or
@@ -25,7 +25,7 @@ Current compact runtime spine:
 Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
-Pipeline #2 baseline register formalism:
+schema-light register bridge baseline:
 
 ```text
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
@@ -117,6 +117,27 @@ If a symbol does not change those controls, it belongs in this spec or an audit 
 not in default runtime output. The default user-facing render remains compact and does not print
 raw `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` unless the user asks for formalism or `:dsl` / audit visibility.
 
+## Divergence / Curl Diagnostic Boundary
+
+`Delta-nB` is the burden-event delta: the local landed state change after a bounded owner/TTP
+operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Delta)` before
+STOP/HOLD/PARTIAL/RECURSE. These are the operative control terms.
+
+The divergence diagnostic (`∇·`) and curl diagnostic (`∇×`) are audit/formalism visibility over
+the dependency/register field produced by those deltas; they are not replacements for `Delta-nB`
+or `Delta-kappa`, and they are not default runtime notation. Divergence asks whether a landed
+burden expands, contracts, or leaves unchanged the live dependency/register pressure. Curl asks
+whether warrant, ontology, discourse, affect, or memetic-carrier dependencies circulate back into
+one another as a loop that must be broken or marked PARTIAL/RECURSE.
+
+The diagnostic is valid only when it changes release, hold, burden selection, collapse-radius
+reread, closure state, or checker outcome. It is symbol theater if it merely decorates an audit.
+For field-language precision, the dependency pressure is read as vector-like: the delta terms are
+event-local changes, while divergence/curl describe whole-field expansion/contraction and
+circulation. Shannon language remains bounded to signal, encoding, channel constraint,
+noise/distortion, redundancy/error correction, and capacity/compression-loss analogies; it never
+measures truth, meaning, warrant, revelation, fitrah, or sound reason.
+
 ## Correct Use
 
 - Use `ξ` only when warrant, testimony, proof-method, authority, evidence, proper function, or
@@ -190,7 +211,7 @@ right warrant/order. It is not an ontology of truth.
 Current checks must prove both sides of the bridge:
 
 - v0.3.2.0 compact runtime behavior still passes;
-- the accepted Pipeline #2 symbols live in atomics/spec/index, not only `docs/index.html`;
+- the accepted register-formalism symbols live in atomics/spec/index, not only `docs/index.html`;
 - hard register fields are not silently added to Diagnostic IR schema;
 - notation is forbidden when it does not change owner selection, hold/release, burden delta,
   reread, or restoration;
@@ -204,6 +225,6 @@ marker migration, and release review.
 
 Canonical runtime rules are authored in `atomics/skill/**` and compiled into generated `skill/**`.
 This document preserves the algebra and maps it to the current derived bridge. The full item
-ledger lives in [`pipeline2-implementation-ledger.md`](pipeline2-implementation-ledger.md).
+ledger lives in [`register-formalism-implementation-ledger.md`](register-formalism-implementation-ledger.md).
 `docs/index.html` is a rich navigation/control-wiki surface; it is not the sole source of
 runtime or theory invariants.

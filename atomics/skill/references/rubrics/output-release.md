@@ -68,7 +68,7 @@ permitted `B` remains live. STOP is invalid unless the post-render gate has run;
 distortion or newly eligible held route remains, choose RECURSE, HOLD, or PARTIAL as governed.
 No premature STOP: do not close while an eligible live burden remains.
 
-> Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
+> Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory noetic-field execution banner, compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
 
 **Same-response RECURSE trigger checklist:**
 After every bounded move, `Land(B) -> R` decides whether recursion is active now:
@@ -86,6 +86,23 @@ category, modality, or dependence release; `μ` may affect carrier/stabilizer ha
 `Δκ` may affect downstream reread. If none of these changes the governed burden, owner, held
 material, `Land(B)`, or `R(H,Delta)`, do not print the symbol. `κ` is not a TODO list, and
 `ΔⁿB` is not a shortcut to a new burden-cycle.
+
+General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
+replies, begins with the noetic-field execution banner as first visible content. Do not put
+prose, headings, apologies, Markdown fences, or clarifying questions before it, and do not wrap
+the banner in a code block. If a source-authentication case is missing the actual
+report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, source request `IMPLICIT`,
+authority frame `LIVE`, state `PARTIAL`, then ask for the missing material. For any input `D0`,
+`R(H,Delta)` must inspect selected/held noetic frames, live heart, xi, Omega, sigma, mu, kappa,
+and held-burden dependencies before final restoration. It may not STOP or mark COMPLETE while downstream dependencies remain.
+Render, clear, hold with reason, or mark PARTIAL/RECURSE.
+
+If the answer closes a multi-burden, register-active, named-worldview, source-authentication,
+mixed noetic-field, or authority-frame case, the closure audit must visibly account for
+candidate/held `N` frames, selected primary `N`, live registers, active or cleared owner/TTP
+child modes, `Delta-nB`, `Delta-kappa`, and remaining kappa / H status. Case-shaped
+dependencies appear only where live. If that accounting cannot be rendered, mark PARTIAL or
+RECURSE instead of COMPLETE.
 
 Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named in formalism,
 `:dsl`, or audit surfaces only after the burden-state delta has landed and reread has decided
