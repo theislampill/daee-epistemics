@@ -23,9 +23,10 @@ overgrowth and Layer B flattening.
 
 Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
 banner before Layer A. The short invariant is: all inputs are noetic fields; prompt brevity never
-licenses shallow execution; source request is not authority frame; and closure must match banner
-state. Banner shape, exact vocabulary, first-visible/no-code-fence rule, and missing-material
-source-authentication behavior are owned by `references/rubrics/diagnostic-render-contract.md`.
+licenses shallow execution; user task, external source request, and authority frame are distinct;
+and closure must match banner state. Banner shape, exact vocabulary, first-visible/no-code-fence
+rule, and missing-material source-authentication behavior are owned by
+`references/rubrics/diagnostic-render-contract.md`.
 `RECURSE` / `PARTIAL` / `COMPLETE` release semantics are owned by
 `references/rubrics/output-release.md`. `Land(B) -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
 `kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
@@ -76,9 +77,11 @@ umbrella burden. Noetic-structure density is not prompt length: short named or i
 worldview, ideology, authority-order, epistemic-regime, religious-objection, or
 civilization-level-criterion inputs can instantiate dense noetic fields. Do not assume selected
 `N` is known at design time; scan and hold candidate frames, activate live registers, and let
-`R(H,Delta)` decide release, HOLD, PARTIAL, or closure. The detailed generalized noetic-selection
-and register-control rule lives in `recursive-state-transitions.md`; banner/render visibility
-lives in `diagnostic-render-contract.md`.
+`R(H,Delta)` decide release, HOLD, PARTIAL, or closure. The selected path is the release order
+over the field, not the whole field itself; alternate valid structures and residual pressures
+must be integrated, discharged, held with reason, or carried forward. The detailed generalized
+noetic-selection and register-control rule lives in `recursive-state-transitions.md`;
+banner/render visibility lives in `diagnostic-render-contract.md`.
 
 Distinct functions may consolidate only when they share function, source-frame, and claim-cluster;
 topic availability alone does not create a burden, and umbrella labels do not collapse distinct

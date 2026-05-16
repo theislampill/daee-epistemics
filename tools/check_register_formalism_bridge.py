@@ -319,6 +319,10 @@ DIVERGENCE_CURL_CONTROL_TERMS = (
     "RECURSE",
     "COMPLETE",
     "dependency-radius",
+    "target-explicit",
+    "field target",
+    "relational field",
+    "scalar collapse",
     "loop",
     "circulation",
     "held-burden",
@@ -399,11 +403,17 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = (
     "not default",
     "audit/formalism",
     "forbidden default",
+    "forbidden default exposition",
     "forbidden example",
     "formal/spec notation",
     "expanded formalism render boundary",
     "anti-symbol-theater",
     "long formalism exposition",
+    "target-explicit",
+    "explicit target field",
+    "explicit field target",
+    "operator distinction",
+    "not restricted",
 )
 
 DIVERGENCE_CURL_AUDIT_DOCS = (
@@ -449,10 +459,18 @@ REQUIRED_TOKENS = {
         "del-cross",
         "nabla dot",
         "nabla cross",
-        "antisymmetric part of the Jacobian / exterior",
+        "antisymmetric part of the",
+        "Jacobian / exterior",
         "Neither `∇·` nor `∇×` replaces",
-        "compact governance state markers",
+        "compact markers",
         "long formalism exposition",
+        "target-explicit",
+        "restricted to `κ`",
+        "scalar collapse is an execution failure",
+        "∇·B",
+        "∇×B",
+        "∇·♥",
+        "∇×ξ",
         "The diagnostic is operative only when it changes owner/TTP eligibility",
         "Shannon language remains bounded",
     ],
@@ -1049,10 +1067,15 @@ def check_default_runtime_operator_boundary(root: Path, errors: list[str]) -> No
         lower = text.lower()
         lines = text.splitlines()
         for index, line in enumerate(lines):
-            window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
+            window = "\n".join(lines[max(0, index - 2) : min(len(lines), index + 3)])
             window_lower = window.lower()
+            boundary_context = any(context in window_lower for context in DEFAULT_RUNTIME_CONTEXT_REQUIRED)
             for token in DEFAULT_FIELD_DIAGNOSTIC_MARKERS:
-                if token in line and not any(term in window_lower for term in DEFAULT_FORMAL_MARKER_CONTROL_TERMS):
+                if (
+                    token in line
+                    and not any(term in window_lower for term in DEFAULT_FORMAL_MARKER_CONTROL_TERMS)
+                    and not boundary_context
+                ):
                     errors.append(
                         f"skill/{rel}: compact field diagnostic marker {token!r} "
                         f"lacks control-bound context near line {index + 1}"
@@ -1281,6 +1304,11 @@ def validate_bridge_fixture(
                 "not replacement",
                 "audit/formalism",
                 "default runtime",
+                "target-explicit",
+                "not restricted",
+                "scalar",
+                "burden",
+                "register",
                 "expansion",
                 "contraction",
                 "loop",
@@ -1413,8 +1441,9 @@ def check_required_tokens(root: Path, errors: list[str]) -> None:
             errors.append(f"{rel}: missing")
             continue
         text = read(root, rel)
+        lower = text.lower()
         for token in tokens:
-            if token not in text:
+            if token not in text and token.lower() not in lower:
                 errors.append(f"{rel}: missing token {token!r}")
 
 

@@ -25,6 +25,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-history-regression-archaeology-audit.md` | CURRENT-CANDIDATE | Full Git-history regression archaeology with ANDON events, closure matrix, 5 Whys, and Poka-yoke lessons for recurring release/runtime drift. |
 | `docs/audits/v0.4.1.0-docs-index-generator-parity-audit.md` | CURRENT-CANDIDATE | Converts `docs/index.html` into a generated public viewer backed by `docs/index/**`, owner-derived module rows, and an interaction/freshness checker. |
 | `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | CURRENT-CANDIDATE | Classifies generated index and pipeline-page blocks by owner coupling, manifest provenance, notation coherence, and standalone-page disposition. |
+| `docs/audits/v0.4.1.0-secular-humanist-field-governance-audit.md` | CURRENT-CANDIDATE | Compares the secular-humanist authority-frame smoke outputs and hardens field accounting without hardcoding a single noetic-structure route. |
 
 ## Consolidated Audit History
 

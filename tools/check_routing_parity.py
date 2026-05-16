@@ -124,6 +124,59 @@ GOVERNANCE_ALIASES = {
     "register-hold": [
         "register-hold",
     ],
+    "hard-compound field accounting": [
+        "multiple valid noetic-structure selections",
+        "selected execution path",
+        "release order over the live noetic field",
+        "not the whole field itself",
+    ],
+    "scalar-collapse execution failure": [
+        "not be treated as scalar summaries",
+        "relational field states in token/noetic space",
+        "Scalar collapse is an execution failure",
+    ],
+    "target-explicit field diagnostics": [
+        "target-explicit",
+        "∇·",
+        "∇×",
+        "not restricted to",
+    ],
+    "whole-field reread after delta": [
+        "each landed burden",
+        "R(H,Delta)",
+        "reread the entire live field",
+    ],
+    "addressed, integrated, discharged as duplicate/derivative": [
+        "addressed, integrated, discharged as",
+        "duplicate/derivative",
+    ],
+    "explicitly held with reason": [
+        "explicitly held with reason",
+    ],
+    "carried forward into RECURSE": [
+        "carried forward into RECURSE",
+    ],
+    "TTP coverage is eligibility-aware": [
+        "TTP coverage",
+        "eligibility-aware",
+    ],
+    "user task vs external source request": [
+        "user task: REFUTE",
+        "external source request",
+        "NONE EXPLICIT",
+    ],
+    "proof-by-symbol": [
+        "do not prove execution",
+        "symbol",
+    ],
+    "decorative proof": [
+        "decorative proof of execution",
+    ],
+    "as replacements for Delta": [
+        "not transition operators",
+        "do not replace",
+        "Delta",
+    ],
     "no theodicy dump": [
         "no argument, no theodicy",
     ],

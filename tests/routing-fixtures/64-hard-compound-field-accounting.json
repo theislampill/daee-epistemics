@@ -1,0 +1,75 @@
+{
+  "id": "hard-compound-field-accounting",
+  "prompt": "Refute the claim that religious authority has no public standing because modern secular humanism protects religion only when it gives up coercive truth-claims, eschatological threats are inert for outsiders, and political power is what matters.",
+  "case_class": "complex",
+  "notes": "Regression fixture for hard-compound named-worldview / authority-frame cases. It does not require a fixed burden order or deterministic noetic-structure selection. It requires field accounting: valid candidate structures, burdens, submoves, dependencies, registers, routes, and residual pressures must be integrated, discharged, held, or carried into RECURSE/PARTIAL rather than scalar-collapsed.",
+  "expected": {
+    "required_modules": [
+      "diagnostic-ir",
+      "foreign-premise-detection",
+      "recursive-state-transitions"
+    ],
+    "optional_modules": [
+      "noetic-reading-checklist",
+      "routing-precedence",
+      "philosophical-usurpation",
+      "reason-disambiguation",
+      "proof-method-audit",
+      "inference-boundary",
+      "nomenclature-normalization",
+      "diagnostic-render-contract",
+      "output-release"
+    ],
+    "forbidden_matched_modules": [
+      "OMNIBUS-do-families",
+      "OMNIBUS-profiles",
+      "OMNIBUS-tactics",
+      "OMNIBUS-techniques",
+      "OMNIBUS-procedures",
+      "OMNIBUS-specialty-diagnostics"
+    ],
+    "required_governance": [
+      "hard-compound field accounting",
+      "scalar-collapse execution failure",
+      "target-explicit field diagnostics",
+      "whole-field reread after delta",
+      "user task vs external source request",
+      "addressed, integrated, discharged as duplicate/derivative",
+      "explicitly held with reason",
+      "carried forward into RECURSE",
+      "TTP coverage is eligibility-aware",
+      "power-map"
+    ],
+    "prohibition_support_present": [
+      "proof-by-symbol",
+      "decorative proof",
+      "as replacements for Delta"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "expected_bundles": [
+      "references/runtime-foundation.md",
+      "references/runtime-diagnostic-core.md",
+      "references/runtime-phase2-passes.md",
+      "references/runtime-dispatch-gate.md",
+      "references/runtime-output-governance.md",
+      "references/omnibus/OMNIBUS-do-families.md",
+      "references/omnibus/OMNIBUS-specialty-diagnostics.md",
+      "references/omnibus/OMNIBUS-techniques.md"
+    ],
+    "owner_clusters": [
+      "runtime-foundation",
+      "diagnostic-core",
+      "phase2-passes",
+      "dispatch-gate",
+      "output-governance",
+      "specialty-diagnostics",
+      "techniques"
+    ],
+    "max_calls": 20
+  }
+}

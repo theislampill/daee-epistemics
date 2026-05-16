@@ -104,6 +104,16 @@ outcome, classify it as docs-only or ornamental risk.
   `∇·κ: positive/live` or `∇×κ: unresolved loop`, tied to dependency pressure, loop-breaking,
   `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE, or checker outcome. Long formalism exposition remains
   audit/formalism-only and decorative proof-by-symbol is forbidden.
+- Field-accounting discipline: when a case admits multiple valid noetic-structure selections,
+  do not hardcode one route as canonical or collapse the case into a scalar master diagnosis.
+  The selected execution path is the release order over the live field, not the whole field
+  itself. Preserve candidate structures, burdens, submoves, dependencies, registers, routes,
+  and residual pressures until they are used, integrated, discharged as duplicate/derivative,
+  held with reason, or carried into RECURSE/PARTIAL. `R(H,Δ)` rereads the whole live field
+  after burden events. `∇·` / `∇×` are target-explicit field diagnostics over Δ-produced
+  state; they are not κ-only, though κ is the collapse/closure-state target when rendered as
+  `∇·κ` / `∇×κ`. TTP coverage is eligibility-aware: eligible live pressure must be used,
+  integrated, held, or rejected with reason, not sprayed indiscriminately.
 - NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
   interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
   Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /

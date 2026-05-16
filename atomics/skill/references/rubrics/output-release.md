@@ -88,25 +88,63 @@ material, `Land(B)`, or `R(H,Δ)`, do not print the symbol. `κ` is not a TODO l
 `ΔⁿB` is not a shortcut to a new burden-cycle.
 
 Default governed render is not compact in the sense of hiding governance. It must surface the
-burden-cycle, operative submove, `Δκ`, `∇·` / `∇×` state, `R(H,Δ)`, and PARTIAL / RECURSE /
-COMPLETE decision when those markers are control-relevant. Use `R(H,Δ)` as the formal notation
-and `R(H,Delta)` only as the ASCII fallback. The expanded formal reread is
-`R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
+burden-cycle, operative submove, `Δκ`, target-explicit `∇·` / `∇×` field diagnostics,
+`R(H,Δ)`, and PARTIAL / RECURSE / COMPLETE decision when those markers are control-relevant.
+Use `R(H,Δ)` as the formal notation and `R(H,Delta)` only as the ASCII fallback. The expanded
+formal reread is `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
 `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. `∇·` and `∇×` remain forbidden as
-decorative proof of execution: they must be tied to `κ/H`, dependency pressure, loop-breaking,
-`R(H,Δ)`, PARTIAL, RECURSE, COMPLETE, or checker outcome. Allowed default: `State: Δκ live;
-∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.` Forbidden default: `The antisymmetric
-Jacobian of the noetic field shows...`
+decorative proof of execution: they must have an explicit field target and be tied to the
+noetic/burden/dependency/register/route field, `κ/H`, dependency pressure, loop-breaking,
+`R(H,Δ)`, PARTIAL, RECURSE, COMPLETE, or checker outcome. They may render as `∇·κ` / `∇×κ`
+when `κ` is the diagnostic target, but they are not restricted to `κ`. Allowed default:
+`State: Δκ live; ∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.` `Burden field: ΔⁿB landed;
+∇·B positive over B3/B4; ∇×B unresolved around compact-neutrality dependency.` `Register
+field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.` Forbidden default: `The antisymmetric
+Jacobian of the noetic field shows...`; `The ∇× symbol proves the TTP executed.`
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. Do not put
 prose, headings, apologies, Markdown fences, or clarifying questions before it, and do not wrap
 the banner in a code block. If a source-authentication case is missing the actual
-report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, source request `IMPLICIT`,
-authority frame `LIVE`, state `PARTIAL`, then ask for the missing material. For any input `D0`,
-`R(H,Delta)` must inspect selected/held noetic frames, live heart, xi, Omega, sigma, mu, kappa,
-and held-burden dependencies before final restoration. It may not STOP or mark COMPLETE while downstream dependencies remain.
-Render, clear, hold with reason, or mark PARTIAL/RECURSE.
+report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, `user task:
+SOURCE-AUTHENTICATION`, `external source request: IMPLICIT`, authority frame `LIVE`, state
+`PARTIAL`, then ask for the missing material. For `/daee-epistemics refute:` or similar task
+verbs, mark the user task explicitly (for example `REFUTE`) even when `external source request`
+is `NONE EXPLICIT`.
+
+Noetic structures, burdens, submoves, dependencies, registers, routes, and closure pressures
+must not be treated as scalar summaries. They are relational field states in token/noetic space:
+they can carry directed dependency, residual outward pressure, circularity, overlap, conflict,
+and unresolved route pressure. For that reason, `Δ` and `∇·` / `∇×` notation is not
+ornamental. `Δ` marks event-local transition over a burden or field state. `∇·` reads
+divergence-like residual outward pressure in an explicit target field. `∇×` reads
+curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target
+field. These operators do not apply to a scalarized master diagnosis. They apply only after the
+runtime has preserved a live noetic/burden/dependency/register/route/collapse field with explicit
+target and control effect. `κ` is the collapse/closure-state target when rendered as `∇·κ` or
+`∇×κ`, but the operators are not restricted to `κ`. Scalar collapse is an execution failure
+because divergence and curl are field diagnostics, and fields are lost when the noetic structure
+is reduced to a one-point summary.
+
+When a hard case admits multiple valid noetic-structure selections, the selected execution path
+is the release order over the live noetic field, not the whole field itself. The runtime must
+construct and govern a burden/dependency/register/route field containing valid candidate
+structures, burdens, submoves, overlaps, dependencies, conflicts, and residual pressures. After
+each landed burden, `R(H,Delta)` must reread the entire live field, not only the last selected
+route. Remaining first-order and higher-order operations, alternate valid structures, hidden
+dependencies, circularities, and residual pressures must be addressed, integrated, discharged as
+duplicate/derivative, explicitly held with reason, or carried forward into RECURSE. TTP coverage
+is eligibility-aware: check live pressure against available owner/TTP space, but do not force
+every TTP onto every burden regardless of fit.
+The final restorative response must preserve the master deformation discovered during execution.
+If the governed read discovers that an input is functioning as a power-map rather than a truth
+rebuttal, closing prose must not drop that diagnosis merely because another valid route was
+selected first.
+
+For any input `D0`, `R(H,Delta)` must inspect selected/held noetic frames, live heart, xi,
+Omega, sigma, mu, kappa, held-burden dependencies, and residual field pressure before final
+restoration. It may not STOP or mark COMPLETE while downstream dependencies remain. Render,
+clear, integrate, discharge as duplicate/derivative, hold with reason, or mark PARTIAL/RECURSE.
 
 If the answer closes a multi-burden, register-active, named-worldview, source-authentication,
 mixed noetic-field, or authority-frame case, the closure audit must visibly account for
@@ -535,8 +573,8 @@ Default final-output failure tokens include:
 - Literal default governance fields such as `Recursion decision:`, `next_eligible_pass:`,
   `post_render_gate:`, or `Governance:`. Raw field labels are for `:dsl`, internal/development
   audit, pass-review, or diagnostic trace. Default mode uses prose transition plus bounded next
-  pass, and may use compact control-bound markers such as `R(H,Δ): RECURSE`, `Δκ live`,
-  `∇·κ positive/live`, or `∇×κ unresolved`.
+  pass, and may use compact target-explicit control-bound markers such as `R(H,Δ): RECURSE`,
+  `Δκ live`, `∇·κ positive/live`, `∇×κ unresolved`, `∇·B positive`, or `∇×ξ unresolved`.
 - Smoke/runtime proof boilerplate such as "Smoke runtime note", "Runtime grounding detail",
   "Skill invocation proof", "loaded before output", or "proof of loaded files" in the
   public default output. Runtime proof belongs in trace/verdict artifacts, not Layer B.

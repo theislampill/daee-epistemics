@@ -151,10 +151,14 @@ Land(ⁿB) -> R(H,ΔⁿB{heart,xi,Omega,sigma,mu},Δkappa)
 This gate is mandatory whenever a live burden lands. It does not assume the selected N frame
 is known at design time: the runtime must scan the noetic-structure selection space, select or
 hold candidate/held N frames, activate live registers, and let `R` decide STOP, HOLD, PARTIAL,
-RECURSE, or NewB from the refreshed state. The formalism is valid only when it changes control:
-owner eligibility, held material, hold/release posture, burden selection, collapse radius,
-reread, or closure state.
-
+RECURSE, or NewB from the refreshed state. The selected execution path is the release order
+over the live field, not the whole field itself. If several noetic-structure selections are
+valid, `R` rereads the whole burden/dependency/register/route field after each `ΔⁿB` / `Δκ`,
+so alternate valid structures, hidden dependencies, circularities, unresolved pressures, and
+residual candidate routes are addressed, integrated, discharged as duplicate/derivative,
+explicitly held with reason, or carried forward into RECURSE. The formalism is valid only when
+it changes control: owner eligibility, held material, hold/release posture, burden selection,
+collapse radius, reread, or closure state.
 If `xi` (warrant / authority / proof-status), `Omega` (ontology / predication / dependence),
 `sigma` (discourse / pattern state), `mu` (carrier or reproduction vector), `kappa`
 (downstream dependency set), or `H` (held burdens) remain live after `Land(B)`, `R` must force
@@ -163,6 +167,20 @@ downstream dependencies remain. Concrete dependencies are case-shaped: source-au
 may expose transmission/testimony routes; moral protest may expose predicate/tribunal routes;
 named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
 routes. These are control checks, not topical argument-bank entries.
+
+Noetic structures, burdens, submoves, dependencies, registers, routes, and closure pressures are
+not scalar objects. They are relational field states in token/noetic space: directed dependency,
+residual outward pressure, circularity, overlap, conflict, and unresolved route pressure can all
+remain after a local burden lands. `Δ` operators compute event-local transition over the current
+burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `∇·` reads
+divergence-like residual outward pressure in an explicit target field. `∇×` reads curl-like
+circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.
+The target may be `κ` (`∇·κ`, `∇×κ`) or another owner-defined noetic, burden,
+dependency, register, or route target (`∇·B`, `∇×B`, `∇·♥`, `∇×ξ`) when the target
+and control effect are clear. These diagnostics do not apply to scalarized one-point summaries,
+are not transition operators, do not replace `ΔⁿB` or `Δκ`, and do not prove execution by
+symbol. Closure is licensed only when residual divergence/curl pressure is cleared, integrated,
+discharged, held with reason, or carried into RECURSE/PARTIAL.
 
 A COMPLETE closure in any multi-burden or register-active case must visibly account for
 selected and held `N` frames, live registers, active or cleared owner/TTP child modes,

@@ -16,6 +16,14 @@ FIELD_VALUES = {
     "MIXED NOETIC FIELD",
 }
 SOURCE_VALUES = {"NONE EXPLICIT", "IMPLICIT", "EXPLICIT"}
+USER_TASK_VALUES = {
+    "RESPOND",
+    "REFUTE",
+    "DIAGNOSE",
+    "EXPLAIN",
+    "SOURCE-AUTHENTICATION",
+    "OTHER",
+}
 AUTHORITY_VALUES = {"NONE DETECTED", "LIVE"}
 STATE_VALUES = {"RECURSE", "PARTIAL", "COMPLETE"}
 
@@ -72,17 +80,24 @@ def extract_banner(text: str) -> tuple[dict[str, str], list[str]]:
         errors.append("output does not begin with banner box")
 
     fields: dict[str, str] = {}
-    for raw_line in stripped.splitlines()[:12]:
+    for raw_line in stripped.splitlines()[:16]:
         normalized = _clean_banner_line(raw_line)
-        match = re.match(r"^(field|source request|authority frame|state):\s*(.*?)\s*$", normalized, re.I)
+        match = re.match(
+            r"^(field|user task|external source request|source request|authority frame|state):\s*(.*?)\s*$",
+            normalized,
+            re.I,
+        )
         if match:
             key = match.group(1).lower()
+            if key == "source request":
+                key = "external source request"
             value = match.group(2).strip().strip("<>").strip()
             fields[key] = value
 
     expected = {
         "field": FIELD_VALUES,
-        "source request": SOURCE_VALUES,
+        "user task": USER_TASK_VALUES,
+        "external source request": SOURCE_VALUES,
         "authority frame": AUTHORITY_VALUES,
         "state": STATE_VALUES,
     }
@@ -138,6 +153,7 @@ def _closure_errors(text: str, fields: dict[str, str]) -> list[str]:
 def _expectation_errors(
     fields: dict[str, str],
     expected_fields: set[str] | None,
+    expected_user_tasks: set[str] | None,
     expected_source: set[str] | None,
     expected_authority: set[str] | None,
     allowed_states: set[str] | None,
@@ -145,7 +161,8 @@ def _expectation_errors(
     errors: list[str] = []
     checks = (
         ("field", expected_fields),
-        ("source request", expected_source),
+        ("user task", expected_user_tasks),
+        ("external source request", expected_source),
         ("authority frame", expected_authority),
         ("state", allowed_states),
     )
@@ -235,6 +252,7 @@ def _audit_errors(path: Path, require_named_movement_overfit: bool = False) -> l
 def check_output_path(
     path: Path,
     expected_fields: set[str] | None,
+    expected_user_tasks: set[str] | None,
     expected_source: set[str] | None,
     expected_authority: set[str] | None,
     allowed_states: set[str] | None,
@@ -243,7 +261,16 @@ def check_output_path(
     fields, errors = extract_banner(text)
     if not errors:
         errors.extend(_closure_errors(text, fields))
-        errors.extend(_expectation_errors(fields, expected_fields, expected_source, expected_authority, allowed_states))
+        errors.extend(
+            _expectation_errors(
+                fields,
+                expected_fields,
+                expected_user_tasks,
+                expected_source,
+                expected_authority,
+                allowed_states,
+            )
+        )
     return errors
 
 
@@ -256,6 +283,7 @@ def main() -> int:
     parser.add_argument("paths", nargs="*", type=Path)
     parser.add_argument("--audit", type=Path, action="append", default=[])
     parser.add_argument("--expect-field", choices=sorted(FIELD_VALUES), action="append")
+    parser.add_argument("--expect-user-task", choices=sorted(USER_TASK_VALUES), action="append")
     parser.add_argument("--expect-source-request", choices=sorted(SOURCE_VALUES), action="append")
     parser.add_argument("--expect-authority-frame", choices=sorted(AUTHORITY_VALUES), action="append")
     parser.add_argument("--allowed-state", choices=sorted(STATE_VALUES), action="append")
@@ -273,6 +301,7 @@ def main() -> int:
         errors = check_output_path(
             path,
             _parse_set(args.expect_field),
+            _parse_set(args.expect_user_task),
             _parse_set(args.expect_source_request),
             _parse_set(args.expect_authority_frame),
             _parse_set(args.allowed_state),

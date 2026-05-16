@@ -124,26 +124,34 @@ operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Δ)` be
 STOP/HOLD/PARTIAL/RECURSE. These are event-local transition operators.
 
 The field-level operators are different. `∇·` (del-dot, del dot, nabla dot, divergence)
-reads the burden/dependency/register field after one or more delta events and asks whether
-pressure is expanding, contracting, or neutral across the field. Positive divergence means the
-landed burden exposes more live dependency/register pressure; negative divergence means
+reads the noetic/burden/dependency/register/route field after one or more delta events and asks
+whether pressure is expanding, contracting, or neutral across the selected field target. Positive
+divergence means the landed burden exposes more live pressure; negative divergence means
 dependency pressure contracts toward closure; zero divergence means no meaningful control change.
-If `∇·kappa` remains positive/live, STOP/COMPLETE is not licensed.
+If `∇·κ` remains positive/live, STOP/COMPLETE is not licensed. `κ` is the common
+collapse/closure-state target, but it is not the only valid target and the operators are not
+restricted to `κ`: a burden, dependency, route, register, or noetic-field target may be read when
+the target is explicit and owner-defined.
 
 `∇×` (del-cross, del cross, nabla cross, curl) reads circulation in that same field after delta
 events. It asks whether warrant, ontology, discourse state, affective posture, memetic carrier,
-and dependency radius loop back into one another. Standard curl is a 3D construction, but the
-high-dimensional analogue used here is the antisymmetric part of the Jacobian / exterior
-derivative: a noetic-state field over `N_space` can have circular dependency pressure without
-being a 3D physical field. If nonzero curl remains live, the output must break the loop or mark
-PARTIAL/RECURSE; answering one local proposition does not discharge a curl-like dependency loop.
+dependency radius, burden order, or route relation loop back into one another. Standard curl is
+a 3D construction, but the high-dimensional analogue used here is the antisymmetric part of the
+Jacobian / exterior derivative: a noetic-state field over `N_space` can have circular dependency
+pressure without being a 3D physical field. If nonzero curl remains live, the output must break
+the loop or mark PARTIAL/RECURSE; answering one local proposition does not discharge a curl-like
+dependency loop.
 
 Neither `∇·` nor `∇×` replaces `Delta-nB` or `Delta-kappa`. Delta operators are computed at burden
-events; divergence/curl read the field those deltas have produced across the burden/dependency
-space. Default governed output must use `∇·κ` or `∇×κ` when the field diagnostic is
-control-relevant, but only as compact governance state markers tied to dependency pressure,
-loop-breaking, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE, or checker outcome.
-long formalism exposition and alias-heavy operator explanation remain audit/formalism visibility.
+events. Divergence/curl read the field that delta events have produced across the whole
+noetic/burden/dependency/register/route space. These operators do not apply to a scalarized
+one-point master diagnosis; they apply only after the runtime preserves a live field with an
+explicit target and control effect. Scalar collapse is an execution failure because the field is
+lost when noetic structure is reduced to a one-point summary. Default governed output must use
+target-explicit compact markers such as `∇·κ`, `∇×κ`, `∇·B`, `∇×B`, `∇·♥`, or `∇×ξ` when the field
+diagnostic is control-relevant; it must not dump long formalism exposition unless the user
+requested formalism/audit visibility. Control effects include dependency pressure,
+loop-breaking, `R(H,Δ)`, HOLD/PARTIAL/RECURSE/COMPLETE, or checker outcome.
 
 The diagnostic is operative only when it changes owner/TTP eligibility, held material,
 hold/release posture, burden selection, dependency radius, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE,
@@ -156,10 +164,12 @@ measures truth, meaning, warrant, revelation, fitrah, or sound reason.
 
 Allowed forms: `∇·`, `∇×`, `del-dot`, `del dot`, `del-cross`, `del cross`, `nabla dot`,
 `nabla cross`, `divergence`, and `curl`. In default runtime output, compact Unicode markers
-must appear when control-relevant in state notation such as `State: Δκ live; ∇·κ positive;
-∇×κ unresolved; R(H,Δ): RECURSE.` ASCII aliases and long explanations are not default notation
-unless the user asks for algebra/formalism/audit visibility. In audit/formalism surfaces, all
-forms are allowed only with the operator distinction and control-effect rule above.
+must appear when control-relevant in target-explicit state notation such as `State: Δκ live;
+∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.`, `Burden field: ΔⁿB landed; ∇·B positive over
+B3/B4; ∇×B unresolved around compact-neutrality dependency.`, or `Register field: ∇·♥
+positive; ∇×ξ unresolved; R(H,Δ): HOLD.` ASCII aliases and long explanations are not default
+notation unless the user asks for algebra/formalism/audit visibility. In audit/formalism
+surfaces, all forms are allowed only with the operator distinction and control-effect rule above.
 
 ## Correct Use
 

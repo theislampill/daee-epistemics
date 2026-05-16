@@ -137,31 +137,35 @@ or invent a local synonym:
 ╔══════════════════════════════════════════════════════╗
 ║ daee-epistemics — NOETIC FIELD EXECUTION             ║
 ║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-║ source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
 ║ authority frame: <NONE DETECTED | LIVE>
 ║ state: <RECURSE | PARTIAL | COMPLETE>
 ╚══════════════════════════════════════════════════════╝
 ```
 
 Use only these banner values. All inputs are noetic fields; prompt brevity does not imply
-simple execution. `source request` tracks explicit or implicit demand for citations, textual
-proof, isnad/authentication, or external grounding; do not mark it `IMPLICIT` merely because a
-worldview or authority frame is live. If more than one field type is active, choose `MIXED
-NOETIC FIELD` as the single field value. `authority frame` is LIVE when the input contains or
-implies a criterion for authority, proof, legitimacy, moral standing, public admissibility,
-governance, coercion, or epistemic right. Do not use SIMPLE, COMPACT, CANONICAL, HARD, or
-SOURCE-ORDER as banner categories or depth licenses. `state` is the opening governance state,
-not a prediction that the answer may finish later: RECURSE means live burdens remain and the
-output must continue; PARTIAL means the output is stopping while live burdens remain unresolved,
-compressed, or unrendered; COMPLETE is allowed at the opening banner only for a bounded case
-whose live burden set is already dischargeable in one current pass. Named-worldview, mixed
-noetic field, source-authentication, or authority-frame cases with live kappa / held
-dependencies normally begin with RECURSE. Closure audit must match the banner state.
+simple execution. `user task` tracks the requested operation; `/daee-epistemics refute:` renders
+`user task: REFUTE` even when no source/citation request is present. `external source request`
+tracks explicit or implicit demand for citations, textual proof, isnad/authentication, or
+external grounding; do not mark it `IMPLICIT` merely because a worldview or authority frame is
+live. If more than one field type is active, choose `MIXED NOETIC FIELD` as the single field
+value. `authority frame` is LIVE when the input contains or implies a criterion for authority,
+proof, legitimacy, moral standing, public admissibility, governance, coercion, or epistemic
+right. Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or
+depth licenses. `state` is the opening governance state, not a prediction that the answer may
+finish later: RECURSE means live burdens remain and the output must continue; PARTIAL means the
+output is stopping while live burdens remain unresolved, compressed, or unrendered; COMPLETE is
+allowed at the opening banner only for a bounded case whose live burden set is already
+dischargeable in one current pass. Named-worldview, mixed noetic field, source-authentication,
+or authority-frame cases with live kappa / held dependencies normally begin with RECURSE.
+Closure audit must match the banner state.
 
 If the user asks whether a report, text, narration, citation, attribution, or transmission claim
 is reliable but supplies no actual text/reference, classify the field as SOURCE-AUTHENTICATION,
-source request as IMPLICIT, authority frame as LIVE, and state as PARTIAL; then ask for the
-missing material after the banner. Missing material is not a license to omit the banner.
+`user task: SOURCE-AUTHENTICATION`, `external source request: IMPLICIT`, authority frame as
+LIVE, and state as PARTIAL; then ask for the missing material after the banner. Missing material
+is not a license to omit the banner.
 
 Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,

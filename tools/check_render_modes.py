@@ -69,15 +69,23 @@ REQUIRED_TOKENS = [
     "Markdown fences",
     "Clarifying or missing-input replies are still runtime outputs",
     "field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>",
-    "source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>",
+    "user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>",
+    "external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>",
     "authority frame: <NONE DETECTED | LIVE>",
     "state: <RECURSE | PARTIAL | COMPLETE>",
     "Print exactly one value for each field",
     "never print the choice list",
     "combine values with `|`",
+    "`user task: REFUTE`",
+    "`external source request: NONE EXPLICIT`",
     "do not mark it `IMPLICIT` merely because a",
     "worldview or authority frame is live",
     "supplies no actual text/reference",
+    "relational field states",
+    "scalar summaries",
+    "Scalar collapse is an execution failure",
+    "target-explicit",
+    "not restricted to `κ`",
     "General noetic-selection / register-control reread gate",
     "do not assume the selected N frame is known at design time",
     "candidate/held N frames",
@@ -86,7 +94,8 @@ REQUIRED_TOKENS = [
     "It may not STOP or mark COMPLETE while downstream dependencies remain",
     "Prompt brevity does not imply simple execution",
     "Do not use SIMPLE, COMPACT",
-    "banner categories or depth licenses",
+    "banner categories or",
+    "depth licenses",
     "Closure audit must match the",
     "banner state",
     "`matched_modules` and route plans remain internal",
@@ -591,6 +600,12 @@ DEFAULT_FORMAL_MARKER_CONTROL_TERMS = [
     "control",
     "land(b)",
     "burden",
+    "field target",
+    "target-explicit",
+    "register",
+    "route",
+    "relational field",
+    "scalar",
     "governance",
 ]
 
@@ -617,6 +632,15 @@ DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN = [
     "curl measures warrant",
     "nabla measures truth",
     "nabla measures warrant",
+    "nabla replaces delta",
+    "divergence replaces delta",
+    "curl replaces delta",
+    "∇ replaces Δ",
+    "∇x symbol proves",
+    "∇× symbol proves",
+    "∇ applies to scalar",
+    "∇· applies to scalar",
+    "∇× applies to scalar",
 ]
 
 DEFAULT_RUNTIME_NLA_FORBIDDEN = [
@@ -645,6 +669,23 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = [
     "anti-symbol-theater",
     "long formalism exposition",
 ]
+
+FORMAL_MARKER_POSITIVE_SAMPLES = {
+    "closure_kappa_target": "State: Δκ live; ∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.",
+    "burden_target": (
+        "Burden field: ΔⁿB landed; ∇·B positive over B3/B4; "
+        "∇×B unresolved around compact-neutrality dependency."
+    ),
+    "register_target": "Register field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.",
+}
+
+FORMAL_MARKER_BAD_SAMPLES = {
+    "untargeted_marker": ("State: ∇× unresolved; COMPLETE.", "without explicit target"),
+    "proof_by_symbol": ("The ∇× symbol proves the TTP executed.", "forbidden formalism claim"),
+    "delta_replacement": ("Curl replaces Delta here; ∇ replaces Δ as the transition operator.", "forbidden formalism claim"),
+    "scalar_target": ("∇· applies to scalar master diagnosis; COMPLETE.", "forbidden formalism claim"),
+    "long_exposition": ("The antisymmetric Jacobian of the noetic field shows a loop.", "formalism exposition"),
+}
 
 FIXTURE_FORBIDDEN_TOKENS = [
     "FPD/M1 landed",
@@ -2179,13 +2220,42 @@ def _has_any_context(text: str, contexts: list[str]) -> bool:
     return any(context.lower() in lower for context in contexts)
 
 
+TARGET_EXPLICIT_FIELD_DIAGNOSTIC_RE = re.compile(
+    r"∇[·×](?:κ|kappa|B|burden|H|heart|♥|xi|ξ|Omega|Ω|sigma|σ|mu|μ|N|route|register)",
+    re.I,
+)
+
+
 def check_default_formal_marker_policy(corpus: str, errors: list[str], label: str = "default runtime surface") -> None:
     """Allow compact control-bound state markers; reject exposition-as-governance."""
     lines = corpus.splitlines()
     for index, line in enumerate(lines):
-        window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
+        window = "\n".join(lines[max(0, index - 2) : min(len(lines), index + 3)])
+        boundary_context = _has_any_context(window, DEFAULT_RUNTIME_CONTEXT_REQUIRED) or _has_any_context(
+            window,
+            [
+                "target-explicit",
+                "explicit field target",
+                "explicit target field",
+                "operator distinction",
+                "not restricted",
+                "not replacements",
+                "read the `δ`-produced field state",
+                "read the `Δ`-produced field state",
+                "diagnostic marker",
+                "forbidden default",
+                "forbidden default exposition",
+                "forbidden example",
+                "anti-symbol-theater",
+            ],
+        )
         for marker in DEFAULT_FIELD_DIAGNOSTIC_MARKERS:
-            if marker in line and not _has_any_context(window, DEFAULT_FORMAL_MARKER_CONTROL_TERMS):
+            if marker in line and not TARGET_EXPLICIT_FIELD_DIAGNOSTIC_RE.search(line) and not boundary_context:
+                errors.append(
+                    f"{label} contains field diagnostic marker without explicit target: "
+                    f"{marker!r} on line {index + 1}"
+                )
+            if marker in line and not _has_any_context(window, DEFAULT_FORMAL_MARKER_CONTROL_TERMS) and not boundary_context:
                 errors.append(
                     f"{label} contains field diagnostic marker without compact control context: "
                     f"{marker!r} on line {index + 1}"
@@ -2197,6 +2267,28 @@ def check_default_formal_marker_policy(corpus: str, errors: list[str], label: st
                     f"{label} contains default-forbidden formalism exposition without "
                     f"an explicit boundary/example context: {term!r} on line {index + 1}"
                 )
+        for term in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
+            if term.lower() in lower_line and not _has_any_context(window, DEFAULT_RUNTIME_CONTEXT_REQUIRED):
+                errors.append(
+                    f"{label} contains forbidden formalism claim without explicit boundary/example context: "
+                    f"{term!r} on line {index + 1}"
+                )
+
+
+def check_formal_marker_policy_samples(errors: list[str]) -> None:
+    for name, sample in FORMAL_MARKER_POSITIVE_SAMPLES.items():
+        sample_errors: list[str] = []
+        check_default_formal_marker_policy(sample, sample_errors, f"formal-marker positive sample {name}")
+        if sample_errors:
+            errors.append(f"formal-marker positive sample rejected: {name}: {sample_errors!r}")
+    for name, (sample, expected_fragment) in FORMAL_MARKER_BAD_SAMPLES.items():
+        sample_errors = []
+        check_default_formal_marker_policy(sample, sample_errors, f"formal-marker bad sample {name}")
+        if not any(expected_fragment.lower() in error.lower() for error in sample_errors):
+            errors.append(
+                "formal-marker bad sample was not rejected: "
+                f"{name} expected {expected_fragment!r}, got {sample_errors!r}"
+            )
 
 
 SUBMOVE_BOUNDARY_EXAMPLE_RE = re.compile(
@@ -2249,6 +2341,7 @@ def main() -> int:
 
     check_current_doc_staleness(root, errors)
     check_render_shape_samples(errors)
+    check_formal_marker_policy_samples(errors)
 
     corpus = read_runtime(root, errors)
     lower = corpus.lower()
@@ -2270,9 +2363,26 @@ def main() -> int:
 
     check_default_formal_marker_policy(corpus, errors)
 
-    for token in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
-        if token.lower() in lower:
-            errors.append(f"default runtime surface contains forbidden NLA/Shannon claim: {token!r}")
+    lines = corpus.splitlines()
+    for index, line in enumerate(lines):
+        window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
+        for token in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
+            if token.lower() in line.lower() and not _has_any_context(
+                window,
+                DEFAULT_RUNTIME_CONTEXT_REQUIRED
+                + [
+                    "forbidden default",
+                    "forbidden default exposition",
+                    "forbidden example",
+                    "anti-symbol-theater",
+                    "not truth",
+                    "not warrant",
+                ],
+            ):
+                errors.append(
+                    "default runtime surface contains forbidden NLA/Shannon/formalism claim "
+                    f"without boundary context: {token!r} on line {index + 1}"
+                )
 
     for token in DEFAULT_RUNTIME_NLA_FORBIDDEN:
         haystack = corpus if token in {"NLA", "FVE"} else lower

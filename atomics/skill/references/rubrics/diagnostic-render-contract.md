@@ -41,22 +41,26 @@ from the same classification state as Layer A:
 
 ```text
 field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
 authority frame: <NONE DETECTED | LIVE>
 state: <RECURSE | PARTIAL | COMPLETE>
 ```
 
 Print exactly one value for each field; never print the choice list or combine values with `|`.
+The banner must distinguish the user's task from an external source request: `/daee-epistemics
+refute:` renders `user task: REFUTE` even when `external source request: NONE EXPLICIT`.
 Default release status is governed, not shallow or governance-hidden. When control-relevant,
-it must include the burden-cycle, operative submove, `Δκ`, `∇·` / `∇×` state, `R(H,Δ)`, and
-PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure. It should still avoid
-long explanatory formalism unless that explanation is needed for the user-requested audit or
-formalism task.
+it must include the burden-cycle, operative submove, `Δκ`, target-explicit `∇·` / `∇×` state,
+`R(H,Δ)`, and PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure. It should
+still avoid long explanatory formalism unless that explanation is needed for the user-requested
+audit or formalism task.
 Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or depth
-licenses. Source request and authority frame are distinct: do not mark source request `IMPLICIT`
-merely because a worldview or authority frame is live. If a source-authentication case supplies
-no actual text/reference, classify source request as `IMPLICIT`, authority frame as `LIVE`, and
-state as `PARTIAL`.
+licenses. External source request and authority frame are distinct: do not mark external source
+request `IMPLICIT` merely because a worldview or authority frame is live. If a
+source-authentication case supplies no actual text/reference, classify external source request as
+`IMPLICIT`, authority frame as `LIVE`, user task as `SOURCE-AUTHENTICATION`, and state as
+`PARTIAL`.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the live noetic
 burden, source/noetic frame, held material, release decision, and current bounded operator. It
@@ -105,15 +109,19 @@ be the primary public notation unless the output is explicitly a checker/dev-har
 Expanded formalism render boundary: full algebraic exposition belongs by default to
 theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
 print short formal governance markers when they are control-relevant to the current execution:
-`ΔⁿB`, `Δκ`, `∇·κ`, `∇×κ`, `R(H,Δ)`, `R(H,Delta)`, PARTIAL, RECURSE, or COMPLETE. Use
-`R(H,Δ)` as the formal notation and `R(H,Delta)` only as the ASCII fallback.
+`ΔⁿB`, `Δκ`, target-explicit `∇·` / `∇×` markers such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
+`R(H,Δ)`, `R(H,Delta)`, PARTIAL, RECURSE, or COMPLETE. Use `R(H,Δ)` as the formal notation
+and `R(H,Delta)` only as the ASCII fallback.
 The expanded formal reread is `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
 `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. Do not print
 `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, do not conflate Delta with del/nabla, and
 do not treat expanded notation as proof that a register or owner has executed.
 
-Allowed default compact marker example: `State: Δκ live; ∇·κ positive; ∇×κ unresolved; PARTIAL.`
-Forbidden default exposition example: `The antisymmetric Jacobian of the noetic field shows...`
+Allowed default compact marker examples: `State: Δκ live; ∇·κ positive; ∇×κ unresolved;
+R(H,Δ): RECURSE.` `Burden field: ΔⁿB landed; ∇·B positive over B3/B4; ∇×B unresolved
+around compact-neutrality dependency.`
+Forbidden default exposition examples: `The antisymmetric Jacobian of the noetic field shows...`;
+`The ∇× symbol proves the TTP executed.`
 
 Anti-symbol-theater rule: visible notation must be backed by a local control effect. If a
 render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `∇·`, `∇×`, `R(H,Δ)`, `𝒞(Ψᴺ)`, or
@@ -1003,7 +1011,7 @@ for expanded diagnostic/IR visibility or default mode for governed response.
 
 **When to surface backbone predicates:** Only when a backbone predicate emission (C, T, O, or K group) materially changed the routing gate or suppression rule in this pass.
 
-**When to suppress raw internal fields:** Default governed response suppresses raw diagnostic machinery, but it must still print the compact DSL/IR header, state/noetic re-read, and control-relevant formal state markers. Literal field labels such as `Recursion decision:`, `next_eligible_pass:`, and `post_render_gate:` belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. Compact markers such as `R(H,Δ): RECURSE`, `Δκ live`, `∇·κ positive/live`, and `∇×κ unresolved` may appear by default only when they govern release, recursion, or closure.
+**When to suppress raw internal fields:** Default governed response suppresses raw diagnostic machinery, but it must still print the compact DSL/IR header, state/noetic re-read, and control-relevant formal state markers. Literal field labels such as `Recursion decision:`, `next_eligible_pass:`, and `post_render_gate:` belong to `:dsl`, internal/development audit, pass-review, or diagnostic trace. Compact target-explicit markers such as `R(H,Δ): RECURSE`, `Δκ live`, `∇·κ positive/live`, `∇×κ unresolved`, `∇·B positive`, or `∇×ξ unresolved` may appear by default only when they govern release, recursion, or closure.
 
 ---
 
