@@ -6,7 +6,11 @@ on:
       version:
         description: "Release-line version for the artifact name, including leading v"
         required: true
-        default: "v0.4.0.0"
+        default: "v0.4.1.0"
+      contract_version:
+        description: "Operative frontmatter contract version to verify"
+        required: true
+        default: "0.4.0.0"
 
 permissions:
   contents: read
@@ -32,8 +36,13 @@ jobs:
             echo "version must look like v0.4.0.0" >&2
             exit 1
           fi
+          CONTRACT_VERSION="${{ inputs.contract_version }}"
+          if [[ ! "$CONTRACT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "contract_version must look like 0.4.0.0" >&2
+            exit 1
+          fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "CONTRACT_VERSION=${VERSION#v}" >> "$GITHUB_ENV"
+          echo "CONTRACT_VERSION=$CONTRACT_VERSION" >> "$GITHUB_ENV"
 
       - name: Build and verify runtime
         run: |
@@ -59,7 +68,7 @@ jobs:
           python tools/check_diagnostic_ir_catalogue_integrity.py
           python tools/check_encoding_hygiene.py
           python -m py_compile tools/*.py
-          git diff --exit-code -- atomics/skill/references/diagnostics/framework-pipeline.md skill/
+          git diff --exit-code -- atomics/skill/references/diagnostics/framework-pipeline.md
           git diff --check
 
       - name: Build package artifact
@@ -127,6 +136,10 @@ jobs:
           payload = {
               "version": version,
               "contract_version": contract_version,
+              "source_tree": "atomics/skill/**",
+              "generated_runtime": "skill/** local/CI output; ignored and not tracked",
+              "package_source": "compiled runtime selected from generated skill/**",
+              "raw_atomics_packaged": False,
               "source_commit": source_commit,
               "zip_path": str(zip_path),
               "asset_path": str(asset_path),
@@ -150,6 +163,5 @@ jobs:
           name: daee-epistemics-${{ env.VERSION }}-skill
           path: |
             build/daee-epistemics-${{ env.VERSION }}.skill
-            build/daee-epistemics-${{ env.VERSION }}.skill.zip
             build/daee-epistemics-${{ env.VERSION }}.provenance.json
           if-no-files-found: error

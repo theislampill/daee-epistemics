@@ -2,7 +2,7 @@
 
 `daee-epistemics` is a modular LLM skill and governed diagnostic framework for epistemic operations and noetic analysis: analogous to a cognitive-security framework for classifying discourse, diagnosing Orientation, Deformation, and Concealment, and routing engagements through matched Tactics, Techniques, Procedures, and Case Modules.
 
-This repository now has two deliberate layers: canonical atomized source under [`atomics/skill/`](atomics/skill/) and a generated compiled Claude runtime under [`skill/`](skill/).
+This repository now has two deliberate layers: canonical atomized source under [`atomics/skill/`](atomics/skill/) and a generated compiled Claude runtime under local/CI `skill/`.
 
 The package is grounded in the coherence and convergence of a common sense account of sound reason, the *fiṭrah* (the innate normative disposition toward truth), and revelation. 
 It is designed to examine the condition of the *qalb* (heart-mind) and the *ʿaql* (intellect or reason) before replying to doubts, objections, and worldview conflicts. 
@@ -300,7 +300,7 @@ The editable source and deployable runtime are intentionally separate:
 | Path | Role |
 |------|------|
 | [`atomics/skill/`](atomics/skill/) | Canonical atomized skill source. Edit this tree. |
-| [`skill/`](skill/) | Generated compiled Claude package root. Do not hand-edit this tree. |
+| `skill/` | Generated local/CI compiled Claude package root. Ignored by git; do not hand-edit or stage this tree. |
 | [`tools/`](tools/) | Compiler and checker scripts. |
 | [`tests/routing-fixtures/`](tests/routing-fixtures/) | Static routing parity fixtures. |
 | [`docs/`](docs/) | Architecture notes, audits, and verification reports. |
@@ -339,10 +339,10 @@ bundle and `MODULE_ID` section.
 
 ## Repository Architecture
 
-The repo is organized around one source-of-truth tree, one generated runtime
-tree, and several verification surfaces. Edit canonical source under
-`atomics/skill/`, then regenerate `skill/`; do not hand-edit generated runtime
-files as the source of truth.
+The repo is organized around one tracked source-of-truth tree, one ignored
+generated runtime tree, and several verification surfaces. Edit canonical
+source under `atomics/skill/`, then regenerate local/CI `skill/`; do not
+hand-edit or stage generated runtime files as source.
 
 | Path | Role |
 |------|------|
@@ -351,11 +351,11 @@ files as the source of truth.
 | [`atomics/skill/data/`](atomics/skill/data/) | Repo-only optional route/check harness data: trigger matrix, precedence, module catalogue, and ontology licenses. |
 | [`atomics/skill/scripts/`](atomics/skill/scripts/) | Repo-only optional harness source scripts for diagnosis, deterministic routing-given-features, validation, reconstruction, orchestration, and execution checking. |
 | [`atomics/skill/tests/`](atomics/skill/tests/) | Repo-only optional harness fixtures and expected route plans. |
-| [`skill/`](skill/) | Generated runtime root. The canonical user-facing package archives only scriptless runtime material from this tree. |
-| [`skill/data/`](skill/data/), [`skill/scripts/`](skill/scripts/), and [`skill/tests/`](skill/tests/) | Generated optional harness view for repo/dev validation when present; excluded from the canonical user-facing package. |
-| [`skill/references/`](skill/references/) | Generated runtime and omnibus bundles. Availability is not activation. |
-| [`skill/compiled-module-map.json`](skill/compiled-module-map.json) | Runtime resolver from original module ID/source path to generated bundle section. |
-| [`skill/build-manifest.json`](skill/build-manifest.json) | Generated freshness and source-checksum manifest. |
+| `skill/` | Ignored generated runtime root. The canonical user-facing package archives only scriptless runtime material produced here by local/CI build. |
+| `skill/data/`, `skill/scripts/`, and `skill/tests/` | Generated optional harness view for repo/dev validation when present; excluded from the canonical user-facing package. |
+| `skill/references/` | Generated runtime and omnibus bundles. Availability is not activation. |
+| `skill/compiled-module-map.json` | Runtime resolver from original module ID/source path to generated bundle section. |
+| `skill/build-manifest.json` | Generated freshness and source-checksum manifest. |
 | [`tools/`](tools/) | Build, checker, smoke-artifact, IR, routing, reconstruction, and hygiene tooling. |
 | [`tests/`](tests/) | Static routing, IR, and reconstruction fixtures for maintainers. |
 | [`ci/`](ci/) and [`.github/workflows/`](.github/workflows/) | Maintainer CI wrappers around local checks. |
@@ -471,8 +471,8 @@ EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
 
 ### Package Boundary
 
-The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.4.0.0 release line,
-the package artifact is built from the generated `skill/` root and recorded in
+The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.4.x release line,
+the package artifact is built from atomics through generated local/CI `skill/` and recorded in
 [`docs/release-artifacts.md`](docs/release-artifacts.md). GitHub Releases are the binary
 distribution surface; older v0.3.1.0 assets and smokes are historical evidence, not
 current-package evidence for v0.4.0.0.
@@ -480,8 +480,9 @@ current-package evidence for v0.4.0.0.
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
 
-Binary skill archives are not committed to this repository. Build locally with `package.ps1` from
-the generated `skill/` root, or use the verified public GitHub Release asset.
+Binary skill archives and generated `skill/` runtime output are not committed to this repository.
+Build locally or in CI from `atomics/skill/**` into generated `skill/`, then package that runtime,
+or use the verified public GitHub Release asset.
 
 The canonical archive root must contain `SKILL.md`, `references/`,
 `compiled-module-map.json`, `build-manifest.json`, and `README.md` directly. It must not

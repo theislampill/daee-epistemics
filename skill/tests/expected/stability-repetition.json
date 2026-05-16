@@ -1,8 +1,0 @@
-{
-  "first_live": ["foreign-premise-detection", "M1-self-refutation"],
-  "held_contains": ["V2-reconstituting-reason"],
-  "deferred_contains": ["M8-reductio"],
-  "continuation_queue_contains": ["do-second-loop", "V2-reconstituting-reason", "M8-reductio", "P1-fitrah-restoration"],
-  "governance_verdict": "RECURSE",
-  "live_burden_contains": "imported moral tribunal"
-}

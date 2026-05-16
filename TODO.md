@@ -7,7 +7,7 @@ Current layout:
 
 ```text
 atomics/skill/          = canonical atomized editable source
-skill/                  = generated compiled Claude package root
+skill/                  = ignored local/CI compiled Claude package root
 tools/                  = compiler/checker scripts
 tests/routing-fixtures/ = static routing parity fixtures
 docs/                   = architecture, audit, and workflow notes

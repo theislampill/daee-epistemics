@@ -5,7 +5,8 @@
 This repository has a canonical atomized source tree and a generated runtime tree.
 
 - `atomics/skill/` is the canonical editable source.
-- `skill/` is generated compiled runtime output.
+- `skill/` is generated local/CI compiled runtime output; it is ignored and not
+  tracked as source.
 - `tools/` contains compiler/checker scripts.
 - `tests/routing-fixtures/` contains static routing parity fixtures.
 - `docs/` contains architecture, audit, and workflow notes.
@@ -643,6 +644,8 @@ __pycache__/
 ```
 
 Package the contents of `skill/`, not the `skill/` directory itself.
+`skill/` must be produced from tracked atomics by local or CI build before
+packaging; do not stage it as repository source.
 Local Hermes helpers, temporary owner lists, raw campaign artifacts, local absolute paths, and
 machine-specific files are not package content.
 The `SKILL.md` frontmatter `description` must be 1024 characters or fewer; keep metadata concise

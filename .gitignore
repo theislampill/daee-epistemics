@@ -4,6 +4,7 @@ desktop.ini
 
 # Build / release artifacts
 build/
+/skill/
 *.skill
 *.skill.zip
 *.zip

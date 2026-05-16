@@ -4,14 +4,14 @@ The repository now separates editable atomized source from the Claude package ru
 
 ```text
 atomics/skill/ = canonical atomized editable source
-skill/         = generated compiled Claude package root
+skill/         = ignored local/CI generated compiled Claude package root
 tools/         = compiler and checker scripts
 tests/         = routing parity fixtures and static regression inputs
 docs/          = reports and operating notes
 build/         = optional temporary/release artifacts
 ```
 
-Edit `atomics/skill/`. Do not edit `skill/` directly.
+Edit tracked `atomics/skill/`. Do not edit or stage generated `skill/` directly.
 
 Regenerate the runtime package root with:
 
@@ -40,7 +40,7 @@ python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
 ```
 
-Package/deploy from the canonical package selector over `skill/`. A `.skill`
+Package/deploy from the canonical package selector over generated local/CI `skill/`. A `.skill`
 archive must contain `SKILL.md` at archive root, not a top-level `skill/`
 directory. For the canonical user-facing artifact, `data/`, `scripts/`, and
 `tests/` are excluded; optional route/check harness material is repo/dev-only
@@ -64,7 +64,7 @@ in `tools/compiled_runtime_lib.py` and are recorded in `build-manifest.json` und
 | `operative-contracts.md` | Architecture specification for operative contracts - purpose, required/optional keys, allowed values, failure modes, migration strategy. |
 
 An archive missing these runtime metadata files has a stale or incomplete
-staging directory. Rebuild from `skill/` after running
+staging directory. Rebuild generated `skill/` after running
 `python tools/build_compiled_runtime.py` to ensure all `RUNTIME_METADATA_COPIES`
 are present. Optional route/check harness directories are not part of the
 canonical package-shape contract.

@@ -14,8 +14,8 @@
 
 v0.4.1.0 is cleanup/hardening work on the `0.4.0.0` operative contract line.
 It consolidates docs/audit/release surfaces, deprecates active Level3 and
-branch-era pipeline terminology, keeps generated `skill/**` tracked as generated
-runtime, and adds manual CI artifact-build automation.
+branch-era pipeline terminology, untracks generated `skill/**` so atomics remain
+the repo source, and adds manual CI artifact-build automation.
 
 ### Added
 
@@ -33,12 +33,13 @@ runtime, and adds manual CI artifact-build automation.
   DSL/IR runtime spine terminology.
 - Historical audits and release logs are consolidated into history files while
   preserving provenance.
+- Generated `skill/**` is now ignored local/CI output compiled from tracked
+  atomics before checks and package builds.
 
 ### Non-Claims
 
 - No hard schema/register migration.
-- No generated `skill/**` untracking.
-- No hard schema/register migration and no generated `skill/**` untracking.
+- No hard schema/register migration.
 
 ### Post-v0.3.2.0 evidence track
 

@@ -5,29 +5,34 @@ package evidence. Binary skill archives are not committed to the source
 repository; GitHub Releases are the binary distribution surface for published
 `.skill` assets.
 
-Build the package locally from the generated `skill/` package root:
+Build the package locally from tracked atomics through generated `skill/`:
 
 ```powershell
+python tools/build_framework_pipeline.py
+python tools/build_compiled_runtime.py
 python tools/package_skill.py build\daee-epistemics-v0.4.1.0.skill.zip
 Copy-Item build\daee-epistemics-v0.4.1.0.skill.zip build\daee-epistemics-v0.4.1.0.skill
 ```
 
 The package script archives the canonical packageable contents selected from
-`skill/`, not the repository root and not the top-level `skill/` directory. It
-writes a local `.skill.zip` payload; the published GitHub Release asset is the
-same checked payload renamed to `.skill`. Do not re-zip the repository root.
-`package.ps1` calls the manifest-backed Python packager, validates generated
-package shape, excludes repo/dev harness roots, and writes slash-safe archive
-entries.
+generated local/CI `skill/`, not raw atomics, not the repository root, and not
+the top-level `skill/` directory. Generated `skill/` is ignored and not tracked
+as source. The build writes a local `.skill.zip` payload; the published GitHub
+Release asset is the same checked payload renamed to `.skill`. Do not re-zip
+the repository root. `package.ps1` calls the manifest-backed Python packager,
+validates generated package shape, excludes repo/dev harness roots, and writes
+slash-safe archive entries.
 
 ## Artifact Evidence
 
 ## v0.4.1.0 Clean Main Final Candidate Artifact
 
-This is clean-main final candidate evidence. At this source commit, no
-v0.4.1.0 GitHub Release upload is claimed yet; publication is the later tag and
-release step. The intended public release asset is the checked `.skill` payload,
-not the `.skill.zip` build intermediate.
+This is pre-untracking clean-main candidate evidence. The v0.4.1.0 GitHub
+Release was published before the generated-runtime untracking correction. A
+replacement release asset must be rebuilt from tracked atomics through ignored
+generated `skill/` and explicitly approved before any asset replacement. The
+intended public release asset remains the checked `.skill` payload, not the
+`.skill.zip` build intermediate.
 
 | Field | Value |
 | --- | --- |
@@ -41,8 +46,9 @@ not the `.skill.zip` build intermediate.
 | Worktree state | Clean `main` at package build |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
+| Source/runtime tracking status | Pre-correction: generated `skill/` was still tracked at this commit |
 | Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
-| GitHub Release visibility | Not uploaded yet at metadata commit time; intended asset for `v0.4.1.0` |
+| GitHub Release visibility | Published before generated-runtime untracking correction |
 | Provenance file | `build/daee-epistemics-v0.4.1.0.provenance.json` |
 
 Candidate package shape:
@@ -152,8 +158,9 @@ Smoke families:
 Evidence boundaries:
 
 ```text
-source repo -> current atomics, tools, docs, generated skill/ runtime
-local package build output -> ignored build/*.skill.zip archive built from skill/
+source repo -> current tracked atomics, tools, tests, docs, and workflows
+generated runtime -> ignored local/CI skill/ built from atomics
+local package build output -> ignored build/*.skill.zip archive built from generated skill/
 release asset -> checked build/*.skill payload uploaded to GitHub Release
 local smoke regression artifacts -> ignored smokes/ or .daee/ working directories
 current package evidence -> public GitHub Release .skill asset, local/internal .skill.zip filename, SHA256, size, entries, and archive-root checks above
