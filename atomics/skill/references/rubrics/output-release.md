@@ -101,6 +101,9 @@ when `κ` is the diagnostic target, but they are not restricted to `κ`. Allowed
 ∇·B positive over B3/B4; ∇×B unresolved around compact-neutrality dependency.` `Register
 field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.` Forbidden default: `The antisymmetric
 Jacobian of the noetic field shows...`; `The ∇× symbol proves the TTP executed.`
+`del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators; if
+Unicode is unavailable they may appear only as compact, target-explicit state markers with the
+same control-effect boundary.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. Do not put
@@ -790,7 +793,7 @@ concealments and distortions, but each movement is ordered, justified, and bound
 **Pass:** The response may proceed through multiple burdens only by governed traversal:
 
 ```text
-B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Gloss: identify the current blocker, apply the matched owner/TTP, land the burden, refresh

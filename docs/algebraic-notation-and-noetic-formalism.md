@@ -22,7 +22,7 @@ live-smoke claim, or a package/release proof claim by itself.
 Current compact runtime spine:
 
 ```text
-Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> Delta -> del-dot/del-cross field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 schema-light register bridge baseline:
@@ -30,7 +30,7 @@ schema-light register bridge baseline:
 ```text
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
 → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
-→ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)]*
+→ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× target field state → R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)]*
 → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ / ⁿ⁺¹B
 ```
 
@@ -39,7 +39,7 @@ ASCII fallback:
 ```text
 N_space |- D0 ~> PsiN<N in N_space,m,tau,sigma,heart,xi,Omega,mu,kappa,H>
 -> IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)
--> [nB -> {nBi[OPi]} -> Land(nB) -> R(H,Delta-nB{heart,xi,Omega,sigma,mu},Delta-kappa)]*
+-> [nB -> {nBi[OPi]} -> Land(nB) -> Delta-nB/Delta-kappa -> del-dot/del-cross target field state -> R(H,Delta-nB{heart,xi,Omega,sigma,mu},Delta-kappa)]*
 -> C(PsiN) -> N_fitri and aql_sarih / n-plus-1B
 ```
 
@@ -51,6 +51,8 @@ Implemented now:
 - `♥`, `ξ`, `Ω`, `μ`, `κ`, and `Δκ` as derived/conditional registers over existing IR,
   hold/release, collapse-radius, owner, reread, and restoration controls.
 - `ⁿB`, `ⁿBᵢ`, `ΔⁿB`, `ⁿ⁺¹B`, `ⁿBᵢ[OP]`, and expanded `R(...)` as burden/governance notation.
+- `∇·` / `del-dot` and `∇×` / `del-cross` as post-Delta, target-explicit field diagnostics
+  over the Δ-produced noetic/burden/dependency/register/route/collapse field.
 - `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` as terminal formalism after burden landing and reread.
 - Shannon analogy boundaries and anti-symbol-theater / anti-schema-bloat guards.
 
@@ -95,6 +97,8 @@ Rejected as runtime behavior:
 | `ΔⁿB` | `Delta-nB` | Local landed state change | Implemented bridge | Local burden delta before reread. |
 | `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle | Implemented bridge | Licensed only after `Land(B) -> R(H,Delta)`. |
 | `ⁿBᵢ[OP]` | `nBi[OP]` | Operator signature | Implemented bridge | `target -> operation -> result -> Delta-nB / Delta-kappa`. |
+| `∇·T` | `del-dot(T)` | Divergence-like residual outward pressure in explicit target field `T` | Implemented bridge | Post-Delta closure diagnostic; target may be `κ`, `B`, `ξ`, `♥`, route/register/noetic field when owner-defined. |
+| `∇×T` | `del-cross(T)` | Curl-like circularity / rotational dependency in explicit target field `T` | Implemented bridge | Post-Delta closure diagnostic; nonzero circulation must be broken, held, discharged, or carried into RECURSE/PARTIAL. |
 | `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)` | `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)` | Expanded reread gate | Implemented bridge | Current `R(H,Δ)` plus live register/dependency deltas; `R(H,Delta)` remains ASCII fallback. |
 | `𝒞(Ψᴺ)` | `C(PsiN)` | Constrained noetic collapse / discursive resolution | Implemented terminal formalism | Endpoint after landing, held-route reread, and decision. |
 | `N_fiṭrī ∧ ʿaql ṣarīḥ` | `N_fitri and aql_sarih` | Fitri/sound-reason restorative orientation | Implemented terminal formalism | Telos after governing misread loses control; not a shortcut marker. |

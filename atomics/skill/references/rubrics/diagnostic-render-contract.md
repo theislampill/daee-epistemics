@@ -112,6 +112,9 @@ print short formal governance markers when they are control-relevant to the curr
 `ΔⁿB`, `Δκ`, target-explicit `∇·` / `∇×` markers such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
 `R(H,Δ)`, `R(H,Delta)`, PARTIAL, RECURSE, or COMPLETE. Use `R(H,Δ)` as the formal notation
 and `R(H,Delta)` only as the ASCII fallback.
+`del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`; when they appear in
+default governed output they must be compact, target-explicit, and control-bound, not long
+formalism exposition or separate operators.
 The expanded formal reread is `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
 `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. Do not print
 `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` as a raw default header, do not conflate Delta with del/nabla, and
@@ -212,8 +215,8 @@ operator grammar: `split`, `distinguish`, `test against own grounds`, `disambigu
 - Read the case from the input file before diagnosis.
 - Write the full canonical compact DSL-governed surface to the output file. The file
   contains the same default surface described above: compact Layer A, governed Layer B,
-  burden-local operations, `Land(B)`, `R(H,Delta)`, continuation/HOLD/PARTIAL/close,
-  and restoration.
+  burden-local operations, `Land(B)`, compact Delta/field diagnostics, `R(H,Delta)`,
+  continuation/HOLD/PARTIAL/close, and restoration.
 - Do not replace the file answer with a completion report. The final chat response
   only states the input file read, output file written, approximate length, and status:
   complete, HOLD, or PARTIAL. It must not add source links, sanity scans, checker notes,

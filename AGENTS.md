@@ -111,9 +111,10 @@ outcome, classify it as docs-only or ornamental risk.
   and residual pressures until they are used, integrated, discharged as duplicate/derivative,
   held with reason, or carried into RECURSE/PARTIAL. `R(H,Δ)` rereads the whole live field
   after burden events. `∇·` / `∇×` are target-explicit field diagnostics over Δ-produced
-  state; they are not κ-only, though κ is the collapse/closure-state target when rendered as
-  `∇·κ` / `∇×κ`. TTP coverage is eligibility-aware: eligible live pressure must be used,
-  integrated, held, or rejected with reason, not sprayed indiscriminately.
+  state; `del-dot` / `del-cross` are ASCII aliases for them, not separate operators. They
+  are not κ-only, though κ is the collapse/closure-state target when rendered as `∇·κ` /
+  `∇×κ`. TTP coverage is eligibility-aware: eligible live pressure must be used, integrated,
+  held, or rejected with reason, not sprayed indiscriminately.
 - NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
   interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
   Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /
@@ -533,7 +534,7 @@ Current runtime notation is owned by
 `atomics/skill/references/diagnostics/recursive-state-transitions.md`.
 
 ```text
-Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> Delta/field diagnostics -> R(H,Delta) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Visual architecture reference:

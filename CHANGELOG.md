@@ -47,9 +47,12 @@ packaged.
 - No hard schema/register migration.
 - No universal semantic grading or all-host/model parity claim.
 - Algebraic, divergence/curl, NLA, and Shannon claims are checker/audit-bounded:
-  symbols require owner/control-effect proof; divergence/curl are audit/formalism
-  diagnostics; NLA means Natural Language Autoencoder reconstruction fidelity;
-  Shannon is a compression/signal boundary, not a truth or warrant metric.
+  symbols require owner/control-effect proof; divergence/curl are target-explicit
+  post-Delta field diagnostics whose compact markers may appear in default
+  governed render when control-bound; `del-dot` / `del-cross` are ASCII aliases
+  for `∇·` / `∇×`; NLA means Natural Language Autoencoder reconstruction
+  fidelity; Shannon is a compression/signal boundary, not a truth or warrant
+  metric.
 
 ### Post-v0.3.2.0 evidence track
 

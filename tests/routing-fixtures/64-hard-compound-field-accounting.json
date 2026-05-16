@@ -32,6 +32,8 @@
       "hard-compound field accounting",
       "scalar-collapse execution failure",
       "target-explicit field diagnostics",
+      "del-dot",
+      "del-cross",
       "whole-field reread after delta",
       "user task vs external source request",
       "addressed, integrated, discharged as duplicate/derivative",

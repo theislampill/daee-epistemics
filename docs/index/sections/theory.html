@@ -72,7 +72,7 @@
 <button class="controlCard reread" onclick="goConceptField('R')">
 <span class="controlSym">R</span>
 <strong>Reread gate</strong>
-<p>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B</p>
+<p>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B after target-explicit ∇·/∇× field-state diagnostics</p>
 </button>
 <button class="controlCard collapse" onclick="goConceptField('C')">
 <span class="controlSym">𝒞</span>
@@ -117,7 +117,11 @@
 <span class="notationArrow">→</span>
 <span class="ntok" data-k="Land" data-label="burden landing" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
+<span class="ntok" data-k="deltaField" data-label="Delta-produced burden and closure-state deltas" onclick="highlightNotation(['deltaField','deltaB','deltaK'])">ΔⁿB/Δκ</span>
+<span class="notationArrow">→</span>
+<span class="ntok" data-k="fieldDiagnostics" data-label="post-Delta del-dot/del-cross field diagnostics" onclick="highlightNotation(['fieldDiagnostics','deltaField','kappa'])">∇·/∇× field state</span>
+<span class="notationArrow">→</span>
+<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 <span>]*</span>
 </div>
 <div class="notationLine">
@@ -132,7 +136,7 @@
 <div class="notationLegend">
 <div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>
 <div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>
-<div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ.</div>
+<div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>
 <div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is the constrained collapse/resolution stage, not merely the final-state card.</div>
 </div>
 </div>
@@ -187,6 +191,7 @@ held state and dependency deltas, then stops, holds, recurses, or marks partial.
 <span class="node violet">{ⁿB₁...ⁿBₖ}</span><span class="arrow">→</span>
 <span class="node orange">Land(ⁿB)</span><span class="arrow">→</span>
 <span class="node orange">ΔⁿB</span><span class="arrow">→</span>
+<span class="node orange">∇·/∇× field state</span><span class="arrow">→</span>
 <span class="node green">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
 <span class="node red">ⁿ⁺¹B | STOP | HOLD | PARTIAL</span>
 </div>
@@ -194,7 +199,7 @@ held state and dependency deltas, then stops, holds, recurses, or marks partial.
 <section id="pv-assessment">
 <h2>2. Current notation assessment</h2>
 <p>The current compact form already captures the backbone:</p>
-<pre><code>IR(N,m,τ,σ) → B → {s1...sn} → Land(ⁿB) → R(H,Δ)</code></pre>
+<pre><code>IR(N,m,τ,σ) → B → {s1...sn} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H,Δ)</code></pre>
 <div class="grid">
 <div class="card wide">
 <h3>What it already captures</h3>
@@ -258,12 +263,14 @@ encoding, channel, noise, redundancy, capacity, error correction, and decoder be
   → {ⁿB₁...ⁿBₖ}
   → Land(ⁿB)
   → ΔⁿB
+  → ∇·/∇× target field state
   → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)
   → ⁿ⁺¹B | STOP | HOLD | PARTIAL</code></pre>
 <div class="callout">
 <p><strong>Strict repo convention:</strong> burden number is always superscript before <code>B</code>.
   The subscript after <code>B</code> is reserved for submove number. There is no <code>Bⁿ</code> in the strict form,
   and there is no prefixed plus sign for next burden. Use <code>ⁿ⁺¹B</code>, not <code>⁺ⁿ⁺¹B</code>.</p>
+<p><strong>Del-dot / del-cross convention:</strong> <code>del-dot</code> and <code>del-cross</code> are ASCII aliases for <code>∇·</code> and <code>∇×</code>. They are post-Delta, target-explicit field diagnostics over the Δ-produced noetic/burden/dependency/register/route/collapse state, not transition operators and not proof-by-symbol.</p>
 </div>
 </section>
 <section id="pv-collapse-algebra">
@@ -292,6 +299,9 @@ collapse radius, and held material.
   ⁿBᵢ[OPᵢ] : Tᵢ → Oᵢ → Rᵢ → ΔⁿBᵢ{♥,ξ,Ω,σ,μ} / Δκᵢ
 
 Land(ⁿB) := ΣᵢΔⁿBᵢ{♥,ξ,Ω,σ,μ} ⊢ ΔⁿB{♥,ξ,Ω,σ,μ}
+
+∇·T / del-dot(T) := residual outward pressure in explicit target field T after Δ
+∇×T / del-cross(T) := circular or rotational dependency pressure in explicit target field T after Δ
 
 R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B
 
@@ -336,7 +346,7 @@ OPᵢ(♥,ξ,Ω,σ,μ,κ) → (Δ♥,Δξ,ΔΩ,Δσ,Δμ,Δκ)</code></pre>
 <strong>Compact one-line form:</strong>
 <pre><code>𝓝 ⊢ D₀ ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩
   ⟶ IR
-  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
+  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
   ⟶ 𝒞(Ψᴺ)
   ⟶ N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
 </div>
@@ -366,6 +376,8 @@ OPᵢ(♥,ξ,Ω,σ,μ,κ) → (Δ♥,Δξ,ΔΩ,Δσ,Δμ,Δκ)</code></pre>
 <tr><td>Land(ⁿB)</td><td>Burden landing</td><td>The current burden has achieved its local state change.</td><td>Gate before reread.</td><td>Render/checker-visible</td><td>Tribunal no longer appears neutral.</td></tr>
 <tr><td>ΔⁿB</td><td>Burden-state delta</td><td>What changed in the current burden.</td><td>Evidence for Land(ⁿB).</td><td>Render/checker-visible</td><td>Source-status corrected.</td></tr>
 <tr><td>Δκ</td><td>Collapse-radius delta</td><td>What changed in downstream dependencies.</td><td>Input to R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ).</td><td>Optional checker-visible artifact</td><td>Two downstream claims held; one collapses.</td></tr>
+<tr><td>∇· / del-dot</td><td>Divergence-like field diagnostic</td><td>Residual outward pressure in an explicit target field after Δ has produced a new field state.</td><td>Closure gate over target T, e.g. <code>∇·κ</code>, <code>∇·B</code>, <code>∇·♥</code>; positive pressure must be cleared, integrated, discharged, held, or carried into RECURSE/PARTIAL.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇·B</code> positive over B3/B4, so COMPLETE is not licensed.</td></tr>
+<tr><td>∇× / del-cross</td><td>Curl-like field diagnostic</td><td>Circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ.</td><td>Closure gate over target T, e.g. <code>∇×κ</code>, <code>∇×B</code>, <code>∇×ξ</code>; nonzero curl blocks false linear closure until accounted.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇×ξ</code> unresolved around a circular certainty standard.</td></tr>
 <tr><td>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</td><td>State/noetic reread</td><td>Reread held material after burden and dependency changes.</td><td>Licenses STOP/HOLD/PARTIAL/ⁿ⁺¹B.</td><td>Existing governance surface</td><td><code>R(... ) ⊢ ⁿ⁺¹B</code></td></tr>
 <tr><td>ⁿ⁺¹B</td><td>Next burden</td><td>Burden n+1 licensed by reread.</td><td>New burden only if distinct live function/order remains.</td><td>Notation-only governance + render</td><td><code>R(...) ⊢ ²B</code> when n=1</td></tr>
 </tbody>
@@ -657,7 +669,7 @@ Read the user’s discourse <code>D</code>. Identify the noetic frame <code>N</c
 live noetic function <code>τ</code>, source/semantic/authority status <code>σ</code>, affective-discursive register <code>♥</code>, epistemic grammar <code>ξ</code>,
 ontological grammar <code>Ω</code>, memetic carrier <code>μ</code>, and downstream dependencies <code>κ</code>.
 Formalize the read through the essential <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> control surface, run gate/precedence, then select one current burden <code>ⁿB</code>. Execute its owner-backed submoves <code>ⁿBᵢ</code>. Land the burden,
-record <code>ΔⁿB</code> and <code>Δκ</code>, reread held material <code>H</code>, then stop, hold, mark partial,
+record <code>ΔⁿB</code> and <code>Δκ</code>, read target-explicit <code>∇·</code> / <code>∇×</code> field pressure where control-relevant, reread held material <code>H</code>, then stop, hold, mark partial,
 or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed.
 </p>
 </div>
@@ -675,6 +687,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li>Select one <code>ⁿB</code>, not a route chain.</li>
 <li>Execute <code>ⁿBᵢ[OP]</code> submoves with target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ where live.</li>
 <li>Run <code>Land(ⁿB) → ΔⁿB{♥,ξ,Ω,σ,μ}</code>.</li>
+<li>Read target-explicit <code>∇·</code> / <code>∇×</code> pressure over the Δ-produced field where closure depends on residual pressure or circularity.</li>
 <li>Run <code>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</code>.</li>
 <li>Emit <code>ⁿ⁺¹B</code> only when the reread licenses a distinct next burden; otherwise STOP, HOLD, or PARTIAL.</li>
 </ol>
@@ -685,7 +698,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <div class="grid">
 <div class="card wide">
 <h3>Main flow diagram</h3>
-<p><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) → ⁿB → {ⁿBᵢ} → Land → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → outcome</code></p>
+<p><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) → ⁿB → {ⁿBᵢ} → Land → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → outcome</code></p>
 </div>
 <div class="card wide">
 <h3>Symbol legend</h3>
@@ -705,7 +718,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </div>
 <div class="card wide">
 <h3>Reread gate</h3>
-<p>Show <code>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</code> deciding <code>STOP | HOLD | PARTIAL | ⁿ⁺¹B</code>.</p>
+<p>Show target-explicit <code>∇·</code> / <code>∇×</code> field-state diagnostics feeding <code>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</code>, then deciding <code>STOP | HOLD | PARTIAL | ⁿ⁺¹B</code>.</p>
 </div>
 </div>
 <div class="legend">
@@ -728,6 +741,8 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li>Was <code>Δ♥</code> recorded when an owner changed, held, softened, or sequenced release posture?</li>
 <li>Was <code>κ</code> identified as downstream dependency set, not generic “remaining issues”?</li>
 <li>Was <code>Δκ</code> updated after <code>Land(ⁿB)</code>?</li>
+<li>Where residual pressure or circularity is live, did compact <code>∇·</code> / <code>∇×</code> markers name an explicit target field and control effect?</li>
+<li>Were <code>del-dot</code> and <code>del-cross</code>, if used, treated as ASCII aliases for <code>∇·</code> and <code>∇×</code> rather than separate operators?</li>
 <li>Did the response distinguish <code>ΔⁿB</code> from <code>ⁿ⁺¹B</code>?</li>
 <li>Did submoves remain submoves unless reread licensed a new burden?</li>
 <li>Did each active TTP show <code>target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ</code> where ♥ is live?</li>
@@ -766,6 +781,8 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li><strong>κ as remaining issues:</strong> treating dependency radius as a generic TODO list.</li>
 <li><strong>ⁿ⁺¹B for every topic:</strong> recursing because more content is available.</li>
 <li><strong>ΔⁿB and ⁿ⁺¹B conflation:</strong> mistaking local change for next-burden license.</li>
+<li><strong>Untargeted del-dot/del-cross:</strong> using ASCII aliases without an explicit target field or control effect.</li>
+<li><strong>∇ as proof-by-symbol:</strong> treating divergence/curl notation as execution proof or as a replacement for Δ.</li>
 <li><strong>Convention violation:</strong> using <code>Bⁿ</code>, <code>⁺ⁿ⁺¹B</code>, or subscript as burden number.</li>
 <li><strong>Unreadable system:</strong> making notation too abstract for maintainers and LLMs.</li>
 </ul>
@@ -777,6 +794,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
   → {ⁿB₁...ⁿBₖ}
   → Land(ⁿB)
   → ΔⁿB
+  → ∇·/∇× target field state
   → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)
   → ⁿ⁺¹B | STOP | HOLD | PARTIAL</code></pre>
 <p>
@@ -786,7 +804,7 @@ collapse-radius tracking <code>κ</code> a clear role in post-landing reread, an
 </p>
 <pre><code>𝓝 ⊢ D₀ ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩
   ⟶ IR
-  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
+  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
   ⟶ 𝒞(Ψᴺ)
   ⟶ N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
 <p>

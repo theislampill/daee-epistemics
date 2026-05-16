@@ -11,14 +11,14 @@ description: >
 Default `/daee-epistemics [input]` is the canonical compact
 DSL-governed surface, not prose-only mode or debug scaffolding. DSL/IR is
 integral to anti-hallucination, routing, burden accounting, and restoration:
-compact diagnostic state -> governed Layer B -> `Land(B)` -> `R(H,Delta)` ->
+compact diagnostic state -> governed Layer B -> `Land(B)` -> Δ/field diagnostics -> `R(H,Delta)` ->
 continue/HOLD/PARTIAL/close. `/daee-epistemics:dsl` exposes expanded diagnostic/IR
 visibility; it is not the first place DSL governance appears.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the current live
 noetic burden, source/noetic frame, held material, release decision, and current bounded operator.
 Layer B is the governed operation/release surface: it performs active TTP/operator submoves,
-then hands state to `Land(B) -> R(H,Delta)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
+then hands state to `Land(B) -> Δ/field diagnostics -> R(H,Delta)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
 overgrowth and Layer B flattening.
 
 Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
@@ -28,7 +28,7 @@ and closure must match banner state. Banner shape, exact vocabulary, first-visib
 rule, and missing-material source-authentication behavior are owned by
 `references/rubrics/diagnostic-render-contract.md`.
 `RECURSE` / `PARTIAL` / `COMPLETE` release semantics are owned by
-`references/rubrics/output-release.md`. `Land(B) -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
+`references/rubrics/output-release.md`. `Land(B) -> Delta/field diagnostics -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
 `kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
 `references/diagnostics/recursive-state-transitions.md`.
 
@@ -172,7 +172,7 @@ Canonical execution, using the notation owned by
 Memetic Compression Layer`:
 
 ```text
-Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Top-salient invariants:

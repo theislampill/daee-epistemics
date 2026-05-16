@@ -9,7 +9,8 @@
 <span class="node v56-owner">Selected/held N + live registers</span><span class="arrow">→</span>
 <span class="node v56-owner">Gate + routing precedence</span><span class="arrow">→</span>
 <span class="node v56-owner">Governed Operation</span><span class="arrow">→</span>
-<span class="node v56-land">Delta-nB / Delta-kappa + Land(B)</span><span class="arrow">→</span>
+<span class="node v56-land">Land(B) + Delta-nB / Delta-kappa</span><span class="arrow">→</span>
+<span class="node v56-land">∇· / ∇× field diagnostics</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H,Δ) reconstruction</span><span class="arrow">→</span>
 <span class="node v56-reread">STOP / HOLD / RECURSE / PARTIAL</span><span class="arrow">→</span>
 <span class="node v56-decision">Restorative Response</span>
@@ -19,6 +20,7 @@
 <span class="node v56-ir">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span><span class="arrow">→</span>
 <span class="node v56-owner">ⁿB → {ⁿBᵢ[OPᵢ]}</span><span class="arrow">→</span>
 <span class="node v56-land">Land(ⁿB)</span><span class="arrow">→</span>
+<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ → ∇·/∇× field state</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
 <span class="node v56-decision">𝒞(Ψᴺ) / Decision</span>
 </div>
@@ -119,6 +121,12 @@
 </div>
 <div class="v21-card"><h3>Reread gate</h3>
 <div class="v21-stage-formula">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B</div>
+<ul>
+<li><b>∇·</b> reads residual outward pressure in an explicit target field (e.g. <code>∇·κ</code>, <code>∇·B</code>, <code>∇·♥</code>) after <code>ΔⁿB / Δκ</code> lands — positive means the field is still expanding; closure not licensed</li>
+<li><b>∇×</b> reads circularity / rotational dependency in an explicit target field (e.g. <code>∇×κ</code>, <code>∇×B</code>, <code>∇×ξ</code>) — nonzero means a dependency loop exists that linear traversal cannot resolve</li>
+<li>Both operators require a live relational field with an explicit target; scalar collapse of the noetic state is an execution failure that destroys the field and makes these diagnostics inoperable</li>
+<li>Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL</li>
+</ul>
 </div>
 <div class="v21-card"><h3>Decision</h3>
 <div class="v21-dec-grid">

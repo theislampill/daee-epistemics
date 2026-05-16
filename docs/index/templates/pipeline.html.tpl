@@ -220,8 +220,8 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
     <div class="stack">
       <div class="panel" style="--c:var(--orange)">
         <h3>Burden cycle</h3>
-        <div class="formula" style="font-size:18px;line-height:1.55;color:#9a3412">B → {s1...sn}<br>→ Delta-nB / Delta-kappa<br>→ Land(B)<br>→ R(H,Δ)</div>
-        <p>Submoves are not burden-cycles. Delta-nB and Delta-kappa are event-local transition operators; a new B is licensed only after burden landing and state re-read.</p>
+        <div class="formula" style="font-size:18px;line-height:1.55;color:#9a3412">B → {s1...sn}<br>→ Land(B)<br>→ Delta-nB / Delta-kappa<br>→ ∇· / ∇× field diagnostics<br>→ R(H,Δ)</div>
+        <p>Submoves are not burden-cycles. Delta-nB and Delta-kappa are event-local transition operators computed at burden landing; ∇· and ∇× are target-explicit post-Delta field diagnostics; a new B is licensed only after burden landing, field-state read, and state re-read.</p>
       </div>
       <div class="panel" style="--c:var(--orange)">
         <h3>Decision</h3>
@@ -255,7 +255,8 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
   <span class="pill" style="--c:var(--green)">selected/held N + live registers</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--green)">gate + routing precedence</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--green)">B → submoves</span><span class="arr">→</span>
-  <span class="pill" style="--c:var(--orange)">Delta-nB / Delta-kappa → Land(B)</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--orange)">Land(B) → Delta-nB / Delta-kappa</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--orange)">∇· / ∇× field diagnostics</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--orange)">R(H,Δ)</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--orange)">STOP / HOLD / RECURSE / PARTIAL</span>
 </div>

@@ -82,7 +82,7 @@ Legend:
 Core runtime:
 
 ```text
-Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Burden/submove notation:
@@ -172,7 +172,8 @@ Noetic structures, burdens, submoves, dependencies, registers, routes, and closu
 not scalar objects. They are relational field states in token/noetic space: directed dependency,
 residual outward pressure, circularity, overlap, conflict, and unresolved route pressure can all
 remain after a local burden lands. `Δ` operators compute event-local transition over the current
-burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `∇·` reads
+burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `del-dot` and
+`del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators. `∇·` reads
 divergence-like residual outward pressure in an explicit target field. `∇×` reads curl-like
 circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.
 The target may be `κ` (`∇·κ`, `∇×κ`) or another owner-defined noetic, burden,

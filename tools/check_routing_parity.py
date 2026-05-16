@@ -139,6 +139,8 @@ GOVERNANCE_ALIASES = {
         "target-explicit",
         "∇·",
         "∇×",
+        "del-dot",
+        "del-cross",
         "not restricted to",
     ],
     "whole-field reread after delta": [

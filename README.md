@@ -17,6 +17,7 @@ routing indexes, and explicit owner/router scope notes. Future scope decisions l
 - [Before You Use This Skill](#before-you-use-this-skill)
 - [Terminology Note](#terminology-note)
 - [Core Thesis](#core-thesis)
+- [Runtime Architecture, Not Prompt Advice](#runtime-architecture-not-prompt-advice)
 - [Why This Framing Fits the Repository](#why-this-framing-fits-the-repository)
 - [What the Skill Protects](#what-the-skill-protects)
 - [Threat Model](#threat-model)
@@ -99,6 +100,38 @@ For quantised or smaller models, it functions as external cognitive compression:
 In both cases, the point is the same: to shift the burden from vague latent improvisation toward a portable, inspectable, and reusable structure for diagnosis, analysis, and restoration.
 
 The cognitive-security / epistemic-SOC analogy is helpful here as an onboarding frame, but it is secondary.
+
+## Runtime Architecture, Not Prompt Advice
+
+The easiest way to misread this repository is to treat `SKILL.md` as a sophisticated prompt:
+"when an objection appears, check these things, then answer." That is not the intended
+architecture.
+
+`daee-epistemics` specifies a runtime execution architecture over a live diagnostic state. The
+Diagnostic IR is not a checklist or answer template; it is the compiler state that carries
+selected or held noetic frames, live registers, burden/dependency structure, held routes, owner
+eligibility, and closure posture. If that state collapses into a scalar label such as "this is a
+Trinity objection" or "this is a secular-humanist objection," the runtime has lost the field it
+is supposed to govern.
+
+The operators are part of that state discipline. `Δ` marks an event-local transition over a
+burden or field state when a burden lands. `R(H,Δ)` rereads the whole live field after that
+transition. `∇·` and `∇×` are post-transition diagnostics over the field that `Δ` produced:
+`∇·` reads residual outward pressure in an explicit target field, and `∇×` reads circular or
+rotational dependency in an explicit target field. They do not apply to a one-point summary, and
+they do not replace `Δ`.
+
+Closure is therefore not a stylistic judgment that the reply "seems complete." Residual
+divergence/curl pressure must be cleared, integrated, discharged as derivative, held with reason,
+or carried into `RECURSE` / `PARTIAL`. In hard cases with multiple valid noetic-structure
+selections, the selected execution path is only the release order over the live field. Alternate
+structures, hidden dependencies, circularities, and residual pressures still have to be accounted
+for, and the final restorative response must preserve the master deformation discovered during
+execution.
+
+Whether a particular model instance fully executes this architecture is a behavioral and evidence
+question. The architecture itself is not reducible to prompt engineering: it is a stateful,
+owner-governed process with transition, reread, field-diagnostic, and closure conditions.
 
 A Security Operations Center (SOC) does not begin by deploying countermeasures blindly; it initiates:
 * intake
@@ -266,7 +299,7 @@ compressed in final chat:
 - `< input.md`: read the case/input from this markdown file.
 - `> output.md`: write the full governed answer to this markdown file.
 - `output.md` must contain the canonical compact DSL-governed surface: compact Layer A,
-  governed Layer B, burden-local operation, `Land(B)`, `R(H,Delta)`,
+  governed Layer B, burden-local operation, `Land(B)`, compact Δ/field diagnostics, `R(H,Delta)`,
   continue/HOLD/PARTIAL/close, and restoration.
 - The chat response must not replace the file output. It should only report the input file
   read, output file written, approximate output length, and completion status. It should not
@@ -435,7 +468,7 @@ flowchart TB
 
 USER["User invokes /daee-epistemics"]
 SKILL["Packaged SKILL.md"]
-CANONICAL["canonical compact DSL-governed surface<br/>Layer A -> Layer B -> Land(B) -> R(H,Delta)"]
+CANONICAL["canonical compact DSL-governed surface<br/>Layer A -> Layer B -> Land(B) -> Δ/field diagnostics -> R(H,Delta)"]
 FILEQ{"file-retained syntax?"}
 CHAT["chat response<br/>governed answer when host permits"]
 FILEOUT["output.md<br/>full governed answer"]

@@ -332,11 +332,11 @@ DIVERGENCE_CURL_CONTROL_TERMS = (
 DEFAULT_FIELD_DIAGNOSTIC_MARKERS = (
     "∇·",
     "∇×",
+    "del-dot",
+    "del-cross",
 )
 
 DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION = (
-    "del-dot",
-    "del-cross",
     "nabla dot",
     "nabla cross",
     "antisymmetric jacobian",
@@ -414,6 +414,10 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = (
     "explicit field target",
     "operator distinction",
     "not restricted",
+    "ascii alias",
+    "ascii aliases",
+    "not separate operators",
+    "post-delta",
 )
 
 DIVERGENCE_CURL_AUDIT_DOCS = (

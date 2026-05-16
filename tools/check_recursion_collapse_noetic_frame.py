@@ -11,7 +11,7 @@ from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 ROOT_REQUIRED = [
     "## EXECUTION SPINE",
-    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ)",
+    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ)",
     "Top-salient invariants",
     "recursive-state-transitions.md §Runtime Notation / Meta-Noetic",
     "Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB",
@@ -26,7 +26,7 @@ ROOT_REQUIRED = [
 OWNER_REQUIRED = [
     "## Runtime Notation / Meta-Noetic Memetic Compression Layer",
     "operative compression for existing runtime behavior, not decorative formalism",
-    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> R(H,Δ)",
+    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ)",
     "sᵢ != Bᵢ",
     "Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB",
     "σ != operative warrant",

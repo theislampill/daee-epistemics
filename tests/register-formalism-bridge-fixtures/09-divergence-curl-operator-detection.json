@@ -31,9 +31,9 @@
     "classification": {
       "∇·": "AUDIT_DIAGNOSTIC_ALLOWED",
       "∇×": "AUDIT_DIAGNOSTIC_ALLOWED",
-      "del-dot": "AUDIT_DIAGNOSTIC_ALLOWED",
-      "del-cross": "AUDIT_DIAGNOSTIC_ALLOWED",
-      "default compact ∇·/∇×": "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+      "del-dot": "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+      "del-cross": "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
+      "default compact ∇·/∇×/del-dot/del-cross": "DEFAULT_COMPACT_STATE_MARKER_ALLOWED",
       "default long formalism exposition": "DEFAULT_FORMALISM_EXPOSITION_FORBIDDEN",
       "historical prose-only divergence/curl": "HISTORICAL_ONLY",
       "decorative math with no control effect": "ORNAMENTAL_RISK",
@@ -53,11 +53,11 @@
     "burden_selection": "Select the loop-breaking or dependency-radius burden before terminal restoration."
   },
   "visible_symbol_policy": {
-    "default_output": "Print target-explicit ∇·κ / ∇×κ / ∇·B / ∇×B / ∇·♥ / ∇×ξ only as compact state markers when control-relevant; do not print del-dot, del-cross, nabla dot, nabla cross, or long formalism exposition in default output.",
+    "default_output": "Print target-explicit ∇·κ / ∇×κ / ∇·B / ∇×B / ∇·♥ / ∇×ξ, or ASCII alias forms such as del-dot(kappa) / del-cross(xi), only as compact state markers when control-relevant; do not print nabla dot, nabla cross, or long formalism exposition in default output.",
     "audit_formalism_visibility": "May print the full operator family in audit/formalism visibility when algebra/formalism/audit visibility is requested and control effect is named.",
     "requires_control_effect": true
   },
-  "forbidden_default_exposition": ["del-dot", "del-cross", "nabla dot", "nabla cross", "antisymmetric Jacobian", "exterior derivative"],
+  "forbidden_default_exposition": ["nabla dot", "nabla cross", "antisymmetric Jacobian", "exterior derivative"],
   "ir_projection": {
     "claim_level": "formalism-audit",
     "routing_gate": "audit-formalism-visible",

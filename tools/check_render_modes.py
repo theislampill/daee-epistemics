@@ -554,6 +554,8 @@ DEFAULT_ALLOWED_FORMAL_STATE_MARKERS = [
     "Δκ",
     "∇·",
     "∇×",
+    "del-dot",
+    "del-cross",
     "R(H,Δ)",
     "R(H,Delta)",
     "PARTIAL",
@@ -577,6 +579,8 @@ DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
 DEFAULT_FIELD_DIAGNOSTIC_MARKERS = [
     "∇·",
     "∇×",
+    "del-dot",
+    "del-cross",
 ]
 
 DEFAULT_FORMAL_MARKER_CONTROL_TERMS = [
@@ -610,8 +614,6 @@ DEFAULT_FORMAL_MARKER_CONTROL_TERMS = [
 ]
 
 DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION = [
-    "del-dot",
-    "del-cross",
     "nabla dot",
     "nabla cross",
     "antisymmetric jacobian",
@@ -668,6 +670,10 @@ DEFAULT_RUNTIME_CONTEXT_REQUIRED = [
     "expanded formalism render boundary",
     "anti-symbol-theater",
     "long formalism exposition",
+    "ascii alias",
+    "ascii aliases",
+    "not separate operators",
+    "post-delta",
 ]
 
 FORMAL_MARKER_POSITIVE_SAMPLES = {
@@ -677,10 +683,12 @@ FORMAL_MARKER_POSITIVE_SAMPLES = {
         "∇×B unresolved around compact-neutrality dependency."
     ),
     "register_target": "Register field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.",
+    "alias_target": "ASCII fallback: del-dot(kappa) positive; del-cross(xi) unresolved; R(H,Delta): RECURSE.",
 }
 
 FORMAL_MARKER_BAD_SAMPLES = {
     "untargeted_marker": ("State: ∇× unresolved; COMPLETE.", "without explicit target"),
+    "untargeted_alias": ("State: del-cross unresolved; COMPLETE.", "without explicit target"),
     "proof_by_symbol": ("The ∇× symbol proves the TTP executed.", "forbidden formalism claim"),
     "delta_replacement": ("Curl replaces Delta here; ∇ replaces Δ as the transition operator.", "forbidden formalism claim"),
     "scalar_target": ("∇· applies to scalar master diagnosis; COMPLETE.", "forbidden formalism claim"),
@@ -2221,7 +2229,7 @@ def _has_any_context(text: str, contexts: list[str]) -> bool:
 
 
 TARGET_EXPLICIT_FIELD_DIAGNOSTIC_RE = re.compile(
-    r"∇[·×](?:κ|kappa|B|burden|H|heart|♥|xi|ξ|Omega|Ω|sigma|σ|mu|μ|N|route|register)",
+    r"(?:∇[·×]|del-(?:dot|cross)\s*\(?)(?:κ|kappa|B|burden|H|heart|♥|xi|ξ|Omega|Ω|sigma|σ|mu|μ|N|route|register)",
     re.I,
 )
 

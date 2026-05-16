@@ -37,6 +37,35 @@ EXPECTED_TABS = {
     "Reference Library": "reference",
 }
 
+REQUIRED_INDEX_NOTATION_TOKENS = {
+    "Architecture post-Delta field diagnostic node": "∇· / ∇× field diagnostics",
+    "Architecture formal field-state node": "ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ → ∇·/∇× field state",
+    "Theory divergence symbol row": "∇· / del-dot",
+    "Theory curl symbol row": "∇× / del-cross",
+    "Theory del-dot alias": "del-dot",
+    "Theory del-cross alias": "del-cross",
+    "Theory alias definition": "ASCII aliases for <code>∇·</code> and <code>∇×</code>",
+    "Theory post-Delta field state": "post-Delta ∇·/∇× field-state diagnostics",
+    "Burden target example": "∇·B",
+    "Register target example": "∇×ξ",
+    "No proof by symbol boundary": "not proof-by-symbol",
+}
+
+REQUIRED_PIPELINE_NOTATION_TOKENS = {
+    "Standalone pipeline field diagnostic rail": "∇· / ∇× field diagnostics",
+    "Standalone pipeline Land before Delta": "Land(B)<br>→ Delta-nB / Delta-kappa",
+    "Standalone pipeline post-Delta wording": "target-explicit post-Delta field diagnostics",
+}
+
+FORBIDDEN_INDEX_NOTATION_CLAIMS = {
+    "∇ replaces Δ": "∇ replaces Δ",
+    "nabla replaces Delta": "nabla replaces delta",
+    "divergence proves truth": "divergence proves truth",
+    "curl proves warrant": "curl proves warrant",
+    "∇ truth metric": "∇ truth metric",
+    "∇ warrant metric": "∇ warrant metric",
+}
+
 
 class IndexParser(HTMLParser):
     def __init__(self) -> None:
@@ -318,6 +347,28 @@ def run_generation_freshness_check(errors: list[str]) -> None:
         errors.append(f"docs index generation freshness failed: {detail}")
 
 
+def check_notation_contract(text: str, errors: list[str]) -> None:
+    for label, token in REQUIRED_INDEX_NOTATION_TOKENS.items():
+        if token not in text:
+            errors.append(f"docs/index.html missing notation token: {label}: {token!r}")
+    lower = text.lower()
+    if "κ-only" in lower and "not κ-only" not in lower:
+        errors.append("docs/index.html contains κ-only wording without the not-κ-only boundary")
+    if "∇· / del-dot" in text and "∇× / del-cross" not in text:
+        errors.append("docs/index.html defines del-dot without paired del-cross")
+    if "∇× / del-cross" in text and "∇· / del-dot" not in text:
+        errors.append("docs/index.html defines del-cross without paired del-dot")
+    for label, phrase in FORBIDDEN_INDEX_NOTATION_CLAIMS.items():
+        if phrase in lower and f"not {phrase}" not in lower:
+            errors.append(f"docs/index.html contains forbidden notation claim: {label}")
+
+
+def check_pipeline_notation_contract(page_text: str, output: str, errors: list[str]) -> None:
+    for label, token in REQUIRED_PIPELINE_NOTATION_TOKENS.items():
+        if token not in page_text:
+            errors.append(f"{output} missing notation token: {label}: {token!r}")
+
+
 def main() -> int:
     errors: list[str] = []
     if not INDEX.exists():
@@ -361,6 +412,8 @@ def main() -> int:
                     errors.append(f"{output}: missing generated-file banner")
                 if "DOCS_PIPELINE_PROVENANCE" not in page_text:
                     errors.append(f"{output}: missing generated provenance block")
+                if output == "docs/daee-epistemics-pipeline.html":
+                    check_pipeline_notation_contract(page_text, output, errors)
 
     parser = IndexParser()
     parser.feed(text)
@@ -441,6 +494,8 @@ def main() -> int:
             errors.append(f"generated owner/TTP table missing token {token!r}")
     if "renderOwnerSourceTable" not in script:
         errors.append("owner-derived module table provider renderOwnerSourceTable missing")
+
+    check_notation_contract(text, errors)
 
     expected = expected_modules(errors)
     embedded = embedded_modules(text, errors)
