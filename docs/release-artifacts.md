@@ -43,7 +43,7 @@ intermediate.
 | SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
 | Size | `557920` bytes |
 | Entries | `20` |
-| Source commit | `18220845b07a948cf58f60beb687d98ccaae752b` |
+| Source commit | Final `v0.4.1.0` tag commit; see the uploaded provenance asset for the exact SHA |
 | Worktree state | Clean `main` at package build |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
