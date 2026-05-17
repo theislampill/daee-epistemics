@@ -51,6 +51,15 @@ intermediate.
 | GitHub Release visibility | Public v0.4.1.0 release asset/provenance replaced; no `.skill.zip` asset uploaded |
 | Provenance file | Published asset: `daee-epistemics-v0.4.1.0.provenance.json` |
 
+Prior corrected asset evidence retained for provenance continuity:
+
+| Field | Value |
+| --- | --- |
+| Prior package source commit | `517a9f133b6bc11f7f9b4dc1160f461c58b9e94e` |
+| Prior SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
+| Prior size | `557920` bytes |
+| Status | Superseded by the notation-surface package artifact above; retained so release history remains auditable. |
+
 Candidate package shape:
 
 ```text
