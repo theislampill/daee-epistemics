@@ -5,144 +5,134 @@
 <div class="panel">
 <h2>Control ontology overview</h2>
 <p class="subtle">
-  The colored layer is broader than ♥/ξ/Ω/μ/κ because the schema-light register bridge separates the whole noetic-structure selection space from the selected operative noetic frame, and it gives 𝒞 its own visible control object. DAEE is designed before the live input is known, so the framework must operate over every possible noetic-structure selection that could become live; the actual N chosen for an input is a runtime selection from that engineered space. Related cards use neighboring colors without sharing the same color: D₀/Ψᴺ/𝓝/N stay in the signal/noetic family, ♥/μ remain related but distinct, and κ/R/𝒞/final mark dependency, reread, collapse, and restoration.
+  Card colors inherit the Architecture phase colors: blue for input, cyan for Layer A / IR signal-state, violet for gate/routing/register governance, orange for owner + Δ + diagnostics, green for reread/closure, and red for the public restorative boundary. Plain ∇ belongs to the violet gate/routing phase; ∇·T, ∇×T, and LoopBreak(∇×T) belong to the orange post-Δ diagnostic phase.
 </p>
 <div class="fieldNavNote"><strong>Bridge highlight policy:</strong> node clicks highlight structurally owned notation tokens. 𝓝 highlights only 𝓝 and D₀. N∈𝓝, Ψᴺ, H, and the register set are runtime selection/encoding objects and must be selected through their own notation tokens or Concept Graph nodes; D₀ itself highlights only D₀; Ψᴺ and IR highlight ♥ because the register is encoded/formalized there; final restoration highlights ♥/ξ/Ω/μ but not κ as a final-state constituent.</div>
 <div class="controlOverviewGrid">
-<button class="controlCard input" onclick="goConceptField('D0')">
-<span class="controlSym">D₀</span>
-<strong>Surface discourse</strong>
-<p>claim, slogan, doubt, proof-packet, source request</p>
-</button>
-<button class="controlCard signal" onclick="goConceptField('Psi')">
-<span class="controlSym">Ψᴺ</span>
-<strong>Encoded noetic signal-state</strong>
-<p>N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀</p>
-</button>
-<button class="controlCard signal" onclick="goConceptField('PsiI')">
-<span class="controlSym">Ψᴵ</span>
-<strong>Diagnosed interlocutor field</strong>
-<p>inferred from discourse/profile/register evidence; not soul access</p>
-</button>
-<button class="controlCard structure" onclick="goConceptField('noetic')">
+<button class="controlCard phase-layer-a" onclick="goConceptField('noetic')">
 <span class="controlSym">𝓝</span>
 <strong>Noetic-structure selection space</strong>
 <p>all possible live noetic structures the framework is engineered to diagnose and route</p>
 </button>
-<button class="controlCard nabla" onclick="goConceptField('gradient')">
-<span class="controlSym">∇</span>
-<strong>Route-gradient pressure</strong>
-<p>eligible route ordering by expected diagnostic reduction</p>
+<button class="controlCard phase-input" onclick="goConceptField('D0')">
+<span class="controlSym">D₀</span>
+<strong>Surface discourse</strong>
+<p>claim, slogan, doubt, proof-packet, source request</p>
 </button>
-<button class="controlCard noetic" onclick="goConceptField('N')">
+<button class="controlCard phase-layer-a" onclick="goConceptField('Psi')">
+<span class="controlSym">Ψᴺ</span>
+<strong>Encoded noetic signal-state</strong>
+<p>N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀</p>
+</button>
+<button class="controlCard phase-gate" onclick="goConceptField('N')">
 <span class="controlSym">N</span>
 <strong>Operative noetic frame</strong>
 <p>the selected frame governing this burden, not the whole structure</p>
 </button>
-<button class="controlCard criterion" onclick="goConceptField('τ')">
+<button class="controlCard phase-gate" onclick="goConceptField('τ')">
 <span class="controlSym">τ</span>
 <strong>Tribunal / burden-function</strong>
 <p>what is judging what; criterion and live function</p>
 </button>
-<button class="controlCard source" onclick="goConceptField('σ')">
+<button class="controlCard phase-gate" onclick="goConceptField('σ')">
 <span class="controlSym">σ</span>
 <strong>Source / semantic / authority status</strong>
 <p>warrant, context, contrast, genealogy, or held material</p>
 </button>
-<button class="controlCard heart" onclick="goConceptField('heart')">
+<button class="controlCard phase-gate" onclick="goConceptField('heart')">
 <span class="controlSym">♥</span>
 <strong>Affective-discursive register</strong>
 <p>grief, identity, performance, truth-seeking, mixed, unclear</p>
 </button>
-<button class="controlCard xi" onclick="goConceptField('ξ')">
+<button class="controlCard phase-gate" onclick="goConceptField('ξ')">
 <span class="controlSym">ξ</span>
 <strong>Epistemic grammar</strong>
 <p>warrant, testimony, proper function, reliability, defeaters</p>
 </button>
-<button class="controlCard omega" onclick="goConceptField('Ω')">
+<button class="controlCard phase-gate" onclick="goConceptField('Ω')">
 <span class="controlSym">Ω</span>
 <strong>Ontological grammar</strong>
 <p>being, predication, modality, dependence, creator/creation</p>
 </button>
-<button class="controlCard mu" onclick="goConceptField('μ')">
+<button class="controlCard phase-gate" onclick="goConceptField('μ')">
 <span class="controlSym">μ</span>
 <strong>Memetic vector</strong>
 <p>carrier, compression, stabilization, defense, mutation</p>
 </button>
-<button class="controlCard kappa" onclick="goConceptField('κ')">
+<button class="controlCard phase-reread-closure" onclick="goConceptField('κ')">
 <span class="controlSym">κ</span>
 <strong>Collapse radius</strong>
 <p>downstream dependency set changed by Land(ⁿB)</p>
 </button>
-<button class="controlCard held" onclick="goConceptField('H')">
+<button class="controlCard phase-reread-closure" onclick="goConceptField('H')">
 <span class="controlSym">H</span>
 <strong>Held set</strong>
 <p>live but unreleased material carried into reread</p>
 </button>
-<button class="controlCard burden" onclick="goConceptField('burden')">
+<button class="controlCard phase-gate route-gradient-card" onclick="goConceptField('gradient')">
+<span class="controlSym">∇</span>
+<strong>Route-gradient pressure</strong>
+<p>eligible route ordering by expected diagnostic reduction</p>
+</button>
+<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('burden')">
 <span class="controlSym">ⁿB</span>
 <strong>Current burden</strong>
 <p>bounded live burden field selected for owner-backed release order</p>
 </button>
-<button class="controlCard burden" onclick="goConceptField('submoves')">
+<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('submoves')">
 <span class="controlSym">ⁿBᵢ[OPᵢ]</span>
 <strong>Submove operation</strong>
 <p>target → operation → result under the current burden</p>
 </button>
-<button class="controlCard delta" onclick="goConceptField('deltaB')">
+<button class="controlCard phase-owner-delta delta-card" onclick="goConceptField('deltaB')">
 <span class="controlSym">ΔⁿB</span>
 <strong>Burden-event delta</strong>
 <p>event-local transition produced by burden/submove landing</p>
 </button>
-<button class="controlCard delta" onclick="goConceptField('deltaK')">
+<button class="controlCard phase-reread-closure delta-card" onclick="goConceptField('deltaK')">
 <span class="controlSym">Δκ</span>
 <strong>Closure-state delta</strong>
 <p>case-collapse / dependency-radius update after burden work</p>
 </button>
-<button class="controlCard nabla" onclick="goConceptField('nablaDot')">
-<span class="controlSym">∇·</span>
-<strong>del-dot diagnostic</strong>
+<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaDot')">
+<span class="controlSym">∇·T</span>
+<strong>∇·T field diagnostic</strong>
 <p>post-Delta residual outward pressure in an explicit target field</p>
 </button>
-<button class="controlCard nabla" onclick="goConceptField('nablaCross')">
-<span class="controlSym">∇×</span>
-<strong>del-cross diagnostic</strong>
+<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaCross')">
+<span class="controlSym">∇×T</span>
+<strong>∇×T field diagnostic</strong>
 <p>post-Delta circularity / rotational dependency in an explicit target field</p>
 </button>
-<button class="controlCard nabla" onclick="goConceptField('loopBreak')">
+<button class="controlCard phase-owner-delta loopbreak-card" onclick="goConceptField('loopBreak')">
 <span class="controlSym">LoopBreak(∇×T)</span>
 <strong>Loop-breaking submove</strong>
 <p>owner-grounded curl resolution with target, Δ effect, and reread</p>
 </button>
-<button class="controlCard alias" onclick="goConceptField('delDot')">
-<span class="controlSym">del-dot</span>
-<strong>ASCII alias for ∇·</strong>
-<p>grep/checker-safe spelling; not a separate operator</p>
-</button>
-<button class="controlCard alias" onclick="goConceptField('delCross')">
-<span class="controlSym">del-cross</span>
-<strong>ASCII alias for ∇×</strong>
-<p>grep/checker-safe spelling; not a separate operator</p>
-</button>
-<button class="controlCard reread" onclick="goConceptField('R')">
+<button class="controlCard phase-reread-closure" onclick="goConceptField('R')">
 <span class="controlSym">R</span>
 <strong>Reread gate</strong>
 <p>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B after target-explicit ∇·/∇× field-state diagnostics</p>
 </button>
-<button class="controlCard collapse" onclick="goConceptField('C')">
+<button class="controlCard phase-reread-closure" onclick="goConceptField('C')">
 <span class="controlSym">𝒞</span>
 <strong>Constrained noetic collapse</strong>
 <p>discursive resolution of Ψᴺ under owner-backed operations and reread</p>
 </button>
-<button class="controlCard collapse" onclick="goConceptField('coupling')">
-<span class="controlSym">T_lang</span>
-<strong>Language-mediated coupling</strong>
-<p>release from Ψᴺ toward diagnosed Ψᴵ without guaranteed uptake</p>
-</button>
-<button class="controlCard final" onclick="goConceptField('final')">
+<button class="controlCard phase-reread-closure final-card" onclick="goConceptField('final')">
 <span class="controlSym">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
 <strong>Restored fiṭrah and sound reason</strong>
 <p>terminal state after ♥/ξ/Ω/μ/κ disorder loses governance</p>
+</button>
+<button class="controlCard phase-public-boundary" onclick="goConceptField('PsiI')">
+<span class="controlSym">Ψᴵ</span>
+<strong>Diagnosed interlocutor field</strong>
+<p>inferred from discourse/profile/register evidence; not soul access</p>
+</button>
+<button class="controlCard phase-public-boundary public-boundary-card" onclick="goConceptField('coupling')">
+<span class="controlSym">Ψᴺ ⇢ Ψᴵ</span>
+<strong>T_lang output boundary</strong>
+<p>post-closure language release toward diagnosed Ψᴵ; not a state transition or uptake claim</p>
 </button>
 </div>
 <div class="notationBoard" id="notationBoard">
@@ -187,20 +177,15 @@
 <span>/</span>
 <span class="ntok" data-k="deltaK" data-label="case-collapse / closure-state delta" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="nablaDot" data-label="∇· / del-dot: post-Delta residual outward pressure in an explicit target field" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·</span>
+<span class="ntok" data-k="nablaDot" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·T</span>
 <span>/</span>
-<span class="ntok" data-k="nablaCross" data-label="∇× / del-cross: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×</span>
+<span class="ntok" data-k="nablaCross" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×T</span>
 <span class="ntok" data-k="fieldDiagnostics" data-label="target-explicit post-Delta field diagnostics" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
 <span class="notationArrow">→</span>
 <span class="ntok" data-k="loopBreak" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
 <span class="notationArrow">→</span>
 <span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 <span>]*</span>
-</div>
-<div class="notationLine v60-alias-line" aria-label="ASCII aliases for field diagnostics">
-<span class="notationArrow">aliases</span>
-<span class="ntok" data-k="delDot" data-label="del-dot is ASCII alias for ∇·, not a separate operator" onclick="highlightNotation(['delDot','nablaDot'])">del-dot = ∇·</span>
-<span class="ntok" data-k="delCross" data-label="del-cross is ASCII alias for ∇×, not a separate operator" onclick="highlightNotation(['delCross','nablaCross'])">del-cross = ∇×</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
@@ -211,18 +196,19 @@
 <span class="ntok" data-k="nextB" data-label="next burden licensed by reread" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
 </div>
 <div class="notationLine">
-<span class="notationArrow">coupling</span>
-<span class="ntok" data-k="coupling" data-label="language-mediated coupling attempt; not guaranteed uptake" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
+<span class="notationArrow">public release boundary</span>
+<span class="ntok" data-k="coupling" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang(response): Ψᴺ ⇢ Ψᴵ</span>
 </div>
 <div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>
 <div class="notationLegend">
 <div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>
 <div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>
 <div class="miniCard"><strong>Route-gradient:</strong> ∇ orders eligible route pressure after IR/routing/catalogue gates; it never replaces those gates or Δ.</div>
+<div class="miniCard"><strong>Phase discipline:</strong> ∇ ranks eligible route pressure before release. Δ produces the changed field state. ∇·T / ∇×T diagnose target-explicit post-Δ field pressure. R(H,Δ) rereads the changed field. 𝒞(Ψᴺ) licenses closure as field condition. T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake.</div>
 <div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>
 <div class="miniCard"><strong>Loop-breaking:</strong> LoopBreak(∇×T) is licensed only when nonzero curl has an owner-grounded target and Δ effect.</div>
 <div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is a positive closure-field condition, not checklist exhaustion.</div>
-<div class="miniCard"><strong>Coupling:</strong> T_lang: Ψᴺ ⇢ Ψᴵ is language-mediated transfer; it does not claim guaranteed uptake.</div>
+<div class="miniCard"><strong>Output boundary:</strong> T_lang(response): Ψᴺ ⇢ Ψᴵ names the public release relation after closure/hold/partial; it is not part of the burden loop and does not claim guaranteed uptake.</div>
 </div>
 </div>
 <div class="subtabs">
@@ -247,7 +233,7 @@ This bridge is a curated public/navigation surface, not a runtime owner. Its own
 <code>recursive-state-transitions.md</code>, <code>diagnostic-render-contract.md</code>,
 <code>output-release.md</code>, <code>diagnostic-ir.md</code>, the algebraic formalism spec,
 and the register-formalism fixtures/checkers. It states how the generated concept graph, relation
-map, and public notation cards should read those owners.
+map, and public notation cards read those owners.
 </p>
 </div>
 <div class="bridgeFlow" aria-label="Bridge execution order">
@@ -261,15 +247,15 @@ map, and public notation cards should read those owners.
 <b>→</b>
 <span>ΔⁿB / Δκ</span>
 <b>→</b>
-<span>∇· / ∇× target field</span>
+<span>∇·T / ∇×T target field</span>
 <b>→</b>
-<span>LoopBreak when licensed</span>
+<span>LoopBreak(∇×T) when licensed</span>
 <b>→</b>
 <span>R(H,Δ)</span>
 <b>→</b>
 <span>𝒞(Ψᴺ) / STOP / HOLD / RECURSE / PARTIAL / COMPLETE</span>
 <b>→</b>
-<span>T_lang: Ψᴺ ⇢ Ψᴵ</span>
+<span>T_lang(response): Ψᴺ ⇢ Ψᴵ output boundary</span>
 </div>
 <div class="bridgeGrid">
 <article class="bridgeCard">
@@ -297,10 +283,12 @@ map, and public notation cards should read those owners.
 </article>
 <article class="bridgeCard">
 <h3>4. Field diagnostics</h3>
-<p><code>∇·</code> reads divergence-like residual outward pressure in an explicit target field after Δ has produced a field state. Valid targets include <code>κ</code>, <code>B</code>, <code>♥</code>, <code>ξ</code>, <code>Ω</code>, <code>μ</code>, route/dependency fields, or other owner-defined targets when the control effect is clear.</p>
-<p><code>∇×</code> reads curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ. It is useful for circular burden dependencies and closure failure that linear traversal would miss.</p>
-<p><code>del-dot</code> and <code>del-cross</code> are ASCII aliases for <code>∇·</code> and <code>∇×</code>. They are checker/grep-safe spellings, not separate operators.</p>
-<p><code>LoopBreak(∇×T)</code> is a loop-breaking submove form. It is licensed only when nonzero curl has an explicit target, owner-grounded source, Δ effect, and post-break reread.</p>
+<p><code>∇·T</code> reads divergence-like residual outward pressure in an explicit target field after Δ has produced a field state. <code>∇×T</code> reads curl-like circularity, rotational dependency, or unresolved cyclic pressure in that same target-explicit post-Δ field.</p>
+<p><code>T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}</code>. Examples include <code>∇·κ</code>, <code>∇·ⁿB</code>, <code>∇·ξ</code>, <code>∇·Ω</code>, <code>∇·♥</code>, <code>∇·μ</code>, <code>∇·route</code>, <code>∇·H</code>, <code>∇×κ</code>, <code>∇×ⁿB</code>, <code>∇×ξ</code>, <code>∇×Ω</code>, <code>∇×μ</code>, <code>∇×route</code>, and <code>∇×σ</code>.</p>
+<p>Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</p>
+<p>Runtime notation prints the symbols <code>∇·</code> and <code>∇×</code>. The spellings <code>del-dot</code> and <code>del-cross</code> are checker/grep aliases only; they are not displayed as operators in the runtime formula.</p>
+<p><code>LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R</code>, where <code>G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}</code>.</p>
+<p>LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</p>
 </article>
 <article class="bridgeCard">
 <h3>5. Reread and closure</h3>
@@ -309,14 +297,14 @@ map, and public notation cards should read those owners.
 </article>
 <article class="bridgeCard">
 <h3>6. Coupling and public release</h3>
-<p><code>Ψᴺ</code> is the agent/runtime execution field. <code>Ψᴵ</code> is the diagnosed interlocutor field inferred from discourse and response. <code>T_lang: Ψᴺ ⇢ Ψᴵ</code> names the language-mediated coupling attempt through the released response.</p>
+<p><code>Ψᴺ</code> is the agent/runtime execution field. <code>Ψᴵ</code> is the diagnosed interlocutor field inferred from discourse and response. <code>T_lang(response): Ψᴺ ⇢ Ψᴵ</code> names the post-closure public release boundary through language; it is not another transition inside the burden loop.</p>
 <p>Coupling assessment asks whether the response preserves identity, avoids deformation, addresses live burdens, and creates conditions for reconfiguration toward fiṭrah and sound reason. It does not claim guaranteed acceptance, access to the soul, or agent control of guidance.</p>
 </article>
 <article class="bridgeCard bridgeNonClaims">
 <h3>7. Non-claims and forbidden uses</h3>
 <ul>
 <li><code>∇</code> is not free intuition, not a truth/warrant metric, and not a bypass around routing/catalogue gates.</li>
-<li><code>∇·</code> / <code>∇×</code> do not replace Δ, prove truth/warrant, or certify TTP success by symbol.</li>
+<li><code>∇·</code> / <code>∇×</code> do not replace Δ, prove truth/warrant, or certify TTP success; they are not proof-by-symbol.</li>
 <li>They do not apply to scalarized master diagnoses; scalar collapse loses the field these diagnostics require.</li>
 <li><code>LoopBreak(∇×T)</code> is not arbitrary assertion and cannot be released without target loop, grounding source, Δ effect, and reread.</li>
 <li><code>𝒞(Ψᴺ)</code> does not guarantee interlocutor conversion.</li>
@@ -324,22 +312,26 @@ map, and public notation cards should read those owners.
 <li>Long formalism exposition belongs to audit/formalism-expanded render, not default governed output.</li>
 <li>Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity.</li>
 <li>NLA means Natural Language Autoencoder reconstruction fidelity, not generic algebra, Shannon theory, or interpretability branding.</li>
+<li>Generated docs are public/navigation surfaces, not runtime owners.</li>
+<li>Mathematical notation is operative only insofar as it maps to repo-defined control effects.</li>
+<li>Field-like notation describes diagnostic and routing structure; it is not a claim that discourse is literally a physical field.</li>
+<li>Formal notation must not outrun the owner files.</li>
 </ul>
 </article>
 </div>
 <div class="bridgeExamples">
-<div><strong>RECURSE example</strong><code>∇ selects B2 pressure; B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved around circular criterion-dependency; R(H,Δ): RECURSE.</code></div>
-<div><strong>Loop-break example</strong><code>∇×B nonzero around circular warrant demand; LoopBreak(∇×B) grounds in necessary knowledge; ΔⁿB contracts; R(H,Δ): HOLD/RECURSE by reread.</code></div>
-<div><strong>STOP example</strong><code>All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP; T_lang: release toward Ψᴵ without uptake claim.</code></div>
+<div><strong>RECURSE example</strong><code>∇ selects ²B pressure; ²B landed; Δ²B updated; Δκ live; ∇·ⁿB positive over dependent burdens; ∇×ξ unresolved around circular criterion-dependency; R(H,Δ): RECURSE.</code></div>
+<div><strong>Loop-break example</strong><code>∇×ⁿB nonzero around circular warrant demand; LoopBreak(∇×ⁿB) ⊢ target loop + necessary knowledge + ⁿBᵢ[OPᵢ] + ΔⁿB + R; R(H,Δ): HOLD/RECURSE by reread.</code></div>
+<div><strong>STOP example</strong><code>All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP; T_lang(response): public release toward Ψᴵ without uptake claim.</code></div>
 </div>
 </div>
 <details><summary>Formalism source annex</summary><div class="proposalAnnex">
 <div class="hero">
-<div class="kicker">Formalism source artifact</div>
-<h1>Notation Normalization for DAEE Epistemics</h1>
+<div class="kicker">Formalism source annex</div>
+<h1>Current Runtime Formalism</h1>
 <p class="lead">
-    A strict repo-convention formalism for extending the compact DSL/IR runtime with preserved
-    <strong>♥</strong> for affective-discursive register/release posture, lowercase <strong>ξ</strong> for epistemic/warrant grammar, <strong>Ω</strong> for ontological grammar,
+    A source-grounded exposition of the current DSL/IR runtime: <strong>♥</strong> for affective-discursive register/release posture,
+    <strong>ξ</strong> for epistemic/warrant grammar, <strong>Ω</strong> for ontological grammar,
     <strong>μ</strong> for meta-noetic memetic carriers, and <strong>κ</strong> for collapse-radius tracking.
   </p>
 <div class="badges">
@@ -350,18 +342,21 @@ map, and public notation cards should read those owners.
 </div>
 </div>
 <section id="pv-summary">
-<h2>1. Executive summary</h2>
+<h2>1. Abstract intuition</h2>
 <p>
-The normalized notation should make DAEE’s core claim visibly executable: surface discourse is not answered as a topic,
+The notation makes DAEE’s current runtime visibly executable: surface discourse is not answered as a topic,
 but read as a signal emitted from, stabilized by, and interpreted through a noetic structure. The runtime diagnoses that
 signal, forms a compact control state, selects one live burden, executes owner-backed submoves, lands the burden, re-reads
 held state and dependency deltas, then stops, holds, recurses, or marks partial.
 </p>
 <div class="callout">
-<p><strong>Key revision in v2:</strong> use lowercase <code>ξ</code> for epistemic grammar: the subject’s warrant, belief,
+<p><strong>Current register split:</strong> use lowercase <code>ξ</code> for epistemic grammar: the subject’s warrant, belief,
   inference, testimony, defeater, proper-function, and prima facie knowledge structure. Keep <code>Ω</code> for ontological
   grammar: being, predication, modality, dependence, causality, universals/particulars, mental/external distinctions,
   and creator/creation boundaries.</p>
+</div>
+<div class="callout warn">
+<p><strong>Source-of-truth boundary:</strong> this generated docs page is a public/navigation surface. Runtime authority lives in the owner files and checkers: <code>diagnostic-ir.md</code>, <code>recursive-state-transitions.md</code>, <code>diagnostic-render-contract.md</code>, <code>output-release.md</code>, <code>algebraic-notation-and-noetic-formalism.md</code>, and <code>register-formalism-implementation-ledger.md</code>. Formal notation is operative only where it maps to a repo-defined control effect.</p>
 </div>
 <div class="flow">
 <span class="node blue">D</span><span class="arrow">→</span>
@@ -391,7 +386,7 @@ held state and dependency deltas, then stops, holds, recurses, or marks partial.
 </ul>
 </div>
 <div class="card wide">
-<h3>What it under-specifies</h3>
+<h3>What the bridge makes explicit</h3>
 <ul>
 <li><strong>Epistemic grammar:</strong> how warrant, testimony, proper function, inference, and defeaters are operating.</li>
 <li><strong>Ontological grammar:</strong> how being, predication, dependence, modality, and creator/creation boundaries are loaded.</li>
@@ -436,7 +431,7 @@ encoding, channel, noise, redundancy, capacity, error correction, and decoder be
 </div>
 </section>
 <section id="pv-recommended">
-<h2>4. Recommended normalized notation</h2>
+<h2>4. Runtime notation spine</h2>
 <pre><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
   → ⁿB
   → {ⁿB₁...ⁿBₖ}
@@ -449,15 +444,15 @@ encoding, channel, noise, redundancy, capacity, error correction, and decoder be
 <p><strong>Strict repo convention:</strong> burden number is always superscript before <code>B</code>.
   The subscript after <code>B</code> is reserved for submove number. There is no <code>Bⁿ</code> in the strict form,
   and there is no prefixed plus sign for next burden. Use <code>ⁿ⁺¹B</code>, not <code>⁺ⁿ⁺¹B</code>.</p>
-<p><strong>Del-dot / del-cross convention:</strong> <code>del-dot</code> and <code>del-cross</code> are ASCII aliases for <code>∇·</code> and <code>∇×</code>. They are post-Delta, target-explicit field diagnostics over the Δ-produced noetic/burden/dependency/register/route/collapse state, not transition operators and not proof-by-symbol.</p>
+<p><strong>Field diagnostic convention:</strong> runtime notation uses <code>∇·T</code> and <code>∇×T</code> for post-Delta, target-explicit field diagnostics over the Δ-produced noetic/burden/dependency/register/route/collapse state. Checker aliases exist only for grep-safe validation and are not separate runtime operators.</p>
 </div>
 </section>
 <section id="pv-collapse-algebra">
-<h2>4b. Generalized noetic-collapse algebra</h2>
+<h2>4b. Noetic state-transition algebra</h2>
 <div class="callout"><p><strong>Smallest-slice DiD correction:</strong> <code>♥</code> is not an external parallel delta beside <code>ΔⁿB</code>. It is one of the internal burden-state registers grouped inside <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code>; <code>Δκ</code> stays separate as dependency-radius reread state.</p></div>
 <p>
-The collapse notation is legitimate when defined as an information-theoretic and noetic-state operation,
-not as a claim that noetic structures literally obey quantum mechanics. In this formalism,
+The closure notation is legitimate when defined as a noetic-state control operation,
+not as a claim that discourse literally behaves like a physical field. In this formalism,
 <code>Ψᴺ</code> is an encoded noetic signal-state: the unresolved diagnostic field carried by discourse before
 DAEE’s diagnostic and restorative operators constrain it.
 </p>
@@ -479,8 +474,8 @@ collapse radius, and held material.
 
 Land(ⁿB) := ΣᵢΔⁿBᵢ{♥,ξ,Ω,σ,μ} ⊢ ΔⁿB{♥,ξ,Ω,σ,μ}
 
-∇·T / del-dot(T) := residual outward pressure in explicit target field T after Δ
-∇×T / del-cross(T) := circular or rotational dependency pressure in explicit target field T after Δ
+∇·T := residual outward pressure in explicit target field T after Δ
+∇×T := circular or rotational dependency pressure in explicit target field T after Δ
 
 R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B
 
@@ -546,8 +541,8 @@ OPᵢ(♥,ξ,Ω,σ,μ,κ) → (Δ♥,Δξ,ΔΩ,Δσ,Δμ,Δκ)</code></pre>
 <tr><td>σ</td><td>Source / semantic / authority status</td><td>How a source, term, authority, school, or semantic object is being used.</td><td>Prevents contrast/context from becoming operative warrant.</td><td>Existing/structural register</td><td><code>σ_context ≠ σ_warrant</code></td></tr>
 <tr><td>♥</td><td>Affective-discursive register</td><td>Whether discourse is operating through grief, identity, performance, truth-seeking, or a mixed/unclear register.</td><td>Controls burden selection, suppression, tone, held material, and release posture; not reducible to m or μ.</td><td>Preserved diagnostic/release register</td><td><code>♥_grief</code> holds argument-stacking; <code>♥_truth-seeking</code> permits clearer instructional release</td></tr>
 <tr><td>Δ♥</td><td>Affective-discursive delta</td><td>What changed, was held, softened, or sequenced in grief/identity/performance/truth-seeking posture.</td><td>Reread-visible register delta for release posture; prevents ♥ from becoming decorative tone metadata.</td><td>Optional checker-visible artifact when live</td><td><code>Δ♥_grief→held</code>; <code>Δ♥_performance→hold</code>; <code>Δ♥_truth-seeking→release</code></td></tr>
-<tr><td>ξ</td><td>Epistemic grammar</td><td>Rules of warrant, fiṭrī foundational knowledge, inferential knowledge, testimony, proper function, reliability, prima facie status, and defeaters.</td><td>Optional structural register / derived function guiding epistemic TTP selection.</td><td>Derived first; schema later only if stable</td><td>“Religious belief needs proof; secular defaults are neutral” → asymmetric ξ</td></tr>
-<tr><td>Ω</td><td>Ontological grammar</td><td>Rules of being, predication, modality, dependence, causality, universals/particulars, mental/external distinction.</td><td>Optional structural register / derived function guiding ontological/predication TTP selection.</td><td>Derived first; schema later only if stable</td><td>“Attributes imply composition” → Ω pressure</td></tr>
+<tr><td>ξ</td><td>Epistemic grammar</td><td>Rules of warrant, fiṭrī foundational knowledge, inferential knowledge, testimony, proper function, prima facie status, and defeaters.</td><td>Structural register / derived function guiding epistemic TTP selection where live.</td><td>Schema-light runtime bridge</td><td>“Religious belief needs proof; secular defaults are neutral” → asymmetric ξ</td></tr>
+<tr><td>Ω</td><td>Ontological grammar</td><td>Rules of being, predication, modality, dependence, causality, universals/particulars, mental/external distinction.</td><td>Structural register / derived function guiding ontological/predication TTP selection where live.</td><td>Schema-light runtime bridge</td><td>“Attributes imply composition” → Ω pressure</td></tr>
 <tr><td>μ</td><td>Meta-noetic memetic vector</td><td>Carrier, compression, stabilization, reproduction, defensive move, mutation rule.</td><td>Optional structural register describing how the noetic grammar propagates/defends itself.</td><td>Derived function/register</td><td>“late reports are unreliable” as slogan/proof-packet</td></tr>
 <tr><td>κ</td><td>Collapse radius</td><td>Downstream dependency set affected if the current burden lands.</td><td>Tracks what must be re-read after a burden changes state.</td><td>Derived/register/checker-visible</td><td>Hadith reliability → Sunnah authority, law, creed reports</td></tr>
 <tr><td>ⁿB</td><td>Burden n</td><td>The current live burden as a bounded noetic function.</td><td>Execution unit.</td><td>Notation-only governance + render</td><td><code>¹B</code> = burden 1</td></tr>
@@ -555,8 +550,8 @@ OPᵢ(♥,ξ,Ω,σ,μ,κ) → (Δ♥,Δξ,ΔΩ,Δσ,Δμ,Δκ)</code></pre>
 <tr><td>Land(ⁿB)</td><td>Burden landing</td><td>The current burden has achieved its local state change.</td><td>Gate before reread.</td><td>Render/checker-visible</td><td>Tribunal no longer appears neutral.</td></tr>
 <tr><td>ΔⁿB</td><td>Burden-state delta</td><td>What changed in the current burden.</td><td>Evidence for Land(ⁿB).</td><td>Render/checker-visible</td><td>Source-status corrected.</td></tr>
 <tr><td>Δκ</td><td>Collapse-radius delta</td><td>What changed in downstream dependencies.</td><td>Input to R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ).</td><td>Optional checker-visible artifact</td><td>Two downstream claims held; one collapses.</td></tr>
-<tr><td>∇· / del-dot</td><td>Divergence-like field diagnostic</td><td>Residual outward pressure in an explicit target field after Δ has produced a new field state.</td><td>Closure gate over target T, e.g. <code>∇·κ</code>, <code>∇·B</code>, <code>∇·♥</code>; positive pressure must be cleared, integrated, discharged, held, or carried into RECURSE/PARTIAL.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇·B</code> positive over B3/B4, so COMPLETE is not licensed.</td></tr>
-<tr><td>∇× / del-cross</td><td>Curl-like field diagnostic</td><td>Circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ.</td><td>Closure gate over target T, e.g. <code>∇×κ</code>, <code>∇×B</code>, <code>∇×ξ</code>; nonzero curl blocks false linear closure until accounted.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇×ξ</code> unresolved around a circular certainty standard.</td></tr>
+<tr><td>∇·T</td><td>Divergence-like field diagnostic</td><td>Residual outward pressure in an explicit target field after Δ has produced a new field state.</td><td>Closure gate over target T, e.g. <code>∇·κ</code>, <code>∇·ⁿB</code>, <code>∇·♥</code>; positive pressure must be cleared, integrated, discharged, held, or carried into RECURSE/PARTIAL.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇·ⁿB</code> positive over dependent burdens, so COMPLETE is not licensed.</td></tr>
+<tr><td>∇×T</td><td>Curl-like field diagnostic</td><td>Circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ.</td><td>Closure gate over target T, e.g. <code>∇×κ</code>, <code>∇×ⁿB</code>, <code>∇×ξ</code>; nonzero curl blocks false linear closure until accounted.</td><td>Compact default marker when control-bound; formalism-expanded explanation only on request</td><td><code>∇×ξ</code> unresolved around a circular certainty standard.</td></tr>
 <tr><td>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</td><td>State/noetic reread</td><td>Reread held material after burden and dependency changes.</td><td>Licenses STOP/HOLD/PARTIAL/ⁿ⁺¹B.</td><td>Existing governance surface</td><td><code>R(... ) ⊢ ⁿ⁺¹B</code></td></tr>
 <tr><td>ⁿ⁺¹B</td><td>Next burden</td><td>Burden n+1 licensed by reread.</td><td>New burden only if distinct live function/order remains.</td><td>Notation-only governance + render</td><td><code>R(...) ⊢ ²B</code> when n=1</td></tr>
 </tbody>
@@ -622,7 +617,7 @@ basic, inferred, evidential, testimonial, defeated, reliable, or properly functi
     </p>
 </div>
 </div>
-<h3>ξ should encode these epistemic distinctions</h3>
+<h3>ξ encodes these epistemic distinctions when live</h3>
 <table>
 <thead><tr><th>ξ component</th><th>Meaning</th><th>DAEE consequence</th></tr></thead>
 <tbody>
@@ -671,7 +666,7 @@ basic, inferred, evidential, testimonial, defeated, reliable, or properly functi
 <div class="callout">
 <p>
 <strong>Repo-native correction:</strong> The earlier embodied blood/human example is removed. The better expansion is
-    structural: <code>ξ</code> should model fiṭrī foundationalism, warrant, proper function, reliability, testimony,
+    structural: <code>ξ</code> models fiṭrī foundationalism, warrant, proper function, reliability, testimony,
     and defeater-status as the epistemic grammar through which a noetic structure processes discourse.
   </p>
 </div>
@@ -699,7 +694,7 @@ OP: V2/M1/R1.
 <section id="pv-omega">
 <h2>8. Ω: ontological grammar</h2>
 <p>
-<code>Ω</code> should remain focused on being-structure, not overloaded with warrant-structure. It tracks the ontology
+<code>Ω</code> remains focused on being-structure, not overloaded with warrant-structure. It tracks the ontology
 instantiated or smuggled by discourse.
 </p>
 <h3>Ω includes</h3>
@@ -819,28 +814,28 @@ state-changing, not merely appeared in a route list.
 </div>
 </section>
 <section id="pv-implementation">
-<h2>13. DSL/IR implementation recommendation</h2>
+<h2>13. DSL/IR implementation contract</h2>
 <p>
 Implement this notation conservatively, but do not confuse conservative schema hardening with optional IR. <strong>The DSL/IR control surface is essential and non-optional.</strong>
 Do not make <code>♥</code>, <code>ξ</code>, <code>Ω</code>, <code>μ</code>, and <code>κ</code> mandatory hard schema fields immediately; use them first as conditionally live structural registers and derived analytic functions <em>inside</em> the IR/gate pipeline.
 </p>
 <table>
-<thead><tr><th>Item</th><th>Recommended status now</th><th>Reason</th></tr></thead>
+<thead><tr><th>Item</th><th>Current status</th><th>Reason</th></tr></thead>
 <tbody>
 <tr><td>D</td><td>Input object</td><td>Already implicit.</td></tr>
 <tr><td>IR</td><td>Essential DSL/IR control surface</td><td>Non-optional dispatch and governance layer; schema-light register bridge expands IR, it does not bypass it.</td></tr>
 <tr><td>N, m, τ, σ</td><td>Existing/explicit or derived IR controls</td><td>Already aligned with runtime grammar.</td></tr>
-<tr><td>ξ</td><td>Optional structural register / derived function</td><td>Needed for warrant/testimony/proper-function/reliability grammar; test before schema hardening.</td></tr>
-<tr><td>Ω</td><td>Optional structural register / derived function</td><td>Needed for predication/ontology/modality/dependence; test before schema hardening.</td></tr>
+<tr><td>ξ</td><td>Schema-light structural register / derived function</td><td>Needed for warrant/testimony/proper-function/reliability grammar without creating a second hard runtime schema.</td></tr>
+<tr><td>Ω</td><td>Schema-light structural register / derived function</td><td>Needed for predication/ontology/modality/dependence without creating a second hard runtime schema.</td></tr>
 <tr><td>μ</td><td>Optional structural register / operator-pack metadata</td><td>Useful when carrier/stabilization/reproduction affects routing or reread.</td></tr>
 <tr><td>♥</td><td>Diagnostic/release-posture register with <code>Δ♥</code> when live</td><td>Prevents grief, identity, performance, or truth-seeking posture from being flattened into tone, noise, <code>m</code>, or <code>μ</code>.</td></tr>
 <tr><td>κ</td><td>Checker-visible artifact / optional structural register</td><td>High audit value after Land(ⁿB), but can begin as render/checker discipline.</td></tr>
-<tr><td>ⁿB / ⁿBᵢ / ΔⁿB / ⁿ⁺¹B</td><td>Notation-only governance + render/checker discipline</td><td>Should be enforced in output shape without bloating schema.</td></tr>
+<tr><td>ⁿB / ⁿBᵢ / ΔⁿB / ⁿ⁺¹B</td><td>Notation-only governance + render/checker discipline</td><td>Enforced in output shape without bloating schema.</td></tr>
 </tbody>
 </table>
 </section>
 <section id="pv-human">
-<h2>14. Human interpretability recommendation</h2>
+<h2>14. Human-readable execution contract</h2>
 <p>Plain-English rendering of the full pipeline:</p>
 <div class="callout">
 <p>
@@ -854,7 +849,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </div>
 </section>
 <section id="pv-agent">
-<h2>15. Agentic LLM interpretability recommendation</h2>
+<h2>15. Agentic runtime legibility contract</h2>
 <ol>
 <li>Diagnose <code>D</code>, not merely the topic.</li>
 <li>Infer <code>ξ(D)</code> when warrant, proof, testimony, proper function, evidence, or defeaters are live.</li>
@@ -872,8 +867,8 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </ol>
 </section>
 <section id="pv-graphic">
-<h2>16. HTML graphic conformance snapshot</h2>
-<p>The current graphic should preserve these six panels where they remain source-aligned; this is no longer a pending implementation specification.</p>
+<h2>16. Generated graph conformance snapshot</h2>
+<p>The generated graph preserves these six source-aligned panels as a navigation surface; it is not a runtime owner or pending implementation proposal.</p>
 <div class="grid">
 <div class="card wide">
 <h3>Main flow diagram</h3>
@@ -921,7 +916,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li>Was <code>κ</code> identified as downstream dependency set, not generic “remaining issues”?</li>
 <li>Was <code>Δκ</code> updated after <code>Land(ⁿB)</code>?</li>
 <li>Where residual pressure or circularity is live, did compact <code>∇·</code> / <code>∇×</code> markers name an explicit target field and control effect?</li>
-<li>Were <code>del-dot</code> and <code>del-cross</code>, if used, treated as ASCII aliases for <code>∇·</code> and <code>∇×</code> rather than separate operators?</li>
+<li>Did runtime notation use <code>∇·T</code> and <code>∇×T</code>, with any checker aliases kept out of the displayed operator formula?</li>
 <li>Did the response distinguish <code>ΔⁿB</code> from <code>ⁿ⁺¹B</code>?</li>
 <li>Did submoves remain submoves unless reread licensed a new burden?</li>
 <li>Did each active TTP show <code>target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ</code> where ♥ is live?</li>
@@ -930,20 +925,18 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </ul>
 </section>
 <section id="pv-compatibility">
-<h2>18. Compatibility with current repo</h2>
-<p>Implementation status by surface:</p>
+<h2>18. Source-of-truth reference surfaces</h2>
+<p>These public-doc claims are grounded in repo owners and checkers. The generated page summarizes them; it does not replace them.</p>
 <table>
-<thead><tr><th>File</th><th>Status</th></tr></thead>
+<thead><tr><th>Surface</th><th>Runtime role</th></tr></thead>
 <tbody>
-<tr><td>nomenclature-normalization.md</td><td>DONE as symbol and alias bridge.</td></tr>
-<tr><td>recursive-state-transitions.md</td><td>PROVEN for burden/submove/reread notation and fixture-backed register-delta behavior.</td></tr>
-<tr><td>diagnostic-ir.md</td><td>PROVEN for derived/conditional register language and anti-schema-bloat boundary.</td></tr>
-<tr><td>output-release.md</td><td>PROVEN for release/reread governance through bridge fixtures and installed-skill hard smokes.</td></tr>
-<tr><td>diagnostic-render-contract.md</td><td>DONE for render boundary and anti-symbol-theater language.</td></tr>
-<tr><td>noetic-reading-checklist.md</td><td>DONE as bridge prompt surface; dedicated bridge fixtures now prove register effects.</td></tr>
-<tr><td>framework-pipeline.md</td><td>DONE as pipeline notation/governance surface; not a behavior smoke.</td></tr>
-<tr><td>README / architecture docs</td><td>DONE with fixture-backed and installed-skill-smoke-backed bridge claim, without release/package readiness claim.</td></tr>
-<tr><td>installed-skill / release-package smokes</td><td>PROVEN as installed-skill post-expansion evidence; current-release package artifact proof still requires release migration authorization.</td></tr>
+<tr><td><code>atomics/skill/references/diagnostics/diagnostic-ir.md</code></td><td>Typed IR, gate discipline, source-status, and schema-light register handling.</td></tr>
+<tr><td><code>atomics/skill/references/diagnostics/recursive-state-transitions.md</code></td><td>Strict burden notation, <code>ΔⁿB</code>, <code>Δκ</code>, <code>R(H,Δ)</code>, closure decisions, and field diagnostic placement.</td></tr>
+<tr><td><code>atomics/skill/references/rubrics/diagnostic-render-contract.md</code></td><td>Default governed render surfaces, compact witness markers, reconstruction witness, and anti-symbol-theater boundary.</td></tr>
+<tr><td><code>atomics/skill/references/rubrics/output-release.md</code></td><td>Public/restorative release, hold/partial discipline, and <code>T_lang(response): Ψᴺ ⇢ Ψᴵ</code> boundary.</td></tr>
+<tr><td><code>docs/algebraic-notation-and-noetic-formalism.md</code></td><td>Formalism map used by this public annex; subordinate to runtime owners for control effects.</td></tr>
+<tr><td><code>docs/register-formalism-implementation-ledger.md</code></td><td>Ledger for register bridge evidence, fixtures, and checker coverage.</td></tr>
+<tr><td><code>tools/check_docs_index_interactions.py</code></td><td>Public docs guard for control-card order, notation discipline, concept graph links, and stale alias/formula regressions.</td></tr>
 </tbody>
 </table>
 </section>
@@ -960,14 +953,14 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li><strong>κ as remaining issues:</strong> treating dependency radius as a generic TODO list.</li>
 <li><strong>ⁿ⁺¹B for every topic:</strong> recursing because more content is available.</li>
 <li><strong>ΔⁿB and ⁿ⁺¹B conflation:</strong> mistaking local change for next-burden license.</li>
-<li><strong>Untargeted del-dot/del-cross:</strong> using ASCII aliases without an explicit target field or control effect.</li>
+<li><strong>Untargeted field diagnostics:</strong> using <code>∇·</code> / <code>∇×</code> without an explicit target field or control effect.</li>
 <li><strong>∇ as proof-by-symbol:</strong> treating divergence/curl notation as execution proof or as a replacement for Δ.</li>
 <li><strong>Convention violation:</strong> using <code>Bⁿ</code>, <code>⁺ⁿ⁺¹B</code>, or subscript as burden number.</li>
 <li><strong>Unreadable system:</strong> making notation too abstract for maintainers and LLMs.</li>
 </ul>
 </section>
 <section id="pv-final">
-<h2>20. Final recommended notation</h2>
+<h2>20. Final runtime notation</h2>
 <pre><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
   → ⁿB
   → {ⁿB₁...ⁿBₖ}
@@ -977,7 +970,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
   → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)
   → ⁿ⁺¹B | STOP | HOLD | PARTIAL</code></pre>
 <p>
-This is the best normalized runtime form because it preserves the repo’s strict burden convention, separates epistemic
+This runtime form preserves the repo’s strict burden convention, separates epistemic
 grammar <code>ξ</code> from ontological grammar <code>Ω</code>, makes meta-noetic memetics operational through <code>μ</code>, gives
 collapse-radius tracking <code>κ</code> a clear role in post-landing reread, and makes <code>♥</code> delta-bearing where release posture changes.
 </p>
@@ -987,7 +980,7 @@ collapse-radius tracking <code>κ</code> a clear role in post-landing reread, an
   ⟶ 𝒞(Ψᴺ)
   ⟶ N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
 <p>
-This is the best generalized algebraic form because it names the encoded noetic signal-state <code>Ψᴺ</code>, the constrained
+This algebraic form names the encoded noetic signal-state <code>Ψᴺ</code>, the constrained
 collapse/resolution operator <code>𝒞</code>, and the burden-cycle machinery by which DAEE acts on meta-noetic memetic structure.
 Every symbol either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the
 framework graphic. Nothing is merely decorative.

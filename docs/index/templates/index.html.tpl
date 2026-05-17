@@ -309,23 +309,31 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 .controlCard strong{display:block;font-size:16px;color:#f8fafc;margin-bottom:7px}
 .controlCard p{margin:0;color:#cbd5e1;font-size:13px;line-height:1.4}
-.controlCard.input{--c:#60a5fa}
-.controlCard.signal{--c:#38bdf8}
-.controlCard.structure{--c:#2dd4bf}
-.controlCard.noetic{--c:#14b8a6}
-.controlCard.criterion{--c:#facc15}
-.controlCard.source{--c:#93c5fd}
-.controlCard.heart{--c:#fb7185}
-.controlCard.xi{--c:#22d3ee}
-.controlCard.omega{--c:#a78bfa}
-.controlCard.mu{--c:#f472b6}
-.controlCard.kappa{--c:#fb923c}
-.controlCard.held{--c:#94a3b8}
-.controlCard.reread{--c:#22c55e}
-.controlCard.collapse{--c:#ef4444}
-.controlCard.final{--c:#eab308}
-.controlCard.final .controlSym{font-size:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.controlCard.collapse .controlSym{font-size:23px}
+.controlCard.phase-input{--c:var(--blue)}
+.controlCard.phase-layer-a{--c:var(--cyan)}
+.controlCard.phase-gate{--c:var(--violet)}
+.controlCard.phase-owner-delta{--c:var(--orange)}
+.controlCard.phase-reread-closure{--c:var(--green)}
+.controlCard.phase-public-boundary{--c:var(--red)}
+.controlCard.final-card .controlSym{font-size:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.controlCard.phase-reread-closure .controlSym{font-size:23px}
+.controlCard.route-gradient-card .controlSym,
+.controlCard.field-diagnostic-card .controlSym,
+.controlCard.loopbreak-card .controlSym,
+.controlCard.burden-card .controlSym,
+.controlCard.delta-card .controlSym,
+.controlCard.public-boundary-card .controlSym,
+.controlCard.final-card .controlSym{
+  max-width:100%;
+  height:auto;
+  min-height:48px;
+  line-height:1.08;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:18px;
+}
 @media(min-width:1500px){.controlOverviewGrid{grid-template-columns:repeat(5,minmax(220px,1fr))}}
 @media(max-width:1499px){.controlOverviewGrid{grid-template-columns:repeat(3,minmax(220px,1fr))}}
 @media(max-width:900px){.controlOverviewGrid{grid-template-columns:repeat(2,minmax(220px,1fr))}}
@@ -1098,6 +1106,27 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   box-shadow:0 0 0 3px color-mix(in srgb,var(--sc),transparent 62%),0 12px 26px rgba(0,0,0,.18);
   background:color-mix(in srgb,rgba(13,17,23,.72),var(--sc) 7%);
 }
+.v60-selectable-subcard{
+  cursor:pointer;
+  position:relative;
+  transition:border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.v60-selectable-subcard:hover,
+.v60-selectable-subcard:focus-visible{
+  border-color:color-mix(in srgb,var(--sc),#fff 18%)!important;
+  background:color-mix(in srgb,#0d1117,var(--sc) 10%)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--sc),transparent 78%);
+  outline:none;
+}
+.v60-selectable-subcard.v60-subactive{
+  border-color:color-mix(in srgb,var(--sc),#fff 28%)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--sc),transparent 60%);
+  background:color-mix(in srgb,#0d1117,var(--sc) 13%)!important;
+}
+.v60-selectable-subcard::after{
+  content:none;
+  display:none;
+}
 .v30-stage-detail{
   margin-top:14px!important;
   border-color:#334155!important;
@@ -1575,8 +1604,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   align-items:center!important;
 }
 #architecture #canonical-architecture-runtime .v56-formula-flow .node{
-  white-space:nowrap!important;
-  overflow-wrap:normal!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
 }
 #architecture #canonical-architecture-runtime .v56-input{border-color:rgba(96,165,250,.65);background:rgba(96,165,250,.10)}
 #architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.09)}
@@ -1584,6 +1613,40 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 #architecture #canonical-architecture-runtime .v56-land{border-color:rgba(251,146,60,.65);background:rgba(251,146,60,.10)}
 #architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(34,197,94,.65);background:rgba(34,197,94,.10)}
 #architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(239,68,68,.65);background:rgba(239,68,68,.09)}
+#architecture #canonical-architecture-runtime .v21-s1{--sc:var(--blue)!important;--sc-rgb:96,165,250!important}
+#architecture #canonical-architecture-runtime .v21-s2{--sc:var(--cyan)!important;--sc-rgb:34,211,238!important}
+#architecture #canonical-architecture-runtime .v21-s3{--sc:var(--violet)!important;--sc-rgb:167,139,250!important}
+#architecture #canonical-architecture-runtime .v21-s4{--sc:var(--orange)!important;--sc-rgb:251,146,60!important}
+#architecture #canonical-architecture-runtime .v21-s5{--sc:var(--red)!important;--sc-rgb:248,113,113!important}
+#architecture #canonical-architecture-runtime .v21-stage{
+  background:rgba(var(--sc-rgb),.045)!important;
+  border-color:rgba(var(--sc-rgb),.92)!important;
+}
+#architecture #canonical-architecture-runtime .v21-card{
+  border-color:rgba(var(--sc-rgb),.32)!important;
+  background:rgba(8,13,25,.78)!important;
+}
+#architecture #canonical-architecture-runtime .v21-note{
+  background:rgba(var(--sc-rgb),.045)!important;
+}
+#architecture #canonical-architecture-runtime .v21-s5 .v21-purple{
+  --sc:var(--red)!important;
+  --sc-rgb:248,113,113!important;
+  background:rgba(248,113,113,.055)!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-label{
+  color:var(--green)!important;
+  font-style:normal!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-phase{
+  --sc:var(--green)!important;
+  --sc-rgb:34,197,94!important;
+  border-color:rgba(34,197,94,.45)!important;
+  background:rgba(34,197,94,.045)!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-phase h3{
+  color:var(--green)!important;
+}
 #architecture #canonical-architecture-runtime .v60-pipeline-stack{
   display:grid!important;
   gap:10px!important;
@@ -1591,24 +1654,42 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 #architecture #canonical-architecture-runtime .v60-pipeline-row{
   display:flex!important;
-  flex-wrap:nowrap!important;
+  flex-wrap:wrap!important;
   align-items:center!important;
-  gap:5px!important;
+  gap:6px!important;
+  row-gap:8px!important;
   max-width:100%!important;
   overflow:visible!important;
 }
 #architecture #canonical-architecture-runtime .v60-pipeline-row .node{
-  white-space:nowrap!important;
-  overflow-wrap:normal!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
   word-break:normal!important;
-  flex:0 0 auto!important;
-  font-size:clamp(8.5px,.72vw,12px)!important;
+  flex:0 1 auto!important;
+  max-width:100%!important;
+  font-size:clamp(10px,.72vw,12px)!important;
   padding:6px 8px!important;
   border-radius:10px!important;
 }
 #architecture #canonical-architecture-runtime .v60-pipeline-row .arrow{
   flex:0 0 auto!important;
   font-size:clamp(9px,.7vw,12px)!important;
+}
+@media(min-width:1500px){
+  #architecture #canonical-architecture-runtime .v60-runtime-row{
+    flex-wrap:nowrap!important;
+    gap:5px!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-runtime-row .node{
+    white-space:nowrap!important;
+    overflow-wrap:normal!important;
+    flex:0 0 auto!important;
+    font-size:clamp(11px,.68vw,12px)!important;
+    padding:6px 8px!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-runtime-row .arrow{
+    font-size:12px!important;
+  }
 }
 #architecture #canonical-architecture-runtime .v60-field-diagnostics{
   display:grid!important;
@@ -1642,6 +1723,14 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   border-radius:10px!important;
   padding:7px!important;
 }
+#architecture #canonical-architecture-runtime .v60-field-heading{
+  color:var(--orange)!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+  flex:0 0 100%!important;
+}
 #architecture #canonical-architecture-runtime .v60-field-target{
   display:inline-flex!important;
   align-items:center!important;
@@ -1655,12 +1744,23 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-size:12px!important;
   font-weight:900!important;
 }
+#architecture #canonical-architecture-runtime .v60-field-grammar .v60-field-target{
+  border-color:rgba(34,211,238,.62)!important;
+  background:rgba(34,211,238,.10)!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-form{
+  border-color:rgba(251,146,60,.75)!important;
+  flex:1 1 auto!important;
+}
 #architecture #canonical-architecture-runtime .v60-field-meaning{
   color:#cbd5e1!important;
   font-size:11px!important;
   line-height:1.32!important;
   min-width:180px!important;
   flex:1 1 180px!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-wide{
+  flex:1 1 100%!important;
 }
 #architecture #canonical-architecture-runtime .v60-diagnostic-note{
   border:1px dashed rgba(34,197,94,.45)!important;
@@ -1696,12 +1796,12 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 {{ GENERATED_DATA }}
 <script>
 const CURRENT_STAGES = [{"id": "source", "n": "0", "title": "Source / Runtime Boundary", "color": "blue", "kind": "retained source/runtime boundary", "receives": ["Canonical atomized source under atomics/skill/.", "Generated runtime under skill/.", "Repo/dev harness that is not canonical package content."], "detects": ["Source-of-truth versus generated output.", "Original module IDs versus omnibus bundle containers.", "Package boundary and runtime resolver constraints."], "writes": ["Generated skill/ runtime.", "compiled-module-map.json and build-manifest.json.", "User-facing package root."], "next": ["Edits happen in atomics/skill; generated runtime is rebuilt.", "Bundle co-location is availability, not activation."], "gap": ["schema-light register bridge keeps this boundary and adds fixture-backed registers to the same source/runtime pipeline."]}, {"id": "input", "n": "1", "title": "Input / Surface Discourse", "color": "blue", "kind": "retained compact baseline stage", "receives": ["User claim, doubt, objection, proof packet, slogan, source request, or worldview claim."], "detects": ["Criterion language, source-status cues, testimony posture, discourse register, repeated slogans, visible objection family."], "writes": ["D as input signal and candidate diagnostic features.", "Initial read-status/confidence surface for Layer A."], "next": ["No direct argument-bank response before diagnostic reduction."], "gap": ["The retained baseline has D implicitly; schema-light register bridge makes D₀ → Ψᴺ explicit."]}, {"id": "noetic", "n": "2", "title": "Noetic / Meta-Noetic Read", "color": "green", "kind": "retained compact baseline stage", "receives": ["Surface discourse plus signal features.", "V1 / noetic checklist / deformation / concealment / discourse-orientation surfaces."], "detects": ["N: operative noetic frame.", "m: deformation/concealment/memetic mode.", "Reason role, testimony posture, DO-orient, source-status pressure."], "writes": ["Case-state and compact control features feeding IR(N,m,τ,σ).", "Held/deferred routes where warranted."], "next": ["V1/core axes and triggered passes complete or case is held/partial."], "gap": ["♥/ξ/Ω/μ/κ are implemented as derived/conditional bridge registers, not hard schema fields."]}, {"id": "ir", "n": "3", "title": "IR / Gate / Routing", "color": "cyan", "kind": "retained compact baseline stage", "receives": ["Typed diagnostic state, triggered Phase 2 passes, source-status, claim level, pattern profile, held routes."], "detects": ["IR consistency, suppression rules, routing precedence, P7 stops, source-status non-equivalence."], "writes": ["IR(N,m,τ,σ).", "Current bounded operator / live burden candidate.", "Matched owner source identities."], "next": ["Dispatch only after gate checks and routing precedence authorize the owner/TTP."], "gap": ["schema-light register bridge extends the compact control surface to IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) as derived/conditional structural registers."]}, {"id": "owner", "n": "4", "title": "Owner / TTP Execution", "color": "violet", "kind": "retained compact baseline stage", "receives": ["Validated IR and active live burden B.", "Owner-loadform maps and module source identities."], "detects": ["Which owner is structurally live: V1/V2/FPD/M1/M9/V10/P7/etc.", "Whether owner body is actually loaded or only label-recognized."], "writes": ["Target → operation → result submoves inside B.", "Owner-backed contribution to Land(ⁿB)."], "next": ["Every active owner executes locally, is cleared, held, or marked PARTIAL."], "gap": ["schema-light register bridge normalizes owner submoves as ⁿBᵢ[OP] with Δξ/ΔΩ/Δσ/Δμ/Δκ where live."]}, {"id": "reread", "n": "5", "title": "Land(ⁿB) → R(H,Δ)", "color": "red", "kind": "retained compact baseline stage", "receives": ["Current burden result, held set H, burden-state delta Δ."], "detects": ["Whether another input-anchored burden remains.", "Whether same-burden facets are being mistaken for new burdens.", "STOP/HOLD/RECURSE/PARTIAL decision."], "writes": ["R(H,Δ) reread and terminal/next-burden decision."], "next": ["If recurse, return to diagnostic/routing re-entry; if closure, final restorative response."], "gap": ["schema-light register bridge distinguishes ΔⁿB from ⁿ⁺¹B and adds Δκ/collapse-radius reread."]}];
-const TARGET_STAGES = [{"id": "t-input", "n": "1", "title": "Input / Surface Discourse", "color": "blue", "kind": "current bridge stage", "receives": ["D₀: surface claim, objection, slogan, proof packet, source request, or case file."], "detects": ["Source/message/encoding/channel/noise/redundancy signals.", "♥ register: grief, identity, performance, truth-seeking, mixed, or unclear.", "Whether the discourse is a proposition or a carrier of deeper noetic grammar."], "writes": ["D₀ as explicit surface-discourse object.", "Preserved ♥ register for burden sequencing, held material, tone, and release posture.", "Initial features for Ψᴺ reconstruction."], "next": ["Enough signal for diagnostic typing or explicitly marked underdetermined."], "failure": ["Topic-label dispatch before noetic read."]}, {"id": "t-psi", "n": "2", "title": "Encoded Noetic Signal-State", "color": "green", "kind": "current bridge stage", "receives": ["D₀ plus current noetic read features."], "detects": ["N,m,τ,σ plus ♥/ξ/Ω/μ/κ/H where structurally live."], "writes": ["Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩."], "next": ["♥ register and structural registers may be held/underdetermined, but not silently omitted when live."], "failure": ["♥ register collapses into noise or μ and meta-noetic memetics remains decorative vocabulary."]}, {"id": "t-ir", "n": "3", "title": "Expanded DSL / IR & Gated Governance", "color": "cyan", "kind": "current bridge stage", "receives": ["Ψᴺ and triggered diagnostic passes."], "detects": ["IR field consistency, suppression rules, source-status non-equivalence, routing precedence, P7 stops, architecture target, and bounded owner eligibility."], "writes": ["IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) as the current derived bridge over the non-optional DSL/IR control surface; fixture-backed register behavior is also backed by installed-skill smoke proof; release-package proof remains blocked until package authorization."], "next": ["Horizontal Gate → Precedence → Owner Select → Layer B sequence with connector arrows between compact boxes; detailed Gate checks sit in a compact sub-panel under the flow, then dispatch opens, holds, or partials while preserving register-to-release posture."], "failure": ["Treating IR as optional, bypassing gate/precedence, or adding hard schema bloat before smoke/checker stability."]}, {"id": "t-owner", "n": "4", "title": "Owner / TTP Activation", "color": "violet", "kind": "current bridge stage", "receives": ["Validated IR and current ⁿB."], "detects": ["Which owner acts on ♥, ξ, Ω, σ, μ, κ, H, or τ."], "writes": ["ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ."], "next": ["Every active owner locally changes state or is cleared/held/PARTIAL; Delta-nB/Delta-kappa feed target-explicit ∇·/∇× field diagnostics where closure depends on residual pressure or circularity; release-package proof remains authorization work."], "failure": ["Owner name printed without operation floor."]}, {"id": "t-burden", "n": "5", "title": "Burden Cycle / Layer B", "color": "orange", "kind": "current bridge stage", "receives": ["ⁿB and all material submoves {ⁿB₁...ⁿBₖ}."], "detects": ["Whether Σ submove deltas land the burden."], "writes": ["Land(ⁿB), ΔⁿB/Δκ, and target-explicit ∇·/∇× field-state diagnostics; register-delta notation is fixture-backed where it changes controls."], "next": ["Read ∇·/∇× over explicit live targets where control-relevant, then reread H, Δ♥ where live, and Δκ before closure or next burden."], "failure": ["One paragraph treated as landing without state delta."]}, {"id": "t-decision", "n": "6", "title": "Reread / Collapse Decision", "color": "red", "kind": "current bridge stage", "receives": ["H, Δ♥, ΔⁿB, Δκ, target-explicit ∇·/∇× field diagnostics, changed Ψᴺ′."], "detects": ["What collapsed, what mutated, what remains held, what residual divergence/curl pressure remains, what licenses ⁿ⁺¹B."], "writes": ["R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) names the fixture-backed reread grammar after target-explicit ∇·/∇× diagnostics; release-package readiness remains package-artifact-blocked."], "next": ["Recurse only for distinct τ/ξ/Ω/σ/κ; otherwise hold/partial/close."], "failure": ["Confusing local ΔⁿB with next-burden license."]}];
+const TARGET_STAGES = [{"id": "t-input", "n": "1", "title": "Input / Surface Discourse", "color": "blue", "kind": "current bridge stage", "receives": ["D₀: surface claim, objection, slogan, proof packet, source request, or case file."], "detects": ["Source/message/encoding/channel/noise/redundancy signals.", "♥ register: grief, identity, performance, truth-seeking, mixed, or unclear.", "Whether the discourse is a proposition or a carrier of deeper noetic grammar."], "writes": ["D₀ as explicit surface-discourse object.", "Preserved ♥ register for burden sequencing, held material, tone, and release posture.", "Initial features for Ψᴺ reconstruction."], "next": ["Enough signal for diagnostic typing or explicitly marked underdetermined."], "failure": ["Topic-label dispatch before noetic read."]}, {"id": "t-psi", "n": "2", "title": "Encoded Noetic Signal-State", "color": "green", "kind": "current bridge stage", "receives": ["D₀ plus current noetic read features."], "detects": ["N,m,τ,σ plus ♥/ξ/Ω/μ/κ/H where structurally live."], "writes": ["Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩."], "next": ["♥ register and structural registers may be held/underdetermined, but not silently omitted when live."], "failure": ["♥ register collapses into noise or μ and meta-noetic memetics remains decorative vocabulary."]}, {"id": "t-ir", "n": "3", "title": "Expanded DSL / IR & Gated Governance", "color": "cyan", "kind": "current bridge stage", "receives": ["Ψᴺ and triggered diagnostic passes."], "detects": ["IR field consistency, suppression rules, source-status non-equivalence, routing precedence, P7 stops, architecture target, and bounded owner eligibility."], "writes": ["IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) as the current derived bridge over the non-optional DSL/IR control surface; fixture/checker evidence keeps the bridge tied to runtime controls."], "next": ["Horizontal Gate → Precedence → Owner Select → Layer B sequence with connector arrows between compact boxes; detailed Gate checks sit in a compact sub-panel under the flow, then dispatch opens, holds, or partials while preserving register-to-release posture."], "failure": ["Treating IR as optional, bypassing gate/precedence, or adding hard schema bloat before smoke/checker stability."]}, {"id": "t-owner", "n": "4", "title": "Owner / TTP Activation", "color": "violet", "kind": "current bridge stage", "receives": ["Validated IR and current ⁿB."], "detects": ["Which owner acts on ♥, ξ, Ω, σ, μ, κ, H, or τ."], "writes": ["ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ."], "next": ["Every active owner locally changes state or is cleared/held/PARTIAL; ΔⁿB/Δκ feed target-explicit ∇·/∇× field diagnostics where closure depends on residual pressure or circularity."], "failure": ["Owner name printed without operation floor."]}, {"id": "t-burden", "n": "5", "title": "Burden Cycle / Layer B", "color": "orange", "kind": "current bridge stage", "receives": ["ⁿB and all material submoves {ⁿB₁...ⁿBₖ}."], "detects": ["Whether Σ submove deltas land the burden."], "writes": ["Land(ⁿB), ΔⁿB/Δκ, and target-explicit ∇·/∇× field-state diagnostics; register-delta notation is fixture-backed where it changes controls."], "next": ["Read ∇·/∇× over explicit live targets where control-relevant, then reread H, Δ♥ where live, and Δκ before closure or next burden."], "failure": ["One paragraph treated as landing without state delta."]}, {"id": "t-decision", "n": "6", "title": "Reread / Collapse Decision", "color": "red", "kind": "current bridge stage", "receives": ["H, Δ♥, ΔⁿB, Δκ, target-explicit ∇·/∇× field diagnostics, changed Ψᴺ′."], "detects": ["What collapsed, what mutated, what remains held, what residual divergence/curl pressure remains, what licenses ⁿ⁺¹B."], "writes": ["R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) names the fixture-backed reread grammar after target-explicit ∇·/∇× diagnostics."], "next": ["Recurse only for distinct τ/ξ/Ω/σ/κ; otherwise hold/partial/close."], "failure": ["Confusing local ΔⁿB with next-burden license."]}];
 const ARCHITECTURE_STAGES = [
   {"id":"t-input","n":"1","title":"D₀ / Surface Signal","color":"blue","kind":"canonical architecture stage","receives":["D₀: surface claim, objection, slogan, proof packet, source request, or case file."],"detects":["Source/message/encoding/channel/noise/redundancy signals.","♥ register: grief, identity, performance, truth-seeking, mixed, or unclear.","Whether the discourse is a proposition or a carrier of deeper noetic grammar."],"writes":["D₀ as explicit surface-discourse object.","Preserved ♥ register for burden sequencing, held material, tone, and release posture.","Initial features for Ψᴺ reconstruction."],"next":["Enough signal for diagnostic typing or explicitly marked underdetermined."],"failure":["Topic-label dispatch before noetic read."]},
-  {"id":"t-psi","n":"2","title":"Ψᴺ / Noetic Signal-State","color":"green","kind":"canonical architecture stage","receives":["D₀ plus current noetic read features."],"detects":["Proper-functional read: F, E, R, T, and Ø.","Structural registers N,m,τ,σ,♥,ξ,Ω,μ,κ,H where live."],"writes":["Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ as encoded noetic signal-state.","Live registers may be asserted, held, or marked underdetermined; they are not silently omitted when they govern release."],"next":["Only registers that affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture govern the next stage."],"failure":["♥/ξ/Ω/μ/κ become decorative notation rather than control-affecting registers."]},
-  {"id":"t-ir","n":"3","title":"DSL / IR & Gated Governance","color":"cyan","kind":"canonical architecture stage","receives":["Ψᴺ and triggered diagnostic passes."],"detects":["IR field consistency, suppression rules, source-status non-equivalence, routing precedence, P7 stops, architecture target, and bounded owner eligibility."],"writes":["Validated IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) as schema-light register notation over existing IR/control surfaces.","Gate → Precedence → Owner Select → Layer B sequence with register-to-release posture preserved."],"next":["Dispatch opens, holds, or partials only after gate checks and routing precedence authorize the owner/TTP."],"failure":["Treating IR as optional, bypassing gate/precedence, or adding hard schema fields without contract migration."]},
-  {"id":"t-owner","n":"4","title":"Owner/TTP + Burden / Reread Release","color":"violet","kind":"canonical architecture stage","receives":["Validated IR and current ⁿB."],"detects":["Which owner acts on ♥, ξ, Ω, σ, μ, κ, H, or τ.","Whether submoves are same-burden facets or a distinct next-burden candidate."],"writes":["ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ.","Land(ⁿB) only after owner-backed submoves change burden state; then target-explicit ∇·/∇× reads residual field pressure before reread."],"next":["Every active owner locally changes state, is cleared, held, or marked PARTIAL; target-explicit ∇·/∇× field diagnostics feed R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ), then STOP/HOLD/PARTIAL/ⁿ⁺¹B."],"failure":["Owner name printed without operation floor, or same-burden facets treated as a licensed new burden."]},
+  {"id":"t-psi","n":"2","title":"Ψᴺ / Noetic Signal-State","color":"cyan","kind":"canonical architecture stage","receives":["D₀ plus current noetic read features."],"detects":["Proper-functional read: F, E, R, T, and Ø.","Structural registers N,m,τ,σ,♥,ξ,Ω,μ,κ,H where live."],"writes":["Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ as encoded noetic signal-state.","Live registers may be asserted, held, or marked underdetermined; they are not silently omitted when they govern release."],"next":["Only registers that affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture govern the next stage."],"failure":["♥/ξ/Ω/μ/κ become decorative notation rather than control-affecting registers."]},
+  {"id":"t-ir","n":"3","title":"DSL / IR & Gated Governance","color":"violet","kind":"canonical architecture stage","receives":["Ψᴺ and triggered diagnostic passes."],"detects":["IR field consistency, suppression rules, source-status non-equivalence, routing precedence, P7 stops, architecture target, and bounded owner eligibility."],"writes":["Validated IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) as schema-light register notation over existing IR/control surfaces.","Gate → Precedence → Owner Select → Layer B sequence with register-to-release posture preserved."],"next":["Dispatch opens, holds, or partials only after gate checks and routing precedence authorize the owner/TTP."],"failure":["Treating IR as optional, bypassing gate/precedence, or adding hard schema fields without contract migration."]},
+  {"id":"t-owner","n":"4","title":"Owner/TTP + Δ / Field Diagnostics / Reread","color":"orange","kind":"canonical architecture stage","receives":["Validated IR and current ⁿB."],"detects":["Which owner acts on ♥, ξ, Ω, σ, μ, κ, H, or τ.","Whether submoves are same-burden facets or a distinct next-burden candidate."],"writes":["ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ.","Land(ⁿB) only after owner-backed submoves change burden state; then target-explicit ∇·/∇× reads residual field pressure before reread."],"next":["Every active owner locally changes state, is cleared, held, or marked PARTIAL; target-explicit ∇·/∇× field diagnostics feed R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ), then STOP/HOLD/PARTIAL/ⁿ⁺¹B."],"failure":["Owner name printed without operation floor, or same-burden facets treated as a licensed new burden."]},
   {"id":"t-collapse","n":"5","title":"Noetic Collapse / Restoration","color":"red","kind":"canonical architecture stage","receives":["H, ΔⁿB, Δκ, and changed Ψᴺ′ after reread."],"detects":["What collapsed, what mutated, what remains held, what licenses STOP/HOLD/RECURSE/PARTIAL."],"writes":["𝒞(Ψᴺ) as constrained resolution under owner-backed operations and reread.","N_fiṭrī ∧ ʿaql ṣarīḥ only as licensed restoration, not premature synthesis."],"next":["STOP, HOLD, PARTIAL, or ⁿ⁺¹B; recurse only for distinct live τ/ξ/Ω/σ/κ."],"failure":["Restoration printed before the dependency radius, held routes, or noetic state have been reread."]}
 ];
 const OWNER_FAMILIES = [{"id": "gate", "title": "Gate & Runtime Governance", "color": "cyan", "purpose": "Turns diagnostic state into permissible dispatch and release. This is where meta-noetic memetics becomes operational through IR fields, suppression, held material, routing precedence, and reread.", "owners": ["diagnostic-ir.md", "routing-precedence.md", "recursive-state-transitions.md", "output-release.md", "diagnostic-render-contract.md", "P7-restoration-stops"], "explains": ["Why the model cannot answer from topic alone.", "Why held material is not forgotten.", "Why ⁿ⁺¹B requires R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)."], "audit": "Look for gate checks, source-status discipline, no route-chain bounded operator, and no premature closure."}, {"id": "diagnostics", "title": "Diagnostic Owners", "color": "green", "purpose": "Read the noetic state before response. They identify N, m, reason-role, source-status, discourse orientation, and triggered ♥/ξ/Ω/μ/κ registers.", "owners": ["V1-diagnostic", "M5-deformation-triage", "reason-disambiguation", "foreign-premise-detection", "noetic-reading-checklist"], "explains": ["What is actually live?", "Is the burden epistemic, ontological, source-status, register, or content-level?"], "audit": "Check whether diagnosis is input-grounded and whether thin reads are held rather than overclaimed."}, {"id": "tactics", "title": "Tactics as State Transformers", "color": "violet", "purpose": "Local owner-backed transformations inside a live burden. They operate as ⁿBᵢ[OP] submoves, not as route-list labels.", "owners": ["M1", "M1-P", "M7", "M8", "M9", "R1", "R3", "E1-E4", "F1-F3"], "explains": ["Which rule is being corrected?", "What state delta does the submove produce?"], "audit": "Every active tactic must show target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ where ♥ is live."}, {"id": "techniques", "title": "Techniques as Burden Tools", "color": "orange", "purpose": "Higher-level methods for reason, transmission, signs, taqlīd, modality, and necessary-knowledge ordering.", "owners": ["V2", "V8", "V9", "V10", "V11", "V12"], "explains": ["How to execute a structurally live burden without collapsing into generic advice."], "audit": "The technique should be loaded/owned and locally applied; bundle availability is not activation."}, {"id": "procedures", "title": "Procedures as Sequencing / Restoration Control", "color": "red", "purpose": "Governs larger arcs: restoration, objection mapping, reason/revelation tension, maieutic follow-through, and stop/hold/recurse discipline.", "owners": ["P1", "P2", "P3", "P4", "P5", "P6", "P7"], "explains": ["When to stop, hold, recurse, partial, or finally release restoration."], "audit": "Restorative response must wait until live burdens are landed, held, or partialed."}];
@@ -1983,15 +2083,15 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     'ΔⁿB':{sym:'ΔⁿB', label:'burden-event delta', concept:'deltaB', key:'deltaB'},
     deltaK:{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'deltaK', key:'deltaK'},
     'Δκ':{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'deltaK', key:'deltaK'},
-    nablaDot:{sym:'∇·', label:'del-dot / residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
-    '∇·':{sym:'∇·', label:'del-dot / residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
-    nablaCross:{sym:'∇×', label:'del-cross / circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
-    '∇×':{sym:'∇×', label:'del-cross / circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
-    delDot:{sym:'del-dot', label:'ASCII alias for ∇·', concept:'delDot', key:'delDot'},
-    'del-dot':{sym:'del-dot', label:'ASCII alias for ∇·', concept:'delDot', key:'delDot'},
-    delCross:{sym:'del-cross', label:'ASCII alias for ∇×', concept:'delCross', key:'delCross'},
-    'del-cross':{sym:'del-cross', label:'ASCII alias for ∇×', concept:'delCross', key:'delCross'},
-    fieldDiagnostics:{sym:'∇·/∇×', label:'target-explicit post-Delta field diagnostics', concept:'nablaDot', key:'fieldDiagnostics'},
+    nablaDot:{sym:'∇·T', label:'target-explicit post-Delta residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
+    '∇·':{sym:'∇·', label:'target-explicit post-Delta residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
+    nablaCross:{sym:'∇×T', label:'target-explicit post-Delta circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
+    '∇×':{sym:'∇×', label:'target-explicit post-Delta circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
+    delDot:{sym:'∇·', label:'∇· / del-dot alias', concept:'delDot', key:'delDot'},
+    'del-dot':{sym:'∇·', label:'∇· / del-dot alias', concept:'delDot', key:'delDot'},
+    delCross:{sym:'∇×', label:'∇× / del-cross alias', concept:'delCross', key:'delCross'},
+    'del-cross':{sym:'∇×', label:'∇× / del-cross alias', concept:'delCross', key:'delCross'},
+    fieldDiagnostics:{sym:'∇·T/∇×T', label:'target-explicit post-Delta field diagnostics', concept:'nablaDot', key:'fieldDiagnostics'},
     R:{sym:'R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)', label:'state/noetic reread', concept:'R', key:'R'},
     C:{sym:'𝒞(Ψᴺ)', label:'constrained noetic collapse / discursive resolution', concept:'collapse', key:'C'},
     '𝒞(Ψᴺ)':{sym:'𝒞(Ψᴺ)', label:'constrained noetic collapse / discursive resolution', concept:'collapse', key:'C'},
@@ -2884,7 +2984,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         ids:['t-ir']
       },
       ownerRelease: {
-        title:'Owner/TTP + Burden / Reread Release',
+        title:'Owner/TTP + Δ / Field Diagnostics / Reread',
         subtitle:'Owner-backed submoves, strict burden notation, Land(ⁿB), and R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) form the release cycle.',
         ids:['t-owner']
       },
@@ -2892,6 +2992,147 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         title:'Noetic Collapse / Restoration',
         subtitle:'Constrained noetic resolution and restoration occur only after reread consumes the state delta and collapse radius.',
         ids:['t-collapse']
+      }
+    }
+  };
+
+  const SUBSTAGE_MAP = {
+    target: {
+      input: {
+        'encoded-signal': {
+          title:'D₀ / Surface Signal — Input as encoded signal',
+          subtitle:'The visible discourse is read as signal before any rebuttal is released.',
+          receives:['Surface claim, slogan, objection, proof packet, or source request.','Source, message, encoding, channel/noise, and visible register cues.'],
+          detects:['Whether the input is a proposition, source-status request, criterion signal, or register-bearing carrier.','♥ pressure such as grief, identity, performance, truth-seeking, mixed posture, or unclear posture.'],
+          writes:['D₀ as an explicit surface-discourse object.','Initial source/message/encoding/noise features for Ψᴺ reconstruction.'],
+          next:['Pass the encoded signal into Ψᴺ rather than answering the topic directly.'],
+          failure:['Topic-label dispatch before the surface signal is decoded.']
+        },
+        'no-direct-rebuttal': {
+          title:'D₀ / Surface Signal — Still no direct rebuttal',
+          subtitle:'Content release is blocked until the signal has been decoded into the noetic field.',
+          receives:['A tempting content-level answer before diagnostic reduction.','A proposition that may be downstream of criterion, source-status, or register pressure.'],
+          detects:['Whether a direct answer would answer the visible claim while missing the governing noetic burden.','Whether the surface wording is carrying hidden tribunal, source, or affective pressure.'],
+          writes:['A hold on direct rebuttal.','A requirement to decode D₀ into Ψᴺ before burden release.'],
+          next:['Move to Ψᴺ / Noetic Signal-State with the encoded signal preserved.'],
+          failure:['Winning a surface proposition while leaving the governing deformation or criterion untouched.']
+        }
+      },
+      psi: {
+        'proper-functional-read': {
+          title:'Ψᴺ / Noetic Signal-State — Proper-functional read',
+          subtitle:'The case is read for fitrah, epistemic environment, reason role, testimony posture, and defeater status.',
+          receives:['D₀ plus source/message/register features.','Current noetic-read evidence from discourse, profile, and source-status signals.'],
+          detects:['Whether recognition is functioning, occluded, suppressed, or underdetermined.','Whether reason and testimony are playing their sound role or an imported role.'],
+          writes:['Proper-function orientation values feeding Ψᴺ.','Initial constraints on tone, hold, and owner eligibility.'],
+          next:['Continue to structural registers only where they affect control behavior.'],
+          failure:['Treating the case as a topic answer without reading proper-function posture.']
+        },
+        'structural-registers': {
+          title:'Ψᴺ / Noetic Signal-State — Structural registers',
+          subtitle:'Live N, m, τ, σ, ♥, ξ, Ω, μ, κ, and H values are asserted, held, or marked underdetermined.',
+          receives:['Proper-functional read plus any live source, warrant, ontology, memetic, closure, or held-material signals.'],
+          detects:['Which registers govern the current burden and which remain held.','Whether κ/dependency radius or H/held material will affect later reread.'],
+          writes:['Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ as an encoded noetic signal-state.','Register constraints for IR, suppression, routing, Δκ, R, tone, and release posture.'],
+          next:['Form DSL/IR only from registers that are live or explicitly held.'],
+          failure:['Decorative register notation that does not change IR, owner choice, hold, reread, or release.']
+        },
+        'operational-boundary': {
+          title:'Ψᴺ / Noetic Signal-State — Operational boundary',
+          subtitle:'Registers govern only when they change execution state.',
+          receives:['Candidate ♥/ξ/Ω/μ/κ signals from the noetic read.'],
+          detects:['Whether a register affects IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.'],
+          writes:['Control-affecting registers into the next stage.','Non-governing notation back into explanation or reference status.'],
+          next:['Only live or held registers enter DSL/IR and gate behavior.'],
+          failure:['Symbol theater: printing registers that do not constrain execution.']
+        }
+      },
+      ir: {
+        'diagnostic-reduction-order': {
+          title:'DSL / IR & Gated Governance — Diagnostic reduction order',
+          subtitle:'The route opens only after D₀, Ψᴺ, core axes, Phase 2, overlays, and validated IR are in order.',
+          receives:['Ψᴺ and triggered diagnostic passes.','Core axes, Phase 2 pass results, overlays, and held material.'],
+          detects:['Whether diagnostic reduction is complete enough for dispatch.','Whether routing is trying to jump ahead of gate validation.'],
+          writes:['A validated diagnostic reduction sequence.','Gate/routing eligibility constraints for the current burden.'],
+          next:['Enter the DSL/IR control surface with validated structure.'],
+          failure:['Route itinerary formed before diagnostic reduction is complete.']
+        },
+        'ir-control-surface': {
+          title:'DSL / IR & Gated Governance — DSL / IR control surface',
+          subtitle:'IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) names control-affecting state, not a decorative schema.',
+          receives:['Validated Ψᴺ registers and diagnostic outputs.'],
+          detects:['Which N/m/τ/σ/♥/ξ/Ω/μ/κ values actually govern current burden behavior.','Whether source-status, warrant, ontology, register, or collapse-radius pressure is live.'],
+          writes:['Validated IR values for gate, precedence, owner selection, and release posture.','Held or underdetermined values that must remain visible to reread.'],
+          next:['Run gate checks and routing precedence before owner/TTP activation.'],
+          failure:['Treating IR as optional, retrospective, or merely explanatory.']
+        },
+        'gate-owner-layerb': {
+          title:'DSL / IR & Gated Governance — Gate → Precedence → Owner Select → Layer B',
+          subtitle:'Gate and routing select one bounded owner-backed operation before Layer B release.',
+          receives:['Validated IR, held material, routing precedence, and owner catalogue constraints.'],
+          detects:['Whether gate checks pass, what route has highest eligible ∇ pressure, and which owner can act.','Whether source-status or P7 discipline blocks release.'],
+          writes:['Current bounded operator and matched owner/TTP identity.','Layer B entry permission or HOLD/PARTIAL/RECURSE gating.'],
+          next:['Execute owner-backed submoves under the current ⁿB.'],
+          failure:['Owner name printed without gate, precedence, or bounded operation.']
+        }
+      },
+      ownerRelease: {
+        'operator-signature': {
+          title:'Owner/TTP + Δ / Field Diagnostics / Reread — Operator signature',
+          subtitle:'A submove is valid only as target → operation → result → ΔⁿB / Δκ.',
+          receives:['Validated IR and the current live ⁿB.','A selected owner/TTP with a bounded target.'],
+          detects:['Whether the owner actually performs an operation instead of being name-dropped.','Which register or burden state the operation can change.'],
+          writes:['ⁿBᵢ[OP] with target, operation, result, and transition effect.','A contribution to ΔⁿB and possibly Δκ.'],
+          next:['Accumulate owner-backed submoves until the current burden can land or be held/partialed.'],
+          failure:['TTP label without target, operation, result, or state delta.']
+        },
+        'strict-burden-cycle': {
+          title:'Owner/TTP + Δ / Field Diagnostics / Reread — Strict burden cycle',
+          subtitle:'Same-burden submoves land ⁿB before any new ⁿ⁺¹B is licensed.',
+          receives:['Current ⁿB and materially necessary submoves {ⁿB₁...ⁿBₖ}.'],
+          detects:['Whether submoves are facets of the same burden or a distinct next-burden candidate.','Whether Δκ changes downstream dependency radius.'],
+          writes:['Land(ⁿB), ΔⁿB, and Δκ where dependency radius changes.','A blocked route-chain if the same burden is being split cosmetically.'],
+          next:['Run target-explicit ∇·/∇× diagnostics over the Δ-produced field state.'],
+          failure:['Treating every submove or route leg as a new burden-cycle.']
+        },
+        'reread-gate': {
+          title:'Owner/TTP + Δ / Field Diagnostics / Reread — Reread gate',
+          subtitle:'After Δ lands, field diagnostics and R(H,Δ) reread the whole live field.',
+          receives:['ΔⁿB, Δκ, H, live registers, and target-explicit ∇·/∇× diagnostics.'],
+          detects:['Residual outward pressure, circular dependency, held material, and remaining live burdens.','Whether LoopBreak is needed, null, held, or licensed.'],
+          writes:['R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) as the refreshed field state.','A grounded basis for STOP, HOLD, RECURSE, PARTIAL, or COMPLETE.'],
+          next:['Move to decision only after diagnostics are cleared, integrated, held, or carried into RECURSE/PARTIAL.'],
+          failure:['Closure by checklist depletion instead of field-state reread.']
+        },
+        decision: {
+          title:'Owner/TTP + Δ / Field Diagnostics / Reread — Decision',
+          subtitle:'The decision is a closure/release state, not a decorative label.',
+          receives:['Reread output, residual pressure status, held material, and next-burden eligibility.'],
+          detects:['Whether STOP, HOLD, RECURSE, PARTIAL, or COMPLETE is licensed.','Whether ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ.'],
+          writes:['The licensed next control state.','A proof that same-burden facets remain inside ⁿB unless a distinct next burden is live.'],
+          next:['Either recurse to the next bounded burden or move toward 𝒞(Ψᴺ) and public release.'],
+          failure:['Premature COMPLETE, unlicensed RECURSE, or same-burden facets treated as new burdens.']
+        }
+      },
+      collapse: {
+        'constrained-resolution': {
+          title:'Noetic Collapse / Restoration — Constrained resolution',
+          subtitle:'𝒞(Ψᴺ) is positive closure-field condition, not a checklist count.',
+          receives:['Reread state with landed, held, partialed, or resolved burdens.','Register and κ/H status after diagnostics.'],
+          detects:['Whether N_fiṭrī ∧ ʿaql ṣarīḥ is licensed in the agent execution field.','Whether residual ∇·/∇× pressure blocks final closure.'],
+          writes:['𝒞(Ψᴺ) as constrained noetic resolution where licensed.','A restored frame that honors ♥, ξ, Ω, μ, κ, and held material boundaries.'],
+          next:['Render a restorative response only after closure or explicit HOLD/PARTIAL discipline.'],
+          failure:['Restoration printed before dependency radius, held routes, or noetic state are reread.']
+        },
+        'coupling-boundary': {
+          title:'Noetic Collapse / Restoration — Coupling boundary',
+          subtitle:'T_lang(response): Ψᴺ ⇢ Ψᴵ names public language release, not direct soul access.',
+          receives:['A licensed response from the agent execution field Ψᴺ.','Diagnosed interlocutor field Ψᴵ inferred from discourse/profile/register/source-status evidence.'],
+          detects:['Whether the public response preserves closure, register, and master deformation diagnosis.','Whether wording overclaims uptake, conversion, guidance, or access to the soul.'],
+          writes:['A language-mediated coupling attempt toward Ψᴵ.','Explicit non-claim of guaranteed uptake or interlocutor acceptance.'],
+          next:['Public/restorative render with no hidden live pressure and no guaranteed-uptake claim.'],
+          failure:['Treating final language as direct rewrite of the interlocutor or proof of conversion.']
+        }
       }
     }
   };
@@ -2914,6 +3155,17 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
   function auditBox(title, items){
     return `<div class="v30-audit-box"><h4>${esc(title)}</h4>${list(items)}</div>`;
   }
+  function renderAuditTrace(panel, config, failureTitle){
+    panel.innerHTML = `<h3>${esc(config.title)}</h3>
+      <p class="v30-detail-subtitle"><strong>Trace:</strong> ${esc(config.subtitle)}</p>
+      <div class="v30-audit-grid">
+        ${auditBox('Receives', config.receives || [])}
+        ${auditBox('Detects', config.detects || [])}
+        ${auditBox('Writes / constrains', config.writes || [])}
+        ${auditBox('Before next stage', config.next || [])}
+        ${auditBox(failureTitle, config.failure || config.gap || [])}
+      </div>`;
+  }
 
   function renderStaticStage(pipeline,key){
     const config = STATIC_STAGE_MAP[pipeline]?.[key];
@@ -2929,17 +3181,42 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(el => {
       el.classList.toggle('v30-active', el.getAttribute('data-stage-key') === key);
     });
+    document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(el => {
+      el.classList.remove('v60-subactive');
+    });
 
     const finalKey = pipeline === 'current' ? 'gap' : 'failure';
-    panel.innerHTML = `<h3>${esc(config.title)}</h3>
-      <p class="v30-detail-subtitle"><strong>Trace:</strong> ${esc(config.subtitle)}</p>
-      <div class="v30-audit-grid">
-        ${auditBox('Receives', flatten(stages,'receives'))}
-        ${auditBox('Detects', flatten(stages,'detects'))}
-        ${auditBox('Writes / constrains', flatten(stages,'writes'))}
-        ${auditBox('Before next stage', flatten(stages,'next'))}
-        ${auditBox(pipeline === 'current' ? 'Bridge overlay on retained spine' : 'Failure looks like', flatten(stages,finalKey))}
-      </div>`;
+    renderAuditTrace(panel, {
+      title:config.title,
+      subtitle:config.subtitle,
+      receives:flatten(stages,'receives'),
+      detects:flatten(stages,'detects'),
+      writes:flatten(stages,'writes'),
+      next:flatten(stages,'next'),
+      [finalKey]:flatten(stages,finalKey)
+    }, pipeline === 'current' ? 'Bridge overlay on retained spine' : 'Failure looks like');
+  }
+
+  function renderStaticSubstage(el){
+    const stageEl = el.closest('.v30-selectable-stage');
+    if(!stageEl) return;
+    const pipeline = stageEl.getAttribute('data-pipeline');
+    const stageKey = stageEl.getAttribute('data-stage-key');
+    const subKey = el.getAttribute('data-substage-key');
+    const config = SUBSTAGE_MAP[pipeline]?.[stageKey]?.[subKey];
+    if(!config) return;
+
+    const panelId = pipeline === 'current' ? 'currentStaticStageDetail' : 'targetStaticStageDetail';
+    const panel = document.getElementById(panelId);
+    if(!panel) return;
+
+    document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(stage => {
+      stage.classList.toggle('v30-active', stage === stageEl);
+    });
+    document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(card => {
+      card.classList.toggle('v60-subactive', card === el);
+    });
+    renderAuditTrace(panel, config, 'Failure looks like');
   }
 
   function attachStaticPipelineInteractivity(){
@@ -2952,6 +3229,20 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         if(ev.key === 'Enter' || ev.key === ' '){
           ev.preventDefault();
           handler();
+        }
+      });
+    });
+    document.querySelectorAll('.v60-selectable-subcard').forEach(el => {
+      const handler = ev => {
+        ev.stopPropagation();
+        renderStaticSubstage(el);
+      };
+      el.addEventListener('click', handler);
+      el.addEventListener('keydown', ev => {
+        if(ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          ev.stopPropagation();
+          renderStaticSubstage(el);
         }
       });
     });
@@ -3043,8 +3334,8 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     Land:['Land','deltaB','deltaK'],
     deltaB:['deltaB','Land','nablaDot','nablaCross','R'],
     deltaK:['deltaK','kappa','nablaDot','nablaCross','R'],
-    nablaDot:['nablaDot','delDot','deltaB','deltaK','R'],
-    nablaCross:['nablaCross','delCross','deltaB','deltaK','R'],
+    nablaDot:['nablaDot','deltaB','deltaK','R'],
+    nablaCross:['nablaCross','deltaB','deltaK','R'],
     delDot:['delDot','nablaDot'],
     delCross:['delCross','nablaCross'],
     fieldDiagnostics:['nablaDot','nablaCross','deltaB','deltaK','R'],
@@ -3072,7 +3363,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
 
 
 <script id="field-diagnostics-concept-parity-v60">
-/* v60: first-class Δ / ∇ / del-dot / del-cross concepts and algebraic relation parity. */
+  /* v60: first-class Δ / ∇·T / ∇×T concepts with ASCII aliases kept secondary. */
 (function(){
   function ensureConcept(id, obj){
     if(!Array.isArray(CONCEPTS)) return;
@@ -3089,13 +3380,13 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
   function ensureFieldDiagnosticConcepts(){
     ensureConcept('submoves', {id:'submoves', name:'ⁿBᵢ[OPᵢ] submove/operator', type:'runtime control state', summary:'Owner-backed submove executed under the current burden.', definition:'ⁿBᵢ[OPᵢ] names an owner-backed submove: target → operation → result under the bounded current burden ⁿB.', runtime:'Submoves can change the burden field through ΔⁿB, but they do not become new burdens unless R(H,Δ) licenses ⁿ⁺¹B.', fields:['ⁿB','ΔⁿB','Δκ','R'], operators:['owner/TTP','P7','output-release'], relations:['executes within → ⁿB','produces → ΔⁿB','feeds → Land(ⁿB)'], files:['output-release.md','recursive-state-transitions.md','diagnostic-render-contract.md'], case:'A source-status operation may be ⁿB₂[OP₂] while the current burden remains ⁿB.', symbols:['submoves','burden','deltaB']});
     ensureConcept('Land', {id:'Land', name:'Land(ⁿB) burden landing', type:'runtime control state', summary:'The current burden lands only after owner-backed submoves produce governed state change.', definition:'Land(ⁿB) marks burden landing. It is not persuasion theater; it is the point at which the current burden has produced a governed ΔⁿB/Δκ transition or is held/partialed.', runtime:'Land(ⁿB) precedes ∇·/∇× field diagnostics and R(H,Δ) reread. It does not itself license final closure.', fields:['ⁿB','ⁿBᵢ[OPᵢ]','ΔⁿB','Δκ','R'], operators:['P7','recursive-state-transitions','output-release'], relations:['is produced by → ⁿBᵢ[OPᵢ]','precedes → ΔⁿB / Δκ','precedes → ∇· / ∇× diagnostics'], files:['recursive-state-transitions.md','output-release.md'], case:'After the active burden lands, the runtime rereads dependencies rather than continuing by momentum.', symbols:['Land','burden','submoves','deltaB','deltaK']});
-    ensureConcept('deltaB', {id:'deltaB', name:'ΔⁿB burden-event delta', type:'runtime control state', summary:'Event-local transition produced by burden/submove landing.', definition:'ΔⁿB is the burden-event delta. It marks the state transition produced by Land(ⁿB) and its owner-backed submoves.', runtime:'ΔⁿB comes before ∇·/∇× field diagnostics and before R(H,Δ). It is not interchangeable with ∇.', fields:['ⁿB','ⁿBᵢ[OPᵢ]','Land(ⁿB)','Δκ','∇·','∇×','R'], operators:['P7','recursive-state-transitions'], relations:['computed by → Land(ⁿB)','precedes → ∇· / ∇× field diagnostics','feeds → R(H,Δ)'], files:['recursive-state-transitions.md','output-release.md','algebraic-notation-and-noetic-formalism.md'], case:'B2 landed; ΔⁿB records what changed in the burden field before field pressure is read.', symbols:['deltaB','burden','submoves','Land','nablaDot','nablaCross','R']});
+    ensureConcept('deltaB', {id:'deltaB', name:'ΔⁿB burden-event delta', type:'runtime control state', summary:'Event-local transition produced by burden/submove landing.', definition:'ΔⁿB is the burden-event delta. It marks the state transition produced by Land(ⁿB) and its owner-backed submoves.', runtime:'ΔⁿB comes before ∇·/∇× field diagnostics and before R(H,Δ). It is not interchangeable with ∇.', fields:['ⁿB','ⁿBᵢ[OPᵢ]','Land(ⁿB)','Δκ','∇·','∇×','R'], operators:['P7','recursive-state-transitions'], relations:['computed by → Land(ⁿB)','precedes → ∇· / ∇× field diagnostics','feeds → R(H,Δ)'], files:['recursive-state-transitions.md','output-release.md','algebraic-notation-and-noetic-formalism.md'], case:'²B landed; Δ²B records what changed in the burden field before field pressure is read.', symbols:['deltaB','burden','submoves','Land','nablaDot','nablaCross','R']});
     ensureConcept('deltaK', {id:'deltaK', name:'Δκ closure-state delta', type:'runtime control state', summary:'Case-collapse / dependency-radius transition after burden-field update.', definition:'Δκ marks dependency-radius or closure-state change produced by the burden cycle. κ is the collapse/closure-state target when rendered as ∇·κ or ∇×κ.', runtime:'Δκ is a transition, not a divergence/curl diagnostic. ∇·κ and ∇×κ may read the κ field after Δκ is produced.', fields:['κ','ΔⁿB','∇·κ','∇×κ','R'], operators:['P7','M8','recursive-state-transitions'], relations:['updates → κ','precedes → ∇·κ / ∇×κ','feeds → R(H,Δ)'], files:['recursive-state-transitions.md','diagnostic-render-contract.md'], case:'If dependency radius expands after a burden lands, Δκ is live and closure remains gated.', symbols:['deltaK','kappa','nablaDot','nablaCross','R']});
-    ensureConcept('nablaDot', {id:'nablaDot', name:'∇· / del-dot target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading divergence-like residual outward pressure in an explicit target field.', definition:'∇· reads residual outward pressure in a named target field after Δ has produced a field state. Valid targets include κ, B, ♥, ξ, registers, routes, or owner-defined fields when the target and control effect are explicit.', runtime:'Detects unresolved outward burden/dependency/register/route pressure after a burden event or field-state update. Positive pressure blocks false closure unless cleared, integrated, discharged, held with reason, or carried into RECURSE/PARTIAL.', fields:['ΔⁿB','Δκ','κ','ⁿB','♥','ξ','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇·B positive over B3/B4 means residual burden-field pressure remains after the last Land(ⁿB).', symbols:['nablaDot','delDot','deltaB','deltaK','R']});
-    ensureConcept('nablaCross', {id:'nablaCross', name:'∇× / del-cross target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.', definition:'∇× reads circularity or rotational dependency in a named target field after Δ has produced a field state. It is a closure diagnostic over relational noetic space, not a graph metaphor or proof-by-symbol.', runtime:'Detects dependency loops, circular burden pressure, recursive closure failure, or route cycles that linear transition alone cannot resolve. Nonzero curl pressure blocks COMPLETE without accounting.', fields:['ΔⁿB','Δκ','κ','ⁿB','ξ','routes','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → loop-breaking / RECURSE / PARTIAL'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇×ξ unresolved means the certainty register contains circular warrant pressure that linear traversal will not resolve.', symbols:['nablaCross','delCross','deltaB','deltaK','R']});
-    ensureConcept('delDot', {id:'delDot', name:'del-dot ASCII alias', type:'runtime control state', summary:'ASCII alias for ∇·.', definition:'del-dot is the grep/checker-safe spelling of ∇·. It is not a separate operator.', runtime:'Use where Unicode is impractical while preserving the same target-explicit divergence-like diagnostic contract.', fields:['∇·','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇·','not separate from → ∇·'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-dot(B) is the ASCII way to refer to ∇·B in checker-safe text.', symbols:['delDot','nablaDot']});
-    ensureConcept('delCross', {id:'delCross', name:'del-cross ASCII alias', type:'runtime control state', summary:'ASCII alias for ∇×.', definition:'del-cross is the grep/checker-safe spelling of ∇×. It is not a separate operator.', runtime:'Use where Unicode is impractical while preserving the same target-explicit curl-like diagnostic contract.', fields:['∇×','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇×','not separate from → ∇×'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-cross(ξ) is the ASCII way to refer to ∇×ξ in checker-safe text.', symbols:['delCross','nablaCross']});
-    ensureConcept('R', {id:'R', name:'R(H,Δ) recursive field-state reread', type:'runtime control state', summary:'Rereads the whole live field after burden events and field-state diagnostics.', definition:'R(H,Δ) is the recursive state reread after ΔⁿB/Δκ and target-explicit ∇·/∇× field diagnostics. R(H,Delta) is ASCII fallback only.', runtime:'Rereads selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, alternate routes, residual pressure, and closure state. It licenses STOP/HOLD/RECURSE/PARTIAL/COMPLETE only after accounting.', fields:['H','ΔⁿB','Δκ','∇·','∇×','κ','ⁿB'], operators:['P7','output-release','recursive-state-transitions'], relations:['rereads → whole live field','after → Δ and ∇ diagnostics','licenses → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['recursive-state-transitions.md','output-release.md','diagnostic-render-contract.md'], case:'After B2 lands, R(H,Δ) must reread B3/B4 and any circular dependency before closure.', symbols:['R','H','deltaB','deltaK','nablaDot','nablaCross']});
+    ensureConcept('nablaDot', {id:'nablaDot', name:'∇·T target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading divergence-like residual outward pressure in an explicit target field T.', definition:'∇·T reads residual outward pressure in a named target field after Δ has produced a field state. Target grammar: T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}. Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.', runtime:'Detects unresolved outward burden/dependency/register/route pressure after a burden event or field-state update. Positive pressure blocks false closure unless cleared, integrated, discharged, held with reason, or carried into RECURSE/PARTIAL.', fields:['ΔⁿB','Δκ','κ','ⁿB','ξ','Ω','♥','μ','H','route','register','Ψᴺ-slice','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇·ⁿB positive over dependent burdens means residual burden-field pressure remains after the last Land(ⁿB).', symbols:['nablaDot','deltaB','deltaK','R']});
+    ensureConcept('nablaCross', {id:'nablaCross', name:'∇×T target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field T.', definition:'∇×T reads circularity or rotational dependency in a named target field after Δ has produced a field state. Target grammar: T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}. It is a closure diagnostic over relational noetic space, not a graph metaphor or proof-by-symbol.', runtime:'Detects dependency loops, circular burden pressure, recursive closure failure, or route cycles that linear transition alone cannot resolve. Nonzero curl pressure blocks COMPLETE without accounting.', fields:['ΔⁿB','Δκ','κ','ⁿB','ξ','Ω','μ','σ','route','register','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → loop-breaking / RECURSE / PARTIAL'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇×ξ unresolved means the certainty register contains circular warrant pressure that linear traversal will not resolve.', symbols:['nablaCross','deltaB','deltaK','R']});
+    ensureConcept('delDot', {id:'delDot', name:'∇· / del-dot alias', type:'notation alias', summary:'∇· diagnostic with del-dot ASCII alias.', definition:'del-dot is the grep/checker-safe spelling of ∇·. It is not a separate operator and not its own runtime state.', runtime:'Use the ∇· diagnostic as primary notation; use del-dot only where Unicode is impractical while preserving the same target-explicit divergence-like diagnostic contract.', fields:['∇·','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇·','not separate from → ∇·'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-dot(ⁿB) is the ASCII way to refer to ∇·ⁿB in checker-safe text.', symbols:['delDot','nablaDot']});
+    ensureConcept('delCross', {id:'delCross', name:'∇× / del-cross alias', type:'notation alias', summary:'∇× diagnostic with del-cross ASCII alias.', definition:'del-cross is the grep/checker-safe spelling of ∇×. It is not a separate operator and not its own runtime state.', runtime:'Use the ∇× diagnostic as primary notation; use del-cross only where Unicode is impractical while preserving the same target-explicit curl-like diagnostic contract.', fields:['∇×','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇×','not separate from → ∇×'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-cross(ξ) is the ASCII way to refer to ∇×ξ in checker-safe text.', symbols:['delCross','nablaCross']});
+    ensureConcept('R', {id:'R', name:'R(H,Δ) recursive field-state reread', type:'runtime control state', summary:'Rereads the whole live field after burden events and field-state diagnostics.', definition:'R(H,Δ) is the recursive state reread after ΔⁿB/Δκ and target-explicit ∇·/∇× field diagnostics. R(H,Delta) is ASCII fallback only.', runtime:'Rereads selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, alternate routes, residual pressure, and closure state. It licenses STOP/HOLD/RECURSE/PARTIAL/COMPLETE only after accounting.', fields:['H','ΔⁿB','Δκ','∇·','∇×','κ','ⁿB'], operators:['P7','output-release','recursive-state-transitions'], relations:['rereads → whole live field','after → Δ and ∇ diagnostics','licenses → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['recursive-state-transitions.md','output-release.md','diagnostic-render-contract.md'], case:'After ²B lands, R(H,Δ) must reread dependent burdens and any circular dependency before closure.', symbols:['R','H','deltaB','deltaK','nablaDot','nablaCross']});
     const decision = (CONCEPTS||[]).find(c => c.id === 'decision');
     if(decision){
       decision.name = 'STOP / HOLD / RECURSE / PARTIAL / COMPLETE';
@@ -3106,11 +3397,11 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
   }
   function ensureFieldDiagnosticRelations(){
     ensureRelation('rel-submove-land-delta', {id:'rel-submove-land-delta', label:'ⁿBᵢ[OPᵢ] lands into ΔⁿB / Δκ', type:'produces-transition', from:'ⁿBᵢ[OPᵢ]', to:'Land(ⁿB) → ΔⁿB / Δκ', symbols:['submoves','Land','deltaB','deltaK'], explain:'Owner-backed submoves operate inside the selected burden and produce event-local transition when the burden lands.', runtime:'This keeps Δ as transition machinery and prevents ∇ from replacing burden events.'});
-    ensureRelation('rel-delta-before-field-diagnostics', {id:'rel-delta-before-field-diagnostics', label:'Δ precedes ∇· / ∇× diagnostics', type:'pipeline-order', from:'ΔⁿB / Δκ', to:'∇· / ∇× field diagnostics', symbols:['deltaB','deltaK','nablaDot','nablaCross'], explain:'∇· and ∇× read the field state that Δ produced. They cannot be applied before a burden lands.', runtime:'This is the operator hierarchy: Δ computes event-local transition; ∇ reads the resulting field pressure.'});
-    ensureRelation('rel-field-diagnostics-reread', {id:'rel-field-diagnostics-reread', label:'field diagnostics feed R(H,Δ)', type:'closure-gate', from:'∇· / ∇× target field state', to:'R(H,Δ)', symbols:['nablaDot','nablaCross','R','H'], explain:'Residual divergence/curl pressure must be accounted for before closure.', runtime:'Nonzero ∇· or ∇× with no accounting is false closure.'});
+    ensureRelation('rel-delta-before-field-diagnostics', {id:'rel-delta-before-field-diagnostics', label:'Δ precedes ∇·T / ∇×T diagnostics', type:'pipeline-order', from:'ΔⁿB / Δκ', to:'∇·T / ∇×T field diagnostics', symbols:['deltaB','deltaK','nablaDot','nablaCross'], explain:'∇·T and ∇×T read the field state that Δ produced. They cannot be applied before a burden lands.', runtime:'This is the operator hierarchy: ∇ ranks eligible route pressure before burden release; Δ computes event-local transition; ∇·T/∇×T diagnose the resulting target-explicit field pressure.'});
+    ensureRelation('rel-field-diagnostics-reread', {id:'rel-field-diagnostics-reread', label:'field diagnostics feed R(H,Δ)', type:'closure-gate', from:'∇·T / ∇×T target field state', to:'R(H,Δ)', symbols:['nablaDot','nablaCross','R','H'], explain:'Residual divergence/curl pressure must be accounted for before closure.', runtime:'Nonzero ∇·T or ∇×T with no accounting is false closure.'});
     ensureRelation('rel-del-dot-alias', {id:'rel-del-dot-alias', label:'del-dot is alias-of ∇·', type:'alias-of', from:'del-dot', to:'∇·', symbols:['delDot','nablaDot'], explain:'del-dot is the ASCII alias for ∇·, not a separate operator.', runtime:'Checker-safe spelling preserves the same target-explicit field diagnostic semantics.'});
     ensureRelation('rel-del-cross-alias', {id:'rel-del-cross-alias', label:'del-cross is alias-of ∇×', type:'alias-of', from:'del-cross', to:'∇×', symbols:['delCross','nablaCross'], explain:'del-cross is the ASCII alias for ∇×, not a separate operator.', runtime:'Checker-safe spelling preserves the same target-explicit curl-like diagnostic semantics.'});
-    ensureRelation('rel-nabla-not-delta', {id:'rel-nabla-not-delta', label:'∇ is not a substitute for Δ', type:'anti-conflation', from:'∇· / ∇×', to:'ΔⁿB / Δκ', symbols:['nablaDot','nablaCross','deltaB','deltaK'], explain:'∇· and ∇× diagnose Δ-produced field state. They do not compute transitions and do not replace Δ.', runtime:'If ∇ is used as transition proof or proof-by-symbol, the render/checker must fail.'});
+    ensureRelation('rel-nabla-not-delta', {id:'rel-nabla-not-delta', label:'∇·T / ∇×T are not substitutes for Δ', type:'anti-conflation', from:'∇·T / ∇×T', to:'ΔⁿB / Δκ', symbols:['nablaDot','nablaCross','deltaB','deltaK'], explain:'∇·T and ∇×T diagnose Δ-produced field state. They do not compute transitions and do not replace Δ.', runtime:'If field diagnostics are used as transition proof or proof-by-symbol, the render/checker must fail.'});
     ensureRelation('rel-reread-whole-live-field', {id:'rel-reread-whole-live-field', label:'R(H,Δ) rereads the whole live field', type:'reconstruction-fidelity', from:'R(H,Δ)', to:'selected/held N, burdens, registers, routes, residual pressure', symbols:['R','H','deltaB','deltaK','nablaDot','nablaCross'], explain:'R rereads more than the selected route. Alternate structures, hidden dependencies, circularities, and residual pressures remain live until accounted for.', runtime:'Closure is not route exhaustion; it is field accounting after reread.'});
     ensureRelation('rel-selected-path-release-order', {id:'rel-selected-path-release-order', label:'selected path is release order over the live field', type:'field-accounting', from:'selected execution path', to:'live noetic/burden/dependency/register/route field', symbols:['noetic','burden','submoves','deltaB','nablaDot','nablaCross','R'], explain:'A selected route is the order of release, not the whole field itself.', runtime:'Multiple valid noetic-structure selections must be integrated, discharged, held, or carried into RECURSE/PARTIAL rather than scalar-collapsed.'});
   }
@@ -3177,7 +3468,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     gradient:{concept:'gradient', key:'gradient'}, '∇':{concept:'gradient', key:'gradient'}, 'route-gradient':{concept:'gradient', key:'gradient'}, routeGradient:{concept:'gradient', key:'gradient'},
     loopBreak:{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak':{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak(∇×T)':{concept:'loopBreak', key:'loopBreak'},
     PsiI:{concept:'PsiI', key:'PsiI'}, 'Ψᴵ':{concept:'PsiI', key:'PsiI'},
-    coupling:{concept:'coupling', key:'coupling'}, T_lang:{concept:'coupling', key:'coupling'}, 'T_lang: Ψᴺ ⇢ Ψᴵ':{concept:'coupling', key:'coupling'}
+    coupling:{concept:'coupling', key:'coupling'}, T_lang:{concept:'coupling', key:'coupling'}, 'T_lang(response): Ψᴺ ⇢ Ψᴵ':{concept:'coupling', key:'coupling'}
   };
   function ensureConcept(id, obj){
     if(!Array.isArray(CONCEPTS)) return;
@@ -3211,13 +3502,13 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
       name:'LoopBreak(∇×T) loop-breaking submove',
       type:'runtime control state',
       summary:'Owner-grounded submove licensed when nonzero curl remains in an explicit target field.',
-      definition:'LoopBreak(∇×T) targets a circular dependency in target field T and grounds the loop in an owner-licensed non-circular source such as fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, source-status correction, or contradiction exposure.',
-      runtime:'A valid loop-breaker must state the target loop, grounding source, burden/submove, Δ effect, post-break ∇×T reread, and closure/HOLD/PARTIAL/RECURSE result. If no loop-breaker is licensed, nonzero curl remains held or recursed rather than hidden by closure.',
+      definition:'LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R. It targets a circular dependency in target field T and grounds the loop in an owner-licensed non-circular source.',
+      runtime:'G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}. LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread. If no loop-breaker is licensed, nonzero curl remains held or recursed rather than hidden by closure.',
       fields:['∇×','T','ΔⁿB','Δκ','R'],
       operators:['P1','V2','V3','V9','M1','M7','M8','R1','proof-method-audit'],
-      relations:['licensed by → nonzero ∇×T plus owner ground','produces → Δ update','requires → post-break ∇×T reread','not → arbitrary assertion'],
+      relations:['licensed by → nonzero ∇×T plus owner ground','requires → target loop + G + ⁿBᵢ[OPᵢ] + Δ + R','produces → Δ update','requires → post-break ∇×T reread','not → arbitrary assertion'],
       files:['recursive-state-transitions.md','output-release.md','diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'],
-      case:'∇×B remains nonzero around circular warrant demand; LoopBreak(∇×B) grounds the burden in necessary knowledge and triggers R(H,Δ).',
+      case:'∇×ⁿB remains nonzero around circular warrant demand; LoopBreak(∇×T) ⊢ target loop + necessary knowledge + ⁿBᵢ[OPᵢ] + Δ + R.',
       symbols:['loopBreak','nablaCross','deltaB','deltaK','R']
     });
     ensureConcept('PsiI', {
@@ -3236,25 +3527,25 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     });
     ensureConcept('coupling', {
       id:'coupling',
-      name:'T_lang language-mediated coupling',
+      name:'T_lang(response): Ψᴺ ⇢ Ψᴵ output boundary',
       type:'output-governance rule',
-      summary:'Release relation from the agent execution field toward the diagnosed interlocutor field.',
-      definition:'T_lang: Ψᴺ ⇢ Ψᴵ names the language-mediated coupling attempt. A released burden does not directly rewrite the interlocutor; it offers a response whose structure may perturb the diagnosed field.',
-      runtime:'Coupling is assessed by identity preservation, non-deformation, live-burden address, reconstruction fidelity, and whether the release creates conditions for reconfiguration toward fiṭrah and sound reason without claiming guaranteed uptake.',
+      summary:'Post-closure public release boundary from the agent execution field toward the diagnosed interlocutor field.',
+      definition:'T_lang(response): Ψᴺ ⇢ Ψᴵ names the language-mediated output boundary after closure, HOLD, PARTIAL, or RECURSE accounting. It is not a burden-loop transition, Δ event, R reread, or claim that the interlocutor has been rewritten.',
+      runtime:'The boundary checks that the public response preserves identity, avoids deformation, addresses the live burden state, and releases toward fiṭrah and sound reason without claiming guaranteed uptake, acceptance, or guidance control.',
       fields:['Ψᴺ','Ψᴵ','R','𝒞(Ψᴺ)','Restorative Response'],
       operators:['output-release','diagnostic-render-contract','P1','P7'],
-      relations:['releases through → language','may perturb → Ψᴵ','bounded by → no guaranteed uptake','checked by → R(H,Δ) / reconstruction fidelity'],
+      relations:['post-closure boundary from → Ψᴺ','toward diagnosed → Ψᴵ','not → burden-loop transition','not → guaranteed uptake'],
       files:['recursive-state-transitions.md','diagnostic-ir.md','output-release.md','diagnostic-render-contract.md'],
-      case:'The final restorative response can preserve the master deformation and address live burden pressure while still refusing to claim the interlocutor has accepted it.',
+      case:'T_lang(response) names the public release boundary, not access-to-soul, conversion guarantee, or another runtime state transition.',
       symbols:['coupling','Psi','PsiI','final','C']
     });
     ensureRelation('rel-live-field-gradient', {id:'rel-live-field-gradient', label:'live field feeds ∇ route-gradient', type:'route-pressure', from:'live noetic/burden/dependency/register/route field', to:'∇ route-gradient', symbols:['gradient','Psi','IR','burden'], explain:'Plain ∇ reads route pressure after the field is diagnostically constrained.', runtime:'It explains release order without bypassing IR, routing precedence, or catalogue gates.'});
     ensureRelation('rel-gradient-gate-constrained', {id:'rel-gradient-gate-constrained', label:'IR/V1/catalogue constrain ∇', type:'gate-boundary', from:'IR / V1 / catalogue gates', to:'∇ route-gradient', symbols:['gradient','IR'], explain:'Route-gradient pressure is computed only over eligible routes.', runtime:'∇ cannot authorize arbitrary jumps or replace owner eligibility.'});
     ensureRelation('rel-gradient-selects-release-pressure', {id:'rel-gradient-selects-release-pressure', label:'∇ orders release pressure', type:'release-order', from:'∇ route-gradient', to:'selected live burden / release order', symbols:['gradient','burden'], explain:'The selected execution path is the release order over the live field, not the whole field.', runtime:'Multiple live structures remain accounted through R(H,Δ).'});
-    ensureRelation('rel-curl-loopbreak', {id:'rel-curl-loopbreak', label:'nonzero ∇×T checks LoopBreak eligibility', type:'loop-breaking', from:'∇×T nonzero', to:'LoopBreak(∇×T)', symbols:['nablaCross','loopBreak'], explain:'Curl may require a loop-breaking submove rather than indefinite deferral or false closure.', runtime:'LoopBreak requires target loop, ground, Δ effect, and post-break reread.'});
-    ensureRelation('rel-loopbreak-delta-reread', {id:'rel-loopbreak-delta-reread', label:'LoopBreak produces Δ and rereads curl', type:'pipeline-order', from:'LoopBreak(∇×T)', to:'Δ update → ∇×T reread → R(H,Δ)', symbols:['loopBreak','deltaB','nablaCross','R'], explain:'Loop-breaking is operative only when it changes state and triggers reread.', runtime:'It cannot be arbitrary assertion or proof-by-symbol.'});
+    ensureRelation('rel-curl-loopbreak', {id:'rel-curl-loopbreak', label:'nonzero ∇×T checks LoopBreak eligibility', type:'loop-breaking', from:'∇×T nonzero', to:'LoopBreak(∇×T)', symbols:['nablaCross','loopBreak'], explain:'Curl may require a loop-breaking submove rather than indefinite deferral or false closure.', runtime:'LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R; G must be an owner-licensed grounding source.'});
+    ensureRelation('rel-loopbreak-delta-reread', {id:'rel-loopbreak-delta-reread', label:'LoopBreak produces Δ and rereads curl', type:'pipeline-order', from:'LoopBreak(∇×T)', to:'Δ update → ∇×T reread → R(H,Δ)', symbols:['loopBreak','deltaB','nablaCross','R'], explain:'Loop-breaking is operative only when it changes state and triggers reread.', runtime:'It requires target loop, grounding source, burden/submove, Δ effect, and post-break reread; it cannot be arbitrary assertion or proof-by-symbol.'});
     ensureRelation('rel-closure-field-condition', {id:'rel-closure-field-condition', label:'𝒞(Ψᴺ) licenses STOP as positive closure-field condition', type:'closure-field', from:'R(H,Δ) + cleared/bounded residual pressure', to:'𝒞(Ψᴺ)', symbols:['C','R','nablaDot','nablaCross','gradient'], explain:'Closure is target configuration, not checklist exhaustion.', runtime:'It does not guarantee interlocutor conversion.'});
-    ensureRelation('rel-agent-interlocutor-coupling', {id:'rel-agent-interlocutor-coupling', label:'Ψᴺ releases through T_lang toward Ψᴵ', type:'coupling', from:'Ψᴺ agent execution field', to:'Ψᴵ diagnosed interlocutor field', symbols:['Psi','PsiI','coupling','final'], explain:'The public response is a language-mediated coupling attempt.', runtime:'No access-to-soul, guaranteed uptake, or guidance-control claim is licensed.'});
+    ensureRelation('rel-agent-interlocutor-coupling', {id:'rel-agent-interlocutor-coupling', label:'Ψᴺ releases through T_lang(response) toward Ψᴵ', type:'output boundary', from:'Ψᴺ agent execution field', to:'Ψᴵ diagnosed interlocutor field', symbols:['Psi','PsiI','coupling','final'], explain:'The public response is a language-mediated output boundary after closure/hold/partial accounting.', runtime:'No access-to-soul, guaranteed uptake, or guidance-control claim is licensed; T_lang is not a burden-loop transition.'});
   }
   const previousGoConceptField = window.goConceptField;
   window.goConceptField = function(raw){

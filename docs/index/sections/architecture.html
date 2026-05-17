@@ -6,16 +6,16 @@
 <div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">
 <div class="flowline v60-pipeline-row v60-runtime-row" aria-label="Canonical runtime spine">
 <span class="node v56-input">Input</span><span class="arrow">→</span>
-<span class="node v56-ir">Banner + Layer A / IR</span><span class="arrow">→</span>
+<span class="node v56-ir" title="Banner + Layer A / IR">Layer A / IR</span><span class="arrow">→</span>
 <span class="node v56-owner">N + registers</span><span class="arrow">→</span>
-<span class="node v56-owner">Gate/routing + ∇ route-gradient</span><span class="arrow">→</span>
+<span class="node v56-owner" title="Gate/routing + ∇ route-gradient">Gate/routing + ∇</span><span class="arrow">→</span>
 <span class="node v56-owner">Operation</span><span class="arrow">→</span>
-<span class="node v56-land">ΔⁿB/Δκ + Land(B)</span><span class="arrow">→</span>
-<span class="node v56-land">∇·/∇× diagnostics</span><span class="arrow">→</span>
-<span class="node v56-land">LoopBreak if ∇×T nonzero</span><span class="arrow">→</span>
-<span class="node v56-reread">R(H,Δ) reread</span><span class="arrow">→</span>
-<span class="node v56-reread">𝒞(Ψᴺ) + STOP / HOLD / RECURSE / PARTIAL</span><span class="arrow">→</span>
-<span class="node v56-decision">Restorative Response + T_lang(Ψᴺ ⇢ Ψᴵ)</span>
+<span class="node v56-land" title="Land(ⁿB) + ΔⁿB/Δκ">Land(ⁿB)+Δ</span><span class="arrow">→</span>
+<span class="node v56-land" title="∇·T / ∇×T target-explicit diagnostics">∇·T/∇×T</span><span class="arrow">→</span>
+<span class="node v56-land" title="LoopBreak if ∇×T nonzero">LoopBreak(∇×T)</span><span class="arrow">→</span>
+<span class="node v56-reread" title="R(H,Δ) reread">R(H,Δ)</span><span class="arrow">→</span>
+<span class="node v56-reread" title="𝒞(Ψᴺ) + STOP/HOLD/RECURSE/PARTIAL/COMPLETE">𝒞(Ψᴺ) + Decision</span><span class="arrow">→</span>
+<span class="node v56-decision" title="T_lang(response): Ψᴺ ⇢ Ψᴵ">Restorative + T_lang</span>
 </div>
 <div class="flowline v56-formula-flow v60-pipeline-row v60-formal-row" aria-label="Canonical algebraic runtime spine">
 <span class="node v56-input">𝓝 ⊢ D₀</span><span class="arrow">→</span>
@@ -23,17 +23,17 @@
 <span class="node v56-owner">∇ route pressure</span><span class="arrow">→</span>
 <span class="node v56-owner">ⁿB → {ⁿBᵢ[OPᵢ]}</span><span class="arrow">→</span>
 <span class="node v56-land">Land(ⁿB)</span><span class="arrow">→</span>
-<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·/∇× → LoopBreak(∇×T)</span><span class="arrow">→</span>
+<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T → LoopBreak(∇×T)</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
-<span class="node v56-decision">𝒞(Ψᴺ) / Decision → Ψᴵ coupling</span>
+<span class="node v56-decision">𝒞(Ψᴺ) / Decision → T_lang(response)</span>
 </div>
 </div>
 <p class="subtle">Expanded <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> is formal/navigation notation over existing IR/control surfaces, not a current hard JSON field migration. For the full register formalism, use <a href="algebraic-notation-and-noetic-formalism.md">the formalism source</a> and <a href="register-formalism-implementation-ledger.md">the implementation ledger</a>.</p>
-<div class="v30-click-hint">Click a bridge stage panel below to inspect its audit trace. DRY here means one current architecture map, not deletion of source-aligned diagnostic affordances.</div>
+<div class="v30-click-hint">Select a bridge stage panel below to inspect its audit trace.</div>
 <div class="v21-five-col">
 <article class="v21-stage v21-s1 v30-selectable-stage" data-pipeline="target" data-stage-key="input" role="button" tabindex="0">
 <h2><span>1</span> D₀ / Surface Signal</h2>
-<div class="v21-card"><h3>Input as encoded signal</h3><ul>
+<div class="v21-card v60-selectable-subcard" data-substage-key="encoded-signal" role="button" tabindex="0"><h3>Input as encoded signal</h3><ul>
 <li><b>D₀</b> visible surface discourse</li>
 <li><b>source</b> origin of claim / criterion / authority</li>
 <li><b>message</b> slogan, objection, proof packet, request</li>
@@ -41,18 +41,18 @@
 <li><b>noise</b> deformation, equivocation, proof-method narrowing</li>
 <li><b>♥</b> register: grief, identity, performance, truth-seeking, mixed, unclear</li>
 </ul></div>
-<div class="v21-card v21-warn"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure.</p></div>
+<div class="v21-card v21-warn v60-selectable-subcard" data-substage-key="no-direct-rebuttal" role="button" tabindex="0"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure.</p></div>
 </article>
 <article class="v21-stage v21-s2 v30-selectable-stage" data-pipeline="target" data-stage-key="psi" role="button" tabindex="0">
 <h2><span>2</span> Ψᴺ / Noetic Signal-State</h2>
-<div class="v21-card"><h3>Proper-functional read</h3><ul>
+<div class="v21-card v60-selectable-subcard" data-substage-key="proper-functional-read" role="button" tabindex="0"><h3>Proper-functional read</h3><ul>
 <li><b>F</b> fiṭrah / proper-function orientation</li>
 <li><b>E</b> epistemic environment</li>
 <li><b>R</b> reason role</li>
 <li><b>T</b> testimony posture</li>
 <li><b>Ø</b> defeater / deformation status</li>
 </ul></div>
-<div class="v21-card"><h3>Structural registers</h3><ul>
+<div class="v21-card v60-selectable-subcard" data-substage-key="structural-registers" role="button" tabindex="0"><h3>Structural registers</h3><ul>
 <li><b>N</b> operative noetic frame</li>
 <li><b>m</b> deformation / memetic mode</li>
 <li><b>τ</b> tribunal / burden-function</li>
@@ -64,16 +64,16 @@
 <li><b>κ</b> collapse radius</li>
 <li><b>H</b> held set</li>
 </ul></div>
-<div class="v21-note"><b>Operational boundary:</b> ♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.</div>
+<div class="v21-note v60-selectable-subcard" data-substage-key="operational-boundary" role="button" tabindex="0"><b>Operational boundary:</b> ♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.</div>
 </article>
 <article class="v21-stage v21-s3 v30-selectable-stage" data-pipeline="target" data-stage-key="ir" role="button" tabindex="0">
 <h2><span>3</span> DSL / IR &amp; Gated Governance</h2>
-<div class="v21-card"><h3>Diagnostic reduction order</h3>
+<div class="v21-card v60-selectable-subcard" data-substage-key="diagnostic-reduction-order" role="button" tabindex="0"><h3>Diagnostic reduction order</h3>
 <div class="v21-proc-flow target">
 <div>D₀</div><span>→</span><div>Ψᴺ</div><span>→</span><div>core axes</div><span>→</span><div>Phase 2</div><span>→</span><div>overlays</div><span>→</span><div>validated IR</div><span>→</span><div>gate checks</div><span>→</span><div>routing</div>
 </div>
 </div>
-<div class="v21-card v54-ir-essential"><h3>DSL / IR control surface</h3>
+<div class="v21-card v54-ir-essential v60-selectable-subcard" data-substage-key="ir-control-surface" role="button" tabindex="0"><h3>DSL / IR control surface</h3>
 <p><code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> names register-derived control over existing IR and gate behavior where live.</p>
 <div class="v21-field-grid">
 <div><b>N</b><span>runtime-selected noetic frame</span><small>selected or held from 𝓝; governs current burden</small></div>
@@ -87,7 +87,7 @@
 <div><b>κ</b><span>collapse radius</span><small>downstream dependency set for reread</small></div>
 </div>
 </div>
-<div class="v21-card"><h3>Gate → Precedence → Owner Select → Layer B</h3>
+<div class="v21-card v60-selectable-subcard" data-substage-key="gate-owner-layerb" role="button" tabindex="0"><h3>Gate → Precedence → Owner Select → Layer B</h3>
 <div class="v54-gate-flow">
 <div class="v54-gate-step"><h4>Gate</h4><p>validated IR before dispatch</p></div>
 <div class="v54-gate-arrow">→</div>
@@ -111,11 +111,11 @@
 </div>
 </div></article>
 <article class="v21-stage v21-s4 v30-selectable-stage" data-pipeline="target" data-stage-key="ownerRelease" role="button" tabindex="0">
-<h2><span>4</span> Owner/TTP + Burden / Reread Release</h2>
-<div class="v21-card"><h3>Operator signature</h3>
+<h2><span>4</span> Owner/TTP + Δ / Field Diagnostics / <em class="v60-reread-label">Reread</em></h2>
+<div class="v21-card v60-selectable-subcard" data-substage-key="operator-signature" role="button" tabindex="0"><h3>Operator signature</h3>
 <div class="v21-stage-formula">ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</div>
 </div>
-<div class="v21-card"><h3>Strict burden cycle</h3>
+<div class="v21-card v60-selectable-subcard" data-substage-key="strict-burden-cycle" role="button" tabindex="0"><h3>Strict burden cycle</h3>
 <div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB / Δκ</div>
 <ul>
 <li><b>♥</b> register/release posture changed or held inside <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code></li>
@@ -125,7 +125,7 @@
 <li><b>Δκ</b> dependency radius changed downstream of burden-state</li>
 </ul>
 </div>
-<div class="v21-card"><h3>Reread gate</h3>
+<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="reread-gate" role="button" tabindex="0"><h3>Reread gate</h3>
 <div class="v21-stage-formula">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | RECURSE | PARTIAL | COMPLETE</div>
 <div class="v60-field-diagnostics" aria-label="Field diagnostics after Delta">
 <div class="v60-diagnostic-card">
@@ -133,30 +133,49 @@
 <span>Burden/submove work changes ΔⁿB and, where dependency radius changes, Δκ.</span>
 </div>
 <div class="v60-diagnostic-card">
-<b>∇ reads after Δ</b>
-<span>Field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span>
+<b>∇· / ∇× read after Δ</b>
+<span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span>
+</div>
+<div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">
+<span class="v60-field-heading">Target grammar</span>
+<span class="v60-field-target">∇·T</span>
+<span class="v60-field-target">∇×T</span>
+<span class="v60-field-meaning">T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}</span>
 </div>
 <div class="v60-field-targets" aria-label="Readable divergence examples">
+<span class="v60-field-heading">∇· examples</span>
 <span class="v60-field-target">∇·κ</span>
-<span class="v60-field-target">∇·B</span>
+<span class="v60-field-target">∇·ⁿB</span>
+<span class="v60-field-target">∇·ξ</span>
+<span class="v60-field-target">∇·Ω</span>
 <span class="v60-field-target">∇·♥</span>
+<span class="v60-field-target">∇·μ</span>
+<span class="v60-field-target">∇·route</span>
+<span class="v60-field-target">∇·H</span>
 <span class="v60-field-meaning">residual outward pressure in an explicit target field</span>
 </div>
 <div class="v60-field-targets" aria-label="Readable curl examples">
+<span class="v60-field-heading">∇× examples</span>
 <span class="v60-field-target">∇×κ</span>
-<span class="v60-field-target">∇×B</span>
+<span class="v60-field-target">∇×ⁿB</span>
 <span class="v60-field-target">∇×ξ</span>
+<span class="v60-field-target">∇×Ω</span>
+<span class="v60-field-target">∇×μ</span>
+<span class="v60-field-target">∇×route</span>
+<span class="v60-field-target">∇×σ</span>
 <span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>
 </div>
-<div class="v60-field-targets" aria-label="Readable loop-breaking examples">
-<span class="v60-field-target">LoopBreak(∇×B)</span>
-<span class="v60-field-target">LoopBreak(∇×ξ)</span>
-<span class="v60-field-meaning">licensed only with target loop, grounding source, Δ effect, and post-break reread</span>
+<div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>
+<div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">
+<span class="v60-field-heading">LoopBreak witness</span>
+<span class="v60-field-target v60-loopbreak-form">LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R</span>
+<span class="v60-field-meaning">G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}</span>
+<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>
 </div>
 <div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>
 </div>
 </div>
-<div class="v21-card"><h3>Decision</h3>
+<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="decision" role="button" tabindex="0"><h3>Decision</h3>
 <div class="v21-dec-grid">
 <div class="stop">■<br/>STOP</div>
 <div class="hold">–<br/>HOLD</div>
@@ -169,7 +188,7 @@
 </article>
 <article class="v21-stage v21-s5 v30-selectable-stage" data-pipeline="target" data-stage-key="collapse" role="button" tabindex="0">
 <h2><span>5</span> Noetic Collapse / Restoration</h2>
-<div class="v21-card v21-purple"><h3>Constrained resolution</h3>
+<div class="v21-card v21-purple v60-selectable-subcard" data-substage-key="constrained-resolution" role="button" tabindex="0"><h3>Constrained resolution</h3>
 <div class="v21-stage-formula">𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ</div>
 <ul>
 <li><b>N</b> restored noetic frame / fiṭrah orientation</li>
@@ -179,7 +198,7 @@
 <li><b>μ</b> memetic stabilizer broken or reordered</li>
 <li><b>κ</b> dependency radius resolved / held / partialed</li>
 </ul>
-<div class="v21-note"><b>Coupling boundary:</b> the agent execution field <code>Ψᴺ</code> releases through language toward diagnosed interlocutor field <code>Ψᴵ</code>; this is not a claim of guaranteed uptake or access to the soul.</div>
+<div class="v21-note v60-selectable-subcard" data-substage-key="coupling-boundary" role="button" tabindex="0"><b>Coupling boundary:</b> <code>T_lang(response): Ψᴺ ⇢ Ψᴵ</code> names post-closure language release from the agent execution field toward the diagnosed interlocutor field; this is not a claim of guaranteed uptake or access to the soul.</div>
 </div>
 </article>
 </div>
@@ -191,7 +210,7 @@
 <div class="callout warn">
 <p><strong>NLA boundary:</strong> NLA means Natural Language Autoencoder, not generic linear algebra and not Shannon theory. The AV / activation verbalizer analogue is Layer A / Diagnostic IR / noetic-field banner. The AR / activation reconstructor analogue is reconstruction/reread through <code>R(H,Δ)</code>. Reconstruction fidelity asks whether selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state can be recovered; confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
 <p><strong>Delta and field diagnostics:</strong> <code>Delta-nB</code> and <code>Delta-kappa</code> are event-local transition operators. <code>∇·</code> / divergence and <code>∇×</code> / curl are field diagnostics over Delta-produced burden/dependency state. Default output may use compact governance markers such as <code>∇·κ: positive/live</code> or <code>∇×κ: unresolved loop</code> only when tied to dependency pressure, loop-breaking, <code>R(H,Δ)</code>, or PARTIAL/RECURSE/COMPLETE; long formalism exposition remains audit/formalism-only.</p>
-<p><strong>Gradient, closure, and coupling:</strong> plain <code>∇</code> reads route-gradient pressure among eligible live routes after gate/catalogue constraints; <code>LoopBreak(∇×T)</code> is a licensed loop-breaking submove, not arbitrary assertion; <code>𝒞(Ψᴺ)</code> is positive closure-field condition over the agent execution field; <code>T_lang: Ψᴺ ⇢ Ψᴵ</code> names language-mediated coupling without claiming guaranteed uptake.</p>
+<p><strong>Gradient, closure, and coupling:</strong> plain <code>∇</code> reads route-gradient pressure among eligible live routes after gate/catalogue constraints; <code>LoopBreak(∇×T)</code> is a licensed loop-breaking submove, not arbitrary assertion; <code>𝒞(Ψᴺ)</code> is positive closure-field condition over the agent execution field; <code>T_lang(response): Ψᴺ ⇢ Ψᴵ</code> names the public/restorative output boundary without claiming guaranteed uptake.</p>
 <p><strong>Package boundary:</strong> <code>atomics/skill/**</code> is tracked canonical source, <code>skill/**</code> is ignored generated runtime, CI/local build compiles atomics into generated <code>skill/**</code>, release <code>.skill</code> packages generated runtime, and raw atomics are not packaged.</p>
 </div>
 </div>
@@ -200,7 +219,7 @@
 <p class="subtle">This tab is the canonical architecture map. It is not the README, the theory paper, the owner inventory, the case library, the proof ledger, or the docs browser.</p>
 <div class="v22-deck-grid v25-deck-grid">
 <div class="v22-deck-card current"><h3>What it is</h3><p>A governed diagnostic runtime: read the live noetic burden before answering, route through the owner/TTP that can change state, then release only after reread.</p></div>
-<div class="v22-deck-card target"><h3>What carries weight</h3><p>Diagnostic State / IR, routing precedence, owner selection, target → operation → result, Land(B), state reread, and stop/hold/recurse/partial discipline.</p></div>
+<div class="v22-deck-card target"><h3>What carries weight</h3><p>Diagnostic State / IR, routing precedence, owner selection, target → operation → result, Land(ⁿB), field diagnostics, state reread, and stop/hold/recurse/partial discipline.</p></div>
 <div class="v22-deck-card preserve"><h3>What it is not</h3><p>Not a topic-to-answer lookup, argument bank, school-label router, public proof ledger, release checklist, or notation showcase.</p></div>
 <div class="v22-deck-card patch"><h3>Source of truth</h3><p><code>atomics/skill/</code> is tracked canonical source. <code>skill/</code> is ignored generated runtime. This page explains boundaries; it does not own runtime behavior.</p></div>
 </div>

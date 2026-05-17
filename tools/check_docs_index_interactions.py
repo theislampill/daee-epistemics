@@ -16,10 +16,17 @@ import subprocess
 import tempfile
 import sys
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
+ARCHITECTURE_SECTION = ROOT / "docs" / "index" / "sections" / "architecture.html"
+THEORY_SECTION = ROOT / "docs" / "index" / "sections" / "theory.html"
 MODULE_CATALOGUE = ROOT / "atomics" / "skill" / "references" / "diagnostics" / "module-catalogue.json"
 GENERATED_BANNER = "GENERATED FILE: do not edit this HTML output directly"
 ALLOWED_CLASSIFICATIONS = {
@@ -39,33 +46,40 @@ EXPECTED_TABS = {
 
 REQUIRED_INDEX_NOTATION_TOKENS = {
     "Architecture controlled row layout": "v60-pipeline-row",
-    "Architecture post-Delta field diagnostic node": "∇· / ∇× field diagnostics",
-    "Architecture formal field-state node": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·/∇×",
-    "Architecture readable divergence targets": "v60-field-target\">∇·κ",
-    "Architecture readable curl targets": "v60-field-target\">∇×κ",
+    "Architecture post-Delta field diagnostic node": "∇·T / ∇×T target-explicit diagnostics",
+    "Architecture formal field-state node": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T",
+    "Architecture target grammar": "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
+    "Architecture readable divergence target grammar": "v60-field-target\">∇·T",
+    "Architecture readable curl target grammar": "v60-field-target\">∇×T",
+    "Architecture divergence route example": "v60-field-target\">∇·route",
+    "Architecture curl route example": "v60-field-target\">∇×route",
+    "Architecture LoopBreak witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
+    "Architecture LoopBreak grounding grammar": "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
     "Architecture COMPLETE closure marker": "✓<br/>COMPLETE",
     "Theory deltaB control card": "goConceptField('deltaB')",
     "Theory deltaK control card": "goConceptField('deltaK')",
     "Theory nabla-dot control card": "goConceptField('nablaDot')",
     "Theory nabla-cross control card": "goConceptField('nablaCross')",
-    "Theory del-dot control card": "goConceptField('delDot')",
-    "Theory del-cross control card": "goConceptField('delCross')",
     "Theory route-gradient control card": "goConceptField('gradient')",
     "Theory loop-break control card": "goConceptField('loopBreak')",
     "Theory PsiI control card": "goConceptField('PsiI')",
     "Theory coupling control card": "goConceptField('coupling')",
     "Theory nabla-dot notation token": "data-k=\"nablaDot\"",
     "Theory nabla-cross notation token": "data-k=\"nablaCross\"",
-    "Theory del-dot notation token": "data-k=\"delDot\"",
-    "Theory del-cross notation token": "data-k=\"delCross\"",
     "Theory route-gradient notation token": "data-k=\"gradient\"",
     "Theory loop-break notation token": "data-k=\"loopBreak\"",
     "Theory PsiI selector": "goConceptField('PsiI')",
     "Theory coupling notation token": "data-k=\"coupling\"",
+    "Theory coupling output boundary": "public release boundary",
+    "Theory T_lang response boundary": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
     "Concept graph nabla-dot concept": "id:'nablaDot'",
     "Concept graph nabla-cross concept": "id:'nablaCross'",
     "Concept graph del-dot concept": "id:'delDot'",
     "Concept graph del-cross concept": "id:'delCross'",
+    "Concept graph del-dot symbol-first name": "name:'∇· / del-dot alias'",
+    "Concept graph del-cross symbol-first name": "name:'∇× / del-cross alias'",
+    "Concept graph del-dot notation alias type": "name:'∇· / del-dot alias', type:'notation alias'",
+    "Concept graph del-cross notation alias type": "name:'∇× / del-cross alias', type:'notation alias'",
     "Concept graph route-gradient concept": "id:'gradient'",
     "Concept graph loop-break concept": "id:'loopBreak'",
     "Concept graph PsiI concept": "id:'PsiI'",
@@ -84,15 +98,24 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Architecture route-gradient": "Gate/routing + ∇ route-gradient",
     "Architecture loop-break": "LoopBreak if ∇×T nonzero",
     "Architecture closure field condition": "𝒞(Ψᴺ)",
-    "Architecture language coupling": "T_lang(Ψᴺ ⇢ Ψᴵ)",
-    "Theory divergence symbol row": "∇· / del-dot",
-    "Theory curl symbol row": "∇× / del-cross",
+    "Architecture language coupling": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Theory divergence symbol row": "∇·T field diagnostic",
+    "Theory curl symbol row": "∇×T field diagnostic",
     "Theory del-dot alias": "del-dot",
     "Theory del-cross alias": "del-cross",
-    "Theory alias definition": "ASCII aliases for <code>∇·</code> and <code>∇×</code>",
+    "Theory alias definition": "checker/grep aliases only",
+    "Theory target grammar": "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
     "Theory post-Delta field state": "post-Delta ∇·/∇× field-state diagnostics",
-    "Burden target example": "∇·B",
+    "Burden target example": "∇·ⁿB",
     "Register target example": "∇×ξ",
+    "Theory LoopBreak witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
+    "Theory LoopBreak grounding grammar": "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
+    "Theory phase discipline gradient": "∇ ranks eligible route pressure before release",
+    "Theory phase discipline Delta": "Δ produces the changed field state",
+    "Theory phase discipline diagnostics": "∇·T / ∇×T diagnose target-explicit post-Δ field pressure",
+    "Theory phase discipline reread": "R(H,Δ) rereads the changed field",
+    "Theory phase discipline closure": "𝒞(Ψᴺ) licenses closure as field condition",
+    "Theory phase discipline coupling": "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake",
     "No proof by symbol boundary": "not proof-by-symbol",
     "Full bridge classification": 'id="full-register-bridge" data-classification="CURATED_SUMMARY_WITH_OWNER_REFERENCES"',
     "Full bridge register/state components": "1. Register/state components",
@@ -106,29 +129,95 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Full bridge deltaB": "<code>ΔⁿB</code> marks the burden-event delta",
     "Full bridge deltaK": "<code>Δκ</code> marks case-collapse / closure-state change",
     "Full bridge nabla not kappa-only": "but not the only ∇ target",
-    "Full bridge nabla-dot definition": "<code>∇·</code> reads divergence-like residual outward pressure",
-    "Full bridge nabla-cross definition": "<code>∇×</code> reads curl-like circularity",
-    "Full bridge del aliases": "<code>del-dot</code> and <code>del-cross</code> are ASCII aliases",
+    "Full bridge nabla-dot definition": "<code>∇·T</code> reads divergence-like residual outward pressure",
+    "Full bridge nabla-cross definition": "<code>∇×T</code> reads curl-like circularity",
+    "Full bridge del aliases": "checker/grep aliases only",
     "Full bridge R reread": "<code>R(H,Δ)</code> rereads held material",
     "Full bridge selected path boundary": "The selected execution path is the release order over the live field, not the whole field.",
     "Full bridge long exposition boundary": "Long formalism exposition belongs to audit/formalism-expanded render",
     "Full bridge Shannon boundary": "Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity",
     "Full bridge NLA boundary": "NLA means Natural Language Autoencoder reconstruction fidelity",
-    "Full bridge RECURSE example": "B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved",
+    "Full bridge RECURSE example": "²B landed; Δ²B updated; Δκ live; ∇·ⁿB positive over dependent burdens; ∇×ξ unresolved",
     "Full bridge STOP example": "All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP",
     "Full bridge route-gradient": "∇ route-gradient",
     "Full bridge loop-break": "LoopBreak(∇×T)",
+    "Full bridge loop-break witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
     "Full bridge PsiI": "Ψᴵ",
-    "Full bridge T_lang": "T_lang: Ψᴺ ⇢ Ψᴵ",
+    "Full bridge T_lang": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+}
+
+EXPECTED_CONTROL_CARD_ORDER = [
+    "noetic",
+    "D0",
+    "Psi",
+    "N",
+    "τ",
+    "σ",
+    "heart",
+    "ξ",
+    "Ω",
+    "μ",
+    "κ",
+    "H",
+    "gradient",
+    "burden",
+    "submoves",
+    "deltaB",
+    "deltaK",
+    "nablaDot",
+    "nablaCross",
+    "loopBreak",
+    "R",
+    "C",
+    "final",
+    "PsiI",
+    "coupling",
+]
+
+REQUIRED_CONTROL_CARD_COLOR_CLASSES = (
+    "phase-input",
+    "phase-layer-a",
+    "phase-gate",
+    "phase-owner-delta",
+    "phase-reread-closure",
+    "phase-public-boundary",
+)
+
+EXPECTED_CONTROL_CARD_PHASES = {
+    "D0": "phase-input",
+    "noetic": "phase-layer-a",
+    "Psi": "phase-layer-a",
+    "N": "phase-gate",
+    "τ": "phase-gate",
+    "σ": "phase-gate",
+    "heart": "phase-gate",
+    "ξ": "phase-gate",
+    "Ω": "phase-gate",
+    "μ": "phase-gate",
+    "gradient": "phase-gate",
+    "burden": "phase-owner-delta",
+    "submoves": "phase-owner-delta",
+    "deltaB": "phase-owner-delta",
+    "nablaDot": "phase-owner-delta",
+    "nablaCross": "phase-owner-delta",
+    "loopBreak": "phase-owner-delta",
+    "κ": "phase-reread-closure",
+    "H": "phase-reread-closure",
+    "deltaK": "phase-reread-closure",
+    "R": "phase-reread-closure",
+    "C": "phase-reread-closure",
+    "final": "phase-reread-closure",
+    "PsiI": "phase-public-boundary",
+    "coupling": "phase-public-boundary",
 }
 
 REQUIRED_PIPELINE_NOTATION_TOKENS = {
     "Standalone pipeline route-gradient rail": "ROUTE-GRADIENT PRESSURE",
-    "Standalone pipeline field diagnostic rail": "∇· / ∇× field diagnostics",
+    "Standalone pipeline field diagnostic rail": "∇·T / ∇×T field diagnostics",
     "Standalone pipeline loop-breaking rail": "LOOP-BREAKING SUBMOVE",
-    "Standalone pipeline closure-field rail": "C(PsiN) CLOSURE-FIELD CONDITION",
-    "Standalone pipeline coupling rail": "LANGUAGE-MEDIATED COUPLING",
-    "Standalone pipeline Land before Delta": "Land(B)<br>→ Delta-nB / Delta-kappa",
+    "Standalone pipeline closure-field rail": "𝒞(Ψᴺ) CLOSURE-FIELD CONDITION",
+    "Standalone pipeline coupling rail": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Standalone pipeline Land before Delta": "Land(ⁿB)<br>→ ΔⁿB / Δκ",
     "Standalone pipeline post-Delta wording": "target-explicit post-Delta field diagnostics",
 }
 
@@ -150,6 +239,10 @@ FORBIDDEN_INDEX_NOTATION_CLAIMS = {
     "PsiI soul access": "Ψᴵ gives access to the soul",
     "agent controls guidance": "agent controls guidance",
 }
+
+TARGET_GRAMMAR = "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}"
+LOOPBREAK_WITNESS = "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R"
+GROUNDING_GRAMMAR = "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}"
 
 
 class IndexParser(HTMLParser):
@@ -443,10 +536,85 @@ def check_notation_contract(text: str, errors: list[str]) -> None:
         errors.append("docs/index.html defines del-dot without paired del-cross")
     if "∇× / del-cross" in text and "∇· / del-dot" not in text:
         errors.append("docs/index.html defines del-cross without paired del-dot")
+    if 'data-label="∇· / del-dot:' in text or 'data-label="∇× / del-cross:' in text:
+        errors.append("Runtime notation data-labels must use ∇·/∇× symbols without ASCII alias prefixes")
+    stale_annex_markers = (
+        "DSL/IR implementation recommendation",
+        "Human interpretability recommendation",
+        "Agentic LLM interpretability recommendation",
+        "Final recommended notation",
+        "current graphic should preserve",
+    )
+    for marker in stale_annex_markers:
+        if marker in text:
+            errors.append(f"docs/index.html contains stale proposal-era annex wording: {marker}")
     for label, phrase in FORBIDDEN_INDEX_NOTATION_CLAIMS.items():
         normalized_phrase = phrase.lower()
         if normalized_phrase in lower and f"not {normalized_phrase}" not in lower:
             errors.append(f"docs/index.html contains forbidden notation claim: {label}")
+
+
+def check_public_notation_surface(path: Path, text: str, errors: list[str]) -> None:
+    label = path.relative_to(ROOT).as_posix()
+    for token_name, token in (
+        ("∇·T target grammar", "∇·T"),
+        ("∇×T target grammar", "∇×T"),
+        ("target set grammar", TARGET_GRAMMAR),
+        ("LoopBreak witness form", LOOPBREAK_WITNESS),
+        ("LoopBreak grounding grammar", GROUNDING_GRAMMAR),
+    ):
+        if token not in text:
+            errors.append(f"{label} missing public notation surface token: {token_name}: {token!r}")
+    if all(token in text for token in ("∇·κ", "∇·B", "∇·♥")) and TARGET_GRAMMAR not in text:
+        errors.append(f"{label} exposes only the old narrow ∇·κ/∇·B/∇·♥ examples without ∇·T target grammar")
+    if all(token in text for token in ("∇×κ", "∇×B", "∇×ξ")) and TARGET_GRAMMAR not in text:
+        errors.append(f"{label} exposes only the old narrow ∇×κ/∇×B/∇×ξ examples without ∇×T target grammar")
+
+
+def check_theory_control_cards(text: str, errors: list[str]) -> None:
+    start = text.find('<div class="controlOverviewGrid">')
+    end = text.find('<div class="notationBoard"', start)
+    if start == -1 or end == -1 or end <= start:
+        errors.append("docs/index.html missing Theory control ontology card grid")
+        return
+
+    block = text[start:end]
+    cards = re.findall(
+        r"<button\s+class=\"([^\"]*controlCard[^\"]*)\"\s+onclick=\"goConceptField\('([^']+)'\)\"",
+        block,
+    )
+    found = [concept for _classes, concept in cards]
+    if found != EXPECTED_CONTROL_CARD_ORDER:
+        errors.append(
+            "Theory control ontology cards must render in pipeline order: "
+            f"expected {EXPECTED_CONTROL_CARD_ORDER!r}, found {found!r}"
+        )
+
+    for css_class in REQUIRED_CONTROL_CARD_COLOR_CLASSES:
+        if not re.search(rf"\.controlCard\.{re.escape(css_class)}\s*\{{[^}}]*--c\s*:", text, flags=re.S):
+            errors.append(f"Theory control card class .controlCard.{css_class} must define --c color")
+
+    class_by_concept = {concept: set(classes.split()) for classes, concept in cards}
+    for concept, phase_class in EXPECTED_CONTROL_CARD_PHASES.items():
+        if phase_class not in class_by_concept.get(concept, set()):
+            errors.append(f"Theory control card {concept!r} must map to {phase_class}")
+    if "phase-gate" in class_by_concept.get("nablaDot", set()) or "phase-gate" in class_by_concept.get("nablaCross", set()):
+        errors.append("∇·T and ∇×T cards must not map to gate/routing phase")
+    if "phase-owner-delta" in class_by_concept.get("gradient", set()):
+        errors.append("plain ∇ route-gradient card must not map to owner/Delta diagnostic phase")
+    for concept in ("nablaDot", "nablaCross", "loopBreak"):
+        if "phase-owner-delta" not in class_by_concept.get(concept, set()):
+            errors.append(f"{concept} must map to owner + Δ + diagnostics phase")
+    for concept in ("PsiI", "coupling"):
+        if "phase-public-boundary" not in class_by_concept.get(concept, set()):
+            errors.append(f"{concept} must map to public restorative boundary phase")
+
+    if "name:'del-dot ASCII alias'" in text or "name:'del-cross ASCII alias'" in text:
+        errors.append("Concept graph alias cards must lead with ∇·/∇× symbols, not ASCII names")
+    if "v60-alias-line" in text or "del-dot = ∇·" in text or "del-cross = ∇×" in text:
+        errors.append("Runtime notation must not render ASCII alias equations as pipeline/formula steps")
+    if "name:'T_lang language-mediated coupling'" in text:
+        errors.append("T_lang concept card must name the output-boundary role explicitly")
 
 
 def check_pipeline_notation_contract(page_text: str, output: str, errors: list[str]) -> None:
@@ -483,6 +651,70 @@ def main() -> int:
         stages_pos = text.find('class="v21-five-col"', runtime_start)
         if flow_pos == -1 or (stages_pos != -1 and flow_pos > stages_pos):
             errors.append("architecture landing must show canonical runtime spine before stage cards")
+        runtime_end = text.find('id="architecture-runtime-notes"', runtime_start)
+        runtime_slice = text[runtime_start:runtime_end if runtime_end != -1 else len(text)]
+        if "STOP/HOLD/RECURSE/PARTIAL/COMPLETE" not in runtime_slice:
+            errors.append("architecture runtime spine must render the full closure decision set without spacing-heavy overflow text")
+        if "Restorative + T_lang</span>" not in runtime_slice:
+            errors.append("architecture runtime spine final chip must use the compact non-clipping T_lang label")
+        if "DRY here means" in runtime_slice:
+            errors.append("architecture click hint must not expose internal DRY/refactor language")
+        stage_color_contract = {
+            ".v21-s1": "--sc:var(--blue)",
+            ".v21-s2": "--sc:var(--cyan)",
+            ".v21-s3": "--sc:var(--violet)",
+            ".v21-s4": "--sc:var(--orange)",
+            ".v21-s5": "--sc:var(--red)",
+        }
+        for selector, token in stage_color_contract.items():
+            css_token = f"#architecture #canonical-architecture-runtime {selector}"
+            if css_token not in text or token not in text[text.find(css_token): text.find(css_token) + 160]:
+                errors.append(f"architecture stage card {selector} must match the canonical spine color token {token}")
+        row_css = "#architecture #canonical-architecture-runtime .v60-pipeline-row"
+        row_css_start = text.find(row_css)
+        if row_css_start == -1 or "flex-wrap:wrap!important" not in text[row_css_start: row_css_start + 260]:
+            errors.append("architecture runtime spine rows must wrap instead of clipping long chips")
+        runtime_row_node_css = "#architecture #canonical-architecture-runtime .v60-runtime-row .node"
+        runtime_row_node_start = text.find(runtime_row_node_css)
+        if runtime_row_node_start == -1 or "font-size:clamp(11px,.68vw,12px)!important" not in text[runtime_row_node_start: runtime_row_node_start + 260]:
+            errors.append("architecture wide runtime spine text must stay in the readable 11-12px range")
+        if 'data-substage-key="reread-gate"' not in runtime_slice or '<h3>Reread gate</h3>' not in runtime_slice:
+            errors.append("architecture card 4 must mark the Reread gate with the green reread phase")
+        if 'data-substage-key="decision"' not in runtime_slice or '<h3>Decision</h3>' not in runtime_slice:
+            errors.append("architecture card 4 must mark the Decision block with the green reread phase")
+        if ".v60-reread-phase" not in text or "--sc:var(--green)" not in text[text.find(".v60-reread-phase"): text.find(".v60-reread-phase") + 220]:
+            errors.append("architecture reread phase styling must use the green phase token")
+        expected_substage_keys = [
+            "encoded-signal",
+            "no-direct-rebuttal",
+            "proper-functional-read",
+            "structural-registers",
+            "operational-boundary",
+            "diagnostic-reduction-order",
+            "ir-control-surface",
+            "gate-owner-layerb",
+            "operator-signature",
+            "strict-burden-cycle",
+            "reread-gate",
+            "decision",
+            "constrained-resolution",
+            "coupling-boundary",
+        ]
+        for key in expected_substage_keys:
+            if f'data-substage-key="{key}"' not in runtime_slice:
+                errors.append(f"architecture sub-card must expose clickable data-substage-key={key}")
+            if f"'{key}':" not in text and f"{key}:" not in text:
+                errors.append(f"architecture sub-card trace map missing {key}")
+        if "SUBSTAGE_MAP" not in text or "renderStaticSubstage" not in text:
+            errors.append("architecture sub-cards must render their own audit traces")
+        if ".v60-selectable-subcard" not in text or "v60-subactive" not in text:
+            errors.append("architecture sub-cards must have interactive/active styling")
+        for token in ("Receives", "Detects", "Writes / constrains", "Before next stage", "Failure looks like"):
+            if token not in text[text.find("const SUBSTAGE_MAP"): text.find("function sourceFor")]:
+                # These labels are emitted by the shared renderer, so require them near the renderer instead.
+                renderer = text[text.find("function renderAuditTrace"): text.find("function attachStaticPipelineInteractivity")]
+                if token not in renderer:
+                    errors.append(f"architecture sub-card trace renderer missing {token}")
     standalone_pages = manifest.get("standalone_pages", []) if isinstance(manifest, dict) else []
     for page in standalone_pages:
         if not isinstance(page, dict):
@@ -582,6 +814,13 @@ def main() -> int:
         errors.append("owner-derived module table provider renderOwnerSourceTable missing")
 
     check_notation_contract(text, errors)
+    check_public_notation_surface(INDEX, text, errors)
+    for source_path in (ARCHITECTURE_SECTION, THEORY_SECTION):
+        if not source_path.exists():
+            errors.append(f"{source_path.relative_to(ROOT).as_posix()}: missing docs index source section")
+        else:
+            check_public_notation_surface(source_path, source_path.read_text(encoding="utf-8"), errors)
+    check_theory_control_cards(text, errors)
 
     expected = expected_modules(errors)
     embedded = embedded_modules(text, errors)
