@@ -75,7 +75,9 @@
         "docs/register-formalism-implementation-ledger.md",
         "docs/audits/v0.4.1.0-nla-operativity-audit.md",
         "docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md",
-        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "tests/register-formalism-bridge-fixtures/10-field-gradient-loop-closure-coupling.json",
+        "tools/check_field_operator_architecture.py"
       ],
       "generated_blocks": []
     },
@@ -127,7 +129,9 @@
       "current_source": "docs/index/templates/index.html.tpl",
       "owner_sources": [
         "docs/algebraic-notation-and-noetic-formalism.md",
-        "docs/register-formalism-implementation-ledger.md"
+        "docs/register-formalism-implementation-ledger.md",
+        "tests/register-formalism-bridge-fixtures/10-field-gradient-loop-closure-coupling.json",
+        "tools/check_field_operator_architecture.py"
       ]
     },
     {
@@ -137,7 +141,8 @@
       "current_source": "docs/index/templates/index.html.tpl",
       "owner_sources": [
         "docs/register-formalism-implementation-ledger.md",
-        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "tests/register-formalism-bridge-fixtures/10-field-gradient-loop-closure-coupling.json"
       ]
     },
     {
@@ -165,7 +170,9 @@
         "docs/algebraic-notation-and-noetic-formalism.md",
         "docs/register-formalism-implementation-ledger.md",
         "tests/routing-fixtures/64-hard-compound-field-accounting.json",
-        "tests/register-formalism-bridge-fixtures/09-divergence-curl-operator-detection.json"
+        "tests/register-formalism-bridge-fixtures/09-divergence-curl-operator-detection.json",
+        "tests/register-formalism-bridge-fixtures/10-field-gradient-loop-closure-coupling.json",
+        "tools/check_field_operator_architecture.py"
       ]
     },
     {

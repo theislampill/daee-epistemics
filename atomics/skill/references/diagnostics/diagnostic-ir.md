@@ -79,7 +79,7 @@ re-evaluated when a load-bearing node is cleared.
 explanatory frame for the already-named dynamics. Its live IR surface is:
 
 ```text
-surface discourse -> IR(N,m,τ,σ) -> B -> TTP/operator -> R(H,Δ)
+surface discourse -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> TTP/operator -> Δ -> field diagnostics -> R(H,Δ)
 ```
 
 Control-surface test: the vocabulary is valid only when it changes an existing field,
@@ -105,10 +105,18 @@ available noetic-structure selection space `N_space` / `𝓝`. The live frame `N
 held from that space as `N in N_space` / `N∈𝓝`; if the input is thin, the selection remains
 underdetermined and the case must be held or partialed rather than family-locked.
 
+`PsiN` / `Ψᴺ` is the agent/runtime execution field. When the runtime diagnoses an interlocutor,
+it models only a diagnosed interlocutor field `PsiI` / `Ψᴵ` inferred from discourse, profile,
+register, response, and source-status evidence. The IR may represent a language-mediated coupling
+attempt from `Ψᴺ` toward `Ψᴵ`, but it must not claim access to the interlocutor's soul, total
+identity, guaranteed uptake, or agent control of guidance. Reconstruction fidelity must be able
+to recover whether the released response addressed the diagnosed interlocutor burden without
+turning that diagnosis into a claim of acceptance.
+
 Operationally:
 
 ```text
-D0 -> PsiN<N,m,tau,sigma,H> -> IR(N,m,tau,sigma) -> B -> TTP/operator -> R(H,Delta)
+D0 -> PsiN<N,m,tau,sigma,H> -> IR(N,m,tau,sigma) -> ∇ route-gradient -> B -> TTP/operator -> R(H,Delta)
 ```
 
 The Unicode formalism is the theory/spec surface for the same bridge:
@@ -140,6 +148,12 @@ fields by itself.
 Control-surface test: if a proposed register does not change an existing field, owner/TTP
 selection, release permission, collapse radius, held material, `Land(B)`, or `R(H,Delta)`,
 it is decorative and must not be promoted into runtime output or schema.
+
+Route-gradient boundary: plain `∇` is a schema-light route-pressure read, not a new IR field. It
+may explain why one eligible burden/route is selected next, but only after mandatory diagnostic
+reduction, reconstruction, gate checks, routing precedence, and catalogue eligibility have
+constrained the live field. It does not replace `Delta`, `del-dot` / `del-cross`, gate checks, or
+owner activation rules.
 
 Identity use must be source-status marked in the existing surfaces:
 

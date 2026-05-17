@@ -114,20 +114,24 @@ eligibility, and closure posture. If that state collapses into a scalar label su
 Trinity objection" or "this is a secular-humanist objection," the runtime has lost the field it
 is supposed to govern.
 
-The operators are part of that state discipline. `Δ` marks an event-local transition over a
-burden or field state when a burden lands. `R(H,Δ)` rereads the whole live field after that
-transition. `∇·` and `∇×` are post-transition diagnostics over the field that `Δ` produced:
-`∇·` reads residual outward pressure in an explicit target field, and `∇×` reads circular or
-rotational dependency in an explicit target field. They do not apply to a one-point summary, and
-they do not replace `Δ`.
+The operators are part of that state discipline. Plain `∇` reads route-gradient pressure among
+eligible live burdens after IR/routing/catalogue gates have constrained the field. `Δ` marks an
+event-local transition over a burden or field state when a burden lands. `R(H,Δ)` rereads the
+whole live field after that transition. `∇·` and `∇×` are post-transition diagnostics over the
+field that `Δ` produced: `∇·` reads residual outward pressure in an explicit target field, and
+`∇×` reads circular or rotational dependency in an explicit target field. A nonzero `∇×T` may
+license a target-explicit `LoopBreak(∇×T)` only when an owner-grounded loop-breaker is available.
+They do not apply to a one-point summary, and they do not replace `Δ`.
 
-Closure is therefore not a stylistic judgment that the reply "seems complete." Residual
-divergence/curl pressure must be cleared, integrated, discharged as derivative, held with reason,
-or carried into `RECURSE` / `PARTIAL`. In hard cases with multiple valid noetic-structure
-selections, the selected execution path is only the release order over the live field. Alternate
-structures, hidden dependencies, circularities, and residual pressures still have to be accounted
-for, and the final restorative response must preserve the master deformation discovered during
-execution.
+Closure is therefore not a stylistic judgment that the reply "seems complete." `𝒞(Ψᴺ)` is a
+positive closure-field condition over the agent execution field: residual divergence/curl pressure
+must be cleared, integrated, discharged as derivative, held with reason, or carried into `RECURSE`
+or `PARTIAL`. In hard cases with multiple valid noetic-structure selections, the selected
+execution path is only the release order over the live field. Alternate structures, hidden
+dependencies, circularities, and residual pressures still have to be accounted for, and the final
+restorative response must preserve the master deformation discovered during execution. The
+interlocutor's diagnosed field `Ψᴵ` is coupled through language; the runtime does not claim access
+to the soul, guaranteed uptake, or control of guidance.
 
 Whether a particular model instance fully executes this architecture is a behavioral and evidence
 question. The architecture itself is not reducible to prompt engineering: it is a stateful,

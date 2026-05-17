@@ -19,10 +19,20 @@
 <strong>Encoded noetic signal-state</strong>
 <p>N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀</p>
 </button>
+<button class="controlCard signal" onclick="goConceptField('PsiI')">
+<span class="controlSym">Ψᴵ</span>
+<strong>Diagnosed interlocutor field</strong>
+<p>inferred from discourse/profile/register evidence; not soul access</p>
+</button>
 <button class="controlCard structure" onclick="goConceptField('noetic')">
 <span class="controlSym">𝓝</span>
 <strong>Noetic-structure selection space</strong>
 <p>all possible live noetic structures the framework is engineered to diagnose and route</p>
+</button>
+<button class="controlCard nabla" onclick="goConceptField('gradient')">
+<span class="controlSym">∇</span>
+<strong>Route-gradient pressure</strong>
+<p>eligible route ordering by expected diagnostic reduction</p>
 </button>
 <button class="controlCard noetic" onclick="goConceptField('N')">
 <span class="controlSym">N</span>
@@ -99,6 +109,11 @@
 <strong>del-cross diagnostic</strong>
 <p>post-Delta circularity / rotational dependency in an explicit target field</p>
 </button>
+<button class="controlCard nabla" onclick="goConceptField('loopBreak')">
+<span class="controlSym">LoopBreak(∇×T)</span>
+<strong>Loop-breaking submove</strong>
+<p>owner-grounded curl resolution with target, Δ effect, and reread</p>
+</button>
 <button class="controlCard alias" onclick="goConceptField('delDot')">
 <span class="controlSym">del-dot</span>
 <strong>ASCII alias for ∇·</strong>
@@ -118,6 +133,11 @@
 <span class="controlSym">𝒞</span>
 <strong>Constrained noetic collapse</strong>
 <p>discursive resolution of Ψᴺ under owner-backed operations and reread</p>
+</button>
+<button class="controlCard collapse" onclick="goConceptField('coupling')">
+<span class="controlSym">T_lang</span>
+<strong>Language-mediated coupling</strong>
+<p>release from Ψᴺ toward diagnosed Ψᴵ without guaranteed uptake</p>
 </button>
 <button class="controlCard final" onclick="goConceptField('final')">
 <span class="controlSym">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
@@ -150,6 +170,12 @@
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
+<span class="ntok" data-k="gradient" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" onclick="highlightNotation(['gradient','IR','burden','R'])">∇ route-gradient</span>
+<span class="notationArrow">selects release pressure over</span>
+<span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
+</div>
+<div class="notationLine">
+<span class="notationArrow">⟶</span>
 <span>[</span>
 <span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
 <span class="notationArrow">→</span>
@@ -165,6 +191,8 @@
 <span>/</span>
 <span class="ntok" data-k="nablaCross" data-label="∇× / del-cross: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×</span>
 <span class="ntok" data-k="fieldDiagnostics" data-label="target-explicit post-Delta field diagnostics" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
+<span class="notationArrow">→</span>
+<span class="ntok" data-k="loopBreak" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
 <span class="notationArrow">→</span>
 <span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 <span>]*</span>
@@ -182,12 +210,19 @@
 <span class="notationArrow"> / </span>
 <span class="ntok" data-k="nextB" data-label="next burden licensed by reread" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
 </div>
+<div class="notationLine">
+<span class="notationArrow">coupling</span>
+<span class="ntok" data-k="coupling" data-label="language-mediated coupling attempt; not guaranteed uptake" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
+</div>
 <div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>
 <div class="notationLegend">
 <div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>
 <div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>
+<div class="miniCard"><strong>Route-gradient:</strong> ∇ orders eligible route pressure after IR/routing/catalogue gates; it never replaces those gates or Δ.</div>
 <div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>
-<div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is the constrained collapse/resolution stage, not merely the final-state card.</div>
+<div class="miniCard"><strong>Loop-breaking:</strong> LoopBreak(∇×T) is licensed only when nonzero curl has an owner-grounded target and Δ effect.</div>
+<div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is a positive closure-field condition, not checklist exhaustion.</div>
+<div class="miniCard"><strong>Coupling:</strong> T_lang: Ψᴺ ⇢ Ψᴵ is language-mediated transfer; it does not claim guaranteed uptake.</div>
 </div>
 </div>
 <div class="subtabs">
@@ -220,15 +255,21 @@ map, and public notation cards should read those owners.
 <b>→</b>
 <span>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
 <b>→</b>
+<span>∇ route-gradient</span>
+<b>→</b>
 <span>ⁿB + ⁿBᵢ[OPᵢ]</span>
 <b>→</b>
 <span>ΔⁿB / Δκ</span>
 <b>→</b>
 <span>∇· / ∇× target field</span>
 <b>→</b>
+<span>LoopBreak when licensed</span>
+<b>→</b>
 <span>R(H,Δ)</span>
 <b>→</b>
-<span>STOP / HOLD / RECURSE / PARTIAL / COMPLETE</span>
+<span>𝒞(Ψᴺ) / STOP / HOLD / RECURSE / PARTIAL / COMPLETE</span>
+<b>→</b>
+<span>T_lang: Ψᴺ ⇢ Ψᴵ</span>
 </div>
 <div class="bridgeGrid">
 <article class="bridgeCard">
@@ -240,10 +281,12 @@ map, and public notation cards should read those owners.
 <dt>μ</dt><dd>Memetic stabilizer/carrier: compressed slogan, label, proof packet, prestige form, defensive move, or reproduction pattern that changes control.</dd>
 <dt>κ</dt><dd>Collapse / closure-state field: downstream dependency radius consumed by reread. It is a valid target for <code>∇·κ</code> / <code>∇×κ</code>, but not the only ∇ target.</dd>
 <dt>H</dt><dd>Held set: live but unreleased, deliberately withheld, or not-yet-live material reread against the Δ-produced field state.</dd>
+<dt>Ψᴵ</dt><dd>Diagnosed interlocutor field inferred from discourse/profile/register evidence; not access to soul-state or guaranteed uptake.</dd>
 </dl>
 </article>
 <article class="bridgeCard">
-<h3>2. Burden and submove cycle</h3>
+<h3>2. Route-gradient and burden cycle</h3>
+<p><code>∇</code> reads route-gradient pressure among eligible burdens/routes after IR, V1/routing precedence, owner catalogue, and held-material gates constrain the field. It ranks release pressure; it does not bypass gates, replace <code>Δ</code>, or freeze the whole field into one deterministic route.</p>
 <p><code>ⁿB</code> is the current live burden as a bounded noetic function. <code>ⁿBᵢ[OPᵢ]</code> is an owner-backed submove under that burden: target → operation → result.</p>
 <p>The selected execution path is the release order over the live field, not the whole field. Candidate structures, burdens, dependencies, registers, routes, and residual pressures must be landed, integrated, discharged as duplicate/derivative, explicitly held with reason, or carried into <code>RECURSE</code> / <code>PARTIAL</code>.</p>
 </article>
@@ -257,17 +300,27 @@ map, and public notation cards should read those owners.
 <p><code>∇·</code> reads divergence-like residual outward pressure in an explicit target field after Δ has produced a field state. Valid targets include <code>κ</code>, <code>B</code>, <code>♥</code>, <code>ξ</code>, <code>Ω</code>, <code>μ</code>, route/dependency fields, or other owner-defined targets when the control effect is clear.</p>
 <p><code>∇×</code> reads curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ. It is useful for circular burden dependencies and closure failure that linear traversal would miss.</p>
 <p><code>del-dot</code> and <code>del-cross</code> are ASCII aliases for <code>∇·</code> and <code>∇×</code>. They are checker/grep-safe spellings, not separate operators.</p>
+<p><code>LoopBreak(∇×T)</code> is a loop-breaking submove form. It is licensed only when nonzero curl has an explicit target, owner-grounded source, Δ effect, and post-break reread.</p>
 </article>
 <article class="bridgeCard">
 <h3>5. Reread and closure</h3>
 <p><code>R(H,Δ)</code> rereads held material, selected/held N, live registers, burden deltas, owner/TTP eligibility, κ/H, alternate routes, and residual field pressure after burden events and field diagnostics.</p>
-<p>Closure depends on residual live-field pressure, not a scalar summary. STOP / COMPLETE is licensed only when live structures, burdens, dependencies, and ∇ pressure are cleared, integrated, discharged, or held with reason. Otherwise the decision is <code>HOLD</code>, <code>RECURSE</code>, or <code>PARTIAL</code>.</p>
+<p><code>𝒞(Ψᴺ)</code> is a positive closure-field condition over the agent execution field, not checklist exhaustion. STOP / COMPLETE is licensed only when live structures, burdens, dependencies, and ∇ pressure are cleared, integrated, discharged, or held with reason. Otherwise the decision is <code>HOLD</code>, <code>RECURSE</code>, or <code>PARTIAL</code>.</p>
+</article>
+<article class="bridgeCard">
+<h3>6. Coupling and public release</h3>
+<p><code>Ψᴺ</code> is the agent/runtime execution field. <code>Ψᴵ</code> is the diagnosed interlocutor field inferred from discourse and response. <code>T_lang: Ψᴺ ⇢ Ψᴵ</code> names the language-mediated coupling attempt through the released response.</p>
+<p>Coupling assessment asks whether the response preserves identity, avoids deformation, addresses live burdens, and creates conditions for reconfiguration toward fiṭrah and sound reason. It does not claim guaranteed acceptance, access to the soul, or agent control of guidance.</p>
 </article>
 <article class="bridgeCard bridgeNonClaims">
-<h3>6. Non-claims and forbidden uses</h3>
+<h3>7. Non-claims and forbidden uses</h3>
 <ul>
+<li><code>∇</code> is not free intuition, not a truth/warrant metric, and not a bypass around routing/catalogue gates.</li>
 <li><code>∇·</code> / <code>∇×</code> do not replace Δ, prove truth/warrant, or certify TTP success by symbol.</li>
 <li>They do not apply to scalarized master diagnoses; scalar collapse loses the field these diagnostics require.</li>
+<li><code>LoopBreak(∇×T)</code> is not arbitrary assertion and cannot be released without target loop, grounding source, Δ effect, and reread.</li>
+<li><code>𝒞(Ψᴺ)</code> does not guarantee interlocutor conversion.</li>
+<li><code>Ψᴵ</code> does not mean access to the soul or total profile identity.</li>
 <li>Long formalism exposition belongs to audit/formalism-expanded render, not default governed output.</li>
 <li>Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity.</li>
 <li>NLA means Natural Language Autoencoder reconstruction fidelity, not generic algebra, Shannon theory, or interpretability branding.</li>
@@ -275,8 +328,9 @@ map, and public notation cards should read those owners.
 </article>
 </div>
 <div class="bridgeExamples">
-<div><strong>RECURSE example</strong><code>B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved around circular criterion-dependency; R(H,Δ): RECURSE.</code></div>
-<div><strong>STOP example</strong><code>All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; R(H,Δ): STOP.</code></div>
+<div><strong>RECURSE example</strong><code>∇ selects B2 pressure; B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved around circular criterion-dependency; R(H,Δ): RECURSE.</code></div>
+<div><strong>Loop-break example</strong><code>∇×B nonzero around circular warrant demand; LoopBreak(∇×B) grounds in necessary knowledge; ΔⁿB contracts; R(H,Δ): HOLD/RECURSE by reread.</code></div>
+<div><strong>STOP example</strong><code>All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP; T_lang: release toward Ψᴵ without uptake claim.</code></div>
 </div>
 </div>
 <details><summary>Formalism source annex</summary><div class="proposalAnnex">

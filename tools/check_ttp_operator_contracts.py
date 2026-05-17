@@ -22,6 +22,22 @@ from compiled_runtime_lib import fail_with_errors, repo_root
 CATALOGUE = Path("atomics/skill/references/diagnostics/module-catalogue.json")
 AUDIT_JSON = Path("docs/audits/v0.4.1.0-ttp-end-to-end-operativity-audit.json")
 ALLOWED_CLASSES = {"case-library", "diagnostic", "procedure", "tactic", "technique"}
+INHERITED_FIELD_OPERATOR_REQUIREMENTS = {
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md": (
+        "Plain `∇` is the route-gradient read over the live field",
+        "Routing remains owner-gated and catalogue-constrained",
+        "LoopBreak(∇×T)",
+        "Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition",
+        "`Ψᴵ` names the diagnosed",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
+    ),
+    "atomics/skill/references/rubrics/output-release.md": (
+        "∇ route-gradient over eligible live pressure",
+        "LoopBreak(∇×T)",
+        "𝒞(Ψᴺ)",
+        "T_lang",
+    ),
+}
 REQUIRED_FRONTMATTER_KEYS = {
     "id",
     "module_class",
@@ -82,6 +98,28 @@ FORBIDDEN_PATTERNS = {
     ),
     "nla-branding": re.compile(
         r"(?:NLA|Natural Language Autoencoder).{0,80}(?:branding|decorative)",
+        re.I | re.S,
+    ),
+    "gradient-bypasses-gates": re.compile(
+        r"(?:∇|route-gradient).{0,80}(?:bypasses|overrides).{0,80}"
+        r"(?:gate|gates|catalogue|IR|routing)",
+        re.I | re.S,
+    ),
+    "loopbreak-arbitrary": re.compile(
+        r"LoopBreak.{0,80}(?:arbitrary assertion|ungrounded assertion)",
+        re.I | re.S,
+    ),
+    "closure-conversion-guarantee": re.compile(
+        r"(?:𝒞\(Ψᴺ\)|closure-field).{0,100}"
+        r"(?:guarantees|ensures|proves).{0,80}(?:conversion|acceptance|uptake)",
+        re.I | re.S,
+    ),
+    "psi-i-soul-access": re.compile(
+        r"(?:Ψᴵ|PsiI|interlocutor field).{0,100}(?:access to|reads|knows).{0,80}(?:soul|qalb)",
+        re.I | re.S,
+    ),
+    "agent-controls-guidance": re.compile(
+        r"(?:agent|runtime).{0,80}(?:controls|guarantees).{0,80}guidance",
         re.I | re.S,
     ),
 }
@@ -235,6 +273,20 @@ def check_strict_contract(module_id: str, text: str, errors: list[str]) -> None:
         errors.append(f"{module_id}: runtime contract contains placeholder question-mark notation")
 
 
+def check_inherited_field_operator_requirements(root: Path, errors: list[str]) -> None:
+    """Ensure per-module contracts inherit the shared field-operator architecture."""
+    for rel, tokens in INHERITED_FIELD_OPERATOR_REQUIREMENTS.items():
+        path = root / rel
+        if not path.is_file():
+            errors.append(f"{rel}: missing inherited field-operator owner")
+            continue
+        text = path.read_text(encoding="utf-8")
+        lower = text.lower()
+        for token in tokens:
+            if token not in text and token.lower() not in lower:
+                errors.append(f"{rel}: missing inherited field-operator token {token!r}")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -255,6 +307,8 @@ def main(argv: list[str] | None = None) -> int:
     modules = payload.get("modules")
     if not isinstance(modules, list) or not modules:
         return fail_with_errors("TTP operator contracts", ["module catalogue has no modules list"])
+
+    check_inherited_field_operator_requirements(root, errors)
 
     seen: set[str] = set()
     for index, entry in enumerate(modules):
@@ -333,6 +387,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Allowed classes: {', '.join(sorted(ALLOWED_CLASSES))}")
         print("Owner path/frontmatter integrity: pass")
         print("Forbidden operator claims: pass")
+        print("Inherited route-gradient / LoopBreak / closure-field / coupling guard: pass")
         print("Audit JSON parity: pass")
         print(f"Strict runtime contracts: {'on' if args.strict else 'off'}")
         print("-" * 60)

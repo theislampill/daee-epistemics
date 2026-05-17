@@ -24,7 +24,7 @@
       "OMNIBUS-techniques"
     ],
     "required_governance": [
-      "surface discourse -> IR(N,m,τ,σ) -> B -> TTP/operator -> R(H,Δ)",
+      "surface discourse -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> TTP/operator -> Δ -> field diagnostics -> R(H,Δ)",
       "Control-surface test",
       "routing suppression",
       "hold/release decision",

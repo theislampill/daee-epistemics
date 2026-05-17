@@ -50,18 +50,41 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Theory nabla-cross control card": "goConceptField('nablaCross')",
     "Theory del-dot control card": "goConceptField('delDot')",
     "Theory del-cross control card": "goConceptField('delCross')",
+    "Theory route-gradient control card": "goConceptField('gradient')",
+    "Theory loop-break control card": "goConceptField('loopBreak')",
+    "Theory PsiI control card": "goConceptField('PsiI')",
+    "Theory coupling control card": "goConceptField('coupling')",
     "Theory nabla-dot notation token": "data-k=\"nablaDot\"",
     "Theory nabla-cross notation token": "data-k=\"nablaCross\"",
     "Theory del-dot notation token": "data-k=\"delDot\"",
     "Theory del-cross notation token": "data-k=\"delCross\"",
+    "Theory route-gradient notation token": "data-k=\"gradient\"",
+    "Theory loop-break notation token": "data-k=\"loopBreak\"",
+    "Theory PsiI selector": "goConceptField('PsiI')",
+    "Theory coupling notation token": "data-k=\"coupling\"",
     "Concept graph nabla-dot concept": "id:'nablaDot'",
     "Concept graph nabla-cross concept": "id:'nablaCross'",
     "Concept graph del-dot concept": "id:'delDot'",
     "Concept graph del-cross concept": "id:'delCross'",
+    "Concept graph route-gradient concept": "id:'gradient'",
+    "Concept graph loop-break concept": "id:'loopBreak'",
+    "Concept graph PsiI concept": "id:'PsiI'",
+    "Concept graph coupling concept": "id:'coupling'",
     "Relation delta before field diagnostics": "rel-delta-before-field-diagnostics",
     "Relation field diagnostics reread": "rel-field-diagnostics-reread",
     "Relation del-dot alias": "rel-del-dot-alias",
     "Relation del-cross alias": "rel-del-cross-alias",
+    "Relation live field gradient": "rel-live-field-gradient",
+    "Relation gradient constrained": "rel-gradient-gate-constrained",
+    "Relation gradient release pressure": "rel-gradient-selects-release-pressure",
+    "Relation curl loop-break": "rel-curl-loopbreak",
+    "Relation loop-break reread": "rel-loopbreak-delta-reread",
+    "Relation closure field condition": "rel-closure-field-condition",
+    "Relation agent/interlocutor coupling": "rel-agent-interlocutor-coupling",
+    "Architecture route-gradient": "Gate/routing + ∇ route-gradient",
+    "Architecture loop-break": "LoopBreak if ∇×T nonzero",
+    "Architecture closure field condition": "𝒞(Ψᴺ)",
+    "Architecture language coupling": "T_lang(Ψᴺ ⇢ Ψᴵ)",
     "Theory divergence symbol row": "∇· / del-dot",
     "Theory curl symbol row": "∇× / del-cross",
     "Theory del-dot alias": "del-dot",
@@ -73,11 +96,12 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "No proof by symbol boundary": "not proof-by-symbol",
     "Full bridge classification": 'id="full-register-bridge" data-classification="CURATED_SUMMARY_WITH_OWNER_REFERENCES"',
     "Full bridge register/state components": "1. Register/state components",
-    "Full bridge burden cycle": "2. Burden and submove cycle",
+    "Full bridge burden cycle": "2. Route-gradient and burden cycle",
     "Full bridge delta transition": "3. Delta transition",
     "Full bridge field diagnostics": "4. Field diagnostics",
     "Full bridge reread and closure": "5. Reread and closure",
-    "Full bridge non-claims": "6. Non-claims and forbidden uses",
+    "Full bridge coupling": "6. Coupling and public release",
+    "Full bridge non-claims": "7. Non-claims and forbidden uses",
     "Full bridge H held set": "<dt>H</dt>",
     "Full bridge deltaB": "<code>ΔⁿB</code> marks the burden-event delta",
     "Full bridge deltaK": "<code>Δκ</code> marks case-collapse / closure-state change",
@@ -91,11 +115,19 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Full bridge Shannon boundary": "Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity",
     "Full bridge NLA boundary": "NLA means Natural Language Autoencoder reconstruction fidelity",
     "Full bridge RECURSE example": "B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved",
-    "Full bridge STOP example": "All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; R(H,Δ): STOP.",
+    "Full bridge STOP example": "All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP",
+    "Full bridge route-gradient": "∇ route-gradient",
+    "Full bridge loop-break": "LoopBreak(∇×T)",
+    "Full bridge PsiI": "Ψᴵ",
+    "Full bridge T_lang": "T_lang: Ψᴺ ⇢ Ψᴵ",
 }
 
 REQUIRED_PIPELINE_NOTATION_TOKENS = {
+    "Standalone pipeline route-gradient rail": "ROUTE-GRADIENT PRESSURE",
     "Standalone pipeline field diagnostic rail": "∇· / ∇× field diagnostics",
+    "Standalone pipeline loop-breaking rail": "LOOP-BREAKING SUBMOVE",
+    "Standalone pipeline closure-field rail": "C(PsiN) CLOSURE-FIELD CONDITION",
+    "Standalone pipeline coupling rail": "LANGUAGE-MEDIATED COUPLING",
     "Standalone pipeline Land before Delta": "Land(B)<br>→ Delta-nB / Delta-kappa",
     "Standalone pipeline post-Delta wording": "target-explicit post-Delta field diagnostics",
 }
@@ -111,6 +143,12 @@ FORBIDDEN_INDEX_NOTATION_CLAIMS = {
     "del-cross separate operator": "del-cross is a separate operator",
     "selected path whole field": "selected execution path is the whole field",
     "field diagnostics prove warrant": "field diagnostics prove warrant",
+    "gradient bypasses gates": "∇ bypasses gates",
+    "gradient replaces Delta": "∇ replaces Δ",
+    "LoopBreak arbitrary assertion": "LoopBreak is arbitrary assertion",
+    "closure guarantees conversion": "𝒞(Ψᴺ) guarantees conversion",
+    "PsiI soul access": "Ψᴵ gives access to the soul",
+    "agent controls guidance": "agent controls guidance",
 }
 
 
@@ -406,7 +444,8 @@ def check_notation_contract(text: str, errors: list[str]) -> None:
     if "∇× / del-cross" in text and "∇· / del-dot" not in text:
         errors.append("docs/index.html defines del-cross without paired del-dot")
     for label, phrase in FORBIDDEN_INDEX_NOTATION_CLAIMS.items():
-        if phrase in lower and f"not {phrase}" not in lower:
+        normalized_phrase = phrase.lower()
+        if normalized_phrase in lower and f"not {normalized_phrase}" not in lower:
             errors.append(f"docs/index.html contains forbidden notation claim: {label}")
 
 

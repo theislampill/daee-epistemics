@@ -1,0 +1,98 @@
+{
+  "id": "field-gradient-loop-closure-coupling",
+  "kind": "positive",
+  "matrix_cases": ["field_gradient_loop_closure_coupling"],
+  "input": "Audit route-gradient selection, loop-breaking, closure-field condition, and language-mediated coupling without replacing Delta or claiming uptake.",
+  "covers": [
+    "PsiN",
+    "PsiI",
+    "route_gradient",
+    "loop_break",
+    "closure_field_condition",
+    "coupling",
+    "expanded_R"
+  ],
+  "bridge_terms": {
+    "PsiN": "PsiN / Ψᴺ is the agent/runtime execution field maintained by the diagnostic IR, burden cycle, Delta events, reread, and closure checks.",
+    "PsiI": "PsiI / Ψᴵ is the diagnosed interlocutor noetic field inferred from discourse, profile, source-status, register pressure, and response evidence; it is not direct soul access.",
+    "route_gradient": "Plain ∇ is route-gradient pressure over eligible live noetic/burden/dependency/register/route field structure. It ranks release pressure only after IR, V1/routing, catalogue, and held-material gates constrain the eligible route set.",
+    "loop_break": "LoopBreak(∇×T) is a licensed curl-resolution submove when target-explicit ∇× over field target T remains nonzero and an owner-licensed grounding source is available.",
+    "closure_field_condition": "𝒞(Ψᴺ) is a positive closure-field condition over the agent execution field: burdens are landed/integrated/held, divergence is bounded, curl is resolved or held, and the route can be reconstructed.",
+    "coupling": "T_lang: Ψᴺ ⇢ Ψᴵ marks the released language-mediated coupling attempt. It may perturb the diagnosed interlocutor field but does not guarantee acceptance or claim the agent controls guidance.",
+    "expanded_R": "R(H,Delta) rereads the whole live field after Delta events, loop-breaking attempts, and field diagnostics before STOP/HOLD/RECURSE/PARTIAL."
+  },
+  "field_operator_architecture": {
+    "route_gradient": {
+      "operator": "∇",
+      "meaning": "route-gradient over eligible live pressure",
+      "constraints": ["constrained by Diagnostic IR", "V1/routing precedence", "owner catalogue", "held-material gates"],
+      "negative_constraints": [
+        "not a truth/warrant metric",
+        "not free-form intuition",
+        "not a substitute for Δ",
+        "not a replacement for ∇· or ∇×",
+        "not a bypass around gates"
+      ]
+    },
+    "loop_breaking": {
+      "form": "LoopBreak(∇×T)",
+      "target_loop": "target loop: T is an explicit burden/dependency/register/route/collapse field target with nonzero curl",
+      "grounding_source": "fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition anchor, source-status correction, contradiction exposure, or another owner-licensed ground",
+      "delta_effect": "delta effect: must produce ΔⁿB and/or Δκ field-state update",
+      "post_break_reread": "post-break ∇×T reread plus R(H,Δ)",
+      "negative_constraints": ["not arbitrary assertion", "not proof-by-symbol", "not endless deferral"]
+    },
+    "closure": {
+      "condition": "𝒞(Ψᴺ)",
+      "positive_target": "agent execution field oriented toward N_fiṭrī ∧ ʿaql ṣarīḥ",
+      "requires": ["landed/integrated/held burdens", "bounded ∇·", "resolved or explicitly held ∇×", "recoverable route"],
+      "negative_constraints": ["does not guarantee acceptance", "does not certify interlocutor conversion", "does not erase held material"]
+    },
+    "coupling": {
+      "relation": "T_lang: Ψᴺ ⇢ Ψᴵ",
+      "meaning": "language-mediated coupling attempt from the agent execution field toward the diagnosed interlocutor field",
+      "negative_constraints": ["does not assert access to the soul", "does not claim guaranteed uptake", "does not claim the agent controls guidance"]
+    }
+  },
+  "control_effects": {
+    "route_selection": "∇ ranks eligible burden/route pressure after owner gates constrain the candidate set.",
+    "loop_breaking": "Nonzero ∇×T must trigger loop-breaker eligibility, HOLD, RECURSE, or PARTIAL instead of false closure.",
+    "closure": "𝒞(Ψᴺ) permits STOP only when residual pressure is cleared, integrated, discharged, held, or carried forward.",
+    "coupling": "Restorative Response is evaluated as a language-mediated coupling attempt, not as proof of interlocutor uptake.",
+    "reread": "R(H,Delta) rereads the whole live field after each transition and any loop-breaking submove.",
+    "partial_behavior": "Unresolved divergence/curl or unsafe coupling claims force PARTIAL/RECURSE."
+  },
+  "forbidden_claims": [
+    "∇ replaces Δ",
+    "∇ bypasses V1/routing/catalogue gates",
+    "LoopBreak is arbitrary assertion",
+    "𝒞(Ψᴺ) guarantees conversion",
+    "Ψᴵ gives access to the soul",
+    "the agent controls guidance"
+  ],
+  "expected_blocker": "Field-operator architecture blocks Delta replacement, gate bypass, arbitrary loop-breaking, conversion guarantees, soul-access claims, and guidance-control claims.",
+  "ir_projection": {
+    "claim_level": "formalism-audit",
+    "routing_gate": "field-operator-architecture-visible",
+    "collapse_radius": "closure remains live until route-gradient-selected burden, Delta event, field diagnostics, loop-break eligibility, and R(H,Delta) reread are accounted",
+    "matched_modules": ["recursive-state-transitions", "diagnostic-render-contract", "output-release"],
+    "output_shape": "audit-only",
+    "what_is_withheld_and_why": "Default governed render may print compact route-gradient, LoopBreak, closure, and coupling markers only when they are control-bound; long explanation remains audit/formalism-expanded.",
+    "post_render_gate": {
+      "cleared_this_pass": "field-operator architecture distinction recorded",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": ["route-gradient selection pressure", "loop-breaker eligibility", "closure-field condition", "agent/interlocutor coupling boundary"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "docs/algebraic-notation-and-noetic-formalism.md",
+    "docs/register-formalism-implementation-ledger.md"
+  ]
+}

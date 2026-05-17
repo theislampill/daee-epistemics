@@ -8,22 +8,24 @@
 <span class="node v56-input">Input</span><span class="arrow">→</span>
 <span class="node v56-ir">Banner + Layer A / IR</span><span class="arrow">→</span>
 <span class="node v56-owner">N + registers</span><span class="arrow">→</span>
-<span class="node v56-owner">Gate/routing</span><span class="arrow">→</span>
+<span class="node v56-owner">Gate/routing + ∇ route-gradient</span><span class="arrow">→</span>
 <span class="node v56-owner">Operation</span><span class="arrow">→</span>
 <span class="node v56-land">ΔⁿB/Δκ + Land(B)</span><span class="arrow">→</span>
 <span class="node v56-land">∇·/∇× diagnostics</span><span class="arrow">→</span>
+<span class="node v56-land">LoopBreak if ∇×T nonzero</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H,Δ) reread</span><span class="arrow">→</span>
-<span class="node v56-reread">STOP / HOLD / RECURSE / PARTIAL</span><span class="arrow">→</span>
-<span class="node v56-decision">Restorative Response</span>
+<span class="node v56-reread">𝒞(Ψᴺ) + STOP / HOLD / RECURSE / PARTIAL</span><span class="arrow">→</span>
+<span class="node v56-decision">Restorative Response + T_lang(Ψᴺ ⇢ Ψᴵ)</span>
 </div>
 <div class="flowline v56-formula-flow v60-pipeline-row v60-formal-row" aria-label="Canonical algebraic runtime spine">
 <span class="node v56-input">𝓝 ⊢ D₀</span><span class="arrow">→</span>
 <span class="node v56-ir">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(...)</span><span class="arrow">→</span>
+<span class="node v56-owner">∇ route pressure</span><span class="arrow">→</span>
 <span class="node v56-owner">ⁿB → {ⁿBᵢ[OPᵢ]}</span><span class="arrow">→</span>
 <span class="node v56-land">Land(ⁿB)</span><span class="arrow">→</span>
-<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·/∇×</span><span class="arrow">→</span>
+<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·/∇× → LoopBreak(∇×T)</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
-<span class="node v56-decision">𝒞(Ψᴺ) / Decision</span>
+<span class="node v56-decision">𝒞(Ψᴺ) / Decision → Ψᴵ coupling</span>
 </div>
 </div>
 <p class="subtle">Expanded <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> is formal/navigation notation over existing IR/control surfaces, not a current hard JSON field migration. For the full register formalism, use <a href="algebraic-notation-and-noetic-formalism.md">the formalism source</a> and <a href="register-formalism-implementation-ledger.md">the implementation ledger</a>.</p>
@@ -91,6 +93,8 @@
 <div class="v54-gate-arrow">→</div>
 <div class="v54-gate-step"><h4>Precedence</h4><p>concealment; DO; deformation; reason; foreign premise; load-bearing</p></div>
 <div class="v54-gate-arrow">→</div>
+<div class="v54-gate-step"><h4>∇ route-gradient</h4><p>eligible route pressure, constrained by gate/owner catalogue</p></div>
+<div class="v54-gate-arrow">→</div>
 <div class="v54-gate-step"><h4>Owner Select</h4><p>all owner families supported; only live bounded owners activate</p></div>
 <div class="v54-gate-arrow">→</div>
 <div class="v54-gate-step"><h4>Layer B</h4><p>TTP submoves: target → operation → result.</p></div>
@@ -144,6 +148,11 @@
 <span class="v60-field-target">∇×ξ</span>
 <span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>
 </div>
+<div class="v60-field-targets" aria-label="Readable loop-breaking examples">
+<span class="v60-field-target">LoopBreak(∇×B)</span>
+<span class="v60-field-target">LoopBreak(∇×ξ)</span>
+<span class="v60-field-meaning">licensed only with target loop, grounding source, Δ effect, and post-break reread</span>
+</div>
 <div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>
 </div>
 </div>
@@ -170,6 +179,7 @@
 <li><b>μ</b> memetic stabilizer broken or reordered</li>
 <li><b>κ</b> dependency radius resolved / held / partialed</li>
 </ul>
+<div class="v21-note"><b>Coupling boundary:</b> the agent execution field <code>Ψᴺ</code> releases through language toward diagnosed interlocutor field <code>Ψᴵ</code>; this is not a claim of guaranteed uptake or access to the soul.</div>
 </div>
 </article>
 </div>
@@ -181,6 +191,7 @@
 <div class="callout warn">
 <p><strong>NLA boundary:</strong> NLA means Natural Language Autoencoder, not generic linear algebra and not Shannon theory. The AV / activation verbalizer analogue is Layer A / Diagnostic IR / noetic-field banner. The AR / activation reconstructor analogue is reconstruction/reread through <code>R(H,Δ)</code>. Reconstruction fidelity asks whether selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state can be recovered; confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
 <p><strong>Delta and field diagnostics:</strong> <code>Delta-nB</code> and <code>Delta-kappa</code> are event-local transition operators. <code>∇·</code> / divergence and <code>∇×</code> / curl are field diagnostics over Delta-produced burden/dependency state. Default output may use compact governance markers such as <code>∇·κ: positive/live</code> or <code>∇×κ: unresolved loop</code> only when tied to dependency pressure, loop-breaking, <code>R(H,Δ)</code>, or PARTIAL/RECURSE/COMPLETE; long formalism exposition remains audit/formalism-only.</p>
+<p><strong>Gradient, closure, and coupling:</strong> plain <code>∇</code> reads route-gradient pressure among eligible live routes after gate/catalogue constraints; <code>LoopBreak(∇×T)</code> is a licensed loop-breaking submove, not arbitrary assertion; <code>𝒞(Ψᴺ)</code> is positive closure-field condition over the agent execution field; <code>T_lang: Ψᴺ ⇢ Ψᴵ</code> names language-mediated coupling without claiming guaranteed uptake.</p>
 <p><strong>Package boundary:</strong> <code>atomics/skill/**</code> is tracked canonical source, <code>skill/**</code> is ignored generated runtime, CI/local build compiles atomics into generated <code>skill/**</code>, release <code>.skill</code> packages generated runtime, and raw atomics are not packaged.</p>
 </div>
 </div>

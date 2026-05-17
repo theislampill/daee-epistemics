@@ -22,7 +22,7 @@ live-smoke claim, or a package/release proof claim by itself.
 Current compact runtime spine:
 
 ```text
-Input -> IR(N,m,tau,sigma) -> B -> {s1...sn} -> Land(B) -> Delta -> del-dot/del-cross field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Delta -> del-dot/del-cross field diagnostics -> LoopBreak if licensed -> R(H,Δ) -> C(PsiN) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 schema-light register bridge baseline:
@@ -30,8 +30,10 @@ schema-light register bridge baseline:
 ```text
 𝓝 ⊢ D₀ ⇝ Ψᴺ<N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H>
 → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
-→ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× target field state → R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)]*
+→ ∇ route-gradient over eligible live pressure
+→ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× target field state → LoopBreak(∇×T) when licensed → R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)]*
 → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ / ⁿ⁺¹B
+→ T_lang: Ψᴺ ⇢ Ψᴵ
 ```
 
 ASCII fallback:
@@ -39,8 +41,10 @@ ASCII fallback:
 ```text
 N_space |- D0 ~> PsiN<N in N_space,m,tau,sigma,heart,xi,Omega,mu,kappa,H>
 -> IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)
--> [nB -> {nBi[OPi]} -> Land(nB) -> Delta-nB/Delta-kappa -> del-dot/del-cross target field state -> R(H,Delta-nB{heart,xi,Omega,sigma,mu},Delta-kappa)]*
+-> route-gradient over eligible live pressure
+-> [nB -> {nBi[OPi]} -> Land(nB) -> Delta-nB/Delta-kappa -> del-dot/del-cross target field state -> LoopBreak(del-cross(T)) when licensed -> R(H,Delta-nB{heart,xi,Omega,sigma,mu},Delta-kappa)]*
 -> C(PsiN) -> N_fitri and aql_sarih / n-plus-1B
+-> T_lang: PsiN -> PsiI
 ```
 
 ## Adjudication Summary
@@ -51,9 +55,12 @@ Implemented now:
 - `♥`, `ξ`, `Ω`, `μ`, `κ`, and `Δκ` as derived/conditional registers over existing IR,
   hold/release, collapse-radius, owner, reread, and restoration controls.
 - `ⁿB`, `ⁿBᵢ`, `ΔⁿB`, `ⁿ⁺¹B`, `ⁿBᵢ[OP]`, and expanded `R(...)` as burden/governance notation.
+- plain `∇` as a route-gradient read over eligible live pressure, constrained by IR/routing/owner gates.
 - `∇·` / `del-dot` and `∇×` / `del-cross` as post-Delta, target-explicit field diagnostics
   over the Δ-produced noetic/burden/dependency/register/route/collapse field.
-- `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` as terminal formalism after burden landing and reread.
+- `LoopBreak(∇×T)` as the explicit loop-breaking submove form when nonzero curl is owner-licensed for resolution.
+- `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` as the positive closure-field condition after burden landing and reread.
+- `Ψᴵ` and `T_lang: Ψᴺ ⇢ Ψᴵ` as the diagnosed interlocutor field and language-mediated coupling boundary.
 - Shannon analogy boundaries and anti-symbol-theater / anti-schema-bloat guards.
 
 Still deferred with blocker:
@@ -83,6 +90,8 @@ Rejected as runtime behavior:
 | `𝓝` | `N_space`, `mathcal-N` | Noetic-structure selection space | Implemented bridge | Design/read domain; not a schema field. |
 | `D₀` | `D0` | Surface discourse / input signal | Implemented bridge | Input before diagnostic reduction. |
 | `Ψᴺ` | `PsiN` | Encoded noetic signal-state | Implemented bridge | Reconstructed signal-state represented through IR/case-state. |
+| `Ψᴵ` | `PsiI` | Diagnosed interlocutor noetic field | Implemented bridge | Inferred from discourse/profile/register evidence; not access to the soul or guaranteed uptake. |
+| `T_lang: Ψᴺ ⇢ Ψᴵ` | `T_lang: PsiN -> PsiI` | Language-mediated coupling attempt | Implemented bridge | Released response may perturb the diagnosed interlocutor field without claiming control of guidance. |
 | `N∈𝓝` | `N in N_space` | Runtime-selected or held noetic frame | Implemented bridge | Current `N` is selected/held; family label is not warrant. |
 | `IR(N,m,τ,σ)` | `IR(N,m,tau,sigma)` | Compact Diagnostic IR | Current canon | Required runtime dispatch bottleneck. |
 | `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` | `IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)` | Expanded register bridge | Implemented bridge | Derived functions; not mandatory schema fields. |
@@ -97,10 +106,12 @@ Rejected as runtime behavior:
 | `ΔⁿB` | `Delta-nB` | Local landed state change | Implemented bridge | Local burden delta before reread. |
 | `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle | Implemented bridge | Licensed only after `Land(B) -> R(H,Delta)`. |
 | `ⁿBᵢ[OP]` | `nBi[OP]` | Operator signature | Implemented bridge | `target -> operation -> result -> Delta-nB / Delta-kappa`. |
+| `∇` | `route-gradient`, `gradient` | Route-gradient read over live field pressure | Implemented bridge | Orders eligible routes/burdens by expected diagnostic reduction or closure progress; constrained by IR/routing/owner gates. |
 | `∇·T` | `del-dot(T)` | Divergence-like residual outward pressure in explicit target field `T` | Implemented bridge | Post-Delta closure diagnostic; target may be `κ`, `B`, `ξ`, `♥`, route/register/noetic field when owner-defined. |
 | `∇×T` | `del-cross(T)` | Curl-like circularity / rotational dependency in explicit target field `T` | Implemented bridge | Post-Delta closure diagnostic; nonzero circulation must be broken, held, discharged, or carried into RECURSE/PARTIAL. |
+| `LoopBreak(∇×T)` | `LoopBreak(del-cross(T))` | Loop-breaking submove over target field `T` | Implemented bridge | When licensed, grounds a circular dependency in an owner-bound non-circular source, produces Δ, and rereads `∇×T`. |
 | `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)` | `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)` | Expanded reread gate | Implemented bridge | Current `R(H,Δ)` plus live register/dependency deltas; `R(H,Delta)` remains ASCII fallback. |
-| `𝒞(Ψᴺ)` | `C(PsiN)` | Constrained noetic collapse / discursive resolution | Implemented terminal formalism | Endpoint after landing, held-route reread, and decision. |
+| `𝒞(Ψᴺ)` | `C(PsiN)` | Positive closure-field condition over the agent execution field | Implemented terminal formalism | Endpoint only when live pressure is landed, integrated, discharged, held, or carried into PARTIAL/RECURSE. |
 | `N_fiṭrī ∧ ʿaql ṣarīḥ` | `N_fitri and aql_sarih` | Fitri/sound-reason restorative orientation | Implemented terminal formalism | Telos after governing misread loses control; not a shortcut marker. |
 
 ## Runtime Boundary
@@ -121,7 +132,16 @@ If a symbol does not change those controls, it belongs in this spec or an audit 
 not in default runtime output. The default user-facing render remains compact and does not print
 raw `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` unless the user asks for formalism or `:dsl` / audit visibility.
 
-## Delta / Divergence / Curl Operator Distinction
+## Route-Gradient / Delta / Divergence / Curl Operator Distinction
+
+Plain `∇` is the route-gradient operator over the live noetic/burden/dependency/register/route
+field. It reads the direction of steepest live pressure change: the eligible route or burden
+whose release is expected to produce the greatest diagnostic reduction, closure progress, or
+dependency clarification. It is a routing pressure read, not an unconstrained intuition. IR,
+V1/routing precedence, owner catalogue eligibility, source-status, and held-material gates still
+bound the route set. Plain `∇` does not prove truth or warrant, does not replace `Delta-nB` or
+`Delta-kappa`, does not replace `∇·` or `∇×`, and does not force a single deterministic route
+when multiple valid structures remain live.
 
 `Delta-nB` is the burden-event delta: the local landed state change after a bounded owner/TTP
 operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Δ)` before
@@ -156,6 +176,26 @@ target-explicit compact markers such as `∇·κ`, `∇×κ`, `∇·B`, `∇×B`
 diagnostic is control-relevant; it must not dump long formalism exposition unless the user
 requested formalism/audit visibility. Control effects include dependency pressure,
 loop-breaking, `R(H,Δ)`, HOLD/PARTIAL/RECURSE/COMPLETE, or checker outcome.
+
+If `∇×T` remains nonzero, `LoopBreak(∇×T)` is the explicit loop-breaking submove form. The
+runtime must either license a loop-breaker or hold/recurse/partial the loop with reason. A valid
+loop-breaker names the target loop, grounding source, burden/submove, `Δ` effect, post-break
+`∇×T` reread, and closure/hold result. Owner-licensed grounds include fiṭrah, `ʿaql ṣarīḥ`,
+necessary knowledge, direct contradiction exposure, definition discipline, source-status
+correction, or another non-circular owner ground. It is invalid to use loop-breaking as arbitrary
+assertion.
+
+`𝒞(Ψᴺ)` is the positive closure-field condition over the agent execution field. It is not simply
+"no checklist item remains." The field must reach the target configuration: burdens landed or
+integrated, live material held or partialed with reason, residual `∇·` neutral/bounded, residual
+`∇×` resolved or explicitly held, and the route from diagnosis to restoration reconstructable
+without hidden live pressure. It does not mean the interlocutor has accepted truth.
+
+`Ψᴺ` and `Ψᴵ` are distinct. `Ψᴺ` is the agent/runtime execution field. `Ψᴵ` is the diagnosed
+interlocutor noetic field inferred from discourse, profile, register, response, and source-status
+evidence. `T_lang: Ψᴺ ⇢ Ψᴵ` names the language-mediated coupling attempt produced by release; it
+does not claim access to the soul, guaranteed uptake, total profile identity, or agent control of
+guidance.
 
 The diagnostic is operative only when it changes owner/TTP eligibility, held material,
 hold/release posture, burden selection, dependency radius, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE,

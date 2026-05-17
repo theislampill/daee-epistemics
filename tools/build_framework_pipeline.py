@@ -294,10 +294,13 @@ def render_chart(data: dict[str, Any]) -> str:
 
     for node_id in (
         "routing_precedence",
+        "route_gradient",
         "selected_live_burden",
         "operative_submoves",
         "delta_transition",
         "burden_result",
+        "field_diagnostics",
+        "loop_breaking",
         "output_governance",
         "output_release",
         "render_contract",
@@ -305,7 +308,9 @@ def render_chart(data: dict[str, Any]) -> str:
         "pass_shape",
         "bounded_layer_b",
         "post_render_gate",
+        "closure_field_condition",
         "restoration_trace",
+        "interlocutor_coupling",
         "bottom_line",
     ):
         node = nodes[node_id]

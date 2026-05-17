@@ -10,6 +10,13 @@
 
 ## [Unreleased] - current-canon metacompliance convergence
 
+### Added
+
+- Source-side field-operator architecture hardening: plain `∇` is route-gradient pressure over
+  eligible live routes, `LoopBreak(∇×T)` is the explicit owner-grounded loop-breaking submove form,
+  `𝒞(Ψᴺ)` is a positive closure-field condition, and `Ψᴺ` / `Ψᴵ` are separated by a
+  language-mediated coupling boundary.
+
 ## [v0.4.1.0] - 2026-05-16
 
 v0.4.1.0 is cleanup/hardening work on the `0.4.0.0` operative contract line.

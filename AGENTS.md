@@ -104,6 +104,12 @@ outcome, classify it as docs-only or ornamental risk.
   `∇·κ: positive/live` or `∇×κ: unresolved loop`, tied to dependency pressure, loop-breaking,
   `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE, or checker outcome. Long formalism exposition remains
   audit/formalism-only and decorative proof-by-symbol is forbidden.
+- Plain `∇` is route-gradient pressure over eligible live routes, not free intuition or a
+  truth/warrant metric. It may order release pressure only after IR/routing/catalogue gates have
+  constrained the field; it does not replace `Δ`, `∇·`, `∇×`, or owner eligibility.
+- Nonzero `∇×T` requires loop accounting. A licensed `LoopBreak(∇×T)` must name the target loop,
+  grounding source, burden/submove, `Δ` effect, post-break reread, and closure/HOLD/PARTIAL/RECURSE
+  result; otherwise the loop remains held or carried forward rather than hidden by closure prose.
 - Field-accounting discipline: when a case admits multiple valid noetic-structure selections,
   do not hardcode one route as canonical or collapse the case into a scalar master diagnosis.
   The selected execution path is the release order over the live field, not the whole field
@@ -116,9 +122,16 @@ outcome, classify it as docs-only or ornamental risk.
   `∇×κ`. TTP coverage is eligibility-aware: eligible live pressure must be used, integrated,
   held, or rejected with reason, not sprayed indiscriminately.
 - Every catalogue TTP/module is a runtime field operator, not an argument-bank topic. Each owner
-  should expose activation, field target, burden/submove form, ? effect, possible target-explicit
-  ? reread, `R(H,?)` obligation, hold/release/closure effect, output boundary, negative
+  should expose activation, field target, burden/submove form, Δ effect, possible target-explicit
+  ∇ reread, `R(H,Δ)` obligation, hold/release/closure effect, output boundary, negative
   constraints, and fixture/checker evidence.
+- Closure is a positive field condition, not mere checklist exhaustion. `𝒞(Ψᴺ)` is licensed only
+  when live burdens, dependencies, registers, routes, divergence/curl pressure, and held material
+  are landed, integrated, discharged, held with reason, or carried into RECURSE/PARTIAL.
+- Keep the agent/interlocutor field boundary explicit: `Ψᴺ` is the agent/runtime execution field;
+  `Ψᴵ` is the diagnosed interlocutor field inferred from discourse. Language-mediated coupling
+  may be assessed, but do not claim access to the soul, guaranteed uptake, profile-total identity,
+  or agent control of guidance.
 - NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
   interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
   Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /

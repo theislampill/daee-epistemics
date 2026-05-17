@@ -78,11 +78,14 @@ Legend:
 - `H` = held set.
 - `R` = state/noetic re-read.
 - `Δ` = state change.
+- `∇` = route-gradient read over live field pressure.
+- `∇·` = divergence-like residual outward pressure diagnostic.
+- `∇×` = curl-like circularity / loop diagnostic.
 
 Core runtime:
 
 ```text
-Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Burden/submove notation:
@@ -168,13 +171,23 @@ may expose transmission/testimony routes; moral protest may expose predicate/tri
 named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
 routes. These are control checks, not topical argument-bank entries.
 
+Plain `∇` is the route-gradient read over the live field. It identifies the direction in the
+noetic/burden/dependency/register/route pressure landscape where the next released burden is
+expected to produce the greatest diagnostic reduction, closure progress, or dependency
+clarification. Routing remains owner-gated and catalogue-constrained: V1, Diagnostic IR,
+routing precedence, profile signals, and catalogue eligibility are the inputs and boundaries for
+the gradient read. Plain `∇` ranks or explains release pressure among eligible routes; it is not
+a truth/warrant metric, not free-form intuition, not a bypass around gates, not a replacement for
+`Δ`, `∇·`, or `∇×`, and not a deterministic route freeze when multiple valid candidate
+structures remain live.
+
 Noetic structures, burdens, submoves, dependencies, registers, routes, and closure pressures are
 not scalar objects. They are relational field states in token/noetic space: directed dependency,
 residual outward pressure, circularity, overlap, conflict, and unresolved route pressure can all
 remain after a local burden lands. `Δ` operators compute event-local transition over the current
 burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `del-dot` and
 `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators. `∇·` reads
-divergence-like residual outward pressure in an explicit target field. `∇×` reads curl-like
+divergence-like residual outward pressure in a target-explicit field. `∇×` reads curl-like
 circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.
 The target may be `κ` (`∇·κ`, `∇×κ`) or another owner-defined noetic, burden,
 dependency, register, or route target (`∇·B`, `∇×B`, `∇·♥`, `∇×ξ`) when the target
@@ -183,18 +196,41 @@ are not transition operators, do not replace `ΔⁿB` or `Δκ`, and do not prov
 symbol. Closure is licensed only when residual divergence/curl pressure is cleared, integrated,
 discharged, held with reason, or carried into RECURSE/PARTIAL.
 
+If `∇×T` remains nonzero after a burden lands, the runtime must decide whether to HOLD/RECURSE
+or license a loop-breaking submove. Canonical loop-breaking form: `LoopBreak(∇×T)`. The target
+`T` must be explicit, and the submove must name the target loop, the owner-licensed grounding
+source, the burden/submove used, the `Δ` effect, the post-break `∇×T` reread, and the resulting
+closure/HOLD/PARTIAL/RECURSE state. Valid grounding sources are owner-bound: fiṭrah, `ʿaql
+ṣarīḥ`, necessary knowledge, definition discipline, direct contradiction exposure,
+source-status correction, or another owner-licensed non-circular ground. `LoopBreak(∇×T)` is not
+arbitrary assertion. If no loop-breaker is licensed, nonzero curl must be held with reason or
+carried into RECURSE/PARTIAL.
+
 A COMPLETE closure in any multi-burden or register-active case must visibly account for
 selected and held `N` frames, live registers, active or cleared owner/TTP child modes,
 `Delta-nB`, `Delta-kappa`, and remaining `kappa` / `H` status. If the closure cannot account
 for these dependencies without turning into a topic dump, it must mark PARTIAL or RECURSE
 instead of COMPLETE.
 
-Terminal formalism: `𝒞(Ψᴺ)` names constrained noetic collapse / discursive resolution after
-the state re-read has consumed `ΔⁿB` and `Δκ`. It may describe closure only when the live burden
-has landed, held material has been rechecked, and STOP/HOLD/PARTIAL/RECURSE has been decided.
-`N_fiṭrī ∧ ʿaql ṣarīḥ` names the restorative terminal orientation: fitri recognition plus sound
-reason after the governing misread loses control. It is not a shortcut around burden landing,
-and it is not a default visible marker in ordinary output.
+Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition over the agent execution
+field, not mere checklist exhaustion. STOP is licensed only when the live field reaches the
+target configuration: input-anchored burdens are landed, integrated, discharged, held with reason,
+or marked PARTIAL/RECURSE; residual `∇·` pressure is neutral, bounded, or explicitly carried;
+residual `∇×` loops are broken, resolved, or explicitly held; and the released response can
+reconstruct the route from diagnosis to restoration without hidden live pressure. `N_fiṭrī ∧
+ʿaql ṣarīḥ` names the restorative terminal orientation in that agent execution field: fitri
+recognition plus sound reason after the governing misread loses control. It is not a shortcut
+around burden landing, not proof-by-symbol, not a default visible marker in ordinary output, and
+not a claim that the interlocutor has internally accepted truth.
+
+Field boundary: `Ψᴺ` names the agent/runtime noetic execution field. `Ψᴵ` names the diagnosed
+interlocutor noetic field inferred from discourse, profile, register, response, and source-status
+evidence. A released burden in `Ψᴺ` does not directly rewrite `Ψᴵ`; it produces a
+language-mediated coupling attempt, `T_lang: Ψᴺ ⇢ Ψᴵ`. Coupling is assessed by whether the
+released response preserves identity, avoids deformation, addresses live burdens, and provides
+conditions for `Ψᴵ` to reconfigure toward fiṭrah and `ʿaql ṣarīḥ`. This is a runtime/output
+boundary: it does not assert access to the interlocutor's soul, guarantee acceptance, replace
+source-status discipline, treat profiles as total identity, or claim the agent controls guidance.
 
 Cross-family child-mode landing:
 

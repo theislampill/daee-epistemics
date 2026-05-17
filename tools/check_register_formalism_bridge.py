@@ -121,8 +121,13 @@ SYMBOL_OPERATIVITY_REQUIRED = [
     "ΔⁿB",
     "Delta-kappa",
     "Δκ",
+    "∇",
+    "route-gradient",
+    "gradient",
     "R(H,Delta)",
     "R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)",
+    "LoopBreak(∇×T)",
+    "LoopBreak",
     "STOP",
     "HOLD",
     "PARTIAL",
@@ -132,6 +137,7 @@ SYMBOL_OPERATIVITY_REQUIRED = [
     "n-plus-1B",
     "𝒞(Ψᴺ)",
     "C(PsiN)",
+    "closure-field condition",
     "N_fiṭrī",
     "N_fitri",
     "ʿaql ṣarīḥ",
@@ -178,6 +184,7 @@ FIXTURE_MATRIX_REQUIRED = {
     "anti_symbol_theater",
     "shannon_nla_boundary",
     "nla_reconstruction",
+    "field_gradient_loop_closure_coupling",
 }
 
 REGISTER_TTP_REQUIREMENTS = {
@@ -474,7 +481,11 @@ REQUIRED_TOKENS = {
         "∇·B",
         "∇×B",
         "∇·♥",
-        "∇×ξ",
+    "∇×ξ",
+    "Ψᴵ",
+    "PsiI",
+    "T_lang",
+    "language-mediated coupling",
         "The diagnostic is operative only when it changes owner/TTP eligibility",
         "Shannon language remains bounded",
     ],
@@ -490,7 +501,7 @@ REQUIRED_TOKENS = {
         "| `μ` meta-noetic memetic carrier/stabilizer |",
         "| `κ` collapse radius / downstream dependency set |",
         "| `Δκ` reread input after burden landing |",
-        "| `𝒞(Ψᴺ)` constrained noetic collapse / discursive resolution |",
+        "| `𝒞(Ψᴺ)` positive closure-field condition |",
         "| `N_fiṭrī ∧ ʿaql ṣarīḥ` restorative terminal-state formalism |",
         "PROVEN IMPLEMENTED",
         "DEFERRED WITH BLOCKER",
@@ -507,6 +518,9 @@ REQUIRED_TOKENS = {
     "atomics/skill/references/diagnostics/diagnostic-ir.md": [
         "register-formalism bridge status",
         "D0 -> PsiN<N,m,tau,sigma,H>",
+        "∇ route-gradient",
+        "`PsiN` / `Ψᴺ` is the agent/runtime execution field",
+        "diagnosed interlocutor field `PsiI` / `Ψᴵ`",
         "𝓝 ⊢ D₀ ⇝ Ψᴺ",
         "derived/conditional runtime bridge",
         "mandatory JSON/schema fields",
@@ -526,16 +540,25 @@ REQUIRED_TOKENS = {
         "Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ",
         "ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ",
         "R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)",
+        "Plain `∇` is the route-gradient",
+        "LoopBreak(∇×T)",
+        "Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition",
+        "`Ψᴵ` names the diagnosed",
         "not a generic TODO list",
         "Terminal formalism",
         "𝒞(Ψᴺ)",
-        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "N_fiṭrī",
+        "ʿaql ṣarīḥ",
     ],
     "atomics/skill/references/rubrics/output-release.md": [
         "Derived register release discipline",
         "Terminal release boundary",
         "owner/TTP execution",
         "ΔⁿB",
+        "∇ route-gradient over eligible live pressure",
+        "LoopBreak(∇×T)",
+        "𝒞(Ψᴺ)",
+        "T_lang",
         "`κ` is not a TODO list",
         "R(H,Delta)",
     ],
@@ -543,11 +566,18 @@ REQUIRED_TOKENS = {
         "Expanded formalism render boundary",
         "Anti-symbol-theater rule",
         "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇ route: B2 pressure highest",
+        "LoopBreak(∇×T)",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
         "N_fiṭrī ∧ ʿaql ṣarīḥ",
     ],
     "atomics/skill/references/diagnostics/framework-pipeline.yaml": [
         "schema-light register bridge maps D0 -> PsiN -> IR without hard schema fields",
         "register_formalism_bridge",
+        "ROUTE-GRADIENT PRESSURE",
+        "LOOP-BREAKING SUBMOVE",
+        "C(PsiN) CLOSURE-FIELD CONDITION",
+        "LANGUAGE-MEDIATED COUPLING",
         "ⁿBᵢ[OP] : target -> operation -> result -> ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ",
         "Delta-kappa dependency-radius changes are consumed before closure",
     ],
@@ -568,6 +598,10 @@ REQUIRED_TOKENS = {
     "AGENTS.md": [
         "python tools/check_register_formalism_bridge.py",
         "schema-light register bridge semantics are",
+        "selected execution path is the release order over the live field",
+        "Plain `∇` is route-gradient pressure",
+        "LoopBreak(∇×T)",
+        "Ψᴵ",
         "tests/register-formalism-bridge-fixtures/",
         "Bridge live-smoke proof",
         "do not claim a release-line migration from the index page",
@@ -580,6 +614,9 @@ GENERATED_REQUIRED = {
         "derived/conditional runtime bridge",
         "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
         "Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ",
+        "Plain `∇` is the route-gradient",
+        "LoopBreak(∇×T)",
+        "`Ψᴵ` names the diagnosed",
         "R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)",
         "Terminal formalism",
     ],
@@ -588,6 +625,9 @@ GENERATED_REQUIRED = {
         "Terminal release boundary",
         "Anti-symbol-theater rule",
         "Expanded formalism render boundary",
+        "∇ route-gradient",
+        "LoopBreak(∇×T)",
+        "𝒞(Ψᴺ)",
     ],
 }
 
@@ -602,6 +642,11 @@ INDEX_REQUIRED = [
     "diagnostic navigation aid",
     "source-governance",
     "fixture-backed",
+    "route-gradient",
+    "LoopBreak(∇×T)",
+    "𝒞(Ψᴺ)",
+    "Ψᴵ",
+    "T_lang",
     "Shannon entropy measures truth",
 ]
 
@@ -1214,6 +1259,26 @@ def validate_bridge_fixture(
         errors.append(f"{fixture_id}: shannon_nla_boundary matrix case must cover shannon_boundary")
     if "nla_reconstruction" in matrix_cases and "nla_reconstruction" not in covers:
         errors.append(f"{fixture_id}: nla_reconstruction matrix case must cover nla_reconstruction")
+    if "field_gradient_loop_closure_coupling" in matrix_cases:
+        required_covers = {"PsiN", "PsiI", "route_gradient", "loop_break", "closure_field_condition", "coupling"}
+        missing = sorted(required_covers - covers)
+        if missing:
+            errors.append(f"{fixture_id}: field-gradient matrix case missing covers: {missing}")
+        for term in (
+            "route-gradient",
+            "constrained by",
+            "catalogue",
+            "loopbreak",
+            "target loop",
+            "grounding source",
+            "delta effect",
+            "post-break",
+            "closure-field condition",
+            "does not guarantee acceptance",
+            "does not assert access to the soul",
+        ):
+            if term not in flattened_payload:
+                errors.append(f"{fixture_id}: field-gradient matrix case missing term {term!r}")
 
     bridge_terms = payload.get("bridge_terms")
     if not isinstance(bridge_terms, dict) or not bridge_terms:
@@ -1364,6 +1429,31 @@ def validate_bridge_fixture(
                 errors.append(f"{fixture_id}: nla_mapping may reduce NLA to generic linear algebra")
         if not ({"reread", "burden_selection", "owner_choice", "partial_behavior"} & effect_keys):
             errors.append(f"{fixture_id}: nla_reconstruction must affect reconstruction, routing, or closure")
+
+    if "field_gradient_loop_closure_coupling" in matrix_cases:
+        if not ({"route_selection", "loop_breaking", "closure", "coupling"} <= effect_keys):
+            errors.append(
+                f"{fixture_id}: field-gradient coverage must include route_selection, loop_breaking, closure, and coupling effects"
+            )
+        architecture = payload.get("field_operator_architecture")
+        if not isinstance(architecture, dict):
+            errors.append(f"{fixture_id}: field-gradient coverage requires field_operator_architecture object")
+        else:
+            flattened_arch = json.dumps(architecture, ensure_ascii=False).lower()
+            for term in (
+                "∇",
+                "∇·",
+                "∇×",
+                "loopbreak",
+                "𝒞(Ψᴺ)".lower(),
+                "Ψᴵ".lower(),
+                "t_lang",
+                "not a truth",
+                "not proof-by-symbol",
+                "not a substitute",
+            ):
+                if term not in flattened_arch:
+                    errors.append(f"{fixture_id}: field_operator_architecture missing term {term!r}")
 
     if kind == "negative":
         if not string_list(payload.get("forbidden_claims")) and not string_list(payload.get("forbidden_visible_symbols")):

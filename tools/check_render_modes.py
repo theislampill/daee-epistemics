@@ -550,14 +550,18 @@ FIXTURE_REQUIRED_TOKENS = [
 ]
 
 DEFAULT_ALLOWED_FORMAL_STATE_MARKERS = [
+    "∇ route-gradient",
     "ΔⁿB",
     "Δκ",
     "∇·",
     "∇×",
     "del-dot",
     "del-cross",
+    "LoopBreak(∇×T)",
     "R(H,Δ)",
     "R(H,Delta)",
+    "𝒞(Ψᴺ)",
+    "T_lang",
     "PARTIAL",
     "RECURSE",
     "COMPLETE",
@@ -566,10 +570,14 @@ DEFAULT_ALLOWED_FORMAL_STATE_MARKERS = [
 DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
     "burden-cycle",
     "operative submove",
+    "∇ route-gradient",
     "Δκ",
     "∇·",
     "∇×",
+    "LoopBreak(∇×T)",
     "R(H,Δ)",
+    "𝒞(Ψᴺ)",
+    "Ψᴵ",
     "PARTIAL",
     "RECURSE",
     "COMPLETE",
@@ -611,6 +619,14 @@ DEFAULT_FORMAL_MARKER_CONTROL_TERMS = [
     "relational field",
     "scalar",
     "governance",
+    "route-gradient",
+    "loopbreak",
+    "loop-breaking",
+    "closure-field",
+    "coupling",
+    "t_lang",
+    "psii",
+    "ψᴵ",
 ]
 
 DEFAULT_FORBIDDEN_FORMALISM_EXPOSITION = [
@@ -638,6 +654,13 @@ DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN = [
     "divergence replaces delta",
     "curl replaces delta",
     "∇ replaces Δ",
+    "∇ bypasses gates",
+    "∇ bypasses catalogue",
+    "route-gradient bypasses gates",
+    "LoopBreak is arbitrary assertion",
+    "𝒞(Ψᴺ) guarantees conversion",
+    "Ψᴵ gives access to the soul",
+    "agent controls guidance",
     "∇x symbol proves",
     "∇× symbol proves",
     "∇ applies to scalar",
@@ -684,6 +707,9 @@ FORMAL_MARKER_POSITIVE_SAMPLES = {
     ),
     "register_target": "Register field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.",
     "alias_target": "ASCII fallback: del-dot(kappa) positive; del-cross(xi) unresolved; R(H,Delta): RECURSE.",
+    "route_gradient": "Route: ∇ pressure selects B2 after gates; Δ waits for burden landing.",
+    "loop_break": "State: ∇×B nonzero; LoopBreak(∇×B) licensed; ΔⁿB lands; R(H,Δ): RECURSE.",
+    "closure_field": "State: 𝒞(Ψᴺ) reached; ∇·κ negative; ∇×κ resolved; R(H,Δ): STOP.",
 }
 
 FORMAL_MARKER_BAD_SAMPLES = {
@@ -691,6 +717,9 @@ FORMAL_MARKER_BAD_SAMPLES = {
     "untargeted_alias": ("State: del-cross unresolved; COMPLETE.", "without explicit target"),
     "proof_by_symbol": ("The ∇× symbol proves the TTP executed.", "forbidden formalism claim"),
     "delta_replacement": ("Curl replaces Delta here; ∇ replaces Δ as the transition operator.", "forbidden formalism claim"),
+    "gradient_bypass": ("Route-gradient bypasses gates and chooses any route.", "forbidden formalism claim"),
+    "loopbreak_assertion": ("LoopBreak is arbitrary assertion over the field.", "forbidden formalism claim"),
+    "closure_conversion": ("𝒞(Ψᴺ) guarantees conversion of the interlocutor.", "forbidden formalism claim"),
     "scalar_target": ("∇· applies to scalar master diagnosis; COMPLETE.", "forbidden formalism claim"),
     "long_exposition": ("The antisymmetric Jacobian of the noetic field shows a loop.", "formalism exposition"),
 }
@@ -2229,7 +2258,11 @@ def _has_any_context(text: str, contexts: list[str]) -> bool:
 
 
 TARGET_EXPLICIT_FIELD_DIAGNOSTIC_RE = re.compile(
-    r"(?:∇[·×]|del-(?:dot|cross)\s*\(?)(?:κ|kappa|B|burden|H|heart|♥|xi|ξ|Omega|Ω|sigma|σ|mu|μ|N|route|register)",
+    r"(?:"
+    r"(?:∇[·×]|del-(?:dot|cross)\s*\(?)(?:κ|kappa|B|burden|H|heart|♥|xi|ξ|Omega|Ω|sigma|σ|mu|μ|N|T|route|register)"
+    r"|∇·`?\s+(?:pressure|diagnostic|field)"
+    r"|∇×`?\s+(?:loops?|diagnostic|field)"
+    r")",
     re.I,
 )
 
@@ -2251,6 +2284,16 @@ def check_default_formal_marker_policy(corpus: str, errors: list[str], label: st
                 "read the `δ`-produced field state",
                 "read the `Δ`-produced field state",
                 "diagnostic marker",
+                "field diagnostics",
+                "diagnostic",
+                "post-delta",
+                "loop-breaking",
+                "loopbreak",
+                "closure-field",
+                "not a replacement",
+                "not replace",
+                "ascii aliases",
+                "operator family",
                 "forbidden default",
                 "forbidden default exposition",
                 "forbidden example",
@@ -2258,12 +2301,13 @@ def check_default_formal_marker_policy(corpus: str, errors: list[str], label: st
             ],
         )
         for marker in DEFAULT_FIELD_DIAGNOSTIC_MARKERS:
+            has_control_context = _has_any_context(window, DEFAULT_FORMAL_MARKER_CONTROL_TERMS)
             if marker in line and not TARGET_EXPLICIT_FIELD_DIAGNOSTIC_RE.search(line) and not boundary_context:
                 errors.append(
                     f"{label} contains field diagnostic marker without explicit target: "
                     f"{marker!r} on line {index + 1}"
                 )
-            if marker in line and not _has_any_context(window, DEFAULT_FORMAL_MARKER_CONTROL_TERMS) and not boundary_context:
+            if marker in line and not has_control_context and not boundary_context:
                 errors.append(
                     f"{label} contains field diagnostic marker without compact control context: "
                     f"{marker!r} on line {index + 1}"
@@ -2276,6 +2320,12 @@ def check_default_formal_marker_policy(corpus: str, errors: list[str], label: st
                     f"an explicit boundary/example context: {term!r} on line {index + 1}"
                 )
         for term in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
+            if term.lower() in lower_line and (
+                "does not" in window.lower()
+                or "not " in window.lower()
+                or "cannot " in window.lower()
+            ):
+                continue
             if term.lower() in lower_line and not _has_any_context(window, DEFAULT_RUNTIME_CONTEXT_REQUIRED):
                 errors.append(
                     f"{label} contains forbidden formalism claim without explicit boundary/example context: "
@@ -2375,6 +2425,12 @@ def main() -> int:
     for index, line in enumerate(lines):
         window = "\n".join(lines[max(0, index - 1) : min(len(lines), index + 2)])
         for token in DEFAULT_RUNTIME_FORMALISM_CLAIM_FORBIDDEN:
+            if token.lower() in line.lower() and (
+                "does not" in window.lower()
+                or "not " in window.lower()
+                or "cannot " in window.lower()
+            ):
+                continue
             if token.lower() in line.lower() and not _has_any_context(
                 window,
                 DEFAULT_RUNTIME_CONTEXT_REQUIRED

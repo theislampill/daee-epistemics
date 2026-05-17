@@ -119,6 +119,16 @@ nodes:
       - TTP entry before activation
     support_claim: routing_before_render
 
+  - id: route_gradient
+    label: ROUTE-GRADIENT PRESSURE
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - plain nabla reads eligible live route pressure over the noetic/burden/dependency/register/route field
+      - constrained by Diagnostic IR, V1/routing precedence, owner catalogue, and held-material gates
+      - ranks release pressure; does not bypass gates, replace Delta, or prove truth/warrant
+      - selected execution path remains release order over the live field, not the whole field
+    support_claim: route_gradient_pressure
+
   - id: selected_live_burden
     label: SELECTED CURRENT LIVE BURDEN
     owner: skill/references/rubrics/diagnostic-render-contract.md
@@ -157,6 +167,25 @@ nodes:
       - Delta-kappa is event-local dependency/collapse-radius change
       - deltas feed Land(B) -> R(H,Delta), not decorative notation
     support_claim: delta_transition_boundary
+
+  - id: field_diagnostics
+    label: FIELD DIAGNOSTICS
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - divergence / curl diagnostics are target-explicit reads over Delta-produced field state
+      - nabla-dot reads residual outward pressure; nabla-cross reads circular dependency
+      - targets may include kappa, burden, register, route, or dependency fields when owner-defined
+      - nonzero pressure blocks false closure until cleared, held, partialed, or recursed
+    support_claim: field_diagnostic_boundary
+
+  - id: loop_breaking
+    label: LOOP-BREAKING SUBMOVE
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - LoopBreak(nabla-cross target) is licensed only when nonzero curl remains and an owner-ground exists
+      - target loop, grounding source, submove, Delta effect, and post-break reread must be explicit
+      - no arbitrary assertion; if no loop-breaker is licensed, HOLD / RECURSE / PARTIAL governs
+    support_claim: loop_breaking_submove
 
   - id: burden_result
     label: BURDEN LANDED
@@ -250,6 +279,24 @@ nodes:
       - decision = STOP / HOLD / RECURSE / PARTIAL
     support_claim: post_render_gate_before_closure
 
+  - id: closure_field_condition
+    label: C(PsiN) CLOSURE-FIELD CONDITION
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - positive closure-field condition over the agent execution field
+      - requires landed/integrated/held burdens, bounded divergence, resolved or held curl, and recoverable route
+      - does not claim interlocutor conversion or proof-by-symbol
+    support_claim: closure_field_condition
+
+  - id: interlocutor_coupling
+    label: LANGUAGE-MEDIATED COUPLING
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    lines:
+      - PsiN is the agent/runtime execution field; PsiI is the diagnosed interlocutor field
+      - released response is T_lang from PsiN toward PsiI, not direct rewrite
+      - no access-to-soul, guaranteed uptake, or agent-control-of-guidance claim
+    support_claim: agent_interlocutor_field_boundary
+
   - id: bottom_line
     label: BOTTOM-LINE SYNTHESIS / NEXT MOVE
     owner: skill/SKILL.md
@@ -270,10 +317,13 @@ required_order:
   - gate_blocked
   - gate_open
   - routing_precedence
+  - route_gradient
   - selected_live_burden
   - operative_submoves
   - delta_transition
   - burden_result
+  - field_diagnostics
+  - loop_breaking
   - output_governance
   - output_release
   - render_contract
@@ -281,7 +331,9 @@ required_order:
   - pass_shape
   - bounded_layer_b
   - post_render_gate
+  - closure_field_condition
   - restoration_trace
+  - interlocutor_coupling
   - bottom_line
 
 edges:
@@ -316,6 +368,9 @@ edges:
     to: routing_precedence
     support_claim: routing_before_render
   - from: routing_precedence
+    to: route_gradient
+    support_claim: route_gradient_pressure
+  - from: route_gradient
     to: selected_live_burden
     support_claim: selected_live_burden_operator
   - from: selected_live_burden
@@ -328,6 +383,12 @@ edges:
     to: burden_result
     support_claim: burden_result_before_refresh
   - from: burden_result
+    to: field_diagnostics
+    support_claim: field_diagnostic_boundary
+  - from: field_diagnostics
+    to: loop_breaking
+    support_claim: loop_breaking_submove
+  - from: loop_breaking
     to: output_governance
     support_claim: default_output_surface
   - from: output_governance
@@ -349,9 +410,15 @@ edges:
     to: post_render_gate
     support_claim: post_render_gate_before_closure
   - from: post_render_gate
+    to: closure_field_condition
+    support_claim: closure_field_condition
+  - from: closure_field_condition
     to: restoration_trace
     support_claim: restoration_trace_shape
   - from: restoration_trace
+    to: interlocutor_coupling
+    support_claim: agent_interlocutor_field_boundary
+  - from: interlocutor_coupling
     to: bottom_line
     support_claim: post_render_gate_before_closure
   - from: post_render_gate
@@ -608,6 +675,10 @@ concept_ownership:
     label: routing
     owner: skill/references/diagnostics/routing-precedence.md
     support_claim: routing_before_render
+  - id: route_gradient_pressure
+    label: route-gradient pressure
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: route_gradient_pressure
   - id: selected_live_burden
     label: selected current live burden
     owner: skill/references/rubrics/diagnostic-render-contract.md
@@ -620,6 +691,14 @@ concept_ownership:
     label: Delta-nB / Delta-kappa transition boundary
     owner: skill/references/diagnostics/recursive-state-transitions.md
     support_claim: delta_transition_boundary
+  - id: field_diagnostic_boundary
+    label: divergence / curl field diagnostics
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: field_diagnostic_boundary
+  - id: loop_breaking_submove
+    label: curl-resolution / loop-breaking submove
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: loop_breaking_submove
   - id: render_shape
     label: render shape
     owner: skill/references/rubrics/diagnostic-render-contract.md
@@ -640,6 +719,14 @@ concept_ownership:
     label: recursion
     owner: skill/references/diagnostics/recursive-state-transitions.md
     support_claim: stop_hold_recurse_partial
+  - id: closure_field_condition
+    label: positive closure-field condition
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: closure_field_condition
+  - id: agent_interlocutor_field_boundary
+    label: agent/interlocutor field boundary
+    owner: skill/references/diagnostics/recursive-state-transitions.md
+    support_claim: agent_interlocutor_field_boundary
   - id: framework_pipeline_audit_surface
     label: framework-pipeline audit surface
     owner: skill/references/diagnostics/framework-pipeline.md
@@ -789,6 +876,15 @@ support_claims:
           - "output-release rubric"
           - "Rule P-7 (TTP entry before activation)"
 
+  route_gradient_pressure:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Plain `∇` is the route-gradient read over the live field"
+          - "Routing remains owner-gated and catalogue-constrained"
+          - "not a bypass around gates"
+          - "not a replacement for"
+
   selected_live_burden_operator:
     owners:
       - source: skill/references/rubrics/diagnostic-render-contract.md
@@ -881,6 +977,24 @@ support_claims:
           - "R(H,Delta)"
           - "remaining `kappa` / `H` status"
 
+  field_diagnostic_boundary:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "`∇·` and `∇×` read the `Δ`-produced field state"
+          - "target-explicit"
+          - "are not transition operators"
+          - "Closure is licensed only when residual divergence/curl pressure is cleared"
+
+  loop_breaking_submove:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "LoopBreak(∇×T)"
+          - "target loop"
+          - "grounding source"
+          - "post-break `∇×T` reread"
+
   bounded_layer_b_release:
     owners:
       - source: skill/references/rubrics/output-release.md
@@ -906,6 +1020,23 @@ support_claims:
           - "What cleared this pass"
           - "What remains live in the same input"
           - "STOP / HOLD / RECURSE / PARTIAL"
+
+  closure_field_condition:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition"
+          - "STOP is licensed only when the live field reaches the target configuration"
+          - "not a claim that the interlocutor has internally accepted truth"
+
+  agent_interlocutor_field_boundary:
+    owners:
+      - source: skill/references/diagnostics/recursive-state-transitions.md
+        tokens:
+          - "`Ψᴺ` names the agent/runtime noetic execution field"
+          - "`Ψᴵ` names the diagnosed"
+          - "T_lang: Ψᴺ ⇢ Ψᴵ"
+          - "does not assert access to the interlocutor's soul"
 
   recursion_through_state_refresh:
     owners:

@@ -28,16 +28,21 @@ raw discourse
 → typed IR
 -> gate checks
 -> routing precedence
+→ ∇ route-gradient over eligible live pressure
 -> selected current live burden
 → PF atom(s) / claim-level overlay
 → canonical owner(s)
 -> internal TTP step(s): target -> operation -> result
 -> burden landing
+→ ΔⁿB / Δκ event-local transition
+→ target-explicit ∇· / ∇× field diagnostics
+→ LoopBreak(∇×T) if a licensed loop-breaker is required
 → family-local load floor
-→ output-release rubric        â† THIS FILE
+→ output-release rubric        ← THIS FILE
 → diagnostic render contract
 → bounded public response
 → post-render state re-read / re-entry gate
+→ closure-field condition 𝒞(Ψᴺ)
 → STOP / HOLD / RECURSE / PARTIAL
 → next governed pass if eligible
 ```
@@ -61,12 +66,18 @@ This rubric governs release order and re-entry. It is not a render template, rou
 proof bank, or permission to dump held downstream material.
 
 **Core principle:** use the runtime notation owned by `recursive-state-transitions.md`:
-`H(n+1) = (Hn âˆª InputLive_n) - Released_n`; `Land(B) -> R`; `R required before STOP/RECURSE`.
+`H(n+1) = (Hn ∪ InputLive_n) - Released_n`; `Land(B) -> R`; `R required before STOP/RECURSE`.
 Gloss: Held means traversal-delayed, not response-delayed. Apply the governing TTP, refresh
 state, reassess upstream/downstream and first-/higher-order burdens, then continue only if another
 permitted `B` remains live. STOP is invalid unless the post-render gate has run; if another live
 distortion or newly eligible held route remains, choose RECURSE, HOLD, or PARTIAL as governed.
 No premature STOP: do not close while an eligible live burden remains.
+
+Plain `∇` is the route-gradient read over eligible live pressure before the selected burden is
+released. It may explain why one route/burden has the highest expected diagnostic reduction or
+closure yield, but it remains constrained by Diagnostic IR, V1/routing precedence, owner catalogue
+eligibility, and held-material discipline. It does not bypass gates, prove truth/warrant, replace
+`Δ`, or turn multiple live candidate structures into one deterministic route.
 
 > Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory noetic-field execution banner, compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
 
@@ -104,6 +115,12 @@ Jacobian of the noetic field shows...`; `The ∇× symbol proves the TTP execute
 `del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators; if
 Unicode is unavailable they may appear only as compact, target-explicit state markers with the
 same control-effect boundary.
+
+If compact `∇×T` remains nonzero, the release decision must account for loop-breaking eligibility.
+`LoopBreak(∇×T)` may be released only when the output identifies the target loop, an
+owner-licensed grounding source, the burden/submove that breaks the loop, the resulting `Δ`
+effect, and a post-break `∇×T` reread. If no loop-breaker is licensed, the loop is held with
+reason or carried into RECURSE/PARTIAL rather than hidden behind closure prose.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. Do not put
@@ -161,6 +178,18 @@ Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` m
 there is no unhandled live distortion requiring another pass. They never license a restoration
 paragraph before owner/TTP execution, visible closure audit, P1/P7 closure, and live M1/M1-P or
 M9 obligations have been satisfied or held/PARTIALed.
+
+Positive closure-field condition: `𝒞(Ψᴺ)` means the agent execution field has reached a governed
+release configuration, not that a checklist is empty and not that the interlocutor has accepted
+truth. STOP requires landed/integrated/held burdens, neutral or bounded residual `∇·` pressure,
+resolved or explicitly held `∇×` loops, recoverable route reconstruction, and no hidden live
+pressure requiring RECURSE/PARTIAL.
+
+Agent/interlocutor field boundary: the runtime operates in `Ψᴺ`, the agent execution field. It
+diagnoses an interlocutor field `Ψᴵ` only through discourse/profile/register/source-status
+evidence and releases through language-mediated coupling `T_lang: Ψᴺ ⇢ Ψᴵ`. Output may assess
+whether the coupling attempt is identity-preserving and non-deformative; it must not claim access
+to the interlocutor's soul, guaranteed uptake, or agent control of guidance.
 
 For file-retained execution, the same release decision governs the file, not the final chat
 message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat

@@ -28,6 +28,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-docs-index-generator-parity-audit.md` | CURRENT-CANDIDATE | Converts `docs/index.html` into a generated public viewer backed by `docs/index/**`, owner-derived module rows, and an interaction/freshness checker. |
 | `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | CURRENT-CANDIDATE | Classifies generated index and pipeline-page blocks by owner coupling, manifest provenance, notation coherence, and standalone-page disposition. |
 | `docs/audits/v0.4.1.0-secular-humanist-field-governance-audit.md` | CURRENT-CANDIDATE | Compares the secular-humanist authority-frame smoke outputs and hardens field accounting without hardcoding a single noetic-structure route. |
+| `docs/audits/v0.4.1.0-field-gradient-loop-closure-coupling-implementation-audit.md` | CURRENT-CANDIDATE | Implements plain ∇ route-gradient pressure, LoopBreak(∇×T), positive 𝒞(Ψᴺ) closure-field condition, and Ψᴺ/Ψᴵ language-mediated coupling with owner/checker/fixture/docs-index traces. |
 
 ## Consolidated Audit History
 

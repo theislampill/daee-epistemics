@@ -51,10 +51,11 @@ Print exactly one value for each field; never print the choice list or combine v
 The banner must distinguish the user's task from an external source request: `/daee-epistemics
 refute:` renders `user task: REFUTE` even when `external source request: NONE EXPLICIT`.
 Default release status is governed, not shallow or governance-hidden. When control-relevant,
-it must include the burden-cycle, operative submove, `Δκ`, target-explicit `∇·` / `∇×` state,
-`R(H,Δ)`, and PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure. It should
-still avoid long explanatory formalism unless that explanation is needed for the user-requested
-audit or formalism task.
+it must include the burden-cycle, operative submove, optional route-gradient pressure `∇`,
+`Δκ`, target-explicit `∇·` / `∇×` state, any licensed `LoopBreak(∇×T)`, `R(H,Δ)`,
+closure-field status, and PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure.
+It should still avoid long explanatory formalism unless that explanation is needed for the
+user-requested audit or formalism task.
 Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or depth
 licenses. External source request and authority frame are distinct: do not mark external source
 request `IMPLICIT` merely because a worldview or authority frame is live. If a
@@ -109,9 +110,11 @@ be the primary public notation unless the output is explicitly a checker/dev-har
 Expanded formalism render boundary: full algebraic exposition belongs by default to
 theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
 print short formal governance markers when they are control-relevant to the current execution:
-`ΔⁿB`, `Δκ`, target-explicit `∇·` / `∇×` markers such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
-`R(H,Δ)`, `R(H,Delta)`, PARTIAL, RECURSE, or COMPLETE. Use `R(H,Δ)` as the formal notation
-and `R(H,Delta)` only as the ASCII fallback.
+route-gradient `∇` markers such as `∇ route: B2 pressure highest`, `ΔⁿB`, `Δκ`,
+target-explicit `∇·` / `∇×` markers such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
+`LoopBreak(∇×T)` when a loop-breaker is licensed, `R(H,Δ)`, `R(H,Delta)`, PARTIAL,
+RECURSE, or COMPLETE. Use `R(H,Δ)` as the formal notation and `R(H,Delta)` only as the
+ASCII fallback.
 `del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`; when they appear in
 default governed output they must be compact, target-explicit, and control-bound, not long
 formalism exposition or separate operators.
@@ -127,10 +130,12 @@ Forbidden default exposition examples: `The antisymmetric Jacobian of the noetic
 `The ∇× symbol proves the TTP executed.`
 
 Anti-symbol-theater rule: visible notation must be backed by a local control effect. If a
-render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, `∇·`, `∇×`, `R(H,Δ)`, `𝒞(Ψᴺ)`, or
+render names `♥`, `ξ`, `Ω`, `μ`, `κ`, `Δκ`, plain `∇`, `∇·`, `∇×`,
+`LoopBreak(∇×T)`, `R(H,Δ)`, `𝒞(Ψᴺ)`, `T_lang: Ψᴺ ⇢ Ψᴵ`, or
 `N_fiṭrī ∧ ʿaql ṣarīḥ`, the same pass must show the burden, owner, hold/release decision,
-reread, dependency pressure, loop-breaking, or restoration boundary that the symbol changed.
-Otherwise use ordinary prose and keep the notation in the theory/spec layer.
+reread, dependency pressure, loop-breaking, closure-field status, coupling boundary, or
+restoration boundary that the symbol changed. Otherwise use ordinary prose and keep the notation
+in the theory/spec layer.
 
 ---
 

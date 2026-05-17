@@ -3170,5 +3170,143 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
 })();
 </script>
 
+<script id="field-operator-architecture-v19">
+/* v19: route-gradient, loop-breaking, closure-field, and agent/interlocutor coupling concepts. */
+(function(){
+  const UPGRADE = {
+    gradient:{concept:'gradient', key:'gradient'}, '∇':{concept:'gradient', key:'gradient'}, 'route-gradient':{concept:'gradient', key:'gradient'}, routeGradient:{concept:'gradient', key:'gradient'},
+    loopBreak:{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak':{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak(∇×T)':{concept:'loopBreak', key:'loopBreak'},
+    PsiI:{concept:'PsiI', key:'PsiI'}, 'Ψᴵ':{concept:'PsiI', key:'PsiI'},
+    coupling:{concept:'coupling', key:'coupling'}, T_lang:{concept:'coupling', key:'coupling'}, 'T_lang: Ψᴺ ⇢ Ψᴵ':{concept:'coupling', key:'coupling'}
+  };
+  function ensureConcept(id, obj){
+    if(!Array.isArray(CONCEPTS)) return;
+    const existing = CONCEPTS.find(c => c.id === id);
+    if(existing) Object.assign(existing, obj);
+    else CONCEPTS.push(obj);
+  }
+  function ensureRelation(id, obj){
+    if(!Array.isArray(RELATIONS)) return;
+    const existing = RELATIONS.find(r => r.id === id);
+    if(existing) Object.assign(existing, obj);
+    else RELATIONS.push(obj);
+  }
+  function ensureFieldOperatorArchitecture(){
+    ensureConcept('gradient', {
+      id:'gradient',
+      name:'∇ route-gradient operator',
+      type:'runtime control state',
+      summary:'Route-gradient pressure over eligible live burdens/routes.',
+      definition:'Plain ∇ is the route-gradient read over the live noetic/burden/dependency/register/route field. It indicates the eligible route or burden expected to produce the greatest diagnostic reduction, closure progress, or dependency clarification.',
+      runtime:'∇ precedes release-order selection and remains constrained by Diagnostic IR, V1/routing precedence, owner catalogue eligibility, source-status, and held-material gates. It ranks or explains release pressure; it is not truth/warrant, free intuition, Δ, ∇·, ∇×, or deterministic route freezing.',
+      fields:['Ψᴺ','IR','ⁿB','routes','H'],
+      operators:['V1','routing-precedence','output-release','recursive-state-transitions'],
+      relations:['reads pressure over → eligible live field','constrained by → IR/V1/catalogue gates','orders → selected release pressure','not substitute for → Δ / ∇· / ∇×'],
+      files:['recursive-state-transitions.md','diagnostic-ir.md','output-release.md','algebraic-notation-and-noetic-formalism.md'],
+      case:'If B2 has the greatest live diagnostic yield after gates, ∇ can explain why B2 releases before B3 without treating B2 as the whole field.',
+      symbols:['gradient','IR','burden','R']
+    });
+    ensureConcept('loopBreak', {
+      id:'loopBreak',
+      name:'LoopBreak(∇×T) loop-breaking submove',
+      type:'runtime control state',
+      summary:'Owner-grounded submove licensed when nonzero curl remains in an explicit target field.',
+      definition:'LoopBreak(∇×T) targets a circular dependency in target field T and grounds the loop in an owner-licensed non-circular source such as fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, source-status correction, or contradiction exposure.',
+      runtime:'A valid loop-breaker must state the target loop, grounding source, burden/submove, Δ effect, post-break ∇×T reread, and closure/HOLD/PARTIAL/RECURSE result. If no loop-breaker is licensed, nonzero curl remains held or recursed rather than hidden by closure.',
+      fields:['∇×','T','ΔⁿB','Δκ','R'],
+      operators:['P1','V2','V3','V9','M1','M7','M8','R1','proof-method-audit'],
+      relations:['licensed by → nonzero ∇×T plus owner ground','produces → Δ update','requires → post-break ∇×T reread','not → arbitrary assertion'],
+      files:['recursive-state-transitions.md','output-release.md','diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'],
+      case:'∇×B remains nonzero around circular warrant demand; LoopBreak(∇×B) grounds the burden in necessary knowledge and triggers R(H,Δ).',
+      symbols:['loopBreak','nablaCross','deltaB','deltaK','R']
+    });
+    ensureConcept('PsiI', {
+      id:'PsiI',
+      name:'Ψᴵ diagnosed interlocutor field',
+      type:'runtime control state',
+      summary:'The interlocutor noetic field as diagnosed from discourse/profile/register evidence.',
+      definition:'Ψᴵ is not the agent execution state and not direct access to the soul. It is the diagnosed interlocutor field inferred from public discourse, profile, register, response, and source-status evidence.',
+      runtime:'The runtime operates in Ψᴺ and releases through language toward Ψᴵ. Ψᴵ constrains coupling assessment, but it does not authorize claims of guaranteed acceptance, total identity, or agent control of guidance.',
+      fields:['D₀','Ψᴺ','profile','registers','source-status'],
+      operators:['V1','P2','output-release','diagnostic-render-contract'],
+      relations:['diagnosed by → discourse/profile/register evidence','receives → language-mediated coupling attempt','not → access to soul','not → guaranteed uptake'],
+      files:['diagnostic-ir.md','recursive-state-transitions.md','output-release.md','algebraic-notation-and-noetic-formalism.md'],
+      case:'A response may target the diagnosed proof-method pressure in Ψᴵ without claiming the person has internally accepted the correction.',
+      symbols:['PsiI','Psi','coupling']
+    });
+    ensureConcept('coupling', {
+      id:'coupling',
+      name:'T_lang language-mediated coupling',
+      type:'output-governance rule',
+      summary:'Release relation from the agent execution field toward the diagnosed interlocutor field.',
+      definition:'T_lang: Ψᴺ ⇢ Ψᴵ names the language-mediated coupling attempt. A released burden does not directly rewrite the interlocutor; it offers a response whose structure may perturb the diagnosed field.',
+      runtime:'Coupling is assessed by identity preservation, non-deformation, live-burden address, reconstruction fidelity, and whether the release creates conditions for reconfiguration toward fiṭrah and sound reason without claiming guaranteed uptake.',
+      fields:['Ψᴺ','Ψᴵ','R','𝒞(Ψᴺ)','Restorative Response'],
+      operators:['output-release','diagnostic-render-contract','P1','P7'],
+      relations:['releases through → language','may perturb → Ψᴵ','bounded by → no guaranteed uptake','checked by → R(H,Δ) / reconstruction fidelity'],
+      files:['recursive-state-transitions.md','diagnostic-ir.md','output-release.md','diagnostic-render-contract.md'],
+      case:'The final restorative response can preserve the master deformation and address live burden pressure while still refusing to claim the interlocutor has accepted it.',
+      symbols:['coupling','Psi','PsiI','final','C']
+    });
+    ensureRelation('rel-live-field-gradient', {id:'rel-live-field-gradient', label:'live field feeds ∇ route-gradient', type:'route-pressure', from:'live noetic/burden/dependency/register/route field', to:'∇ route-gradient', symbols:['gradient','Psi','IR','burden'], explain:'Plain ∇ reads route pressure after the field is diagnostically constrained.', runtime:'It explains release order without bypassing IR, routing precedence, or catalogue gates.'});
+    ensureRelation('rel-gradient-gate-constrained', {id:'rel-gradient-gate-constrained', label:'IR/V1/catalogue constrain ∇', type:'gate-boundary', from:'IR / V1 / catalogue gates', to:'∇ route-gradient', symbols:['gradient','IR'], explain:'Route-gradient pressure is computed only over eligible routes.', runtime:'∇ cannot authorize arbitrary jumps or replace owner eligibility.'});
+    ensureRelation('rel-gradient-selects-release-pressure', {id:'rel-gradient-selects-release-pressure', label:'∇ orders release pressure', type:'release-order', from:'∇ route-gradient', to:'selected live burden / release order', symbols:['gradient','burden'], explain:'The selected execution path is the release order over the live field, not the whole field.', runtime:'Multiple live structures remain accounted through R(H,Δ).'});
+    ensureRelation('rel-curl-loopbreak', {id:'rel-curl-loopbreak', label:'nonzero ∇×T checks LoopBreak eligibility', type:'loop-breaking', from:'∇×T nonzero', to:'LoopBreak(∇×T)', symbols:['nablaCross','loopBreak'], explain:'Curl may require a loop-breaking submove rather than indefinite deferral or false closure.', runtime:'LoopBreak requires target loop, ground, Δ effect, and post-break reread.'});
+    ensureRelation('rel-loopbreak-delta-reread', {id:'rel-loopbreak-delta-reread', label:'LoopBreak produces Δ and rereads curl', type:'pipeline-order', from:'LoopBreak(∇×T)', to:'Δ update → ∇×T reread → R(H,Δ)', symbols:['loopBreak','deltaB','nablaCross','R'], explain:'Loop-breaking is operative only when it changes state and triggers reread.', runtime:'It cannot be arbitrary assertion or proof-by-symbol.'});
+    ensureRelation('rel-closure-field-condition', {id:'rel-closure-field-condition', label:'𝒞(Ψᴺ) licenses STOP as positive closure-field condition', type:'closure-field', from:'R(H,Δ) + cleared/bounded residual pressure', to:'𝒞(Ψᴺ)', symbols:['C','R','nablaDot','nablaCross','gradient'], explain:'Closure is target configuration, not checklist exhaustion.', runtime:'It does not guarantee interlocutor conversion.'});
+    ensureRelation('rel-agent-interlocutor-coupling', {id:'rel-agent-interlocutor-coupling', label:'Ψᴺ releases through T_lang toward Ψᴵ', type:'coupling', from:'Ψᴺ agent execution field', to:'Ψᴵ diagnosed interlocutor field', symbols:['Psi','PsiI','coupling','final'], explain:'The public response is a language-mediated coupling attempt.', runtime:'No access-to-soul, guaranteed uptake, or guidance-control claim is licensed.'});
+  }
+  const previousGoConceptField = window.goConceptField;
+  window.goConceptField = function(raw){
+    ensureFieldOperatorArchitecture();
+    const info = UPGRADE[String(raw||'').trim()];
+    if(!info){
+      if(typeof previousGoConceptField === 'function') return previousGoConceptField(raw);
+      return;
+    }
+    document.querySelectorAll('.tabsec').forEach(x=>x.classList.remove('active'));
+    document.getElementById('theory')?.classList.add('active');
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    const theoryTab=[...document.querySelectorAll('.tab')].find(t=>t.textContent.includes('Theory'));
+    if(theoryTab) theoryTab.classList.add('active');
+    document.querySelectorAll('.subpanel').forEach(x=>x.classList.remove('active'));
+    document.getElementById('sub-concepts')?.classList.add('active');
+    document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active'));
+    const conceptSub=[...document.querySelectorAll('.subtab')].find(t=>t.textContent.includes('Concept'));
+    if(conceptSub) conceptSub.classList.add('active');
+    const search=document.getElementById('conceptSearch');
+    const type=document.getElementById('conceptType');
+    if(search) search.value='';
+    if(type) type.value='';
+    if(typeof renderConcepts === 'function') renderConcepts();
+    const btn=[...document.querySelectorAll('#conceptList .conceptBtn')].find(b=>{
+      const cid=b.dataset?.cid || ((b.getAttribute('onclick')||'').match(/selectConcept\('([^']+)'/)||[])[1];
+      return cid === info.concept;
+    });
+    if(btn && typeof selectConcept === 'function'){
+      selectConcept(info.concept, btn);
+      btn.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  };
+  const previousRenderConcepts = window.renderConcepts;
+  window.renderConcepts = function(){
+    ensureFieldOperatorArchitecture();
+    if(typeof previousRenderConcepts === 'function') previousRenderConcepts();
+  };
+  const previousRenderRelations = window.renderRelations;
+  window.renderRelations = function(){
+    ensureFieldOperatorArchitecture();
+    if(typeof previousRenderRelations === 'function') previousRenderRelations();
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureFieldOperatorArchitecture();
+    setTimeout(function(){
+      if(typeof renderConcepts === 'function') renderConcepts();
+      if(typeof renderRelations === 'function') renderRelations();
+    }, 0);
+  });
+})();
+</script>
+
 </body>
 </html>

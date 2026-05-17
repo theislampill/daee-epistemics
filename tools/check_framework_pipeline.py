@@ -71,10 +71,13 @@ REQUIRED_NODES = [
     "GATE BLOCKED",
     "GATE OPEN",
     "ROUTING PRECEDENCE",
+    "ROUTE-GRADIENT PRESSURE",
     "SELECTED CURRENT LIVE BURDEN",
     "OPERATIVE SUBMOVE(S)",
     "DELTA-NB / DELTA-KAPPA TRANSITION",
     "BURDEN LANDED",
+    "FIELD DIAGNOSTICS",
+    "LOOP-BREAKING SUBMOVE",
     "OUTPUT GOVERNANCE",
     "OUTPUT-RELEASE RUBRIC",
     "DIAGNOSTIC RENDER CONTRACT",
@@ -82,6 +85,8 @@ REQUIRED_NODES = [
     "BOUNDED LAYER B OPERATION",
     "RESTORATION TRACE",
     "R(H,Delta) RECONSTRUCTION / RE-ENTRY GATE",
+    "C(PsiN) CLOSURE-FIELD CONDITION",
+    "LANGUAGE-MEDIATED COUPLING",
     "BOTTOM-LINE SYNTHESIS / NEXT MOVE",
 ]
 
@@ -133,8 +138,6 @@ FRAMEWORK_RUNTIME_FORBIDDEN_TERMS = (
     "Natural Language Autoencoder",
     "activation verbalizer",
     "activation reconstructor",
-    "del-dot",
-    "del-cross",
     "antisymmetric Jacobian",
     "exterior derivative",
 )
@@ -615,6 +618,10 @@ def check_recursive_owner(text: str, errors: list[str]) -> None:
         "Held means traversal-delayed, not response-delayed",
         "Recursion is not argument dump",
         "one live burden",
+        "Plain `∇` is the route-gradient",
+        "LoopBreak(∇×T)",
+        "Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition",
+        "`Ψᴵ` names the diagnosed",
     ]
     for token in required_tokens:
         if token.lower() not in text.lower():
@@ -941,7 +948,11 @@ def check_active_surface_freshness(errors: list[str]) -> None:
         "not Shannon",
         "Delta-nB",
         "Delta-kappa",
+        "route-gradient",
         "field diagnostics",
+        "LoopBreak",
+        "𝒞(Ψᴺ)",
+        "Ψᴵ",
         "compact governance markers",
         "long formalism exposition",
     ]

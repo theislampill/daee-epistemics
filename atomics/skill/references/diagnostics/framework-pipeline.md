@@ -204,6 +204,17 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +--------------------------------------------------+
              |
              v
++-------------------------------------------------------------------------------------------------------+
+| ROUTE-GRADIENT PRESSURE                                                                               |
+|                                                                                                       |
+| plain nabla reads eligible live route pressure over the noetic/burden/dependency/register/route field |
+| constrained by Diagnostic IR, V1/routing precedence, owner catalogue, and held-material gates         |
+| ranks release pressure; does not bypass gates, replace Delta, or prove truth/warrant                  |
+| selected execution path remains release order over the live field, not the whole field                |
+| owner: diagnostics/recursive-state-transitions.md                                                     |
++-------------------------------------------------------------------------------------------------------+
+             |
+             v
 +-----------------------------------------------------------------------------------------------------------------------------------+
 | SELECTED CURRENT LIVE BURDEN                                                                                                      |
 |                                                                                                                                   |
@@ -257,6 +268,27 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | restoration/pastoral waits for refresh license                   |
 | owner: diagnostics/recursive-state-transitions.md                |
 +------------------------------------------------------------------+
+             |
+             v
++---------------------------------------------------------------------------------------------+
+| FIELD DIAGNOSTICS                                                                           |
+|                                                                                             |
+| divergence / curl diagnostics are target-explicit reads over Delta-produced field state     |
+| nabla-dot reads residual outward pressure; nabla-cross reads circular dependency            |
+| targets may include kappa, burden, register, route, or dependency fields when owner-defined |
+| nonzero pressure blocks false closure until cleared, held, partialed, or recursed           |
+| owner: diagnostics/recursive-state-transitions.md                                           |
++---------------------------------------------------------------------------------------------+
+             |
+             v
++-----------------------------------------------------------------------------------------------------+
+| LOOP-BREAKING SUBMOVE                                                                               |
+|                                                                                                     |
+| LoopBreak(nabla-cross target) is licensed only when nonzero curl remains and an owner-ground exists |
+| target loop, grounding source, submove, Delta effect, and post-break reread must be explicit        |
+| no arbitrary assertion; if no loop-breaker is licensed, HOLD / RECURSE / PARTIAL governs            |
+| owner: diagnostics/recursive-state-transitions.md                                                   |
++-----------------------------------------------------------------------------------------------------+
              |
              v
 +----------------------------------------------------------------+
@@ -337,6 +369,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 +--------------------------------------------------------------------------+
              |
              v
++-----------------------------------------------------------------------------------------------------------+
+| C(PsiN) CLOSURE-FIELD CONDITION                                                                           |
+|                                                                                                           |
+| positive closure-field condition over the agent execution field                                           |
+| requires landed/integrated/held burdens, bounded divergence, resolved or held curl, and recoverable route |
+| does not claim interlocutor conversion or proof-by-symbol                                                 |
+| owner: diagnostics/recursive-state-transitions.md                                                         |
++-----------------------------------------------------------------------------------------------------------+
+             |
+             v
 +--------------------------------------------------+
 | RESTORATION TRACE                                |
 |                                                  |
@@ -345,6 +387,16 @@ mark PARTIAL if limits prevent it. It may not silently STOP.
 | correction applied and what remains live         |
 | owner: rubrics/diagnostic-render-contract.md     |
 +--------------------------------------------------+
+             |
+             v
++-------------------------------------------------------------------------------------+
+| LANGUAGE-MEDIATED COUPLING                                                          |
+|                                                                                     |
+| PsiN is the agent/runtime execution field; PsiI is the diagnosed interlocutor field |
+| released response is T_lang from PsiN toward PsiI, not direct rewrite               |
+| no access-to-soul, guaranteed uptake, or agent-control-of-guidance claim            |
+| owner: diagnostics/recursive-state-transitions.md                                   |
++-------------------------------------------------------------------------------------+
              |
              v
 +------------------------------------------------------+
@@ -414,19 +466,24 @@ EDGE INDEX
 - selected_held_registers -> gate_open
 - gate_blocked -> output_governance
 - gate_open -> routing_precedence
-- routing_precedence -> selected_live_burden
+- routing_precedence -> route_gradient
+- route_gradient -> selected_live_burden
 - selected_live_burden -> operative_submoves
 - operative_submoves -> delta_transition
 - delta_transition -> burden_result
-- burden_result -> output_governance
+- burden_result -> field_diagnostics
+- field_diagnostics -> loop_breaking
+- loop_breaking -> output_governance
 - output_governance -> output_release
 - output_release -> render_contract
 - render_contract -> noetic_field_banner
 - noetic_field_banner -> pass_shape
 - pass_shape -> bounded_layer_b
 - bounded_layer_b -> post_render_gate
-- post_render_gate -> restoration_trace
-- restoration_trace -> bottom_line
+- post_render_gate -> closure_field_condition
+- closure_field_condition -> restoration_trace
+- restoration_trace -> interlocutor_coupling
+- interlocutor_coupling -> bottom_line
 - post_render_gate -> v1_diagnostic_gate [RECURSE through state re-read, not topic transition]
 
 FORBIDDEN SHORTCUTS (generated index)
@@ -473,14 +530,19 @@ FORBIDDEN SHORTCUTS (generated index)
 CONCEPT OWNERSHIP (owner-backed)
 - IR formation: diagnostics/diagnostic-ir.md
 - routing: diagnostics/routing-precedence.md
+- route-gradient pressure: diagnostics/recursive-state-transitions.md
 - selected current live burden: rubrics/diagnostic-render-contract.md
 - selected/held N and live registers: rubrics/output-release.md
 - Delta-nB / Delta-kappa transition boundary: diagnostics/recursive-state-transitions.md
+- divergence / curl field diagnostics: diagnostics/recursive-state-transitions.md
+- curl-resolution / loop-breaking submove: diagnostics/recursive-state-transitions.md
 - render shape: rubrics/diagnostic-render-contract.md
 - noetic-field banner obligation: rubrics/diagnostic-render-contract.md
 - bounded Layer B operation: rubrics/output-release.md
 - output release: rubrics/output-release.md
 - recursion: diagnostics/recursive-state-transitions.md
+- positive closure-field condition: diagnostics/recursive-state-transitions.md
+- agent/interlocutor field boundary: diagnostics/recursive-state-transitions.md
 - framework-pipeline audit surface: diagnostics/framework-pipeline.md
 - DSL/IR representation: diagnostics/diagnostic-ir.md
 - meta-noetic memetics object-domain: diagnostics/diagnostic-ir.md
@@ -493,7 +555,7 @@ CONCEPT OWNERSHIP (owner-backed)
 - source/runtime layout: docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md
 
 REQUIRED ORDER
-- user_input -> always_load -> v1_diagnostic_gate -> phase1_listening -> phase2_mandatory_passes -> diagnostic_ir -> selected_held_registers -> gate_blocked -> gate_open -> routing_precedence -> selected_live_burden -> operative_submoves -> delta_transition -> burden_result -> output_governance -> output_release -> render_contract -> noetic_field_banner -> pass_shape -> bounded_layer_b -> post_render_gate -> restoration_trace -> bottom_line
+- user_input -> always_load -> v1_diagnostic_gate -> phase1_listening -> phase2_mandatory_passes -> diagnostic_ir -> selected_held_registers -> gate_blocked -> gate_open -> routing_precedence -> route_gradient -> selected_live_burden -> operative_submoves -> delta_transition -> burden_result -> field_diagnostics -> loop_breaking -> output_governance -> output_release -> render_contract -> noetic_field_banner -> pass_shape -> bounded_layer_b -> post_render_gate -> closure_field_condition -> restoration_trace -> interlocutor_coupling -> bottom_line
 ```
 <!-- END GENERATED FRAMEWORK PIPELINE -->
 
