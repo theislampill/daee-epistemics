@@ -18,6 +18,20 @@ catalogue_registered: true
 
 # V3 - Regress-Dissolution
 
+## Runtime operator contract
+
+- Activation: interlocutor generates justificatory regress objections ("but what justifies that?").
+- Field target: the live technique-level noetic/register/dependency pressure that made `V3-regress-dissolution` eligible; activation cue: interlocutor generates justificatory regress objections ("but what justifies that?").
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
+
+
 **Deploy when:** the interlocutor generates justificatory regress objections ("but what justifies that?").
 
 Address justificatory regress structurally rather than by supplying the infinite chain.

@@ -115,6 +115,10 @@ outcome, classify it as docs-only or ornamental risk.
   are not κ-only, though κ is the collapse/closure-state target when rendered as `∇·κ` /
   `∇×κ`. TTP coverage is eligibility-aware: eligible live pressure must be used, integrated,
   held, or rejected with reason, not sprayed indiscriminately.
+- Every catalogue TTP/module is a runtime field operator, not an argument-bank topic. Each owner
+  should expose activation, field target, burden/submove form, ? effect, possible target-explicit
+  ? reread, `R(H,?)` obligation, hold/release/closure effect, output boundary, negative
+  constraints, and fixture/checker evidence.
 - NLA means Natural Language Autoencoder, not generic linear algebra, Shannon theory, or
   interpretability branding. Daee analogue: AV / activation verbalizer = Layer A /
   Diagnostic IR / noetic-field banner; AR / activation reconstructor = IR reconstruction /

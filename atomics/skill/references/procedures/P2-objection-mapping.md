@@ -34,6 +34,20 @@ operator_pack_eligible: true
 
 # P2 - Objection Mapping
 
+## Runtime operator contract
+
+- Activation: interlocutor presenting a battery of intellectual objections.
+- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P2-objection-mapping`; activation cue: interlocutor presenting a battery of intellectual objections.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
+- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
+
+
 **For:** Interlocutors presenting a battery of intellectual objections; engagement primarily critical rather than existential. Start with V1 and use M5 (`references/tactics/M5-deformation-triage.md`) inside its triage phase - apparent intellectual objections frequently conceal volitional barriers.
 
 ## Structure

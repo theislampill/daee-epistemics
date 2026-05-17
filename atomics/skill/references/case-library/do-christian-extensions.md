@@ -27,6 +27,20 @@ catalogue_registered: true
 
 # Case Library — Doctrinal Objections: Christian Extensions (DO-11 through DO-14)
 
+## Runtime operator contract
+
+- Activation: Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion).
+- Field target: the family-local burden/dependency field for `do-christian-extensions` after V1/routing confirms this case family; activation cue: Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion).
+- Burden/submove form: family-local load floor -> matched owner/submove selection -> bounded `ⁿBᵢ[OPᵢ]` operation; catalogue membership is not content release.
+- Δ effect: `ΔⁿB` may contract, split, or integrate a family-local burden; `Δκ` updates downstream dependency radius before closure.
+- Possible ∇ reread: after family burden landing, check target-explicit `∇·B` for residual family pressure and `∇×κ` / route-field curl for circular dependency where relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (1); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 > **role:** DO pressure family owner — DO-11 through DO-14 (Christian theological extension cases)
 > **use when:** Christian theological pressure family confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion); model identification complete; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script; do not load as first responder to any theological question

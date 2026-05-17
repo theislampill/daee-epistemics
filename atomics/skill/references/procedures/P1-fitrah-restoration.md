@@ -38,6 +38,20 @@ operator_pack_eligible: true
 
 # P1 - Fitrah Restoration
 
+## Runtime operator contract
+
+- Activation: interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment.
+- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P1-fitrah-restoration`; activation cue: interlocutor's fiṭrah is significantly suppressed through prolonged iʿtiqādāt mawrūtha or ʿāda combined with volitional entrenchment.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
+- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-governed` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (4); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **For:** Interlocutors whose fitrah is significantly suppressed, typically through prolonged
 `i'tiqadat mawrutha` or `ada` combined with volitional entrenchment (`hawa` or `gharad`).
 The goal is not to win an argument but to create the conditions under which the fitrah can

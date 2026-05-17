@@ -34,6 +34,20 @@ operator_pack_eligible: true
 
 # Ḥusn al-Naẓar - Inferential Arguments for the Impaired Fiṭrah
 
+## Runtime operator contract
+
+- Activation: ḥusn al-naẓar pathway already selected.
+- Field target: the live burden or submove pressure that made tactic `husn-al-nazar-arguments` eligible; activation cue: ḥusn al-naẓar pathway already selected.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
+- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
+- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (3); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 Load when `ḥusn al-naẓar` has already been selected and the framework has been cleared enough for inferential work. These are not primary means to theistic belief; they are secondary instruments for clearing the path back to fiṭrah-operation when the fiṭrah is too impaired to respond directly to signs.
 
 This file supplies inferential content for the secondary `naẓar ʿaqlī` pathway. It remains downstream of:

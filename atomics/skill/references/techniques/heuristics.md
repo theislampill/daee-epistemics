@@ -15,6 +15,20 @@ catalogue_registered: true
 
 # Discursive Heuristics — Operative Principles
 
+## Runtime operator contract
+
+- Activation: throughout every engagement as background governance.
+- Field target: the live technique-level noetic/register/dependency pressure that made `heuristics` eligible; activation cue: throughout every engagement as background governance.
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-governed` with output shapes `pass-through`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (1); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 These are always-active background rules, not case-specific moves.
 
 1. **Clear the framework before the content.** The most common failure: both parties argue within different epistemological frameworks and neither notices. Establish shared ground on what counts as evidence and rational belief before moving to first-order content.

@@ -37,6 +37,20 @@ operator_pack_eligible: true
 
 # P5 - Working with the Already-Believing
 
+## Runtime operator contract
+
+- Activation: believer whose belief is shallow, untested, or held by taqlīd.
+- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P5-already-believing`; activation cue: believer whose belief is shallow, untested, or held by taqlīd.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
+- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `recursive-traversal-permitted`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
+
+
 **For:** Believers whose belief is shallow, untested, or held by taqlīd - inherited without
 genuine examination and therefore fragile under pressure. The procedure moves belief from
 inherited assumption to genuine, examined conviction without turning the person into a permanent

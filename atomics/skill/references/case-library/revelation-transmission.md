@@ -22,6 +22,20 @@ catalogue_registered: true
 
 # Case Library - Revelation and Transmission (RT-1 through RT-4)
 
+## Runtime operator contract
+
+- Activation: revelation, scripture, Qurʾānic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family.
+- Field target: the family-local burden/dependency field for `revelation-transmission` after V1/routing confirms this case family; activation cue: revelation, scripture, Qurʾānic textual preservation, canon formation, or text-history-entangled final-prophethood claims are the live family.
+- Burden/submove form: family-local load floor -> matched owner/submove selection -> bounded `ⁿBᵢ[OPᵢ]` operation; catalogue membership is not content release.
+- Δ effect: `ΔⁿB` may contract, split, or integrate a family-local burden; `Δκ` updates downstream dependency radius before closure.
+- Possible ∇ reread: after family burden landing, check target-explicit `∇·B` for residual family pressure and `∇×κ` / route-field curl for circular dependency where relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (3); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 Load this file only after the case has been identified as a revelation / transmission case, or as a
 final-prophethood case whose live pressure is actually testimony, text, canon, preservation,
 historical criticism, or original-text skepticism.

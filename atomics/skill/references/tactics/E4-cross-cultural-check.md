@@ -24,6 +24,20 @@ operator_pack_eligible: true
 
 # E4 — The Cross-Cultural Check
 
+## Runtime operator contract
+
+- Activation: interlocutor denies or needs grounding for cross-cultural theistic recognition.
+- Field target: the live burden or submove pressure that made tactic `E4-cross-cultural-check` eligible; activation cue: interlocutor denies or needs grounding for cross-cultural theistic recognition.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
+- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
+- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
+
+
 **Register:** Evidentialist
 **Deploy when:** Interlocutor denies or needs grounding for cross-cultural theistic recognition; presenting E4 requires grounding it properly.
 

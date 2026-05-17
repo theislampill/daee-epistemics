@@ -20,6 +20,20 @@ catalogue_registered: true
 
 # V12 — Burhān al-Tamānuʿ: Logical Exhaustion of Divine Plurality
 
+## Runtime operator contract
+
+- Activation: any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live.
+- Field target: the live technique-level noetic/register/dependency pressure that made `V12-tamanuc-exhaustion` eligible; activation cue: any claim of multiple independent deities, multiple independent lords, or worship-status plurality where independence is live.
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (1); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **Deploy when:** A claim of multiple independent deities, multiple independent lords, or worship-status plurality is live regardless of interlocutor. This is a base rational procedure, not a Trinitarian case file. It triggers on the structural question of whether a plurality of independent lords is coherent. Divine-plurality vocabulary alone is insufficient; if independence is unclear, model/predication discipline runs first and V12 remains held.
 
 **Routing note - Trinity overlay:** When the interlocutor is specifically Trinitarian, do not route by the topic label. If the live pressure is perfection-criterion, model-identification, or person/nature predication, load the Christian overlay and M9/definition discipline first while V12 is held. V12 releases only when the state/noetic re-read exposes independent-lordship, worship-status plurality, or multiple-sovereign pressure as the next live burden. V12 does not replace DO-11/DO-12; it also must not be forced before those gates make independence live.

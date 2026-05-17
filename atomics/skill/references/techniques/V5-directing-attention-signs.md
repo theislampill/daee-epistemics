@@ -21,6 +21,20 @@ catalogue_registered: true
 
 # V5 — Directing Attention to Signs
 
+## Runtime operator contract
+
+- Activation: framework cleared (V2 deployed and filter loosened).
+- Field target: the live technique-level noetic/register/dependency pressure that made `V5-directing-attention-signs` eligible; activation cue: framework cleared (V2 deployed and filter loosened).
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (3); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **Deploy when:** Framework has been cleared (V2 deployed); directing attention to specific āyāt calibrated to this interlocutor.
 
 The fiṭrah is activated by signs (āyāt), not by arguments. The dāʿī's role is to direct attention.

@@ -34,6 +34,20 @@ catalogue_registered: true
 
 # V1 - The Diagnostic Technique
 
+## Runtime operator contract
+
+- Activation: beginning any engagement before substantive content.
+- Field target: the live technique-level noetic/register/dependency pressure that made `V1-diagnostic` eligible; activation cue: beginning any engagement before substantive content.
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: Layer A / diagnostic state only by default; release only the governed consequences permitted by render/output owners.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (3); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 ## Role of V1 in the Skill
 
 V1 is the entry gate. No tactic, technique, procedure, or case-library module is selected before V1 has produced a case-state. V1 does not answer the interlocutor; it produces the routing artifact that makes a matched answer possible.

@@ -3,26 +3,28 @@
 <span id="current-derived-conditional-bridge" hidden></span>
 <span id="proof-ledger-release-path" hidden></span>
 <div class="panel v21-pipeline-panel v29-current-panel" id="canonical-architecture-runtime">
-<div class="flowline" aria-label="Canonical runtime spine">
+<div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">
+<div class="flowline v60-pipeline-row v60-runtime-row" aria-label="Canonical runtime spine">
 <span class="node v56-input">Input</span><span class="arrow">→</span>
-<span class="node v56-ir">Noetic-field banner + Layer A / IR</span><span class="arrow">→</span>
-<span class="node v56-owner">Selected/held N + live registers</span><span class="arrow">→</span>
-<span class="node v56-owner">Gate + routing precedence</span><span class="arrow">→</span>
-<span class="node v56-owner">Governed Operation</span><span class="arrow">→</span>
-<span class="node v56-land">Land(B) + Delta-nB / Delta-kappa</span><span class="arrow">→</span>
-<span class="node v56-land">∇· / ∇× field diagnostics</span><span class="arrow">→</span>
-<span class="node v56-reread">R(H,Δ) reconstruction</span><span class="arrow">→</span>
+<span class="node v56-ir">Banner + Layer A / IR</span><span class="arrow">→</span>
+<span class="node v56-owner">N + registers</span><span class="arrow">→</span>
+<span class="node v56-owner">Gate/routing</span><span class="arrow">→</span>
+<span class="node v56-owner">Operation</span><span class="arrow">→</span>
+<span class="node v56-land">ΔⁿB/Δκ + Land(B)</span><span class="arrow">→</span>
+<span class="node v56-land">∇·/∇× diagnostics</span><span class="arrow">→</span>
+<span class="node v56-reread">R(H,Δ) reread</span><span class="arrow">→</span>
 <span class="node v56-reread">STOP / HOLD / RECURSE / PARTIAL</span><span class="arrow">→</span>
 <span class="node v56-decision">Restorative Response</span>
 </div>
-<div class="flowline v56-formula-flow" aria-label="Canonical algebraic runtime spine">
+<div class="flowline v56-formula-flow v60-pipeline-row v60-formal-row" aria-label="Canonical algebraic runtime spine">
 <span class="node v56-input">𝓝 ⊢ D₀</span><span class="arrow">→</span>
-<span class="node v56-ir">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span><span class="arrow">→</span>
+<span class="node v56-ir">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(...)</span><span class="arrow">→</span>
 <span class="node v56-owner">ⁿB → {ⁿBᵢ[OPᵢ]}</span><span class="arrow">→</span>
 <span class="node v56-land">Land(ⁿB)</span><span class="arrow">→</span>
-<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ → ∇·/∇× field state</span><span class="arrow">→</span>
+<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·/∇×</span><span class="arrow">→</span>
 <span class="node v56-reread">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
 <span class="node v56-decision">𝒞(Ψᴺ) / Decision</span>
+</div>
 </div>
 <p class="subtle">Expanded <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> is formal/navigation notation over existing IR/control surfaces, not a current hard JSON field migration. For the full register formalism, use <a href="algebraic-notation-and-noetic-formalism.md">the formalism source</a> and <a href="register-formalism-implementation-ledger.md">the implementation ledger</a>.</p>
 <div class="v30-click-hint">Click a bridge stage panel below to inspect its audit trace. DRY here means one current architecture map, not deletion of source-aligned diagnostic affordances.</div>
@@ -110,7 +112,7 @@
 <div class="v21-stage-formula">ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</div>
 </div>
 <div class="v21-card"><h3>Strict burden cycle</h3>
-<div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB</div>
+<div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB / Δκ</div>
 <ul>
 <li><b>♥</b> register/release posture changed or held inside <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code></li>
 <li><b>ξ</b> epistemic grammar changed inside <code>ΔⁿB{♥,ξ,Ω,σ,μ}</code></li>
@@ -120,13 +122,30 @@
 </ul>
 </div>
 <div class="v21-card"><h3>Reread gate</h3>
-<div class="v21-stage-formula">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B</div>
-<ul>
-<li><b>∇·</b> reads residual outward pressure in an explicit target field (e.g. <code>∇·κ</code>, <code>∇·B</code>, <code>∇·♥</code>) after <code>ΔⁿB / Δκ</code> lands — positive means the field is still expanding; closure not licensed</li>
-<li><b>∇×</b> reads circularity / rotational dependency in an explicit target field (e.g. <code>∇×κ</code>, <code>∇×B</code>, <code>∇×ξ</code>) — nonzero means a dependency loop exists that linear traversal cannot resolve</li>
-<li>Both operators require a live relational field with an explicit target; scalar collapse of the noetic state is an execution failure that destroys the field and makes these diagnostics inoperable</li>
-<li>Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL</li>
-</ul>
+<div class="v21-stage-formula">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | RECURSE | PARTIAL | COMPLETE</div>
+<div class="v60-field-diagnostics" aria-label="Field diagnostics after Delta">
+<div class="v60-diagnostic-card">
+<b>Δ lands transition</b>
+<span>Burden/submove work changes ΔⁿB and, where dependency radius changes, Δκ.</span>
+</div>
+<div class="v60-diagnostic-card">
+<b>∇ reads after Δ</b>
+<span>Field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span>
+</div>
+<div class="v60-field-targets" aria-label="Readable divergence examples">
+<span class="v60-field-target">∇·κ</span>
+<span class="v60-field-target">∇·B</span>
+<span class="v60-field-target">∇·♥</span>
+<span class="v60-field-meaning">residual outward pressure in an explicit target field</span>
+</div>
+<div class="v60-field-targets" aria-label="Readable curl examples">
+<span class="v60-field-target">∇×κ</span>
+<span class="v60-field-target">∇×B</span>
+<span class="v60-field-target">∇×ξ</span>
+<span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>
+</div>
+<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>
+</div>
 </div>
 <div class="v21-card"><h3>Decision</h3>
 <div class="v21-dec-grid">
@@ -134,6 +153,7 @@
 <div class="hold">–<br/>HOLD</div>
 <div class="recurse">↻<br/>RECURSE</div>
 <div class="partial">○<br/>PARTIAL</div>
+<div class="complete">✓<br/>COMPLETE</div>
 </div>
 <div class="v21-note"><b>Correct recurse:</b> ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ.</div>
 </div>

@@ -24,6 +24,20 @@ catalogue_registered: true
 
 # V2 — Reconstituting the Conception of Reason
 
+## Runtime operator contract
+
+- Activation: interlocutor's conception of reason is contaminated (bidʿī ʿaqlī).
+- Field target: the live technique-level noetic/register/dependency pressure that made `V2-reconstituting-reason` eligible; activation cue: interlocutor's conception of reason is contaminated (bidʿī ʿaqlī).
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (15); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **Deploy when:** Interlocutor's conception of reason is contaminated (bidʿī ʿaqlī); before any evidential content can land through the contaminated filter.
 
 Most often deployed before any other technique. Many contemporary interlocutors operate with an inherited conception of reason — "reasoning properly" means applying the methods of natural science to all questions, or only empirically verifiable claims are meaningful. Others import the same problem through theological vocabulary: only a narrow class of necessary knowledge counts, or revelation must submit to a prior metaphysical picture presented as neutral reason. This feels like reason itself. It is a historically contingent philosophical stance that became dominant in certain intellectual traditions and is anything but self-evident.

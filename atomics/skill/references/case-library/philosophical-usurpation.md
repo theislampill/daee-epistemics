@@ -24,6 +24,20 @@ catalogue_registered: true
 
 # Philosophical Usurpation - Named Case Family
 
+## Runtime operator contract
+
+- Activation: imported philosophical framework functioning as upstream tribunal over revelation.
+- Field target: the family-local burden/dependency field for `philosophical-usurpation` after V1/routing confirms this case family; activation cue: imported philosophical framework functioning as upstream tribunal over revelation.
+- Burden/submove form: family-local load floor -> matched owner/submove selection -> bounded `ⁿBᵢ[OPᵢ]` operation; catalogue membership is not content release.
+- Δ effect: `ΔⁿB` may contract, split, or integrate a family-local burden; `Δκ` updates downstream dependency radius before closure.
+- Possible ∇ reread: after family burden landing, check target-explicit `∇·B` for residual family pressure and `∇×κ` / route-field curl for circular dependency where relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (10); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 Philosophical usurpation occurs when an imported framework has been installed as the upstream authority that revelation must satisfy before its content may be accepted, discussed, or deployed.
 
 This is distinct from:

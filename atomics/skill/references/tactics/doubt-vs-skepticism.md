@@ -30,6 +30,20 @@ operator_pack_eligible: true
 
 # Doubt vs. Skepticism — Evidence Is Not the Default Requirement
 
+## Runtime operator contract
+
+- Activation: interlocutor demands evidence for God as precondition for engagement.
+- Field target: the live burden or submove pressure that made tactic `doubt-vs-skepticism` eligible; activation cue: interlocutor demands evidence for God as precondition for engagement.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
+- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
+- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (8); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **Deploy when:** Interlocutor demands evidence for God as a precondition for engagement;
 invokes "extraordinary claims require extraordinary evidence"; insists belief without
 scientific evidence is irrational; or treats the demand for evidence as the neutral,

@@ -151,6 +151,24 @@
       ]
     },
     {
+      "id": "full_register_bridge",
+      "label": "Full ♥/ξ/Ω/μ/κ bridge",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/sections/theory.html",
+      "owner_sources": [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/case-state-schema.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md",
+        "docs/algebraic-notation-and-noetic-formalism.md",
+        "docs/register-formalism-implementation-ledger.md",
+        "tests/routing-fixtures/64-hard-compound-field-accounting.json",
+        "tests/register-formalism-bridge-fixtures/09-divergence-curl-operator-detection.json"
+      ]
+    },
+    {
       "id": "owner_ttp_module_table",
       "label": "Owner/TTP module table",
       "classification": "OWNER_DERIVED",

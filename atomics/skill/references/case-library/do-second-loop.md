@@ -25,6 +25,20 @@ catalogue_registered: true
 
 # Case Library — Doctrinal Objections: Second Loop (DO-7 through DO-15)
 
+## Runtime operator contract
+
+- Activation: DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes.
+- Field target: the family-local burden/dependency field for `do-second-loop` after V1/routing confirms this case family; activation cue: DO family confirmed (DO-7 through DO-15) via V1 and mandatory Phase 2 passes.
+- Burden/submove form: family-local load floor -> matched owner/submove selection -> bounded `ⁿBᵢ[OPᵢ]` operation; catalogue membership is not content release.
+- Δ effect: `ΔⁿB` may contract, split, or integrate a family-local burden; `Δκ` updates downstream dependency radius before closure.
+- Possible ∇ reread: after family burden landing, check target-explicit `∇·B` for residual family pressure and `∇×κ` / route-field curl for circular dependency where relevant.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (1); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 > **role:** DO pressure family owner — DO-7 through DO-15
 > **use when:** DO family confirmed via V1 and mandatory Phase 2 passes; routing state justifies this file's load condition
 > **do not use when:** case-state has not been confirmed; this file is not a standalone rebuttal script

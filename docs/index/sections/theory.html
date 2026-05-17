@@ -69,6 +69,46 @@
 <strong>Held set</strong>
 <p>live but unreleased material carried into reread</p>
 </button>
+<button class="controlCard burden" onclick="goConceptField('burden')">
+<span class="controlSym">ⁿB</span>
+<strong>Current burden</strong>
+<p>bounded live burden field selected for owner-backed release order</p>
+</button>
+<button class="controlCard burden" onclick="goConceptField('submoves')">
+<span class="controlSym">ⁿBᵢ[OPᵢ]</span>
+<strong>Submove operation</strong>
+<p>target → operation → result under the current burden</p>
+</button>
+<button class="controlCard delta" onclick="goConceptField('deltaB')">
+<span class="controlSym">ΔⁿB</span>
+<strong>Burden-event delta</strong>
+<p>event-local transition produced by burden/submove landing</p>
+</button>
+<button class="controlCard delta" onclick="goConceptField('deltaK')">
+<span class="controlSym">Δκ</span>
+<strong>Closure-state delta</strong>
+<p>case-collapse / dependency-radius update after burden work</p>
+</button>
+<button class="controlCard nabla" onclick="goConceptField('nablaDot')">
+<span class="controlSym">∇·</span>
+<strong>del-dot diagnostic</strong>
+<p>post-Delta residual outward pressure in an explicit target field</p>
+</button>
+<button class="controlCard nabla" onclick="goConceptField('nablaCross')">
+<span class="controlSym">∇×</span>
+<strong>del-cross diagnostic</strong>
+<p>post-Delta circularity / rotational dependency in an explicit target field</p>
+</button>
+<button class="controlCard alias" onclick="goConceptField('delDot')">
+<span class="controlSym">del-dot</span>
+<strong>ASCII alias for ∇·</strong>
+<p>grep/checker-safe spelling; not a separate operator</p>
+</button>
+<button class="controlCard alias" onclick="goConceptField('delCross')">
+<span class="controlSym">del-cross</span>
+<strong>ASCII alias for ∇×</strong>
+<p>grep/checker-safe spelling; not a separate operator</p>
+</button>
 <button class="controlCard reread" onclick="goConceptField('R')">
 <span class="controlSym">R</span>
 <strong>Reread gate</strong>
@@ -117,12 +157,22 @@
 <span class="notationArrow">→</span>
 <span class="ntok" data-k="Land" data-label="burden landing" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="deltaField" data-label="Delta-produced burden and closure-state deltas" onclick="highlightNotation(['deltaField','deltaB','deltaK'])">ΔⁿB/Δκ</span>
+<span class="ntok" data-k="deltaB" data-label="burden-event delta; transition produced by burden/submove landing" onclick="highlightNotation(['deltaB','burden','submoves'])">ΔⁿB</span>
+<span>/</span>
+<span class="ntok" data-k="deltaK" data-label="case-collapse / closure-state delta" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="fieldDiagnostics" data-label="post-Delta del-dot/del-cross field diagnostics" onclick="highlightNotation(['fieldDiagnostics','deltaField','kappa'])">∇·/∇× field state</span>
+<span class="ntok" data-k="nablaDot" data-label="∇· / del-dot: post-Delta residual outward pressure in an explicit target field" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·</span>
+<span>/</span>
+<span class="ntok" data-k="nablaCross" data-label="∇× / del-cross: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×</span>
+<span class="ntok" data-k="fieldDiagnostics" data-label="target-explicit post-Delta field diagnostics" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
+<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 <span>]*</span>
+</div>
+<div class="notationLine v60-alias-line" aria-label="ASCII aliases for field diagnostics">
+<span class="notationArrow">aliases</span>
+<span class="ntok" data-k="delDot" data-label="del-dot is ASCII alias for ∇·, not a separate operator" onclick="highlightNotation(['delDot','nablaDot'])">del-dot = ∇·</span>
+<span class="ntok" data-k="delCross" data-label="del-cross is ASCII alias for ∇×, not a separate operator" onclick="highlightNotation(['delCross','nablaCross'])">del-cross = ∇×</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
@@ -153,8 +203,83 @@
 <div id="relationPanel"></div>
 </div>
 <div class="subpanel" id="sub-proposal">
-<div class="callout">This preserves the notation/collapse formalism while the top of this tab maps the implemented bridge into the wiki architecture.</div>
-<details open=""><summary>Full formalism source annex</summary><div class="proposalAnnex">
+<div class="bridgeSemantics" id="full-register-bridge" data-classification="CURATED_SUMMARY_WITH_OWNER_REFERENCES">
+<div class="bridgeIntro">
+<p class="bridgeKicker">Notation and execution semantics</p>
+<h2>Full ♥/ξ/Ω/μ/κ bridge</h2>
+<p>
+This bridge is a curated public/navigation surface, not a runtime owner. Its owner set is
+<code>recursive-state-transitions.md</code>, <code>diagnostic-render-contract.md</code>,
+<code>output-release.md</code>, <code>diagnostic-ir.md</code>, the algebraic formalism spec,
+and the register-formalism fixtures/checkers. It states how the generated concept graph, relation
+map, and public notation cards should read those owners.
+</p>
+</div>
+<div class="bridgeFlow" aria-label="Bridge execution order">
+<span>D₀ / live field</span>
+<b>→</b>
+<span>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
+<b>→</b>
+<span>ⁿB + ⁿBᵢ[OPᵢ]</span>
+<b>→</b>
+<span>ΔⁿB / Δκ</span>
+<b>→</b>
+<span>∇· / ∇× target field</span>
+<b>→</b>
+<span>R(H,Δ)</span>
+<b>→</b>
+<span>STOP / HOLD / RECURSE / PARTIAL / COMPLETE</span>
+</div>
+<div class="bridgeGrid">
+<article class="bridgeCard">
+<h3>1. Register/state components</h3>
+<dl>
+<dt>♥</dt><dd>Affective-discursive / release-posture register: grief, identity, performance, truth-seeking, mixed, or unclear posture that changes hold, tone, sequence, owner choice, or closure posture.</dd>
+<dt>ξ</dt><dd>Epistemic grammar: warrant, testimony, proof-method, authority, proper function, prima facie status, defeaters, and proof-pressure.</dd>
+<dt>Ω</dt><dd>Ontological grammar: predication, modality, dependence, being, causality, and creator/creation boundary.</dd>
+<dt>μ</dt><dd>Memetic stabilizer/carrier: compressed slogan, label, proof packet, prestige form, defensive move, or reproduction pattern that changes control.</dd>
+<dt>κ</dt><dd>Collapse / closure-state field: downstream dependency radius consumed by reread. It is a valid target for <code>∇·κ</code> / <code>∇×κ</code>, but not the only ∇ target.</dd>
+<dt>H</dt><dd>Held set: live but unreleased, deliberately withheld, or not-yet-live material reread against the Δ-produced field state.</dd>
+</dl>
+</article>
+<article class="bridgeCard">
+<h3>2. Burden and submove cycle</h3>
+<p><code>ⁿB</code> is the current live burden as a bounded noetic function. <code>ⁿBᵢ[OPᵢ]</code> is an owner-backed submove under that burden: target → operation → result.</p>
+<p>The selected execution path is the release order over the live field, not the whole field. Candidate structures, burdens, dependencies, registers, routes, and residual pressures must be landed, integrated, discharged as duplicate/derivative, explicitly held with reason, or carried into <code>RECURSE</code> / <code>PARTIAL</code>.</p>
+</article>
+<article class="bridgeCard">
+<h3>3. Delta transition</h3>
+<p><code>ΔⁿB</code> marks the burden-event delta produced when the current burden lands. <code>Δκ</code> marks case-collapse / closure-state change in the downstream dependency field.</p>
+<p>Delta is event-local transition machinery. It precedes field diagnostics and is not interchangeable with <code>∇·</code> or <code>∇×</code>.</p>
+</article>
+<article class="bridgeCard">
+<h3>4. Field diagnostics</h3>
+<p><code>∇·</code> reads divergence-like residual outward pressure in an explicit target field after Δ has produced a field state. Valid targets include <code>κ</code>, <code>B</code>, <code>♥</code>, <code>ξ</code>, <code>Ω</code>, <code>μ</code>, route/dependency fields, or other owner-defined targets when the control effect is clear.</p>
+<p><code>∇×</code> reads curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field after Δ. It is useful for circular burden dependencies and closure failure that linear traversal would miss.</p>
+<p><code>del-dot</code> and <code>del-cross</code> are ASCII aliases for <code>∇·</code> and <code>∇×</code>. They are checker/grep-safe spellings, not separate operators.</p>
+</article>
+<article class="bridgeCard">
+<h3>5. Reread and closure</h3>
+<p><code>R(H,Δ)</code> rereads held material, selected/held N, live registers, burden deltas, owner/TTP eligibility, κ/H, alternate routes, and residual field pressure after burden events and field diagnostics.</p>
+<p>Closure depends on residual live-field pressure, not a scalar summary. STOP / COMPLETE is licensed only when live structures, burdens, dependencies, and ∇ pressure are cleared, integrated, discharged, or held with reason. Otherwise the decision is <code>HOLD</code>, <code>RECURSE</code>, or <code>PARTIAL</code>.</p>
+</article>
+<article class="bridgeCard bridgeNonClaims">
+<h3>6. Non-claims and forbidden uses</h3>
+<ul>
+<li><code>∇·</code> / <code>∇×</code> do not replace Δ, prove truth/warrant, or certify TTP success by symbol.</li>
+<li>They do not apply to scalarized master diagnoses; scalar collapse loses the field these diagnostics require.</li>
+<li>Long formalism exposition belongs to audit/formalism-expanded render, not default governed output.</li>
+<li>Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity.</li>
+<li>NLA means Natural Language Autoencoder reconstruction fidelity, not generic algebra, Shannon theory, or interpretability branding.</li>
+</ul>
+</article>
+</div>
+<div class="bridgeExamples">
+<div><strong>RECURSE example</strong><code>B2 landed; ΔⁿB updated; Δκ live; ∇·B positive over B3/B4; ∇×ξ unresolved around circular criterion-dependency; R(H,Δ): RECURSE.</code></div>
+<div><strong>STOP example</strong><code>All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; R(H,Δ): STOP.</code></div>
+</div>
+</div>
+<details><summary>Formalism source annex</summary><div class="proposalAnnex">
 <div class="hero">
 <div class="kicker">Formalism source artifact</div>
 <h1>Notation Normalization for DAEE Epistemics</h1>

@@ -24,6 +24,20 @@ operator_pack_eligible: true
 
 # NS-12 — The Blank-Slate or Dual-Nature Fiṭrah Holder
 
+## Runtime field-accounting contract
+
+- Activation/profile condition: NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification.
+- Field target: the candidate noetic-frame/profile pressure exposed by `ns-12-blank-slate-dual-fitrah`; use profile signals as field conditions, not as a deterministic verdict. Activation cue: NS-12 (Blank-Slate or Dual-Nature Fiṭrah Holder) confirmed via Quick NS Identification.
+- Burden pressures usually exposed: profiles expose candidate burdens, likely route pressures, and held alternatives; they do not themselves exhaust the field or license content release.
+- Δ effect: `ΔⁿB` may expose, split, or prioritize burdens; `Δκ` updates closure/dependency radius only after routed burden pressure lands.
+- Possible ∇ reread: after profile pressure lands, check target-explicit residuals such as `∇·B` for unlanded profile burdens or `∇×κ` for circular route dependency; no ∇ marker is emitted without a target/control effect.
+- R(H,Δ) obligation: after any profile-shaped burden lands, reread the whole live field: selected/held N, H, remaining burdens, alternate routes, unresolved registers, and closure pressure.
+- Hold/release/closure effect: profile selection can prioritize, hold, or defer routes; it does not license STOP while input-anchored pressure remains unaccounted.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: do not treat a profile label as a verdict, motive proof, deterministic route, scalar summary, or substitute for owner/TTP execution; no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
+
+
 **Implicit doxastic rule:** The fiṭrah either has no determinate religious content (blank-slate:
 it is a general capacity that gets shaped by environment) or it contains equally weighted
 orientations toward belief and unbelief (dual-nature: the fiṭrah pulls in two directions

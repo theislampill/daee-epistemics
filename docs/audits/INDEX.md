@@ -18,6 +18,8 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-nla-operativity-audit.md` | CURRENT-CANDIDATE | Natural Language Autoencoder mapping: Layer A/IR as verbalizer, reconstruction/reread as reconstructor, with fidelity and confabulation gates. |
 | `docs/audits/v0.4.1.0-skill-compliance-audit.md` | CURRENT-CANDIDATE | Checks root SKILL, DSL/IR, Natural Language Autoencoder reconstruction-fidelity discipline, and formalism boundaries. |
 | `docs/audits/v0.4.1.0-ttp-operativity-audit.md` | CURRENT-CANDIDATE | Audits compiled modules for owner body, routing effect, and coverage status. |
+| `docs/audits/v0.4.1.0-ttp-end-to-end-operativity-audit.md` | CURRENT-CANDIDATE | Audits every live catalogue TTP/module as a field-aware runtime operator across activation, burden/submove, Delta, nabla diagnostics, reread, closure, NLA trace, and fixture/checker evidence. |
+| `docs/audits/v0.4.1.0-ttp-runtime-contract-remediation.json` | CURRENT-CANDIDATE | Phase 1 remediation ledger showing runtime operator/field-accounting contracts added to all live catalogue owners and guarded by the strict TTP checker. |
 | `docs/audits/v0.4.1.0-ci-release-operativity-audit.md` | CURRENT-CANDIDATE | Checks push/PR CI and manual artifact workflow against release-gate constraints. |
 | `docs/audits/v0.4.1.0-release-claim-inventory.md` | CURRENT-CANDIDATE | Enumerates local release-facing docs, Git tags, and GitHub Releases before claim classification. |
 | `docs/audits/v0.4.1.0-release-claim-integrity-audit.md` | CURRENT-CANDIDATE | Audits release-facing claims with claim/evidence/checker-or-provenance/qualifier discipline. |

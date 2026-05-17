@@ -32,6 +32,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .callout{border-left:4px solid var(--green);background:rgba(34,197,94,.07);border-radius:12px;padding:14px 16px;margin:14px 0} .warn{border-left-color:var(--orange);background:rgba(251,146,60,.08)} .danger{border-left-color:var(--red);background:rgba(248,113,113,.08)}
 .procGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px} .procStep{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:14px} .procStep h3{margin-top:0;color:#dbeafe} .command-block{background:#050914;border:1px solid #243047;border-radius:14px;padding:12px;overflow:auto;font-size:12px}
 .auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
+.bridgeSemantics{border:1px solid var(--line);background:rgba(12,18,32,.92);border-radius:20px;padding:16px;margin:12px 0}.bridgeIntro{max-width:1180px}.bridgeKicker{margin:0 0 4px;color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.bridgeIntro h2{margin:0 0 8px;font-size:clamp(24px,2vw,34px);letter-spacing:-.04em}.bridgeIntro p{margin:0;color:#cbd5e1}.bridgeFlow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed #334155;background:#080d19;border-radius:16px;padding:10px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}.bridgeFlow span{border:1px solid #334155;background:#0c1220;border-radius:10px;padding:6px 8px;color:#e8edf7}.bridgeFlow b{color:#64748b}.bridgeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bridgeCard{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:12px;min-width:0}.bridgeCard h3{font-size:15px;margin:0 0 8px;color:#dbeafe;letter-spacing:-.02em}.bridgeCard p{margin:7px 0;font-size:13px;line-height:1.48}.bridgeCard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0}.bridgeCard dt{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bbf7d0;font-weight:950}.bridgeCard dd{margin:0;color:#cbd5e1;font-size:13px;line-height:1.42}.bridgeNonClaims{border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.055)}.bridgeNonClaims h3{color:#fecaca}.bridgeNonClaims ul{margin:0;padding-left:18px}.bridgeNonClaims li{font-size:13px;line-height:1.45;margin:4px 0}.bridgeExamples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bridgeExamples>div{border:1px solid #334155;background:#080d19;border-radius:14px;padding:10px}.bridgeExamples strong{display:block;color:#bbf7d0;margin-bottom:6px}.bridgeExamples code{display:block;white-space:normal;line-height:1.45}@media(max-width:1100px){.bridgeGrid{grid-template-columns:1fr 1fr}.bridgeExamples{grid-template-columns:1fr}}@media(max-width:760px){.bridgeGrid{grid-template-columns:1fr}.bridgeFlow{display:grid;grid-template-columns:1fr}.bridgeFlow b{display:none}}
 @media(max-width:1250px){.pipelineGrid{grid-template-columns:repeat(3,1fr)}.detailGrid{grid-template-columns:1fr 1fr}.compareGrid,.ownerFamilies,.entityLayout,.docviewer{grid-template-columns:1fr}.ownerCircuit{grid-template-columns:1fr 1fr}.regGrid{grid-template-columns:1fr 1fr}.procGrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.col3,.col4,.col6,.col8,.full{grid-column:1/-1}}
 @media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.tab{padding:10px 12px}}
 
@@ -1571,11 +1572,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
 }
 #architecture #canonical-architecture-runtime .v56-formula-flow{
-  align-items:stretch!important;
+  align-items:center!important;
 }
 #architecture #canonical-architecture-runtime .v56-formula-flow .node{
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
 }
 #architecture #canonical-architecture-runtime .v56-input{border-color:rgba(96,165,250,.65);background:rgba(96,165,250,.10)}
 #architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.09)}
@@ -1583,6 +1584,97 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 #architecture #canonical-architecture-runtime .v56-land{border-color:rgba(251,146,60,.65);background:rgba(251,146,60,.10)}
 #architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(34,197,94,.65);background:rgba(34,197,94,.10)}
 #architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(239,68,68,.65);background:rgba(239,68,68,.09)}
+#architecture #canonical-architecture-runtime .v60-pipeline-stack{
+  display:grid!important;
+  gap:10px!important;
+  margin:10px 0 12px!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-row{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  gap:5px!important;
+  max-width:100%!important;
+  overflow:visible!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-row .node{
+  white-space:nowrap!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  flex:0 0 auto!important;
+  font-size:clamp(8.5px,.72vw,12px)!important;
+  padding:6px 8px!important;
+  border-radius:10px!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-row .arrow{
+  flex:0 0 auto!important;
+  font-size:clamp(9px,.7vw,12px)!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-diagnostics{
+  display:grid!important;
+  gap:8px!important;
+  margin-top:8px!important;
+}
+#architecture #canonical-architecture-runtime .v60-diagnostic-card{
+  border:1px solid #263044!important;
+  background:#0b101b!important;
+  border-radius:10px!important;
+  padding:7px 8px!important;
+  display:grid!important;
+  gap:3px!important;
+}
+#architecture #canonical-architecture-runtime .v60-diagnostic-card b{
+  color:var(--orange)!important;
+  font-size:11.5px!important;
+}
+#architecture #canonical-architecture-runtime .v60-diagnostic-card span{
+  color:#cbd5e1!important;
+  font-size:11px!important;
+  line-height:1.32!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-targets{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  align-items:center!important;
+  border:1px solid #263044!important;
+  background:#080d19!important;
+  border-radius:10px!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-target{
+  display:inline-flex!important;
+  align-items:center!important;
+  white-space:nowrap!important;
+  border:1px solid rgba(251,146,60,.55)!important;
+  background:rgba(251,146,60,.10)!important;
+  border-radius:999px!important;
+  padding:4px 8px!important;
+  color:#fff7ed!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  font-size:12px!important;
+  font-weight:900!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-meaning{
+  color:#cbd5e1!important;
+  font-size:11px!important;
+  line-height:1.32!important;
+  min-width:180px!important;
+  flex:1 1 180px!important;
+}
+#architecture #canonical-architecture-runtime .v60-diagnostic-note{
+  border:1px dashed rgba(34,197,94,.45)!important;
+  background:rgba(34,197,94,.06)!important;
+  border-radius:10px!important;
+  padding:8px!important;
+  color:#d1fae5!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+}
+#architecture #canonical-architecture-runtime .v21-dec-grid .complete{
+  border-color:rgba(34,197,94,.7)!important;
+  color:#bbf7d0!important;
+}
 @media(max-width:1180px){
   #architecture #canonical-architecture-runtime > .v21-five-col{
     grid-template-columns:repeat(2,minmax(260px,1fr))!important;
@@ -1885,13 +1977,22 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     IR:{sym:'IR', label:'compact DSL/IR control state', concept:'IR', key:'IR'},
     burden:{sym:'ⁿB', label:'current burden n', concept:'burden', key:'burden'},
     'ⁿB':{sym:'ⁿB', label:'current burden n', concept:'burden', key:'burden'},
-    submoves:{sym:'ⁿBᵢ[OPᵢ]', label:'owner-backed submoves under burden n', concept:'burden', key:'submoves'},
-    Land:{sym:'Land(ⁿB)', label:'burden landing', concept:'LandR', key:'Land'},
-    deltaB:{sym:'ΔⁿB', label:'burden-state delta', concept:'LandR', key:'deltaB'},
-    'ΔⁿB':{sym:'ΔⁿB', label:'burden-state delta', concept:'LandR', key:'deltaB'},
-    deltaK:{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'kappa', key:'deltaK'},
-    'Δκ':{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'kappa', key:'deltaK'},
-    R:{sym:'R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)', label:'state/noetic reread', concept:'LandR', key:'R'},
+    submoves:{sym:'ⁿBᵢ[OPᵢ]', label:'owner-backed submoves under burden n', concept:'submoves', key:'submoves'},
+    Land:{sym:'Land(ⁿB)', label:'burden landing', concept:'Land', key:'Land'},
+    deltaB:{sym:'ΔⁿB', label:'burden-event delta', concept:'deltaB', key:'deltaB'},
+    'ΔⁿB':{sym:'ΔⁿB', label:'burden-event delta', concept:'deltaB', key:'deltaB'},
+    deltaK:{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'deltaK', key:'deltaK'},
+    'Δκ':{sym:'Δκ', label:'collapse-radius / dependency delta', concept:'deltaK', key:'deltaK'},
+    nablaDot:{sym:'∇·', label:'del-dot / residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
+    '∇·':{sym:'∇·', label:'del-dot / residual outward pressure diagnostic', concept:'nablaDot', key:'nablaDot'},
+    nablaCross:{sym:'∇×', label:'del-cross / circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
+    '∇×':{sym:'∇×', label:'del-cross / circular dependency diagnostic', concept:'nablaCross', key:'nablaCross'},
+    delDot:{sym:'del-dot', label:'ASCII alias for ∇·', concept:'delDot', key:'delDot'},
+    'del-dot':{sym:'del-dot', label:'ASCII alias for ∇·', concept:'delDot', key:'delDot'},
+    delCross:{sym:'del-cross', label:'ASCII alias for ∇×', concept:'delCross', key:'delCross'},
+    'del-cross':{sym:'del-cross', label:'ASCII alias for ∇×', concept:'delCross', key:'delCross'},
+    fieldDiagnostics:{sym:'∇·/∇×', label:'target-explicit post-Delta field diagnostics', concept:'nablaDot', key:'fieldDiagnostics'},
+    R:{sym:'R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)', label:'state/noetic reread', concept:'R', key:'R'},
     C:{sym:'𝒞(Ψᴺ)', label:'constrained noetic collapse / discursive resolution', concept:'collapse', key:'C'},
     '𝒞(Ψᴺ)':{sym:'𝒞(Ψᴺ)', label:'constrained noetic collapse / discursive resolution', concept:'collapse', key:'C'},
     final:{sym:'N_fiṭrī ∧ ʿaql ṣarīḥ', label:'restored fiṭrah and sound reason; ♥/ξ/Ω/μ restored or reordered', concept:'collapse', key:'final'},
@@ -2221,11 +2322,16 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     kappa:{concept:'kappa', key:'kappa'}, 'κ':{concept:'kappa', key:'kappa'},
     H:{concept:'H', key:'H'}, IR:{concept:'IR', key:'IR'},
     burden:{concept:'burden', key:'burden'}, 'ⁿB':{concept:'burden', key:'burden'},
-    submoves:{concept:'burden', key:'submoves'},
-    Land:{concept:'LandR', key:'Land'},
-    deltaB:{concept:'LandR', key:'deltaB'}, 'ΔⁿB':{concept:'LandR', key:'deltaB'},
-    deltaK:{concept:'kappa', key:'deltaK'}, 'Δκ':{concept:'kappa', key:'deltaK'},
-    R:{concept:'LandR', key:'R'},
+    submoves:{concept:'submoves', key:'submoves'},
+    Land:{concept:'Land', key:'Land'},
+    deltaB:{concept:'deltaB', key:'deltaB'}, 'ΔⁿB':{concept:'deltaB', key:'deltaB'},
+    deltaK:{concept:'deltaK', key:'deltaK'}, 'Δκ':{concept:'deltaK', key:'deltaK'},
+    nablaDot:{concept:'nablaDot', key:'nablaDot'}, '∇·':{concept:'nablaDot', key:'nablaDot'},
+    nablaCross:{concept:'nablaCross', key:'nablaCross'}, '∇×':{concept:'nablaCross', key:'nablaCross'},
+    delDot:{concept:'delDot', key:'delDot'}, 'del-dot':{concept:'delDot', key:'delDot'},
+    delCross:{concept:'delCross', key:'delCross'}, 'del-cross':{concept:'delCross', key:'delCross'},
+    fieldDiagnostics:{concept:'nablaDot', key:'fieldDiagnostics'},
+    R:{concept:'R', key:'R'},
     C:{concept:'collapse', key:'C'}, '𝒞(Ψᴺ)':{concept:'collapse', key:'C'},
     final:{concept:'finalState', key:'final'},
     'N_fiṭrī ∧ ʿaql ṣarīḥ':{concept:'finalState', key:'final'},
@@ -2417,7 +2523,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     });
   }
 
-  const ORDER = ['D0','Psi','IR','N','m','tau','sigma','xi','omega','mu','kappa','H','burden','LandR','decision','collapse','finalState','layerA','layerB'];
+  const ORDER = ['D0','Psi','IR','N','m','tau','sigma','xi','omega','mu','kappa','H','burden','submoves','Land','deltaB','deltaK','nablaDot','nablaCross','delDot','delCross','R','LandR','decision','collapse','finalState','layerA','layerB'];
   const priorRenderConcepts = window.renderConcepts;
   window.renderConcepts = function(){
     ensureV19Concepts();
@@ -2933,10 +3039,18 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     kappa:['kappa','deltaK','R'],
     IR:['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'],
     burden:['burden','submoves'],
-    Land:['Land','deltaB'],
-    LandR:['Land','R','deltaB','deltaK','H'],
-    R:['R','H','deltaB','deltaK'],
-    decision:['R','H','deltaB','deltaK','nextB'],
+    submoves:['submoves','burden','deltaB'],
+    Land:['Land','deltaB','deltaK'],
+    deltaB:['deltaB','Land','nablaDot','nablaCross','R'],
+    deltaK:['deltaK','kappa','nablaDot','nablaCross','R'],
+    nablaDot:['nablaDot','delDot','deltaB','deltaK','R'],
+    nablaCross:['nablaCross','delCross','deltaB','deltaK','R'],
+    delDot:['delDot','nablaDot'],
+    delCross:['delCross','nablaCross'],
+    fieldDiagnostics:['nablaDot','nablaCross','deltaB','deltaK','R'],
+    LandR:['Land','R','deltaB','deltaK','nablaDot','nablaCross','H'],
+    R:['R','H','deltaB','deltaK','nablaDot','nablaCross'],
+    decision:['R','H','deltaB','deltaK','nablaDot','nablaCross','nextB'],
     C:['C','Psi'],
     collapse:['C','Psi','R','final','heart','xi','omega','mu'],
     final:['final','N','heart','xi','omega','mu'],
@@ -2956,6 +3070,62 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
 
 
 
+
+<script id="field-diagnostics-concept-parity-v60">
+/* v60: first-class Δ / ∇ / del-dot / del-cross concepts and algebraic relation parity. */
+(function(){
+  function ensureConcept(id, obj){
+    if(!Array.isArray(CONCEPTS)) return;
+    const existing = CONCEPTS.find(c => c.id === id);
+    if(existing) Object.assign(existing, obj);
+    else CONCEPTS.push(obj);
+  }
+  function ensureRelation(id, obj){
+    if(!Array.isArray(RELATIONS)) return;
+    const existing = RELATIONS.find(r => r.id === id);
+    if(existing) Object.assign(existing, obj);
+    else RELATIONS.push(obj);
+  }
+  function ensureFieldDiagnosticConcepts(){
+    ensureConcept('submoves', {id:'submoves', name:'ⁿBᵢ[OPᵢ] submove/operator', type:'runtime control state', summary:'Owner-backed submove executed under the current burden.', definition:'ⁿBᵢ[OPᵢ] names an owner-backed submove: target → operation → result under the bounded current burden ⁿB.', runtime:'Submoves can change the burden field through ΔⁿB, but they do not become new burdens unless R(H,Δ) licenses ⁿ⁺¹B.', fields:['ⁿB','ΔⁿB','Δκ','R'], operators:['owner/TTP','P7','output-release'], relations:['executes within → ⁿB','produces → ΔⁿB','feeds → Land(ⁿB)'], files:['output-release.md','recursive-state-transitions.md','diagnostic-render-contract.md'], case:'A source-status operation may be ⁿB₂[OP₂] while the current burden remains ⁿB.', symbols:['submoves','burden','deltaB']});
+    ensureConcept('Land', {id:'Land', name:'Land(ⁿB) burden landing', type:'runtime control state', summary:'The current burden lands only after owner-backed submoves produce governed state change.', definition:'Land(ⁿB) marks burden landing. It is not persuasion theater; it is the point at which the current burden has produced a governed ΔⁿB/Δκ transition or is held/partialed.', runtime:'Land(ⁿB) precedes ∇·/∇× field diagnostics and R(H,Δ) reread. It does not itself license final closure.', fields:['ⁿB','ⁿBᵢ[OPᵢ]','ΔⁿB','Δκ','R'], operators:['P7','recursive-state-transitions','output-release'], relations:['is produced by → ⁿBᵢ[OPᵢ]','precedes → ΔⁿB / Δκ','precedes → ∇· / ∇× diagnostics'], files:['recursive-state-transitions.md','output-release.md'], case:'After the active burden lands, the runtime rereads dependencies rather than continuing by momentum.', symbols:['Land','burden','submoves','deltaB','deltaK']});
+    ensureConcept('deltaB', {id:'deltaB', name:'ΔⁿB burden-event delta', type:'runtime control state', summary:'Event-local transition produced by burden/submove landing.', definition:'ΔⁿB is the burden-event delta. It marks the state transition produced by Land(ⁿB) and its owner-backed submoves.', runtime:'ΔⁿB comes before ∇·/∇× field diagnostics and before R(H,Δ). It is not interchangeable with ∇.', fields:['ⁿB','ⁿBᵢ[OPᵢ]','Land(ⁿB)','Δκ','∇·','∇×','R'], operators:['P7','recursive-state-transitions'], relations:['computed by → Land(ⁿB)','precedes → ∇· / ∇× field diagnostics','feeds → R(H,Δ)'], files:['recursive-state-transitions.md','output-release.md','algebraic-notation-and-noetic-formalism.md'], case:'B2 landed; ΔⁿB records what changed in the burden field before field pressure is read.', symbols:['deltaB','burden','submoves','Land','nablaDot','nablaCross','R']});
+    ensureConcept('deltaK', {id:'deltaK', name:'Δκ closure-state delta', type:'runtime control state', summary:'Case-collapse / dependency-radius transition after burden-field update.', definition:'Δκ marks dependency-radius or closure-state change produced by the burden cycle. κ is the collapse/closure-state target when rendered as ∇·κ or ∇×κ.', runtime:'Δκ is a transition, not a divergence/curl diagnostic. ∇·κ and ∇×κ may read the κ field after Δκ is produced.', fields:['κ','ΔⁿB','∇·κ','∇×κ','R'], operators:['P7','M8','recursive-state-transitions'], relations:['updates → κ','precedes → ∇·κ / ∇×κ','feeds → R(H,Δ)'], files:['recursive-state-transitions.md','diagnostic-render-contract.md'], case:'If dependency radius expands after a burden lands, Δκ is live and closure remains gated.', symbols:['deltaK','kappa','nablaDot','nablaCross','R']});
+    ensureConcept('nablaDot', {id:'nablaDot', name:'∇· / del-dot target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading divergence-like residual outward pressure in an explicit target field.', definition:'∇· reads residual outward pressure in a named target field after Δ has produced a field state. Valid targets include κ, B, ♥, ξ, registers, routes, or owner-defined fields when the target and control effect are explicit.', runtime:'Detects unresolved outward burden/dependency/register/route pressure after a burden event or field-state update. Positive pressure blocks false closure unless cleared, integrated, discharged, held with reason, or carried into RECURSE/PARTIAL.', fields:['ΔⁿB','Δκ','κ','ⁿB','♥','ξ','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇·B positive over B3/B4 means residual burden-field pressure remains after the last Land(ⁿB).', symbols:['nablaDot','delDot','deltaB','deltaK','R']});
+    ensureConcept('nablaCross', {id:'nablaCross', name:'∇× / del-cross target-explicit field diagnostic', type:'runtime control state', summary:'Post-Delta diagnostic reading curl-like circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.', definition:'∇× reads circularity or rotational dependency in a named target field after Δ has produced a field state. It is a closure diagnostic over relational noetic space, not a graph metaphor or proof-by-symbol.', runtime:'Detects dependency loops, circular burden pressure, recursive closure failure, or route cycles that linear transition alone cannot resolve. Nonzero curl pressure blocks COMPLETE without accounting.', fields:['ΔⁿB','Δκ','κ','ⁿB','ξ','routes','R'], operators:['P7','recursive-state-transitions','diagnostic-render-contract'], relations:['post-Delta diagnostic over → explicit target field','not substitute for → Δ','gates → loop-breaking / RECURSE / PARTIAL'], files:['diagnostic-render-contract.md','output-release.md','recursive-state-transitions.md','algebraic-notation-and-noetic-formalism.md'], case:'∇×ξ unresolved means the certainty register contains circular warrant pressure that linear traversal will not resolve.', symbols:['nablaCross','delCross','deltaB','deltaK','R']});
+    ensureConcept('delDot', {id:'delDot', name:'del-dot ASCII alias', type:'runtime control state', summary:'ASCII alias for ∇·.', definition:'del-dot is the grep/checker-safe spelling of ∇·. It is not a separate operator.', runtime:'Use where Unicode is impractical while preserving the same target-explicit divergence-like diagnostic contract.', fields:['∇·','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇·','not separate from → ∇·'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-dot(B) is the ASCII way to refer to ∇·B in checker-safe text.', symbols:['delDot','nablaDot']});
+    ensureConcept('delCross', {id:'delCross', name:'del-cross ASCII alias', type:'runtime control state', summary:'ASCII alias for ∇×.', definition:'del-cross is the grep/checker-safe spelling of ∇×. It is not a separate operator.', runtime:'Use where Unicode is impractical while preserving the same target-explicit curl-like diagnostic contract.', fields:['∇×','ΔⁿB','Δκ','R'], operators:['check_register_formalism_bridge','check_render_modes'], relations:['alias-of → ∇×','not separate from → ∇×'], files:['diagnostic-render-contract.md','algebraic-notation-and-noetic-formalism.md'], case:'del-cross(ξ) is the ASCII way to refer to ∇×ξ in checker-safe text.', symbols:['delCross','nablaCross']});
+    ensureConcept('R', {id:'R', name:'R(H,Δ) recursive field-state reread', type:'runtime control state', summary:'Rereads the whole live field after burden events and field-state diagnostics.', definition:'R(H,Δ) is the recursive state reread after ΔⁿB/Δκ and target-explicit ∇·/∇× field diagnostics. R(H,Delta) is ASCII fallback only.', runtime:'Rereads selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, alternate routes, residual pressure, and closure state. It licenses STOP/HOLD/RECURSE/PARTIAL/COMPLETE only after accounting.', fields:['H','ΔⁿB','Δκ','∇·','∇×','κ','ⁿB'], operators:['P7','output-release','recursive-state-transitions'], relations:['rereads → whole live field','after → Δ and ∇ diagnostics','licenses → STOP/HOLD/RECURSE/PARTIAL/COMPLETE'], files:['recursive-state-transitions.md','output-release.md','diagnostic-render-contract.md'], case:'After B2 lands, R(H,Δ) must reread B3/B4 and any circular dependency before closure.', symbols:['R','H','deltaB','deltaK','nablaDot','nablaCross']});
+    const decision = (CONCEPTS||[]).find(c => c.id === 'decision');
+    if(decision){
+      decision.name = 'STOP / HOLD / RECURSE / PARTIAL / COMPLETE';
+      decision.summary = 'Closure outcomes licensed by R(H,Δ), not by route exhaustion.';
+      decision.runtime = 'COMPLETE is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged, held with reason, or carried into RECURSE/PARTIAL.';
+      decision.symbols = ['R','deltaB','deltaK','nablaDot','nablaCross','nextB'];
+    }
+  }
+  function ensureFieldDiagnosticRelations(){
+    ensureRelation('rel-submove-land-delta', {id:'rel-submove-land-delta', label:'ⁿBᵢ[OPᵢ] lands into ΔⁿB / Δκ', type:'produces-transition', from:'ⁿBᵢ[OPᵢ]', to:'Land(ⁿB) → ΔⁿB / Δκ', symbols:['submoves','Land','deltaB','deltaK'], explain:'Owner-backed submoves operate inside the selected burden and produce event-local transition when the burden lands.', runtime:'This keeps Δ as transition machinery and prevents ∇ from replacing burden events.'});
+    ensureRelation('rel-delta-before-field-diagnostics', {id:'rel-delta-before-field-diagnostics', label:'Δ precedes ∇· / ∇× diagnostics', type:'pipeline-order', from:'ΔⁿB / Δκ', to:'∇· / ∇× field diagnostics', symbols:['deltaB','deltaK','nablaDot','nablaCross'], explain:'∇· and ∇× read the field state that Δ produced. They cannot be applied before a burden lands.', runtime:'This is the operator hierarchy: Δ computes event-local transition; ∇ reads the resulting field pressure.'});
+    ensureRelation('rel-field-diagnostics-reread', {id:'rel-field-diagnostics-reread', label:'field diagnostics feed R(H,Δ)', type:'closure-gate', from:'∇· / ∇× target field state', to:'R(H,Δ)', symbols:['nablaDot','nablaCross','R','H'], explain:'Residual divergence/curl pressure must be accounted for before closure.', runtime:'Nonzero ∇· or ∇× with no accounting is false closure.'});
+    ensureRelation('rel-del-dot-alias', {id:'rel-del-dot-alias', label:'del-dot is alias-of ∇·', type:'alias-of', from:'del-dot', to:'∇·', symbols:['delDot','nablaDot'], explain:'del-dot is the ASCII alias for ∇·, not a separate operator.', runtime:'Checker-safe spelling preserves the same target-explicit field diagnostic semantics.'});
+    ensureRelation('rel-del-cross-alias', {id:'rel-del-cross-alias', label:'del-cross is alias-of ∇×', type:'alias-of', from:'del-cross', to:'∇×', symbols:['delCross','nablaCross'], explain:'del-cross is the ASCII alias for ∇×, not a separate operator.', runtime:'Checker-safe spelling preserves the same target-explicit curl-like diagnostic semantics.'});
+    ensureRelation('rel-nabla-not-delta', {id:'rel-nabla-not-delta', label:'∇ is not a substitute for Δ', type:'anti-conflation', from:'∇· / ∇×', to:'ΔⁿB / Δκ', symbols:['nablaDot','nablaCross','deltaB','deltaK'], explain:'∇· and ∇× diagnose Δ-produced field state. They do not compute transitions and do not replace Δ.', runtime:'If ∇ is used as transition proof or proof-by-symbol, the render/checker must fail.'});
+    ensureRelation('rel-reread-whole-live-field', {id:'rel-reread-whole-live-field', label:'R(H,Δ) rereads the whole live field', type:'reconstruction-fidelity', from:'R(H,Δ)', to:'selected/held N, burdens, registers, routes, residual pressure', symbols:['R','H','deltaB','deltaK','nablaDot','nablaCross'], explain:'R rereads more than the selected route. Alternate structures, hidden dependencies, circularities, and residual pressures remain live until accounted for.', runtime:'Closure is not route exhaustion; it is field accounting after reread.'});
+    ensureRelation('rel-selected-path-release-order', {id:'rel-selected-path-release-order', label:'selected path is release order over the live field', type:'field-accounting', from:'selected execution path', to:'live noetic/burden/dependency/register/route field', symbols:['noetic','burden','submoves','deltaB','nablaDot','nablaCross','R'], explain:'A selected route is the order of release, not the whole field itself.', runtime:'Multiple valid noetic-structure selections must be integrated, discharged, held, or carried into RECURSE/PARTIAL rather than scalar-collapsed.'});
+  }
+  ensureFieldDiagnosticConcepts();
+  ensureFieldDiagnosticRelations();
+  document.addEventListener('DOMContentLoaded', function(){
+    ensureFieldDiagnosticConcepts();
+    ensureFieldDiagnosticRelations();
+    setTimeout(function(){
+      if(typeof renderConcepts === 'function') renderConcepts();
+      if(typeof renderRelations === 'function') renderRelations();
+    }, 0);
+  });
+})();
+</script>
 
 <script id="v45-notation-click-unifier">
 (function(){

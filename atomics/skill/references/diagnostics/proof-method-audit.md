@@ -25,6 +25,20 @@ catalogue_registered: true
 
 # Proof-Method Audit
 
+## Runtime operator contract
+
+- Activation: arguments for God's existence being compared or contested.
+- Field target: the diagnostic pressure named by `proof-method-audit`: criterion/source/warrant/predication/dependency state that must be classified before release; activation cue: arguments for God's existence being compared or contested.
+- Burden/submove form: diagnostic `ⁿBᵢ[OPᵢ]`: target -> classify/disambiguate/mark -> routing or state constraint.
+- Δ effect: `ΔⁿB` updates the diagnostic burden by narrowing the operative target; `Δκ` may expand or contract dependency radius for downstream routing.
+- Possible ∇ reread: after diagnostic narrowing, check target-explicit `∇·κ` for expanded dependency radius or `∇×B`/`∇×ξ` when the diagnostic exposes circular warrant pressure.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `pass-through`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (37); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 This file is not an argument bank. It is a taxonomy and audit surface for proof families.
 
 The governing question is not "which proof wins?" but:

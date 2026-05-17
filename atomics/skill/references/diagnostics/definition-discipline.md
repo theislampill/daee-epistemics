@@ -28,6 +28,20 @@ catalogue_registered: true
 
 # Definition Discipline
 
+## Runtime operator contract
+
+- Activation: silent redefinition or specialist capture of ordinary language operative.
+- Field target: the diagnostic pressure named by `definition-discipline`: criterion/source/warrant/predication/dependency state that must be classified before release; activation cue: silent redefinition or specialist capture of ordinary language operative.
+- Burden/submove form: diagnostic `ⁿBᵢ[OPᵢ]`: target -> classify/disambiguate/mark -> routing or state constraint.
+- Δ effect: `ΔⁿB` updates the diagnostic burden by narrowing the operative target; `Δκ` may expand or contract dependency radius for downstream routing.
+- Possible ∇ reread: after diagnostic narrowing, check target-explicit `∇·κ` for expanded dependency radius or `∇×B`/`∇×ξ` when the diagnostic exposes circular warrant pressure.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-governed` with output shapes `pass-through`, `held-pending-upstream`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (15); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 This file governs a different problem from M9.
 
 - **M7** handles a live verbal dispute blocking engagement.

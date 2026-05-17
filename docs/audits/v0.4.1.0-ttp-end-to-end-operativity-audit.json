@@ -1,0 +1,3001 @@
+{
+  "audit": "v0.4.1.0 TTP end-to-end operativity audit",
+  "catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
+  "catalogue_count": 69,
+  "class_counts": {
+    "case-library": 19,
+    "diagnostic": 6,
+    "tactic": 24,
+    "procedure": 7,
+    "technique": 13
+  },
+  "status_counts": {
+    "PASS": 12,
+    "PARTIAL": 57
+  },
+  "priority_counts": {
+    "P2": 19,
+    "P1": 50
+  },
+  "dimension_counts": {
+    "A_catalogue_integrity": {
+      "PASS": 69,
+      "PARTIAL": 0,
+      "MISSING": 0,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "B_activation_condition": {
+      "PASS": 69,
+      "PARTIAL": 0,
+      "MISSING": 0,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "C_field_target_clarity": {
+      "PASS": 69,
+      "PARTIAL": 0,
+      "MISSING": 0,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "D_burden_submove_semantics": {
+      "PASS": 68,
+      "PARTIAL": 0,
+      "MISSING": 1,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "E_delta_effect": {
+      "PASS": 0,
+      "PARTIAL": 39,
+      "MISSING": 30,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "F_nabla_diagnostic_awareness": {
+      "PASS": 2,
+      "PARTIAL": 13,
+      "MISSING": 54,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "G_reread_obligation": {
+      "PASS": 14,
+      "PARTIAL": 6,
+      "MISSING": 49,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "H_hold_release_closure_effect": {
+      "PASS": 68,
+      "PARTIAL": 0,
+      "MISSING": 1,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "I_nla_reconstruction_fidelity": {
+      "PASS": 0,
+      "PARTIAL": 25,
+      "MISSING": 44,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "J_render_output_boundary": {
+      "PASS": 68,
+      "PARTIAL": 1,
+      "MISSING": 0,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "K_negative_constraints": {
+      "PASS": 63,
+      "PARTIAL": 0,
+      "MISSING": 6,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    },
+    "L_fixture_checker_coverage": {
+      "PASS": 49,
+      "PARTIAL": 2,
+      "MISSING": 18,
+      "UNCLEAR": 0,
+      "NOT_APPLICABLE": 0
+    }
+  },
+  "defect_class_counts": {
+    "TTP-DELTA-EFFECT-MISSING": 69,
+    "TTP-NABLA-AWARENESS-MISSING": 67,
+    "TTP-NLA-TRACE-MISSING": 69,
+    "TTP-REREAD-MISSING": 55,
+    "TTP-ARGUMENT-BANK-DRIFT": 1,
+    "TTP-CLOSURE-EFFECT-MISSING": 1,
+    "TTP-FIXTURE-GAP": 20,
+    "TTP-SCALAR-COLLAPSE-RISK": 39,
+    "TTP-NEGATIVE-CONSTRAINT-MISSING": 6
+  },
+  "complement_owner_surfaces_read": [
+    {
+      "path": "atomics/skill/SKILL.md",
+      "bytes_read": 48935,
+      "sha256": "57e5b8796900dd8cd46ab8389b689707e3234dcb8e321c4cd766b38feb473fd8"
+    },
+    {
+      "path": "atomics/skill/references/diagnostics/diagnostic-ir.md",
+      "bytes_read": 65204,
+      "sha256": "6c70f12a60e28a247d3d23feb521de358a5febf830355c29c86cbe6deb2feaff"
+    },
+    {
+      "path": "atomics/skill/references/diagnostics/diagnostic-ir.schema.json",
+      "bytes_read": 18549,
+      "sha256": "87d4142dde8443c1e2aa9f5370a8b9494c57bf9d7b8f6cdb15ba444ee77deff3"
+    },
+    {
+      "path": "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+      "bytes_read": 76878,
+      "sha256": "a9b82a2802dfb1c316273ec17a1241c50f4b516200ab0ab5f88c897633d55703"
+    },
+    {
+      "path": "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+      "bytes_read": 91137,
+      "sha256": "e490641bd4eee0cb798fd41e3ebaae17be2a12fe0481794e3c050fea7ad5f6bb"
+    },
+    {
+      "path": "atomics/skill/references/rubrics/output-release.md",
+      "bytes_read": 73412,
+      "sha256": "2914d1ba437c5c36a4a985a2361895961ca0eeb98a2f68540b7202db67360ede"
+    },
+    {
+      "path": "docs/algebraic-notation-and-noetic-formalism.md",
+      "bytes_read": 16804,
+      "sha256": "0a71b3e9e893e78b6b88babf6fcbc5b948e480e17260d94d2f3906bf43465aba"
+    },
+    {
+      "path": "tools/check_routing_parity.py",
+      "bytes_read": 35743,
+      "sha256": "dd11a219040cf56f5132b65c2fc2d5f43f4c772fad0c3b227b77eaf6edf6ab72"
+    },
+    {
+      "path": "tools/check_register_formalism_bridge.py",
+      "bytes_read": 59100,
+      "sha256": "49e221ac2be577928773b4ab38c45bd71339301c918c7f4d15260c5724a1a1a9"
+    },
+    {
+      "path": "tools/check_render_modes.py",
+      "bytes_read": 98922,
+      "sha256": "8e51c16eec32306f74f1edacb3505437da726b32124d61f6a05035cba8dd4879"
+    },
+    {
+      "path": "tools/check_metacompliance_current_canon.py",
+      "bytes_read": 12270,
+      "sha256": "5c0b9d8b40aaa794a2da48a502dd320916e878508e92bcd11dd1cd7e535cc7d4"
+    }
+  ],
+  "modules": [
+    {
+      "id": "do-attribute-precision",
+      "owner_file": "atomics/skill/references/case-library/do-attribute-precision.md",
+      "class": "case-library",
+      "owner_sha256": "bcac4bb073b3cdc8c11023a99437d03014ae5e0e345df9b8713c49d8c051db30",
+      "owner_bytes_read": 14993,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/15-reason-revelation-local-semantic.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/19-tawil-tafsir-bayan.json",
+        "tests/routing-fixtures/21-loaded-body-direction-term.json",
+        "tests/routing-fixtures/22-composition-dependence-scope.json",
+        "tests/routing-fixtures/23-human-entailment-attribution.json",
+        "tests/routing-fixtures/31-cross-frame-verbal-agreement.json",
+        "tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json",
+        "tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json",
+        "tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json",
+        "tests/routing-fixtures/50-da-action-actor-effect.json",
+        "tests/routing-fixtures/51-da-purpose-without-need.json",
+        "tests/routing-fixtures/52-ds-speech-source-articulation.json",
+        "tests/routing-fixtures/53-hk-huduth-khalq-split.json",
+        "tests/routing-fixtures/55-oq-mental-external.json",
+        "tests/routing-fixtures/57-oq-source-action-effect.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/03-omega-predication-owner-selection.json",
+        "tests/register-formalism-bridge-fixtures/10-register-activation-multi-register.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "do-christian-extensions",
+      "owner_file": "atomics/skill/references/case-library/do-christian-extensions.md",
+      "class": "case-library",
+      "owner_sha256": "1b09a2f01b6a21b21a3812f1d9217cb2943f3f40fa5ba460a6e9002d6fcb86a6",
+      "owner_bytes_read": 34562,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Muri: overloaded owner file",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "do-core",
+      "owner_file": "atomics/skill/references/case-library/do-core.md",
+      "class": "case-library",
+      "owner_sha256": "0311b849792cfda76450e82c9be725b316d5a7cfb16688f0f2b8d27f11d6a5d8",
+      "owner_bytes_read": 37291,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PASS",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/09-thin-basis-ambiguous.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/01-heart-register-hold.json",
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json"
+      ],
+      "checker_hits": [
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Muri: overloaded owner file",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "do-second-loop",
+      "owner_file": "atomics/skill/references/case-library/do-second-loop.md",
+      "class": "case-library",
+      "owner_sha256": "094d473a03cd5ecf2b4a50ee1392efd561925adffd5684b25ea12ff411d8fcbd",
+      "owner_bytes_read": 47651,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Muri: overloaded owner file",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "noetic-profiles",
+      "owner_file": "atomics/skill/references/case-library/noetic-profiles.md",
+      "class": "case-library",
+      "owner_sha256": "22140484cc251cc612cb0554727c09606339d12c28416507c44bacc473630898",
+      "owner_bytes_read": 2002,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "MISSING",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "MISSING",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PARTIAL",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-ARGUMENT-BANK-DRIFT",
+        "TTP-CLOSURE-EFFECT-MISSING",
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global; Muda: topic-page drift risk",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "philosophical-usurpation",
+      "owner_file": "atomics/skill/references/case-library/philosophical-usurpation.md",
+      "class": "case-library",
+      "owner_sha256": "620e16121690628715823c9e98cdcb041da592cb28cc4e503822e22ca897c4c0",
+      "owner_bytes_read": 8350,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/14-reason-revelation-global-tribunal.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json",
+        "tests/routing-fixtures/20-tawil-philosophical-override.json",
+        "tests/routing-fixtures/64-hard-compound-field-accounting.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "revelation-transmission",
+      "owner_file": "atomics/skill/references/case-library/revelation-transmission.md",
+      "class": "case-library",
+      "owner_sha256": "d0daef7c20a6a9cafd161c11b8e24acdfe7d2154f759ba4c17740d8a72945bd0",
+      "owner_bytes_read": 23456,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/05-revelation-transmission.json",
+        "tests/routing-fixtures/06-hadith-authentication.json",
+        "tests/routing-fixtures/16-reason-revelation-transmission-local.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "prophetic-discourse-neutralization",
+      "owner_file": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md",
+      "class": "diagnostic",
+      "owner_sha256": "1021212481b08f1f0d82d6f62b5806c74758aac4408fc019e2e7a9c7d3bb3d17",
+      "owner_bytes_read": 7753,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/05-revelation-transmission.json",
+        "tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json",
+        "tests/routing-fixtures/37-m9-zahir-majaz-label-stripped.json",
+        "tests/routing-fixtures/52-ds-speech-source-articulation.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [
+        "tools/check_da_ds_hk_child_mode_execution_samples.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "causal-series-taxonomy",
+      "owner_file": "atomics/skill/references/diagnostics/causal-series-taxonomy.md",
+      "class": "diagnostic",
+      "owner_sha256": "5e5cd383892e5a7bb9c968016e1bf2d5689e96e258ac2af40d418601dc4516b8",
+      "owner_bytes_read": 6824,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json",
+        "tests/routing-fixtures/28-signs-science-false-cause.json",
+        "tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json",
+        "tests/routing-fixtures/40-pm-huduth-contingency-route.json",
+        "tests/routing-fixtures/56-oq-cause-condition-impediment.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [
+        "tools/check_oq_child_mode_execution_samples.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "definition-discipline",
+      "owner_file": "atomics/skill/references/diagnostics/definition-discipline.md",
+      "class": "diagnostic",
+      "owner_sha256": "e79cf225ed59af169579e408d09d42f3d158e3e9e30bbb1804e750359bea3d06",
+      "owner_bytes_read": 13479,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/15-reason-revelation-local-semantic.json",
+        "tests/routing-fixtures/19-tawil-tafsir-bayan.json",
+        "tests/routing-fixtures/21-loaded-body-direction-term.json",
+        "tests/routing-fixtures/23-human-entailment-attribution.json",
+        "tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json",
+        "tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json",
+        "tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json",
+        "tests/routing-fixtures/37-m9-zahir-majaz-label-stripped.json",
+        "tests/routing-fixtures/54-oq-universal-particular.json",
+        "tests/routing-fixtures/55-oq-mental-external.json",
+        "tests/routing-fixtures/56-oq-cause-condition-impediment.json",
+        "tests/routing-fixtures/57-oq-source-action-effect.json",
+        "tests/routing-fixtures/58-mm-loaded-label-carrier.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "hadith-authentication-epistemology",
+      "owner_file": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md",
+      "class": "diagnostic",
+      "owner_sha256": "f098691f889c8662bf7b6e285ea3db7f6a92fa962adfe1889c3d58ff1315bbb7",
+      "owner_bytes_read": 10119,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/06-hadith-authentication.json",
+        "tests/routing-fixtures/16-reason-revelation-transmission-local.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "proof-method-audit",
+      "owner_file": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "class": "diagnostic",
+      "owner_sha256": "c7c8e314547fb17f73bdcdb829a40e080b182c0281885f20384a716fd91bfe17",
+      "owner_bytes_read": 14385,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/14-reason-revelation-global-tribunal.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/22-composition-dependence-scope.json",
+        "tests/routing-fixtures/24-honest-shubhah-evidence.json",
+        "tests/routing-fixtures/29-frame-alias-nat-normalization.json",
+        "tests/routing-fixtures/30-ashari-family-nonmonolith.json",
+        "tests/routing-fixtures/31-cross-frame-verbal-agreement.json",
+        "tests/routing-fixtures/32-meta-noetic-control-surface.json",
+        "tests/routing-fixtures/33-maturidi-family-nonmonolith.json",
+        "tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json",
+        "tests/routing-fixtures/39-pm-proof-denominator-narrowing.json",
+        "tests/routing-fixtures/40-pm-huduth-contingency-route.json",
+        "tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json",
+        "tests/routing-fixtures/42-as-school-label-identity-audit.json",
+        "tests/routing-fixtures/45-as-source-evidence-identity-signal.json",
+        "tests/routing-fixtures/46-dw-shubhah-wiswas-split.json",
+        "tests/routing-fixtures/47-dw-overcomplexity-deformation.json",
+        "tests/routing-fixtures/48-dw-content-escalation-stop.json",
+        "tests/routing-fixtures/49-dw-bounded-reassurance-hold.json",
+        "tests/routing-fixtures/50-da-action-actor-effect.json",
+        "tests/routing-fixtures/51-da-purpose-without-need.json",
+        "tests/routing-fixtures/52-ds-speech-source-articulation.json",
+        "tests/routing-fixtures/53-hk-huduth-khalq-split.json",
+        "tests/routing-fixtures/54-oq-universal-particular.json",
+        "tests/routing-fixtures/55-oq-mental-external.json",
+        "tests/routing-fixtures/56-oq-cause-condition-impediment.json",
+        "tests/routing-fixtures/57-oq-source-action-effect.json",
+        "tests/routing-fixtures/58-mm-loaded-label-carrier.json",
+        "tests/routing-fixtures/59-mm-proof-packet-reconstruction.json",
+        "tests/routing-fixtures/60-mm-mutation-after-challenge.json",
+        "tests/routing-fixtures/61-mm-collapse-radius-mapping.json",
+        "tests/routing-fixtures/62-ns-unknown-pattern-typed-operator-route.json",
+        "tests/routing-fixtures/63-register-composition-owner-handoff.json",
+        "tests/routing-fixtures/64-hard-compound-field-accounting.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json",
+        "tests/register-formalism-bridge-fixtures/07-shannon-boundary-negative.json",
+        "tests/register-formalism-bridge-fixtures/10-register-activation-multi-register.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "perfection-criterion-usurpation",
+      "owner_file": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md",
+      "class": "diagnostic",
+      "owner_sha256": "404df36235491571eaf82ee779f013cab0f69a4b02e30d43b90ef14669112619",
+      "owner_bytes_read": 8632,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/20-tawil-philosophical-override.json",
+        "tests/routing-fixtures/21-loaded-body-direction-term.json",
+        "tests/routing-fixtures/22-composition-dependence-scope.json",
+        "tests/routing-fixtures/23-human-entailment-attribution.json",
+        "tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json",
+        "tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json",
+        "tests/routing-fixtures/50-da-action-actor-effect.json",
+        "tests/routing-fixtures/51-da-purpose-without-need.json",
+        "tests/routing-fixtures/53-hk-huduth-khalq-split.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/03-omega-predication-owner-selection.json"
+      ],
+      "checker_hits": [
+        "tools/check_recursive_traversal_governance.py",
+        "tools/check_render_modes.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-1-naturalist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md",
+      "class": "case-library",
+      "owner_sha256": "d395a899766916687b7044ff865b0e18a9e4db04ef448d7395d1bab773ca4546",
+      "owner_bytes_read": 2312,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/09-thin-basis-ambiguous.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-2-agnostic-evidentialist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md",
+      "class": "case-library",
+      "owner_sha256": "b836ed1d86533293304a1a3a16d7341099917c141eefd4160a7416b4082302ff",
+      "owner_bytes_read": 3307,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "ns-3-deconverted",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md",
+      "class": "case-library",
+      "owner_sha256": "3624a3ff6405086d12b1a91c49baf6af65f50e6115a667d45d9a0cac504bd84d",
+      "owner_bytes_read": 3396,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-4-secular-moral-realist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md",
+      "class": "case-library",
+      "owner_sha256": "d5ce42de27c20f154334a08caa5882d5e7deb2cfeab7059cdfd42ef0467dc413",
+      "owner_bytes_read": 3215,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-5-habituated-atheist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md",
+      "class": "case-library",
+      "owner_sha256": "bead397ed79623c8db94257452575ceb322e8df13a9a33dcaf9ba55f6838faae",
+      "owner_bytes_read": 3811,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "ns-6-kalamic-evidentialist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md",
+      "class": "case-library",
+      "owner_sha256": "35d0eb0ab30c79dff638057587d901960bb9b0fd0c695ac74904bccb8976d50c",
+      "owner_bytes_read": 4172,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-7-theistic-evidentialist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md",
+      "class": "case-library",
+      "owner_sha256": "99b1578770e0294ff3ed9e183e5b1b4517a7314f63754ad6a16c3710fb10251f",
+      "owner_bytes_read": 4653,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "ns-8-muslim-internal-crisis",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md",
+      "class": "case-library",
+      "owner_sha256": "bc30cdbcd0cd8815fe2f10e40afb01546ddafe37ebbe78ba594a6ed1f6f48d01",
+      "owner_bytes_read": 8708,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-9-historical-critical-skeptic",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md",
+      "class": "case-library",
+      "owner_sha256": "03d31e7fdb92f56de2bd18ba68458b48553c390ae65f8950a9f3845d12e993af",
+      "owner_bytes_read": 5445,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/05-revelation-transmission.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-10-maturidi-evidentialist",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md",
+      "class": "case-library",
+      "owner_sha256": "64b2503f703a090106ce0cde0de5db6e99d9b8027d796ceffaa39ce792bac786",
+      "owner_bytes_read": 4287,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "ns-11-fideist-reformed",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md",
+      "class": "case-library",
+      "owner_sha256": "1d58c78fb7a9f56d83491eda1395355641006ee85d83cbea5405918a06fcc691",
+      "owner_bytes_read": 5409,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "ns-12-blank-slate-dual-fitrah",
+      "owner_file": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md",
+      "class": "case-library",
+      "owner_sha256": "b3fd7d227ddc8cffc3d1d38564ab3f19a98f1f5d8ad3a3455e2eb79592105858",
+      "owner_bytes_read": 5743,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "E1-broadening-evidence",
+      "owner_file": "atomics/skill/references/tactics/E1-broadening-evidence.md",
+      "class": "tactic",
+      "owner_sha256": "773796e4b71d54d1e0e33d667645d6972e633ac64785224ea5d6c98266acde92",
+      "owner_bytes_read": 4550,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json",
+        "tests/register-formalism-bridge-fixtures/04-mu-carrier-burden-selection.json",
+        "tests/register-formalism-bridge-fixtures/10-register-activation-multi-register.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "E2-inferential-criterion",
+      "owner_file": "atomics/skill/references/tactics/E2-inferential-criterion.md",
+      "class": "tactic",
+      "owner_sha256": "c99f79270e0e0898ca2fa0f40a24cfb297b8a00d5ae86318a3826e48d27636fa",
+      "owner_bytes_read": 7210,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "E3-cumulative-case",
+      "owner_file": "atomics/skill/references/tactics/E3-cumulative-case.md",
+      "class": "tactic",
+      "owner_sha256": "b022b0fc48548f26f16428d91da8f89c63cc5ad7772d3bdbca339ef4966af09d",
+      "owner_bytes_read": 2289,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PARTIAL"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/04-mu-carrier-burden-selection.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "E4-cross-cultural-check",
+      "owner_file": "atomics/skill/references/tactics/E4-cross-cultural-check.md",
+      "class": "tactic",
+      "owner_sha256": "475e11703307c7c02f8ec3c3fabef853696afb096463087bb2350d1ee19be398",
+      "owner_bytes_read": 2861,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "F1-supra-vs-antirational",
+      "owner_file": "atomics/skill/references/tactics/F1-supra-vs-antirational.md",
+      "class": "tactic",
+      "owner_sha256": "8d2c2f9ea0c23cb6b47946d84b092d6450f00af53b796e071727719c2296f3a9",
+      "owner_bytes_read": 9568,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/14-reason-revelation-global-tribunal.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "F2-volitional-dimensions",
+      "owner_file": "atomics/skill/references/tactics/F2-volitional-dimensions.md",
+      "class": "tactic",
+      "owner_sha256": "dca6bfbe43862c43cb962936d8e058514d6d945504a51a797899229966e0ab9c",
+      "owner_bytes_read": 2170,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/26-identity-performance-dont-care.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "F3-practice-epistemic-access",
+      "owner_file": "atomics/skill/references/tactics/F3-practice-epistemic-access.md",
+      "class": "tactic",
+      "owner_sha256": "de4a48842b1e34dc86232c008f20eef5b3a420ac45332c0ad59214a559602df3",
+      "owner_bytes_read": 6618,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "M1-self-refutation",
+      "owner_file": "atomics/skill/references/tactics/M1-self-refutation.md",
+      "class": "tactic",
+      "owner_sha256": "e8093b9aebce820dd62fff2ebd12ed5302c130dd11ebcd67f78533dbf0e47d00",
+      "owner_bytes_read": 7589,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json",
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json",
+        "tests/routing-fixtures/24-honest-shubhah-evidence.json",
+        "tests/routing-fixtures/32-meta-noetic-control-surface.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json"
+      ],
+      "checker_hits": [
+        "tools/check_ir_instance_integrity.py",
+        "tools/check_routing_parity.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "M1P-performative-self-refutation",
+      "owner_file": "atomics/skill/references/tactics/M1P-performative-self-refutation.md",
+      "class": "tactic",
+      "owner_sha256": "db08ccc1232a519003f2a4ccbeff41d69e20acb73539f9d231faaf91edc48a86",
+      "owner_bytes_read": 4544,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PARTIAL"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "M2-prior-probability",
+      "owner_file": "atomics/skill/references/tactics/M2-prior-probability.md",
+      "class": "tactic",
+      "owner_sha256": "25de701085e56bc5a347c9df5b316d7741b2618799b239bfa9c64b2b45edbc15",
+      "owner_bytes_read": 7644,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/01-heart-register-hold.json",
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "M3-orphaned-intuition",
+      "owner_file": "atomics/skill/references/tactics/M3-orphaned-intuition.md",
+      "class": "tactic",
+      "owner_sha256": "82c61722e46597a8f6cbe3ffe2dd9bd3bba50d967332069f80ecbd4bc189215d",
+      "owner_bytes_read": 9829,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json",
+        "tests/routing-fixtures/28-signs-science-false-cause.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [
+        "tools/check_routing_parity.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "M4-grief-register",
+      "owner_file": "atomics/skill/references/tactics/M4-grief-register.md",
+      "class": "tactic",
+      "owner_sha256": "a3a51654968832094425e222c4b1c847a9319f3fcbcefebbea56ada0bcdab6e9",
+      "owner_bytes_read": 2808,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/08-grief-primary-evil.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/01-heart-register-hold.json",
+        "tests/register-formalism-bridge-fixtures/11-held-frame-ambiguity.json"
+      ],
+      "checker_hits": [
+        "tools/check_routing_parity.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "M5-deformation-triage",
+      "owner_file": "atomics/skill/references/tactics/M5-deformation-triage.md",
+      "class": "tactic",
+      "owner_sha256": "ba5b600c72719ce0aea5083c0c84be2ded2bac0a1cdaa7ffd5cbef30e793377f",
+      "owner_bytes_read": 10329,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/09-thin-basis-ambiguous.json",
+        "tests/routing-fixtures/24-honest-shubhah-evidence.json",
+        "tests/routing-fixtures/25-inherited-scientism-evidence.json",
+        "tests/routing-fixtures/26-identity-performance-dont-care.json",
+        "tests/routing-fixtures/28-signs-science-false-cause.json",
+        "tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json",
+        "tests/routing-fixtures/39-pm-proof-denominator-narrowing.json",
+        "tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json",
+        "tests/routing-fixtures/46-dw-shubhah-wiswas-split.json",
+        "tests/routing-fixtures/47-dw-overcomplexity-deformation.json",
+        "tests/routing-fixtures/48-dw-content-escalation-stop.json",
+        "tests/routing-fixtures/49-dw-bounded-reassurance-hold.json",
+        "tests/routing-fixtures/60-mm-mutation-after-challenge.json",
+        "tests/routing-fixtures/61-mm-collapse-radius-mapping.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "M6-excluded-middle",
+      "owner_file": "atomics/skill/references/tactics/M6-excluded-middle.md",
+      "class": "tactic",
+      "owner_sha256": "7d36d1f0b11c7f223dbe4a44355e4a241452ad4b79f6983dba08e46af919f70f",
+      "owner_bytes_read": 8220,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "M7-definition-anchor",
+      "owner_file": "atomics/skill/references/tactics/M7-definition-anchor.md",
+      "class": "tactic",
+      "owner_sha256": "7b11fb836abbb90eb939936369257ddb2e224e412b433714d7110c0e32e51fbb",
+      "owner_bytes_read": 2142,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "M8-reductio",
+      "owner_file": "atomics/skill/references/tactics/M8-reductio.md",
+      "class": "tactic",
+      "owner_sha256": "3f80bf48f9491f0b7197aa42ca1abacbb9a9664195baba48b2a8baa871d20094",
+      "owner_bytes_read": 6103,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/18-logical-evil-hidden-premise.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json"
+      ],
+      "checker_hits": [
+        "tools/check_ir_instance_integrity.py",
+        "tools/check_level3_data_shapes.py",
+        "tools/check_routing_parity.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "M9-predication-mode",
+      "owner_file": "atomics/skill/references/tactics/M9-predication-mode.md",
+      "class": "tactic",
+      "owner_sha256": "d2ba40b1e741a39392b3bb650ec64766b7318c900be11b3c4d96dd604fff6141",
+      "owner_bytes_read": 19691,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/15-reason-revelation-local-semantic.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/19-tawil-tafsir-bayan.json",
+        "tests/routing-fixtures/20-tawil-philosophical-override.json",
+        "tests/routing-fixtures/21-loaded-body-direction-term.json",
+        "tests/routing-fixtures/22-composition-dependence-scope.json",
+        "tests/routing-fixtures/23-human-entailment-attribution.json",
+        "tests/routing-fixtures/29-frame-alias-nat-normalization.json",
+        "tests/routing-fixtures/31-cross-frame-verbal-agreement.json",
+        "tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json",
+        "tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json",
+        "tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json",
+        "tests/routing-fixtures/37-m9-zahir-majaz-label-stripped.json",
+        "tests/routing-fixtures/50-da-action-actor-effect.json",
+        "tests/routing-fixtures/51-da-purpose-without-need.json",
+        "tests/routing-fixtures/52-ds-speech-source-articulation.json",
+        "tests/routing-fixtures/53-hk-huduth-khalq-split.json",
+        "tests/routing-fixtures/54-oq-universal-particular.json",
+        "tests/routing-fixtures/55-oq-mental-external.json",
+        "tests/routing-fixtures/58-mm-loaded-label-carrier.json",
+        "tests/routing-fixtures/59-mm-proof-packet-reconstruction.json",
+        "tests/routing-fixtures/60-mm-mutation-after-challenge.json",
+        "tests/routing-fixtures/62-ns-unknown-pattern-typed-operator-route.json",
+        "tests/routing-fixtures/63-register-composition-owner-handoff.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/03-omega-predication-owner-selection.json",
+        "tests/register-formalism-bridge-fixtures/10-register-activation-multi-register.json"
+      ],
+      "checker_hits": [
+        "tools/check_recursive_traversal_governance.py",
+        "tools/check_render_modes.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "R1-internalist-criterion",
+      "owner_file": "atomics/skill/references/tactics/R1-internalist-criterion.md",
+      "class": "tactic",
+      "owner_sha256": "5aef70115223041eef54f4d1e7293e621be05814f3c446144dadc118e00e43bc",
+      "owner_bytes_read": 8410,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "R2-the-reminder",
+      "owner_file": "atomics/skill/references/tactics/R2-the-reminder.md",
+      "class": "tactic",
+      "owner_sha256": "0310ee2425193b2cd459f5b59382f1551f6b8c3400e6318ee016d9e61d3a2e76",
+      "owner_bytes_read": 9965,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "R3-warranted-basic-belief",
+      "owner_file": "atomics/skill/references/tactics/R3-warranted-basic-belief.md",
+      "class": "tactic",
+      "owner_sha256": "7521c5747075f24971d959cf386521adad439bd9f60d3a244ab42b6a928461ee",
+      "owner_bytes_read": 9269,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "doubt-vs-skepticism",
+      "owner_file": "atomics/skill/references/tactics/doubt-vs-skepticism.md",
+      "class": "tactic",
+      "owner_sha256": "091adde5a8f7c6637a4e04b534b5af26175f532e80d58c28e24cce97a0338dcb",
+      "owner_bytes_read": 14191,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json",
+        "tests/routing-fixtures/46-dw-shubhah-wiswas-split.json",
+        "tests/routing-fixtures/47-dw-overcomplexity-deformation.json",
+        "tests/routing-fixtures/48-dw-content-escalation-stop.json",
+        "tests/routing-fixtures/49-dw-bounded-reassurance-hold.json",
+        "tests/routing-fixtures/60-mm-mutation-after-challenge.json",
+        "tests/routing-fixtures/61-mm-collapse-radius-mapping.json",
+        "tests/routing-fixtures/63-register-composition-owner-handoff.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "husn-al-nazar-arguments",
+      "owner_file": "atomics/skill/references/tactics/husn-al-nazar-arguments.md",
+      "class": "tactic",
+      "owner_sha256": "adb9208b4e43ccd697210cc5dd80733148fc325c3ea416742dafe2c811c21736",
+      "owner_bytes_read": 4349,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json",
+        "tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json",
+        "tests/routing-fixtures/40-pm-huduth-contingency-route.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "inductive-fitri-method",
+      "owner_file": "atomics/skill/references/tactics/inductive-fitri-method.md",
+      "class": "tactic",
+      "owner_sha256": "8531942d327fbe1d3d4006251218f883ff52954baa8389ac5a452324efc923bb",
+      "owner_bytes_read": 6169,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "symmetric-taqlid-check",
+      "owner_file": "atomics/skill/references/tactics/symmetric-taqlid-check.md",
+      "class": "tactic",
+      "owner_sha256": "5495f4c448f4b8bbf77f8a356a6a4146e3555db723822d9c475d5382405def09",
+      "owner_bytes_read": 2312,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "P1-fitrah-restoration",
+      "owner_file": "atomics/skill/references/procedures/P1-fitrah-restoration.md",
+      "class": "procedure",
+      "owner_sha256": "a368e585763e149399cf477c194e7538a83790287f505420c553ea57f308dd44",
+      "owner_bytes_read": 14277,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/25-inherited-scientism-evidence.json",
+        "tests/routing-fixtures/26-identity-performance-dont-care.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json",
+        "tests/register-formalism-bridge-fixtures/06-terminal-collapse-restoration.json"
+      ],
+      "checker_hits": [
+        "tools/check_routing_parity.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "P2-objection-mapping",
+      "owner_file": "atomics/skill/references/procedures/P2-objection-mapping.md",
+      "class": "procedure",
+      "owner_sha256": "e4b9298c308348670743c694af406aceb6763a944966a8761badb5ded62ba066",
+      "owner_bytes_read": 8705,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "P3-reason-revelation-tension",
+      "owner_file": "atomics/skill/references/procedures/P3-reason-revelation-tension.md",
+      "class": "procedure",
+      "owner_sha256": "c1532aee7e05635ad1b4c7ad15ac8f243dd59c0f266f5a41c7ca702186265233",
+      "owner_bytes_read": 11499,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/14-reason-revelation-global-tribunal.json",
+        "tests/routing-fixtures/15-reason-revelation-local-semantic.json",
+        "tests/routing-fixtures/16-reason-revelation-transmission-local.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "P4-maieutic",
+      "owner_file": "atomics/skill/references/procedures/P4-maieutic.md",
+      "class": "procedure",
+      "owner_sha256": "98cbc2031e75ab00906f215a67fc1413bf620ba0d5832a48724a4cac88f6a389",
+      "owner_bytes_read": 7203,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/08-grief-primary-evil.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/24-honest-shubhah-evidence.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "P5-already-believing",
+      "owner_file": "atomics/skill/references/procedures/P5-already-believing.md",
+      "class": "procedure",
+      "owner_sha256": "81da03f804c939b8e210684714a5d726fedd6f5bc880a54eef925ed7a8c634b7",
+      "owner_bytes_read": 8302,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "P6-universal-aqidah-principle",
+      "owner_file": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md",
+      "class": "procedure",
+      "owner_sha256": "2b5945b85197c069ae3fa4c3c07a5070c8297a93a005e34ca92d8de0928d4776",
+      "owner_bytes_read": 13905,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "P7-restoration-stops",
+      "owner_file": "atomics/skill/references/procedures/P7-restoration-stops.md",
+      "class": "procedure",
+      "owner_sha256": "e01f9164965d4b1a5ebd3f801ccc073681cdbb559459fb5e0eefc881a14627ca",
+      "owner_bytes_read": 17436,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/08-grief-primary-evil.json",
+        "tests/routing-fixtures/09-thin-basis-ambiguous.json",
+        "tests/routing-fixtures/12-grief-primary-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/26-identity-performance-dont-care.json",
+        "tests/routing-fixtures/27-trauma-moral-objection-hold.json",
+        "tests/routing-fixtures/39-pm-proof-denominator-narrowing.json",
+        "tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json",
+        "tests/routing-fixtures/46-dw-shubhah-wiswas-split.json",
+        "tests/routing-fixtures/47-dw-overcomplexity-deformation.json",
+        "tests/routing-fixtures/48-dw-content-escalation-stop.json",
+        "tests/routing-fixtures/49-dw-bounded-reassurance-hold.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/01-heart-register-hold.json",
+        "tests/register-formalism-bridge-fixtures/05-kappa-deltakappa-reread-partial.json",
+        "tests/register-formalism-bridge-fixtures/06-terminal-collapse-restoration.json",
+        "tests/register-formalism-bridge-fixtures/11-held-frame-ambiguity.json"
+      ],
+      "checker_hits": [
+        "tools/check_framework_pipeline.py",
+        "tools/check_recursive_traversal_governance.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "V1-diagnostic",
+      "owner_file": "atomics/skill/references/techniques/V1-diagnostic.md",
+      "class": "technique",
+      "owner_sha256": "314501a4f696da36d36aea211b7edd047aa3884b772a779c2a0becb592102798",
+      "owner_bytes_read": 5951,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json",
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/09-thin-basis-ambiguous.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V10-transmission-content-vetting",
+      "owner_file": "atomics/skill/references/techniques/V10-transmission-content-vetting.md",
+      "class": "technique",
+      "owner_sha256": "39bdd62b76ae899c7ffb7decf020f75b4d7350a4c4b5a038476379be18dedc0d",
+      "owner_bytes_read": 15815,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PASS",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/05-revelation-transmission.json",
+        "tests/routing-fixtures/06-hadith-authentication.json",
+        "tests/routing-fixtures/16-reason-revelation-transmission-local.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json"
+      ],
+      "checker_hits": [
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Low",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "state Delta effect"
+    },
+    {
+      "id": "V11-taqlid-transition",
+      "owner_file": "atomics/skill/references/techniques/V11-taqlid-transition.md",
+      "class": "technique",
+      "owner_sha256": "33012df64d3c2a1505ef2e067f1768204179ea6606c63ecb0003e5b89e8c447a",
+      "owner_bytes_read": 8604,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V12-tamanuc-exhaustion",
+      "owner_file": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md",
+      "class": "technique",
+      "owner_sha256": "20087f6858da806f70259b0667d985817fbc3e2410232b67f3446b588423a4cc",
+      "owner_bytes_read": 14351,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PARTIAL",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "PARTIAL",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [
+        "tools/check_recursive_traversal_governance.py",
+        "tools/check_render_modes.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V2-reconstituting-reason",
+      "owner_file": "atomics/skill/references/techniques/V2-reconstituting-reason.md",
+      "class": "technique",
+      "owner_sha256": "3318dc9dd58329d0825467b4542e0f49a45de967a6c59a49b3297db9d2500a95",
+      "owner_bytes_read": 6679,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json",
+        "tests/routing-fixtures/03-naturalist-causal-closure.json",
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json",
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json",
+        "tests/routing-fixtures/14-reason-revelation-global-tribunal.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/20-tawil-philosophical-override.json",
+        "tests/routing-fixtures/25-inherited-scientism-evidence.json",
+        "tests/routing-fixtures/28-signs-science-false-cause.json",
+        "tests/routing-fixtures/32-meta-noetic-control-surface.json",
+        "tests/routing-fixtures/38-pm-proof-family-ambiguous-route.json",
+        "tests/routing-fixtures/39-pm-proof-denominator-narrowing.json",
+        "tests/routing-fixtures/40-pm-huduth-contingency-route.json",
+        "tests/routing-fixtures/41-pm-proof-overreach-tool-tribunal.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json",
+        "tests/register-formalism-bridge-fixtures/04-mu-carrier-burden-selection.json"
+      ],
+      "checker_hits": [
+        "tools/check_level3_data_shapes.py",
+        "tools/check_smoke_artifacts.py"
+      ],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "V3-regress-dissolution",
+      "owner_file": "atomics/skill/references/techniques/V3-regress-dissolution.md",
+      "class": "technique",
+      "owner_sha256": "c978c2f08acc3390a13b7fcc2047b236cc8cb7c72d9ba41879cc6973838f8001",
+      "owner_bytes_read": 2501,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PARTIAL",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "V4-contamination-identification",
+      "owner_file": "atomics/skill/references/techniques/V4-contamination-identification.md",
+      "class": "technique",
+      "owner_sha256": "95cbd0b82e66659354f79bd2b557978b23c3d4b95089c6f67b205950dc49bfb5",
+      "owner_bytes_read": 1932,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V5-directing-attention-signs",
+      "owner_file": "atomics/skill/references/techniques/V5-directing-attention-signs.md",
+      "class": "technique",
+      "owner_sha256": "06139c5a66ebe017e53bad23401ce6124c4ca4422439ec86c192fab3d9f62620",
+      "owner_bytes_read": 5169,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/11-secular-moral-protest-hiddenness-imported-criterion.json",
+        "tests/routing-fixtures/25-inherited-scientism-evidence.json",
+        "tests/routing-fixtures/28-signs-science-false-cause.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/02-xi-warrant-owner-selection.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V6-convergence",
+      "owner_file": "atomics/skill/references/techniques/V6-convergence.md",
+      "class": "technique",
+      "owner_sha256": "037af3a148af5edf27528dd567307d3fa4d9c04d875cc330e5d1cbd205955414",
+      "owner_bytes_read": 2844,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "MISSING"
+      },
+      "direct_fixtures": [],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-FIXTURE-GAP",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: fixture coverage uneven; Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect; add structural fixture or checker assertion"
+    },
+    {
+      "id": "V7-taqlid-check",
+      "owner_file": "atomics/skill/references/techniques/V7-taqlid-check.md",
+      "class": "technique",
+      "owner_sha256": "ad2a7d0fb5fd3fb931d59c08775ec41ce82c4620fd3b085450d2c072b156a2e4",
+      "owner_bytes_read": 2526,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/02-naturalist-evidence-objection.json",
+        "tests/routing-fixtures/13-muslim-internal-authority-fatigue-hiddenness-vocabulary-minimal-pair.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V8-bila-kayf-anchor",
+      "owner_file": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md",
+      "class": "technique",
+      "owner_sha256": "6ed1dde77e8c377a9d7efb78c5f0ad7204aa889602672b34e10fd2a3d268e433",
+      "owner_bytes_read": 7068,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "MISSING",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/04-trinity-person-multiplicity.json",
+        "tests/routing-fixtures/10-complex-perfection-revelation.json",
+        "tests/routing-fixtures/15-reason-revelation-local-semantic.json",
+        "tests/routing-fixtures/17-reason-revelation-speculative-perfection.json",
+        "tests/routing-fixtures/19-tawil-tafsir-bayan.json",
+        "tests/routing-fixtures/20-tawil-philosophical-override.json",
+        "tests/routing-fixtures/21-loaded-body-direction-term.json",
+        "tests/routing-fixtures/22-composition-dependence-scope.json",
+        "tests/routing-fixtures/23-human-entailment-attribution.json",
+        "tests/routing-fixtures/29-frame-alias-nat-normalization.json",
+        "tests/routing-fixtures/31-cross-frame-verbal-agreement.json",
+        "tests/routing-fixtures/34-m9-semantic-reception-label-stripped.json",
+        "tests/routing-fixtures/35-m9-loaded-label-ontology-label-stripped.json",
+        "tests/routing-fixtures/36-m9-creaturely-modality-label-stripped.json",
+        "tests/routing-fixtures/37-m9-zahir-majaz-label-stripped.json",
+        "tests/routing-fixtures/50-da-action-actor-effect.json",
+        "tests/routing-fixtures/51-da-purpose-without-need.json",
+        "tests/routing-fixtures/52-ds-speech-source-articulation.json",
+        "tests/routing-fixtures/53-hk-huduth-khalq-split.json"
+      ],
+      "indirect_fixtures": [
+        "tests/register-formalism-bridge-fixtures/03-omega-predication-owner-selection.json"
+      ],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "V9-necessary-knowledge-priority",
+      "owner_file": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md",
+      "class": "technique",
+      "owner_sha256": "a45d6b69dc4fe9af00164958e2b8f4f74c4fced4dbf068d03231e44e73e308c0",
+      "owner_bytes_read": 4005,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "MISSING",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "MISSING",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/07-kalamic-maturidi-evidentialist.json",
+        "tests/routing-fixtures/24-honest-shubhah-evidence.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NEGATIVE-CONSTRAINT-MISSING",
+        "TTP-NLA-TRACE-MISSING",
+        "TTP-REREAD-MISSING",
+        "TTP-SCALAR-COLLAPSE-RISK"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "add post-Delta field-diagnostic compatibility note; bind exit to R(H,Delta) reread; state Delta effect"
+    },
+    {
+      "id": "heuristics",
+      "owner_file": "atomics/skill/references/techniques/heuristics.md",
+      "class": "technique",
+      "owner_sha256": "346e465f6fb8bc53d7ddfd5bc5649258d3cc391c069f511c5984528473bbc683",
+      "owner_bytes_read": 10551,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "MISSING",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/routing-fixtures/01-glossary-fitrah.json"
+      ],
+      "indirect_fixtures": [],
+      "checker_hits": [],
+      "defect_classes": [
+        "TTP-DELTA-EFFECT-MISSING",
+        "TTP-NABLA-AWARENESS-MISSING",
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Mura: post-Delta field diagnostics implicit/global",
+      "status": "PASS",
+      "priority": "P2",
+      "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    }
+  ],
+  "safe_patches_made": [
+    {
+      "path": "tools/check_ttp_operator_contracts.py",
+      "kind": "baseline checker",
+      "scope": "catalogue owner resolution, frontmatter identity, catalogue registration, audit JSON parity, field-target language, and forbidden operator claims",
+      "strict_full_contract_gate": false,
+      "reason": "full runtime-operator contract is uneven and requires phased owner remediation before strict gating"
+    }
+  ]
+}

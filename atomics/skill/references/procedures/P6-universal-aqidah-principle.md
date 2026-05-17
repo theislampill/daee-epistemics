@@ -21,6 +21,20 @@ catalogue_registered: true
 
 # P6 - The Universal ʿAqīdah Principle
 
+## Runtime operator contract
+
+- Activation: interlocutor claims no religion, no worldview, no ʿaqīdah.
+- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P6-universal-aqidah-principle`; activation cue: interlocutor claims no religion, no worldview, no ʿaqīdah.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
+- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (1); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **For:** Interlocutors who claim to have no religion, no worldview, no ʿaqīdah; or who
 assert "there is no righteous guidance"; or who present their skepticism as a neutral
 non-position. This procedure establishes that the interlocutor has a position before

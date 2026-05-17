@@ -35,6 +35,20 @@ operator_pack_eligible: true
 
 # P4 — The Socratic-Maieutic Procedure
 
+## Runtime operator contract
+
+- Activation: interlocutor in inkār mode — qalb has already registered what the tongue denies.
+- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P4-maieutic`; activation cue: interlocutor in inkār mode — qalb has already registered what the tongue denies.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
+- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
+- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`, `recursive-traversal-permitted`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
+- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Fixture/checker: Direct routing fixtures cover this owner (5); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
+
+
 **For:** Interlocutors in inkār mode — where the qalb has already registered what the
 tongue denies. The most appropriate procedure when there is reason to believe the recognition
 is present but suppressed.
