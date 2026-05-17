@@ -42,7 +42,8 @@ intermediate.
 | SHA256 | `532C47E100607627006C214FC2F43BD36F4C351A4803A489E023184601AEEE37` |
 | Size | `584569` bytes |
 | Entries | `20` |
-| Package source commit | `676396e0edc04103d603c9a68ecbc6f3d4e30356` |
+| Notation-surface gate commit | `676396e0edc04103d603c9a68ecbc6f3d4e30356` |
+| Source commit authority | Uploaded provenance JSON records the exact source commit used for the release asset. |
 | Worktree state | Public v0.4.1.0 release asset/provenance refreshed after field-operator notation-surface correction |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
