@@ -54,8 +54,10 @@ def check(path: Path) -> list[str]:
     for label, pattern in REQUIRED_PATTERNS:
         if not pattern.search(text):
             errors.append(f"{path}: missing {label}")
-    field_count = len(re.findall(r"(?is)Field diagnostics\s*:.*?(?:∇·|del-dot).*?(?:∇×|del-cross)", text))
-    r_count = len(re.findall(r"R\(H,(?:Δ|Delta)\)", text))
+    field_line = re.compile(r"(?i)Field diagnostics\s*:.*?(?:∇·|del-dot).*?(?:∇×|del-cross)")
+    reread_line = re.compile(r"R\(H,(?:Δ|Delta)\)")
+    field_count = sum(1 for line in text.splitlines() if field_line.search(line))
+    r_count = sum(1 for line in text.splitlines() if reread_line.search(line))
     if r_count > 1 and field_count < r_count:
         errors.append(
             f"{path}: field diagnostics not repeated for each R(H,Δ)/R(H,Delta) "
