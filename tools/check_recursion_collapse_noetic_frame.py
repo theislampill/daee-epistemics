@@ -11,7 +11,10 @@ from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 ROOT_REQUIRED = [
     "## EXECUTION SPINE",
-    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ)",
+    "Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE",
+    "Plain `∇` orders eligible release pressure under IR/V1/catalogue gates",
+    "Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)`",
+    "`𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state",
     "Top-salient invariants",
     "recursive-state-transitions.md §Runtime Notation / Meta-Noetic",
     "Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB",
@@ -26,7 +29,10 @@ ROOT_REQUIRED = [
 OWNER_REQUIRED = [
     "## Runtime Notation / Meta-Noetic Memetic Compression Layer",
     "operative compression for existing runtime behavior, not decorative formalism",
-    "Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ)",
+    "Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE",
+    "Plain `∇` is the route-gradient read over the live field",
+    "LoopBreak(∇×T)",
+    "Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition",
     "sᵢ != Bᵢ",
     "Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB",
     "σ != operative warrant",

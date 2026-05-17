@@ -172,12 +172,15 @@ Canonical execution, using the notation owned by
 Memetic Compression Layer`:
 
 ```text
-Input -> IR(N,m,τ,σ) -> B -> {s1...sn} -> Land(B) -> Δ/field diagnostics -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 Top-salient invariants:
 - `sᵢ != Bᵢ`: submoves are not burden-cycles.
 - A burden-cycle begins only after the current burden lands.
+- Plain `∇` orders eligible release pressure under IR/V1/catalogue gates; it does not bypass owner routing or replace `Δ`.
+- Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
+- `𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state, not checklist exhaustion or guaranteed interlocutor uptake.
 - `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 - Active TTP/operator submoves remain visible under Layer B: each materially active FPD, M1/M1P,
   M8, M9, V2, P1/P7, transmission/testimony, predication, register-hold, or family-local
