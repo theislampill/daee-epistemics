@@ -1076,6 +1076,93 @@ The case is closed.
 """,
         "R(H,Δ) without target-explicit field diagnostics",
     ),
+    "multi_burden_closure_without_literal_witness_surfaces": (
+        """## Burden-Cycle 1
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: predicate inflation
+- reason-category: 3
+- concealment: clear
+- deformation: unstable predicate
+- DO-orient: mixed
+- live noetic burden: B1 predicate correction
+- current bounded operator: definition discipline
+- held: B2 held pending B1
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release B1 first
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports an unstable predicate.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is predicate instability.
+##### Bounded Response / operative submoves
+Operator: definition discipline.
+Target: predicate. Operation: distinguish senses. Result: B1 lands.
+##### TTP/operator trace
+Trace: definition discipline.
+### State/noetic re-read
+- What changed: B1 landed and B2 became eligible.
+- Cleared: B1
+- Remaining input-anchored burdens: B2
+- Held routes rechecked: B2 released
+- Field diagnostics: ∇·B: positive over B2; ∇×κ: null.
+- Release status: continue.
+
+## Burden-Cycle 2
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: lexical transfer
+- reason-category: 3
+- concealment: clear
+- deformation: lexical transfer
+- DO-orient: mixed
+- live noetic burden: B2 lexical correction
+- current bounded operator: M9
+- held: none
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release B2
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- Lexical overlap is treated as identity.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is lexical transfer.
+##### Bounded Response / operative submoves
+Operator: M9.
+Target: lexical claim. Operation: separate predicates. Result: B2 lands.
+##### TTP/operator trace
+Trace: M9.
+### State/noetic re-read
+- What changed: B2 landed.
+- Cleared: all live burdens
+- Remaining input-anchored burdens: none
+- Held routes rechecked: none
+- Field diagnostics: ∇·B: neutral; ∇×κ: null.
+- Release status: closed; no same-input eligible burden remains; R(H,Δ): COMPLETE
+
+### Closure audit
+- N frames: selected operative frame
+- Registers: κ bounded
+- burden graph: B1 -> B2
+- Operator match: B1 -> definition discipline; B2 -> M9
+- Field checks: ∇·B neutral; ∇×κ null
+- `𝒞(Ψᴺ)`: positive
+- `T_lang: Ψᴺ ⇢ Ψᴵ`: coupling attempt only
+
+### Restorative Response
+The response preserves what landed.
+### Closing Formulation
+The case is closed.
+""",
+        "multi-burden closure without ∇ route",
+    ),
     "literal_governance_label": (
         """### Layer A - Compact DSL/IR header
 - read status: dominant
@@ -2216,6 +2303,10 @@ CLOSURE_COMPLETE_RE = re.compile(
 )
 CLOSURE_FIELD_RE = re.compile(r"𝒞\(Ψᴺ\)")
 T_LANG_RE = re.compile(r"T_lang:\s*Ψᴺ\s*⇢\s*Ψᴵ")
+ROUTE_GRADIENT_DECISION_RE = re.compile(r"∇\s*route\s*:", re.I)
+LOOPBREAK_STATUS_RE = re.compile(r"(?im)^\s*-?\s*LoopBreak\s*:")
+CLOSURE_WITNESS_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
+BURDEN_DEPENDENCY_GRAPH_RE = re.compile(r"(?im)^\s*-?\s*Burden dependency graph\s*:")
 TARGET_EXPLICIT_FIELD_CHECK_RE = re.compile(
     r"(?is)(?:Field diagnostics:|Field checks:|R\(H,(?:Δ|Delta)\):).*?"
     r"(?:∇·|del-dot).*?(?:∇×|del-cross)"
@@ -2449,6 +2540,14 @@ def render_shape_violations(text: str) -> list[str]:
         CLOSURE_COMPLETE_RE.search(text)
     )
     if multi_burden_closure:
+        if not ROUTE_GRADIENT_DECISION_RE.search(text):
+            violations.append("multi-burden closure without ∇ route")
+        if not LOOPBREAK_STATUS_RE.search(text):
+            violations.append("multi-burden closure without LoopBreak status")
+        if not CLOSURE_WITNESS_RE.search(text):
+            violations.append("multi-burden closure without Closure/Reconstruction Witness")
+        if not BURDEN_DEPENDENCY_GRAPH_RE.search(text):
+            violations.append("multi-burden closure without Burden dependency graph")
         if not CLOSURE_FIELD_RE.search(text):
             violations.append("closure without 𝒞(Ψᴺ)")
         if not T_LANG_RE.search(text):

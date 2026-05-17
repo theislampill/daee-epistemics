@@ -216,17 +216,20 @@ Top-salient invariants:
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
     R(H,Δ): <held/released/next-live-burden decision plus target-explicit ∇· / ∇× field check>
   ```
+  Hard/multi-burden default may not render bare `R(H,Delta)`: each RECURSE/PARTIAL/COMPLETE
+  reread prints `Field diagnostics:` and `LoopBreak:` with target-explicit `∇·`/`∇×`;
+  null curl = `LoopBreak: not needed`.
   Post-burden continuation gate: after every `R(H,Delta)`, if the state re-read names a
   remaining input-anchored burden and no hold, register, semantic, thin-basis, source-use,
   or limit gate blocks it, do not emit Restorative Response or Closing Formulation yet.
-  Re-enter a compact Layer A for `Burden N+1` before Layer B continues. That Layer A is a
-  state re-read, not a global reset: name the current live noetic burden, active
-  deformation/pattern signals, current bounded operator, held/deferred routes, and
-  gate/release decision. `R(H,Delta)` is a state-transition judgment, not a formatting
+  Re-enter compact Layer A for `Burden N+1` before Layer B. It is a state re-read, not reset:
+  name current live burden, active deformation/pattern, bounded operator, held/deferred routes, and
+  gate/release decision. If multiple live/held burdens or routes exist, gate/release includes
+  pre-release `∇ route:` with dependency-reduction reason. `R(H,Delta)` is a state-transition judgment, not a formatting
   marker: continue only if the next burden remains input-anchored and licensed; otherwise
-  HOLD, SKIP, PARTIAL, bounded-reroute, or close as the refreshed state requires. Continue with the next `Burden N+1`. Restorative Response and Closing Formulation are
-  final-only for the current answer; if limits prevent the next burden, emit `PARTIAL`
-  with the next live burden instead of closing.
+  HOLD, SKIP, PARTIAL, reroute, or close as refreshed state requires. Continue with `Burden N+1`;
+  Restorative Response/Closing Formulation are final-only. If limits block next burden, emit
+  `PARTIAL` with the next live burden.
   Input-anchored means any explicit claim, supporting premise, contrast, public/private
   partition, source-status rule, translation demand, or moral/epistemic criterion already
   present in the user's input. Do not reclassify those as future questions merely because
@@ -237,10 +240,10 @@ Top-salient invariants:
   `AtomicB` may use one submove only when the burden has one target, one operation,
   and no distinct internal predicates, criteria, source-status forks, or release gates.
 - Final closure for multi-burden, register-active, named-worldview, source-authentication,
-  mixed-field, authority-frame, or hard compound cases requires a compact
-  Closure/Reconstruction Witness: selected/held `N`, operative registers, burden dependency
-  graph, owner/TTP match, target-explicit `∇·` / `∇×` results, `𝒞(Ψᴺ)` positive closure-field
-  condition, and `T_lang: Ψᴺ ⇢ Ψᴵ` coupling boundary. Dependency graphs use compact edge
+  mixed-field, authority-frame, or hard compound cases requires literal
+  `Closure/Reconstruction Witness` (not `Closure audit`) with `Burden dependency graph:`,
+  selected/held `N`, registers, owner/TTP match, e.g. `∇·B`/`∇×κ`, `𝒞(Ψᴺ)`, `T_lang`.
+  Graphs use edge
   notation such as `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`.
 - Hard-output miniature, structure only:
   ```text

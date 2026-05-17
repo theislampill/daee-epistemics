@@ -171,8 +171,10 @@ Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,
   pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
   current bounded operator, held, source-status/noetic-frame, gate/release decision with
-  pre-release `∇ route: ...` when route ordering selects the burden, decisive missing
-  differentiator when required)
+  pre-release `∇ route: ...` when route ordering selects the burden; when more than one
+  live/held burden or dependency route is present, the `∇ route:` clause is mandatory and explains
+  highest dependency-reduction yield over held alternatives, decisive missing differentiator when
+  required)
 - Layer B - bounded governed response (Hidden Premises, local Core Formulation,
   Bounded Response / operative submoves, and TTP/operator trace when a named operator
   does runtime work; may contain multiple operative submoves when they all serve the
@@ -181,22 +183,25 @@ Default multi-burden execution uses this repeated burden-cycle shape:
 - State/noetic re-read - compact (burden landed, remaining input-anchored burdens,
   held routes rechecked, target-explicit `∇·` / `∇×` field diagnostics including null checks
   when they license RECURSE/PARTIAL/COMPLETE, LoopBreak status, next live burden, release status
-  in prose)
+  in prose). Hard/multi-burden default output may not render a bare `R(H,Delta)` continuation
+  line: it must include literal `Field diagnostics:` and `LoopBreak:` lines adjacent to the reread.
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
-- Named-worldview / source-authentication / mixed-field closure audit - before any final
-  Restorative Response or Closing Formulation in these field classes, visibly account for
+- Named-worldview / source-authentication / mixed-field closure witness - before any final
+  Restorative Response or Closing Formulation in these field classes, visibly render literal
+  `Closure/Reconstruction Witness` and account for
   candidate/held N frames, selected primary N, live registers, active or cleared owner/TTP child
-  modes, Delta-nB, Delta-kappa, target-explicit `∇·` / `∇×` results, compact burden dependency
-  graph such as `B1 -> B2, B3` or `B1 ∥ B2 -> B3`, and remaining kappa / H status. If any live
-  dependency remains unresolved, unrendered, or merely identified, write PARTIAL or continue under
-  RECURSE.
-- Final hard-case closure audit - in hard compound/source-request cases, the last
+  modes, Delta-nB, Delta-kappa, target-explicit `∇·` / `∇×` results, literal `Burden dependency
+  graph:` with compact edges such as `B1 -> B2, B3` or `B1 ∥ B2 -> B3`, and remaining kappa / H
+  status. If any live dependency remains unresolved, unrendered, or merely identified, write
+  PARTIAL or continue under RECURSE.
+- Final hard-case closure witness - in hard compound/source-request cases, the last
   state/noetic re-read before any Restorative Response or Closing Formulation must visibly
-  include `closure audit:` and account for FPD, M1/M1-P, M8, M9, P1/P7, and source functions
-  as done, cleared, held, or PARTIAL, then include compact `𝒞(Ψᴺ)` closure-field licensing and
-  `T_lang: Ψᴺ ⇢ Ψᴵ` coupling-boundary statement. If any live item is missing, do not close; write
-  literal PARTIAL and name the missing burden/TTP/source function.
+  include literal `Closure/Reconstruction Witness` and account for FPD, M1/M1-P, M8, M9, P1/P7,
+  and source functions as done, cleared, held, or PARTIAL, then include compact `𝒞(Ψᴺ)`
+  closure-field licensing and `T_lang: Ψᴺ ⇢ Ψᴵ` coupling-boundary statement. Do not rename the
+  block `Closure audit`. If any live item is missing, do not close; write literal PARTIAL and
+  name the missing burden/TTP/source function.
 - Restorative Response - required once after the final state/noetic re-read
 - Closing Formulation - required once at the end after final Restorative Response
 

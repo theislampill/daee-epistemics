@@ -394,7 +394,9 @@ shown their owner IDs, targets, operations, and results.
 ### Closure/Reconstruction Witness
 [Required before final Restorative Response when closing a multi-burden, register-active,
 named-worldview, source-authentication, mixed-field, authority-frame, or hard compound case.
-Compact, not a full ledger.]
+Compact, not a full ledger. The heading and labels are literal default governed output; do not
+rename this block `Closure audit`, do not shorten `Burden dependency graph:` to `burden graph`,
+and do not move `𝒞(Ψᴺ)` / `T_lang: Ψᴺ ⇢ Ψᴵ` into prose-only closure.]
 - N frames:                     [selected primary N and held/candidate N with reason]
 - Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
 - Burden dependency graph:      [compact edges, e.g. `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`]

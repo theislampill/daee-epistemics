@@ -108,7 +108,11 @@ held alternatives, or dependency pressure selects one burden over another. After
 `R(H,Δ)` prints a target-explicit field-diagnostic witness:
 `∇·<target>: <positive|bounded|neutral|null>; ∇×<target>: <nonzero|resolved|held|null>`.
 Null checks are visible when they license RECURSE, PARTIAL, or COMPLETE; they are suppressed only
-when no burden has landed or no explicit field target/control effect exists. Use `R(H,Δ)` as the
+when no burden has landed or no explicit field target/control effect exists. In hard or
+multi-burden default output, a bare `R(H,Δ)` / `R(H,Delta)` continuation line is invalid unless
+the same state re-read also prints literal `Field diagnostics:` and `LoopBreak:` witness lines.
+`LoopBreak:` prints `not needed` when `∇×` is null, or the licensed target loop, grounding source,
+burden/submove, `Δ` effect, and post-break reread when nonzero. Use `R(H,Δ)` as the
 formal notation and `R(H,Delta)` only as the ASCII fallback. The expanded formal reread is
 `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
 `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. `∇·` and `∇×` remain forbidden as
@@ -182,6 +186,9 @@ kappa / H status. Case-shaped dependencies appear only where live. The compact d
 uses readable edge notation, e.g. `B1 -> B2, B3, B4, B5` for a root burden whose landing licenses
 serial dependents, or `B1 ∥ B2 -> B3` where B3 depends on both parallel landed burdens. If that
 accounting cannot be rendered, mark PARTIAL or RECURSE instead of COMPLETE.
+The visible default section heading for this final accounting is literal
+`Closure/Reconstruction Witness`; do not replace it with `Closure audit` or collapse
+`Burden dependency graph:` into a shorter `burden graph` label.
 
 Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named only after the
 burden-state delta has landed and reread has decided there is no unhandled live distortion
