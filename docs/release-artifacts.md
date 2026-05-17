@@ -39,15 +39,15 @@ intermediate.
 | Package filename | `daee-epistemics-v0.4.1.0.skill` |
 | Local zip build | `build/daee-epistemics-v0.4.1.0.skill.zip` |
 | Local release asset copy | `build/daee-epistemics-v0.4.1.0.skill` |
-| SHA256 | `184D370534DE9E6FFC10C736CDD5C96C15D28761C5ED86156228930F95B4C59E` |
-| Size | `557920` bytes |
+| SHA256 | `532C47E100607627006C214FC2F43BD36F4C351A4803A489E023184601AEEE37` |
+| Size | `584569` bytes |
 | Entries | `20` |
-| Source commit | `517a9f133b6bc11f7f9b4dc1160f461c58b9e94e` |
-| Worktree state | Public v0.4.1.0 release asset/provenance replaced after final corrections |
+| Package source commit | `676396e0edc04103d603c9a68ecbc6f3d4e30356` |
+| Worktree state | Public v0.4.1.0 release asset/provenance refreshed after field-operator notation-surface correction |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | Corrected: `atomics/skill/**` tracked; `skill/**` ignored/generated |
-| Generated runtime manifest SHA256 | `2302844820E7E9F0812CF79A83ECCBC200FF04F743589463F6799EB2877BE817` |
+| Generated runtime manifest SHA256 | `F6AA88138665781D5AEC9E429BFB84D7F6430B371F90481C370D2AF11F9A1381` |
 | GitHub Release visibility | Public v0.4.1.0 release asset/provenance replaced; no `.skill.zip` asset uploaded |
 | Provenance file | Published asset: `daee-epistemics-v0.4.1.0.provenance.json` |
 
