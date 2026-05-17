@@ -51,9 +51,9 @@ Print exactly one value for each field; never print the choice list or combine v
 The banner must distinguish the user's task from an external source request: `/daee-epistemics
 refute:` renders `user task: REFUTE` even when `external source request: NONE EXPLICIT`.
 Default release status is governed, not shallow or governance-hidden. When control-relevant,
-it must include the burden-cycle, operative submove, optional route-gradient pressure `∇`,
-`Δκ`, target-explicit `∇·` / `∇×` state, any licensed `LoopBreak(∇×T)`, `R(H,Δ)`,
-closure-field status, and PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure.
+it must include the burden-cycle, operative submove, pre-release route-gradient pressure `∇` in
+Layer A's gate/release decision, `Δκ`, target-explicit `∇·` / `∇×` state in `R(H,Δ)`, any
+licensed `LoopBreak(∇×T)`, closure-field status, and PARTIAL / RECURSE / COMPLETE decision needed to prevent false closure.
 It should still avoid long explanatory formalism unless that explanation is needed for the
 user-requested audit or formalism task.
 Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or depth
@@ -110,8 +110,8 @@ be the primary public notation unless the output is explicitly a checker/dev-har
 Expanded formalism render boundary: full algebraic exposition belongs by default to
 theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
 print short formal governance markers when they are control-relevant to the current execution:
-route-gradient `∇` markers such as `∇ route: B2 pressure highest`, `ΔⁿB`, `Δκ`,
-target-explicit `∇·` / `∇×` markers such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
+route-gradient `∇` markers in Layer A gate/release decision such as `∇ route: B2 pressure highest — B2 has highest dependency-reduction yield over held B3/B4`, `ΔⁿB`, `Δκ`,
+target-explicit `∇·` / `∇×` markers in `R(H,Δ)` such as `∇·κ`, `∇×κ`, `∇·B`, or `∇×ξ`,
 `LoopBreak(∇×T)` when a loop-breaker is licensed, `R(H,Δ)`, `R(H,Delta)`, PARTIAL,
 RECURSE, or COMPLETE. Use `R(H,Δ)` as the formal notation and `R(H,Delta)` only as the
 ASCII fallback.
@@ -383,10 +383,25 @@ shown their owner IDs, targets, operations, and results.
 
 ### State/noetic re-read
 - Cleared:                      [what this live burden cleared]
+- ∇ route:                      [why this burden was selected before release, or why the next selected burden has highest dependency-reduction yield over held alternatives; omit only when no route ordering was control-relevant]
 - Remaining input-anchored burdens: [enumerated from original input, not a topic list]
 - Held routes rechecked:        [result after this pass]
+- Field diagnostics:            [target-explicit `∇·` / `∇×` status; include null when it licenses closure, RECURSE, or PARTIAL]
+- LoopBreak:                    [not needed / licensed with target + ground + Δ effect + reread / held with reason]
 - Next bounded pass:            [prose reason if another bounded pass is licensed]
 - Release status:               [prose closure/hold/partial/continuation status, plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant; no raw `Recursion decision:` field]
+
+### Closure/Reconstruction Witness
+[Required before final Restorative Response when closing a multi-burden, register-active,
+named-worldview, source-authentication, mixed-field, authority-frame, or hard compound case.
+Compact, not a full ledger.]
+- N frames:                     [selected primary N and held/candidate N with reason]
+- Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
+- Burden dependency graph:      [compact edges, e.g. `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`]
+- Operator match:               [each landed burden mapped to owner/TTP submoves]
+- Field checks:                 [`∇·<target>` and `∇×<target>` results, including null where closure depends on the check]
+- `𝒞(Ψᴺ)`:                     [positive closure-field condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
+- `T_lang: Ψᴺ ⇢ Ψᴵ`:           [final response is language-mediated coupling attempt, not soul access, guaranteed uptake, or control of guidance]
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]
@@ -1214,9 +1229,22 @@ Trace: M9 predication-mode work is already local in ¹B₁ and ¹B₂; this trac
 
 ### State/noetic re-read
 - Cleared: composition / dependence pressure dissolved through the lexical and category split.
+- ∇ route: this burden was selected because the composition-dependence hinge carried the highest
+  dependency-reduction yield; broader attribute exposition remained held.
 - Remaining input-anchored burdens: none in this prompt.
 - Held routes rechecked: full attribute exposition and source-comparison remain held.
+- Field diagnostics: ∇·B: neutral after category split; ∇×κ: null.
+- LoopBreak: not needed.
 - Release status: closed for this input; no same-input eligible burden remains after the category correction.
+
+### Closure/Reconstruction Witness
+- N frames: selected operative frame held to lexical/category discipline; source-comparison frame held.
+- Registers: Ω cleared for composition/dependence predicate; κ bounded; H contains only held exposition.
+- Burden dependency graph: B1 only.
+- Operator match: B1 -> M9 submoves ¹B₁/¹B₂.
+- Field checks: ∇·B neutral; ∇×κ null.
+- `𝒞(Ψᴺ)`: positive; burden landed, residual pressure bounded, no loop remains live.
+- `T_lang: Ψᴺ ⇢ Ψᴵ`: final wording is a coupling attempt toward the diagnosed objection field, not guaranteed uptake.
 
 ### Restorative Response
 The restored order is that real predication does not become dependency merely by being
@@ -1258,7 +1286,8 @@ who hides himself, condemns people to hell, and demands worship."
 
 #### Land(B) -> R(H,Delta)
 `Land(B)`: the imported tribunal no longer governs the case as an untested judge.
-`R(H,Delta)`: re-read the input. If accountability/hujjah, hiddenness/coercive guidance,
+`R(H,Delta)`: re-read the input. Field diagnostics: `∇·B` positive if downstream burdens remain;
+`∇×κ` null unless a circular dependency is still detected. If accountability/hujjah, hiddenness/coercive guidance,
 punishment/mercy/justice, source-worldview consequence, testimony, predication, grief/register,
 or family-local proof-method pressure remains as a distinct target/function/restoration vector,
 release the next burden-cycle, HOLD/PARTIAL it with reason, or mark a runtime limit. Keep it

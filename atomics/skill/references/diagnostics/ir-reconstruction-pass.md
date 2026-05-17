@@ -167,7 +167,12 @@ route and a final synthesis, it has not reconstructed the compound burden faithf
 
 ## Render Discipline
 
-Default public output should not print the reconstruction ledger. The visible answer may show the
-existing compact Layer A signal and case-specific `ⁿBᵢ -> Land(ⁿB) -> R(H,Delta)` work when needed.
-The reconstruction witness belongs in trace/verdict evidence unless the user explicitly requests
-diagnostic or audit render.
+Default public output must not print the full reconstruction ledger. It must, however, preserve a
+compact reconstruction witness at the existing control surfaces: Layer A route selection,
+burden-local `ⁿBᵢ -> owner-floor Target/Operation/Result -> Land(ⁿB)`, `R(H,Delta)` field
+diagnostics, and final closure. For any closing multi-burden, register-active, named-worldview,
+source-authentication, mixed-field, authority-frame, or hard compound case, the closure witness
+must be sufficient to replay the execution from output alone: selected/held `N`, operative
+register summary, burden dependency graph, owner/TTP match, target-explicit `∇·` / `∇×` results,
+`𝒞(Ψᴺ)` closure condition, and `T_lang: Ψᴺ ⇢ Ψᴵ` coupling boundary. This compact witness is not a
+route ledger, matched-module dump, or full Diagnostic IR printout.

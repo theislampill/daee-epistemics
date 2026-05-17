@@ -178,7 +178,10 @@ Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ 
 Top-salient invariants:
 - `sᵢ != Bᵢ`: submoves are not burden-cycles.
 - A burden-cycle begins only after the current burden lands.
-- Plain `∇` orders eligible release pressure under IR/V1/catalogue gates; it does not bypass owner routing or replace `Δ`.
+- Plain `∇` orders eligible release pressure under IR/V1/catalogue gates before burden release; in
+  default Layer A it appears inside the gate/release decision as `∇ route: Bn pressure highest`
+  with the dependency-reduction reason over held alternatives. It does not bypass owner routing
+  or replace `Δ`.
 - Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
 - `𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state, not checklist exhaustion or guaranteed interlocutor uptake.
 - `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
@@ -211,7 +214,7 @@ Top-salient invariants:
       Result: <changed claim-state>
     [continue until all materially necessary s are rendered]
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
-    R(H,Δ): <held/released/next-live-burden decision>
+    R(H,Δ): <held/released/next-live-burden decision plus target-explicit ∇· / ∇× field check>
   ```
   Post-burden continuation gate: after every `R(H,Delta)`, if the state re-read names a
   remaining input-anchored burden and no hold, register, semantic, thin-basis, source-use,
@@ -233,6 +236,12 @@ Top-salient invariants:
   a reason to RECURSE or mark PARTIAL, not a reason to close.
   `AtomicB` may use one submove only when the burden has one target, one operation,
   and no distinct internal predicates, criteria, source-status forks, or release gates.
+- Final closure for multi-burden, register-active, named-worldview, source-authentication,
+  mixed-field, authority-frame, or hard compound cases requires a compact
+  Closure/Reconstruction Witness: selected/held `N`, operative registers, burden dependency
+  graph, owner/TTP match, target-explicit `∇·` / `∇×` results, `𝒞(Ψᴺ)` positive closure-field
+  condition, and `T_lang: Ψᴺ ⇢ Ψᴵ` coupling boundary. Dependency graphs use compact edge
+  notation such as `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`.
 - Hard-output miniature, structure only:
   ```text
   Burden 1: imported moral tribunal

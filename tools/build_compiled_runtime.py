@@ -170,26 +170,32 @@ is not a license to omit the banner.
 Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,
   pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
-  current bounded operator, held, source-status/noetic-frame, gate/release decision,
-  decisive missing differentiator when required)
+  current bounded operator, held, source-status/noetic-frame, gate/release decision with
+  pre-release `∇ route: ...` when route ordering selects the burden, decisive missing
+  differentiator when required)
 - Layer B - bounded governed response (Hidden Premises, local Core Formulation,
   Bounded Response / operative submoves, and TTP/operator trace when a named operator
   does runtime work; may contain multiple operative submoves when they all serve the
   same live noetic burden; the released burden must be burden-complete before R,
   with materially necessary sub-burdens receiving matched TTP/operator treatment)
 - State/noetic re-read - compact (burden landed, remaining input-anchored burdens,
-  held routes rechecked, next live burden, release status in prose)
+  held routes rechecked, target-explicit `∇·` / `∇×` field diagnostics including null checks
+  when they license RECURSE/PARTIAL/COMPLETE, LoopBreak status, next live burden, release status
+  in prose)
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
 - Named-worldview / source-authentication / mixed-field closure audit - before any final
   Restorative Response or Closing Formulation in these field classes, visibly account for
   candidate/held N frames, selected primary N, live registers, active or cleared owner/TTP child
-  modes, Delta-nB, Delta-kappa, and remaining kappa / H status. If any live dependency remains
-  unresolved, unrendered, or merely identified, write PARTIAL or continue under RECURSE.
+  modes, Delta-nB, Delta-kappa, target-explicit `∇·` / `∇×` results, compact burden dependency
+  graph such as `B1 -> B2, B3` or `B1 ∥ B2 -> B3`, and remaining kappa / H status. If any live
+  dependency remains unresolved, unrendered, or merely identified, write PARTIAL or continue under
+  RECURSE.
 - Final hard-case closure audit - in hard compound/source-request cases, the last
   state/noetic re-read before any Restorative Response or Closing Formulation must visibly
   include `closure audit:` and account for FPD, M1/M1-P, M8, M9, P1/P7, and source functions
-  as done, cleared, held, or PARTIAL. If any live item is missing, do not close; write
+  as done, cleared, held, or PARTIAL, then include compact `𝒞(Ψᴺ)` closure-field licensing and
+  `T_lang: Ψᴺ ⇢ Ψᴵ` coupling-boundary statement. If any live item is missing, do not close; write
   literal PARTIAL and name the missing burden/TTP/source function.
 - Restorative Response - required once after the final state/noetic re-read
 - Closing Formulation - required once at the end after final Restorative Response
@@ -226,10 +232,11 @@ unrendered.
 
 For outputs that close, the closure audit must visibly account for the generalized algebraic
 control state in prose: candidate/held N frames, selected primary N, live registers, active or
-cleared owner/TTP child modes, Delta-nB, Delta-kappa, and remaining kappa / H status. The audit
-must remain case-shaped; dependencies appear only where structurally live. Do not mark COMPLETE
-unless the audit shows each live dependency executed, cleared, held with reason, or no longer
-structurally live.
+cleared owner/TTP child modes, Delta-nB, Delta-kappa, target-explicit `∇·` / `∇×` results,
+compact burden dependency graph, `𝒞(Ψᴺ)` positive closure-field condition, `T_lang: Ψᴺ ⇢ Ψᴵ`
+coupling boundary, and remaining kappa / H status. The audit must remain case-shaped;
+dependencies appear only where structurally live. Do not mark COMPLETE unless the audit shows
+each live dependency executed, cleared, held with reason, or no longer structurally live.
 
 Hard file-retained depth floor:
 Compact means no padding and no route dump; it does not mean short. In file-retained hard
@@ -438,6 +445,8 @@ Layer B — bounded governed response
 - TTP/operator trace when a named operator does runtime work
 
 State/noetic re-read
+
+Closure/Reconstruction Witness (when closing hard, multi-burden, register-active, or mixed-field cases)
 
 Next Burden (only while R licenses RECURSE)
 

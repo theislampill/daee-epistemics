@@ -74,10 +74,13 @@ distortion or newly eligible held route remains, choose RECURSE, HOLD, or PARTIA
 No premature STOP: do not close while an eligible live burden remains.
 
 Plain `∇` is the route-gradient read over eligible live pressure before the selected burden is
-released. It may explain why one route/burden has the highest expected diagnostic reduction or
-closure yield, but it remains constrained by Diagnostic IR, V1/routing precedence, owner catalogue
-eligibility, and held-material discipline. It does not bypass gates, prove truth/warrant, replace
-`Δ`, or turn multiple live candidate structures into one deterministic route.
+released. In default render it prints only as part of Layer A's gate/release decision, before
+Layer B releases the burden: `∇ route: Bn pressure highest — [dependency-reduction reason] over
+[held alternatives]`. It explains why the selected burden has the highest expected diagnostic
+reduction, closure yield, or dependency-clarification yield among currently eligible routes. It
+remains constrained by Diagnostic IR, V1/routing precedence, owner catalogue eligibility, and
+held-material discipline. It does not bypass gates, prove truth/warrant, replace `Δ`, or turn
+multiple live candidate structures into one deterministic route.
 
 > Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory noetic-field execution banner, compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
 
@@ -98,11 +101,16 @@ category, modality, or dependence release; `μ` may affect carrier/stabilizer ha
 material, `Land(B)`, or `R(H,Δ)`, do not print the symbol. `κ` is not a TODO list, and
 `ΔⁿB` is not a shortcut to a new burden-cycle.
 
-Default governed render is not compact in the sense of hiding governance. It must surface the
-burden-cycle, operative submove, `Δκ`, target-explicit `∇·` / `∇×` field diagnostics,
-`R(H,Δ)`, and PARTIAL / RECURSE / COMPLETE decision when those markers are control-relevant.
-Use `R(H,Δ)` as the formal notation and `R(H,Delta)` only as the ASCII fallback. The expanded
-formal reread is `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
+Default governed render is not compact in the sense of hiding governance. It must surface a
+compact witness wherever a field operator controls release, recursion, hold, partial, or closure.
+Layer A prints `∇ route: ...` in the gate/release decision whenever eligible burden ordering,
+held alternatives, or dependency pressure selects one burden over another. After every `Land(B)`,
+`R(H,Δ)` prints a target-explicit field-diagnostic witness:
+`∇·<target>: <positive|bounded|neutral|null>; ∇×<target>: <nonzero|resolved|held|null>`.
+Null checks are visible when they license RECURSE, PARTIAL, or COMPLETE; they are suppressed only
+when no burden has landed or no explicit field target/control effect exists. Use `R(H,Δ)` as the
+formal notation and `R(H,Delta)` only as the ASCII fallback. The expanded formal reread is
+`R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
 `R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. `∇·` and `∇×` remain forbidden as
 decorative proof of execution: they must have an explicit field target and be tied to the
 noetic/burden/dependency/register/route field, `κ/H`, dependency pressure, loop-breaking,
@@ -169,15 +177,18 @@ clear, integrate, discharge as duplicate/derivative, hold with reason, or mark P
 If the answer closes a multi-burden, register-active, named-worldview, source-authentication,
 mixed noetic-field, or authority-frame case, the closure audit must visibly account for
 candidate/held `N` frames, selected primary `N`, live registers, active or cleared owner/TTP
-child modes, `Delta-nB`, `Delta-kappa`, and remaining kappa / H status. Case-shaped
-dependencies appear only where live. If that accounting cannot be rendered, mark PARTIAL or
-RECURSE instead of COMPLETE.
+child modes, `Delta-nB`, `Delta-kappa`, target-explicit `∇·` / `∇×` results, and remaining
+kappa / H status. Case-shaped dependencies appear only where live. The compact dependency graph
+uses readable edge notation, e.g. `B1 -> B2, B3, B4, B5` for a root burden whose landing licenses
+serial dependents, or `B1 ∥ B2 -> B3` where B3 depends on both parallel landed burdens. If that
+accounting cannot be rendered, mark PARTIAL or RECURSE instead of COMPLETE.
 
-Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named in formalism,
-`:dsl`, or audit surfaces only after the burden-state delta has landed and reread has decided
-there is no unhandled live distortion requiring another pass. They never license a restoration
-paragraph before owner/TTP execution, visible closure audit, P1/P7 closure, and live M1/M1-P or
-M9 obligations have been satisfied or held/PARTIALed.
+Terminal release boundary: `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` may be named only after the
+burden-state delta has landed and reread has decided there is no unhandled live distortion
+requiring another pass. In default render, `𝒞(Ψᴺ)` appears as a compact closure marker when
+COMPLETE/STOP is licensed, because closure is a positive field configuration, not checklist
+exhaustion. It never licenses a restoration paragraph before owner/TTP execution, visible closure
+audit, P1/P7 closure, and live M1/M1-P or M9 obligations have been satisfied or held/PARTIALed.
 
 Positive closure-field condition: `𝒞(Ψᴺ)` means the agent execution field has reached a governed
 release configuration, not that a checklist is empty and not that the interlocutor has accepted
@@ -187,9 +198,12 @@ pressure requiring RECURSE/PARTIAL.
 
 Agent/interlocutor field boundary: the runtime operates in `Ψᴺ`, the agent execution field. It
 diagnoses an interlocutor field `Ψᴵ` only through discourse/profile/register/source-status
-evidence and releases through language-mediated coupling `T_lang: Ψᴺ ⇢ Ψᴵ`. Output may assess
-whether the coupling attempt is identity-preserving and non-deformative; it must not claim access
-to the interlocutor's soul, guaranteed uptake, or agent control of guidance.
+evidence and releases through language-mediated coupling `T_lang: Ψᴺ ⇢ Ψᴵ`. Final restorative
+boundary text must articulate this compactly when closure or final counsel is rendered: the
+released response is a language-mediated coupling attempt from the governed agent field toward the
+diagnosed interlocutor field. Output may assess whether the coupling attempt is
+identity-preserving and non-deformative; it must not claim access to the interlocutor's soul,
+guaranteed uptake, or agent control of guidance.
 
 For file-retained execution, the same release decision governs the file, not the final chat
 message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat

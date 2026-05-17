@@ -221,6 +221,16 @@ REQUIRED_TOKENS = [
     "Layer A - compact DSL/IR header",
     "Layer B - bounded governed response",
     "State/noetic re-read - compact",
+    "pre-release `∇ route: ...`",
+    "highest dependency-reduction yield",
+    "Field diagnostics:",
+    "LoopBreak:",
+    "Closure/Reconstruction Witness",
+    "Burden dependency graph",
+    "B1 -> B2, B3",
+    "B1 ∥ B2 -> B3",
+    "`𝒞(Ψᴺ)`",
+    "`T_lang: Ψᴺ ⇢ Ψᴵ`",
     "Current bounded operator",
     "Let me check",
     "I will produce governed prose",
@@ -582,6 +592,11 @@ DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
     "RECURSE",
     "COMPLETE",
     "control-relevant",
+    "dependency-reduction yield",
+    "target-explicit field-diagnostic witness",
+    "Closure/Reconstruction Witness",
+    "Burden dependency graph",
+    "B1 ∥ B2 -> B3",
 ]
 
 DEFAULT_FIELD_DIAGNOSTIC_MARKERS = [
@@ -708,6 +723,8 @@ FORMAL_MARKER_POSITIVE_SAMPLES = {
     "register_target": "Register field: ∇·♥ positive; ∇×ξ unresolved; R(H,Δ): HOLD.",
     "alias_target": "ASCII fallback: del-dot(kappa) positive; del-cross(xi) unresolved; R(H,Delta): RECURSE.",
     "route_gradient": "Route: ∇ pressure selects B2 after gates; Δ waits for burden landing.",
+    "route_gradient_gate": "Layer A gate/release decision: ∇ route: B2 pressure highest — highest dependency-reduction yield over held B3/B4.",
+    "null_field_check": "Field diagnostics: ∇·B: neutral; ∇×κ: null; R(H,Δ): COMPLETE.",
     "loop_break": "State: ∇×B nonzero; LoopBreak(∇×B) licensed; ΔⁿB lands; R(H,Δ): RECURSE.",
     "closure_field": "State: 𝒞(Ψᴺ) reached; ∇·κ negative; ∇×κ resolved; R(H,Δ): STOP.",
 }
@@ -804,6 +821,261 @@ DISPATCH_GATE_REQUIRED = [
 
 
 RENDER_SHAPE_BAD_OUTPUTS = {
+    "multi_burden_closure_without_closure_field": (
+        """## Burden-Cycle 1
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported tribunal
+- current bounded operator: imported criterion / moral tribunal test
+- held: B2 held pending B1
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B1 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports a moral criterion as tribunal.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement; the restoration vector is to test the tribunal.
+##### Bounded Response / operative submoves
+Operator: tribunal-detection.
+Target: imported tribunal. Operation: test whether the criterion has authority. Result: the tribunal cannot remain unexamined.
+##### TTP/operator trace
+Trace: tribunal-detection + FPD.
+### State/noetic re-read
+- What changed: B1 landed and B2 became eligible.
+- Cleared: imported tribunal
+- Remaining input-anchored burdens: B2
+- Held routes rechecked: B2 released
+- Field diagnostics: ∇·B: positive over B2; ∇×κ: null.
+- Release status: continue.
+
+## Burden-Cycle 2
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: scope inflation
+- DO-orient: mixed
+- live noetic burden: B2 scoped correction
+- current bounded operator: scope correction
+- held: none
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B2 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- Scope is inflated.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is scope inflation; the noetic pattern is a widened predicate; the restoration vector is scoped correction.
+##### Bounded Response / operative submoves
+Operator: definition discipline.
+Target: scoped claim. Operation: narrow the predicate. Result: scope is corrected.
+##### TTP/operator trace
+Trace: definition discipline.
+### State/noetic re-read
+- What changed: B2 landed.
+- Cleared: all live burdens
+- Remaining input-anchored burdens: none
+- Held routes rechecked: none
+- Field diagnostics: ∇·B: neutral; ∇×κ: null.
+- Release status: closed; no same-input eligible burden remains; R(H,Δ): COMPLETE
+
+### Closure/Reconstruction Witness
+- N frames: selected operative frame
+- Registers: κ bounded
+- Burden dependency graph: B1 -> B2
+- Operator match: B1 -> FPD; B2 -> definition discipline
+- Field checks: ∇·B neutral; ∇×κ null
+
+### Restorative Response
+The response preserves what landed.
+### Closing Formulation
+The case is closed.
+""",
+        "closure without 𝒞(Ψᴺ)",
+    ),
+    "multi_burden_closure_without_t_lang": (
+        """## Burden-Cycle 1
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported tribunal
+- current bounded operator: imported criterion / moral tribunal test
+- held: B2 held pending B1
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B1 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports a moral criterion as tribunal.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement; the restoration vector is to test the tribunal.
+##### Bounded Response / operative submoves
+Operator: tribunal-detection.
+Target: imported tribunal. Operation: test whether the criterion has authority. Result: the tribunal cannot remain unexamined.
+##### TTP/operator trace
+Trace: tribunal-detection + FPD.
+### State/noetic re-read
+- What changed: B1 landed and B2 became eligible.
+- Cleared: imported tribunal
+- Remaining input-anchored burdens: B2
+- Held routes rechecked: B2 released
+- Field diagnostics: ∇·B: positive over B2; ∇×κ: null.
+- Release status: continue.
+
+## Burden-Cycle 2
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: scope inflation
+- DO-orient: mixed
+- live noetic burden: B2 scoped correction
+- current bounded operator: scope correction
+- held: none
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B2 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- Scope is inflated.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is scope inflation; the noetic pattern is a widened predicate; the restoration vector is scoped correction.
+##### Bounded Response / operative submoves
+Operator: definition discipline.
+Target: scoped claim. Operation: narrow the predicate. Result: scope is corrected.
+##### TTP/operator trace
+Trace: definition discipline.
+### State/noetic re-read
+- What changed: B2 landed.
+- Cleared: all live burdens
+- Remaining input-anchored burdens: none
+- Held routes rechecked: none
+- Field diagnostics: ∇·B: neutral; ∇×κ: null.
+- Release status: closed; no same-input eligible burden remains; R(H,Δ): COMPLETE
+
+### Closure/Reconstruction Witness
+- N frames: selected operative frame
+- Registers: κ bounded
+- Burden dependency graph: B1 -> B2
+- Operator match: B1 -> FPD; B2 -> definition discipline
+- Field checks: ∇·B neutral; ∇×κ null
+- `𝒞(Ψᴺ)`: positive
+
+### Restorative Response
+The response preserves what landed.
+### Closing Formulation
+The case is closed.
+""",
+        "final response without T_lang",
+    ),
+    "multi_burden_closure_without_field_diagnostics": (
+        """## Burden-Cycle 1
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: meta-epistemic
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: imported criterion
+- DO-orient: mixed
+- live noetic burden: imported tribunal
+- current bounded operator: imported criterion / moral tribunal test
+- held: B2 held pending B1
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B1 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- The objection imports a moral criterion as tribunal.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is criterion import; the noetic pattern is tribunal displacement; the restoration vector is to test the tribunal.
+##### Bounded Response / operative submoves
+Operator: tribunal-detection.
+Target: imported tribunal. Operation: test whether the criterion has authority. Result: the tribunal cannot remain unexamined.
+##### TTP/operator trace
+Trace: tribunal-detection + FPD.
+### State/noetic re-read
+- What changed: B1 landed and B2 became eligible.
+- Cleared: imported tribunal
+- Remaining input-anchored burdens: B2
+- Held routes rechecked: B2 released
+- Release status: continue.
+
+## Burden-Cycle 2
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: none
+- reason-category: 3
+- concealment: clear
+- deformation: scope inflation
+- DO-orient: mixed
+- live noetic burden: B2 scoped correction
+- current bounded operator: scope correction
+- held: none
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: ∇ route: B2 pressure highest; release one bounded operator
+
+### Layer B - bounded governed response
+#### Hidden Premises
+- Scope is inflated.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is scope inflation; the noetic pattern is a widened predicate; the restoration vector is scoped correction.
+##### Bounded Response / operative submoves
+Operator: definition discipline.
+Target: scoped claim. Operation: narrow the predicate. Result: scope is corrected.
+##### TTP/operator trace
+Trace: definition discipline.
+### State/noetic re-read
+- What changed: B2 landed.
+- Cleared: all live burdens
+- Remaining input-anchored burdens: none
+- Held routes rechecked: none
+- Release status: closed; no same-input eligible burden remains; R(H,Δ): COMPLETE
+
+### Closure/Reconstruction Witness
+- N frames: selected operative frame
+- Registers: κ bounded
+- Burden dependency graph: B1 -> B2
+- Operator match: B1 -> FPD; B2 -> definition discipline
+- `𝒞(Ψᴺ)`: positive
+- `T_lang: Ψᴺ ⇢ Ψᴵ`: coupling attempt only
+
+### Restorative Response
+The response preserves what landed.
+### Closing Formulation
+The case is closed.
+""",
+        "R(H,Δ) without target-explicit field diagnostics",
+    ),
     "literal_governance_label": (
         """### Layer A - Compact DSL/IR header
 - read status: dominant
@@ -1935,6 +2207,19 @@ HIDDEN_PREMISES_RE = re.compile(r"(?im)^\s*#{3,5}\s*Hidden Premises\b")
 CORE_RE = re.compile(r"(?im)^\s*#{3,6}\s*(?:\d+\.\s*)?Core Formulation\b")
 CLOSING_RE = re.compile(r"(?im)^\s*#{3,5}\s*(?:\d+\.\s*)?Closing Formulation\b")
 STATE_RE = re.compile(r"(?im)^\s*#{3,5}\s*State/noetic re-read\b")
+MULTI_BURDEN_CLOSING_RE = re.compile(
+    r"(?ims)(?:^#{2,5}\s*Burden-Cycle\s+2\b|^\*\*Burden\s+2:|^#{2,5}\s*Burden\s+2\b|B1\s*->\s*B2)"
+)
+CLOSURE_COMPLETE_RE = re.compile(
+    r"(?i)(?:no same-input eligible burden remains|R\(H,(?:Δ|Delta)\):\s*COMPLETE|"
+    r"closure licensed|state:\s*COMPLETE)"
+)
+CLOSURE_FIELD_RE = re.compile(r"𝒞\(Ψᴺ\)")
+T_LANG_RE = re.compile(r"T_lang:\s*Ψᴺ\s*⇢\s*Ψᴵ")
+TARGET_EXPLICIT_FIELD_CHECK_RE = re.compile(
+    r"(?is)(?:Field diagnostics:|Field checks:|R\(H,(?:Δ|Delta)\):).*?"
+    r"(?:∇·|del-dot).*?(?:∇×|del-cross)"
+)
 LAYER_A_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer A\s*(?:\u2014|-)\s*Compact DSL/IR header\b")
 LAYER_B_RE = re.compile(r"(?im)^\s*#{3,5}\s*Layer B\s*(?:\u2014|-)\s*bounded governed response\b")
 NON_TRIVIAL_OPERATOR_RE = re.compile(
@@ -2160,6 +2445,16 @@ def render_shape_violations(text: str) -> list[str]:
         if not STATE_DELTA_RE.search(state.group("body")):
             violations.append("weak state/noetic re-read")
             break
+    multi_burden_closure = bool(MULTI_BURDEN_CLOSING_RE.search(text)) and bool(
+        CLOSURE_COMPLETE_RE.search(text)
+    )
+    if multi_burden_closure:
+        if not CLOSURE_FIELD_RE.search(text):
+            violations.append("closure without 𝒞(Ψᴺ)")
+        if not T_LANG_RE.search(text):
+            violations.append("final response without T_lang")
+        if not TARGET_EXPLICIT_FIELD_CHECK_RE.search(text):
+            violations.append("R(H,Δ) without target-explicit field diagnostics")
     if V12_OPERATOR_RE.search(layer_b_text):
         if v12_before_independence_gate(text):
             violations.append("V12 before independence gate")

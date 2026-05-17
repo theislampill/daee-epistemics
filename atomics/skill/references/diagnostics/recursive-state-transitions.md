@@ -171,15 +171,17 @@ may expose transmission/testimony routes; moral protest may expose predicate/tri
 named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
 routes. These are control checks, not topical argument-bank entries.
 
-Plain `∇` is the route-gradient read over the live field. It identifies the direction in the
-noetic/burden/dependency/register/route pressure landscape where the next released burden is
-expected to produce the greatest diagnostic reduction, closure progress, or dependency
-clarification. Routing remains owner-gated and catalogue-constrained: V1, Diagnostic IR,
-routing precedence, profile signals, and catalogue eligibility are the inputs and boundaries for
-the gradient read. Plain `∇` ranks or explains release pressure among eligible routes; it is not
-a truth/warrant metric, not free-form intuition, not a bypass around gates, not a replacement for
-`Δ`, `∇·`, or `∇×`, and not a deterministic route freeze when multiple valid candidate
-structures remain live.
+Plain `∇` is the route-gradient read over the live field before burden release. It identifies the
+direction in the noetic/burden/dependency/register/route pressure landscape where the next
+released burden is expected to produce the greatest diagnostic reduction, closure progress, or
+dependency clarification. In default render it appears in Layer A's gate/release decision, not as
+a retrospective decoration after Layer B: `∇ route: Bn pressure highest — [reason] over [held
+alternatives]`. Routing remains owner-gated and catalogue-constrained: V1, Diagnostic IR, routing
+precedence, profile signals, and catalogue eligibility are the inputs and boundaries for the
+gradient read. Plain `∇` ranks or explains release pressure among eligible routes; it is not a
+truth/warrant metric, not free-form intuition, not a bypass around gates, not a replacement for
+`Δ`, `∇·`, or `∇×`, and not a deterministic route freeze when multiple valid candidate structures
+remain live.
 
 Noetic structures, burdens, submoves, dependencies, registers, routes, and closure pressures are
 not scalar objects. They are relational field states in token/noetic space: directed dependency,
@@ -208,9 +210,11 @@ carried into RECURSE/PARTIAL.
 
 A COMPLETE closure in any multi-burden or register-active case must visibly account for
 selected and held `N` frames, live registers, active or cleared owner/TTP child modes,
-`Delta-nB`, `Delta-kappa`, and remaining `kappa` / `H` status. If the closure cannot account
-for these dependencies without turning into a topic dump, it must mark PARTIAL or RECURSE
-instead of COMPLETE.
+`Delta-nB`, `Delta-kappa`, target-explicit `∇·` / `∇×` results, burden dependency graph, and
+remaining `kappa` / `H` status. The dependency graph uses compact edge notation such as
+`B1 -> B2, B3, B4, B5` for root-to-serial dependencies or `B1 ∥ B2 -> B3` when a later burden
+depends on multiple landed burdens. If the closure cannot account for these dependencies without
+turning into a topic dump, it must mark PARTIAL or RECURSE instead of COMPLETE.
 
 Terminal formalism: `𝒞(Ψᴺ)` names the positive closure-field condition over the agent execution
 field, not mere checklist exhaustion. STOP is licensed only when the live field reaches the
@@ -220,13 +224,15 @@ residual `∇×` loops are broken, resolved, or explicitly held; and the release
 reconstruct the route from diagnosis to restoration without hidden live pressure. `N_fiṭrī ∧
 ʿaql ṣarīḥ` names the restorative terminal orientation in that agent execution field: fitri
 recognition plus sound reason after the governing misread loses control. It is not a shortcut
-around burden landing, not proof-by-symbol, not a default visible marker in ordinary output, and
-not a claim that the interlocutor has internally accepted truth.
+around burden landing, not proof-by-symbol, not a long default formalism exposition, and not a claim that the interlocutor has internally accepted truth.
+A compact `𝒞(Ψᴺ)` marker is required when COMPLETE/STOP is rendered, because closure is licensed
+by positive field configuration rather than checklist exhaustion.
 
 Field boundary: `Ψᴺ` names the agent/runtime noetic execution field. `Ψᴵ` names the diagnosed
 interlocutor noetic field inferred from discourse, profile, register, response, and source-status
 evidence. A released burden in `Ψᴺ` does not directly rewrite `Ψᴵ`; it produces a
-language-mediated coupling attempt, `T_lang: Ψᴺ ⇢ Ψᴵ`. Coupling is assessed by whether the
+language-mediated coupling attempt, `T_lang: Ψᴺ ⇢ Ψᴵ`. Final restorative boundary text must name
+this coupling when closure or final counsel is rendered. Coupling is assessed by whether the
 released response preserves identity, avoids deformation, addresses live burdens, and provides
 conditions for `Ψᴵ` to reconfigure toward fiṭrah and `ʿaql ṣarīḥ`. This is a runtime/output
 boundary: it does not assert access to the interlocutor's soul, guarantee acceptance, replace
