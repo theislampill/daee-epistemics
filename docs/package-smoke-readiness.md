@@ -216,6 +216,9 @@ current-release evidence: yes
   non-applicability reason before capture. Required witness surfaces are route-gradient, target
   explicit field diagnostics, `R(H,Delta)` reread with held/live/next-status accounting,
   closure/non-closure status, `T_lang` boundary, Restorative Response, and non-claim boundary.
+- `tools/check_smoke_artifacts.py --require-current-release-smokes` invokes
+  `tools/check_live_default_witness_contract.py` for manifest cases with `witness_required=true`;
+  ordinary compact chat output cannot satisfy the release-smoke witness gate by provenance alone.
 - Historical smokes remain useful regression evidence but do not prove the current package.
 - `tools/check_smoke_artifacts.py` validates package/smoke provenance consistency.
 - `tools/check_smoke_artifacts.py --require-current-release-smokes` is the stricter release check

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "shared-runtime-architecture-source",
-  "ssot_note": "Shared docs/index source projection for runtime architecture renderings. Architecture cards, Architecture rows, and Theory Deep Dive notation/mapping are generated from this file by tools/build_docs_index.py. Generated docs/index.html is not the canonical owner.",
+  "ssot_note": "Shared docs/index source projection for runtime architecture renderings. Architecture cards, both Architecture rows (plain process row and formal architecture row), and the distinct Theory Deep Dive notation/mapping rendering are generated from this file by tools/build_docs_index.py. Generated docs/index.html is not the canonical owner.",
   "runtime_owner_sources": [
     "atomics/skill/SKILL.md",
     "atomics/skill/references/diagnostics/diagnostic-ir.md",

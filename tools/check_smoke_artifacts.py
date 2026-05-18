@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from check_live_default_witness_contract import check as live_default_witness_errors
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,6 +33,7 @@ DEFAULT_RELEASE_PACKAGE_SHA256 = "78C2BECE8818DEFF10C8CEF1A1578D9B54D09299504606
 REQUIRED_CURRENT_RELEASE_CASES = {"CR-01", "CR-02", "CR-03"}
 DEFERRED_CURRENT_RELEASE_CASES = {f"CR-{index:02d}" for index in range(4, 11)}
 EXPECTED_CURRENT_RELEASE_CASES = REQUIRED_CURRENT_RELEASE_CASES | DEFERRED_CURRENT_RELEASE_CASES
+RELEASE_SMOKE_WITNESS_MODE_RE = re.compile(r"(?i)\brelease-smoke witness capture mode\b")
 PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill(?:\.zip)?$")
 HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
 RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
@@ -1422,6 +1425,8 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
                 status = str(item.get("status", ""))
                 if not status.startswith("deferred-expanded-smoke"):
                     errors.append(f"{case_id}: deferred expanded smoke status must start with deferred-expanded-smoke")
+    else:
+        errors.append(f"{manifest_path.as_posix()}: current-release manifest missing")
 
     hard_current_passes = 0
     bounded_current_passes = 0
@@ -1443,6 +1448,8 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
         provenance = f"{trace_text}\n{verdict_text}"
         status = verdict_status(verdict_text)
         cls = fixture_class(verdict_text)
+        manifest_case = manifest_cases.get(case_id, {})
+        witness_required = manifest_case.get("witness_required") is True
 
         if not is_current_release_provenance(provenance, release_artifact):
             continue
@@ -1457,6 +1464,12 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
         )
         if status == "PASS" and not (directory / "ir.json").is_file():
             artifact_errors.append("current-release PASS smoke missing ir.json")
+        if witness_required:
+            if not RELEASE_SMOKE_WITNESS_MODE_RE.search(input_text):
+                artifact_errors.append(
+                    "witness_required smoke input must invoke release-smoke witness capture mode"
+                )
+            artifact_errors.extend(live_default_witness_errors(directory / "output.md"))
         for error in artifact_errors:
             errors.append(f"{directory.name}: {error}")
         if artifact_errors or status != "PASS":

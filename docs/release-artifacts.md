@@ -48,7 +48,7 @@ smoke captures are local diagnostic artifacts and are not committed or uploaded 
 | Compiled module map SHA256 | `031C7522FD21F1F8DECF200BB2785D50976FB7FB7D99EF865B4BDDF6877AB608` |
 | GitHub Release visibility | Target tag/release: `v0.4.2.0` |
 | Provenance file | Release asset: `daee-epistemics-v0.4.2.0.provenance.json` generated from `build/daee-epistemics-v0.4.2.0.provenance.json` |
-| Current-release smoke proof | Local 3-case package-bound smoke passed against this SHA (`CR-01` hard, `CR-02` misuse boundary, `CR-03` bounded answer); raw captures are local diagnostic artifacts and are not committed |
+| Current-release smoke proof | Local 3-case package-bound smoke passed against this SHA (`CR-01` hard, `CR-02` misuse boundary, `CR-03` bounded answer), including witness-required live contract checks; raw captures are local diagnostic artifacts and are not committed |
 
 The local package/provenance pair passed:
 

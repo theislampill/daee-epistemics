@@ -414,8 +414,11 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def render_runtime_row(items: list[dict[str, Any]], row_class: str, aria: str) -> str:
-    pieces: list[str] = [f'<div class="flowline {row_class}" aria-label="{esc(aria)}">']
+def render_runtime_row(items: list[dict[str, Any]], row_class: str, aria: str, rendering_id: str) -> str:
+    pieces: list[str] = [
+        f'<div class="flowline {row_class}" aria-label="{esc(aria)}" '
+        f'data-runtime-rendering="{esc(rendering_id)}">'
+    ]
     for index, item in enumerate(items):
         title = item.get("title")
         title_attr = f' title="{esc(title)}"' if isinstance(title, str) and title else ""
@@ -436,8 +439,18 @@ def render_runtime_architecture_rows(arch: dict[str, Any]) -> str:
             "Generated HTML is not the owner.",
             "</div>",
             '<div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">',
-            render_runtime_row(rows["runtime"], "v60-pipeline-row v60-runtime-row", "Canonical runtime spine"),
-            render_runtime_row(rows["formal"], "v56-formula-flow v60-pipeline-row v60-formal-row", "Canonical algebraic runtime spine"),
+            render_runtime_row(
+                rows["runtime"],
+                "v60-pipeline-row v60-runtime-row",
+                "Canonical runtime spine",
+                "architecture-plain-row",
+            ),
+            render_runtime_row(
+                rows["formal"],
+                "v56-formula-flow v60-pipeline-row v60-formal-row",
+                "Canonical algebraic runtime spine",
+                "architecture-formal-row",
+            ),
             "</div>",
         ]
     )
@@ -626,7 +639,10 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
             "</button>"
         )
     cards.append("</div>")
-    cards.append('<div class="notationBoard" id="notationBoard">')
+    cards.append(
+        '<div class="notationBoard" id="notationBoard" '
+        'data-runtime-rendering="theory-formalism-notation">'
+    )
     for line in arch["notation_lines"]:
         cards.append('<div class="notationLine">')
         for segment in line:
@@ -669,7 +685,8 @@ def render_theory_mapping_table(arch: dict[str, Any]) -> str:
         for notation, role, owner in arch["mapping_rows"]
     )
     return (
-        '<div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json">'
+        '<div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json" '
+        'data-runtime-rendering="theory-formalism-mapping">'
         "<h3>Notation → runtime role → source owner</h3>"
         "<p class=\"subtle\">Generated from the shared runtime architecture source; it compactly maps the same sequence rather than repeating the Architecture tab rows.</p>"
         f"<table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody>{rows}</tbody></table>"

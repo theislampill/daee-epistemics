@@ -10,7 +10,8 @@ C:\workspace\ai\daee-epistemics\expansion\repo
 
 Continue the docs/index SSOT hardening for `daee-epistemics` without widening scope.
 
-The active workstream is the public docs/index generation system:
+The active workstream completed in this pass was the public docs/index generation system plus the
+v0.4.2.0 current-release witness gate:
 
 - `docs/index.html` and `docs/daee-epistemics-pipeline.html` are generated browser/navigation surfaces.
 - Do not hand-edit generated HTML directly.
@@ -22,14 +23,16 @@ Release guardrails still apply:
 
 - Do not push, tag, create a GitHub Release, publish, or stage broadly unless explicitly instructed.
 - Do not fabricate smoke outputs or treat local diagnostics as public release proof.
+- The three-smoke gate is local package-bound evidence only; raw captures remain ignored
+  diagnostics and are not committed.
 - Keep release claims bounded: schema-light executable governance calculus; stronger than prompt engineering; not a full formal calculus; not a truth meter; not live-output proven beyond actual smoke evidence.
 
 ## Current Progress
 
-The previous docs/index audit verdict was:
+The current docs/index audit verdict is:
 
 ```text
-INDEX MOSTLY CLEAN; TARGETED GENERATION PATCHES NEEDED
+INDEX ACID/SSOT/GRASP HARDENED; TARGETED P2 GENERATION REMAINS OPTIONAL
 ```
 
 The two P1 drift risks were:
@@ -40,39 +43,56 @@ The two P1 drift risks were:
 Latest pass result:
 
 ```text
-P1 MOSTLY CLOSED; PARITY CHECKS ADDED
+THREE-SMOKE GATE PASSED LOCALLY; RELEASE STILL NOT PERFORMED
 ```
 
 What changed in this pass:
 
+- `tools/check_smoke_artifacts.py --require-current-release-smokes` now invokes
+  `tools/check_live_default_witness_contract.py` for manifest `witness_required=true` cases.
+- The strict current-release smoke gate now requires `release-smoke witness capture mode` in the
+  smoke input when witness capture is required.
 - `tools/check_docs_index_interactions.py` now checks Architecture trace parity against `docs/index/runtime-architecture.json`.
 - The checker verifies Architecture shared stage keys, stage numbers, stage titles, generated `data-stage-key`, generated `data-substage-key`, and trace-map substage keys/titles.
 - `tools/check_docs_index_interactions.py` now checks Owner/TTP map parity against module-catalogue/source paths.
 - The checker verifies operator source paths, catalogue-backed operator classes, family filter options, owner-family source tokens, generated module metadata, and guards against stale literal "69 modules" claims.
+- `tools/check_docs_index_interactions.py` now verifies the three intended renderings of the shared
+  runtime sequence remain separate and aligned:
+  - Architecture plain row;
+  - Architecture formal row;
+  - Theory Deep Dive notation/mapping rendering.
+- `tools/check_docs_index_interactions.py` now inventories large JavaScript constants with
+  runtime/control claims and requires manifest `js_constants` coverage.
 - `docs/index/templates/index.html.tpl` now has source/parity comments for the Architecture trace maps and Owner/TTP maps.
-- `docs/index/manifest.json` now records `parity_checked_by` and `parity_scope` for the two P1 surfaces.
+- `docs/index/manifest.json` now records `parity_checked_by`, `parity_scope`, and `js_constants`
+  coverage for the runtime/control JavaScript blocks.
+- `docs/index/manifest.json` reclassifies the standalone pipeline page as
+  `CURATED_SUMMARY_WITH_OWNER_REFERENCES` rather than overstating structured-source derivation for
+  its curated stage prose.
 - `docs/index/README.md` documents the generation/parity boundary.
 - `docs/audits/v0.4.2.0-docs-index-ssot-audit.md` was updated to say the P1 items are closed by parity checks, with optional full generation deferred as future hardening.
 - `docs/index.html` and `docs/daee-epistemics-pipeline.html` were regenerated through `python tools/build_docs_index.py`.
 
-Current dirty files include prior docs/index SSOT work as well as this pass:
+Current changed source/docs files from this pass include:
 
 ```text
+HANDOFF.md
 docs/audits/INDEX.md
-docs/audits/v0.4.2.0-deep-research-next-handoff.md
-docs/audits/v0.4.2.0-release-candidate-audit.md
+docs/audits/v0.4.2.0-current-release-smoke-runbook.md
 docs/audits/v0.4.2.0-docs-index-ssot-audit.md
+docs/audits/v0.4.2.0-p0-remediation.md
 docs/daee-epistemics-pipeline.html
 docs/index.html
 docs/index/README.md
 docs/index/manifest.json
 docs/index/runtime-architecture.json
-docs/index/sections/architecture.html
-docs/index/sections/theory.html
-docs/index/templates/index.html.tpl
+docs/package-smoke-readiness.md
+docs/release-artifacts.md
+docs/v0.4.2.0-release-log.md
+docs/v0.4.2.0-release-notes.md
 tools/build_docs_index.py
 tools/check_docs_index_interactions.py
-tools/check_field_operator_architecture.py
+tools/check_smoke_artifacts.py
 ```
 
 Latest commands run and passing:
@@ -87,6 +107,10 @@ python tools/check_compiled_runtime_freshness.py
 python tools/check_compiled_module_boundaries.py
 python tools/check_ttp_operator_contracts.py --strict
 python tools/check_field_operator_architecture.py
+python tools/check_smoke_artifacts.py --require-current-release-smokes
+python tools/check_live_default_witness_contract.py tests\smokes\current-release\v0.4.2.0\CR-01\output.md
+python tools/check_live_default_witness_contract.py tests\smokes\current-release\v0.4.2.0\CR-02\output.md
+python tools/check_live_default_witness_contract.py tests\smokes\current-release\v0.4.2.0\CR-03\output.md
 git diff --check
 ```
 
@@ -94,11 +118,12 @@ git diff --check
 
 ## What Worked
 
-- Treating `docs/index/runtime-architecture.json` as the shared source for Architecture cards, Architecture rows, and Theory notation worked well.
+- Treating `docs/index/runtime-architecture.json` as the shared source for Architecture cards, both Architecture rows, and Theory notation worked well.
 - Rebuilding generated docs through `tools/build_docs_index.py` kept `docs/index.html` fresh without direct edits.
-- Adding parity checks was the right scope for the remaining P1 surfaces:
+- Adding parity/inventory checks was the right scope for the remaining P1/P2 surfaces:
   - Architecture trace prose is still curated, but the trace keys/titles now fail if they drift from the shared architecture source.
   - Owner/TTP operator prose is still curated, but source paths, catalogue-backed classes, family filters, owner tokens, generated module metadata, and module-count claims now fail on drift.
+- Keeping the Architecture plain row, Architecture formal row, and Theory rendering distinct matters; they are three related renderings of the same runtime sequence, not duplicates.
 - Keeping Owner/TTP operator graph and full module catalogue separate was important. The graph is not one-to-one with all 69 catalogue entries because case-library/noetic-profile modules are not operator chips.
 - Extending `tools/check_docs_index_interactions.py` was a good fit; it already owns docs/index structure, source-data, freshness, JS syntax, and interaction checks.
 - Local checks passed after regenerating docs.
@@ -113,38 +138,36 @@ git diff --check
 
 ## Release / Smoke Status
 
-v0.4.2.0 is **not released**.
+v0.4.2.0 is **not released**. No push, tag, GitHub Release, or release asset publication was
+performed in this pass.
 
-Source/runtime/docs/provenance gates passed in the last reported pass, and the final local package/provenance pair exists and verifies, but the current-release smoke gate is still blocked.
+The final local package/provenance pair still exists and verifies:
 
-Three local package-bound smokes were captured for the final package, but all three failed the live witness checker. Do not claim the smokes passed.
+- package: `build\daee-epistemics-v0.4.2.0.skill`
+- SHA256: `21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7`
+- size: `594097`
+- entries: `20`
+- provenance: `build\daee-epistemics-v0.4.2.0.provenance.json`
 
-Latest known smoke result:
+Current local smoke result:
 
-- `CR-01`: captured locally, but FAILED `check_live_default_witness_contract.py`
-  - missing valid `T_lang` boundary and Restorative Response
-  - `R(H,Delta)` / closure witness surfaces did not satisfy checker
-- `CR-02`: captured locally, but FAILED `check_live_default_witness_contract.py`
-  - missing route-gradient witness
-  - incomplete repeated diagnostics
-  - missing `T_lang` boundary and Restorative Response
-- `CR-03`: captured locally, but FAILED `check_live_default_witness_contract.py`
-  - missing route-gradient witness
-  - incomplete diagnostics
-  - closure witness defect
-  - missing Restorative Response
+- `CR-01`: local package-bound capture passes `check_live_default_witness_contract.py`.
+- `CR-02`: local package-bound capture passes `check_live_default_witness_contract.py`.
+- `CR-03`: local package-bound capture passes `check_live_default_witness_contract.py`.
+- `python tools\check_smoke_artifacts.py --require-current-release-smokes` passes and now invokes
+  the witness checker for manifest `witness_required=true` cases.
 
-`python tools\check_smoke_artifacts.py --require-current-release-smokes` therefore remains failing.
-
-Raw smoke captures are local/ignored diagnostics and should not be committed.
+Raw smoke captures are local/ignored diagnostics and should not be committed. Witness markers are
+evidence surfaces, not competence proof. Docs/index parity/generation is not runtime proof.
 
 Current release state:
 
 ```text
-RELEASE-BLOCKED
+THREE-SMOKE GATE PASSED LOCALLY; RELEASE STILL NOT PERFORMED
 ```
 
-Next release-line work is witness-gate remediation / release-smoke capture mode, followed by fresh package-bound smoke capture. Do not tag, publish, or create a GitHub Release until the required smoke/witness gates pass honestly.
+Next release-line work, if the maintainer chooses to release later, is an explicit final release
+authorization step. Do not tag, publish, or create a GitHub Release without that explicit approval.
 
 ## Next Steps
 
@@ -169,14 +192,14 @@ docs/index/runtime-architecture.json
 git status --short
 python tools/build_docs_index.py --check
 python tools/check_docs_index_interactions.py
+python tools/check_smoke_artifacts.py --require-current-release-smokes
 ```
 
 3. If continuing docs/index SSOT hardening, likely next optional P2 items are:
 
 - Fully generate Architecture interaction trace prose from `docs/index/runtime-architecture.json`, if the owner wants stronger SSOT than parity.
 - Move Owner/TTP operator/family prose into a source-backed structured data file or generate it from catalogue/frontmatter where enough fields exist.
-- Add a small inventory check that flags new large JS constants with runtime/control claims unless they have manifest entries and checker coverage.
-- Consider reclassifying or generating more of the standalone pipeline page prose if its current manifest classification overstates structured-source derivation.
+- Generate more standalone pipeline page prose from `framework-pipeline.yaml` / runtime architecture source if stronger derivation is desired.
 
 4. If preparing a commit/PR later, do not stage with `git add .`. Stage explicit files only and review:
 

@@ -200,6 +200,16 @@
       "label": "Concept graph",
       "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
       "current_source": "docs/index/templates/index.html.tpl",
+      "js_constants": [
+        "CONCEPTS",
+        "FIELD",
+        "FIELD18",
+        "ORDER",
+        "CONCEPT_ORDER",
+        "TOKEN_POLICY",
+        "POLICY",
+        "UPGRADE"
+      ],
       "owner_sources": [
         "docs/algebraic-notation-and-noetic-formalism.md",
         "docs/register-formalism-implementation-ledger.md",
@@ -212,6 +222,10 @@
       "label": "Relation map",
       "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
       "current_source": "docs/index/templates/index.html.tpl",
+      "js_constants": [
+        "RELATIONS",
+        "RELATION_ORDER"
+      ],
       "owner_sources": [
         "docs/register-formalism-implementation-ledger.md",
         "atomics/skill/references/diagnostics/recursive-state-transitions.md",
@@ -263,6 +277,9 @@
       "label": "Reference library entries",
       "classification": "OWNER_DERIVED",
       "current_source": "tools/build_docs_index.py",
+      "js_constants": [
+        "REFS"
+      ],
       "owner_sources": [
         "atomics/skill/README.md",
         "atomics/skill/SKILL.md",
@@ -275,6 +292,9 @@
       "label": "Embedded viewer snapshots",
       "classification": "OWNER_DERIVED",
       "current_source": "tools/build_docs_index.py",
+      "js_constants": [
+        "DOCS"
+      ],
       "owner_sources": [
         "atomics/skill/README.md",
         "atomics/skill/SKILL.md",
@@ -287,6 +307,14 @@
       "label": "Architecture interactive trace maps",
       "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
       "current_source": "docs/index/templates/index.html.tpl",
+      "js_constants": [
+        "CURRENT_STAGES",
+        "TARGET_STAGES",
+        "ARCHITECTURE_STAGES",
+        "PIPELINE_DEEP",
+        "STATIC_STAGE_MAP",
+        "SUBSTAGE_MAP"
+      ],
       "owner_sources": [
         "docs/index/runtime-architecture.json",
         "atomics/skill/SKILL.md",
@@ -310,6 +338,10 @@
       "label": "Owner family and operator graph maps",
       "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
       "current_source": "docs/index/templates/index.html.tpl",
+      "js_constants": [
+        "OWNER_FAMILIES",
+        "OPERATORS"
+      ],
       "owner_sources": [
         "atomics/skill/references/diagnostics/module-catalogue.json",
         "atomics/skill/references/diagnostics/diagnostic-ir.md",
@@ -354,7 +386,8 @@
       "label": "Standalone pipeline page",
       "output": "docs/daee-epistemics-pipeline.html",
       "template": "docs/index/templates/pipeline.html.tpl",
-      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "generated shell with curated stage prose and owner/source provenance",
       "allow_curated_static": true,
       "freshness_required": true,
       "owner_sources": [

@@ -7,6 +7,7 @@ panels, ARIA wiring, or JavaScript controller drift out of sync.
 
 from __future__ import annotations
 
+import html
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -42,6 +43,15 @@ ALLOWED_CLASSIFICATIONS = {
     "STATIC_SNAPSHOT",
     "LAYOUT_ONLY",
 }
+
+RUNTIME_CONTROL_JS_CLAIM_RE = re.compile(
+    r"(?i)\b("
+    r"runtime|control|noetic|burden|owner|TTP|operator|route|routing|IR|"
+    r"Delta|Land|R\(H|closure|witness|source-status|package|smoke|release|"
+    r"formalism|field diagnostics|LoopBreak"
+    r")\b|[∇ΔΨ𝒞]",
+)
+LARGE_JS_CONSTANT_MIN_BYTES = 1200
 
 EXPECTED_TABS = {
     "Architecture": "architecture",
@@ -761,6 +771,137 @@ def check_architecture_trace_parity(text: str, errors: list[str]) -> None:
                 )
 
 
+def tab_section_slice(text: str, section_id: str) -> str:
+    match = re.search(rf'<section\b[^>]*\bid="{re.escape(section_id)}"[^>]*>', text)
+    if not match:
+        return ""
+    next_match = re.search(r'\n<section\b[^>]*\bclass="tabsec', text[match.end() :])
+    if not next_match:
+        return text[match.start() :]
+    return text[match.start() : match.end() + next_match.start()]
+
+
+def div_slice_for_marker(text: str, marker: str) -> str:
+    start = text.find(marker)
+    if start == -1:
+        return ""
+    end = text.find("</div>", start)
+    if end == -1:
+        return text[start:]
+    return text[start : end + len("</div>")]
+
+
+def normalized_render_text(value: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", value)).strip().lower()
+
+
+def mapping_row_values(row: object) -> tuple[str, str, str] | None:
+    if isinstance(row, dict):
+        notation = row.get("notation")
+        role = row.get("runtime_role") or row.get("role")
+        owner = row.get("source_owner") or row.get("owner")
+        if all(isinstance(value, str) for value in (notation, role, owner)):
+            return str(notation), str(role), str(owner)
+        return None
+    if isinstance(row, list) and len(row) >= 3 and all(isinstance(value, str) for value in row[:3]):
+        return str(row[0]), str(row[1]), str(row[2])
+    return None
+
+
+def require_ordered_tokens(block: str, tokens: list[str], label: str, errors: list[str]) -> None:
+    cursor = 0
+    for token in tokens:
+        rendered = html.escape(token, quote=True)
+        found = block.find(rendered, cursor)
+        if found == -1:
+            errors.append(f"{label} missing shared runtime token {token!r}")
+            continue
+        cursor = found + len(rendered)
+
+
+def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
+    """Guard the three related renderings of the same runtime sequence.
+
+    The Architecture tab intentionally has two rows, and Theory has a related
+    notation/mapping rendering. This check prevents collapsing them or letting
+    any of the three drift away from docs/index/runtime-architecture.json.
+    """
+
+    arch = load_runtime_architecture_for_check(errors)
+    rows = arch.get("rows")
+    mapping_rows = arch.get("mapping_rows")
+    notation_lines = arch.get("notation_lines")
+    if not isinstance(rows, dict) or not isinstance(mapping_rows, list):
+        errors.append("docs/index/runtime-architecture.json must define rows and mapping_rows for shared rendering checks")
+        return
+
+    architecture = tab_section_slice(text, "architecture")
+    theory = tab_section_slice(text, "theory")
+    if not architecture:
+        errors.append("Architecture tab section missing for shared runtime rendering check")
+        return
+    if not theory:
+        errors.append("Theory tab section missing for shared runtime rendering check")
+        return
+
+    plain_row = div_slice_for_marker(architecture, 'data-runtime-rendering="architecture-plain-row"')
+    formal_row = div_slice_for_marker(architecture, 'data-runtime-rendering="architecture-formal-row"')
+    if not plain_row:
+        errors.append("Architecture plain runtime row missing data-runtime-rendering marker")
+    if not formal_row:
+        errors.append("Architecture formal runtime row missing data-runtime-rendering marker")
+
+    runtime_items = rows.get("runtime")
+    formal_items = rows.get("formal")
+    if isinstance(runtime_items, list) and plain_row:
+        runtime_labels = [str(item.get("label", "")) for item in runtime_items if isinstance(item, dict)]
+        require_ordered_tokens(plain_row, runtime_labels, "Architecture plain row", errors)
+    else:
+        errors.append("docs/index/runtime-architecture.json rows.runtime must be a list")
+        runtime_labels = []
+    if isinstance(formal_items, list) and formal_row:
+        formal_labels = [str(item.get("label", "")) for item in formal_items if isinstance(item, dict)]
+        require_ordered_tokens(formal_row, formal_labels, "Architecture formal row", errors)
+    else:
+        errors.append("docs/index/runtime-architecture.json rows.formal must be a list")
+        formal_labels = []
+
+    if 'data-runtime-rendering="architecture-plain-row"' in theory:
+        errors.append("Architecture plain row must remain on Architecture tab, not Theory")
+    if 'data-runtime-rendering="architecture-formal-row"' in theory:
+        errors.append("Architecture formal row must remain on Architecture tab, not Theory")
+    if 'data-runtime-rendering="theory-formalism-notation"' not in theory:
+        errors.append("Theory formalism notation rendering missing shared-source marker")
+    if 'data-runtime-rendering="theory-formalism-mapping"' not in theory:
+        errors.append("Theory formalism mapping rendering missing shared-source marker")
+
+    parsed_mapping_rows = [values for values in (mapping_row_values(row) for row in mapping_rows) if values]
+    if len(parsed_mapping_rows) != len(mapping_rows):
+        errors.append("docs/index/runtime-architecture.json mapping_rows contains malformed rows")
+    for notation, role, owner in parsed_mapping_rows:
+        require_ordered_tokens(theory, [notation, role, owner], "Theory shared mapping", errors)
+
+    if isinstance(notation_lines, list):
+        notation_tokens = [
+            str(segment.get("token"))
+            for line in notation_lines
+            if isinstance(line, list)
+            for segment in line
+            if isinstance(segment, dict) and isinstance(segment.get("token"), str)
+        ]
+        for token in sorted(set(notation_tokens)):
+            if f'data-k="{html.escape(token, quote=True)}"' not in theory:
+                errors.append(f"Theory notation rendering missing shared notation token {token!r}")
+
+    plain_normal = normalized_render_text(" ".join(runtime_labels))
+    formal_normal = normalized_render_text(" ".join(formal_labels))
+    theory_normal = normalized_render_text(" ".join(row[0] for row in parsed_mapping_rows))
+    if plain_normal and plain_normal == formal_normal:
+        errors.append("Architecture plain and formal rows must remain related but not text-identical")
+    if theory_normal and theory_normal in {plain_normal, formal_normal}:
+        errors.append("Theory formalism rendering must map the same sequence without duplicating an Architecture row")
+
+
 def operator_reference_paths() -> set[str]:
     paths = {path.relative_to(ROOT).as_posix() for path in REFERENCE_ROOT.rglob("*.md")}
     paths.update(path.relative_to(ROOT).as_posix() for path in REFERENCE_SOURCE_PATHS if path.exists())
@@ -913,6 +1054,60 @@ def check_reference_data(text: str, errors: list[str]) -> None:
             errors.append(f"generated DOCS line count drift: {rel_path}")
         if isinstance(ref, dict) and ref.get("lines") != len(text_current.splitlines()):
             errors.append(f"generated REFS line count drift: {rel_path}")
+
+
+def manifest_js_constant_coverage(manifest: dict[str, object]) -> set[str]:
+    covered: set[str] = set()
+
+    def collect(entry: object) -> None:
+        if not isinstance(entry, dict):
+            return
+        constants = entry.get("js_constants")
+        if isinstance(constants, list):
+            covered.update(str(value) for value in constants if isinstance(value, str) and value)
+        for block in entry.get("generated_blocks", []) or []:
+            collect(block)
+
+    for tab in manifest.get("tabs", []) or []:
+        collect(tab)
+    for block in manifest.get("visible_blocks", []) or []:
+        collect(block)
+    for page in manifest.get("standalone_pages", []) or []:
+        collect(page)
+    return covered
+
+
+def iter_const_blocks(text: str) -> list[tuple[str, str]]:
+    found: list[tuple[str, str]] = []
+    for match in re.finditer(r"(?m)^\s*const\s+([A-Z][A-Z0-9_]*)\s*=", text):
+        name = match.group(1)
+        end = text.find(";\n", match.end())
+        if end == -1:
+            line_end = text.find("\n", match.end())
+            end = len(text) if line_end == -1 else line_end
+        else:
+            end += 1
+        found.append((name, text[match.start() : end]))
+    return found
+
+
+def check_large_runtime_control_js_inventory(text: str, manifest: dict[str, object], errors: list[str]) -> None:
+    covered = manifest_js_constant_coverage(manifest)
+    const_blocks = iter_const_blocks(text)
+    present_names = {name for name, _block in const_blocks}
+    for name, block in const_blocks:
+        if len(block.encode("utf-8")) < LARGE_JS_CONSTANT_MIN_BYTES:
+            continue
+        if not RUNTIME_CONTROL_JS_CLAIM_RE.search(block):
+            continue
+        if name not in covered:
+            errors.append(
+                f"large runtime/control JS constant {name} lacks manifest js_constants coverage "
+                "and checker/source-basis review"
+            )
+    for name in sorted(covered):
+        if name not in present_names:
+            errors.append(f"manifest js_constants entry {name} does not match a generated const declaration")
 
 
 def run_generation_freshness_check(errors: list[str]) -> None:
@@ -1225,6 +1420,8 @@ def main() -> int:
     check_notation_contract(public_text, errors)
     check_public_notation_surface(INDEX, public_text, errors)
     check_architecture_trace_parity(text, errors)
+    check_shared_runtime_renderings(text, errors)
+    check_large_runtime_control_js_inventory(text, manifest if isinstance(manifest, dict) else {}, errors)
     runtime_source_text = ""
     if RUNTIME_ARCHITECTURE_SOURCE.exists():
         runtime_source_text = RUNTIME_ARCHITECTURE_SOURCE.read_text(encoding="utf-8")
