@@ -20,15 +20,15 @@ catalogue_registered: true
 
 ## Runtime operator contract
 
-- Activation: interlocutor generates justificatory regress objections ("but what justifies that?").
-- Field target: the live technique-level noetic/register/dependency pressure that made `V3-regress-dissolution` eligible; activation cue: interlocutor generates justificatory regress objections ("but what justifies that?").
-- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
-- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
-- Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: the interlocutor generates a justificatory regress objection ("but what justifies that?") against a norm, faculty, memory, reason, testimony, or basic-belief starting point.
+- Field target: the regress-demand structure in warrant space, especially whether the demand attacks all starting points, only theistic starting points, or a specific proposed foundation.
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: identify the regress demand, test whether it is global or selective, distinguish basic starting point from arbitrary assertion, and dissolve the demand when it defeats itself or proves too much.
+- Δ effect: `ΔⁿB` changes infinite-justification pressure into a bounded foundation/criterion question; `Δκ` releases R1, M1, or source-status work only if the regress demand remains after dissolution.
+- Possible ∇ reread: after dissolution, check target-explicit `∇·ξ` for remaining warrant pressure and `∇×κ` if the demand keeps requiring justification for the rule of justification itself.
+- R(H,Δ) obligation: reread held criterion routes, basic-belief routes, source-status routes, and whether the objection has shifted into causal-series confusion or a different proof-method burden.
+- Hold/release/closure effect: release only the regress-dissolution result; hold cosmological causal-series work, source proof, or cumulative evidence until separately licensed.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: do not confuse justificatory regress with causal-series regress, do not answer every "why" with foundation talk, do not use V3 to avoid a real evidential burden, no scalar closure, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

@@ -25,15 +25,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: act of asserting a position enacts what the position denies.
-- Field target: the live burden or submove pressure that made tactic `M1P-performative-self-refutation` eligible; activation cue: act of asserting a position enacts what the position denies.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: an asserted position, refusal, criterion, or speech act relies on the very norm, agency, truth-access, rational authority, or obligation it denies.
+- Field target: the performed contradiction between the claim's content and the act needed to state, demand, deny, guide, or obligate by it.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: quote or compactly name the performed act, identify what the act presupposes, then test whether the proposition denies that presupposition.
+- Δ effect: `ΔⁿB` demotes the assertion from operative criterion to self-defeating performance when the enactment conflict lands; `Δκ` releases ordinary M1, M8, or STOP only after the performed contradiction is not merely verbal.
+- Possible ∇ reread: after the exposure, check target-explicit `∇·B` for residual object-level pressure and `∇×ξ`/`∇×κ` if the interlocutor preserves the criterion by exempting their own act from it.
+- R(H,Δ) obligation: reread held paraphrases, qualifications, and downstream objections to see whether the self-enactment remains, was only rhetorical, or has shifted into a different burden.
+- Hold/release/closure effect: release only the specific performed contradiction; hold wider worldview consequences until the contradiction either lands or is qualified away.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: do not substitute premise-level M1 for performed self-refutation; do not infer contradiction from tone; do not close the whole case because one speech act fails; no scalar closure, no argument-bank drift, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Register-formalism fixtures reference this owner (1); add direct routing coverage when this owner becomes release-critical.
 
 

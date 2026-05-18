@@ -1,0 +1,24 @@
+{
+  "id": "rc2-m6-excluded-middle-negative",
+  "prompt": "Before asking whether the claim is true or false, the word being disputed has shifted between a relational sense and an extra-mental measure, so the term itself has to be anchored first.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: do not force excluded-middle commitment before the proposition is locally defined.",
+  "expected": {
+    "required_modules": [
+      "M7-definition-anchor"
+    ],
+    "optional_modules": [
+      "definition-discipline"
+    ],
+    "forbidden_matched_modules": [
+      "M6-excluded-middle"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

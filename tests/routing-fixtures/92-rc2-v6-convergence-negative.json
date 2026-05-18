@@ -1,0 +1,22 @@
+{
+  "id": "rc2-v6-convergence-negative",
+  "prompt": "Keep this inside a single evidential register: several considerations within the same argument family are being assembled into a bounded case, without experiential or testimonial registers being live.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: single-register cumulative support should not be described as cross-register convergence.",
+  "expected": {
+    "required_modules": [
+      "E3-cumulative-case"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "V6-convergence"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

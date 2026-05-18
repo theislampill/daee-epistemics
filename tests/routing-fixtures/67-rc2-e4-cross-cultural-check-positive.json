@@ -1,0 +1,24 @@
+{
+  "id": "rc2-e4-cross-cultural-check-positive",
+  "prompt": "People across very different societies seem to recognize a transcendent source and moral accountability, but the practices and stories differ. How do we check whether diversity is an overlay on a shared foundation or evidence against the foundation itself?",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from cross-cultural fitrah and theology-of-the-masses material.",
+  "expected": {
+    "required_modules": [
+      "E4-cross-cultural-check"
+    ],
+    "optional_modules": [
+      "inductive-fitri-method"
+    ],
+    "forbidden_matched_modules": [
+      "symmetric-taqlid-check"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

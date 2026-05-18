@@ -27,15 +27,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: grounding E4 or any tawātur fiṭrī claim.
-- Field target: the live burden or submove pressure that made tactic `inductive-fitri-method` eligible; activation cue: grounding E4 or any tawātur fiṭrī claim.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: E4 or another tawātur-fiṭrī claim needs method-level grounding rather than a bare cross-cultural appeal.
+- Field target: the foundation/superstructure distinction in recognition-pattern evidence: what appears invariant, what varies culturally, and what would count as suppression or overlay.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: specify the recognition datum, distinguish foundation from superstructure, test cross-context recurrence, and name defeater or distortion conditions.
+- Δ effect: `ΔⁿB` separates invariant recognition pressure from variable cultural expression; `Δκ` releases E4/V6 only after the method can hold the diversity objection without ad hoc reclassification.
+- Possible ∇ reread: after the method lands, check target-explicit `∇·ξ` for remaining evidence-method pressure and `∇×κ` if the method reclassifies every counterexample as distortion without criteria.
+- R(H,Δ) obligation: reread held HADD/debunking objections, foundation criteria, cultural-variation pressure, and whether E4 or V6 is now eligible or still held.
+- Hold/release/closure effect: release the method boundary, not a universal proof by itself; hold examples, convergence claims, or cultural contrasts until their route is licensed.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: no ad hoc "foundation" rescue for every counterexample, no flattening culture into proof, no direct conversion of method into conclusion, no scalar closure, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

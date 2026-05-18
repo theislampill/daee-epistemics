@@ -1,0 +1,25 @@
+{
+  "id": "rc2-v6-convergence-positive",
+  "prompt": "The evidential, experiential, testimonial, and fitrah registers are all live, and the question is why these different registers converge rather than whether one register alone proves the whole case.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from convergence and cross-register warrant materials.",
+  "expected": {
+    "required_modules": [
+      "V6-convergence"
+    ],
+    "optional_modules": [
+      "E3-cumulative-case",
+      "E4-cross-cultural-check"
+    ],
+    "forbidden_matched_modules": [
+      "P2-objection-mapping"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

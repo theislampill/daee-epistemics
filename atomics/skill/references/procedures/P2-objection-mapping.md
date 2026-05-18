@@ -37,11 +37,11 @@ operator_pack_eligible: true
 ## Runtime operator contract
 
 - Activation: interlocutor presenting a battery of intellectual objections.
-- Field target: the release, sequencing, restoration, or hold/recurse pressure governed by procedure `P2-objection-mapping`; activation cue: interlocutor presenting a battery of intellectual objections.
-- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: target -> sequence/hold/release/restore -> governed next state.
-- Δ effect: `ΔⁿB` records the procedural release/hold/restoration transition; `Δκ` governs whether STOP, HOLD, RECURSE, or PARTIAL is licensed.
+- Field target: objection-battery sequencing pressure where second-order framework burdens and first-order content burdens are entangled.
+- Burden/submove form: procedure `ⁿBᵢ[OPᵢ]`: map objections into second-order, first-order, source/transmission, and affective/volitional buckets -> hold downstream answers behind the governing upstream burden -> governed next state.
+- Δ effect: `ΔⁿB` changes arrival-order answering into ordered burden topology; `Δκ` records which downstream DO/RT/content routes remain held behind criterion, source-authority, testimony, or register blockers.
 - Possible ∇ reread: after procedural release/hold, check target-explicit `∇·B`, `∇·♥`, or `∇×κ` when release posture or closure loops remain live.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- R(H,Δ) obligation: after this owner acts, reread H for held first-order answers, live second-order framework remainder, newly released upstream routes, newly blocked arrival-order answers, and next eligible pass before STOP/RECURSE/PARTIAL.
 - Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.

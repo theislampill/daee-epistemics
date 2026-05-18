@@ -1,0 +1,24 @@
+{
+  "id": "rc2-inductive-fitri-method-positive",
+  "prompt": "Across societies there are stable recognitions of dependence, worship, and accountability, but there are also cultural overlays. How do we distinguish a fitrah-level pattern from local custom without turning anecdotes into proof?",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from fitrah and cross-cultural method materials.",
+  "expected": {
+    "required_modules": [
+      "inductive-fitri-method"
+    ],
+    "optional_modules": [
+      "E4-cross-cultural-check"
+    ],
+    "forbidden_matched_modules": [
+      "proof-method-audit"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

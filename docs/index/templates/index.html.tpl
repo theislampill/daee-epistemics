@@ -3126,7 +3126,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         },
         'coupling-boundary': {
           title:'Noetic Collapse / Restoration — Coupling boundary',
-          subtitle:'T_lang(response): Ψᴺ ⇢ Ψᴵ names public language release, not direct soul access.',
+          subtitle:'T_lang: Ψᴺ ⇢ Ψᴵ names public language release, not direct soul access.',
           receives:['A licensed response from the agent execution field Ψᴺ.','Diagnosed interlocutor field Ψᴵ inferred from discourse/profile/register/source-status evidence.'],
           detects:['Whether the public response preserves closure, register, and master deformation diagnosis.','Whether wording overclaims uptake, conversion, guidance, or access to the soul.'],
           writes:['A language-mediated coupling attempt toward Ψᴵ.','Explicit non-claim of guaranteed uptake or interlocutor acceptance.'],
@@ -3468,7 +3468,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     gradient:{concept:'gradient', key:'gradient'}, '∇':{concept:'gradient', key:'gradient'}, 'route-gradient':{concept:'gradient', key:'gradient'}, routeGradient:{concept:'gradient', key:'gradient'},
     loopBreak:{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak':{concept:'loopBreak', key:'loopBreak'}, 'LoopBreak(∇×T)':{concept:'loopBreak', key:'loopBreak'},
     PsiI:{concept:'PsiI', key:'PsiI'}, 'Ψᴵ':{concept:'PsiI', key:'PsiI'},
-    coupling:{concept:'coupling', key:'coupling'}, T_lang:{concept:'coupling', key:'coupling'}, 'T_lang(response): Ψᴺ ⇢ Ψᴵ':{concept:'coupling', key:'coupling'}
+    coupling:{concept:'coupling', key:'coupling'}, T_lang:{concept:'coupling', key:'coupling'}, 'T_lang: Ψᴺ ⇢ Ψᴵ':{concept:'coupling', key:'coupling'}
   };
   function ensureConcept(id, obj){
     if(!Array.isArray(CONCEPTS)) return;
@@ -3527,16 +3527,16 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     });
     ensureConcept('coupling', {
       id:'coupling',
-      name:'T_lang(response): Ψᴺ ⇢ Ψᴵ output boundary',
+      name:'T_lang: Ψᴺ ⇢ Ψᴵ output boundary',
       type:'output-governance rule',
       summary:'Post-closure public release boundary from the agent execution field toward the diagnosed interlocutor field.',
-      definition:'T_lang(response): Ψᴺ ⇢ Ψᴵ names the language-mediated output boundary after closure, HOLD, PARTIAL, or RECURSE accounting. It is not a burden-loop transition, Δ event, R reread, or claim that the interlocutor has been rewritten.',
+      definition:'T_lang: Ψᴺ ⇢ Ψᴵ names the language-mediated output boundary after closure, HOLD, PARTIAL, or RECURSE accounting. It is not a burden-loop transition, Δ event, R reread, or claim that the interlocutor has been rewritten.',
       runtime:'The boundary checks that the public response preserves identity, avoids deformation, addresses the live burden state, and releases toward fiṭrah and sound reason without claiming guaranteed uptake, acceptance, or guidance control.',
       fields:['Ψᴺ','Ψᴵ','R','𝒞(Ψᴺ)','Restorative Response'],
       operators:['output-release','diagnostic-render-contract','P1','P7'],
       relations:['post-closure boundary from → Ψᴺ','toward diagnosed → Ψᴵ','not → burden-loop transition','not → guaranteed uptake'],
       files:['recursive-state-transitions.md','diagnostic-ir.md','output-release.md','diagnostic-render-contract.md'],
-      case:'T_lang(response) names the public release boundary, not access-to-soul, conversion guarantee, or another runtime state transition.',
+      case:'T_lang names the public release boundary, not access-to-soul, conversion guarantee, or another runtime state transition.',
       symbols:['coupling','Psi','PsiI','final','C']
     });
     ensureRelation('rel-live-field-gradient', {id:'rel-live-field-gradient', label:'live field feeds ∇ route-gradient', type:'route-pressure', from:'live noetic/burden/dependency/register/route field', to:'∇ route-gradient', symbols:['gradient','Psi','IR','burden'], explain:'Plain ∇ reads route pressure after the field is diagnostically constrained.', runtime:'It explains release order without bypassing IR, routing precedence, or catalogue gates.'});
@@ -3545,7 +3545,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     ensureRelation('rel-curl-loopbreak', {id:'rel-curl-loopbreak', label:'nonzero ∇×T checks LoopBreak eligibility', type:'loop-breaking', from:'∇×T nonzero', to:'LoopBreak(∇×T)', symbols:['nablaCross','loopBreak'], explain:'Curl may require a loop-breaking submove rather than indefinite deferral or false closure.', runtime:'LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R; G must be an owner-licensed grounding source.'});
     ensureRelation('rel-loopbreak-delta-reread', {id:'rel-loopbreak-delta-reread', label:'LoopBreak produces Δ and rereads curl', type:'pipeline-order', from:'LoopBreak(∇×T)', to:'Δ update → ∇×T reread → R(H,Δ)', symbols:['loopBreak','deltaB','nablaCross','R'], explain:'Loop-breaking is operative only when it changes state and triggers reread.', runtime:'It requires target loop, grounding source, burden/submove, Δ effect, and post-break reread; it cannot be arbitrary assertion or proof-by-symbol.'});
     ensureRelation('rel-closure-field-condition', {id:'rel-closure-field-condition', label:'𝒞(Ψᴺ) licenses STOP as positive closure-field condition', type:'closure-field', from:'R(H,Δ) + cleared/bounded residual pressure', to:'𝒞(Ψᴺ)', symbols:['C','R','nablaDot','nablaCross','gradient'], explain:'Closure is target configuration, not checklist exhaustion.', runtime:'It does not guarantee interlocutor conversion.'});
-    ensureRelation('rel-agent-interlocutor-coupling', {id:'rel-agent-interlocutor-coupling', label:'Ψᴺ releases through T_lang(response) toward Ψᴵ', type:'output boundary', from:'Ψᴺ agent execution field', to:'Ψᴵ diagnosed interlocutor field', symbols:['Psi','PsiI','coupling','final'], explain:'The public response is a language-mediated output boundary after closure/hold/partial accounting.', runtime:'No access-to-soul, guaranteed uptake, or guidance-control claim is licensed; T_lang is not a burden-loop transition.'});
+    ensureRelation('rel-agent-interlocutor-coupling', {id:'rel-agent-interlocutor-coupling', label:'Ψᴺ releases through T_lang toward Ψᴵ', type:'output boundary', from:'Ψᴺ agent execution field', to:'Ψᴵ diagnosed interlocutor field', symbols:['Psi','PsiI','coupling','final'], explain:'The public response is a language-mediated output boundary after closure/hold/partial accounting.', runtime:'No access-to-soul, guaranteed uptake, or guidance-control claim is licensed; T_lang is not a burden-loop transition.'});
   }
   const previousGoConceptField = window.goConceptField;
   window.goConceptField = function(raw){

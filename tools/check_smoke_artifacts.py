@@ -9,6 +9,7 @@ verdicts require reading input/output/verdict artifacts together.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from collections import defaultdict
@@ -21,9 +22,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 HARD_MIN_BYTES = 20_000
 DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
+CURRENT_RELEASE_PENDING_ROOT = ROOT / "tests" / "smokes" / "current-release"
+CURRENT_RELEASE_VERSION = "v0.4.2.0"
+CURRENT_RELEASE_ROOT = CURRENT_RELEASE_PENDING_ROOT / CURRENT_RELEASE_VERSION
 DEFAULT_RELEASE_ARTIFACTS = ROOT / "docs" / "release-artifacts.md"
 DEFAULT_RELEASE_PACKAGE_FILENAME = "daee-epistemics-v0.4.0.0.skill"
 DEFAULT_RELEASE_PACKAGE_SHA256 = "78C2BECE8818DEFF10C8CEF1A1578D9B54D0929950460681D04DC4F885576D0C"
+REQUIRED_CURRENT_RELEASE_CASES = {"CR-01", "CR-02", "CR-03"}
+DEFERRED_CURRENT_RELEASE_CASES = {f"CR-{index:02d}" for index in range(4, 11)}
+EXPECTED_CURRENT_RELEASE_CASES = REQUIRED_CURRENT_RELEASE_CASES | DEFERRED_CURRENT_RELEASE_CASES
 PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill(?:\.zip)?$")
 HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
 RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
@@ -305,6 +312,12 @@ WORSHIP_WORTHINESS_TERMS_RE = re.compile(
 
 
 FIXTURE_ALLOWANCES = {
+    # Current-release cases use stable CR-* ids rather than descriptive fixture
+    # names. Keep their contamination allowances narrow and tied to the manifest
+    # selection rationale so package-bound outputs are not rejected merely because
+    # the case id itself lacks the content family token.
+    "cr-01": (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE),
+    "cr-03": (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE),
     "source-worldview-canary": (
         SOURCE_WORLDVIEW_CANARY_TERMS_RE,
         ACCOUNTABILITY_TERMS_RE,
@@ -1371,10 +1384,58 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
     if not root.exists():
         return [f"current-release smoke root is absent: {root}"]
 
+    required_cases = REQUIRED_CURRENT_RELEASE_CASES
+    manifest_path = root / "manifest.json"
+    manifest_cases: dict[str, dict[str, object]] = {}
+    if manifest_path.exists():
+        try:
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            errors.append(f"{manifest_path.relative_to(ROOT).as_posix()}: invalid JSON: {exc}")
+            payload = {}
+        if isinstance(payload, dict):
+            cases = payload.get("cases")
+            if isinstance(cases, list):
+                for item in cases:
+                    if isinstance(item, dict) and isinstance(item.get("id"), str):
+                        manifest_cases[item["id"]] = item
+            release_required = {
+                case_id
+                for case_id, item in manifest_cases.items()
+                if item.get("release_required") is True
+            }
+            if release_required and release_required != required_cases:
+                errors.append(
+                    "require-current-release-smokes: v0.4.2.0 release-required cases must be "
+                    f"{', '.join(sorted(required_cases))}; got {', '.join(sorted(release_required))}"
+                )
+            for case_id in sorted(required_cases):
+                item = manifest_cases.get(case_id)
+                if item is not None and item.get("witness_required") is not True:
+                    errors.append(f"{case_id}: release-required smoke must declare witness_required: true")
+            for case_id in sorted(DEFERRED_CURRENT_RELEASE_CASES):
+                item = manifest_cases.get(case_id)
+                if item is None:
+                    continue
+                if item.get("release_required") is not False:
+                    errors.append(f"{case_id}: deferred expanded smoke must not be release_required")
+                status = str(item.get("status", ""))
+                if not status.startswith("deferred-expanded-smoke"):
+                    errors.append(f"{case_id}: deferred expanded smoke status must start with deferred-expanded-smoke")
+
     hard_current_passes = 0
     bounded_current_passes = 0
-    fixture_dirs = sorted(path for path in root.iterdir() if path.is_dir())
-    for directory in fixture_dirs:
+    required_passes = 0
+    for case_id in sorted(required_cases):
+        directory = root / case_id
+        if not directory.is_dir():
+            errors.append(f"{case_id}: missing required current-release smoke directory")
+            continue
+        for required_file in ("input.md", "output.md", "trace.md", "verdict.md"):
+            if not (directory / required_file).is_file():
+                errors.append(f"{case_id}: missing {required_file}")
+        if not (directory / "output.md").is_file() or not (directory / "trace.md").is_file() or not (directory / "verdict.md").is_file():
+            continue
         input_text = read(directory / "input.md")
         output_text = read(directory / "output.md")
         trace_text = read(directory / "trace.md")
@@ -1394,21 +1455,95 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
             trace_text,
             release_artifact=release_artifact,
         )
-        if not (directory / "ir.json").is_file():
+        if status == "PASS" and not (directory / "ir.json").is_file():
             artifact_errors.append("current-release PASS smoke missing ir.json")
         for error in artifact_errors:
             errors.append(f"{directory.name}: {error}")
         if artifact_errors or status != "PASS":
             continue
+        required_passes += 1
         if cls == "hard":
             hard_current_passes += 1
         elif cls == "bounded":
             bounded_current_passes += 1
 
+    if required_passes != len(required_cases):
+        errors.append(
+            "require-current-release-smokes: not all three required v0.4.2.0 "
+            f"current-release smokes passed ({required_passes}/{len(required_cases)})"
+        )
     if hard_current_passes < 1:
         errors.append("require-current-release-smokes: no hard current-release PASS smoke with ir.json")
     if bounded_current_passes < 1:
         errors.append("require-current-release-smokes: no bounded current-release PASS smoke with ir.json")
+    return errors
+
+
+def pending_current_release_suite_errors(root: Path) -> list[str]:
+    """Return release-mode failures for committed pending smoke skeletons.
+
+    Pending manifests are useful because they make absence explicit, but they are
+    not current-release smoke proof and must fail the release-promotion check.
+    """
+
+    errors: list[str] = []
+    manifests = sorted(root.glob("*/manifest.json"))
+    if not manifests:
+        return [f"pending current-release smoke manifest is absent under {root}"]
+
+    for manifest in manifests:
+        rel = manifest.relative_to(ROOT).as_posix()
+        try:
+            payload = json.loads(manifest.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            errors.append(f"{rel}: invalid JSON: {exc}")
+            continue
+        if not isinstance(payload, dict):
+            errors.append(f"{rel}: manifest must be a JSON object")
+            continue
+        if payload.get("status") not in {"pending-live-output", "local-3-smoke-required"}:
+            errors.append(f"{rel}: manifest status must be pending-live-output or local-3-smoke-required")
+        cases = payload.get("cases")
+        if not isinstance(cases, list):
+            errors.append(f"{rel}: cases must be an array")
+            continue
+        seen: set[str] = set()
+        for item in cases:
+            if not isinstance(item, dict):
+                errors.append(f"{rel}: case entry must be an object")
+                continue
+            case_id = item.get("id")
+            if not isinstance(case_id, str) or not case_id:
+                errors.append(f"{rel}: case missing id")
+                continue
+            seen.add(case_id)
+            status = item.get("status")
+            if case_id in REQUIRED_CURRENT_RELEASE_CASES:
+                if item.get("release_required") is not True:
+                    errors.append(f"{rel}: {case_id} must be release_required")
+                if status != "pending-live-output":
+                    errors.append(f"{rel}: {case_id} status must be pending-live-output")
+            elif case_id in DEFERRED_CURRENT_RELEASE_CASES:
+                if item.get("release_required") is not False:
+                    errors.append(f"{rel}: {case_id} deferred case must not be release_required")
+                if not str(status).startswith("deferred-expanded-smoke"):
+                    errors.append(f"{rel}: {case_id} status must be deferred-expanded-smoke")
+            for field in ("output_path", "ir_path", "verdict_path"):
+                value = item.get(field)
+                if value not in ("", None):
+                    errors.append(f"{rel}: {case_id} skeleton case must not point to {field}")
+        missing = sorted(EXPECTED_CURRENT_RELEASE_CASES - seen)
+        extra = sorted(seen - EXPECTED_CURRENT_RELEASE_CASES)
+        if missing:
+            errors.append(f"{rel}: missing current-release pending case(s): {', '.join(missing)}")
+        if extra:
+            errors.append(f"{rel}: unexpected current-release case id(s): {', '.join(extra)}")
+        errors.append(f"{rel}: current-release smoke suite lacks local required PASS captures")
+
+    errors.append(
+        "require-current-release-smokes: minimal three-case skeleton supplies no "
+        "current-release PASS smoke with ir.json until local captures exist"
+    )
     return errors
 
 
@@ -1746,14 +1881,48 @@ def validate_sidecar_artifact(
     return errors
 
 
+def deferred_manifest_case_ids(root: Path) -> set[str]:
+    manifest = root / "manifest.json"
+    if not manifest.exists():
+        return set()
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return set()
+    if not isinstance(payload, dict):
+        return set()
+    cases = payload.get("cases")
+    if not isinstance(cases, list):
+        return set()
+    deferred: set[str] = set()
+    for item in cases:
+        if not isinstance(item, dict):
+            continue
+        case_id = item.get("id")
+        if not isinstance(case_id, str):
+            continue
+        status = str(item.get("status", ""))
+        if item.get("release_required") is False or status.startswith("deferred-expanded-smoke"):
+            deferred.add(case_id)
+    return deferred
+
+
 def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -> list[str]:
     errors: list[str] = []
-    fixture_dirs = sorted(path for path in root.iterdir() if path.is_dir()) if root.exists() else []
     if not root.exists():
         return [
             f"smoke artifact root is absent: {root}. "
             "Pass --root explicitly when validating a local smoke suite."
         ]
+    deferred_cases = deferred_manifest_case_ids(root)
+    helper_dirs = {"ir", "outputs", "verdicts"}
+    fixture_dirs = sorted(
+        path
+        for path in root.iterdir()
+        if path.is_dir()
+        and path.name not in helper_dirs
+        and path.name not in deferred_cases
+    )
     if not fixture_dirs:
         return [f"no fixture directories found under {root}"]
 
@@ -1907,7 +2076,7 @@ def validate_current_release_bad_samples(release_artifact: ReleaseArtifact) -> l
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
         write_artifact(
-            root / "01-historical-only",
+            root / "CR-01",
             fixture_class_value="hard",
             trace=(
                 "- package filename: daee-epistemics-RC00001-v0.3.1.0.skill.zip\n"
@@ -1930,32 +2099,35 @@ def validate_current_release_bad_samples(release_artifact: ReleaseArtifact) -> l
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=False, release_artifact=release_artifact)
-        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-01", fixture_class_value="hard", with_ir=False, release_artifact=release_artifact)
+        write_artifact(root / "CR-02", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-03", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
         found = current_release_requirement_errors(root, release_artifact)
         if not any("current-release PASS smoke missing ir.json" in item for item in found):
             errors.append(f"strict bad sample missing ir.json was not rejected: {found!r}")
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", output="x" * 1000, with_ir=True, release_artifact=release_artifact)
-        write_artifact(root / "02-current-bounded", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-01", fixture_class_value="hard", output="x" * 1000, with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-02", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-03", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
         found = current_release_requirement_errors(root, release_artifact)
         if not any("hard smoke PASS under depth floor" in item for item in found):
             errors.append(f"strict bad sample hard below depth was not rejected: {found!r}")
 
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
-        write_artifact(root / "01-current-hard", fixture_class_value="hard", with_ir=True, release_artifact=release_artifact)
+        write_artifact(root / "CR-01", fixture_class_value="hard", with_ir=True, release_artifact=release_artifact)
         write_artifact(
-            root / "02-current-bounded",
+            root / "CR-02",
             fixture_class_value="bounded",
             verdict_extra="",
             with_ir=True,
             release_artifact=release_artifact,
         )
+        write_artifact(root / "CR-03", fixture_class_value="bounded", with_ir=True, release_artifact=release_artifact)
         # Overwrite verdict without bounded-complete fields.
-        (root / "02-current-bounded" / "verdict.md").write_text(
+        (root / "CR-02" / "verdict.md").write_text(
             "- fixture class: bounded\n- status: PASS\n- burden-cycle count: 1\n",
             encoding="utf-8",
         )
@@ -1963,6 +2135,16 @@ def validate_current_release_bad_samples(release_artifact: ReleaseArtifact) -> l
         if not any("bounded PASS lacks burden-completeness audit" in item for item in found):
             errors.append(f"strict bad sample bounded without audit was not rejected: {found!r}")
     return errors
+
+
+def has_required_current_release_capture(root: Path) -> bool:
+    if not root.exists():
+        return False
+    for case_id in REQUIRED_CURRENT_RELEASE_CASES:
+        directory = root / case_id
+        if not all((directory / name).is_file() for name in ("input.md", "output.md", "trace.md", "verdict.md", "ir.json")):
+            return False
+    return True
 
 
 def main(argv: list[str]) -> int:
@@ -1994,8 +2176,8 @@ def main(argv: list[str]) -> int:
         "--require-current-release-smokes",
         action="store_true",
         help=(
-            "Require at least one hard and one bounded current-release PASS smoke with ir.json. "
-            "Historical regression smokes do not count."
+            "Require the v0.4.2.0 three-case current-release PASS smoke gate with ir.json. "
+            "Historical regression and deferred expanded smokes do not count."
         ),
     )
     args = parser.parse_args(argv)
@@ -2019,10 +2201,29 @@ def main(argv: list[str]) -> int:
     errors.extend(release_errors)
     if not args.samples_only:
         artifact_root = Path(args.root)
-        if artifact_root.exists() or artifact_root != DEFAULT_ROOT or args.require_current_release_smokes:
+        if (
+            args.require_current_release_smokes
+            and artifact_root == DEFAULT_ROOT
+            and not artifact_root.exists()
+            and has_required_current_release_capture(CURRENT_RELEASE_ROOT)
+        ):
+            artifact_root = CURRENT_RELEASE_ROOT
+        pending_skeleton_mode = (
+            args.require_current_release_smokes
+            and artifact_root == DEFAULT_ROOT
+            and not artifact_root.exists()
+            and CURRENT_RELEASE_PENDING_ROOT.exists()
+        )
+        if (
+            artifact_root.exists()
+            or artifact_root != DEFAULT_ROOT
+            or (args.require_current_release_smokes and not pending_skeleton_mode)
+        ):
             errors.extend(validate_root(artifact_root, None if args.no_release_artifacts else release_artifact))
         if args.require_current_release_smokes:
-            if release_artifact is None:
+            if pending_skeleton_mode:
+                errors.extend(pending_current_release_suite_errors(CURRENT_RELEASE_PENDING_ROOT))
+            elif release_artifact is None:
                 errors.append("--require-current-release-smokes requires release-artifacts evidence")
             else:
                 errors.extend(current_release_requirement_errors(artifact_root, release_artifact))

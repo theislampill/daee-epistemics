@@ -22,7 +22,7 @@ live-smoke claim, or a package/release proof claim by itself.
 Current compact runtime spine:
 
 ```text
-Input -> IR(N,m,tau,sigma) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Delta -> del-dot/del-cross field diagnostics -> LoopBreak if licensed -> R(H,Δ) -> C(PsiN) -> STOP/HOLD/PARTIAL/RECURSE
+Input -> IR(N,m,tau,sigma) -> ∇ route-gradient -> ⁿB -> {ⁿBᵢ[OPᵢ]} -> Land(ⁿB) -> ΔⁿB/Δκ -> ∇·/∇× field diagnostics -> LoopBreak(∇×T) if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
 schema-light register bridge baseline:
@@ -47,6 +47,79 @@ N_space |- D0 ~> PsiN<N in N_space,m,tau,sigma,heart,xi,Omega,mu,kappa,H>
 -> T_lang: PsiN -> PsiI
 ```
 
+## Operator Typing / Schema-Light Formal Types
+
+These are schema-light formal types. They clarify the mathematical role, valid use, and misuse
+boundary of the notation without turning the repo into a full formal calculus. They also do not
+make vector-calculus notation literal physical differential operators, and they do not prove
+truth, warrant, interlocutor uptake, model-internal mechanism, or live behavioral competence.
+
+| Operator | Schema-light formal type | Misuse boundary |
+|---|---|---|
+| `ΔⁿB` | Partial local state-update on burden-local and register-local state. | Not a decorative topic shift and not interchangeable with `ⁿ⁺¹B`. |
+| `Δκ` | Dependency/collapse-radius graph update. | Not a generic TODO list or a proof that all dependencies were reread. |
+| `∇` | Route-ranking functional from state and eligible route set to a preorder/scored ordering. | Not literal physical gradient, truth metric, warrant proof, or gate bypass. |
+| `∇·T` | Post-`Δ` diagnostic predicate/label over explicit target subfield `T`. | Not literal divergence unless a rigorous target space is later defined. |
+| `∇×T` | Cycle/circularity diagnostic over a relation/graph-like target `T`. | Not literal curl unless a rigorous target space is later defined. |
+| `LoopBreak(∇×T)` | Owner-licensed partial transition, `⇀`, not total `→`. | Undefined unless cyclic pressure is diagnosed and a non-circular owner ground licenses repair. |
+| `R(H,Δ)` | Reread transition over held material `H` and updated state. | Not satisfied by printing the marker without held/live remainder and next-status work. |
+| `𝒞(Ψᴺ)` | Closure predicate on agent/runtime execution state. | Not interlocutor acceptance, conversion, persuasion, guidance, or soul access. |
+| `T_lang: Ψᴺ ⇢ Ψᴵ` | Partial coupling relation at the public-output boundary. | Not an isomorphism, not a surjection, and not a guaranteed update operator on `Ψᴵ`. |
+
+## Small-Step Transition Model
+
+This is the preferred mathematical home for the current notation: typed transition systems,
+graph-state updates, and operational semantics. Vector-calculus language remains analogy unless a
+rigorous target space is defined. In particular, `∇·` and `∇×` are target-explicit diagnostics,
+not literal differential operators.
+
+```text
+S = (N_space, N_sel_or_held, B_live, H, κ, Reg, Routes, SourceBasis, Gate, RenderGate)
+
+select:   Sᵢ ──∇──▶ (route preorder, chosen burden/operator)
+operate:  Sᵢ ──ⁿBᵢ[OP]──▶ Sᵢ'
+delta:    ΔⁿB, Δκ extracted from Sᵢ → Sᵢ'
+diagnose: Sᵢ' ──(∇·T, ∇×T)──▶ diagnostic labels over explicit target T
+repair:   if licensed, LoopBreak(∇×T): Sᵢ' ⇀ Sᵢ''
+reread:   Sᵢ'' ──R(H,Δ)──▶ decision ∈ {STOP, HOLD, PARTIAL, RECURSE, ⁿ⁺¹B}
+close:    𝒞(Ψᴺ) is a predicate on Sᵢ'' plus reread state
+release:  T_lang: Ψᴺ ⇢ Ψᴵ is a partial coupling relation at the public-output boundary
+```
+
+`LoopBreak` is partial because it is licensed only under diagnosed cyclic pressure. `T_lang` is
+partial because public language may fail to couple, be misunderstood, or be refused. `∇` ranks
+eligible route pressure before release; it does not choose from the whole possible field after
+routing gates have already excluded a path.
+
+## Closure Coverage And Collapse Proof
+
+The Closure/Reconstruction Witness uses the burden dependency graph as both a dependency
+structure and a coverage record. `A → B` means B depends on A landing first; `A ∥ B` means the
+two burdens are parallel in the current witness; `(root)` means no upstream dependency. Dropping
+an initial burden from terminal accounting is a proof failure, even if the response prints
+`R(H,Δ)`.
+
+`InitialBurdenSet` is not a retrospective set inferred from the closure block. It is the
+pre-release burden enumeration supplied by Layer A / Diagnostic IR before terminal accounting.
+New burdens found during `R(H,Δ)` are newly live or next-pass candidates; they do not make the
+original initial set larger after the fact.
+
+```text
+coverage_complete =
+  every burden in InitialBurdenSet appears exactly once in TerminalStates
+
+collapse_positive =
+  coverage_complete
+  and ∇·B = neutral
+  and ∇×κ ∈ {null, resolved}
+```
+
+Held or carried burdens can be valid terminal states for current-pass accounting:
+`held-with-reason`, `carried-PARTIAL`, and `carried-RECURSE` prevent silent drops. They must not be
+mistaken for COMPLETE closure unless the witness also explains why the scoped field has no live
+outward pressure and no unresolved curl. Coverage completion is an accounting condition; positive
+collapse is a stronger closure condition.
+
 ## Adjudication Summary
 
 Implemented now:
@@ -56,21 +129,21 @@ Implemented now:
   hold/release, collapse-radius, owner, reread, and restoration controls.
 - `ⁿB`, `ⁿBᵢ`, `ΔⁿB`, `ⁿ⁺¹B`, `ⁿBᵢ[OP]`, and expanded `R(...)` as burden/governance notation.
 - plain `∇` as a route-gradient read over eligible live pressure, constrained by IR/routing/owner gates.
-- `∇·` / `del-dot` and `∇×` / `del-cross` as post-Delta, target-explicit field diagnostics
+- `∇·T` and `∇×T` as post-Delta, target-explicit field diagnostics
   over the Δ-produced noetic/burden/dependency/register/route/collapse field.
 - `LoopBreak(∇×T)` as the explicit loop-breaking submove form when nonzero curl is owner-licensed for resolution.
 - `𝒞(Ψᴺ)` and `N_fiṭrī ∧ ʿaql ṣarīḥ` as the positive closure-field condition after burden landing and reread.
-- `Ψᴵ` and `T_lang: Ψᴺ ⇢ Ψᴵ` as the diagnosed interlocutor field and language-mediated coupling boundary.
+- `Ψᴵ` and `T_lang: Ψᴺ ⇢ Ψᴵ` as the diagnosed interlocutor field and language-mediated public output boundary.
 - Shannon analogy boundaries and anti-symbol-theater / anti-schema-bloat guards.
 
-Still deferred with blocker:
+Outside this formalism surface:
 
 - Hard mandatory schema fields for `heart`, `xi`, `Omega`, `mu`, or `kappa`.
-- v0.4.0.0 contract/release migration.
+- release, package, or tag claims.
 
-Blocker: hard schema and release migration require deliberate schema/checker/fixture/smoke
-migration, reviewed fresh hard smokes, and release authorization. Static fixtures prove the
-derived bridge against current controls; they are not a substitute for package-bound live smokes.
+Hard schema migration requires deliberate schema/checker/fixture/smoke migration and authorization.
+Static fixtures prove the derived bridge against current controls; they are not a substitute for
+release provenance or package-bound evidence.
 
 Rejected as runtime behavior:
 
@@ -91,7 +164,7 @@ Rejected as runtime behavior:
 | `D₀` | `D0` | Surface discourse / input signal | Implemented bridge | Input before diagnostic reduction. |
 | `Ψᴺ` | `PsiN` | Encoded noetic signal-state | Implemented bridge | Reconstructed signal-state represented through IR/case-state. |
 | `Ψᴵ` | `PsiI` | Diagnosed interlocutor noetic field | Implemented bridge | Inferred from discourse/profile/register evidence; not access to the soul or guaranteed uptake. |
-| `T_lang: Ψᴺ ⇢ Ψᴵ` | `T_lang: PsiN -> PsiI` | Language-mediated coupling attempt | Implemented bridge | Released response may perturb the diagnosed interlocutor field without claiming control of guidance. |
+| `T_lang: Ψᴺ ⇢ Ψᴵ` | `T_lang: PsiN -> PsiI` | Language-mediated public output boundary | Implemented bridge | Released response may perturb the diagnosed interlocutor field without claiming control of guidance. |
 | `N∈𝓝` | `N in N_space` | Runtime-selected or held noetic frame | Implemented bridge | Current `N` is selected/held; family label is not warrant. |
 | `IR(N,m,τ,σ)` | `IR(N,m,tau,sigma)` | Compact Diagnostic IR | Current canon | Required runtime dispatch bottleneck. |
 | `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` | `IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)` | Expanded register bridge | Implemented bridge | Derived functions; not mandatory schema fields. |
@@ -104,7 +177,7 @@ Rejected as runtime behavior:
 | `ⁿB` | `nB` | n-th live burden-cycle | Implemented bridge | Current live burden with cycle index where needed. |
 | `ⁿBᵢ` | `nBi` | i-th operative submove | Current canon | Owner-backed target -> operation -> result. |
 | `ΔⁿB` | `Delta-nB` | Local landed state change | Implemented bridge | Local burden delta before reread. |
-| `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle | Implemented bridge | Licensed only after `Land(B) -> R(H,Delta)`. |
+| `ⁿ⁺¹B` | `n-plus-1B` | Next burden-cycle | Implemented bridge | Licensed only after `Land(ⁿB) -> R(H,Delta)`. |
 | `ⁿBᵢ[OP]` | `nBi[OP]` | Operator signature | Implemented bridge | `target -> operation -> result -> Delta-nB / Delta-kappa`. |
 | `∇` | `route-gradient`, `gradient` | Route-gradient read over live field pressure | Implemented bridge | Orders eligible routes/burdens by expected diagnostic reduction or closure progress; constrained by IR/routing/owner gates. |
 | `∇·T` | `del-dot(T)` | Divergence-like residual outward pressure in explicit target field `T` | Implemented bridge | Post-Delta closure diagnostic; target may be `κ`, `B`, `ξ`, `♥`, route/register/noetic field when owner-defined. |
@@ -125,7 +198,7 @@ one of these:
 - hold/release posture,
 - burden selection,
 - collapse radius,
-- `Land(B)` or `R(H,Δ)`,
+- `Land(ⁿB)` or `R(H,Δ)`,
 - terminal restoration boundary.
 
 If a symbol does not change those controls, it belongs in this spec or an audit explanation,
@@ -147,7 +220,7 @@ when multiple valid structures remain live.
 operation. `Delta-kappa` is the dependency-radius delta consumed by `R(H,Δ)` before
 STOP/HOLD/PARTIAL/RECURSE. These are event-local transition operators.
 
-The field-level operators are different. `∇·` (del-dot, del dot, nabla dot, divergence)
+The field-level operators are different. `∇·` (checker/search aliases: del-dot, del dot, nabla dot, divergence)
 reads the noetic/burden/dependency/register/route field after one or more delta events and asks
 whether pressure is expanding, contracting, or neutral across the selected field target. Positive
 divergence means the landed burden exposes more live pressure; negative divergence means
@@ -157,12 +230,12 @@ collapse/closure-state target, but it is not the only valid target and the opera
 restricted to `κ`: a burden, dependency, route, register, or noetic-field target may be read when
 the target is explicit and owner-defined.
 
-`∇×` (del-cross, del cross, nabla cross, curl) reads circulation in that same field after delta
+`∇×` (checker/search aliases: del-cross, del cross, nabla cross, curl) reads circulation in that same field after delta
 events. It asks whether warrant, ontology, discourse state, affective posture, memetic carrier,
 dependency radius, burden order, or route relation loop back into one another. Standard curl is
-a 3D construction, but the high-dimensional analogue used here is the antisymmetric part of the
-Jacobian / exterior derivative: a noetic-state field over `N_space` can have circular dependency
-pressure without being a 3D physical field. If nonzero curl remains live, the output must break
+a 3D construction; this repo uses it only as a formal analogy for antisymmetric / circular
+dependency pressure over an owner-defined target field. It is not decorative physics and does not
+claim discourse is literally a physical field. If nonzero curl remains live, the output must break
 the loop or mark PARTIAL/RECURSE; answering one local proposition does not discharge a curl-like
 dependency loop.
 
@@ -197,6 +270,12 @@ evidence. `T_lang: Ψᴺ ⇢ Ψᴵ` names the language-mediated coupling attempt
 does not claim access to the soul, guaranteed uptake, total profile identity, or agent control of
 guidance.
 
+`Ψᴵ` remains uncertainty-bearing. Where the discourse basis is thin or compatible with multiple
+candidate noetic structures, the runtime should hold alternatives through `read_status`,
+`confidence`, `decisive_missing_differentiator`, `what_remains_live`, or route notes rather than
+certifying a single interlocutor field. This is still schema-light: uncertainty may be compact, and
+ordinary output should not grow a decorative uncertainty paragraph.
+
 The diagnostic is operative only when it changes owner/TTP eligibility, held material,
 hold/release posture, burden selection, dependency radius, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE,
 or checker outcome. It is symbol theater if it merely decorates an audit or appears without a
@@ -206,11 +285,11 @@ measures truth, meaning, warrant, revelation, fitrah, or sound reason.
 
 ## Divergence / Curl Diagnostic Boundary
 
-Allowed forms: `∇·`, `∇×`, `del-dot`, `del dot`, `del-cross`, `del cross`, `nabla dot`,
-`nabla cross`, `divergence`, and `curl`. In default runtime output, compact Unicode markers
+Runtime notation forms: `∇·T` and `∇×T`. Checker/search aliases include `del-dot`, `del dot`, `del-cross`, `del cross`, `nabla dot`,
+`nabla cross`, `divergence`, and `curl`; they are not separate runtime operators. In default runtime output, compact Unicode markers
 must appear when control-relevant in target-explicit state notation such as `State: Δκ live;
-∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.`, `Burden field: ΔⁿB landed; ∇·B positive over
-B3/B4; ∇×B unresolved around compact-neutrality dependency.`, or `Register field: ∇·♥
+∇·κ positive; ∇×κ unresolved; R(H,Δ): RECURSE.`, `Burden field: ΔⁿB landed; ∇·ⁿB positive over
+dependent burdens; ∇×ⁿB unresolved around compact-neutrality dependency.`, or `Register field: ∇·♥
 positive; ∇×ξ unresolved; R(H,Δ): HOLD.` ASCII aliases and long explanations are not default
 notation unless the user asks for algebra/formalism/audit visibility. In audit/formalism
 surfaces, all forms are allowed only with the operator distinction and control-effect rule above.
@@ -226,7 +305,7 @@ surfaces, all forms are allowed only with the operator distinction and control-e
 - Use `κ` to name the downstream dependency set that must be reread after a load-bearing node
   changes.
 - Use `ΔⁿB` for local burden-state change and `ⁿ⁺¹B` only for a new burden licensed after
-  `Land(B) -> R(H,Delta)`.
+  `Land(ⁿB) -> R(H,Delta)`.
 - Keep every `ⁿBᵢ[OP]` attached to target -> operation -> result.
 
 ## Compositional Noetic-State Boundary
@@ -241,7 +320,7 @@ N_space read
 -> PF / pattern_profile
 -> live register set {heart, xi, Omega, mu, kappa, sigma}
 -> owner/TTP child mode
--> Land(B)
+-> Land(ⁿB)
 -> R(H,Delta)/kappa
 ```
 

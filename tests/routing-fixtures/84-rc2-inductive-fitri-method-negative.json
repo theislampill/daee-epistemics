@@ -1,0 +1,24 @@
+{
+  "id": "rc2-inductive-fitri-method-negative",
+  "prompt": "One public figure says his community has always believed this, so treat that claim as decisive proof. Check whether that method carries the conclusion.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: single-source social proof needs method audit rather than fitri induction.",
+  "expected": {
+    "required_modules": [
+      "proof-method-audit"
+    ],
+    "optional_modules": [
+      "symmetric-taqlid-check"
+    ],
+    "forbidden_matched_modules": [
+      "inductive-fitri-method"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

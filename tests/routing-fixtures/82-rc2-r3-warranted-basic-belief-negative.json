@@ -1,0 +1,22 @@
+{
+  "id": "rc2-r3-warranted-basic-belief-negative",
+  "prompt": "I reject any claim as knowledge unless it is first reconstructed as an inference from premises I can inspect; spontaneous recognition is not the live issue.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: explicit internalist criterion demand should route before warranted-basic-belief restoration.",
+  "expected": {
+    "required_modules": [
+      "R1-internalist-criterion"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "R3-warranted-basic-belief"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

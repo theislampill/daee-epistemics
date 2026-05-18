@@ -452,6 +452,13 @@ REQUIRED_TOKENS = {
         "The schema-light register bridge is implemented in this repo",
         "tests/register-formalism-bridge-fixtures/",
         "a derived/conditional bridge",
+        "Operator Typing / Schema-Light Formal Types",
+        "route-ranking functional",
+        "preorder/scored ordering",
+        "Small-Step Transition Model",
+        "partial coupling relation",
+        "not an isomorphism",
+        "not a surjection",
         "𝓝 ⊢ D₀ ⇝ Ψᴺ",
         "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
         "R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)",
@@ -470,8 +477,8 @@ REQUIRED_TOKENS = {
         "del-cross",
         "nabla dot",
         "nabla cross",
-        "antisymmetric part of the",
-        "Jacobian / exterior",
+        "formal analogy for antisymmetric / circular",
+        "not decorative physics",
         "Neither `∇·` nor `∇×` replaces",
         "compact markers",
         "long formalism exposition",
@@ -1602,7 +1609,7 @@ def check_ledger_status(root: Path, errors: list[str]) -> None:
         "DEFERRED WITH BLOCKER",
         "tests/register-formalism-bridge-fixtures/",
         "installed-skill live smoke proof",
-        "current-release package artifact smokes",
+        "package proof belongs to release provenance",
     ]
     for token in required:
         if token not in text:
@@ -1610,10 +1617,10 @@ def check_ledger_status(root: Path, errors: list[str]) -> None:
     if "| IMPLEMENTED |" in text:
         errors.append("ledger: bare IMPLEMENTED status is forbidden; use proof-boundary statuses")
     if (
-        "It does not mean current-release package artifact" not in text
-        or "smokes have passed" not in text
+        "It does not expand the Diagnostic IR JSON schema" not in text
+        or "package proof belongs to release provenance" not in text
     ):
-        errors.append("ledger: missing release-package proof caveat")
+        errors.append("ledger: missing schema/package proof-boundary caveat")
 
 def check_index(root: Path, errors: list[str]) -> None:
     path = root / "docs/index.html"

@@ -24,6 +24,10 @@ initial IR must govern dispatch before content release; the `post_render_gate` t
 same live control surface after a bounded move and before closure. If the initial IR cannot be
 formed because mandatory fields cannot be populated, the correct action is Stop-4, not a response
 with a post-hoc IR.
+When a Closure/Reconstruction Witness will be rendered, its `Initial burden set` must be derived
+from this pre-release Layer A / Diagnostic IR burden enumeration before terminal states are printed.
+`R(H,Δ)` may discover newly live or next-pass burdens, but those are not retroactively inserted into
+the original initial set.
 
 The IR composes fields from several sources:
 
@@ -113,6 +117,13 @@ identity, guaranteed uptake, or agent control of guidance. Reconstruction fideli
 to recover whether the released response addressed the diagnosed interlocutor burden without
 turning that diagnosis into a claim of acceptance.
 
+`PsiI` / `Ψᴵ` diagnoses remain uncertainty-bearing. When discourse evidence is thin,
+distributed, or compatible with multiple candidate noetic structures, the IR should preserve
+alternative reads through `read_status`, `confidence`, `decisive_missing_differentiator`,
+`what_remains_live`, or held-route notes rather than family-locking the interlocutor. Default
+output need not print a long uncertainty paragraph, but it must not certify interior motive,
+soul-state, uptake, or a single interlocutor field where the discourse basis is underdetermined.
+
 Operationally:
 
 ```text
@@ -128,6 +139,22 @@ The Unicode formalism is the theory/spec surface for the same bridge:
 This makes schema-light register bridge real as a derived/conditional runtime bridge: the extra symbols must
 govern existing IR formation, owner eligibility, held material, collapse radius, release
 posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
+
+Optional trace bridge: `field_witness` is an optional sidecar for development, smoke, or audit
+artifacts that need a schema-light but machine-checkable trace of route-gradient, burden delta,
+field diagnostics, loopbreak, reread, closure, and transfer-boundary evidence. It is validated
+only when present, does not replace `post_render_gate`, does not require ordinary outputs to expose
+a formal block, and does not prove truth, warrant, interlocutor uptake, or full formal calculus.
+When an artifact needs collapse reconstruction, it may include an optional
+`field_witness.coverage_proof` subobject with `initial_burden_set`, `terminal_states`,
+`divergence_check`, `curl_check`, and `coverage_complete`. `coverage_complete` is false unless
+every initial burden appears in `terminal_states`; positive collapse still requires neutral `∇·B`
+and null/resolved `∇×κ` under the scoped closure rule.
+
+Formal typing boundary: `∇` is a route-ranking/preorder pressure read over eligible routes,
+`LoopBreak(∇×T)` is a partial licensed transition, `R(H,Δ)` rereads held material and the updated
+live remainder, and `T_lang: Ψᴺ ⇢ Ψᴵ` is a partial coupling relation rather than an isomorphism,
+surjection, or guaranteed update operator on the diagnosed interlocutor field.
 
 The expanded formalism `IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)` is a theory/specification bridge over this same
 Diagnostic IR. It names conditionally live analytic functions; it does not add mandatory schema
@@ -394,6 +421,7 @@ Layer A — Compact DSL/IR header
 - deformation:
 - DO-orient:
 - live noetic burden:
+- initial burden set: [when closure-witness or hard multi-burden accounting is in scope]
 - current bounded operator:
 - held:
 - source-status/noetic-frame:

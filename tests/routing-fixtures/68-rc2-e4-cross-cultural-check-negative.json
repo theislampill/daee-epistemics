@@ -1,0 +1,24 @@
+{
+  "id": "rc2-e4-cross-cultural-check-negative",
+  "prompt": "A speaker claims the biggest religious population must be right because numbers alone settle truth. Check the method before treating cultural spread as evidence.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: raw population or prestige statistics are proof-method questions, not cross-cultural fitrah evidence.",
+  "expected": {
+    "required_modules": [
+      "proof-method-audit"
+    ],
+    "optional_modules": [
+      "symmetric-taqlid-check"
+    ],
+    "forbidden_matched_modules": [
+      "E4-cross-cultural-check"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

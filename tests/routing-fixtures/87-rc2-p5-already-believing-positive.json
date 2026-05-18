@@ -1,0 +1,26 @@
+{
+  "id": "rc2-p5-already-believing-positive",
+  "prompt": "I already believe in the authority of the Sahihayn, but that belief is mostly inherited and now feels fragile after a viral historical objection keeps framing Bukhari as negotiable rather than authoritative.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from already-believing and revisionist-source-pressure material.",
+  "expected": {
+    "required_modules": [
+      "P5-already-believing"
+    ],
+    "optional_modules": [
+      "V11-taqlid-transition",
+      "F3-practice-epistemic-access",
+      "V10-transmission-content-vetting"
+    ],
+    "forbidden_matched_modules": [
+      "P2-objection-mapping"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

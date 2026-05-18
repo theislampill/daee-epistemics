@@ -88,6 +88,13 @@ Core runtime:
 Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE
 ```
 
+LoopBreak is conditional, not decorative. If `∇×T` is checked and non-null, the output must
+either license `LoopBreak:` with target, owner-ground, `Δ` effect, post-break reread, and resulting
+hold/closure state, or carry the loop into HOLD/PARTIAL/RECURSE. If `∇×T` is checked and null,
+render compactly as `LoopBreak: not needed` / `not licensed` / equivalent when the loopbreak
+surface is in scope. If cyclic pressure was not checked, do not silently imply a loopbreak; use
+ordinary prose unless the field-diagnostic surface requires a compact not-licensed status.
+
 Burden/submove notation:
 
 ```text
@@ -162,6 +169,20 @@ residual candidate routes are addressed, integrated, discharged as duplicate/der
 explicitly held with reason, or carried forward into RECURSE. The formalism is valid only when
 it changes control: owner eligibility, held material, hold/release posture, burden selection,
 collapse radius, reread, or closure state.
+Compact output should recover the equivalent of held set, live remainder, newly released or newly
+blocked routes, and next eligible pass / STOP-HOLD-PARTIAL-RECURSE-COMPLETE status. `𝒞(Ψᴺ)` is
+agent/runtime execution-field closure only: it must identify COMPLETE, STOP, HOLD, PARTIAL, or
+RECURSE relative to the runtime field, and it never means interlocutor acceptance, persuasion,
+conversion, guidance, or soul access. `Ψᴵ` remains a diagnosed interlocutor field under
+uncertainty; alternate reads stay held when discourse evidence underdetermines the profile.
+When a Closure/Reconstruction Witness is rendered, `R(H,Δ)` must also account for the initial
+burden set through terminal states or explicit carry/hold decisions. The dependency graph records
+which burdens depend on prior landing; the coverage proof records whether every initial burden has
+one terminal state; the collapse proof is stronger and requires neutral `∇·B` plus null/resolved
+`∇×κ` for the scoped field.
+The initial burden set is a pre-release Layer A / Diagnostic IR enumeration. It must be declared
+before the terminal-state accounting that closes the witness. New burdens discovered by `R(H,Δ)`
+are newly live or next-pass candidates, not retroactive additions to the original initial set.
 If `xi` (warrant / authority / proof-status), `Omega` (ontology / predication / dependence),
 `sigma` (discourse / pattern state), `mu` (carrier or reproduction vector), `kappa`
 (downstream dependency set), or `H` (held burdens) remain live after `Land(B)`, `R` must force
@@ -171,7 +192,8 @@ may expose transmission/testimony routes; moral protest may expose predicate/tri
 named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
 routes. These are control checks, not topical argument-bank entries.
 
-Plain `∇` is the route-gradient read over the live field before burden release. It identifies the
+Plain `∇` is the route-gradient read over the live field before burden release. Formally, it is a
+route-ranking/preorder pressure read over eligible routes, not a literal vector gradient. It identifies the
 direction in the noetic/burden/dependency/register/route pressure landscape where the next
 released burden is expected to produce the greatest diagnostic reduction, closure progress, or
 dependency clarification. In default render it appears in Layer A's gate/release decision, not as
@@ -205,7 +227,7 @@ source, the burden/submove used, the `Δ` effect, the post-break `∇×T` reread
 closure/HOLD/PARTIAL/RECURSE state. Valid grounding sources are owner-bound: fiṭrah, `ʿaql
 ṣarīḥ`, necessary knowledge, definition discipline, direct contradiction exposure,
 source-status correction, or another owner-licensed non-circular ground. `LoopBreak(∇×T)` is not
-arbitrary assertion. If no loop-breaker is licensed, nonzero curl must be held with reason or
+arbitrary assertion and is a partial licensed transition, not a total transition. If no loop-breaker is licensed, nonzero curl must be held with reason or
 carried into RECURSE/PARTIAL.
 
 A COMPLETE closure in any multi-burden or register-active case must visibly account for
@@ -231,7 +253,8 @@ by positive field configuration rather than checklist exhaustion.
 Field boundary: `Ψᴺ` names the agent/runtime noetic execution field. `Ψᴵ` names the diagnosed
 interlocutor noetic field inferred from discourse, profile, register, response, and source-status
 evidence. A released burden in `Ψᴺ` does not directly rewrite `Ψᴵ`; it produces a
-language-mediated coupling attempt, `T_lang: Ψᴺ ⇢ Ψᴵ`. Final restorative boundary text must name
+language-mediated partial coupling relation, `T_lang: Ψᴺ ⇢ Ψᴵ`. It is not an isomorphism, not a
+surjection, and not a guaranteed update operator on `Ψᴵ`. Final restorative boundary text must name
 this coupling when closure or final counsel is rendered. Coupling is assessed by whether the
 released response preserves identity, avoids deformation, addresses live burdens, and provides
 conditions for `Ψᴵ` to reconfigure toward fiṭrah and `ʿaql ṣarīḥ`. This is a runtime/output

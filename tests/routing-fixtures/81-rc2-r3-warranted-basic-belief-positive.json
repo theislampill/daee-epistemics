@@ -1,0 +1,24 @@
+{
+  "id": "rc2-r3-warranted-basic-belief-positive",
+  "prompt": "The recognition of God comes to me more like memory or awareness of another person than like a theorem. I want to know whether that kind of involuntary recognition can carry warrant.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from religious-epistemology/basic-belief materials.",
+  "expected": {
+    "required_modules": [
+      "R3-warranted-basic-belief"
+    ],
+    "optional_modules": [
+      "R2-the-reminder"
+    ],
+    "forbidden_matched_modules": [
+      "R1-internalist-criterion"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

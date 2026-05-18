@@ -42,6 +42,40 @@ POST_RENDER_GATE_KEYS = {
     "next_eligible_pass",
     "recursion_decision",
 }
+FIELD_WITNESS_KEYS = {
+    "route_gradient",
+    "burden_events",
+    "field_diagnostics",
+    "loopbreak",
+    "reconstruction",
+    "closure",
+    "transfer_boundary",
+}
+FIELD_WITNESS_OPTIONAL_KEYS = {"coverage_proof"}
+FIELD_WITNESS_ROUTE_KEYS = {"eligible_routes", "selected", "reason"}
+FIELD_WITNESS_BURDEN_EVENT_KEYS = {"owner", "delta_nB", "delta_kappa", "result"}
+FIELD_WITNESS_DIAGNOSTIC_KEYS = {"divergence", "curl"}
+FIELD_WITNESS_TARGET_STATUS_KEYS = {"target", "status"}
+FIELD_WITNESS_LOOPBREAK_KEYS = {"licensed", "target", "ground", "delta_effect", "post_break_reread"}
+FIELD_WITNESS_RECONSTRUCTION_KEYS = {"held_set", "live_remainder", "reread_scope"}
+FIELD_WITNESS_CLOSURE_KEYS = {"operator", "decision", "agent_field_status"}
+FIELD_WITNESS_TRANSFER_KEYS = {"operator", "from", "to", "mode"}
+FIELD_WITNESS_COVERAGE_KEYS = {
+    "initial_burden_set",
+    "terminal_states",
+    "divergence_check",
+    "curl_check",
+    "coverage_complete",
+}
+FIELD_WITNESS_TERMINAL_STATES = {
+    "landed",
+    "discharged-as-derivative",
+    "held-with-reason",
+    "carried-PARTIAL",
+    "carried-RECURSE",
+    "cleared",
+}
+FIELD_WITNESS_CLOSURE_DECISIONS = {"COMPLETE", "STOP", "HOLD", "RECURSE", "PARTIAL"}
 
 
 POSITIVE_SAMPLE: dict[str, Any] = {
@@ -94,6 +128,65 @@ POSITIVE_SAMPLE: dict[str, Any] = {
         "newly_released_routes": [],
         "next_eligible_pass": "none",
         "recursion_decision": "STOP",
+    },
+    "field_witness": {
+        "route_gradient": {
+            "eligible_routes": ["M1-self-refutation", "M8-reductio"],
+            "selected": "M1-self-refutation",
+            "reason": "imported tribunal pressure governs before reductio consequence trace",
+        },
+        "burden_events": [
+            {
+                "owner": "M1-self-refutation",
+                "delta_nB": "imported criterion no longer stands as neutral judge",
+                "delta_kappa": "downstream moral-content route remains held behind criterion repair",
+                "result": "criterion pressure landed",
+            }
+        ],
+        "field_diagnostics": {
+            "divergence": {"target": "B", "status": "bounded"},
+            "curl": {"target": "kappa", "status": "null"},
+        },
+        "loopbreak": {
+            "licensed": False,
+            "target": "",
+            "ground": "",
+            "delta_effect": "",
+            "post_break_reread": "",
+        },
+        "reconstruction": {
+            "held_set": [],
+            "live_remainder": [],
+            "reread_scope": "held routes and remaining live distortions rechecked before STOP",
+        },
+        "closure": {
+            "operator": "𝒞(Ψᴺ)",
+            "decision": "STOP",
+            "agent_field_status": "agent execution field closed with no remaining live distortion",
+        },
+        "transfer_boundary": {
+            "operator": "T_lang",
+            "from": "Ψᴺ",
+            "to": "Ψᴵ",
+            "mode": "coupling-attempt",
+        },
+        "coverage_proof": {
+            "initial_burden_set": ["B1", "B2"],
+            "terminal_states": {
+                "B1": {
+                    "state": "landed",
+                    "operator": "M1-self-refutation",
+                    "delta_nB": "criterion pressure landed",
+                },
+                "B2": {
+                    "state": "discharged-as-derivative",
+                    "reason": "dissolved when B1 landed",
+                },
+            },
+            "divergence_check": "neutral",
+            "curl_check": "null",
+            "coverage_complete": True,
+        },
     },
 }
 
@@ -182,6 +275,26 @@ BAD_SAMPLES["source_basis_entry_extra_key"] = (
 BAD_SAMPLES["post_render_gate_extra_key"] = (
     _sample_with(lambda s: s["post_render_gate"].update({"extra": "leak"})),
     "post_render_gate additional property not allowed",
+)
+BAD_SAMPLES["field_witness_extra_key"] = (
+    _sample_with(lambda s: s["field_witness"].update({"extra": "leak"})),
+    "field_witness additional property not allowed",
+)
+BAD_SAMPLES["field_witness_empty_burden_events"] = (
+    _sample_with(lambda s: s["field_witness"].update({"burden_events": []})),
+    "field_witness.burden_events must be a non-empty array",
+)
+BAD_SAMPLES["field_witness_loopbreak_licensed_without_target"] = (
+    _sample_with(lambda s: s["field_witness"]["loopbreak"].update({"licensed": True, "target": ""})),
+    "field_witness.loopbreak.target required when licensed",
+)
+BAD_SAMPLES["field_witness_transfer_uptake_mode"] = (
+    _sample_with(lambda s: s["field_witness"]["transfer_boundary"].update({"mode": "uptake-guarantee"})),
+    "field_witness.transfer_boundary.mode must be coupling-attempt",
+)
+BAD_SAMPLES["field_witness_coverage_missing_terminal"] = (
+    _sample_with(lambda s: s["field_witness"]["coverage_proof"]["terminal_states"].pop("B2")),
+    "field_witness.coverage_proof missing terminal state for B2",
 )
 
 COMPILED_MAP_BAD_SAMPLES = {
@@ -345,6 +458,175 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
             errors.append(f"schema: post_render_gate.recursion_decision invalid: {decision!r}")
     elif post_gate is not None:
         errors.append("schema: post_render_gate must be object")
+
+    field_witness = instance.get("field_witness")
+    if field_witness is not None:
+        errors.extend(field_witness_errors(field_witness))
+
+    return errors
+
+
+def require_exact_keys(value: Any, keys: set[str], label: str) -> list[str]:
+    if not isinstance(value, dict):
+        return [f"schema: {label} must be object"]
+    extra = sorted(set(value) - keys)
+    missing = sorted(keys - set(value))
+    errors: list[str] = []
+    if extra:
+        errors.append(f"schema: {label} additional property not allowed: {', '.join(extra)}")
+    if missing:
+        errors.append(f"schema: {label} missing required field: {', '.join(missing)}")
+    return errors
+
+
+def require_keys_with_optional(value: Any, required: set[str], optional: set[str], label: str) -> list[str]:
+    if not isinstance(value, dict):
+        return [f"schema: {label} must be object"]
+    allowed = required | optional
+    extra = sorted(set(value) - allowed)
+    missing = sorted(required - set(value))
+    errors: list[str] = []
+    if extra:
+        errors.append(f"schema: {label} additional property not allowed: {', '.join(extra)}")
+    if missing:
+        errors.append(f"schema: {label} missing required field: {', '.join(missing)}")
+    return errors
+
+
+def non_empty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def field_witness_errors(field_witness: Any) -> list[str]:
+    errors = require_keys_with_optional(
+        field_witness,
+        FIELD_WITNESS_KEYS,
+        FIELD_WITNESS_OPTIONAL_KEYS,
+        "field_witness",
+    )
+    if errors:
+        return errors
+
+    route = field_witness["route_gradient"]
+    errors.extend(require_exact_keys(route, FIELD_WITNESS_ROUTE_KEYS, "field_witness.route_gradient"))
+    if isinstance(route, dict):
+        eligible = route.get("eligible_routes")
+        if not isinstance(eligible, list) or not all(non_empty_string(item) for item in eligible):
+            errors.append("schema: field_witness.route_gradient.eligible_routes must be array of non-empty strings")
+        if not non_empty_string(route.get("selected")):
+            errors.append("schema: field_witness.route_gradient.selected must be non-empty string")
+        if not non_empty_string(route.get("reason")):
+            errors.append("schema: field_witness.route_gradient.reason must be non-empty string")
+
+    burden_events = field_witness["burden_events"]
+    if not isinstance(burden_events, list) or not burden_events:
+        errors.append("schema: field_witness.burden_events must be a non-empty array")
+    elif not all(isinstance(event, dict) for event in burden_events):
+        errors.append("schema: field_witness.burden_events entries must be objects")
+    else:
+        for index, event in enumerate(burden_events):
+            label = f"field_witness.burden_events[{index}]"
+            errors.extend(require_exact_keys(event, FIELD_WITNESS_BURDEN_EVENT_KEYS, label))
+            for key in FIELD_WITNESS_BURDEN_EVENT_KEYS:
+                if not non_empty_string(event.get(key)):
+                    errors.append(f"schema: {label}.{key} must be non-empty string")
+
+    diagnostics = field_witness["field_diagnostics"]
+    errors.extend(require_exact_keys(diagnostics, FIELD_WITNESS_DIAGNOSTIC_KEYS, "field_witness.field_diagnostics"))
+    if isinstance(diagnostics, dict):
+        for key in ("divergence", "curl"):
+            value = diagnostics.get(key)
+            label = f"field_witness.field_diagnostics.{key}"
+            errors.extend(require_exact_keys(value, FIELD_WITNESS_TARGET_STATUS_KEYS, label))
+            if isinstance(value, dict):
+                for subkey in FIELD_WITNESS_TARGET_STATUS_KEYS:
+                    if not non_empty_string(value.get(subkey)):
+                        errors.append(f"schema: {label}.{subkey} must be non-empty string")
+
+    loopbreak = field_witness["loopbreak"]
+    errors.extend(require_exact_keys(loopbreak, FIELD_WITNESS_LOOPBREAK_KEYS, "field_witness.loopbreak"))
+    if isinstance(loopbreak, dict):
+        if not isinstance(loopbreak.get("licensed"), bool):
+            errors.append("schema: field_witness.loopbreak.licensed must be boolean")
+        if loopbreak.get("licensed") is True:
+            for key in ("target", "ground", "delta_effect", "post_break_reread"):
+                if not non_empty_string(loopbreak.get(key)):
+                    errors.append(f"schema: field_witness.loopbreak.{key} required when licensed")
+        else:
+            for key in ("target", "ground", "delta_effect", "post_break_reread"):
+                if not isinstance(loopbreak.get(key), str):
+                    errors.append(f"schema: field_witness.loopbreak.{key} must be string")
+
+    reconstruction = field_witness["reconstruction"]
+    errors.extend(require_exact_keys(reconstruction, FIELD_WITNESS_RECONSTRUCTION_KEYS, "field_witness.reconstruction"))
+    if isinstance(reconstruction, dict):
+        for key in ("held_set", "live_remainder"):
+            values = reconstruction.get(key)
+            if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
+                errors.append(f"schema: field_witness.reconstruction.{key} must be array of strings")
+        if not non_empty_string(reconstruction.get("reread_scope")):
+            errors.append("schema: field_witness.reconstruction.reread_scope must be non-empty string")
+
+    closure = field_witness["closure"]
+    errors.extend(require_exact_keys(closure, FIELD_WITNESS_CLOSURE_KEYS, "field_witness.closure"))
+    if isinstance(closure, dict):
+        if closure.get("operator") != "𝒞(Ψᴺ)":
+            errors.append("schema: field_witness.closure.operator must be 𝒞(Ψᴺ)")
+        if closure.get("decision") not in FIELD_WITNESS_CLOSURE_DECISIONS:
+            errors.append(f"schema: field_witness.closure.decision invalid: {closure.get('decision')!r}")
+        if not non_empty_string(closure.get("agent_field_status")):
+            errors.append("schema: field_witness.closure.agent_field_status must be non-empty string")
+
+    transfer = field_witness["transfer_boundary"]
+    errors.extend(require_exact_keys(transfer, FIELD_WITNESS_TRANSFER_KEYS, "field_witness.transfer_boundary"))
+    if isinstance(transfer, dict):
+        if transfer.get("operator") != "T_lang":
+            errors.append("schema: field_witness.transfer_boundary.operator must be T_lang")
+        if transfer.get("from") != "Ψᴺ":
+            errors.append("schema: field_witness.transfer_boundary.from must be Ψᴺ")
+        if transfer.get("to") != "Ψᴵ":
+            errors.append("schema: field_witness.transfer_boundary.to must be Ψᴵ")
+        if transfer.get("mode") != "coupling-attempt":
+            errors.append("schema: field_witness.transfer_boundary.mode must be coupling-attempt")
+
+    coverage = field_witness.get("coverage_proof")
+    if coverage is not None:
+        errors.extend(require_exact_keys(coverage, FIELD_WITNESS_COVERAGE_KEYS, "field_witness.coverage_proof"))
+        if isinstance(coverage, dict):
+            initial = coverage.get("initial_burden_set")
+            terminals = coverage.get("terminal_states")
+            if not isinstance(initial, list) or not initial or not all(isinstance(item, str) and re.fullmatch(r"B\d+", item) for item in initial):
+                errors.append("schema: field_witness.coverage_proof.initial_burden_set must be non-empty B-id array")
+                initial = []
+            if len(set(initial)) != len(initial):
+                errors.append("schema: field_witness.coverage_proof.initial_burden_set must be unique")
+            if not isinstance(terminals, dict):
+                errors.append("schema: field_witness.coverage_proof.terminal_states must be object")
+                terminals = {}
+            for burden in initial:
+                if burden not in terminals:
+                    errors.append(f"schema: field_witness.coverage_proof missing terminal state for {burden}")
+            expected_complete = bool(initial) and all(burden in terminals for burden in initial)
+            if coverage.get("coverage_complete") != expected_complete:
+                errors.append("schema: field_witness.coverage_proof.coverage_complete does not match terminal-state coverage")
+            for burden, terminal in terminals.items():
+                if not re.fullmatch(r"B\d+", str(burden)):
+                    errors.append(f"schema: field_witness.coverage_proof terminal key must be burden ID: {burden!r}")
+                if not isinstance(terminal, dict):
+                    errors.append(f"schema: field_witness.coverage_proof.{burden} must be object")
+                    continue
+                if terminal.get("state") not in FIELD_WITNESS_TERMINAL_STATES:
+                    errors.append(
+                        f"schema: field_witness.coverage_proof.{burden}.state invalid: {terminal.get('state')!r}"
+                    )
+                for key in set(terminal) - {"state", "operator", "delta_nB", "reason"}:
+                    errors.append(f"schema: field_witness.coverage_proof.{burden} additional property not allowed: {key}")
+            if not isinstance(coverage.get("divergence_check"), str):
+                errors.append("schema: field_witness.coverage_proof.divergence_check must be string")
+            if not isinstance(coverage.get("curl_check"), str):
+                errors.append("schema: field_witness.coverage_proof.curl_check must be string")
+            if not isinstance(coverage.get("coverage_complete"), bool):
+                errors.append("schema: field_witness.coverage_proof.coverage_complete must be boolean")
 
     return errors
 

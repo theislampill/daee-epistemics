@@ -28,15 +28,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: interlocutor retreats into indefiniteness, evasion, or refusal to commit.
-- Field target: the live burden or submove pressure that made tactic `M6-excluded-middle` eligible; activation cue: interlocutor retreats into indefiniteness, evasion, or refusal to commit.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: a defined proposition is already anchored and the interlocutor retreats into indefiniteness, evasion, or refusal to commit while still using the proposition's practical force.
+- Field target: the truth-value evasion blocking engagement with the defined proposition, not mere uncertainty, apophatic reserve, or evidential withholding.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: restate the anchored proposition, ask whether it is affirmed, denied, or genuinely suspended, and expose when suspension is being used as disguised denial or control.
+- Δ effect: `ΔⁿB` turns evasion into direct proposition engagement or confirmed avoidance; `Δκ` opens the substantive route, returns to M7 if the proposition is not defined, or carries F2/P7 if evasion is non-epistemic.
+- Possible ∇ reread: after the evasion is pressured, check target-explicit `∇·B` for the now-live substantive burden and `∇×κ` if the response loops by redefining the proposition to avoid commitment.
+- R(H,Δ) obligation: reread the proposition definition, evasion status, held substantive route, and whether M7 must precede any further M6 use.
+- Hold/release/closure effect: M6 clears an evasion gate; it does not answer the substantive proposition and must hold or release the next owner only after reread.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: do not treat sincere evidential withholding, qualified apophatic claims, or undefined terms as excluded-middle evasion; no scalar closure, no argument-bank drift, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

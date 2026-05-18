@@ -1,0 +1,8 @@
+package filename: daee-epistemics-v0.4.2.0.skill
+package SHA256: 21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7
+smoke provenance mode: local-3-smoke-required
+
+This package hash is recorded so the three release-required local current-release smokes can be
+captured against the intended artifact. Raw output.md, ir.json, trace.md, verdict.md, and model/host
+capture files are local diagnostic artifacts and are not committed. CR-04 through CR-10 are deferred
+expanded-smoke cases for v0.4.3.0/v0.5 and do not block v0.4.2.0.

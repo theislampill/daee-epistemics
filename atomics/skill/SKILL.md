@@ -36,24 +36,20 @@ Burden-cycle recursion follows live noetic order, not topic count. Same-order ma
 Layer B; a distinct live order recurses or is held/PARTIALed under `R(H,Delta)`. Detailed order
 rules live in `recursive-state-transitions.md`.
 
-Runtimes that cannot produce the full hard-case answer in final chat must use
-canonical file-retained execution rather than compressing the answer. This is
-not prompt engineering and not the optional script-capable route/check harness;
-it is the same canonical compact DSL-governed runtime with a safer output
-transport.
+If final chat would compress a hard answer, use canonical file-retained execution instead:
+`/daee-epistemics < C:\path\input.md > C:\path\output.md`. Where the host supports file I/O,
+read `< input.md`, write the full governed answer to `> output.md`, and report only path/status/
+length. This is skill-level syntax, not the optional script-capable route/check harness. Do not run
+repo checkers or route tools unless developer validation is explicitly requested; harness-tainted
+file smokes are advisory and must be rerun clean before release.
 
-File-retained syntax: `/daee-epistemics < C:\path\input.md > C:\path\output.md`.
-Where the host/agent supports file reads/writes, read the case from `< input.md` and write the
-full governed answer to `> output.md`. This is skill-level file-retained syntax, not a guarantee
-of native shell behavior in every host. Bash-style shells use `<`/`>`; PowerShell output
-redirection differs for stdin. Chat reports only file/status/length/completion, never the answer,
-source links, sanity scans, checker notes, or commentary.
+## Release-Smoke Witness Capture Mode
 
-Do not use the optional script-capable route/check harness unless the user or maintainer
-explicitly asks for developer validation. It is repo/dev/CI machinery, not the public runtime.
-File-retained execution must not run repo checkers, route tools, smoke-artifact tools, or
-execution-fidelity checks; hard/multi-burden files keep explicit `Land(Bn)` and `R(H,Delta)`.
-Harness-contaminated file smokes are advisory; rerun clean before release.
+When a runbook requests `/daee-epistemics release-smoke witness capture mode`, keep the normal
+governed answer but render checker-readable witness surfaces from the final package context.
+Exact rules live in `references/rubrics/diagnostic-render-contract.md`. Witness markers are
+evidence surfaces only; missing required witnesses are never downgraded to "not applicable"
+after failure.
 
 ## Scriptless Compact DSL Behavioral Coercion
 

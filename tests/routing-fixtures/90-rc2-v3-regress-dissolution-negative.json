@@ -1,0 +1,22 @@
+{
+  "id": "rc2-v3-regress-dissolution-negative",
+  "prompt": "The question is whether a temporally originated thing needs a determining ground rather than remaining nonexistent. This is a causal-series taxonomy issue, not an infinite demand for justification.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: causal-series classification should not be collapsed into justificatory regress dissolution.",
+  "expected": {
+    "required_modules": [
+      "causal-series-taxonomy"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "V3-regress-dissolution"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

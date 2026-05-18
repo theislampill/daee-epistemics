@@ -263,7 +263,7 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
   <span class="pill" style="--c:var(--orange)">LOOP-BREAKING SUBMOVE</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--orange)">R(H,Δ)</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--orange)">𝒞(Ψᴺ) CLOSURE-FIELD CONDITION</span><span class="arr">→</span>
-  <span class="pill" style="--c:var(--purple)">T_lang(response): Ψᴺ ⇢ Ψᴵ</span><span class="arr">→</span>
+  <span class="pill" style="--c:var(--purple)">T_lang: Ψᴺ ⇢ Ψᴵ</span><span class="arr">→</span>
   <span class="pill" style="--c:var(--orange)">STOP / HOLD / RECURSE / PARTIAL</span>
 </div>
 
@@ -274,7 +274,7 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
   </div>
   <div class="panel" style="--c:var(--orange)">
     <h3>Delta versus field diagnostics</h3>
-    <p><span class="formula">ΔⁿB</span> / <span class="formula">Delta-nB</span> and <span class="formula">Δκ</span> / <span class="formula">Delta-kappa</span> are event-local transition operators. <span class="formula">∇·T</span> and <span class="formula">∇×T</span> are target-explicit field diagnostics over Δ-produced burden/dependency state. Default output may use compact governance markers such as <span class="formula">∇·κ: positive/live</span> or <span class="formula">∇×κ: unresolved loop</span> only when tied to dependency pressure, loop-breaking, <span class="formula">R(H,Δ)</span>, or PARTIAL/RECURSE/COMPLETE; long formalism exposition remains audit/formalism-only. Plain <span class="formula">∇</span> is route-gradient pressure; <span class="formula">𝒞(Ψᴺ)</span> is the closure-field condition; <span class="formula">T_lang(response): Ψᴺ ⇢ Ψᴵ</span> names response transfer from Ψᴺ toward the diagnosed interlocutor field Ψᴵ without uptake claims.</p>
+    <p><span class="formula">ΔⁿB</span> / <span class="formula">Delta-nB</span> and <span class="formula">Δκ</span> / <span class="formula">Delta-kappa</span> are event-local transition operators. <span class="formula">∇·T</span> and <span class="formula">∇×T</span> are target-explicit field diagnostics over Δ-produced burden/dependency state. Default output may use compact governance markers such as <span class="formula">∇·κ: positive/live</span> or <span class="formula">∇×κ: unresolved loop</span> only when tied to dependency pressure, loop-breaking, <span class="formula">R(H,Δ)</span>, or PARTIAL/RECURSE/COMPLETE; long formalism exposition remains audit/formalism-only. Plain <span class="formula">∇</span> is route-gradient pressure; <span class="formula">𝒞(Ψᴺ)</span> is the closure-field condition; <span class="formula">T_lang: Ψᴺ ⇢ Ψᴵ</span> names public output transfer from Ψᴺ toward the diagnosed interlocutor field Ψᴵ without uptake claims.</p>
   </div>
   <div class="panel" style="--c:var(--blue)">
     <h3>Package boundary</h3>

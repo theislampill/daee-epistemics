@@ -10,8 +10,8 @@ Build the package locally from tracked atomics through generated `skill/`:
 ```powershell
 python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
-python tools/package_skill.py build\daee-epistemics-v0.4.1.0.skill.zip
-Copy-Item build\daee-epistemics-v0.4.1.0.skill.zip build\daee-epistemics-v0.4.1.0.skill
+python tools/package_skill.py build\daee-epistemics-v0.4.2.0.skill.zip
+Copy-Item build\daee-epistemics-v0.4.2.0.skill.zip build\daee-epistemics-v0.4.2.0.skill
 ```
 
 The package script archives the canonical packageable contents selected from
@@ -24,6 +24,37 @@ validates generated package shape, excludes repo/dev harness roots, and writes
 slash-safe archive entries.
 
 ## Artifact Evidence
+
+## v0.4.2.0 Release Package / Provenance Status
+
+v0.4.2.0 public artifact status: ready for GitHub Release publication after the final tag/release
+command. The package/provenance pair below is the checked release payload. Raw current-release
+smoke captures are local diagnostic artifacts and are not committed or uploaded as release assets.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.2.0.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.2.0.skill.zip` |
+| Local package copy | `build/daee-epistemics-v0.4.2.0.skill` |
+| SHA256 | `21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7` |
+| Size | `594097` bytes |
+| Entries | `20` |
+| Source commit recorded in provenance | Generated at release time from the release source commit |
+| Source state | Release-gate source/checker/smoke gates passed locally before tag/release |
+| Branch | `main` |
+| Contract version | `0.4.0.0` |
+| Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
+| Generated runtime manifest SHA256 | `240BCCCBEA373CD049585CCC885ED4FB44B9B86FB01BC3A414B537FED2AEA504` |
+| Compiled module map SHA256 | `031C7522FD21F1F8DECF200BB2785D50976FB7FB7D99EF865B4BDDF6877AB608` |
+| GitHub Release visibility | Target tag/release: `v0.4.2.0` |
+| Provenance file | Release asset: `daee-epistemics-v0.4.2.0.provenance.json` generated from `build/daee-epistemics-v0.4.2.0.provenance.json` |
+| Current-release smoke proof | Local 3-case package-bound smoke passed against this SHA (`CR-01` hard, `CR-02` misuse boundary, `CR-03` bounded answer); raw captures are local diagnostic artifacts and are not committed |
+
+The local package/provenance pair passed:
+
+```powershell
+python tools/check_release_provenance.py --provenance build\daee-epistemics-v0.4.2.0.provenance.json --package build\daee-epistemics-v0.4.2.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json --release-artifacts docs\release-artifacts.md
+```
 
 ## v0.4.1.0 Corrected Published Release Asset
 
@@ -156,7 +187,7 @@ python tools/check_smoke_artifacts.py --root .daee/v0.4.0.0-current-release-smok
 ```
 
 The retained suite is local, package-bound evidence for the v0.4.0.0 package
-SHA. It is not committed, not packaged, not v0.4.1.0 replacement proof, and not
+SHA. It is not committed, not packaged, not later v0.4.x replacement proof, and not
 a universal semantic-grading claim.
 
 Smoke families:

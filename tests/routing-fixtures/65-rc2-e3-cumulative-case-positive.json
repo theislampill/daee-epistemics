@@ -1,0 +1,25 @@
+{
+  "id": "rc2-e3-cumulative-case-positive",
+  "prompt": "Inside one evidential register, no single rational sign decides the matter by itself: contingency, origination, order, and dependence each carry part of the case. How should I weigh the cumulative force without pretending one proof does all the work?",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from the miracle/signs and reason-revelation materials: cumulative warrant after upstream blockers are not the live issue.",
+  "expected": {
+    "required_modules": [
+      "E3-cumulative-case"
+    ],
+    "optional_modules": [
+      "E1-broadening-evidence"
+    ],
+    "forbidden_matched_modules": [
+      "P2-objection-mapping",
+      "V6-convergence"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

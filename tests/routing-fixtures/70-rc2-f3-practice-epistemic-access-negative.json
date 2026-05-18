@@ -1,0 +1,24 @@
+{
+  "id": "rc2-f3-practice-epistemic-access-negative",
+  "prompt": "I am not asking for spiritual practice or register work. I am asking whether the conclusion follows from the stated premises under the criterion I supplied.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: do not route practice-access when the live burden is inferential criterion testing.",
+  "expected": {
+    "required_modules": [
+      "E2-inferential-criterion"
+    ],
+    "optional_modules": [
+      "proof-method-audit"
+    ],
+    "forbidden_matched_modules": [
+      "F3-practice-epistemic-access"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

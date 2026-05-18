@@ -137,6 +137,33 @@ reread, dependency pressure, loop-breaking, closure-field status, coupling bound
 restoration boundary that the symbol changed. Otherwise use ordinary prose and keep the notation
 in the theory/spec layer.
 
+Conditional LoopBreak render: do not require a decorative `LoopBreak:` line in every ordinary
+output. When field diagnostics are rendered and `∇×T` was checked, the loopbreak surface must be
+explicit: non-null cyclic pressure requires target, ground, `Δ` effect, reread, and resulting
+hold/closure state; null cyclic pressure requires compact `LoopBreak: not needed`, `not licensed`,
+or equivalent. If cyclic pressure was not checked, do not imply that a loopbreak occurred.
+
+Reread witness floor: a visible `R(H,Δ)` / `R(H,Delta)` line must name actual reread content, not
+only the symbol. Compact equivalents are acceptable, but the state/noetic re-read must recover
+held set, live remainder, newly released or newly blocked routes, and next eligible
+STOP/HOLD/PARTIAL/RECURSE/COMPLETE status when those surfaces govern release.
+
+Initial burden enumeration gate: the `Initial burden set` used by the Closure/Reconstruction
+Witness must be declared from the pre-release Layer A / Diagnostic IR burden enumeration before
+terminal states are rendered. New burdens discovered during `R(H,Δ)` are `newly discovered`,
+`newly live`, or `next-pass candidates`; they are not silently inserted into the original initial
+set. If the render cannot distinguish the initial set from newly released or newly discovered
+material, closure must be HOLD, PARTIAL, or RECURSE rather than COMPLETE.
+
+Closure witness floor: `𝒞(Ψᴺ)` is agent/runtime-side closure only. When printed, it must identify
+the agent execution-field decision or status (COMPLETE, STOP, HOLD, PARTIAL, or RECURSE) and must
+not claim interlocutor acceptance, conversion, persuasion, guidance, or soul access.
+
+Transfer-boundary witness floor: `T_lang: Ψᴺ ⇢ Ψᴵ` is a partial coupling relation at the public
+output boundary, not an isomorphism, not a surjection, and not a guaranteed update operator on
+the diagnosed interlocutor field. A render may show that the response preserves identity and
+addresses the diagnosed burden; it may not claim uptake.
+
 ---
 
 ## Relation to Output-Release Rubric
@@ -207,6 +234,43 @@ operator grammar: `split`, `distinguish`, `test against own grounds`, `disambigu
 `classify`, `audit`, `reclassify`, `narrow`, `expose`, `re-read`, `sequence`,
 `refuse jurisdiction of`, or `clear`. Generic verbs such as `address`, `discuss`,
 `explore`, `engage`, or `consider` are non-operative operation verbs.
+
+### Release-Smoke Witness Capture Surface
+
+**Use when:**
+- The invocation or smoke runbook explicitly requests `release-smoke witness capture mode`.
+- The output is a local package-bound release-gate smoke, not an ordinary user-facing chat reply.
+
+**Rules:**
+- Preserve the default governed answer; do not replace execution with a trace, route dump, or
+  marker list.
+- Make the witness surfaces literal and checker-readable because the purpose of this mode is
+  release-gate capture from the final package.
+- Required visible surfaces for `witness_required=true` cases:
+  - noetic-field execution banner before all prose;
+  - at least one literal `## Burden-Cycle N` section and a `State/noetic re-read` section
+    with `What changed / cumulative-state delta:` and a prose `Release status:`;
+  - compact Layer A with a non-empty `∇ route:` inside `gate/release decision`;
+  - pre-release `initial burden set: [B1, ...]` before the closing witness;
+  - target-explicit `Field diagnostics:` and `LoopBreak:` beside every released `R(H,Δ)` /
+    `R(H,Delta)` state re-read;
+  - `R(H,Δ):` / `R(H,Delta):` lines that state held material, live remainder or cleared field,
+    newly released/blocked route where relevant, and STOP/HOLD/PARTIAL/RECURSE/COMPLETE status;
+  - literal `## Closure/Reconstruction Witness` containing `Initial burden set`, `Terminal states`,
+    `Burden dependency graph:`, `∇·B:`, `∇×κ:`, `𝒞(Ψᴺ):`, and `T_lang: Ψᴺ ⇢ Ψᴵ:`;
+  - `Terminal states:` rendered as one parseable row per burden: `B1: cleared / <operator> /
+    <target -> operation -> result or compact delta>`; do not put the burden title before the colon;
+  - `∇·B:` rendered with a parseable leading status, for example `neutral / ...` or
+    `non-neutral / <target-explicit status>`;
+  - `∇×κ:` rendered with a parseable leading status, for example `null / ...`,
+    `resolved / ...`, or `non-null / <target-explicit status>`;
+  - `𝒞(Ψᴺ):` with explicit agent/runtime execution-field semantics and bounded closure status;
+  - `T_lang: Ψᴺ ⇢ Ψᴵ:` with language-mediated partial-coupling boundary and no soul access,
+    guaranteed uptake, or guidance-control claim;
+  - literal `## Restorative Response` and `## Closing Formulation` after the closure witness.
+- This mode is evidence capture only. The witness block is not competence proof, not a truth
+  meter, not public-release proof beyond the local package-bound smoke, and not a claim that every
+  ordinary output always renders the full witness scaffold.
 
 ### Canonical File-Retained Execution
 
@@ -399,11 +463,21 @@ rename this block `Closure audit`, do not shorten `Burden dependency graph:` to 
 and do not move `𝒞(Ψᴺ)` / `T_lang: Ψᴺ ⇢ Ψᴵ` into prose-only closure.]
 - N frames:                     [selected primary N and held/candidate N with reason]
 - Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
-- Burden dependency graph:      [compact edges, e.g. `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`]
-- Operator match:               [each landed burden mapped to owner/TTP submoves]
-- Field checks:                 [`∇·<target>` and `∇×<target>` results, including null where closure depends on the check]
-- `𝒞(Ψᴺ)`:                     [positive closure-field condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
+- Initial burden set:           [`[B1, B2, B3]`; every input-anchored burden admitted to the scoped witness]
+- Terminal states:              [one line per initial burden: `B1: landed / <operator> / <target -> operation -> result or compact delta>`; the burden ID must come immediately before the colon; do not write `B1 <title>: <state>`; allowed states are `landed`, `discharged-as-derivative`, `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, `cleared`]
+- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / no dependency relation, `(root)` means no upstream dependency; ASCII `A -> B` is allowed when Unicode is unavailable]
+- ∇·B:                          [`neutral / <target-explicit status>` or `non-neutral / <target-explicit status>`]
+- ∇×κ:                          [`null / <target-explicit status>`, `resolved / <target-explicit status>`, or `non-null / <target-explicit status>`]
+- `𝒞(Ψᴺ)`:                     [positive agent/runtime execution-field closure condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
 - `T_lang: Ψᴺ ⇢ Ψᴵ`:           [final response is language-mediated coupling attempt, not soul access, guaranteed uptake, or control of guidance]
+
+Coverage proof rule: bare `R(H,Δ)` and a bare graph are insufficient. The witness must identify
+held set / live remainder / terminal state accounting. `coverage_complete` means every burden in
+`Initial burden set` appears exactly once in `Terminal states`. `collapse_positive` requires
+`coverage_complete`, `∇·B: neutral`, and `∇×κ: null` or `resolved`. Coverage alone is not COMPLETE
+closure. If any burden is `held-with-reason`, `carried-PARTIAL`, or `carried-RECURSE`, the closure
+language must not overclaim COMPLETE unless it explains why that scoped field is terminal without
+live outward pressure or unresolved curl.
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]
@@ -1235,6 +1309,7 @@ Trace: M9 predication-mode work is already local in ¹B₁ and ¹B₂; this trac
   dependency-reduction yield; broader attribute exposition remained held.
 - Remaining input-anchored burdens: none in this prompt.
 - Held routes rechecked: full attribute exposition and source-comparison remain held.
+- Initial burden set: [B1] declared before terminal-state accounting.
 - Field diagnostics: ∇·B: neutral after category split; ∇×κ: null.
 - LoopBreak: not needed.
 - Release status: closed for this input; no same-input eligible burden remains after the category correction.
@@ -1242,9 +1317,12 @@ Trace: M9 predication-mode work is already local in ¹B₁ and ¹B₂; this trac
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame held to lexical/category discipline; source-comparison frame held.
 - Registers: Ω cleared for composition/dependence predicate; κ bounded; H contains only held exposition.
-- Burden dependency graph: B1 only.
-- Operator match: B1 -> M9 submoves ¹B₁/¹B₂.
-- Field checks: ∇·B neutral; ∇×κ null.
+- Initial burden set: [B1]
+- Terminal states:
+  B1: landed / M9 / composition-dependence predicate split through ¹B₁/¹B₂
+- Burden dependency graph: B1 (root).
+- ∇·B: neutral
+- ∇×κ: null
 - `𝒞(Ψᴺ)`: positive; burden landed, residual pressure bounded, no loop remains live.
 - `T_lang: Ψᴺ ⇢ Ψᴵ`: final wording is a coupling attempt toward the diagnosed objection field, not guaranteed uptake.
 

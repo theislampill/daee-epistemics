@@ -28,11 +28,11 @@ operator_pack_eligible: true
 ## Runtime operator contract
 
 - Activation: interlocutor genuinely open to inquiry; intellectual arguments acknowledged but insufficient.
-- Field target: the live burden or submove pressure that made tactic `F3-practice-epistemic-access` eligible; activation cue: interlocutor genuinely open to inquiry; intellectual arguments acknowledged but insufficient.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
+- Field target: access-condition pressure where acknowledged arguments are insufficient because practice/attention/moral discipline is the live epistemic condition.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: identify practice-as-access condition -> frame practice as investigation rather than credulity -> result; the result contributes to `Land(ⁿB)` only when openness or P5 examined-conviction pressure is live.
+- Δ effect: `ΔⁿB` shifts the burden from "argument alone must compel" to "the relevant faculty may require cultivated conditions"; `Δκ` changes only if this makes P5/R2/V5 routes newly eligible or keeps content held pending practice-access framing.
 - Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- R(H,Δ) obligation: after this owner acts, reread H for held evidential content, live practice-access remainder, newly eligible P5/R2/V5 routes, and whether the case remains HOLD/PARTIAL because experiential access cannot be forced by prose.
 - Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.

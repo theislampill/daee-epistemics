@@ -32,15 +32,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: no single argument is decisive; independent considerations need bounded assembly.
-- Field target: the live burden or submove pressure that made tactic `E3-cumulative-case` eligible; activation cue: no single argument is decisive; independent considerations need bounded assembly.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: no single argument is decisive, prior blockers are cleared, and several independent considerations remain live for bounded assembly rather than debate-by-volume.
+- Field target: the cumulative-warrant burden: the relation among already-eligible independent routes, not the truth of the conclusion by assertion or a pile of loosely related arguments.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: select a bounded set of independent lines, name their distinct warrant functions, order them by admitted commitments, and integrate only what survives the current criterion.
+- Δ effect: `ΔⁿB` changes isolated weak-support pressure into a bounded cumulative-warrant state; `Δκ` marks which routes become derivative, mutually reinforcing, held, or still unsupported after assembly.
+- Possible ∇ reread: after assembly, check target-explicit `∇·B` for residual demand for one decisive proof and `∇×ξ`/`∇×κ` if the interlocutor's criterion rejects cumulative support while using cumulative support elsewhere.
+- R(H,Δ) obligation: reread held single-argument objections, live route weights, derivative routes, and any next eligible burden before STOP/RECURSE/PARTIAL.
+- Hold/release/closure effect: release only the bounded cumulative relation that landed; hold unintegrated lines, discharge duplicated lines as derivative, and carry unresolved proof-method pressure forward with reason.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: no argument-bank drift, no proof-by-volume, no stacking variants of the same consideration as independent support, no scalar closure, no deterministic route freezing, no ∇ as Δ replacement, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Register-formalism fixtures reference this owner (1); add direct routing coverage when this owner becomes release-critical.
 
 

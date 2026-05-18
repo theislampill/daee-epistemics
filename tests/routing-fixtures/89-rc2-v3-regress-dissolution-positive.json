@@ -1,0 +1,24 @@
+{
+  "id": "rc2-v3-regress-dissolution-positive",
+  "prompt": "But what justifies that standard, and what justifies the thing that justifies it, and what justifies that? I feel every answer needs a further answer forever.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from regress and definition-method materials.",
+  "expected": {
+    "required_modules": [
+      "V3-regress-dissolution"
+    ],
+    "optional_modules": [
+      "R1-internalist-criterion"
+    ],
+    "forbidden_matched_modules": [
+      "causal-series-taxonomy"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

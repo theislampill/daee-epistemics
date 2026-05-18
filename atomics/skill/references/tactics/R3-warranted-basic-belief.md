@@ -26,15 +26,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: applying proper-function framework directly to interlocutor's own involuntary experience of theistic-type recognition.
-- Field target: the live burden or submove pressure that made tactic `R3-warranted-basic-belief` eligible; activation cue: applying proper-function framework directly to interlocutor's own involuntary experience of theistic-type recognition.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: the interlocutor has acknowledged involuntary theistic-type recognition and is now examining what that recognition means for warrant.
+- Field target: the warrant interpretation of the acknowledged recognition, especially whether the recognition may be a properly functioning basic-belief faculty rather than mere feeling.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: bind the move to the interlocutor's own acknowledged experience, test its involuntariness and proper-function status, and name what would defeat or undercut it.
+- Δ effect: `ΔⁿB` makes the proper-function account live, blocks dismissal as mere chosen preference, or routes to DO-7/debunking/criterion work if a defeater is raised; `Δκ` may release E3 only after this warrant interpretation is not premature.
+- Possible ∇ reread: after analysis, check target-explicit `∇·ξ` for remaining warrant pressure and `∇×κ` if the interlocutor requires proof of the faculty while relying on similar basic faculties.
+- R(H,Δ) obligation: reread recognition status, DO-7/debunking pressure, R1 criterion pressure, and whether P7 Stop-2 requires holding further argument.
+- Hold/release/closure effect: make one analytical move and stop or hold unless the interlocutor's response licenses a next pass; do not pre-queue a cumulative case.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: do not use R3 to elicit recognition that R2 has not surfaced, do not claim involuntary recognition guarantees acceptance, and do not bypass DO-7 or R1 when those are live; no scalar closure, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

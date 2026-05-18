@@ -1,0 +1,24 @@
+{
+  "id": "rc2-e3-cumulative-case-negative",
+  "prompt": "I have a pile of objections about transmission, miracle reports, moral language, and modern academic methods. Before answering any one of them, help me separate which objection controls the order of the rest.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: an objection battery should be mapped before being treated as a cumulative positive case.",
+  "expected": {
+    "required_modules": [
+      "P2-objection-mapping"
+    ],
+    "optional_modules": [
+      "V1-diagnostic"
+    ],
+    "forbidden_matched_modules": [
+      "E3-cumulative-case"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

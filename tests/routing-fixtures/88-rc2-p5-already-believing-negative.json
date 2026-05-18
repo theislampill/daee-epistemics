@@ -1,0 +1,24 @@
+{
+  "id": "rc2-p5-already-believing-negative",
+  "prompt": "I am an external critic presenting multiple objections for debate, not a believer whose inherited conviction is under pressure.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: external objection mapping should not be handled as already-believing restoration.",
+  "expected": {
+    "required_modules": [
+      "P2-objection-mapping"
+    ],
+    "optional_modules": [
+      "V1-diagnostic"
+    ],
+    "forbidden_matched_modules": [
+      "P5-already-believing"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

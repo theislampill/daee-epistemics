@@ -1,0 +1,24 @@
+{
+  "id": "rc2-p2-objection-mapping-negative",
+  "prompt": "There is only one live issue: the key term has shifted between two meanings, and I need the local definition fixed before anything else.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: a single semantic anchor problem should not be treated as an objection battery.",
+  "expected": {
+    "required_modules": [
+      "M7-definition-anchor"
+    ],
+    "optional_modules": [
+      "definition-discipline"
+    ],
+    "forbidden_matched_modules": [
+      "P2-objection-mapping"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

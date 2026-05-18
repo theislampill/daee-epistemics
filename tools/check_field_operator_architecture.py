@@ -69,10 +69,24 @@ OWNER_TOKEN_REQUIREMENTS: dict[str, list[str]] = {
         "| `𝒞(Ψᴺ)`",
         "| `Ψᴵ`",
         "| `T_lang: Ψᴺ ⇢ Ψᴵ`",
+        "Operator Typing / Schema-Light Formal Types",
+        "route-ranking functional",
+        "preorder/scored ordering",
+        "Small-Step Transition Model",
+        "partial coupling relation",
+        "not an isomorphism",
+        "not a surjection",
         "Plain `∇` is the route-gradient operator",
         "LoopBreak(∇×T)",
         "positive closure-field condition",
         "language-mediated coupling",
+    ],
+    "docs/package-smoke-readiness.md": [
+        "Marker-Theater Trap",
+        "Witness labels present but local target/operation/result work absent",
+        "Route-pressure stability under paraphrase",
+        "False-route resistance under tempting but disallowed operators",
+        "Marker presence remains structural/render evidence only",
     ],
     "docs/register-formalism-implementation-ledger.md": [
         "| `∇` route-gradient pressure |",
@@ -102,7 +116,7 @@ DOCS_INDEX_SOURCE_TOKENS = {
         "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
         "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
         "𝒞(Ψᴺ)",
-        "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
     ],
     "docs/index/sections/theory.html": [
         "data-k=\"gradient\"",
@@ -123,7 +137,7 @@ DOCS_INDEX_SOURCE_TOKENS = {
         "𝒞(Ψᴺ) licenses closure as field condition",
         "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake",
         "𝒞(Ψᴺ)",
-        "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
     ],
     "docs/index/templates/index.html.tpl": [
         "field-operator-architecture-v19",
@@ -158,13 +172,13 @@ GENERATED_DOC_TOKENS = {
         "𝒞(Ψᴺ) licenses closure as field condition",
         "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake",
         "𝒞(Ψᴺ)",
-        "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
     ],
     "docs/daee-epistemics-pipeline.html": [
         "ROUTE-GRADIENT PRESSURE",
         "LOOP-BREAKING SUBMOVE",
         "𝒞(Ψᴺ) CLOSURE-FIELD CONDITION",
-        "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
     ],
 }
 

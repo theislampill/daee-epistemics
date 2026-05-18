@@ -1,0 +1,22 @@
+{
+  "id": "rc2-m1p-performative-self-refutation-negative",
+  "prompt": "The statement says every claim is false, including this statement. The problem is inside the proposition itself, not in a social act that contradicts its content.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: premise-level self-refutation should not be inflated into performed self-refutation.",
+  "expected": {
+    "required_modules": [
+      "M1-self-refutation"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "M1P-performative-self-refutation"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

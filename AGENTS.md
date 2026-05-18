@@ -160,6 +160,7 @@ After editing source files under `atomics/skill/`, run:
 ```bash
 python tools/build_framework_pipeline.py
 python tools/build_compiled_runtime.py
+python tools/build_docs_index.py --check
 python tools/check_framework_pipeline.py
 python tools/check_compiled_runtime_freshness.py
 python tools/check_package_shape.py
@@ -175,6 +176,9 @@ python tools/check_coverage.py
 python tools/check_recursion_collapse_noetic_frame.py
 python tools/check_metacompliance_current_canon.py
 python tools/check_register_formalism_bridge.py
+python tools/check_ttp_operator_contracts.py --strict
+python tools/check_docs_index_interactions.py
+python tools/check_field_operator_architecture.py
 python tools/check_smoke_artifacts.py
 python tools/check_ir_instance_integrity.py
 python tools/check_diagnostic_ir_catalogue_integrity.py
@@ -191,6 +195,9 @@ only when explicitly requested.
 `tools/check_noetic_field_banner_samples.py` is a tracked dev-local regression checker. When
 noetic-field banner or algebraic-control retained smokes are part of a patch, run it against
 those local artifacts. Its PASS is not package/release proof.
+`docs/index.html` and `docs/daee-epistemics-pipeline.html` are generated navigation surfaces;
+run the docs freshness and interaction checks when public docs or their sources change.
+Witness markers and compact formal labels are evidence surfaces, not behavioral competence proof.
 
 Current release-line contract: operative front matter must use `contract_version: "0.4.0.0"`
 until the project intentionally moves to a later release line. Run:
@@ -203,8 +210,9 @@ Historical release references may remain only when they are clearly historical. 
 claims, package metadata, generated runtime metadata, and checker samples must not silently retain
 older version markers.
 
-Current dirty work after the `v0.4.0.0` tag is `v0.4.1.0` candidate cleanup/hardening work.
-That candidate label does not migrate operative `contract_version` by itself.
+Current dirty work after the `v0.4.1.0` correction line is `v0.4.2.0` release-candidate
+evidence-discipline work. That candidate label does not migrate operative `contract_version`
+by itself.
 
 ## Release Cycle Etiquette
 
@@ -230,6 +238,9 @@ state.
 - Historical smokes are historical regression evidence. Do not claim current-release
   package-bound smokes unless they were regenerated against the current package filename and
   SHA and are marked current-release.
+- `tools/check_release_provenance.py` verifies a local package/provenance pair when provenance
+  JSON exists. Missing provenance, missing public assets, or absent current-release smokes remain
+  release-proof blockers; do not satisfy them with local dirty-worktree hashes or fabricated outputs.
 - If atomics change, rebuild `skill/` and run freshness checks before reporting success.
 - If package contents or release-artifact docs change, rebuild the `.skill` package, compute
   SHA256, size, entry count, and top-level entries, then update `docs/release-artifacts.md`

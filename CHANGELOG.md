@@ -17,6 +17,43 @@
   `𝒞(Ψᴺ)` is a positive closure-field condition, and `Ψᴺ` / `Ψᴵ` are separated by a
   language-mediated coupling boundary.
 
+## [v0.4.2.0] - 2026-05-17 release candidate
+
+v0.4.2.0 is a Deep Research implementation and evidence-discipline release candidate on the
+`0.4.0.0` operative contract line. It improves source/build/docs/checker/release-proof discipline
+without claiming a full formal calculus, public release provenance proof, current-release smoke
+proof, or live-output behavioral proof.
+
+### Added
+
+- Bounded local release provenance checker: `tools/check_release_provenance.py`.
+- Deep Research implementation audit, next handoff, and v0.4.2.0 release-candidate audit.
+- v0.4.2.0 release notes and release log with explicit non-claims and blockers.
+- Direct positive and negative/misuse routing fixtures for the fourteen modules previously tracked
+  as under-fixtured by the operativity audit.
+- Pending-only current-release smoke skeleton under `tests/smokes/current-release/v0.4.2.0/`.
+
+### Changed
+
+- CI and the manual artifact workflow now include generated docs freshness, docs interaction,
+  strict TTP operator, and field-operator architecture gates.
+- The manual artifact workflow records and verifies package SHA, size, entry count,
+  build-manifest SHA, and compiled-module-map SHA.
+- `tools/check_live_default_witness_contract.py` is hardened against marker theater and uptake
+  overclaims without adding canned model-output fixtures.
+- `tools/check_underfixtured_module_coverage.py` and `tools/check_operative_contracts.py` add
+  focused RC2 guardrails for fixture coverage and operative frontmatter.
+- Generated docs/index and pipeline sources preserve canonical `T_lang: Ψᴺ ⇢ Ψᴵ` boundary
+  wording and generated/navigation caveats.
+
+### Non-Claims
+
+- No fake current-release smokes; pending skeleton slots are not PASS evidence.
+- No hard schema migration of the field calculus.
+- No claim that witness markers prove competence.
+- No claim of public v0.4.2.0 package/provenance proof until an actual asset/provenance pair is
+  produced and checked.
+
 ## [v0.4.1.0] - 2026-05-16
 
 v0.4.1.0 is cleanup/hardening work on the `0.4.0.0` operative contract line.

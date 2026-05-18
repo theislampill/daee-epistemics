@@ -28,15 +28,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: internalist criterion cleared or not the barrier.
-- Field target: the live burden or submove pressure that made tactic `R2-the-reminder` eligible; activation cue: internalist criterion cleared or not the barrier.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: the internalist criterion is cleared, absent, or no longer the barrier, and the case calls for recognition-opening rather than another proof stack.
+- Field target: the interlocutor-facing recognition field: whether attention to āyāt, mortality, gratitude, beauty, moral horror, or dependency can surface the already-present recognition without coercive conclusion pressure.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: invite attention to one fitting recognition scene, name the possible fiṭrah movement, and then hold argumentative pressure unless the interlocutor asks to examine it.
+- Δ effect: `ΔⁿB` updates recognition_strength or confirms recognition remains absent/denied; `Δκ` holds R3/E3 until an examination signal appears or routes elsewhere if recognition is rejected.
+- Possible ∇ reread: after the reminder, check target-explicit `∇·♥`/`∇·ξ` for remaining recognition or warrant pressure and `∇×κ` if the answer tries to force a conclusion from an invitation.
+- R(H,Δ) obligation: reread held arguments, recognition status, concealment mode, and whether R3 is licensed by the interlocutor's own turn toward examination.
+- Hold/release/closure effect: when recognition opens, hold argumentative content and do not press for "so you agree"; release only the reminder and the next invitation/hold state.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: no manufactured recognition, no conversion claim, no immediate R3 unless recognition is acknowledged, no scalar closure, no argument-bank drift, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

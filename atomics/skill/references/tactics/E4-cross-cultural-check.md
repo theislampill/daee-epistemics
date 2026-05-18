@@ -27,11 +27,11 @@ operator_pack_eligible: true
 ## Runtime operator contract
 
 - Activation: interlocutor denies or needs grounding for cross-cultural theistic recognition.
-- Field target: the live burden or submove pressure that made tactic `E4-cross-cultural-check` eligible; activation cue: interlocutor denies or needs grounding for cross-cultural theistic recognition.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
+- Field target: diversity/cross-cultural-recognition pressure where the interlocutor treats variable superstructure as defeat for shared foundation.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: split foundation from superstructure -> test the denial against pan-human recognition data -> result; the result contributes to `Land(ⁿB)` only when that distinction is live for the current burden.
+- Δ effect: `ΔⁿB` narrows the burden from "religions differ, therefore no fitri foundation" to the foundation/superstructure distinction; `Δκ` changes only if that split opens or blocks downstream E3/V6/inductive-fitri routes.
 - Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- R(H,Δ) obligation: after this owner acts, reread H for held diversity objections, live foundation/superstructure remainder, newly eligible inductive-fitri or convergence routes, and whether cross-cultural pressure remains a blocker before STOP/RECURSE/PARTIAL.
 - Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.

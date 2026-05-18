@@ -1,0 +1,24 @@
+{
+  "id": "rc2-r2-the-reminder-negative",
+  "prompt": "Give a structured set of independent reasons and show how their combined force supports the conclusion; I am not asking to have an already-recognized sign brought back to attention.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: cumulative warrant should not be reduced to reminder language.",
+  "expected": {
+    "required_modules": [
+      "E3-cumulative-case"
+    ],
+    "optional_modules": [
+      "V6-convergence"
+    ],
+    "forbidden_matched_modules": [
+      "R2-the-reminder"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "rc2-r1-internalist-criterion-negative",
+  "prompt": "I am not demanding a theory of proof. I am numb to the ordinary signs around me and need the familiar thing I already know to be brought back into view.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: reminder routing should not be forced through an inferential-criterion gate.",
+  "expected": {
+    "required_modules": [
+      "R2-the-reminder"
+    ],
+    "optional_modules": [
+      "V5-directing-attention-signs"
+    ],
+    "forbidden_matched_modules": [
+      "R1-internalist-criterion"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

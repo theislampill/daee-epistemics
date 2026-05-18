@@ -6,7 +6,7 @@ on:
       version:
         description: "Release-line version for the artifact name, including leading v"
         required: true
-        default: "v0.4.1.0"
+        default: "v0.4.2.0"
       contract_version:
         description: "Operative frontmatter contract version to verify"
         required: true
@@ -48,6 +48,7 @@ jobs:
         run: |
           python tools/build_framework_pipeline.py
           python tools/build_compiled_runtime.py
+          python tools/build_docs_index.py --check
           python tools/check_compiled_runtime_freshness.py
           python tools/check_package_shape.py
           python tools/check_compiled_module_boundaries.py
@@ -64,6 +65,9 @@ jobs:
           python tools/check_metacompliance_current_canon.py
           python tools/check_smoke_artifacts.py
           python tools/check_register_formalism_bridge.py
+          python tools/check_ttp_operator_contracts.py --strict
+          python tools/check_docs_index_interactions.py
+          python tools/check_field_operator_architecture.py
           python tools/check_ir_instance_integrity.py
           python tools/check_diagnostic_ir_catalogue_integrity.py
           python tools/check_encoding_hygiene.py
@@ -96,6 +100,8 @@ jobs:
           zip_path = Path(f"build/daee-epistemics-{version}.skill.zip")
           asset_path = Path(f"build/daee-epistemics-{version}.skill")
           provenance_path = Path(f"build/daee-epistemics-{version}.provenance.json")
+          manifest_path = Path("skill/build-manifest.json")
+          compiled_map_path = Path("skill/compiled-module-map.json")
 
           required_roots = {
               "SKILL.md",
@@ -129,9 +135,15 @@ jobs:
 
           zip_bytes = zip_path.read_bytes()
           asset_bytes = asset_path.read_bytes()
+          manifest_bytes = manifest_path.read_bytes()
+          compiled_map_bytes = compiled_map_path.read_bytes()
           source_commit = subprocess.check_output(
               ["git", "rev-parse", "HEAD"], text=True
           ).strip()
+          zip_sha256 = hashlib.sha256(zip_bytes).hexdigest().upper()
+          asset_sha256 = hashlib.sha256(asset_bytes).hexdigest().upper()
+          manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest().upper()
+          compiled_map_sha256 = hashlib.sha256(compiled_map_bytes).hexdigest().upper()
 
           payload = {
               "version": version,
@@ -143,11 +155,17 @@ jobs:
               "source_commit": source_commit,
               "zip_path": str(zip_path),
               "asset_path": str(asset_path),
-              "zip_sha256": hashlib.sha256(zip_bytes).hexdigest().upper(),
-              "asset_sha256": hashlib.sha256(asset_bytes).hexdigest().upper(),
+              "package_filename": asset_path.name,
+              "package_sha256": asset_sha256,
+              "zip_sha256": zip_sha256,
+              "asset_sha256": asset_sha256,
+              "build_manifest_sha256": manifest_sha256,
+              "compiled_module_map_sha256": compiled_map_sha256,
               "zip_size": len(zip_bytes),
               "asset_size": len(asset_bytes),
+              "package_size": len(asset_bytes),
               "entry_count": len(names),
+              "package_entry_count": len(names),
               "top_level_entries": top_level,
               "required_roots": sorted(required_roots),
               "forbidden_roots_absent": forbidden == [],
@@ -156,6 +174,15 @@ jobs:
           provenance_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
           print(json.dumps(payload, indent=2))
           PY
+
+      - name: Verify package provenance
+        shell: bash
+        run: |
+          python tools/check_release_provenance.py \
+            --provenance "build/daee-epistemics-${VERSION}.provenance.json" \
+            --package "build/daee-epistemics-${VERSION}.skill" \
+            --manifest skill/build-manifest.json \
+            --compiled-map skill/compiled-module-map.json
 
       - name: Upload skill artifact
         uses: actions/upload-artifact@v4

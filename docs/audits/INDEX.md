@@ -29,6 +29,17 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | CURRENT-CANDIDATE | Classifies generated index and pipeline-page blocks by owner coupling, manifest provenance, notation coherence, and standalone-page disposition. |
 | `docs/audits/v0.4.1.0-secular-humanist-field-governance-audit.md` | CURRENT-CANDIDATE | Compares the secular-humanist authority-frame smoke outputs and hardens field accounting without hardcoding a single noetic-structure route. |
 | `docs/audits/v0.4.1.0-field-gradient-loop-closure-coupling-implementation-audit.md` | CURRENT-CANDIDATE | Implements plain ∇ route-gradient pressure, LoopBreak(∇×T), positive 𝒞(Ψᴺ) closure-field condition, and Ψᴺ/Ψᴵ language-mediated coupling with owner/checker/fixture/docs-index traces. |
+| `docs/audits/v0.4.1.0-deep-research-implementation-audit.md` | CURRENT-CANDIDATE | Maps the four Deep Research reports to repo-grounded implementation decisions, refusals, blockers, and proof boundaries. |
+| `docs/audits/v0.4.1.0-deep-research-next-handoff.md` | CURRENT-CANDIDATE | Handoff prompt and proof-boundary map for the next Deep Research investigation after this implementation pass. |
+| `docs/audits/v0.4.2.0-release-candidate-audit.md` | CURRENT-CANDIDATE | Final pre-public file/status audit for the v0.4.2.0 Deep Research implementation and evidence-discipline release. |
+| `docs/audits/v0.4.2.0-deep-research-coverage-proof.md` | CURRENT-CANDIDATE | Per-report Deep Research coverage proof for v0.4.2.0 release-candidate evidence and terminology cleanup. |
+| `docs/audits/v0.4.2.0-deep-research-next-handoff.md` | CURRENT-CANDIDATE | Pre-public handoff for the next Deep Research verification pass before any v0.4.2.0 public release decision. |
+| `docs/audits/v0.4.2.0-deep-research-gap-remediation.md` | CURRENT-CANDIDATE | Targeted remediation ledger for eleven missed or under-addressed Deep Research operativity findings before pre-public archive packaging. |
+| `docs/audits/v0.4.2.0-underfixtured-module-coverage.md` | CURRENT-CANDIDATE | Pre-public appendix for the fourteen operativity-audit modules: owner strengthening status, direct route/misuse fixture paths, and live-behavior follow-up. |
+| `docs/audits/v0.4.2.0-fixture-corpus-mining-audit.md` | CURRENT-CANDIDATE | Four-lane review of both candidate markdown archives with candidate-to-module map, all-TTP opportunities, and implemented fixture table. |
+| `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | CURRENT-CANDIDATE | Pre-archive stale-surface audit classifying tools, smokes, raw fixture candidates, ignored local build outputs, and pre-public proof boundaries. |
+| `docs/audits/v0.4.2.0-current-release-smoke-runbook.md` | CURRENT-CANDIDATE | Owner packet for capturing real package-bound current-release smoke outputs, sidecars, verdicts, and provenance. |
+| `docs/audits/v0.4.2.0-p0-remediation.md` | CURRENT-CANDIDATE | P0 remediation ledger for stale public wording, local package/provenance proof, and remaining live-smoke release blockers. |
 
 ## Consolidated Audit History
 
@@ -47,6 +58,7 @@ Historical evidence is consolidated into history files rather than retained as d
 |---|---|---|
 | `docs/algebraic-notation-and-noetic-formalism.md` | CURRENT | Formalism reference and anti-symbol-theater guard. |
 | `docs/register-formalism-implementation-ledger.md` | CURRENT | schema-light register bridge implementation and schema-light ledger. |
+| `docs/behavioral-evaluation-framework.md` | CURRENT | Seven-layer future behavioral-evaluation framework separating marker/render proof from behavioral competence. |
 | `docs/source-vs-runtime-layout.md` | CURRENT | Source/runtime boundary note. |
 | `docs/compiled-runtime-tools.md` | CURRENT | Compiler/checker guide; notes historical harness naming. |
 | `docs/recursive-traversal-governance.md` | CURRENT | Reread and traversal governance. |

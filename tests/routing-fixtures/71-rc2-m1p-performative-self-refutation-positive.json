@@ -1,0 +1,24 @@
+{
+  "id": "rc2-m1p-performative-self-refutation-positive",
+  "prompt": "The critic says no one has a right to impose moral obligations, but in the same breath demands that everyone must accept his moral tribunal before religion may speak publicly.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from polemical double-standard cases where the act of objection performs the denied norm.",
+  "expected": {
+    "required_modules": [
+      "M1P-performative-self-refutation"
+    ],
+    "optional_modules": [
+      "M1-self-refutation"
+    ],
+    "forbidden_matched_modules": [
+      "M8-reductio"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

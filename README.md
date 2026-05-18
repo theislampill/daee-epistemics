@@ -1,6 +1,6 @@
 # daee-epistemics
 
-`daee-epistemics` is a modular LLM skill and governed diagnostic framework for epistemic operations and noetic analysis: analogous to a cognitive-security framework for classifying discourse, diagnosing Orientation, Deformation, and Concealment, and routing engagements through matched Tactics, Techniques, Procedures, and Case Modules.
+`daee-epistemics` is a modular LLM skill and governed diagnostic framework for epistemic operations and noetic analysis. It uses a limited cognitive-security analogy as onboarding language, but the release claim is the repo-native runtime discipline: compact DSL/IR diagnosis, recursive state re-read, owner/TTP routing, bounded response release, and evidence-bound packaging.
 
 This repository now has two deliberate layers: canonical atomized source under [`atomics/skill/`](atomics/skill/) and a generated compiled Claude runtime under local/CI `skill/`.
 
@@ -74,7 +74,7 @@ The repository's own method requires clarity before response, and that applies t
 
 ## Core Thesis
 
-> `daee-epistemics` is best understood as analogous to an epistemic SOC: 
+> `daee-epistemics` is best understood as a governed diagnostic-and-release runtime:
 a structured system for identifying, classifying, and remediating epistemic distortion affecting the heart-mind.
 
 The point of that analogy is architectural (onboarding-oriented), not ornamental. 
@@ -99,7 +99,7 @@ For quantised or smaller models, it functions as external cognitive compression:
 
 In both cases, the point is the same: to shift the burden from vague latent improvisation toward a portable, inspectable, and reusable structure for diagnosis, analysis, and restoration.
 
-The cognitive-security / epistemic-SOC analogy is helpful here as an onboarding frame, but it is secondary.
+The cognitive-security analogy is helpful only as an onboarding frame. It is secondary to the actual implementation boundary: DSL/IR state, owner/TTP contracts, state-transition discipline, generated runtime, package-shape checks, and evidence-bound release proof.
 
 ## Runtime Architecture, Not Prompt Advice
 
@@ -137,7 +137,7 @@ Whether a particular model instance fully executes this architecture is a behavi
 question. The architecture itself is not reducible to prompt engineering: it is a stateful,
 owner-governed process with transition, reread, field-diagnostic, and closure conditions.
 
-A Security Operations Center (SOC) does not begin by deploying countermeasures blindly; it initiates:
+The limited security analogy is that a serious response system does not begin by deploying countermeasures blindly; it initiates:
 * intake
 * triage
 * classification
@@ -147,12 +147,12 @@ A Security Operations Center (SOC) does not begin by deploying countermeasures b
 This repository applies a comparable logic to theological and philosophical engagement. 
 It treats an objection not merely as a proposition to rebut, but as an event arising within a wider *noetic structure* (the underlying structure of how a person knows, trusts, reasons, and proportions belief).
 
-Not a storehouse of arguments; this is a cognitive-security and diagnostic-response framework for epistemic compromise. 
+Not a storehouse of arguments; this is a diagnostic-response framework for epistemic compromise.
 Its aim is restorative: to clear occlusion, reorder cognition, and return the person to sound perception of truth rather than to construct belief from nothing.
 
 ## Why This Framing Fits the Repository
 
-A SOC needs an inventory of systems and dependencies. In this skill, **Noetic Structure** functions like that inventory, as an asset map.
+The analogy also highlights dependency awareness. In this skill, **Noetic Structure** functions like an inventory of live epistemic dependencies.
 
 It maps:
 * what the person takes as basic

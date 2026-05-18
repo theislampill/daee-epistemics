@@ -80,7 +80,8 @@ Layer B releases the burden: `∇ route: Bn pressure highest — [dependency-red
 reduction, closure yield, or dependency-clarification yield among currently eligible routes. It
 remains constrained by Diagnostic IR, V1/routing precedence, owner catalogue eligibility, and
 held-material discipline. It does not bypass gates, prove truth/warrant, replace `Δ`, or turn
-multiple live candidate structures into one deterministic route.
+multiple live candidate structures into one deterministic route. Its formal role is
+route-ranking/preorder pressure, not literal vector gradient.
 
 > Render surface does not change governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface: readable, bounded, and visibly carrying a mandatory noetic-field execution banner, compact DSL/IR header, governed Layer B, and state/noetic re-read. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded Diagnostic IR / live-burden state; it is not the first place DSL governance appears. `/daee-epistemics < input.md > output.md` is canonical file-retained execution: the same compact DSL-governed surface is written to `output.md` when final-chat delivery would compress a hard answer. `/daee-epistemics:audit` is deprecated as a public render mode and retained only for internal/development audit compatibility. The former external recursive-audit prompt is deprecated as normal prompting because its useful discipline is now native.
 
@@ -132,7 +133,14 @@ If compact `∇×T` remains nonzero, the release decision must account for loop-
 `LoopBreak(∇×T)` may be released only when the output identifies the target loop, an
 owner-licensed grounding source, the burden/submove that breaks the loop, the resulting `Δ`
 effect, and a post-break `∇×T` reread. If no loop-breaker is licensed, the loop is held with
-reason or carried into RECURSE/PARTIAL rather than hidden behind closure prose.
+reason or carried into RECURSE/PARTIAL rather than hidden behind closure prose. It is a partial
+licensed transition, not a total transition.
+
+LoopBreak is conditional and control-bound. Do not require a decorative `LoopBreak:` line in every
+ordinary output. When field diagnostics are rendered and cyclic pressure was checked, null cyclic
+pressure must render as `LoopBreak: not needed` / `not licensed` / equivalent; non-null cyclic
+pressure must name target, ground, `Δ` effect, post-break reread, and resulting hold/closure
+state.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. Do not put
@@ -177,6 +185,21 @@ For any input `D0`, `R(H,Delta)` must inspect selected/held noetic frames, live 
 Omega, sigma, mu, kappa, held-burden dependencies, and residual field pressure before final
 restoration. It may not STOP or mark COMPLETE while downstream dependencies remain. Render,
 clear, integrate, discharge as duplicate/derivative, hold with reason, or mark PARTIAL/RECURSE.
+Bare-symbol reread is invalid: the state/noetic re-read must recover held set, live remainder,
+newly released or newly blocked routes, and next eligible pass / STOP-HOLD-PARTIAL-RECURSE-
+COMPLETE status, or a compact equivalent.
+
+Closure/reconstruction must distinguish three surfaces: the burden dependency graph, the coverage
+proof, and the collapse/closure proof. `R(H,Δ)` rereads the updated state and must account for the
+initial burden set through terminal states or explicit carry/hold decisions. A parseable graph
+alone is not enough: every initial burden must have exactly one terminal accounting line, and
+COMPLETE / positive closure is not licensed unless residual `∇·B` is neutral and `∇×κ` is null or
+resolved for the scoped field.
+The initial burden set must be declared from Layer A / Diagnostic IR before release accounting; it
+is not discovered retroactively by the closure witness. If `R(H,Δ)` exposes a burden not in that
+pre-release set, render it as newly discovered, newly live, or a next-pass candidate, then HOLD,
+PARTIAL, or RECURSE unless the scoped closure rule explicitly permits current-pass terminal
+accounting without pretending the original set was complete.
 
 If the answer closes a multi-burden, register-active, named-worldview, source-authentication,
 mixed noetic-field, or authority-frame case, the closure audit must visibly account for
@@ -203,14 +226,28 @@ truth. STOP requires landed/integrated/held burdens, neutral or bounded residual
 resolved or explicitly held `∇×` loops, recoverable route reconstruction, and no hidden live
 pressure requiring RECURSE/PARTIAL.
 
+The visible closure block must identify whether the agent execution field is COMPLETE, STOP, HOLD,
+PARTIAL, or RECURSE. `𝒞(Ψᴺ)` remains runtime-side closure only and never indicates interlocutor
+acceptance, conversion, persuasion, guidance, or soul access.
+
 Agent/interlocutor field boundary: the runtime operates in `Ψᴺ`, the agent execution field. It
 diagnoses an interlocutor field `Ψᴵ` only through discourse/profile/register/source-status
 evidence and releases through language-mediated coupling `T_lang: Ψᴺ ⇢ Ψᴵ`. Final restorative
 boundary text must articulate this compactly when closure or final counsel is rendered: the
 released response is a language-mediated coupling attempt from the governed agent field toward the
-diagnosed interlocutor field. Output may assess whether the coupling attempt is
+diagnosed interlocutor field. This is a partial coupling relation, not an isomorphism, not a
+surjection, and not a guaranteed update operator on `Ψᴵ`. Output may assess whether the coupling attempt is
 identity-preserving and non-deformative; it must not claim access to the interlocutor's soul,
 guaranteed uptake, or agent control of guidance.
+
+Release-smoke witness capture mode is a local package-bound evidence mode. It does not change what
+may be released, but it makes release decisions and closure boundaries literal: `∇ route`,
+`Field diagnostics:`, `LoopBreak:`, `R(H,Delta)`, `Closure/Reconstruction Witness`,
+`𝒞(Ψᴺ)`, `T_lang: Ψᴺ ⇢ Ψᴵ`, `Restorative Response`, and `Closing Formulation` must be
+checker-readable when the manifest says `witness_required=true`. Missing surfaces are not
+silently downgraded to "not applicable"; non-applicability must be declared by case type before
+capture. Witness markers remain evidence surfaces, not competence proof, not a truth meter, and
+not guaranteed uptake.
 
 For file-retained execution, the same release decision governs the file, not the final chat
 message. Write the complete, HOLD, or PARTIAL governed answer to the output file. The chat

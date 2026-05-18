@@ -1,0 +1,22 @@
+{
+  "id": "rc2-m7-definition-anchor-negative",
+  "prompt": "The speaker has already fixed the meaning of the term for this exchange, but now avoids saying whether the defined proposition is true, false, or being withheld.",
+  "case_class": "ordinary",
+  "notes": "Misuse guard: once definition is settled, the live problem is truth-value evasion rather than anchoring a term.",
+  "expected": {
+    "required_modules": [
+      "M6-excluded-middle"
+    ],
+    "optional_modules": [],
+    "forbidden_matched_modules": [
+      "M7-definition-anchor"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

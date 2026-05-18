@@ -1,0 +1,24 @@
+{
+  "id": "rc2-r1-internalist-criterion-positive",
+  "prompt": "I accept memory, other minds, and moral perception without deriving them from proofs, but I keep treating knowledge of God as impossible unless I can infer it from a formal argument first.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from basic-belief and internalist-criterion materials.",
+  "expected": {
+    "required_modules": [
+      "R1-internalist-criterion"
+    ],
+    "optional_modules": [
+      "R3-warranted-basic-belief"
+    ],
+    "forbidden_matched_modules": [
+      "R2-the-reminder"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

@@ -71,7 +71,7 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Theory PsiI selector": "goConceptField('PsiI')",
     "Theory coupling notation token": "data-k=\"coupling\"",
     "Theory coupling output boundary": "public release boundary",
-    "Theory T_lang response boundary": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Theory T_lang boundary": "T_lang: Ψᴺ ⇢ Ψᴵ",
     "Concept graph nabla-dot concept": "id:'nablaDot'",
     "Concept graph nabla-cross concept": "id:'nablaCross'",
     "Concept graph del-dot concept": "id:'delDot'",
@@ -98,7 +98,7 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Architecture route-gradient": "Gate/routing + ∇ route-gradient",
     "Architecture loop-break": "LoopBreak if ∇×T nonzero",
     "Architecture closure field condition": "𝒞(Ψᴺ)",
-    "Architecture language coupling": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Architecture language coupling": "T_lang: Ψᴺ ⇢ Ψᴵ",
     "Theory divergence symbol row": "∇·T field diagnostic",
     "Theory curl symbol row": "∇×T field diagnostic",
     "Theory del-dot alias": "del-dot",
@@ -143,7 +143,7 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Full bridge loop-break": "LoopBreak(∇×T)",
     "Full bridge loop-break witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
     "Full bridge PsiI": "Ψᴵ",
-    "Full bridge T_lang": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Full bridge T_lang": "T_lang: Ψᴺ ⇢ Ψᴵ",
 }
 
 EXPECTED_CONTROL_CARD_ORDER = [
@@ -216,7 +216,7 @@ REQUIRED_PIPELINE_NOTATION_TOKENS = {
     "Standalone pipeline field diagnostic rail": "∇·T / ∇×T field diagnostics",
     "Standalone pipeline loop-breaking rail": "LOOP-BREAKING SUBMOVE",
     "Standalone pipeline closure-field rail": "𝒞(Ψᴺ) CLOSURE-FIELD CONDITION",
-    "Standalone pipeline coupling rail": "T_lang(response): Ψᴺ ⇢ Ψᴵ",
+    "Standalone pipeline coupling rail": "T_lang: Ψᴺ ⇢ Ψᴵ",
     "Standalone pipeline Land before Delta": "Land(ⁿB)<br>→ ΔⁿB / Δκ",
     "Standalone pipeline post-Delta wording": "target-explicit post-Delta field diagnostics",
 }

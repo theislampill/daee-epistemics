@@ -1,0 +1,24 @@
+{
+  "id": "rc2-m7-definition-anchor-positive",
+  "prompt": "In this exchange, the same term is being used once for ordinary rational engagement and once for a speculative theological method. Before deciding the claim, fix the local working definition.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from kalam-definition and time-definition materials.",
+  "expected": {
+    "required_modules": [
+      "M7-definition-anchor"
+    ],
+    "optional_modules": [
+      "definition-discipline"
+    ],
+    "forbidden_matched_modules": [
+      "M6-excluded-middle"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

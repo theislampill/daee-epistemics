@@ -3,6 +3,10 @@
 This is the current-canon readiness surface. It prepares package and smoke verification only; it
 does not create a package and does not assert live model behavioral equivalence.
 
+For future behavioral proof layers, see `docs/behavioral-evaluation-framework.md`. Marker presence
+is structural/render evidence only; it is not route correctness, state-transformation proof, or
+interlocutor-facing usefulness proof.
+
 ## Package Root Expectations
 
 Before packaging, regenerate and verify the generated runtime. Package the contents of `skill/`,
@@ -90,6 +94,33 @@ Do not package unless explicitly asked.
 
 Each smoke test checks shape and governance, not exact prose.
 
+### Marker-Theater Trap
+
+Future smoke or behavioral evaluation should include negative-control families where an answer may
+contain the right symbols or witness labels but still fails because the local target, operation,
+result, route choice, reread, closure, or source-status work was not actually performed. These are
+evaluation families, not canned expected outputs; success should be judged by route correctness,
+state transformation, reconstruction fidelity, and bounded release rather than exact wording.
+Marker presence remains structural/render evidence only.
+
+1. Witness labels present but local target/operation/result work absent.
+2. Route-pressure stability under paraphrase.
+3. False-route resistance under tempting but disallowed operators.
+4. Held-set reread fidelity after burden landing.
+5. Closure-field discipline vs premature closure.
+6. Uneven TTP activation under similar-looking prompts.
+7. Adversarial source-status perturbations.
+
+### Closure-Witness Visualization Artifact
+
+Closure/Reconstruction Witness fixtures may be inspected with
+`tools/visualize_closure_witness.py`. The tool emits Mermaid plus a JSON sidecar summary containing
+coverage status, collapse status, burden nodes, dependency edges, `∇·B`, and `∇×κ`. This is a
+research/evaluation artifact: it makes rendered coverage easier to audit, but it does not prove
+route correctness, live model execution, or behavioral competence. An interactive colored-node graph
+may be useful later, but it should be built on the JSON summary rather than replacing the textual
+closure witness or inventing stronger proof claims.
+
 ## Runtime-Grounding Smoke Artifact Gate
 
 Smoke artifact suites are local evidence by default and should remain ignored unless a task
@@ -143,9 +174,9 @@ executed, not because it has the expected headings.
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
 - No smoke artifact suite is committed in this source state.
-- v0.4.0.0 package smoke evidence is historical for the v0.4.1.0 correction line unless the
-  smoke suite is regenerated locally against the intended v0.4.1.0 replacement package and the
-  SHA256 recorded in `docs/release-artifacts.md`.
+- v0.4.0.0 package smoke evidence is historical for later v0.4.x release lines unless the
+  smoke suite is regenerated locally against the intended replacement package and the SHA256 is
+  recorded in `docs/release-artifacts.md`.
 - Markdown smoke artifacts prove governed output shape, contamination discipline, provenance, and
   burden-completeness regression behavior.
 - `ir.json` smoke sidecars prove typed Diagnostic IR/source_basis integrity for the same fixture.
@@ -156,9 +187,17 @@ executed, not because it has the expected headings.
 
 - Local smoke folders such as `runtime-grounding-v5` or later may be used for regenerated
   package-bound evidence, but they remain ignored unless a task explicitly authorizes tracking.
-- Current source state for the v0.4.1.0 correction line: package-bound current-release smoke suite
-  is absent, so `python tools/check_smoke_artifacts.py --require-current-release-smokes` is
-  expected to fail until package-bound current-release smoke artifacts are truthfully regenerated.
+- v0.4.2.0 uses an intentional minimal three-case local release gate. The committed skeleton lives
+  at `tests/smokes/current-release/v0.4.2.0/manifest.json`; raw `output.md`, `ir.json`, `trace.md`,
+  `verdict.md`, and model/host capture files are local diagnostic artifacts and are not committed.
+- The three v0.4.2.0 release-required cases are `CR-01`, `CR-02`, and `CR-03`. `CR-04` through
+  `CR-10`, expanded behavioral generalization, paraphrase clusters, cross-host probes, and the
+  heuristics/noetic-profiles catalogue migration are deferred to v0.4.3.0/v0.5 and do not block
+  v0.4.2.0.
+- `python tools/check_smoke_artifacts.py --require-current-release-smokes` fails unless the three
+  required package-bound current-release smoke artifacts exist locally and pass with matching
+  package provenance and `ir.json` sidecars. For the v0.4.2.0 release pass, this strict gate passed
+  locally against package SHA `21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7`.
 - `runtime-grounding-v7`, `runtime-grounding-v8`, and Hermes probe folders, if present locally, are
   development / post-expansion regression evidence unless explicitly regenerated against a release
   package and re-marked with current-release package provenance.
@@ -172,15 +211,55 @@ current-release evidence: yes
 ```
 
 - Current-release smoke evidence requires `ir.json` sidecars for every current-release fixture.
+- For v0.4.2.0, each release-required case declares `witness_required=true` and must be captured
+  in `release-smoke witness capture mode` unless a future manifest explicitly gives a case-type
+  non-applicability reason before capture. Required witness surfaces are route-gradient, target
+  explicit field diagnostics, `R(H,Delta)` reread with held/live/next-status accounting,
+  closure/non-closure status, `T_lang` boundary, Restorative Response, and non-claim boundary.
 - Historical smokes remain useful regression evidence but do not prove the current package.
 - `tools/check_smoke_artifacts.py` validates package/smoke provenance consistency.
-- `tools/check_smoke_artifacts.py --require-current-release-smokes` is the stricter release check:
-  it requires at least one hard current-release PASS smoke and at least one bounded current-release
-  PASS smoke, each with matching package provenance and `ir.json`.
-- The strict flag is a release-promotion check in this source state. It is expected to fail until a
-  truthfully regenerated current-release smoke suite exists, so it is not wired into mandatory CI.
+- `tools/check_smoke_artifacts.py --require-current-release-smokes` is the stricter release check
+  for v0.4.2.0: it requires all three release-required current-release PASS smokes (`CR-01` through
+  `CR-03`), including at least one hard smoke and one bounded smoke, each with matching package
+  provenance and `ir.json`.
+- The strict flag is a release-promotion check in this source state. It is not wired into mandatory
+  CI because raw current-release captures are local diagnostic artifacts and are not committed.
 - Neither historical nor current smoke artifacts independently prove live-host replay unless a future
   live-runner is implemented.
+
+## Minimal v0.4.2.0 Smoke Skeleton
+
+The committed skeleton defines three release-required local smoke families and seven deferred
+expanded-smoke families without committing raw outputs:
+
+Release package used for the local three-case smoke gate:
+
+```text
+package filename: daee-epistemics-v0.4.2.0.skill
+package SHA256: 21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7
+```
+
+| Case | Family | Current status |
+| --- | --- | --- |
+| `CR-01` | Default hard routing and closure witness | local PASS in release pass; release-required |
+| `CR-02` | Witness-label misuse negative boundary | local PASS in release pass; release-required |
+| `CR-03` | Ordinary bounded governed answer | local PASS in release pass; release-required |
+| `CR-04` | Held-route carry / release | `deferred-expanded-smoke` |
+| `CR-05` | Source-status / noetic-frame distinction | `deferred-expanded-smoke` |
+| `CR-06` | Submove boundary | `deferred-expanded-smoke` |
+| `CR-07` | Closure witness coverage expansion | `deferred-expanded-smoke` |
+| `CR-08` | Route-pressure stability under paraphrase | `deferred-expanded-smoke` |
+| `CR-09` | False-route resistance expansion | `deferred-expanded-smoke` |
+| `CR-10` | Release/provenance boundary expansion | `deferred-expanded-smoke` |
+
+The three required cases must not be counted as current-release smoke proof until real local
+package-bound outputs, IR sidecars, verdicts, and provenance are captured. Raw captures remain local
+and ignored; committed skeleton metadata must not be treated as PASS evidence by itself. Deferred
+cases must not be counted as PASS evidence for v0.4.2.0.
+
+Release-smoke witness capture mode is a poka-yoke for this local gate. It makes the expected
+surfaces explicit, but the surfaces still must be substantive: witness markers are not competence
+proof, not a truth meter, not guaranteed uptake, and not a soul/interlocutor rewrite claim.
 
 ## How to Promote Historical Smokes to Current-Package Evidence
 
@@ -215,8 +294,29 @@ required/conditional fields, then adds catalogue, compiled-module-map, source-ba
 post-render decision checks. It discovers local `smokes/runtime-grounding-v*/<fixture>/ir.json`
 sidecars when present and treats them as expected-valid.
 
-Current-release smoke suites require `ir.json` for every fixture. No committed smoke sidecars exist
-in this source state.
+Promoted current-release smoke suites require `ir.json` for every PASS fixture. The committed
+`tests/smokes/current-release/v0.4.2.0/` tree is a skeleton only; local ignored `output.md`,
+`trace.md`, `verdict.md`, and `ir.json` files may exist during release verification but are not
+committed.
+
+## Release Provenance Check
+
+`tools/check_release_provenance.py` verifies local package/provenance consistency without using
+GitHub or the network. Run it after a package and provenance JSON exist:
+
+```bash
+python tools/check_release_provenance.py \
+  --provenance build/daee-epistemics-v0.4.2.0.provenance.json \
+  --package build/daee-epistemics-v0.4.2.0.skill \
+  --manifest skill/build-manifest.json \
+  --compiled-map skill/compiled-module-map.json \
+  --release-artifacts docs/release-artifacts.md
+```
+
+The checker compares package SHA256, package size, archive entry count, build-manifest SHA256,
+compiled-module-map SHA256, and any matching release-artifacts table. If a smoke root is supplied
+with `--smoke-root`, it also requires smoke package SHA evidence to match the same package. A missing
+provenance JSON remains a release-proof blocker; do not satisfy this check by inventing provenance.
 
 ### Default Compact DSL/IR
 

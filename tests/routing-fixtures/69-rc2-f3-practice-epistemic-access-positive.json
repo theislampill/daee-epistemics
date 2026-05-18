@@ -1,0 +1,25 @@
+{
+  "id": "rc2-f3-practice-epistemic-access-positive",
+  "prompt": "The arguments no longer seem blocked, but I still feel like the truth only becomes accessible if I actually pray, restrain myself, and live as if the recognition matters. Is that practice epistemically relevant or just emotion?",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from the creeping-doubts and practice-access materials.",
+  "expected": {
+    "required_modules": [
+      "F3-practice-epistemic-access"
+    ],
+    "optional_modules": [
+      "F2-volitional-dimensions",
+      "P5-already-believing"
+    ],
+    "forbidden_matched_modules": [
+      "E2-inferential-criterion"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

@@ -23,11 +23,11 @@ catalogue_registered: true
 ## Runtime operator contract
 
 - Activation: several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live.
-- Field target: the live technique-level noetic/register/dependency pressure that made `V6-convergence` eligible; activation cue: several epistemic registers (evidential, fiṭrī, experiential, testimonial) are genuinely live.
-- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: target -> repair/orient/disambiguate -> result; it is a bounded operator, not an essay section.
-- Δ effect: `ΔⁿB` records the repair/orientation transition; `Δκ` changes when the technique clears or exposes downstream dependency pressure.
+- Field target: cross-register pressure where evidential, fitri, experiential, and testimonial registers are genuinely live and are being set against one another.
+- Burden/submove form: technique `ⁿBᵢ[OPᵢ]`: identify the live registers -> show their convergence without flattening them into one proof -> result; it is a bounded operator, not an essay section.
+- Δ effect: `ΔⁿB` shifts the burden from register-conflict to register-convergence when multiple independent pathways are actually live; `Δκ` changes only if the convergence point releases, holds, or reprioritizes E3, E4, testimonial, or experiential routes.
 - Possible ∇ reread: after the technique lands, check target-explicit `∇·B`, `∇·ξ`, or `∇×κ` only when residual burden, warrant, or route pressure remains.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
+- R(H,Δ) obligation: after this owner acts, reread H for held single-register routes, live cross-register remainder, newly released E3/E4/testimonial/experiential routes, and whether convergence itself has landed or remains PARTIAL.
 - Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.

@@ -26,15 +26,15 @@ operator_pack_eligible: true
 
 ## Runtime operator contract
 
-- Activation: interlocutor holds that knowledge of God requires inferential argument.
-- Field target: the live burden or submove pressure that made tactic `R1-internalist-criterion` eligible; activation cue: interlocutor holds that knowledge of God requires inferential argument.
-- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: target -> operation -> result; the result contributes to `Land(ⁿB)` only when live for the current burden.
-- Δ effect: `ΔⁿB` is the local target/operation/result transition; `Δκ` changes only if the operation affects closure, dependency radius, or held routes.
-- Possible ∇ reread: after the tactic lands, check target-explicit `∇·B` for remaining burden pressure or `∇×ξ`/`∇×κ` for circular criterion/dependency pressure when relevant.
-- R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.
-- Hold/release/closure effect: release only the bounded result that has landed; hold, integrate, discharge as derivative, or carry forward unresolved pressure with reason.
+- Activation: the interlocutor bars theistic knowledge unless it is produced by inferential argument while accepting other basic beliefs without the same demand.
+- Field target: the internalist criterion functioning as a gate against theism, especially whether it is global, theism-specific, or a face-saving asymmetry.
+- Burden/submove form: tactic `ⁿBᵢ[OPᵢ]`: name the criterion, compare it to other basic-belief domains, and test whether the criterion proves too much or exempts itself.
+- Δ effect: `ΔⁿB` loosens the criterion, exposes a theism-specific restriction, or routes to M1 if global internalism absorbs the analogy; `Δκ` releases R2/R3 only when the criterion barrier is actually pressured.
+- Possible ∇ reread: after the criterion test, check target-explicit `∇·ξ` for remaining warrant pressure and `∇×κ` if the criterion demands argument while relying on unargued trust in its own demand.
+- R(H,Δ) obligation: reread held R2/R3, concealment mode, global-internalism response, and whether the next Reformed-register move is licensed or still held.
+- Hold/release/closure effect: hold R2/R3 until R1 has pressured or bounded the criterion; release only the criterion-state change, not a full theistic conclusion.
 - Output boundary: `layer-b-permitted` with output shapes `bounded-single-pass`. Default render may show compact state markers when control-bound; long formalism stays audit/formalism-expanded.
-- Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
+- Negative constraints: do not run R1 when concealment or volitional resistance is primary, do not treat the analogy as proof of theism, and do not bypass M1 when global internalism is defended; no scalar closure, no proof-by-symbol, and no ∇ truth-or-warrant claim.
 - Fixture/checker: Catalogue/frontmatter integrity is guarded by `tools/check_ttp_operator_contracts.py`; direct structural routing coverage remains a remediation item.
 
 

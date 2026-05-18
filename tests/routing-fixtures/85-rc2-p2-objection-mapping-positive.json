@@ -1,0 +1,25 @@
+{
+  "id": "rc2-p2-objection-mapping-positive",
+  "prompt": "I have several objections at once: one about transmission, one about moral judgment, one about whether miracles count, and one about whether inherited certainty is legitimate. I need the order of burdens before any answer.",
+  "case_class": "complex",
+  "notes": "Corpus-derived from multi-objection threads and source-status/burden-order cases.",
+  "expected": {
+    "required_modules": [
+      "P2-objection-mapping"
+    ],
+    "optional_modules": [
+      "V1-diagnostic",
+      "M5-deformation-triage"
+    ],
+    "forbidden_matched_modules": [
+      "E3-cumulative-case"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 20
+  }
+}

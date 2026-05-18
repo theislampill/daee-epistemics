@@ -1,0 +1,24 @@
+{
+  "id": "rc2-r2-the-reminder-positive",
+  "prompt": "I keep waiting for a dramatic miracle, but the more basic fact of my existence and dependence is right in front of me. Help redirect attention without turning this into a proof dump.",
+  "case_class": "ordinary",
+  "notes": "Corpus-derived from the 'waiting for a miracle' thread.",
+  "expected": {
+    "required_modules": [
+      "R2-the-reminder"
+    ],
+    "optional_modules": [
+      "V5-directing-attention-signs"
+    ],
+    "forbidden_matched_modules": [
+      "E3-cumulative-case"
+    ],
+    "allowed_post_render_decisions": [
+      "STOP",
+      "HOLD",
+      "RECURSE",
+      "PARTIAL"
+    ],
+    "max_calls": 12
+  }
+}

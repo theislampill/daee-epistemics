@@ -371,6 +371,174 @@
         }
       }
     },
+    "field_witness": {
+      "$comment": "Optional schema-light trace sidecar. It is validated when present, does not replace post_render_gate, and does not imply full formal-calculus proof, truth, warrant, or interlocutor uptake.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_gradient",
+        "burden_events",
+        "field_diagnostics",
+        "loopbreak",
+        "reconstruction",
+        "closure",
+        "transfer_boundary"
+      ],
+      "properties": {
+        "route_gradient": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["eligible_routes", "selected", "reason"],
+          "properties": {
+            "eligible_routes": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "selected": { "type": "string", "minLength": 1 },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        },
+        "burden_events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["owner", "delta_nB", "delta_kappa", "result"],
+            "properties": {
+              "owner": { "type": "string", "minLength": 1 },
+              "delta_nB": { "type": "string", "minLength": 1 },
+              "delta_kappa": { "type": "string", "minLength": 1 },
+              "result": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "field_diagnostics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["divergence", "curl"],
+          "properties": {
+            "divergence": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["target", "status"],
+              "properties": {
+                "target": { "type": "string", "minLength": 1 },
+                "status": { "type": "string", "minLength": 1 }
+              }
+            },
+            "curl": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["target", "status"],
+              "properties": {
+                "target": { "type": "string", "minLength": 1 },
+                "status": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "loopbreak": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["licensed", "target", "ground", "delta_effect", "post_break_reread"],
+          "properties": {
+            "licensed": { "type": "boolean" },
+            "target": { "type": "string" },
+            "ground": { "type": "string" },
+            "delta_effect": { "type": "string" },
+            "post_break_reread": { "type": "string" }
+          }
+        },
+        "reconstruction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["held_set", "live_remainder", "reread_scope"],
+          "properties": {
+            "held_set": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "live_remainder": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "reread_scope": { "type": "string", "minLength": 1 }
+          }
+        },
+        "closure": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operator", "decision", "agent_field_status"],
+          "properties": {
+            "operator": { "type": "string", "const": "𝒞(Ψᴺ)" },
+            "decision": {
+              "type": "string",
+              "enum": ["COMPLETE", "STOP", "HOLD", "RECURSE", "PARTIAL"]
+            },
+            "agent_field_status": { "type": "string", "minLength": 1 }
+          }
+        },
+        "transfer_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operator", "from", "to", "mode"],
+          "properties": {
+            "operator": { "type": "string", "const": "T_lang" },
+            "from": { "type": "string", "const": "Ψᴺ" },
+            "to": { "type": "string", "const": "Ψᴵ" },
+            "mode": { "type": "string", "const": "coupling-attempt" }
+          }
+        },
+        "coverage_proof": {
+          "$comment": "Optional schema-light collapse reconstruction. Coverage proves rendered accounting, not live noetic competence.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "initial_burden_set",
+            "terminal_states",
+            "divergence_check",
+            "curl_check",
+            "coverage_complete"
+          ],
+          "properties": {
+            "initial_burden_set": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^B[0-9]+$" },
+              "uniqueItems": true
+            },
+            "terminal_states": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["state"],
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "landed",
+                      "discharged-as-derivative",
+                      "held-with-reason",
+                      "carried-PARTIAL",
+                      "carried-RECURSE",
+                      "cleared"
+                    ]
+                  },
+                  "operator": { "type": "string" },
+                  "delta_nB": { "type": "string" },
+                  "reason": { "type": "string" }
+                }
+              }
+            },
+            "divergence_check": { "type": "string" },
+            "curl_check": { "type": "string" },
+            "coverage_complete": { "type": "boolean" }
+          }
+        }
+      }
+    },
     "inference_boundary_active": {
       "type": "string",
       "enum": ["yes", "no"]
