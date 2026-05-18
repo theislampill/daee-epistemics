@@ -43,6 +43,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.2.0-docs-index-ssot-audit.md` | CURRENT-CANDIDATE | Audits docs/index source ownership, generated runtime/theory surfaces, carousel/theory interaction checks, large JS runtime-control constant inventory, Reference Library snapshots, and remaining optional SSOT hardening. |
 | `docs/audits/v0.4.2.0-docs-index-design-md-audit.md` | CURRENT-CANDIDATE | Records the docs/index-scoped DESIGN.md adoption, token groups, carousel visual consolidation, generator/checker boundary, local contrast checks, and official-lint timeout caveat. |
 | `docs/audits/v0.4.2.0-docs-index-design-quality-audit.md` | CURRENT-CANDIDATE | Extracts practical docs/index design-quality discipline from design-system, Kami, and agentic-HTML references, with a durable visual rubric. |
+| `docs/audits/v0.4.2.0-docs-index-design-refinement-plan.md` | CURRENT-CANDIDATE | Deep reference-based refinement plan for docs/index hierarchy, progressive disclosure, visual QA, and checker-backed design-system maturation. |
 | `docs/audits/v0.4.2.0-docs-index-handoff.md` | CURRENT-CANDIDATE | Tracked mirror of the ignored root HANDOFF.md state for the docs/index design-discipline commit and follow-on refinement audit. |
 
 ## Consolidated Audit History

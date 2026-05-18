@@ -87,9 +87,32 @@ Docs/index runtime and visual ownership is split by responsibility:
 - `docs/index/runtime-architecture.json` is the shared docs/index runtime
   architecture source for Architecture cards, Architecture pipelines, Theory
   notation mappings, and related generated trace maps.
-- `docs/index/DESIGN.md` owns docs/index visual tokens and visual rationale only.
-  It must not become a runtime-semantic owner.
+- `docs/index/DESIGN.md` owns docs/index visual tokens, component roles, density
+  rules, visual QA discipline, and visual rationale only. It must not become a
+  runtime-semantic owner.
 - Generated HTML is not canonical runtime, release, smoke, or design source.
+
+Docs/index design and runtime notation must preserve their source boundaries:
+
+- Do not hand-edit `docs/index.html` or `docs/daee-epistemics-pipeline.html`.
+  Edit source-owned docs/index files and regenerate.
+- Preserve daee-epistemics notation exactly where it is the source-owned
+  display. Layout must adapt to notation; do not erase, ASCII-normalize,
+  rename, transliterate, or simplify away forms such as `𝓝`, `D₀`, `Ψᴺ`,
+  `Ψᴵ`, `N∈𝓝`, `m`, `τ`, `σ`, `♥`, `ξ`, `Ω`, `μ`, `κ`, `H`, `IR(...)`,
+  `∇`, `∇·T`, `∇×T`, `∇ route pressure`, `ⁿB`, `ⁿBᵢ[OPᵢ]`, `Land(ⁿB)`,
+  `ΔⁿB`, `Δκ`, `ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ`, `LoopBreak(∇×T)`, `R(H,Δ)`,
+  `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`, `𝒞(Ψᴺ)`, `T_lang`,
+  `T_lang: Ψᴺ ⇢ Ψᴵ`, `N_fiṭrī ∧ ʿaql ṣarīḥ`, `fiṭrah`, or `ʿaql ṣarīḥ`.
+  Plain-language labels may sit beside, below, or in tooltips, but they must
+  not replace formal notation.
+- Major docs/index blocks should declare a durable surface role such as focal,
+  support, control, provenance, raw-source, disclosure, or generated-snapshot.
+  Each major tab should have one primary focal object unless an audit/source
+  view explicitly declares an exception.
+- Provenance/source-owner tables should be contextual or collapsed unless the
+  user is inside an audit/source view. Passing source-parity checks is not by
+  itself a visual pass.
 
 The Architecture tab must preserve three generated surfaces from the shared runtime
 architecture source:
@@ -112,10 +135,23 @@ selected meaning, runtime role, source owners, and related highlighted notation.
 The full notation source map is provenance/secondary UI only, not a default-visible
 dominant table.
 
+The Reference Library tab should default to a human-readable source browser:
+summary counts, search/filter controls, document/source list, selected document
+preview, and then collapsed full raw source maps. The Owners & TTP tab should
+default to a selected-detail operator/family workspace with summary counters,
+while full matrices and owner/source tables remain accessible as support or
+provenance disclosures.
+
 Use ACID / SSOT / GRASP for docs/index generation work: make bounded source changes,
 keep generated docs fresh and checker-covered, isolate visual presentation from runtime
 meaning, and keep runtime information with the source owners while `tools/build_docs_index.py`
 creates generated surfaces and `tools/check_docs_index_interactions.py` controls parity.
+
+Use genchi genbutsu, gemba, Andon, 5 Whys, and poka-yoke for docs/index visual,
+source-parity, smoke, and release-adjacent regression triage: inspect the actual
+files and generated HTML, stop on visible severe failure, identify why the
+generator/checker/design rules allowed it, and add a structural regression guard
+when the defect class can be checked without pixel-perfect brittleness.
 
 Future docs/index UI changes must also run durable design-quality gates before success is
 reported:
