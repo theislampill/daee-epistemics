@@ -1,6 +1,7 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+HANDOFF.md
 
 # Build / release artifacts
 build/
