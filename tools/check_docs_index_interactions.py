@@ -67,6 +67,7 @@ EXPECTED_TABS = {
     "Owners & TTP": "owners",
     "Theory Deep Dive": "theory",
     "Reference Library": "reference",
+    "Boundaries": "boundaries",
 }
 
 REQUIRED_INDEX_NOTATION_TOKENS = {
@@ -694,7 +695,7 @@ def check_release_download_nav_action(
     label = str(action.get("label") or "")
     aria = str(action.get("aria-label") or "")
     if action.get("role") == "tab":
-        errors.append("download nav action must not be implemented as a fifth tab")
+        errors.append("download nav action must not be implemented as a tab")
     if any("Download" in str(tab.get("label") or "") or ".skill" in str(tab.get("label") or "") for tab in parser.tabs):
         errors.append("download action must stay outside the tab labels")
     tablist_start = text.find('role="tablist"')
@@ -735,6 +736,83 @@ def check_release_download_nav_action(
     action_sha = str(action.get("data-release-sha256") or "").upper()
     if metadata_sha and action_sha != metadata_sha:
         errors.append("download nav action data-release-sha256 must match release metadata SHA")
+
+
+def check_masthead_and_boundaries_layout(text: str, errors: list[str]) -> None:
+    if text.count('id="site-hero"') != 1:
+        errors.append("docs/index must render exactly one page-level masthead before the sticky navigation")
+    site_hero = text.find('id="site-hero"')
+    topbar = text.find('class="topbar"')
+    main = text.find("<main>")
+    if site_hero == -1 or topbar == -1 or main == -1 or not (site_hero < topbar < main):
+        errors.append("site masthead must render before the sticky top navigation, and main content must render after the nav")
+    for token in (
+        "DAEE Epistemics Control Wiki",
+        "Runtime phase color legend",
+        "surface signal",
+        "noetic signal-state",
+        "DSL/IR + route gate",
+        "owner/TTP + Δ landing",
+        "R(H,Δ) reread",
+        "T_lang public boundary",
+    ):
+        if token not in text:
+            errors.append(f"site masthead missing token {token!r}")
+    masthead_phases = [
+        "phase-input",
+        "phase-layer-a",
+        "phase-gate",
+        "phase-owner-delta",
+        "phase-reread-closure",
+        "phase-public-boundary",
+    ]
+    for phase in masthead_phases:
+        if f'data-masthead-phase="{phase}"' not in text or f"dot {phase}" not in text:
+            errors.append(f"site masthead phase legend must expose Architecture phase color {phase!r}")
+    if not ordered_subsequence(
+        text,
+        [f'data-masthead-phase="{phase}"' for phase in masthead_phases],
+    ):
+        errors.append("site masthead phase legend must follow the Architecture pipeline phase order")
+    for css_token in (
+        ".dot.phase-input{background:var(--stage-d0)}",
+        ".dot.phase-layer-a{background:var(--stage-psi-n)}",
+        ".dot.phase-gate{background:var(--stage-dsl-ir)}",
+        ".dot.phase-owner-delta{background:var(--stage-owner-ttp-delta)}",
+        ".dot.phase-reread-closure{background:var(--green)}",
+        ".dot.phase-public-boundary{background:var(--stage-collapse-restoration)}",
+    ):
+        if css_token not in text:
+            errors.append(f"site masthead badge colors must inherit Architecture phase token: {css_token}")
+    if ".topbar{position:sticky;top:0" not in text:
+        errors.append("top navigation must remain sticky while the masthead scrolls away")
+    if ".siteHero{" not in text or ".siteHeroInner{" not in text:
+        errors.append("site masthead must have dedicated non-sticky layout CSS")
+
+    architecture = tab_section_slice(text, "architecture")
+    boundaries = tab_section_slice(text, "boundaries")
+    if '<div class="hero">\n<h1>Architecture</h1>' not in architecture:
+        errors.append("Architecture tab must keep its own tab title after the global masthead")
+    if not boundaries:
+        errors.append("Boundaries tab section missing")
+        return
+    if 'id="system-boundaries"' in architecture or 'id="current-bridge-note"' in architecture:
+        errors.append("System Boundaries and Current Bridge Note must not live inside the Architecture tab")
+    for token in ('id="system-boundaries"', "System Boundaries", 'id="current-bridge-note"', "Current Bridge Note"):
+        if token not in boundaries:
+            errors.append(f"Boundaries tab missing {token!r}")
+    if text.find('data-tab="reference"') > text.find('data-tab="boundaries"'):
+        errors.append("Boundaries tab must render after Reference Library in the top navigation")
+
+
+def ordered_subsequence(text: str, tokens: list[str]) -> bool:
+    cursor = 0
+    for token in tokens:
+        found = text.find(token, cursor)
+        if found == -1:
+            return False
+        cursor = found + len(token)
+    return True
 
 
 def check_docs_index_design_system(text: str, manifest: dict[str, object], errors: list[str]) -> None:
@@ -1507,8 +1585,13 @@ def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
         errors.append("Architecture carousel missing selectable stage dot buttons")
     if "architectureCarouselStatus" not in carousel:
         errors.append("Architecture carousel missing aria-live selected-stage status")
-    if "v60-carousel-title" not in text:
-        errors.append("Architecture carousel status must render the selected title")
+    status_start = carousel.find('id="architectureCarouselStatus"')
+    status_end = carousel.find("</div>", status_start)
+    status_slice = carousel[status_start: status_end if status_end != -1 else status_start + 500]
+    if 'class="v60-carousel-dot"' not in status_slice:
+        errors.append("Architecture carousel stage-number selectors must live between the previous/next arrows")
+    if "v60-carousel-title" in text or "status.innerHTML" in text:
+        errors.append("Architecture carousel arrow rail must not repeat the selected card title")
     carousel_heading_css = "#architecture #canonical-architecture-runtime .v60-carousel-card h2"
     carousel_heading_css_start = text.find(carousel_heading_css)
     if (
@@ -1517,8 +1600,6 @@ def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
         or "text-align:center!important" not in text[carousel_heading_css_start: carousel_heading_css_start + 260]
     ):
         errors.append("Architecture carousel card headings must be centered at the top of each card")
-    if re.search(r"architectureCarouselStatus[\s\S]{0,500}selectedIndex\s*\+\s*1", text):
-        errors.append("Architecture carousel status must not render progress like n/5 above the selected card")
     if re.search(r"status\.textContent\s*=\s*`[^`]*\$\{selectedIndex \+ 1\} / \$\{stages\.length\}[^`]*\$\{title\}", text, flags=re.S):
         errors.append("Architecture carousel status must not concatenate progress and numbered title into one label")
     if "ArrowRight" not in text or "ArrowLeft" not in text:
@@ -2022,6 +2103,7 @@ def main() -> int:
     text = INDEX.read_text(encoding="utf-8")
     if GENERATED_BANNER not in text:
         errors.append("docs/index.html missing generated-file banner")
+    check_masthead_and_boundaries_layout(text, errors)
     architecture_start = text.find('id="architecture"')
     runtime_start = text.find('id="canonical-architecture-runtime"', architecture_start)
     if architecture_start == -1:
@@ -2029,7 +2111,7 @@ def main() -> int:
     elif runtime_start == -1:
         errors.append("architecture panel must include canonical-architecture-runtime")
     else:
-        for marker in ('id="architecture-thesis"', 'class="hero"'):
+        for marker in ('id="architecture-thesis"',):
             marker_pos = text.find(marker, architecture_start)
             if marker_pos != -1 and marker_pos < runtime_start:
                 errors.append(

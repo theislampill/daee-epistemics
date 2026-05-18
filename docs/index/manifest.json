@@ -50,7 +50,7 @@
       "folded_sections": [
         {
           "label": "Pipeline",
-          "reason": "The Architecture landing tab contains the current runtime spine and pipeline cards so the top navigation remains four tabs."
+          "reason": "The Architecture landing tab contains the current runtime spine and pipeline cards; system/source/runtime boundary notes live in the Boundaries tab after Reference Library."
         }
       ]
     },
@@ -144,6 +144,25 @@
           "reason": "Case Library material remains available through Reference Library entries and the Owner/TTP live module table rather than a separate top-level tab."
         }
       ]
+    },
+    {
+      "id": "boundaries",
+      "label": "Boundaries",
+      "panel": "boundaries",
+      "section_source": "docs/index/sections/boundaries.html",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "curated system/source/runtime boundary explanation",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "AGENTS.md",
+        "docs/source-vs-runtime-layout.md",
+        "docs/release-artifacts.md",
+        "docs/package-smoke-readiness.md",
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+      ]
     }
   ],
   "visible_blocks": [
@@ -152,6 +171,13 @@
       "label": "Top navigation tabs",
       "classification": "LAYOUT_ONLY",
       "current_source": "docs/index/manifest.json",
+      "owner_sources": []
+    },
+    {
+      "id": "site_masthead",
+      "label": "Page masthead above sticky navigation",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "docs/index/templates/index.html.tpl",
       "owner_sources": []
     },
     {
@@ -172,6 +198,21 @@
         "latest-release fallback only when metadata lacks a direct asset",
         "metadata is navigation provenance, not runtime proof",
         "raw smoke captures are not release assets"
+      ]
+    },
+    {
+      "id": "system_boundaries_and_bridge_note",
+      "label": "System boundaries and current bridge note",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/sections/boundaries.html",
+      "owner_sources": [
+        "AGENTS.md",
+        "docs/source-vs-runtime-layout.md",
+        "docs/release-artifacts.md",
+        "docs/package-smoke-readiness.md",
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md"
       ]
     },
     {

@@ -159,11 +159,11 @@
 }
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
 button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .topbarInner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1880px;margin:0 auto;padding:8px 12px}.tabs{display:flex;gap:4px;min-width:0;overflow:auto}.tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}.downloadNavAction{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid rgba(34,197,94,.42);background:linear-gradient(180deg,rgba(34,197,94,.16),rgba(34,197,94,.08));color:#dcfce7;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.14)}.downloadNavAction:hover{border-color:rgba(34,197,94,.75);background:rgba(34,197,94,.18);color:#fff}.downloadNavAction:focus-visible{outline:3px solid var(--ds-color-focus);outline-offset:3px}
+.siteHero{border-bottom:1px solid rgba(38,48,68,.72);background:linear-gradient(180deg,rgba(8,10,16,.96),rgba(8,10,16,.72));text-align:center}.siteHeroInner{max-width:1880px;margin:0 auto;padding:34px 22px 22px}.siteHero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px}.siteHero p{color:var(--muted);max-width:1000px;margin:0 auto}.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .topbarInner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1880px;margin:0 auto;padding:8px 12px}.tabs{display:flex;gap:4px;min-width:0;overflow:auto}.tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}.downloadNavAction{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid rgba(34,197,94,.42);background:linear-gradient(180deg,rgba(34,197,94,.16),rgba(34,197,94,.08));color:#dcfce7;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.14)}.downloadNavAction:hover{border-color:rgba(34,197,94,.75);background:rgba(34,197,94,.18);color:#fff}.downloadNavAction:focus-visible{outline:3px solid var(--ds-color-focus);outline-offset:3px}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
 .panel{border:1px solid var(--line);background:rgba(15,19,32,.88);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.18)} h2{font-size:clamp(24px,2.4vw,38px);letter-spacing:-.055em;margin:20px 0 10px} h3{font-size:20px;letter-spacing:-.035em;margin:18px 0 8px} h4{margin:14px 0 8px;color:#f8fafc} p,li{color:#cbd5e1} .small,.subtle{font-size:13px;color:var(--muted)}
-.badges,.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px} .badge,.chip{display:inline-flex;gap:7px;align-items:center;border:1px solid var(--line);background:#0b1020;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:#dbeafe} .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block} .dot.green{background:var(--green)}.dot.cyan{background:var(--cyan)}.dot.violet{background:var(--violet)}.dot.orange{background:var(--orange)}.dot.red{background:var(--red)}.dot.pink{background:var(--pink)}
+.badges,.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px} .badge,.chip{display:inline-flex;gap:7px;align-items:center;border:1px solid var(--line);background:#0b1020;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:#dbeafe} .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);display:inline-block}.dot.phase-input{background:var(--stage-d0)}.dot.phase-layer-a{background:var(--stage-psi-n)}.dot.phase-gate{background:var(--stage-dsl-ir)}.dot.phase-owner-delta{background:var(--stage-owner-ttp-delta)}.dot.phase-reread-closure{background:var(--green)}.dot.phase-public-boundary{background:var(--stage-collapse-restoration)} .dot.green{background:var(--green)}.dot.cyan{background:var(--cyan)}.dot.violet{background:var(--violet)}.dot.orange{background:var(--orange)}.dot.red{background:var(--red)}.dot.pink{background:var(--pink)}
 .flowline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#080d19;border:1px dashed #334155;border-radius:16px;padding:12px;margin:12px 0} .node{border:1px solid #334155;background:#101827;border-radius:14px;padding:9px 12px;font-weight:900;color:#f8fafc;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace} .arrow{font-weight:900;color:#64748b}
 .pipelineGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:12px 0} .stageCard{border:2px solid var(--c);border-radius:18px;background:#0c1220;padding:12px;cursor:pointer;min-height:172px;transition:.15s transform,.15s background,.15s box-shadow} .stageCard:hover{transform:translateY(-2px);background:#101827} .stageCard.active{box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 72%);background:#101827} .stageCard h3{font-size:15px;color:var(--c);margin:0 0 8px} .stageNum{width:28px;height:28px;border-radius:50%;background:var(--c);display:inline-grid;place-items:center;color:#fff;font-weight:900;margin-right:6px} .stageCard p{font-size:12px;margin:6px 0;color:#cbd5e1}
 .detailGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px} .detailBox{border:1px solid #2b3854;background:#0a0f1d;border-radius:14px;padding:10px} .detailBox h4{font-size:12px;color:var(--cyan);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px} .detailBox ul{padding-left:18px;margin:0} .detailBox li{font-size:12px;margin:4px 0}
@@ -183,7 +183,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
 .bridgeSemantics{border:1px solid var(--line);background:rgba(12,18,32,.92);border-radius:20px;padding:16px;margin:12px 0}.bridgeIntro{max-width:1180px}.bridgeKicker{margin:0 0 4px;color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.bridgeIntro h2{margin:0 0 8px;font-size:clamp(24px,2vw,34px);letter-spacing:-.04em}.bridgeIntro p{margin:0;color:#cbd5e1}.bridgeFlow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed #334155;background:#080d19;border-radius:16px;padding:10px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}.bridgeFlow span{border:1px solid #334155;background:#0c1220;border-radius:10px;padding:6px 8px;color:#e8edf7}.bridgeFlow b{color:#64748b}.bridgeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bridgeCard{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:12px;min-width:0}.bridgeCard h3{font-size:15px;margin:0 0 8px;color:#dbeafe;letter-spacing:-.02em}.bridgeCard p{margin:7px 0;font-size:13px;line-height:1.48}.bridgeCard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0}.bridgeCard dt{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bbf7d0;font-weight:950}.bridgeCard dd{margin:0;color:#cbd5e1;font-size:13px;line-height:1.42}.bridgeNonClaims{border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.055)}.bridgeNonClaims h3{color:#fecaca}.bridgeNonClaims ul{margin:0;padding-left:18px}.bridgeNonClaims li{font-size:13px;line-height:1.45;margin:4px 0}.bridgeExamples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bridgeExamples>div{border:1px solid #334155;background:#080d19;border-radius:14px;padding:10px}.bridgeExamples strong{display:block;color:#bbf7d0;margin-bottom:6px}.bridgeExamples code{display:block;white-space:normal;line-height:1.45}@media(max-width:1100px){.bridgeGrid{grid-template-columns:1fr 1fr}.bridgeExamples{grid-template-columns:1fr}}@media(max-width:760px){.bridgeGrid{grid-template-columns:1fr}.bridgeFlow{display:grid;grid-template-columns:1fr}.bridgeFlow b{display:none}}
 @media(max-width:1250px){.pipelineGrid{grid-template-columns:repeat(3,1fr)}.detailGrid{grid-template-columns:1fr 1fr}.compareGrid,.ownerFamilies,.entityLayout,.docviewer{grid-template-columns:1fr}.ownerCircuit{grid-template-columns:1fr 1fr}.regGrid{grid-template-columns:1fr 1fr}.procGrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.col3,.col4,.col6,.col8,.full{grid-column:1/-1}}
-@media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.topbarInner{align-items:stretch;flex-wrap:wrap}.tabs{flex:1 1 100%;order:1}.downloadNavAction{order:2;margin-left:auto;padding:8px 12px}.tab{padding:10px 12px}}
+@media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.siteHeroInner{padding:26px 12px 18px}.topbarInner{align-items:stretch;flex-wrap:wrap}.tabs{flex:1 1 100%;order:1}.downloadNavAction{order:2;margin-left:auto;padding:8px 12px}.tab{padding:10px 12px}}
 
 
 .notationBoard{border:1px solid #334155;background:#070b14;border-radius:18px;padding:14px;margin:12px 0;overflow:hidden;max-width:100%}
@@ -2161,27 +2161,31 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   outline:none;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-status{
-  min-width:min(420px,70vw);
+  min-width:auto;
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
   align-items:center;
   justify-content:center;
-  gap:2px;
+  gap:8px;
   text-align:center;
   border:1px solid var(--ds-color-border);
   background:var(--ds-color-surface-deep);
   border-radius:var(--ds-radius-chip);
-  padding:7px 12px;
+  padding:5px 9px;
   color:var(--ds-color-text-subtle);
   font-size:13px;
   font-weight:850;
 }
-#architecture #canonical-architecture-runtime .v60-carousel-progress{
-  display:none;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-title{
-  color:var(--ds-color-text-subtle);
-  font-weight:950;
+#architecture #canonical-architecture-runtime .v60-carousel-status-label{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
 }
 #architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
 #architecture #canonical-architecture-runtime .v60-architecture-rail{
@@ -2350,11 +2354,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
-  gap:8px;
+  gap:6px;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-dot{
-  width:34px;
-  height:34px;
+  width:30px;
+  height:30px;
   border:1px solid var(--ds-color-border-strong);
   border-radius:var(--ds-radius-chip);
   background:var(--ds-color-surface-code);
@@ -2739,6 +2743,20 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </style>
 </head>
 <body>
+<header class="siteHero" id="site-hero" aria-label="DAEE Epistemics Control Wiki">
+<div class="siteHeroInner">
+<h1>DAEE Epistemics Control Wiki</h1>
+<p>daee-epistemics is a compact DSL-governed runtime for diagnosing a surface discourse, selecting the live owner-backed operation, landing the burden, rereading state, and releasing only the governed restorative response.</p>
+<div class="badges" aria-label="Runtime phase color legend">
+<span class="badge" data-masthead-phase="phase-input"><i class="dot phase-input"></i>surface signal</span>
+<span class="badge" data-masthead-phase="phase-layer-a"><i class="dot phase-layer-a"></i>noetic signal-state</span>
+<span class="badge" data-masthead-phase="phase-gate"><i class="dot phase-gate"></i>DSL/IR + route gate</span>
+<span class="badge" data-masthead-phase="phase-owner-delta"><i class="dot phase-owner-delta"></i>owner/TTP + Δ landing</span>
+<span class="badge" data-masthead-phase="phase-reread-closure"><i class="dot phase-reread-closure"></i>R(H,Δ) reread</span>
+<span class="badge" data-masthead-phase="phase-public-boundary"><i class="dot phase-public-boundary"></i>T_lang public boundary</span>
+</div>
+</div>
+</header>
 <div class="topbar">
 <div class="topbarInner">
 <div class="tabs" role="tablist" aria-label="DAEE wiki sections">
@@ -2746,6 +2764,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <button type="button" id="tab-owners" class="tab" role="tab" aria-selected="false" aria-controls="owners" data-tab="owners" tabindex="-1">Owners &amp; TTP</button>
 <button type="button" id="tab-theory" class="tab" role="tab" aria-selected="false" aria-controls="theory" data-tab="theory" tabindex="-1">Theory Deep Dive</button>
 <button type="button" id="tab-reference" class="tab" role="tab" aria-selected="false" aria-controls="reference" data-tab="reference" tabindex="-1">Reference Library</button>
+<button type="button" id="tab-boundaries" class="tab" role="tab" aria-selected="false" aria-controls="boundaries" data-tab="boundaries" tabindex="-1">Boundaries</button>
 </div>
 <a class="downloadNavAction" data-release-download-kind="direct_asset" data-release-sha256="21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7" href="https://github.com/theislampill/daee-epistemics/releases/download/v0.4.2.0/daee-epistemics-v0.4.2.0.skill" target="_blank" rel="noopener" title="Latest GitHub Release: v0.4.2.0 — Release-Proven Runtime Governance" aria-label="Download latest .skill asset from GitHub Release" download="daee-epistemics-v0.4.2.0.skill"><span>Download latest .skill</span></a>
 </div>
@@ -2756,6 +2775,10 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <span id="retained-compact-runtime-spine-historical-baseline" hidden></span>
 <span id="current-derived-conditional-bridge" hidden></span>
 <span id="proof-ledger-release-path" hidden></span>
+<div class="hero">
+<h1>Architecture</h1>
+<p>Generated runtime map: plain/process pipeline, formal/runtime trace, and selected-primary cards from the shared docs/index runtime architecture source.</p>
+</div>
 <div class="panel v21-pipeline-panel v29-current-panel" id="canonical-architecture-runtime">
 <!-- Generated by tools/build_docs_index.py from docs/index/runtime-architecture.json. Generated docs/index.html is not canonical runtime source. -->
 <div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">
@@ -2849,7 +2872,16 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v60-architecture-carousel" data-carousel="architecture-runtime">
 <div class="v60-carousel-controls" aria-label="Architecture carousel controls">
 <button class="v60-carousel-btn" type="button" data-carousel-action="prev" aria-label="Previous architecture stage">‹</button>
-<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite"></div>
+<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite" aria-label="Select architecture stage">
+<span class="v60-carousel-status-label">Stage 1 of 5</span>
+<div class="v60-carousel-dots" aria-label="Select architecture stage">
+<button class="v60-carousel-dot" type="button" data-carousel-target="input" aria-label="Show stage 1: D₀ / Surface Signal" aria-current="true"><span>1</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="psi" aria-label="Show stage 2: Ψᴺ / Noetic Signal-State"><span>2</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="ir" aria-label="Show stage 3: DSL / IR &amp; Gated Governance"><span>3</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="ownerRelease" aria-label="Show stage 4: Owner/TTP + Δ / Field Diagnostics / Reread"><span>4</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="collapse" aria-label="Show stage 5: Noetic Collapse / Restoration"><span>5</span></button>
+</div>
+</div>
 <button class="v60-carousel-btn" type="button" data-carousel-action="next" aria-label="Next architecture stage">›</button>
 </div>
 <div class="v21-five-col v60-architecture-rail" data-pipeline="target" aria-label="Architecture runtime cards" role="listbox" aria-orientation="horizontal" tabindex="0">
@@ -3022,13 +3054,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v21-note v60-selectable-subcard" data-substage-key="coupling-boundary" role="button" tabindex="0"><b>Coupling boundary:</b> <br/>T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field;<br/>this is not a claim of guaranteed uptake or access to the soul.</div>
 </article></div>
 </div>
-<div class="v60-carousel-dots" aria-label="Select architecture stage">
-<button class="v60-carousel-dot" type="button" data-carousel-target="input" aria-label="Show stage 1: D₀ / Surface Signal" aria-current="true"><span>1</span></button>
-<button class="v60-carousel-dot" type="button" data-carousel-target="psi" aria-label="Show stage 2: Ψᴺ / Noetic Signal-State"><span>2</span></button>
-<button class="v60-carousel-dot" type="button" data-carousel-target="ir" aria-label="Show stage 3: DSL / IR &amp; Gated Governance"><span>3</span></button>
-<button class="v60-carousel-dot" type="button" data-carousel-target="ownerRelease" aria-label="Show stage 4: Owner/TTP + Δ / Field Diagnostics / Reread"><span>4</span></button>
-<button class="v60-carousel-dot" type="button" data-carousel-target="collapse" aria-label="Show stage 5: Noetic Collapse / Restoration"><span>5</span></button>
-</div>
 </div>
 <noscript><style>#architecture #canonical-architecture-runtime .v60-architecture-rail{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))!important;overflow:visible!important}#architecture #canonical-architecture-runtime .v60-carousel-controls,#architecture #canonical-architecture-runtime .v60-carousel-dots{display:none!important}#architecture #canonical-architecture-runtime .v60-carousel-card{display:block!important;transform:none!important;opacity:1!important;max-height:none!important}#architecture #canonical-architecture-runtime .v60-carousel-slot{display:block!important;width:auto!important;height:auto!important;overflow:visible!important}#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{display:block!important}</style></noscript>
 <div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>
@@ -3052,35 +3077,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v22-deck-card preserve"><h3>What it is not</h3><p>Not a topic-to-answer lookup, argument bank, school-label router, public proof ledger, release checklist, or notation showcase.</p></div>
 <div class="v22-deck-card patch"><h3>Source of truth</h3><p><code>atomics/skill/</code> is tracked canonical source. <code>skill/</code> is ignored generated runtime. This page explains boundaries; it does not own runtime behavior.</p></div>
 </div>
-</div>
-<div class="hero">
-<h1>DAEE Epistemics Control Wiki</h1>
-<p>daee-epistemics is a compact DSL-governed runtime for diagnosing a surface discourse, selecting the live owner-backed operation, landing the burden, rereading state, and releasing only the governed restorative response.</p>
-<div class="badges">
-<span class="badge"><i class="dot blue"></i>canonical system map</span>
-<span class="badge"><i class="dot green"></i>source/runtime boundary</span>
-<span class="badge"><i class="dot cyan"></i>diagnostic IR first</span>
-<span class="badge"><i class="dot violet"></i>owner/TTP execution</span>
-<span class="badge"><i class="dot orange"></i>burden landing</span>
-<span class="badge"><i class="dot red"></i>state reread before release</span>
-</div>
-</div>
-<div class="panel" id="system-boundaries">
-<h2>System Boundaries</h2>
-<table>
-<tr><th>Surface</th><th>Responsibility</th><th>Boundary</th></tr>
-<tr><td><code>atomics/skill/</code></td><td>Canonical editable source for runtime instructions, owners, diagnostics, data, and references.</td><td>Edit here first; rebuild generated runtime after source changes.</td></tr>
-<tr><td><code>skill/</code></td><td>Generated runtime/package root.</td><td>Do not hand-edit as source of truth.</td></tr>
-<tr><td><code>tools/</code>, <code>tests/</code>, CI</td><td>Maintainer verification, routing parity, package shape, smoke/artifact checks.</td><td>Checker evidence supports claims; it is not runtime source.</td></tr>
-<tr><td><code>docs/</code></td><td>Onboarding, audit, reference, and release/evidence surfaces.</td><td>Docs explain and point; they do not govern live operation.</td></tr>
-<tr><td>Optional harness</td><td>Repo/dev validation machinery.</td><td>Not canonical user-facing package content unless explicitly authorized.</td></tr>
-<tr><td>Public runtime contract</td><td>Compact DSL-governed output and owner-backed execution.</td><td>No proof ledger or notation annex is a substitute for governed operation.</td></tr>
-</table>
-</div>
-<div class="panel" id="current-bridge-note">
-<h2>Current Bridge Note</h2>
-<p>The notation layer is schema-light baseline control over the compact runtime. The registers are not mandatory JSON fields unless a deliberate contract migration updates producers, consumers, schemas, tests, examples, docs, generated runtime, and release claims together.</p>
-<p>Use the notation to clarify where a live register changes IR, owner eligibility, held material, collapse radius, burden landing, reread, PARTIAL, or restoration. If it does not change control state, it belongs in deeper theory or reference material, not in the Architecture map.</p>
 </div>
 <span id="verification-surfaces" hidden></span>
 <span id="deeper-links" hidden></span>
@@ -4096,9 +4092,32 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <div class="panel"><h2>Source map</h2><div id="refTable"></div></div>
 <div class="panel"><h2>Embedded document viewer</h2><div class="docviewer"><div class="doclist" id="docList"></div><div class="docbody panel" id="docBody"><p>Select a source document.</p></div></div></div>
 </section>
+<section class="tabsec" id="boundaries" role="tabpanel" aria-labelledby="tab-boundaries" hidden>
+<div class="hero">
+<h1>Boundaries & Bridge</h1>
+<p>Source, runtime, package, checker, and notation boundaries for reading the generated docs/index surface without confusing it for runtime proof.</p>
+</div>
+<div class="panel" id="system-boundaries">
+<h2>System Boundaries</h2>
+<table>
+<tr><th>Surface</th><th>Responsibility</th><th>Boundary</th></tr>
+<tr><td><code>atomics/skill/</code></td><td>Canonical editable source for runtime instructions, owners, diagnostics, data, and references.</td><td>Edit here first; rebuild generated runtime after source changes.</td></tr>
+<tr><td><code>skill/</code></td><td>Generated runtime/package root.</td><td>Do not hand-edit as source of truth.</td></tr>
+<tr><td><code>tools/</code>, <code>tests/</code>, CI</td><td>Maintainer verification, routing parity, package shape, smoke/artifact checks.</td><td>Checker evidence supports claims; it is not runtime source.</td></tr>
+<tr><td><code>docs/</code></td><td>Onboarding, audit, reference, and release/evidence surfaces.</td><td>Docs explain and point; they do not govern live operation.</td></tr>
+<tr><td>Optional harness</td><td>Repo/dev validation machinery.</td><td>Not canonical user-facing package content unless explicitly authorized.</td></tr>
+<tr><td>Public runtime contract</td><td>Compact DSL-governed output and owner-backed execution.</td><td>No proof ledger or notation annex is a substitute for governed operation.</td></tr>
+</table>
+</div>
+<div class="panel" id="current-bridge-note">
+<h2>Current Bridge Note</h2>
+<p>The notation layer is schema-light baseline control over the compact runtime. The registers are not mandatory JSON fields unless a deliberate contract migration updates producers, consumers, schemas, tests, examples, docs, generated runtime, and release claims together.</p>
+<p>Use the notation to clarify where a live register changes IR, owner eligibility, held material, collapse radius, burden landing, reread, PARTIAL, or restoration. If it does not change control state, it belongs in deeper theory or reference material, not in the Architecture map.</p>
+</div>
+</section>
 </main>
 <script id="docs-index-generated-data">
-window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "release_download": "docs/index/release-download.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html"], "source_digest": "32d762079481b0e02fc2c1ffd5f723197fee71c098660e96796a51d8f97f788e", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
+window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "release_download": "docs/index/release-download.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html", "docs/index/sections/boundaries.html"], "source_digest": "e743cc2fa297a17befb408b6ca5684c91101b7eee9860d6d341a212b023bd64c", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
 window.DOCS_INDEX_MODULE_CATALOGUE = [{"id": "do-attribute-precision", "module_class": "case-library", "path": "skill/references/case-library/do-attribute-precision.md", "source_path": "atomics/skill/references/case-library/do-attribute-precision.md"}, {"id": "do-christian-extensions", "module_class": "case-library", "path": "skill/references/case-library/do-christian-extensions.md", "source_path": "atomics/skill/references/case-library/do-christian-extensions.md"}, {"id": "do-core", "module_class": "case-library", "path": "skill/references/case-library/do-core.md", "source_path": "atomics/skill/references/case-library/do-core.md"}, {"id": "do-second-loop", "module_class": "case-library", "path": "skill/references/case-library/do-second-loop.md", "source_path": "atomics/skill/references/case-library/do-second-loop.md"}, {"id": "noetic-profiles", "module_class": "case-library", "path": "skill/references/case-library/noetic-profiles.md", "source_path": "atomics/skill/references/case-library/noetic-profiles.md"}, {"id": "ns-1-naturalist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-1-naturalist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md"}, {"id": "ns-10-maturidi-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md"}, {"id": "ns-11-fideist-reformed", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md", "source_path": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md"}, {"id": "ns-12-blank-slate-dual-fitrah", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md", "source_path": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md"}, {"id": "ns-2-agnostic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md"}, {"id": "ns-3-deconverted", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-3-deconverted.md", "source_path": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md"}, {"id": "ns-4-secular-moral-realist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md"}, {"id": "ns-5-habituated-atheist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md"}, {"id": "ns-6-kalamic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md"}, {"id": "ns-7-theistic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md"}, {"id": "ns-8-muslim-internal-crisis", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md", "source_path": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md"}, {"id": "ns-9-historical-critical-skeptic", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md", "source_path": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md"}, {"id": "philosophical-usurpation", "module_class": "case-library", "path": "skill/references/case-library/philosophical-usurpation.md", "source_path": "atomics/skill/references/case-library/philosophical-usurpation.md"}, {"id": "revelation-transmission", "module_class": "case-library", "path": "skill/references/case-library/revelation-transmission.md", "source_path": "atomics/skill/references/case-library/revelation-transmission.md"}, {"id": "causal-series-taxonomy", "module_class": "diagnostic", "path": "skill/references/diagnostics/causal-series-taxonomy.md", "source_path": "atomics/skill/references/diagnostics/causal-series-taxonomy.md"}, {"id": "definition-discipline", "module_class": "diagnostic", "path": "skill/references/diagnostics/definition-discipline.md", "source_path": "atomics/skill/references/diagnostics/definition-discipline.md"}, {"id": "hadith-authentication-epistemology", "module_class": "diagnostic", "path": "skill/references/diagnostics/hadith-authentication-epistemology.md", "source_path": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md"}, {"id": "perfection-criterion-usurpation", "module_class": "diagnostic", "path": "skill/references/diagnostics/perfection-criterion-usurpation.md", "source_path": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md"}, {"id": "proof-method-audit", "module_class": "diagnostic", "path": "skill/references/diagnostics/proof-method-audit.md", "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md"}, {"id": "prophetic-discourse-neutralization", "module_class": "diagnostic", "path": "skill/references/diagnostics/prophetic-discourse-neutralization.md", "source_path": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md"}, {"id": "P1-fitrah-restoration", "module_class": "procedure", "path": "skill/references/procedures/P1-fitrah-restoration.md", "source_path": "atomics/skill/references/procedures/P1-fitrah-restoration.md"}, {"id": "P2-objection-mapping", "module_class": "procedure", "path": "skill/references/procedures/P2-objection-mapping.md", "source_path": "atomics/skill/references/procedures/P2-objection-mapping.md"}, {"id": "P3-reason-revelation-tension", "module_class": "procedure", "path": "skill/references/procedures/P3-reason-revelation-tension.md", "source_path": "atomics/skill/references/procedures/P3-reason-revelation-tension.md"}, {"id": "P4-maieutic", "module_class": "procedure", "path": "skill/references/procedures/P4-maieutic.md", "source_path": "atomics/skill/references/procedures/P4-maieutic.md"}, {"id": "P5-already-believing", "module_class": "procedure", "path": "skill/references/procedures/P5-already-believing.md", "source_path": "atomics/skill/references/procedures/P5-already-believing.md"}, {"id": "P6-universal-aqidah-principle", "module_class": "procedure", "path": "skill/references/procedures/P6-universal-aqidah-principle.md", "source_path": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md"}, {"id": "P7-restoration-stops", "module_class": "procedure", "path": "skill/references/procedures/P7-restoration-stops.md", "source_path": "atomics/skill/references/procedures/P7-restoration-stops.md"}, {"id": "E1-broadening-evidence", "module_class": "tactic", "path": "skill/references/tactics/E1-broadening-evidence.md", "source_path": "atomics/skill/references/tactics/E1-broadening-evidence.md"}, {"id": "E2-inferential-criterion", "module_class": "tactic", "path": "skill/references/tactics/E2-inferential-criterion.md", "source_path": "atomics/skill/references/tactics/E2-inferential-criterion.md"}, {"id": "E3-cumulative-case", "module_class": "tactic", "path": "skill/references/tactics/E3-cumulative-case.md", "source_path": "atomics/skill/references/tactics/E3-cumulative-case.md"}, {"id": "E4-cross-cultural-check", "module_class": "tactic", "path": "skill/references/tactics/E4-cross-cultural-check.md", "source_path": "atomics/skill/references/tactics/E4-cross-cultural-check.md"}, {"id": "F1-supra-vs-antirational", "module_class": "tactic", "path": "skill/references/tactics/F1-supra-vs-antirational.md", "source_path": "atomics/skill/references/tactics/F1-supra-vs-antirational.md"}, {"id": "F2-volitional-dimensions", "module_class": "tactic", "path": "skill/references/tactics/F2-volitional-dimensions.md", "source_path": "atomics/skill/references/tactics/F2-volitional-dimensions.md"}, {"id": "F3-practice-epistemic-access", "module_class": "tactic", "path": "skill/references/tactics/F3-practice-epistemic-access.md", "source_path": "atomics/skill/references/tactics/F3-practice-epistemic-access.md"}, {"id": "M1-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1-self-refutation.md"}, {"id": "M1P-performative-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1P-performative-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1P-performative-self-refutation.md"}, {"id": "M2-prior-probability", "module_class": "tactic", "path": "skill/references/tactics/M2-prior-probability.md", "source_path": "atomics/skill/references/tactics/M2-prior-probability.md"}, {"id": "M3-orphaned-intuition", "module_class": "tactic", "path": "skill/references/tactics/M3-orphaned-intuition.md", "source_path": "atomics/skill/references/tactics/M3-orphaned-intuition.md"}, {"id": "M4-grief-register", "module_class": "tactic", "path": "skill/references/tactics/M4-grief-register.md", "source_path": "atomics/skill/references/tactics/M4-grief-register.md"}, {"id": "M5-deformation-triage", "module_class": "tactic", "path": "skill/references/tactics/M5-deformation-triage.md", "source_path": "atomics/skill/references/tactics/M5-deformation-triage.md"}, {"id": "M6-excluded-middle", "module_class": "tactic", "path": "skill/references/tactics/M6-excluded-middle.md", "source_path": "atomics/skill/references/tactics/M6-excluded-middle.md"}, {"id": "M7-definition-anchor", "module_class": "tactic", "path": "skill/references/tactics/M7-definition-anchor.md", "source_path": "atomics/skill/references/tactics/M7-definition-anchor.md"}, {"id": "M8-reductio", "module_class": "tactic", "path": "skill/references/tactics/M8-reductio.md", "source_path": "atomics/skill/references/tactics/M8-reductio.md"}, {"id": "M9-predication-mode", "module_class": "tactic", "path": "skill/references/tactics/M9-predication-mode.md", "source_path": "atomics/skill/references/tactics/M9-predication-mode.md"}, {"id": "R1-internalist-criterion", "module_class": "tactic", "path": "skill/references/tactics/R1-internalist-criterion.md", "source_path": "atomics/skill/references/tactics/R1-internalist-criterion.md"}, {"id": "R2-the-reminder", "module_class": "tactic", "path": "skill/references/tactics/R2-the-reminder.md", "source_path": "atomics/skill/references/tactics/R2-the-reminder.md"}, {"id": "R3-warranted-basic-belief", "module_class": "tactic", "path": "skill/references/tactics/R3-warranted-basic-belief.md", "source_path": "atomics/skill/references/tactics/R3-warranted-basic-belief.md"}, {"id": "doubt-vs-skepticism", "module_class": "tactic", "path": "skill/references/tactics/doubt-vs-skepticism.md", "source_path": "atomics/skill/references/tactics/doubt-vs-skepticism.md"}, {"id": "husn-al-nazar-arguments", "module_class": "tactic", "path": "skill/references/tactics/husn-al-nazar-arguments.md", "source_path": "atomics/skill/references/tactics/husn-al-nazar-arguments.md"}, {"id": "inductive-fitri-method", "module_class": "tactic", "path": "skill/references/tactics/inductive-fitri-method.md", "source_path": "atomics/skill/references/tactics/inductive-fitri-method.md"}, {"id": "symmetric-taqlid-check", "module_class": "tactic", "path": "skill/references/tactics/symmetric-taqlid-check.md", "source_path": "atomics/skill/references/tactics/symmetric-taqlid-check.md"}, {"id": "V1-diagnostic", "module_class": "technique", "path": "skill/references/techniques/V1-diagnostic.md", "source_path": "atomics/skill/references/techniques/V1-diagnostic.md"}, {"id": "V10-transmission-content-vetting", "module_class": "technique", "path": "skill/references/techniques/V10-transmission-content-vetting.md", "source_path": "atomics/skill/references/techniques/V10-transmission-content-vetting.md"}, {"id": "V11-taqlid-transition", "module_class": "technique", "path": "skill/references/techniques/V11-taqlid-transition.md", "source_path": "atomics/skill/references/techniques/V11-taqlid-transition.md"}, {"id": "V12-tamanuc-exhaustion", "module_class": "technique", "path": "skill/references/techniques/V12-tamanuc-exhaustion.md", "source_path": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md"}, {"id": "V2-reconstituting-reason", "module_class": "technique", "path": "skill/references/techniques/V2-reconstituting-reason.md", "source_path": "atomics/skill/references/techniques/V2-reconstituting-reason.md"}, {"id": "V3-regress-dissolution", "module_class": "technique", "path": "skill/references/techniques/V3-regress-dissolution.md", "source_path": "atomics/skill/references/techniques/V3-regress-dissolution.md"}, {"id": "V4-contamination-identification", "module_class": "technique", "path": "skill/references/techniques/V4-contamination-identification.md", "source_path": "atomics/skill/references/techniques/V4-contamination-identification.md"}, {"id": "V5-directing-attention-signs", "module_class": "technique", "path": "skill/references/techniques/V5-directing-attention-signs.md", "source_path": "atomics/skill/references/techniques/V5-directing-attention-signs.md"}, {"id": "V6-convergence", "module_class": "technique", "path": "skill/references/techniques/V6-convergence.md", "source_path": "atomics/skill/references/techniques/V6-convergence.md"}, {"id": "V7-taqlid-check", "module_class": "technique", "path": "skill/references/techniques/V7-taqlid-check.md", "source_path": "atomics/skill/references/techniques/V7-taqlid-check.md"}, {"id": "V8-bila-kayf-anchor", "module_class": "technique", "path": "skill/references/techniques/V8-bila-kayf-anchor.md", "source_path": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md"}, {"id": "V9-necessary-knowledge-priority", "module_class": "technique", "path": "skill/references/techniques/V9-necessary-knowledge-priority.md", "source_path": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md"}, {"id": "heuristics", "module_class": "technique", "path": "skill/references/techniques/heuristics.md", "source_path": "atomics/skill/references/techniques/heuristics.md"}];
 </script>
 <script>
@@ -4177,6 +4196,13 @@ function initTopTabs(){
   const hash=(window.location.hash||'').slice(1);
   const initial=tabs.find(tab=>tab.dataset.tab===hash) || tabs.find(tab=>tab.classList.contains('active')) || tabs[0];
   showTopTab(initial.dataset.tab, initial);
+  if(hash){
+    setTimeout(()=>{
+      document.documentElement.scrollTop=0;
+      document.body.scrollTop=0;
+      if(typeof window.scrollTo === 'function') window.scrollTo(0,0);
+    },0);
+  }
 }
 function showSub(id,btn){
   document.querySelectorAll('.subpanel').forEach(x=>x.classList.remove('active'));
@@ -5593,8 +5619,8 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     });
     const status = document.getElementById('architectureCarouselStatus');
     if(status && selected){
-      const title = selected.querySelector('h2')?.textContent?.replace(/\s+/g,' ').trim() || key;
-      status.innerHTML = `<span class="v60-carousel-title">${esc(title)}</span>`;
+      const label = status.querySelector('.v60-carousel-status-label');
+      if(label) label.textContent = `Stage ${selectedIndex + 1} of ${stages.length}`;
     }
   }
   function moveArchitectureCarousel(delta){

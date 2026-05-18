@@ -987,14 +987,31 @@ def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
         '<div class="v60-carousel-controls" aria-label="Architecture carousel controls">',
         '<button class="v60-carousel-btn" type="button" data-carousel-action="prev" '
         'aria-label="Previous architecture stage">‹</button>',
-        '<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite"></div>',
+        '<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite" '
+        'aria-label="Select architecture stage">',
+        '<span class="v60-carousel-status-label">Stage 1 of 5</span>',
+        '<div class="v60-carousel-dots" aria-label="Select architecture stage">',
+    ]
+    for index, stage in enumerate(arch["stages"]):
+        title = re.sub(r"<[^>]+>", "", str(stage.get("title_html") or stage.get("title", "")))
+        current = ' aria-current="true"' if index == 0 else ""
+        articles.append(
+            f'<button class="v60-carousel-dot" type="button" data-carousel-target="{esc(stage["key"])}" '
+            f'aria-label="Show stage {esc(stage["number"])}: {esc(title)}"{current}>'
+            f'<span>{esc(stage["number"])}</span></button>'
+        )
+    articles.extend(
+        [
+            "</div>",
+            "</div>",
         '<button class="v60-carousel-btn" type="button" data-carousel-action="next" '
         'aria-label="Next architecture stage">›</button>',
         "</div>",
         '<div class="v21-five-col v60-architecture-rail" data-pipeline="target" '
         'aria-label="Architecture runtime cards" role="listbox" aria-orientation="horizontal" '
         'tabindex="0">',
-    ]
+        ]
+    )
     default_positions = ["center", "next", "far-next", "far-prev", "prev"]
     for index, stage in enumerate(arch["stages"]):
         title = stage.get("title_html", esc(stage.get("title", "")))
@@ -1018,18 +1035,8 @@ def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
         articles.append(render_architecture_stage_body(stage))
         articles.append("</article></div>")
     articles.append("</div>")
-    articles.append('<div class="v60-carousel-dots" aria-label="Select architecture stage">')
-    for index, stage in enumerate(arch["stages"]):
-        title = re.sub(r"<[^>]+>", "", str(stage.get("title_html") or stage.get("title", "")))
-        current = ' aria-current="true"' if index == 0 else ""
-        articles.append(
-            f'<button class="v60-carousel-dot" type="button" data-carousel-target="{esc(stage["key"])}" '
-            f'aria-label="Show stage {esc(stage["number"])}: {esc(title)}"{current}>'
-            f'<span>{esc(stage["number"])}</span></button>'
-        )
     articles.extend(
         [
-            "</div>",
             "</div>",
             "<noscript><style>"
             "#architecture #canonical-architecture-runtime .v60-architecture-rail{display:grid!important;"
