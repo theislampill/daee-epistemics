@@ -16,10 +16,16 @@ import re
 import sys
 from typing import Any
 
+try:
+    import yaml
+except ImportError:  # pragma: no cover - exercised only in underprovisioned envs
+    print("ERROR: PyYAML not installed. Run: pip install pyyaml", file=sys.stderr)
+    raise
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "docs" / "index"
 MANIFEST = SOURCE_ROOT / "manifest.json"
+DESIGN_MD = SOURCE_ROOT / "DESIGN.md"
 OUTPUT = ROOT / "docs" / "index.html"
 REFERENCE_ROOT = ROOT / "atomics" / "skill" / "references"
 REFERENCE_SOURCE_PATHS = [
@@ -52,6 +58,159 @@ def read_json(path: Path) -> Any:
         return json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise SystemExit(f"{rel(path)}: JSON parse error: {exc}") from exc
+
+
+def split_design_frontmatter(path: Path) -> tuple[dict[str, Any], str]:
+    if not path.exists():
+        raise SystemExit(f"{rel(path)}: missing docs/index design source")
+    raw = path.read_text(encoding="utf-8")
+    if not raw.startswith("---\n"):
+        raise SystemExit(f"{rel(path)}: DESIGN.md must start with YAML front matter")
+    try:
+        _, frontmatter, body = raw.split("---", 2)
+    except ValueError as exc:
+        raise SystemExit(f"{rel(path)}: DESIGN.md missing closing front matter fence") from exc
+    try:
+        data = yaml.safe_load(frontmatter) or {}
+    except yaml.YAMLError as exc:
+        raise SystemExit(f"{rel(path)}: YAML parse error: {exc}") from exc
+    if not isinstance(data, dict):
+        raise SystemExit(f"{rel(path)}: YAML front matter must be a mapping")
+    return data, body
+
+
+def read_design_system() -> dict[str, Any]:
+    design, _body = split_design_frontmatter(DESIGN_MD)
+    required = ("colors", "typography", "spacing", "radius", "shadow", "motion", "components")
+    for group in required:
+        if not isinstance(design.get(group), dict) or not design[group]:
+            raise SystemExit(f"{rel(DESIGN_MD)}: missing required token group {group!r}")
+    return design
+
+
+def css_token_name(raw: str) -> str:
+    value = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", raw)
+    value = re.sub(r"[^a-zA-Z0-9]+", "-", value)
+    return value.strip("-").lower()
+
+
+def css_var(prefix: str, raw: str) -> str:
+    return f"--ds-{prefix}-{css_token_name(raw)}"
+
+
+def token_path_value(design: dict[str, Any], path: str) -> Any:
+    value: Any = design
+    for part in path.split("."):
+        if not isinstance(value, dict) or part not in value:
+            raise SystemExit(f"{rel(DESIGN_MD)}: token reference {{{path}}} does not resolve")
+        value = value[part]
+    return value
+
+
+def resolve_design_value(design: dict[str, Any], value: Any) -> str:
+    if not isinstance(value, str):
+        return str(value)
+    match = re.fullmatch(r"\{([^{}]+)\}", value.strip())
+    if match:
+        return resolve_design_value(design, token_path_value(design, match.group(1)))
+    return value
+
+
+def component_value(design: dict[str, Any], component: str, key: str, fallback: str) -> str:
+    components = design.get("components", {})
+    raw = components.get(component, {}).get(key) if isinstance(components, dict) else None
+    if raw is None:
+        return fallback
+    return resolve_design_value(design, raw)
+
+
+def hex_to_rgb(value: str) -> str:
+    raw = value.strip()
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", raw):
+        raise SystemExit(f"{rel(DESIGN_MD)}: expected #RRGGBB color, got {value!r}")
+    return ",".join(str(int(raw[index : index + 2], 16)) for index in (1, 3, 5))
+
+
+def render_design_tokens_css(design: dict[str, Any]) -> str:
+    colors = design["colors"]
+    typography = design["typography"]
+    spacing = design["spacing"]
+    radius = design["radius"]
+    shadow = design["shadow"]
+    motion = design["motion"]
+
+    lines: list[str] = [
+        "/* docs-index-design-source: docs/index/DESIGN.md */",
+        ":root{",
+    ]
+    for name, value in colors.items():
+        if isinstance(value, str):
+            lines.append(f"  {css_var('color', name)}:{value};")
+            if re.fullmatch(r"#[0-9A-Fa-f]{6}", value.strip()):
+                lines.append(f"  {css_var('color', name)}-rgb:{hex_to_rgb(value)};")
+    for name, spec in typography.items():
+        if isinstance(spec, dict):
+            if "fontFamily" in spec:
+                lines.append(f"  {css_var('font', name)}:{spec['fontFamily']};")
+            for key in ("fontSize", "fontWeight", "lineHeight", "letterSpacing"):
+                if key in spec:
+                    lines.append(f"  {css_var(f'type-{css_token_name(name)}', key)}:{spec[key]};")
+    for group_name, group in (("space", spacing), ("radius", radius), ("shadow", shadow), ("motion", motion)):
+        for name, value in group.items():
+            lines.append(f"  {css_var(group_name, name)}:{value};")
+
+    carousel = {
+        "gap": component_value(design, "architectureCarousel", "gap", "10px"),
+        "primary-width": component_value(design, "architectureCarousel", "primaryWidth", "clamp(620px,56vw,900px)"),
+        "side-width": component_value(design, "architectureCarousel", "sideWidth", "clamp(170px,14vw,240px)"),
+        "far-width": component_value(design, "architectureCarousel", "farWidth", "clamp(112px,9vw,155px)"),
+        "preview-source-width": component_value(design, "carouselPreview", "sourceWidth", "560px"),
+        "preview-far-source-width": component_value(design, "carouselPreview", "farSourceWidth", "460px"),
+        "preview-near-scale": component_value(design, "carouselPreview", "nearScale", ".43"),
+        "preview-far-scale": component_value(design, "carouselPreview", "farScale", ".34"),
+        "preview-near-slot-height": component_value(design, "carouselPreview", "nearSlotHeight", "430px"),
+        "preview-far-slot-height": component_value(design, "carouselPreview", "farSlotHeight", "310px"),
+        "preview-near-max-height": component_value(design, "carouselPreview", "nearMaxHeight", "430px"),
+        "preview-far-max-height": component_value(design, "carouselPreview", "farMaxHeight", "330px"),
+        "preview-opacity": component_value(design, "carouselPreview", "opacity", ".72"),
+        "preview-far-opacity": component_value(design, "carouselPreview", "farOpacity", ".52"),
+    }
+    for name, value in carousel.items():
+        lines.append(f"  --ds-carousel-{name}:{value};")
+
+    compatibility = {
+        "bg": "var(--ds-color-background)",
+        "panel": "var(--ds-color-background-raised)",
+        "panel2": "var(--ds-color-surface-raised)",
+        "ink": "var(--ds-color-text)",
+        "muted": "var(--ds-color-text-muted)",
+        "line": "var(--ds-color-border)",
+        "blue": "var(--ds-color-info)",
+        "green": "var(--ds-color-success)",
+        "cyan": "var(--ds-color-cyan)",
+        "violet": "var(--ds-color-violet)",
+        "orange": "var(--ds-color-warning)",
+        "red": "var(--ds-color-danger)",
+        "pink": "var(--ds-color-pink)",
+        "yellow": "var(--ds-color-yellow)",
+        "stage-d0": "var(--ds-color-stage-d0)",
+        "stage-psi-n": "var(--ds-color-stage-psi-n)",
+        "stage-dsl-ir": "var(--ds-color-stage-dsl-ir)",
+        "stage-owner-ttp-delta": "var(--ds-color-stage-owner-ttp-delta)",
+        "stage-collapse-restoration": "var(--ds-color-stage-collapse-restoration)",
+    }
+    for name, value in compatibility.items():
+        lines.append(f"  --{name}:{value};")
+    for token_name in (
+        "stageD0",
+        "stagePsiN",
+        "stageDslIr",
+        "stageOwnerTtpDelta",
+        "stageCollapseRestoration",
+    ):
+        lines.append(f"  --{css_token_name(token_name)}-rgb:{hex_to_rgb(colors[token_name])};")
+    lines.append("}")
+    return "\n".join(lines)
 
 
 def _declared_path_values(entry: dict[str, Any]) -> list[str]:
@@ -401,7 +560,14 @@ def load_runtime_architecture(manifest: dict[str, Any]) -> dict[str, Any]:
         raise SystemExit(f"{rel(source_path)}: schema_version must be 1")
     if payload.get("status") != "shared-runtime-architecture-source":
         raise SystemExit(f"{rel(source_path)}: status must be shared-runtime-architecture-source")
-    for key in ("rows", "stages", "theory_cards", "mapping_rows", "notation_lines"):
+    for key in (
+        "rows",
+        "stages",
+        "theory_cards",
+        "theory_card_notation_targets",
+        "mapping_rows",
+        "notation_lines",
+    ):
         if key not in payload:
             raise SystemExit(f"{rel(source_path)}: missing required key {key!r}")
     for owner in payload.get("runtime_owner_sources", []):
@@ -500,8 +666,54 @@ def render_gate_flow(card: dict[str, Any]) -> str:
 
 
 def render_reread_gate(card: dict[str, Any]) -> str:
-    divergence = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in card["divergence_examples"])
-    curl = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in card["curl_examples"])
+    def chip_row(items: list[str]) -> str:
+        chips = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in items)
+        return f'<div class="v60-field-chiprow">{chips}</div>'
+
+    def example_group(label: str, items: list[str], meaning: str, aria: str) -> str:
+        return "\n".join(
+            [
+                f'<div class="v60-field-targets v60-example-group" aria-label="{esc(aria)}">',
+                f'<span class="v60-field-heading">{esc(label)}</span>',
+                chip_row(items),
+                f'<span class="v60-field-meaning v60-field-description">{esc(meaning)}</span>',
+                "</div>",
+            ]
+        )
+
+    def loopbreak_witness(value: str, grounding: str) -> str:
+        if " ⊢ " in value:
+            left, right = value.split(" ⊢ ", 1)
+        else:
+            left, right = value, ""
+        operands = [piece.strip() for piece in right.split(" + ") if piece.strip()]
+        operand_html = "".join(f'<span class="v60-loopbreak-chip">{esc(piece)}</span>' for piece in operands)
+        grounding_match = re.match(r"^\s*([^{}]+)\{(.+)\}\s*$", grounding)
+        if grounding_match:
+            grounding_label = grounding_match.group(1).strip()
+            members = [piece.strip() for piece in grounding_match.group(2).split(",") if piece.strip()]
+        else:
+            grounding_label = "G ∈"
+            members = [grounding]
+        member_html = "".join(f'<span class="v60-grounding-chip">{esc(piece)}</span>' for piece in members)
+        return "\n".join(
+            [
+                '<div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">',
+                '<span class="v60-field-heading">LoopBreak witness</span>',
+                '<div class="v60-loopbreak-formula">',
+                f'<span class="v60-loopbreak-head">{esc(left)}</span>',
+                '<span class="v60-loopbreak-turnstile">⊢</span>',
+                f'<span class="v60-loopbreak-operands">{operand_html}</span>',
+                "</div>",
+                '<div class="v60-grounding-block">',
+                f'<span class="v60-grounding-label">{esc(grounding_label)}' + "{</span>",
+                f'<span class="v60-grounding-members">{member_html}</span>',
+                '<span class="v60-grounding-label">}</span>',
+                "</div>",
+                '<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>',
+                "</div>",
+            ]
+        )
     return "\n".join(
         [
             f'<div class="v21-stage-formula">{esc(card["formula"])}</div>',
@@ -510,27 +722,23 @@ def render_reread_gate(card: dict[str, Any]) -> str:
             '<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span></div>',
             '<div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">',
             '<span class="v60-field-heading">Target grammar</span>',
-            '<span class="v60-field-target">∇·T</span>',
-            '<span class="v60-field-target">∇×T</span>',
-            f'<span class="v60-field-meaning">{esc(card["target_grammar"])}</span>',
+            chip_row(["∇·T", "∇×T"]),
+            f'<span class="v60-field-meaning v60-field-description">{esc(card["target_grammar"])}</span>',
             "</div>",
-            '<div class="v60-field-targets" aria-label="Readable divergence examples">',
-            '<span class="v60-field-heading">∇· examples</span>',
-            divergence,
-            '<span class="v60-field-meaning">residual outward pressure in an explicit target field</span>',
-            "</div>",
-            '<div class="v60-field-targets" aria-label="Readable curl examples">',
-            '<span class="v60-field-heading">∇× examples</span>',
-            curl,
-            '<span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>',
-            "</div>",
+            example_group(
+                "∇· examples",
+                card["divergence_examples"],
+                "residual outward pressure in an explicit target field",
+                "Readable divergence examples",
+            ),
+            example_group(
+                "∇× examples",
+                card["curl_examples"],
+                "circular / rotational dependency in an explicit target field",
+                "Readable curl examples",
+            ),
             '<div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>',
-            '<div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">',
-            '<span class="v60-field-heading">LoopBreak witness</span>',
-            f'<span class="v60-field-target v60-loopbreak-form">{esc(card["loopbreak_witness"])}</span>',
-            f'<span class="v60-field-meaning">{esc(card["grounding_grammar"])}</span>',
-            '<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>',
-            "</div>",
+            loopbreak_witness(card["loopbreak_witness"], card["grounding_grammar"]),
             '<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>',
             "</div>",
         ]
@@ -540,11 +748,11 @@ def render_reread_gate(card: dict[str, Any]) -> str:
 def render_decision(card: dict[str, Any]) -> str:
     return "\n".join(
         [
-            '<div class="v21-dec-grid">',
-            '<div class="stop">■<br/>STOP</div>',
-            '<div class="hold">–<br/>HOLD</div>',
+            '<div class="v21-dec-grid v62-decision-grid" data-decision-layout="2x2-plus-complete">',
             '<div class="recurse">↻<br/>RECURSE</div>',
+            '<div class="hold">–<br/>HOLD</div>',
             '<div class="partial">○<br/>PARTIAL</div>',
+            '<div class="stop">■<br/>STOP</div>',
             '<div class="complete">✓<br/>COMPLETE</div>',
             "</div>",
             f'<div class="v21-note"><b>Correct recurse:</b> {esc(card["note"])}</div>',
@@ -599,19 +807,69 @@ def render_architecture_subcard(card: dict[str, Any]) -> str:
 def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
     articles: list[str] = [
         '<div class="v30-click-hint">Select a bridge stage panel below to inspect its audit trace.</div>',
-        '<div class="v21-five-col v60-architecture-rail" aria-label="Architecture runtime cards" tabindex="0">',
+        '<div class="v60-architecture-carousel" data-carousel="architecture-runtime">',
+        '<div class="v60-carousel-controls" aria-label="Architecture carousel controls">',
+        '<button class="v60-carousel-btn" type="button" data-carousel-action="prev" '
+        'aria-label="Previous architecture stage">‹</button>',
+        '<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite"></div>',
+        '<button class="v60-carousel-btn" type="button" data-carousel-action="next" '
+        'aria-label="Next architecture stage">›</button>',
+        "</div>",
+        '<div class="v21-five-col v60-architecture-rail" data-pipeline="target" '
+        'aria-label="Architecture runtime cards" role="listbox" aria-orientation="horizontal" '
+        'tabindex="0">',
     ]
-    for stage in arch["stages"]:
+    default_positions = ["center", "next", "far-next", "far-prev", "prev"]
+    for index, stage in enumerate(arch["stages"]):
         title = stage.get("title_html", esc(stage.get("title", "")))
+        active_class = " v30-active" if index == 0 else ""
+        position = default_positions[index] if index < len(default_positions) else "far"
+        preview_class = " is-primary" if position == "center" else f" is-preview is-{position}"
+        selected = "true" if index == 0 else "false"
+        tabindex = "0" if index == 0 else "-1"
         articles.append(
-            f'<article class="v21-stage {esc(stage["class"])} v30-selectable-stage" '
-            f'data-pipeline="target" data-stage-key="{esc(stage["key"])}" role="button" tabindex="0">'
+            f'<div class="v60-carousel-slot{preview_class}" data-carousel-slot '
+            f'data-stage-key="{esc(stage["key"])}" data-carousel-index="{index}" '
+            f'data-carousel-position="{position}">'
+        )
+        articles.append(
+            f'<article class="v21-stage {esc(stage["class"])} v30-selectable-stage v60-carousel-card{active_class}{preview_class}" '
+            f'data-pipeline="target" data-stage-key="{esc(stage["key"])}" '
+            f'data-carousel-index="{index}" data-carousel-position="{position}" '
+            f'role="option" aria-selected="{selected}" tabindex="{tabindex}">'
             f'<h2><span>{esc(stage["number"])}</span> {title}</h2>'
         )
         for card in stage.get("subcards", []):
             articles.append(render_architecture_subcard(card))
-        articles.append("</article>")
-    articles.extend(["</div>", '<div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>'])
+        articles.append("</article></div>")
+    articles.append("</div>")
+    articles.append('<div class="v60-carousel-dots" aria-label="Select architecture stage">')
+    for index, stage in enumerate(arch["stages"]):
+        title = re.sub(r"<[^>]+>", "", str(stage.get("title_html") or stage.get("title", "")))
+        current = ' aria-current="true"' if index == 0 else ""
+        articles.append(
+            f'<button class="v60-carousel-dot" type="button" data-carousel-target="{esc(stage["key"])}" '
+            f'aria-label="Show stage {esc(stage["number"])}: {esc(title)}"{current}>'
+            f'<span>{esc(stage["number"])}</span></button>'
+        )
+    articles.extend(
+        [
+            "</div>",
+            "</div>",
+            "<noscript><style>"
+            "#architecture #canonical-architecture-runtime .v60-architecture-rail{display:grid!important;"
+            "grid-template-columns:repeat(auto-fit,minmax(300px,1fr))!important;overflow:visible!important}"
+            "#architecture #canonical-architecture-runtime .v60-carousel-controls,"
+            "#architecture #canonical-architecture-runtime .v60-carousel-dots{display:none!important}"
+            "#architecture #canonical-architecture-runtime .v60-carousel-card{display:block!important;"
+            "transform:none!important;opacity:1!important;max-height:none!important}"
+            "#architecture #canonical-architecture-runtime .v60-carousel-slot{display:block!important;"
+            "width:auto!important;height:auto!important;overflow:visible!important}"
+            "#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{display:block!important}"
+            "</style></noscript>",
+            '<div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>',
+        ]
+    )
     return "\n".join(articles)
 
 
@@ -622,6 +880,38 @@ def js_array(values: list[str]) -> str:
     return "[" + ",".join(js_single(str(value)) for value in values) + "]"
 
 
+def notation_token_ids(arch: dict[str, Any]) -> set[str]:
+    token_ids: set[str] = set()
+    for line in arch.get("notation_lines", []):
+        if not isinstance(line, list):
+            continue
+        for segment in line:
+            if isinstance(segment, dict) and isinstance(segment.get("token"), str):
+                token_ids.add(segment["token"])
+    return token_ids
+
+
+def theory_card_targets(arch: dict[str, Any], card: dict[str, Any]) -> list[str]:
+    target_map = arch.get("theory_card_notation_targets")
+    if not isinstance(target_map, dict):
+        raise SystemExit("docs/index/runtime-architecture.json: theory_card_notation_targets must be an object")
+    card_id = str(card.get("id", ""))
+    targets = target_map.get(card_id)
+    if not isinstance(targets, list) or not targets or not all(isinstance(target, str) for target in targets):
+        raise SystemExit(
+            "docs/index/runtime-architecture.json: "
+            f"theory card {card_id!r} must declare at least one notation target"
+        )
+    known_tokens = notation_token_ids(arch)
+    missing = sorted(target for target in targets if target not in known_tokens)
+    if missing:
+        raise SystemExit(
+            "docs/index/runtime-architecture.json: "
+            f"theory card {card_id!r} targets missing notation tokens {missing!r}"
+        )
+    return targets
+
+
 def render_theory_control_overview(arch: dict[str, Any]) -> str:
     cards: list[str] = [
         '<div class="runtimeSourceNote theoryRuntimeSourcing" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
@@ -629,10 +919,17 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
         "</div>",
         '<div class="controlOverviewGrid">',
     ]
-    for card in arch["theory_cards"]:
+    for index, card in enumerate(arch["theory_cards"]):
         extra = f' {esc(card.get("extra_class", ""))}' if card.get("extra_class") else ""
+        targets = theory_card_targets(arch, card)
+        active_class = " is-linked-active" if index == 0 else ""
+        pressed = "true" if index == 0 else "false"
         cards.append(
-            f'<button class="controlCard {esc(card["phase_class"])}{extra}" onclick="goConceptField(\'{esc(card["id"])}\')">\n'
+            f'<button type="button" class="controlCard {esc(card["phase_class"])}{extra}{active_class}" '
+            f'data-theory-card="{esc(card["id"])}" data-concept-id="{esc(card["id"])}" '
+            f'data-notation-targets="{esc(" ".join(targets))}" '
+            'data-runtime-architecture-source="docs/index/runtime-architecture.json" '
+            f'aria-pressed="{pressed}" onclick="selectTheoryCard(this)">\n'
             f'<span class="controlSym">{esc(card["symbol"])}</span>\n'
             f'<strong>{esc(card["label"])}</strong>\n'
             f'<p>{esc(card["description"])}</p>\n'
@@ -652,7 +949,10 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
                     classes += f' {esc(segment["classes"])}'
                 cards.append(
                     f'<span class="{classes}" data-k="{esc(segment["token"])}" '
+                    f'data-notation-id="{esc(segment["token"])}" role="button" tabindex="0" '
+                    'aria-pressed="false" '
                     f'data-label="{esc(segment["label"])}" '
+                    'onkeydown="return activateNotationToken(event,this)" '
                     f'onclick="highlightNotation({js_array(segment["highlight"])})">{esc(segment["symbol"])}</span>'
                 )
             else:
@@ -770,6 +1070,7 @@ def render_generated_data(manifest: dict[str, Any], modules: list[dict[str, str]
     provenance = {
         "generator": "tools/build_docs_index.py",
         "manifest": rel(MANIFEST),
+        "design_source": rel(DESIGN_MD),
         "module_catalogue": manifest["derived_data"]["module_catalogue"],
         "source_digest": source_digest(source_paths),
         "section_sources": [section_source(tab) for tab in manifest["tabs"]],
@@ -799,9 +1100,11 @@ def build_index(manifest: dict[str, Any]) -> str:
         raise SystemExit(f"{rel(template_path)}: missing template")
     modules = load_modules(manifest)
     arch = load_runtime_architecture(manifest)
+    design = read_design_system()
     output = template_path.read_text(encoding="utf-8")
     replacements = {
         "{{ GENERATED_BANNER }}": BANNER,
+        "{{ DESIGN_TOKENS_CSS }}": render_design_tokens_css(design),
         "{{ TOPBAR }}": render_tabs(manifest["tabs"]),
         "{{ SECTIONS }}": render_sections(manifest["tabs"], arch),
         "{{ GENERATED_DATA }}": render_generated_data(manifest, modules),
@@ -816,6 +1119,7 @@ def build_index(manifest: dict[str, Any]) -> str:
         token
         for token in (
             "{{ GENERATED_BANNER }}",
+            "{{ DESIGN_TOKENS_CSS }}",
             "{{ TOPBAR }}",
             "{{ SECTIONS }}",
             "{{ GENERATED_DATA }}",

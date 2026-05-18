@@ -7,6 +7,7 @@
   "derived_data": {
     "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
     "runtime_architecture": "docs/index/runtime-architecture.json",
+    "design_system": "docs/index/DESIGN.md",
     "framework_pipeline": "atomics/skill/references/diagnostics/framework-pipeline.yaml",
     "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
     "audit_index": "docs/audits/INDEX.md"
@@ -176,12 +177,63 @@
       ]
     },
     {
+      "id": "architecture_card_carousel_behavior",
+      "label": "Architecture selected-primary card carousel behavior",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "docs/index/runtime-architecture.json"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "one default selected stage",
+        "five generated stage cards",
+        "previous/next controls",
+        "side-card and dot selection affordances",
+        "scaled actual-card preview structure rather than label-only tiles",
+        "card-4 dense example and LoopBreak containment",
+        "Decision 2x2+COMPLETE layout marker",
+        "keyboard arrow navigation",
+        "no auto-rotation timer",
+        "print/no-JS fallback"
+      ]
+    },
+    {
+      "id": "docs_index_design_system",
+      "label": "docs/index visual design system",
+      "classification": "LAYOUT_ONLY",
+      "current_source": "docs/index/DESIGN.md",
+      "owner_sources": [
+        "docs/index/DESIGN.md",
+        "docs/index/templates/index.html.tpl",
+        "tools/build_docs_index.py"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "required DESIGN.md token groups",
+        "required stage color tokens",
+        "token-reference resolution",
+        "generated CSS custom properties",
+        "carousel token references",
+        "focus and reduced-motion styles",
+        "contrast sanity checks"
+      ]
+    },
+    {
       "id": "theory_runtime_notation_mapping",
       "label": "Theory Deep Dive notation and mapping rows",
       "classification": "STRUCTURED_SOURCE_DERIVED",
       "current_source": "docs/index/runtime-architecture.json",
       "owner_sources": [
         "docs/index/runtime-architecture.json"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "Theory control card order",
+        "card-to-notation target mappings",
+        "generated notation chip identifiers",
+        "default active card and notation active state",
+        "keyboard-addressable card/chip controls"
       ]
     },
     {

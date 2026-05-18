@@ -7,9 +7,9 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>DAEE Epistemics — Pipeline Control Wiki</title>
 <style>
-:root{--bg:#080a10;--panel:#0f1320;--panel2:#141a2a;--ink:#e8edf7;--muted:#98a2b3;--line:#263044;--blue:#60a5fa;--green:#22c55e;--cyan:#22d3ee;--violet:#a78bfa;--orange:#fb923c;--red:#f87171;--pink:#f472b6;--yellow:#facc15}
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(96,165,250,.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(34,197,94,.10),transparent 30%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
-button,input,select{font:inherit} code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace} code{background:#0a0f1d;border:1px solid #243047;border-radius:6px;padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid #243047;border-radius:14px;padding:14px;overflow:auto;color:#e5e7eb}
+{{ DESIGN_TOKENS_CSS }}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
+button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
 .topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .tabs{display:flex;gap:4px;max-width:1880px;margin:0 auto;padding:8px 12px;overflow:auto} .tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
@@ -41,7 +41,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .notationLine{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:6px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}
 .ntok{display:inline-flex;align-items:center;border:1px solid #334155;background:#0c1220;border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;cursor:pointer}
 .ntok:hover{border-color:var(--cyan);transform:translateY(-1px)}
-.ntok.active{border-color:var(--yellow);background:rgba(250,204,21,.16);color:#fff;box-shadow:0 0 0 2px rgba(250,204,21,.12)}
+.ntok.active,
+.ntok.is-linked-active,
+.ntok[aria-pressed="true"]{border-color:var(--yellow);background:rgba(250,204,21,.16);color:#fff;box-shadow:0 0 0 2px rgba(250,204,21,.12);outline:2px solid rgba(250,204,21,.36);outline-offset:2px}
 .ntok.muted{opacity:.34}
 .ntok.symNoetic{border-color:rgba(45,212,191,.7)}.ntok.symXi{border-color:rgba(34,211,238,.55)}.ntok.symOmega{border-color:rgba(167,139,250,.55)}.ntok.symHeart{border-color:rgba(244,114,182,.7)}.ntok.symMu{border-color:rgba(244,114,182,.55)}.ntok.symKappa{border-color:rgba(251,146,60,.55)}
 .notationArrow{color:#64748b;font-weight:900}
@@ -293,6 +295,20 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   background:#101827;
   box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 74%);
 }
+.controlCard:focus-visible{
+  outline:3px solid var(--ds-color-focus);
+  outline-offset:3px;
+}
+.controlCard.is-linked-active,
+.controlCard[aria-pressed="true"]{
+  background:#111c2d;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 58%), inset 0 0 0 2px rgba(255,255,255,.12);
+  transform:translateY(-1px);
+}
+.controlCard.is-linked-active .controlSym,
+.controlCard[aria-pressed="true"] .controlSym{
+  box-shadow:0 0 0 2px rgba(255,255,255,.34);
+}
 .controlCard .controlSym{
   min-width:48px;
   height:48px;
@@ -494,11 +510,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-weight:900;
   font-size:14px;
 }
-.v21-s1{--sc:var(--blue)}
-.v21-s2{--sc:var(--green)}
-.v21-s3{--sc:var(--cyan)}
-.v21-s4{--sc:var(--violet)}
-.v21-s5{--sc:var(--orange)}
+.v21-s1{--sc:var(--stage-d0)}
+.v21-s2{--sc:var(--stage-psi-n)}
+.v21-s3{--sc:var(--stage-dsl-ir)}
+.v21-s4{--sc:var(--stage-owner-ttp-delta)}
+.v21-s5{--sc:var(--stage-collapse-restoration)}
 .v21-card{
   background:#0d1117;
   border:1.5px solid #263044;
@@ -1617,17 +1633,17 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   white-space:normal!important;
   overflow-wrap:anywhere!important;
 }
-#architecture #canonical-architecture-runtime .v56-input{border-color:rgba(96,165,250,.65);background:rgba(96,165,250,.10)}
-#architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.09)}
-#architecture #canonical-architecture-runtime .v56-owner{border-color:rgba(167,139,250,.65);background:rgba(167,139,250,.10)}
-#architecture #canonical-architecture-runtime .v56-land{border-color:rgba(251,146,60,.65);background:rgba(251,146,60,.10)}
-#architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(34,197,94,.65);background:rgba(34,197,94,.10)}
-#architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(239,68,68,.65);background:rgba(239,68,68,.09)}
-#architecture #canonical-architecture-runtime .v21-s1{--sc:var(--blue)!important;--sc-rgb:96,165,250!important}
-#architecture #canonical-architecture-runtime .v21-s2{--sc:var(--cyan)!important;--sc-rgb:34,211,238!important}
-#architecture #canonical-architecture-runtime .v21-s3{--sc:var(--violet)!important;--sc-rgb:167,139,250!important}
-#architecture #canonical-architecture-runtime .v21-s4{--sc:var(--orange)!important;--sc-rgb:251,146,60!important}
-#architecture #canonical-architecture-runtime .v21-s5{--sc:var(--red)!important;--sc-rgb:248,113,113!important}
+#architecture #canonical-architecture-runtime .v56-input{border-color:rgba(var(--stage-d0-rgb),.65);background:rgba(var(--stage-d0-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(var(--stage-psi-n-rgb),.65);background:rgba(var(--stage-psi-n-rgb),.09)}
+#architecture #canonical-architecture-runtime .v56-owner{border-color:rgba(var(--stage-dsl-ir-rgb),.65);background:rgba(var(--stage-dsl-ir-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-land{border-color:rgba(var(--stage-owner-ttp-delta-rgb),.65);background:rgba(var(--stage-owner-ttp-delta-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(var(--ds-color-success-rgb),.65);background:rgba(var(--ds-color-success-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(var(--stage-collapse-restoration-rgb),.65);background:rgba(var(--stage-collapse-restoration-rgb),.09)}
+#architecture #canonical-architecture-runtime .v21-s1{--sc:var(--stage-d0)!important;--sc-rgb:var(--stage-d0-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s2{--sc:var(--stage-psi-n)!important;--sc-rgb:var(--stage-psi-n-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s3{--sc:var(--stage-dsl-ir)!important;--sc-rgb:var(--stage-dsl-ir-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s4{--sc:var(--stage-owner-ttp-delta)!important;--sc-rgb:var(--stage-owner-ttp-delta-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s5{--sc:var(--stage-collapse-restoration)!important;--sc-rgb:var(--stage-collapse-restoration-rgb)!important}
 #architecture #canonical-architecture-runtime .v21-stage{
   background:rgba(var(--sc-rgb),.045)!important;
   border-color:rgba(var(--sc-rgb),.92)!important;
@@ -1640,19 +1656,19 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   background:rgba(var(--sc-rgb),.045)!important;
 }
 #architecture #canonical-architecture-runtime .v21-s5 .v21-purple{
-  --sc:var(--red)!important;
-  --sc-rgb:248,113,113!important;
-  background:rgba(248,113,113,.055)!important;
+  --sc:var(--stage-collapse-restoration)!important;
+  --sc-rgb:var(--stage-collapse-restoration-rgb)!important;
+  background:rgba(var(--stage-collapse-restoration-rgb),.055)!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-label{
   color:var(--green)!important;
   font-style:normal!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-phase{
-  --sc:var(--green)!important;
-  --sc-rgb:34,197,94!important;
-  border-color:rgba(34,197,94,.45)!important;
-  background:rgba(34,197,94,.045)!important;
+  --sc:var(--ds-color-success)!important;
+  --sc-rgb:var(--ds-color-success-rgb)!important;
+  border-color:rgba(var(--ds-color-success-rgb),.45)!important;
+  background:rgba(var(--ds-color-success-rgb),.045)!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-phase h3{
   color:var(--green)!important;
@@ -1745,8 +1761,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   display:inline-flex!important;
   align-items:center!important;
   white-space:nowrap!important;
-  border:1px solid rgba(251,146,60,.55)!important;
-  background:rgba(251,146,60,.10)!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.55)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.10)!important;
   border-radius:999px!important;
   padding:4px 8px!important;
   color:#fff7ed!important;
@@ -1755,11 +1771,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-weight:900!important;
 }
 #architecture #canonical-architecture-runtime .v60-field-grammar .v60-field-target{
-  border-color:rgba(34,211,238,.62)!important;
-  background:rgba(34,211,238,.10)!important;
+  border-color:rgba(var(--stage-psi-n-rgb),.62)!important;
+  background:rgba(var(--stage-psi-n-rgb),.10)!important;
 }
 #architecture #canonical-architecture-runtime .v60-loopbreak-form{
-  border-color:rgba(251,146,60,.75)!important;
+  border-color:rgba(var(--stage-owner-ttp-delta-rgb),.75)!important;
   flex:1 1 auto!important;
 }
 #architecture #canonical-architecture-runtime .v60-field-meaning{
@@ -1815,16 +1831,492 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .theoryNotationMap h3{margin-top:0}
 .compactBridgeFlow{align-items:stretch}
 .compactBridgeFlow .notationChip{margin:0}
+
+/* v61: Architecture cards are a selected-primary carousel, not a horizontal rail. */
+#architecture #canonical-architecture-runtime .v60-architecture-carousel{
+  --v61-carousel-gap:var(--ds-carousel-gap);
+  --v61-carousel-primary:var(--ds-carousel-primary-width);
+  --v61-carousel-side:var(--ds-carousel-side-width);
+  --v61-carousel-far:var(--ds-carousel-far-width);
+  display:grid;
+  gap:12px;
+  margin-top:12px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-btn{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--ds-color-border-strong);
+  border-radius:var(--ds-radius-chip);
+  background:var(--ds-color-surface-code);
+  color:var(--ds-color-text);
+  cursor:pointer;
+  font-size:24px;
+  font-weight:950;
+  line-height:1;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-btn:hover,
+#architecture #canonical-architecture-runtime .v60-carousel-btn:focus-visible{
+  border-color:var(--ds-color-focus);
+  background:rgba(var(--ds-color-focus-rgb),.10);
+  outline:none;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-status{
+  min-width:min(420px,70vw);
+  text-align:center;
+  border:1px solid var(--ds-color-border);
+  background:var(--ds-color-surface-deep);
+  border-radius:var(--ds-radius-chip);
+  padding:7px 12px;
+  color:var(--ds-color-text-subtle);
+  font-size:13px;
+  font-weight:850;
+}
+#architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
+#architecture #canonical-architecture-runtime .v60-architecture-rail{
+  display:flex!important;
+  grid-template-columns:none!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:var(--v61-carousel-gap)!important;
+  overflow:hidden!important;
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  padding:6px 2px 10px!important;
+  scroll-snap-type:none!important;
+  scrollbar-width:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-architecture-rail::-webkit-scrollbar{
+  display:none;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card{
+  flex:0 0 var(--v61-carousel-side)!important;
+  min-width:0!important;
+  max-width:var(--v61-carousel-side)!important;
+  min-height:330px!important;
+  max-height:var(--ds-carousel-preview-near-max-height)!important;
+  padding:9px!important;
+  overflow:hidden!important;
+  opacity:var(--ds-carousel-preview-opacity);
+  transform:none;
+  transform-origin:center;
+  scroll-snap-align:none!important;
+  transition:transform var(--ds-motion-duration) var(--ds-motion-easing), opacity var(--ds-motion-duration) var(--ds-motion-easing), flex-basis var(--ds-motion-duration) var(--ds-motion-easing), max-width var(--ds-motion-duration) var(--ds-motion-easing), box-shadow var(--ds-motion-duration) var(--ds-motion-easing), background var(--ds-motion-duration) var(--ds-motion-easing);
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card h2{
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card h2 span{
+  width:22px!important;
+  height:22px!important;
+  font-size:11px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{
+  display:block!important;
+  margin-top:8px!important;
+  padding:8px!important;
+  opacity:.84;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard b{
+  font-size:10.5px!important;
+  line-height:1.15!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard small{
+  font-size:9px!important;
+  line-height:1.18!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v21-field-grid,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v21-dec-grid,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-flow,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-arrow{
+  display:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"]{
+  order:3;
+  flex-basis:var(--v61-carousel-primary)!important;
+  max-width:960px!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:stretch!important;
+  overflow:visible!important;
+  opacity:1;
+  transform:none;
+  z-index:3;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] h2{
+  font-size:clamp(14px,1.05vw,17px)!important;
+  line-height:1.18!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] h2 span{
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard{
+  display:block!important;
+  opacity:1;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard b{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard small{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v54-gate-flow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="prev"]{order:2}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="next"]{order:4}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-prev"],
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-next"]{
+  flex-basis:var(--v61-carousel-far)!important;
+  max-width:var(--v61-carousel-far)!important;
+  opacity:var(--ds-carousel-preview-far-opacity);
+  transform:none;
+  max-height:var(--ds-carousel-preview-far-max-height)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-prev"]{order:1}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-next"]{order:5}
+#architecture #canonical-architecture-runtime .v60-carousel-card:focus-visible{
+  outline:2px solid var(--ds-color-focus);
+  outline-offset:3px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dots{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot{
+  width:34px;
+  height:34px;
+  border:1px solid var(--ds-color-border-strong);
+  border-radius:var(--ds-radius-chip);
+  background:var(--ds-color-surface-code);
+  color:var(--ds-color-text-subtle);
+  cursor:pointer;
+  font-weight:950;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot[aria-current="true"]{
+  border-color:var(--ds-color-focus);
+  color:#bbf7d0;
+  background:rgba(var(--ds-color-focus-rgb),.12);
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot:hover,
+#architecture #canonical-architecture-runtime .v60-carousel-dot:focus-visible{
+  border-color:var(--ds-color-cyan);
+  color:#fff;
+  outline:none;
+}
+@media(max-width:1180px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --v61-carousel-primary:min(680px,68vw);
+    --v61-carousel-side:138px;
+    --v61-carousel-far:82px;
+  }
+}
+@media(max-width:760px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --v61-carousel-primary:100%;
+  }
+  #architecture #canonical-architecture-runtime .v60-architecture-rail{
+    display:block!important;
+    padding:4px 0!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card{
+    display:none!important;
+    max-width:none!important;
+    width:100%!important;
+    transform:none!important;
+    opacity:1!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"]{
+    display:block!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-status{
+    min-width:0;
+    flex:1 1 auto;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #architecture #canonical-architecture-runtime .v60-carousel-card,
+  #architecture #canonical-architecture-runtime .v60-carousel-btn,
+  #architecture #canonical-architecture-runtime .v60-carousel-dot{
+    transition:none!important;
+  }
+}
 @media print{
-  #architecture #canonical-architecture-runtime > .v21-five-col{
+  #architecture #canonical-architecture-runtime .v60-carousel-controls,
+  #architecture #canonical-architecture-runtime .v60-carousel-dots{
+    display:none!important;
+  }
+  #architecture #canonical-architecture-runtime > .v21-five-col,
+  #architecture #canonical-architecture-runtime .v60-architecture-rail{
     display:block!important;
     overflow:visible!important;
   }
-  #architecture #canonical-architecture-runtime .v21-stage{
+  #architecture #canonical-architecture-runtime .v21-stage,
+  #architecture #canonical-architecture-runtime .v60-carousel-card{
+    display:block!important;
     min-width:0!important;
+    max-width:none!important;
+    max-height:none!important;
+    transform:none!important;
+    opacity:1!important;
     break-inside:avoid;
     page-break-inside:avoid;
     margin-bottom:12px;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{
+    display:block!important;
+  }
+}
+
+/* v62: contain card-4 dense notation and make side cards scaled full-card previews. */
+#architecture #canonical-architecture-runtime .v60-field-targets{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-items:start!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-chiprow,
+#architecture #canonical-architecture-runtime .v60-loopbreak-operands,
+#architecture #canonical-architecture-runtime .v60-grounding-members{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-description,
+#architecture #canonical-architecture-runtime .v60-field-wide{
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  flex:1 1 100%!important;
+  overflow-wrap:anywhere!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-formula{
+  display:grid!important;
+  grid-template-columns:auto auto minmax(0,1fr)!important;
+  gap:7px!important;
+  align-items:center!important;
+  min-width:0!important;
+  width:100%!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.55)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.10)!important;
+  border-radius:var(--ds-radius-card)!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-head,
+#architecture #canonical-architecture-runtime .v60-loopbreak-turnstile,
+#architecture #canonical-architecture-runtime .v60-loopbreak-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-label{
+  font-family:var(--ds-font-monospace)!important;
+  font-weight:900!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-head,
+#architecture #canonical-architecture-runtime .v60-loopbreak-turnstile{
+  color:#fff7ed!important;
+  white-space:nowrap!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-chip{
+  display:inline-flex!important;
+  align-items:center!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.45)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.08)!important;
+  border-radius:var(--ds-radius-chip)!important;
+  padding:3px 7px!important;
+  color:#fff7ed!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#architecture #canonical-architecture-runtime .v60-grounding-block{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  gap:6px!important;
+  align-items:start!important;
+  min-width:0!important;
+  width:100%!important;
+  border:1px solid var(--ds-color-border)!important;
+  background:var(--ds-color-surface-deep)!important;
+  border-radius:var(--ds-radius-card)!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-grounding-label{
+  color:var(--ds-color-text-subtle)!important;
+}
+#architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
+#architecture #canonical-architecture-runtime .v60-architecture-rail{
+  align-items:flex-start!important;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  overflow-y:visible!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v62-decision-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v62-decision-grid .complete{
+  grid-column:1 / -1!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot{
+  position:relative!important;
+  display:grid!important;
+  align-items:start!important;
+  justify-items:center!important;
+  flex:0 0 var(--v61-carousel-side)!important;
+  width:var(--v61-carousel-side)!important;
+  height:var(--ds-carousel-preview-near-slot-height)!important;
+  min-width:0!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"]{
+  order:3!important;
+  flex:0 1 var(--v61-carousel-primary)!important;
+  width:var(--v61-carousel-primary)!important;
+  height:auto!important;
+  align-self:flex-start!important;
+  z-index:4!important;
+  pointer-events:auto!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="prev"]{order:2!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="next"]{order:4!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
+  flex-basis:var(--v61-carousel-far)!important;
+  width:var(--v61-carousel-far)!important;
+  height:var(--ds-carousel-preview-far-slot-height)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"]{order:1!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{order:5!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card{
+  position:absolute!important;
+  left:50%!important;
+  top:0!important;
+  flex:none!important;
+  width:var(--ds-carousel-preview-source-width)!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:auto!important;
+  max-height:none!important;
+  padding:12px!important;
+  overflow:visible!important;
+  opacity:var(--ds-carousel-preview-opacity)!important;
+  transform:translateX(-50%) scale(var(--ds-carousel-preview-near-scale))!important;
+  transform-origin:top center!important;
+  pointer-events:auto!important;
+  box-shadow:var(--ds-shadow-preview-card)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"] > .v60-carousel-card,
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"] > .v60-carousel-card{
+  width:var(--ds-carousel-preview-far-source-width)!important;
+  opacity:var(--ds-carousel-preview-far-opacity)!important;
+  transform:translateX(-50%) scale(var(--ds-carousel-preview-far-scale))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"] > .v60-carousel-card{
+  flex:none!important;
+  width:100%!important;
+  max-width:960px!important;
+  transform:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2{
+  font-size:clamp(14px,1.05vw,17px)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2 span{
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard b{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard small{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-flow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+@media(max-width:1180px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --ds-carousel-preview-source-width:420px;
+    --ds-carousel-preview-near-scale:.33;
+    --ds-carousel-preview-near-slot-height:260px;
+    --ds-carousel-preview-far-source-width:360px;
+    --ds-carousel-preview-far-scale:.23;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
+    display:none!important;
+  }
+}
+@media(max-width:760px){
+  #architecture #canonical-architecture-runtime .v60-carousel-slot{
+    display:none!important;
+    width:100%!important;
+    height:auto!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"]{
+    display:block!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"] > .v60-carousel-card{
+    max-width:none!important;
+    width:100%!important;
+  }
+}
+@media(max-width:620px){
+  #architecture #canonical-architecture-runtime .v60-loopbreak-formula,
+  #architecture #canonical-architecture-runtime .v60-grounding-block{
+    grid-template-columns:1fr!important;
+  }
+}
+@media print{
+  #architecture #canonical-architecture-runtime .v60-carousel-slot{
+    display:block!important;
+    width:auto!important;
+    height:auto!important;
+    overflow:visible!important;
+    margin-bottom:12px!important;
   }
 }
 
@@ -1854,6 +2346,15 @@ const CONCEPTS = [{"id": "noetic", "name": "𝓝 noetic-structure selection spac
 const RELATIONS = [{"id": "rel-noetic-design", "label": "𝓝 designs the selection space", "type": "designs-for", "from": "𝓝", "to": "possible live noetic structures", "symbols": ["noetic", "Psi", "N"], "explain": "The framework is engineered before the current input is known, so it must be able to operate for every possible noetic-structure selection that could become live.", "runtime": "Meta-noetic memetics solves this as an engineering problem by representing recurring criteria, source-status moves, registers, stabilizers, and collapse radii as routable control state."}, {"id": "rel-noetic-selects-N", "label": "𝓝 licenses runtime N selection", "type": "selects", "from": "𝓝", "to": "N∈𝓝", "symbols": ["noetic", "N", "Psi"], "explain": "N is not assumed at design time. It is selected, constrained, or held as underdetermined after D₀ is decoded into Ψᴺ.", "runtime": "This prevents the pipeline from hard-coding one worldview path or treating N as a mere label."}, {"id": "rel-D-Psi", "label": "D₀ encodes Ψᴺ", "type": "encodes", "from": "D₀", "to": "Ψᴺ", "symbols": ["D0", "Psi"], "explain": "Surface discourse is treated as an encoded noetic signal-state, not merely a proposition to answer.", "runtime": "This is where Shannon-style signal/compression language becomes useful without replacing noetic theology."}, {"id": "rel-Psi-fields", "label": "Ψᴺ contains N,m,τ,σ,♥,ξ,Ω,μ,κ,H", "type": "contains", "from": "Ψᴺ", "to": "register set", "symbols": ["Psi", "N", "m", "tau", "sigma", "heart", "xi", "omega", "mu", "kappa", "H"], "explain": "The unresolved diagnostic field carries runtime-selected noetic frame, mode, burden-function, source-status, affective-discursive register, epistemic grammar, ontology, memetic carrier, collapse radius, and held material.", "runtime": "Concept selection should highlight the matching register inside the notation."}, {"id": "rel-heart-release", "label": "♥ constrains release posture", "type": "constrains", "from": "♥", "to": "burden / H / tone / release", "symbols": ["heart", "H", "R"], "explain": "The affective-discursive register is not decorative sentiment and is not reducible to μ or m. Grief, identity, performance, truth-seeking, and mixed/unclear registers can license different suppression, hold, burden, and tone decisions.", "runtime": "This is why the same proposition may require different Layer B release depending on register."}, {"id": "rel-Psi-IR", "label": "Ψᴺ formalizes into IR", "type": "formalizes", "from": "Ψᴺ", "to": "IR", "symbols": ["Psi", "IR"], "explain": "Diagnostic reconstruction converts the signal-state into compact DSL/IR control state.", "runtime": "The IR authorizes dispatch; it is not a post-hoc label."}, {"id": "rel-xi-owner", "label": "ξ routes epistemic burdens", "type": "routes to", "from": "ξ", "to": "V2 / R1 / R3 / V10", "symbols": ["xi", "IR", "submoves"], "explain": "Warrant, testimony, proper function, reliability, and defeater structure select epistemic owners.", "runtime": "This blocks routing epistemic objections as mere doctrinal content."}, {"id": "rel-omega-owner", "label": "Ω routes ontological burdens", "type": "routes to", "from": "Ω", "to": "M9 / V8 / V9 / M8", "symbols": ["omega", "IR", "submoves"], "explain": "Predication, modality, dependence, and creator/creation boundaries select ontology-sensitive owners.", "runtime": "This prevents creaturely grammar from governing divine predication unnoticed."}, {"id": "rel-mu-operational", "label": "μ becomes operational through control surfaces", "type": "constrains", "from": "μ", "to": "IR/H/owner/κ/R", "symbols": ["mu", "IR", "H", "submoves", "kappa", "R"], "explain": "Meta-noetic memetics is not decorative vocabulary. It matters only when it changes control state, hold/release, owner choice, collapse radius, or reread.", "runtime": "This is the key structural thesis of schema-light register bridge."}, {"id": "rel-IR-owner", "label": "IR authorizes owner/TTP activation", "type": "authorizes", "from": "IR", "to": "ⁿBᵢ[OP]", "symbols": ["IR", "burden", "submoves"], "explain": "Owners activate only after diagnostic reduction, gate checks, and routing precedence.", "runtime": "No owner label counts without local target → operation → result execution."}, {"id": "rel-op-delta", "label": "ⁿBᵢ[OP] produces ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ", "type": "lands as", "from": "submoves", "to": "deltas", "symbols": ["submoves", "deltaB", "deltaK"], "explain": "Each active operator should produce burden-local and dependency-relevant state change.", "runtime": "The state delta is what makes the operation auditable."}, {"id": "rel-r-next", "label": "R licenses STOP/HOLD/PARTIAL/ⁿ⁺¹B", "type": "licenses release of", "from": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)", "to": "decision", "symbols": ["R", "deltaB", "deltaK", "nextB"], "explain": "Reread decides whether the system closes, holds, partials, or recurses to a distinct next burden.", "runtime": "This prevents recursion bloat and premature restoration."}, {"id": "rel-collapse", "label": "R* yields 𝒞(Ψᴺ)", "type": "resolves", "from": "iterated burden cycles", "to": "𝒞(Ψᴺ)", "symbols": ["R", "C", "final"], "explain": "Across landed/held/partial burdens, the encoded noetic signal-state is constrained toward discursive resolution.", "runtime": "The terminal aim is restored fiṭrah and sound reason, not novelty or argument accumulation."}];
 {{ REFERENCE_DATA }}
 {{ OWNER_SOURCE_RENDERER }}
+function esc(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[ch]);
+}
 function showTopTab(id, btn){
   const panel=document.getElementById(id);
   if(!panel || !panel.classList.contains('tabsec')) return false;
@@ -2035,7 +2536,9 @@ function highlightNotation(keys){
   document.querySelectorAll('.ntok').forEach(el=>{
     const key=el.getAttribute('data-k');
     el.classList.toggle('active', set.has(key));
+    el.classList.toggle('is-linked-active', set.has(key));
     el.classList.toggle('muted', set.size && !set.has(key));
+    el.setAttribute('aria-pressed', set.has(key) ? 'true' : 'false');
   });
   const explain=document.getElementById('notationExplain');
   if(explain && set.size){
@@ -2049,6 +2552,42 @@ function highlightNotation(keys){
   }
 }
 function clearNotation(){ highlightNotation([]); }
+function theoryCardTargetKeys(card){
+  if(!card) return [];
+  return (card.getAttribute('data-notation-targets')||'')
+    .split(/\s+/)
+    .map(x=>x.trim())
+    .filter(Boolean);
+}
+function selectTheoryCard(cardOrId){
+  const card = typeof cardOrId === 'string'
+    ? document.querySelector(`.controlCard[data-theory-card="${CSS.escape(cardOrId)}"]`)
+    : cardOrId;
+  if(!card) return;
+  document.querySelectorAll('.controlCard[data-theory-card]').forEach(el=>{
+    const active = el === card;
+    el.classList.toggle('is-linked-active', active);
+    el.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  const targets = theoryCardTargetKeys(card);
+  if(typeof window.highlightNotation === 'function') window.highlightNotation(targets);
+  else highlightNotation(targets);
+  const explain=document.getElementById('notationExplain');
+  const label=card.querySelector('strong')?.textContent?.trim() || card.getAttribute('data-theory-card') || 'Theory card';
+  if(explain && targets.length){
+    const targetLabels = targets.map(k=>{
+      const tok=document.querySelector(`.ntok[data-k="${CSS.escape(k)}"]`);
+      return tok ? tok.textContent.trim() : k;
+    });
+    explain.innerHTML='<strong>Selected theory card:</strong> '+esc(label)+' → '+targetLabels.map(esc).join(' · ');
+  }
+}
+function activateNotationToken(ev, el){
+  if(ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return true;
+  if(ev) ev.preventDefault();
+  if(el && typeof el.click === 'function') el.click();
+  return false;
+}
 
 function init(){
   const safe=(label,fn)=>{try{fn()}catch(e){console.warn('DAEE wiki init skipped:',label,e)}};
@@ -2064,6 +2603,8 @@ function init(){
   if(document.getElementById('relationPanel')) safe('relations',()=>renderRelations());
   if(document.getElementById('refTable')) safe('refs',()=>renderRefs());
   if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
+  const defaultTheoryCard=document.querySelector('.controlCard[data-theory-card][aria-pressed="true"]') || document.querySelector('.controlCard[data-theory-card]');
+  if(defaultTheoryCard) safe('theory card default notation',()=>selectTheoryCard(defaultTheoryCard));
 
 }
 document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
@@ -3187,6 +3728,67 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         ${auditBox(failureTitle, config.failure || config.gap || [])}
       </div>`;
   }
+  function architectureCarouselStages(){
+    return [...document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-architecture-rail .v30-selectable-stage[data-pipeline="target"]')];
+  }
+  function architectureCarouselKey(){
+    const active = document.querySelector('#architecture #canonical-architecture-runtime .v60-architecture-rail .v30-selectable-stage.v30-active[data-pipeline="target"]');
+    return active?.getAttribute('data-stage-key') || architectureCarouselStages()[0]?.getAttribute('data-stage-key') || 'input';
+  }
+  function carouselPosition(index, selectedIndex, total){
+    const offset = (index - selectedIndex + total) % total;
+    if(offset === 0) return 'center';
+    if(offset === 1) return 'next';
+    if(offset === 2) return 'far-next';
+    if(offset === total - 1) return 'prev';
+    if(offset === total - 2) return 'far-prev';
+    return 'far';
+  }
+  function applyArchitectureCarousel(key){
+    const stages = architectureCarouselStages();
+    if(!stages.length) return;
+    const selectedIndex = Math.max(0, stages.findIndex(el => el.getAttribute('data-stage-key') === key));
+    const selected = stages[selectedIndex];
+    stages.forEach((el,index) => {
+      const position = carouselPosition(index, selectedIndex, stages.length);
+      const isSelected = position === 'center';
+      const slot = el.closest('.v60-carousel-slot');
+      el.setAttribute('data-carousel-position', position);
+      el.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      el.tabIndex = isSelected ? 0 : -1;
+      el.classList.toggle('is-primary', isSelected);
+      el.classList.toggle('is-preview', !isSelected);
+      if(slot){
+        slot.setAttribute('data-carousel-position', position);
+        slot.classList.toggle('is-primary', isSelected);
+        slot.classList.toggle('is-preview', !isSelected);
+      }
+      ['prev','next','far-prev','far-next','far'].forEach(name => {
+        el.classList.toggle(`is-${name}`, position === name);
+        if(slot) slot.classList.toggle(`is-${name}`, position === name);
+      });
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-carousel-dot').forEach(dot => {
+      const isCurrent = dot.getAttribute('data-carousel-target') === key;
+      if(isCurrent) dot.setAttribute('aria-current','true');
+      else dot.removeAttribute('aria-current');
+    });
+    const status = document.getElementById('architectureCarouselStatus');
+    if(status && selected){
+      const title = selected.querySelector('h2')?.textContent?.replace(/\s+/g,' ').trim() || key;
+      status.textContent = `${selectedIndex + 1} / ${stages.length} · ${title}`;
+    }
+  }
+  function moveArchitectureCarousel(delta){
+    const stages = architectureCarouselStages();
+    if(!stages.length) return;
+    const currentKey = architectureCarouselKey();
+    const currentIndex = Math.max(0, stages.findIndex(el => el.getAttribute('data-stage-key') === currentKey));
+    const nextIndex = (currentIndex + delta + stages.length) % stages.length;
+    const nextKey = stages[nextIndex].getAttribute('data-stage-key');
+    renderStaticStage('target', nextKey);
+    stages[nextIndex].focus({preventScroll:true});
+  }
 
   function renderStaticStage(pipeline,key){
     const config = STATIC_STAGE_MAP[pipeline]?.[key];
@@ -3202,6 +3804,9 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(el => {
       el.classList.toggle('v30-active', el.getAttribute('data-stage-key') === key);
     });
+    if(pipeline === 'target'){
+      applyArchitectureCarousel(key);
+    }
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(el => {
       el.classList.remove('v60-subactive');
     });
@@ -3234,10 +3839,44 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(stage => {
       stage.classList.toggle('v30-active', stage === stageEl);
     });
+    if(pipeline === 'target'){
+      applyArchitectureCarousel(stageKey);
+    }
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(card => {
       card.classList.toggle('v60-subactive', card === el);
     });
     renderAuditTrace(panel, config, 'Failure looks like');
+  }
+  function attachArchitectureCarouselControls(){
+    document.querySelectorAll('#architecture #canonical-architecture-runtime [data-carousel-action="prev"]').forEach(btn => {
+      btn.addEventListener('click', () => moveArchitectureCarousel(-1));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime [data-carousel-action="next"]').forEach(btn => {
+      btn.addEventListener('click', () => moveArchitectureCarousel(1));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-carousel-dot').forEach(dot => {
+      dot.addEventListener('click', () => renderStaticStage('target', dot.getAttribute('data-carousel-target')));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-architecture-rail').forEach(rail => {
+      rail.addEventListener('keydown', ev => {
+        if(ev.key === 'ArrowRight'){
+          ev.preventDefault();
+          moveArchitectureCarousel(1);
+        }else if(ev.key === 'ArrowLeft'){
+          ev.preventDefault();
+          moveArchitectureCarousel(-1);
+        }else if(ev.key === 'Home'){
+          ev.preventDefault();
+          const first = architectureCarouselStages()[0];
+          if(first) renderStaticStage('target', first.getAttribute('data-stage-key'));
+        }else if(ev.key === 'End'){
+          ev.preventDefault();
+          const stages = architectureCarouselStages();
+          const last = stages[stages.length - 1];
+          if(last) renderStaticStage('target', last.getAttribute('data-stage-key'));
+        }
+      });
+    });
   }
 
   function attachStaticPipelineInteractivity(){
@@ -3253,6 +3892,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         }
       });
     });
+    attachArchitectureCarouselControls();
     document.querySelectorAll('.v60-selectable-subcard').forEach(el => {
       const handler = ev => {
         ev.stopPropagation();

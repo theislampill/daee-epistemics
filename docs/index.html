@@ -7,9 +7,158 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>DAEE Epistemics — Pipeline Control Wiki</title>
 <style>
-:root{--bg:#080a10;--panel:#0f1320;--panel2:#141a2a;--ink:#e8edf7;--muted:#98a2b3;--line:#263044;--blue:#60a5fa;--green:#22c55e;--cyan:#22d3ee;--violet:#a78bfa;--orange:#fb923c;--red:#f87171;--pink:#f472b6;--yellow:#facc15}
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(96,165,250,.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(34,197,94,.10),transparent 30%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5}
-button,input,select{font:inherit} code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace} code{background:#0a0f1d;border:1px solid #243047;border-radius:6px;padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid #243047;border-radius:14px;padding:14px;overflow:auto;color:#e5e7eb}
+/* docs-index-design-source: docs/index/DESIGN.md */
+:root{
+  --ds-color-primary:#22C55E;
+  --ds-color-primary-rgb:34,197,94;
+  --ds-color-secondary:#98A2B3;
+  --ds-color-secondary-rgb:152,162,179;
+  --ds-color-tertiary:#22D3EE;
+  --ds-color-tertiary-rgb:34,211,238;
+  --ds-color-neutral:#080A10;
+  --ds-color-neutral-rgb:8,10,16;
+  --ds-color-background:#080A10;
+  --ds-color-background-rgb:8,10,16;
+  --ds-color-background-raised:#0F1320;
+  --ds-color-background-raised-rgb:15,19,32;
+  --ds-color-surface:#0C1220;
+  --ds-color-surface-rgb:12,18,32;
+  --ds-color-surface-raised:#141A2A;
+  --ds-color-surface-raised-rgb:20,26,42;
+  --ds-color-surface-deep:#070B14;
+  --ds-color-surface-deep-rgb:7,11,20;
+  --ds-color-surface-code:#0A0F1D;
+  --ds-color-surface-code-rgb:10,15,29;
+  --ds-color-text:#E8EDF7;
+  --ds-color-text-rgb:232,237,247;
+  --ds-color-text-strong:#F8FAFC;
+  --ds-color-text-strong-rgb:248,250,252;
+  --ds-color-text-muted:#98A2B3;
+  --ds-color-text-muted-rgb:152,162,179;
+  --ds-color-text-subtle:#CBD5E1;
+  --ds-color-text-subtle-rgb:203,213,225;
+  --ds-color-border:#263044;
+  --ds-color-border-rgb:38,48,68;
+  --ds-color-border-strong:#334155;
+  --ds-color-border-strong-rgb:51,65,85;
+  --ds-color-focus:#22C55E;
+  --ds-color-focus-rgb:34,197,94;
+  --ds-color-info:#60A5FA;
+  --ds-color-info-rgb:96,165,250;
+  --ds-color-success:#22C55E;
+  --ds-color-success-rgb:34,197,94;
+  --ds-color-warning:#FB923C;
+  --ds-color-warning-rgb:251,146,60;
+  --ds-color-danger:#F87171;
+  --ds-color-danger-rgb:248,113,113;
+  --ds-color-cyan:#22D3EE;
+  --ds-color-cyan-rgb:34,211,238;
+  --ds-color-violet:#A78BFA;
+  --ds-color-violet-rgb:167,139,250;
+  --ds-color-pink:#F472B6;
+  --ds-color-pink-rgb:244,114,182;
+  --ds-color-yellow:#FACC15;
+  --ds-color-yellow-rgb:250,204,21;
+  --ds-color-stage-d0:#60A5FA;
+  --ds-color-stage-d0-rgb:96,165,250;
+  --ds-color-stage-psi-n:#22D3EE;
+  --ds-color-stage-psi-n-rgb:34,211,238;
+  --ds-color-stage-dsl-ir:#A78BFA;
+  --ds-color-stage-dsl-ir-rgb:167,139,250;
+  --ds-color-stage-owner-ttp-delta:#FB923C;
+  --ds-color-stage-owner-ttp-delta-rgb:251,146,60;
+  --ds-color-stage-collapse-restoration:#F87171;
+  --ds-color-stage-collapse-restoration-rgb:248,113,113;
+  --ds-font-body:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --ds-type-body-font-size:1rem;
+  --ds-type-body-font-weight:400;
+  --ds-type-body-line-height:1.5;
+  --ds-type-body-letter-spacing:0;
+  --ds-font-small:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --ds-type-small-font-size:13px;
+  --ds-type-small-font-weight:400;
+  --ds-type-small-line-height:1.45;
+  --ds-type-small-letter-spacing:0;
+  --ds-font-label:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --ds-type-label-font-size:12px;
+  --ds-type-label-font-weight:850;
+  --ds-type-label-line-height:1.2;
+  --ds-type-label-letter-spacing:.04em;
+  --ds-font-heading:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --ds-type-heading-font-size:clamp(24px,2.4vw,38px);
+  --ds-type-heading-font-weight:900;
+  --ds-type-heading-line-height:1.08;
+  --ds-type-heading-letter-spacing:-.04em;
+  --ds-font-monospace:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ds-type-monospace-font-size:13px;
+  --ds-type-monospace-font-weight:850;
+  --ds-type-monospace-line-height:1.35;
+  --ds-type-monospace-letter-spacing:0;
+  --ds-font-notation:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ds-type-notation-font-size:13px;
+  --ds-type-notation-font-weight:900;
+  --ds-type-notation-line-height:1.35;
+  --ds-type-notation-letter-spacing:0;
+  --ds-space-xs:4px;
+  --ds-space-sm:8px;
+  --ds-space-md:12px;
+  --ds-space-lg:18px;
+  --ds-space-xl:24px;
+  --ds-space-card-padding:12px;
+  --ds-space-section-gap:14px;
+  --ds-space-carousel-gap:10px;
+  --ds-radius-chip:999px;
+  --ds-radius-card:10px;
+  --ds-radius-panel:18px;
+  --ds-radius-carousel:20px;
+  --ds-shadow-card:0 10px 30px rgba(0,0,0,.18);
+  --ds-shadow-active-card:0 0 0 3px color-mix(in srgb,var(--sc),transparent 62%),0 12px 26px rgba(0,0,0,.18);
+  --ds-shadow-preview-card:0 8px 20px rgba(0,0,0,.18);
+  --ds-motion-duration:200ms;
+  --ds-motion-duration-fast:150ms;
+  --ds-motion-easing:ease;
+  --ds-motion-reduced-motion:Disable non-essential transitions; preserve state changes without animated travel.;
+  --ds-carousel-gap:10px;
+  --ds-carousel-primary-width:clamp(620px,52vw,860px);
+  --ds-carousel-side-width:clamp(150px,12vw,190px);
+  --ds-carousel-far-width:clamp(48px,4vw,60px);
+  --ds-carousel-preview-source-width:440px;
+  --ds-carousel-preview-far-source-width:440px;
+  --ds-carousel-preview-near-scale:.43;
+  --ds-carousel-preview-far-scale:.14;
+  --ds-carousel-preview-near-slot-height:330px;
+  --ds-carousel-preview-far-slot-height:150px;
+  --ds-carousel-preview-near-max-height:430px;
+  --ds-carousel-preview-far-max-height:330px;
+  --ds-carousel-preview-opacity:.72;
+  --ds-carousel-preview-far-opacity:.52;
+  --bg:var(--ds-color-background);
+  --panel:var(--ds-color-background-raised);
+  --panel2:var(--ds-color-surface-raised);
+  --ink:var(--ds-color-text);
+  --muted:var(--ds-color-text-muted);
+  --line:var(--ds-color-border);
+  --blue:var(--ds-color-info);
+  --green:var(--ds-color-success);
+  --cyan:var(--ds-color-cyan);
+  --violet:var(--ds-color-violet);
+  --orange:var(--ds-color-warning);
+  --red:var(--ds-color-danger);
+  --pink:var(--ds-color-pink);
+  --yellow:var(--ds-color-yellow);
+  --stage-d0:var(--ds-color-stage-d0);
+  --stage-psi-n:var(--ds-color-stage-psi-n);
+  --stage-dsl-ir:var(--ds-color-stage-dsl-ir);
+  --stage-owner-ttp-delta:var(--ds-color-stage-owner-ttp-delta);
+  --stage-collapse-restoration:var(--ds-color-stage-collapse-restoration);
+  --stage-d0-rgb:96,165,250;
+  --stage-psi-n-rgb:34,211,238;
+  --stage-dsl-ir-rgb:167,139,250;
+  --stage-owner-ttp-delta-rgb:251,146,60;
+  --stage-collapse-restoration-rgb:248,113,113;
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
+button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
 .topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .tabs{display:flex;gap:4px;max-width:1880px;margin:0 auto;padding:8px 12px;overflow:auto} .tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
@@ -41,7 +190,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .notationLine{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:6px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}
 .ntok{display:inline-flex;align-items:center;border:1px solid #334155;background:#0c1220;border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;cursor:pointer}
 .ntok:hover{border-color:var(--cyan);transform:translateY(-1px)}
-.ntok.active{border-color:var(--yellow);background:rgba(250,204,21,.16);color:#fff;box-shadow:0 0 0 2px rgba(250,204,21,.12)}
+.ntok.active,
+.ntok.is-linked-active,
+.ntok[aria-pressed="true"]{border-color:var(--yellow);background:rgba(250,204,21,.16);color:#fff;box-shadow:0 0 0 2px rgba(250,204,21,.12);outline:2px solid rgba(250,204,21,.36);outline-offset:2px}
 .ntok.muted{opacity:.34}
 .ntok.symNoetic{border-color:rgba(45,212,191,.7)}.ntok.symXi{border-color:rgba(34,211,238,.55)}.ntok.symOmega{border-color:rgba(167,139,250,.55)}.ntok.symHeart{border-color:rgba(244,114,182,.7)}.ntok.symMu{border-color:rgba(244,114,182,.55)}.ntok.symKappa{border-color:rgba(251,146,60,.55)}
 .notationArrow{color:#64748b;font-weight:900}
@@ -293,6 +444,20 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   background:#101827;
   box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 74%);
 }
+.controlCard:focus-visible{
+  outline:3px solid var(--ds-color-focus);
+  outline-offset:3px;
+}
+.controlCard.is-linked-active,
+.controlCard[aria-pressed="true"]{
+  background:#111c2d;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 58%), inset 0 0 0 2px rgba(255,255,255,.12);
+  transform:translateY(-1px);
+}
+.controlCard.is-linked-active .controlSym,
+.controlCard[aria-pressed="true"] .controlSym{
+  box-shadow:0 0 0 2px rgba(255,255,255,.34);
+}
 .controlCard .controlSym{
   min-width:48px;
   height:48px;
@@ -494,11 +659,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-weight:900;
   font-size:14px;
 }
-.v21-s1{--sc:var(--blue)}
-.v21-s2{--sc:var(--green)}
-.v21-s3{--sc:var(--cyan)}
-.v21-s4{--sc:var(--violet)}
-.v21-s5{--sc:var(--orange)}
+.v21-s1{--sc:var(--stage-d0)}
+.v21-s2{--sc:var(--stage-psi-n)}
+.v21-s3{--sc:var(--stage-dsl-ir)}
+.v21-s4{--sc:var(--stage-owner-ttp-delta)}
+.v21-s5{--sc:var(--stage-collapse-restoration)}
 .v21-card{
   background:#0d1117;
   border:1.5px solid #263044;
@@ -1617,17 +1782,17 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   white-space:normal!important;
   overflow-wrap:anywhere!important;
 }
-#architecture #canonical-architecture-runtime .v56-input{border-color:rgba(96,165,250,.65);background:rgba(96,165,250,.10)}
-#architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.09)}
-#architecture #canonical-architecture-runtime .v56-owner{border-color:rgba(167,139,250,.65);background:rgba(167,139,250,.10)}
-#architecture #canonical-architecture-runtime .v56-land{border-color:rgba(251,146,60,.65);background:rgba(251,146,60,.10)}
-#architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(34,197,94,.65);background:rgba(34,197,94,.10)}
-#architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(239,68,68,.65);background:rgba(239,68,68,.09)}
-#architecture #canonical-architecture-runtime .v21-s1{--sc:var(--blue)!important;--sc-rgb:96,165,250!important}
-#architecture #canonical-architecture-runtime .v21-s2{--sc:var(--cyan)!important;--sc-rgb:34,211,238!important}
-#architecture #canonical-architecture-runtime .v21-s3{--sc:var(--violet)!important;--sc-rgb:167,139,250!important}
-#architecture #canonical-architecture-runtime .v21-s4{--sc:var(--orange)!important;--sc-rgb:251,146,60!important}
-#architecture #canonical-architecture-runtime .v21-s5{--sc:var(--red)!important;--sc-rgb:248,113,113!important}
+#architecture #canonical-architecture-runtime .v56-input{border-color:rgba(var(--stage-d0-rgb),.65);background:rgba(var(--stage-d0-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(var(--stage-psi-n-rgb),.65);background:rgba(var(--stage-psi-n-rgb),.09)}
+#architecture #canonical-architecture-runtime .v56-owner{border-color:rgba(var(--stage-dsl-ir-rgb),.65);background:rgba(var(--stage-dsl-ir-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-land{border-color:rgba(var(--stage-owner-ttp-delta-rgb),.65);background:rgba(var(--stage-owner-ttp-delta-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(var(--ds-color-success-rgb),.65);background:rgba(var(--ds-color-success-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(var(--stage-collapse-restoration-rgb),.65);background:rgba(var(--stage-collapse-restoration-rgb),.09)}
+#architecture #canonical-architecture-runtime .v21-s1{--sc:var(--stage-d0)!important;--sc-rgb:var(--stage-d0-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s2{--sc:var(--stage-psi-n)!important;--sc-rgb:var(--stage-psi-n-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s3{--sc:var(--stage-dsl-ir)!important;--sc-rgb:var(--stage-dsl-ir-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s4{--sc:var(--stage-owner-ttp-delta)!important;--sc-rgb:var(--stage-owner-ttp-delta-rgb)!important}
+#architecture #canonical-architecture-runtime .v21-s5{--sc:var(--stage-collapse-restoration)!important;--sc-rgb:var(--stage-collapse-restoration-rgb)!important}
 #architecture #canonical-architecture-runtime .v21-stage{
   background:rgba(var(--sc-rgb),.045)!important;
   border-color:rgba(var(--sc-rgb),.92)!important;
@@ -1640,19 +1805,19 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   background:rgba(var(--sc-rgb),.045)!important;
 }
 #architecture #canonical-architecture-runtime .v21-s5 .v21-purple{
-  --sc:var(--red)!important;
-  --sc-rgb:248,113,113!important;
-  background:rgba(248,113,113,.055)!important;
+  --sc:var(--stage-collapse-restoration)!important;
+  --sc-rgb:var(--stage-collapse-restoration-rgb)!important;
+  background:rgba(var(--stage-collapse-restoration-rgb),.055)!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-label{
   color:var(--green)!important;
   font-style:normal!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-phase{
-  --sc:var(--green)!important;
-  --sc-rgb:34,197,94!important;
-  border-color:rgba(34,197,94,.45)!important;
-  background:rgba(34,197,94,.045)!important;
+  --sc:var(--ds-color-success)!important;
+  --sc-rgb:var(--ds-color-success-rgb)!important;
+  border-color:rgba(var(--ds-color-success-rgb),.45)!important;
+  background:rgba(var(--ds-color-success-rgb),.045)!important;
 }
 #architecture #canonical-architecture-runtime .v60-reread-phase h3{
   color:var(--green)!important;
@@ -1745,8 +1910,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   display:inline-flex!important;
   align-items:center!important;
   white-space:nowrap!important;
-  border:1px solid rgba(251,146,60,.55)!important;
-  background:rgba(251,146,60,.10)!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.55)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.10)!important;
   border-radius:999px!important;
   padding:4px 8px!important;
   color:#fff7ed!important;
@@ -1755,11 +1920,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-weight:900!important;
 }
 #architecture #canonical-architecture-runtime .v60-field-grammar .v60-field-target{
-  border-color:rgba(34,211,238,.62)!important;
-  background:rgba(34,211,238,.10)!important;
+  border-color:rgba(var(--stage-psi-n-rgb),.62)!important;
+  background:rgba(var(--stage-psi-n-rgb),.10)!important;
 }
 #architecture #canonical-architecture-runtime .v60-loopbreak-form{
-  border-color:rgba(251,146,60,.75)!important;
+  border-color:rgba(var(--stage-owner-ttp-delta-rgb),.75)!important;
   flex:1 1 auto!important;
 }
 #architecture #canonical-architecture-runtime .v60-field-meaning{
@@ -1815,16 +1980,492 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .theoryNotationMap h3{margin-top:0}
 .compactBridgeFlow{align-items:stretch}
 .compactBridgeFlow .notationChip{margin:0}
+
+/* v61: Architecture cards are a selected-primary carousel, not a horizontal rail. */
+#architecture #canonical-architecture-runtime .v60-architecture-carousel{
+  --v61-carousel-gap:var(--ds-carousel-gap);
+  --v61-carousel-primary:var(--ds-carousel-primary-width);
+  --v61-carousel-side:var(--ds-carousel-side-width);
+  --v61-carousel-far:var(--ds-carousel-far-width);
+  display:grid;
+  gap:12px;
+  margin-top:12px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-btn{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--ds-color-border-strong);
+  border-radius:var(--ds-radius-chip);
+  background:var(--ds-color-surface-code);
+  color:var(--ds-color-text);
+  cursor:pointer;
+  font-size:24px;
+  font-weight:950;
+  line-height:1;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-btn:hover,
+#architecture #canonical-architecture-runtime .v60-carousel-btn:focus-visible{
+  border-color:var(--ds-color-focus);
+  background:rgba(var(--ds-color-focus-rgb),.10);
+  outline:none;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-status{
+  min-width:min(420px,70vw);
+  text-align:center;
+  border:1px solid var(--ds-color-border);
+  background:var(--ds-color-surface-deep);
+  border-radius:var(--ds-radius-chip);
+  padding:7px 12px;
+  color:var(--ds-color-text-subtle);
+  font-size:13px;
+  font-weight:850;
+}
+#architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
+#architecture #canonical-architecture-runtime .v60-architecture-rail{
+  display:flex!important;
+  grid-template-columns:none!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:var(--v61-carousel-gap)!important;
+  overflow:hidden!important;
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  padding:6px 2px 10px!important;
+  scroll-snap-type:none!important;
+  scrollbar-width:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-architecture-rail::-webkit-scrollbar{
+  display:none;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card{
+  flex:0 0 var(--v61-carousel-side)!important;
+  min-width:0!important;
+  max-width:var(--v61-carousel-side)!important;
+  min-height:330px!important;
+  max-height:var(--ds-carousel-preview-near-max-height)!important;
+  padding:9px!important;
+  overflow:hidden!important;
+  opacity:var(--ds-carousel-preview-opacity);
+  transform:none;
+  transform-origin:center;
+  scroll-snap-align:none!important;
+  transition:transform var(--ds-motion-duration) var(--ds-motion-easing), opacity var(--ds-motion-duration) var(--ds-motion-easing), flex-basis var(--ds-motion-duration) var(--ds-motion-easing), max-width var(--ds-motion-duration) var(--ds-motion-easing), box-shadow var(--ds-motion-duration) var(--ds-motion-easing), background var(--ds-motion-duration) var(--ds-motion-easing);
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card h2{
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card h2 span{
+  width:22px!important;
+  height:22px!important;
+  font-size:11px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{
+  display:block!important;
+  margin-top:8px!important;
+  padding:8px!important;
+  opacity:.84;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard b{
+  font-size:10.5px!important;
+  line-height:1.15!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard small{
+  font-size:9px!important;
+  line-height:1.18!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v21-field-grid,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v21-dec-grid,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-flow,
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-arrow{
+  display:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"]{
+  order:3;
+  flex-basis:var(--v61-carousel-primary)!important;
+  max-width:960px!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:stretch!important;
+  overflow:visible!important;
+  opacity:1;
+  transform:none;
+  z-index:3;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] h2{
+  font-size:clamp(14px,1.05vw,17px)!important;
+  line-height:1.18!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] h2 span{
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard{
+  display:block!important;
+  opacity:1;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard b{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v60-selectable-subcard small{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v54-gate-flow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"] .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="prev"]{order:2}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="next"]{order:4}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-prev"],
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-next"]{
+  flex-basis:var(--v61-carousel-far)!important;
+  max-width:var(--v61-carousel-far)!important;
+  opacity:var(--ds-carousel-preview-far-opacity);
+  transform:none;
+  max-height:var(--ds-carousel-preview-far-max-height)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-prev"]{order:1}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="far-next"]{order:5}
+#architecture #canonical-architecture-runtime .v60-carousel-card:focus-visible{
+  outline:2px solid var(--ds-color-focus);
+  outline-offset:3px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dots{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot{
+  width:34px;
+  height:34px;
+  border:1px solid var(--ds-color-border-strong);
+  border-radius:var(--ds-radius-chip);
+  background:var(--ds-color-surface-code);
+  color:var(--ds-color-text-subtle);
+  cursor:pointer;
+  font-weight:950;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot[aria-current="true"]{
+  border-color:var(--ds-color-focus);
+  color:#bbf7d0;
+  background:rgba(var(--ds-color-focus-rgb),.12);
+}
+#architecture #canonical-architecture-runtime .v60-carousel-dot:hover,
+#architecture #canonical-architecture-runtime .v60-carousel-dot:focus-visible{
+  border-color:var(--ds-color-cyan);
+  color:#fff;
+  outline:none;
+}
+@media(max-width:1180px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --v61-carousel-primary:min(680px,68vw);
+    --v61-carousel-side:138px;
+    --v61-carousel-far:82px;
+  }
+}
+@media(max-width:760px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --v61-carousel-primary:100%;
+  }
+  #architecture #canonical-architecture-runtime .v60-architecture-rail{
+    display:block!important;
+    padding:4px 0!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card{
+    display:none!important;
+    max-width:none!important;
+    width:100%!important;
+    transform:none!important;
+    opacity:1!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"]{
+    display:block!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-status{
+    min-width:0;
+    flex:1 1 auto;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #architecture #canonical-architecture-runtime .v60-carousel-card,
+  #architecture #canonical-architecture-runtime .v60-carousel-btn,
+  #architecture #canonical-architecture-runtime .v60-carousel-dot{
+    transition:none!important;
+  }
+}
 @media print{
-  #architecture #canonical-architecture-runtime > .v21-five-col{
+  #architecture #canonical-architecture-runtime .v60-carousel-controls,
+  #architecture #canonical-architecture-runtime .v60-carousel-dots{
+    display:none!important;
+  }
+  #architecture #canonical-architecture-runtime > .v21-five-col,
+  #architecture #canonical-architecture-runtime .v60-architecture-rail{
     display:block!important;
     overflow:visible!important;
   }
-  #architecture #canonical-architecture-runtime .v21-stage{
+  #architecture #canonical-architecture-runtime .v21-stage,
+  #architecture #canonical-architecture-runtime .v60-carousel-card{
+    display:block!important;
     min-width:0!important;
+    max-width:none!important;
+    max-height:none!important;
+    transform:none!important;
+    opacity:1!important;
     break-inside:avoid;
     page-break-inside:avoid;
     margin-bottom:12px;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{
+    display:block!important;
+  }
+}
+
+/* v62: contain card-4 dense notation and make side cards scaled full-card previews. */
+#architecture #canonical-architecture-runtime .v60-field-targets{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  align-items:start!important;
+  width:100%!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-chiprow,
+#architecture #canonical-architecture-runtime .v60-loopbreak-operands,
+#architecture #canonical-architecture-runtime .v60-grounding-members{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-field-description,
+#architecture #canonical-architecture-runtime .v60-field-wide{
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  flex:1 1 100%!important;
+  overflow-wrap:anywhere!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-formula{
+  display:grid!important;
+  grid-template-columns:auto auto minmax(0,1fr)!important;
+  gap:7px!important;
+  align-items:center!important;
+  min-width:0!important;
+  width:100%!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.55)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.10)!important;
+  border-radius:var(--ds-radius-card)!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-head,
+#architecture #canonical-architecture-runtime .v60-loopbreak-turnstile,
+#architecture #canonical-architecture-runtime .v60-loopbreak-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-label{
+  font-family:var(--ds-font-monospace)!important;
+  font-weight:900!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-head,
+#architecture #canonical-architecture-runtime .v60-loopbreak-turnstile{
+  color:#fff7ed!important;
+  white-space:nowrap!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-chip,
+#architecture #canonical-architecture-runtime .v60-grounding-chip{
+  display:inline-flex!important;
+  align-items:center!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.45)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.08)!important;
+  border-radius:var(--ds-radius-chip)!important;
+  padding:3px 7px!important;
+  color:#fff7ed!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#architecture #canonical-architecture-runtime .v60-grounding-block{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  gap:6px!important;
+  align-items:start!important;
+  min-width:0!important;
+  width:100%!important;
+  border:1px solid var(--ds-color-border)!important;
+  background:var(--ds-color-surface-deep)!important;
+  border-radius:var(--ds-radius-card)!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-grounding-label{
+  color:var(--ds-color-text-subtle)!important;
+}
+#architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
+#architecture #canonical-architecture-runtime .v60-architecture-rail{
+  align-items:flex-start!important;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  overflow-y:visible!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v62-decision-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card .v62-decision-grid .complete{
+  grid-column:1 / -1!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot{
+  position:relative!important;
+  display:grid!important;
+  align-items:start!important;
+  justify-items:center!important;
+  flex:0 0 var(--v61-carousel-side)!important;
+  width:var(--v61-carousel-side)!important;
+  height:var(--ds-carousel-preview-near-slot-height)!important;
+  min-width:0!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"]{
+  order:3!important;
+  flex:0 1 var(--v61-carousel-primary)!important;
+  width:var(--v61-carousel-primary)!important;
+  height:auto!important;
+  align-self:flex-start!important;
+  z-index:4!important;
+  pointer-events:auto!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="prev"]{order:2!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="next"]{order:4!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
+  flex-basis:var(--v61-carousel-far)!important;
+  width:var(--v61-carousel-far)!important;
+  height:var(--ds-carousel-preview-far-slot-height)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"]{order:1!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{order:5!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card{
+  position:absolute!important;
+  left:50%!important;
+  top:0!important;
+  flex:none!important;
+  width:var(--ds-carousel-preview-source-width)!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:auto!important;
+  max-height:none!important;
+  padding:12px!important;
+  overflow:visible!important;
+  opacity:var(--ds-carousel-preview-opacity)!important;
+  transform:translateX(-50%) scale(var(--ds-carousel-preview-near-scale))!important;
+  transform-origin:top center!important;
+  pointer-events:auto!important;
+  box-shadow:var(--ds-shadow-preview-card)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"] > .v60-carousel-card,
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"] > .v60-carousel-card{
+  width:var(--ds-carousel-preview-far-source-width)!important;
+  opacity:var(--ds-carousel-preview-far-opacity)!important;
+  transform:translateX(-50%) scale(var(--ds-carousel-preview-far-scale))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"] > .v60-carousel-card{
+  flex:none!important;
+  width:100%!important;
+  max-width:960px!important;
+  transform:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2{
+  font-size:clamp(14px,1.05vw,17px)!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2 span{
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard h3,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard b{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard p,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard li,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard span,
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard small{
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-flow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-checks{
+  grid-template-columns:1fr!important;
+}
+@media(max-width:1180px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --ds-carousel-preview-source-width:420px;
+    --ds-carousel-preview-near-scale:.33;
+    --ds-carousel-preview-near-slot-height:260px;
+    --ds-carousel-preview-far-source-width:360px;
+    --ds-carousel-preview-far-scale:.23;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
+    display:none!important;
+  }
+}
+@media(max-width:760px){
+  #architecture #canonical-architecture-runtime .v60-carousel-slot{
+    display:none!important;
+    width:100%!important;
+    height:auto!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"]{
+    display:block!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"] > .v60-carousel-card{
+    max-width:none!important;
+    width:100%!important;
+  }
+}
+@media(max-width:620px){
+  #architecture #canonical-architecture-runtime .v60-loopbreak-formula,
+  #architecture #canonical-architecture-runtime .v60-grounding-block{
+    grid-template-columns:1fr!important;
+  }
+}
+@media print{
+  #architecture #canonical-architecture-runtime .v60-carousel-slot{
+    display:block!important;
+    width:auto!important;
+    height:auto!important;
+    overflow:visible!important;
+    margin-bottom:12px!important;
   }
 }
 
@@ -1894,8 +2535,15 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </div>
 <p class="subtle">Expanded <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> is formal/navigation notation over existing IR/control surfaces, not a current hard JSON field migration. For the full register formalism, use <a href="algebraic-notation-and-noetic-formalism.md">the formalism source</a> and <a href="register-formalism-implementation-ledger.md">the implementation ledger</a>.</p>
 <div class="v30-click-hint">Select a bridge stage panel below to inspect its audit trace.</div>
-<div class="v21-five-col v60-architecture-rail" aria-label="Architecture runtime cards" tabindex="0">
-<article class="v21-stage v21-s1 v30-selectable-stage" data-pipeline="target" data-stage-key="input" role="button" tabindex="0"><h2><span>1</span> D₀ / Surface Signal</h2>
+<div class="v60-architecture-carousel" data-carousel="architecture-runtime">
+<div class="v60-carousel-controls" aria-label="Architecture carousel controls">
+<button class="v60-carousel-btn" type="button" data-carousel-action="prev" aria-label="Previous architecture stage">‹</button>
+<div class="v60-carousel-status" id="architectureCarouselStatus" aria-live="polite"></div>
+<button class="v60-carousel-btn" type="button" data-carousel-action="next" aria-label="Next architecture stage">›</button>
+</div>
+<div class="v21-five-col v60-architecture-rail" data-pipeline="target" aria-label="Architecture runtime cards" role="listbox" aria-orientation="horizontal" tabindex="0">
+<div class="v60-carousel-slot is-primary" data-carousel-slot data-stage-key="input" data-carousel-index="0" data-carousel-position="center">
+<article class="v21-stage v21-s1 v30-selectable-stage v60-carousel-card v30-active is-primary" data-pipeline="target" data-stage-key="input" data-carousel-index="0" data-carousel-position="center" role="option" aria-selected="true" tabindex="0"><h2><span>1</span> D₀ / Surface Signal</h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="encoded-signal" role="button" tabindex="0"><h3>Input as encoded signal</h3><ul>
 <li><b>D₀</b> visible surface discourse</li>
 <li><b>source</b> origin of claim / criterion / authority</li>
@@ -1905,8 +2553,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>♥</b> register: grief, identity, performance, truth-seeking, mixed, unclear</li>
 </ul></div>
 <div class="v21-card v21-warn v60-selectable-subcard" data-substage-key="no-direct-rebuttal" role="button" tabindex="0"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure.</p></div>
-</article>
-<article class="v21-stage v21-s2 v30-selectable-stage" data-pipeline="target" data-stage-key="psi" role="button" tabindex="0"><h2><span>2</span> Ψᴺ / Noetic Signal-State</h2>
+</article></div>
+<div class="v60-carousel-slot is-preview is-next" data-carousel-slot data-stage-key="psi" data-carousel-index="1" data-carousel-position="next">
+<article class="v21-stage v21-s2 v30-selectable-stage v60-carousel-card is-preview is-next" data-pipeline="target" data-stage-key="psi" data-carousel-index="1" data-carousel-position="next" role="option" aria-selected="false" tabindex="-1"><h2><span>2</span> Ψᴺ / Noetic Signal-State</h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="proper-functional-read" role="button" tabindex="0"><h3>Proper-functional read</h3><ul>
 <li><b>F</b> fitrah / proper-function orientation</li>
 <li><b>E</b> epistemic environment</li>
@@ -1927,8 +2576,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>H</b> held set</li>
 </ul></div>
 <div class="v21-note v60-selectable-subcard" data-substage-key="operational-boundary" role="button" tabindex="0"><b>Operational boundary:</b> ♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.</div>
-</article>
-<article class="v21-stage v21-s3 v30-selectable-stage" data-pipeline="target" data-stage-key="ir" role="button" tabindex="0"><h2><span>3</span> DSL / IR &amp; Gated Governance</h2>
+</article></div>
+<div class="v60-carousel-slot is-preview is-far-next" data-carousel-slot data-stage-key="ir" data-carousel-index="2" data-carousel-position="far-next">
+<article class="v21-stage v21-s3 v30-selectable-stage v60-carousel-card is-preview is-far-next" data-pipeline="target" data-stage-key="ir" data-carousel-index="2" data-carousel-position="far-next" role="option" aria-selected="false" tabindex="-1"><h2><span>3</span> DSL / IR &amp; Gated Governance</h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="diagnostic-reduction-order" role="button" tabindex="0"><h3>Diagnostic reduction order</h3><div class="v21-proc-flow target">
 <div>D₀</div>
 <span>→</span>
@@ -1975,8 +2625,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v54-gate-check"><b>P7 discipline</b><span>stop / hold / partial / recurse before release</span></div>
 <div class="v54-gate-check"><b>Owner bounded</b><span>activation only after gate</span></div>
 </div></div></div>
-</article>
-<article class="v21-stage v21-s4 v30-selectable-stage" data-pipeline="target" data-stage-key="ownerRelease" role="button" tabindex="0"><h2><span>4</span> Owner/TTP + Δ / Field Diagnostics / <em class="v60-reread-label">Reread</em></h2>
+</article></div>
+<div class="v60-carousel-slot is-preview is-far-prev" data-carousel-slot data-stage-key="ownerRelease" data-carousel-index="3" data-carousel-position="far-prev">
+<article class="v21-stage v21-s4 v30-selectable-stage v60-carousel-card is-preview is-far-prev" data-pipeline="target" data-stage-key="ownerRelease" data-carousel-index="3" data-carousel-position="far-prev" role="option" aria-selected="false" tabindex="-1"><h2><span>4</span> Owner/TTP + Δ / Field Diagnostics / <em class="v60-reread-label">Reread</em></h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="operator-signature" role="button" tabindex="0"><h3>Operator signature</h3><div class="v21-stage-formula">ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</div></div>
 <div class="v21-card v60-selectable-subcard" data-substage-key="strict-burden-cycle" role="button" tabindex="0"><h3>Strict burden cycle</h3><div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB / Δκ</div><ul>
 <li><b>♥</b> register/release posture changed or held inside ΔⁿB{♥,ξ,Ω,σ,μ}</li>
@@ -1991,39 +2642,47 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span></div>
 <div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">
 <span class="v60-field-heading">Target grammar</span>
-<span class="v60-field-target">∇·T</span>
-<span class="v60-field-target">∇×T</span>
-<span class="v60-field-meaning">T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}</span>
+<div class="v60-field-chiprow"><span class="v60-field-target">∇·T</span><span class="v60-field-target">∇×T</span></div>
+<span class="v60-field-meaning v60-field-description">T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}</span>
 </div>
-<div class="v60-field-targets" aria-label="Readable divergence examples">
+<div class="v60-field-targets v60-example-group" aria-label="Readable divergence examples">
 <span class="v60-field-heading">∇· examples</span>
-<span class="v60-field-target">∇·T</span><span class="v60-field-target">∇·κ</span><span class="v60-field-target">∇·ⁿB</span><span class="v60-field-target">∇·ξ</span><span class="v60-field-target">∇·Ω</span><span class="v60-field-target">∇·♥</span><span class="v60-field-target">∇·μ</span><span class="v60-field-target">∇·route</span><span class="v60-field-target">∇·H</span>
-<span class="v60-field-meaning">residual outward pressure in an explicit target field</span>
+<div class="v60-field-chiprow"><span class="v60-field-target">∇·T</span><span class="v60-field-target">∇·κ</span><span class="v60-field-target">∇·ⁿB</span><span class="v60-field-target">∇·ξ</span><span class="v60-field-target">∇·Ω</span><span class="v60-field-target">∇·♥</span><span class="v60-field-target">∇·μ</span><span class="v60-field-target">∇·route</span><span class="v60-field-target">∇·H</span></div>
+<span class="v60-field-meaning v60-field-description">residual outward pressure in an explicit target field</span>
 </div>
-<div class="v60-field-targets" aria-label="Readable curl examples">
+<div class="v60-field-targets v60-example-group" aria-label="Readable curl examples">
 <span class="v60-field-heading">∇× examples</span>
-<span class="v60-field-target">∇×T</span><span class="v60-field-target">∇×κ</span><span class="v60-field-target">∇×ⁿB</span><span class="v60-field-target">∇×ξ</span><span class="v60-field-target">∇×Ω</span><span class="v60-field-target">∇×μ</span><span class="v60-field-target">∇×route</span><span class="v60-field-target">∇×σ</span>
-<span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>
+<div class="v60-field-chiprow"><span class="v60-field-target">∇×T</span><span class="v60-field-target">∇×κ</span><span class="v60-field-target">∇×ⁿB</span><span class="v60-field-target">∇×ξ</span><span class="v60-field-target">∇×Ω</span><span class="v60-field-target">∇×μ</span><span class="v60-field-target">∇×route</span><span class="v60-field-target">∇×σ</span></div>
+<span class="v60-field-meaning v60-field-description">circular / rotational dependency in an explicit target field</span>
 </div>
 <div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>
 <div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">
 <span class="v60-field-heading">LoopBreak witness</span>
-<span class="v60-field-target v60-loopbreak-form">LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R</span>
-<span class="v60-field-meaning">G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}</span>
+<div class="v60-loopbreak-formula">
+<span class="v60-loopbreak-head">LoopBreak(∇×T)</span>
+<span class="v60-loopbreak-turnstile">⊢</span>
+<span class="v60-loopbreak-operands"><span class="v60-loopbreak-chip">target loop</span><span class="v60-loopbreak-chip">G</span><span class="v60-loopbreak-chip">ⁿBᵢ[OPᵢ]</span><span class="v60-loopbreak-chip">Δ</span><span class="v60-loopbreak-chip">R</span></span>
+</div>
+<div class="v60-grounding-block">
+<span class="v60-grounding-label">G ∈{</span>
+<span class="v60-grounding-members"><span class="v60-grounding-chip">fiṭrah</span><span class="v60-grounding-chip">ʿaql ṣarīḥ</span><span class="v60-grounding-chip">necessary knowledge</span><span class="v60-grounding-chip">definition discipline</span><span class="v60-grounding-chip">direct contradiction exposure</span><span class="v60-grounding-chip">source-status correction</span></span>
+<span class="v60-grounding-label">}</span>
+</div>
 <span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>
 </div>
 <div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>
 </div></div>
-<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="decision" role="button" tabindex="0"><h3>Decision</h3><div class="v21-dec-grid">
-<div class="stop">■<br/>STOP</div>
-<div class="hold">–<br/>HOLD</div>
+<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="decision" role="button" tabindex="0"><h3>Decision</h3><div class="v21-dec-grid v62-decision-grid" data-decision-layout="2x2-plus-complete">
 <div class="recurse">↻<br/>RECURSE</div>
+<div class="hold">–<br/>HOLD</div>
 <div class="partial">○<br/>PARTIAL</div>
+<div class="stop">■<br/>STOP</div>
 <div class="complete">✓<br/>COMPLETE</div>
 </div>
 <div class="v21-note"><b>Correct recurse:</b> Correct recurse: ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ.</div></div>
-</article>
-<article class="v21-stage v21-s5 v30-selectable-stage" data-pipeline="target" data-stage-key="collapse" role="button" tabindex="0"><h2><span>5</span> Noetic Collapse / Restoration</h2>
+</article></div>
+<div class="v60-carousel-slot is-preview is-prev" data-carousel-slot data-stage-key="collapse" data-carousel-index="4" data-carousel-position="prev">
+<article class="v21-stage v21-s5 v30-selectable-stage v60-carousel-card is-preview is-prev" data-pipeline="target" data-stage-key="collapse" data-carousel-index="4" data-carousel-position="prev" role="option" aria-selected="false" tabindex="-1"><h2><span>5</span> Noetic Collapse / Restoration</h2>
 <div class="v21-card v21-purple v60-selectable-subcard" data-substage-key="constrained-resolution" role="button" tabindex="0"><h3>Constrained resolution</h3><div class="v21-stage-formula">𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ</div><ul>
 <li><b>N</b> restored noetic frame / fitrah orientation</li>
 <li><b>♥</b> register honored; grief/identity/performance/truth-seeking not flattened</li>
@@ -2033,8 +2692,17 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>κ</b> dependency radius resolved / held / partialed</li>
 </ul></div>
 <div class="v21-note v60-selectable-subcard" data-substage-key="coupling-boundary" role="button" tabindex="0"><b>Coupling boundary:</b> T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field; this is not a claim of guaranteed uptake or access to the soul.</div>
-</article>
+</article></div>
 </div>
+<div class="v60-carousel-dots" aria-label="Select architecture stage">
+<button class="v60-carousel-dot" type="button" data-carousel-target="input" aria-label="Show stage 1: D₀ / Surface Signal" aria-current="true"><span>1</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="psi" aria-label="Show stage 2: Ψᴺ / Noetic Signal-State"><span>2</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="ir" aria-label="Show stage 3: DSL / IR &amp; Gated Governance"><span>3</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="ownerRelease" aria-label="Show stage 4: Owner/TTP + Δ / Field Diagnostics / Reread"><span>4</span></button>
+<button class="v60-carousel-dot" type="button" data-carousel-target="collapse" aria-label="Show stage 5: Noetic Collapse / Restoration"><span>5</span></button>
+</div>
+</div>
+<noscript><style>#architecture #canonical-architecture-runtime .v60-architecture-rail{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))!important;overflow:visible!important}#architecture #canonical-architecture-runtime .v60-carousel-controls,#architecture #canonical-architecture-runtime .v60-carousel-dots{display:none!important}#architecture #canonical-architecture-runtime .v60-carousel-card{display:block!important;transform:none!important;opacity:1!important;max-height:none!important}#architecture #canonical-architecture-runtime .v60-carousel-slot{display:block!important;width:auto!important;height:auto!important;overflow:visible!important}#architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{display:block!important}</style></noscript>
 <div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>
 </div>
 <div class="panel" id="architecture-runtime-notes">
@@ -2158,127 +2826,127 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the full Architecture rows.
 </div>
 <div class="controlOverviewGrid">
-<button class="controlCard phase-layer-a" onclick="goConceptField('noetic')">
+<button type="button" class="controlCard phase-layer-a is-linked-active" data-theory-card="noetic" data-concept-id="noetic" data-notation-targets="noetic D0" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="true" onclick="selectTheoryCard(this)">
 <span class="controlSym">𝓝</span>
 <strong>Noetic-structure selection space</strong>
 <p>all possible live noetic structures the framework is engineered to diagnose and route</p>
 </button>
-<button class="controlCard phase-input" onclick="goConceptField('D0')">
+<button type="button" class="controlCard phase-input" data-theory-card="D0" data-concept-id="D0" data-notation-targets="D0" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">D₀</span>
 <strong>Surface discourse</strong>
 <p>claim, slogan, doubt, proof-packet, source request</p>
 </button>
-<button class="controlCard phase-layer-a" onclick="goConceptField('Psi')">
+<button type="button" class="controlCard phase-layer-a" data-theory-card="Psi" data-concept-id="Psi" data-notation-targets="noetic Psi N m tau sigma heart xi omega mu kappa H" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">Ψᴺ</span>
 <strong>Encoded noetic signal-state</strong>
 <p>N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('N')">
+<button type="button" class="controlCard phase-gate" data-theory-card="N" data-concept-id="N" data-notation-targets="noetic N" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">N</span>
 <strong>Operative noetic frame</strong>
 <p>the selected frame governing this burden, not the whole structure</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('τ')">
+<button type="button" class="controlCard phase-gate" data-theory-card="τ" data-concept-id="τ" data-notation-targets="tau" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">τ</span>
 <strong>Tribunal / burden-function</strong>
 <p>what is judging what; criterion and live function</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('σ')">
+<button type="button" class="controlCard phase-gate" data-theory-card="σ" data-concept-id="σ" data-notation-targets="sigma" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">σ</span>
 <strong>Source / semantic / authority status</strong>
 <p>warrant, context, contrast, genealogy, or held material</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('heart')">
+<button type="button" class="controlCard phase-gate" data-theory-card="heart" data-concept-id="heart" data-notation-targets="heart" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">♥</span>
 <strong>Affective-discursive register</strong>
 <p>grief, identity, performance, truth-seeking, mixed, unclear</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('ξ')">
+<button type="button" class="controlCard phase-gate" data-theory-card="ξ" data-concept-id="ξ" data-notation-targets="xi" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">ξ</span>
 <strong>Epistemic grammar</strong>
 <p>warrant, testimony, proper function, reliability, defeaters</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('Ω')">
+<button type="button" class="controlCard phase-gate" data-theory-card="Ω" data-concept-id="Ω" data-notation-targets="omega" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">Ω</span>
 <strong>Ontological grammar</strong>
 <p>being, predication, modality, dependence, creator/creation</p>
 </button>
-<button class="controlCard phase-gate" onclick="goConceptField('μ')">
+<button type="button" class="controlCard phase-gate" data-theory-card="μ" data-concept-id="μ" data-notation-targets="mu" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">μ</span>
 <strong>Memetic vector</strong>
 <p>carrier, compression, stabilization, defense, mutation</p>
 </button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('κ')">
+<button type="button" class="controlCard phase-reread-closure" data-theory-card="κ" data-concept-id="κ" data-notation-targets="kappa deltaK R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">κ</span>
 <strong>Collapse radius</strong>
 <p>downstream dependency set changed by Land(ⁿB)</p>
 </button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('H')">
+<button type="button" class="controlCard phase-reread-closure" data-theory-card="H" data-concept-id="H" data-notation-targets="H R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">H</span>
 <strong>Held set</strong>
 <p>live but unreleased material carried into reread</p>
 </button>
-<button class="controlCard phase-gate route-gradient-card" onclick="goConceptField('gradient')">
+<button type="button" class="controlCard phase-gate route-gradient-card" data-theory-card="gradient" data-concept-id="gradient" data-notation-targets="gradient IR burden" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">∇</span>
 <strong>Route-gradient pressure</strong>
 <p>eligible route ordering by expected diagnostic reduction</p>
 </button>
-<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('burden')">
+<button type="button" class="controlCard phase-owner-delta burden-card" data-theory-card="burden" data-concept-id="burden" data-notation-targets="burden" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">ⁿB</span>
 <strong>Current burden</strong>
 <p>bounded live burden field selected for owner-backed release order</p>
 </button>
-<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('submoves')">
+<button type="button" class="controlCard phase-owner-delta burden-card" data-theory-card="submoves" data-concept-id="submoves" data-notation-targets="submoves" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">ⁿBᵢ[OPᵢ]</span>
 <strong>Submove operation</strong>
 <p>target → operation → result under the current burden</p>
 </button>
-<button class="controlCard phase-owner-delta delta-card" onclick="goConceptField('deltaB')">
+<button type="button" class="controlCard phase-owner-delta delta-card" data-theory-card="deltaB" data-concept-id="deltaB" data-notation-targets="deltaB burden submoves" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">ΔⁿB</span>
 <strong>Burden-event delta</strong>
 <p>event-local transition produced by burden/submove landing</p>
 </button>
-<button class="controlCard phase-reread-closure delta-card" onclick="goConceptField('deltaK')">
+<button type="button" class="controlCard phase-reread-closure delta-card" data-theory-card="deltaK" data-concept-id="deltaK" data-notation-targets="deltaK kappa" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">Δκ</span>
 <strong>Closure-state delta</strong>
 <p>case-collapse / dependency-radius update after burden work</p>
 </button>
-<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaDot')">
+<button type="button" class="controlCard phase-owner-delta field-diagnostic-card" data-theory-card="nablaDot" data-concept-id="nablaDot" data-notation-targets="nablaDot deltaB deltaK R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">∇·T</span>
 <strong>∇·T field diagnostic</strong>
 <p>post-Delta residual outward pressure in an explicit target field</p>
 </button>
-<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaCross')">
+<button type="button" class="controlCard phase-owner-delta field-diagnostic-card" data-theory-card="nablaCross" data-concept-id="nablaCross" data-notation-targets="nablaCross deltaB deltaK R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">∇×T</span>
 <strong>∇×T field diagnostic</strong>
 <p>post-Delta circularity / rotational dependency in an explicit target field</p>
 </button>
-<button class="controlCard phase-owner-delta loopbreak-card" onclick="goConceptField('loopBreak')">
+<button type="button" class="controlCard phase-owner-delta loopbreak-card" data-theory-card="loopBreak" data-concept-id="loopBreak" data-notation-targets="loopBreak nablaCross deltaB deltaK R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">LoopBreak(∇×T)</span>
 <strong>Loop-breaking submove</strong>
 <p>owner-grounded curl resolution with target, Δ effect, and reread</p>
 </button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('R')">
+<button type="button" class="controlCard phase-reread-closure" data-theory-card="R" data-concept-id="R" data-notation-targets="R H heart deltaB deltaK nablaDot nablaCross fieldDiagnostics" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">R</span>
 <strong>Reread gate</strong>
 <p>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B after target-explicit ∇·/∇× field-state diagnostics</p>
 </button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('C')">
+<button type="button" class="controlCard phase-reread-closure" data-theory-card="C" data-concept-id="C" data-notation-targets="C Psi R" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">𝒞</span>
 <strong>Constrained noetic collapse</strong>
 <p>discursive resolution of Ψᴺ under owner-backed operations and reread</p>
 </button>
-<button class="controlCard phase-reread-closure final-card" onclick="goConceptField('final')">
+<button type="button" class="controlCard phase-reread-closure final-card" data-theory-card="final" data-concept-id="final" data-notation-targets="final N heart xi omega mu" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
 <strong>Restored fitrah and sound reason</strong>
 <p>terminal state after ♥/ξ/Ω/μ/κ disorder loses governance</p>
 </button>
-<button class="controlCard phase-public-boundary" onclick="goConceptField('PsiI')">
+<button type="button" class="controlCard phase-public-boundary" data-theory-card="PsiI" data-concept-id="PsiI" data-notation-targets="PsiI coupling" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">Ψᴵ</span>
 <strong>Diagnosed interlocutor field</strong>
 <p>inferred from discourse/profile/register evidence; not soul access</p>
 </button>
-<button class="controlCard phase-public-boundary public-boundary-card" onclick="goConceptField('coupling')">
+<button type="button" class="controlCard phase-public-boundary public-boundary-card" data-theory-card="coupling" data-concept-id="coupling" data-notation-targets="coupling Psi PsiI final" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="false" onclick="selectTheoryCard(this)">
 <span class="controlSym">Ψᴺ ⇢ Ψᴵ</span>
 <strong>T_lang output boundary</strong>
 <p>post-closure language release toward diagnosed Ψᴵ; not a state transition or uptake claim</p>
@@ -2286,69 +2954,76 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </div>
 <div class="notationBoard" id="notationBoard" data-runtime-rendering="theory-formalism-notation">
 <div class="notationLine">
-<span class="ntok symNoetic" data-k="noetic" data-label="noetic-structure selection space" onclick="highlightNotation(['noetic','D0'])">𝓝</span>
+<span class="ntok symNoetic" data-k="noetic" data-notation-id="noetic" role="button" tabindex="0" aria-pressed="false" data-label="noetic-structure selection space" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','D0'])">𝓝</span>
 <span class="notationArrow">⊢</span>
-<span class="ntok" data-k="D0" data-label="surface discourse / initial signal" onclick="highlightNotation(['D0'])">D₀</span>
+<span class="ntok" data-k="D0" data-notation-id="D0" role="button" tabindex="0" aria-pressed="false" data-label="surface discourse / initial signal" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['D0'])">D₀</span>
 <span class="notationArrow">⇝</span>
-<span class="ntok" data-k="Psi" data-label="encoded noetic signal-state" onclick="highlightNotation(['noetic','Psi','N','m','tau','sigma','heart','xi','omega','mu','kappa','H'])">Ψᴺ</span>
+<span class="ntok" data-k="Psi" data-notation-id="Psi" role="button" tabindex="0" aria-pressed="false" data-label="encoded noetic signal-state" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','Psi','N','m','tau','sigma','heart','xi','omega','mu','kappa','H'])">Ψᴺ</span>
 <span>⟨</span>
-<span class="ntok" data-k="N" data-label="runtime-selected operative noetic frame from 𝓝" onclick="highlightNotation(['noetic','N'])">N∈𝓝</span>
-<span>, m, τ, σ, </span>
-<span class="ntok symHeart" data-k="heart" data-label="affective-discursive register / release posture" onclick="highlightNotation(['heart'])">♥</span>
+<span class="ntok" data-k="N" data-notation-id="N" role="button" tabindex="0" aria-pressed="false" data-label="runtime-selected operative noetic frame from 𝓝" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','N'])">N∈𝓝</span>
 <span>, </span>
-<span class="ntok symXi" data-k="xi" data-label="epistemic/warrant grammar" onclick="highlightNotation(['xi'])">ξ</span>
+<span class="ntok" data-k="m" data-notation-id="m" role="button" tabindex="0" aria-pressed="false" data-label="deformation / memetic mode" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['m'])">m</span>
 <span>, </span>
-<span class="ntok symOmega" data-k="omega" data-label="ontological grammar" onclick="highlightNotation(['omega'])">Ω</span>
+<span class="ntok" data-k="tau" data-notation-id="tau" role="button" tabindex="0" aria-pressed="false" data-label="tribunal / burden-function" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['tau'])">τ</span>
 <span>, </span>
-<span class="ntok symMu" data-k="mu" data-label="meta-noetic memetic vector" onclick="highlightNotation(['mu'])">μ</span>
+<span class="ntok" data-k="sigma" data-notation-id="sigma" role="button" tabindex="0" aria-pressed="false" data-label="source / semantic / authority status" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['sigma'])">σ</span>
 <span>, </span>
-<span class="ntok symKappa" data-k="kappa" data-label="collapse radius / downstream dependency set" onclick="highlightNotation(['kappa'])">κ</span>
+<span class="ntok symHeart" data-k="heart" data-notation-id="heart" role="button" tabindex="0" aria-pressed="false" data-label="affective-discursive register / release posture" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['heart'])">♥</span>
 <span>, </span>
-<span class="ntok" data-k="H" data-label="held set" onclick="highlightNotation(['H'])">H</span>
+<span class="ntok symXi" data-k="xi" data-notation-id="xi" role="button" tabindex="0" aria-pressed="false" data-label="epistemic/warrant grammar" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['xi'])">ξ</span>
+<span>, </span>
+<span class="ntok symOmega" data-k="omega" data-notation-id="omega" role="button" tabindex="0" aria-pressed="false" data-label="ontological grammar" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['omega'])">Ω</span>
+<span>, </span>
+<span class="ntok symMu" data-k="mu" data-notation-id="mu" role="button" tabindex="0" aria-pressed="false" data-label="meta-noetic memetic vector" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['mu'])">μ</span>
+<span>, </span>
+<span class="ntok symKappa" data-k="kappa" data-notation-id="kappa" role="button" tabindex="0" aria-pressed="false" data-label="collapse radius / downstream dependency set" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['kappa'])">κ</span>
+<span>, </span>
+<span class="ntok" data-k="H" data-notation-id="H" role="button" tabindex="0" aria-pressed="false" data-label="held set" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['H'])">H</span>
 <span>⟩</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="IR" data-label="compact DSL/IR control state" onclick="highlightNotation(['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'])">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
+<span class="ntok" data-k="IR" data-notation-id="IR" role="button" tabindex="0" aria-pressed="false" data-label="compact DSL/IR control state" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'])">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="gradient" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" onclick="highlightNotation(['gradient','IR','burden','R'])">∇ route-gradient</span>
+<span class="ntok" data-k="gradient" data-notation-id="gradient" role="button" tabindex="0" aria-pressed="false" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['gradient','IR','burden','R'])">∇ route-gradient</span>
 <span class="notationArrow">selects release pressure over</span>
-<span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
+<span class="ntok" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'])">ⁿB</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
+<span class="ntok" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'])">ⁿB</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="submoves" data-label="owner-backed submoves under burden n" onclick="highlightNotation(['submoves'])">{ⁿBᵢ[OPᵢ]}</span>
+<span class="ntok" data-k="submoves" data-notation-id="submoves" role="button" tabindex="0" aria-pressed="false" data-label="owner-backed submoves under burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['submoves'])">{ⁿBᵢ[OPᵢ]}</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="Land" data-label="burden landing" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
+<span class="ntok" data-k="Land" data-notation-id="Land" role="button" tabindex="0" aria-pressed="false" data-label="burden landing" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="deltaB" data-label="burden-event delta; transition produced by burden/submove landing" onclick="highlightNotation(['deltaB','burden','submoves'])">ΔⁿB</span>
+<span class="ntok" data-k="deltaB" data-notation-id="deltaB" role="button" tabindex="0" aria-pressed="false" data-label="burden-event delta; transition produced by burden/submove landing" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaB','burden','submoves'])">ΔⁿB</span>
 <span>/</span>
-<span class="ntok" data-k="deltaK" data-label="case-collapse / closure-state delta" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
+<span class="ntok" data-k="deltaK" data-notation-id="deltaK" role="button" tabindex="0" aria-pressed="false" data-label="case-collapse / closure-state delta" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="nablaDot" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·T</span>
+<span class="ntok" data-k="nablaDot" data-notation-id="nablaDot" role="button" tabindex="0" aria-pressed="false" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·T</span>
 <span>/</span>
-<span class="ntok" data-k="nablaCross" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×T</span>
-<span class="ntok" data-k="fieldDiagnostics" data-label="target-explicit post-Delta field diagnostics" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
+<span class="ntok" data-k="nablaCross" data-notation-id="nablaCross" role="button" tabindex="0" aria-pressed="false" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×T</span>
+<span class="ntok" data-k="fieldDiagnostics" data-notation-id="fieldDiagnostics" role="button" tabindex="0" aria-pressed="false" data-label="target-explicit post-Delta field diagnostics" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="loopBreak" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
+<span class="ntok" data-k="loopBreak" data-notation-id="loopBreak" role="button" tabindex="0" aria-pressed="false" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
+<span class="ntok" data-k="R" data-notation-id="R" role="button" tabindex="0" aria-pressed="false" data-label="state/noetic reread" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="C" data-label="constrained noetic collapse / discursive resolution" onclick="highlightNotation(['C','Psi'])">𝒞(Ψᴺ)</span>
+<span class="ntok" data-k="C" data-notation-id="C" role="button" tabindex="0" aria-pressed="false" data-label="constrained noetic collapse / discursive resolution" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['C','Psi'])">𝒞(Ψᴺ)</span>
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="final" data-label="restored fitrah and sound reason" onclick="highlightNotation(['final','N','heart','xi','omega','mu'])">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
+<span class="ntok" data-k="final" data-notation-id="final" role="button" tabindex="0" aria-pressed="false" data-label="restored fitrah and sound reason" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['final','N','heart','xi','omega','mu'])">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
 <span>/</span>
-<span class="ntok" data-k="nextB" data-label="next burden licensed by reread" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
+<span class="ntok" data-k="nextB" data-notation-id="nextB" role="button" tabindex="0" aria-pressed="false" data-label="next burden licensed by reread" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">public release boundary</span>
-<span class="ntok" data-k="coupling" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
+<span class="ntok" data-k="coupling" data-notation-id="coupling" role="button" tabindex="0" aria-pressed="false" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
+<span class="ntok" data-k="PsiI" data-notation-id="PsiI" role="button" tabindex="0" aria-pressed="false" data-label="diagnosed interlocutor field inferred from discourse/profile/register evidence" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['PsiI','coupling'])">Ψᴵ</span>
 </div>
 <div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>
 <div class="notationLegend">
@@ -3095,7 +3770,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </section>
 </main>
 <script id="docs-index-generated-data">
-window.DOCS_INDEX_PROVENANCE = {"generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html"], "source_digest": "94ff274fa55af0ff7ad1b05a250d815edd67227cfcb05f5da97be2e7a20c3cec", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
+window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html"], "source_digest": "3967ceb771345f83e6b4b00617fcc6dc681b8e4d6b52a8d070a0dc3ee6c07ba6", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
 window.DOCS_INDEX_MODULE_CATALOGUE = [{"id": "do-attribute-precision", "module_class": "case-library", "path": "skill/references/case-library/do-attribute-precision.md", "source_path": "atomics/skill/references/case-library/do-attribute-precision.md"}, {"id": "do-christian-extensions", "module_class": "case-library", "path": "skill/references/case-library/do-christian-extensions.md", "source_path": "atomics/skill/references/case-library/do-christian-extensions.md"}, {"id": "do-core", "module_class": "case-library", "path": "skill/references/case-library/do-core.md", "source_path": "atomics/skill/references/case-library/do-core.md"}, {"id": "do-second-loop", "module_class": "case-library", "path": "skill/references/case-library/do-second-loop.md", "source_path": "atomics/skill/references/case-library/do-second-loop.md"}, {"id": "noetic-profiles", "module_class": "case-library", "path": "skill/references/case-library/noetic-profiles.md", "source_path": "atomics/skill/references/case-library/noetic-profiles.md"}, {"id": "ns-1-naturalist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-1-naturalist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md"}, {"id": "ns-10-maturidi-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md"}, {"id": "ns-11-fideist-reformed", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md", "source_path": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md"}, {"id": "ns-12-blank-slate-dual-fitrah", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md", "source_path": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md"}, {"id": "ns-2-agnostic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md"}, {"id": "ns-3-deconverted", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-3-deconverted.md", "source_path": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md"}, {"id": "ns-4-secular-moral-realist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md"}, {"id": "ns-5-habituated-atheist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md"}, {"id": "ns-6-kalamic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md"}, {"id": "ns-7-theistic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md"}, {"id": "ns-8-muslim-internal-crisis", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md", "source_path": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md"}, {"id": "ns-9-historical-critical-skeptic", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md", "source_path": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md"}, {"id": "philosophical-usurpation", "module_class": "case-library", "path": "skill/references/case-library/philosophical-usurpation.md", "source_path": "atomics/skill/references/case-library/philosophical-usurpation.md"}, {"id": "revelation-transmission", "module_class": "case-library", "path": "skill/references/case-library/revelation-transmission.md", "source_path": "atomics/skill/references/case-library/revelation-transmission.md"}, {"id": "causal-series-taxonomy", "module_class": "diagnostic", "path": "skill/references/diagnostics/causal-series-taxonomy.md", "source_path": "atomics/skill/references/diagnostics/causal-series-taxonomy.md"}, {"id": "definition-discipline", "module_class": "diagnostic", "path": "skill/references/diagnostics/definition-discipline.md", "source_path": "atomics/skill/references/diagnostics/definition-discipline.md"}, {"id": "hadith-authentication-epistemology", "module_class": "diagnostic", "path": "skill/references/diagnostics/hadith-authentication-epistemology.md", "source_path": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md"}, {"id": "perfection-criterion-usurpation", "module_class": "diagnostic", "path": "skill/references/diagnostics/perfection-criterion-usurpation.md", "source_path": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md"}, {"id": "proof-method-audit", "module_class": "diagnostic", "path": "skill/references/diagnostics/proof-method-audit.md", "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md"}, {"id": "prophetic-discourse-neutralization", "module_class": "diagnostic", "path": "skill/references/diagnostics/prophetic-discourse-neutralization.md", "source_path": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md"}, {"id": "P1-fitrah-restoration", "module_class": "procedure", "path": "skill/references/procedures/P1-fitrah-restoration.md", "source_path": "atomics/skill/references/procedures/P1-fitrah-restoration.md"}, {"id": "P2-objection-mapping", "module_class": "procedure", "path": "skill/references/procedures/P2-objection-mapping.md", "source_path": "atomics/skill/references/procedures/P2-objection-mapping.md"}, {"id": "P3-reason-revelation-tension", "module_class": "procedure", "path": "skill/references/procedures/P3-reason-revelation-tension.md", "source_path": "atomics/skill/references/procedures/P3-reason-revelation-tension.md"}, {"id": "P4-maieutic", "module_class": "procedure", "path": "skill/references/procedures/P4-maieutic.md", "source_path": "atomics/skill/references/procedures/P4-maieutic.md"}, {"id": "P5-already-believing", "module_class": "procedure", "path": "skill/references/procedures/P5-already-believing.md", "source_path": "atomics/skill/references/procedures/P5-already-believing.md"}, {"id": "P6-universal-aqidah-principle", "module_class": "procedure", "path": "skill/references/procedures/P6-universal-aqidah-principle.md", "source_path": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md"}, {"id": "P7-restoration-stops", "module_class": "procedure", "path": "skill/references/procedures/P7-restoration-stops.md", "source_path": "atomics/skill/references/procedures/P7-restoration-stops.md"}, {"id": "E1-broadening-evidence", "module_class": "tactic", "path": "skill/references/tactics/E1-broadening-evidence.md", "source_path": "atomics/skill/references/tactics/E1-broadening-evidence.md"}, {"id": "E2-inferential-criterion", "module_class": "tactic", "path": "skill/references/tactics/E2-inferential-criterion.md", "source_path": "atomics/skill/references/tactics/E2-inferential-criterion.md"}, {"id": "E3-cumulative-case", "module_class": "tactic", "path": "skill/references/tactics/E3-cumulative-case.md", "source_path": "atomics/skill/references/tactics/E3-cumulative-case.md"}, {"id": "E4-cross-cultural-check", "module_class": "tactic", "path": "skill/references/tactics/E4-cross-cultural-check.md", "source_path": "atomics/skill/references/tactics/E4-cross-cultural-check.md"}, {"id": "F1-supra-vs-antirational", "module_class": "tactic", "path": "skill/references/tactics/F1-supra-vs-antirational.md", "source_path": "atomics/skill/references/tactics/F1-supra-vs-antirational.md"}, {"id": "F2-volitional-dimensions", "module_class": "tactic", "path": "skill/references/tactics/F2-volitional-dimensions.md", "source_path": "atomics/skill/references/tactics/F2-volitional-dimensions.md"}, {"id": "F3-practice-epistemic-access", "module_class": "tactic", "path": "skill/references/tactics/F3-practice-epistemic-access.md", "source_path": "atomics/skill/references/tactics/F3-practice-epistemic-access.md"}, {"id": "M1-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1-self-refutation.md"}, {"id": "M1P-performative-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1P-performative-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1P-performative-self-refutation.md"}, {"id": "M2-prior-probability", "module_class": "tactic", "path": "skill/references/tactics/M2-prior-probability.md", "source_path": "atomics/skill/references/tactics/M2-prior-probability.md"}, {"id": "M3-orphaned-intuition", "module_class": "tactic", "path": "skill/references/tactics/M3-orphaned-intuition.md", "source_path": "atomics/skill/references/tactics/M3-orphaned-intuition.md"}, {"id": "M4-grief-register", "module_class": "tactic", "path": "skill/references/tactics/M4-grief-register.md", "source_path": "atomics/skill/references/tactics/M4-grief-register.md"}, {"id": "M5-deformation-triage", "module_class": "tactic", "path": "skill/references/tactics/M5-deformation-triage.md", "source_path": "atomics/skill/references/tactics/M5-deformation-triage.md"}, {"id": "M6-excluded-middle", "module_class": "tactic", "path": "skill/references/tactics/M6-excluded-middle.md", "source_path": "atomics/skill/references/tactics/M6-excluded-middle.md"}, {"id": "M7-definition-anchor", "module_class": "tactic", "path": "skill/references/tactics/M7-definition-anchor.md", "source_path": "atomics/skill/references/tactics/M7-definition-anchor.md"}, {"id": "M8-reductio", "module_class": "tactic", "path": "skill/references/tactics/M8-reductio.md", "source_path": "atomics/skill/references/tactics/M8-reductio.md"}, {"id": "M9-predication-mode", "module_class": "tactic", "path": "skill/references/tactics/M9-predication-mode.md", "source_path": "atomics/skill/references/tactics/M9-predication-mode.md"}, {"id": "R1-internalist-criterion", "module_class": "tactic", "path": "skill/references/tactics/R1-internalist-criterion.md", "source_path": "atomics/skill/references/tactics/R1-internalist-criterion.md"}, {"id": "R2-the-reminder", "module_class": "tactic", "path": "skill/references/tactics/R2-the-reminder.md", "source_path": "atomics/skill/references/tactics/R2-the-reminder.md"}, {"id": "R3-warranted-basic-belief", "module_class": "tactic", "path": "skill/references/tactics/R3-warranted-basic-belief.md", "source_path": "atomics/skill/references/tactics/R3-warranted-basic-belief.md"}, {"id": "doubt-vs-skepticism", "module_class": "tactic", "path": "skill/references/tactics/doubt-vs-skepticism.md", "source_path": "atomics/skill/references/tactics/doubt-vs-skepticism.md"}, {"id": "husn-al-nazar-arguments", "module_class": "tactic", "path": "skill/references/tactics/husn-al-nazar-arguments.md", "source_path": "atomics/skill/references/tactics/husn-al-nazar-arguments.md"}, {"id": "inductive-fitri-method", "module_class": "tactic", "path": "skill/references/tactics/inductive-fitri-method.md", "source_path": "atomics/skill/references/tactics/inductive-fitri-method.md"}, {"id": "symmetric-taqlid-check", "module_class": "tactic", "path": "skill/references/tactics/symmetric-taqlid-check.md", "source_path": "atomics/skill/references/tactics/symmetric-taqlid-check.md"}, {"id": "V1-diagnostic", "module_class": "technique", "path": "skill/references/techniques/V1-diagnostic.md", "source_path": "atomics/skill/references/techniques/V1-diagnostic.md"}, {"id": "V10-transmission-content-vetting", "module_class": "technique", "path": "skill/references/techniques/V10-transmission-content-vetting.md", "source_path": "atomics/skill/references/techniques/V10-transmission-content-vetting.md"}, {"id": "V11-taqlid-transition", "module_class": "technique", "path": "skill/references/techniques/V11-taqlid-transition.md", "source_path": "atomics/skill/references/techniques/V11-taqlid-transition.md"}, {"id": "V12-tamanuc-exhaustion", "module_class": "technique", "path": "skill/references/techniques/V12-tamanuc-exhaustion.md", "source_path": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md"}, {"id": "V2-reconstituting-reason", "module_class": "technique", "path": "skill/references/techniques/V2-reconstituting-reason.md", "source_path": "atomics/skill/references/techniques/V2-reconstituting-reason.md"}, {"id": "V3-regress-dissolution", "module_class": "technique", "path": "skill/references/techniques/V3-regress-dissolution.md", "source_path": "atomics/skill/references/techniques/V3-regress-dissolution.md"}, {"id": "V4-contamination-identification", "module_class": "technique", "path": "skill/references/techniques/V4-contamination-identification.md", "source_path": "atomics/skill/references/techniques/V4-contamination-identification.md"}, {"id": "V5-directing-attention-signs", "module_class": "technique", "path": "skill/references/techniques/V5-directing-attention-signs.md", "source_path": "atomics/skill/references/techniques/V5-directing-attention-signs.md"}, {"id": "V6-convergence", "module_class": "technique", "path": "skill/references/techniques/V6-convergence.md", "source_path": "atomics/skill/references/techniques/V6-convergence.md"}, {"id": "V7-taqlid-check", "module_class": "technique", "path": "skill/references/techniques/V7-taqlid-check.md", "source_path": "atomics/skill/references/techniques/V7-taqlid-check.md"}, {"id": "V8-bila-kayf-anchor", "module_class": "technique", "path": "skill/references/techniques/V8-bila-kayf-anchor.md", "source_path": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md"}, {"id": "V9-necessary-knowledge-priority", "module_class": "technique", "path": "skill/references/techniques/V9-necessary-knowledge-priority.md", "source_path": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md"}, {"id": "heuristics", "module_class": "technique", "path": "skill/references/techniques/heuristics.md", "source_path": "atomics/skill/references/techniques/heuristics.md"}];
 </script>
 <script>
@@ -3123,6 +3798,15 @@ function renderOwnerSourceTable(){
   if(!el) return;
   const supportRows = REFS.filter(r=>['runtime governance','diagnostic','TTP/operator','schema'].includes(r.layer)).slice(0,80);
   el.innerHTML = `<h3>Live module catalogue</h3><p class="subtle">Generated from <code>atomics/skill/references/diagnostics/module-catalogue.json</code>; paths resolve to tracked atomics source, while the root <code>skill/</code> directory remains ignored runtime output.</p><table data-owner-source="atomics/skill/references/diagnostics/module-catalogue.json"><thead><tr><th>Module ID</th><th>Class</th><th>Compiled path</th><th>Tracked source</th></tr></thead><tbody>${rows.map(r=>`<tr data-module-id="${esc(r.id)}"><td><code>${esc(r.id)}</code></td><td>${esc(r.module_class)}</td><td><code>${esc(r.path)}</code></td><td><code>${esc(r.source_path)}</code></td></tr>`).join('')}</tbody></table><h3>Complement-bearing source rows</h3><p class="subtle">Curated support map retained from the index source for governance/schema/source navigation. It is not the module-catalogue owner.</p><table><thead><tr><th>Path</th><th>Layer</th><th>Governs</th><th>Concepts</th><th>Operators</th></tr></thead><tbody>${supportRows.map(r=>`<tr><td><code>${esc(r.path)}</code></td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.concepts||[]).map(esc).join(', ')}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table>`;
+}
+function esc(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[ch]);
 }
 function showTopTab(id, btn){
   const panel=document.getElementById(id);
@@ -3311,7 +3995,9 @@ function highlightNotation(keys){
   document.querySelectorAll('.ntok').forEach(el=>{
     const key=el.getAttribute('data-k');
     el.classList.toggle('active', set.has(key));
+    el.classList.toggle('is-linked-active', set.has(key));
     el.classList.toggle('muted', set.size && !set.has(key));
+    el.setAttribute('aria-pressed', set.has(key) ? 'true' : 'false');
   });
   const explain=document.getElementById('notationExplain');
   if(explain && set.size){
@@ -3325,6 +4011,42 @@ function highlightNotation(keys){
   }
 }
 function clearNotation(){ highlightNotation([]); }
+function theoryCardTargetKeys(card){
+  if(!card) return [];
+  return (card.getAttribute('data-notation-targets')||'')
+    .split(/\s+/)
+    .map(x=>x.trim())
+    .filter(Boolean);
+}
+function selectTheoryCard(cardOrId){
+  const card = typeof cardOrId === 'string'
+    ? document.querySelector(`.controlCard[data-theory-card="${CSS.escape(cardOrId)}"]`)
+    : cardOrId;
+  if(!card) return;
+  document.querySelectorAll('.controlCard[data-theory-card]').forEach(el=>{
+    const active = el === card;
+    el.classList.toggle('is-linked-active', active);
+    el.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+  const targets = theoryCardTargetKeys(card);
+  if(typeof window.highlightNotation === 'function') window.highlightNotation(targets);
+  else highlightNotation(targets);
+  const explain=document.getElementById('notationExplain');
+  const label=card.querySelector('strong')?.textContent?.trim() || card.getAttribute('data-theory-card') || 'Theory card';
+  if(explain && targets.length){
+    const targetLabels = targets.map(k=>{
+      const tok=document.querySelector(`.ntok[data-k="${CSS.escape(k)}"]`);
+      return tok ? tok.textContent.trim() : k;
+    });
+    explain.innerHTML='<strong>Selected theory card:</strong> '+esc(label)+' → '+targetLabels.map(esc).join(' · ');
+  }
+}
+function activateNotationToken(ev, el){
+  if(ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return true;
+  if(ev) ev.preventDefault();
+  if(el && typeof el.click === 'function') el.click();
+  return false;
+}
 
 function init(){
   const safe=(label,fn)=>{try{fn()}catch(e){console.warn('DAEE wiki init skipped:',label,e)}};
@@ -3340,6 +4062,8 @@ function init(){
   if(document.getElementById('relationPanel')) safe('relations',()=>renderRelations());
   if(document.getElementById('refTable')) safe('refs',()=>renderRefs());
   if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
+  const defaultTheoryCard=document.querySelector('.controlCard[data-theory-card][aria-pressed="true"]') || document.querySelector('.controlCard[data-theory-card]');
+  if(defaultTheoryCard) safe('theory card default notation',()=>selectTheoryCard(defaultTheoryCard));
 
 }
 document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
@@ -4463,6 +5187,67 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         ${auditBox(failureTitle, config.failure || config.gap || [])}
       </div>`;
   }
+  function architectureCarouselStages(){
+    return [...document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-architecture-rail .v30-selectable-stage[data-pipeline="target"]')];
+  }
+  function architectureCarouselKey(){
+    const active = document.querySelector('#architecture #canonical-architecture-runtime .v60-architecture-rail .v30-selectable-stage.v30-active[data-pipeline="target"]');
+    return active?.getAttribute('data-stage-key') || architectureCarouselStages()[0]?.getAttribute('data-stage-key') || 'input';
+  }
+  function carouselPosition(index, selectedIndex, total){
+    const offset = (index - selectedIndex + total) % total;
+    if(offset === 0) return 'center';
+    if(offset === 1) return 'next';
+    if(offset === 2) return 'far-next';
+    if(offset === total - 1) return 'prev';
+    if(offset === total - 2) return 'far-prev';
+    return 'far';
+  }
+  function applyArchitectureCarousel(key){
+    const stages = architectureCarouselStages();
+    if(!stages.length) return;
+    const selectedIndex = Math.max(0, stages.findIndex(el => el.getAttribute('data-stage-key') === key));
+    const selected = stages[selectedIndex];
+    stages.forEach((el,index) => {
+      const position = carouselPosition(index, selectedIndex, stages.length);
+      const isSelected = position === 'center';
+      const slot = el.closest('.v60-carousel-slot');
+      el.setAttribute('data-carousel-position', position);
+      el.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      el.tabIndex = isSelected ? 0 : -1;
+      el.classList.toggle('is-primary', isSelected);
+      el.classList.toggle('is-preview', !isSelected);
+      if(slot){
+        slot.setAttribute('data-carousel-position', position);
+        slot.classList.toggle('is-primary', isSelected);
+        slot.classList.toggle('is-preview', !isSelected);
+      }
+      ['prev','next','far-prev','far-next','far'].forEach(name => {
+        el.classList.toggle(`is-${name}`, position === name);
+        if(slot) slot.classList.toggle(`is-${name}`, position === name);
+      });
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-carousel-dot').forEach(dot => {
+      const isCurrent = dot.getAttribute('data-carousel-target') === key;
+      if(isCurrent) dot.setAttribute('aria-current','true');
+      else dot.removeAttribute('aria-current');
+    });
+    const status = document.getElementById('architectureCarouselStatus');
+    if(status && selected){
+      const title = selected.querySelector('h2')?.textContent?.replace(/\s+/g,' ').trim() || key;
+      status.textContent = `${selectedIndex + 1} / ${stages.length} · ${title}`;
+    }
+  }
+  function moveArchitectureCarousel(delta){
+    const stages = architectureCarouselStages();
+    if(!stages.length) return;
+    const currentKey = architectureCarouselKey();
+    const currentIndex = Math.max(0, stages.findIndex(el => el.getAttribute('data-stage-key') === currentKey));
+    const nextIndex = (currentIndex + delta + stages.length) % stages.length;
+    const nextKey = stages[nextIndex].getAttribute('data-stage-key');
+    renderStaticStage('target', nextKey);
+    stages[nextIndex].focus({preventScroll:true});
+  }
 
   function renderStaticStage(pipeline,key){
     const config = STATIC_STAGE_MAP[pipeline]?.[key];
@@ -4478,6 +5263,9 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(el => {
       el.classList.toggle('v30-active', el.getAttribute('data-stage-key') === key);
     });
+    if(pipeline === 'target'){
+      applyArchitectureCarousel(key);
+    }
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(el => {
       el.classList.remove('v60-subactive');
     });
@@ -4510,10 +5298,44 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"]`).forEach(stage => {
       stage.classList.toggle('v30-active', stage === stageEl);
     });
+    if(pipeline === 'target'){
+      applyArchitectureCarousel(stageKey);
+    }
     document.querySelectorAll(`.v30-selectable-stage[data-pipeline="${pipeline}"] .v60-selectable-subcard`).forEach(card => {
       card.classList.toggle('v60-subactive', card === el);
     });
     renderAuditTrace(panel, config, 'Failure looks like');
+  }
+  function attachArchitectureCarouselControls(){
+    document.querySelectorAll('#architecture #canonical-architecture-runtime [data-carousel-action="prev"]').forEach(btn => {
+      btn.addEventListener('click', () => moveArchitectureCarousel(-1));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime [data-carousel-action="next"]').forEach(btn => {
+      btn.addEventListener('click', () => moveArchitectureCarousel(1));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-carousel-dot').forEach(dot => {
+      dot.addEventListener('click', () => renderStaticStage('target', dot.getAttribute('data-carousel-target')));
+    });
+    document.querySelectorAll('#architecture #canonical-architecture-runtime .v60-architecture-rail').forEach(rail => {
+      rail.addEventListener('keydown', ev => {
+        if(ev.key === 'ArrowRight'){
+          ev.preventDefault();
+          moveArchitectureCarousel(1);
+        }else if(ev.key === 'ArrowLeft'){
+          ev.preventDefault();
+          moveArchitectureCarousel(-1);
+        }else if(ev.key === 'Home'){
+          ev.preventDefault();
+          const first = architectureCarouselStages()[0];
+          if(first) renderStaticStage('target', first.getAttribute('data-stage-key'));
+        }else if(ev.key === 'End'){
+          ev.preventDefault();
+          const stages = architectureCarouselStages();
+          const last = stages[stages.length - 1];
+          if(last) renderStaticStage('target', last.getAttribute('data-stage-key'));
+        }
+      });
+    });
   }
 
   function attachStaticPipelineInteractivity(){
@@ -4529,6 +5351,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
         }
       });
     });
+    attachArchitectureCarouselControls();
     document.querySelectorAll('.v60-selectable-subcard').forEach(el => {
       const handler = ev => {
         ev.stopPropagation();

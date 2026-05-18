@@ -17,6 +17,12 @@ import subprocess
 import tempfile
 import sys
 
+try:
+    import yaml
+except ImportError:  # pragma: no cover - exercised only in underprovisioned envs
+    print("ERROR: PyYAML not installed. Run: pip install pyyaml", file=sys.stderr)
+    raise
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 if hasattr(sys.stderr, "reconfigure"):
@@ -26,6 +32,8 @@ if hasattr(sys.stderr, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
+DESIGN_MD = ROOT / "docs" / "index" / "DESIGN.md"
+INDEX_TEMPLATE = ROOT / "docs" / "index" / "templates" / "index.html.tpl"
 ARCHITECTURE_SECTION = ROOT / "docs" / "index" / "sections" / "architecture.html"
 THEORY_SECTION = ROOT / "docs" / "index" / "sections" / "theory.html"
 RUNTIME_ARCHITECTURE_SOURCE = ROOT / "docs" / "index" / "runtime-architecture.json"
@@ -72,19 +80,19 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Architecture LoopBreak witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
     "Architecture LoopBreak grounding grammar": "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
     "Architecture COMPLETE closure marker": "✓<br/>COMPLETE",
-    "Theory deltaB control card": "goConceptField('deltaB')",
-    "Theory deltaK control card": "goConceptField('deltaK')",
-    "Theory nabla-dot control card": "goConceptField('nablaDot')",
-    "Theory nabla-cross control card": "goConceptField('nablaCross')",
-    "Theory route-gradient control card": "goConceptField('gradient')",
-    "Theory loop-break control card": "goConceptField('loopBreak')",
-    "Theory PsiI control card": "goConceptField('PsiI')",
-    "Theory coupling control card": "goConceptField('coupling')",
+    "Theory deltaB control card": 'data-theory-card="deltaB"',
+    "Theory deltaK control card": 'data-theory-card="deltaK"',
+    "Theory nabla-dot control card": 'data-theory-card="nablaDot"',
+    "Theory nabla-cross control card": 'data-theory-card="nablaCross"',
+    "Theory route-gradient control card": 'data-theory-card="gradient"',
+    "Theory loop-break control card": 'data-theory-card="loopBreak"',
+    "Theory PsiI control card": 'data-theory-card="PsiI"',
+    "Theory coupling control card": 'data-theory-card="coupling"',
     "Theory nabla-dot notation token": "data-k=\"nablaDot\"",
     "Theory nabla-cross notation token": "data-k=\"nablaCross\"",
     "Theory route-gradient notation token": "data-k=\"gradient\"",
     "Theory loop-break notation token": "data-k=\"loopBreak\"",
-    "Theory PsiI selector": "goConceptField('PsiI')",
+    "Theory PsiI selector": 'data-theory-card="PsiI"',
     "Theory coupling notation token": "data-k=\"coupling\"",
     "Theory coupling output boundary": "public release boundary",
     "Theory T_lang boundary": "T_lang: Ψᴺ ⇢ Ψᴵ",
@@ -423,6 +431,96 @@ def manifest_paths(entry: dict[str, object]) -> list[str]:
     return values
 
 
+def split_design_frontmatter(errors: list[str]) -> tuple[dict[str, object], str, str]:
+    if not DESIGN_MD.exists():
+        errors.append("docs/index/DESIGN.md missing")
+        return {}, "", ""
+    raw = DESIGN_MD.read_text(encoding="utf-8")
+    if not raw.startswith("---\n"):
+        errors.append("docs/index/DESIGN.md must start with YAML front matter")
+        return {}, "", raw
+    try:
+        _prefix, frontmatter, body = raw.split("---", 2)
+    except ValueError:
+        errors.append("docs/index/DESIGN.md missing closing front matter fence")
+        return {}, "", raw
+    try:
+        parsed = yaml.safe_load(frontmatter) or {}
+    except yaml.YAMLError as exc:
+        errors.append(f"docs/index/DESIGN.md YAML parse error: {exc}")
+        return {}, frontmatter, body
+    if not isinstance(parsed, dict):
+        errors.append("docs/index/DESIGN.md front matter must parse as a mapping")
+        return {}, frontmatter, body
+    return parsed, frontmatter, body
+
+
+def css_token_name(raw: str) -> str:
+    value = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", raw)
+    value = re.sub(r"[^a-zA-Z0-9]+", "-", value)
+    return value.strip("-").lower()
+
+
+def token_path_value(tokens: dict[str, object], path: str) -> object | None:
+    value: object = tokens
+    for part in path.split("."):
+        if not isinstance(value, dict) or part not in value:
+            return None
+        value = value[part]
+    return value
+
+
+def walk_design_values(value: object) -> list[str]:
+    found: list[str] = []
+    if isinstance(value, dict):
+        for child in value.values():
+            found.extend(walk_design_values(child))
+    elif isinstance(value, list):
+        for child in value:
+            found.extend(walk_design_values(child))
+    elif isinstance(value, str):
+        found.extend(re.findall(r"\{([^{}]+)\}", value))
+    return found
+
+
+def count_frontmatter_color_keys(frontmatter: str) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    in_colors = False
+    for line in frontmatter.splitlines():
+        if re.match(r"^[A-Za-z0-9_-]+:", line):
+            in_colors = line.startswith("colors:")
+            continue
+        if not in_colors:
+            continue
+        match = re.match(r"^  ([A-Za-z0-9_-]+):", line)
+        if match:
+            key = match.group(1)
+            counts[key] = counts.get(key, 0) + 1
+    return counts
+
+
+def hex_luminance(value: str) -> float | None:
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", value):
+        return None
+    channels = [int(value[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+
+    def channel_lum(channel: float) -> float:
+        return channel / 12.92 if channel <= 0.03928 else ((channel + 0.055) / 1.055) ** 2.4
+
+    red, green, blue = (channel_lum(channel) for channel in channels)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def contrast_ratio(foreground: str, background: str) -> float | None:
+    fg = hex_luminance(foreground)
+    bg = hex_luminance(background)
+    if fg is None or bg is None:
+        return None
+    lighter = max(fg, bg)
+    darker = min(fg, bg)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
 def check_manifest(errors: list[str]) -> dict[str, object]:
     if not MANIFEST.exists():
         errors.append("docs/index/manifest.json missing")
@@ -437,6 +535,8 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
     derived_data = manifest.get("derived_data") or {}
     if not isinstance(derived_data, dict) or derived_data.get("runtime_architecture") != "docs/index/runtime-architecture.json":
         errors.append("manifest derived_data.runtime_architecture must point to docs/index/runtime-architecture.json")
+    if not isinstance(derived_data, dict) or derived_data.get("design_system") != "docs/index/DESIGN.md":
+        errors.append("manifest derived_data.design_system must point to docs/index/DESIGN.md")
     for key in ("output", "template"):
         value = manifest.get(key)
         if not isinstance(value, str) or not value:
@@ -511,6 +611,150 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
         for path in manifest_paths(page):
             expand_manifest_path(path, errors)
     return manifest
+
+
+def check_docs_index_design_system(text: str, manifest: dict[str, object], errors: list[str]) -> None:
+    design, frontmatter, body = split_design_frontmatter(errors)
+    if not design:
+        return
+
+    required_groups = ("colors", "typography", "spacing", "radius", "rounded", "shadow", "motion", "components")
+    for group in required_groups:
+        if not isinstance(design.get(group), dict) or not design[group]:
+            errors.append(f"docs/index/DESIGN.md missing required token group {group}")
+
+    colors = design.get("colors")
+    if not isinstance(colors, dict):
+        return
+    required_stage_colors = [
+        "stageD0",
+        "stagePsiN",
+        "stageDslIr",
+        "stageOwnerTtpDelta",
+        "stageCollapseRestoration",
+    ]
+    color_counts = count_frontmatter_color_keys(frontmatter)
+    for key in required_stage_colors:
+        if key not in colors:
+            errors.append(f"docs/index/DESIGN.md missing required stage color {key}")
+        elif color_counts.get(key, 0) != 1:
+            errors.append(f"docs/index/DESIGN.md stage color {key} must appear exactly once")
+        elif not isinstance(colors[key], str) or not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(colors[key])):
+            errors.append(f"docs/index/DESIGN.md stage color {key} must be #RRGGBB")
+
+    for ref in walk_design_values(design):
+        if token_path_value(design, ref) is None:
+            errors.append(f"docs/index/DESIGN.md token reference {{{ref}}} does not resolve")
+
+    needed_sections = [
+        "## Overview",
+        "## Visual principles",
+        "## Color semantics",
+        "## Stage color rules",
+        "## Typography and notation",
+        "## Spacing and density",
+        "## Carousel behavior",
+        "## Accessibility and contrast",
+        "## Do / Do not",
+        "## Source ownership",
+    ]
+    for heading in needed_sections:
+        if heading not in body:
+            errors.append(f"docs/index/DESIGN.md missing rationale section {heading}")
+
+    if "docs-index-design-source: docs/index/DESIGN.md" not in text:
+        errors.append("generated docs/index.html missing DESIGN.md source marker in CSS")
+    generated_vars = [
+        "--ds-color-background",
+        "--ds-color-stage-d0",
+        "--ds-color-stage-psi-n",
+        "--ds-color-stage-dsl-ir",
+        "--ds-color-stage-owner-ttp-delta",
+        "--ds-color-stage-collapse-restoration",
+        "--ds-font-body",
+        "--ds-space-carousel-gap",
+        "--ds-radius-card",
+        "--ds-shadow-active-card",
+        "--ds-motion-duration",
+        "--ds-carousel-primary-width",
+        "--ds-carousel-preview-source-width",
+        "--ds-carousel-preview-near-scale",
+        "--ds-carousel-preview-far-scale",
+        "--ds-carousel-preview-near-slot-height",
+        "--stage-d0",
+        "--stage-collapse-restoration-rgb",
+    ]
+    for token in generated_vars:
+        if token not in text:
+            errors.append(f"generated docs/index.html missing design CSS custom property {token}")
+
+    template = INDEX_TEMPLATE.read_text(encoding="utf-8") if INDEX_TEMPLATE.exists() else ""
+    for token in (
+        "{{ DESIGN_TOKENS_CSS }}",
+        "--v61-carousel-primary:var(--ds-carousel-primary-width)",
+        "--v61-carousel-side:var(--ds-carousel-side-width)",
+        "--v61-carousel-far:var(--ds-carousel-far-width)",
+        "--v61-carousel-gap:var(--ds-carousel-gap)",
+        "scale(var(--ds-carousel-preview-near-scale))",
+        "scale(var(--ds-carousel-preview-far-scale))",
+        "var(--ds-motion-duration)",
+        "var(--ds-color-focus)",
+    ):
+        if token not in template:
+            errors.append(f"docs/index template must reference design token surface {token}")
+
+    architecture_css_start = text.find("#architecture #canonical-architecture-runtime .v56-input")
+    architecture_css_end = text.find("/* v61: Architecture cards", architecture_css_start)
+    architecture_css = text[architecture_css_start:architecture_css_end] if architecture_css_start != -1 else ""
+    if architecture_css_start == -1:
+        errors.append("architecture CSS block missing for design-token stage-color check")
+    else:
+        stale_stage_rgba = [
+            "rgba(96,165,250",
+            "rgba(34,211,238",
+            "rgba(167,139,250",
+            "rgba(251,146,60",
+            "rgba(248,113,113",
+        ]
+        for stale in stale_stage_rgba:
+            if stale in architecture_css:
+                errors.append(f"architecture stage CSS still hardcodes stale stage color {stale}; use DESIGN.md tokens")
+
+    visible_blocks = manifest.get("visible_blocks") if isinstance(manifest, dict) else []
+    design_block = next(
+        (
+            block
+            for block in visible_blocks or []
+            if isinstance(block, dict) and block.get("id") == "docs_index_design_system"
+        ),
+        None,
+    )
+    if not design_block or design_block.get("current_source") != "docs/index/DESIGN.md":
+        errors.append("manifest must mark docs/index/DESIGN.md as the docs/index design source")
+
+    if ":focus-visible" not in text or "--ds-color-focus" not in text:
+        errors.append("docs/index generated CSS must include token-backed focus-visible styles")
+    if "@media(prefers-reduced-motion:reduce)" not in text:
+        errors.append("docs/index generated CSS must preserve reduced-motion handling")
+    if "setInterval(" in text:
+        errors.append("docs/index carousel must not use automatic rotation timers")
+
+    contrast_pairs = [
+        ("colors.text", "colors.background"),
+        ("colors.textSubtle", "colors.surface"),
+        ("colors.textMuted", "colors.background"),
+        ("colors.text", "colors.surfaceCode"),
+    ]
+    for foreground_path, background_path in contrast_pairs:
+        foreground = token_path_value(design, foreground_path)
+        background = token_path_value(design, background_path)
+        if not isinstance(foreground, str) or not isinstance(background, str):
+            errors.append(f"contrast token pair missing {foreground_path}/{background_path}")
+            continue
+        ratio = contrast_ratio(foreground, background)
+        if ratio is None or ratio < 4.5:
+            detail = f"{ratio:.2f}:1" if ratio is not None else "unparseable color"
+            errors.append(f"contrast sanity check failed for {foreground_path} on {background_path}: {detail}")
 
 
 def embedded_modules(text: str, errors: list[str]) -> list[dict[str, str]]:
@@ -902,6 +1146,131 @@ def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
         errors.append("Theory formalism rendering must map the same sequence without duplicating an Architecture row")
 
 
+def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
+    """Verify the Architecture cards render as a selected-primary carousel.
+
+    The carousel is presentation only. Runtime stage identity still comes from
+    docs/index/runtime-architecture.json, and the Architecture rows / Theory
+    rendering remain separate shared-source surfaces.
+    """
+
+    arch = load_runtime_architecture_for_check(errors)
+    stages = arch.get("stages")
+    if not isinstance(stages, list) or not stages:
+        return
+
+    architecture = tab_section_slice(text, "architecture")
+    if not architecture:
+        errors.append("Architecture tab section missing for carousel contract check")
+        return
+
+    start = architecture.find('data-carousel="architecture-runtime"')
+    if start == -1:
+        errors.append("Architecture runtime carousel container missing data-carousel marker")
+        return
+    end = architecture.find('id="targetStaticStageDetail"', start)
+    carousel = architecture[start:] if end == -1 else architecture[start:end]
+
+    expected_keys = [str(stage.get("key", "")) for stage in stages if isinstance(stage, dict)]
+    found_cards = re.findall(r"<article\b[^>]*\bv60-carousel-card\b[^>]*>", carousel)
+    found_slots = re.findall(r"<div\b[^>]*\bv60-carousel-slot\b[^>]*>", carousel)
+    card_slices = [
+        carousel[match.start() : carousel.find("</article>", match.end()) + len("</article>")]
+        for match in re.finditer(r"<article\b[^>]*\bv60-carousel-card\b[^>]*>", carousel)
+        if carousel.find("</article>", match.end()) != -1
+    ]
+    if len(found_cards) != len(expected_keys):
+        errors.append(f"Architecture carousel should render {len(expected_keys)} stage cards, found {len(found_cards)}")
+    if len(found_slots) != len(expected_keys):
+        errors.append(f"Architecture carousel should wrap each generated card in a scaled preview slot, found {len(found_slots)} slots")
+    if len(card_slices) != len(found_cards):
+        errors.append("Architecture carousel card markup is malformed; every stage card must close as an article")
+    for index, key in enumerate(expected_keys):
+        if f'data-stage-key="{html.escape(key, quote=True)}"' not in carousel:
+            errors.append(f"Architecture carousel missing stage card for shared key {key!r}")
+        if f'data-carousel-index="{index}"' not in carousel:
+            errors.append(f"Architecture carousel missing stable data-carousel-index={index}")
+
+    active_cards = [
+        card
+        for card in found_cards
+        if re.search(r'\bclass="[^"]*\bv30-active\b', card)
+    ]
+    selected_cards = [card for card in found_cards if 'aria-selected="true"' in card]
+    if len(active_cards) != 1:
+        errors.append(f"Architecture carousel must have exactly one default active primary card, found {len(active_cards)}")
+    if len(selected_cards) != 1:
+        errors.append(f"Architecture carousel must have exactly one default aria-selected card, found {len(selected_cards)}")
+    if expected_keys and selected_cards and f'data-stage-key="{expected_keys[0]}"' not in selected_cards[0]:
+        errors.append("Architecture carousel default selected card should be the first shared runtime stage")
+    preview_cards = [card for card in found_cards if 'aria-selected="false"' in card]
+    if len(preview_cards) != max(0, len(expected_keys) - 1):
+        errors.append("Architecture carousel must mark every non-primary stage as a preview/selectable card")
+    for card in preview_cards:
+        if "is-preview" not in card:
+            errors.append("Architecture carousel preview card missing is-preview class")
+    for slot in found_slots:
+        if 'data-carousel-position="center"' not in slot and "is-preview" not in slot:
+            errors.append("Architecture carousel preview slot missing is-preview class")
+    for index, card_markup in enumerate(card_slices):
+        if "v21-stage" not in found_cards[index] or "v30-selectable-stage" not in found_cards[index]:
+            errors.append("Architecture carousel cards must reuse the generated stage card class family")
+        if "v60-selectable-subcard" not in card_markup or "data-substage-key=" not in card_markup:
+            errors.append("Architecture carousel cards must include generated subcard content, not title-only preview markup")
+    hidden_preview_subcards = re.search(
+        r"\.v60-carousel-card\s+\.v60-selectable-subcard\s*\{[^}]*display\s*:\s*none",
+        text,
+        flags=re.S,
+    )
+    if hidden_preview_subcards:
+        errors.append("Architecture carousel preview cards must not hide generated subcards into title-only tiles")
+    required_preview_css = [
+        ".v60-carousel-slot:not([data-carousel-position=\"center\"])",
+        "scale(var(--ds-carousel-preview-near-scale))",
+        "scale(var(--ds-carousel-preview-far-scale))",
+        "width:var(--ds-carousel-preview-source-width)",
+        "overflow:visible!important",
+    ]
+    for token in required_preview_css:
+        if token not in text:
+            errors.append(f"Architecture carousel scaled-preview CSS missing {token!r}")
+    if re.search(
+        r"\.v60-carousel-slot:not\(\[data-carousel-position=\"center\"\]\)\s*>\s*\.v60-carousel-card\s*\{[^}]*overflow\s*:\s*hidden",
+        text,
+        flags=re.S,
+    ):
+        errors.append("Architecture carousel preview cards must scale inside slots, not crop with overflow hidden")
+    dense_layout_tokens = [
+        "v60-example-group",
+        "v60-field-chiprow",
+        "v60-loopbreak-formula",
+        "v60-grounding-block",
+        'data-decision-layout="2x2-plus-complete"',
+        ".v62-decision-grid .complete",
+    ]
+    for token in dense_layout_tokens:
+        if token not in text:
+            errors.append(f"Architecture card 4 containment/layout token missing {token!r}")
+
+    for action in ("prev", "next"):
+        if f'data-carousel-action="{action}"' not in carousel:
+            errors.append(f"Architecture carousel missing {action!r} control")
+    if 'class="v60-carousel-dot"' not in carousel:
+        errors.append("Architecture carousel missing selectable stage dot buttons")
+    if "architectureCarouselStatus" not in carousel:
+        errors.append("Architecture carousel missing aria-live selected-stage status")
+    if "ArrowRight" not in text or "ArrowLeft" not in text:
+        errors.append("Architecture carousel missing keyboard arrow navigation")
+    if "setInterval(" in text or "requestAnimationFrame(" in text or "auto-rotate" in text.lower():
+        errors.append("Architecture carousel must remain user-controlled with no auto-rotation timer")
+    if "prefers-reduced-motion:reduce" not in text:
+        errors.append("Architecture carousel missing prefers-reduced-motion handling")
+    if "<noscript><style>" not in carousel or "v60-architecture-rail" not in carousel:
+        errors.append("Architecture carousel missing no-JS fallback style")
+    if "@media print" not in text or "v60-carousel-controls" not in text:
+        errors.append("Architecture carousel missing print fallback for all cards")
+
+
 def operator_reference_paths() -> set[str]:
     paths = {path.relative_to(ROOT).as_posix() for path in REFERENCE_ROOT.rglob("*.md")}
     paths.update(path.relative_to(ROOT).as_posix() for path in REFERENCE_SOURCE_PATHS if path.exists())
@@ -1181,22 +1550,52 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
         return
 
     block = text[start:end]
-    cards = re.findall(
-        r"<button\s+class=\"([^\"]*controlCard[^\"]*)\"\s+onclick=\"goConceptField\('([^']+)'\)\"",
-        block,
-    )
-    found = [concept for _classes, concept in cards]
+    card_tags = re.findall(r"<button\b(?=[^>]*\bcontrolCard\b)([^>]*)>", block)
+
+    def attr(attrs: str, name: str) -> str:
+        match = re.search(rf'\b{re.escape(name)}="([^"]*)"', attrs)
+        return html.unescape(match.group(1)) if match else ""
+
+    cards = [(attr(attrs, "class"), attr(attrs, "data-theory-card"), attrs) for attrs in card_tags]
+    found = [concept for _classes, concept, _attrs in cards]
     if found != EXPECTED_CONTROL_CARD_ORDER:
         errors.append(
             "Theory control ontology cards must render in pipeline order: "
             f"expected {EXPECTED_CONTROL_CARD_ORDER!r}, found {found!r}"
         )
 
+    arch = load_runtime_architecture_for_check(errors)
+    theory_cards = arch.get("theory_cards")
+    target_map = arch.get("theory_card_notation_targets")
+    notation_lines = arch.get("notation_lines")
+    source_card_ids: list[str] = []
+    if isinstance(theory_cards, list):
+        source_card_ids = [str(card.get("id")) for card in theory_cards if isinstance(card, dict)]
+    if source_card_ids and found != source_card_ids:
+        errors.append(
+            "Theory control card order must derive from docs/index/runtime-architecture.json: "
+            f"expected {source_card_ids!r}, found {found!r}"
+        )
+    if not isinstance(target_map, dict):
+        errors.append("docs/index/runtime-architecture.json must define theory_card_notation_targets")
+        target_map = {}
+
+    notation_tokens: set[str] = set()
+    if isinstance(notation_lines, list):
+        for line in notation_lines:
+            if not isinstance(line, list):
+                continue
+            for segment in line:
+                if isinstance(segment, dict) and isinstance(segment.get("token"), str):
+                    notation_tokens.add(segment["token"])
+    if not notation_tokens:
+        errors.append("docs/index/runtime-architecture.json must define source notation token ids")
+
     for css_class in REQUIRED_CONTROL_CARD_COLOR_CLASSES:
         if not re.search(rf"\.controlCard\.{re.escape(css_class)}\s*\{{[^}}]*--c\s*:", text, flags=re.S):
             errors.append(f"Theory control card class .controlCard.{css_class} must define --c color")
 
-    class_by_concept = {concept: set(classes.split()) for classes, concept in cards}
+    class_by_concept = {concept: set(classes.split()) for classes, concept, _attrs in cards}
     for concept, phase_class in EXPECTED_CONTROL_CARD_PHASES.items():
         if phase_class not in class_by_concept.get(concept, set()):
             errors.append(f"Theory control card {concept!r} must map to {phase_class}")
@@ -1210,6 +1609,69 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
     for concept in ("PsiI", "coupling"):
         if "phase-public-boundary" not in class_by_concept.get(concept, set()):
             errors.append(f"{concept} must map to public restorative boundary phase")
+
+    pressed_cards = [concept for _classes, concept, attrs in cards if attr(attrs, "aria-pressed") == "true"]
+    if len(pressed_cards) != 1:
+        errors.append(f"Theory control cards must have exactly one deterministic default active card, found {pressed_cards!r}")
+    elif pressed_cards[0] != EXPECTED_CONTROL_CARD_ORDER[0]:
+        errors.append("Theory control cards should default to the first shared-source card")
+
+    for _classes, concept, attrs in cards:
+        if attr(attrs, "type") != "button":
+            errors.append(f"Theory control card {concept!r} must be a real button control")
+        if attr(attrs, "data-concept-id") != concept:
+            errors.append(f"Theory control card {concept!r} missing stable data-concept-id")
+        if "selectTheoryCard(this)" not in attr(attrs, "onclick"):
+            errors.append(f"Theory control card {concept!r} must call selectTheoryCard(this), not only route to concept graph")
+        targets = attr(attrs, "data-notation-targets").split()
+        source_targets = target_map.get(concept)
+        if not targets:
+            errors.append(f"Theory control card {concept!r} missing data-notation-targets")
+        if not isinstance(source_targets, list) or not source_targets:
+            errors.append(f"runtime architecture source missing notation targets for theory card {concept!r}")
+            source_targets = []
+        if targets != source_targets:
+            errors.append(
+                f"Theory control card {concept!r} target drift: "
+                f"generated {targets!r}, source {source_targets!r}"
+            )
+        for target in targets:
+            if target not in notation_tokens:
+                errors.append(f"Theory control card {concept!r} targets unknown source notation token {target!r}")
+            if f'data-notation-id="{html.escape(target, quote=True)}"' not in text:
+                errors.append(f"Theory control card {concept!r} target {target!r} has no generated notation chip")
+
+    for token in sorted(notation_tokens):
+        token_attr = f'data-notation-id="{html.escape(token, quote=True)}"'
+        if token_attr not in text:
+            errors.append(f"Theory notation token {token!r} missing generated data-notation-id")
+        token_tag = re.search(rf"<span\b(?=[^>]*{re.escape(token_attr)})([^>]*)>", text)
+        if not token_tag:
+            continue
+        attrs = token_tag.group(1)
+        if attr(attrs, "role") != "button":
+            errors.append(f"Theory notation token {token!r} must be keyboard-addressable role=button")
+        if attr(attrs, "tabindex") != "0":
+            errors.append(f"Theory notation token {token!r} must be focusable")
+        if "highlightNotation(" not in attr(attrs, "onclick"):
+            errors.append(f"Theory notation token {token!r} must retain highlightNotation click behavior")
+
+    required_interaction_tokens = [
+        "function selectTheoryCard",
+        "function theoryCardTargetKeys",
+        "function activateNotationToken",
+        "is-linked-active",
+        'aria-pressed="true"',
+        ".controlCard.is-linked-active",
+        ".ntok.is-linked-active",
+    ]
+    for token in required_interaction_tokens:
+        if token not in text:
+            errors.append(f"Theory card-to-notation interaction missing {token!r}")
+    if "goConceptField('" in block:
+        errors.append("Theory control cards must not depend on goConceptField-only concept routing")
+    if "setInterval(" in text:
+        errors.append("Theory card-to-notation interaction must not depend on automatic timers")
 
     if "name:'del-dot ASCII alias'" in text or "name:'del-cross ASCII alias'" in text:
         errors.append("Concept graph alias cards must lead with ∇·/∇× symbols, not ASCII names")
@@ -1262,11 +1724,11 @@ def main() -> int:
         if "DRY here means" in runtime_slice:
             errors.append("architecture click hint must not expose internal DRY/refactor language")
         stage_color_contract = {
-            ".v21-s1": "--sc:var(--blue)",
-            ".v21-s2": "--sc:var(--cyan)",
-            ".v21-s3": "--sc:var(--violet)",
-            ".v21-s4": "--sc:var(--orange)",
-            ".v21-s5": "--sc:var(--red)",
+            ".v21-s1": "--sc:var(--stage-d0)",
+            ".v21-s2": "--sc:var(--stage-psi-n)",
+            ".v21-s3": "--sc:var(--stage-dsl-ir)",
+            ".v21-s4": "--sc:var(--stage-owner-ttp-delta)",
+            ".v21-s5": "--sc:var(--stage-collapse-restoration)",
         }
         for selector, token in stage_color_contract.items():
             css_token = f"#architecture #canonical-architecture-runtime {selector}"
@@ -1284,8 +1746,8 @@ def main() -> int:
             errors.append("architecture card 4 must mark the Reread gate with the green reread phase")
         if 'data-substage-key="decision"' not in runtime_slice or '<h3>Decision</h3>' not in runtime_slice:
             errors.append("architecture card 4 must mark the Decision block with the green reread phase")
-        if ".v60-reread-phase" not in text or "--sc:var(--green)" not in text[text.find(".v60-reread-phase"): text.find(".v60-reread-phase") + 220]:
-            errors.append("architecture reread phase styling must use the green phase token")
+        if ".v60-reread-phase" not in text or "--sc:var(--ds-color-success)" not in text[text.find(".v60-reread-phase"): text.find(".v60-reread-phase") + 220]:
+            errors.append("architecture reread phase styling must use the design success phase token")
         expected_substage_keys = [
             "encoded-signal",
             "no-direct-rebuttal",
@@ -1417,10 +1879,12 @@ def main() -> int:
     check_reference_data(text, errors)
 
     public_text = strip_reference_snapshots(text)
+    check_docs_index_design_system(text, manifest if isinstance(manifest, dict) else {}, errors)
     check_notation_contract(public_text, errors)
     check_public_notation_surface(INDEX, public_text, errors)
     check_architecture_trace_parity(text, errors)
     check_shared_runtime_renderings(text, errors)
+    check_architecture_carousel_contract(text, errors)
     check_large_runtime_control_js_inventory(text, manifest if isinstance(manifest, dict) else {}, errors)
     runtime_source_text = ""
     if RUNTIME_ARCHITECTURE_SOURCE.exists():

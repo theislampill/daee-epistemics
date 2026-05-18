@@ -51,6 +51,10 @@ release assets.
 | Provenance file | Release asset: `daee-epistemics-v0.4.2.0.provenance.json` generated from `build/daee-epistemics-v0.4.2.0.provenance.json` |
 | Current-release smoke proof | Local 3-case package-bound smoke passed against this SHA (`CR-01` hard, `CR-02` misuse boundary, `CR-03` bounded answer), including witness-required live contract checks; raw captures are local diagnostic artifacts and are not committed |
 
+Docs/index visual/SSOT/design consolidation is complete in tracked docs/generator/checker sources
+and does not change the package payload or SHA above. The generated docs/index surfaces are
+navigation evidence only, not runtime or smoke proof.
+
 The local package/provenance pair passed:
 
 ```powershell

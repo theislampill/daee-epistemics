@@ -259,6 +259,33 @@
     {"id": "PsiI", "symbol": "Ψᴵ", "label": "Diagnosed interlocutor field", "description": "inferred from discourse/profile/register evidence; not soul access", "phase_class": "phase-public-boundary"},
     {"id": "coupling", "symbol": "Ψᴺ ⇢ Ψᴵ", "label": "T_lang output boundary", "description": "post-closure language release toward diagnosed Ψᴵ; not a state transition or uptake claim", "phase_class": "phase-public-boundary", "extra_class": "public-boundary-card"}
   ],
+  "theory_card_notation_targets": {
+    "noetic": ["noetic", "D0"],
+    "D0": ["D0"],
+    "Psi": ["noetic", "Psi", "N", "m", "tau", "sigma", "heart", "xi", "omega", "mu", "kappa", "H"],
+    "N": ["noetic", "N"],
+    "τ": ["tau"],
+    "σ": ["sigma"],
+    "heart": ["heart"],
+    "ξ": ["xi"],
+    "Ω": ["omega"],
+    "μ": ["mu"],
+    "κ": ["kappa", "deltaK", "R"],
+    "H": ["H", "R"],
+    "gradient": ["gradient", "IR", "burden"],
+    "burden": ["burden"],
+    "submoves": ["submoves"],
+    "deltaB": ["deltaB", "burden", "submoves"],
+    "deltaK": ["deltaK", "kappa"],
+    "nablaDot": ["nablaDot", "deltaB", "deltaK", "R"],
+    "nablaCross": ["nablaCross", "deltaB", "deltaK", "R"],
+    "loopBreak": ["loopBreak", "nablaCross", "deltaB", "deltaK", "R"],
+    "R": ["R", "H", "heart", "deltaB", "deltaK", "nablaDot", "nablaCross", "fieldDiagnostics"],
+    "C": ["C", "Psi", "R"],
+    "final": ["final", "N", "heart", "xi", "omega", "mu"],
+    "PsiI": ["PsiI", "coupling"],
+    "coupling": ["coupling", "Psi", "PsiI", "final"]
+  },
   "mapping_rows": [
     ["D₀", "Surface discourse / initial signal", "diagnostic-ir.md; diagnostic-render-contract.md"],
     ["Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩", "Encoded agent/runtime signal-state and held set", "diagnostic-ir.md; recursive-state-transitions.md"],
@@ -281,7 +308,13 @@
       {"token": "Psi", "symbol": "Ψᴺ", "label": "encoded noetic signal-state", "highlight": ["noetic", "Psi", "N", "m", "tau", "sigma", "heart", "xi", "omega", "mu", "kappa", "H"]},
       {"text": "⟨"},
       {"token": "N", "symbol": "N∈𝓝", "label": "runtime-selected operative noetic frame from 𝓝", "highlight": ["noetic", "N"]},
-      {"text": ", m, τ, σ, "},
+      {"text": ", "},
+      {"token": "m", "symbol": "m", "label": "deformation / memetic mode", "highlight": ["m"]},
+      {"text": ", "},
+      {"token": "tau", "symbol": "τ", "label": "tribunal / burden-function", "highlight": ["tau"]},
+      {"text": ", "},
+      {"token": "sigma", "symbol": "σ", "label": "source / semantic / authority status", "highlight": ["sigma"]},
+      {"text": ", "},
       {"token": "heart", "symbol": "♥", "classes": "symHeart", "label": "affective-discursive register / release posture", "highlight": ["heart"]},
       {"text": ", "},
       {"token": "xi", "symbol": "ξ", "classes": "symXi", "label": "epistemic/warrant grammar", "highlight": ["xi"]},
@@ -336,7 +369,8 @@
     ],
     [
       {"text": "public release boundary", "class": "notationArrow"},
-      {"token": "coupling", "symbol": "T_lang: Ψᴺ ⇢ Ψᴵ", "label": "T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim", "highlight": ["coupling", "Psi", "PsiI", "final"]}
+      {"token": "coupling", "symbol": "T_lang: Ψᴺ ⇢ Ψᴵ", "label": "T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim", "highlight": ["coupling", "Psi", "PsiI", "final"]},
+      {"token": "PsiI", "symbol": "Ψᴵ", "label": "diagnosed interlocutor field inferred from discourse/profile/register evidence", "highlight": ["PsiI", "coupling"]}
     ]
   ]
 }
