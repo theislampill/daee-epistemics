@@ -106,7 +106,7 @@
   --ds-space-xl:24px;
   --ds-space-card-padding:12px;
   --ds-space-section-gap:14px;
-  --ds-space-carousel-gap:10px;
+  --ds-space-carousel-gap:18px;
   --ds-radius-chip:999px;
   --ds-radius-card:10px;
   --ds-radius-panel:18px;
@@ -118,16 +118,16 @@
   --ds-motion-duration-fast:150ms;
   --ds-motion-easing:ease;
   --ds-motion-reduced-motion:Disable non-essential transitions; preserve state changes without animated travel.;
-  --ds-carousel-gap:10px;
+  --ds-carousel-gap:18px;
   --ds-carousel-primary-width:clamp(620px,52vw,860px);
-  --ds-carousel-side-width:clamp(150px,12vw,190px);
-  --ds-carousel-far-width:clamp(48px,4vw,60px);
-  --ds-carousel-preview-source-width:440px;
-  --ds-carousel-preview-far-source-width:440px;
-  --ds-carousel-preview-near-scale:.43;
+  --ds-carousel-side-width:clamp(205px,13vw,300px);
+  --ds-carousel-far-width:clamp(56px,4vw,90px);
+  --ds-carousel-preview-source-width:clamp(620px,52vw,860px);
+  --ds-carousel-preview-far-source-width:clamp(620px,52vw,860px);
+  --ds-carousel-preview-near-scale:.34;
   --ds-carousel-preview-far-scale:.14;
-  --ds-carousel-preview-near-slot-height:330px;
-  --ds-carousel-preview-far-slot-height:150px;
+  --ds-carousel-preview-near-slot-height:560px;
+  --ds-carousel-preview-far-slot-height:240px;
   --ds-carousel-preview-near-max-height:430px;
   --ds-carousel-preview-far-max-height:330px;
   --ds-carousel-preview-opacity:.72;
@@ -159,7 +159,7 @@
 }
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
 button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
-.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .tabs{display:flex;gap:4px;max-width:1880px;margin:0 auto;padding:8px 12px;overflow:auto} .tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .topbarInner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1880px;margin:0 auto;padding:8px 12px}.tabs{display:flex;gap:4px;min-width:0;overflow:auto}.tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}.downloadNavAction{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid rgba(34,197,94,.42);background:linear-gradient(180deg,rgba(34,197,94,.16),rgba(34,197,94,.08));color:#dcfce7;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.14)}.downloadNavAction:hover{border-color:rgba(34,197,94,.75);background:rgba(34,197,94,.18);color:#fff}.downloadNavAction:focus-visible{outline:3px solid var(--ds-color-focus);outline-offset:3px}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
 .panel{border:1px solid var(--line);background:rgba(15,19,32,.88);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.18)} h2{font-size:clamp(24px,2.4vw,38px);letter-spacing:-.055em;margin:20px 0 10px} h3{font-size:20px;letter-spacing:-.035em;margin:18px 0 8px} h4{margin:14px 0 8px;color:#f8fafc} p,li{color:#cbd5e1} .small,.subtle{font-size:13px;color:var(--muted)}
@@ -183,20 +183,39 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
 .bridgeSemantics{border:1px solid var(--line);background:rgba(12,18,32,.92);border-radius:20px;padding:16px;margin:12px 0}.bridgeIntro{max-width:1180px}.bridgeKicker{margin:0 0 4px;color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.bridgeIntro h2{margin:0 0 8px;font-size:clamp(24px,2vw,34px);letter-spacing:-.04em}.bridgeIntro p{margin:0;color:#cbd5e1}.bridgeFlow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed #334155;background:#080d19;border-radius:16px;padding:10px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}.bridgeFlow span{border:1px solid #334155;background:#0c1220;border-radius:10px;padding:6px 8px;color:#e8edf7}.bridgeFlow b{color:#64748b}.bridgeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bridgeCard{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:12px;min-width:0}.bridgeCard h3{font-size:15px;margin:0 0 8px;color:#dbeafe;letter-spacing:-.02em}.bridgeCard p{margin:7px 0;font-size:13px;line-height:1.48}.bridgeCard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0}.bridgeCard dt{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bbf7d0;font-weight:950}.bridgeCard dd{margin:0;color:#cbd5e1;font-size:13px;line-height:1.42}.bridgeNonClaims{border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.055)}.bridgeNonClaims h3{color:#fecaca}.bridgeNonClaims ul{margin:0;padding-left:18px}.bridgeNonClaims li{font-size:13px;line-height:1.45;margin:4px 0}.bridgeExamples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bridgeExamples>div{border:1px solid #334155;background:#080d19;border-radius:14px;padding:10px}.bridgeExamples strong{display:block;color:#bbf7d0;margin-bottom:6px}.bridgeExamples code{display:block;white-space:normal;line-height:1.45}@media(max-width:1100px){.bridgeGrid{grid-template-columns:1fr 1fr}.bridgeExamples{grid-template-columns:1fr}}@media(max-width:760px){.bridgeGrid{grid-template-columns:1fr}.bridgeFlow{display:grid;grid-template-columns:1fr}.bridgeFlow b{display:none}}
 @media(max-width:1250px){.pipelineGrid{grid-template-columns:repeat(3,1fr)}.detailGrid{grid-template-columns:1fr 1fr}.compareGrid,.ownerFamilies,.entityLayout,.docviewer{grid-template-columns:1fr}.ownerCircuit{grid-template-columns:1fr 1fr}.regGrid{grid-template-columns:1fr 1fr}.procGrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.col3,.col4,.col6,.col8,.full{grid-column:1/-1}}
-@media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.tab{padding:10px 12px}}
+@media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.topbarInner{align-items:stretch;flex-wrap:wrap}.tabs{flex:1 1 100%;order:1}.downloadNavAction{order:2;margin-left:auto;padding:8px 12px}.tab{padding:10px 12px}}
 
 
-.notationBoard{border:1px solid #334155;background:#070b14;border-radius:18px;padding:14px;margin:12px 0;overflow:auto}
-.notationLine{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:6px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}
-.ntok{display:inline-flex;align-items:center;border:1px solid #334155;background:#0c1220;border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;cursor:pointer}
-.ntok:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.notationBoard{border:1px solid #334155;background:#070b14;border-radius:18px;padding:14px;margin:12px 0;overflow:hidden;max-width:100%}
+.notationLine{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:6px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850;max-width:100%;overflow-wrap:anywhere}
+.ntok{--ntok-c:#334155;display:inline-flex;align-items:center;border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 86%);border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;cursor:pointer;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;line-height:1.35}
+.ntok:hover{border-color:var(--ntok-c);transform:translateY(-1px)}
 .ntok.active,
 .ntok.is-linked-active,
-.ntok[aria-pressed="true"]{border-color:var(--yellow);background:rgba(250,204,21,.16);color:#fff;box-shadow:0 0 0 2px rgba(250,204,21,.12);outline:2px solid rgba(250,204,21,.36);outline-offset:2px}
+.ntok[aria-pressed="true"]{border-color:var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 72%);color:#fff;box-shadow:0 0 0 2px color-mix(in srgb,var(--ntok-c),transparent 76%);outline:2px solid rgba(250,204,21,.36);outline-offset:2px}
 .ntok.muted{opacity:.34}
-.ntok.symNoetic{border-color:rgba(45,212,191,.7)}.ntok.symXi{border-color:rgba(34,211,238,.55)}.ntok.symOmega{border-color:rgba(167,139,250,.55)}.ntok.symHeart{border-color:rgba(244,114,182,.7)}.ntok.symMu{border-color:rgba(244,114,182,.55)}.ntok.symKappa{border-color:rgba(251,146,60,.55)}
+.ntok.phase-input,.ntokMini.phase-input{--ntok-c:var(--stage-d0)}
+.ntok.phase-layer-a,.ntokMini.phase-layer-a{--ntok-c:var(--stage-psi-n)}
+.ntok.phase-gate,.ntokMini.phase-gate{--ntok-c:var(--stage-dsl-ir)}
+.ntok.phase-owner-delta,.ntokMini.phase-owner-delta{--ntok-c:var(--stage-owner-ttp-delta)}
+.ntok.phase-reread-closure,.ntokMini.phase-reread-closure{--ntok-c:var(--green)}
+.ntok.phase-public-boundary,.ntokMini.phase-public-boundary{--ntok-c:var(--stage-collapse-restoration)}
 .notationArrow{color:#64748b;font-weight:900}
-.notationExplain{border:1px dashed #334155;background:#0a0f1d;border-radius:12px;padding:10px;color:#cbd5e1;font-size:13px;margin-top:10px}
+.notationExplain{border:1px dashed #334155;background:#0a0f1d;border-radius:12px;padding:12px;color:#cbd5e1;font-size:13px;margin-top:10px;overflow:hidden}
+.notationContext{display:grid;gap:10px}
+.notationContextHeader{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;font-weight:900;color:#f8fafc}
+.notationContextHeader .ntokMini{--ntok-c:var(--yellow);border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 82%);border-radius:999px;padding:4px 8px;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.notationContextGrid{display:grid;grid-template-columns:1fr;gap:7px}
+.notationContextBlock{border:1px solid #263044;background:#080d19;border-radius:12px;padding:10px;min-width:0}
+.notationContextBlock strong{display:block;color:#7dd3fc;text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin-bottom:5px}
+.notationContextBlock span{display:block;line-height:1.42}
+.notationContextBlock code{white-space:normal;overflow-wrap:anywhere;color:#bbf7d0}
+.notationRelated{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.notationRelated span{border:1px solid #334155;background:#0c1220;border-radius:999px;padding:4px 7px;color:#dbeafe;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.notationHighlightList{display:grid;gap:6px;margin-top:4px}
+.notationHighlightRow{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:8px;align-items:start;border:1px solid #263044;background:#0a0f1d;border-radius:10px;padding:7px}
+.notationHighlightRow b{color:#f8fafc;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.notationHighlightRow span{color:#cbd5e1}
 .notationLegend{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .notationLegend .miniCard{border:1px solid #334155;background:#0a0f1d;border-radius:14px;padding:10px;font-size:13px}
 .relationLayout{display:grid;grid-template-columns:360px 1fr;gap:14px}.relationList{display:grid;gap:8px;max-height:680px;overflow:auto}.relationBtn{border:1px solid var(--line);background:#0c1220;border-radius:14px;padding:10px;text-align:left;color:#e8edf7;cursor:pointer}.relationBtn.active{border-color:var(--green);background:rgba(34,197,94,.09)}.relationDetail{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
@@ -421,67 +440,67 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .finalStateChip{border-color:rgba(250,204,21,.55)!important;background:rgba(250,204,21,.10)!important}
 
 
-/* v19: richer prominent control ontology cards */
+/* v62: compact Theory selectors keep the 25-card bank secondary to notation. */
 .controlOverviewGrid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(220px,1fr));
-  gap:12px;
-  margin:14px 0 16px;
+  grid-template-columns:repeat(5,minmax(150px,1fr));
+  gap:8px;
+  margin:10px 0 12px;
 }
 .controlCard{
   text-align:left;
   border:2px solid var(--c);
   background:#0c1220;
   color:var(--ink);
-  border-radius:18px;
-  padding:14px;
+  border-radius:12px;
+  padding:8px;
   cursor:pointer;
-  min-height:150px;
+  min-height:84px;
   transition:.15s transform,.15s background,.15s box-shadow;
 }
 .controlCard:hover{
-  transform:translateY(-2px);
+  transform:translateY(-1px);
   background:#101827;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 74%);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--c),transparent 74%);
 }
 .controlCard:focus-visible{
-  outline:3px solid var(--ds-color-focus);
-  outline-offset:3px;
+  outline:2px solid var(--ds-color-focus);
+  outline-offset:2px;
 }
 .controlCard.is-linked-active,
 .controlCard[aria-pressed="true"]{
   background:#111c2d;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--c),transparent 58%), inset 0 0 0 2px rgba(255,255,255,.12);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--c),transparent 58%), inset 0 0 0 1px rgba(255,255,255,.12);
   transform:translateY(-1px);
 }
 .controlCard.is-linked-active .controlSym,
 .controlCard[aria-pressed="true"] .controlSym{
-  box-shadow:0 0 0 2px rgba(255,255,255,.34);
+  box-shadow:0 0 0 1px rgba(255,255,255,.34);
 }
 .controlCard .controlSym{
-  min-width:48px;
-  height:48px;
-  border-radius:15px;
-  padding:0 10px;
+  min-width:30px;
+  height:30px;
+  border-radius:9px;
+  padding:0 7px;
   display:inline-grid;
   place-items:center;
   background:var(--c);
   color:white;
   font-family:ui-serif,Georgia,serif;
-  font-size:24px;
+  font-size:16px;
   font-weight:950;
-  margin-bottom:9px;
+  margin-bottom:5px;
 }
-.controlCard strong{display:block;font-size:16px;color:#f8fafc;margin-bottom:7px}
-.controlCard p{margin:0;color:#cbd5e1;font-size:13px;line-height:1.4}
-.controlCard.phase-input{--c:var(--blue)}
-.controlCard.phase-layer-a{--c:var(--cyan)}
-.controlCard.phase-gate{--c:var(--violet)}
-.controlCard.phase-owner-delta{--c:var(--orange)}
+.controlCard strong{display:block;font-size:12px;color:#f8fafc;margin-bottom:4px;line-height:1.2}
+.controlCard p{margin:0;color:#cbd5e1;font-size:10.5px;line-height:1.28}
+.controlCard.phase-input{--c:var(--stage-d0)}
+.controlCard.phase-layer-a{--c:var(--stage-psi-n)}
+.controlCard.phase-gate{--c:var(--stage-dsl-ir)}
+.controlCard.phase-owner-delta{--c:var(--stage-owner-ttp-delta)}
 .controlCard.phase-reread-closure{--c:var(--green)}
-.controlCard.phase-public-boundary{--c:var(--red)}
-.controlCard.final-card .controlSym{font-size:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.controlCard.phase-reread-closure .controlSym{font-size:23px}
+.controlCard.phase-public-boundary{--c:var(--stage-collapse-restoration)}
+.controlCard.final-card .controlSym{font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.controlCard.phase-reread-closure .controlSym{font-size:15px}
 .controlCard.route-gradient-card .controlSym,
 .controlCard.field-diagnostic-card .controlSym,
 .controlCard.loopbreak-card .controlSym,
@@ -491,17 +510,17 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .controlCard.final-card .controlSym{
   max-width:100%;
   height:auto;
-  min-height:48px;
+  min-height:30px;
   line-height:1.08;
   text-align:center;
   white-space:normal;
   overflow-wrap:anywhere;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  font-size:18px;
+  font-size:11px;
 }
-@media(min-width:1500px){.controlOverviewGrid{grid-template-columns:repeat(5,minmax(220px,1fr))}}
-@media(max-width:1499px){.controlOverviewGrid{grid-template-columns:repeat(3,minmax(220px,1fr))}}
-@media(max-width:900px){.controlOverviewGrid{grid-template-columns:repeat(2,minmax(220px,1fr))}}
+@media(min-width:1500px){.controlOverviewGrid{grid-template-columns:repeat(5,minmax(150px,1fr))}}
+@media(max-width:1499px){.controlOverviewGrid{grid-template-columns:repeat(5,minmax(145px,1fr))}}
+@media(max-width:900px){.controlOverviewGrid{grid-template-columns:repeat(3,minmax(140px,1fr))}}
 @media(max-width:620px){.controlOverviewGrid{grid-template-columns:1fr}}
 
 /* v20: deep pipeline stage cards restoring index9 architecture content */
@@ -1686,6 +1705,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   font-size:clamp(14px,1.05vw,17px)!important;
   line-height:1.18!important;
   gap:7px!important;
+  justify-content:center!important;
+  text-align:center!important;
 }
 #architecture #canonical-architecture-runtime .v21-stage h2 span{
   width:24px!important;
@@ -1775,19 +1796,12 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 #architecture #canonical-architecture-runtime .v21-dec-grid{
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
 }
-#architecture #canonical-architecture-runtime .v56-formula-flow{
-  align-items:center!important;
-}
-#architecture #canonical-architecture-runtime .v56-formula-flow .node{
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
-}
-#architecture #canonical-architecture-runtime .v56-input{border-color:rgba(var(--stage-d0-rgb),.65);background:rgba(var(--stage-d0-rgb),.10)}
-#architecture #canonical-architecture-runtime .v56-ir{border-color:rgba(var(--stage-psi-n-rgb),.65);background:rgba(var(--stage-psi-n-rgb),.09)}
-#architecture #canonical-architecture-runtime .v56-owner{border-color:rgba(var(--stage-dsl-ir-rgb),.65);background:rgba(var(--stage-dsl-ir-rgb),.10)}
-#architecture #canonical-architecture-runtime .v56-land{border-color:rgba(var(--stage-owner-ttp-delta-rgb),.65);background:rgba(var(--stage-owner-ttp-delta-rgb),.10)}
-#architecture #canonical-architecture-runtime .v56-reread{border-color:rgba(var(--ds-color-success-rgb),.65);background:rgba(var(--ds-color-success-rgb),.10)}
-#architecture #canonical-architecture-runtime .v56-decision{border-color:rgba(var(--stage-collapse-restoration-rgb),.65);background:rgba(var(--stage-collapse-restoration-rgb),.09)}
+#architecture #canonical-architecture-runtime .v56-input{--pipe-rgb:var(--stage-d0-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-ir{--pipe-rgb:var(--stage-psi-n-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.09)}
+#architecture #canonical-architecture-runtime .v56-owner{--pipe-rgb:var(--stage-dsl-ir-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-land{--pipe-rgb:var(--stage-owner-ttp-delta-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-reread{--pipe-rgb:var(--ds-color-success-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.10)}
+#architecture #canonical-architecture-runtime .v56-decision{--pipe-rgb:var(--stage-collapse-restoration-rgb);border-color:rgba(var(--pipe-rgb),.65);background:rgba(var(--pipe-rgb),.09)}
 #architecture #canonical-architecture-runtime .v21-s1{--sc:var(--stage-d0)!important;--sc-rgb:var(--stage-d0-rgb)!important}
 #architecture #canonical-architecture-runtime .v21-s2{--sc:var(--stage-psi-n)!important;--sc-rgb:var(--stage-psi-n-rgb)!important}
 #architecture #canonical-architecture-runtime .v21-s3{--sc:var(--stage-dsl-ir)!important;--sc-rgb:var(--stage-dsl-ir-rgb)!important}
@@ -1824,46 +1838,177 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 #architecture #canonical-architecture-runtime .v60-pipeline-stack{
   display:grid!important;
-  gap:10px!important;
-  margin:10px 0 12px!important;
-}
-#architecture #canonical-architecture-runtime .v60-pipeline-row{
-  display:flex!important;
-  flex-wrap:wrap!important;
-  align-items:center!important;
-  gap:6px!important;
-  row-gap:8px!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:12px!important;
+  margin:12px 0 16px!important;
   max-width:100%!important;
+  border:1px solid #263044!important;
+  background:rgba(8,13,25,.66)!important;
+  border-radius:14px!important;
+  padding:12px!important;
+  overflow:hidden!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-heading{
+  color:#f8fafc!important;
+  font-size:14px!important;
+  font-weight:950!important;
+  letter-spacing:.02em!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-columns{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:start!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-panel{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important;
+  min-width:0!important;
+  max-width:100%!important;
+  align-self:start!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-panel + .v60-pipeline-panel{
+  border-left:3px solid var(--green)!important;
+  padding-left:18px!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-label{
+  color:var(--ds-color-text-muted)!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-list{
+  list-style:none!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:8px!important;
+  margin:0!important;
+  padding:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
   overflow:visible!important;
 }
-#architecture #canonical-architecture-runtime .v60-pipeline-row .node{
+#architecture #canonical-architecture-runtime .v60-pipeline-phase-group{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  min-width:0!important;
+  max-width:100%!important;
+  border:1px dashed rgba(var(--pipe-rgb,51,65,85),.32)!important;
+  border-radius:12px!important;
+  background:rgba(var(--pipe-rgb,51,65,85),.035)!important;
+  padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-phase-group[data-phase-break="true"]{
+  margin-top:8px!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-phase-group[data-phase-break="true"]::before{
+  content:"↓"!important;
+  position:absolute!important;
+  left:12px!important;
+  top:-18px!important;
+  color:rgba(226,232,240,.76)!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  line-height:1!important;
+}
+#architecture #canonical-architecture-runtime .v60-phase-flow{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px 7px!important;
+  align-items:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-step{
+  display:inline-grid!important;
+  grid-template-columns:26px minmax(0,1fr)!important;
+  gap:8px!important;
+  align-items:center!important;
+  min-width:0!important;
+  max-width:min(100%,260px)!important;
+  border:1px solid #334155!important;
+  border-radius:10px!important;
+  padding:6px 8px!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  font-weight:900!important;
+  color:#f8fafc!important;
+}
+#architecture #canonical-architecture-runtime .v60-formal-pipeline .v60-pipeline-step{
+  max-width:min(100%,360px)!important;
+}
+#architecture #canonical-architecture-runtime .v60-pipeline-arrow{
+  display:inline-grid!important;
+  place-items:center!important;
+  color:rgba(226,232,240,.72)!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  font-size:14px!important;
+  font-weight:950!important;
+  align-self:center!important;
+}
+#architecture #canonical-architecture-runtime .v60-step-number{
+  width:22px!important;
+  height:22px!important;
+  border-radius:999px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  background:rgba(var(--pipe-rgb,51,65,85),.88)!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:950!important;
+}
+#architecture #canonical-architecture-runtime .v60-step-label{
   white-space:normal!important;
   overflow-wrap:anywhere!important;
   word-break:normal!important;
-  flex:0 1 auto!important;
-  max-width:100%!important;
+  min-width:0!important;
   font-size:clamp(10px,.72vw,12px)!important;
-  padding:6px 8px!important;
+  line-height:1.32!important;
+}
+#architecture #canonical-architecture-runtime .v56-formula-flow .v60-step-label{
+  font-size:clamp(10px,.68vw,12px)!important;
+}
+#architecture #canonical-architecture-runtime .v60-formal-trace-copy{
+  display:grid!important;
+  gap:7px!important;
+  min-width:0!important;
+  max-width:100%!important;
+  border:1px solid rgba(var(--stage-collapse-restoration-rgb),.38)!important;
+  background:rgba(3,7,18,.76)!important;
+  border-radius:12px!important;
+  padding:10px!important;
+}
+#architecture #canonical-architecture-runtime .v60-formal-trace-copy pre{
+  margin:0!important;
+  max-width:100%!important;
+  overflow:auto!important;
+  white-space:pre!important;
+  border:1px solid #263044!important;
+  background:#050914!important;
   border-radius:10px!important;
+  padding:9px 10px!important;
 }
-#architecture #canonical-architecture-runtime .v60-pipeline-row .arrow{
-  flex:0 0 auto!important;
-  font-size:clamp(9px,.7vw,12px)!important;
+#architecture #canonical-architecture-runtime .v60-formal-trace-copy code{
+  color:#f8fafc!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  font-size:12px!important;
+  line-height:1.45!important;
 }
-@media(min-width:1500px){
-  #architecture #canonical-architecture-runtime .v60-runtime-row{
-    flex-wrap:nowrap!important;
-    gap:5px!important;
+@media(max-width:920px){
+  #architecture #canonical-architecture-runtime .v60-pipeline-columns{
+    grid-template-columns:minmax(0,1fr)!important;
   }
-  #architecture #canonical-architecture-runtime .v60-runtime-row .node{
-    white-space:nowrap!important;
-    overflow-wrap:normal!important;
-    flex:0 0 auto!important;
-    font-size:clamp(11px,.68vw,12px)!important;
-    padding:6px 8px!important;
-  }
-  #architecture #canonical-architecture-runtime .v60-runtime-row .arrow{
-    font-size:12px!important;
+  #architecture #canonical-architecture-runtime .v60-pipeline-panel + .v60-pipeline-panel{
+    border-left:0!important;
+    border-top:3px solid var(--green)!important;
+    padding-left:0!important;
+    padding-top:12px!important;
   }
 }
 #architecture #canonical-architecture-runtime .v60-field-diagnostics{
@@ -1976,8 +2121,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   margin:8px 0 12px;
 }
 .runtimeSourceNote code{white-space:nowrap}
-.theoryNotationMap{border:1px solid #334155;background:#080d19;border-radius:16px;padding:12px;margin:12px 0}
-.theoryNotationMap h3{margin-top:0}
 .compactBridgeFlow{align-items:stretch}
 .compactBridgeFlow .notationChip{margin:0}
 
@@ -2019,6 +2162,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 #architecture #canonical-architecture-runtime .v60-carousel-status{
   min-width:min(420px,70vw);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
   text-align:center;
   border:1px solid var(--ds-color-border);
   background:var(--ds-color-surface-deep);
@@ -2027,6 +2175,13 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   color:var(--ds-color-text-subtle);
   font-size:13px;
   font-weight:850;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-progress{
+  display:none;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-title{
+  color:var(--ds-color-text-subtle);
+  font-weight:950;
 }
 #architecture #canonical-architecture-runtime > .v60-architecture-carousel > .v60-architecture-rail,
 #architecture #canonical-architecture-runtime .v60-architecture-rail{
@@ -2049,10 +2204,10 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   flex:0 0 var(--v61-carousel-side)!important;
   min-width:0!important;
   max-width:var(--v61-carousel-side)!important;
-  min-height:330px!important;
-  max-height:var(--ds-carousel-preview-near-max-height)!important;
-  padding:9px!important;
-  overflow:hidden!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:12px!important;
+  overflow:visible!important;
   opacity:var(--ds-carousel-preview-opacity);
   transform:none;
   transform-origin:center;
@@ -2061,40 +2216,76 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card h2{
   margin:0!important;
-  font-size:12px!important;
-  line-height:1.2!important;
+  font-size:clamp(14px,1.05vw,17px)!important;
+  line-height:1.18!important;
+  justify-content:center!important;
+  text-align:center!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card h2 span{
-  width:22px!important;
-  height:22px!important;
-  font-size:11px!important;
+  width:24px!important;
+  height:24px!important;
+  font-size:12px!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard{
   display:block!important;
   margin-top:8px!important;
   padding:8px!important;
-  opacity:.84;
+  opacity:1;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard h3,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard b{
-  font-size:10.5px!important;
-  line-height:1.15!important;
+  font-size:13px!important;
+  line-height:1.2!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard p,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard li,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard span,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v60-selectable-subcard small{
-  font-size:9px!important;
-  line-height:1.18!important;
+  font-size:12px!important;
+  line-height:1.35!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card .v21-field-grid,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v21-dec-grid,
-#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-flow,
 #architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-checks{
   grid-template-columns:1fr!important;
 }
+#architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-flow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
 #architecture #canonical-architecture-runtime .v60-carousel-card .v54-gate-arrow{
   display:none!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"]{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-content:start!important;
+  gap:8px!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"] > h2,
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"] > [data-substage-key="operational-boundary"]{
+  grid-column:1 / -1!important;
+}
+#architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"] > .v60-selectable-subcard{
+  margin-top:0!important;
+}
+#architecture #canonical-architecture-runtime .v63-two-column-stage-layout{
+  display:grid!important;
+  grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)!important;
+  gap:10px!important;
+  align-items:start!important;
+  min-width:0!important;
+}
+#architecture #canonical-architecture-runtime .v63-stage-stack{
+  display:grid!important;
+  gap:8px!important;
+  align-content:start!important;
+  min-width:0!important;
+}
+#architecture #canonical-architecture-runtime .v63-two-column-stage-layout .v60-selectable-subcard{
+  margin-top:0!important;
+}
+#architecture #canonical-architecture-runtime .v63-owner-release-layout{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-card[data-carousel-position="center"]{
   order:3;
@@ -2256,7 +2447,6 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   overflow:hidden!important;
 }
 #architecture #canonical-architecture-runtime .v60-field-chiprow,
-#architecture #canonical-architecture-runtime .v60-loopbreak-operands,
 #architecture #canonical-architecture-runtime .v60-grounding-members{
   display:flex!important;
   flex-wrap:wrap!important;
@@ -2272,17 +2462,93 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   flex:1 1 100%!important;
   overflow-wrap:anywhere!important;
 }
+#architecture #canonical-architecture-runtime .example-chip-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:6px!important;
+  align-items:center!important;
+  justify-content:start!important;
+  max-width:100%!important;
+  overflow:visible!important;
+}
+#architecture #canonical-architecture-runtime .example-chip-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .example-chip-grid .v60-field-target{
+  min-width:0!important;
+  max-width:100%!important;
+  justify-content:center!important;
+}
+#architecture #canonical-architecture-runtime .example-chip-description{
+  display:block!important;
+  grid-column:1 / -1!important;
+  margin-top:2px!important;
+}
 #architecture #canonical-architecture-runtime .v60-loopbreak-formula{
   display:grid!important;
   grid-template-columns:auto auto minmax(0,1fr)!important;
   gap:7px!important;
-  align-items:center!important;
+  align-items:start!important;
   min-width:0!important;
   width:100%!important;
   border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.55)!important;
   background:rgba(var(--stage-owner-ttp-delta-rgb),.10)!important;
   border-radius:var(--ds-radius-card)!important;
   padding:7px!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-operands{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:5px!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-loopbreak-operand-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  align-items:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-decision-formula{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:6px!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-signature,
+#architecture #canonical-architecture-runtime .v60-reread-outcomes{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  align-items:center!important;
+  min-width:0!important;
+  max-width:100%!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-signature{
+  color:#fff7ed!important;
+}
+#architecture #canonical-architecture-runtime .v60-reread-turnstile,
+#architecture #canonical-architecture-runtime .v60-decision-separator{
+  color:rgba(var(--stage-owner-ttp-delta-rgb),.8)!important;
+  font-weight:950!important;
+}
+#architecture #canonical-architecture-runtime .v60-decision-outcome{
+  display:inline-flex!important;
+  align-items:center!important;
+  border:1px solid rgba(var(--stage-owner-ttp-delta-rgb),.42)!important;
+  background:rgba(var(--stage-owner-ttp-delta-rgb),.08)!important;
+  border-radius:var(--ds-radius-chip)!important;
+  padding:3px 7px!important;
+  color:#fff7ed!important;
+  font-weight:900!important;
 }
 #architecture #canonical-architecture-runtime .v60-loopbreak-head,
 #architecture #canonical-architecture-runtime .v60-loopbreak-turnstile,
@@ -2311,7 +2577,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 }
 #architecture #canonical-architecture-runtime .v60-grounding-block{
   display:grid!important;
-  grid-template-columns:auto minmax(0,1fr) auto!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
   gap:6px!important;
   align-items:start!important;
   min-width:0!important;
@@ -2350,6 +2616,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   min-width:0!important;
   overflow:visible!important;
   pointer-events:none!important;
+  z-index:1!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="center"]{
   order:3!important;
@@ -2360,13 +2627,14 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   z-index:4!important;
   pointer-events:auto!important;
 }
-#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="prev"]{order:2!important}
-#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="next"]{order:4!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="prev"]{order:2!important; z-index:2!important}
+#architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="next"]{order:4!important; z-index:2!important}
 #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
 #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
   flex-basis:var(--v61-carousel-far)!important;
   width:var(--v61-carousel-far)!important;
   height:var(--ds-carousel-preview-far-slot-height)!important;
+  z-index:0!important;
 }
 #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"]{order:1!important}
 #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{order:5!important}
@@ -2400,39 +2668,21 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   max-width:960px!important;
   transform:none!important;
 }
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2{
-  font-size:clamp(14px,1.05vw,17px)!important;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2 span{
-  width:24px!important;
-  height:24px!important;
-  font-size:12px!important;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard h3,
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard b{
-  font-size:13px!important;
-  line-height:1.2!important;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard p,
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard li,
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard span,
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard small{
-  font-size:12px!important;
-  line-height:1.35!important;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-flow{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-}
-#architecture #canonical-architecture-runtime .v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-checks{
-  grid-template-columns:1fr!important;
+@media(max-width:1500px) and (min-width:1181px){
+  #architecture #canonical-architecture-runtime .v60-architecture-carousel{
+    --ds-carousel-preview-near-scale:.30;
+    --ds-carousel-preview-far-scale:.11;
+    --ds-carousel-preview-near-slot-height:500px;
+    --ds-carousel-preview-far-slot-height:210px;
+  }
 }
 @media(max-width:1180px){
   #architecture #canonical-architecture-runtime .v60-architecture-carousel{
-    --ds-carousel-preview-source-width:420px;
-    --ds-carousel-preview-near-scale:.33;
-    --ds-carousel-preview-near-slot-height:260px;
-    --ds-carousel-preview-far-source-width:360px;
-    --ds-carousel-preview-far-scale:.23;
+    --ds-carousel-preview-source-width:min(680px,68vw);
+    --ds-carousel-preview-near-scale:.18;
+    --ds-carousel-preview-near-slot-height:300px;
+    --ds-carousel-preview-far-source-width:min(680px,68vw);
+    --ds-carousel-preview-far-scale:.075;
   }
   #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-prev"],
   #architecture #canonical-architecture-runtime .v60-carousel-slot[data-carousel-position="far-next"]{
@@ -2452,11 +2702,28 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
     max-width:none!important;
     width:100%!important;
   }
+  #architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"]{
+    grid-template-columns:1fr!important;
+  }
+  #architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"] > h2,
+  #architecture #canonical-architecture-runtime .v60-carousel-card[data-stage-key="psi"] > [data-substage-key="operational-boundary"]{
+    grid-column:auto!important;
+  }
+  #architecture #canonical-architecture-runtime .v63-two-column-stage-layout,
+  #architecture #canonical-architecture-runtime .v63-owner-release-layout{
+    grid-template-columns:1fr!important;
+  }
+  #architecture #canonical-architecture-runtime .example-chip-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
 }
 @media(max-width:620px){
   #architecture #canonical-architecture-runtime .v60-loopbreak-formula,
   #architecture #canonical-architecture-runtime .v60-grounding-block{
     grid-template-columns:1fr!important;
+  }
+  #architecture #canonical-architecture-runtime .example-chip-grid{
+    grid-template-columns:minmax(0,1fr)!important;
   }
 }
 @media print{
@@ -2473,11 +2740,14 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </head>
 <body>
 <div class="topbar">
+<div class="topbarInner">
 <div class="tabs" role="tablist" aria-label="DAEE wiki sections">
 <button type="button" id="tab-architecture" class="tab active" role="tab" aria-selected="true" aria-controls="architecture" data-tab="architecture">Architecture</button>
 <button type="button" id="tab-owners" class="tab" role="tab" aria-selected="false" aria-controls="owners" data-tab="owners" tabindex="-1">Owners &amp; TTP</button>
 <button type="button" id="tab-theory" class="tab" role="tab" aria-selected="false" aria-controls="theory" data-tab="theory" tabindex="-1">Theory Deep Dive</button>
 <button type="button" id="tab-reference" class="tab" role="tab" aria-selected="false" aria-controls="reference" data-tab="reference" tabindex="-1">Reference Library</button>
+</div>
+<a class="downloadNavAction" data-release-download-kind="direct_asset" data-release-sha256="21B25FF08AD36E26A57BACEC785C635F49DEC06E84A6EE191F4F8A61870913A7" href="https://github.com/theislampill/daee-epistemics/releases/download/v0.4.2.0/daee-epistemics-v0.4.2.0.skill" target="_blank" rel="noopener" title="Latest GitHub Release: v0.4.2.0 — Release-Proven Runtime Governance" aria-label="Download latest .skill asset from GitHub Release" download="daee-epistemics-v0.4.2.0.skill"><span>Download latest .skill</span></a>
 </div>
 </div>
 <main>
@@ -2489,48 +2759,89 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="panel v21-pipeline-panel v29-current-panel" id="canonical-architecture-runtime">
 <!-- Generated by tools/build_docs_index.py from docs/index/runtime-architecture.json. Generated docs/index.html is not canonical runtime source. -->
 <div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">
-<strong>Shared source:</strong> Architecture cards, Architecture rows, and Theory notation are generated from <code>docs/index/runtime-architecture.json</code>, which points back to canonical runtime owners. Generated HTML is not the owner.
+<strong>Shared source:</strong> Architecture cards, paired Architecture pipelines, and Theory notation are generated from <code>docs/index/runtime-architecture.json</code>, which points back to canonical runtime owners. Generated HTML is not the owner.
 </div>
-<div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">
-<div class="flowline v60-pipeline-row v60-runtime-row" aria-label="Canonical runtime spine" data-runtime-rendering="architecture-plain-row">
-<span class="node v56-input" title="D0 / surface discourse">Input</span>
-<span class="arrow">→</span>
-<span class="node v56-ir" title="Banner + Layer A / IR">Layer A / IR</span>
-<span class="arrow">→</span>
-<span class="node v56-owner" title="N + runtime registers">N + registers</span>
-<span class="arrow">→</span>
-<span class="node v56-owner" title="Gate/routing + ∇ route-gradient">Gate/routing + ∇</span>
-<span class="arrow">→</span>
-<span class="node v56-owner" title="Owner/TTP operation">Operation</span>
-<span class="arrow">→</span>
-<span class="node v56-land" title="Land(ⁿB) + ΔⁿB/Δκ">Land(ⁿB)+Δ</span>
-<span class="arrow">→</span>
-<span class="node v56-land" title="∇·T / ∇×T target-explicit diagnostics">∇·T/∇×T</span>
-<span class="arrow">→</span>
-<span class="node v56-land" title="LoopBreak if ∇×T nonzero">LoopBreak(∇×T)</span>
-<span class="arrow">→</span>
-<span class="node v56-reread" title="R(H,Δ) reread">R(H,Δ)</span>
-<span class="arrow">→</span>
-<span class="node v56-reread" title="𝒞(Ψᴺ) + STOP/HOLD/RECURSE/PARTIAL/COMPLETE">𝒞(Ψᴺ) + Decision</span>
-<span class="arrow">→</span>
-<span class="node v56-decision" title="T_lang: Ψᴺ ⇢ Ψᴵ">Restorative + T_lang</span>
+<div class="v60-pipeline-stack" aria-label="Canonical runtime paired pipelines" data-runtime-layout="paired-vertical-pipelines">
+<div class="v60-pipeline-heading">Architecture pipeline</div>
+<div class="v60-pipeline-columns">
+<div class="v60-pipeline-panel" data-runtime-row-panel="architecture-plain-row" data-runtime-pipeline-panel="architecture-plain-row">
+<div class="v60-pipeline-label">Plain/process reading</div>
+<ol class="v60-pipeline-list v60-runtime-pipeline" aria-label="Plain process reading" data-runtime-rendering="architecture-plain-row" data-runtime-layout="phase-grouped-vertical-pipeline">
+<li class="v60-pipeline-phase-group v56-input" data-phase-group="v56-input" data-phase-break="false"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-input" data-pipeline-step="1" title="Surface discourse or case input before diagnostic reduction."><span class="v60-step-number">1</span><span class="v60-step-label">Input</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-ir" data-phase-group="v56-ir" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-ir" data-pipeline-step="2" title="The opening diagnostic read converts the surface into controlled intermediate representation."><span class="v60-step-number">2</span><span class="v60-step-label">Layer A / diagnostic IR</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-owner" data-phase-group="v56-owner" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="3" title="Runtime-selected noetic frame plus live registers such as source-status, burden-function, held material, and release posture."><span class="v60-step-number">3</span><span class="v60-step-label">runtime frame + registers</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="4" title="∇ means constrained route pressure after gate, routing, and owner catalogue checks; it is not a generic gradient."><span class="v60-step-number">4</span><span class="v60-step-label">gate + ∇ route pressure</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="5" title="ⁿB is the current bounded burden selected for owner-backed work."><span class="v60-step-number">5</span><span class="v60-step-label">ⁿB burden selected</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="6" title="An eligible owner/TTP performs a bounded target → operation → result submove."><span class="v60-step-number">6</span><span class="v60-step-label">Owner/TTP operation</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-land" data-phase-group="v56-land" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-land" data-pipeline-step="7" title="Δ marks the burden/register/dependency change produced by landing the current burden."><span class="v60-step-number">7</span><span class="v60-step-label">Land(ⁿB) + Δ state update</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-land" data-pipeline-step="8" title="∇·T reads residual or outward pressure; ∇×T reads circular or rotational dependency in an explicit target field."><span class="v60-step-number">8</span><span class="v60-step-label">∇·T / ∇×T field diagnostics</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-land" data-pipeline-step="9" title="LoopBreak is licensed loop-breaking only when curl/circular dependency remains and the target, ground, Δ effect, and reread are explicit."><span class="v60-step-number">9</span><span class="v60-step-label">LoopBreak if circular dependency remains</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-reread" data-phase-group="v56-reread" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-reread" data-pipeline-step="10" title="Reread held material H and the changed field after the Δ update before closing, holding, partialing, or recursing."><span class="v60-step-number">10</span><span class="v60-step-label">R(H,Δ) reread</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-reread" data-pipeline-step="11" title="𝒞(Ψᴺ) is the runtime closure condition under STOP/HOLD/RECURSE/PARTIAL/COMPLETE accounting, not persuasion or guaranteed uptake."><span class="v60-step-number">11</span><span class="v60-step-label">𝒞(Ψᴺ) closure decision</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-decision" data-phase-group="v56-decision" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-decision" data-pipeline-step="12" title="The public restorative response is released only after the runtime decision."><span class="v60-step-number">12</span><span class="v60-step-label">restorative response</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-decision" data-pipeline-step="13" title="T_lang is public language release toward the diagnosed interlocutor field, not guaranteed uptake."><span class="v60-step-number">13</span><span class="v60-step-label">T_lang public release boundary</span></span>
+</div></li>
+</ol>
 </div>
-<div class="flowline v56-formula-flow v60-pipeline-row v60-formal-row" aria-label="Canonical algebraic runtime spine" data-runtime-rendering="architecture-formal-row">
-<span class="node v56-input">𝓝 ⊢ D₀</span>
-<span class="arrow">→</span>
-<span class="node v56-ir">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(...)</span>
-<span class="arrow">→</span>
-<span class="node v56-owner">∇ route pressure</span>
-<span class="arrow">→</span>
-<span class="node v56-owner">ⁿB → {ⁿBᵢ[OPᵢ]}</span>
-<span class="arrow">→</span>
-<span class="node v56-land">Land(ⁿB)</span>
-<span class="arrow">→</span>
-<span class="node v56-land">ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T → LoopBreak(∇×T)</span>
-<span class="arrow">→</span>
-<span class="node v56-reread">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
-<span class="arrow">→</span>
-<span class="node v56-decision">𝒞(Ψᴺ) / Decision → T_lang</span>
+<div class="v60-pipeline-panel" data-runtime-row-panel="architecture-formal-row" data-runtime-pipeline-panel="architecture-formal-row">
+<div class="v60-pipeline-label">Formal runtime trace</div>
+<ol class="v60-pipeline-list v56-formula-flow v60-formal-pipeline" aria-label="Formal runtime trace" data-runtime-rendering="architecture-formal-row" data-runtime-layout="phase-grouped-vertical-pipeline">
+<li class="v60-pipeline-phase-group v56-input" data-phase-group="v56-input" data-phase-break="false"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-input" data-pipeline-step="1"><span class="v60-step-number">1</span><span class="v60-step-label">𝓝 ⊢ D₀</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-ir" data-phase-group="v56-ir" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-ir" data-pipeline-step="2"><span class="v60-step-number">2</span><span class="v60-step-label">⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-owner" data-phase-group="v56-owner" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="3"><span class="v60-step-number">3</span><span class="v60-step-label">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="4"><span class="v60-step-number">4</span><span class="v60-step-label">∇ route pressure</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="5"><span class="v60-step-number">5</span><span class="v60-step-label">ⁿB</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-owner" data-pipeline-step="6"><span class="v60-step-number">6</span><span class="v60-step-label">{ⁿBᵢ[OPᵢ]}</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-land" data-phase-group="v56-land" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-land" data-pipeline-step="7"><span class="v60-step-number">7</span><span class="v60-step-label">Land(ⁿB) + ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-land" data-pipeline-step="8"><span class="v60-step-number">8</span><span class="v60-step-label">∇·T/∇×T</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-land" data-pipeline-step="9"><span class="v60-step-number">9</span><span class="v60-step-label">LoopBreak(∇×T)</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-reread" data-phase-group="v56-reread" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-reread" data-pipeline-step="10"><span class="v60-step-number">10</span><span class="v60-step-label">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-reread" data-pipeline-step="11"><span class="v60-step-number">11</span><span class="v60-step-label">𝒞(Ψᴺ) / Decision</span></span>
+</div></li>
+<li class="v60-pipeline-phase-group v56-decision" data-phase-group="v56-decision" data-phase-break="true"><div class="v60-phase-flow">
+<span class="v60-pipeline-step v56-decision" data-pipeline-step="12"><span class="v60-step-number">12</span><span class="v60-step-label">N_fiṭrī ∧ ʿaql ṣarīḥ</span></span>
+<span class="v60-pipeline-arrow" aria-hidden="true">→</span>
+<span class="v60-pipeline-step v56-decision" data-pipeline-step="13"><span class="v60-step-number">13</span><span class="v60-step-label">T_lang: Ψᴺ ⇢ Ψᴵ</span></span>
+</div></li>
+</ol>
+</div>
+</div>
+<div class="v60-formal-trace-copy" data-runtime-rendering="architecture-formal-algebraic-trace" data-runtime-layout="copyable-formal-algebraic-trace">
+<div class="v60-pipeline-label">Formal algebraic trace</div>
+<pre><code>𝓝 ⊢ D₀ → ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) → ∇_route → ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T → LoopBreak(∇×T) → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ → T_lang: Ψᴺ ⇢ Ψᴵ</code></pre>
 </div>
 </div>
 <p class="subtle">Expanded <code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> is formal/navigation notation over existing IR/control surfaces, not a current hard JSON field migration. For the full register formalism, use <a href="algebraic-notation-and-noetic-formalism.md">the formalism source</a> and <a href="register-formalism-implementation-ledger.md">the implementation ledger</a>.</p>
@@ -2543,19 +2854,19 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </div>
 <div class="v21-five-col v60-architecture-rail" data-pipeline="target" aria-label="Architecture runtime cards" role="listbox" aria-orientation="horizontal" tabindex="0">
 <div class="v60-carousel-slot is-primary" data-carousel-slot data-stage-key="input" data-carousel-index="0" data-carousel-position="center">
-<article class="v21-stage v21-s1 v30-selectable-stage v60-carousel-card v30-active is-primary" data-pipeline="target" data-stage-key="input" data-carousel-index="0" data-carousel-position="center" role="option" aria-selected="true" tabindex="0"><h2><span>1</span> D₀ / Surface Signal</h2>
+<article class="v21-stage v21-s1 v30-selectable-stage v60-carousel-card v30-active is-primary" data-pipeline="target" data-stage-key="input" data-carousel-index="0" data-carousel-position="center" role="option" aria-selected="true" tabindex="0"><h2>D₀ / Surface Signal</h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="encoded-signal" role="button" tabindex="0"><h3>Input as encoded signal</h3><ul>
 <li><b>D₀</b> visible surface discourse</li>
 <li><b>source</b> origin of claim / criterion / authority</li>
 <li><b>message</b> slogan, objection, proof packet, request</li>
 <li><b>encoding</b> labels, examples, school identity, proof denominators</li>
 <li><b>noise</b> deformation, equivocation, proof-method narrowing</li>
-<li><b>♥</b> register: grief, identity, performance, truth-seeking, mixed, unclear</li>
+<li><b>♥</b> register: grief, identity, performance,<br/>truth-seeking, mixed, unclear</li>
 </ul></div>
-<div class="v21-card v21-warn v60-selectable-subcard" data-substage-key="no-direct-rebuttal" role="button" tabindex="0"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure.</p></div>
+<div class="v21-card v21-warn v60-selectable-subcard" data-substage-key="no-direct-rebuttal" role="button" tabindex="0"><h3>Still no direct rebuttal</h3><p>D₀ must be decoded as a signal-state before content release.<br/>A proposition may be downstream of criterion, source-status, or ♥ register pressure.</p></div>
 </article></div>
 <div class="v60-carousel-slot is-preview is-next" data-carousel-slot data-stage-key="psi" data-carousel-index="1" data-carousel-position="next">
-<article class="v21-stage v21-s2 v30-selectable-stage v60-carousel-card is-preview is-next" data-pipeline="target" data-stage-key="psi" data-carousel-index="1" data-carousel-position="next" role="option" aria-selected="false" tabindex="-1"><h2><span>2</span> Ψᴺ / Noetic Signal-State</h2>
+<article class="v21-stage v21-s2 v30-selectable-stage v60-carousel-card is-preview is-next" data-pipeline="target" data-stage-key="psi" data-carousel-index="1" data-carousel-position="next" role="option" aria-selected="false" tabindex="-1"><h2>Ψᴺ / Noetic Signal-State</h2>
 <div class="v21-card v60-selectable-subcard" data-substage-key="proper-functional-read" role="button" tabindex="0"><h3>Proper-functional read</h3><ul>
 <li><b>F</b> fitrah / proper-function orientation</li>
 <li><b>E</b> epistemic environment</li>
@@ -2575,10 +2886,12 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>κ</b> collapse radius</li>
 <li><b>H</b> held set</li>
 </ul></div>
-<div class="v21-note v60-selectable-subcard" data-substage-key="operational-boundary" role="button" tabindex="0"><b>Operational boundary:</b> ♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.</div>
+<div class="v21-note v60-selectable-subcard" data-substage-key="operational-boundary" role="button" tabindex="0"><b>Operational boundary:</b> <br/>♥/ξ/Ω/μ/κ matter only when they affect<br/>IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture.</div>
 </article></div>
 <div class="v60-carousel-slot is-preview is-far-next" data-carousel-slot data-stage-key="ir" data-carousel-index="2" data-carousel-position="far-next">
-<article class="v21-stage v21-s3 v30-selectable-stage v60-carousel-card is-preview is-far-next" data-pipeline="target" data-stage-key="ir" data-carousel-index="2" data-carousel-position="far-next" role="option" aria-selected="false" tabindex="-1"><h2><span>3</span> DSL / IR &amp; Gated Governance</h2>
+<article class="v21-stage v21-s3 v30-selectable-stage v60-carousel-card is-preview is-far-next" data-pipeline="target" data-stage-key="ir" data-carousel-index="2" data-carousel-position="far-next" role="option" aria-selected="false" tabindex="-1"><h2>DSL / IR &amp; Gated Governance</h2>
+<div class="v63-two-column-stage-layout v63-ir-layout" data-stage-layout="ir-two-left-one-right">
+<div class="v63-stage-stack v63-stage-stack-left" data-stage-layout-column="left">
 <div class="v21-card v60-selectable-subcard" data-substage-key="diagnostic-reduction-order" role="button" tabindex="0"><h3>Diagnostic reduction order</h3><div class="v21-proc-flow target">
 <div>D₀</div>
 <span>→</span>
@@ -2596,25 +2909,27 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <span>→</span>
 <div>routing</div>
 </div></div>
-<div class="v21-card v60-selectable-subcard" data-substage-key="ir-control-surface" role="button" tabindex="0"><h3>DSL / IR control surface</h3><p><code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code> names register-derived control over existing IR and gate behavior where live.</p><div class="v21-field-grid">
+<div class="v21-card v60-selectable-subcard" data-substage-key="ir-control-surface" role="button" tabindex="0"><h3>DSL / IR control surface</h3><p><code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code><br/>names register-derived control over existing IR<br/>and gate behavior where live.</p><div class="v21-field-grid">
 <div><b>N</b><span>runtime-selected noetic frame</span><small>selected or held from 𝓝; governs current burden</small></div>
 <div><b>m</b><span>mode / deformation</span><small>deformation, concealment, memetic mode, or underdetermined status</small></div>
 <div><b>τ</b><span>tribunal / burden-function</span><small>what judges what; determines current function</small></div>
 <div><b>σ</b><span>source / semantic / authority status</span><small>warrant, contrast, context, genealogy, or held status</small></div>
-<div><b>♥</b><span>affective-discursive register</span><small>grief, identity, performance, truth-seeking, mixed, unclear</small></div>
+<div><b>♥</b><span>affective-discursive register</span><small>grief, identity, performance,<br/>truth-seeking, mixed, unclear</small></div>
 <div><b>ξ</b><span>epistemic grammar</span><small>warrant, testimony, proper function, defeaters</small></div>
 <div><b>Ω</b><span>ontological grammar</span><small>being, predication, modality, dependence</small></div>
 <div><b>μ</b><span>memetic vector</span><small>carrier, compression, stabilizer, mutation</small></div>
 <div><b>κ</b><span>collapse radius</span><small>downstream dependency set for reread</small></div>
 </div></div>
+</div>
+<div class="v63-stage-stack v63-stage-stack-right" data-stage-layout-column="right">
 <div class="v21-card v60-selectable-subcard" data-substage-key="gate-owner-layerb" role="button" tabindex="0"><h3>Gate → Precedence → Owner Select → Layer B</h3><div class="v54-gate-flow">
 <div class="v54-gate-step"><h4>Gate</h4><p>validated IR before dispatch</p></div>
 <div class="v54-gate-arrow">→</div>
-<div class="v54-gate-step"><h4>Precedence</h4><p>concealment; DO; deformation; reason; foreign premise; load-bearing</p></div>
+<div class="v54-gate-step"><h4>Precedence</h4><p>concealment; DO; deformation;<br/>reason; foreign premise;<br/>load-bearing</p></div>
 <div class="v54-gate-arrow">→</div>
 <div class="v54-gate-step"><h4>∇ route-gradient</h4><p>eligible route pressure, constrained by gate/owner catalogue</p></div>
 <div class="v54-gate-arrow">→</div>
-<div class="v54-gate-step"><h4>Owner Select</h4><p>all owner families supported; only live bounded owners activate</p></div>
+<div class="v54-gate-step"><h4>Owner Select</h4><p>all owner families supported;<br/>only live bounded owners activate</p></div>
 <div class="v54-gate-arrow">→</div>
 <div class="v54-gate-step"><h4>Layer B</h4><p>TTP submoves: target → operation → result.</p></div>
 </div><div class="v54-gate-check-panel"><h4>Gate checks</h4><div class="v54-gate-checks">
@@ -2625,10 +2940,14 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="v54-gate-check"><b>P7 discipline</b><span>stop / hold / partial / recurse before release</span></div>
 <div class="v54-gate-check"><b>Owner bounded</b><span>activation only after gate</span></div>
 </div></div></div>
+</div>
+</div>
 </article></div>
 <div class="v60-carousel-slot is-preview is-far-prev" data-carousel-slot data-stage-key="ownerRelease" data-carousel-index="3" data-carousel-position="far-prev">
-<article class="v21-stage v21-s4 v30-selectable-stage v60-carousel-card is-preview is-far-prev" data-pipeline="target" data-stage-key="ownerRelease" data-carousel-index="3" data-carousel-position="far-prev" role="option" aria-selected="false" tabindex="-1"><h2><span>4</span> Owner/TTP + Δ / Field Diagnostics / <em class="v60-reread-label">Reread</em></h2>
-<div class="v21-card v60-selectable-subcard" data-substage-key="operator-signature" role="button" tabindex="0"><h3>Operator signature</h3><div class="v21-stage-formula">ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</div></div>
+<article class="v21-stage v21-s4 v30-selectable-stage v60-carousel-card is-preview is-far-prev" data-pipeline="target" data-stage-key="ownerRelease" data-carousel-index="3" data-carousel-position="far-prev" role="option" aria-selected="false" tabindex="-1"><h2>Owner/TTP + Δ / Field Diagnostics / <em class="v60-reread-label">Reread</em></h2>
+<div class="v63-two-column-stage-layout v63-owner-release-layout" data-stage-layout="owner-release-two-by-two">
+<div class="v63-stage-stack v63-stage-stack-left" data-stage-layout-column="left">
+<div class="v21-card v60-selectable-subcard" data-substage-key="operator-signature" role="button" tabindex="0"><h3>Operator signature</h3><div class="v21-stage-formula">ⁿBᵢ[OP] :<br/>target → operation<br/>→ result<br/>→ ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</div></div>
 <div class="v21-card v60-selectable-subcard" data-substage-key="strict-burden-cycle" role="button" tabindex="0"><h3>Strict burden cycle</h3><div class="v21-stage-formula">ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB / Δκ</div><ul>
 <li><b>♥</b> register/release posture changed or held inside ΔⁿB{♥,ξ,Ω,σ,μ}</li>
 <li><b>ξ</b> epistemic grammar changed inside ΔⁿB{♥,ξ,Ω,σ,μ}</li>
@@ -2636,41 +2955,48 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>μ</b> memetic stabilizer changed inside ΔⁿB{♥,ξ,Ω,σ,μ}</li>
 <li><b>Δκ</b> dependency radius changed downstream of burden-state</li>
 </ul></div>
-<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="reread-gate" role="button" tabindex="0"><h3>Reread gate</h3><div class="v21-stage-formula">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | RECURSE | PARTIAL | COMPLETE</div>
+</div>
+<div class="v63-stage-stack v63-stage-stack-right" data-stage-layout-column="right">
+<div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="reread-gate" role="button" tabindex="0"><h3>Reread gate</h3><div class="v21-stage-formula v60-reread-decision-formula" data-reread-decision-formula="stacked">
+<div class="v60-reread-signature">
+<span>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
+<span class="v60-reread-turnstile">⊢</span>
+</div>
+<div class="v60-reread-outcomes" aria-label="Reread decision outcomes"><span class="v60-decision-outcome">STOP</span><span class="v60-decision-separator">|</span><span class="v60-decision-outcome">HOLD</span><span class="v60-decision-separator">|</span><span class="v60-decision-outcome">RECURSE</span><span class="v60-decision-separator">|</span><span class="v60-decision-outcome">PARTIAL</span><span class="v60-decision-separator">|</span><span class="v60-decision-outcome">COMPLETE</span></div>
+</div>
 <div class="v60-field-diagnostics" aria-label="Field diagnostics after Delta">
-<div class="v60-diagnostic-card"><b>Δ lands transition</b><span>Burden/submove work changes ΔⁿB and, where dependency radius changes, Δκ.</span></div>
-<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span></div>
+<div class="v60-diagnostic-card"><b>Δ lands transition</b><span>Burden/submove work changes ΔⁿB and,<br/>where dependency radius changes, Δκ.</span></div>
+<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced<br/>noetic/burden/register/route state before reread closure.</span></div>
 <div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">
 <span class="v60-field-heading">Target grammar</span>
 <div class="v60-field-chiprow"><span class="v60-field-target">∇·T</span><span class="v60-field-target">∇×T</span></div>
 <span class="v60-field-meaning v60-field-description">T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}</span>
 </div>
 <div class="v60-field-targets v60-example-group" aria-label="Readable divergence examples">
-<span class="v60-field-heading">∇· examples</span>
-<div class="v60-field-chiprow"><span class="v60-field-target">∇·T</span><span class="v60-field-target">∇·κ</span><span class="v60-field-target">∇·ⁿB</span><span class="v60-field-target">∇·ξ</span><span class="v60-field-target">∇·Ω</span><span class="v60-field-target">∇·♥</span><span class="v60-field-target">∇·μ</span><span class="v60-field-target">∇·route</span><span class="v60-field-target">∇·H</span></div>
-<span class="v60-field-meaning v60-field-description">residual outward pressure in an explicit target field</span>
+<span class="v60-field-heading">∇· EXAMPLES</span>
+<div class="v60-field-chiprow example-chip-grid" data-example-grid="4-plus-rest"><span class="example-chip-row"><span class="v60-field-target">∇·T</span><span class="v60-field-target">∇·κ</span><span class="v60-field-target">∇·ⁿB</span><span class="v60-field-target">∇·ξ</span></span><span class="example-chip-row"><span class="v60-field-target">∇·Ω</span><span class="v60-field-target">∇·♥</span><span class="v60-field-target">∇·μ</span><span class="v60-field-target">∇·route</span><span class="v60-field-target">∇·H</span></span></div>
+<span class="v60-field-meaning v60-field-description example-chip-description">residual outward pressure in an explicit target field</span>
 </div>
 <div class="v60-field-targets v60-example-group" aria-label="Readable curl examples">
-<span class="v60-field-heading">∇× examples</span>
-<div class="v60-field-chiprow"><span class="v60-field-target">∇×T</span><span class="v60-field-target">∇×κ</span><span class="v60-field-target">∇×ⁿB</span><span class="v60-field-target">∇×ξ</span><span class="v60-field-target">∇×Ω</span><span class="v60-field-target">∇×μ</span><span class="v60-field-target">∇×route</span><span class="v60-field-target">∇×σ</span></div>
-<span class="v60-field-meaning v60-field-description">circular / rotational dependency in an explicit target field</span>
+<span class="v60-field-heading">∇× EXAMPLES</span>
+<div class="v60-field-chiprow example-chip-grid" data-example-grid="4-plus-rest"><span class="example-chip-row"><span class="v60-field-target">∇×T</span><span class="v60-field-target">∇×κ</span><span class="v60-field-target">∇×ⁿB</span><span class="v60-field-target">∇×ξ</span></span><span class="example-chip-row"><span class="v60-field-target">∇×Ω</span><span class="v60-field-target">∇×μ</span><span class="v60-field-target">∇×route</span><span class="v60-field-target">∇×σ</span></span></div>
+<span class="v60-field-meaning v60-field-description example-chip-description">circular / rotational dependency in an explicit target field</span>
 </div>
-<div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>
+<div class="v60-diagnostic-note">Examples are owner-valid only when<br/>the target is explicit and control-relevant;<br/>they are not decorative symbol variants.</div>
 <div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">
-<span class="v60-field-heading">LoopBreak witness</span>
+<span class="v60-field-heading">LOOPBREAK WITNESS</span>
 <div class="v60-loopbreak-formula">
 <span class="v60-loopbreak-head">LoopBreak(∇×T)</span>
 <span class="v60-loopbreak-turnstile">⊢</span>
-<span class="v60-loopbreak-operands"><span class="v60-loopbreak-chip">target loop</span><span class="v60-loopbreak-chip">G</span><span class="v60-loopbreak-chip">ⁿBᵢ[OPᵢ]</span><span class="v60-loopbreak-chip">Δ</span><span class="v60-loopbreak-chip">R</span></span>
+<span class="v60-loopbreak-operands"><span class="v60-loopbreak-operand-row" data-loopbreak-row="loop-grounding"><span class="v60-loopbreak-chip">target loop</span><span class="v60-loopbreak-chip">G</span></span><span class="v60-loopbreak-operand-row" data-loopbreak-row="burden-delta-reread"><span class="v60-loopbreak-chip">ⁿBᵢ[OPᵢ]</span><span class="v60-loopbreak-chip">Δ</span><span class="v60-loopbreak-chip">R</span></span></span>
 </div>
 <div class="v60-grounding-block">
-<span class="v60-grounding-label">G ∈{</span>
+<span class="v60-grounding-label">G ∈</span>
 <span class="v60-grounding-members"><span class="v60-grounding-chip">fiṭrah</span><span class="v60-grounding-chip">ʿaql ṣarīḥ</span><span class="v60-grounding-chip">necessary knowledge</span><span class="v60-grounding-chip">definition discipline</span><span class="v60-grounding-chip">direct contradiction exposure</span><span class="v60-grounding-chip">source-status correction</span></span>
-<span class="v60-grounding-label">}</span>
 </div>
-<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>
+<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop,<br/>owner-licensed grounding source, burden/submove, Δ effect,<br/>and post-break reread.</span>
 </div>
-<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>
+<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field.<br/>Closure is licensed only when residual ∇·/∇× pressure is cleared,<br/>integrated, discharged as derivative, held with reason,<br/>or carried into RECURSE/PARTIAL.</div>
 </div></div>
 <div class="v21-card v60-reread-phase v60-selectable-subcard" data-substage-key="decision" role="button" tabindex="0"><h3>Decision</h3><div class="v21-dec-grid v62-decision-grid" data-decision-layout="2x2-plus-complete">
 <div class="recurse">↻<br/>RECURSE</div>
@@ -2679,10 +3005,12 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="stop">■<br/>STOP</div>
 <div class="complete">✓<br/>COMPLETE</div>
 </div>
-<div class="v21-note"><b>Correct recurse:</b> Correct recurse: ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ.</div></div>
+<div class="v21-note"><b>Correct recurse:</b> ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ.<br/>Same-burden facets stay as ⁿBᵢ.</div></div>
+</div>
+</div>
 </article></div>
 <div class="v60-carousel-slot is-preview is-prev" data-carousel-slot data-stage-key="collapse" data-carousel-index="4" data-carousel-position="prev">
-<article class="v21-stage v21-s5 v30-selectable-stage v60-carousel-card is-preview is-prev" data-pipeline="target" data-stage-key="collapse" data-carousel-index="4" data-carousel-position="prev" role="option" aria-selected="false" tabindex="-1"><h2><span>5</span> Noetic Collapse / Restoration</h2>
+<article class="v21-stage v21-s5 v30-selectable-stage v60-carousel-card is-preview is-prev" data-pipeline="target" data-stage-key="collapse" data-carousel-index="4" data-carousel-position="prev" role="option" aria-selected="false" tabindex="-1"><h2>Noetic Collapse / Restoration</h2>
 <div class="v21-card v21-purple v60-selectable-subcard" data-substage-key="constrained-resolution" role="button" tabindex="0"><h3>Constrained resolution</h3><div class="v21-stage-formula">𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ</div><ul>
 <li><b>N</b> restored noetic frame / fitrah orientation</li>
 <li><b>♥</b> register honored; grief/identity/performance/truth-seeking not flattened</li>
@@ -2691,7 +3019,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <li><b>μ</b> memetic stabilizer broken or reordered</li>
 <li><b>κ</b> dependency radius resolved / held / partialed</li>
 </ul></div>
-<div class="v21-note v60-selectable-subcard" data-substage-key="coupling-boundary" role="button" tabindex="0"><b>Coupling boundary:</b> T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field; this is not a claim of guaranteed uptake or access to the soul.</div>
+<div class="v21-note v60-selectable-subcard" data-substage-key="coupling-boundary" role="button" tabindex="0"><b>Coupling boundary:</b> <br/>T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field;<br/>this is not a claim of guaranteed uptake or access to the soul.</div>
 </article></div>
 </div>
 <div class="v60-carousel-dots" aria-label="Select architecture stage">
@@ -2709,7 +3037,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <h2>Canonical Architecture Runtime</h2>
 <p class="subtle">The compact runtime spine remains the controlling baseline. The expanded <code>𝓝</code> / <code>♥</code> / <code>ξ</code> / <code>Ω</code> / <code>μ</code> / <code>κ</code> notation is a schema-light register bridge over that spine; together they are the baseline register formalism, not a second public runtime. It matters only where it governs or clarifies actual IR, owner/TTP selection, hold/release, collapse radius, burden landing, state reread, PARTIAL, anti-symbol-theater, or restoration. Hard schema fields remain blocked unless a deliberate schema/checker/fixture/smoke migration updates producers, consumers, tests, examples, docs, generated runtime, and release claims. This page is a diagnostic navigation aid; repo runtime/source files remain the source of truth.</p>
 <div class="callout warn">
-<p><strong>NLA boundary:</strong> NLA means Natural Language Autoencoder, not generic linear algebra and not Shannon theory. The AV / activation verbalizer analogue is Layer A / Diagnostic IR / noetic-field banner. The AR / activation reconstructor analogue is reconstruction/reread through <code>R(H,Δ)</code>. Reconstruction fidelity asks whether selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state can be recovered; confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
+<p><strong>NLA boundary:</strong> NLA means Natural Language Autoencoder: a reconstruction-fidelity frame for encoding a natural-language discourse state into a controlled intermediate representation and reconstructing it while preserving burdens, registers, source-status, and dependency structure. The AV / activation verbalizer analogue is Layer A / Diagnostic IR / noetic-field banner. The AR / activation reconstructor analogue is reconstruction/reread through <code>R(H,Δ)</code>. Reconstruction fidelity asks whether selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state can be recovered; confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
 <p><strong>Delta and field diagnostics:</strong> <code>Delta-nB</code> and <code>Delta-kappa</code> are event-local transition operators. <code>∇·</code> / divergence and <code>∇×</code> / curl are field diagnostics over Delta-produced burden/dependency state. Default output may use compact governance markers such as <code>∇·κ: positive/live</code> or <code>∇×κ: unresolved loop</code> only when tied to dependency pressure, loop-breaking, <code>R(H,Δ)</code>, or PARTIAL/RECURSE/COMPLETE; long formalism exposition remains audit/formalism-only.</p>
 <p><strong>Gradient, closure, and coupling:</strong> plain <code>∇</code> reads route-gradient pressure among eligible live routes after gate/catalogue constraints; <code>LoopBreak(∇×T)</code> is a licensed loop-breaking submove, not arbitrary assertion; <code>𝒞(Ψᴺ)</code> is positive closure-field condition over the agent execution field; <code>T_lang: Ψᴺ ⇢ Ψᴵ</code> names the public/restorative output boundary without claiming guaranteed uptake.</p>
 <p><strong>Package boundary:</strong> <code>atomics/skill/**</code> is tracked canonical source, <code>skill/**</code> is ignored generated runtime, CI/local build compiles atomics into generated <code>skill/**</code>, release <code>.skill</code> packages generated runtime, and raw atomics are not packaged.</p>
@@ -2823,7 +3151,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="fieldNavNote"><strong>Bridge highlight policy:</strong> node clicks highlight structurally owned notation tokens. 𝓝 highlights only 𝓝 and D₀. N∈𝓝, Ψᴺ, H, and the register set are runtime selection/encoding objects and must be selected through their own notation tokens or Concept Graph nodes; D₀ itself highlights only D₀; Ψᴺ and IR highlight ♥ because the register is encoded/formalized there; final restoration highlights ♥/ξ/Ω/μ but not κ as a final-state constituent.</div>
 <!-- Generated by tools/build_docs_index.py from docs/index/runtime-architecture.json. The Theory tab uses compact notation/mapping, not a duplicate Architecture row block. -->
 <div class="runtimeSourceNote theoryRuntimeSourcing" data-runtime-architecture-source="docs/index/runtime-architecture.json">
-<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the full Architecture rows.
+<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the Architecture pipelines.
 </div>
 <div class="controlOverviewGrid">
 <button type="button" class="controlCard phase-layer-a is-linked-active" data-theory-card="noetic" data-concept-id="noetic" data-notation-targets="noetic D0" data-runtime-architecture-source="docs/index/runtime-architecture.json" aria-pressed="true" onclick="selectTheoryCard(this)">
@@ -2954,76 +3282,76 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 </div>
 <div class="notationBoard" id="notationBoard" data-runtime-rendering="theory-formalism-notation">
 <div class="notationLine">
-<span class="ntok symNoetic" data-k="noetic" data-notation-id="noetic" role="button" tabindex="0" aria-pressed="false" data-label="noetic-structure selection space" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','D0'])">𝓝</span>
+<span class="ntok symNoetic phase-layer-a" data-k="noetic" data-notation-id="noetic" role="button" tabindex="0" aria-pressed="false" data-label="noetic-structure selection space" data-meaning="noetic-structure selection space" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="D0" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','D0'], 'noetic')">𝓝</span>
 <span class="notationArrow">⊢</span>
-<span class="ntok" data-k="D0" data-notation-id="D0" role="button" tabindex="0" aria-pressed="false" data-label="surface discourse / initial signal" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['D0'])">D₀</span>
+<span class="ntok phase-input" data-k="D0" data-notation-id="D0" role="button" tabindex="0" aria-pressed="false" data-label="surface discourse / initial signal" data-meaning="surface discourse / initial signal" data-runtime-role="Surface discourse / initial signal" data-source-owners="diagnostic-ir.md; diagnostic-render-contract.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['D0'], 'D0')">D₀</span>
 <span class="notationArrow">⇝</span>
-<span class="ntok" data-k="Psi" data-notation-id="Psi" role="button" tabindex="0" aria-pressed="false" data-label="encoded noetic signal-state" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','Psi','N','m','tau','sigma','heart','xi','omega','mu','kappa','H'])">Ψᴺ</span>
+<span class="ntok phase-layer-a" data-k="Psi" data-notation-id="Psi" role="button" tabindex="0" aria-pressed="false" data-label="encoded noetic signal-state" data-meaning="encoded noetic signal-state" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="noetic N m tau sigma heart xi omega mu kappa H" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','Psi','N','m','tau','sigma','heart','xi','omega','mu','kappa','H'], 'Psi')">Ψᴺ</span>
 <span>⟨</span>
-<span class="ntok" data-k="N" data-notation-id="N" role="button" tabindex="0" aria-pressed="false" data-label="runtime-selected operative noetic frame from 𝓝" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','N'])">N∈𝓝</span>
+<span class="ntok phase-gate" data-k="N" data-notation-id="N" role="button" tabindex="0" aria-pressed="false" data-label="runtime-selected operative noetic frame from 𝓝" data-meaning="runtime-selected operative noetic frame from 𝓝" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="noetic" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['noetic','N'], 'N')">N∈𝓝</span>
 <span>, </span>
-<span class="ntok" data-k="m" data-notation-id="m" role="button" tabindex="0" aria-pressed="false" data-label="deformation / memetic mode" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['m'])">m</span>
+<span class="ntok phase-layer-a" data-k="m" data-notation-id="m" role="button" tabindex="0" aria-pressed="false" data-label="deformation / memetic mode" data-meaning="deformation / memetic mode" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['m'], 'm')">m</span>
 <span>, </span>
-<span class="ntok" data-k="tau" data-notation-id="tau" role="button" tabindex="0" aria-pressed="false" data-label="tribunal / burden-function" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['tau'])">τ</span>
+<span class="ntok phase-gate" data-k="tau" data-notation-id="tau" role="button" tabindex="0" aria-pressed="false" data-label="tribunal / burden-function" data-meaning="tribunal / burden-function" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['tau'], 'tau')">τ</span>
 <span>, </span>
-<span class="ntok" data-k="sigma" data-notation-id="sigma" role="button" tabindex="0" aria-pressed="false" data-label="source / semantic / authority status" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['sigma'])">σ</span>
+<span class="ntok phase-gate" data-k="sigma" data-notation-id="sigma" role="button" tabindex="0" aria-pressed="false" data-label="source / semantic / authority status" data-meaning="source / semantic / authority status" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['sigma'], 'sigma')">σ</span>
 <span>, </span>
-<span class="ntok symHeart" data-k="heart" data-notation-id="heart" role="button" tabindex="0" aria-pressed="false" data-label="affective-discursive register / release posture" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['heart'])">♥</span>
+<span class="ntok symHeart phase-gate" data-k="heart" data-notation-id="heart" role="button" tabindex="0" aria-pressed="false" data-label="affective-discursive register / release posture" data-meaning="affective-discursive register / release posture" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['heart'], 'heart')">♥</span>
 <span>, </span>
-<span class="ntok symXi" data-k="xi" data-notation-id="xi" role="button" tabindex="0" aria-pressed="false" data-label="epistemic/warrant grammar" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['xi'])">ξ</span>
+<span class="ntok symXi phase-gate" data-k="xi" data-notation-id="xi" role="button" tabindex="0" aria-pressed="false" data-label="epistemic/warrant grammar" data-meaning="epistemic/warrant grammar" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['xi'], 'xi')">ξ</span>
 <span>, </span>
-<span class="ntok symOmega" data-k="omega" data-notation-id="omega" role="button" tabindex="0" aria-pressed="false" data-label="ontological grammar" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['omega'])">Ω</span>
+<span class="ntok symOmega phase-gate" data-k="omega" data-notation-id="omega" role="button" tabindex="0" aria-pressed="false" data-label="ontological grammar" data-meaning="ontological grammar" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['omega'], 'omega')">Ω</span>
 <span>, </span>
-<span class="ntok symMu" data-k="mu" data-notation-id="mu" role="button" tabindex="0" aria-pressed="false" data-label="meta-noetic memetic vector" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['mu'])">μ</span>
+<span class="ntok symMu phase-gate" data-k="mu" data-notation-id="mu" role="button" tabindex="0" aria-pressed="false" data-label="meta-noetic memetic vector" data-meaning="meta-noetic memetic vector" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['mu'], 'mu')">μ</span>
 <span>, </span>
-<span class="ntok symKappa" data-k="kappa" data-notation-id="kappa" role="button" tabindex="0" aria-pressed="false" data-label="collapse radius / downstream dependency set" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['kappa'])">κ</span>
+<span class="ntok symKappa phase-reread-closure" data-k="kappa" data-notation-id="kappa" role="button" tabindex="0" aria-pressed="false" data-label="collapse radius / downstream dependency set" data-meaning="collapse radius / downstream dependency set" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['kappa'], 'kappa')">κ</span>
 <span>, </span>
-<span class="ntok" data-k="H" data-notation-id="H" role="button" tabindex="0" aria-pressed="false" data-label="held set" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['H'])">H</span>
+<span class="ntok phase-reread-closure" data-k="H" data-notation-id="H" role="button" tabindex="0" aria-pressed="false" data-label="held set" data-meaning="held set" data-runtime-role="Encoded agent/runtime signal-state and held set" data-source-owners="diagnostic-ir.md; recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['H'], 'H')">H</span>
 <span>⟩</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="IR" data-notation-id="IR" role="button" tabindex="0" aria-pressed="false" data-label="compact DSL/IR control state" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'])">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
+<span class="ntok phase-gate" data-k="IR" data-notation-id="IR" role="button" tabindex="0" aria-pressed="false" data-label="compact DSL/IR control state" data-meaning="compact DSL/IR control state" data-runtime-role="Compact DSL/IR control state; schema-light register bridge" data-source-owners="diagnostic-ir.md; algebraic-notation-and-noetic-formalism.md" data-related-targets="N m tau sigma heart xi omega mu kappa" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'], 'IR')">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="gradient" data-notation-id="gradient" role="button" tabindex="0" aria-pressed="false" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['gradient','IR','burden','R'])">∇ route-gradient</span>
+<span class="ntok phase-gate" data-k="gradient" data-notation-id="gradient" role="button" tabindex="0" aria-pressed="false" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" data-meaning="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" data-runtime-role="Route-gradient pressure after gate/catalogue constraints" data-source-owners="recursive-state-transitions.md" data-related-targets="IR burden R" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['gradient','IR','burden','R'], 'gradient')">∇ route-gradient</span>
 <span class="notationArrow">selects release pressure over</span>
-<span class="ntok" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'])">ⁿB</span>
+<span class="ntok phase-owner-delta" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" data-meaning="current burden n" data-runtime-role="Current burden and owner-backed submoves" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'], 'burden')">ⁿB</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'])">ⁿB</span>
+<span class="ntok phase-owner-delta" data-k="burden" data-notation-id="burden" role="button" tabindex="0" aria-pressed="false" data-label="current burden n" data-meaning="current burden n" data-runtime-role="Current burden and owner-backed submoves" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['burden'], 'burden')">ⁿB</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="submoves" data-notation-id="submoves" role="button" tabindex="0" aria-pressed="false" data-label="owner-backed submoves under burden n" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['submoves'])">{ⁿBᵢ[OPᵢ]}</span>
+<span class="ntok phase-owner-delta" data-k="submoves" data-notation-id="submoves" role="button" tabindex="0" aria-pressed="false" data-label="owner-backed submoves under burden n" data-meaning="owner-backed submoves under burden n" data-runtime-role="Current burden and owner-backed submoves" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['submoves'], 'submoves')">{ⁿBᵢ[OPᵢ]}</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="Land" data-notation-id="Land" role="button" tabindex="0" aria-pressed="false" data-label="burden landing" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
+<span class="ntok phase-owner-delta" data-k="Land" data-notation-id="Land" role="button" tabindex="0" aria-pressed="false" data-label="burden landing" data-meaning="burden landing" data-runtime-role="Burden landing and event-local state/dependency transition" data-source-owners="recursive-state-transitions.md" data-related-targets="" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['Land'], 'Land')">Land(ⁿB)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="deltaB" data-notation-id="deltaB" role="button" tabindex="0" aria-pressed="false" data-label="burden-event delta; transition produced by burden/submove landing" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaB','burden','submoves'])">ΔⁿB</span>
+<span class="ntok phase-owner-delta" data-k="deltaB" data-notation-id="deltaB" role="button" tabindex="0" aria-pressed="false" data-label="burden-event delta; transition produced by burden/submove landing" data-meaning="burden-event delta; transition produced by burden/submove landing" data-runtime-role="Burden landing and event-local state/dependency transition" data-source-owners="recursive-state-transitions.md" data-related-targets="burden submoves" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaB','burden','submoves'], 'deltaB')">ΔⁿB</span>
 <span>/</span>
-<span class="ntok" data-k="deltaK" data-notation-id="deltaK" role="button" tabindex="0" aria-pressed="false" data-label="case-collapse / closure-state delta" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
+<span class="ntok phase-reread-closure" data-k="deltaK" data-notation-id="deltaK" role="button" tabindex="0" aria-pressed="false" data-label="case-collapse / closure-state delta" data-meaning="case-collapse / closure-state delta" data-runtime-role="Burden landing and event-local state/dependency transition" data-source-owners="recursive-state-transitions.md" data-related-targets="kappa" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['deltaK','kappa'], 'deltaK')">Δκ</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="nablaDot" data-notation-id="nablaDot" role="button" tabindex="0" aria-pressed="false" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·T</span>
+<span class="ntok phase-owner-delta" data-k="nablaDot" data-notation-id="nablaDot" role="button" tabindex="0" aria-pressed="false" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" data-meaning="∇·T: post-Delta residual outward pressure in an explicit target field" data-runtime-role="Target-explicit post-Delta field diagnostics" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="deltaB deltaK R" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'], 'nablaDot')">∇·T</span>
 <span>/</span>
-<span class="ntok" data-k="nablaCross" data-notation-id="nablaCross" role="button" tabindex="0" aria-pressed="false" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×T</span>
-<span class="ntok" data-k="fieldDiagnostics" data-notation-id="fieldDiagnostics" role="button" tabindex="0" aria-pressed="false" data-label="target-explicit post-Delta field diagnostics" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
+<span class="ntok phase-owner-delta" data-k="nablaCross" data-notation-id="nablaCross" role="button" tabindex="0" aria-pressed="false" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" data-meaning="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" data-runtime-role="Target-explicit post-Delta field diagnostics" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="deltaB deltaK R" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'], 'nablaCross')">∇×T</span>
+<span class="ntok phase-owner-delta" data-k="fieldDiagnostics" data-notation-id="fieldDiagnostics" role="button" tabindex="0" aria-pressed="false" data-label="target-explicit post-Delta field diagnostics" data-meaning="target-explicit post-Delta field diagnostics" data-runtime-role="Target-explicit post-Delta field diagnostics" data-source-owners="recursive-state-transitions.md; diagnostic-render-contract.md" data-related-targets="nablaDot nablaCross deltaB deltaK" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'], 'fieldDiagnostics')">field state</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="loopBreak" data-notation-id="loopBreak" role="button" tabindex="0" aria-pressed="false" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
+<span class="ntok phase-owner-delta" data-k="loopBreak" data-notation-id="loopBreak" role="button" tabindex="0" aria-pressed="false" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" data-meaning="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" data-runtime-role="Licensed owner-grounded loop-breaking submove when curl remains nonzero" data-source-owners="recursive-state-transitions.md; output-release.md" data-related-targets="nablaCross deltaB deltaK R" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'], 'loopBreak')">LoopBreak(∇×T)</span>
 <span class="notationArrow">→</span>
-<span class="ntok" data-k="R" data-notation-id="R" role="button" tabindex="0" aria-pressed="false" data-label="state/noetic reread" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
+<span class="ntok phase-reread-closure" data-k="R" data-notation-id="R" role="button" tabindex="0" aria-pressed="false" data-label="state/noetic reread" data-meaning="state/noetic reread" data-runtime-role="Reread held material, selected/held routes, register deltas, and residual pressure" data-source-owners="recursive-state-transitions.md; output-release.md" data-related-targets="H heart deltaB deltaK nablaDot nablaCross fieldDiagnostics" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'], 'R')">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="C" data-notation-id="C" role="button" tabindex="0" aria-pressed="false" data-label="constrained noetic collapse / discursive resolution" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['C','Psi'])">𝒞(Ψᴺ)</span>
+<span class="ntok phase-reread-closure" data-k="C" data-notation-id="C" role="button" tabindex="0" aria-pressed="false" data-label="constrained noetic collapse / discursive resolution" data-meaning="constrained noetic collapse / discursive resolution" data-runtime-role="Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline" data-source-owners="output-release.md; diagnostic-render-contract.md" data-related-targets="Psi" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['C','Psi'], 'C')">𝒞(Ψᴺ)</span>
 <span class="notationArrow">⟶</span>
-<span class="ntok" data-k="final" data-notation-id="final" role="button" tabindex="0" aria-pressed="false" data-label="restored fitrah and sound reason" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['final','N','heart','xi','omega','mu'])">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
+<span class="ntok phase-reread-closure" data-k="final" data-notation-id="final" role="button" tabindex="0" aria-pressed="false" data-label="restored fitrah and sound reason" data-meaning="restored fitrah and sound reason" data-runtime-role="Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline" data-source-owners="output-release.md; diagnostic-render-contract.md" data-related-targets="N heart xi omega mu" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['final','N','heart','xi','omega','mu'], 'final')">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
 <span>/</span>
-<span class="ntok" data-k="nextB" data-notation-id="nextB" role="button" tabindex="0" aria-pressed="false" data-label="next burden licensed by reread" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
+<span class="ntok phase-reread-closure" data-k="nextB" data-notation-id="nextB" role="button" tabindex="0" aria-pressed="false" data-label="next burden licensed by reread" data-meaning="next burden licensed by reread" data-runtime-role="Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline" data-source-owners="output-release.md; diagnostic-render-contract.md" data-related-targets="R" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['nextB','R'], 'nextB')">ⁿ⁺¹B</span>
 </div>
 <div class="notationLine">
 <span class="notationArrow">public release boundary</span>
-<span class="ntok" data-k="coupling" data-notation-id="coupling" role="button" tabindex="0" aria-pressed="false" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
-<span class="ntok" data-k="PsiI" data-notation-id="PsiI" role="button" tabindex="0" aria-pressed="false" data-label="diagnosed interlocutor field inferred from discourse/profile/register evidence" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['PsiI','coupling'])">Ψᴵ</span>
+<span class="ntok phase-public-boundary" data-k="coupling" data-notation-id="coupling" role="button" tabindex="0" aria-pressed="false" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" data-meaning="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" data-runtime-role="Public/restorative language boundary without guaranteed uptake" data-source-owners="output-release.md" data-related-targets="Psi PsiI final" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['coupling','Psi','PsiI','final'], 'coupling')">T_lang: Ψᴺ ⇢ Ψᴵ</span>
+<span class="ntok phase-public-boundary" data-k="PsiI" data-notation-id="PsiI" role="button" tabindex="0" aria-pressed="false" data-label="diagnosed interlocutor field inferred from discourse/profile/register evidence" data-meaning="diagnosed interlocutor field inferred from discourse/profile/register evidence" data-runtime-role="Public/restorative language boundary without guaranteed uptake" data-source-owners="output-release.md" data-related-targets="coupling" onkeydown="return activateNotationToken(event,this)" onclick="highlightNotation(['PsiI','coupling'], 'PsiI')">Ψᴵ</span>
 </div>
 <div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>
 <div class="notationLegend">
@@ -3037,7 +3365,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <div class="miniCard"><strong>Output boundary:</strong> T_lang: Ψᴺ ⇢ Ψᴵ names the public release relation after closure/hold/partial; it is not part of the burden loop and does not claim guaranteed uptake.</div>
 </div>
 </div>
-<div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json" data-runtime-rendering="theory-formalism-mapping"><h3>Notation → runtime role → source owner</h3><p class="subtle">Generated from the shared runtime architecture source; it compactly maps the same sequence rather than repeating the Architecture tab rows.</p><table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody><tr><td><code>D₀</code></td><td>Surface discourse / initial signal</td><td><code>diagnostic-ir.md; diagnostic-render-contract.md</code></td></tr>
+<template class="theoryNotationMapData" data-hidden-source-map="true" data-runtime-architecture-source="docs/index/runtime-architecture.json" data-runtime-rendering="theory-formalism-mapping"><table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody><tr><td><code>D₀</code></td><td>Surface discourse / initial signal</td><td><code>diagnostic-ir.md; diagnostic-render-contract.md</code></td></tr>
 <tr><td><code>Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩</code></td><td>Encoded agent/runtime signal-state and held set</td><td><code>diagnostic-ir.md; recursive-state-transitions.md</code></td></tr>
 <tr><td><code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code></td><td>Compact DSL/IR control state; schema-light register bridge</td><td><code>diagnostic-ir.md; algebraic-notation-and-noetic-formalism.md</code></td></tr>
 <tr><td><code>∇</code></td><td>Route-gradient pressure after gate/catalogue constraints</td><td><code>recursive-state-transitions.md</code></td></tr>
@@ -3047,7 +3375,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <tr><td><code>LoopBreak(∇×T)</code></td><td>Licensed owner-grounded loop-breaking submove when curl remains nonzero</td><td><code>recursive-state-transitions.md; output-release.md</code></td></tr>
 <tr><td><code>R(H,Δ)</code></td><td>Reread held material, selected/held routes, register deltas, and residual pressure</td><td><code>recursive-state-transitions.md; output-release.md</code></td></tr>
 <tr><td><code>𝒞(Ψᴺ) + Decision</code></td><td>Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline</td><td><code>output-release.md; diagnostic-render-contract.md</code></td></tr>
-<tr><td><code>T_lang: Ψᴺ ⇢ Ψᴵ</code></td><td>Public/restorative language boundary without guaranteed uptake</td><td><code>output-release.md</code></td></tr></tbody></table></div>
+<tr><td><code>T_lang: Ψᴺ ⇢ Ψᴵ</code></td><td>Public/restorative language boundary without guaranteed uptake</td><td><code>output-release.md</code></td></tr></tbody></table></template>
 </div>
 <div class="subtabs">
 <button class="subtab active" onclick="showSub('concepts',this)">Concept graph</button>
@@ -3129,7 +3457,7 @@ map, and public notation cards read those owners.
 <li><code>Ψᴵ</code> does not mean access to the soul or total profile identity.</li>
 <li>Long formalism exposition belongs to audit/formalism-expanded render, not default governed output.</li>
 <li>Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity.</li>
-<li>NLA means Natural Language Autoencoder reconstruction fidelity, not generic algebra, Shannon theory, or interpretability branding.</li>
+<li>NLA means Natural Language Autoencoder: a reconstruction-fidelity frame for encoding a natural-language discourse state into a controlled intermediate representation and reconstructing it while preserving burdens, registers, source-status, and dependency structure.</li>
 <li>Generated docs are public/navigation surfaces, not runtime owners.</li>
 <li>Mathematical notation is operative only insofar as it maps to repo-defined control effects.</li>
 <li>Field-like notation describes diagnostic and routing structure; it is not a claim that discourse is literally a physical field.</li>
@@ -3745,7 +4073,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li><strong>Unreadable system:</strong> making notation too abstract for maintainers and LLMs.</li>
 </ul>
 </section>
-<section id="pv-final"><h2>20. Final runtime notation</h2><p>The final notation summary is generated as compact mapping rows from the shared runtime architecture source, not as a second copy of the Architecture-tab row block.</p><div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json" data-runtime-rendering="theory-formalism-mapping"><h3>Notation → runtime role → source owner</h3><p class="subtle">Generated from the shared runtime architecture source; it compactly maps the same sequence rather than repeating the Architecture tab rows.</p><table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody><tr><td><code>D₀</code></td><td>Surface discourse / initial signal</td><td><code>diagnostic-ir.md; diagnostic-render-contract.md</code></td></tr>
+<section id="pv-final"><h2>20. Final runtime notation</h2><p>The final notation source map is generated as hidden metadata from the shared runtime architecture source and surfaced through the contextual Highlighted notation panel, not as a dominant table or a second copy of the Architecture-tab rows.</p><template class="theoryNotationMapData" data-hidden-source-map="true" data-runtime-architecture-source="docs/index/runtime-architecture.json" data-runtime-rendering="theory-formalism-mapping"><table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody><tr><td><code>D₀</code></td><td>Surface discourse / initial signal</td><td><code>diagnostic-ir.md; diagnostic-render-contract.md</code></td></tr>
 <tr><td><code>Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩</code></td><td>Encoded agent/runtime signal-state and held set</td><td><code>diagnostic-ir.md; recursive-state-transitions.md</code></td></tr>
 <tr><td><code>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</code></td><td>Compact DSL/IR control state; schema-light register bridge</td><td><code>diagnostic-ir.md; algebraic-notation-and-noetic-formalism.md</code></td></tr>
 <tr><td><code>∇</code></td><td>Route-gradient pressure after gate/catalogue constraints</td><td><code>recursive-state-transitions.md</code></td></tr>
@@ -3755,7 +4083,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <tr><td><code>LoopBreak(∇×T)</code></td><td>Licensed owner-grounded loop-breaking submove when curl remains nonzero</td><td><code>recursive-state-transitions.md; output-release.md</code></td></tr>
 <tr><td><code>R(H,Δ)</code></td><td>Reread held material, selected/held routes, register deltas, and residual pressure</td><td><code>recursive-state-transitions.md; output-release.md</code></td></tr>
 <tr><td><code>𝒞(Ψᴺ) + Decision</code></td><td>Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline</td><td><code>output-release.md; diagnostic-render-contract.md</code></td></tr>
-<tr><td><code>T_lang: Ψᴺ ⇢ Ψᴵ</code></td><td>Public/restorative language boundary without guaranteed uptake</td><td><code>output-release.md</code></td></tr></tbody></table></div><p>Every symbol listed here either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the framework graphic. Nothing is merely decorative.</p></section>
+<tr><td><code>T_lang: Ψᴺ ⇢ Ψᴵ</code></td><td>Public/restorative language boundary without guaranteed uptake</td><td><code>output-release.md</code></td></tr></tbody></table></template><p>Select a notation chip or theory card to inspect the relevant runtime role and source owner. Every symbol either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the framework graphic. Nothing is merely decorative.</p></section>
 <div class="footer">
   DAEE Epistemics notation normalization bridge — source-governance proof snapshot.
 </div>
@@ -3770,7 +4098,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </section>
 </main>
 <script id="docs-index-generated-data">
-window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html"], "source_digest": "3967ceb771345f83e6b4b00617fcc6dc681b8e4d6b52a8d070a0dc3ee6c07ba6", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
+window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "release_download": "docs/index/release-download.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html"], "source_digest": "32d762079481b0e02fc2c1ffd5f723197fee71c098660e96796a51d8f97f788e", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
 window.DOCS_INDEX_MODULE_CATALOGUE = [{"id": "do-attribute-precision", "module_class": "case-library", "path": "skill/references/case-library/do-attribute-precision.md", "source_path": "atomics/skill/references/case-library/do-attribute-precision.md"}, {"id": "do-christian-extensions", "module_class": "case-library", "path": "skill/references/case-library/do-christian-extensions.md", "source_path": "atomics/skill/references/case-library/do-christian-extensions.md"}, {"id": "do-core", "module_class": "case-library", "path": "skill/references/case-library/do-core.md", "source_path": "atomics/skill/references/case-library/do-core.md"}, {"id": "do-second-loop", "module_class": "case-library", "path": "skill/references/case-library/do-second-loop.md", "source_path": "atomics/skill/references/case-library/do-second-loop.md"}, {"id": "noetic-profiles", "module_class": "case-library", "path": "skill/references/case-library/noetic-profiles.md", "source_path": "atomics/skill/references/case-library/noetic-profiles.md"}, {"id": "ns-1-naturalist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-1-naturalist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md"}, {"id": "ns-10-maturidi-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md"}, {"id": "ns-11-fideist-reformed", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md", "source_path": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md"}, {"id": "ns-12-blank-slate-dual-fitrah", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md", "source_path": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md"}, {"id": "ns-2-agnostic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md"}, {"id": "ns-3-deconverted", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-3-deconverted.md", "source_path": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md"}, {"id": "ns-4-secular-moral-realist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md"}, {"id": "ns-5-habituated-atheist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md"}, {"id": "ns-6-kalamic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md"}, {"id": "ns-7-theistic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md"}, {"id": "ns-8-muslim-internal-crisis", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md", "source_path": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md"}, {"id": "ns-9-historical-critical-skeptic", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md", "source_path": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md"}, {"id": "philosophical-usurpation", "module_class": "case-library", "path": "skill/references/case-library/philosophical-usurpation.md", "source_path": "atomics/skill/references/case-library/philosophical-usurpation.md"}, {"id": "revelation-transmission", "module_class": "case-library", "path": "skill/references/case-library/revelation-transmission.md", "source_path": "atomics/skill/references/case-library/revelation-transmission.md"}, {"id": "causal-series-taxonomy", "module_class": "diagnostic", "path": "skill/references/diagnostics/causal-series-taxonomy.md", "source_path": "atomics/skill/references/diagnostics/causal-series-taxonomy.md"}, {"id": "definition-discipline", "module_class": "diagnostic", "path": "skill/references/diagnostics/definition-discipline.md", "source_path": "atomics/skill/references/diagnostics/definition-discipline.md"}, {"id": "hadith-authentication-epistemology", "module_class": "diagnostic", "path": "skill/references/diagnostics/hadith-authentication-epistemology.md", "source_path": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md"}, {"id": "perfection-criterion-usurpation", "module_class": "diagnostic", "path": "skill/references/diagnostics/perfection-criterion-usurpation.md", "source_path": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md"}, {"id": "proof-method-audit", "module_class": "diagnostic", "path": "skill/references/diagnostics/proof-method-audit.md", "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md"}, {"id": "prophetic-discourse-neutralization", "module_class": "diagnostic", "path": "skill/references/diagnostics/prophetic-discourse-neutralization.md", "source_path": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md"}, {"id": "P1-fitrah-restoration", "module_class": "procedure", "path": "skill/references/procedures/P1-fitrah-restoration.md", "source_path": "atomics/skill/references/procedures/P1-fitrah-restoration.md"}, {"id": "P2-objection-mapping", "module_class": "procedure", "path": "skill/references/procedures/P2-objection-mapping.md", "source_path": "atomics/skill/references/procedures/P2-objection-mapping.md"}, {"id": "P3-reason-revelation-tension", "module_class": "procedure", "path": "skill/references/procedures/P3-reason-revelation-tension.md", "source_path": "atomics/skill/references/procedures/P3-reason-revelation-tension.md"}, {"id": "P4-maieutic", "module_class": "procedure", "path": "skill/references/procedures/P4-maieutic.md", "source_path": "atomics/skill/references/procedures/P4-maieutic.md"}, {"id": "P5-already-believing", "module_class": "procedure", "path": "skill/references/procedures/P5-already-believing.md", "source_path": "atomics/skill/references/procedures/P5-already-believing.md"}, {"id": "P6-universal-aqidah-principle", "module_class": "procedure", "path": "skill/references/procedures/P6-universal-aqidah-principle.md", "source_path": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md"}, {"id": "P7-restoration-stops", "module_class": "procedure", "path": "skill/references/procedures/P7-restoration-stops.md", "source_path": "atomics/skill/references/procedures/P7-restoration-stops.md"}, {"id": "E1-broadening-evidence", "module_class": "tactic", "path": "skill/references/tactics/E1-broadening-evidence.md", "source_path": "atomics/skill/references/tactics/E1-broadening-evidence.md"}, {"id": "E2-inferential-criterion", "module_class": "tactic", "path": "skill/references/tactics/E2-inferential-criterion.md", "source_path": "atomics/skill/references/tactics/E2-inferential-criterion.md"}, {"id": "E3-cumulative-case", "module_class": "tactic", "path": "skill/references/tactics/E3-cumulative-case.md", "source_path": "atomics/skill/references/tactics/E3-cumulative-case.md"}, {"id": "E4-cross-cultural-check", "module_class": "tactic", "path": "skill/references/tactics/E4-cross-cultural-check.md", "source_path": "atomics/skill/references/tactics/E4-cross-cultural-check.md"}, {"id": "F1-supra-vs-antirational", "module_class": "tactic", "path": "skill/references/tactics/F1-supra-vs-antirational.md", "source_path": "atomics/skill/references/tactics/F1-supra-vs-antirational.md"}, {"id": "F2-volitional-dimensions", "module_class": "tactic", "path": "skill/references/tactics/F2-volitional-dimensions.md", "source_path": "atomics/skill/references/tactics/F2-volitional-dimensions.md"}, {"id": "F3-practice-epistemic-access", "module_class": "tactic", "path": "skill/references/tactics/F3-practice-epistemic-access.md", "source_path": "atomics/skill/references/tactics/F3-practice-epistemic-access.md"}, {"id": "M1-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1-self-refutation.md"}, {"id": "M1P-performative-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1P-performative-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1P-performative-self-refutation.md"}, {"id": "M2-prior-probability", "module_class": "tactic", "path": "skill/references/tactics/M2-prior-probability.md", "source_path": "atomics/skill/references/tactics/M2-prior-probability.md"}, {"id": "M3-orphaned-intuition", "module_class": "tactic", "path": "skill/references/tactics/M3-orphaned-intuition.md", "source_path": "atomics/skill/references/tactics/M3-orphaned-intuition.md"}, {"id": "M4-grief-register", "module_class": "tactic", "path": "skill/references/tactics/M4-grief-register.md", "source_path": "atomics/skill/references/tactics/M4-grief-register.md"}, {"id": "M5-deformation-triage", "module_class": "tactic", "path": "skill/references/tactics/M5-deformation-triage.md", "source_path": "atomics/skill/references/tactics/M5-deformation-triage.md"}, {"id": "M6-excluded-middle", "module_class": "tactic", "path": "skill/references/tactics/M6-excluded-middle.md", "source_path": "atomics/skill/references/tactics/M6-excluded-middle.md"}, {"id": "M7-definition-anchor", "module_class": "tactic", "path": "skill/references/tactics/M7-definition-anchor.md", "source_path": "atomics/skill/references/tactics/M7-definition-anchor.md"}, {"id": "M8-reductio", "module_class": "tactic", "path": "skill/references/tactics/M8-reductio.md", "source_path": "atomics/skill/references/tactics/M8-reductio.md"}, {"id": "M9-predication-mode", "module_class": "tactic", "path": "skill/references/tactics/M9-predication-mode.md", "source_path": "atomics/skill/references/tactics/M9-predication-mode.md"}, {"id": "R1-internalist-criterion", "module_class": "tactic", "path": "skill/references/tactics/R1-internalist-criterion.md", "source_path": "atomics/skill/references/tactics/R1-internalist-criterion.md"}, {"id": "R2-the-reminder", "module_class": "tactic", "path": "skill/references/tactics/R2-the-reminder.md", "source_path": "atomics/skill/references/tactics/R2-the-reminder.md"}, {"id": "R3-warranted-basic-belief", "module_class": "tactic", "path": "skill/references/tactics/R3-warranted-basic-belief.md", "source_path": "atomics/skill/references/tactics/R3-warranted-basic-belief.md"}, {"id": "doubt-vs-skepticism", "module_class": "tactic", "path": "skill/references/tactics/doubt-vs-skepticism.md", "source_path": "atomics/skill/references/tactics/doubt-vs-skepticism.md"}, {"id": "husn-al-nazar-arguments", "module_class": "tactic", "path": "skill/references/tactics/husn-al-nazar-arguments.md", "source_path": "atomics/skill/references/tactics/husn-al-nazar-arguments.md"}, {"id": "inductive-fitri-method", "module_class": "tactic", "path": "skill/references/tactics/inductive-fitri-method.md", "source_path": "atomics/skill/references/tactics/inductive-fitri-method.md"}, {"id": "symmetric-taqlid-check", "module_class": "tactic", "path": "skill/references/tactics/symmetric-taqlid-check.md", "source_path": "atomics/skill/references/tactics/symmetric-taqlid-check.md"}, {"id": "V1-diagnostic", "module_class": "technique", "path": "skill/references/techniques/V1-diagnostic.md", "source_path": "atomics/skill/references/techniques/V1-diagnostic.md"}, {"id": "V10-transmission-content-vetting", "module_class": "technique", "path": "skill/references/techniques/V10-transmission-content-vetting.md", "source_path": "atomics/skill/references/techniques/V10-transmission-content-vetting.md"}, {"id": "V11-taqlid-transition", "module_class": "technique", "path": "skill/references/techniques/V11-taqlid-transition.md", "source_path": "atomics/skill/references/techniques/V11-taqlid-transition.md"}, {"id": "V12-tamanuc-exhaustion", "module_class": "technique", "path": "skill/references/techniques/V12-tamanuc-exhaustion.md", "source_path": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md"}, {"id": "V2-reconstituting-reason", "module_class": "technique", "path": "skill/references/techniques/V2-reconstituting-reason.md", "source_path": "atomics/skill/references/techniques/V2-reconstituting-reason.md"}, {"id": "V3-regress-dissolution", "module_class": "technique", "path": "skill/references/techniques/V3-regress-dissolution.md", "source_path": "atomics/skill/references/techniques/V3-regress-dissolution.md"}, {"id": "V4-contamination-identification", "module_class": "technique", "path": "skill/references/techniques/V4-contamination-identification.md", "source_path": "atomics/skill/references/techniques/V4-contamination-identification.md"}, {"id": "V5-directing-attention-signs", "module_class": "technique", "path": "skill/references/techniques/V5-directing-attention-signs.md", "source_path": "atomics/skill/references/techniques/V5-directing-attention-signs.md"}, {"id": "V6-convergence", "module_class": "technique", "path": "skill/references/techniques/V6-convergence.md", "source_path": "atomics/skill/references/techniques/V6-convergence.md"}, {"id": "V7-taqlid-check", "module_class": "technique", "path": "skill/references/techniques/V7-taqlid-check.md", "source_path": "atomics/skill/references/techniques/V7-taqlid-check.md"}, {"id": "V8-bila-kayf-anchor", "module_class": "technique", "path": "skill/references/techniques/V8-bila-kayf-anchor.md", "source_path": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md"}, {"id": "V9-necessary-knowledge-priority", "module_class": "technique", "path": "skill/references/techniques/V9-necessary-knowledge-priority.md", "source_path": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md"}, {"id": "heuristics", "module_class": "technique", "path": "skill/references/techniques/heuristics.md", "source_path": "atomics/skill/references/techniques/heuristics.md"}];
 </script>
 <script>
@@ -3990,8 +4318,57 @@ function renderRefs(){const q=(document.getElementById('refSearch')?.value||'').
 function renderDocList(q=''){const arr=DOCS.filter(d=>!q||JSON.stringify(d).toLowerCase().includes(q));document.getElementById('docList').innerHTML=arr.map(d=>`<div class="docitem" onclick="showDoc(${d.id})"><strong>${esc(d.title)}</strong><br><span class="small">${esc(d.rel)} · ${esc(d.lines)} lines</span></div>`).join('');}
 function showDoc(id){const d=DOCS.find(x=>x.id==id);if(!d)return;document.getElementById('docBody').innerHTML=`<h2>${esc(d.title)}</h2><p class="small"><code>${esc(d.rel)}</code> · ${esc(d.lines)} lines</p><div>${d.html||'<pre>'+esc(d.content||'')+'</pre>'}</div>`;}
 
-function highlightNotation(keys){
-  const set=new Set(keys||[]);
+function notationMetaFor(key){
+  if(!key) return null;
+  const el=document.querySelector(`.ntok[data-k="${CSS.escape(key)}"]`);
+  if(!el) return null;
+  return {
+    key,
+    symbol:el.textContent.trim(),
+    meaning:el.getAttribute('data-meaning')||el.getAttribute('data-label')||key,
+    runtimeRole:el.getAttribute('data-runtime-role')||el.getAttribute('data-label')||key,
+    sourceOwners:el.getAttribute('data-source-owners')||'docs/index/runtime-architecture.json',
+    relatedTargets:(el.getAttribute('data-related-targets')||'').split(/\s+/).filter(Boolean),
+    phaseClass:[...el.classList].find(name=>name.startsWith('phase-'))||''
+  };
+}
+function notationTokenLabel(key){
+  const el=document.querySelector(`.ntok[data-k="${CSS.escape(key)}"]`);
+  return el ? el.textContent.trim() : key;
+}
+function renderNotationPanel(keys, primaryKey){
+  const explain=document.getElementById('notationExplain');
+  if(!explain) return;
+  const ordered=[...new Set((Array.isArray(keys)?keys:[keys]).filter(Boolean))];
+  if(!ordered.length){
+    explain.innerHTML='Click a concept or relation to highlight its place in the notation.';
+    return;
+  }
+  const primary=(primaryKey && ordered.includes(primaryKey)) ? primaryKey : ordered[0];
+  const meta=notationMetaFor(primary) || {key:primary,symbol:primary,meaning:primary,runtimeRole:'No runtime role metadata found.',sourceOwners:'docs/index/runtime-architecture.json',relatedTargets:[]};
+  const related=[...new Set([...(meta.relatedTargets||[]),...ordered.filter(k=>k!==primary)])].filter(k=>k!==primary);
+  const ownerChips=String(meta.sourceOwners||'').split(';').map(owner=>owner.trim()).filter(Boolean).map(owner=>`<code>${esc(owner)}</code>`).join('<br>');
+  const highlightedRows=ordered.map(key=>{
+    const item=notationMetaFor(key) || {symbol:key,meaning:key};
+    return `<div class="notationHighlightRow"><b>${esc(item.symbol||key)}</b><span>${esc(item.meaning||key)}</span></div>`;
+  }).join('');
+  const relatedHtml=related.length
+    ? `<div class="notationRelated">${related.map(k=>`<span>${esc(notationTokenLabel(k))}</span>`).join('')}</div>`
+    : '<span class="small">No related notation targets declared.</span>';
+  explain.innerHTML=`<div class="notationContext">
+    <div class="notationContextHeader"><span>Highlighted notation</span><span class="ntokMini ${esc(meta.phaseClass||'')}">${esc(meta.symbol||primary)}</span></div>
+    <div class="notationContextGrid">
+      <div class="notationContextBlock"><strong>Meaning</strong><span>${esc(meta.meaning||primary)}</span></div>
+      <div class="notationContextBlock"><strong>Runtime role</strong><span>${esc(meta.runtimeRole||'')}</span></div>
+      <div class="notationContextBlock"><strong>Source owners</strong>${ownerChips||'<code>docs/index/runtime-architecture.json</code>'}</div>
+      <div class="notationContextBlock"><strong>Highlighted set</strong><div class="notationHighlightList">${highlightedRows}</div></div>
+      <div class="notationContextBlock"><strong>Related</strong>${relatedHtml}</div>
+    </div>
+  </div>`;
+}
+function highlightNotation(keys, primaryKey){
+  const ordered=[...new Set((Array.isArray(keys)?keys:[keys]).filter(Boolean))];
+  const set=new Set(ordered);
   document.querySelectorAll('.ntok').forEach(el=>{
     const key=el.getAttribute('data-k');
     el.classList.toggle('active', set.has(key));
@@ -3999,16 +4376,7 @@ function highlightNotation(keys){
     el.classList.toggle('muted', set.size && !set.has(key));
     el.setAttribute('aria-pressed', set.has(key) ? 'true' : 'false');
   });
-  const explain=document.getElementById('notationExplain');
-  if(explain && set.size){
-    const labels=[...set].map(k=>{
-      const el=document.querySelector(`.ntok[data-k="${k}"]`);
-      return el ? `${el.textContent.trim()} = ${el.getAttribute('data-label')||k}` : k;
-    });
-    explain.innerHTML='<strong>Highlighted notation:</strong> '+labels.map(esc).join(' · ');
-  } else if(explain){
-    explain.innerHTML='Click a concept or relation to highlight its place in the notation.';
-  }
+  renderNotationPanel(ordered, primaryKey);
 }
 function clearNotation(){ highlightNotation([]); }
 function theoryCardTargetKeys(card){
@@ -4029,17 +4397,8 @@ function selectTheoryCard(cardOrId){
     el.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
   const targets = theoryCardTargetKeys(card);
-  if(typeof window.highlightNotation === 'function') window.highlightNotation(targets);
-  else highlightNotation(targets);
-  const explain=document.getElementById('notationExplain');
-  const label=card.querySelector('strong')?.textContent?.trim() || card.getAttribute('data-theory-card') || 'Theory card';
-  if(explain && targets.length){
-    const targetLabels = targets.map(k=>{
-      const tok=document.querySelector(`.ntok[data-k="${CSS.escape(k)}"]`);
-      return tok ? tok.textContent.trim() : k;
-    });
-    explain.innerHTML='<strong>Selected theory card:</strong> '+esc(label)+' → '+targetLabels.map(esc).join(' · ');
-  }
+  if(typeof window.highlightNotation === 'function') window.highlightNotation(targets, targets[0]);
+  else highlightNotation(targets, targets[0]);
 }
 function activateNotationToken(ev, el){
   if(ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return true;
@@ -5235,7 +5594,7 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     const status = document.getElementById('architectureCarouselStatus');
     if(status && selected){
       const title = selected.querySelector('h2')?.textContent?.replace(/\s+/g,' ').trim() || key;
-      status.textContent = `${selectedIndex + 1} / ${stages.length} · ${title}`;
+      status.innerHTML = `<span class="v60-carousel-title">${esc(title)}</span>`;
     }
   }
   function moveArchitectureCarousel(delta){
@@ -5565,12 +5924,12 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
     nextB:['nextB','R']
   };
   const oldHighlight = window.highlightNotation;
-  window.highlightNotation = function(keys){
+  window.highlightNotation = function(keys, primaryKey){
     let raw = Array.isArray(keys) ? keys.slice() : [keys];
     let expanded = [];
     raw.forEach(k => expanded = expanded.concat(POLICY[k] || [k]));
     expanded = [...new Set(expanded.filter(Boolean))];
-    if(typeof oldHighlight === 'function') return oldHighlight(expanded);
+    if(typeof oldHighlight === 'function') return oldHighlight(expanded, primaryKey || raw[0]);
   };
   const oldSelectConcept = window.selectConcept;
   window.selectConcept = function(id, el){

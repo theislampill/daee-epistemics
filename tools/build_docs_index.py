@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "docs" / "index"
 MANIFEST = SOURCE_ROOT / "manifest.json"
 DESIGN_MD = SOURCE_ROOT / "DESIGN.md"
+RELEASE_DOWNLOAD = SOURCE_ROOT / "release-download.json"
 OUTPUT = ROOT / "docs" / "index.html"
 REFERENCE_ROOT = ROOT / "atomics" / "skill" / "references"
 REFERENCE_SOURCE_PATHS = [
@@ -580,43 +581,96 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
-def render_runtime_row(items: list[dict[str, Any]], row_class: str, aria: str, rendering_id: str) -> str:
+def render_runtime_pipeline(
+    items: list[dict[str, Any]],
+    pipeline_class: str,
+    aria: str,
+    rendering_id: str,
+    visible_label: str,
+) -> str:
     pieces: list[str] = [
-        f'<div class="flowline {row_class}" aria-label="{esc(aria)}" '
-        f'data-runtime-rendering="{esc(rendering_id)}">'
+        f'<div class="v60-pipeline-panel" data-runtime-row-panel="{esc(rendering_id)}" '
+        f'data-runtime-pipeline-panel="{esc(rendering_id)}">',
+        f'<div class="v60-pipeline-label">{esc(visible_label)}</div>',
+        f'<ol class="v60-pipeline-list {pipeline_class}" aria-label="{esc(aria)}" '
+        f'data-runtime-rendering="{esc(rendering_id)}" '
+        'data-runtime-layout="phase-grouped-vertical-pipeline">'
     ]
+    groups: list[tuple[str, list[tuple[int, dict[str, Any]]]]] = []
     for index, item in enumerate(items):
-        title = item.get("title")
-        title_attr = f' title="{esc(title)}"' if isinstance(title, str) and title else ""
-        pieces.append(f'<span class="node {esc(item.get("class", ""))}"{title_attr}>{esc(item["label"])}</span>')
-        if index < len(items) - 1:
-            pieces.append('<span class="arrow">→</span>')
+        item_class = str(item.get("class", ""))
+        if not groups or groups[-1][0] != item_class:
+            groups.append((item_class, []))
+        groups[-1][1].append((index, item))
+
+    for group_index, (item_class, group_items) in enumerate(groups):
+        phase_break = "true" if group_index > 0 else "false"
+        pieces.append(
+            f'<li class="v60-pipeline-phase-group {esc(item_class)}" '
+            f'data-phase-group="{esc(item_class)}" data-phase-break="{phase_break}">'
+            '<div class="v60-phase-flow">'
+        )
+        for offset, (index, item) in enumerate(group_items):
+            title = item.get("title")
+            title_attr = f' title="{esc(title)}"' if isinstance(title, str) and title else ""
+            pieces.append(
+                f'<span class="v60-pipeline-step {esc(item_class)}" data-pipeline-step="{index + 1}"{title_attr}>'
+                f'<span class="v60-step-number">{index + 1}</span>'
+                f'<span class="v60-step-label">{render_multiline_text(item["label"])}</span>'
+                "</span>"
+            )
+            if offset < len(group_items) - 1:
+                pieces.append('<span class="v60-pipeline-arrow" aria-hidden="true">→</span>')
+        pieces.append("</div></li>")
+    pieces.append("</ol>")
     pieces.append("</div>")
     return "\n".join(pieces)
 
 
+def render_formal_algebraic_trace(items: list[str]) -> str:
+    trace = " → ".join(str(item) for item in items)
+    return "\n".join(
+        [
+            '<div class="v60-formal-trace-copy" data-runtime-rendering="architecture-formal-algebraic-trace" '
+            'data-runtime-layout="copyable-formal-algebraic-trace">',
+            '<div class="v60-pipeline-label">Formal algebraic trace</div>',
+            f'<pre><code>{esc(trace)}</code></pre>',
+            "</div>",
+        ]
+    )
+
+
 def render_runtime_architecture_rows(arch: dict[str, Any]) -> str:
     rows = arch["rows"]
+    formal_trace = rows.get("formal_algebraic_trace") or [
+        item.get("label", "") for item in rows.get("formal", []) if isinstance(item, dict)
+    ]
     return "\n".join(
         [
             '<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
-            "<strong>Shared source:</strong> Architecture cards, Architecture rows, and Theory notation are generated from "
+            "<strong>Shared source:</strong> Architecture cards, paired Architecture pipelines, and Theory notation are generated from "
             '<code>docs/index/runtime-architecture.json</code>, which points back to canonical runtime owners. '
             "Generated HTML is not the owner.",
             "</div>",
-            '<div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">',
-            render_runtime_row(
+            '<div class="v60-pipeline-stack" aria-label="Canonical runtime paired pipelines" data-runtime-layout="paired-vertical-pipelines">',
+            '<div class="v60-pipeline-heading">Architecture pipeline</div>',
+            '<div class="v60-pipeline-columns">',
+            render_runtime_pipeline(
                 rows["runtime"],
-                "v60-pipeline-row v60-runtime-row",
-                "Canonical runtime spine",
+                "v60-runtime-pipeline",
+                "Plain process reading",
                 "architecture-plain-row",
+                "Plain/process reading",
             ),
-            render_runtime_row(
+            render_runtime_pipeline(
                 rows["formal"],
-                "v56-formula-flow v60-pipeline-row v60-formal-row",
-                "Canonical algebraic runtime spine",
+                "v56-formula-flow v60-formal-pipeline",
+                "Formal runtime trace",
                 "architecture-formal-row",
+                "Formal runtime trace",
             ),
+            "</div>",
+            render_formal_algebraic_trace([str(item) for item in formal_trace]),
             "</div>",
         ]
     )
@@ -624,8 +678,13 @@ def render_runtime_architecture_rows(arch: dict[str, Any]) -> str:
 
 def render_terms(terms: list[list[str]]) -> str:
     return "<ul>\n" + "\n".join(
-        f"<li><b>{esc(term)}</b> {esc(text)}</li>" for term, text in terms
+        f"<li><b>{esc(term)}</b> {render_multiline_text(text)}</li>" for term, text in terms
     ) + "\n</ul>"
+
+
+def render_multiline_text(value: object) -> str:
+    lines = str(value).splitlines() or [str(value)]
+    return "<br/>".join(esc(line) for line in lines)
 
 
 def render_proc_flow(steps: list[str]) -> str:
@@ -640,9 +699,13 @@ def render_proc_flow(steps: list[str]) -> str:
 
 def render_field_grid(fields: list[list[str]]) -> str:
     return '<div class="v21-field-grid">\n' + "\n".join(
-        f"<div><b>{esc(symbol)}</b><span>{esc(label)}</span><small>{esc(detail)}</small></div>"
+        f"<div><b>{esc(symbol)}</b><span>{esc(label)}</span><small>{render_multiline_text(detail)}</small></div>"
         for symbol, label, detail in fields
     ) + "\n</div>"
+
+
+def render_stage_formula(value: object) -> str:
+    return f'<div class="v21-stage-formula">{render_multiline_text(value)}</div>'
 
 
 def render_gate_flow(card: dict[str, Any]) -> str:
@@ -651,12 +714,12 @@ def render_gate_flow(card: dict[str, Any]) -> str:
     step_html: list[str] = ['<div class="v54-gate-flow">']
     for index, step in enumerate(steps):
         title, text = step
-        step_html.append(f'<div class="v54-gate-step"><h4>{esc(title)}</h4><p>{esc(text)}</p></div>')
+        step_html.append(f'<div class="v54-gate-step"><h4>{esc(title)}</h4><p>{render_multiline_text(text)}</p></div>')
         if index < len(steps) - 1:
             step_html.append('<div class="v54-gate-arrow">→</div>')
     step_html.append("</div>")
     check_html = "\n".join(
-        f'<div class="v54-gate-check"><b>{esc(title)}</b><span>{esc(text)}</span></div>'
+        f'<div class="v54-gate-check"><b>{esc(title)}</b><span>{render_multiline_text(text)}</span></div>'
         for title, text in checks
     )
     return "\n".join(step_html) + (
@@ -666,17 +729,57 @@ def render_gate_flow(card: dict[str, Any]) -> str:
 
 
 def render_reread_gate(card: dict[str, Any]) -> str:
-    def chip_row(items: list[str]) -> str:
-        chips = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in items)
-        return f'<div class="v60-field-chiprow">{chips}</div>'
+    def reread_formula(value: str) -> str:
+        if " ⊢ " not in value:
+            return f'<div class="v21-stage-formula">{esc(value)}</div>'
+        left, right = value.split(" ⊢ ", 1)
+        outcomes = [piece.strip() for piece in right.split(" | ") if piece.strip()]
+        outcome_html = "".join(
+            (
+                f'<span class="v60-decision-outcome">{esc(outcome)}</span>'
+                + ('<span class="v60-decision-separator">|</span>' if index < len(outcomes) - 1 else "")
+            )
+            for index, outcome in enumerate(outcomes)
+        )
+        return "\n".join(
+            [
+                '<div class="v21-stage-formula v60-reread-decision-formula" data-reread-decision-formula="stacked">',
+                '<div class="v60-reread-signature">',
+                f'<span>{esc(left)}</span>',
+                '<span class="v60-reread-turnstile">⊢</span>',
+                "</div>",
+                f'<div class="v60-reread-outcomes" aria-label="Reread decision outcomes">{outcome_html}</div>',
+                "</div>",
+            ]
+        )
 
-    def example_group(label: str, items: list[str], meaning: str, aria: str) -> str:
+    def chip_row(items: list[str], extra_class: str = "") -> str:
+        chips = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in items)
+        classes = "v60-field-chiprow"
+        if extra_class:
+            classes += f" {extra_class}"
+        return f'<div class="{classes}">{chips}</div>'
+
+    def example_chip_grid(items: list[str], split_after: int | None = None) -> str:
+        if split_after is None or split_after <= 0 or split_after >= len(items):
+            return chip_row(items, "example-chip-grid")
+        rows = [items[:split_after], items[split_after:]]
+        row_html = "".join(
+            '<span class="example-chip-row">'
+            + "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in row)
+            + "</span>"
+            for row in rows
+            if row
+        )
+        return f'<div class="v60-field-chiprow example-chip-grid" data-example-grid="4-plus-rest">{row_html}</div>'
+
+    def example_group(label: str, items: list[str], meaning: str, aria: str, split_after: int | None = None) -> str:
         return "\n".join(
             [
                 f'<div class="v60-field-targets v60-example-group" aria-label="{esc(aria)}">',
                 f'<span class="v60-field-heading">{esc(label)}</span>',
-                chip_row(items),
-                f'<span class="v60-field-meaning v60-field-description">{esc(meaning)}</span>',
+                example_chip_grid(items, split_after),
+                f'<span class="v60-field-meaning v60-field-description example-chip-description">{esc(meaning)}</span>',
                 "</div>",
             ]
         )
@@ -687,7 +790,15 @@ def render_reread_gate(card: dict[str, Any]) -> str:
         else:
             left, right = value, ""
         operands = [piece.strip() for piece in right.split(" + ") if piece.strip()]
-        operand_html = "".join(f'<span class="v60-loopbreak-chip">{esc(piece)}</span>' for piece in operands)
+        operand_rows = [operands[:2], operands[2:]]
+        operand_html = "".join(
+            '<span class="v60-loopbreak-operand-row" data-loopbreak-row="'
+            f'{"loop-grounding" if row_index == 0 else "burden-delta-reread"}">'
+            + "".join(f'<span class="v60-loopbreak-chip">{esc(piece)}</span>' for piece in row)
+            + "</span>"
+            for row_index, row in enumerate(operand_rows)
+            if row
+        )
         grounding_match = re.match(r"^\s*([^{}]+)\{(.+)\}\s*$", grounding)
         if grounding_match:
             grounding_label = grounding_match.group(1).strip()
@@ -696,50 +807,74 @@ def render_reread_gate(card: dict[str, Any]) -> str:
             grounding_label = "G ∈"
             members = [grounding]
         member_html = "".join(f'<span class="v60-grounding-chip">{esc(piece)}</span>' for piece in members)
+        license_text = render_multiline_text(
+            "LoopBreak is licensed only with an explicit target loop,\n"
+            "owner-licensed grounding source, burden/submove, Δ effect,\n"
+            "and post-break reread."
+        )
         return "\n".join(
             [
                 '<div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">',
-                '<span class="v60-field-heading">LoopBreak witness</span>',
+                '<span class="v60-field-heading">LOOPBREAK WITNESS</span>',
                 '<div class="v60-loopbreak-formula">',
                 f'<span class="v60-loopbreak-head">{esc(left)}</span>',
                 '<span class="v60-loopbreak-turnstile">⊢</span>',
                 f'<span class="v60-loopbreak-operands">{operand_html}</span>',
                 "</div>",
                 '<div class="v60-grounding-block">',
-                f'<span class="v60-grounding-label">{esc(grounding_label)}' + "{</span>",
+                f'<span class="v60-grounding-label">{esc(grounding_label)}</span>',
                 f'<span class="v60-grounding-members">{member_html}</span>',
-                '<span class="v60-grounding-label">}</span>',
                 "</div>",
-                '<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>',
+                f'<span class="v60-field-meaning v60-field-wide">{license_text}</span>',
                 "</div>",
             ]
         )
+    delta_transition_text = render_multiline_text(
+        "Burden/submove work changes ΔⁿB and,\nwhere dependency radius changes, Δκ."
+    )
+    field_diagnostic_text = render_multiline_text(
+        "Target-explicit field diagnostics read the Δ-produced\n"
+        "noetic/burden/register/route state before reread closure."
+    )
+    reread_note_text = render_multiline_text(
+        "R(H,Δ) rereads the whole live field.\n"
+        "Closure is licensed only when residual ∇·/∇× pressure is cleared,\n"
+        "integrated, discharged as derivative, held with reason,\n"
+        "or carried into RECURSE/PARTIAL."
+    )
+    examples_note_text = render_multiline_text(
+        "Examples are owner-valid only when\n"
+        "the target is explicit and control-relevant;\n"
+        "they are not decorative symbol variants."
+    )
     return "\n".join(
         [
-            f'<div class="v21-stage-formula">{esc(card["formula"])}</div>',
+            reread_formula(card["formula"]),
             '<div class="v60-field-diagnostics" aria-label="Field diagnostics after Delta">',
-            '<div class="v60-diagnostic-card"><b>Δ lands transition</b><span>Burden/submove work changes ΔⁿB and, where dependency radius changes, Δκ.</span></div>',
-            '<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span></div>',
+            f'<div class="v60-diagnostic-card"><b>Δ lands transition</b><span>{delta_transition_text}</span></div>',
+            f'<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>{field_diagnostic_text}</span></div>',
             '<div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">',
             '<span class="v60-field-heading">Target grammar</span>',
             chip_row(["∇·T", "∇×T"]),
             f'<span class="v60-field-meaning v60-field-description">{esc(card["target_grammar"])}</span>',
             "</div>",
             example_group(
-                "∇· examples",
+                "∇· EXAMPLES",
                 card["divergence_examples"],
                 "residual outward pressure in an explicit target field",
                 "Readable divergence examples",
+                4,
             ),
             example_group(
-                "∇× examples",
+                "∇× EXAMPLES",
                 card["curl_examples"],
                 "circular / rotational dependency in an explicit target field",
                 "Readable curl examples",
+                4,
             ),
-            '<div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>',
+            f'<div class="v60-diagnostic-note">{examples_note_text}</div>',
             loopbreak_witness(card["loopbreak_witness"], card["grounding_grammar"]),
-            '<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>',
+            f'<div class="v60-diagnostic-note">{reread_note_text}</div>',
             "</div>",
         ]
     )
@@ -755,7 +890,7 @@ def render_decision(card: dict[str, Any]) -> str:
             '<div class="stop">■<br/>STOP</div>',
             '<div class="complete">✓<br/>COMPLETE</div>',
             "</div>",
-            f'<div class="v21-note"><b>Correct recurse:</b> {esc(card["note"])}</div>',
+            f'<div class="v21-note"><b>Correct recurse:</b> {render_multiline_text(card["note"])}</div>',
         ]
     )
 
@@ -774,34 +909,75 @@ def render_architecture_subcard(card: dict[str, Any]) -> str:
     attrs = f'class="{" ".join(classes)}" data-substage-key="{esc(card["key"])}" role="button" tabindex="0"'
     title = f'<h3>{esc(card["title"])}</h3>' if kind != "note" else f'<b>{esc(card["title"])}:</b> '
     if kind in {"terms", "warning"}:
-        content = render_terms(card.get("terms", [])) if kind == "terms" else f"<p>{esc(card['text'])}</p>"
+        content = render_terms(card.get("terms", [])) if kind == "terms" else f"<p>{render_multiline_text(card['text'])}</p>"
     elif kind == "note":
-        return f'<div {attrs}>{title}{esc(card["text"])}</div>'
+        note_text = str(card["text"])
+        separator = "<br/>" if "\n" in note_text else " "
+        return f'<div {attrs}>{title}{separator}{render_multiline_text(note_text)}</div>'
     elif kind == "proc_flow":
         content = render_proc_flow(card.get("steps", []))
     elif kind == "field_grid":
         intro = str(card["intro"])
         if " names " in intro:
             formula, rest = intro.split(" names ", 1)
-            intro_html = f"<p><code>{esc(formula)}</code> names {esc(rest)}</p>"
+            intro_html = f"<p><code>{esc(formula)}</code><br/>names {render_multiline_text(rest)}</p>"
         else:
-            intro_html = f"<p>{esc(intro)}</p>"
+            intro_html = f"<p>{render_multiline_text(intro)}</p>"
         content = intro_html + render_field_grid(card.get("fields", []))
     elif kind == "gate_flow":
         content = render_gate_flow(card)
     elif kind == "formula":
-        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>'
+        content = render_stage_formula(card["formula"])
     elif kind == "formula_terms":
-        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>{render_terms(card.get("terms", []))}'
+        content = f'{render_stage_formula(card["formula"])}{render_terms(card.get("terms", []))}'
     elif kind == "reread_gate":
         content = render_reread_gate(card)
     elif kind == "decision":
         content = render_decision(card)
     elif kind == "resolution":
-        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>{render_terms(card.get("terms", []))}'
+        content = f'{render_stage_formula(card["formula"])}{render_terms(card.get("terms", []))}'
     else:
         raise SystemExit(f"{rel(ROOT / 'docs/index/runtime-architecture.json')}: unknown subcard kind {kind!r}")
     return f"<div {attrs}>{title}{content}</div>"
+
+
+def render_architecture_stage_body(stage: dict[str, Any]) -> str:
+    subcards = stage.get("subcards", [])
+    if stage.get("key") == "ir":
+        left_keys = {"diagnostic-reduction-order", "ir-control-surface"}
+        right_keys = {"gate-owner-layerb"}
+        left = [card for card in subcards if card.get("key") in left_keys]
+        right = [card for card in subcards if card.get("key") in right_keys]
+        return "\n".join(
+            [
+                '<div class="v63-two-column-stage-layout v63-ir-layout" data-stage-layout="ir-two-left-one-right">',
+                '<div class="v63-stage-stack v63-stage-stack-left" data-stage-layout-column="left">',
+                *(render_architecture_subcard(card) for card in left),
+                "</div>",
+                '<div class="v63-stage-stack v63-stage-stack-right" data-stage-layout-column="right">',
+                *(render_architecture_subcard(card) for card in right),
+                "</div>",
+                "</div>",
+            ]
+        )
+    if stage.get("key") == "ownerRelease":
+        left_keys = {"operator-signature", "strict-burden-cycle"}
+        right_keys = {"reread-gate", "decision"}
+        left = [card for card in subcards if card.get("key") in left_keys]
+        right = [card for card in subcards if card.get("key") in right_keys]
+        return "\n".join(
+            [
+                '<div class="v63-two-column-stage-layout v63-owner-release-layout" data-stage-layout="owner-release-two-by-two">',
+                '<div class="v63-stage-stack v63-stage-stack-left" data-stage-layout-column="left">',
+                *(render_architecture_subcard(card) for card in left),
+                "</div>",
+                '<div class="v63-stage-stack v63-stage-stack-right" data-stage-layout-column="right">',
+                *(render_architecture_subcard(card) for card in right),
+                "</div>",
+                "</div>",
+            ]
+        )
+    return "\n".join(render_architecture_subcard(card) for card in subcards)
 
 
 def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
@@ -837,10 +1013,9 @@ def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
             f'data-pipeline="target" data-stage-key="{esc(stage["key"])}" '
             f'data-carousel-index="{index}" data-carousel-position="{position}" '
             f'role="option" aria-selected="{selected}" tabindex="{tabindex}">'
-            f'<h2><span>{esc(stage["number"])}</span> {title}</h2>'
+            f"<h2>{title}</h2>"
         )
-        for card in stage.get("subcards", []):
-            articles.append(render_architecture_subcard(card))
+        articles.append(render_architecture_stage_body(stage))
         articles.append("</article></div>")
     articles.append("</div>")
     articles.append('<div class="v60-carousel-dots" aria-label="Select architecture stage">')
@@ -912,10 +1087,147 @@ def theory_card_targets(arch: dict[str, Any], card: dict[str, Any]) -> list[str]
     return targets
 
 
+CONTROL_CARD_TOKEN_ALIASES = {
+    "τ": "tau",
+    "σ": "sigma",
+    "ξ": "xi",
+    "Ω": "omega",
+    "μ": "mu",
+    "κ": "kappa",
+}
+
+
+def notation_phase_classes(arch: dict[str, Any]) -> dict[str, str]:
+    """Derive notation chip colors from the same phase classes as Theory cards."""
+
+    phase_for_token = {
+        "D0": "phase-input",
+        "noetic": "phase-layer-a",
+        "Psi": "phase-layer-a",
+        "m": "phase-layer-a",
+        "N": "phase-gate",
+        "tau": "phase-gate",
+        "sigma": "phase-gate",
+        "heart": "phase-gate",
+        "xi": "phase-gate",
+        "omega": "phase-gate",
+        "mu": "phase-gate",
+        "IR": "phase-gate",
+        "gradient": "phase-gate",
+        "kappa": "phase-reread-closure",
+        "H": "phase-reread-closure",
+        "burden": "phase-owner-delta",
+        "submoves": "phase-owner-delta",
+        "Land": "phase-owner-delta",
+        "deltaB": "phase-owner-delta",
+        "deltaK": "phase-reread-closure",
+        "nablaDot": "phase-owner-delta",
+        "nablaCross": "phase-owner-delta",
+        "fieldDiagnostics": "phase-owner-delta",
+        "loopBreak": "phase-owner-delta",
+        "R": "phase-reread-closure",
+        "C": "phase-reread-closure",
+        "final": "phase-reread-closure",
+        "nextB": "phase-reread-closure",
+        "coupling": "phase-public-boundary",
+        "PsiI": "phase-public-boundary",
+    }
+    known_tokens = notation_token_ids(arch)
+    for card in arch.get("theory_cards", []):
+        if not isinstance(card, dict):
+            continue
+        phase_class = str(card.get("phase_class", ""))
+        if not phase_class.startswith("phase-"):
+            continue
+        targets = theory_card_targets(arch, card)
+        card_id = str(card.get("id", ""))
+        primary = CONTROL_CARD_TOKEN_ALIASES.get(card_id, card_id)
+        if primary not in targets or primary not in known_tokens:
+            primary = targets[0]
+        phase_for_token[primary] = phase_class
+    return phase_for_token
+
+
+def notation_metadata(arch: dict[str, Any]) -> dict[str, dict[str, object]]:
+    """Join notation chip data to mapping rows for the Theory context panel."""
+
+    mapping_rows = arch.get("mapping_rows")
+    if not isinstance(mapping_rows, list) or len(mapping_rows) < 11:
+        raise SystemExit("docs/index/runtime-architecture.json: mapping_rows must define the runtime sequence")
+
+    row_for_token = {
+        "D0": 0,
+        "noetic": 1,
+        "Psi": 1,
+        "N": 1,
+        "m": 1,
+        "tau": 1,
+        "sigma": 1,
+        "heart": 1,
+        "xi": 1,
+        "omega": 1,
+        "mu": 1,
+        "kappa": 1,
+        "H": 1,
+        "IR": 2,
+        "gradient": 3,
+        "burden": 4,
+        "submoves": 4,
+        "Land": 5,
+        "deltaB": 5,
+        "deltaK": 5,
+        "nablaDot": 6,
+        "nablaCross": 6,
+        "fieldDiagnostics": 6,
+        "loopBreak": 7,
+        "R": 8,
+        "C": 9,
+        "final": 9,
+        "nextB": 9,
+        "coupling": 10,
+        "PsiI": 10,
+    }
+    phase_for_token = notation_phase_classes(arch)
+
+    metadata: dict[str, dict[str, object]] = {}
+    for line in arch.get("notation_lines", []):
+        if not isinstance(line, list):
+            continue
+        for segment in line:
+            if not isinstance(segment, dict):
+                continue
+            token = segment.get("token")
+            if not isinstance(token, str):
+                continue
+            row_index = row_for_token.get(token)
+            role = str(segment.get("label", ""))
+            owners = "docs/index/runtime-architecture.json"
+            if row_index is not None:
+                row = mapping_rows[row_index]
+                if isinstance(row, list) and len(row) == 3:
+                    role = str(row[1])
+                    owners = str(row[2])
+            related_targets = [
+                str(value)
+                for value in segment.get("highlight", [])
+                if isinstance(value, str) and value != token
+            ]
+            metadata[token] = {
+                "symbol": str(segment.get("symbol", token)),
+                "meaning": str(segment.get("label", token)),
+                "runtime_role": role,
+                "source_owners": owners,
+                "related_targets": related_targets,
+                "phase_class": phase_for_token.get(token, "phase-layer-a"),
+            }
+    return metadata
+
+
 def render_theory_control_overview(arch: dict[str, Any]) -> str:
+    metadata = notation_metadata(arch)
     cards: list[str] = [
         '<div class="runtimeSourceNote theoryRuntimeSourcing" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
-        "<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the full Architecture rows.",
+        "<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the Architecture pipelines.",
         "</div>",
         '<div class="controlOverviewGrid">',
     ]
@@ -947,13 +1259,19 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
                 classes = "ntok"
                 if segment.get("classes"):
                     classes += f' {esc(segment["classes"])}'
+                phase_class = str(metadata.get(segment["token"], {}).get("phase_class", "phase-layer-a"))
+                classes += f" {esc(phase_class)}"
                 cards.append(
                     f'<span class="{classes}" data-k="{esc(segment["token"])}" '
                     f'data-notation-id="{esc(segment["token"])}" role="button" tabindex="0" '
                     'aria-pressed="false" '
                     f'data-label="{esc(segment["label"])}" '
+                    f'data-meaning="{esc(str(metadata.get(segment["token"], {}).get("meaning", segment["label"])))}" '
+                    f'data-runtime-role="{esc(str(metadata.get(segment["token"], {}).get("runtime_role", segment["label"])))}" '
+                    f'data-source-owners="{esc(str(metadata.get(segment["token"], {}).get("source_owners", "docs/index/runtime-architecture.json")))}" '
+                    f'data-related-targets="{esc(" ".join(str(value) for value in metadata.get(segment["token"], {}).get("related_targets", [])))}" '
                     'onkeydown="return activateNotationToken(event,this)" '
-                    f'onclick="highlightNotation({js_array(segment["highlight"])})">{esc(segment["symbol"])}</span>'
+                    f'onclick="highlightNotation({js_array(segment["highlight"])}, \'{esc(segment["token"])}\')">{esc(segment["symbol"])}</span>'
                 )
             else:
                 cls = f' class="{esc(segment["class"])}"' if segment.get("class") else ""
@@ -985,12 +1303,10 @@ def render_theory_mapping_table(arch: dict[str, Any]) -> str:
         for notation, role, owner in arch["mapping_rows"]
     )
     return (
-        '<div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json" '
+        '<template class="theoryNotationMapData" data-hidden-source-map="true" data-runtime-architecture-source="docs/index/runtime-architecture.json" '
         'data-runtime-rendering="theory-formalism-mapping">'
-        "<h3>Notation → runtime role → source owner</h3>"
-        "<p class=\"subtle\">Generated from the shared runtime architecture source; it compactly maps the same sequence rather than repeating the Architecture tab rows.</p>"
         f"<table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody>{rows}</tbody></table>"
-        "</div>"
+        "</template>"
     )
 
 
@@ -1011,9 +1327,9 @@ def render_theory_final_runtime_summary(arch: dict[str, Any]) -> str:
     return (
         '<section id="pv-final">'
         "<h2>20. Final runtime notation</h2>"
-        "<p>The final notation summary is generated as compact mapping rows from the shared runtime architecture source, not as a second copy of the Architecture-tab row block.</p>"
+        "<p>The final notation source map is generated as hidden metadata from the shared runtime architecture source and surfaced through the contextual Highlighted notation panel, not as a dominant table or a second copy of the Architecture-tab rows.</p>"
         f"{render_theory_mapping_table(arch)}"
-        "<p>Every symbol listed here either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the framework graphic. Nothing is merely decorative.</p>"
+        "<p>Select a notation chip or theory card to inspect the relevant runtime role and source owner. Every symbol either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the framework graphic. Nothing is merely decorative.</p>"
         "</section>"
     )
 
@@ -1034,8 +1350,68 @@ def replace_section_tokens(body: str, arch: dict[str, Any]) -> str:
     return body
 
 
-def render_tabs(tabs: list[dict[str, Any]]) -> str:
-    lines = ['<div class="topbar">', '<div class="tabs" role="tablist" aria-label="DAEE wiki sections">']
+def release_download_metadata_path(manifest: dict[str, Any]) -> Path:
+    raw = manifest.get("derived_data", {}).get("release_download")
+    if isinstance(raw, str) and raw:
+        return ROOT / raw
+    return RELEASE_DOWNLOAD
+
+
+def fallback_release_download_metadata() -> dict[str, Any]:
+    return {
+        "download_kind": "latest_release_page",
+        "release_title": "Latest GitHub Release",
+        "release_url": "https://github.com/theislampill/daee-epistemics/releases/latest",
+        "fallback_url": "https://github.com/theislampill/daee-epistemics/releases/latest",
+        "primary_skill_asset_name": "",
+        "primary_skill_asset_browser_download_url": "",
+        "sha256": "",
+    }
+
+
+def read_release_download_metadata(manifest: dict[str, Any]) -> dict[str, Any]:
+    path = release_download_metadata_path(manifest)
+    if not path.exists():
+        return fallback_release_download_metadata()
+    metadata = read_json(path)
+    if not isinstance(metadata, dict):
+        raise SystemExit(f"{rel(path)}: release download metadata must be a JSON object")
+    if metadata.get("schema_version") != 1:
+        raise SystemExit(f"{rel(path)}: schema_version must be 1")
+    return metadata
+
+
+def render_download_nav_action(metadata: dict[str, Any]) -> str:
+    direct_url = str(metadata.get("primary_skill_asset_browser_download_url") or "").strip()
+    fallback_url = str(metadata.get("fallback_url") or metadata.get("release_url") or "").strip()
+    href = direct_url or fallback_url or "https://github.com/theislampill/daee-epistemics/releases/latest"
+    direct = bool(direct_url)
+    label = "Download latest .skill" if direct else "Latest release"
+    title = "Latest GitHub Release"
+    release_title = str(metadata.get("release_title") or "").strip()
+    if release_title:
+        title = f"{title}: {release_title}"
+    sha = str(metadata.get("sha256") or "").strip().upper()
+    asset_name = str(metadata.get("primary_skill_asset_name") or "").strip()
+    data_kind = str(metadata.get("download_kind") or ("direct_asset" if direct else "latest_release_page"))
+    aria = "Download latest .skill asset from GitHub Release" if direct else "Open latest GitHub Release"
+    download_attr = f' download="{html.escape(asset_name, quote=True)}"' if direct and asset_name.endswith(".skill") else ""
+    return (
+        '<a class="downloadNavAction" data-release-download-kind="'
+        f'{html.escape(data_kind, quote=True)}" data-release-sha256="{html.escape(sha, quote=True)}" '
+        f'href="{html.escape(href, quote=True)}" target="_blank" rel="noopener" '
+        f'title="{html.escape(title, quote=True)}" aria-label="{html.escape(aria, quote=True)}"{download_attr}>'
+        f'<span>{html.escape(label)}</span>'
+        "</a>"
+    )
+
+
+def render_tabs(tabs: list[dict[str, Any]], release_download: dict[str, Any]) -> str:
+    lines = [
+        '<div class="topbar">',
+        '<div class="topbarInner">',
+        '<div class="tabs" role="tablist" aria-label="DAEE wiki sections">',
+    ]
     for index, tab in enumerate(tabs):
         tab_id = tab["id"]
         classes = "tab active" if index == 0 else "tab"
@@ -1046,7 +1422,7 @@ def render_tabs(tabs: list[dict[str, Any]]) -> str:
             f'aria-selected="{selected}" aria-controls="{html.escape(tab_id)}" '
             f'data-tab="{html.escape(tab_id)}"{tabindex}>{html.escape(tab["label"])}</button>'
         )
-    lines.extend(["</div>", "</div>"])
+    lines.extend(["</div>", render_download_nav_action(release_download), "</div>", "</div>"])
     return "\n".join(lines)
 
 
@@ -1072,6 +1448,7 @@ def render_generated_data(manifest: dict[str, Any], modules: list[dict[str, str]
         "manifest": rel(MANIFEST),
         "design_source": rel(DESIGN_MD),
         "module_catalogue": manifest["derived_data"]["module_catalogue"],
+        "release_download": manifest["derived_data"].get("release_download"),
         "source_digest": source_digest(source_paths),
         "section_sources": [section_source(tab) for tab in manifest["tabs"]],
         "standalone_pages": [page["output"] for page in manifest.get("standalone_pages", [])],
@@ -1101,11 +1478,12 @@ def build_index(manifest: dict[str, Any]) -> str:
     modules = load_modules(manifest)
     arch = load_runtime_architecture(manifest)
     design = read_design_system()
+    release_download = read_release_download_metadata(manifest)
     output = template_path.read_text(encoding="utf-8")
     replacements = {
         "{{ GENERATED_BANNER }}": BANNER,
         "{{ DESIGN_TOKENS_CSS }}": render_design_tokens_css(design),
-        "{{ TOPBAR }}": render_tabs(manifest["tabs"]),
+        "{{ TOPBAR }}": render_tabs(manifest["tabs"], release_download),
         "{{ SECTIONS }}": render_sections(manifest["tabs"], arch),
         "{{ GENERATED_DATA }}": render_generated_data(manifest, modules),
         "{{ OWNER_SOURCE_RENDERER }}": render_owner_source_renderer(),

@@ -73,6 +73,50 @@ all relevant owners before patching or reporting success.
 - Future release/report audits must use:
   `claim -> complement set -> owner trace -> evidence -> checker/provenance -> qualifier`.
 
+## Docs/Index Governance
+
+`docs/index.html` and `docs/daee-epistemics-pipeline.html` are generated public docs
+surfaces. Do not hand-edit either generated HTML file directly. Patch the owning
+source files under `docs/index/`, `tools/build_docs_index.py`, and the relevant
+checker, then regenerate the pages.
+
+Docs/index runtime and visual ownership is split by responsibility:
+
+- Canonical runtime source remains `atomics/skill/**`; generated runtime remains
+  `skill/**`.
+- `docs/index/runtime-architecture.json` is the shared docs/index runtime
+  architecture source for Architecture cards, Architecture pipelines, Theory
+  notation mappings, and related generated trace maps.
+- `docs/index/DESIGN.md` owns docs/index visual tokens and visual rationale only.
+  It must not become a runtime-semantic owner.
+- Generated HTML is not canonical runtime, release, smoke, or design source.
+
+The Architecture tab must preserve three generated surfaces from the shared runtime
+architecture source:
+
+- a selected-primary carousel with one readable active card;
+- scaled side-card previews of the generated cards, not label-only tiles or cropped
+  fragments;
+- paired side-by-side vertical Architecture pipelines: a left plain/process reading
+  and a right denser formal/runtime trace. Each pipeline must render as contained
+  color/phase-grouped numbered steps from the shared runtime sequence; steps inside
+  a color/phase group may flow horizontally with arrows, but the surface must not
+  collapse into long page-wide chip streams or scroll rows. A copyable formal
+  algebraic trace may appear beneath the two pipelines when it is generated from
+  the same runtime architecture source.
+
+The Theory Deep Dive tab must remain distinct from the Architecture pipelines. It owns a
+related formal/theory rendering with card-to-notation interaction. Selecting a
+Theory card or notation chip must update the Highlighted notation panel with the
+selected meaning, runtime role, source owners, and related highlighted notation.
+The full notation source map is provenance/secondary UI only, not a default-visible
+dominant table.
+
+Use ACID / SSOT / GRASP for docs/index generation work: make bounded source changes,
+keep generated docs fresh and checker-covered, isolate visual presentation from runtime
+meaning, and keep runtime information with the source owners while `tools/build_docs_index.py`
+creates generated surfaces and `tools/check_docs_index_interactions.py` controls parity.
+
 ## ANDON, 5 Whys, and Poka-yoke
 
 During Genchi Genbutsu / gemba work, inspect the actual files, diffs, artifacts, and release
@@ -84,6 +128,12 @@ Repeated defect classes require Poka-yoke: add or strengthen a checker, fixture,
 or provenance check. Typical recurrence blockers are symbol inventory + control-effect checks,
 Natural Language Autoencoder AV/AR fixtures, release-claim integrity audits, Complementary SSOT
 parity checks, and `git ls-files skill == 0` after generated-runtime migration.
+
+Smoke failure triage must use genchi genbutsu, gemba, andon, 5 Whys, and poka-yoke:
+inspect the real local artifacts, package, checker output, and canonical owners; work at
+the actual failing smoke/checker/package sites; stop the release line on any required
+smoke or witness-gate failure; record a short root-cause ladder per failed smoke; and
+patch source/runbook/checker surfaces so the failure class is harder to repeat.
 
 ## Formalism, NLA, and Operativity Discipline
 
@@ -288,6 +338,19 @@ Release claims must stay narrow and honest:
   golden-depth claim. Golden-depth claims require adversarial content review against the
   relevant anchor output across owner/TTP execution, operative sources, noetic diagnosis,
   restoration force, source-status discipline, and da'wah usefulness.
+- Release-smoke captures are local/ignored diagnostic artifacts, not committed source and
+  not GitHub Release assets.
+- v0.4.2.0 release evidence is bounded to the local three-smoke package-bound gate; do not
+  present it as broad live-output proof, a full formal calculus, a truth meter, or guaranteed
+  uptake.
+- Expanded 10-case/generalization evidence and heuristics/noetic-profiles catalogue migration
+  are deferred to v0.4.3.0/v0.5 unless explicitly authorized.
+- When a GitHub Release already exists for a tag, update the existing release body/assets
+  instead of creating a duplicate release, and do not force-move tags without owner
+  authorization.
+- Release bodies must preserve non-claims: schema-light executable governance calculus,
+  stronger than prompt engineering, not a full formal calculus, not a truth meter, not
+  guaranteed uptake, and not live-output proven beyond the included smoke gate.
 
 ## Regression Audit Etiquette
 

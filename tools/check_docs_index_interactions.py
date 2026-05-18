@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
 DESIGN_MD = ROOT / "docs" / "index" / "DESIGN.md"
+RELEASE_DOWNLOAD = ROOT / "docs" / "index" / "release-download.json"
 INDEX_TEMPLATE = ROOT / "docs" / "index" / "templates" / "index.html.tpl"
 ARCHITECTURE_SECTION = ROOT / "docs" / "index" / "sections" / "architecture.html"
 THEORY_SECTION = ROOT / "docs" / "index" / "sections" / "theory.html"
@@ -69,9 +70,9 @@ EXPECTED_TABS = {
 }
 
 REQUIRED_INDEX_NOTATION_TOKENS = {
-    "Architecture controlled row layout": "v60-pipeline-row",
-    "Architecture post-Delta field diagnostic node": "∇·T / ∇×T target-explicit diagnostics",
-    "Architecture formal field-state node": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T",
+    "Architecture paired vertical pipeline layout": "v60-pipeline-list",
+    "Architecture post-Delta field diagnostic node": "∇·T / ∇×T field diagnostics",
+    "Architecture formal field-state node": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
     "Architecture target grammar": "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
     "Architecture readable divergence target grammar": "v60-field-target\">∇·T",
     "Architecture readable curl target grammar": "v60-field-target\">∇×T",
@@ -119,10 +120,12 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Relation loop-break reread": "rel-loopbreak-delta-reread",
     "Relation closure field condition": "rel-closure-field-condition",
     "Relation agent/interlocutor coupling": "rel-agent-interlocutor-coupling",
-    "Architecture route-gradient": "Gate/routing + ∇ route-gradient",
-    "Architecture loop-break": "LoopBreak if ∇×T nonzero",
+    "Architecture route pressure": "gate + ∇ route pressure",
+    "Architecture burden selected": "ⁿB burden selected",
+    "Architecture state update": "Land(ⁿB) + Δ state update",
+    "Architecture loop-break": "LoopBreak if circular dependency remains",
     "Architecture closure field condition": "𝒞(Ψᴺ)",
-    "Architecture language coupling": "T_lang: Ψᴺ ⇢ Ψᴵ",
+    "Architecture public release boundary": "T_lang public release boundary",
     "Theory divergence symbol row": "∇·T field diagnostic",
     "Theory curl symbol row": "∇×T field diagnostic",
     "Theory del-dot alias": "del-dot",
@@ -160,7 +163,7 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Full bridge selected path boundary": "The selected execution path is the release order over the live field, not the whole field.",
     "Full bridge long exposition boundary": "Long formalism exposition belongs to audit/formalism-expanded render",
     "Full bridge Shannon boundary": "Shannon language is limited to signal/encoding/channel/noise/distortion/redundancy/compression/capacity",
-    "Full bridge NLA boundary": "NLA means Natural Language Autoencoder reconstruction fidelity",
+    "Full bridge NLA boundary": "NLA means Natural Language Autoencoder: a reconstruction-fidelity frame",
     "Full bridge RECURSE example": "²B landed; Δ²B updated; Δκ live; ∇·ⁿB positive over dependent burdens; ∇×ξ unresolved",
     "Full bridge STOP example": "All live burdens landed/integrated/held; Δκ contracted; ∇·κ negative; ∇×κ resolved; 𝒞(Ψᴺ): STOP",
     "Full bridge route-gradient": "∇ route-gradient",
@@ -235,6 +238,15 @@ EXPECTED_CONTROL_CARD_PHASES = {
     "coupling": "phase-public-boundary",
 }
 
+CONTROL_CARD_TOKEN_ALIASES = {
+    "τ": "tau",
+    "σ": "sigma",
+    "ξ": "xi",
+    "Ω": "omega",
+    "μ": "mu",
+    "κ": "kappa",
+}
+
 REQUIRED_PIPELINE_NOTATION_TOKENS = {
     "Standalone pipeline route-gradient rail": "ROUTE-GRADIENT PRESSURE",
     "Standalone pipeline field diagnostic rail": "∇·T / ∇×T field diagnostics",
@@ -275,10 +287,13 @@ class IndexParser(HTMLParser):
         self.ids: list[tuple[str, str]] = []
         self.tabs: list[dict[str, str | None]] = []
         self.panels: list[dict[str, str | None | bool]] = []
+        self.download_actions: list[dict[str, str | None]] = []
         self.tablist_seen = False
         self.scripts: list[str] = []
         self._current_tab: dict[str, str | None] | None = None
         self._tab_text: list[str] = []
+        self._current_download: dict[str, str | None] | None = None
+        self._download_text: list[str] = []
         self._in_script = False
         self._script_text: list[str] = []
 
@@ -300,6 +315,20 @@ class IndexParser(HTMLParser):
                 "tabindex": attr.get("tabindex"),
             }
             self._tab_text = []
+        if tag == "a" and "downloadNavAction" in classes:
+            self._current_download = {
+                "href": attr.get("href"),
+                "class": attr.get("class"),
+                "target": attr.get("target"),
+                "rel": attr.get("rel"),
+                "title": attr.get("title"),
+                "aria-label": attr.get("aria-label"),
+                "role": attr.get("role"),
+                "download": attr.get("download"),
+                "data-release-download-kind": attr.get("data-release-download-kind"),
+                "data-release-sha256": attr.get("data-release-sha256"),
+            }
+            self._download_text = []
         if tag == "section" and "tabsec" in classes:
             self.panels.append(
                 {
@@ -317,6 +346,8 @@ class IndexParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         if self._current_tab is not None:
             self._tab_text.append(data)
+        if self._current_download is not None:
+            self._download_text.append(data)
         if self._in_script:
             self._script_text.append(data)
 
@@ -326,6 +357,11 @@ class IndexParser(HTMLParser):
             self.tabs.append(self._current_tab)
             self._current_tab = None
             self._tab_text = []
+        if tag == "a" and self._current_download is not None:
+            self._current_download["label"] = " ".join("".join(self._download_text).split())
+            self.download_actions.append(self._current_download)
+            self._current_download = None
+            self._download_text = []
         if tag == "script" and self._in_script:
             self.scripts.append("".join(self._script_text))
             self._in_script = False
@@ -537,6 +573,8 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
         errors.append("manifest derived_data.runtime_architecture must point to docs/index/runtime-architecture.json")
     if not isinstance(derived_data, dict) or derived_data.get("design_system") != "docs/index/DESIGN.md":
         errors.append("manifest derived_data.design_system must point to docs/index/DESIGN.md")
+    if not isinstance(derived_data, dict) or derived_data.get("release_download") != "docs/index/release-download.json":
+        errors.append("manifest derived_data.release_download must point to docs/index/release-download.json")
     for key in ("output", "template"):
         value = manifest.get(key)
         if not isinstance(value, str) or not value:
@@ -596,6 +634,17 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
             expand_manifest_path(path, errors)
         if block.get("classification") == "OWNER_DERIVED" and not block.get("provider"):
             errors.append(f"manifest owner-derived visible block {block.get('id')!r} missing provider")
+    visible_blocks = manifest.get("visible_blocks") or []
+    download_block = next(
+        (
+            block
+            for block in visible_blocks
+            if isinstance(block, dict) and block.get("id") == "latest_skill_download_action"
+        ),
+        None,
+    )
+    if not download_block or download_block.get("current_source") != "docs/index/release-download.json":
+        errors.append("manifest must mark docs/index/release-download.json as the latest .skill download action source")
     for index, page in enumerate(manifest.get("standalone_pages") or []):
         if not isinstance(page, dict):
             errors.append(f"manifest standalone_pages[{index}] must be an object")
@@ -611,6 +660,81 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
         for path in manifest_paths(page):
             expand_manifest_path(path, errors)
     return manifest
+
+
+def load_release_download_metadata(errors: list[str]) -> dict[str, object]:
+    if not RELEASE_DOWNLOAD.exists():
+        errors.append("docs/index/release-download.json missing")
+        return {}
+    try:
+        payload = json.loads(RELEASE_DOWNLOAD.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"docs/index/release-download.json JSON parse error: {exc}")
+        return {}
+    if not isinstance(payload, dict):
+        errors.append("docs/index/release-download.json must be a JSON object")
+        return {}
+    if payload.get("schema_version") != 1:
+        errors.append("docs/index/release-download.json schema_version must be 1")
+    return payload
+
+
+def check_release_download_nav_action(
+    text: str,
+    parser: IndexParser,
+    metadata: dict[str, object],
+    errors: list[str],
+) -> None:
+    actions = parser.download_actions
+    if len(actions) != 1:
+        errors.append(f"docs/index nav must render exactly one download nav action, found {len(actions)}")
+        return
+    action = actions[0]
+    href = str(action.get("href") or "")
+    label = str(action.get("label") or "")
+    aria = str(action.get("aria-label") or "")
+    if action.get("role") == "tab":
+        errors.append("download nav action must not be implemented as a fifth tab")
+    if any("Download" in str(tab.get("label") or "") or ".skill" in str(tab.get("label") or "") for tab in parser.tabs):
+        errors.append("download action must stay outside the tab labels")
+    tablist_start = text.find('role="tablist"')
+    action_start = text.find('class="downloadNavAction"')
+    tablist_end = text.find("</div>", tablist_start) if tablist_start != -1 else -1
+    if tablist_start != -1 and tablist_end != -1 and tablist_start < action_start < tablist_end:
+        errors.append("download nav action must be outside the tablist container")
+    if not href or not re.match(r"https://github\.com/theislampill/daee-epistemics/releases/", href):
+        errors.append("download nav action must use a GitHub Release href")
+    if action.get("target") != "_blank":
+        errors.append("download nav action should open the external GitHub asset/release in a new tab")
+    if "noopener" not in str(action.get("rel") or "").split():
+        errors.append("download nav action must include rel='noopener'")
+    if not label or not aria:
+        errors.append("download nav action must have visible text and an aria-label")
+    if ":focus-visible" not in text or ".downloadNavAction:focus-visible" not in text:
+        errors.append("download nav action must have a visible focus style")
+
+    direct_url = str(metadata.get("primary_skill_asset_browser_download_url") or "")
+    fallback_url = str(metadata.get("fallback_url") or metadata.get("release_url") or "")
+    download_kind = str(metadata.get("download_kind") or "")
+    expected_href = direct_url if direct_url and download_kind == "direct_asset" else fallback_url
+    if expected_href and href != expected_href:
+        errors.append("download nav action href must match docs/index/release-download.json")
+    if direct_url and href == fallback_url:
+        errors.append("download nav action must not fall back to releases/latest when metadata has a direct .skill asset")
+    if direct_url and (not href.endswith(".skill") or href.endswith(".skill.zip")):
+        errors.append("direct download nav action must point to the .skill asset, not the zip or release page")
+    if not direct_url and "releases/latest" not in href:
+        errors.append("fallback download nav action must point to the latest-release page")
+    if direct_url and "Download latest .skill" not in label:
+        errors.append("direct download nav action must use the Download latest .skill label")
+    if not direct_url and "Latest release" not in label:
+        errors.append("fallback download nav action must use the Latest release label")
+    if action.get("data-release-download-kind") != download_kind:
+        errors.append("download nav action data-release-download-kind must match release metadata")
+    metadata_sha = str(metadata.get("sha256") or "").upper()
+    action_sha = str(action.get("data-release-sha256") or "").upper()
+    if metadata_sha and action_sha != metadata_sha:
+        errors.append("download nav action data-release-sha256 must match release metadata SHA")
 
 
 def check_docs_index_design_system(text: str, manifest: dict[str, object], errors: list[str]) -> None:
@@ -1029,6 +1153,14 @@ def div_slice_for_marker(text: str, marker: str) -> str:
     start = text.find(marker)
     if start == -1:
         return ""
+    prefix = text[:start]
+    ol_start = prefix.rfind("<ol")
+    div_start = prefix.rfind("<div")
+    if ol_start > div_start:
+        end = text.find("</ol>", start)
+        if end == -1:
+            return text[start:]
+        return text[ol_start : end + len("</ol>")]
     end = text.find("</div>", start)
     if end == -1:
         return text[start:]
@@ -1066,9 +1198,9 @@ def require_ordered_tokens(block: str, tokens: list[str], label: str, errors: li
 def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
     """Guard the three related renderings of the same runtime sequence.
 
-    The Architecture tab intentionally has two rows, and Theory has a related
-    notation/mapping rendering. This check prevents collapsing them or letting
-    any of the three drift away from docs/index/runtime-architecture.json.
+    The Architecture tab intentionally has paired vertical pipelines, and Theory
+    has a related notation/mapping rendering. This check prevents collapsing them
+    or letting any of the three drift away from docs/index/runtime-architecture.json.
     """
 
     arch = load_runtime_architecture_for_check(errors)
@@ -1091,29 +1223,115 @@ def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
     plain_row = div_slice_for_marker(architecture, 'data-runtime-rendering="architecture-plain-row"')
     formal_row = div_slice_for_marker(architecture, 'data-runtime-rendering="architecture-formal-row"')
     if not plain_row:
-        errors.append("Architecture plain runtime row missing data-runtime-rendering marker")
+        errors.append("Architecture plain runtime pipeline missing data-runtime-rendering marker")
     if not formal_row:
-        errors.append("Architecture formal runtime row missing data-runtime-rendering marker")
+        errors.append("Architecture formal runtime pipeline missing data-runtime-rendering marker")
 
     runtime_items = rows.get("runtime")
     formal_items = rows.get("formal")
+    formal_trace_items = rows.get("formal_algebraic_trace")
     if isinstance(runtime_items, list) and plain_row:
         runtime_labels = [str(item.get("label", "")) for item in runtime_items if isinstance(item, dict)]
-        require_ordered_tokens(plain_row, runtime_labels, "Architecture plain row", errors)
+        require_ordered_tokens(plain_row, runtime_labels, "Architecture plain pipeline", errors)
+        plain_steps = re.findall(r"<span\b(?=[^>]*\bv60-pipeline-step\b)", plain_row)
+        if len(plain_steps) != len(runtime_labels):
+            errors.append(
+                f"Architecture plain pipeline must render one numbered phase-grouped step per source item: "
+                f"expected {len(runtime_labels)}, found {len(plain_steps)}"
+            )
+        plain_clarifiers = [
+            "diagnostic IR",
+            "runtime frame + registers",
+            "∇ route pressure",
+            "ⁿB burden selected",
+            "Δ state update",
+            "field diagnostics",
+            "circular dependency",
+            "R(H,Δ) reread",
+            "closure decision",
+            "public release boundary",
+        ]
+        for token in plain_clarifiers:
+            if token not in plain_row:
+                errors.append(f"Architecture plain pipeline missing human-readable operator clarifier {token!r}")
+        title_text = " ".join(
+            str(item.get("title", ""))
+            for item in runtime_items
+            if isinstance(item, dict)
+        )
+        for token in ("not a generic gradient", "current bounded burden", "not persuasion or guaranteed uptake", "not guaranteed uptake"):
+            if token not in title_text:
+                errors.append(f"Architecture plain pipeline source titles must clarify {token!r}")
     else:
         errors.append("docs/index/runtime-architecture.json rows.runtime must be a list")
         runtime_labels = []
     if isinstance(formal_items, list) and formal_row:
         formal_labels = [str(item.get("label", "")) for item in formal_items if isinstance(item, dict)]
-        require_ordered_tokens(formal_row, formal_labels, "Architecture formal row", errors)
+        require_ordered_tokens(formal_row, formal_labels, "Architecture formal pipeline", errors)
+        formal_steps = re.findall(r"<span\b(?=[^>]*\bv60-pipeline-step\b)", formal_row)
+        if len(formal_steps) != len(formal_labels):
+            errors.append(
+                f"Architecture formal pipeline must render one numbered phase-grouped step per source item: "
+                f"expected {len(formal_labels)}, found {len(formal_steps)}"
+            )
     else:
         errors.append("docs/index/runtime-architecture.json rows.formal must be a list")
         formal_labels = []
 
     if 'data-runtime-rendering="architecture-plain-row"' in theory:
-        errors.append("Architecture plain row must remain on Architecture tab, not Theory")
+        errors.append("Architecture plain pipeline must remain on Architecture tab, not Theory")
     if 'data-runtime-rendering="architecture-formal-row"' in theory:
-        errors.append("Architecture formal row must remain on Architecture tab, not Theory")
+        errors.append("Architecture formal pipeline must remain on Architecture tab, not Theory")
+    if 'data-runtime-row-panel="architecture-plain-row"' not in architecture:
+        errors.append("Architecture plain pipeline must live in its own generated panel")
+    if 'data-runtime-row-panel="architecture-formal-row"' not in architecture:
+        errors.append("Architecture formal pipeline must live in its own generated panel")
+    if 'data-runtime-layout="paired-vertical-pipelines"' not in architecture:
+        errors.append("Architecture pipelines must render as paired side-by-side vertical pipelines")
+    if 'data-runtime-layout="phase-grouped-vertical-pipeline"' not in architecture:
+        errors.append("Architecture pipeline lists must expose the phase-grouped-vertical-pipeline layout marker")
+    if "v60-pipeline-phase-group" not in architecture or "v60-phase-flow" not in architecture:
+        errors.append("Architecture pipelines must group same-color phases into horizontal arrow flows")
+    if "v60-pipeline-arrow" not in architecture:
+        errors.append("Architecture pipelines must show arrows between steps inside phase groups")
+    if "v60-pipeline-columns" not in architecture:
+        errors.append("Architecture paired pipeline columns wrapper missing")
+    if "v60-pipeline-row" in architecture:
+        errors.append("Architecture pipelines must not regress to horizontal v60-pipeline-row chip streams")
+    if "Architecture pipeline" not in architecture:
+        errors.append("Architecture pipeline group should be visibly labeled Architecture pipeline")
+    if "Plain/process reading" not in architecture:
+        errors.append("Architecture plain pipeline should be visibly labeled Plain/process reading")
+    if "Formal runtime trace" not in architecture:
+        errors.append("Architecture formal pipeline should be visibly labeled Formal runtime trace")
+    if architecture.find('data-runtime-rendering="architecture-plain-row"') > architecture.find('data-runtime-rendering="architecture-formal-row"'):
+        errors.append("Architecture plain pipeline must render before the formal pipeline")
+    stack_css = "#architecture #canonical-architecture-runtime .v60-pipeline-stack"
+    stack_css_start = text.find(stack_css)
+    if stack_css_start == -1 or 'data-runtime-layout="paired-vertical-pipelines"' not in architecture:
+        errors.append("Architecture pipeline stack must render the paired-vertical-pipelines layout")
+    columns_css = "#architecture #canonical-architecture-runtime .v60-pipeline-columns"
+    columns_css_start = text.find(columns_css)
+    if columns_css_start == -1 or "grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important" not in text[columns_css_start: columns_css_start + 320]:
+        errors.append("Architecture pipeline columns must use two bounded side-by-side tracks")
+    list_css = "#architecture #canonical-architecture-runtime .v60-pipeline-list"
+    list_css_start = text.find(list_css)
+    if list_css_start == -1 or "display:grid!important" not in text[list_css_start: list_css_start + 260]:
+        errors.append("Architecture pipeline lists must remain vertical phase-group stacks, not page-wide chip rows")
+    phase_css = "#architecture #canonical-architecture-runtime .v60-phase-flow"
+    phase_css_start = text.find(phase_css)
+    if phase_css_start == -1 or "display:flex!important" not in text[phase_css_start: phase_css_start + 260] or "flex-wrap:wrap!important" not in text[phase_css_start: phase_css_start + 260]:
+        errors.append("Architecture phase groups must render contained horizontal arrow flows with wrapping")
+    if 'data-runtime-rendering="architecture-formal-algebraic-trace"' not in architecture:
+        errors.append("Architecture must include the generated copyable formal algebraic trace")
+    if 'data-runtime-layout="copyable-formal-algebraic-trace"' not in architecture:
+        errors.append("Architecture formal algebraic trace must expose its generated layout marker")
+    if isinstance(formal_trace_items, list):
+        formal_trace = " → ".join(str(item) for item in formal_trace_items)
+        if html.escape(formal_trace, quote=True) not in architecture:
+            errors.append("Architecture copyable formal algebraic trace must derive from rows.formal_algebraic_trace")
+    else:
+        errors.append("docs/index/runtime-architecture.json rows.formal_algebraic_trace must be a list")
     if 'data-runtime-rendering="theory-formalism-notation"' not in theory:
         errors.append("Theory formalism notation rendering missing shared-source marker")
     if 'data-runtime-rendering="theory-formalism-mapping"' not in theory:
@@ -1141,16 +1359,16 @@ def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
     formal_normal = normalized_render_text(" ".join(formal_labels))
     theory_normal = normalized_render_text(" ".join(row[0] for row in parsed_mapping_rows))
     if plain_normal and plain_normal == formal_normal:
-        errors.append("Architecture plain and formal rows must remain related but not text-identical")
+        errors.append("Architecture plain and formal pipelines must remain related but not text-identical")
     if theory_normal and theory_normal in {plain_normal, formal_normal}:
-        errors.append("Theory formalism rendering must map the same sequence without duplicating an Architecture row")
+        errors.append("Theory formalism rendering must map the same sequence without duplicating an Architecture pipeline")
 
 
 def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
     """Verify the Architecture cards render as a selected-primary carousel.
 
     The carousel is presentation only. Runtime stage identity still comes from
-    docs/index/runtime-architecture.json, and the Architecture rows / Theory
+    docs/index/runtime-architecture.json, and the Architecture pipelines / Theory
     rendering remain separate shared-source surfaces.
     """
 
@@ -1234,6 +1452,16 @@ def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
     for token in required_preview_css:
         if token not in text:
             errors.append(f"Architecture carousel scaled-preview CSS missing {token!r}")
+    if "--ds-carousel-preview-source-width:clamp(620px,52vw,860px)" not in text:
+        errors.append("Architecture carousel previews must lay out at the same source width as the primary card before scaling")
+    preview_style_overrides = [
+        '.v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card h2',
+        '.v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v60-selectable-subcard',
+        '.v60-carousel-slot:not([data-carousel-position="center"]) > .v60-carousel-card .v54-gate-flow',
+    ]
+    for selector in preview_style_overrides:
+        if selector in text:
+            errors.append(f"Architecture carousel previews must not use preview-only internal formatting: {selector}")
     if re.search(
         r"\.v60-carousel-slot:not\(\[data-carousel-position=\"center\"\]\)\s*>\s*\.v60-carousel-card\s*\{[^}]*overflow\s*:\s*hidden",
         text,
@@ -1243,14 +1471,34 @@ def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
     dense_layout_tokens = [
         "v60-example-group",
         "v60-field-chiprow",
+        "example-chip-grid",
+        "example-chip-row",
+        "example-chip-description",
+        'data-example-grid="4-plus-rest"',
+        "LOOPBREAK WITNESS",
         "v60-loopbreak-formula",
+        "v60-loopbreak-operand-row",
+        'data-loopbreak-row="loop-grounding"',
+        'data-loopbreak-row="burden-delta-reread"',
         "v60-grounding-block",
+        "v60-loopbreak-chip",
+        "v60-grounding-chip",
+        'data-reread-decision-formula="stacked"',
+        "v60-reread-signature",
+        "v60-reread-outcomes",
+        "v60-decision-outcome",
+        '.v60-carousel-card[data-stage-key="psi"]',
+        'data-substage-key="proper-functional-read"',
+        'data-substage-key="structural-registers"',
+        'data-substage-key="operational-boundary"',
         'data-decision-layout="2x2-plus-complete"',
         ".v62-decision-grid .complete",
     ]
     for token in dense_layout_tokens:
         if token not in text:
             errors.append(f"Architecture card 4 containment/layout token missing {token!r}")
+    if text.count('data-example-grid="4-plus-rest"') < 2:
+        errors.append("Architecture ∇· and ∇× example banks must both use bounded split chip rows")
 
     for action in ("prev", "next"):
         if f'data-carousel-action="{action}"' not in carousel:
@@ -1259,6 +1507,20 @@ def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
         errors.append("Architecture carousel missing selectable stage dot buttons")
     if "architectureCarouselStatus" not in carousel:
         errors.append("Architecture carousel missing aria-live selected-stage status")
+    if "v60-carousel-title" not in text:
+        errors.append("Architecture carousel status must render the selected title")
+    carousel_heading_css = "#architecture #canonical-architecture-runtime .v60-carousel-card h2"
+    carousel_heading_css_start = text.find(carousel_heading_css)
+    if (
+        carousel_heading_css_start == -1
+        or "justify-content:center!important" not in text[carousel_heading_css_start: carousel_heading_css_start + 260]
+        or "text-align:center!important" not in text[carousel_heading_css_start: carousel_heading_css_start + 260]
+    ):
+        errors.append("Architecture carousel card headings must be centered at the top of each card")
+    if re.search(r"architectureCarouselStatus[\s\S]{0,500}selectedIndex\s*\+\s*1", text):
+        errors.append("Architecture carousel status must not render progress like n/5 above the selected card")
+    if re.search(r"status\.textContent\s*=\s*`[^`]*\$\{selectedIndex \+ 1\} / \$\{stages\.length\}[^`]*\$\{title\}", text, flags=re.S):
+        errors.append("Architecture carousel status must not concatenate progress and numbered title into one label")
     if "ArrowRight" not in text or "ArrowLeft" not in text:
         errors.append("Architecture carousel missing keyboard arrow navigation")
     if "setInterval(" in text or "requestAnimationFrame(" in text or "auto-rotate" in text.lower():
@@ -1519,6 +1781,15 @@ def check_notation_contract(text: str, errors: list[str]) -> None:
     for marker in stale_annex_markers:
         if marker in text:
             errors.append(f"docs/index.html contains stale proposal-era annex wording: {marker}")
+    stale_nla_markers = (
+        "NLA means Natural Language Autoencoder, not generic linear algebra and not Shannon theory",
+        "NLA means Natural Language Autoencoder reconstruction fidelity, not generic algebra, Shannon theory, or interpretability branding",
+    )
+    for marker in stale_nla_markers:
+        if marker in text:
+            errors.append(f"docs/index.html contains stale negative NLA wording: {marker}")
+    if "NLA means Natural Language Autoencoder: a reconstruction-fidelity frame" not in text:
+        errors.append("docs/index.html missing positive Natural Language Autoencoder reconstruction-fidelity wording")
     for label, phrase in FORBIDDEN_INDEX_NOTATION_CLAIMS.items():
         normalized_phrase = phrase.lower()
         if normalized_phrase in lower and f"not {normalized_phrase}" not in lower:
@@ -1594,11 +1865,28 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
     for css_class in REQUIRED_CONTROL_CARD_COLOR_CLASSES:
         if not re.search(rf"\.controlCard\.{re.escape(css_class)}\s*\{{[^}}]*--c\s*:", text, flags=re.S):
             errors.append(f"Theory control card class .controlCard.{css_class} must define --c color")
+        if not re.search(rf"\.ntok\.{re.escape(css_class)}\s*,\.ntokMini\.{re.escape(css_class)}\s*\{{[^}}]*--ntok-c\s*:", text, flags=re.S):
+            errors.append(f"Theory notation class .ntok.{css_class} must derive --ntok-c from the shared phase palette")
+    if re.search(r"\.ntok\.sym[A-Za-z0-9]+\s*\{[^}]*border-color\s*:", text, flags=re.S):
+        errors.append("Theory notation chips must not use symbol-specific border-color overrides over phase palette colors")
 
     class_by_concept = {concept: set(classes.split()) for classes, concept, _attrs in cards}
+    expected_token_phase_by_card: dict[str, str] = {}
+    source_card_by_id = {
+        str(card.get("id")): card for card in theory_cards if isinstance(card, dict)
+    } if isinstance(theory_cards, list) else {}
     for concept, phase_class in EXPECTED_CONTROL_CARD_PHASES.items():
         if phase_class not in class_by_concept.get(concept, set()):
             errors.append(f"Theory control card {concept!r} must map to {phase_class}")
+    for concept, card in source_card_by_id.items():
+        source_targets = target_map.get(concept)
+        phase_class = str(card.get("phase_class", ""))
+        if not isinstance(source_targets, list) or not source_targets or not phase_class.startswith("phase-"):
+            continue
+        primary = CONTROL_CARD_TOKEN_ALIASES.get(concept, concept)
+        if primary not in source_targets or primary not in notation_tokens:
+            primary = str(source_targets[0])
+        expected_token_phase_by_card[primary] = phase_class
     if "phase-gate" in class_by_concept.get("nablaDot", set()) or "phase-gate" in class_by_concept.get("nablaCross", set()):
         errors.append("∇·T and ∇×T cards must not map to gate/routing phase")
     if "phase-owner-delta" in class_by_concept.get("gradient", set()):
@@ -1655,11 +1943,37 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
             errors.append(f"Theory notation token {token!r} must be focusable")
         if "highlightNotation(" not in attr(attrs, "onclick"):
             errors.append(f"Theory notation token {token!r} must retain highlightNotation click behavior")
+        if not attr(attrs, "data-meaning"):
+            errors.append(f"Theory notation token {token!r} missing generated contextual meaning metadata")
+        if not attr(attrs, "data-runtime-role"):
+            errors.append(f"Theory notation token {token!r} missing generated runtime-role metadata")
+        if not attr(attrs, "data-source-owners"):
+            errors.append(f"Theory notation token {token!r} missing generated source-owner metadata")
+        if attr(attrs, "data-source-owners") == "docs/index/runtime-architecture.json":
+            errors.append(f"Theory notation token {token!r} fell back to docs/index source instead of runtime owner metadata")
+        token_classes = set(attr(attrs, "class").split())
+        if not any(item.startswith("phase-") for item in token_classes):
+            errors.append(f"Theory notation token {token!r} must carry a phase color class derived from the shared stage palette")
+        expected_phase = expected_token_phase_by_card.get(token)
+        if expected_phase and expected_phase not in token_classes:
+            errors.append(
+                f"Theory notation token {token!r} must inherit {expected_phase} "
+                "from its runtime/theory card color source"
+            )
 
     required_interaction_tokens = [
         "function selectTheoryCard",
         "function theoryCardTargetKeys",
         "function activateNotationToken",
+        "function renderNotationPanel",
+        "function notationMetaFor",
+        "data-runtime-role",
+        "data-source-owners",
+        'data-hidden-source-map="true"',
+        "Source owners",
+        "Runtime role",
+        "Highlighted set",
+        "notationHighlightRow",
         "is-linked-active",
         'aria-pressed="true"',
         ".controlCard.is-linked-active",
@@ -1672,6 +1986,17 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
         errors.append("Theory control cards must not depend on goConceptField-only concept routing")
     if "setInterval(" in text:
         errors.append("Theory card-to-notation interaction must not depend on automatic timers")
+    theory_section = tab_section_slice(text, "theory")
+    if '<template class="theoryNotationMapData"' not in theory_section:
+        errors.append("Theory source map metadata must stay generated as an invisible template")
+    if '<details class="theoryNotationMap"' in theory_section:
+        errors.append("Theory full source map must not render as a clickable disclosure")
+    if '<div class="theoryNotationMap"' in theory_section:
+        errors.append("Theory full source map must not render as a default-visible dominant table")
+    if "Source map / notation provenance" in theory_section:
+        errors.append("Theory source map provenance must not be visible as a disclosure label")
+    if "Selected theory card:" in text:
+        errors.append("Theory card selection must update the contextual Highlighted notation panel, not overwrite it with card-only text")
 
     if "name:'del-dot ASCII alias'" in text or "name:'del-cross ASCII alias'" in text:
         errors.append("Concept graph alias cards must lead with ∇·/∇× symbols, not ASCII names")
@@ -1711,7 +2036,7 @@ def main() -> int:
                     "architecture landing must be map-first: "
                     f"{marker} appears before canonical-architecture-runtime"
                 )
-        flow_pos = text.find('aria-label="Canonical runtime spine"', runtime_start)
+        flow_pos = text.find('data-runtime-layout="paired-vertical-pipelines"', runtime_start)
         stages_pos = text.find('class="v21-five-col"', runtime_start)
         if flow_pos == -1 or (stages_pos != -1 and flow_pos > stages_pos):
             errors.append("architecture landing must show canonical runtime spine before stage cards")
@@ -1719,8 +2044,8 @@ def main() -> int:
         runtime_slice = text[runtime_start:runtime_end if runtime_end != -1 else len(text)]
         if "STOP/HOLD/RECURSE/PARTIAL/COMPLETE" not in runtime_slice:
             errors.append("architecture runtime spine must render the full closure decision set without spacing-heavy overflow text")
-        if "Restorative + T_lang</span>" not in runtime_slice:
-            errors.append("architecture runtime spine final chip must use the compact non-clipping T_lang label")
+        if "T_lang public release boundary</span>" not in runtime_slice:
+            errors.append("architecture runtime spine final chip must use the plain-language T_lang release-boundary label")
         if "DRY here means" in runtime_slice:
             errors.append("architecture click hint must not expose internal DRY/refactor language")
         stage_color_contract = {
@@ -1734,20 +2059,33 @@ def main() -> int:
             css_token = f"#architecture #canonical-architecture-runtime {selector}"
             if css_token not in text or token not in text[text.find(css_token): text.find(css_token) + 160]:
                 errors.append(f"architecture stage card {selector} must match the canonical spine color token {token}")
-        row_css = "#architecture #canonical-architecture-runtime .v60-pipeline-row"
-        row_css_start = text.find(row_css)
-        if row_css_start == -1 or "flex-wrap:wrap!important" not in text[row_css_start: row_css_start + 260]:
-            errors.append("architecture runtime spine rows must wrap instead of clipping long chips")
-        runtime_row_node_css = "#architecture #canonical-architecture-runtime .v60-runtime-row .node"
-        runtime_row_node_start = text.find(runtime_row_node_css)
-        if runtime_row_node_start == -1 or "font-size:clamp(11px,.68vw,12px)!important" not in text[runtime_row_node_start: runtime_row_node_start + 260]:
-            errors.append("architecture wide runtime spine text must stay in the readable 11-12px range")
+        list_css = "#architecture #canonical-architecture-runtime .v60-pipeline-list"
+        list_css_start = text.find(list_css)
+        if list_css_start == -1 or "grid-template-columns:minmax(0,1fr)!important" not in text[list_css_start: list_css_start + 260]:
+            errors.append("architecture runtime spine must use vertical phase-grouped lists, not page-wide horizontal rows")
+        if "v60-pipeline-arrow" not in runtime_slice:
+            errors.append("architecture runtime pipelines must show arrows between same-phase steps")
+        if 'data-runtime-rendering="architecture-formal-algebraic-trace"' not in runtime_slice:
+            errors.append("architecture runtime spine must include the generated copyable formal algebraic trace")
+        step_label_css = "#architecture #canonical-architecture-runtime .v60-step-label"
+        step_label_css_start = text.find(step_label_css)
+        if step_label_css_start == -1 or "font-size:clamp(10px,.72vw,12px)!important" not in text[step_label_css_start: step_label_css_start + 260]:
+            errors.append("architecture vertical pipeline text must stay in the readable 10-12px range")
         if 'data-substage-key="reread-gate"' not in runtime_slice or '<h3>Reread gate</h3>' not in runtime_slice:
             errors.append("architecture card 4 must mark the Reread gate with the green reread phase")
         if 'data-substage-key="decision"' not in runtime_slice or '<h3>Decision</h3>' not in runtime_slice:
             errors.append("architecture card 4 must mark the Decision block with the green reread phase")
         if ".v60-reread-phase" not in text or "--sc:var(--ds-color-success)" not in text[text.find(".v60-reread-phase"): text.find(".v60-reread-phase") + 220]:
             errors.append("architecture reread phase styling must use the design success phase token")
+        if 'data-stage-layout="ir-two-left-one-right"' not in runtime_slice:
+            errors.append("architecture card 3 must render the two-left/one-right generated layout")
+        if 'data-stage-layout="owner-release-two-by-two"' not in runtime_slice:
+            errors.append("architecture card 4 must render the two-column generated layout")
+        if 'class="v63-stage-stack v63-stage-stack-left"' not in runtime_slice or 'class="v63-stage-stack v63-stage-stack-right"' not in runtime_slice:
+            errors.append("architecture generated stage layouts must expose left/right stack containers")
+        layout_css = "#architecture #canonical-architecture-runtime .v63-two-column-stage-layout"
+        if layout_css not in text or "grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)!important" not in text[text.find(layout_css): text.find(layout_css) + 260]:
+            errors.append("architecture stage 3/4 layout CSS must use bounded two-column grid tracks")
         expected_substage_keys = [
             "encoded-signal",
             "no-direct-rebuttal",
@@ -1799,6 +2137,7 @@ def main() -> int:
 
     parser = IndexParser()
     parser.feed(text)
+    release_download_metadata = load_release_download_metadata(errors)
 
     seen_ids: dict[str, list[str]] = {}
     for tag, id_value in parser.ids:
@@ -1809,6 +2148,7 @@ def main() -> int:
 
     if not parser.tablist_seen:
         errors.append("missing top-level tablist role")
+    check_release_download_nav_action(text, parser, release_download_metadata, errors)
 
     tabs_by_label = {str(tab.get("label")): tab for tab in parser.tabs}
     panels_by_id = {str(panel.get("id")): panel for panel in parser.panels}

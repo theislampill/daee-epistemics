@@ -270,7 +270,7 @@ A repo-grounded architecture view: atomized source compiles into the canonical c
 <section class="grid-3">
   <div class="panel" style="--c:var(--green)">
     <h3>NLA reconstruction fidelity</h3>
-    <p><b>NLA means Natural Language Autoencoder</b>, not generic linear algebra and not Shannon theory. AV / activation verbalizer maps to Layer A / Diagnostic IR / noetic-field banner; AR / activation reconstructor maps to reconstruction/reread through <span class="formula">R(H,Δ)</span>. Reconstruction fidelity gates closure: the verbalized diagnosis must recover selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state. Confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
+    <p><b>NLA means Natural Language Autoencoder</b>: a reconstruction-fidelity frame for encoding a natural-language discourse state into a controlled intermediate representation and reconstructing it while preserving burdens, registers, source-status, and dependency structure. AV / activation verbalizer maps to Layer A / Diagnostic IR / noetic-field banner; AR / activation reconstructor maps to reconstruction/reread through <span class="formula">R(H,Δ)</span>. Reconstruction fidelity gates closure: the verbalized diagnosis must recover selected/held N, live registers, burdens, owner/TTP eligibility, κ/H, and closure state. Confabulation, excessive expressivity, lack of grounding, degenerate bottleneck, or reconstruction failure forces PARTIAL/RECURSE or checker failure.</p>
   </div>
   <div class="panel" style="--c:var(--orange)">
     <h3>Delta versus field diagnostics</h3>

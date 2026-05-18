@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "shared-runtime-architecture-source",
-  "ssot_note": "Shared docs/index source projection for runtime architecture renderings. Architecture cards, both Architecture rows (plain process row and formal architecture row), and the distinct Theory Deep Dive notation/mapping rendering are generated from this file by tools/build_docs_index.py. Generated docs/index.html is not the canonical owner.",
+  "ssot_note": "Shared docs/index source projection for runtime architecture renderings. Architecture cards, the paired vertical Architecture pipelines (plain process reading and formal runtime trace), and the distinct Theory Deep Dive notation/mapping rendering are generated from this file by tools/build_docs_index.py. Generated docs/index.html is not the canonical owner.",
   "runtime_owner_sources": [
     "atomics/skill/SKILL.md",
     "atomics/skill/references/diagnostics/diagnostic-ir.md",
@@ -12,27 +12,50 @@
   ],
   "rows": {
     "runtime": [
-      {"label": "Input", "class": "v56-input", "title": "D0 / surface discourse"},
-      {"label": "Layer A / IR", "class": "v56-ir", "title": "Banner + Layer A / IR"},
-      {"label": "N + registers", "class": "v56-owner", "title": "N + runtime registers"},
-      {"label": "Gate/routing + ∇", "class": "v56-owner", "title": "Gate/routing + ∇ route-gradient"},
-      {"label": "Operation", "class": "v56-owner", "title": "Owner/TTP operation"},
-      {"label": "Land(ⁿB)+Δ", "class": "v56-land", "title": "Land(ⁿB) + ΔⁿB/Δκ"},
-      {"label": "∇·T/∇×T", "class": "v56-land", "title": "∇·T / ∇×T target-explicit diagnostics"},
-      {"label": "LoopBreak(∇×T)", "class": "v56-land", "title": "LoopBreak if ∇×T nonzero"},
-      {"label": "R(H,Δ)", "class": "v56-reread", "title": "R(H,Δ) reread"},
-      {"label": "𝒞(Ψᴺ) + Decision", "class": "v56-reread", "title": "𝒞(Ψᴺ) + STOP/HOLD/RECURSE/PARTIAL/COMPLETE"},
-      {"label": "Restorative + T_lang", "class": "v56-decision", "title": "T_lang: Ψᴺ ⇢ Ψᴵ"}
+      {"label": "Input", "class": "v56-input", "title": "Surface discourse or case input before diagnostic reduction."},
+      {"label": "Layer A / diagnostic IR", "class": "v56-ir", "title": "The opening diagnostic read converts the surface into controlled intermediate representation."},
+      {"label": "runtime frame + registers", "class": "v56-owner", "title": "Runtime-selected noetic frame plus live registers such as source-status, burden-function, held material, and release posture."},
+      {"label": "gate + ∇ route pressure", "class": "v56-owner", "title": "∇ means constrained route pressure after gate, routing, and owner catalogue checks; it is not a generic gradient."},
+      {"label": "ⁿB burden selected", "class": "v56-owner", "title": "ⁿB is the current bounded burden selected for owner-backed work."},
+      {"label": "Owner/TTP operation", "class": "v56-owner", "title": "An eligible owner/TTP performs a bounded target → operation → result submove."},
+      {"label": "Land(ⁿB) + Δ state update", "class": "v56-land", "title": "Δ marks the burden/register/dependency change produced by landing the current burden."},
+      {"label": "∇·T / ∇×T field diagnostics", "class": "v56-land", "title": "∇·T reads residual or outward pressure; ∇×T reads circular or rotational dependency in an explicit target field."},
+      {"label": "LoopBreak if circular dependency remains", "class": "v56-land", "title": "LoopBreak is licensed loop-breaking only when curl/circular dependency remains and the target, ground, Δ effect, and reread are explicit."},
+      {"label": "R(H,Δ) reread", "class": "v56-reread", "title": "Reread held material H and the changed field after the Δ update before closing, holding, partialing, or recursing."},
+      {"label": "𝒞(Ψᴺ) closure decision", "class": "v56-reread", "title": "𝒞(Ψᴺ) is the runtime closure condition under STOP/HOLD/RECURSE/PARTIAL/COMPLETE accounting, not persuasion or guaranteed uptake."},
+      {"label": "restorative response", "class": "v56-decision", "title": "The public restorative response is released only after the runtime decision."},
+      {"label": "T_lang public release boundary", "class": "v56-decision", "title": "T_lang is public language release toward the diagnosed interlocutor field, not guaranteed uptake."}
     ],
     "formal": [
       {"label": "𝓝 ⊢ D₀", "class": "v56-input"},
-      {"label": "⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(...)", "class": "v56-ir"},
+      {"label": "⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩", "class": "v56-ir"},
+      {"label": "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)", "class": "v56-owner"},
       {"label": "∇ route pressure", "class": "v56-owner"},
-      {"label": "ⁿB → {ⁿBᵢ[OPᵢ]}", "class": "v56-owner"},
-      {"label": "Land(ⁿB)", "class": "v56-land"},
-      {"label": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T → LoopBreak(∇×T)", "class": "v56-land"},
+      {"label": "ⁿB", "class": "v56-owner"},
+      {"label": "{ⁿBᵢ[OPᵢ]}", "class": "v56-owner"},
+      {"label": "Land(ⁿB) + ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ", "class": "v56-land"},
+      {"label": "∇·T/∇×T", "class": "v56-land"},
+      {"label": "LoopBreak(∇×T)", "class": "v56-land"},
       {"label": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)", "class": "v56-reread"},
-      {"label": "𝒞(Ψᴺ) / Decision → T_lang", "class": "v56-decision"}
+      {"label": "𝒞(Ψᴺ) / Decision", "class": "v56-reread"},
+      {"label": "N_fiṭrī ∧ ʿaql ṣarīḥ", "class": "v56-decision"},
+      {"label": "T_lang: Ψᴺ ⇢ Ψᴵ", "class": "v56-decision"}
+    ],
+    "formal_algebraic_trace": [
+      "𝓝 ⊢ D₀",
+      "⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+      "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+      "∇_route",
+      "ⁿB",
+      "{ⁿBᵢ[OPᵢ]}",
+      "Land(ⁿB)",
+      "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+      "∇·T/∇×T",
+      "LoopBreak(∇×T)",
+      "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)",
+      "𝒞(Ψᴺ)",
+      "N_fiṭrī ∧ ʿaql ṣarīḥ",
+      "T_lang: Ψᴺ ⇢ Ψᴵ"
     ]
   },
   "stages": [
@@ -52,14 +75,14 @@
             ["message", "slogan, objection, proof packet, request"],
             ["encoding", "labels, examples, school identity, proof denominators"],
             ["noise", "deformation, equivocation, proof-method narrowing"],
-            ["♥", "register: grief, identity, performance, truth-seeking, mixed, unclear"]
+            ["♥", "register: grief, identity, performance,\ntruth-seeking, mixed, unclear"]
           ]
         },
         {
           "key": "no-direct-rebuttal",
           "title": "Still no direct rebuttal",
           "kind": "warning",
-          "text": "D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure."
+          "text": "D₀ must be decoded as a signal-state before content release.\nA proposition may be downstream of criterion, source-status, or ♥ register pressure."
         }
       ]
     },
@@ -102,7 +125,7 @@
           "key": "operational-boundary",
           "title": "Operational boundary",
           "kind": "note",
-          "text": "♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture."
+          "text": "♥/ξ/Ω/μ/κ matter only when they affect\nIR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture."
         }
       ]
     },
@@ -122,13 +145,13 @@
           "key": "ir-control-surface",
           "title": "DSL / IR control surface",
           "kind": "field_grid",
-          "intro": "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) names register-derived control over existing IR and gate behavior where live.",
+          "intro": "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) names register-derived control over existing IR\nand gate behavior where live.",
           "fields": [
             ["N", "runtime-selected noetic frame", "selected or held from 𝓝; governs current burden"],
             ["m", "mode / deformation", "deformation, concealment, memetic mode, or underdetermined status"],
             ["τ", "tribunal / burden-function", "what judges what; determines current function"],
             ["σ", "source / semantic / authority status", "warrant, contrast, context, genealogy, or held status"],
-            ["♥", "affective-discursive register", "grief, identity, performance, truth-seeking, mixed, unclear"],
+            ["♥", "affective-discursive register", "grief, identity, performance,\ntruth-seeking, mixed, unclear"],
             ["ξ", "epistemic grammar", "warrant, testimony, proper function, defeaters"],
             ["Ω", "ontological grammar", "being, predication, modality, dependence"],
             ["μ", "memetic vector", "carrier, compression, stabilizer, mutation"],
@@ -141,9 +164,9 @@
           "kind": "gate_flow",
           "steps": [
             ["Gate", "validated IR before dispatch"],
-            ["Precedence", "concealment; DO; deformation; reason; foreign premise; load-bearing"],
+            ["Precedence", "concealment; DO; deformation;\nreason; foreign premise;\nload-bearing"],
             ["∇ route-gradient", "eligible route pressure, constrained by gate/owner catalogue"],
-            ["Owner Select", "all owner families supported; only live bounded owners activate"],
+            ["Owner Select", "all owner families supported;\nonly live bounded owners activate"],
             ["Layer B", "TTP submoves: target → operation → result."]
           ],
           "checks": [
@@ -167,7 +190,7 @@
           "key": "operator-signature",
           "title": "Operator signature",
           "kind": "formula",
-          "formula": "ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ"
+          "formula": "ⁿBᵢ[OP] :\ntarget → operation\n→ result\n→ ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ"
         },
         {
           "key": "strict-burden-cycle",
@@ -199,7 +222,7 @@
           "title": "Decision",
           "kind": "decision",
           "reread_phase": true,
-          "note": "Correct recurse: ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ."
+          "note": "ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ.\nSame-burden facets stay as ⁿBᵢ."
         }
       ]
     },
@@ -227,7 +250,7 @@
           "key": "coupling-boundary",
           "title": "Coupling boundary",
           "kind": "note",
-          "text": "T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field; this is not a claim of guaranteed uptake or access to the soul."
+          "text": "T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field;\nthis is not a claim of guaranteed uptake or access to the soul."
         }
       ]
     }

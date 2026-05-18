@@ -8,6 +8,7 @@
     "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
     "runtime_architecture": "docs/index/runtime-architecture.json",
     "design_system": "docs/index/DESIGN.md",
+    "release_download": "docs/index/release-download.json",
     "framework_pipeline": "atomics/skill/references/diagnostics/framework-pipeline.yaml",
     "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
     "audit_index": "docs/audits/INDEX.md"
@@ -103,7 +104,7 @@
           "owner_source": "docs/index/runtime-architecture.json"
         },
         {
-          "id": "runtime_theory_mapping_rows",
+          "id": "runtime_theory_source_metadata",
           "provider": "renderTheoryMappingTable",
           "classification": "STRUCTURED_SOURCE_DERIVED",
           "owner_source": "docs/index/runtime-architecture.json"
@@ -152,6 +153,26 @@
       "classification": "LAYOUT_ONLY",
       "current_source": "docs/index/manifest.json",
       "owner_sources": []
+    },
+    {
+      "id": "latest_skill_download_action",
+      "label": "Latest .skill download nav action",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/release-download.json",
+      "owner_sources": [
+        "docs/release-artifacts.md",
+        "docs/v0.4.2.0-release-notes.md",
+        "docs/v0.4.2.0-release-log.md"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "right-aligned nav action outside tablist",
+        "accessible text and focus style",
+        "direct .skill asset URL when release metadata provides one",
+        "latest-release fallback only when metadata lacks a direct asset",
+        "metadata is navigation provenance, not runtime proof",
+        "raw smoke captures are not release assets"
+      ]
     },
     {
       "id": "runtime_architecture_shared_source",
@@ -221,7 +242,7 @@
     },
     {
       "id": "theory_runtime_notation_mapping",
-      "label": "Theory Deep Dive notation and mapping rows",
+      "label": "Theory Deep Dive notation and contextual source metadata",
       "classification": "STRUCTURED_SOURCE_DERIVED",
       "current_source": "docs/index/runtime-architecture.json",
       "owner_sources": [
@@ -232,6 +253,8 @@
         "Theory control card order",
         "card-to-notation target mappings",
         "generated notation chip identifiers",
+        "generated runtime role/source-owner metadata",
+        "phase color classes from the shared stage palette",
         "default active card and notation active state",
         "keyboard-addressable card/chip controls"
       ]
