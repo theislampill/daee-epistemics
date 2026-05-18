@@ -43,7 +43,7 @@ The two P1 drift risks were:
 Latest pass result:
 
 ```text
-THREE-SMOKE GATE PASSED LOCALLY; RELEASE STILL NOT PERFORMED
+EXISTING v0.4.2.0 GITHUB RELEASE UPDATED; THREE-SMOKE GATE PASSED LOCALLY
 ```
 
 What changed in this pass:
@@ -138,8 +138,14 @@ git diff --check
 
 ## Release / Smoke Status
 
-v0.4.2.0 is **not released**. No push, tag, GitHub Release, or release asset publication was
-performed in this pass.
+v0.4.2.0 is **released** through the existing GitHub Release:
+
+```text
+https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.2.0
+```
+
+The existing `v0.4.2.0` release assets and body were updated after the final local gates passed.
+The release tag was not force-moved.
 
 The final local package/provenance pair still exists and verifies:
 
@@ -163,11 +169,12 @@ evidence surfaces, not competence proof. Docs/index parity/generation is not run
 Current release state:
 
 ```text
-THREE-SMOKE GATE PASSED LOCALLY; RELEASE STILL NOT PERFORMED
+EXISTING RELEASE UPDATED; THREE-SMOKE GATE PASSED LOCALLY
 ```
 
-Next release-line work, if the maintainer chooses to release later, is an explicit final release
-authorization step. Do not tag, publish, or create a GitHub Release without that explicit approval.
+Next release-line work, if any, is a future explicitly authorized correction or follow-up release.
+Do not create a duplicate `v0.4.2.0` release, force-move the existing tag, or upload raw smoke
+captures.
 
 ## Next Steps
 
