@@ -117,6 +117,28 @@ keep generated docs fresh and checker-covered, isolate visual presentation from 
 meaning, and keep runtime information with the source owners while `tools/build_docs_index.py`
 creates generated surfaces and `tools/check_docs_index_interactions.py` controls parity.
 
+Future docs/index UI changes must also run durable design-quality gates before success is
+reported:
+
+1. `docs/index/DESIGN.md` token/source-boundary pass.
+2. Nielsen-style heuristic pass.
+3. WCAG/accessibility pass.
+4. Dense-interface pass for notation, source paths, tables, chips, and formulas.
+5. Local browser visual regression pass against generated `docs/index.html`.
+6. Poka-yoke checker update for the exact regression class fixed, when the signal is
+   structural and non-brittle.
+
+Reference-derived design rules:
+
+- Kami lesson: agent output must be constrained by design-system rules; do not accept
+  generic gray, cramped, or inconsistent docs/index layouts simply because the generated
+  HTML builds.
+- html-anything lesson: generated HTML must be previewed as human-facing HTML, not only
+  validated as code.
+- awesome-design-systems lesson: mature systems include component behavior, voice/tone,
+  source-code/source-owner guidance, documentation principles, accessibility, and layout
+  patterns.
+
 ## ANDON, 5 Whys, and Poka-yoke
 
 During Genchi Genbutsu / gemba work, inspect the actual files, diffs, artifacts, and release
@@ -285,6 +307,9 @@ state.
   `features.json`, `validation.json`, `reconstruction.json`, `execution_verdict.json`,
   `execution_prompt.md`, `execution_blocked.md`, `partial_banner.md`, `retry_prompt.md`,
   `output.simulated.md`, or `output.model.md`.
+- If the owner asks for local handoff content to be pushed while root `HANDOFF.md` remains ignored,
+  mirror the current handoff state into a tracked `docs/audits/` handoff note and leave the ignored
+  root handoff unstaged unless the owner explicitly changes the tracking policy.
 - Historical smokes are historical regression evidence. Do not claim current-release
   package-bound smokes unless they were regenerated against the current package filename and
   SHA and are marked current-release.

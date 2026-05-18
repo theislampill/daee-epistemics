@@ -198,6 +198,51 @@ Dense formal notation must remain legible at the selected-card size. Preview car
 
 Spacing should preserve a high-density operational view while keeping cards and tables scannable. Use the spacing scale for repeated gaps, card padding, section rhythm, and carousel spacing. Do not introduce broad decorative whitespace or landing-page scale into the operational tabs.
 
+## Design quality discipline
+
+The visual bar is human readability, not structural validity alone. A docs/index pass can build, check, and still be visually wrong if it leaves cramped cards, generic gray panels, clipped notation, hidden interactions, or a page that only works at the author's viewport.
+
+Before declaring visual work complete, run a source-bound design pass: confirm that repeated colors, spacing, radii, typography, focus states, and carousel dimensions come from this file or from a clearly local component rule. Runtime meaning, release status, and formal semantics must remain in their owning sources.
+
+## Layout discipline
+
+Each major section needs one primary focal object. Architecture starts with the shared runtime map and selected-primary carousel. Theory starts with compact notation and the contextual Highlighted notation panel. Owners/TTP and Reference Library are support/navigation surfaces, so dense source tables must not take over the default Architecture or Theory reading path.
+
+Use bounded grids with `minmax(0, 1fr)`, local scroll for wide tables, and wrapping text inside chips, code paths, formulas, and card bodies. Do not use page-wide horizontal chip streams when the content is a sequence; use vertical phase groups, grids, or progressive disclosure.
+
+## Dense notation discipline
+
+Dense notation is allowed only when it remains readable at the selected-card size. Long formulas, target grammars, source-owner lists, and path material must wrap, move into a contextual panel, or live in collapsed/provenance metadata.
+
+Notation color inherits the Architecture phase palette. Color helps recognition, but the label, source owner, and runtime role carry meaning. Do not create symbol-only decoration, proof-by-color, or notation variants that are not source-owned.
+
+## Carousel discipline
+
+The Architecture carousel is a selected-primary display, not a horizontal scroll rail. One card is readable at full size. Side cards are scaled previews of the same generated cards, retaining their internal structure as previews, not separate label-only tiles.
+
+Card changes must preserve previous/next controls, numbered selectors, side-card selection, keyboard arrow navigation, focus-visible styling, no auto-rotation, reduced-motion behavior, no-JS fallback, and print fallback.
+
+## Interaction discipline
+
+Interactive cards remain real controls. Visual refactors must preserve `button` semantics where present, `role`, `tabindex`, `aria-selected`, `aria-pressed`, focus rings, active styles, click handlers, keyboard handlers, and the linked detail or notation panel.
+
+Do not flatten interactive cards into static cards to make the page easier to style. Do not replace a working interaction with a visually similar element unless the checker and browser pass prove the behavior is still present.
+
+## Progressive disclosure discipline
+
+Provenance, source-owner maps, full notation source maps, raw reference snapshots, and long support tables are secondary. They should appear as contextual chips, hidden metadata, support-tab content, local scroll regions, or collapsed details, not as the dominant default reading path.
+
+Generated HTML should be readable by humans when opened directly, but it is not canonical. Edit source files, regenerate, and let the checker guard source parity.
+
+## Visual QA checklist
+
+- DESIGN.md token/source-boundary pass: visuals use source-owned tokens or an intentional local component rule.
+- Nielsen-style heuristic pass: primary action/status is visible, controls are predictable, layout is consistent, and recovery paths are obvious.
+- WCAG/accessibility pass: keyboard operation, visible focus, semantic states, contrast, reduced motion, and responsive text all work.
+- Dense-interface pass: notation, source paths, tables, chips, and formulas wrap or disclose without page-wide overflow.
+- Local browser screenshot pass: view the generated page locally on desktop and a narrow/mobile width before calling visual work done.
+- Poka-yoke checker pass: add or strengthen a non-brittle checker for the exact regression fixed.
+
 ## Carousel behavior
 
 The Architecture carousel is user-controlled only:
@@ -218,6 +263,24 @@ Focus tokens must remain visible on dark surfaces. Reduced-motion users get imme
 Do use tokens for repeated colors, stage colors, focus rings, carousel dimensions, radii, shadows, typography families, and motion timing.
 
 Do keep runtime semantics in `docs/index/runtime-architecture.json` and atomics/runtime owners.
+
+Do keep one primary focal object per section and let support material stay contextual.
+
+Do use grids, vertical lists, local scroll, wrapping, or disclosure when notation or source material gets dense.
+
+Do run the local browser screenshot pass. Passing structural checks is not a visual pass.
+
+Do not produce generic gray unstructured UI.
+
+Do not make every card full-width if one selected-primary display is intended.
+
+Do not replace scaled previews with label-only tiles.
+
+Do not use horizontal chip streams where a grid or vertical list is needed.
+
+Do not make provenance tables dominate the default reading path.
+
+Do not treat passing structural checks as a visual pass.
 
 Do not move runtime theory, owner meaning, or release evidence into this file.
 

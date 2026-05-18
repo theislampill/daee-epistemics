@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
 DESIGN_MD = ROOT / "docs" / "index" / "DESIGN.md"
+DESIGN_QUALITY_AUDIT = ROOT / "docs" / "audits" / "v0.4.2.0-docs-index-design-quality-audit.md"
 RELEASE_DOWNLOAD = ROOT / "docs" / "index" / "release-download.json"
 INDEX_TEMPLATE = ROOT / "docs" / "index" / "templates" / "index.html.tpl"
 ARCHITECTURE_SECTION = ROOT / "docs" / "index" / "sections" / "architecture.html"
@@ -855,6 +856,13 @@ def check_docs_index_design_system(text: str, manifest: dict[str, object], error
         "## Stage color rules",
         "## Typography and notation",
         "## Spacing and density",
+        "## Design quality discipline",
+        "## Layout discipline",
+        "## Dense notation discipline",
+        "## Carousel discipline",
+        "## Interaction discipline",
+        "## Progressive disclosure discipline",
+        "## Visual QA checklist",
         "## Carousel behavior",
         "## Accessibility and contrast",
         "## Do / Do not",
@@ -957,6 +965,101 @@ def check_docs_index_design_system(text: str, manifest: dict[str, object], error
         if ratio is None or ratio < 4.5:
             detail = f"{ratio:.2f}:1" if ratio is not None else "unparseable color"
             errors.append(f"contrast sanity check failed for {foreground_path} on {background_path}: {detail}")
+
+
+def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> None:
+    """Guard practical docs/index design-quality discipline without pixel tests."""
+
+    _design, _frontmatter, body = split_design_frontmatter(errors)
+    if not body:
+        return
+
+    required_rules = [
+        "Do not produce generic gray unstructured UI.",
+        "Do not make every card full-width if one selected-primary display is intended.",
+        "Do not replace scaled previews with label-only tiles.",
+        "Do not use horizontal chip streams where a grid or vertical list is needed.",
+        "Do not make provenance tables dominate the default reading path.",
+        "Do not treat passing structural checks as a visual pass.",
+        "Local browser screenshot pass",
+        "Poka-yoke checker pass",
+    ]
+    for rule in required_rules:
+        if rule not in body:
+            errors.append(f"docs/index/DESIGN.md missing design-quality rule {rule!r}")
+
+    if not DESIGN_QUALITY_AUDIT.exists():
+        errors.append(f"{DESIGN_QUALITY_AUDIT.relative_to(ROOT)} missing docs/index design-quality audit")
+    else:
+        audit_text = DESIGN_QUALITY_AUDIT.read_text(encoding="utf-8")
+        for token in (
+            "# docs/index Design Quality Audit",
+            "TARGETED DESIGN DISCIPLINE NEEDED",
+            "## Reference findings",
+            "## docs/index design-quality rubric",
+            "one primary focal object per section",
+            "generated HTML is not canonical",
+            "Design tokens own visuals",
+        ):
+            if token.lower() not in audit_text.lower():
+                errors.append(f"{DESIGN_QUALITY_AUDIT.relative_to(ROOT)} missing audit/rubric token {token!r}")
+
+    architecture = tab_section_slice(text, "architecture")
+    theory = tab_section_slice(text, "theory")
+    owners = tab_section_slice(text, "owners")
+    reference = tab_section_slice(text, "reference")
+
+    if 'id="ownerSourceTable"' in architecture or 'id="ownerSourceTable"' in theory:
+        errors.append("owner/source table must not dominate Architecture or Theory default reading paths")
+    if '<div class="theoryNotationMap"' in theory or '<details class="theoryNotationMap"' in theory:
+        errors.append("Theory full notation source map must remain hidden/contextual, not a default-visible table")
+    if 'data-hidden-source-map="true"' not in theory:
+        errors.append("Theory notation provenance must stay generated as hidden metadata for contextual disclosure")
+    if owners and 'id="ownerSourceTable"' not in owners:
+        errors.append("Owner/source table must stay scoped to the Owners support surface")
+    if reference and "Structured source map" not in reference:
+        errors.append("Reference Library must identify itself as a support/source-map surface")
+
+    containment_tokens = [
+        ".tabsec table{display:block;max-width:100%;overflow-x:auto}",
+        ".notationLine{display:flex;flex-wrap:wrap",
+        ".ntok{",
+        "white-space:normal;overflow-wrap:anywhere",
+        "#architecture #canonical-architecture-runtime .v60-pipeline-columns",
+        "grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important",
+        "@media(max-width:920px)",
+        "grid-template-columns:minmax(0,1fr)!important",
+    ]
+    for token in containment_tokens:
+        if token not in text:
+            errors.append(f"docs/index generated CSS missing dense-interface containment token {token!r}")
+
+    selected_primary_tokens = [
+        'data-carousel="architecture-runtime"',
+        'data-carousel-position="center"',
+        "scale(var(--ds-carousel-preview-near-scale))",
+        "scale(var(--ds-carousel-preview-far-scale))",
+        "data-carousel-action=\"prev\"",
+        "data-carousel-action=\"next\"",
+        "ArrowRight",
+        "ArrowLeft",
+    ]
+    for token in selected_primary_tokens:
+        if token not in architecture and token not in text:
+            errors.append(f"Architecture selected-primary carousel discipline missing {token!r}")
+
+    theory_interaction_tokens = [
+        '<div class="controlOverviewGrid">',
+        "selectTheoryCard(this)",
+        "highlightNotation(",
+        'aria-pressed="true"',
+        'role="button"',
+        'tabindex="0"',
+        "notationContextBlock",
+    ]
+    for token in theory_interaction_tokens:
+        if token not in theory and token not in text:
+            errors.append(f"Theory card/notation interaction discipline missing {token!r}")
 
 
 def embedded_modules(text: str, errors: list[str]) -> list[dict[str, str]]:
@@ -2302,6 +2405,7 @@ def main() -> int:
 
     public_text = strip_reference_snapshots(text)
     check_docs_index_design_system(text, manifest if isinstance(manifest, dict) else {}, errors)
+    check_docs_index_design_quality_discipline(text, errors)
     check_notation_contract(public_text, errors)
     check_public_notation_surface(INDEX, public_text, errors)
     check_architecture_trace_parity(text, errors)
