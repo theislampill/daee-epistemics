@@ -27,7 +27,13 @@ INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
 ARCHITECTURE_SECTION = ROOT / "docs" / "index" / "sections" / "architecture.html"
 THEORY_SECTION = ROOT / "docs" / "index" / "sections" / "theory.html"
+RUNTIME_ARCHITECTURE_SOURCE = ROOT / "docs" / "index" / "runtime-architecture.json"
 MODULE_CATALOGUE = ROOT / "atomics" / "skill" / "references" / "diagnostics" / "module-catalogue.json"
+REFERENCE_ROOT = ROOT / "atomics" / "skill" / "references"
+REFERENCE_SOURCE_PATHS = [
+    ROOT / "atomics" / "skill" / "README.md",
+    ROOT / "atomics" / "skill" / "SKILL.md",
+]
 GENERATED_BANNER = "GENERATED FILE: do not edit this HTML output directly"
 ALLOWED_CLASSIFICATIONS = {
     "OWNER_DERIVED",
@@ -418,6 +424,9 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
         return {}
     if manifest.get("schema_version") != 1:
         errors.append("docs/index/manifest.json schema_version must be 1")
+    derived_data = manifest.get("derived_data") or {}
+    if not isinstance(derived_data, dict) or derived_data.get("runtime_architecture") != "docs/index/runtime-architecture.json":
+        errors.append("manifest derived_data.runtime_architecture must point to docs/index/runtime-architecture.json")
     for key in ("output", "template"):
         value = manifest.get(key)
         if not isinstance(value, str) or not value:
@@ -454,6 +463,14 @@ def check_manifest(errors: list[str]) -> dict[str, object]:
                 expand_manifest_path(owner_source, errors)
             if block.get("classification") == "OWNER_DERIVED" and not block.get("provider"):
                 errors.append(f"manifest owner-derived block {block.get('id')!r} missing provider")
+        if tab.get("id") in {"architecture", "theory"}:
+            generated_sources = {
+                block.get("owner_source")
+                for block in (tab.get("generated_blocks") or [])
+                if isinstance(block, dict)
+            }
+            if "docs/index/runtime-architecture.json" not in generated_sources:
+                errors.append(f"manifest tab {tab.get('id')!r} must generate its runtime architecture blocks from docs/index/runtime-architecture.json")
     for index, block in enumerate(manifest.get("visible_blocks") or []):
         if not isinstance(block, dict):
             errors.append(f"manifest visible_blocks[{index}] must be an object")
@@ -506,6 +523,396 @@ def embedded_modules(text: str, errors: list[str]) -> list[dict[str, str]]:
             continue
         normalized.append({key: str(entry.get(key, "")) for key in ("id", "module_class", "path", "source_path")})
     return sorted(normalized, key=lambda item: (item["module_class"], item["id"]))
+
+
+def expected_reference_paths() -> list[Path]:
+    paths = [path for path in REFERENCE_SOURCE_PATHS if path.exists()]
+    paths.extend(sorted(REFERENCE_ROOT.rglob("*.md")))
+    seen: dict[Path, Path] = {}
+    for path in paths:
+        seen[path.resolve()] = path
+    return [seen[key] for key in sorted(seen, key=lambda item: str(item))]
+
+
+def extract_js_array(text: str, name: str, errors: list[str]) -> list[object]:
+    marker = f"const {name} = "
+    marker_start = text.find(marker)
+    if marker_start == -1:
+        errors.append(f"generated reference data missing const {name}")
+        return []
+    start = text.find("[", marker_start + len(marker))
+    if start == -1:
+        errors.append(f"generated reference data const {name} is not an array")
+        return []
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+            if depth == 0:
+                raw = text[start : index + 1]
+                try:
+                    payload = json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    errors.append(f"generated reference data const {name} is invalid JSON: {exc}")
+                    return []
+                if not isinstance(payload, list):
+                    errors.append(f"generated reference data const {name} must be a list")
+                    return []
+                return payload
+    errors.append(f"generated reference data const {name} array is unterminated")
+    return []
+
+
+def strip_js_array_const(text: str, name: str) -> str:
+    marker = f"const {name} = "
+    marker_start = text.find(marker)
+    if marker_start == -1:
+        return text
+    start = text.find("[", marker_start + len(marker))
+    if start == -1:
+        return text
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+            if depth == 0:
+                end = index + 1
+                if end < len(text) and text[end] == ";":
+                    end += 1
+                return text[:marker_start] + f"const {name} = [];" + text[end:]
+    return text
+
+
+def strip_reference_snapshots(text: str) -> str:
+    # DOCS embeds source-owned markdown snapshots. Public-surface claim checks
+    # must inspect the visible index rendering, not every quoted owner source.
+    return strip_js_array_const(strip_js_array_const(text, "REFS"), "DOCS")
+
+
+def extract_js_object_block(text: str, name: str, errors: list[str]) -> str:
+    marker = f"const {name} = "
+    marker_start = text.find(marker)
+    if marker_start == -1:
+        errors.append(f"generated trace data missing const {name}")
+        return ""
+    start = text.find("{", marker_start + len(marker))
+    if start == -1:
+        errors.append(f"generated trace data const {name} is not an object")
+        return ""
+    depth = 0
+    quote: str | None = None
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+            continue
+        if char in ("'", '"', "`"):
+            quote = char
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    errors.append(f"generated trace data const {name} object is unterminated")
+    return ""
+
+
+def has_js_object_key(block: str, key: str) -> bool:
+    return re.search(
+        rf"(?<![A-Za-z0-9_$-])(?:['\"]{re.escape(key)}['\"]|{re.escape(key)})\s*:",
+        block,
+    ) is not None
+
+
+def plain_html(value: object) -> str:
+    return re.sub(r"<[^>]+>", "", str(value)).strip()
+
+
+def load_runtime_architecture_for_check(errors: list[str]) -> dict[str, object]:
+    if not RUNTIME_ARCHITECTURE_SOURCE.exists():
+        errors.append("docs/index/runtime-architecture.json missing; Architecture trace maps need a shared source")
+        return {}
+    try:
+        payload = json.loads(RUNTIME_ARCHITECTURE_SOURCE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"docs/index/runtime-architecture.json JSON parse error: {exc}")
+        return {}
+    if payload.get("schema_version") != 1:
+        errors.append("docs/index/runtime-architecture.json schema_version must be 1")
+    if payload.get("status") != "shared-runtime-architecture-source":
+        errors.append("docs/index/runtime-architecture.json status must be shared-runtime-architecture-source")
+    stages = payload.get("stages")
+    if not isinstance(stages, list) or not stages:
+        errors.append("docs/index/runtime-architecture.json must define non-empty stages")
+    return payload
+
+
+def runtime_stage_title(stage: dict[str, object]) -> str:
+    title = stage.get("title")
+    if isinstance(title, str) and title:
+        return title
+    return plain_html(stage.get("title_html", ""))
+
+
+def check_architecture_trace_parity(text: str, errors: list[str]) -> None:
+    arch = load_runtime_architecture_for_check(errors)
+    stages = arch.get("stages")
+    if not isinstance(stages, list) or not stages:
+        return
+
+    static_map = extract_js_object_block(text, "STATIC_STAGE_MAP", errors)
+    substage_map = extract_js_object_block(text, "SUBSTAGE_MAP", errors)
+    js_stages = extract_js_array(text, "ARCHITECTURE_STAGES", errors)
+    parity_marker = (
+        "Architecture interaction trace maps are parity-checked against "
+        "docs/index/runtime-architecture.json"
+    )
+    if parity_marker not in text:
+        errors.append("architecture trace maps missing source/parity marker comment")
+
+    if len(js_stages) != len(stages):
+        errors.append(f"ARCHITECTURE_STAGES count drift: expected {len(stages)}, found {len(js_stages)}")
+    for index, stage_obj in enumerate(stages):
+        if not isinstance(stage_obj, dict):
+            errors.append(f"runtime architecture stage {index} is malformed")
+            continue
+        key = str(stage_obj.get("key", ""))
+        title = runtime_stage_title(stage_obj)
+        number = str(stage_obj.get("number", ""))
+        if not key:
+            errors.append(f"runtime architecture stage {index} missing key")
+            continue
+        if f'data-stage-key="{key}"' not in text:
+            errors.append(f"generated Architecture cards missing data-stage-key={key!r}")
+        if static_map and not has_js_object_key(static_map, key):
+            errors.append(f"STATIC_STAGE_MAP.target missing shared stage key {key!r}")
+        if substage_map and not has_js_object_key(substage_map, key):
+            errors.append(f"SUBSTAGE_MAP.target missing shared stage key {key!r}")
+        if title and static_map and title not in static_map:
+            errors.append(f"STATIC_STAGE_MAP target stage {key!r} title drifts from shared source: {title!r}")
+        if index < len(js_stages) and isinstance(js_stages[index], dict):
+            js_title = plain_html(js_stages[index].get("title", ""))
+            js_number = str(js_stages[index].get("n", ""))
+            if title and js_title != title:
+                errors.append(
+                    f"ARCHITECTURE_STAGES[{index}] title drift: expected {title!r}, found {js_title!r}"
+                )
+            if number and js_number != number:
+                errors.append(
+                    f"ARCHITECTURE_STAGES[{index}] stage number drift: expected {number!r}, found {js_number!r}"
+                )
+        subcards = stage_obj.get("subcards")
+        if not isinstance(subcards, list):
+            errors.append(f"runtime architecture stage {key!r} must define subcards")
+            continue
+        for card in subcards:
+            if not isinstance(card, dict):
+                errors.append(f"runtime architecture stage {key!r} has malformed subcard")
+                continue
+            subkey = str(card.get("key", ""))
+            card_title = str(card.get("title", ""))
+            if not subkey:
+                errors.append(f"runtime architecture stage {key!r} has subcard without key")
+                continue
+            if f'data-substage-key="{subkey}"' not in text:
+                errors.append(f"generated Architecture cards missing data-substage-key={subkey!r}")
+            if substage_map and not has_js_object_key(substage_map, subkey):
+                errors.append(f"SUBSTAGE_MAP.target.{key} missing shared subcard key {subkey!r}")
+            if card_title and substage_map and card_title not in substage_map:
+                errors.append(
+                    f"SUBSTAGE_MAP target subcard {key}.{subkey} title drifts from shared source: {card_title!r}"
+                )
+
+
+def operator_reference_paths() -> set[str]:
+    paths = {path.relative_to(ROOT).as_posix() for path in REFERENCE_ROOT.rglob("*.md")}
+    paths.update(path.relative_to(ROOT).as_posix() for path in REFERENCE_SOURCE_PATHS if path.exists())
+    return paths
+
+
+def owner_token_resolves(token: str, operators: list[dict[str, object]], source_paths: set[str]) -> bool:
+    value = token.strip()
+    if not value:
+        return True
+    op_ids = {str(op.get("id", "")) for op in operators}
+    aliases = {
+        str(alias)
+        for op in operators
+        for alias in (op.get("aliases") or [])
+        if isinstance(alias, str)
+    }
+    stems = {Path(path).stem for path in source_paths}
+    names = {Path(path).name for path in source_paths}
+    if value in op_ids or value in aliases or value in stems or value in names:
+        return True
+    if value.endswith(".md") and value in names:
+        return True
+    range_match = re.fullmatch(r"([A-Z]+)(\d+)-(?:[A-Z]+)?(\d+)", value)
+    if range_match:
+        prefix, start, end = range_match.groups()
+        start_i = int(start)
+        end_i = int(end)
+        if start_i > end_i:
+            return False
+        for number in range(start_i, end_i + 1):
+            candidate = f"{prefix}{number}"
+            if candidate not in aliases and not any(op_id == candidate or op_id.startswith(f"{candidate}-") for op_id in op_ids):
+                return False
+        return True
+    return False
+
+
+def check_owner_ttp_map_parity(text: str, expected: list[dict[str, str]], errors: list[str]) -> None:
+    operators_raw = extract_js_array(text, "OPERATORS", errors)
+    families_raw = extract_js_array(text, "OWNER_FAMILIES", errors)
+    if not operators_raw or not families_raw:
+        return
+    operators = [op for op in operators_raw if isinstance(op, dict)]
+    families = [family for family in families_raw if isinstance(family, dict)]
+    if len(operators) != len(operators_raw):
+        errors.append("OPERATORS contains malformed non-object entries")
+    if len(families) != len(families_raw):
+        errors.append("OWNER_FAMILIES contains malformed non-object entries")
+
+    parity_marker = (
+        "Owner/TTP operator and family maps are parity-checked against "
+        "module-catalogue/frontmatter/source paths"
+    )
+    if parity_marker not in text:
+        errors.append("Owner/TTP maps missing source/parity marker comment")
+
+    expected_by_id = {module["id"]: module for module in expected}
+    expected_by_source = {module["source_path"]: module for module in expected}
+    source_paths = operator_reference_paths()
+    seen_operator_ids: set[str] = set()
+    operator_families: set[str] = set()
+    required_fields = ("id", "family", "class", "label", "activation", "operation", "delta", "reread", "path")
+    for op in operators:
+        op_id = str(op.get("id", ""))
+        if not op_id:
+            errors.append("OPERATORS entry missing id")
+            continue
+        if op_id in seen_operator_ids:
+            errors.append(f"OPERATORS duplicate id {op_id!r}")
+        seen_operator_ids.add(op_id)
+        for field in required_fields:
+            if not isinstance(op.get(field), str) or not str(op.get(field)).strip():
+                errors.append(f"OPERATORS[{op_id}] missing required field {field!r}")
+        family = str(op.get("family", ""))
+        if family:
+            operator_families.add(family)
+        path = str(op.get("path", ""))
+        if path and path not in source_paths:
+            errors.append(f"OPERATORS[{op_id}] path is not a tracked atomics/reference source: {path}")
+        catalogue_entry = expected_by_id.get(op_id) or expected_by_source.get(path)
+        if catalogue_entry:
+            if path and path != catalogue_entry["source_path"]:
+                errors.append(
+                    f"OPERATORS[{op_id}] source path drift: expected {catalogue_entry['source_path']}, found {path}"
+                )
+            if str(op.get("class", "")) != catalogue_entry["module_class"]:
+                errors.append(
+                    f"OPERATORS[{op_id}] class drift: expected {catalogue_entry['module_class']}, found {op.get('class')!r}"
+                )
+        elif path:
+            aliases = op.get("aliases") or []
+            if op_id not in Path(path).stem and op_id not in aliases:
+                # Non-catalogue operators are allowed only when clearly source-linked
+                # through their file identity or an explicit alias.
+                errors.append(f"OPERATORS[{op_id}] is not catalogue-backed and lacks a file-stem/alias source link")
+
+    option_families = set(re.findall(r"<option>([^<]+)</option>", text))
+    missing_options = sorted(operator_families - option_families)
+    if missing_options:
+        errors.append(f"Owner/TTP operator family filter missing options: {missing_options}")
+
+    for family in families:
+        family_id = str(family.get("id", ""))
+        owners = family.get("owners")
+        if not family_id:
+            errors.append("OWNER_FAMILIES entry missing id")
+        if not isinstance(owners, list) or not owners:
+            errors.append(f"OWNER_FAMILIES[{family_id}] must list source owners")
+            continue
+        unresolved = [
+            str(owner)
+            for owner in owners
+            if isinstance(owner, str) and not owner_token_resolves(owner, operators, source_paths)
+        ]
+        if unresolved:
+            errors.append(f"OWNER_FAMILIES[{family_id}] has unresolved owner/source tokens: {unresolved}")
+
+    if re.search(r"\b69\s+modules?\b", strip_reference_snapshots(text), flags=re.I):
+        errors.append("docs/index public surface must not hardcode a literal '69 modules' claim")
+
+
+def check_reference_data(text: str, errors: list[str]) -> None:
+    if "const PROCEDURE" in text:
+        errors.append("docs/index.html still embeds stale PROCEDURE release-status data")
+    if "auditSummary" in text:
+        errors.append("docs/index.html still embeds stale auditSummary release-status text")
+    refs = extract_js_array(text, "REFS", errors)
+    docs = extract_js_array(text, "DOCS", errors)
+    expected_paths = [path.relative_to(ROOT).as_posix() for path in expected_reference_paths()]
+    ref_paths = [entry.get("path") for entry in refs if isinstance(entry, dict)]
+    doc_paths = [entry.get("rel") for entry in docs if isinstance(entry, dict)]
+    if ref_paths and ref_paths != expected_paths:
+        errors.append("generated REFS paths drift from atomics/skill README, SKILL.md, and references/**/*.md")
+    if doc_paths and doc_paths != expected_paths:
+        errors.append("generated DOCS paths drift from atomics/skill README, SKILL.md, and references/**/*.md")
+    docs_by_path = {entry.get("rel"): entry for entry in docs if isinstance(entry, dict)}
+    refs_by_path = {entry.get("path"): entry for entry in refs if isinstance(entry, dict)}
+    for path in expected_reference_paths():
+        rel_path = path.relative_to(ROOT).as_posix()
+        text_current = path.read_text(encoding="utf-8")
+        doc = docs_by_path.get(rel_path)
+        ref = refs_by_path.get(rel_path)
+        if not isinstance(doc, dict):
+            errors.append(f"generated DOCS missing source snapshot for {rel_path}")
+            continue
+        if doc.get("content") != text_current:
+            errors.append(f"generated DOCS source snapshot drift: {rel_path}")
+        if doc.get("lines") != len(text_current.splitlines()):
+            errors.append(f"generated DOCS line count drift: {rel_path}")
+        if isinstance(ref, dict) and ref.get("lines") != len(text_current.splitlines()):
+            errors.append(f"generated REFS line count drift: {rel_path}")
 
 
 def run_generation_freshness_check(errors: list[str]) -> None:
@@ -812,17 +1219,29 @@ def main() -> int:
             errors.append(f"generated owner/TTP table missing token {token!r}")
     if "renderOwnerSourceTable" not in script:
         errors.append("owner-derived module table provider renderOwnerSourceTable missing")
+    check_reference_data(text, errors)
 
-    check_notation_contract(text, errors)
-    check_public_notation_surface(INDEX, text, errors)
+    public_text = strip_reference_snapshots(text)
+    check_notation_contract(public_text, errors)
+    check_public_notation_surface(INDEX, public_text, errors)
+    check_architecture_trace_parity(text, errors)
+    runtime_source_text = ""
+    if RUNTIME_ARCHITECTURE_SOURCE.exists():
+        runtime_source_text = RUNTIME_ARCHITECTURE_SOURCE.read_text(encoding="utf-8")
+    else:
+        errors.append("docs/index/runtime-architecture.json missing; Architecture/Theory runtime renderings must share one source")
     for source_path in (ARCHITECTURE_SECTION, THEORY_SECTION):
         if not source_path.exists():
             errors.append(f"{source_path.relative_to(ROOT).as_posix()}: missing docs index source section")
         else:
-            check_public_notation_surface(source_path, source_path.read_text(encoding="utf-8"), errors)
+            section_text = source_path.read_text(encoding="utf-8")
+            if "docs/index/runtime-architecture.json" not in section_text:
+                errors.append(f"{source_path.relative_to(ROOT).as_posix()}: must declare the shared runtime architecture source")
+            check_public_notation_surface(source_path, f"{section_text}\n{runtime_source_text}", errors)
     check_theory_control_cards(text, errors)
 
     expected = expected_modules(errors)
+    check_owner_ttp_map_parity(text, expected, errors)
     embedded = embedded_modules(text, errors)
     if expected and embedded and expected != embedded:
         expected_ids = {item["id"] for item in expected}

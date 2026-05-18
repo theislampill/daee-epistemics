@@ -40,6 +40,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | CURRENT-CANDIDATE | Pre-archive stale-surface audit classifying tools, smokes, raw fixture candidates, ignored local build outputs, and pre-public proof boundaries. |
 | `docs/audits/v0.4.2.0-current-release-smoke-runbook.md` | CURRENT-CANDIDATE | Owner packet for capturing real package-bound current-release smoke outputs, sidecars, verdicts, and provenance. |
 | `docs/audits/v0.4.2.0-p0-remediation.md` | CURRENT-CANDIDATE | P0 remediation ledger for stale public wording, local package/provenance proof, and remaining live-smoke release blockers. |
+| `docs/audits/v0.4.2.0-docs-index-ssot-audit.md` | CURRENT-CANDIDATE | Audits docs/index source ownership, generated runtime/theory surfaces, Reference Library snapshots, and remaining targeted SSOT hardening. |
 
 ## Consolidated Audit History
 

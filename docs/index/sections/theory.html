@@ -8,208 +8,8 @@
   Card colors inherit the Architecture phase colors: blue for input, cyan for Layer A / IR signal-state, violet for gate/routing/register governance, orange for owner + Δ + diagnostics, green for reread/closure, and red for the public restorative boundary. Plain ∇ belongs to the violet gate/routing phase; ∇·T, ∇×T, and LoopBreak(∇×T) belong to the orange post-Δ diagnostic phase.
 </p>
 <div class="fieldNavNote"><strong>Bridge highlight policy:</strong> node clicks highlight structurally owned notation tokens. 𝓝 highlights only 𝓝 and D₀. N∈𝓝, Ψᴺ, H, and the register set are runtime selection/encoding objects and must be selected through their own notation tokens or Concept Graph nodes; D₀ itself highlights only D₀; Ψᴺ and IR highlight ♥ because the register is encoded/formalized there; final restoration highlights ♥/ξ/Ω/μ but not κ as a final-state constituent.</div>
-<div class="controlOverviewGrid">
-<button class="controlCard phase-layer-a" onclick="goConceptField('noetic')">
-<span class="controlSym">𝓝</span>
-<strong>Noetic-structure selection space</strong>
-<p>all possible live noetic structures the framework is engineered to diagnose and route</p>
-</button>
-<button class="controlCard phase-input" onclick="goConceptField('D0')">
-<span class="controlSym">D₀</span>
-<strong>Surface discourse</strong>
-<p>claim, slogan, doubt, proof-packet, source request</p>
-</button>
-<button class="controlCard phase-layer-a" onclick="goConceptField('Psi')">
-<span class="controlSym">Ψᴺ</span>
-<strong>Encoded noetic signal-state</strong>
-<p>N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('N')">
-<span class="controlSym">N</span>
-<strong>Operative noetic frame</strong>
-<p>the selected frame governing this burden, not the whole structure</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('τ')">
-<span class="controlSym">τ</span>
-<strong>Tribunal / burden-function</strong>
-<p>what is judging what; criterion and live function</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('σ')">
-<span class="controlSym">σ</span>
-<strong>Source / semantic / authority status</strong>
-<p>warrant, context, contrast, genealogy, or held material</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('heart')">
-<span class="controlSym">♥</span>
-<strong>Affective-discursive register</strong>
-<p>grief, identity, performance, truth-seeking, mixed, unclear</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('ξ')">
-<span class="controlSym">ξ</span>
-<strong>Epistemic grammar</strong>
-<p>warrant, testimony, proper function, reliability, defeaters</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('Ω')">
-<span class="controlSym">Ω</span>
-<strong>Ontological grammar</strong>
-<p>being, predication, modality, dependence, creator/creation</p>
-</button>
-<button class="controlCard phase-gate" onclick="goConceptField('μ')">
-<span class="controlSym">μ</span>
-<strong>Memetic vector</strong>
-<p>carrier, compression, stabilization, defense, mutation</p>
-</button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('κ')">
-<span class="controlSym">κ</span>
-<strong>Collapse radius</strong>
-<p>downstream dependency set changed by Land(ⁿB)</p>
-</button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('H')">
-<span class="controlSym">H</span>
-<strong>Held set</strong>
-<p>live but unreleased material carried into reread</p>
-</button>
-<button class="controlCard phase-gate route-gradient-card" onclick="goConceptField('gradient')">
-<span class="controlSym">∇</span>
-<strong>Route-gradient pressure</strong>
-<p>eligible route ordering by expected diagnostic reduction</p>
-</button>
-<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('burden')">
-<span class="controlSym">ⁿB</span>
-<strong>Current burden</strong>
-<p>bounded live burden field selected for owner-backed release order</p>
-</button>
-<button class="controlCard phase-owner-delta burden-card" onclick="goConceptField('submoves')">
-<span class="controlSym">ⁿBᵢ[OPᵢ]</span>
-<strong>Submove operation</strong>
-<p>target → operation → result under the current burden</p>
-</button>
-<button class="controlCard phase-owner-delta delta-card" onclick="goConceptField('deltaB')">
-<span class="controlSym">ΔⁿB</span>
-<strong>Burden-event delta</strong>
-<p>event-local transition produced by burden/submove landing</p>
-</button>
-<button class="controlCard phase-reread-closure delta-card" onclick="goConceptField('deltaK')">
-<span class="controlSym">Δκ</span>
-<strong>Closure-state delta</strong>
-<p>case-collapse / dependency-radius update after burden work</p>
-</button>
-<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaDot')">
-<span class="controlSym">∇·T</span>
-<strong>∇·T field diagnostic</strong>
-<p>post-Delta residual outward pressure in an explicit target field</p>
-</button>
-<button class="controlCard phase-owner-delta field-diagnostic-card" onclick="goConceptField('nablaCross')">
-<span class="controlSym">∇×T</span>
-<strong>∇×T field diagnostic</strong>
-<p>post-Delta circularity / rotational dependency in an explicit target field</p>
-</button>
-<button class="controlCard phase-owner-delta loopbreak-card" onclick="goConceptField('loopBreak')">
-<span class="controlSym">LoopBreak(∇×T)</span>
-<strong>Loop-breaking submove</strong>
-<p>owner-grounded curl resolution with target, Δ effect, and reread</p>
-</button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('R')">
-<span class="controlSym">R</span>
-<strong>Reread gate</strong>
-<p>R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B after target-explicit ∇·/∇× field-state diagnostics</p>
-</button>
-<button class="controlCard phase-reread-closure" onclick="goConceptField('C')">
-<span class="controlSym">𝒞</span>
-<strong>Constrained noetic collapse</strong>
-<p>discursive resolution of Ψᴺ under owner-backed operations and reread</p>
-</button>
-<button class="controlCard phase-reread-closure final-card" onclick="goConceptField('final')">
-<span class="controlSym">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
-<strong>Restored fiṭrah and sound reason</strong>
-<p>terminal state after ♥/ξ/Ω/μ/κ disorder loses governance</p>
-</button>
-<button class="controlCard phase-public-boundary" onclick="goConceptField('PsiI')">
-<span class="controlSym">Ψᴵ</span>
-<strong>Diagnosed interlocutor field</strong>
-<p>inferred from discourse/profile/register evidence; not soul access</p>
-</button>
-<button class="controlCard phase-public-boundary public-boundary-card" onclick="goConceptField('coupling')">
-<span class="controlSym">Ψᴺ ⇢ Ψᴵ</span>
-<strong>T_lang output boundary</strong>
-<p>post-closure language release toward diagnosed Ψᴵ; not a state transition or uptake claim</p>
-</button>
-</div>
-<div class="notationBoard" id="notationBoard">
-<div class="notationLine">
-<span class="ntok symNoetic" data-k="noetic" data-label="noetic-structure selection space" onclick="highlightNotation(['noetic','D0'])">𝓝</span>
-<span class="notationArrow">⊢</span>
-<span class="ntok" data-k="D0" data-label="surface discourse / initial signal" onclick="highlightNotation(['D0'])">D₀</span>
-<span class="notationArrow">⇝</span>
-<span class="ntok" data-k="Psi" data-label="encoded noetic signal-state" onclick="highlightNotation(['noetic','Psi','N','m','tau','sigma','heart','xi','omega','mu','kappa','H'])">Ψᴺ</span>
-<span>⟨</span>
-<span class="ntok" data-k="N" data-label="runtime-selected operative noetic frame from 𝓝" onclick="highlightNotation(['noetic','N'])">N∈𝓝</span><span>,</span>
-<span class="ntok" data-k="m" data-label="deformation / concealment / memetic mode" onclick="highlightNotation(['m'])">m</span><span>,</span>
-<span class="ntok" data-k="tau" data-label="burden function / tribunal / criterion" onclick="highlightNotation(['tau'])">τ</span><span>,</span>
-<span class="ntok" data-k="sigma" data-label="source / semantic / authority status" onclick="highlightNotation(['sigma'])">σ</span><span>,</span>
-<span class="ntok symHeart" data-k="heart" data-label="affective-discursive register / release posture" onclick="highlightNotation(['heart'])">♥</span><span>,</span>
-<span class="ntok symXi" data-k="xi" data-label="epistemic/warrant grammar" onclick="highlightNotation(['xi'])">ξ</span><span>,</span>
-<span class="ntok symOmega" data-k="omega" data-label="ontological grammar" onclick="highlightNotation(['omega'])">Ω</span><span>,</span>
-<span class="ntok symMu" data-k="mu" data-label="meta-noetic memetic vector" onclick="highlightNotation(['mu'])">μ</span><span>,</span>
-<span class="ntok symKappa" data-k="kappa" data-label="collapse radius / downstream dependency set" onclick="highlightNotation(['kappa'])">κ</span><span>,</span>
-<span class="ntok" data-k="H" data-label="held set" onclick="highlightNotation(['H'])">H</span><span>⟩</span>
-</div>
-<div class="notationLine">
-<span class="notationArrow">⟶</span>
-<span class="ntok" data-k="IR" data-label="compact DSL/IR control state" onclick="highlightNotation(['IR','N','m','tau','sigma','heart','xi','omega','mu','kappa'])">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
-</div>
-<div class="notationLine">
-<span class="notationArrow">⟶</span>
-<span class="ntok" data-k="gradient" data-label="∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates" onclick="highlightNotation(['gradient','IR','burden','R'])">∇ route-gradient</span>
-<span class="notationArrow">selects release pressure over</span>
-<span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
-</div>
-<div class="notationLine">
-<span class="notationArrow">⟶</span>
-<span>[</span>
-<span class="ntok" data-k="burden" data-label="current burden n" onclick="highlightNotation(['burden'])">ⁿB</span>
-<span class="notationArrow">→</span>
-<span>{</span><span class="ntok" data-k="submoves" data-label="owner-backed submoves under burden n" onclick="highlightNotation(['submoves'])">ⁿBᵢ[OPᵢ]</span><span>}</span>
-<span class="notationArrow">→</span>
-<span class="ntok" data-k="Land" data-label="burden landing" onclick="highlightNotation(['Land'])">Land(ⁿB)</span>
-<span class="notationArrow">→</span>
-<span class="ntok" data-k="deltaB" data-label="burden-event delta; transition produced by burden/submove landing" onclick="highlightNotation(['deltaB','burden','submoves'])">ΔⁿB</span>
-<span>/</span>
-<span class="ntok" data-k="deltaK" data-label="case-collapse / closure-state delta" onclick="highlightNotation(['deltaK','kappa'])">Δκ</span>
-<span class="notationArrow">→</span>
-<span class="ntok" data-k="nablaDot" data-label="∇·T: post-Delta residual outward pressure in an explicit target field" onclick="highlightNotation(['nablaDot','deltaB','deltaK','R'])">∇·T</span>
-<span>/</span>
-<span class="ntok" data-k="nablaCross" data-label="∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field" onclick="highlightNotation(['nablaCross','deltaB','deltaK','R'])">∇×T</span>
-<span class="ntok" data-k="fieldDiagnostics" data-label="target-explicit post-Delta field diagnostics" onclick="highlightNotation(['fieldDiagnostics','nablaDot','nablaCross','deltaB','deltaK'])">field state</span>
-<span class="notationArrow">→</span>
-<span class="ntok" data-k="loopBreak" data-label="LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero" onclick="highlightNotation(['loopBreak','nablaCross','deltaB','deltaK','R'])">LoopBreak(∇×T)</span>
-<span class="notationArrow">→</span>
-<span class="ntok" data-k="R" data-label="state/noetic reread" onclick="highlightNotation(['R','H','heart','deltaB','deltaK','nablaDot','nablaCross','fieldDiagnostics'])">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span>
-<span>]*</span>
-</div>
-<div class="notationLine">
-<span class="notationArrow">⟶</span>
-<span class="ntok" data-k="C" data-label="constrained noetic collapse / discursive resolution" onclick="highlightNotation(['C','Psi'])">𝒞(Ψᴺ)</span>
-<span class="notationArrow">⟶</span>
-<span class="ntok" data-k="final" data-label="restored fiṭrah and sound reason" onclick="highlightNotation(['final','N','heart','xi','omega','mu'])">N_fiṭrī ∧ ʿaql ṣarīḥ</span>
-<span class="notationArrow"> / </span>
-<span class="ntok" data-k="nextB" data-label="next burden licensed by reread" onclick="highlightNotation(['nextB','R'])">ⁿ⁺¹B</span>
-</div>
-<div class="notationLine">
-<span class="notationArrow">public release boundary</span>
-<span class="ntok" data-k="coupling" data-label="T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim" onclick="highlightNotation(['coupling','Psi','PsiI','final'])">T_lang: Ψᴺ ⇢ Ψᴵ</span>
-</div>
-<div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>
-<div class="notationLegend">
-<div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>
-<div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>
-<div class="miniCard"><strong>Route-gradient:</strong> ∇ orders eligible route pressure after IR/routing/catalogue gates; it never replaces those gates or Δ.</div>
-<div class="miniCard"><strong>Phase discipline:</strong> ∇ ranks eligible route pressure before release. Δ produces the changed field state. ∇·T / ∇×T diagnose target-explicit post-Δ field pressure. R(H,Δ) rereads the changed field. 𝒞(Ψᴺ) licenses closure as field condition. T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake.</div>
-<div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>
-<div class="miniCard"><strong>Loop-breaking:</strong> LoopBreak(∇×T) is licensed only when nonzero curl has an owner-grounded target and Δ effect.</div>
-<div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is a positive closure-field condition, not checklist exhaustion.</div>
-<div class="miniCard"><strong>Output boundary:</strong> T_lang: Ψᴺ ⇢ Ψᴵ names the public release relation after closure/hold/partial; it is not part of the burden loop and does not claim guaranteed uptake.</div>
-</div>
+<!-- Generated by tools/build_docs_index.py from docs/index/runtime-architecture.json. The Theory tab uses compact notation/mapping, not a duplicate Architecture row block. -->
+{{ THEORY_RUNTIME_OVERVIEW }}
 </div>
 <div class="subtabs">
 <button class="subtab active" onclick="showSub('concepts',this)">Concept graph</button>
@@ -236,27 +36,7 @@ and the register-formalism fixtures/checkers. It states how the generated concep
 map, and public notation cards read those owners.
 </p>
 </div>
-<div class="bridgeFlow" aria-label="Bridge execution order">
-<span>D₀ / live field</span>
-<b>→</b>
-<span>IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span>
-<b>→</b>
-<span>∇ route-gradient</span>
-<b>→</b>
-<span>ⁿB + ⁿBᵢ[OPᵢ]</span>
-<b>→</b>
-<span>ΔⁿB / Δκ</span>
-<b>→</b>
-<span>∇·T / ∇×T target field</span>
-<b>→</b>
-<span>LoopBreak(∇×T) when licensed</span>
-<b>→</b>
-<span>R(H,Δ)</span>
-<b>→</b>
-<span>𝒞(Ψᴺ) / STOP / HOLD / RECURSE / PARTIAL / COMPLETE</span>
-<b>→</b>
-<span>T_lang: Ψᴺ ⇢ Ψᴵ output boundary</span>
-</div>
+{{ THEORY_BRIDGE_COMPACT }}
 <div class="bridgeGrid">
 <article class="bridgeCard">
 <h3>1. Register/state components</h3>
@@ -358,22 +138,13 @@ held state and dependency deltas, then stops, holds, recurses, or marks partial.
 <div class="callout warn">
 <p><strong>Source-of-truth boundary:</strong> this generated docs page is a public/navigation surface. Runtime authority lives in the owner files and checkers: <code>diagnostic-ir.md</code>, <code>recursive-state-transitions.md</code>, <code>diagnostic-render-contract.md</code>, <code>output-release.md</code>, <code>algebraic-notation-and-noetic-formalism.md</code>, and <code>register-formalism-implementation-ledger.md</code>. Formal notation is operative only where it maps to a repo-defined control effect.</p>
 </div>
-<div class="flow">
-<span class="node blue">D</span><span class="arrow">→</span>
-<span class="node green">IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)</span><span class="arrow">→</span>
-<span class="node violet">ⁿB</span><span class="arrow">→</span>
-<span class="node violet">{ⁿB₁...ⁿBₖ}</span><span class="arrow">→</span>
-<span class="node orange">Land(ⁿB)</span><span class="arrow">→</span>
-<span class="node orange">ΔⁿB</span><span class="arrow">→</span>
-<span class="node orange">∇·/∇× field state</span><span class="arrow">→</span>
-<span class="node green">R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)</span><span class="arrow">→</span>
-<span class="node red">ⁿ⁺¹B | STOP | HOLD | PARTIAL</span>
+<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">
+The compact sequence is rendered above from the shared runtime architecture source as notation chips and mapping rows. This theory annex explains those controls without duplicating the Architecture tab's full rows.
 </div>
 </section>
 <section id="pv-assessment">
 <h2>2. Current notation assessment</h2>
-<p>The current compact form already captures the backbone:</p>
-<pre><code>IR(N,m,τ,σ) → B → {s1...sn} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H,Δ)</code></pre>
+<p>The current compact form already captures the backbone; the generated notation map above is the shared source-derived rendering of that backbone.</p>
 <div class="grid">
 <div class="card wide">
 <h3>What it already captures</h3>
@@ -432,14 +203,9 @@ encoding, channel, noise, redundancy, capacity, error correction, and decoder be
 </section>
 <section id="pv-recommended">
 <h2>4. Runtime notation spine</h2>
-<pre><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
-  → ⁿB
-  → {ⁿB₁...ⁿBₖ}
-  → Land(ⁿB)
-  → ΔⁿB
-  → ∇·/∇× target field state
-  → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)
-  → ⁿ⁺¹B | STOP | HOLD | PARTIAL</code></pre>
+<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">
+The runtime notation spine is rendered at the top of this tab as compact chips and mapping rows from the shared runtime architecture source. This section keeps the convention notes without restating the full Architecture row.
+</div>
 <div class="callout">
 <p><strong>Strict repo convention:</strong> burden number is always superscript before <code>B</code>.
   The subscript after <code>B</code> is reserved for submove number. There is no <code>Bⁿ</code> in the strict form,
@@ -464,23 +230,9 @@ burden-function, source-status, affective-discursive register, epistemic grammar
 collapse radius, and held material.
 </p>
 </div>
-<pre><code>𝓝 ⊢ D₀ ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩
-𝒟(D₀) := IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
-
-ⁿB := β(𝒟(D₀))
-
-∀i ≤ k:
-  ⁿBᵢ[OPᵢ] : Tᵢ → Oᵢ → Rᵢ → ΔⁿBᵢ{♥,ξ,Ω,σ,μ} / Δκᵢ
-
-Land(ⁿB) := ΣᵢΔⁿBᵢ{♥,ξ,Ω,σ,μ} ⊢ ΔⁿB{♥,ξ,Ω,σ,μ}
-
-∇·T := residual outward pressure in explicit target field T after Δ
-∇×T := circular or rotational dependency pressure in explicit target field T after Δ
-
-R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | PARTIAL | ⁿ⁺¹B
-
-𝒞(Ψᴺ) := constrained resolution of Ψᴺ under {OPᵢ} and R
-𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
+<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">
+The algebraic roles in this section are generated in compact form by the shared notation map above. This annex keeps the explanatory definitions and operator examples, rather than repeating the full Architecture sequence as another formula block.
+</div>
 <div class="grid">
 <div class="card wide">
 <span class="sym violet">Ψ</span>
@@ -518,11 +270,7 @@ OPᵢ(♥,ξ,Ω,σ,μ,κ) → (Δ♥,Δξ,ΔΩ,Δσ,Δμ,Δκ)</code></pre>
 </table>
 <div class="mini">
 <strong>Compact one-line form:</strong>
-<pre><code>𝓝 ⊢ D₀ ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩
-  ⟶ IR
-  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
-  ⟶ 𝒞(Ψᴺ)
-  ⟶ N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
+<p>Use the generated notation chips and mapping rows at the top of this tab; they are sourced from <code>docs/index/runtime-architecture.json</code> and stay in sync with the Architecture cards and rows.</p>
 </div>
 </section>
 <section id="pv-symbols">
@@ -872,7 +620,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <div class="grid">
 <div class="card wide">
 <h3>Main flow diagram</h3>
-<p><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) → ⁿB → {ⁿBᵢ} → Land → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → outcome</code></p>
+<p>The main flow diagram is generated from the same shared runtime source as the Architecture tab. The conformance question here is whether each compact chip maps to a real runtime role and source owner, not whether this tab repeats the full row.</p>
 </div>
 <div class="card wide">
 <h3>Symbol legend</h3>
@@ -959,33 +707,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 <li><strong>Unreadable system:</strong> making notation too abstract for maintainers and LLMs.</li>
 </ul>
 </section>
-<section id="pv-final">
-<h2>20. Final runtime notation</h2>
-<pre><code>D₀ → IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)
-  → ⁿB
-  → {ⁿB₁...ⁿBₖ}
-  → Land(ⁿB)
-  → ΔⁿB
-  → ∇·/∇× target field state
-  → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)
-  → ⁿ⁺¹B | STOP | HOLD | PARTIAL</code></pre>
-<p>
-This runtime form preserves the repo’s strict burden convention, separates epistemic
-grammar <code>ξ</code> from ontological grammar <code>Ω</code>, makes meta-noetic memetics operational through <code>μ</code>, gives
-collapse-radius tracking <code>κ</code> a clear role in post-landing reread, and makes <code>♥</code> delta-bearing where release posture changes.
-</p>
-<pre><code>𝓝 ⊢ D₀ ⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩
-  ⟶ IR
-  ⟶ [ⁿB → {ⁿBᵢ[OPᵢ]} → Land(ⁿB) → ΔⁿB/Δκ → ∇·/∇× field state → R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)]*
-  ⟶ 𝒞(Ψᴺ)
-  ⟶ N_fiṭrī ∧ ʿaql ṣarīḥ</code></pre>
-<p>
-This algebraic form names the encoded noetic signal-state <code>Ψᴺ</code>, the constrained
-collapse/resolution operator <code>𝒞</code>, and the burden-cycle machinery by which DAEE acts on meta-noetic memetic structure.
-Every symbol either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the
-framework graphic. Nothing is merely decorative.
-</p>
-</section>
+{{ THEORY_FINAL_RUNTIME_SUMMARY }}
 <div class="footer">
   DAEE Epistemics notation normalization bridge — source-governance proof snapshot.
 </div>

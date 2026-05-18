@@ -6,6 +6,7 @@
   "bootstrap_note": "Bootstrapped mechanically from the current intended docs/index.html after tab-regression repair; generated output is now rebuilt from docs/index/** plus owner-derived data.",
   "derived_data": {
     "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
+    "runtime_architecture": "docs/index/runtime-architecture.json",
     "framework_pipeline": "atomics/skill/references/diagnostics/framework-pipeline.yaml",
     "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
     "audit_index": "docs/audits/INDEX.md"
@@ -30,7 +31,20 @@
         "atomics/skill/references/rubrics/diagnostic-render-contract.md",
         "atomics/skill/references/rubrics/output-release.md"
       ],
-      "generated_blocks": [],
+      "generated_blocks": [
+        {
+          "id": "runtime_architecture_cards",
+          "provider": "renderRuntimeArchitectureCards",
+          "classification": "STRUCTURED_SOURCE_DERIVED",
+          "owner_source": "docs/index/runtime-architecture.json"
+        },
+        {
+          "id": "runtime_architecture_rows",
+          "provider": "renderRuntimeArchitectureRows",
+          "classification": "STRUCTURED_SOURCE_DERIVED",
+          "owner_source": "docs/index/runtime-architecture.json"
+        }
+      ],
       "folded_sections": [
         {
           "label": "Pipeline",
@@ -71,6 +85,7 @@
       "allow_curated_static": true,
       "freshness_required": true,
       "owner_sources": [
+        "docs/index/runtime-architecture.json",
         "docs/algebraic-notation-and-noetic-formalism.md",
         "docs/register-formalism-implementation-ledger.md",
         "docs/audits/v0.4.1.0-nla-operativity-audit.md",
@@ -79,23 +94,48 @@
         "tests/register-formalism-bridge-fixtures/10-field-gradient-loop-closure-coupling.json",
         "tools/check_field_operator_architecture.py"
       ],
-      "generated_blocks": []
+      "generated_blocks": [
+        {
+          "id": "runtime_theory_notation",
+          "provider": "renderTheoryControlOverview",
+          "classification": "STRUCTURED_SOURCE_DERIVED",
+          "owner_source": "docs/index/runtime-architecture.json"
+        },
+        {
+          "id": "runtime_theory_mapping_rows",
+          "provider": "renderTheoryMappingTable",
+          "classification": "STRUCTURED_SOURCE_DERIVED",
+          "owner_source": "docs/index/runtime-architecture.json"
+        }
+      ]
     },
     {
       "id": "reference",
       "label": "Reference Library",
       "panel": "reference",
       "section_source": "docs/index/sections/reference.html",
-      "classification": "STATIC_SNAPSHOT",
-      "content_source_type": "static curated reference browser with embedded owner document snapshots",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "curated reference browser shell with owner-derived document entries and embedded source snapshots",
       "allow_curated_static": true,
       "freshness_required": true,
       "owner_sources": [
+        "atomics/skill/README.md",
         "atomics/skill/SKILL.md",
         "atomics/skill/references/**",
         "docs/audits/INDEX.md"
       ],
-      "generated_blocks": [],
+      "generated_blocks": [
+        {
+          "id": "reference_library_data",
+          "provider": "renderReferenceData",
+          "classification": "OWNER_DERIVED",
+          "owner_sources": [
+            "atomics/skill/README.md",
+            "atomics/skill/SKILL.md",
+            "atomics/skill/references/**"
+          ]
+        }
+      ],
       "folded_sections": [
         {
           "label": "Case Library",
@@ -113,11 +153,44 @@
       "owner_sources": []
     },
     {
+      "id": "runtime_architecture_shared_source",
+      "label": "Shared runtime architecture projection",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "current_source": "docs/index/runtime-architecture.json",
+      "owner_sources": [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md",
+        "docs/algebraic-notation-and-noetic-formalism.md"
+      ]
+    },
+    {
+      "id": "architecture_runtime_cards_and_rows",
+      "label": "Architecture cards and runtime rows",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "current_source": "docs/index/runtime-architecture.json",
+      "owner_sources": [
+        "docs/index/runtime-architecture.json"
+      ]
+    },
+    {
+      "id": "theory_runtime_notation_mapping",
+      "label": "Theory Deep Dive notation and mapping rows",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "current_source": "docs/index/runtime-architecture.json",
+      "owner_sources": [
+        "docs/index/runtime-architecture.json"
+      ]
+    },
+    {
       "id": "formal_notation_banner_graph",
       "label": "Formal notation banner / graph",
-      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
-      "current_source": "docs/index/sections/theory.html",
+      "classification": "STRUCTURED_SOURCE_DERIVED",
+      "current_source": "docs/index/runtime-architecture.json",
       "owner_sources": [
+        "docs/index/runtime-architecture.json",
         "docs/algebraic-notation-and-noetic-formalism.md",
         "atomics/skill/references/diagnostics/recursive-state-transitions.md"
       ]
@@ -188,20 +261,74 @@
     {
       "id": "reference_library_entries",
       "label": "Reference library entries",
-      "classification": "STATIC_SNAPSHOT",
-      "current_source": "docs/index/templates/index.html.tpl",
+      "classification": "OWNER_DERIVED",
+      "current_source": "tools/build_docs_index.py",
       "owner_sources": [
+        "atomics/skill/README.md",
+        "atomics/skill/SKILL.md",
         "atomics/skill/references/**"
-      ]
+      ],
+      "provider": "renderReferenceData"
     },
     {
       "id": "embedded_viewer_snapshots",
       "label": "Embedded viewer snapshots",
-      "classification": "STATIC_SNAPSHOT",
-      "current_source": "docs/index/templates/index.html.tpl",
+      "classification": "OWNER_DERIVED",
+      "current_source": "tools/build_docs_index.py",
       "owner_sources": [
+        "atomics/skill/README.md",
         "atomics/skill/SKILL.md",
         "atomics/skill/references/**"
+      ],
+      "provider": "renderReferenceData"
+    },
+    {
+      "id": "architecture_interaction_trace_map",
+      "label": "Architecture interactive trace maps",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "docs/index/runtime-architecture.json",
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "shared stage keys",
+        "stage numbers",
+        "stage titles",
+        "generated card data-stage-key values",
+        "generated subcard data-substage-key values",
+        "trace-map substage keys and titles"
+      ]
+    },
+    {
+      "id": "owner_family_operator_maps",
+      "label": "Owner family and operator graph maps",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "current_source": "docs/index/templates/index.html.tpl",
+      "owner_sources": [
+        "atomics/skill/references/diagnostics/module-catalogue.json",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/diagnostics/coverage-scope.yaml",
+        "atomics/skill/references/diagnostics/module-catalogue.json",
+        "atomics/skill/references/diagnostics/**",
+        "atomics/skill/references/procedures/**",
+        "atomics/skill/references/tactics/**",
+        "atomics/skill/references/techniques/**"
+      ],
+      "parity_checked_by": "tools/check_docs_index_interactions.py",
+      "parity_scope": [
+        "operator source paths",
+        "catalogue-backed operator classes",
+        "operator family filter options",
+        "owner-family source token resolution",
+        "generated module catalogue metadata",
+        "literal module-count claim guard"
       ]
     },
     {

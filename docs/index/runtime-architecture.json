@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "status": "shared-runtime-architecture-source",
+  "ssot_note": "Shared docs/index source projection for runtime architecture renderings. Architecture cards, Architecture rows, and Theory Deep Dive notation/mapping are generated from this file by tools/build_docs_index.py. Generated docs/index.html is not the canonical owner.",
+  "runtime_owner_sources": [
+    "atomics/skill/SKILL.md",
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "docs/algebraic-notation-and-noetic-formalism.md"
+  ],
+  "rows": {
+    "runtime": [
+      {"label": "Input", "class": "v56-input", "title": "D0 / surface discourse"},
+      {"label": "Layer A / IR", "class": "v56-ir", "title": "Banner + Layer A / IR"},
+      {"label": "N + registers", "class": "v56-owner", "title": "N + runtime registers"},
+      {"label": "Gate/routing + ∇", "class": "v56-owner", "title": "Gate/routing + ∇ route-gradient"},
+      {"label": "Operation", "class": "v56-owner", "title": "Owner/TTP operation"},
+      {"label": "Land(ⁿB)+Δ", "class": "v56-land", "title": "Land(ⁿB) + ΔⁿB/Δκ"},
+      {"label": "∇·T/∇×T", "class": "v56-land", "title": "∇·T / ∇×T target-explicit diagnostics"},
+      {"label": "LoopBreak(∇×T)", "class": "v56-land", "title": "LoopBreak if ∇×T nonzero"},
+      {"label": "R(H,Δ)", "class": "v56-reread", "title": "R(H,Δ) reread"},
+      {"label": "𝒞(Ψᴺ) + Decision", "class": "v56-reread", "title": "𝒞(Ψᴺ) + STOP/HOLD/RECURSE/PARTIAL/COMPLETE"},
+      {"label": "Restorative + T_lang", "class": "v56-decision", "title": "T_lang: Ψᴺ ⇢ Ψᴵ"}
+    ],
+    "formal": [
+      {"label": "𝓝 ⊢ D₀", "class": "v56-input"},
+      {"label": "⇝ Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩ → IR(...)", "class": "v56-ir"},
+      {"label": "∇ route pressure", "class": "v56-owner"},
+      {"label": "ⁿB → {ⁿBᵢ[OPᵢ]}", "class": "v56-owner"},
+      {"label": "Land(ⁿB)", "class": "v56-land"},
+      {"label": "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ → ∇·T/∇×T → LoopBreak(∇×T)", "class": "v56-land"},
+      {"label": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)", "class": "v56-reread"},
+      {"label": "𝒞(Ψᴺ) / Decision → T_lang", "class": "v56-decision"}
+    ]
+  },
+  "stages": [
+    {
+      "number": 1,
+      "key": "input",
+      "class": "v21-s1",
+      "title": "D₀ / Surface Signal",
+      "subcards": [
+        {
+          "key": "encoded-signal",
+          "title": "Input as encoded signal",
+          "kind": "terms",
+          "terms": [
+            ["D₀", "visible surface discourse"],
+            ["source", "origin of claim / criterion / authority"],
+            ["message", "slogan, objection, proof packet, request"],
+            ["encoding", "labels, examples, school identity, proof denominators"],
+            ["noise", "deformation, equivocation, proof-method narrowing"],
+            ["♥", "register: grief, identity, performance, truth-seeking, mixed, unclear"]
+          ]
+        },
+        {
+          "key": "no-direct-rebuttal",
+          "title": "Still no direct rebuttal",
+          "kind": "warning",
+          "text": "D₀ must be decoded as a signal-state before content release. A proposition may be downstream of criterion, source-status, or ♥ register pressure."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "key": "psi",
+      "class": "v21-s2",
+      "title": "Ψᴺ / Noetic Signal-State",
+      "subcards": [
+        {
+          "key": "proper-functional-read",
+          "title": "Proper-functional read",
+          "kind": "terms",
+          "terms": [
+            ["F", "fitrah / proper-function orientation"],
+            ["E", "epistemic environment"],
+            ["R", "reason role"],
+            ["T", "testimony posture"],
+            ["Ø", "defeater / deformation status"]
+          ]
+        },
+        {
+          "key": "structural-registers",
+          "title": "Structural registers",
+          "kind": "terms",
+          "terms": [
+            ["N", "operative noetic frame"],
+            ["m", "deformation / memetic mode"],
+            ["τ", "tribunal / burden-function"],
+            ["σ", "source / semantic / authority status"],
+            ["♥", "affective-discursive register / release posture"],
+            ["ξ", "epistemic / warrant grammar"],
+            ["Ω", "ontological grammar"],
+            ["μ", "memetic carrier / stabilizer"],
+            ["κ", "collapse radius"],
+            ["H", "held set"]
+          ]
+        },
+        {
+          "key": "operational-boundary",
+          "title": "Operational boundary",
+          "kind": "note",
+          "text": "♥/ξ/Ω/μ/κ matter only when they affect IR, suppression, H, owner choice, Δκ, R, tone, burden sequencing, or release posture."
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "key": "ir",
+      "class": "v21-s3",
+      "title": "DSL / IR & Gated Governance",
+      "subcards": [
+        {
+          "key": "diagnostic-reduction-order",
+          "title": "Diagnostic reduction order",
+          "kind": "proc_flow",
+          "steps": ["D₀", "Ψᴺ", "core axes", "Phase 2", "overlays", "validated IR", "gate checks", "routing"]
+        },
+        {
+          "key": "ir-control-surface",
+          "title": "DSL / IR control surface",
+          "kind": "field_grid",
+          "intro": "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ) names register-derived control over existing IR and gate behavior where live.",
+          "fields": [
+            ["N", "runtime-selected noetic frame", "selected or held from 𝓝; governs current burden"],
+            ["m", "mode / deformation", "deformation, concealment, memetic mode, or underdetermined status"],
+            ["τ", "tribunal / burden-function", "what judges what; determines current function"],
+            ["σ", "source / semantic / authority status", "warrant, contrast, context, genealogy, or held status"],
+            ["♥", "affective-discursive register", "grief, identity, performance, truth-seeking, mixed, unclear"],
+            ["ξ", "epistemic grammar", "warrant, testimony, proper function, defeaters"],
+            ["Ω", "ontological grammar", "being, predication, modality, dependence"],
+            ["μ", "memetic vector", "carrier, compression, stabilizer, mutation"],
+            ["κ", "collapse radius", "downstream dependency set for reread"]
+          ]
+        },
+        {
+          "key": "gate-owner-layerb",
+          "title": "Gate → Precedence → Owner Select → Layer B",
+          "kind": "gate_flow",
+          "steps": [
+            ["Gate", "validated IR before dispatch"],
+            ["Precedence", "concealment; DO; deformation; reason; foreign premise; load-bearing"],
+            ["∇ route-gradient", "eligible route pressure, constrained by gate/owner catalogue"],
+            ["Owner Select", "all owner families supported; only live bounded owners activate"],
+            ["Layer B", "TTP submoves: target → operation → result."]
+          ],
+          "checks": [
+            ["IR validated", "required controls and consistency before dispatch"],
+            ["σ non-equivalence", "source-status context is not operative warrant"],
+            ["H governed", "held material remains held until released"],
+            ["♥ preserved", "register-to-release posture is not flattened"],
+            ["P7 discipline", "stop / hold / partial / recurse before release"],
+            ["Owner bounded", "activation only after gate"]
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "key": "ownerRelease",
+      "class": "v21-s4",
+      "title_html": "Owner/TTP + Δ / Field Diagnostics / <em class=\"v60-reread-label\">Reread</em>",
+      "subcards": [
+        {
+          "key": "operator-signature",
+          "title": "Operator signature",
+          "kind": "formula",
+          "formula": "ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ"
+        },
+        {
+          "key": "strict-burden-cycle",
+          "title": "Strict burden cycle",
+          "kind": "formula_terms",
+          "formula": "ⁿB → {ⁿB₁...ⁿBₖ} → Land(ⁿB) → ΔⁿB / Δκ",
+          "terms": [
+            ["♥", "register/release posture changed or held inside ΔⁿB{♥,ξ,Ω,σ,μ}"],
+            ["ξ", "epistemic grammar changed inside ΔⁿB{♥,ξ,Ω,σ,μ}"],
+            ["Ω", "ontological grammar changed inside ΔⁿB{♥,ξ,Ω,σ,μ}"],
+            ["μ", "memetic stabilizer changed inside ΔⁿB{♥,ξ,Ω,σ,μ}"],
+            ["Δκ", "dependency radius changed downstream of burden-state"]
+          ]
+        },
+        {
+          "key": "reread-gate",
+          "title": "Reread gate",
+          "kind": "reread_gate",
+          "reread_phase": true,
+          "formula": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) ⊢ STOP | HOLD | RECURSE | PARTIAL | COMPLETE",
+          "target_grammar": "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
+          "divergence_examples": ["∇·T", "∇·κ", "∇·ⁿB", "∇·ξ", "∇·Ω", "∇·♥", "∇·μ", "∇·route", "∇·H"],
+          "curl_examples": ["∇×T", "∇×κ", "∇×ⁿB", "∇×ξ", "∇×Ω", "∇×μ", "∇×route", "∇×σ"],
+          "loopbreak_witness": "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
+          "grounding_grammar": "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}"
+        },
+        {
+          "key": "decision",
+          "title": "Decision",
+          "kind": "decision",
+          "reread_phase": true,
+          "note": "Correct recurse: ⁿ⁺¹B requires a distinct live τ/ξ/Ω/σ/κ. Same-burden facets stay as ⁿBᵢ."
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "key": "collapse",
+      "class": "v21-s5",
+      "title": "Noetic Collapse / Restoration",
+      "subcards": [
+        {
+          "key": "constrained-resolution",
+          "title": "Constrained resolution",
+          "kind": "resolution",
+          "formula": "𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ",
+          "terms": [
+            ["N", "restored noetic frame / fitrah orientation"],
+            ["♥", "register honored; grief/identity/performance/truth-seeking not flattened"],
+            ["ξ", "warrant grammar repaired"],
+            ["Ω", "ontology repaired or held"],
+            ["μ", "memetic stabilizer broken or reordered"],
+            ["κ", "dependency radius resolved / held / partialed"]
+          ]
+        },
+        {
+          "key": "coupling-boundary",
+          "title": "Coupling boundary",
+          "kind": "note",
+          "text": "T_lang: Ψᴺ ⇢ Ψᴵ names post-closure language release from the agent execution field toward the diagnosed interlocutor field; this is not a claim of guaranteed uptake or access to the soul."
+        }
+      ]
+    }
+  ],
+  "theory_cards": [
+    {"id": "noetic", "symbol": "𝓝", "label": "Noetic-structure selection space", "description": "all possible live noetic structures the framework is engineered to diagnose and route", "phase_class": "phase-layer-a"},
+    {"id": "D0", "symbol": "D₀", "label": "Surface discourse", "description": "claim, slogan, doubt, proof-packet, source request", "phase_class": "phase-input"},
+    {"id": "Psi", "symbol": "Ψᴺ", "label": "Encoded noetic signal-state", "description": "N,m,τ,σ,♥,ξ,Ω,μ,κ,H reconstructed from D₀", "phase_class": "phase-layer-a"},
+    {"id": "N", "symbol": "N", "label": "Operative noetic frame", "description": "the selected frame governing this burden, not the whole structure", "phase_class": "phase-gate"},
+    {"id": "τ", "symbol": "τ", "label": "Tribunal / burden-function", "description": "what is judging what; criterion and live function", "phase_class": "phase-gate"},
+    {"id": "σ", "symbol": "σ", "label": "Source / semantic / authority status", "description": "warrant, context, contrast, genealogy, or held material", "phase_class": "phase-gate"},
+    {"id": "heart", "symbol": "♥", "label": "Affective-discursive register", "description": "grief, identity, performance, truth-seeking, mixed, unclear", "phase_class": "phase-gate"},
+    {"id": "ξ", "symbol": "ξ", "label": "Epistemic grammar", "description": "warrant, testimony, proper function, reliability, defeaters", "phase_class": "phase-gate"},
+    {"id": "Ω", "symbol": "Ω", "label": "Ontological grammar", "description": "being, predication, modality, dependence, creator/creation", "phase_class": "phase-gate"},
+    {"id": "μ", "symbol": "μ", "label": "Memetic vector", "description": "carrier, compression, stabilization, defense, mutation", "phase_class": "phase-gate"},
+    {"id": "κ", "symbol": "κ", "label": "Collapse radius", "description": "downstream dependency set changed by Land(ⁿB)", "phase_class": "phase-reread-closure"},
+    {"id": "H", "symbol": "H", "label": "Held set", "description": "live but unreleased material carried into reread", "phase_class": "phase-reread-closure"},
+    {"id": "gradient", "symbol": "∇", "label": "Route-gradient pressure", "description": "eligible route ordering by expected diagnostic reduction", "phase_class": "phase-gate", "extra_class": "route-gradient-card"},
+    {"id": "burden", "symbol": "ⁿB", "label": "Current burden", "description": "bounded live burden field selected for owner-backed release order", "phase_class": "phase-owner-delta", "extra_class": "burden-card"},
+    {"id": "submoves", "symbol": "ⁿBᵢ[OPᵢ]", "label": "Submove operation", "description": "target → operation → result under the current burden", "phase_class": "phase-owner-delta", "extra_class": "burden-card"},
+    {"id": "deltaB", "symbol": "ΔⁿB", "label": "Burden-event delta", "description": "event-local transition produced by burden/submove landing", "phase_class": "phase-owner-delta", "extra_class": "delta-card"},
+    {"id": "deltaK", "symbol": "Δκ", "label": "Closure-state delta", "description": "case-collapse / dependency-radius update after burden work", "phase_class": "phase-reread-closure", "extra_class": "delta-card"},
+    {"id": "nablaDot", "symbol": "∇·T", "label": "∇·T field diagnostic", "description": "post-Delta residual outward pressure in an explicit target field", "phase_class": "phase-owner-delta", "extra_class": "field-diagnostic-card"},
+    {"id": "nablaCross", "symbol": "∇×T", "label": "∇×T field diagnostic", "description": "post-Delta circularity / rotational dependency in an explicit target field", "phase_class": "phase-owner-delta", "extra_class": "field-diagnostic-card"},
+    {"id": "loopBreak", "symbol": "LoopBreak(∇×T)", "label": "Loop-breaking submove", "description": "owner-grounded curl resolution with target, Δ effect, and reread", "phase_class": "phase-owner-delta", "extra_class": "loopbreak-card"},
+    {"id": "R", "symbol": "R", "label": "Reread gate", "description": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) decides STOP/HOLD/PARTIAL/ⁿ⁺¹B after target-explicit ∇·/∇× field-state diagnostics", "phase_class": "phase-reread-closure"},
+    {"id": "C", "symbol": "𝒞", "label": "Constrained noetic collapse", "description": "discursive resolution of Ψᴺ under owner-backed operations and reread", "phase_class": "phase-reread-closure"},
+    {"id": "final", "symbol": "N_fiṭrī ∧ ʿaql ṣarīḥ", "label": "Restored fitrah and sound reason", "description": "terminal state after ♥/ξ/Ω/μ/κ disorder loses governance", "phase_class": "phase-reread-closure", "extra_class": "final-card"},
+    {"id": "PsiI", "symbol": "Ψᴵ", "label": "Diagnosed interlocutor field", "description": "inferred from discourse/profile/register evidence; not soul access", "phase_class": "phase-public-boundary"},
+    {"id": "coupling", "symbol": "Ψᴺ ⇢ Ψᴵ", "label": "T_lang output boundary", "description": "post-closure language release toward diagnosed Ψᴵ; not a state transition or uptake claim", "phase_class": "phase-public-boundary", "extra_class": "public-boundary-card"}
+  ],
+  "mapping_rows": [
+    ["D₀", "Surface discourse / initial signal", "diagnostic-ir.md; diagnostic-render-contract.md"],
+    ["Ψᴺ⟨N,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩", "Encoded agent/runtime signal-state and held set", "diagnostic-ir.md; recursive-state-transitions.md"],
+    ["IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)", "Compact DSL/IR control state; schema-light register bridge", "diagnostic-ir.md; algebraic-notation-and-noetic-formalism.md"],
+    ["∇", "Route-gradient pressure after gate/catalogue constraints", "recursive-state-transitions.md"],
+    ["ⁿB / ⁿBᵢ[OPᵢ]", "Current burden and owner-backed submoves", "recursive-state-transitions.md; diagnostic-render-contract.md"],
+    ["Land(ⁿB) + ΔⁿB/Δκ", "Burden landing and event-local state/dependency transition", "recursive-state-transitions.md"],
+    ["∇·T / ∇×T", "Target-explicit post-Delta field diagnostics", "recursive-state-transitions.md; diagnostic-render-contract.md"],
+    ["LoopBreak(∇×T)", "Licensed owner-grounded loop-breaking submove when curl remains nonzero", "recursive-state-transitions.md; output-release.md"],
+    ["R(H,Δ)", "Reread held material, selected/held routes, register deltas, and residual pressure", "recursive-state-transitions.md; output-release.md"],
+    ["𝒞(Ψᴺ) + Decision", "Closure-field condition with STOP/HOLD/RECURSE/PARTIAL/COMPLETE discipline", "output-release.md; diagnostic-render-contract.md"],
+    ["T_lang: Ψᴺ ⇢ Ψᴵ", "Public/restorative language boundary without guaranteed uptake", "output-release.md"]
+  ],
+  "notation_lines": [
+    [
+      {"token": "noetic", "symbol": "𝓝", "classes": "symNoetic", "label": "noetic-structure selection space", "highlight": ["noetic", "D0"]},
+      {"text": "⊢", "class": "notationArrow"},
+      {"token": "D0", "symbol": "D₀", "label": "surface discourse / initial signal", "highlight": ["D0"]},
+      {"text": "⇝", "class": "notationArrow"},
+      {"token": "Psi", "symbol": "Ψᴺ", "label": "encoded noetic signal-state", "highlight": ["noetic", "Psi", "N", "m", "tau", "sigma", "heart", "xi", "omega", "mu", "kappa", "H"]},
+      {"text": "⟨"},
+      {"token": "N", "symbol": "N∈𝓝", "label": "runtime-selected operative noetic frame from 𝓝", "highlight": ["noetic", "N"]},
+      {"text": ", m, τ, σ, "},
+      {"token": "heart", "symbol": "♥", "classes": "symHeart", "label": "affective-discursive register / release posture", "highlight": ["heart"]},
+      {"text": ", "},
+      {"token": "xi", "symbol": "ξ", "classes": "symXi", "label": "epistemic/warrant grammar", "highlight": ["xi"]},
+      {"text": ", "},
+      {"token": "omega", "symbol": "Ω", "classes": "symOmega", "label": "ontological grammar", "highlight": ["omega"]},
+      {"text": ", "},
+      {"token": "mu", "symbol": "μ", "classes": "symMu", "label": "meta-noetic memetic vector", "highlight": ["mu"]},
+      {"text": ", "},
+      {"token": "kappa", "symbol": "κ", "classes": "symKappa", "label": "collapse radius / downstream dependency set", "highlight": ["kappa"]},
+      {"text": ", "},
+      {"token": "H", "symbol": "H", "label": "held set", "highlight": ["H"]},
+      {"text": "⟩"}
+    ],
+    [
+      {"text": "⟶", "class": "notationArrow"},
+      {"token": "IR", "symbol": "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)", "label": "compact DSL/IR control state", "highlight": ["IR", "N", "m", "tau", "sigma", "heart", "xi", "omega", "mu", "kappa"]}
+    ],
+    [
+      {"text": "⟶", "class": "notationArrow"},
+      {"token": "gradient", "symbol": "∇ route-gradient", "label": "∇ route-gradient: eligible live route pressure constrained by IR/routing/catalogue gates", "highlight": ["gradient", "IR", "burden", "R"]},
+      {"text": "selects release pressure over", "class": "notationArrow"},
+      {"token": "burden", "symbol": "ⁿB", "label": "current burden n", "highlight": ["burden"]}
+    ],
+    [
+      {"text": "⟶", "class": "notationArrow"},
+      {"token": "burden", "symbol": "ⁿB", "label": "current burden n", "highlight": ["burden"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "submoves", "symbol": "{ⁿBᵢ[OPᵢ]}", "label": "owner-backed submoves under burden n", "highlight": ["submoves"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "Land", "symbol": "Land(ⁿB)", "label": "burden landing", "highlight": ["Land"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "deltaB", "symbol": "ΔⁿB", "label": "burden-event delta; transition produced by burden/submove landing", "highlight": ["deltaB", "burden", "submoves"]},
+      {"text": "/"},
+      {"token": "deltaK", "symbol": "Δκ", "label": "case-collapse / closure-state delta", "highlight": ["deltaK", "kappa"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "nablaDot", "symbol": "∇·T", "label": "∇·T: post-Delta residual outward pressure in an explicit target field", "highlight": ["nablaDot", "deltaB", "deltaK", "R"]},
+      {"text": "/"},
+      {"token": "nablaCross", "symbol": "∇×T", "label": "∇×T: post-Delta circularity or unresolved cyclic pressure in an explicit target field", "highlight": ["nablaCross", "deltaB", "deltaK", "R"]},
+      {"token": "fieldDiagnostics", "symbol": "field state", "label": "target-explicit post-Delta field diagnostics", "highlight": ["fieldDiagnostics", "nablaDot", "nablaCross", "deltaB", "deltaK"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "loopBreak", "symbol": "LoopBreak(∇×T)", "label": "LoopBreak(∇×T): owner-grounded loop-breaking submove when curl remains nonzero", "highlight": ["loopBreak", "nablaCross", "deltaB", "deltaK", "R"]},
+      {"text": "→", "class": "notationArrow"},
+      {"token": "R", "symbol": "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)", "label": "state/noetic reread", "highlight": ["R", "H", "heart", "deltaB", "deltaK", "nablaDot", "nablaCross", "fieldDiagnostics"]}
+    ],
+    [
+      {"text": "⟶", "class": "notationArrow"},
+      {"token": "C", "symbol": "𝒞(Ψᴺ)", "label": "constrained noetic collapse / discursive resolution", "highlight": ["C", "Psi"]},
+      {"text": "⟶", "class": "notationArrow"},
+      {"token": "final", "symbol": "N_fiṭrī ∧ ʿaql ṣarīḥ", "label": "restored fitrah and sound reason", "highlight": ["final", "N", "heart", "xi", "omega", "mu"]},
+      {"text": "/"},
+      {"token": "nextB", "symbol": "ⁿ⁺¹B", "label": "next burden licensed by reread", "highlight": ["nextB", "R"]}
+    ],
+    [
+      {"text": "public release boundary", "class": "notationArrow"},
+      {"token": "coupling", "symbol": "T_lang: Ψᴺ ⇢ Ψᴵ", "label": "T_lang is the post-closure language-mediated output boundary, not a burden-loop transition or uptake claim", "highlight": ["coupling", "Psi", "PsiI", "final"]}
+    ]
+  ]
+}

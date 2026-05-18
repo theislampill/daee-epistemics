@@ -109,35 +109,15 @@ OWNER_TOKEN_REQUIREMENTS: dict[str, list[str]] = {
 
 DOCS_INDEX_SOURCE_TOKENS = {
     "docs/index/sections/architecture.html": [
-        "Gate/routing + ∇ route-gradient",
-        "LoopBreak if ∇×T nonzero",
-        "∇·T / ∇×T target-explicit diagnostics",
-        "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
-        "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
-        "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
-        "𝒞(Ψᴺ)",
-        "T_lang: Ψᴺ ⇢ Ψᴵ",
+        "docs/index/runtime-architecture.json",
+        "{{ RUNTIME_ARCHITECTURE_ROWS }}",
+        "{{ RUNTIME_ARCHITECTURE_CARDS }}",
     ],
     "docs/index/sections/theory.html": [
-        "data-k=\"gradient\"",
-        "data-k=\"loopBreak\"",
-        "goConceptField('PsiI')",
-        "data-k=\"coupling\"",
-        "goConceptField('gradient')",
-        "goConceptField('loopBreak')",
-        "goConceptField('PsiI')",
-        "goConceptField('coupling')",
-        "LoopBreak(∇×T)",
-        "LoopBreak(∇×T) ⊢ target loop + G + ⁿBᵢ[OPᵢ] + Δ + R",
-        "T ∈ {κ, ⁿB, ξ, Ω, ♥, μ, H, route, register, Ψᴺ-slice}",
-        "∇ ranks eligible route pressure before release",
-        "Δ produces the changed field state",
-        "∇·T / ∇×T diagnose target-explicit post-Δ field pressure",
-        "R(H,Δ) rereads the changed field",
-        "𝒞(Ψᴺ) licenses closure as field condition",
-        "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake",
-        "𝒞(Ψᴺ)",
-        "T_lang: Ψᴺ ⇢ Ψᴵ",
+        "docs/index/runtime-architecture.json",
+        "{{ THEORY_RUNTIME_OVERVIEW }}",
+        "{{ THEORY_BRIDGE_COMPACT }}",
+        "{{ THEORY_FINAL_RUNTIME_SUMMARY }}",
     ],
     "docs/index/templates/index.html.tpl": [
         "field-operator-architecture-v19",
@@ -150,6 +130,29 @@ DOCS_INDEX_SOURCE_TOKENS = {
         "rel-curl-loopbreak",
         "rel-closure-field-condition",
         "rel-agent-interlocutor-coupling",
+    ],
+}
+
+RUNTIME_ARCHITECTURE_TOKENS = {
+    "docs/index/runtime-architecture.json": [
+        "route-gradient",
+        "LoopBreak",
+        "target-explicit diagnostics",
+        "target loop + G",
+        "necessary knowledge",
+        "definition discipline",
+        "source-status correction",
+        '"id": "gradient"',
+        '"id": "loopBreak"',
+        '"id": "PsiI"',
+        '"id": "coupling"',
+        "eligible route pressure",
+        "changed by Land",
+        "field-state diagnostics",
+        "Reread held material",
+        "Closure-field condition",
+        "without guaranteed uptake",
+        "T_lang",
     ],
 }
 
@@ -278,13 +281,20 @@ def main() -> int:
         require_tokens(root, rel, tokens, errors)
     for rel, tokens in DOCS_INDEX_SOURCE_TOKENS.items():
         require_tokens(root, rel, tokens, errors)
+    for rel, tokens in RUNTIME_ARCHITECTURE_TOKENS.items():
+        require_tokens(root, rel, tokens, errors)
     for rel, tokens in GENERATED_DOC_TOKENS.items():
         require_tokens(root, rel, tokens, errors)
     check_fixture(root, errors)
     check_ttp_inheritance(root, errors)
     check_forbidden_claims(
         root,
-        sorted(set(OWNER_TOKEN_REQUIREMENTS) | set(DOCS_INDEX_SOURCE_TOKENS) | set(GENERATED_DOC_TOKENS)),
+        sorted(
+            set(OWNER_TOKEN_REQUIREMENTS)
+            | set(DOCS_INDEX_SOURCE_TOKENS)
+            | set(RUNTIME_ARCHITECTURE_TOKENS)
+            | set(GENERATED_DOC_TOKENS)
+        ),
         errors,
     )
 

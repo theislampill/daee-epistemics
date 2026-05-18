@@ -12,6 +12,7 @@ import hashlib
 import html
 import json
 from pathlib import Path
+import re
 import sys
 from typing import Any
 
@@ -20,6 +21,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "docs" / "index"
 MANIFEST = SOURCE_ROOT / "manifest.json"
 OUTPUT = ROOT / "docs" / "index.html"
+REFERENCE_ROOT = ROOT / "atomics" / "skill" / "references"
+REFERENCE_SOURCE_PATHS = [
+    ROOT / "atomics" / "skill" / "README.md",
+    ROOT / "atomics" / "skill" / "SKILL.md",
+]
 
 BANNER = (
     "<!-- GENERATED FILE: do not edit this HTML output directly. "
@@ -232,6 +238,485 @@ def load_modules(manifest: dict[str, Any]) -> list[dict[str, str]]:
     return sorted(normalized, key=lambda item: (item["module_class"], item["id"]))
 
 
+def js_json(payload: object) -> str:
+    """Render JSON for a script tag without permitting accidental script close."""
+
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
+
+
+def reference_paths() -> list[Path]:
+    paths = [path for path in REFERENCE_SOURCE_PATHS if path.exists()]
+    paths.extend(sorted(REFERENCE_ROOT.rglob("*.md")))
+    seen: dict[Path, Path] = {}
+    for path in paths:
+        seen[path.resolve()] = path
+    return [seen[key] for key in sorted(seen, key=lambda item: rel(item))]
+
+
+def parse_frontmatter(text: str) -> dict[str, str]:
+    match = re.match(r"\A---\r?\n(.*?)\r?\n---\r?\n", text, flags=re.S)
+    if not match:
+        return {}
+    frontmatter: dict[str, str] = {}
+    for line in match.group(1).splitlines():
+        if ":" not in line or line.startswith((" ", "\t", "-")):
+            continue
+        key, value = line.split(":", 1)
+        frontmatter[key.strip()] = value.strip().strip('"').strip("'")
+    return frontmatter
+
+
+def strip_frontmatter(text: str) -> str:
+    return re.sub(r"\A---\r?\n.*?\r?\n---\r?\n", "", text, count=1, flags=re.S)
+
+
+def reference_title(path: Path, text: str, frontmatter: dict[str, str]) -> str:
+    title = frontmatter.get("title")
+    if title:
+        return title
+    body = strip_frontmatter(text)
+    for line in body.splitlines():
+        match = re.match(r"^#\s+(.+?)\s*$", line)
+        if match:
+            return match.group(1).strip()
+    return path.stem.replace("-", " ").title()
+
+
+def reference_layer(path: Path, frontmatter: dict[str, str]) -> str:
+    relative = rel(path)
+    module_class = frontmatter.get("module_class", "")
+    if "references/case-library/" in relative:
+        return "case/test"
+    if "references/rubrics/" in relative:
+        return "runtime governance"
+    if "references/procedures/" in relative or "references/tactics/" in relative or "references/techniques/" in relative:
+        return "TTP/operator"
+    if relative.endswith("/diagnostic-ir.md") or module_class == "schema":
+        return "schema"
+    if "references/diagnostics/" in relative:
+        if any(name in relative for name in ("recursive-state-transitions.md", "routing-precedence.md", "framework-pipeline.md")):
+            return "runtime governance"
+        return "diagnostic"
+    if "references/" in relative:
+        return "terminology/reference"
+    if relative.endswith(("README.md", "SKILL.md")):
+        return "generated artifact"
+    return "source document"
+
+
+def reference_governs(path: Path, text: str, frontmatter: dict[str, str]) -> str:
+    relative = rel(path)
+    hints = [
+        ("diagnostic-ir.md", "IR / dispatch gate"),
+        ("recursive-state-transitions.md", "burden cycle / R(H,Delta)"),
+        ("diagnostic-render-contract.md", "Layer A / render"),
+        ("output-release.md", "release/render governance"),
+        ("routing-precedence.md", "routing precedence"),
+        ("module-codes.md", "owner identity"),
+        ("case-state-schema.md", "case state / schema"),
+        ("reason-disambiguation.md", "xi / reason-role"),
+        ("foreign-premise-detection.md", "tribunal / criterion"),
+        ("noetic-reading-checklist.md", "noetic structure"),
+        ("modes-of-concealment.md", "concealment"),
+        ("discourse-orientation.md", "discourse orientation"),
+        ("pattern-profiling.md", "mu / pattern profile"),
+        ("P1-fitrah-restoration.md", "fitrah / restoration"),
+        ("P7-restoration-stops.md", "STOP/HOLD/RECURSE/PARTIAL"),
+    ]
+    for suffix, governs in hints:
+        if relative.endswith(suffix):
+            return governs
+    load_when = frontmatter.get("load_when")
+    if load_when:
+        return load_when
+    lowered = text.lower()
+    if "source-status" in lowered:
+        return "source-status discipline"
+    if "fitrah" in lowered or "fiṭrah" in lowered:
+        return "fitrah / proper function"
+    if "testimony" in lowered or "transmission" in lowered:
+        return "testimony / sigma / xi"
+    return "general source"
+
+
+def reference_data(modules: list[dict[str, str]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    module_id_by_source = {module["source_path"]: module["id"] for module in modules}
+    refs: list[dict[str, Any]] = []
+    docs: list[dict[str, Any]] = []
+    for index, path in enumerate(reference_paths(), start=1):
+        text = path.read_text(encoding="utf-8")
+        frontmatter = parse_frontmatter(text)
+        title = reference_title(path, text, frontmatter)
+        path_text = rel(path)
+        governs = reference_governs(path, text, frontmatter)
+        operator = module_id_by_source.get(path_text, frontmatter.get("id") or "—")
+        concepts = [governs] if governs != "general source" else ["general source"]
+        refs.append(
+            {
+                "id": index,
+                "path": path_text,
+                "title": title,
+                "role": title,
+                "layer": reference_layer(path, frontmatter),
+                "governs": governs,
+                "concepts": concepts,
+                "operators": [operator],
+                "lines": len(text.splitlines()),
+            }
+        )
+        docs.append(
+            {
+                "id": index,
+                "rel": path_text,
+                "title": title,
+                "content": text,
+                "html": f'<pre class="sourceSnapshot"><code>{esc(text)}</code></pre>',
+                "lines": len(text.splitlines()),
+                "search": f"{path_text}\n{title}\n{text}",
+            }
+        )
+    return refs, docs
+
+
+def render_reference_data(modules: list[dict[str, str]]) -> str:
+    refs, docs = reference_data(modules)
+    return "\n".join(
+        [
+            "// Generated from atomics/skill README, SKILL.md, and references/**/*.md by tools/build_docs_index.py.",
+            f"const REFS = {js_json(refs)};",
+            f"const DOCS = {js_json(docs)};",
+        ]
+    )
+
+
+def load_runtime_architecture(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Load the shared runtime architecture projection for docs/index renderings."""
+
+    source_path_text = manifest.get("derived_data", {}).get("runtime_architecture")
+    if not isinstance(source_path_text, str) or not source_path_text:
+        raise SystemExit(f"{rel(MANIFEST)}: derived_data.runtime_architecture is required")
+    source_path = ROOT / source_path_text
+    payload = read_json(source_path)
+    if payload.get("schema_version") != 1:
+        raise SystemExit(f"{rel(source_path)}: schema_version must be 1")
+    if payload.get("status") != "shared-runtime-architecture-source":
+        raise SystemExit(f"{rel(source_path)}: status must be shared-runtime-architecture-source")
+    for key in ("rows", "stages", "theory_cards", "mapping_rows", "notation_lines"):
+        if key not in payload:
+            raise SystemExit(f"{rel(source_path)}: missing required key {key!r}")
+    for owner in payload.get("runtime_owner_sources", []):
+        if isinstance(owner, str):
+            expand_declared_path(owner)
+    return payload
+
+
+def esc(value: object) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def render_runtime_row(items: list[dict[str, Any]], row_class: str, aria: str) -> str:
+    pieces: list[str] = [f'<div class="flowline {row_class}" aria-label="{esc(aria)}">']
+    for index, item in enumerate(items):
+        title = item.get("title")
+        title_attr = f' title="{esc(title)}"' if isinstance(title, str) and title else ""
+        pieces.append(f'<span class="node {esc(item.get("class", ""))}"{title_attr}>{esc(item["label"])}</span>')
+        if index < len(items) - 1:
+            pieces.append('<span class="arrow">→</span>')
+    pieces.append("</div>")
+    return "\n".join(pieces)
+
+
+def render_runtime_architecture_rows(arch: dict[str, Any]) -> str:
+    rows = arch["rows"]
+    return "\n".join(
+        [
+            '<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
+            "<strong>Shared source:</strong> Architecture cards, Architecture rows, and Theory notation are generated from "
+            '<code>docs/index/runtime-architecture.json</code>, which points back to canonical runtime owners. '
+            "Generated HTML is not the owner.",
+            "</div>",
+            '<div class="v60-pipeline-stack" aria-label="Canonical runtime spine rows">',
+            render_runtime_row(rows["runtime"], "v60-pipeline-row v60-runtime-row", "Canonical runtime spine"),
+            render_runtime_row(rows["formal"], "v56-formula-flow v60-pipeline-row v60-formal-row", "Canonical algebraic runtime spine"),
+            "</div>",
+        ]
+    )
+
+
+def render_terms(terms: list[list[str]]) -> str:
+    return "<ul>\n" + "\n".join(
+        f"<li><b>{esc(term)}</b> {esc(text)}</li>" for term, text in terms
+    ) + "\n</ul>"
+
+
+def render_proc_flow(steps: list[str]) -> str:
+    pieces: list[str] = ['<div class="v21-proc-flow target">']
+    for index, step in enumerate(steps):
+        pieces.append(f"<div>{esc(step)}</div>")
+        if index < len(steps) - 1:
+            pieces.append("<span>→</span>")
+    pieces.append("</div>")
+    return "\n".join(pieces)
+
+
+def render_field_grid(fields: list[list[str]]) -> str:
+    return '<div class="v21-field-grid">\n' + "\n".join(
+        f"<div><b>{esc(symbol)}</b><span>{esc(label)}</span><small>{esc(detail)}</small></div>"
+        for symbol, label, detail in fields
+    ) + "\n</div>"
+
+
+def render_gate_flow(card: dict[str, Any]) -> str:
+    steps = card.get("steps", [])
+    checks = card.get("checks", [])
+    step_html: list[str] = ['<div class="v54-gate-flow">']
+    for index, step in enumerate(steps):
+        title, text = step
+        step_html.append(f'<div class="v54-gate-step"><h4>{esc(title)}</h4><p>{esc(text)}</p></div>')
+        if index < len(steps) - 1:
+            step_html.append('<div class="v54-gate-arrow">→</div>')
+    step_html.append("</div>")
+    check_html = "\n".join(
+        f'<div class="v54-gate-check"><b>{esc(title)}</b><span>{esc(text)}</span></div>'
+        for title, text in checks
+    )
+    return "\n".join(step_html) + (
+        '<div class="v54-gate-check-panel"><h4>Gate checks</h4>'
+        f'<div class="v54-gate-checks">\n{check_html}\n</div></div>'
+    )
+
+
+def render_reread_gate(card: dict[str, Any]) -> str:
+    divergence = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in card["divergence_examples"])
+    curl = "".join(f'<span class="v60-field-target">{esc(item)}</span>' for item in card["curl_examples"])
+    return "\n".join(
+        [
+            f'<div class="v21-stage-formula">{esc(card["formula"])}</div>',
+            '<div class="v60-field-diagnostics" aria-label="Field diagnostics after Delta">',
+            '<div class="v60-diagnostic-card"><b>Δ lands transition</b><span>Burden/submove work changes ΔⁿB and, where dependency radius changes, Δκ.</span></div>',
+            '<div class="v60-diagnostic-card"><b>∇· / ∇× read after Δ</b><span>Target-explicit field diagnostics read the Δ-produced noetic/burden/register/route state before reread closure.</span></div>',
+            '<div class="v60-field-targets v60-field-grammar" aria-label="Target grammar for field diagnostics">',
+            '<span class="v60-field-heading">Target grammar</span>',
+            '<span class="v60-field-target">∇·T</span>',
+            '<span class="v60-field-target">∇×T</span>',
+            f'<span class="v60-field-meaning">{esc(card["target_grammar"])}</span>',
+            "</div>",
+            '<div class="v60-field-targets" aria-label="Readable divergence examples">',
+            '<span class="v60-field-heading">∇· examples</span>',
+            divergence,
+            '<span class="v60-field-meaning">residual outward pressure in an explicit target field</span>',
+            "</div>",
+            '<div class="v60-field-targets" aria-label="Readable curl examples">',
+            '<span class="v60-field-heading">∇× examples</span>',
+            curl,
+            '<span class="v60-field-meaning">circular / rotational dependency in an explicit target field</span>',
+            "</div>",
+            '<div class="v60-diagnostic-note">Examples are owner-valid only when the target is explicit and control-relevant; they are not decorative symbol variants.</div>',
+            '<div class="v60-field-targets v60-loopbreak-witness" aria-label="LoopBreak witness form">',
+            '<span class="v60-field-heading">LoopBreak witness</span>',
+            f'<span class="v60-field-target v60-loopbreak-form">{esc(card["loopbreak_witness"])}</span>',
+            f'<span class="v60-field-meaning">{esc(card["grounding_grammar"])}</span>',
+            '<span class="v60-field-meaning v60-field-wide">LoopBreak is licensed only with an explicit target loop, owner-licensed grounding source, burden/submove, Δ effect, and post-break reread.</span>',
+            "</div>",
+            '<div class="v60-diagnostic-note">R(H,Δ) rereads the whole live field. Closure is licensed only when residual ∇·/∇× pressure is cleared, integrated, discharged as derivative, held with reason, or carried into RECURSE/PARTIAL.</div>',
+            "</div>",
+        ]
+    )
+
+
+def render_decision(card: dict[str, Any]) -> str:
+    return "\n".join(
+        [
+            '<div class="v21-dec-grid">',
+            '<div class="stop">■<br/>STOP</div>',
+            '<div class="hold">–<br/>HOLD</div>',
+            '<div class="recurse">↻<br/>RECURSE</div>',
+            '<div class="partial">○<br/>PARTIAL</div>',
+            '<div class="complete">✓<br/>COMPLETE</div>',
+            "</div>",
+            f'<div class="v21-note"><b>Correct recurse:</b> {esc(card["note"])}</div>',
+        ]
+    )
+
+
+def render_architecture_subcard(card: dict[str, Any]) -> str:
+    kind = card.get("kind")
+    base_class = "v21-note" if kind == "note" else "v21-card"
+    classes = [base_class]
+    if kind == "warning":
+        classes.append("v21-warn")
+    if kind == "resolution":
+        classes.append("v21-purple")
+    if card.get("reread_phase"):
+        classes.append("v60-reread-phase")
+    classes.append("v60-selectable-subcard")
+    attrs = f'class="{" ".join(classes)}" data-substage-key="{esc(card["key"])}" role="button" tabindex="0"'
+    title = f'<h3>{esc(card["title"])}</h3>' if kind != "note" else f'<b>{esc(card["title"])}:</b> '
+    if kind in {"terms", "warning"}:
+        content = render_terms(card.get("terms", [])) if kind == "terms" else f"<p>{esc(card['text'])}</p>"
+    elif kind == "note":
+        return f'<div {attrs}>{title}{esc(card["text"])}</div>'
+    elif kind == "proc_flow":
+        content = render_proc_flow(card.get("steps", []))
+    elif kind == "field_grid":
+        intro = str(card["intro"])
+        if " names " in intro:
+            formula, rest = intro.split(" names ", 1)
+            intro_html = f"<p><code>{esc(formula)}</code> names {esc(rest)}</p>"
+        else:
+            intro_html = f"<p>{esc(intro)}</p>"
+        content = intro_html + render_field_grid(card.get("fields", []))
+    elif kind == "gate_flow":
+        content = render_gate_flow(card)
+    elif kind == "formula":
+        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>'
+    elif kind == "formula_terms":
+        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>{render_terms(card.get("terms", []))}'
+    elif kind == "reread_gate":
+        content = render_reread_gate(card)
+    elif kind == "decision":
+        content = render_decision(card)
+    elif kind == "resolution":
+        content = f'<div class="v21-stage-formula">{esc(card["formula"])}</div>{render_terms(card.get("terms", []))}'
+    else:
+        raise SystemExit(f"{rel(ROOT / 'docs/index/runtime-architecture.json')}: unknown subcard kind {kind!r}")
+    return f"<div {attrs}>{title}{content}</div>"
+
+
+def render_runtime_architecture_cards(arch: dict[str, Any]) -> str:
+    articles: list[str] = [
+        '<div class="v30-click-hint">Select a bridge stage panel below to inspect its audit trace.</div>',
+        '<div class="v21-five-col v60-architecture-rail" aria-label="Architecture runtime cards" tabindex="0">',
+    ]
+    for stage in arch["stages"]:
+        title = stage.get("title_html", esc(stage.get("title", "")))
+        articles.append(
+            f'<article class="v21-stage {esc(stage["class"])} v30-selectable-stage" '
+            f'data-pipeline="target" data-stage-key="{esc(stage["key"])}" role="button" tabindex="0">'
+            f'<h2><span>{esc(stage["number"])}</span> {title}</h2>'
+        )
+        for card in stage.get("subcards", []):
+            articles.append(render_architecture_subcard(card))
+        articles.append("</article>")
+    articles.extend(["</div>", '<div aria-live="polite" class="v30-stage-detail panel" id="targetStaticStageDetail"></div>'])
+    return "\n".join(articles)
+
+
+def js_array(values: list[str]) -> str:
+    def js_single(value: str) -> str:
+        return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+    return "[" + ",".join(js_single(str(value)) for value in values) + "]"
+
+
+def render_theory_control_overview(arch: dict[str, Any]) -> str:
+    cards: list[str] = [
+        '<div class="runtimeSourceNote theoryRuntimeSourcing" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
+        "<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the full Architecture rows.",
+        "</div>",
+        '<div class="controlOverviewGrid">',
+    ]
+    for card in arch["theory_cards"]:
+        extra = f' {esc(card.get("extra_class", ""))}' if card.get("extra_class") else ""
+        cards.append(
+            f'<button class="controlCard {esc(card["phase_class"])}{extra}" onclick="goConceptField(\'{esc(card["id"])}\')">\n'
+            f'<span class="controlSym">{esc(card["symbol"])}</span>\n'
+            f'<strong>{esc(card["label"])}</strong>\n'
+            f'<p>{esc(card["description"])}</p>\n'
+            "</button>"
+        )
+    cards.append("</div>")
+    cards.append('<div class="notationBoard" id="notationBoard">')
+    for line in arch["notation_lines"]:
+        cards.append('<div class="notationLine">')
+        for segment in line:
+            if "token" in segment:
+                classes = "ntok"
+                if segment.get("classes"):
+                    classes += f' {esc(segment["classes"])}'
+                cards.append(
+                    f'<span class="{classes}" data-k="{esc(segment["token"])}" '
+                    f'data-label="{esc(segment["label"])}" '
+                    f'onclick="highlightNotation({js_array(segment["highlight"])})">{esc(segment["symbol"])}</span>'
+                )
+            else:
+                cls = f' class="{esc(segment["class"])}"' if segment.get("class") else ""
+                cards.append(f'<span{cls}>{esc(segment["text"])}</span>')
+        cards.append("</div>")
+    cards.extend(
+        [
+            '<div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>',
+            '<div class="notationLegend">',
+            '<div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>',
+            '<div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>',
+            '<div class="miniCard"><strong>Route-gradient:</strong> ∇ orders eligible route pressure after IR/routing/catalogue gates; it never replaces those gates or Δ.</div>',
+            '<div class="miniCard"><strong>Phase discipline:</strong> ∇ ranks eligible route pressure before release. Δ produces the changed field state. ∇·T / ∇×T diagnose target-explicit post-Δ field pressure. R(H,Δ) rereads the changed field. 𝒞(Ψᴺ) licenses closure as field condition. T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake.</div>',
+            '<div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>',
+            '<div class="miniCard"><strong>Loop-breaking:</strong> LoopBreak(∇×T) is licensed only when nonzero curl has an owner-grounded target and Δ effect.</div>',
+            '<div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is a positive closure-field condition, not checklist exhaustion.</div>',
+            '<div class="miniCard"><strong>Output boundary:</strong> T_lang: Ψᴺ ⇢ Ψᴵ names the public release relation after closure/hold/partial; it is not part of the burden loop and does not claim guaranteed uptake.</div>',
+            "</div>",
+            "</div>",
+            render_theory_mapping_table(arch),
+        ]
+    )
+    return "\n".join(cards)
+
+
+def render_theory_mapping_table(arch: dict[str, Any]) -> str:
+    rows = "\n".join(
+        f"<tr><td><code>{esc(notation)}</code></td><td>{esc(role)}</td><td><code>{esc(owner)}</code></td></tr>"
+        for notation, role, owner in arch["mapping_rows"]
+    )
+    return (
+        '<div class="theoryNotationMap" data-runtime-architecture-source="docs/index/runtime-architecture.json">'
+        "<h3>Notation → runtime role → source owner</h3>"
+        "<p class=\"subtle\">Generated from the shared runtime architecture source; it compactly maps the same sequence rather than repeating the Architecture tab rows.</p>"
+        f"<table><thead><tr><th>Notation</th><th>Runtime role</th><th>Source owner</th></tr></thead><tbody>{rows}</tbody></table>"
+        "</div>"
+    )
+
+
+def render_theory_bridge_compact(arch: dict[str, Any]) -> str:
+    chips = "".join(
+        f'<span class="notationChip"><span class="nsym">{esc(row[0])}</span><span class="nlabel">{esc(row[1])}</span></span>'
+        for row in arch["mapping_rows"]
+    )
+    return (
+        '<div class="bridgeFlow compactBridgeFlow" aria-label="Shared runtime architecture notation chips">'
+        f"{chips}"
+        "</div>"
+        '<p class="subtle">Generated from <code>docs/index/runtime-architecture.json</code>. This compact chip rail names the same sequence; the Architecture tab owns the expanded visual cards and rows.</p>'
+    )
+
+
+def render_theory_final_runtime_summary(arch: dict[str, Any]) -> str:
+    return (
+        '<section id="pv-final">'
+        "<h2>20. Final runtime notation</h2>"
+        "<p>The final notation summary is generated as compact mapping rows from the shared runtime architecture source, not as a second copy of the Architecture-tab row block.</p>"
+        f"{render_theory_mapping_table(arch)}"
+        "<p>Every symbol listed here either affects diagnosis, routing, owner execution, state landing, dependency reread, auditability, or the framework graphic. Nothing is merely decorative.</p>"
+        "</section>"
+    )
+
+
+def replace_section_tokens(body: str, arch: dict[str, Any]) -> str:
+    replacements = {
+        "{{ RUNTIME_ARCHITECTURE_ROWS }}": render_runtime_architecture_rows(arch),
+        "{{ RUNTIME_ARCHITECTURE_CARDS }}": render_runtime_architecture_cards(arch),
+        "{{ THEORY_RUNTIME_OVERVIEW }}": render_theory_control_overview(arch),
+        "{{ THEORY_BRIDGE_COMPACT }}": render_theory_bridge_compact(arch),
+        "{{ THEORY_FINAL_RUNTIME_SUMMARY }}": render_theory_final_runtime_summary(arch),
+    }
+    for token, value in replacements.items():
+        body = body.replace(token, value)
+    unresolved = [token for token in replacements if token in body]
+    if unresolved:
+        raise SystemExit(f"{rel(MANIFEST)}: unresolved section tokens: {unresolved}")
+    return body
+
+
 def render_tabs(tabs: list[dict[str, Any]]) -> str:
     lines = ['<div class="topbar">', '<div class="tabs" role="tablist" aria-label="DAEE wiki sections">']
     for index, tab in enumerate(tabs):
@@ -248,14 +733,14 @@ def render_tabs(tabs: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def render_sections(tabs: list[dict[str, Any]]) -> str:
+def render_sections(tabs: list[dict[str, Any]], arch: dict[str, Any]) -> str:
     rendered: list[str] = []
     for index, tab in enumerate(tabs):
         tab_id = tab["id"]
         source = ROOT / section_source(tab)
         classes = "tabsec active" if index == 0 else "tabsec"
         hidden = "" if index == 0 else " hidden"
-        body = source.read_text(encoding="utf-8").strip()
+        body = replace_section_tokens(source.read_text(encoding="utf-8").strip(), arch)
         rendered.append(
             f'<section class="{classes}" id="{html.escape(tab_id)}" role="tabpanel" '
             f'aria-labelledby="tab-{html.escape(tab_id)}"{hidden}>\n{body}\n</section>'
@@ -275,8 +760,8 @@ def render_generated_data(manifest: dict[str, Any], modules: list[dict[str, str]
     }
     return (
         '<script id="docs-index-generated-data">\n'
-        f"window.DOCS_INDEX_PROVENANCE = {json.dumps(provenance, ensure_ascii=False, sort_keys=True)};\n"
-        f"window.DOCS_INDEX_MODULE_CATALOGUE = {json.dumps(modules, ensure_ascii=False, sort_keys=True)};\n"
+        f"window.DOCS_INDEX_PROVENANCE = {js_json(provenance)};\n"
+        f"window.DOCS_INDEX_MODULE_CATALOGUE = {js_json(modules)};\n"
         "</script>"
     )
 
@@ -296,19 +781,32 @@ def build_index(manifest: dict[str, Any]) -> str:
     if not template_path.exists():
         raise SystemExit(f"{rel(template_path)}: missing template")
     modules = load_modules(manifest)
+    arch = load_runtime_architecture(manifest)
     output = template_path.read_text(encoding="utf-8")
     replacements = {
         "{{ GENERATED_BANNER }}": BANNER,
         "{{ TOPBAR }}": render_tabs(manifest["tabs"]),
-        "{{ SECTIONS }}": render_sections(manifest["tabs"]),
+        "{{ SECTIONS }}": render_sections(manifest["tabs"], arch),
         "{{ GENERATED_DATA }}": render_generated_data(manifest, modules),
         "{{ OWNER_SOURCE_RENDERER }}": render_owner_source_renderer(),
+        "{{ REFERENCE_DATA }}": render_reference_data(modules),
     }
     for token, value in replacements.items():
         if token not in output:
             raise SystemExit(f"{rel(template_path)}: missing template token {token}")
         output = output.replace(token, value)
-    unresolved = [token for token in ("{{ GENERATED_BANNER }}", "{{ TOPBAR }}", "{{ SECTIONS }}", "{{ GENERATED_DATA }}", "{{ OWNER_SOURCE_RENDERER }}") if token in output]
+    unresolved = [
+        token
+        for token in (
+            "{{ GENERATED_BANNER }}",
+            "{{ TOPBAR }}",
+            "{{ SECTIONS }}",
+            "{{ GENERATED_DATA }}",
+            "{{ OWNER_SOURCE_RENDERER }}",
+            "{{ REFERENCE_DATA }}",
+        )
+        if token in output
+    ]
     if unresolved:
         raise SystemExit(f"{rel(template_path)}: unresolved template tokens: {unresolved}")
     return output
@@ -331,7 +829,7 @@ def standalone_page_provenance(manifest: dict[str, Any], page: dict[str, Any]) -
     }
     return (
         '<script id="docs-pipeline-generated-provenance">\n'
-        f"window.DOCS_PIPELINE_PROVENANCE = {json.dumps(provenance, ensure_ascii=False, sort_keys=True)};\n"
+        f"window.DOCS_PIPELINE_PROVENANCE = {js_json(provenance)};\n"
         "</script>"
     )
 
