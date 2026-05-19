@@ -863,7 +863,7 @@ Downstream content must remain held while any of the following are active:
 **Pass:**
 - Downstream material may be named as downstream but not fully released before its governing conditions are met.
 - Holding is pass-scoped and traversal-scoped, not permanent suppression.
-- `H(n+1) = (Hn âˆª InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
+- `H(n+1) = (Hn ∪ InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
 - After the current `B` lands, `R` reassesses held material.
 - If held material remains live and now governs, it becomes the next bounded pass; if not, it is dropped, compressed, or resolved.
 
@@ -1133,6 +1133,6 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 | `references/diagnostics/routing-precedence.md` | ?VII distinguishes routing precedence from output-release and render |
 | `references/procedures/P7-restoration-stops.md` | P7 stops govern current-pass deployment; this rubric governs release discipline |
 | `references/diagnostics/diagnostic-ir.md` | IR fields `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `continuation_eligibility`, and `post_render_gate` carry the release state |
-| `references/diagnostics/case-state-schema.md` | Concealment Ã— orientation matrix governs register-hold discipline |
+| `references/diagnostics/case-state-schema.md` | Concealment × orientation matrix governs register-hold discipline |
 | `references/diagnostics/anti-patterns.md` | Anti-patterns for failure modes this rubric prevents |
 | `skill/SKILL.md ?V.A` | Control-plane pointer to the owner files; this file owns release amount and held/released discipline |

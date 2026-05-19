@@ -1220,7 +1220,7 @@ This is the canonical State Carry Table for the abstract refresh operation.
 must be derivable from:
 
 ```text
-Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) âˆ’ (items released by Burden N-1)
+Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) − (items released by Burden N-1)
 ```
 
 New material introduced in Burden N's `Held routes` must be anchored in the original
@@ -1277,7 +1277,7 @@ Failure conditions:
   read without state re-read between passes, without enumerating remaining input-anchored live
   burdens after each pass, and without routing one bounded live burden per burden-cycle. Covering all
   topics is not recursion. A response that covers all topics in one essay still fails recursion.
-  input-anchored eligibility after refresh â‰  topic presence in the prompt.
+  input-anchored eligibility after refresh ≠ topic presence in the prompt.
 
 Minimal pair: a governed same-response recursion follows a landed move plus refresh plus renewed
 permission; an argument dump accumulates downstream content without refreshed governance.

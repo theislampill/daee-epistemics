@@ -18,11 +18,11 @@ BURDEN_ID_RE = re.compile(r"\bB\d+\b")
 HEADING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
 NEXT_HEADING_RE = re.compile(r"(?m)^\s*(?:#{2,5}\s+\S|Restorative Response\b|Closing Formulation\b)")
 KNOWN_FIELD_RE = re.compile(
-    r"(?i)^\s*(?:[-*]\s*)?(?:"
-    r"N frames|Registers|Burden dependency graph|[∇\u2207]·B|âˆ‡Â·B|"
-    r"[∇\u2207]·T|[∇\u2207]×κ|[∇\u2207]×T|âˆ‡Ã—Îº|del[- ]dot\s*B|del[- ]dot\s*T|del[- ]cross\s*kappa|del[- ]cross\s*T|"
-    r"𝒞\(Ψᴺ\)|ð’ž\(Î¨á´º\)|C\(PsiN\)|T_lang"
-    r")\s*:"
+    "(?i)^\s*(?:[-*]\s*)?(?:"
+    "N frames|Registers|Burden dependency graph|\u2207\u00b7B|\u2207\u00b7T|\u2207\u00d7\u03ba|\u2207\u00d7T|"
+    "del[- ]dot\s*B|del[- ]dot\s*T|del[- ]cross\s*kappa|del[- ]cross\s*T|"
+    "\U0001d49e\(\u03a8\u1d3a\)|C\(PsiN\)|T_lang"
+    ")\s*:"
 )
 REGISTERS_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Registers\s*:\s*(?P<body>\S.*)$")
 INITIAL_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[(?P<body>[^\]]*)\]")
@@ -33,16 +33,16 @@ TERMINAL_LINE_RE = re.compile(
     r"(?P<state>[A-Za-z-]+)\b(?:\s*/\s*(?P<detail>.*))?$"
 )
 GRAPH_HEADER_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Burden dependency graph\s*:\s*(?P<body>.*)$")
-DIVERGENCE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:∇·B|∇·T|âˆ‡Â·B|del[- ]dot\s*B|del[- ]dot\s*T)\s*:\s*(?P<body>\S.*)$")
-CURL_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:∇×κ|∇×T|âˆ‡Ã—Îº|del[- ]cross\s*kappa|del[- ]cross\s*T)\s*:\s*(?P<body>\S.*)$")
-CLOSURE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?`?(?:𝒞\(Ψᴺ\)|ð’ž\(Î¨á´º\)|C\(PsiN\))`?\s*:\s*(?P<body>\S.*)$")
+DIVERGENCE_RE = re.compile("(?im)^\s*(?:[-*]\s*)?(?:\u2207\u00b7B|\u2207\u00b7T|del[- ]dot\s*B|del[- ]dot\s*T)\s*:\s*(?P<body>\S.*)$")
+CURL_RE = re.compile("(?im)^\s*(?:[-*]\s*)?(?:\u2207\u00d7\u03ba|\u2207\u00d7T|del[- ]cross\s*kappa|del[- ]cross\s*T)\s*:\s*(?P<body>\S.*)$")
+CLOSURE_RE = re.compile("(?im)^\s*(?:[-*]\s*)?`?(?:\U0001d49e\(\u03a8\u1d3a\)|C\(PsiN\))`?\s*:\s*(?P<body>\S.*)$")
 TRANSFER_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?`?T_lang\s*:\s*(?:Ψᴺ|Î¨á´º)\s*(?:⇢|â‡¢)\s*"
-    r"(?:Ψᴵ|Î¨á´µ)`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
+    "(?im)^\s*(?:[-*]\s*)?`?T_lang\s*:\s*(?:\u03a8\u1d3a|PsiN)\s*(?:\u21e2|->)\s*"
+    "(?:\u03a8\u1d35|PsiI)`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
 )
 
-ARROW_RE = re.compile(r"\s*(?:→|â†’|->)\s*")
-PARALLEL_RE = re.compile(r"\s*(?:∥|âˆ¥|\|\|)\s*")
+ARROW_RE = re.compile("\s*(?:\u2192|->)\s*")
+PARALLEL_RE = re.compile("\s*(?:\u2225|\|\|)\s*")
 ROOT_RE = re.compile(r"\b(?P<node>B\d+)\b\s*\(root\)")
 
 
