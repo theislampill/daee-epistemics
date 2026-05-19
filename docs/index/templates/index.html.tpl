@@ -9,7 +9,7 @@
 <style>
 {{ DESIGN_TOKENS_CSS }}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
-button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
+button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} p code,.small code,.subtle code{white-space:normal;overflow-wrap:anywhere} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
 .siteHero{border-bottom:1px solid rgba(38,48,68,.72);background:linear-gradient(180deg,rgba(8,10,16,.96),rgba(8,10,16,.72));text-align:center}.siteHeroInner{max-width:1880px;margin:0 auto;padding:34px 22px 22px}.siteHero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px}.siteHero p{color:var(--muted);max-width:1000px;margin:0 auto}.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .topbarInner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1880px;margin:0 auto;padding:8px 12px}.tabs{display:flex;gap:4px;min-width:0;overflow:auto}.tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}.downloadNavAction{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid rgba(34,197,94,.42);background:linear-gradient(180deg,rgba(34,197,94,.16),rgba(34,197,94,.08));color:#dcfce7;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.14)}.downloadNavAction:hover{border-color:rgba(34,197,94,.75);background:rgba(34,197,94,.18);color:#fff}.downloadNavAction:focus-visible{outline:3px solid var(--ds-color-focus);outline-offset:3px}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
@@ -31,7 +31,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .docviewer{display:grid;grid-template-columns:360px 1fr;gap:14px} .doclist{max-height:660px;overflow:auto;display:grid;gap:6px} .docitem{border:1px solid var(--line);background:#0c1220;border-radius:12px;padding:9px;cursor:pointer} .docitem:hover{border-color:var(--cyan)} .docbody{max-height:780px;overflow:auto}
 .callout{border-left:4px solid var(--green);background:rgba(34,197,94,.07);border-radius:12px;padding:14px 16px;margin:14px 0} .warn{border-left-color:var(--orange);background:rgba(251,146,60,.08)} .danger{border-left-color:var(--red);background:rgba(248,113,113,.08)}
 .procGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px} .procStep{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:14px} .procStep h3{margin-top:0;color:#dbeafe} .command-block{background:#050914;border:1px solid #243047;border-radius:14px;padding:12px;overflow:auto;font-size:12px}
-.auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
+.auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} details.panel>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none} details.panel>summary::-webkit-details-marker{display:none} details.panel>summary::after{content:"+";border:1px solid var(--line);border-radius:999px;width:26px;height:26px;display:grid;place-items:center;color:var(--cyan);flex:0 0 auto} details.panel[open]>summary::after{content:"-"} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
+.surfaceRoleKicker{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900;margin-bottom:6px}.surfaceSummaryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}.surfaceStat{border:1px solid #263044;background:#080d19;border-radius:14px;padding:11px;min-width:0}.surfaceStat strong{display:block;color:#f8fafc;font-size:20px;line-height:1}.surfaceStat span{display:block;color:#93a4bb;font-size:12px;margin-top:4px}.surfaceStat code{white-space:normal;overflow-wrap:anywhere}.sourceBrowser{display:grid;grid-template-columns:360px minmax(0,1fr);gap:14px;align-items:start}.sourceBrowser .doclist{max-height:640px}.docitem{width:100%;text-align:left;color:#e8edf7}.docitem.active,.docitem[aria-selected="true"]{border-color:var(--green);background:rgba(34,197,94,.09)}.docbodyEmpty{border:1px dashed #334155;border-radius:14px;padding:18px;color:var(--muted)}[data-surface-role="focal"]{box-shadow:0 16px 42px rgba(0,0,0,.25)}[data-surface-role="support"],[data-surface-role="provenance"],[data-surface-role="raw-source"]{background:rgba(10,15,29,.82)}[data-surface-role="raw-source"] table,[data-surface-role="provenance"] table{font-size:12px}.ownerWorkspaceIntro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px;margin:10px 0}.ownerSummaryNote{border:1px solid #263044;background:#080d19;border-radius:14px;padding:12px}.theoryFocalGrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px;align-items:start}.theoryNotationContext{position:sticky;top:86px;max-height:calc(100vh - 120px);overflow:auto}.theoryCardGroups{display:grid;gap:12px;margin-top:14px}.theoryCardGroup{border:1px solid #263044;background:#080d19;border-radius:16px;padding:12px}.theoryCardGroup h3{margin-top:0}.theoryCardGroup .controlOverviewGrid{margin-top:8px}.architectureSupportDisclosure .callout{margin-top:12px}@media(max-width:1100px){.sourceBrowser,.ownerWorkspaceIntro,.theoryFocalGrid{grid-template-columns:1fr}.theoryNotationContext{position:static;max-height:none}.surfaceSummaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.surfaceSummaryGrid{grid-template-columns:1fr}}
 .bridgeSemantics{border:1px solid var(--line);background:rgba(12,18,32,.92);border-radius:20px;padding:16px;margin:12px 0}.bridgeIntro{max-width:1180px}.bridgeKicker{margin:0 0 4px;color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.bridgeIntro h2{margin:0 0 8px;font-size:clamp(24px,2vw,34px);letter-spacing:-.04em}.bridgeIntro p{margin:0;color:#cbd5e1}.bridgeFlow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed #334155;background:#080d19;border-radius:16px;padding:10px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}.bridgeFlow span{border:1px solid #334155;background:#0c1220;border-radius:10px;padding:6px 8px;color:#e8edf7}.bridgeFlow b{color:#64748b}.bridgeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bridgeCard{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:12px;min-width:0}.bridgeCard h3{font-size:15px;margin:0 0 8px;color:#dbeafe;letter-spacing:-.02em}.bridgeCard p{margin:7px 0;font-size:13px;line-height:1.48}.bridgeCard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0}.bridgeCard dt{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bbf7d0;font-weight:950}.bridgeCard dd{margin:0;color:#cbd5e1;font-size:13px;line-height:1.42}.bridgeNonClaims{border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.055)}.bridgeNonClaims h3{color:#fecaca}.bridgeNonClaims ul{margin:0;padding-left:18px}.bridgeNonClaims li{font-size:13px;line-height:1.45;margin:4px 0}.bridgeExamples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bridgeExamples>div{border:1px solid #334155;background:#080d19;border-radius:14px;padding:10px}.bridgeExamples strong{display:block;color:#bbf7d0;margin-bottom:6px}.bridgeExamples code{display:block;white-space:normal;line-height:1.45}@media(max-width:1100px){.bridgeGrid{grid-template-columns:1fr 1fr}.bridgeExamples{grid-template-columns:1fr}}@media(max-width:760px){.bridgeGrid{grid-template-columns:1fr}.bridgeFlow{display:grid;grid-template-columns:1fr}.bridgeFlow b{display:none}}
 @media(max-width:1250px){.pipelineGrid{grid-template-columns:repeat(3,1fr)}.detailGrid{grid-template-columns:1fr 1fr}.compareGrid,.ownerFamilies,.entityLayout,.docviewer{grid-template-columns:1fr}.ownerCircuit{grid-template-columns:1fr 1fr}.regGrid{grid-template-columns:1fr 1fr}.procGrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.col3,.col4,.col6,.col8,.full{grid-column:1/-1}}
 @media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.siteHeroInner{padding:26px 12px 18px}.topbarInner{align-items:stretch;flex-wrap:wrap}.tabs{flex:1 1 100%;order:1}.downloadNavAction{order:2;margin-left:auto;padding:8px 12px}.tab{padding:10px 12px}}
@@ -2717,6 +2718,16 @@ function selectStage(gridId,detailId,id,el){document.querySelectorAll(`#${gridId
 function renderOwnerFamilies(){const list=document.getElementById('ownerFamilyList');list.innerHTML=OWNER_FAMILIES.map((f,i)=>`<button class="ownerBtn ${i===0?'active':''}" onclick="selectOwnerFamily('${f.id}',this)"><span class="entityType">${esc(f.title)}</span><br><span class="small">${esc(f.purpose).slice(0,120)}...</span></button>`).join('');selectOwnerFamily(OWNER_FAMILIES[0].id,list.querySelector('.ownerBtn'));}
 function chips(arr){return `<div class="relchips">${(arr||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`}
 function selectOwnerFamily(id,el){document.querySelectorAll('.ownerBtn').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');const f=OWNER_FAMILIES.find(x=>x.id===id);document.getElementById('ownerFamilyDetail').innerHTML=`<h2>${esc(f.title)}</h2><p>${esc(f.purpose)}</p><h3>Owners / surfaces</h3>${chips(f.owners)}<h3>What it explains</h3><ul>${f.explains.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h3>Audit question</h3><p>${esc(f.audit)}</p>`;}
+function countBy(items,key){return (items||[]).reduce((acc,item)=>{const value=String(item?.[key]||'uncategorized');acc[value]=(acc[value]||0)+1;return acc;},{});}
+function statCards(items){return Object.entries(items).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([label,count])=>`<div class="surfaceStat"><strong>${esc(count)}</strong><span>${esc(label)}</span></div>`).join('');}
+function renderOwnerSummary(){
+  const el=document.getElementById('ownerSummary');
+  if(!el) return;
+  const modules=window.DOCS_INDEX_MODULE_CATALOGUE||[];
+  const operatorFamilies=countBy(OPERATORS,'family');
+  const moduleClasses=countBy(modules,'module_class');
+  el.innerHTML=`<div class="surfaceRoleKicker">Source-derived summary</div><h2>Owner/TTP map at a glance</h2><p class="subtle">Counts are computed from the generated operator map and <code>atomics/skill/references/diagnostics/module-catalogue.json</code>. Operator graph entries are curated controls; catalogue modules include case-library and noetic-profile material as well as operators.</p><div class="ownerWorkspaceIntro"><div class="ownerSummaryNote"><h3>Operator families</h3><div class="surfaceSummaryGrid">${statCards(operatorFamilies)}</div></div><div class="ownerSummaryNote"><h3>Catalogue module classes</h3><div class="surfaceSummaryGrid">${statCards(moduleClasses)}</div></div></div>`;
+}
 function renderOperatorMatrix(){
   const target=document.getElementById('operatorMatrix');
   if(!target) return;
@@ -2823,6 +2834,81 @@ function renderRefs(){const q=(document.getElementById('refSearch')?.value||'').
 function renderDocList(q=''){const arr=DOCS.filter(d=>!q||JSON.stringify(d).toLowerCase().includes(q));document.getElementById('docList').innerHTML=arr.map(d=>`<div class="docitem" onclick="showDoc(${d.id})"><strong>${esc(d.title)}</strong><br><span class="small">${esc(d.rel)} · ${esc(d.lines)} lines</span></div>`).join('');}
 function showDoc(id){const d=DOCS.find(x=>x.id==id);if(!d)return;document.getElementById('docBody').innerHTML=`<h2>${esc(d.title)}</h2><p class="small"><code>${esc(d.rel)}</code> · ${esc(d.lines)} lines</p><div>${d.html||'<pre>'+esc(d.content||'')+'</pre>'}</div>`;}
 
+let REFERENCE_SELECTED_ID = null;
+function referenceMetaForDoc(doc){
+  return REFS.find(r=>r.path===doc.rel) || {};
+}
+function filteredReferenceRows(q,layer){
+  const needle=String(q||'').toLowerCase();
+  return REFS.filter(r=>(!layer||r.layer===layer)&&(!needle||JSON.stringify(r).toLowerCase().includes(needle)));
+}
+function filteredReferenceDocs(q,layer){
+  const needle=String(q||'').toLowerCase();
+  return DOCS.filter(d=>{
+    const ref=referenceMetaForDoc(d);
+    if(layer && ref.layer!==layer) return false;
+    return !needle || JSON.stringify({...d,ref}).toLowerCase().includes(needle);
+  });
+}
+function renderReferenceSummary(q,layer,refsShown,docsShown){
+  const el=document.getElementById('refSummary');
+  if(!el) return;
+  const summary=(typeof REF_SUMMARY!=='undefined') ? REF_SUMMARY : {};
+  const layerStats=statCards(summary.by_layer||{});
+  const roleStats=statCards(summary.by_role||{});
+  const activeFilter=q||layer ? `<p class="small"><strong>Filtered:</strong> ${esc(refsShown)} source rows and ${esc(docsShown)} document snapshots match the active controls.</p>` : '';
+  el.innerHTML=`<div class="surfaceRoleKicker">Source-derived summary</div><h2>Reference library at a glance</h2><p class="subtle">Generated from tracked atomics README/SKILL/reference Markdown. The selected document preview is the human path; the full source map remains available below for audit work.</p><div class="surfaceSummaryGrid"><div class="surfaceStat"><strong>${esc(summary.total_references||REFS.length)}</strong><span>source rows</span></div><div class="surfaceStat"><strong>${esc(summary.total_snapshots||DOCS.length)}</strong><span>document snapshots</span></div><div class="surfaceStat"><strong>${esc(summary.total_lines||REFS.reduce((n,r)=>n+(Number(r.lines)||0),0))}</strong><span>source lines</span></div><div class="surfaceStat"><strong>${esc(Object.keys(summary.by_layer||{}).length)}</strong><span>layers</span></div></div><div class="ownerWorkspaceIntro"><div class="ownerSummaryNote"><h3>Layers</h3><div class="surfaceSummaryGrid">${layerStats}</div></div><div class="ownerSummaryNote"><h3>Roles</h3><div class="surfaceSummaryGrid">${roleStats}</div></div></div>${activeFilter}`;
+}
+function renderRefs(){
+  const q=(document.getElementById('refSearch')?.value||'').trim();
+  const layer=document.getElementById('refLayer')?.value||'';
+  const refs=filteredReferenceRows(q,layer);
+  const docs=filteredReferenceDocs(q,layer);
+  const refTable=document.getElementById('refTable');
+  if(refTable){
+    refTable.innerHTML=`<table><thead><tr><th>Path</th><th>Role</th><th>Layer</th><th>Governs</th><th>Operators</th></tr></thead><tbody>${refs.map(r=>`<tr><td><code>${esc(r.path)}</code><br><span class="small">${esc(r.lines)} lines</span></td><td>${esc(r.role)}</td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table><p class="small">${refs.length} references shown.</p>`;
+  }
+  renderReferenceSummary(q,layer,refs.length,docs.length);
+  if(docs.length && !docs.some(d=>String(d.id)===String(REFERENCE_SELECTED_ID))) REFERENCE_SELECTED_ID=docs[0].id;
+  renderDocList(q,layer);
+  if(docs.length) showDoc(REFERENCE_SELECTED_ID||docs[0].id);
+  if(!docs.length){
+    REFERENCE_SELECTED_ID=null;
+    const body=document.getElementById('docBody');
+    if(body) body.innerHTML='<div class="docbodyEmpty">No generated source snapshot matches the current filter.</div>';
+  }
+}
+function renderDocList(q='',layer=''){
+  const docs=filteredReferenceDocs(q,layer);
+  const list=document.getElementById('docList');
+  if(!list) return;
+  list.setAttribute('role','listbox');
+  if(!docs.length){
+    list.innerHTML='<div class="docbodyEmpty">No documents match.</div>';
+    return;
+  }
+  if(!docs.some(d=>String(d.id)===String(REFERENCE_SELECTED_ID))) REFERENCE_SELECTED_ID=docs[0].id;
+  list.innerHTML=docs.map(d=>{
+    const ref=referenceMetaForDoc(d);
+    const active=String(d.id)===String(REFERENCE_SELECTED_ID);
+    return `<button type="button" class="docitem ${active?'active':''}" role="option" aria-selected="${active?'true':'false'}" data-doc-id="${esc(d.id)}" onclick="showDoc(${Number(d.id)})"><strong>${esc(d.title)}</strong><br><span class="small"><code>${esc(d.rel)}</code></span><br><span class="small">${esc(ref.layer||'reference')} · ${esc(ref.role||'snapshot')} · ${esc(d.lines)} lines</span></button>`;
+  }).join('');
+}
+function showDoc(id){
+  const d=DOCS.find(x=>String(x.id)===String(id));
+  if(!d) return;
+  REFERENCE_SELECTED_ID=d.id;
+  document.querySelectorAll('#docList .docitem').forEach(item=>{
+    const active=String(item.getAttribute('data-doc-id'))===String(d.id);
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-selected',active?'true':'false');
+  });
+  const ref=referenceMetaForDoc(d);
+  const body=document.getElementById('docBody');
+  if(!body) return;
+  body.innerHTML=`<div class="surfaceRoleKicker">Selected generated snapshot</div><h2>${esc(d.title)}</h2><p class="small"><code>${esc(d.rel)}</code> · ${esc(d.lines)} lines</p><div class="relchips"><span>${esc(ref.layer||'reference')}</span><span>${esc(ref.role||'snapshot')}</span><span>${esc(ref.governs||'source')}</span></div><div class="callout"><strong>Source ownership:</strong> this preview is generated from the tracked Markdown source. The raw source-map table is collapsed below for audit parity.</div><div>${d.html||'<pre>'+esc(d.content||'')+'</pre>'}</div>`;
+}
+
 function notationMetaFor(key){
   if(!key) return null;
   const el=document.querySelector(`.ntok[data-k="${CSS.escape(key)}"]`);
@@ -2919,13 +3005,14 @@ function init(){
   if(document.getElementById('targetPipeline')) safe('target pipeline',()=>renderPipeline(TARGET_STAGES,'targetPipeline','targetDetail'));
 
   safe('owner families',()=>renderOwnerFamilies());
+  if(document.getElementById('ownerSummary')) safe('owner summary',()=>renderOwnerSummary());
   if(document.getElementById('operatorGraphList')) safe('operator graph',()=>renderOperatorGraph());
   if(document.getElementById('operatorMatrix')) safe('operator matrix',()=>renderOperatorMatrix());
   if(document.getElementById('ownerSourceTable')) safe('owner source table',()=>renderOwnerSourceTable());
   if(document.getElementById('conceptList')) safe('concepts',()=>renderConcepts());
   if(document.getElementById('relationPanel')) safe('relations',()=>renderRelations());
   if(document.getElementById('refTable')) safe('refs',()=>renderRefs());
-  if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
+  else if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
   const defaultTheoryCard=document.querySelector('.controlCard[data-theory-card][aria-pressed="true"]') || document.querySelector('.controlCard[data-theory-card]');
   if(defaultTheoryCard) safe('theory card default notation',()=>selectTheoryCard(defaultTheoryCard));
 

@@ -13,6 +13,42 @@
     "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
     "audit_index": "docs/audits/INDEX.md"
   },
+  "surface_roles": {
+    "taxonomy_source": "docs/index/DESIGN.md",
+    "roles": [
+      "focal",
+      "support",
+      "control",
+      "provenance",
+      "raw-source",
+      "disclosure",
+      "generated-snapshot"
+    ],
+    "tabs": {
+      "architecture": {
+        "primary_focal": "runtime map, selected-primary carousel, and paired pipeline readings",
+        "support": "compact how-to-read and source-boundary disclosures",
+        "provenance": "runtime architecture source notes"
+      },
+      "owners": {
+        "primary_focal": "selected operator/family workspace",
+        "control": "operator/family selectors",
+        "support": "source-derived summaries and family descriptions",
+        "provenance": "collapsed owner/source tables"
+      },
+      "theory": {
+        "primary_focal": "notation map and Highlighted notation context panel",
+        "control": "runtime-phase grouped theory cards and notation selectors",
+        "provenance": "collapsed/full source-owner notation map"
+      },
+      "reference": {
+        "primary_focal": "source-browser selected document preview",
+        "control": "search, filter, and document list",
+        "support": "source-derived counts",
+        "raw-source": "collapsed generated source map table"
+      }
+    }
+  },
   "tabs": [
     {
       "id": "architecture",
@@ -267,6 +303,7 @@
       "current_source": "docs/index/DESIGN.md",
       "owner_sources": [
         "docs/index/DESIGN.md",
+        "docs/index/VISUAL_QA.md",
         "docs/index/templates/index.html.tpl",
         "tools/build_docs_index.py"
       ],
@@ -278,7 +315,9 @@
         "generated CSS custom properties",
         "carousel token references",
         "focus and reduced-motion styles",
-        "contrast sanity checks"
+        "contrast sanity checks",
+        "surface-role taxonomy",
+        "local browser visual QA runbook"
       ]
     },
     {
@@ -394,7 +433,8 @@
       "classification": "OWNER_DERIVED",
       "current_source": "tools/build_docs_index.py",
       "js_constants": [
-        "REFS"
+        "REFS",
+        "REF_SUMMARY"
       ],
       "owner_sources": [
         "atomics/skill/README.md",

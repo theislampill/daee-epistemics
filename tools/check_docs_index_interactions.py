@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
 DESIGN_MD = ROOT / "docs" / "index" / "DESIGN.md"
+VISUAL_QA_MD = ROOT / "docs" / "index" / "VISUAL_QA.md"
 DESIGN_QUALITY_AUDIT = ROOT / "docs" / "audits" / "v0.4.2.0-docs-index-design-quality-audit.md"
 RELEASE_DOWNLOAD = ROOT / "docs" / "index" / "release-download.json"
 INDEX_TEMPLATE = ROOT / "docs" / "index" / "templates" / "index.html.tpl"
@@ -239,6 +240,41 @@ EXPECTED_CONTROL_CARD_PHASES = {
     "PsiI": "phase-public-boundary",
     "coupling": "phase-public-boundary",
 }
+
+CRITICAL_FORMAL_NOTATION_TOKENS = [
+    "𝓝",
+    "D₀",
+    "Ψᴺ",
+    "Ψᴵ",
+    "N∈𝓝",
+    "τ",
+    "σ",
+    "♥",
+    "ξ",
+    "Ω",
+    "μ",
+    "κ",
+    "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+    "∇",
+    "∇·T",
+    "∇×T",
+    "∇ route pressure",
+    "ⁿB",
+    "ⁿBᵢ[OPᵢ]",
+    "Land(ⁿB)",
+    "ΔⁿB",
+    "Δκ",
+    "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+    "LoopBreak(∇×T)",
+    "R(H,Δ)",
+    "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)",
+    "𝒞(Ψᴺ)",
+    "T_lang",
+    "T_lang: Ψᴺ ⇢ Ψᴵ",
+    "N_fiṭrī ∧ ʿaql ṣarīḥ",
+    "fiṭrah",
+    "ʿaql ṣarīḥ",
+]
 
 CONTROL_CARD_TOKEN_ALIASES = {
     "τ": "tau",
@@ -975,6 +1011,9 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         return
 
     required_rules = [
+        "Component role taxonomy",
+        "Reference source-browser discipline",
+        "Owners selected-detail discipline",
         "Do not produce generic gray unstructured UI.",
         "Do not make every card full-width if one selected-primary display is intended.",
         "Do not replace scaled previews with label-only tiles.",
@@ -1003,6 +1042,20 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         ):
             if token.lower() not in audit_text.lower():
                 errors.append(f"{DESIGN_QUALITY_AUDIT.relative_to(ROOT)} missing audit/rubric token {token!r}")
+    if not VISUAL_QA_MD.exists():
+        errors.append(f"{VISUAL_QA_MD.relative_to(ROOT)} missing local browser visual QA runbook")
+    else:
+        visual_qa = VISUAL_QA_MD.read_text(encoding="utf-8")
+        for token in (
+            "Architecture card 4 selected",
+            "Owners selected operator",
+            "Theory selected notation",
+            "Reference selected document",
+            "Narrow / Mobile Checks",
+            "Structural checks passing is not enough",
+        ):
+            if token not in visual_qa:
+                errors.append(f"{VISUAL_QA_MD.relative_to(ROOT)} missing visual QA target {token!r}")
 
     architecture = tab_section_slice(text, "architecture")
     theory = tab_section_slice(text, "theory")
@@ -1017,8 +1070,37 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         errors.append("Theory notation provenance must stay generated as hidden metadata for contextual disclosure")
     if owners and 'id="ownerSourceTable"' not in owners:
         errors.append("Owner/source table must stay scoped to the Owners support surface")
-    if reference and "Structured source map" not in reference:
-        errors.append("Reference Library must identify itself as a support/source-map surface")
+    if reference and "Structured source browser" not in reference:
+        errors.append("Reference Library must identify itself as a source-browser surface")
+    for tab_id, required_roles in {
+        "architecture": {"focal", "support"},
+        "owners": {"focal", "support", "control", "provenance", "raw-source"},
+        "theory": {"focal", "control", "support", "provenance"},
+        "reference": {"focal", "support", "control", "raw-source", "generated-snapshot"},
+    }.items():
+        section = tab_section_slice(text, tab_id)
+        if not section:
+            errors.append(f"{tab_id}: missing tab section for surface-role check")
+            continue
+        declared_roles = set(re.findall(r'data-surface-role="([^"]+)"', section))
+        missing_roles = sorted(required_roles - declared_roles)
+        if missing_roles:
+            errors.append(f"{tab_id}: missing surface-role declarations {missing_roles}")
+        primary_count = len(re.findall(r'data-primary-focal="true"', section))
+        if primary_count != 1:
+            errors.append(f"{tab_id}: must declare exactly one primary focal object, found {primary_count}")
+    if owners:
+        matrix_pos = owners.find('id="operatorMatrix"')
+        source_pos = owners.find('id="ownerSourceTable"')
+        focal_pos = owners.find('data-primary-focal="true"')
+        if matrix_pos != -1 and matrix_pos < focal_pos:
+            errors.append("Owners full matrix must not appear before the selected-detail workspace")
+        if source_pos != -1 and source_pos < focal_pos:
+            errors.append("Owners source table must not appear before the selected-detail workspace")
+        for raw_id in ('id="operatorMatrix"', 'id="ownerSourceTable"'):
+            pos = owners.find(raw_id)
+            if pos != -1 and owners.rfind("<details", 0, pos) == -1:
+                errors.append(f"Owners {raw_id} must live inside a disclosure, not default-visible")
 
     containment_tokens = [
         ".tabsec table{display:block;max-width:100%;overflow-x:auto}",
@@ -1135,6 +1217,50 @@ def extract_js_array(text: str, name: str, errors: list[str]) -> list[object]:
                 return payload
     errors.append(f"generated reference data const {name} array is unterminated")
     return []
+
+
+def extract_js_object(text: str, name: str, errors: list[str]) -> dict[str, object]:
+    marker = f"const {name} = "
+    marker_start = text.find(marker)
+    if marker_start == -1:
+        errors.append(f"generated reference data missing const {name}")
+        return {}
+    start = text.find("{", marker_start + len(marker))
+    if start == -1:
+        errors.append(f"generated reference data const {name} is not an object")
+        return {}
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                raw = text[start : index + 1]
+                try:
+                    payload = json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    errors.append(f"generated reference data const {name} is invalid JSON: {exc}")
+                    return {}
+                if not isinstance(payload, dict):
+                    errors.append(f"generated reference data const {name} must be an object")
+                    return {}
+                return payload
+    errors.append(f"generated reference data const {name} object is unterminated")
+    return {}
 
 
 def strip_js_array_const(text: str, name: str) -> str:
@@ -1846,6 +1972,7 @@ def check_reference_data(text: str, errors: list[str]) -> None:
         errors.append("docs/index.html still embeds stale auditSummary release-status text")
     refs = extract_js_array(text, "REFS", errors)
     docs = extract_js_array(text, "DOCS", errors)
+    summary = extract_js_object(text, "REF_SUMMARY", errors)
     expected_paths = [path.relative_to(ROOT).as_posix() for path in expected_reference_paths()]
     ref_paths = [entry.get("path") for entry in refs if isinstance(entry, dict)]
     doc_paths = [entry.get("rel") for entry in docs if isinstance(entry, dict)]
@@ -1869,6 +1996,62 @@ def check_reference_data(text: str, errors: list[str]) -> None:
             errors.append(f"generated DOCS line count drift: {rel_path}")
         if isinstance(ref, dict) and ref.get("lines") != len(text_current.splitlines()):
             errors.append(f"generated REFS line count drift: {rel_path}")
+    if refs and docs and summary:
+        total_lines = sum(int(entry.get("lines") or 0) for entry in refs if isinstance(entry, dict))
+        by_layer: dict[str, int] = {}
+        by_role: dict[str, int] = {}
+        for entry in refs:
+            if not isinstance(entry, dict):
+                continue
+            layer = str(entry.get("layer") or "uncategorized")
+            role = str(entry.get("role") or "uncategorized")
+            by_layer[layer] = by_layer.get(layer, 0) + 1
+            by_role[role] = by_role.get(role, 0) + 1
+        expected_summary = {
+            "total_references": len(refs),
+            "total_snapshots": len(docs),
+            "total_lines": total_lines,
+            "by_layer": by_layer,
+            "by_role": by_role,
+        }
+        for key, expected_value in expected_summary.items():
+            if summary.get(key) != expected_value:
+                errors.append(f"REF_SUMMARY {key} drift: expected {expected_value!r}, found {summary.get(key)!r}")
+
+    reference = tab_section_slice(text, "reference")
+    if reference:
+        required = [
+            'id="refSummary"',
+            'id="referenceBrowser"',
+            'id="refSearch"',
+            'id="refLayer"',
+            'id="docList"',
+            'role="listbox"',
+            'id="docBody"',
+            'data-surface-role="generated-snapshot"',
+            'id="referenceRawSourceMap"',
+            'data-surface-role="raw-source"',
+            'id="refTable"',
+        ]
+        for token in required:
+            if token not in reference:
+                errors.append(f"Reference source-browser missing {token}")
+        summary_pos = reference.find('id="refSummary"')
+        browser_pos = reference.find('id="referenceBrowser"')
+        raw_pos = reference.find('id="referenceRawSourceMap"')
+        if not (0 <= summary_pos < browser_pos < raw_pos):
+            errors.append("Reference Library must render summary/list/detail before the raw source map")
+        raw_start = reference.rfind("<details", 0, raw_pos)
+        raw_end = reference.find("</details>", raw_pos)
+        if raw_start == -1 or raw_end == -1:
+            errors.append("Reference full source map must be inside a details disclosure")
+        elif re.search(r"<details\b[^>]*\bopen\b", reference[raw_start : reference.find(">", raw_start) + 1]):
+            errors.append("Reference full source map must be collapsed by default")
+        render_doc_list_start = text.rfind("function renderDocList")
+        render_doc_list_end = text.find("function showDoc", render_doc_list_start)
+        render_doc_list = text[render_doc_list_start:render_doc_list_end] if render_doc_list_start != -1 and render_doc_list_end != -1 else ""
+        if re.search(r'<div\s+id="docList"', reference) and "<button" not in render_doc_list:
+            errors.append("Reference document list must render keyboard-accessible button options")
 
 
 def manifest_js_constant_coverage(manifest: dict[str, object]) -> set[str]:
@@ -1946,6 +2129,14 @@ def check_notation_contract(text: str, errors: list[str]) -> None:
     for label, token in REQUIRED_INDEX_NOTATION_TOKENS.items():
         if token not in text:
             errors.append(f"docs/index.html missing notation token: {label}: {token!r}")
+    notation_sources = [text]
+    for source_path in (RUNTIME_ARCHITECTURE_SOURCE, ARCHITECTURE_SECTION, THEORY_SECTION, INDEX_TEMPLATE):
+        if source_path.exists():
+            notation_sources.append(source_path.read_text(encoding="utf-8"))
+    notation_source_text = "\n".join(notation_sources)
+    for token in CRITICAL_FORMAL_NOTATION_TOKENS:
+        if token not in notation_source_text:
+            errors.append(f"critical daee-epistemics notation token was lost or changed: {token!r}")
     lower = text.lower()
     if "κ-only" in lower and "not κ-only" not in lower:
         errors.append("docs/index.html contains κ-only wording without the not-κ-only boundary")
@@ -1998,14 +2189,20 @@ def check_public_notation_surface(path: Path, text: str, errors: list[str]) -> N
 
 
 def check_theory_control_cards(text: str, errors: list[str]) -> None:
-    start = text.find('<div class="controlOverviewGrid">')
-    end = text.find('<div class="notationBoard"', start)
-    if start == -1 or end == -1 or end <= start:
+    theory = tab_section_slice(text, "theory")
+    if not theory:
+        errors.append("docs/index.html missing Theory tab section")
+        return
+    start = theory.find('<div class="theoryCardGroups"')
+    if start == -1:
         errors.append("docs/index.html missing Theory control ontology card grid")
         return
 
-    block = text[start:end]
+    block = theory[start:]
     card_tags = re.findall(r"<button\b(?=[^>]*\bcontrolCard\b)([^>]*)>", block)
+    if not card_tags:
+        errors.append("docs/index.html missing Theory control ontology card buttons")
+        return
 
     def attr(attrs: str, name: str) -> str:
         match = re.search(rf'\b{re.escape(name)}="([^"]*)"', attrs)
