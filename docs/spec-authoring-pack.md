@@ -112,6 +112,18 @@ Owner: tools/check_smoke_artifacts.py plus docs/package-smoke-readiness.md
 If no automated check exists, name the manual inspection basis and whether a checker is P0, P1, or
 deferred.
 
+Low-noise prose checker pattern:
+
+```text
+Checker: python tools/check_spec_authoring_pack.py
+Scope: allowlisted spec-like files only
+Exclusions: ordinary theory prose, case-library prose, fenced examples, and explanatory counterexamples
+Failure type: high-risk ambiguous requirement phrases such as "good enough" or "best effort"
+```
+
+Do not broaden this into a global prose linter. Add a file to the allowlist only when it behaves as
+a contract, gate, schema, runtime requirement, package rule, or checker policy.
+
 ## Stop reason pattern
 
 Stop reasons make strict-mode denial auditable:

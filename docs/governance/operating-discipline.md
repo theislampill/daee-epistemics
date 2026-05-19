@@ -64,9 +64,11 @@ Use PDCA for bounded improvement loops:
 - Check: run the smallest meaningful smoke/check before claiming improvement.
 - Act: standardize, revise, revert, defer, block, or mark unverified with a reason.
 
-For `SKILL.md` cleanup, PDCA means taking Smoke A before mutation, changing only safe pointer or
-entrypoint text, rebuilding generated runtime, running strict static checks, then taking Smoke B
-with the same prompts and capture method.
+For `SKILL.md` cleanup, PDCA means taking a baseline smoke before mutation, changing only safe
+pointer or entrypoint text, rebuilding generated runtime, running strict static checks, then taking
+the post-change smoke with the same prompts and runtime-loaded capture method. If the reliable
+local method is an inlined generated runtime, use it for both sides of the comparison and label it
+local generated-runtime evidence, not package-bound release proof.
 
 ## Andon
 

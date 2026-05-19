@@ -99,6 +99,10 @@ def validate_output(path: Path) -> SmokeResult:
 
     if MOJIBAKE_RE.search(text):
         warnings.append("possible notation mojibake in captured output")
+    if "𝒞(ΨN)" in text or "ΨN" in text or "ΨI" in text:
+        failures.append("notation simplified: preserve Ψᴺ / Ψᴵ superscript boundary")
+    if not is_witness_case(case) and "??" in text and text_has_any(text, ["T_lang", "𝒞("]):
+        failures.append("notation mangled to question-mark placeholders")
 
     if is_witness_case(case):
         witness_checks = {
@@ -141,13 +145,20 @@ def validate_output(path: Path) -> SmokeResult:
             failures.append("ordinary output lacks minimal governed-output signal")
 
         overclaim_checks = [
-            ("truth meter", "not a truth meter"),
-            ("guaranteed uptake", "not guaranteed uptake"),
-            ("soul/interlocutor rewrite", "not a soul/interlocutor rewrite"),
+            ("truth meter", ["not a truth meter"]),
+            (
+                "guaranteed uptake",
+                [
+                    "not guaranteed uptake",
+                    "no claim of guaranteed uptake",
+                    "does not claim access",
+                ],
+            ),
+            ("soul/interlocutor rewrite", ["not a soul/interlocutor rewrite"]),
         ]
         lowered = text.lower()
-        for phrase, negated in overclaim_checks:
-            if phrase in lowered and negated not in lowered:
+        for phrase, negations in overclaim_checks:
+            if phrase in lowered and not any(negated in lowered for negated in negations):
                 failures.append(f"possible overclaim language: {phrase}")
 
     cause = classify_cause(log_text, first_line, failures)

@@ -92,6 +92,9 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   model compliance, and checker expectation before adding more entrypoint prose.
   Local inlined-runtime smokes can diagnose generated-runtime behavior, but do not count
   as package-bound release-smoke proof.
+  For SKILL entrypoint cleanup, baseline before shrink and accept only when the same
+  runtime-loaded smoke method preserves or improves field banner, witness, notation,
+  non-claim, routing, and ordinary governed-output signals.
 - Andon: when work cannot honestly pass, expose status, blocker, failing check, owner,
   and next concrete action immediately.
 - Hansei: after failure, record the gap, cause, countermeasure, and follow-up evidence.

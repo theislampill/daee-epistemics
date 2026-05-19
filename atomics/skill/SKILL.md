@@ -194,6 +194,9 @@ Top-salient invariants:
   or replace `Δ`.
 - Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
 - `𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state, not checklist exhaustion or guaranteed interlocutor uptake.
+- When closure/coupling boundary notation is printed, preserve exact notation such as
+  `𝒞(Ψᴺ)` and `T_lang: Ψᴺ ⇢ Ψᴵ`; do not ASCII-normalize or simplify it to
+  `ΨN`, `ΨI`, `->`, `?`, or `??`.
 - `Sameτ ∧ SameSourceFrame ∧ SameClaimCluster ∧ ¬NewB -> facets ⊂ {s1...sn} -> ¬RECURSE`.
 - Active TTP/operator submoves remain visible under Layer B: each materially active FPD, M1/M1P,
   M8, M9, V2, P1/P7, transmission/testimony, predication, register-hold, or family-local
@@ -252,27 +255,14 @@ Top-salient invariants:
 - Final closure for multi-burden, register-active, named-worldview, source-authentication,
   mixed-field, authority-frame, or hard compound cases requires literal
   `Closure/Reconstruction Witness` (not `Closure audit`) with `Burden dependency graph:`,
-  selected/held `N`, registers, owner/TTP match, e.g. `∇·B`/`∇×κ`, `𝒞(Ψᴺ)`, `T_lang`.
+  selected/held `N`, registers, owner/TTP match, e.g. `∇·B`/`∇×κ`, `𝒞(Ψᴺ)`,
+  `T_lang: Ψᴺ ⇢ Ψᴵ`.
   Graphs use edge
   notation such as `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`.
-- Hard-output miniature, structure only:
-  ```text
-  Burden 1: imported moral tribunal
-    ¹B₁ — expose the tribunal
-      Target: hidden moral judge | Operation: expose | Result: criterion is no longer neutral
-    ¹B₂ — test the criterion against its own grounds
-      Target: self-authorizing standard | Operation: test | Result: standard cannot condemn while self-grounded
-    Land(B1): the imported tribunal no longer governs as unquestioned judge
-    R(H,Δ): accountability and guidance-demand burdens remain held/live; release next B only if still input-anchored
-
-  Burden 2: accountability compression
-    ²B₁ — distinguish bare non-exposure from culpable rejection
-    ²B₂ — hold individual fate while correcting the general rule
-    Land(B2): "simple non-belief" no longer names the accountability structure
-    R(H,Δ): guidance-demand burden remains live; release next B
-  ```
-  This is permitted default hard-output shape, not raw IR or route ledger, when each
-  submove is case-specific and serves the same `B`.
+- Hard-output worked examples and submove-boundary examples live in
+  `references/rubrics/diagnostic-render-contract.md`. Root invariant: case-specific
+  `¹Bᵢ [owner]` submoves show Target -> Operation -> Result, then `Land(B)` and
+  `R(H,Δ)` decide continue/HOLD/PARTIAL/close from refreshed state.
 - `σ != operative warrant` when `σ` is contrast / opponent-position / genealogy / historical note / held material / bounded comparison.
 - `N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī`; aliases are not multiple warrants.
 - `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.
@@ -384,23 +374,19 @@ Diagnostic IR, Case State, Source Basis, `matched_modules`, and routing plan are
 internal control surfaces where triggered. Default output is governed prose rendered from the internal state plus the mandatory compact DSL/IR header; it is not the raw internal state itself and must not print full Diagnostic IR, `[Case State]`, full Source Basis ledger, `matched_modules`, load ledger, source ledger, or planned route list. Compact TTP/operator trace appears when a named operator does runtime work; it is not source citation support. Render details are owned by `references/rubrics/diagnostic-render-contract.md`.
 
 ### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
-These passes are mandatory within V1 Phase 2. They are not conditional on topic. **Load and run** each triggered file in sequence on any case with an intellectual-content component. Loading the governing file is required — running a pass from memory without loading its file is a gate-compliance failure equivalent to skipping the pass entirely. Skip only if P7 Stop-1 is active (no content gate is being assessed).
+Run V1 Phase 2 by the owner files, not from memory: [P-A]
+`reason-disambiguation.md`; [P-B] `foreign-premise-detection.md` when
+criterion-importing is visible; [P-C] `prophetic-discourse-neutralization.md`
+when prophetic discourse is redirected, evacuated, or treated as non-determinate
+guidance; and [P-D] `arabic-backbone-predicates.md` per trigger mapping.
+The exact pass effects and skip/clearance rules live in
+`references/techniques/V1-diagnostic.md` and `references/diagnostics/diagnostic-ir.md`.
 
-| Pass | File | Internal effect |
-|------|------|------|
-| [P-A] mandatory | `references/diagnostics/reason-disambiguation.md` | reason-category (1–4) + routing gate; feeds case-state and diagnostic IR |
-| [P-B] mandatory when criterion-importing visible | `references/diagnostics/foreign-premise-detection.md` | internal Foreign Premise Detection result; visible block only in `:dsl`, internal/development audit, pass-review, or diagnostic trace; skip only if reason-category = 1 AND no criterion-importing element is visible |
-| [P-C] mandatory when prophetic discourse is being redirected, evacuated, or treated as non-determinate guidance | `references/diagnostics/prophetic-discourse-neutralization.md` | internal semantic-neutralization mode or "none active"; visible detail depends on render mode; checks recontenting vs. evacuation before content release |
-| [P-D] mandatory per trigger mapping | `references/diagnostics/arabic-backbone-predicates.md` | internal Backbone Predicates result or "none active"; visible block only in `:dsl`, internal/development audit, pass-review, or diagnostic trace; check trigger-mapping table for minimum checks per NS/DO code |
-
-**Diagnostic-reduction order is hard.** No current bounded operator or route itinerary may be
-formed until diagnostic reduction is complete: core axes -> mandatory Phase 2 passes ->
-triggered overlays / specialty markers -> Diagnostic IR -> gate checks -> routing precedence.
-Each mandatory pass is either internally emitted or internally cleared before dispatch opens.
-If a pass is inactive, record that clearance internally rather than silently skipping it. A
-route chain such as `FPD -> M1 -> DO-8 -> M8 -> restoration` is never evidence that diagnostic
-reduction has run; it is an invalid shortcut when printed or used as the current bounded
-operator.
+**Diagnostic-reduction order is hard.** Complete core axes -> mandatory Phase 2 passes ->
+triggered overlays / specialty markers -> Diagnostic IR -> gate checks -> routing precedence
+before any current bounded operator or route itinerary forms. A route chain such as
+`FPD -> M1 -> DO-8 -> M8 -> restoration` is evidence of shortcutting, not proof that
+diagnostic reduction ran.
 
 ### Dispatch Gate — Required Before Module Dispatch
 The diagnostic IR must be formed internally and all gate checks must pass before any content
@@ -623,16 +609,10 @@ still held.
 
 ## V. Burden-Governed Render Protocol
 
-Default render remains:
-
-```text
-Default = noetic-field banner + Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
-(+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation
-```
-
-Default visible frame is owned by `references/rubrics/diagnostic-render-contract.md`:
-noetic-field banner, compact Layer A, governed Layer B, state/noetic re-read, Restorative
-Response, and Closing Formulation.
+Default render remains the invariant stated above: noetic-field banner, compact Layer A,
+governed Layer B, state/noetic re-read, any next burden licensed by `R`, final Restorative
+Response, and final Closing Formulation. The visible frame is owned by
+`references/rubrics/diagnostic-render-contract.md`.
 
 Default forbids raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
 load ledger, source/bibliography ledger, giant load ledger by default, and meta-composition

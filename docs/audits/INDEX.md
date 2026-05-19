@@ -49,6 +49,7 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.2.0-skill-md-dry-acid-ssot-audit.md` | CURRENT-CANDIDATE | Audits `atomics/skill/SKILL.md` for DRY, ACID, SSOT, progressive disclosure, release-smoke witness mode, notation boundaries, package behavior, and owner-pointer cleanup. |
 | `docs/audits/v0.4.2.0-pack-spec-operating-discipline-audit.md` | CURRENT-CANDIDATE | Records PACK-SPEC and operating-discipline governance integration, spec-like file classifications, low-noise checker, and implementation closure. |
 | `docs/audits/v0.4.2.0-skill-ab-smoke-audit.md` | CURRENT-CANDIDATE | Records Smoke A/B/C/D generated-runtime evidence, runtime-load failure localization, local validator results, and release-proof boundary. |
+| `docs/audits/v0.4.3.0-skill-entrypoint-cleanup-ab-audit.md` | CURRENT-CANDIDATE | Records corrected inlined-runtime Smoke E/F evidence for SKILL entrypoint cleanup, PACK-SPEC checker hardening, notation guard revision, and P1 closure. |
 
 ## Consolidated Audit History
 
