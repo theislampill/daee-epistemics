@@ -471,7 +471,7 @@ and do not move `𝒞(Ψᴺ)` / `T_lang: Ψᴺ ⇢ Ψᴵ` into prose-only closur
 - Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
 - Initial burden set:           [`[B1, B2, B3]`; every input-anchored burden admitted to the scoped witness]
 - Terminal states:              [one line per initial burden: `B1: landed / <operator> / <target -> operation -> result or compact delta>`; the burden ID must come immediately before the colon; do not write `B1 <title>: <state>`; allowed states are `landed`, `discharged-as-derivative`, `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, `cleared`]
-- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / no dependency relation, `(root)` means no upstream dependency; ASCII `A -> B` is allowed when Unicode is unavailable]
+- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / independent at this level, `(root)` means no upstream dependency; node IDs must match terminal-state burden IDs and the graph must be reconstructible from the visible witness text alone; ASCII `A -> B` is a legacy transport fallback only, not the preferred notation]
 - ∇·B:                          [`neutral / <target-explicit status>` or `non-neutral / <target-explicit status>`]
 - ∇×κ:                          [`null / <target-explicit status>`, `resolved / <target-explicit status>`, or `non-null / <target-explicit status>`]
 - `𝒞(Ψᴺ)`:                     [positive agent/runtime execution-field closure condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
@@ -484,6 +484,28 @@ held set / live remainder / terminal state accounting. `coverage_complete` means
 closure. If any burden is `held-with-reason`, `carried-PARTIAL`, or `carried-RECURSE`, the closure
 language must not overclaim COMPLETE unless it explains why that scoped field is terminal without
 live outward pressure or unresolved curl.
+
+Valid dependency-graph example:
+
+```text
+B1 (root)
+B1 → B2
+B1 → B3
+B2 ∥ B3
+B2 → B4
+B3 → B4
+```
+
+Counterexamples: `B1 then maybe B2`, `B1/B2 related`, and `B2 after the first thing` are not
+parseable dependency graphs because they do not expose roots, directed dependencies, or parallel
+relations with burden IDs.
+
+When the final `R(H,Δ)` exposes an apparent new burden, graph movement should be licensed by
+`TTP-MRP-mid-reread-pressure` or an equivalent source-owned reread-pressure check. The render may
+show a compact `[Mid-Reread Pressure]` block only when that pressure is control-relevant; ordinary
+compact output must not grow a new audit ledger merely to name the check.
+When MRP is shown, `∇·T` and `∇×T` are active reread gates: non-neutral `∇·T` needs HOLD/RECURSE
+or bounded explanation, and non-null `∇×T` needs LoopBreak, STOP, HOLD, or graph-bound recursion.
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]

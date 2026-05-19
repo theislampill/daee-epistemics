@@ -51,6 +51,18 @@ lightweight governance, not extra ceremony.
   rendering, and documentation separate unless a clear owning module has reason to combine
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
+- External governance sheets such as ADHLBS are reference inputs, not runtime source. Audit
+  them through RTFM -> TRACE -> OWNER -> SSOT -> ATOMIC PATCH -> VERIFY; import only compact
+  repo-relevant rules, keep `AGENTS.md` and `SKILL.md` lean, and require A/B smoke proof before
+  changing runtime behavior.
+- Formal notation is a source-owner map, not decorative math or software-design rhetoric. Use
+  SOLID / GRASP / CUPID / ACID / BASE only as audit pointer discipline: name each symbol's meaning,
+  owner, dependency boundary, forbidden use, checker/smoke proof, and misuse signal before
+  patching. Do not add these acronyms to runtime output or `SKILL.md` without an owner decision
+  and A/B proof.
+- Formalism-pointer PDCA must baseline with the current runtime-loaded smoke method before patching,
+  patch only owner/checker pointers that reduce drift, and close each recommendation as done,
+  changed, blocked, deferred, or unverified with check/smoke evidence.
 
 ## Operating Discipline Packs
 

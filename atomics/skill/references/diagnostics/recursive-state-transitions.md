@@ -334,6 +334,18 @@ burden, hold/defer it, skip it because it no longer applies, mark PARTIAL/limit,
 bounded reroute need because the live state materially changed, or close because no
 input-anchored burden remains.
 
+Mid-reread pressure: when `R(H,Δ)` is deciding whether an apparent post-landing burden is stable,
+genuinely downstream, partial, recoil-bound, churn, or reminder/reorientation pressure, load
+`references/tactics/TTP-MRP-mid-reread-pressure.md`. MRP freezes the landed `ΔⁿB`, tugs the
+dependency graph through closure-witness machinery, activates the relevant existing pressure
+owners for hidden-framework recoil / label-pressure / entailment pressure / doubt-churn /
+reorientation, then records which route their outputs license: STOP, HOLD, RECURSE,
+LoopBreak(∇×T), or closure witness.
+If MRP finds a genuine new dependency, `R(H,Δ)` attaches the graph edge and chooses RECURSE. If the
+pressure is partial but real, choose HOLD. If it is churn, label-pressure, or unlicensed recoil,
+use LoopBreak or STOP without proof-stacking. If the reread is stable, render the closure witness.
+MRP is not a truth/warrant metric and does not make `T_lang: Ψᴺ ⇢ Ψᴵ` guarantee uptake.
+
 B-complexity:
 
 ```text

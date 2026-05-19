@@ -114,12 +114,19 @@ Marker presence remains structural/render evidence only.
 ### Closure-Witness Visualization Artifact
 
 Closure/Reconstruction Witness fixtures may be inspected with
-`tools/visualize_closure_witness.py`. The tool emits Mermaid plus a JSON sidecar summary containing
-coverage status, collapse status, burden nodes, dependency edges, `∇·B`, and `∇×κ`. This is a
-research/evaluation artifact: it makes rendered coverage easier to audit, but it does not prove
-route correctness, live model execution, or behavioral competence. An interactive colored-node graph
-may be useful later, but it should be built on the JSON summary rather than replacing the textual
-closure witness or inventing stronger proof claims.
+`tools/visualize_closure_witness.py` or the standalone local viewer
+`tools/closure_witness_viewer.html`. The CLI accepts visible closure witness text and/or a
+`field_witness` JSON sidecar, validates the parseable dependency graph, and emits a Mermaid/JSON
+summary or standalone HTML with colored DAG nodes. The viewer accepts pasted witness text or
+sidecar JSON with no network dependency. These are research/evaluation artifacts: they make
+rendered coverage easier to audit, but they do not prove route correctness, live model execution,
+package-bound release-smoke proof, or behavioral competence.
+
+When Mid-Reread Pressure is invoked, closure graph movement is not cosmetic: the visible witness
+or `field_witness.reread_pressure` should record active `∇·T` / `∇×T` states, activated pressure
+owners/classes, graph delta if any, and the route licensed by reread pressure. Package-bound
+release proof still requires the normal package smoke gate; local MRP fixtures are diagnostic
+reconstructibility proof only.
 
 ## Runtime-Grounding Smoke Artifact Gate
 

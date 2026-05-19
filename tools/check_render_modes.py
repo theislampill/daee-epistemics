@@ -64,10 +64,10 @@ REQUIRED_TOKENS = [
     "Default Output Surface Invariant",
     "For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints",
     "noetic-field execution banner",
-    "NOETIC FIELD EXECUTION",
+    "first visible line is literally `field:`",
     "first visible content",
     "Markdown fences",
-    "Clarifying or missing-input replies are still runtime outputs",
+    "Clarifying or missing-input replies are still runtime",
     "field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>",
     "user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>",
     "external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>",
@@ -227,8 +227,8 @@ REQUIRED_TOKENS = [
     "LoopBreak:",
     "Closure/Reconstruction Witness",
     "Burden dependency graph",
-    "B1 -> B2, B3",
-    "B1 ∥ B2 -> B3",
+    "B1 → B2, B3",
+    "B1 ∥ B2 → B3",
     "`𝒞(Ψᴺ)`",
     "`T_lang: Ψᴺ ⇢ Ψᴵ`",
     "Current bounded operator",
@@ -596,7 +596,7 @@ DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
     "target-explicit field-diagnostic witness",
     "Closure/Reconstruction Witness",
     "Burden dependency graph",
-    "B1 ∥ B2 -> B3",
+    "B1 ∥ B2 → B3",
 ]
 
 DEFAULT_FIELD_DIAGNOSTIC_MARKERS = [
@@ -895,7 +895,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - Field checks: ∇·B neutral; ∇×κ null
 
@@ -980,7 +980,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - Field checks: ∇·B neutral; ∇×κ null
 - `𝒞(Ψᴺ)`: positive
@@ -1064,7 +1064,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - `𝒞(Ψᴺ)`: positive
 - `T_lang: Ψᴺ ⇢ Ψᴵ`: coupling attempt only
@@ -1150,7 +1150,7 @@ Trace: M9.
 ### Closure audit
 - N frames: selected operative frame
 - Registers: κ bounded
-- burden graph: B1 -> B2
+- burden graph: B1 → B2
 - Operator match: B1 -> definition discipline; B2 -> M9
 - Field checks: ∇·B neutral; ∇×κ null
 - `𝒞(Ψᴺ)`: positive

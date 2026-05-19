@@ -15,6 +15,24 @@ FIELD_VALUES_RE = re.compile(
 )
 REREAD_RE = re.compile(r"R\(H,?\s*(Delta|\u0394)\)")
 MOJIBAKE_RE = re.compile(r"[\uFFFD\u00CE\u00E2]")
+ASCII_FORMALISM_RE = re.compile(r"\b(PsiN|PsiI|Psi\^N|Psi\^I)\b")
+FORMALISM_REQUIRED_TOKENS = {
+    5: ["∇", "Δ", "R(H,Δ)", "𝒞(Ψᴺ)", "T_lang"],
+    6: [
+        "Ψᴺ",
+        "Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
+        "N_fiṭrī",
+        "ʿaql ṣarīḥ",
+        "∇·T",
+        "∇×T",
+        "LoopBreak(∇×T)",
+        "ΔⁿB",
+        "Δκ",
+        "R(H,Δ)",
+        "𝒞(Ψᴺ)",
+    ],
+}
 
 
 @dataclass
@@ -50,6 +68,21 @@ def text_has_any(text: str, needles: list[str]) -> bool:
     return any(needle.lower() in lowered for needle in needles)
 
 
+def has_unnegated_phrase(text: str, phrase: str, negations: list[str]) -> bool:
+    lowered = text.lower()
+    for match in re.finditer(re.escape(phrase), lowered):
+        start = max(0, match.start() - 100)
+        end = min(len(lowered), match.end() + 40)
+        window = lowered[start:end]
+        if any(negated in window for negated in negations):
+            continue
+        prefix = lowered[start : match.start()]
+        if re.search(r"\b(no|not|without|does not|do not|cannot|never|doesn't|don't)\b.{0,100}$", prefix):
+            continue
+        return True
+    return False
+
+
 def printable(value: str, limit: int = 140) -> str:
     value = value.replace("|", "\\|")
     if len(value) > limit:
@@ -60,6 +93,19 @@ def printable(value: str, limit: int = 140) -> str:
 def is_witness_case(case_name: str) -> bool:
     match = re.match(r"^[A-Z](\d+)$", case_name)
     return bool(match and int(match.group(1)) in {1, 2, 3})
+
+
+def case_number(case_name: str) -> int | None:
+    match = re.match(r"^[A-Z](\d+)$", case_name)
+    return int(match.group(1)) if match else None
+
+
+def is_formalism_phase(phase: str) -> bool:
+    return "formalism-smoke" in phase
+
+
+def is_smoke_phase_dir(path: Path) -> bool:
+    return path.is_dir() and "smoke-" in path.name
 
 
 def classify_cause(log_text: str, first_line: str, failures: list[str]) -> str:
@@ -103,6 +149,14 @@ def validate_output(path: Path) -> SmokeResult:
         failures.append("notation simplified: preserve Ψᴺ / Ψᴵ superscript boundary")
     if not is_witness_case(case) and "??" in text and text_has_any(text, ["T_lang", "𝒞("]):
         failures.append("notation mangled to question-mark placeholders")
+    if is_formalism_phase(phase):
+        if ASCII_FORMALISM_RE.search(text):
+            failures.append("formalism notation ASCII-normalized: preserve Ψᴺ / Ψᴵ")
+        if "??" in text and text_has_any(text, ["T_lang", "LoopBreak", "R(H", "∇", "𝒞(", "Ψ"]):
+            failures.append("formalism notation mangled to question-mark placeholders")
+        for token in FORMALISM_REQUIRED_TOKENS.get(case_number(case) or -1, []):
+            if token not in text:
+                failures.append(f"missing formalism notation token: {token}")
 
     if is_witness_case(case):
         witness_checks = {
@@ -158,7 +212,7 @@ def validate_output(path: Path) -> SmokeResult:
         ]
         lowered = text.lower()
         for phrase, negations in overclaim_checks:
-            if phrase in lowered and not any(negated in lowered for negated in negations):
+            if has_unnegated_phrase(text, phrase, negations):
                 failures.append(f"possible overclaim language: {phrase}")
 
     cause = classify_cause(log_text, first_line, failures)
@@ -175,13 +229,11 @@ def validate_output(path: Path) -> SmokeResult:
 
 
 def phase_sort_key(path: Path) -> tuple[int, str]:
-    match = re.match(r"smoke-([a-z]+)$", path.name)
+    match = re.search(r"(?:^|-)smoke-([a-z])(?:-|$)", path.name)
     if not match:
-        return (-1, path.name)
+        return (100, path.name)
     token = match.group(1)
-    if len(token) == 1:
-        return (ord(token) - ord("a"), path.name)
-    return (100, path.name)
+    return (ord(token) - ord("a"), path.name)
 
 
 def main() -> int:
@@ -204,7 +256,7 @@ def main() -> int:
         phase_dirs = [root / args.phase]
     else:
         phase_dirs = sorted(
-            [p for p in root.iterdir() if p.is_dir() and p.name.startswith("smoke-")],
+            [p for p in root.iterdir() if is_smoke_phase_dir(p)],
             key=phase_sort_key,
         )
 

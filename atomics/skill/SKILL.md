@@ -374,17 +374,22 @@ Diagnostic IR, Case State, Source Basis, `matched_modules`, and routing plan are
 internal control surfaces where triggered. Default output is governed prose rendered from the internal state plus the mandatory compact DSL/IR header; it is not the raw internal state itself and must not print full Diagnostic IR, `[Case State]`, full Source Basis ledger, `matched_modules`, load ledger, source ledger, or planned route list. Compact TTP/operator trace appears when a named operator does runtime work; it is not source citation support. Render details are owned by `references/rubrics/diagnostic-render-contract.md`.
 
 ### V1 Phase 2 Mandatory Passes — Run Inside the Diagnostic Gate
-Run V1 Phase 2 by the owner files, not from memory: [P-A]
-`reason-disambiguation.md`; [P-B] `foreign-premise-detection.md` when
-criterion-importing is visible; [P-C] `prophetic-discourse-neutralization.md`
-when prophetic discourse is redirected, evacuated, or treated as non-determinate
-guidance; and [P-D] `arabic-backbone-predicates.md` per trigger mapping.
+Run V1 Phase 2 by the owner files, not from memory:
+
+| Pass | Owner |
+|---|---|
+| [P-A] mandatory | `reason-disambiguation.md` |
+| [P-B] mandatory | `foreign-premise-detection.md` when criterion-importing is visible |
+| [P-C] mandatory | `prophetic-discourse-neutralization.md` when prophetic discourse is redirected, evacuated, or treated as non-determinate guidance |
+| [P-D] mandatory | `arabic-backbone-predicates.md` per trigger mapping |
+
 The exact pass effects and skip/clearance rules live in
 `references/techniques/V1-diagnostic.md` and `references/diagnostics/diagnostic-ir.md`.
 
 **Diagnostic-reduction order is hard.** Complete core axes -> mandatory Phase 2 passes ->
 triggered overlays / specialty markers -> Diagnostic IR -> gate checks -> routing precedence
-before any current bounded operator or route itinerary forms. A route chain such as
+before any current bounded operator or route itinerary forms. No current bounded operator or route
+itinerary may be formed before that diagnostic reduction completes. A route chain such as
 `FPD -> M1 -> DO-8 -> M8 -> restoration` is evidence of shortcutting, not proof that
 diagnostic reduction ran.
 
