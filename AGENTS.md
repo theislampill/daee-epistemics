@@ -52,6 +52,61 @@ lightweight governance, not extra ceremony.
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
 
+## Operating Discipline Packs
+
+Use these packs as lightweight durable rules. Keep detailed guidance in
+`docs/spec-authoring-pack.md` and `docs/governance/operating-discipline.md`.
+
+- PACK-SPEC applies to spec-like docs, contracts, schemas, checkers, release/smoke/package
+  gates, runtime contracts, and implementation requirements. In normative files, use
+  RFC 2119/8174-style levels; uppercase MUST / SHOULD / MAY only when intentionally
+  normative. Normative requirements should include examples, counterexamples,
+  compatibility notes where useful, and conformance checks. In strict work, ambiguous
+  requirement words are defects; unsafe, unsupported, or unauthorized paths stop and
+  report the stop reason. In exploratory work, draft requirement levels before mutation
+  and name owner, risk, next verification, and inspection basis.
+- Gemba: inspect the live artifact where the work happens. For failures, use the actual
+  file, generated HTML, smoke output, package, checker error, workflow, or UI state rather
+  than summaries when the artifact exists.
+- Hoshin Kanri, light: align major workstreams to the top objective by naming objective,
+  owner/source of truth, metric/check, and next review point. Do not create heavy OKR
+  bureaucracy.
+- Nemawashi: before changing source ownership, checker policy, release gates, package
+  behavior, generated-doc architecture, or runtime entrypoint behavior, surface the
+  proposed change, affected owners, tradeoffs, and rollback. Do not use it to stall tiny
+  safe fixes.
+- Muda / Mura / Muri: cut waste, smooth uneven work, and reduce overload before adding
+  tools. Remove redundant panels, repeated headers, overloaded source maps, giant audit
+  walls, and unnecessary process; prefer small source-owned renderers/checkers over broad
+  frameworks.
+- Kaizen: improve the smallest repeatable process, measure it, and fold it into the
+  standard. Regression fixes should ask what checker, runbook, token, source-owner rule,
+  or template rule prevents recurrence.
+- PDCA: plan the smallest change, do it, check evidence, then act by standardizing,
+  revising, reverting, deferring, or blocking the item.
+  If the objective is execution improvement, do not close at "cleanup safe";
+  continue until smoke evidence improves, a blocker is named, or remaining changes are
+  deferred with risk evidence.
+  When smoke output ignores a rule, localize transport, runtime loading, prompt mode,
+  model compliance, and checker expectation before adding more entrypoint prose.
+  Local inlined-runtime smokes can diagnose generated-runtime behavior, but do not count
+  as package-bound release-smoke proof.
+- Andon: when work cannot honestly pass, expose status, blocker, failing check, owner,
+  and next concrete action immediately.
+- Hansei: after failure, record the gap, cause, countermeasure, and follow-up evidence.
+- 5 Whys: trace symptoms to systemic cause carefully, then add the countermeasure at
+  the cause rather than polishing the symptom.
+- Smoke Before Claim: run the smallest meaningful check before readiness claims and
+  report command plus result. If live checks cannot run, label evidence type and risk.
+- Plan Closure: end by mapping each planned item to done, changed, blocked, deferred,
+  or unverified.
+- DRY / ACID / SSOT / progressive disclosure apply to runtime entrypoints, generated docs,
+  checkers, release proof, and package surfaces. Avoid duplicate source-of-truth logic
+  while preserving intentional safety duplicates in always-loaded runtime entrypoints.
+  Make changes bounded, rebuildable, isolated, and durable; identify the source owner
+  before editing. Always-loaded files should route and enforce gates; detailed owner
+  material belongs in owner files.
+
 ## Complementary SSOT and Truthmaker Trace
 
 SSOT does not mean one file contains all truth. Before selecting a source of truth,

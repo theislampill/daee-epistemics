@@ -126,22 +126,19 @@ quality-gate claims. Those artifacts are optional developer validation, not publ
 evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
 Every plain `/daee-epistemics` runtime output begins with this noetic-field execution banner
-before Layer A. The banner must be the first visible content in the answer: do not place prose,
-headings, apologies, Markdown fences, or clarifying questions before it, and do not wrap the
-banner in a code block. Clarifying or missing-input replies are still runtime outputs and must
-begin with the banner. The banner is generated from the same classification state used by Layer
-A. Print exactly one value for each field; never print the choice list, combine values with `|`,
-or invent a local synonym:
+before Layer A. The first visible line is literally `field:`: do not place prose, headings,
+box art, apologies, Markdown fences, clarifying questions, or banner summaries before it, and
+do not wrap the banner in a code block. Clarifying or missing-input replies are still runtime
+outputs and must begin with the banner. The banner is generated from the same classification
+state used by Layer A. Print exactly one value for each field; never print the choice list,
+combine values with `|`, or invent a local synonym:
 
 ```text
-╔══════════════════════════════════════════════════════╗
-║ daee-epistemics — NOETIC FIELD EXECUTION             ║
-║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-║ authority frame: <NONE DETECTED | LIVE>
-║ state: <RECURSE | PARTIAL | COMPLETE>
-╚══════════════════════════════════════════════════════╝
+field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+authority frame: <NONE DETECTED | LIVE>
+state: <RECURSE | PARTIAL | COMPLETE>
 ```
 
 Use only these banner values. All inputs are noetic fields; prompt brevity does not imply
@@ -407,7 +404,9 @@ Rewrite before emitting.
 # Default Output Surface Invariant
 
 For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints
-a noetic-field execution banner before the compact DSL/IR header. Compact Layer A (read status, confidence, claim_level,
+a noetic-field execution banner before the compact DSL/IR header. The first visible line of the
+banner is literally `field:`; do not render box art, a banner heading, or a `source request`
+legacy label in that frame. Compact Layer A (read status, confidence, claim_level,
 pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
 current bounded operator, held, source-status/noetic-frame, gate/release decision, decisive
 missing differentiator when required) is the visible default diagnostic surface. Full
@@ -418,13 +417,11 @@ work under the render contract.
 Default visible frame:
 
 ```text
-╔══════════════════════════════════════════════════════╗
-║ daee-epistemics — NOETIC FIELD EXECUTION             ║
-║ field:
-║ source request:
-║ authority frame:
-║ state:
-╚══════════════════════════════════════════════════════╝
+field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+authority frame: <NONE DETECTED | LIVE>
+state: <RECURSE | PARTIAL | COMPLETE>
 
 Layer A — Compact DSL/IR header
 - read status:

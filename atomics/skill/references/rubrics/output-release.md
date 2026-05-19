@@ -143,9 +143,10 @@ pressure must name target, ground, `Δ` effect, post-break reread, and resulting
 state.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
-replies, begins with the noetic-field execution banner as first visible content. Do not put
-prose, headings, apologies, Markdown fences, or clarifying questions before it, and do not wrap
-the banner in a code block. If a source-authentication case is missing the actual
+replies, begins with the noetic-field execution banner as first visible content. The first visible
+line is literally `field:`; do not put prose, headings, apologies, Markdown fences, box art,
+banner summaries, or clarifying questions before it, and do not wrap the banner in a code block.
+If a source-authentication case is missing the actual
 report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, `user task:
 SOURCE-AUTHENTICATION`, `external source request: IMPLICIT`, authority frame `LIVE`, state
 `PARTIAL`, then ask for the missing material. For `/daee-epistemics refute:` or similar task

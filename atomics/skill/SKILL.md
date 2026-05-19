@@ -22,15 +22,29 @@ then hands state to `Land(B) -> Δ/field diagnostics -> R(H,Delta)` for STOP/HOL
 overgrowth and Layer B flattening.
 
 Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
-banner before Layer A. The short invariant is: all inputs are noetic fields; prompt brevity never
-licenses shallow execution; user task, external source request, and authority frame are distinct;
-and closure must match banner state. Banner shape, exact vocabulary, first-visible/no-code-fence
-rule, and missing-material source-authentication behavior are owned by
-`references/rubrics/diagnostic-render-contract.md`.
+banner before Layer A. The first visible line is literally `field:`; do not render a heading such
+as "Noetic-field execution banner," box art, prose, apology, Markdown fence, or clarifying question
+before it. Minimum banner shape:
+
+```text
+field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+authority frame: <NONE DETECTED | LIVE>
+state: <RECURSE | PARTIAL | COMPLETE>
+```
+
+The short invariant is: all inputs are noetic fields; prompt brevity never licenses shallow
+execution; user task, external source request, and authority frame are distinct; and closure must
+match banner state. Banner value rules, first-visible/no-code-fence rule, and missing-material
+source-authentication behavior are owned by `references/rubrics/diagnostic-render-contract.md`.
 `RECURSE` / `PARTIAL` / `COMPLETE` release semantics are owned by
 `references/rubrics/output-release.md`. `Land(B) -> Delta/field diagnostics -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
 `kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
 `references/diagnostics/recursive-state-transitions.md`.
+There is no separate `runtime-output-governance.md` owner in this source state; do not invent or
+split one without a deliberate owner migration. Output governance is composed through the render,
+release, and recursive-state owners named above.
 
 Burden-cycle recursion follows live noetic order, not topic count. Same-order material stays in
 Layer B; a distinct live order recurses or is held/PARTIALed under `R(H,Delta)`. Detailed order

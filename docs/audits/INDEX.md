@@ -46,6 +46,9 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/audits/v0.4.2.0-docs-index-design-refinement-plan.md` | CURRENT-CANDIDATE | Deep reference-based refinement plan for docs/index hierarchy, progressive disclosure, visual QA, and checker-backed design-system maturation. |
 | `docs/audits/v0.4.2.0-docs-index-design-refinement-implementation.md` | CURRENT-CANDIDATE | Implements P1 docs/index design hierarchy refinements and records the local Reference Library source-browser follow-up that demotes fine-grained role/source maps into collapsed provenance. |
 | `docs/audits/v0.4.2.0-docs-index-handoff.md` | CURRENT-CANDIDATE | Tracked mirror of the ignored root HANDOFF.md state for the docs/index design-discipline commit and follow-on refinement audit. |
+| `docs/audits/v0.4.2.0-skill-md-dry-acid-ssot-audit.md` | CURRENT-CANDIDATE | Audits `atomics/skill/SKILL.md` for DRY, ACID, SSOT, progressive disclosure, release-smoke witness mode, notation boundaries, package behavior, and owner-pointer cleanup. |
+| `docs/audits/v0.4.2.0-pack-spec-operating-discipline-audit.md` | CURRENT-CANDIDATE | Records PACK-SPEC and operating-discipline governance integration, spec-like file classifications, checker deferral, and remaining cleanup. |
+| `docs/audits/v0.4.2.0-skill-ab-smoke-audit.md` | CURRENT-CANDIDATE | Records Smoke A/B live generated-runtime evidence, PDCA item closure, the safe `SKILL.md` owner-map clarification, and deferred risky pointer-shrink candidates. |
 
 ## Consolidated Audit History
 
@@ -69,6 +72,8 @@ Historical evidence is consolidated into history files rather than retained as d
 | `docs/compiled-runtime-tools.md` | CURRENT | Compiler/checker guide; notes historical harness naming. |
 | `docs/recursive-traversal-governance.md` | CURRENT | Reread and traversal governance. |
 | `docs/runtime-harness-onboarding.md` | CURRENT | Optional route/check harness maintainer guidance; legacy implementation filenames remain compatibility details. |
+| `docs/spec-authoring-pack.md` | CURRENT | PACK-SPEC governance for normative docs, contracts, schemas, checkers, release/package/smoke gates, runtime contracts, and stop reasons. |
+| `docs/governance/operating-discipline.md` | CURRENT | Practical operating-discipline guidance for Gemba, light Hoshin Kanri, Nemawashi, Muda/Mura/Muri, Kaizen, DRY/ACID/SSOT, and progressive disclosure. |
 | `docs/index.html` and `docs/daee-epistemics-pipeline.html` | CURRENT | Generated navigation/visual architecture aids, not runtime source. |
 
 ## Retention Rule

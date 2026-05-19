@@ -37,7 +37,9 @@ mandatory and default visibly prints the noetic-field execution banner as first 
 then the compact DSL/IR header and bounded governed response. Clarifying or missing-input replies
 are still runtime outputs and must begin with the banner. Do not put prose, headings, apologies,
 Markdown fences, or clarifying questions before it. The banner is a render obligation produced
-from the same classification state as Layer A:
+from the same classification state as Layer A. The first visible line must be literally `field:`;
+do not replace it with a heading such as "Noetic-field execution banner," box art, or a prose
+summary of the banner:
 
 ```text
 field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
