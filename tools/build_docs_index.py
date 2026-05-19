@@ -326,7 +326,8 @@ def source_digest(paths: list[Path]) -> str:
     for path in sorted(paths, key=lambda p: rel(p)):
         digest.update(rel(path).encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        # Docs provenance must be stable across Windows and Linux checkouts.
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n"))
         digest.update(b"\0")
     return digest.hexdigest()
 
