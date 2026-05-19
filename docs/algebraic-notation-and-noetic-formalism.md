@@ -99,13 +99,6 @@ two burdens are parallel in the current witness; `(root)` means no upstream depe
 an initial burden from terminal accounting is a proof failure, even if the response prints
 `R(H,Δ)`.
 
-The visible graph is the human-readable reconstructibility layer. When a development, smoke, or
-audit artifact needs machine-readable reconstruction, a `field_witness` sidecar carries the same
-burden nodes, dependency edges, roots, parallel groups, terminal states, register deltas, `∇·` /
-`∇×` diagnostics, LoopBreak data, `R(H,Δ)`, closure status, `T_lang` boundary, non-claims, and
-provenance/evidence metadata. The two layers must agree; neither layer upgrades local diagnostic
-evidence into package-bound release proof.
-
 `InitialBurdenSet` is not a retrospective set inferred from the closure block. It is the
 pre-release burden enumeration supplied by Layer A / Diagnostic IR before terminal accounting.
 New burdens found during `R(H,Δ)` are newly live or next-pass candidates; they do not make the

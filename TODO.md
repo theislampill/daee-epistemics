@@ -371,7 +371,7 @@ hardening only; live scriptless compact DSL behavior remains gated by the manual
   `atomics/skill/scripts/validate.py`, `atomics/skill/scripts/check_execution.py`,
   `atomics/skill/scripts/daee_level3.py`, and generated `skill/`.
 - Status: patched in source with burden-local `state_envelope` replay and targeted
-  structural-flattening checks. Follow-up notation normalization added `ⁿBᵢ` / `nBi`
+  structural-flattening checks. Follow-up notation normalization added `â¿Báµ¢` / `nBi`
   as the human/math and plain-text burden-submove notation while preserving `B1.s1`
   as a checker-compatible alias. Verification is recorded in the closure report after
   generated runtime rebuilds.

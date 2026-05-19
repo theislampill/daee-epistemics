@@ -226,11 +226,6 @@
       "module_class": "tactic"
     },
     {
-      "id": "TTP-MRP-mid-reread-pressure",
-      "path": "skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
-      "module_class": "tactic"
-    },
-    {
       "id": "doubt-vs-skepticism",
       "path": "skill/references/tactics/doubt-vs-skepticism.md",
       "module_class": "tactic"

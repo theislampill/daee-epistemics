@@ -51,18 +51,6 @@ lightweight governance, not extra ceremony.
   rendering, and documentation separate unless a clear owning module has reason to combine
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
-- External governance sheets such as ADHLBS are reference inputs, not runtime source. Audit
-  them through RTFM -> TRACE -> OWNER -> SSOT -> ATOMIC PATCH -> VERIFY; import only compact
-  repo-relevant rules, keep `AGENTS.md` and `SKILL.md` lean, and require A/B smoke proof before
-  changing runtime behavior.
-- Formal notation is a source-owner map, not decorative math or software-design rhetoric. Use
-  SOLID / GRASP / CUPID / ACID / BASE only as audit pointer discipline: name each symbol's meaning,
-  owner, dependency boundary, forbidden use, checker/smoke proof, and misuse signal before
-  patching. Do not add these acronyms to runtime output or `SKILL.md` without an owner decision
-  and A/B proof.
-- Formalism-pointer PDCA must baseline with the current runtime-loaded smoke method before patching,
-  patch only owner/checker pointers that reduce drift, and close each recommendation as done,
-  changed, blocked, deferred, or unverified with check/smoke evidence.
 
 ## Operating Discipline Packs
 
@@ -104,9 +92,6 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   model compliance, and checker expectation before adding more entrypoint prose.
   Local inlined-runtime smokes can diagnose generated-runtime behavior, but do not count
   as package-bound release-smoke proof.
-  For SKILL entrypoint cleanup, baseline before shrink and accept only when the same
-  runtime-loaded smoke method preserves or improves field banner, witness, notation,
-  non-claim, routing, and ordinary governed-output signals.
 - Andon: when work cannot honestly pass, expose status, blocker, failing check, owner,
   and next concrete action immediately.
 - Hansei: after failure, record the gap, cause, countermeasure, and follow-up evidence.
@@ -465,13 +450,6 @@ state.
   frontmatter contract check, generated-from-atomics freshness, package-shape validation,
   release-artifact hash coherence, smoke/evidence boundary check, public docs coherence, CI
   status, source-neutrality/local-path sweep, and `git diff --check`.
-- Public release names must use the public version tag only. Internal labels such as RC1 may
-  appear in provenance/audit notes, but the GitHub Release title/tag for this line is
-  `v0.4.3.0`, not an RC label.
-- Before publishing a new `.skill` release asset, update the release work queue in `TODO.md`,
-  refresh package/release evidence docs from the built artifact, and refresh docs/index
-  release-download metadata from the published GitHub Release before claiming the public
-  download points at the new package.
 - If replacing an existing GitHub Release asset on the same tag, say plainly that the asset
   hash changed, update the release notes/artifact docs, and verify the release page afterward.
 - Do not create a patch tag such as `v0.3.2.1` unless explicitly instructed. If a same-version

@@ -155,22 +155,6 @@ When an artifact needs collapse reconstruction, it may include an optional
 every initial burden appears in `terminal_states`; positive collapse still requires neutral `∇·B`
 and null/resolved `∇×κ` under the scoped closure rule.
 
-Field-witness reconstructibility addendum: when `field_witness` is present, it must carry
-machine-readable burden nodes, dependency edges, roots, parallel groups, terminal states,
-schema-light register-delta entries, `∇·` / `∇×` diagnostics, LoopBreak data, `R(H,Δ)`, closure status,
-`T_lang` boundary, non-claims, and provenance/evidence metadata sufficient to compare the
-sidecar against the visible closure witness. Its `coverage_proof.dependency_graph` records
-`nodes`, `edges`, `roots`, `parallel_groups`, and `acyclic`; graph nodes must match the visible
-initial-burden / terminal-state accounting. This sidecar is machine-readable reconstructibility,
-not a package-bound release-smoke proof and not a truth, warrant, uptake, or formal-calculus
-claim.
-
-Optional MRP evidence: `field_witness.reread_pressure` may record
-`TTP-MRP-mid-reread-pressure` when the post-landed reread state itself is tested. It records
-target burden, `R(H,Δ)` delta, pressure activations, active `∇·T` / `∇×T` states, finding,
-graph delta, pre-emption basis, route, and non-claims.
-It is validated only when present and does not make MRP visible in ordinary compact output.
-
 Formal typing boundary: `∇` is a route-ranking/preorder pressure read over eligible routes,
 `LoopBreak(∇×T)` is a partial licensed transition, `R(H,Δ)` rereads held material and the updated
 live remainder, and `T_lang: Ψᴺ ⇢ Ψᴵ` is a partial coupling relation rather than an isomorphism,

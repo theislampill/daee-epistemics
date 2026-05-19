@@ -1,102 +1,102 @@
 {
   "audit": "v0.4.1.0 TTP end-to-end operativity audit",
   "catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
-  "catalogue_count": 70,
+  "catalogue_count": 69,
   "class_counts": {
     "case-library": 19,
     "diagnostic": 6,
-    "tactic": 25,
+    "tactic": 24,
     "procedure": 7,
     "technique": 13
   },
   "status_counts": {
-    "PASS": 13,
+    "PASS": 12,
     "PARTIAL": 57
   },
   "priority_counts": {
     "P2": 19,
-    "P1": 51
+    "P1": 50
   },
   "dimension_counts": {
     "A_catalogue_integrity": {
-      "PASS": 70,
+      "PASS": 69,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "B_activation_condition": {
-      "PASS": 70,
+      "PASS": 69,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "C_field_target_clarity": {
-      "PASS": 70,
+      "PASS": 69,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "D_burden_submove_semantics": {
-      "PASS": 69,
+      "PASS": 68,
       "PARTIAL": 0,
       "MISSING": 1,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "E_delta_effect": {
-      "PASS": 1,
+      "PASS": 0,
       "PARTIAL": 39,
       "MISSING": 30,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "F_nabla_diagnostic_awareness": {
-      "PASS": 3,
+      "PASS": 2,
       "PARTIAL": 13,
       "MISSING": 54,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "G_reread_obligation": {
-      "PASS": 15,
+      "PASS": 14,
       "PARTIAL": 6,
       "MISSING": 49,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "H_hold_release_closure_effect": {
-      "PASS": 69,
+      "PASS": 68,
       "PARTIAL": 0,
       "MISSING": 1,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "I_nla_reconstruction_fidelity": {
-      "PASS": 1,
+      "PASS": 0,
       "PARTIAL": 25,
       "MISSING": 44,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "J_render_output_boundary": {
-      "PASS": 69,
+      "PASS": 68,
       "PARTIAL": 1,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "K_negative_constraints": {
-      "PASS": 64,
+      "PASS": 63,
       "PARTIAL": 0,
       "MISSING": 6,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "L_fixture_checker_coverage": {
-      "PASS": 50,
+      "PASS": 49,
       "PARTIAL": 2,
       "MISSING": 18,
       "UNCLEAR": 0,
@@ -2987,49 +2987,6 @@
       "status": "PASS",
       "priority": "P2",
       "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
-    },
-    {
-      "id": "TTP-MRP-mid-reread-pressure",
-      "owner_file": "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
-      "class": "tactic",
-      "owner_sha256": "c75e38c8c30e9130fd7d4c2d92ed5e0a95b082860f1b012d9d9d273025193bd0",
-      "owner_bytes_read": 11891,
-      "scores": {
-        "A_catalogue_integrity": "PASS",
-        "B_activation_condition": "PASS",
-        "C_field_target_clarity": "PASS",
-        "D_burden_submove_semantics": "PASS",
-        "E_delta_effect": "PASS",
-        "F_nabla_diagnostic_awareness": "PASS",
-        "G_reread_obligation": "PASS",
-        "H_hold_release_closure_effect": "PASS",
-        "I_nla_reconstruction_fidelity": "PASS",
-        "J_render_output_boundary": "PASS",
-        "K_negative_constraints": "PASS",
-        "L_fixture_checker_coverage": "PASS"
-      },
-      "direct_fixtures": [
-        "tests/mid-reread-pressure/valid/stable-reread-closure.md",
-        "tests/mid-reread-pressure/valid/genuine-downstream-burden.md",
-        "tests/mid-reread-pressure/valid/partial-real-burden.md",
-        "tests/mid-reread-pressure/valid/hidden-framework-recoil.md",
-        "tests/mid-reread-pressure/valid/doubt-churn-loopbreak.md",
-        "tests/mid-reread-pressure/valid/reorientation-reminder.md",
-        "tests/mid-reread-pressure/invalid/finding-without-pressure-owner.md"
-      ],
-      "indirect_fixtures": [
-        "tests/mid-reread-pressure/valid/genuine-downstream-burden.field_witness.json"
-      ],
-      "checker_hits": [
-        "tools/check_mid_reread_pressure.py",
-        "tools/check_ttp_operator_contracts.py --strict",
-        "tools/check_ir_instance_integrity.py"
-      ],
-      "defect_classes": [],
-      "lean_risk": "Low: reread harness activates existing pressure owners instead of replacing them",
-      "status": "PASS",
-      "priority": "P1",
-      "action": "implemented as reread-time activation harness with graph/field_witness fixtures and checker coverage"
     }
   ],
   "safe_patches_made": [

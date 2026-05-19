@@ -38,20 +38,26 @@ The former external recursive-audit prompt is deprecated as a normal invocation 
 
 **Default Output Surface Invariant.** For plain `/daee-epistemics`, internal governance is
 mandatory and default visibly prints the noetic-field execution banner as first visible content,
-then the compact DSL/IR header and bounded governed response. Clarifying or missing-input replies
-are still runtime outputs and must begin with the banner. Do not put prose, headings, apologies,
-Markdown fences, or clarifying questions before it. The banner is a render obligation produced
-from the same classification state as Layer A. The first visible line must be literally `field:`;
-do not replace it with a heading such as "Noetic-field execution banner," box art, or a prose
-summary of the banner:
+then the compact DSL/IR header and bounded governed response. Clarifying or missing-input replies are still runtime outputs
+and must begin with the banner. Do not put prose, headings, apologies, Markdown fences, or
+clarifying questions before it. The banner is a render obligation produced from the same
+classification state as Layer A. Preserve the recognizable `NOETIC FIELD EXECUTION` governed
+surface; do not demote the normal first-visible surface to a naked `field:` line:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔════════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>                ║
+╚════════════════════════════════════════════════════════╝
 ```
+
+If a transport cannot preserve box drawing, fall back to the same fields as plain text beginning
+with `field:`. That fallback is transport-safe, not a license to weaken governed-execution
+signaling when the normal banner can render.
 
 Print exactly one value for each field; never print the choice list or combine values with `|`.
 The banner must distinguish the user's task from an external source request: `/daee-epistemics
@@ -471,7 +477,7 @@ and do not move `𝒞(Ψᴺ)` / `T_lang: Ψᴺ ⇢ Ψᴵ` into prose-only closur
 - Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
 - Initial burden set:           [`[B1, B2, B3]`; every input-anchored burden admitted to the scoped witness]
 - Terminal states:              [one line per initial burden: `B1: landed / <operator> / <target -> operation -> result or compact delta>`; the burden ID must come immediately before the colon; do not write `B1 <title>: <state>`; allowed states are `landed`, `discharged-as-derivative`, `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, `cleared`]
-- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / independent at this level, `(root)` means no upstream dependency; node IDs must match terminal-state burden IDs and the graph must be reconstructible from the visible witness text alone; ASCII `A -> B` is a legacy transport fallback only, not the preferred notation]
+- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / no dependency relation, `(root)` means no upstream dependency; ASCII `A -> B` is allowed when Unicode is unavailable]
 - ∇·B:                          [`neutral / <target-explicit status>` or `non-neutral / <target-explicit status>`]
 - ∇×κ:                          [`null / <target-explicit status>`, `resolved / <target-explicit status>`, or `non-null / <target-explicit status>`]
 - `𝒞(Ψᴺ)`:                     [positive agent/runtime execution-field closure condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
@@ -484,28 +490,6 @@ held set / live remainder / terminal state accounting. `coverage_complete` means
 closure. If any burden is `held-with-reason`, `carried-PARTIAL`, or `carried-RECURSE`, the closure
 language must not overclaim COMPLETE unless it explains why that scoped field is terminal without
 live outward pressure or unresolved curl.
-
-Valid dependency-graph example:
-
-```text
-B1 (root)
-B1 → B2
-B1 → B3
-B2 ∥ B3
-B2 → B4
-B3 → B4
-```
-
-Counterexamples: `B1 then maybe B2`, `B1/B2 related`, and `B2 after the first thing` are not
-parseable dependency graphs because they do not expose roots, directed dependencies, or parallel
-relations with burden IDs.
-
-When the final `R(H,Δ)` exposes an apparent new burden, graph movement should be licensed by
-`TTP-MRP-mid-reread-pressure` or an equivalent source-owned reread-pressure check. The render may
-show a compact `[Mid-Reread Pressure]` block only when that pressure is control-relevant; ordinary
-compact output must not grow a new audit ledger merely to name the check.
-When MRP is shown, `∇·T` and `∇×T` are active reread gates: non-neutral `∇·T` needs HOLD/RECURSE
-or bounded explanation, and non-null `∇×T` needs LoopBreak, STOP, HOLD, or graph-bound recursion.
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]

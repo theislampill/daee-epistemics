@@ -334,18 +334,6 @@ burden, hold/defer it, skip it because it no longer applies, mark PARTIAL/limit,
 bounded reroute need because the live state materially changed, or close because no
 input-anchored burden remains.
 
-Mid-reread pressure: when `R(H,Δ)` is deciding whether an apparent post-landing burden is stable,
-genuinely downstream, partial, recoil-bound, churn, or reminder/reorientation pressure, load
-`references/tactics/TTP-MRP-mid-reread-pressure.md`. MRP freezes the landed `ΔⁿB`, tugs the
-dependency graph through closure-witness machinery, activates the relevant existing pressure
-owners for hidden-framework recoil / label-pressure / entailment pressure / doubt-churn /
-reorientation, then records which route their outputs license: STOP, HOLD, RECURSE,
-LoopBreak(∇×T), or closure witness.
-If MRP finds a genuine new dependency, `R(H,Δ)` attaches the graph edge and chooses RECURSE. If the
-pressure is partial but real, choose HOLD. If it is churn, label-pressure, or unlicensed recoil,
-use LoopBreak or STOP without proof-stacking. If the reread is stable, render the closure witness.
-MRP is not a truth/warrant metric and does not make `T_lang: Ψᴺ ⇢ Ψᴵ` guarantee uptake.
-
 B-complexity:
 
 ```text
@@ -1220,7 +1208,7 @@ This is the canonical State Carry Table for the abstract refresh operation.
 must be derivable from:
 
 ```text
-Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) − (items released by Burden N-1)
+Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) âˆ’ (items released by Burden N-1)
 ```
 
 New material introduced in Burden N's `Held routes` must be anchored in the original
@@ -1277,7 +1265,7 @@ Failure conditions:
   read without state re-read between passes, without enumerating remaining input-anchored live
   burdens after each pass, and without routing one bounded live burden per burden-cycle. Covering all
   topics is not recursion. A response that covers all topics in one essay still fails recursion.
-  input-anchored eligibility after refresh ≠ topic presence in the prompt.
+  input-anchored eligibility after refresh â‰  topic presence in the prompt.
 
 Minimal pair: a governed same-response recursion follows a landed move plus refresh plus renewed
 permission; an argument dump accumulates downstream content without refreshed governance.

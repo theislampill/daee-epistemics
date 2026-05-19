@@ -189,7 +189,7 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   `Closure/Reconstruction Witness` and account for
   candidate/held N frames, selected primary N, live registers, active or cleared owner/TTP child
   modes, Delta-nB, Delta-kappa, target-explicit `∇·` / `∇×` results, literal `Burden dependency
-  graph:` with compact edges such as `B1 → B2, B3` or `B1 ∥ B2 → B3`, and remaining kappa / H
+  graph:` with compact edges such as `B1 -> B2, B3` or `B1 ∥ B2 -> B3`, and remaining kappa / H
   status. If any live dependency remains unresolved, unrendered, or merely identified, write
   PARTIAL or continue under RECURSE.
 - Final hard-case closure witness - in hard compound/source-request cases, the last

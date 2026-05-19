@@ -15,7 +15,7 @@
       {"label": "Input", "class": "v56-input", "title": "Surface discourse or case input before diagnostic reduction."},
       {"label": "Layer A / diagnostic IR", "class": "v56-ir", "title": "The opening diagnostic read converts the surface into controlled intermediate representation."},
       {"label": "runtime frame + registers", "class": "v56-owner", "title": "Runtime-selected noetic frame plus live registers such as source-status, burden-function, held material, and release posture."},
-      {"label": "gate + ∇ route pressure", "class": "v56-owner", "title": "∇ means constrained route pressure after gate, routing, and owner catalogue checks; it is not a generic gradient, not generic linear algebra, and not Shannon."},
+      {"label": "gate + ∇ route pressure", "class": "v56-owner", "title": "∇ means constrained route pressure after gate, routing, and owner catalogue checks; it is not a generic gradient."},
       {"label": "ⁿB burden selected", "class": "v56-owner", "title": "ⁿB is the current bounded burden selected for owner-backed work."},
       {"label": "Owner/TTP operation", "class": "v56-owner", "title": "An eligible owner/TTP performs a bounded target → operation → result submove."},
       {"label": "Land(ⁿB) + Δ state update", "class": "v56-land", "title": "Δ marks the burden/register/dependency change produced by landing the current burden."},

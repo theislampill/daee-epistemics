@@ -120,12 +120,7 @@ the same state re-read also prints literal `Field diagnostics:` and `LoopBreak:`
 burden/submove, `Δ` effect, and post-break reread when nonzero. Use `R(H,Δ)` as the
 formal notation and `R(H,Delta)` only as the ASCII fallback. The expanded formal reread is
 `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`; the expanded ASCII fallback is
-`R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. If the reread itself is the pressure
-point, use `TTP-MRP-mid-reread-pressure` to activate existing pressure owners/classes and record
-whether their outputs license genuine dependency, partial real burden, hidden-framework recoil,
-label-pressure, doubt-churn, reorientation/reminder, or stable no-new-burden closure before
-release. MRP licenses graph deltas for RECURSE/HOLD, blocks proof-stacking when LoopBreak or STOP
-is the governed route, and makes `∇·T` / `∇×T` active reread gates rather than final labels. `∇·` and `∇×` remain forbidden as
+`R(H, Delta-nB{heart,xi,Omega,sigma,mu}, Delta-kappa)`. `∇·` and `∇×` remain forbidden as
 decorative proof of execution: they must have an explicit field target and be tied to the
 noetic/burden/dependency/register/route field, `κ/H`, dependency pressure, loop-breaking,
 `R(H,Δ)`, PARTIAL, RECURSE, COMPLETE, or checker outcome. They may render as `∇·κ` / `∇×κ`
@@ -152,9 +147,11 @@ pressure must name target, ground, `Δ` effect, post-break reread, and resulting
 state.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
-replies, begins with the noetic-field execution banner as first visible content. The first visible
-line is literally `field:`; do not put prose, headings, apologies, Markdown fences, box art,
-banner summaries, or clarifying questions before it, and do not wrap the banner in a code block.
+replies, begins with the noetic-field execution banner as first visible content. Preserve the
+recognizable `NOETIC FIELD EXECUTION` governed surface; do not put prose, headings, apologies,
+Markdown fences, banner summaries, or clarifying questions before it, and do not wrap the banner in
+a code block. A plain `field:` first line is a transport fallback only, not the normal governed
+surface.
 If a source-authentication case is missing the actual
 report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, `user task:
 SOURCE-AUTHENTICATION`, `external source request: IMPLICIT`, authority frame `LIVE`, state
@@ -216,10 +213,9 @@ mixed noetic-field, or authority-frame case, the closure audit must visibly acco
 candidate/held `N` frames, selected primary `N`, live registers, active or cleared owner/TTP
 child modes, `Delta-nB`, `Delta-kappa`, target-explicit `∇·` / `∇×` results, and remaining
 kappa / H status. Case-shaped dependencies appear only where live. The compact dependency graph
-uses parseable edge notation: `(root)` marks no upstream dependency, `A → B` means B depends on A
-landing first, and `A ∥ B` means A and B are parallel / independent at that level. Example:
-`B1 (root); B1 → B2; B1 → B3; B2 ∥ B3`. If that accounting cannot be rendered, mark PARTIAL or
-RECURSE instead of COMPLETE.
+uses readable edge notation, e.g. `B1 -> B2, B3, B4, B5` for a root burden whose landing licenses
+serial dependents, or `B1 ∥ B2 -> B3` where B3 depends on both parallel landed burdens. If that
+accounting cannot be rendered, mark PARTIAL or RECURSE instead of COMPLETE.
 The visible default section heading for this final accounting is literal
 `Closure/Reconstruction Witness`; do not replace it with `Closure audit` or collapse
 `Burden dependency graph:` into a shorter `burden graph` label.
@@ -863,7 +859,7 @@ Downstream content must remain held while any of the following are active:
 **Pass:**
 - Downstream material may be named as downstream but not fully released before its governing conditions are met.
 - Holding is pass-scoped and traversal-scoped, not permanent suppression.
-- `H(n+1) = (Hn ∪ InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
+- `H(n+1) = (Hn âˆª InputLive_n) - Released_n`: what is cleared, held, and not yet permitted stays explicit.
 - After the current `B` lands, `R` reassesses held material.
 - If held material remains live and now governs, it becomes the next bounded pass; if not, it is dropped, compressed, or resolved.
 
@@ -1133,6 +1129,6 @@ Compact diagnostic structure is mandatory in default at the frame level and may 
 | `references/diagnostics/routing-precedence.md` | ?VII distinguishes routing precedence from output-release and render |
 | `references/procedures/P7-restoration-stops.md` | P7 stops govern current-pass deployment; this rubric governs release discipline |
 | `references/diagnostics/diagnostic-ir.md` | IR fields `output_shape`, `what_is_withheld_and_why`, `what_remains_live`, `continuation_eligibility`, and `post_render_gate` carry the release state |
-| `references/diagnostics/case-state-schema.md` | Concealment × orientation matrix governs register-hold discipline |
+| `references/diagnostics/case-state-schema.md` | Concealment Ã— orientation matrix governs register-hold discipline |
 | `references/diagnostics/anti-patterns.md` | Anti-patterns for failure modes this rubric prevents |
 | `skill/SKILL.md ?V.A` | Control-plane pointer to the owner files; this file owns release amount and held/released discipline |
