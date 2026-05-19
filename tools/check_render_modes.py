@@ -64,7 +64,8 @@ REQUIRED_TOKENS = [
     "Default Output Surface Invariant",
     "For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints",
     "noetic-field execution banner",
-    "first visible line is literally `field:`",
+    "NOETIC FIELD EXECUTION",
+    "must not collapse to a bare `field:`",
     "first visible content",
     "Markdown fences",
     "Clarifying or missing-input replies are still runtime",
@@ -487,6 +488,29 @@ FORBIDDEN_TOKENS = [
     "Recursion decision: RECURSE may appear as a compact governance line at the close",
     "FPD/M1 landed",
     "the imported criterion has failed",
+    "first visible line is literally `field:`",
+    "do not render box art",
+    "box art, apologies, Markdown fences",
+]
+
+
+FIELD_ONLY_REGRESSION_PHRASES = [
+    "first visible line is literally `field:`",
+    "do not render box art",
+    "box art, apologies, Markdown fences",
+]
+
+ROOT_INVOCATION_SURFACE_REQUIRED = [
+    "NOETIC FIELD EXECUTION",
+    "¹B₁ [FPD]",
+    "¹B₂ [M1]",
+    "Land(¹B)",
+    "Land(B1)",
+    "R(H,Δ)",
+    "MRP",
+    "∇·T",
+    "∇×T",
+    "TTP-MRP-mid-reread-pressure",
 ]
 
 FIXTURE_REQUIRED_TOKENS = [
@@ -2632,6 +2656,34 @@ def read_dispatch_gate(root: Path, errors: list) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def check_invocation_surface_sources(root: Path, errors: list[str]) -> None:
+    """Guard the primary invocation surface against pointer-only regressions."""
+    root_skill = root / "atomics/skill/SKILL.md"
+    if not root_skill.is_file():
+        errors.append("root invocation surface missing: atomics/skill/SKILL.md")
+        return
+
+    skill_text = root_skill.read_text(encoding="utf-8")
+    for token in ROOT_INVOCATION_SURFACE_REQUIRED:
+        if token not in skill_text:
+            errors.append(f"root SKILL.md missing invocation-surface token: {token!r}")
+
+    for rel_path in [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md",
+        "tools/build_compiled_runtime.py",
+    ]:
+        path = root / rel_path
+        if not path.is_file():
+            errors.append(f"missing invocation-surface guard input: {rel_path}")
+            continue
+        text = path.read_text(encoding="utf-8")
+        for phrase in FIELD_ONLY_REGRESSION_PHRASES:
+            if phrase in text:
+                errors.append(f"{rel_path} preserves field-only banner regression: {phrase!r}")
+
+
 def check_current_doc_staleness(root: Path, errors: list) -> None:
     for rel_path in CURRENT_GOVERNANCE_DOCS:
         path = root / rel_path
@@ -2791,6 +2843,7 @@ def main() -> int:
     root = repo_root()
     errors = []
 
+    check_invocation_surface_sources(root, errors)
     check_current_doc_staleness(root, errors)
     check_render_shape_samples(errors)
     check_formal_marker_policy_samples(errors)

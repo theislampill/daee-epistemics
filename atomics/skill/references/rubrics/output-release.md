@@ -153,8 +153,9 @@ state.
 
 General noetic-selection / register-control release guard: Prompt brevity does not imply simple execution and is not a release permission. Every `/daee-epistemics` release surface, including clarifying or missing-input
 replies, begins with the noetic-field execution banner as first visible content. The first visible
-line is literally `field:`; do not put prose, headings, apologies, Markdown fences, box art,
-banner summaries, or clarifying questions before it, and do not wrap the banner in a code block.
+surface must visibly signal governed execution with `NOETIC FIELD EXECUTION` and the banner fields;
+do not reduce success to a bare `field:` line, prose, headings, apologies, Markdown fences, banner
+summaries, or clarifying questions before it, and do not wrap the banner in a code block.
 If a source-authentication case is missing the actual
 report/text/reference, mark the banner as `SOURCE-AUTHENTICATION`, `user task:
 SOURCE-AUTHENTICATION`, `external source request: IMPLICIT`, authority frame `LIVE`, state

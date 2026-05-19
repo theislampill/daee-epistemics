@@ -126,19 +126,22 @@ quality-gate claims. Those artifacts are optional developer validation, not publ
 evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
 Every plain `/daee-epistemics` runtime output begins with this noetic-field execution banner
-before Layer A. The first visible line is literally `field:`: do not place prose, headings,
-box art, apologies, Markdown fences, clarifying questions, or banner summaries before it, and
-do not wrap the banner in a code block. Clarifying or missing-input replies are still runtime
-outputs and must begin with the banner. The banner is generated from the same classification
-state used by Layer A. Print exactly one value for each field; never print the choice list,
-combine values with `|`, or invent a local synonym:
+before Layer A. The first visible surface must visibly signal governed execution; do not reduce
+success to a bare `field:` line, and do not place prose, headings, apologies, Markdown fences,
+clarifying questions, or banner summaries before it. Do not wrap the banner in a code block.
+Clarifying or missing-input replies are still runtime outputs and must begin with the banner. The
+banner is generated from the same classification state used by Layer A. Print exactly one value
+for each field; never print the choice list, combine values with `|`, or invent a local synonym:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>
+╚══════════════════════════════════════════════════════╝
 ```
 
 Use only these banner values. All inputs are noetic fields; prompt brevity does not imply
@@ -177,10 +180,10 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   does runtime work; may contain multiple operative submoves when they all serve the
   same live noetic burden; the released burden must be burden-complete before R,
   with materially necessary sub-burdens receiving matched TTP/operator treatment)
-- State/noetic re-read - compact (burden landed, remaining input-anchored burdens,
+- State/noetic re-read - compact (`Land(Bn)` / `Land(ⁿB)`, remaining input-anchored burdens,
   held routes rechecked, target-explicit `∇·` / `∇×` field diagnostics including null checks
-  when they license RECURSE/PARTIAL/COMPLETE, LoopBreak status, next live burden, release status
-  in prose). Hard/multi-burden default output may not render a bare `R(H,Delta)` continuation
+  when they license RECURSE/PARTIAL/COMPLETE, MRP when non-neutral `∇·T` or non-null `∇×T`
+  pressures reread, LoopBreak status, next live burden, release status in prose). Hard/multi-burden default output may not render a bare `R(H,Delta)` continuation
   line: it must include literal `Field diagnostics:` and `LoopBreak:` lines adjacent to the reread.
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
@@ -404,9 +407,9 @@ Rewrite before emitting.
 # Default Output Surface Invariant
 
 For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints
-a noetic-field execution banner before the compact DSL/IR header. The first visible line of the
-banner is literally `field:`; do not render box art, a banner heading, or a `source request`
-legacy label in that frame. Compact Layer A (read status, confidence, claim_level,
+a noetic-field execution banner before the compact DSL/IR header. The first visible surface must
+signal governed execution with `NOETIC FIELD EXECUTION` and must not collapse to a bare `field:`
+line or `source request` legacy label. Compact Layer A (read status, confidence, claim_level,
 pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
 current bounded operator, held, source-status/noetic-frame, gate/release decision, decisive
 missing differentiator when required) is the visible default diagnostic surface. Full
@@ -417,11 +420,14 @@ work under the render contract.
 Default visible frame:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>
+╚══════════════════════════════════════════════════════╝
 
 Layer A — Compact DSL/IR header
 - read status:

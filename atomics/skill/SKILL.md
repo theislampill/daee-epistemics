@@ -22,16 +22,19 @@ then hands state to `Land(B) -> Δ/field diagnostics -> R(H,Delta)` for STOP/HOL
 overgrowth and Layer B flattening.
 
 Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
-banner before Layer A. The first visible line is literally `field:`; do not render a heading such
-as "Noetic-field execution banner," box art, prose, apology, Markdown fence, or clarifying question
-before it. Minimum banner shape:
+banner before Layer A. Do not reduce the first-visible surface to a bare `field:` line, prose,
+apology, Markdown fence, or clarifying question. The banner must visibly signal governed runtime
+execution. Approved compact shape:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>
+╚══════════════════════════════════════════════════════╝
 ```
 
 The short invariant is: all inputs are noetic fields; prompt brevity never licenses shallow
@@ -192,7 +195,11 @@ Top-salient invariants:
   default Layer A it appears inside the gate/release decision as `∇ route: Bn pressure highest`
   with the dependency-reduction reason over held alternatives. It does not bypass owner routing
   or replace `Δ`.
-- Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
+- MRP trigger: when `R(H,Δ)` sees non-neutral `∇·T`, non-null `∇×T`, apparent downstream burden,
+  hidden-framework recoil, doubt-churn, or a licensed pre-voiced response, invoke
+  `TTP-MRP-mid-reread-pressure` before closure, `LoopBreak`, HOLD, or RECURSE is licensed. MRP
+  pressures the reread; it may license STOP/HOLD/RECURSE/LoopBreak/closure, not automatic recursion.
+- Nonzero `∇×T` still requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
 - `𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state, not checklist exhaustion or guaranteed interlocutor uptake.
 - When closure/coupling boundary notation is printed, preserve exact notation such as
   `𝒞(Ψᴺ)` and `T_lang: Ψᴺ ⇢ Ψᴵ`; do not ASCII-normalize or simplify it to
@@ -229,6 +236,8 @@ Top-salient invariants:
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
     R(H,Δ): <held/released/next-live-burden decision plus target-explicit ∇· / ∇× field check>
   ```
+  Every released burden-cycle must visibly include `Land(Bn)` or `Land(ⁿB)` before `R(H,Δ)`;
+  a generic state paragraph or bare "burden landed" label does not replace the landing gate.
   Hard/multi-burden default may not render bare `R(H,Delta)`: each RECURSE/PARTIAL/COMPLETE
   reread prints `Field diagnostics:` and `LoopBreak:` with target-explicit `∇·`/`∇×`;
   null curl = `LoopBreak: not needed`.
@@ -259,10 +268,16 @@ Top-salient invariants:
   `T_lang: Ψᴺ ⇢ Ψᴵ`.
   Graphs use edge
   notation such as `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`.
-- Hard-output worked examples and submove-boundary examples live in
-  `references/rubrics/diagnostic-render-contract.md`. Root invariant: case-specific
-  `¹Bᵢ [owner]` submoves show Target -> Operation -> Result, then `Land(B)` and
-  `R(H,Δ)` decide continue/HOLD/PARTIAL/close from refreshed state.
+- Invocation-surface miniature, structure only:
+  ```text
+  ¹B — main burden: imported moral tribunal
+  ¹B₁ [FPD] - expose imported criterion
+  ¹B₂ [M1] - test grounding / self-reference
+  Land(¹B) / Land(B1): criterion no longer governs as unquestioned judge
+  R(H,Δ): downstream burdens remain held/live; release, HOLD, PARTIAL, or close from refreshed state
+  ```
+  Detailed worked examples remain owned by `references/rubrics/diagnostic-render-contract.md`;
+  this compact shape is required on the invocation surface.
 - `σ != operative warrant` when `σ` is contrast / opponent-position / genealogy / historical note / held material / bounded comparison.
 - `N_AT := N_Atharī ≡ N_Taymiyyan ≡ N_Salafī ≡ N_Wahhābī`; aliases are not multiple warrants.
 - `N_Ashʿarī != N_Māturīdī != N_Taymiyyan`; `N_Ashʿarī[*]` and `N_Māturīdī[*]` are family labels, not automatic operative `N`.

@@ -41,16 +41,19 @@ mandatory and default visibly prints the noetic-field execution banner as first 
 then the compact DSL/IR header and bounded governed response. Clarifying or missing-input replies
 are still runtime outputs and must begin with the banner. Do not put prose, headings, apologies,
 Markdown fences, or clarifying questions before it. The banner is a render obligation produced
-from the same classification state as Layer A. The first visible line must be literally `field:`;
-do not replace it with a heading such as "Noetic-field execution banner," box art, or a prose
-summary of the banner:
+from the same classification state as Layer A. The first visible surface must not collapse into
+a bare `field:` line. It must show a governed execution signature such as compact box art or an
+equivalent banner with `NOETIC FIELD EXECUTION` plus these fields:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔══════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>
+╚══════════════════════════════════════════════════════╝
 ```
 
 Print exactly one value for each field; never print the choice list or combine values with `|`.

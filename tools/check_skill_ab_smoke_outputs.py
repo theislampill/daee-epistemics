@@ -13,6 +13,7 @@ CASE_RE = re.compile(r"^(?P<label>[A-Z])(?P<number>\d+)-output\.md$")
 FIELD_VALUES_RE = re.compile(
     r"^field:\s+(LOCAL CLAIM|NAMED WORLDVIEW|SOURCE-AUTHENTICATION|MIXED NOETIC FIELD)\b"
 )
+GOVERNED_BANNER_RE = re.compile(r"\bNOETIC FIELD EXECUTION\b")
 REREAD_RE = re.compile(r"R\(H,?\s*(Delta|\u0394)\)")
 MOJIBAKE_RE = re.compile(r"[\uFFFD\u00CE\u00E2]")
 ASCII_FORMALISM_RE = re.compile(r"\b(PsiN|PsiI|Psi\^N|Psi\^I)\b")
@@ -61,6 +62,20 @@ def first_visible_line(text: str) -> str:
         if line.strip():
             return line.strip()
     return ""
+
+
+def first_visible_lines(text: str, limit: int = 10) -> list[str]:
+    lines: list[str] = []
+    for line in text.splitlines():
+        if line.strip():
+            lines.append(line.strip())
+        if len(lines) >= limit:
+            break
+    return lines
+
+
+def normalize_banner_line(line: str) -> str:
+    return line.strip().strip("║").strip()
 
 
 def text_has_any(text: str, needles: list[str]) -> bool:
@@ -127,6 +142,7 @@ def classify_cause(log_text: str, first_line: str, failures: list[str]) -> str:
 def validate_output(path: Path) -> SmokeResult:
     text = read_text_auto(path)
     first_line = first_visible_line(text)
+    visible_head = first_visible_lines(text)
     phase = path.parent.name
     match = CASE_RE.match(path.name)
     case = path.stem.replace("-output", "")
@@ -140,8 +156,18 @@ def validate_output(path: Path) -> SmokeResult:
         failures.append("output is empty")
     if not first_line:
         failures.append("missing first visible line")
-    elif not FIELD_VALUES_RE.match(first_line):
-        failures.append("first visible line does not begin with canonical field:")
+    elif first_line.startswith("```"):
+        failures.append("first visible line is a Markdown fence, not governed execution banner")
+    else:
+        banner_window = "\n".join(visible_head[:8])
+        has_governed_banner = bool(GOVERNED_BANNER_RE.search(banner_window))
+        has_field_line = any(FIELD_VALUES_RE.match(normalize_banner_line(line)) for line in visible_head[:8])
+        if not has_governed_banner:
+            failures.append("first visible surface lacks governed NOETIC FIELD EXECUTION signature")
+        if not has_field_line:
+            failures.append("governed banner lacks canonical field line")
+        if FIELD_VALUES_RE.match(first_line) and not has_governed_banner:
+            failures.append("first visible surface collapsed to bare field:")
 
     if MOJIBAKE_RE.search(text):
         warnings.append("possible notation mojibake in captured output")
