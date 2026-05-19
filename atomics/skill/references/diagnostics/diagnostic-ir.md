@@ -14,6 +14,10 @@ catalogue_registered: false
 
 # Diagnostic IR - Dispatch Gate and Typed Intermediate Representation
 
+PACK-SPEC note: this file functions as an IR/dispatch contract owner. For future normative edits,
+use `docs/spec-authoring-pack.md`; keep uppercase MUST / SHOULD / MAY intentional and backed by
+examples or checks.
+
 This file defines the complete typed state that must be formed before any content module is dispatched. It sits between the workflow layer (routing procedure) and the metaphysical-architecture layer (what is being restored). Its purpose is twofold:
 
 1. Gate module dispatch. Dispatch is blocked until the mandatory minimum fields are populated and consistency checks pass.

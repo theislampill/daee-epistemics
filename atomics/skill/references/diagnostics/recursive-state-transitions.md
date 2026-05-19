@@ -41,6 +41,10 @@ operator_pack_eligible: true
 
 # Recursive State Transitions
 
+PACK-SPEC note: this file functions as a recursive-state contract owner. For future normative
+edits, use `docs/spec-authoring-pack.md`; keep uppercase MUST / SHOULD / MAY intentional and
+backed by examples or checks.
+
 This file is the canonical abstract owner for STOP / HOLD / RECURSE / PARTIAL
 state-transition semantics. It governs post-render re-entry, no-premature-STOP discipline,
 same-response recursion eligibility, PARTIAL vs STOP, and the state carry/reset/re-evaluation

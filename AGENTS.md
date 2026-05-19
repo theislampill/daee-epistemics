@@ -65,6 +65,7 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   requirement words are defects; unsafe, unsupported, or unauthorized paths stop and
   report the stop reason. In exploratory work, draft requirement levels before mutation
   and name owner, risk, next verification, and inspection basis.
+  Run `tools/check_spec_authoring_pack.py` after PACK-SPEC/governance pointer changes.
 - Gemba: inspect the live artifact where the work happens. For failures, use the actual
   file, generated HTML, smoke output, package, checker error, workflow, or UI state rather
   than summaries when the artifact exists.

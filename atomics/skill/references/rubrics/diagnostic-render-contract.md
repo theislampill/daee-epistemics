@@ -10,6 +10,10 @@ catalogue_registered: false
 
 # Diagnostic Render Contract
 
+PACK-SPEC note: this file functions as a render contract owner. For future normative edits, use
+`docs/spec-authoring-pack.md`; keep uppercase MUST / SHOULD / MAY intentional and backed by
+examples or checks.
+
 ## Function
 
 This file governs how visibly structured the output is. It runs after the output-release rubric has confirmed what may be released, and before the public response is shaped. It also requires an internal post-render gate before closure; visible gate fields are surface-specific. It does not replace routing, does not determine what is diagnosed, and does not determine what is eligible for release. Render shape follows diagnosis; it does not govern it. The default `/daee-epistemics` surface is the canonical compact DSL-governed runtime: readable bounded governed response with a mandatory noetic-field execution banner, compact DSL/IR header, hidden premises, per-released-operation Core Formulation, bounded operation, state/noetic re-read, one Restorative Response, and one final Closing Formulation. It is not prose-only mode. `/daee-epistemics:dsl` exposes expanded diagnostic/IR visibility; it is not the first place DSL governance appears. Internal/development audit render is retained for regression, pass-review, and architecture testing compatibility.

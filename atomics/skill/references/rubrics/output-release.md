@@ -12,6 +12,10 @@ catalogue_registered: false
 
 # Output-Release Rubric
 
+PACK-SPEC note: this file functions as a release contract owner. For future normative edits, use
+`docs/spec-authoring-pack.md`; keep uppercase MUST / SHOULD / MAY intentional and backed by
+examples or checks.
+
 ## Function
 
 This runtime governance rubric runs after dispatch and before final public render. It decides

@@ -121,6 +121,11 @@ plus result. If live execution cannot run, label the evidence type and remaining
 checkers can prove freshness, shape, and contract conformance; they do not prove live model
 behavior unless the check actually executes the model output path.
 
+For local SKILL smoke diagnostics, first verify the generated runtime was actually loaded. If a
+host cannot read `skill/SKILL.md` under its sandbox, inline the current generated runtime for local
+diagnosis and label the result as generated-runtime evidence only. Do not treat that as
+package-bound release-smoke proof.
+
 ## Plan Closure
 
 End substantial work by mapping every planned item to:
