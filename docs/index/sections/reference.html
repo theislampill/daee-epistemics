@@ -1,17 +1,4 @@
-<div class="hero"><h1>Reference Library</h1><p>Structured source browser. Files remain owners/sources of control objects, while the default path is search, select, and preview rather than a raw audit wall.</p></div>
-<div class="panel" id="refSummary" data-surface-role="support" data-summary-source="REFS"></div>
-<div class="panel" id="referenceBrowser" data-surface-role="focal" data-primary-focal="true">
-<div class="surfaceRoleKicker">Source-browser workspace</div>
-<h2>Browse generated source snapshots</h2>
-<div class="filters" data-surface-role="control"><input id="refSearch" oninput="renderRefs()" placeholder="Search references..."/><select id="refLayer" onchange="renderRefs()"><option value="">All layers</option><option value="schema">schema</option><option value="runtime governance">runtime governance</option><option value="diagnostic">diagnostic</option><option value="TTP/operator">TTP/operator</option><option value="terminology/reference">terminology/reference</option><option value="case/test">case/test</option><option value="generated artifact">generated artifact</option></select></div>
-<div class="sourceBrowser">
-<div class="doclist" id="docList" role="listbox" aria-label="Reference documents"></div>
-<div class="docbody panel" id="docBody" data-surface-role="generated-snapshot" aria-live="polite"><div class="docbodyEmpty">Select a source document.</div></div>
-</div>
-</div>
-<details class="panel" id="referenceRawSourceMap" data-surface-role="raw-source">
-<summary><span>Full generated source map</span><span class="small">raw provenance table for auditors</span></summary>
-<h2>Source map</h2>
-<p class="subtle">Generated from atomics source and audit index entries. This table remains available for parity review, but it is not the default reading path.</p>
-<div id="refTable"></div>
-</details>
+<div class="hero"><h1>Reference Library</h1><p>Structured source map. Files are owners/sources of control objects, not the primary theory view.</p></div>
+<div class="filters"><input id="refSearch" oninput="renderRefs()" placeholder="Search references..."/><select id="refLayer" onchange="renderRefs()"><option value="">All layers</option><option value="schema">schema</option><option value="runtime governance">runtime governance</option><option value="diagnostic">diagnostic</option><option value="TTP/operator">TTP/operator</option><option value="terminology/reference">terminology/reference</option><option value="case/test">case/test</option><option value="generated artifact">generated artifact</option></select></div>
+<div class="panel"><h2>Source map</h2><div id="refTable"></div></div>
+<div class="panel"><h2>Embedded document viewer</h2><div class="docviewer"><div class="doclist" id="docList"></div><div class="docbody panel" id="docBody"><p>Select a source document.</p></div></div></div>

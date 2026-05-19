@@ -204,23 +204,9 @@ The visual bar is human readability, not structural validity alone. A docs/index
 
 Before declaring visual work complete, run a source-bound design pass: confirm that repeated colors, spacing, radii, typography, focus states, and carousel dimensions come from this file or from a clearly local component rule. Runtime meaning, release status, and formal semantics must remain in their owning sources.
 
-## Component role taxonomy
-
-Every major tab declares surface roles with `data-surface-role` so future layout work has a visible contract:
-
-- `focal`: the primary object a human should read or manipulate first.
-- `support`: guidance, summaries, counts, or explanatory copy that helps the focal object.
-- `control`: search, filter, selector, tab, carousel, notation, or card controls.
-- `provenance`: source-owner material needed for auditability, but not the first reading path.
-- `raw-source`: full generated tables, matrices, or source maps.
-- `disclosure`: collapsed or contextual material.
-- `generated-snapshot`: generated human-readable HTML preview from source-owned files.
-
-Each of Architecture, Owners/TTP, Theory, and Reference Library should have exactly one primary focal surface. Additional cards can be useful, but they must clearly support that focal object rather than becoming a wall of equal-weight panels.
-
 ## Layout discipline
 
-Each major section needs one primary focal object. Architecture starts with the shared runtime map, paired pipeline readings, and selected-primary carousel. Owners/TTP starts with a selected-detail operator/family workspace. Theory starts with the notation map and contextual Highlighted notation panel. Reference Library starts with source-derived counts, search/filter/list controls, and a selected generated document preview.
+Each major section needs one primary focal object. Architecture starts with the shared runtime map and selected-primary carousel. Theory starts with compact notation and the contextual Highlighted notation panel. Owners/TTP and Reference Library are support/navigation surfaces, so dense source tables must not take over the default Architecture or Theory reading path.
 
 Use bounded grids with `minmax(0, 1fr)`, local scroll for wide tables, and wrapping text inside chips, code paths, formulas, and card bodies. Do not use page-wide horizontal chip streams when the content is a sequence; use vertical phase groups, grids, or progressive disclosure.
 
@@ -229,20 +215,6 @@ Use bounded grids with `minmax(0, 1fr)`, local scroll for wide tables, and wrapp
 Dense notation is allowed only when it remains readable at the selected-card size. Long formulas, target grammars, source-owner lists, and path material must wrap, move into a contextual panel, or live in collapsed/provenance metadata.
 
 Notation color inherits the Architecture phase palette. Color helps recognition, but the label, source owner, and runtime role carry meaning. Do not create symbol-only decoration, proof-by-color, or notation variants that are not source-owned.
-
-The daee-epistemics notation is semantic material, not decorative text. Preserve exact forms such as `𝓝`, `D₀`, `Ψᴺ`, `Ψᴵ`, `N∈𝓝`, `∇·T`, `∇×T`, `ⁿBᵢ[OPᵢ]`, `ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ`, `LoopBreak(∇×T)`, `R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)`, `𝒞(Ψᴺ)`, `T_lang: Ψᴺ ⇢ Ψᴵ`, and `N_fiṭrī ∧ ʿaql ṣarīḥ`. If a layout cannot handle the notation, fix the layout; do not simplify, transliterate, rename, or ASCII-normalize the notation.
-
-## Reference source-browser discipline
-
-Reference Library is a source browser, not a table-first audit wall. The default path is summary counts, search/filter controls, keyboard-accessible source list, and selected generated snapshot preview. The full source map remains generated and available, but it lives in a collapsed raw-source disclosure.
-
-Counts, paths, roles, layers, line counts, and snapshots derive from generated source data. Do not maintain parallel literal link tables.
-
-## Owners selected-detail discipline
-
-Owners/TTP is a selected-detail workspace. Operator/family controls and selected detail panels are the human path. Full matrices and owner/source tables remain available for audit parity, but they are collapsed or contextual by default.
-
-Do not imply the operator graph is the full module catalogue. Operator/family maps, case-library/noetic-profile modules, and catalogue entries have distinct owners and counts.
 
 ## Carousel discipline
 
@@ -258,7 +230,7 @@ Do not flatten interactive cards into static cards to make the page easier to st
 
 ## Progressive disclosure discipline
 
-Provenance, source-owner maps, full notation source maps, raw reference source maps, operator matrices, and long support tables are secondary unless the user is explicitly in an audit/source view. They should appear as contextual chips, hidden metadata, support-tab content, local scroll regions, or collapsed details, not as the dominant default reading path.
+Provenance, source-owner maps, full notation source maps, raw reference snapshots, and long support tables are secondary. They should appear as contextual chips, hidden metadata, support-tab content, local scroll regions, or collapsed details, not as the dominant default reading path.
 
 Generated HTML should be readable by humans when opened directly, but it is not canonical. Edit source files, regenerate, and let the checker guard source parity.
 
@@ -317,12 +289,6 @@ Do not make side carousel cards into separate preview labels.
 Do not use colors to claim truth, competence, uptake, or release proof.
 
 Do not hand-edit generated `docs/index.html`.
-
-Do not replace formal daee-epistemics notation with simplified labels; add plain-language labels beside or below it when needed.
-
-Do not turn Reference Library back into a default-visible raw source table.
-
-Do not turn Owners/TTP into a default-visible operator matrix or provenance wall.
 
 ## Source ownership
 

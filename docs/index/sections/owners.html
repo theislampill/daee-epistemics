@@ -2,8 +2,7 @@
 <h1>Owners &amp; TTP</h1>
 <p>Owners are the control surfaces that make meta-noetic memetics executable. TTPs are state-transformers over diagnosed burdens, not black-box labels.</p>
 </div>
-<details class="panel" data-surface-role="support">
-<summary><span>How to read an owner/TTP</span><span class="small">gate, trigger, owner floor, submove, reread</span></summary>
+<div class="panel">
 <h2>How to read an owner/TTP</h2>
 <div class="opGraph">
 <div class="opGraphNode" style="--c:var(--cyan)"><strong>1. Gate</strong><p>IR and routing authorize or suppress the move.</p></div>
@@ -12,14 +11,12 @@
 <div class="opGraphNode" style="--c:var(--orange)"><strong>4. Submove</strong><p>ⁿBᵢ[OP] performs target → operation → result.</p></div>
 <div class="opGraphNode" style="--c:var(--red)"><strong>5. Delta / Reread</strong><p>ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ feeds R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ).</p></div>
 </div>
-<div class="callout"><strong>Operational test:</strong> A TTP is not "mentioned" until it changes target state. Each active operator should be readable as <code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</code>.</div>
-</details>
-<div class="panel" id="ownerSummary" data-surface-role="support" data-summary-source="module-catalogue"></div>
-<div class="panel" data-surface-role="focal" data-primary-focal="true">
-<div class="surfaceRoleKicker">Selected-detail workspace</div>
+<div class="callout"><strong>Operational test:</strong> A TTP is not “mentioned” until it changes target state. Each active operator should be readable as <code>ⁿBᵢ[OP] : target → operation → result → ΔⁿB{♥,ξ,Ω,σ,μ} / Δκ</code>.</div>
+</div>
+<div class="panel">
 <h2>TTP/operator graph — click an operator</h2>
-<p class="subtle">These are the same labels that appear in the Concept Graph and Relations Map. Click any chip there to jump here. The selected detail is the default human path; full audit matrices remain below as collapsed source views.</p>
-<div class="filters" data-surface-role="control">
+<p class="subtle">These are the same labels that appear in the Concept Graph and Relations Map. Click any chip there to jump here.</p>
+<div class="filters">
 <input id="opSearch" oninput="renderOperatorGraph()" placeholder="Filter operators..."/>
 <select id="opFamily" onchange="renderOperatorGraph()">
 <option value="">All families</option>
@@ -35,22 +32,20 @@
 <div class="opDetail" id="operatorGraphDetail"></div>
 </div>
 </div>
-<div class="panel" data-surface-role="support">
+<div class="panel">
 <h2>Owner families — control layers</h2>
 <div class="ownerFamilies">
 <div class="ownerList" id="ownerFamilyList"></div>
 <div class="ownerDetail" id="ownerFamilyDetail"></div>
 </div>
 </div>
-<details class="panel ownerAuditDisclosure" data-surface-role="raw-source">
-<summary><span>Operator transformation matrix</span><span class="small">full generated audit table</span></summary>
+<div class="panel">
 <h2>Operator transformation matrix</h2>
 <p class="subtle">Audit matrix: what each operator acts on, when it activates, and what state delta it should produce.</p>
 <div id="operatorMatrix"></div>
-</details>
-<details class="panel ownerAuditDisclosure" data-surface-role="provenance">
-<summary><span>Owner/source table</span><span class="small">catalogue and complement-bearing source rows</span></summary>
+</div>
+<div class="panel">
 <h2>Owner/source table</h2>
 <p class="subtle">For code auditors: file/source identities and what they govern.</p>
 <div id="ownerSourceTable"></div>
-</details>
+</div>
