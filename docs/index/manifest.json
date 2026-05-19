@@ -13,6 +13,43 @@
     "framework_pipeline_markdown": "atomics/skill/references/diagnostics/framework-pipeline.md",
     "audit_index": "docs/audits/INDEX.md"
   },
+  "surface_roles": {
+    "taxonomy_source": "docs/index/DESIGN.md",
+    "roles": [
+      "focal",
+      "support",
+      "control",
+      "provenance",
+      "raw-source",
+      "disclosure",
+      "generated-snapshot"
+    ],
+    "tabs": {
+      "architecture": {
+        "primary_focal": "runtime map, selected-primary carousel, and paired pipeline readings",
+        "support": "Architecture Thesis onboarding abstract plus compact how-to-read and source-boundary disclosures",
+        "provenance": "runtime architecture source notes"
+      },
+      "owners": {
+        "primary_focal": "selected operator/family workspace",
+        "control": "operator/family selectors",
+        "support": "source-derived summaries and family descriptions",
+        "provenance": "collapsed owner/source tables"
+      },
+      "theory": {
+        "primary_focal": "notation map and Highlighted notation context panel",
+        "control": "runtime-phase grouped theory cards and notation selectors",
+        "provenance": "collapsed/full source-owner notation map"
+      },
+      "reference": {
+        "primary_focal": "source-browser selected document preview",
+        "control": "search, coarse layer/family filters, clear action, and document list",
+        "support": "compact source-derived counts inside the source-browser workspace",
+        "provenance": "collapsed generated layer, family, and fine-grained role breakdown",
+        "raw-source": "collapsed generated source map table"
+      }
+    }
+  },
   "tabs": [
     {
       "id": "architecture",
@@ -101,7 +138,8 @@
           "id": "runtime_theory_notation",
           "provider": "renderTheoryControlOverview",
           "classification": "STRUCTURED_SOURCE_DERIVED",
-          "owner_source": "docs/index/runtime-architecture.json"
+          "owner_source": "docs/index/runtime-architecture.json",
+          "notes": "Renders formal trace, one thin side phase/color legend, and one flat runtime-ordered card flow with compact execution step breaks; phase labels do not bucket or reorder controls."
         },
         {
           "id": "runtime_theory_source_metadata",
@@ -131,6 +169,7 @@
           "id": "reference_library_data",
           "provider": "renderReferenceData",
           "classification": "OWNER_DERIVED",
+          "notes": "Default surface is source browser first; #reference resets to that browser path; Source map opens as compact provenance summary plus nested closed layer/family/fine-role/raw-row disclosures. Layer/family/fine-role breakdowns preserve exact generated labels and render as compact key/value count lists with filters and show-all gating; raw generated source rows remain a real table in the deepest collapsed Reference provenance surface.",
           "owner_sources": [
             "atomics/skill/README.md",
             "atomics/skill/SKILL.md",
@@ -267,6 +306,7 @@
       "current_source": "docs/index/DESIGN.md",
       "owner_sources": [
         "docs/index/DESIGN.md",
+        "docs/index/VISUAL_QA.md",
         "docs/index/templates/index.html.tpl",
         "tools/build_docs_index.py"
       ],
@@ -278,7 +318,9 @@
         "generated CSS custom properties",
         "carousel token references",
         "focus and reduced-motion styles",
-        "contrast sanity checks"
+        "contrast sanity checks",
+        "surface-role taxonomy",
+        "local browser visual QA runbook"
       ]
     },
     {
@@ -394,7 +436,8 @@
       "classification": "OWNER_DERIVED",
       "current_source": "tools/build_docs_index.py",
       "js_constants": [
-        "REFS"
+        "REFS",
+        "REF_SUMMARY"
       ],
       "owner_sources": [
         "atomics/skill/README.md",

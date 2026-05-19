@@ -134,13 +134,40 @@ Theory card or notation chip must update the Highlighted notation panel with the
 selected meaning, runtime role, source owners, and related highlighted notation.
 The full notation source map is provenance/secondary UI only, not a default-visible
 dominant table.
+Theory card banks must separate runtime order from phase/color identity. The formal notation
+trace remains ordered as formal trace; the runtime execution cards render as one compact
+source-ordered card flow with each card exactly once; phase/color labels belong in one thin
+side-rail legend plus data/ARIA/title metadata, not repeated full-width section wrappers,
+top banners, buckets, or visible per-card phase labels inserted into the card flow.
+Theory notation highlighting must separate semantic color from active state. Selected notation,
+highlighted-set rows, and related chips keep their source/phase color; active selection is shown
+with outline, ring, glow, or stroke rather than replacing the semantic color with a generic
+highlight.
 
-The Reference Library tab should default to a human-readable source browser:
-summary counts, search/filter controls, document/source list, selected document
-preview, and then collapsed full raw source maps. The Owners & TTP tab should
-default to a selected-detail operator/family workspace with summary counters,
-while full matrices and owner/source tables remain accessible as support or
-provenance disclosures.
+`docs/index/DESIGN.md` is the detailed SSOT for docs/index visual rules. Keep
+`AGENTS.md` as the durable operating gate, not a second copy of the design spec.
+For Reference Library work, enforce these invariants from DESIGN.md: browser
+first; `Source map / generated provenance` secondary and collapsed; count
+breakdowns as compact key/value lists rather than `NAME` / `COUNT` tables or
+giant cards; raw source rows as tables only inside collapsed raw provenance; and
+exact generated source labels preserved without renaming, title-casing,
+normalizing, flattening, or reinterpretation. Fix Reference layout without
+changing source meaning, and keep checker coverage for source-browser order,
+collapsed provenance, count-list rendering, exact source-label preservation, and
+raw table placement.
+The Owners & TTP tab should default to a selected-detail operator/family
+workspace with summary counters, while full matrices and owner/source tables
+remain accessible as support or provenance disclosures.
+For audit/provenance disclosures, the `<summary>` owns the disclosure title.
+Do not repeat that same title as an immediate H1/H2 inside the disclosure body.
+Inside audit/provenance disclosures, use H3/H4 labels, captions, or small metadata
+for subsections such as source maps, owner/source tables, catalogue rows, and raw
+generated provenance.
+
+The Boundaries tab should render System Boundaries as a readable boundary map, not a
+half-width audit table inside a large empty panel. Preserve the surface/responsibility/
+boundary distinctions, but prefer responsive boundary cards or a full-width responsive table
+with structural checker coverage.
 
 Use ACID / SSOT / GRASP for docs/index generation work: make bounded source changes,
 keep generated docs fresh and checker-covered, isolate visual presentation from runtime

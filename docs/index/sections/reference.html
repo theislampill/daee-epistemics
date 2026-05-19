@@ -1,4 +1,33 @@
-<div class="hero"><h1>Reference Library</h1><p>Structured source map. Files are owners/sources of control objects, not the primary theory view.</p></div>
-<div class="filters"><input id="refSearch" oninput="renderRefs()" placeholder="Search references..."/><select id="refLayer" onchange="renderRefs()"><option value="">All layers</option><option value="schema">schema</option><option value="runtime governance">runtime governance</option><option value="diagnostic">diagnostic</option><option value="TTP/operator">TTP/operator</option><option value="terminology/reference">terminology/reference</option><option value="case/test">case/test</option><option value="generated artifact">generated artifact</option></select></div>
-<div class="panel"><h2>Source map</h2><div id="refTable"></div></div>
-<div class="panel"><h2>Embedded document viewer</h2><div class="docviewer"><div class="doclist" id="docList"></div><div class="docbody panel" id="docBody"><p>Select a source document.</p></div></div></div>
+<div class="hero"><h1>Reference Library</h1><p>Structured source browser. Files remain owners/sources of control objects, while the default path is search, select, and preview rather than a raw audit wall.</p></div>
+<div class="panel referenceBrowserPanel" id="referenceBrowser" data-surface-role="focal" data-primary-focal="true" data-reference-browser="source-browser">
+<div class="surfaceRoleKicker">Source-browser workspace</div>
+<h2>Browse generated source snapshots</h2>
+<div class="referenceSummaryInline" id="refSummary" data-surface-role="support" data-summary-source="REFS"></div>
+<div class="filters referenceFilters" data-surface-role="control"><input id="refSearch" oninput="renderRefs()" placeholder="Search references..."/><select id="refLayer" onchange="renderRefs()"><option value="">All layers</option></select><select id="refFamily" onchange="renderRefs()"><option value="">All families/types</option></select><button type="button" class="filterClear" onclick="clearRefFilters()">Clear</button></div>
+<div class="sourceBrowser">
+<div class="doclist" id="docList" role="listbox" aria-label="Reference documents"></div>
+<div class="docbody panel" id="docBody" data-surface-role="generated-snapshot" data-reference-selected-preview="true" aria-live="polite"><div class="docbodyEmpty">Select a source document.</div></div>
+</div>
+</div>
+<details class="panel sourceMapDisclosure source-map-disclosure auditDisclosure" id="referenceRawSourceMap" data-surface-role="raw-source" data-reference-provenance="source-map">
+<summary><span class="auditTitleStack"><span class="audit-title">Source map / generated provenance</span><span class="audit-subtitle">collapsed provenance for auditors</span></span></summary>
+<div class="auditBody" id="referenceAuditBreakdown" data-surface-role="provenance">
+<div class="referenceProvenanceSummary" id="referenceProvenanceSummary"></div>
+<details class="referenceNestedDisclosure" id="referenceLayerBreakdown">
+<summary>Layer breakdown</summary>
+<div id="referenceLayerBreakdownTable"></div>
+</details>
+<details class="referenceNestedDisclosure" id="referenceFamilyBreakdown">
+<summary>Coarse family/type breakdown</summary>
+<div id="referenceFamilyBreakdownTable"></div>
+</details>
+<details class="referenceNestedDisclosure" id="referenceFineRoleBreakdown">
+<summary>Fine-grained role/source breakdown</summary>
+<div id="referenceFineRoleBreakdownTable"></div>
+</details>
+<details class="referenceNestedDisclosure" id="referenceRawRows">
+<summary>Raw generated source rows</summary>
+<div id="refTable"></div>
+</details>
+</div>
+</details>

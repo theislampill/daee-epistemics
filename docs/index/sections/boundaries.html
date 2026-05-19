@@ -2,20 +2,43 @@
 <h1>Boundaries & Bridge</h1>
 <p>Source, runtime, package, checker, and notation boundaries for reading the generated docs/index surface without confusing it for runtime proof.</p>
 </div>
-<div class="panel" id="system-boundaries">
+<div class="panel boundaryMapPanel" id="system-boundaries" data-surface-role="support" data-boundary-map="system-boundaries">
 <h2>System Boundaries</h2>
-<table>
-<tr><th>Surface</th><th>Responsibility</th><th>Boundary</th></tr>
-<tr><td><code>atomics/skill/</code></td><td>Canonical editable source for runtime instructions, owners, diagnostics, data, and references.</td><td>Edit here first; rebuild generated runtime after source changes.</td></tr>
-<tr><td><code>skill/</code></td><td>Generated runtime/package root.</td><td>Do not hand-edit as source of truth.</td></tr>
-<tr><td><code>tools/</code>, <code>tests/</code>, CI</td><td>Maintainer verification, routing parity, package shape, smoke/artifact checks.</td><td>Checker evidence supports claims; it is not runtime source.</td></tr>
-<tr><td><code>docs/</code></td><td>Onboarding, audit, reference, and release/evidence surfaces.</td><td>Docs explain and point; they do not govern live operation.</td></tr>
-<tr><td>Optional harness</td><td>Repo/dev validation machinery.</td><td>Not canonical user-facing package content unless explicitly authorized.</td></tr>
-<tr><td>Public runtime contract</td><td>Compact DSL-governed output and owner-backed execution.</td><td>No proof ledger or notation annex is a substitute for governed operation.</td></tr>
-</table>
+<div class="boundaryCardGrid" role="list" aria-label="System boundary map">
+<article class="boundaryCard" role="listitem" data-boundary-surface="atomics/skill/">
+<h3>Surface</h3><p><code>atomics/skill/</code></p>
+<h3>Responsibility</h3><p>Canonical editable source for runtime instructions, owners, diagnostics, data, and references.</p>
+<h3>Boundary</h3><p>Edit here first; rebuild generated runtime after source changes.</p>
+</article>
+<article class="boundaryCard" role="listitem" data-boundary-surface="skill/">
+<h3>Surface</h3><p><code>skill/</code></p>
+<h3>Responsibility</h3><p>Generated runtime/package root.</p>
+<h3>Boundary</h3><p>Do not hand-edit as source of truth.</p>
+</article>
+<article class="boundaryCard" role="listitem" data-boundary-surface="tools-tests-ci">
+<h3>Surface</h3><p><code>tools/</code>, <code>tests/</code>, CI</p>
+<h3>Responsibility</h3><p>Maintainer verification, routing parity, package shape, smoke/artifact checks.</p>
+<h3>Boundary</h3><p>Checker evidence supports claims; it is not runtime source.</p>
+</article>
+<article class="boundaryCard" role="listitem" data-boundary-surface="docs/">
+<h3>Surface</h3><p><code>docs/</code></p>
+<h3>Responsibility</h3><p>Onboarding, audit, reference, and release/evidence surfaces.</p>
+<h3>Boundary</h3><p>Docs explain and point; they do not govern live operation.</p>
+</article>
+<article class="boundaryCard" role="listitem" data-boundary-surface="optional-harness">
+<h3>Surface</h3><p>Optional harness</p>
+<h3>Responsibility</h3><p>Repo/dev validation machinery.</p>
+<h3>Boundary</h3><p>Not canonical user-facing package content unless explicitly authorized.</p>
+</article>
+<article class="boundaryCard" role="listitem" data-boundary-surface="public-runtime-contract">
+<h3>Surface</h3><p>Public runtime contract</p>
+<h3>Responsibility</h3><p>Compact DSL-governed output and owner-backed execution.</p>
+<h3>Boundary</h3><p>No proof ledger or notation annex is a substitute for governed operation.</p>
+</article>
 </div>
-<div class="panel" id="current-bridge-note">
+</div>
+<div class="panel" id="current-bridge-note" data-surface-role="support">
 <h2>Current Bridge Note</h2>
-<p>The notation layer is schema-light baseline control over the compact runtime. The registers are not mandatory JSON fields unless a deliberate contract migration updates producers, consumers, schemas, tests, examples, docs, generated runtime, and release claims together.</p>
-<p>Use the notation to clarify where a live register changes IR, owner eligibility, held material, collapse radius, burden landing, reread, PARTIAL, or restoration. If it does not change control state, it belongs in deeper theory or reference material, not in the Architecture map.</p>
+<p>The notation layer is schema-light baseline control over the compact runtime.<br/>The registers are not mandatory JSON fields unless a deliberate contract migration updates producers, consumers, schemas, tests, examples, docs, generated runtime, and release claims together.</p>
+<p>Use the notation to clarify where a live register changes IR, owner eligibility, held material, collapse radius, burden landing, reread, PARTIAL, or restoration.<br/>If it does not change control state, it belongs in deeper theory or reference material, not in the Architecture map.</p>
 </div>

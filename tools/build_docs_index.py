@@ -540,11 +540,31 @@ def reference_data(modules: list[dict[str, str]]) -> tuple[list[dict[str, Any]],
 
 def render_reference_data(modules: list[dict[str, str]]) -> str:
     refs, docs = reference_data(modules)
+    by_layer: dict[str, int] = {}
+    by_role: dict[str, int] = {}
+    total_lines = 0
+    for ref in refs:
+        layer = str(ref.get("layer", "source document"))
+        role = str(ref.get("role", "source"))
+        by_layer[layer] = by_layer.get(layer, 0) + 1
+        by_role[role] = by_role.get(role, 0) + 1
+        try:
+            total_lines += int(ref.get("lines", 0))
+        except (TypeError, ValueError):
+            pass
+    summary = {
+        "total_references": len(refs),
+        "total_snapshots": len(docs),
+        "total_lines": total_lines,
+        "by_layer": dict(sorted(by_layer.items())),
+        "by_role": dict(sorted(by_role.items())),
+    }
     return "\n".join(
         [
             "// Generated from atomics/skill README, SKILL.md, and references/**/*.md by tools/build_docs_index.py.",
             f"const REFS = {js_json(refs)};",
             f"const DOCS = {js_json(docs)};",
+            f"const REF_SUMMARY = {js_json(summary)};",
         ]
     )
 
@@ -647,12 +667,12 @@ def render_runtime_architecture_rows(arch: dict[str, Any]) -> str:
     ]
     return "\n".join(
         [
-            '<div class="runtimeSourceNote" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
+            '<div class="runtimeSourceNote" data-surface-role="provenance" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
             "<strong>Shared source:</strong> Architecture cards, paired Architecture pipelines, and Theory notation are generated from "
             '<code>docs/index/runtime-architecture.json</code>, which points back to canonical runtime owners. '
             "Generated HTML is not the owner.",
             "</div>",
-            '<div class="v60-pipeline-stack" aria-label="Canonical runtime paired pipelines" data-runtime-layout="paired-vertical-pipelines">',
+            '<div class="v60-pipeline-stack" data-surface-role="focal" aria-label="Canonical runtime paired pipelines" data-runtime-layout="paired-vertical-pipelines">',
             '<div class="v60-pipeline-heading">Architecture pipeline</div>',
             '<div class="v60-pipeline-columns">',
             render_runtime_pipeline(
@@ -1232,35 +1252,16 @@ def notation_metadata(arch: dict[str, Any]) -> dict[str, dict[str, object]]:
 
 def render_theory_control_overview(arch: dict[str, Any]) -> str:
     metadata = notation_metadata(arch)
-    cards: list[str] = [
-        '<div class="runtimeSourceNote theoryRuntimeSourcing" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
+    pieces: list[str] = [
+        '<div class="runtimeSourceNote theoryRuntimeSourcing" data-surface-role="provenance" data-runtime-architecture-source="docs/index/runtime-architecture.json">',
         "<strong>Same runtime sequence, formalized:</strong> this tab renders compact notation chips and mapping rows from the same shared runtime architecture source as the Architecture tab, without duplicating the Architecture pipelines.",
         "</div>",
-        '<div class="controlOverviewGrid">',
-    ]
-    for index, card in enumerate(arch["theory_cards"]):
-        extra = f' {esc(card.get("extra_class", ""))}' if card.get("extra_class") else ""
-        targets = theory_card_targets(arch, card)
-        active_class = " is-linked-active" if index == 0 else ""
-        pressed = "true" if index == 0 else "false"
-        cards.append(
-            f'<button type="button" class="controlCard {esc(card["phase_class"])}{extra}{active_class}" '
-            f'data-theory-card="{esc(card["id"])}" data-concept-id="{esc(card["id"])}" '
-            f'data-notation-targets="{esc(" ".join(targets))}" '
-            'data-runtime-architecture-source="docs/index/runtime-architecture.json" '
-            f'aria-pressed="{pressed}" onclick="selectTheoryCard(this)">\n'
-            f'<span class="controlSym">{esc(card["symbol"])}</span>\n'
-            f'<strong>{esc(card["label"])}</strong>\n'
-            f'<p>{esc(card["description"])}</p>\n'
-            "</button>"
-        )
-    cards.append("</div>")
-    cards.append(
+        '<div class="theoryFocalGrid" data-surface-role="focal" data-primary-focal="true">',
         '<div class="notationBoard" id="notationBoard" '
-        'data-runtime-rendering="theory-formalism-notation">'
-    )
+        'data-runtime-rendering="theory-formalism-notation">',
+    ]
     for line in arch["notation_lines"]:
-        cards.append('<div class="notationLine">')
+        pieces.append('<div class="notationLine">')
         for segment in line:
             if "token" in segment:
                 classes = "ntok"
@@ -1268,7 +1269,7 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
                     classes += f' {esc(segment["classes"])}'
                 phase_class = str(metadata.get(segment["token"], {}).get("phase_class", "phase-layer-a"))
                 classes += f" {esc(phase_class)}"
-                cards.append(
+                pieces.append(
                     f'<span class="{classes}" data-k="{esc(segment["token"])}" '
                     f'data-notation-id="{esc(segment["token"])}" role="button" tabindex="0" '
                     'aria-pressed="false" '
@@ -1282,26 +1283,144 @@ def render_theory_control_overview(arch: dict[str, Any]) -> str:
                 )
             else:
                 cls = f' class="{esc(segment["class"])}"' if segment.get("class") else ""
-                cards.append(f'<span{cls}>{esc(segment["text"])}</span>')
-        cards.append("</div>")
-    cards.extend(
+                pieces.append(f'<span{cls}>{esc(segment["text"])}</span>')
+        pieces.append("</div>")
+    pieces.append("</div>")
+    pieces.append(
+        '<aside class="notationExplain theoryNotationContext" id="notationExplain" '
+        'data-surface-role="support" aria-live="polite">'
+        '<div class="notationContext"><div class="notationContextHeader">'
+        '<span>Highlighted notation</span><span class="ntokMini">select a chip</span>'
+        '</div><div class="notationContextBlock"><strong>Start here</strong>'
+        '<span>Click a notation chip or runtime card to inspect meaning, runtime role, source owners, and related notation without replacing the formal symbols.</span>'
+        "</div></div></aside>"
+    )
+    pieces.append("</div>")
+
+    theory_cards = list(arch["theory_cards"])
+    phase_legend: dict[str, dict[str, Any]] = {}
+    for card in theory_cards:
+        card_id = str(card.get("id", ""))
+        phase_id = str(card.get("phase_id", "")).strip()
+        phase_label = str(card.get("phase_label", "")).strip()
+        if not phase_id or not phase_label:
+            raise SystemExit(
+                "docs/index/runtime-architecture.json: theory card "
+                f"{card_id!r} must declare phase_id and phase_label"
+            )
+        if "phase_order" not in card or "card_runtime_order" not in card:
+            raise SystemExit(
+                "docs/index/runtime-architecture.json: theory card "
+                f"{card_id!r} must declare phase_order and card_runtime_order"
+            )
+        if not str(card.get("runtime_step_group", "")).strip() or not str(card.get("runtime_step_label", "")).strip():
+            raise SystemExit(
+                "docs/index/runtime-architecture.json: theory card "
+                f"{card_id!r} must declare runtime_step_group and runtime_step_label"
+            )
+        phase = phase_legend.setdefault(
+            phase_id,
+            {
+                "label": phase_label,
+                "order": int(card["phase_order"]),
+                "phase_class": str(card.get("phase_class", "phase-layer-a")),
+            },
+        )
+        if phase["label"] != phase_label or phase["order"] != int(card["phase_order"]):
+            raise SystemExit(
+                "docs/index/runtime-architecture.json: theory card "
+                f"{card_id!r} has conflicting metadata for phase {phase_id!r}"
+            )
+    sorted_phase_legend = sorted(
+        (data | {"id": phase_id} for phase_id, data in phase_legend.items()),
+        key=lambda phase: int(phase["order"]),
+    )
+    pieces.append(
+        '<section class="panel theoryCardBank" data-surface-role="control" '
+        'data-theory-card-bank="runtime-notation-controls">'
+        '<div class="surfaceRoleKicker">Runtime execution flow</div>'
+        '<h2>Runtime notation controls</h2>'
+        '<p class="subtle">Cards stay in source-owned execution order. Small runtime step breaks make the sequence readable; color comes from the side legend.</p>'
+        '<div class="theoryRuntimeWorkspace">'
+        '<aside class="theoryPhaseLegend" data-surface-role="support" '
+        'data-theory-phase-legend="semantic-color" aria-label="Phase color legend">'
+        '<div class="surfaceRoleKicker">Phase / color legend</div>'
+    )
+    for phase in sorted_phase_legend:
+        pieces.append(
+            f'<div class="theoryPhaseLegendItem {esc(str(phase["phase_class"]))}" '
+            f'data-theory-phase-id="{esc(str(phase["id"]))}" '
+            f'data-theory-phase-order="{esc(str(phase["order"]))}">'
+            '<span class="phaseDot" aria-hidden="true"></span>'
+            f'<span>{esc(str(phase["label"]))}</span>'
+            '</div>'
+        )
+    pieces.append(
+        '</aside>'
+        '<div class="theoryCardFlow" data-theory-card-flow="runtime-execution">'
+    )
+    sorted_cards = sorted(theory_cards, key=lambda card: int(card["card_runtime_order"]))
+    seen_step_groups: set[str] = set()
+    current_step_group = None
+    for index, card in enumerate(sorted_cards):
+        step_group = str(card["runtime_step_group"])
+        step_label = str(card["runtime_step_label"])
+        if step_group != current_step_group:
+            if step_group in seen_step_groups:
+                raise SystemExit(
+                    "docs/index/runtime-architecture.json: runtime_step_group "
+                    f"{step_group!r} is not contiguous in card_runtime_order"
+                )
+            seen_step_groups.add(step_group)
+            current_step_group = step_group
+            pieces.append(
+                f'<div class="runtimeStepBreak" data-runtime-step-group="{esc(step_group)}" '
+                f'data-runtime-step-label="{esc(step_label)}">'
+                '<span class="runtimeStepRule" aria-hidden="true"></span>'
+                f'<span>{esc(step_label)}</span>'
+                '<span class="runtimeStepRule" aria-hidden="true"></span>'
+                '</div>'
+            )
+        extra = f' {esc(card.get("extra_class", ""))}' if card.get("extra_class") else ""
+        targets = theory_card_targets(arch, card)
+        active_class = " is-linked-active" if index == 0 else ""
+        pressed = "true" if index == 0 else "false"
+        pieces.append(
+            f'<button type="button" class="controlCard {esc(card["phase_class"])}{extra}{active_class}" '
+            f'data-theory-card="{esc(card["id"])}" data-concept-id="{esc(card["id"])}" '
+            f'data-phase-id="{esc(str(card["phase_id"]))}" '
+            f'data-phase-label="{esc(str(card["phase_label"]))}" '
+            f'data-phase-order="{esc(str(card["phase_order"]))}" '
+            f'data-card-runtime-order="{esc(str(card["card_runtime_order"]))}" '
+            f'data-runtime-step-group="{esc(step_group)}" '
+            f'data-runtime-step-label="{esc(step_label)}" '
+            f'data-notation-targets="{esc(" ".join(targets))}" '
+            'data-runtime-architecture-source="docs/index/runtime-architecture.json" '
+            f'title="Phase: {esc(str(card["phase_label"]))}; runtime step: {esc(step_label)}" '
+            f'aria-label="{esc(card["symbol"])}: {esc(card["label"])}. Phase: {esc(str(card["phase_label"]))}. Runtime step: {esc(step_label)}." '
+            f'aria-pressed="{pressed}" onclick="selectTheoryCard(this)" onkeydown="return activateTheoryCard(event,this)">\n'
+            f'<span class="controlSym">{esc(card["symbol"])}</span>\n'
+            f'<strong>{esc(card["label"])}</strong>\n'
+            f'<p>{esc(card["description"])}</p>\n'
+            "</button>"
+        )
+    pieces.append("</div></div></section>")
+    pieces.extend(
         [
-            '<div class="notationExplain" id="notationExplain">Click a concept or relation to highlight its place in the notation.</div>',
-            '<div class="notationLegend">',
-            '<div class="miniCard"><strong>𝓝 → N:</strong> design covers the possible noetic-structure selection space; runtime selects or holds the live N from D₀ → Ψᴺ.</div>',
-            '<div class="miniCard"><strong>Registers:</strong> N,m,τ,σ,♥,ξ,Ω,μ,κ,H are the state components being diagnosed.</div>',
-            '<div class="miniCard"><strong>Route-gradient:</strong> ∇ orders eligible route pressure after IR/routing/catalogue gates; it never replaces those gates or Δ.</div>',
-            '<div class="miniCard"><strong>Phase discipline:</strong> ∇ ranks eligible route pressure before release. Δ produces the changed field state. ∇·T / ∇×T diagnose target-explicit post-Δ field pressure. R(H,Δ) rereads the changed field. 𝒞(Ψᴺ) licenses closure as field condition. T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake.</div>',
-            '<div class="miniCard"><strong>Burden cycle:</strong> ⁿB contains ⁿBᵢ[OPᵢ] submoves; landing produces ΔⁿB/Δκ and post-Delta ∇·/∇× field-state diagnostics.</div>',
+            '<div class="notationLegend" data-surface-role="support">',
+            '<div class="miniCard"><strong>𝓝 → N:</strong><span>design covers the possible noetic-structure selection space;</span><span>runtime selects or holds the live N from D₀ → Ψᴺ.</span></div>',
+            '<div class="miniCard"><strong>Registers:</strong><span>N,m,τ,σ,♥,ξ,Ω,μ,κ,H</span><span>are the state components being diagnosed.</span></div>',
+            '<div class="miniCard"><strong>Route-gradient:</strong><span>∇ orders eligible route pressure</span><span>after IR/routing/catalogue gates;</span><span>it never replaces those gates or Δ.</span></div>',
+            '<div class="miniCard"><strong>Phase discipline:</strong><span>∇ ranks eligible route pressure before release.</span><span>Δ produces the changed field state.</span><span>∇·T / ∇×T diagnose</span><span>target-explicit post-Δ field pressure.</span><span>R(H,Δ) rereads the changed field.</span><span>𝒞(Ψᴺ) licenses closure as field condition.</span><span>T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling</span><span>without guaranteed uptake.</span></div>',
+            '<div class="miniCard"><strong>Burden cycle:</strong><span>ⁿB contains ⁿBᵢ[OPᵢ] submoves;</span><span>landing produces ΔⁿB/Δκ</span><span>and post-Delta ∇·/∇× field-state diagnostics.</span></div>',
             '<div class="miniCard"><strong>Loop-breaking:</strong> LoopBreak(∇×T) is licensed only when nonzero curl has an owner-grounded target and Δ effect.</div>',
-            '<div class="miniCard"><strong>Resolution:</strong> R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B; 𝒞(Ψᴺ) is a positive closure-field condition, not checklist exhaustion.</div>',
-            '<div class="miniCard"><strong>Output boundary:</strong> T_lang: Ψᴺ ⇢ Ψᴵ names the public release relation after closure/hold/partial; it is not part of the burden loop and does not claim guaranteed uptake.</div>',
-            "</div>",
+            '<div class="miniCard"><strong>Resolution:</strong><span>R decides STOP/HOLD/PARTIAL/ⁿ⁺¹B;</span><span>𝒞(Ψᴺ) is a positive closure-field condition,</span><span>not checklist exhaustion.</span></div>',
+            '<div class="miniCard"><strong>Output boundary:</strong><span>T_lang: Ψᴺ ⇢ Ψᴵ names the public release relation</span><span>after closure/hold/partial;</span><span>it is not part of the burden loop</span><span>and does not claim guaranteed uptake.</span></div>',
             "</div>",
             render_theory_mapping_table(arch),
         ]
     )
-    return "\n".join(cards)
+    return "\n".join(pieces)
 
 
 def render_theory_mapping_table(arch: dict[str, Any]) -> str:
@@ -1474,7 +1593,7 @@ def render_owner_source_renderer() -> str:
   const el = document.getElementById('ownerSourceTable');
   if(!el) return;
   const supportRows = REFS.filter(r=>['runtime governance','diagnostic','TTP/operator','schema'].includes(r.layer)).slice(0,80);
-  el.innerHTML = `<h3>Live module catalogue</h3><p class="subtle">Generated from <code>atomics/skill/references/diagnostics/module-catalogue.json</code>; paths resolve to tracked atomics source, while the root <code>skill/</code> directory remains ignored runtime output.</p><table data-owner-source="atomics/skill/references/diagnostics/module-catalogue.json"><thead><tr><th>Module ID</th><th>Class</th><th>Compiled path</th><th>Tracked source</th></tr></thead><tbody>${rows.map(r=>`<tr data-module-id="${esc(r.id)}"><td><code>${esc(r.id)}</code></td><td>${esc(r.module_class)}</td><td><code>${esc(r.path)}</code></td><td><code>${esc(r.source_path)}</code></td></tr>`).join('')}</tbody></table><h3>Complement-bearing source rows</h3><p class="subtle">Curated support map retained from the index source for governance/schema/source navigation. It is not the module-catalogue owner.</p><table><thead><tr><th>Path</th><th>Layer</th><th>Governs</th><th>Concepts</th><th>Operators</th></tr></thead><tbody>${supportRows.map(r=>`<tr><td><code>${esc(r.path)}</code></td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.concepts||[]).map(esc).join(', ')}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table>`;
+  el.innerHTML = `<h3>Live module catalogue</h3><p class="subtle">Generated from <code>atomics/skill/references/diagnostics/module-catalogue.json</code>; paths resolve to tracked atomics source, while the root <code>skill/</code> directory remains ignored runtime output.</p><div class="provenanceTableWrap provenanceTableWrap--wide ownerSourceTableWrap"><table data-owner-source="atomics/skill/references/diagnostics/module-catalogue.json" data-surface-role="raw-source"><thead><tr><th>Module ID</th><th>Class</th><th>Compiled path</th><th>Tracked source</th></tr></thead><tbody>${rows.map(r=>`<tr data-module-id="${esc(r.id)}"><td><code>${esc(r.id)}</code></td><td>${esc(r.module_class)}</td><td><code>${esc(r.path)}</code></td><td><code>${esc(r.source_path)}</code></td></tr>`).join('')}</tbody></table></div><h3>Complement-bearing source rows</h3><p class="subtle">Curated support map retained from the index source for governance/schema/source navigation. It is not the module-catalogue owner.</p><div class="provenanceTableWrap provenanceTableWrap--wide ownerSourceTableWrap"><table data-surface-role="provenance"><thead><tr><th>Path</th><th>Layer</th><th>Governs</th><th>Concepts</th><th>Operators</th></tr></thead><tbody>${supportRows.map(r=>`<tr><td><code>${esc(r.path)}</code></td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.concepts||[]).map(esc).join(', ')}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table></div>`;
 }"""
 
 

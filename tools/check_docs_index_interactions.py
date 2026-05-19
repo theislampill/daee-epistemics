@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "docs" / "index.html"
 MANIFEST = ROOT / "docs" / "index" / "manifest.json"
 DESIGN_MD = ROOT / "docs" / "index" / "DESIGN.md"
+VISUAL_QA_MD = ROOT / "docs" / "index" / "VISUAL_QA.md"
 DESIGN_QUALITY_AUDIT = ROOT / "docs" / "audits" / "v0.4.2.0-docs-index-design-quality-audit.md"
 RELEASE_DOWNLOAD = ROOT / "docs" / "index" / "release-download.json"
 INDEX_TEMPLATE = ROOT / "docs" / "index" / "templates" / "index.html.tpl"
@@ -141,10 +142,10 @@ REQUIRED_INDEX_NOTATION_TOKENS = {
     "Theory LoopBreak grounding grammar": "G ∈ {fiṭrah, ʿaql ṣarīḥ, necessary knowledge, definition discipline, direct contradiction exposure, source-status correction}",
     "Theory phase discipline gradient": "∇ ranks eligible route pressure before release",
     "Theory phase discipline Delta": "Δ produces the changed field state",
-    "Theory phase discipline diagnostics": "∇·T / ∇×T diagnose target-explicit post-Δ field pressure",
+    "Theory phase discipline diagnostics": "target-explicit post-Δ field pressure",
     "Theory phase discipline reread": "R(H,Δ) rereads the changed field",
     "Theory phase discipline closure": "𝒞(Ψᴺ) licenses closure as field condition",
-    "Theory phase discipline coupling": "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling without guaranteed uptake",
+    "Theory phase discipline coupling": "T_lang: Ψᴺ ⇢ Ψᴵ marks public coupling",
     "No proof by symbol boundary": "not proof-by-symbol",
     "Full bridge classification": 'id="full-register-bridge" data-classification="CURATED_SUMMARY_WITH_OWNER_REFERENCES"',
     "Full bridge register/state components": "1. Register/state components",
@@ -203,6 +204,24 @@ EXPECTED_CONTROL_CARD_ORDER = [
     "coupling",
 ]
 
+EXPECTED_THEORY_PHASE_LEGEND = [
+    ("input-surface", "Input and surface signal"),
+    ("layer-a-noetic", "Layer A and noetic signal-state"),
+    ("dsl-ir-route-pressure", "DSL/IR, routing, and route pressure"),
+    ("owner-ttp-delta-diagnostics", "Owner/TTP, Δ, and field diagnostics"),
+    ("reread-closure", "Reread and closure"),
+    ("public-release-boundary", "Public release boundary"),
+]
+
+EXPECTED_RUNTIME_STEP_BREAKS = [
+    ("selection-signal-state", "Selection / signal-state"),
+    ("runtime-registers", "Runtime registers"),
+    ("route-and-burden", "Route and burden"),
+    ("landing-diagnostics", "Landing and diagnostics"),
+    ("closure-restoration", "Closure and restoration"),
+    ("public-release-boundary", "Public release boundary"),
+]
+
 REQUIRED_CONTROL_CARD_COLOR_CLASSES = (
     "phase-input",
     "phase-layer-a",
@@ -223,22 +242,57 @@ EXPECTED_CONTROL_CARD_PHASES = {
     "ξ": "phase-gate",
     "Ω": "phase-gate",
     "μ": "phase-gate",
+    "κ": "phase-reread-closure",
+    "H": "phase-reread-closure",
     "gradient": "phase-gate",
     "burden": "phase-owner-delta",
     "submoves": "phase-owner-delta",
     "deltaB": "phase-owner-delta",
+    "deltaK": "phase-reread-closure",
     "nablaDot": "phase-owner-delta",
     "nablaCross": "phase-owner-delta",
     "loopBreak": "phase-owner-delta",
-    "κ": "phase-reread-closure",
-    "H": "phase-reread-closure",
-    "deltaK": "phase-reread-closure",
     "R": "phase-reread-closure",
     "C": "phase-reread-closure",
     "final": "phase-reread-closure",
     "PsiI": "phase-public-boundary",
     "coupling": "phase-public-boundary",
 }
+
+CRITICAL_FORMAL_NOTATION_TOKENS = [
+    "𝓝",
+    "D₀",
+    "Ψᴺ",
+    "Ψᴵ",
+    "N∈𝓝",
+    "τ",
+    "σ",
+    "♥",
+    "ξ",
+    "Ω",
+    "μ",
+    "κ",
+    "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+    "∇",
+    "∇·T",
+    "∇×T",
+    "∇ route pressure",
+    "ⁿB",
+    "ⁿBᵢ[OPᵢ]",
+    "Land(ⁿB)",
+    "ΔⁿB",
+    "Δκ",
+    "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+    "LoopBreak(∇×T)",
+    "R(H,Δ)",
+    "R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ)",
+    "𝒞(Ψᴺ)",
+    "T_lang",
+    "T_lang: Ψᴺ ⇢ Ψᴵ",
+    "N_fiṭrī ∧ ʿaql ṣarīḥ",
+    "fiṭrah",
+    "ʿaql ṣarīḥ",
+]
 
 CONTROL_CARD_TOKEN_ALIASES = {
     "τ": "tau",
@@ -975,6 +1029,9 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         return
 
     required_rules = [
+        "Component role taxonomy",
+        "Reference source-browser discipline",
+        "Owners selected-detail discipline",
         "Do not produce generic gray unstructured UI.",
         "Do not make every card full-width if one selected-primary display is intended.",
         "Do not replace scaled previews with label-only tiles.",
@@ -1003,11 +1060,26 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         ):
             if token.lower() not in audit_text.lower():
                 errors.append(f"{DESIGN_QUALITY_AUDIT.relative_to(ROOT)} missing audit/rubric token {token!r}")
+    if not VISUAL_QA_MD.exists():
+        errors.append(f"{VISUAL_QA_MD.relative_to(ROOT)} missing local browser visual QA runbook")
+    else:
+        visual_qa = VISUAL_QA_MD.read_text(encoding="utf-8")
+        for token in (
+            "Architecture card 4 selected",
+            "Owners selected operator",
+            "Theory selected notation",
+            "Reference selected document",
+            "Narrow / Mobile Checks",
+            "Structural checks passing is not enough",
+        ):
+            if token not in visual_qa:
+                errors.append(f"{VISUAL_QA_MD.relative_to(ROOT)} missing visual QA target {token!r}")
 
     architecture = tab_section_slice(text, "architecture")
     theory = tab_section_slice(text, "theory")
     owners = tab_section_slice(text, "owners")
     reference = tab_section_slice(text, "reference")
+    check_audit_disclosure_heading_hierarchy(text, errors)
 
     if 'id="ownerSourceTable"' in architecture or 'id="ownerSourceTable"' in theory:
         errors.append("owner/source table must not dominate Architecture or Theory default reading paths")
@@ -1017,8 +1089,43 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
         errors.append("Theory notation provenance must stay generated as hidden metadata for contextual disclosure")
     if owners and 'id="ownerSourceTable"' not in owners:
         errors.append("Owner/source table must stay scoped to the Owners support surface")
-    if reference and "Structured source map" not in reference:
-        errors.append("Reference Library must identify itself as a support/source-map surface")
+    if reference and "Structured source browser" not in reference:
+        errors.append("Reference Library must identify itself as a source-browser surface")
+    for tab_id, required_roles in {
+        "architecture": {"focal", "support"},
+        "owners": {"focal", "support", "control", "provenance", "raw-source"},
+        "theory": {"focal", "control", "support", "provenance"},
+        "reference": {"focal", "support", "control", "raw-source", "generated-snapshot"},
+    }.items():
+        section = tab_section_slice(text, tab_id)
+        if not section:
+            errors.append(f"{tab_id}: missing tab section for surface-role check")
+            continue
+        declared_roles = set(re.findall(r'data-surface-role="([^"]+)"', section))
+        missing_roles = sorted(required_roles - declared_roles)
+        if missing_roles:
+            errors.append(f"{tab_id}: missing surface-role declarations {missing_roles}")
+        primary_count = len(re.findall(r'data-primary-focal="true"', section))
+        if primary_count != 1:
+            errors.append(f"{tab_id}: must declare exactly one primary focal object, found {primary_count}")
+    if owners:
+        matrix_pos = owners.find('id="operatorMatrix"')
+        source_pos = owners.find('id="ownerSourceTable"')
+        focal_pos = owners.find('data-primary-focal="true"')
+        if matrix_pos != -1 and matrix_pos < focal_pos:
+            errors.append("Owners full matrix must not appear before the selected-detail workspace")
+        if source_pos != -1 and source_pos < focal_pos:
+            errors.append("Owners source table must not appear before the selected-detail workspace")
+        for raw_id in ('id="operatorMatrix"', 'id="ownerSourceTable"'):
+            pos = owners.find(raw_id)
+            if pos != -1 and owners.rfind("<details", 0, pos) == -1:
+                errors.append(f"Owners {raw_id} must live inside a disclosure, not default-visible")
+        owner_source_renderer = text[text.find("function renderOwnerSourceTable"): text.find("function renderConcepts")]
+        if "ownerSourceTableWrap" not in owner_source_renderer or "provenanceTableWrap--wide" not in owner_source_renderer:
+            errors.append("Owners owner/source tables must use the shared provenance table wrapper instead of raw global tables")
+        operator_matrix_renderer = text[text.find("function renderOperatorMatrix"): text.find("function renderConcepts")]
+        if "operatorMatrix" in owners and "provenanceTableWrap--wide" not in operator_matrix_renderer:
+            errors.append("Owners operator matrix must use the shared provenance table wrapper instead of raw global table styling")
 
     containment_tokens = [
         ".tabsec table{display:block;max-width:100%;overflow-x:auto}",
@@ -1049,7 +1156,7 @@ def check_docs_index_design_quality_discipline(text: str, errors: list[str]) -> 
             errors.append(f"Architecture selected-primary carousel discipline missing {token!r}")
 
     theory_interaction_tokens = [
-        '<div class="controlOverviewGrid">',
+        '<div class="theoryCardFlow"',
         "selectTheoryCard(this)",
         "highlightNotation(",
         'aria-pressed="true"',
@@ -1135,6 +1242,50 @@ def extract_js_array(text: str, name: str, errors: list[str]) -> list[object]:
                 return payload
     errors.append(f"generated reference data const {name} array is unterminated")
     return []
+
+
+def extract_js_object(text: str, name: str, errors: list[str]) -> dict[str, object]:
+    marker = f"const {name} = "
+    marker_start = text.find(marker)
+    if marker_start == -1:
+        errors.append(f"generated reference data missing const {name}")
+        return {}
+    start = text.find("{", marker_start + len(marker))
+    if start == -1:
+        errors.append(f"generated reference data const {name} is not an object")
+        return {}
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                raw = text[start : index + 1]
+                try:
+                    payload = json.loads(raw)
+                except json.JSONDecodeError as exc:
+                    errors.append(f"generated reference data const {name} is invalid JSON: {exc}")
+                    return {}
+                if not isinstance(payload, dict):
+                    errors.append(f"generated reference data const {name} must be an object")
+                    return {}
+                return payload
+    errors.append(f"generated reference data const {name} object is unterminated")
+    return {}
 
 
 def strip_js_array_const(text: str, name: str) -> str:
@@ -1328,6 +1479,67 @@ def tab_section_slice(text: str, section_id: str) -> str:
     if not next_match:
         return text[match.start() :]
     return text[match.start() : match.end() + next_match.start()]
+
+
+def plain_html_text(fragment: str) -> str:
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", fragment))).strip()
+
+
+def audit_disclosure_title(summary_html: str) -> str:
+    title_match = re.search(
+        r'<span\b[^>]*class="[^"]*\baudit-title\b[^"]*"[^>]*>(.*?)</span>',
+        summary_html,
+        re.S,
+    )
+    if title_match:
+        return plain_html_text(title_match.group(1))
+    span_match = re.search(r"<span\b[^>]*>(.*?)</span>", summary_html, re.S)
+    if span_match:
+        return plain_html_text(span_match.group(1))
+    return plain_html_text(summary_html)
+
+
+def check_audit_disclosure_heading_hierarchy(text: str, errors: list[str]) -> None:
+    """Audit/provenance disclosures use summary as the title, not duplicate H1/H2."""
+
+    for match in re.finditer(r"<details\b([^>]*)>", text):
+        attrs = match.group(1)
+        is_audit = any(
+            token in attrs
+            for token in (
+                "ownerAuditDisclosure",
+                "sourceMapDisclosure",
+                'data-surface-role="provenance"',
+                'data-surface-role="raw-source"',
+            )
+        )
+        if not is_audit:
+            continue
+        end = text.find("</details>", match.end())
+        block = text[match.start() : end if end != -1 else len(text)]
+        summary_match = re.search(r"<summary\b[^>]*>(.*?)</summary>", block, re.S)
+        if not summary_match:
+            errors.append("Audit/provenance disclosure missing summary title")
+            continue
+        summary_html = summary_match.group(1)
+        title = audit_disclosure_title(summary_html)
+        if any(token in attrs for token in ("ownerAuditDisclosure", "sourceMapDisclosure")):
+            if "auditDisclosure" not in attrs:
+                errors.append(f"Audit disclosure {title!r} missing auditDisclosure class")
+            if "audit-title" not in summary_html or "audit-subtitle" not in summary_html:
+                errors.append(f"Audit disclosure {title!r} summary must use audit-title/audit-subtitle metadata")
+            if 'class="small"' in summary_html:
+                errors.append(f"Audit disclosure {title!r} summary subtitle must not use centered .small metadata")
+        body = block[summary_match.end() :]
+        heading_match = re.match(
+            r"\s*(?:<div\b[^>]*>\s*)*<h([12])\b[^>]*>(.*?)</h\1>",
+            body,
+            re.S,
+        )
+        if heading_match and plain_html_text(heading_match.group(2)).lower() == title.lower():
+            errors.append(
+                f"Audit/provenance disclosure {title!r} repeats its summary as immediate H{heading_match.group(1)}"
+            )
 
 
 def div_slice_for_marker(text: str, marker: str) -> str:
@@ -1543,6 +1755,61 @@ def check_shared_runtime_renderings(text: str, errors: list[str]) -> None:
         errors.append("Architecture plain and formal pipelines must remain related but not text-identical")
     if theory_normal and theory_normal in {plain_normal, formal_normal}:
         errors.append("Theory formalism rendering must map the same sequence without duplicating an Architecture pipeline")
+
+
+def check_architecture_thesis_onboarding(text: str, errors: list[str]) -> None:
+    architecture = tab_section_slice(text, "architecture")
+    if not architecture:
+        errors.append("Architecture tab section missing for thesis onboarding check")
+        return
+
+    hero_pos = architecture.find("<div class=\"hero\"")
+    thesis_pos = architecture.find('id="architecture-thesis"')
+    runtime_pos = architecture.find('id="canonical-architecture-runtime"')
+    if thesis_pos == -1:
+        errors.append("Architecture Thesis onboarding section missing")
+        return
+    if runtime_pos == -1:
+        errors.append("Architecture runtime panel missing for thesis ordering check")
+        return
+    if not (hero_pos != -1 and hero_pos < thesis_pos < runtime_pos):
+        errors.append("Architecture Thesis must appear directly after the Architecture hero and before the runtime pipeline/formal trace")
+
+    thesis = architecture[thesis_pos:runtime_pos] if thesis_pos < runtime_pos else architecture[thesis_pos:]
+    if 'data-architecture-thesis="onboarding-abstract"' not in thesis:
+        errors.append("Architecture Thesis must declare onboarding-abstract role marker")
+    if thesis.count("v22-deck-card") != 4:
+        errors.append(f"Architecture Thesis must keep exactly four cards, found {thesis.count('v22-deck-card')}")
+    deck_pos = thesis.find('class="v22-deck-grid')
+    first_para_pos = thesis.find("<p")
+    if deck_pos == -1:
+        errors.append("Architecture Thesis must keep the four-card deck")
+    elif first_para_pos != -1 and first_para_pos < deck_pos:
+        errors.append("Architecture Thesis must place the four-card deck before onboarding/gloss paragraphs")
+    for heading in ("What it is", "What carries weight", "What it is not", "Source of truth"):
+        if heading not in thesis:
+            errors.append(f"Architecture Thesis missing card heading {heading!r}")
+    forbidden_meta = ("This tab is", "canonical architecture map. It is not the README")
+    for token in forbidden_meta:
+        if token in thesis[:700]:
+            errors.append(f"Architecture Thesis must not open as page/tab metadata ({token!r})")
+    for token in ("D₀", "Ψᴺ", "IR", "ⁿB", "Δ", "R(H,Δ)", "𝒞(Ψᴺ)", "T_lang"):
+        if token not in thesis:
+            errors.append(f"Architecture Thesis missing onboarding/runtime term {token!r}")
+    lower = thesis.lower()
+    for token in ("not an answer bank", "truth meter", "full formal calculus", "not guaranteed uptake"):
+        if token not in lower:
+            errors.append(f"Architecture Thesis missing non-claim {token!r}")
+    for duplicated_runtime_marker in (
+        'data-runtime-rendering="architecture-plain-row"',
+        'data-runtime-rendering="architecture-formal-row"',
+        'data-runtime-rendering="architecture-formal-algebraic-trace"',
+        "v60-pipeline-step",
+        "v60-pipeline-list",
+        "v60-phase-flow",
+    ):
+        if duplicated_runtime_marker in thesis:
+            errors.append("Architecture Thesis must onboard the runtime without duplicating the formal pipeline/spine")
 
 
 def check_architecture_carousel_contract(text: str, errors: list[str]) -> None:
@@ -1846,6 +2113,7 @@ def check_reference_data(text: str, errors: list[str]) -> None:
         errors.append("docs/index.html still embeds stale auditSummary release-status text")
     refs = extract_js_array(text, "REFS", errors)
     docs = extract_js_array(text, "DOCS", errors)
+    summary = extract_js_object(text, "REF_SUMMARY", errors)
     expected_paths = [path.relative_to(ROOT).as_posix() for path in expected_reference_paths()]
     ref_paths = [entry.get("path") for entry in refs if isinstance(entry, dict)]
     doc_paths = [entry.get("rel") for entry in docs if isinstance(entry, dict)]
@@ -1869,6 +2137,273 @@ def check_reference_data(text: str, errors: list[str]) -> None:
             errors.append(f"generated DOCS line count drift: {rel_path}")
         if isinstance(ref, dict) and ref.get("lines") != len(text_current.splitlines()):
             errors.append(f"generated REFS line count drift: {rel_path}")
+    if refs and docs and summary:
+        total_lines = sum(int(entry.get("lines") or 0) for entry in refs if isinstance(entry, dict))
+        by_layer: dict[str, int] = {}
+        by_role: dict[str, int] = {}
+        for entry in refs:
+            if not isinstance(entry, dict):
+                continue
+            layer = str(entry.get("layer") or "uncategorized")
+            role = str(entry.get("role") or "uncategorized")
+            by_layer[layer] = by_layer.get(layer, 0) + 1
+            by_role[role] = by_role.get(role, 0) + 1
+        expected_summary = {
+            "total_references": len(refs),
+            "total_snapshots": len(docs),
+            "total_lines": total_lines,
+            "by_layer": by_layer,
+            "by_role": by_role,
+        }
+        for key, expected_value in expected_summary.items():
+            if summary.get(key) != expected_value:
+                errors.append(f"REF_SUMMARY {key} drift: expected {expected_value!r}, found {summary.get(key)!r}")
+
+    reference = tab_section_slice(text, "reference")
+    if reference:
+        required = [
+            'id="refSummary"',
+            'id="referenceBrowser"',
+            'data-reference-browser="source-browser"',
+            'id="refSearch"',
+            'id="refLayer"',
+            'id="refFamily"',
+            'class="filterClear"',
+            'id="docList"',
+            'role="listbox"',
+            'id="docBody"',
+            'data-reference-selected-preview="true"',
+            'data-surface-role="generated-snapshot"',
+            'id="referenceRawSourceMap"',
+            'data-reference-provenance="source-map"',
+            "sourceMapDisclosure",
+            'id="referenceProvenanceSummary"',
+            'id="referenceLayerBreakdown"',
+            'id="referenceLayerBreakdownTable"',
+            'id="referenceFamilyBreakdown"',
+            'id="referenceFamilyBreakdownTable"',
+            'id="referenceFineRoleBreakdown"',
+            'id="referenceFineRoleBreakdownTable"',
+            'id="referenceRawRows"',
+            'id="referenceAuditBreakdown"',
+            'data-surface-role="raw-source"',
+            'id="refTable"',
+        ]
+        for token in required:
+            if token not in reference:
+                errors.append(f"Reference source-browser missing {token}")
+        summary_pos = reference.find('id="refSummary"')
+        browser_pos = reference.find('id="referenceBrowser"')
+        search_pos = reference.find('id="refSearch"')
+        list_pos = reference.find('id="docList"')
+        preview_pos = reference.find('data-reference-selected-preview="true"')
+        raw_pos = reference.find('id="referenceRawSourceMap"')
+        if not (0 <= browser_pos < summary_pos < search_pos < list_pos < preview_pos < raw_pos):
+            errors.append("Reference Library must render as one source-browser workspace: summary, filters, list/detail, then raw source map")
+        if reference.find('<div class="panel" id="refSummary"') != -1:
+            errors.append("Reference summary must not be a standalone panel before the source-browser workspace")
+        if not (0 <= browser_pos < preview_pos < raw_pos):
+            errors.append("Reference selected document preview must be visible before raw source/provenance tables")
+        raw_start = reference.rfind("<details", 0, raw_pos)
+        raw_end = reference.rfind("</details>")
+        if raw_start == -1 or raw_end == -1:
+            errors.append("Reference full source map must be inside a details disclosure")
+        elif re.search(r"<details\b[^>]*\bopen\b", reference[raw_start : reference.find(">", raw_start) + 1]):
+            errors.append("Reference full source map must be collapsed by default")
+        elif "sourceMapDisclosure" not in reference[raw_start : reference.find(">", raw_start) + 1]:
+            errors.append("Reference full source map disclosure must carry sourceMapDisclosure collapse guard class")
+        if "Source map / generated provenance" not in reference:
+            errors.append("Reference provenance disclosure must be labelled 'Source map / generated provenance'")
+        heading_match = re.search(r"<h[12]\b[^>]*>(.*?)</h[12]>", reference, flags=re.S)
+        if heading_match:
+            first_heading = re.sub(r"<[^>]+>", "", heading_match.group(1)).strip()
+            if first_heading == "Source map":
+                errors.append("Reference first major heading must be Reference Library/source-browser, not Source map")
+        visible_source_map_pos = reference.find("<h2>Source map</h2>")
+        if visible_source_map_pos != -1 and (raw_start == -1 or raw_end == -1 or not (raw_start < visible_source_map_pos < raw_end)):
+            errors.append("Reference Source map must not be a top-level default-visible panel before the source browser")
+        breakdown_pos = reference.find('id="referenceAuditBreakdown"')
+        if breakdown_pos != -1 and not (raw_start < breakdown_pos < raw_end):
+            errors.append("Reference role/layer breakdown must live inside collapsed raw-source disclosure")
+        nested_disclosures = {
+            "referenceLayerBreakdown": "Layer breakdown",
+            "referenceFamilyBreakdown": "Coarse family/type breakdown",
+            "referenceFineRoleBreakdown": "Fine-grained role/source breakdown",
+            "referenceRawRows": "Raw generated source rows",
+        }
+        for nested_id, label in nested_disclosures.items():
+            nested_pos = reference.find(f'id="{nested_id}"')
+            nested_start = reference.rfind("<details", 0, nested_pos)
+            nested_end = reference.find("</details>", nested_pos)
+            if nested_pos == -1 or nested_start == -1 or nested_end == -1:
+                errors.append(f"Reference Source map missing nested disclosure for {label}")
+                continue
+            if not (raw_start < nested_start < nested_pos < nested_end < raw_end):
+                errors.append(f"Reference {label} must be nested inside the Source map disclosure")
+            elif re.search(r"<details\b[^>]*\bopen\b", reference[nested_start : reference.find(">", nested_start) + 1]):
+                errors.append(f"Reference {label} nested disclosure must be collapsed by default")
+        fine_table_pos = reference.find('id="referenceFineRoleBreakdownTable"')
+        raw_table_pos = reference.find('id="refTable"')
+        fine_nested_pos = reference.find('id="referenceFineRoleBreakdown"')
+        raw_nested_pos = reference.find('id="referenceRawRows"')
+        if fine_table_pos != -1 and fine_nested_pos != -1:
+            fine_start = reference.rfind("<details", 0, fine_table_pos)
+            if fine_start == -1 or fine_start > fine_nested_pos:
+                errors.append("Reference fine-grained role/source breakdown table must stay behind its nested disclosure")
+        if raw_table_pos != -1 and raw_nested_pos != -1:
+            raw_nested_start = reference.rfind("<details", 0, raw_table_pos)
+            if raw_nested_start == -1 or raw_nested_start > raw_nested_pos:
+                errors.append("Reference raw generated source rows table must stay behind its nested disclosure")
+        for nested_css_token in (
+            ".sourceMapDisclosure .referenceNestedDisclosure",
+            ".sourceMapDisclosure .referenceNestedDisclosure:not([open])>:not(summary){display:none!important}",
+            ".referenceCountList",
+            ".referenceCountRow",
+            ".referenceCountName",
+            ".referenceCountValue",
+            ".rawSourceTableWrap",
+            ".breakdownPurpose",
+            "overflow-x:auto",
+        ):
+            if nested_css_token not in text:
+                errors.append(f"Reference Source map nested inspector CSS missing {nested_css_token!r}")
+        if "sourceMapDisclosure:not([open])>:not(summary){display:none!important}" not in text:
+            errors.append("Reference source-map disclosure needs an explicit closed-content CSS guard")
+        if "function referenceDefaultPath" not in text or "referenceRawSourceMap" not in text[text.find("function referenceDefaultPath"): text.find("function showTopTab")]:
+            errors.append("Reference tab route must explicitly close source-map provenance on default entry")
+        show_top_tab = text[text.find("function showTopTab"): text.find("function initTopTabs")]
+        if "id==='reference'" not in show_top_tab or "referenceDefaultPath" not in show_top_tab:
+            errors.append("#reference tab activation must reset to the source-browser default path")
+        render_doc_list_start = text.rfind("function renderDocList")
+        render_doc_list_end = text.find("function showDoc", render_doc_list_start)
+        render_doc_list = text[render_doc_list_start:render_doc_list_end] if render_doc_list_start != -1 and render_doc_list_end != -1 else ""
+        if re.search(r'<div\s+id="docList"', reference) and "<button" not in render_doc_list:
+            errors.append("Reference document list must render keyboard-accessible button options")
+        render_summary_start = text.find("function renderReferenceSummary")
+        render_summary_end = text.find("function renderRefs", render_summary_start)
+        render_summary = (
+            text[render_summary_start:render_summary_end]
+            if render_summary_start != -1 and render_summary_end != -1
+            else ""
+        )
+        for stale_token in (
+            "ownerWorkspaceIntro",
+            "roleStats=statCards",
+            "<h3>Roles</h3>",
+            "referenceFacetStrip",
+            "referenceCountChips",
+            "data-reference-role-chips",
+        ):
+            if stale_token in render_summary:
+                errors.append(
+                    "Reference summary must not render the old default-visible role-card wall "
+                    f"({stale_token})"
+                )
+        for token in (
+            "referenceSummaryStrip",
+            "source-owned",
+        ):
+            if token not in render_summary:
+                errors.append(f"Reference summary missing compact source-browser token {token!r}")
+        for token in (
+            "function populateReferenceFilters",
+            "function clearRefFilters",
+            "function renderReferenceAuditBreakdown",
+            "REFERENCE_PROVENANCE_SHOW_ALL",
+            "function renderReferenceBreakdown",
+            "function renderReferenceRawRows",
+            "function referenceFamilyForPath",
+            "function referenceFamilyCounts",
+            "function filteredReferenceRows(q,layer,family)",
+            "function filteredReferenceDocs(q,layer,family)",
+        ):
+            if token not in text:
+                errors.append(f"Reference source-browser missing generated behavior {token!r}")
+        for token in (
+            "referenceProvenanceSummary",
+            "Fine-grained role/source breakdown",
+            "Raw generated source rows",
+            "Show all",
+            "data-count-breakdown",
+            "data-reference-count-breakdown",
+            "referenceCountList",
+            "referenceCountRow",
+            "rawSourceTableWrap",
+            "REFERENCE_BREAKDOWN_PURPOSE",
+            "Counts files by repo-layer / ownership surface.",
+            "Counts files by broad family/type grouping.",
+            "Counts exact generated role/source labels without simplification.",
+        ):
+            if token not in text:
+                errors.append(f"Reference Source map compact provenance inspector missing {token!r}")
+        render_breakdown_start = text.find("function renderReferenceBreakdown")
+        render_breakdown_end = text.find("function renderReferenceRawRows", render_breakdown_start)
+        render_breakdown = (
+            text[render_breakdown_start:render_breakdown_end]
+            if render_breakdown_start != -1 and render_breakdown_end != -1
+            else ""
+        )
+        for token in (
+            "referenceCountList",
+            "referenceCountRow",
+            "referenceCountName",
+            "referenceCountValue",
+            "data-reference-count-breakdown",
+        ):
+            if token not in render_breakdown:
+                errors.append(f"Reference Source map count breakdowns must render compact key/value list token {token!r}")
+        for forbidden in (
+            "<table",
+            "<th>Name</th>",
+            "<th>Count</th>",
+            "referenceCountTableWrap",
+        ):
+            if forbidden in render_breakdown:
+                errors.append(f"Reference Source map count breakdowns must not render table/header token {forbidden!r}")
+        if ".sourceMapDisclosure .referenceCountList" not in text:
+            errors.append("Reference count breakdowns need explicit compact key/value list styling")
+        if ".provenanceTableWrap.ownerSourceTableWrap" not in text:
+            errors.append("Owners source/provenance tables need explicit non-clipped ownerSourceTableWrap styling")
+        for stale_transform in (
+            "referenceFamilyLabel(label)",
+            "count-list",
+            "count-row",
+            "count-name",
+            "count-value",
+        ):
+            if stale_transform in render_breakdown:
+                errors.append(
+                    "Reference Source map count breakdowns must preserve exact generated labels "
+                    f"and avoid stale card/table transforms ({stale_transform})"
+                )
+        for count_target in (
+            "referenceLayerBreakdownTable",
+            "referenceFamilyBreakdownTable",
+            "referenceFineRoleBreakdownTable",
+        ):
+            target_pos = text.find(count_target)
+            next_func_pos = text.find("function ", target_pos + 1) if target_pos != -1 else -1
+            target_slice = text[target_pos: next_func_pos if next_func_pos != -1 else len(text)] if target_pos != -1 else ""
+            if "referenceFamilyLabel(label)" in target_slice or "<table" in target_slice or "Name</th>" in target_slice or "Count</th>" in target_slice:
+                errors.append(f"{count_target} must preserve exact source labels and render key/value list rows without table headers")
+        if "data-reference-raw-source-table" not in text or "rawSourceTableWrap" not in text:
+            errors.append("Reference raw source rows table must carry explicit raw-source table wrapper/header markers")
+        for stale_token in (
+            "referenceBreakdownTable('Full layer breakdown'",
+            "referenceBreakdownTable('Coarse family/type breakdown'",
+            "referenceBreakdownTable('Full fine-grained role/source breakdown'",
+            '<div class="referenceAuditGrid">${referenceBreakdownTable',
+        ):
+            if stale_token in text:
+                errors.append(f"Reference Source map must not render the old all-tables audit wall token {stale_token!r}")
+        for token in (
+            ".sourceBrowser{display:grid;grid-template-columns:minmax(280px,400px) minmax(0,1fr)",
+            ".referenceBrowserPanel{padding:16px}",
+            ".referenceSummaryInline{border:0;background:transparent!important",
+            ".referenceFilters{margin:8px 0 12px}",
+        ):
+            if token not in text:
+                errors.append(f"Reference source-browser missing overflow-safe layout guard {token!r}")
 
 
 def manifest_js_constant_coverage(manifest: dict[str, object]) -> set[str]:
@@ -1946,6 +2481,14 @@ def check_notation_contract(text: str, errors: list[str]) -> None:
     for label, token in REQUIRED_INDEX_NOTATION_TOKENS.items():
         if token not in text:
             errors.append(f"docs/index.html missing notation token: {label}: {token!r}")
+    notation_sources = [text]
+    for source_path in (RUNTIME_ARCHITECTURE_SOURCE, ARCHITECTURE_SECTION, THEORY_SECTION, INDEX_TEMPLATE):
+        if source_path.exists():
+            notation_sources.append(source_path.read_text(encoding="utf-8"))
+    notation_source_text = "\n".join(notation_sources)
+    for token in CRITICAL_FORMAL_NOTATION_TOKENS:
+        if token not in notation_source_text:
+            errors.append(f"critical daee-epistemics notation token was lost or changed: {token!r}")
     lower = text.lower()
     if "κ-only" in lower and "not κ-only" not in lower:
         errors.append("docs/index.html contains κ-only wording without the not-κ-only boundary")
@@ -1998,24 +2541,104 @@ def check_public_notation_surface(path: Path, text: str, errors: list[str]) -> N
 
 
 def check_theory_control_cards(text: str, errors: list[str]) -> None:
-    start = text.find('<div class="controlOverviewGrid">')
-    end = text.find('<div class="notationBoard"', start)
-    if start == -1 or end == -1 or end <= start:
-        errors.append("docs/index.html missing Theory control ontology card grid")
+    theory = tab_section_slice(text, "theory")
+    if not theory:
+        errors.append("docs/index.html missing Theory tab section")
         return
-
-    block = text[start:end]
-    card_tags = re.findall(r"<button\b(?=[^>]*\bcontrolCard\b)([^>]*)>", block)
+    legend_start = theory.find('data-theory-phase-legend="semantic-color"')
+    bank_start = theory.find('data-theory-card-bank="runtime-notation-controls"')
+    if legend_start == -1:
+        errors.append("Theory must render a compact phase/color legend before runtime controls")
+    if bank_start == -1:
+        errors.append("Theory must render one Runtime notation controls card bank")
+        return
+    workspace_start = theory.find('class="theoryRuntimeWorkspace"', bank_start)
+    if workspace_start == -1:
+        errors.append("Theory Runtime notation controls must use a left legend/right card-flow workspace")
+    flow_start = theory.find('data-theory-card-flow="runtime-execution"', bank_start)
+    if flow_start == -1:
+        errors.append("Theory must render one flat runtime execution card flow")
+        return
+    if legend_start != -1 and workspace_start != -1 and not (bank_start < workspace_start < legend_start < flow_start):
+        errors.append("Theory phase/color legend must sit as the left rail inside the Runtime notation controls workspace")
 
     def attr(attrs: str, name: str) -> str:
         match = re.search(rf'\b{re.escape(name)}="([^"]*)"', attrs)
         return html.unescape(match.group(1)) if match else ""
 
+    notation_legend_start = theory.find('<div class="notationLegend"', flow_start)
+    bank_block = theory[bank_start:notation_legend_start] if notation_legend_start != -1 else theory[bank_start:]
+    flow_block = theory[flow_start:notation_legend_start] if notation_legend_start != -1 else theory[flow_start:]
+    if bank_block.count('data-theory-card-bank="runtime-notation-controls"') > 1:
+        errors.append("Theory must not render multiple Runtime notation controls banks")
+    if "theoryCardGroup" in flow_block or "data-theory-phase-id" in re.sub(
+        r"<button\b.*?</button>", "", flow_block, flags=re.S
+    ):
+        errors.append("Theory runtime card flow must not be split into phase bucket panels")
+    if re.search(r"<section\b(?=[^>]*\btheoryCardGroup\b)", flow_block, flags=re.S):
+        errors.append("Theory card bank must not render repeated phase sections")
+    if "controlPhaseBadge" in flow_block:
+        errors.append("Theory runtime cards must not print redundant per-card phase labels; use legend plus color/metadata")
+
+    if legend_start != -1:
+        legend_block = theory[legend_start:flow_start]
+        legend_tags = re.findall(
+            r"<div\b(?=[^>]*\btheoryPhaseLegendItem\b)([^>]*)>",
+            legend_block,
+            flags=re.S,
+        )
+        legend_phase_ids = [attr(attrs, "data-theory-phase-id") for attrs in legend_tags]
+        expected_phase_ids = [phase_id for phase_id, _label in EXPECTED_THEORY_PHASE_LEGEND]
+        if legend_phase_ids != expected_phase_ids:
+            errors.append(
+                "Theory phase/color legend must list each semantic family once in source order: "
+                f"expected {expected_phase_ids!r}, found {legend_phase_ids!r}"
+            )
+        if len(set(legend_phase_ids)) != len(legend_phase_ids):
+            errors.append(f"Theory phase/color legend must not repeat phase ids: {legend_phase_ids!r}")
+        for expected_order, attrs in enumerate(legend_tags, start=1):
+            if attr(attrs, "data-theory-phase-order") != str(expected_order):
+                errors.append(
+                    "Theory phase/color legend order marker drift: "
+                    f"expected {expected_order}, found {attr(attrs, 'data-theory-phase-order')!r}"
+                )
+        legend_css_start = text.find(".theoryRuntimeWorkspace")
+        if legend_css_start == -1 or "grid-template-columns:minmax(150px,190px) minmax(0,1fr)" not in text[legend_css_start: legend_css_start + 420]:
+            errors.append("Theory phase/color legend must be a thin left rail beside the card flow, not a full-width banner")
+        if ".theoryRuntimeWorkspace{grid-template-columns:1fr}" in text:
+            errors.append("Theory phase/color legend must not collapse into a full-width banner above runtime controls")
+
+    step_tags = re.findall(
+        r"<div\b(?=[^>]*\bruntimeStepBreak\b)([^>]*)>.*?<span>(.*?)</span>",
+        flow_block,
+        flags=re.S,
+    )
+    step_groups = [attr(attrs, "data-runtime-step-group") for attrs, _label in step_tags]
+    step_labels = [html.unescape(re.sub(r"<[^>]+>", "", label)).strip() for _attrs, label in step_tags]
+    expected_step_groups = [group for group, _label in EXPECTED_RUNTIME_STEP_BREAKS]
+    expected_step_labels = [label for _group, label in EXPECTED_RUNTIME_STEP_BREAKS]
+    if step_groups != expected_step_groups:
+        errors.append(
+            "Theory runtime card flow must include the six lightweight runtime step breaks in order: "
+            f"expected {expected_step_groups!r}, found {step_groups!r}"
+        )
+    if step_labels != expected_step_labels:
+        errors.append(
+            "Theory runtime step labels must be execution labels, not phase headings: "
+            f"expected {expected_step_labels!r}, found {step_labels!r}"
+        )
+    card_tags = re.findall(r"<button\b(?=[^>]*\bcontrolCard\b)([^>]*)>", flow_block)
+    if not card_tags:
+        errors.append("docs/index.html missing Theory runtime card flow buttons")
+        return
+
     cards = [(attr(attrs, "class"), attr(attrs, "data-theory-card"), attrs) for attrs in card_tags]
     found = [concept for _classes, concept, _attrs in cards]
+    if len(set(found)) != len(found):
+        errors.append(f"Theory cards must appear exactly once; duplicate card ids found in {found!r}")
     if found != EXPECTED_CONTROL_CARD_ORDER:
         errors.append(
-            "Theory control ontology cards must render in pipeline order: "
+            "Theory runtime cards must render as one flat source-owned execution flow: "
             f"expected {EXPECTED_CONTROL_CARD_ORDER!r}, found {found!r}"
         )
 
@@ -2026,6 +2649,44 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
     source_card_ids: list[str] = []
     if isinstance(theory_cards, list):
         source_card_ids = [str(card.get("id")) for card in theory_cards if isinstance(card, dict)]
+        if len(set(source_card_ids)) != len(source_card_ids):
+            errors.append(f"docs/index/runtime-architecture.json has duplicate theory card ids: {source_card_ids!r}")
+        sorted_source_ids = [
+            str(card.get("id"))
+            for card in sorted(
+                (card for card in theory_cards if isinstance(card, dict)),
+                key=lambda card: int(card.get("card_runtime_order", 999)),
+            )
+        ]
+        if source_card_ids != sorted_source_ids:
+            errors.append(
+                "docs/index/runtime-architecture.json theory_cards must be stored in card_runtime_order: "
+                f"expected {sorted_source_ids!r}, found {source_card_ids!r}"
+            )
+        source_step_groups = []
+        current_step_group = None
+        seen_step_groups: set[str] = set()
+        for card in sorted(
+            (card for card in theory_cards if isinstance(card, dict)),
+            key=lambda card: int(card.get("card_runtime_order", 999)),
+        ):
+            card_id = str(card.get("id"))
+            group = str(card.get("runtime_step_group", ""))
+            label = str(card.get("runtime_step_label", ""))
+            if not group or not label:
+                errors.append(f"theory card {card_id!r} must declare runtime_step_group and runtime_step_label")
+                continue
+            if group != current_step_group:
+                if group in seen_step_groups:
+                    errors.append(f"runtime_step_group {group!r} is split across non-contiguous card runs")
+                seen_step_groups.add(group)
+                current_step_group = group
+                source_step_groups.append((group, label))
+        if source_step_groups != EXPECTED_RUNTIME_STEP_BREAKS:
+            errors.append(
+                "docs/index/runtime-architecture.json runtime step groups must match the expected execution bands: "
+                f"expected {EXPECTED_RUNTIME_STEP_BREAKS!r}, found {source_step_groups!r}"
+            )
     if source_card_ids and found != source_card_ids:
         errors.append(
             "Theory control card order must derive from docs/index/runtime-architecture.json: "
@@ -2049,7 +2710,7 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
     for css_class in REQUIRED_CONTROL_CARD_COLOR_CLASSES:
         if not re.search(rf"\.controlCard\.{re.escape(css_class)}\s*\{{[^}}]*--c\s*:", text, flags=re.S):
             errors.append(f"Theory control card class .controlCard.{css_class} must define --c color")
-        if not re.search(rf"\.ntok\.{re.escape(css_class)}\s*,\.ntokMini\.{re.escape(css_class)}\s*\{{[^}}]*--ntok-c\s*:", text, flags=re.S):
+        if not re.search(rf"\.ntok\.{re.escape(css_class)}[^{{]*\.ntokMini\.{re.escape(css_class)}[^{{]*\{{[^}}]*--ntok-c\s*:", text, flags=re.S):
             errors.append(f"Theory notation class .ntok.{css_class} must derive --ntok-c from the shared phase palette")
     if re.search(r"\.ntok\.sym[A-Za-z0-9]+\s*\{[^}]*border-color\s*:", text, flags=re.S):
         errors.append("Theory notation chips must not use symbol-specific border-color overrides over phase palette colors")
@@ -2089,10 +2750,20 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
         errors.append("Theory control cards should default to the first shared-source card")
 
     for _classes, concept, attrs in cards:
+        source_card = source_card_by_id.get(concept, {})
         if attr(attrs, "type") != "button":
             errors.append(f"Theory control card {concept!r} must be a real button control")
         if attr(attrs, "data-concept-id") != concept:
             errors.append(f"Theory control card {concept!r} missing stable data-concept-id")
+        if source_card:
+            for field_name in ("phase_id", "phase_order", "card_runtime_order"):
+                html_attr = "data-" + field_name.replace("_", "-")
+                expected = str(source_card.get(field_name, ""))
+                if attr(attrs, html_attr) != expected:
+                    errors.append(
+                        f"Theory control card {concept!r} {html_attr} must match runtime architecture source: "
+                        f"expected {expected!r}, found {attr(attrs, html_attr)!r}"
+                    )
         if "selectTheoryCard(this)" not in attr(attrs, "onclick"):
             errors.append(f"Theory control card {concept!r} must call selectTheoryCard(this), not only route to concept graph")
         targets = attr(attrs, "data-notation-targets").split()
@@ -2158,6 +2829,10 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
         "Runtime role",
         "Highlighted set",
         "notationHighlightRow",
+        "notationPanelSelectedChip is-active",
+        "data-selected-notation",
+        "data-highlight-notation",
+        "data-related-notation",
         "is-linked-active",
         'aria-pressed="true"',
         ".controlCard.is-linked-active",
@@ -2166,10 +2841,14 @@ def check_theory_control_cards(text: str, errors: list[str]) -> None:
     for token in required_interaction_tokens:
         if token not in text:
             errors.append(f"Theory card-to-notation interaction missing {token!r}")
-    if "goConceptField('" in block:
+    if "goConceptField('" in flow_block:
         errors.append("Theory control cards must not depend on goConceptField-only concept routing")
     if "setInterval(" in text:
         errors.append("Theory card-to-notation interaction must not depend on automatic timers")
+    if re.search(r"\.notationContextHeader\s+\.ntokMini\{[^}]*var\(--yellow\)", text, flags=re.S):
+        errors.append("Highlighted notation chip must keep semantic phase color, not generic yellow")
+    if ".semanticNotationChip.is-active" not in text or "box-shadow" not in text[text.find(".semanticNotationChip.is-active"): text.find(".semanticNotationChip.is-active") + 260]:
+        errors.append("Highlighted notation active state must use non-color ring/glow/stroke while preserving semantic color")
     theory_section = tab_section_slice(text, "theory")
     if '<template class="theoryNotationMapData"' not in theory_section:
         errors.append("Theory source map metadata must stay generated as an invisible template")
@@ -2216,10 +2895,10 @@ def main() -> int:
     else:
         for marker in ('id="architecture-thesis"',):
             marker_pos = text.find(marker, architecture_start)
-            if marker_pos != -1 and marker_pos < runtime_start:
+            if marker_pos == -1 or marker_pos > runtime_start:
                 errors.append(
-                    "architecture landing must be map-first: "
-                    f"{marker} appears before canonical-architecture-runtime"
+                    "architecture landing must onboard before the generated runtime map: "
+                    f"{marker} must appear before canonical-architecture-runtime"
                 )
         flow_pos = text.find('data-runtime-layout="paired-vertical-pipelines"', runtime_start)
         stages_pos = text.find('class="v21-five-col"', runtime_start)
@@ -2409,6 +3088,7 @@ def main() -> int:
     check_notation_contract(public_text, errors)
     check_public_notation_surface(INDEX, public_text, errors)
     check_architecture_trace_parity(text, errors)
+    check_architecture_thesis_onboarding(text, errors)
     check_shared_runtime_renderings(text, errors)
     check_architecture_carousel_contract(text, errors)
     check_large_runtime_control_js_inventory(text, manifest if isinstance(manifest, dict) else {}, errors)

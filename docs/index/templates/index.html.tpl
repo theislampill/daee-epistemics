@@ -9,7 +9,7 @@
 <style>
 {{ DESIGN_TOKENS_CSS }}
 *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 18% 0%,rgba(var(--ds-color-info-rgb),.13),transparent 30%),radial-gradient(circle at 82% 0%,rgba(var(--ds-color-success-rgb),.10),transparent 30%),var(--bg);color:var(--ink);font-family:var(--ds-font-body);line-height:var(--ds-type-body-line-height)}
-button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
+button,input,select{font:inherit} code,pre{font-family:var(--ds-font-monospace)} code{background:var(--ds-color-surface-code);border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-card);padding:1px 5px;color:#e2e8f0} p code,.small code,.subtle code{white-space:normal;overflow-wrap:anywhere} pre{background:#050914;border:1px solid var(--ds-color-border);border-radius:var(--ds-radius-panel);padding:14px;overflow:auto;color:#e5e7eb}
 .siteHero{border-bottom:1px solid rgba(38,48,68,.72);background:linear-gradient(180deg,rgba(8,10,16,.96),rgba(8,10,16,.72));text-align:center}.siteHeroInner{max-width:1880px;margin:0 auto;padding:34px 22px 22px}.siteHero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px}.siteHero p{color:var(--muted);max-width:1000px;margin:0 auto}.topbar{position:sticky;top:0;z-index:100;background:rgba(8,10,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)} .topbarInner{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1880px;margin:0 auto;padding:8px 12px}.tabs{display:flex;gap:4px;min-width:0;overflow:auto}.tab{border:0;background:transparent;color:var(--muted);padding:12px 18px;border-bottom:3px solid transparent;cursor:pointer;font-weight:850;white-space:nowrap} .tab:hover{color:#fff;background:#121a2b} .tab.active{color:var(--green);border-bottom-color:var(--green)}.downloadNavAction{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid rgba(34,197,94,.42);background:linear-gradient(180deg,rgba(34,197,94,.16),rgba(34,197,94,.08));color:#dcfce7;border-radius:999px;padding:9px 14px;font-size:13px;font-weight:900;text-decoration:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.14)}.downloadNavAction:hover{border-color:rgba(34,197,94,.75);background:rgba(34,197,94,.18);color:#fff}.downloadNavAction:focus-visible{outline:3px solid var(--ds-color-focus);outline-offset:3px}
 main{max-width:1880px;margin:0 auto;padding:20px 22px 70px} .tabsec{display:none} .tabsec.active{display:block}
 .hero{text-align:center;padding:18px 0 20px;border-bottom:1px solid rgba(38,48,68,.55);margin-bottom:18px} .hero h1{font-size:clamp(34px,4vw,58px);letter-spacing:-.07em;line-height:.95;margin:10px 0 8px} .hero p{color:var(--muted);max-width:1000px;margin:0 auto}
@@ -31,7 +31,11 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .docviewer{display:grid;grid-template-columns:360px 1fr;gap:14px} .doclist{max-height:660px;overflow:auto;display:grid;gap:6px} .docitem{border:1px solid var(--line);background:#0c1220;border-radius:12px;padding:9px;cursor:pointer} .docitem:hover{border-color:var(--cyan)} .docbody{max-height:780px;overflow:auto}
 .callout{border-left:4px solid var(--green);background:rgba(34,197,94,.07);border-radius:12px;padding:14px 16px;margin:14px 0} .warn{border-left-color:var(--orange);background:rgba(251,146,60,.08)} .danger{border-left-color:var(--red);background:rgba(248,113,113,.08)}
 .procGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px} .procStep{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:14px} .procStep h3{margin-top:0;color:#dbeafe} .command-block{background:#050914;border:1px solid #243047;border-radius:14px;padding:12px;overflow:auto;font-size:12px}
-.auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} .proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
+.auditOnly{border:1px dashed #334155;background:#080d19;border-radius:16px;padding:12px;margin-top:12px} details{margin:10px 0} summary{cursor:pointer;color:#bbf7d0;font-weight:900} details.panel>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none} details.panel>summary::-webkit-details-marker{display:none} details.panel>summary::after{content:"+";border:1px solid var(--line);border-radius:999px;width:26px;height:26px;display:grid;place-items:center;color:var(--cyan);flex:0 0 auto} details.panel[open]>summary::after{content:"-"} details.auditDisclosure>summary{justify-content:flex-start;align-items:center} details.auditDisclosure>summary::after{margin-left:auto}.auditTitleStack{display:grid;gap:2px;min-width:0}.audit-title{color:#bbf7d0;font-weight:950;line-height:1.2}.audit-subtitle{color:#93a4bb;font-size:12px;font-weight:700;line-height:1.25;text-transform:none;letter-spacing:0}.auditBody{padding-top:8px}.auditBody>h2:first-child{margin-top:0}.proposalAnnex{font-size:14px} .proposalAnnex .shell{display:block;min-height:auto} .proposalAnnex nav{display:none} .proposalAnnex main{padding:0;max-width:none} .proposalAnnex section{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px;margin:12px 0} .proposalAnnex .hero{text-align:left;border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
+.surfaceRoleKicker{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:900;margin-bottom:6px}.surfaceSummaryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}.surfaceStat{border:1px solid #263044;background:#080d19;border-radius:14px;padding:11px;min-width:0}.surfaceStat strong{display:block;color:#f8fafc;font-size:20px;line-height:1}.surfaceStat span{display:block;color:#93a4bb;font-size:12px;margin-top:4px}.surfaceStat code{white-space:normal;overflow-wrap:anywhere}.sourceBrowser{display:grid;grid-template-columns:minmax(280px,400px) minmax(0,1fr);gap:14px;align-items:start}.sourceBrowser .doclist{max-height:640px}.docitem{width:100%;text-align:left;color:#e8edf7}.docitem.active,.docitem[aria-selected="true"]{border-color:var(--green);background:rgba(34,197,94,.09)}.docbodyEmpty{border:1px dashed #334155;border-radius:14px;padding:18px;color:var(--muted)}[data-surface-role="focal"]{box-shadow:0 16px 42px rgba(0,0,0,.25)}[data-surface-role="support"],[data-surface-role="provenance"],[data-surface-role="raw-source"]{background:rgba(10,15,29,.82)}[data-surface-role="raw-source"] table,[data-surface-role="provenance"] table{font-size:12px}.ownerWorkspaceIntro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px;margin:10px 0}.ownerSummaryNote{border:1px solid #263044;background:#080d19;border-radius:14px;padding:12px}.referenceSummaryStrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:10px 0}.referenceFacetStrip{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:12px}.referenceFacetPanel{border:1px solid #263044;background:#080d19;border-radius:14px;padding:11px;min-width:0}.referenceFacetPanel h3{font-size:14px;letter-spacing:-.01em;margin:0 0 8px}.referenceFacetChips{display:flex;flex-wrap:wrap;gap:6px}.filterChip,.filterClear{border:1px solid #334155;background:#0a0f1d;color:#dbeafe;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:850;cursor:pointer}.filterChip:hover,.filterChip.active,.filterClear:hover{border-color:var(--cyan);color:#fff}.referenceFilters input{min-width:min(320px,100%)}.referenceFilters select{min-width:170px}.referenceAuditGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.referenceAuditBlock{min-width:0}.theoryFocalGrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px;align-items:start}.theoryNotationContext{position:sticky;top:86px;max-height:calc(100vh - 120px);overflow:auto}.theoryCardGroups{display:grid;gap:12px;margin-top:14px}.theoryCardGroup{border:1px solid #263044;background:#080d19;border-radius:16px;padding:12px}.theoryCardGroup h3{margin-top:0}.theoryCardGroup .controlOverviewGrid{margin-top:8px}.architectureSupportDisclosure .callout{margin-top:12px}@media(max-width:1100px){.sourceBrowser,.ownerWorkspaceIntro,.theoryFocalGrid,.referenceFacetStrip,.referenceAuditGrid{grid-template-columns:1fr}.theoryNotationContext{position:static;max-height:none}.surfaceSummaryGrid,.referenceSummaryStrip{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.surfaceSummaryGrid,.referenceSummaryStrip{grid-template-columns:1fr}.referenceFilters{display:grid;grid-template-columns:1fr}.referenceFilters input,.referenceFilters select,.referenceFilters button{width:100%}}
+.referenceBrowserPanel{padding:16px}.referenceBrowserPanel h2{margin:0 0 8px;font-size:clamp(22px,2vw,32px)}.referenceSummaryInline{border:0;background:transparent!important;box-shadow:none;padding:0;margin:0}.referenceSummaryInline .subtle{margin:0 0 6px}.referenceSummaryStrip{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}.referenceSummaryStrip .surfaceStat{padding:8px 10px;border-radius:12px}.referenceSummaryStrip .surfaceStat strong{font-size:17px}.referenceFilters{margin:8px 0 12px}.referenceFilters input{flex:1 1 320px}.referenceFilters select{flex:0 1 190px}.referenceBrowserPanel .docbody{margin:0}.referenceBrowserPanel .sourceBrowser{margin-top:0}.sourceMapDisclosure:not([open])>:not(summary){display:none!important}.sourceMapDisclosure .referenceProvenanceSummary{border:1px solid #263044;background:#080d19;border-radius:14px;padding:10px;margin-top:10px}.sourceMapDisclosure .referenceNestedDisclosure{border:1px solid #263044;background:#080d19;border-radius:14px;padding:14px;margin-top:10px}.sourceMapDisclosure .referenceNestedDisclosure:not([open])>:not(summary){display:none!important}.sourceMapDisclosure .referenceNestedDisclosure summary{color:#dbeafe}.sourceMapDisclosure .referenceAuditGrid{display:block}.provenanceNestedIntro{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:#cbd5e1;font-size:12px;margin:10px 0}.provenanceToolRow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}.provenanceToolRow input{flex:1 1 220px;background:#0a0f1d;color:#e5e7eb;border:1px solid #334155;border-radius:10px;padding:9px 10px}.provenanceRows{display:grid;gap:8px;margin-top:10px;max-width:100%}.provenanceRow{border:1px solid #263044;background:#070b14;border-radius:12px;padding:10px 12px;min-width:0}.provenanceName{color:#f8fafc;font-weight:850;line-height:1.35;overflow-wrap:anywhere}.provenanceRawRow,.ownerSourceRow,.operatorMatrixRow{display:grid;gap:8px}.provenanceRowHeader{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.provenanceRowTitle{font-weight:900;color:#f8fafc;overflow-wrap:anywhere}.provenanceMeta{display:flex;flex-wrap:wrap;gap:6px}.provenanceMeta span{border:1px solid #334155;background:#0a0f1d;border-radius:999px;padding:4px 7px;color:#dbeafe;font-size:12px}.provenanceFields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.provenanceFields div{min-width:0}.provenanceFields strong{display:block;color:#93c5fd;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}.provenanceFields span{display:block;color:#cbd5e1;line-height:1.4;overflow-wrap:anywhere}.provenanceRows code,.provenanceRow code{white-space:normal;overflow-wrap:anywhere;word-break:break-word}.provenanceLimitNote{color:#93a4bb;font-size:12px}@media(max-width:900px){.provenanceFields{grid-template-columns:1fr 1fr}}@media(max-width:560px){.provenanceFields{grid-template-columns:1fr}}
+.theoryRuntimeWorkspace{display:grid;grid-template-columns:minmax(150px,190px) minmax(0,1fr);gap:12px;align-items:start;margin-top:10px}.theoryPhaseLegend{position:sticky;top:86px;display:grid;gap:6px;padding:8px;border:1px solid #263044;background:#080d19;border-radius:14px}.theoryPhaseLegend .surfaceRoleKicker{margin-bottom:2px;font-size:10px}.theoryPhaseLegendItem{display:grid;grid-template-columns:9px minmax(0,1fr);align-items:center;gap:6px;border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 90%);color:#e5edf8;border-radius:10px;padding:5px 6px;font-size:11px;font-weight:850;line-height:1.18}.phaseDot{width:8px;height:8px;border-radius:999px;background:var(--ntok-c);box-shadow:0 0 0 2px color-mix(in srgb,var(--ntok-c),transparent 72%)}.theoryCardFlow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}.runtimeStepBreak{grid-column:1/-1;display:grid;grid-template-columns:minmax(28px,1fr) auto minmax(28px,1fr);align-items:center;gap:10px;margin:6px 0 2px;color:#bbf7d0;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.runtimeStepRule{height:1px;background:linear-gradient(90deg,transparent,#334155,transparent)}
+.boundaryMapPanel{padding:16px}.boundaryMapPanel h2{margin:0 0 12px}.boundaryCardGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.boundaryCard{border:1px solid #263044;background:#080d19;border-radius:14px;padding:12px;min-width:0;display:grid;align-content:start;gap:6px}.boundaryCard h3{margin:0;color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.07em}.boundaryCard p{margin:0;color:#d7deea;font-size:13px;line-height:1.42}.boundaryCard code{white-space:normal;overflow-wrap:anywhere}@media(max-width:1180px){.boundaryCardGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.boundaryCardGrid{grid-template-columns:1fr}}
 .bridgeSemantics{border:1px solid var(--line);background:rgba(12,18,32,.92);border-radius:20px;padding:16px;margin:12px 0}.bridgeIntro{max-width:1180px}.bridgeKicker{margin:0 0 4px;color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.bridgeIntro h2{margin:0 0 8px;font-size:clamp(24px,2vw,34px);letter-spacing:-.04em}.bridgeIntro p{margin:0;color:#cbd5e1}.bridgeFlow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border:1px dashed #334155;background:#080d19;border-radius:16px;padding:10px;margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850}.bridgeFlow span{border:1px solid #334155;background:#0c1220;border-radius:10px;padding:6px 8px;color:#e8edf7}.bridgeFlow b{color:#64748b}.bridgeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.bridgeCard{border:1px solid #334155;background:#0a0f1d;border-radius:16px;padding:12px;min-width:0}.bridgeCard h3{font-size:15px;margin:0 0 8px;color:#dbeafe;letter-spacing:-.02em}.bridgeCard p{margin:7px 0;font-size:13px;line-height:1.48}.bridgeCard dl{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;margin:0}.bridgeCard dt{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bbf7d0;font-weight:950}.bridgeCard dd{margin:0;color:#cbd5e1;font-size:13px;line-height:1.42}.bridgeNonClaims{border-color:rgba(248,113,113,.45);background:rgba(248,113,113,.055)}.bridgeNonClaims h3{color:#fecaca}.bridgeNonClaims ul{margin:0;padding-left:18px}.bridgeNonClaims li{font-size:13px;line-height:1.45;margin:4px 0}.bridgeExamples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.bridgeExamples>div{border:1px solid #334155;background:#080d19;border-radius:14px;padding:10px}.bridgeExamples strong{display:block;color:#bbf7d0;margin-bottom:6px}.bridgeExamples code{display:block;white-space:normal;line-height:1.45}@media(max-width:1100px){.bridgeGrid{grid-template-columns:1fr 1fr}.bridgeExamples{grid-template-columns:1fr}}@media(max-width:760px){.bridgeGrid{grid-template-columns:1fr}.bridgeFlow{display:grid;grid-template-columns:1fr}.bridgeFlow b{display:none}}
 @media(max-width:1250px){.pipelineGrid{grid-template-columns:repeat(3,1fr)}.detailGrid{grid-template-columns:1fr 1fr}.compareGrid,.ownerFamilies,.entityLayout,.docviewer{grid-template-columns:1fr}.ownerCircuit{grid-template-columns:1fr 1fr}.regGrid{grid-template-columns:1fr 1fr}.procGrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.col3,.col4,.col6,.col8,.full{grid-column:1/-1}}
 @media(max-width:760px){main{padding:12px}.pipelineGrid,.detailGrid,.ownerCircuit,.regGrid{grid-template-columns:1fr}.siteHeroInner{padding:26px 12px 18px}.topbarInner{align-items:stretch;flex-wrap:wrap}.tabs{flex:1 1 100%;order:1}.downloadNavAction{order:2;margin-left:auto;padding:8px 12px}.tab{padding:10px 12px}}
@@ -39,36 +43,39 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 
 .notationBoard{border:1px solid #334155;background:#070b14;border-radius:18px;padding:14px;margin:12px 0;overflow:hidden;max-width:100%}
 .notationLine{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:6px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850;max-width:100%;overflow-wrap:anywhere}
-.ntok{--ntok-c:#334155;display:inline-flex;align-items:center;border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 86%);border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;cursor:pointer;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;line-height:1.35}
+.ntok,.semanticNotationChip{--ntok-c:#334155;display:inline-flex;align-items:center;border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 86%);border-radius:10px;padding:5px 8px;color:#dbeafe;transition:.15s all;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;line-height:1.35}
+.ntok{cursor:pointer}
 .ntok:hover{border-color:var(--ntok-c);transform:translateY(-1px)}
 .ntok.active,
 .ntok.is-linked-active,
-.ntok[aria-pressed="true"]{border-color:var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 72%);color:#fff;box-shadow:0 0 0 2px color-mix(in srgb,var(--ntok-c),transparent 76%);outline:2px solid rgba(250,204,21,.36);outline-offset:2px}
+.ntok[aria-pressed="true"],
+.semanticNotationChip.is-active{border-color:var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 72%);color:#fff;box-shadow:0 0 0 2px var(--yellow),0 0 18px color-mix(in srgb,var(--yellow),transparent 46%),inset 0 0 0 1px color-mix(in srgb,var(--ntok-c),#ffffff 24%);outline:2px solid color-mix(in srgb,var(--yellow),transparent 35%);outline-offset:2px}
 .ntok.muted{opacity:.34}
-.ntok.phase-input,.ntokMini.phase-input{--ntok-c:var(--stage-d0)}
-.ntok.phase-layer-a,.ntokMini.phase-layer-a{--ntok-c:var(--stage-psi-n)}
-.ntok.phase-gate,.ntokMini.phase-gate{--ntok-c:var(--stage-dsl-ir)}
-.ntok.phase-owner-delta,.ntokMini.phase-owner-delta{--ntok-c:var(--stage-owner-ttp-delta)}
-.ntok.phase-reread-closure,.ntokMini.phase-reread-closure{--ntok-c:var(--green)}
-.ntok.phase-public-boundary,.ntokMini.phase-public-boundary{--ntok-c:var(--stage-collapse-restoration)}
+.ntok.phase-input,.ntokMini.phase-input,.semanticNotationChip.phase-input,.theoryPhaseLegendItem.phase-input{--ntok-c:var(--stage-d0)}
+.ntok.phase-layer-a,.ntokMini.phase-layer-a,.semanticNotationChip.phase-layer-a,.theoryPhaseLegendItem.phase-layer-a{--ntok-c:var(--stage-psi-n)}
+.ntok.phase-gate,.ntokMini.phase-gate,.semanticNotationChip.phase-gate,.theoryPhaseLegendItem.phase-gate{--ntok-c:var(--stage-dsl-ir)}
+.ntok.phase-owner-delta,.ntokMini.phase-owner-delta,.semanticNotationChip.phase-owner-delta,.theoryPhaseLegendItem.phase-owner-delta{--ntok-c:var(--stage-owner-ttp-delta)}
+.ntok.phase-reread-closure,.ntokMini.phase-reread-closure,.semanticNotationChip.phase-reread-closure,.theoryPhaseLegendItem.phase-reread-closure{--ntok-c:var(--green)}
+.ntok.phase-public-boundary,.ntokMini.phase-public-boundary,.semanticNotationChip.phase-public-boundary,.theoryPhaseLegendItem.phase-public-boundary{--ntok-c:var(--stage-collapse-restoration)}
 .notationArrow{color:#64748b;font-weight:900}
 .notationExplain{border:1px dashed #334155;background:#0a0f1d;border-radius:12px;padding:12px;color:#cbd5e1;font-size:13px;margin-top:10px;overflow:hidden}
 .notationContext{display:grid;gap:10px}
 .notationContextHeader{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;font-weight:900;color:#f8fafc}
-.notationContextHeader .ntokMini{--ntok-c:var(--yellow);border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 82%);border-radius:999px;padding:4px 8px;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.notationContextHeader .ntokMini:not(.semanticNotationChip){--ntok-c:#334155;border:1px solid var(--ntok-c);background:color-mix(in srgb,var(--ntok-c),#0c1220 82%);border-radius:999px;padding:4px 8px;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.notationContextHeader .notationPanelSelectedChip{justify-self:start;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:950}
 .notationContextGrid{display:grid;grid-template-columns:1fr;gap:7px}
 .notationContextBlock{border:1px solid #263044;background:#080d19;border-radius:12px;padding:10px;min-width:0}
 .notationContextBlock strong{display:block;color:#7dd3fc;text-transform:uppercase;letter-spacing:.06em;font-size:11px;margin-bottom:5px}
 .notationContextBlock span{display:block;line-height:1.42}
 .notationContextBlock code{white-space:normal;overflow-wrap:anywhere;color:#bbf7d0}
 .notationRelated{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.notationRelated span{border:1px solid #334155;background:#0c1220;border-radius:999px;padding:4px 7px;color:#dbeafe;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .notationHighlightList{display:grid;gap:6px;margin-top:4px}
 .notationHighlightRow{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:8px;align-items:start;border:1px solid #263044;background:#0a0f1d;border-radius:10px;padding:7px}
-.notationHighlightRow b{color:#f8fafc;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.notationHighlightRow b{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
 .notationHighlightRow span{color:#cbd5e1}
 .notationLegend{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .notationLegend .miniCard{border:1px solid #334155;background:#0a0f1d;border-radius:14px;padding:10px;font-size:13px}
+.notationLegend .miniCard strong{display:block;margin-bottom:5px;color:#bbf7d0}.notationLegend .miniCard span{display:block;line-height:1.42;margin:2px 0}
 .relationLayout{display:grid;grid-template-columns:360px 1fr;gap:14px}.relationList{display:grid;gap:8px;max-height:680px;overflow:auto}.relationBtn{border:1px solid var(--line);background:#0c1220;border-radius:14px;padding:10px;text-align:left;color:#e8edf7;cursor:pointer}.relationBtn.active{border-color:var(--green);background:rgba(34,197,94,.09)}.relationDetail{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}
 .proposalAnnex .grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(330px,1fr))!important;gap:14px!important;align-items:stretch!important}
 .proposalAnnex .card,.proposalAnnex .card.wide{grid-column:auto!important;min-width:0!important}
@@ -84,6 +91,8 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .proposalAnnex .hero{text-align:left!important;border:1px solid var(--line)!important;background:#0c1220!important;border-radius:18px!important;padding:16px!important}
 .proposalAnnex h1{font-size:clamp(30px,3vw,48px)!important}
 @media(max-width:900px){.notationLegend{grid-template-columns:1fr}.relationLayout{grid-template-columns:1fr}.proposalAnnex .two{columns:1}}
+@media(max-width:900px){.theoryRuntimeWorkspace{grid-template-columns:minmax(118px,145px) minmax(0,1fr);gap:8px}.theoryPhaseLegend{position:static}.theoryPhaseLegendItem{grid-template-columns:8px minmax(0,1fr);font-size:10px;padding:5px}.theoryCardFlow{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}}
+@media(max-width:420px){.theoryRuntimeWorkspace{grid-template-columns:minmax(96px,112px) minmax(0,1fr);gap:6px}.theoryPhaseLegend{padding:6px}.theoryPhaseLegendItem{grid-template-columns:6px minmax(0,1fr);font-size:9px;padding:4px}.phaseDot{width:6px;height:6px}.theoryCardFlow{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
 
 
 .opLayout{display:grid;grid-template-columns:380px 1fr;gap:14px}.opList{display:grid;gap:8px;max-height:720px;overflow:auto}.opBtn{border:1px solid var(--line);background:#0c1220;border-radius:14px;padding:10px;text-align:left;color:#e8edf7;cursor:pointer}.opBtn:hover{border-color:var(--cyan)}.opBtn.active{border-color:var(--green);background:rgba(34,197,94,.09)}.opDetail{border:1px solid var(--line);background:#0c1220;border-radius:18px;padding:16px}.opFamily{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.opGraph{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}.opGraphNode{border:2px solid var(--c);background:#0c1220;border-radius:18px;padding:12px;text-align:center}.opGraphNode strong{display:block;color:var(--c);margin-bottom:6px}.opChip{border:1px solid #334155;background:#0a0f1d;color:#dbeafe;border-radius:999px;padding:5px 8px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;margin:2px}.opChip:hover{border-color:var(--green);background:rgba(34,197,94,.1);color:#fff}.opMiniGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}.opMini{border:1px solid #334155;background:#0a0f1d;border-radius:14px;padding:10px}.opMini h4{font-size:12px;color:var(--cyan);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}.opExplainBlock{border:1px solid #334155;background:#080d19;border-radius:14px;padding:12px;margin:8px 0}.opExplain{border-top:1px solid #263044;padding:8px 0}.opExplain:first-of-type{border-top:0}.opExplain p{margin:4px 0}@media(max-width:1100px){.opLayout{grid-template-columns:1fr}.opGraph{grid-template-columns:1fr}.opMiniGrid{grid-template-columns:1fr}}
@@ -228,6 +237,135 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
   }
 }
 
+/* v25: Reference source-map provenance discipline */
+.sourceMapDisclosure .breakdownPurpose{
+  margin:6px 0 4px;
+  color:#93a4bb;
+  font-size:12px;
+  line-height:1.4;
+}
+.sourceMapDisclosure .provenanceTableWrap{
+  border:1px solid #263044;
+  background:#070b14;
+  border-radius:12px;
+  padding:0;
+  margin-top:12px;
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:visible;
+}
+.sourceMapDisclosure .provenanceTableWrap table{
+  display:table!important;
+  width:100%;
+  min-width:980px;
+  table-layout:auto;
+  border-collapse:separate;
+  border-spacing:0;
+  margin:0;
+  overflow:visible!important;
+}
+.sourceMapDisclosure .provenanceTableWrap th{
+  padding:14px 12px 12px!important;
+  line-height:1.35!important;
+  vertical-align:middle!important;
+  white-space:normal;
+}
+.sourceMapDisclosure .provenanceTableWrap td{
+  padding:11px 12px!important;
+  line-height:1.4!important;
+  vertical-align:top!important;
+  overflow-wrap:anywhere;
+}
+.sourceMapDisclosure .provenanceTableWrap code{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.sourceMapDisclosure .referenceCountList{
+  display:grid;
+  gap:0;
+  width:min(560px,100%);
+  max-width:560px;
+  margin-top:10px;
+  border:1px solid #263044;
+  border-radius:12px;
+  background:#070b14;
+  overflow:visible;
+}
+.sourceMapDisclosure .referenceCountRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 4.5ch;
+  align-items:center;
+  gap:12px;
+  padding:7px 10px;
+  min-height:34px;
+  border-bottom:1px solid #1f2937;
+}
+.sourceMapDisclosure .referenceCountRow:last-child{
+  border-bottom:0;
+}
+.sourceMapDisclosure .referenceCountName{
+  min-width:0;
+  color:#e5e7eb;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.28;
+  overflow-wrap:anywhere;
+}
+.sourceMapDisclosure .referenceCountValue{
+  justify-self:end;
+  min-width:4.5ch;
+  text-align:right;
+  color:#dbeafe;
+  font-size:13px;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.sourceMapDisclosure .rawSourceTableWrap table{
+  min-width:980px;
+}
+@media(max-width:560px){
+  .sourceMapDisclosure .referenceCountList{max-width:100%}
+}
+
+.provenanceTableWrap.ownerSourceTableWrap{
+  border:1px solid #263044;
+  background:#070b14;
+  border-radius:16px;
+  margin-top:12px;
+  padding:0;
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:visible;
+}
+.provenanceTableWrap.ownerSourceTableWrap table{
+  display:table!important;
+  width:100%;
+  min-width:980px;
+  table-layout:auto;
+  border-collapse:separate;
+  border-spacing:0;
+  margin:0;
+  overflow:visible!important;
+}
+.provenanceTableWrap.ownerSourceTableWrap th{
+  padding:14px 12px 12px!important;
+  line-height:1.35!important;
+  vertical-align:middle!important;
+  white-space:normal;
+}
+.provenanceTableWrap.ownerSourceTableWrap td{
+  padding:11px 12px!important;
+  line-height:1.4!important;
+  vertical-align:top!important;
+  overflow-wrap:anywhere;
+}
+.provenanceTableWrap.ownerSourceTableWrap code{
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
 
 /* v18: normalize left-column browser behavior across Owners, Concept Graph, and Relations Map */
 #owners .opLayout,
@@ -291,7 +429,9 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .finalStateChip{border-color:rgba(250,204,21,.55)!important;background:rgba(250,204,21,.10)!important}
 
 
-/* v62: compact Theory selectors keep the 25-card bank secondary to notation. */
+/* v62: compact Theory selectors keep the notation-control bank secondary to notation. */
+.theoryCardBank{padding:14px;margin-top:14px}
+.theoryCardBank h2{margin:0 0 6px;font-size:clamp(22px,2vw,32px)}
 .controlOverviewGrid{
   display:grid;
   grid-template-columns:repeat(5,minmax(150px,1fr));
@@ -352,6 +492,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 .controlCard.phase-public-boundary{--c:var(--stage-collapse-restoration)}
 .controlCard.final-card .controlSym{font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .controlCard.phase-reread-closure .controlSym{font-size:15px}
+.controlCard.ir-card .controlSym,
 .controlCard.route-gradient-card .controlSym,
 .controlCard.field-diagnostic-card .controlSym,
 .controlCard.loopbreak-card .controlSym,
@@ -2640,7 +2781,17 @@ function esc(value){
     "'":'&#39;'
   })[ch]);
 }
-function showTopTab(id, btn){
+function referenceDefaultPath(scrollToTop=false){
+  const raw=document.getElementById('referenceRawSourceMap');
+  if(raw) raw.open=false;
+  if(typeof renderRefs==='function') renderRefs();
+  if(scrollToTop){
+    setTimeout(()=>{
+      document.getElementById('reference')?.scrollIntoView({behavior:'auto',block:'start'});
+    },0);
+  }
+}
+function showTopTab(id, btn, options={}){
   const panel=document.getElementById(id);
   if(!panel || !panel.classList.contains('tabsec')) return false;
   document.querySelectorAll('.tabsec').forEach(sec=>{
@@ -2657,6 +2808,7 @@ function showTopTab(id, btn){
   if(window.history && window.location && window.location.hash !== '#'+id){
     history.replaceState(null, '', '#'+id);
   }
+  if(id==='reference') referenceDefaultPath(Boolean(options.scrollTop));
   return false;
 }
 function initTopTabs(){
@@ -2664,7 +2816,7 @@ function initTopTabs(){
   if(!tabs.length) return;
   tabs.forEach((tab,index)=>{
     const id=tab.dataset.tab;
-    tab.addEventListener('click',()=>showTopTab(id,tab));
+    tab.addEventListener('click',()=>showTopTab(id,tab,{scrollTop:true}));
     tab.addEventListener('keydown',event=>{
       const keys=['ArrowLeft','ArrowRight','Home','End'];
       if(!keys.includes(event.key)) return;
@@ -2675,19 +2827,12 @@ function initTopTabs(){
       if(event.key==='Home') next=0;
       if(event.key==='End') next=tabs.length-1;
       tabs[next].focus();
-      showTopTab(tabs[next].dataset.tab,tabs[next]);
+      showTopTab(tabs[next].dataset.tab,tabs[next],{scrollTop:true});
     });
   });
   const hash=(window.location.hash||'').slice(1);
   const initial=tabs.find(tab=>tab.dataset.tab===hash) || tabs.find(tab=>tab.classList.contains('active')) || tabs[0];
-  showTopTab(initial.dataset.tab, initial);
-  if(hash){
-    setTimeout(()=>{
-      document.documentElement.scrollTop=0;
-      document.body.scrollTop=0;
-      if(typeof window.scrollTo === 'function') window.scrollTo(0,0);
-    },0);
-  }
+  showTopTab(initial.dataset.tab, initial, {scrollTop:Boolean(hash)});
 }
 function showSub(id,btn){
   document.querySelectorAll('.subpanel').forEach(x=>x.classList.remove('active'));
@@ -2717,10 +2862,20 @@ function selectStage(gridId,detailId,id,el){document.querySelectorAll(`#${gridId
 function renderOwnerFamilies(){const list=document.getElementById('ownerFamilyList');list.innerHTML=OWNER_FAMILIES.map((f,i)=>`<button class="ownerBtn ${i===0?'active':''}" onclick="selectOwnerFamily('${f.id}',this)"><span class="entityType">${esc(f.title)}</span><br><span class="small">${esc(f.purpose).slice(0,120)}...</span></button>`).join('');selectOwnerFamily(OWNER_FAMILIES[0].id,list.querySelector('.ownerBtn'));}
 function chips(arr){return `<div class="relchips">${(arr||[]).map(x=>`<span>${esc(x)}</span>`).join('')}</div>`}
 function selectOwnerFamily(id,el){document.querySelectorAll('.ownerBtn').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');const f=OWNER_FAMILIES.find(x=>x.id===id);document.getElementById('ownerFamilyDetail').innerHTML=`<h2>${esc(f.title)}</h2><p>${esc(f.purpose)}</p><h3>Owners / surfaces</h3>${chips(f.owners)}<h3>What it explains</h3><ul>${f.explains.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h3>Audit question</h3><p>${esc(f.audit)}</p>`;}
+function countBy(items,key){return (items||[]).reduce((acc,item)=>{const value=String(item?.[key]||'uncategorized');acc[value]=(acc[value]||0)+1;return acc;},{});}
+function statCards(items){return Object.entries(items).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([label,count])=>`<div class="surfaceStat"><strong>${esc(count)}</strong><span>${esc(label)}</span></div>`).join('');}
+function renderOwnerSummary(){
+  const el=document.getElementById('ownerSummary');
+  if(!el) return;
+  const modules=window.DOCS_INDEX_MODULE_CATALOGUE||[];
+  const operatorFamilies=countBy(OPERATORS,'family');
+  const moduleClasses=countBy(modules,'module_class');
+  el.innerHTML=`<div class="surfaceRoleKicker">Source-derived summary</div><h2>Owner/TTP map at a glance</h2><p class="subtle">Counts are computed from the generated operator map and <code>atomics/skill/references/diagnostics/module-catalogue.json</code>. Operator graph entries are curated controls; catalogue modules include case-library and noetic-profile material as well as operators.</p><div class="ownerWorkspaceIntro"><div class="ownerSummaryNote"><h3>Operator families</h3><div class="surfaceSummaryGrid">${statCards(operatorFamilies)}</div></div><div class="ownerSummaryNote"><h3>Catalogue module classes</h3><div class="surfaceSummaryGrid">${statCards(moduleClasses)}</div></div></div>`;
+}
 function renderOperatorMatrix(){
   const target=document.getElementById('operatorMatrix');
   if(!target) return;
-  target.innerHTML=`<table><thead><tr><th>Operator</th><th>Family</th><th>Acts on</th><th>Activation</th><th>Operation</th><th>Delta / reread</th></tr></thead><tbody>${OPERATORS.map(o=>`<tr><td><button class="opChip" onclick="goOperator('${esc(o.id)}')">${esc(o.label||o.id)}</button><br><span class="small"><code>${esc(o.path||'')}</code></span></td><td>${esc(o.family||o.class)}</td><td>${esc(o.acts_on||'')}</td><td>${esc(o.activation||'')}</td><td>${esc(o.operation||'')}</td><td>${esc(o.delta||'')}<br><span class="small">${esc(o.reread||'')}</span></td></tr>`).join('')}</tbody></table>`;
+  target.innerHTML=`<div class="provenanceTableWrap provenanceTableWrap--wide ownerSourceTableWrap"><table><thead><tr><th>Operator</th><th>Family</th><th>Acts on</th><th>Activation</th><th>Operation</th><th>Delta / reread</th></tr></thead><tbody>${OPERATORS.map(o=>`<tr><td><button class="opChip" onclick="goOperator('${esc(o.id)}')">${esc(o.label||o.id)}</button><br><span class="small"><code>${esc(o.path||'')}</code></span></td><td>${esc(o.family||o.class)}</td><td>${esc(o.acts_on||'')}</td><td>${esc(o.activation||'')}</td><td>${esc(o.operation||'')}</td><td>${esc(o.delta||'')}<br><span class="small">${esc(o.reread||'')}</span></td></tr>`).join('')}</tbody></table></div>`;
 }
 {{ OWNER_SOURCE_RENDERER }}
 function renderConcepts(){const q=(document.getElementById('conceptSearch')?.value||'').toLowerCase();const t=document.getElementById('conceptType')?.value||'';const arr=CONCEPTS.filter(c=>(!t||c.type===t)&&JSON.stringify(c).toLowerCase().includes(q));const list=document.getElementById('conceptList');list.innerHTML=arr.map((c,i)=>`<button class="conceptBtn ${i===0?'active':''}" data-cid="${esc(c.id)}" onclick="selectConcept('${c.id}',this)"><span class="entityType">${esc(c.type)}</span><br><strong>${esc(c.name)}</strong><br><span class="small">${esc(c.summary)}</span></button>`).join('');if(arr[0])selectConcept(arr[0].id,list.querySelector('.conceptBtn'));}
@@ -2819,9 +2974,197 @@ function selectOperator(id,el){
   }
 }
 
-function renderRefs(){const q=(document.getElementById('refSearch')?.value||'').toLowerCase();const layer=document.getElementById('refLayer')?.value||'';const f=REFS.filter(r=>(!layer||r.layer===layer)&&JSON.stringify(r).toLowerCase().includes(q));document.getElementById('refTable').innerHTML=`<table><thead><tr><th>Path</th><th>Role</th><th>Layer</th><th>Governs</th><th>Operators</th></tr></thead><tbody>${f.map(r=>`<tr><td><code>${esc(r.path)}</code><br><span class="small">${esc(r.lines)} lines</span></td><td>${esc(r.role)}</td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table><p class="small">${f.length} references shown.</p>`;renderDocList(q);}
-function renderDocList(q=''){const arr=DOCS.filter(d=>!q||JSON.stringify(d).toLowerCase().includes(q));document.getElementById('docList').innerHTML=arr.map(d=>`<div class="docitem" onclick="showDoc(${d.id})"><strong>${esc(d.title)}</strong><br><span class="small">${esc(d.rel)} · ${esc(d.lines)} lines</span></div>`).join('');}
-function showDoc(id){const d=DOCS.find(x=>x.id==id);if(!d)return;document.getElementById('docBody').innerHTML=`<h2>${esc(d.title)}</h2><p class="small"><code>${esc(d.rel)}</code> · ${esc(d.lines)} lines</p><div>${d.html||'<pre>'+esc(d.content||'')+'</pre>'}</div>`;}
+let REFERENCE_SELECTED_ID = null;
+function referenceMetaForDoc(doc){
+  return REFS.find(r=>r.path===doc.rel) || {};
+}
+const REFERENCE_BREAKDOWN_PURPOSE={
+  layer:'Counts files by repo-layer / ownership surface.',
+  family:'Counts files by broad family/type grouping.',
+  fineRole:'Counts exact generated role/source labels without simplification.'
+};
+function referenceCountsFor(key){
+  const summary=(typeof REF_SUMMARY!=='undefined') ? REF_SUMMARY : {};
+  return key==='role' ? (summary.by_role||{}) : (summary.by_layer||{});
+}
+function referenceCountEntries(key){
+  return Object.entries(referenceCountsFor(key)).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+}
+function referenceFamilyLabel(raw){
+  return String(raw||'').replace(/-/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase());
+}
+function referenceFamilyForPath(path){
+  const p=String(path||'');
+  if(p==='atomics/skill/README.md' || p==='atomics/skill/SKILL.md') return 'skill root';
+  const ref=p.match(/^atomics\/skill\/references\/([^/]+)/);
+  if(ref) return ref[1];
+  if(p.startsWith('docs/')) return 'generated docs';
+  return 'other source';
+}
+function referenceFamilyForRef(ref){
+  return referenceFamilyForPath(ref?.path||'');
+}
+function referenceFamilyCounts(){
+  return (REFS||[]).reduce((acc,ref)=>{
+    const family=referenceFamilyForRef(ref);
+    acc[family]=(acc[family]||0)+1;
+    return acc;
+  },{});
+}
+function referenceFamilyEntries(){
+  return Object.entries(referenceFamilyCounts()).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+}
+function populateReferenceFilters(){
+  const layerSelect=document.getElementById('refLayer');
+  const familySelect=document.getElementById('refFamily');
+  const fill=(select,entries,allLabel)=>{
+    if(!select || select.dataset.populated==='true') return;
+    const current=select.value||'';
+    select.innerHTML=`<option value="">${esc(allLabel)}</option>` + entries.map(([label,count])=>`<option value="${esc(label)}">${esc(referenceFamilyLabel(label))} (${esc(count)})</option>`).join('');
+    select.value=current;
+    select.dataset.populated='true';
+  };
+  fill(layerSelect,referenceCountEntries('layer'),'All layers');
+  fill(familySelect,referenceFamilyEntries(),'All families/types');
+}
+function setRefFilter(kind,value){
+  const target=document.getElementById(kind==='family'?'refFamily':'refLayer');
+  if(target){
+    target.value=value;
+    renderRefs();
+  }
+}
+function clearRefFilters(){
+  const search=document.getElementById('refSearch');
+  const layer=document.getElementById('refLayer');
+  const family=document.getElementById('refFamily');
+  if(search) search.value='';
+  if(layer) layer.value='';
+  if(family) family.value='';
+  renderRefs();
+}
+const REFERENCE_PROVENANCE_SHOW_ALL={layer:false,family:false,fineRole:false,raw:false};
+function setReferenceProvenanceShowAll(kind,value){
+  REFERENCE_PROVENANCE_SHOW_ALL[kind]=Boolean(value);
+  renderRefs();
+}
+function referenceProvenanceId(kind,suffix){
+  return `reference${String(kind||'').charAt(0).toUpperCase()}${String(kind||'').slice(1)}${suffix}`;
+}
+function referenceProvenanceFilter(kind){
+  return (document.getElementById(referenceProvenanceId(kind,'Filter'))?.value||'').trim().toLowerCase();
+}
+function referenceProvenanceRows(items,query){
+  const rows=Object.entries(items||{}).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  if(!query) return rows;
+  return rows.filter(([label,count])=>`${label} ${count}`.toLowerCase().includes(query));
+}
+function renderReferenceBreakdown(kind,title,items,limit=20){
+  const target=document.getElementById(referenceProvenanceId(kind,'BreakdownTable'));
+  if(!target) return;
+  const query=referenceProvenanceFilter(kind);
+  const rows=referenceProvenanceRows(items,query);
+  const showAll=REFERENCE_PROVENANCE_SHOW_ALL[kind] || Boolean(query);
+  const visible=showAll ? rows : rows.slice(0,limit);
+  const omitted=Math.max(0,rows.length-visible.length);
+  const purpose=REFERENCE_BREAKDOWN_PURPOSE[kind] || 'Counts generated source metadata exactly as emitted.';
+  target.innerHTML=`<p class="breakdownPurpose">${esc(purpose)}</p><div class="provenanceNestedIntro"><strong>${esc(rows.length)}</strong><span>${esc(title)} entries${query?' matching filter':''}.</span>${omitted?`<span class="provenanceLimitNote">Showing first ${esc(visible.length)}; ${esc(omitted)} held behind Show all.</span>`:''}</div>
+  <div class="provenanceToolRow"><input id="${esc(referenceProvenanceId(kind,'Filter'))}" value="${esc(query)}" oninput="renderReferenceAuditBreakdown()" placeholder="Filter ${esc(title.toLowerCase())}..."/>${omitted?`<button type="button" class="filterClear" onclick="setReferenceProvenanceShowAll('${esc(kind)}',true)">Show all</button>`:''}${showAll && rows.length>limit?`<button type="button" class="filterClear" onclick="setReferenceProvenanceShowAll('${esc(kind)}',false)">Show less</button>`:''}</div>
+  <div class="referenceCountList" data-count-breakdown="${esc(kind)}" data-reference-count-breakdown="${esc(kind)}">${visible.map(([label,count])=>`<div class="referenceCountRow"><span class="referenceCountName">${esc(label)}</span><span class="referenceCountValue">${esc(count)}</span></div>`).join('')}</div>`;
+}
+function renderReferenceRawRows(refs){
+  const refTable=document.getElementById('refTable');
+  if(!refTable) return;
+  const query=referenceProvenanceFilter('raw');
+  const rows=(refs||[]).filter(r=>!query||JSON.stringify(r).toLowerCase().includes(query));
+  const showAll=REFERENCE_PROVENANCE_SHOW_ALL.raw || Boolean(query);
+  const visible=showAll ? rows : rows.slice(0,20);
+  const omitted=Math.max(0,rows.length-visible.length);
+  refTable.innerHTML=`<div class="provenanceNestedIntro"><strong>${esc(rows.length)}</strong><span>source rows${query?' matching filter':''}.</span>${omitted?`<span class="provenanceLimitNote">Showing first ${esc(visible.length)}; ${esc(omitted)} held behind Show all.</span>`:''}</div>
+  <div class="provenanceToolRow"><input id="${esc(referenceProvenanceId('raw','Filter'))}" value="${esc(query)}" oninput="renderRefs()" placeholder="Filter raw source rows..."/>${omitted?`<button type="button" class="filterClear" onclick="setReferenceProvenanceShowAll('raw',true)">Show all</button>`:''}${showAll && rows.length>20?`<button type="button" class="filterClear" onclick="setReferenceProvenanceShowAll('raw',false)">Show less</button>`:''}</div>
+  <div class="provenanceTableWrap provenanceTableWrap--wide rawSourceTableWrap"><table data-reference-raw-source-table="true"><thead><tr><th>Path</th><th>Role</th><th>Layer</th><th>Governs</th><th>Operators</th></tr></thead><tbody>${visible.map(r=>`<tr><td><code>${esc(r.path)}</code><br><span class="small">${esc(r.lines)} lines</span></td><td>${esc(r.role)}</td><td>${esc(r.layer)}</td><td>${esc(r.governs)}</td><td>${(r.operators||[]).map(esc).join(', ')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderReferenceAuditBreakdown(){
+  const el=document.getElementById('referenceAuditBreakdown');
+  if(!el) return;
+  const summary=(typeof REF_SUMMARY!=='undefined') ? REF_SUMMARY : {};
+  const summaryEl=document.getElementById('referenceProvenanceSummary');
+  if(summaryEl){
+    summaryEl.innerHTML=`<div class="surfaceRoleKicker">Compact provenance summary</div><div class="referenceSummaryStrip"><div class="surfaceStat"><strong>${esc(summary.total_snapshots||DOCS.length)}</strong><span>snapshots</span></div><div class="surfaceStat"><strong>${esc(Object.keys(summary.by_layer||{}).length)}</strong><span>layers</span></div><div class="surfaceStat"><strong>${esc(summary.total_references||REFS.length)}</strong><span>source rows</span></div><div class="surfaceStat"><strong>generated</strong><span>source-owned</span></div></div><p class="small">Open nested sections for audit detail. Fine-grained roles and raw rows stay behind their own disclosures and local filters.</p>`;
+  }
+  renderReferenceBreakdown('layer','Layer breakdown',summary.by_layer||{},20);
+  renderReferenceBreakdown('family','Coarse family/type breakdown',referenceFamilyCounts(),20);
+  renderReferenceBreakdown('fineRole','Fine-grained role/source breakdown',summary.by_role||{},12);
+}
+function filteredReferenceRows(q,layer,family){
+  const needle=String(q||'').toLowerCase();
+  return REFS.filter(r=>(!layer||r.layer===layer)&&(!family||referenceFamilyForRef(r)===family)&&(!needle||JSON.stringify(r).toLowerCase().includes(needle)));
+}
+function filteredReferenceDocs(q,layer,family){
+  const needle=String(q||'').toLowerCase();
+  return DOCS.filter(d=>{
+    const ref=referenceMetaForDoc(d);
+    if(layer && ref.layer!==layer) return false;
+    if(family && referenceFamilyForRef(ref)!==family) return false;
+    return !needle || JSON.stringify({...d,ref}).toLowerCase().includes(needle);
+  });
+}
+function renderReferenceSummary(q,layer,family,refsShown,docsShown){
+  const el=document.getElementById('refSummary');
+  if(!el) return;
+  const summary=(typeof REF_SUMMARY!=='undefined') ? REF_SUMMARY : {};
+  const activeFilter=q||layer||family ? `<p class="small"><strong>Filtered:</strong> ${esc(refsShown)} source rows and ${esc(docsShown)} document snapshots match the active controls.</p>` : '';
+  el.innerHTML=`<p class="subtle">Generated from tracked atomics README/SKILL/reference Markdown; full layer/role maps stay collapsed for audit work.</p><div class="referenceSummaryStrip"><div class="surfaceStat"><strong>${esc(summary.total_snapshots||DOCS.length)}</strong><span>snapshots</span></div><div class="surfaceStat"><strong>${esc(Object.keys(summary.by_layer||{}).length)}</strong><span>layers</span></div><div class="surfaceStat"><strong>${esc(summary.total_lines||REFS.reduce((n,r)=>n+(Number(r.lines)||0),0))}</strong><span>source lines</span></div><div class="surfaceStat"><strong>generated</strong><span>source-owned</span></div></div>${activeFilter}`;
+}
+function renderRefs(){
+  populateReferenceFilters();
+  const q=(document.getElementById('refSearch')?.value||'').trim();
+  const layer=document.getElementById('refLayer')?.value||'';
+  const family=document.getElementById('refFamily')?.value||'';
+  const refs=filteredReferenceRows(q,layer,family);
+  const docs=filteredReferenceDocs(q,layer,family);
+  renderReferenceAuditBreakdown();
+  renderReferenceRawRows(refs);
+  renderReferenceSummary(q,layer,family,refs.length,docs.length);
+  if(docs.length && !docs.some(d=>String(d.id)===String(REFERENCE_SELECTED_ID))) REFERENCE_SELECTED_ID=docs[0].id;
+  renderDocList(q,layer,family);
+  if(docs.length) showDoc(REFERENCE_SELECTED_ID||docs[0].id);
+  if(!docs.length){
+    REFERENCE_SELECTED_ID=null;
+    const body=document.getElementById('docBody');
+    if(body) body.innerHTML='<div class="docbodyEmpty">No generated source snapshot matches the current filter.</div>';
+  }
+}
+function renderDocList(q='',layer='',family=''){
+  const docs=filteredReferenceDocs(q,layer,family);
+  const list=document.getElementById('docList');
+  if(!list) return;
+  list.setAttribute('role','listbox');
+  if(!docs.length){
+    list.innerHTML='<div class="docbodyEmpty">No documents match.</div>';
+    return;
+  }
+  if(!docs.some(d=>String(d.id)===String(REFERENCE_SELECTED_ID))) REFERENCE_SELECTED_ID=docs[0].id;
+  list.innerHTML=docs.map(d=>{
+    const ref=referenceMetaForDoc(d);
+    const active=String(d.id)===String(REFERENCE_SELECTED_ID);
+    return `<button type="button" class="docitem ${active?'active':''}" role="option" aria-selected="${active?'true':'false'}" data-doc-id="${esc(d.id)}" onclick="showDoc(${Number(d.id)})"><strong>${esc(d.title)}</strong><br><span class="small"><code>${esc(d.rel)}</code></span><br><span class="small">${esc(ref.layer||'reference')} · ${esc(referenceFamilyLabel(referenceFamilyForRef(ref)))} · ${esc(d.lines)} lines</span></button>`;
+  }).join('');
+}
+function showDoc(id){
+  const d=DOCS.find(x=>String(x.id)===String(id));
+  if(!d) return;
+  REFERENCE_SELECTED_ID=d.id;
+  document.querySelectorAll('#docList .docitem').forEach(item=>{
+    const active=String(item.getAttribute('data-doc-id'))===String(d.id);
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-selected',active?'true':'false');
+  });
+  const ref=referenceMetaForDoc(d);
+  const body=document.getElementById('docBody');
+  if(!body) return;
+  body.innerHTML=`<div class="surfaceRoleKicker">Selected generated snapshot</div><h2>${esc(d.title)}</h2><p class="small"><code>${esc(d.rel)}</code> · ${esc(d.lines)} lines</p><div class="relchips"><span>${esc(ref.layer||'reference')}</span><span>${esc(referenceFamilyLabel(referenceFamilyForRef(ref)))}</span><span>${esc(ref.role||'snapshot')}</span><span>${esc(ref.governs||'source')}</span></div><div class="callout"><strong>Source ownership:</strong> this preview is generated from the tracked Markdown source. The raw source-map table is collapsed below for audit parity.</div><div>${d.html||'<pre>'+esc(d.content||'')+'</pre>'}</div>`;
+}
 
 function notationMetaFor(key){
   if(!key) return null;
@@ -2854,14 +3197,14 @@ function renderNotationPanel(keys, primaryKey){
   const related=[...new Set([...(meta.relatedTargets||[]),...ordered.filter(k=>k!==primary)])].filter(k=>k!==primary);
   const ownerChips=String(meta.sourceOwners||'').split(';').map(owner=>owner.trim()).filter(Boolean).map(owner=>`<code>${esc(owner)}</code>`).join('<br>');
   const highlightedRows=ordered.map(key=>{
-    const item=notationMetaFor(key) || {symbol:key,meaning:key};
-    return `<div class="notationHighlightRow"><b>${esc(item.symbol||key)}</b><span>${esc(item.meaning||key)}</span></div>`;
+    const item=notationMetaFor(key) || {key,symbol:key,meaning:key,phaseClass:''};
+    return `<div class="notationHighlightRow" data-highlight-notation="${esc(key)}" data-phase-class="${esc(item.phaseClass||'')}"><b class="semanticNotationChip ${esc(item.phaseClass||'')}">${esc(item.symbol||key)}</b><span>${esc(item.meaning||key)}</span></div>`;
   }).join('');
   const relatedHtml=related.length
-    ? `<div class="notationRelated">${related.map(k=>`<span>${esc(notationTokenLabel(k))}</span>`).join('')}</div>`
+    ? `<div class="notationRelated">${related.map(k=>{const item=notationMetaFor(k) || {phaseClass:''}; return `<span class="semanticNotationChip ${esc(item.phaseClass||'')}" data-related-notation="${esc(k)}" data-phase-class="${esc(item.phaseClass||'')}">${esc(notationTokenLabel(k))}</span>`;}).join('')}</div>`
     : '<span class="small">No related notation targets declared.</span>';
   explain.innerHTML=`<div class="notationContext">
-    <div class="notationContextHeader"><span>Highlighted notation</span><span class="ntokMini ${esc(meta.phaseClass||'')}">${esc(meta.symbol||primary)}</span></div>
+    <div class="notationContextHeader"><span>Highlighted notation</span><span class="ntokMini semanticNotationChip notationPanelSelectedChip is-active ${esc(meta.phaseClass||'')}" data-selected-notation="${esc(primary)}" data-phase-class="${esc(meta.phaseClass||'')}" aria-selected="true">${esc(meta.symbol||primary)}</span></div>
     <div class="notationContextGrid">
       <div class="notationContextBlock"><strong>Meaning</strong><span>${esc(meta.meaning||primary)}</span></div>
       <div class="notationContextBlock"><strong>Runtime role</strong><span>${esc(meta.runtimeRole||'')}</span></div>
@@ -2905,6 +3248,12 @@ function selectTheoryCard(cardOrId){
   if(typeof window.highlightNotation === 'function') window.highlightNotation(targets, targets[0]);
   else highlightNotation(targets, targets[0]);
 }
+function activateTheoryCard(ev, card){
+  if(ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return true;
+  if(ev) ev.preventDefault();
+  selectTheoryCard(card);
+  return false;
+}
 function activateNotationToken(ev, el){
   if(ev && ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return true;
   if(ev) ev.preventDefault();
@@ -2919,13 +3268,14 @@ function init(){
   if(document.getElementById('targetPipeline')) safe('target pipeline',()=>renderPipeline(TARGET_STAGES,'targetPipeline','targetDetail'));
 
   safe('owner families',()=>renderOwnerFamilies());
+  if(document.getElementById('ownerSummary')) safe('owner summary',()=>renderOwnerSummary());
   if(document.getElementById('operatorGraphList')) safe('operator graph',()=>renderOperatorGraph());
   if(document.getElementById('operatorMatrix')) safe('operator matrix',()=>renderOperatorMatrix());
   if(document.getElementById('ownerSourceTable')) safe('owner source table',()=>renderOwnerSourceTable());
   if(document.getElementById('conceptList')) safe('concepts',()=>renderConcepts());
   if(document.getElementById('relationPanel')) safe('relations',()=>renderRelations());
   if(document.getElementById('refTable')) safe('refs',()=>renderRefs());
-  if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
+  else if(document.getElementById('docList')) safe('doc list',()=>renderDocList());
   const defaultTheoryCard=document.querySelector('.controlCard[data-theory-card][aria-pressed="true"]') || document.querySelector('.controlCard[data-theory-card]');
   if(defaultTheoryCard) safe('theory card default notation',()=>selectTheoryCard(defaultTheoryCard));
 
@@ -3066,17 +3416,13 @@ document.addEventListener('DOMContentLoaded',()=>{ initTopTabs(); init(); });
   };
 
   window.goReference = function(label){
-    document.querySelectorAll('.tabsec').forEach(x=>x.classList.remove('active'));
-    document.getElementById('reference')?.classList.add('active');
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     const refTab=[...document.querySelectorAll('.tab')].find(t=>t.textContent.includes('Reference'));
-    if(refTab) refTab.classList.add('active');
+    showTopTab('reference', refTab, {scrollTop:true});
     const input=document.getElementById('refSearch');
     if(input) input.value=label;
     if(typeof renderRefs==='function') renderRefs();
     const match=sourceByName(label);
     if(match && typeof showDoc==='function' && match.id) showDoc(match.id);
-    document.getElementById('reference')?.scrollIntoView({behavior:'smooth',block:'start'});
   };
 
   window.goOperator = function(id){
