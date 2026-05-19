@@ -180,6 +180,10 @@ executed, not because it has the expected headings.
 
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
+- v0.4.3.0 release proof is package-bound artifact/provenance validation plus
+  deterministic reconstructibility/MRP fixtures unless a configured live runner is
+  explicitly run. Do not promote local generated-runtime A/B smokes into package-
+  bound live-output proof.
 - No smoke artifact suite is committed in this source state.
 - v0.4.0.0 package smoke evidence is historical for later v0.4.x release lines unless the
   smoke suite is regenerated locally against the intended replacement package and the SHA256 is

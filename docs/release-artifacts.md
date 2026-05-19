@@ -25,6 +25,38 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
+## v0.4.3.0 Release Package / Provenance Status
+
+v0.4.3.0 public artifact status: prepared for publication on the GitHub Release for tag
+`v0.4.3.0`. RC1 is internal closeout provenance only; the public release name and tag are
+`v0.4.3.0`. Raw smoke and visualizer outputs remain local diagnostic artifacts and are not
+committed or uploaded as release assets.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.3.0.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.3.0.skill.zip` |
+| Local package copy | `build/daee-epistemics-v0.4.3.0.skill` |
+| SHA256 | `BA179A74859306D420075A78FC300D260E92EC074668C5B3B3C1406B44941A38` |
+| Size | `600964` bytes |
+| Entries | `20` |
+| Source commit recorded in provenance | v0.4.3.0 release-prep commit; see release tag |
+| Source state | Deterministic source/checker/package gates passed locally before tag/release |
+| Branch | `main` |
+| Contract version | `0.4.0.0` |
+| Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
+| Generated runtime manifest SHA256 | `6BB40F8660F64914D0D0B9F6D321D1DA5851AC4CD4218D76092B171715CC4D03` |
+| Compiled module map SHA256 | `27022EF07E93A1277EC67A1C50A6AEE3D5409B77D5AB614A8DDF29626487381C` |
+| GitHub Release visibility | Pending publication during the v0.4.3.0 release task |
+| Provenance file | Release asset: `daee-epistemics-v0.4.3.0.provenance.json` generated from `build/daee-epistemics-v0.4.3.0.provenance.json` |
+| Package-bound proof | Local package artifact validation passed for `.skill.zip` and copied `.skill` payload; deterministic reconstructibility/MRP fixture proof passed. Fresh live/generated-runtime LLM smoke is not claimed unless separately run. |
+
+The local package/provenance pair is checked with:
+
+```powershell
+python tools/check_release_provenance.py --provenance build\daee-epistemics-v0.4.3.0.provenance.json --package build\daee-epistemics-v0.4.3.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json --release-artifacts docs\release-artifacts.md
+```
+
 ## v0.4.2.0 Release Package / Provenance Status
 
 v0.4.2.0 public artifact status: published on the existing GitHub Release for tag

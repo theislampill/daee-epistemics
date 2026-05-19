@@ -465,6 +465,13 @@ state.
   frontmatter contract check, generated-from-atomics freshness, package-shape validation,
   release-artifact hash coherence, smoke/evidence boundary check, public docs coherence, CI
   status, source-neutrality/local-path sweep, and `git diff --check`.
+- Public release names must use the public version tag only. Internal labels such as RC1 may
+  appear in provenance/audit notes, but the GitHub Release title/tag for this line is
+  `v0.4.3.0`, not an RC label.
+- Before publishing a new `.skill` release asset, update the release work queue in `TODO.md`,
+  refresh package/release evidence docs from the built artifact, and refresh docs/index
+  release-download metadata from the published GitHub Release before claiming the public
+  download points at the new package.
 - If replacing an existing GitHub Release asset on the same tag, say plainly that the asset
   hash changed, update the release notes/artifact docs, and verify the release page afterward.
 - Do not create a patch tag such as `v0.3.2.1` unless explicitly instructed. If a same-version

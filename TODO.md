@@ -48,6 +48,32 @@ mixed evidence, proposal, and release claims.
 
 ## Active
 
+### [MUST][release][package][smoke] v0.4.3.0 Public Release Gate
+
+- Problem: the internal RC1 closeout commit `75cce53` made closure-witness
+  reconstructibility, `field_witness`, the visualizer, and Mid-Reread Pressure
+  deterministically ready, but public release still requires package-bound proof,
+  a truthful GitHub Release body, tag publication, and release-asset validation.
+- Source surfaces: `atomics/skill/**`, generated `skill/**`, `docs/release-artifacts.md`,
+  `docs/package-smoke-readiness.md`, `docs/index/release-download.json`,
+  `docs/audits/v0.4.3.0-rc1-closeout-audit.md`, and this TODO entry.
+- Checker/package surfaces: `package.ps1`, `tools/package_skill.py`,
+  `tools/check_package_shape.py`, `tools/check_release_provenance.py`,
+  `tools/check_reconstructibility_and_mrp.py`, `tools/check_mid_reread_pressure.py`,
+  `tools/check_closure_witness_graph.py`, `tools/check_smoke_artifacts.py`,
+  and GitHub Release asset verification through `gh release view`.
+- Decision boundary: public tag/release name is `v0.4.3.0`. Do not call the
+  public release RC1 except when describing internal closeout provenance. Do not
+  claim fresh live/generated-runtime LLM smoke unless it is actually run. Package-
+  bound proof means the built `daee-epistemics-v0.4.3.0.skill` payload and its
+  provenance pass local artifact checks before tag/release.
+- Remaining verification: rebuild generated runtime/docs, run the deterministic
+  release suite, build and validate the package/provenance pair, update release
+  artifact/download metadata, push the release commit, tag `v0.4.3.0`, create the
+  GitHub Release with the `.skill` and provenance assets, then verify the release
+  page and final git state.
+- Status: current implementation target for this release pass.
+
 ### [MUST][checker][source] Current Canon Checker Anchors
 
 - Problem: current-canon metacompliance intentionally verifies that TODO still

@@ -383,3 +383,14 @@ Creator: `tools/build_docs_index.py` emits generated docs surfaces and CSS custo
 Controller: `tools/check_docs_index_interactions.py` validates runtime/source parity, carousel behavior, and design-token boundaries.
 
 Generated HTML is a durable artifact only after rebuild and checker pass; it is never the source of truth.
+
+## Release download metadata
+
+The top navigation download action is a generated navigation affordance, not release proof. After
+a public `.skill` asset is created or replaced, refresh `docs/index/release-download.json` from
+the GitHub Release metadata, rebuild the generated docs/index surfaces, and rerun the docs/index
+checks before claiming the public page points at the new package.
+
+Do not edit generated `docs/index.html` to change the release link. The owner path is GitHub
+Release metadata -> `docs/index/release-download.json` -> `tools/build_docs_index.py` ->
+generated HTML.

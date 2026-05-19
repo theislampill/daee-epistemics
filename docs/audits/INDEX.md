@@ -15,6 +15,8 @@ sweep moves them.
 |---|---|---|
 | `docs/release-artifacts.md` | ACTIVE CURRENT TRUTH | Release package/provenance evidence ledger and proof boundaries. |
 | `docs/package-smoke-readiness.md` | ACTIVE CURRENT TRUTH | Package-smoke runbook, strict witness gate, and deferred expanded-smoke slots. |
+| `docs/v0.4.3.0-release-notes.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 release notes for closure reconstructibility, `field_witness`, visualizer, MRP, proof boundaries, and caveats. |
+| `docs/v0.4.3.0-release-log.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 package artifact facts, proof boundary, and release step log. |
 | `docs/v0.4.2.0-release-notes.md` | ACTIVE CURRENT TRUTH | v0.4.2.0 release notes with explicit local proof boundaries and deferrals. |
 | `docs/v0.4.2.0-release-log.md` | ACTIVE CURRENT TRUTH | v0.4.2.0 release log with local package-bound gate and release-scope caveats. |
 | `docs/audits/v0.4.2.0-current-release-smoke-runbook.md` | ACTIVE CURRENT TRUTH | Owner packet for required local package-bound current-release smoke capture. |
