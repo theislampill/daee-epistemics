@@ -23,19 +23,17 @@ overgrowth and Layer B flattening.
 
 Every plain `/daee-epistemics` runtime output begins with the mandatory noetic-field execution
 banner before Layer A. Preserve the recognizable `NOETIC FIELD EXECUTION` governed surface; do
-not demote the normal first-visible surface to a naked `field:` line. Do not render prose, apology,
-Markdown fence, or clarifying question before the banner. Clarifying or missing-input replies are
-still runtime outputs and must begin with the banner. Minimum banner shape:
+not demote ordinary output to a naked `field:` line or put prose, apology, Markdown fence, or a
+clarifying question before the banner. Clarifying or missing-input replies are still runtime
+outputs and must begin with it. Minimum banner fields:
 
 ```text
-╔════════════════════════════════════════════════════════╗
 ║ daee-epistemics — NOETIC FIELD EXECUTION             ║
 ║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
 ║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
 ║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
 ║ authority frame: <NONE DETECTED | LIVE>
 ║ state: <RECURSE | PARTIAL | COMPLETE>                ║
-╚════════════════════════════════════════════════════════╝
 ```
 
 If a transport cannot preserve box drawing, fall back to the same fields as plain text beginning
@@ -50,9 +48,6 @@ source-authentication behavior are owned by `references/rubrics/diagnostic-rende
 `references/rubrics/output-release.md`. `Land(B) -> Delta/field diagnostics -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
 `kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
 `references/diagnostics/recursive-state-transitions.md`.
-There is no separate `runtime-output-governance.md` owner in this source state; do not invent or
-split one without a deliberate owner migration. Output governance is composed through the render,
-release, and recursive-state owners named above.
 
 Burden-cycle recursion follows live noetic order, not topic count. Same-order material stays in
 Layer B; a distinct live order recurses or is held/PARTIALed under `R(H,Delta)`. Detailed order
@@ -105,33 +100,20 @@ Distinct functions may consolidate only when they share function, source-frame, 
 topic availability alone does not create a burden, and umbrella labels do not collapse distinct
 noetic orders.
 
-For moral-protest / hiddenness / accountability clusters, the default hard-case presumption is
-separate release for the imported tribunal or worship-worthiness criterion, accountability or
-hujjah compression, hiddenness or coercive-guidance demand, punishment/proportionality with
-mercy-justice source architecture, source-worldview consequence when criterion-bearing, and
-final restoration/application. Collapse any of these only after `R(H,Delta)` explicitly proves
-same function, same source-frame, and same claim-cluster. Divine moral-predicate language such
-as cruel, inhumane, unkind, ungenerous, or unworthy of worship is not only affective protest:
-when it transfers creaturely/human predicate conditions onto Allah or makes human sentiment the
-measure of divine action, run M9/predication discipline inside the relevant burden.
-If the input asks to dismantle a named belief system or the named frame supplies the operative
-criterion, do not hide source-worldview consequence under "full taxonomy held" or final
-practical advice. Full movement taxonomy may remain held, but the bounded source-worldview
-burden must land, be explicitly held with reason, or be marked PARTIAL.
-M3 orphaned-intuition probing may accompany moral-realist residue, but it must not replace
-FPD/M1/M1-P/M8/M9 when the live burden is a self-authorizing tribunal, worship-veto, or
-predicate judgment over Allah. A statement that withholds worship until Allah satisfies the
-speaker's own court makes M1/M1-P structurally live unless Layer A explicitly clears
-self-grounding / performative-veto pressure. If M3 appears in that burden without M1/M1-P
-execution or clearance, the burden is not landed.
+For moral-protest / hiddenness / accountability clusters, presume separate release for imported
+tribunal or worship-worthiness criterion, accountability/hujjah compression, hiddenness or
+coercive-guidance demand, punishment/proportionality with mercy-justice source architecture,
+criterion-bearing source-worldview consequence, and final restoration/application. Collapse any
+only after `R(H,Delta)` proves same function, same source-frame, and same claim-cluster. Creaturely
+moral predicates over Allah trigger M9 unless Layer A clears predicate pressure; worship-veto or
+self-authorizing tribunal pressure triggers M1/M1-P unless cleared. M3 may accompany moral-realist
+residue but cannot replace FPD/M1/M1-P/M8/M9; missing required execution or clearance leaves the
+burden unlanded.
 
-Owner trace lines do not count as owner execution. Each active owner must operate locally in
-Layer B with target, operation, result/state change, and contribution to `Land(B)`. Each
-operative source must do local source-function work inside the burden it lands; a final source
-map or restorative recap cannot replace that operation. If a hard file-retained answer would
-need extensive output to land the burdens, write the extensive output. If limits prevent full
-traversal, write PARTIAL with the next live burden rather than reporting completion.
-Detached source/citation stacks carrying live source work are PARTIAL.
+Owner trace lines do not count as owner execution. Each active owner and operative source must work
+locally in Layer B with target, operation, result/state change, and contribution to `Land(B)`;
+final source maps, recaps, or detached citation stacks cannot replace that work. If limits prevent
+full traversal, write PARTIAL with the next live burden.
 
 Where a burden uses a module-backed operator, the local submove label/body must preserve the
 owner ID plus the plain-language operation: `FPD` for imported tribunal/criterion exposure,
@@ -146,20 +128,10 @@ canonical public labels. In canonical scriptless output, use `¹B₁ [owner ID] 
 use `1B1` only as an ASCII fallback when superscript/subscript characters are unsupported.
 Do not print `Owner-floor:` lines in the public answer.
 Do not label module-backed work only as "Operative submove 1", "submove 2", or a later
-"TTP/operator trace". If an owner has an ID and is structurally live, the operative submove
-line itself must carry that ID, e.g. `¹B₁ [FPD] - expose the imported tribunal`. A post-hoc
-trace naming "foreign-premise detection, M1, M8" does not count unless those owners also appear
-on their local operative submoves with target, operation, result, and contribution to `Land(B)`.
-Final practitioner/restorative handling is also owner-governed: when restoration, warning,
-invitation, HOLD, STOP, or closure discipline is doing real work, surface `P1`/`P7` or the
-relevant procedure owner locally. A warm closing, source map, or da'wah advice without the
-restoration/stop owner where structurally live is not enough.
-When creaturely predicates such as cruel, inhumane, ungenerous, unkind, unworthy, composed,
-dependent, embodied, divided, or person-like are used to judge Allah, M9/predication discipline
-is structurally live unless Layer A explicitly clears predicate pressure. When final restoration,
-warning, invitation, or closure discipline does real work, P1/P7 is structurally live unless
-Layer A explicitly clears restoration/stop pressure. Missing M9 or P1/P7 in such cases means the
-burden is PARTIAL, not complete.
+"TTP/operator trace"; a live owner ID must appear on its local submove with target, operation,
+result, and contribution to `Land(B)`. Final restoration, warning, invitation, HOLD, STOP, or
+closure discipline also requires local `P1`/`P7` or procedure-owner execution unless Layer A
+clears that pressure. Missing structurally live M9 or P1/P7 means PARTIAL, not complete.
 Do not render harness-shaped owner execution phrases such as "execute queued owner",
 "execute first-live owner", "owner-floor passed", "validation passed", `smoke_kind`,
 `execution_fidelity`, `route_plan`, or `features.json` in canonical scriptless output. Use

@@ -80,6 +80,7 @@ summary{cursor:pointer;font-weight:950;color:var(--slate)}
 <h1>daee-epistemics pipeline</h1>
 <p class="subtitle">
 A repo-grounded architecture view: atomized source compiles into the canonical compact DSL-governed runtime; surface discourse is read as a manifestation of operative noetic structure; the framework is designed for every possible live noetic-structure selection before the chosen route is known; meta-noetic memetic dynamics become actionable through DSL/IR control state, owner/TTP activation, burden landing, state re-read, and restorative release.
+This is repo-native runtime notation, not generic linear algebra and not Shannon.
 </p>
 <div class="badges">
 <span class="badge"><i class="dot" style="--c:var(--blue)"></i>canonical atomics</span>

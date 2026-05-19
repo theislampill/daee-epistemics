@@ -125,21 +125,28 @@ route-check harnesses during canonical execution: no `daee_level3.py`, `route.py
 quality-gate claims. Those artifacts are optional developer validation, not public runtime
 evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
-Every plain `/daee-epistemics` runtime output begins with this noetic-field execution banner
-before Layer A. The first visible line is literally `field:`: do not place prose, headings,
-box art, apologies, Markdown fences, clarifying questions, or banner summaries before it, and
-do not wrap the banner in a code block. Clarifying or missing-input replies are still runtime
-outputs and must begin with the banner. The banner is generated from the same classification
-state used by Layer A. Print exactly one value for each field; never print the choice list,
-combine values with `|`, or invent a local synonym:
+Every plain `/daee-epistemics` runtime output begins with the recognizable noetic-field
+execution banner before Layer A. Preserve `NOETIC FIELD EXECUTION` as the normal governed
+surface; do not demote ordinary output to a naked `field:` line. Do not place prose, headings,
+apologies, Markdown fences, clarifying questions, or banner summaries before the banner, and do
+not wrap it in a code block. Clarifying or missing-input replies are still runtime outputs and
+must begin with the banner. The banner is generated from the same classification state used by
+Layer A. Print exactly one value for each field; never print the choice list, combine values
+with `|`, or invent a local synonym:
 
 ```text
-field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
-user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
-external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
-authority frame: <NONE DETECTED | LIVE>
-state: <RECURSE | PARTIAL | COMPLETE>
+╔════════════════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION             ║
+║ field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>
+║ user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>
+║ external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>
+║ authority frame: <NONE DETECTED | LIVE>
+║ state: <RECURSE | PARTIAL | COMPLETE>                ║
+╚════════════════════════════════════════════════════════╝
 ```
+
+If a transport cannot preserve box drawing, use the same fields as plain text beginning with
+`field:`. That fallback is transport-safe, not the normal governed surface.
 
 Use only these banner values. All inputs are noetic fields; prompt brevity does not imply
 simple execution. `user task` tracks the requested operation; `/daee-epistemics refute:` renders
