@@ -25,6 +25,46 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
+## v0.4.3.0 Release Package / Provenance Status
+
+v0.4.3.0 public artifact status: published. The withdrawn/regression-hold `v0.4.3.0`
+prerelease and stale tag were replaced under owner-authorized Option A after package-bound
+proof. The public release name and tag are `v0.4.3.0`, not an RC label. Raw smoke and visualizer
+outputs remain local diagnostic artifacts and are not committed or uploaded as release assets.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.3.0.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.3.0.skill.zip` |
+| Local package copy | `build/daee-epistemics-v0.4.3.0.skill` |
+| SHA256 | `A1FBFE6C507923416FC255E0140E5ECDD30BE1E055DC9310F02D16189212269C` |
+| Size | `625827` bytes |
+| Entries | `20` |
+| Source commit recorded in provenance | Generated at release time from the final release source commit |
+| Source state | Deterministic source/checker/package gates passed locally before tag/release replacement |
+| Branch | `diagnostic/v0.4.3.0-regression-repair` |
+| Contract version | `0.4.0.0` |
+| Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
+| Generated runtime manifest SHA256 | `6C2A06036D0D52096A48336A7B5048205A4F9E93DD4501BB5D55244D25AF19B6` |
+| Compiled module map SHA256 | `738C7D9C5C11C575C30A04595AD3B375BDE4FB9A6CF94E1163798510ADA9C6D5` |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.0`; remote tag must peel to the final release-fix source commit recorded in provenance and release body claim |
+| Provenance file | Release asset: `daee-epistemics-v0.4.3.0.provenance.json` generated from `build/daee-epistemics-v0.4.3.0.provenance.json` |
+| Package-bound proof | Local package artifact validation passed for the `.skill` release payload and its local `.skill.zip` build intermediate; mojibake guard and package artifact mojibake check passed; deterministic reconstructibility/MRP fixture proof passed; Trinitarian and generic route/curl invariant checks passed; Codex-hosted exact-file hard-compound Smoke 6 proved MRP behavior locally. Cross-host/paraphrase proof is not claimed. |
+
+The v0.4.3.0 release assets include the canonical `.skill` payload and package provenance. The
+`.skill.zip` file is a local build intermediate only and must not be uploaded as a GitHub Release
+asset. The refreshed hotfix package corrects mojibake in parseable
+closure-witness field names such as `∇·B:`, `∇×κ:`, and `𝒞(Ψᴺ):`.
+The same-version release correction also includes the Trinitarian route/curl hotfix and the
+generic MRP route/curl invariant guard; the later secularism hosted smoke is route/curl/field
+generalization evidence only, not a full replacement for the Repair14 behavioral proof. The generated-burden / notation hotfix is deterministic fixture/checker proven; no fresh hosted Smoke 7 proof is claimed.
+
+The local package/provenance pair is checked with:
+
+```powershell
+python tools/check_release_provenance.py --provenance build\daee-epistemics-v0.4.3.0.provenance.json --package build\daee-epistemics-v0.4.3.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json --release-artifacts docs\release-artifacts.md
+```
+
 ## v0.4.2.0 Release Package / Provenance Status
 
 v0.4.2.0 public artifact status: published on the existing GitHub Release for tag

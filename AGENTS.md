@@ -51,6 +51,18 @@ lightweight governance, not extra ceremony.
   rendering, and documentation separate unless a clear owning module has reason to combine
   them. Owner first: identify the owning file, module, or schema before editing; patch the
   owner rather than downstream symptoms.
+- External governance sheets such as ADHLBS are reference inputs, not runtime source. Audit
+  them through RTFM -> TRACE -> OWNER -> SSOT -> ATOMIC PATCH -> VERIFY; import only compact
+  repo-relevant rules, keep `AGENTS.md` and `SKILL.md` lean, and require A/B smoke proof before
+  changing runtime behavior.
+- Formal notation is a source-owner map, not decorative math or software-design rhetoric. Use
+  SOLID / GRASP / CUPID / ACID / BASE only as audit pointer discipline: name each symbol's meaning,
+  owner, dependency boundary, forbidden use, checker/smoke proof, and misuse signal before
+  patching. Do not add these acronyms to runtime output or `SKILL.md` without an owner decision
+  and A/B proof.
+- Formalism-pointer PDCA must baseline with the current runtime-loaded smoke method before patching,
+  patch only owner/checker pointers that reduce drift, and close each recommendation as done,
+  changed, blocked, deferred, or unverified with check/smoke evidence.
 
 ## Operating Discipline Packs
 
@@ -92,6 +104,9 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   model compliance, and checker expectation before adding more entrypoint prose.
   Local inlined-runtime smokes can diagnose generated-runtime behavior, but do not count
   as package-bound release-smoke proof.
+  For SKILL entrypoint cleanup, baseline before shrink and accept only when the same
+  runtime-loaded smoke method preserves or improves field banner, witness, notation,
+  non-claim, routing, and ordinary governed-output signals.
 - Andon: when work cannot honestly pass, expose status, blocker, failing check, owner,
   and next concrete action immediately.
 - Hansei: after failure, record the gap, cause, countermeasure, and follow-up evidence.
@@ -99,6 +114,9 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   the cause rather than polishing the symptom.
 - Smoke Before Claim: run the smallest meaningful check before readiness claims and
   report command plus result. If live checks cannot run, label evidence type and risk.
+- Exact-file runner discipline: behavioral runner subagents must load the generated/package
+  `skill/SKILL.md` surface directly. A vague installed/general skill invocation is not proof
+  of the release surface that will be packaged.
 - Plan Closure: end by mapping each planned item to done, changed, blocked, deferred,
   or unverified.
 - DRY / ACID / SSOT / progressive disclosure apply to runtime entrypoints, generated docs,
@@ -435,6 +453,12 @@ state.
 - `tools/check_release_provenance.py` verifies a local package/provenance pair when provenance
   JSON exists. Missing provenance, missing public assets, or absent current-release smokes remain
   release-proof blockers; do not satisfy them with local dirty-worktree hashes or fabricated outputs.
+- Before any push, tag, release creation/update, or release asset update, run release provenance
+  preflight with the actual built artifact and release body, for example:
+  `python tools/check_release_provenance.py --version v0.4.3.0 --artifact build\daee-epistemics-v0.4.3.0.skill --release-body build\v0.4.3.0-release-body.md`.
+  Do not manually guess package SHA, size, source commit, release-body provenance, or tag state.
+  Stale release docs are an Andon stop. A release is blocked if either provenance alignment or
+  release-facing mojibake checks fail.
 - If atomics change, rebuild `skill/` and run freshness checks before reporting success.
 - If package contents or release-artifact docs change, rebuild the `.skill` package, compute
   SHA256, size, entry count, and top-level entries, then update `docs/release-artifacts.md`
@@ -450,8 +474,18 @@ state.
   frontmatter contract check, generated-from-atomics freshness, package-shape validation,
   release-artifact hash coherence, smoke/evidence boundary check, public docs coherence, CI
   status, source-neutrality/local-path sweep, and `git diff --check`.
+- Public release names must use the public version tag only. Internal labels such as RC1 may
+  appear in provenance/audit notes, but the GitHub Release title/tag for this line is
+  `v0.4.3.0`, not an RC label.
+- Before publishing a new `.skill` release asset, update the release work queue in `TODO.md`,
+  refresh package/release evidence docs from the built artifact, and refresh docs/index
+  release-download metadata from the published GitHub Release before claiming the public
+  download points at the new package.
 - If replacing an existing GitHub Release asset on the same tag, say plainly that the asset
   hash changed, update the release notes/artifact docs, and verify the release page afterward.
+- Existing GitHub Release assets may be replaced only after proving:
+  `tag commit = package source commit = release body claims = uploaded asset contents = recorded release provenance`.
+  If any side differs, update the tag/release alignment or stop.
 - Do not create a patch tag such as `v0.3.2.1` unless explicitly instructed. If a same-version
   release asset is being corrected, keep it on the existing release line and document the
   rebake.
@@ -484,6 +518,32 @@ Release claims must stay narrow and honest:
   restoration force, source-status discipline, and da'wah usefulness.
 - Release-smoke captures are local/ignored diagnostic artifacts, not committed source and
   not GitHub Release assets.
+- MRP behavior proof is not file/checker presence. Mid-Reread Pressure counts as behavioral only
+  when it changes or licenses route, graph/field_witness state, closure, HOLD, RECURSE,
+  LoopBreak, or graph-bound anticipatory downstream handling after `Land(Bn)` during
+  `R(H,Delta)`.
+- MRP-generated burden proof is narrower than ordinary next-burden routing. Layer A owns the
+  first-pass burden inventory; moving to an already-inventoried held burden is
+  `held_burden_activation`, not generated discovery. A generated burden must surface only after
+  `Land(ⁿB)` and `R(H,Δ)`, render `MRP route result type: generated_burden_instantiation`,
+  instantiate a real node such as `²B [generated-by: MRP(¹B)]`, include Layer A/B accounting,
+  owner-bearing submoves, `Land(²B)` or `HOLD(²B)`, and closure witness / `field_witness`
+  provenance. Deterministic fixture/checker proof for this guard is not a substitute for a fresh
+  hosted Smoke 7 model-output proof unless that smoke is actually run.
+- Public-facing governed output should prefer canonical burden notation: `ⁿB`, `ⁿBᵢ[OPᵢ]`,
+  `MRP(ⁿB)`, and `ⁿB → ⁿ⁺¹B`. ASCII aliases are parser/checker fallbacks and must not become the
+  primary public surface unless explicitly marked machine-facing.
+- The decisive v0.4.3.0 behavioral MRP proof remains the Codex-hosted exact-file hard-compound
+  Smoke 6 repair14 output. Later generic route/curl hosted smokes prove the narrower route/curl/
+  field invariant only unless they also pass full reconstructibility/topology checks.
+- Route/curl invariants are generic runtime gates, not case-family patches: `Route: STOP` forbids
+  later Layer B or graph continuation; every post-reread graph edge needs an MRP-backed resultant;
+  directed acyclic downstream pressure is `∇·T`; and `∇×T` requires actual loop, churn, recoil,
+  label-pressure, or dependency rotation. Run `python tools/check_mrp_route_invariants.py` and keep
+  case wrappers such as `check_trinitarian_mrp_hotfix.py` delegated to the generic checker.
+- Hard-compound MRP smokes require topology plus plausible execution mass plus anti-bloat review.
+  Byte count alone is not proof, but a severely compressed hard-compound traversal is an Andon
+  unless it honestly routes HOLD/PARTIAL.
 - v0.4.2.0 release evidence is bounded to the local three-smoke package-bound gate; do not
   present it as broad live-output proof, a full formal calculus, a truth meter, or guaranteed
   uptake.

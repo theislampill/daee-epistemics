@@ -50,8 +50,12 @@ FIELD_WITNESS_KEYS = {
     "reconstruction",
     "closure",
     "transfer_boundary",
+    "register_deltas",
+    "non_claims",
+    "provenance",
+    "coverage_proof",
 }
-FIELD_WITNESS_OPTIONAL_KEYS = {"coverage_proof"}
+FIELD_WITNESS_OPTIONAL_KEYS = {"reread_pressure"}
 FIELD_WITNESS_ROUTE_KEYS = {"eligible_routes", "selected", "reason"}
 FIELD_WITNESS_BURDEN_EVENT_KEYS = {"owner", "delta_nB", "delta_kappa", "result"}
 FIELD_WITNESS_DIAGNOSTIC_KEYS = {"divergence", "curl"}
@@ -60,13 +64,54 @@ FIELD_WITNESS_LOOPBREAK_KEYS = {"licensed", "target", "ground", "delta_effect", 
 FIELD_WITNESS_RECONSTRUCTION_KEYS = {"held_set", "live_remainder", "reread_scope"}
 FIELD_WITNESS_CLOSURE_KEYS = {"operator", "decision", "agent_field_status"}
 FIELD_WITNESS_TRANSFER_KEYS = {"operator", "from", "to", "mode"}
+FIELD_WITNESS_REGISTER_DELTA_ENTRY_KEYS = {"register", "delta"}
+FIELD_WITNESS_PROVENANCE_KEYS = {"evidence_type", "source", "captured_by"}
 FIELD_WITNESS_COVERAGE_KEYS = {
     "initial_burden_set",
     "terminal_states",
+    "dependency_graph",
     "divergence_check",
     "curl_check",
     "coverage_complete",
 }
+FIELD_WITNESS_DEPENDENCY_GRAPH_KEYS = {"nodes", "edges", "roots", "parallel_groups", "acyclic"}
+FIELD_WITNESS_DEPENDENCY_EDGE_KEYS = {"from", "to"}
+FIELD_WITNESS_REREAD_PRESSURE_KEYS = {
+    "target_burden_id",
+    "reread_delta",
+    "pressure_activations",
+    "divergence_state",
+    "curl_state",
+    "finding",
+    "graph_delta",
+    "preemption_basis",
+    "route",
+    "non_claims",
+}
+FIELD_WITNESS_REREAD_PRESSURE_ACTIVATION_KEYS = {
+    "freeze_landed_move",
+    "dependency_tug",
+    "hidden_framework_recoil",
+    "entailment_pressure",
+    "doubt_churn_guard",
+    "reorientation_reminder",
+}
+FIELD_WITNESS_REREAD_PRESSURE_GRAPH_DELTA_KEYS = {"nodes_added", "edges_added", "note"}
+FIELD_WITNESS_REREAD_PRESSURE_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
+FIELD_WITNESS_REREAD_PRESSURE_CURL = {"null", "resolved", "held", "non-null"}
+FIELD_WITNESS_REREAD_PRESSURE_FINDINGS = {
+    "stable",
+    "genuine-dependent",
+    "partial-real",
+    "hidden-framework-recoil",
+    "doubt-churn",
+    "reorientation",
+}
+FIELD_WITNESS_REREAD_PRESSURE_ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+FIELD_WITNESS_REREAD_PRESSURE_PREEMPTION = {"none", "graph-bound", "commitment-bound", "framework-bound"}
+FIELD_WITNESS_CLOSURE_OPERATORS = {"𝒞(Ψᴺ)"}
+FIELD_WITNESS_TRANSFER_FROM_VALUES = {"Ψᴺ"}
+FIELD_WITNESS_TRANSFER_TO_VALUES = {"Ψᴵ"}
 FIELD_WITNESS_TERMINAL_STATES = {
     "landed",
     "discharged-as-derivative",
@@ -170,6 +215,26 @@ POSITIVE_SAMPLE: dict[str, Any] = {
             "to": "Ψᴵ",
             "mode": "coupling-attempt",
         },
+        "register_deltas": [
+            {"register": "heart", "delta": "grief-coded register held with reason"},
+            {"register": "xi", "delta": "criterion warrant pressure landed"},
+            {"register": "Omega", "delta": "no live ontological delta in this sample"},
+            {"register": "sigma", "delta": "source-status unchanged"},
+            {"register": "mu", "delta": "no carrier/reproduction vector live"},
+            {"register": "kappa", "delta": "B2 dependency radius discharged after B1 landed"},
+            {"register": "H", "delta": "held set empty after reread"},
+        ],
+        "non_claims": [
+            "not truth or warrant proof",
+            "not interlocutor uptake",
+            "not soul access",
+            "not package-bound release proof",
+        ],
+        "provenance": {
+            "evidence_type": "static-checker-positive-sample",
+            "source": "tools/check_ir_instance_integrity.py",
+            "captured_by": "embedded fixture",
+        },
         "coverage_proof": {
             "initial_burden_set": ["B1", "B2"],
             "terminal_states": {
@@ -182,6 +247,13 @@ POSITIVE_SAMPLE: dict[str, Any] = {
                     "state": "discharged-as-derivative",
                     "reason": "dissolved when B1 landed",
                 },
+            },
+            "dependency_graph": {
+                "nodes": ["B1", "B2"],
+                "edges": [{"from": "B1", "to": "B2"}],
+                "roots": ["B1"],
+                "parallel_groups": [],
+                "acyclic": True,
             },
             "divergence_check": "neutral",
             "curl_check": "null",
@@ -295,6 +367,18 @@ BAD_SAMPLES["field_witness_transfer_uptake_mode"] = (
 BAD_SAMPLES["field_witness_coverage_missing_terminal"] = (
     _sample_with(lambda s: s["field_witness"]["coverage_proof"]["terminal_states"].pop("B2")),
     "field_witness.coverage_proof missing terminal state for B2",
+)
+BAD_SAMPLES["field_witness_dependency_unknown_node"] = (
+    _sample_with(lambda s: s["field_witness"]["coverage_proof"]["dependency_graph"]["edges"].append({"from": "B1", "to": "B9"})),
+    "field_witness.coverage_proof.dependency_graph edge endpoint not in nodes",
+)
+BAD_SAMPLES["field_witness_dependency_cycle"] = (
+    _sample_with(lambda s: s["field_witness"]["coverage_proof"]["dependency_graph"]["edges"].append({"from": "B2", "to": "B1"})),
+    "field_witness.coverage_proof.dependency_graph contains a cycle",
+)
+BAD_SAMPLES["field_witness_empty_non_claims"] = (
+    _sample_with(lambda s: s["field_witness"].update({"non_claims": []})),
+    "field_witness.non_claims must be non-empty array",
 )
 
 COMPILED_MAP_BAD_SAMPLES = {
@@ -497,6 +581,30 @@ def non_empty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def graph_has_cycle(nodes: list[str], edges: list[tuple[str, str]]) -> bool:
+    graph = {node: [] for node in nodes}
+    for source, target in edges:
+        graph.setdefault(source, []).append(target)
+        graph.setdefault(target, [])
+    temporary: set[str] = set()
+    permanent: set[str] = set()
+
+    def visit(node: str) -> bool:
+        if node in permanent:
+            return False
+        if node in temporary:
+            return True
+        temporary.add(node)
+        for target in graph.get(node, []):
+            if visit(target):
+                return True
+        temporary.remove(node)
+        permanent.add(node)
+        return False
+
+    return any(visit(node) for node in list(graph))
+
+
 def field_witness_errors(field_witness: Any) -> list[str]:
     errors = require_keys_with_optional(
         field_witness,
@@ -570,7 +678,7 @@ def field_witness_errors(field_witness: Any) -> list[str]:
     closure = field_witness["closure"]
     errors.extend(require_exact_keys(closure, FIELD_WITNESS_CLOSURE_KEYS, "field_witness.closure"))
     if isinstance(closure, dict):
-        if closure.get("operator") != "𝒞(Ψᴺ)":
+        if closure.get("operator") not in FIELD_WITNESS_CLOSURE_OPERATORS:
             errors.append("schema: field_witness.closure.operator must be 𝒞(Ψᴺ)")
         if closure.get("decision") not in FIELD_WITNESS_CLOSURE_DECISIONS:
             errors.append(f"schema: field_witness.closure.decision invalid: {closure.get('decision')!r}")
@@ -582,12 +690,122 @@ def field_witness_errors(field_witness: Any) -> list[str]:
     if isinstance(transfer, dict):
         if transfer.get("operator") != "T_lang":
             errors.append("schema: field_witness.transfer_boundary.operator must be T_lang")
-        if transfer.get("from") != "Ψᴺ":
+        if transfer.get("from") not in FIELD_WITNESS_TRANSFER_FROM_VALUES:
             errors.append("schema: field_witness.transfer_boundary.from must be Ψᴺ")
-        if transfer.get("to") != "Ψᴵ":
+        if transfer.get("to") not in FIELD_WITNESS_TRANSFER_TO_VALUES:
             errors.append("schema: field_witness.transfer_boundary.to must be Ψᴵ")
         if transfer.get("mode") != "coupling-attempt":
             errors.append("schema: field_witness.transfer_boundary.mode must be coupling-attempt")
+
+    register_deltas = field_witness["register_deltas"]
+    if (
+        not isinstance(register_deltas, list)
+        or not register_deltas
+        or not all(isinstance(item, dict) for item in register_deltas)
+    ):
+        errors.append("schema: field_witness.register_deltas must be a non-empty array of register/delta objects")
+    else:
+        seen_registers: set[str] = set()
+        for index, item in enumerate(register_deltas):
+            label = f"field_witness.register_deltas[{index}]"
+            errors.extend(require_exact_keys(item, FIELD_WITNESS_REGISTER_DELTA_ENTRY_KEYS, label))
+            register = item.get("register")
+            delta = item.get("delta")
+            if not non_empty_string(register):
+                errors.append(f"schema: {label}.register must be non-empty string")
+            elif register in seen_registers:
+                errors.append(f"schema: {label}.register duplicates {register!r}")
+            else:
+                seen_registers.add(register)
+            if not non_empty_string(delta):
+                errors.append(f"schema: {label}.delta must be non-empty string")
+
+    non_claims = field_witness["non_claims"]
+    if not isinstance(non_claims, list) or not non_claims or not all(non_empty_string(item) for item in non_claims):
+        errors.append("schema: field_witness.non_claims must be non-empty array of strings")
+    elif not any(re.search(r"(?i)\b(?:uptake|acceptance|soul|truth|warrant|release proof)\b", item) for item in non_claims):
+        errors.append("schema: field_witness.non_claims must include proof/uptake/soul/release boundary")
+
+    provenance = field_witness["provenance"]
+    errors.extend(require_exact_keys(provenance, FIELD_WITNESS_PROVENANCE_KEYS, "field_witness.provenance"))
+    if isinstance(provenance, dict):
+        for key in FIELD_WITNESS_PROVENANCE_KEYS:
+            if not non_empty_string(provenance.get(key)):
+                errors.append(f"schema: field_witness.provenance.{key} must be non-empty string")
+
+    reread_pressure = field_witness.get("reread_pressure")
+    if reread_pressure is not None:
+        errors.extend(
+            require_exact_keys(
+                reread_pressure,
+                FIELD_WITNESS_REREAD_PRESSURE_KEYS,
+                "field_witness.reread_pressure",
+            )
+        )
+        if isinstance(reread_pressure, dict):
+            target = reread_pressure.get("target_burden_id")
+            if not isinstance(target, str) or not re.fullmatch(r"B\d+", target):
+                errors.append("schema: field_witness.reread_pressure.target_burden_id must be burden ID")
+            if not non_empty_string(reread_pressure.get("reread_delta")):
+                errors.append("schema: field_witness.reread_pressure.reread_delta must be non-empty string")
+            activations = reread_pressure.get("pressure_activations")
+            errors.extend(
+                require_exact_keys(
+                    activations,
+                    FIELD_WITNESS_REREAD_PRESSURE_ACTIVATION_KEYS,
+                    "field_witness.reread_pressure.pressure_activations",
+                )
+            )
+            if isinstance(activations, dict):
+                for key in FIELD_WITNESS_REREAD_PRESSURE_ACTIVATION_KEYS:
+                    if not non_empty_string(activations.get(key)):
+                        errors.append(f"schema: field_witness.reread_pressure.pressure_activations.{key} must be non-empty string")
+            if reread_pressure.get("finding") not in FIELD_WITNESS_REREAD_PRESSURE_FINDINGS:
+                errors.append(f"schema: field_witness.reread_pressure.finding invalid: {reread_pressure.get('finding')!r}")
+            if reread_pressure.get("divergence_state") not in FIELD_WITNESS_REREAD_PRESSURE_DIVERGENCE:
+                errors.append(
+                    f"schema: field_witness.reread_pressure.divergence_state invalid: {reread_pressure.get('divergence_state')!r}"
+                )
+            if reread_pressure.get("curl_state") not in FIELD_WITNESS_REREAD_PRESSURE_CURL:
+                errors.append(
+                    f"schema: field_witness.reread_pressure.curl_state invalid: {reread_pressure.get('curl_state')!r}"
+                )
+            if reread_pressure.get("route") not in FIELD_WITNESS_REREAD_PRESSURE_ROUTES:
+                errors.append(f"schema: field_witness.reread_pressure.route invalid: {reread_pressure.get('route')!r}")
+            if reread_pressure.get("preemption_basis") not in FIELD_WITNESS_REREAD_PRESSURE_PREEMPTION:
+                errors.append(
+                    f"schema: field_witness.reread_pressure.preemption_basis invalid: {reread_pressure.get('preemption_basis')!r}"
+                )
+            graph_delta = reread_pressure.get("graph_delta")
+            errors.extend(
+                require_exact_keys(
+                    graph_delta,
+                    FIELD_WITNESS_REREAD_PRESSURE_GRAPH_DELTA_KEYS,
+                    "field_witness.reread_pressure.graph_delta",
+                )
+            )
+            if isinstance(graph_delta, dict):
+                for key in ("nodes_added", "edges_added"):
+                    if not isinstance(graph_delta.get(key), list):
+                        errors.append(f"schema: field_witness.reread_pressure.graph_delta.{key} must be array")
+                for index, node in enumerate(graph_delta.get("nodes_added", [])):
+                    if not isinstance(node, str) or not re.fullmatch(r"B\d+", node):
+                        errors.append(f"schema: field_witness.reread_pressure.graph_delta.nodes_added[{index}] must be burden ID")
+                for index, edge in enumerate(graph_delta.get("edges_added", [])):
+                    label = f"field_witness.reread_pressure.graph_delta.edges_added[{index}]"
+                    errors.extend(require_exact_keys(edge, FIELD_WITNESS_DEPENDENCY_EDGE_KEYS, label))
+                    if isinstance(edge, dict):
+                        if not isinstance(edge.get("from"), str) or not re.fullmatch(r"B\d+", edge.get("from", "")):
+                            errors.append(f"schema: {label}.from must be burden ID")
+                        if not isinstance(edge.get("to"), str) or not re.fullmatch(r"B\d+", edge.get("to", "")):
+                            errors.append(f"schema: {label}.to must be burden ID")
+                if not non_empty_string(graph_delta.get("note")):
+                    errors.append("schema: field_witness.reread_pressure.graph_delta.note must be non-empty string")
+            local_non_claims = reread_pressure.get("non_claims")
+            if not isinstance(local_non_claims, list) or not local_non_claims or not all(non_empty_string(item) for item in local_non_claims):
+                errors.append("schema: field_witness.reread_pressure.non_claims must be non-empty array of strings")
+            elif not any(re.search(r"(?i)\b(?:uptake|acceptance|conversion|guidance|soul)\b", item) for item in local_non_claims):
+                errors.append("schema: field_witness.reread_pressure.non_claims must include uptake/guidance boundary")
 
     coverage = field_witness.get("coverage_proof")
     if coverage is not None:
@@ -621,6 +839,75 @@ def field_witness_errors(field_witness: Any) -> list[str]:
                     )
                 for key in set(terminal) - {"state", "operator", "delta_nB", "reason"}:
                     errors.append(f"schema: field_witness.coverage_proof.{burden} additional property not allowed: {key}")
+            dependency_graph = coverage.get("dependency_graph")
+            errors.extend(
+                require_exact_keys(
+                    dependency_graph,
+                    FIELD_WITNESS_DEPENDENCY_GRAPH_KEYS,
+                    "field_witness.coverage_proof.dependency_graph",
+                )
+            )
+            if isinstance(dependency_graph, dict):
+                nodes = dependency_graph.get("nodes")
+                roots = dependency_graph.get("roots")
+                raw_edges = dependency_graph.get("edges")
+                raw_parallel = dependency_graph.get("parallel_groups")
+                if not isinstance(nodes, list) or not nodes or not all(isinstance(node, str) and re.fullmatch(r"B\d+", node) for node in nodes):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.nodes must be non-empty B-id array")
+                    nodes = []
+                if len(set(nodes)) != len(nodes):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.nodes must be unique")
+                if set(nodes) != set(initial) | set(terminals):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.nodes must match initial burdens and terminal states")
+                if not isinstance(roots, list) or not all(isinstance(node, str) and re.fullmatch(r"B\d+", node) for node in roots):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.roots must be B-id array")
+                    roots = []
+                edges: list[tuple[str, str]] = []
+                if not isinstance(raw_edges, list):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.edges must be array")
+                    raw_edges = []
+                for index, edge in enumerate(raw_edges):
+                    label = f"field_witness.coverage_proof.dependency_graph.edges[{index}]"
+                    errors.extend(require_exact_keys(edge, FIELD_WITNESS_DEPENDENCY_EDGE_KEYS, label))
+                    if not isinstance(edge, dict):
+                        continue
+                    source = edge.get("from")
+                    target = edge.get("to")
+                    if not isinstance(source, str) or not re.fullmatch(r"B\d+", source):
+                        errors.append(f"schema: {label}.from must be B-id")
+                        continue
+                    if not isinstance(target, str) or not re.fullmatch(r"B\d+", target):
+                        errors.append(f"schema: {label}.to must be B-id")
+                        continue
+                    if source not in nodes or target not in nodes:
+                        errors.append("schema: field_witness.coverage_proof.dependency_graph edge endpoint not in nodes")
+                    edges.append((source, target))
+                if not isinstance(raw_parallel, list):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.parallel_groups must be array")
+                    raw_parallel = []
+                for index, group in enumerate(raw_parallel):
+                    if not isinstance(group, list) or len(group) < 2 or not all(isinstance(node, str) and re.fullmatch(r"B\d+", node) for node in group):
+                        errors.append(f"schema: field_witness.coverage_proof.dependency_graph.parallel_groups[{index}] must contain at least two B-ids")
+                    elif any(node not in nodes for node in group):
+                        errors.append(f"schema: field_witness.coverage_proof.dependency_graph.parallel_groups[{index}] node not in nodes")
+                indegree = {node: 0 for node in nodes}
+                for _source, target in edges:
+                    indegree[target] = indegree.get(target, 0) + 1
+                for root in roots:
+                    if root not in nodes:
+                        errors.append(f"schema: field_witness.coverage_proof.dependency_graph root not in nodes: {root}")
+                    elif indegree.get(root, 0) != 0:
+                        errors.append(f"schema: field_witness.coverage_proof.dependency_graph root has upstream dependency: {root}")
+                for node, degree in indegree.items():
+                    if degree == 0 and node not in roots:
+                        errors.append(f"schema: field_witness.coverage_proof.dependency_graph node missing root marker: {node}")
+                actual_acyclic = not graph_has_cycle(nodes, edges)
+                if not actual_acyclic:
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph contains a cycle")
+                if not isinstance(dependency_graph.get("acyclic"), bool):
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.acyclic must be boolean")
+                elif dependency_graph.get("acyclic") != actual_acyclic:
+                    errors.append("schema: field_witness.coverage_proof.dependency_graph.acyclic does not match graph")
             if not isinstance(coverage.get("divergence_check"), str):
                 errors.append("schema: field_witness.coverage_proof.divergence_check must be string")
             if not isinstance(coverage.get("curl_check"), str):

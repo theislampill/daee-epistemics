@@ -382,7 +382,11 @@
         "loopbreak",
         "reconstruction",
         "closure",
-        "transfer_boundary"
+        "transfer_boundary",
+        "register_deltas",
+        "non_claims",
+        "provenance",
+        "coverage_proof"
       ],
       "properties": {
         "route_gradient": {
@@ -491,13 +495,115 @@
             "mode": { "type": "string", "const": "coupling-attempt" }
           }
         },
+        "register_deltas": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["register", "delta"],
+            "properties": {
+              "register": { "type": "string", "minLength": 1 },
+              "delta": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "non_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["evidence_type", "source", "captured_by"],
+          "properties": {
+            "evidence_type": { "type": "string", "minLength": 1 },
+            "source": { "type": "string", "minLength": 1 },
+            "captured_by": { "type": "string", "minLength": 1 }
+          }
+        },
+        "reread_pressure": {
+          "$comment": "Optional TTP-MRP evidence. It records how the post-landed reread state was pressured before STOP/HOLD/RECURSE/LoopBreak/closure.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target_burden_id", "reread_delta", "pressure_activations", "divergence_state", "curl_state", "finding", "graph_delta", "preemption_basis", "route", "non_claims"],
+          "properties": {
+            "target_burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
+            "reread_delta": { "type": "string", "minLength": 1 },
+            "pressure_activations": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["freeze_landed_move", "dependency_tug", "hidden_framework_recoil", "entailment_pressure", "doubt_churn_guard", "reorientation_reminder"],
+              "properties": {
+                "freeze_landed_move": { "type": "string", "minLength": 1 },
+                "dependency_tug": { "type": "string", "minLength": 1 },
+                "hidden_framework_recoil": { "type": "string", "minLength": 1 },
+                "entailment_pressure": { "type": "string", "minLength": 1 },
+                "doubt_churn_guard": { "type": "string", "minLength": 1 },
+                "reorientation_reminder": { "type": "string", "minLength": 1 }
+              }
+            },
+            "finding": {
+              "type": "string",
+              "enum": ["stable", "genuine-dependent", "partial-real", "hidden-framework-recoil", "doubt-churn", "reorientation"]
+            },
+            "divergence_state": {
+              "type": "string",
+              "enum": ["neutral", "settled", "bounded", "non-neutral"]
+            },
+            "curl_state": {
+              "type": "string",
+              "enum": ["null", "resolved", "held", "non-null"]
+            },
+            "graph_delta": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["nodes_added", "edges_added", "note"],
+              "properties": {
+                "nodes_added": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "edges_added": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["from", "to"],
+                    "properties": {
+                      "from": { "type": "string", "pattern": "^B[0-9]+$" },
+                      "to": { "type": "string", "pattern": "^B[0-9]+$" }
+                    }
+                  }
+                },
+                "note": { "type": "string", "minLength": 1 }
+              }
+            },
+            "preemption_basis": {
+              "type": "string",
+              "enum": ["none", "graph-bound", "commitment-bound", "framework-bound"]
+            },
+            "route": {
+              "type": "string",
+              "enum": ["STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"]
+            },
+            "non_claims": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
         "coverage_proof": {
-          "$comment": "Optional schema-light collapse reconstruction. Coverage proves rendered accounting, not live noetic competence.",
+          "$comment": "Schema-light collapse reconstruction for field_witness. Coverage proves rendered accounting, not live noetic competence.",
           "type": "object",
           "additionalProperties": false,
           "required": [
             "initial_burden_set",
             "terminal_states",
+            "dependency_graph",
             "divergence_check",
             "curl_check",
             "coverage_complete"
@@ -530,6 +636,45 @@
                   "delta_nB": { "type": "string" },
                   "reason": { "type": "string" }
                 }
+              }
+            },
+            "dependency_graph": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["nodes", "edges", "roots", "parallel_groups", "acyclic"],
+              "properties": {
+                "nodes": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "edges": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["from", "to"],
+                    "properties": {
+                      "from": { "type": "string", "pattern": "^B[0-9]+$" },
+                      "to": { "type": "string", "pattern": "^B[0-9]+$" }
+                    }
+                  }
+                },
+                "roots": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "parallel_groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                    "uniqueItems": true
+                  }
+                },
+                "acyclic": { "type": "boolean" }
               }
             },
             "divergence_check": { "type": "string" },

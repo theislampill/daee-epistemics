@@ -297,6 +297,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
         "skill/references/tactics/R1-internalist-criterion.md",
         "skill/references/tactics/R2-the-reminder.md",
         "skill/references/tactics/R3-warranted-basic-belief.md",
+        "skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
         "skill/references/tactics/M1-self-refutation.md",
         "skill/references/tactics/M1P-performative-self-refutation.md",
         "skill/references/tactics/M2-prior-probability.md",

@@ -1,0 +1,20 @@
+Smoke 1 -- Genuine downstream burden / RECURSE
+
+Use the daee-epistemics runtime exactly as packaged for the version under test.
+Do not answer from generic assistant behavior. Preserve the runtime's visible
+execution surface.
+
+Prompt:
+
+I keep hearing that my moral anger at suffering proves God cannot be good.
+But even if you answer the suffering part, I think the deeper issue remains:
+no one has the right to judge me unless I first accept their moral authority.
+So answer this without assuming I already accept God's authority.
+
+Required evaluator focus:
+
+The first burden should land on the moral protest or accountability compression.
+Then R(H,Delta) should detect a genuine downstream burden about authority and
+route to RECURSE rather than false closure. In v0.4.3.0, MRP must visibly
+pressure that downstream burden and dispatch it through an existing TTP/operator
+class.
