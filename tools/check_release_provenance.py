@@ -353,7 +353,9 @@ def source_commit_from_provenance(path: Path) -> str:
 
 
 def remote_tag_target(tag: str) -> str:
-    line = git_output(["ls-remote", "--tags", "origin", f"refs/tags/{tag}"])
+    line = git_output(["ls-remote", "--tags", "origin", f"refs/tags/{tag}^{{}}"])
+    if not line:
+        line = git_output(["ls-remote", "--tags", "origin", f"refs/tags/{tag}"])
     if not line:
         return ""
     return line.split()[0]
@@ -369,7 +371,7 @@ def build_release_manifest(
     errors: list[str] = []
     summary = package_summary(artifact, errors)
     head = git_output(["rev-parse", "HEAD"]) or ""
-    local_tag = git_output(["rev-parse", version]) or ""
+    local_tag = git_output(["rev-parse", f"{version}^{{}}"]) or git_output(["rev-parse", version]) or ""
     remote_tag = remote_tag_target(version)
     package_built_from = source_commit_from_provenance(provenance_path or conventional_provenance_path(version))
     release = gh_json([
