@@ -58,6 +58,9 @@ def main() -> int:
         "minimum body font": "bodySize=16",
         "minimum technical font": "techSize=16",
         "large burden title": "storyLineText(titleLines,margin+34,y+56,42,'#f8fafc',34,900)",
+        "list block rendering": "function storyListBlock",
+        "rectangular story badges": 'height="34" rx="8"',
+        "rectangular view badge": 'height="44" rx="9"',
         "story legend route color": "next failure / HOLD / RECURSE",
         "story legend closed color": "STOP / closed / restoration",
     }
@@ -71,6 +74,7 @@ def main() -> int:
         "fixed submove story height": "d.subH",
         "decorative mini-flow call": "storyMiniFlow(model",
         "story mini toggle": "d.mini",
+        "giant SVG pill styling": 'rx="999"',
     }
     for label, token in forbidden_story.items():
         if token in story_body:
@@ -80,6 +84,7 @@ def main() -> int:
         "content-card clipping": r"outputGrapher(?:Story|Top|Graph|Inspector|Restoration)[^{]*\{[^}]*overflow\s*:\s*hidden",
         "fixed burden card height": r"\.outputGrapherStoryBurden[^{]*\{[^}]*height\s*:",
         "fixed story panel height": r"\.outputGrapherStoryPanel[^{]*\{[^}]*height\s*:",
+        "giant pill CSS styling": r"border-radius\s*:\s*999px",
     }
     for label, pattern in forbidden_css.items():
         if re.search(pattern, css_text, re.I | re.S):

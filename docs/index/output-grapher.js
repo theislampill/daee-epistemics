@@ -268,7 +268,7 @@
     const lines=[]; let cur='';
     words.forEach(w=>{ if((cur+' '+w).trim().length>maxChars && cur){ lines.push(cur); cur=w; } else cur=(cur+' '+w).trim(); });
     if(cur) lines.push(cur);
-    if(Number.isFinite(maxLines) && maxLines>0 && lines.length>maxLines){ lines.length=maxLines; lines[maxLines-1]=lines[maxLines-1].replace(/\s*$/,'')+'…'; }
+    if(Number.isFinite(maxLines) && maxLines>0 && lines.length>maxLines){ lines.length=maxLines; lines[maxLines-1]=`${lines[maxLines-1].replace(/\s*$/,'')} (more in inspector)`; }
     return lines.length?lines:[''];
   }
   function svgText(text,x,y,width=180,lineHeight=14,maxLines=3,klass='',fill='#f8fafc',size=12,weight=800){
@@ -384,6 +384,12 @@
       .filter(Boolean)
       .slice(0,limit);
   }
+  function splitReadableItems(text){
+    return String(text||'')
+      .split(/(?<=\.)\s+|;\s+|\s+•\s+/)
+      .map(x=>x.trim())
+      .filter(Boolean);
+  }
   function burdenNumber(b){
     const s=String(b||'');
     const m=s.match(/^B(\d+)/);
@@ -455,6 +461,16 @@
     if(model.restorationAim&&model.restorationAim!=='not detected') parts.push(`Restoration target: ${model.restorationAim}`);
     return parts.join(' · ');
   }
+  function diagnosisItems(model,burdens){
+    return [
+      `Field diagnosis: ${model.fieldType||'not detected'}`,
+      `Case recognized: ${model.caseProfile||'not detected'}`,
+      `Claim pattern: ${model.claimType||'not detected'}`,
+      `Hidden structure: ${model.patternProfile||model.diagnosis||'not detected'}`,
+      `Problems found: ${burdens.length}`,
+      model.restorationAim&&model.restorationAim!=='not detected'?`Restoration target: ${model.restorationAim}`:''
+    ].filter(Boolean);
+  }
   function conclusionDigest(model){
     if(model.closingFormulation) return model.closingFormulation;
     if(model.restorativeResponse) return model.restorativeResponse;
@@ -494,16 +510,26 @@
   }
 
   function storyLineChars(width,size){
-    return Math.max(18, Math.floor(width/(size*0.56)));
+    return Math.max(18, Math.floor(width/(size*0.50)));
   }
   function storyLineText(lines,x,y,lineHeight,fill,size,weight=800){
     return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" class="ogNodeLabel">${lines.map((line,i)=>`<tspan x="${x}" dy="${i?lineHeight:0}">${esc(line)}</tspan>`).join('')}</text>`;
+  }
+  function storyListBlock(items,x,y,w,lineHeight,fill,size,weight=800,gap=12){
+    let cy=y, svg='';
+    (items||[]).filter(Boolean).forEach((item)=>{
+      const lines=wrapWords(item, storyLineChars(w-34,size), 0);
+      svg+=`<circle cx="${x+7}" cy="${cy-7}" r="5" fill="${fill}"></circle>${storyLineText(lines,x+28,cy,lineHeight,fill,size,weight)}`;
+      cy+=lines.length*lineHeight+gap;
+    });
+    return {svg,height:Math.max(0,cy-y)};
   }
   function storySectionBlock(title,subtitle,x,y,w,options={}){
     const {
       fill='#0b1220',
       stroke='#334155',
       technical='',
+      items=null,
       maxLines=0,
       titleSize=18,
       bodySize=16,
@@ -514,16 +540,20 @@
       minHeight=0,
       klass='outputGrapherStoryPanel'
     }=options;
-    const bodyLines=wrapWords(subtitle||'not detected', storyLineChars(w-pad*2,bodySize), maxLines);
+    const listItems=Array.isArray(items)?items.filter(Boolean):null;
+    const bodyLines=listItems?[]:wrapWords(subtitle||'not detected', storyLineChars(w-pad*2,bodySize), maxLines);
     const techLines=technical?wrapWords(`Technical: ${technical}`, storyLineChars(w-pad*2,techSize), 2):[];
-    const bodyY=y+pad+titleSize+18;
-    const techY=bodyY+bodyLines.length*lineHeight+18;
-    const height=Math.max(minHeight, pad+titleSize+18+bodyLines.length*lineHeight+(techLines.length?18+techLines.length*(techSize+5):0)+pad);
+    const bodyY=y+pad+titleSize+30;
+    const listBlock=listItems?storyListBlock(listItems,x+pad,bodyY,w-pad*2,lineHeight,'#e5e7eb',bodySize,800,16):null;
+    const bodyHeight=listBlock?listBlock.height:bodyLines.length*lineHeight;
+    const techY=bodyY+bodyHeight+24;
+    const height=Math.max(minHeight, pad+titleSize+30+bodyHeight+(techLines.length?24+techLines.length*(techSize+5):0)+pad);
     const railSvg=rail?`<rect x="${x}" y="${y}" width="7" height="${height}" rx="7" fill="${rail}"></rect>`:'';
     const techSvg=techLines.length?storyLineText(techLines,x+pad,techY,techSize+5,'#94a3b8',techSize,800):'';
+    const bodySvg=listBlock?listBlock.svg:storyLineText(bodyLines,x+pad,bodyY,lineHeight,'#e5e7eb',bodySize,800);
     return {
       height,
-      svg:`<g class="${klass}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${railSvg}<text x="${x+pad}" y="${y+pad+titleSize}" fill="#f8fafc" font-size="${titleSize}" font-weight="900">${esc(title)}</text>${storyLineText(bodyLines,x+pad,bodyY,lineHeight,'#e5e7eb',bodySize,800)}${techSvg}</g>`
+      svg:`<g class="${klass}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${railSvg}<text x="${x+pad}" y="${y+pad+titleSize}" fill="#f8fafc" font-size="${titleSize}" font-weight="900">${esc(title)}</text>${bodySvg}${techSvg}</g>`
     };
   }
   function storySection(title,subtitle,x,y,w,h,fill='#0b1220',stroke='#334155',technical=''){
@@ -533,7 +563,8 @@
     const collapse=model.collapse||{};
     const bullets=restorationBullets(model);
     const pad=36, titleSize=34, bodySize=22, techSize=18, lineHeight=34;
-    const bulletHeight=bullets.reduce((height,text)=>height+wrapWords(text, storyLineChars(w-pad*2-24,bodySize), 0).length*lineHeight+12,0);
+    const bulletGap=20;
+    const bulletHeight=bullets.reduce((height,text)=>height+wrapWords(text, storyLineChars(w-pad*2-24,bodySize), 0).length*lineHeight+bulletGap,0);
     const tech=`Terminal states: ${Object.keys(model.terminals).length}/${model.burdens.length} · ∇·B: ${collapse.divergence||'not detected'} · ∇×κ: ${collapse.curl||'not detected'} · 𝒞(Ψᴺ): ${collapse.coverage||String(model.closureComplete)} · T_lang: ${collapse.tLang||'boundary not detected'}`;
     const techText=`R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ · ${tech}`;
     const techLines=wrapWords(techText, storyLineChars(w-pad*2-28,techSize), 0);
@@ -543,7 +574,7 @@
     const bulletSvg=bullets.map(text=>{
       const lines=wrapWords(text, storyLineChars(w-pad*2-24,bodySize), 0);
       const group=`<circle cx="${x+pad+5}" cy="${cy-7}" r="5" fill="#86efac"></circle>${storyLineText(lines,x+pad+24,cy,lineHeight,'#dcfce7',bodySize,800)}`;
-      cy+=lines.length*lineHeight+12;
+      cy+=lines.length*lineHeight+bulletGap;
       return group;
     }).join('');
     const techY=cy+18;
@@ -553,7 +584,7 @@
     };
   }
   function storyBadge(text,x,y,fill='#1f2937',stroke='#475569'){
-    return `<g><rect x="${x}" y="${y}" width="${Math.max(126,String(text).length*10+28)}" height="34" rx="999" fill="${fill}" stroke="${stroke}" stroke-width="1.2"></rect><text x="${x+14}" y="${y+23}" fill="#e5e7eb" font-size="16" font-weight="900">${esc(text)}</text></g>`;
+    return `<g><rect x="${x}" y="${y}" width="${Math.max(126,String(text).length*10+28)}" height="34" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="1.2"></rect><text x="${x+14}" y="${y+23}" fill="#e5e7eb" font-size="16" font-weight="900">${esc(text)}</text></g>`;
   }
   function storyMiniFlow(model,b,x,y,w){
     const steps=[
@@ -583,18 +614,18 @@
     const verdict=verdictDigest(model);
     let y=34;
     const parts=[];
-    parts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="950">OUTPUT GRAPHER - REBUTTAL MAP</text><rect x="${width-420}" y="${y-16}" width="370" height="44" rx="999" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-392}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="900">Plain-language Rebuttal View</text>`);
+    parts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="950">OUTPUT GRAPHER - REBUTTAL MAP</text><rect x="${width-420}" y="${y-16}" width="370" height="44" rx="9" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-392}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="900">Plain-language Rebuttal View</text>`);
     y+=60;
     const verdictCard=storySectionBlock(verdict.headline,verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:34,bodySize:23,lineHeight:36,pad:34,rail:'#10b981'});
     parts.push(verdictCard.svg); y+=verdictCard.height+18;
-    const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
+    const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',items:splitReadableItems(readerInputDigest(model)),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
     parts.push(claimCard.svg); y+=claimCard.height+18;
-    const diagCard=storySectionBlock('Why the reply fails structurally',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
+    const diagCard=storySectionBlock('Why the reply fails structurally',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
     parts.push(diagCard.svg); y+=diagCard.height+18;
     const conclusionCard=storySectionBlock('Why the reply fails',verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#10b981'});
     parts.push(conclusionCard.svg); y+=conclusionCard.height+18;
-    const invLabels=semanticBurdenLabels(model,8).join('   •   ')||'not detected';
-    const invCard=storySectionBlock('Failure points in the reply',invLabels,margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#3b82f6'});
+    const invItems=semanticBurdenLabels(model,8);
+    const invCard=storySectionBlock('Failure points in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#3b82f6'});
     parts.push(invCard.svg); y+=invCard.height+28;
     burdens.forEach((b,index)=>{
       const sms=model.submoves[b]||[];
