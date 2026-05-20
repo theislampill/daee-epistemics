@@ -39,13 +39,22 @@ jobs:
           python tools/check_recursion_collapse_noetic_frame.py
           python tools/check_metacompliance_current_canon.py
           python tools/check_register_formalism_bridge.py
+          python tools/check_reconstructibility_and_mrp.py
+          python tools/check_closure_witness_graph.py --input tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md --field-witness tests/live-witness-fixtures/valid/closure-witness-dependency-graph.field_witness.json
+          python tools/check_mid_reread_pressure.py
+          python tools/check_mrp_generated_burden.py
+          python tools/check_mrp_route_invariants.py
+          python tools/check_trinitarian_mrp_hotfix.py
           python tools/check_ttp_operator_contracts.py --strict
+          python tools/check_spec_authoring_pack.py
           python tools/check_docs_index_interactions.py
           python tools/check_field_operator_architecture.py
+          python tools/check_live_default_witness_contract.py tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md
           python tools/check_smoke_artifacts.py
           python tools/check_ir_instance_integrity.py
           python tools/check_diagnostic_ir_catalogue_integrity.py
           python tools/check_encoding_hygiene.py
+          python tools/check_mojibake.py
           python -m py_compile tools/*.py
           git diff --exit-code -- atomics/skill/references/diagnostics/framework-pipeline.md
           git diff --check

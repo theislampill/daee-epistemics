@@ -103,6 +103,18 @@ evaluation families, not canned expected outputs; success should be judged by ro
 state transformation, reconstruction fidelity, and bounded release rather than exact wording.
 Marker presence remains structural/render evidence only.
 
+v0.4.3.0 adds Codex-hosted exact-file behavioral proof for Mid-Reread Pressure. The runner loaded
+the generated package skill surface directly instead of a vague installed/general skill, and the
+decisive hard-compound Smoke 6 proved inter-burden MRP behavior. This is stronger than static
+file/checker presence, but remains local Codex-hosted behavioral evidence rather than cross-host
+or paraphrase proof. Raw smoke outputs are local evidence and are not release assets.
+
+The later Trinitarian route/curl hotfix and generic MRP route/curl invariant pass are release-line
+hardening, not a replacement for the Repair14 behavioral proof. The generic secularism exact-file
+smoke proves route/curl/field generalization only: it passed `check_mrp_route_invariants.py`, but
+does not become full reconstructibility proof unless it also passes the full topology/MRP output
+checks.
+
 1. Witness labels present but local target/operation/result work absent.
 2. Route-pressure stability under paraphrase.
 3. False-route resistance under tempting but disallowed operators.
@@ -114,12 +126,19 @@ Marker presence remains structural/render evidence only.
 ### Closure-Witness Visualization Artifact
 
 Closure/Reconstruction Witness fixtures may be inspected with
-`tools/visualize_closure_witness.py`. The tool emits Mermaid plus a JSON sidecar summary containing
-coverage status, collapse status, burden nodes, dependency edges, `∇·B`, and `∇×κ`. This is a
-research/evaluation artifact: it makes rendered coverage easier to audit, but it does not prove
-route correctness, live model execution, or behavioral competence. An interactive colored-node graph
-may be useful later, but it should be built on the JSON summary rather than replacing the textual
-closure witness or inventing stronger proof claims.
+`tools/visualize_closure_witness.py` or the standalone local viewer
+`tools/closure_witness_viewer.html`. The CLI accepts visible closure witness text and/or a
+`field_witness` JSON sidecar, validates the parseable dependency graph, and emits a Mermaid/JSON
+summary or standalone HTML with colored DAG nodes. The viewer accepts pasted witness text or
+sidecar JSON with no network dependency. These are research/evaluation artifacts: they make
+rendered coverage easier to audit, but they do not prove route correctness, live model execution,
+package-bound release-smoke proof, or behavioral competence.
+
+When Mid-Reread Pressure is invoked, closure graph movement is not cosmetic: the visible witness
+or `field_witness.reread_pressure` should record active `∇·T` / `∇×T` states, activated pressure
+owners/classes, graph delta if any, and the route licensed by reread pressure. Package-bound
+release proof still requires the normal package smoke gate; local MRP fixtures are diagnostic
+reconstructibility proof only.
 
 ## Runtime-Grounding Smoke Artifact Gate
 
@@ -173,6 +192,13 @@ executed, not because it has the expected headings.
 
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
+- v0.4.3.0 release proof is package-bound artifact/provenance validation plus
+  deterministic reconstructibility/MRP fixtures plus the recorded Codex-hosted exact-file
+  hard-compound Smoke 6 behavior proof. Do not promote raw local transcripts into release
+  assets, and do not treat cross-host/paraphrase preservation as proven.
+- v0.4.3.0 route/curl release hardening also requires `tools/check_mrp_route_invariants.py` and
+  the Trinitarian wrapper `tools/check_trinitarian_mrp_hotfix.py`; the wrapper must remain delegated
+  to the generic checker so secularism, TST, and synthetic linear chains are guarded too.
 - No smoke artifact suite is committed in this source state.
 - v0.4.0.0 package smoke evidence is historical for later v0.4.x release lines unless the
   smoke suite is regenerated locally against the intended replacement package and the SHA256 is

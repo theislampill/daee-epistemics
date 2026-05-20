@@ -65,9 +65,10 @@ REQUIRED_TOKENS = [
     "For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints",
     "noetic-field execution banner",
     "NOETIC FIELD EXECUTION",
+    "must not collapse to a bare `field:`",
     "first visible content",
     "Markdown fences",
-    "Clarifying or missing-input replies are still runtime outputs",
+    "Clarifying or missing-input replies are still runtime",
     "field: <LOCAL CLAIM | NAMED WORLDVIEW | SOURCE-AUTHENTICATION | MIXED NOETIC FIELD>",
     "user task: <RESPOND | REFUTE | DIAGNOSE | EXPLAIN | SOURCE-AUTHENTICATION | OTHER>",
     "external source request: <NONE EXPLICIT | IMPLICIT | EXPLICIT>",
@@ -227,8 +228,8 @@ REQUIRED_TOKENS = [
     "LoopBreak:",
     "Closure/Reconstruction Witness",
     "Burden dependency graph",
-    "B1 -> B2, B3",
-    "B1 ∥ B2 -> B3",
+    "B1 → B2, B3",
+    "B1 ∥ B2 → B3",
     "`𝒞(Ψᴺ)`",
     "`T_lang: Ψᴺ ⇢ Ψᴵ`",
     "Current bounded operator",
@@ -487,6 +488,37 @@ FORBIDDEN_TOKENS = [
     "Recursion decision: RECURSE may appear as a compact governance line at the close",
     "FPD/M1 landed",
     "the imported criterion has failed",
+    "first visible line is literally `field:`",
+    "do not render box art",
+    "box art, apologies, Markdown fences",
+]
+
+
+FIELD_ONLY_REGRESSION_PHRASES = [
+    "first visible line is literally `field:`",
+    "do not render box art",
+    "box art, apologies, Markdown fences",
+]
+
+ROOT_INVOCATION_SURFACE_REQUIRED = [
+    "NOETIC FIELD EXECUTION",
+    "¹B₁[FPD]",
+    "¹B₂[M1]",
+    "Land(¹B)",
+    "MRP(¹B)",
+    "R(H,Δ)",
+    "MRP",
+    "[Mid-Reread Pressure]",
+    "Pressure activations",
+    "Pre-emption basis",
+    "MRP trigger expansion",
+    "MANDATORY MRP ROUTE GATE",
+    "every routed burden-cycle",
+    "remaining burden",
+    "release next",
+    "∇·T",
+    "∇×T",
+    "TTP-MRP-mid-reread-pressure",
 ]
 
 FIXTURE_REQUIRED_TOKENS = [
@@ -596,7 +628,7 @@ DEFAULT_REQUIRED_FORMAL_STATE_MARKER_TOKENS = [
     "target-explicit field-diagnostic witness",
     "Closure/Reconstruction Witness",
     "Burden dependency graph",
-    "B1 ∥ B2 -> B3",
+    "B1 ∥ B2 → B3",
 ]
 
 DEFAULT_FIELD_DIAGNOSTIC_MARKERS = [
@@ -895,7 +927,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - Field checks: ∇·B neutral; ∇×κ null
 
@@ -980,7 +1012,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - Field checks: ∇·B neutral; ∇×κ null
 - `𝒞(Ψᴺ)`: positive
@@ -1064,7 +1096,7 @@ Trace: definition discipline.
 ### Closure/Reconstruction Witness
 - N frames: selected operative frame
 - Registers: κ bounded
-- Burden dependency graph: B1 -> B2
+- Burden dependency graph: B1 → B2
 - Operator match: B1 -> FPD; B2 -> definition discipline
 - `𝒞(Ψᴺ)`: positive
 - `T_lang: Ψᴺ ⇢ Ψᴵ`: coupling attempt only
@@ -1150,7 +1182,7 @@ Trace: M9.
 ### Closure audit
 - N frames: selected operative frame
 - Registers: κ bounded
-- burden graph: B1 -> B2
+- burden graph: B1 → B2
 - Operator match: B1 -> definition discipline; B2 -> M9
 - Field checks: ∇·B neutral; ∇×κ null
 - `𝒞(Ψᴺ)`: positive
@@ -2328,7 +2360,7 @@ SUBMOVE_COHESION_GATE_RE = re.compile(
     r"cohesion gate|more-than-three)\b"
 )
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamÃƒâ€žÃ‚ÂnuÃƒÅ Ã‚Â¿|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tam[?a]nu[?']?|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -2424,10 +2456,10 @@ LITERAL_DEFAULT_GOVERNANCE_RE = re.compile(
     r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
     r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿|multiple independent lords?)\b")
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tam[?a]nu[?']?|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿)\b"
+    r"\b(?:V12|tamanu|tam[?a]nu[?']?)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",
@@ -2632,6 +2664,34 @@ def read_dispatch_gate(root: Path, errors: list) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def check_invocation_surface_sources(root: Path, errors: list[str]) -> None:
+    """Guard the primary invocation surface against pointer-only regressions."""
+    root_skill = root / "atomics/skill/SKILL.md"
+    if not root_skill.is_file():
+        errors.append("root invocation surface missing: atomics/skill/SKILL.md")
+        return
+
+    skill_text = root_skill.read_text(encoding="utf-8")
+    for token in ROOT_INVOCATION_SURFACE_REQUIRED:
+        if token not in skill_text:
+            errors.append(f"root SKILL.md missing invocation-surface token: {token!r}")
+
+    for rel_path in [
+        "atomics/skill/SKILL.md",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+        "atomics/skill/references/rubrics/output-release.md",
+        "tools/build_compiled_runtime.py",
+    ]:
+        path = root / rel_path
+        if not path.is_file():
+            errors.append(f"missing invocation-surface guard input: {rel_path}")
+            continue
+        text = path.read_text(encoding="utf-8")
+        for phrase in FIELD_ONLY_REGRESSION_PHRASES:
+            if phrase in text:
+                errors.append(f"{rel_path} preserves field-only banner regression: {phrase!r}")
+
+
 def check_current_doc_staleness(root: Path, errors: list) -> None:
     for rel_path in CURRENT_GOVERNANCE_DOCS:
         path = root / rel_path
@@ -2791,6 +2851,7 @@ def main() -> int:
     root = repo_root()
     errors = []
 
+    check_invocation_surface_sources(root, errors)
     check_current_doc_staleness(root, errors)
     check_render_shape_samples(errors)
     check_formal_marker_policy_samples(errors)

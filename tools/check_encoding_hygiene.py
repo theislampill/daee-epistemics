@@ -21,6 +21,10 @@ DEFAULT_TARGETS = (
     "skill",
     "tests",
 )
+EXCLUDED_PATH_PARTS = (
+    "tests/output",
+    "tests/smokes/mrp-behavior/outputs",
+)
 
 MOJIBAKE_TOKENS = {
     b"\xc3\x82\xc2\xa7": "section-sign mojibake",
@@ -28,6 +32,14 @@ MOJIBAKE_TOKENS = {
     b"\xc3\xa2\xe2\x82\xac\xc2\xa0": "arrow mojibake",
     b"\xc3\xa2\xe2\x80\x94": "bullet/dash mojibake",
     b"\xc3\xaf\xc2\xbb\xc2\xbf": "visible BOM mojibake",
+    bytes([0xC3, 0xA2]): "U+00E2 mojibake marker",
+    bytes([0xC3, 0x82]): "U+00C2 mojibake marker",
+    bytes([0xC3, 0x83]): "U+00C3 mojibake marker",
+    bytes([0xC3, 0x8E]): "U+00CE mojibake marker",
+    bytes([0xC3, 0x8F]): "U+00CF mojibake marker",
+    bytes([0xC3, 0x90]): "U+00D0 mojibake marker",
+    bytes([0xC3, 0xB0]): "U+00F0 mojibake marker",
+    b"\xef\xbf\xbd": "replacement-character mojibake marker",
 }
 UTF8_BOM = b"\xef\xbb\xbf"
 
@@ -48,7 +60,10 @@ def iter_files(paths: list[Path]) -> list[Path]:
             and ".git" not in child.parts
             and "__pycache__" not in child.parts
             and child.suffix != ".pyc"
-            and "tests/output" not in child.as_posix().replace("\\", "/")
+            and not any(
+                excluded in child.as_posix().replace("\\", "/")
+                for excluded in EXCLUDED_PATH_PARTS
+            )
         )
     return sorted(set(files))
 

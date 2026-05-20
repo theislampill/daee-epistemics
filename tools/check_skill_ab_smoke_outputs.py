@@ -13,8 +13,27 @@ CASE_RE = re.compile(r"^(?P<label>[A-Z])(?P<number>\d+)-output\.md$")
 FIELD_VALUES_RE = re.compile(
     r"^field:\s+(LOCAL CLAIM|NAMED WORLDVIEW|SOURCE-AUTHENTICATION|MIXED NOETIC FIELD)\b"
 )
+GOVERNED_BANNER_RE = re.compile(r"\bNOETIC FIELD EXECUTION\b")
 REREAD_RE = re.compile(r"R\(H,?\s*(Delta|\u0394)\)")
 MOJIBAKE_RE = re.compile(r"[\uFFFD\u00CE\u00E2]")
+ASCII_FORMALISM_RE = re.compile(r"\b(PsiN|PsiI|Psi\^N|Psi\^I)\b")
+FORMALISM_REQUIRED_TOKENS = {
+    5: ["∇", "Δ", "R(H,Δ)", "𝒞(Ψᴺ)", "T_lang"],
+    6: [
+        "Ψᴺ",
+        "Ψᴵ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ",
+        "N_fiṭrī",
+        "ʿaql ṣarīḥ",
+        "∇·T",
+        "∇×T",
+        "LoopBreak(∇×T)",
+        "ΔⁿB",
+        "Δκ",
+        "R(H,Δ)",
+        "𝒞(Ψᴺ)",
+    ],
+}
 
 
 @dataclass
@@ -45,9 +64,38 @@ def first_visible_line(text: str) -> str:
     return ""
 
 
+def first_visible_lines(text: str, limit: int = 10) -> list[str]:
+    lines: list[str] = []
+    for line in text.splitlines():
+        if line.strip():
+            lines.append(line.strip())
+        if len(lines) >= limit:
+            break
+    return lines
+
+
+def normalize_banner_line(line: str) -> str:
+    return line.strip().strip("║").strip()
+
+
 def text_has_any(text: str, needles: list[str]) -> bool:
     lowered = text.lower()
     return any(needle.lower() in lowered for needle in needles)
+
+
+def has_unnegated_phrase(text: str, phrase: str, negations: list[str]) -> bool:
+    lowered = text.lower()
+    for match in re.finditer(re.escape(phrase), lowered):
+        start = max(0, match.start() - 100)
+        end = min(len(lowered), match.end() + 40)
+        window = lowered[start:end]
+        if any(negated in window for negated in negations):
+            continue
+        prefix = lowered[start : match.start()]
+        if re.search(r"\b(no|not|without|does not|do not|cannot|never|doesn't|don't)\b.{0,100}$", prefix):
+            continue
+        return True
+    return False
 
 
 def printable(value: str, limit: int = 140) -> str:
@@ -60,6 +108,19 @@ def printable(value: str, limit: int = 140) -> str:
 def is_witness_case(case_name: str) -> bool:
     match = re.match(r"^[A-Z](\d+)$", case_name)
     return bool(match and int(match.group(1)) in {1, 2, 3})
+
+
+def case_number(case_name: str) -> int | None:
+    match = re.match(r"^[A-Z](\d+)$", case_name)
+    return int(match.group(1)) if match else None
+
+
+def is_formalism_phase(phase: str) -> bool:
+    return "formalism-smoke" in phase
+
+
+def is_smoke_phase_dir(path: Path) -> bool:
+    return path.is_dir() and "smoke-" in path.name
 
 
 def classify_cause(log_text: str, first_line: str, failures: list[str]) -> str:
@@ -81,6 +142,7 @@ def classify_cause(log_text: str, first_line: str, failures: list[str]) -> str:
 def validate_output(path: Path) -> SmokeResult:
     text = read_text_auto(path)
     first_line = first_visible_line(text)
+    visible_head = first_visible_lines(text)
     phase = path.parent.name
     match = CASE_RE.match(path.name)
     case = path.stem.replace("-output", "")
@@ -94,11 +156,33 @@ def validate_output(path: Path) -> SmokeResult:
         failures.append("output is empty")
     if not first_line:
         failures.append("missing first visible line")
-    elif not FIELD_VALUES_RE.match(first_line):
-        failures.append("first visible line does not begin with canonical field:")
+    elif first_line.startswith("```"):
+        failures.append("first visible line is a Markdown fence, not governed execution banner")
+    else:
+        banner_window = "\n".join(visible_head[:8])
+        has_governed_banner = bool(GOVERNED_BANNER_RE.search(banner_window))
+        has_field_line = any(FIELD_VALUES_RE.match(normalize_banner_line(line)) for line in visible_head[:8])
+        if not has_governed_banner:
+            failures.append("first visible surface lacks governed NOETIC FIELD EXECUTION signature")
+        if not has_field_line:
+            failures.append("governed banner lacks canonical field line")
+        if FIELD_VALUES_RE.match(first_line) and not has_governed_banner:
+            failures.append("first visible surface collapsed to bare field:")
 
     if MOJIBAKE_RE.search(text):
         warnings.append("possible notation mojibake in captured output")
+    if "𝒞(ΨN)" in text or "ΨN" in text or "ΨI" in text:
+        failures.append("notation simplified: preserve Ψᴺ / Ψᴵ superscript boundary")
+    if not is_witness_case(case) and "??" in text and text_has_any(text, ["T_lang", "𝒞("]):
+        failures.append("notation mangled to question-mark placeholders")
+    if is_formalism_phase(phase):
+        if ASCII_FORMALISM_RE.search(text):
+            failures.append("formalism notation ASCII-normalized: preserve Ψᴺ / Ψᴵ")
+        if "??" in text and text_has_any(text, ["T_lang", "LoopBreak", "R(H", "∇", "𝒞(", "Ψ"]):
+            failures.append("formalism notation mangled to question-mark placeholders")
+        for token in FORMALISM_REQUIRED_TOKENS.get(case_number(case) or -1, []):
+            if token not in text:
+                failures.append(f"missing formalism notation token: {token}")
 
     if is_witness_case(case):
         witness_checks = {
@@ -141,13 +225,20 @@ def validate_output(path: Path) -> SmokeResult:
             failures.append("ordinary output lacks minimal governed-output signal")
 
         overclaim_checks = [
-            ("truth meter", "not a truth meter"),
-            ("guaranteed uptake", "not guaranteed uptake"),
-            ("soul/interlocutor rewrite", "not a soul/interlocutor rewrite"),
+            ("truth meter", ["not a truth meter"]),
+            (
+                "guaranteed uptake",
+                [
+                    "not guaranteed uptake",
+                    "no claim of guaranteed uptake",
+                    "does not claim access",
+                ],
+            ),
+            ("soul/interlocutor rewrite", ["not a soul/interlocutor rewrite"]),
         ]
         lowered = text.lower()
-        for phrase, negated in overclaim_checks:
-            if phrase in lowered and negated not in lowered:
+        for phrase, negations in overclaim_checks:
+            if has_unnegated_phrase(text, phrase, negations):
                 failures.append(f"possible overclaim language: {phrase}")
 
     cause = classify_cause(log_text, first_line, failures)
@@ -164,13 +255,11 @@ def validate_output(path: Path) -> SmokeResult:
 
 
 def phase_sort_key(path: Path) -> tuple[int, str]:
-    match = re.match(r"smoke-([a-z]+)$", path.name)
+    match = re.search(r"(?:^|-)smoke-([a-z])(?:-|$)", path.name)
     if not match:
-        return (-1, path.name)
+        return (100, path.name)
     token = match.group(1)
-    if len(token) == 1:
-        return (ord(token) - ord("a"), path.name)
-    return (100, path.name)
+    return (ord(token) - ord("a"), path.name)
 
 
 def main() -> int:
@@ -193,7 +282,7 @@ def main() -> int:
         phase_dirs = [root / args.phase]
     else:
         phase_dirs = sorted(
-            [p for p in root.iterdir() if p.is_dir() and p.name.startswith("smoke-")],
+            [p for p in root.iterdir() if is_smoke_phase_dir(p)],
             key=phase_sort_key,
         )
 

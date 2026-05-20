@@ -1,87 +1,137 @@
 # Audit and Release Evidence Index
 
-This index classifies audit documentation by current workflow status. It is navigation, not runtime source.
-Historical evidence is consolidated into history files rather than retained as dozens of separate active surfaces.
+This index separates current evidence from historical snapshots. It is
+navigation, not runtime source. Retention policy lives in
+`docs/audits/README.md`.
 
-## Current Release Holds
+Archive mode for the v0.4.3.0 pruning pass: no physical moves or deletes. A
+reference search found inbound links for the audit corpus, so superseded audits
+are archived by classification here unless a future owner-approved link-update
+sweep moves them.
 
-| Path | Status | Note |
-|---|---|---|
-| `docs/audits/v0.4.3.0-regression-hold-audit.md` | CURRENT-RELEASE-HOLD | Withdraws v0.4.3.0 from live shipping state after smoke comparison showed regression against v0.4.2.0; preserves work on `pr/v0.4.3.0-regression-hold`. |
-
-## Current v0.4.1.0 Candidate Audits
-
-| Path | Status | Note |
-|---|---|---|
-| `docs/audits/v0.4.1.0-docs-consolidation-inventory.md` | CURRENT-CANDIDATE | Current docs inventory and consolidation ledger. |
-| `docs/audits/v0.4.1.0-level3-deprecation-audit.md` | CURRENT-CANDIDATE | Classifies retired Level 3 language versus live optional harness machinery. |
-| `docs/audits/v0.4.1.0-pipeline-label-deprecation-audit.md` | CURRENT-CANDIDATE | Deprecates branch-era pipeline labels from active architecture language. |
-| `docs/audits/v0.4.1.0-cleanup-readiness-audit.md` | CURRENT-CANDIDATE | Summarizes cleanup readiness, contract-version decision, checks, and remaining gates. |
-| `docs/audits/v0.4.1.0-conway-yagni-audit.md` | CURRENT-CANDIDATE | Carry-forward Conway/YAGNI constraints for v0.4.1.0 cleanup. |
-| `docs/audits/v0.4.1.0-github-ci-release-automation-audit.md` | CURRENT-CANDIDATE | Carry-forward CI/release automation constraints for v0.4.1.0 cleanup. |
-| `docs/audits/v0.4.1.0-formalism-operativity-audit.md` | CURRENT-CANDIDATE | Checker-bounds algebraic notation and divergence/curl diagnostics to owner/control-effect proof. |
-| `docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md` | CURRENT-CANDIDATE | Full checker-parsed algebraic/register/governance symbol inventory with owner, classification, control-effect, fixture, and default-runtime absence proof. |
-| `docs/audits/v0.4.1.0-nla-operativity-audit.md` | CURRENT-CANDIDATE | Natural Language Autoencoder mapping: Layer A/IR as verbalizer, reconstruction/reread as reconstructor, with fidelity and confabulation gates. |
-| `docs/audits/v0.4.1.0-skill-compliance-audit.md` | CURRENT-CANDIDATE | Checks root SKILL, DSL/IR, Natural Language Autoencoder reconstruction-fidelity discipline, and formalism boundaries. |
-| `docs/audits/v0.4.1.0-ttp-operativity-audit.md` | CURRENT-CANDIDATE | Audits compiled modules for owner body, routing effect, and coverage status. |
-| `docs/audits/v0.4.1.0-ttp-end-to-end-operativity-audit.md` | CURRENT-CANDIDATE | Audits every live catalogue TTP/module as a field-aware runtime operator across activation, burden/submove, Delta, nabla diagnostics, reread, closure, NLA trace, and fixture/checker evidence. |
-| `docs/audits/v0.4.1.0-ttp-runtime-contract-remediation.json` | CURRENT-CANDIDATE | Phase 1 remediation ledger showing runtime operator/field-accounting contracts added to all live catalogue owners and guarded by the strict TTP checker. |
-| `docs/audits/v0.4.1.0-ci-release-operativity-audit.md` | CURRENT-CANDIDATE | Checks push/PR CI and manual artifact workflow against release-gate constraints. |
-| `docs/audits/v0.4.1.0-release-claim-inventory.md` | CURRENT-CANDIDATE | Enumerates local release-facing docs, Git tags, and GitHub Releases before claim classification. |
-| `docs/audits/v0.4.1.0-release-claim-integrity-audit.md` | CURRENT-CANDIDATE | Audits release-facing claims with claim/evidence/checker-or-provenance/qualifier discipline. |
-| `docs/audits/v0.4.1.0-complementary-ssot-pipeline-freshness-audit.md` | CURRENT-CANDIDATE | Traces pipeline/runtime/release claims through complement-bearing owners, patches stale public surfaces, and hardens framework freshness checks. |
-| `docs/audits/v0.4.1.0-history-regression-archaeology-audit.md` | CURRENT-CANDIDATE | Full Git-history regression archaeology with ANDON events, closure matrix, 5 Whys, and Poka-yoke lessons for recurring release/runtime drift. |
-| `docs/audits/v0.4.1.0-docs-index-generator-parity-audit.md` | CURRENT-CANDIDATE | Converts `docs/index.html` into a generated public viewer backed by `docs/index/**`, owner-derived module rows, and an interaction/freshness checker. |
-| `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | CURRENT-CANDIDATE | Classifies generated index and pipeline-page blocks by owner coupling, manifest provenance, notation coherence, and standalone-page disposition. |
-| `docs/audits/v0.4.1.0-secular-humanist-field-governance-audit.md` | CURRENT-CANDIDATE | Compares the secular-humanist authority-frame smoke outputs and hardens field accounting without hardcoding a single noetic-structure route. |
-| `docs/audits/v0.4.1.0-field-gradient-loop-closure-coupling-implementation-audit.md` | CURRENT-CANDIDATE | Implements plain ∇ route-gradient pressure, LoopBreak(∇×T), positive 𝒞(Ψᴺ) closure-field condition, and Ψᴺ/Ψᴵ language-mediated coupling with owner/checker/fixture/docs-index traces. |
-| `docs/audits/v0.4.1.0-deep-research-implementation-audit.md` | CURRENT-CANDIDATE | Maps the four Deep Research reports to repo-grounded implementation decisions, refusals, blockers, and proof boundaries. |
-| `docs/audits/v0.4.1.0-deep-research-next-handoff.md` | CURRENT-CANDIDATE | Handoff prompt and proof-boundary map for the next Deep Research investigation after this implementation pass. |
-| `docs/audits/v0.4.2.0-release-candidate-audit.md` | CURRENT-CANDIDATE | Final pre-public file/status audit for the v0.4.2.0 Deep Research implementation and evidence-discipline release. |
-| `docs/audits/v0.4.2.0-deep-research-coverage-proof.md` | CURRENT-CANDIDATE | Per-report Deep Research coverage proof for v0.4.2.0 release-candidate evidence and terminology cleanup. |
-| `docs/audits/v0.4.2.0-deep-research-next-handoff.md` | CURRENT-CANDIDATE | Pre-public handoff for the next Deep Research verification pass before any v0.4.2.0 public release decision. |
-| `docs/audits/v0.4.2.0-deep-research-gap-remediation.md` | CURRENT-CANDIDATE | Targeted remediation ledger for eleven missed or under-addressed Deep Research operativity findings before pre-public archive packaging. |
-| `docs/audits/v0.4.2.0-underfixtured-module-coverage.md` | CURRENT-CANDIDATE | Pre-public appendix for the fourteen operativity-audit modules: owner strengthening status, direct route/misuse fixture paths, and live-behavior follow-up. |
-| `docs/audits/v0.4.2.0-fixture-corpus-mining-audit.md` | CURRENT-CANDIDATE | Four-lane review of both candidate markdown archives with candidate-to-module map, all-TTP opportunities, and implemented fixture table. |
-| `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | CURRENT-CANDIDATE | Pre-archive stale-surface audit classifying tools, smokes, raw fixture candidates, ignored local build outputs, and pre-public proof boundaries. |
-| `docs/audits/v0.4.2.0-current-release-smoke-runbook.md` | CURRENT-CANDIDATE | Owner packet for capturing real package-bound current-release smoke outputs, sidecars, verdicts, provenance, and witness-required gate checks. |
-| `docs/audits/v0.4.2.0-p0-remediation.md` | CURRENT-CANDIDATE | P0 remediation ledger for stale public wording, local package/provenance proof, and remaining live-smoke release blockers. |
-| `docs/audits/v0.4.2.0-docs-index-ssot-audit.md` | CURRENT-CANDIDATE | Audits docs/index source ownership, generated runtime/theory surfaces, carousel/theory interaction checks, large JS runtime-control constant inventory, Reference Library snapshots, and remaining optional SSOT hardening. |
-| `docs/audits/v0.4.2.0-docs-index-design-md-audit.md` | CURRENT-CANDIDATE | Records the docs/index-scoped DESIGN.md adoption, token groups, carousel visual consolidation, generator/checker boundary, local contrast checks, and official-lint timeout caveat. |
-| `docs/audits/v0.4.2.0-docs-index-design-quality-audit.md` | CURRENT-CANDIDATE | Extracts practical docs/index design-quality discipline from design-system, Kami, and agentic-HTML references, with a durable visual rubric. |
-| `docs/audits/v0.4.2.0-docs-index-design-refinement-plan.md` | CURRENT-CANDIDATE | Deep reference-based refinement plan for docs/index hierarchy, progressive disclosure, visual QA, and checker-backed design-system maturation. |
-| `docs/audits/v0.4.2.0-docs-index-design-refinement-implementation.md` | CURRENT-CANDIDATE | Implements P1 docs/index design hierarchy refinements and records the local Reference Library source-browser follow-up that demotes fine-grained role/source maps into collapsed provenance. |
-| `docs/audits/v0.4.2.0-docs-index-handoff.md` | CURRENT-CANDIDATE | Tracked mirror of the ignored root HANDOFF.md state for the docs/index design-discipline commit and follow-on refinement audit. |
-| `docs/audits/v0.4.2.0-skill-md-dry-acid-ssot-audit.md` | CURRENT-CANDIDATE | Audits `atomics/skill/SKILL.md` for DRY, ACID, SSOT, progressive disclosure, release-smoke witness mode, notation boundaries, package behavior, and owner-pointer cleanup. |
-| `docs/audits/v0.4.2.0-pack-spec-operating-discipline-audit.md` | CURRENT-CANDIDATE | Records PACK-SPEC and operating-discipline governance integration, spec-like file classifications, low-noise checker, and implementation closure. |
-| `docs/audits/v0.4.2.0-skill-ab-smoke-audit.md` | CURRENT-CANDIDATE | Records Smoke A/B/C/D generated-runtime evidence, runtime-load failure localization, local validator results, and release-proof boundary. |
-
-## Consolidated Audit History
+## Current Release / Readiness Evidence
 
 | Path | Status | Note |
 |---|---|---|
-| `docs/audits/audit-history-v0.3.md` | HISTORICAL | Consolidated v0.3.2.0 audit/campaign evidence. |
-| `docs/audits/audit-history-v0.4.0.0.md` | HISTORICAL | Consolidated v0.4.0.0 audit, inventory, and smoke/regression evidence. |
-| `docs/audits/audit-history-pre-v0.4.1.md` | HISTORICAL | Consolidated miscellaneous older audits. |
-| `docs/releases/README.md` | ACTIVE | Release-doc navigation surface. |
-| `docs/releases/release-history-v0.3.md` | HISTORICAL | Consolidated v0.3.x release docs. |
-| `docs/releases/release-history-v0.4.md` | HISTORICAL | Consolidated v0.4.x release docs. |
+| `docs/release-artifacts.md` | ACTIVE CURRENT TRUTH | Release package/provenance evidence ledger and proof boundaries. |
+| `docs/package-smoke-readiness.md` | ACTIVE CURRENT TRUTH | Package-smoke runbook, strict witness gate, and deferred expanded-smoke slots. |
+| `docs/v0.4.3.0-release-notes.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 release notes for closure reconstructibility, `field_witness`, visualizer, MRP, proof boundaries, and caveats. |
+| `docs/v0.4.3.0-release-log.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 package artifact facts, proof boundary, and release step log. |
+| `docs/v0.4.2.0-release-notes.md` | ACTIVE CURRENT TRUTH | v0.4.2.0 release notes with explicit local proof boundaries and deferrals. |
+| `docs/v0.4.2.0-release-log.md` | ACTIVE CURRENT TRUTH | v0.4.2.0 release log with local package-bound gate and release-scope caveats. |
+| `docs/audits/v0.4.2.0-current-release-smoke-runbook.md` | ACTIVE CURRENT TRUTH | Owner packet for required local package-bound current-release smoke capture. |
+| `docs/audits/v0.4.2.0-p0-remediation.md` | ACTIVE IMPLEMENTATION EVIDENCE | Supersedes earlier v0.4.2.0 release-candidate blocker state. |
+| `docs/audits/v0.4.2.0-release-candidate-audit.md` | SUPERSEDED BUT KEEP | Historical pre-public snapshot; latest package/smoke status is `v0.4.2.0-p0-remediation.md`. |
+| `docs/releases/README.md` | ACTIVE CURRENT TRUTH | Release-doc navigation surface. |
 
-## Current Architecture and Spec Docs
+## Current v0.4.3.0 Prep Evidence
 
 | Path | Status | Note |
 |---|---|---|
-| `docs/algebraic-notation-and-noetic-formalism.md` | CURRENT | Formalism reference and anti-symbol-theater guard. |
-| `docs/register-formalism-implementation-ledger.md` | CURRENT | schema-light register bridge implementation and schema-light ledger. |
-| `docs/behavioral-evaluation-framework.md` | CURRENT | Seven-layer future behavioral-evaluation framework separating marker/render proof from behavioral competence. |
-| `docs/source-vs-runtime-layout.md` | CURRENT | Source/runtime boundary note. |
-| `docs/compiled-runtime-tools.md` | CURRENT | Compiler/checker guide; notes historical harness naming. |
-| `docs/recursive-traversal-governance.md` | CURRENT | Reread and traversal governance. |
-| `docs/runtime-harness-onboarding.md` | CURRENT | Optional route/check harness maintainer guidance; legacy implementation filenames remain compatibility details. |
-| `docs/spec-authoring-pack.md` | CURRENT | PACK-SPEC governance for normative docs, contracts, schemas, checkers, release/package/smoke gates, runtime contracts, and stop reasons. |
-| `docs/governance/operating-discipline.md` | CURRENT | Practical operating-discipline guidance for Gemba, light Hoshin Kanri, Nemawashi, Muda/Mura/Muri, Kaizen, DRY/ACID/SSOT, and progressive disclosure. |
-| `docs/index.html` and `docs/daee-epistemics-pipeline.html` | CURRENT | Generated navigation/visual architecture aids, not runtime source. |
+| `docs/audits/v0.4.3.0-skill-entrypoint-cleanup-ab-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Corrected inlined-runtime Smoke E/F proof for SKILL entrypoint cleanup and PACK-SPEC checker hardening. |
+| `docs/audits/v0.4.3.0-adhlbs-skill-governance-audit.md` | ACTIVE CURRENT TRUTH | External ADHLBS governance audit; keeps trigger-eval/lifecycle gaps out of runtime bloat. |
+| `docs/audits/v0.4.3.0-formalism-pointer-discipline-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Formalism pointer PDCA, Smoke G/H preservation, and local validator hardening. |
+| `docs/audits/v0.4.3.0-closure-witness-graph-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Closure witness graph grammar, `field_witness` sidecar, parser/checker, and standalone DAG viewer proof. |
+| `docs/audits/v0.4.3.0-mid-reread-pressure-ttp-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | TTP-MRP reread-time activation harness, active `∇·T` / `∇×T` gate, graph/field_witness evidence, fixtures, and checker proof. |
+| `docs/audits/v0.4.3.0-reconstructibility-mrp-completion-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Completion audit verifying closure graph, canonical sidecar naming, visualizer modes, MRP, and integrated deterministic proof; live generated-runtime smoke remains unverified. |
+| `docs/audits/v0.4.3.0-mrp-codex-hosted-behavior-smoke.md` | ACTIVE RELEASE EVIDENCE | Codex-hosted exact-file hard-compound Smoke 6 proof that MRP is behavioral, inter-burden, and reconstructible rather than ornamental; raw smoke outputs are not release assets. |
+| `docs/audits/v0.4.3.0-regression-hold-audit.md` | HISTORICAL RELEASE EVIDENCE | Records the first v0.4.3.0 withdrawal/regression hold; superseded by the repaired hotfix release line. |
+| `docs/audits/v0.4.3.0-trinitarian-mrp-hotfix-audit.md` | ACTIVE RELEASE EVIDENCE | Targeted Trinitarian RC2 hotfix evidence for STOP-before-continuation, `∇·T`/`∇×T` route discipline, and mixed-field classification. |
+| `docs/audits/v0.4.3.0-mrp-route-curl-generalization-audit.md` | ACTIVE RELEASE EVIDENCE | Generalized route/curl invariant audit with secularism, TST, synthetic fixtures and the boundary that the hosted secularism smoke proves route/curl/field only. |
+| `docs/audits/v0.4.3.0-main-reconciliation-audit.md` | ACTIVE RELEASE EVIDENCE | Main/source reconciliation audit proving the repaired v0.4.3.0 release-source invariants were brought back onto main before Output Grapher publication. |
+| `docs/audits/v0.4.3.0-rc1-closeout-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Internal RC1 closeout for v0.4.3.0 reconstructibility/MRP work, local CI-equivalent proof, commit boundary, and live/package proof caveats. |
+| `docs/audits/v0.4.3.0-audit-of-audits.md` | ACTIVE IMPLEMENTATION EVIDENCE | Audit-of-audits input and closure for targeted stale-status cleanup. |
+| `docs/audits/v0.4.3.0-future-work-ledger.md` | FUTURE-WORK SOURCE | Single ledger for deferred/tabled findings that should not remain scattered as live blockers. |
 
-## Retention Rule
+## Current Governance / Runtime Evidence
 
-Keep historical evidence through consolidated history files unless a later retention decision explicitly authorizes deletion of the summaries. Do not restore archived individual files as active docs unless a release/audit gate requires full original provenance.
+| Path | Status | Note |
+|---|---|---|
+| `docs/audits/v0.4.2.0-skill-md-dry-acid-ssot-audit.md` | ACTIVE CURRENT TRUTH | SKILL.md DRY/ACID/SSOT/progressive-disclosure audit and owner-pointer plan. |
+| `docs/audits/v0.4.2.0-skill-ab-smoke-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Smoke A/B/C/D runtime-load localization and local output validator evidence. |
+| `docs/audits/v0.4.2.0-pack-spec-operating-discipline-audit.md` | ACTIVE CURRENT TRUTH | PACK-SPEC and operating-discipline integration and checker scope. |
+| `docs/audits/v0.4.2.0-deep-research-coverage-proof.md` | ACTIVE IMPLEMENTATION EVIDENCE | Coverage proof for v0.4.2.0 Deep Research scope. |
+| `docs/audits/v0.4.2.0-deep-research-gap-remediation.md` | ACTIVE IMPLEMENTATION EVIDENCE | Gap remediation ledger for Deep Research operativity findings. |
+| `docs/audits/v0.4.2.0-underfixtured-module-coverage.md` | ACTIVE IMPLEMENTATION EVIDENCE | Under-fixtured module appendix and follow-up evidence. |
+| `docs/audits/v0.4.2.0-fixture-corpus-mining-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Fixture mining record and implemented fixture table. |
+| `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Stale-surface purge record and proof-boundary classifications. |
+
+## Current Docs/Index Evidence
+
+| Path | Status | Note |
+|---|---|---|
+| `docs/audits/v0.4.2.0-docs-index-ssot-audit.md` | ACTIVE CURRENT TRUTH | Docs/index source ownership, generated runtime/theory surfaces, and checker coverage. |
+| `docs/audits/v0.4.2.0-docs-index-design-md-audit.md` | ACTIVE CURRENT TRUTH | DESIGN.md adoption and docs/index-scoped visual/design ownership. |
+| `docs/audits/v0.4.2.0-docs-index-design-quality-audit.md` | ACTIVE CURRENT TRUTH | Durable docs/index design-quality rubric. |
+| `docs/audits/v0.4.2.0-docs-index-design-refinement-implementation.md` | ACTIVE IMPLEMENTATION EVIDENCE | Implemented P1 docs/index refinement and Reference Library source-browser follow-up. |
+| `docs/audits/v0.4.2.0-docs-index-handoff.md` | ACTIVE CURRENT TRUTH | Tracked mirror of ignored root handoff state for docs/index design work. |
+| `docs/audits/v0.4.2.0-docs-index-design-refinement-plan.md` | SUPERSEDED BUT KEEP | Plan snapshot implemented by `v0.4.2.0-docs-index-design-refinement-implementation.md`. |
+
+## Future Work / Deferred Items
+
+Use `docs/audits/v0.4.3.0-future-work-ledger.md` as the owner for tabled work
+instead of re-promoting repeated TODOs from historical audits.
+
+| Deferred item | Current owner |
+|---|---|
+| Trigger-eval taxonomy | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Retire/revise lifecycle criteria | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Minimum execution load-floor shrink | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Expanded 10-case/generalization smoke suite | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Paraphrase clusters and cross-host probes | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Cross-host/paraphrase MRP proof | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| MRP schema-language cleanup / anti-bloat refinement | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Heuristics/noetic-profiles catalogue migration | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Future package-bound release-smoke proof | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Broad source notation/prose checker | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Generated symbol-owner matrix | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| Docs/index pixel-perfect visual regression helper | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+
+## Historical / Archived Audits
+
+These files are retained for provenance and historical traceability. They should
+not be treated as current blockers unless a newer audit explicitly reopens the
+finding.
+
+| Path | Status | Superseded by / note |
+|---|---|---|
+| `docs/audits/audit-history-v0.3.md` | HISTORICAL SNAPSHOT | Consolidated v0.3.2.0 audit/campaign evidence. |
+| `docs/audits/audit-history-v0.4.0.0.md` | HISTORICAL SNAPSHOT | Consolidated v0.4.0.0 audit/inventory/smoke evidence. |
+| `docs/audits/audit-history-pre-v0.4.1.md` | HISTORICAL SNAPSHOT | Consolidated miscellaneous older audits. |
+| `docs/releases/release-history-v0.3.md` | HISTORICAL SNAPSHOT | Consolidated v0.3.x release docs. |
+| `docs/releases/release-history-v0.4.md` | HISTORICAL SNAPSHOT | Consolidated v0.4.x release docs. |
+| `docs/audits/v0.4.1.0-docs-consolidation-inventory.md` | HISTORICAL SNAPSHOT | Older docs inventory; current index and docs/index audits supersede status. |
+| `docs/audits/v0.4.1.0-level3-deprecation-audit.md` | HISTORICAL SNAPSHOT | Older terminology cleanup; current docs/runtime avoid Level 3 as public framing. |
+| `docs/audits/v0.4.1.0-pipeline-label-deprecation-audit.md` | HISTORICAL SNAPSHOT | Older pipeline-label cleanup; current generated docs/checks supersede status. |
+| `docs/audits/v0.4.1.0-cleanup-readiness-audit.md` | HISTORICAL SNAPSHOT | Older cleanup readiness; v0.4.2/v0.4.3 audits supersede release-line status. |
+| `docs/audits/v0.4.1.0-conway-yagni-audit.md` | HISTORICAL SNAPSHOT | Principles carried into operating-discipline docs; no current blocker. |
+| `docs/audits/v0.4.1.0-github-ci-release-automation-audit.md` | HISTORICAL SNAPSHOT | Older CI/release automation audit; current release docs/workflows govern. |
+| `docs/audits/v0.4.1.0-formalism-operativity-audit.md` | HISTORICAL SNAPSHOT | Current formalism status lives in `v0.4.3.0-formalism-pointer-discipline-audit.md`. |
+| `docs/audits/v0.4.1.0-algebraic-symbol-operativity-audit.md` | HISTORICAL SNAPSHOT | Current symbol-owner status lives in `v0.4.3.0-formalism-pointer-discipline-audit.md`. |
+| `docs/audits/v0.4.1.0-nla-operativity-audit.md` | HISTORICAL SNAPSHOT | Current formalism/checker status supersedes. |
+| `docs/audits/v0.4.1.0-skill-compliance-audit.md` | HISTORICAL SNAPSHOT | Current SKILL status lives in v0.4.2/v0.4.3 SKILL audits. |
+| `docs/audits/v0.4.1.0-ttp-operativity-audit.md` | HISTORICAL SNAPSHOT | Current strict TTP checker and later fixture coverage supersede status. |
+| `docs/audits/v0.4.1.0-ttp-end-to-end-operativity-audit.md` | HISTORICAL SNAPSHOT | Current strict TTP checker and later fixture coverage supersede status. |
+| `docs/audits/v0.4.1.0-ci-release-operativity-audit.md` | HISTORICAL SNAPSHOT | Older CI/release audit; current release docs/workflows govern. |
+| `docs/audits/v0.4.1.0-release-claim-inventory.md` | HISTORICAL SNAPSHOT | v0.4.2 release docs and remediation supersede status. |
+| `docs/audits/v0.4.1.0-release-claim-integrity-audit.md` | HISTORICAL SNAPSHOT | v0.4.2 release docs and remediation supersede status. |
+| `docs/audits/v0.4.1.0-complementary-ssot-pipeline-freshness-audit.md` | HISTORICAL SNAPSHOT | Current generated-runtime/docs checks supersede status. |
+| `docs/audits/v0.4.1.0-history-regression-archaeology-audit.md` | HISTORICAL SNAPSHOT | Operating-discipline packs preserve lessons; no current blocker. |
+| `docs/audits/v0.4.1.0-docs-index-generator-parity-audit.md` | HISTORICAL SNAPSHOT | Later docs/index SSOT/design audits supersede. |
+| `docs/audits/v0.4.1.0-docs-index-source-coupling-audit.md` | HISTORICAL SNAPSHOT | Later docs/index SSOT/design audits supersede. |
+| `docs/audits/v0.4.1.0-secular-humanist-field-governance-audit.md` | HISTORICAL SNAPSHOT | Current field/operator checks supersede status. |
+| `docs/audits/v0.4.1.0-field-gradient-loop-closure-coupling-implementation-audit.md` | HISTORICAL SNAPSHOT | Current field-operator checker and formalism audit supersede status. |
+| `docs/audits/v0.4.1.0-deep-research-implementation-audit.md` | HISTORICAL SNAPSHOT | v0.4.2 Deep Research coverage/gap remediation supersede. |
+| `docs/audits/v0.4.1.0-deep-research-next-handoff.md` | SUPERSEDED BUT KEEP | Earlier handoff; v0.4.2 remediation and smoke evidence supersede status. |
+| `docs/audits/v0.4.1.0-generated-runtime-untracking-audit.md` | HISTORICAL SNAPSHOT | Generated-runtime policy is now in AGENTS and compiler/checker docs. |
+| `docs/audits/v0.4.2.0-deep-research-next-handoff.md` | SUPERSEDED BUT KEEP | Pre-public handoff before later P0 closure; keep as handoff record. |
+
+## Non-Markdown Audit Support
+
+Non-markdown audit support files remain in place and are not active narrative
+surfaces by default:
+
+| Path | Status | Note |
+|---|---|---|
+| `docs/audits/v0.4.1.0-ttp-runtime-contract-remediation.json` | HISTORICAL SNAPSHOT | Machine-readable remediation ledger retained for provenance. |
+| `docs/audits/v0.4.1.0-full-history-name-status.txt` | HISTORICAL SNAPSHOT | Git-history name/status support file retained for audit traceability. |

@@ -11,9 +11,9 @@ from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 ROOT_REQUIRED = [
     "## EXECUTION SPINE",
-    "Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> Δ -> ∇·/∇× diagnostics -> LoopBreak if licensed -> R(H,Δ) -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE",
+    "Input -> IR(N,m,τ,σ) -> ∇ route-gradient -> B -> {s1...sn} -> Land(B) -> [Mid-Reread Pressure inside R(H,Δ)] -> 𝒞(Ψᴺ) -> STOP/HOLD/PARTIAL/RECURSE",
     "Plain `∇` orders eligible release pressure under IR/V1/catalogue gates",
-    "Nonzero `∇×T` requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)`",
+    "Nonzero `∇×T` still requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)`",
     "`𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state",
     "Top-salient invariants",
     "recursive-state-transitions.md §Runtime Notation / Meta-Noetic",

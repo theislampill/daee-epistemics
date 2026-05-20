@@ -66,6 +66,24 @@ truth, warrant, interlocutor uptake, model-internal mechanism, or live behaviora
 | `𝒞(Ψᴺ)` | Closure predicate on agent/runtime execution state. | Not interlocutor acceptance, conversion, persuasion, guidance, or soul access. |
 | `T_lang: Ψᴺ ⇢ Ψᴵ` | Partial coupling relation at the public-output boundary. | Not an isomorphism, not a surjection, and not a guaranteed update operator on `Ψᴵ`. |
 
+## Mid-Reread Pressure Reconstructibility
+
+v0.4.3.0 adds Mid-Reread Pressure (MRP) to the operational chain as a reconstructibility
+requirement, not as a decorative block. After `Land(Bn)`, `R(H,Delta)` must be able to recover
+the MRP pressure resultant that licensed the next route: graph movement, HOLD, RECURSE,
+LoopBreak, STOP, or closure. The release proof lineage is:
+
+```text
+input -> burden nodes -> submove nodes -> Land(Bn) -> R(H,Delta)
+-> MRP pressure activations -> MRP resultant -> graph/route
+-> next burden or closure -> restoration aim
+```
+
+Execution mass is not proof by itself, but hard-compound reconstructibility has visible output
+cost. A hard-compound answer that claims complete traversal while hiding the burden/submove/MRP
+lineage is under-executed even if it prints the right labels; a long answer without topology is
+bloat.
+
 ## Small-Step Transition Model
 
 This is the preferred mathematical home for the current notation: typed transition systems,
@@ -98,6 +116,13 @@ structure and a coverage record. `A → B` means B depends on A landing first; `
 two burdens are parallel in the current witness; `(root)` means no upstream dependency. Dropping
 an initial burden from terminal accounting is a proof failure, even if the response prints
 `R(H,Δ)`.
+
+The visible graph is the human-readable reconstructibility layer. When a development, smoke, or
+audit artifact needs machine-readable reconstruction, a `field_witness` sidecar carries the same
+burden nodes, dependency edges, roots, parallel groups, terminal states, register deltas, `∇·` /
+`∇×` diagnostics, LoopBreak data, `R(H,Δ)`, closure status, `T_lang` boundary, non-claims, and
+provenance/evidence metadata. The two layers must agree; neither layer upgrades local diagnostic
+evidence into package-bound release proof.
 
 `InitialBurdenSet` is not a retrospective set inferred from the closure block. It is the
 pre-release burden enumeration supplied by Layer A / Diagnostic IR before terminal accounting.

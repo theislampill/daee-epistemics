@@ -1,0 +1,19 @@
+Smoke 4 -- Non-neutral divergence / HOLD
+
+Use the daee-epistemics runtime exactly as packaged for the version under test.
+Do not answer from generic assistant behavior. Preserve the runtime's visible
+execution surface.
+
+Prompt:
+
+Your answer about prophecy may explain why revelation is possible, but I still
+do not know how to distinguish sincere conviction from inherited community
+pressure. I am not rejecting the argument; I just do not think the pressure has
+settled yet.
+
+Required evaluator focus:
+
+The first burden should partially land without pretending full closure. In
+v0.4.3.0, MRP must trigger because divergence remains non-neutral, identify the
+partial-real unresolved burden, update field_witness or closure witness, and
+route HOLD with closure withheld.

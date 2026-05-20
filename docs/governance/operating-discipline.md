@@ -12,6 +12,14 @@ Go to the real place of work. For failures, inspect the actual file, generated H
 checker output, smoke artifact, workflow, or UI state. Do not diagnose from summaries when the live
 artifact exists.
 
+## Tool / Reference Discipline
+
+Use read-only inspection first for external references, generated artifacts, smoke outputs, and
+repo state. Treat external governance sheets as reference inputs, not repo source. Quote, cite, or
+name the file/log basis before importing a rule; if the basis cannot be verified, mark the claim
+unverified or retract it. Keep context lean: start with trigger metadata, core instructions,
+owners, and checkers; load references or scripts only when the task needs them.
+
 ## Hoshin Kanri, light
 
 For major workstreams, name:
@@ -64,9 +72,11 @@ Use PDCA for bounded improvement loops:
 - Check: run the smallest meaningful smoke/check before claiming improvement.
 - Act: standardize, revise, revert, defer, block, or mark unverified with a reason.
 
-For `SKILL.md` cleanup, PDCA means taking Smoke A before mutation, changing only safe pointer or
-entrypoint text, rebuilding generated runtime, running strict static checks, then taking Smoke B
-with the same prompts and capture method.
+For `SKILL.md` cleanup, PDCA means taking a baseline smoke before mutation, changing only safe
+pointer or entrypoint text, rebuilding generated runtime, running strict static checks, then taking
+the post-change smoke with the same prompts and runtime-loaded capture method. If the reliable
+local method is an inlined generated runtime, use it for both sides of the comparison and label it
+local generated-runtime evidence, not package-bound release proof.
 
 ## Andon
 

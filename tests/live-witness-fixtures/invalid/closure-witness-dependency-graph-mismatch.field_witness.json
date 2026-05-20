@@ -1,0 +1,85 @@
+{
+  "route_gradient": {
+    "eligible_routes": ["M1-self-refutation", "M8-reductio", "P7-restoration-stops"],
+    "selected": "M1-self-refutation",
+    "reason": "Intentionally mismatched fixture: B3 is incorrectly recorded as an independent root."
+  },
+  "burden_events": [
+    {
+      "owner": "M1-self-refutation",
+      "delta_nB": "B1 landed",
+      "delta_kappa": "B2 and B3 handled in mismatched sidecar order",
+      "result": "root burden landed"
+    }
+  ],
+  "field_diagnostics": {
+    "divergence": {"target": "B", "status": "neutral"},
+    "curl": {"target": "κ", "status": "null"}
+  },
+  "loopbreak": {
+    "licensed": false,
+    "target": "",
+    "ground": "",
+    "delta_effect": "",
+    "post_break_reread": ""
+  },
+  "reconstruction": {
+    "held_set": [],
+    "live_remainder": [],
+    "reread_scope": "mismatch fixture"
+  },
+  "closure": {
+    "operator": "𝒞(Ψᴺ)",
+    "decision": "STOP",
+    "agent_field_status": "mismatched sidecar should fail visible comparison"
+  },
+  "transfer_boundary": {
+    "operator": "T_lang",
+    "from": "Ψᴺ",
+    "to": "Ψᴵ",
+    "mode": "coupling-attempt"
+  },
+  "register_deltas": [
+    {"register": "heart", "delta": "no live affective delta in fixture"},
+    {"register": "xi", "delta": "criterion pressure landed"},
+    {"register": "Omega", "delta": "no live ontological delta in fixture"},
+    {"register": "sigma", "delta": "source-status unchanged"},
+    {"register": "mu", "delta": "no carrier/reproduction vector live"},
+    {"register": "kappa", "delta": "mismatched dependency radius"},
+    {"register": "H", "delta": "held set empty after reread"}
+  ],
+  "non_claims": [
+    "not truth or warrant proof",
+    "not interlocutor uptake",
+    "not soul access",
+    "not package-bound release proof"
+  ],
+  "provenance": {
+    "evidence_type": "fixture",
+    "source": "tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md",
+    "captured_by": "tools/check_reconstructibility_and_mrp.py"
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1", "B2", "B3", "B4"],
+    "terminal_states": {
+      "B1": {"state": "landed", "operator": "M1", "delta_nB": "criterion self-application exposed"},
+      "B2": {"state": "cleared", "operator": "M8", "delta_nB": "downstream consequence made derivative"},
+      "B3": {"state": "discharged-as-derivative", "reason": "semantic branch incorrectly made root"},
+      "B4": {"state": "landed", "operator": "P7", "delta_nB": "synthesis released after B2 and B3 landed"}
+    },
+    "dependency_graph": {
+      "nodes": ["B1", "B2", "B3", "B4"],
+      "edges": [
+        {"from": "B1", "to": "B2"},
+        {"from": "B2", "to": "B4"},
+        {"from": "B3", "to": "B4"}
+      ],
+      "roots": ["B1", "B3"],
+      "parallel_groups": [],
+      "acyclic": true
+    },
+    "divergence_check": "neutral",
+    "curl_check": "null",
+    "coverage_complete": true
+  }
+}

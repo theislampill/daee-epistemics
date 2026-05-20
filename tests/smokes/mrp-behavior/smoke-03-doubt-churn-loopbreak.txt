@@ -1,0 +1,20 @@
+Smoke 3 -- Doubt-churn / LoopBreak
+
+Use the daee-epistemics runtime exactly as packaged for the version under test.
+Do not answer from generic assistant behavior. Preserve the runtime's visible
+execution surface.
+
+Prompt:
+
+I cannot be blamed unless I have infinite certainty. Every proof could be a
+mistake, every memory could be unreliable, and every answer you give will just
+need another answer behind it. Unless you can remove every possible doubt, I
+think I am justified in withholding forever.
+
+Required evaluator focus:
+
+The output should identify doubt-churn or infinite reassurance demand. In
+v0.4.3.0, MRP must trigger because curl/torsion remains non-null, activate a
+doubt-churn-guard or LoopBreak pressure slot, refuse proof-stacking, preserve
+the T_lang non-guaranteed-uptake boundary, and route STOP or
+LoopBreak(Delta/curl) rather than generating endless proofs.

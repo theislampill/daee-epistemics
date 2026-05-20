@@ -217,6 +217,9 @@ burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `del
 `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators. `∇·` reads
 divergence-like residual outward pressure in a target-explicit field. `∇×` reads curl-like
 circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.
+An acyclic downstream burden chain is residual divergence, not curl: `Bn -> Bn+1` remaining
+live after `Land(Bn)` means `∇·T` is non-neutral while `∇×T` is null unless a real loop, churn,
+hidden-framework recoil, label-pressure, or dependency rotation is also present.
 The target may be `κ` (`∇·κ`, `∇×κ`) or another owner-defined noetic, burden,
 dependency, register, or route target (`∇·B`, `∇×B`, `∇·♥`, `∇×ξ`) when the target
 and control effect are clear. These diagnostics do not apply to scalarized one-point summaries,
@@ -327,18 +330,31 @@ Land(B) -> R
 R required before STOP/RECURSE
 ```
 
-Gloss: a burden must land before re-read; re-read must license closure or recursion.
+Gloss: a burden must land before re-read; the visible reread surface is the MRP activation
+record whenever the reread licenses closure, HOLD, PARTIAL, LoopBreak, or recursion.
 `R(H,Delta)` is a state-transition judgment, not a formatting marker. After each `Land(B)`,
 refresh the current noetic state and decide whether to continue to the next already-present
 burden, hold/defer it, skip it because it no longer applies, mark PARTIAL/limit, trigger a
 bounded reroute need because the live state materially changed, or close because no
 input-anchored burden remains.
 
+Mid-reread pressure: when `R(H,Δ)` is deciding whether an apparent post-landing burden is stable,
+genuinely downstream, partial, recoil-bound, churn, or reminder/reorientation pressure, load
+`references/tactics/TTP-MRP-mid-reread-pressure.md`. MRP freezes the landed `ΔⁿB`, tugs the
+dependency graph through closure-witness machinery, activates the relevant existing pressure
+owners for hidden-framework recoil / label-pressure / entailment pressure / doubt-churn /
+reorientation, then records which route their outputs license: STOP, HOLD, RECURSE,
+LoopBreak(∇×T), or closure witness.
+If MRP finds a genuine new dependency, `R(H,Δ)` attaches the graph edge and chooses RECURSE. If the
+pressure is partial but real, choose HOLD. If it is churn, label-pressure, or unlicensed recoil,
+use LoopBreak or STOP without proof-stacking. If the reread is stable, render the closure witness.
+MRP is not a truth/warrant metric and does not make `T_lang: Ψᴺ ⇢ Ψᴵ` guarantee uptake.
+
 B-complexity:
 
 ```text
-ComplexB -> {s1...sn} -> Land(B) -> R
-AtomicB -> s1 -> Land(B) -> R
+ComplexB -> {s1...sn} -> Land(B) -> [Mid-Reread Pressure] -> R
+AtomicB -> s1 -> Land(B) -> [Mid-Reread Pressure] -> R
 ```
 
 Gloss: distinct hidden premises, criteria, predicates, source-status forks, release gates, or
@@ -384,6 +400,10 @@ the final state re-read for the answer. If `R(H,Delta)` names a remaining input-
 burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
 the next action is the next bounded burden-cycle, not rhetorical closure. If the next
 bounded pass cannot fit, mark PARTIAL with the next live burden.
+MRP named pressure counts as state re-read pressure here: proportionality, hiddenness/coercive
+guidance, source-worldview, moral-grounding, owner-floor, owner-body, non-neutral `∇·T`,
+non-null/held `∇×T`, or graph-edge pressure must be released and landed, held with reason, or
+marked PARTIAL before STOP/COMPLETE or final response sections are licensed.
 
 Input-anchored burden means more than an explicit question-marked subrequest. It includes
 supporting premises, contrasts, public/private partitions, source-status rules, translation
@@ -412,6 +432,10 @@ or visible default-mode template slots.
    Package availability, map presence, or bundle co-location is not access. If access is
    absent, the route is `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path,
    not generic prose.
+   In an MRP activation record this appears as `Route: HOLD` plus
+   `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>`; after that boundary,
+   closure witness, Restorative Response, Closing Formulation, and "refuted"/"closed" language
+   for the blocked burden are not licensed.
 5. The TTP has a bounded target inside the active live noetic burden.
 6. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
 7. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.
@@ -601,6 +625,11 @@ After every bounded restorative move, run state re-read before closure. The post
 The gate is not a new routing pass. It is the enforcement point that keeps the validated IR live
 after the response has made a bounded move.
 
+Layer A owns first-pass burden discovery. The initial read inventories the ordinary burden nodes
+that are already present in the input and marks held/live routes. MRP does not take over that job:
+it rereads after `Land(ⁿB)` and asks whether the landing produced an additional resultant burden
+beyond the initial inventory.
+
 ## No Premature STOP
 
 Core recursive traversal rule: no premature STOP while an eligible live burden remains.
@@ -633,6 +662,9 @@ When all four conditions hold, RECURSE is required in the same response. When th
 eligible but limits prevent it, use PARTIAL. When the next pass remains live but its release signal
 is absent, use HOLD. STOP is invalid.
 
+This is `held_burden_activation` when the next burden was already in the initial Layer A burden
+inventory. It may be MRP-authorized as a route, but it is not an MRP-generated burden.
+
 **NewB license test:**
 
 `NewB` is licensed only when state re-read can show all six facts:
@@ -648,6 +680,28 @@ is absent, use HOLD. STOP is invalid.
 
 If any fact is missing, the next material is not NewB. It remains an operative submove,
 HOLD, or PARTIAL.
+
+**MRP-generated resultant burden test:**
+
+An MRP-generated burden is a narrower category than ordinary `NewB`. It is licensed only when
+`MRP(ⁿB)` can show all seven facts:
+
+1. `ⁿB` landed or partially landed through owner-specific operation;
+2. `R(H,Δ)` detected pressure not fully present in the initial Layer A inventory;
+3. the pressure is graph-bound, commitment-bound, framework-bound, or grounded in the prior burden's
+   collapse radius, not speculative topic expansion;
+4. the new node differs from `ⁿB` and from already-held burdens by target-family, claim-level,
+   restoration vector, or governing noetic pressure;
+5. the new node is not merely an operative submove already answered inside `ⁿB`;
+6. MRP records `MRP route result type: generated_burden_instantiation`, graph/provenance
+   `ⁿB → ⁿ⁺¹B`, and route `RECURSE` or `HOLD`;
+7. the output instantiates `ⁿ⁺¹B [generated-by: MRP(ⁿB)]` as a normal burden node with Layer A
+   accounting, Layer B governed operation body, owner-bearing submoves, and `Land(ⁿ⁺¹B)` or
+   `HOLD(ⁿ⁺¹B)` before closure is licensed.
+
+If the proposed node was already present in the initial inventory, the route result type is
+`held_burden_activation`, not `generated_burden_instantiation`. If no additional resultant exists,
+record `no_new_resultant` and continue ordinary route/closure discipline.
 
 Practical/application material is not NewB merely because it needs its own heading. Source
 maps, concise answer wording, "how to respond" sections, do/don't guardrails, warning
@@ -668,6 +722,7 @@ visible-format sanitizer. After the first bounded move, final-output preflight a
 - what cleared?
 - what remains live?
 - was the remaining live burden already present in the original input?
+- did `MRP(ⁿB)` generate any additional resultant burden beyond the initial inventory?
 - is it now eligible?
 - is any stop/register/semantic/thin-basis gate blocking it?
 
@@ -1208,7 +1263,7 @@ This is the canonical State Carry Table for the abstract refresh operation.
 must be derivable from:
 
 ```text
-Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) âˆ’ (items released by Burden N-1)
+Held(N) = (Held(N-1)) ∪ (input-anchored burdens not yet released) − (items released by Burden N-1)
 ```
 
 New material introduced in Burden N's `Held routes` must be anchored in the original
@@ -1265,7 +1320,7 @@ Failure conditions:
   read without state re-read between passes, without enumerating remaining input-anchored live
   burdens after each pass, and without routing one bounded live burden per burden-cycle. Covering all
   topics is not recursion. A response that covers all topics in one essay still fails recursion.
-  input-anchored eligibility after refresh â‰  topic presence in the prompt.
+  input-anchored eligibility after refresh ≠ topic presence in the prompt.
 
 Minimal pair: a governed same-response recursion follows a landed move plus refresh plus renewed
 permission; an argument dump accumulates downstream content without refreshed governance.

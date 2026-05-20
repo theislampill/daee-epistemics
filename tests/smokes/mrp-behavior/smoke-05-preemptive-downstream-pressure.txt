@@ -1,0 +1,19 @@
+Smoke 5 -- Pre-emptive downstream pressure
+
+Use the daee-epistemics runtime exactly as packaged for the version under test.
+Do not answer from generic assistant behavior. Preserve the runtime's visible
+execution surface.
+
+Prompt:
+
+Suppose you convince me that worship is not humiliation and that dependence on
+God is rational. Even then, I still would not worship, because obedience feels
+like surrendering my selfhood. Answer the worship objection, but do not pretend
+that solving the first point solves the second.
+
+Required evaluator focus:
+
+After Land(B1), v0.4.3.0 should detect a structurally licensed downstream
+defense before it is fully developed, make the pre-emption basis explicit,
+create or propose a B1 -> B2 graph edge, dispatch B2 through an existing
+TTP/operator class, and route RECURSE/HOLD without speculative ghost-fighting.

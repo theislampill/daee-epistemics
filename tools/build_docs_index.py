@@ -326,10 +326,18 @@ def source_digest(paths: list[Path]) -> str:
     for path in sorted(paths, key=lambda p: rel(p)):
         digest.update(rel(path).encode("utf-8"))
         digest.update(b"\0")
-        # Docs provenance must be stable across Windows and Linux checkouts.
-        digest.update(path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n"))
+        digest.update(normalized_source_bytes(path))
         digest.update(b"\0")
     return digest.hexdigest()
+
+
+def normalized_source_bytes(path: Path) -> bytes:
+    raw = path.read_bytes()
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
 
 
 def manifest_dependency_paths(manifest: dict[str, Any], extra_paths: list[Path] | None = None) -> list[Path]:

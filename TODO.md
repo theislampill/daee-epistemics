@@ -48,6 +48,26 @@ mixed evidence, proposal, and release claims.
 
 ## Active
 
+### [MUST][release][checker] v0.4.3.0 Generated-Burden Hotfix Closeout
+
+- Problem: v0.4.3.0 now needs a release hotfix that distinguishes ordinary
+  held-burden activation from genuine MRP-generated burden instantiation and
+  normalizes public burden notation without claiming unrun hosted Smoke 7 proof.
+- Source surfaces: `atomics/skill/SKILL.md`,
+  `atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md`,
+  `atomics/skill/references/diagnostics/recursive-state-transitions.md`,
+  and `atomics/skill/references/rubrics/diagnostic-render-contract.md`.
+- Checker/fixture surfaces: `tools/check_mrp_generated_burden.py`,
+  `tools/check_mid_reread_pressure.py`, `tools/check_mrp_route_invariants.py`,
+  `tests/mrp-generated-burden/`, and
+  `tests/smokes/mrp-behavior/prompts/smoke7-mrp-generated-downstream-burden.md`.
+- Release boundary: deterministic fixtures/checkers prove the generated-burden
+  distinction for this package refresh. A fresh hosted Smoke 7 model-output proof
+  was not run and must not be claimed in release notes/body.
+- Status: release hotfix authorized for v0.4.3.0 same-version asset refresh after
+  deterministic checks, package validation, provenance preflight, tag alignment,
+  and GitHub Release asset/body replacement pass.
+
 ### [MUST][checker][source] Current Canon Checker Anchors
 
 - Problem: current-canon metacompliance intentionally verifies that TODO still
@@ -371,7 +391,7 @@ hardening only; live scriptless compact DSL behavior remains gated by the manual
   `atomics/skill/scripts/validate.py`, `atomics/skill/scripts/check_execution.py`,
   `atomics/skill/scripts/daee_level3.py`, and generated `skill/`.
 - Status: patched in source with burden-local `state_envelope` replay and targeted
-  structural-flattening checks. Follow-up notation normalization added `â¿Báµ¢` / `nBi`
+  structural-flattening checks. Follow-up notation normalization added `ⁿBᵢ` / `nBi`
   as the human/math and plain-text burden-submove notation while preserving `B1.s1`
   as a checker-compatible alias. Verification is recorded in the closure report after
   generated runtime rebuilds.

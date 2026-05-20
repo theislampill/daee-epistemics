@@ -60,12 +60,6 @@ def _clean_banner_line(raw_line: str) -> str:
         .replace("═", "")
         .replace("╝", "")
         .replace("╗", "")
-        .replace("â•‘", "")
-        .replace("â•”", "")
-        .replace("â•š", "")
-        .replace("â•", "")
-        .replace("â•", "")
-        .replace("â•—", "")
         .strip()
     )
 
@@ -76,7 +70,7 @@ def extract_banner(text: str) -> tuple[dict[str, str], list[str]]:
     first_chunk = stripped[:1200]
     if "NOETIC FIELD EXECUTION" not in first_chunk:
         errors.append("missing noetic-field banner near start of output")
-    if not (stripped.startswith("╔") or stripped.startswith("â•”")):
+    if not stripped.startswith("╔"):
         errors.append("output does not begin with banner box")
 
     fields: dict[str, str] = {}
