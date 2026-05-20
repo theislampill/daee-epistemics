@@ -51,6 +51,32 @@ ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
 REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Δ)\)")
 LANDED_DELTA_RE = re.compile(r"(?:Delta|Δ|ΔⁿB)")
+MRP_BLOCK_RE = re.compile(
+    r"(?ims)^\s*\[Mid-Reread Pressure\]\s*(?P<body>.*?)(?="
+    r"^\s*\[Mid-Reread Pressure\]\s*$|"
+    r"^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
+    r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
+)
+STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
+POST_STOP_CONTINUATION_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Layer B\b|.*Layer B\s*[-—]\s*Governed Operation Body\b)"
+)
+POST_STOP_TERMINAL_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?(?:Closure/Reconstruction Witness\b|Restorative Response\b|Closing Formulation\b)"
+)
+LINEAR_DEPENDENCY_RE = re.compile(
+    r"(?i)\b(?:depends on|downstream|directed dependency|linear(?:ly)? traversable|"
+    r"B\d+\s*(?:->|→)\s*B\d+|remaining live burden)\b"
+)
+CURL_REASON_RE = re.compile(
+    r"(?i)\b(?:loop|circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
+    r"self-reinforcing|regress|wisw[āa]s|framework)\b"
+)
+STRICT_CURL_REASON_RE = re.compile(
+    r"(?i)\b(?:circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
+    r"self-reinforcing|regress|wisw[āa]s)\b"
+)
+CURL_NEGATION_RE = re.compile(r"(?i)\b(?:no loop|no circular|no churn|not a loop|not circular)\b")
 
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
@@ -79,21 +105,12 @@ class MrpBlock:
 
 
 def extract_block(text: str) -> str:
-    match = re.search(
-        r"(?ims)^\s*\[Mid-Reread Pressure\]\s*(?P<body>.*?)(?=^\s*(?:###\s+Closure/Reconstruction Witness|\[|$))",
-        text,
-    )
+    match = MRP_BLOCK_RE.search(text)
     return match.group("body").strip() if match else ""
 
 
 def extract_blocks(text: str) -> list[str]:
-    return [
-        match.group("body").strip()
-        for match in re.finditer(
-            r"(?ims)^\s*\[Mid-Reread Pressure\]\s*(?P<body>.*?)(?=^\s*(?:###\s+Closure/Reconstruction Witness|\[|$))",
-            text,
-        )
-    ]
+    return [match.group("body").strip() for match in MRP_BLOCK_RE.finditer(text)]
 
 
 def field(body: str, name: str) -> str:
@@ -244,6 +261,32 @@ def partial_owner_closure_errors(path: Path, text: str) -> list[str]:
     return errors
 
 
+def stop_before_continuation_errors(path: Path, text: str) -> list[str]:
+    """Reject final STOP before later burden-local work in the same output."""
+    errors: list[str] = []
+    for match in STOP_ROUTE_RE.finditer(text):
+        tail = text[match.end() :]
+        continuation = POST_STOP_CONTINUATION_RE.search(tail)
+        terminal = POST_STOP_TERMINAL_RE.search(tail)
+        if continuation and (terminal is None or continuation.start() < terminal.start()):
+            errors.append(f"{path}: Route: STOP cannot be followed by later burden/Layer B work before closure")
+    return errors
+
+
+def curl_diagnostic_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]:
+    """Reject use of curl for ordinary acyclic downstream dependencies."""
+    errors: list[str] = []
+    curl_state = first_state(mrp.curl)
+    if curl_state in {"held", "non-null"}:
+        if CURL_NEGATION_RE.search(mrp.curl):
+            errors.append(f"{label}: {curl_state} ∇×T contradicts a no-loop/no-circularity reason")
+        if LINEAR_DEPENDENCY_RE.search(mrp.curl) and not STRICT_CURL_REASON_RE.search(mrp.curl):
+            errors.append(f"{label}: linear downstream dependency belongs to ∇·T; ∇×T must stay null without loop/churn/recoil")
+    if curl_state == "resolved" and LINEAR_DEPENDENCY_RE.search(mrp.curl) and not CURL_REASON_RE.search(mrp.curl):
+        errors.append(f"{label}: resolved ∇×T needs a prior real curl/loop reason, not ordinary dependency traversal")
+    return errors
+
+
 def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
     label = f"{path}: MRP block {index}"
     errors: list[str] = []
@@ -304,6 +347,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: must record active divergence state")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
         errors.append(f"{label}: must record active curl state")
+    errors.extend(curl_diagnostic_errors(path, mrp, label))
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
         errors.append(f"{label}: Pressure activations missing {key}")
@@ -341,6 +385,7 @@ def check_fixture(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     errors: list[str] = []
     errors.extend(partial_owner_closure_errors(path, text))
+    errors.extend(stop_before_continuation_errors(path, text))
     mrp = parse_mrp(text)
     if mrp is None:
         return [f"{path}: missing [Mid-Reread Pressure] block"]
@@ -362,6 +407,7 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: MRP must record active ∇·T state: neutral/settled/bounded/non-neutral")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
         errors.append(f"{path}: MRP must record active ∇×T state: null/resolved/held/non-null")
+    errors.extend(curl_diagnostic_errors(path, mrp, str(path)))
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
         errors.append(f"{path}: MRP Pressure activations missing {key}")

@@ -57,9 +57,12 @@ hiddenness, source-worldview, owner-floor, or owner-body pressure, the output mu
 three things before any Restorative Response or Closing Formulation: release and land that
 burden, explicitly HOLD it with a named gate/reason, or mark PARTIAL with the named blocked
 burden/owner. STOP/COMPLETE is invalid while the same MRP record names an unresolved live
-pressure. `Route:` in the compact MRP block is limited to `STOP`, `HOLD`, `RECURSE`, or
-`LoopBreak(∇×T)`; owner-load failure is rendered as `Route: HOLD` plus
-`Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>`.
+pressure. If a later burden, Layer B body, or closure graph edge follows from the same answer,
+the prior MRP record is not final; it must mark the remaining burden as `genuine-dependent`,
+emit a graph delta such as `B3 -> B4`, and route `RECURSE` into the next burden. `Route:` in the
+compact MRP block is limited to `STOP`, `HOLD`, `RECURSE`, or `LoopBreak(∇×T)`; owner-load
+failure is rendered as `Route: HOLD` plus `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing
+owner/path>`.
 
 **PARTIAL OWNER-LOAD BOUNDARY.** When `PARTIAL / OWNER-BODY-NOT-LOADED` appears, do not continue
 into broad refutation, Restorative Response, Closing Formulation, closure witness, or language
@@ -80,7 +83,12 @@ record values, not prose. Use exact first-token values: `∇·T: neutral|settled
 slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <missing owner>`,
 then an em dash and the release/hold/clear effect. For `∇·T` / `∇×T`, put a slash after the
 state token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: held / B2 depends on...`;
-this keeps the active state machine-readable. `Boundary:` always begins
+this keeps the active state machine-readable. Directed downstream pressure belongs to `∇·T`:
+when B2/B3/B4 remain live in a strictly acyclic dependency chain, render `∇·T: non-neutral` and
+`∇×T: null / no circular dependency; the chain is linearly traversable`. Use `∇×T: held` or
+`∇×T: non-null` only for circularity, churn, hidden-framework recoil, label-pressure, dependency
+rotation, or self-reinforcing loop pressure; do not claim `∇×T: resolved` unless a prior real
+curl/loop was named. `Boundary:` always begins
 `T_lang does not imply guaranteed uptake`; append PARTIAL/owner-load text after a semicolon.
 `genuine-dependent` requires `Route: RECURSE` and a graph edge; `stable` requires
 `Route: STOP` and `Graph delta: none`; `partial-real` requires `Route: HOLD`.
@@ -217,8 +225,11 @@ execution. Approved compact shape:
 
 The short invariant is: all inputs are noetic fields; prompt brevity never licenses shallow
 execution; user task, external source request, and authority frame are distinct; and closure must
-match banner state. Banner value rules, first-visible/no-code-fence rule, and missing-material
-source-authentication behavior are owned by `references/rubrics/diagnostic-render-contract.md`.
+match banner state. A local claim governed by a named theological/worldview authority frame, while
+the response actively contrasts or restores through the Islamic tawḥīd frame, is `MIXED NOETIC
+FIELD` (or the repo-native equivalent), not `LOCAL CLAIM`. Banner value rules,
+first-visible/no-code-fence rule, and missing-material source-authentication behavior are owned by
+`references/rubrics/diagnostic-render-contract.md`.
 `RECURSE` / `PARTIAL` / `COMPLETE` release semantics are owned by
 `references/rubrics/output-release.md`. `Land(B) -> [Mid-Reread Pressure] -> R(H,Delta)`, `Delta-nB`, `Delta-kappa`,
 `kappa/H`, and STOP/HOLD/PARTIAL/RECURSE control are owned by
@@ -403,6 +414,10 @@ Top-salient invariants:
   pre-voiced/downstream defense has invoked MRP. Do not route from `Land(Bn)` to the next burden,
   HOLD/PARTIAL, LoopBreak, or closure until `[Mid-Reread Pressure]` has recorded the pressure
   slots and route.
+- Directed acyclic burden chains are `∇·T` pressure, not `∇×T` pressure. If B1 -> B2 -> B3 -> B4
+  is linearly traversable, keep `∇×T: null` unless the output names an actual cycle, churn,
+  hidden-framework recoil, label-pressure, or loop. Do not say curl "resolved" when no curl was
+  non-null.
 - Nonzero `∇×T` still requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.
 - `𝒞(Ψᴺ)` licenses closure by bounded/resolved execution-field state, not checklist exhaustion or guaranteed interlocutor uptake.
 - When closure/coupling boundary notation is printed, preserve exact notation such as

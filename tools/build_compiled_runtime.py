@@ -163,9 +163,12 @@ a genuine downstream burden, proportionality, hiddenness, source-worldview, owne
 owner-body pressure, the output must release and land that burden, explicitly HOLD it with a
 named gate/reason, or mark PARTIAL with the named blocked burden/owner before any Restorative
 Response or Closing Formulation. STOP/COMPLETE is invalid while the same MRP record names an
-unresolved live pressure. Route in the compact MRP block is limited to STOP, HOLD, RECURSE, or
-LoopBreak(∇×T); owner-load failure is rendered as Route: HOLD plus
-Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>.
+unresolved live pressure. If a later burden, Layer B body, or closure graph edge follows from
+the same answer, the prior MRP record is not final; it must mark the remaining burden as
+genuine-dependent, emit a graph delta such as B3 -> B4, and route RECURSE into the next burden.
+Route in the compact MRP block is limited to STOP, HOLD, RECURSE, or LoopBreak(∇×T);
+owner-load failure is rendered as Route: HOLD plus Boundary: PARTIAL / OWNER-BODY-NOT-LOADED:
+<missing owner/path>.
 
 PARTIAL OWNER-LOAD BOUNDARY:
 When PARTIAL / OWNER-BODY-NOT-LOADED appears, do not continue into broad refutation,
@@ -187,8 +190,11 @@ first-token values: `∇·T: neutral|settled|bounded|non-neutral`, `∇×T: null
 `Route: STOP|HOLD|RECURSE|LoopBreak(∇×T)`. Do not add punctuation to those values. Each pressure
 slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <missing owner>`,
 then an em dash and the release/hold/clear effect. For ∇·T / ∇×T, put a slash after the state
-token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: held / B2 depends on...`; this keeps
-the active state machine-readable. `Boundary:` always begins
+token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: null / no circular dependency; the
+chain is linearly traversable`; this keeps the active state machine-readable. Directed downstream
+pressure belongs to ∇·T. Use ∇×T held/non-null only for circularity, churn, hidden-framework
+recoil, label-pressure, dependency rotation, or self-reinforcing loop pressure; do not claim ∇×T
+resolved unless a prior real curl/loop was named. `Boundary:` always begins
 `T_lang does not imply guaranteed uptake`; append PARTIAL/owner-load text after a semicolon.
 `genuine-dependent` requires `Route: RECURSE` and a graph edge; `stable` requires `Route: STOP`
 and `Graph delta: none`; `partial-real` requires `Route: HOLD`.
@@ -332,7 +338,9 @@ simple execution. `user task` tracks the requested operation; `/daee-epistemics 
 tracks explicit or implicit demand for citations, textual proof, isnad/authentication, or
 external grounding; do not mark it `IMPLICIT` merely because a worldview or authority frame is
 live. If more than one field type is active, choose `MIXED NOETIC FIELD` as the single field
-value. `authority frame` is LIVE when the input contains or implies a criterion for authority,
+value. A local claim governed by a named theological/worldview authority frame while the answer
+actively contrasts or restores through Islamic tawḥīd is `MIXED NOETIC FIELD`, not `LOCAL CLAIM`.
+`authority frame` is LIVE when the input contains or implies a criterion for authority,
 proof, legitimacy, moral standing, public admissibility, governance, coercion, or epistemic
 right. Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or
 depth licenses. `state` is the opening governance state, not a prediction that the answer may
@@ -582,9 +590,10 @@ next live burden instead of closing.
 If MRP names a live dependency such as proportionality, hiddenness/coercive-guidance,
 source-worldview, moral-grounding, or owner-body pressure, STOP/COMPLETE is forbidden until
 that dependency is released and landed, merged into a named landed burden with same-function
-proof, or held/PARTIALed with the exact gate. Owner-load failure uses Route: HOLD and
-Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>; after that boundary, do not
-emit closure witness, Restorative Response, Closing Formulation, or broad "refuted" language.
+proof, or held/PARTIALed with the exact gate. If a later Layer B burden appears, the prior MRP
+route must be RECURSE/HOLD, not STOP. Owner-load failure uses Route: HOLD and Boundary: PARTIAL /
+OWNER-BODY-NOT-LOADED: <missing owner/path>; after that boundary, do not emit closure witness,
+Restorative Response, Closing Formulation, or broad "refuted" language.
 Input-anchored means any explicit claim, supporting premise, contrast, public/private partition,
 source-status rule, translation demand, or moral/epistemic criterion already present in the
 user's input, not only a separate requested question.

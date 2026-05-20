@@ -229,6 +229,10 @@ landing first, and `A ∥ B` means A and B are parallel / independent at that le
 RECURSE instead of COMPLETE. Root marker grammar is exact: put glosses outside the marker.
 `B1 (root) - authority-order` is valid; `B1 (root authority-order)` is invalid because the
 witness parser cannot recover the root.
+Closure graph edges must be backed by the route/reread ledger. If the final graph contains
+`B3 -> B4`, a prior MRP/resultant must have licensed that edge with `Finding:
+genuine-dependent`, `Graph delta: B3 -> B4`, and `Route: RECURSE`; `Route: STOP` before the B4
+Layer B body is false closure, even if B4 is restorative.
 The visible default section heading for this final accounting is literal
 `Closure/Reconstruction Witness`; do not replace it with `Closure audit` or collapse
 `Burden dependency graph:` into a shorter `burden graph` label.

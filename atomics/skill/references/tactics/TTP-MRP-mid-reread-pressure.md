@@ -92,14 +92,22 @@ pressure rotated back as churn, hidden-framework recoil, label-pressure, or self
 Neutral or settled `∇·T` plus null/resolved `∇×T` may license stable closure; non-neutral `∇·T`
 requires HOLD/RECURSE explanation; non-null `∇×T` requires LoopBreak, STOP, HOLD, or graph-bound
 recursion rather than decorative reporting.
+Directed downstream dependency is not curl. If `B1 -> B2 -> B3 -> B4` is acyclic and linearly
+traversable, residual pressure is recorded as non-neutral `∇·T` while `∇×T` stays null. Use
+held/non-null/resolved curl only when a real circular dependency, churn, hidden-framework recoil,
+label-pressure, dependency rotation, or loop was named; do not say curl resolved merely because a
+linear chain was traversed.
 
 Route consequence invariant: if the MRP record names a remaining live burden, proportionality
 pressure, hiddenness/coercive-guidance pressure, source-worldview pressure, owner-floor pressure,
 owner-body pressure, non-neutral `∇·T`, non-null/held `∇×T`, or a graph edge, the next public
 move must release and land that burden, explicitly HOLD it with a named gate, or mark PARTIAL
 with the blocked burden/owner. `STOP`/COMPLETE is invalid while the same record still names an
-unresolved live pressure. Owner-load failure is not `Route: PARTIAL`; use `Route: HOLD` and put
-`PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>` in `Boundary`.
+unresolved live pressure. If another burden or Layer B body follows, or the closure graph later
+contains an edge out of the current burden, the current MRP record cannot be `stable`/`STOP`; it
+must record the dependency as `genuine-dependent`, add the graph edge, and route `RECURSE` into
+the next burden. Owner-load failure is not `Route: PARTIAL`; use `Route: HOLD` and put `PARTIAL /
+OWNER-BODY-NOT-LOADED: <missing owner/path>` in `Boundary`.
 
 For invocation purposes, `T` is the whole reread pressure field, not only the literal printed
 token `T`. It includes `B`, `κ/H`, held dependencies, register pressure, and downstream burden

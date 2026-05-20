@@ -71,6 +71,10 @@ request `IMPLICIT` merely because a worldview or authority frame is live. If a
 source-authentication case supplies no actual text/reference, classify external source request as
 `IMPLICIT`, authority frame as `LIVE`, user task as `SOURCE-AUTHENTICATION`, and state as
 `PARTIAL`.
+Field classification must not flatten named theological/worldview authority frames. If the input
+is a local claim but it is governed by a named theological or worldview frame and the response
+actively contrasts or restores through Islamic tawḥīd, render `field: MIXED NOETIC FIELD` (or the
+repo-native mixed/named-worldview equivalent), not `LOCAL CLAIM`.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the live noetic
 burden, source/noetic frame, held material, release decision, and current bounded operator. It
