@@ -47,6 +47,11 @@
         "support": "compact source-derived counts inside the source-browser workspace",
         "provenance": "collapsed generated layer, family, and fine-grained role breakdown",
         "raw-source": "collapsed generated source map table"
+      },
+      "output-grapher": {
+        "primary_focal": "docs-only output reconstruction workspace with paste inputs, inline SVG DAG, validation panels, exports, and field_witness comparison",
+        "control": "pasted output textarea, optional field_witness textarea, parse/graph and export buttons",
+        "support": "node inspector, validation/warning panels, notation and evidence-boundary notes"
       }
     }
   },
@@ -147,6 +152,33 @@
           "classification": "STRUCTURED_SOURCE_DERIVED",
           "owner_source": "docs/index/runtime-architecture.json"
         }
+      ]
+    },
+    {
+      "id": "output-grapher",
+      "label": "Output Grapher",
+      "panel": "output-grapher",
+      "section_source": "docs/index/sections/output-grapher.html",
+      "classification": "CURATED_SUMMARY_WITH_OWNER_REFERENCES",
+      "content_source_type": "docs-only static output parser/graph artifact; consumes generated skill outputs but does not change runtime behavior",
+      "allow_curated_static": true,
+      "freshness_required": true,
+      "owner_sources": [
+        "tools/output_grapher_lib.py",
+        "tools/check_output_grapher.py",
+        "docs/index/output-grapher.js",
+        "docs/index/output-grapher.css",
+        "tests/docs-output-grapher/**",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/rubrics/output-release.md",
+        "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md"
+      ],
+      "freshness_dependencies": [
+        "docs/index/output-grapher.js",
+        "docs/index/output-grapher.css",
+        "tools/output_grapher_lib.py",
+        "tools/check_output_grapher.py",
+        "tests/docs-output-grapher/**"
       ]
     },
     {

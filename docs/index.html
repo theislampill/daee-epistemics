@@ -2904,6 +2904,7 @@ table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(
 <button type="button" id="tab-architecture" class="tab active" role="tab" aria-selected="true" aria-controls="architecture" data-tab="architecture">Architecture</button>
 <button type="button" id="tab-owners" class="tab" role="tab" aria-selected="false" aria-controls="owners" data-tab="owners" tabindex="-1">Owners &amp; TTP</button>
 <button type="button" id="tab-theory" class="tab" role="tab" aria-selected="false" aria-controls="theory" data-tab="theory" tabindex="-1">Theory Deep Dive</button>
+<button type="button" id="tab-output-grapher" class="tab" role="tab" aria-selected="false" aria-controls="output-grapher" data-tab="output-grapher" tabindex="-1">Output Grapher</button>
 <button type="button" id="tab-reference" class="tab" role="tab" aria-selected="false" aria-controls="reference" data-tab="reference" tabindex="-1">Reference Library</button>
 <button type="button" id="tab-boundaries" class="tab" role="tab" aria-selected="false" aria-controls="boundaries" data-tab="boundaries" tabindex="-1">Boundaries</button>
 </div>
@@ -4252,6 +4253,116 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </div></details>
 </div>
 </section>
+<section class="tabsec" id="output-grapher" role="tabpanel" aria-labelledby="tab-output-grapher" hidden>
+<div class="hero outputGrapherHero">
+  <h1>Noetic Field Output Grapher</h1>
+  <p>Paste a daee-epistemics output and read it as a rebuttal infographic: what the claim says, what it depends on, the problems found, how each problem is answered, what changed after each answer, what remains, and the final restoration status.</p>
+  <div class="badges">
+    <span class="badge"><span class="dot violet"></span>docs artifact only</span>
+    <span class="badge"><span class="dot green"></span>inline SVG renderer</span>
+    <span class="badge"><span class="dot orange"></span>field_witness compare</span>
+  </div>
+</div>
+
+<link rel="stylesheet" href="index/output-grapher.css">
+
+<section class="panel outputGrapher" data-surface-role="focal" data-output-grapher="true">
+  <div class="outputGrapherIntro">
+    <div>
+      <h2>Graph a Skill Output</h2>
+      <p class="subtle">This tool consumes a finished output. It does not change runtime behavior, invoke the skill, or prove live model behavior. It makes visible whether an output is graphable, reconstructible, and terminally accounted.</p>
+    </div>
+    <div class="outputGrapherMiniFlow" aria-label="Output graph lineage">
+      <span>claim</span><b>→</b><span>problems found</span><b>→</b><span>answer moves</span><b>→</b><span>what landed</span><b>→</b><span>what remains</span><b>→</b><span>follow-up check</span><b>→</b><span>route</span><b>→</b><span>restoration</span>
+    </div>
+  </div>
+
+  <div class="outputGrapherInputs" data-surface-role="control">
+    <label>
+      <span>daee-epistemics output</span>
+      <textarea id="ogOutputInput" spellcheck="false" placeholder="Paste governed output with Layer A, burdens, submoves, Land(¹B), R(H,Δ), MRP(¹B), graph deltas, terminal states, and closure/restoration evidence."></textarea>
+    </label>
+    <label>
+      <span>optional field_witness JSON</span>
+      <textarea id="ogWitnessInput" spellcheck="false" placeholder='Optional sidecar, e.g. {"nodes":["¹B"],"edges":[],"terminal_states":{"¹B":"landed"}}'></textarea>
+    </label>
+  </div>
+
+  <div class="outputGrapherActions" data-surface-role="control">
+    <button type="button" id="ogParseBtn">Parse / Graph</button>
+    <label class="outputGrapherExportSize">
+      <span>PNG size</span>
+      <select id="ogExportWidthMode" aria-label="PNG export size">
+        <option value="desktop">Desktop PNG (1800px)</option>
+        <option value="poster" selected>Poster PNG (2200px)</option>
+        <option value="compact">Compact PNG (1500px)</option>
+      </select>
+    </label>
+    <button type="button" id="ogExportPngBtn" disabled>Export PNG</button>
+    <button type="button" id="ogExportPngSectionsBtn" disabled>Export Sectioned PNG</button>
+    <button type="button" id="ogExportSvgBtn" disabled>Export SVG</button>
+    <button type="button" id="ogExportJsonBtn" disabled>Export JSON</button>
+    <button type="button" id="ogExportMermaidBtn" disabled>Export Mermaid <span>(optional / lossy ELK)</span></button>
+  </div>
+
+  <div class="outputGrapherModes" data-surface-role="control" aria-label="Graph proof mode">
+    <button type="button" class="active" data-og-mode="rebuttal">Plain-language Rebuttal View</button>
+    <button type="button" data-og-mode="dag">Technical Pipeline View</button>
+    <button type="button" data-og-mode="validation">Validation View</button>
+  </div>
+
+  <details class="outputGrapherHelp" data-surface-role="control">
+    <summary>How to read this</summary>
+    <div class="outputGrapherHelpBody">
+      <p>Read top-to-bottom: claim, problems, answer moves, what landed, what remains, follow-up pressure-check, next step, and final restoration.</p>
+      <p><strong>Technical labels:</strong> <code>Land(¹B)</code> means what was established, <code>R(H,Δ)</code> means what remains after that answer, and <code>MRP(¹B)</code> marks the follow-up pressure-check.</p>
+    </div>
+  </details>
+
+  <div class="outputGrapherSummary" id="ogSummary" aria-live="polite"></div>
+
+  <div class="outputGrapherWorkspace">
+    <div class="outputGrapherGraphPanel">
+      <div id="ogGraph" class="outputGrapherGraph" data-surface-role="generated-snapshot"></div>
+      <div class="outputGrapherLegend" id="ogLegend">
+        <span><i class="ogColor ogBurden"></i>problem / burden</span>
+        <span><i class="ogColor ogSubmove"></i>rebuttal move / TTP</span>
+        <span><i class="ogColor ogLanded"></i>failure shown / landed</span>
+        <span><i class="ogColor ogMrp"></i>follow-up pressure / MRP</span>
+        <span><i class="ogColor ogRoute"></i>next issue / HOLD / RECURSE</span>
+        <span><i class="ogColor ogClosed"></i>STOP / closed / restoration</span>
+        <span><i class="ogColor ogInvalid"></i>missing / invalid</span>
+      </div>
+    </div>
+    <aside class="outputGrapherInspector" data-surface-role="support">
+      <h3>Selected Node</h3>
+      <div id="ogInspector" class="outputGrapherInspectorBody">Select a node after parsing to inspect source excerpt, technical label, owner/TTP, route, and validation notes.</div>
+    </aside>
+  </div>
+
+  <div class="outputGrapherValidation">
+    <section>
+      <h3>Validation</h3>
+      <ul id="ogErrors"></ul>
+    </section>
+    <section>
+      <h3>Warnings</h3>
+      <ul id="ogWarnings"></ul>
+    </section>
+  </div>
+</section>
+
+<section class="panel" data-surface-role="support">
+  <h2>What It Checks</h2>
+  <div class="outputGrapherChecklist">
+    <p><strong>Hard errors:</strong> missing initial burdens under complete closure, unknown graph nodes, missing terminal states, STOP before later burden work, unbacked MRP-governed graph edges, decorative MRP labels, live ∇·B or ∇×κ under complete closure without a licensed route.</p>
+    <p><strong>Warnings:</strong> legacy ASCII aliases such as <code>B1 -&gt; B2</code>, burden notation written as <code>B₁</code>, missing submoves under a full landing, held-burden activation without generated burden, low visible topology, possible bloat, or visible/field_witness mismatch.</p>
+    <p><strong>Notation boundary:</strong> public output should prefer <code>¹B</code>, <code>¹B₁[OP]</code>, <code>Land(¹B)</code>, <code>MRP(¹B)</code>, <code>¹B → ²B</code>, <code>∇·B</code>, <code>∇×κ</code>, <code>𝒞(Ψᴺ)</code>, and <code>T_lang: Ψᴺ ⇢ Ψᴵ</code>. Parser aliases are fallback only. Mermaid export is optional/lossy and includes an ELK layout hint; it is not the primary renderer.</p>
+  </div>
+</section>
+
+<script src="index/output-grapher.js"></script>
+</section>
 <section class="tabsec" id="reference" role="tabpanel" aria-labelledby="tab-reference" hidden>
 <div class="hero"><h1>Reference Library</h1><p>Structured source browser. Files remain owners/sources of control objects, while the default path is search, select, and preview rather than a raw audit wall.</p></div>
 <div class="panel referenceBrowserPanel" id="referenceBrowser" data-surface-role="focal" data-primary-focal="true" data-reference-browser="source-browser">
@@ -4335,7 +4446,7 @@ or continue to <code>ⁿ⁺¹B</code> only if a distinct next burden is licensed
 </section>
 </main>
 <script id="docs-index-generated-data">
-window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "release_download": "docs/index/release-download.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/reference.html", "docs/index/sections/boundaries.html"], "source_digest": "40c10d519c9860f8dc4772f5fe97a46a24e69f976fcf581184552e9f049f3278", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
+window.DOCS_INDEX_PROVENANCE = {"design_source": "docs/index/DESIGN.md", "generator": "tools/build_docs_index.py", "manifest": "docs/index/manifest.json", "module_catalogue": "atomics/skill/references/diagnostics/module-catalogue.json", "release_download": "docs/index/release-download.json", "section_sources": ["docs/index/sections/architecture.html", "docs/index/sections/owners.html", "docs/index/sections/theory.html", "docs/index/sections/output-grapher.html", "docs/index/sections/reference.html", "docs/index/sections/boundaries.html"], "source_digest": "5ecbf772b72424ffcce62ef2b1727d6758713c52c9f3b39375b1e0c7f14a01ae", "standalone_pages": ["docs/daee-epistemics-pipeline.html"]};
 window.DOCS_INDEX_MODULE_CATALOGUE = [{"id": "do-attribute-precision", "module_class": "case-library", "path": "skill/references/case-library/do-attribute-precision.md", "source_path": "atomics/skill/references/case-library/do-attribute-precision.md"}, {"id": "do-christian-extensions", "module_class": "case-library", "path": "skill/references/case-library/do-christian-extensions.md", "source_path": "atomics/skill/references/case-library/do-christian-extensions.md"}, {"id": "do-core", "module_class": "case-library", "path": "skill/references/case-library/do-core.md", "source_path": "atomics/skill/references/case-library/do-core.md"}, {"id": "do-second-loop", "module_class": "case-library", "path": "skill/references/case-library/do-second-loop.md", "source_path": "atomics/skill/references/case-library/do-second-loop.md"}, {"id": "noetic-profiles", "module_class": "case-library", "path": "skill/references/case-library/noetic-profiles.md", "source_path": "atomics/skill/references/case-library/noetic-profiles.md"}, {"id": "ns-1-naturalist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-1-naturalist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-1-naturalist.md"}, {"id": "ns-10-maturidi-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-10-maturidi-evidentialist.md"}, {"id": "ns-11-fideist-reformed", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-11-fideist-reformed.md", "source_path": "atomics/skill/references/case-library/profiles/ns-11-fideist-reformed.md"}, {"id": "ns-12-blank-slate-dual-fitrah", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md", "source_path": "atomics/skill/references/case-library/profiles/ns-12-blank-slate-dual-fitrah.md"}, {"id": "ns-2-agnostic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-2-agnostic-evidentialist.md"}, {"id": "ns-3-deconverted", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-3-deconverted.md", "source_path": "atomics/skill/references/case-library/profiles/ns-3-deconverted.md"}, {"id": "ns-4-secular-moral-realist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-4-secular-moral-realist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-4-secular-moral-realist.md"}, {"id": "ns-5-habituated-atheist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-5-habituated-atheist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-5-habituated-atheist.md"}, {"id": "ns-6-kalamic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-6-kalamic-evidentialist.md"}, {"id": "ns-7-theistic-evidentialist", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-7-theistic-evidentialist.md", "source_path": "atomics/skill/references/case-library/profiles/ns-7-theistic-evidentialist.md"}, {"id": "ns-8-muslim-internal-crisis", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md", "source_path": "atomics/skill/references/case-library/profiles/ns-8-muslim-internal-crisis.md"}, {"id": "ns-9-historical-critical-skeptic", "module_class": "case-library", "path": "skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md", "source_path": "atomics/skill/references/case-library/profiles/ns-9-historical-critical-skeptic.md"}, {"id": "philosophical-usurpation", "module_class": "case-library", "path": "skill/references/case-library/philosophical-usurpation.md", "source_path": "atomics/skill/references/case-library/philosophical-usurpation.md"}, {"id": "revelation-transmission", "module_class": "case-library", "path": "skill/references/case-library/revelation-transmission.md", "source_path": "atomics/skill/references/case-library/revelation-transmission.md"}, {"id": "causal-series-taxonomy", "module_class": "diagnostic", "path": "skill/references/diagnostics/causal-series-taxonomy.md", "source_path": "atomics/skill/references/diagnostics/causal-series-taxonomy.md"}, {"id": "definition-discipline", "module_class": "diagnostic", "path": "skill/references/diagnostics/definition-discipline.md", "source_path": "atomics/skill/references/diagnostics/definition-discipline.md"}, {"id": "hadith-authentication-epistemology", "module_class": "diagnostic", "path": "skill/references/diagnostics/hadith-authentication-epistemology.md", "source_path": "atomics/skill/references/diagnostics/hadith-authentication-epistemology.md"}, {"id": "perfection-criterion-usurpation", "module_class": "diagnostic", "path": "skill/references/diagnostics/perfection-criterion-usurpation.md", "source_path": "atomics/skill/references/diagnostics/perfection-criterion-usurpation.md"}, {"id": "proof-method-audit", "module_class": "diagnostic", "path": "skill/references/diagnostics/proof-method-audit.md", "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md"}, {"id": "prophetic-discourse-neutralization", "module_class": "diagnostic", "path": "skill/references/diagnostics/prophetic-discourse-neutralization.md", "source_path": "atomics/skill/references/diagnostics/prophetic-discourse-neutralization.md"}, {"id": "P1-fitrah-restoration", "module_class": "procedure", "path": "skill/references/procedures/P1-fitrah-restoration.md", "source_path": "atomics/skill/references/procedures/P1-fitrah-restoration.md"}, {"id": "P2-objection-mapping", "module_class": "procedure", "path": "skill/references/procedures/P2-objection-mapping.md", "source_path": "atomics/skill/references/procedures/P2-objection-mapping.md"}, {"id": "P3-reason-revelation-tension", "module_class": "procedure", "path": "skill/references/procedures/P3-reason-revelation-tension.md", "source_path": "atomics/skill/references/procedures/P3-reason-revelation-tension.md"}, {"id": "P4-maieutic", "module_class": "procedure", "path": "skill/references/procedures/P4-maieutic.md", "source_path": "atomics/skill/references/procedures/P4-maieutic.md"}, {"id": "P5-already-believing", "module_class": "procedure", "path": "skill/references/procedures/P5-already-believing.md", "source_path": "atomics/skill/references/procedures/P5-already-believing.md"}, {"id": "P6-universal-aqidah-principle", "module_class": "procedure", "path": "skill/references/procedures/P6-universal-aqidah-principle.md", "source_path": "atomics/skill/references/procedures/P6-universal-aqidah-principle.md"}, {"id": "P7-restoration-stops", "module_class": "procedure", "path": "skill/references/procedures/P7-restoration-stops.md", "source_path": "atomics/skill/references/procedures/P7-restoration-stops.md"}, {"id": "E1-broadening-evidence", "module_class": "tactic", "path": "skill/references/tactics/E1-broadening-evidence.md", "source_path": "atomics/skill/references/tactics/E1-broadening-evidence.md"}, {"id": "E2-inferential-criterion", "module_class": "tactic", "path": "skill/references/tactics/E2-inferential-criterion.md", "source_path": "atomics/skill/references/tactics/E2-inferential-criterion.md"}, {"id": "E3-cumulative-case", "module_class": "tactic", "path": "skill/references/tactics/E3-cumulative-case.md", "source_path": "atomics/skill/references/tactics/E3-cumulative-case.md"}, {"id": "E4-cross-cultural-check", "module_class": "tactic", "path": "skill/references/tactics/E4-cross-cultural-check.md", "source_path": "atomics/skill/references/tactics/E4-cross-cultural-check.md"}, {"id": "F1-supra-vs-antirational", "module_class": "tactic", "path": "skill/references/tactics/F1-supra-vs-antirational.md", "source_path": "atomics/skill/references/tactics/F1-supra-vs-antirational.md"}, {"id": "F2-volitional-dimensions", "module_class": "tactic", "path": "skill/references/tactics/F2-volitional-dimensions.md", "source_path": "atomics/skill/references/tactics/F2-volitional-dimensions.md"}, {"id": "F3-practice-epistemic-access", "module_class": "tactic", "path": "skill/references/tactics/F3-practice-epistemic-access.md", "source_path": "atomics/skill/references/tactics/F3-practice-epistemic-access.md"}, {"id": "M1-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1-self-refutation.md"}, {"id": "M1P-performative-self-refutation", "module_class": "tactic", "path": "skill/references/tactics/M1P-performative-self-refutation.md", "source_path": "atomics/skill/references/tactics/M1P-performative-self-refutation.md"}, {"id": "M2-prior-probability", "module_class": "tactic", "path": "skill/references/tactics/M2-prior-probability.md", "source_path": "atomics/skill/references/tactics/M2-prior-probability.md"}, {"id": "M3-orphaned-intuition", "module_class": "tactic", "path": "skill/references/tactics/M3-orphaned-intuition.md", "source_path": "atomics/skill/references/tactics/M3-orphaned-intuition.md"}, {"id": "M4-grief-register", "module_class": "tactic", "path": "skill/references/tactics/M4-grief-register.md", "source_path": "atomics/skill/references/tactics/M4-grief-register.md"}, {"id": "M5-deformation-triage", "module_class": "tactic", "path": "skill/references/tactics/M5-deformation-triage.md", "source_path": "atomics/skill/references/tactics/M5-deformation-triage.md"}, {"id": "M6-excluded-middle", "module_class": "tactic", "path": "skill/references/tactics/M6-excluded-middle.md", "source_path": "atomics/skill/references/tactics/M6-excluded-middle.md"}, {"id": "M7-definition-anchor", "module_class": "tactic", "path": "skill/references/tactics/M7-definition-anchor.md", "source_path": "atomics/skill/references/tactics/M7-definition-anchor.md"}, {"id": "M8-reductio", "module_class": "tactic", "path": "skill/references/tactics/M8-reductio.md", "source_path": "atomics/skill/references/tactics/M8-reductio.md"}, {"id": "M9-predication-mode", "module_class": "tactic", "path": "skill/references/tactics/M9-predication-mode.md", "source_path": "atomics/skill/references/tactics/M9-predication-mode.md"}, {"id": "R1-internalist-criterion", "module_class": "tactic", "path": "skill/references/tactics/R1-internalist-criterion.md", "source_path": "atomics/skill/references/tactics/R1-internalist-criterion.md"}, {"id": "R2-the-reminder", "module_class": "tactic", "path": "skill/references/tactics/R2-the-reminder.md", "source_path": "atomics/skill/references/tactics/R2-the-reminder.md"}, {"id": "R3-warranted-basic-belief", "module_class": "tactic", "path": "skill/references/tactics/R3-warranted-basic-belief.md", "source_path": "atomics/skill/references/tactics/R3-warranted-basic-belief.md"}, {"id": "TTP-MRP-mid-reread-pressure", "module_class": "tactic", "path": "skill/references/tactics/TTP-MRP-mid-reread-pressure.md", "source_path": "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md"}, {"id": "doubt-vs-skepticism", "module_class": "tactic", "path": "skill/references/tactics/doubt-vs-skepticism.md", "source_path": "atomics/skill/references/tactics/doubt-vs-skepticism.md"}, {"id": "husn-al-nazar-arguments", "module_class": "tactic", "path": "skill/references/tactics/husn-al-nazar-arguments.md", "source_path": "atomics/skill/references/tactics/husn-al-nazar-arguments.md"}, {"id": "inductive-fitri-method", "module_class": "tactic", "path": "skill/references/tactics/inductive-fitri-method.md", "source_path": "atomics/skill/references/tactics/inductive-fitri-method.md"}, {"id": "symmetric-taqlid-check", "module_class": "tactic", "path": "skill/references/tactics/symmetric-taqlid-check.md", "source_path": "atomics/skill/references/tactics/symmetric-taqlid-check.md"}, {"id": "V1-diagnostic", "module_class": "technique", "path": "skill/references/techniques/V1-diagnostic.md", "source_path": "atomics/skill/references/techniques/V1-diagnostic.md"}, {"id": "V10-transmission-content-vetting", "module_class": "technique", "path": "skill/references/techniques/V10-transmission-content-vetting.md", "source_path": "atomics/skill/references/techniques/V10-transmission-content-vetting.md"}, {"id": "V11-taqlid-transition", "module_class": "technique", "path": "skill/references/techniques/V11-taqlid-transition.md", "source_path": "atomics/skill/references/techniques/V11-taqlid-transition.md"}, {"id": "V12-tamanuc-exhaustion", "module_class": "technique", "path": "skill/references/techniques/V12-tamanuc-exhaustion.md", "source_path": "atomics/skill/references/techniques/V12-tamanuc-exhaustion.md"}, {"id": "V2-reconstituting-reason", "module_class": "technique", "path": "skill/references/techniques/V2-reconstituting-reason.md", "source_path": "atomics/skill/references/techniques/V2-reconstituting-reason.md"}, {"id": "V3-regress-dissolution", "module_class": "technique", "path": "skill/references/techniques/V3-regress-dissolution.md", "source_path": "atomics/skill/references/techniques/V3-regress-dissolution.md"}, {"id": "V4-contamination-identification", "module_class": "technique", "path": "skill/references/techniques/V4-contamination-identification.md", "source_path": "atomics/skill/references/techniques/V4-contamination-identification.md"}, {"id": "V5-directing-attention-signs", "module_class": "technique", "path": "skill/references/techniques/V5-directing-attention-signs.md", "source_path": "atomics/skill/references/techniques/V5-directing-attention-signs.md"}, {"id": "V6-convergence", "module_class": "technique", "path": "skill/references/techniques/V6-convergence.md", "source_path": "atomics/skill/references/techniques/V6-convergence.md"}, {"id": "V7-taqlid-check", "module_class": "technique", "path": "skill/references/techniques/V7-taqlid-check.md", "source_path": "atomics/skill/references/techniques/V7-taqlid-check.md"}, {"id": "V8-bila-kayf-anchor", "module_class": "technique", "path": "skill/references/techniques/V8-bila-kayf-anchor.md", "source_path": "atomics/skill/references/techniques/V8-bila-kayf-anchor.md"}, {"id": "V9-necessary-knowledge-priority", "module_class": "technique", "path": "skill/references/techniques/V9-necessary-knowledge-priority.md", "source_path": "atomics/skill/references/techniques/V9-necessary-knowledge-priority.md"}, {"id": "heuristics", "module_class": "technique", "path": "skill/references/techniques/heuristics.md", "source_path": "atomics/skill/references/techniques/heuristics.md"}];
 </script>
 <script>
