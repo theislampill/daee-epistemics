@@ -116,6 +116,7 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
       }};
     }});
     const coverage = window.daeeOutputGrapher.exportCoverageReport();
+    const sectionPlan = window.daeeOutputGrapher.sectionExportPlan();
     const restorationText = svg.querySelector('.outputGrapherRestorationSummary')?.textContent || '';
     return {{
       viewBox: svg.getAttribute('viewBox'),
@@ -134,6 +135,7 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
       duplicateRereadTechnicalLines: [...svg.querySelectorAll('.outputGrapherStoryPanel')].filter(g => /Technical:\\s*R\\(H,/.test(g.textContent)).length,
       legendCount: svg.querySelectorAll('.ogSvgLegend').length,
       exportCoverage: coverage,
+      sectionPlan,
       finalSectionOrder: {{
         restorationSummary: elementBox('.outputGrapherRestorationSummary'),
         restorativeResponse: elementBox('.outputGrapherRestorativeResponse'),
@@ -222,6 +224,52 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         errors.append("export coverage report is missing the legend")
     if not coverage.get("hasFinalBurden"):
         errors.append("export coverage report is missing the final burden card")
+    if coverage.get("sectionedExportType") != "zip":
+        errors.append("section export must be a PNG ZIP, not loose PNG downloads")
+    if not coverage.get("hasSectionManifest"):
+        errors.append("section export coverage must report a manifest.json")
+    expected_section_count = int(coverage.get("burdenCardCount") or 0) + 3
+    if coverage.get("sectionedExportCount", 0) < expected_section_count:
+        errors.append("section export coverage is missing intro, per-burden, restoration, or formal sections")
+    section_plan = metrics.get("sectionPlan") or []
+    if len(section_plan) < expected_section_count:
+        errors.append("rendered section export plan is missing intro, per-burden, restoration, or formal sections")
+    if section_plan:
+        if section_plan[0].get("type") != "intro":
+            errors.append("first sectioned export crop must be the intro section")
+        required_types = {"intro", "burden", "restoration", "formal"}
+        observed_types = {section.get("type") for section in section_plan}
+        missing_types = sorted(required_types - observed_types)
+        if missing_types:
+            errors.append(f"sectioned export plan is missing semantic sections: {', '.join(missing_types)}")
+        for index, section in enumerate(section_plan):
+            crop = section.get("sourceCrop") or {}
+            semantic = section.get("semanticBounds") or {}
+            crop_top = float(crop.get("y") or section.get("y") or 0)
+            crop_bottom = crop_top + float(crop.get("height") or section.get("height") or 0)
+            semantic_top = float(semantic.get("top") or semantic.get("y") or 0)
+            semantic_bottom = float(semantic.get("bottom") or (semantic_top + float(semantic.get("height") or 0)))
+            prev_bottom = section.get("previousSectionBottom")
+            next_top = section.get("nextSectionTop")
+            if section.get("foreignSectionOverlap"):
+                errors.append(f"section crop overlaps a neighboring semantic section: {section.get('file') or section.get('name')}")
+            if not section.get("canvasSafe", False):
+                errors.append(f"section crop is not marked canvas-safe: {section.get('file') or section.get('name')}")
+            if prev_bottom is not None and crop_top < float(prev_bottom) - 0.5:
+                errors.append(f"section crop starts before previous semantic boundary: {section.get('file') or section.get('name')}")
+            if next_top is not None and crop_bottom > float(next_top) + 0.5:
+                errors.append(f"section crop crosses into the next semantic boundary: {section.get('file') or section.get('name')}")
+            if crop_top > semantic_top + 0.5 or crop_bottom < semantic_bottom - 0.5:
+                errors.append(f"section crop clips its own semantic section: {section.get('file') or section.get('name')}")
+            if section.get("type") == "intro" and next_top is not None and crop_bottom > float(next_top) + 0.5:
+                errors.append("intro sectioned export crop includes the first burden boundary")
+            if (
+                section.get("type") == "restoration"
+                and index + 1 < len(section_plan)
+                and section_plan[index + 1].get("type") == "formal"
+                and crop_bottom > float(section_plan[index + 1].get("semanticBounds", {}).get("top") or next_top or crop_bottom) + 0.5
+            ):
+                errors.append("restoration sectioned export crop includes the formal appendix")
     if coverage.get("pngHeight", 0) < coverage.get("paddedExportHeight", 0) * 0.70:
         errors.append("PNG export height is suspiciously shorter than the measured content height")
     bottom_padding = coverage.get("bottomPadding")
@@ -370,6 +418,21 @@ def main() -> int:
         "list-like remaining items": "function splitListLikeItems",
         "PNG export sizing": "function pngExportConfig",
         "sectioned PNG fallback": "function exportPngSections",
+        "section ZIP creator": "function createZipBlob",
+        "section PNG renderer": "function renderPngBlobFromSvgNode",
+        "section export manifest": "function sectionExportManifest",
+        "semantic section anchors": "data-og-section=\"intro\"",
+        "semantic burden anchors": "data-og-section=\"burden\"",
+        "semantic restoration anchor": "data-og-section=\"restoration\"",
+        "semantic formal anchor": "data-og-section=\"formal\"",
+        "semantic section collector": "function storySemanticSections",
+        "section boundary manifest previous": "previousSectionBottom",
+        "section boundary manifest next": "nextSectionTop",
+        "section overlap manifest": "foreignSectionOverlap",
+        "font-ready export wait": "function waitForExportLayout",
+        "section export plan API": "sectionExportPlan",
+        "section ZIP export filename": "daee-output-grapher-sections.zip",
+        "section manifest file": "manifest.json",
         "export coverage report": "function exportCoverageReport",
         "restorative export coverage": "hasRestorativeResponse",
         "closing export coverage": "hasClosingFormulation",
@@ -458,10 +521,12 @@ def main() -> int:
         "reader-size inspector": "font-size:16px",
         "route legend swatch": ".ogRoute{background:#f59e0b}",
         "closed legend swatch": ".ogClosed{background:#10b981}",
-        "responsive top cards": ".outputGrapherTopCards{grid-template-columns:1fr}",
+        "responsive top cards": ".outputGrapherTopCards,.outputGrapherMapScope{grid-template-columns:1fr}",
         "wide graph viewport": ".outputGrapherGraph svg{display:block;min-width:1600px;max-width:none}",
         "export size control styling": ".outputGrapherExportSize",
         "collapsed top help styling": ".outputGrapherHelp",
+        "map scope styling": ".outputGrapherMapScope",
+        "primary map label styling": ".outputGrapherPrimaryView",
     }
     for label, token in required_css.items():
         if token not in css_text:
@@ -474,6 +539,10 @@ def main() -> int:
         "PNG poster size": "Poster PNG (2200px)",
         "PNG compact size": "Compact PNG (1500px)",
         "sectioned PNG export button": "ogExportPngSectionsBtn",
+        "section ZIP export label": "Export sections as PNG ZIP",
+        "single full output input": "Paste full daee-epistemics output",
+        "primary map view label": "Restorative Noetic Map View",
+        "map scope support": "What the Restorative Noetic Map shows",
         "top help control": "outputGrapherHelp",
         "top help label": "How to read this",
     }

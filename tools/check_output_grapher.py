@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 
-from output_grapher_lib import graph_html, parse_output, result_summary
+from output_grapher_lib import burden_token, graph_html, parse_output, result_summary
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -67,6 +67,7 @@ def check_static_artifact(errors: list[str]) -> None:
         "local CSS": "index/output-grapher.css",
         "export PNG button": "ogExportPngBtn",
         "sectioned PNG button": "ogExportPngSectionsBtn",
+        "section ZIP button label": "Export sections as PNG ZIP",
         "export PNG size selector": "ogExportWidthMode",
         "desktop PNG mode": "Desktop PNG (1800px)",
         "poster PNG mode": "Poster PNG (2200px)",
@@ -75,9 +76,18 @@ def check_static_artifact(errors: list[str]) -> None:
         "export JSON button": "ogExportJsonBtn",
         "optional Mermaid export": "Export Mermaid",
         "optional Mermaid ELK": "defaultRenderer': 'elk",
-        "rebuttal mode": "Rebuttal View",
-        "DAG mode": "Technical Pipeline View",
-        "validation mode": "Validation View",
+        "full output input label": "Paste full daee-epistemics output",
+        "full output input subtitle": "The grapher will separate the readable response, closure witness, and field_witness automatically.",
+        "advanced field witness disclosure": "Advanced: separate field_witness JSON",
+        "optional separate witness label": "Optional separate field_witness JSON",
+        "optional separate witness help": "Use only if your field_witness is in a separate JSON block or file",
+        "primary map view label": "Restorative Noetic Map View",
+        "map scope support": "What the Restorative Noetic Map shows",
+        "input ontology scope": "ontological noetic structure",
+        "MRP outcome scope": "MRP result type",
+        "restoration aim scope": "restoration aim",
+        "show validation details control": "Show validation details",
+        "show technical details control": "Show technical details",
         "input digest panel": "Reply / Claim Being Rejected",
         "reader-facing input fallback": "readerInputDigest",
         "plain dependency panel": "What The Reply Depends On",
@@ -100,6 +110,9 @@ def check_static_artifact(errors: list[str]) -> None:
         "top help summary": "How to read this",
         "top help technical labels": "Land(¹B)",
         "body prose split": "splitOutputZones",
+        "embedded field witness extraction": "extractEmbeddedFieldWitness",
+        "embedded/separate witness comparison": "compareEmbeddedAndSeparateWitness",
+        "field witness edge comparison": "edge mismatch visible=",
         "visible final section extractor": "extractBodySection",
         "visible final prose cleaner": "cleanVisibleProseBlock",
         "visible body extraction": "bodyExtract",
@@ -133,6 +146,25 @@ def check_static_artifact(errors: list[str]) -> None:
         "inline SVG renderer": "renderGraph",
         "PNG export function": "exportPng",
         "sectioned PNG export function": "exportPngSections",
+        "section ZIP creator": "createZipBlob",
+        "section PNG renderer": "renderPngBlobFromSvgNode",
+        "section export manifest": "sectionExportManifest",
+        "semantic intro section anchor": "data-og-section=\"intro\"",
+        "semantic burden section anchor": "data-og-section=\"burden\"",
+        "semantic restoration section anchor": "data-og-section=\"restoration\"",
+        "semantic formal section anchor": "data-og-section=\"formal\"",
+        "semantic section collector": "storySemanticSections",
+        "bounded section crop": "boundedSectionCrop",
+        "section crop previous boundary": "previousSectionBottom",
+        "section crop next boundary": "nextSectionTop",
+        "foreign section overlap flag": "foreignSectionOverlap",
+        "section canvas safety flag": "canvasSafe",
+        "font-ready section export wait": "waitForExportLayout",
+        "section export plan API": "sectionExportPlan",
+        "section ZIP filename": "daee-output-grapher-sections.zip",
+        "intro section filename": "01-intro-case-and-verdict.png",
+        "restoration section filename": "restoration-summary.png",
+        "formal section filename": "formal-reconstruction.png",
         "export coverage report": "exportCoverageReport",
         "restorative export coverage": "hasRestorativeResponse",
         "closing export coverage": "hasClosingFormulation",
@@ -196,6 +228,13 @@ def check_static_artifact(errors: list[str]) -> None:
         "in-flow reader guide title": "How to read this map",
         "obsolete reader guide renderer": "function readingGuideItems",
         "technical proof strip inside restoration": "Technical proof strip",
+        "old plain-language view label": "Plain-language Rebuttal View",
+        "old technical pipeline view label": "Technical Pipeline View",
+        "old validation view label": "Validation View",
+        "prominent mode button container": "outputGrapherModes",
+        "mode button data attribute": "data-og-mode",
+        "loose section PNG downloads": "downloadBlob(name,'image/png',png)",
+        "old sectioned PNG label": "Export Sectioned PNG",
         "duplicate Land technical line": "technical:`Land(${b})`",
         "duplicate reread technical line": "technical:'R(H,Δ)'",
     }
@@ -219,6 +258,41 @@ def check_static_artifact(errors: list[str]) -> None:
     if "Main Problems In The Reply" in combined and "bodyBurdenDescription(model,b)" not in js_text:
         errors.append("Output Grapher burden inventory must use visible body headings, not witness-only labels")
     check_submove_content_preservation(js_text, errors)
+    check_single_paste_embedded_witness(errors)
+
+
+def check_single_paste_embedded_witness(errors: list[str]) -> None:
+    source = """
+NOETIC FIELD EXECUTION
+Layer A
+initial burden inventory: B1
+
+## Burden 1: body burden survives as the visible source
+B1_1[definition-discipline] - answer the visible problem.
+Land(B1): the body burden lands.
+R(H,Delta): no further pressure remains.
+MRP(B1): stable
+Route: STOP
+
+Closure/Reconstruction Witness
+coverage_complete=true
+
+field_witness
+{"nodes":["B1"],"edges":[]}
+"""
+    result = parse_output(source)
+    if result.errors:
+        errors.append(f"single pasted output with embedded field_witness should parse without errors: {result.errors}")
+    disagreed = parse_output(source, '{"nodes":["B2"],"edges":[]}')
+    if not any("embedded field_witness and separate field_witness disagree" in warning for warning in disagreed.visible_vs_field_witness):
+        errors.append("separate field_witness JSON must be compared against embedded field_witness and warn on disagreement")
+    if burden_token(1) not in disagreed.body_burdens:
+        errors.append("visible body burden set must remain separate from field_witness structural nodes")
+    if burden_token(2) in disagreed.body_burdens:
+        errors.append("visible body burden set must stop before closure witness / field_witness structural nodes")
+    edge_disagreed = parse_output(source, '{"nodes":["B1"],"edges":[["B1","B1"]]}')
+    if not any("edge mismatch visible=" in warning for warning in edge_disagreed.visible_vs_field_witness):
+        errors.append("field_witness edge mismatches must be reported, not only node mismatches")
 
 
 def check_submove_content_preservation(js_text: str, errors: list[str]) -> None:

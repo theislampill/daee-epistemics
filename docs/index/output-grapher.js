@@ -41,6 +41,36 @@
     const stop=rest.match(stopRe);
     return cleanVisibleProseBlock(stop?rest.slice(0,stop.index):rest);
   }
+  function extractBalancedJsonFrom(text,startIndex){
+    const source=String(text||'');
+    const start=source.slice(startIndex).search(/[\{\[]/);
+    if(start<0) return '';
+    const jsonStart=startIndex+start;
+    const opener=source[jsonStart], closer=opener==='{'?'}':']';
+    let depth=0, inString=false, escaped=false;
+    for(let i=jsonStart;i<source.length;i++){
+      const ch=source[i];
+      if(inString){
+        if(escaped) escaped=false;
+        else if(ch==='\\') escaped=true;
+        else if(ch==='"') inString=false;
+        continue;
+      }
+      if(ch==='"'){inString=true; continue;}
+      if(ch===opener) depth+=1;
+      else if(ch===closer){
+        depth-=1;
+        if(depth===0) return source.slice(jsonStart,i+1);
+      }
+    }
+    return '';
+  }
+  function extractEmbeddedFieldWitness(text){
+    const source=String(text||'');
+    const marker=source.search(/(?:^|\n)\s*(?:#+\s*)?field_witness\b/i);
+    if(marker<0) return '';
+    return extractBalancedJsonFrom(source,marker);
+  }
   function supNum(raw){return [...String(raw||'')].map(c=>supToInt[c]||'').join('')||'0';}
   function subNum(raw){return [...String(raw||'')].map(c=>subToInt[c]||'').join('')||'0';}
   function burden(n){return [...String(n)].map(c=>intToSup[c]||'').join('')+'B';}
@@ -75,13 +105,14 @@
       bodyProse,
       closureWitness,
       bodyLineCount: bodyProse.split(/\r?\n/).length,
+      embeddedFieldWitness: extractEmbeddedFieldWitness(text),
       restorativeResponse,
       closingFormulation
     };
   }
 
   function blankModel(){
-    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{}}};
+    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{}}};
   }
 
   function lineBurdens(line,model,lineNo){
@@ -135,6 +166,7 @@
     const sourceText=String(text||'');
     const zones=splitOutputZones(sourceText);
     model.zones={bodyProse:zones.bodyProse,closureWitness:zones.closureWitness};
+    model.witnessSources={embedded:Boolean(zones.embeddedFieldWitness),separate:Boolean(String(witnessText||'').trim())};
     model.restorativeResponse=zones.restorativeResponse;
     model.closingFormulation=zones.closingFormulation;
     const lines=sourceText.split(/\r?\n/);
@@ -176,6 +208,7 @@
       const heading=/^(#+\s*)?(Burden\s+\d+\b|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\b)/.test(trimmed);
       burdens.forEach(b=>{
         if(!model.burdens.includes(b)) model.burdens.push(b);
+        if(inBody&&!model.bodyBurdens.includes(b)) model.bodyBurdens.push(b);
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:trimmed.slice(0,220)});
         if(initial&&!model.initialBurdens.includes(b)) model.initialBurdens.push(b);
         if(heading&&b===headingBurden){
@@ -306,7 +339,9 @@
     });
     model.burdens=[...new Set(model.burdens)].sort((a,b)=>Number(supNum(a[0]))-Number(supNum(b[0])));
     validate(model,lines,routeRecords);
-    compareWitness(model,witnessText);
+    if(zones.embeddedFieldWitness) compareWitness(model,zones.embeddedFieldWitness,'embedded field_witness');
+    if(String(witnessText||'').trim()) compareWitness(model,witnessText,'separate field_witness');
+    compareEmbeddedAndSeparateWitness(model,zones.embeddedFieldWitness,witnessText);
     return model;
   }
 
@@ -332,17 +367,48 @@
     if(model.closureComplete&&curlStates.some(s=>!s.startsWith('null')&&!s.includes('resolved'))&&!/LoopBreak|resolved|null/i.test(text)) model.errors.push('coverage_complete=true while ∇×κ is non-null without LoopBreak/resolution');
   }
 
-  function compareWitness(model,witnessText){
+  function parseWitnessPayload(witnessText,label,model){
     if(!String(witnessText||'').trim()) return;
     try{
-      const payload=JSON.parse(witnessText);
-      const witnessNodes=new Set((payload.nodes||[]).map(normalizeBurden));
-      if(witnessNodes.size){
-        const visible=new Set(model.burdens);
-        const w=[...witnessNodes].sort().join(', '), v=[...visible].sort().join(', ');
-        if(w!==v) model.witnessMismatches.push(`node mismatch visible=[${v}] field_witness=[${w}]`);
-      }
-    }catch(e){ model.errors.push(`field_witness JSON is invalid: ${e.message}`); }
+      return JSON.parse(witnessText);
+    }catch(e){
+      model.errors.push(`${label} JSON is invalid: ${e.message}`);
+      return null;
+    }
+  }
+  function canonicalJson(value){
+    if(Array.isArray(value)) return value.map(canonicalJson);
+    if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonicalJson(value[k])]));
+    return value;
+  }
+  function compareWitness(model,witnessText,label='field_witness'){
+    const payload=parseWitnessPayload(witnessText,label,model);
+    if(!payload) return;
+    const witnessNodes=new Set((payload.nodes||[]).map(normalizeBurden));
+    if(witnessNodes.size){
+      const visible=new Set(model.bodyBurdens.length?model.bodyBurdens:model.burdens);
+      const w=[...witnessNodes].sort().join(', '), v=[...visible].sort().join(', ');
+      if(w!==v) model.witnessMismatches.push(`${label}: node mismatch visible=[${v}] field_witness=[${w}]`);
+    }
+    const witnessEdges=new Set((payload.edges||[]).map(edge=>{
+      if(Array.isArray(edge)&&edge.length>=2) return `${normalizeBurden(edge[0])}->${normalizeBurden(edge[1])}`;
+      if(edge&&typeof edge==='object') return `${normalizeBurden(edge.source||'')}->${normalizeBurden(edge.target||'')}`;
+      return '';
+    }).filter(edge=>edge&&edge!=='->'));
+    if(witnessEdges.size){
+      const visibleEdges=new Set((model.graphEdges||[]).map(edge=>`${edge[0]}->${edge[1]}`));
+      const w=[...witnessEdges].sort().join(', '), v=[...visibleEdges].sort().join(', ');
+      if(w!==v) model.witnessMismatches.push(`${label}: edge mismatch visible=[${v}] field_witness=[${w}]`);
+    }
+  }
+  function compareEmbeddedAndSeparateWitness(model,embedded,separate){
+    if(!String(embedded||'').trim() || !String(separate||'').trim()) return;
+    const a=parseWitnessPayload(embedded,'embedded field_witness',model);
+    const b=parseWitnessPayload(separate,'separate field_witness',model);
+    if(!a||!b) return;
+    if(JSON.stringify(canonicalJson(a))!==JSON.stringify(canonicalJson(b))){
+      model.witnessMismatches.push('embedded field_witness and separate field_witness disagree');
+    }
   }
 
   function colorFor(node,model){
@@ -1176,20 +1242,21 @@
     const verdict=verdictDigest(model);
     const caseHead=storyCaseHeadline(model);
     let y=34;
-    const parts=[];
-    parts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="760">Output grapher — Restorative Noetic Map</text><rect x="${width-420}" y="${y-16}" width="370" height="44" rx="9" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-392}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="700">Plain-language Rebuttal View</text>`);
+    const parts=[], introParts=[];
+    introParts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="760">Output grapher — Restorative Noetic Map</text><rect x="${width-444}" y="${y-16}" width="394" height="44" rx="9" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-416}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="700">Restorative Noetic Map View</text>`);
     y+=58;
     const caseCard=storySectionBlock(caseHead.title,caseHead.subtitle,margin,y,cardW,{fill:'#0a1020',stroke:'#38bdf8',maxLines:0,titleSize:42,bodySize:27,lineHeight:40,pad:36,badges:[{label:'What this map is about',color:'#0e7490'}]});
-    parts.push(caseCard.svg); y+=caseCard.height+20;
+    introParts.push(caseCard.svg); y+=caseCard.height+20;
     const verdictCard=storySectionBlock(verdict.headline,verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:38,bodySize:25,lineHeight:38,pad:34});
-    parts.push(verdictCard.svg); y+=verdictCard.height+18;
+    introParts.push(verdictCard.svg); y+=verdictCard.height+18;
     const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
-    parts.push(claimCard.svg); y+=claimCard.height+18;
+    introParts.push(claimCard.svg); y+=claimCard.height+18;
     const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
-    parts.push(diagCard.svg); y+=diagCard.height+18;
+    introParts.push(diagCard.svg); y+=diagCard.height+18;
     const invItems=semanticBurdenLabels(model,8);
     const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
-    parts.push(invCard.svg); y+=invCard.height+28;
+    introParts.push(invCard.svg); y+=invCard.height+28;
+    parts.push(`<g class="outputGrapherStorySection outputGrapherIntroSection" data-og-section="intro">${introParts.join('')}</g>`);
     burdens.forEach((b,index)=>{
       const sms=model.submoves[b]||[];
       const burden=model.nodes[b]||{label:b};
@@ -1237,7 +1304,7 @@
       const routeBlock=renderRouteRow('Next step',routeItems,routes,panelX,bottomPanelY+mrpBlock.height+18,fullW,{titleSize:24,bodySize:21,lineHeight:32,pad:d.panelPad});
       const bottomRowH=mrpBlock.height+18+routeBlock.height;
       const cardH=bottomPanelY-y+bottomRowH+38;
-      parts.push(`<g class="outputGrapherStoryBurden"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect>${burdenHeader.svg}`);
+      parts.push(`<g class="outputGrapherStorySection outputGrapherStoryBurden" data-og-section="burden" data-burden="${esc(b)}"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect>${burdenHeader.svg}`);
       parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How this problem is answered</text>`);
       let subY=y+firstMoveY;
       moveBlocks.forEach((block)=>{
@@ -1251,17 +1318,22 @@
       parts.push('</g>');
       y+=cardH+d.gap;
     });
+    const restorationParts=[];
     const collapsePanel=renderCollapsePanel(model,margin,y,cardW);
-    parts.push(collapsePanel.svg); y+=collapsePanel.height+52;
+    restorationParts.push(collapsePanel.svg); y+=collapsePanel.height+52;
     const restorativeCard=renderFinalProseCard('Restorative Response',model.restorativeResponse,margin,y,cardW,{klass:'outputGrapherFinalBodyProse outputGrapherRestorativeResponse',fill:'#071a12',stroke:'#10b981',color:'#22c55e'});
-    if(restorativeCard.svg){parts.push(restorativeCard.svg); y+=restorativeCard.height+34;}
+    if(restorativeCard.svg){restorationParts.push(restorativeCard.svg); y+=restorativeCard.height+34;}
     const closingCard=renderFinalProseCard('Closing Formulation',model.closingFormulation,margin,y,cardW,{klass:'outputGrapherFinalBodyProse outputGrapherClosingFormulation',fill:'#111827',stroke:'#38bdf8',color:'#38bdf8'});
-    if(closingCard.svg){parts.push(closingCard.svg); y+=closingCard.height+52;}
+    if(closingCard.svg){restorationParts.push(closingCard.svg); y+=closingCard.height+52;}
+    parts.push(`<g class="outputGrapherStorySection outputGrapherRestorationSection" data-og-section="restoration">${restorationParts.join('')}</g>`);
+    const formalParts=[];
     const formalCaseFill=renderFormalCaseFill(model,margin,y,cardW);
-    parts.push(formalCaseFill.svg); y+=formalCaseFill.height+44;
+    formalParts.push(formalCaseFill.svg); y+=formalCaseFill.height+44;
     const legend=`<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">problem / burden</text><circle cx="370" cy="-8" r="8" fill="#38bdf8"/><text x="386" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="626" cy="-8" r="8" fill="#22c55e"/><text x="642" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="880" cy="-8" r="8" fill="#a855f7"/><text x="896" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next issue / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
+    formalParts.push(legend);
     const height=y+78;
-    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Plain-language rebuttal story infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${parts.join('')}${legend}</svg>`;
+    parts.push(`<g class="outputGrapherStorySection outputGrapherFormalSection" data-og-section="formal">${formalParts.join('')}</g>`);
+    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Restorative noetic map infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${parts.join('')}</svg>`;
   }
 
   function renderGraph(model){
@@ -1386,10 +1458,10 @@
   }
   function cropSvgForExport(svg,crop,padding=56){
     const clone=svg.cloneNode(true);
-    const x=Math.max(0,crop.x-padding);
-    const y=Math.max(0,crop.y-padding);
-    const width=crop.width+padding*2;
-    const height=crop.height+padding*2;
+    const x=Number.isFinite(crop.viewX)?crop.viewX:Math.max(0,crop.x-padding);
+    const y=Number.isFinite(crop.viewY)?crop.viewY:Math.max(0,crop.y-padding);
+    const width=Number.isFinite(crop.viewWidth)?crop.viewWidth:crop.width+padding*2;
+    const height=Number.isFinite(crop.viewHeight)?crop.viewHeight:crop.height+padding*2;
     clone.setAttribute('viewBox',`${x} ${y} ${width} ${height}`);
     clone.setAttribute('width',String(width));
     clone.setAttribute('height',String(height));
@@ -1452,6 +1524,9 @@
       exportedBottomPadding:bottomPadding+exportPadding,
       burdenCardCount:burdenCards.length,
       exportedBurdenCardCount:burdenCards.length,
+      sectionedExportType:'zip',
+      sectionedExportCount:storySectionCrops(svg).length,
+      hasSectionManifest:true,
       canvasSafe:paddedHeight*scale<30000 && paddedWidth*scale<30000 && paddedHeight*paddedWidth*scale*scale<240000000
     };
   }
@@ -1485,52 +1560,164 @@
   function exportPng(){
     const svg=document.getElementById('ogSvg'); if(!svg) return;
     const exportSvgNode=cloneSvgForExport(svg);
-    const raw=new XMLSerializer().serializeToString(exportSvgNode);
-    const blob=new Blob([raw],{type:'image/svg+xml;charset=utf-8'});
-    const url=URL.createObjectURL(blob), img=new Image();
-    img.onload=()=>{
-      const naturalW=exportSvgNode.viewBox.baseVal.width||exportSvgNode.width.baseVal.value;
-      const naturalH=exportSvgNode.viewBox.baseVal.height||exportSvgNode.height.baseVal.value;
-      const cfg=pngExportConfig();
-      const scale=cfg.width/naturalW;
-      if(naturalH*scale>=30000 || naturalW*scale>=30000 || naturalH*naturalW*scale*scale>=240000000){
-        URL.revokeObjectURL(url);
-        exportPngSections();
-        return;
-      }
-      const canvas=document.createElement('canvas');
-      canvas.width=Math.round(naturalW*scale);
-      canvas.height=Math.round(naturalH*scale);
-      const ctx=canvas.getContext('2d');
-      ctx.fillStyle='#050914';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.scale(scale,scale);
-      ctx.drawImage(img,0,0);
-      canvas.toBlob(png=>{if(png) downloadBlob(`daee-output-collapse-graph-${cfg.mode}.png`,'image/png',png); URL.revokeObjectURL(url);},'image/png');
+    const naturalW=exportSvgNode.viewBox.baseVal.width||exportSvgNode.width.baseVal.value;
+    const naturalH=exportSvgNode.viewBox.baseVal.height||exportSvgNode.height.baseVal.value;
+    const cfg=pngExportConfig();
+    const scale=cfg.width/naturalW;
+    if(naturalH*scale>=30000 || naturalW*scale>=30000 || naturalH*naturalW*scale*scale>=240000000){
+      exportPngSections();
+      return;
+    }
+    renderPngBlobFromSvgNode(exportSvgNode,cfg.width).then(png=>{
+      if(png) downloadBlob(`daee-output-collapse-graph-${cfg.mode}.png`,'image/png',png);
+    });
+  }
+  function nextAnimationFrame(){
+    return new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+  }
+  async function waitForExportLayout(){
+    if(document.fonts?.ready){
+      try{await document.fonts.ready;}catch(err){}
+    }
+    if(typeof requestAnimationFrame==='function'){
+      await nextAnimationFrame();
+      await nextAnimationFrame();
+    }
+  }
+  function sectionBoundsPayload(bounds){
+    if(!bounds) return null;
+    return {
+      x:bounds.x,
+      y:bounds.y,
+      width:bounds.width,
+      height:bounds.height,
+      top:bounds.y,
+      bottom:bounds.y+bounds.height
     };
-    img.onerror=()=>URL.revokeObjectURL(url); img.src=url;
+  }
+  function storySemanticSections(svg){
+    return [...svg.querySelectorAll('[data-og-section]')]
+      .map((el,index)=>({
+        el,
+        index,
+        type:el.getAttribute('data-og-section')||'unknown',
+        burden:el.getAttribute('data-burden')||'',
+        bounds:svgElementBounds(el)
+      }))
+      .filter(section=>section.bounds&&section.bounds.height>0)
+      .sort((a,b)=>(a.bounds.y-b.bounds.y)||(a.index-b.index));
+  }
+  function boundedSectionCrop(section,index,sections,geom,name,title,order){
+    const semantic=sectionBoundsPayload(section.bounds);
+    const prev=sections[index-1]?sectionBoundsPayload(sections[index-1].bounds):null;
+    const next=sections[index+1]?sectionBoundsPayload(sections[index+1].bounds):null;
+    const horizontalPad=56;
+    const verticalBleed=24;
+    const sectionTop=semantic.top;
+    const sectionBottom=semantic.bottom;
+    const previousBottom=prev?prev.bottom:null;
+    const nextTop=next?next.top:null;
+    const topGap=previousBottom===null?sectionTop:Math.max(0,sectionTop-previousBottom);
+    const bottomGap=nextTop===null?Math.max(0,geom.height-sectionBottom):Math.max(0,nextTop-sectionBottom);
+    const topBleed=section.type==='intro'?0:Math.min(verticalBleed,Math.max(0,topGap-1));
+    const bottomBleed=Math.min(verticalBleed,Math.max(0,bottomGap-1));
+    const viewY=Math.floor(Math.max(0,sectionTop-topBleed));
+    const maxBottom=nextTop===null?geom.height:Math.max(sectionBottom,nextTop-1);
+    const viewBottom=Math.ceil(Math.min(geom.height,maxBottom,sectionBottom+bottomBleed));
+    const viewHeight=Math.max(1,viewBottom-viewY);
+    const viewX=-horizontalPad;
+    const viewWidth=geom.width+horizontalPad*2;
+    const sourceCrop={x:viewX,y:viewY,width:viewWidth,height:viewHeight};
+    const foreignSectionOverlap=Boolean(
+      (previousBottom!==null&&viewY<previousBottom-0.25)||
+      (nextTop!==null&&viewY+viewHeight>nextTop+0.25)
+    );
+    const canvasSafe=viewHeight*viewWidth<240000000&&viewHeight<30000&&viewWidth<30000;
+    return {
+      name,
+      title,
+      type:section.type,
+      order,
+      burden:section.burden,
+      x:viewX,
+      y:viewY,
+      width:viewWidth,
+      height:viewHeight,
+      viewX,
+      viewY,
+      viewWidth,
+      viewHeight,
+      semanticBounds:semantic,
+      sourceCrop,
+      previousSectionBottom:previousBottom,
+      nextSectionTop:nextTop,
+      foreignSectionOverlap,
+      canvasSafe
+    };
   }
   function storySectionCrops(svg){
     const geom=svgGeometry(svg);
-    const burdenGroups=[...svg.querySelectorAll('.outputGrapherStoryBurden')];
-    const crops=[];
-    if(burdenGroups.length){
-      const first=burdenGroups[0].getBBox();
-      crops.push({name:'daee-output-graph-01-summary.png',x:0,y:0,width:geom.width,height:first.y});
-      for(let i=0;i<burdenGroups.length;i+=1){
-        const a=burdenGroups[i].getBBox();
-        const y=a.y;
-        const bottom=a.y+a.height;
-        crops.push({name:`daee-output-graph-${String(crops.length+1).padStart(2,'0')}-burden-${i+1}.png`,x:0,y,width:geom.width,height:bottom-y});
-      }
-      const last=burdenGroups[burdenGroups.length-1].getBBox();
-      crops.push({name:`daee-output-graph-${String(crops.length+1).padStart(2,'0')}-restoration.png`,x:0,y:last.y+last.height,width:geom.width,height:geom.height-(last.y+last.height)});
-    }else{
-      crops.push({name:'daee-output-graph-01-full.png',x:0,y:0,width:geom.width,height:geom.height});
+    const semanticSections=storySemanticSections(svg);
+    if(semanticSections.length){
+      let burdenCount=0;
+      return semanticSections.map((section,index)=>{
+        if(section.type==='intro'){
+          return boundedSectionCrop(section,index,semanticSections,geom,'01-intro-case-and-verdict.png','Intro, case, verdict, reply, dependencies, and live burdens',1);
+        }
+        if(section.type==='burden'){
+          burdenCount+=1;
+          return boundedSectionCrop(section,index,semanticSections,geom,`${String(burdenCount+1).padStart(2,'0')}-burden-${burdenCount}.png`,`Burden ${burdenCount}`,burdenCount+1);
+        }
+        if(section.type==='restoration'){
+          return boundedSectionCrop(section,index,semanticSections,geom,`${String(burdenCount+2).padStart(2,'0')}-restoration-summary.png`,'Restoration Summary, Restorative Response, and Closing Formulation',burdenCount+2);
+        }
+        if(section.type==='formal'){
+          return boundedSectionCrop(section,index,semanticSections,geom,`${String(burdenCount+3).padStart(2,'0')}-formal-reconstruction.png`,'Formal Reconstruction and technical appendix',burdenCount+3);
+        }
+        return boundedSectionCrop(section,index,semanticSections,geom,`${String(index+1).padStart(2,'0')}-${safe(section.type)}.png`,section.type,index+1);
+      }).filter(section=>section.height>80);
     }
-    return crops.filter(crop=>crop.height>80);
+    const burdenGroups=[...svg.querySelectorAll('.outputGrapherStoryBurden')].map(svgElementBounds).filter(Boolean);
+    const crops=[];
+    const addCrop=(name,title,type,y,height)=>{
+      const top=Math.max(0,Math.floor(y));
+      const bottom=Math.min(geom.height,Math.ceil(y+height));
+      if(bottom-top>80) crops.push({name,title,type,x:0,y:top,width:geom.width,height:bottom-top});
+    };
+    if(burdenGroups.length){
+      const first=burdenGroups[0];
+      addCrop('01-intro-case-and-verdict.png','Intro, case, verdict, reply, dependencies, and live burdens','intro',0,first.y);
+      burdenGroups.forEach((box,i)=>addCrop(`${String(i+2).padStart(2,'0')}-burden-${i+1}.png`,`Burden ${i+1}`,'burden',box.y,box.height));
+      const restorationEls=[
+        svg.querySelector('.outputGrapherRestorationSummary'),
+        svg.querySelector('.outputGrapherRestorativeResponse'),
+        svg.querySelector('.outputGrapherClosingFormulation')
+      ].map(svgElementBounds).filter(Boolean);
+      const formalBox=svgElementBounds(svg.querySelector('.outputGrapherFormalCaseFill'));
+      const legendBox=svgElementBounds(svg.querySelector('.ogSvgLegend'));
+      if(restorationEls.length){
+        const top=Math.min(...restorationEls.map(box=>box.y));
+        const bottom=Math.max(...restorationEls.map(box=>box.y+box.height));
+        addCrop(`${String(burdenGroups.length+2).padStart(2,'0')}-restoration-summary.png`,'Restoration Summary, Restorative Response, and Closing Formulation','restoration',top,bottom-top);
+      }
+      if(formalBox){
+        const top=formalBox.y;
+        const bottom=Math.max(formalBox.y+formalBox.height,legendBox?legendBox.y+legendBox.height:0);
+        addCrop(`${String(burdenGroups.length+3).padStart(2,'0')}-formal-reconstruction.png`,'Formal Reconstruction and technical appendix','formal',top,bottom-top);
+      }else if(legendBox){
+        addCrop(`${String(burdenGroups.length+3).padStart(2,'0')}-formal-reconstruction.png`,'Legend and technical appendix','formal',legendBox.y,legendBox.height);
+      }
+    }else{
+      addCrop('01-restorative-noetic-map.png','Restorative Noetic Map','full',0,geom.height);
+    }
+    return crops;
   }
-  function exportPngFromSvgNode(svgNode,name,targetWidth){
+  function sectionExportPlan(){
+    const svg=document.getElementById('ogSvg');
+    return svg?storySectionCrops(svg):[];
+  }
+  function renderPngBlobFromSvgNode(svgNode,targetWidth){
+    return new Promise(resolve=>{
     const raw=new XMLSerializer().serializeToString(svgNode);
     const blob=new Blob([raw],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob), img=new Image();
@@ -1545,16 +1732,163 @@
       ctx.fillStyle='#050914';
       ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      canvas.toBlob(png=>{if(png) downloadBlob(name,'image/png',png); URL.revokeObjectURL(url);},'image/png');
+      canvas.toBlob(png=>{URL.revokeObjectURL(url); resolve(png);},'image/png');
     };
-    img.onerror=()=>URL.revokeObjectURL(url); img.src=url;
-  }
-  function exportPngSections(){
-    const svg=document.getElementById('ogSvg'); if(!svg) return;
-    const cfg=pngExportConfig();
-    storySectionCrops(svg).forEach((crop,index)=>{
-      setTimeout(()=>exportPngFromSvgNode(cropSvgForExport(svg,crop,56),crop.name,cfg.width),index*180);
+    img.onerror=()=>{URL.revokeObjectURL(url); resolve(null);}; img.src=url;
     });
+  }
+  function zipCrc32(bytes){
+    if(!zipCrc32.table){
+      zipCrc32.table=Array.from({length:256},(_,n)=>{
+        let c=n;
+        for(let k=0;k<8;k++) c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);
+        return c>>>0;
+      });
+    }
+    let crc=0xffffffff;
+    for(let i=0;i<bytes.length;i++) crc=zipCrc32.table[(crc^bytes[i])&0xff]^(crc>>>8);
+    return (crc^0xffffffff)>>>0;
+  }
+  function zipDosDateTime(date=new Date()){
+    const time=(date.getHours()<<11)|(date.getMinutes()<<5)|Math.floor(date.getSeconds()/2);
+    const dosDate=((date.getFullYear()-1980)<<9)|((date.getMonth()+1)<<5)|date.getDate();
+    return {time,dosDate};
+  }
+  async function createZipBlob(files){
+    const enc=new TextEncoder();
+    const chunks=[], central=[];
+    let offset=0;
+    const {time,dosDate}=zipDosDateTime();
+    for(const file of files){
+      const nameBytes=enc.encode(file.name);
+      const data=new Uint8Array(await file.blob.arrayBuffer());
+      const crc=zipCrc32(data);
+      const local=new ArrayBuffer(30+nameBytes.length);
+      const view=new DataView(local);
+      view.setUint32(0,0x04034b50,true);
+      view.setUint16(4,20,true);
+      view.setUint16(6,0,true);
+      view.setUint16(8,0,true);
+      view.setUint16(10,time,true);
+      view.setUint16(12,dosDate,true);
+      view.setUint32(14,crc,true);
+      view.setUint32(18,data.length,true);
+      view.setUint32(22,data.length,true);
+      view.setUint16(26,nameBytes.length,true);
+      view.setUint16(28,0,true);
+      const localBytes=new Uint8Array(local);
+      localBytes.set(nameBytes,30);
+      chunks.push(localBytes,data);
+      const centralHeader=new ArrayBuffer(46+nameBytes.length);
+      const cv=new DataView(centralHeader);
+      cv.setUint32(0,0x02014b50,true);
+      cv.setUint16(4,20,true);
+      cv.setUint16(6,20,true);
+      cv.setUint16(8,0,true);
+      cv.setUint16(10,0,true);
+      cv.setUint16(12,time,true);
+      cv.setUint16(14,dosDate,true);
+      cv.setUint32(16,crc,true);
+      cv.setUint32(20,data.length,true);
+      cv.setUint32(24,data.length,true);
+      cv.setUint16(28,nameBytes.length,true);
+      cv.setUint16(30,0,true);
+      cv.setUint16(32,0,true);
+      cv.setUint16(34,0,true);
+      cv.setUint16(36,0,true);
+      cv.setUint32(38,0,true);
+      cv.setUint32(42,offset,true);
+      const centralBytes=new Uint8Array(centralHeader);
+      centralBytes.set(nameBytes,46);
+      central.push(centralBytes);
+      offset+=localBytes.length+data.length;
+    }
+    const centralOffset=offset;
+    const centralSize=central.reduce((sum,item)=>sum+item.length,0);
+    chunks.push(...central);
+    const end=new ArrayBuffer(22);
+    const ev=new DataView(end);
+    ev.setUint32(0,0x06054b50,true);
+    ev.setUint16(4,0,true);
+    ev.setUint16(6,0,true);
+    ev.setUint16(8,files.length,true);
+    ev.setUint16(10,files.length,true);
+    ev.setUint32(12,centralSize,true);
+    ev.setUint32(16,centralOffset,true);
+    ev.setUint16(20,0,true);
+    chunks.push(new Uint8Array(end));
+    return new Blob(chunks,{type:'application/zip'});
+  }
+  function sectionExportManifest(sections,renderedFiles){
+    const coverage=exportCoverageReport()||{};
+    const model=currentModel||blankModel();
+    const verdict=verdictDigest(model);
+    return {
+      title:'Restorative Noetic Map section export',
+      case:storyCaseHeadline(model).title,
+      verdict:verdict.headline,
+      sourceOutputDigest:readerInputDigest(model),
+      exportedAt:new Date().toISOString(),
+      parserVerdict:{
+        reconstructible:!(model.errors||[]).length,
+        closureComplete:Boolean(model.closureComplete),
+        burdenCount:(model.burdens||[]).length,
+        errors:model.errors||[],
+        warnings:[...(model.warnings||[]),...(model.witnessMismatches||[])]
+      },
+      fieldWitness:{
+        embedded:Boolean(model.witnessSources?.embedded),
+        separate:Boolean(model.witnessSources?.separate),
+        mismatchCount:(model.witnessMismatches||[]).length
+      },
+      dimensions:coverage,
+      sections:sections.map((section,index)=>({
+        order:index+1,
+        file:section.name,
+        title:section.title,
+        type:section.type,
+        semanticBounds:section.semanticBounds?{
+          x:Math.round(section.semanticBounds.x),
+          y:Math.round(section.semanticBounds.y),
+          width:Math.round(section.semanticBounds.width),
+          height:Math.round(section.semanticBounds.height),
+          top:Math.round(section.semanticBounds.top),
+          bottom:Math.round(section.semanticBounds.bottom)
+        }:null,
+        sourceCrop:{
+          x:Math.round(section.sourceCrop?.x??section.x),
+          y:Math.round(section.sourceCrop?.y??section.y),
+          width:Math.round(section.sourceCrop?.width??section.width),
+          height:Math.round(section.sourceCrop?.height??section.height)
+        },
+        previousSectionBottom:Number.isFinite(section.previousSectionBottom)?Math.round(section.previousSectionBottom):null,
+        nextSectionTop:Number.isFinite(section.nextSectionTop)?Math.round(section.nextSectionTop):null,
+        foreignSectionOverlap:Boolean(section.foreignSectionOverlap),
+        canvasSafe:Boolean(section.canvasSafe),
+        png:renderedFiles[index]?.dimensions||null
+      }))
+    };
+  }
+  async function exportPngSections(){
+    const svg=document.getElementById('ogSvg'); if(!svg) return;
+    await waitForExportLayout();
+    const cfg=pngExportConfig();
+    const sections=storySectionCrops(svg);
+    const files=[], renderedFiles=[];
+    for(const section of sections){
+      const sectionSvg=cropSvgForExport(svg,section,56);
+      const png=await renderPngBlobFromSvgNode(sectionSvg,cfg.width);
+      if(!png) continue;
+      const naturalW=sectionSvg.viewBox.baseVal.width||sectionSvg.width.baseVal.value;
+      const naturalH=sectionSvg.viewBox.baseVal.height||sectionSvg.height.baseVal.value;
+      const scale=cfg.width/naturalW;
+      renderedFiles.push({name:section.name,dimensions:{width:Math.round(naturalW*scale),height:Math.round(naturalH*scale)}});
+      files.push({name:section.name,blob:png});
+    }
+    const manifest=sectionExportManifest(sections,renderedFiles);
+    files.push({name:'manifest.json',blob:new Blob([JSON.stringify(manifest,null,2)],{type:'application/json;charset=utf-8'})});
+    const zip=await createZipBlob(files);
+    downloadBlob('daee-output-grapher-sections.zip','application/zip',zip);
   }
 
   function init(){
@@ -1566,12 +1900,7 @@
     document.getElementById('ogExportSvgBtn')?.addEventListener('click',exportSvg);
     document.getElementById('ogExportJsonBtn')?.addEventListener('click',exportJson);
     document.getElementById('ogExportMermaidBtn')?.addEventListener('click',exportMermaid);
-    document.querySelectorAll('[data-og-mode]').forEach(btn=>btn.addEventListener('click',()=>{
-      currentGraphMode=btn.dataset.ogMode||'rebuttal';
-      document.querySelectorAll('[data-og-mode]').forEach(item=>item.classList.toggle('active',item===btn));
-      if(currentModel) render(currentModel);
-    }));
   }
-  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport};
+  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport,sectionExportPlan};
   document.addEventListener('DOMContentLoaded',init);
 })();

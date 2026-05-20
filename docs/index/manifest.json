@@ -49,9 +49,9 @@
         "raw-source": "collapsed generated source map table"
       },
       "output-grapher": {
-        "primary_focal": "docs-only output reconstruction workspace with paste inputs, inline SVG DAG, validation panels, exports, and field_witness comparison",
-        "control": "pasted output textarea, optional field_witness textarea, parse/graph and export buttons",
-        "support": "node inspector, validation/warning panels, notation and evidence-boundary notes"
+        "primary_focal": "docs-only Restorative Noetic Map workspace with one full-output paste input, inline SVG infographic, full PNG/SVG/JSON exports, section PNG ZIP export, and automatic body/closure/field_witness splitting",
+        "control": "full daee-epistemics output textarea, advanced optional separate field_witness textarea, parse/graph and export buttons",
+        "support": "node inspector, collapsed validation details, collapsed technical details, notation and evidence-boundary notes"
       }
     }
   },
