@@ -63,6 +63,18 @@ def main() -> int:
         "rectangular view badge": 'height="44" rx="9"',
         "story legend route color": "next failure / HOLD / RECURSE",
         "story legend closed color": "STOP / closed / restoration",
+        "desktop story width": "const width=1800",
+        "less aggressive line wrapping": "width/(size*0.44)",
+        "output zone split": "function splitOutputZones",
+        "body prose extraction": "bodyExtract",
+        "body-first land text": "bodyLandText(model,b,land)",
+        "body-first reread text": "bodyRereadText(model,b,reread)",
+        "list-like remaining items": "function splitListLikeItems",
+        "PNG export sizing": "function pngExportConfig",
+        "poster PNG mode": "poster:2200",
+        "plain dependency copy": "What kind of reply this is",
+        "plain reliance copy": "What it relies on",
+        "technical diagnosis demoted": "technicalDiagnosis(model)",
     }
     for label, token in required_js.items():
         if token not in js_text:
@@ -75,6 +87,12 @@ def main() -> int:
         "decorative mini-flow call": "storyMiniFlow(model",
         "story mini toggle": "d.mini",
         "giant SVG pill styling": 'rx="999"',
+        "body text balance wrapping": "text-wrap: balance",
+        "aggressive body word breaking": "word-break:",
+        "insider field diagnosis as main copy": "Field diagnosis:",
+        "insider case recognized as main copy": "Case recognized:",
+        "insider claim pattern as main copy": "Claim pattern:",
+        "insider hidden structure as main copy": "Hidden structure:",
     }
     for label, token in forbidden_story.items():
         if token in story_body:
@@ -97,6 +115,8 @@ def main() -> int:
         "route legend swatch": ".ogRoute{background:#f59e0b}",
         "closed legend swatch": ".ogClosed{background:#10b981}",
         "responsive top cards": ".outputGrapherTopCards{grid-template-columns:1fr}",
+        "wide graph viewport": ".outputGrapherGraph svg{display:block;min-width:1600px;max-width:none}",
+        "export size control styling": ".outputGrapherExportSize",
     }
     for label, token in required_css.items():
         if token not in css_text:
@@ -106,6 +126,9 @@ def main() -> int:
         "route legend label": "next failure / HOLD / RECURSE",
         "closed legend label": "STOP / closed / restoration",
         "comfortable default": 'class="active" data-og-density="comfortable"',
+        "PNG desktop size": "Desktop PNG (1800px)",
+        "PNG poster size": "Poster PNG (2200px)",
+        "PNG compact size": "Compact PNG (1500px)",
     }
     for label, token in required_section.items():
         if token not in section_text:

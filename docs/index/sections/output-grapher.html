@@ -34,6 +34,14 @@
 
   <div class="outputGrapherActions" data-surface-role="control">
     <button type="button" id="ogParseBtn">Parse / Graph</button>
+    <label class="outputGrapherExportSize">
+      <span>PNG size</span>
+      <select id="ogExportWidthMode" aria-label="PNG export size">
+        <option value="desktop" selected>Desktop PNG (1800px)</option>
+        <option value="poster">Poster PNG (2200px)</option>
+        <option value="compact">Compact PNG (1500px)</option>
+      </select>
+    </label>
     <button type="button" id="ogExportPngBtn" disabled>Export PNG</button>
     <button type="button" id="ogExportSvgBtn" disabled>Export SVG</button>
     <button type="button" id="ogExportJsonBtn" disabled>Export JSON</button>
