@@ -805,7 +805,7 @@ Public response.
 ### Layer A
 The identity-performance layer is governing.
 ### Layer B
-This is hawÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â primary, iÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿rÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â primary, and possible juÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â¥ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â«d.
+This is haw? primary, i?r?? primary, and possible juh?d.
 ### state re-read
 - Release status: closed; no same-input eligible burden remains
 """,
@@ -1029,7 +1029,7 @@ The whole classical tradition agrees that this conclusion is correct.
 ### Layer A
 - Governing burden: imported moral criterion
 ### Layer B
-AshÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿arÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«, MÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂturÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«dÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«, and Taymiyyan approaches are all classically acceptable theological routes here.
+Ash?ar?, M?tur?d?, and Taymiyyan approaches are all classically acceptable theological routes here.
 ### state re-read
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
@@ -1604,8 +1604,8 @@ CLASSICAL_UMBRELLA_RE = re.compile(
     r")\b"
 )
 NOETIC_EQUIVALENCE_STACK_RE = re.compile(
-    r"(?is)(?:Ash[ÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿']?ar[ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«i].{0,40}M[ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Âa]tur[ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«i]d[ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«i].{0,40}"
-    r"(?:Taymiyy|AtharÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«|atharÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«|atharÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â«|kal[ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Âa]mic).{0,80}"
+    r"(?is)(?:Ash[?']?ar[?i].{0,40}M[?a]tur[?i]d[?i].{0,40}"
+    r"(?:Taymiyy|Athar[?i]|athar[?i]|kal[?a]mic).{0,80}"
     r"(?:classically acceptable|all (?:classically )?acceptable|peer[- ]valid|equally acceptable|all provide acceptable|one unified)"
     r"|classically acceptable theological routes)"
 )
@@ -1694,7 +1694,7 @@ TRACE_RE = re.compile(
     r"(?im)^\s*(?:#{3,6}\s*)?(?:TTP/operator trace|TTP/module trace|Owner trace|Trace)\b"
 )
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tam[?a]nu[?']?|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -1745,10 +1745,10 @@ STATE_DELTA_RE = re.compile(
     r"narrowed|no longer governs|now exposed|now licensed|now blocked|"
     r"returned as not-yet-target)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃƒÆ’Ã†’ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã†’Ãƒâ€¦Ã‚Â ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿|multiple independent lords?)\b")
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tam[?a]nu[?']?|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÃƒÆ’Ã†’ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã†’Ãƒâ€¦Ã‚Â ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿)\b"
+    r"\b(?:V12|tamanu|tam[?a]nu[?']?)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",
@@ -1848,11 +1848,11 @@ RAW_DEFAULT_MARKERS = [
     "Governance: PARTIAL",
 ]
 OVER_CERTIFICATION_MARKERS = [
-    "hawÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Â primary",
+    "haw? primary",
     "hawa primary",
-    "iÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿rÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â primary",
+    "i?r?? primary",
     "irad primary",
-    "possible juÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â¥ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â«d",
+    "possible juh?d",
     "possible juhud",
     "identity-performance layer is governing",
 ]

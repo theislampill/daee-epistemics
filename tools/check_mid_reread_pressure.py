@@ -38,7 +38,7 @@ FINDINGS = {
     "doubt-churn",
     "reorientation",
 }
-ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)", "LoopBreak(âˆ‡Ã—T)"}
+ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
 PRESSURE_KEYS = {
     "freeze-landed-move",
     "dependency-tug",
@@ -49,8 +49,8 @@ PRESSURE_KEYS = {
 }
 ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
-REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Î”|Δ|ÃŽâ€)\)")
-LANDED_DELTA_RE = re.compile(r"(?:Delta|Î”|Δ|Î”â¿B|ÃŽâ€|ÃŽâ€Ã¢ÂÂ¿B)")
+REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Δ)\)")
+LANDED_DELTA_RE = re.compile(r"(?:Delta|Δ|ΔⁿB)")
 
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
@@ -249,16 +249,16 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     errors: list[str] = []
     if not mrp.target or "B" not in mrp.target:
         errors.append(f"{label}: Target must name a burden")
-    if not mrp.reread or not re.search(r"R\(H,\s*(?:Î”|Delta)\)", mrp.reread):
-        errors.append(f"{label}: Reread must invoke R(H,Î”)")
-    if not mrp.landed_delta or not re.search(r"(?:Î”â¿B|Î”|Delta)", mrp.landed_delta):
-        errors.append(f"{label}: Landed delta must name Î”â¿B/Î”")
+    if not mrp.reread or not re.search(r"R\(H,\s*(?:Δ|Delta)\)", mrp.reread):
+        errors.append(f"{label}: Reread must invoke R(H,Δ)")
+    if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
+        errors.append(f"{label}: Landed delta must name ΔⁿB/Δ")
     divergence_state = first_state(mrp.divergence)
     curl_state = first_state(mrp.curl)
     if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
-        errors.append(f"{label}: must record active âˆ‡Â·T state")
+        errors.append(f"{label}: must record active ∇·T state")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
-        errors.append(f"{label}: must record active âˆ‡Ã—T state")
+        errors.append(f"{label}: must record active ∇×T state")
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
         errors.append(f"{label}: Pressure activations missing {key}")
@@ -297,7 +297,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     if not mrp.reread or not REREAD_RE.search(mrp.reread):
         errors.append(f"{label}: Reread must invoke R(H,Delta)")
     if not mrp.landed_delta or not LANDED_DELTA_RE.search(mrp.landed_delta):
-        errors.append(f"{label}: Landed delta must name Delta/Î”")
+        errors.append(f"{label}: Landed delta must name Delta/Δ")
     divergence_state = first_state(mrp.divergence)
     curl_state = first_state(mrp.curl)
     if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
@@ -469,7 +469,7 @@ def check_output_reconstructibility(path: Path) -> list[str]:
         errors.append(f"{path}: reconstructibility missing submove nodes")
     if not re.search(r"(?im)^\s*(?:Land\(|Landed delta\s*:|Land\(Bn\)\s*:\s*PARTIAL)", text):
         errors.append(f"{path}: reconstructibility missing Land(Bn) or partial landing")
-    if not re.search(r"(?im)^\s*Reread\s*:\s*R\(H,\s*(?:Delta|Î”|Δ|ÃŽâ€)\)", text):
+    if not re.search(r"(?im)^\s*Reread\s*:\s*R\(H,\s*(?:Delta|Δ)\)", text):
         errors.append(f"{path}: reconstructibility missing R(H,Delta) reread state")
     if not re.search(r"(?im)^\s*MRP resultant\s*:\s*\S", text):
         errors.append(f"{path}: reconstructibility missing MRP resultant")

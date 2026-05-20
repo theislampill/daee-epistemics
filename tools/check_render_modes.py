@@ -2360,7 +2360,7 @@ SUBMOVE_COHESION_GATE_RE = re.compile(
     r"cohesion gate|more-than-three)\b"
 )
 NAMED_OPERATOR_RE = re.compile(
-    r"(?i)\b(?:reductio|tamanu|tamÃƒâ€žÃ‚ÂnuÃƒÅ Ã‚Â¿|criterion-reversal|tribunal-detection|"
+    r"(?i)\b(?:reductio|tamanu|tam[?a]nu[?']?|criterion-reversal|tribunal-detection|"
     r"predication repair|authority-order repair|predication-mode|self-refutation|"
     r"source-status check|pattern-first routing|reason-disambiguation|foreign-premise detection|"
     r"perfection-criterion-usurpation|model-identification gate|V10|transmission-content vetting|"
@@ -2456,10 +2456,10 @@ LITERAL_DEFAULT_GOVERNANCE_RE = re.compile(
     r"(?im)^\s*-?\s*(?:Governance|Release status|Closure|recursion decision)\s*:\s*"
     r"(?:STOP|HOLD|RECURSE|PARTIAL)\b"
 )
-V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿|multiple independent lords?)\b")
+V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tam[?a]nu[?']?|multiple independent lords?)\b")
 V12_PREMATURE_TRINITY_RE = re.compile(
     r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tamÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂnuÃƒÆ’Ã…Â Ãƒâ€šÃ‚Â¿)\b"
+    r"\b(?:V12|tamanu|tam[?a]nu[?']?)\b"
 )
 V12_DIMENSION_TERMS = [
     "dependency",

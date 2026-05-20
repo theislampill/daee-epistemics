@@ -30,7 +30,7 @@ SMOKE6_CALIBRATED_MIN_KB = 75
 BURDEN_RE = re.compile(r"(?im)^\s*(?:Layer A\s+[-—]\s+)?Burden\s+(?P<num>\d+)\b|^\s*live noetic burden\s*:.*\bB[1-9]\b")
 MRP_RE = re.compile(r"(?im)^\s*\[Mid-Reread Pressure\]\s*$")
 LAND_RE = re.compile(r"(?im)^\s*Land\((?:B1|¹B|1B)\)\s*:")
-ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*(?P<route>STOP|HOLD|RECURSE|LoopBreak\(∇×T\)|LoopBreak\(âˆ‡Ã—T\))\b")
+ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*(?P<route>STOP|HOLD|RECURSE|LoopBreak\(∇×T\))\b")
 GRAPH_EDGE_RE = re.compile(r"(?im)^\s*Graph delta\s*:\s*(?P<body>.*(?:B1|¹B).*(?:->|→).*(?:B2|B3|B4).*)$")
 RESULTANT_RE = re.compile(r"(?im)^\s*MRP resultant\s*:\s*(?P<body>\S.*)$")
 PRESSURE_SLOT_RE = re.compile(
@@ -58,7 +58,6 @@ OWNER_SUBMOVE_RE = re.compile(
     r"B\d+[_\.-]?\d+|"
     r"\d+B\d+|"
     r"[¹²³⁴⁵⁶⁷⁸⁹]B[₁₂₃₄₅₆₇₈₉0-9]+|"
-    r"Â¹B(?:â‚[\\x80-\\x99]|[0-9])+"
     r")\s*\[[A-Za-z][A-Za-z0-9/-]*\]\s*(?:[-—:])"
 )
 BAD_OWNER_LABEL_RE = re.compile(r"(?im)^\s*B\d+[_\.-]?\d+\s*\[[^\]\r\n]*\s+[^\]\r\n]*\]\s*(?:[-—:])")

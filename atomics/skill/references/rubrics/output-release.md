@@ -663,9 +663,9 @@ This includes live pressure named by MRP: proportionality, hiddenness/coercive-g
 source-worldview, moral-grounding, owner-floor, owner-body, non-neutral `∇·T`, non-null/held
 `∇×T`, or a graph edge must be released and landed, held with a named gate, or PARTIALed before
 STOP/COMPLETE, Restorative Response, or Closing Formulation.
-Hard/full closure must render the checker-readable closure fields literally: `âˆ‡Â·B:`,
-`âˆ‡Ã—Îº:`, `ð’ž(Î¨á´º): coverage_complete=<true|false>; ...`, and
-`T_lang: Î¨á´º â‡¢ Î¨á´µ:` or ASCII `T_lang: PsiN -> PsiI:`. Do not substitute
+Hard/full closure must render the checker-readable closure fields literally: `∇·B:`,
+`∇×κ:`, `𝒞(Ψᴺ): coverage_complete=<true|false>; ...`, and
+`T_lang: Ψᴺ ⇢ Ψᴵ:` or ASCII `T_lang: PsiN -> PsiI:`. Do not substitute
 a generic divergence-result field, a generic curl-result field, `remaining kappa`, standalone `coverage_complete=true`, or a
 prose-only closure license. In file-retained hard smokes, the runtime may not self-grant a size
 waiver: if the answer stays near old compact-output size while claiming 5+ fully landed burdens,

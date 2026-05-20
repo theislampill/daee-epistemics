@@ -28,7 +28,21 @@ REQUIRED_CONTENT_TOKENS = {
     "closure graph parallel marker": "∥",
     "active divergence gate": "∇·T",
     "active curl gate": "∇×T",
+    "closure divergence field": "∇·B:",
+    "closure curl field": "∇×κ:",
+    "closure field": "𝒞(Ψᴺ):",
     "transfer boundary": "T_lang",
+}
+
+FORBIDDEN_MOJIBAKE_TOKENS = {
+    "U+00E2 marker": "\u00e2",
+    "U+00C2 marker": "\u00c2",
+    "U+00C3 marker": "\u00c3",
+    "U+00CE marker": "\u00ce",
+    "U+00CF marker": "\u00cf",
+    "U+00D0 marker": "\u00d0",
+    "U+00F0 marker": "\u00f0",
+    "replacement character": "\ufffd",
 }
 
 
@@ -136,6 +150,9 @@ def validate_package(path: Path, expect_version: str | None = None) -> tuple[lis
             for label, token in REQUIRED_CONTENT_TOKENS.items():
                 if token not in corpus:
                     errors.append(f"missing packaged content token ({label}): {token}")
+            for label, token in FORBIDDEN_MOJIBAKE_TOKENS.items():
+                if token in corpus:
+                    errors.append(f"packaged text contains likely mojibake token: {label}")
     except BadZipFile:
         errors.append(f"package is not a readable zip payload: {path}")
         names = []
