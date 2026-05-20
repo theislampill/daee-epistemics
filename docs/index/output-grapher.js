@@ -7,10 +7,40 @@
   const intToSub=Object.fromEntries([...SUB].map((c,i)=>[String(i),c]));
   let currentModel=null;
   let currentGraphMode='rebuttal';
-  let currentDensity='comfortable';
 
   function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function cleanParsed(s){return String(s??'').replace(/[╔╗╚╝║═]/g,'').replace(/\s+/g,' ').trim();}
+  function escapeRegExp(s){return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+  function cleanVisibleProseBlock(s){
+    return canonicalizePublicNotation(String(s??'')
+      .replace(/[╔╗╚╝║═]/g,'')
+      .replace(/\r\n/g,'\n')
+      .split('\n')
+      .map(line=>line.trim())
+      .join('\n')
+      .replace(/[ \t]+/g,' ')
+      .replace(/\n{3,}/g,'\n\n')
+      .trim());
+  }
+  function extractBodySection(bodyProse, heading, stopHeadings=[]){
+    const startRe=new RegExp(`(?:^|\\n)\\s*(?:#{1,6}\\s*)?${escapeRegExp(heading)}\\s*:?\\s*\\n+`,'i');
+    const start=String(bodyProse||'').match(startRe);
+    if(!start) return '';
+    const contentStart=(start.index||0)+start[0].length;
+    const rest=bodyProse.slice(contentStart);
+    const stops=stopHeadings.length?stopHeadings:[
+      'Restorative Response',
+      'Closing Formulation',
+      'Closure/Reconstruction Witness',
+      'Closure Witness',
+      'Reconstruction Witness',
+      'Closure audit',
+      'field_witness'
+    ];
+    const stopRe=new RegExp(`\\n\\s*(?:#{1,6}\\s*)?(?:${stops.map(escapeRegExp).join('|')})\\s*:?\\s*(?:\\n|$)`,'i');
+    const stop=rest.match(stopRe);
+    return cleanVisibleProseBlock(stop?rest.slice(0,stop.index):rest);
+  }
   function supNum(raw){return [...String(raw||'')].map(c=>supToInt[c]||'').join('')||'0';}
   function subNum(raw){return [...String(raw||'')].map(c=>subToInt[c]||'').join('')||'0';}
   function burden(n){return [...String(n)].map(c=>intToSup[c]||'').join('')+'B';}
@@ -37,14 +67,16 @@
     const closureStart=closureMatch?closureMatch.index+1:text.length;
     const bodyProse=text.slice(0,closureStart);
     const closureWitness=text.slice(closureStart);
-    const restorativeMatch=bodyProse.match(/Restorative Response\s*\n+([\s\S]*?)(?:\n\s*Closing Formulation\b|\n\s*(?:#+\s*)?(?:Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b|$)/i);
-    const closingMatch=bodyProse.match(/Closing Formulation\s*\n+([\s\S]*?)(?:\n\s*(?:#+\s*)?(?:Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b|$)/i);
+    const fieldWitnessMatch=text.match(/\n\s*(?:#+\s*)?field_witness\b/i);
+    const visibleOutputProse=fieldWitnessMatch?text.slice(0,fieldWitnessMatch.index+1):text;
+    const restorativeResponse=extractBodySection(visibleOutputProse,'Restorative Response',['Closing Formulation','field_witness']);
+    const closingFormulation=extractBodySection(visibleOutputProse,'Closing Formulation',['field_witness']);
     return {
       bodyProse,
       closureWitness,
       bodyLineCount: bodyProse.split(/\r?\n/).length,
-      restorativeResponse: restorativeMatch?cleanParsed(restorativeMatch[1]).slice(0,900):'',
-      closingFormulation: closingMatch?cleanParsed(closingMatch[1]).slice(0,900):''
+      restorativeResponse,
+      closingFormulation
     };
   }
 
@@ -183,8 +215,8 @@
       }
       if(inBody&&currentSubmove){
         const targetDetail=trimmed.match(/^Target:\s*(.+)$/i);
-        const operationDetail=trimmed.match(/^Operation:\s*(.+)$/i);
-        const resultDetail=trimmed.match(/^Result\/state-change:\s*(.+)$/i);
+        const operationDetail=trimmed.match(/^(?:Operation|What it does):\s*(.+)$/i);
+        const resultDetail=trimmed.match(/^(?:Result\/state-change|Result):\s*(.+)$/i);
         const contributionDetail=trimmed.match(/^Contribution-to-Land\([^)]+\):\s*(.+)$/i);
         if(targetDetail) pushSubmoveDetail(model,currentSubmove,'target',targetDetail[1]);
         if(operationDetail) pushSubmoveDetail(model,currentSubmove,'operation',operationDetail[1]);
@@ -331,8 +363,52 @@
     const lines=[]; let cur='';
     words.forEach(w=>{ if((cur+' '+w).trim().length>maxChars && cur){ lines.push(cur); cur=w; } else cur=(cur+' '+w).trim(); });
     if(cur) lines.push(cur);
-    if(Number.isFinite(maxLines) && maxLines>0 && lines.length>maxLines){ lines.length=maxLines; lines[maxLines-1]=`${lines[maxLines-1].replace(/\s*$/,'')} (more in inspector)`; }
     return lines.length?lines:[''];
+  }
+  let svgMeasureCanvas=null;
+  function browserSvgTextWidth(text,size,weight=500){
+    try{
+      if(typeof document==='undefined'||!document.createElement) return null;
+      svgMeasureCanvas=svgMeasureCanvas||document.createElement('canvas');
+      const ctx=svgMeasureCanvas.getContext&&svgMeasureCanvas.getContext('2d');
+      if(!ctx) return null;
+      ctx.font=`${Math.round(Number(weight)||500)} ${size}px Segoe UI, Arial, sans-serif`;
+      return ctx.measureText(String(text||'')).width;
+    }catch(_error){
+      return null;
+    }
+  }
+  function estimateSvgTextWidth(text,size,weight=500){
+    const measured=browserSvgTextWidth(text,size,weight);
+    if(Number.isFinite(measured)) return measured;
+    const heavy=Number(weight)>=700?1.04:1;
+    let units=0;
+    for(const ch of String(text||'')){
+      if(ch===' ') units+=0.34;
+      else if(/[ilI\.,:;'`|!]/.test(ch)) units+=0.30;
+      else if(/[fjrt\[\]\(\)]/.test(ch)) units+=0.42;
+      else if(/[MW@#%&]/.test(ch)) units+=0.86;
+      else if(/[A-Z]/.test(ch)) units+=0.66;
+      else if(/[0-9]/.test(ch)) units+=0.56;
+      else if(/[—–→∇×κΨᴺᴵ𝒞]/.test(ch)) units+=0.70;
+      else units+=0.52;
+    }
+    return units*size*heavy;
+  }
+  function wrapSvgText(text,width,size,weight=500,maxLines=0){
+    const words=String(text||'').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);
+    const lines=[]; let cur='';
+    words.forEach(word=>{
+      const test=(cur+' '+word).trim();
+      if(cur && estimateSvgTextWidth(test,size,weight)>width){lines.push(cur); cur=word;}
+      else cur=test;
+    });
+    if(cur) lines.push(cur);
+    if(Number.isFinite(maxLines)&&maxLines>0&&lines.length>maxLines) lines.length=maxLines;
+    return lines.length?lines:[''];
+  }
+  function storyWrap(text,width,size,weight=500,maxLines=0){
+    return wrapSvgText(text,width,size,weight,maxLines);
   }
   function svgText(text,x,y,width=180,lineHeight=14,maxLines=3,klass='',fill='#f8fafc',size=12,weight=800){
     return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" ${klass?`class="${klass}"`:''}>${wrapWords(text,Math.max(12,Math.floor(width/7)),maxLines).map((line,i)=>`<tspan x="${x}" dy="${i?lineHeight:0}">${esc(line)}</tspan>`).join('')}</text>`;
@@ -363,7 +439,7 @@
     const s=String(state||'pending');
     if(/HOLD/i.test(s)) return 'Held';
     if(/PARTIAL|RECURSE/i.test(s)) return 'Partial';
-    if(/land/i.test(s)) return 'Failure shown';
+    if(/land/i.test(s)) return 'Landed';
     if(/STOP|closed/i.test(s)) return 'Closed';
     return s;
   }
@@ -371,7 +447,7 @@
     const r=String(routes||'');
     if(/STOP/i.test(r)) return 'Closed for this reply';
     if(/HOLD/i.test(r)) return 'Held open';
-    if(/RECURSE/i.test(r)) return 'Next issue';
+    if(/RECURSE/i.test(r)) return 'RECURSE';
     if(/LoopBreak/i.test(r)) return 'Loop blocked';
     return 'Route';
   }
@@ -406,7 +482,7 @@
       const prefix=/HOLD/i.test(node.id)?'What remains held':'What this answer established';
       return canonicalizePublicNotation(node.label).replace(/^Land\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^HOLD\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^Land\(.+?\)$/i,prefix).replace(/^HOLD\(.+?\)$/i,prefix);
     }
-    if(node.kind==='reread') return canonicalizePublicNotation(node.label).replace(/^R\(H,Δ\)\s+—\s*/,'After this answer, what remains? — ').replace(/^R\(H,Δ\)$/,'After this answer, what remains?');
+    if(node.kind==='reread') return canonicalizePublicNotation(node.label).replace(/^R\(H,Δ\)\s+—\s*/,'After this, what remains? — ').replace(/^R\(H,Δ\)$/,'After this, what remains?');
     if(node.kind==='mrp'){
       const b=node.id.match(/\((.+)\)/)?.[1]||'';
       return `Follow-up pressure check — ${publicRouteType(routeResultType(model,b))}`;
@@ -459,7 +535,7 @@
     const raw=String(text||'').replace(/\s+/g,' ').trim();
     if(!raw) return null;
     const cleaned=raw
-      .replace(/^After this answer, what remains\?\s*[—:-]?\s*/i,'')
+      .replace(/^After this(?: answer)?, what remains\?\s*[—:-]?\s*/i,'')
       .replace(/^R\(H,Δ\)\s*[—:-]?\s*/i,'')
       .replace(/^Follow-up(?: pressure check)?:\s*/i,'');
     const pieces=cleaned.split(/\s*(?:;|\|)\s+|\s+•\s+|\s+(?=(?:Failure point|Known failure|Next link|Graph|Route|Target|Finding|Resultant)\b)/i)
@@ -524,6 +600,26 @@
     }
     return `${prefix}${heading}`;
   }
+  function bodySubmoveSections(model,sm,node){
+    const details=model.bodyExtract?.submoveDetails?.[sm]||{};
+    const owner=node?.owner?`[${node.owner}]`:'';
+    const heading=stripTechnicalLead(model.bodyExtract?.submoveTexts?.[sm]||node?.result||node?.label||sm);
+    const sections=[{kind:'heading',label:'',text:`${sm}${owner} — ${heading}`}];
+    [
+      ['Target', details.target],
+      ['What it does', details.operation],
+      ['Result', details.result],
+      ['Contribution', details.contribution]
+    ].forEach(([label,value])=>{
+      const cleaned=stripTechnicalLead(value||'');
+      if(cleaned) sections.push({kind:'detail',label,text:storyFieldText(cleaned,label)});
+    });
+    return sections;
+  }
+  function storyFieldText(text,label=''){
+    const cleaned=stripTechnicalLead(text||'');
+    return cleaned;
+  }
   function bodyLandText(model,b,land){
     const body=model.bodyExtract?.landTexts?.[b];
     return body?stripTechnicalLead(body):(land?stripTechnicalLead(land.label):'No landing result detected in the visible output.');
@@ -540,8 +636,115 @@
     if(bodyItems&&bodyItems.length) return bodyItems;
     return [`Follow-up result: ${result}.`, `Next link: ${canonicalizePublicNotation(edgeText)}.`];
   }
+  function pickMrpLine(model,b,patterns,fallback='not detected'){
+    const body=(model.bodyExtract?.mrpTexts?.[b]||[]).map(x=>canonicalizePublicNotation(cleanParsed(x))).filter(Boolean);
+    for(const pattern of patterns){
+      const found=body.find(line=>pattern.test(line));
+      if(found) return stripTechnicalLead(found);
+    }
+    return fallback;
+  }
+  function mrpPanelRows(model,b,result,edgeText,routes,rereadText){
+    const route=routes||'not detected';
+    const graph=edgeText&&edgeText!=='none'?canonicalizePublicNotation(edgeText):'none';
+    const remained=pickMrpLine(model,b,[/∇·T\s*:/i,/Target:\s*/i,/Reread:\s*/i],rereadText);
+    const why=pickMrpLine(model,b,[/MRP resultant\s*:/i,/Resultant\s*:/i,/finding .* routes/i,/no new pressure/i],route&&/STOP/i.test(route)?'No additional live pressure remained after this follow-up check.':'The previous answer landed, but the follow-up check found pressure that still had to be handled.');
+    return [
+      ['Result', result],
+      ['What remained', remained],
+      ['Why it matters', why],
+      ['Graph movement', graph],
+      ['Route', route],
+      ['Technical', `MRP(${b}); graph=${graph}; route=${route}`]
+    ];
+  }
+  function routePanelItems(model,b,nextBurden,routes,result){
+    const route=String(routes||'').toUpperCase();
+    const mrp=model.mrp[b]||{};
+    const edgeTarget=(mrp.edges||[])[0]?.[1] || nextBurden || '';
+    const nextTitle=edgeTarget?`${edgeTarget} — ${bodyBurdenDescription(model,edgeTarget)}`:'no next problem detected';
+    const reread=bodyRereadText(model,b,model.nodes[`R(H,Δ)@${b}`]);
+    const relation=result||publicRouteType(routeResultType(model,b));
+    if(/RECURSE/.test(route)){
+      return [
+        `Move to next identified problem: ${nextTitle}.`,
+        `Why closure is withheld: ${reread}`,
+        relation==='another problem surfaced'
+          ? `Route type: MRP generated an additional problem from the reread.`
+          : `Route type: MRP activated a remaining problem that still had to be answered.`
+      ];
+    }
+    if(/HOLD/.test(route)){
+      return [
+        `Hold instead of closing: ${reread}`,
+        `Why this is held: the output records real pressure that is not expanded in this pass.`
+      ];
+    }
+    if(/LOOPBREAK/.test(route)){
+      return [
+        `LoopBreak: repeated proof-demand or circular pressure was detected.`,
+        `Why expansion stops: further proof-stacking is not licensed by this route.`
+      ];
+    }
+    if(/STOP/.test(route)){
+      return [
+        `Stop for this reply: no additional live problem remains after ${b}.`,
+        `Closure is licensed because the follow-up check records no new graph edge.`
+      ];
+    }
+    return [
+      edgeTarget?`Next problem available: ${nextTitle}.`:`No explicit next route was detected.`,
+      `Route evidence: ${canonicalizePublicNotation(routes||'not detected')}.`
+    ];
+  }
   function firstSentence(text){
     return String(text||'').split(/(?<=\.)\s+/)[0] || String(text||'');
+  }
+  function visibleClaimContext(model){
+    const labels=semanticBurdenLabels(model,6).map(item=>item.replace(/^Problem\s+\S+\s+—\s*/,'').trim()).filter(Boolean);
+    const joined=[...labels,model.closingFormulation||'',model.restorationAim||''].join(' ');
+    if(/only true God/i.test(joined) && /John\s+17:3/i.test(joined)){
+      const proofTexts=[...new Set((joined.match(/\b(?:1\s+John|John)\s+\d+:\d+/gi)||[]).map(x=>x.replace(/\s+/g,' ')))];
+      const textList=proofTexts.length?` around ${proofTexts.slice(0,4).join(', ')}`:'';
+      return `A Trinitarian reply${textList}: it tries to answer the claim that the Father is called "the only true God" by moving "only," appealing to other proof-texts, and invoking the doctrine of the Trinity.`;
+    }
+    if(/secular/i.test(joined) && /neutral/i.test(joined)){
+      return `A secular-public-reason reply: it claims neutrality while the output tests whether that neutrality hides an authority rule or admissibility filter.`;
+    }
+    if(/eternal lake of fire|non-belief|TST|Satanist|worship/i.test(joined)){
+      return `A moral-protest reply about divine judgment and worship-worthiness: it challenges whether the objection's moral criterion and worldview frame can carry the burden it places on God.`;
+    }
+    if(labels.length){
+      const shown=labels.slice(0,3).join('; ');
+      const remaining=labels.length>3?`; plus ${labels.length-3} more listed problem${labels.length-3===1?'':'s'}`:'';
+      return `The output is refuting a reply built around: ${shown}${remaining}.`;
+    }
+    return '';
+  }
+  function storyCaseHeadline(model){
+    const context=visibleClaimContext(model);
+    if(/Trinitarian reply/i.test(context) && /John\s+17:3/i.test(context)){
+      return {
+        title:'CASE: Trinitarian reply to John 17:3',
+        subtitle:'Question under test: can the reply preserve the Father as “the only true God” while moving “only,” appealing to other proof-texts, and invoking the Trinity?'
+      };
+    }
+    if(/secular-public-reason/i.test(context)){
+      return {
+        title:'CASE: secular public-reason neutrality claim',
+        subtitle:'Question under test: does the appeal to neutral shared reason hide an authority rule or admissibility filter?'
+      };
+    }
+    if(/moral-protest reply/i.test(context)){
+      return {
+        title:'CASE: moral protest against divine judgment',
+        subtitle:'Question under test: can the objection’s moral criterion and worldview frame carry the burden it places on God?'
+      };
+    }
+    return {
+      title:'CASE: pasted daee-epistemics output',
+      subtitle:context||readerInputDigest(model)
+    };
   }
   function refutationParties(model){
     const closing=String(model.closingFormulation||'');
@@ -563,6 +766,15 @@
         body:`${defender}'s challenge remains standing. The graph is dismantling the ${parties.challenged}, not defending it.${reason?` ${firstSentence(reason)}`:''}`
       };
     }
+    const visibleContext=visibleClaimContext(model);
+    if(/Trinitarian reply/i.test(visibleContext) && /John\s+17:3/i.test(visibleContext)){
+      return {
+        headline:'Verdict: the Trinitarian reply fails to close the John 17:3 objection',
+        body:model.restorationAim&&model.restorationAim!=='not detected'
+          ? `Restoration aim from output: ${model.restorationAim}`
+          : closing
+      };
+    }
     return {
       headline:`Verdict: ${collapseLabel(model)}`,
       body:closing
@@ -571,6 +783,8 @@
   function readerInputDigest(model){
     const raw=String(model.inputDigest||'').trim();
     if(raw && raw!=='pasted daee-epistemics output' && !/^dominant\b/i.test(raw)) return raw;
+    const visibleContext=visibleClaimContext(model);
+    if(visibleContext) return visibleContext;
     const parties=refutationParties(model);
     const task=/REFUTE/i.test(model.userTask||'')
       ? (parties?`Reply being rejected: the ${parties.challenged} is trying to answer ${parties.defended}.`:'Task stated in the output: REFUTE.')
@@ -587,8 +801,9 @@
     return parts.join(' · ');
   }
   function diagnosisItems(model,burdens){
+    const visibleContext=visibleClaimContext(model);
     return [
-      model.userTask?`Task stated in the output: ${humanize(model.userTask)}`:'',
+      visibleContext?`What kind of reply this is: ${visibleContext}`:(model.userTask?`Task stated in the output: ${humanize(model.userTask)}`:''),
       `Structural pressure from the visible output: ${bodyBackedStructuralSummary(model)}`,
       `Problems found in the output: ${burdens.length}`,
       model.restorationAim&&model.restorationAim!=='not detected'?`Restoration aim from the output: ${model.restorationAim}`:''
@@ -624,8 +839,6 @@
     const route=model.errors.length?'The graph still exposes missing or invalid accounting.':held.length?`The final result remains ${collapse}; live states: ${held.join('; ')}.`:`The final result reaches ${collapse}; no unaccounted terminal problem was detected.`;
     const restored=(model.restorationAim&&model.restorationAim!=='not detected')?model.restorationAim:'The handled field is oriented back toward sound fiṭrah and clear intellect after the visible burden cycle has been accounted for.';
     return [
-      model.closingFormulation?`Final answer from the output: ${model.closingFormulation}`:'',
-      model.restorativeResponse?`Restorative response from the output: ${model.restorativeResponse}`:'',
       answered,
       ...burdens.map(item=>`Accounted for: ${item}`),
       route,
@@ -633,18 +846,123 @@
     ].filter(Boolean);
   }
 
-  function storyLineChars(width,size){
-    return Math.max(22, Math.floor(width/(size*0.44)));
-  }
   function storyLineText(lines,x,y,lineHeight,fill,size,weight=800){
     return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" font-weight="${weight}" class="ogNodeLabel">${lines.map((line,i)=>`<tspan x="${x}" dy="${i?lineHeight:0}">${esc(line)}</tspan>`).join('')}</text>`;
   }
-  function storyListBlock(items,x,y,w,lineHeight,fill,size,weight=800,gap=12){
+  function storyTextHeight(lines,lineHeight,size){
+    const count=(lines||[]).length;
+    if(!count) return 0;
+    return Math.max(Math.ceil(size*1.22), (count-1)*lineHeight+Math.ceil(size*1.22));
+  }
+  function storyBottomPad(pad){
+    return Math.max(8,Math.round(pad*.38));
+  }
+  function normalizeHeaderBadges(badges){
+    const items=(badges||[]).filter(Boolean).map(item=>{
+      const label=typeof item==='string'?item:item.label;
+      const color=typeof item==='string'?'#334155':(item.color||'#334155');
+      return {label:String(label||'').trim(), color};
+    }).filter(item=>item.label);
+    return items.map(item=>({...item,width:Math.max(92,Math.min(190,estimateSvgTextWidth(item.label,14,650)+28))}));
+  }
+  function renderHeaderBadges(badges,x,y,w,align='left'){
+    const items=normalizeHeaderBadges(badges);
+    if(!items.length) return {svg:'',height:0};
+    let rowH=30, gap=8, svg='';
+    let cx=align==='right'?x+w:x;
+    items.forEach((item)=>{
+      const bw=Math.min(w,item.width);
+      const bx=align==='right'?(cx-bw):cx;
+      svg+=`<rect x="${bx}" y="${y}" width="${bw}" height="${rowH}" rx="7" fill="${item.color}" stroke="rgba(255,255,255,.18)" stroke-width="1"></rect><text x="${bx+13}" y="${y+20}" fill="#f8fafc" font-size="14" font-weight="650">${esc(item.label)}</text>`;
+      cx+=align==='right'?-(bw+gap):(bw+gap);
+    });
+    return {svg,height:rowH,width:items.reduce((sum,item,i)=>sum+item.width+(i?gap:0),0)};
+  }
+  function renderCardHeader({x,y,width,title,subtitle='',badges=[],type='',color='#64748b',titleSize=24,subtitleSize=16,pad=24,titleFill='#f8fafc',subtitleFill='#cbd5e1',titleWeight=700}){
+    const titleLine=Math.round(titleSize*1.32);
+    const subtitleLine=Math.round(subtitleSize*1.45);
+    const contentW=width-pad*2;
+    const badgeItems=normalizeHeaderBadges(badges);
+    const badgeW=badgeItems.length?Math.min(contentW*.42,badgeItems.reduce((sum,item,i)=>sum+item.width+(i?8:0),0)):0;
+    const titleW=badgeW?Math.max(300,contentW-badgeW-24):contentW;
+    const titleText=title||type||'Untitled';
+    const titleLines=storyWrap(titleText, titleW, titleSize, titleWeight, 0);
+    let svg='';
+    const titleY=y+pad+titleSize;
+    if(badgeItems.length){
+      const badgeY=y+pad-4;
+      svg+=renderHeaderBadges(badgeItems,x+pad,badgeY,contentW,'right').svg;
+    }
+    svg+=storyLineText(titleLines,x+pad,titleY,titleLine,titleFill,titleSize,titleWeight);
+    const titleBottom=titleY+Math.max(0,titleLines.length-1)*titleLine+12;
+    const badgeBottom=badgeItems.length?y+pad-4+30+16:0;
+    let cy=Math.max(titleBottom,badgeBottom);
+    const subtitleLines=subtitle?storyWrap(subtitle, contentW, subtitleSize, 440, 0):[];
+    if(subtitleLines.length){
+      cy+=subtitleSize;
+      svg+=storyLineText(subtitleLines,x+pad,cy,subtitleLine,subtitleFill,subtitleSize,440);
+      cy+=Math.max(0,subtitleLines.length-1)*subtitleLine+10;
+    }
+    const headerHeight=Math.max(78,cy-y+10);
+    return {svg,height:headerHeight,bodyY:y+headerHeight+24,color};
+  }
+  function splitLeadingLabel(text){
+    const match=String(text||'').match(/^([^:]{3,54}):\s+(.+)$/);
+    if(!match) return null;
+    return {label:match[1].trim(), value:match[2].trim()};
+  }
+  function measureSubmoveSections(sections,w,d){
+    const headingSize=Math.max(22,d.font+1);
+    const labelSize=Math.max(21,d.font);
+    const bodySize=Math.max(22,d.font);
+    const bodyLine=Math.max(36,d.line+2);
+    const heading=sections.find(section=>section.kind==='heading')?.text||'Answer move';
+    const header=renderCardHeader({x:0,y:0,width:w,title:heading,color:'#38bdf8',titleSize:headingSize,pad:24,titleWeight:720,titleFill:'#ecfeff'});
+    let height=header.height+6;
+    const detailSections=sections.filter(section=>section.kind!=='heading');
+    const measured=detailSections.map((section,index)=>{
+      const isLast=index===detailSections.length-1;
+      const textW=w-48;
+      const labelLines=storyWrap(`${section.label}:`, textW, labelSize, 690, 1);
+      const bodyLines=storyWrap(section.text, textW, bodySize, 500, 0);
+      height+=(index?22:14)+labelLines.length*(labelSize+6)+12+bodyLines.length*bodyLine+(isLast?4:14);
+      return {...section,labelLines,bodyLines,labelSize,bodySize,bodyLine};
+    });
+    return {title:heading,sections:measured,height:Math.max(d.subMinH,height+8)};
+  }
+  function renderSubmoveSections(block,x,y,w){
+    const header=renderCardHeader({x,y,width:w,title:block.title,color:'#38bdf8',titleSize:Math.max(20,block.sections[0]?.bodySize||20),pad:24,titleWeight:720,titleFill:'#ecfeff'});
+    let cy=header.bodyY;
+    const bodySvg=block.sections.map((section,index)=>{
+      cy+=index?22:14;
+      const labelSvg=storyLineText(section.labelLines,x+24,cy,section.labelSize+6,'#bae6fd',section.labelSize,690);
+      cy+=section.labelLines.length*(section.labelSize+6)+12;
+      const bodySvg=storyLineText(section.bodyLines,x+24,cy,section.bodyLine,'#dff7ff',section.bodySize,500);
+      cy+=section.bodyLines.length*section.bodyLine+(index===block.sections.length-1?4:14);
+      return `${labelSvg}${bodySvg}`;
+    }).join('');
+    return `${header.svg}${bodySvg}`;
+  }
+  function storyListBlock(items,x,y,w,lineHeight,fill,size,weight=540,gap=16,labelWeight=700){
     let cy=y, svg='';
-    (items||[]).filter(Boolean).forEach((item)=>{
-      const lines=wrapWords(item, storyLineChars(w-34,size), 0);
-      svg+=`<circle cx="${x+7}" cy="${cy-7}" r="5" fill="${fill}"></circle>${storyLineText(lines,x+28,cy,lineHeight,fill,size,weight)}`;
-      cy+=lines.length*lineHeight+gap;
+    const rows=(items||[]).filter(Boolean);
+    rows.forEach((item,index)=>{
+      const isLast=index===rows.length-1;
+      const split=splitLeadingLabel(item);
+      svg+=`<circle cx="${x+7}" cy="${cy-7}" r="5" fill="${fill}"></circle>`;
+      if(split){
+        const textW=w-34;
+        const labelLines=storyWrap(`${split.label}:`, textW, size, labelWeight, 1);
+        const valueLines=storyWrap(split.value, textW, size, weight, 0);
+        svg+=storyLineText(labelLines,x+28,cy,lineHeight,fill,size,labelWeight);
+        cy+=storyTextHeight(labelLines,lineHeight,size)+8;
+        svg+=storyLineText(valueLines,x+28,cy,lineHeight,fill,size,weight);
+        cy+=storyTextHeight(valueLines,lineHeight,size)+(isLast?0:gap+4);
+      }else{
+        const lines=storyWrap(item, w-34, size, weight, 0);
+        svg+=storyLineText(lines,x+28,cy,lineHeight,fill,size,weight);
+        cy+=storyTextHeight(lines,lineHeight,size)+(isLast?0:gap);
+      }
     });
     return {svg,height:Math.max(0,cy-y)};
   }
@@ -660,25 +978,97 @@
       techSize=16,
       lineHeight=24,
       pad=22,
-      rail='',
+      badges=[],
+      color=stroke,
       minHeight=0,
       klass='outputGrapherStoryPanel'
     }=options;
     const listItems=Array.isArray(items)?items.filter(Boolean):null;
-    const bodyLines=listItems?[]:wrapWords(subtitle||'not detected', storyLineChars(w-pad*2,bodySize), maxLines);
-    const techLines=technical?wrapWords(`Technical: ${technical}`, storyLineChars(w-pad*2,techSize), 2):[];
-    const bodyY=y+pad+titleSize+30;
-    const listBlock=listItems?storyListBlock(listItems,x+pad,bodyY,w-pad*2,lineHeight,'#e5e7eb',bodySize,800,16):null;
-    const bodyHeight=listBlock?listBlock.height:bodyLines.length*lineHeight;
+    const innerW=w-pad*2;
+    const bodyLines=listItems?[]:storyWrap(subtitle||'not detected', innerW, bodySize, 540, maxLines);
+    const techLines=technical?storyWrap(`Technical: ${technical}`, innerW, techSize, 500, 2):[];
+    const header=renderCardHeader({x,y,width:w,title,badges,color,titleSize,pad,titleWeight:720});
+    const bodyY=header.bodyY;
+    const listBlock=listItems?storyListBlock(listItems,x+pad,bodyY,w-pad*2,lineHeight,'#e5e7eb',bodySize,540,16,700):null;
+    const bodyHeight=listBlock?listBlock.height:storyTextHeight(bodyLines,lineHeight,bodySize);
     const techY=bodyY+bodyHeight+24;
-    const height=Math.max(minHeight, pad+titleSize+30+bodyHeight+(techLines.length?24+techLines.length*(techSize+5):0)+pad);
-    const railSvg=rail?`<rect x="${x}" y="${y}" width="7" height="${height}" rx="7" fill="${rail}"></rect>`:'';
-    const techSvg=techLines.length?storyLineText(techLines,x+pad,techY,techSize+5,'#94a3b8',techSize,800):'';
-    const bodySvg=listBlock?listBlock.svg:storyLineText(bodyLines,x+pad,bodyY,lineHeight,'#e5e7eb',bodySize,800);
+    const bottomPad=storyBottomPad(pad);
+    const visualTrim=techLines.length?Math.ceil(Math.min(bodySize,techSize)*.45):Math.ceil(bodySize*.75);
+    const height=Math.max(minHeight, (bodyY-y)+bodyHeight+(techLines.length?24+techLines.length*(techSize+5):0)+bottomPad-visualTrim);
+    const techSvg=techLines.length?storyLineText(techLines,x+pad,techY,techSize+5,'#94a3b8',techSize,500):'';
+    const bodySvg=listBlock?listBlock.svg:storyLineText(bodyLines,x+pad,bodyY,lineHeight,'#e5e7eb',bodySize,540);
     return {
       height,
-      svg:`<g class="${klass}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${railSvg}<text x="${x+pad}" y="${y+pad+titleSize}" fill="#f8fafc" font-size="${titleSize}" font-weight="900">${esc(title)}</text>${bodySvg}${techSvg}</g>`
+      svg:`<g class="${klass}" data-panel-width="${w}" data-inner-text-width="${innerW}" data-left-padding="${pad}" data-right-padding="${pad}" data-text-x="${x+pad}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${header.svg}${bodySvg}${techSvg}</g>`
     };
+  }
+  function storyKeyValueBlock(title,rows,x,y,w,options={}){
+    const {
+      fill='#0b1220',
+      stroke='#334155',
+      titleSize=18,
+      bodySize=16,
+      labelSize=16,
+      lineHeight=24,
+      pad=22,
+      badges=[],
+      color=stroke,
+      klass='outputGrapherStoryPanel outputGrapherKeyValuePanel'
+    }=options;
+    const labelW=Math.min(260,Math.max(170,Math.floor(w*.2)));
+    const header=renderCardHeader({x,y,width:w,title,badges,color,titleSize,pad,titleWeight:720});
+    let cy=header.bodyY+10;
+    const rowGap=22;
+    const rowPad=14;
+    const rowData=(rows||[]).filter(row=>row&&row[1]).map(([label,value])=>{
+      const lines=storyWrap(value, w-pad*2-labelW-28, bodySize, 500, 0);
+      const height=Math.max(lineHeight+rowPad*2, storyTextHeight(lines,lineHeight,bodySize)+rowPad*2);
+      return {label,value,lines,height};
+    });
+    const rowsSvg=rowData.map(row=>{
+      const textY=cy+rowPad+labelSize;
+      const labelSvg=`<text x="${x+pad}" y="${textY}" fill="#c4b5fd" font-size="${labelSize}" font-weight="700">${esc(row.label)}:</text>`;
+      const bodyWeight=/^Technical$/i.test(row.label)?480:500;
+      const bodyFill=/^Technical$/i.test(row.label)?'#ddd6fe':'#ede9fe';
+      const bodySvg=storyLineText(row.lines,x+pad+labelW,textY,lineHeight,bodyFill,bodySize,bodyWeight);
+      const sep=`<line x1="${x+pad}" y1="${cy+row.height+6}" x2="${x+w-pad}" y2="${cy+row.height+6}" stroke="${stroke}" stroke-width=".8" opacity=".45"></line>`;
+      cy+=row.height+rowGap;
+      return `${labelSvg}${bodySvg}${sep}`;
+    }).join('');
+    const height=Math.max(96,cy-y+storyBottomPad(pad)-rowGap);
+    return {
+      height,
+      svg:`<g class="${klass}" data-panel-width="${w}" data-value-text-width="${w-pad*2-labelW-28}" data-left-padding="${pad}" data-right-padding="${pad}" data-label-width="${labelW}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${header.svg}${rowsSvg}</g>`
+    };
+  }
+  function renderRouteRow(title,items,routes,x,y,w,options={}){
+    const route=String(routes||'not detected');
+    const closed=/STOP/i.test(route);
+    const held=/HOLD/i.test(route);
+    const loop=/LoopBreak/i.test(route);
+    const stroke=closed?'#10b981':loop?'#ef4444':'#f59e0b';
+    const fill=closed?'#052e16':loop?'#3b0a0a':'#451a03';
+    const badgeFill=closed?'#064e3b':held?'#7c2d12':loop?'#7f1d1d':'#7c2d12';
+    const pad=options.pad||24, titleSize=options.titleSize||24, bodySize=options.bodySize||21, lineHeight=options.lineHeight||32;
+    const routeLabel=/STOP/i.test(route)?'STOP':/HOLD/i.test(route)?'HOLD':/RECURSE/i.test(route)?'RECURSE':/LoopBreak/i.test(route)?'LoopBreak':'Route';
+    const bodyItems=(items||[]).filter(Boolean);
+    const main=bodyItems[0]||'No explicit next-step explanation was detected.';
+    const detail=bodyItems.slice(1);
+    const badgeW=Math.max(92,Math.min(190,estimateSvgTextWidth(routeLabel,14,650)+28));
+    const textX=x+pad;
+    const textW=w-pad*2;
+    const mainLines=storyWrap(main,textW,bodySize,500,0);
+    const detailLines=detail.flatMap(item=>storyWrap(`- ${item}`,textW,bodySize-1,480,0));
+    const header=renderCardHeader({x,y,width:w,title,badges:[{label:routeLabel,color:badgeFill}],color:stroke,titleSize,pad,titleWeight:720,titleFill:'#fed7aa'});
+    const bodyH=storyTextHeight(mainLines,lineHeight,bodySize)+(detailLines.length?16+storyTextHeight(detailLines,lineHeight-2,bodySize-1):0);
+    const height=Math.max(96,(header.bodyY-y)+bodyH+storyBottomPad(pad)-Math.ceil(bodySize*.75));
+    let cy=header.bodyY;
+    let svg=`<g class="outputGrapherRouteRow" data-panel-width="${w}" data-route-badge-width="${badgeW}" data-route-badge-position="top-right" data-inner-text-width="${textW}" data-left-padding="${pad}" data-right-padding="${pad}" data-text-x="${textX}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="16" fill="${fill}" stroke="${stroke}" stroke-width="1.4"></rect>${header.svg}`;
+    svg+=storyLineText(mainLines,textX,cy,lineHeight,'#ffedd5',bodySize,500);
+    cy+=storyTextHeight(mainLines,lineHeight,bodySize)+16;
+    if(detailLines.length) svg+=storyLineText(detailLines,textX,cy,lineHeight-2,'#fed7aa',bodySize-1,480);
+    svg+=`</g>`;
+    return {height,svg};
   }
   function storySection(title,subtitle,x,y,w,h,fill='#0b1220',stroke='#334155',technical=''){
     return storySectionBlock(title,subtitle,x,y,w,{fill,stroke,technical,minHeight:h,maxLines:3}).svg;
@@ -686,29 +1076,79 @@
   function renderCollapsePanel(model,x,y,w){
     const collapse=model.collapse||{};
     const bullets=restorationBullets(model);
-    const pad=36, titleSize=34, bodySize=22, techSize=18, lineHeight=34;
+    const pad=36, titleSize=34, bodySize=22, lineHeight=34;
     const bulletGap=20;
-    const bulletHeight=bullets.reduce((height,text)=>height+wrapWords(text, storyLineChars(w-pad*2-24,bodySize), 0).length*lineHeight+bulletGap,0);
-    const tech=`Terminal states: ${Object.keys(model.terminals).length}/${model.burdens.length} · ∇·B: ${collapse.divergence||'not detected'} · ∇×κ: ${collapse.curl||'not detected'} · 𝒞(Ψᴺ): ${collapse.coverage||String(model.closureComplete)} · T_lang: ${collapse.tLang||'boundary not detected'}`;
-    const techText=`R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ · ${tech}`;
-    const techLines=wrapWords(techText, storyLineChars(w-pad*2-28,techSize), 0);
-    const techH=72+techLines.length*30;
-    const height=pad+titleSize+26+bulletHeight+22+techH+pad;
-    let cy=y+pad+titleSize+28;
-    const bulletSvg=bullets.map(text=>{
-      const lines=wrapWords(text, storyLineChars(w-pad*2-24,bodySize), 0);
-      const group=`<circle cx="${x+pad+5}" cy="${cy-7}" r="5" fill="#86efac"></circle>${storyLineText(lines,x+pad+24,cy,lineHeight,'#dcfce7',bodySize,800)}`;
-      cy+=lines.length*lineHeight+bulletGap;
+    const bulletHeight=bullets.reduce((height,text,index)=>{
+      const lines=storyWrap(text, w-pad*2-24, bodySize, 540, 0);
+      return height+storyTextHeight(lines,lineHeight,bodySize)+(index===bullets.length-1?0:bulletGap);
+    },0);
+    const header=renderCardHeader({x,y,width:w,title:`Restoration Summary: ${collapseLabel(model)}`,color:'#22c55e',titleSize,pad,titleFill:'#dcfce7',titleWeight:720});
+    const height=header.height+bulletHeight+storyBottomPad(pad);
+    let cy=header.bodyY;
+    const bulletSvg=bullets.map((text,index)=>{
+      const lines=storyWrap(text, w-pad*2-24, bodySize, 540, 0);
+      const group=`<circle cx="${x+pad+5}" cy="${cy-7}" r="5" fill="#86efac"></circle>${storyLineText(lines,x+pad+24,cy,lineHeight,'#dcfce7',bodySize,540)}`;
+      cy+=storyTextHeight(lines,lineHeight,bodySize)+(index===bullets.length-1?0:bulletGap);
       return group;
     }).join('');
-    const techY=cy+18;
     return {
       height,
-      svg:`<g class="outputGrapherProofBlock outputGrapherRestorationSummary"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="22" fill="#071a12" stroke="#22c55e" stroke-width="1.8"></rect><rect x="${x}" y="${y}" width="8" height="${height}" rx="8" fill="#10b981"></rect><text x="${x+pad}" y="${y+pad+titleSize}" fill="#dcfce7" font-size="${titleSize}" font-weight="900">Restoration Summary: ${esc(collapseLabel(model))}</text>${bulletSvg}<rect x="${x+pad}" y="${techY}" width="${w-pad*2}" height="${techH}" rx="14" fill="#0b1220" stroke="#14532d" stroke-width="1"></rect><text x="${x+pad+16}" y="${techY+32}" fill="#bbf7d0" font-size="20" font-weight="900">Technical proof strip</text>${storyLineText(techLines,x+pad+16,techY+66,30,'#bbf7d0',techSize,800)}</g>`
+      svg:`<g class="outputGrapherProofBlock outputGrapherRestorationSummary"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="22" fill="#071a12" stroke="#22c55e" stroke-width="1.8"></rect>${header.svg}${bulletSvg}</g>`
     };
   }
-  function storyBadge(text,x,y,fill='#1f2937',stroke='#475569'){
-    return `<g><rect x="${x}" y="${y}" width="${Math.max(126,String(text).length*10+28)}" height="34" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="1.2"></rect><text x="${x+14}" y="${y+23}" fill="#e5e7eb" font-size="16" font-weight="900">${esc(text)}</text></g>`;
+  function renderFormalCaseFill(model,x,y,w){
+    const collapse=model.collapse||{};
+    const terminalStates=Object.entries(model.terminals||{})
+      .map(([b,state])=>`${normalizeBurden(b)}=${canonicalizePublicNotation(state)}`)
+      .join('; ') || 'not detected';
+    const mrpLedger=Object.entries(model.mrp||{})
+      .map(([b,data])=>{
+        const graph=(data.edges||[]).map(edge=>issueGraph(edge[0],edge[1])).join(', ') || 'none';
+        const route=(data.routes||[]).join(', ') || 'not detected';
+        const result=(data.resultTypes||[]).join(', ') || publicRouteType(routeResultType(model,b));
+        return `MRP(${normalizeBurden(b)}): finding=${result}; graph=${graph}; route=${route}`;
+      })
+      .join('; ') || 'none';
+    const rows=[
+      ['Formal reading', 'R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ'],
+      ['Terminal states', `${Object.keys(model.terminals||{}).length}/${model.burdens.length||0}; ${terminalStates}`],
+      ['MRP/resultant ledger', mrpLedger],
+      ['Closure/collapse proof', `∇·B: ${collapse.divergence||'not detected'}; ∇×κ: ${collapse.curl||'not detected'}; 𝒞(Ψᴺ): ${collapse.coverage||String(model.closureComplete)}`],
+      ['Language boundary', `T_lang: ${collapse.tLang||'boundary not detected'}`],
+      ['field_witness fill', model.witnessMismatches?.length?`visible output / field_witness mismatches: ${model.witnessMismatches.length}`:'visible output and supplied field_witness have no reported mismatch']
+    ];
+    const block=storyKeyValueBlock('Formal Case Fill',rows,x,y,w,{fill:'#0b1220',stroke:'#64748b',titleSize:30,bodySize:20,labelSize:20,lineHeight:31,pad:30,badges:[{label:'Technical appendix',color:'#334155'}],klass:'outputGrapherStoryPanel outputGrapherKeyValuePanel outputGrapherFormalCaseFill'});
+    return block;
+  }
+  function renderFinalProseCard(title,text,x,y,w,options={}){
+    const cleaned=cleanVisibleProseBlock(text);
+    if(!cleaned) return {height:0,svg:''};
+    const {
+      klass='outputGrapherFinalBodyProse',
+      fill='#0b1220',
+      stroke='#10b981',
+      color=stroke,
+      titleSize=34,
+      bodySize=23,
+      lineHeight=36,
+      pad=36
+    }=options;
+    const paragraphs=cleaned.split(/\n{2,}/).map(item=>item.trim()).filter(Boolean);
+    const innerW=w-pad*2;
+    const header=renderCardHeader({x,y,width:w,title,color,titleSize,pad,titleFill:'#f8fafc',titleWeight:720});
+    let cy=header.bodyY;
+    const paraGap=22;
+    const bodySvg=paragraphs.map(paragraph=>{
+      const lines=storyWrap(paragraph,innerW,bodySize,500,0);
+      const svg=storyLineText(lines,x+pad,cy,lineHeight,'#e5e7eb',bodySize,500);
+      cy+=storyTextHeight(lines,lineHeight,bodySize)+paraGap;
+      return svg;
+    }).join('');
+    const height=Math.max(header.height+storyBottomPad(pad),cy-y+storyBottomPad(pad)-paraGap-Math.ceil(bodySize*.85));
+    return {
+      height,
+      svg:`<g class="${klass}" data-panel-width="${w}" data-inner-text-width="${innerW}" data-left-padding="${pad}" data-right-padding="${pad}" data-text-x="${x+pad}"><rect x="${x}" y="${y}" width="${w}" height="${height}" rx="22" fill="${fill}" stroke="${stroke}" stroke-width="1.8"></rect>${header.svg}${bodySvg}</g>`
+    };
   }
   function storyMiniFlow(model,b,x,y,w){
     const steps=[
@@ -726,28 +1166,29 @@
       return `<g><rect x="${sx}" y="${y}" width="${sw}" height="48" rx="10" fill="${s[1]}" stroke="#1f2937" stroke-width="1.2"></rect>${svgText(s[0],sx+8,y+18,sw-16,12,1,'ogNodeLabel','#f8fafc',11,900)}<text x="${sx+8}" y="${y+38}" fill="#e2e8f0" font-size="9" font-weight="800">${esc(s[2])}</text>${arrow}</g>`;
     }).join('');
   }
-  function densityConfig(){
-    if(currentDensity==='compact') return {font:19,line:29,gap:44,cardPad:36,subMinH:82,subGap:18,panelLines:0};
-    if(currentDensity==='expanded') return {font:24,line:37,gap:78,cardPad:54,subMinH:116,subGap:28,panelLines:0};
-    return {font:22,line:34,gap:66,cardPad:48,subMinH:104,subGap:24,panelLines:0};
+  function storyLayoutConfig(){
+    return {font:22,line:34,gap:54,cardPad:42,subMinH:82,subGap:20,panelLines:0,panelPad:26};
   }
   function renderStorySvg(model){
     const width=1800, margin=56, cardW=width-margin*2;
-    const d=densityConfig();
+    const d=storyLayoutConfig();
     const burdens=model.burdens.length?model.burdens:Object.values(model.nodes).filter(n=>n.kind==='burden').map(n=>n.id);
     const verdict=verdictDigest(model);
+    const caseHead=storyCaseHeadline(model);
     let y=34;
     const parts=[];
-    parts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="950">OUTPUT GRAPHER - REBUTTAL MAP</text><rect x="${width-420}" y="${y-16}" width="370" height="44" rx="9" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-392}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="900">Plain-language Rebuttal View</text>`);
-    y+=60;
-    const verdictCard=storySectionBlock(verdict.headline,verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:34,bodySize:23,lineHeight:36,pad:34,rail:'#10b981'});
+    parts.push(`<text x="${margin}" y="${y+18}" fill="#f8fafc" font-size="38" font-weight="760">Output grapher — Restorative Noetic Map</text><rect x="${width-420}" y="${y-16}" width="370" height="44" rx="9" fill="#0f172a" stroke="#475569" stroke-width="1.2"></rect><text x="${width-392}" y="${y+12}" fill="#e2e8f0" font-size="19" font-weight="700">Plain-language Rebuttal View</text>`);
+    y+=58;
+    const caseCard=storySectionBlock(caseHead.title,caseHead.subtitle,margin,y,cardW,{fill:'#0a1020',stroke:'#38bdf8',maxLines:0,titleSize:42,bodySize:27,lineHeight:40,pad:36,badges:[{label:'What this map is about',color:'#0e7490'}]});
+    parts.push(caseCard.svg); y+=caseCard.height+20;
+    const verdictCard=storySectionBlock(verdict.headline,verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:38,bodySize:25,lineHeight:38,pad:34});
     parts.push(verdictCard.svg); y+=verdictCard.height+18;
-    const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',items:splitReadableItems(readerInputDigest(model)),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
+    const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     parts.push(claimCard.svg); y+=claimCard.height+18;
-    const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
+    const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     parts.push(diagCard.svg); y+=diagCard.height+18;
     const invItems=semanticBurdenLabels(model,8);
-    const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#3b82f6'});
+    const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     parts.push(invCard.svg); y+=invCard.height+28;
     burdens.forEach((b,index)=>{
       const sms=model.submoves[b]||[];
@@ -757,67 +1198,70 @@
       const mrp=model.mrp[b]||{};
       const routes=(mrp.routes||[]).join(', ')||'not detected';
       const result=publicRouteType(routeResultType(model,b));
-      const visibleSms=sms.slice(0,currentDensity==='compact'?3:currentDensity==='expanded'?6:4);
-      const hiddenCount=Math.max(0,sms.length-visibleSms.length);
       const titleText=`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`;
-      const titleLines=wrapWords(titleText, storyLineChars(cardW-68,34), 0);
-      const badgeY=y+56+titleLines.length*42+18;
       const problemText='Problem from the visible output: '+bodyBurdenDescription(model,b);
-      const problemLines=wrapWords(problemText, storyLineChars(cardW-68,d.font), 0);
-      const problemY=badgeY+76;
-      const moveBlocks=visibleSms.map(sm=>{
-        const node=model.nodes[sm]||{label:sm};
-        const lines=wrapWords(bodySubmoveLabel(model,sm,node), storyLineChars(cardW-116,d.font), 0);
-        return {sm,node,lines,height:Math.max(d.subMinH,lines.length*d.line+30)};
+      const burdenHeader=renderCardHeader({
+        x:margin,
+        y,
+        width:cardW,
+        title:titleText,
+        subtitle:problemText,
+        color:'#3b82f6',
+        titleSize:34,
+        subtitleSize:22,
+        pad:34,
+        titleWeight:720
       });
-      const moveBlockH=moveBlocks.reduce((sum,block,i)=>sum+block.height+(i?d.subGap:0),0)+(hiddenCount?32:0);
-      const movesTitleY=problemY+problemLines.length*d.line+36-y;
+      const moveBlocks=sms.map(sm=>{
+        const node=model.nodes[sm]||{label:sm};
+        const sections=bodySubmoveSections(model,sm,node);
+        const measured=measureSubmoveSections(sections,cardW-68,d);
+        return {sm,node,...measured};
+      });
+      const moveBlockH=moveBlocks.reduce((sum,block,i)=>sum+block.height+(i?d.subGap:0),0);
+      const movesTitleY=burdenHeader.bodyY+18-y;
       const firstMoveY=movesTitleY+50;
       const panelTop=firstMoveY+moveBlockH+34;
       const fullW=cardW-60, panelGap=24, panelX=margin+30;
       const landText=bodyLandText(model,b,land);
-      const landBlock=storySectionBlock('What this establishes against the reply',landText,panelX,y+panelTop,fullW,{fill:'#052e16',stroke:'#22c55e',technical:`Land(${b})`,items:splitListLikeItems(landText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#22c55e'});
+      const landBlock=storySectionBlock('What this establishes',landText,panelX,y+panelTop,fullW,{fill:'#052e16',stroke:'#22c55e',items:splitListLikeItems(landText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:d.panelPad,badges:[{label:`Land(${b})`,color:'#14532d'}]});
       const rereadY=y+panelTop+landBlock.height+panelGap;
       const rereadText=bodyRereadText(model,b,reread);
-      const rereadBlock=storySectionBlock('After this answer, what remains?',rereadText,panelX,rereadY,fullW,{fill:'#451a03',stroke:'#f59e0b',technical:'R(H,Δ)',items:splitListLikeItems(rereadText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#f59e0b'});
-      const mrpY=rereadY+rereadBlock.height+panelGap;
+      const rereadBlock=storySectionBlock('After this, what remains?',rereadText,panelX,rereadY,fullW,{fill:'#451a03',stroke:'#f59e0b',items:splitListLikeItems(rereadText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:d.panelPad,badges:[{label:'R(H,Δ)',color:'#7c2d12'}]});
+      const bottomPanelY=rereadY+rereadBlock.height+panelGap;
       const edgeText=(mrp.edges||[]).map(e=>issueGraph(e[0],e[1])).join(', ')||'none';
-      const mrpItems=bodyMrpItems(model,b,result,edgeText);
-      const mrpBlock=storySectionBlock('Follow-up: does the reply still have pressure?',mrpItems.join('; '),panelX,mrpY,fullW,{fill:'#2e1065',stroke:'#a855f7',technical:`MRP(${b}) · ${result}`,items:mrpItems,maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#a855f7'});
-      const routeClosed=/STOP/i.test(routes);
-      const routeBadgeText=publicRouteBadge(routes);
-      const routeY=mrpY+mrpBlock.height+panelGap;
-      const routeBlock=storySectionBlock('Next issue / closure',humanize(routes),panelX,routeY,fullW,{fill:routeClosed?'#052e16':'#451a03',stroke:routeClosed?'#10b981':'#f59e0b',technical:'',maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:routeClosed?'#10b981':'#f59e0b'});
-      const cardH=routeY-y+routeBlock.height+86;
-      parts.push(`<g class="outputGrapherStoryBurden"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect><rect x="${margin}" y="${y}" width="10" height="${cardH}" rx="10" fill="#3b82f6"></rect>${storyLineText(titleLines,margin+34,y+56,42,'#f8fafc',34,900)}`);
-      parts.push(storyBadge('Problem',margin+34,badgeY,'#1e3a8a','#3b82f6'));
-      parts.push(storyBadge(publicTerminalBadge(model.terminals[b]),margin+260,badgeY,/HOLD|PARTIAL|RECURSE/i.test(model.terminals[b]||'')?'#7c2d12':'#14532d',/HOLD|PARTIAL|RECURSE/i.test(model.terminals[b]||'')?'#f59e0b':'#22c55e'));
-      parts.push(storyBadge(routeBadgeText,margin+480,badgeY,routeClosed?'#064e3b':'#7c2d12',routeClosed?'#10b981':'#f59e0b'));
-      parts.push(storyLineText(problemLines,margin+34,problemY,d.line,'#cbd5e1',d.font,850));
+      const mrpRows=mrpPanelRows(model,b,result,edgeText,routes,rereadText);
+      const mrpBlock=storyKeyValueBlock('Follow-up: pressure-check',mrpRows,panelX,bottomPanelY,fullW,{fill:'#2e1065',stroke:'#a855f7',titleSize:26,bodySize:21,lineHeight:32,pad:d.panelPad,badges:[{label:`MRP(${b})`,color:'#581c87'}]});
+      const nextBurden=burdens[index+1]||'';
+      const routeItems=routePanelItems(model,b,nextBurden,routes,result);
+      const routeBlock=renderRouteRow('Next step',routeItems,routes,panelX,bottomPanelY+mrpBlock.height+18,fullW,{titleSize:24,bodySize:21,lineHeight:32,pad:d.panelPad});
+      const bottomRowH=mrpBlock.height+18+routeBlock.height;
+      const cardH=bottomPanelY-y+bottomRowH+38;
+      parts.push(`<g class="outputGrapherStoryBurden"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect>${burdenHeader.svg}`);
       parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How this problem is answered</text>`);
       let subY=y+firstMoveY;
       moveBlocks.forEach((block)=>{
-        parts.push(`<g class="outputGrapherStorySubmove"><rect x="${margin+34}" y="${subY-34}" width="${cardW-68}" height="${block.height}" rx="15" fill="#0e7490" stroke="#38bdf8" stroke-width="1.3"></rect><rect x="${margin+34}" y="${subY-34}" width="8" height="${block.height}" rx="8" fill="#38bdf8"></rect>${storyLineText(block.lines,margin+58,subY,d.line,'#ecfeff',d.font,850)}</g>`);
+        parts.push(`<g class="outputGrapherStorySubmove outputGrapherSingleColumnPanel" data-panel-width="${cardW-68}" data-inner-text-width="${cardW-68-48}" data-left-padding="24" data-right-padding="24" data-text-x="${margin+58}"><rect x="${margin+34}" y="${subY-34}" width="${cardW-68}" height="${block.height}" rx="15" fill="#0b3142" stroke="#38bdf8" stroke-width="1.3"></rect>${renderSubmoveSections(block,margin+34,subY-34,cardW-68)}</g>`);
         subY+=block.height+d.subGap;
       });
-      if(hiddenCount) parts.push(`<text x="${margin+46}" y="${subY-16}" fill="#94a3b8" font-size="16" font-weight="900">+ ${hiddenCount} additional move(s) available in technical view / node inspector</text>`);
       parts.push(landBlock.svg);
       parts.push(rereadBlock.svg);
       parts.push(mrpBlock.svg);
       parts.push(routeBlock.svg);
-      if(index<burdens.length-1){
-        const next=burdens[index+1];
-        const rel=(mrp.edges||[]).some(e=>e[1]===next)?publicRouteType(routeResultType(model,b)):'next listed issue';
-        parts.push(`<text x="${margin+42}" y="${y+cardH-28}" fill="#94a3b8" font-size="21" font-weight="900">Next issue: ${esc(issueGraph(b,next))} · ${esc(rel)}</text>`);
-      }
       parts.push('</g>');
       y+=cardH+d.gap;
     });
     const collapsePanel=renderCollapsePanel(model,margin,y,cardW);
     parts.push(collapsePanel.svg); y+=collapsePanel.height+52;
+    const restorativeCard=renderFinalProseCard('Restorative Response',model.restorativeResponse,margin,y,cardW,{klass:'outputGrapherFinalBodyProse outputGrapherRestorativeResponse',fill:'#071a12',stroke:'#10b981',color:'#22c55e'});
+    if(restorativeCard.svg){parts.push(restorativeCard.svg); y+=restorativeCard.height+34;}
+    const closingCard=renderFinalProseCard('Closing Formulation',model.closingFormulation,margin,y,cardW,{klass:'outputGrapherFinalBodyProse outputGrapherClosingFormulation',fill:'#111827',stroke:'#38bdf8',color:'#38bdf8'});
+    if(closingCard.svg){parts.push(closingCard.svg); y+=closingCard.height+52;}
+    const formalCaseFill=renderFormalCaseFill(model,margin,y,cardW);
+    parts.push(formalCaseFill.svg); y+=formalCaseFill.height+44;
     const legend=`<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">problem / burden</text><circle cx="370" cy="-8" r="8" fill="#38bdf8"/><text x="386" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="626" cy="-8" r="8" fill="#22c55e"/><text x="642" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="880" cy="-8" r="8" fill="#a855f7"/><text x="896" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next issue / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
-    const height=y+100;
-    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="Plain-language rebuttal story infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${parts.join('')}${legend}</svg>`;
+    const height=y+78;
+    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Plain-language rebuttal story infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${parts.join('')}${legend}</svg>`;
   }
 
   function renderGraph(model){
@@ -864,7 +1308,7 @@
     const closureEdge=last&&pos[last.id]?svgEdge([pos[last.id][0]+pos[last.id][2],pos[last.id][1]+38],[pos[collapseId][0],pos[collapseId][1]+62],'closure','closure / restoration'):'';
     const finalPanel=renderCollapsePanel(model,pos[collapseId]);
     const legend=`<g class="ogSvgLegend" transform="translate(36 ${height-36})"><text fill="#e5e7eb" font-size="12" font-weight="800">Legend:</text><circle cx="72" cy="-4" r="5" fill="#3b82f6"/><text x="82" y="0" fill="#cbd5e1" font-size="11">burden</text><circle cx="152" cy="-4" r="5" fill="#38bdf8"/><text x="162" y="0" fill="#cbd5e1" font-size="11">submove/TTP</text><circle cx="252" cy="-4" r="5" fill="#22c55e"/><text x="262" y="0" fill="#cbd5e1" font-size="11">Land/closure</text><circle cx="360" cy="-4" r="5" fill="#a855f7"/><text x="370" y="0" fill="#cbd5e1" font-size="11">MRP</text><circle cx="440" cy="-4" r="5" fill="#f59e0b"/><text x="450" y="0" fill="#cbd5e1" font-size="11">route/HOLD</text><circle cx="548" cy="-4" r="5" fill="#ef4444"/><text x="558" y="0" fill="#cbd5e1" font-size="11">invalid</text></g>`;
-    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="Noetic field rebuttal infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${topEdges}${clusterSvg.join('')}${edgeSvg}${inputBurdenEdges}${mrpRelationEdges.join('')}${closureEdge}${renderedNodes}${finalPanel}${legend}</svg>`;
+    return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Noetic field rebuttal infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${topEdges}${clusterSvg.join('')}${edgeSvg}${inputBurdenEdges}${mrpRelationEdges.join('')}${closureEdge}${renderedNodes}${finalPanel}${legend}</svg>`;
   }
 
   function render(model){
@@ -876,7 +1320,7 @@
     summary.innerHTML=renderTopSummary(model);
     errors.innerHTML=(model.errors.length?model.errors:['No hard errors.']).map(x=>`<li class="${model.errors.length?'outputGrapherError':''}">${esc(x)}</li>`).join('');
     warnings.innerHTML=((model.warnings||[]).concat(model.witnessMismatches||[]).length?(model.warnings||[]).concat(model.witnessMismatches||[]):['No warnings.']).map(x=>`<li class="outputGrapherWarn">${esc(x)}</li>`).join('');
-    ['ogExportPngBtn','ogExportSvgBtn','ogExportJsonBtn','ogExportMermaidBtn'].forEach(id=>{const b=document.getElementById(id); if(b) b.disabled=false;});
+    ['ogExportPngBtn','ogExportPngSectionsBtn','ogExportSvgBtn','ogExportJsonBtn','ogExportMermaidBtn'].forEach(id=>{const b=document.getElementById(id); if(b) b.disabled=false;});
     graph.querySelectorAll('.outputGrapherNode').forEach(el=>el.addEventListener('click',()=>inspectNode(el.dataset.nodeId)));
   }
 
@@ -892,7 +1336,126 @@
     const blob=content instanceof Blob?content:new Blob([content],{type});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},0);
   }
-  function exportSvg(){const svg=document.getElementById('ogSvg'); if(svg) downloadBlob('daee-output-collapse-graph.svg','image/svg+xml;charset=utf-8',new XMLSerializer().serializeToString(svg));}
+  function cloneSvgForExport(svg,padding=56){
+    const clone=svg.cloneNode(true);
+    const vb=svg.viewBox.baseVal;
+    const width=vb.width||svg.width.baseVal.value;
+    const height=vb.height||svg.height.baseVal.value;
+    clone.setAttribute('viewBox',`${-padding} ${-padding} ${width+padding*2} ${height+padding*2}`);
+    clone.setAttribute('width',String(width+padding*2));
+    clone.setAttribute('height',String(height+padding*2));
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',String(-padding));
+    bg.setAttribute('y',String(-padding));
+    bg.setAttribute('width',String(width+padding*2));
+    bg.setAttribute('height',String(height+padding*2));
+    bg.setAttribute('fill','#050914');
+    clone.insertBefore(bg,clone.firstChild);
+    return clone;
+  }
+  function svgGeometry(svg){
+    const vb=svg.viewBox.baseVal;
+    return {
+      x:vb.x||0,
+      y:vb.y||0,
+      width:vb.width||svg.width.baseVal.value,
+      height:vb.height||svg.height.baseVal.value
+    };
+  }
+  function svgElementBounds(el){
+    if(!el||!el.getBBox) return null;
+    const box=el.getBBox();
+    const matrix=el.getCTM&&el.getCTM();
+    const svg=el.ownerSVGElement||el;
+    if(!matrix||!svg.createSVGPoint){
+      return {x:box.x,y:box.y,width:box.width,height:box.height};
+    }
+    const point=svg.createSVGPoint();
+    const corners=[
+      [box.x,box.y],
+      [box.x+box.width,box.y],
+      [box.x,box.y+box.height],
+      [box.x+box.width,box.y+box.height]
+    ].map(([x,y])=>{
+      point.x=x; point.y=y;
+      return point.matrixTransform(matrix);
+    });
+    const xs=corners.map(p=>p.x), ys=corners.map(p=>p.y);
+    const x=Math.min(...xs), y=Math.min(...ys);
+    return {x,y,width:Math.max(...xs)-x,height:Math.max(...ys)-y};
+  }
+  function cropSvgForExport(svg,crop,padding=56){
+    const clone=svg.cloneNode(true);
+    const x=Math.max(0,crop.x-padding);
+    const y=Math.max(0,crop.y-padding);
+    const width=crop.width+padding*2;
+    const height=crop.height+padding*2;
+    clone.setAttribute('viewBox',`${x} ${y} ${width} ${height}`);
+    clone.setAttribute('width',String(width));
+    clone.setAttribute('height',String(height));
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',String(x));
+    bg.setAttribute('y',String(y));
+    bg.setAttribute('width',String(width));
+    bg.setAttribute('height',String(height));
+    bg.setAttribute('fill','#050914');
+    clone.insertBefore(bg,clone.firstChild);
+    return clone;
+  }
+  function exportCoverageReport(){
+    const svg=document.getElementById('ogSvg');
+    if(!svg) return null;
+    const geom=svgGeometry(svg);
+    const burdenCards=[...svg.querySelectorAll('.outputGrapherStoryBurden')].map(svgElementBounds).filter(Boolean);
+    const restoration=svgElementBounds(svg.querySelector('.outputGrapherRestorationSummary'));
+    const restorativeResponse=svgElementBounds(svg.querySelector('.outputGrapherRestorativeResponse'));
+    const closingFormulation=svgElementBounds(svg.querySelector('.outputGrapherClosingFormulation'));
+    const formalCaseFill=svgElementBounds(svg.querySelector('.outputGrapherFormalCaseFill'));
+    const legend=svgElementBounds(svg.querySelector('.ogSvgLegend'));
+    const finalBurden=burdenCards[burdenCards.length-1]||null;
+    const terminalBottom=Math.max(
+      restoration?restoration.y+restoration.height:0,
+      restorativeResponse?restorativeResponse.y+restorativeResponse.height:0,
+      closingFormulation?closingFormulation.y+closingFormulation.height:0,
+      formalCaseFill?formalCaseFill.y+formalCaseFill.height:0
+    );
+    const bottom=Math.max(
+      finalBurden?finalBurden.y+finalBurden.height:0,
+      terminalBottom,
+      legend?legend.y+legend.height:0
+    );
+    const cfg=pngExportConfig();
+    const exportPadding=56;
+    const paddedHeight=geom.height+exportPadding*2;
+    const paddedWidth=geom.width+exportPadding*2;
+    const scale=cfg.width/paddedWidth;
+    const bottomPadding=Math.round(geom.height-bottom);
+    return {
+      contentHeight:geom.height,
+      contentWidth:geom.width,
+      paddedExportHeight:paddedHeight,
+      paddedExportWidth:paddedWidth,
+      pngWidth:Math.round(paddedWidth*scale),
+      pngHeight:Math.round(paddedHeight*scale),
+      hasFinalBurden:Boolean(finalBurden),
+      hasRestorationSummary:Boolean(restoration),
+      hasRestorativeResponse:Boolean(restorativeResponse),
+      hasClosingFormulation:Boolean(closingFormulation),
+      hasFormalCaseFill:Boolean(formalCaseFill),
+      hasLegend:Boolean(legend),
+      bottomContentY:Math.round(bottom),
+      bottomPadding,
+      postTerminalCardBottomPadding:Math.round(geom.height-terminalBottom),
+      postLegendBottomPadding:legend?Math.round(geom.height-(legend.y+legend.height)):null,
+      legendGapAfterTerminal:legend&&terminalBottom?Math.round(legend.y-terminalBottom):null,
+      exportPadding,
+      exportedBottomPadding:bottomPadding+exportPadding,
+      burdenCardCount:burdenCards.length,
+      exportedBurdenCardCount:burdenCards.length,
+      canvasSafe:paddedHeight*scale<30000 && paddedWidth*scale<30000 && paddedHeight*paddedWidth*scale*scale<240000000
+    };
+  }
+  function exportSvg(){const svg=document.getElementById('ogSvg'); if(svg) downloadBlob('daee-output-collapse-graph.svg','image/svg+xml;charset=utf-8',new XMLSerializer().serializeToString(cloneSvgForExport(svg)));}
   function exportJson(){if(currentModel) downloadBlob('daee-output-collapse-graph.json','application/json;charset=utf-8',JSON.stringify(currentModel,null,2));}
   function exportMermaid(){
     if(!currentModel) return;
@@ -915,20 +1478,26 @@
   }
   function safe(s){return String(s).replace(/[^a-zA-Z0-9_]/g,'_');}
   function pngExportConfig(){
-    const mode=document.getElementById('ogExportWidthMode')?.value||'desktop';
+    const mode=document.getElementById('ogExportWidthMode')?.value||'poster';
     const widths={compact:1500,desktop:1800,poster:2200};
     return {mode,width:widths[mode]||widths.desktop};
   }
   function exportPng(){
     const svg=document.getElementById('ogSvg'); if(!svg) return;
-    const raw=new XMLSerializer().serializeToString(svg);
+    const exportSvgNode=cloneSvgForExport(svg);
+    const raw=new XMLSerializer().serializeToString(exportSvgNode);
     const blob=new Blob([raw],{type:'image/svg+xml;charset=utf-8'});
     const url=URL.createObjectURL(blob), img=new Image();
     img.onload=()=>{
-      const naturalW=svg.viewBox.baseVal.width||svg.width.baseVal.value;
-      const naturalH=svg.viewBox.baseVal.height||svg.height.baseVal.value;
+      const naturalW=exportSvgNode.viewBox.baseVal.width||exportSvgNode.width.baseVal.value;
+      const naturalH=exportSvgNode.viewBox.baseVal.height||exportSvgNode.height.baseVal.value;
       const cfg=pngExportConfig();
       const scale=cfg.width/naturalW;
+      if(naturalH*scale>=30000 || naturalW*scale>=30000 || naturalH*naturalW*scale*scale>=240000000){
+        URL.revokeObjectURL(url);
+        exportPngSections();
+        return;
+      }
       const canvas=document.createElement('canvas');
       canvas.width=Math.round(naturalW*scale);
       canvas.height=Math.round(naturalH*scale);
@@ -941,12 +1510,59 @@
     };
     img.onerror=()=>URL.revokeObjectURL(url); img.src=url;
   }
+  function storySectionCrops(svg){
+    const geom=svgGeometry(svg);
+    const burdenGroups=[...svg.querySelectorAll('.outputGrapherStoryBurden')];
+    const crops=[];
+    if(burdenGroups.length){
+      const first=burdenGroups[0].getBBox();
+      crops.push({name:'daee-output-graph-01-summary.png',x:0,y:0,width:geom.width,height:first.y});
+      for(let i=0;i<burdenGroups.length;i+=1){
+        const a=burdenGroups[i].getBBox();
+        const y=a.y;
+        const bottom=a.y+a.height;
+        crops.push({name:`daee-output-graph-${String(crops.length+1).padStart(2,'0')}-burden-${i+1}.png`,x:0,y,width:geom.width,height:bottom-y});
+      }
+      const last=burdenGroups[burdenGroups.length-1].getBBox();
+      crops.push({name:`daee-output-graph-${String(crops.length+1).padStart(2,'0')}-restoration.png`,x:0,y:last.y+last.height,width:geom.width,height:geom.height-(last.y+last.height)});
+    }else{
+      crops.push({name:'daee-output-graph-01-full.png',x:0,y:0,width:geom.width,height:geom.height});
+    }
+    return crops.filter(crop=>crop.height>80);
+  }
+  function exportPngFromSvgNode(svgNode,name,targetWidth){
+    const raw=new XMLSerializer().serializeToString(svgNode);
+    const blob=new Blob([raw],{type:'image/svg+xml;charset=utf-8'});
+    const url=URL.createObjectURL(blob), img=new Image();
+    img.onload=()=>{
+      const naturalW=svgNode.viewBox.baseVal.width||svgNode.width.baseVal.value;
+      const naturalH=svgNode.viewBox.baseVal.height||svgNode.height.baseVal.value;
+      const scale=targetWidth/naturalW;
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.round(naturalW*scale);
+      canvas.height=Math.round(naturalH*scale);
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle='#050914';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      canvas.toBlob(png=>{if(png) downloadBlob(name,'image/png',png); URL.revokeObjectURL(url);},'image/png');
+    };
+    img.onerror=()=>URL.revokeObjectURL(url); img.src=url;
+  }
+  function exportPngSections(){
+    const svg=document.getElementById('ogSvg'); if(!svg) return;
+    const cfg=pngExportConfig();
+    storySectionCrops(svg).forEach((crop,index)=>{
+      setTimeout(()=>exportPngFromSvgNode(cropSvgForExport(svg,crop,56),crop.name,cfg.width),index*180);
+    });
+  }
 
   function init(){
     const parse=document.getElementById('ogParseBtn');
     if(!parse) return;
     parse.addEventListener('click',()=>render(parseOutput(document.getElementById('ogOutputInput')?.value||'',document.getElementById('ogWitnessInput')?.value||'')));
     document.getElementById('ogExportPngBtn')?.addEventListener('click',exportPng);
+    document.getElementById('ogExportPngSectionsBtn')?.addEventListener('click',exportPngSections);
     document.getElementById('ogExportSvgBtn')?.addEventListener('click',exportSvg);
     document.getElementById('ogExportJsonBtn')?.addEventListener('click',exportJson);
     document.getElementById('ogExportMermaidBtn')?.addEventListener('click',exportMermaid);
@@ -955,12 +1571,7 @@
       document.querySelectorAll('[data-og-mode]').forEach(item=>item.classList.toggle('active',item===btn));
       if(currentModel) render(currentModel);
     }));
-    document.querySelectorAll('[data-og-density]').forEach(btn=>btn.addEventListener('click',()=>{
-      currentDensity=btn.dataset.ogDensity||'comfortable';
-      document.querySelectorAll('[data-og-density]').forEach(item=>item.classList.toggle('active',item===btn));
-      if(currentModel) render(currentModel);
-    }));
-    window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportSvg,exportJson};
   }
+  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport};
   document.addEventListener('DOMContentLoaded',init);
 })();

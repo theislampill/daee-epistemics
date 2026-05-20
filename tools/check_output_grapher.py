@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 from output_grapher_lib import graph_html, parse_output, result_summary
@@ -65,6 +66,7 @@ def check_static_artifact(errors: list[str]) -> None:
         "local JS": "index/output-grapher.js",
         "local CSS": "index/output-grapher.css",
         "export PNG button": "ogExportPngBtn",
+        "sectioned PNG button": "ogExportPngSectionsBtn",
         "export PNG size selector": "ogExportWidthMode",
         "desktop PNG mode": "Desktop PNG (1800px)",
         "poster PNG mode": "Poster PNG (2200px)",
@@ -76,9 +78,6 @@ def check_static_artifact(errors: list[str]) -> None:
         "rebuttal mode": "Rebuttal View",
         "DAG mode": "Technical Pipeline View",
         "validation mode": "Validation View",
-        "density controls": "Comfortable",
-        "expanded density": "Expanded",
-        "density config": "densityConfig",
         "input digest panel": "Reply / Claim Being Rejected",
         "reader-facing input fallback": "readerInputDigest",
         "plain dependency panel": "What The Reply Depends On",
@@ -86,31 +85,61 @@ def check_static_artifact(errors: list[str]) -> None:
         "collapse status panel": "Final Answer From The Output",
         "graph conclusion card": "Final Answer From The Output",
         "plain restoration summary": "Restoration Summary",
+        "restorative noetic title": "Output grapher — Restorative Noetic Map",
+        "large case headline": "storyCaseHeadline",
+        "case headline for Trinitarian smoke": "CASE: Trinitarian reply to John 17:3",
         "restoration bullet builder": "restorationBullets",
-        "technical proof strip": "Technical proof strip",
+        "formal case fill": "Formal Case Fill",
+        "formal case fill renderer": "renderFormalCaseFill",
         "story view renderer": "renderStorySvg",
         "story burden cards": "outputGrapherStoryBurden",
         "plain claim label": "Reply / claim being rejected",
-        "plain conclusion label": "Final answer from the output",
+        "plain conclusion label": "Final Answer From The Output",
         "plain dependency label": "What the reply depends on",
+        "collapsed top help": "outputGrapherHelp",
+        "top help summary": "How to read this",
+        "top help technical labels": "Land(¹B)",
         "body prose split": "splitOutputZones",
+        "visible final section extractor": "extractBodySection",
+        "visible final prose cleaner": "cleanVisibleProseBlock",
         "visible body extraction": "bodyExtract",
         "body-first canonicalizer": "canonicalizePublicNotation",
         "body submove detail extraction": "submoveDetails",
         "body submove resolver": "bodySubmoveLabel",
+        "body submove section resolver": "bodySubmoveSections",
+        "submove section renderer": "renderSubmoveSections",
+        "final body prose renderer": "renderFinalProseCard",
+        "restorative response card": "outputGrapherRestorativeResponse",
+        "closing formulation card": "outputGrapherClosingFormulation",
+        "shared SVG header component": "function renderCardHeader",
+        "shared SVG header badges": "function renderHeaderBadges",
+        "pixel-estimated SVG text width": "function estimateSvgTextWidth",
+        "shared SVG text wrapper": "function wrapSvgText",
+        "story pixel wrapper": "function storyWrap",
         "body-first land panel": "bodyLandText",
         "body-first reread panel": "bodyRereadText",
+        "route panel resolver": "routePanelItems",
+        "structured MRP rows": "mrpPanelRows",
+        "MRP key-value renderer": "storyKeyValueBlock",
         "list-like remaining rendering": "splitListLikeItems",
         "plain answer label": "How this problem is answered",
-        "plain land label": "What this establishes against the reply",
-        "plain reread label": "After this answer, what remains?",
-        "plain MRP label": "Follow-up: does the reply still have pressure?",
+        "plain land label": "What this establishes",
+        "plain reread label": "After this, what remains?",
+        "plain MRP label": "Follow-up: pressure-check",
         "burden cluster container": "outputGrapherBurdenCluster",
         "semantic edge labels": "outputGrapherEdgeLabel",
         "generated burden relation": "new problem surfaced",
         "closure restoration edge": "closure / restoration",
         "inline SVG renderer": "renderGraph",
         "PNG export function": "exportPng",
+        "sectioned PNG export function": "exportPngSections",
+        "export coverage report": "exportCoverageReport",
+        "restorative export coverage": "hasRestorativeResponse",
+        "closing export coverage": "hasClosingFormulation",
+        "formal export coverage": "hasFormalCaseFill",
+        "top-right route badge": 'data-route-badge-position="top-right"',
+        "top-right shared badges": "renderHeaderBadges(badgeItems,x+pad,badgeY,contentW,'right')",
+        "padded export clone": "cloneSvgForExport",
         "canonical burden": "¹B",
         "canonical submove": "¹B₁",
         "MRP node": "MRP(ⁿB)",
@@ -144,7 +173,31 @@ def check_static_artifact(errors: list[str]) -> None:
         "raw failure-point issue labels": "function issueLabel(b){return `Failure point",
         "raw B fallback in inventory": "model.nodes[b]?.label||b",
         "old hyphen issue title": "${issueLabel(b)} - ",
+        "repeated story badge chrome": "parts.push(storyBadge",
+        "empty route panel rendering": "storySectionBlock('Next issue / closure',humanize(routes)",
         "field witness as body copy": "field_witness metadata appears as main",
+        "density view controls": "data-og-density",
+        "density-mode state": "currentDensity",
+        "density config": "densityConfig",
+        "hidden submove count": "hiddenCount",
+        "visible submove slice": "visibleSms",
+        "sentence-limited submove prose": "firstSentences",
+        "decorative accent helper": "accentSvg",
+        "decorative top accent rectangle": 'height="3" fill=',
+        "paint-stroke accent": "stroke-linecap",
+        "character-count story wrapper": "function storyLineChars",
+        "old width-to-character story wrapping": "width/(size*",
+        "inspector truncation marker": "(more in inspector)",
+        "old story title": "OUTPUT GRAPHER - REBUTTAL MAP",
+        "long land panel title": "What this establishes against the reply",
+        "long reread panel title": "After this answer, what remains?",
+        "long MRP panel title": "Follow-up: does the reply still have pressure?",
+        "left route badge text column": "textX=x+pad+badgeW+22",
+        "in-flow reader guide title": "How to read this map",
+        "obsolete reader guide renderer": "function readingGuideItems",
+        "technical proof strip inside restoration": "Technical proof strip",
+        "duplicate Land technical line": "technical:`Land(${b})`",
+        "duplicate reread technical line": "technical:'R(H,Δ)'",
     }
     for label, token in forbidden_public_patterns.items():
         if token in js_text:
@@ -153,8 +206,104 @@ def check_static_artifact(errors: list[str]) -> None:
         errors.append("Output Grapher must resolve burden/submove display text from visible body prose before witness metadata")
     if "canonicalizePublicNotation(edgeText)" not in js_text:
         errors.append("Output Grapher must canonicalize public graph/resultant text before rendering")
+    if "Move to next identified problem:" not in js_text or "Why closure is withheld:" not in js_text:
+        errors.append("Output Grapher route panel must name the next burden and explain why closure is withheld")
+    if "Target', details.target" not in js_text or "Result', details.result" not in js_text or "Contribution', details.contribution" not in js_text:
+        errors.append("Output Grapher submove cards must render body-derived target/result/contribution details")
+    if "labelSize" not in js_text or "bodySize" not in js_text or "font-weight" not in js_text:
+        errors.append("Output Grapher submove cards must use differentiated label/body typography")
+    if "['Graph movement', graph]" not in js_text or "['Route', route]" not in js_text:
+        errors.append("Output Grapher MRP panel must render structured graph movement and route rows")
+    if "cloneSvgForExport(svg)" not in js_text or "viewBox',`${-padding}" not in js_text:
+        errors.append("Output Grapher exports must use a padded full-viewBox SVG clone")
     if "Main Problems In The Reply" in combined and "bodyBurdenDescription(model,b)" not in js_text:
         errors.append("Output Grapher burden inventory must use visible body headings, not witness-only labels")
+    check_submove_content_preservation(js_text, errors)
+
+
+def check_submove_content_preservation(js_text: str, errors: list[str]) -> None:
+    fixture = r'''
+NOETIC FIELD EXECUTION
+Layer A
+- read status: A claim moves a source sentence away from its actual subject.
+initial burden inventory: B1
+
+## Burden 1: the source sentence is being moved away from its subject
+B1_1[definition-discipline] — restore the proposition actually uttered
+Target: the exact sentence under dispute and the addressed subject named inside it.
+What it does: restores the sentence under dispute before a later model is allowed to rewrite its grammar.
+Result: the reply can no longer test the sentence by moving a key term into a manufactured formula.
+Contribution-to-Land(B1): the subject-predicate relation is restored and the imported formula loses authority.
+
+Land(B1): the source sentence is restored against the imported formula.
+R(H,Delta): no downstream problem remains in this reduced fixture.
+MRP(B1): stable
+MRP resultant: stable; graph=none; route=STOP
+Route: STOP
+
+Restorative Response
+
+The source sentence is restored, and the reply no longer controls the conclusion by moving the wording into a later formula.
+
+Closing Formulation
+
+The claim fails because its imported formula does not answer the sentence as given.
+
+Closure/Reconstruction Witness
+coverage_complete=true
+∇·B: neutral
+∇×κ: null
+𝒞(Ψᴺ): coverage_complete=true
+'''
+    required_fragments = [
+        "Target:",
+        "the exact sentence under dispute",
+        "What it does:",
+        "restores the sentence under dispute",
+        "Result:",
+        "the reply can no longer test the sentence",
+        "Contribution:",
+        "the subject predicate relation is restored",
+        "Restorative Response",
+        "The source sentence is restored",
+        "Closing Formulation",
+        "The claim fails because its imported formula",
+    ]
+    node_script = f"""
+const fs = require('fs');
+global.window = {{}};
+global.document = {{
+  addEventListener: () => {{}},
+  getElementById: () => null,
+  querySelectorAll: () => []
+}};
+const source = {fixture!r};
+eval(fs.readFileSync({str(JS)!r}, 'utf8'));
+const model = window.daeeOutputGrapher.parseOutput(source, '');
+const svg = window.daeeOutputGrapher.renderGraph(model);
+const required = {required_fragments!r};
+const missing = required.filter(token => !svg.includes(token));
+const forbidden = ['height="3" fill=', 'stroke-linecap', '(more in inspector)', '...'];
+const forbiddenHits = forbidden.filter(token => svg.includes(token));
+if (missing.length || forbiddenHits.length) {{
+  console.log(JSON.stringify({{missing, forbiddenHits}}, null, 2));
+  process.exit(1);
+}}
+"""
+    try:
+        result = subprocess.run(
+            ["node", "-e", node_script],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        errors.append(f"Output Grapher submove content-preservation check could not run: {exc}")
+        return
+    if result.returncode != 0:
+        details = (result.stdout or result.stderr or "").strip()
+        errors.append(f"Output Grapher submove content-preservation check failed: {details}")
 
 
 def check_fixtures(errors: list[str]) -> None:
@@ -171,6 +320,7 @@ def check_fixtures(errors: list[str]) -> None:
         "valid-mrp-held-burden-activation.md",
         "valid-mrp-generated-burden.md",
         "valid-hard-compound-reconstructible.md",
+        "valid-restorative-response-closing-formulation.md",
         "invalid-missing-terminal-state.md",
         "invalid-stop-before-continuation.md",
         "invalid-edge-missing-mrp-resultant.md",

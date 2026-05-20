@@ -37,12 +37,13 @@
     <label class="outputGrapherExportSize">
       <span>PNG size</span>
       <select id="ogExportWidthMode" aria-label="PNG export size">
-        <option value="desktop" selected>Desktop PNG (1800px)</option>
-        <option value="poster">Poster PNG (2200px)</option>
+        <option value="desktop">Desktop PNG (1800px)</option>
+        <option value="poster" selected>Poster PNG (2200px)</option>
         <option value="compact">Compact PNG (1500px)</option>
       </select>
     </label>
     <button type="button" id="ogExportPngBtn" disabled>Export PNG</button>
+    <button type="button" id="ogExportPngSectionsBtn" disabled>Export Sectioned PNG</button>
     <button type="button" id="ogExportSvgBtn" disabled>Export SVG</button>
     <button type="button" id="ogExportJsonBtn" disabled>Export JSON</button>
     <button type="button" id="ogExportMermaidBtn" disabled>Export Mermaid <span>(optional / lossy ELK)</span></button>
@@ -54,11 +55,13 @@
     <button type="button" data-og-mode="validation">Validation View</button>
   </div>
 
-  <div class="outputGrapherDensity" data-surface-role="control" aria-label="Story view density">
-    <button type="button" data-og-density="compact">Compact</button>
-    <button type="button" class="active" data-og-density="comfortable">Comfortable</button>
-    <button type="button" data-og-density="expanded">Expanded</button>
-  </div>
+  <details class="outputGrapherHelp" data-surface-role="control">
+    <summary>How to read this</summary>
+    <div class="outputGrapherHelpBody">
+      <p>Read top-to-bottom: claim, problems, answer moves, what landed, what remains, follow-up pressure-check, next step, and final restoration.</p>
+      <p><strong>Technical labels:</strong> <code>Land(¹B)</code> means what was established, <code>R(H,Δ)</code> means what remains after that answer, and <code>MRP(¹B)</code> marks the follow-up pressure-check.</p>
+    </div>
+  </details>
 
   <div class="outputGrapherSummary" id="ogSummary" aria-live="polite"></div>
 

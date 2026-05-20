@@ -14,9 +14,15 @@
 .outputGrapherActions button span{font-size:11px;color:#94a3b8}
 .outputGrapherExportSize{display:inline-flex;align-items:center;gap:8px;border:1px solid #334155;background:#080d19;border-radius:10px;padding:7px 9px;color:#cbd5e1;font-size:14px;font-weight:850}
 .outputGrapherExportSize select{background:#0b1020;color:#e5e7eb;border:1px solid #475569;border-radius:8px;padding:7px 9px;font-size:14px;font-weight:850}
-.outputGrapherModes,.outputGrapherDensity{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
-.outputGrapherModes button,.outputGrapherDensity button{border:1px solid #334155;background:#0b1020;color:#cbd5e1;border-radius:9px;padding:7px 10px;font-weight:900;cursor:pointer}
-.outputGrapherModes button.active,.outputGrapherDensity button.active{border-color:rgba(56,189,248,.65);color:#e0f2fe;background:rgba(56,189,248,.12)}
+.outputGrapherModes{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.outputGrapherModes button{border:1px solid #334155;background:#0b1020;color:#cbd5e1;border-radius:9px;padding:7px 10px;font-weight:900;cursor:pointer}
+.outputGrapherModes button.active{border-color:rgba(56,189,248,.65);color:#e0f2fe;background:rgba(56,189,248,.12)}
+.outputGrapherHelp{margin:8px 0 12px;border:1px solid #334155;background:#080d19;border-radius:10px;color:#cbd5e1}
+.outputGrapherHelp summary{cursor:pointer;padding:9px 12px;font-size:15px;font-weight:850;color:#e5e7eb;list-style:none}
+.outputGrapherHelp summary::-webkit-details-marker{display:none}
+.outputGrapherHelp summary::after{content:"?";display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border:1px solid #475569;border-radius:6px;color:#93c5fd;font-size:12px}
+.outputGrapherHelpBody{border-top:1px solid #1f2937;padding:12px 14px;font-size:15px;line-height:1.55}
+.outputGrapherHelpBody p{margin:0 0 8px}.outputGrapherHelpBody p:last-child{margin-bottom:0}
 .outputGrapherSummary{display:block;margin:10px 0}
 .outputGrapherTopCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
 .outputGrapherTopCard{border:1px solid #334155;background:#080d19;border-radius:14px;padding:16px;min-width:0}
