@@ -114,6 +114,9 @@ Use these packs as lightweight durable rules. Keep detailed guidance in
   the cause rather than polishing the symptom.
 - Smoke Before Claim: run the smallest meaningful check before readiness claims and
   report command plus result. If live checks cannot run, label evidence type and risk.
+- Exact-file runner discipline: behavioral runner subagents must load the generated/package
+  `skill/SKILL.md` surface directly. A vague installed/general skill invocation is not proof
+  of the release surface that will be packaged.
 - Plan Closure: end by mapping each planned item to done, changed, blocked, deferred,
   or unverified.
 - DRY / ACID / SSOT / progressive disclosure apply to runtime entrypoints, generated docs,
@@ -506,6 +509,13 @@ Release claims must stay narrow and honest:
   restoration force, source-status discipline, and da'wah usefulness.
 - Release-smoke captures are local/ignored diagnostic artifacts, not committed source and
   not GitHub Release assets.
+- MRP behavior proof is not file/checker presence. Mid-Reread Pressure counts as behavioral only
+  when it changes or licenses route, graph/field_witness state, closure, HOLD, RECURSE,
+  LoopBreak, or graph-bound anticipatory downstream handling after `Land(Bn)` during
+  `R(H,Delta)`.
+- Hard-compound MRP smokes require topology plus plausible execution mass plus anti-bloat review.
+  Byte count alone is not proof, but a severely compressed hard-compound traversal is an Andon
+  unless it honestly routes HOLD/PARTIAL.
 - v0.4.2.0 release evidence is bounded to the local three-smoke package-bound gate; do not
   present it as broad live-output proof, a full formal calculus, a truth meter, or guaranteed
   uptake.

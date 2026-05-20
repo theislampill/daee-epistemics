@@ -66,6 +66,24 @@ truth, warrant, interlocutor uptake, model-internal mechanism, or live behaviora
 | `𝒞(Ψᴺ)` | Closure predicate on agent/runtime execution state. | Not interlocutor acceptance, conversion, persuasion, guidance, or soul access. |
 | `T_lang: Ψᴺ ⇢ Ψᴵ` | Partial coupling relation at the public-output boundary. | Not an isomorphism, not a surjection, and not a guaranteed update operator on `Ψᴵ`. |
 
+## Mid-Reread Pressure Reconstructibility
+
+v0.4.3.0 adds Mid-Reread Pressure (MRP) to the operational chain as a reconstructibility
+requirement, not as a decorative block. After `Land(Bn)`, `R(H,Delta)` must be able to recover
+the MRP pressure resultant that licensed the next route: graph movement, HOLD, RECURSE,
+LoopBreak, STOP, or closure. The release proof lineage is:
+
+```text
+input -> burden nodes -> submove nodes -> Land(Bn) -> R(H,Delta)
+-> MRP pressure activations -> MRP resultant -> graph/route
+-> next burden or closure -> restoration aim
+```
+
+Execution mass is not proof by itself, but hard-compound reconstructibility has visible output
+cost. A hard-compound answer that claims complete traversal while hiding the burden/submove/MRP
+lineage is under-executed even if it prints the right labels; a long answer without topology is
+bloat.
+
 ## Small-Step Transition Model
 
 This is the preferred mathematical home for the current notation: typed transition systems,

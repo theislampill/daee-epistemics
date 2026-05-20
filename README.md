@@ -277,6 +277,11 @@ Canonical invocation forms:
   It does not print raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
   or load ledger. It is not prose-only mode; DSL/IR is integral to the skill's
   anti-hallucination, routing, burden-accounting, and restoration discipline.
+- v0.4.3.0 restores the governed first-visible `NOETIC FIELD EXECUTION` banner and adds
+  Mid-Reread Pressure (MRP) as a reread-time activation harness. MRP is not a mega-TTP and not
+  a decorative heading: after `Land(Bn)`, it pressures `R(H,Delta)` through existing
+  TTP/operator classes, records the resultant, and licenses graph movement, HOLD, RECURSE,
+  LoopBreak, STOP, or closure.
 - `/daee-epistemics:dsl` is expanded diagnostic/IR visibility: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested. It is not the first place DSL governance appears.
 - `/daee-epistemics < input.md > output.md` is canonical file-retained execution. It reads the case from `input.md`, writes the full canonical compact DSL-governed answer to `output.md`, and keeps the chat response to status only. This is not the optional script-capable route/check harness; it is the canonical runtime using a safer output transport for hosts whose final-chat channel compresses hard cases.
 
@@ -312,8 +317,9 @@ compressed in final chat:
   execution-fidelity checks unless developer validation is explicitly requested. The chat status
   should not add harness verdicts, route-plan claims, or source-audit commentary.
 - Hard or multi-burden file-retained answers should keep explicit `Land(Bn)` and
-  `R(H,Delta)` attachment per released burden rather than replacing them with a generic
-  state paragraph.
+  `R(H,Delta)` / MRP attachment per released burden rather than replacing them with a generic
+  state paragraph. The reconstructible lineage is:
+  `input -> burdens -> submoves -> Land(Bn) -> R(H,Delta) -> MRP resultant -> graph/route -> next burden/closure -> restoration aim`.
 
 Bash-style shells use `<` and `>` for redirection. PowerShell supports `>` for output
 redirection, but stdin behavior differs. Because `/daee-epistemics` is a skill invocation,

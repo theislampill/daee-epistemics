@@ -103,6 +103,12 @@ evaluation families, not canned expected outputs; success should be judged by ro
 state transformation, reconstruction fidelity, and bounded release rather than exact wording.
 Marker presence remains structural/render evidence only.
 
+v0.4.3.0 adds Codex-hosted exact-file behavioral proof for Mid-Reread Pressure. The runner loaded
+the generated package skill surface directly instead of a vague installed/general skill, and the
+decisive hard-compound Smoke 6 proved inter-burden MRP behavior. This is stronger than static
+file/checker presence, but remains local Codex-hosted behavioral evidence rather than cross-host
+or paraphrase proof. Raw smoke outputs are local evidence and are not release assets.
+
 1. Witness labels present but local target/operation/result work absent.
 2. Route-pressure stability under paraphrase.
 3. False-route resistance under tempting but disallowed operators.
@@ -181,9 +187,9 @@ executed, not because it has the expected headings.
 - Current-release smoke evidence must match the package filename and SHA256 in
   `docs/release-artifacts.md`.
 - v0.4.3.0 release proof is package-bound artifact/provenance validation plus
-  deterministic reconstructibility/MRP fixtures unless a configured live runner is
-  explicitly run. Do not promote local generated-runtime A/B smokes into package-
-  bound live-output proof.
+  deterministic reconstructibility/MRP fixtures plus the recorded Codex-hosted exact-file
+  hard-compound Smoke 6 behavior proof. Do not promote raw local transcripts into release
+  assets, and do not treat cross-host/paraphrase preservation as proven.
 - No smoke artifact suite is committed in this source state.
 - v0.4.0.0 package smoke evidence is historical for later v0.4.x release lines unless the
   smoke suite is regenerated locally against the intended replacement package and the SHA256 is

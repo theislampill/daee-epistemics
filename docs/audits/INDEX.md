@@ -34,6 +34,7 @@ sweep moves them.
 | `docs/audits/v0.4.3.0-closure-witness-graph-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Closure witness graph grammar, `field_witness` sidecar, parser/checker, and standalone DAG viewer proof. |
 | `docs/audits/v0.4.3.0-mid-reread-pressure-ttp-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | TTP-MRP reread-time activation harness, active `∇·T` / `∇×T` gate, graph/field_witness evidence, fixtures, and checker proof. |
 | `docs/audits/v0.4.3.0-reconstructibility-mrp-completion-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Completion audit verifying closure graph, canonical sidecar naming, visualizer modes, MRP, and integrated deterministic proof; live generated-runtime smoke remains unverified. |
+| `docs/audits/v0.4.3.0-mrp-codex-hosted-behavior-smoke.md` | ACTIVE RELEASE EVIDENCE | Codex-hosted exact-file hard-compound Smoke 6 proof that MRP is behavioral, inter-burden, and reconstructible rather than ornamental; raw smoke outputs are not release assets. |
 | `docs/audits/v0.4.3.0-rc1-closeout-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Internal RC1 closeout for v0.4.3.0 reconstructibility/MRP work, local CI-equivalent proof, commit boundary, and live/package proof caveats. |
 | `docs/audits/v0.4.3.0-audit-of-audits.md` | ACTIVE IMPLEMENTATION EVIDENCE | Audit-of-audits input and closure for targeted stale-status cleanup. |
 | `docs/audits/v0.4.3.0-future-work-ledger.md` | FUTURE-WORK SOURCE | Single ledger for deferred/tabled findings that should not remain scattered as live blockers. |
@@ -75,6 +76,7 @@ instead of re-promoting repeated TODOs from historical audits.
 | Expanded 10-case/generalization smoke suite | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Paraphrase clusters and cross-host probes | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Cross-host/paraphrase MRP proof | `docs/audits/v0.4.3.0-future-work-ledger.md` |
+| MRP schema-language cleanup / anti-bloat refinement | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Heuristics/noetic-profiles catalogue migration | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Future package-bound release-smoke proof | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Broad source notation/prose checker | `docs/audits/v0.4.3.0-future-work-ledger.md` |
