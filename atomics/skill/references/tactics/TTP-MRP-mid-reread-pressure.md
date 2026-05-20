@@ -81,6 +81,23 @@ not replace the TTPs that perform hidden-framework, entailment, churn, or remind
 the relevant pressure owners to operate in the reread interval and records what their outputs
 license.
 
+MRP is not the ordinary "find the next burden" mechanism. The initial state-read / Layer A burden
+inventory owns first-pass discovery of `¹B`, `²B`, `³B`, etc., and normal burden routing releases
+already-inventoried held burdens. `MRP(ⁿB)` asks the narrower post-landing question: did
+`Land(ⁿB)` produce an additional reread resultant beyond the initial inventory?
+
+Distinguish route result types:
+
+- `held_burden_activation`: MRP authorizes movement to an already-inventoried held burden. The
+  edge may be recorded as route provenance, but MRP did not generate the node.
+- `generated_burden_instantiation`: MRP discovers a new resultant burden not fully present in the
+  initial Layer A inventory. It must instantiate a normal burden node such as
+  `ⁿ⁺¹B [generated-by: MRP(ⁿB)]`.
+- `no_new_resultant`: MRP finds no additional resultant burden; normal routing may continue to the
+  next already-held burden or close if no eligible held burden remains.
+- `loopbreak`: MRP detects churn/curl and blocks proof-stacking.
+- `hold_partial`: MRP detects real unresolved pressure and prevents false closure.
+
 MRP is not a brevity mechanism. It makes state reread operationally consequential: fake burdens
 contract into STOP or LoopBreak, partial real burdens HOLD, genuine downstream burdens RECURSE with
 graph evidence, and stable rereads release closure witness. It turns `R(H,Δ)` from a named refresh
@@ -120,13 +137,22 @@ MRP may license anticipatory downstream pressure: when a landed burden predictab
 structurally licensed defense of the objection, MRP may activate matched TTPs to address that
 defense before it is voiced. This must be graph-bound, commitment-bound, or framework-bound and
 non-speculative; otherwise the route is STOP or closure, not pre-emptive expansion. MRP detects
-and records the pre-emption gate; existing TTPs are the response machinery.
+and records the pre-emption gate; existing TTPs are the response machinery. If the defense was
+already fully identified in the initial burden inventory, classify the route as
+`held_burden_activation`. If it surfaces only after `Land(ⁿB)` / `R(H,Δ)`, classify it as
+`generated_burden_instantiation` and instantiate the new node with its own Layer A, Layer B,
+owner-bearing submoves, Land/HOLD accounting, and closure-witness / `field_witness` record.
 
 Each pressure activation slot must name one of three things: the matched TTP/operator used, the
 pressure class used when the repo does not expose a narrower TTP ID, or an explicit TTP coverage
 gap. MRP may not produce a finding from an unsupported slot. If a structurally necessary pressure
 role has no current owner, record the coverage gap and route HOLD/PARTIAL or defer the pressure;
 do not silently fold that missing work into MRP.
+Do not hardcode MRP to FPD/M1/M8. Those are examples. MRP may dispatch to any repo-native
+operator whose owner is matched by the pressure, including FPD, M1, M1-P, M8, M9,
+source-status repair, authority-order repair, criterion-reversal, definition-discipline, P1, P7,
+doubt-vs-skepticism, regress-dissolution, and other catalogue owners. A generated burden that
+always defaults to the same small TTP set regardless of pressure type is under-routed.
 
 1. **Freeze the landed move.** Use existing burden/closure/terminal-state machinery to record what
    `Land(ⁿB)` actually licensed.
@@ -146,11 +172,15 @@ do not silently fold that missing work into MRP.
    stable knowledge, `fiṭrah`, `ʿaql ṣarīḥ`, or non-proof-stacking closure; MRP records whether
    closure, HOLD, or reminder/reorientation is licensed.
 7. **Route from aggregated owner outputs.** Emit one governed result:
-   - stable reread -> closure witness;
-   - genuine new dependency -> RECURSE and attach graph edge;
-   - partial but real burden -> HOLD;
-   - churn / label-pressure / unlicensed recoil -> LoopBreak(∇×T) or STOP;
-   - reorientation/reminder -> closure or HOLD without proof-stacking.
+    - stable reread -> closure witness;
+    - already-inventoried held dependency -> `held_burden_activation`, RECURSE/HOLD, and graph
+      provenance;
+    - newly surfaced resultant dependency -> `generated_burden_instantiation`, instantiate
+      `ⁿ⁺¹B [generated-by: MRP(ⁿB)]`, RECURSE/HOLD, and attach graph edge;
+    - no additional resultant -> `no_new_resultant` and ordinary route/closure discipline;
+    - partial but real burden -> HOLD;
+    - churn / label-pressure / unlicensed recoil -> LoopBreak(∇×T) or STOP;
+    - reorientation/reminder -> closure or HOLD without proof-stacking.
 
 ## Compact visible block
 
@@ -173,6 +203,7 @@ Pressure activations:
 ∇·T: neutral | settled | bounded | non-neutral / <what this licenses>
 ∇×T: null | resolved | held | non-null / <what this licenses>
 Finding: stable | genuine-dependent | partial-real | hidden-framework-recoil | doubt-churn | reorientation
+MRP route result type: held_burden_activation | generated_burden_instantiation | no_new_resultant | loopbreak | hold_partial
 MRP resultant: <finding -> route/graph/HOLD consequence>
 Graph delta: none | ⁿB → ⁿ⁺¹B
 Pre-emption basis: none | graph-bound | commitment-bound | framework-bound
@@ -192,11 +223,14 @@ template shows only superscript `ⁿB`, render it as `Bn / <landed burden name>`
 The compact block is a parseable record, not a prose paragraph. `Finding`, `Pre-emption basis`,
 and `Route` must be one exact value from the template with no punctuation or added explanation.
 It must include `MRP resultant: <finding -> route/graph/hold consequence>`.
+`MRP route result type` records whether the edge/routing is held-burden activation,
+generated-burden instantiation, no new resultant, loopbreak, or hold-partial. Do not label normal
+movement to an already-inventoried held burden as generated.
 `Boundary` must begin `T_lang does not imply guaranteed uptake`; PARTIAL or owner-load boundaries
 come after a semicolon. If no narrower owner/TTP id is exposed, begin the slot value with
 `pressure class:`; if no owner exists, begin with `coverage gap:`. `Graph delta` is `none` unless
-the route is `RECURSE`; held downstream routes are recorded in `R(H,Δ)`/closure witness, not as
-created graph edges. The six pressure activation labels are fixed and must not be replaced by
+the route is `RECURSE`; held downstream route edges and generated node edges must be distinguished
+by `MRP route result type`. The six pressure activation labels are fixed and must not be replaced by
 generic pressure-class bullets. Each slot line must literally begin with `- <slot-name>:`; do
 not omit the dash or colon. For doubt-churn / LoopBreak, `Graph delta:` is `none`; do not render
 LoopBreak as a graph node or graph edge.
@@ -231,6 +265,7 @@ When `field_witness` is present, MRP evidence may be recorded as optional
   "divergence_state": "neutral",
   "curl_state": "null",
   "finding": "stable",
+  "route_result_type": "no_new_resultant",
   "graph_delta": {
     "nodes_added": [],
     "edges_added": [],
@@ -265,6 +300,13 @@ it does not upgrade local smoke evidence into package-bound release proof.
   language for the blocked burden.
 - Unsupported activation: a pressure slot produces a finding without naming an activated
   TTP/operator, named pressure class, or explicit TTP coverage gap.
+- Generated-burden name theft: MRP calls an already-inventoried held burden "generated"; this
+  steals Layer A's discovery job and blurs route provenance.
+- Prose-only generated burden: MRP detects a new resultant but only mentions it in prose, without
+  instantiating a normal burden node, Layer A/B accounting, owner-bearing submoves, Land/HOLD, and
+  graph / `field_witness` evidence.
+- TTP hardcoding: MRP-generated burdens always use FPD/M1/M8 despite a different pressure type,
+  or fail to mark a coverage gap when no existing owner is available.
 - Recoil concession: hidden-framework recoil is marked but then treated as an unqualified landed
   burden.
 - Infinite proof stack: doubt-churn is diagnosed but the response adds more proof instead of

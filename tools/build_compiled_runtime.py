@@ -293,14 +293,14 @@ in a hard/full closure.
 
 Parseable hard-closure witness template:
 Closure/Reconstruction Witness
-Initial burden set: [B1, B2, ...]
-Burden dependency graph: B1 (root) -> B2, ...
+Initial burden set: [¹B, ²B, ...]      # parser alias allowed in machine fields: [B1, B2, ...]
+Burden dependency graph: ¹B (root) → ²B, ...
 Terminal states:
-B1: landed / <owner-or-pressure> / <detail>
+¹B: landed / <owner-or-pressure> / <detail>
 MRP resultants:
-B1: finding=<stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation>; graph=<delta-or-none>; route=<STOP|HOLD|RECURSE|LoopBreak(∇×T)>
-del-dot B: neutral / <target-explicit reason>     # or non-neutral / <held burden>
-del-cross kappa: null / <reason>                  # or resolved / <reason>, non-null / <loop target>
+MRP(¹B): type=<held_burden_activation|generated_burden_instantiation|no_new_resultant|loopbreak|hold_partial>; finding=<stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation>; graph=<delta-or-none>; route=<STOP|HOLD|RECURSE|LoopBreak(∇×T)>
+∇·B: neutral / <target-explicit reason>     # or non-neutral / <held burden>
+∇×κ: null / <reason>                        # or resolved / <reason>, non-null / <loop target>
 𝒞(Ψᴺ): coverage_complete=<true|false>; <closure/HOLD/RECURSE reason>
 T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed uptake
 Do not write substitute fields such as a generic divergence-result field, a generic curl-result field, remaining kappa, a standalone
@@ -405,7 +405,7 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   The witness must include parseable `Initial burden set: [B1, B2, ...]`, `Terminal states:`
   with one line per burden using `landed`, `discharged-as-derivative`, `held-with-reason`,
   `carried-PARTIAL`, `carried-RECURSE`, or `cleared`, root nodes marked exactly `(root)` in the
-  graph with no gloss inside those parentheses (`B1 (root) -> B2`, not `B1 (root authority...)`),
+  graph with no gloss inside those parentheses (`¹B (root) → ²B`, not `¹B (root authority...)`),
   plus `∇·B:`, `∇×κ:`, `𝒞(Ψᴺ):`, and `T_lang: Ψᴺ ⇢ Ψᴵ:` before final response text.
 - Final hard-case closure witness - in hard compound/source-request cases, the last
   state/noetic re-read before any Restorative Response or Closing Formulation must visibly

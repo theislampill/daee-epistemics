@@ -11,22 +11,28 @@ description: >
 Default `/daee-epistemics [input]` is the canonical compact
 DSL-governed surface, not prose-only mode or debug scaffolding. DSL/IR is
 integral to anti-hallucination, routing, burden accounting, and restoration:
-compact diagnostic state -> governed Layer B -> `Land(B)` -> `[Mid-Reread Pressure]` -> `R(H,Delta)` ->
+compact diagnostic state -> governed Layer B -> `Land(ⁿB)` -> `[Mid-Reread Pressure]` -> `R(H,Δ)` ->
 continue/HOLD/PARTIAL/close. `/daee-epistemics:dsl` exposes expanded diagnostic/IR
 visibility; it is not the first place DSL governance appears.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the current live
 noetic burden, source/noetic frame, held material, release decision, and current bounded operator.
 Layer B is the governed operation/release surface: it performs active TTP/operator submoves,
-then hands state to `Land(B) -> [Mid-Reread Pressure] -> R(H,Delta)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
+then hands state to `Land(ⁿB) -> [Mid-Reread Pressure] -> R(H,Δ)` for STOP/HOLD/PARTIAL/RECURSE. Avoid Layer A
 overgrowth and Layer B flattening.
+
+Public-facing governed output prefers canonical notation: `¹B`, `²B`, `¹B₁[OPᵢ]`,
+`Land(¹B)`, `Δ¹B`, `MRP(¹B)`, `¹B → ²B`, `R(H,Δ)`, `∇·B`, `∇×κ`,
+`𝒞(Ψᴺ)`, and `T_lang: Ψᴺ ⇢ Ψᴵ`. ASCII burden, arrow, reread, field-diagnostic,
+and closure aliases are parser/checker fallbacks only; do
+not make them the primary public surface unless the line is explicitly machine-facing.
 
 Hard-compound full traversal requires a visible Layer B operation body for every released
 burden. Do not collapse a major burden into one generic "Bounded Response" paragraph or one
 Target/Operation/Result block. A non-atomic released burden renders multiple owner-bearing
-submove labels, preferably `B1_1 [FPD] - expose the imported criterion`,
-`B1_2 [M1-P] - test the authority premise`, etc.; superscript/subscript notation remains
-allowed, but ASCII `B<N>_<s> [owner]` is the checker-readable fallback. Each submove carries
+submove labels, preferably `¹B₁[FPD] - expose the imported criterion`,
+`¹B₂[M1-P] - test the authority premise`, etc.; ASCII `B<N>_<s> [owner]` is a
+machine-facing fallback, not the preferred public notation. Each submove carries
 Target, Operation, Result/state-change, and Contribution-to-Land(Bn). In a full hard-compound
 traversal those fields are not stubs: each released submove must do its local noetic work in
 case-shaped prose, naming the exact criterion/premise, applying the matched owner/operator, and
@@ -59,7 +65,7 @@ burden, explicitly HOLD it with a named gate/reason, or mark PARTIAL with the na
 burden/owner. STOP/COMPLETE is invalid while the same MRP record names an unresolved live
 pressure. If a later burden, Layer B body, or closure graph edge follows from the same answer,
 the prior MRP record is not final; it must mark the remaining burden as `genuine-dependent`,
-emit a graph delta such as `Bn -> Bn+1`, and route `RECURSE` into the next burden. `Route:` in the
+emit a graph delta such as `ⁿB → ⁿ⁺¹B`, and route `RECURSE` into the next burden. `Route:` in the
 compact MRP block is limited to `STOP`, `HOLD`, `RECURSE`, or `LoopBreak(∇×T)`; owner-load
 failure is rendered as `Route: HOLD` plus `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing
 owner/path>`.
@@ -82,7 +88,7 @@ record values, not prose. Use exact first-token values: `∇·T: neutral|settled
 `Route: STOP|HOLD|RECURSE|LoopBreak(∇×T)`. Do not add punctuation to those values. Each pressure
 slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <missing owner>`,
 then an em dash and the release/hold/clear effect. For `∇·T` / `∇×T`, put a slash after the
-state token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: held / B2 depends on...`;
+state token, e.g. `∇·T: non-neutral / ²B remains live` and `∇×T: held / recoil loops back...`;
 this keeps the active state machine-readable. Directed downstream pressure belongs to `∇·T`:
 when later burdens remain live in a strictly acyclic dependency chain, render `∇·T: non-neutral` and
 `∇×T: null / no circular dependency; the chain is linearly traversable`. Use `∇×T: held` or
@@ -110,9 +116,20 @@ Each slot value must begin with an owner/TTP id, `pressure class: <name>`, or
 `cleared`, or ordinary prose. Inactive slots still render as `pressure class: none` or
 `pressure class: cleared`, followed by the effect.
 
+MRP does not own the first pass of burden discovery. Layer A / initial state-read identifies
+`¹B`, `²B`, `³B`, etc.; normal routing releases already-inventoried held burdens. `MRP(ⁿB)`
+only asks whether `Land(ⁿB)` produced an additional reread resultant beyond that initial
+inventory. Classify each MRP route result as `held_burden_activation`,
+`generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.
+If `²B` was already in the initial burden set, MRP may authorize continued route to `²B`
+but did not generate it. A generated burden is not fully present in the initial Layer A
+inventory; it surfaces only after `Land(ⁿB)` and `R(H,Δ)`, receives a normal burden node such
+as `²B [generated-by: MRP(¹B)]`, and then receives Layer A accounting, Layer B submoves,
+`Land(²B)`/`HOLD(²B)`, and closure witness / `field_witness` graph accounting.
+
 **MRP RECONSTRUCTIBILITY / NODE-LINEAGE ACCOUNTING.** MRP is not a rendered note. A valid routed output
 must let the input be reconstructed as node process: input -> burden nodes -> submove nodes ->
-Land(Bn) or partial Land(Bn) -> R(H,Delta) -> MRP pressure resultants -> graph/field_witness
+Land(ⁿB) or partial Land(ⁿB) -> R(H,Δ) -> MRP pressure resultants -> graph/field_witness
 delta or explicit no-edge -> STOP/HOLD/RECURSE/LoopBreak/closure -> restoration aim. If MRP
 cannot be mapped to this lineage, it is ornamental and cannot license closure, HOLD, RECURSE, or
 LoopBreak.
@@ -155,10 +172,11 @@ no guaranteed uptake` or ASCII `T_lang: PsiN -> PsiI: partial coupling attempt /
 language-mediated boundary; no guaranteed uptake`. Never write `Ψᴮ`, `PsiB`, `Ψᵁ`, `PsiU`, or
 topic/interlocutor substitutes in that line. If any item fails, do not close; continue the next
 Layer B operation or route HOLD/PARTIAL with `coverage_complete=false`.
-MRP Target is mandatory and must name the burden token explicitly: `Target: B1 / ...`,
-`Target: B2 / ...`, etc. A target that only says "after Land(B2)" in the reread line is not
+MRP Target is mandatory and must name the burden token explicitly: `Target: ¹B / ...`,
+`Target: ²B / ...`, etc. A target that only says "after Land(²B)" in the reread line is not
 enough. MRP pressure slots follow the same owner-token rule: `entailment-pressure` should normally begin
-with `M8`, `M1-P`, `M1`, or `pressure class: entailment-pressure`; `hidden-framework-recoil`
+with the matched owner/TTP id, e.g. `M8`, `M1-P`, `M1`, `criterion-reversal`,
+`authority-order-repair`, or `pressure class: entailment-pressure`; `hidden-framework-recoil`
 should begin with `FPD` or `pressure class: hidden-framework-recoil`; `reorientation-reminder`
 should begin with `P1`, `P7`, or `pressure class: reorientation`. Do not begin a slot with a
 phrase such as "consequence trace", "authority-order repair", or "source-status discipline".
@@ -187,14 +205,14 @@ Formulation before the closure witness in a hard/full closure.
 Parseable hard-closure witness template:
 ```text
 Closure/Reconstruction Witness
-Initial burden set: [B1, B2, ...]
-Burden dependency graph: B1 (root) -> B2, ...
+Initial burden set: [¹B, ²B, ...]      # parser alias allowed in machine fields: [B1, B2, ...]
+Burden dependency graph: ¹B (root) → ²B, ...
 Terminal states:
-B1: landed / <owner-or-pressure> / <detail>
+¹B: landed / <owner-or-pressure> / <detail>
 MRP resultants:
-B1: finding=<stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation>; graph=<delta-or-none>; route=<STOP|HOLD|RECURSE|LoopBreak(∇×T)>
-del-dot B: neutral / <target-explicit reason>     # or non-neutral / <held burden>
-del-cross kappa: null / <reason>                  # or resolved / <reason>, non-null / <loop target>
+MRP(¹B): type=<held_burden_activation|generated_burden_instantiation|no_new_resultant|loopbreak|hold_partial>; finding=<stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation>; graph=<delta-or-none>; route=<STOP|HOLD|RECURSE|LoopBreak(∇×T)>
+∇·B: neutral / <target-explicit reason>     # or non-neutral / <held burden>
+∇×κ: null / <reason>                        # or resolved / <reason>, non-null / <loop target>
 𝒞(Ψᴺ): coverage_complete=<true|false>; <closure/HOLD/RECURSE reason>
 T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed uptake
 ```
@@ -449,12 +467,12 @@ Top-salient invariants:
   ```text
   Burden N: <name>
   Layer B - Governed Operation Body
-  ¹B₁ [owner ID] - <plain operation name>:
+  ¹B₁[owner-ID] - <plain operation name>:
       Target: <exact premise / criterion / predicate / warrant>
       Operation: <case-shaped owner action; not a one-line stub in full traversal>
       Result: <changed claim-state>
       Contribution-to-Land(Bn): <how this submove helps land the burden>
-  ¹B₂ [owner ID] - <plain operation name>:
+  ¹B₂[owner-ID] - <plain operation name>:
       Target: <exact premise / criterion / predicate / warrant>
       Operation: <case-shaped owner action; not a one-line stub in full traversal>
       Result: <changed claim-state>
@@ -462,7 +480,7 @@ Top-salient invariants:
     [continue until all materially necessary s are rendered]
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
     [Mid-Reread Pressure]
-    Target: Bn / <landed burden name>
+    Target: ⁿB / <landed burden name>
     Reread: R(H,Δ)
     Landed delta: Δ¹B / Δκ from Land(¹B)
     Pressure activations:
@@ -475,8 +493,9 @@ Top-salient invariants:
     ∇·T: <neutral/settled/bounded/non-neutral plus license>
     ∇×T: <null/resolved/held/non-null plus license>
     Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
+    MRP route result type: <held_burden_activation/generated_burden_instantiation/no_new_resultant/loopbreak/hold_partial>
     MRP resultant: <finding -> route/graph/hold consequence>
-    Graph delta: <none or Bn -> Bn+1>
+    Graph delta: <none or ⁿB → ⁿ⁺¹B>
     Pre-emption basis: <none/graph-bound/commitment-bound/framework-bound>
     Route: <STOP/HOLD/RECURSE/LoopBreak(∇×T)>
     Boundary: T_lang does not imply guaranteed uptake
@@ -497,10 +516,13 @@ Top-salient invariants:
   must state the finding-to-route/graph/HOLD consequence in one line.
   `Graph delta` is `none` for STOP/LoopBreak. RECURSE must include a graph edge. HOLD may include
   a held graph edge only when `Terminal states:` marks the downstream node `held-with-reason` or
-  `carried-PARTIAL`. LoopBreak is never a graph node or graph edge; render `Graph delta: none`
-  and `Route: LoopBreak(∇×T)`.
+  `carried-PARTIAL`. `held_burden_activation` means the next node was already in the initial
+  inventory; `generated_burden_instantiation` means `MRP(ⁿB)` produced a new resultant node and the
+  output must instantiate it as a normal burden, e.g. `²B [generated-by: MRP(¹B)]`, with Layer A,
+  Layer B, owner-bearing submoves, and `Land(²B)`/`HOLD(²B)`. LoopBreak is never a graph node or
+  graph edge; render `Graph delta: none` and `Route: LoopBreak(∇×T)`.
   Reconstructibility/node-lineage requirement: the visible output must let an evaluator map input ->
-  burden nodes -> submove nodes -> Land(Bn) -> R(H,Delta) -> MRP resultant -> graph/field_witness
+  burden nodes -> submove nodes -> Land(ⁿB) -> R(H,Δ) -> MRP resultant -> graph/field_witness
   delta/no-edge -> route -> closure/restoration. If a node in that chain is absent, route HOLD
   or PARTIAL instead of claiming closure.
   Every released burden-cycle must visibly include `Land(Bn)` or `Land(ⁿB)` before `R(H,Δ)`;
@@ -543,10 +565,13 @@ Top-salient invariants:
   `Closure/Reconstruction Witness` (not `Closure audit`) with `Burden dependency graph:`,
   selected/held `N`, registers, owner/TTP match, e.g. `∇·B`/`∇×κ`, `𝒞(Ψᴺ)`,
   `T_lang: Ψᴺ ⇢ Ψᴵ`.
-  The witness must also include parseable `Initial burden set: [B1, B2, ...]` and
+  The witness must also include parseable `Initial burden set: [¹B, ²B, ...]` with machine-facing
+  aliases only when needed, and
   `Terminal states:` lines for every burden, using one state from `landed`,
   `discharged-as-derivative`, `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, or
-  `cleared`. Each terminal line must be parseable as `B1: landed / <owner-or-pressure> / <detail>`.
+  `cleared`. Each terminal line should be public-canonical, e.g.
+  `¹B: landed / <owner-or-pressure> / <detail>`; parser aliases such as `B1:` are allowed only in
+  explicitly machine-facing fields.
   Root nodes in `Burden dependency graph:` must be marked exactly `(root)`, with no gloss inside
   those parentheses. Write `B1 (root) -> B2` or `B1 (root) - <gloss> -> B2`; never write
   `B1 (root authority/order...)`, because the witness parser must recover the root node. Include
@@ -559,15 +584,15 @@ Top-salient invariants:
   T_lang invariant: never write uptake/interlocutor substitutes such as `PsiU`, `Psi^U`, or
   a local uptake-letter target in the closure witness; use the exact invariant target named
   in the preceding `T_lang:` template.
-  Graphs use edge
-  notation such as `B1 -> B2, B3, B4, B5` or `B1 ∥ B2 -> B3`.
+  Graphs use public canonical edge notation such as `¹B → ²B`, `¹B → ²B, ³B`, or
+  `¹B ∥ ²B → ³B`; ASCII arrows belong to parser aliases only.
 - Invocation-surface miniature, structure only:
   ```text
   ¹B — main burden: imported moral tribunal
-  ¹B₁ [FPD] - expose imported criterion
-  ¹B₂ [M1] - test grounding / self-reference
-  Land(¹B) / Land(B1): criterion no longer governs as unquestioned judge
-  [Mid-Reread Pressure]: freeze Land(B1); activate existing owner/TTP pressure slots;
+  ¹B₁[FPD] - expose imported criterion
+  ¹B₂[M1] - test grounding / self-reference
+  Land(¹B): criterion no longer governs as unquestioned judge
+  MRP(¹B): freeze Land(¹B); activate existing owner/TTP pressure slots;
   record ∇·T/∇×T, finding, graph/held/no-edge consequence, pre-emption basis, and route
   R(H,Δ): release, HOLD, PARTIAL, LoopBreak, or close only from the recorded MRP result
   ```

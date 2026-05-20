@@ -30,8 +30,10 @@ if hasattr(sys.stdout, "reconfigure"):
 
 
 FIELD_RE = re.compile(r"(?im)^\s*║?\s*field\s*:\s*(?P<field>[A-Z -]+)\b")
+SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹"
+BURDEN_TOKEN_RE = re.compile(rf"(?:B\d+|[{SUP}]+B)")
 BURDEN_RE = re.compile(r"\bB(?P<num>\d+)\b")
-EDGE_RE = re.compile(r"\b(B\d+)\b\s*(?:->|→)\s*\b(B\d+)\b")
+EDGE_RE = re.compile(rf"({BURDEN_TOKEN_RE.pattern})\s*(?:->|→)\s*({BURDEN_TOKEN_RE.pattern})")
 GRAPH_HEADING_RE = re.compile(r"(?i)\bBurden dependency graph\s*:")
 GRAPH_STOP_RE = re.compile(
     r"(?i)^\s*(?:[-*]\s*)?(?:Terminal states|MRP resultants|field_witness|del-dot|"
@@ -62,7 +64,7 @@ def field_value(text: str) -> str:
 
 
 def block_target(block: MrpBlock) -> str:
-    match = BURDEN_RE.search(block.target)
+    match = BURDEN_TOKEN_RE.search(block.target)
     return match.group(0) if match else ""
 
 

@@ -110,15 +110,18 @@ or explicitly HOLD/PARTIAL it.
 
 **Named invariant:** Full recursion in every mode; compact DSL/IR header in default; full ledger only in internal/development audit.
 
-Notation mirror: `ⁿBᵢ` names the i-th operative submove inside the n-th burden-cycle, and
-`nBi` is the plain-text equivalent. `B1.s1` remains an accepted legacy/checker alias for
-`¹B₁` where needed. Default prose may still say "Burden 1" and "operative submove"; the
-notation is primarily for governance docs, hard-output templates, checker traces, and
-`:dsl` / audit surfaces.
+Notation mirror: `ⁿB` names the n-th burden, `ⁿBᵢ` names the i-th operative submove inside
+that burden-cycle, and `ⁿBᵢ[OPᵢ]` attaches the owner/operator. `nBi` is the plain-text
+equivalent. `B1.s1` remains an accepted legacy/checker alias for `¹B₁` where needed. Default
+prose may still say "Burden 1" and "operative submove"; public governed notation should use the
+canonical burden/submove forms, while ASCII aliases belong in checker/dev-harness traces or
+explicit machine-facing fallback fields.
 
-Public canonical output should prefer `¹B₁`, `¹B₂`, `²B₁`. Use `1B1`, `1B2`, `2B1`
-as the ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a legacy/checker alias and should not
-be the primary public notation unless the output is explicitly a checker/dev-harness trace.
+Public canonical output should prefer `¹B`, `²B`, `¹B₁[FPD]`, `¹B₂[M1-P]`,
+`²B₁[definition-discipline]`, `Land(¹B)`, `MRP(¹B)`, and `¹B → ²B`. Use `1B1`,
+`1B2`, `2B1` or `B1`/`B2` only as ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a
+legacy/checker alias and should not be the primary public notation unless the output is explicitly
+a checker/dev-harness trace.
 
 Expanded formalism render boundary: full algebraic exposition belongs by default to
 theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
@@ -163,10 +166,14 @@ STOP/HOLD/PARTIAL/RECURSE/COMPLETE status when those surfaces govern release.
 
 Initial burden enumeration gate: the `Initial burden set` used by the Closure/Reconstruction
 Witness must be declared from the pre-release Layer A / Diagnostic IR burden enumeration before
-terminal states are rendered. New burdens discovered during `R(H,Δ)` are `newly discovered`,
-`newly live`, or `next-pass candidates`; they are not silently inserted into the original initial
-set. If the render cannot distinguish the initial set from newly released or newly discovered
-material, closure must be HOLD, PARTIAL, or RECURSE rather than COMPLETE.
+terminal states are rendered. MRP-generated burdens discovered during `R(H,Δ)` are
+`generated-by: MRP(ⁿB)` resultant nodes; they are not silently inserted into the original initial
+set. If a later node was already in the initial set, classify the MRP route as
+`held_burden_activation`; if it was not fully present until the post-landing reread, classify it as
+`generated_burden_instantiation` and instantiate the node with Layer A, Layer B, owner-bearing
+submoves, and Land/HOLD accounting. If the render cannot distinguish the initial set from newly
+released or newly generated material, closure must be HOLD, PARTIAL, or RECURSE rather than
+COMPLETE.
 
 Closure witness floor: `𝒞(Ψᴺ)` is agent/runtime-side closure only. When printed, it must identify
 the agent execution-field decision or status (COMPLETE, STOP, HOLD, PARTIAL, or RECURSE) and must
@@ -685,7 +692,8 @@ Burden N: <name>
     ∇·T: <neutral/settled/bounded/non-neutral plus license>
     ∇×T: <null/resolved/held/non-null plus license>
     Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
-    Graph delta: <none or Bn -> Bn+1>
+    MRP route result type: <held_burden_activation/generated_burden_instantiation/no_new_resultant/loopbreak/hold_partial>
+    Graph delta: <none or ⁿB → ⁿ⁺¹B>
     Pre-emption basis: <none/graph-bound/commitment-bound/framework-bound>
     Route: <STOP/HOLD/RECURSE/LoopBreak(∇×T)>
     Boundary: T_lang does not imply guaranteed uptake

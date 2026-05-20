@@ -39,6 +39,13 @@ FINDINGS = {
     "reorientation",
 }
 ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+ROUTE_RESULT_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+    "hold_partial",
+}
 PRESSURE_KEYS = {
     "freeze-landed-move",
     "dependency-tug",
@@ -96,6 +103,7 @@ class MrpBlock:
     divergence: str
     curl: str
     finding: str
+    route_result_type: str
     mrp_resultant: str
     graph_delta: str
     preemption_basis: str
@@ -143,6 +151,7 @@ def parse_mrp_body(body: str) -> MrpBlock:
         divergence=field(body, "∇·T"),
         curl=field(body, "∇×T"),
         finding=field(body, "Finding"),
+        route_result_type=field(body, "MRP route result type"),
         mrp_resultant=field(body, "MRP resultant"),
         graph_delta=field(body, "Graph delta"),
         preemption_basis=field(body, "Pre-emption basis"),
@@ -208,6 +217,8 @@ def check_sidecar(path: Path, text: str, mrp: MrpBlock, errors: list[str]) -> No
         return
     if reread_pressure.get("finding") != mrp.finding:
         errors.append(f"{sidecar_path}: reread_pressure finding does not match visible MRP")
+    if mrp.route_result_type and reread_pressure.get("route_result_type") != mrp.route_result_type:
+        errors.append(f"{sidecar_path}: reread_pressure route_result_type does not match visible MRP")
     if reread_pressure.get("route") != mrp.route:
         errors.append(f"{sidecar_path}: reread_pressure route does not match visible MRP")
     if reread_pressure.get("preemption_basis") != mrp.preemption_basis:
@@ -287,6 +298,39 @@ def curl_diagnostic_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]:
     return errors
 
 
+def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]:
+    """Validate optional MRP route-result type when visible."""
+    errors: list[str] = []
+    value = mrp.route_result_type.strip()
+    if not value:
+        return errors
+    if value not in ROUTE_RESULT_TYPES:
+        return [f"{label}: MRP route result type invalid: {value!r}"]
+    if value == "generated_burden_instantiation":
+        if mrp.route not in {"RECURSE", "HOLD"}:
+            errors.append(f"{label}: generated_burden_instantiation requires Route: RECURSE or HOLD")
+        if not has_edge(mrp.graph_delta):
+            errors.append(f"{label}: generated_burden_instantiation requires visible graph edge")
+        if mrp.preemption_basis == "none":
+            errors.append(f"{label}: generated_burden_instantiation requires graph/commitment/framework-bound basis")
+    elif value == "held_burden_activation":
+        if mrp.route not in {"RECURSE", "HOLD"}:
+            errors.append(f"{label}: held_burden_activation requires Route: RECURSE or HOLD")
+        if not has_edge(mrp.graph_delta):
+            errors.append(f"{label}: held_burden_activation requires graph provenance edge")
+    elif value == "no_new_resultant":
+        if has_edge(mrp.graph_delta):
+            errors.append(f"{label}: no_new_resultant must not create a graph edge")
+    elif value == "loopbreak":
+        if mrp.route != "LoopBreak(∇×T)":
+            errors.append(f"{label}: loopbreak route result type requires Route: LoopBreak(∇×T)")
+        if has_edge(mrp.graph_delta):
+            errors.append(f"{label}: loopbreak must not create graph edge")
+    elif value == "hold_partial" and mrp.route != "HOLD":
+        errors.append(f"{label}: hold_partial route result type requires Route: HOLD")
+    return errors
+
+
 def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
     label = f"{path}: MRP block {index}"
     errors: list[str] = []
@@ -310,6 +354,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    errors.extend(route_result_type_errors(path, mrp, label))
     if mrp.route not in ROUTES:
         errors.append(f"{label}: Route invalid: {mrp.route!r}")
     if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
@@ -356,6 +401,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    errors.extend(route_result_type_errors(path, mrp, label))
     if not mrp.mrp_resultant:
         errors.append(f"{label}: MRP resultant missing")
     if mrp.route not in ROUTES:
@@ -418,6 +464,7 @@ def check_fixture(path: Path) -> list[str]:
             )
     if mrp.finding not in FINDINGS:
         errors.append(f"{path}: MRP Finding invalid: {mrp.finding!r}")
+    errors.extend(route_result_type_errors(path, mrp, str(path)))
     if mrp.route not in ROUTES:
         errors.append(f"{path}: MRP Route invalid: {mrp.route!r}")
     if mrp.preemption_basis not in {"none", "graph-bound", "commitment-bound", "framework-bound"}:

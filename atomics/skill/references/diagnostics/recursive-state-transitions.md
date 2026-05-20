@@ -625,6 +625,11 @@ After every bounded restorative move, run state re-read before closure. The post
 The gate is not a new routing pass. It is the enforcement point that keeps the validated IR live
 after the response has made a bounded move.
 
+Layer A owns first-pass burden discovery. The initial read inventories the ordinary burden nodes
+that are already present in the input and marks held/live routes. MRP does not take over that job:
+it rereads after `Land(ⁿB)` and asks whether the landing produced an additional resultant burden
+beyond the initial inventory.
+
 ## No Premature STOP
 
 Core recursive traversal rule: no premature STOP while an eligible live burden remains.
@@ -657,6 +662,9 @@ When all four conditions hold, RECURSE is required in the same response. When th
 eligible but limits prevent it, use PARTIAL. When the next pass remains live but its release signal
 is absent, use HOLD. STOP is invalid.
 
+This is `held_burden_activation` when the next burden was already in the initial Layer A burden
+inventory. It may be MRP-authorized as a route, but it is not an MRP-generated burden.
+
 **NewB license test:**
 
 `NewB` is licensed only when state re-read can show all six facts:
@@ -672,6 +680,28 @@ is absent, use HOLD. STOP is invalid.
 
 If any fact is missing, the next material is not NewB. It remains an operative submove,
 HOLD, or PARTIAL.
+
+**MRP-generated resultant burden test:**
+
+An MRP-generated burden is a narrower category than ordinary `NewB`. It is licensed only when
+`MRP(ⁿB)` can show all seven facts:
+
+1. `ⁿB` landed or partially landed through owner-specific operation;
+2. `R(H,Δ)` detected pressure not fully present in the initial Layer A inventory;
+3. the pressure is graph-bound, commitment-bound, framework-bound, or grounded in the prior burden's
+   collapse radius, not speculative topic expansion;
+4. the new node differs from `ⁿB` and from already-held burdens by target-family, claim-level,
+   restoration vector, or governing noetic pressure;
+5. the new node is not merely an operative submove already answered inside `ⁿB`;
+6. MRP records `MRP route result type: generated_burden_instantiation`, graph/provenance
+   `ⁿB → ⁿ⁺¹B`, and route `RECURSE` or `HOLD`;
+7. the output instantiates `ⁿ⁺¹B [generated-by: MRP(ⁿB)]` as a normal burden node with Layer A
+   accounting, Layer B governed operation body, owner-bearing submoves, and `Land(ⁿ⁺¹B)` or
+   `HOLD(ⁿ⁺¹B)` before closure is licensed.
+
+If the proposed node was already present in the initial inventory, the route result type is
+`held_burden_activation`, not `generated_burden_instantiation`. If no additional resultant exists,
+record `no_new_resultant` and continue ordinary route/closure discipline.
 
 Practical/application material is not NewB merely because it needs its own heading. Source
 maps, concise answer wording, "how to respond" sections, do/don't guardrails, warning
@@ -692,6 +722,7 @@ visible-format sanitizer. After the first bounded move, final-output preflight a
 - what cleared?
 - what remains live?
 - was the remaining live burden already present in the original input?
+- did `MRP(ⁿB)` generate any additional resultant burden beyond the initial inventory?
 - is it now eligible?
 - is any stop/register/semantic/thin-basis gate blocking it?
 

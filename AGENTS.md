@@ -522,6 +522,17 @@ Release claims must stay narrow and honest:
   when it changes or licenses route, graph/field_witness state, closure, HOLD, RECURSE,
   LoopBreak, or graph-bound anticipatory downstream handling after `Land(Bn)` during
   `R(H,Delta)`.
+- MRP-generated burden proof is narrower than ordinary next-burden routing. Layer A owns the
+  first-pass burden inventory; moving to an already-inventoried held burden is
+  `held_burden_activation`, not generated discovery. A generated burden must surface only after
+  `Land(ⁿB)` and `R(H,Δ)`, render `MRP route result type: generated_burden_instantiation`,
+  instantiate a real node such as `²B [generated-by: MRP(¹B)]`, include Layer A/B accounting,
+  owner-bearing submoves, `Land(²B)` or `HOLD(²B)`, and closure witness / `field_witness`
+  provenance. Deterministic fixture/checker proof for this guard is not a substitute for a fresh
+  hosted Smoke 7 model-output proof unless that smoke is actually run.
+- Public-facing governed output should prefer canonical burden notation: `ⁿB`, `ⁿBᵢ[OPᵢ]`,
+  `MRP(ⁿB)`, and `ⁿB → ⁿ⁺¹B`. ASCII aliases are parser/checker fallbacks and must not become the
+  primary public surface unless explicitly marked machine-facing.
 - The decisive v0.4.3.0 behavioral MRP proof remains the Codex-hosted exact-file hard-compound
   Smoke 6 repair14 output. Later generic route/curl hosted smokes prove the narrower route/curl/
   field invariant only unless they also pass full reconstructibility/topology checks.

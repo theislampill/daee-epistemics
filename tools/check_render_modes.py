@@ -502,10 +502,10 @@ FIELD_ONLY_REGRESSION_PHRASES = [
 
 ROOT_INVOCATION_SURFACE_REQUIRED = [
     "NOETIC FIELD EXECUTION",
-    "¹B₁ [FPD]",
-    "¹B₂ [M1]",
+    "¹B₁[FPD]",
+    "¹B₂[M1]",
     "Land(¹B)",
-    "Land(B1)",
+    "MRP(¹B)",
     "R(H,Δ)",
     "MRP",
     "[Mid-Reread Pressure]",
