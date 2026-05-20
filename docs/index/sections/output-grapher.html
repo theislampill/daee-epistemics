@@ -1,0 +1,97 @@
+<div class="hero outputGrapherHero">
+  <h1>Noetic Field Output Grapher</h1>
+  <p>Paste a daee-epistemics output and read it as a rebuttal infographic: what the claim says, what it depends on, the problems found, how each problem is answered, what changed after each answer, what remains, and the final restoration status.</p>
+  <div class="badges">
+    <span class="badge"><span class="dot violet"></span>docs artifact only</span>
+    <span class="badge"><span class="dot green"></span>inline SVG renderer</span>
+    <span class="badge"><span class="dot orange"></span>field_witness compare</span>
+  </div>
+</div>
+
+<link rel="stylesheet" href="index/output-grapher.css">
+
+<section class="panel outputGrapher" data-surface-role="focal" data-output-grapher="true">
+  <div class="outputGrapherIntro">
+    <div>
+      <h2>Graph a Skill Output</h2>
+      <p class="subtle">This tool consumes a finished output. It does not change runtime behavior, invoke the skill, or prove live model behavior. It makes visible whether an output is graphable, reconstructible, and terminally accounted.</p>
+    </div>
+    <div class="outputGrapherMiniFlow" aria-label="Output graph lineage">
+      <span>claim</span><b>→</b><span>problems found</span><b>→</b><span>answer moves</span><b>→</b><span>what landed</span><b>→</b><span>what remains</span><b>→</b><span>follow-up check</span><b>→</b><span>route</span><b>→</b><span>restoration</span>
+    </div>
+  </div>
+
+  <div class="outputGrapherInputs" data-surface-role="control">
+    <label>
+      <span>daee-epistemics output</span>
+      <textarea id="ogOutputInput" spellcheck="false" placeholder="Paste governed output with Layer A, burdens, submoves, Land(¹B), R(H,Δ), MRP(¹B), graph deltas, terminal states, and closure/restoration evidence."></textarea>
+    </label>
+    <label>
+      <span>optional field_witness JSON</span>
+      <textarea id="ogWitnessInput" spellcheck="false" placeholder='Optional sidecar, e.g. {"nodes":["¹B"],"edges":[],"terminal_states":{"¹B":"landed"}}'></textarea>
+    </label>
+  </div>
+
+  <div class="outputGrapherActions" data-surface-role="control">
+    <button type="button" id="ogParseBtn">Parse / Graph</button>
+    <button type="button" id="ogExportPngBtn" disabled>Export PNG</button>
+    <button type="button" id="ogExportSvgBtn" disabled>Export SVG</button>
+    <button type="button" id="ogExportJsonBtn" disabled>Export JSON</button>
+    <button type="button" id="ogExportMermaidBtn" disabled>Export Mermaid <span>(optional / lossy ELK)</span></button>
+  </div>
+
+  <div class="outputGrapherModes" data-surface-role="control" aria-label="Graph proof mode">
+    <button type="button" class="active" data-og-mode="rebuttal">Plain-language Rebuttal View</button>
+    <button type="button" data-og-mode="dag">Technical Pipeline View</button>
+    <button type="button" data-og-mode="validation">Validation View</button>
+  </div>
+
+  <div class="outputGrapherDensity" data-surface-role="control" aria-label="Story view density">
+    <button type="button" data-og-density="compact">Compact</button>
+    <button type="button" class="active" data-og-density="comfortable">Comfortable</button>
+    <button type="button" data-og-density="expanded">Expanded</button>
+  </div>
+
+  <div class="outputGrapherSummary" id="ogSummary" aria-live="polite"></div>
+
+  <div class="outputGrapherWorkspace">
+    <div class="outputGrapherGraphPanel">
+      <div id="ogGraph" class="outputGrapherGraph" data-surface-role="generated-snapshot"></div>
+      <div class="outputGrapherLegend" id="ogLegend">
+        <span><i class="ogColor ogBurden"></i>failure point / burden</span>
+        <span><i class="ogColor ogSubmove"></i>rebuttal move / TTP</span>
+        <span><i class="ogColor ogLanded"></i>failure shown / landed</span>
+        <span><i class="ogColor ogMrp"></i>follow-up pressure / MRP</span>
+        <span><i class="ogColor ogRoute"></i>next failure / HOLD / RECURSE</span>
+        <span><i class="ogColor ogClosed"></i>STOP / closed / restoration</span>
+        <span><i class="ogColor ogInvalid"></i>missing / invalid</span>
+      </div>
+    </div>
+    <aside class="outputGrapherInspector" data-surface-role="support">
+      <h3>Selected Node</h3>
+      <div id="ogInspector" class="outputGrapherInspectorBody">Select a node after parsing to inspect source excerpt, technical label, owner/TTP, route, and validation notes.</div>
+    </aside>
+  </div>
+
+  <div class="outputGrapherValidation">
+    <section>
+      <h3>Validation</h3>
+      <ul id="ogErrors"></ul>
+    </section>
+    <section>
+      <h3>Warnings</h3>
+      <ul id="ogWarnings"></ul>
+    </section>
+  </div>
+</section>
+
+<section class="panel" data-surface-role="support">
+  <h2>What It Checks</h2>
+  <div class="outputGrapherChecklist">
+    <p><strong>Hard errors:</strong> missing initial burdens under complete closure, unknown graph nodes, missing terminal states, STOP before later burden work, unbacked MRP-governed graph edges, decorative MRP labels, live ∇·B or ∇×κ under complete closure without a licensed route.</p>
+    <p><strong>Warnings:</strong> legacy ASCII aliases such as <code>B1 -&gt; B2</code>, burden notation written as <code>B₁</code>, missing submoves under a full landing, held-burden activation without generated burden, low visible topology, possible bloat, or visible/field_witness mismatch.</p>
+    <p><strong>Notation boundary:</strong> public output should prefer <code>¹B</code>, <code>¹B₁[OP]</code>, <code>Land(¹B)</code>, <code>MRP(¹B)</code>, <code>¹B → ²B</code>, <code>∇·B</code>, <code>∇×κ</code>, <code>𝒞(Ψᴺ)</code>, and <code>T_lang: Ψᴺ ⇢ Ψᴵ</code>. Parser aliases are fallback only. Mermaid export is optional/lossy and includes an ELK layout hint; it is not the primary renderer.</p>
+  </div>
+</section>
+
+<script src="index/output-grapher.js"></script>

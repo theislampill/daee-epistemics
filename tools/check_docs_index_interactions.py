@@ -68,6 +68,7 @@ EXPECTED_TABS = {
     "Architecture": "architecture",
     "Owners & TTP": "owners",
     "Theory Deep Dive": "theory",
+    "Output Grapher": "output-grapher",
     "Reference Library": "reference",
     "Boundaries": "boundaries",
 }

@@ -1,0 +1,11 @@
+{
+  "nodes": ["¹B"],
+  "edges": [],
+  "terminal_states": {
+    "¹B": "landed"
+  },
+  "closure": {
+    "coverage_complete": true,
+    "T_lang": "Ψᴺ ⇢ Ψᴵ"
+  }
+}

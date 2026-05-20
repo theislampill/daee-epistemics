@@ -39,6 +39,7 @@ sweep moves them.
 | `docs/audits/v0.4.3.0-trinitarian-mrp-hotfix-audit.md` | ACTIVE RELEASE EVIDENCE | Targeted Trinitarian RC2 hotfix evidence for STOP-before-continuation, `∇·T`/`∇×T` route discipline, and mixed-field classification. |
 | `docs/audits/v0.4.3.0-mrp-route-curl-generalization-audit.md` | ACTIVE RELEASE EVIDENCE | Generalized route/curl invariant audit with secularism, TST, synthetic fixtures and the boundary that the hosted secularism smoke proves route/curl/field only. |
 | `docs/audits/v0.4.3.0-main-reconciliation-audit.md` | ACTIVE RELEASE EVIDENCE | Main/source reconciliation audit proving the repaired v0.4.3.0 release-source invariants were brought back onto main before Output Grapher publication. |
+| `docs/audits/v0.4.3.0-output-grapher-branch-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Docs-only Output Grapher branch audit with synthetic fixtures, fresh skill-output reconstruction smokes, export proof, and cold-reader visual review. |
 | `docs/audits/v0.4.3.0-rc1-closeout-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Internal RC1 closeout for v0.4.3.0 reconstructibility/MRP work, local CI-equivalent proof, commit boundary, and live/package proof caveats. |
 | `docs/audits/v0.4.3.0-audit-of-audits.md` | ACTIVE IMPLEMENTATION EVIDENCE | Audit-of-audits input and closure for targeted stale-status cleanup. |
 | `docs/audits/v0.4.3.0-future-work-ledger.md` | FUTURE-WORK SOURCE | Single ledger for deferred/tabled findings that should not remain scattered as live blockers. |
