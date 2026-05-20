@@ -282,6 +282,10 @@ Canonical invocation forms:
   a decorative heading: after `Land(Bn)`, it pressures `R(H,Delta)` through existing
   TTP/operator classes, records the resultant, and licenses graph movement, HOLD, RECURSE,
   LoopBreak, STOP, or closure.
+- v0.4.3.0 also guards generic MRP route/curl invariants: STOP cannot precede later burden
+  work, post-reread graph edges must be MRP-backed, directed acyclic downstream pressure is
+  `∇·T`, and `∇×T` is reserved for real loop/churn/recoil/rotation pressure. The Trinitarian
+  route/curl hotfix is now a case wrapper over this generic checker, not the source of the rule.
 - `/daee-epistemics:dsl` is expanded diagnostic/IR visibility: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested. It is not the first place DSL governance appears.
 - `/daee-epistemics < input.md > output.md` is canonical file-retained execution. It reads the case from `input.md`, writes the full canonical compact DSL-governed answer to `output.md`, and keeps the chat response to status only. This is not the optional script-capable route/check harness; it is the canonical runtime using a safer output transport for hosts whose final-chat channel compresses hard cases.
 

@@ -34,7 +34,22 @@ def tracked_files(paths: list[str]) -> list[Path]:
     if paths:
         command.extend(["--", *paths])
     raw = subprocess.check_output(command)
-    return [ROOT / item.decode("utf-8") for item in raw.split(b"\0") if item]
+    files = [ROOT / item.decode("utf-8") for item in raw.split(b"\0") if item]
+    for item in paths:
+        path = Path(item)
+        if not path.is_absolute():
+            path = ROOT / path
+        if path.is_file():
+            files.append(path)
+
+    unique: list[Path] = []
+    seen: set[Path] = set()
+    for path in files:
+        resolved = path.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            unique.append(path)
+    return unique
 
 
 def is_binary(data: bytes) -> bool:

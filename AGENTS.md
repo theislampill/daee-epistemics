@@ -453,6 +453,12 @@ state.
 - `tools/check_release_provenance.py` verifies a local package/provenance pair when provenance
   JSON exists. Missing provenance, missing public assets, or absent current-release smokes remain
   release-proof blockers; do not satisfy them with local dirty-worktree hashes or fabricated outputs.
+- Before any push, tag, release creation/update, or release asset update, run release provenance
+  preflight with the actual built artifact and release body, for example:
+  `python tools/check_release_provenance.py --version v0.4.3.0 --artifact build\daee-epistemics-v0.4.3.0.skill --release-body build\v0.4.3.0-release-body.md`.
+  Do not manually guess package SHA, size, source commit, release-body provenance, or tag state.
+  Stale release docs are an Andon stop. A release is blocked if either provenance alignment or
+  release-facing mojibake checks fail.
 - If atomics change, rebuild `skill/` and run freshness checks before reporting success.
 - If package contents or release-artifact docs change, rebuild the `.skill` package, compute
   SHA256, size, entry count, and top-level entries, then update `docs/release-artifacts.md`
@@ -477,6 +483,9 @@ state.
   download points at the new package.
 - If replacing an existing GitHub Release asset on the same tag, say plainly that the asset
   hash changed, update the release notes/artifact docs, and verify the release page afterward.
+- Existing GitHub Release assets may be replaced only after proving:
+  `tag commit = package source commit = release body claims = uploaded asset contents = recorded release provenance`.
+  If any side differs, update the tag/release alignment or stop.
 - Do not create a patch tag such as `v0.3.2.1` unless explicitly instructed. If a same-version
   release asset is being corrected, keep it on the existing release line and document the
   rebake.
@@ -513,6 +522,14 @@ Release claims must stay narrow and honest:
   when it changes or licenses route, graph/field_witness state, closure, HOLD, RECURSE,
   LoopBreak, or graph-bound anticipatory downstream handling after `Land(Bn)` during
   `R(H,Delta)`.
+- The decisive v0.4.3.0 behavioral MRP proof remains the Codex-hosted exact-file hard-compound
+  Smoke 6 repair14 output. Later generic route/curl hosted smokes prove the narrower route/curl/
+  field invariant only unless they also pass full reconstructibility/topology checks.
+- Route/curl invariants are generic runtime gates, not case-family patches: `Route: STOP` forbids
+  later Layer B or graph continuation; every post-reread graph edge needs an MRP-backed resultant;
+  directed acyclic downstream pressure is `∇·T`; and `∇×T` requires actual loop, churn, recoil,
+  label-pressure, or dependency rotation. Run `python tools/check_mrp_route_invariants.py` and keep
+  case wrappers such as `check_trinitarian_mrp_hotfix.py` delegated to the generic checker.
 - Hard-compound MRP smokes require topology plus plausible execution mass plus anti-bloat review.
   Byte count alone is not proof, but a severely compressed hard-compound traversal is an Andon
   unless it honestly routes HOLD/PARTIAL.

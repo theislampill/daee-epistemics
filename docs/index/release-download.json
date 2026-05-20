@@ -13,12 +13,12 @@
   "download_kind": "direct_asset",
   "primary_skill_asset_name": "daee-epistemics-v0.4.3.0.skill",
   "primary_skill_asset_browser_download_url": "https://github.com/theislampill/daee-epistemics/releases/download/v0.4.3.0/daee-epistemics-v0.4.3.0.skill",
-  "primary_skill_asset_size": 621566,
-  "primary_skill_asset_digest": "sha256:e1b9e3f14b5303b882714a412c2903b6079d1dbf46088dab2ae6ec1585644734",
+  "primary_skill_asset_size": 622900,
+  "primary_skill_asset_digest": "sha256:56000848441e5ff56a12fb55efce7288e569d924f27ec99189e3533224bbfb95",
   "provenance_asset_name": "daee-epistemics-v0.4.3.0.provenance.json",
   "provenance_asset_browser_download_url": "https://github.com/theislampill/daee-epistemics/releases/download/v0.4.3.0/daee-epistemics-v0.4.3.0.provenance.json",
   "provenance_asset_digest": "sha256:59773fe677232a1a7deb019919342f539ff86d44e15a5247bdf95614c98db34d",
-  "sha256": "E1B9E3F14B5303B882714A412C2903B6079D1DBF46088DAB2AE6EC1585644734",
+  "sha256": "56000848441E5FF56A12FB55EFCE7288E569D924F27EC99189E3533224BBFB95",
   "fallback_url": "https://github.com/theislampill/daee-epistemics/releases/latest",
   "non_claim": "Release metadata powers a navigation link only; it is not runtime proof, smoke proof, or a public raw-smoke artifact."
 }
