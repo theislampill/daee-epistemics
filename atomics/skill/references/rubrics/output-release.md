@@ -230,9 +230,9 @@ RECURSE instead of COMPLETE. Root marker grammar is exact: put glosses outside t
 `B1 (root) - authority-order` is valid; `B1 (root authority-order)` is invalid because the
 witness parser cannot recover the root.
 Closure graph edges must be backed by the route/reread ledger. If the final graph contains
-`B3 -> B4`, a prior MRP/resultant must have licensed that edge with `Finding:
-genuine-dependent`, `Graph delta: B3 -> B4`, and `Route: RECURSE`; `Route: STOP` before the B4
-Layer B body is false closure, even if B4 is restorative.
+an edge such as `Bn -> Bn+1`, a prior MRP/resultant must have licensed that edge with `Finding:
+genuine-dependent` or `partial-real`, `Graph delta: Bn -> Bn+1`, and `Route: RECURSE` or `HOLD`;
+`Route: STOP` before later Layer B work is false closure, even when the later burden is restorative.
 The visible default section heading for this final accounting is literal
 `Closure/Reconstruction Witness`; do not replace it with `Closure audit` or collapse
 `Burden dependency graph:` into a shorter `burden graph` label.

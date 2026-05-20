@@ -165,7 +165,7 @@ named gate/reason, or mark PARTIAL with the named blocked burden/owner before an
 Response or Closing Formulation. STOP/COMPLETE is invalid while the same MRP record names an
 unresolved live pressure. If a later burden, Layer B body, or closure graph edge follows from
 the same answer, the prior MRP record is not final; it must mark the remaining burden as
-genuine-dependent, emit a graph delta such as B3 -> B4, and route RECURSE into the next burden.
+genuine-dependent, emit a graph delta such as Bn -> Bn+1, and route RECURSE into the next burden.
 Route in the compact MRP block is limited to STOP, HOLD, RECURSE, or LoopBreak(∇×T);
 owner-load failure is rendered as Route: HOLD plus Boundary: PARTIAL / OWNER-BODY-NOT-LOADED:
 <missing owner/path>.
@@ -339,7 +339,8 @@ tracks explicit or implicit demand for citations, textual proof, isnad/authentic
 external grounding; do not mark it `IMPLICIT` merely because a worldview or authority frame is
 live. If more than one field type is active, choose `MIXED NOETIC FIELD` as the single field
 value. A local claim governed by a named theological/worldview authority frame while the answer
-actively contrasts or restores through Islamic tawḥīd is `MIXED NOETIC FIELD`, not `LOCAL CLAIM`.
+actively contrasts or restores through an Islamic restoration frame is `MIXED NOETIC FIELD`, not
+`LOCAL CLAIM`.
 `authority frame` is LIVE when the input contains or implies a criterion for authority,
 proof, legitimacy, moral standing, public admissibility, governance, coercion, or epistemic
 right. Do not use SIMPLE, COMPACT, CANONICAL, HARD, or SOURCE-ORDER as banner categories or

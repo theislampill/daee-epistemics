@@ -59,7 +59,7 @@ burden, explicitly HOLD it with a named gate/reason, or mark PARTIAL with the na
 burden/owner. STOP/COMPLETE is invalid while the same MRP record names an unresolved live
 pressure. If a later burden, Layer B body, or closure graph edge follows from the same answer,
 the prior MRP record is not final; it must mark the remaining burden as `genuine-dependent`,
-emit a graph delta such as `B3 -> B4`, and route `RECURSE` into the next burden. `Route:` in the
+emit a graph delta such as `Bn -> Bn+1`, and route `RECURSE` into the next burden. `Route:` in the
 compact MRP block is limited to `STOP`, `HOLD`, `RECURSE`, or `LoopBreak(∇×T)`; owner-load
 failure is rendered as `Route: HOLD` plus `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing
 owner/path>`.
@@ -84,7 +84,7 @@ slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <m
 then an em dash and the release/hold/clear effect. For `∇·T` / `∇×T`, put a slash after the
 state token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: held / B2 depends on...`;
 this keeps the active state machine-readable. Directed downstream pressure belongs to `∇·T`:
-when B2/B3/B4 remain live in a strictly acyclic dependency chain, render `∇·T: non-neutral` and
+when later burdens remain live in a strictly acyclic dependency chain, render `∇·T: non-neutral` and
 `∇×T: null / no circular dependency; the chain is linearly traversable`. Use `∇×T: held` or
 `∇×T: non-null` only for circularity, churn, hidden-framework recoil, label-pressure, dependency
 rotation, or self-reinforcing loop pressure; do not claim `∇×T: resolved` unless a prior real
@@ -226,7 +226,7 @@ execution. Approved compact shape:
 The short invariant is: all inputs are noetic fields; prompt brevity never licenses shallow
 execution; user task, external source request, and authority frame are distinct; and closure must
 match banner state. A local claim governed by a named theological/worldview authority frame, while
-the response actively contrasts or restores through the Islamic tawḥīd frame, is `MIXED NOETIC
+the response actively contrasts or restores through an Islamic restoration frame, is `MIXED NOETIC
 FIELD` (or the repo-native equivalent), not `LOCAL CLAIM`. Banner value rules,
 first-visible/no-code-fence rule, and missing-material source-authentication behavior are owned by
 `references/rubrics/diagnostic-render-contract.md`.
@@ -414,8 +414,8 @@ Top-salient invariants:
   pre-voiced/downstream defense has invoked MRP. Do not route from `Land(Bn)` to the next burden,
   HOLD/PARTIAL, LoopBreak, or closure until `[Mid-Reread Pressure]` has recorded the pressure
   slots and route.
-- Directed acyclic burden chains are `∇·T` pressure, not `∇×T` pressure. If B1 -> B2 -> B3 -> B4
-  is linearly traversable, keep `∇×T: null` unless the output names an actual cycle, churn,
+- Directed acyclic burden chains are `∇·T` pressure, not `∇×T` pressure. If a chain is linearly
+  traversable from one burden to the next, keep `∇×T: null` unless the output names an actual cycle, churn,
   hidden-framework recoil, label-pressure, or loop. Do not say curl "resolved" when no curl was
   non-null.
 - Nonzero `∇×T` still requires HOLD/RECURSE or an owner-licensed `LoopBreak(∇×T)` with target, ground, `Δ` effect, and reread.

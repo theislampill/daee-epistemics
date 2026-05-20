@@ -1,0 +1,244 @@
+#!/usr/bin/env python3
+"""Generic MRP route/curl/runtime invariant guard.
+
+This checker validates runtime invariants that must hold across case families:
+
+- STOP cannot precede later burden or Layer B work.
+- Closure graph edges must be backed by MRP route/resultant records.
+- Directed acyclic downstream pressure belongs to ∇·T, not ∇×T.
+- Named authority/worldview frames with active Islamic restoration must not flatten to LOCAL CLAIM.
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+from check_mid_reread_pressure import (
+    MrpBlock,
+    curl_diagnostic_errors,
+    first_state,
+    parse_mrps,
+    stop_before_continuation_errors,
+)
+
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+
+FIELD_RE = re.compile(r"(?im)^\s*║?\s*field\s*:\s*(?P<field>[A-Z -]+)\b")
+BURDEN_RE = re.compile(r"\bB(?P<num>\d+)\b")
+EDGE_RE = re.compile(r"\b(B\d+)\b\s*(?:->|→)\s*\b(B\d+)\b")
+GRAPH_HEADING_RE = re.compile(r"(?i)\bBurden dependency graph\s*:")
+GRAPH_STOP_RE = re.compile(
+    r"(?i)^\s*(?:[-*]\s*)?(?:Terminal states|MRP resultants|field_witness|del-dot|"
+    r"∇·B|∇×κ|𝒞|T_lang|Restorative Response|Closing Formulation)\b"
+)
+DOWNSTREAM_LIVE_RE = re.compile(
+    r"(?i)\b(?:B\d+\b.*\bremain(?:s)? live|downstream burden(?:s)? remain|"
+    r"later burden(?:s)? remain|next burden remains|B\d+\b.*\bfollows)\b"
+)
+NAMED_AUTHORITY_RE = re.compile(
+    r"(?i)\b(?:secular(?:ism|ist)?|public reason|human rights|Satanic Temple|TST|"
+    r"Trinitarian|Trinity|Christian|atheis[mt]|naturalism|scientism|humanis[mt]|"
+    r"liberal(?:ism)?|materialis[mt]|worldview|theological authority|authority frame)\b"
+)
+ISLAMIC_RESTORATION_RE = re.compile(
+    r"(?i)\b(?:Islamic|Allah|Qur[ʾ'’`]?an|Qur[ʾ'’`]?ānic|tawḥīd|tawhid|"
+    r"hujjah|fitrah|sharī[ʿ']?ah|sharia|prophetic|restoration frame)\b"
+)
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def field_value(text: str) -> str:
+    match = FIELD_RE.search(text)
+    return match.group("field").strip() if match else ""
+
+
+def block_target(block: MrpBlock) -> str:
+    match = BURDEN_RE.search(block.target)
+    return match.group(0) if match else ""
+
+
+def edge_set(text: str) -> set[tuple[str, str]]:
+    return {(source, target) for source, target in EDGE_RE.findall(text)}
+
+
+def closure_graph_text(text: str) -> str:
+    lines = text.splitlines()
+    captured: list[str] = []
+    collecting = False
+    for line in lines:
+        if GRAPH_HEADING_RE.search(line):
+            collecting = True
+            captured.append(line)
+            continue
+        if collecting:
+            if not line.strip() or GRAPH_STOP_RE.search(line):
+                collecting = False
+                continue
+            captured.append(line)
+    return "\n".join(captured)
+
+
+def closure_graph_edges(text: str) -> set[tuple[str, str]]:
+    return edge_set(closure_graph_text(text))
+
+
+def mrp_backed_edges(blocks: list[MrpBlock]) -> set[tuple[str, str]]:
+    edges: set[tuple[str, str]] = set()
+    for block in blocks:
+        edges.update(edge_set(block.graph_delta))
+        edges.update(edge_set(block.mrp_resultant))
+    return edges
+
+
+def route_backed_edges(blocks: list[MrpBlock]) -> set[tuple[str, str]]:
+    edges: set[tuple[str, str]] = set()
+    for block in blocks:
+        source = block_target(block)
+        if not source:
+            continue
+        if block.finding not in {"genuine-dependent", "partial-real"}:
+            continue
+        if block.route not in {"RECURSE", "HOLD"}:
+            continue
+        for edge in edge_set(block.graph_delta) | edge_set(block.mrp_resultant):
+            if edge[0] == source:
+                edges.add(edge)
+    return edges
+
+
+def mixed_field_errors(path: Path, text: str) -> list[str]:
+    field = field_value(text)
+    if field != "LOCAL CLAIM":
+        return []
+    if NAMED_AUTHORITY_RE.search(text) and ISLAMIC_RESTORATION_RE.search(text):
+        return [
+            f"{path}: named authority/worldview frame plus Islamic restoration must not classify as LOCAL CLAIM"
+        ]
+    return []
+
+
+def graph_edge_errors(path: Path, text: str, blocks: list[MrpBlock]) -> list[str]:
+    errors: list[str] = []
+    if not blocks:
+        return errors
+    closure_edges = closure_graph_edges(text)
+    if not closure_edges:
+        return errors
+    backed = mrp_backed_edges(blocks)
+    route_backed = route_backed_edges(blocks)
+    for edge in sorted(closure_edges):
+        if edge not in backed:
+            errors.append(f"{path}: closure graph edge {edge[0]} -> {edge[1]} lacks MRP graph/resultant backing")
+        elif edge not in route_backed:
+            errors.append(
+                f"{path}: closure graph edge {edge[0]} -> {edge[1]} must be licensed by "
+                "Finding: genuine-dependent/partial-real plus Route: RECURSE/HOLD"
+            )
+    return errors
+
+
+def downstream_divergence_errors(path: Path, block: MrpBlock, label: str) -> list[str]:
+    state = first_state(block.divergence)
+    if state in {"neutral", "settled"} and DOWNSTREAM_LIVE_RE.search(block.body):
+        return [f"{label}: downstream burdens remaining live require non-neutral ∇·T"]
+    return []
+
+
+def graph_delta_route_errors(path: Path, block: MrpBlock, label: str) -> list[str]:
+    errors: list[str] = []
+    edges = edge_set(block.graph_delta) | edge_set(block.mrp_resultant)
+    if not edges:
+        return errors
+    if block.finding not in {"genuine-dependent", "partial-real"}:
+        errors.append(f"{label}: graph delta requires genuine-dependent or partial-real finding")
+    if block.route not in {"RECURSE", "HOLD"}:
+        errors.append(f"{label}: graph delta requires Route: RECURSE or Route: HOLD")
+    return errors
+
+
+def check_text(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    errors.extend(stop_before_continuation_errors(path, text))
+    errors.extend(mixed_field_errors(path, text))
+
+    blocks = parse_mrps(text)
+    for index, block in enumerate(blocks, start=1):
+        label = f"{path}: MRP block {index}"
+        errors.extend(curl_diagnostic_errors(path, block, label))
+        errors.extend(downstream_divergence_errors(path, block, label))
+        errors.extend(graph_delta_route_errors(path, block, label))
+    errors.extend(graph_edge_errors(path, text, blocks))
+    return errors
+
+
+def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
+    return sorted((root / "valid").glob("*.md")), sorted((root / "invalid").glob("*.md"))
+
+
+def run_check(root: Path, outputs: list[Path]) -> tuple[list[str], int, int, int]:
+    errors: list[str] = []
+    valid, invalid = iter_fixtures(root)
+    valid_checked = 0
+    invalid_checked = 0
+    output_checked = 0
+
+    for path in valid:
+        found = check_text(path, read_text(path))
+        if found:
+            errors.extend(found)
+        else:
+            valid_checked += 1
+    for path in invalid:
+        found = check_text(path, read_text(path))
+        if not found:
+            errors.append(f"{path}: expected-invalid MRP route invariant fixture unexpectedly passed")
+        else:
+            invalid_checked += 1
+    for path in outputs:
+        found = check_text(path, read_text(path))
+        if found:
+            errors.extend(found)
+        else:
+            output_checked += 1
+    return errors, valid_checked, invalid_checked, output_checked
+
+
+def run_cli(
+    default_root: Path = Path("tests/mrp-route-invariants"),
+    description: str | None = None,
+) -> int:
+    parser = argparse.ArgumentParser(description=description or __doc__)
+    parser.add_argument("--root", type=Path, default=default_root)
+    parser.add_argument("--outputs", nargs="*", type=Path, default=[])
+    args = parser.parse_args()
+
+    errors, valid_checked, invalid_checked, output_checked = run_check(args.root, args.outputs)
+    if errors:
+        print("MRP route invariant check: FAIL")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+
+    print("MRP route invariant check: PASS")
+    print(f"Valid fixtures checked: {valid_checked}")
+    print(f"Invalid fixtures checked: {invalid_checked}")
+    if args.outputs:
+        print(f"Hosted/live outputs checked: {output_checked}")
+    return 0
+
+
+def main() -> int:
+    return run_cli()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

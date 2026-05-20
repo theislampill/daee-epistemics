@@ -92,7 +92,7 @@ pressure rotated back as churn, hidden-framework recoil, label-pressure, or self
 Neutral or settled `∇·T` plus null/resolved `∇×T` may license stable closure; non-neutral `∇·T`
 requires HOLD/RECURSE explanation; non-null `∇×T` requires LoopBreak, STOP, HOLD, or graph-bound
 recursion rather than decorative reporting.
-Directed downstream dependency is not curl. If `B1 -> B2 -> B3 -> B4` is acyclic and linearly
+Directed downstream dependency is not curl. If `Bn -> Bn+1` is acyclic and linearly
 traversable, residual pressure is recorded as non-neutral `∇·T` while `∇×T` stays null. Use
 held/non-null/resolved curl only when a real circular dependency, churn, hidden-framework recoil,
 label-pressure, dependency rotation, or loop was named; do not say curl resolved merely because a

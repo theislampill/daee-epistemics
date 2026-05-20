@@ -217,8 +217,8 @@ burden/field state; `∇·` and `∇×` read the `Δ`-produced field state. `del
 `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators. `∇·` reads
 divergence-like residual outward pressure in a target-explicit field. `∇×` reads curl-like
 circularity, rotational dependency, or unresolved cyclic pressure in an explicit target field.
-An acyclic downstream burden chain is residual divergence, not curl: `B1 -> B2 -> B3` remaining
-live after `Land(B1)` means `∇·T` is non-neutral while `∇×T` is null unless a real loop, churn,
+An acyclic downstream burden chain is residual divergence, not curl: `Bn -> Bn+1` remaining
+live after `Land(Bn)` means `∇·T` is non-neutral while `∇×T` is null unless a real loop, churn,
 hidden-framework recoil, label-pressure, or dependency rotation is also present.
 The target may be `κ` (`∇·κ`, `∇×κ`) or another owner-defined noetic, burden,
 dependency, register, or route target (`∇·B`, `∇×B`, `∇·♥`, `∇×ξ`) when the target

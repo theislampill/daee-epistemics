@@ -65,6 +65,7 @@ jobs:
           python tools/check_metacompliance_current_canon.py
           python tools/check_smoke_artifacts.py
           python tools/check_register_formalism_bridge.py
+          python tools/check_mrp_route_invariants.py
           python tools/check_trinitarian_mrp_hotfix.py
           python tools/check_ttp_operator_contracts.py --strict
           python tools/check_docs_index_interactions.py

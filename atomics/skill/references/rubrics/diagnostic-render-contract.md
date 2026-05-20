@@ -73,8 +73,8 @@ source-authentication case supplies no actual text/reference, classify external 
 `PARTIAL`.
 Field classification must not flatten named theological/worldview authority frames. If the input
 is a local claim but it is governed by a named theological or worldview frame and the response
-actively contrasts or restores through Islamic tawḥīd, render `field: MIXED NOETIC FIELD` (or the
-repo-native mixed/named-worldview equivalent), not `LOCAL CLAIM`.
+actively contrasts or restores through an Islamic restoration frame, render `field: MIXED NOETIC
+FIELD` (or the repo-native mixed/named-worldview equivalent), not `LOCAL CLAIM`.
 
 Layer A is the compact diagnostic/control surface: it identifies and licenses the live noetic
 burden, source/noetic frame, held material, release decision, and current bounded operator. It
