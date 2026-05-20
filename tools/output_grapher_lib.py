@@ -75,6 +75,53 @@ def normalize_burden_token(raw: str) -> str:
     return raw
 
 
+def extract_balanced_json_from(text: str, start_index: int) -> str:
+    source = str(text or "")
+    opener_match = re.search(r"[\{\[]", source[start_index:])
+    if not opener_match:
+        return ""
+    json_start = start_index + opener_match.start()
+    opener = source[json_start]
+    closer = "}" if opener == "{" else "]"
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(json_start, len(source)):
+        char = source[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == opener:
+            depth += 1
+        elif char == closer:
+            depth -= 1
+            if depth == 0:
+                return source[json_start : index + 1]
+    return ""
+
+
+def extract_embedded_field_witness(text: str) -> str:
+    match = re.search(r"(?:^|\n)\s*(?:#+\s*)?field_witness\b", str(text or ""), re.IGNORECASE)
+    if not match:
+        return ""
+    return extract_balanced_json_from(text, match.start())
+
+
+def canonical_json(value: Any) -> Any:
+    if isinstance(value, list):
+        return [canonical_json(item) for item in value]
+    if isinstance(value, dict):
+        return {key: canonical_json(value[key]) for key in sorted(value)}
+    return value
+
+
 @dataclass
 class GraphNode:
     id: str
@@ -106,6 +153,7 @@ class ParseResult:
     warnings: list[str] = field(default_factory=list)
     initial_burdens: list[str] = field(default_factory=list)
     burdens: list[str] = field(default_factory=list)
+    body_burdens: list[str] = field(default_factory=list)
     generated_burdens: dict[str, str] = field(default_factory=dict)
     submoves: dict[str, list[str]] = field(default_factory=dict)
     terminals: dict[str, str] = field(default_factory=dict)
@@ -202,6 +250,12 @@ def record_dependency_edge(
 def parse_output(text: str, field_witness_text: str | None = None) -> ParseResult:
     result = ParseResult()
     lines = text.splitlines()
+    body_stop_match = re.search(
+        r"(?:^|\n)\s*(?:#+\s*)?(?:Closure/Reconstruction Witness|Closure Witness|Reconstruction Witness|Closure audit|field_witness)\b",
+        str(text or ""),
+        re.IGNORECASE,
+    )
+    body_line_count = str(text or "")[: body_stop_match.start()].count("\n") + 1 if body_stop_match else len(lines)
     add_node(result, GraphNode("input", "input", "input", excerpt="pasted daee-epistemics output"))
 
     route_records: list[tuple[str, str, int]] = []
@@ -234,6 +288,8 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
         for token in line_burdens:
             if token not in result.burdens:
                 result.burdens.append(token)
+            if index <= body_line_count and token not in result.body_burdens:
+                result.body_burdens.append(token)
             add_node(result, GraphNode(token, "burden", token, line=index, excerpt=stripped[:220]))
             if is_initial_line and token not in result.initial_burdens:
                 result.initial_burdens.append(token)
@@ -424,8 +480,12 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
     result.initial_burdens = sorted(set(result.initial_burdens), key=burden_sort_key)
 
     validate_result(result, lines, route_records)
+    embedded_field_witness = extract_embedded_field_witness(text)
+    if embedded_field_witness:
+        compare_field_witness(result, embedded_field_witness, "embedded field_witness")
     if field_witness_text:
-        compare_field_witness(result, field_witness_text)
+        compare_field_witness(result, field_witness_text, "separate field_witness")
+    compare_embedded_and_separate_witness(result, embedded_field_witness, field_witness_text or "")
     return result
 
 
@@ -470,20 +530,27 @@ def validate_result(result: ParseResult, lines: list[str], route_records: list[t
             result.errors.append("T_lang boundary appears to claim guaranteed uptake")
 
 
-def compare_field_witness(result: ParseResult, raw_json: str) -> None:
+def parse_field_witness_payload(result: ParseResult, raw_json: str, label: str) -> dict[str, Any] | None:
     try:
         payload = json.loads(raw_json)
     except json.JSONDecodeError as exc:
-        result.errors.append(f"field_witness JSON is invalid: {exc}")
-        return
+        result.errors.append(f"{label} JSON is invalid: {exc}")
+        return None
     if not isinstance(payload, dict):
-        result.errors.append("field_witness JSON must be an object")
+        result.errors.append(f"{label} JSON must be an object")
+        return None
+    return payload
+
+
+def compare_field_witness(result: ParseResult, raw_json: str, label: str = "field_witness") -> None:
+    payload = parse_field_witness_payload(result, raw_json, label)
+    if payload is None:
         return
     witness_nodes = {normalize_burden_token(str(item)) for item in payload.get("nodes", []) if isinstance(item, str)}
-    visible_burdens = set(result.burdens)
+    visible_burdens = set(result.body_burdens or result.burdens)
     if witness_nodes and witness_nodes != visible_burdens:
         result.visible_vs_field_witness.append(
-            f"node mismatch visible={sorted(visible_burdens, key=burden_sort_key)} field_witness={sorted(witness_nodes, key=burden_sort_key)}"
+            f"{label}: node mismatch visible={sorted(visible_burdens, key=burden_sort_key)} field_witness={sorted(witness_nodes, key=burden_sort_key)}"
         )
     witness_edges: set[tuple[str, str]] = set()
     for edge in payload.get("edges", []):
@@ -497,8 +564,20 @@ def compare_field_witness(result: ParseResult, raw_json: str) -> None:
     visible_edges = {(source, target) for source, target, _line, _excerpt in result.graph_edges}
     if witness_edges and witness_edges != visible_edges:
         result.visible_vs_field_witness.append(
-            f"edge mismatch visible={sorted(visible_edges)} field_witness={sorted(witness_edges)}"
+            f"{label}: edge mismatch visible={sorted(visible_edges)} field_witness={sorted(witness_edges)}"
         )
+
+
+def compare_embedded_and_separate_witness(result: ParseResult, embedded: str, separate: str) -> None:
+    if not embedded.strip() or not separate.strip():
+        return
+    try:
+        embedded_payload = json.loads(embedded)
+        separate_payload = json.loads(separate)
+    except json.JSONDecodeError:
+        return
+    if canonical_json(embedded_payload) != canonical_json(separate_payload):
+        result.visible_vs_field_witness.append("embedded field_witness and separate field_witness disagree")
 
 
 def result_summary(result: ParseResult) -> dict[str, Any]:

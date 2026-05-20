@@ -1,6 +1,6 @@
 <div class="hero outputGrapherHero">
-  <h1>Noetic Field Output Grapher</h1>
-  <p>Paste a daee-epistemics output and read it as a rebuttal infographic: what the claim says, what it depends on, the problems found, how each problem is answered, what changed after each answer, what remains, and the final restoration status.</p>
+  <h1>Output Grapher — Restorative Noetic Map</h1>
+  <p>Paste the complete daee-epistemics output and get one outsider-readable map of the noetic case: what the input is, what pressure it carries, which burdens go live, which owner-backed moves answer them, what lands, what remains, how MRP routes the field, and what restoration aim the output returns to.</p>
   <div class="badges">
     <span class="badge"><span class="dot violet"></span>docs artifact only</span>
     <span class="badge"><span class="dot green"></span>inline SVG renderer</span>
@@ -13,27 +13,53 @@
 <section class="panel outputGrapher" data-surface-role="focal" data-output-grapher="true">
   <div class="outputGrapherIntro">
     <div>
-      <h2>Graph a Skill Output</h2>
-      <p class="subtle">This tool consumes a finished output. It does not change runtime behavior, invoke the skill, or prove live model behavior. It makes visible whether an output is graphable, reconstructible, and terminally accounted.</p>
+      <h2>Build the Restorative Noetic Map</h2>
+      <p class="subtle">Copy the whole skill output into one box. The grapher separates the readable response, Closure/Reconstruction Witness, embedded field_witness, Restorative Response, and Closing Formulation automatically.</p>
     </div>
     <div class="outputGrapherMiniFlow" aria-label="Output graph lineage">
-      <span>claim</span><b>→</b><span>problems found</span><b>→</b><span>answer moves</span><b>→</b><span>what landed</span><b>→</b><span>what remains</span><b>→</b><span>follow-up check</span><b>→</b><span>route</span><b>→</b><span>restoration</span>
+      <span>input structure</span><b>→</b><span>noetic pressure</span><b>→</b><span>live burdens</span><b>→</b><span>owner-backed moves</span><b>→</b><span>what lands</span><b>→</b><span>state reread</span><b>→</b><span>MRP outcome</span><b>→</b><span>route</span><b>→</b><span>restoration aim</span>
     </div>
   </div>
 
-  <div class="outputGrapherInputs" data-surface-role="control">
-    <label>
-      <span>daee-epistemics output</span>
-      <textarea id="ogOutputInput" spellcheck="false" placeholder="Paste governed output with Layer A, burdens, submoves, Land(¹B), R(H,Δ), MRP(¹B), graph deltas, terminal states, and closure/restoration evidence."></textarea>
-    </label>
-    <label>
-      <span>optional field_witness JSON</span>
-      <textarea id="ogWitnessInput" spellcheck="false" placeholder='Optional sidecar, e.g. {"nodes":["¹B"],"edges":[],"terminal_states":{"¹B":"landed"}}'></textarea>
+  <div class="outputGrapherMapScope" data-surface-role="support" aria-label="What the Restorative Noetic Map shows">
+    <div>
+      <strong>Reads the input</strong>
+      <span>ontological noetic structure, pressure, distortion, and dependency frame</span>
+    </div>
+    <div>
+      <strong>Tracks the runtime work</strong>
+      <span>live burdens, owner-backed moves, and what each move exposes, repairs, blocks, or restores</span>
+    </div>
+    <div>
+      <strong>Shows the landing cycle</strong>
+      <span>Land, state reread, MRP result type, graph movement, and STOP / HOLD / RECURSE / LoopBreak route</span>
+    </div>
+    <div>
+      <strong>Closes with restoration</strong>
+      <span>whether the field is closed, held, partial, or still live, plus the returned restoration aim</span>
+    </div>
+  </div>
+
+  <div class="outputGrapherInputs outputGrapherSimpleInput" data-surface-role="control">
+    <label class="outputGrapherFullInput">
+      <span>Paste full daee-epistemics output</span>
+      <small>Paste the complete output, including closure witness / field_witness if present. The grapher will separate the readable response, closure witness, and field_witness automatically.</small>
+      <textarea id="ogOutputInput" spellcheck="false" placeholder="Paste the complete output: visible response body, Closure/Reconstruction Witness, embedded field_witness JSON if present, Restorative Response, and Closing Formulation."></textarea>
     </label>
   </div>
+
+  <details class="outputGrapherAdvanced" data-surface-role="control">
+    <summary>Advanced: separate field_witness JSON</summary>
+    <label>
+      <span>Optional separate field_witness JSON</span>
+      <small>Use only if your field_witness is in a separate JSON block or file, not already included in the pasted output.</small>
+      <textarea id="ogWitnessInput" spellcheck="false" placeholder='Optional separate sidecar, e.g. {"nodes":["¹B"],"edges":[],"terminal_states":{"¹B":"landed"}}'></textarea>
+    </label>
+  </details>
 
   <div class="outputGrapherActions" data-surface-role="control">
     <button type="button" id="ogParseBtn">Parse / Graph</button>
+    <span class="outputGrapherPrimaryView">Restorative Noetic Map View</span>
     <label class="outputGrapherExportSize">
       <span>PNG size</span>
       <select id="ogExportWidthMode" aria-label="PNG export size">
@@ -43,16 +69,10 @@
       </select>
     </label>
     <button type="button" id="ogExportPngBtn" disabled>Export PNG</button>
-    <button type="button" id="ogExportPngSectionsBtn" disabled>Export Sectioned PNG</button>
+    <button type="button" id="ogExportPngSectionsBtn" disabled>Export sections as PNG ZIP</button>
     <button type="button" id="ogExportSvgBtn" disabled>Export SVG</button>
     <button type="button" id="ogExportJsonBtn" disabled>Export JSON</button>
     <button type="button" id="ogExportMermaidBtn" disabled>Export Mermaid <span>(optional / lossy ELK)</span></button>
-  </div>
-
-  <div class="outputGrapherModes" data-surface-role="control" aria-label="Graph proof mode">
-    <button type="button" class="active" data-og-mode="rebuttal">Plain-language Rebuttal View</button>
-    <button type="button" data-og-mode="dag">Technical Pipeline View</button>
-    <button type="button" data-og-mode="validation">Validation View</button>
   </div>
 
   <details class="outputGrapherHelp" data-surface-role="control">
@@ -84,6 +104,8 @@
     </aside>
   </div>
 
+  <details class="outputGrapherValidationDetails" data-surface-role="support">
+    <summary>Show validation details</summary>
   <div class="outputGrapherValidation">
     <section>
       <h3>Validation</h3>
@@ -94,15 +116,16 @@
       <ul id="ogWarnings"></ul>
     </section>
   </div>
+  </details>
 </section>
 
-<section class="panel" data-surface-role="support">
-  <h2>What It Checks</h2>
+<details class="panel outputGrapherTechnicalDetails" data-surface-role="support">
+  <summary>Show technical details</summary>
   <div class="outputGrapherChecklist">
     <p><strong>Hard errors:</strong> missing initial burdens under complete closure, unknown graph nodes, missing terminal states, STOP before later burden work, unbacked MRP-governed graph edges, decorative MRP labels, live ∇·B or ∇×κ under complete closure without a licensed route.</p>
     <p><strong>Warnings:</strong> legacy ASCII aliases such as <code>B1 -&gt; B2</code>, burden notation written as <code>B₁</code>, missing submoves under a full landing, held-burden activation without generated burden, low visible topology, possible bloat, or visible/field_witness mismatch.</p>
     <p><strong>Notation boundary:</strong> public output should prefer <code>¹B</code>, <code>¹B₁[OP]</code>, <code>Land(¹B)</code>, <code>MRP(¹B)</code>, <code>¹B → ²B</code>, <code>∇·B</code>, <code>∇×κ</code>, <code>𝒞(Ψᴺ)</code>, and <code>T_lang: Ψᴺ ⇢ Ψᴵ</code>. Parser aliases are fallback only. Mermaid export is optional/lossy and includes an ELK layout hint; it is not the primary renderer.</p>
   </div>
-</section>
+</details>
 
 <script src="index/output-grapher.js"></script>
