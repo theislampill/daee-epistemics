@@ -27,10 +27,10 @@ slash-safe archive entries.
 
 ## v0.4.3.0 Release Package / Provenance Status
 
-v0.4.3.0 public artifact status: prepared for owner-authorized replacement of the withdrawn /
-regression-hold `v0.4.3.0` prerelease. The public release name and tag are `v0.4.3.0`, not an
-RC label. Raw smoke and visualizer outputs remain local diagnostic artifacts and are not committed
-or uploaded as release assets.
+v0.4.3.0 public artifact status: published. The withdrawn/regression-hold `v0.4.3.0`
+prerelease and stale tag were replaced under owner-authorized Option A after package-bound
+proof. The public release name and tag are `v0.4.3.0`, not an RC label. Raw smoke and visualizer
+outputs remain local diagnostic artifacts and are not committed or uploaded as release assets.
 
 | Field | Value |
 | --- | --- |
@@ -40,14 +40,14 @@ or uploaded as release assets.
 | SHA256 | `EFF7764423BA8AC0C64F9717C87425DE648E28F542E0458C590369F4D7A79A36` |
 | Size | `621635` bytes |
 | Entries | `20` |
-| Source commit recorded in provenance | Final v0.4.3.0 tag commit; see published provenance |
+| Source commit recorded in provenance | `64cce3e541a5e8dc41dd2e9a0c609ca9a30340cd` |
 | Source state | Deterministic source/checker/package gates passed locally before tag/release replacement |
 | Branch | `diagnostic/v0.4.3.0-regression-repair` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
 | Generated runtime manifest SHA256 | `8A1D14B893226015FBD11744FE51464DC8C2FEA67850453C21D142EA8D6D9268` |
 | Compiled module map SHA256 | `3B84F247F294BA03EFA224AB788D448C504969AE32C9E1BCB6903641C462CC56` |
-| GitHub Release visibility | Prepared for replacement at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.0`; existing withdrawn release/tag must be replaced so tag commit, package source commit, release body, and uploaded asset agree |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.0`; remote tag peels to `64cce3e541a5e8dc41dd2e9a0c609ca9a30340cd`, matching provenance source commit and release body claim |
 | Provenance file | Release asset: `daee-epistemics-v0.4.3.0.provenance.json` generated from `build/daee-epistemics-v0.4.3.0.provenance.json` |
 | Package-bound proof | Local package artifact validation passed for `.skill.zip` and copied `.skill` payload; deterministic reconstructibility/MRP fixture proof passed; Codex-hosted exact-file hard-compound Smoke 6 proved MRP behavior locally. Cross-host/paraphrase proof is not claimed. |
 
