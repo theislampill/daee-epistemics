@@ -327,7 +327,8 @@ Land(B) -> R
 R required before STOP/RECURSE
 ```
 
-Gloss: a burden must land before re-read; re-read must license closure or recursion.
+Gloss: a burden must land before re-read; the visible reread surface is the MRP activation
+record whenever the reread licenses closure, HOLD, PARTIAL, LoopBreak, or recursion.
 `R(H,Delta)` is a state-transition judgment, not a formatting marker. After each `Land(B)`,
 refresh the current noetic state and decide whether to continue to the next already-present
 burden, hold/defer it, skip it because it no longer applies, mark PARTIAL/limit, trigger a
@@ -349,8 +350,8 @@ MRP is not a truth/warrant metric and does not make `T_lang: Ψᴺ ⇢ Ψᴵ` gu
 B-complexity:
 
 ```text
-ComplexB -> {s1...sn} -> Land(B) -> R
-AtomicB -> s1 -> Land(B) -> R
+ComplexB -> {s1...sn} -> Land(B) -> [Mid-Reread Pressure] -> R
+AtomicB -> s1 -> Land(B) -> [Mid-Reread Pressure] -> R
 ```
 
 Gloss: distinct hidden premises, criteria, predicates, source-status forks, release gates, or
@@ -396,6 +397,10 @@ the final state re-read for the answer. If `R(H,Delta)` names a remaining input-
 burden and no hold, register, semantic, thin-basis, source-use, or limit gate blocks it,
 the next action is the next bounded burden-cycle, not rhetorical closure. If the next
 bounded pass cannot fit, mark PARTIAL with the next live burden.
+MRP named pressure counts as state re-read pressure here: proportionality, hiddenness/coercive
+guidance, source-worldview, moral-grounding, owner-floor, owner-body, non-neutral `∇·T`,
+non-null/held `∇×T`, or graph-edge pressure must be released and landed, held with reason, or
+marked PARTIAL before STOP/COMPLETE or final response sections are licensed.
 
 Input-anchored burden means more than an explicit question-marked subrequest. It includes
 supporting premises, contrasts, public/private partitions, source-status rules, translation
@@ -424,6 +429,10 @@ or visible default-mode template slots.
    Package availability, map presence, or bundle co-location is not access. If access is
    absent, the route is `PARTIAL / OWNER-BODY-NOT-LOADED` with the missing owner/path,
    not generic prose.
+   In an MRP activation record this appears as `Route: HOLD` plus
+   `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>`; after that boundary,
+   closure witness, Restorative Response, Closing Formulation, and "refuted"/"closed" language
+   for the blocked burden are not licensed.
 5. The TTP has a bounded target inside the active live noetic burden.
 6. Output-release permits the operation now; otherwise the route is HOLD or PARTIAL.
 7. No P7 stop, register-hold, semantic gate, thin-basis rule, or absent release signal blocks it.

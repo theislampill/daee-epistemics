@@ -16,6 +16,7 @@ Pressure activations:
 ∇·T: bounded / no genuine downstream burden
 ∇×T: non-null / circular reassurance demand requires LoopBreak
 Finding: doubt-churn
+MRP resultant: doubt-churn -> LoopBreak with no graph edge
 Graph delta: none
 Pre-emption basis: commitment-bound
 Route: LoopBreak(∇×T)

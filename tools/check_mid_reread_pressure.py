@@ -38,7 +38,7 @@ FINDINGS = {
     "doubt-churn",
     "reorientation",
 }
-ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)", "LoopBreak(âˆ‡Ã—T)"}
 PRESSURE_KEYS = {
     "freeze-landed-move",
     "dependency-tug",
@@ -49,11 +49,15 @@ PRESSURE_KEYS = {
 }
 ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
+REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Î”|Δ|ÃŽâ€)\)")
+LANDED_DELTA_RE = re.compile(r"(?:Delta|Î”|Δ|Î”â¿B|ÃŽâ€|ÃŽâ€Ã¢ÂÂ¿B)")
 
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
     r"field_witness|pressure class|terminal-state|foreign-premise|definition|grief|"
-    r"M1|M8|M7|R2|V3|P1|doubt-vs-skepticism|coverage gap)\b"
+    r"FPD|M1|M1P|M8|M9|M7|V2|R2|V3|P1|P7|doubt-vs-skepticism|"
+    r"source-architecture|predicate discipline|application hold|hujjah|hiddenness|"
+    r"coercive-guidance|closure-witness|coverage gap)\b"
 )
 
 
@@ -66,6 +70,7 @@ class MrpBlock:
     divergence: str
     curl: str
     finding: str
+    mrp_resultant: str
     graph_delta: str
     preemption_basis: str
     route: str
@@ -79,6 +84,16 @@ def extract_block(text: str) -> str:
         text,
     )
     return match.group("body").strip() if match else ""
+
+
+def extract_blocks(text: str) -> list[str]:
+    return [
+        match.group("body").strip()
+        for match in re.finditer(
+            r"(?ims)^\s*\[Mid-Reread Pressure\]\s*(?P<body>.*?)(?=^\s*(?:###\s+Closure/Reconstruction Witness|\[|$))",
+            text,
+        )
+    ]
 
 
 def field(body: str, name: str) -> str:
@@ -99,6 +114,10 @@ def parse_mrp(text: str) -> MrpBlock | None:
     body = extract_block(text)
     if not body:
         return None
+    return parse_mrp_body(body)
+
+
+def parse_mrp_body(body: str) -> MrpBlock:
     return MrpBlock(
         body=body,
         target=field(body, "Target"),
@@ -107,12 +126,17 @@ def parse_mrp(text: str) -> MrpBlock | None:
         divergence=field(body, "∇·T"),
         curl=field(body, "∇×T"),
         finding=field(body, "Finding"),
+        mrp_resultant=field(body, "MRP resultant"),
         graph_delta=field(body, "Graph delta"),
         preemption_basis=field(body, "Pre-emption basis"),
         route=field(body, "Route"),
         boundary=field(body, "Boundary"),
         pressure_lines=parse_pressure_lines(body),
     )
+
+
+def parse_mrps(text: str) -> list[MrpBlock]:
+    return [parse_mrp_body(body) for body in extract_blocks(text)]
 
 
 def sidecar_path_for(path: Path) -> Path:
@@ -139,6 +163,10 @@ def activation_names_owner_or_gap(value: str) -> bool:
 
 
 def first_state(value: str) -> str:
+    normalized = value.strip().lower()
+    for allowed in sorted(ALLOWED_DIVERGENCE | ALLOWED_CURL, key=len, reverse=True):
+        if re.match(rf"^{re.escape(allowed)}(?:\b|/|;|\s)", normalized):
+            return allowed
     return re.split(r"\s*/\s*|\s+-\s+|\s+—\s+|\s*;\s*", value.strip(), maxsplit=1)[0].strip().lower()
 
 
@@ -193,12 +221,134 @@ def check_sidecar(path: Path, text: str, mrp: MrpBlock, errors: list[str]) -> No
             errors.append(f"{sidecar_path}: genuine-dependent MRP requires graph_delta.edges_added")
 
 
+LIVE_PRESSURE_RE = re.compile(
+    r"(?i)\b(?:remaining live|remains live|still live|live pressure|next live burden|"
+    r"proportionality|hiddenness|coercive-guidance|source-worldview|moral-grounding|"
+    r"owner-floor|owner-body|OWNER-BODY-NOT-LOADED)\b"
+)
+
+
+def partial_owner_closure_errors(path: Path, text: str) -> list[str]:
+    if not re.search(r"(?i)\bPARTIAL\s*/\s*OWNER-BODY-NOT-LOADED\b", text):
+        return []
+    errors: list[str] = []
+    partial_at = re.search(r"(?i)\bPARTIAL\s*/\s*OWNER-BODY-NOT-LOADED\b", text)
+    assert partial_at is not None
+    tail = text[partial_at.start() :]
+    if re.search(r"(?im)^\s*(?:#{1,6}\s*)?(?:Closure/Reconstruction Witness|Restorative Response|Closing Formulation)\b", tail):
+        errors.append(f"{path}: OWNER-BODY-NOT-LOADED must not continue into closure/restorative/final sections")
+    if re.search(r"(?i)\b(?:refuted at its root|refuted\b|closed\b|closure licensed|no unresolved burden)\b", tail):
+        errors.append(f"{path}: OWNER-BODY-NOT-LOADED must not claim refutation/closure for the blocked burden")
+    if re.search(r"(?im)^\s*Route\s*:\s*PARTIAL\b", text):
+        errors.append(f"{path}: MRP owner-load failure must use Route: HOLD plus PARTIAL boundary, not Route: PARTIAL")
+    return errors
+
+
+def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
+    label = f"{path}: MRP block {index}"
+    errors: list[str] = []
+    if not mrp.target or "B" not in mrp.target:
+        errors.append(f"{label}: Target must name a burden")
+    if not mrp.reread or not re.search(r"R\(H,\s*(?:Î”|Delta)\)", mrp.reread):
+        errors.append(f"{label}: Reread must invoke R(H,Î”)")
+    if not mrp.landed_delta or not re.search(r"(?:Î”â¿B|Î”|Delta)", mrp.landed_delta):
+        errors.append(f"{label}: Landed delta must name Î”â¿B/Î”")
+    divergence_state = first_state(mrp.divergence)
+    curl_state = first_state(mrp.curl)
+    if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
+        errors.append(f"{label}: must record active âˆ‡Â·T state")
+    if not mrp.curl or curl_state not in ALLOWED_CURL:
+        errors.append(f"{label}: must record active âˆ‡Ã—T state")
+    missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
+    for key in missing_pressure:
+        errors.append(f"{label}: Pressure activations missing {key}")
+    for key, value in mrp.pressure_lines.items():
+        if not activation_names_owner_or_gap(value):
+            errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
+    if mrp.finding not in FINDINGS:
+        errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    if mrp.route not in ROUTES:
+        errors.append(f"{label}: Route invalid: {mrp.route!r}")
+    if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
+        errors.append(f"{label}: stable finding requires STOP and no graph edge")
+    if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
+        errors.append(f"{label}: genuine-dependent finding requires RECURSE and graph edge")
+    if mrp.finding == "partial-real" and mrp.route != "HOLD":
+        errors.append(f"{label}: partial-real finding requires HOLD")
+    if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
+        errors.append(f"{label}: graph-edge pre-emption requires graph/commitment/framework-bound basis")
+    if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
+        if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
+            errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
+    return errors
+
+
+def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
+    """Validate any MRP block after the first one.
+
+    This intentionally shadows the legacy helper above, whose regexes were tied to a stale
+    mojibake spelling of Delta. Multi-burden hosted smokes need every block to be checked with
+    the same route/resultant contract as the first block.
+    """
+    label = f"{path}: MRP block {index}"
+    errors: list[str] = []
+    if not mrp.target or "B" not in mrp.target:
+        errors.append(f"{label}: Target must name a burden")
+    if not mrp.reread or not REREAD_RE.search(mrp.reread):
+        errors.append(f"{label}: Reread must invoke R(H,Delta)")
+    if not mrp.landed_delta or not LANDED_DELTA_RE.search(mrp.landed_delta):
+        errors.append(f"{label}: Landed delta must name Delta/Î”")
+    divergence_state = first_state(mrp.divergence)
+    curl_state = first_state(mrp.curl)
+    if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
+        errors.append(f"{label}: must record active divergence state")
+    if not mrp.curl or curl_state not in ALLOWED_CURL:
+        errors.append(f"{label}: must record active curl state")
+    missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
+    for key in missing_pressure:
+        errors.append(f"{label}: Pressure activations missing {key}")
+    for key, value in mrp.pressure_lines.items():
+        if not activation_names_owner_or_gap(value):
+            errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
+    if mrp.finding not in FINDINGS:
+        errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    if not mrp.mrp_resultant:
+        errors.append(f"{label}: MRP resultant missing")
+    if mrp.route not in ROUTES:
+        errors.append(f"{label}: Route invalid: {mrp.route!r}")
+    if mrp.preemption_basis not in {"none", "graph-bound", "commitment-bound", "framework-bound"}:
+        errors.append(f"{label}: Pre-emption basis invalid: {mrp.preemption_basis!r}")
+    if not re.search(r"T_lang", mrp.boundary) or re.search(
+        r"(?i)\b(?:guarantees|ensures|proves|achieves)\b.{0,50}\b(?:uptake|acceptance|conversion|guidance)\b",
+        mrp.boundary,
+    ):
+        errors.append(f"{label}: Boundary must preserve T_lang non-guaranteed uptake")
+    if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
+        errors.append(f"{label}: stable finding requires STOP and no graph edge")
+    if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
+        errors.append(f"{label}: genuine-dependent finding requires RECURSE and graph edge")
+    if mrp.finding == "partial-real" and mrp.route != "HOLD":
+        errors.append(f"{label}: partial-real finding requires HOLD")
+    if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
+        errors.append(f"{label}: graph-edge pre-emption requires graph/commitment/framework-bound basis")
+    if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
+        if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
+            errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
+    return errors
+
+
 def check_fixture(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     errors: list[str] = []
+    errors.extend(partial_owner_closure_errors(path, text))
     mrp = parse_mrp(text)
     if mrp is None:
         return [f"{path}: missing [Mid-Reread Pressure] block"]
+    if not mrp.mrp_resultant:
+        errors.append(f"{path}: MRP resultant missing")
+    all_mrps = parse_mrps(text)
+    for index, block in enumerate(all_mrps[1:], start=2):
+        errors.extend(check_mrp_block(path, text, block, index))
 
     if not mrp.target or "B" not in mrp.target:
         errors.append(f"{path}: MRP Target must name a burden")
@@ -244,7 +394,11 @@ def check_fixture(path: Path) -> list[str]:
     if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
         errors.append(f"{path}: graph-edge pre-emption requires graph-bound, commitment-bound, or framework-bound basis")
     preemption_text = re.sub(r"(?im)^\s*Pre-emption basis\s*:.*$", "", text)
-    if re.search(r"(?i)\b(?:likely defense|pre-voiced recoil|anticipatory downstream pressure|pre-empt)", preemption_text):
+    if re.search(
+        r"(?i)\b(?:likely defense|pre-voiced recoil|anticipatory downstream pressure|"
+        r"pre-emption|pre-empted burden|structurally licensed defense)\b",
+        preemption_text,
+    ):
         if mrp.preemption_basis == "none":
             errors.append(f"{path}: anticipatory downstream pressure requires a non-speculative pre-emption basis")
         if not re.search(r"(?i)\b(?:graph-bound|commitment-bound|framework-bound|structurally licensed)\b", preemption_text):
@@ -299,6 +453,44 @@ def check_fixture(path: Path) -> list[str]:
     return errors
 
 
+def check_output_reconstructibility(path: Path) -> list[str]:
+    """Hosted-smoke guard: MRP must be part of reconstructible node accounting."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+    errors: list[str] = []
+    partial_owner = bool(re.search(r"(?i)\bPARTIAL\s*/\s*OWNER-BODY-NOT-LOADED\b", text))
+    hold_route = bool(re.search(r"(?im)^\s*Route\s*:\s*HOLD\b", text))
+
+    if not re.search(r"(?im)^\s*(?:Burden\s+\d+|Initial burden set\s*:)", text):
+        errors.append(f"{path}: reconstructibility missing burden nodes")
+    if not partial_owner and not re.search(
+        r"(?im)^\s*(?:Operative Submove|[¹1]B[₁₂₃₄₅₆₇₈₉0-9]|Target\s*:)",
+        text,
+    ):
+        errors.append(f"{path}: reconstructibility missing submove nodes")
+    if not re.search(r"(?im)^\s*(?:Land\(|Landed delta\s*:|Land\(Bn\)\s*:\s*PARTIAL)", text):
+        errors.append(f"{path}: reconstructibility missing Land(Bn) or partial landing")
+    if not re.search(r"(?im)^\s*Reread\s*:\s*R\(H,\s*(?:Delta|Î”|Δ|ÃŽâ€)\)", text):
+        errors.append(f"{path}: reconstructibility missing R(H,Delta) reread state")
+    if not re.search(r"(?im)^\s*MRP resultant\s*:\s*\S", text):
+        errors.append(f"{path}: reconstructibility missing MRP resultant")
+    if not re.search(r"(?im)^\s*(?:Graph delta\s*:|Burden dependency graph\s*:|field_witness\b)", text):
+        errors.append(f"{path}: reconstructibility missing graph/field_witness consequence")
+    if not re.search(r"(?im)^\s*Route\s*:\s*(?:STOP|HOLD|RECURSE|LoopBreak)", text):
+        errors.append(f"{path}: reconstructibility missing route consequence")
+    if not re.search(r"(?i)T_lang", text):
+        errors.append(f"{path}: reconstructibility missing T_lang non-guaranteed-uptake boundary")
+    if not partial_owner and not re.search(r"(?im)^\s*Initial burden set\s*:\s*\[", text):
+        errors.append(f"{path}: reconstructibility missing initial burden set")
+    if not partial_owner and not re.search(r"(?im)^\s*Terminal states\s*:", text):
+        errors.append(f"{path}: reconstructibility missing terminal-state accounting")
+    if not partial_owner and not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\b|restoration aim", text):
+        errors.append(f"{path}: reconstructibility missing closure/restoration relation")
+    if partial_owner or hold_route:
+        if not re.search(r"(?i)\b(?:next live burden|held-with-reason|carried-PARTIAL|Route\s*:\s*HOLD|PARTIAL)\b", text):
+            errors.append(f"{path}: HOLD/PARTIAL route missing held burden accounting")
+    return errors
+
+
 def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
     valid = sorted((root / "valid").glob("*.md"))
     invalid = sorted((root / "invalid").glob("*.md"))
@@ -308,6 +500,13 @@ def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("tests/mid-reread-pressure"))
+    parser.add_argument(
+        "--outputs",
+        nargs="*",
+        type=Path,
+        default=[],
+        help="Optional live/hosted smoke output files to validate against the MRP block contract.",
+    )
     args = parser.parse_args()
 
     root = args.root
@@ -331,6 +530,14 @@ def main() -> int:
             errors.append(f"{path}: expected-invalid fixture unexpectedly passed")
         else:
             invalid_checked += 1
+    output_checked = 0
+    for path in args.outputs:
+        found = check_fixture(path)
+        found.extend(check_output_reconstructibility(path))
+        if found:
+            errors.extend(found)
+        else:
+            output_checked += 1
     has_contraction = any(
         block.finding in {"doubt-churn", "hidden-framework-recoil"}
         and block.route in {"STOP", "LoopBreak(∇×T)"}
@@ -369,6 +576,8 @@ def main() -> int:
     print("mid-reread pressure check: PASS")
     print(f"Valid fixtures checked: {valid_checked}")
     print(f"Invalid fixtures checked: {invalid_checked}")
+    if args.outputs:
+        print(f"Hosted/live outputs checked: {output_checked}")
     return 0
 
 

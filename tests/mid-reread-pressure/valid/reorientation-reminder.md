@@ -16,6 +16,7 @@ Pressure activations:
 ∇·T: settled / post-landing pressure returns to prior stable knowledge
 ∇×T: null / no loop remains
 Finding: reorientation
+MRP resultant: reorientation -> STOP with reminder/reorientation no-edge
 Graph delta: none
 Pre-emption basis: none
 Route: STOP

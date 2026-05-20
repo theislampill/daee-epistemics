@@ -16,6 +16,7 @@ Pressure activations:
 ∇·T: neutral / post-landing pressure dissipated
 ∇×T: null / no recoil, churn, or loop
 Finding: stable
+MRP resultant: stable -> STOP with no graph edge
 Graph delta: none
 Pre-emption basis: none
 Route: STOP

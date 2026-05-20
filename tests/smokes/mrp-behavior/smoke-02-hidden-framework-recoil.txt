@@ -1,0 +1,21 @@
+Smoke 2 -- Hidden-framework recoil
+
+Use the daee-epistemics runtime exactly as packaged for the version under test.
+Do not answer from generic assistant behavior. Preserve the runtime's visible
+execution surface.
+
+Prompt:
+
+If God really wanted me to believe, He knows exactly what private sign would
+convince me. Since He has not given that, it seems unfair to blame me. And do
+not dodge by saying I am arrogant; I am only asking for the evidence that would
+work for me.
+
+Required evaluator focus:
+
+The first burden should land on the hiddenness claim. Then R(H,Delta) should
+detect that the likely defense depends on an imported evidential criterion:
+"only my requested private sign counts." In v0.4.3.0, MRP should activate the
+hidden-framework-recoil slot, expose the imported criterion or label pressure,
+and route STOP/HOLD/qualified RECURSE rather than treating the defense as an
+ordinary unqualified burden.

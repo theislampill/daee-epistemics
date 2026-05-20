@@ -59,9 +59,11 @@ operator_pack_eligible: true
   without pretending ordinary landing; doubt-churn / label-pressure / unlicensed recoil output
   requires LoopBreak or STOP; reorientation output holds proof-stacking and returns the field to
   already-landed signs / prior stable knowledge.
-- Output boundary: `layer-b-permitted` only when MRP is invoked. Default output may render a compact
-  `[Mid-Reread Pressure]` block only when it prevents false closure or infinite recursion; ordinary
-  compact answers do not display the full block. `T_lang: Ψᴺ ⇢ Ψᴵ` remains partial coupling and does
+- Output boundary: `layer-b-permitted` only when MRP is invoked. Default routed output must render
+  a compact `[Mid-Reread Pressure]` block for every burden-cycle route, because otherwise legacy
+  `R(H,Δ)` can masquerade as pressure execution. Ordinary compact answers omit the block only when
+  no burden-cycle route, HOLD/PARTIAL, LoopBreak, next burden, or closure is being released.
+  `T_lang: Ψᴺ ⇢ Ψᴵ` remains partial coupling and does
   not imply guaranteed uptake.
 - Negative constraints: no guaranteed uptake claim, no psychological acceptance claim, no proof-by-symbol,
   no truth/warrant overclaim, no scalar summary closure, no graph edge without terminal accounting,
@@ -90,6 +92,21 @@ pressure rotated back as churn, hidden-framework recoil, label-pressure, or self
 Neutral or settled `∇·T` plus null/resolved `∇×T` may license stable closure; non-neutral `∇·T`
 requires HOLD/RECURSE explanation; non-null `∇×T` requires LoopBreak, STOP, HOLD, or graph-bound
 recursion rather than decorative reporting.
+
+Route consequence invariant: if the MRP record names a remaining live burden, proportionality
+pressure, hiddenness/coercive-guidance pressure, source-worldview pressure, owner-floor pressure,
+owner-body pressure, non-neutral `∇·T`, non-null/held `∇×T`, or a graph edge, the next public
+move must release and land that burden, explicitly HOLD it with a named gate, or mark PARTIAL
+with the blocked burden/owner. `STOP`/COMPLETE is invalid while the same record still names an
+unresolved live pressure. Owner-load failure is not `Route: PARTIAL`; use `Route: HOLD` and put
+`PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>` in `Boundary`.
+
+For invocation purposes, `T` is the whole reread pressure field, not only the literal printed
+token `T`. It includes `B`, `κ/H`, held dependencies, register pressure, and downstream burden
+pressure. Visible `∇×κ`, `∇×B`, `∇×H`, remaining live burden, release-next, HOLD/PARTIAL,
+LoopBreak, blocked proof-stacking, hidden-framework recoil, doubt-churn, or pre-voiced downstream
+defense is therefore an MRP invocation point. The output must not jump from `Land(Bn)` to the next
+burden or closure by legacy `R(H,Δ)` alone.
 
 MRP may license anticipatory downstream pressure: when a landed burden predictably exposes a
 structurally licensed defense of the objection, MRP may activate matched TTPs to address that
@@ -129,7 +146,9 @@ do not silently fold that missing work into MRP.
 
 ## Compact visible block
 
-Use only when MRP is invoked and visible pressure prevents false closure:
+Use in every default routed burden-cycle. In default hard/multi-burden output, this block is the
+mandatory route gate between `Land(Bn)` and any Field diagnostics, LoopBreak, route-bearing
+`R(H,Δ)`, next burden, HOLD/PARTIAL, or closure:
 
 ```text
 [Mid-Reread Pressure]
@@ -146,6 +165,7 @@ Pressure activations:
 ∇·T: neutral | settled | bounded | non-neutral / <what this licenses>
 ∇×T: null | resolved | held | non-null / <what this licenses>
 Finding: stable | genuine-dependent | partial-real | hidden-framework-recoil | doubt-churn | reorientation
+MRP resultant: <finding -> route/graph/HOLD consequence>
 Graph delta: none | ⁿB → ⁿ⁺¹B
 Pre-emption basis: none | graph-bound | commitment-bound | framework-bound
 Route: STOP | HOLD | RECURSE | LoopBreak(∇×T)
@@ -153,7 +173,35 @@ Boundary: T_lang does not imply guaranteed uptake.
 ```
 
 The compact block is not a replacement for the closure witness. If it creates or blocks graph
-movement, the closure witness / `field_witness` evidence must agree.
+movement, the closure witness / `field_witness` evidence must agree. Pressure activations must
+render as six bullet slots, not one inline list. Each slot records the owner/TTP or pressure
+class used and the release/hold/clear effect it licensed. A slot that merely names a pressure
+without an effect is unsupported.
+`Target:` must name the burden token explicitly, for example `Target: B2 / state-enforcement
+reduction`; mentioning `Land(B2)` only inside `Reread:` is not enough. If an older copied
+template shows only superscript `ⁿB`, render it as `Bn / <landed burden name>` in live output.
+
+The compact block is a parseable record, not a prose paragraph. `Finding`, `Pre-emption basis`,
+and `Route` must be one exact value from the template with no punctuation or added explanation.
+It must include `MRP resultant: <finding -> route/graph/hold consequence>`.
+`Boundary` must begin `T_lang does not imply guaranteed uptake`; PARTIAL or owner-load boundaries
+come after a semicolon. If no narrower owner/TTP id is exposed, begin the slot value with
+`pressure class:`; if no owner exists, begin with `coverage gap:`. `Graph delta` is `none` unless
+the route is `RECURSE`; held downstream routes are recorded in `R(H,Δ)`/closure witness, not as
+created graph edges. The six pressure activation labels are fixed and must not be replaced by
+generic pressure-class bullets. Each slot line must literally begin with `- <slot-name>:`; do
+not omit the dash or colon. For doubt-churn / LoopBreak, `Graph delta:` is `none`; do not render
+LoopBreak as a graph node or graph edge.
+Each slot value must begin with an owner/TTP id, `pressure class: <name>`, or
+`coverage gap: <missing owner>`. Do not begin a slot value with only a burden id, `none`,
+`cleared`, or ordinary prose; inactive slots use `pressure class: none` or
+`pressure class: cleared`.
+
+MRP participates in reconstructibility/node-lineage accounting. A valid MRP pass must let the same node
+lineage be reconstructed: input -> burden nodes -> submove nodes -> Land(Bn) -> R(H,Delta) ->
+MRP resultant -> graph/field_witness delta or no-edge -> STOP/HOLD/RECURSE/LoopBreak/closure ->
+restoration aim. If the MRP block cannot be mapped into that lineage, it is ornamental and cannot
+license route or closure.
 
 ## Field-witness hook
 
@@ -201,6 +249,12 @@ it does not upgrade local smoke evidence into package-bound release proof.
 - Decorative diagnostics: MRP claims closure while `∇·T` remains non-neutral without HOLD/RECURSE
   explanation, or while `∇×T` remains non-null without LoopBreak, STOP, HOLD, or graph-bound
   recursion.
+- Dropped-live-burden: MRP names proportionality, hiddenness, source-worldview, moral-grounding,
+  owner-floor, or owner-body pressure as live, but the output closes without releasing, landing,
+  holding, or PARTIALing that pressure.
+- Partial-closure leakage: `PARTIAL / OWNER-BODY-NOT-LOADED` appears, but the response continues
+  into broad refutation, closure witness, Restorative Response, Closing Formulation, or "refuted"
+  language for the blocked burden.
 - Unsupported activation: a pressure slot produces a finding without naming an activated
   TTP/operator, named pressure class, or explicit TTP coverage gap.
 - Recoil concession: hidden-framework recoil is marked but then treated as an unqualified landed

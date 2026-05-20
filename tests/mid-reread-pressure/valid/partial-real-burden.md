@@ -16,6 +16,7 @@ Pressure activations:
 ∇·T: non-neutral / real downstream pressure remains held
 ∇×T: held / no LoopBreak, but register curl prevents release
 Finding: partial-real
+MRP resultant: partial-real -> HOLD with held downstream burden
 Graph delta: B1 → B2
 Pre-emption basis: commitment-bound
 Route: HOLD

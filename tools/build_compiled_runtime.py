@@ -125,6 +125,188 @@ route-check harnesses during canonical execution: no `daee_level3.py`, `route.py
 quality-gate claims. Those artifacts are optional developer validation, not public runtime
 evidence and not a substitute for owner/source/depth behavior in `output.md`.
 
+HARD-COMPOUND LAYER B EXECUTION BODY:
+Hard-compound full traversal requires a visible Layer B operation body for every released burden.
+Do not collapse a major burden into one generic "Bounded Response" paragraph or one
+Target/Operation/Result block. A non-atomic released burden renders multiple owner-bearing
+submove labels, preferably `B1_1 [FPD] - expose the imported criterion`,
+`B1_2 [M1-P] - test the authority premise`, etc.; superscript/subscript notation remains
+allowed, but ASCII `B<N>_<s> [owner]` is the checker-readable fallback. Each submove carries
+Target, Operation, Result/state-change, and Contribution-to-Land(Bn). In a full hard-compound
+traversal those fields are not stubs: each released submove must do its local noetic work in
+case-shaped prose, naming the exact criterion/premise, applying the matched owner/operator, and
+showing why that change contributes to Land(Bn). One-sentence Target/Operation/Result lines are
+acceptable only for an explicitly compact PARTIAL/HOLD route, not for coverage_complete=true.
+The bracketed token must be a compact owner/operator ID or pressure class with no spaces, such as
+`[FPD]`, `[M1-P]`, `[M8]`, `[P1]`, `[P7]`, `[definition-discipline]`,
+`[source-status-repair]`, or `[authority-order-repair]`. Put human-readable operation names
+after the dash; do not put phrases like `[consequence trace]`, `[authority-order repair]`,
+`[source-status discipline]`, or `[governed submove]` inside the brackets. Do not reuse the same
+generic Operation/Result/Contribution wording across submoves in one burden; repeated
+boilerplate is under-execution. For a 4+ burden hard-compound answer that claims full closure,
+fewer than three visible owner-bearing submoves per released major burden is an execution-depth
+warning; fewer than fifteen total submoves in a 5+ burden full traversal is normally
+under-executed. If the output cannot pay that local execution cost, route HOLD/PARTIAL instead
+of printing coverage_complete=true.
+
+MANDATORY MRP ROUTE GATE:
+In default `/daee-epistemics` output, every routed burden-cycle that prints Land(Bn), Field
+diagnostics, LoopBreak, R(H,Delta), R(H,Δ), a next burden, HOLD/PARTIAL, or closure must print a
+compact `[Mid-Reread Pressure]` block between the landed burden and the route. This is not
+optional diagnostic ornament. The block is the visible proof that reread pressure ran. If the
+block is absent, do not release the next burden, do not close, and do not print a route-bearing
+reread.
+
+MRP ROUTE CONSEQUENCE INVARIANT:
+If MRP names remaining live pressure, non-neutral divergence, non-null/held curl, a graph edge,
+a genuine downstream burden, proportionality, hiddenness, source-worldview, owner-floor, or
+owner-body pressure, the output must release and land that burden, explicitly HOLD it with a
+named gate/reason, or mark PARTIAL with the named blocked burden/owner before any Restorative
+Response or Closing Formulation. STOP/COMPLETE is invalid while the same MRP record names an
+unresolved live pressure. Route in the compact MRP block is limited to STOP, HOLD, RECURSE, or
+LoopBreak(∇×T); owner-load failure is rendered as Route: HOLD plus
+Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>.
+
+PARTIAL OWNER-LOAD BOUNDARY:
+When PARTIAL / OWNER-BODY-NOT-LOADED appears, do not continue into broad refutation,
+Restorative Response, Closing Formulation, closure witness, or language such as "refuted" /
+"closed" for the blocked burden. Give only the bounded diagnostic sketch licensed by loaded
+owners, name the missing owner/path and next live burden, then stop.
+Ordinary HOLD/PARTIAL not caused by owner-load failure must still render a `Burden N:` node,
+submoves where licensed, `Land(Bn): PARTIAL / ...` or `Land(Bn): ...`, `[Mid-Reread Pressure]`,
+and held-node accounting. Do not answer a named-worldview HOLD as pure prose plus a final
+`PARTIAL / HOLD:` line. Held-node accounting must include `Initial burden set: [...]` and
+`Terminal states:` lines using the same parseable `B1: state / owner-or-pressure / detail`
+format as a closure witness.
+
+MRP FIELD VALUE DISCIPLINE:
+In the compact `[Mid-Reread Pressure]` block, field values are record values, not prose. Use exact
+first-token values: `∇·T: neutral|settled|bounded|non-neutral`, `∇×T: null|resolved|held|non-null`,
+`Finding: stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation`,
+`Pre-emption basis: none|graph-bound|commitment-bound|framework-bound`, and
+`Route: STOP|HOLD|RECURSE|LoopBreak(∇×T)`. Do not add punctuation to those values. Each pressure
+slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <missing owner>`,
+then an em dash and the release/hold/clear effect. For ∇·T / ∇×T, put a slash after the state
+token, e.g. `∇·T: non-neutral / B2 remains live` and `∇×T: held / B2 depends on...`; this keeps
+the active state machine-readable. `Boundary:` always begins
+`T_lang does not imply guaranteed uptake`; append PARTIAL/owner-load text after a semicolon.
+`genuine-dependent` requires `Route: RECURSE` and a graph edge; `stable` requires `Route: STOP`
+and `Graph delta: none`; `partial-real` requires `Route: HOLD`.
+`Reread:` must begin exactly `R(H,Delta)` or `R(H,Δ)`; `Landed delta:` must begin with `Delta`
+or `Δ` and identify the burden/field change. `Pressure activations:` must render exactly six
+bullet slots whose literal lines begin, after optional spaces, with `- freeze-landed-move:`,
+`- dependency-tug:`, `- hidden-framework-recoil:`, `- entailment-pressure:`,
+`- doubt-churn-guard:`, and `- reorientation-reminder:`. Do not omit the dash, colon, or any
+slot. Do not replace those slot labels with generic pressure-class bullets.
+The fixed labels are:
+`freeze-landed-move`, `dependency-tug`,
+`hidden-framework-recoil`, `entailment-pressure`, `doubt-churn-guard`, and
+`reorientation-reminder`.
+`MRP resultant:` is required and must state the finding-to-route/graph/HOLD consequence.
+For doubt-churn / LoopBreak, `Graph delta:` is `none`; do not render `B1 -> LoopBreak` as a graph
+edge. Put the LoopBreak consequence in `MRP resultant:` and `Route:`.
+Each slot value must begin with an owner/TTP id, `pressure class: <name>`, or
+`coverage gap: <missing owner>`. Do not begin a slot value with only `B1`, `B2`, `none`,
+`cleared`, or ordinary prose. Inactive slots still render as `pressure class: none` or
+`pressure class: cleared`, followed by the effect.
+
+MRP RECONSTRUCTIBILITY / NODE-LINEAGE ACCOUNTING:
+MRP is not a rendered note. A valid routed output must let the input be reconstructed as node
+process: input -> burden nodes -> submove nodes -> Land(Bn) or partial Land(Bn) -> R(H,Delta) ->
+MRP pressure resultants -> graph/field_witness delta or explicit no-edge ->
+STOP/HOLD/RECURSE/LoopBreak/closure -> restoration aim. If MRP cannot be mapped to this lineage,
+it is ornamental and cannot license closure, HOLD, RECURSE, or LoopBreak.
+
+HARD-COMPOUND DEPTH FLOOR:
+Hard-compound named-worldview, source-worldview, public-reason, authority-order, moral-tribunal,
+or multi-anchor shubhah cases require Brandolini-scale traversal: the answer must be
+substantially larger than the prompt because it must unpack the noetic load. Do not compress
+these cases merely because the input is short. A real traversal normally renders 4-6 burdens,
+3-5 visible owner-bearing submoves per major burden, a Land(Bn), inter-burden MRP, R(H,Delta),
+and carried graph state after each landing. Output mass is an Andon, not the proof standard:
+topology decides proof, while mass decides whether the claimed topology was plausibly executed.
+Size without topology is bloat; topology with skeletal local execution is under-execution.
+For a full traversal, estimate plausibility from the topology claimed: governed surface and
+Layer A/B operation bodies; every fully released burden and its submoves; every MRP invocation
+and resultant; graph/field_witness accounting; closure witness; and restorative response.
+Empirical older compact outputs may cluster near 38-50 KB, but MRP-heavy 5+ burden full
+traversals with repeated MRP, graph accounting, closure, and restoration normally need a much
+larger visible cost. Treat roughly 60 KB as a serious Andon for Smoke-6-shaped full traversal,
+and 75-100 KB as the normal plausible band unless a reviewer grants an explicit size waiver.
+For file-retained hard-compound smoke execution, a full traversal that is still under that band
+must continue expanding burden-local Layer B operations, or else retract to an honest HOLD/PARTIAL
+with coverage_complete=false. Do not attempt to satisfy the mass Andon with recaps, repeated MRP
+labels, citation stacks, or filler; spend the mass on the owner-bearing submoves and their
+Land/R(H,Delta)/MRP consequences.
+If the answer cannot visibly pay that reconstructibility cost, do not claim coverage_complete=true,
+"all input burdens landed", or full closure. Instead stop after the currently released burden
+with Route: HOLD or Route: RECURSE, terminal accounting for held downstream burdens, and no final
+restorative closure.
+
+HARD-FULL PRE-CLOSURE GATE:
+Before writing Closure/Reconstruction Witness with coverage_complete=true in any 4+ burden
+hard-compound case, run this visible release check: each released burden has a literal
+`Layer B - Governed Operation Body` (or `Layer B — Governed Operation Body`) section; each
+non-atomic burden has at least three owner-bearing submoves; each submove body does more than
+name the operator and contains enough case-shaped Target, Operation, Result, and
+Contribution-to-Land(Bn) content to show the owner actually operated; every Land(Bn) is followed
+by inter-burden [Mid-Reread Pressure]; and the closure witness contains a parseable T_lang line
+exactly as `T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed
+uptake` or ASCII `T_lang: PsiN -> PsiI: partial coupling attempt / language-mediated boundary;
+no guaranteed uptake`. Never write Ψᴮ, PsiB, Ψᵁ, PsiU, or topic/interlocutor substitutes in that
+line. If any item fails, do not close; continue the next Layer B operation or route HOLD/PARTIAL
+with coverage_complete=false.
+MRP Target is mandatory and must name the burden token explicitly: `Target: B1 / ...`,
+`Target: B2 / ...`, etc. A target that only says "after Land(B2)" in the reread line is not
+enough. MRP pressure slots follow the same owner-token rule: entailment-pressure should normally begin
+with M8, M1-P, M1, or `pressure class: entailment-pressure`; hidden-framework-recoil should begin
+with FPD or `pressure class: hidden-framework-recoil`; reorientation-reminder should begin with
+P1, P7, or `pressure class: reorientation`. Do not begin a slot with a phrase such as
+"consequence trace", "authority-order repair", or "source-status discipline".
+For release-smoke/file-retained execution, the runtime may not self-grant a size waiver. If a
+Smoke-6-shaped full traversal remains below the serious Andon band (roughly 60 KB) or remains near
+old compact-output size while claiming 5+ fully landed burdens, repeated MRP, graph accounting,
+closure, and restoration, it must not print coverage_complete=true; it must expand the local
+Layer B operations or route HOLD/PARTIAL.
+This is a hard gate, not advice: below roughly 60 KB, a 5+ burden full hard-compound answer must
+write `𝒞(Ψᴺ): coverage_complete=false; HOLD/PARTIAL because execution mass is not yet plausible
+for the claimed topology`, or continue expanding before closure. Between roughly 60 KB and the
+calibrated 75 KB floor, it still requires explicit adjudicator waiver; the runtime itself may
+only close when the visible topology and mass both satisfy the gate. Because byte estimates are
+coarse and hard-smoke capture can vary by a small margin, a Smoke-6-shaped full traversal should
+target a visible safety margin above the floor (roughly 80 KB or more) before coverage_complete=true.
+Spend that margin on reconstructible burden-local owner work, MRP resultant accounting, graph /
+field_witness deltas, and closure witness detail; never spend it on recaps or filler.
+Closure order is fixed. If a final MRP block emits Route: STOP, no further Layer B work,
+burden-local completion body, supplemental expansion, or submove block may appear after it. If
+more burden-local work is needed, render it before the final Land(Bn) and final stable MRP STOP,
+or route RECURSE/HOLD instead of STOP. When STOP is licensed, render Closure/Reconstruction
+Witness immediately after the final MRP record and before any Restorative Response or Closing
+Formulation. Never write Restorative Response or Closing Formulation before the closure witness
+in a hard/full closure.
+
+Parseable hard-closure witness template:
+Closure/Reconstruction Witness
+Initial burden set: [B1, B2, ...]
+Burden dependency graph: B1 (root) -> B2, ...
+Terminal states:
+B1: landed / <owner-or-pressure> / <detail>
+MRP resultants:
+B1: finding=<stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation>; graph=<delta-or-none>; route=<STOP|HOLD|RECURSE|LoopBreak(∇×T)>
+del-dot B: neutral / <target-explicit reason>     # or non-neutral / <held burden>
+del-cross kappa: null / <reason>                  # or resolved / <reason>, non-null / <loop target>
+𝒞(Ψᴺ): coverage_complete=<true|false>; <closure/HOLD/RECURSE reason>
+T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed uptake
+Do not write substitute fields such as a generic divergence-result field, a generic curl-result field, remaining kappa, a standalone
+coverage_complete=true, or a prose-only closure license.
+
+BRANDOLINI DEFAULT:
+Even non-hard-compound objections usually require more output than input: surface brevity often
+hides burden, premise, criterion, and restoration work. Default responses to refute, respond,
+diagnose, shubhah, worldview, moral protest, hiddenness, authority-order, or source-status inputs
+should render visible burden work, not terse answerlets. Only narrow factual clarifications,
+glossary-style requests, or explicitly requested short replies may stay small.
+
 Every plain `/daee-epistemics` runtime output begins with this noetic-field execution banner
 before Layer A. The first visible surface must visibly signal governed execution; do not reduce
 success to a bare `field:` line, and do not place prose, headings, apologies, Markdown fences,
@@ -180,11 +362,27 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   does runtime work; may contain multiple operative submoves when they all serve the
   same live noetic burden; the released burden must be burden-complete before R,
   with materially necessary sub-burdens receiving matched TTP/operator treatment)
-- State/noetic re-read - compact (`Land(Bn)` / `Land(ⁿB)`, remaining input-anchored burdens,
-  held routes rechecked, target-explicit `∇·` / `∇×` field diagnostics including null checks
-  when they license RECURSE/PARTIAL/COMPLETE, MRP when non-neutral `∇·T` or non-null `∇×T`
-  pressures reread, LoopBreak status, next live burden, release status in prose). Hard/multi-burden default output may not render a bare `R(H,Delta)` continuation
+- State/noetic re-read - compact. The visible state/noetic reread surface is the
+  `[Mid-Reread Pressure]` activation record. It records `Land(Bn)` / `Land(ⁿB)`, remaining
+  input-anchored burdens, held routes rechecked, target-explicit `∇·T` / `∇×T`,
+  pressure activations, LoopBreak status, next live burden, route, and release status in prose.
+  Do not print a standalone `State/noetic re-read`, `Field diagnostics:`, `LoopBreak:`, or
+  route-bearing `R(H,Delta):` after `Land(Bn)` unless `[Mid-Reread Pressure]` is the first visible
+  reread block after that landing gate. Hard/multi-burden default output may not render a bare `R(H,Delta)` continuation
   line: it must include literal `Field diagnostics:` and `LoopBreak:` lines adjacent to the reread.
+- MRP-visible reread gate - in default routed output, render a compact
+  `[Mid-Reread Pressure]` block before the final route decision. The block must name Target,
+  Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, Finding, Graph delta,
+  Pre-emption basis, Route, and Boundary. A plain `State/noetic re-read`, `LoopBreak:`,
+  `R(H,Delta)`, graph edge, or owner/TTP trace is not MRP evidence unless it shows the pressure
+  slot and route consequence. Do not omit the block in any routed burden-cycle.
+- MRP trigger expansion - in default output, `T` includes current burden pressure, `kappa/H`,
+  held dependencies, register pressure, and downstream burden pressure. Therefore any state
+  reread that names `∇×κ`, `∇×B`, `∇×H`, remaining burden, still live pressure, release next,
+  HOLD, PARTIAL, LoopBreak, blocked proof-stacking, hidden-framework recoil, doubt-churn, or a
+  pre-voiced/downstream defense has invoked MRP. Do not route from Land(Bn) to the next burden,
+  HOLD/PARTIAL, LoopBreak, or closure until `[Mid-Reread Pressure]` has recorded the pressure
+  slots and route.
 - If R(H,Delta) names a remaining input-anchored burden and no gate blocks it, continue
   with the next Burden. Do not emit Restorative Response or Closing Formulation yet.
 - Named-worldview / source-authentication / mixed-field closure witness - before any final
@@ -195,13 +393,30 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   graph:` with compact edges such as `B1 → B2, B3` or `B1 ∥ B2 → B3`, and remaining kappa / H
   status. If any live dependency remains unresolved, unrendered, or merely identified, write
   PARTIAL or continue under RECURSE.
+  The witness must include parseable `Initial burden set: [B1, B2, ...]`, `Terminal states:`
+  with one line per burden using `landed`, `discharged-as-derivative`, `held-with-reason`,
+  `carried-PARTIAL`, `carried-RECURSE`, or `cleared`, root nodes marked exactly `(root)` in the
+  graph with no gloss inside those parentheses (`B1 (root) -> B2`, not `B1 (root authority...)`),
+  plus `∇·B:`, `∇×κ:`, `𝒞(Ψᴺ):`, and `T_lang: Ψᴺ ⇢ Ψᴵ:` before final response text.
 - Final hard-case closure witness - in hard compound/source-request cases, the last
   state/noetic re-read before any Restorative Response or Closing Formulation must visibly
   include literal `Closure/Reconstruction Witness` and account for FPD, M1/M1-P, M8, M9, P1/P7,
   and source functions as done, cleared, held, or PARTIAL, then include compact `𝒞(Ψᴺ)`
   closure-field licensing and `T_lang: Ψᴺ ⇢ Ψᴵ` coupling-boundary statement. Do not rename the
-  block `Closure audit`. If any live item is missing, do not close; write literal PARTIAL and
-  name the missing burden/TTP/source function.
+  block `Closure audit`.
+  Each terminal line must be parseable as `B1: landed / <owner-or-pressure> / <detail>`.
+  Divergence/curl lines must be target-explicit: `∇·B: neutral / <reason>` or
+  `∇·B: non-neutral / <held burden>`, and `∇×κ: null / <reason>`,
+  `∇×κ: resolved / <reason>`, or `∇×κ: non-null / <loop target>`.
+  `𝒞(Ψᴺ):` includes `coverage_complete=<true|false>; <closure/HOLD/RECURSE reason>`.
+  `T_lang: Ψᴺ ⇢ Ψᴵ:` includes `partial coupling attempt / language-mediated boundary; no guaranteed uptake`.
+  The right side is always exactly `Ψᴵ`; never substitute local variants such as `Ψᴰ`, `Ψᴮ`,
+  topic letters, or interlocutor labels.
+  T_lang invariant: never write uptake/interlocutor substitutes such as `PsiU`, `Psi^U`, or
+  a local uptake-letter target in the closure witness; use the exact invariant target named
+  in the preceding `T_lang:` template.
+  If any live item is missing, do not close; write literal PARTIAL and name the missing
+  burden/TTP/source function.
 - Restorative Response - required once after the final state/noetic re-read
 - Closing Formulation - required once at the end after final Restorative Response
 
@@ -249,11 +464,21 @@ compound/source-request execution, output length follows live burden and source 
 A complete-looking hard answer below 30k characters is invalid unless it visibly says PARTIAL
 and names the missing burden/TTP/source function; 30k-35k remains suspect and must pass the
 owner/source/closure matrix. Do not satisfy the floor with citation stacks or recaps; expand
-the local Layer B operations that actually land the burdens.
+the local Layer B operations that actually land the burdens. A 5+ burden MRP-heavy full traversal
+that stays near old compact-output size must prove it is not skeletal by rendering explicit
+Layer B operation bodies and owner-bearing submoves for released burdens; otherwise continue
+execution or route HOLD/PARTIAL. If claiming full traversal in file-retained smoke mode, do not
+use one-sentence submove fields; expand each owner-bearing submove enough that its target,
+operation, result, and contribution are reconstructible without a reader having to infer the
+operator's work from the label.
+By Brandolini default, ordinary refute/respond/diagnose, worldview, moral-protest, hiddenness,
+authority-order, source-status, and shubhah inputs should still render substantial governed
+unpacking. Surface brevity is not evidence of low noetic load. Only narrow factual
+clarifications, glossary requests, or explicit short-answer requests may stay small.
 
 Hard/multi-burden default output:
-ComplexB -> {{¹B₁...¹Bₙ}} -> Land(¹B) -> R(H,Delta).
-AtomicB -> ¹B₁ -> Land(¹B) -> R(H,Delta).
+ComplexB -> {{¹B₁...¹Bₙ}} -> Land(¹B) -> [Mid-Reread Pressure] -> R(H,Delta).
+AtomicB -> ¹B₁ -> Land(¹B) -> [Mid-Reread Pressure] -> R(H,Delta).
 Compact default may not collapse a complex B into one generic operation block. Render materially
 necessary submoves as case-specific target -> operation -> result units before burden landing.
 The burden grammar is part of the hard-output deliverable, not commentary about the deliverable.
@@ -262,6 +487,11 @@ rendering a complex ⁿBᵢ, load/read the owner body or compiled bundle section
 the active TTP's operation floor, unless that exact section is already present in active
 context. Package availability, map presence, or bundle co-location is not access. TTP label
 recognition is not owner-body execution; matched module label is not owner floor loaded.
+When the packaged/generated `skill/SKILL.md` is the supplied runtime surface, its copied runtime
+references and compiled omnibus sections count as readable runtime context once the compiled map
+or routing table points to that section. Do not mark `PARTIAL / OWNER-BODY-NOT-LOADED` merely
+because a separate atomized repo file was not opened. Still do not activate sibling bundle
+sections unless routing selects their original module ID.
 If the needed owner body or compiled bundle section is unavailable, do not compress into
 generic prose; mark PARTIAL / OWNER-BODY-NOT-LOADED and name the missing owner/path. This
 marker is a required hard-output failure marker and is permitted in default/hard output.
@@ -292,22 +522,69 @@ Owner-loadform map for common hard-output owners:
 
 Render ComplexB in this order:
 Burden N: <name>
+Layer B - Governed Operation Body
   Operative Submove ¹B₁:
     Target: <exact premise / criterion / predicate / warrant>
-    Operation: <closed operative verb>
+    Operation: <case-shaped owner action; not a one-line stub in full traversal>
     Result: <changed claim-state>
+    Contribution-to-Land(Bn): <how this submove helps land the burden>
   Operative Submove ¹B₂:
     Target: <exact premise / criterion / predicate / warrant>
-    Operation: <closed operative verb>
+    Operation: <case-shaped owner action; not a one-line stub in full traversal>
     Result: <changed claim-state>
+    Contribution-to-Land(Bn): <how this submove helps land the burden>
   [continue until all materially necessary s are rendered]
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
+  [Mid-Reread Pressure]
+    Target: Bn / <landed burden name>
+    Reread: R(H,Delta)
+    Landed delta: Delta-1B / Delta-kappa from Land(¹B)
+    Pressure activations:
+    - freeze-landed-move: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - dependency-tug: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - hidden-framework-recoil: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - entailment-pressure: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - doubt-churn-guard: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - reorientation-reminder: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    ∇·T: <neutral/settled/bounded/non-neutral plus license>
+    ∇×T: <null/resolved/held/non-null plus license>
+    Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
+    MRP resultant: <finding -> route/graph/hold consequence>
+    Graph delta: <none or Bn -> Bn+1>
+    Pre-emption basis: <none/graph-bound/commitment-bound/framework-bound>
+    Route: <STOP/HOLD/RECURSE/LoopBreak(∇×T)>
+    Boundary: T_lang does not imply guaranteed uptake
   R(H,Delta): <held/released/next-live-burden decision>
+If a diagnostic pass only partially lands because a route is held, still render
+`Land(Bn): PARTIAL / <what was identified>` before MRP. A bare diagnostic sketch without a Land
+or partial-Land line is not reconstructible.
+MRP compact-block fields are parseable record fields. The Finding, Pre-emption basis, and Route
+lines must contain one exact value from the template with no extra prose or punctuation. Boundary
+must begin `T_lang does not imply guaranteed uptake`; append any PARTIAL / OWNER-BODY-NOT-LOADED
+text after a semicolon. Each pressure activation must begin with an owner/TTP id,
+`pressure class: <name>`, or `coverage gap: <missing owner>`, followed by the effect. Graph delta
+is `none` for STOP/LoopBreak. RECURSE must include a graph edge. HOLD may include a held graph
+edge only when Terminal states marks the downstream node held-with-reason or carried-PARTIAL.
+The six pressure activation labels are fixed and must not be replaced by generic labels or
+emitted without the literal leading dash. Slot values must begin with an owner/TTP id,
+`pressure class: ...`, or `coverage gap: ...`; never with only `B1`, `none`, `cleared`, or prose.
+MRP resultant must state the finding-to-route/graph/HOLD consequence in one line. LoopBreak is
+never a graph node or graph edge; render Graph delta: none and Route: LoopBreak(∇×T).
+Reconstructibility/node-lineage requirement: the visible output must let an evaluator map input ->
+burden nodes -> submove nodes -> Land(Bn) -> R(H,Delta) -> MRP resultant -> graph/field_witness
+delta/no-edge -> route -> closure/restoration. If a node in that chain is absent, route HOLD
+or PARTIAL instead of claiming closure.
 Post-burden continuation gate: after every R(H,Delta), if state re-read names a remaining
 input-anchored burden and no hold, register, semantic, thin-basis, source-use, or limit gate
 blocks it, continue with the next Burden. Restorative Response and Closing Formulation are
 final-only for the current answer; if limits prevent the next burden, emit PARTIAL with the
 next live burden instead of closing.
+If MRP names a live dependency such as proportionality, hiddenness/coercive-guidance,
+source-worldview, moral-grounding, or owner-body pressure, STOP/COMPLETE is forbidden until
+that dependency is released and landed, merged into a named landed burden with same-function
+proof, or held/PARTIALed with the exact gate. Owner-load failure uses Route: HOLD and
+Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>; after that boundary, do not
+emit closure witness, Restorative Response, Closing Formulation, or broad "refuted" language.
 Input-anchored means any explicit claim, supporting premise, contrast, public/private partition,
 source-status rule, translation demand, or moral/epistemic criterion already present in the
 user's input, not only a separate requested question.
@@ -316,6 +593,10 @@ STOP reason unless a named hold gate blocks release. "Requires its own bounded p
 continue or mark PARTIAL.
 AtomicB may use one submove only when it has one target, one operation, and no distinct
 internal predicates, criteria, source-status forks, or release gates.
+In default hard/multi-burden output, `[Mid-Reread Pressure]` is the mandatory route gate between
+Land(Bn) and any Field diagnostics, LoopBreak, route-bearing R(H,Delta), next burden,
+HOLD/PARTIAL, or closure. If it is absent, R(H,Delta) may not release the next burden,
+HOLD/PARTIAL, LoopBreak, or close.
 
 Miniature structure only:
 Burden 1: imported moral tribunal
@@ -324,12 +605,15 @@ Burden 1: imported moral tribunal
   ¹B₂ - test the criterion against its own grounds
     Target: self-authorizing standard | Operation: test | Result: standard cannot condemn while self-grounded
   Land(B1): the imported tribunal no longer governs as unquestioned judge
-  R(H,Delta): accountability and guidance-demand burdens remain held/live; release next B only if input-anchored
+  [Mid-Reread Pressure]: freeze Land(B1); activate existing owner/TTP pressure slots;
+  record divergence/curl, finding, graph/held/no-edge consequence, pre-emption basis, and route
+  R(H,Delta): accountability and guidance-demand burdens remain held/live; release next B only from the MRP result
 Burden 2: accountability compression
   ²B₁ - distinguish bare non-exposure from culpable rejection
   ²B₂ - hold individual fate while correcting the general rule
   Land(B2): "simple non-belief" no longer names the accountability structure
-  R(H,Delta): guidance-demand burden remains live; release next B
+  [Mid-Reread Pressure]: activate dependency-tug and hiddenness/coercive-guidance pressure owners before route
+  R(H,Delta): guidance-demand burden remains live; release next B only from the MRP result
 This hard-output shape is not raw IR or a route ledger when each submove serves the same B.
 
 If internal state re-read licenses another bounded pass, continue with the next burden-cycle.
@@ -540,6 +824,12 @@ then load the containing runtime bundle and section, for example:
 `references/omnibus/OMNIBUS-tactics.md` -> section `MODULE_ID: M9-predication-mode`.
 
 Do not attempt to load missing atomized files from the compiled package.
+
+When this generated SKILL.md is the supplied runtime surface, its copied runtime references and
+compiled omnibus bundle sections are readable runtime context. A selected module's bundle
+section counts as loaded when the compiled map or routing table points to that `MODULE_ID` and
+the runner has the generated skill surface. Do not return OWNER-BODY-NOT-LOADED merely because
+the separate atomized source file was not opened.
 
 Do not use omnibus filenames as `matched_modules`.
 

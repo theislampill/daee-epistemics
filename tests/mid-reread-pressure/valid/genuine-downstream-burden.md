@@ -16,6 +16,7 @@ Pressure activations:
 ∇·T: non-neutral / B2 diverged as genuine downstream burden
 ∇×T: null / no churn loop
 Finding: genuine-dependent
+MRP resultant: genuine-dependent -> RECURSE with graph edge B1 -> B2
 Graph delta: B1 → B2
 Pre-emption basis: graph-bound
 Route: RECURSE

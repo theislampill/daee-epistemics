@@ -277,6 +277,29 @@ operator grammar: `split`, `distinguish`, `test against own grounds`, `disambigu
   - `T_lang: Ψᴺ ⇢ Ψᴵ:` with language-mediated partial-coupling boundary and no soul access,
     guaranteed uptake, or guidance-control claim;
   - literal `## Restorative Response` and `## Closing Formulation` after the closure witness.
+- Hard/full closure must use those parseable field names exactly. Do not substitute
+  a generic divergence-result field, a generic curl-result field, `remaining kappa`, standalone `coverage_complete=true`, or a
+  prose-only closure license. In file-retained hard smokes, do not self-grant a size waiver:
+  if the output remains near old compact-output size while claiming 5+ fully landed burdens,
+  repeated MRP, graph accounting, closure, and restoration, continue expanding Layer B operations
+  or route HOLD/PARTIAL with `coverage_complete=false`.
+  Below the serious Andon band of roughly 60 KB, this is a hard gate: a 5+ burden full
+  hard-compound answer must not self-close with `coverage_complete=true`. It must either continue
+  expanding local Layer B work or write `coverage_complete=false` with HOLD/PARTIAL mass-boundary
+  reason. Between roughly 60 KB and the calibrated 75 KB floor, closure requires external
+  adjudicator waiver; the runtime itself should keep expanding or hold. For Smoke-6-shaped full
+  traversal, target an approximate 80 KB safety margin before positive closure and spend the
+  margin on reconstructible owner/submove, MRP-resultant, graph/field_witness, and closure-witness
+  accounting rather than filler.
+- Closure order is fixed. If final MRP emits `Route: STOP`, no further Layer B work,
+  burden-local completion body, supplemental expansion, or submove block may appear after it.
+  If more burden-local work is needed, render it before the final `Land(Bn)` and final stable
+  MRP STOP, or route RECURSE/HOLD instead of STOP. Hard/full `Closure/Reconstruction Witness`
+  must appear immediately after the final MRP record and before `Restorative Response` and
+  `Closing Formulation`.
+- Hard/full `Closure/Reconstruction Witness` must include an `MRP resultants:` ledger when MRP
+  was invoked. Each line should identify the burden token, finding, graph/no-edge result, and
+  route licensed by the MRP activation.
 - This mode is evidence capture only. The witness block is not competence proof, not a truth
   meter, not public-release proof beyond the local package-bound smoke, and not a claim that every
   ordinary output always renders the full witness scaffold.
@@ -460,6 +483,7 @@ shown their owner IDs, targets, operations, and results.
 - Remaining input-anchored burdens: [enumerated from original input, not a topic list]
 - Held routes rechecked:        [result after this pass]
 - Field diagnostics:            [target-explicit `∇·` / `∇×` status; include null when it licenses closure, RECURSE, or PARTIAL]
+- [Mid-Reread Pressure]:        [mandatory when this reread releases next burden, HOLD/PARTIAL, LoopBreak, or closure; include Target, Reread, Landed delta, Pressure activations, ∇·T, ∇×T, Finding, Graph delta, Pre-emption basis, Route, Boundary]
 - LoopBreak:                    [not needed / licensed with target + ground + Δ effect + reread / held with reason]
 - Next bounded pass:            [prose reason if another bounded pass is licensed]
 - Release status:               [prose closure/hold/partial/continuation status, plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant; no raw `Recursion decision:` field]
@@ -474,7 +498,7 @@ and do not move `𝒞(Ψᴺ)` / `T_lang: Ψᴺ ⇢ Ψᴵ` into prose-only closur
 - Registers:                    [operative ♥/ξ/Ω/σ/μ/κ summary or resolved/held state]
 - Initial burden set:           [`[B1, B2, B3]`; every input-anchored burden admitted to the scoped witness]
 - Terminal states:              [one line per initial burden: `B1: landed / <operator> / <target -> operation -> result or compact delta>`; the burden ID must come immediately before the colon; do not write `B1 <title>: <state>`; allowed states are `landed`, `discharged-as-derivative`, `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, `cleared`]
-- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / independent at this level, `(root)` means no upstream dependency; node IDs must match terminal-state burden IDs and the graph must be reconstructible from the visible witness text alone; ASCII `A -> B` is a legacy transport fallback only, not the preferred notation]
+- Burden dependency graph:      [parseable compact graph; `A → B` means B depends on A landing first, `A ∥ B` means parallel / independent at this level, exact `(root)` means no upstream dependency; node IDs must match terminal-state burden IDs and the graph must be reconstructible from the visible witness text alone; ASCII `A -> B` is a legacy transport fallback only, not the preferred notation. Put any root gloss outside the parentheses: `B1 (root) - authority-order` is valid; `B1 (root authority-order)` is invalid.]
 - ∇·B:                          [`neutral / <target-explicit status>` or `non-neutral / <target-explicit status>`]
 - ∇×κ:                          [`null / <target-explicit status>`, `resolved / <target-explicit status>`, or `non-null / <target-explicit status>`]
 - `𝒞(Ψᴺ)`:                     [positive agent/runtime execution-field closure condition: landed/integrated/held burdens, bounded ∇·, resolved/held ∇×, reconstructible route, no hidden live pressure]
@@ -504,11 +528,16 @@ parseable dependency graphs because they do not expose roots, directed dependenc
 relations with burden IDs.
 
 When the final `R(H,Δ)` exposes an apparent new burden, graph movement should be licensed by
-`TTP-MRP-mid-reread-pressure` or an equivalent source-owned reread-pressure check. The render may
-show a compact `[Mid-Reread Pressure]` block only when that pressure is control-relevant; ordinary
-compact output must not grow a new audit ledger merely to name the check.
+`TTP-MRP-mid-reread-pressure` or an equivalent source-owned reread-pressure check. Default routed
+output must show a compact `[Mid-Reread Pressure]` block for every burden-cycle route. Ordinary
+compact output omits it only when no burden-cycle route, HOLD/PARTIAL, LoopBreak, next burden, or
+closure is being released.
 When MRP is shown, `∇·T` and `∇×T` are active reread gates: non-neutral `∇·T` needs HOLD/RECURSE
 or bounded explanation, and non-null `∇×T` needs LoopBreak, STOP, HOLD, or graph-bound recursion.
+For output control, `T` includes `B`, `κ/H`, held dependencies, registers, and downstream burden
+pressure. If a state/noetic reread prints `∇×κ`, `∇×B`, remaining burden, still live pressure,
+release next, HOLD, LoopBreak, blocked proof-stacking, hidden-framework recoil, doubt-churn, or a
+pre-voiced downstream defense, it has invoked MRP and must show the compact block before routing.
 
 ### Restorative Response
 [Required once in default output after the final state/noetic re-read. Bounded to what the released operation(s) actually landed. Do not promote it into a new burden-cycle. Do not release held downstream burdens. If state/noetic re-read licenses another same-input burden, continue first.]
@@ -638,8 +667,36 @@ Burden N: <name>
     Result: <changed claim-state>
   [continue until all materially necessary s are rendered]
   Land(¹B): <cumulative state delta from ¹B₁...¹Bₙ>
-  R(H,Δ): <held/released/next-live-burden decision>
+  [Mid-Reread Pressure]
+    Target: ¹B
+    Reread: R(H,Δ)
+    Landed delta: Δ¹B / Δκ from Land(¹B)
+    Pressure activations:
+    - freeze-landed-move: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - dependency-tug: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - hidden-framework-recoil: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - entailment-pressure: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - doubt-churn-guard: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    - reorientation-reminder: <existing owner/TTP or pressure class> — <release/hold/clear effect>
+    ∇·T: <neutral/settled/bounded/non-neutral plus license>
+    ∇×T: <null/resolved/held/non-null plus license>
+    Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
+    Graph delta: <none or Bn -> Bn+1>
+    Pre-emption basis: <none/graph-bound/commitment-bound/framework-bound>
+    Route: <STOP/HOLD/RECURSE/LoopBreak(∇×T)>
+    Boundary: T_lang does not imply guaranteed uptake
+  R(H,Δ): <held/released/next-live-burden decision licensed by the MRP block>
 ```
+
+If this block names live pressure such as proportionality, hiddenness/coercive-guidance,
+source-worldview, moral-grounding, owner-floor, owner-body, non-neutral divergence,
+non-null/held curl, or a graph edge, STOP/COMPLETE and final response sections are blocked until
+that pressure is released/landed, held with reason, or marked PARTIAL with the blocked
+owner/burden.
+MRP field values are parseable records: `Finding`, `Pre-emption basis`, and `Route` use one
+exact template value with no prose or punctuation; `Boundary` begins `T_lang does not imply
+guaranteed uptake`; pressure slots begin with an owner/TTP id, `pressure class:`, or
+`coverage gap:`; `Graph delta` is `none` unless `Route: RECURSE`.
 
 This template is the visible hard-output form for `ComplexB`; it is not a full procedural
 audit, raw IR dump, or route ledger when the fields are case-specific and serve the same
@@ -654,6 +711,14 @@ trace/verdict evidence must not overclaim beyond that access. If the owner body 
 loaded or identified, the hard output must mark `PARTIAL / OWNER-BODY-NOT-LOADED` with
 the missing owner/path rather than rendering a generic Target/Operation/Result block. This marker
 is a required hard-output failure marker and is permitted in default/hard output.
+When generated `skill/SKILL.md` is the supplied runtime surface, copied runtime references and
+compiled omnibus sections count as readable runtime context once the compiled map or routing
+table points to that selected `MODULE_ID`. Do not mark owner-body failure merely because a
+separate atomized source file was not opened. Sibling bundle sections remain inactive unless
+routing selects their original module ID.
+After this marker, do not render closure witness, Restorative Response, Closing Formulation, or
+broad "refuted"/"closed" language for the blocked burden. In MRP, owner-load failure uses
+`Route: HOLD` and `Boundary: PARTIAL / OWNER-BODY-NOT-LOADED: <missing owner/path>`.
 
 **Layer B governed-response shape (mandatory):** Default Layer B must visibly contain Hidden
 Premises and one Core Formulation for each released live noetic burden / governed operation.
