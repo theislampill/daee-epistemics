@@ -82,7 +82,7 @@ def check_static_artifact(errors: list[str]) -> None:
         "input digest panel": "Reply / Claim Being Rejected",
         "reader-facing input fallback": "readerInputDigest",
         "plain dependency panel": "What The Reply Depends On",
-        "burden inventory panel": "Failure Points In The Reply",
+        "burden inventory panel": "Main Problems In The Reply",
         "collapse status panel": "Final Answer From The Output",
         "graph conclusion card": "Final Answer From The Output",
         "plain restoration summary": "Restoration Summary",
@@ -95,10 +95,13 @@ def check_static_artifact(errors: list[str]) -> None:
         "plain dependency label": "What the reply depends on",
         "body prose split": "splitOutputZones",
         "visible body extraction": "bodyExtract",
+        "body-first canonicalizer": "canonicalizePublicNotation",
+        "body submove detail extraction": "submoveDetails",
+        "body submove resolver": "bodySubmoveLabel",
         "body-first land panel": "bodyLandText",
         "body-first reread panel": "bodyRereadText",
         "list-like remaining rendering": "splitListLikeItems",
-        "plain answer label": "How the graph rejects this point",
+        "plain answer label": "How this problem is answered",
         "plain land label": "What this establishes against the reply",
         "plain reread label": "After this answer, what remains?",
         "plain MRP label": "Follow-up: does the reply still have pressure?",
@@ -137,6 +140,21 @@ def check_static_artifact(errors: list[str]) -> None:
         errors.append("Output Grapher must assign submoves to parent burden clusters")
     if "MRP(" not in js_text or "resultTypes" not in js_text:
         errors.append("Output Grapher must display MRP result types")
+    forbidden_public_patterns = {
+        "raw failure-point issue labels": "function issueLabel(b){return `Failure point",
+        "raw B fallback in inventory": "model.nodes[b]?.label||b",
+        "old hyphen issue title": "${issueLabel(b)} - ",
+        "field witness as body copy": "field_witness metadata appears as main",
+    }
+    for label, token in forbidden_public_patterns.items():
+        if token in js_text:
+            errors.append(f"Output Grapher still has {label}: {token!r}")
+    if "bodyExtract.burdenTitles" not in js_text or "bodyExtract.submoveDetails" not in js_text:
+        errors.append("Output Grapher must resolve burden/submove display text from visible body prose before witness metadata")
+    if "canonicalizePublicNotation(edgeText)" not in js_text:
+        errors.append("Output Grapher must canonicalize public graph/resultant text before rendering")
+    if "Main Problems In The Reply" in combined and "bodyBurdenDescription(model,b)" not in js_text:
+        errors.append("Output Grapher burden inventory must use visible body headings, not witness-only labels")
 
 
 def check_fixtures(errors: list[str]) -> None:

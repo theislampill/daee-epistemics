@@ -42,7 +42,7 @@ def main() -> int:
     required_js = {
         "dynamic story panels": "storySectionBlock",
         "dynamic restoration panel": "renderCollapsePanel(model,x,y,w)",
-        "plain tested-claim anchor": "Claim under review",
+        "visible task anchor": "Task stated in the output",
         "plain conclusion anchor": "Final answer from the output",
         "closing formulation extraction": "model.closingFormulation",
         "wrapped burden title measurement": "titleLines=wrapWords",
@@ -61,19 +61,22 @@ def main() -> int:
         "list block rendering": "function storyListBlock",
         "rectangular story badges": 'height="34" rx="8"',
         "rectangular view badge": 'height="44" rx="9"',
-        "story legend route color": "next failure / HOLD / RECURSE",
+        "story legend route color": "next issue / HOLD / RECURSE",
         "story legend closed color": "STOP / closed / restoration",
         "desktop story width": "const width=1800",
         "less aggressive line wrapping": "width/(size*0.44)",
         "output zone split": "function splitOutputZones",
         "body prose extraction": "bodyExtract",
+        "canonical public notation": "function canonicalizePublicNotation",
+        "visible submove details": "submoveDetails",
         "body-first land text": "bodyLandText(model,b,land)",
         "body-first reread text": "bodyRereadText(model,b,reread)",
         "list-like remaining items": "function splitListLikeItems",
         "PNG export sizing": "function pngExportConfig",
         "poster PNG mode": "poster:2200",
-        "plain dependency copy": "What kind of reply this is",
-        "plain reliance copy": "What it relies on",
+        "visible-output task copy": "Task stated in the output",
+        "visible-output pressure copy": "Structural pressure from the visible output",
+        "visible-output restoration copy": "Restoration aim from the output",
         "technical diagnosis demoted": "technicalDiagnosis(model)",
     }
     for label, token in required_js.items():
@@ -93,6 +96,11 @@ def main() -> int:
         "insider case recognized as main copy": "Case recognized:",
         "insider claim pattern as main copy": "Claim pattern:",
         "insider hidden structure as main copy": "Hidden structure:",
+        "synthetic essay summary": "The output breaks the reply",
+        "synthetic case commentary": "A theological defense that mixes",
+        "synthetic reliance commentary": "It relies on shifting key terms",
+        "raw failure-point issue labels": "function issueLabel(b){return `Failure point",
+        "raw old issue title": "${issueLabel(b)} - ",
     }
     for label, token in forbidden_story.items():
         if token in story_body:
@@ -123,7 +131,7 @@ def main() -> int:
             errors.append(f"{rel(CSS)} missing {label}: {token!r}")
 
     required_section = {
-        "route legend label": "next failure / HOLD / RECURSE",
+        "route legend label": "next issue / HOLD / RECURSE",
         "closed legend label": "STOP / closed / restoration",
         "comfortable default": 'class="active" data-og-density="comfortable"',
         "PNG desktop size": "Desktop PNG (1800px)",

@@ -15,6 +15,16 @@
   function subNum(raw){return [...String(raw||'')].map(c=>subToInt[c]||'').join('')||'0';}
   function burden(n){return [...String(n)].map(c=>intToSup[c]||'').join('')+'B';}
   function submove(b,s){return burden(b)+[...String(s)].map(c=>intToSub[c]||'').join('');}
+  function canonicalizePublicNotation(text){
+    return String(text||'')
+      .replace(/\bB(\d+)_(\d+)\s*(?:\[([^\]\n]+)\])?/g,(m,b,s,op)=>`${submove(b,s)}${op?`[${op}]`:''}`)
+      .replace(/\b(Land|HOLD)\(B(\d+)\)/gi,(m,op,b)=>`${op}(${burden(b)})`)
+      .replace(/\bMRP\(B(\d+)\)/g,(m,b)=>`MRP(${burden(b)})`)
+      .replace(/\bR\(H,Delta\)/g,'R(H,Δ)')
+      .replace(/\bDelta\s+B(\d+)\b/gi,(m,b)=>`Δ${burden(b)}`)
+      .replace(/\bB(\d+)\s*->\s*B(\d+)\b/g,(m,a,b)=>`${burden(a)} → ${burden(b)}`)
+      .replace(/\bB(\d+)\b/g,(m,b)=>burden(b));
+  }
   function addNode(model,node){if(!model.nodes[node.id]) model.nodes[node.id]=node;}
   function addEdge(model,edge){if(!model.edges.some(e=>e.source===edge.source&&e.target===edge.target&&e.kind===edge.kind)) model.edges.push(edge);}
   function normalizeBurden(raw){const s=String(raw||'').trim(); if(/^[⁰¹²³⁴⁵⁶⁷⁸⁹]+B$/.test(s)) return s; const m=s.match(/^B(\d+)$/); return m?burden(m[1]):s;}
@@ -39,7 +49,7 @@
   }
 
   function blankModel(){
-    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},landTexts:{},rereadTexts:{},mrpTexts:{}}};
+    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{}}};
   }
 
   function lineBurdens(line,model,lineNo){
@@ -67,6 +77,12 @@
     const cleaned=cleanParsed(line);
     if(cleaned && !model.bodyExtract.mrpTexts[b].includes(cleaned)) model.bodyExtract.mrpTexts[b].push(cleaned);
   }
+  function pushSubmoveDetail(model,sm,key,line){
+    if(!sm||!key) return;
+    if(!model.bodyExtract.submoveDetails[sm]) model.bodyExtract.submoveDetails[sm]={};
+    const cleaned=canonicalizePublicNotation(cleanParsed(line));
+    if(cleaned) model.bodyExtract.submoveDetails[sm][key]=cleaned;
+  }
   function refreshMrpLabel(model,b){
     const data=model.mrp[b]||{}, node=model.nodes[`MRP(${b})`];
     if(!node) return;
@@ -90,7 +106,7 @@
     model.restorativeResponse=zones.restorativeResponse;
     model.closingFormulation=zones.closingFormulation;
     const lines=sourceText.split(/\r?\n/);
-    let lastBurden='', currentMrpBurden='', pendingMrpBlock=false;
+    let lastBurden='', currentMrpBurden='', pendingMrpBlock=false, currentSubmove='';
     const routeRecords=[];
     lines.forEach((line,idx)=>{
       const lineNo=idx+1, trimmed=line.trim();
@@ -132,6 +148,7 @@
         if(initial&&!model.initialBurdens.includes(b)) model.initialBurdens.push(b);
         if(heading&&b===headingBurden){
           lastBurden=b;
+          currentSubmove='';
           const title=tailSummary(trimmed, headingMatch?headingMatch[0].length:0);
           if(title && model.nodes[b]) model.nodes[b].label=`${b} — ${title.replace(/\s*\[generated-by:.+?\]\s*/i,'').slice(0,120)}`;
           if(inBody && title) model.bodyExtract.burdenTitles[b]=cleanParsed(title.replace(/\s*\[generated-by:.+?\]\s*/i,''));
@@ -142,10 +159,12 @@
         const summary=tailSummary(trimmed,m[0].length);
         addNode(model,{id:sm,kind:'submove',label:summary?`${sm}[${owner||'OP'}] — ${summary}`:sm,line:lineNo,excerpt:trimmed.slice(0,220),owner,parent:b,result:summary});
         if(inBody && summary) model.bodyExtract.submoveTexts[sm]=cleanParsed(summary);
+        if(inBody) pushSubmoveDetail(model,sm,'heading',summary||trimmed);
         if(!model.submoves[b]) model.submoves[b]=[];
         if(!model.submoves[b].includes(sm)) model.submoves[b].push(sm);
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:''});
         addEdge(model,{source:b,target:sm,kind:'burden-submove',line:lineNo,excerpt:trimmed.slice(0,220)});
+        currentSubmove=sm;
       }
       for(const m of line.matchAll(/\bB(\d+)_(\d+)\s*(?:\[([^\]\n]+)\])?/g)){
         const b=burden(m[1]), sm=submove(m[1],m[2]), owner=(m[3]||'').trim();
@@ -155,13 +174,26 @@
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:trimmed.slice(0,220)});
         addNode(model,{id:sm,kind:'submove',label:summary?`${sm}[${owner||'OP'}] — ${summary}`:sm,line:lineNo,excerpt:trimmed.slice(0,220),owner,parent:b,result:summary});
         if(inBody && summary) model.bodyExtract.submoveTexts[sm]=cleanParsed(summary);
+        if(inBody) pushSubmoveDetail(model,sm,'heading',summary||trimmed);
         if(!model.submoves[b]) model.submoves[b]=[];
         if(!model.submoves[b].includes(sm)) model.submoves[b].push(sm);
         addEdge(model,{source:b,target:sm,kind:'burden-submove',line:lineNo,excerpt:trimmed.slice(0,220)});
         lastBurden=b;
+        currentSubmove=sm;
+      }
+      if(inBody&&currentSubmove){
+        const targetDetail=trimmed.match(/^Target:\s*(.+)$/i);
+        const operationDetail=trimmed.match(/^Operation:\s*(.+)$/i);
+        const resultDetail=trimmed.match(/^Result\/state-change:\s*(.+)$/i);
+        const contributionDetail=trimmed.match(/^Contribution-to-Land\([^)]+\):\s*(.+)$/i);
+        if(targetDetail) pushSubmoveDetail(model,currentSubmove,'target',targetDetail[1]);
+        if(operationDetail) pushSubmoveDetail(model,currentSubmove,'operation',operationDetail[1]);
+        if(resultDetail) pushSubmoveDetail(model,currentSubmove,'result',resultDetail[1]);
+        if(contributionDetail) pushSubmoveDetail(model,currentSubmove,'contribution',contributionDetail[1]);
       }
       const land=line.match(/\b(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i);
       if(land){
+        currentSubmove='';
         const b=burden(supNum(land[2])), term=land[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
         const summary=tailSummary(trimmed,land.index+land[0].length);
         if(inBody && summary) model.bodyExtract.landTexts[b]=cleanParsed(summary);
@@ -170,6 +202,7 @@
       }else{
         const legacyLand=line.match(/\b(Land|HOLD)\(B(\d+)\)/i);
         if(legacyLand){
+          currentSubmove='';
           const b=burden(legacyLand[2]), term=legacyLand[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
           const summary=tailSummary(trimmed,legacyLand.index+legacyLand[0].length);
           if(inBody && summary) model.bodyExtract.landTexts[b]=cleanParsed(summary);
@@ -178,7 +211,8 @@
           addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:''}); addEdge(model,{source:b,target:id,kind:'burden-terminal',line:lineNo,excerpt:trimmed}); lastBurden=b;
         }
       }
-      if(line.includes('R(H,Δ)')||line.includes('R(H,Delta)')){
+      if((line.includes('R(H,Δ)')||line.includes('R(H,Delta)')) && !/^\s*Reread:\s*/i.test(line)){
+        currentSubmove='';
         if(line.includes('R(H,Delta)')) model.warnings.push(`line ${lineNo}: parsed legacy alias R(H,Delta); use R(H,Δ)`);
         const rereadTarget=line.match(/R\(H,Delta\)\s*B(\d+)\b/i);
         const b=(rereadTarget?burden(rereadTarget[1]):burdens[0]||lastBurden), id=`R(H,Δ)@${b||lineNo}`;
@@ -188,7 +222,7 @@
         addNode(model,{id,kind:'reread',label:summary?`R(H,Δ) — ${summary}`:'R(H,Δ)',line:lineNo,excerpt:trimmed,parent:b,result:summary});
         if(b) addEdge(model,{source:`Land(${b})`,target:id,kind:'land-reread',line:lineNo,excerpt:trimmed});
       }
-      if(/\[\s*Mid-Reread Pressure\s*\]/i.test(line)){pendingMrpBlock=true; currentMrpBurden='';}
+      if(/\[\s*Mid-Reread Pressure\s*\]/i.test(line)){pendingMrpBlock=true; currentMrpBurden=''; currentSubmove='';}
       const target=line.match(/^\s*Target:\s*B(\d+)\b/i);
       if(pendingMrpBlock&&target){const b=burden(target[1]); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed}); warnLegacy(model,lineNo,target[0].trim(),`MRP(${b})`);}
       const mrp=line.match(/\bMRP\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/);
@@ -318,10 +352,10 @@
   }
   function publicRouteType(type){
     return ({
-      generated_burden_instantiation:'another failure point surfaced',
-      held_burden_activation:'known failure point still needs answering',
-      no_new_resultant:'no further failure point remained',
-      hold_partial:'real failure point remains held',
+      generated_burden_instantiation:'another problem surfaced',
+      held_burden_activation:'known problem still needs answering',
+      no_new_resultant:'no further problem remained',
+      hold_partial:'real problem remains held',
       loopbreak:'loop/proof-stack blocked'
     })[type]||type;
   }
@@ -337,40 +371,42 @@
     const r=String(routes||'');
     if(/STOP/i.test(r)) return 'Closed for this reply';
     if(/HOLD/i.test(r)) return 'Held open';
-    if(/RECURSE/i.test(r)) return 'Next failure point';
+    if(/RECURSE/i.test(r)) return 'Next issue';
     if(/LoopBreak/i.test(r)) return 'Loop blocked';
     return 'Route';
   }
   function humanize(text){
-    return String(text||'')
+    return canonicalizePublicNotation(String(text||'')
       .replace(/\s+/g,' ')
+      .replace(/\bPF[-_ ]?definition[-_ ]?shift\b/gi,'definition shift')
+      .replace(/\bDO-\d+\s*\/\s*/gi,'')
       .replace(/\b([a-z]+)-([a-z]+)/gi,(m,a,b)=>`${a} ${b}`)
       .replace(/\bFPD\b/g,'foreign premise detection')
       .replace(/\bM1-P\b/g,'performative contradiction')
       .replace(/\bM1\b/g,'self refutation')
       .replace(/\bM8\b/g,'consequence trace')
       .replace(/\bM9\b/g,'predication repair')
-      .trim();
+      .trim());
   }
   function stripTechnicalLead(text){
-    return humanize(String(text||'')
+    return humanize(canonicalizePublicNotation(String(text||'')
       .replace(/^Answer move\s+/i,'')
       .replace(/^[⁰¹²³⁴⁵⁶⁷⁸⁹]+B[₀₁₂₃₄₅₆₇₈₉]+(?:\[[^\]]+\])?\s+—\s*/,'')
       .replace(/^Land\([^)]+\)\s+—\s*/i,'')
       .replace(/^HOLD\([^)]+\)\s+—\s*/i,'')
       .replace(/^R\(H,Δ\)\s+—\s*/i,'')
       .replace(/^MRP\([^)]+\)\s*[:—-]?\s*/i,'')
-      .replace(/^Route:\s*/i,''));
+      .replace(/^Route:\s*/i,'')));
   }
   function publicNodeLabel(node,model){
-    if(node.kind==='input') return node.label;
-    if(node.kind==='burden') return node.label.replace(/^([⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s+—\s*/,'Problem $1 — ');
+    if(node.kind==='input') return canonicalizePublicNotation(node.label);
+    if(node.kind==='burden') return canonicalizePublicNotation(node.label).replace(/^([⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s+—\s*/,'Problem $1 — ');
     if(node.kind==='submove') return stripTechnicalLead(node.label);
     if(node.kind==='land'){
       const prefix=/HOLD/i.test(node.id)?'What remains held':'What this answer established';
-      return node.label.replace(/^Land\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^HOLD\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^Land\(.+?\)$/i,prefix).replace(/^HOLD\(.+?\)$/i,prefix);
+      return canonicalizePublicNotation(node.label).replace(/^Land\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^HOLD\((.+?)\)\s+—\s*/i,`${prefix} — `).replace(/^Land\(.+?\)$/i,prefix).replace(/^HOLD\(.+?\)$/i,prefix);
     }
-    if(node.kind==='reread') return node.label.replace(/^R\(H,Δ\)\s+—\s*/,'After this answer, what remains? — ').replace(/^R\(H,Δ\)$/,'After this answer, what remains?');
+    if(node.kind==='reread') return canonicalizePublicNotation(node.label).replace(/^R\(H,Δ\)\s+—\s*/,'After this answer, what remains? — ').replace(/^R\(H,Δ\)$/,'After this answer, what remains?');
     if(node.kind==='mrp'){
       const b=node.id.match(/\((.+)\)/)?.[1]||'';
       return `Follow-up pressure check — ${publicRouteType(routeResultType(model,b))}`;
@@ -381,7 +417,7 @@
       if(/STOP/i.test(node.label)) return node.label.replace(/^Route:\s*STOP/i,'Final route — STOP');
       if(/LoopBreak/i.test(node.label)) return node.label.replace(/^Route:\s*/i,'Loop blocked — ');
     }
-    return node.label;
+    return canonicalizePublicNotation(node.label);
   }
   function nodeBox(node,x,y,w,h,model,mode){
     const fill=colorFor(node,model), invalid=model.errors.some(e=>e.includes(node.id));
@@ -409,7 +445,7 @@
   }
   function semanticBurdenLabels(model,limit=4){
     return (model.initialBurdens.length?model.initialBurdens:model.burdens)
-      .map(b=>`${issueLabel(b)} - ${burdenDescription(model,b)}`.replace(/\s+/g,' '))
+      .map(b=>`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`.replace(/\s+/g,' '))
       .filter(Boolean)
       .slice(0,limit);
   }
@@ -443,21 +479,17 @@
     if(model.restorationAim&&model.restorationAim!=='not detected') parts.push(`restoration=${model.restorationAim}`);
     return parts.join(' · ');
   }
-  function plainCaseSummary(model){
-    const source=[model.caseProfile,model.claimType,model.patternProfile,model.diagnosis,model.authorityFrame].filter(Boolean).join(' ').toLowerCase();
-    if(/trinit|christ|john|theolog/.test(source)) return 'A theological defense that mixes source-text argument, identity claims, and later doctrinal framing.';
-    if(/secular|public reason|authority|neutral/.test(source)) return 'A public-authority claim that presents its own filter as neutral.';
-    if(/moral|punish|evil|hidden|tst|satan/.test(source)) return 'A moral-protest claim that turns a grievance into an authority test.';
-    return 'A structured reply whose assumptions have to be separated before the final claim can be judged.';
-  }
-  function plainRelianceSummary(model){
-    const source=[model.patternProfile,model.diagnosis,model.claimType,model.liveBurden,model.authorityFrame].filter(Boolean).join(' ').toLowerCase();
-    if(/definition|shift|predicat|identity|only|equivoc/.test(source)) return 'It relies on shifting key terms or moving the wording away from what the sentence actually says.';
-    if(/source|proof|text|scripture|john/.test(source)) return 'It relies on proof-text appeals that have to be tested in their own textual order.';
-    if(/authority|neutral|public|tribunal|criterion/.test(source)) return 'It relies on an unstated rule about which authority or reason is allowed to count.';
-    if(/emotion|moral|cruel|worship|fire|punish/.test(source)) return 'It relies on a moral criterion that must be made explicit before it can judge the claim.';
+  function bodyBackedStructuralSummary(model){
+    const candidates=[
+      model.liveBurden,
+      model.inputDigest && model.inputDigest!=='pasted daee-epistemics output' ? model.inputDigest : '',
+      model.diagnosis,
+      model.patternProfile,
+      semanticBurdenLabels(model,1)[0]
+    ].filter(x=>x&&x!=='not detected');
+    if(candidates.length) return humanize(candidates[0]);
     const first=semanticBurdenLabels(model,1)[0];
-    return first?first.replace(/^Failure point \d+\s*-\s*/,''):'It relies on assumptions that the output decomposes into specific failure points.';
+    return first?first.replace(/^Problem\s+[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\s*—\s*/,''):'not detected in visible body';
   }
   function burdenNumber(b){
     const s=String(b||'');
@@ -467,21 +499,30 @@
     const n=[...prefix].map(c=>supToInt[c]||'').join('');
     return n||s.replace(/B.*/,'')||s;
   }
-  function issueLabel(b){return `Failure point ${burdenNumber(b)}`;}
-  function issueGraph(a,b){return `${issueLabel(a)} → ${issueLabel(b)}`;}
+  function issueLabel(b){return `Problem ${normalizeBurden(b)}`;}
+  function issueGraph(a,b){return `${normalizeBurden(a)} → ${normalizeBurden(b)}`;}
   function burdenDescription(model,b){
-    const raw=String(model.nodes[b]?.label||b).replace(/\s+/g,' ').trim();
+    const raw=String(model.nodes[b]?.label||normalizeBurden(b)).replace(/\s+/g,' ').trim();
     let desc=raw.startsWith(b)?raw.slice(String(b).length):raw;
     desc=desc.replace(/^\s*(?:[-–—]|:)\s*/,'').trim();
     return desc||raw;
   }
   function bodyBurdenDescription(model,b){
     const body=model.bodyExtract?.burdenTitles?.[b];
-    return body?stripTechnicalLead(body):burdenDescription(model,b);
+    return body?stripTechnicalLead(body):stripTechnicalLead(burdenDescription(model,b));
   }
   function bodySubmoveLabel(model,sm,node){
     const body=model.bodyExtract?.submoveTexts?.[sm];
-    return body?stripTechnicalLead(body):publicNodeLabel(node,model);
+    const details=model.bodyExtract?.submoveDetails?.[sm]||{};
+    const heading=body?stripTechnicalLead(body):publicNodeLabel(node,model);
+    const owner=node?.owner?`[${node.owner}]`:'';
+    const prefix=`${sm}${owner} — `;
+    const detail=details.result||details.contribution||details.operation||details.target||'';
+    if(detail){
+      const cleaned=stripTechnicalLead(detail);
+      if(cleaned && !heading.includes(cleaned.slice(0,40))) return `${prefix}${heading}. ${cleaned}`;
+    }
+    return `${prefix}${heading}`;
   }
   function bodyLandText(model,b,land){
     const body=model.bodyExtract?.landTexts?.[b];
@@ -497,7 +538,7 @@
       .map(x=>x.replace(/^\s*(?:Resultant|MRP resultant)\s*:\s*/i,'Result: ').trim())
       .filter(x=>!/^(?:MRP|resultant:?|pressure activations:?|target:?|reread:?)$/i.test(x));
     if(bodyItems&&bodyItems.length) return bodyItems;
-    return [`Follow-up result: ${result}.`, `Next link: ${edgeText}.`];
+    return [`Follow-up result: ${result}.`, `Next link: ${canonicalizePublicNotation(edgeText)}.`];
   }
   function firstSentence(text){
     return String(text||'').split(/(?<=\.)\s+/)[0] || String(text||'');
@@ -530,14 +571,13 @@
   function readerInputDigest(model){
     const raw=String(model.inputDigest||'').trim();
     if(raw && raw!=='pasted daee-epistemics output' && !/^dominant\b/i.test(raw)) return raw;
-    const labels=semanticBurdenLabels(model,2);
     const parties=refutationParties(model);
     const task=/REFUTE/i.test(model.userTask||'')
-      ? (parties?`Reply being rejected: the ${parties.challenged} is trying to answer ${parties.defended}. The blue moves below are rebuttal moves against that reply; they show why ${parties.defended}'s challenge remains standing.`:'Claim under review: this map is refuting the surfaced reply, not presenting that reply as the conclusion.')
+      ? (parties?`Reply being rejected: the ${parties.challenged} is trying to answer ${parties.defended}.`:'Task stated in the output: REFUTE.')
       : model.userTask?`User task: ${model.userTask}.`:'';
-    const targetPart=labels.length?`Failure points tested: ${labels.join('; ')}.`:'';
-    const anchored=[task,targetPart].filter(Boolean).join(' ');
+    const anchored=[task].filter(Boolean).join(' ');
     if(anchored) return anchored;
+    const labels=semanticBurdenLabels(model,1);
     if(labels.length) return `Inferred from the burden inventory: ${labels.join('; ')}`;
     if(model.fieldType&&model.fieldType!=='not detected') return `A ${model.fieldType} case processed as ${model.claimType||'a governed claim'}`;
     return 'Pasted daee-epistemics output; original prompt text was not echoed in the output.';
@@ -548,24 +588,20 @@
   }
   function diagnosisItems(model,burdens){
     return [
-      `What kind of reply this is: ${plainCaseSummary(model)}`,
-      `What it relies on: ${plainRelianceSummary(model)}`,
-      `Why that matters: those moves have to be answered before the reply can close.`,
-      `Problems found: ${burdens.length}`,
-      model.restorationAim&&model.restorationAim!=='not detected'?`Restored reading aimed at: ${model.restorationAim}`:''
+      model.userTask?`Task stated in the output: ${humanize(model.userTask)}`:'',
+      `Structural pressure from the visible output: ${bodyBackedStructuralSummary(model)}`,
+      `Problems found in the output: ${burdens.length}`,
+      model.restorationAim&&model.restorationAim!=='not detected'?`Restoration aim from the output: ${model.restorationAim}`:''
     ].filter(Boolean);
   }
   function conclusionDigest(model){
     if(model.closingFormulation) return model.closingFormulation;
     if(model.restorativeResponse) return model.restorativeResponse;
-    const labels=semanticBurdenLabels(model,3);
-    if(labels.length){
-      return `The output breaks the reply into ${model.burdens.length} failure point(s), answers them in order, and reaches ${collapseLabel(model)}. It shows that ${plainRelianceSummary(model).replace(/^It relies on\s*/i,'the reply relies on ')} The specific failure points are listed below.`;
-    }
+    if(model.restorationAim&&model.restorationAim!=='not detected') return `Restoration aim from output: ${model.restorationAim}`;
     return collapseLabel(model);
   }
   function renderTopSummary(model){
-    const inventory=(model.initialBurdens.length?model.initialBurdens:model.burdens).map(b=>`<li>${esc(model.nodes[b]?.label||b)}</li>`).join('')||'<li>not detected</li>';
+    const inventory=semanticBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('')||'<li>not detected</li>';
     const collapse=model.collapse||{}, pillStatus=model.errors.length?'fail':model.warnings.length?'warn':'ok';
     const verdict=verdictDigest(model);
     const diagnosisList=diagnosisItems(model,model.burdens).map(x=>`<li>${esc(x)}</li>`).join('');
@@ -573,24 +609,23 @@
       <section class="outputGrapherTopCard"><h3>Final Answer From The Output</h3><p><strong>${esc(verdict.headline)}</strong></p><p>${esc(verdict.body)}</p></section>
       <section class="outputGrapherTopCard"><h3>Reply / Claim Being Rejected</h3><p>${esc(readerInputDigest(model))}</p></section>
       <section class="outputGrapherTopCard"><h3>What The Reply Depends On</h3><ul>${diagnosisList}</ul><p class="outputGrapherTechMeta">Technical reading: ${esc(technicalDiagnosis(model))}</p></section>
-      <section class="outputGrapherTopCard"><h3>Failure Points In The Reply</h3><ul>${inventory}</ul></section>
+      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul></section>
       <section class="outputGrapherTopCard"><h3>Collapse / Technical Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>remaining pressure / ∇·B: ${esc(collapse.divergence||'not detected')}</p><p>loop check / ∇×κ: ${esc(collapse.curl||'not detected')}</p><p>all issues accounted for / 𝒞(Ψᴺ): ${esc(collapse.coverage||String(model.closureComplete))}</p><p>T_lang boundary: ${esc(collapse.tLang||'boundary not detected')}</p></section>
-    </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Burdens: ${model.burdens.length}</span><span class="outputGrapherPill">Submoves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">MRP resultants: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminals: ${Object.keys(model.terminals).length}</span></div>`;
+    </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Problems: ${model.burdens.length}</span><span class="outputGrapherPill">TTP moves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">MRP resultants: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminal states: ${Object.keys(model.terminals).length}</span></div>`;
   }
 
   function restorationBullets(model){
     const burdens=semanticBurdenLabels(model,4);
     const held=Object.entries(model.terminals||{})
       .filter(([,state])=>/HOLD|PARTIAL|RECURSE/i.test(String(state)))
-      .map(([b,state])=>`${b}: ${state}`);
-    const answered=`The rebuttal accounted for ${Object.keys(model.terminals).length}/${model.burdens.length||0} failure points.`;
-    const reliance=plainRelianceSummary(model);
+      .map(([b,state])=>`${normalizeBurden(b)}: ${state}`);
+    const answered=`The rebuttal accounted for ${Object.keys(model.terminals).length}/${model.burdens.length||0} problems.`;
     const collapse=collapseLabel(model);
     const route=model.errors.length?'The graph still exposes missing or invalid accounting.':held.length?`The final result remains ${collapse}; live states: ${held.join('; ')}.`:`The final result reaches ${collapse}; no unaccounted terminal problem was detected.`;
     const restored=(model.restorationAim&&model.restorationAim!=='not detected')?model.restorationAim:'The handled field is oriented back toward sound fiṭrah and clear intellect after the visible burden cycle has been accounted for.';
     return [
       model.closingFormulation?`Final answer from the output: ${model.closingFormulation}`:'',
-      `The rejected reply relied on: ${reliance}`,
+      model.restorativeResponse?`Restorative response from the output: ${model.restorativeResponse}`:'',
       answered,
       ...burdens.map(item=>`Accounted for: ${item}`),
       route,
@@ -711,10 +746,8 @@
     parts.push(claimCard.svg); y+=claimCard.height+18;
     const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#64748b'});
     parts.push(diagCard.svg); y+=diagCard.height+18;
-    const conclusionCard=storySectionBlock('Why the reply fails',verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#10b981'});
-    parts.push(conclusionCard.svg); y+=conclusionCard.height+18;
     const invItems=semanticBurdenLabels(model,8);
-    const invCard=storySectionBlock('Failure points in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#3b82f6'});
+    const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,rail:'#3b82f6'});
     parts.push(invCard.svg); y+=invCard.height+28;
     burdens.forEach((b,index)=>{
       const sms=model.submoves[b]||[];
@@ -726,10 +759,10 @@
       const result=publicRouteType(routeResultType(model,b));
       const visibleSms=sms.slice(0,currentDensity==='compact'?3:currentDensity==='expanded'?6:4);
       const hiddenCount=Math.max(0,sms.length-visibleSms.length);
-      const titleText=`${issueLabel(b)} - ${bodyBurdenDescription(model,b)}`;
+      const titleText=`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`;
       const titleLines=wrapWords(titleText, storyLineChars(cardW-68,34), 0);
       const badgeY=y+56+titleLines.length*42+18;
-      const problemText='What fails here: '+bodyBurdenDescription(model,b);
+      const problemText='Problem from the visible output: '+bodyBurdenDescription(model,b);
       const problemLines=wrapWords(problemText, storyLineChars(cardW-68,d.font), 0);
       const problemY=badgeY+76;
       const moveBlocks=visibleSms.map(sm=>{
@@ -743,10 +776,10 @@
       const panelTop=firstMoveY+moveBlockH+34;
       const fullW=cardW-60, panelGap=24, panelX=margin+30;
       const landText=bodyLandText(model,b,land);
-      const landBlock=storySectionBlock('What this establishes against the reply',landText,panelX,y+panelTop,fullW,{fill:'#052e16',stroke:'#22c55e',technical:'',items:splitListLikeItems(landText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#22c55e'});
+      const landBlock=storySectionBlock('What this establishes against the reply',landText,panelX,y+panelTop,fullW,{fill:'#052e16',stroke:'#22c55e',technical:`Land(${b})`,items:splitListLikeItems(landText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#22c55e'});
       const rereadY=y+panelTop+landBlock.height+panelGap;
       const rereadText=bodyRereadText(model,b,reread);
-      const rereadBlock=storySectionBlock('After this answer, what remains?',rereadText,panelX,rereadY,fullW,{fill:'#451a03',stroke:'#f59e0b',technical:'',items:splitListLikeItems(rereadText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#f59e0b'});
+      const rereadBlock=storySectionBlock('After this answer, what remains?',rereadText,panelX,rereadY,fullW,{fill:'#451a03',stroke:'#f59e0b',technical:'R(H,Δ)',items:splitListLikeItems(rereadText),maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:'#f59e0b'});
       const mrpY=rereadY+rereadBlock.height+panelGap;
       const edgeText=(mrp.edges||[]).map(e=>issueGraph(e[0],e[1])).join(', ')||'none';
       const mrpItems=bodyMrpItems(model,b,result,edgeText);
@@ -754,14 +787,14 @@
       const routeClosed=/STOP/i.test(routes);
       const routeBadgeText=publicRouteBadge(routes);
       const routeY=mrpY+mrpBlock.height+panelGap;
-      const routeBlock=storySectionBlock('Next failure point / closure',humanize(routes),panelX,routeY,fullW,{fill:routeClosed?'#052e16':'#451a03',stroke:routeClosed?'#10b981':'#f59e0b',technical:'',maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:routeClosed?'#10b981':'#f59e0b'});
+      const routeBlock=storySectionBlock('Next issue / closure',humanize(routes),panelX,routeY,fullW,{fill:routeClosed?'#052e16':'#451a03',stroke:routeClosed?'#10b981':'#f59e0b',technical:'',maxLines:d.panelLines,titleSize:26,bodySize:22,lineHeight:34,pad:32,rail:routeClosed?'#10b981':'#f59e0b'});
       const cardH=routeY-y+routeBlock.height+86;
       parts.push(`<g class="outputGrapherStoryBurden"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect><rect x="${margin}" y="${y}" width="10" height="${cardH}" rx="10" fill="#3b82f6"></rect>${storyLineText(titleLines,margin+34,y+56,42,'#f8fafc',34,900)}`);
-      parts.push(storyBadge('Failure point',margin+34,badgeY,'#1e3a8a','#3b82f6'));
+      parts.push(storyBadge('Problem',margin+34,badgeY,'#1e3a8a','#3b82f6'));
       parts.push(storyBadge(publicTerminalBadge(model.terminals[b]),margin+260,badgeY,/HOLD|PARTIAL|RECURSE/i.test(model.terminals[b]||'')?'#7c2d12':'#14532d',/HOLD|PARTIAL|RECURSE/i.test(model.terminals[b]||'')?'#f59e0b':'#22c55e'));
       parts.push(storyBadge(routeBadgeText,margin+480,badgeY,routeClosed?'#064e3b':'#7c2d12',routeClosed?'#10b981':'#f59e0b'));
       parts.push(storyLineText(problemLines,margin+34,problemY,d.line,'#cbd5e1',d.font,850));
-      parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How the graph rejects this point</text>`);
+      parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How this problem is answered</text>`);
       let subY=y+firstMoveY;
       moveBlocks.forEach((block)=>{
         parts.push(`<g class="outputGrapherStorySubmove"><rect x="${margin+34}" y="${subY-34}" width="${cardW-68}" height="${block.height}" rx="15" fill="#0e7490" stroke="#38bdf8" stroke-width="1.3"></rect><rect x="${margin+34}" y="${subY-34}" width="8" height="${block.height}" rx="8" fill="#38bdf8"></rect>${storyLineText(block.lines,margin+58,subY,d.line,'#ecfeff',d.font,850)}</g>`);
@@ -775,14 +808,14 @@
       if(index<burdens.length-1){
         const next=burdens[index+1];
         const rel=(mrp.edges||[]).some(e=>e[1]===next)?publicRouteType(routeResultType(model,b)):'next listed issue';
-        parts.push(`<text x="${margin+42}" y="${y+cardH-28}" fill="#94a3b8" font-size="21" font-weight="900">Next failure point: ${esc(issueGraph(b,next))} · ${esc(rel)}</text>`);
+        parts.push(`<text x="${margin+42}" y="${y+cardH-28}" fill="#94a3b8" font-size="21" font-weight="900">Next issue: ${esc(issueGraph(b,next))} · ${esc(rel)}</text>`);
       }
       parts.push('</g>');
       y+=cardH+d.gap;
     });
     const collapsePanel=renderCollapsePanel(model,margin,y,cardW);
     parts.push(collapsePanel.svg); y+=collapsePanel.height+52;
-    const legend=`<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">failure point</text><circle cx="342" cy="-8" r="8" fill="#38bdf8"/><text x="358" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="594" cy="-8" r="8" fill="#22c55e"/><text x="610" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="842" cy="-8" r="8" fill="#a855f7"/><text x="858" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next failure / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
+    const legend=`<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">problem / burden</text><circle cx="370" cy="-8" r="8" fill="#38bdf8"/><text x="386" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="626" cy="-8" r="8" fill="#22c55e"/><text x="642" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="880" cy="-8" r="8" fill="#a855f7"/><text x="896" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next issue / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
     const height=y+100;
     return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="Plain-language rebuttal story infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${parts.join('')}${legend}</svg>`;
   }
