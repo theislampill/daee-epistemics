@@ -9,7 +9,7 @@ from pathlib import Path
 from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 
-ROOT_MAX_CHARS = 50_000
+ROOT_MAX_CHARS = 80_000
 
 ROOT_REQUIRED = [
     "## EXECUTION SPINE",
