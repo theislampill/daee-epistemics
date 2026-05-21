@@ -368,10 +368,10 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   required. Named-worldview, imported-framework, pseudo-neutral-tribunal, source-worldview, or
   identity-stabilized cases must show `Concealment mode:` as operative covering, e.g.
   `surface-open / framework-concealed` or `mode-? / framework-concealed`; do not omit it and
-  do not write `concealment: None detected`. Trinitarian person/nature grammar, later
-  doctrinal apparatus, cross-text doctrine import, imported model-language, and doctrine-preserving
+  do not write `concealment: None detected`. Imported person/nature grammar, later doctrinal
+  apparatus, cross-text doctrine import, imported model-language, and doctrine-preserving
   harmonization count as framework/source-worldview concealment pressure whenever they govern a
-  local text as if they were neutral grammar.)
+  local claim as if they were neutral grammar.)
 - Layer B - bounded governed response (Hidden Premises, local Core Formulation,
   Bounded Response / operative submoves, and TTP/operator trace when a named operator
   does runtime work; may contain multiple operative submoves when they all serve the

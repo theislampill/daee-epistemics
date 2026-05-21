@@ -26,6 +26,17 @@ Public-facing governed output prefers canonical notation: `¹B`, `²B`, `¹B₁[
 `𝒞(Ψᴺ)`, and `T_lang: Ψᴺ ⇢ Ψᴵ`. ASCII burden, arrow, reread, field-diagnostic,
 and closure aliases are parser/checker fallbacks only; do
 not make them the primary public surface unless the line is explicitly machine-facing.
+Never render `?B`, `R(H,?)`, `??T`, `??B`, `??(??)`, or `Graph delta: ?B ? ?B`.
+If Unicode transport is unsafe, use the ASCII fallbacks `B1`, `B2`, `Delta B1`,
+`R(H,Delta)`, `del-dot T`, `del-cross T`, `C(PsiN)`, and `T_lang: PsiN -> PsiI`.
+For generated-MRP proof, the generated burden node MUST carry the provenance marker in its own
+burden heading, not only in the closure ledger: render the generated heading as
+`## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, render graph movement as
+`¹B → ²B`, render landings as `Land(¹B)` / `Land(²B)`, and render reread as `R(H,Δ)`.
+Do not use ASCII `B1`, `B2`, `B1 -> B2`, `Land(B1)`, or `R(H,Delta)` in the public generated
+burden proof unless Unicode transport is actually unavailable and the line explicitly marks it
+as a parser-only fallback. When ASCII fallback is required, the generated heading is still exact:
+`## Burden 2 / B2 [generated-by: MRP(B1)] - <title>`.
 
 Hard-compound full traversal requires a visible Layer B operation body for every released
 burden. Do not collapse a major burden into one generic "Bounded Response" paragraph or one
@@ -101,6 +112,10 @@ curl/loop was named. `Boundary:` always begins
 `Land(ⁿB)` and `R(H,Δ)`: held burden, generated burden, HOLD, LoopBreak, or STOP. It cannot be
 replaced by `∇·T` or `∇×T`; divergence says whether pressure remains, curl says whether the field
 loops, and route-gradient says where the field points next.
+In any `generated_burden_instantiation` block, `Route-gradient:` must explicitly name the
+post-Land escape route, say it was absent from the initial burden/held inventory, and identify
+what `ΔⁿB` made newly visible. Without that literal line, do not print a generated graph edge or
+`generated_burden_instantiation`.
 The MRP block is invalid if the literal `Route-gradient:`, `MRP route result type:`, or
 `MRP resultant:` lines are missing. `Field diagnostics:`, `LoopBreak:`, a bare graph edge,
 or ordinary route prose may appear only as adjacent summaries; they never substitute for those
@@ -131,34 +146,126 @@ the source/noetic frame, and held burdens that are explicit, input-anchored, or 
 preserve a known compound. It must not pre-enumerate every speculative escape route that only
 becomes live after a burden lands. That overgrowth collapses sound-reason preemption into a
 static map. `MRP(ⁿB)` is the post-Land reread and escape-route discovery gate: after
-`Land(ⁿB)`, it asks what the field now pulls toward and what the interlocutor could say next
-under the updated `ΔⁿB` / `Δκ`. Classify each route result as `held_burden_activation`,
+`Land(ⁿB)`, it asks which eligible live pressure the field now pulls toward under the updated
+`ΔⁿB` / `Δκ`. In dialectical prose that pressure may correspond to the next escape route, but MRP
+is not response-fanfiction and does not generate possible replies merely to answer them. Classify
+each route result as `held_burden_activation`,
 `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.
+MRP does not own the input burden dependency order; Layer A's initial graph/release structure does.
+MRP is a lean detection/generation gate, not a refutation block. It names what just landed, what
+escape route or pressure the reread detects, whether that pressure is already Layer-A-held or
+genuinely new, and the resultant route. If the detected escape route is new, MRP instantiates a
+generated burden such as `²B [generated-by: MRP(¹B)]`; the generated burden's own Layer B, not the
+MRP block, closes the route with owner-bearing Target/Operation/Result/Contribution-to-Land
+submoves and `Land(²B)`. Do not answer the escape route inside the MRP block itself.
+Held status is evidential, not merely foreseeable: every initial held burden must be licensed by
+an exact input phrase, a quoted claim already present in the prompt, or a necessary compound
+preservation reason. If no such anchor can be named, do not list it as held merely because a skilled
+analyst can imagine the interlocutor saying it later; leave it as a possible post-Land MRP
+candidate and generate it only if `ΔⁿB`, `R(H,Δ)`, and route-gradient make it live.
 If `²B` was already in the initial burden set or held set, MRP may authorize continued route to
 `²B` but did not generate it. A generated burden is not fully present in the initial Layer A
 inventory; it surfaces only after `Land(ⁿB)` and `R(H,Δ)` because the renewed route-gradient
 over `∇·B`, `∇×κ`, `ξ`, `Ω`, concealment, and held pressure reveals a new input-anchored
-resultant. It receives a normal burden node such as `²B [generated-by: MRP(¹B)]`, and then
+  resultant. It receives a normal burden node whose heading includes the marker, such as
+  `## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, and then
 receives Layer A accounting, Layer B submoves, `Land(²B)`/`HOLD(²B)`, and closure witness /
-`field_witness` graph accounting.
+`field_witness` graph accounting. Generated-MRP inserts a licensed new burden into the route; it
+does not erase the original input-anchored burden cycle. After the generated node lands or holds,
+return to the remaining initial/held burdens as `R(H,Δ)` and the route-gradient license them.
+The `Initial burden set` ledger is immutable: it records only the first Layer A read. Later MRP
+generated nodes, HOLD/PARTIAL downstream nodes, or broader source-dossier nodes must be listed in
+their own generated/partial/held accounting, not retroactively inserted into the initial set.
+Generated-MRP is only proven when MRP detects a legitimate next escape route that was not in the
+initial burden set, held set, or initial Layer A inventory. The MRP block must name the newly
+detected route enough to instantiate the node and show why it became visible through `ΔⁿB` and `∇`;
+the generated node must then receive full Layer A/Layer B treatment, at least two owner-bearing
+Target/Operation/Result/Contribution-to-Land submoves, `Land(ⁿ⁺¹B)`, and post-land reread/MRP
+accounting unless a terminal route explicitly licenses STOP. MRP licenses and records the generated
+node; it does not answer the generated burden as a mega-TTP.
 Worked counter-case: if Layer A declares `initial burden set: [¹B, ²B, ³B]` or
 `held: ²B, ³B`, then later `MRP(¹B)` routing into `²B` records
 `held_burden_activation`, not `generated_burden_instantiation`, even when MRP is the gate that
 authorizes release. Use `generated_burden_instantiation` only for a node not fully present in
 that initial Layer A inventory and first surfaced by the post-landing reread.
 
+Hard theological deployment gate: in named-worldview, mixed noetic-field, source-worldview,
+authority-frame, or other hard theological cases, do not let MRP become merely a confirmation
+pass over the baseline Layer-A ledger. Preserve the baseline ledger as `𝔅_LA` (the burdens Layer A
+would work without MRP), then let MRP add only genuinely new post-Land escape-route nodes as
+`𝔅_MRP`, so `𝔅_total = 𝔅_LA ∪ 𝔅_MRP`. Do not under-inventory Layer A to force generation, and do
+not relabel ordinary `𝔅_LA` burdens as generated. But when `Land(ⁿB)` exposes an additional
+non-baseline pressure not already in `𝔅_LA` or `H` - such as an immunity shield, authority-shift,
+proof-stack retreat, imported-model recoil, source-order recoil, predicate recoil, formal-shell
+recoil, concealment pressure, or shubhah/shakk-rāyb clarification pressure - MRP should instantiate
+the next unused burden id as `ᵏB [generated-by: MRP(ⁿB)]`, work it through normal Layer A/B, then
+return to any pending Layer-A-held burden as the reread licenses. A real generated-MRP proof is not
+`¹B → ²B` when `²B` was already in Layer A; it is `𝔅_total = 𝔅_LA ∪ 𝔅_MRP` with at least one
+non-baseline generated node fully worked and landed.
+Before final STOP in a hard case, MRP inside `R(H,Δ)` must account for whether any post-Land
+non-baseline pressure remains live after the baseline ledger lands. If the route-gradient,
+`∇·T`/`∇·B`, `∇×T`/`∇×κ`, concealment pressure, or held-field reread exposes a distinct extra
+pressure absent from `𝔅_LA`, instantiate it as `𝔅_MRP`, work it through Layer B, land it, and
+reread again. If STOP is claimed instead, the final MRP must visibly explain why no distinct
+non-baseline pressure remains live; a bare `B_total has no remaining burden` is not enough in
+hard generated-MRP proof.
+
 **CONCEALMENT MODE VISIBILITY.** Default Layer A must render a compact `Concealment mode:` line
 whenever D6, imported-framework pressure, pseudo-neutral tribunal pressure, named-worldview
 pressure, source-worldview pressure, or identity-stabilizing lens is operative. The value must
-track operative covering, not surface secrecy: use `surface-open / framework-concealed`,
-`mode-? / framework-concealed`, or a repo-native non-clear mode when the governing lens is still
-presented as neutral or authority-setting. Do not write `concealment: None detected`, and do not
-use `clear` unless the output positively explains that the framework no longer governs the
-current pass. Trinitarian person/nature grammar, later doctrinal apparatus, cross-text doctrine
+track operative covering, not surface secrecy, and must route through the source-owned
+concealment vocabulary in `references/terminology.md` / `references/diagnostics/modes-of-concealment.md`.
+For any non-clear diagnosis, print a source-owned mode first, then the plain gloss:
+`iʿrāḍ`, `juḥūd`, `inkār`, `istikbār`, `nifāq`, or `mixed`. The code/data aliases remain
+`irad`, `juhud`, `inkar`, `istikbar`, `nifaq`, and `mixed`, but public prose should keep the
+readable source-owned form when space allows. Loose descriptions such as `surface-open /
+framework-concealed`, `predicate-concealed`, `entailment-concealed`, or
+`hidden-framework-recoil` are allowed only as secondary glosses after the mode, not as the mode
+itself. The line must preserve the lexical/diagnostic boundary, e.g. `Boundary: diagnostic
+noetic covering only; no hidden soul-state or takfīr judgment.` The label is exact and
+case-sensitive:
+`Concealment mode:`. Do not write bare `concealment:`, do not write `concealment: None detected`,
+and do not use `clear` unless the output positively explains that the framework no longer governs
+the current pass. Imported person/nature grammar, later doctrinal apparatus, cross-text doctrine
 import, imported model-language, and doctrine-preserving harmonization count as
-framework/source-worldview concealment pressure whenever they govern a local text as if they were
-neutral grammar. If the mode is printed in Layer A, the matching MRP hidden-framework-recoil slot
-must either clear it, HOLD it, LoopBreak it, or explain how it remains bounded.
+framework/source-worldview concealment pressure whenever they govern a local claim as if they were
+neutral grammar. Do not collapse `iʿrāḍ` and `juḥūd`: `iʿrāḍ` means attention has not yet been
+given and the matter has not been allowed to press; `juḥūd` means acknowledgment is refused once
+attention has landed. Do not force sincere Muslim/ḥanīf clarification, genuine shubhah, shakk/rayb,
+tawahhum, or doubt-pressure into `juḥūd`, `inkār`, `istikbār`, or `nifāq`. In those cases, render
+the adjacent pressure explicitly, e.g. `Concealment mode: clarification / shubhah pressure — sincere
+uncertainty is covering clarity, not functioning as refusal. Boundary: Muslim/ḥanīf restoration
+case; no hidden soul-state or takfīr judgment.` If the enum/data field must stay on the five-mode
+axis, use `clear` only as a positive non-refusal finding and carry `clarification pressure:
+shubhah / shakk-rāyb` beside it; do not let `clear` mean that no burden or occlusion exists. If the
+mode is printed in Layer A, the matching MRP hidden-framework-recoil or doubt-churn slot must
+either clear it, HOLD it, LoopBreak it, or explain how it remains bounded.
+The sincere shubhah path is not a license to print `clear` when the diagnostic target still
+contains operative D6/imported-framework, pseudo-neutral tribunal, identity-stabilizing lens,
+hidden-framework-recoil, source-worldview, or predicate-concealment pressure. In mixed cases,
+print the target's source-owned mode first, usually `mixed`, and name the visible component
+source-owned pressures when they can be read, e.g. `mixed — iʿrāḍ + juḥūd pressure; secondary
+gloss: framework-concealed`. Do not print `mixed / framework-concealed` as the whole diagnosis
+when `iʿrāḍ`, `juḥūd`, `inkār`, `istikbār`, or `nifāq` pressure is visible. Likewise,
+`mixed - framework-concealed source-worldview pressure` is too thin unless it names at least one
+source-owned component pressure. In ASCII transport, the compact safe line is:
+`Concealment mode: mixed - irad + juhud pressure; secondary gloss: framework-concealed
+source-worldview pressure. Boundary: diagnostic noetic covering only; no hidden soul-state or
+takfir judgment.` Use `inkar`, `istikbar`, or `nifaq` in the same way when those are the visible
+components. Carry
+shubhah/shakk-rāyb as secondary clarification pressure where applicable. Keep requester posture
+separate from the diagnostic target.
+
+**CONCEALMENT TARGET SCOPING.** Concealment mode attaches to the diagnostic target by default,
+not to the requester. A request such as `refute this worldview`, `refute this prooftext argument`,
+or `analyze this contradiction claim` diagnoses the noetic field / worldview / quoted claim
+under analysis. It does not diagnose the user's personal hidden state. Track the distinction:
+`diagnostic_target: <claim | worldview | quoted interlocutor | requester-self-state | mixed>`,
+`concealment_applies_to: <diagnostic_target by default, not requester>`, and
+`requester_posture: <if visible; non-diagnostic unless self-state is the target>`. Only attach
+concealment to requester-self-state when the requester explicitly presents their own doubt,
+belief, refusal, or interior struggle as the object of diagnosis. Always preserve the boundary:
+no hidden soul-state, no takfīr, and no personal culpability claim.
 
 **MRP RECONSTRUCTIBILITY / NODE-LINEAGE ACCOUNTING.** MRP is not a rendered note. A valid routed output
 must let the input be reconstructed as node process: input -> burden nodes -> submove nodes ->
@@ -558,7 +665,8 @@ Top-salient invariants:
   a held graph edge only when `Terminal states:` marks the downstream node `held-with-reason` or
   `carried-PARTIAL`. `held_burden_activation` means the next node was already in the initial
   inventory; `generated_burden_instantiation` means `MRP(ⁿB)` produced a new resultant node and the
-  output must instantiate it as a normal burden, e.g. `²B [generated-by: MRP(¹B)]`, with Layer A,
+  output must instantiate it as a normal burden heading, e.g.
+  `## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, with Layer A,
   Layer B, owner-bearing submoves, and `Land(²B)`/`HOLD(²B)`. LoopBreak is never a graph node or
   graph edge; render `Graph delta: none` and `Route: LoopBreak(∇×T)`.
   Reconstructibility/node-lineage requirement: the visible output must let an evaluator map input ->

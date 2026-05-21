@@ -102,6 +102,9 @@ BURDEN_ARROW_TARGET_RE = re.compile(
     r")",
     re.IGNORECASE,
 )
+MRP_REFUTATION_BODY_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:Operation|Result|Contribution-to-Land)\s*:"
+)
 
 
 @dataclass
@@ -140,6 +143,14 @@ def field(body: str, name: str) -> str:
     return match.group("body").strip() if match else ""
 
 
+def field_any(body: str, names: tuple[str, ...]) -> str:
+    for name in names:
+        found = field(body, name)
+        if found:
+            return found
+    return ""
+
+
 def parse_pressure_lines(body: str) -> dict[str, str]:
     pressure: dict[str, str] = {}
     for key in PRESSURE_KEYS:
@@ -166,8 +177,8 @@ def parse_mrp_body(body: str) -> MrpBlock:
         reread=field(body, "Reread"),
         landed_delta=field(body, "Landed delta"),
         route_gradient=field(body, "Route-gradient"),
-        divergence=field(body, "∇·T"),
-        curl=field(body, "∇×T"),
+        divergence=field_any(body, ("∇·T", "del-dot T", "del dot T", "del-dot-T")),
+        curl=field_any(body, ("∇×T", "del-cross T", "del cross T", "del-cross-T")),
         finding=field(body, "Finding"),
         route_result_type=field(body, "MRP route result type"),
         mrp_resultant=field(body, "MRP resultant"),
@@ -198,6 +209,16 @@ def has_edge(value: str) -> bool:
     return bool(re.search(r"(?:→|->)", value))
 
 
+def edge_targets(value: str) -> set[str]:
+    return {
+        match.group("dst")
+        for match in re.finditer(
+            r"(?P<src>(?:B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B))\s*(?:→|->)\s*(?P<dst>(?:B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B))",
+            value,
+        )
+    }
+
+
 def is_none_delta(value: str) -> bool:
     return bool(re.search(r"(?i)\b(?:none|no new graph edge|no-edge)\b", value))
 
@@ -212,6 +233,14 @@ def first_state(value: str) -> str:
         if re.match(rf"^{re.escape(allowed)}(?:\b|/|;|\s)", normalized):
             return allowed
     return re.split(r"\s*/\s*|\s+-\s+|\s+—\s+|\s*;\s*", value.strip(), maxsplit=1)[0].strip().lower()
+
+
+def mrp_refutation_content_errors(mrp: MrpBlock, label: str) -> list[str]:
+    if MRP_REFUTATION_BODY_RE.search(mrp.body):
+        return [
+            f"{label}: MRP contains refutation/preemption prose content. This work belongs in the Layer B of the generated B, not in the MRP block."
+        ]
+    return []
 
 
 def check_sidecar(path: Path, text: str, mrp: MrpBlock, errors: list[str]) -> None:
@@ -278,6 +307,24 @@ LIVE_PRESSURE_RE = re.compile(
     r"proportionality|hiddenness|coercive-guidance|source-worldview|moral-grounding|"
     r"owner-floor|owner-body|OWNER-BODY-NOT-LOADED)\b"
 )
+UNRELEASED_ROUTE_RE = re.compile(
+    r"(?i)\b(?:identified but not released|not released as a new burden|unreleased|"
+    r"held outside (?:this )?scope|remain outside|remains outside|held broad routes remain|"
+    r"broad .* routes remain unreleased)\b"
+)
+NEGATED_UNRELEASED_RE = re.compile(
+    r"(?i)\b(?:no|not|without|none)\s+"
+    r"(?:remaining\s+|identified\s+|post-Land\s+|input-anchored\s+)*"
+    r"(?:(?:burden(?:s)?|route(?:s)?|pressure)?\s*(?:remain(?:s)?\s+)?unreleased|live|remaining live)\b"
+)
+
+
+def has_unreleased_route(body: str) -> bool:
+    if not UNRELEASED_ROUTE_RE.search(body):
+        return False
+    if re.search(r"(?i)\bno\b.{0,80}\b(?:remain(?:s|ing)?\s+)?unreleased\b", body):
+        return False
+    return not NEGATED_UNRELEASED_RE.search(body)
 
 
 def partial_owner_closure_errors(path: Path, text: str) -> list[str]:
@@ -341,7 +388,7 @@ def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]
             errors.append(f"{label}: generated_burden_instantiation requires Route-gradient")
         elif not re.search(r"(?i)\b(?:generated|new|newly|resultant|not fully present|not present|MRP)\b", mrp.route_gradient):
             errors.append(f"{label}: generated_burden_instantiation Route-gradient must explain the newly surfaced resultant")
-        elif not re.search(r"(?i)(?:Δ|Delta|xi|ξ|Omega|Ω|concealment|framework|dependency|burden-gradient|translation tribunal|admissibility)", mrp.route_gradient):
+        elif not re.search(r"(?i)(?:Δ|Delta|xi|ξ|Omega|Ω|concealment|framework|dependency|burden-gradient|translation tribunal|admissibility|doctrine|mystery|immunity|shield|recoil|source-worldview|del[- ]dot|D3|D6)", mrp.route_gradient):
             errors.append(f"{label}: generated_burden_instantiation Route-gradient must name the post-Land pressure source")
     elif value == "held_burden_activation":
         if mrp.route not in {"RECURSE", "HOLD"}:
@@ -353,6 +400,7 @@ def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]
         elif not (
             re.search(r"(?i)\b(?:held|initial|already[- ]inventoried|already named|H\b)", mrp.route_gradient)
             or BURDEN_ARROW_TARGET_RE.search(mrp.route_gradient)
+            or bool(edge_targets(mrp.graph_delta) & set(re.findall(r"(?:B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)", mrp.route_gradient)))
         ):
             errors.append(f"{label}: held_burden_activation Route-gradient must point to an already-held/initial burden")
     elif value == "no_new_resultant":
@@ -394,6 +442,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
     errors.extend(route_result_type_errors(path, mrp, label))
+    errors.extend(mrp_refutation_content_errors(mrp, label))
     if mrp.route not in ROUTES:
         errors.append(f"{label}: Route invalid: {mrp.route!r}")
     if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
@@ -407,6 +456,8 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
         if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
             errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
+    if mrp.route == "STOP" and has_unreleased_route(mrp.body):
+        errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
     return errors
 
 
@@ -443,6 +494,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
     errors.extend(route_result_type_errors(path, mrp, label))
+    errors.extend(mrp_refutation_content_errors(mrp, label))
     if not mrp.mrp_resultant:
         errors.append(f"{label}: MRP resultant missing")
     if mrp.route not in ROUTES:
@@ -465,6 +517,8 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
         if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
             errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
+    if mrp.route == "STOP" and has_unreleased_route(mrp.body):
+        errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
     return errors
 
 
@@ -508,6 +562,7 @@ def check_fixture(path: Path) -> list[str]:
     if mrp.finding not in FINDINGS:
         errors.append(f"{path}: MRP Finding invalid: {mrp.finding!r}")
     errors.extend(route_result_type_errors(path, mrp, str(path)))
+    errors.extend(mrp_refutation_content_errors(mrp, str(path)))
     if mrp.route not in ROUTES:
         errors.append(f"{path}: MRP Route invalid: {mrp.route!r}")
     if mrp.preemption_basis not in {"none", "graph-bound", "commitment-bound", "framework-bound"}:
@@ -525,6 +580,8 @@ def check_fixture(path: Path) -> list[str]:
 
     if mrp.route == "RECURSE" and not has_edge(mrp.graph_delta):
         errors.append(f"{path}: RECURSE requires visible graph delta edge")
+    if mrp.route == "STOP" and has_unreleased_route(mrp.body):
+        errors.append(f"{path}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
     if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
         errors.append(f"{path}: genuine-dependent finding requires RECURSE and graph edge")
     if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
@@ -619,7 +676,7 @@ def check_output_reconstructibility(path: Path) -> list[str]:
         errors.append(f"{path}: reconstructibility missing initial burden set")
     if not partial_owner and not re.search(r"(?im)^\s*Terminal states\s*:", text):
         errors.append(f"{path}: reconstructibility missing terminal-state accounting")
-    if not partial_owner and not re.search(r"(?im)^\s*(?:#{1,6}\s*)?(?:Final\s+)?Restorative Response\b|restoration aim", text):
+    if not partial_owner and not re.search(r"(?im)^\s*(?:#{1,6}\s*)?(?:(?:Final\s+)?Restorative Response\b|PARTIAL\s*-\s*bounded\s+answer\b)|restoration aim", text):
         errors.append(f"{path}: reconstructibility missing closure/restoration relation")
     if partial_owner or hold_route:
         if not re.search(r"(?i)\b(?:next live burden|held-with-reason|carried-PARTIAL|Route\s*:\s*HOLD|PARTIAL)\b", text):

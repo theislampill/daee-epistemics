@@ -31,6 +31,20 @@
       "type": "string",
       "minLength": 1
     },
+    "diagnostic_target": {
+      "type": "string",
+      "enum": ["claim", "worldview", "quoted-interlocutor", "requester-self-state", "mixed"],
+      "description": "Object being diagnosed. Concealment mode attaches here by default, not to the requester."
+    },
+    "concealment_applies_to": {
+      "type": "string",
+      "enum": ["diagnostic_target", "requester", "mixed"],
+      "description": "Scope of the concealment-mode diagnosis. Use requester only when requester self-state is explicitly the target."
+    },
+    "requester_posture": {
+      "type": "string",
+      "description": "Visible posture of the person asking, when relevant. This is contextual and not a hidden-state diagnosis unless self-state is the target."
+    },
     "claim_type": {
       "type": "string",
       "enum": [
@@ -71,9 +85,14 @@
         "inkar",
         "istikbar",
         "nifaq",
+        "mixed",
         "mode-?",
         "compound"
       ]
+    },
+    "clarification_pressure": {
+      "type": "string",
+      "description": "Optional adjacent pressure for sincere shubhah, shakk/rayb, tawahhum, or doubt-pressure cases where no refusal-mode concealment is operative but clarity remains covered."
     },
     "do_orient": {
       "type": "string",
@@ -964,7 +983,7 @@
       "if": {
         "properties": {
           "concealment_mode": {
-            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mode-?", "compound"]
+            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mixed", "mode-?", "compound"]
           }
         },
         "required": ["concealment_mode"]

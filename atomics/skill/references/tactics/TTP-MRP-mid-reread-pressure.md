@@ -39,8 +39,9 @@ operator_pack_eligible: true
 
 - Activation: after `Land(ⁿB)` or partial `Land(ⁿB)`, while `R(H,Δ)` is rereading the landed
   state before STOP, HOLD, RECURSE, PARTIAL, LoopBreak, or closure witness release. MRP is the
-  sound-reason preemption gate: it asks what the updated field now lets the interlocutor say next
-  before closure is licensed.
+  sound-reason pressure gate inside the reread: it asks which post-land pressure is now licensed
+  before closure is released. In argumentative renders that pressure may correspond to a next
+  escape route, but the formal owner is the field-state calculus, not imagined dialogue.
 - Field target: the post-landed reread field: current burden `ⁿB`, `ΔⁿB`, `Δκ`, held set `H`,
   dependency graph, terminal-state accounting, register deltas, target-explicit `∇·T` / `∇×T`,
   and `T_lang` boundary.
@@ -85,13 +86,23 @@ not replace the TTPs that perform hidden-framework, entailment, churn, or remind
 the relevant pressure owners to operate in the reread interval and records what their outputs
 license.
 
-MRP is the post-Land escape-route discovery operator. Layer A owns the initial visible surface:
+MRP is the post-Land escape-route discovery and preemption operator. Layer A owns the initial visible surface:
 the current burden and any held burdens that are explicit, input-anchored, or necessary to keep a
 compound from being flattened. Layer A should not dump every foreseeable downstream reply into the
 initial inventory before any burden lands; doing so turns MRP into static dependency traversal and
 weakens the sound-reason method. After `Land(ⁿB)`, `MRP(ⁿB)` freezes the landing, rereads
 `ΔⁿB` / `Δκ`, tests `∇·B`, `∇×κ`, `ξ`, `Ω`, concealment, and held pressure, then asks: what
-would the interlocutor say next that this landing now reveals or enables?
+formal post-land pressure does the field now make eligible, and does that pressure require held
+activation, generated burden instantiation, HOLD, LoopBreak, STOP, or closure? MRP is not
+response-fanfiction or speculative reply generation; it converts licensed pressure into route
+accounting, and only then, when the pressure is non-baseline, into a generated burden node.
+MRP does not own the input burden dependency order; Layer A's graph/release structure does. MRP is
+a lean detection/generation gate, not a content/refutation block. It names what just landed, what
+escape route or pressure the reread detects, whether that pressure is already Layer-A-held or
+genuinely new, and the resultant route. If the detected route is new, MRP instantiates a generated
+burden such as `ⁿ⁺¹B [generated-by: MRP(ⁿB)]`; the generated burden's own Layer B closes it with
+owner-bearing submoves. If the next burden was already in Layer A / `H`, MRP records
+`held_burden_activation`, but it did not generate the node.
 
 Distinguish route result types:
 
@@ -100,6 +111,12 @@ Distinguish route result types:
 - `generated_burden_instantiation`: MRP discovers a new resultant burden not fully present in the
   initial Layer A inventory. It must instantiate a normal burden node such as
   `ⁿ⁺¹B [generated-by: MRP(ⁿB)]`.
+  This is an insertion into the governed route, not a replacement for the initial burden cycle:
+  after the generated node lands or holds, return to any remaining input-anchored held burdens as
+  `R(H,Δ)` and the route-gradient license them.
+  The `Initial burden set` ledger is immutable: do not retroactively place generated nodes,
+  HOLD/PARTIAL downstream nodes, or broader source-dossier nodes into it. List them separately in
+  generated/partial/held accounting and terminal states.
 - `no_new_resultant`: MRP finds no additional resultant burden; normal routing may continue to the
   next already-held burden or close if no eligible held burden remains.
 - `loopbreak`: MRP detects churn/curl and blocks proof-stacking.
@@ -110,6 +127,36 @@ Worked counter-case: if Layer A declares `initial burden set: [¹B, ²B, ³B]` o
 MRP may authorize the release edge, but it did not generate the node. Reserve
 `generated_burden_instantiation` for a post-landing reread resultant not fully present in the
 initial inventory and then instantiate that node with `[generated-by: MRP(ⁿB)]`.
+
+Hard theological deployment rule: preserve the baseline Layer-A ledger while still testing for
+extra post-Land escape routes. Write the baseline burden set as `𝔅_LA`: the burdens already
+present in the input and worked by ordinary Layer-A release even without generated MRP. MRP may
+add `𝔅_MRP`: generated burdens that surface only after `Land(ⁿB)` / `R(H,Δ)`. The total worked
+ledger is therefore `𝔅_total = 𝔅_LA ∪ 𝔅_MRP`. In hard theological, named-worldview, mixed-field,
+source-worldview, source-authentication, or authority-frame cases, do not count success as merely
+walking `𝔅_LA` by `held_burden_activation`. Also do not cripple `𝔅_LA` to force a generated edge.
+Instead, after each landing, test whether the renewed `ΔⁿB`, route-gradient `∇`,
+divergence/curl state, ξ/Ω, and concealment pressure expose an additional non-baseline pressure
+such as an immunity shield, authority-shift, proof-stack retreat, imported-model recoil,
+source-order recoil, predicate recoil, formal-shell recoil, concealment pressure, or
+shubhah/shakk-rāyb clarification pressure. If such a route is not already in `𝔅_LA` / `H`,
+instantiate the next unused burden id as `ᵏB [generated-by: MRP(ⁿB)]`, work `ᵏB` with Layer B
+owner-backed submoves, land it, then reread again and route back to any pending Layer-A-held burden
+when licensed.
+
+Before final STOP in a hard case, MRP inside `R(H,Δ)` must account for whether any post-Land
+non-baseline pressure remains live after the baseline ledger lands. If the route-gradient,
+`∇·T`/`∇·B`, `∇×T`/`∇×κ`, concealment pressure, or held-field reread exposes a distinct extra
+pressure absent from `𝔅_LA`, instantiate it as `𝔅_MRP`, work it through Layer B, land it, and
+reread again. If STOP is claimed instead, STOP must state why no such non-baseline route remains
+live instead of merely saying the baseline ledger is exhausted.
+For public generated-MRP proof, use canonical burden notation rather than ASCII parser aliases:
+`¹B`, `²B`, `¹B → ²B`, `Land(¹B)`, and `R(H,Δ)`. A generated burden heading MUST carry the
+generated provenance marker on the burden node itself:
+`## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`. ASCII forms such as `B1`, `B2`,
+`B1 -> B2`, `Land(B1)`, or `R(H,Delta)` are transport/checker fallbacks, not the default
+public generated-burden proof surface; when transport forces ASCII, use
+`## Burden 2 / B2 [generated-by: MRP(B1)] - <title>`.
 
 MRP is not a brevity mechanism. It makes state reread operationally consequential: fake burdens
 contract into STOP or LoopBreak, partial real burdens HOLD, genuine downstream burdens RECURSE with
@@ -157,6 +204,12 @@ already fully identified in the initial burden inventory, classify the route as
 `held_burden_activation`. If it surfaces only after `Land(ⁿB)` / `R(H,Δ)`, classify it as
 `generated_burden_instantiation` and instantiate the new node with its own Layer A, Layer B,
 owner-bearing submoves, Land/HOLD accounting, and closure-witness / `field_witness` record.
+The generated case must say what legitimate post-land pressure / escape-route state became live,
+why that route was not already in Layer A / `H`, what `ΔⁿB` revealed, and where the plain
+route-gradient `∇` now points. In public dialectical prose this may be glossed as the serious next
+retreat the argument now exposes, but the proof must remain the reread calculus:
+`Land(ⁿB) -> ΔⁿB/Δκ -> ∇/∇·T/∇×T -> R(H,Δ) containing MRP -> resultant route`. If that explanation
+is absent, MRP may STOP/HOLD/LoopBreak, but it may not claim `generated_burden_instantiation`.
 
 Each pressure activation slot must name one of three things: the matched TTP/operator used, the
 pressure class used when the repo does not expose a narrower TTP ID, or an explicit TTP coverage
@@ -228,15 +281,31 @@ Boundary: T_lang does not imply guaranteed uptake.
 ```
 
 The compact block is not a replacement for the closure witness. If it creates or blocks graph
-movement, the closure witness / `field_witness` evidence must agree. Pressure activations must
+movement, the closure witness / `field_witness` evidence must agree.
+Pressure activations must
 render as six bullet slots, not one inline list. Each slot records the owner/TTP or pressure
 class used and the release/hold/clear effect it licensed. A slot that merely names a pressure
 without an effect is unsupported.
+MRP must not contain submove-style refutation prose (`Operation:`, `Result:`, or
+`Contribution-to-Land:`). That work belongs in the Layer B of the generated burden. A lean MRP block
+with route/resultant/graph metadata is valid when it either releases a held Layer-A burden, records
+STOP/HOLD/LoopBreak, or instantiates a generated burden that then receives full Layer B treatment.
 `Route-gradient:` records the plain-`∇` direction after `Land(ⁿB)` and the pressure checks. In a
 generated case, it must name the newly visible resultant and why the field now points there; in a
 held activation case, it must show that the field points to a burden already in `H` / the initial
 inventory. A block that has only `∇·T` and `∇×T` but no directional account is not enough to prove
 preemptive MRP behavior.
+For `generated_burden_instantiation`, do not print the route type, graph edge, or generated node
+until the block also includes literal `Route-gradient:` with the post-Land escape-route
+explanation. MRP licenses the generated node; the generated node's own Layer B must then use
+existing TTP/operator owners to answer it with Target/Operation/Result/Contribution-to-Land
+submoves, a `Land(ⁿ⁺¹B)` statement, and post-land reread/MRP accounting unless terminal STOP is
+explicitly licensed.
+Terminal STOP is not licensed when the MRP block itself says a doctrine-preserving,
+source-worldview, framework, prooftext-harmonization, or other escape route is "identified",
+"not released", "unreleased", or "held outside scope" while still live. In that case MRP must
+generate the new burden when it was absent from Layer A, activate the held burden when it was
+already inventoried, HOLD/PARTIAL it with a named gate, or LoopBreak it if it is churn/recoil.
 `Target:` must name the burden token explicitly, for example `Target: B2 / state-enforcement
 reduction`; mentioning `Land(B2)` only inside `Reread:` is not enough. If an older copied
 template shows only superscript `ⁿB`, render it as `Bn / <landed burden name>` in live output.

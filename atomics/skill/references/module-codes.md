@@ -158,6 +158,7 @@ and do not, on their own, constitute the full sharʿī category of *kufr* vs. *�
 | `inkar` | Inkār | Active resistance against internal recognition | Maieutic (P4); R2; do not feed absorbable argument |
 | `istikbar` | Istikbār | Obstinacy; acknowledgment without will-alignment | Relational/spiritual; pride-structure is the barrier |
 | `nifaq` | Nifāq | Surface acceptance without inner reorganization | Already-believing procedure (P5) |
+| `mixed` | Mixed concealment mode | Multiple source-owned modes visibly operative or unresolved in a framework case | Name the dominant pressures; keep interior judgment held; let the stronger register cue govern |
 | `mode-?` | — | Mode still unreadable | Route through mixed-case-handling |
 
 Compound: `<mode-A> | <mode-B>` when two modes are genuinely co-present.

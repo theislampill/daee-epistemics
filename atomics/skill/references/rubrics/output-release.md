@@ -144,6 +144,10 @@ Jacobian of the noetic field shows...`; `The ∇× symbol proves the TTP execute
 `del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators; if
 Unicode is unavailable they may appear only as compact, target-explicit state markers with the
 same control-effect boundary.
+Never render formal placeholders as question marks. `?B`, `R(H,?)`, `??T`, `??(??)`, and
+`Graph delta: ?B ? ?B` are invalid public output. If Unicode transport is unsafe, use the
+ASCII parser fallbacks `B1`, `B2`, `Delta B1`, `R(H,Delta)`, `del-dot T`, `del-cross T`, and
+`B1 -> B2`; do not replace burden or field notation with `?`.
 
 MRP route-gradient is the bridge from field diagnostics to release amount. After a burden lands,
 the output-release decision must ask whether plain `∇` now points toward an already-held burden,
@@ -968,6 +972,32 @@ The compact MRP block is not satisfied by a loose paragraph. It must expose the 
 Target, Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, `Route-gradient`, Finding,
 `MRP route result type`, `MRP resultant`, Graph delta, Pre-emption basis, Route, and Boundary.
 `Route-gradient` is the plain-`∇` directional read; do not replace it with divergence or curl.
+MRP is a lean detection/generation block, not a refutation paragraph. It must not contain
+submove-style `Operation:`, `Result:`, or `Contribution-to-Land:` work. When MRP records
+`generated_burden_instantiation`, the corresponding generated burden must carry the provenance
+marker on the generated burden heading itself, for example
+`## Burden 2 / B2 [generated-by: MRP(B1)] - <title>` or
+`## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, plus a generated-burden Layer A intake,
+Layer B governed operation body, at least two owner-bearing submoves with
+Target/Operation/Result/Contribution-to-Land, `Land(Bk)` / `Land(ᵏB)`, and then a post-land
+`[Mid-Reread Pressure]` or explicitly licensed terminal STOP. MRP names the escape route; Layer B
+works it. If an MRP block names a doctrine-preserving, source-worldview, framework, or
+prooftext-harmonization route as "identified", "not released", or "held outside scope", STOP is
+not licensed unless the route is explicitly bounded as non-live; generate, HOLD/PARTIAL, or
+LoopBreak instead.
+In hard theological, named-worldview, mixed-field, source-worldview, source-authentication, or
+authority-frame cases, release must preserve the ledger distinction: `𝔅_LA` names the baseline
+Layer-A burden ledger, `𝔅_MRP` names generated post-Land escape-route burdens, and
+`𝔅_total = 𝔅_LA ∪ 𝔅_MRP`. A pass that only walks `𝔅_LA` by `held_burden_activation` proves held
+traversal, not generated-MRP deployment. If the output claims generated deployment, at least one
+non-baseline generated node must be visible, fully worked by owner-bearing Layer B submoves,
+landed, and accounted for in the closure witness / field witness.
+Before final STOP in a hard case, the final MRP must visibly probe and bound any distinct
+non-baseline post-Land pressure absent from `𝔅_LA`: an immunity shield, authority-shift,
+proof-stack retreat, source-order recoil, predicate recoil, formal-shell recoil, concealment
+pressure, or shubhah/shakk-rāyb clarification pressure. If the route is live and absent from
+`𝔅_LA`, generate it as `𝔅_MRP`, work it in Layer B, and land it before final STOP. If it is not
+live, say why before STOP.
 
 Recursive burden-cycle shape for expanded diagnostic/internal audit render:
 

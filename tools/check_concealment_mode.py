@@ -4,7 +4,8 @@
 The checker is intentionally narrow. It does not infer a person's interior state or
 replace the modes-of-concealment taxonomy. It catches the regression where an output
 calls concealment "None detected" while the same Layer A read marks an imported or
-identity-stabilizing framework as operative.
+identity-stabilizing framework as operative, and the follow-on regression where a
+loose gloss such as "framework-concealed" replaces the source-owned concealment mode.
 """
 
 from __future__ import annotations
@@ -34,6 +35,7 @@ FRAMEWORK_SIGNAL_RE = re.compile(
     r"later\s+(?:Trinitarian|doctrinal)\s+(?:model|apparatus|grammar)|"
     r"doctrine-(?:import|preserving)|doctrine\s+import|imported\s+model-language|"
     r"creedal\s+(?:framework|commitment|lens)|framework\s+presents\s+as\s+neutral|"
+    r"source-worldview|worldview\s+pressure|"
     r"named\s+worldview|field\s*:\s*NAMED WORLDVIEW|governing\s+worldview|"
     r"governing\s+(?:lens|framework|criterion)|operates?\s+from\s+inside\s+the\s+worldview"
     r")\b"
@@ -45,8 +47,79 @@ ACTIVE_HIDDEN_FRAMEWORK_RE = re.compile(
 CLEAR_EXCEPTION_RE = re.compile(
     r"(?i)\b(?:positively\s+(?:exposed|cleared)|no\s+longer\s+governs|"
     r"framework\s+(?:cleared|no\s+longer\s+operative)|non-operative\s+finding|"
-    r"operative\s+covering\s+(?:cleared|absent))\b"
+    r"operative\s+covering\s+(?:cleared|absent)|no\s+longer\s+diagnosing\s+hidden|"
+    r"no\s+longer\s+diagnosing\s+framework|current\s+pass\s+is\s+(?:restor(?:ing|ation)|no\s+longer\s+diagnosing))\b"
 )
+SOURCE_MODE_RE = re.compile(
+    r"(?i)\b(?:irad|juhud|inkar|istikbar|nifaq|mixed)\b|"
+    r"iʿrāḍ|juḥūd|inkār|istikbār|nifāq"
+)
+SOURCE_COMPONENT_MODE_RE = re.compile(
+    r"(?i)\b(?:irad|juhud|inkar|istikbar|nifaq)\b|"
+    r"iʿrāḍ|juḥūd|inkār|istikbār|nifāq"
+)
+MODE_UNKNOWN_RE = re.compile(r"(?i)\bmode-\?\b")
+UNRESOLVED_MODE_RE = re.compile(r"(?i)\b(?:underdetermined|unreadable|provisional|insufficient(?:ly)?\s+signalled|insufficient\s+basis)\b")
+LOOSE_GLOSS_RE = re.compile(
+    r"(?i)\b(?:surface-open|framework-concealed|hidden-framework|predicate-concealed|"
+    r"entailment-concealed|source-worldview|identity-stabili[sz]ed|framework-cover(?:ed|ing)|"
+    r"formal-shell|moral-predicate transfer)\b"
+)
+CLARIFICATION_PRESSURE_RE = re.compile(
+    r"(?i)\b(?:clarification\s+pressure|clarification\s*/\s*shubh?a?h|"
+    r"shubh?a?h|shakk|rayb|rāyb|tawahhum|wasw[āa]s|doubt-pressure|doubt\s+pressure|"
+    r"sincere\s+(?:uncertainty|clarification|inquiry)|ḥanīf\s+restoration|hanif\s+restoration)\b"
+)
+REFUSAL_MODE_RE = re.compile(r"(?i)\b(?:juhud|inkar|istikbar|nifaq)\b|juḥūd|inkār|istikbār|nifāq")
+REFUSAL_SIGNAL_RE = re.compile(
+    r"(?i)\b(?:refus|repudiat|recognition\s+pressure|outward\s+denial|"
+    r"acknowledg(?:e|ment).*refus|pride|status\s+obstruction|volitional\s+alignment|"
+    r"surface\s+acceptance\s+without\s+genuine|performative\s+agreement)\b"
+)
+REQUESTER_SCOPE_RE = re.compile(
+    r"(?i)\b(?:user|requester|asker|the\s+person\s+asking|the\s+Muslim\s+asking|the\s+da[ʿ'`]?i\s+asking)\b"
+)
+REQUESTER_ALLOWED_RE = re.compile(
+    r"(?i)\b(?:diagnostic[_ -]?target\s*:\s*requester-self-state|"
+    r"concealment[_ -]?applies[_ -]?to\s*:\s*requester|"
+    r"not\s+(?:the\s+)?requester|requester\s+(?:is\s+)?(?:not|non[- ]diagnostic)|"
+    r"requester\s+(?:explicitly\s+)?(?:presents|states|asks\s+about)\s+(?:their|his|her|my)\s+own|"
+    r"\bI\s+(?:am|have|feel|believe|refuse|deny)\b|my\s+(?:doubt|shubh?a?h|belief|refusal|state))\b"
+)
+BOUNDARY_RE = re.compile(
+    r"(?i)\b(?:Boundary\s*:|diagnostic\s+noetic|visible\s+discourse\s+diagnosis|"
+    r"no\s+(?:hidden\s+)?soul[- ]state|no\s+takf[īi]r|not\s+a\s+takf[īi]r|"
+    r"not\s+(?:a\s+)?(?:hidden\s+)?(?:soul[- ]state|culpability)\s+judg)"
+)
+IRAD_CONTEXT_RE = re.compile(
+    r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
+    r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
+    r"not\s+yet\s+allowed\s+to\s+press|pre-inquiry|pre\s+inquiry)\b"
+)
+JUHUD_CONTEXT_RE = re.compile(
+    r"(?i)\b(?:acknowledg(?:e|ment)\s+(?:is\s+)?refus|refused\s+once\s+attention\s+has\s+landed|"
+    r"once\s+the\s+matter\s+has\s+pressed|after\s+pressure\s+landed|post-engagement\s+refusal)\b"
+)
+
+
+def has_source_mode(value: str) -> bool:
+    return bool(SOURCE_MODE_RE.search(value))
+
+
+def is_mode_unknown(value: str) -> bool:
+    return bool(MODE_UNKNOWN_RE.search(value))
+
+
+def is_mixed(value: str) -> bool:
+    return bool(re.search(r"(?i)\bmixed\b", value))
+
+
+def has_source_component(value: str, block: str) -> bool:
+    return bool(SOURCE_COMPONENT_MODE_RE.search(value) or SOURCE_COMPONENT_MODE_RE.search(block))
+
+
+def has_clarification_pressure(value: str, block: str) -> bool:
+    return bool(CLARIFICATION_PRESSURE_RE.search(value) or CLARIFICATION_PRESSURE_RE.search(block))
 
 
 def read_text(path: Path) -> str:
@@ -76,12 +149,53 @@ def check_text(path: Path, text: str) -> list[str]:
         block = surrounding_block(text, match.start())
         if not value or NONE_PLACEHOLDER_RE.search(value):
             errors.append(f"{path}: concealment must not use placeholder {value!r}; use clear, mode-?, or an anchored mode")
+        if REQUESTER_SCOPE_RE.search(value) and REFUSAL_MODE_RE.search(value) and not REQUESTER_ALLOWED_RE.search(block):
+            errors.append(
+                f"{path}: Concealment mode appears attached to the requester rather than the diagnostic target"
+            )
         if CLEAR_VALUE_RE.search(value) and (
             FRAMEWORK_SIGNAL_RE.search(block) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text)
         ) and not (CLEAR_EXCEPTION_RE.search(block) or exception_visible):
             errors.append(
                 f"{path}: concealment {value!r} conflicts with operative framework/worldview covering"
             )
+        is_clear = bool(CLEAR_VALUE_RE.search(value))
+        if not is_clear and not NONE_PLACEHOLDER_RE.search(value):
+            source_mode = has_source_mode(value)
+            unresolved_only = is_mode_unknown(value) and UNRESOLVED_MODE_RE.search(block) and not (
+                FRAMEWORK_SIGNAL_RE.search(block) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text)
+            )
+            clarification_pressure = has_clarification_pressure(value, block) and not (
+                FRAMEWORK_SIGNAL_RE.search(block) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(block)
+            )
+            if not source_mode and not unresolved_only and not clarification_pressure:
+                errors.append(
+                    f"{path}: non-clear Concealment mode must name a source-owned mode "
+                    "(iʿrāḍ/irad, juḥūd/juhud, inkār/inkar, istikbār/istikbar, nifāq/nifaq, mixed, "
+                    "or a bounded clarification/shubhah pressure); "
+                    f"loose gloss found: {value!r}"
+                )
+            if LOOSE_GLOSS_RE.search(value) and not source_mode:
+                errors.append(f"{path}: loose concealment gloss cannot replace the source-owned mode: {value!r}")
+            if (source_mode or clarification_pressure) and not BOUNDARY_RE.search(block):
+                errors.append(
+                    f"{path}: non-clear Concealment mode must preserve the diagnostic boundary "
+                    "(no hidden soul-state / takfīr judgment)"
+                )
+            if is_mixed(value) and not has_source_component(value, block):
+                errors.append(
+                    f"{path}: mixed Concealment mode must name at least one source-owned component "
+                    "pressure (iʿrāḍ/juḥūd/inkār/istikbār/nifāq), not only a loose gloss"
+                )
+            if REFUSAL_MODE_RE.search(value) and not is_mixed(value) and CLARIFICATION_PRESSURE_RE.search(block) and not REFUSAL_SIGNAL_RE.search(block):
+                errors.append(
+                    f"{path}: sincere shubhah/shakk-rāyb clarification pressure is misrouted into a refusal mode"
+                )
+            if not is_mixed(value):
+                if re.search(r"(?i)\bjuhud\b|juḥūd", value) and IRAD_CONTEXT_RE.search(block) and not JUHUD_CONTEXT_RE.search(block):
+                    errors.append(f"{path}: juḥūd/juhud is misrouted where attention has not yet been allowed to press")
+                if re.search(r"(?i)\birad\b|iʿrāḍ", value) and JUHUD_CONTEXT_RE.search(block) and not IRAD_CONTEXT_RE.search(block):
+                    errors.append(f"{path}: iʿrāḍ/irad is misrouted where acknowledgment is already refused after pressure landed")
     return errors
 
 
@@ -97,6 +211,12 @@ def main() -> int:
 
     errors: list[str] = []
     valid, invalid = iter_fixtures(args.root)
+    if not args.root.exists():
+        errors.append(f"{args.root}: concealment fixture root is missing")
+    elif not valid or not invalid:
+        errors.append(
+            f"{args.root}: concealment fixture root must contain at least one valid and one invalid fixture"
+        )
     valid_checked = 0
     invalid_checked = 0
     output_checked = 0

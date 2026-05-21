@@ -106,9 +106,39 @@ deployment discipline, not a label that exhausts the case.
 `clear` concealment when the operative lens is being presented as neutral. If Layer A marks an
 imported framework, pseudo-neutral tribunal, or identity-stabilizing reading lens as operative,
 then `concealment: None detected` is invalid and `clear` is licensed only if the framework is
-positively no longer functioning as a hidden criterion. When the interior mode is not readable,
-use `mode-?` or a compact anchored phrase such as `surface-open / framework-concealed`; do not
-over-certify `juhud`, `inkar`, or `istikbar` from the public claim alone.
+positively no longer functioning as a hidden criterion. When operative covering is diagnosed,
+do not replace the mode with a loose gloss such as `surface-open / framework-concealed`,
+`predicate-concealed`, or `entailment-concealed`. Emit the source-owned mode first
+(`irad`, `juhud`, `inkar`, `istikbar`, `nifaq`, or `mixed` / `<mode-A> | <mode-B>`), then add the
+plain gloss and boundary. If the exact interior mode is not readable but multiple source-owned
+modes are visibly possible, prefer `mixed` with the competing pressures named and held rather
+than a freeform concealment label. `mode-?` remains only for genuinely unreadable cases after
+attention to the axis; it is not a substitute for the mode in D6/named-worldview framework cases.
+Every emitted line must preserve the analytic boundary: diagnostic noetic covering only, not a
+hidden soul-state, final culpability, or takfīr judgment.
+
+**Sincere shubhah / shakk-rāyb clarification boundary:** Not every noetic occlusion is a
+concealment/refusal mode. A Muslim, ḥanīf, or sincere truth-seeker can have a real shubhah,
+shakk/rayb, tawahhum, waswās-like pressure, or doubt-churn that covers clarity without being
+`juhud`, `inkar`, `istikbar`, or `nifaq`. In those cases the concealment axis may be positively
+non-refusal while a separate clarification pressure remains live. Render this as
+`Concealment mode: clarification / shubhah pressure — ...` or, when a strict case-state enum is
+needed, `Concealment mode: clear` plus `clarification pressure: shubhah / shakk-rāyb`. Route toward
+clarification, V9 / necessary-knowledge priority, fiṭrah anchoring, source-order repair, bounded
+reassurance, or P7/DW hold as appropriate. Do not accuse, do not harden doubt into refusal, and do
+not treat "no refusal mode" as "nothing is happening."
+This safe clarification path does not license `clear` when the diagnostic target itself still
+contains operative D6/imported-framework, pseudo-neutral tribunal, identity-stabilizing lens,
+hidden-framework-recoil, source-worldview, or predicate-concealment pressure. In mixed cases,
+print the source-owned target mode first, normally `mixed`, and carry the shubhah/shakk-rāyb
+pressure as a secondary clarification pressure. Example: `Concealment mode: mixed - iʿrāḍ /
+framework-covering pressure; clarification pressure: shubhah / shakk-rāyb. Boundary: diagnostic
+target only; no hidden soul-state or takfīr judgment.`
+For ASCII transport, use the aliases as component proof:
+`Concealment mode: mixed - irad + juhud pressure; secondary gloss: framework-concealed
+source-worldview pressure. Boundary: diagnostic noetic covering only; no hidden soul-state or
+takfir judgment.` Do not emit `mixed - framework-concealed source-worldview pressure` without at
+least one source-owned component mode.
 
 ---
 
@@ -253,6 +283,7 @@ the transliterated names used throughout the skill; no re-abbreviation.
 | Intellectual concession without volitional movement; pride-structure visible | `istikbar` | Relational/spiritual register; suspend further argument; character-as-evidence central |
 | Performative agreement without inner reorganization; collapses under pressure | `nifaq` | Already-believing procedure (P5); questions requiring the subject to inhabit the stated position |
 | Two modes genuinely co-present | `<mode-A> | <mode-B>` | Name the register each mode requires; do not force collapse |
+| Multiple modes visibly operative or unresolved between source-owned modes in a framework case | `mixed` | Name the dominant pressures, keep interior judgment held, and let the stronger register cue govern |
 | Mode still unreadable after genuine attention | `mode-?` | Route through `mixed-case-handling.md` before committing to register |
 
 **Boundary note — `irad` vs. `juhud`:** The two most frequently confused modes. `irad`
@@ -322,7 +353,7 @@ routing to `case-library/revelation-transmission.md`.
 
 The concealment diagnostic terminates with a short line for the case-state:
 
-    Concealment: <irad | juhud | inkar | istikbar | nifaq | mode-A | mode-B | mode-?>    RT (if applicable): <RT-1..4>    Register: <invitational | intellectual | maieutic | relational | suspended>
+    Concealment: <irad | juhud | inkar | istikbar | nifaq | mixed | mode-A | mode-B | mode-?>    RT (if applicable): <RT-1..4>    Register: <invitational | intellectual | maieutic | relational | suspended>
 
 This line is consumed by `case-state-schema.md` alongside the NS emission from
 `noetic-reading-checklist.md`, the DO-orient emission from `discourse-orientation.md`,

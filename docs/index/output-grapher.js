@@ -269,7 +269,7 @@
   }
 
   function blankModel(){
-    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',sourceSections:[],zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{},mrpSourceTexts:{},burdenSetupTexts:{},burdenSetupHeadings:{},hiddenPremiseTexts:{},hiddenPremiseHeadings:{},compactLayerA:'',compactLayerAHeading:'',bannerText:'',closureWitnessText:''}};
+    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],ledger:{B_LA:[],B_MRP:[],B_total:[]},submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',sourceSections:[],zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{},mrpSourceTexts:{},burdenSetupTexts:{},burdenSetupHeadings:{},hiddenPremiseTexts:{},hiddenPremiseHeadings:{},compactLayerA:'',compactLayerAHeading:'',bannerText:'',closureWitnessText:''}};
   }
 
   function lineBurdens(line,model,lineNo){
@@ -364,10 +364,19 @@
       const live=line.match(/^\s*-\s*live noetic burden:\s*(.+)$/i); if(live) model.liveBurden=cleanParsed(live[1]);
       const div=line.match(/∇·B\s*:\s*([^;\n]+)/i); if(div) model.collapse.divergence=div[1].trim();
       const curl=line.match(/∇×κ\s*:\s*([^;\n]+)/i); if(curl) model.collapse.curl=curl[1].trim();
+      const routeGradient=line.match(/Route-gradient\s*:\s*([^;\n]+)/i); if(routeGradient) model.collapse.routeGradient=routeGradient[1].trim();
+      const delDot=line.match(/(?:del-dot(?:\s*\(?T\)?)?|∇·T|∇·B)\s*:\s*([^;\n]+)/i); if(delDot) model.collapse.delDot=delDot[1].trim();
+      const delCross=line.match(/(?:del-cross(?:\s*\(?T\)?)?|∇×T|∇×κ)\s*:\s*([^;\n]+)/i); if(delCross) model.collapse.delCross=delCross[1].trim();
       const closure=line.match(/𝒞\(Ψᴺ\)\s*:\s*([^;\n]+)/i); if(closure) model.collapse.coverage=closure[1].trim();
       const tLang=line.match(/T_lang\s*:\s*([^\n]+)/i); if(tLang) model.collapse.tLang=tLang[1].trim();
       const restAim=line.match(/Restoration (?:aim|target):\s*(.+)$/i); if(restAim){model.restorationAim=cleanParsed(restAim[1]); model.hasRestoration=true;}
       const burdens=lineBurdens(line,model,lineNo);
+      const ledgerLine=line.match(/\b(?:B_|𝔅_)(LA|MRP|total)\b\s*(?:baseline|generated|worked|ledger|burden|set|total|=|:|\s)*/i);
+      if(ledgerLine&&burdens.length){
+        const key=ledgerLine[1].toLowerCase()==='la'?'B_LA':ledgerLine[1].toLowerCase()==='mrp'?'B_MRP':'B_total';
+        burdens.forEach(b=>{if(!model.ledger[key].includes(b)) model.ledger[key].push(b);});
+        if(key==='B_LA') burdens.forEach(b=>{if(!model.initialBurdens.includes(b)) model.initialBurdens.push(b);});
+      }
       const headingMatch=trimmed.match(/^(?:#+\s*)?Burden\s+(\d+|B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\b/i);
       const headingBurden=headingMatch?sourceBurdenToken(headingMatch[1]):'';
       if(headingMatch){burdens.splice(0,burdens.length,headingBurden,...burdens.filter(b=>b!==headingBurden));}
@@ -990,15 +999,15 @@
   function visibleClaimContext(model){
     const labels=semanticBurdenLabels(model,6).map(item=>item.replace(/^Problem\s+\S+\s+—\s*/,'').trim()).filter(Boolean);
     const joined=[...labels,model.closingFormulation||'',model.restorationAim||''].join(' ');
-    if(/only true God/i.test(joined) && /John\s+17:3/i.test(joined)){
-      const proofTexts=[...new Set((joined.match(/\b(?:1\s+John|John)\s+\d+:\d+/gi)||[]).map(x=>x.replace(/\s+/g,' ')))];
+    if(/proof-?text|local grammar|remote text|cross-text|only true God/i.test(joined)){
+      const proofTexts=[...new Set((joined.match(/\b(?:[1-3]\s+)?[A-Z][a-z]+\s+\d+:\d+/g)||[]).map(x=>x.replace(/\s+/g,' ')))];
       const textList=proofTexts.length?` around ${proofTexts.slice(0,4).join(', ')}`:'';
-      return `A Trinitarian reply${textList}: it tries to answer the claim that the Father is called "the only true God" by moving "only," appealing to other proof-texts, and invoking the doctrine of the Trinity.`;
+      return `A prooftext or source-reading reply${textList}: the output tests whether local grammar, remote-text appeals, and imported doctrinal or framework pressure have been routed as distinct burdens.`;
     }
     if(/secular/i.test(joined) && /neutral/i.test(joined)){
       return `A secular-public-reason reply: it claims neutrality while the output tests whether that neutrality hides an authority rule or admissibility filter.`;
     }
-    if(/eternal lake of fire|non-belief|TST|Satanist|worship/i.test(joined)){
+    if(/eternal lake of fire|non-belief|worship|moral tribunal|divine judgment/i.test(joined)){
       return `A moral-protest reply about divine judgment and worship-worthiness: it challenges whether the objection's moral criterion and worldview frame can carry the burden it places on God.`;
     }
     if(labels.length){
@@ -1010,10 +1019,10 @@
   }
   function storyCaseHeadline(model){
     const context=visibleClaimContext(model);
-    if(/Trinitarian reply/i.test(context) && /John\s+17:3/i.test(context)){
+    if(/prooftext or source-reading reply/i.test(context)){
       return {
-        title:'CASE: Trinitarian reply to John 17:3',
-        subtitle:'Question under test: can the reply preserve the Father as “the only true God” while moving “only,” appealing to other proof-texts, and invoking the Trinity?'
+        title:'CASE: prooftext / source-reading reply',
+        subtitle:'Question under test: does the output distinguish local grammar, remote source appeals, imported frameworks, and generated post-land pressure?'
       };
     }
     if(/secular-public-reason/i.test(context)){
@@ -1056,13 +1065,6 @@
       return {
         headline:`Final answer: the ${parties.challenged} fails`,
         body:`${defender}'s challenge remains standing. The map accounts for ${terminalCount}/${burdenCount||terminalCount} live problem${(burdenCount||terminalCount)===1?'':'s'} and keeps the detailed closing formulation in its own final card. ${routeLine}`
-      };
-    }
-    const visibleContext=visibleClaimContext(model);
-    if(/Trinitarian reply/i.test(visibleContext) && /John\s+17:3/i.test(visibleContext)){
-      return {
-        headline:'Verdict: the Trinitarian reply fails to close the John 17:3 objection',
-        body:`The map lands the live objections to the reply and keeps the positive restorative answer in the final source-prose cards. ${routeLine}`
       };
     }
     return {
@@ -1110,12 +1112,14 @@
     const collapse=model.collapse||{}, pillStatus=model.errors.length?'fail':model.warnings.length?'warn':'ok';
     const verdict=verdictDigest(model);
     const diagnosisList=diagnosisItems(model,model.burdens).map(x=>`<li>${esc(x)}</li>`).join('');
+    const baseline=(model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens).map(normalizeBurden).join(', ')||'not detected';
+    const generated=(model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{})).map(normalizeBurden).join(', ')||'none';
     return `<div class="outputGrapherTopCards">
       <section class="outputGrapherTopCard"><h3>Final Answer From The Output</h3><p><strong>${esc(verdict.headline)}</strong></p><p>${esc(verdict.body)}</p></section>
       <section class="outputGrapherTopCard"><h3>Reply / Claim Being Rejected</h3><p>${esc(readerInputDigest(model))}</p></section>
       <section class="outputGrapherTopCard"><h3>What The Reply Depends On</h3><ul>${diagnosisList}</ul><p class="outputGrapherTechMeta">Technical reading: ${esc(technicalDiagnosis(model))}</p></section>
-      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul></section>
-      <section class="outputGrapherTopCard"><h3>Closure / Restoration Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>The map shows whether the reply is closed, held, partial, or still live after the final pressure-check.</p><p class="outputGrapherTechMeta">Technical reading: coverage=${esc(collapse.coverage||String(model.closureComplete))}; field pressure=${esc(collapse.divergence||'not detected')}; loop check=${esc(collapse.curl||'not detected')}; T_lang=${esc(collapse.tLang||'boundary not detected')}</p></section>
+      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}</p></section>
+      <section class="outputGrapherTopCard"><h3>Closure / Restoration Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>The map shows whether the reply is closed, held, partial, or still live after the final pressure-check.</p><p class="outputGrapherTechMeta">Technical reading: route-gradient=${esc(collapse.routeGradient||'not detected')}; del-dot=${esc(collapse.delDot||collapse.divergence||'not detected')}; del-cross=${esc(collapse.delCross||collapse.curl||'not detected')}; T_lang=${esc(collapse.tLang||'boundary not detected')}</p></section>
     </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Problems: ${model.burdens.length}</span><span class="outputGrapherPill">TTP moves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">Follow-up checks: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminal states: ${Object.keys(model.terminals).length}</span></div>`;
   }
 
@@ -1401,9 +1405,10 @@
       .join('; ') || 'none';
     const rows=[
       ['Formal reading', 'R(H, ΔⁿB{♥,ξ,Ω,σ,μ}, Δκ) → 𝒞(Ψᴺ) → N_fiṭrī ∧ ʿaql ṣarīḥ'],
+      ['Burden ledger', `B_LA=${(model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens).map(normalizeBurden).join(', ')||'not detected'}; B_MRP=${(model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{})).map(normalizeBurden).join(', ')||'none'}; B_total=${(model.ledger.B_total.length?model.ledger.B_total:model.burdens).map(normalizeBurden).join(', ')||'not detected'}`],
       ['Terminal states', `${Object.keys(model.terminals||{}).length}/${model.burdens.length||0}; ${terminalStates}`],
       ['MRP/resultant ledger', mrpLedger],
-      ['Closure/collapse proof', `∇·B: ${collapse.divergence||'not detected'}; ∇×κ: ${collapse.curl||'not detected'}; 𝒞(Ψᴺ): ${collapse.coverage||String(model.closureComplete)}`],
+      ['Formal field proof', `Route-gradient: ${collapse.routeGradient||'not detected'}; del-dot: ${collapse.delDot||collapse.divergence||'not detected'}; del-cross: ${collapse.delCross||collapse.curl||'not detected'}; 𝒞(Ψᴺ): ${collapse.coverage||String(model.closureComplete)}`],
       ['Language boundary', `T_lang: ${collapse.tLang||'boundary not detected'}`],
       ['field_witness fill', model.witnessMismatches?.length?`visible output / field_witness mismatches: ${model.witnessMismatches.length}`:'visible output and supplied field_witness have no reported mismatch']
     ];
@@ -1604,7 +1609,8 @@
     const burdens=model.burdens.length?model.burdens:Object.values(model.nodes).filter(n=>n.kind==='burden').map(n=>n.id);
     const inputNode={id:'input',kind:'input',label:`What the claim says — ${readerInputDigest(model)}`,excerpt:readerInputDigest(model)};
     const diagNode={id:'diagnosis',kind:'input',label:`What the claim depends on — ${model.fieldType||'field not detected'} / ${model.claimType||'claim not detected'}`,excerpt:model.diagnosis||''};
-    const invNode={id:'inventory',kind:'input',label:`Main problems the input creates — ${semanticBurdenLabels(model,3).join('; ')||'not detected'}`,excerpt:model.liveBurden||''};
+    const ledgerLabel=`B_LA=${(model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens).map(normalizeBurden).join(', ')||'not detected'}; B_MRP=${(model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{})).map(normalizeBurden).join(', ')||'none'}`;
+    const invNode={id:'inventory',kind:'input',label:`Main problems the input creates — ${ledgerLabel}`,excerpt:model.liveBurden||''};
     const topH=96;
     pos.input=[left,38,350,topH]; pos.diagnosis=[430,38,380,topH]; pos.inventory=[850,38,520,topH];
     let y=194;
@@ -1641,7 +1647,7 @@
     const routeNodes=Object.values(model.nodes).filter(n=>n.kind==='terminal'&&/^Route:/.test(n.label)); const last=routeNodes[routeNodes.length-1];
     const closureEdge=last&&pos[last.id]?svgEdge([pos[last.id][0]+pos[last.id][2],pos[last.id][1]+38],[pos[collapseId][0],pos[collapseId][1]+62],'closure','closure / restoration'):'';
     const finalPanel=renderCollapsePanel(model,pos[collapseId]);
-    const legend=`<g class="ogSvgLegend" transform="translate(36 ${height-36})"><text fill="#e5e7eb" font-size="12" font-weight="800">Legend:</text><circle cx="72" cy="-4" r="5" fill="#3b82f6"/><text x="82" y="0" fill="#cbd5e1" font-size="11">burden</text><circle cx="152" cy="-4" r="5" fill="#38bdf8"/><text x="162" y="0" fill="#cbd5e1" font-size="11">submove/TTP</text><circle cx="252" cy="-4" r="5" fill="#22c55e"/><text x="262" y="0" fill="#cbd5e1" font-size="11">Land/closure</text><circle cx="360" cy="-4" r="5" fill="#a855f7"/><text x="370" y="0" fill="#cbd5e1" font-size="11">MRP</text><circle cx="440" cy="-4" r="5" fill="#f59e0b"/><text x="450" y="0" fill="#cbd5e1" font-size="11">route/HOLD</text><circle cx="548" cy="-4" r="5" fill="#ef4444"/><text x="558" y="0" fill="#cbd5e1" font-size="11">invalid</text></g>`;
+    const legend=`<g class="ogSvgLegend" transform="translate(36 ${height-36})"><text fill="#e5e7eb" font-size="12" font-weight="800">Legend:</text><circle cx="72" cy="-4" r="5" fill="#3b82f6"/><text x="82" y="0" fill="#cbd5e1" font-size="11">B_LA burden</text><circle cx="174" cy="-4" r="5" fill="#8b5cf6"/><text x="184" y="0" fill="#cbd5e1" font-size="11">B_MRP generated</text><circle cx="306" cy="-4" r="5" fill="#38bdf8"/><text x="316" y="0" fill="#cbd5e1" font-size="11">submove/TTP</text><circle cx="418" cy="-4" r="5" fill="#22c55e"/><text x="428" y="0" fill="#cbd5e1" font-size="11">Land/closure</text><circle cx="538" cy="-4" r="5" fill="#a855f7"/><text x="548" y="0" fill="#cbd5e1" font-size="11">MRP</text><circle cx="618" cy="-4" r="5" fill="#f59e0b"/><text x="628" y="0" fill="#cbd5e1" font-size="11">route/HOLD</text><circle cx="736" cy="-4" r="5" fill="#ef4444"/><text x="746" y="0" fill="#cbd5e1" font-size="11">invalid</text></g>`;
     return `<svg id="ogSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="Segoe UI, Arial, sans-serif" role="img" aria-label="Noetic field rebuttal infographic"><rect x="0" y="0" width="${width}" height="${height}" fill="#050914"/><defs><marker id="ogArrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>${topEdges}${clusterSvg.join('')}${edgeSvg}${inputBurdenEdges}${mrpRelationEdges.join('')}${closureEdge}${renderedNodes}${finalPanel}${legend}</svg>`;
   }
 

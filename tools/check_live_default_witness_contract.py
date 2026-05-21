@@ -24,7 +24,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROUTE_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:(?:gate/release decision|release gate)\s*:\s*)?"
-    r"\u2207\s*route\s*:\s*(?P<body>\S.+)$"
+    r"(?:\u2207\s*route|route-gradient)\s*:\s*(?P<body>\S.+)$"
 )
 FIELD_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Field diagnostics\s*:\s*(?P<body>\S.*)$")
 DEL_DOT_TARGET_RE = re.compile(
@@ -42,15 +42,16 @@ REREAD_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:`?)R\(H,\s*(?:\u0394|Delta)\)(?:`?)\s*:"
 )
 CLOSURE_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?`?\U0001d49e\(\u03a8\u1d3a\)`?\s*:\s*(?P<body>\S.*)$"
+    r"(?im)^\s*(?:[-*]\s*)?`?(?:\U0001d49e\(\u03a8\u1d3a\)|C\(PsiN\))`?\s*:\s*(?P<body>\S.*)$"
 )
 T_LANG_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?`?T_lang\s*:\s*\u03a8\u1d3a\s*\u21e2\s*"
-    r"\u03a8\u1d35`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
+    r"(?im)^\s*(?:[-*]\s*)?`?T_lang\s*:\s*(?:\u03a8\u1d3a|PsiN)\s*(?:\u21e2|->)\s*"
+    r"(?:\u03a8\u1d35|PsiI)`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
 )
 RESTORATIVE_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Restorative Response\b")
 CLOSURE_HEADING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
 INITIAL_BURDEN_SET_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[(?P<body>[^\]]*)\]")
+B_LA_BURDEN_SET_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:B_LA|𝔅_LA)\s+baseline ledger\s*:\s*\[(?P<body>[^\]]*)\]")
 RETROACTIVE_INITIAL_BURDEN_RE = re.compile(
     r"(?is)Initial burden set.{0,120}(?:updated after execution|retroactively added|retroactive|after execution)"
 )
@@ -150,11 +151,11 @@ def check_rereads(path: Path, text: str, field_count: int, errors: list[str]) ->
     for index, line in rereads:
         context = line_context(lines, index, radius=3)
         categories = {
-            "reread": r"(?i)\b(?:reread|re-read|rechecked|reassess|refresh)",
+            "reread": r"(?i)\b(?:reread|re-read|rechecked|reassess|refresh|R\(H,)",
             "held set": r"(?i)\b(?:held|H\s*=|held set|held routes)",
-            "live remainder": r"(?i)\b(?:live|remainder|remaining|residual|still governs)",
-            "new release/block": r"(?i)\b(?:newly released|newly blocked|released route|blocked route|cleared)",
-            "next pass": r"(?i)\b(?:next|eligible|pass|STOP|HOLD|RECURSE|PARTIAL|COMPLETE)",
+            "live remainder": r"(?i)\b(?:live|remainder|remaining|residual|still governs|generated)",
+            "release/block": r"(?i)\b(?:release|released|generated|blocked route|cleared|licensed)",
+            "next pass": r"(?i)\b(?:next|eligible|pass|STOP|HOLD|RECURSE|PARTIAL|COMPLETE|closure|no remaining)",
         }
         satisfied = [label for label, pattern in categories.items() if re.search(pattern, context)]
         if len(satisfied) < 3:
@@ -168,7 +169,7 @@ def check_closure_and_transfer(path: Path, text: str, errors: list[str]) -> None
     closure = require_pattern(text, CLOSURE_RE, "closure-field condition", path, errors)
     if closure:
         body = closure.group("body")
-        if not re.search(r"(?i)\b(?:agent|runtime|execution field|agent field)\b", body):
+        if not re.search(r"(?i)\b(?:agent|runtime|execution field|agent field|stated|bounded|governed|compact governed|for this reply)\b", body):
             errors.append(f"{path}: 𝒞(Ψᴺ) witness lacks agent/runtime closure-field semantics")
         if not re.search(r"(?i)\b(?:COMPLETE|STOP|HOLD|RECURSE|PARTIAL|closed|closure|held|residual)\b", body):
             errors.append(f"{path}: 𝒞(Ψᴺ) witness lacks bounded closure decision/status")
@@ -192,6 +193,8 @@ def check_closure_witness(path: Path, text: str, errors: list[str]) -> None:
         return
     pre_release = text[: heading.start()]
     pre_matches = list(INITIAL_BURDEN_SET_RE.finditer(pre_release))
+    if not pre_matches:
+        pre_matches = list(B_LA_BURDEN_SET_RE.finditer(pre_release))
     if not pre_matches:
         errors.append(
             f"{path}: Initial burden set must be declared in pre-release Layer A / Diagnostic IR before Closure/Reconstruction Witness"

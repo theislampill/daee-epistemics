@@ -10,7 +10,7 @@ state: RECURSE
 - claim_level: worldview criterion
 - pattern_profile: D6 imported framework; D3 identity-stabilization
 - reason-category: 2 / imported framework controls the case
-- Concealment mode: mode-? - surface-open / framework-concealed; the conclusion is stated openly, but D6 imported framework pressure presents the creedal reading lens as neutral grammar.
+- Concealment mode: mixed — iʿrāḍ + juḥūd pressure; surface-open / framework-concealed; the conclusion is stated openly, but D6 imported framework pressure presents the creedal reading lens as neutral grammar. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
 - deformation: D6 imported foreign framework; D3 identity-stabilization
 - live noetic burden: B1
 

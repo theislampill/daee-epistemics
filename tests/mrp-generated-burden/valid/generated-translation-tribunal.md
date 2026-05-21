@@ -55,9 +55,9 @@ Layer A — Compact DSL/IR Re-entry
 
 Layer B — Governed Operation Body
 
-²B₁[definition-discipline] — Target: "translate into neutral reasons." Operation: define the translation demand as an admissibility rule, not a mere communication norm. Result: the tribunal becomes explicit.
-²B₂[authority-order-repair] — Target: the public authority criterion. Operation: ask which authority grants the criterion the right to exclude revelation. Result: the demand transfers authority to the secular tribunal.
-²B₃[criterion-reversal] — Target: "everyone can accept." Operation: test whether the criterion itself is accepted by everyone without contested metaphysics. Result: the criterion fails its own universality standard.
+²B₁[definition-discipline] — Target: "translate into neutral reasons." Operation: define the translation demand as an admissibility rule, not a mere communication norm. Result: the tribunal becomes explicit. Contribution-to-Land: fixes the generated burden as an authority-filter question rather than a style preference.
+²B₂[authority-order-repair] — Target: the public authority criterion. Operation: ask which authority grants the criterion the right to exclude revelation. Result: the demand transfers authority to the secular tribunal. Contribution-to-Land: exposes the generated node's source-order pressure.
+²B₃[criterion-reversal] — Target: "everyone can accept." Operation: test whether the criterion itself is accepted by everyone without contested metaphysics. Result: the criterion fails its own universality standard. Contribution-to-Land: closes the generated burden by applying its own standard back onto it.
 
 Land(²B): the translation tribunal is landed as a non-neutral admissibility rule; it cannot serve as an unexamined judge over revelation.
 

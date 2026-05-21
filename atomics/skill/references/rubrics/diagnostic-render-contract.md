@@ -127,6 +127,11 @@ Public canonical output should prefer `¹B`, `²B`, `¹B₁[FPD]`, `¹B₂[M1-P]
 `1B2`, `2B1` or `B1`/`B2` only as ASCII fallback. `B1.s1` / `B<N>.s<M>` remains a
 legacy/checker alias and should not be the primary public notation unless the output is explicitly
 a checker/dev-harness trace.
+Generated-MRP proof is stricter than ordinary parser compatibility. A generated node should be
+headed as `## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, should use `¹B → ²B` for the
+visible graph delta, and should use `Land(¹B)` / `R(H,Δ)` in public proof. ASCII aliases such as
+`B1`, `B2`, `B1 -> B2`, `Land(B1)`, and `R(H,Delta)` are only explicit fallback/parser forms and
+do not satisfy the public generated-burden proof surface when Unicode transport is available.
 
 Expanded formalism render boundary: full algebraic exposition belongs by default to
 theory/specification docs, `:dsl` visibility, or internal audit surfaces. Default output must
@@ -187,6 +192,26 @@ The visible MRP block and the closure-witness `MRP resultants` ledger must agree
 an already-initialized held node cannot be called generated in the ledger merely because MRP
 authorized the route edge. A generated ledger entry requires a matching `[generated-by: MRP(ⁿB)]`
 burden node and normal Layer A/B accounting.
+It must also say what real post-land pressure / escape-route state became licensed after the prior
+landing, why that pressure was absent from the initial burden/held inventory, and which existing
+owners/TTPs answer it. Do not render MRP as speculative dialogue generation or as "possible replies
+to answer." The proof is the direct reread calculus:
+`Land(ⁿB) -> ΔⁿB/Δκ -> ∇/∇·T/∇×T -> R(H,Δ) containing MRP -> resultant route`. Public prose may
+describe the pressure as an anticipated retreat, but the generated burden must be licensed by the
+post-land field state. MRP licenses the generated node; it is not the mega-TTP that answers the
+generated burden.
+For hard theological, named-worldview, mixed-field, source-worldview, source-authentication, or authority-frame renders, keep
+the ledger distinction visible when generated MRP is used: `𝔅_LA` is the baseline Layer-A burden
+set, `𝔅_MRP` is the generated post-Land burden set, and `𝔅_total = 𝔅_LA ∪ 𝔅_MRP`. Ordinary
+Layer-A burdens remain ordinary held/released burdens. Generated-MRP proof requires an additional
+non-baseline `ᵏB [generated-by: MRP(ⁿB)]` node that receives full Layer A/B treatment and lands
+before the route returns to pending Layer-A-held material or closes.
+Before final STOP in a hard case, the render must show whether `R(H,Δ)` found any non-baseline
+post-Land pressure absent from `𝔅_LA`: an immunity shield, authority-shift, proof-stack retreat,
+source-order recoil, predicate recoil, formal-shell recoil, concealment pressure, or
+shubhah/shakk-rāyb clarification pressure. If the route is live and not already `𝔅_LA`, render it
+as `𝔅_MRP` with full Layer A/B and closure accounting before STOP. If it is not live, state the
+field-state reason rather than treating baseline ledger exhaustion as proof.
 
 Closure witness floor: `𝒞(Ψᴺ)` is agent/runtime-side closure only. When printed, it must identify
 the agent execution-field decision or status (COMPLETE, STOP, HOLD, PARTIAL, or RECURSE) and must
@@ -464,10 +489,14 @@ diagnostic burden accounting.
 ### Layer A ? Compact DSL/IR header
 - read status: [dominant | distributed | underdetermined]
 - confidence: [strong | provisional | low]
+- diagnostic_target: [claim | worldview | quoted-interlocutor | requester-self-state | mixed]
+- concealment_applies_to: [diagnostic_target by default; requester only when self-state is explicitly the target]
+- requester_posture: [practitioner/requester/curious outsider/adversarial claimant/self-state target/underdetermined]
 - claim_level: [first-order | meta-epistemic | meta-ontological | meta-noetic | cross-level]
 - pattern_profile: [PF overlay or none]
 - reason-category: [1 | 2 | 3 | 4]
-- Concealment mode: [clear | mode-? | compact anchored mode; never `None detected`]
+- Concealment mode: [clear | iʿrāḍ/irad | juḥūd/juhud | inkār/inkar | istikbār/istikbar | nifāq/nifaq | mixed; exact label required; never bare `concealment:` and never `None detected`; loose glosses follow the source-owned mode]
+- clarification pressure: [optional; shubhah / shakk-rāyb / tawahhum / doubt-pressure when sincere clarification, Muslim/ḥanīf restoration, or truth-seeking uncertainty covers clarity without refusal]
 - deformation: [primary/secondary deformation read or none/underdetermined]
 - DO-orient: [truth-seek | identity-perf | autotelic | zann-mode | mixed]
 - live noetic burden: [input-anchored noetic-state burden governing this pass]
@@ -610,8 +639,30 @@ the case is named-worldview, imported-framework, pseudo-neutral-tribunal, or ide
 If the same Layer A marks
 `D6`, imported-framework pressure, pseudo-neutral tribunal pressure, or identity-stabilization
 as operative, `clear` is not licensed merely because the conclusion was stated openly. Use a
-non-clear compact mode, `mode-?`, or an anchored phrase such as `surface-open /
-framework-concealed` while holding stronger interior claims unless the evidence warrants them.
+source-owned non-clear mode (`iʿrāḍ`, `juḥūd`, `inkār`, `istikbār`, `nifāq`, or `mixed`) and then a
+plain gloss such as `surface-open / framework-concealed` while holding stronger interior claims
+unless the evidence warrants them. Do not let the gloss replace the mode. The line should also
+name the boundary: diagnostic noetic covering only, no hidden soul-state or takfīr judgment.
+When the mode is `mixed`, name the dominant source-owned component pressures when visible
+(`iʿrāḍ + juḥūd pressure`, `inkār + istikbār pressure`, etc.) before any secondary gloss. A line
+such as `Concealment mode: mixed / framework-concealed` is too thin when the component pressure
+can be read from the field; use `mixed — <source-owned pressures>; <secondary gloss>` instead.
+`Concealment mode: mixed - framework-concealed source-worldview pressure` is also too thin when
+no component mode is named. In ASCII transport, render the source-owned components as aliases,
+for example `Concealment mode: mixed - irad + juhud pressure; secondary gloss:
+framework-concealed source-worldview pressure. Boundary: diagnostic noetic covering only; no
+hidden soul-state or takfir judgment.`
+When the user is a Muslim/ḥanīf/truth-seeker asking sincerely under shubhah, shakk/rayb,
+tawahhum, or doubt-pressure, do not force the case into `juḥūd`, `inkār`, `istikbār`, or `nifāq`.
+Render the adjacent pressure explicitly (`clarification pressure: shubhah / shakk-rāyb`) and route
+through clarification, V9, fiṭrah anchoring, source-order repair, bounded reassurance, or P7/DW
+hold as appropriate. A positive non-refusal concealment read does not mean no burden exists.
+Concealment mode scopes to the diagnostic target by default. A prompt like `refute secularism`
+diagnoses secularism as a noetic/worldview field; it does not diagnose the requester as personally
+concealed. If the requester posture is visible, render it as posture/context, not concealment,
+unless the requester explicitly presents their own doubt, belief, refusal, or interior struggle as
+the diagnostic target. This target-scoping line prevents the concealment tool from becoming an
+unseen-person read.
 If a public worldview or identity marker supplies the criterion, authority-order, discourse
 posture, or restoration vector, Layer A may mark it as structurally load-bearing while still
 holding interior motive, culpability, sincerity, and soul-state. Source-status caution prevents
