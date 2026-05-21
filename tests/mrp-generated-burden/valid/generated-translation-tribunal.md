@@ -36,6 +36,7 @@ Pressure activations:
 ∇·T: non-neutral / translation tribunal pressure surfaces after Land(¹B)
 ∇×T: null / no circular dependency; the pressure is a directed resultant
 Finding: genuine-dependent
+Route-gradient: ∇ points to ²B [generated-by: MRP(¹B)] because Δ¹B exposed framework/admissibility pressure not present in the initial burden set.
 MRP route result type: generated_burden_instantiation
 MRP resultant: genuine-dependent -> instantiate ²B [generated-by: MRP(¹B)] and route RECURSE
 Graph delta: ¹B → ²B
@@ -74,6 +75,7 @@ Pressure activations:
 ∇·T: settled / no additional resultant burden beyond ²B
 ∇×T: null / no circular dependency
 Finding: stable
+Route-gradient: ∇ points to STOP because ∇·B is neutral, ∇×κ is null, and no further input-anchored resultant remains.
 MRP route result type: no_new_resultant
 MRP resultant: stable -> no additional resultant burden; closure witness may record bounded closure for this generated-node pass
 Graph delta: none

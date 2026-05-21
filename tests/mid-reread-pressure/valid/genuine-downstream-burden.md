@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: non-neutral / B2 diverged as genuine downstream burden
 ∇×T: null / no churn loop
 Finding: genuine-dependent
+Route-gradient: ∇ points to held B2 because ΔⁿB landed the root criterion while B2 was already in the initial burden set.
+MRP route result type: held_burden_activation
 MRP resultant: genuine-dependent -> RECURSE with graph edge B1 -> B2
 Graph delta: B1 → B2
 Pre-emption basis: graph-bound

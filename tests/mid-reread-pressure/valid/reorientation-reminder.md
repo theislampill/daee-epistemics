@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: settled / post-landing pressure returns to prior stable knowledge
 ∇×T: null / no loop remains
 Finding: reorientation
+Route-gradient: ∇ points to STOP through reorientation because the field returns to already-landed stable knowledge rather than a new proof route.
+MRP route result type: no_new_resultant
 MRP resultant: reorientation -> STOP with reminder/reorientation no-edge
 Graph delta: none
 Pre-emption basis: none

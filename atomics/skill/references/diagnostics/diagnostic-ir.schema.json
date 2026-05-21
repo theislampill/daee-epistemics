@@ -527,10 +527,15 @@
           "$comment": "Optional TTP-MRP evidence. It records how the post-landed reread state was pressured before STOP/HOLD/RECURSE/LoopBreak/closure.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["target_burden_id", "reread_delta", "pressure_activations", "divergence_state", "curl_state", "finding", "graph_delta", "preemption_basis", "route", "non_claims"],
+          "required": ["target_burden_id", "reread_delta", "pressure_activations", "route_gradient", "divergence_state", "curl_state", "finding", "route_result_type", "graph_delta", "preemption_basis", "route", "non_claims"],
           "properties": {
             "target_burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
             "reread_delta": { "type": "string", "minLength": 1 },
+            "route_gradient": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Plain-∇ directional reread after Land(ⁿB): held target, generated target, HOLD, LoopBreak, or STOP."
+            },
             "pressure_activations": {
               "type": "object",
               "additionalProperties": false,
@@ -547,6 +552,10 @@
             "finding": {
               "type": "string",
               "enum": ["stable", "genuine-dependent", "partial-real", "hidden-framework-recoil", "doubt-churn", "reorientation"]
+            },
+            "route_result_type": {
+              "type": "string",
+              "enum": ["held_burden_activation", "generated_burden_instantiation", "no_new_resultant", "loopbreak", "hold_partial"]
             },
             "divergence_state": {
               "type": "string",

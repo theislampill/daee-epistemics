@@ -68,6 +68,7 @@
   "reread_pressure": {
     "target_burden_id": "B1",
     "reread_delta": "ΔⁿB landed and Δκ exposed B2",
+    "route_gradient": "∇ points to held B2 because ΔⁿB landed the root criterion while B2 was already in the initial burden set.",
     "pressure_activations": {
       "freeze_landed_move": "diagnostic-render-contract / terminal-state accounting",
       "dependency_tug": "closure witness graph pressure class",
@@ -77,6 +78,7 @@
       "reorientation_reminder": "R2-the-reminder held"
     },
     "finding": "genuine-dependent",
+    "route_result_type": "held_burden_activation",
     "divergence_state": "non-neutral",
     "curl_state": "null",
     "graph_delta": {

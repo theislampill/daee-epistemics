@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: bounded / no genuine downstream burden
 ∇×T: non-null / circular reassurance demand requires LoopBreak
 Finding: doubt-churn
+Route-gradient: ∇ points to LoopBreak because the pressure curls into reassurance churn rather than a new burden.
+MRP route result type: loopbreak
 MRP resultant: doubt-churn -> LoopBreak with no graph edge
 Graph delta: none
 Pre-emption basis: commitment-bound

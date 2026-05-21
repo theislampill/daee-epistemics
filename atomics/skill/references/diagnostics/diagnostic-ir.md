@@ -168,7 +168,7 @@ claim.
 Optional MRP evidence: `field_witness.reread_pressure` may record
 `TTP-MRP-mid-reread-pressure` when the post-landed reread state itself is tested. It records
 target burden, `R(H,Δ)` delta, pressure activations, active `∇·T` / `∇×T` states, finding,
-graph delta, pre-emption basis, route, and non-claims.
+plain-`∇` route-gradient, route-result type, graph delta, pre-emption basis, route, and non-claims.
 It is validated only when present and does not make MRP visible in ordinary compact output.
 
 Formal typing boundary: `∇` is a route-ranking/preorder pressure read over eligible routes,
@@ -644,6 +644,19 @@ Concealment mode is mandatory. Use `clear` when no active concealment mode is po
 Use `mode-?` when the axis remains unresolved. Blank values, em dashes, or placeholders such as
 `none confirmed` are invalid because they erase the difference between "resolved absent" and
 "still unread."
+`clear` is a positive non-operative finding, not a synonym for "the speaker stated the claim
+openly." When a compact Layer A read simultaneously marks an imported framework, pseudo-neutral
+tribunal, or identity-stabilizing reading lens as operative, do not render `concealment: None
+detected` and do not use `clear` unless the framework has been positively exposed and no longer
+governs the present pass. If the surface claim is open but the governing lens is unacknowledged,
+record a non-clear mode where readable, or `mode-?` with an anchored note such as
+`surface-open / framework-concealed`.
+Concealment mode is control-bearing: framework-concealment normally registers as `ξ` pressure
+when a proof/warrant/source rule is presented as neutral, as `Ω` pressure when source-order or
+ontological predication is covered, as `κ` pressure when the proof-stack loops back to the same
+unexamined lens, and as `∇·B` pressure when the covering keeps a burden live. Do not add a new
+person-level judgment from those symbols; use them to govern hold/release, MRP pressure, and
+restoration target.
 
 **Mandatory minimum**
 
@@ -760,12 +773,16 @@ After every bounded restorative move, and before any closing or STOP decision, t
 2. What remains live in the same input?
 3. Which held routes were rechecked?
 4. Did any held route become newly eligible?
-5. Is there a next eligible pass?
-6. Is the correct governance decision STOP, HOLD, RECURSE, or PARTIAL?
+5. Where does the refreshed route-gradient `∇` point: held burden, generated burden, hold,
+   loopbreak, or none?
+6. Is there a next eligible pass?
+7. Is the correct governance decision STOP, HOLD, RECURSE, or PARTIAL?
 
 Decision semantics:
 
-- `STOP` is valid only if the gate has run, no live distortion remains, no held route has become newly eligible, and `next_eligible_pass` explicitly records `none`.
+- `STOP` is valid only if the gate has run, no live distortion remains, no held route has become
+  newly eligible, no route-gradient points toward an input-anchored burden in licensed scope, and
+  `next_eligible_pass` explicitly records `none`.
 - `HOLD` is valid only when remaining material exists but its release signal is absent because a stop, register-hold, semantic gate, thin-basis rule, or other hard rail still blocks it.
 - `RECURSE` is required when another live distortion remains in the same input, or when a held route becomes newly eligible after the current pass clears its blocker.
 - `PARTIAL` is required when token, tool, or interaction limits prevent completion while recursive pressure remains. Do not emit a false STOP in that condition.

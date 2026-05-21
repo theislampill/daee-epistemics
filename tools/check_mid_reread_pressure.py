@@ -58,10 +58,13 @@ ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
 REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Δ)\)")
 LANDED_DELTA_RE = re.compile(r"(?:Delta|Δ|ΔⁿB)")
+MRP_HEADING_RE = (
+    r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
+)
 MRP_BLOCK_RE = re.compile(
-    r"(?ims)^\s*\[Mid-Reread Pressure\]\s*(?P<body>.*?)(?="
-    r"^\s*\[Mid-Reread Pressure\]\s*$|"
-    r"^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
+    r"(?ims)" + MRP_HEADING_RE + r"\s*(?P<body>.*?)(?="
+    + MRP_HEADING_RE
+    + r"|^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
     r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
 )
 STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
@@ -88,9 +91,16 @@ CURL_NEGATION_RE = re.compile(r"(?i)\b(?:no loop|no circular|no churn|not a loop
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
     r"field_witness|pressure class|terminal-state|foreign-premise|definition|grief|"
-    r"FPD|M1|M1P|M8|M9|M7|V2|R2|V3|P1|P7|doubt-vs-skepticism|"
+    r"FPD|M\d+|M1P|V\d+|R\d+|P\d+|doubt-vs-skepticism|"
     r"source-architecture|predicate discipline|application hold|hujjah|hiddenness|"
     r"coercive-guidance|closure-witness|coverage gap)\b"
+)
+BURDEN_ARROW_TARGET_RE = re.compile(
+    r"(?:"
+    r"(?:->|→)\s*(?:B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\b|"
+    r"(?:B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s+(?:pressure\s+highest|released|remains\s+live)"
+    r")",
+    re.IGNORECASE,
 )
 
 
@@ -100,6 +110,7 @@ class MrpBlock:
     target: str
     reread: str
     landed_delta: str
+    route_gradient: str
     divergence: str
     curl: str
     finding: str
@@ -122,14 +133,20 @@ def extract_blocks(text: str) -> list[str]:
 
 
 def field(body: str, name: str) -> str:
-    match = re.search(rf"(?im)^\s*{re.escape(name)}\s*:\s*(?P<body>.+)$", body)
+    match = re.search(
+        rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?{re.escape(name)}\s*:\s*(?:\*\*)?\s*(?P<body>.+)$",
+        body,
+    )
     return match.group("body").strip() if match else ""
 
 
 def parse_pressure_lines(body: str) -> dict[str, str]:
     pressure: dict[str, str] = {}
     for key in PRESSURE_KEYS:
-        match = re.search(rf"(?im)^\s*[-*]\s*{re.escape(key)}\s*:\s*(?P<body>.+)$", body)
+        match = re.search(
+            rf"(?im)^\s*[-*]\s*(?:\*\*)?{re.escape(key)}\s*:\s*(?:\*\*)?\s*(?P<body>.+)$",
+            body,
+        )
         if match:
             pressure[key] = match.group("body").strip()
     return pressure
@@ -148,6 +165,7 @@ def parse_mrp_body(body: str) -> MrpBlock:
         target=field(body, "Target"),
         reread=field(body, "Reread"),
         landed_delta=field(body, "Landed delta"),
+        route_gradient=field(body, "Route-gradient"),
         divergence=field(body, "∇·T"),
         curl=field(body, "∇×T"),
         finding=field(body, "Finding"),
@@ -217,8 +235,14 @@ def check_sidecar(path: Path, text: str, mrp: MrpBlock, errors: list[str]) -> No
         return
     if reread_pressure.get("finding") != mrp.finding:
         errors.append(f"{sidecar_path}: reread_pressure finding does not match visible MRP")
+    if not reread_pressure.get("route_gradient"):
+        errors.append(f"{sidecar_path}: reread_pressure route_gradient missing")
+    elif mrp.route_gradient and str(reread_pressure.get("route_gradient")) != mrp.route_gradient:
+        errors.append(f"{sidecar_path}: reread_pressure route_gradient does not match visible MRP")
     if mrp.route_result_type and reread_pressure.get("route_result_type") != mrp.route_result_type:
         errors.append(f"{sidecar_path}: reread_pressure route_result_type does not match visible MRP")
+    if not mrp.route_result_type and not reread_pressure.get("route_result_type"):
+        errors.append(f"{sidecar_path}: reread_pressure route_result_type missing")
     if reread_pressure.get("route") != mrp.route:
         errors.append(f"{sidecar_path}: reread_pressure route does not match visible MRP")
     if reread_pressure.get("preemption_basis") != mrp.preemption_basis:
@@ -313,11 +337,24 @@ def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]
             errors.append(f"{label}: generated_burden_instantiation requires visible graph edge")
         if mrp.preemption_basis == "none":
             errors.append(f"{label}: generated_burden_instantiation requires graph/commitment/framework-bound basis")
+        if not mrp.route_gradient:
+            errors.append(f"{label}: generated_burden_instantiation requires Route-gradient")
+        elif not re.search(r"(?i)\b(?:generated|new|newly|resultant|not fully present|not present|MRP)\b", mrp.route_gradient):
+            errors.append(f"{label}: generated_burden_instantiation Route-gradient must explain the newly surfaced resultant")
+        elif not re.search(r"(?i)(?:Δ|Delta|xi|ξ|Omega|Ω|concealment|framework|dependency|burden-gradient|translation tribunal|admissibility)", mrp.route_gradient):
+            errors.append(f"{label}: generated_burden_instantiation Route-gradient must name the post-Land pressure source")
     elif value == "held_burden_activation":
         if mrp.route not in {"RECURSE", "HOLD"}:
             errors.append(f"{label}: held_burden_activation requires Route: RECURSE or HOLD")
         if not has_edge(mrp.graph_delta):
             errors.append(f"{label}: held_burden_activation requires graph provenance edge")
+        if not mrp.route_gradient:
+            errors.append(f"{label}: held_burden_activation requires Route-gradient")
+        elif not (
+            re.search(r"(?i)\b(?:held|initial|already[- ]inventoried|already named|H\b)", mrp.route_gradient)
+            or BURDEN_ARROW_TARGET_RE.search(mrp.route_gradient)
+        ):
+            errors.append(f"{label}: held_burden_activation Route-gradient must point to an already-held/initial burden")
     elif value == "no_new_resultant":
         if has_edge(mrp.graph_delta):
             errors.append(f"{label}: no_new_resultant must not create a graph edge")
@@ -340,6 +377,8 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: Reread must invoke R(H,Δ)")
     if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
         errors.append(f"{label}: Landed delta must name ΔⁿB/Δ")
+    if not mrp.route_gradient:
+        errors.append(f"{label}: Route-gradient must record the plain-∇ directional read")
     divergence_state = first_state(mrp.divergence)
     curl_state = first_state(mrp.curl)
     if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
@@ -386,6 +425,8 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: Reread must invoke R(H,Delta)")
     if not mrp.landed_delta or not LANDED_DELTA_RE.search(mrp.landed_delta):
         errors.append(f"{label}: Landed delta must name Delta/Δ")
+    if not mrp.route_gradient:
+        errors.append(f"{label}: Route-gradient must record the plain-∇ directional read")
     divergence_state = first_state(mrp.divergence)
     curl_state = first_state(mrp.curl)
     if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
@@ -447,6 +488,8 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: MRP Reread must invoke R(H,Δ)")
     if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
         errors.append(f"{path}: MRP Landed delta must name ΔⁿB/Δ")
+    if not mrp.route_gradient:
+        errors.append(f"{path}: MRP Route-gradient must record the plain-∇ directional read")
     divergence_state = first_state(mrp.divergence)
     curl_state = first_state(mrp.curl)
     if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
@@ -576,7 +619,7 @@ def check_output_reconstructibility(path: Path) -> list[str]:
         errors.append(f"{path}: reconstructibility missing initial burden set")
     if not partial_owner and not re.search(r"(?im)^\s*Terminal states\s*:", text):
         errors.append(f"{path}: reconstructibility missing terminal-state accounting")
-    if not partial_owner and not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\b|restoration aim", text):
+    if not partial_owner and not re.search(r"(?im)^\s*(?:#{1,6}\s*)?(?:Final\s+)?Restorative Response\b|restoration aim", text):
         errors.append(f"{path}: reconstructibility missing closure/restoration relation")
     if partial_owner or hold_route:
         if not re.search(r"(?i)\b(?:next live burden|held-with-reason|carried-PARTIAL|Route\s*:\s*HOLD|PARTIAL)\b", text):

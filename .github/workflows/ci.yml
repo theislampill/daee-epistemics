@@ -44,6 +44,7 @@ jobs:
           python tools/check_mid_reread_pressure.py
           python tools/check_mrp_generated_burden.py
           python tools/check_mrp_route_invariants.py
+          python tools/check_concealment_mode.py
           python tools/check_trinitarian_mrp_hotfix.py
           python tools/check_ttp_operator_contracts.py --strict
           python tools/check_spec_authoring_pack.py

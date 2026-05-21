@@ -84,6 +84,7 @@ format as a closure witness.
 **MRP FIELD VALUE DISCIPLINE.** In the compact `[Mid-Reread Pressure]` block, field values are
 record values, not prose. Use exact first-token values: `∇·T: neutral|settled|bounded|non-neutral`,
 `∇×T: null|resolved|held|non-null`, `Finding: stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation`,
+`MRP route result type: held_burden_activation|generated_burden_instantiation|no_new_resultant|loopbreak|hold_partial`,
 `Pre-emption basis: none|graph-bound|commitment-bound|framework-bound`, and
 `Route: STOP|HOLD|RECURSE|LoopBreak(∇×T)`. Do not add punctuation to those values. Each pressure
 slot begins with an owner/TTP id, `pressure class: <name>`, or `coverage gap: <missing owner>`,
@@ -96,6 +97,15 @@ when later burdens remain live in a strictly acyclic dependency chain, render `�
 rotation, or self-reinforcing loop pressure; do not claim `∇×T: resolved` unless a prior real
 curl/loop was named. `Boundary:` always begins
 `T_lang does not imply guaranteed uptake`; append PARTIAL/owner-load text after a semicolon.
+`Route-gradient:` is mandatory in every compact MRP block and names where plain `∇` pulls after
+`Land(ⁿB)` and `R(H,Δ)`: held burden, generated burden, HOLD, LoopBreak, or STOP. It cannot be
+replaced by `∇·T` or `∇×T`; divergence says whether pressure remains, curl says whether the field
+loops, and route-gradient says where the field points next.
+The MRP block is invalid if the literal `Route-gradient:`, `MRP route result type:`, or
+`MRP resultant:` lines are missing. `Field diagnostics:`, `LoopBreak:`, a bare graph edge,
+or ordinary route prose may appear only as adjacent summaries; they never substitute for those
+required MRP fields. Before final closure, self-check every MRP block and revise any block that
+lacks these exact labels.
 `genuine-dependent` requires `Route: RECURSE` and a graph edge; `stable` requires
 `Route: STOP` and `Graph delta: none`; `partial-real` requires `Route: HOLD`.
 `Reread:` must begin exactly `R(H,Delta)` or `R(H,Δ)`; `Landed delta:` must begin with `Delta`
@@ -116,16 +126,39 @@ Each slot value must begin with an owner/TTP id, `pressure class: <name>`, or
 `cleared`, or ordinary prose. Inactive slots still render as `pressure class: none` or
 `pressure class: cleared`, followed by the effect.
 
-MRP does not own the first pass of burden discovery. Layer A / initial state-read identifies
-`¹B`, `²B`, `³B`, etc.; normal routing releases already-inventoried held burdens. `MRP(ⁿB)`
-only asks whether `Land(ⁿB)` produced an additional reread resultant beyond that initial
-inventory. Classify each MRP route result as `held_burden_activation`,
+Layer A / initial state-read owns the first visible noetic surface: the current live burden,
+the source/noetic frame, and held burdens that are explicit, input-anchored, or necessary to
+preserve a known compound. It must not pre-enumerate every speculative escape route that only
+becomes live after a burden lands. That overgrowth collapses sound-reason preemption into a
+static map. `MRP(ⁿB)` is the post-Land reread and escape-route discovery gate: after
+`Land(ⁿB)`, it asks what the field now pulls toward and what the interlocutor could say next
+under the updated `ΔⁿB` / `Δκ`. Classify each route result as `held_burden_activation`,
 `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.
-If `²B` was already in the initial burden set, MRP may authorize continued route to `²B`
-but did not generate it. A generated burden is not fully present in the initial Layer A
-inventory; it surfaces only after `Land(ⁿB)` and `R(H,Δ)`, receives a normal burden node such
-as `²B [generated-by: MRP(¹B)]`, and then receives Layer A accounting, Layer B submoves,
-`Land(²B)`/`HOLD(²B)`, and closure witness / `field_witness` graph accounting.
+If `²B` was already in the initial burden set or held set, MRP may authorize continued route to
+`²B` but did not generate it. A generated burden is not fully present in the initial Layer A
+inventory; it surfaces only after `Land(ⁿB)` and `R(H,Δ)` because the renewed route-gradient
+over `∇·B`, `∇×κ`, `ξ`, `Ω`, concealment, and held pressure reveals a new input-anchored
+resultant. It receives a normal burden node such as `²B [generated-by: MRP(¹B)]`, and then
+receives Layer A accounting, Layer B submoves, `Land(²B)`/`HOLD(²B)`, and closure witness /
+`field_witness` graph accounting.
+Worked counter-case: if Layer A declares `initial burden set: [¹B, ²B, ³B]` or
+`held: ²B, ³B`, then later `MRP(¹B)` routing into `²B` records
+`held_burden_activation`, not `generated_burden_instantiation`, even when MRP is the gate that
+authorizes release. Use `generated_burden_instantiation` only for a node not fully present in
+that initial Layer A inventory and first surfaced by the post-landing reread.
+
+**CONCEALMENT MODE VISIBILITY.** Default Layer A must render a compact `Concealment mode:` line
+whenever D6, imported-framework pressure, pseudo-neutral tribunal pressure, named-worldview
+pressure, source-worldview pressure, or identity-stabilizing lens is operative. The value must
+track operative covering, not surface secrecy: use `surface-open / framework-concealed`,
+`mode-? / framework-concealed`, or a repo-native non-clear mode when the governing lens is still
+presented as neutral or authority-setting. Do not write `concealment: None detected`, and do not
+use `clear` unless the output positively explains that the framework no longer governs the
+current pass. Trinitarian person/nature grammar, later doctrinal apparatus, cross-text doctrine
+import, imported model-language, and doctrine-preserving harmonization count as
+framework/source-worldview concealment pressure whenever they govern a local text as if they were
+neutral grammar. If the mode is printed in Layer A, the matching MRP hidden-framework-recoil slot
+must either clear it, HOLD it, LoopBreak it, or explain how it remains bounded.
 
 **MRP RECONSTRUCTIBILITY / NODE-LINEAGE ACCOUNTING.** MRP is not a rendered note. A valid routed output
 must let the input be reconstructed as node process: input -> burden nodes -> submove nodes ->
@@ -412,6 +445,11 @@ Top-salient invariants:
   default Layer A it appears inside the gate/release decision as `∇ route: Bn pressure highest`
   with the dependency-reduction reason over held alternatives. It does not bypass owner routing
   or replace `Δ`.
+- Inside MRP, the same route-gradient discipline rereads the post-Land field: `∇·B` asks whether
+  burden pressure remains, `∇×κ` asks whether dependency/curl/churn pressure remains, and plain
+  `∇` asks where the field now pulls next. That pull may point to an already-held burden, a
+  genuinely generated resultant, HOLD/PARTIAL, LoopBreak, or STOP. If the gradient is not named
+  in the MRP resultant, the generated/held distinction is under-proven.
 - MRP trigger: when `R(H,Δ)` sees non-neutral `∇·T`, non-null `∇×T`, apparent downstream burden,
   hidden-framework recoil, doubt-churn, or a licensed pre-voiced response, invoke
   `TTP-MRP-mid-reread-pressure` before closure, `LoopBreak`, HOLD, or RECURSE is licensed. MRP
@@ -421,8 +459,9 @@ Top-salient invariants:
   `Field diagnostics:`, `LoopBreak:`, or `R(H,Δ):` route after `Land(Bn)` unless
   `[Mid-Reread Pressure]` is the first visible reread block after that landing gate. Render a compact
   `[Mid-Reread Pressure]` block before the final route decision. The block must name Target,
-  Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, Finding, Graph delta,
-  Pre-emption basis, Route, and Boundary. A plain `State/noetic re-read`, `LoopBreak:`,
+  Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, Route-gradient, Finding,
+  MRP route result type, MRP resultant, Graph delta, Pre-emption basis, Route, and Boundary.
+  A plain `State/noetic re-read`, `LoopBreak:`,
   `R(H,Δ)`, graph edge, or owner/TTP trace is not MRP evidence unless it also shows the
   pressure slot and route consequence. Do not omit the block in any routed burden-cycle.
 - MRP trigger expansion: in default output, `T` includes current burden pressure, `κ/H`, held
@@ -492,6 +531,7 @@ Top-salient invariants:
     - reorientation-reminder: <existing owner/TTP or pressure class> — <release/hold/clear effect>
     ∇·T: <neutral/settled/bounded/non-neutral plus license>
     ∇×T: <null/resolved/held/non-null plus license>
+    Route-gradient: <where ∇ now points: held burden / generated burden / hold / loopbreak / stop>
     Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
     MRP route result type: <held_burden_activation/generated_burden_instantiation/no_new_resultant/loopbreak/hold_partial>
     MRP resultant: <finding -> route/graph/hold consequence>

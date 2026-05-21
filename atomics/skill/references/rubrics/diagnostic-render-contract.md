@@ -82,6 +82,11 @@ does not argue, prove itself indefinitely, or spawn another burden. Layer B is t
 operation/release surface: it performs active TTP/operator submoves and releases only what is
 needed to land the current burden. Layer A overgrowth and Layer B flattening are both render
 failures.
+Layer A may carry explicitly input-anchored held burdens, but it should not pre-list every
+foreseeable downstream escape route before any burden has landed. Speculative downstream replies
+belong to `MRP(ⁿB)` when `Land(ⁿB)` and `R(H,Δ)` make them live. A Layer A that prints the whole
+refutation chain as an initial inventory without showing why each node is already input-anchored
+has collapsed route-gradient reread into a static topology board.
 
 Burden recursion is licensed by live noetic order, not topic availability. Layer A must identify
 whether the live burden is first-order (surface claim), second-order (criterion, warrant,
@@ -141,7 +146,8 @@ do not treat expanded notation as proof that a register or owner has executed.
 
 Allowed default compact marker examples: `State: Δκ live; ∇·κ positive; ∇×κ unresolved;
 R(H,Δ): RECURSE.` `Burden field: ΔⁿB landed; ∇·B positive over B3/B4; ∇×B unresolved
-around compact-neutrality dependency.`
+around compact-neutrality dependency.` `MRP(¹B): Route-gradient points to ²B generated-by
+MRP(¹B) because Δ¹B exposed a translation tribunal not present in the initial inventory.`
 Forbidden default exposition examples: `The antisymmetric Jacobian of the noetic field shows...`;
 `The ∇× symbol proves the TTP executed.`
 
@@ -174,6 +180,13 @@ set. If a later node was already in the initial set, classify the MRP route as
 submoves, and Land/HOLD accounting. If the render cannot distinguish the initial set from newly
 released or newly generated material, closure must be HOLD, PARTIAL, or RECURSE rather than
 COMPLETE.
+Generated-burden evidence must also name the route-gradient: what changed in `ΔⁿB`, which
+`ξ`/`Ω`/concealment/dependency pressure now pulls the field toward the new node, why `∇·B` is
+non-neutral or newly directed, and why `∇×κ` is not merely a loop unless LoopBreak is licensed.
+The visible MRP block and the closure-witness `MRP resultants` ledger must agree on this lineage:
+an already-initialized held node cannot be called generated in the ledger merely because MRP
+authorized the route edge. A generated ledger entry requires a matching `[generated-by: MRP(ⁿB)]`
+burden node and normal Layer A/B accounting.
 
 Closure witness floor: `𝒞(Ψᴺ)` is agent/runtime-side closure only. When printed, it must identify
 the agent execution-field decision or status (COMPLETE, STOP, HOLD, PARTIAL, or RECURSE) and must
@@ -454,7 +467,7 @@ diagnostic burden accounting.
 - claim_level: [first-order | meta-epistemic | meta-ontological | meta-noetic | cross-level]
 - pattern_profile: [PF overlay or none]
 - reason-category: [1 | 2 | 3 | 4]
-- concealment: [clear | mode-? | compact anchored mode]
+- Concealment mode: [clear | mode-? | compact anchored mode; never `None detected`]
 - deformation: [primary/secondary deformation read or none/underdetermined]
 - DO-orient: [truth-seek | identity-perf | autotelic | zann-mode | mixed]
 - live noetic burden: [input-anchored noetic-state burden governing this pass]
@@ -494,7 +507,7 @@ shown their owner IDs, targets, operations, and results.
 - Remaining input-anchored burdens: [enumerated from original input, not a topic list]
 - Held routes rechecked:        [result after this pass]
 - Field diagnostics:            [target-explicit `∇·` / `∇×` status; include null when it licenses closure, RECURSE, or PARTIAL]
-- [Mid-Reread Pressure]:        [mandatory when this reread releases next burden, HOLD/PARTIAL, LoopBreak, or closure; include Target, Reread, Landed delta, Pressure activations, ∇·T, ∇×T, Finding, Graph delta, Pre-emption basis, Route, Boundary]
+- [Mid-Reread Pressure]:        [mandatory when this reread releases next burden, HOLD/PARTIAL, LoopBreak, or closure; include Target, Reread, Landed delta, Pressure activations, ∇·T, ∇×T, Route-gradient, Finding, MRP route result type, MRP resultant, Graph delta, Pre-emption basis, Route, Boundary]
 - LoopBreak:                    [not needed / licensed with target + ground + Δ effect + reread / held with reason]
 - Next bounded pass:            [prose reason if another bounded pass is licensed]
 - Release status:               [prose closure/hold/partial/continuation status, plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant; no raw `Recursion decision:` field]
@@ -579,7 +592,7 @@ is skipped because the prior burden changed the state, requires bounded reroute,
 closure. Do not render the next Layer B merely because it was plausible in the initial route.
 
 **Layer A required default fields:** read status, confidence, claim_level,
-pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic
+pattern_profile, reason-category, `Concealment mode:`, deformation, DO-orient, live noetic
 burden, current bounded operator (by function), held, source-status/noetic-frame, and
 gate/release decision. `Decisive missing differentiator` is conditional:
 include it when confidence is not `strong` or read status is not `dominant`, or when the
@@ -592,6 +605,13 @@ than flattening it into one module label. Preserve load-bearing distinctions amo
 desire-as-criterion, identity-stabilization, imported framework, concealment, register
 mismatch, and pride/refusal signals when the input warrants them. A compact field can still
 carry the case-specific diagnostic reading.
+Do not render `concealment: None detected` or omit the concealment line in default Layer A when
+the case is named-worldview, imported-framework, pseudo-neutral-tribunal, or identity-stabilized.
+If the same Layer A marks
+`D6`, imported-framework pressure, pseudo-neutral tribunal pressure, or identity-stabilization
+as operative, `clear` is not licensed merely because the conclusion was stated openly. Use a
+non-clear compact mode, `mode-?`, or an anchored phrase such as `surface-open /
+framework-concealed` while holding stronger interior claims unless the evidence warrants them.
 If a public worldview or identity marker supplies the criterion, authority-order, discourse
 posture, or restoration vector, Layer A may mark it as structurally load-bearing while still
 holding interior motive, culpability, sincerity, and soul-state. Source-status caution prevents
@@ -691,8 +711,10 @@ Burden N: <name>
     - reorientation-reminder: <existing owner/TTP or pressure class> — <release/hold/clear effect>
     ∇·T: <neutral/settled/bounded/non-neutral plus license>
     ∇×T: <null/resolved/held/non-null plus license>
+    Route-gradient: <where ∇ now points: held burden / generated burden / hold / loopbreak / stop>
     Finding: <stable/genuine-dependent/partial-real/hidden-framework-recoil/doubt-churn/reorientation>
     MRP route result type: <held_burden_activation/generated_burden_instantiation/no_new_resultant/loopbreak/hold_partial>
+    MRP resultant: <finding -> route/graph/hold consequence>
     Graph delta: <none or ⁿB → ⁿ⁺¹B>
     Pre-emption basis: <none/graph-bound/commitment-bound/framework-bound>
     Route: <STOP/HOLD/RECURSE/LoopBreak(∇×T)>
@@ -846,8 +868,8 @@ unless a preceding state/noetic re-read explicitly released it with `Released: <
 **Layer A must not show:** full Diagnostic IR, full Case State, source_basis,
 matched_modules, load ledger, route itinerary (e.g., Next: FPD → M1 → M8), NS codes in
 field-printout form (unless the NS code is the governing issue), or broad concealment /
-deformation verdict dumps without anchoring signal. The compact lowercase `concealment:`
-and `deformation:` fields above are permitted only as bounded DSL/IR anchors, not as
+deformation verdict dumps without anchoring signal. The compact `Concealment mode:`
+and lowercase `deformation:` fields above are permitted only as bounded DSL/IR anchors, not as
 expanded interior-certification ledgers.
 
 **Default compact DSL/IR header:** The Layer A block above is the compact visible
@@ -968,7 +990,7 @@ Rule: prose diagnostic fact is allowed; field-style printout is not default outp
 "Field-style printout" in this rule refers to the full IR / Case-State field set and verdict
 dumps ? not the compact Layer A DSL/IR header. The compact Layer A header is the explicitly
 permitted exception: it may show read status, confidence, claim_level, pattern_profile,
-reason-category, concealment, deformation, DO-orient, live noetic burden, current bounded
+reason-category, `Concealment mode:`, deformation, DO-orient, live noetic burden, current bounded
 operator, held, source-status/noetic-frame, decisive missing differentiator when required,
 and gate/release decision. Layer A must not show the forbidden set above.
 
@@ -982,8 +1004,8 @@ Default final-output failure tokens include:
   a visible route plan such as `Next: FPD -> ...`.
 - Strong interior-classification verdict dumps such as `Concealment: iʿrāḍ primary`,
   `Deformation: hawā primary`, or `NS-4/NS-5 compound` unless the user invoked `:dsl`
-  or the task is internal/development audit. The compact lowercase Layer A fields are
-  allowed only as bounded DSL/IR anchors.
+  or the task is internal/development audit. The compact Layer A fields are allowed only
+  as bounded DSL/IR anchors.
 - A bibliography, "Primary Sources Referenced", external research-style source list, or
   source-basis ledger in default mode unless sources/citations were requested.
 - Bare "Step 1 / Step 2 / Step 3 / Step 4" or "Move 1 / Move 2 / Move 3" sequencing
@@ -1380,7 +1402,7 @@ else?"
 - claim_level: meta-ontological
 - pattern_profile: none
 - reason-category: 2
-- concealment: clear
+- Concealment mode: clear
 - deformation: category pressure / none primary certified
 - DO-orient: truth-seek
 - live noetic burden: composition / dependence pressure on divine attributes

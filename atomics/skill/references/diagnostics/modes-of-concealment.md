@@ -102,6 +102,14 @@ ask one bounded diagnostic question first; if the same blocker stays live, add o
 tribunal-clearing; then pause. Concealment analysis here is therefore a live route into
 deployment discipline, not a label that exhausts the case.
 
+**Surface-open / framework-concealed rule:** Do not equate an openly stated conclusion with
+`clear` concealment when the operative lens is being presented as neutral. If Layer A marks an
+imported framework, pseudo-neutral tribunal, or identity-stabilizing reading lens as operative,
+then `concealment: None detected` is invalid and `clear` is licensed only if the framework is
+positively no longer functioning as a hidden criterion. When the interior mode is not readable,
+use `mode-?` or a compact anchored phrase such as `surface-open / framework-concealed`; do not
+over-certify `juhud`, `inkar`, or `istikbar` from the public claim alone.
+
 ---
 
 ## Juḥūd — Culpable Denial

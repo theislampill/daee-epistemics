@@ -144,7 +144,10 @@ diagnostic trace). It is not the default `/daee-epistemics` output template:
 - `Primary deformation` should name only the deformation governing the next move.
 - `Concealment mode` is required. Use `clear` when no active concealment mode is positively
   read; use `mode-?` when the axis remains unresolved. Do not leave this field blank and do
-  not substitute placeholders such as `none confirmed`.
+  not substitute placeholders such as `none confirmed`. Surface openness is not enough for
+  `clear`: when an imported framework, pseudo-neutral tribunal, or identity-stabilizing lens
+  is operative, the concealment axis remains non-clear unless that lens has been positively
+  exposed and no longer governs the current pass.
 - `Register-hold` is required whenever concealment x orientation blocks direct deployment.
   It names the axis or cell doing the holding. This field governs Layer B only; it does not
   cancel the Layer A diagnosis.

@@ -127,7 +127,8 @@ label-pressure, doubt-churn, reorientation/reminder, or stable no-new-burden clo
 release. Default routed output must render `[Mid-Reread Pressure]` for every burden-cycle route; a bare
 `R(H,Δ)`, `LoopBreak:`, graph edge, or owner/TTP trace does not prove reread-pressure execution.
 MRP licenses graph deltas for RECURSE/HOLD, blocks proof-stacking when LoopBreak or STOP
-is the governed route, and makes `∇·T` / `∇×T` active reread gates rather than final labels. `∇·` and `∇×` remain forbidden as
+is the governed route, and makes `∇`, `∇·T` / `∇×T` active reread gates rather than final labels.
+`∇·` and `∇×` remain forbidden as
 decorative proof of execution: they must have an explicit field target and be tied to the
 noetic/burden/dependency/register/route field, `κ/H`, dependency pressure, loop-breaking,
 `R(H,Δ)`, PARTIAL, RECURSE, COMPLETE, or checker outcome. They may render as `∇·κ` / `∇×κ`
@@ -143,6 +144,14 @@ Jacobian of the noetic field shows...`; `The ∇× symbol proves the TTP execute
 `del-dot` and `del-cross` are ASCII aliases for `∇·` and `∇×`, not separate operators; if
 Unicode is unavailable they may appear only as compact, target-explicit state markers with the
 same control-effect boundary.
+
+MRP route-gradient is the bridge from field diagnostics to release amount. After a burden lands,
+the output-release decision must ask whether plain `∇` now points toward an already-held burden,
+a newly generated resultant, HOLD/PARTIAL, LoopBreak, or STOP. For generated resultants, the
+release must say which `ΔⁿB` change exposed the new `ξ` / `Ω` / concealment / dependency pressure.
+For held activations, the release must say the gradient points to a node already in `H` or the
+initial burden set. For STOP, there must be no remaining route-gradient toward an input-anchored
+burden inside the licensed scope.
 
 If compact `∇×T` remains nonzero, the release decision must account for loop-breaking eligibility.
 `LoopBreak(∇×T)` may be released only when the output identifies the target loop, an
@@ -622,7 +631,7 @@ Before emitting a default response, check:
 
 ```text
 Layer A ? Compact DSL/IR header is present
-read status, confidence, claim_level, pattern_profile, reason-category, concealment,
+read status, confidence, claim_level, pattern_profile, reason-category, `Concealment mode:`,
 deformation, DO-orient, live noetic burden, current bounded operator, held,
 source-status/noetic-frame, and gate/release decision are present
 decisive missing differentiator is present when required
@@ -955,6 +964,10 @@ gate before closure. STOP only when P7 / register / semantic / sufficiency gover
 and no next eligible pass remains.
 When the refresh releases any route, `[Mid-Reread Pressure]` is the mandatory route gate:
 `Land(B) -> [Mid-Reread Pressure] -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE`.
+The compact MRP block is not satisfied by a loose paragraph. It must expose the route fields:
+Target, Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, `Route-gradient`, Finding,
+`MRP route result type`, `MRP resultant`, Graph delta, Pre-emption basis, Route, and Boundary.
+`Route-gradient` is the plain-`∇` directional read; do not replace it with divergence or curl.
 
 Recursive burden-cycle shape for expanded diagnostic/internal audit render:
 
@@ -965,6 +978,9 @@ Released module(s):
 Bounded move:
 state re-read:
 [Mid-Reread Pressure]:
+Route-gradient:
+MRP route result type:
+MRP resultant:
 Release status: prose closure/hold/partial/continuation status plus compact `R(H,Δ): RECURSE/PARTIAL/COMPLETE` marker when control-relevant
 ```
 

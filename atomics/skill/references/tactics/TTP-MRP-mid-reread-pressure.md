@@ -38,7 +38,9 @@ operator_pack_eligible: true
 ## Runtime operator contract
 
 - Activation: after `Land(ⁿB)` or partial `Land(ⁿB)`, while `R(H,Δ)` is rereading the landed
-  state before STOP, HOLD, RECURSE, PARTIAL, LoopBreak, or closure witness release.
+  state before STOP, HOLD, RECURSE, PARTIAL, LoopBreak, or closure witness release. MRP is the
+  sound-reason preemption gate: it asks what the updated field now lets the interlocutor say next
+  before closure is licensed.
 - Field target: the post-landed reread field: current burden `ⁿB`, `ΔⁿB`, `Δκ`, held set `H`,
   dependency graph, terminal-state accounting, register deltas, target-explicit `∇·T` / `∇×T`,
   and `T_lang` boundary.
@@ -48,8 +50,10 @@ operator_pack_eligible: true
 - Δ effect: `ΔⁿB` records what the landed move actually licensed; `Δκ` records whether activated
   pressure owners license graph movement, hold, recoil-bound status, LoopBreak, or no-edge closure.
 - Possible ∇ reread: after pressure, check target-explicit `∇·B` for residual outward burden
-  pressure and `∇×κ` for churn, circular reassurance demand, or label-pressure loop. The check is
-  control-bound and target-explicit, not a truth/warrant metric.
+  pressure and `∇×κ` for churn, circular reassurance demand, or label-pressure loop; then read
+  plain `∇` as the directional route-gradient over the refreshed field. The gradient asks where
+  the field now pulls: toward an already-held burden, a generated resultant, HOLD/PARTIAL,
+  LoopBreak, or STOP. The check is control-bound and target-explicit, not a truth/warrant metric.
 - R(H,Δ) obligation: MRP runs inside `R(H,Δ)` before the final decision. It does not perform every
   pressure test itself; it activates the relevant existing TTP/operator owners and records what
   their outputs license for STOP, HOLD, RECURSE, PARTIAL, LoopBreak, graph delta, or closure.
@@ -81,10 +85,13 @@ not replace the TTPs that perform hidden-framework, entailment, churn, or remind
 the relevant pressure owners to operate in the reread interval and records what their outputs
 license.
 
-MRP is not the ordinary "find the next burden" mechanism. The initial state-read / Layer A burden
-inventory owns first-pass discovery of `¹B`, `²B`, `³B`, etc., and normal burden routing releases
-already-inventoried held burdens. `MRP(ⁿB)` asks the narrower post-landing question: did
-`Land(ⁿB)` produce an additional reread resultant beyond the initial inventory?
+MRP is the post-Land escape-route discovery operator. Layer A owns the initial visible surface:
+the current burden and any held burdens that are explicit, input-anchored, or necessary to keep a
+compound from being flattened. Layer A should not dump every foreseeable downstream reply into the
+initial inventory before any burden lands; doing so turns MRP into static dependency traversal and
+weakens the sound-reason method. After `Land(ⁿB)`, `MRP(ⁿB)` freezes the landing, rereads
+`ΔⁿB` / `Δκ`, tests `∇·B`, `∇×κ`, `ξ`, `Ω`, concealment, and held pressure, then asks: what
+would the interlocutor say next that this landing now reveals or enables?
 
 Distinguish route result types:
 
@@ -98,17 +105,25 @@ Distinguish route result types:
 - `loopbreak`: MRP detects churn/curl and blocks proof-stacking.
 - `hold_partial`: MRP detects real unresolved pressure and prevents false closure.
 
+Worked counter-case: if Layer A declares `initial burden set: [¹B, ²B, ³B]` or a compact
+`held: ²B, ³B` field, then `MRP(¹B)` routing to `²B` is `held_burden_activation`.
+MRP may authorize the release edge, but it did not generate the node. Reserve
+`generated_burden_instantiation` for a post-landing reread resultant not fully present in the
+initial inventory and then instantiate that node with `[generated-by: MRP(ⁿB)]`.
+
 MRP is not a brevity mechanism. It makes state reread operationally consequential: fake burdens
 contract into STOP or LoopBreak, partial real burdens HOLD, genuine downstream burdens RECURSE with
 graph evidence, and stable rereads release closure witness. It turns `R(H,Δ)` from a named refresh
 into licensed burden economics: fewer fake burdens, more real burdens, and no unlicensed closure.
 
-MRP also makes `∇·T` and `∇×T` active reread gates. `∇·T` asks whether post-landing burden
+MRP also makes `∇`, `∇·T`, and `∇×T` active reread gates. `∇·T` asks whether post-landing burden
 pressure dissipated or diverged into a genuine downstream burden. `∇×T` asks whether post-landing
 pressure rotated back as churn, hidden-framework recoil, label-pressure, or self-reinforcing loop.
-Neutral or settled `∇·T` plus null/resolved `∇×T` may license stable closure; non-neutral `∇·T`
-requires HOLD/RECURSE explanation; non-null `∇×T` requires LoopBreak, STOP, HOLD, or graph-bound
-recursion rather than decorative reporting.
+Plain `∇` asks where the refreshed field now points. Neutral or settled `∇·T`, null/resolved
+`∇×T`, and no remaining route-gradient toward an input-anchored burden may license stable closure;
+non-neutral `∇·T` or a route-gradient toward held/generated pressure requires HOLD/RECURSE
+explanation; non-null `∇×T` requires LoopBreak, STOP, HOLD, or graph-bound recursion rather than
+decorative reporting.
 Directed downstream dependency is not curl. If `Bn -> Bn+1` is acyclic and linearly
 traversable, residual pressure is recorded as non-neutral `∇·T` while `∇×T` stays null. Use
 held/non-null/resolved curl only when a real circular dependency, churn, hidden-framework recoil,
@@ -202,6 +217,7 @@ Pressure activations:
 - reorientation-reminder: <existing owner/TTP id or pressure class>
 ∇·T: neutral | settled | bounded | non-neutral / <what this licenses>
 ∇×T: null | resolved | held | non-null / <what this licenses>
+Route-gradient: <where ∇ now points: held burden / generated burden / hold / loopbreak / stop>
 Finding: stable | genuine-dependent | partial-real | hidden-framework-recoil | doubt-churn | reorientation
 MRP route result type: held_burden_activation | generated_burden_instantiation | no_new_resultant | loopbreak | hold_partial
 MRP resultant: <finding -> route/graph/HOLD consequence>
@@ -216,6 +232,11 @@ movement, the closure witness / `field_witness` evidence must agree. Pressure ac
 render as six bullet slots, not one inline list. Each slot records the owner/TTP or pressure
 class used and the release/hold/clear effect it licensed. A slot that merely names a pressure
 without an effect is unsupported.
+`Route-gradient:` records the plain-`∇` direction after `Land(ⁿB)` and the pressure checks. In a
+generated case, it must name the newly visible resultant and why the field now points there; in a
+held activation case, it must show that the field points to a burden already in `H` / the initial
+inventory. A block that has only `∇·T` and `∇×T` but no directional account is not enough to prove
+preemptive MRP behavior.
 `Target:` must name the burden token explicitly, for example `Target: B2 / state-enforcement
 reduction`; mentioning `Land(B2)` only inside `Reread:` is not enough. If an older copied
 template shows only superscript `ⁿB`, render it as `Bn / <landed burden name>` in live output.
@@ -254,6 +275,7 @@ When `field_witness` is present, MRP evidence may be recorded as optional
 {
   "target_burden_id": "B1",
   "reread_delta": "ΔⁿB landed; Δκ tested",
+  "route_gradient": "∇ points to STOP; no held or generated burden remains in licensed scope",
   "pressure_activations": {
     "freeze_landed_move": "diagnostic-render-contract / terminal-state accounting",
     "dependency_tug": "closure witness graph machinery",

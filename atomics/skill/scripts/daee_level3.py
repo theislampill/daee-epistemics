@@ -992,7 +992,7 @@ Layer A - Compact DSL/IR Header [Burden 1]
 - claim_level: hard source request
 - pattern_profile: accountability compression
 - reason-category: source-governed burden
-- concealment: none
+- concealment: clear
 - deformation: none
 - DO-orient: source-operation
 - current live noetic burden: synthetic source-request route
