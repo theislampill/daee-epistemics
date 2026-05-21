@@ -80,9 +80,11 @@ FIELD_WITNESS_REREAD_PRESSURE_KEYS = {
     "target_burden_id",
     "reread_delta",
     "pressure_activations",
+    "route_gradient",
     "divergence_state",
     "curl_state",
     "finding",
+    "route_result_type",
     "graph_delta",
     "preemption_basis",
     "route",
@@ -106,6 +108,13 @@ FIELD_WITNESS_REREAD_PRESSURE_FINDINGS = {
     "hidden-framework-recoil",
     "doubt-churn",
     "reorientation",
+}
+FIELD_WITNESS_REREAD_PRESSURE_ROUTE_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+    "hold_partial",
 }
 FIELD_WITNESS_REREAD_PRESSURE_ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
 FIELD_WITNESS_REREAD_PRESSURE_PREEMPTION = {"none", "graph-bound", "commitment-bound", "framework-bound"}
@@ -748,6 +757,8 @@ def field_witness_errors(field_witness: Any) -> list[str]:
                 errors.append("schema: field_witness.reread_pressure.target_burden_id must be burden ID")
             if not non_empty_string(reread_pressure.get("reread_delta")):
                 errors.append("schema: field_witness.reread_pressure.reread_delta must be non-empty string")
+            if not non_empty_string(reread_pressure.get("route_gradient")):
+                errors.append("schema: field_witness.reread_pressure.route_gradient must be non-empty string")
             activations = reread_pressure.get("pressure_activations")
             errors.extend(
                 require_exact_keys(
@@ -762,6 +773,10 @@ def field_witness_errors(field_witness: Any) -> list[str]:
                         errors.append(f"schema: field_witness.reread_pressure.pressure_activations.{key} must be non-empty string")
             if reread_pressure.get("finding") not in FIELD_WITNESS_REREAD_PRESSURE_FINDINGS:
                 errors.append(f"schema: field_witness.reread_pressure.finding invalid: {reread_pressure.get('finding')!r}")
+            if reread_pressure.get("route_result_type") not in FIELD_WITNESS_REREAD_PRESSURE_ROUTE_TYPES:
+                errors.append(
+                    f"schema: field_witness.reread_pressure.route_result_type invalid: {reread_pressure.get('route_result_type')!r}"
+                )
             if reread_pressure.get("divergence_state") not in FIELD_WITNESS_REREAD_PRESSURE_DIVERGENCE:
                 errors.append(
                     f"schema: field_witness.reread_pressure.divergence_state invalid: {reread_pressure.get('divergence_state')!r}"

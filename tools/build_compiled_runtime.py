@@ -360,12 +360,18 @@ is not a license to omit the banner.
 
 Default multi-burden execution uses this repeated burden-cycle shape:
 - Layer A - compact DSL/IR header (read status, confidence, claim_level,
-  pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
+  pattern_profile, reason-category, `Concealment mode:`, deformation, DO-orient, live noetic burden,
   current bounded operator, held, source-status/noetic-frame, gate/release decision with
   pre-release `∇ route: ...` when route ordering selects the burden; when more than one
   live/held burden or dependency route is present, the `∇ route:` clause is mandatory and explains
   highest dependency-reduction yield over held alternatives, decisive missing differentiator when
-  required)
+  required. Named-worldview, imported-framework, pseudo-neutral-tribunal, source-worldview, or
+  identity-stabilized cases must show `Concealment mode:` as operative covering, e.g.
+  `surface-open / framework-concealed` or `mode-? / framework-concealed`; do not omit it and
+  do not write `concealment: None detected`. Imported person/nature grammar, later doctrinal
+  apparatus, cross-text doctrine import, imported model-language, and doctrine-preserving
+  harmonization count as framework/source-worldview concealment pressure whenever they govern a
+  local claim as if they were neutral grammar.)
 - Layer B - bounded governed response (Hidden Premises, local Core Formulation,
   Bounded Response / operative submoves, and TTP/operator trace when a named operator
   does runtime work; may contain multiple operative submoves when they all serve the
@@ -381,8 +387,14 @@ Default multi-burden execution uses this repeated burden-cycle shape:
   line: it must include literal `Field diagnostics:` and `LoopBreak:` lines adjacent to the reread.
 - MRP-visible reread gate - in default routed output, render a compact
   `[Mid-Reread Pressure]` block before the final route decision. The block must name Target,
-  Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, Finding, Graph delta,
-  Pre-emption basis, Route, and Boundary. A plain `State/noetic re-read`, `LoopBreak:`,
+  Reread, Landed delta, Pressure activations, `∇·T`, `∇×T`, Route-gradient, Finding,
+  MRP route result type, MRP resultant, Graph delta, Pre-emption basis, Route, and Boundary.
+  The MRP block is invalid if the literal `Route-gradient:`, `MRP route result type:`, or
+  `MRP resultant:` lines are missing. `Field diagnostics:`, `LoopBreak:`, a bare graph edge,
+  or ordinary route prose may appear only as adjacent summaries; they never substitute for those
+  required MRP fields. Before final closure, self-check every MRP block and revise any block
+  that lacks these exact labels.
+  A plain `State/noetic re-read`, `LoopBreak:`,
   `R(H,Delta)`, graph edge, or owner/TTP trace is not MRP evidence unless it shows the pressure
   slot and route consequence. Do not omit the block in any routed burden-cycle.
 - MRP trigger expansion - in default output, `T` includes current burden pressure, `kappa/H`,
@@ -704,7 +716,7 @@ For plain `/daee-epistemics`, internal governance is mandatory and default visib
 a noetic-field execution banner before the compact DSL/IR header. The first visible surface must
 signal governed execution with `NOETIC FIELD EXECUTION` and must not collapse to a bare `field:`
 line or `source request` legacy label. Compact Layer A (read status, confidence, claim_level,
-pattern_profile, reason-category, concealment, deformation, DO-orient, live noetic burden,
+pattern_profile, reason-category, `Concealment mode:`, deformation, DO-orient, live noetic burden,
 current bounded operator, held, source-status/noetic-frame, gate/release decision, decisive
 missing differentiator when required) is the visible default diagnostic surface. Full
 Diagnostic IR, full Case State, full Source Basis ledger, matched_modules, and route ledger
@@ -729,7 +741,7 @@ Layer A — Compact DSL/IR header
 - claim_level:
 - pattern_profile:
 - reason-category:
-- concealment:
+- Concealment mode:
 - deformation:
 - DO-orient:
 - live noetic burden:

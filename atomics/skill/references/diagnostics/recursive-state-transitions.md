@@ -667,7 +667,7 @@ inventory. It may be MRP-authorized as a route, but it is not an MRP-generated b
 
 **NewB license test:**
 
-`NewB` is licensed only when state re-read can show all six facts:
+`NewB` is licensed only when state re-read can show all seven facts:
 
 1. the prior `B` landed through owner-specific operation, not merely through section shape;
 2. the cumulative-state delta is explicit enough to show what changed;
@@ -676,7 +676,9 @@ inventory. It may be MRP-authorized as a route, but it is not an MRP-generated b
 4. the proposed next burden differs from the prior `B` by target-family, claim-level,
    restoration vector, or governing noetic pressure;
 5. the proposed next burden was not already answered as an operative submove;
-6. release is not blocked by stop, register, semantic, thin-basis, source-use, or limit gates.
+6. the route-gradient `∇` after `Land(B) -> R(H,Δ)` points to that burden rather than to STOP,
+   HOLD, LoopBreak, or duplicate/derivative collapse;
+7. release is not blocked by stop, register, semantic, thin-basis, source-use, or limit gates.
 
 If any fact is missing, the next material is not NewB. It remains an operative submove,
 HOLD, or PARTIAL.
@@ -688,20 +690,33 @@ An MRP-generated burden is a narrower category than ordinary `NewB`. It is licen
 
 1. `ⁿB` landed or partially landed through owner-specific operation;
 2. `R(H,Δ)` detected pressure not fully present in the initial Layer A inventory;
-3. the pressure is graph-bound, commitment-bound, framework-bound, or grounded in the prior burden's
+3. the renewed route-gradient `∇` points to that pressure after reading `ΔⁿB`, `Δκ`,
+   `∇·B`, `∇×κ`, `ξ`, `Ω`, concealment/framework pressure, and held routes;
+4. the pressure is graph-bound, commitment-bound, framework-bound, or grounded in the prior burden's
    collapse radius, not speculative topic expansion;
-4. the new node differs from `ⁿB` and from already-held burdens by target-family, claim-level,
+5. the new node differs from `ⁿB` and from already-held burdens by target-family, claim-level,
    restoration vector, or governing noetic pressure;
-5. the new node is not merely an operative submove already answered inside `ⁿB`;
-6. MRP records `MRP route result type: generated_burden_instantiation`, graph/provenance
+6. the new node is not merely an operative submove already answered inside `ⁿB`;
+7. MRP records `MRP route result type: generated_burden_instantiation`, graph/provenance
    `ⁿB → ⁿ⁺¹B`, and route `RECURSE` or `HOLD`;
-7. the output instantiates `ⁿ⁺¹B [generated-by: MRP(ⁿB)]` as a normal burden node with Layer A
+8. the output instantiates `ⁿ⁺¹B [generated-by: MRP(ⁿB)]` as a normal burden node with Layer A
    accounting, Layer B governed operation body, owner-bearing submoves, and `Land(ⁿ⁺¹B)` or
    `HOLD(ⁿ⁺¹B)` before closure is licensed.
 
 If the proposed node was already present in the initial inventory, the route result type is
 `held_burden_activation`, not `generated_burden_instantiation`. If no additional resultant exists,
 record `no_new_resultant` and continue ordinary route/closure discipline.
+The formal difference is load-bearing: held activation means `R(H,Δ)` found the route-gradient
+pointing to a node already carried in `H` / the initial set; generation means `ΔⁿB` exposed a
+new `ξ`, `Ω`, concealment, dependency, or burden-gradient pressure that was not fully inventoried.
+STOP means `∇·B` is neutral, `∇×κ` is null/resolved, no remaining `∇` points toward an
+input-anchored burden in licensed scope, live `ξ` / `Ω` / concealment pressure is accounted for
+or bounded, `𝒞(Ψᴺ)` is satisfied, and `T_lang` remains a boundary rather than uptake.
+The same distinction applies in the `Closure/Reconstruction Witness` `MRP resultants` ledger:
+do not repair a missing visible route-type line by calling an already-initialized held node
+`generated_burden_instantiation`. For an inventory such as `[¹B, ²B, ³B]`, `MRP(¹B)` with
+`graph=¹B → ²B` is a held activation unless `²B` first appears after the post-landing reread and
+is rendered as `²B [generated-by: MRP(¹B)]`.
 
 Practical/application material is not NewB merely because it needs its own heading. Source
 maps, concise answer wording, "how to respond" sections, do/don't guardrails, warning

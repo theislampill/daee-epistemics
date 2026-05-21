@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: non-neutral / real downstream pressure remains held
 ∇×T: held / no LoopBreak, but register curl prevents release
 Finding: partial-real
+Route-gradient: ∇ points to HOLD because the downstream pressure is real but remains incomplete under the current register/release boundary.
+MRP route result type: hold_partial
 MRP resultant: partial-real -> HOLD with held downstream burden
 Graph delta: B1 → B2
 Pre-emption basis: commitment-bound

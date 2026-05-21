@@ -36,6 +36,7 @@ Pressure activations:
 ∇·T: non-neutral / translation tribunal pressure surfaces after Land(¹B)
 ∇×T: null / no circular dependency; the pressure is a directed resultant
 Finding: genuine-dependent
+Route-gradient: ∇ points to ²B [generated-by: MRP(¹B)] because Δ¹B exposed framework/admissibility pressure not present in the initial burden set.
 MRP route result type: generated_burden_instantiation
 MRP resultant: genuine-dependent -> instantiate ²B [generated-by: MRP(¹B)] and route RECURSE
 Graph delta: ¹B → ²B
@@ -54,9 +55,9 @@ Layer A — Compact DSL/IR Re-entry
 
 Layer B — Governed Operation Body
 
-²B₁[definition-discipline] — Target: "translate into neutral reasons." Operation: define the translation demand as an admissibility rule, not a mere communication norm. Result: the tribunal becomes explicit.
-²B₂[authority-order-repair] — Target: the public authority criterion. Operation: ask which authority grants the criterion the right to exclude revelation. Result: the demand transfers authority to the secular tribunal.
-²B₃[criterion-reversal] — Target: "everyone can accept." Operation: test whether the criterion itself is accepted by everyone without contested metaphysics. Result: the criterion fails its own universality standard.
+²B₁[definition-discipline] — Target: "translate into neutral reasons." Operation: define the translation demand as an admissibility rule, not a mere communication norm. Result: the tribunal becomes explicit. Contribution-to-Land: fixes the generated burden as an authority-filter question rather than a style preference.
+²B₂[authority-order-repair] — Target: the public authority criterion. Operation: ask which authority grants the criterion the right to exclude revelation. Result: the demand transfers authority to the secular tribunal. Contribution-to-Land: exposes the generated node's source-order pressure.
+²B₃[criterion-reversal] — Target: "everyone can accept." Operation: test whether the criterion itself is accepted by everyone without contested metaphysics. Result: the criterion fails its own universality standard. Contribution-to-Land: closes the generated burden by applying its own standard back onto it.
 
 Land(²B): the translation tribunal is landed as a non-neutral admissibility rule; it cannot serve as an unexamined judge over revelation.
 
@@ -74,6 +75,7 @@ Pressure activations:
 ∇·T: settled / no additional resultant burden beyond ²B
 ∇×T: null / no circular dependency
 Finding: stable
+Route-gradient: ∇ points to STOP because ∇·B is neutral, ∇×κ is null, and no further input-anchored resultant remains.
 MRP route result type: no_new_resultant
 MRP resultant: stable -> no additional resultant burden; closure witness may record bounded closure for this generated-node pass
 Graph delta: none

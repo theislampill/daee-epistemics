@@ -92,6 +92,9 @@ diagnostic trace). It is not the default `/daee-epistemics` output template:
 ```text
 [Case State]
 - Case family:
+- Diagnostic target:                 # claim / worldview / quoted-interlocutor / requester-self-state / mixed
+- Concealment applies to:            # diagnostic-target by default; requester only when self-state is explicitly the target
+- Requester posture:                 # if visible; non-diagnostic unless self-state is the target
 - Claim-type:
 - Claim level:                      # first-order / meta-epistemic / meta-ontological / meta-noetic / cross-level; omit only when routine first-order
 - Reason-category:                   # 1 / 2 / 3 / 4 - from reason-disambiguation.md; governs routing gate
@@ -143,8 +146,24 @@ diagnostic trace). It is not the default `/daee-epistemics` output template:
 - `Pattern profile` is optional but strongly preferred when a recurring PF family is governing the next move. Keep one primary profile only; carry competing profiles in `Live alternatives`.
 - `Primary deformation` should name only the deformation governing the next move.
 - `Concealment mode` is required. Use `clear` when no active concealment mode is positively
-  read; use `mode-?` when the axis remains unresolved. Do not leave this field blank and do
-  not substitute placeholders such as `none confirmed`.
+  read; use `mode-?` only when the axis remains genuinely unresolved after attention to the
+  concealment read. Do not leave this field blank and do not substitute placeholders such as
+  `none confirmed`. Surface openness is not enough for `clear`: when an imported framework,
+  pseudo-neutral tribunal, or identity-stabilizing lens is operative, the concealment axis
+  remains non-clear unless that lens has been positively exposed and no longer governs the
+  current pass. Non-clear diagnoses must name a source-owned mode from
+  `modes-of-concealment.md` (`irad`, `juhud`, `inkar`, `istikbar`, `nifaq`, or `mixed`);
+  descriptive glosses such as framework-concealed or predicate-concealed are secondary notes,
+  not replacements for the mode.
+- Sincere clarification pressure is adjacent to, not identical with, concealment/refusal mode.
+  If a Muslim/ḥanīf/truth-seeker is under shubhah, shakk/rayb, tawahhum, or doubt-pressure
+  without visible refusal, render the pressure explicitly (`clarification pressure: shubha /
+  shakk-rayb`, or `Concealment mode: clarification / shubha pressure` in public prose). This
+  means "no refusal mode is operative," not "no occlusion or burden exists."
+- `Diagnostic target`, `Concealment applies to`, and `Requester posture` prevent target leakage.
+  Generic refutation or analysis prompts diagnose the claim/worldview/quoted interlocutor by
+  default. Do not attach `iʿrāḍ`, `juḥūd`, `inkār`, `istikbār`, `nifāq`, or `mixed` to the
+  requester unless the requester explicitly makes their own state the diagnostic target.
 - `Register-hold` is required whenever concealment x orientation blocks direct deployment.
   It names the axis or cell doing the holding. This field governs Layer B only; it does not
   cancel the Layer A diagnosis.
@@ -253,6 +272,7 @@ Concealment mode and DO-orient compose orthogonally. The matrix is the fastest w
 | `inkar` | Maieutic (P4) + R2. Recognition is present; do not argue. | Identity-performance compounds the denial; pastoral register indefinite hold. | Very rare; re-run V1. | Do not press; `zann-mode` absorbs without landing. | Maieutic wins here more often than argument. |
 | `istikbar` | Relational + spiritual. Pride-structure is the barrier. More argument deepens it. | Compound that yields only to long relational investment. Doctrinal modules waste. | Treat as `istikbar`; the autotelic surface is usually a disguise for pride. | Rare. | Relational first in all sub-cases. |
 | `nifaq` | Already-believing procedure (P5). Questions requiring inhabited belief. | Common compound; P5 with caution about what the performance is for. | Stop supplying material the performance consumes. | Very common compound; press one specific claim and require it be inhabited. | Re-assess frequently. |
+| `mixed` | Name the dominant source-owned pressures and let the stronger present cue govern. | Register-hold until the dominant mode is clearer. | Do not feed the performance; identify which mode is consuming the exchange. | Press one claim only if it clarifies the dominant mode. | Track mode shift explicitly; do not flatten into a loose gloss. |
 
 How to read the matrix:
 

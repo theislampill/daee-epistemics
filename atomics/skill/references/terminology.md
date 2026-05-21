@@ -160,6 +160,20 @@ distinct register. The root shared across these terms and the concept of *coveri
 | استكبار | Istikbār | Obstinacy — acknowledgment without volitional alignment; the will is not aligned with the recognition. Register: relational/spiritual; pride-structure is the barrier |
 | نفاق | Nifāq | Surface acceptance without genuine inner conviction; language of belief without inner reorganization. Register: already-believing procedure (P5) |
 
+`mixed` is the composed diagnostic emission for cases where multiple source-owned
+concealment pressures are visibly operative, or where the evidence is distributed between
+them and premature hardening would misroute the register. It is not a freeform replacement
+for the modes above. A `mixed` line should name the dominant source-owned pressures when
+the evidence permits, then add any plain gloss such as framework-concealed,
+predicate-concealed, or source-worldview recoil as secondary explanation.
+
+Shubhah, shakk/rayb, tawahhum, waswās-like pressure, and doubt-churn can cover clarity
+without functioning as refusal-mode concealment. In sincere Muslim, ḥanīf, truth-seeker,
+or clarification cases, mark that as adjacent clarification pressure rather than forcing
+it into `juhud`, `inkar`, `istikbar`, or `nifaq`. That path routes toward clarification,
+necessary-knowledge priority, fiṭrah anchoring, source-order repair, bounded reassurance,
+or hold discipline, not personal culpability language.
+
 **`irad` vs. `juhud` diagnostic boundary.** The two most frequently confused modes.
 `irad` is attention not yet given; `juhud` is acknowledgment refused once attention has
 landed. Test: has the matter been *allowed to press*? If not, the mode is `irad`

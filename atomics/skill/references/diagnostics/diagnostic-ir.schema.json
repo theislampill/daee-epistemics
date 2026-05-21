@@ -31,6 +31,20 @@
       "type": "string",
       "minLength": 1
     },
+    "diagnostic_target": {
+      "type": "string",
+      "enum": ["claim", "worldview", "quoted-interlocutor", "requester-self-state", "mixed"],
+      "description": "Object being diagnosed. Concealment mode attaches here by default, not to the requester."
+    },
+    "concealment_applies_to": {
+      "type": "string",
+      "enum": ["diagnostic_target", "requester", "mixed"],
+      "description": "Scope of the concealment-mode diagnosis. Use requester only when requester self-state is explicitly the target."
+    },
+    "requester_posture": {
+      "type": "string",
+      "description": "Visible posture of the person asking, when relevant. This is contextual and not a hidden-state diagnosis unless self-state is the target."
+    },
     "claim_type": {
       "type": "string",
       "enum": [
@@ -71,9 +85,14 @@
         "inkar",
         "istikbar",
         "nifaq",
+        "mixed",
         "mode-?",
         "compound"
       ]
+    },
+    "clarification_pressure": {
+      "type": "string",
+      "description": "Optional adjacent pressure for sincere shubhah, shakk/rayb, tawahhum, or doubt-pressure cases where no refusal-mode concealment is operative but clarity remains covered."
     },
     "do_orient": {
       "type": "string",
@@ -527,10 +546,15 @@
           "$comment": "Optional TTP-MRP evidence. It records how the post-landed reread state was pressured before STOP/HOLD/RECURSE/LoopBreak/closure.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["target_burden_id", "reread_delta", "pressure_activations", "divergence_state", "curl_state", "finding", "graph_delta", "preemption_basis", "route", "non_claims"],
+          "required": ["target_burden_id", "reread_delta", "pressure_activations", "route_gradient", "divergence_state", "curl_state", "finding", "route_result_type", "graph_delta", "preemption_basis", "route", "non_claims"],
           "properties": {
             "target_burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
             "reread_delta": { "type": "string", "minLength": 1 },
+            "route_gradient": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Plain-∇ directional reread after Land(ⁿB): held target, generated target, HOLD, LoopBreak, or STOP."
+            },
             "pressure_activations": {
               "type": "object",
               "additionalProperties": false,
@@ -547,6 +571,10 @@
             "finding": {
               "type": "string",
               "enum": ["stable", "genuine-dependent", "partial-real", "hidden-framework-recoil", "doubt-churn", "reorientation"]
+            },
+            "route_result_type": {
+              "type": "string",
+              "enum": ["held_burden_activation", "generated_burden_instantiation", "no_new_resultant", "loopbreak", "hold_partial"]
             },
             "divergence_state": {
               "type": "string",
@@ -955,7 +983,7 @@
       "if": {
         "properties": {
           "concealment_mode": {
-            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mode-?", "compound"]
+            "enum": ["irad", "juhud", "inkar", "istikbar", "nifaq", "mixed", "mode-?", "compound"]
           }
         },
         "required": ["concealment_mode"]

@@ -43,6 +43,11 @@ DOWNSTREAM_LIVE_RE = re.compile(
     r"(?i)\b(?:B\d+\b.*\bremain(?:s)? live|downstream burden(?:s)? remain|"
     r"later burden(?:s)? remain|next burden remains|B\d+\b.*\bfollows)\b"
 )
+NEGATED_DOWNSTREAM_RE = re.compile(
+    r"(?i)\b(?:no|not|without|none)\s+"
+    r"(?:input-anchored\s+|downstream\s+|later\s+|next\s+|broad\s+)*"
+    r"(?:burden(?:s)?\s+)?(?:remain(?:s)?|live|remaining|follows)\b"
+)
 NAMED_AUTHORITY_RE = re.compile(
     r"(?i)\b(?:secular(?:ism|ist)?|public reason|human rights|Satanic Temple|TST|"
     r"Trinitarian|Trinity|Christian|atheis[mt]|naturalism|scientism|humanis[mt]|"
@@ -150,14 +155,22 @@ def graph_edge_errors(path: Path, text: str, blocks: list[MrpBlock]) -> list[str
 
 def downstream_divergence_errors(path: Path, block: MrpBlock, label: str) -> list[str]:
     state = first_state(block.divergence)
-    if state in {"neutral", "settled"} and DOWNSTREAM_LIVE_RE.search(block.body):
+    if (
+        state in {"neutral", "settled"}
+        and DOWNSTREAM_LIVE_RE.search(block.body)
+        and not NEGATED_DOWNSTREAM_RE.search(block.body)
+    ):
         return [f"{label}: downstream burdens remaining live require non-neutral ∇·T"]
     return []
 
 
 def graph_delta_route_errors(path: Path, block: MrpBlock, label: str) -> list[str]:
     errors: list[str] = []
-    edges = edge_set(block.graph_delta) | edge_set(block.mrp_resultant)
+    # The per-block route invariant is about the block's own graph movement.
+    # A STOP block may legitimately mention an already-recorded closure graph in
+    # its resultant prose; only the explicit Graph delta field creates a new
+    # route edge for this block.
+    edges = edge_set(block.graph_delta)
     if not edges:
         return errors
     if block.finding not in {"genuine-dependent", "partial-real"}:

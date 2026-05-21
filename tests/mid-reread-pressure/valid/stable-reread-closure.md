@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: neutral / post-landing pressure dissipated
 ∇×T: null / no recoil, churn, or loop
 Finding: stable
+Route-gradient: ∇ points to STOP because no held or generated burden remains in licensed scope.
+MRP route result type: no_new_resultant
 MRP resultant: stable -> STOP with no graph edge
 Graph delta: none
 Pre-emption basis: none

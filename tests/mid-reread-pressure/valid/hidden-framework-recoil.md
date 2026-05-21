@@ -16,6 +16,8 @@ Pressure activations:
 ∇·T: bounded / no ordinary downstream burden after framework mark
 ∇×T: non-null / hidden-framework recoil rotates through loaded label
 Finding: hidden-framework-recoil
+Route-gradient: ∇ points to STOP because the apparent next burden is framework-concession-bound rather than a licensed graph target.
+MRP route result type: no_new_resultant
 MRP resultant: hidden-framework-recoil -> STOP with framework-bound no-edge
 Graph delta: none
 Pre-emption basis: framework-bound

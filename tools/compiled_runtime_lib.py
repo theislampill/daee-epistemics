@@ -419,14 +419,29 @@ def _rmtree_resilient(path: Path) -> list[Path]:
     except Exception:  # noqa: BLE001
         pass
 
-    # Truncation pass: any file that still exists gets zeroed so the build overwrites cleanly.
+    # Truncation pass: any file that still exists gets zeroed, then unlinked
+    # again. Some Windows/virtiofs combinations reject the first rmtree unlink
+    # but allow removal after the handle has been rewritten.
     if path.exists():
-        for child in path.rglob("*"):
+        for child in sorted(path.rglob("*"), key=lambda item: len(item.parts), reverse=True):
             if child.is_file():
                 try:
                     child.write_bytes(b"")
                 except (PermissionError, OSError):
                     pass
+                try:
+                    child.unlink()
+                except (PermissionError, OSError):
+                    pass
+            elif child.is_dir():
+                try:
+                    child.rmdir()
+                except (PermissionError, OSError):
+                    pass
+        try:
+            path.rmdir()
+        except (PermissionError, OSError):
+            pass
     if not path.exists():
         return []
     return sorted(child for child in path.rglob("*") if child.is_file())

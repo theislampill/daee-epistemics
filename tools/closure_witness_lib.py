@@ -14,7 +14,19 @@ from pathlib import Path
 from typing import Any
 
 
-BURDEN_ID_RE = re.compile(r"\bB\d+\b")
+SUPERSCRIPT_DIGITS = {
+    "⁰": "0",
+    "¹": "1",
+    "²": "2",
+    "³": "3",
+    "⁴": "4",
+    "⁵": "5",
+    "⁶": "6",
+    "⁷": "7",
+    "⁸": "8",
+    "⁹": "9",
+}
+BURDEN_ID_RE = re.compile(r"(?:\bB\d+\b|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\b)")
 HEADING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
 NEXT_HEADING_RE = re.compile(r"(?m)^\s*(?:#{2,5}\s+\S|Restorative Response\b|Closing Formulation\b)")
 KNOWN_FIELD_RE = re.compile(
@@ -29,7 +41,7 @@ INITIAL_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[(?P<bo
 TERMINAL_HEADER_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Terminal states\s*:\s*$")
 TERMINAL_INLINE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Terminal states\s*:\s*(?P<body>\S.*)$")
 TERMINAL_LINE_RE = re.compile(
-    r"^\s*(?:[-*]\s*)?(?P<burden>B\d+)\s*:\s*"
+    r"^\s*(?:[-*]\s*)?(?P<burden>B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*:\s*"
     r"(?P<state>[A-Za-z-]+)\b(?:\s*/\s*(?P<detail>.*))?$"
 )
 GRAPH_HEADER_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Burden dependency graph\s*:\s*(?P<body>.*)$")
@@ -43,7 +55,7 @@ TRANSFER_RE = re.compile(
 
 ARROW_RE = re.compile("\s*(?:\u2192|->)\s*")
 PARALLEL_RE = re.compile("\s*(?:\u2225|\|\|)\s*")
-ROOT_RE = re.compile(r"\b(?P<node>B\d+)\b\s*\(root\)")
+ROOT_RE = re.compile(r"(?P<node>B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*\(root\)")
 
 
 ALLOWED_TERMINAL_STATES = {
@@ -112,6 +124,21 @@ def unique(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
 
 
+def normalize_burden_id(value: str) -> str:
+    """Normalize public burden notation (`¹B`) to machine graph notation (`B1`)."""
+    value = value.strip()
+    if re.fullmatch(r"B\d+", value):
+        return value
+    if re.fullmatch(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+B", value):
+        digits = "".join(SUPERSCRIPT_DIGITS[ch] for ch in value[:-1])
+        return f"B{digits}"
+    return value
+
+
+def burden_ids(value: str) -> list[str]:
+    return [normalize_burden_id(match.group(0)) for match in BURDEN_ID_RE.finditer(value)]
+
+
 def extract_closure_witness_block(text: str) -> str | None:
     match = HEADING_RE.search(text)
     if not match:
@@ -123,7 +150,7 @@ def extract_closure_witness_block(text: str) -> str | None:
 
 
 def parse_burden_list(body: str) -> list[str]:
-    return BURDEN_ID_RE.findall(body)
+    return burden_ids(body)
 
 
 def parse_terminal_states(block: str) -> tuple[dict[str, dict[str, str]], list[str]]:
@@ -136,7 +163,7 @@ def parse_terminal_states(block: str) -> tuple[dict[str, dict[str, str]], list[s
         if inline_match:
             inline_state = TERMINAL_LINE_RE.match(inline_match.group("body"))
             if inline_state:
-                burden = inline_state.group("burden")
+                burden = normalize_burden_id(inline_state.group("burden"))
                 if burden in states and burden not in duplicates:
                     duplicates.append(burden)
                 states[burden] = {
@@ -156,7 +183,7 @@ def parse_terminal_states(block: str) -> tuple[dict[str, dict[str, str]], list[s
         match = TERMINAL_LINE_RE.match(line)
         if not match:
             continue
-        burden = match.group("burden")
+        burden = normalize_burden_id(match.group("burden"))
         if burden in states and burden not in duplicates:
             duplicates.append(burden)
         states[burden] = {
@@ -206,11 +233,11 @@ def parse_graph(graph_text: str) -> tuple[list[tuple[str, str]], list[str], list
         segment = _strip_list_prefix(segment)
         if not segment:
             continue
-        roots.extend(ROOT_RE.findall(segment))
+        roots.extend(normalize_burden_id(node) for node in ROOT_RE.findall(segment))
         for piece in ARROW_RE.split(segment):
             if not PARALLEL_RE.search(piece):
                 continue
-            group = unique(BURDEN_ID_RE.findall(piece))
+            group = unique(burden_ids(piece))
             if len(group) >= 2 and group not in parallel_groups:
                 parallel_groups.append(group)
                 for left_index, left in enumerate(group):
@@ -222,8 +249,8 @@ def parse_graph(graph_text: str) -> tuple[list[tuple[str, str]], list[str], list
         if len(chain) < 2:
             continue
         for left, right in zip(chain, chain[1:]):
-            sources = unique(BURDEN_ID_RE.findall(left))
-            targets = unique(BURDEN_ID_RE.findall(right))
+            sources = unique(burden_ids(left))
+            targets = unique(burden_ids(right))
             for source in sources:
                 for target in targets:
                     edge = (source, target)

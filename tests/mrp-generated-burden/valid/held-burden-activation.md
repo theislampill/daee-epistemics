@@ -34,6 +34,7 @@ Pressure activations:
 ∇·T: non-neutral / ²B remains live as an already-inventoried held burden
 ∇×T: null / no circular dependency
 Finding: genuine-dependent
+Route-gradient: ∇ points to held ²B because Δ¹B landed the authority-transfer burden while the initial inventory already carried ²B.
 MRP route result type: held_burden_activation
 MRP resultant: genuine-dependent -> activate held ²B from the initial inventory
 Graph delta: ¹B → ²B
