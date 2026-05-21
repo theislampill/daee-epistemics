@@ -67,7 +67,7 @@ def check_static_artifact(errors: list[str]) -> None:
         "local CSS": "index/output-grapher.css",
         "export PNG button": "ogExportPngBtn",
         "sectioned PNG button": "ogExportPngSectionsBtn",
-        "section ZIP button label": "Export sections as PNG ZIP",
+        "section ZIP button label": "Export section ZIP",
         "export PNG size selector": "ogExportWidthMode",
         "desktop PNG mode": "Desktop PNG (1800px)",
         "poster PNG mode": "Poster PNG (2200px)",
@@ -118,7 +118,8 @@ def check_static_artifact(errors: list[str]) -> None:
         "source-section render manifest": "sourceCoverageManifest",
         "section source coverage manifest": "sourceCoverage",
         "source setup card renderer": "outputGrapherSourceSetup",
-        "source MRP block renderer": "outputGrapherMrpSourceBlock",
+        "source-section render layer classifier": "sourceRenderLayer",
+        "technical source coverage appendix": "outputGrapherSourceCoverageAppendix",
         "closure witness source renderer": "outputGrapherClosureWitnessSource",
         "visible final prose cleaner": "cleanVisibleProseBlock",
         "visible body extraction": "bodyExtract",
@@ -460,18 +461,15 @@ The visible final restorative response must appear after the restoration summary
 The closing formulation must remain visible and cannot be replaced by the formal case fill.
 '''
     required_fragments = [
-        "Source structure detected in the output",
-        "Layer A — Compact DSL/IR Header",
+        "What structure was detected",
+        "Layer A / Compact DSL-IR detected",
         "Hidden premises operating in the statement",
-        "Layer A — Burden 2",
-        "Source block: [Mid-Reread Pressure]",
-        "Pressure activations",
-        "MRP resultant",
+        "Problem setup from the output",
+        "Follow-up: pressure-check",
         "Restorative Response",
         "The visible final restorative response must appear",
         "Closing Formulation",
         "The closing formulation must remain visible",
-        "Closure/Reconstruction Witness",
     ]
     model_required = [
         ["compact_layer_a", "banner", "hidden_premises", "burden_setup", "mid_reread_pressure", "closure_witness", "restorative_response", "closing_formulation"],
@@ -491,6 +489,23 @@ const model = window.daeeOutputGrapher.parseOutput(source, '');
 const svg = window.daeeOutputGrapher.renderGraph(model);
 const required = {required_fragments!r};
 const missing = required.filter(token => !svg.includes(token));
+const forbiddenPublic = [
+  'Source structure detected in the output',
+  'Layer A — Compact DSL/IR Header',
+  'Layer A — Compact Diagnostic Surface',
+  'Source block: [Mid-Reread Pressure]',
+  'Closure/Reconstruction Witness',
+  'Closure / Reconstruction Witness',
+  'Formal Case Fill',
+  'MRP resultants',
+  '∇·B:',
+  '∇×κ:',
+  '𝒞(Ψᴺ):',
+  '```',
+  '**',
+  '*'
+];
+const publicLeaks = forbiddenPublic.filter(token => svg.includes(token));
 const requiredTypes = {model_required[0]!r};
 const types = new Set((model.sourceSections || []).map(section => section.type));
 const missingTypes = requiredTypes.filter(type => !types.has(type));
@@ -498,8 +513,13 @@ const requiredBurdens = {model_required[1]!r};
 const setupMissing = requiredBurdens.filter(b => !(model.bodyExtract.mrpSourceTexts || {{}})[b]);
 if (!model.restorativeResponse || !model.closingFormulation) missing.push('final prose model fields');
 if (svg.includes('Plain-language Rebuttal View')) missing.push('old plain-language label absent');
-if (missing.length || missingTypes.length || setupMissing.length) {{
-  console.log(JSON.stringify({{missing, missingTypes, setupMissing, sourceSections:model.sourceSections}}, null, 2));
+const coverage = (model.sourceSections || []).map(section => ({{
+  type: section.type,
+  assignedRenderSection: section.assignedRenderSection,
+  renderLayer: window.daeeOutputGrapher.sourceRenderLayer ? window.daeeOutputGrapher.sourceRenderLayer(section.type) : null
+}}));
+if (missing.length || missingTypes.length || setupMissing.length || publicLeaks.length) {{
+  console.log(JSON.stringify({{missing, missingTypes, setupMissing, publicLeaks, sourceSections:model.sourceSections, coverage}}, null, 2));
   process.exit(1);
 }}
 """
