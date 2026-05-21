@@ -23,7 +23,14 @@
       .trim());
   }
   function extractBodySection(bodyProse, heading, stopHeadings=[]){
-    const startRe=new RegExp(`(?:^|\\n)\\s*(?:#{1,6}\\s*)?${escapeRegExp(heading)}\\s*:?\\s*\\n+`,'i');
+    const headingPattern=(label)=>{
+      if(/^Restorative Response$/i.test(label)) return String.raw`(?:Final\s+)?Restorative\s+Response(?:\s*(?:—|-)\s*[^*\n#]+)?`;
+      if(/^Closing Formulation$/i.test(label)) return String.raw`(?:Final\s+)?Closing\s+Formulation(?:\s*(?:—|-)\s*[^*\n#]+)?`;
+      if(/^Closure\/Reconstruction Witness$/i.test(label)) return String.raw`(?:Closure\/Reconstruction\s+Witness|Closure\s+Witness|Reconstruction\s+Witness)`;
+      return escapeRegExp(label);
+    };
+    const marker=(pattern)=>`(?:^|\\n)\\s*(?:#{1,6}\\s*)?(?:\\*{1,2})?${pattern}(?:\\*{1,2})?\\s*:?\\s*(?:\\n|$)`;
+    const startRe=new RegExp(marker(headingPattern(heading)),'i');
     const start=String(bodyProse||'').match(startRe);
     if(!start) return '';
     const contentStart=(start.index||0)+start[0].length;
@@ -37,9 +44,87 @@
       'Closure audit',
       'field_witness'
     ];
-    const stopRe=new RegExp(`\\n\\s*(?:#{1,6}\\s*)?(?:${stops.map(escapeRegExp).join('|')})\\s*:?\\s*(?:\\n|$)`,'i');
+    const stopRe=new RegExp(marker(stops.map(headingPattern).join('|')),'i');
     const stop=rest.match(stopRe);
     return cleanVisibleProseBlock(stop?rest.slice(0,stop.index):rest);
+  }
+  function normalizeSourceHeadingLine(line){
+    return String(line||'')
+      .replace(/^\s*(?:#{1,6}\s*)?/,'')
+      .replace(/^\s*\*{1,2}/,'')
+      .replace(/\*{1,2}\s*$/,'')
+      .replace(/^\s*\[([^\]]+)\]\s*$/,'$1')
+      .replace(/\s+/g,' ')
+      .trim();
+  }
+  function stripSourceHeading(text){
+    return cleanVisibleProseBlock(String(text||'').split(/\r?\n/).slice(1).join('\n'));
+  }
+  function cleanSourceLine(line){
+    return canonicalizePublicNotation(String(line||'')
+      .replace(/^\s*(?:[-*]\s*)?/,'')
+      .replace(/^\s*\*{1,2}/,'')
+      .replace(/\*{1,2}\s*$/,'')
+      .replace(/\s+/g,' ')
+      .trim());
+  }
+  function sourceBlockLines(text){
+    return String(text||'')
+      .split(/\r?\n/)
+      .map(cleanSourceLine)
+      .filter(line=>line && !/^[-–—]{3,}$/.test(line));
+  }
+  function sourceHeadingKind(line){
+    const raw=String(line||'');
+    const heading=normalizeSourceHeadingLine(line);
+    const headingLike=/^\s*(?:#{1,6}\s+|\*{1,2}|\[[^\]]+\]\s*$)/.test(raw) || /NOETIC FIELD EXECUTION/i.test(raw);
+    let match;
+    if(/NOETIC FIELD EXECUTION/i.test(heading)) return {type:'banner',heading};
+    if(headingLike&&/^Layer A\b/i.test(heading)&&/Compact\s+DSL\/IR\s+Header/i.test(heading)) return {type:'compact_layer_a',heading};
+    if((match=heading.match(/^Burden\s+(\d+)\b(?:\s*(?:—|-)\s*(.*))?/i))) return {type:'burden',heading,burden:burden(match[1])};
+    if(headingLike&&(match=heading.match(/^Layer A\b.*\bBurden\s+(\d+)\b/i))) return {type:'burden_setup',heading,burden:burden(match[1])};
+    if(headingLike&&/Hidden premises operating/i.test(heading)) return {type:'hidden_premises',heading};
+    if((match=heading.match(/^([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B([₀₁₂₃₄₅₆₇₈₉]+)(?:\[([^\]]+)\])?/))) return {type:'submove',heading,burden:burden(supNum(match[1]))};
+    if(headingLike&&(match=heading.match(/^(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i))) return {type:'land',heading,burden:burden(supNum(match[2]))};
+    if(headingLike&&(match=heading.match(/^(Land|HOLD)\(B(\d+)\)/i))) return {type:'land',heading,burden:burden(match[2])};
+    if(headingLike&&/^\[?\s*Mid-Reread Pressure\s*\]?$/i.test(heading)) return {type:'mid_reread_pressure',heading};
+    if(headingLike&&/^(?:Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b/i.test(heading)) return {type:'closure_witness',heading};
+    if(headingLike&&/^(?:Final\s+)?Restorative Response\b/i.test(heading)) return {type:'restorative_response',heading};
+    if(headingLike&&/^(?:Final\s+)?Closing Formulation\b/i.test(heading)) return {type:'closing_formulation',heading};
+    return null;
+  }
+  function sourceRenderSection(type,burdenId=''){
+    if(type==='banner'||type==='compact_layer_a') return 'intro';
+    if(['burden','burden_setup','hidden_premises','submove','land','mid_reread_pressure'].includes(type)) return burdenId?`burden:${burdenId}`:'burden';
+    if(type==='restorative_response'||type==='closing_formulation') return 'restoration';
+    if(type==='closure_witness') return 'formal';
+    return 'unassigned';
+  }
+  function detectSourceSections(sourceText){
+    const lines=String(sourceText||'').split(/\r?\n/);
+    const markers=[];
+    let currentBurden='';
+    lines.forEach((line,index)=>{
+      const kind=sourceHeadingKind(line);
+      if(!kind) return;
+      const lineNo=index+1;
+      if(kind.type==='burden'&&kind.burden) currentBurden=kind.burden;
+      const sectionBurden=kind.burden||currentBurden||'';
+      markers.push({
+        id:`${kind.type}:${sectionBurden||lineNo}:${lineNo}`,
+        type:kind.type,
+        heading:kind.heading,
+        burden:sectionBurden,
+        lineStart:lineNo
+      });
+    });
+    return markers.map((marker,index)=>{
+      const next=markers[index+1];
+      const lineEnd=(next?next.lineStart-1:lines.length);
+      const text=lines.slice(marker.lineStart-1,lineEnd).join('\n');
+      const assignedRenderSection=sourceRenderSection(marker.type,marker.burden);
+      return {...marker,lineEnd,text,assignedRenderSection,rendered:false,exportFile:'',reason:''};
+    }).filter(section=>String(section.text||'').trim());
   }
   function extractBalancedJsonFrom(text,startIndex){
     const source=String(text||'');
@@ -93,17 +178,21 @@
   function afterColon(line){const i=String(line).indexOf(':'); return i>=0?String(line).slice(i+1).replace(/\s+/g,' ').trim():'';}
   function splitOutputZones(sourceText){
     const text=String(sourceText||'');
+    const sourceSections=detectSourceSections(text);
     const closureMatch=text.match(/\n\s*(?:#+\s*)?(?:Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness|Closure audit|field_witness)\b/i);
     const closureStart=closureMatch?closureMatch.index+1:text.length;
     const bodyProse=text.slice(0,closureStart);
     const closureWitness=text.slice(closureStart);
     const fieldWitnessMatch=text.match(/\n\s*(?:#+\s*)?field_witness\b/i);
     const visibleOutputProse=fieldWitnessMatch?text.slice(0,fieldWitnessMatch.index+1):text;
-    const restorativeResponse=extractBodySection(visibleOutputProse,'Restorative Response',['Closing Formulation','field_witness']);
-    const closingFormulation=extractBodySection(visibleOutputProse,'Closing Formulation',['field_witness']);
+    const restorativeSection=sourceSections.find(section=>section.type==='restorative_response');
+    const closingSection=sourceSections.find(section=>section.type==='closing_formulation');
+    const restorativeResponse=restorativeSection?stripSourceHeading(restorativeSection.text):extractBodySection(visibleOutputProse,'Restorative Response',['Closing Formulation','field_witness']);
+    const closingFormulation=closingSection?stripSourceHeading(closingSection.text):extractBodySection(visibleOutputProse,'Closing Formulation',['field_witness']);
     return {
       bodyProse,
       closureWitness,
+      sourceSections,
       bodyLineCount: bodyProse.split(/\r?\n/).length,
       embeddedFieldWitness: extractEmbeddedFieldWitness(text),
       restorativeResponse,
@@ -112,7 +201,7 @@
   }
 
   function blankModel(){
-    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{}}};
+    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',sourceSections:[],zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{},mrpSourceTexts:{},burdenSetupTexts:{},burdenSetupHeadings:{},hiddenPremiseTexts:{},hiddenPremiseHeadings:{},compactLayerA:'',bannerText:'',closureWitnessText:''}};
   }
 
   function lineBurdens(line,model,lineNo){
@@ -166,9 +255,19 @@
     const sourceText=String(text||'');
     const zones=splitOutputZones(sourceText);
     model.zones={bodyProse:zones.bodyProse,closureWitness:zones.closureWitness};
+    model.sourceSections=zones.sourceSections||[];
     model.witnessSources={embedded:Boolean(zones.embeddedFieldWitness),separate:Boolean(String(witnessText||'').trim())};
     model.restorativeResponse=zones.restorativeResponse;
     model.closingFormulation=zones.closingFormulation;
+    (model.sourceSections||[]).forEach(section=>{
+      const body=stripSourceHeading(section.text);
+      if(section.type==='banner') model.bodyExtract.bannerText=body||cleanVisibleProseBlock(section.text);
+      if(section.type==='compact_layer_a') model.bodyExtract.compactLayerA=body;
+      if(section.type==='burden_setup'&&section.burden){model.bodyExtract.burdenSetupTexts[section.burden]=body; model.bodyExtract.burdenSetupHeadings[section.burden]=section.heading;}
+      if(section.type==='hidden_premises'&&section.burden){model.bodyExtract.hiddenPremiseTexts[section.burden]=body; model.bodyExtract.hiddenPremiseHeadings[section.burden]=section.heading;}
+      if(section.type==='mid_reread_pressure'&&section.burden) model.bodyExtract.mrpSourceTexts[section.burden]=body;
+      if(section.type==='closure_witness') model.bodyExtract.closureWitnessText=body;
+    });
     const lines=sourceText.split(/\r?\n/);
     let lastBurden='', currentMrpBurden='', pendingMrpBlock=false, currentSubmove='';
     const routeRecords=[];
@@ -693,6 +792,18 @@
   function bodyRereadText(model,b,reread){
     const body=model.bodyExtract?.rereadTexts?.[b];
     return body?stripTechnicalLead(body):(reread?stripTechnicalLead(reread.label):'No state reread was detected for this problem.');
+  }
+  function bodyBurdenSetupText(model,b){
+    return model.bodyExtract?.hiddenPremiseTexts?.[b] || model.bodyExtract?.burdenSetupTexts?.[b] || '';
+  }
+  function bodyMrpSourceText(model,b){
+    return model.bodyExtract?.mrpSourceTexts?.[b] || '';
+  }
+  function bodyClosureWitnessText(model){
+    return model.bodyExtract?.closureWitnessText || '';
+  }
+  function sourceSectionTitle(model,b){
+    return model.bodyExtract?.hiddenPremiseHeadings?.[b] || model.bodyExtract?.burdenSetupHeadings?.[b] || 'Source setup from the output';
   }
   function bodyMrpItems(model,b,result,edgeText){
     const body=(model.bodyExtract?.mrpTexts?.[b]||[]).map(stripTechnicalLead).filter(Boolean);
@@ -1253,6 +1364,12 @@
     introParts.push(claimCard.svg); y+=claimCard.height+18;
     const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     introParts.push(diagCard.svg); y+=diagCard.height+18;
+    const compactLayerAText=model.bodyExtract?.compactLayerA?`Layer A — Compact DSL/IR Header\n${model.bodyExtract.compactLayerA}`:'';
+    const sourceIntroText=[model.bodyExtract?.bannerText,compactLayerAText].filter(Boolean).join('\n\n');
+    if(sourceIntroText){
+      const sourceIntro=storySectionBlock('Source structure detected in the output',sourceIntroText,margin,y,cardW,{fill:'#0b1220',stroke:'#64748b',items:sourceBlockLines(sourceIntroText),maxLines:0,titleSize:28,bodySize:21,lineHeight:33,pad:32,klass:'outputGrapherStoryPanel outputGrapherSourceIntro'});
+      introParts.push(sourceIntro.svg); y+=sourceIntro.height+18;
+    }
     const invItems=semanticBurdenLabels(model,8);
     const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     introParts.push(invCard.svg); y+=invCard.height+28;
@@ -1286,7 +1403,9 @@
         return {sm,node,...measured};
       });
       const moveBlockH=moveBlocks.reduce((sum,block,i)=>sum+block.height+(i?d.subGap:0),0);
-      const movesTitleY=burdenHeader.bodyY+18-y;
+      const setupText=bodyBurdenSetupText(model,b);
+      const setupBlock=setupText?storySectionBlock(sourceSectionTitle(model,b),setupText,margin+34,burdenHeader.bodyY+18,cardW-68,{fill:'#0b1220',stroke:'#64748b',items:sourceBlockLines(setupText),maxLines:0,titleSize:24,bodySize:20,lineHeight:31,pad:26,klass:'outputGrapherStoryPanel outputGrapherSourceSetup'}):{height:0,svg:''};
+      const movesTitleY=(setupBlock.svg?burdenHeader.bodyY+18+setupBlock.height+34:burdenHeader.bodyY+18)-y;
       const firstMoveY=movesTitleY+50;
       const panelTop=firstMoveY+moveBlockH+34;
       const fullW=cardW-60, panelGap=24, panelX=margin+30;
@@ -1299,12 +1418,17 @@
       const edgeText=(mrp.edges||[]).map(e=>issueGraph(e[0],e[1])).join(', ')||'none';
       const mrpRows=mrpPanelRows(model,b,result,edgeText,routes,rereadText);
       const mrpBlock=storyKeyValueBlock('Follow-up: pressure-check',mrpRows,panelX,bottomPanelY,fullW,{fill:'#2e1065',stroke:'#a855f7',titleSize:26,bodySize:21,lineHeight:32,pad:d.panelPad,badges:[{label:`MRP(${b})`,color:'#581c87'}]});
+      const mrpSourceText=bodyMrpSourceText(model,b);
+      const mrpSourceY=bottomPanelY+mrpBlock.height+18;
+      const mrpSourceBlock=mrpSourceText?storySectionBlock('Source block: [Mid-Reread Pressure]',mrpSourceText,panelX,mrpSourceY,fullW,{fill:'#1e1b4b',stroke:'#a855f7',items:sourceBlockLines(mrpSourceText),maxLines:0,titleSize:24,bodySize:20,lineHeight:31,pad:d.panelPad,klass:'outputGrapherStoryPanel outputGrapherMrpSourceBlock'}):{height:0,svg:''};
       const nextBurden=burdens[index+1]||'';
       const routeItems=routePanelItems(model,b,nextBurden,routes,result);
-      const routeBlock=renderRouteRow('Next step',routeItems,routes,panelX,bottomPanelY+mrpBlock.height+18,fullW,{titleSize:24,bodySize:21,lineHeight:32,pad:d.panelPad});
-      const bottomRowH=mrpBlock.height+18+routeBlock.height;
+      const routeY=mrpSourceY+(mrpSourceBlock.svg?mrpSourceBlock.height+18:0);
+      const routeBlock=renderRouteRow('Next step',routeItems,routes,panelX,routeY,fullW,{titleSize:24,bodySize:21,lineHeight:32,pad:d.panelPad});
+      const bottomRowH=mrpBlock.height+18+(mrpSourceBlock.svg?mrpSourceBlock.height+18:0)+routeBlock.height;
       const cardH=bottomPanelY-y+bottomRowH+38;
       parts.push(`<g class="outputGrapherStorySection outputGrapherStoryBurden" data-og-section="burden" data-burden="${esc(b)}"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect>${burdenHeader.svg}`);
+      if(setupBlock.svg) parts.push(setupBlock.svg);
       parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How this problem is answered</text>`);
       let subY=y+firstMoveY;
       moveBlocks.forEach((block)=>{
@@ -1314,6 +1438,7 @@
       parts.push(landBlock.svg);
       parts.push(rereadBlock.svg);
       parts.push(mrpBlock.svg);
+      if(mrpSourceBlock.svg) parts.push(mrpSourceBlock.svg);
       parts.push(routeBlock.svg);
       parts.push('</g>');
       y+=cardH+d.gap;
@@ -1327,6 +1452,11 @@
     if(closingCard.svg){restorationParts.push(closingCard.svg); y+=closingCard.height+52;}
     parts.push(`<g class="outputGrapherStorySection outputGrapherRestorationSection" data-og-section="restoration">${restorationParts.join('')}</g>`);
     const formalParts=[];
+    const closureWitnessText=bodyClosureWitnessText(model);
+    if(closureWitnessText){
+      const closureWitnessCard=storySectionBlock('Closure/Reconstruction Witness',closureWitnessText,margin,y,cardW,{fill:'#0b1220',stroke:'#64748b',items:sourceBlockLines(closureWitnessText),maxLines:0,titleSize:30,bodySize:20,lineHeight:31,pad:30,klass:'outputGrapherStoryPanel outputGrapherClosureWitnessSource'});
+      formalParts.push(closureWitnessCard.svg); y+=closureWitnessCard.height+34;
+    }
     const formalCaseFill=renderFormalCaseFill(model,margin,y,cardW);
     formalParts.push(formalCaseFill.svg); y+=formalCaseFill.height+44;
     const legend=`<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">problem / burden</text><circle cx="370" cy="-8" r="8" fill="#38bdf8"/><text x="386" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="626" cy="-8" r="8" fill="#22c55e"/><text x="642" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="880" cy="-8" r="8" fill="#a855f7"/><text x="896" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next issue / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
@@ -1819,6 +1949,55 @@
     chunks.push(new Uint8Array(end));
     return new Blob(chunks,{type:'application/zip'});
   }
+  function sourceCoverageManifest(model,sections){
+    const cropFor=(sourceSection)=>{
+      const assigned=sourceSection.assignedRenderSection||'unassigned';
+      if(assigned==='intro') return sections.find(section=>section.type==='intro');
+      if(assigned==='restoration') return sections.find(section=>section.type==='restoration');
+      if(assigned==='formal') return sections.find(section=>section.type==='formal');
+      const burdenMatch=assigned.match(/^burden:(.+)$/);
+      if(burdenMatch) return sections.find(section=>section.type==='burden'&&section.burden===burdenMatch[1]);
+      return null;
+    };
+    const isRendered=(section)=>{
+      const b=section.burden;
+      if(section.type==='banner') return Boolean(model.bodyExtract?.bannerText);
+      if(section.type==='compact_layer_a') return Boolean(model.bodyExtract?.compactLayerA);
+      if(section.type==='burden') return Boolean(b&&model.burdens?.includes(b));
+      if(section.type==='burden_setup') return Boolean(b&&model.bodyExtract?.burdenSetupTexts?.[b]);
+      if(section.type==='hidden_premises') return Boolean(b&&model.bodyExtract?.hiddenPremiseTexts?.[b]);
+      if(section.type==='submove') return true;
+      if(section.type==='land') return Boolean(b&&model.bodyExtract?.landTexts?.[b]);
+      if(section.type==='mid_reread_pressure') return Boolean(b&&model.bodyExtract?.mrpSourceTexts?.[b]);
+      if(section.type==='closure_witness') return Boolean(model.bodyExtract?.closureWitnessText);
+      if(section.type==='restorative_response') return Boolean(model.restorativeResponse);
+      if(section.type==='closing_formulation') return Boolean(model.closingFormulation);
+      return false;
+    };
+    const reasonFor=(section,rendered)=>{
+      if(!rendered) return 'detected source section was not rendered';
+      if(section.type==='submove') return 'rendered as owner-backed answer move with source-derived fields';
+      if(section.type==='land') return 'rendered in the burden landing panel';
+      if(section.type==='burden') return 'rendered as the burden/problem card header';
+      return 'rendered as a source-preserving card or final prose card';
+    };
+    return (model.sourceSections||[]).map(section=>{
+      const crop=cropFor(section);
+      const rendered=isRendered(section);
+      return {
+        id:section.id,
+        type:section.type,
+        heading:section.heading,
+        burden:section.burden||null,
+        lineStart:section.lineStart,
+        lineEnd:section.lineEnd,
+        assignedRenderSection:section.assignedRenderSection,
+        rendered,
+        exportFile:crop?.name||null,
+        reason:reasonFor(section,rendered)
+      };
+    });
+  }
   function sectionExportManifest(sections,renderedFiles){
     const coverage=exportCoverageReport()||{};
     const model=currentModel||blankModel();
@@ -1842,6 +2021,7 @@
         mismatchCount:(model.witnessMismatches||[]).length
       },
       dimensions:coverage,
+      sourceCoverage:sourceCoverageManifest(model,sections),
       sections:sections.map((section,index)=>({
         order:index+1,
         file:section.name,
