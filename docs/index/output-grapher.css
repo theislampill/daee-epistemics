@@ -55,7 +55,7 @@
 .outputGrapherInspectorBody code{display:block;margin:4px 0;padding:6px}
 .outputGrapherLegend{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .outputGrapherLegend span{display:inline-flex;align-items:center;gap:7px;border:1px solid #334155;background:#0b1020;border-radius:8px;padding:7px 10px;font-size:14px;color:#cbd5e1}
-.ogColor{width:12px;height:12px;border-radius:50%;display:inline-block}.ogInput{background:#64748b}.ogBurden{background:#3b82f6}.ogSubmove{background:#38bdf8}.ogLanded{background:#22c55e}.ogRoute{background:#f59e0b}.ogClosed{background:#10b981}.ogHeld{background:#f59e0b}.ogMrp{background:#a855f7}.ogInvalid{background:#ef4444}
+.ogColor{width:12px;height:12px;border-radius:50%;display:inline-block}.ogInput{background:#64748b}.ogBurden{background:#3b82f6}.ogMrpGenerated{background:#8b5cf6}.ogSubmove{background:#38bdf8}.ogLanded{background:#22c55e}.ogRoute{background:#f59e0b}.ogClosed{background:#10b981}.ogHeld{background:#f59e0b}.ogMrp{background:#a855f7}.ogInvalid{background:#ef4444}
 .outputGrapherValidation{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .outputGrapherValidationDetails{margin-top:12px;border:1px solid #334155;background:#080d19;border-radius:12px}
 .outputGrapherValidationDetails .outputGrapherValidation{padding:0 12px 12px}

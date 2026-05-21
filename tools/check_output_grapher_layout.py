@@ -424,8 +424,8 @@ def main() -> int:
         "large burden title": "titleSize:34",
         "list block rendering": "function storyListBlock",
         "rectangular view badge": 'height="44" rx="9"',
-        "story legend route color": "next issue / HOLD / RECURSE",
-        "story legend closed color": "STOP / closed / restoration",
+        "story legend generated burden": "B_MRP generated burden",
+        "story legend terminal route": "STOP / HOLD / LoopBreak",
         "desktop story width": "const width=1800",
         "actual panel width wrapping": "storyWrap(subtitle||'not detected', innerW, bodySize",
         "output zone split": "function splitOutputZones",
@@ -560,8 +560,8 @@ def main() -> int:
             errors.append(f"{rel(CSS)} missing {label}: {token!r}")
 
     required_section = {
-        "route legend label": "next issue / HOLD / RECURSE",
-        "closed legend label": "STOP / closed / restoration",
+        "route legend label": "STOP / HOLD / LoopBreak",
+        "generated burden legend label": "B_MRP generated burden",
         "PNG desktop size": "Desktop PNG (1800px)",
         "PNG poster size": "Poster PNG (2200px)",
         "PNG compact size": "Compact PNG (1500px)",

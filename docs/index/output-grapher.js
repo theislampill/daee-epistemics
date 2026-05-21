@@ -1114,11 +1114,12 @@
     const diagnosisList=diagnosisItems(model,model.burdens).map(x=>`<li>${esc(x)}</li>`).join('');
     const baseline=(model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens).map(normalizeBurden).join(', ')||'not detected';
     const generated=(model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{})).map(normalizeBurden).join(', ')||'none';
+    const total=(model.ledger.B_total.length?model.ledger.B_total:model.burdens).map(normalizeBurden).join(', ')||'not detected';
     return `<div class="outputGrapherTopCards">
       <section class="outputGrapherTopCard"><h3>Final Answer From The Output</h3><p><strong>${esc(verdict.headline)}</strong></p><p>${esc(verdict.body)}</p></section>
       <section class="outputGrapherTopCard"><h3>Reply / Claim Being Rejected</h3><p>${esc(readerInputDigest(model))}</p></section>
       <section class="outputGrapherTopCard"><h3>What The Reply Depends On</h3><ul>${diagnosisList}</ul><p class="outputGrapherTechMeta">Technical reading: ${esc(technicalDiagnosis(model))}</p></section>
-      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}</p></section>
+      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}; B_total=${esc(total)}; B_total = B_LA ∪ B_MRP when generated pressure is present.</p></section>
       <section class="outputGrapherTopCard"><h3>Closure / Restoration Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>The map shows whether the reply is closed, held, partial, or still live after the final pressure-check.</p><p class="outputGrapherTechMeta">Technical reading: route-gradient=${esc(collapse.routeGradient||'not detected')}; del-dot=${esc(collapse.delDot||collapse.divergence||'not detected')}; del-cross=${esc(collapse.delCross||collapse.curl||'not detected')}; T_lang=${esc(collapse.tLang||'boundary not detected')}</p></section>
     </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Problems: ${model.burdens.length}</span><span class="outputGrapherPill">TTP moves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">Follow-up checks: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminal states: ${Object.keys(model.terminals).length}</span></div>`;
   }
@@ -1477,7 +1478,7 @@
     return storyKeyValueBlock('Source Preservation / Coverage',rows,x,y,w,{fill:'#0b1220',stroke:'#64748b',titleSize:30,bodySize:20,labelSize:20,lineHeight:31,pad:30,badges:[{label:'Technical appendix',color:'#334155'}],klass:'outputGrapherStoryPanel outputGrapherKeyValuePanel outputGrapherSourceCoverageAppendix'});
   }
   function renderStoryLegend(margin,y){
-    return `<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">problem / burden</text><circle cx="370" cy="-8" r="8" fill="#38bdf8"/><text x="386" y="0" fill="#cbd5e1" font-size="22">rebuttal move</text><circle cx="626" cy="-8" r="8" fill="#22c55e"/><text x="642" y="0" fill="#cbd5e1" font-size="22">failure shown</text><circle cx="880" cy="-8" r="8" fill="#a855f7"/><text x="896" y="0" fill="#cbd5e1" font-size="22">follow-up check</text><circle cx="126" cy="38" r="8" fill="#f59e0b"/><text x="142" y="46" fill="#cbd5e1" font-size="22">next issue / HOLD / RECURSE</text><circle cx="514" cy="38" r="8" fill="#10b981"/><text x="530" y="46" fill="#cbd5e1" font-size="22">STOP / closed / restoration</text><circle cx="872" cy="38" r="8" fill="#ef4444"/><text x="888" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
+    return `<g class="ogSvgLegend" transform="translate(${margin} ${y-10})"><text fill="#e5e7eb" font-size="24" font-weight="900">Legend:</text><circle cx="126" cy="-8" r="8" fill="#3b82f6"/><text x="142" y="0" fill="#cbd5e1" font-size="22">B_LA baseline burden</text><circle cx="430" cy="-8" r="8" fill="#8b5cf6"/><text x="446" y="0" fill="#cbd5e1" font-size="22">B_MRP generated burden</text><circle cx="796" cy="-8" r="8" fill="#38bdf8"/><text x="812" y="0" fill="#cbd5e1" font-size="22">owner-backed move</text><circle cx="126" cy="38" r="8" fill="#22c55e"/><text x="142" y="46" fill="#cbd5e1" font-size="22">Land / closure</text><circle cx="384" cy="38" r="8" fill="#a855f7"/><text x="400" y="46" fill="#cbd5e1" font-size="22">MRP / generated route</text><circle cx="718" cy="38" r="8" fill="#f59e0b"/><text x="734" y="46" fill="#cbd5e1" font-size="22">STOP / HOLD / LoopBreak</text><circle cx="1104" cy="38" r="8" fill="#ef4444"/><text x="1120" y="46" fill="#cbd5e1" font-size="22">invalid / missing</text></g>`;
   }
   function renderStorySvg(model,options={}){
     const includeTechnicalAppendix=Boolean(options.includeTechnicalAppendix);
@@ -1514,15 +1515,19 @@
       const mrp=model.mrp[b]||{};
       const routes=(mrp.routes||[]).join(', ')||'not detected';
       const result=publicRouteType(routeResultType(model,b));
+      const generatedBy=model.generatedBurdens[b];
+      const burdenColor=generatedBy?'#8b5cf6':'#3b82f6';
+      const burdenFill=generatedBy?'#14102a':'#07111f';
+      const burdenStroke=generatedBy?'#8b5cf6':'#263044';
       const titleText=`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`;
-      const problemText='Problem from the visible output: '+bodyBurdenDescription(model,b);
+      const problemText=(generatedBy?`Generated by ${generatedBy}; `:'Baseline Layer-A burden; ')+'problem from the visible output: '+bodyBurdenDescription(model,b);
       const burdenHeader=renderCardHeader({
         x:margin,
         y,
         width:cardW,
         title:titleText,
         subtitle:problemText,
-        color:'#3b82f6',
+        color:burdenColor,
         titleSize:34,
         subtitleSize:22,
         pad:34,
@@ -1558,7 +1563,7 @@
       const routeBlock=renderRouteRow('Next step',routeItems,routes,panelX,routeY,fullW,{titleSize:24,bodySize:21,lineHeight:32,pad:d.panelPad});
       const bottomRowH=mrpBlock.height+18+(mrpSourceBlock.svg?mrpSourceBlock.height+18:0)+routeBlock.height;
       const cardH=bottomPanelY-y+bottomRowH+38;
-      parts.push(`<g class="outputGrapherStorySection outputGrapherStoryBurden" data-og-section="burden" data-burden="${esc(b)}"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="#07111f" stroke="#263044" stroke-width="1.5"></rect>${burdenHeader.svg}`);
+      parts.push(`<g class="outputGrapherStorySection outputGrapherStoryBurden" data-og-section="burden" data-burden="${esc(b)}"><rect x="${margin}" y="${y}" width="${cardW}" height="${cardH}" rx="24" fill="${burdenFill}" stroke="${burdenStroke}" stroke-width="${generatedBy?'2.4':'1.5'}"></rect>${burdenHeader.svg}`);
       if(setupBlock.svg) parts.push(setupBlock.svg);
       parts.push(`<text x="${margin+34}" y="${y+movesTitleY}" fill="#bae6fd" font-size="28" font-weight="900">How this problem is answered</text>`);
       let subY=y+firstMoveY;
