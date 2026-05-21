@@ -67,7 +67,7 @@ def check_static_artifact(errors: list[str]) -> None:
         "local CSS": "index/output-grapher.css",
         "export PNG button": "ogExportPngBtn",
         "sectioned PNG button": "ogExportPngSectionsBtn",
-        "section ZIP button label": "Export sections as PNG ZIP",
+        "section ZIP button label": "Export section ZIP",
         "export PNG size selector": "ogExportWidthMode",
         "desktop PNG mode": "Desktop PNG (1800px)",
         "poster PNG mode": "Poster PNG (2200px)",
@@ -114,6 +114,13 @@ def check_static_artifact(errors: list[str]) -> None:
         "embedded/separate witness comparison": "compareEmbeddedAndSeparateWitness",
         "field witness edge comparison": "edge mismatch visible=",
         "visible final section extractor": "extractBodySection",
+        "visible source-section detector": "detectSourceSections",
+        "source-section render manifest": "sourceCoverageManifest",
+        "section source coverage manifest": "sourceCoverage",
+        "source setup card renderer": "outputGrapherSourceSetup",
+        "source-section render layer classifier": "sourceRenderLayer",
+        "technical source coverage appendix": "outputGrapherSourceCoverageAppendix",
+        "closure witness source renderer": "outputGrapherClosureWitnessSource",
         "visible final prose cleaner": "cleanVisibleProseBlock",
         "visible body extraction": "bodyExtract",
         "body-first canonicalizer": "canonicalizePublicNotation",
@@ -258,6 +265,7 @@ def check_static_artifact(errors: list[str]) -> None:
     if "Main Problems In The Reply" in combined and "bodyBurdenDescription(model,b)" not in js_text:
         errors.append("Output Grapher burden inventory must use visible body headings, not witness-only labels")
     check_submove_content_preservation(js_text, errors)
+    check_source_section_preservation(errors)
     check_single_paste_embedded_witness(errors)
 
 
@@ -369,6 +377,8 @@ if (missing.length || forbiddenHits.length) {{
             ["node", "-e", node_script],
             cwd=ROOT,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
             timeout=30,
         )
@@ -378,6 +388,157 @@ if (missing.length || forbiddenHits.length) {{
     if result.returncode != 0:
         details = (result.stdout or result.stderr or "").strip()
         errors.append(f"Output Grapher submove content-preservation check failed: {details}")
+
+
+def check_source_section_preservation(errors: list[str]) -> None:
+    fixture = r'''
+╔════════════════════════════════════════════╗
+║ daee-epistemics — NOETIC FIELD EXECUTION ║
+╚════════════════════════════════════════════╝
+
+**Layer A — Compact DSL/IR Header**
+- read status: source sections must survive the map
+- held: B1, B2
+
+### Burden 1 — Imported moral tribunal
+**Hidden premises operating in the statement:**
+- hidden premise one
+- hidden premise two
+
+¹B₁ [FPD] — expose the imported tribunal
+Target: the hidden court imported by the reply.
+What it does: names the court before it judges the noetic field.
+Result: the hidden premise is no longer invisible.
+Contribution-to-Land(¹B): the first burden lands from visible body prose.
+
+**Land(¹B):** the imported tribunal loses authority.
+
+**[Mid-Reread Pressure]**
+Target: ¹B
+Pressure activations: ²B remains live
+∇·T: non-neutral toward the next burden
+∇×T: null
+Finding: known issue still had to be answered
+Graph delta: ¹B → ²B
+Route: RECURSE
+Boundary: T_lang respected
+MRP resultant: held_burden_activation
+
+### Burden 2 — Accountability compression
+**Layer A — Burden 2**
+- local setup one
+- local setup two
+
+²B₁ [M1] — expose compression
+Target: the compressed accountability claim.
+What it does: restores the missing distinction.
+Result: the compression no longer carries the argument.
+Contribution-to-Land(²B): the second burden lands from source text.
+
+**Land(²B):** the compression is discharged.
+
+**[Mid-Reread Pressure]**
+Target: ²B
+Pressure activations: none
+∇·T: neutral
+∇×T: null
+Finding: no new pressure remains
+Graph delta: none
+Route: STOP
+Boundary: T_lang respected
+MRP resultant: no_new_resultant
+
+## Closure/Reconstruction Witness
+coverage_complete=true
+terminal states: ¹B=landed; ²B=landed
+
+## Final Restorative Response — For the Dāʿī
+
+The visible final restorative response must appear after the restoration summary and before the formal appendix.
+
+## Final Closing Formulation
+
+The closing formulation must remain visible and cannot be replaced by the formal case fill.
+'''
+    required_fragments = [
+        "What structure was detected",
+        "Layer A / Compact DSL-IR detected",
+        "Hidden premises operating in the statement",
+        "Problem setup from the output",
+        "Follow-up: pressure-check",
+        "Restorative Response",
+        "The visible final restorative response must appear",
+        "Closing Formulation",
+        "The closing formulation must remain visible",
+    ]
+    model_required = [
+        ["compact_layer_a", "banner", "hidden_premises", "burden_setup", "mid_reread_pressure", "closure_witness", "restorative_response", "closing_formulation"],
+        ["¹B", "²B"],
+    ]
+    node_script = f"""
+const fs = require('fs');
+global.window = {{}};
+global.document = {{
+  addEventListener: () => {{}},
+  getElementById: () => null,
+  querySelectorAll: () => []
+}};
+const source = {fixture!r};
+eval(fs.readFileSync({str(JS)!r}, 'utf8'));
+const model = window.daeeOutputGrapher.parseOutput(source, '');
+const svg = window.daeeOutputGrapher.renderGraph(model);
+const required = {required_fragments!r};
+const missing = required.filter(token => !svg.includes(token));
+const forbiddenPublic = [
+  'Source structure detected in the output',
+  'Layer A — Compact DSL/IR Header',
+  'Layer A — Compact Diagnostic Surface',
+  'Source block: [Mid-Reread Pressure]',
+  'Closure/Reconstruction Witness',
+  'Closure / Reconstruction Witness',
+  'Formal Case Fill',
+  'MRP resultants',
+  '∇·B:',
+  '∇×κ:',
+  '𝒞(Ψᴺ):',
+  '```',
+  '**',
+  '*'
+];
+const publicLeaks = forbiddenPublic.filter(token => svg.includes(token));
+const requiredTypes = {model_required[0]!r};
+const types = new Set((model.sourceSections || []).map(section => section.type));
+const missingTypes = requiredTypes.filter(type => !types.has(type));
+const requiredBurdens = {model_required[1]!r};
+const setupMissing = requiredBurdens.filter(b => !(model.bodyExtract.mrpSourceTexts || {{}})[b]);
+if (!model.restorativeResponse || !model.closingFormulation) missing.push('final prose model fields');
+if (svg.includes('Plain-language Rebuttal View')) missing.push('old plain-language label absent');
+const coverage = (model.sourceSections || []).map(section => ({{
+  type: section.type,
+  assignedRenderSection: section.assignedRenderSection,
+  renderLayer: window.daeeOutputGrapher.sourceRenderLayer ? window.daeeOutputGrapher.sourceRenderLayer(section.type) : null
+}}));
+if (missing.length || missingTypes.length || setupMissing.length || publicLeaks.length) {{
+  console.log(JSON.stringify({{missing, missingTypes, setupMissing, publicLeaks, sourceSections:model.sourceSections, coverage}}, null, 2));
+  process.exit(1);
+}}
+"""
+    try:
+        result = subprocess.run(
+            ["node", "-e", node_script],
+            cwd=ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        errors.append(f"Output Grapher source-section preservation check could not run: {exc}")
+        return
+    if result.returncode != 0:
+        details = (result.stdout or result.stderr or "").strip()
+        errors.append(f"Output Grapher source-section preservation check failed: {details}")
 
 
 def check_fixtures(errors: list[str]) -> None:

@@ -32,7 +32,7 @@ def rel(path: Path) -> str:
 
 
 def render_story_body(js_text: str) -> str:
-    match = re.search(r"function renderStorySvg\(model\)\{(?P<body>.*?)\n  function renderGraph\(model\)\{", js_text, re.S)
+    match = re.search(r"function renderStorySvg\(model(?:,[^)]*)?\)\{(?P<body>.*?)\n  function renderGraph\(model\)\{", js_text, re.S)
     return match.group("body") if match else ""
 
 
@@ -129,6 +129,22 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
       restorativeResponseCount: svg.querySelectorAll('.outputGrapherRestorativeResponse').length,
       closingFormulationCount: svg.querySelectorAll('.outputGrapherClosingFormulation').length,
       formalCaseFillCount: svg.querySelectorAll('.outputGrapherFormalCaseFill').length,
+      publicInsiderLeaks: [
+        'Source structure detected in the output',
+        'Layer A — Compact DSL/IR Header',
+        'Layer A — Compact Diagnostic Surface',
+        'Source block: [Mid-Reread Pressure]',
+        'Closure/Reconstruction Witness',
+        'Closure / Reconstruction Witness',
+        'Formal Case Fill',
+        'MRP resultants',
+        '∇·B:',
+        '∇×κ:',
+        '𝒞(Ψᴺ):',
+        '```',
+        '**',
+        '*'
+      ].filter(token => svg.textContent.includes(token) || svg.outerHTML.includes(token)),
       restorationContainsTechnicalProofStrip: restorationText.includes('Technical proof strip'),
       restorationContainsTechnicalAppendix: /Technical proof|Formal Reconstruction|Formal Case Fill|Technical appendix/i.test(restorationText),
       duplicateLandTechnicalLines: [...svg.querySelectorAll('.outputGrapherStoryPanel')].filter(g => /Technical:\\s*Land\\(/.test(g.textContent)).length,
@@ -189,28 +205,26 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         errors.append("rendered Restoration Summary still contains the insider technical proof strip")
     if metrics.get("duplicateLandTechnicalLines") or metrics.get("duplicateRereadTechnicalLines"):
         errors.append("rendered Land/Reread panels still duplicate their corner badges with Technical lines")
+    if metrics.get("publicInsiderLeaks"):
+        errors.append(f"default Restorative Noetic Map leaks insider/raw source text: {metrics.get('publicInsiderLeaks')}")
     if metrics.get("routeRowCount", 0) < 1:
         errors.append("rendered story view did not render compact route rows")
     order = metrics.get("finalSectionOrder") or {}
-    ordered_keys = ["restorationSummary", "restorativeResponse", "closingFormulation", "formalCaseFill", "legend"]
+    ordered_keys = ["restorationSummary", "restorativeResponse", "closingFormulation", "legend"]
     if all(isinstance(order.get(key), dict) for key in ordered_keys):
         tops = {key: float(order[key].get("top") or 0) for key in ordered_keys}
         if not (
             tops["restorationSummary"]
             < tops["restorativeResponse"]
             < tops["closingFormulation"]
-            < tops["formalCaseFill"]
             < tops["legend"]
         ):
             errors.append(
                 "rendered final section order is wrong: expected Restoration Summary -> "
-                "Restorative Response -> Closing Formulation -> Formal Case Fill -> Legend"
+                "Restorative Response -> Closing Formulation -> Legend"
             )
-        if (
-            tops["formalCaseFill"] < tops["restorativeResponse"]
-            or tops["formalCaseFill"] < tops["closingFormulation"]
-        ):
-            errors.append("rendered Formal Case Fill appears before Restorative Response or Closing Formulation")
+    if isinstance(order.get("formalCaseFill"), dict):
+        errors.append("default Restorative Noetic Map should not render Formal Case Fill in the public flow")
     coverage = metrics.get("exportCoverage") or {}
     if not coverage.get("hasRestorationSummary"):
         errors.append("export coverage report is missing the Restoration Summary")
@@ -291,8 +305,8 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         errors.append("rendered story view did not include the body-prose Restorative Response card")
     if metrics.get("closingFormulationCount", 0) < 1:
         errors.append("rendered story view did not include the body-prose Closing Formulation card")
-    if metrics.get("formalCaseFillCount", 0) < 1:
-        errors.append("rendered story view did not include the bottom Formal Case Fill appendix")
+    if metrics.get("formalCaseFillCount", 0) != 0:
+        errors.append("default story view should keep Formal Case Fill out of the public map")
     if not coverage.get("canvasSafe", False) and "function exportPngSections" not in JS.read_text(encoding="utf-8"):
         errors.append("one-shot PNG exceeds safe canvas limits and no sectioned export fallback exists")
     for row in metrics.get("routeRows", []):
@@ -397,7 +411,7 @@ def main() -> int:
         "route with next burden": "Move to next identified problem:",
         "route row body text width metadata": "data-inner-text-width=\"${textW}\"",
         "structured MRP panel rows": "mrpPanelRows(model,b,result,edgeText,routes,rereadText)",
-        "content-aware route row": "const bottomRowH=mrpBlock.height+18+routeBlock.height",
+        "content-aware route row": "const bottomRowH=mrpBlock.height+18+(mrpSourceBlock.svg?mrpSourceBlock.height+18:0)+routeBlock.height",
         "MRP panel uses full story width": "bottomPanelY,fullW",
         "padded export clone": "function cloneSvgForExport",
         "minimum body font": "bodySize=16",
@@ -410,6 +424,14 @@ def main() -> int:
         "desktop story width": "const width=1800",
         "actual panel width wrapping": "storyWrap(subtitle||'not detected', innerW, bodySize",
         "output zone split": "function splitOutputZones",
+        "source-section detector": "function detectSourceSections",
+        "source-section coverage manifest": "function sourceCoverageManifest",
+        "source coverage manifest field": "sourceCoverage:sourceCoverageManifest",
+        "source setup cards": "outputGrapherSourceSetup",
+        "source-section render layer classifier": "sourceRenderLayer",
+        "technical source coverage appendix": "outputGrapherSourceCoverageAppendix",
+        "public structure digest": "function publicStructureDigest",
+        "closure witness source card": "outputGrapherClosureWitnessSource",
         "body prose extraction": "bodyExtract",
         "canonical public notation": "function canonicalizePublicNotation",
         "visible submove details": "submoveDetails",
@@ -539,7 +561,7 @@ def main() -> int:
         "PNG poster size": "Poster PNG (2200px)",
         "PNG compact size": "Compact PNG (1500px)",
         "sectioned PNG export button": "ogExportPngSectionsBtn",
-        "section ZIP export label": "Export sections as PNG ZIP",
+        "section ZIP export label": "Export section ZIP",
         "single full output input": "Paste full daee-epistemics output",
         "primary map view label": "Restorative Noetic Map View",
         "map scope support": "What the Restorative Noetic Map shows",
