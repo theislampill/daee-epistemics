@@ -27,42 +27,44 @@ slash-safe archive entries.
 
 ## v0.4.3.0 Release Package / Provenance Status
 
-v0.4.3.0 public artifact status: published. The withdrawn/regression-hold `v0.4.3.0`
-prerelease and stale tag were replaced under owner-authorized Option A after package-bound
-proof. The public release name and tag are `v0.4.3.0`, not an RC label. Raw smoke and visualizer
-outputs remain local diagnostic artifacts and are not committed or uploaded as release assets.
+v0.4.3.0 public artifact status: published after corrected-goal closure. The stale
+same-version assets were replaced only after source CI, package rebuild, package-bound
+Boltzmann repeated-run proof, downloaded asset hash verification, and release provenance
+verification. The public release name and tag are `v0.4.3.0`, not an RC label. Raw smoke
+and visualizer outputs remain local diagnostic artifacts and are not committed or uploaded
+as release assets.
 
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.4.3.0.skill` |
 | Local zip build | `build/daee-epistemics-v0.4.3.0.skill.zip` |
 | Local package copy | `build/daee-epistemics-v0.4.3.0.skill` |
-| SHA256 | `A1FBFE6C507923416FC255E0140E5ECDD30BE1E055DC9310F02D16189212269C` |
-| Size | `625827` bytes |
+| SHA256 | `6C096A0DF199D44BBFD26F8F73BC836C53AA76BBA7B63B5E80B0FAE390C6CF5E` |
+| Size | `680020` bytes |
 | Entries | `20` |
-| Source commit recorded in provenance | Generated at release time from the final release source commit |
-| Source state | Deterministic source/checker/package gates passed locally before tag/release replacement |
-| Branch | `diagnostic/v0.4.3.0-regression-repair` |
+| Source commit recorded in provenance | `9a57961395643a1b56a1c39fcb8026d17d1ca6d7` |
+| Source state | Corrected-goal source/checker/package gates passed locally before tag/release replacement |
+| Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
-| Generated runtime manifest SHA256 | `6C2A06036D0D52096A48336A7B5048205A4F9E93DD4501BB5D55244D25AF19B6` |
-| Compiled module map SHA256 | `738C7D9C5C11C575C30A04595AD3B375BDE4FB9A6CF94E1163798510ADA9C6D5` |
-| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.0`; remote tag must peel to the final release-fix source commit recorded in provenance and release body claim |
+| Generated `SKILL.md` SHA256 | `C29609AC6C5546E00B1D44784F801E2675BF5073EF264FA891D8188D070A3696` |
+| Generated runtime manifest SHA256 | `DE068C48E6447C00BFAD25BECEE5244B3F90B5DAA53143C11D41808234604B0D` |
+| Compiled module map SHA256 | `2D9C455F2A0CE356AC3454BAD23B3A8654FA7BD2F4D80EA422DF9E04213DD1A0` |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.0`; remote tag peels to `9a57961395643a1b56a1c39fcb8026d17d1ca6d7` |
 | Provenance file | Release asset: `daee-epistemics-v0.4.3.0.provenance.json` generated from `build/daee-epistemics-v0.4.3.0.provenance.json` |
-| Package-bound proof | Local package artifact validation passed for the `.skill` release payload and its local `.skill.zip` build intermediate; mojibake guard and package artifact mojibake check passed; deterministic reconstructibility/MRP fixture proof passed; Trinitarian and generic route/curl invariant checks passed; Codex-hosted exact-file hard-compound Smoke 6 proved MRP behavior locally. Cross-host/paraphrase proof is not claimed. |
+| Package-bound proof | Local package artifact validation passed for the `.skill` release payload and its local `.skill.zip` build intermediate; package-bound Boltzmann run1/run2 passed syntax, strict MRP, manual, witness, mid-reread, formal reread, convergence, NLA, owner-plan, Grapher, and compare-runs; repeated-run fingerprints matched (`9376BCAE93F4`, `AB43E82A5170`, `D4BC08CD21C6`). Cross-host/paraphrase proof is not claimed. |
 
 The v0.4.3.0 release assets include the canonical `.skill` payload and package provenance. The
 `.skill.zip` file is a local build intermediate only and must not be uploaded as a GitHub Release
-asset. The refreshed hotfix package corrects mojibake in parseable
-closure-witness field names such as `∇·B:`, `∇×κ:`, and `𝒞(Ψᴺ):`.
-The same-version release correction also includes the Trinitarian route/curl hotfix and the
-generic MRP route/curl invariant guard; the later secularism hosted smoke is route/curl/field
-generalization evidence only, not a full replacement for the Repair14 behavioral proof. The generated-burden / notation hotfix is deterministic fixture/checker proven; no fresh hosted Smoke 7 proof is claimed.
+asset. The corrected-goal package includes register-derived burden floors, formal reread-state
+semantics, field-witness convergence, NLA decode semantic faithfulness, LoopBreak enforcement,
+legacy alias cleanup, and false-pass canaries. The literal Shannon/integral theorem and full
+`T_lang` response-closure checker are outside v0.4.3.0 release claims.
 
 The local package/provenance pair is checked with:
 
 ```powershell
-python tools/check_release_provenance.py --provenance build\daee-epistemics-v0.4.3.0.provenance.json --package build\daee-epistemics-v0.4.3.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json --release-artifacts docs\release-artifacts.md
+python tools/check_release_provenance.py --provenance build\download-verify-v0.4.3.0-20260524-232840\daee-epistemics-v0.4.3.0.provenance.json --package build\download-verify-v0.4.3.0-20260524-232840\daee-epistemics-v0.4.3.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json
 ```
 
 ## v0.4.2.0 Release Package / Provenance Status
