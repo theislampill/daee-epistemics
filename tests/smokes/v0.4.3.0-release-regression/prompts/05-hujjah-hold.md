@@ -1,0 +1,1 @@
+/daee-epistemics "I understand the distinction between someone who never heard Islam and someone who knowingly rejects it. But I still don't see how we can tell whether any actual person really received enough hujjah, so isn't the whole accountability claim unresolved?"

@@ -144,32 +144,40 @@ This makes schema-light register bridge real as a derived/conditional runtime br
 govern existing IR formation, owner eligibility, held material, collapse radius, release
 posture, or state re-read when live. It still does not make them mandatory JSON/schema fields.
 
-Optional trace bridge: `field_witness` is an optional sidecar for development, smoke, or audit
-artifacts that need a schema-light but machine-checkable trace of route-gradient, burden delta,
-field diagnostics, loopbreak, reread, closure, and transfer-boundary evidence. It is validated
-only when present, does not replace `post_render_gate`, does not require ordinary outputs to expose
-a formal block, and does not prove truth, warrant, interlocutor uptake, or full formal calculus.
-When an artifact needs collapse reconstruction, it may include an optional
+Trace bridge: `field_witness` is required for normal default governed output because Output
+Grapher is the graphability/reconstructibility surface for daee-epistemics outputs. It appears as
+the final inline sidecar, after Restorative Response, Closing Formulation, and
+Closure/Reconstruction Witness, or as an adjacent JSON sidecar when file transport is available.
+Only explicit minimal/short/no-graph modes may omit it, and they must say graphing is unsupported
+or partial. The sidecar carries a schema-light but machine-checkable trace of route-gradient,
+burden delta, field diagnostics, loopbreak, reread, closure, and transfer-boundary evidence. It
+does not replace `post_render_gate`, Closure/Reconstruction Witness, Restorative Response, or
+Closing Formulation, and does not prove truth, warrant, interlocutor uptake, or full formal
+calculus.
+When an artifact needs collapse reconstruction, it includes a
 `field_witness.coverage_proof` subobject with `initial_burden_set`, `terminal_states`,
 `divergence_check`, `curl_check`, and `coverage_complete`. `coverage_complete` is false unless
 every initial burden appears in `terminal_states`; positive collapse still requires neutral `∇·B`
 and null/resolved `∇×κ` under the scoped closure rule.
 
 Field-witness reconstructibility addendum: when `field_witness` is present, it must carry
-machine-readable burden nodes, dependency edges, roots, parallel groups, terminal states,
-schema-light register-delta entries, `∇·` / `∇×` diagnostics, LoopBreak data, `R(H,Δ)`, closure status,
-`T_lang` boundary, non-claims, and provenance/evidence metadata sufficient to compare the
-sidecar against the visible closure witness. Its `coverage_proof.dependency_graph` records
+machine-readable `B_LA`, `B_MRP`, `B_total`, burden nodes, generated-by MRP provenance,
+dependency edges, held/generated MRP resultants, route-gradient records, roots, parallel groups,
+terminal states, schema-light register-delta entries, `∇·` / `∇×` diagnostics, LoopBreak data,
+`R(H,Δ)`, owner activation ordering, closure status, `T_lang` boundary, non-claims, and provenance/evidence metadata
+sufficient to compare the sidecar against the visible closure witness. Its
+`coverage_proof.dependency_graph` records
 `nodes`, `edges`, `roots`, `parallel_groups`, and `acyclic`; graph nodes must match the visible
 initial-burden / terminal-state accounting. This sidecar is machine-readable reconstructibility,
 not a package-bound release-smoke proof and not a truth, warrant, uptake, or formal-calculus
 claim.
 
-Optional MRP evidence: `field_witness.reread_pressure` may record
-`TTP-MRP-mid-reread-pressure` when the post-landed reread state itself is tested. It records
+MRP evidence: `field_witness.reread_pressure` records `TTP-MRP-mid-reread-pressure` when the
+post-landed reread state itself is tested. It records
 target burden, `R(H,Δ)` delta, pressure activations, active `∇·T` / `∇×T` states, finding,
 plain-`∇` route-gradient, route-result type, graph delta, pre-emption basis, route, and non-claims.
-It is validated only when present and does not make MRP visible in ordinary compact output.
+It is validated as part of graphability/reconstructibility and does not replace visible MRP in
+ordinary compact output.
 
 Formal typing boundary: `∇` is a route-ranking/preorder pressure read over eligible routes,
 `LoopBreak(∇×T)` is a partial licensed transition, `R(H,Δ)` rereads held material and the updated
@@ -374,7 +382,10 @@ for the public response.
 **Core invariants:**
 - Discipline is universal across all modes. Printout is mode-specific.
 - Recursive-audit discipline applies in every mode; the full audit printout belongs only to internal/development audit.
-- Full recursion in every mode; compact DSL/IR header in default; full ledger only in internal/development audit.
+- Full recursion in every mode; compact DSL/IR header in default; compact two-ledger witness in
+  default hard cases; full raw ledger only in internal/development audit.
+- `𝔅_LA (B_LA)`, `𝔅_MRP (B_MRP)`, and `𝔅_total (B_total)` are compact reconstructibility
+  witnesses, not the prohibited full raw ledger.
 
 Recursive traversal runs in full in every mode. The mode determines how much diagnostic
 machinery is printed, not whether recursion occurs:
@@ -384,7 +395,8 @@ machinery is printed, not whether recursion occurs:
                           mandatory compact DSL/IR header
                           prose-first bounded governed Layer B response
                           State/noetic re-read
-                          no full ledger / no full Diagnostic IR dump
+                          compact ledger witness when burden cycling is live;
+                          no full raw ledger / no full Diagnostic IR dump
 /daee-epistemics:dsl    = full recursive traversal operationally
                           compact formal Layer A visibility
 /daee-epistemics:audit  = deprecated internal/development audit compatibility only
@@ -759,6 +771,57 @@ contract permits a diagnostic or audit-style response.
 - When several TTPs are required to land that one live burden, record them internally as
   operative submoves, each with target -> operation -> result. They remain under the same
   current-pass activation until the burden landing is reached and state re-read runs.
+- Before dispatching several owner/TTP submoves for one burden, emit a deterministic owner
+  activation plan in the IR/control surface with
+  `policy_id: "diagnostic-ir-pressure-owner-floor-v1"`. The plan is produced before Layer B:
+  first freeze the baseline burden decomposition from stable pressure classes, then select required
+  owner families from the pressure-owner floor, and only then render `Matched owner/TTP route`, ACT
+  records, and Layer B submoves. The stable owner floor is:
+  source/criterion/authority gates before downstream content owners; Trinitarian
+  model/person-language identification before definition, predication, or consequence work;
+  definition/meaning -> M7; predication/category/person-nature transfer -> M9;
+  entailment/consequence/backread -> M8; source/proof-text/warrant/hidden support ->
+  source-status/authority-order repair; scope/stop/bounded-reply/closure-immunity -> P7 after
+  load-bearing owners unless P7 is the active stop owner. P1/restoration, tone, closing
+  formulation, broader source reminders, and pastoral reorientation are
+  `optional_non_load_bearing` unless the burden target itself is restoration/orientation. The plan
+  records `required_before` for sequenced owners, `parallel` groups for order-independent
+  load-bearing owners, `contingent` owners with their trigger, `optional_non_load_bearing` owners
+  for restorative or tone-only support, and `hold_partial` for owner work that remains unresolved.
+  It governs `Matched owner/TTP route`, ACT record order, Layer B submove order, and
+  `field_witness.owner_activation_ordering`. Optional or held owners do not change the canonical
+  required activation fingerprint. `required_before` entries are owner-family objects with
+  `target`, `before_owner`, and `after_owner`; arrays, body-ref pairs, and burden-event pairs are
+  not valid ordering rules. `parallel_groups[]` plan entries use `target`, `group`, and `owners`;
+  only the per-activation mirror rows use `ordering_group`.
+- Register-derived burden floor: before owner-plan emission, derive `B_LA` structure from the live
+  register set in `IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)`, not from a named case template:
+  `burden_floor = {B_r : r in live_registers(IR(...))}`. `Omega` live requires an
+  ontological/predication burden; `xi` live requires a warrant/authority burden; `mu` live requires
+  a memetic-carrier decomposition burden; `kappa` live requires a dependency/collapse burden; and
+  `heart` live requires an affective/posture burden. A burden may be multi-typed, so the
+  requirement is coverage per live register, not one burden per register. The selected N-frame
+  supplies the burden labels and content; register liveness supplies the floor structure.
+- Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
+  register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
+  `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,
+  model-carrier compression, and eternal-life/sent-one entailment, `B_LA` must cover those register
+  types before any generated MRP burden. The canary may expect stable labels such as
+  `trinitarian-person-nature-model-transfer`, `john-1-1-and-1-john-5-20-proof-stack`, and
+  `eternal-life-knowing-jesus-entailment`, but those labels are supplied by the Trinitarian N-frame
+  after live-register derivation. Boundary, doctrine-immunity, proof-carousel, or bounded-reply
+  recoil remains post-land/generated unless the input asserts it as an independent baseline claim.
+- For that Trinitarian canary instance, the deterministic owner plan does not use
+  `parallel_groups`; it emits required owner rows and required-before edges for the register-typed
+  burdens. These exact labels are canary expectations for the Trinitarian N-frame, not a general
+  B1-B5 floor template: B1 `do-christian-extensions.model-identification` /
+  `trinitarian-person-nature-model-transfer` before M9 / `father-only-true-god-predicate-transfer`;
+  B2 M7 / `only-placement-analogy` before M9 / `2-plus-2-predicate-category`; B3
+  `source-status-repair.source-order` / `john-1-1-and-1-john-5-20-proof-stack` before
+  `authority-order-repair.authority-order` / `proof-text-hidden-support`; B4 M8 /
+  `eternal-life-knowing-jesus-entailment` before M9 / `sender-sent-relation-category`; generated B5
+  P7 / `sacred-doctrine-bounded-reply-immunity` before `source-status-repair.source-order` /
+  `full-system-doctrine-hidden-support`.
 - When a load-bearing premise, criterion, or authority node has been cleared, `What remains live`
   should mark any dependent claims whose support has collapsed or whose status now requires
   re-evaluation before further routing.

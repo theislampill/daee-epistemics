@@ -1,0 +1,9 @@
+{
+  "nodes": ["B1"],
+  "edges": [],
+  "ledger": {
+    "B_LA": ["B1"],
+    "B_MRP": ["B1"],
+    "B_total": ["B1"]
+  }
+}

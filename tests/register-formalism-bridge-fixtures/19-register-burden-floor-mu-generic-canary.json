@@ -1,0 +1,56 @@
+{
+  "id": "register-burden-floor-mu-generic-canary",
+  "kind": "negative",
+  "matrix_cases": ["register_burden_floor"],
+  "input": "A generic mu burden is named but no carrier operation is performed.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "mu", "register_burden_floor"],
+  "bridge_terms": {
+    "D0": "The surface claim mentions a memetic carrier.",
+    "PsiN": "The encoded state must not accept labels as operations.",
+    "selected_N": "A selected frame cannot replace carrier decomposition.",
+    "expanded_IR": "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa) requires live-register derived burdens.",
+    "mu": "This fixture intentionally fails because the mu burden is generic.",
+    "register_burden_floor": "The floor contains a mu label without decomposition."
+  },
+  "control_effects": {
+    "owner_choice": ["foreign-premise-detection"],
+    "hold_release": "Should hold because no carrier decomposition occurs.",
+    "burden_selection": "Names mu but does not operate on it."
+  },
+  "invalid_register_to_burden_obligation": {
+    "derivation": "burden_floor = {B_r : r in live_registers(IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa))}; N supplies label content.",
+    "live_registers": ["mu"],
+    "burden_floor": [
+      {
+        "id": "B1",
+        "register_types": ["mu"],
+        "label": "generic memetic carrier",
+        "register_operation": "mention the carrier in broad terms"
+      }
+    ]
+  },
+  "forbidden_claims": [
+    "a generic mu label without carrier decomposition is sufficient",
+    "a carrier burden can pass without naming carried Omega/xi/kappa pressures"
+  ],
+  "ir_projection": {
+    "claim_level": "meta-noetic",
+    "routing_gate": "mu-carrier-decomposition",
+    "load_bearing_node": "mu label without operation",
+    "matched_modules": ["foreign-premise-detection"],
+    "output_shape": "audit-trace",
+    "what_is_withheld_and_why": "The checker must reject this because no carrier decomposition, carried-register list, local Delta, or Land contribution is present.",
+    "post_render_gate": {
+      "cleared_this_pass": "",
+      "remaining_live_distortions": "carrier remains undecomposed",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "perform carrier decomposition",
+      "recursion_decision": "HOLD"
+    }
+  },
+  "expected_blocker": "MU_OPERATION_FAILURE: mu-typed burden must perform carrier decomposition and identify carried Omega/xi/kappa pressures",
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/diagnostic-ir.md"
+  ]
+}

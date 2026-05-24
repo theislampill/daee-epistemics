@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 from check_closure_witness_graph import check as check_closure_witness
+from check_manual_smoke_render_contract import check_text as check_manual_smoke_render_text
 from check_mid_reread_pressure import check_fixture, has_edge, parse_mrp
 from closure_witness_lib import (
     extract_field_witness,
@@ -41,6 +42,8 @@ LIVE_INVALID_GRAPH_FIXTURES = {
     "missing-terminal-state.md",
     "positive-closure-with-non-neutral-divergence.md",
 }
+MANUAL_SMOKE_VALID_DIR = ROOT / "tests/manual-smoke-render/valid"
+MANUAL_SMOKE_INVALID_DIR = ROOT / "tests/manual-smoke-render/invalid"
 MRP_VALID_DIR = ROOT / "tests/mid-reread-pressure/valid"
 MRP_INVALID_DIR = ROOT / "tests/mid-reread-pressure/invalid"
 COMPILED_MAP = ROOT / "skill/compiled-module-map.json"
@@ -175,6 +178,20 @@ def main() -> int:
         record(errors, f"MRP valid fixture passes: {rel(path)}", check_fixture(path))
     for path in sorted(MRP_INVALID_DIR.glob("*.md")):
         record(errors, f"MRP invalid fixture fails: {rel(path)}", check_fixture(path), expect_fail=True)
+
+    for path in sorted(MANUAL_SMOKE_VALID_DIR.glob("*.md")):
+        record(
+            errors,
+            f"manual smoke render valid fixture passes: {rel(path)}",
+            check_manual_smoke_render_text(path, path.read_text(encoding="utf-8", errors="replace")),
+        )
+    for path in sorted(MANUAL_SMOKE_INVALID_DIR.glob("*.md")):
+        record(
+            errors,
+            f"manual smoke render invalid fixture fails: {rel(path)}",
+            check_manual_smoke_render_text(path, path.read_text(encoding="utf-8", errors="replace")),
+            expect_fail=True,
+        )
 
     record(errors, "MRP integrated route matrix", mrp_case_errors())
     record(errors, "TTP-MRP compiled runtime inclusion", compiled_runtime_errors())

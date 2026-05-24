@@ -61,6 +61,19 @@ These stops govern current-pass deployment; they do not abolish recursion. Use t
 **Held means traversal-delayed, not response-delayed.** `H(n+1) = (Hn ∪ InputLive_n) - Released_n`. Gloss: held downstream material is reassessed after `R`; if still live and unblocked, it may become the next bounded pass in the same response or later. Do not model refresh as merely waiting for a new user reply.
 
 **Post-render gate is mandatory before closure.** `Land(B) -> R`. The gate must name what cleared, what remains live, held routes rechecked, newly eligible routes, next eligible pass, and STOP/HOLD/PARTIAL/RECURSE. STOP requires no live distortion and no newly eligible held route; HOLD blocks remaining material; RECURSE handles an eligible same-input next pass; PARTIAL marks limits.
+In compact MRP output, `Route:` is a single parseable route value: `STOP`, `HOLD`, `RECURSE`, or
+`LoopBreak(∇×T)`. Do not write `Route: RECURSE to Bn` or `Route: STOP/closure`; targets and
+explanations belong in `R(H,Δ)`, `MRP resultant`, and `Graph delta`. If STOP follows any named
+held route, P7 must classify that route as worked, generated, HOLD/PARTIAL-routed, or
+non-load-bearing with reason before closure. `Held beyond prompt` is not a P7 stop condition by
+itself.
+
+**P7 operation is not a closure slogan.** When P7 is used as a Layer B submove to stop a proof
+carousel, scope drift, or bounded-answer immunity route, the submove must identify the carousel or
+release pressure, state the stopping rule, show why the next proposed route would be a new burden,
+held route, or non-load-bearing for the scoped claim, and record the state change that licenses
+STOP/HOLD/PARTIAL. A line that merely says "proof carousel stopped" or "closure licensed" does not
+execute P7 and cannot by itself contribute to `Land(B)`.
 
 P7 owns the concrete stop instances below. The abstract STOP / HOLD / RECURSE / PARTIAL state model, same-response recursion condition, and state carry/reset/re-evaluation partition are owned by `references/diagnostics/recursive-state-transitions.md`.
 

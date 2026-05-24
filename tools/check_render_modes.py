@@ -24,6 +24,9 @@ import re
 import sys
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 
@@ -38,6 +41,29 @@ CURRENT_GOVERNANCE_DOCS = [
     "AGENTS.md",
     "docs/compiled-runtime-tools.md",
     "docs/recursive-traversal-governance.md",
+]
+
+MRP_RENDER_OWNER_DOCS = [
+    "atomics/skill/SKILL.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "atomics/skill/references/rubrics/output-release.md",
+    "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
+    "tools/build_compiled_runtime.py",
+]
+
+STALE_MRP_FIELD_LIST_PATTERNS = [
+    re.compile(
+        r"Target,\s*Reread,\s*Landed delta,\s*Pressure activations,\s*`?∇·T`?,\s*`?∇×T`?,\s*`?Route-gradient`?",
+        re.I,
+    ),
+    re.compile(
+        r"include Target,\s*Reread,\s*Landed delta,\s*Pressure activations,\s*∇·T,\s*∇×T",
+        re.I,
+    ),
+    re.compile(
+        r"boundary-as-immunity pressure with `∇·T: bounded\|non-neutral` or `∇×T: held\|non-null`",
+        re.I,
+    ),
 ]
 
 STALE_CURRENT_DOC_TOKENS = [
@@ -2706,6 +2732,28 @@ def check_current_doc_staleness(root: Path, errors: list) -> None:
                 )
 
 
+def check_mrp_render_owner_staleness(root: Path, errors: list[str]) -> None:
+    """Guard owner docs against old MRP field-list summaries.
+
+    The current default/manual block uses a route-bearing `R(H,Δ): ...` line and
+    target-explicit `Field diagnostics: ∇·B ...; ∇×κ ...`. Older summaries that
+    list `Reread`, `∇·T`, and `∇×T` as standalone public fields seed the exact
+    regression this release line is fixing.
+    """
+    for rel_path in MRP_RENDER_OWNER_DOCS:
+        path = root / rel_path
+        if not path.is_file():
+            errors.append(f"missing MRP render owner for stale-field check: {rel_path}")
+            continue
+        text = path.read_text(encoding="utf-8")
+        for pattern in STALE_MRP_FIELD_LIST_PATTERNS:
+            match = pattern.search(text)
+            if match:
+                errors.append(
+                    f"stale MRP render field-list in {rel_path}: {match.group(0)!r}"
+                )
+
+
 def _has_any_context(text: str, contexts: list[str]) -> bool:
     lower = text.lower()
     return any(context.lower() in lower for context in contexts)
@@ -2853,6 +2901,7 @@ def main() -> int:
 
     check_invocation_surface_sources(root, errors)
     check_current_doc_staleness(root, errors)
+    check_mrp_render_owner_staleness(root, errors)
     check_render_shape_samples(errors)
     check_formal_marker_policy_samples(errors)
 
@@ -3000,6 +3049,7 @@ def main() -> int:
         print(f"Render-shape positive samples checked: {len(RENDER_SHAPE_POSITIVE_OUTPUTS)}")
         print(f"Current governance docs checked: {len(CURRENT_GOVERNANCE_DOCS)}")
         print(f"Current-doc stale tokens checked: {len(STALE_CURRENT_DOC_TOKENS)}")
+        print(f"MRP render owner stale patterns checked: {len(STALE_MRP_FIELD_LIST_PATTERNS)}")
         print("-" * 60)
 
     return fail_with_errors("render mode governance", errors)

@@ -18,15 +18,12 @@ SOURCE_ROOT_REL = "atomics/skill"
 OUTPUT_ROOT_REL = "skill"
 LEGACY_SOURCE_ROOT_REL = "skill"
 
-GENERATED_WARNING = """<!--
-GENERATED FILE.
-Do not edit directly.
-Canonical atomized source lives under atomics/skill/.
-Regenerate with tools/build_compiled_runtime.py.
--->
-"""
+GENERATED_WARNING = (
+    "GENERATED FILE. Do not edit directly. Canonical atomized source lives under "
+    "atomics/skill/. Regenerate with tools/build_compiled_runtime.py."
+)
 
-SECTION_FIELDS = ("SOURCE", "MODULE_ID", "MODULE_CLASS", "CANONICAL_PATH", "SOURCE_SHA256")
+SECTION_FIELDS = ("MODULE_ID", "MODULE_CLASS", "CANONICAL_PATH", "SOURCE_SHA256")
 
 
 @dataclass(frozen=True)
@@ -90,6 +87,29 @@ def sha256_file(path: Path) -> str:
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def normalize_runtime_surface_text(text: str) -> str:
+    """Remove source-tree-only wording from model-readable compiled runtime text."""
+    replacements = {
+        "atomics/skill/** tracked in repo as canonical source": (
+            "source files tracked in repo as canonical build inputs"
+        ),
+        "skill/** ignored local/CI generated runtime output": (
+            "compiled skill files are ignored local/CI runtime output"
+        ),
+        "CI/local build compiles atomics -> generated skill/**": (
+            "CI/local build compiles source inputs into the generated skill runtime"
+        ),
+        "raw atomics are not distributed as the .skill runtime": (
+            "raw source tree is not distributed as the .skill runtime"
+        ),
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    text = re.sub(r"atomics/skill/[A-Za-z0-9_.\-/]+", "compiled runtime module metadata", text)
+    text = text.replace("atomics/skill/", "compiled runtime module metadata")
+    return text
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, Any], str, str]:
@@ -447,6 +467,23 @@ def _rmtree_resilient(path: Path) -> list[Path]:
     return sorted(child for child in path.rglob("*") if child.is_file())
 
 
+GENERATED_SKILL_SENTINELS = (
+    "# NON-DROPPABLE DEFAULT MANUAL CONTRACT",
+    "When this compiled SKILL.md is the supplied runtime surface",
+    "The generated bundle map is `compiled-module-map.json`.",
+)
+
+
+def is_generated_skill_surface(path: Path) -> bool:
+    """Return true for generated SKILL.md outputs, including legacy single-file checkouts."""
+    if not path.is_file():
+        return False
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    if "GENERATED FILE." in text:
+        return True
+    return all(sentinel in text for sentinel in GENERATED_SKILL_SENTINELS)
+
+
 def clean_compiled_dir(root: Path) -> Path:
     target = out_dir(root).resolve()
     expected = (root / OUTPUT_ROOT_REL).resolve()
@@ -454,7 +491,13 @@ def clean_compiled_dir(root: Path) -> Path:
         raise RuntimeError(f"refusing to clean unexpected path: {target}")
     if target.exists():
         marker = target / "SKILL.md"
-        if marker.is_file() and "GENERATED FILE." not in marker.read_text(encoding="utf-8", errors="ignore"):
+        manifest = target / "build-manifest.json"
+        has_generated_marker = is_generated_skill_surface(marker)
+        has_generated_manifest = (
+            manifest.is_file()
+            and '"generated": true' in manifest.read_text(encoding="utf-8", errors="ignore")
+        )
+        if marker.is_file() and not (has_generated_marker or has_generated_manifest):
             raise RuntimeError(f"refusing to clean non-generated runtime root: {target}")
         leftovers = _rmtree_resilient(target)
         if leftovers:
@@ -467,20 +510,29 @@ def clean_compiled_dir(root: Path) -> Path:
 def build_section(doc: SourceDoc) -> str:
     title = doc.module_id or Path(doc.rel_path).name
     return (
-        f"\n\n## SOURCE MODULE: {title}\n\n"
-        f"<!-- SOURCE: {doc.rel_path} -->\n"
+        f"\n\n## RUNTIME MODULE: {title}\n\n"
         f"<!-- MODULE_ID: {doc.module_id} -->\n"
         f"<!-- MODULE_CLASS: {doc.module_class} -->\n"
         f"<!-- CANONICAL_PATH: {doc.canonical_path} -->\n"
         f"<!-- SOURCE_SHA256: {doc.sha256} -->\n\n"
-        f"{doc.text.rstrip()}\n\n"
-        f"<!-- END_SOURCE: {doc.module_id} -->\n"
+        f"{normalize_runtime_surface_text(doc.text.rstrip())}\n\n"
+        f"<!-- END_MODULE: {doc.module_id} -->\n"
     )
 
 
 def parse_compiled_sections(path: Path) -> list[dict[str, str]]:
     text = path.read_text(encoding="utf-8")
     section_pattern = re.compile(
+        r"<!-- MODULE_ID:\s*(?P<MODULE_ID>.*?)\s*-->\s*\n"
+        r"<!-- MODULE_CLASS:\s*(?P<MODULE_CLASS>.*?)\s*-->\s*\n"
+        r"<!-- CANONICAL_PATH:\s*(?P<CANONICAL_PATH>.*?)\s*-->\s*\n"
+        r"<!-- SOURCE_SHA256:\s*(?P<SOURCE_SHA256>[0-9a-fA-F]+)\s*-->\s*\n\n"
+        r"(?P<GENERATED_BODY>.*?)\n<!-- END_MODULE:\s*(?P<END_MODULE>.*?)\s*-->",
+        flags=re.DOTALL,
+    )
+    matches = list(section_pattern.finditer(text))
+    if not matches:
+        section_pattern = re.compile(
         r"<!-- SOURCE:\s*(?P<SOURCE>.*?)\s*-->\s*\n"
         r"<!-- MODULE_ID:\s*(?P<MODULE_ID>.*?)\s*-->\s*\n"
         r"<!-- MODULE_CLASS:\s*(?P<MODULE_CLASS>.*?)\s*-->\s*\n"
@@ -488,8 +540,8 @@ def parse_compiled_sections(path: Path) -> list[dict[str, str]]:
         r"<!-- SOURCE_SHA256:\s*(?P<SOURCE_SHA256>[0-9a-fA-F]+)\s*-->\s*\n\n"
         r"(?P<GENERATED_BODY>.*?)\n<!-- END_SOURCE:\s*(?P<END_SOURCE>.*?)\s*-->",
         flags=re.DOTALL,
-    )
-    matches = list(section_pattern.finditer(text))
+        )
+        matches = list(section_pattern.finditer(text))
     if matches:
         sections: list[dict[str, str]] = []
         for match in matches:

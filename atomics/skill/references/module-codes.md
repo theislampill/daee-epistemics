@@ -5,6 +5,8 @@ canonical_path: skill/references/module-codes.md
 contract_version: "0.4.0.0"
 load_when:
   - ambiguity arises about what a code names or where its full treatment lives
+  - owner/TTP routing is being selected, checked, or recorded for a burden
+  - MRP generated or held pressure needs a matched source-owned owner route
 catalogue_registered: false
 verification_status: L_check
 direct_read_verified: true
@@ -24,6 +26,12 @@ disagrees with the canonical file, the canonical file governs — this reference
 and summarizes.
 Code lookup is not owner activation. A code identifies the owner or axis to consult; release still
 requires validated state, owner-specific operation, burden-local result, and `Land(B) -> R`.
+For compact ACT records, operation aliases must normalize to a catalogue owner family before they
+can count as owner agreement. Stable aliases include `definition-discipline -> M7`,
+`source-status-repair` / `authority-order-repair -> SOURCE`, `criterion-reversal -> M1`,
+`do-second-loop -> DO_SECOND_LOOP`, `do-christian-extensions -> DO_CHRISTIAN`, and
+`foreign-premise-detection -> FPD`. Bare family words such as `SOURCE`, `AUTHORITY`, `OWNER`,
+`OP`, `MRP`, `DEFINITION`, or `RESTORATION` are loose aliases and do not satisfy ACT owner fields.
 
 ## Axis 0 — Claim Level and Pattern Profile
 

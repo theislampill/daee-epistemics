@@ -1,9 +1,15 @@
 {
-  "nodes": ["¹B"],
+  "nodes": ["B1"],
   "edges": [],
-  "terminal_states": {
-    "¹B": "landed"
+  "ledger": {
+    "B_LA": ["B1"],
+    "B_MRP": [],
+    "B_total": ["B1"]
   },
+  "terminal_states": {
+    "B1": "landed"
+  },
+  "mrp_resultants": [],
   "closure": {
     "coverage_complete": true,
     "T_lang": "Ψᴺ ⇢ Ψᴵ"

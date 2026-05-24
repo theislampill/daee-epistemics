@@ -22,7 +22,7 @@ CANONICAL_BURDEN_RE = re.compile(fr"([{SUP_DIGITS}]+)B(?![{SUB_DIGITS}])")
 CANONICAL_SUBMOVE_RE = re.compile(fr"([{SUP_DIGITS}]+)B([{SUB_DIGITS}]+)(?:\[([^\]\n]+)\])?")
 CANONICAL_EDGE_RE = re.compile(fr"([{SUP_DIGITS}]+)B\s*→\s*([{SUP_DIGITS}]+)B")
 ASCII_BURDEN_RE = re.compile(r"\bB(\d+)\b")
-ASCII_EDGE_RE = re.compile(r"\bB(\d+)\s*->\s*B(\d+)\b")
+ASCII_EDGE_RE = re.compile(r"\bB(\d+)\s*(?:->|→)\s*B(\d+)\b")
 ASCII_CHAIN_TOKEN_RE = re.compile(r"\bB(\d+)\b")
 ASCII_SUBMOVE_RE = re.compile(r"\bB(\d+)_(\d+)\s*(?:\[([^\]\n]+)\])?")
 BAD_SUBSCRIPT_BURDEN_RE = re.compile(fr"\bB([{SUB_DIGITS}]+)\b")
@@ -44,6 +44,25 @@ RESULT_TYPE_RE = re.compile(
 RESULTANT_RE = re.compile(r"\b(Finding|MRP resultant|Resultant|Result type):\s*([^\n;]+)", re.IGNORECASE)
 FIELD_STATE_RE = re.compile(r"∇·B\s*:\s*([^;\n]+)", re.IGNORECASE)
 CURL_STATE_RE = re.compile(r"∇×κ\s*:\s*([^;\n]+)", re.IGNORECASE)
+HIGH_LEVERAGE_HELD_ROUTE_RE = re.compile(
+    r"(?i)\b(?:independent lordship|canon[- ]wide|textual criticism|epistemology of canon|"
+    r"full Christology|source/proof-stack|source authority|proof[- ]stack|mystery shield|"
+    r"worldview recoil|moral tribunal shift|authority-order|predication|source-worldview|"
+    r"Christology|theology|hiddenness|metaphysics|epistemology|identity/worldview|"
+    r"historical/transmission|transmission|source-authority|analogy[- ]stack|shubha|"
+    r"shakk|rayb|moral protest|secular moral|source[- ]order|criterion)\b"
+)
+UNROUTED_HELD_ROUTE_RE = re.compile(
+    r"(?i)\b(?:not released|unreleased|held beyond|beyond prompt|beyond bounded claim|"
+    r"held outside scope|not worked)\b"
+)
+TERMINAL_CLOSURE_RE = re.compile(r"(?i)\b(?:STOP|closure|complete|collapse achieved|no remaining live problem)\b")
+ROUTING_OR_BOUNDARY_PROOF_RE = re.compile(
+    r"(?i)\b(?:held_burden_activation|generated_burden_instantiation|HOLD|PARTIAL|"
+    r"coverage_complete\s*=\s*false|non[- ]load[- ]bearing|not load[- ]bearing|"
+    r"not needed for (?:this|the) (?:scoped|bounded|local) claim|scope gate|"
+    r"local closure only|partial closure)\b"
+)
 
 
 def _sup_to_int(raw: str) -> int:
@@ -154,6 +173,7 @@ class ParseResult:
     initial_burdens: list[str] = field(default_factory=list)
     burdens: list[str] = field(default_factory=list)
     body_burdens: list[str] = field(default_factory=list)
+    ledger: dict[str, list[str]] = field(default_factory=lambda: {"B_LA": [], "B_MRP": [], "B_total": []})
     generated_burdens: dict[str, str] = field(default_factory=dict)
     submoves: dict[str, list[str]] = field(default_factory=dict)
     terminals: dict[str, str] = field(default_factory=dict)
@@ -186,18 +206,46 @@ def burden_sort_key(token: str) -> int:
     return _sup_to_int(match.group(1)) if match else 9999
 
 
+def canonical_burden_indices(line: str) -> set[str]:
+    indices: set[str] = set()
+    for match in CANONICAL_BURDEN_RE.finditer(line):
+        indices.add(str(_sup_to_int(match.group(1))))
+    return indices
+
+
+def allowed_paired_alias_context(line: str) -> bool:
+    """Allow checker-owned ASCII IDs only when canonical notation is present too."""
+
+    if re.search(r"(?i)^\s*LoopBreak\s*:", line):
+        return True
+    return bool(
+        re.search(
+            r"(?i)^\s*(?:Landed delta|Route-gradient|R\(H,Δ\)|R\(H,Delta\)|Target|"
+            r"Field diagnostics|MRP resultant)\s*:",
+            line,
+        )
+        or re.search(r"(?i)\b(?:Delta\(B\d+\)|B_LA|B_MRP|B_total|field_witness)\b", line)
+    )
+
+
 def extract_burdens(line: str, result: ParseResult, line_no: int) -> list[str]:
     found: list[str] = []
     for match in CANONICAL_BURDEN_RE.finditer(line):
         token = match.group(0)
         if token not in found:
             found.append(token)
+    canonical_indices = canonical_burden_indices(line)
+    paired_alias_context = allowed_paired_alias_context(line)
     for match in ASCII_BURDEN_RE.finditer(line):
         token = burden_token(match.group(1))
         if token not in found:
             found.append(token)
         alias = match.group(0)
-        if alias not in result.legacy_aliases:
+        is_delta_alias = bool(
+            re.search(rf"(?i)\bDelta\(\s*{re.escape(alias)}\s*\)", line)
+        )
+        is_paired_parser_alias = match.group(1) in canonical_indices or (paired_alias_context and is_delta_alias)
+        if not is_paired_parser_alias and alias not in result.legacy_aliases:
             result.legacy_aliases.append(alias)
             result.warnings.append(
                 f"line {line_no}: parsed legacy alias {alias}; public canonical notation preferred"
@@ -207,6 +255,21 @@ def extract_burdens(line: str, result: ParseResult, line_no: int) -> list[str]:
             f"line {line_no}: {match.group(0)} looks like subscript burden notation; use superscript-before-B for burdens"
         )
     return found
+
+
+def clean_visible_ledger_segment(segment: str) -> str:
+    """Keep ledger membership tokens while removing provenance source aliases.
+
+    A visible ledger line may say `⁸B [generated-by: MRP(⁷B)]`. The member is
+    `⁸B`; `⁷B` is provenance and must not be backfilled into B_MRP. Likewise a
+    union formula such as `𝔅_total = 𝔅_LA ∪ 𝔅_MRP` is a relation, not an
+    explicit member list.
+    """
+
+    cleaned = re.sub(r"\[generated-by:\s*MRP\([^\)]*\)\]", "", str(segment), flags=re.IGNORECASE)
+    cleaned = re.sub(r"\bMRP\([^\)]*\)", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\b(?:B_|𝔅_)(?:LA|MRP|total)\b", "", cleaned, flags=re.IGNORECASE)
+    return cleaned
 
 
 def warn_legacy(result: ParseResult, line_no: int, alias: str, canonical: str) -> None:
@@ -221,7 +284,17 @@ def ensure_mrp(result: ParseResult, burden: str, line_no: int, excerpt: str = ""
     mrp_id = f"MRP({burden})"
     data = result.mrp.setdefault(
         burden,
-        {"id": mrp_id, "line": line_no, "routes": [], "result_types": [], "edges": [], "pressure": []},
+        {
+            "id": mrp_id,
+            "line": line_no,
+            "routes": [],
+            "result_types": [],
+            "edges": [],
+            "pressure": [],
+            "route_gradient": "",
+            "divergence": "",
+            "curl": "",
+        },
     )
     add_node(result, GraphNode(mrp_id, "mrp", mrp_id, line=line_no, excerpt=excerpt[:220]))
     add_edge(result, GraphEdge(f"R(H,Δ)@{burden}", mrp_id, "reread-mrp", line=line_no, excerpt=excerpt[:220]))
@@ -256,6 +329,10 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
         re.IGNORECASE,
     )
     body_line_count = str(text or "")[: body_stop_match.start()].count("\n") + 1 if body_stop_match else len(lines)
+    field_witness_match = re.search(r"(?:^|\n)\s*(?:#+\s*)?field_witness\b", str(text or ""), re.IGNORECASE)
+    field_witness_line = (
+        str(text or "")[: field_witness_match.start()].count("\n") + 1 if field_witness_match else 10**9
+    )
     add_node(result, GraphNode("input", "input", "input", excerpt="pasted daee-epistemics output"))
 
     route_records: list[tuple[str, str, int]] = []
@@ -266,8 +343,16 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
 
     for index, line in enumerate(lines, 1):
         stripped = line.strip()
+        if index >= field_witness_line:
+            continue
         if not stripped:
             continue
+        if re.match(
+            r"(?i)^(?:#+\s*)?(?:Restorative Response|Closing Formulation|Closure/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b",
+            stripped,
+        ):
+            pending_mrp_block = False
+            current_mrp_burden = ""
         if "NOETIC FIELD EXECUTION" in line or "governed execution" in line.lower():
             result.has_banner = True
         if "Layer A" in line or "DSL" in line and "IR" in line:
@@ -278,6 +363,21 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             result.has_restoration = True
 
         line_burdens = extract_burdens(line, result, index)
+        ledger_line = re.search(r"^\s*(?:[-*]\s*)?(?:B_|𝔅_)(LA|MRP|total)\b", line, re.IGNORECASE)
+        if ledger_line:
+            key = "B_total" if ledger_line.group(1).lower() == "total" else f"B_{ledger_line.group(1).upper()}"
+            ledger_segment = line[ledger_line.start() :]
+            value_start = re.search(r"[=:]", ledger_segment)
+            ledger_segment = (
+                ledger_segment[value_start.end() :] if value_start else line[ledger_line.end() :]
+            )
+            next_ledger = re.search(r"\b(?:B_|𝔅_)(?:LA|MRP|total)\b", ledger_segment, re.IGNORECASE)
+            if next_ledger and next_ledger.start() > 0:
+                ledger_segment = ledger_segment[: next_ledger.start()]
+            ledger_segment = clean_visible_ledger_segment(ledger_segment)
+            for token in extract_burdens(ledger_segment, result, index):
+                if token not in result.ledger[key]:
+                    result.ledger[key].append(token)
         heading_match = BURDEN_HEADING_RE.match(stripped)
         if heading_match:
             heading_burden = burden_token(heading_match.group(1))
@@ -325,14 +425,16 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
         generated_by = MRP_RE.search(line)
         generated_by_ascii = ASCII_MRP_RE.search(line)
         if "generated-by" in line and line_burdens and (generated_by or generated_by_ascii):
-            new_burden = line_burdens[0]
-            source_mrp = (
-                f"MRP({burden_token(_sup_to_int(generated_by.group(1)))})"
+            source_burden = (
+                burden_token(_sup_to_int(generated_by.group(1)))
                 if generated_by
-                else f"MRP({burden_token(generated_by_ascii.group(1))})"
+                else burden_token(generated_by_ascii.group(1))
             )
-            result.generated_burdens[new_burden] = source_mrp
-            result.nodes[new_burden].generated_by = source_mrp
+            new_burden = next((token for token in line_burdens if token != source_burden), "")
+            source_mrp = f"MRP({source_burden})"
+            if new_burden:
+                result.generated_burdens[new_burden] = source_mrp
+                result.nodes[new_burden].generated_by = source_mrp
 
         land_match = LAND_RE.search(line)
         if land_match:
@@ -358,7 +460,7 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
                 last_burden = burden
 
         if "R(H,Δ)" in line or "R(H,Delta)" in line:
-            if "R(H,Delta)" in line:
+            if "R(H,Delta)" in line and not allowed_paired_alias_context(line):
                 result.warnings.append(f"line {index}: parsed legacy alias R(H,Delta); use R(H,Δ)")
             target = line_burdens[0] if line_burdens else last_burden
             reread_target = MRP_REREAD_TARGET_RE.search(line)
@@ -383,7 +485,7 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             warn_legacy(result, index, target_match.group(0).strip(), f"MRP({burden})")
 
         mrp_match = MRP_RE.search(line)
-        if mrp_match:
+        if mrp_match and "generated-by" not in line:
             burden = burden_token(_sup_to_int(mrp_match.group(1)))
             current_mrp_burden = burden
             mrp_line_for[burden] = index
@@ -399,12 +501,12 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
 
         result_type = RESULT_TYPE_RE.search(line)
         if result_type:
-            burden = last_burden
-            if current_mrp_burden:
-                burden = current_mrp_burden
-            if mrp_line_for:
+            burden = current_mrp_burden or (last_burden if pending_mrp_block else "")
+            if not burden and mrp_line_for:
                 burden = sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0]
             if burden:
+                current_mrp_burden = burden
+                mrp_line_for[burden] = index
                 ensure_mrp(result, burden, index, stripped)["result_types"].append(result_type.group(1))
 
         ascii_resultant_match = ASCII_RESULTANT_RE.search(line)
@@ -422,18 +524,37 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             add_edge(result, GraphEdge(f"MRP({burden})", route_id, "mrp-route", line=index, excerpt=stripped[:220]))
 
         resultant_match = RESULTANT_RE.search(line)
-        if resultant_match and (mrp_line_for or current_mrp_burden):
-            burden = current_mrp_burden or sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0]
+        if resultant_match and (mrp_line_for or current_mrp_burden or (pending_mrp_block and last_burden)):
+            burden = current_mrp_burden or (last_burden if pending_mrp_block else "") or sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0]
+            current_mrp_burden = burden
+            mrp_line_for[burden] = index
             ensure_mrp(result, burden, index, stripped)["pressure"].append(resultant_match.group(2).strip())
+
+        active_mrp_burden = (
+            current_mrp_burden
+            or (last_burden if pending_mrp_block else "")
+            or (sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0] if mrp_line_for else "")
+        )
+        if active_mrp_burden and pending_mrp_block:
+            route_gradient_match = re.search(r"(?i)^\s*Route-gradient\s*:\s*(?P<body>.+)$", line)
+            field_state_match = FIELD_STATE_RE.search(line)
+            curl_state_match = CURL_STATE_RE.search(line)
+            if route_gradient_match:
+                ensure_mrp(result, active_mrp_burden, index, stripped)["route_gradient"] = route_gradient_match.group("body").strip()
+            if field_state_match:
+                ensure_mrp(result, active_mrp_burden, index, stripped)["divergence"] = first_state(field_state_match.group(1))
+            if curl_state_match:
+                ensure_mrp(result, active_mrp_burden, index, stripped)["curl"] = first_state(curl_state_match.group(1))
 
         route_match = ROUTE_RE.search(line)
         if route_match:
             route = route_match.group(1)
-            burden = line_burdens[0] if line_burdens else last_burden
-            if current_mrp_burden:
-                burden = current_mrp_burden
-            if mrp_line_for:
+            burden = current_mrp_burden or (last_burden if pending_mrp_block else "") or (line_burdens[0] if line_burdens else last_burden)
+            if not burden and mrp_line_for:
                 burden = sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0]
+            current_mrp_burden = burden
+            if burden:
+                mrp_line_for[burden] = index
             route_records.append((burden, route, index))
             route_id = f"Route:{route}@{burden or index}"
             add_node(result, GraphNode(route_id, "terminal", f"Route: {route}", line=index, excerpt=stripped[:220], route=route))
@@ -456,18 +577,19 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             add_edge(result, GraphEdge(burden, terminal_id, "burden-terminal", line=index, excerpt=stripped[:220]))
 
         is_dependency_summary = bool(re.search(r"Burden dependency graph", line, re.I))
+        in_body = index <= body_line_count
 
         for match in CANONICAL_EDGE_RE.finditer(line):
             source = burden_token(_sup_to_int(match.group(1)))
             target = burden_token(_sup_to_int(match.group(2)))
-            edge_mrp = "" if is_dependency_summary else current_mrp_burden or (sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0] if mrp_line_for else "")
+            edge_mrp = "" if (is_dependency_summary or not in_body) else current_mrp_burden or (sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0] if mrp_line_for else "")
             record_dependency_edge(result, source, target, index, stripped, edge_mrp)
 
         for match in ASCII_EDGE_RE.finditer(line):
             source = burden_token(match.group(1))
             target = burden_token(match.group(2))
             warn_legacy(result, index, match.group(0), f"{source} → {target}")
-            edge_mrp = "" if is_dependency_summary else current_mrp_burden or (sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0] if mrp_line_for else "")
+            edge_mrp = "" if (is_dependency_summary or not in_body) else current_mrp_burden or (sorted(mrp_line_for.items(), key=lambda item: item[1])[-1][0] if mrp_line_for else "")
             record_dependency_edge(result, source, target, index, stripped, edge_mrp)
 
         if "->" in line and "Burden dependency graph" in line and ";" not in line:
@@ -514,10 +636,20 @@ def validate_result(result: ParseResult, lines: list[str], route_records: list[t
             result.warnings.append(f"{burden} lands without visible submoves")
     for burden, route, line_no in route_records:
         if route.upper() == "STOP":
-            later = "\n".join(lines[line_no:])
+            later_lines = lines[line_no:]
+            closure_index = next(
+                (
+                    index
+                    for index, line in enumerate(later_lines)
+                    if re.search(r"^\s*(?:#{1,6}\s*)?Closure/Reconstruction Witness\b", line, re.I)
+                ),
+                -1,
+            )
+            later = "\n".join(later_lines[:closure_index] if closure_index >= 0 else later_lines)
             if re.search(r"Layer B|^#+\s*Burden\s+\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\s+\[generated-by", later, re.M):
                 result.errors.append(f"line {line_no}: Route: STOP is followed by later burden / Layer B work")
     text = "\n".join(lines)
+    validate_held_route_closure(result, lines, text)
     field_states = [match.group(1).strip().lower() for match in FIELD_STATE_RE.finditer(text)]
     curl_states = [match.group(1).strip().lower() for match in CURL_STATE_RE.finditer(text)]
     if result.closure_complete and any(not state.startswith("neutral") for state in field_states) and not re.search(r"Route:\s*(HOLD|RECURSE)|HOLD\(", text, re.I):
@@ -528,6 +660,87 @@ def validate_result(result: ParseResult, lines: list[str], route_records: list[t
         window = match.group(0).lower()
         if not re.search(r"\b(no|not|non|does not|without|denies|boundary)\b", window):
             result.errors.append("T_lang boundary appears to claim guaranteed uptake")
+
+
+def split_mrp_source_blocks(lines: list[str]) -> list[str]:
+    blocks: list[str] = []
+    for index, line in enumerate(lines):
+        if not re.match(r"^\s*\[Mid-Reread Pressure\]\s*$", line, re.IGNORECASE):
+            continue
+        end = len(lines)
+        for cursor in range(index + 1, len(lines)):
+            if re.match(
+                r"^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+|Restorative Response|Closing Formulation|Closure/Reconstruction Witness|field_witness)\b",
+                lines[cursor],
+                re.IGNORECASE,
+            ):
+                end = cursor
+                break
+        blocks.append("\n".join(lines[index + 1 : end]))
+    return blocks
+
+
+def validate_held_route_closure(result: ParseResult, lines: list[str], text: str) -> None:
+    r_lines = [
+        match.group(1)
+        for match in re.finditer(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:Δ|Delta)\)\s*:\s*(.+)$", text)
+    ]
+    closure_tail = ""
+    for index, line in enumerate(lines):
+        if re.match(r"^\s*(?:#{1,6}\s*)?Closure/Reconstruction Witness\b", line, re.IGNORECASE):
+            closure_tail = "\n".join(lines[index:])
+            break
+    candidates = [item for item in [*r_lines, *split_mrp_source_blocks(lines), closure_tail] if item.strip()]
+    if any(
+        HIGH_LEVERAGE_HELD_ROUTE_RE.search(candidate)
+        and UNROUTED_HELD_ROUTE_RE.search(candidate)
+        and TERMINAL_CLOSURE_RE.search(candidate)
+        and not ROUTING_OR_BOUNDARY_PROOF_RE.search(candidate)
+        for candidate in candidates
+    ):
+        result.errors.append(
+            "R(H,Δ) detected a pertinent high-leverage held route, but output claimed STOP/collapse without working, generating, HOLD/PARTIAL-routing, or proving non-load-bearing status"
+        )
+
+
+def witness_string_parts(value: Any) -> list[str]:
+    parts: list[str] = []
+    if value is None:
+        return parts
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        for item in value:
+            parts.extend(witness_string_parts(item))
+        return parts
+    if isinstance(value, dict):
+        for key, item in value.items():
+            parts.append(str(key))
+            parts.extend(witness_string_parts(item))
+    return parts
+
+
+def validate_field_witness_held_route_closure(result: ParseResult, payload: dict[str, Any], label: str) -> None:
+    body = field_witness_body(payload)
+    coverage = body.get("coverage_proof") if isinstance(body.get("coverage_proof"), dict) else {}
+    closure = body.get("closure") if isinstance(body.get("closure"), dict) else {}
+    candidate = "\n".join(witness_string_parts(body))
+    closure_status = str(closure.get("status") or closure.get("verdict") or "")
+    claims_closure = (
+        bool(TERMINAL_CLOSURE_RE.search(candidate))
+        or body.get("coverage_complete") is True
+        or coverage.get("coverage_complete") is True
+        or bool(re.search(r"complete|collapse achieved|STOP", closure_status, re.IGNORECASE))
+    )
+    if (
+        claims_closure
+        and HIGH_LEVERAGE_HELD_ROUTE_RE.search(candidate)
+        and UNROUTED_HELD_ROUTE_RE.search(candidate)
+        and not ROUTING_OR_BOUNDARY_PROOF_RE.search(candidate)
+    ):
+        result.errors.append(
+            f"{label}: unresolved high-leverage held route is still load-bearing, but closure is marked complete/collapse achieved"
+        )
 
 
 def parse_field_witness_payload(result: ParseResult, raw_json: str, label: str) -> dict[str, Any] | None:
@@ -542,30 +755,344 @@ def parse_field_witness_payload(result: ParseResult, raw_json: str, label: str) 
     return payload
 
 
+def field_witness_body(payload: dict[str, Any]) -> dict[str, Any]:
+    nested = payload.get("field_witness")
+    return nested if isinstance(nested, dict) else payload
+
+
+def field_witness_nodes(payload: dict[str, Any]) -> set[str]:
+    body = field_witness_body(payload)
+    raw_nodes = body.get("nodes")
+    coverage = body.get("coverage_proof") if isinstance(body.get("coverage_proof"), dict) else {}
+    graph = coverage.get("dependency_graph") if isinstance(coverage.get("dependency_graph"), dict) else {}
+    graph_nodes = graph.get("nodes")
+    if isinstance(graph_nodes, list):
+        raw_nodes = graph_nodes
+    if not isinstance(raw_nodes, list):
+        return set()
+    nodes: set[str] = set()
+    for item in raw_nodes:
+        if isinstance(item, str):
+            token = normalize_burden_token(item)
+            if re.fullmatch(fr"[{SUP_DIGITS}]+B", token):
+                nodes.add(token)
+        elif isinstance(item, dict):
+            node_id = normalize_burden_token(str(item.get("id", "")))
+            node_type = str(item.get("type", ""))
+            if node_id and (node_type == "burden" or re.fullmatch(fr"[{SUP_DIGITS}]+B", node_id)):
+                nodes.add(node_id)
+    return nodes
+
+
+def field_witness_edges(payload: dict[str, Any]) -> set[tuple[str, str]]:
+    body = field_witness_body(payload)
+    coverage = body.get("coverage_proof") if isinstance(body.get("coverage_proof"), dict) else {}
+    graph = coverage.get("dependency_graph") if isinstance(coverage.get("dependency_graph"), dict) else {}
+    raw_edges = graph.get("edges")
+    if not isinstance(raw_edges, list):
+        raw_edges = body.get("edges")
+    if not isinstance(raw_edges, list):
+        return set()
+    witness_edges: set[tuple[str, str]] = set()
+    for edge in raw_edges:
+        if isinstance(edge, dict):
+            source = edge.get("source", edge.get("from", ""))
+            target = edge.get("target", edge.get("to", ""))
+            source_token = normalize_burden_token(str(source))
+            target_token = normalize_burden_token(str(target))
+            if source_token and target_token:
+                witness_edges.add((source_token, target_token))
+        elif isinstance(edge, (list, tuple)) and len(edge) == 2:
+            witness_edges.add((normalize_burden_token(str(edge[0])), normalize_burden_token(str(edge[1]))))
+    return witness_edges
+
+
+def normalize_witness_graph(value: str) -> str:
+    raw = str(value or "").strip()
+    if not raw or re.search(r"(?i)\b(?:none|no edge|no new graph edge|no-edge)\b", raw):
+        return "none"
+    match = ASCII_EDGE_RE.search(raw)
+    if match:
+        return f"{burden_token(match.group(1))}->{burden_token(match.group(2))}"
+    match = CANONICAL_EDGE_RE.search(raw)
+    if match:
+        return f"{burden_token(_sup_to_int(match.group(1)))}->{burden_token(_sup_to_int(match.group(2)))}"
+    return raw.replace(" → ", "->").replace("→", "->").replace(" ", "")
+
+
+def first_state(value: Any) -> str:
+    return re.split(r"\s*/\s*|;|,", str(value or "").strip(), maxsplit=1)[0].strip()
+
+
+def field_witness_ledger(payload: dict[str, Any]) -> dict[str, list[str]]:
+    body = field_witness_body(payload)
+    source = body.get("ledger") if isinstance(body.get("ledger"), dict) else body
+    ledger = {"B_LA": [], "B_MRP": [], "B_total": []}
+    for key in ledger:
+        value = source.get(key) if isinstance(source, dict) else None
+        if isinstance(value, list):
+            ledger[key] = [normalize_burden_token(str(item)) for item in value if isinstance(item, str)]
+    generated = body.get("generated_burdens")
+    if not ledger["B_MRP"]:
+        if isinstance(generated, dict):
+            ledger["B_MRP"] = [normalize_burden_token(str(item)) for item in generated.keys()]
+        elif isinstance(generated, list):
+            ledger["B_MRP"] = [normalize_burden_token(str(item)) for item in generated if isinstance(item, str)]
+    return ledger
+
+
+def field_witness_mrp_resultants(payload: dict[str, Any]) -> dict[str, dict[str, str]]:
+    body = field_witness_body(payload)
+    raw = body.get("mrp_resultants")
+    if not isinstance(raw, (list, dict)):
+        raw = body.get("reread_pressure")
+    if isinstance(raw, dict):
+        raw = [
+            {"source": source, **item} if isinstance(item, dict) else {"source": source, "type": str(item)}
+            for source, item in raw.items()
+        ]
+    if not isinstance(raw, list):
+        return {}
+    resultants: dict[str, dict[str, str]] = {}
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        source = item.get("source") or item.get("burden") or item.get("target") or item.get("id") or ""
+        source_token = normalize_burden_token(str(source).replace("MRP(", "").replace(")", ""))
+        if not source_token:
+            continue
+        graph_value = item.get("graph") if "graph" in item else None
+        graph_delta = item.get("graph_delta")
+        if isinstance(graph_value, dict):
+            graph = (
+                f"{normalize_burden_token(str(graph_value.get('source', graph_value.get('from', ''))))}->"
+                f"{normalize_burden_token(str(graph_value.get('target', graph_value.get('to', ''))))}"
+            )
+        elif isinstance(graph_delta, dict):
+            edges_added = graph_delta.get("edges_added")
+            if isinstance(edges_added, list) and edges_added:
+                edge = edges_added[0]
+                if isinstance(edge, dict):
+                    graph = (
+                        f"{normalize_burden_token(str(edge.get('source', edge.get('from', ''))))}->"
+                        f"{normalize_burden_token(str(edge.get('target', edge.get('to', ''))))}"
+                    )
+                elif isinstance(edge, (list, tuple)) and len(edge) == 2:
+                    graph = f"{normalize_burden_token(str(edge[0]))}->{normalize_burden_token(str(edge[1]))}"
+                else:
+                    graph = str(graph_delta)
+            else:
+                graph = "none"
+        elif graph_value is None:
+            graph = "none"
+        else:
+            graph = normalize_witness_graph(str(graph_value))
+        resultants[source_token] = {
+            "type": str(item.get("type") or item.get("result_type") or item.get("resultant") or ""),
+            "route": str(item.get("route") or item.get("next_route") or ""),
+            "graph": graph,
+        }
+    return resultants
+
+
+def field_witness_terminals(payload: dict[str, Any]) -> dict[str, str]:
+    body = field_witness_body(payload)
+    raw = body.get("terminal_states")
+    if not isinstance(raw, (dict, list)):
+        coverage = body.get("coverage_proof") if isinstance(body.get("coverage_proof"), dict) else {}
+        raw = coverage.get("terminal_states")
+    if not isinstance(raw, (dict, list)):
+        burdens = body.get("burdens")
+        if isinstance(burdens, dict):
+            raw = {
+                burden: value.get("terminal_state", value.get("terminal", value.get("state", "")))
+                if isinstance(value, dict)
+                else value
+                for burden, value in burdens.items()
+            }
+    if not isinstance(raw, (dict, list)):
+        return {}
+    terminals: dict[str, str] = {}
+    items: list[tuple[Any, Any]]
+    if isinstance(raw, list):
+        items = []
+        for value in raw:
+            if isinstance(value, dict):
+                items.append((value.get("id") or value.get("notation") or value.get("burden") or "", value))
+            else:
+                items.append((value, value))
+    else:
+        items = list(raw.items())
+    for burden, value in items:
+        token = normalize_burden_token(str(burden))
+        if isinstance(value, dict):
+            state = str(value.get("state") or value.get("terminal") or "")
+        else:
+            state = str(value)
+        if token and state:
+            terminals[token] = state.lower()
+    return terminals
+
+
+def compare_formal_reread_states(
+    result: ParseResult,
+    body: dict[str, Any],
+    visible_mrp: dict[str, dict[str, Any]],
+    label: str,
+) -> None:
+    raw = body.get("formal_reread_states")
+    if raw is None:
+        return
+    if not isinstance(raw, list):
+        result.errors.append(f"{label}: field_witness.formal_reread_states must be a list")
+        return
+
+    seen: set[str] = set()
+    if len(raw) != len(visible_mrp):
+        result.errors.append(
+            f"{label}: formal_reread_states count {len(raw)} does not match visible MRP count {len(visible_mrp)}"
+        )
+    for index, state in enumerate(raw, start=1):
+        state_label = f"{label}: formal_reread_states[{index}]"
+        if not isinstance(state, dict):
+            result.errors.append(f"{state_label}: state must be an object")
+            continue
+        source = normalize_burden_token(str(state.get("source_burden") or state.get("source") or ""))
+        if not source:
+            result.errors.append(f"{state_label}: missing source_burden")
+            continue
+        if source in seen:
+            result.errors.append(f"{state_label}: duplicate source_burden {source}")
+        seen.add(source)
+        visible = visible_mrp.get(source)
+        if not visible:
+            result.errors.append(f"{state_label}: source_burden {source} has no visible MRP block")
+            continue
+
+        visible_type = (visible.get("result_types") or [""])[-1]
+        visible_route = (visible.get("routes") or [""])[-1]
+        if state.get("route_result_type") and visible_type and state.get("route_result_type") != visible_type:
+            result.errors.append(
+                f"{state_label}: route_result_type mismatch visible={visible_type!r} field_witness={state.get('route_result_type')!r}"
+            )
+        if state.get("route") and visible_route and str(state.get("route")).upper() != visible_route.upper():
+            result.errors.append(
+                f"{state_label}: route mismatch visible={visible_route!r} field_witness={state.get('route')!r}"
+            )
+
+        visible_graphs = {f"{source_id}->{target_id}" for source_id, target_id in visible.get("edges", [])}
+        state_graph = normalize_witness_graph(str(state.get("graph_delta") or state.get("graph") or ""))
+        if visible_graphs and state_graph not in visible_graphs:
+            result.errors.append(
+                f"{state_label}: graph_delta mismatch visible={sorted(visible_graphs)} field_witness={state_graph!r}"
+            )
+        elif not visible_graphs and state_graph and state_graph != "none":
+            result.errors.append(f"{state_label}: graph_delta must be none when visible MRP has no graph edge")
+
+        visible_divergence = first_state(visible.get("divergence"))
+        visible_curl = first_state(visible.get("curl"))
+        state_divergence = first_state(state.get("divergence_state"))
+        state_curl = first_state(state.get("curl_state"))
+        if visible_divergence and state_divergence and visible_divergence != state_divergence:
+            result.errors.append(
+                f"{state_label}: divergence_state mismatch visible={visible_divergence!r} field_witness={state_divergence!r}"
+            )
+        if visible_curl and state_curl and visible_curl != state_curl:
+            result.errors.append(
+                f"{state_label}: curl_state mismatch visible={visible_curl!r} field_witness={state_curl!r}"
+            )
+
+    for burden in sorted(set(visible_mrp) - seen, key=burden_sort_key):
+        result.errors.append(f"{label}: formal_reread_states missing visible MRP source {burden}")
+    for burden in sorted(seen - set(visible_mrp), key=burden_sort_key):
+        result.errors.append(f"{label}: formal_reread_states names non-visible MRP source {burden}")
+
+
 def compare_field_witness(result: ParseResult, raw_json: str, label: str = "field_witness") -> None:
     payload = parse_field_witness_payload(result, raw_json, label)
     if payload is None:
         return
-    witness_nodes = {normalize_burden_token(str(item)) for item in payload.get("nodes", []) if isinstance(item, str)}
+    validate_field_witness_held_route_closure(result, payload, label)
+    witness_nodes = field_witness_nodes(payload)
     visible_burdens = set(result.body_burdens or result.burdens)
-    if witness_nodes and witness_nodes != visible_burdens:
-        result.visible_vs_field_witness.append(
+    if visible_burdens and not witness_nodes:
+        result.errors.append(f"{label}: graphable output has visible burdens but field_witness omits graph nodes")
+    elif witness_nodes and witness_nodes != visible_burdens:
+        result.errors.append(
             f"{label}: node mismatch visible={sorted(visible_burdens, key=burden_sort_key)} field_witness={sorted(witness_nodes, key=burden_sort_key)}"
         )
-    witness_edges: set[tuple[str, str]] = set()
-    for edge in payload.get("edges", []):
-        if isinstance(edge, dict):
-            source = normalize_burden_token(str(edge.get("source", "")))
-            target = normalize_burden_token(str(edge.get("target", "")))
-            if source and target:
-                witness_edges.add((source, target))
-        elif isinstance(edge, (list, tuple)) and len(edge) == 2:
-            witness_edges.add((normalize_burden_token(str(edge[0])), normalize_burden_token(str(edge[1]))))
+    witness_edges = field_witness_edges(payload)
     visible_edges = {(source, target) for source, target, _line, _excerpt in result.graph_edges}
-    if witness_edges and witness_edges != visible_edges:
-        result.visible_vs_field_witness.append(
+    if visible_edges and not witness_edges:
+        result.errors.append(f"{label}: graphable output has visible dependency edges but field_witness omits graph edges")
+    elif witness_edges and witness_edges != visible_edges:
+        result.errors.append(
             f"{label}: edge mismatch visible={sorted(visible_edges)} field_witness={sorted(witness_edges)}"
         )
+    ledger = field_witness_ledger(payload)
+    visible_la = result.ledger.get("B_LA") or result.initial_burdens
+    visible_mrp = result.ledger.get("B_MRP") or sorted(result.generated_burdens, key=burden_sort_key)
+    visible_total = result.ledger.get("B_total") or result.burdens
+    if ledger["B_MRP"]:
+        for generated in ledger["B_MRP"]:
+            if generated in ledger["B_LA"]:
+                result.errors.append(f"{label}: field_witness marks baseline burden {generated} as generated")
+    if result.generated_burdens and not ledger["B_MRP"]:
+        result.errors.append(f"{label}: visible generated B_MRP appears in prose but field_witness omits B_MRP")
+    if ledger["B_LA"] and visible_la and set(ledger["B_LA"]) != set(visible_la):
+        result.errors.append(f"{label}: B_LA mismatch visible={visible_la} field_witness={ledger['B_LA']}")
+    if ledger["B_MRP"] and visible_mrp and set(ledger["B_MRP"]) != set(visible_mrp):
+        result.errors.append(f"{label}: B_MRP mismatch visible={visible_mrp} field_witness={ledger['B_MRP']}")
+    if ledger["B_total"] and visible_total and set(ledger["B_total"]) != set(visible_total):
+        result.errors.append(f"{label}: B_total mismatch visible={visible_total} field_witness={ledger['B_total']}")
+    witness_mrp = field_witness_mrp_resultants(payload)
+    visible_mrp = {
+        burden: data
+        for burden, data in result.mrp.items()
+        if data.get("result_types") or data.get("routes") or data.get("edges")
+    }
+    if visible_mrp and not witness_mrp:
+        result.errors.append(f"{label}: visible MRP resultants appear in prose but field_witness omits mrp_resultants")
+    for burden, data in visible_mrp.items():
+        witness = witness_mrp.get(burden)
+        if not witness:
+            result.errors.append(f"{label}: missing MRP resultant for visible MRP({burden})")
+            continue
+        visible_type = (data.get("result_types") or [""])[-1]
+        visible_route = (data.get("routes") or [""])[-1]
+        if visible_type and witness.get("type") and visible_type != witness["type"]:
+            result.errors.append(
+                f"{label}: MRP({burden}) type mismatch visible={visible_type!r} field_witness={witness['type']!r}"
+            )
+        if visible_route and witness.get("route") and visible_route.upper() != witness["route"].upper():
+            result.errors.append(
+                f"{label}: MRP({burden}) route mismatch visible={visible_route!r} field_witness={witness['route']!r}"
+            )
+        visible_graphs = {f"{source}->{target}" for source, target in data.get("edges", [])}
+        witness_graph = witness.get("graph", "")
+        if visible_graphs and (not witness_graph or witness_graph == "none"):
+            result.errors.append(f"{label}: MRP({burden}) visible graph edge omitted from field_witness MRP resultant")
+        elif visible_graphs and witness_graph and witness_graph != "none" and witness_graph not in visible_graphs:
+            result.errors.append(
+                f"{label}: MRP({burden}) graph mismatch visible={sorted(visible_graphs)} field_witness={witness_graph!r}"
+            )
+    compare_formal_reread_states(result, field_witness_body(payload), visible_mrp, label)
+    witness_terminals = field_witness_terminals(payload)
+    if result.terminals and not witness_terminals:
+        result.errors.append(f"{label}: visible terminal states appear in prose but field_witness omits terminal_states")
+    for burden, visible_state in result.terminals.items():
+        witness_state = witness_terminals.get(burden, "")
+        if not witness_state:
+            result.errors.append(f"{label}: missing terminal state for visible {burden}")
+            continue
+        if visible_state == "Land" and not re.search(r"landed|cleared|discharged|held-with-reason", witness_state):
+            result.errors.append(
+                f"{label}: terminal mismatch for {burden}: visible Land but field_witness state={witness_state!r}"
+            )
+        if visible_state == "HOLD" and not re.search(r"hold|held|partial|carried", witness_state):
+            result.errors.append(
+                f"{label}: terminal mismatch for {burden}: visible HOLD but field_witness state={witness_state!r}"
+            )
 
 
 def compare_embedded_and_separate_witness(result: ParseResult, embedded: str, separate: str) -> None:
@@ -577,7 +1104,7 @@ def compare_embedded_and_separate_witness(result: ParseResult, embedded: str, se
     except json.JSONDecodeError:
         return
     if canonical_json(embedded_payload) != canonical_json(separate_payload):
-        result.visible_vs_field_witness.append("embedded field_witness and separate field_witness disagree")
+        result.errors.append("embedded field_witness and separate field_witness disagree")
 
 
 def result_summary(result: ParseResult) -> dict[str, Any]:

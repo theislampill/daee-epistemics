@@ -28,7 +28,9 @@ SUPERSCRIPT_DIGITS = {
 }
 BURDEN_ID_RE = re.compile(r"(?:\bB\d+\b|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\b)")
 HEADING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
-NEXT_HEADING_RE = re.compile(r"(?m)^\s*(?:#{2,5}\s+\S|Restorative Response\b|Closing Formulation\b)")
+NEXT_HEADING_RE = re.compile(
+    r"(?m)^\s*(?:#{2,5}\s+\S|Restorative Response\b|Closing Formulation\b|field_witness\b)"
+)
 KNOWN_FIELD_RE = re.compile(
     "(?i)^\s*(?:[-*]\s*)?(?:"
     "N frames|Registers|Burden dependency graph|\u2207\u00b7B|\u2207\u00b7T|\u2207\u00d7\u03ba|\u2207\u00d7T|"
@@ -38,6 +40,10 @@ KNOWN_FIELD_RE = re.compile(
 )
 REGISTERS_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Registers\s*:\s*(?P<body>\S.*)$")
 INITIAL_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[(?P<body>[^\]]*)\]")
+LEDGER_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:𝔅_(?:LA|MRP|total)\s*\(\s*)?"
+    r"(?P<key>B_LA|B_MRP|B_total)\s*\)?\s*(?:=|:)\s*(?P<body>.*)$"
+)
 TERMINAL_HEADER_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Terminal states\s*:\s*$")
 TERMINAL_INLINE_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Terminal states\s*:\s*(?P<body>\S.*)$")
 TERMINAL_LINE_RE = re.compile(
@@ -51,6 +57,10 @@ CLOSURE_RE = re.compile("(?im)^\s*(?:[-*]\s*)?`?(?:\U0001d49e\(\u03a8\u1d3a\)|C\
 TRANSFER_RE = re.compile(
     "(?im)^\s*(?:[-*]\s*)?`?T_lang\s*:\s*(?:\u03a8\u1d3a|PsiN)\s*(?:\u21e2|->)\s*"
     "(?:\u03a8\u1d35|PsiI)`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
+)
+MRP_RESULTANT_LINE_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?MRP\((?P<source>B\d+|[^\s\)]+B)\)\s*:\s*"
+    r"(?P<body>.+)$"
 )
 
 ARROW_RE = re.compile("\s*(?:\u2192|->)\s*")
@@ -72,6 +82,9 @@ ALLOWED_TERMINAL_STATES = {
 class ClosureWitness:
     block: str
     initial_burdens: list[str]
+    ledger_la: list[str]
+    ledger_mrp: list[str]
+    ledger_total: list[str]
     registers: str
     terminal_states: dict[str, dict[str, str]]
     duplicate_terminal_states: list[str]
@@ -80,6 +93,7 @@ class ClosureWitness:
     roots: list[str]
     parallel: list[tuple[str, str]]
     parallel_groups: list[list[str]]
+    mrp_resultants: list[dict[str, str]]
     divergence: str
     curl: str
     closure: str
@@ -139,6 +153,15 @@ def burden_ids(value: str) -> list[str]:
     return [normalize_burden_id(match.group(0)) for match in BURDEN_ID_RE.finditer(value)]
 
 
+def clean_visible_ledger_body(body: str) -> str:
+    """Remove provenance source aliases from visible ledger membership lines."""
+
+    cleaned = re.sub(r"\[generated-by:\s*MRP\([^\)]*\)\]", "", str(body), flags=re.IGNORECASE)
+    cleaned = re.sub(r"\bMRP\([^\)]*\)", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\b(?:B_|𝔅_)(?:LA|MRP|total)\b", "", cleaned, flags=re.IGNORECASE)
+    return cleaned
+
+
 def extract_closure_witness_block(text: str) -> str | None:
     match = HEADING_RE.search(text)
     if not match:
@@ -151,6 +174,16 @@ def extract_closure_witness_block(text: str) -> str | None:
 
 def parse_burden_list(body: str) -> list[str]:
     return burden_ids(body)
+
+
+def parse_visible_ledgers(block: str) -> dict[str, list[str]]:
+    ledgers = {"B_LA": [], "B_MRP": [], "B_total": []}
+    for match in LEDGER_RE.finditer(block):
+        key = match.group("key")
+        ledgers[key] = unique(parse_burden_list(clean_visible_ledger_body(match.group("body"))))
+    if not ledgers["B_total"] and (ledgers["B_LA"] or ledgers["B_MRP"]):
+        ledgers["B_total"] = unique(ledgers["B_LA"] + ledgers["B_MRP"])
+    return ledgers
 
 
 def parse_terminal_states(block: str) -> tuple[dict[str, dict[str, str]], list[str]]:
@@ -214,8 +247,6 @@ def extract_graph_text(block: str) -> str:
                 break
             stripped = _strip_list_prefix(next_line)
             if not stripped:
-                if chunks:
-                    break
                 continue
             if "B" not in stripped:
                 break
@@ -257,6 +288,43 @@ def parse_graph(graph_text: str) -> tuple[list[tuple[str, str]], list[str], list
                     if source != target and edge not in edges:
                         edges.append(edge)
     return edges, unique(roots), parallel_pairs, parallel_groups
+
+
+def parse_key_value_body(body: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for chunk in body.split(";"):
+        if "=" not in chunk:
+            continue
+        key, value = chunk.split("=", 1)
+        values[key.strip().lower()] = value.strip()
+    return values
+
+
+def normalize_graph_value(value: str) -> str:
+    value = value.strip()
+    if not value or value.lower() == "none":
+        return "none"
+    edges, roots, _parallel, groups = parse_graph(value)
+    parts = [f"{source}->{target}" for source, target in edges]
+    parts.extend(f"root:{root}" for root in roots)
+    parts.extend("||".join(group) for group in groups)
+    return ";".join(parts) if parts else value
+
+
+def parse_mrp_resultants(block: str) -> list[dict[str, str]]:
+    resultants: list[dict[str, str]] = []
+    for match in MRP_RESULTANT_LINE_RE.finditer(block):
+        body = parse_key_value_body(match.group("body"))
+        resultants.append(
+            {
+                "source": normalize_burden_id(match.group("source")),
+                "type": body.get("type", ""),
+                "finding": body.get("finding", ""),
+                "graph": normalize_graph_value(body.get("graph", "")),
+                "route": body.get("route", ""),
+            }
+        )
+    return resultants
 
 
 def graph_nodes(edges: list[tuple[str, str]], roots: list[str], parallel_groups: list[list[str]]) -> list[str]:
@@ -313,7 +381,8 @@ def graph_validation_errors(
         if node not in terminal_ids:
             errors.append(f"Burden dependency graph node {node} lacks terminal state")
     for burden in sorted(initial_ids | terminal_ids):
-        detail = terminal_states.get(burden, {}).get("detail", "")
+        terminal_payload = terminal_states.get(burden, {})
+        detail = terminal_payload.get("detail", "") if isinstance(terminal_payload, dict) else ""
         if burden not in graph_ids and "non-graph" not in detail.lower():
             errors.append(f"Burden dependency graph missing burden {burden}")
     for source, target in edges:
@@ -341,9 +410,11 @@ def parse_closure_witness(text: str) -> ClosureWitness | None:
         return None
     initial_match = INITIAL_RE.search(block)
     initial = parse_burden_list(initial_match.group("body")) if initial_match else []
+    ledgers = parse_visible_ledgers(block)
     terminal_states, duplicates = parse_terminal_states(block)
     graph_text = extract_graph_text(block)
     edges, roots, parallel, parallel_groups = parse_graph(graph_text)
+    mrp_resultants = parse_mrp_resultants(block)
     registers_match = REGISTERS_RE.search(block)
     divergence_match = DIVERGENCE_RE.search(block)
     curl_match = CURL_RE.search(block)
@@ -352,6 +423,9 @@ def parse_closure_witness(text: str) -> ClosureWitness | None:
     return ClosureWitness(
         block=block,
         initial_burdens=initial,
+        ledger_la=ledgers["B_LA"],
+        ledger_mrp=ledgers["B_MRP"],
+        ledger_total=ledgers["B_total"],
         registers=registers_match.group("body").strip() if registers_match else "",
         terminal_states=terminal_states,
         duplicate_terminal_states=duplicates,
@@ -360,6 +434,7 @@ def parse_closure_witness(text: str) -> ClosureWitness | None:
         roots=roots,
         parallel=parallel,
         parallel_groups=parallel_groups,
+        mrp_resultants=mrp_resultants,
         divergence=divergence_match.group("body").strip() if divergence_match else "",
         curl=curl_match.group("body").strip() if curl_match else "",
         closure=closure_match.group("body").strip() if closure_match else "",
@@ -431,6 +506,51 @@ def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def extract_balanced_json_from(text: str, start_index: int) -> str:
+    source = str(text or "")
+    opener_match = re.search(r"[\{\[]", source[start_index:])
+    if not opener_match:
+        return ""
+    json_start = start_index + opener_match.start()
+    opener = source[json_start]
+    closer = "}" if opener == "{" else "]"
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(json_start, len(source)):
+        char = source[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == opener:
+            depth += 1
+        elif char == closer:
+            depth -= 1
+            if depth == 0:
+                return source[json_start : index + 1]
+    return ""
+
+
+def extract_embedded_field_witness(text: str) -> dict[str, Any] | None:
+    match = re.search(r"(?:^|\n)\s*(?:#{1,6}\s*)?field_witness\b", str(text or ""), re.IGNORECASE)
+    if not match:
+        return None
+    raw_json = extract_balanced_json_from(text, match.start())
+    if not raw_json:
+        return None
+    try:
+        return json.loads(raw_json)
+    except json.JSONDecodeError:
+        return None
+
+
 def extract_field_witness(payload: Any) -> dict[str, Any] | None:
     if not isinstance(payload, dict):
         return None
@@ -438,19 +558,121 @@ def extract_field_witness(payload: Any) -> dict[str, Any] | None:
         return payload["field_witness"]
     if "coverage_proof" in payload and "field_diagnostics" in payload:
         return payload
+    if any(key in payload for key in ("nodes", "edges", "ledger", "B_LA", "B_MRP", "B_total")):
+        return payload
     return None
+
+
+def field_witness_ledger(field_witness: dict[str, Any] | None) -> dict[str, list[str]]:
+    ledgers = {"B_LA": [], "B_MRP": [], "B_total": []}
+    if not isinstance(field_witness, dict):
+        return ledgers
+    ledger = field_witness.get("ledger")
+    if not isinstance(ledger, dict):
+        ledger = field_witness
+    for key in ledgers:
+        value = ledger.get(key)
+        if isinstance(value, list):
+            ledgers[key] = unique(
+                normalize_burden_id(str(item))
+                for item in value
+                if isinstance(item, str) and BURDEN_ID_RE.fullmatch(item.strip())
+            )
+    return ledgers
+
+
+def field_witness_mrp_resultants(field_witness: dict[str, Any] | None) -> list[dict[str, str]]:
+    if not isinstance(field_witness, dict):
+        return []
+    raw = field_witness.get("mrp_resultants")
+    if not isinstance(raw, list):
+        reread = field_witness.get("reread_pressure")
+        if isinstance(raw, dict):
+            raw = [
+                {"source": source, **item} if isinstance(item, dict) else {"source": source, "type": str(item)}
+                for source, item in raw.items()
+            ]
+        elif isinstance(reread, dict) and any(str(key).startswith(("MRP(", "B")) for key in reread.keys()):
+            raw = [
+                {"source": source, **item} if isinstance(item, dict) else {"source": source, "type": str(item)}
+                for source, item in reread.items()
+            ]
+        elif isinstance(reread, dict):
+            source = reread.get("target_burden_id", "")
+            raw = [
+                {
+                    "source": source,
+                    "type": reread.get("route_result_type", ""),
+                    "finding": reread.get("finding", ""),
+                    "graph": reread.get("graph_delta", {}),
+                    "route": reread.get("route", ""),
+                }
+            ]
+        else:
+            return []
+    resultants: list[dict[str, str]] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        source = item.get("source") or item.get("target_burden_id") or item.get("from") or item.get("id") or ""
+        source = re.sub(r"^MRP\((.*)\)$", r"\1", str(source))
+        graph_value = item.get("graph")
+        if graph_value is None:
+            graph_value = item.get("graph_delta")
+        if isinstance(graph_value, dict):
+            if "from" in graph_value and "to" in graph_value:
+                graph = f"{normalize_burden_id(str(graph_value.get('from')))}->{normalize_burden_id(str(graph_value.get('to')))}"
+            elif "edges_added" in graph_value and isinstance(graph_value["edges_added"], list):
+                pairs = []
+                for edge in graph_value["edges_added"]:
+                    if isinstance(edge, dict):
+                        pairs.append(f"{normalize_burden_id(str(edge.get('from', '')))}->{normalize_burden_id(str(edge.get('to', '')))}")
+                graph = ";".join(pair for pair in pairs if pair != "->") or "none"
+            else:
+                graph = "none"
+        elif isinstance(graph_value, str):
+            graph = normalize_graph_value(graph_value)
+        else:
+            graph = "none"
+        resultants.append(
+            {
+                "source": normalize_burden_id(source),
+                "type": str(item.get("type") or item.get("route_result_type") or ""),
+                "finding": str(item.get("finding") or ""),
+                "graph": graph,
+                "route": str(item.get("route") or ""),
+            }
+        )
+    return resultants
 
 
 def field_witness_graph_errors(field_witness: dict[str, Any] | None) -> list[str]:
     if field_witness is None:
         return ["field_witness JSON missing"]
     errors: list[str] = []
+    ledgers = field_witness_ledger(field_witness)
+    if ledgers["B_MRP"] and not ledgers["B_total"]:
+        errors.append("field_witness ledger has B_MRP but missing B_total")
+    for generated in ledgers["B_MRP"]:
+        if generated in ledgers["B_LA"]:
+            errors.append(f"field_witness marks baseline burden {generated} as generated")
+    if ledgers["B_total"]:
+        expected_total = unique(ledgers["B_LA"] + ledgers["B_MRP"])
+        if ledgers["B_total"] != expected_total:
+            errors.append("field_witness B_total must equal B_LA plus B_MRP in order")
+    for index, resultant in enumerate(field_witness_mrp_resultants(field_witness)):
+        if not resultant.get("source"):
+            errors.append(f"field_witness.mrp_resultants[{index}] missing source")
+        if not resultant.get("type"):
+            errors.append(f"field_witness.mrp_resultants[{index}] missing type")
+        if not resultant.get("route"):
+            errors.append(f"field_witness.mrp_resultants[{index}] missing route")
     coverage = field_witness.get("coverage_proof")
     if not isinstance(coverage, dict):
-        return ["field_witness.coverage_proof missing"]
+        return errors + ["field_witness.coverage_proof missing"]
     graph = coverage.get("dependency_graph")
     if not isinstance(graph, dict):
-        return ["field_witness.coverage_proof.dependency_graph missing"]
+        return errors + ["field_witness.coverage_proof.dependency_graph missing"]
     initial = coverage.get("initial_burden_set")
     terminals = coverage.get("terminal_states")
     if not isinstance(initial, list):
@@ -474,11 +696,17 @@ def field_witness_graph_errors(field_witness: dict[str, Any] | None) -> list[str
         edges_payload = []
     edges: list[tuple[str, str]] = []
     for index, edge in enumerate(edges_payload):
-        if not isinstance(edge, dict) or set(edge) != {"from", "to"}:
-            errors.append(f"field_witness.coverage_proof.dependency_graph.edges[{index}] must have from/to only")
+        if isinstance(edge, dict):
+            if not {"from", "to"}.issubset(set(edge)):
+                errors.append(f"field_witness.coverage_proof.dependency_graph.edges[{index}] must have from/to")
+                continue
+            source = edge.get("from")
+            target = edge.get("to")
+        elif isinstance(edge, list) and len(edge) == 2:
+            source, target = edge
+        else:
+            errors.append(f"field_witness.coverage_proof.dependency_graph.edges[{index}] must be from/to object or pair")
             continue
-        source = edge.get("from")
-        target = edge.get("to")
         if not isinstance(source, str) or not BURDEN_ID_RE.fullmatch(source):
             errors.append(f"field_witness.coverage_proof.dependency_graph.edges[{index}].from must be B-id")
             continue
@@ -488,8 +716,8 @@ def field_witness_graph_errors(field_witness: dict[str, Any] | None) -> list[str
         edges.append((source, target))
     groups: list[list[str]] = []
     if not isinstance(parallel_groups, list):
-        errors.append("field_witness.coverage_proof.dependency_graph.parallel_groups must be array")
-    else:
+        parallel_groups = []
+    if isinstance(parallel_groups, list):
         for index, group in enumerate(parallel_groups):
             if not isinstance(group, list) or len(group) < 2 or not all(isinstance(node, str) and BURDEN_ID_RE.fullmatch(node) for node in group):
                 errors.append(f"field_witness.coverage_proof.dependency_graph.parallel_groups[{index}] must contain at least two B-ids")
@@ -497,6 +725,25 @@ def field_witness_graph_errors(field_witness: dict[str, Any] | None) -> list[str
             groups.append(group)
     if not isinstance(graph.get("acyclic"), bool):
         errors.append("field_witness.coverage_proof.dependency_graph.acyclic must be boolean")
+    graph_node_set = set(nodes)
+    implied_nodes = set(item for item in initial if isinstance(item, str))
+    implied_nodes.update(str(node) for node in terminals if isinstance(node, str))
+    implied_nodes.update(ledgers["B_LA"])
+    implied_nodes.update(ledgers["B_MRP"])
+    implied_nodes.update(ledgers["B_total"])
+    implied_nodes.update(roots)
+    for source, target in edges:
+        implied_nodes.update((source, target))
+    for group in groups:
+        implied_nodes.update(group)
+    implied_nodes = {node for node in implied_nodes if BURDEN_ID_RE.fullmatch(node)}
+    if graph_node_set and implied_nodes and graph_node_set != implied_nodes:
+        missing = sorted(implied_nodes - graph_node_set)
+        extra = sorted(graph_node_set - implied_nodes)
+        if missing:
+            errors.append(f"field_witness.coverage_proof.dependency_graph.nodes missing implied burdens: {', '.join(missing)}")
+        if extra:
+            errors.append(f"field_witness.coverage_proof.dependency_graph.nodes has extra burdens not in ledgers/terminals/edges: {', '.join(extra)}")
     graph_text = "; ".join(
         [f"{root} (root)" for root in roots]
         + [f"{source} → {target}" for source, target in edges]
@@ -519,26 +766,80 @@ def field_witness_graph_errors(field_witness: dict[str, Any] | None) -> list[str
     return errors
 
 
+def nested_field_diagnostic_status(diagnostics: dict[str, Any], *keys: str) -> str:
+    for key in keys:
+        value = diagnostics.get(key)
+        if isinstance(value, str) and value.strip():
+            return value
+    nested_values: list[str] = []
+    for value in diagnostics.values():
+        if not isinstance(value, dict):
+            continue
+        for key in keys:
+            nested = value.get(key)
+            if isinstance(nested, str) and nested.strip():
+                nested_values.append(nested)
+                break
+    return nested_values[-1] if nested_values else ""
+
+
 def compare_visible_to_field_witness(witness: ClosureWitness, field_witness: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     coverage = field_witness.get("coverage_proof") if isinstance(field_witness, dict) else None
+    ledgers = field_witness_ledger(field_witness)
+    if witness.ledger_la and ledgers["B_LA"] and ledgers["B_LA"] != witness.ledger_la:
+        errors.append("visible witness B_LA does not match field_witness ledger.B_LA")
+    if witness.ledger_mrp and not ledgers["B_MRP"]:
+        errors.append("visible witness has B_MRP but field_witness ledger.B_MRP is missing")
+    elif witness.ledger_mrp and ledgers["B_MRP"] != witness.ledger_mrp:
+        errors.append("visible witness B_MRP does not match field_witness ledger.B_MRP")
+    if witness.ledger_total and not ledgers["B_total"]:
+        errors.append("visible witness has B_total but field_witness ledger.B_total is missing")
+    elif witness.ledger_total and ledgers["B_total"] != witness.ledger_total:
+        errors.append("visible witness B_total does not match field_witness ledger.B_total")
+    for generated in ledgers["B_MRP"]:
+        if generated in ledgers["B_LA"]:
+            errors.append(f"field_witness marks baseline burden {generated} as generated")
+    visible_mrp = witness.mrp_resultants
+    sidecar_mrp = field_witness_mrp_resultants(field_witness)
+    if visible_mrp and not sidecar_mrp:
+        errors.append("visible witness has MRP resultants but field_witness omits them")
+    elif visible_mrp and sidecar_mrp:
+        visible_set = {
+            (item.get("source", ""), item.get("type", ""), item.get("graph", ""), item.get("route", ""))
+            for item in visible_mrp
+        }
+        sidecar_set = {
+            (item.get("source", ""), item.get("type", ""), item.get("graph", ""), item.get("route", ""))
+            for item in sidecar_mrp
+        }
+        if visible_set != sidecar_set:
+            errors.append("visible witness MRP resultants do not match field_witness MRP resultants")
     if not isinstance(coverage, dict):
-        return ["field_witness.coverage_proof missing for visible consistency check"]
+        return errors + ["field_witness.coverage_proof missing for visible consistency check"]
     graph = coverage.get("dependency_graph")
     if not isinstance(graph, dict):
-        return ["field_witness.coverage_proof.dependency_graph missing for visible consistency check"]
+        return errors + ["field_witness.coverage_proof.dependency_graph missing for visible consistency check"]
     if coverage.get("initial_burden_set") != witness.initial_burdens:
         errors.append("visible witness initial burden set does not match field_witness.coverage_proof.initial_burden_set")
     terminal_payload = coverage.get("terminal_states")
     if isinstance(terminal_payload, dict):
         for burden, visible_payload in witness.terminal_states.items():
             sidecar_payload = terminal_payload.get(burden)
+            if isinstance(sidecar_payload, str):
+                state, _, detail = sidecar_payload.partition("/")
+                sidecar_payload = {"state": state.strip(), "detail": detail.strip()}
             if not isinstance(sidecar_payload, dict):
                 errors.append(f"field_witness missing terminal state for visible burden {burden}")
                 continue
             if sidecar_payload.get("state") != visible_payload.get("state"):
                 errors.append(f"terminal state mismatch for {burden}: visible {visible_payload.get('state')!r} vs field_witness {sidecar_payload.get('state')!r}")
-    side_edges = [(edge.get("from"), edge.get("to")) for edge in graph.get("edges", []) if isinstance(edge, dict)]
+    side_edges = []
+    for edge in graph.get("edges", []):
+        if isinstance(edge, dict):
+            side_edges.append((edge.get("from"), edge.get("to")))
+        elif isinstance(edge, list) and len(edge) == 2:
+            side_edges.append((edge[0], edge[1]))
     if set(side_edges) != set(witness.edges):
         errors.append("visible witness dependency edges do not match field_witness dependency_graph.edges")
     if set(graph.get("roots", [])) != set(witness.roots):
@@ -547,6 +848,15 @@ def compare_visible_to_field_witness(witness: ClosureWitness, field_witness: dic
     visible_groups = {tuple(group) for group in witness.parallel_groups}
     if side_groups != visible_groups:
         errors.append("visible witness parallel groups do not match field_witness dependency_graph.parallel_groups")
+    diagnostics = field_witness.get("field_diagnostics") if isinstance(field_witness.get("field_diagnostics"), dict) else {}
+    if not coverage.get("divergence_check"):
+        coverage["divergence_check"] = nested_field_diagnostic_status(
+            diagnostics, "del_dot_B", "del_dot_T", "∇·T", "∇·B"
+        )
+    if not coverage.get("curl_check"):
+        coverage["curl_check"] = nested_field_diagnostic_status(
+            diagnostics, "del_cross_kappa", "del_cross_T", "∇×T", "∇×κ"
+        )
     if status_head(str(coverage.get("divergence_check", ""))) != status_head(witness.divergence):
         errors.append("visible ∇·B status does not match field_witness.coverage_proof.divergence_check")
     if status_head(str(coverage.get("curl_check", ""))) != status_head(witness.curl):

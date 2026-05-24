@@ -390,6 +390,75 @@
         }
       }
     },
+    "owner_activation_ordering": {
+      "$comment": "Pre-Layer-B deterministic owner selection plan. It governs matched owner route order, ACT order, and field_witness owner activation roles; it is not a proof ledger by itself.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy_id", "required_before"],
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "const": "diagnostic-ir-pressure-owner-floor-v1"
+        },
+        "required_before": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "before_owner", "after_owner"],
+            "properties": {
+              "target": { "type": "string", "pattern": "^B[0-9]+$" },
+              "before_owner": { "type": "string", "minLength": 1 },
+              "after_owner": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "parallel_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "group", "owners"],
+            "properties": {
+              "target": { "type": "string", "pattern": "^B[0-9]+$" },
+              "group": { "type": "string", "minLength": 1 },
+              "owners": {
+                "type": "array",
+                "minItems": 2,
+                "items": { "type": "string", "minLength": 1 },
+                "uniqueItems": true
+              }
+            }
+          }
+        },
+        "contingent": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "owner", "trigger"],
+            "properties": {
+              "target": { "type": "string", "pattern": "^B[0-9]+$" },
+              "owner": { "type": "string", "minLength": 1 },
+              "trigger": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "non_load_bearing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "owner", "reason"],
+            "properties": {
+              "target": { "type": "string", "pattern": "^B[0-9]+$" },
+              "owner": { "type": "string", "minLength": 1 },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
     "field_witness": {
       "$comment": "Optional schema-light trace sidecar. It is validated when present, does not replace post_render_gate, and does not imply full formal-calculus proof, truth, warrant, or interlocutor uptake.",
       "type": "object",
@@ -436,6 +505,9 @@
               "result": { "type": "string", "minLength": 1 }
             }
           }
+        },
+        "owner_activation_ordering": {
+          "$ref": "#/properties/owner_activation_ordering"
         },
         "field_diagnostics": {
           "type": "object",

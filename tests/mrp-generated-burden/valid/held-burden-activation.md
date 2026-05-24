@@ -56,3 +56,29 @@ Boundary: T_lang does not imply guaranteed uptake.
 - ∇×κ: null / directed acyclic route
 - 𝒞(Ψᴺ): coverage_complete=false; route is RECURSE
 - T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed uptake
+
+## field_witness
+```json
+{
+  "formal_reread_states": [
+    {
+      "source_burden": "B1",
+      "prior_land": "Land(B1)",
+      "delta": "Δ¹B / ¹B landed; held ²B remains live from the initial inventory.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to held ²B because Δ¹B landed the authority-transfer burden while the initial inventory already carried ²B.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> activate held ²B from the initial inventory",
+      "graph_delta": "¹B → ²B",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B2",
+      "owner_route": [
+        "held-route-B2"
+      ]
+    }
+  ]
+}
+```

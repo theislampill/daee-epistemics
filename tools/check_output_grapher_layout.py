@@ -118,6 +118,10 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
     const coverage = window.daeeOutputGrapher.exportCoverageReport();
     const sectionPlan = window.daeeOutputGrapher.sectionExportPlan();
     const restorationText = svg.querySelector('.outputGrapherRestorationSummary')?.textContent || '';
+    const publicClone = svg.cloneNode(true);
+    publicClone.querySelectorAll('.outputGrapherFormalSection').forEach(el => el.remove());
+    const publicFlowText = publicClone.textContent || '';
+    const publicFlowHtml = publicClone.outerHTML || '';
     return {{
       viewBox: svg.getAttribute('viewBox'),
       headerStatusBadges: [...svg.querySelectorAll('.outputGrapherStoryBurden > text')].filter(t => /^(Landed|RECURSE|STOP|Held)$/i.test(t.textContent.trim())).length,
@@ -129,6 +133,8 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
       restorativeResponseCount: svg.querySelectorAll('.outputGrapherRestorativeResponse').length,
       closingFormulationCount: svg.querySelectorAll('.outputGrapherClosingFormulation').length,
       formalCaseFillCount: svg.querySelectorAll('.outputGrapherFormalCaseFill').length,
+      closingContainsClosureWitness: /Closure\/Reconstruction Witness|Initial burden set:|MRP resultants:/i.test(svg.querySelector('.outputGrapherClosingFormulation')?.textContent || ''),
+      formalContainsClosureWitness: /Closure\/Reconstruction Witness/i.test(svg.querySelector('.outputGrapherFormalSection')?.textContent || ''),
       publicInsiderLeaks: [
         'Source structure detected in the output',
         'Layer A — Compact DSL/IR Header',
@@ -144,7 +150,7 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         '```',
         '**',
         '*'
-      ].filter(token => svg.textContent.includes(token) || svg.outerHTML.includes(token)),
+      ].filter(token => publicFlowText.includes(token) || publicFlowHtml.includes(token)),
       restorationContainsTechnicalProofStrip: restorationText.includes('Technical proof strip'),
       restorationContainsTechnicalAppendix: /Technical proof|Formal Reconstruction|Formal Case Fill|Technical appendix/i.test(restorationText),
       duplicateLandTechnicalLines: [...svg.querySelectorAll('.outputGrapherStoryPanel')].filter(g => /Technical:\\s*Land\\(/.test(g.textContent)).length,
@@ -210,21 +216,22 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
     if metrics.get("routeRowCount", 0) < 1:
         errors.append("rendered story view did not render compact route rows")
     order = metrics.get("finalSectionOrder") or {}
-    ordered_keys = ["restorationSummary", "restorativeResponse", "closingFormulation", "legend"]
+    ordered_keys = ["restorationSummary", "restorativeResponse", "closingFormulation", "formalCaseFill", "legend"]
     if all(isinstance(order.get(key), dict) for key in ordered_keys):
         tops = {key: float(order[key].get("top") or 0) for key in ordered_keys}
         if not (
             tops["restorationSummary"]
             < tops["restorativeResponse"]
             < tops["closingFormulation"]
+            < tops["formalCaseFill"]
             < tops["legend"]
         ):
             errors.append(
                 "rendered final section order is wrong: expected Restoration Summary -> "
-                "Restorative Response -> Closing Formulation -> Legend"
+                "Restorative Response -> Closing Formulation -> Closure/Formal Witness -> Legend"
             )
-    if isinstance(order.get("formalCaseFill"), dict):
-        errors.append("default Restorative Noetic Map should not render Formal Case Fill in the public flow")
+    if not isinstance(order.get("formalCaseFill"), dict):
+        errors.append("default Restorative Noetic Map must render the Formal Case Fill / field_witness appendix near the bottom")
     coverage = metrics.get("exportCoverage") or {}
     if not coverage.get("hasRestorationSummary"):
         errors.append("export coverage report is missing the Restoration Summary")
@@ -242,6 +249,8 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         errors.append("section export must be a PNG ZIP, not loose PNG downloads")
     if not coverage.get("hasSectionManifest"):
         errors.append("section export coverage must report a manifest.json")
+    if not coverage.get("sectionedCanvasSafe", False):
+        errors.append("sectioned export coverage must report a canvas-safe PNG path")
     expected_section_count = int(coverage.get("burdenCardCount") or 0) + 3
     if coverage.get("sectionedExportCount", 0) < expected_section_count:
         errors.append("section export coverage is missing intro, per-burden, restoration, or formal sections")
@@ -292,7 +301,11 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
     if bottom_padding is not None and bottom_padding > GLOBAL_BOTTOM_PADDING_MAX:
         errors.append(f"rendered SVG has excessive post-legend bottom padding ({bottom_padding}px)")
     post_terminal_padding = coverage.get("postTerminalCardBottomPadding")
-    if post_terminal_padding is not None and post_terminal_padding > POST_TERMINAL_BOTTOM_PADDING_MAX:
+    if (
+        post_terminal_padding is not None
+        and post_terminal_padding > POST_TERMINAL_BOTTOM_PADDING_MAX
+        and not coverage.get("hasFormalCaseFill")
+    ):
         errors.append(f"rendered SVG has excessive post-terminal-card bottom padding ({post_terminal_padding}px)")
     exported_bottom_padding = coverage.get("exportedBottomPadding")
     if exported_bottom_padding is not None and exported_bottom_padding < EXPORTED_BOTTOM_PADDING_MIN:
@@ -305,8 +318,12 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
         errors.append("rendered story view did not include the body-prose Restorative Response card")
     if metrics.get("closingFormulationCount", 0) < 1:
         errors.append("rendered story view did not include the body-prose Closing Formulation card")
-    if metrics.get("formalCaseFillCount", 0) != 0:
-        errors.append("default story view should keep Formal Case Fill out of the public map")
+    if metrics.get("closingContainsClosureWitness"):
+        errors.append("Closing Formulation card swallowed Closure/Reconstruction Witness text")
+    if not metrics.get("formalContainsClosureWitness"):
+        errors.append("formal section did not preserve the readable Closure/Reconstruction Witness")
+    if metrics.get("formalCaseFillCount", 0) < 1:
+        errors.append("default story view did not include the Formal Case Fill / field_witness appendix")
     if not coverage.get("canvasSafe", False) and "function exportPngSections" not in JS.read_text(encoding="utf-8"):
         errors.append("one-shot PNG exceeds safe canvas limits and no sectioned export fallback exists")
     for row in metrics.get("routeRows", []):

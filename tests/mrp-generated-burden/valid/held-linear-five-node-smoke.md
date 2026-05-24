@@ -151,3 +151,97 @@ MRP resultants:
 ∇×κ: null / directed acyclic route
 𝒞(Ψᴺ): coverage_complete=true; STOP
 T_lang: Ψᴺ ⇢ Ψᴵ: partial coupling attempt / language-mediated boundary; no guaranteed uptake
+
+## field_witness
+```json
+{
+  "formal_reread_states": [
+    {
+      "source_burden": "B1",
+      "prior_land": "Land(B1)",
+      "delta": "Δ¹B / ¹B landed while held ²B remains live.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to held ²B because Δ¹B landed while ²B was already in the initial burden inventory.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> activate held ²B from the initial inventory.",
+      "graph_delta": "¹B → ²B",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B2",
+      "owner_route": [
+        "held-route-B2"
+      ]
+    },
+    {
+      "source_burden": "B2",
+      "prior_land": "Land(B2)",
+      "delta": "Δ²B / ²B landed while held ³B remains live.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to held ³B because Δ²B landed while ³B was already in the initial burden inventory.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> activate held ³B from the initial inventory.",
+      "graph_delta": "²B → ³B",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B3",
+      "owner_route": [
+        "held-route-B3"
+      ]
+    },
+    {
+      "source_burden": "B3",
+      "prior_land": "Land(B3)",
+      "delta": "Δ³B / ³B landed while held ⁴B remains live.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to held ⁴B because Δ³B landed while ⁴B was already in the initial burden inventory.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> activate held ⁴B from the initial inventory.",
+      "graph_delta": "³B → ⁴B",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B4",
+      "owner_route": [
+        "held-route-B4"
+      ]
+    },
+    {
+      "source_burden": "B4",
+      "prior_land": "Land(B4)",
+      "delta": "Δ⁴B / ⁴B landed while held ⁵B remains live.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to held ⁵B because Δ⁴B landed while ⁵B was already in the initial burden inventory.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> activate held ⁵B from the initial inventory.",
+      "graph_delta": "⁴B → ⁵B",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B5",
+      "owner_route": [
+        "held-route-B5"
+      ]
+    },
+    {
+      "source_burden": "B5",
+      "prior_land": "Land(B5)",
+      "delta": "Δ⁵B / all held burdens landed.",
+      "reread": "R(H,Δ)",
+      "route_gradient": "∇ points to STOP because no held or generated burden remains in licensed scope.",
+      "divergence_state": "neutral",
+      "curl_state": "null",
+      "route_result_type": "no_new_resultant",
+      "mrp_resultant": "stable -> no new resultant remains; route STOP.",
+      "graph_delta": "none",
+      "preemption_basis": "none",
+      "route": "STOP"
+    }
+  ]
+}
+```

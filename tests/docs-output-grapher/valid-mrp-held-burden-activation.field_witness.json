@@ -1,0 +1,32 @@
+{
+  "nodes": ["B1", "B2"],
+  "edges": [
+    {"from": "B1", "to": "B2"}
+  ],
+  "ledger": {
+    "B_LA": ["B1", "B2"],
+    "B_MRP": [],
+    "B_total": ["B1", "B2"]
+  },
+  "mrp_resultants": [
+    {"source": "B1", "type": "held_burden_activation", "graph": {"from": "B1", "to": "B2"}, "route": "RECURSE"}
+  ],
+  "terminal_states": {
+    "B1": "landed",
+    "B2": "landed"
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1", "B2"],
+    "terminal_states": {
+      "B1": {"state": "landed"},
+      "B2": {"state": "landed"}
+    },
+    "dependency_graph": {
+      "nodes": ["B1", "B2"],
+      "edges": [{"from": "B1", "to": "B2"}],
+      "roots": ["B1"],
+      "acyclic": true
+    },
+    "coverage_complete": true
+  }
+}

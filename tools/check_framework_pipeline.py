@@ -34,6 +34,7 @@ from build_framework_pipeline import (
     source_path,
     validate_pipeline_data,
 )
+from compiled_runtime_lib import normalize_runtime_surface_text, parse_compiled_sections
 
 
 ROOT = Path.cwd()
@@ -986,33 +987,29 @@ def check_compiled_runtime_pipeline_surface(framework_text: str, errors: list[st
     if not COMPILED_DISPATCH_GATE_PATH.is_file():
         errors.append(f"compiled runtime dispatch gate missing: {rel(COMPILED_DISPATCH_GATE_PATH)}")
         return
-    runtime_text = read_text(COMPILED_DISPATCH_GATE_PATH, errors)
-    pattern = re.compile(
-        r"<!-- SOURCE:\s*atomics/skill/references/diagnostics/framework-pipeline\.md\s*-->\s*\n"
-        r"<!-- MODULE_ID:\s*framework-pipeline\s*-->\s*\n"
-        r"<!-- MODULE_CLASS:\s*governance\s*-->\s*\n"
-        r"<!-- CANONICAL_PATH:\s*skill/references/diagnostics/framework-pipeline\.md\s*-->\s*\n"
-        r"<!-- SOURCE_SHA256:\s*(?P<sha>[0-9a-fA-F]+)\s*-->\s*\n\n"
-        r"(?P<body>.*?)\n\n<!-- END_SOURCE:\s*framework-pipeline\s*-->",
-        flags=re.DOTALL,
-    )
-    match = pattern.search(runtime_text)
-    if not match:
+    sections = {
+        section.get("MODULE_ID"): section
+        for section in parse_compiled_sections(COMPILED_DISPATCH_GATE_PATH)
+    }
+    section = sections.get("framework-pipeline")
+    if not section:
         errors.append(f"{rel(COMPILED_DISPATCH_GATE_PATH)}: missing compiled framework-pipeline section")
         return
     current_sha = sha256_file(FRAMEWORK_PATH)
-    if match.group("sha").lower() != current_sha:
+    if section.get("SOURCE_SHA256", "").lower() != current_sha:
         errors.append(
             f"{rel(COMPILED_DISPATCH_GATE_PATH)}: compiled framework-pipeline source hash is stale; "
             "run python tools/build_compiled_runtime.py"
         )
-    if match.group("body").rstrip() != framework_text.rstrip():
+    body = section.get("GENERATED_BODY", "")
+    normalized_framework_text = normalize_runtime_surface_text(framework_text.rstrip())
+    if body.rstrip() != normalized_framework_text:
         errors.append(
             f"{rel(COMPILED_DISPATCH_GATE_PATH)}: compiled framework-pipeline body is stale; "
             "run python tools/build_compiled_runtime.py"
         )
-    expected_region = generated_region(framework_text)
-    if expected_region and expected_region not in match.group("body"):
+    expected_region = normalize_runtime_surface_text(generated_region(framework_text))
+    if expected_region and expected_region not in body:
         errors.append(f"{rel(COMPILED_DISPATCH_GATE_PATH)}: compiled runtime lacks generated pipeline block")
 
 

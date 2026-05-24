@@ -18,8 +18,10 @@ from pathlib import Path
 
 from check_mid_reread_pressure import (
     MrpBlock,
+    closure_over_held_route_errors,
     curl_diagnostic_errors,
     first_state,
+    high_leverage_false_closure_errors,
     parse_mrps,
     stop_before_continuation_errors,
 )
@@ -110,14 +112,16 @@ def route_backed_edges(blocks: list[MrpBlock]) -> set[tuple[str, str]]:
     edges: set[tuple[str, str]] = set()
     for block in blocks:
         source = block_target(block)
-        if not source:
-            continue
         if block.finding not in {"genuine-dependent", "partial-real"}:
             continue
         if block.route not in {"RECURSE", "HOLD"}:
             continue
         for edge in edge_set(block.graph_delta) | edge_set(block.mrp_resultant):
-            if edge[0] == source:
+            # Runtime MRP blocks use Target for the pressure being reread,
+            # not necessarily for the burden token. The graph edge itself is
+            # the route-bearing source/target witness; when a token is present
+            # in Target, keep the stricter source check.
+            if not source or edge[0] == source:
                 edges.add(edge)
     return edges
 
@@ -183,12 +187,14 @@ def graph_delta_route_errors(path: Path, block: MrpBlock, label: str) -> list[st
 def check_text(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     errors.extend(stop_before_continuation_errors(path, text))
+    errors.extend(closure_over_held_route_errors(path, text))
     errors.extend(mixed_field_errors(path, text))
 
     blocks = parse_mrps(text)
     for index, block in enumerate(blocks, start=1):
         label = f"{path}: MRP block {index}"
         errors.extend(curl_diagnostic_errors(path, block, label))
+        errors.extend(high_leverage_false_closure_errors(path, block, label))
         errors.extend(downstream_divergence_errors(path, block, label))
         errors.extend(graph_delta_route_errors(path, block, label))
     errors.extend(graph_edge_errors(path, text, blocks))

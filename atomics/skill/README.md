@@ -20,7 +20,7 @@ When a host's final chat channel compresses hard outputs, use file-retained
 execution where supported by the host or agent:
 
 ```text
-/daee-epistemics < C:\path\input.md > C:\path\output.md
+/daee-epistemics < input.md > output.md
 ```
 
 The `< input.md` / `> output.md` convention is skill-level file-retained

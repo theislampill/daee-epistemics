@@ -1,0 +1,79 @@
+{
+  "id": "register-burden-floor-mu-carrier-specificity",
+  "kind": "positive",
+  "matrix_cases": ["register_burden_floor"],
+  "input": "A default worldview claim packages authority, ontology, and implication pressure into one carrier.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "Omega", "xi", "mu", "kappa", "register_burden_floor"],
+  "bridge_terms": {
+    "D0": "The surface claim behaves as a carrier rather than a single premise.",
+    "PsiN": "The encoded state preserves the packaged pressure set.",
+    "selected_N": "The selected frame supplies content, not a case template.",
+    "expanded_IR": "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa) derives the burden floor from live_registers(IR(...)).",
+    "mu": "The mu register is operative because it requires carrier decomposition before release.",
+    "Omega": "The carrier includes ontological/predication pressure.",
+    "xi": "The carrier includes warrant/authority pressure.",
+    "kappa": "The carrier includes dependency/collapse pressure.",
+    "register_burden_floor": "The burden floor contains a mu-typed burden whose operation exposes the carried registers."
+  },
+  "control_effects": {
+    "owner_choice": ["foreign-premise-detection", "M7-definition-anchor", "M8-reductio"],
+    "hold_release": "Hold direct evidence release until the carrier is decomposed.",
+    "burden_selection": "Select a mu-typed carrier burden from live register state.",
+    "reread": "After Land(B1), reread each exposed carried pressure separately."
+  },
+  "register_to_burden_obligation": {
+    "derivation": "burden_floor = {B_r : r in live_registers(IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa))}; N supplies label content.",
+    "live_registers": ["mu", "Omega", "xi", "kappa"],
+    "burden_floor": [
+      {
+        "id": "B1",
+        "register_types": ["mu"],
+        "label": "default-worldview carrier",
+        "register_operation": "decompose the carrier by unpacking its packaging structure before evidence release",
+        "carried_registers": ["Omega", "xi", "kappa"],
+        "carried_pressures": ["ontological predicate claim", "warrant authority tribunal", "dependency implication chain"],
+        "local_delta": "Delta(B1): carrier package exposed and separated into carried pressures",
+        "land_contribution": "Contribution-to-Land(B1): lands the decomposition so Omega, xi, and kappa routes can be worked individually"
+      },
+      {
+        "id": "B2",
+        "register_types": ["Omega"],
+        "label": "ontological predicate claim",
+        "register_operation": "repair predication after carrier decomposition"
+      },
+      {
+        "id": "B3",
+        "register_types": ["xi"],
+        "label": "warrant authority tribunal",
+        "register_operation": "sort authority after carrier decomposition"
+      },
+      {
+        "id": "B4",
+        "register_types": ["kappa"],
+        "label": "dependency implication chain",
+        "register_operation": "trace dependency after carrier decomposition"
+      }
+    ]
+  },
+  "ir_projection": {
+    "claim_level": "meta-noetic",
+    "routing_gate": "mu-carrier-decomposition",
+    "load_bearing_node": "mu carrier decomposition controls burden selection and release order",
+    "matched_modules": ["foreign-premise-detection", "M7-definition-anchor", "M8-reductio"],
+    "output_shape": "audit-trace",
+    "what_is_withheld_and_why": "Direct response is held until the carrier stops compressing the carried registers.",
+    "post_render_gate": {
+      "cleared_this_pass": "carrier packaging exposed",
+      "remaining_live_distortions": "carried registers may still need separate work",
+      "held_routes_rechecked": ["Omega", "xi", "kappa"],
+      "newly_released_routes": ["Omega", "xi", "kappa"],
+      "next_eligible_pass": "work exposed carried-register burdens",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/diagnostics/foreign-premise-detection.md",
+    "atomics/skill/references/tactics/M8-reductio.md"
+  ]
+}

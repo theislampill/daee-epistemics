@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 from zipfile import BadZipFile, ZipFile
 
+from check_compiled_skill_self_contained import check_package as check_self_contained_package
 from package_shape import (
     CANONICAL_REQUIRED_ROOT_ENTRIES,
     DEV_ONLY_ROOT_ENTRIES,
@@ -156,6 +157,8 @@ def validate_package(path: Path, expect_version: str | None = None) -> tuple[lis
     except BadZipFile:
         errors.append(f"package is not a readable zip payload: {path}")
         names = []
+
+    errors.extend(check_self_contained_package(path))
 
     summary = {
         "package": str(path),

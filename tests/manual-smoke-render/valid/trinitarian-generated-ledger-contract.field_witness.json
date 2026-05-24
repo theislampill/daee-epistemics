@@ -1,0 +1,63 @@
+{
+  "nodes": ["B1", "B2", "B3", "B4", "B5"],
+  "edges": [
+    {"from": "B1", "to": "B2"},
+    {"from": "B2", "to": "B3"},
+    {"from": "B3", "to": "B4"},
+    {"from": "B4", "to": "B5"}
+  ],
+  "ledger": {
+    "B_LA": ["B1", "B2", "B3", "B4"],
+    "B_MRP": ["B5"],
+    "B_total": ["B1", "B2", "B3", "B4", "B5"]
+  },
+  "generated_burdens": {
+    "B5": {"generated_by": "MRP(B4)"}
+  },
+  "mrp_resultants": [
+    {"source": "B1", "type": "held_burden_activation", "graph": {"from": "B1", "to": "B2"}, "route": "RECURSE"},
+    {"source": "B4", "type": "generated_burden_instantiation", "graph": {"from": "B4", "to": "B5"}, "route": "RECURSE"},
+    {"source": "B5", "type": "no_new_resultant", "graph": null, "route": "STOP"}
+  ],
+  "route_gradient": {
+    "selected": "B5",
+    "reason": "post-land immunity pressure was absent from B_LA"
+  },
+  "reread_records": [
+    {"burden": "B1", "reread": "R(H,Delta)", "route": "RECURSE"},
+    {"burden": "B4", "reread": "R(H,Delta)", "route": "RECURSE"},
+    {"burden": "B5", "reread": "R(H,Delta)", "route": "STOP"}
+  ],
+  "field_diagnostics": {
+    "del_dot": {"target": "B", "status": "neutral"},
+    "del_cross": {"target": "kappa", "status": "null"}
+  },
+  "closure": {"status": "COMPLETE"},
+  "transfer_boundary": {"operator": "T_lang", "mode": "coupling-attempt"},
+  "non_claims": ["no guaranteed uptake", "no hidden soul-state claim"],
+  "coverage_proof": {
+    "initial_burden_set": ["B1", "B2", "B3", "B4"],
+    "terminal_states": {
+      "B1": {"state": "landed", "operator": "FPD"},
+      "B2": {"state": "landed", "operator": "held"},
+      "B3": {"state": "landed", "operator": "held"},
+      "B4": {"state": "landed", "operator": "M9"},
+      "B5": {"state": "landed", "operator": "FPD+M8"}
+    },
+    "dependency_graph": {
+      "nodes": ["B1", "B2", "B3", "B4", "B5"],
+      "edges": [
+        {"from": "B1", "to": "B2"},
+        {"from": "B2", "to": "B3"},
+        {"from": "B3", "to": "B4"},
+        {"from": "B4", "to": "B5"}
+      ],
+      "roots": ["B1"],
+      "parallel_groups": [],
+      "acyclic": true
+    },
+    "divergence_check": "neutral",
+    "curl_check": "null",
+    "coverage_complete": true
+  }
+}

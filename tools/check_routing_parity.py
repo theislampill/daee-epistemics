@@ -521,8 +521,11 @@ def check_module_mapping(
         errors.append(f"{context}: {module_id} section missing identity markers: {', '.join(missing)}")
     if section.get("MODULE_ID") != module_id:
         errors.append(f"{context}: {module_id} section MODULE_ID mismatch: {section.get('MODULE_ID')}")
-    if section.get("SOURCE") != entry.get("source"):
-        errors.append(f"{context}: {module_id} section/source map mismatch")
+    if section.get("SOURCE"):
+        if section.get("SOURCE") != entry.get("source"):
+            errors.append(f"{context}: {module_id} section/source map mismatch")
+    elif section.get("SOURCE_SHA256") != entry.get("source_sha256"):
+        errors.append(f"{context}: {module_id} section/source hash mismatch")
     if section.get("CANONICAL_PATH") != entry.get("canonical_path"):
         errors.append(f"{context}: {module_id} section canonical path mismatch")
     return bundle_rel

@@ -1,0 +1,56 @@
+{
+  "id": "register-burden-floor-hardcoded-template-canary",
+  "kind": "negative",
+  "matrix_cases": ["register_burden_floor"],
+  "input": "A John 17:3 burden floor is supplied as a named B1-B5 template without deriving it from live registers.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "mu", "register_burden_floor"],
+  "bridge_terms": {
+    "D0": "The surface discourse names a familiar case pattern.",
+    "PsiN": "The encoded state must still derive floor structure from live registers.",
+    "selected_N": "The N-frame may supply content labels, but it cannot replace register-derived floor structure.",
+    "expanded_IR": "IR live-register state is required before owner-plan emission.",
+    "mu": "A case template can behave like a memetic carrier if it compresses multiple pressures into a fixed label list.",
+    "register_burden_floor": "A hardcoded B1-B5 list without live_registers(IR(...)) derivation is not acceptable."
+  },
+  "control_effects": {
+    "owner_choice": ["do-christian-extensions", "diagnostic-render-contract"],
+    "hold_release": "Hold the case-template floor until register derivation is named.",
+    "burden_selection": "Reject case-label floor selection as a substitute for live-register coverage.",
+    "reread": "Reread the expanded IR and derive register obligations before owner-plan emission."
+  },
+  "invalid_register_to_burden_obligation": {
+    "derivation": "hardcoded case template: John 17:3 B1-B5 exact labels",
+    "burden_floor": [
+      {"id": "B1", "label": "trinitarian-person-nature-model-transfer"},
+      {"id": "B2", "label": "only-placement-analogy"},
+      {"id": "B3", "label": "john-1-1-and-1-john-5-20-proof-stack"},
+      {"id": "B4", "label": "eternal-life-knowing-jesus-entailment"},
+      {"id": "B5", "label": "sacred-doctrine-bounded-reply-immunity"}
+    ]
+  },
+  "forbidden_claims": [
+    "a hardcoded John 17:3 B1-B5 template proves general burden-floor derivation"
+  ],
+  "expected_blocker": "DERIVATION_FAILURE: burden floor must be derived from live_registers(IR(...)) rather than a hardcoded case template",
+  "ir_projection": {
+    "claim_level": "template-risk",
+    "routing_gate": "register-derived-burden-floor-canary",
+    "load_bearing_node": "Case labels are present but the live register derivation is absent.",
+    "matched_modules": ["do-christian-extensions", "diagnostic-render-contract"],
+    "output_shape": "checker-canary",
+    "what_is_withheld_and_why": "The owner plan is held because the floor source is a case template rather than live register state.",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "floor derivation is absent",
+      "held_routes_rechecked": ["do-christian-extensions"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "derive floor obligations from live registers",
+      "recursion_decision": "HOLD"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/rubrics/diagnostic-render-contract.md",
+    "atomics/skill/references/case-library/do-christian-extensions.md"
+  ]
+}

@@ -126,6 +126,15 @@ Land(¹B) -> R(H,Δ) -> ²B₁
 Gloss: `ⁿBᵢ` names the i-th operative submove inside the n-th burden-cycle. A burden may
 contain multiple operative submoves before it lands; a submove is not automatically a new
 burden-cycle. A new burden begins only when `Land(B)` and `R(H,Δ)` license it.
+`Land(B)` is a state transition, not a formatting reward. For both initial `𝔅_LA` burdens and
+generated `𝔅_MRP` burdens, the submoves must have enough owner/TTP mass to change the live field:
+they identify the exact claim, pressure, route, predicate, source-status, consequence, or
+affective/noetic move being worked; apply the owner operation; record the state delta; and show why
+that delta discharges the burden. A burden with only labeled Target/Operation/Result/
+Contribution fields remains unlanded when those fields are conclusion-shaped. Bounded, local, or
+short surface form is not a low-mass license; low-mass concise treatment requires diagnostic proof
+that hidden premise, dependency, source/worldview, predication/category, proof-stack, recoil, and
+closure-risk pressures are absent.
 
 Collapse:
 
@@ -195,6 +204,13 @@ downstream dependencies remain. Concrete dependencies are case-shaped: source-au
 may expose transmission/testimony routes; moral protest may expose predicate/tribunal routes;
 named worldview may expose source/worldview-frame routes; doubt cases may expose register/P7
 routes. These are control checks, not topical argument-bank entries.
+When a compact MRP block is rendered for that transition, it is a parseable transition record:
+literal `[Mid-Reread Pressure]`, `Target: Bn` / `Target: ⁿB`, route-bearing `R(H,Δ): held routes
+rechecked: ...; live remainder: ...; release/next: ...`, then the fixed field lines. `Route:` is
+only `STOP`, `HOLD`, `RECURSE`, or `LoopBreak(∇×T)`; destinations and explanations belong in
+`R(H,Δ)`, `MRP resultant`, and `Graph delta`. If STOP follows any named held route, each named
+route must be worked, generated, HOLD/PARTIAL-routed, or explicitly classified as
+non-load-bearing with reason before COMPLETE may be claimed.
 
 Plain `∇` is the route-gradient read over the live field before burden release. Formally, it is a
 route-ranking/preorder pressure read over eligible routes, not a literal vector gradient. It identifies the
@@ -476,6 +492,15 @@ and coercive-guidance narrowing for do-second-loop, sound-reason/proof-status re
 V2, source/noetic-frame consequence for M8, restoration bounded to landed burdens for P1,
 testimony/tawatur/authentication pressure for transmission owners, predicate/category
 pressure for predication owners, and register-hold/pastoral sequencing for grief owners.
+Hard/manual graphable output must make the owner mechanism visible enough to reconstruct:
+source-status/authority-order sorts citations, source-prestige, hidden support, and source
+function; do-christian-extensions identifies the Christian pressure family and model/fan-out route
+before content release, and for DO-12 Trinitarian model pressure its ACT / field_witness operation
+is `model-identification`, never bare `route`; doubt-vs-skepticism distinguishes normal doubt from skeptical methodology,
+the evidence-demand or modal-veto tribunal, and the burden inversion/LoopBreak consequence; P7
+names STOP/HOLD/PARTIAL, held-route boundary, and reopen condition. Unknown but source-owned
+catalogue owners remain eligible, but their operation body still needs a local mechanism, action,
+state change, and contribution to Land.
 If those pressures do not change claim-state before `Land(B)`, the burden has not landed.
 If a source-request burden has several source functions, each function must remain attached
 to the submove it governs. A global source list or one generic revealed text does not preserve
@@ -702,6 +727,15 @@ An MRP-generated burden is a narrower category than ordinary `NewB`. It is licen
 8. the output instantiates `ⁿ⁺¹B [generated-by: MRP(ⁿB)]` as a normal burden node with Layer A
    accounting, Layer B governed operation body, owner-bearing submoves, and `Land(ⁿ⁺¹B)` or
    `HOLD(ⁿ⁺¹B)` before closure is licensed.
+9. if the generated node is high-mass, its owner-bearing submoves are operation-shaped rather than
+   conclusion-shaped: they identify the exact claim, pressure, route, predicate, source-status,
+   consequence, or affective/noetic move being worked; explain why it is live after the prior
+   landing; apply the named owner/TTP; produce a concrete state delta; and connect that delta to
+   `Land(ⁿ⁺¹B)`. FPD exposes an imported premise or criterion, M8 traces consequences, M9 repairs
+   predication/category structure, source-status or authority-order repair sorts authority and
+   hidden support, P7 bounds stop/reopen conditions, and LoopBreak exits circularity. A generated
+   node does not land merely because it has two submove labels or because its body states the
+   intended conclusion.
 
 If the proposed node was already present in the initial inventory, the route result type is
 `held_burden_activation`, not `generated_burden_instantiation`. If no additional resultant exists,
@@ -724,9 +758,10 @@ paragraphs, and recaps of already-landed material belong in the current Layer B,
 Restorative/Application Response, or Closing Formulation unless the state re-read proves a
 distinct unresolved noetic function. Across case families, test the proposed new burden by
 function, not by topic: naturalist evidence criteria, testimony/tawatur pressure,
-predication/category pressure, Trinity/incarnation pressure, kalam/falsafah proof-method
-pressure, grief/register HOLD, authority fatigue, source-worldview transfer, moral protest,
-hiddenness, and worship-worthiness may each become a burden only when they remain
+predication/category pressure, divine-plurality/person-nature or tradition-specific coherence
+pressure, kalam/falsafah proof-method pressure, grief/register HOLD, authority fatigue,
+source-worldview transfer, moral protest, hiddenness, and worship-worthiness may each become a
+burden only when they remain
 input-anchored and unresolved after `Land(B) -> R(H,Delta)`. Source-worldview is allowed as a
 separate burden when the worldview/source-frame itself is criterion-bearing or explicitly
 requested for dismantling; practical response guidance is not automatically a burden.

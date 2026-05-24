@@ -717,11 +717,11 @@ routes.
 
 ## Compiled Runtime Note
 
-In the compiled runtime, atomized paths named in this pipeline are source identities. They do
-not require the standalone atomized file to exist under the generated runtime root. Resolve the
-original module ID or source path through `compiled-module-map.json`, load the containing runtime
-bundle or omnibus file, and use only the section with the matching `MODULE_ID`. Matched modules
-remain original module IDs; omnibus filenames are containers, not active dispatch.
+In the compiled runtime, module paths named in this pipeline are identities, not required
+standalone files. Resolve the original module ID or canonical module path through
+`compiled-module-map.json`, load the containing runtime bundle or omnibus file, and use only the
+section with the matching `MODULE_ID`. Matched modules remain original module IDs; omnibus
+filenames are containers, not active dispatch.
 
 ## Formalization Pointer
 

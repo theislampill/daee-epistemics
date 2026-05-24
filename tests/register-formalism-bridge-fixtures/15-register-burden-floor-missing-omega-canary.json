@@ -1,0 +1,57 @@
+{
+  "id": "register-burden-floor-missing-omega-canary",
+  "kind": "negative",
+  "matrix_cases": ["register_burden_floor"],
+  "input": "A live predication pressure is treated as if a warrant-only burden exhausts the floor.",
+  "covers": ["D0", "PsiN", "expanded_IR", "Omega", "xi", "register_burden_floor"],
+  "bridge_terms": {
+    "D0": "The surface discourse contains a live predication burden.",
+    "PsiN": "The encoded state keeps the predication register live even when a warrant burden is also present.",
+    "expanded_IR": "IR live-register state is the ground truth for floor completeness.",
+    "Omega": "A live ontological/predication register cannot be discharged by a warrant-only burden.",
+    "xi": "The warrant burden may be valid, but it does not cover Omega.",
+    "register_burden_floor": "Coverage is required per live register; missing Omega is a completeness failure."
+  },
+  "control_effects": {
+    "owner_choice": ["M9-predication-mode", "proof-method-audit"],
+    "burden_selection": "Reject a floor that omits the live Omega burden.",
+    "reread": "Keep the predication pressure unresolved until an Omega-typed burden exists."
+  },
+  "invalid_register_to_burden_obligation": {
+    "derivation": "burden_floor = {B_r : r in live_registers(IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa))}; the N-frame supplies label content.",
+    "live_registers": ["Omega", "xi"],
+    "burden_floor": [
+      {
+        "id": "B1",
+        "register_types": ["xi"],
+        "label": "scientific-authority-tribunal",
+        "register_operation": "sort warrant authority"
+      }
+    ]
+  },
+  "forbidden_claims": [
+    "a warrant-only burden floor completes a live ontological/predication register"
+  ],
+  "expected_blocker": "COMPLETENESS_FAILURE: live register Omega requires an ontological/predication burden in burden_floor",
+  "ir_projection": {
+    "claim_level": "meta-ontological",
+    "routing_gate": "register-derived-burden-floor-canary",
+    "load_bearing_node": "Omega remains live and unaccounted for.",
+    "matched_modules": ["M9-predication-mode", "proof-method-audit"],
+    "output_shape": "checker-canary",
+    "what_is_withheld_and_why": "Closure is withheld because the Omega register has no typed burden.",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "Omega predication pressure remains unrepresented",
+      "held_routes_rechecked": ["M9-predication-mode"],
+      "newly_released_routes": [],
+      "next_eligible_pass": "add an Omega-typed floor burden",
+      "recursion_decision": "HOLD"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/tactics/M9-predication-mode.md",
+    "atomics/skill/references/diagnostics/proof-method-audit.md"
+  ]
+}

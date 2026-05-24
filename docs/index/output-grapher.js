@@ -102,7 +102,14 @@
   function sourceHeadingKind(line){
     const raw=String(line||'');
     const heading=normalizeSourceHeadingLine(line);
-    const headingLike=/^\s*(?:#{1,6}\s+|\*{1,2}|\[[^\]]+\]\s*$)/.test(raw) || /NOETIC FIELD EXECUTION/i.test(raw);
+    const closureWitnessHeading=/^(?:Closure\s*\/\s*Reconstruction Witness|Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b/i.test(heading);
+    const restorativeHeading=/^(?:Final\s+)?Restorative Response\b/i.test(heading);
+    const closingHeading=/^(?:Final\s+)?Closing Formulation\b/i.test(heading);
+    const headingLike=/^\s*(?:#{1,6}\s+|\*{1,2}|\[[^\]]+\]\s*$)/.test(raw)
+      || /NOETIC FIELD EXECUTION/i.test(raw)
+      || closureWitnessHeading
+      || restorativeHeading
+      || closingHeading;
     let match;
     if(/NOETIC FIELD EXECUTION/i.test(heading)) return {type:'banner',heading};
     if(headingLike&&/^Layer A\b/i.test(heading)&&/Compact\b/i.test(heading)&&/(DSL\/IR|Diagnostic Surface|Header)/i.test(heading)) return {type:'compact_layer_a',heading};
@@ -113,9 +120,9 @@
     if(headingLike&&(match=heading.match(/^(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i))) return {type:'land',heading,burden:burden(supNum(match[2]))};
     if(headingLike&&(match=heading.match(/^(Land|HOLD)\(B(\d+)\)/i))) return {type:'land',heading,burden:burden(match[2])};
     if(headingLike&&/^\[?\s*Mid-Reread Pressure\s*\]?$/i.test(heading)) return {type:'mid_reread_pressure',heading};
-    if(headingLike&&/^(?:Closure\s*\/\s*Reconstruction Witness|Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b/i.test(heading)) return {type:'closure_witness',heading};
-    if(headingLike&&/^(?:Final\s+)?Restorative Response\b/i.test(heading)) return {type:'restorative_response',heading};
-    if(headingLike&&/^(?:Final\s+)?Closing Formulation\b/i.test(heading)) return {type:'closing_formulation',heading};
+    if(closureWitnessHeading) return {type:'closure_witness',heading};
+    if(restorativeHeading) return {type:'restorative_response',heading};
+    if(closingHeading) return {type:'closing_formulation',heading};
     return null;
   }
   function sourceRenderSection(type,burdenId=''){
@@ -250,13 +257,15 @@
     const closureMatch=text.match(/\n\s*(?:#+\s*)?(?:Closure\s*\/\s*Reconstruction Witness|Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness|Closure audit|field_witness)\b/i);
     const closureStart=closureMatch?closureMatch.index+1:text.length;
     const bodyProse=text.slice(0,closureStart);
-    const closureWitness=text.slice(closureStart);
     const fieldWitnessMatch=text.match(/\n\s*(?:#+\s*)?field_witness\b/i);
+    const closureWitness=(fieldWitnessMatch&&fieldWitnessMatch.index+1>closureStart)
+      ? text.slice(closureStart,fieldWitnessMatch.index+1)
+      : text.slice(closureStart);
     const visibleOutputProse=fieldWitnessMatch?text.slice(0,fieldWitnessMatch.index+1):text;
     const restorativeSection=sourceSections.find(section=>section.type==='restorative_response');
     const closingSection=sourceSections.find(section=>section.type==='closing_formulation');
-    const restorativeResponse=restorativeSection?stripSourceHeading(restorativeSection.text):extractBodySection(visibleOutputProse,'Restorative Response',['Closing Formulation','field_witness']);
-    const closingFormulation=closingSection?stripSourceHeading(closingSection.text):extractBodySection(visibleOutputProse,'Closing Formulation',['field_witness']);
+    const restorativeResponse=restorativeSection?stripSourceHeading(restorativeSection.text):extractBodySection(visibleOutputProse,'Restorative Response',['Closing Formulation','Closure/Reconstruction Witness','Closure Witness','Reconstruction Witness','field_witness']);
+    const closingFormulation=closingSection?stripSourceHeading(closingSection.text):extractBodySection(visibleOutputProse,'Closing Formulation',['Closure/Reconstruction Witness','Closure Witness','Reconstruction Witness','field_witness']);
     return {
       bodyProse,
       closureWitness,
@@ -274,20 +283,38 @@
 
   function lineBurdens(line,model,lineNo){
     const found=[];
-    for(const m of line.matchAll(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B(?![₀₁₂₃₄₅₆₇₈₉])/g)){ if(!found.includes(m[0])) found.push(m[0]); }
+    const canonicalIndices=new Set();
+    for(const m of line.matchAll(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B(?![₀₁₂₃₄₅₆₇₈₉])/g)){
+      if(!found.includes(m[0])) found.push(m[0]);
+      canonicalIndices.add(String(Number(supNum(m[1]))));
+    }
+    const formalPairedContext=/^\s*(?:Landed delta|Route-gradient|R\(H,Δ\)|R\(H,Delta\)|Target|Field diagnostics|MRP resultant|LoopBreak)\s*:/i.test(line)
+      || /\b(?:Delta\(B\d+\)|B_LA|B_MRP|B_total|field_witness)\b/i.test(line);
+    const machinePayloadLine=/^\s*["{[\]},]/.test(line)
+      && /"(?:B_LA|B_MRP|B_total|id|source|target|from|to|nodes|edges|terminal_states|owner_activations|coverage_proof|graph|body_ref|loopbreak_target)"\s*:/.test(line);
     for(const m of line.matchAll(/\bB(\d+)\b/g)){
       const t=burden(m[1]); if(!found.includes(t)) found.push(t);
-      model.legacyAliases.push(m[0]); model.warnings.push(`line ${lineNo}: parsed legacy alias ${m[0]}; public canonical notation preferred`);
+      const isDeltaAlias=new RegExp(`\\\\bDelta\\\\(\\\\s*${m[0]}\\\\s*\\\\)`,'i').test(line);
+      const isPaired=canonicalIndices.has(m[1]) || (formalPairedContext && isDeltaAlias);
+      if(!isPaired && !machinePayloadLine){
+        model.legacyAliases.push(m[0]); model.warnings.push(`line ${lineNo}: parsed legacy alias ${m[0]}; public canonical notation preferred`);
+      }
     }
     for(const m of line.matchAll(/\bB([₀₁₂₃₄₅₆₇₈₉]+)\b/g)){
       model.warnings.push(`line ${lineNo}: ${m[0]} looks like subscript burden notation; use superscript-before-B for burdens`);
     }
     return found;
   }
+  function cleanVisibleLedgerSegment(segment){
+    return String(segment||'')
+      .replace(/\[generated-by:\s*MRP\([^\)]*\)\]/ig,'')
+      .replace(/\bMRP\([^\)]*\)/ig,'')
+      .replace(/\b(?:B_|𝔅_)(?:LA|MRP|total)\b/ig,'');
+  }
 
   function ensureMrp(model,b,lineNo){
     const id=`MRP(${b})`;
-    if(!model.mrp[b]) model.mrp[b]={id,line:lineNo,routes:[],resultTypes:[],edges:[],pressure:[]};
+    if(!model.mrp[b]) model.mrp[b]={id,line:lineNo,routes:[],resultTypes:[],edges:[],pressure:[],routeGradient:'',divergence:'',curl:''};
     addNode(model,{id,kind:'mrp',label:id,line:lineNo,excerpt:''});
     return model.mrp[b];
   }
@@ -301,7 +328,15 @@
     if(!sm||!key) return;
     if(!model.bodyExtract.submoveDetails[sm]) model.bodyExtract.submoveDetails[sm]={};
     const cleaned=canonicalizePublicNotation(cleanParsed(line));
-    if(cleaned) model.bodyExtract.submoveDetails[sm][key]=cleaned;
+    if(!cleaned) return;
+    if(key==='body'){
+      const existing=model.bodyExtract.submoveDetails[sm][key]||'';
+      if(!existing.includes(cleaned)){
+        model.bodyExtract.submoveDetails[sm][key]=existing?`${existing}\n${cleaned}`:cleaned;
+      }
+      return;
+    }
+    model.bodyExtract.submoveDetails[sm][key]=cleaned;
   }
   function refreshMrpLabel(model,b){
     const data=model.mrp[b]||{}, node=model.nodes[`MRP(${b})`];
@@ -327,6 +362,8 @@
     model.witnessSources={embedded:Boolean(zones.embeddedFieldWitness),separate:Boolean(String(witnessText||'').trim())};
     model.restorativeResponse=zones.restorativeResponse;
     model.closingFormulation=zones.closingFormulation;
+    const fieldWitnessStart=sourceText.search(/(?:^|\n)\s*(?:#+\s*)?field_witness\b/i);
+    const fieldWitnessLine=fieldWitnessStart>=0?sourceText.slice(0,fieldWitnessStart).split('\n').length+1:Infinity;
     (model.sourceSections||[]).forEach(section=>{
       const body=stripSourceHeading(section.text);
       if(section.type==='banner') model.bodyExtract.bannerText=body||cleanVisibleProseBlock(section.text);
@@ -336,13 +373,21 @@
       if(section.type==='mid_reread_pressure'&&section.burden) model.bodyExtract.mrpSourceTexts[section.burden]=body;
       if(section.type==='closure_witness') model.bodyExtract.closureWitnessText=body;
     });
+    if(!model.bodyExtract.closureWitnessText&&zones.closureWitness){
+      model.bodyExtract.closureWitnessText=stripSourceHeading(zones.closureWitness);
+    }
     const lines=sourceText.split(/\r?\n/);
     let lastBurden='', currentMrpBurden='', pendingMrpBlock=false, currentSubmove='';
     const routeRecords=[];
     lines.forEach((line,idx)=>{
       const lineNo=idx+1, trimmed=line.trim();
+      if(lineNo>=fieldWitnessLine) return;
       const inBody=lineNo<=zones.bodyLineCount;
       if(!trimmed) return;
+      if(/^(?:#{1,6}\s*)?(?:Restorative Response|Closing Formulation|Closure\/Reconstruction Witness|Closure Witness|Reconstruction Witness)\b/i.test(trimmed)){
+        pendingMrpBlock=false;
+        currentMrpBurden='';
+      }
       if(line.includes('NOETIC FIELD EXECUTION') || /governed execution/i.test(line)) model.hasBanner=true;
       if(line.includes('Layer A') || (/DSL/.test(line)&&/IR/.test(line))) model.hasLayerA=true;
       if(/coverage_complete\s*[:=]\s*true/i.test(line)) model.closureComplete=true;
@@ -371,11 +416,18 @@
       const tLang=line.match(/T_lang\s*:\s*([^\n]+)/i); if(tLang) model.collapse.tLang=tLang[1].trim();
       const restAim=line.match(/Restoration (?:aim|target):\s*(.+)$/i); if(restAim){model.restorationAim=cleanParsed(restAim[1]); model.hasRestoration=true;}
       const burdens=lineBurdens(line,model,lineNo);
-      const ledgerLine=line.match(/\b(?:B_|𝔅_)(LA|MRP|total)\b\s*(?:baseline|generated|worked|ledger|burden|set|total|=|:|\s)*/i);
-      if(ledgerLine&&burdens.length){
+      const ledgerLine=line.match(/^\s*(?:[-*]\s*)?(?:B_|𝔅_)(LA|MRP|total)\b\s*(?:baseline|generated|worked|ledger|burden|set|total|=|:|\s)*/i);
+      if(ledgerLine){
         const key=ledgerLine[1].toLowerCase()==='la'?'B_LA':ledgerLine[1].toLowerCase()==='mrp'?'B_MRP':'B_total';
-        burdens.forEach(b=>{if(!model.ledger[key].includes(b)) model.ledger[key].push(b);});
-        if(key==='B_LA') burdens.forEach(b=>{if(!model.initialBurdens.includes(b)) model.initialBurdens.push(b);});
+        let ledgerSegment=line.slice(ledgerLine.index);
+        const ledgerValueStart=ledgerSegment.search(/[=:]/);
+        ledgerSegment=ledgerValueStart>=0?ledgerSegment.slice(ledgerValueStart+1):line.slice(ledgerLine.index+ledgerLine[0].length);
+        const nextLedger=ledgerSegment.search(/\b(?:B_|𝔅_)(?:LA|MRP|total)\b/i);
+        if(nextLedger>0) ledgerSegment=ledgerSegment.slice(0,nextLedger);
+        ledgerSegment=cleanVisibleLedgerSegment(ledgerSegment);
+        const ledgerBurdens=lineBurdens(ledgerSegment,model,lineNo);
+        ledgerBurdens.forEach(b=>{if(!model.ledger[key].includes(b)) model.ledger[key].push(b);});
+        if(key==='B_LA') ledgerBurdens.forEach(b=>{if(!model.initialBurdens.includes(b)) model.initialBurdens.push(b);});
       }
       const headingMatch=trimmed.match(/^(?:#+\s*)?Burden\s+(\d+|B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\b/i);
       const headingBurden=headingMatch?sourceBurdenToken(headingMatch[1]):'';
@@ -432,8 +484,15 @@
         if(operationDetail) pushSubmoveDetail(model,currentSubmove,'operation',operationDetail[1]);
         if(resultDetail) pushSubmoveDetail(model,currentSubmove,'result',resultDetail[1]);
         if(contributionDetail) pushSubmoveDetail(model,currentSubmove,'contribution',contributionDetail[1]);
+        const isDetailLine=targetDetail||operationDetail||resultDetail||contributionDetail;
+        const isSubmoveHeading=/^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:B\d+_\d+|[^\s]+B[^\s]*\[[^\]]+\])/.test(trimmed);
+        const isStructuralLine=/^\s*(?:#{1,6}\s*)?(?:Burden\b|Layer\b|Land\(|HOLD\(|\[Mid-Reread Pressure\]|R\(H,|MRP\(|Route:|Closure\/Reconstruction Witness|Final Restorative Response|Restorative Response|Closing Formulation|field_witness\b|Initial burden set|Terminal states|Burden dependency graph|MRP resultants|Graph delta:|Field diagnostics:|Finding:|Pressure activations:|Boundary:)/i.test(trimmed);
+        if(!isDetailLine && !isSubmoveHeading && !isStructuralLine && trimmed){
+          pushSubmoveDetail(model,currentSubmove,'body',trimmed);
+        }
       }
-      const land=line.match(/\b(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i);
+      const contributionLandLine=/^\s*(?:[-*]\s*)?(?:\*\*)?Contribution-to-Land\(/i.test(cleanMarkdownLabelLine(trimmed));
+      const land=contributionLandLine?null:line.match(/(?<!Contribution-to-)\b(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i);
       if(land){
         currentSubmove='';
         const b=burden(supNum(land[2])), term=land[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
@@ -442,7 +501,7 @@
         model.terminals[b]=term; addNode(model,{id,kind:term==='Land'?'land':'terminal',label:summary?`${id} — ${summary}`:id,line:lineNo,excerpt:trimmed,status:term,parent:b,result:summary});
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:''}); addEdge(model,{source:b,target:id,kind:'burden-terminal',line:lineNo,excerpt:trimmed}); lastBurden=b;
       }else{
-        const legacyLand=line.match(/\b(Land|HOLD)\(B(\d+)\)/i);
+        const legacyLand=contributionLandLine?null:line.match(/(?<!Contribution-to-)\b(Land|HOLD)\(B(\d+)\)/i);
         if(legacyLand){
           currentSubmove='';
           const b=burden(legacyLand[2]), term=legacyLand[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
@@ -469,14 +528,23 @@
       const target=targetLine.match(/^Target:\s*(?:B(\d+)|([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B)\b/i);
       if(pendingMrpBlock&&target){const b=target[1]?burden(target[1]):burden(supNum(target[2])); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed}); if(target[1]) warnLegacy(model,lineNo,target[0].trim(),`MRP(${b})`);}
       const mrp=line.match(/\bMRP\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/);
-      if(mrp){const b=burden(supNum(mrp[1])); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed});}
+      if(mrp&&!line.includes('generated-by')){const b=burden(supNum(mrp[1])); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed});}
       const asciiGenerated=line.match(/\bMRP\(B(\d+)\)/);
-      if(line.includes('generated-by')&&burdens[0]&&(mrp||asciiGenerated)){
-        model.generatedBurdens[burdens[0]]=mrp?`MRP(${burden(supNum(mrp[1]))})`:`MRP(${burden(asciiGenerated[1])})`;
-        if(model.nodes[burdens[0]]) model.nodes[burdens[0]].generatedBy=model.generatedBurdens[burdens[0]];
+      if(line.includes('generated-by')&&(mrp||asciiGenerated)){
+        const sourceBurden=mrp?burden(supNum(mrp[1])):burden(asciiGenerated[1]);
+        const generatedTarget=headingBurden || (lastBurden&&lastBurden!==sourceBurden?lastBurden:'') || burdens.find(b=>b!==sourceBurden);
+        if(generatedTarget){
+          model.generatedBurdens[generatedTarget]=`MRP(${sourceBurden})`;
+          if(model.nodes[generatedTarget]) model.nodes[generatedTarget].generatedBy=model.generatedBurdens[generatedTarget];
+        }
       }
       const asciiMrpLine=line.match(/^\s*MRP\(B(\d+)\)/i);
       if(asciiMrpLine){const b=burden(asciiMrpLine[1]); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); warnLegacy(model,lineNo,asciiMrpLine[0].trim(),`MRP(${b})`);}
+      if(pendingMrpBlock&&!currentMrpBurden&&lastBurden&&/\b(Route-gradient|Finding|MRP route result type|MRP resultant|Graph delta|Field diagnostics|R\(H,)/i.test(line)){
+        currentMrpBurden=lastBurden;
+        ensureMrp(model,currentMrpBurden,lineNo);
+        addEdge(model,{source:`R(H,Δ)@${currentMrpBurden}`,target:`MRP(${currentMrpBurden})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed});
+      }
       const rt=line.match(/\b(held_burden_activation|generated_burden_instantiation|no_new_resultant|loopbreak|hold_partial)\b/);
       if(rt && currentMrpBurden){ ensureMrp(model,currentMrpBurden,lineNo).resultTypes.push(rt[1]); if(inBody) pushBodyMrp(model,currentMrpBurden,trimmed); }
       if(rt && currentMrpBurden) refreshMrpLabel(model,currentMrpBurden);
@@ -489,6 +557,15 @@
       }
       const finding=line.match(/\b(Finding|MRP resultant|Resultant|Result type):\s*([^\n;]+)/i);
       if(finding && currentMrpBurden){ensureMrp(model,currentMrpBurden,lineNo).pressure.push(finding[2].trim()); if(inBody) pushBodyMrp(model,currentMrpBurden,trimmed); refreshMrpLabel(model,currentMrpBurden);}
+      const activeMrp=currentMrpBurden || (pendingMrpBlock&&lastBurden?lastBurden:'');
+      if(activeMrp&&pendingMrpBlock){
+        const rg=line.match(/^\s*Route-gradient\s*:\s*(.+)$/i);
+        const div=line.match(/(?:\u2207\u00b7[BT]|del[- ]dot\s*[BT])\s*:\s*([^;\n]+)/i);
+        const curl=line.match(/(?:\u2207(?:\u00d7|x)(?:\u03ba|kappa|T)|del[- ]cross\s*(?:kappa|T))\s*:\s*([^;\n]+)/i);
+        if(rg){currentMrpBurden=activeMrp; ensureMrp(model,activeMrp,lineNo).routeGradient=rg[1].trim();}
+        if(div){currentMrpBurden=activeMrp; ensureMrp(model,activeMrp,lineNo).divergence=String(div[1]||'').split(/[\/;,]/)[0].trim();}
+        if(curl){currentMrpBurden=activeMrp; ensureMrp(model,activeMrp,lineNo).curl=String(curl[1]||'').split(/[\/;,]/)[0].trim();}
+      }
       const route=line.match(/\bRoute(?:\*\*)?\s*:\s*(?:\*\*)?\s*(STOP|HOLD|RECURSE|LoopBreak(?:\(∇×T\))?|LoopBreak)/i);
       if(route){
         const b=currentMrpBurden||burdens[0]||lastBurden, value=route[1], id=`Route:${value}@${b||lineNo}`;
@@ -505,10 +582,10 @@
       }
       const isDependencySummary=/Burden dependency graph/i.test(line);
       for(const m of line.matchAll(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\s*→\s*([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B/g)){
-        const s=burden(supNum(m[1])), t=burden(supNum(m[2])); recordDependency(model,s,t,lineNo,trimmed,isDependencySummary?'':currentMrpBurden);
+        const s=burden(supNum(m[1])), t=burden(supNum(m[2])); recordDependency(model,s,t,lineNo,trimmed,(isDependencySummary||!inBody)?'':currentMrpBurden);
       }
       for(const m of line.matchAll(/\bB(\d+)\s*->\s*B(\d+)\b/g)){
-        const s=burden(m[1]), t=burden(m[2]); warnLegacy(model,lineNo,m[0],`${s} → ${t}`); recordDependency(model,s,t,lineNo,trimmed,isDependencySummary?'':currentMrpBurden);
+        const s=burden(m[1]), t=burden(m[2]); warnLegacy(model,lineNo,m[0],`${s} → ${t}`); recordDependency(model,s,t,lineNo,trimmed,(isDependencySummary||!inBody)?'':currentMrpBurden);
       }
       if(isDependencySummary&&line.includes('->')&&!line.includes(';')){
         const chain=[...line.matchAll(/\bB(\d+)\b/g)].map(m=>burden(m[1]));
@@ -523,7 +600,117 @@
     return model;
   }
 
+  const HIGH_LEVERAGE_HELD_ROUTE_RE=/(?:independent lordship|canon[- ]wide|textual criticism|epistemology of canon|full Christology|source\/proof-stack|source authority|proof[- ]stack|mystery shield|worldview recoil|moral tribunal shift|authority-order|predication|source-worldview|Christology|theology|hiddenness|metaphysics|epistemology|identity\/worldview|historical\/transmission|transmission|source-authority|analogy[- ]stack|shubha|shakk|rayb|moral protest|secular moral|source[- ]order|criterion)/i;
+  const UNROUTED_HELD_ROUTE_RE=/(?:not released|unreleased|held beyond|beyond prompt|beyond bounded claim|held outside scope|not worked)/i;
+  const TERMINAL_CLOSURE_RE=/(?:STOP|closure|complete|collapse achieved|no remaining live problem)/i;
+  const ROUTING_OR_BOUNDARY_PROOF_RE=/(?:held_burden_activation|generated_burden_instantiation|HOLD|PARTIAL|coverage_complete\s*=\s*false|non[- ]load[- ]bearing|not load[- ]bearing|not needed for (?:this|the) (?:scoped|bounded|local) claim|scope gate|local closure only|partial closure)/i;
+  const HIGH_MASS_GENERATED_RE=/(?:source[- ]worldview|worldview|proof[- ]stack|textual|canon|Christology|independent lordship|hidden premise|dependency radius|source authority|authority-order|predication|category|moral tribunal|worship[- ]worthiness|hiddenness|coercive guidance|accountability|mystery shield|immunity|recoil|epistemology|framework|bounded-answer)/i;
+  const OPERATION_MECHANISM_RE=/(?:hidden premise|escape route|smuggl|burden shift|proof[- ]stack|source[- ]order|source authority|authority frame|scope gate|bounded claim|local claim|total[- ]system|whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|predicate|predication|category|dependency|criterion|immunity|recoil|framework|broader material|held material|state change|delta)/i;
+  const OPERATION_SCOPE_RE=/(?:original (?:local )?claim|local (?:claim|argument|reply|refutation|closure)|specific (?:reply|argument|claim)|bounded (?:claim|refutation|closure|answer)|scoped (?:claim|closure)|total[- ]system|whole[- ]system|entire doctrine|every (?:text|possible route|doctrine)|broader (?:system|framework|doctrine|material))/i;
+  const OPERATION_TEST_RE=/(?:hidden premise|new premise|unargued|unstated|must be (?:stated|tested|carried)|would require|requires (?:a )?(?:new burden|fixed|stable|criterion)|reopen(?:ed|ing)?|reopen condition|admissible only if|cannot be smuggled|smuggled)/i;
+  const OPERATION_FAILURE_RE=/(?:cannot (?:rescue|repair|retroactively|function)|not a rescue|does not (?:establish|license|derive)|burden shift|burden shifting|proof[- ]carousel|evasion|not evidence|barred|blocked|fails because)/i;
+  const OPERATION_ACTION_RE=/(?:expose|distinguish|block|repair|trace|ground|test|separate|prevent|audit|apply|identify|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|restore|reorient|re-home|honor|define|vet|reconstruct|dissolve|triage|clarify|prioritize|anchor|map|bound|shifts?|smuggl|reopen|supplies|explains|cannot retroactively|does not mean|answered according)/i;
+  const STATE_CHANGE_RE=/(?:blocked|blocks|bounded|boundary[- ]bounded|removed|removes|separated|separates|held|released|routed|licensed|licenses|license|closed|restored|reoriented|scoped STOP|STOP[- ]eligible|HOLD\/PARTIAL|reopen conditions|future distinct burdens|admissible|barred|prevents|cannot rescue|cannot act as hidden support|must be stated as (?:a )?new burden|requires a new burden|becomes a new burden|new burden and tested|exposed|demoted|invalidated|withheld|narrowed|converted|classified|refused|denied|self[- ]undercut|loses|loss|severed|separated from|non[- ]load[- ]bearing|not load[- ]bearing|lands|landed|cleared|state change|state delta|delta)/i;
+  const OWNER_OPERATION_SHAPES=[
+    {owner:/\bFPD\b|foreign[- ]premise|imported[- ]premise/i, work:/(?:hidden|foreign|imported|unstated|smuggled|impossible).{0,120}(?:premise|criterion|court|tribunal|support|route)/i},
+    {owner:/source[- ]status|authority[- ]order|\bV10\b|transmission|testimony/i, work:/(?:source|authority|transmission|content|support|override|govern|ledger|hidden support|source[- ]order|source-use|source function|source-prestige|source accumulation|proof[- ]text|citation|cited|held material)/i},
+    {owner:/\bP7\b|boundedness|stop/i, work:/(?:STOP|HOLD|PARTIAL|bounded|scoped|closure|reopen|proof[- ]carousel|stop condition|held[- ]route|boundary)/i},
+    {owner:/\bM8\b|reductio|consequence/i, work:/(?:trace|consequence|if .* then|if allowed|self[- ]undermin|evasion|unacceptable|what follows|proof[- ]carousel)/i},
+    {owner:/\bM9\b|predication|predicate|category/i, work:/(?:predicate|predication|category|referent|semantic|identity|transfer|mode|sense|level)/i},
+    {owner:/do[- ]attribute[- ]precision|attribute[- ]precision/i, work:/(?:person\/nature|attribute|multiplicity|model identification|composition|dependence|category confusion|person-level|nature-level)/i},
+    {owner:/do[- ]christian[- ]extensions|Christian theological pressure|Trinitarian/i, work:/(?:Christian theological pressure|Trinitarian model|Trinity model|model identification|model-shift|identity-style|social Trinitarian|relative identity|mystery|person\/nature|DO-1[1-4]|canon authority|coherence burden|Christian overlay)/i},
+    {owner:/do[- ]second[- ]loop/i, work:/(?:DO[- ]second[- ]loop|hujjah|á¸¥ujjah|warning|record|prophetic authority|moral protest|Great Pumpkin|cognitive science|CSR|HADD|necessary-knowledge|accountability|guidance architecture|family-local load floor)/i},
+    {owner:/doubt[- ]vs[- ]skepticism|skepticism/i, work:/(?:doubt[- ]vs[- ]skepticism|normal doubt|skepticism as (?:ideology|methodology)|skeptical methodology|evidence demand|absence of evidence|modal veto|bare imagined possibility|alternative description|anomaly|background commitments|burden[- ]of[- ]proof inversion|total possibility[- ]exhaustion|doubt function)/i},
+    {owner:/proof[- ]method[- ]audit|method[- ]audit/i, work:/(?:proof[- ]method|proof grammar|proof family|formal derivation|logic tree|inferential standard|what the proof establishes|premise strength|invalid inference)/i},
+    {owner:/\bM7\b|definition/i, work:/(?:define|definition|term|meaning|anchor|equivocation|relation|category)/i},
+    {owner:/\bM1-P\b|performative/i, work:/(?:performative|act of making|presupposes|cannot ground|denies|self[- ]refutation)/i},
+    {owner:/\bM1\b|self[- ]refutation/i, work:/(?:self[- ]refut|contradiction|own standard|internal standard|inconsistent)/i},
+    {owner:/\bM3\b|orphaned[- ]intuition|moral intuition/i, work:/(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|orphaned moral|ground is orphaned|intuition has a home|moral deliverance|moral recognition|recognition remains honored|retained while its ground)/i},
+    {owner:/\bV2\b|reason reconstruction/i, work:/(?:reason|rationality|governing conception|faculty|truth|sovereign|criterion|type reason|reason as (?:access|recognition|recognizer)|epistemic role|order of discovery|order of reality)/i},
+    {owner:/\bV3\b|regress/i, work:/(?:regress|infinite|foundation|ground|terminates|dissolve)/i},
+    {owner:/\bV7\b|\bV11\b|taqlid|taḥqīq|taqlīd/i, work:/(?:taqlid|taqlīd|blind following|inherited|transition|taḥqīq|verification)/i},
+    {owner:/\bV8\b|bilā kayf|attribute/i, work:/(?:attribute|bilā kayf|mystery|modality|without asking how|anti[- ]rational)/i},
+    {owner:/\bV9\b|necessary[- ]knowledge|fitri|fiṭr/i, work:/(?:necessary knowledge|fiṭr|fitr|priority|lower[- ]order|destabilization|hujjah|clarity)/i},
+    {owner:/\bV12\b|tamānuʿ|tamanu/i, work:/(?:divine plurality|lordship|independent|tamānu|exhaustion|mutual prevention)/i},
+    {owner:/\bE[1-4]\b|evidence|inferential|cumulative|cross[- ]cultural/i, work:/(?:evidence|inferential|criterion|cumulative|cross[- ]cultural|case|support|rule)/i},
+    {owner:/\bF[1-3]\b|supra[- ]rational|volitional|practice/i, work:/(?:supra[- ]rational|anti[- ]rational|volitional|practice|access|orientation|will)/i},
+    {owner:/\bR[1-3]\b|internalist|reminder|warranted/i, work:/(?:internalist|criterion|reminder|warrant|basic belief|recognition|fitr)/i},
+    {owner:/\bP1\b|restoration|fiṭrah|fitrah/i, work:/(?:restore|restored|restoration|positive orientation|fiṭr|fitr|tawḥīd|tawhid|da.?ee|mercy|justice|sound orientation|capacity, access|access, clarity|clear warning|honest (?:engagement|inquiry)|humane criterion)/i},
+    {owner:/\bP2\b|objection mapping/i, work:/(?:map|objection|pressure|route|structure|premise|burden)/i},
+    {owner:/\bP3\b|reason.*revelation|revelation.*reason/i, work:/(?:reason|revelation|tension|source order|authority|scripture)/i},
+    {owner:/\bP4\b|maieutic/i, work:/(?:question|elicit|maieutic|draw out|admission|already sees)/i},
+    {owner:/\bP5\b|already[- ]believing/i, work:/(?:already[- ]believing|internal repair|implicit|commitment|presupposes)/i},
+    {owner:/\bP6\b|ʿaqīdah|aqidah/i, work:/(?:universal|aqidah|ʿaqīdah|principle|doctrine|norm)/i},
+  ];
+  const GENERIC_OWNER_ACTIVATION_RE=/(?:validated state|operation mechanism|state change|mechanism|criterion|ground|source|authority|predicate|definition|consequence|reconstruct|dissolve|vet|triage|restore|route|bound|test|separate|block|trace|repair|anchor|map|clarify|transition|priority|warrant|evidence|orientation|result follows)/i;
+  function ownerSpecificOperationActivated(ownerText,combined){
+    const matched=OWNER_OPERATION_SHAPES.filter(shape=>shape.owner.test(ownerText));
+    if(matched.length) return matched.some(shape=>shape.work.test(combined));
+    return GENERIC_OWNER_ACTIVATION_RE.test(combined);
+  }
+  function splitMrpSourceBlocks(lines){
+    const blocks=[];
+    for(let i=0;i<lines.length;i++){
+      if(!/^\s*\[Mid-Reread Pressure\]\s*$/i.test(lines[i])) continue;
+      const start=i+1;
+      let end=lines.length;
+      for(let j=start;j<lines.length;j++){
+        if(/^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+|Restorative Response|Closing Formulation|Closure\/Reconstruction Witness|field_witness)\b/i.test(lines[j])){end=j; break;}
+      }
+      blocks.push(lines.slice(start,end).join('\n'));
+    }
+    return blocks;
+  }
+  function validateHeldRouteClosure(model,lines){
+    const text=lines.join('\n');
+    const rLines=[...text.matchAll(/^\s*(?:[-*]\s*)?R\(H,\s*(?:Δ|Delta)\)\s*:\s*(.+)$/gim)].map(m=>m[1]);
+    const closureIndex=lines.findIndex(line=>/^\s*(?:#{1,6}\s*)?Closure\/Reconstruction Witness\b/i.test(line));
+    const closureTail=closureIndex>=0?lines.slice(closureIndex).join('\n'):'';
+    const candidates=[...rLines,...splitMrpSourceBlocks(lines),closureTail].filter(Boolean);
+    if(candidates.some(candidate=>
+      HIGH_LEVERAGE_HELD_ROUTE_RE.test(candidate)
+      && UNROUTED_HELD_ROUTE_RE.test(candidate)
+      && TERMINAL_CLOSURE_RE.test(candidate)
+      && !ROUTING_OR_BOUNDARY_PROOF_RE.test(candidate)
+    )){
+      model.errors.push('R(H,Δ) detected a pertinent high-leverage held route, but output claimed STOP/collapse without working, generating, HOLD/PARTIAL-routing, or proving non-load-bearing status');
+    }
+  }
+
+  function witnessStringParts(value,parts=[]){
+    if(value==null) return parts;
+    if(typeof value==='string'){parts.push(value); return parts;}
+    if(Array.isArray(value)){value.forEach(item=>witnessStringParts(item,parts)); return parts;}
+    if(typeof value==='object'){
+      Object.entries(value).forEach(([key,item])=>{
+        parts.push(String(key));
+        witnessStringParts(item,parts);
+      });
+    }
+    return parts;
+  }
+  function validateWitnessHeldRouteClosure(model,body,label){
+    if(!body||typeof body!=='object') return;
+    const coverage=body.coverage_proof&&typeof body.coverage_proof==='object'?body.coverage_proof:{};
+    const closure=body.closure&&typeof body.closure==='object'?body.closure:{};
+    const candidate=witnessStringParts(body).join('\n');
+    const claimsClosure=TERMINAL_CLOSURE_RE.test(candidate)
+      || body.coverage_complete===true
+      || coverage.coverage_complete===true
+      || /complete|collapse achieved|STOP/i.test(String(closure.status||closure.verdict||''));
+    if(claimsClosure
+      && HIGH_LEVERAGE_HELD_ROUTE_RE.test(candidate)
+      && UNROUTED_HELD_ROUTE_RE.test(candidate)
+      && !ROUTING_OR_BOUNDARY_PROOF_RE.test(candidate)
+    ){
+      model.errors.push(`${label}: unresolved high-leverage held route is still load-bearing, but closure is marked complete/collapse achieved`);
+    }
+  }
+
   function validate(model,lines,routeRecords){
+    if(lines.some(line=>/^\s*(?:#{1,6}\s*)?(?:[\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079]+B|B\d+)(?:[\u2080-\u2089]+|[_\.]\d+)\s*\[OP(?:[\u1d62i])?\](?:\s*\[[^\]]+\])?/i.test(line))){
+      model.errors.push('submove heading uses [OP] placeholder or second owner bracket; render one concrete source-owned owner bracket such as [M9]');
+    }
     if(model.closureComplete&&!model.initialBurdens.length) model.errors.push('initial burden set missing while closure claims coverage_complete=true');
     if(model.closureComplete){(model.initialBurdens.length?model.initialBurdens:model.burdens).forEach(b=>{if(!model.terminals[b]) model.errors.push(`${b} lacks terminal Land/HOLD accounting while closure claims complete`);});}
     const known=new Set([...model.burdens,...model.initialBurdens]);
@@ -537,8 +724,44 @@
       }
     }));
     model.burdens.forEach(b=>{if(model.terminals[b]==='Land'&&!(model.submoves[b]||[]).length) model.warnings.push(`${b} lands without visible submoves`);});
-    routeRecords.forEach(r=>{if(String(r.route).toUpperCase()==='STOP' && /Layer B|^#+\s*Burden\s+\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\s+\[generated-by/m.test(lines.slice(r.line).join('\n'))) model.errors.push(`line ${r.line}: Route: STOP is followed by later burden / Layer B work`);});
+    Object.keys(model.generatedBurdens||{}).forEach(b=>{
+      const sms=model.submoves[b]||[];
+      const highMassText=[bodyBurdenDescription(model,b),...sms.map(sm=>{
+        const d=model.bodyExtract?.submoveDetails?.[sm]||{};
+        return [d.heading,d.target,d.operation,d.body,d.result,d.contribution].join(' ');
+      })].join(' ');
+      if(!HIGH_MASS_GENERATED_RE.test(highMassText)) return;
+      const bad=sms.filter(sm=>{
+        const d=model.bodyExtract?.submoveDetails?.[sm]||{};
+        const ownerText=[model.nodes?.[sm]?.owner,d.heading].filter(Boolean).join(' ');
+        const operationBody=[d.operation,d.body].filter(Boolean).join(' ');
+        const combined=[d.target,d.operation,d.body,d.result,d.contribution].join(' ');
+        if(!(d.target&&d.operation&&d.result&&d.contribution&&d.body)) return true;
+        const ownerActivated=ownerSpecificOperationActivated(ownerText,combined);
+        if(!OPERATION_MECHANISM_RE.test(combined)&&!ownerActivated) return true;
+        const semanticCategories=[OPERATION_SCOPE_RE,OPERATION_TEST_RE,OPERATION_FAILURE_RE].filter(re=>re.test(combined)).length;
+        if(semanticCategories<2&&!ownerActivated) return true;
+        if(!OPERATION_ACTION_RE.test(`${d.heading||''} ${operationBody}`)&&!ownerActivated) return true;
+        if(!STATE_CHANGE_RE.test(`${d.result} ${d.contribution}`)) return true;
+        const opWords=(String(operationBody).match(/\b[\w'-]{4,}\b/g)||[]).length;
+        const bodyWords=(String(d.body).match(/\b[\w'-]{4,}\b/g)||[]).length;
+        const opSentences=String(operationBody).split(/(?<=[.!?])\s+/).filter(Boolean).length;
+        const minOpWords=ownerActivated?55:70;
+        return opSentences<=2||opWords<minOpWords||bodyWords<45;
+      });
+      if(bad.length){
+        model.errors.push(`${b} generated burden Layer B treatment is mass-insufficient: owner labels and fields are present, but submoves are conclusion-shaped rather than operation-shaped`);
+      }
+    });
+    routeRecords.forEach(r=>{
+      if(String(r.route).toUpperCase()!=='STOP') return;
+      const tailLines=lines.slice(r.line);
+      const closureIdx=tailLines.findIndex(line=>/^\s*(?:#{1,6}\s*)?Closure\/Reconstruction Witness\b/i.test(line));
+      const tail=(closureIdx>=0?tailLines.slice(0,closureIdx):tailLines).join('\n');
+      if(/Layer B|^#+\s*Burden\s+\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\s+\[generated-by/m.test(tail)) model.errors.push(`line ${r.line}: Route: STOP is followed by later burden / Layer B work`);
+    });
     const text=lines.join('\n');
+    validateHeldRouteClosure(model,lines);
     const fieldStates=[...text.matchAll(/∇·B\s*:\s*([^;\n]+)/gi)].map(m=>m[1].trim().toLowerCase());
     const curlStates=[...text.matchAll(/∇×κ\s*:\s*([^;\n]+)/gi)].map(m=>m[1].trim().toLowerCase());
     if(model.closureComplete&&fieldStates.some(s=>!s.startsWith('neutral'))&&!/Route:\s*(HOLD|RECURSE)|HOLD\(/i.test(text)) model.errors.push('coverage_complete=true while ∇·B is non-neutral without HOLD/RECURSE explanation');
@@ -559,25 +782,207 @@
     if(value&&typeof value==='object') return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonicalJson(value[k])]));
     return value;
   }
+  function normalizeWitnessGraph(value){
+    const raw=String(value||'').trim();
+    if(!raw || /\b(?:none|no edge|no new graph edge|no-edge)\b/i.test(raw)) return 'none';
+    return canonicalizePublicNotation(raw).replace(/\s*→\s*/g,'->').replace(/\s+/g,'');
+  }
+  function firstState(value){
+    return String(value||'').trim().split(/[\/;,]/)[0].trim();
+  }
+  function compareFormalRereadStates(model,body,visibleMrpEntries,label){
+    const raw=body.formal_reread_states;
+    if(raw===undefined || raw===null) return;
+    if(!Array.isArray(raw)){
+      model.errors.push(`${label}: field_witness.formal_reread_states must be a list`);
+      return;
+    }
+    const visible=Object.fromEntries(visibleMrpEntries);
+    const seen=new Set();
+    if(raw.length!==visibleMrpEntries.length){
+      model.errors.push(`${label}: formal_reread_states count ${raw.length} does not match visible MRP count ${visibleMrpEntries.length}`);
+    }
+    raw.forEach((state,index)=>{
+      const stateLabel=`${label}: formal_reread_states[${index+1}]`;
+      if(!state || typeof state!=='object'){
+        model.errors.push(`${stateLabel}: state must be an object`);
+        return;
+      }
+      const source=normalizeBurden(state.source_burden||state.source||'');
+      if(!source){
+        model.errors.push(`${stateLabel}: missing source_burden`);
+        return;
+      }
+      if(seen.has(source)) model.errors.push(`${stateLabel}: duplicate source_burden ${source}`);
+      seen.add(source);
+      const data=visible[source];
+      if(!data){
+        model.errors.push(`${stateLabel}: source_burden ${source} has no visible MRP block`);
+        return;
+      }
+      const visibleType=(data.resultTypes||[]).slice(-1)[0]||'';
+      const visibleRoute=(data.routes||[]).slice(-1)[0]||'';
+      if(state.route_result_type&&visibleType&&state.route_result_type!==visibleType){
+        model.errors.push(`${stateLabel}: route_result_type mismatch visible=${visibleType} field_witness=${state.route_result_type}`);
+      }
+      if(state.route&&visibleRoute&&String(state.route).toUpperCase()!==visibleRoute.toUpperCase()){
+        model.errors.push(`${stateLabel}: route mismatch visible=${visibleRoute} field_witness=${state.route}`);
+      }
+      const visibleGraphs=new Set((data.edges||[]).map(e=>`${e[0]}->${e[1]}`));
+      const stateGraph=normalizeWitnessGraph(state.graph_delta||state.graph||'');
+      if(visibleGraphs.size && !visibleGraphs.has(stateGraph)){
+        model.errors.push(`${stateLabel}: graph_delta mismatch visible=[${[...visibleGraphs].sort().join(', ')}] field_witness=${stateGraph}`);
+      }else if(!visibleGraphs.size && stateGraph && stateGraph!=='none'){
+        model.errors.push(`${stateLabel}: graph_delta must be none when visible MRP has no graph edge`);
+      }
+      const visibleDivergence=firstState(data.divergence);
+      const visibleCurl=firstState(data.curl);
+      const stateDivergence=firstState(state.divergence_state);
+      const stateCurl=firstState(state.curl_state);
+      if(visibleDivergence&&stateDivergence&&visibleDivergence!==stateDivergence){
+        model.errors.push(`${stateLabel}: divergence_state mismatch visible=${visibleDivergence} field_witness=${stateDivergence}`);
+      }
+      if(visibleCurl&&stateCurl&&visibleCurl!==stateCurl){
+        model.errors.push(`${stateLabel}: curl_state mismatch visible=${visibleCurl} field_witness=${stateCurl}`);
+      }
+    });
+    visibleMrpEntries.forEach(([burden])=>{
+      if(!seen.has(burden)) model.errors.push(`${label}: formal_reread_states missing visible MRP source ${burden}`);
+    });
+    [...seen].filter(b=>!visible[b]).forEach(b=>model.errors.push(`${label}: formal_reread_states names non-visible MRP source ${b}`));
+  }
   function compareWitness(model,witnessText,label='field_witness'){
     const payload=parseWitnessPayload(witnessText,label,model);
     if(!payload) return;
-    const witnessNodes=new Set((payload.nodes||[]).map(normalizeBurden));
+    const body=payload.field_witness&&typeof payload.field_witness==='object'?payload.field_witness:payload;
+    const coverage=body.coverage_proof&&typeof body.coverage_proof==='object'?body.coverage_proof:{};
+    const graph=coverage.dependency_graph&&typeof coverage.dependency_graph==='object'?coverage.dependency_graph:{};
+    validateWitnessHeldRouteClosure(model,body,label);
+    const rawNodes=Array.isArray(graph.nodes)?graph.nodes:(Array.isArray(body.nodes)?body.nodes:[]);
+    const witnessNodes=new Set(rawNodes.map(item=>{
+      if(item&&typeof item==='object'){
+        const token=normalizeBurden(item.id||'');
+        return item.type==='burden'||/^[⁰¹²³⁴⁵⁶⁷⁸⁹]+B$/.test(token)?token:'';
+      }
+      return normalizeBurden(item);
+    }).filter(token=>/^[⁰¹²³⁴⁵⁶⁷⁸⁹]+B$/.test(token)));
     if(witnessNodes.size){
       const visible=new Set(model.bodyBurdens.length?model.bodyBurdens:model.burdens);
       const w=[...witnessNodes].sort().join(', '), v=[...visible].sort().join(', ');
-      if(w!==v) model.witnessMismatches.push(`${label}: node mismatch visible=[${v}] field_witness=[${w}]`);
+      if(w!==v) model.errors.push(`${label}: node mismatch visible=[${v}] field_witness=[${w}]`);
     }
-    const witnessEdges=new Set((payload.edges||[]).map(edge=>{
+    const rawEdges=Array.isArray(graph.edges)?graph.edges:(Array.isArray(body.edges)?body.edges:[]);
+    const witnessEdges=new Set(rawEdges.map(edge=>{
       if(Array.isArray(edge)&&edge.length>=2) return `${normalizeBurden(edge[0])}->${normalizeBurden(edge[1])}`;
-      if(edge&&typeof edge==='object') return `${normalizeBurden(edge.source||'')}->${normalizeBurden(edge.target||'')}`;
+      if(edge&&typeof edge==='object') return `${normalizeBurden(edge.source||edge.from||'')}->${normalizeBurden(edge.target||edge.to||'')}`;
       return '';
     }).filter(edge=>edge&&edge!=='->'));
     if(witnessEdges.size){
       const visibleEdges=new Set((model.graphEdges||[]).map(edge=>`${edge[0]}->${edge[1]}`));
       const w=[...witnessEdges].sort().join(', '), v=[...visibleEdges].sort().join(', ');
-      if(w!==v) model.witnessMismatches.push(`${label}: edge mismatch visible=[${v}] field_witness=[${w}]`);
+      if(w!==v) model.errors.push(`${label}: edge mismatch visible=[${v}] field_witness=[${w}]`);
     }
+    const ledgerSource=body.ledger&&typeof body.ledger==='object'?body.ledger:body;
+    const ledger={
+      B_LA:Array.isArray(ledgerSource.B_LA)?ledgerSource.B_LA.map(normalizeBurden):[],
+      B_MRP:Array.isArray(ledgerSource.B_MRP)?ledgerSource.B_MRP.map(normalizeBurden):[],
+      B_total:Array.isArray(ledgerSource.B_total)?ledgerSource.B_total.map(normalizeBurden):[]
+    };
+    if(!ledger.B_MRP.length&&body.generated_burdens&&typeof body.generated_burdens==='object'){
+      ledger.B_MRP=Array.isArray(body.generated_burdens)?body.generated_burdens.map(normalizeBurden):Object.keys(body.generated_burdens).map(normalizeBurden);
+    }
+    const visibleLa=(model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens).map(normalizeBurden);
+    const visibleMrp=(model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{})).map(normalizeBurden);
+    const visibleTotal=(model.ledger.B_total.length?model.ledger.B_total:model.burdens).map(normalizeBurden);
+    const sameSet=(a,b)=>[...new Set(a)].sort().join(', ')===[...new Set(b)].sort().join(', ');
+    ledger.B_MRP.forEach(generated=>{
+      if(ledger.B_LA.includes(generated)) model.errors.push(`${label}: field_witness marks baseline burden ${generated} as generated`);
+    });
+    if(Object.keys(model.generatedBurdens||{}).length&&!ledger.B_MRP.length){
+      model.errors.push(`${label}: visible generated B_MRP appears in prose but field_witness omits B_MRP`);
+    }
+    if(ledger.B_LA.length&&visibleLa.length&&!sameSet(ledger.B_LA,visibleLa)){
+      model.errors.push(`${label}: B_LA mismatch visible=[${visibleLa.join(', ')}] field_witness=[${ledger.B_LA.join(', ')}]`);
+    }
+    if(ledger.B_MRP.length&&visibleMrp.length&&!sameSet(ledger.B_MRP,visibleMrp)){
+      model.errors.push(`${label}: B_MRP mismatch visible=[${visibleMrp.join(', ')}] field_witness=[${ledger.B_MRP.join(', ')}]`);
+    }
+    if(ledger.B_total.length&&visibleTotal.length&&!sameSet(ledger.B_total,visibleTotal)){
+      model.errors.push(`${label}: B_total mismatch visible=[${visibleTotal.join(', ')}] field_witness=[${ledger.B_total.join(', ')}]`);
+    }
+    let rawMrp=body.mrp_resultants;
+    if(!Array.isArray(rawMrp)&&!(rawMrp&&typeof rawMrp==='object')) rawMrp=body.reread_pressure;
+    if(!Array.isArray(rawMrp)&&!(rawMrp&&typeof rawMrp==='object')) rawMrp=[];
+    if(!rawMrp.length&&body.mrp_resultants&&typeof body.mrp_resultants==='object'){
+      rawMrp=Object.entries(body.mrp_resultants).map(([source,item])=>(
+        item&&typeof item==='object'?{source,...item}:{source,type:String(item||'')}
+      ));
+    }
+    if(!rawMrp.length&&body.reread_pressure&&typeof body.reread_pressure==='object'){
+      rawMrp=Object.entries(body.reread_pressure).map(([source,item])=>(
+        item&&typeof item==='object'?{source,...item}:{source,type:String(item||'')}
+      ));
+    }
+    const witnessMrp={};
+    rawMrp.forEach(item=>{
+      if(!item||typeof item!=='object') return;
+      const source=normalizeBurden(String(item.source||item.burden||item.target||item.id||'').replace(/^MRP\(/,'').replace(/\)$/,''));
+      if(!source) return;
+      witnessMrp[source]={type:String(item.type||item.result_type||item.resultant||''),route:String(item.route||item.next_route||''),graph:item.graph};
+    });
+    const visibleMrpEntries=Object.entries(model.mrp||{}).filter(([_,data])=>(data.resultTypes||[]).length||(data.routes||[]).length||(data.edges||[]).length);
+    if(visibleMrpEntries.length&&!Object.keys(witnessMrp).length){
+      model.errors.push(`${label}: visible MRP resultants appear in prose but field_witness omits mrp_resultants`);
+    }
+    visibleMrpEntries.forEach(([burden,data])=>{
+      const witness=witnessMrp[burden];
+      if(!witness){model.errors.push(`${label}: missing MRP resultant for visible MRP(${burden})`); return;}
+      const visibleType=(data.resultTypes||[]).slice(-1)[0]||'';
+      const visibleRoute=(data.routes||[]).slice(-1)[0]||'';
+      if(visibleType&&witness.type&&visibleType!==witness.type) model.errors.push(`${label}: MRP(${burden}) type mismatch visible=${visibleType} field_witness=${witness.type}`);
+      if(visibleRoute&&witness.route&&visibleRoute.toUpperCase()!==witness.route.toUpperCase()) model.errors.push(`${label}: MRP(${burden}) route mismatch visible=${visibleRoute} field_witness=${witness.route}`);
+    });
+    compareFormalRereadStates(model,body,visibleMrpEntries,label);
+    function normalizeTerminalSource(source){
+      const terminals={};
+      const add=(burden,value)=>{
+        const token=normalizeBurden(burden);
+        const state=value&&typeof value==='object'?String(value.state||value.terminal||''):String(value||'');
+        if(token&&state) terminals[token]=state.toLowerCase();
+      };
+      if(Array.isArray(source)){
+        source.forEach(value=>{
+          if(value&&typeof value==='object') add(value.id||value.notation||value.burden||'',value);
+          else add(value,value);
+        });
+      }else if(source&&typeof source==='object'){
+        Object.entries(source).forEach(([burden,value])=>add(burden,value));
+      }
+      return terminals;
+    }
+    let witnessTerminals=normalizeTerminalSource(body.terminal_states);
+    if(!Object.keys(witnessTerminals).length) witnessTerminals=normalizeTerminalSource(coverage.terminal_states);
+    if(!Object.keys(witnessTerminals).length&&body.burdens&&typeof body.burdens==='object'){
+      witnessTerminals=normalizeTerminalSource(Object.fromEntries(Object.entries(body.burdens).map(([burden,value])=>[
+        burden,
+        value&&typeof value==='object'?{state:value.terminal_state||value.terminal||value.state||''}:value
+      ])));
+    }
+    Object.entries(witnessTerminals).forEach(([burden,value])=>{
+      const token=normalizeBurden(burden);
+      const state=String(value||'');
+      if(token&&state) witnessTerminals[token]=state.toLowerCase();
+    });
+    const visibleTerminals=Object.entries(model.terminals||{});
+    if(visibleTerminals.length&&!Object.keys(witnessTerminals).length){
+      model.errors.push(`${label}: visible terminal states appear in prose but field_witness omits terminal_states`);
+    }
+    visibleTerminals.forEach(([burden,state])=>{
+      const witness=witnessTerminals[burden]||'';
+      if(!witness){model.errors.push(`${label}: missing terminal state for visible ${burden}`); return;}
+      if(state==='Land'&&!/(landed|cleared|discharged|held-with-reason)/i.test(witness)) model.errors.push(`${label}: terminal mismatch for ${burden}: visible Land but field_witness state=${witness}`);
+      if(state==='HOLD'&&!/(hold|held|partial|carried)/i.test(witness)) model.errors.push(`${label}: terminal mismatch for ${burden}: visible HOLD but field_witness state=${witness}`);
+    });
   }
   function compareEmbeddedAndSeparateWitness(model,embedded,separate){
     if(!String(embedded||'').trim() || !String(separate||'').trim()) return;
@@ -585,7 +990,7 @@
     const b=parseWitnessPayload(separate,'separate field_witness',model);
     if(!a||!b) return;
     if(JSON.stringify(canonicalJson(a))!==JSON.stringify(canonicalJson(b))){
-      model.witnessMismatches.push('embedded field_witness and separate field_witness disagree');
+      model.errors.push('embedded field_witness and separate field_witness disagree');
     }
   }
 
@@ -672,11 +1077,11 @@
   }
   function publicRouteType(type){
     return ({
-      generated_burden_instantiation:'another problem surfaced',
-      held_burden_activation:'known problem still needs answering',
-      no_new_resultant:'no further problem remained',
-      hold_partial:'real problem remains held',
-      loopbreak:'loop/proof-stack blocked'
+      generated_burden_instantiation:'generated_burden_instantiation',
+      held_burden_activation:'held_burden_activation',
+      no_new_resultant:'no_new_resultant',
+      hold_partial:'hold_partial',
+      loopbreak:'loopbreak'
     })[type]||type;
   }
   function publicTerminalBadge(state){
@@ -776,6 +1181,53 @@
       .filter(Boolean)
       .slice(0,limit);
   }
+  function baselineBurdenIds(model){
+    const baseline=model.ledger.B_LA.length?model.ledger.B_LA:model.initialBurdens;
+    return baseline.map(normalizeBurden).filter(Boolean);
+  }
+  function generatedBurdenIds(model){
+    const generated=model.ledger.B_MRP.length?model.ledger.B_MRP:Object.keys(model.generatedBurdens||{});
+    return generated.map(normalizeBurden).filter(Boolean);
+  }
+  function burdenLabelItems(model,ids,limit=20){
+    return ids
+      .map(b=>`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`.replace(/\s+/g,' '))
+      .filter(Boolean)
+      .slice(0,limit);
+  }
+  function baselineBurdenLabels(model,limit=8){
+    return burdenLabelItems(model,baselineBurdenIds(model),limit);
+  }
+  function generatedBurdenLabels(model,limit=8){
+    return burdenLabelItems(model,generatedBurdenIds(model),limit).map(item=>{
+      const b=(item.match(/^Problem\s+(\S+)/)||[])[1]||'';
+      const provenance=b&&model.generatedBurdens[b]?` [generated-by: ${model.generatedBurdens[b]}]`:' [generated]';
+      return `${item}${provenance}`;
+    });
+  }
+  function uniqueBurdenIds(ids){
+    const seen=new Set(), out=[];
+    (ids||[]).map(normalizeBurden).filter(Boolean).forEach(id=>{
+      if(!seen.has(id)){seen.add(id); out.push(id);}
+    });
+    return out;
+  }
+  function accountedBurdenIds(model){
+    const total=uniqueBurdenIds(model.ledger.B_total.length?model.ledger.B_total:model.burdens);
+    if(total.length) return total;
+    return uniqueBurdenIds([...baselineBurdenIds(model),...generatedBurdenIds(model)]);
+  }
+  function accountedBurdenLabels(model,limit=50){
+    const generatedSet=new Set(generatedBurdenIds(model));
+    return burdenLabelItems(model,accountedBurdenIds(model),limit).map(item=>{
+      const b=(item.match(/^Problem\s+(\S+)/)||[])[1]||'';
+      if(generatedSet.has(b)){
+        const provenance=model.generatedBurdens[b]?` [generated-by: ${model.generatedBurdens[b]}]`:' [generated]';
+        return `${item}${provenance}`;
+      }
+      return item;
+    });
+  }
   function splitReadableItems(text){
     return String(text||'')
       .split(/(?<=\.)\s+|;\s+|\s+•\s+/)
@@ -864,7 +1316,7 @@
   }
   function bodyBurdenDescription(model,b){
     const body=model.bodyExtract?.burdenTitles?.[b];
-    return body?stripTechnicalLead(body):stripTechnicalLead(burdenDescription(model,b));
+    return (body?stripTechnicalLead(body):stripTechnicalLead(burdenDescription(model,b))).replace(/^\s*(?:[-–—]|:)\s*/,'').trim();
   }
   function bodySubmoveLabel(model,sm,node){
     const body=model.bodyExtract?.submoveTexts?.[sm];
@@ -887,8 +1339,9 @@
     [
       ['Target', details.target],
       ['What it does', details.operation],
+      ['TTP operation body', details.body],
       ['Result', details.result],
-      ['Contribution', details.contribution]
+      ['Contribution-to-Land', details.contribution]
     ].forEach(([label,value])=>{
       const cleaned=stripTechnicalLead(value||'');
       if(cleaned) sections.push({kind:'detail',label,text:storyFieldText(cleaned,label)});
@@ -943,16 +1396,39 @@
   function mrpPanelRows(model,b,result,edgeText,routes,rereadText){
     const route=routes||'not detected';
     const graph=edgeText&&edgeText!=='none'?canonicalizePublicNotation(edgeText):'none';
+    const routeType=routeResultType(model,b);
+    const mrp=model.mrp[b]||{};
+    const edgeTarget=(mrp.edges||[])[0]?.[1]||'';
+    const targetGenerated=edgeTarget&&model.generatedBurdens[edgeTarget]===`MRP(${b})`;
+    const targetBaseline=edgeTarget&&(baselineBurdenIds(model).includes(edgeTarget)||model.initialBurdens.includes(edgeTarget));
     const remained=pickMrpLine(model,b,[/∇·T\s*:/i,/Target:\s*/i,/Reread:\s*/i],rereadText);
     const why=pickMrpLine(model,b,[/MRP resultant\s*:/i,/Resultant\s*:/i,/finding .* routes/i,/no new pressure/i],route&&/STOP/i.test(route)?'No additional live pressure remained after this follow-up check.':'The previous answer landed, but the follow-up check found pressure that still had to be handled.');
-    return [
+    const rows=[
       ['Result', result],
       ['What remained', remained],
       ['Why it matters', why],
       ['Graph movement', graph],
       ['Route', route],
-      ['Technical', `MRP(${b}); graph=${graph}; route=${route}`]
     ];
+    if(routeType==='generated_burden_instantiation'){
+      rows.push(['Generated burden', edgeTarget?`${edgeTarget} [generated-by: MRP(${b})]`:'generated burden detected']);
+      rows.push(['Ledger effect', edgeTarget?`${edgeTarget} was absent from B_LA and added to B_MRP.`:'A new non-baseline pressure was added to B_MRP.']);
+      rows.push(['Next step', edgeTarget?`RECURSE into generated ${edgeTarget}.`:'RECURSE into the generated burden.']);
+    }else if(routeType==='held_burden_activation'){
+      rows.push(['Ledger effect', edgeTarget&&targetBaseline?`${edgeTarget} was already in B_LA; no ledger expansion.`:'Known baseline pressure was activated; no ledger expansion.']);
+      rows.push(['Next step', edgeTarget?`RECURSE to existing ${edgeTarget}.`:'RECURSE to the existing held burden.']);
+    }else if(routeType==='no_new_resultant'){
+      rows.push(['Ledger effect', 'No new burden was added to B_MRP.']);
+      rows.push(['Next step', /STOP/i.test(route)?'STOP / closure as licensed.':'No graph movement unless HOLD or closure is licensed.']);
+    }else if(routeType==='hold_partial'){
+      rows.push(['Ledger effect', 'No ledger expansion; real pressure remains held.']);
+      rows.push(['Next step', 'HOLD / PARTIAL as licensed.']);
+    }else if(routeType==='loopbreak'){
+      rows.push(['Ledger effect', 'No ledger expansion; cyclic pressure is blocked.']);
+      rows.push(['Next step', 'LoopBreak rather than proof-stack expansion.']);
+    }
+    rows.push(['Technical', `MRP(${b}); type=${routeType}; graph=${graph}; route=${route}`]);
+    return rows;
   }
   function routePanelItems(model,b,nextBurden,routes,result){
     const route=String(routes||'').toUpperCase();
@@ -965,7 +1441,7 @@
       return [
         `Move to next identified problem: ${nextTitle}.`,
         `Why closure is withheld: ${reread}`,
-        relation==='another problem surfaced'
+      relation==='generated_burden_instantiation'
           ? `Route type: MRP generated an additional problem from the reread.`
           : `Route type: MRP activated a remaining problem that still had to be answered.`
       ];
@@ -1054,8 +1530,9 @@
   function verdictDigest(model){
     const parties=refutationParties(model);
     const status=collapseLabel(model);
-    const terminalCount=Object.keys(model.terminals||{}).length;
-    const burdenCount=model.burdens.length||0;
+    const accounted=accountedBurdenIds(model);
+    const burdenCount=accounted.length||model.burdens.length||0;
+    const terminalCount=accounted.length?accounted.filter(b=>model.terminals[b]).length:Object.keys(model.terminals||{}).length;
     const closed=/collapse achieved|closed/i.test(status);
     const routeLine=closed
       ? `The final pressure-check stops because no additional input-anchored burden remains live.`
@@ -1108,7 +1585,8 @@
     return collapseLabel(model);
   }
   function renderTopSummary(model){
-    const inventory=semanticBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('')||'<li>not detected</li>';
+    const inventory=baselineBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('')||'<li>not detected</li>';
+    const generatedFollowup=generatedBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('');
     const collapse=model.collapse||{}, pillStatus=model.errors.length?'fail':model.warnings.length?'warn':'ok';
     const verdict=verdictDigest(model);
     const diagnosisList=diagnosisItems(model,model.burdens).map(x=>`<li>${esc(x)}</li>`).join('');
@@ -1119,17 +1597,21 @@
       <section class="outputGrapherTopCard"><h3>Final Answer From The Output</h3><p><strong>${esc(verdict.headline)}</strong></p><p>${esc(verdict.body)}</p></section>
       <section class="outputGrapherTopCard"><h3>Reply / Claim Being Rejected</h3><p>${esc(readerInputDigest(model))}</p></section>
       <section class="outputGrapherTopCard"><h3>What The Reply Depends On</h3><ul>${diagnosisList}</ul><p class="outputGrapherTechMeta">Technical reading: ${esc(technicalDiagnosis(model))}</p></section>
-      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}; B_total=${esc(total)}; B_total = B_LA ∪ B_MRP when generated pressure is present.</p></section>
+      <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Baseline only: this section lists B_LA. Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}; B_total=${esc(total)}; B_total = B_LA ∪ B_MRP when generated pressure is present.</p></section>
+      ${generatedFollowup?`<section class="outputGrapherTopCard"><h3>Preempted Problems Surfaced By Reread</h3><ul>${generatedFollowup}</ul><p class="outputGrapherTechMeta">Technical: B_MRP. Generated burdens are shown separately from Main Problems and must carry generated-by MRP provenance.</p></section>`:''}
       <section class="outputGrapherTopCard"><h3>Closure / Restoration Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>The map shows whether the reply is closed, held, partial, or still live after the final pressure-check.</p><p class="outputGrapherTechMeta">Technical reading: route-gradient=${esc(collapse.routeGradient||'not detected')}; del-dot=${esc(collapse.delDot||collapse.divergence||'not detected')}; del-cross=${esc(collapse.delCross||collapse.curl||'not detected')}; T_lang=${esc(collapse.tLang||'boundary not detected')}</p></section>
     </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Problems: ${model.burdens.length}</span><span class="outputGrapherPill">TTP moves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">Follow-up checks: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminal states: ${Object.keys(model.terminals).length}</span></div>`;
   }
 
   function restorationBullets(model){
-    const burdens=semanticBurdenLabels(model,4);
+    const burdens=accountedBurdenLabels(model,50);
+    const burdenIds=accountedBurdenIds(model);
+    const renderedCount=burdens.length;
+    const terminalCount=burdenIds.length?burdenIds.filter(b=>model.terminals[b]).length:Object.keys(model.terminals||{}).length;
     const held=Object.entries(model.terminals||{})
       .filter(([,state])=>/HOLD|PARTIAL|RECURSE/i.test(String(state)))
       .map(([b,state])=>`${normalizeBurden(b)}: ${state}`);
-    const answered=`The rebuttal accounted for ${Object.keys(model.terminals).length}/${model.burdens.length||0} problems.`;
+    const answered=`The rebuttal accounted for ${terminalCount}/${renderedCount||terminalCount} problems.`;
     const collapse=collapseLabel(model);
     const route=model.errors.length?'The graph still exposes missing or invalid accounting.':held.length?`The final result remains ${collapse}; live states: ${held.join('; ')}.`:`The final result reaches ${collapse}; no unaccounted terminal problem was detected.`;
     const restored=(model.restorationAim&&model.restorationAim!=='not detected')?model.restorationAim:'The handled field is oriented back toward sound fiṭrah and clear intellect after the visible burden cycle has been accounted for.';
@@ -1503,9 +1985,14 @@
       const structureIntro=storySectionBlock('What structure was detected',publicStructureDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#64748b',items:publicStructureItems(model,burdens),technical:publicTechnicalGloss(model),maxLines:0,titleSize:28,bodySize:21,lineHeight:33,pad:32,klass:'outputGrapherStoryPanel outputGrapherStructureDigest'});
       introParts.push(structureIntro.svg); y+=structureIntro.height+18;
     }
-    const invItems=semanticBurdenLabels(model,8);
-    const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
+    const invItems=baselineBurdenLabels(model,12);
+    const invCard=storySectionBlock('Main problems in the reply',invItems.join('; ')||'not detected',margin,y,cardW,{fill:'#07111f',stroke:'#3b82f6',items:invItems.length?invItems:null,technical:'B_LA only; generated B_MRP burdens are not backfilled into this baseline list.',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     introParts.push(invCard.svg); y+=invCard.height+28;
+    const generatedItems=generatedBurdenLabels(model,12);
+    if(generatedItems.length){
+      const generatedCard=storySectionBlock('Preempted problems surfaced by reread',generatedItems.join('; '),margin,y,cardW,{fill:'#14102a',stroke:'#8b5cf6',items:generatedItems,technical:'B_MRP; generated by MRP after a burden landed and absent from B_LA.',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34,badges:[{label:'B_MRP',color:'#6d28d9'}]});
+      introParts.push(generatedCard.svg); y+=generatedCard.height+28;
+    }
     parts.push(`<g class="outputGrapherStorySection outputGrapherIntroSection" data-og-section="intro">${introParts.join('')}</g>`);
     burdens.forEach((b,index)=>{
       const sms=model.submoves[b]||[];
@@ -1520,7 +2007,7 @@
       const burdenFill=generatedBy?'#14102a':'#07111f';
       const burdenStroke=generatedBy?'#8b5cf6':'#263044';
       const titleText=`${issueLabel(b)} — ${bodyBurdenDescription(model,b)}`;
-      const problemText=(generatedBy?`Generated by ${generatedBy}; `:'Baseline Layer-A burden; ')+'problem from the visible output: '+bodyBurdenDescription(model,b);
+      const problemText=(generatedBy?`Generated by ${generatedBy}. Technical: ${b} ∈ B_MRP, absent from B_LA. `:'Baseline Layer-A burden. Technical: B_LA. ')+'Problem from the visible output: '+bodyBurdenDescription(model,b);
       const burdenHeader=renderCardHeader({
         x:margin,
         y,
@@ -1609,7 +2096,7 @@
 
   function renderGraph(model){
     currentModel=model;
-    if(currentGraphMode==='rebuttal') return renderStorySvg(model);
+    if(currentGraphMode==='rebuttal') return renderStorySvg(model,{includeTechnicalAppendix:true});
     const pos={}, width=1780, nodeH=76, rowH=82, laneGap=56, left=36;
     const burdens=model.burdens.length?model.burdens:Object.values(model.nodes).filter(n=>n.kind==='burden').map(n=>n.id);
     const inputNode={id:'input',kind:'input',label:`What the claim says — ${readerInputDigest(model)}`,excerpt:readerInputDigest(model)};
@@ -1790,6 +2277,9 @@
     const paddedHeight=geom.height+exportPadding*2;
     const paddedWidth=geom.width+exportPadding*2;
     const scale=cfg.width/paddedWidth;
+    const oneShotCanvasSafe=canvasSafetyForDimensions(paddedWidth*scale,paddedHeight*scale);
+    const sectionCrops=storySectionCrops(exportSvg);
+    const sectionedCanvasSafe=sectionCrops.length>0&&sectionCrops.every(section=>section.canvasSafe);
     const bottomPadding=Math.round(geom.height-bottom);
     const report={
       contentHeight:geom.height,
@@ -1814,9 +2304,11 @@
       burdenCardCount:burdenCards.length,
       exportedBurdenCardCount:burdenCards.length,
       sectionedExportType:'zip',
-      sectionedExportCount:storySectionCrops(exportSvg).length,
+      sectionedExportCount:sectionCrops.length,
       hasSectionManifest:true,
-      canvasSafe:paddedHeight*scale<30000 && paddedWidth*scale<30000 && paddedHeight*paddedWidth*scale*scale<240000000
+      oneShotCanvasSafe,
+      sectionedCanvasSafe,
+      canvasSafe:oneShotCanvasSafe||sectionedCanvasSafe
     };
     exportBuild.cleanup();
     return report;
@@ -1855,7 +2347,7 @@
     const naturalH=exportSvgNode.viewBox.baseVal.height||exportSvgNode.height.baseVal.value;
     const cfg=pngExportConfig();
     const scale=cfg.width/naturalW;
-    if(naturalH*scale>=30000 || naturalW*scale>=30000 || naturalH*naturalW*scale*scale>=240000000){
+    if(!canvasSafetyForDimensions(naturalW*scale,naturalH*scale)){
       exportPngSections();
       return;
     }
@@ -1874,6 +2366,27 @@
       await nextAnimationFrame();
       await nextAnimationFrame();
     }
+  }
+  const BROWSER_CANVAS_SIDE_LIMIT=30000;
+  const BROWSER_CANVAS_PIXEL_LIMIT=240000000;
+  const EXPORT_CANVAS_SIDE_TARGET=28000;
+  const EXPORT_CANVAS_PIXEL_TARGET=220000000;
+  function canvasSafetyForDimensions(width,height){
+    return width>0&&height>0&&width<BROWSER_CANVAS_SIDE_LIMIT&&height<BROWSER_CANVAS_SIDE_LIMIT&&width*height<BROWSER_CANVAS_PIXEL_LIMIT;
+  }
+  function safePngTargetWidthForDimensions(naturalW,naturalH,preferredWidth){
+    if(!naturalW||!naturalH) return preferredWidth;
+    let safeWidth=preferredWidth;
+    safeWidth=Math.min(safeWidth,Math.floor((EXPORT_CANVAS_SIDE_TARGET*naturalW)/naturalH));
+    safeWidth=Math.min(safeWidth,Math.floor(Math.sqrt((EXPORT_CANVAS_PIXEL_TARGET*naturalW)/naturalH)));
+    return Math.max(480,Math.min(preferredWidth,safeWidth||preferredWidth));
+  }
+  function plannedPngDimensionsForCrop(width,height,preferredWidth){
+    const targetWidth=safePngTargetWidthForDimensions(width,height,preferredWidth);
+    const scale=targetWidth/width;
+    const pngWidth=Math.round(width*scale);
+    const pngHeight=Math.round(height*scale);
+    return {width:pngWidth,height:pngHeight,targetWidth,canvasSafe:canvasSafetyForDimensions(pngWidth,pngHeight)};
   }
   function sectionBoundsPayload(bounds){
     if(!bounds) return null;
@@ -1923,7 +2436,9 @@
       (previousBottom!==null&&viewY<previousBottom-0.25)||
       (nextTop!==null&&viewY+viewHeight>nextTop+0.25)
     );
-    const canvasSafe=viewHeight*viewWidth<240000000&&viewHeight<30000&&viewWidth<30000;
+    const sourceCanvasSafe=canvasSafetyForDimensions(viewWidth,viewHeight);
+    const plannedPng=plannedPngDimensionsForCrop(viewWidth,viewHeight,pngExportConfig().width);
+    const canvasSafe=plannedPng.canvasSafe;
     return {
       name,
       title,
@@ -1943,6 +2458,8 @@
       previousSectionBottom:previousBottom,
       nextSectionTop:nextTop,
       foreignSectionOverlap,
+      sourceCanvasSafe,
+      plannedPng,
       canvasSafe
     };
   }
@@ -2029,6 +2546,11 @@
     };
     img.onerror=()=>{URL.revokeObjectURL(url); resolve(null);}; img.src=url;
     });
+  }
+  function safePngTargetWidthForSection(svgNode,preferredWidth){
+    const naturalW=svgNode.viewBox.baseVal.width||svgNode.width.baseVal.value;
+    const naturalH=svgNode.viewBox.baseVal.height||svgNode.height.baseVal.value;
+    return safePngTargetWidthForDimensions(naturalW,naturalH,preferredWidth);
   }
   function zipCrc32(bytes){
     if(!zipCrc32.table){
@@ -2214,7 +2736,9 @@
         previousSectionBottom:Number.isFinite(section.previousSectionBottom)?Math.round(section.previousSectionBottom):null,
         nextSectionTop:Number.isFinite(section.nextSectionTop)?Math.round(section.nextSectionTop):null,
         foreignSectionOverlap:Boolean(section.foreignSectionOverlap),
-        canvasSafe:Boolean(section.canvasSafe),
+        sourceCanvasSafe:Boolean(section.sourceCanvasSafe??section.canvasSafe),
+        plannedPng:section.plannedPng||null,
+        canvasSafe:Boolean(section.canvasSafe||(renderedFiles[index]?.dimensions&&canvasSafetyForDimensions(renderedFiles[index].dimensions.width,renderedFiles[index].dimensions.height))),
         png:renderedFiles[index]?.dimensions||null
       }))
     };
@@ -2230,11 +2754,12 @@
     const files=[], renderedFiles=[];
     for(const section of sections){
       const sectionSvg=cropSvgForExport(svg,section,56);
-      const png=await renderPngBlobFromSvgNode(sectionSvg,cfg.width);
+      const targetWidth=safePngTargetWidthForSection(sectionSvg,cfg.width);
+      const png=await renderPngBlobFromSvgNode(sectionSvg,targetWidth);
       if(!png) continue;
       const naturalW=sectionSvg.viewBox.baseVal.width||sectionSvg.width.baseVal.value;
       const naturalH=sectionSvg.viewBox.baseVal.height||sectionSvg.height.baseVal.value;
-      const scale=cfg.width/naturalW;
+      const scale=targetWidth/naturalW;
       renderedFiles.push({name:section.name,dimensions:{width:Math.round(naturalW*scale),height:Math.round(naturalH*scale)}});
       files.push({name:section.name,blob:png});
     }
@@ -2255,6 +2780,6 @@
     document.getElementById('ogExportJsonBtn')?.addEventListener('click',exportJson);
     document.getElementById('ogExportMermaidBtn')?.addEventListener('click',exportMermaid);
   }
-  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport,sectionExportPlan};
+  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport,sectionExportPlan,sourceRenderLayer};
   document.addEventListener('DOMContentLoaded',init);
 })();

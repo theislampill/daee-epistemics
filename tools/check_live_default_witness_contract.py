@@ -11,11 +11,18 @@ philosophical quality of an answer.
 from __future__ import annotations
 
 import argparse
+import glob
 import re
 import sys
 from pathlib import Path
 
 from closure_witness_lib import closure_witness_errors, parse_burden_list, parse_closure_witness
+from closure_witness_lib import (
+    compare_visible_to_field_witness,
+    extract_embedded_field_witness,
+    extract_field_witness,
+    field_witness_graph_errors,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -49,6 +56,7 @@ T_LANG_RE = re.compile(
     r"(?:\u03a8\u1d35|PsiI)`?(?:\s+(?:coupling|boundary|coupling boundary))?\s*:\s*(?P<body>\S.*)$"
 )
 RESTORATIVE_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Restorative Response\b")
+CLOSING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closing Formulation\b")
 CLOSURE_HEADING_RE = re.compile(r"(?im)^\s*(?:#{2,5}\s*)?Closure/Reconstruction Witness\b")
 INITIAL_BURDEN_SET_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[(?P<body>[^\]]*)\]")
 B_LA_BURDEN_SET_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:B_LA|𝔅_LA)\s+baseline ledger\s*:\s*\[(?P<body>[^\]]*)\]")
@@ -212,6 +220,11 @@ def check_restorative_order(path: Path, text: str, errors: list[str]) -> None:
     if not restorative:
         errors.append(f"{path}: missing Restorative Response")
         return
+    closing = CLOSING_RE.search(text)
+    if not closing:
+        errors.append(f"{path}: missing Closing Formulation")
+    elif closing.start() < restorative.start():
+        errors.append(f"{path}: Closing Formulation must follow Restorative Response")
     before = text[: restorative.start()]
     if not BANNER_RE.search(before):
         errors.append(f"{path}: Restorative Response appears before noetic-field banner")
@@ -222,8 +235,36 @@ def check_restorative_order(path: Path, text: str, errors: list[str]) -> None:
     closure_heading = CLOSURE_HEADING_RE.search(text)
     if not closure_heading:
         errors.append(f"{path}: missing Closure/Reconstruction Witness")
-    elif closure_heading.start() > restorative.start():
-        errors.append(f"{path}: Closure/Reconstruction Witness must precede Restorative Response")
+    elif closing and closure_heading.start() < closing.start():
+        errors.append(f"{path}: Closure/Reconstruction Witness must follow Closing Formulation in graphable default output")
+    field_witness = re.search(r"(?im)^\s*(?:#{2,5}\s*)?field_witness\b", text)
+    if not field_witness and not re.search(r"(?i)\b(?:minimal|short|no-graph)\b.{0,120}\bgraph(?:ing)?\s+(?:unsupported|partial)", text):
+        errors.append(f"{path}: missing field_witness / graphable reconstruction payload")
+    elif field_witness and closure_heading and field_witness.start() < closure_heading.start():
+        errors.append(f"{path}: field_witness must follow Closure/Reconstruction Witness")
+
+
+def check_field_witness_consistency(path: Path, text: str, errors: list[str]) -> None:
+    field_heading = re.search(r"(?im)^\s*(?:#{2,5}\s*)?field_witness\b", text)
+    if not field_heading:
+        return
+    payload = extract_embedded_field_witness(text)
+    if payload is None:
+        errors.append(f"{path}: field_witness heading present but parser-stable JSON payload missing or invalid")
+        return
+    if isinstance(payload, dict) and "field_witness" in payload:
+        errors.append(f"{path}: field_witness payload is nested under a wrapper; emit the parser-stable field_witness object itself")
+    field_witness = extract_field_witness(payload)
+    if field_witness is None:
+        errors.append(f"{path}: field_witness / graphable reconstruction payload required for normal governed output")
+        return
+    errors.extend(f"{path}: {error}" for error in field_witness_graph_errors(field_witness))
+    witness = parse_closure_witness(text)
+    if witness is not None:
+        errors.extend(
+            f"{path}: {error}"
+            for error in compare_visible_to_field_witness(witness, field_witness)
+        )
 
 
 def check(path: Path) -> list[str]:
@@ -237,19 +278,33 @@ def check(path: Path) -> list[str]:
     check_closure_and_transfer(path, text, errors)
     check_closure_witness(path, text, errors)
     check_restorative_order(path, text, errors)
+    check_field_witness_consistency(path, text, errors)
     for label, pattern in FORBIDDEN_PATTERNS:
         if pattern.search(text):
             errors.append(f"{path}: forbidden {label}")
     return errors
 
 
+def expand_output_paths(paths: list[Path]) -> list[Path]:
+    expanded: list[Path] = []
+    for path in paths:
+        raw = str(path)
+        if any(char in raw for char in "*?["):
+            matches = sorted(Path(match) for match in glob.glob(raw))
+            expanded.extend(matches or [path])
+        else:
+            expanded.append(path)
+    return expanded
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("outputs", nargs="+", type=Path, help="Captured live default output files")
     args = parser.parse_args()
+    outputs = expand_output_paths(args.outputs)
 
     errors: list[str] = []
-    for output in args.outputs:
+    for output in outputs:
         if not output.exists():
             errors.append(f"{output}: missing")
             continue
@@ -262,7 +317,7 @@ def main() -> int:
         return 1
 
     print("live default witness contract: PASS")
-    for output in args.outputs:
+    for output in outputs:
         print(f"- {output}")
     return 0
 

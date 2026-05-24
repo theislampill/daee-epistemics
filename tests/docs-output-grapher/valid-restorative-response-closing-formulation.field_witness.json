@@ -1,0 +1,28 @@
+{
+  "nodes": ["B1"],
+  "edges": [],
+  "ledger": {
+    "B_LA": ["B1"],
+    "B_MRP": [],
+    "B_total": ["B1"]
+  },
+  "mrp_resultants": [
+    {"source": "B1", "type": "no_new_resultant", "graph": null, "route": "STOP"}
+  ],
+  "terminal_states": {
+    "B1": "landed"
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1"],
+    "terminal_states": {
+      "B1": {"state": "landed"}
+    },
+    "dependency_graph": {
+      "nodes": ["B1"],
+      "edges": [],
+      "roots": ["B1"],
+      "acyclic": true
+    },
+    "coverage_complete": true
+  }
+}

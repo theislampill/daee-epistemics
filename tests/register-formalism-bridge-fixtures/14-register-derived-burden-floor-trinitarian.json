@@ -1,0 +1,76 @@
+{
+  "id": "register-derived-burden-floor-trinitarian",
+  "kind": "positive",
+  "matrix_cases": ["register_burden_floor"],
+  "input": "A Trinitarian reading of John 17:3 compresses person/nature predication, proof-text authority, a model carrier, and the eternal-life entailment into one reply.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "Omega", "xi", "mu", "kappa", "register_burden_floor"],
+  "bridge_terms": {
+    "D0": "The surface discourse contains a named theological claim, proof stack, model carrier, and entailment chain.",
+    "PsiN": "The encoded state preserves the live register mix before owner-plan emission.",
+    "selected_N": "The selected frame is the Trinitarian N-frame, but the floor shape comes from register liveness rather than from a John 17:3 template.",
+    "expanded_IR": "IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa) derives the burden floor from live_registers(IR(...)).",
+    "Omega": "The person/nature predication pressure requires an ontological/predication burden.",
+    "xi": "The proof-text and authority-order pressure requires a warrant/authority burden.",
+    "mu": "The Trinitarian model carrier requires carrier decomposition before downstream proof release.",
+    "kappa": "The eternal-life entailment chain requires a dependency/collapse burden.",
+    "register_burden_floor": "For each mapped live register, the burden floor contains at least one burden typed to that register; burdens may be multi-typed."
+  },
+  "control_effects": {
+    "owner_choice": ["do-christian-extensions", "M9-predication-mode", "M7-definition-anchor", "proof-method-audit", "M8-reductio"],
+    "hold_release": "Hold downstream doctrine-immunity and broader proof-stack material until register-typed baseline burdens land.",
+    "burden_selection": "Select register-typed baseline burdens from live Omega, xi, mu, and kappa rather than from a case-label template.",
+    "reread": "After baseline burdens land, reread whether generated MRP boundary pressure remains."
+  },
+  "register_to_burden_obligation": {
+    "derivation": "burden_floor = {B_r : r in live_registers(IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa))}; the N-frame supplies label content.",
+    "live_registers": ["Omega", "xi", "mu", "kappa"],
+    "burden_floor": [
+      {
+        "id": "B1",
+        "register_types": ["Omega", "mu"],
+        "label": "trinitarian-model-carrier / person-nature-predicate-transfer",
+        "register_operation": "decompose the model carrier before predication repair",
+        "carried_registers": ["Omega", "xi", "kappa"],
+        "local_delta": "Delta(B1): model carrier unpacked into predication, proof-authority, and entailment pressures",
+        "land_contribution": "Contribution-to-Land(B1): lands the carrier decomposition so each carried pressure can be routed separately"
+      },
+      {
+        "id": "B2",
+        "register_types": ["xi"],
+        "label": "john-1-1-and-1-john-5-20-proof-stack / authority-order",
+        "register_operation": "sort proof-text authority before hidden support is treated as settled"
+      },
+      {
+        "id": "B3",
+        "register_types": ["kappa"],
+        "label": "eternal-life-knowing-jesus-entailment-chain",
+        "register_operation": "trace the downstream dependency before closure"
+      }
+    ]
+  },
+  "ir_projection": {
+    "claim_level": "mixed-register",
+    "routing_gate": "register-derived-burden-floor",
+    "load_bearing_node": "Trinitarian content fills labels, while live register state supplies the floor structure.",
+    "matched_modules": ["do-christian-extensions", "M9-predication-mode", "M7-definition-anchor", "proof-method-audit", "M8-reductio", "recursive-state-transitions"],
+    "output_shape": "audit-trace",
+    "what_is_withheld_and_why": "Doctrine-immunity recoil and broader proof-system closure are held until the register-derived baseline floor is landed.",
+    "post_render_gate": {
+      "cleared_this_pass": "the floor source is register liveness rather than a named John 17:3 template",
+      "remaining_live_distortions": "MRP boundary pressure may remain after baseline burdens land",
+      "held_routes_rechecked": ["P7-restoration-stops", "proof-method-audit"],
+      "newly_released_routes": ["proof-method-audit"],
+      "next_eligible_pass": "evaluate generated boundary pressure after the register-derived floor lands",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/diagnostic-ir.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+    "atomics/skill/references/case-library/do-christian-extensions.md",
+    "atomics/skill/references/tactics/M9-predication-mode.md",
+    "atomics/skill/references/tactics/M7-definition-anchor.md",
+    "atomics/skill/references/diagnostics/proof-method-audit.md",
+    "atomics/skill/references/tactics/M8-reductio.md"
+  ]
+}

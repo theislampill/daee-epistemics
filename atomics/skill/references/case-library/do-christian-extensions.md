@@ -32,6 +32,7 @@ catalogue_registered: true
 - Activation: Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion).
 - Field target: the family-local burden/dependency field for `do-christian-extensions` after V1/routing confirms this case family; activation cue: Christian theological pressure confirmed (Trinity, incarnation, philosopher's-God, canon authority, perfection-criterion).
 - Burden/submove form: family-local load floor -> matched owner/submove selection -> bounded `ⁿBᵢ[OPᵢ]` operation; catalogue membership is not content release.
+- ACT operation alias: use only a registered source-owned operation label. The registered DO-12 Trinitarian model-pressure operation is exactly `model-identification`, not bare `route` and not an invented synonym; the same operation string must appear in the visible ACT record and `field_witness.owner_activations[].operation`.
 - Δ effect: `ΔⁿB` may contract, split, or integrate a family-local burden; `Δκ` updates downstream dependency radius before closure.
 - Possible ∇ reread: after family burden landing, check target-explicit `∇·B` for residual family pressure and `∇×κ` / route-field curl for circular dependency where relevant.
 - R(H,Δ) obligation: after this owner acts, reread H, remaining burdens, alternate routes, register pressure, dependency loops, and closure state before STOP/RECURSE/PARTIAL.

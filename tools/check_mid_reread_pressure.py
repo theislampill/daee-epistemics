@@ -10,6 +10,7 @@ the philosophical quality of the answer.
 from __future__ import annotations
 
 import argparse
+import glob
 import re
 import sys
 from dataclasses import dataclass
@@ -58,6 +59,20 @@ ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
 REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Δ)\)")
 LANDED_DELTA_RE = re.compile(r"(?:Delta|Δ|ΔⁿB)")
+DIRECT_REREAD_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*(?:Delta|Δ)\)`?\s*:\s*(?:\*\*)?\s*(?P<body>\S.*)$"
+)
+BARE_DIRECT_REREAD_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*(?:Delta|Δ)\)`?\s*:\s*(?:\*\*)?\s*$"
+)
+FIELD_DIAGNOSTICS_DIVERGENCE_RE = re.compile(
+    r"(?:∇\s*·\s*B|del[- ]dot\s*B)\s*:\s*(?P<body>[^;\n]+)",
+    re.IGNORECASE,
+)
+FIELD_DIAGNOSTICS_CURL_RE = re.compile(
+    r"(?:∇\s*×\s*(?:κ|kappa)|del[- ]cross\s*(?:κ|kappa))\s*:\s*(?P<body>[^;\n]+)",
+    re.IGNORECASE,
+)
 MRP_HEADING_RE = (
     r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
 )
@@ -91,7 +106,7 @@ CURL_NEGATION_RE = re.compile(r"(?i)\b(?:no loop|no circular|no churn|not a loop
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
     r"field_witness|pressure class|terminal-state|foreign-premise|definition|grief|"
-    r"FPD|M\d+|M1P|V\d+|R\d+|P\d+|doubt-vs-skepticism|"
+    r"FPD|M\d+|M1P|V\d+|R\d+|P\d+|LoopBreak|doubt-vs-skepticism|"
     r"source-architecture|predicate discipline|application hold|hujjah|hiddenness|"
     r"coercive-guidance|closure-witness|coverage gap)\b"
 )
@@ -104,6 +119,30 @@ BURDEN_ARROW_TARGET_RE = re.compile(
 )
 MRP_REFUTATION_BODY_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:Operation|Result|Contribution-to-Land)\s*:"
+)
+HIGH_LEVERAGE_ROUTE_RE = re.compile(
+    r"(?i)\b(?:independent lordship|canon(?:[- ]wide)?|canon/source authority|"
+    r"source authority|source[- ]order inversion|textual criticism|source-authentication|"
+    r"proof[- ]stack|moral tribunal|worldview recoil|source[- ]worldview|"
+    r"identity/worldview|predication|category repair|hiddenness|coercive guidance|"
+    r"guidance|shubha|shakk|rayb|authority[- ]order|transmission|criterion|"
+    r"translation tribunal|admissibility tribunal|burden-gradient|dependency radius)\b"
+)
+HELD_OR_UNWORKED_ROUTE_RE = re.compile(
+    r"(?i)\b(?:held beyond prompt|held beyond|beyond prompt|beyond bounded claim|"
+    r"held outside scope|outside scope|not released|unreleased|not worked|unworked|"
+    r"not executed|not discharged|left held|carried outside)\b"
+)
+HELD_ROUTE_LICENSE_RE = re.compile(
+    r"(?i)\b(?:HOLD|PARTIAL|RECURSE|generated_burden_instantiation|"
+    r"held_burden_activation|non[- ]load[- ]bearing|not load[- ]bearing|"
+    r"not needed for (?:this|the) (?:scoped|bounded|local) claim|"
+    r"scope gate|local closure only|partial closure|coverage_complete\s*=\s*false|"
+    r"explicitly held with reason|held-with-reason)\b"
+)
+COMPLETE_CLOSURE_STATUS_RE = re.compile(
+    r"(?i)\b(?:COMPLETE|complete closure|coverage_complete\s*[:=]\s*true|"
+    r"runtime .*closed|execution field closed|collapse achieved|no remaining live problem)\b"
 )
 
 
@@ -151,6 +190,23 @@ def field_any(body: str, names: tuple[str, ...]) -> str:
     return ""
 
 
+def direct_reread(body: str) -> str:
+    match = DIRECT_REREAD_RE.search(body)
+    if not match:
+        return ""
+    return f"R(H,Δ): {match.group('body').strip()}"
+
+
+def field_diagnostic_value(body: str, pattern: re.Pattern[str]) -> str:
+    diagnostics = field(body, "Field diagnostics")
+    if not diagnostics:
+        return ""
+    match = pattern.search(diagnostics)
+    if not match:
+        return ""
+    return match.group("body").strip()
+
+
 def parse_pressure_lines(body: str) -> dict[str, str]:
     pressure: dict[str, str] = {}
     for key in PRESSURE_KEYS:
@@ -174,11 +230,13 @@ def parse_mrp_body(body: str) -> MrpBlock:
     return MrpBlock(
         body=body,
         target=field(body, "Target"),
-        reread=field(body, "Reread"),
+        reread=field(body, "Reread") or direct_reread(body),
         landed_delta=field(body, "Landed delta"),
         route_gradient=field(body, "Route-gradient"),
-        divergence=field_any(body, ("∇·T", "del-dot T", "del dot T", "del-dot-T")),
-        curl=field_any(body, ("∇×T", "del-cross T", "del cross T", "del-cross-T")),
+        divergence=field_any(body, ("∇·T", "∇·B", "del-dot T", "del dot T", "del-dot-T", "del-dot B"))
+        or field_diagnostic_value(body, FIELD_DIAGNOSTICS_DIVERGENCE_RE),
+        curl=field_any(body, ("∇×T", "∇×κ", "del-cross T", "del cross T", "del-cross-T", "del-cross kappa"))
+        or field_diagnostic_value(body, FIELD_DIAGNOSTICS_CURL_RE),
         finding=field(body, "Finding"),
         route_result_type=field(body, "MRP route result type"),
         mrp_resultant=field(body, "MRP resultant"),
@@ -241,6 +299,35 @@ def mrp_refutation_content_errors(mrp: MrpBlock, label: str) -> list[str]:
             f"{label}: MRP contains refutation/preemption prose content. This work belongs in the Layer B of the generated B, not in the MRP block."
         ]
     return []
+
+
+def direct_reread_content_errors(mrp: MrpBlock, label: str) -> list[str]:
+    errors: list[str] = []
+    if BARE_DIRECT_REREAD_RE.search(mrp.body):
+        errors.append(f"{label}: R(H,Delta) line must not be a bare heading")
+    match = DIRECT_REREAD_RE.search(mrp.body)
+    if not match:
+        return errors
+    value = match.group("body")
+    if not re.search(r"(?i)\bheld routes rechecked\b", value):
+        errors.append(f"{label}: R(H,Delta) line must record held routes rechecked")
+    if not re.search(r"(?i)\blive remainder\s*:", value):
+        errors.append(f"{label}: R(H,Delta) line must record live remainder")
+    if not re.search(r"(?i)\brelease/next\s*:", value):
+        errors.append(f"{label}: R(H,Delta) line must record release/next consequence")
+    return errors
+
+
+def field_diagnostics_content_errors(mrp: MrpBlock, label: str) -> list[str]:
+    diagnostics = field(mrp.body, "Field diagnostics")
+    if not diagnostics:
+        return []
+    errors: list[str] = []
+    if not FIELD_DIAGNOSTICS_DIVERGENCE_RE.search(diagnostics):
+        errors.append(f"{label}: Field diagnostics must include target-explicit ∇·B state")
+    if not FIELD_DIAGNOSTICS_CURL_RE.search(diagnostics):
+        errors.append(f"{label}: Field diagnostics must include target-explicit ∇×κ state")
+    return errors
 
 
 def check_sidecar(path: Path, text: str, mrp: MrpBlock, errors: list[str]) -> None:
@@ -325,6 +412,56 @@ def has_unreleased_route(body: str) -> bool:
     if re.search(r"(?i)\bno\b.{0,80}\b(?:remain(?:s|ing)?\s+)?unreleased\b", body):
         return False
     return not NEGATED_UNRELEASED_RE.search(body)
+
+
+def has_high_leverage_unworked_route(body: str) -> bool:
+    return bool(HIGH_LEVERAGE_ROUTE_RE.search(body) and HELD_OR_UNWORKED_ROUTE_RE.search(body))
+
+
+def has_held_route_license(body: str) -> bool:
+    return bool(HELD_ROUTE_LICENSE_RE.search(body))
+
+
+def high_leverage_false_closure_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]:
+    """Reject STOP over named, still-held high-leverage routes without a license.
+
+    This is intentionally selection-general: the regexes recognize route classes
+    as examples of high leverage, but the failure is the generic route-state
+    contradiction between a held/unworked route and terminal closure.
+    """
+    if mrp.route != "STOP":
+        return []
+    body = "\n".join(
+        value
+        for value in (
+            mrp.body,
+            mrp.reread,
+            mrp.route_gradient,
+            mrp.mrp_resultant,
+            mrp.boundary,
+        )
+        if value
+    )
+    if not has_high_leverage_unworked_route(body):
+        return []
+    if has_held_route_license(body):
+        return []
+    return [
+        f"{label}: STOP/closure cannot leave high-leverage held routes beyond prompt; "
+        "execute the route, generate/activate the burden, HOLD/PARTIAL it, or prove it non-load-bearing"
+    ]
+
+
+def closure_over_held_route_errors(path: Path, text: str) -> list[str]:
+    if not has_high_leverage_unworked_route(text):
+        return []
+    if not COMPLETE_CLOSURE_STATUS_RE.search(text):
+        return []
+    if has_held_route_license(text):
+        return []
+    return [
+        f"{path}: output lists high-leverage routes as held beyond prompt but still claims complete closure"
+    ]
 
 
 def partial_owner_closure_errors(path: Path, text: str) -> list[str]:
@@ -423,6 +560,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: Target must name a burden")
     if not mrp.reread or not re.search(r"R\(H,\s*(?:Δ|Delta)\)", mrp.reread):
         errors.append(f"{label}: Reread must invoke R(H,Δ)")
+    errors.extend(direct_reread_content_errors(mrp, label))
     if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
         errors.append(f"{label}: Landed delta must name ΔⁿB/Δ")
     if not mrp.route_gradient:
@@ -433,6 +571,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: must record active ∇·T state")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
         errors.append(f"{label}: must record active ∇×T state")
+    errors.extend(field_diagnostics_content_errors(mrp, label))
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
         errors.append(f"{label}: Pressure activations missing {key}")
@@ -441,8 +580,12 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    if not mrp.route_result_type:
+        errors.append(f"{label}: MRP route result type missing")
     errors.extend(route_result_type_errors(path, mrp, label))
     errors.extend(mrp_refutation_content_errors(mrp, label))
+    if not mrp.graph_delta:
+        errors.append(f"{label}: Graph delta missing")
     if mrp.route not in ROUTES:
         errors.append(f"{label}: Route invalid: {mrp.route!r}")
     if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
@@ -458,6 +601,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
     if mrp.route == "STOP" and has_unreleased_route(mrp.body):
         errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
+    errors.extend(high_leverage_false_closure_errors(path, mrp, label))
     return errors
 
 
@@ -474,6 +618,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: Target must name a burden")
     if not mrp.reread or not REREAD_RE.search(mrp.reread):
         errors.append(f"{label}: Reread must invoke R(H,Delta)")
+    errors.extend(direct_reread_content_errors(mrp, label))
     if not mrp.landed_delta or not LANDED_DELTA_RE.search(mrp.landed_delta):
         errors.append(f"{label}: Landed delta must name Delta/Δ")
     if not mrp.route_gradient:
@@ -484,6 +629,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
         errors.append(f"{label}: must record active divergence state")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
         errors.append(f"{label}: must record active curl state")
+    errors.extend(field_diagnostics_content_errors(mrp, label))
     errors.extend(curl_diagnostic_errors(path, mrp, label))
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
@@ -493,10 +639,14 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
     if mrp.finding not in FINDINGS:
         errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
+    if not mrp.route_result_type:
+        errors.append(f"{label}: MRP route result type missing")
     errors.extend(route_result_type_errors(path, mrp, label))
     errors.extend(mrp_refutation_content_errors(mrp, label))
     if not mrp.mrp_resultant:
         errors.append(f"{label}: MRP resultant missing")
+    if not mrp.graph_delta:
+        errors.append(f"{label}: Graph delta missing")
     if mrp.route not in ROUTES:
         errors.append(f"{label}: Route invalid: {mrp.route!r}")
     if mrp.preemption_basis not in {"none", "graph-bound", "commitment-bound", "framework-bound"}:
@@ -519,6 +669,7 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
             errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
     if mrp.route == "STOP" and has_unreleased_route(mrp.body):
         errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
+    errors.extend(high_leverage_false_closure_errors(path, mrp, label))
     return errors
 
 
@@ -527,6 +678,7 @@ def check_fixture(path: Path) -> list[str]:
     errors: list[str] = []
     errors.extend(partial_owner_closure_errors(path, text))
     errors.extend(stop_before_continuation_errors(path, text))
+    errors.extend(closure_over_held_route_errors(path, text))
     mrp = parse_mrp(text)
     if mrp is None:
         return [f"{path}: missing [Mid-Reread Pressure] block"]
@@ -540,6 +692,7 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: MRP Target must name a burden")
     if not mrp.reread or not re.search(r"R\(H,\s*(?:Δ|Delta)\)", mrp.reread):
         errors.append(f"{path}: MRP Reread must invoke R(H,Δ)")
+    errors.extend(direct_reread_content_errors(mrp, str(path)))
     if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
         errors.append(f"{path}: MRP Landed delta must name ΔⁿB/Δ")
     if not mrp.route_gradient:
@@ -550,6 +703,7 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: MRP must record active ∇·T state: neutral/settled/bounded/non-neutral")
     if not mrp.curl or curl_state not in ALLOWED_CURL:
         errors.append(f"{path}: MRP must record active ∇×T state: null/resolved/held/non-null")
+    errors.extend(field_diagnostics_content_errors(mrp, str(path)))
     errors.extend(curl_diagnostic_errors(path, mrp, str(path)))
     missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
     for key in missing_pressure:
@@ -561,8 +715,12 @@ def check_fixture(path: Path) -> list[str]:
             )
     if mrp.finding not in FINDINGS:
         errors.append(f"{path}: MRP Finding invalid: {mrp.finding!r}")
+    if not mrp.route_result_type:
+        errors.append(f"{path}: MRP route result type missing")
     errors.extend(route_result_type_errors(path, mrp, str(path)))
     errors.extend(mrp_refutation_content_errors(mrp, str(path)))
+    if not mrp.graph_delta:
+        errors.append(f"{path}: MRP Graph delta missing")
     if mrp.route not in ROUTES:
         errors.append(f"{path}: MRP Route invalid: {mrp.route!r}")
     if mrp.preemption_basis not in {"none", "graph-bound", "commitment-bound", "framework-bound"}:
@@ -582,6 +740,7 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: RECURSE requires visible graph delta edge")
     if mrp.route == "STOP" and has_unreleased_route(mrp.body):
         errors.append(f"{path}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
+    errors.extend(high_leverage_false_closure_errors(path, mrp, str(path)))
     if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
         errors.append(f"{path}: genuine-dependent finding requires RECURSE and graph edge")
     if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
@@ -615,6 +774,21 @@ def check_fixture(path: Path) -> list[str]:
         errors.append(f"{path}: non-null ∇×T requires STOP/HOLD/RECURSE/LoopBreak route")
     if curl_state == "non-null" and mrp.route == "RECURSE" and not has_edge(mrp.graph_delta):
         errors.append(f"{path}: non-null ∇×T recursion requires graph-bound edge if it is not LoopBreak/STOP/HOLD")
+    if curl_state in {"held", "non-null"}:
+        has_non_load_bearing_proof = bool(
+            re.search(
+                r"(?i)\b(?:non[- ]load[- ]bearing|not load[- ]bearing|outside scope|not operative|"
+                r"framework[- ]concession[- ]bound|not an ordinary downstream burden|no ordinary downstream burden|"
+                r"no ordinary graph edge)\b",
+                mrp.body,
+            )
+        )
+        if mrp.route == "STOP" and mrp.route_result_type != "loopbreak" and not has_non_load_bearing_proof:
+            errors.append(
+                f"{path}: nonzero ∇×T cannot STOP without LoopBreak, HOLD/PARTIAL/RECURSE, or non-load-bearing proof"
+            )
+    if mrp.route == "LoopBreak(∇×T)" and curl_state not in {"held", "non-null"}:
+        errors.append(f"{path}: LoopBreak(∇×T) requires diagnosed nonzero ∇×T")
     if mrp.finding == "hidden-framework-recoil":
         if not re.search(r"framework-concession-bound|hidden-framework", text, re.IGNORECASE):
             errors.append(f"{path}: hidden-framework-recoil must mark framework-concession boundary")
@@ -662,7 +836,7 @@ def check_output_reconstructibility(path: Path) -> list[str]:
         errors.append(f"{path}: reconstructibility missing submove nodes")
     if not re.search(r"(?im)^\s*(?:Land\(|Landed delta\s*:|Land\(Bn\)\s*:\s*PARTIAL)", text):
         errors.append(f"{path}: reconstructibility missing Land(Bn) or partial landing")
-    if not re.search(r"(?im)^\s*Reread\s*:\s*R\(H,\s*(?:Delta|Δ)\)", text):
+    if not re.search(r"(?im)^\s*(?:[-*]\s*)?(?:Reread\s*:\s*)?R\(H,\s*(?:Delta|Δ)\)(?::|\b)", text):
         errors.append(f"{path}: reconstructibility missing R(H,Delta) reread state")
     if not re.search(r"(?im)^\s*MRP resultant\s*:\s*\S", text):
         errors.append(f"{path}: reconstructibility missing MRP resultant")
@@ -688,6 +862,18 @@ def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
     valid = sorted((root / "valid").glob("*.md"))
     invalid = sorted((root / "invalid").glob("*.md"))
     return valid, invalid
+
+
+def expand_output_paths(paths: list[Path]) -> list[Path]:
+    expanded: list[Path] = []
+    for path in paths:
+        raw = str(path)
+        if any(marker in raw for marker in "*?[]"):
+            matches = sorted(Path(match) for match in glob.glob(raw))
+            expanded.extend(matches or [path])
+        else:
+            expanded.append(path)
+    return expanded
 
 
 def main() -> int:
@@ -724,7 +910,8 @@ def main() -> int:
         else:
             invalid_checked += 1
     output_checked = 0
-    for path in args.outputs:
+    output_paths = expand_output_paths(args.outputs)
+    for path in output_paths:
         found = check_fixture(path)
         found.extend(check_output_reconstructibility(path))
         if found:
@@ -769,7 +956,7 @@ def main() -> int:
     print("mid-reread pressure check: PASS")
     print(f"Valid fixtures checked: {valid_checked}")
     print(f"Invalid fixtures checked: {invalid_checked}")
-    if args.outputs:
+    if output_paths:
         print(f"Hosted/live outputs checked: {output_checked}")
     return 0
 

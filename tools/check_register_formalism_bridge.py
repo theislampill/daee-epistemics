@@ -178,6 +178,7 @@ SYMBOL_OPERATIVITY_REQUIRED = [
 FIXTURE_MATRIX_REQUIRED = {
     "local_transition",
     "register_activation",
+    "register_burden_floor",
     "held_frame",
     "closure_prevention",
     "divergence_curl",
@@ -195,6 +196,38 @@ REGISTER_TTP_REQUIREMENTS = {
     "heart": ("affective", "release posture", "softness", "closure posture"),
     "sigma": ("discourse", "pattern state", "routing"),
 }
+
+REGISTER_ALIASES = {
+    "heart": "heart",
+    "\u2665": "heart",
+    "xi": "xi",
+    "\u03be": "xi",
+    "omega": "Omega",
+    "Omega": "Omega",
+    "\u03a9": "Omega",
+    "mu": "mu",
+    "\u03bc": "mu",
+    "kappa": "kappa",
+    "\u03ba": "kappa",
+    "sigma": "sigma",
+    "\u03c3": "sigma",
+}
+
+REGISTER_BURDEN_OBLIGATIONS = {
+    "Omega": "ontological/predication burden",
+    "xi": "warrant/authority burden",
+    "mu": "memetic carrier burden",
+    "kappa": "dependency/collapse burden",
+    "heart": "affective/posture burden",
+}
+
+MU_CARRIER_OPERATION_RE = re.compile(
+    r"(?i)\b(?:carrier|packag(?:e|ing)|compress(?:ion|es|ed)?|stabilizer|default[- ]carrier)\b"
+)
+MU_DECOMPOSITION_RE = re.compile(
+    r"(?i)\b(?:decompos(?:e|es|ed|ition)|unpack(?:s|ed|ing)?|expos(?:e|es|ed|ing)|"
+    r"separat(?:e|es|ed|ing)|split(?:s|ting)?|disaggregate(?:s|d)?)\b"
+)
 
 NLA_REQUIRED_PHRASES = (
     "Natural-language bottleneck for noetic-state reconstruction",
@@ -691,6 +724,7 @@ BRIDGE_REQUIRED_COVERAGE = {
     "anti_symbol_theater",
     "divergence_curl_operators",
     "nla_reconstruction",
+    "register_burden_floor",
 }
 
 REGISTER_EFFECT_REQUIREMENTS = {
@@ -731,6 +765,181 @@ def string_list(value: object) -> list[str]:
     if isinstance(value, list):
         return [item for item in value if isinstance(item, str)]
     return []
+
+
+def normalize_register(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    token = value.strip().strip("`")
+    if token in REGISTER_ALIASES:
+        return REGISTER_ALIASES[token]
+    return REGISTER_ALIASES.get(token.lower())
+
+
+def normalize_register_list(value: object) -> tuple[set[str], list[str]]:
+    if isinstance(value, str):
+        raw_items = [part.strip() for part in re.split(r"[,/|]", value) if part.strip()]
+    elif isinstance(value, list):
+        raw_items = [item for item in value if isinstance(item, str)]
+    else:
+        return set(), []
+
+    registers: set[str] = set()
+    invalid: list[str] = []
+    for item in raw_items:
+        register = normalize_register(item)
+        if register:
+            registers.add(register)
+        else:
+            invalid.append(item)
+    return registers, invalid
+
+
+def burden_register_types(burden: dict[str, object]) -> tuple[set[str], list[str]]:
+    registers: set[str] = set()
+    invalid: list[str] = []
+    for key in ("register_types", "registers", "types", "type", "register", "burden_type"):
+        if key not in burden:
+            continue
+        found, bad = normalize_register_list(burden.get(key))
+        registers.update(found)
+        invalid.extend(bad)
+    return registers, invalid
+
+
+def burden_text(burden: dict[str, object]) -> str:
+    chunks: list[str] = []
+    for key in (
+        "id",
+        "label",
+        "content",
+        "operation",
+        "description",
+        "register_operation",
+        "local_delta",
+        "land_contribution",
+        "contribution_to_land",
+    ):
+        value = burden.get(key)
+        if isinstance(value, str):
+            chunks.append(value)
+    for key in ("carried_registers", "carried_pressures"):
+        value = burden.get(key)
+        if isinstance(value, list):
+            chunks.extend(str(item) for item in value)
+        elif isinstance(value, str):
+            chunks.append(value)
+    return " ".join(chunks)
+
+
+def mu_specificity_errors(fixture_id: str, burden: dict[str, object]) -> list[str]:
+    errors: list[str] = []
+    text = burden_text(burden)
+    if not (MU_CARRIER_OPERATION_RE.search(text) and MU_DECOMPOSITION_RE.search(text)):
+        errors.append(
+            f"{fixture_id}: MU_OPERATION_FAILURE: mu-typed burden must perform carrier decomposition, not merely name mu/carrier"
+        )
+
+    carried_registers, invalid = normalize_register_list(
+        burden.get("carried_registers") or burden.get("carried_pressures")
+    )
+    if invalid:
+        errors.append(f"{fixture_id}: mu-typed burden names unknown carried register(s): {invalid}")
+    if not {"Omega", "xi", "kappa"}.issubset(carried_registers):
+        errors.append(
+            f"{fixture_id}: MU_OPERATION_FAILURE: mu carrier decomposition must identify carried Omega/xi/kappa pressures"
+        )
+
+    local_delta = str(
+        burden.get("local_delta")
+        or burden.get("delta")
+        or burden.get("Delta")
+        or burden.get("result_delta")
+        or ""
+    )
+    land = str(
+        burden.get("land_contribution")
+        or burden.get("contribution_to_land")
+        or burden.get("land")
+        or ""
+    )
+    if not re.search(r"(?i)(?:Delta|Δ|state[- ]change|local delta)", local_delta):
+        errors.append(f"{fixture_id}: MU_OPERATION_FAILURE: mu carrier decomposition must produce local Delta")
+    if not re.search(r"(?i)(?:Land|contribution[- ]to[- ]land|contribution to land|lands?)", land):
+        errors.append(f"{fixture_id}: MU_OPERATION_FAILURE: mu carrier decomposition must produce Land contribution")
+    return errors
+
+
+def register_burden_obligation_errors(fixture_id: str, obligation: object) -> list[str]:
+    found_errors: list[str] = []
+    if not isinstance(obligation, dict):
+        return [f"{fixture_id}: register_to_burden_obligation must be an object"]
+
+    derivation = obligation.get("derivation") or obligation.get("derivation_source")
+    if not isinstance(derivation, str) or not derivation.strip():
+        found_errors.append(
+            f"{fixture_id}: DERIVATION_FAILURE: burden floor must name live-register derivation from IR"
+        )
+    else:
+        derivation_lower = derivation.lower()
+        if "live_register" not in derivation_lower or "ir(" not in derivation_lower:
+            found_errors.append(
+                f"{fixture_id}: DERIVATION_FAILURE: burden floor derivation must cite live_registers(IR(...))"
+            )
+        if "case template" in derivation_lower or "hardcoded" in derivation_lower:
+            found_errors.append(
+                f"{fixture_id}: DERIVATION_FAILURE: burden floor cannot be a case-label template"
+            )
+
+    live_registers, invalid_live = normalize_register_list(obligation.get("live_registers"))
+    if invalid_live:
+        found_errors.append(f"{fixture_id}: unknown live register(s): {invalid_live}")
+    if not live_registers:
+        found_errors.append(
+            f"{fixture_id}: DERIVATION_FAILURE: register_to_burden_obligation must list live_registers"
+        )
+
+    burden_floor = obligation.get("burden_floor")
+    if not isinstance(burden_floor, list) or not burden_floor:
+        found_errors.append(
+            f"{fixture_id}: COMPLETENESS_FAILURE: register-derived burden_floor must be a non-empty array"
+        )
+        return found_errors
+
+    covered: dict[str, list[dict[str, object]]] = {register: [] for register in REGISTER_BURDEN_OBLIGATIONS}
+    for index, burden in enumerate(burden_floor, start=1):
+        if not isinstance(burden, dict):
+            found_errors.append(f"{fixture_id}: burden_floor[{index}] must be an object")
+            continue
+        burden_id = burden.get("id")
+        if not isinstance(burden_id, str) or not burden_id.strip():
+            found_errors.append(f"{fixture_id}: burden_floor[{index}] missing id")
+        registers, invalid_registers = burden_register_types(burden)
+        if invalid_registers:
+            found_errors.append(f"{fixture_id}: burden_floor[{index}] unknown register type(s): {invalid_registers}")
+        if not registers:
+            found_errors.append(
+                f"{fixture_id}: COMPLETENESS_FAILURE: burden_floor[{index}] lacks register_types"
+            )
+        for register in registers:
+            if register in covered:
+                covered[register].append(burden)
+
+    for register in sorted(live_registers & set(REGISTER_BURDEN_OBLIGATIONS)):
+        if not covered[register]:
+            found_errors.append(
+                f"{fixture_id}: COMPLETENESS_FAILURE: live register {register} requires "
+                f"{REGISTER_BURDEN_OBLIGATIONS[register]} in burden_floor"
+            )
+
+    if "mu" in live_registers:
+        mu_burdens = covered["mu"]
+        if mu_burdens:
+            burden_errors = [mu_specificity_errors(fixture_id, burden) for burden in mu_burdens]
+            if not any(not errors for errors in burden_errors):
+                found_errors.extend(error for errors in burden_errors for error in errors)
+
+    return found_errors
 
 
 def is_noneish(value: object) -> bool:
@@ -1260,6 +1469,8 @@ def validate_bridge_fixture(
             errors.append(f"{fixture_id}: local_transition matrix case must preserve Delta-nB/Delta-kappa distinction")
     if "register_activation" in matrix_cases and not {"xi", "Omega", "mu", "kappa"}.issubset(covers):
         errors.append(f"{fixture_id}: register_activation matrix case must cover xi/Omega/mu/kappa")
+    if "register_burden_floor" in matrix_cases and "register_burden_floor" not in covers:
+        errors.append(f"{fixture_id}: register_burden_floor matrix case must cover register_burden_floor")
     if "held_frame" in matrix_cases and "selected_N" not in covers:
         errors.append(f"{fixture_id}: held_frame matrix case must cover selected_N")
     if "shannon_nla_boundary" in matrix_cases and "shannon_boundary" not in covers:
@@ -1301,6 +1512,30 @@ def validate_bridge_fixture(
         errors.append(f"{fixture_id}: control_effects must name a runtime control effect")
     if "closure_prevention" in matrix_cases and "partial_behavior" not in effect_keys:
         errors.append(f"{fixture_id}: closure_prevention matrix case must exercise partial_behavior")
+    if "register_burden_floor" in matrix_cases and "burden_selection" not in effect_keys:
+        errors.append(f"{fixture_id}: register_burden_floor matrix case must exercise burden_selection")
+
+    if "register_to_burden_obligation" in payload:
+        errors.extend(register_burden_obligation_errors(fixture_id, payload["register_to_burden_obligation"]))
+
+    invalid_obligations: list[object] = []
+    if "invalid_register_to_burden_obligation" in payload:
+        invalid_obligations.append(payload["invalid_register_to_burden_obligation"])
+    if isinstance(payload.get("invalid_register_to_burden_obligations"), list):
+        invalid_obligations.extend(payload["invalid_register_to_burden_obligations"])
+    for index, invalid_obligation in enumerate(invalid_obligations, start=1):
+        canary_errors = register_burden_obligation_errors(f"{fixture_id}.canary{index}", invalid_obligation)
+        if not canary_errors:
+            errors.append(
+                f"{fixture_id}: invalid_register_to_burden_obligation[{index}] unexpectedly passed"
+            )
+        elif not any(
+            marker in " ".join(canary_errors)
+            for marker in ("COMPLETENESS_FAILURE", "DERIVATION_FAILURE", "MU_OPERATION_FAILURE")
+        ):
+            errors.append(
+                f"{fixture_id}: invalid_register_to_burden_obligation[{index}] did not hit completeness/derivation guard"
+            )
 
     projection = payload.get("ir_projection")
     decision: str | None = None

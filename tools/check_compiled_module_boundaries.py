@@ -30,6 +30,7 @@ def main() -> int:
     catalogue = catalogue_by_id(root)
     seen: dict[str, str] = {}
     metadata_rels: set[str] = set()
+    manifest_sources: dict[str, dict[str, str]] = {}
     manifest_path = compiled_root / "build-manifest.json"
     if manifest_path.is_file():
         try:
@@ -37,6 +38,13 @@ def main() -> int:
             metadata_copies = manifest.get("runtime_metadata_copies") or {}
             if isinstance(metadata_copies, dict):
                 metadata_rels = set(metadata_copies)
+            sources = manifest.get("sources") or {}
+            if isinstance(sources, dict):
+                manifest_sources = {
+                    module_id: entry
+                    for module_id, entry in sources.items()
+                    if isinstance(module_id, str) and isinstance(entry, dict)
+                }
         except json.JSONDecodeError as exc:
             errors.append(f"build-manifest.json parse error: {exc}")
     markdown_files = [
@@ -57,17 +65,20 @@ def main() -> int:
                 errors.append(f"{rel_bundle}: section missing {', '.join(missing)}")
                 continue
             module_id = section["MODULE_ID"]
-            source = section["SOURCE"]
             if module_id in seen:
                 errors.append(f"duplicate module id in compiled bundles: {module_id} ({seen[module_id]}, {rel_bundle})")
             seen[module_id] = rel_bundle
+            catalogue_entry = catalogue.get(module_id)
+            manifest_entry = manifest_sources.get(module_id, {})
+            source = manifest_entry.get("source") or (
+                canonical_source_rel(catalogue_entry.get("path", "")) if catalogue_entry else ""
+            )
             expected_canonical_path = f"{OUTPUT_ROOT_REL}/{source_rel_from_legacy(source)}"
             if section["CANONICAL_PATH"] != expected_canonical_path:
                 errors.append(
                     f"{rel_bundle}: canonical path does not match source for {module_id}: "
                     f"{section['CANONICAL_PATH']} != {expected_canonical_path}"
                 )
-            catalogue_entry = catalogue.get(module_id)
             if catalogue_entry:
                 expected_source = canonical_source_rel(catalogue_entry.get("path", ""))
                 if expected_source != source:

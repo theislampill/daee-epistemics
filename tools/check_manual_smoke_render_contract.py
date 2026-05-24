@@ -1,0 +1,1688 @@
+#!/usr/bin/env python3
+"""Validate manual/default hard-smoke render contract.
+
+This checker is intentionally structural. It guards the v0.4.3.0 manual smoke
+regression class where a readable theological answer drops the required public
+execution banner, canonical burden notation, MRP route-result fields, generated
+burden ledger, generated-by provenance, and Closing Formulation.
+"""
+
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import re
+import sys
+from pathlib import Path
+
+from closure_witness_lib import (
+    compare_visible_to_field_witness,
+    extract_embedded_field_witness,
+    extract_field_witness,
+    field_witness_graph_errors,
+    parse_closure_witness,
+)
+
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+
+SUP = "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079"
+SUB = "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"
+B_LEDGER = "\U0001d505"
+WRONG_B_LEDGER = "\U0001d4d1"
+WRONG_CLOSURE = "\U0001d4d2"
+GENERIC_BURDEN_PLACEHOLDER_RE = re.compile(
+    r"(?:[\u207f\u1d4f]B(?:[" + SUB + r"]+)?)"
+    r"|(?:\bB[kn]\b|\bB[kn]\s*(?:->|\u2192)|(?:Land|MRP)\(\s*B[kn]\s*\)|Target:\s*B[kn]\b)"
+)
+SOURCE_OWNED_CONCEALMENT = (
+    "iʿrāḍ",
+    "irad",
+    "i'rad",
+    "juḥūd",
+    "juhud",
+    "inkār",
+    "inkar",
+    "istikbār",
+    "istikbar",
+    "nifāq",
+    "nifaq",
+    "mixed",
+    "clarification",
+    "shubhah",
+    "shubha",
+    "shakk",
+    "rayb",
+    "clear",
+)
+HIGH_LEVERAGE_HELD_ROUTE_RE = re.compile(
+    r"(?i)\b(?:independent lordship|canon[- ]wide|textual criticism|epistemology of canon|"
+    r"full Christology|source/proof-stack|source authority|proof[- ]stack|mystery shield|"
+    r"worldview recoil|moral tribunal shift|authority-order|predication|source-worldview|"
+    r"Christology|theology|hiddenness|metaphysics|epistemology|identity/worldview|"
+    r"historical/transmission|transmission|source-authority|analogy[- ]stack|shubha|"
+    r"shakk|rayb|moral protest|secular moral|source[- ]order|criterion)\b"
+)
+UNROUTED_HELD_ROUTE_RE = re.compile(
+    r"(?i)\b(?:not released|unreleased|held beyond|beyond prompt|beyond bounded claim|"
+    r"held outside scope|not worked)\b"
+)
+TERMINAL_CLOSURE_RE = re.compile(r"(?i)\b(?:STOP|closure|complete|collapse achieved|no remaining live problem)\b")
+ROUTING_OR_BOUNDARY_PROOF_RE = re.compile(
+    r"(?i)\b(?:held_burden_activation|generated_burden_instantiation|HOLD|PARTIAL|"
+    r"coverage_complete\s*=\s*false|non[- ]load[- ]bearing|not load[- ]bearing|"
+    r"not needed for (?:this|the) (?:scoped|bounded|local) claim|scope gate|"
+    r"local closure only|partial closure)\b"
+)
+BAD_ROUTE_VALUE_RE = re.compile(
+    r"(?im)^\s*Route\s*:\s*(?:RECURSE|STOP|HOLD|LoopBreak\(∇×T\))\s+(?:to|into|/|with|because|generated|closure)\b"
+)
+MRP_BLOCK_WITHOUT_TARGET_RE = re.compile(r"(?ims)^\s*\[Mid-Reread Pressure\]\s*\n(?!\s*Target\s*:)")
+INLINE_REREAD_HEADING_RE = re.compile(
+    r"(?im)^\s*R\(H,\s*(?:\u0394|Delta)\)\s*:\s*\[Mid-Reread Pressure\]\s*$"
+)
+HIGH_MASS_TERMS_RE = re.compile(
+    r"(?i)\b(?:source[- ]worldview|worldview|proof[- ]stack|textual|canon|Christology|"
+    r"independent lordship|hidden premise|dependency radius|source authority|authority-order|"
+    r"predication|category|moral tribunal|worship[- ]worthiness|hiddenness|coercive guidance|"
+    r"accountability|culpability|arbitrary command|command authority|mystery shield|"
+    r"immunity|recoil|epistemology|self[- ]refutation|"
+    r"performative contradiction|consequence trace|LoopBreak|proof[- ]carousel)\b"
+)
+LOW_MASS_LICENSE_RE = re.compile(
+    r"(?i)\b(?:diagnostic state proves low mass|low[- ]mass license|low burden mass because|"
+    r"few hidden premises|low dependency radius|no source/worldview load|no source-worldview load|"
+    r"no predication/category repair|no proof-stack|no textual backstop|no MRP-detected recoil|"
+    r"low closure risk)\b"
+)
+LOW_MASS_ASSERTION_RE = re.compile(
+    r"(?i)\b(?:treated as low[- ]mass|low[- ]mass burden|low burden mass|"
+    r"burden mass is low|bounded scope makes it low[- ]mass|local scope makes it low[- ]mass|"
+    r"bounded/local scope removes|bounded scope removes|local scope removes)\b"
+)
+LABEL_LIKE_VALUE_RE = re.compile(
+    r"(?i)^(?:dummy|label|named|name it|trace it|traced|identify it|identified|"
+    r"expose|exposed|contributes?|lands?|landed|bounded|local|cleared|none|"
+    r"the route is named|the pressure is named)\.?$"
+)
+RELATIONAL_PRESSURE_RE = re.compile(
+    r"(?i)\b(?:identity|person|label|source|authority|criterion|reason|boundary|"
+    r"model|mystery|proof|doctrine|worldview|frame)[- ]as[- ](?:warrant|criterion|"
+    r"tribunal|immunity|proof|authority|source|court|support)\b"
+)
+PLACEHOLDER_OWNER_RE = re.compile(
+    rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+)\s*"
+    r"\[OP(?:[ᵢi])?\](?:\s*\[[^\]]+\])?"
+)
+OPERATION_MECHANISM_RE = re.compile(
+    r"(?i)\b(?:hidden premise|escape route|smuggl|burden shift|proof[- ]stack|source[- ]order|"
+    r"source authority|authority frame|scope gate|bounded claim|local claim|total[- ]system|"
+    r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
+    r"predicate|predication|category|dependency|criterion|immunity|recoil|framework|"
+    r"broader material|held material|state change|delta|consequence|entailment|"
+    r"self[- ]refutation|performative contradiction|internal contradiction|semantic|referent|"
+    r"authority[- ]order|proof[- ]carousel|stop condition|closure boundary|circularity|"
+    r"loop|restoration|fitrah|tawhid|positive orientation|guidance[- ]order|"
+    r"guidance[- ]vs[- ]compulsion|source[- ]function|conveyance|warning|tawf[iī]q|"
+    r"non[- ]coercive guidance)\b"
+)
+OPERATION_ACTION_RE = re.compile(
+    r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|block|repair|repairs|repaired|repairing|"
+    r"trace|ground|test|split|splits|splitting|separate|separates|separated|separating|"
+    r"prevent|audit|apply|tests?|"
+    r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
+    r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
+    r"assume|assumes|assumed|assuming|follow|follows|followed|following|"
+    r"shifts?|smuggl|reopen|supplies|explains|cannot retroactively|does not mean|"
+    r"answered according|sort|bound|stop|break|restores?|return|orient|reorient|re-home|honor)\b"
+)
+OPERATION_SCOPE_RE = re.compile(
+    r"(?i)\b(?:original (?:local )?claim|local (?:claim|argument|reply|refutation|closure)|"
+    r"specific (?:reply|argument|claim)|bounded (?:claim|refutation|closure|answer)|"
+    r"scoped (?:claim|closure)|total[- ]system|whole[- ]system|entire doctrine|"
+    r"every (?:text|possible route|doctrine)|broader (?:system|framework|doctrine|material)|"
+    r"proof[- ]stack claim|predicate|predication|identity claim|sender/sent|source[- ]order|"
+    r"authority[- ]order|ontology|criterion|tribunal)\b"
+)
+OPERATION_TEST_RE = re.compile(
+    r"(?i)\b(?:hidden premise|new premise|unargued|unstated|must be (?:stated|tested|carried)|"
+    r"would require|requires (?:a )?(?:new burden|fixed|stable|criterion)|"
+    r"reopen(?:ed|ing)?|reopen condition|admissible only if|cannot be smuggled|smuggled|"
+    r"tests? which inference|which inference depends|would need its own burden|importing a new ontology|"
+    r"must carry|must supply)\b"
+)
+OPERATION_FAILURE_RE = re.compile(
+    r"(?i)\b(?:cannot (?:rescue|repair|retroactively|function)|not a rescue|does not (?:establish|license|derive)|"
+    r"burden shift|burden shifting|proof[- ]carousel|evasion|not evidence|barred|blocked|fails because)\b"
+)
+STATE_CHANGE_RE = re.compile(
+    r"(?i)\b(?:blocked|blocks|removed|removes|separated|separates|held|released|routed|"
+    r"licensed|licenses|license|scoped STOP|reopen conditions|future distinct burdens|admissible|"
+    r"barred|prevents|cannot rescue|requires a new burden|becomes a new burden|"
+        r"exposed|demote|demotes|demoted|invalidated|withheld|narrowed|reoriented|converted|classified|sorted|sorts|"
+    r"grounded|regrounded|re-grounded|"
+    r"identified|identifies|defined|defines|stabilized|stabilizes|refused|denied|self[- ]undercut|loses|loss|severed|separated from|"
+    r"(?:non|not)[- ]load[- ]bearing|lands|landed|cleared|state change|delta|undermined|"
+    r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|anchors?|anchored)\b"
+)
+GENERIC_CONTRIBUTION_RE = re.compile(
+    r"(?i)^\s*(?:it\s+)?(?:blocks?|preserves?|gives?|allows?|contributes?|lands?|makes?)\s+"
+    r"(?:the\s+)?(?:move|burden|closure|target|direction|condition)\.?\s*$"
+)
+FIELD_LABEL_RE = re.compile(
+    r"(?im)^\s*-?\s*(?:Target|Operation|What it does|Result(?:/state-change)?|Contribution-to-Land(?:\([^)]*\))?)\s*:"
+)
+
+OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
+    (
+        "V1",
+        re.compile(
+            r"(?i)\b(?:diagnostic entry|diagnostic gate|case[- ]state|state[- ]read|"
+            r"classif(?:y|ies|ication)|axis|pattern profile|triage|validated state)\b"
+        ),
+    ),
+    (
+        "V2",
+        re.compile(
+            r"(?i)\b(?:conception of reason|role of reason|sound reason|reconstitut\w+ reason|"
+            r"reason is (?:not|more than)|reason[- ]role|rational faculty|type reason|"
+            r"reason as (?:access|recognition|recognizer)|epistemic role|order of discovery|"
+            r"order of reality)\b"
+        ),
+    ),
+    (
+        "V3",
+        re.compile(r"(?i)\b(?:regress|infinite regress|terminat\w+|grounding chain|non[- ]terminating)\b"),
+    ),
+    (
+        "V4",
+        re.compile(r"(?i)\b(?:contamination|contaminated|foreign frame|mixed source|imported standard)\b"),
+    ),
+    (
+        "V5",
+        re.compile(r"(?i)\b(?:signs?|ayat|direct(?:s|ing) attention|attention to|evidence in creation)\b"),
+    ),
+    (
+        "V6",
+        re.compile(r"(?i)\b(?:convergence|multi[- ]register|integrat(?:e|ion)|converging lines|registers? together)\b"),
+    ),
+    (
+        "V7",
+        re.compile(r"(?i)\b(?:taqlid|blind following|inherited authority|following without proof|deference structure)\b"),
+    ),
+    (
+        "V8",
+        re.compile(r"(?i)\b(?:bila kayf|bilā kayf|attribute discipline|without asking how|modality|kayf|divine attribute)\b"),
+    ),
+    (
+        "V9",
+        re.compile(r"(?i)\b(?:necessary knowledge|fitri knowledge|fiṭrī knowledge|lower[- ]order|destabiliz\w+|priority)\b"),
+    ),
+    (
+        "V10",
+        re.compile(r"(?i)\b(?:transmission|content vetting|isnad|isnād|matn|source chain|report standard|textual transmission)\b"),
+    ),
+    (
+        "V11",
+        re.compile(r"(?i)\b(?:taqlid|taḥqīq|tahqiq|transition to verification|recognition and transition|from deference)\b"),
+    ),
+    (
+        "V12",
+        re.compile(r"(?i)\b(?:tamanu|tamānu|divine plurality|independent lordship|multiple gods|logical exhaustion|plurality pressure)\b"),
+    ),
+    (
+        "FPD",
+        re.compile(
+            r"(?i)\b(?:foreign premise|imported premise|imported criterion|hidden court|"
+            r"foreign criterion|hidden premise|escape route|hidden support|smuggl\w*|"
+            r"unargued criterion|criterion import|premise import|hidden criterion|"
+            r"imported tribunal|imported court|impossible tribunal|total[- ]exhaustion tribunal)\b"
+        ),
+    ),
+    (
+        "M1-P",
+        re.compile(
+            r"(?i)\b(?:performative contradiction|act of (?:making|asserting)|presupposes|"
+            r"cannot ground its own assertion|speech act|claiming it requires)\b"
+        ),
+    ),
+    (
+        "M1",
+        re.compile(
+            r"(?i)\b(?:self[- ]refutation|self[- ]grounding|self[- ]authoriz\w+|"
+            r"self[- ]enthronement|internal contradiction|own standard|"
+            r"own rules?|unproved premise|unsupported premise|premise (?:must be )?established|"
+            r"assum(?:e|es|ed|ing) (?:the )?(?:very )?conclusion|begs? the question|"
+            r"own (?:source[- ]appeal|textual|evidential|proof[- ]stack) standard|"
+            r"own appeal to (?:scripture|the source|the text|evidence)|"
+            r"circular (?:protection|appeal|source[- ]order|proof[- ]stack)|"
+            r"proof[- ]stack becomes circular|cannot be falsified|pre[- ]controls?|"
+            r"by its own rule|(?:cannot|can it|whether .* can) authorize its own verdict|"
+            r"own verdict|collapses under its own)\b"
+        ),
+    ),
+    (
+        "M2",
+        re.compile(r"(?i)\b(?:prior probability|probability prior|antecedent plausibility|prior plausibility)\b"),
+    ),
+    (
+        "M3",
+        re.compile(
+            r"(?i)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
+            r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
+            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground)\b"
+        ),
+    ),
+    (
+        "M4",
+        re.compile(r"(?i)\b(?:grief register|grief|pain register|pastoral hold|wound|lament)\b"),
+    ),
+    (
+        "M5",
+        re.compile(r"(?i)\b(?:deformation triage|triage|deformation|sort(?:s|ing) the deformation|D[1-7])\b"),
+    ),
+    (
+        "M6",
+        re.compile(r"(?i)\b(?:excluded middle|either.*or|cannot be both|binary|middle option)\b"),
+    ),
+    (
+        "M7",
+        re.compile(
+            r"(?i)\b(?:definition anchor|definition discipline|define|definition|defined term|"
+            r"terms?|lexical|semantic anchor|meaning|relation|what .* means)\b"
+        ),
+    ),
+    (
+        "M8",
+        re.compile(
+            r"(?i)\b(?:consequence trace|if (?:the )?.*?(?:granted|holds|accepted)|what follows|"
+            r"entails?|consequence|self[- ]undermining|vacuous|would make|leads to)\b"
+        ),
+    ),
+    (
+        "M9",
+        re.compile(
+            r"(?i)\b(?:predication|predicate|category|referent|semantic|sense|attributive|"
+            r"adverbial|identity|person/nature|mode of predication|category transfer)\b"
+        ),
+    ),
+    (
+        "DO_ATTRIBUTE",
+        re.compile(
+            r"(?i)\b(?:attribute[- ]precision|person/nature|attribute multiplicity|"
+            r"divine attribute|model identification|composition|dependence|category confusion|"
+            r"person-level|nature-level|multiplicity)\b"
+        ),
+    ),
+    (
+        "DO_CHRISTIAN",
+        re.compile(
+            r"(?i)\b(?:Christian theological pressure|Trinitarian model|Trinity model|"
+            r"model[- ]identification|model[- ]shift|model[- ]pressure|"
+            r"Trinitarian predication model|identity-style|social Trinitarian|"
+            r"relative identity|mystery|person/nature|DO-1[1-4]|canon authority|"
+            r"coherence burden|Christian overlay)\b"
+        ),
+    ),
+    (
+        "DO_SECOND_LOOP",
+        re.compile(
+            r"(?i)\b(?:DO[- ]second[- ]loop|hujjah|á¸¥ujjah|warning|record|"
+            r"prophetic authority|moral protest|Great Pumpkin|cognitive science|"
+            r"CSR|HADD|necessary-knowledge|accountability|guidance architecture|"
+            r"family-local load floor)\b"
+        ),
+    ),
+    (
+        "PROOF_METHOD",
+        re.compile(
+            r"(?i)\b(?:proof[- ]method|proof grammar|proof family|method audit|"
+            r"formal derivation|logic tree|inferential standard|what the proof establishes|"
+            r"premise strength|invalid inference)\b"
+        ),
+    ),
+    (
+        "E1",
+        re.compile(r"(?i)\b(?:broaden(?:ing)? evidence|wider evidence|evidence base|additional evidential register)\b"),
+    ),
+    (
+        "E2",
+        re.compile(r"(?i)\b(?:inferential criterion|criterion for inference|what would count|inference rule)\b"),
+    ),
+    (
+        "E3",
+        re.compile(r"(?i)\b(?:cumulative case|cumulative|combined evidence|convergent case)\b"),
+    ),
+    (
+        "E4",
+        re.compile(r"(?i)\b(?:cross[- ]cultural|across cultures|cultural check|cross[- ]tradition)\b"),
+    ),
+    (
+        "F1",
+        re.compile(r"(?i)\b(?:supra[- ]rational|anti[- ]rational|above reason|against reason)\b"),
+    ),
+    (
+        "F2",
+        re.compile(r"(?i)\b(?:volitional|will|desire|refusal|volition)\b"),
+    ),
+    (
+        "F3",
+        re.compile(r"(?i)\b(?:practice|epistemic access|access through practice|lived practice|practical access)\b"),
+    ),
+    (
+        "R1",
+        re.compile(r"(?i)\b(?:internalist criterion|internal criterion|from within|own criterion)\b"),
+    ),
+    (
+        "R2",
+        re.compile(r"(?i)\b(?:reminder|dhikr|recall|reorients? attention|already know)\b"),
+    ),
+    (
+        "R3",
+        re.compile(r"(?i)\b(?:warranted basic belief|basic belief|properly basic|warrant without inference)\b"),
+    ),
+    (
+        "SOURCE",
+        re.compile(
+            r"(?i)\b(?:source[- ]status|source status|authority[- ]order|source authority|"
+            r"source[- ]order|Qur'?anic source order|revealed source(?:s| order)?|"
+            r"proof[- ]stack|broader proof[- ]texts?|hidden rescue|"
+            r"source-correct(?:ed|ion)|revelation define|let revelation define|"
+            r"source-use|source[- ]functions?|source[- ]function[- ][a-z-]+|source-prestige|source accumulation|proof[- ]text|"
+            r"guidance[- ]order|guidance[- ]vs[- ]compulsion|guidance and compulsion|"
+            r"revelation (?:guides|warns|clarifies|invites)|conveyance and warning|"
+            r"outward clarification|inward granting|tawf[iī]q|warner|non[- ]coercive guidance|"
+            r"citation|cited|override|overriding|governing source|text under dispute|"
+            r"hidden support|unworked material|what source has authority|scoped closure|"
+            r"doctrine[- ](?:shield|protection|prestige)|doctrinal (?:shield|protection|prestige|status)|"
+            r"sacred doctrine|doctrine as (?:shield|protection)|"
+            r"total[- ]system exhaustion|new text|new doctrine)\b"
+        ),
+    ),
+    (
+        "P2",
+        re.compile(r"(?i)\b(?:objection mapping|maps? the objection|claim map|support map|objection structure)\b"),
+    ),
+    (
+        "P3",
+        re.compile(r"(?i)\b(?:reason/revelation|reason and revelation|revelation tension|ʿaql|naql)\b"),
+    ),
+    (
+        "P4",
+        re.compile(r"(?i)\b(?:maieutic|elicits?|questioning|draws out|asks the interlocutor)\b"),
+    ),
+    (
+        "P5",
+        re.compile(r"(?i)\b(?:already[- ]believing|internal repair|believer|within commitment|Muslim internal)\b"),
+    ),
+    (
+        "P6",
+        re.compile(r"(?i)\b(?:universal aqidah|universal ʿaqīdah|aqidah principle|creedal principle)\b"),
+    ),
+    (
+        "P7",
+        re.compile(
+            r"(?i)\b(?:proof[- ]carousel|stop condition|STOP|HOLD|PARTIAL|scope boundary|"
+            r"boundedness|bounded (?:closure|refutation|reply|answer|claim|exchange)|"
+            r"local (?:closure|refutation|stop condition|reply)|scope gate|"
+            r"total[- ]system exhaustion|reopen (?:condition|gate)|non[- ]load[- ]bearing|"
+            r"held route|closure boundary|new burden territory)\b"
+        ),
+    ),
+    (
+        "LOOPBREAK",
+        re.compile(
+            r"(?i)\b(?:LoopBreak|loop break|circularity|circular structure|cycle|churn|"
+            r"outside the loop|breaks? the loop)\b"
+        ),
+    ),
+    (
+        "P1",
+        re.compile(
+            r"(?i)\b(?:restoration|restore|positive orientation|sound orientation|fitrah|"
+            r"tawhid|reorients?|returns? the field|restored source[- ]owned frame|"
+            r"capacity, access|access, clarity|clear warning|honest (?:engagement|inquiry)|"
+            r"humane criterion)\b"
+        ),
+    ),
+    (
+        "DOUBT_SKEPTICISM",
+        re.compile(
+            r"(?i)\b(?:doubt[- ]vs[- ]skepticism|normal doubt|skepticism as (?:ideology|methodology)|"
+            r"skeptical methodology|evidence demand|absence of evidence|modal veto|"
+            r"bare imagined possibility|alternative description|anomaly|background commitments|"
+            r"burden[- ]of[- ]proof inversion|total possibility[- ]exhaustion|doubt function)\b"
+        ),
+    ),
+)
+
+GENERIC_OWNER_ACTIVATION_RE = re.compile(
+    r"(?i)\b(?:validated state|matched owner|matched TTP|source[- ]owned|owner[- ]specific|"
+    r"entry criteria|exit criteria|state change|burden[- ]local result|contribution to land|"
+    r"route(?:d|s)? to Layer B|operation shape|operator function)\b"
+)
+SOURCE_EXECUTION_RE = re.compile(
+    r"(?i)\b(?:revelation (?:guides|warns|clarifies|invites)|conveyance|warning|"
+    r"outward clarification|inward granting|tawf[iī]q|non[- ]coercive|coercive|"
+    r"compulsion|source[- ]function|source[- ]order filter|authority transfer|"
+    r"who (?:gave|grants)|exclude revelation|source[- ]status (?:separated|sorted|repaired)|"
+    r"exegetical warrant|textual warrant|proof[- ]stack|broader proof[- ]texts?|"
+    r"hidden rescue|hidden authority|judge over the text|source[- ]order office|"
+    r"non[- ]load[- ]bearing rescue material)\b"
+)
+OWNER_NAME_ONLY_RE = re.compile(
+    r"(?i)\b(?:is named here|named here,\s*so|so .{0,80}\bis handled)\b"
+)
+
+OWNER_ROUTE_LINE_RE = re.compile(
+    r"(?im)^\s*(?:[-*]\s*)?(?:Matched owner/TTP route|Matched TTP route|"
+    r"Owner/TTP route|Matched owners?|TTP route)\s*:\s*(?P<body>.+)$"
+)
+OWNER_ROUTE_TOKEN_RE = re.compile(
+    r"(?i)(?:\[[A-Za-z][A-Za-z0-9_.\-/]*\]|\b(?:V(?:1[0-2]|[1-9])|M1-P|M[1-9]|"
+    r"E[1-4]|F[1-3]|R[1-3]|P[1-7]|FPD|LoopBreak|source[- ]status|authority[- ]order|"
+    r"definition[- ]discipline|transmission|testimony|restoration)\b)"
+)
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def has_any(text: str, needles: tuple[str, ...]) -> bool:
+    return any(needle in text for needle in needles)
+
+
+def generated_target(text: str) -> str:
+    match = re.search(
+        rf"(?P<target>(?:[{SUP}]+B|B\d+))\s*\[generated-by:\s*MRP\((?P<src>(?:[{SUP}]+B|B\d+))\)\]",
+        text,
+    )
+    return match.group("target") if match else ""
+
+
+def count_complete_submoves(section: str, target: str) -> int:
+    heading_re = re.compile(
+        rf"(?im)^\s*(?:#{{1,6}}\s*)?{re.escape(target)}(?:[{SUB}]+|[_\.]\d+)\s*"
+        rf"\[[A-Za-z][A-Za-z0-9/-]*\](?:\s*\([^)]*\))?\s*(?:[-\u2014:]).*$"
+    )
+    headings = list(heading_re.finditer(section))
+    complete = 0
+    for index, match in enumerate(headings):
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(section)
+        block = section[match.start() : end]
+        if (
+            re.search(r"(?im)^\s*-?\s*Target\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Operation\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Result(?:/state-change)?\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:", block)
+        ):
+            complete += 1
+    return complete
+
+
+def split_mrp_blocks(text: str) -> list[str]:
+    pieces = re.split(r"(?im)^\s*\[Mid-Reread Pressure\]\s*$", text)
+    blocks: list[str] = []
+    for piece in pieces[1:]:
+        end = re.search(
+            r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+|Restorative Response|Closing Formulation|Closure/Reconstruction Witness|field_witness)\b",
+            piece,
+        )
+        blocks.append(piece[: end.start()] if end else piece)
+    return blocks
+
+
+def held_route_false_closure_errors(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    line_candidates = re.findall(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:\s*(.+)$", text)
+    block_candidates = split_mrp_blocks(text)
+    closure_tail = text[text.find("Closure/Reconstruction Witness") :] if "Closure/Reconstruction Witness" in text else ""
+    candidates = line_candidates + block_candidates + ([closure_tail] if closure_tail else [])
+    for candidate in candidates:
+        if not candidate.strip():
+            continue
+        if (
+            HIGH_LEVERAGE_HELD_ROUTE_RE.search(candidate)
+            and UNROUTED_HELD_ROUTE_RE.search(candidate)
+            and TERMINAL_CLOSURE_RE.search(candidate)
+            and not ROUTING_OR_BOUNDARY_PROOF_RE.search(candidate)
+        ):
+            errors.append(
+                f"{path}: R(H,Δ) detected a pertinent high-leverage held route, but output claimed STOP/collapse without working, generating, HOLD/PARTIAL-routing, or proving non-load-bearing status"
+            )
+            break
+    if (
+        HIGH_LEVERAGE_HELD_ROUTE_RE.search(text)
+        and UNROUTED_HELD_ROUTE_RE.search(text)
+        and re.search(r"(?im)^\s*Route\s*:\s*STOP\b", text)
+        and re.search(r"(?i)\b(?:collapse achieved|coverage_complete\s*=\s*true|COMPLETE|no remaining live problem)\b", text)
+        and not ROUTING_OR_BOUNDARY_PROOF_RE.search(text)
+    ):
+        errors.append(
+            f"{path}: detected route is TTP-addressable and high-leverage, but output treats it as beyond prompt while claiming complete collapse"
+        )
+    return errors
+
+
+def submove_blocks(section: str, target: str) -> list[str]:
+    heading_re = re.compile(
+        rf"(?im)^\s*(?:#{{1,6}}\s*)?{re.escape(target)}(?:[{SUB}]+|[_\.]\d+)\s*"
+        rf"\[[A-Za-z][A-Za-z0-9/-]*\](?:\s*\([^)]*\))?\s*(?:[-\u2014:]).*$"
+    )
+    headings = list(heading_re.finditer(section))
+    blocks: list[str] = []
+    for index, match in enumerate(headings):
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(section)
+        blocks.append(section[match.start() : end])
+    return blocks
+
+
+def field_body(block: str, name: str) -> str:
+    match = re.search(rf"(?im)^\s*-?\s*{re.escape(name)}\s*:\s*(?P<body>.+)$", block)
+    return match.group("body").strip() if match else ""
+
+
+def field_body_any(block: str, names: tuple[str, ...]) -> str:
+    for name in names:
+        value = field_body(block, name)
+        if value:
+            return value
+    return ""
+
+
+def submove_field_values(block: str) -> list[str]:
+    values = [
+        field_body(block, "Target"),
+        field_body_any(block, ("Operation", "What it does")),
+        field_body_any(block, ("Result", "Result/state-change")),
+    ]
+    contribution = re.search(
+        r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:\s*(?P<body>.+)$",
+        block,
+    )
+    if contribution:
+        values.append(contribution.group("body").strip())
+    return [value for value in values if value]
+
+
+def submove_operation_body(block: str) -> str:
+    """Return prose body lines beyond compact Target/Operation/Result fields."""
+    body_lines: list[str] = []
+    for raw_line in block.splitlines()[1:]:
+        line = raw_line.strip()
+        if not line:
+            if body_lines and body_lines[-1] != "":
+                body_lines.append("")
+            continue
+        if re.match(rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+)\s*\[", line):
+            continue
+        if FIELD_LABEL_RE.match(line):
+            continue
+        if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:\s*$", line):
+            continue
+        if re.match(r"(?im)^\s*(?:#|Land\(|\[Mid-Reread Pressure\]|R\(H,)", line):
+            continue
+        body_lines.append(line)
+    return "\n".join(body_lines).strip()
+
+
+def paragraph_count(text: str) -> int:
+    chunks = [chunk.strip() for chunk in re.split(r"\n\s*\n", text.strip()) if chunk.strip()]
+    return len(chunks)
+
+
+def section_after_heading(text: str, heading: str) -> str:
+    match = re.search(rf"(?im)^\s*(?:#{{1,6}}\s*)?{re.escape(heading)}\s*$", text)
+    if not match:
+        return ""
+    tail = text[match.end():]
+    end = re.search(
+        r"(?im)^\s*(?:#{1,6}\s*)?(?:Restorative Response|Closing Formulation|Closure/Reconstruction Witness|field_witness|Legend)\s*$",
+        tail,
+    )
+    return tail[: end.start()] if end else tail
+
+
+PUBLIC_TAIL_LABEL_RE = re.compile(
+    r"(?i)^\s*(?:response|restorative response|closing|closed|complete|done|answered|"
+    r"refuted|summary|closure)\.?\s*$"
+)
+RESTORATIVE_ORDER_RE = re.compile(
+    r"(?i)\b(?:restor(?:e|ed|es|ation)|reorient|return(?:s|ed)?|sound|fitrah|tawhid|"
+    r"source[- ]owned|criterion|warrant|source order|orientation|bounded|scope|clarity|"
+    r"proper order|proper home|exclusive predicate|sender/sent|model and the rule|principled rule)\b"
+)
+RESTORATIVE_RELIEF_RE = re.compile(
+    r"(?i)\b(?:reliev(?:e|es|ed|ing)?|prevent(?:s|ed|ing)?|block(?:s|ed|ing)?|"
+    r"bar(?:s|red|ring)?|clear(?:s|ed|ing)?|separat(?:e|es|ed|ing)?|"
+    r"deformation|concealment|hidden|"
+    r"pressure|proof[- ]stack|smuggl|burden|route|claim|fails?|does not answer|"
+    r"false shape|error|autonom(?:y|ous)|orphan(?:ed|ing)|not self[- ]explaining|"
+    r"no longer|cannot|refus(?:e|es|ed|ing)|demot(?:e|es|ed|ing)|not load[- ]bearing)\b"
+)
+RESTORATIVE_REMAINDER_RE = re.compile(
+    r"(?i)\b(?:remain|held|scope|bounded|partial|reopen|generated|non[- ]load[- ]bearing|"
+    r"what was proven|what failed|what remains|concrete defeater|determinate defeater|"
+    r"strongest version|keep .* but|burden remains|give (?:the )?(?:model|rule)|"
+    r"door open|if the real question|let the warrant stand)\b"
+)
+CLOSING_FAILURE_RE = re.compile(
+    r"(?i)\b(?:fails?|failure|cannot|does not|blocked|barred|invalidated|undermined|"
+    r"loses?|defeated|not evidence|cannot repair|collapse)\b"
+)
+CLOSING_ORIENTATION_RE = re.compile(
+    r"(?i)\b(?:criterion|source|warrant|orientation|scope|bounded|local|ledger|Land|"
+    r"generated|burden|route|proof|claim)\b"
+)
+CLOSING_BOUNDARY_RE = re.compile(
+    r"(?i)\b(?:held|reopen|reopenable|new burden|scope|scoped|bounded|partial|non[- ]load[- ]bearing|"
+    r"without pretending|does not exhaust|cannot repair|honest scope)\b"
+)
+
+
+def public_tail_label_like(body: str) -> bool:
+    cleaned = re.sub(r"\s+", " ", body.strip(" .;:-")).strip()
+    return not cleaned or bool(PUBLIC_TAIL_LABEL_RE.fullmatch(cleaned))
+
+
+def public_tail_quality_errors(path: Path, text: str, hard_anchor_hits: int) -> list[str]:
+    if hard_anchor_hits < 4:
+        return []
+    errors: list[str] = []
+    restorative = section_after_heading(text, "Restorative Response")
+    closing = section_after_heading(text, "Closing Formulation")
+    if restorative:
+        if public_tail_label_like(restorative) or not (
+            RESTORATIVE_ORDER_RE.search(restorative)
+            and RESTORATIVE_RELIEF_RE.search(restorative)
+            and RESTORATIVE_REMAINDER_RE.search(restorative)
+        ):
+            errors.append(
+                f"{path}: Restorative Response is not reconstructible for high-mass governed output; it must identify restored order/criterion, relieved pressure, and what remains held or scoped"
+            )
+    if closing:
+        if public_tail_label_like(closing) or not (
+            CLOSING_FAILURE_RE.search(closing)
+            and CLOSING_ORIENTATION_RE.search(closing)
+            and CLOSING_BOUNDARY_RE.search(closing)
+        ):
+            errors.append(
+                f"{path}: Closing Formulation is not reconstructible for high-mass governed output; it must name the established failure, restored criterion/orientation, and scoped boundary or reopen condition"
+            )
+    return errors
+
+
+def is_label_like_value(value: str) -> bool:
+    cleaned = re.sub(r"\s+", " ", value.strip(" .;:-")).strip()
+    words = re.findall(r"\b[\w'-]{3,}\b", cleaned)
+    if len(words) <= 2:
+        return True
+    return bool(LABEL_LIKE_VALUE_RE.fullmatch(cleaned))
+
+
+def has_substantive_operation_body(block: str) -> bool:
+    body = submove_operation_body(block)
+    if not body:
+        return False
+    words = re.findall(r"\b[\w'-]{4,}\b", body)
+    if len(words) < 16 or sentence_count(body) < 2:
+        return False
+    return bool(
+        OPERATION_ACTION_RE.search(body)
+        or OPERATION_MECHANISM_RE.search(body)
+        or STATE_CHANGE_RE.search(body)
+    )
+
+
+def is_label_like_submove(block: str) -> bool:
+    values = submove_field_values(block)
+    if len(values) < 3:
+        return False
+    label_like = sum(1 for value in values if is_label_like_value(value))
+    substantive_words = re.findall(r"\b[\w'-]{4,}\b", " ".join(values))
+    if has_substantive_operation_body(block):
+        return False
+    return label_like >= 3 or len(substantive_words) < 16
+
+
+def sentence_count(value: str) -> int:
+    parts = [part.strip() for part in re.split(r"(?<=[.!?])\s+", value.strip()) if part.strip()]
+    return len(parts) if parts else (1 if value.strip() else 0)
+
+
+def submove_owner(block: str) -> str:
+    heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
+    match = re.search(r"\[(?P<owner>[A-Za-z][A-Za-z0-9_.\-/]*)\]", heading)
+    return match.group("owner") if match else ""
+
+
+def owner_family(owner: str) -> str:
+    normalized = owner.upper()
+    if "DO-ATTRIBUTE" in normalized or "ATTRIBUTE-PRECISION" in normalized:
+        return "DO_ATTRIBUTE"
+    if "PROOF-METHOD" in normalized or "METHOD-AUDIT" in normalized:
+        return "PROOF_METHOD"
+    if re.match(r"^V10(?:\b|[-_/])", normalized):
+        return "V10"
+    if re.match(r"^V11(?:\b|[-_/])", normalized):
+        return "V11"
+    if re.match(r"^V12(?:\b|[-_/])", normalized):
+        return "V12"
+    for code in ("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9"):
+        if re.match(rf"^{code}(?:\b|[-_/])", normalized):
+            return code
+    if re.match(r"^M1-P(?:\b|[-_/])", normalized):
+        return "M1-P"
+    if re.match(r"^M1(?:\b|[-_/])", normalized):
+        return "M1"
+    for code in ("M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"):
+        if re.match(rf"^{code}(?:\b|[-_/])", normalized):
+            return code
+    for code in ("E1", "E2", "E3", "E4", "F1", "F2", "F3", "R1", "R2", "R3"):
+        if re.match(rf"^{code}(?:\b|[-_/])", normalized):
+            return code
+    for code in ("P2", "P3", "P4", "P5", "P6", "P7"):
+        if re.match(rf"^{code}(?:\b|[-_/])", normalized):
+            return code
+    if normalized.startswith("FPD") or "FOREIGN" in normalized or "PREMISE" in normalized:
+        return "FPD"
+    if "CHRISTIAN" in normalized:
+        return "DO_CHRISTIAN"
+    if "SECOND" in normalized and "LOOP" in normalized:
+        return "DO_SECOND_LOOP"
+    if "DOUBT" in normalized or "SKEPTIC" in normalized:
+        return "DOUBT_SKEPTICISM"
+    if normalized.startswith("PROOF-METHOD") or "PROOF-METHOD" in normalized or "PROOF_METHOD" in normalized:
+        return "PROOF_METHOD"
+    if "LOOP" in normalized:
+        return "LOOPBREAK"
+    if normalized.startswith("P1") or "RESTOR" in normalized:
+        return "P1"
+    if "DEFINITION" in normalized:
+        return "M7"
+    if "ATTRIBUTE" in normalized or "BILA" in normalized:
+        return "V8"
+    if "SOURCE" in normalized or "AUTHORITY" in normalized:
+        return "SOURCE"
+    if "BOUND" in normalized or "STOP" in normalized:
+        return "P7"
+    return ""
+
+
+def owner_specific_operation_performed(owner: str, combined: str) -> bool:
+    if OWNER_NAME_ONLY_RE.search(combined):
+        return False
+    family = owner_family(owner)
+    if family:
+        return any(key == family and pattern.search(combined) for key, pattern in OWNER_OPERATION_PATTERNS)
+    if not owner:
+        return False
+    return bool(
+        GENERIC_OWNER_ACTIVATION_RE.search(combined)
+        and OPERATION_ACTION_RE.search(combined)
+        and STATE_CHANGE_RE.search(combined)
+    )
+
+
+GENERIC_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:the\s+)?(?:baseline|target|pressure|claim|move|burden|route|issue|"
+    r"local issue|generated note|scope note|thing|it|this)\.?\s*$"
+)
+CONTRIBUTION_EXPLANATION_RE = re.compile(
+    r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
+    r"lands?|contributes? to|makes .* land|prevents?|blocks?|preserves?|keeps?|separates?|bars?|routes?|"
+    r"held|generated|non[- ]load[- ]bearing|state change|delta|reopen|scope|"
+    r"no longer|can no longer|cannot|establish(?:es|ed)?|shows?|"
+    r"completes?|compatible with|needed to|rests on|defeat(?:s|ed)?|"
+    r"suppl(?:y|ies|ied)|restoration|requires?|requiring|without|stops? functioning)\b"
+)
+
+
+def target_pressure_identifiable(target: str) -> bool:
+    cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
+    if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
+        return False
+    if OPERATION_MECHANISM_RE.search(cleaned) or HIGH_MASS_TERMS_RE.search(cleaned):
+        return True
+    if RELATIONAL_PRESSURE_RE.search(cleaned):
+        return True
+    compact_words = [
+        word.lower()
+        for word in re.split(r"[-_/]", cleaned)
+        if re.fullmatch(r"[A-Za-z][A-Za-z']{2,}", word)
+        and word.lower() not in {"the", "this", "that", "claim", "claims", "move", "burden", "route"}
+    ]
+    if len(compact_words) >= 3:
+        return True
+    load_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", cleaned))
+        if word.lower() not in {"the", "this", "that", "claim", "claims", "move", "burden", "route"}
+    ]
+    if len(load_words) >= 3:
+        return True
+    return not is_label_like_value(cleaned)
+
+
+def target_keywords(target: str) -> set[str]:
+    stopwords = {
+        "the",
+        "this",
+        "that",
+        "with",
+        "from",
+        "into",
+        "whose",
+        "which",
+        "claim",
+        "move",
+        "burden",
+        "route",
+        "local",
+        "baseline",
+        "generated",
+        "visible",
+        "specific",
+        "present",
+        "current",
+    }
+    normalized = re.sub(r"[-/]", " ", target)
+    return {
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{3,}", normalized)
+        if word.lower() not in stopwords
+    }
+
+
+def operation_acts_on_pressure(target: str, operation_text: str) -> bool:
+    if not OPERATION_ACTION_RE.search(operation_text):
+        return False
+    keywords = target_keywords(target)
+    if keywords and any(re.search(rf"(?i)\b{re.escape(word)}\b", operation_text) for word in keywords):
+        return True
+    operation_words = {word.lower() for word in re.findall(r"[A-Za-z][A-Za-z']{3,}", operation_text)}
+    if any(
+        len(word) >= 6
+        and any(candidate.startswith(word[:6]) or word.startswith(candidate[:6]) for candidate in operation_words)
+        for word in keywords
+    ):
+        return True
+    if (
+        re.search(r"(?i)\b(?:universal|total|exhaustive|everyone|all)\b", target)
+        and re.search(
+            r"(?i)\b(?:every|everyone|all|exhaustive|particular|specific|counterfactual|"
+            r"scope gate|stop condition|reopen condition)\b",
+            operation_text,
+        )
+    ):
+        return True
+    return bool(
+        (OPERATION_MECHANISM_RE.search(target) or HIGH_MASS_TERMS_RE.search(target))
+        and (OPERATION_MECHANISM_RE.search(operation_text) or HIGH_MASS_TERMS_RE.search(operation_text))
+    )
+
+
+def contribution_explains_land(contribution: str) -> bool:
+    if is_label_like_value(contribution) or GENERIC_CONTRIBUTION_RE.fullmatch(contribution.strip()):
+        return False
+    return bool(CONTRIBUTION_EXPLANATION_RE.search(contribution) or STATE_CHANGE_RE.search(contribution))
+
+
+def operation_body_has_state_delta(operation_body: str, result: str, contribution: str) -> bool:
+    delta_text = " ".join((operation_body, result, contribution))
+    return bool(STATE_CHANGE_RE.search(delta_text) and contribution_explains_land(contribution))
+
+
+def has_matched_owner_route(scope: str) -> bool:
+    for match in OWNER_ROUTE_LINE_RE.finditer(scope):
+        body = match.group("body").strip()
+        if not body or re.search(r"(?i)\b(?:none|unknown|unmatched|coverage gap)\b", body):
+            continue
+        if OWNER_ROUTE_TOKEN_RE.search(body):
+            return True
+    return False
+
+
+def owner_specific_failure_message(owner: str) -> str:
+    family = owner_family(owner)
+    if family == "FPD":
+        return "FPD submove did not expose the imported premise or criterion."
+    if family == "M8":
+        return "M8 submove did not trace consequences."
+    if family == "M9":
+        return "M9 submove did not repair predication/category structure."
+    if family == "DO_ATTRIBUTE":
+        return "do-attribute-precision submove did not perform person/nature or attribute-precision work."
+    if family == "DO_CHRISTIAN":
+        return "do-christian-extensions submove did not perform model-identification or Christian-overlay routing work."
+    if family == "DO_SECOND_LOOP":
+        return "do-second-loop submove did not perform family-local hujjah/warning/record/accountability routing work."
+    if family == "PROOF_METHOD":
+        return "proof-method-audit submove did not audit the proof grammar or inferential method."
+    if family == "DOUBT_SKEPTICISM":
+        return "doubt-vs-skepticism submove did not distinguish doubt function, evidence-demand tribunal, or burden inversion."
+    if family == "M1":
+        return "M1 submove did not test self-grounding or internal contradiction."
+    if family == "M1-P":
+        return "M1-P submove did not show performative contradiction."
+    if family == "V1":
+        return "V1 submove did not perform diagnostic/state validation."
+    if family == "V2":
+        return "V2 submove did not reconstruct the governing conception of reason."
+    if family == "V3":
+        return "V3 submove did not dissolve regress structure."
+    if family == "V4":
+        return "V4 submove did not identify contamination/source mixing."
+    if family == "V5":
+        return "V5 submove did not direct attention to signs/evidence."
+    if family == "V6":
+        return "V6 submove did not integrate converging registers."
+    if family == "V7":
+        return "V7 submove did not expose taqlid structure."
+    if family == "V8":
+        return "V8 submove did not anchor attribute/bila kayf discipline."
+    if family == "V9":
+        return "V9 submove did not prioritize necessary/fitri knowledge."
+    if family == "V10":
+        return "V10 submove did not vet transmission/content standards."
+    if family == "V11":
+        return "V11 submove did not handle taqlid-to-tahqiq transition."
+    if family == "V12":
+        return "V12 submove did not run plurality/lordship exhaustion."
+    if family == "M2":
+        return "M2 submove did not probe prior probability."
+    if family == "M3":
+        return "M3 submove did not expose orphaned intuition."
+    if family == "M4":
+        return "M4 submove did not preserve the grief/register boundary."
+    if family == "M5":
+        return "M5 submove did not triage deformation."
+    if family == "M6":
+        return "M6 submove did not force the excluded-middle structure."
+    if family == "M7":
+        return "M7 submove did not anchor definitions."
+    if family == "SOURCE":
+        return "source-status/authority-order submove did not sort authority or prevent hidden support."
+    if family == "E1":
+        return "E1 submove did not broaden evidence."
+    if family == "E2":
+        return "E2 submove did not establish the inferential criterion."
+    if family == "E3":
+        return "E3 submove did not build a cumulative case."
+    if family == "E4":
+        return "E4 submove did not run cross-cultural check."
+    if family == "F1":
+        return "F1 submove did not distinguish supra-rational from anti-rational."
+    if family == "F2":
+        return "F2 submove did not handle volitional dimension."
+    if family == "F3":
+        return "F3 submove did not handle practice/epistemic access."
+    if family == "R1":
+        return "R1 submove did not handle the internalist criterion."
+    if family == "R2":
+        return "R2 submove did not perform reminder work."
+    if family == "R3":
+        return "R3 submove did not handle warranted basic belief."
+    if family == "P2":
+        return "P2 submove did not map the objection."
+    if family == "P3":
+        return "P3 submove did not handle reason/revelation tension."
+    if family == "P4":
+        return "P4 submove did not perform maieutic elicitation."
+    if family == "P5":
+        return "P5 submove did not handle already-believing/internal repair."
+    if family == "P6":
+        return "P6 submove did not apply universal aqidah principle."
+    if family == "P7":
+        return "P7 submove did not define scope, bounded closure, stop condition, held-route boundary, or reopen gate."
+    if family == "LOOPBREAK":
+        return "LoopBreak submove did not identify and exit circularity."
+    if family == "P1":
+        return "restoration/P1 submove did not restore positive orientation after the burden landed."
+    if owner:
+        return f"Owner code named but not activated: submove cites {owner} but does not perform a source-owned operation for that owner."
+    return "Submove mass insufficient: the field skeleton is present, but no owner-specific operation was performed."
+
+
+def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -> bool:
+    """Return whether a high-mass Layer B submove actually operates.
+
+    Numeric floors are only under-compression Andons. Pass/fail is determined
+    by reconstructibility: the target pressure is identifiable, the selected
+    owner/TTP is actually performed, that operation acts on the pressure, the
+    burden-local state delta is visible, and Contribution-to-Land explains
+    why the concrete Land line is licensed.
+    """
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = ""
+    contribution_match = re.search(
+        r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:\s*(?P<body>.+)$",
+        block,
+    )
+    if contribution_match:
+        contribution = contribution_match.group("body").strip()
+    if not (target and operation and result and contribution):
+        return False
+    if not target_pressure_identifiable(target):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    operation_body = submove_operation_body(block)
+    operation_text = " ".join((operation, operation_body))
+    operation_scope = " ".join((operation_text, result, contribution))
+    combined = " ".join((target, operation_text, result, contribution))
+    if not operation_body and not low_mass_license:
+        return False
+    owner = submove_owner(block)
+    owner_performed = owner_specific_operation_performed(owner, operation_scope)
+    if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
+        return False
+    semantic_categories = sum(
+        1
+        for pattern in (OPERATION_SCOPE_RE, OPERATION_TEST_RE, OPERATION_FAILURE_RE)
+        if pattern.search(combined)
+    )
+    if semantic_categories < 2 and not owner_performed:
+        return False
+    heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
+    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}"):
+        return False
+    if not owner_performed:
+        return False
+    if not STATE_CHANGE_RE.search(" ".join((result, contribution))):
+        return False
+    if not operation_acts_on_pressure(target, operation_text):
+        return False
+    if not operation_body_has_state_delta(operation_body, result, contribution):
+        return False
+    if is_label_like_submove(block) and not low_mass_license:
+        return False
+    return True
+
+
+def mass_insufficiency_errors(path: Path, section: str, target: str, *, generated: bool) -> list[str]:
+    has_high_mass = generated or bool(HIGH_MASS_TERMS_RE.search(section))
+    low_mass_claim = bool(LOW_MASS_ASSERTION_RE.search(section))
+    has_license = bool(LOW_MASS_LICENSE_RE.search(section))
+    if not has_high_mass and not low_mass_claim:
+        return []
+    kind = "generated burden" if generated else "baseline burden"
+    land_claimed = bool(re.search(rf"(?im)^\s*(?:Land|HOLD)\({re.escape(target)}\)\s*:", section))
+    complete_blocks = [
+        block
+        for block in submove_blocks(section, target)
+        if (
+            re.search(r"(?im)^\s*-?\s*Target\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Operation\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Result(?:/state-change)?\s*:", block)
+            and re.search(r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:", block)
+        )
+    ]
+    if not complete_blocks:
+        if land_claimed and has_high_mass:
+            return [
+                f"{path}: Land({target}) claimed without mass-sufficient Layer B treatment",
+                f"{path}: {kind} {target} has no complete owner-bearing submoves to discharge high-mass burden pressure",
+            ]
+        return []
+    errors: list[str] = []
+    if low_mass_claim and not has_license:
+        errors.append(
+            f"{path}: {kind} {target} treated as if low-mass without diagnostic license"
+        )
+    label_like = sum(
+        1
+        for block in complete_blocks
+        if is_label_like_submove(block) and not is_operation_shaped_submove(block, low_mass_license=has_license)
+    )
+    if has_high_mass and label_like >= len(complete_blocks):
+        errors.append(
+            f"{path}: Layer B submove mass insufficient: required fields are present, but owner/TTP work is conclusion-shaped rather than operation-shaped"
+        )
+    if has_high_mass:
+        conclusion_shaped = [
+            block
+            for block in complete_blocks
+            if not is_operation_shaped_submove(block, low_mass_license=has_license)
+        ]
+        if conclusion_shaped:
+            errors.append(
+                f"{path}: Layer B submove mass insufficient: required fields are present, but owner/TTP work is conclusion-shaped rather than operation-shaped"
+            )
+            for message in sorted({owner_specific_failure_message(submove_owner(block)) for block in conclusion_shaped}):
+                errors.append(f"{path}: {message}")
+            errors.append(
+                f"{path}: Land({target}) claimed without mass-sufficient Layer B treatment"
+            )
+            if generated:
+                errors.append(
+                    f"{path}: Generated burden treated as if low-mass despite post-land recoil pressure"
+                )
+            else:
+                errors.append(
+                    f"{path}: Baseline burden treated as if low-mass without diagnostic license"
+                )
+    return errors
+
+
+BURDEN_HEADING_RE = re.compile(
+    rf"(?im)^\s*(?:#{{1,6}}\s*)?Burden\s+\d+\s*/\s*"
+    rf"(?P<target>(?:[{SUP}]+B|B\d+))(?P<rest>.*)$"
+)
+
+
+def burden_sections(text: str) -> list[tuple[str, bool, str]]:
+    matches = list(BURDEN_HEADING_RE.finditer(text))
+    sections: list[tuple[str, bool, str]] = []
+    for index, match in enumerate(matches):
+        start = match.start()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        tail_match = re.search(
+            r"(?im)^\s*(?:#{1,6}\s*)?(?:Restorative Response|Closing Formulation|Closure/Reconstruction Witness|field_witness)\b",
+            text[start:end],
+        )
+        if tail_match:
+            end = start + tail_match.start()
+        section = text[start:end]
+        generated = "[generated-by:" in match.group("rest")
+        sections.append((match.group("target"), generated, section))
+    return sections
+
+
+def layer_b_mass_errors(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    for target, generated, section in burden_sections(text):
+        land_match = re.search(rf"(?im)^\s*(?:Land|HOLD)\({re.escape(target)}\)\s*:", section)
+        if land_match:
+            pre_land_section = section[: land_match.end()]
+            errors.extend(mass_insufficiency_errors(path, pre_land_section, target, generated=generated))
+    return errors
+
+
+def concealment_mode_errors(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    lines = [line.strip() for line in text.splitlines() if re.search(r"(?i)\bconcealment mode\s*:", line)]
+    if not lines:
+        return errors
+    for line in lines:
+        lowered = line.lower()
+        if "none detected" in lowered:
+            errors.append(f"{path}: concealment mode uses None detected")
+        if not any(mode in lowered for mode in SOURCE_OWNED_CONCEALMENT):
+            errors.append(f"{path}: concealment mode lacks source-owned mode or clarification-pressure path")
+        loose_only = any(
+            gloss in lowered
+            for gloss in (
+                "framework-concealed",
+                "predicate-concealed",
+                "entailment-concealed",
+                "hidden-framework-recoil",
+                "source-worldview",
+            )
+        )
+        if loose_only and not any(mode in lowered for mode in SOURCE_OWNED_CONCEALMENT):
+            errors.append(f"{path}: loose concealment gloss replaces source-owned mode")
+    if any(
+        not any(clear in line.lower() for clear in ("clear", "clarification", "shubhah", "shubha", "shakk", "rayb"))
+        for line in lines
+    ):
+        lowered_text = text.lower()
+        if not re.search(r"no hidden (?:soul-?state|interior)|hidden soul-?state", lowered_text):
+            errors.append(f"{path}: concealment diagnostic lacks no-hidden-soul-state boundary")
+        if "takfīr" not in lowered_text and "takfir" not in lowered_text:
+            errors.append(f"{path}: concealment diagnostic lacks no-takfir boundary")
+    return errors
+
+
+def load_sidecar_field_witness(path: Path) -> dict | None:
+    sidecar = path.with_suffix(".field_witness.json")
+    if not sidecar.is_file():
+        return None
+    try:
+        payload = json.loads(sidecar.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"__invalid_json__": str(sidecar)}
+    return extract_field_witness(payload)
+
+
+def check_field_witness_contract(path: Path, text: str, require_field_witness: bool) -> list[str]:
+    errors: list[str] = []
+    embedded_payload = extract_embedded_field_witness(text)
+    embedded = extract_field_witness(embedded_payload) if embedded_payload is not None else None
+    sidecar = load_sidecar_field_witness(path)
+    field_witness = embedded or sidecar
+    field_match = re.search(r"(?im)^\s*(?:#{1,6}\s*)?field_witness\b", text)
+    nested_inline = bool(re.search(r'(?is)```json\s*\{\s*"field_witness"\s*:', text))
+    if require_field_witness and nested_inline and not field_match:
+        errors.append(
+            f"{path}: field_witness JSON wrapper emitted without literal field_witness heading"
+        )
+    if field_match and isinstance(embedded_payload, dict) and "field_witness" in embedded_payload:
+        errors.append(
+            f"{path}: field_witness payload is nested under a wrapper; emit the parser-stable field_witness object itself"
+        )
+    closing_at = text.find("Closing Formulation")
+    if field_match and closing_at >= 0 and field_match.start() < closing_at:
+        errors.append(f"{path}: field_witness appears before Closing Formulation; machine sidecar must be last or external")
+    if require_field_witness and field_witness is None:
+        errors.append(
+            f"{path}: field_witness / graphable reconstruction payload required for normal governed output"
+        )
+        return errors
+    if field_witness is None:
+        return errors
+    if isinstance(field_witness, dict) and "__invalid_json__" in field_witness:
+        errors.append(f"{path}: field_witness sidecar JSON is invalid: {field_witness['__invalid_json__']}")
+        return errors
+    errors.extend(f"{path}: {error}" for error in field_witness_graph_errors(field_witness))
+    witness = parse_closure_witness(text)
+    if witness is not None:
+        errors.extend(
+            f"{path}: {error}"
+            for error in compare_visible_to_field_witness(witness, field_witness)
+        )
+    return errors
+
+
+NO_GRAPH_MODE_RE = re.compile(r"(?i)\b(?:minimal|short|no-graph)\b.{0,120}\bgraph(?:ing)?\s+(?:unsupported|partial)|\bgraph(?:ing)?\s+(?:unsupported|partial)\b.{0,120}\b(?:minimal|short|no-graph)\b")
+
+
+def check_text(path: Path, text: str, require_field_witness: bool = True) -> list[str]:
+    errors: list[str] = []
+    local_require_field_witness = (require_field_witness or bool(
+        re.search(r"(?i)require[-_ ]field[-_ ]witness|manual/release smoke proof mode|output grapher verification mode", text)
+    )) and not NO_GRAPH_MODE_RE.search(text)
+    if "daee-epistemics — NOETIC FIELD EXECUTION" not in "\n".join(text.splitlines()[:10]):
+        errors.append(f"{path}: missing canonical daee-epistemics noetic-field execution banner")
+    if re.search(r"(?im)^\s*(?:#{1,6}\s*)?NOETIC FIELD EXECUTION\s*$", text):
+        errors.append(f"{path}: bare NOETIC FIELD EXECUTION banner used without daee-epistemics prefix")
+    if PLACEHOLDER_OWNER_RE.search(text):
+        errors.append(
+            f"{path}: submove heading uses [OP] placeholder or second owner bracket; render one concrete source-owned owner bracket such as [M9]"
+        )
+    if not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer A\b.*(?:Compact DSL|DSL/IR|Diagnostic)", text):
+        errors.append(f"{path}: missing compact Layer A / DSL-IR header")
+    if not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer B\b.*(?:Governed|Bounded)", text):
+        errors.append(f"{path}: missing governed Layer B header")
+    if re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer B\b.*Owner Submoves", text):
+        errors.append(f"{path}: Layer B heading was renamed to owner-only submoves")
+    errors.extend(concealment_mode_errors(path, text))
+    if not re.search(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[", text):
+        errors.append(f"{path}: missing pre-release Initial burden set")
+
+    if not re.search(rf"[{SUP}]+B", text):
+        errors.append(f"{path}: missing canonical superscript burden notation")
+    if GENERIC_BURDEN_PLACEHOLDER_RE.search(text):
+        errors.append(
+            f"{path}: generic burden placeholder notation used as live public ID; instantiate concrete tokens such as ¹B, ²B, and ⁶B [generated-by: MRP(⁵B)]"
+        )
+    if re.search(r"(?:\?{1,3}B|R\(H,\?\)|\?{2,3}T|Graph delta:\s*\?B)", text):
+        errors.append(f"{path}: question-mark substitutes used for canonical notation")
+    if re.search(r"\bB\d+[_\.]\d+\b", text) and not re.search(rf"[{SUP}]+B[{SUB}]+", text):
+        errors.append(f"{path}: ASCII-only submove notation used without canonical public notation")
+    for line in re.findall(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[[^\]]+\]", text):
+        if re.search(r"\bB\d+\b", line) and not re.search(rf"[{SUP}]+B", line):
+            errors.append(f"{path}: Initial burden set uses ASCII burden aliases without canonical notation")
+            break
+
+    ledger_terms = (
+        (f"{B_LEDGER}_LA", "B_LA"),
+        (f"{B_LEDGER}_MRP", "B_MRP"),
+        (f"{B_LEDGER}_total", "B_total"),
+    )
+    for wrong in (f"{WRONG_B_LEDGER}_LA", f"{WRONG_B_LEDGER}_MRP", f"{WRONG_B_LEDGER}_total"):
+        if wrong in text:
+            errors.append(f"{path}: ledger witness uses 𝓑 instead of canonical 𝔅")
+    for canonical, alias in ledger_terms:
+        if not has_any(text, (canonical, alias)):
+            errors.append(f"{path}: missing {canonical} / {alias} ledger witness")
+    visible_before_field_witness = re.split(
+        r"(?im)^\s*(?:#{1,6}\s*)?field_witness\b",
+        text,
+        maxsplit=1,
+    )[0]
+    canonical_total_line = re.compile(
+        rf"(?m){B_LEDGER}_total\s*\(\s*B_total\s*\)\s*=\s*"
+        rf"{B_LEDGER}_LA\s*\u222a\s*{B_LEDGER}_MRP"
+    )
+    if "B_total" in visible_before_field_witness and not canonical_total_line.search(visible_before_field_witness):
+        errors.append(
+            f"{path}: public B_total ledger must use canonical "
+            f"{B_LEDGER}_total (B_total) = {B_LEDGER}_LA \u222a {B_LEDGER}_MRP"
+        )
+    if not has_any(text, ("\u222a", "union")) and "B_total" in text:
+        errors.append(f"{path}: B_total ledger lacks union relation")
+
+    hard_anchor_hits = sum(
+        1
+        for pattern in (
+            r"\bgrammar\b",
+            r"\banalogy\b",
+            r"\bproof-?text\b",
+            r"\bsource\b",
+            r"\bauthority\b",
+            r"\bmodel\b",
+            r"\bframework\b",
+            r"\bmoral\b",
+            r"\bepistemic\b",
+        )
+        if re.search(pattern, text, re.IGNORECASE)
+    )
+    single_baseline = False
+    for line in text.splitlines():
+        if re.search(r"(?i)initial burden set\s*:\s*\[\s*(?:B1|\u00b9B)\s*\]\s*$", line):
+            single_baseline = True
+        if re.search(rf"(?:{B_LEDGER}_LA|B_LA)\b", line) and "=" in line:
+            rhs = line.split("=", 1)[1]
+            if "," not in rhs and not re.search(r"(?:B2|\u00b2B|\u00b3B|\u2074B|\u2075B)", rhs):
+                if re.search(r"(?:B1|\u00b9B)", rhs):
+                    single_baseline = True
+    if (
+        "generated_burden_instantiation" in text
+        and single_baseline
+        and hard_anchor_hits >= 2
+        and not LOW_MASS_LICENSE_RE.search(text)
+    ):
+        errors.append(
+            f"{path}: generated-MRP proof appears to under-inventory Layer A as one burden despite multiple input-anchor classes"
+        )
+    if hard_anchor_hits >= 4:
+        framework_or_authority = re.search(
+            r"(?i)(proof-?stack|prooftext|authority-order|doctrine|framework|sacred doctrine|full-system|broader doctrine)",
+            text,
+        )
+        empty_generated_ledger = re.search(
+            rf"(?im)(?:{B_LEDGER}_MRP|B_MRP)\s*(?:\([^)]*\))?\s*=\s*(?:\{{\s*\}}|empty|none)\b",
+            text,
+        )
+        if framework_or_authority and empty_generated_ledger and "generated_burden_instantiation" not in text:
+            if not re.search(r"(?i)no (?:broader-system|doctrine-immunity|proof-carousel|bounded-answer|boundary-as-immunity).*recoil remains", text):
+                errors.append(
+                    f"{path}: hard framework/proof-stack smoke closes with empty B_MRP without generated burden or explicit no-recoil proof"
+                )
+    errors.extend(layer_b_mass_errors(path, text))
+    errors.extend(public_tail_quality_errors(path, text, hard_anchor_hits))
+
+    loopbreak_without_generated = (
+        re.search(r"(?im)^\s*MRP route result type\s*:\s*loopbreak\b", text) is not None
+        and "generated_burden_instantiation" not in text
+    )
+    required_literals = [
+        "[Mid-Reread Pressure]",
+        "Route-gradient:",
+        "Finding:",
+        "MRP route result type:",
+        "MRP resultant:",
+        "Graph delta:",
+        "Field diagnostics:",
+        "LoopBreak:",
+        "held_burden_activation",
+        "Closure/Reconstruction Witness",
+        "Restorative Response",
+        "Closing Formulation",
+    ]
+    if not loopbreak_without_generated:
+        required_literals.extend(
+            [
+                "generated_burden_instantiation",
+                "[generated-by: MRP(",
+            ]
+        )
+    for literal in required_literals:
+        if literal not in text:
+            errors.append(f"{path}: missing {literal}")
+
+    if not re.search(r"R\(H,\s*(?:\u0394|Delta)\)", text):
+        errors.append(f"{path}: missing R(H,Delta)/R(H,Δ) reread")
+    if not re.search(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:", text):
+        errors.append(f"{path}: missing literal route-bearing R(H,Delta)/R(H,Δ) line")
+    for line in re.findall(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:\s*(.+)$", text):
+        lowered = line.lower()
+        if "held" not in lowered:
+            errors.append(f"{path}: R(H,Delta) line lacks held-route reread content")
+        if not re.search(r"(?i)\b(?:live|remaining|remainder|residual|generated|no remaining)\b", line):
+            errors.append(f"{path}: R(H,Delta) line lacks live-remainder content")
+        if not re.search(r"(?i)\b(?:release|released|next|STOP|HOLD|RECURSE|closure|generated)\b", line):
+            errors.append(f"{path}: R(H,Delta) line lacks release/next-pass consequence")
+    errors.extend(held_route_false_closure_errors(path, text))
+    if "Field diagnostics:" in text:
+        for line in re.findall(r"(?im)^\s*Field diagnostics\s*:\s*(.+)$", text):
+            if not re.search(r"(?:∇·B|del[- ]dot)", line, re.IGNORECASE):
+                errors.append(f"{path}: Field diagnostics lacks target-explicit ∇·B/del-dot witness")
+            if not re.search(r"(?:∇×κ|∇×B|del[- ]cross)", line, re.IGNORECASE):
+                errors.append(f"{path}: Field diagnostics lacks target-explicit ∇×κ/∇×B/del-cross witness")
+    if BAD_ROUTE_VALUE_RE.search(text):
+        errors.append(f"{path}: MRP Route line must be a single parseable value; put targets in R(H,Delta), MRP resultant, and Graph delta")
+    if INLINE_REREAD_HEADING_RE.search(text):
+        errors.append(f"{path}: R(H,Delta): [Mid-Reread Pressure] is invalid; render [Mid-Reread Pressure] heading first, then Target and route-bearing R(H,Delta)")
+    if MRP_BLOCK_WITHOUT_TARGET_RE.search(text):
+        errors.append(f"{path}: [Mid-Reread Pressure] block missing immediate Target line")
+    allowed_mrp_types = {
+        "held_burden_activation",
+        "generated_burden_instantiation",
+        "no_new_resultant",
+        "hold_partial",
+        "loopbreak",
+    }
+    for value in re.findall(r"(?im)^\s*MRP route result type\s*:\s*([^\s.;,]+)", text):
+        if value not in allowed_mrp_types:
+            errors.append(f"{path}: invalid MRP route result type {value!r}")
+
+    target = generated_target(text)
+    if loopbreak_without_generated:
+        target = ""
+    elif not target:
+        errors.append(f"{path}: missing generated burden node with generated-by marker")
+    else:
+        marker_at = text.find(f"{target} [generated-by:")
+        section = text[marker_at:] if marker_at >= 0 else text
+        route_window = text[max(0, marker_at - 2500) : min(len(text), marker_at + 2500)] if marker_at >= 0 else text
+        if "generated_burden_instantiation" in text and not (
+            has_matched_owner_route(section) or has_matched_owner_route(route_window)
+        ):
+            errors.append(f"{path}: MRP generated a burden but did not route it to matched source-owned TTPs")
+        if count_complete_submoves(section, target) < 2:
+            errors.append(f"{path}: generated burden {target} lacks at least two complete owner-bearing Layer B submoves")
+        if not re.search(rf"(?im)^\s*(?:Land|HOLD)\({re.escape(target)}\)\s*:", section):
+            errors.append(f"{path}: generated burden {target} lacks Land/HOLD accounting")
+        if not re.search(rf"(?is)(?:Land|HOLD)\({re.escape(target)}\).*?\[Mid-Reread Pressure\]", section):
+            errors.append(f"{path}: generated burden {target} lacks post-land MRP/reread accounting")
+
+    closure_at = text.find("Closure/Reconstruction Witness")
+    restorative_at = text.find("Restorative Response")
+    closing_at = text.find("Closing Formulation")
+    if restorative_at >= 0 and closing_at >= 0 and restorative_at > closing_at:
+        errors.append(f"{path}: Closing Formulation must follow Restorative Response")
+    if closing_at >= 0 and closure_at >= 0 and closure_at < closing_at:
+        errors.append(f"{path}: Closure/Reconstruction Witness must follow Closing Formulation in default graphable output")
+    if closure_at >= 0:
+        closure = text[closure_at:]
+        if f"{WRONG_CLOSURE}(Ψᴺ)" in closure or "C(PsiA)" in closure:
+            errors.append(f"{path}: closure witness uses 𝓒/PsiA substitute instead of canonical 𝒞(Ψᴺ)")
+        if re.search(r"(?:𝒞\(Ψᴬ\)|C\(PsiA\)|T_lang:\s*(?:Ψᴬ|PsiA)\b)", closure):
+            errors.append(f"{path}: closure witness substituted agent symbol Ψᴬ/PsiA for Ψᴺ/PsiN")
+        if not re.search(r"(?im)^\s*(?:[-*]\s*)?Initial burden set\s*:\s*\[", closure):
+            errors.append(f"{path}: closure witness missing Initial burden set ledger")
+        if "MRP resultants" not in closure:
+            errors.append(f"{path}: closure witness missing MRP resultants ledger")
+        if "Burden dependency graph:" not in closure:
+            errors.append(f"{path}: closure witness missing Burden dependency graph")
+        elif "(root)" not in closure:
+            errors.append(f"{path}: closure witness dependency graph lacks root marker")
+        graph_match = re.search(
+            r"(?is)Burden dependency graph\s*:(?P<body>.*?)(?:\n\s*MRP resultants\s*:|\n\s*Terminal states\s*:|\n\s*(?:[-*]\s*)?∇·B\s*:|\Z)",
+            closure,
+        )
+        if graph_match:
+            graph_body = graph_match.group("body")
+            for line in graph_body.splitlines():
+                if re.search(r"\bB\d+\b", line) and not re.search(rf"[{SUP}]+B", line):
+                    errors.append(f"{path}: closure dependency graph uses ASCII burden aliases without canonical notation")
+                    break
+                if "->" in line and "→" not in line:
+                    errors.append(f"{path}: closure dependency graph uses ASCII arrow instead of canonical →")
+                    break
+        terminal_match = re.search(
+            r"(?is)Terminal states\s*:(?P<body>.*?)(?:\n\s*Burden dependency graph\s*:|\n\s*MRP resultants\s*:|\n\s*(?:[-*]\s*)?∇·B\s*:|\Z)",
+            closure,
+        )
+        if terminal_match:
+            terminal_body = terminal_match.group("body")
+            for line in terminal_body.splitlines():
+                if re.search(r"(?m)^\s*(?:[-*]\s*)?B\d+\s*:", line) and not re.search(rf"[{SUP}]+B\s*:", line):
+                    errors.append(f"{path}: closure terminal states use ASCII burden aliases without canonical notation")
+                    break
+        for line in re.findall(r"(?im)^\s*MRP\([^)]+\)\s*:\s*type=.*$", closure):
+            graph_part = re.search(r"\bgraph\s*=\s*([^;]+)", line)
+            if graph_part and "->" in graph_part.group(1) and "→" not in graph_part.group(1):
+                errors.append(f"{path}: closure MRP resultant graph uses ASCII arrow instead of canonical →")
+                break
+            if graph_part and re.search(r"\bB\d+\b", graph_part.group(1)) and not re.search(rf"[{SUP}]+B", graph_part.group(1)):
+                errors.append(f"{path}: closure MRP resultant graph uses ASCII burden aliases without canonical notation")
+                break
+        if "∇·B:" not in closure and "del-dot" not in closure.lower():
+            errors.append(f"{path}: closure witness missing ∇·B status")
+        elif "∇·B:" in closure and not re.search(r"(?im)^\s*(?:[-*]\s*)?∇·B\s*:\s*(?:neutral|non-neutral)\s*/", closure):
+            errors.append(f"{path}: closure witness ∇·B status must be neutral/non-neutral with slash detail")
+        if "∇×κ:" not in closure and "del-cross" not in closure.lower():
+            errors.append(f"{path}: closure witness missing ∇×κ status")
+        elif "∇×κ:" in closure and not re.search(r"(?im)^\s*(?:[-*]\s*)?∇×κ\s*:\s*(?:null|resolved|non-null|unresolved)\s*/", closure):
+            errors.append(f"{path}: closure witness ∇×κ status must be null/resolved/non-null/unresolved with slash detail")
+        closure_field = re.search(r"(?im)^\s*(?:[-*]\s*)?(?:𝒞\(Ψᴺ\)|C\(PsiN\))\s*:\s*(.+)$", closure)
+        if closure_field:
+            body = closure_field.group(1)
+            if not re.search(r"(?i)\b(?:runtime|execution field|bounded|governed|for this reply)\b", body):
+                errors.append(f"{path}: closure witness 𝒞(Ψᴺ) lacks runtime/bounded field semantics")
+            if not re.search(r"(?i)\b(?:COMPLETE|STOP|HOLD|RECURSE|PARTIAL|closed|closure|held|residual)\b", body):
+                errors.append(f"{path}: closure witness 𝒞(Ψᴺ) lacks bounded route/closure status")
+        else:
+            errors.append(f"{path}: closure witness missing 𝒞(Ψᴺ) status")
+        if target and target not in closure:
+            errors.append(f"{path}: closure witness missing generated burden {target}")
+
+    errors.extend(check_field_witness_contract(path, text, local_require_field_witness))
+    return errors
+
+
+def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
+    return sorted((root / "valid").glob("*.md")), sorted((root / "invalid").glob("*.md"))
+
+
+def check_compiled_skill_contract(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    text = read_text(path)
+    head = "\n".join(text.splitlines()[:120])
+    errors: list[str] = []
+    required = [
+        "NON-DROPPABLE DEFAULT MANUAL CONTRACT",
+        "daee-epistemics — NOETIC FIELD EXECUTION",
+        "𝔅_LA (B_LA)",
+        "𝔅_MRP (B_MRP)",
+        "𝔅_total (B_total)",
+        "Initial burden set:",
+        "Concealment mode:",
+        "no hidden soul-state",
+        "takfir",
+        "Route-gradient:",
+        "MRP route result type:",
+        "Field diagnostics:",
+        "LoopBreak:",
+        "generated_burden_instantiation",
+        "held_burden_activation",
+        "[generated-by: MRP(",
+        "field_witness",
+        "graphing is unsupported",
+        "human-readable proof ledger",
+        "machine-readable graph/reconstruction payload",
+        "coverage_proof",
+        "nodes",
+        "edges",
+        "terminal_states",
+        "Closing Formulation",
+        "Matched owner/TTP route",
+        "Code lookup is not owner activation",
+        "TTP Operation Body",
+        "field_witness.mrp_resultants",
+        "Generic burden placeholder notation",
+    ]
+    for literal in required:
+        if literal not in head:
+            errors.append(f"{path}: compiled skill top contract missing {literal!r} in first 120 lines")
+    if re.search(r"preferably\s+`B1[_\.]1", head):
+        errors.append(f"{path}: compiled skill top contract still prefers ASCII B1_1 notation")
+    return errors
+
+
+def expand_globbed_paths(paths: list[Path]) -> list[Path]:
+    expanded: list[Path] = []
+    for path in paths:
+        pattern = str(path)
+        if any(char in pattern for char in "*?["):
+            matches = [Path(match) for match in glob.glob(pattern)]
+            expanded.extend(sorted(matches) or [path])
+        else:
+            expanded.append(path)
+    return expanded
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=Path("tests/manual-smoke-render"))
+    parser.add_argument("--outputs", nargs="*", type=Path, default=[])
+    parser.add_argument("--allow-missing-field-witness", action="store_true")
+    parser.add_argument("--skip-skill-contract", action="store_true")
+    args = parser.parse_args()
+
+    errors: list[str] = []
+    if not args.skip_skill_contract:
+        errors.extend(check_compiled_skill_contract(Path("skill/SKILL.md")))
+
+    valid, invalid = iter_fixtures(args.root)
+    valid_checked = 0
+    invalid_checked = 0
+
+    for path in valid:
+        found = check_text(path, read_text(path), not args.allow_missing_field_witness)
+        if found:
+            errors.extend(found)
+        else:
+            valid_checked += 1
+
+    for path in invalid:
+        found = check_text(path, read_text(path), not args.allow_missing_field_witness)
+        if not found:
+            errors.append(f"{path}: expected-invalid manual smoke render fixture unexpectedly passed")
+        else:
+            invalid_checked += 1
+
+    output_checked = 0
+    for path in expand_globbed_paths(args.outputs):
+        found = check_text(path, read_text(path), not args.allow_missing_field_witness)
+        if found:
+            errors.extend(found)
+        else:
+            output_checked += 1
+
+    if errors:
+        print("manual smoke render contract: FAIL")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+
+    print("manual smoke render contract: PASS")
+    print(f"Valid fixtures checked: {valid_checked}")
+    print(f"Invalid fixtures checked: {invalid_checked}")
+    if args.outputs:
+        print(f"Outputs checked: {output_checked}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

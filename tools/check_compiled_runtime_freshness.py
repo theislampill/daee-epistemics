@@ -10,9 +10,9 @@ from pathlib import Path
 from compiled_runtime_lib import (
     BUNDLE_MAPPING_VERSION,
     COMPILER_VERSION,
-    GENERATED_WARNING,
     SECTION_FIELDS,
     fail_with_errors,
+    normalize_runtime_surface_text,
     out_dir,
     parse_compiled_sections,
     repo_root,
@@ -62,12 +62,6 @@ def main() -> int:
         if not path.is_file():
             errors.append(f"generated file listed in manifest is absent: {generated_rel}")
             continue
-        if (
-            generated_rel not in metadata_generated_rels
-            and path.suffix == ".md"
-            and GENERATED_WARNING.strip() not in path.read_text(encoding="utf-8")
-        ):
-            errors.append(f"generated markdown lacks warning header: {generated_rel}")
 
     for rel_path, recorded_sha in sorted((manifest.get("extra_inputs") or {}).items()):
         path = root / rel_path
@@ -108,7 +102,11 @@ def main() -> int:
             if module_id in seen_sections:
                 errors.append(f"duplicate compiled section for module id: {module_id}")
             seen_sections[module_id] = section
-            source = section["SOURCE"]
+            manifest_entry = sources.get(module_id)
+            source = manifest_entry.get("source") if isinstance(manifest_entry, dict) else ""
+            if not source:
+                errors.append(f"{bundle_rel}: section absent from manifest sources: {module_id}")
+                continue
             source_path = root / source
             if not source_path.is_file():
                 errors.append(f"{bundle_rel}: source missing for section {module_id}: {source}")
@@ -118,13 +116,10 @@ def main() -> int:
                 errors.append(f"{bundle_rel}: section hash stale for {module_id} ({source})")
             generated_body = section.get("GENERATED_BODY")
             if generated_body is not None:
-                source_text = source_path.read_text(encoding="utf-8").rstrip()
+                source_text = normalize_runtime_surface_text(source_path.read_text(encoding="utf-8").rstrip())
                 if generated_body.rstrip() != source_text:
                     errors.append(f"{bundle_rel}: generated body stale for {module_id} ({source})")
-            manifest_entry = sources.get(module_id)
-            if not manifest_entry:
-                errors.append(f"{bundle_rel}: section absent from manifest sources: {module_id}")
-            elif manifest_entry.get("source_sha256") != current_sha:
+            if manifest_entry.get("source_sha256") != current_sha:
                 errors.append(f"manifest source hash stale for {module_id}: {source}")
 
     for module_id, entry in sorted(sources.items()):
