@@ -124,6 +124,25 @@ SOURCE_PARADE_BLOCK_RE = re.compile(
     r"\b(?:block|blocks|blocked|withhold|withheld|hold)\b.{0,140}"
     r"\b(?:argument[- ]bank|source[- ]parade)\b"
 )
+PROOF_PACKET_RE = re.compile(
+    r"(?is)\b(?:MM-5|proof[- ]packet|quote[- ]fragment|inherited\s+quote[- ]fragment)\b"
+    r".{0,260}\b(?:compress(?:es|ed|ing)|opaque\s+warrant|already\s+contains|"
+    r"hidden\s+premises|proof,\s*authority,\s*conclusion,\s*method)\b|"
+    r"\bMM-5\s+proof[- ]packet\s+reconstruction\b"
+)
+PROOF_PACKET_CONTEXT_RE = re.compile(r"(?is)\b(?:MM-5|proof[- ]packet|reconstruct(?:ed|ion)?|packet)\b")
+PROOF_PACKET_RELEASE_BLOCK_RE = re.compile(
+    r"(?is)\b(?:proof\s+answer|source\s+stack|doctrinal\s+conclusion)\b.{0,220}"
+    r"\b(?:blocked|held|withheld|not\s+released|forbidden|stopped|deferred)\b|"
+    r"\b(?:block|blocks|blocked|withhold|withheld|hold|defer|deferred)\b.{0,180}"
+    r"\b(?:proof\s+answer|source\s+stack|doctrinal\s+conclusion)\b"
+)
+PROOF_PACKET_ANTI_HOLD_RE = re.compile(
+    r"(?is)\b(?:proof\s+answer|source\s+stack|doctrinal\s+conclusion)\b.{0,140}"
+    r"\b(?:not\s+(?:held|blocked|withheld|deferred)|still\s+(?:released|releases)|released\s+anyway)\b|"
+    r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|withhold|defer)\b.{0,160}"
+    r"\b(?:proof\s+answer|source\s+stack|doctrinal\s+conclusion)\b"
+)
 IRAD_CONTEXT_RE = re.compile(
     r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
     r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
@@ -173,6 +192,19 @@ def source_components(value: str) -> set[str]:
     return components
 
 
+def has_proof_packet_reconstruction(text: str) -> bool:
+    if not PROOF_PACKET_CONTEXT_RE.search(text):
+        return False
+    required = (
+        r"\bpremise(?:s)?\b",
+        r"\binference\b",
+        r"\bconclusion\s+scope\b",
+        r"\bsource[- ]status\b",
+        r"\btribunal\s+function\b",
+    )
+    return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
+
+
 def has_clarification_pressure(value: str, block: str) -> bool:
     return bool(CLARIFICATION_PRESSURE_RE.search(value) or CLARIFICATION_PRESSURE_RE.search(block))
 
@@ -196,6 +228,7 @@ def check_text(path: Path, text: str) -> list[str]:
     framework_active = bool(FRAMEWORK_SIGNAL_RE.search(text) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text))
     exception_visible = bool(CLEAR_EXCEPTION_RE.search(text))
     source_stack_ambiguous = bool(SOURCE_STACK_AMBIGUITY_RE.search(text))
+    proof_packet_active = bool(PROOF_PACKET_RE.search(text))
     if source_stack_ambiguous:
         if not SOURCE_USE_FUNCTION_RE.search(text):
             errors.append(
@@ -205,6 +238,17 @@ def check_text(path: Path, text: str) -> list[str]:
         if not SOURCE_PARADE_BLOCK_RE.search(text):
             errors.append(
                 f"{path}: AS-8 source-stack ambiguity must block argument-bank/source-parade release"
+            )
+    if proof_packet_active:
+        if not has_proof_packet_reconstruction(text):
+            errors.append(
+                f"{path}: MM-5 proof-packet compression requires reconstruction into premise, "
+                "inference, conclusion scope, source-status, and tribunal function"
+            )
+        if PROOF_PACKET_ANTI_HOLD_RE.search(text) or not PROOF_PACKET_RELEASE_BLOCK_RE.search(text):
+            errors.append(
+                f"{path}: MM-5 proof-packet compression must hold proof answer, source stack, "
+                "or doctrinal conclusion until packet reconstruction"
             )
     if framework_active and not matches:
         errors.append(f"{path}: operative framework/worldview covering requires a visible Concealment mode line")
