@@ -25,6 +25,51 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
+## v0.4.3.5 Release Package / Provenance Status
+
+v0.4.3.5 public artifact status: published on the existing GitHub Release for
+tag `v0.4.3.5` after the docs-truthfulness/source-boundary checkpoint. The
+package is built from the tagged source boundary
+`da68ae87ef74424a081a3bf96f673106d9ebd60e`. The `.skill.zip` file is a local
+build intermediate only and was not uploaded.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.3.5.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.3.5.skill.zip` |
+| Local package copy | `build/daee-epistemics-v0.4.3.5.skill` |
+| SHA256 | `7B1050DF02077198E3F1B6FA7C56C5DDCE6B6BB8444E543FA5350238D33ED24C` |
+| Size | `702030` bytes |
+| Entries | `21` |
+| Source commit recorded in provenance | `da68ae87ef74424a081a3bf96f673106d9ebd60e` |
+| Source state | Docs-truthfulness source boundary tag with live CI and Pages PASS before package build |
+| Branch | `main` |
+| Contract version | `0.4.0.0` |
+| Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
+| Generated `SKILL.md` SHA256 | `FEEA5664B5010C606545395D7F9913C6B94832634986CD408344C9D19336775A` |
+| Generated runtime manifest SHA256 | `1AA08F70352D62BED557DFE0DC17117B7A8FEED07337DC64B38F889B19291F61` |
+| Compiled module map SHA256 | `A7872365723E8DA9130A840C4FE729360BE3650F80FBA0926075138D9A045FCE` |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.3.5`; remote tag peels to `da68ae87ef74424a081a3bf96f673106d9ebd60e` |
+| Provenance file | Release asset: `daee-epistemics-v0.4.3.5.provenance.json` generated from `build/daee-epistemics-v0.4.3.5.provenance.json` |
+| Provenance SHA256 | `AEEC6318DBBA484ECD1E1F0637378038F255B9FF905EBDBE5D56E663D0AFA607` |
+| Package-bound proof | Full release preflight PASS from a clean detached `v0.4.3.5` tag worktree; package artifact validation PASS; self-contained package PASS; local provenance check PASS; uploaded assets were downloaded back from GitHub and hash/provenance verified. Cross-host/paraphrase proof is not claimed. |
+
+The v0.4.3.5 release assets include the canonical `.skill` payload and package
+provenance JSON only:
+
+- `daee-epistemics-v0.4.3.5.skill`
+- `daee-epistemics-v0.4.3.5.provenance.json`
+
+No `.skill.zip` asset was uploaded. No A.13 hard-register schema acceptance,
+D.8 cleanup completion, full IR decode, guaranteed `T_lang` uptake,
+cross-host/paraphrase proof, or new model-smoke proof is claimed.
+
+The downloaded package/provenance pair is checked with:
+
+```powershell
+python tools/check_release_provenance.py --provenance build\download-verify-v0.4.3.5-20260531\daee-epistemics-v0.4.3.5.provenance.json --package build\download-verify-v0.4.3.5-20260531\daee-epistemics-v0.4.3.5.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json
+```
+
 ## v0.4.3.0 Release Package / Provenance Status
 
 v0.4.3.0 public artifact status: published after corrected-goal closure. The stale
