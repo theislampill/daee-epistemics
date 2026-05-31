@@ -107,6 +107,23 @@ BOUNDARY_RE = re.compile(
     r"no\s+(?:hidden\s+)?soul[- ]state|no\s+takf[īi]r|not\s+a\s+takf[īi]r|"
     r"not\s+(?:a\s+)?(?:hidden\s+)?(?:soul[- ]state|culpability)\s+judg)"
 )
+SOURCE_STACK_AMBIGUITY_RE = re.compile(
+    r"(?is)\b(?:source[- ]stack|stack\s+of\s+names|names\s+and\s+quotations)\b"
+    r".{0,220}\b(?:ambiguous|ambiguously|prestige\s+signal|identity\s+signal|"
+    r"as\s+(?:proof|evidence|prestige|contrast)|contrast|genealogy)\b|"
+    r"\b(?:AS-8|source\s+as\s+evidence\s+vs\s+source\s+as\s+identity\s+signal)\b"
+)
+SOURCE_USE_FUNCTION_RE = re.compile(
+    r"(?is)\b(?:AS-8|source[- ]use(?:\s+function)?|source\s+function|source-status)\b"
+    r".{0,280}\b(?:evidence|contrast|genealogy|identity\s+signal|prestige\s+signal|"
+    r"held\s+material|bounded\s+comparison)\b"
+)
+SOURCE_PARADE_BLOCK_RE = re.compile(
+    r"(?is)\b(?:argument[- ]bank|source[- ]parade)\b.{0,180}"
+    r"\b(?:blocked|held|withheld|not\s+released|forbidden|stopped)\b|"
+    r"\b(?:block|blocks|blocked|withhold|withheld|hold)\b.{0,140}"
+    r"\b(?:argument[- ]bank|source[- ]parade)\b"
+)
 IRAD_CONTEXT_RE = re.compile(
     r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
     r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
@@ -178,6 +195,17 @@ def check_text(path: Path, text: str) -> list[str]:
     matches = list(CONCEALMENT_LINE_RE.finditer(text))
     framework_active = bool(FRAMEWORK_SIGNAL_RE.search(text) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text))
     exception_visible = bool(CLEAR_EXCEPTION_RE.search(text))
+    source_stack_ambiguous = bool(SOURCE_STACK_AMBIGUITY_RE.search(text))
+    if source_stack_ambiguous:
+        if not SOURCE_USE_FUNCTION_RE.search(text):
+            errors.append(
+                f"{path}: AS-8 source-stack ambiguity requires a visible source-use function "
+                "classification before content/proof release"
+            )
+        if not SOURCE_PARADE_BLOCK_RE.search(text):
+            errors.append(
+                f"{path}: AS-8 source-stack ambiguity must block argument-bank/source-parade release"
+            )
     if framework_active and not matches:
         errors.append(f"{path}: operative framework/worldview covering requires a visible Concealment mode line")
     if framework_active and matches and not any("mode" in match.group("label").lower() for match in matches):
