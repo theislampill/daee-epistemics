@@ -130,6 +130,7 @@ PROOF_SIDECAR_REQUIRED_ENTRIES = (
 )
 
 PROOF_SIDECAR_INVALID_FIXTURE_EXPECTATIONS = {
+    "absent-proof-sidecars": "proof_sidecars is required",
     "malformed-sha": "proof_sidecars.raw_input sha256 is malformed",
     "missing-entry": "proof_sidecars missing required entry: raw_input",
     "missing-file": "proof_sidecars.raw_input path does not exist",
@@ -1241,7 +1242,7 @@ def validate_proof_sidecars_record(record: object, hash_record_path: Path) -> li
     return errors
 
 
-def validate_hash_record_file(path: Path) -> list[str]:
+def validate_hash_record_file(path: Path, *, require_proof_sidecars: bool = False) -> list[str]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
@@ -1249,6 +1250,8 @@ def validate_hash_record_file(path: Path) -> list[str]:
     if not isinstance(payload, dict):
         return ["hash record must be an object"]
     if "proof_sidecars" not in payload:
+        if require_proof_sidecars:
+            return ["proof_sidecars is required"]
         return []
     return validate_proof_sidecars_record(payload["proof_sidecars"], path)
 
@@ -1268,11 +1271,11 @@ def validate_proof_sidecar_hash_fixtures(root: Path = PROOF_SIDECAR_HASH_FIXTURE
 
     valid_root = root / "valid"
     invalid_root = root / "invalid"
-    valid_records = sorted(valid_root.glob("*/*.hashes.json"))
+    valid_records = sorted(valid_root.glob("*/smoke.hashes.json"))
     if not valid_records:
         errors.append("proof-sidecar hash fixtures lack valid records")
     for path in valid_records:
-        found = validate_hash_record_file(path)
+        found = validate_hash_record_file(path, require_proof_sidecars=True)
         if found:
             errors.append(f"{path.relative_to(root).as_posix()}: valid fixture failed: {found!r}")
 
@@ -1281,7 +1284,7 @@ def validate_proof_sidecar_hash_fixtures(root: Path = PROOF_SIDECAR_HASH_FIXTURE
         if not records:
             errors.append(f"proof-sidecar invalid fixture missing hash record: {fixture_name}")
             continue
-        found = validate_hash_record_file(records[0])
+        found = validate_hash_record_file(records[0], require_proof_sidecars=True)
         if not any(expected in item for item in found):
             errors.append(
                 f"proof-sidecar invalid fixture {fixture_name!r} was not rejected "
@@ -2313,6 +2316,11 @@ def main(argv: list[str]) -> int:
         help="Validate a current-skill smoke *.hashes.json record, including optional proof_sidecars.",
     )
     parser.add_argument(
+        "--require-proof-sidecars",
+        action="store_true",
+        help="Require each explicit --hash-record to contain a proof_sidecars object.",
+    )
+    parser.add_argument(
         "--no-release-artifacts",
         action="store_true",
         help="Disable release-artifact filename/SHA consistency checks intentionally.",
@@ -2350,7 +2358,10 @@ def main(argv: list[str]) -> int:
         if not hash_record_path.exists():
             errors.append(f"{hash_record_path.as_posix()}: hash record is absent")
             continue
-        for error in validate_hash_record_file(hash_record_path):
+        for error in validate_hash_record_file(
+            hash_record_path,
+            require_proof_sidecars=args.require_proof_sidecars,
+        ):
             errors.append(f"{hash_record_path.as_posix()}: {error}")
     if not args.samples_only:
         artifact_root = Path(args.root)

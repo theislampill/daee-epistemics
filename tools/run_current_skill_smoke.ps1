@@ -137,6 +137,11 @@ function Test-ProofSidecarRecord([object]$Record) {
     }
 }
 
+function Write-JsonUtf8NoBom([string]$PathValue, [object]$Payload) {
+    $json = $Payload | ConvertTo-Json -Depth 5
+    [System.IO.File]::WriteAllText($PathValue, $json + [Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
+}
+
 $rootPath = Resolve-RequiredDirectory -PathValue $Root -Name "Root"
 $currentPath = (Resolve-Path -LiteralPath (Get-Location)).Path
 if ($currentPath -ne $rootPath) {
@@ -187,9 +192,9 @@ if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
     if ($selfTestJson -notmatch '"proof_sidecars"') {
         throw "Proof sidecar self-test did not serialize proof_sidecars into the hash record."
     }
-    Set-Content -LiteralPath $selfTestHashPath -Encoding UTF8 -Value $selfTestJson
+    Write-JsonUtf8NoBom -PathValue $selfTestHashPath -Payload $selfTestHashRecord
 
-    $hashCheckerOutput = & python (Join-Path $rootPath "tools\check_smoke_artifacts.py") --samples-only --no-release-artifacts --hash-record $selfTestHashPath 2>&1
+    $hashCheckerOutput = & python (Join-Path $rootPath "tools\check_smoke_artifacts.py") --samples-only --no-release-artifacts --require-proof-sidecars --hash-record $selfTestHashPath 2>&1
     $hashCheckerExit = $LASTEXITCODE
     $hashCheckerOutput | ForEach-Object { Write-Host "$_" }
     if ($hashCheckerExit -ne 0) {
@@ -344,7 +349,7 @@ if ($null -ne $proofSidecarRecord) {
     $hashRecord["proof_sidecars"] = $proofSidecarRecord
 }
 
-$hashRecord | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $hashPath -Encoding UTF8
+Write-JsonUtf8NoBom -PathValue $hashPath -Payload $hashRecord
 
 if ($codexExit -ne 0) {
     throw "codex exec failed for CaseName='$CaseName' with exit code $codexExit. See $logPath"

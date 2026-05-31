@@ -1,0 +1,7 @@
+{
+  "case_name": "proof-sidecar-hash-record-absent-proof-sidecars",
+  "output": {
+    "path": "output.md",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  }
+}
