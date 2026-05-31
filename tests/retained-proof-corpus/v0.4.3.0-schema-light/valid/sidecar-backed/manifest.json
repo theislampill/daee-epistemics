@@ -61,6 +61,37 @@
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal"
       ]
+    },
+    {
+      "id": "d2-closing-formulation-retained-breadth",
+      "description": "Current retained cases that carry D.2 Closing Formulation evidence; this is retained-corpus accounting, not proof by manifest alone.",
+      "rows": [
+        "D.2"
+      ],
+      "case_ids": [
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "d3-mixed-concealment-retained-breadth",
+      "description": "Current retained cases that carry D.3 mixed concealment evidence; this is retained-corpus accounting, not proof by manifest alone.",
+      "rows": [
+        "D.3"
+      ],
+      "case_ids": [
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "academic-prestige-authority",
+        "therapy-moral-tribunal"
+      ]
     }
   ],
   "cases": [
