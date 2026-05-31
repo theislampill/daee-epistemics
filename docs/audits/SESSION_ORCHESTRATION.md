@@ -310,6 +310,13 @@ The current owner-decision queue is
 `docs/audits/v0.4.3.x-owner-decision-queue.md`. The managing session should use
 that queue before opening any new implementation or scout session.
 
+A.13.2/full-IR/register-composition decision prep now exists at
+`docs/audits/v0.4.3.x-a13-2-full-ir-decision-prep-packet.md`. It is a docs-only
+owner-decision packet and recommends a checker/fixture-first hard-register
+field_witness/NAR/register-composition reconciliation slice if accepted. It is
+not approval to implement A.13.2, emit hard registers by default, start full IR
+decode, open fixture 62/D.3, or run model smokes.
+
 ## Boundaries
 
 This policy does not authorize:
