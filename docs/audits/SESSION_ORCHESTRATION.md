@@ -291,6 +291,16 @@ fixture 62 remains a D.3-adjacent owner-decision candidate; and A.13 follow-on
 implementation remains owner-gated. No new implementation session is opened by
 this policy document itself.
 
+Post-sidecar checkpoint after commit
+`e651756bc210e764b1c8a112eac6c216f20d642d`: read-only scouts Galileo
+(`019e8032-437a-7320-8e5c-7172e7010d2a`) and Aquinas
+(`019e8032-71a9-7240-8e62-465a3c4d0ed5`) reported no actionable stale wording
+and no owner-free no-model residual lane. The managing session should not open
+a new implementation session until the owner accepts fixture 62 as
+D.3-adjacent, opens later A.13/full-IR work, promotes D.8 archaeology, approves
+broad governed/model matrix work, or names another concrete residual with owner
+files.
+
 ## Boundaries
 
 This policy does not authorize:
