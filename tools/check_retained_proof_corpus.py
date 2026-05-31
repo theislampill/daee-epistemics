@@ -3,8 +3,8 @@
 
 This checker binds promoted governed-output proof artifacts to their raw input,
 checker-owned collapse certificate, warning-clean certificate-backed Grapher
-HTML, and byte hashes. It is a corpus integrity gate, not proof by itself; the
-row-specific validators remain the proof authority.
+HTML, and repository-normalized text hashes. It is a corpus integrity gate, not
+proof by itself; the row-specific validators remain the proof authority.
 """
 
 from __future__ import annotations
@@ -73,12 +73,27 @@ def load_json(path: Path) -> tuple[Any | None, list[str]]:
         return None, [f"{rel(path)}: invalid JSON: {exc}"]
 
 
+def sha256_artifact_bytes(data: bytes) -> str:
+    if b"\x00" not in data:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest().upper()
+
+
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return sha256_artifact_bytes(path.read_bytes())
+
+
+def hash_portability_errors() -> list[str]:
+    text_lf = sha256_artifact_bytes(b"alpha\nbeta\n")
+    text_crlf = sha256_artifact_bytes(b"alpha\r\nbeta\r\n")
+    binary_lf = sha256_artifact_bytes(b"alpha\x00\nbeta\n")
+    binary_crlf = sha256_artifact_bytes(b"alpha\x00\r\nbeta\r\n")
+    errors: list[str] = []
+    if text_lf != text_crlf:
+        errors.append("hash portability self-test: LF/CRLF text hashes differ")
+    if binary_lf == binary_crlf:
+        errors.append("hash portability self-test: binary-like hashes were normalized")
+    return errors
 
 
 def expand_paths(paths: list[Path]) -> list[Path]:
@@ -297,6 +312,8 @@ def main() -> int:
             errors.extend(f"{rel(path)}: {error}" for error in found)
         else:
             direct_checked += 1
+
+    errors.extend(hash_portability_errors())
 
     if errors:
         print("retained proof corpus check: FAIL")

@@ -2,9 +2,9 @@
 """Validate D.1 retained hard-smoke corpus manifests.
 
 The manifest is a corpus contract, not proof by itself. It binds raw input,
-governed output, hashes, collapse certificate, Grapher output, surface evidence,
-and validator records so a future D.1 governed smoke cannot be mistaken for a
-loose historical artifact.
+governed output, repository-normalized text hashes, collapse certificate,
+Grapher output, surface evidence, and validator records so a future D.1
+governed smoke cannot be mistaken for a loose historical artifact.
 """
 
 from __future__ import annotations
@@ -118,12 +118,27 @@ def load_json(path: Path) -> tuple[Any | None, list[str]]:
         return None, [f"{rel(path)}: invalid JSON: {exc}"]
 
 
+def sha256_artifact_bytes(data: bytes) -> str:
+    if b"\x00" not in data:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest().upper()
+
+
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    return sha256_artifact_bytes(path.read_bytes())
+
+
+def hash_portability_errors() -> list[str]:
+    text_lf = sha256_artifact_bytes(b"alpha\nbeta\n")
+    text_crlf = sha256_artifact_bytes(b"alpha\r\nbeta\r\n")
+    binary_lf = sha256_artifact_bytes(b"alpha\x00\nbeta\n")
+    binary_crlf = sha256_artifact_bytes(b"alpha\x00\r\nbeta\r\n")
+    errors: list[str] = []
+    if text_lf != text_crlf:
+        errors.append("hash portability self-test: LF/CRLF text hashes differ")
+    if binary_lf == binary_crlf:
+        errors.append("hash portability self-test: binary-like hashes were normalized")
+    return errors
 
 
 def normalize_command(text: str) -> str:
@@ -302,7 +317,7 @@ def artifact_errors(manifest_path: Path, case: dict[str, Any]) -> list[str]:
             raw_input_sha = sha256_file(input_path)
             if metadata.get("raw_input_sha256") != raw_input_sha:
                 errors.append(
-                    "hashes: raw_input_sha256 must match input.md byte SHA-256 "
+                    "hashes: raw_input_sha256 must match repository-normalized input SHA-256 "
                     f"{raw_input_sha}"
                 )
             normalized_fingerprint = input_fingerprint_for_path(input_path).upper()
@@ -498,6 +513,8 @@ def main() -> int:
             errors.extend(f"{rel(path)}: {error}" for error in found)
         else:
             direct_checked += 1
+
+    errors.extend(hash_portability_errors())
 
     if errors:
         print("hard-smoke manifest check: FAIL")

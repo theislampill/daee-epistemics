@@ -3,8 +3,9 @@
 
 This helper copies the canonical raw input, output, checker-owned collapse
 certificate, and warning-clean certificate-backed Grapher HTML into a retained
-case directory, then writes the manifest entry with byte hashes. It is a
-promotion helper only; row-specific validators remain the proof authority.
+case directory, then writes the manifest entry with repository-normalized text
+hashes. It is a promotion helper only; row-specific validators remain the proof
+authority.
 """
 
 from __future__ import annotations
@@ -54,11 +55,10 @@ def rel(path: Path) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
+    data = path.read_bytes()
+    if b"\x00" not in data:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(data).hexdigest().upper()
 
 
 def load_json(path: Path) -> Any:
