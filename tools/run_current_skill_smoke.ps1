@@ -58,6 +58,85 @@ function ConvertTo-SafeName([string]$Value) {
     return $safe
 }
 
+function Invoke-ProofSidecarBuild(
+    [string]$RootPath,
+    [string]$RawInputFullPath,
+    [string]$OutputPath,
+    [string]$ProofSidecarDirPath,
+    [string]$OutputBaseName
+) {
+    if (-not (Test-Path -LiteralPath $ProofSidecarDirPath -PathType Container)) {
+        New-Item -ItemType Directory -Path $ProofSidecarDirPath | Out-Null
+    }
+    $ProofSidecarDirPath = (Resolve-Path -LiteralPath $ProofSidecarDirPath).Path
+
+    $builderArgs = @(
+        (Join-Path $RootPath "tools\build_retained_proof_sidecars.py"),
+        "--input", $RawInputFullPath,
+        "--output", $OutputPath,
+        "--out-dir", $ProofSidecarDirPath,
+        "--prefix", $OutputBaseName,
+        "--force"
+    )
+    $builderOutput = & python @builderArgs 2>&1
+    $builderExit = $LASTEXITCODE
+    $builderOutput | ForEach-Object { Write-Host "$_" }
+    if ($builderExit -ne 0) {
+        throw "Proof sidecar build failed."
+    }
+
+    $proofCertificatePath = Join-Path $ProofSidecarDirPath "$OutputBaseName.collapse-certificate.json"
+    $proofGrapherPath = Join-Path $ProofSidecarDirPath "$OutputBaseName.grapher.html"
+    $proofHashesPath = Join-Path $ProofSidecarDirPath "$OutputBaseName.hashes.json"
+    foreach ($path in @($proofCertificatePath, $proofGrapherPath, $proofHashesPath)) {
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+            throw "Proof sidecar builder did not produce expected artifact: $path"
+        }
+    }
+
+    return [pscustomobject]@{
+        raw_input = [pscustomobject]@{
+            path = $RawInputFullPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $RawInputFullPath).Hash
+        }
+        out_dir = $ProofSidecarDirPath
+        collapse_certificate = [pscustomobject]@{
+            path = $proofCertificatePath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofCertificatePath).Hash
+        }
+        grapher_html = [pscustomobject]@{
+            path = $proofGrapherPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofGrapherPath).Hash
+        }
+        hashes = [pscustomobject]@{
+            path = $proofHashesPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofHashesPath).Hash
+        }
+        command = "python $($builderArgs -join ' ')"
+    }
+}
+
+function Test-ProofSidecarRecord([object]$Record) {
+    foreach ($key in @("raw_input", "collapse_certificate", "grapher_html", "hashes")) {
+        $property = $Record.PSObject.Properties[$key]
+        if ($null -eq $property) {
+            throw "Proof sidecar record missing key: $key"
+        }
+        $entry = $property.Value
+        $path = $entry.PSObject.Properties["path"].Value
+        $sha256 = $entry.PSObject.Properties["sha256"].Value
+        if ([string]::IsNullOrWhiteSpace($path)) {
+            throw "Proof sidecar record missing path for: $key"
+        }
+        if ([string]::IsNullOrWhiteSpace($sha256)) {
+            throw "Proof sidecar record missing sha256 for: $key"
+        }
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+            throw "Proof sidecar record path does not exist for ${key}: $path"
+        }
+    }
+}
+
 $rootPath = Resolve-RequiredDirectory -PathValue $Root -Name "Root"
 $currentPath = (Resolve-Path -LiteralPath (Get-Location)).Path
 if ($currentPath -ne $rootPath) {
@@ -78,11 +157,24 @@ foreach ($required in $requiredFiles) {
 }
 
 if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
-    & python (Join-Path $rootPath "tools\build_retained_proof_sidecars.py") --self-test
-    if ($LASTEXITCODE -ne 0) {
-        throw "Proof sidecar self-test failed."
+    $selfTestCase = Join-Path $rootPath "tests\retained-proof-corpus\v0.4.3.0-schema-light\valid\sidecar-backed\cases\a9-science-source"
+    $selfTestInput = Join-Path $selfTestCase "input.txt"
+    $selfTestOutput = Join-Path $selfTestCase "output.md"
+    $selfTestDir = Join-Path ([System.IO.Path]::GetTempPath()) ("current-skill-proof-sidecar-" + [System.Guid]::NewGuid().ToString("N"))
+    $proofSidecarRecord = Invoke-ProofSidecarBuild -RootPath $rootPath -RawInputFullPath $selfTestInput -OutputPath $selfTestOutput -ProofSidecarDirPath $selfTestDir -OutputBaseName "self-test"
+    Test-ProofSidecarRecord -Record $proofSidecarRecord
+    $selfTestHashRecord = [ordered]@{
+        case_name = "proof-sidecar-self-test"
+        proof_sidecars = $proofSidecarRecord
+    }
+    $selfTestJson = $selfTestHashRecord | ConvertTo-Json -Depth 5
+    if ($selfTestJson -notmatch '"proof_sidecars"') {
+        throw "Proof sidecar self-test did not serialize proof_sidecars into the hash record."
     }
     Write-Host "current-skill smoke proof-sidecar self-test: PASS"
+    Write-Host "proof-sidecar certificate: $($proofSidecarRecord.collapse_certificate.path)"
+    Write-Host "proof-sidecar grapher: $($proofSidecarRecord.grapher_html.path)"
+    Write-Host "proof-sidecar hashes: $($proofSidecarRecord.hashes.path)"
     return
 }
 
@@ -180,47 +272,8 @@ if (($codexExit -eq 0) -and $BuildProofSidecars) {
     else {
         $proofSidecarDirPath = Resolve-PathUnderRoot -RootPath $rootPath -PathValue $ProofSidecarDir
     }
-    if (-not (Test-Path -LiteralPath $proofSidecarDirPath -PathType Container)) {
-        New-Item -ItemType Directory -Path $proofSidecarDirPath | Out-Null
-    }
-    $proofSidecarDirPath = (Resolve-Path -LiteralPath $proofSidecarDirPath).Path
-
-    $builderArgs = @(
-        (Join-Path $rootPath "tools\build_retained_proof_sidecars.py"),
-        "--input", $rawInputFullPath,
-        "--output", $outputPath,
-        "--out-dir", $proofSidecarDirPath,
-        "--prefix", $OutputBaseName,
-        "--force"
-    )
-    & python @builderArgs
-    if ($LASTEXITCODE -ne 0) {
-        throw "Proof sidecar build failed for CaseName='$CaseName'."
-    }
-
-    $proofCertificatePath = Join-Path $proofSidecarDirPath "$OutputBaseName.collapse-certificate.json"
-    $proofGrapherPath = Join-Path $proofSidecarDirPath "$OutputBaseName.grapher.html"
-    $proofHashesPath = Join-Path $proofSidecarDirPath "$OutputBaseName.hashes.json"
-    $proofSidecarRecord = [ordered]@{
-        raw_input = @{
-            path = $rawInputFullPath
-            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $rawInputFullPath).Hash
-        }
-        out_dir = $proofSidecarDirPath
-        collapse_certificate = @{
-            path = $proofCertificatePath
-            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofCertificatePath).Hash
-        }
-        grapher_html = @{
-            path = $proofGrapherPath
-            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofGrapherPath).Hash
-        }
-        hashes = @{
-            path = $proofHashesPath
-            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofHashesPath).Hash
-        }
-        command = "python $($builderArgs -join ' ')"
-    }
+    $proofSidecarRecord = Invoke-ProofSidecarBuild -RootPath $rootPath -RawInputFullPath $rawInputFullPath -OutputPath $outputPath -ProofSidecarDirPath $proofSidecarDirPath -OutputBaseName $OutputBaseName
+    Test-ProofSidecarRecord -Record $proofSidecarRecord
 }
 
 $hashRecord = [ordered]@{
