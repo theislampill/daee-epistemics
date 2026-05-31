@@ -1,0 +1,29 @@
+{
+  "case_name": "promote-a9-from-smoke-hash-record",
+  "skill": {
+    "sha256": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3"
+  },
+  "output": {
+    "path": "../../../../retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
+    "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"
+  },
+  "proof_sidecars": {
+    "raw_input": {
+      "path": "../../../../retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "sha256": "6F2FB8D7E0F37487A4E018E119E1AE90EB43AE51C42B31564380A5DA875EF6F4"
+    },
+    "collapse_certificate": {
+      "path": "../../../../retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+      "sha256": "9D158B826F3002A61F07C9A11C0AA88BF9B56C2155A0B4EED34868290EC74FC1"
+    },
+    "grapher_html": {
+      "path": "../../../../retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "sha256": "2D12DA99E4B9C6906E8CBE7AE599556C31A82459B86BDBE6A77527A12C99C896"
+    },
+    "hashes": {
+      "path": "sidecar.hashes.json",
+      "sha256": "A36CDA5A025C456F42F3FC1382E54FAE619849ED2F29DA6E1BC1BC75AAF959A1"
+    },
+    "command": "python tools/build_retained_proof_sidecars.py --input input.txt --output output.md --out-dir proof-sidecars --prefix a9"
+  }
+}

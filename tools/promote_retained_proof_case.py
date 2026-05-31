@@ -21,6 +21,7 @@ from typing import Any
 from check_collapse_certificate_schema import certificate_errors
 from check_graph_completeness import input_fingerprint_for_path
 from check_retained_proof_corpus import SCHEMA_VERSION, manifest_errors
+from check_smoke_artifacts import validate_hash_record_file
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -45,6 +46,12 @@ ARTIFACT_NAMES = {
     "collapse_certificate": "collapse-certificate.json",
     "grapher_html": "grapher.html",
 }
+HASH_RECORD_ARTIFACT_MAP = {
+    "input": ("proof_sidecars", "raw_input"),
+    "output": ("output",),
+    "collapse_certificate": ("proof_sidecars", "collapse_certificate"),
+    "grapher_html": ("proof_sidecars", "grapher_html"),
+}
 
 
 def rel(path: Path) -> str:
@@ -61,6 +68,10 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(data).hexdigest().upper()
 
 
+def raw_sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest().upper()
+
+
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -75,6 +86,75 @@ def resolve_existing(path: Path, label: str) -> Path:
     if not resolved.exists() or not resolved.is_file():
         raise SystemExit(f"{label} does not exist or is not a file: {path}")
     return resolved
+
+
+def resolve_record_path(path_value: str, record_path: Path) -> Path:
+    candidate = Path(path_value)
+    if candidate.is_absolute():
+        return candidate
+    return record_path.parent / candidate
+
+
+def hash_record_entry(payload: dict[str, Any], path_keys: tuple[str, ...], label: str) -> dict[str, Any]:
+    value: Any = payload
+    for key in path_keys:
+        if not isinstance(value, dict) or key not in value:
+            raise SystemExit(f"hash record missing {label} entry")
+        value = value[key]
+    if not isinstance(value, dict):
+        raise SystemExit(f"hash record {label} entry must be an object")
+    return value
+
+
+def path_from_hash_record(payload: dict[str, Any], record_path: Path, path_keys: tuple[str, ...], label: str) -> Path:
+    entry = hash_record_entry(payload, path_keys, label)
+    path_value = entry.get("path")
+    if not isinstance(path_value, str) or not path_value.strip():
+        raise SystemExit(f"hash record {label} entry lacks path")
+    source_path = resolve_existing(resolve_record_path(path_value, record_path), label)
+    sha_value = entry.get("sha256")
+    if isinstance(sha_value, str) and sha_value.strip():
+        actual = raw_sha256_file(source_path)
+        expected = sha_value.strip().upper()
+        if actual != expected:
+            raise SystemExit(
+                f"hash record {label} sha256 mismatch: expected {expected}, found {actual}"
+            )
+    return source_path
+
+
+def source_paths_from_hash_record(record_path: Path) -> tuple[dict[str, Path], str | None, str | None]:
+    record_path = require_under_root(record_path, "hash record")
+    record_path = resolve_existing(record_path, "hash record")
+    errors = validate_hash_record_file(record_path)
+    if errors:
+        joined = "\n- ".join(errors)
+        raise SystemExit(f"hash record failed proof_sidecars validation:\n- {joined}")
+
+    payload = load_json(record_path)
+    if not isinstance(payload, dict):
+        raise SystemExit("hash record root must be a JSON object")
+
+    source_paths = {
+        field: path_from_hash_record(payload, record_path, path_keys, field)
+        for field, path_keys in HASH_RECORD_ARTIFACT_MAP.items()
+    }
+    for field, source_path in source_paths.items():
+        require_under_root(source_path, f"hash record {field}")
+
+    origin = None
+    output_entry = hash_record_entry(payload, ("output",), "output")
+    output_path_value = output_entry.get("path")
+    if isinstance(output_path_value, str) and output_path_value.strip():
+        origin = output_path_value.replace("\\", "/")
+
+    generated_skill_sha = None
+    skill_entry = payload.get("skill")
+    if isinstance(skill_entry, dict):
+        skill_sha = skill_entry.get("sha256")
+        if isinstance(skill_sha, str) and skill_sha.strip():
+            generated_skill_sha = skill_sha.strip().upper()
+    return source_paths, origin, generated_skill_sha
 
 
 def require_under_root(path: Path, label: str) -> Path:
@@ -220,35 +300,135 @@ def promote(manifest_path: Path, expected: dict[str, Any], source_paths: dict[st
         raise SystemExit(f"updated manifest failed validation:\n- {joined}")
 
 
+def self_test() -> int:
+    manifest_path = DEFAULT_MANIFEST
+    rows = ["A.9", "B.1", "B.2", "B.3", "B.4", "B.5"]
+    origin = (
+        ".daee/a9-delta-vocabulary-smokes/"
+        "20260530-current-skill-60a9-science-source-v1/"
+        "a9-science-source-current-skill-60a9-run1.md"
+    )
+    valid_record = (
+        ROOT
+        / "tests"
+        / "smoke-artifacts"
+        / "proof-sidecars"
+        / "valid"
+        / "promote-a9"
+        / "smoke.hashes.json"
+    )
+    source_paths, _, generated_skill_sha = source_paths_from_hash_record(valid_record)
+    if not generated_skill_sha:
+        raise SystemExit("self-test valid hash record lacks generated skill SHA")
+    validate_source_artifacts(
+        source_paths["input"],
+        source_paths["output"],
+        source_paths["collapse_certificate"],
+        source_paths["grapher_html"],
+    )
+    case_dir = manifest_path.parent / "cases" / "a9-science-source"
+    retained_paths = {
+        field: case_dir / artifact_name
+        for field, artifact_name in ARTIFACT_NAMES.items()
+    }
+    expected = build_entry(
+        manifest_path,
+        "a9-science-source",
+        rows,
+        generated_skill_sha,
+        origin,
+        retained_paths,
+        source_paths,
+    )
+    errors = compare_existing(manifest_path, expected)
+    if errors:
+        print("retained proof case promotion self-test: FAIL")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+
+    invalid_record = (
+        ROOT
+        / "tests"
+        / "smoke-artifacts"
+        / "proof-sidecars"
+        / "invalid"
+        / "promotion-stale-output"
+        / "smoke.hashes.json"
+    )
+    try:
+        source_paths_from_hash_record(invalid_record)
+    except SystemExit as exc:
+        if "hash record output sha256 mismatch" not in str(exc):
+            print("retained proof case promotion self-test: FAIL")
+            print(f"- stale-output canary failed with unexpected error: {exc}")
+            return 1
+    else:
+        print("retained proof case promotion self-test: FAIL")
+        print("- stale-output canary was not rejected")
+        return 1
+
+    print("retained proof case promotion self-test: PASS")
+    return 0
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
-    parser.add_argument("--case-id", required=True)
-    parser.add_argument("--rows", nargs="+", required=True)
-    parser.add_argument("--generated-skill-sha", required=True)
-    parser.add_argument("--origin", required=True)
-    parser.add_argument("--input", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--collapse-certificate", type=Path, required=True)
-    parser.add_argument("--grapher-html", type=Path, required=True)
+    parser.add_argument("--case-id")
+    parser.add_argument("--rows", nargs="+")
+    parser.add_argument("--generated-skill-sha")
+    parser.add_argument("--origin")
+    parser.add_argument("--hash-record", type=Path, help="read output and proof sidecar paths from a smoke *.hashes.json record")
+    parser.add_argument("--input", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--collapse-certificate", type=Path)
+    parser.add_argument("--grapher-html", type=Path)
     parser.add_argument("--case-dir", type=Path)
     parser.add_argument("--check", action="store_true", help="validate against an existing retained case without writing")
     parser.add_argument("--replace", action="store_true", help="replace an existing manifest case in write mode")
+    parser.add_argument("--self-test", action="store_true", help="run promotion-helper hash-record self-tests")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.self_test:
+        return self_test()
+    if not args.case_id:
+        raise SystemExit("--case-id is required")
+    if not args.rows:
+        raise SystemExit("--rows is required")
+
     manifest_path = require_under_root(args.manifest, "manifest")
     if not manifest_path.exists():
         raise SystemExit(f"manifest does not exist: {manifest_path}")
 
-    source_paths = {
-        "input": resolve_existing(args.input, "input"),
-        "output": resolve_existing(args.output, "output"),
-        "collapse_certificate": resolve_existing(args.collapse_certificate, "collapse certificate"),
-        "grapher_html": resolve_existing(args.grapher_html, "Grapher HTML"),
-    }
+    if args.hash_record:
+        manual_artifacts = [args.input, args.output, args.collapse_certificate, args.grapher_html]
+        if any(manual_artifacts):
+            raise SystemExit("--hash-record cannot be combined with manual artifact path arguments")
+        source_paths, record_origin, record_generated_skill_sha = source_paths_from_hash_record(args.hash_record)
+        origin = args.origin or record_origin
+        generated_skill_sha = args.generated_skill_sha or record_generated_skill_sha
+    else:
+        if not all([args.input, args.output, args.collapse_certificate, args.grapher_html]):
+            raise SystemExit(
+                "manual promotion requires --input, --output, --collapse-certificate, and --grapher-html"
+            )
+        source_paths = {
+            "input": resolve_existing(args.input, "input"),
+            "output": resolve_existing(args.output, "output"),
+            "collapse_certificate": resolve_existing(args.collapse_certificate, "collapse certificate"),
+            "grapher_html": resolve_existing(args.grapher_html, "Grapher HTML"),
+        }
+        origin = args.origin
+        generated_skill_sha = args.generated_skill_sha
+    if not origin:
+        raise SystemExit("--origin is required when it cannot be derived from --hash-record")
+    if not generated_skill_sha:
+        raise SystemExit("--generated-skill-sha is required when it cannot be derived from --hash-record")
+
     validate_source_artifacts(
         source_paths["input"],
         source_paths["output"],
@@ -266,8 +446,8 @@ def main() -> int:
         manifest_path,
         args.case_id,
         args.rows,
-        args.generated_skill_sha,
-        args.origin,
+        generated_skill_sha,
+        origin,
         retained_paths,
         source_paths,
     )
