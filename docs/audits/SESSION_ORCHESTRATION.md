@@ -306,6 +306,10 @@ Fixture 62 decision prep now exists at
 docs-only owner-decision packet, not an implementation session and not approval
 to patch D.3.
 
+The current owner-decision queue is
+`docs/audits/v0.4.3.x-owner-decision-queue.md`. The managing session should use
+that queue before opening any new implementation or scout session.
+
 ## Boundaries
 
 This policy does not authorize:
