@@ -46,6 +46,7 @@ jobs:
           python tools/check_graph_completeness.py
           python tools/check_hard_smoke_manifest.py
           python tools/check_retained_proof_corpus.py
+          python tools/build_retained_proof_sidecars.py --self-test
           python tools/check_closure_witness_graph.py --input tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md --field-witness tests/live-witness-fixtures/valid/closure-witness-dependency-graph.field_witness.json
           python tools/check_mid_reread_pressure.py
           python tools/check_mrp_generated_burden.py
