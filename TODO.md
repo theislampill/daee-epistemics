@@ -46,9 +46,9 @@ mixed evidence, proposal, and release claims.
   separate unless an owning module justifies combining them. Owner first: name the owning
   file/module/schema before patching symptoms.
 
-## Active
+## Completed / Historical
 
-### [MUST][release][checker] v0.4.3.0 Generated-Burden Hotfix Closeout
+### [DONE][historical][release][checker] v0.4.3.0 Generated-Burden Hotfix Closeout
 
 - Problem: v0.4.3.0 now needs a release hotfix that distinguishes ordinary
   held-burden activation from genuine MRP-generated burden instantiation and
@@ -64,9 +64,11 @@ mixed evidence, proposal, and release claims.
 - Release boundary: deterministic fixtures/checkers prove the generated-burden
   distinction for this package refresh. A fresh hosted Smoke 7 model-output proof
   was not run and must not be claimed in release notes/body.
-- Status: release hotfix authorized for v0.4.3.0 same-version asset refresh after
-  deterministic checks, package validation, provenance preflight, tag alignment,
-  and GitHub Release asset/body replacement pass.
+- Status: completed as historical v0.4.3.0 release-line closeout. Do not treat
+  this as active v0.4.3.5 release authorization, and do not cite it as current
+  proof-corpus or docs-truthfulness evidence.
+
+## Active
 
 ### [MUST][checker][source] Current Canon Checker Anchors
 

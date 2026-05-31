@@ -22,6 +22,7 @@ tests/output/
 tests/smoke-output/
 tests/smokes/mrp-behavior/outputs/
 .daee/
+graphify-out/
 _fixture-candidates/
 level3-runs/
 smokes/

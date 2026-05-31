@@ -147,17 +147,17 @@
         "C.8",
         "T_lang"
       ],
-      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
-      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c5-authority-return-v2/authority-return-c5-current-skill-60a9-run2.md",
+      "generated_skill_sha": "EE4EA581CE3103F8F462835C9CF535FD176FE291EB9EBBD41B9618406BE029EC",
+      "origin": ".daee/restoration-track-smokes/20260531-current-skill-ee4e-c5-authority-return-v4/authority-return-c5-current-skill-ee4e-run1.md",
       "input": "cases/authority-return-recoil/input.txt",
       "output": "cases/authority-return-recoil/output.md",
       "collapse_certificate": "cases/authority-return-recoil/collapse-certificate.json",
       "grapher_html": "cases/authority-return-recoil/grapher.html",
       "hashes": {
-        "input": "D4C9DE8D8C9D2B0B4829C1844E65DA4AF6D2B6BD1169F35F88A63BB4BDEAF82A",
-        "output": "DA77175601CCA93C1AEAA80F43FA813216C38ED98F271259D9C7AADBC3344533",
+        "input": "959EB7C5D46351D5721AB8089D4A806E1FDC5581D0E36F260333CACC2A74EF60",
+        "output": "9D10D5B96F70F966F3F22250E93D5E60CA838F2435748EAF6090844E3F18847B",
         "collapse_certificate": "E51545D6B1F044808A637AF73A2020A6EE492EBD62FD5CEDCECCE724D3DC4FAF",
-        "grapher_html": "41374842F05723680D6E1DFAED6C0691C1DA88E04AA10B9D37D9E2DF025CAA6B"
+        "grapher_html": "D0CBA59223FD8AB773A19109272F64C36E8B34BD9F1F2BA9E4A888C7036DA0FB"
       }
     },
     {
@@ -354,6 +354,130 @@
         "output": "3084D879B2CCEDE49039B8EB44FD00E765C1C12A12C117AE61118249191DBF82",
         "collapse_certificate": "39FEBA3888A95920948E8215F25B2404DDC790D42DD8566F62B208F0EABD7ED3",
         "grapher_html": "18AE46213E2967748F158C4299931F3D637F90DF50D9ADF80BB033E8F608EE46"
+      }
+    },
+    {
+      "id": "exact-tst-lillard",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "T_lang"
+      ],
+      "generated_skill_sha": "BA6A7A6C130624F8F55A06F9506D8DC8D816D87930653D4EB81FA87E9154C907",
+      "origin": ".daee/exact-hard-output-smokes/20260531-current-skill-ba6a-exact-trio/tst-lillard-exact-current-skill-ba6a-run1.md",
+      "input": "cases/exact-tst-lillard/input.txt",
+      "output": "cases/exact-tst-lillard/output.md",
+      "collapse_certificate": "cases/exact-tst-lillard/collapse-certificate.json",
+      "grapher_html": "cases/exact-tst-lillard/grapher.html",
+      "hashes": {
+        "input": "8D9FBF40B5DFD7CD747A897F54EA4D0770F8087F9A39D56A465517761CF22C8F",
+        "output": "7A2A54E6A5E78F615EAD138B4E10C4BED6765006007EDA0EEBE17CCFCA29702B",
+        "collapse_certificate": "127F95288765AC7772C5F52D6B5B6A1CA1DA929CC62C627DA1FDC02F82B58700",
+        "grapher_html": "2EEB1BE2EE9471C80C30016BFD11EF79CBFF34AFF1788D06B4FAD7331A313C5E"
+      }
+    },
+    {
+      "id": "exact-secularism",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "T_lang"
+      ],
+      "generated_skill_sha": "BA6A7A6C130624F8F55A06F9506D8DC8D816D87930653D4EB81FA87E9154C907",
+      "origin": ".daee/exact-hard-output-smokes/20260531-current-skill-ba6a-exact-trio/secularism-exact-current-skill-ba6a-run1.md",
+      "input": "cases/exact-secularism/input.txt",
+      "output": "cases/exact-secularism/output.md",
+      "collapse_certificate": "cases/exact-secularism/collapse-certificate.json",
+      "grapher_html": "cases/exact-secularism/grapher.html",
+      "hashes": {
+        "input": "C516CC3B3F78BC0099F1BAFAFBCA70CB8BFE3628BD7A98B7777E43839F5BC380",
+        "output": "CB7A0B40E72018B8BFF90589B62824D98CA5A06BC2F629CB6661A6EC858F7430",
+        "collapse_certificate": "9E4F9AA379AC7CE5653882F7D7E4341E4583C33564375FC65946E1DF7855E813",
+        "grapher_html": "E90C6840011E2D911347AF6BF1A883E9594B80B092CDA82187C8C7C4BB8D374E"
+      }
+    },
+    {
+      "id": "exact-trinitarian-j173",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "T_lang"
+      ],
+      "generated_skill_sha": "BA6A7A6C130624F8F55A06F9506D8DC8D816D87930653D4EB81FA87E9154C907",
+      "origin": ".daee/exact-hard-output-smokes/20260531-current-skill-ba6a-exact-trio/trinitarian-j173-exact-current-skill-ba6a-run1.md",
+      "input": "cases/exact-trinitarian-j173/input.txt",
+      "output": "cases/exact-trinitarian-j173/output.md",
+      "collapse_certificate": "cases/exact-trinitarian-j173/collapse-certificate.json",
+      "grapher_html": "cases/exact-trinitarian-j173/grapher.html",
+      "hashes": {
+        "input": "3ACFC6720F1755643975596ACAFEB56AC4FC510011041B2296ADD4C2CD87688D",
+        "output": "0F91290AD9AC737F6BF644E9D988D2C2D485168B62610A6EE3BE77A32809B10E",
+        "collapse_certificate": "914DD1D8A30FC956CD0B6F5FC69826597719CF3C177D1A4532D32496CF31F7F9",
+        "grapher_html": "CD5C047FF7B7661A8612DC8EB1B58F0A54E13171438FE9DB014D08421C802F63"
+      }
+    },
+    {
+      "id": "trinitarian-j173-repair-v6",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "T_lang"
+      ],
+      "generated_skill_sha": "67213410DA0CD39722F1D2D5E4F3970C6D420436F303263385473D6447A6811B",
+      "origin": ".daee/exact-hard-output-smokes/20260531-current-skill-6721-trinitarian-repair-v6/trinitarian-j173-repair-v6-current-skill-6721-run1.md",
+      "input": "cases/trinitarian-j173-repair-v6/input.txt",
+      "output": "cases/trinitarian-j173-repair-v6/output.md",
+      "collapse_certificate": "cases/trinitarian-j173-repair-v6/collapse-certificate.json",
+      "grapher_html": "cases/trinitarian-j173-repair-v6/grapher.html",
+      "hashes": {
+        "input": "3ACFC6720F1755643975596ACAFEB56AC4FC510011041B2296ADD4C2CD87688D",
+        "output": "84C7CF3D32EEFABE05146763D72422BF0A4B10D9445B672AC1719368AEBA9E85",
+        "collapse_certificate": "BB61CB4FC25BCA796E6E71DAE2BE7D9E619099E492020462A48D0F9471BDF740",
+        "grapher_html": "71ADE0C04A03028EB71D0CDBD592A94492A955BF22257507033180178261684A"
       }
     }
   ]

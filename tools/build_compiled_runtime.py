@@ -524,6 +524,9 @@ surface too small`.
     source-status or
     authority-order sorts which source, citation, proof text, authority, or source function can
     carry which claim and blocks hidden support, source-prestige, or proof-stack accumulation;
+    its ACT delta_result must name the concrete burden-local effect, such as
+    `proof-text-sorted`, `hidden-support-blocked`, `proof-text-hidden-support-blocked`, or
+    `source-function-bounded`; do not use `source-order-repaired` as the only state-change token;
     M1 names the claim's own standard, self-grounding rule, internal contradiction, or why the
     claim cannot authorize its own verdict; P7 names the scope boundary, stop condition, held-route
     boundary, and reopen condition rather than merely saying the answer is bounded; a P7 submove
@@ -537,7 +540,9 @@ surface too small`.
     cognitive-science, or accountability mechanics; doubt-vs-skepticism distinguishes normal doubt
     from skeptical methodology, names the evidence-demand or modal-veto tribunal, identifies the
     anomaly/background-commitment structure, and shows the burden inversion or LoopBreak/P7
-    consequence; P1/restoration explicitly restores positive orientation, fitrah/tawhid direction,
+    consequence; do-attribute-precision types the person/nature/attribute relation, blocks transfer
+    from person-level multiplicity into nature-level deity, and names the local attribute confusion
+    rather than letting M9 alone absorb it; P1/restoration explicitly restores positive orientation, fitrah/tawhid direction,
     humane reorientation, or returns the field to sound worship/source-owned frame after the burden
     lands. Other catalogue owners likewise activate their own source-owned mechanism.
     Numeric body floors are Andons, not proof of mass sufficiency. In hard/manual graphable output,

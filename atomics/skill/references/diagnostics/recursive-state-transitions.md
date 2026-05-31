@@ -736,6 +736,13 @@ An MRP-generated burden is a narrower category than ordinary `NewB`. It is licen
    hidden support, P7 bounds stop/reopen conditions, and LoopBreak exits circularity. A generated
    node does not land merely because it has two submove labels or because its body states the
    intended conclusion.
+   For restoration-track, source-order recoil, or authority-return generated nodes, the
+   parser-visible `TTP Operation Body:` block of each owner-bearing submove carries the execution
+   mass. Put the mechanism-rich paragraph there before the submove lands: name the recoil, the
+   prior `Land(B)` it tries to reopen, the concrete hidden-support/source-status move being
+   blocked or bounded, the local `Δ`, and why `Land(ⁿ⁺¹B)` follows. Do not rely on a short
+   conclusion field, a downstream Restorative Response paragraph, or the Closure Witness to supply
+   the generated node's operation-shaped proof.
 
 If the proposed node was already present in the initial inventory, the route result type is
 `held_burden_activation`, not `generated_burden_instantiation`. If no additional resultant exists,

@@ -85,12 +85,10 @@ Invocation-surface invariants retained here:
   boundary/recoil burden such as `⁵B [generated-by: MRP(⁴B)]`, or classify the
   route as HOLD/PARTIAL/non-load-bearing with an explicit reason. Do not absorb
   that post-land recoil into `⁴B` and then claim `no_new_resultant`.
-  Generated `𝔅_MRP` burdens must receive the same operation-shaped Layer B mass
-  as baseline burdens. A generated boundary/recoil burden is not landed by
-  naming P7/M8/source-status fields alone: the TTP body must perform the
-  stop/reopen/non-load-bearing test, trace the finite-answer or proof-carousel
-  consequence, block hidden support or source-order recoil where claimed, and
-  explain the local Δ and Land contribution.
+  Generated `𝔅_MRP` burdens need operation-shaped Layer B mass, local Δ, and
+  Land contribution. Restoration-track/source-order recoil nodes put that
+  proof in parser-visible `TTP Operation Body:` cells; response/witness
+  conclusions cannot supply missing operation mass.
   Terminal `no_new_resultant` rows must not invent the next hypothetical burden
   token. Do not write `no newly generated ⁴B`, `no B4`, or similar future IDs in
   Route-gradient, MRP resultant, prose, or `formal_reread_states[]`; say
@@ -870,6 +868,9 @@ governing files are gate-integrity violations, not conservative loading choices.
    `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
    and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
    files is diagnosis without execution.
+   John 17:3 Trinitarian hard-output prompts follow
+   `do-christian-extensions.md`'s hard-output floor; do not claim
+   `coverage_complete=true` from a compact under-mass DO-12 answer.
 
 5. **All matched_modules governing source identities:** Every entry in `matched_modules`
    corresponds to an original module ID and canonical module identity. In source-development

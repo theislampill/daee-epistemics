@@ -428,6 +428,9 @@ surface too small`.
     source-status or
     authority-order sorts which source, citation, proof text, authority, or source function can
     carry which claim and blocks hidden support, source-prestige, or proof-stack accumulation;
+    its ACT delta_result must name the concrete burden-local effect, such as
+    `proof-text-sorted`, `hidden-support-blocked`, `proof-text-hidden-support-blocked`, or
+    `source-function-bounded`; do not use `source-order-repaired` as the only state-change token;
     M1 names the claim's own standard, self-grounding rule, internal contradiction, or why the
     claim cannot authorize its own verdict; P7 names the scope boundary, stop condition, held-route
     boundary, and reopen condition rather than merely saying the answer is bounded; a P7 submove
@@ -441,7 +444,9 @@ surface too small`.
     cognitive-science, or accountability mechanics; doubt-vs-skepticism distinguishes normal doubt
     from skeptical methodology, names the evidence-demand or modal-veto tribunal, identifies the
     anomaly/background-commitment structure, and shows the burden inversion or LoopBreak/P7
-    consequence; P1/restoration explicitly restores positive orientation, fitrah/tawhid direction,
+    consequence; do-attribute-precision types the person/nature/attribute relation, blocks transfer
+    from person-level multiplicity into nature-level deity, and names the local attribute confusion
+    rather than letting M9 alone absorb it; P1/restoration explicitly restores positive orientation, fitrah/tawhid direction,
     humane reorientation, or returns the field to sound worship/source-owned frame after the burden
     lands. Other catalogue owners likewise activate their own source-owned mechanism.
     Numeric body floors are Andons, not proof of mass sufficiency. In hard/manual graphable output,
@@ -1823,12 +1828,10 @@ Invocation-surface invariants retained here:
   boundary/recoil burden such as `⁵B [generated-by: MRP(⁴B)]`, or classify the
   route as HOLD/PARTIAL/non-load-bearing with an explicit reason. Do not absorb
   that post-land recoil into `⁴B` and then claim `no_new_resultant`.
-  Generated `𝔅_MRP` burdens must receive the same operation-shaped Layer B mass
-  as baseline burdens. A generated boundary/recoil burden is not landed by
-  naming P7/M8/source-status fields alone: the TTP body must perform the
-  stop/reopen/non-load-bearing test, trace the finite-answer or proof-carousel
-  consequence, block hidden support or source-order recoil where claimed, and
-  explain the local Δ and Land contribution.
+  Generated `𝔅_MRP` burdens need operation-shaped Layer B mass, local Δ, and
+  Land contribution. Restoration-track/source-order recoil nodes put that
+  proof in parser-visible `TTP Operation Body:` cells; response/witness
+  conclusions cannot supply missing operation mass.
   Terminal `no_new_resultant` rows must not invent the next hypothetical burden
   token. Do not write `no newly generated ⁴B`, `no B4`, or similar future IDs in
   Route-gradient, MRP resultant, prose, or `formal_reread_states[]`; say
@@ -2608,6 +2611,9 @@ governing files are gate-integrity violations, not conservative loading choices.
    `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
    and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
    files is diagnosis without execution.
+   John 17:3 Trinitarian hard-output prompts follow
+   `do-christian-extensions.md`'s hard-output floor; do not claim
+   `coverage_complete=true` from a compact under-mass DO-12 answer.
 
 5. **All matched_modules governing source identities:** Every entry in `matched_modules`
    corresponds to an original module ID and canonical module identity. In source-development

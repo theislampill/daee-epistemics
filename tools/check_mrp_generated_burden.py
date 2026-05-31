@@ -177,6 +177,14 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"relative[- ]identity|mystery/apophatic|force varies by model)\b"
         ),
     },
+    "DO_ATTRIBUTE": {
+        "attribute-precision": re.compile(
+            r"(?is)\b(?:attribute[- ]precision|person/nature|person[- ]nature|"
+            r"attribute multiplicity|person[- ]level|nature[- ]level|"
+            r"predicate identity|predicate transfer|category confusion|"
+            r"composition|dependence|transfer)\b"
+        ),
+    },
 }
 LOOSE_OWNER_ALIASES = {
     "AUTHORITY",

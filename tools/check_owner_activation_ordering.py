@@ -243,6 +243,13 @@ def source_recoil_delta_errors(label: str, owner: str, pressure: str, delta: str
     if not any(token in pressure for token in ("recoil", "hidden-support", "future-support")):
         return []
     suffix = delta_result_suffix(delta)
+    if "proof-text-hidden-support" in pressure:
+        if suffix == "proof-text-hidden-support-blocked":
+            return []
+        return [
+            f"{label}: proof-text hidden-support pressure must use "
+            "delta_result token 'proof-text-hidden-support-blocked'"
+        ]
     if suffix == "hidden-support-blocked":
         return []
     return [

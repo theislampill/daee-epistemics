@@ -45,7 +45,7 @@ Boundary: T_lang does not imply guaranteed uptake.
 
 Matched owner/TTP route: [M1, P7]
 - ACT records:
-  ⟦ACT ²B₁[M1.test] :: π=circular protection claim :: body_ref=²B₁ :: Δ=Δ²B:protection invalidated as internal contradiction :: Land(²B)+⟧
+  ⟦ACT ²B₁[M1.test] :: π=circular protection claim :: body_ref=²B₁ :: Δ=Δ²B:criterion-self-failed :: Land(²B)+⟧
   ⟦ACT ²B₂[P7.bound] :: π=unworked material :: body_ref=²B₂ :: Δ=Δ²B:unworked material held-with-reason :: Land(²B)+⟧
 
 Layer B — Governed Operation Body
@@ -53,7 +53,7 @@ Layer B — Governed Operation Body
 ²B₁[M1] — test the circular protection claim
 - Target: the source appeal proves itself because it controls the admissible reading.
 - Operation: test the claim by its own standard: if the source is evidence, it must be allowed to judge the protected reading rather than be governed by it.
-- Result/state-change: invalidated / the protection becomes an internal contradiction in the source appeal.
+- Result/state-change: criterion-self-failed / the protection becomes an internal contradiction in the source appeal.
 - Contribution-to-Land(²B): lands the M1 component by preventing the protected reading from authorizing its own verdict.
 
 M1 performs the self-grounding test. The claim appeals to the source as evidence, but then refuses to let that same source discipline the protected reading. By its own rule, evidence must be able to count against the conclusion it is invoked to prove. The state change is that the protection can no longer function as proof; it collapses into an internal contradiction unless it supplies a separate warrant.
@@ -104,7 +104,7 @@ Boundary: T_lang does not imply guaranteed uptake.
   MRP(¹B): type=held_burden_activation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE
   MRP(²B): type=no_new_resultant; finding=stable; graph=none; route=STOP
 - Owner activations:
-  ⟦ACT ²B₁[M1.test] :: π=circular protection claim :: body_ref=²B₁ :: Δ=Δ²B:protection invalidated as internal contradiction :: Land(²B)+⟧
+  ⟦ACT ²B₁[M1.test] :: π=circular protection claim :: body_ref=²B₁ :: Δ=Δ²B:criterion-self-failed :: Land(²B)+⟧
   ⟦ACT ²B₂[P7.bound] :: π=unworked material :: body_ref=²B₂ :: Δ=Δ²B:unworked material held-with-reason :: Land(²B)+⟧
 - ∇·B: neutral / all held burdens landed
 - ∇×κ: null / directed route complete
@@ -122,7 +122,7 @@ Boundary: T_lang does not imply guaranteed uptake.
       "operation": "test",
       "pressure": "circular protection claim",
       "body_ref": "²B₁",
-      "delta": "Δ²B:protection invalidated as internal contradiction",
+      "delta": "Δ²B:criterion-self-failed",
       "land": "Land(²B)+"
     },
     {

@@ -4,6 +4,7 @@
   "description": "Source-owned owner-local delta_result suffix vocabulary for governed ACT and normalized_activation_record emission.",
   "owner_aliases": {
     "authority-order-repair": "SOURCE",
+    "do-attribute-precision": "DO_ATTRIBUTE",
     "do-christian-extensions": "DO_CHRISTIAN",
     "doubt-vs-skepticism": "DOUBT_SKEPTICISM",
     "LoopBreak": "LOOPBREAK",
@@ -63,7 +64,8 @@
       "authority-order-repaired",
       "proof-text-hidden-support-blocked",
       "authority-order-separated",
-      "hidden-authority-source-status-bounded"
+      "hidden-authority-source-status-bounded",
+      "source-function-bounded"
     ],
     "P1": [
       "fitrah-reorientation-restored",
@@ -90,6 +92,12 @@
     "DO_CHRISTIAN": [
       "trinitarian-model-identified",
       "fan-out-route-named"
+    ],
+    "DO_ATTRIBUTE": [
+      "attribute-precision-typed",
+      "person-nature-transfer-blocked",
+      "attribute-multiplicity-bounded",
+      "predicate-identity-separated"
     ],
     "DOUBT_SKEPTICISM": [
       "doubt-distinguished-from-skeptical-methodology",

@@ -344,6 +344,7 @@ def check_static_artifact(errors: list[str]) -> None:
     if "Main Problems In The Reply" in combined and "bodyBurdenDescription(model,b)" not in js_text:
         errors.append("Output Grapher burden inventory must use visible body headings, not witness-only labels")
     check_submove_content_preservation(js_text, errors)
+    check_mrp_reread_fallback_rendering(errors)
     check_generated_burden_render_shape(errors)
     check_restoration_summary_count_consistency(errors)
     check_source_section_preservation(errors)
@@ -721,6 +722,94 @@ if (missing.length || forbiddenHits.length) {{
     if result.returncode != 0:
         details = (result.stdout or result.stderr or "").strip()
         errors.append(f"Output Grapher submove content-preservation check failed: {details}")
+
+
+def check_mrp_reread_fallback_rendering(errors: list[str]) -> None:
+    fixture = r'''
+NOETIC FIELD EXECUTION
+Layer A
+𝔅_LA (B_LA) = {¹B}
+𝔅_MRP (B_MRP) = {²B}
+𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP
+
+Layer B — Governed Traversal
+
+Burden ¹B — imported moral tribunal / worship worthiness criterion
+
+¹B₁[FPD] — expose the imported tribunal
+Target: the unannounced moral court whose standard is treated as binding on God.
+What it does: foreign premise detection traces the criterion to its source and prevents it from being treated as neutral.
+Result: the tribunal is unmasked and loses its authority over the scoped claim.
+Contribution-to-Land(¹B): the imported criterion is separated from the objection.
+Land(¹B): landed.
+
+[Mid-Reread Pressure]
+Result: known problem still needs answering
+What remained: Target: ¹B / moral tribunal / worship worthiness criterion — post landing
+Why it matters: MRP resultant: ¹B landed clearly; non-neutral divergence confirmed; genuine dependent finding licenses RECURSE into ²B.
+Graph movement: ¹B → ²B
+Route: RECURSE
+MRP route result type: held_burden_activation
+
+Burden ²B — accountability / hujjah compression
+²B₁[P7] — bound the next pressure
+Target: the generated accountability pressure.
+What it does: names the downstream pressure as a separate burden.
+Result: the next pressure is no longer hidden.
+Contribution-to-Land(²B): the follow-up burden is accounted.
+Land(²B): landed.
+
+Closure/Reconstruction Witness
+coverage_complete=true
+Terminal states:
+¹B: landed
+²B: landed
+MRP resultants:
+MRP(¹B): type=held_burden_activation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE
+'''
+    node_script = f"""
+const fs = require('fs');
+global.window = {{}};
+global.document = {{
+  addEventListener: () => {{}},
+  getElementById: () => null,
+  querySelectorAll: () => []
+}};
+const source = {fixture!r};
+eval(fs.readFileSync({str(JS)!r}, 'utf8'));
+const model = window.daeeOutputGrapher.parseOutput(source, '');
+const svg = window.daeeOutputGrapher.renderGraph(model);
+const afterStart = svg.indexOf('After this, what remains?');
+const mrpStart = svg.indexOf('Follow-up: pressure-check', afterStart);
+const afterSegment = afterStart >= 0 && mrpStart > afterStart ? svg.slice(afterStart, mrpStart) : '';
+const errors = [];
+if (!afterSegment) errors.push('could not isolate After this panel');
+if (afterSegment.includes('No state reread was detected')) errors.push('After this panel ignored structured MRP fallback prose');
+['known problem still needs answering', 'Target:', '¹B / moral tribunal / worship worthiness criterion', 'Graph movement:', '¹B → ²B', 'RECURSE'].forEach(token => {{
+  if (!afterSegment.includes(token)) errors.push('missing after-panel token: ' + token);
+}});
+if (model.errors.length) errors.push('parser errors: ' + model.errors.join('; '));
+if (errors.length) {{
+  console.log(JSON.stringify({{errors, afterSegment: afterSegment.slice(0, 1200)}}, null, 2));
+  process.exit(1);
+}}
+"""
+    try:
+        result = subprocess.run(
+            ["node", "-e", node_script],
+            cwd=ROOT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        errors.append(f"Output Grapher MRP reread fallback rendering check could not run: {exc}")
+        return
+    if result.returncode != 0:
+        details = (result.stdout or result.stderr or "").strip()
+        errors.append(f"Output Grapher MRP reread fallback rendering check failed: {details}")
 
 
 def check_generated_burden_render_shape(errors: list[str]) -> None:
@@ -1223,6 +1312,16 @@ def check_fixtures(errors: list[str]) -> None:
         witness_path = path.with_suffix(".field_witness.json")
         field_witness = witness_path.read_text(encoding="utf-8") if witness_path.exists() else None
         result = parse_output(text, field_witness)
+        browser_errors: list[str] = []
+        browser_warnings: list[str] = []
+        if path.name == "invalid-generated-recoil-conclusion-shaped.md":
+            browser_result = parse_skill_output_with_browser_js(path)
+            browser_errors = browser_result["errors"]
+            browser_warnings = browser_result["warnings"]
+            if not any("mass-insufficient" in item and "conclusion-shaped" in item for item in browser_errors):
+                errors.append(f"{rel(path)} must be rejected by browser generated-burden mass guard")
+        effective_errors = [*result.errors, *browser_errors]
+        effective_warnings = [*result.warnings, *browser_warnings]
         mode = expected_mode(text, path)
         has_embedded_witness = bool(extract_embedded_field_witness(text))
         no_graph_mode = bool(
@@ -1234,14 +1333,14 @@ def check_fixtures(errors: list[str]) -> None:
         )
         if mode == "pass" and not (field_witness or has_embedded_witness or no_graph_mode):
             errors.append(f"{rel(path)} expected pass but lacks field_witness / graphable reconstruction payload")
-        if mode == "pass" and result.errors:
-            errors.append(f"{rel(path)} expected pass but failed: {result.errors}")
-        elif mode == "fail" and not result.errors:
+        if mode == "pass" and effective_errors:
+            errors.append(f"{rel(path)} expected pass but failed: {effective_errors}")
+        elif mode == "fail" and not effective_errors:
             errors.append(f"{rel(path)} expected hard failure but passed")
         elif mode == "warn":
-            if result.errors:
-                errors.append(f"{rel(path)} expected warning-only but failed: {result.errors}")
-            if not result.warnings:
+            if effective_errors:
+                errors.append(f"{rel(path)} expected warning-only but failed: {effective_errors}")
+            if not effective_warnings:
                 errors.append(f"{rel(path)} expected warnings but emitted none")
         if path.name == "valid-mrp-generated-burden.md":
             if "²B" not in result.generated_burdens:

@@ -108,6 +108,42 @@ For IMPLEMENTAUDIT execution templates, see
 `docs/audits/implementaudit-execution-templates.md`. Use these templates for
 ledger rows, failure compaction, subagent tasks, and pause/resume checkpoints.
 
+## Proof-Corpus / Grapher Evidence Discipline
+
+For v0.4.3.5+ proof-corpus, Output Grapher, and exact hard-output lanes, keep
+proof claims narrower than the artifact display. Detailed evidence belongs in
+the orchestrator and retained-corpus manifests, not in `AGENTS.md`.
+
+- Public Output Grapher demo/parser fixtures are visual examples only. Real
+  proof requires a retained governed output, raw input sidecar, checker-owned
+  collapse certificate, warning-clean certificate-backed Grapher sidecar,
+  hashes, manifest entry, and orchestrator evidence.
+- Grapher reconstructibility means the output is graphable. It does not prove
+  expert prose/scope fulfillment, Brandolini adequacy, da'wah usefulness, or
+  outsider/cold-reader intelligibility by itself.
+- Exact hard-output cases used as release evidence need structural validators
+  plus expert prose/scope review. For outsider-facing Grapher claims, also
+  review whether visible prose fills the Grapher cells intelligibly.
+- Trinitarian DO-12 / John 17:3 hard-output proof requires visible owner/TTP
+  execution depth when live: model-family discrimination, M9 person/nature and
+  predication repair, do-attribute-precision, identity/counting pressure,
+  proof-text stack handling, worship/lordship referent handling, source-order
+  repair, and tawhid restoration. A compact local John 17:3 answer is not full
+  DO-12 Brandolini proof.
+- If an installed/user skill fails to load, for example because metadata such
+  as description is too long, do not accept the collapsed generic answer as
+  current-skill evidence. Use the repo-standard prompt-embedded generated
+  `skill/SKILL.md` harness, or classify the run as a harness failure.
+- Retained proof-corpus promotion follows
+  `docs/audits/v0.4.3.0-retained-smoke-sidecar-convention.md` and the manifest
+  under `tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/`.
+  `python tools/check_retained_proof_corpus.py` is a corpus-integrity gate, not
+  a substitute for row-specific validators or release provenance.
+- Local CI, retained proof corpus, docs truthfulness, and warning-clean Grapher
+  evidence do not authorize package, tag, upload, release notes, or release
+  assets. Release/provenance opens only through the orchestrator's explicit
+  release gate.
+
 ## Operating Discipline Packs
 
 Use these packs as lightweight durable rules. Keep detailed guidance in

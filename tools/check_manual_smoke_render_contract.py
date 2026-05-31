@@ -188,9 +188,11 @@ STATE_CHANGE_RE = re.compile(
     r"(?i)\b(?:blocked|blocks|removed|removes|separated|separates|held|released|routed|"
     r"licensed|licenses|license|scoped STOP|reopen conditions|future distinct burdens|admissible|"
     r"barred|prevents|cannot rescue|requires a new burden|becomes a new burden|"
-        r"exposed|demote|demotes|demoted|invalidated|withheld|narrowed|reoriented|converted|classified|sorted|sorts|"
+    r"scope[- ]boundary[- ]named|"
+    r"exposed|demote|demotes|demoted|invalidated|withheld|narrowed|reoriented|converted|classified|sorted|sorts|"
     r"grounded|regrounded|re-grounded|"
     r"identified|identifies|defined|defines|stabilized|stabilizes|refused|denied|self[- ]undercut|loses|loss|severed|separated from|"
+    r"criterion[- ]self[- ]failed|self[- ]failed|"
     r"(?:non|not)[- ]load[- ]bearing|lands|landed|cleared|state change|delta|undermined|"
     r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|anchors?|anchored)\b"
 )

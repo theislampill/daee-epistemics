@@ -537,8 +537,8 @@
           pushSubmoveDetail(model,currentSubmove,'body',trimmed);
         }
       }
-      const contributionLandLine=/^\s*(?:[-*]\s*)?(?:\*\*)?Contribution-to-Land\(/i.test(cleanMarkdownLabelLine(trimmed));
-      const land=contributionLandLine?null:line.match(/(?<!Contribution-to-)\b(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i);
+      const terminalLandLine=cleanMarkdownLabelLine(trimmed).match(/^\s*(?:[-*]\s*)?(?:\*\*)?(Land|HOLD)\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/i);
+      const land=terminalLandLine;
       if(land){
         currentSubmove='';
         const b=burden(supNum(land[2])), term=land[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
@@ -547,7 +547,7 @@
         model.terminals[b]=term; addNode(model,{id,kind:term==='Land'?'land':'terminal',label:summary?`${id} — ${summary}`:id,line:lineNo,excerpt:trimmed,status:term,parent:b,result:summary});
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:''}); addEdge(model,{source:b,target:id,kind:'burden-terminal',line:lineNo,excerpt:trimmed}); lastBurden=b;
       }else{
-        const legacyLand=contributionLandLine?null:line.match(/(?<!Contribution-to-)\b(Land|HOLD)\(B(\d+)\)/i);
+        const legacyLand=cleanMarkdownLabelLine(trimmed).match(/^\s*(?:[-*]\s*)?(?:\*\*)?(Land|HOLD)\(B(\d+)\)/i);
         if(legacyLand){
           currentSubmove='';
           const b=burden(legacyLand[2]), term=legacyLand[1].toUpperCase()==='HOLD'?'HOLD':'Land', id=`${term}(${b})`;
@@ -586,10 +586,13 @@
       }
       const asciiMrpLine=line.match(/^\s*MRP\(B(\d+)\)/i);
       if(asciiMrpLine){const b=burden(asciiMrpLine[1]); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); warnLegacy(model,lineNo,asciiMrpLine[0].trim(),`MRP(${b})`);}
-      if(pendingMrpBlock&&!currentMrpBurden&&lastBurden&&/\b(Route-gradient|Finding|MRP route result type|MRP resultant|Graph delta|Field diagnostics|R\(H,)/i.test(line)){
+      if(pendingMrpBlock&&!currentMrpBurden&&lastBurden&&/\b(Result|What remained|Why it matters|Route-gradient|Finding|MRP route result type|MRP resultant|Graph movement|Graph delta|Field diagnostics|R\(H,|Route:)/i.test(line)){
         currentMrpBurden=lastBurden;
         ensureMrp(model,currentMrpBurden,lineNo);
         addEdge(model,{source:`R(H,Δ)@${currentMrpBurden}`,target:`MRP(${currentMrpBurden})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed});
+      }
+      if(pendingMrpBlock&&currentMrpBurden&&/^\s*(?:Result|What remained|Why it matters|Graph movement|Graph delta|Field diagnostics)\s*:/i.test(cleanMarkdownLabelLine(trimmed))){
+        pushBodyMrp(model,currentMrpBurden,trimmed);
       }
       const rt=line.match(/\b(held_burden_activation|generated_burden_instantiation|no_new_resultant|loopbreak|hold_partial)\b/);
       if(rt && currentMrpBurden){ ensureMrp(model,currentMrpBurden,lineNo).resultTypes.push(rt[1]); if(inBody) pushBodyMrp(model,currentMrpBurden,trimmed); }
@@ -1288,7 +1291,7 @@
       .replace(/^After this(?: answer)?, what remains\?\s*[—:-]?\s*/i,'')
       .replace(/^R\(H,Δ\)\s*[—:-]?\s*/i,'')
       .replace(/^Follow-up(?: pressure check)?:\s*/i,'');
-    const pieces=cleaned.split(/\s*(?:;|\|)\s+|\s+•\s+|\s+(?=(?:Failure point|Known failure|Next link|Graph|Route|Target|Finding|Resultant)\b)/i)
+    const pieces=cleaned.split(/\s*(?:;|\|)\s+|\s+•\s+|\s+(?=(?:Failure point|Known failure|Next link|What remained|Why it matters|Field diagnostics|MRP result(?:ant)?|Graph|Route|Target|Finding|Resultant)\b)/i)
       .map(x=>x.trim().replace(/^\s*[-–—]\s*/,''))
       .filter(x=>x.length>2);
     if(pieces.length>1) return pieces;
@@ -1403,9 +1406,29 @@
     const body=model.bodyExtract?.landTexts?.[b];
     return body?stripTechnicalLead(body):(land?stripTechnicalLead(land.label):'No landing result detected in the visible output.');
   }
+  function mrpRereadFallbackText(model,b){
+    const body=(model.bodyExtract?.mrpTexts?.[b]||[])
+      .map(line=>canonicalizePublicNotation(cleanParsed(line)))
+      .filter(Boolean);
+    if(!body.length) return '';
+    const pick=(patterns)=>patterns.flatMap(pattern=>body.filter(line=>pattern.test(line)))[0]||'';
+    const result=pick([/^Result\s*:/i,/^MRP result(?:ant)?\s*:/i,/^Resultant\s*:/i]);
+    const target=pick([/^What remained\s*:/i,/^Target\s*:/i]);
+    const diagnostics=pick([/^Field diagnostics\s*:/i,/∇·|∇×|del[- ]dot|del[- ]cross/i]);
+    const graph=pick([/^Graph (?:movement|delta)\s*:/i]);
+    const route=pick([/^Route\s*:/i]);
+    return [result,target,diagnostics,graph,route]
+      .filter(Boolean)
+      .map(stripTechnicalLead)
+      .filter(Boolean)
+      .join('; ');
+  }
   function bodyRereadText(model,b,reread){
     const body=model.bodyExtract?.rereadTexts?.[b];
-    return body?stripTechnicalLead(body):(reread?stripTechnicalLead(reread.label):'No state reread was detected for this problem.');
+    if(body) return stripTechnicalLead(body);
+    if(reread) return stripTechnicalLead(reread.label);
+    const mrpFallback=mrpRereadFallbackText(model,b);
+    return mrpFallback||'No state reread was detected for this problem.';
   }
   function bodyBurdenSetupText(model,b){
     return model.bodyExtract?.hiddenPremiseTexts?.[b] || model.bodyExtract?.burdenSetupTexts?.[b] || '';
