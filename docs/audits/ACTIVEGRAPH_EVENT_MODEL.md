@@ -22,6 +22,50 @@ ledger remains `docs/audits/v0.4.3.0-implementaudit-orchestrator.md`.
 | `blocker` | A named unmet prerequisite or owner decision |
 | `dependency_edge` | A relationship between rows, artifacts, checks, or blockers |
 
+## v0.4.3.x Ledger-Closure Vocabulary
+
+For bounded ledger-closure waves, use these names as the sidecar orchestration
+vocabulary. The Markdown ledgers remain canonical; these are ActiveGraph
+node/edge/event labels only.
+
+Node types:
+
+- `LedgerRow`
+- `SubagentRun`
+- `EvidenceFile`
+- `Commit`
+- `Smoke`
+- `Blocker`
+- `OwnerDecision`
+- `D8HistoryItem`
+- `GraphifyArtifact`
+- `ActiveGraphScratchRun`
+
+Edge types:
+
+- `audits`
+- `blocks`
+- `closes`
+- `supersedes`
+- `needs_owner_decision`
+- `produced_evidence`
+- `verified_by`
+- `references`
+- `forked_from`
+
+Required event types:
+
+- `subagent.spawn_requested`
+- `subagent.spawn_failed`
+- `subagent.reported`
+- `ledger.row_classified`
+- `ledger.row_closed`
+- `ledger.row_blocked`
+- `evidence.attached`
+- `owner.decision_required`
+- `d8.history_classified`
+- `graphify.report_consulted`
+
 ## Candidate Event Types
 
 ```json
@@ -100,9 +144,17 @@ The initial scratch smoke used:
 This proves only that ActiveGraph can record and replay a tiny local sidecar
 event graph in ignored scratch storage.
 
+The 2026-05-31 gate refresh added a second tiny run,
+`activegraph_scratch_v043x_gate_20260531_r2`, using the v0.4.3.x names
+`LedgerRow`, `EvidenceFile`, and `produced_evidence`. It also verified
+`inspect`, `replay`, `fork`, and `diff` on ignored SQLite scratch storage. The
+fork command generated run id `01KSZT05B7KRRCVKKYQP694KTV`; the human label was
+not a usable run id for diff.
+
 ## Later Spike Requirements
 
-Before ActiveGraph can become even an experimental sidecar, define:
+Before ActiveGraph can be promoted beyond an ignored experimental sidecar,
+define:
 
 - storage path and ignored/tracked policy;
 - event schema versioning;
