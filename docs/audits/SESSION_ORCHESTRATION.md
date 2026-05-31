@@ -301,6 +301,11 @@ D.3-adjacent, opens later A.13/full-IR work, promotes D.8 archaeology, approves
 broad governed/model matrix work, or names another concrete residual with owner
 files.
 
+Fixture 62 decision prep now exists at
+`docs/audits/v0.4.3.x-fixture62-d3-adjacent-decision-packet.md`. It is a
+docs-only owner-decision packet, not an implementation session and not approval
+to patch D.3.
+
 ## Boundaries
 
 This policy does not authorize:
