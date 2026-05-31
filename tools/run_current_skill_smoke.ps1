@@ -156,25 +156,63 @@ foreach ($required in $requiredFiles) {
     }
 }
 
+$skillPath = Join-Path $rootPath "skill\SKILL.md"
+$skillHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $skillPath).Hash
+
 if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
     $selfTestCase = Join-Path $rootPath "tests\retained-proof-corpus\v0.4.3.0-schema-light\valid\sidecar-backed\cases\a9-science-source"
     $selfTestInput = Join-Path $selfTestCase "input.txt"
     $selfTestOutput = Join-Path $selfTestCase "output.md"
-    $selfTestDir = Join-Path ([System.IO.Path]::GetTempPath()) ("current-skill-proof-sidecar-" + [System.Guid]::NewGuid().ToString("N"))
+    $selfTestRoot = Join-Path $rootPath ".daee\validation"
+    if (-not (Test-Path -LiteralPath $selfTestRoot -PathType Container)) {
+        New-Item -ItemType Directory -Path $selfTestRoot | Out-Null
+    }
+    $selfTestDir = Join-Path $selfTestRoot ("current-skill-proof-sidecar-" + [System.Guid]::NewGuid().ToString("N"))
     $proofSidecarRecord = Invoke-ProofSidecarBuild -RootPath $rootPath -RawInputFullPath $selfTestInput -OutputPath $selfTestOutput -ProofSidecarDirPath $selfTestDir -OutputBaseName "self-test"
     Test-ProofSidecarRecord -Record $proofSidecarRecord
+    $selfTestHashPath = Join-Path $selfTestDir "self-test.smoke.hashes.json"
     $selfTestHashRecord = [ordered]@{
         case_name = "proof-sidecar-self-test"
+        skill = [ordered]@{
+            path = $skillPath
+            sha256 = $skillHash
+        }
+        output = [ordered]@{
+            path = $selfTestOutput
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $selfTestOutput).Hash
+        }
         proof_sidecars = $proofSidecarRecord
     }
     $selfTestJson = $selfTestHashRecord | ConvertTo-Json -Depth 5
     if ($selfTestJson -notmatch '"proof_sidecars"') {
         throw "Proof sidecar self-test did not serialize proof_sidecars into the hash record."
     }
+    Set-Content -LiteralPath $selfTestHashPath -Encoding UTF8 -Value $selfTestJson
+
+    $hashCheckerOutput = & python (Join-Path $rootPath "tools\check_smoke_artifacts.py") --samples-only --no-release-artifacts --hash-record $selfTestHashPath 2>&1
+    $hashCheckerExit = $LASTEXITCODE
+    $hashCheckerOutput | ForEach-Object { Write-Host "$_" }
+    if ($hashCheckerExit -ne 0) {
+        throw "Proof sidecar self-test hash-record validation failed."
+    }
+
+    $promotionArgs = @(
+        (Join-Path $rootPath "tools\promote_retained_proof_case.py"),
+        "--source-only",
+        "--hash-record", $selfTestHashPath
+    )
+    $promotionOutput = & python @promotionArgs 2>&1
+    $promotionExit = $LASTEXITCODE
+    $promotionOutput | ForEach-Object { Write-Host "$_" }
+    if ($promotionExit -ne 0) {
+        throw "Proof sidecar self-test promotion-helper check failed."
+    }
+
     Write-Host "current-skill smoke proof-sidecar self-test: PASS"
     Write-Host "proof-sidecar certificate: $($proofSidecarRecord.collapse_certificate.path)"
     Write-Host "proof-sidecar grapher: $($proofSidecarRecord.grapher_html.path)"
     Write-Host "proof-sidecar hashes: $($proofSidecarRecord.hashes.path)"
+    Write-Host "proof-sidecar smoke hash record: $selfTestHashPath"
     return
 }
 
@@ -209,8 +247,6 @@ else {
     $OutputBaseName = ConvertTo-SafeName -Value $OutputBaseName
 }
 
-$skillPath = Join-Path $rootPath "skill\SKILL.md"
-$skillHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $skillPath).Hash
 $promptText = Get-Content -Raw -Encoding UTF8 -LiteralPath $promptFullPath
 if ($promptText -notmatch ("(?m)^Runtime SHA256:\s*" + [regex]::Escape($skillHash) + "\s*$")) {
     throw "Prompt does not record the current generated skill SHA256. Expected Runtime SHA256: $skillHash in $promptFullPath"

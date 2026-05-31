@@ -449,6 +449,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--grapher-html", type=Path)
     parser.add_argument("--case-dir", type=Path)
     parser.add_argument("--check", action="store_true", help="validate against an existing retained case without writing")
+    parser.add_argument("--source-only", action="store_true", help="validate source artifacts or hash-record inputs without comparing or writing a retained manifest")
     parser.add_argument("--replace", action="store_true", help="replace an existing manifest case in write mode")
     parser.add_argument("--self-test", action="store_true", help="run promotion-helper hash-record self-tests")
     return parser.parse_args()
@@ -458,6 +459,32 @@ def main() -> int:
     args = parse_args()
     if args.self_test:
         return self_test()
+    if args.source_only:
+        if args.hash_record:
+            manual_artifacts = [args.input, args.output, args.collapse_certificate, args.grapher_html]
+            if any(manual_artifacts):
+                raise SystemExit("--hash-record cannot be combined with manual artifact path arguments")
+            source_paths, _, _ = source_paths_from_hash_record(args.hash_record)
+        else:
+            if not all([args.input, args.output, args.collapse_certificate, args.grapher_html]):
+                raise SystemExit(
+                    "--source-only requires --hash-record or manual --input, --output, "
+                    "--collapse-certificate, and --grapher-html"
+                )
+            source_paths = {
+                "input": resolve_existing(args.input, "input"),
+                "output": resolve_existing(args.output, "output"),
+                "collapse_certificate": resolve_existing(args.collapse_certificate, "collapse certificate"),
+                "grapher_html": resolve_existing(args.grapher_html, "Grapher HTML"),
+            }
+        validate_source_artifacts(
+            source_paths["input"],
+            source_paths["output"],
+            source_paths["collapse_certificate"],
+            source_paths["grapher_html"],
+        )
+        print("retained proof case promotion source-artifact check: PASS")
+        return 0
     if not args.case_id:
         raise SystemExit("--case-id is required")
     if not args.rows:
