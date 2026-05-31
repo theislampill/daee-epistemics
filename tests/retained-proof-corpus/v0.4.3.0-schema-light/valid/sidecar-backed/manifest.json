@@ -4,6 +4,157 @@
   "proof_boundary": "Retained governed-output copies that have raw input sidecars, checker-owned collapse certificates, warning-clean certificate-backed Grapher HTML, and row-specific orchestrator evidence. This corpus is an integrity gate, not a release/provenance claim.",
   "coverage_targets": [
     {
+      "id": "b1-graph-completeness-retained-breadth",
+      "description": "Current retained cases that carry B.1 graph-completeness evidence; this is retained-corpus accounting, not broad harness/default adoption.",
+      "rows": [
+        "B.1"
+      ],
+      "case_ids": [
+        "a9-science-source",
+        "source-order-tlang",
+        "restoration-track",
+        "c7-loopbreak",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b2-collapse-certificate-retained-breadth",
+      "description": "Current retained cases that carry B.2 checker-owned collapse-certificate evidence; this is retained-corpus accounting, not runtime/default certificate emission.",
+      "rows": [
+        "B.2"
+      ],
+      "case_ids": [
+        "a9-science-source",
+        "source-order-tlang",
+        "restoration-track",
+        "c7-loopbreak",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b3-output-grapher-retained-breadth",
+      "description": "Current retained cases that carry B.3 warning-clean certificate-backed Output Grapher evidence; this is retained-corpus accounting, not browser display proof.",
+      "rows": [
+        "B.3"
+      ],
+      "case_ids": [
+        "a9-science-source",
+        "source-order-tlang",
+        "restoration-track",
+        "c7-loopbreak",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b4-input-fingerprint-retained-breadth",
+      "description": "Current retained cases that carry B.4 raw-input fingerprint binding evidence; this is retained-corpus accounting, not package/provenance evidence.",
+      "rows": [
+        "B.4"
+      ],
+      "case_ids": [
+        "a9-science-source",
+        "source-order-tlang",
+        "restoration-track",
+        "c7-loopbreak",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b5-nla-decode-retained-breadth",
+      "description": "Current retained cases that carry B.5 schema-light NLA semantic-faithfulness evidence; full IR decode remains blocked by later A.13 slices.",
+      "rows": [
+        "B.5"
+      ],
+      "case_ids": [
+        "a9-science-source",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "tlang-response-closure-retained-breadth",
+      "description": "Current retained cases that carry T_lang response-closure evidence; this proves response reflection of generated pressure, not guaranteed uptake.",
+      "rows": [
+        "T_lang"
+      ],
+      "case_ids": [
+        "source-order-tlang",
+        "restoration-track",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
       "id": "c5-named-restoration-recoil-subtypes",
       "description": "Current named restoration-recoil subtype coverage retained as schema-light sidecar-backed evidence; this is not broad matrix completion.",
       "rows": [
