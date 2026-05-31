@@ -159,6 +159,8 @@ When an artifact needs collapse reconstruction, it includes a
 `divergence_check`, `curl_check`, and `coverage_complete`. `coverage_complete` is false unless
 every initial burden appears in `terminal_states`; positive collapse still requires neutral `∇·B`
 and null/resolved `∇×κ` under the scoped closure rule.
+Machine-facing `field_witness.terminal_states` and `coverage_proof.terminal_states` are
+objects/maps keyed by `B` id, not arrays of terminal objects.
 
 Field-witness reconstructibility addendum: when `field_witness` is present, it must carry
 machine-readable `B_LA`, `B_MRP`, `B_total`, burden nodes, generated-by MRP provenance,
@@ -793,8 +795,26 @@ contract permits a diagnostic or audit-style response.
   required activation fingerprint. `required_before` entries are owner-family objects with
   `target`, `before_owner`, and `after_owner`; arrays, body-ref pairs, and burden-event pairs are
   not valid ordering rules. `parallel_groups[]` plan entries use `target`, `group`, and `owners`;
-  only the per-activation mirror rows use `ordering_group`.
-- Register-derived burden floor: before owner-plan emission, derive `B_LA` structure from the live
+  only the per-activation mirror rows use `ordering_group`. A parallel group is only for two or
+  more distinct owner families whose load-bearing operations are order-independent on the same
+  target. Do not mark duplicate ACT rows from the same owner family as `parallel`, and do not list
+  one owner twice or alone in `parallel_groups[].owners`; either sequence the same-owner work as
+  `required` in stable ACT order or collapse it into one owner activation when one operation lands
+  both pressures.
+  - Science-only/source-totalization rule: if the input says scientific explanation, empirical
+    method, or scientific authority is the only knowledge source/criterion, the source-order gate is
+    structurally live. Execute `source-status-repair.source-order` before
+    `M1.self-grounding-test` on the same burden and record
+    `required_before: source-status-repair -> M1`, unless Layer A explicitly proves source-order
+    non-load-bearing with a reason. For that science-only source-order canary, use exact pressure
+    labels: `scientific-explanations-only-knowledge-source` for the source-status ACT and
+    `only-science-counts-standard` for the M1 ACT. Use simple terminal-state maps in machine
+    fields: `"terminal_states": {"B1": "landed"}` in both `field_witness` and `coverage_proof`.
+    Use the exact Layer A concealment boundary
+    `Concealment mode: sincere clarification/shubhah pressure path; boundary: diagnostic noetic covering only; no hidden soul-state or takfir judgment.`
+    Do not label this narrow frame `mixed` unless at least two dominant source-owned refusal
+    components are explicitly diagnosed and named.
+  - Register-derived burden floor: before owner-plan emission, derive `B_LA` structure from the live
   register set in `IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)`, not from a named case template:
   `burden_floor = {B_r : r in live_registers(IR(...))}`. `Omega` live requires an
   ontological/predication burden; `xi` live requires a warrant/authority burden; `mu` live requires
@@ -802,6 +822,52 @@ contract permits a diagnostic or audit-style response.
   `heart` live requires an affective/posture burden. A burden may be multi-typed, so the
   requirement is coverage per live register, not one burden per register. The selected N-frame
   supplies the burden labels and content; register liveness supplies the floor structure.
+  - Academic-prestige/source-order shubhah canary: when the mixed field contains an
+    academic-prestige, science-authority, or secular-ethics public-knowledge tribunal plus Muslim
+    identity/social-respectability pressure and sincere shubhah, the stable N-frame token is
+    `mixed-academic-source-order-shubhah`; do not alternate to
+    `mixed-academic-public-knowledge-shubhah`, `mixed-academic-respectability-shubhah`, or
+    `mixed-academic-secular-identity-shubhah`. Identity/social-respectability is a pressure inside
+    that frame unless the input makes it a separate source-owned baseline burden. The pressure-class
+    structure is stable: B1 imported public-knowledge tribunal/carrier -> FPD; B2 source-order
+    status -> source-status-repair; B3 reason/revelation-order -> P3; B4 sincere shubhah boundary
+    -> doubt-vs-skepticism before P1; generated B5 bounded-answer/source-order recoil ->
+    source-status-repair before P7. The exact pressure labels are B1/FPD
+    `academic-prestige-science-secular-ethics-hidden-tribunal`, B2/source-status
+    `science-secular-ethics-only-public-knowledge-source`, B3/P3
+    `revelation-authority-as-anti-intellectual-betrayal`, B4/doubt-vs-skepticism
+    `sincere-doubt-vs-academic-respectability-shield`, B4/P1
+    `salah-tawhid-attraction-restoration`, B5/source-status
+    `source-order-recoil-hidden-support`, and B5/P7 `bounded-answer-reopen-boundary`.
+    Any `required_before` edge must reference owners that actually execute on the same target. Do
+    not emit `source-status-repair -> P3` on B2 unless P3 has an ACT row on B2; in this canary frame
+    P3 belongs to B3. Use `P1.restoration` consistently, not a drifting `fitrah-restoration`
+    operation token, unless a future source-owned vocabulary migration changes the operation name.
+    Generated B5 source-order recoil uses `hidden-support-blocked`; reserve
+    `hidden-authority-source-status-bounded` for hidden authority/source-status transfer, not
+    post-restoration source-order recoil.
+- When normal governed output emits `field_witness`, also emit
+  `field_witness.normalized_activation_record`. This is the schema-light structural comparison record:
+  `n_frame`, `live_registers`, `burden_floor`, and `per_burden[]` with `burden_id`, `owner_id`,
+  `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and
+  `generation_depth`. It is generated after the owner plan and burden traversal are fixed, and
+  it must be derived from `owner_activations[]`, `mrp_resultants[]`, terminal states,
+  generated-burden depth, and the burden ledgers rather than authored as a separate proof claim.
+  `burden_floor` is a string list of B IDs only, not register/object rows. `per_burden[]` is
+  ACT-level despite its historical name: emit one row for every visible ACT /
+    `field_witness.owner_activations[]` object, including multiple rows with the same `burden_id`
+    when several owners land one burden. When `live_registers` is claimed in NAR, the compact Layer A
+    header must include an explicit `live registers: [...]` line with the same set. `n_frame` is a
+    stable kebab-case frame token selected by Diagnostic IR, not prose. For the narrow science-only
+    source-order warrant frame, use exactly `science-only-source-order-warrant`. In NAR,
+    `delta_result` is the suffix token only, such as `science-source-bounded` or
+    `self-authorizing-standard-invalidated`; do not include `Delta(B1):`, `Δ¹B:`, or any other
+    burden-local prefix in `normalized_activation_record.per_burden[].delta_result`. Canonical
+    owner-local suffixes are source-owned in
+    `references/diagnostics/delta-result-vocabulary.json`
+    (`diagnostic-ir-delta-result-vocabulary-v1`). Governed ACT and NAR emission must use those
+    tokens by construction for listed owner families; post-render checkers reject drift but are not
+    the source of the vocabulary.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,

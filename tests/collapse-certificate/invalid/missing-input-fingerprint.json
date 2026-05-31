@@ -1,0 +1,17 @@
+{
+  "skill_version": "0.4.3.0",
+  "collapse_positive": true,
+  "coverage_complete": true,
+  "divergence_state": "neutral",
+  "curl_state": "null",
+  "diagnostic_completeness": true,
+  "live_registers_covered": ["xi"],
+  "max_generation_depth": 0,
+  "loopbreak_count": 0,
+  "loopbreak_grounds": [],
+  "verified_activations": ["B1"],
+  "hold_partial_nodes": [],
+  "restoration_endpoint_reached": true,
+  "checker_version": "check_graph_completeness.py:b1-schema-light",
+  "timestamp": "2026-05-30T00:00:00Z"
+}

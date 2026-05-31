@@ -1,0 +1,128 @@
+{
+  "schema_version": "d1-hard-smoke-manifest-v1",
+  "corpus_id": "v0.4.3.0-rc4-surfaces",
+  "generated_skill_sha": "C29609AC6C5546E00B1D44784F801E2675BF5073EF264FA891D8188D070A3696",
+  "release_provenance_status": "frozen",
+  "stop_condition": "stop_on_first_failing_validator",
+  "validator_order": [
+    "act_surface_syntax",
+    "mrp_generated_burden",
+    "manual_smoke_render_contract",
+    "live_default_witness_contract",
+    "mid_reread_pressure",
+    "formal_reread_state_semantics",
+    "field_witness_convergence",
+    "graph_completeness",
+    "collapse_certificate_schema",
+    "owner_activation_ordering",
+    "output_grapher"
+  ],
+  "cases": [
+    {
+      "id": "rc4-seven-surface-fixture",
+      "prompt_sha": "1111111111111111111111111111111111111111111111111111111111111111",
+      "input": "input.md",
+      "output": "output.md",
+      "hashes": "hashes.json",
+      "collapse_certificate": "collapse_certificate.json",
+      "grapher_html": "grapher.html",
+      "surface_evidence": [
+        {
+          "surface": "formal_reread_states_every_mrp_cycle",
+          "path": "output.md",
+          "needles": ["field_witness.formal_reread_states[]"]
+        },
+        {
+          "surface": "mixed_concealment_secondary_clarification",
+          "path": "output.md",
+          "needles": ["Concealment mode: mixed", "secondary sincere shubhah routed to clarification"]
+        },
+        {
+          "surface": "closing_formulation_three_slot",
+          "path": "output.md",
+          "needles": ["Established failure:", "Restored criterion/orientation:", "Scoped boundary:"]
+        },
+        {
+          "surface": "owner_activation_ordering_object",
+          "path": "output.md",
+          "needles": ["field_witness.owner_activation_ordering is object-shaped"]
+        },
+        {
+          "surface": "two_track_primary_restoration_mrp",
+          "path": "output.md",
+          "needles": ["MRP track: primary", "MRP track: restoration"]
+        },
+        {
+          "surface": "graph_completeness_collapse_certificate_binding",
+          "path": "output.md",
+          "needles": ["graph-completeness collapse_certificate binding present"]
+        },
+        {
+          "surface": "output_grapher_warning_clean_certificate_input_agreement",
+          "path": "output.md",
+          "needles": ["Output Grapher warning-clean certificate/input agreement present"]
+        }
+      ],
+      "validators": [
+        {
+          "id": "act_surface_syntax",
+          "command": "python tools/check_act_surface_syntax.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "mrp_generated_burden",
+          "command": "python tools/check_mrp_generated_burden.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "manual_smoke_render_contract",
+          "command": "python tools/check_manual_smoke_render_contract.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "live_default_witness_contract",
+          "command": "python tools/check_live_default_witness_contract.py tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "mid_reread_pressure",
+          "command": "python tools/check_mid_reread_pressure.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "formal_reread_state_semantics",
+          "command": "python tools/check_formal_reread_state_semantics.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "field_witness_convergence",
+          "command": "python tools/check_field_witness_convergence.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "graph_completeness",
+          "command": "python tools/check_graph_completeness.py --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS",
+          "result": {"collapse_positive": true, "failures": []}
+        },
+        {
+          "id": "collapse_certificate_schema",
+          "command": "python tools/check_collapse_certificate_schema.py --certificates tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/collapse_certificate.json",
+          "verdict": "PASS",
+          "result": {"certificate_valid": true}
+        },
+        {
+          "id": "owner_activation_ordering",
+          "command": "python tools/check_owner_activation_ordering.py --require-plan --outputs tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "output_grapher",
+          "command": "python tools/check_output_grapher.py --skill-output tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/output.md --expect-reconstructible --fail-on-warnings --input tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/input.md --collapse-certificate tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/collapse_certificate.json --out tests/hard-smokes/v0.4.3.0-rc4-surfaces/valid/complete-manifest/grapher.html",
+          "verdict": "PASS",
+          "result": {"reconstructible": true, "warnings": []}
+        }
+      ]
+    }
+  ]
+}

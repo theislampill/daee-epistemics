@@ -9,6 +9,7 @@ state: COMPLETE
 - 𝔅_MRP (B_MRP) = {⁵B}
 - 𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP
 - Initial burden set: [¹B, ²B, ³B, ⁴B]
+Initial burden set: [¹B, ²B, ³B, ⁴B]
 - held: ²B, ³B, ⁴B
 - ∇ route: ¹B first; MRP may activate held burdens or generate non-baseline pressure.
 
@@ -81,7 +82,7 @@ Route-gradient: ∇ points to new ⁵B absent from 𝔅_LA because Δ⁴B expose
 Finding: genuine-dependent
 MRP route result type: generated_burden_instantiation
 MRP resultant: genuine-dependent -> instantiate ⁵B [generated-by: MRP(⁴B)] and RECURSE
-Matched owner/TTP route: [FPD], [M8]
+Matched owner/TTP route: [FPD], [M8], [P7]
 Graph delta: ⁴B → ⁵B
 Pre-emption basis: framework-bound
 Field diagnostics: ∇·B: non-neutral / ⁵B generated from post-land immunity pressure; ∇×κ: null / generate rather than loopbreak
@@ -89,7 +90,18 @@ LoopBreak: not needed
 Route: RECURSE
 Boundary: T_lang does not imply guaranteed uptake.
 
+#### Layer A — Generated Burden Intake
+- generated source: MRP(⁴B)
+- live noetic burden: ⁵B / non-baseline total-system immunity shield.
+- matched owner/TTP route: [FPD], [M8], [P7]
+- ACT records:
+  ⟦ACT ⁵B₁[FPD.expose] :: π=immunity shield :: body_ref=⁵B₁ :: Δ=Δ⁵B:hidden total-system reserve exposed :: Land(⁵B)+⟧
+  ⟦ACT ⁵B₂[M8.consequence-trace] :: π=burden-shift consequence :: body_ref=⁵B₂ :: Δ=Δ⁵B:immunity rescue made non-load-bearing :: Land(⁵B)+⟧
+  ⟦ACT ⁵B₃[P7.bound] :: π=reopen condition :: body_ref=⁵B₃ :: Δ=Δ⁵B:scoped reopen condition bounded :: Land(⁵B)+⟧
+
 ### Burden 5 / ⁵B [generated-by: MRP(⁴B)] — generated immunity shield
+
+#### Layer B — Governed Operation Body
 
 ⁵B₁[FPD] — identify the shield
 
@@ -108,6 +120,15 @@ The FPD operation names the escape route: after the proof-stack burden landed, t
 - Contribution-to-Land(⁵B): the recoil mass is discharged because the shield is made non-load-bearing for this scoped pass.
 
 The M8 operation follows the consequence of the smuggling move. If immunity replaces proof after the proof-stack has landed, then the proof-stack was not doing the work and the reply has shifted burdens. The trace tests the proposed rescue by asking what would make it evidential: a stated new argument, owner-backed treatment, and fresh Land/R(H,Δ) accounting. Without that reopen condition, the immunity route cannot rescue the already-defeated local reply or act as hidden support in the closure witness. The opposing move fails as a burden shift, not as a merely incomplete citation. That concrete state change licenses scoped STOP without pretending total-system exhaustion or counting an invisible doctrinal reserve as evidence.
+
+⁵B₃[P7] — bound the reopen condition
+
+- Target: the condition under which broader-system immunity could reopen the route.
+- Operation: define the STOP/HOLD boundary and require a new owner-routed burden before the reserve can count as evidence.
+- Result: the generated immunity shield is closed for this scoped pass without pretending that all future broader material is exhausted.
+- Contribution-to-Land(⁵B): the generated shield lands because its reopen condition is explicit and non-load-bearing material cannot silently govern closure.
+
+The P7 operation names the boundary of the generated route. It does not answer every possible broader-system claim; it states what would have to happen for such a claim to become load-bearing: a fresh burden, a source-owned route, and renewed Land/R(H,Δ) accounting. That prevents the shield from becoming an invisible veto while preserving honest scope. The state change is that STOP is licensed for the worked generated burden, and any later broader appeal must re-enter as a new accountable route rather than hiding inside closure.
 
 Land(⁵B): generated immunity-shield burden landed.
 
@@ -141,9 +162,11 @@ The local reply has been answered without pretending that the entire doctrine ha
 For the practitioner, the restorative force is this: do not let a failed local proof become protected by an unargued total-system reserve. Keep source order clear, keep the exact predicate or proof claim in view, and then hold broader material only as a new burden if it is actually raised. The field is returned toward tawhid and sound warrant because the answer distinguishes what was proven, what failed, and what remains held without turning hidden reserves into evidence.
 
 ## Closing Formulation
-The closure formula is: the visible argument fails on its own offered supports, and the later broader-system appeal cannot repair it unless it becomes a new argued burden. Work the baseline ledger first; when post-land pressure exposes a non-baseline recoil, generate it openly, give it owner-backed treatment, and land it before STOP.
+Established failure: the visible argument fails on its own offered supports, and the later broader-system appeal cannot repair it unless it becomes a new argued burden.
 
-So the bounded claim closes here: 𝔅_LA has landed, 𝔅_MRP has landed, and the wider unresolved material remains held without functioning as hidden support. That is not metadata and not a slogan; it is the practitioner-usable distinction between local refutation, generated recoil, and honest scope boundary.
+Restored criterion/orientation: work the baseline ledger first; when post-land pressure exposes a non-baseline recoil, generate it openly, give it owner-backed treatment, and land it before STOP.
+
+Scoped boundary: the bounded claim closes here because 𝔅_LA has landed, 𝔅_MRP has landed, and the wider unresolved material remains held without functioning as hidden support. That is not metadata and not a slogan; it is the practitioner-usable distinction between local refutation, generated recoil, and honest scope boundary.
 
 ## Closure/Reconstruction Witness
 - 𝔅_LA (B_LA) = {¹B, ²B, ³B, ⁴B}
@@ -151,16 +174,21 @@ So the bounded claim closes here: 𝔅_LA has landed, 𝔅_MRP has landed, and t
 - 𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP
 - Initial burden set: [¹B, ²B, ³B, ⁴B]
 - Terminal states:
+Terminal states:
   ¹B: landed / FPD / baseline burden landed
   ²B: landed / held / baseline held burden landed
   ³B: landed / held / baseline held burden landed
   ⁴B: landed / M9 / final baseline burden landed
-  ⁵B: landed / FPD+M8 / generated MRP burden landed
+  ⁵B: landed / FPD+M8+P7 / generated MRP burden landed
 - Burden dependency graph: ¹B (root); ¹B → ²B; ²B → ³B; ³B → ⁴B; ⁴B → ⁵B
 - MRP resultants:
   MRP(¹B): type=held_burden_activation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE
   MRP(⁴B): type=generated_burden_instantiation; finding=genuine-dependent; graph=⁴B → ⁵B; route=RECURSE
   MRP(⁵B): type=no_new_resultant; finding=stable; graph=none; route=STOP
+- Owner activations:
+  ⟦ACT ⁵B₁[FPD.expose] :: π=immunity shield :: body_ref=⁵B₁ :: Δ=Δ⁵B:hidden total-system reserve exposed :: Land(⁵B)+⟧
+  ⟦ACT ⁵B₂[M8.consequence-trace] :: π=burden-shift consequence :: body_ref=⁵B₂ :: Δ=Δ⁵B:immunity rescue made non-load-bearing :: Land(⁵B)+⟧
+  ⟦ACT ⁵B₃[P7.bound] :: π=reopen condition :: body_ref=⁵B₃ :: Δ=Δ⁵B:scoped reopen condition bounded :: Land(⁵B)+⟧
 - ∇·B: neutral / all baseline and generated burdens landed
 - ∇×κ: null / no loop pressure remains
 - 𝒞(Ψᴺ): COMPLETE / runtime execution field closed for this bounded pass
@@ -184,18 +212,67 @@ So the bounded claim closes here: 𝔅_LA has landed, 𝔅_MRP has landed, and t
     "B5": {"generated_by": "MRP(B4)"}
   },
   "mrp_resultants": [
-    {"source": "B1", "type": "held_burden_activation", "graph": {"from": "B1", "to": "B2"}, "route": "RECURSE"},
-    {"source": "B4", "type": "generated_burden_instantiation", "graph": {"from": "B4", "to": "B5"}, "route": "RECURSE"},
-    {"source": "B5", "type": "no_new_resultant", "graph": null, "route": "STOP"}
+    {"source": "B1", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B1 -> B2", "route": "RECURSE"},
+    {"source": "B4", "type": "generated_burden_instantiation", "finding": "genuine-dependent", "graph": "B4 -> B5", "route": "RECURSE"},
+    {"source": "B5", "type": "no_new_resultant", "finding": "stable", "graph": "none", "route": "STOP"}
   ],
   "route_gradient": {
     "selected": "B5",
     "reason": "post-land immunity pressure was absent from B_LA"
   },
   "reread_records": [
-    {"burden": "B1", "reread": "R(H,Delta)", "route": "RECURSE"},
-    {"burden": "B4", "reread": "R(H,Delta)", "route": "RECURSE"},
-    {"burden": "B5", "reread": "R(H,Delta)", "route": "STOP"}
+    {"source": "B1", "reread": "R(H,Delta)", "release_next": "B2"},
+    {"source": "B4", "reread": "R(H,Delta)", "release_next": "B5"},
+    {"source": "B5", "reread": "R(H,Delta)", "release_next": "STOP"}
+  ],
+  "formal_reread_states": [
+    {
+      "source_burden": "B1",
+      "prior_land": "Land(B1)",
+      "delta": "Δ¹B / Δκ exposed the next baseline burden already held in 𝔅_LA. B1",
+      "reread": "R(H,Delta)",
+      "route_gradient": "∇ points to held ²B already in 𝔅_LA, so no ledger expansion occurs.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "held_burden_activation",
+      "mrp_resultant": "genuine-dependent -> RECURSE into held ²B without adding to 𝔅_MRP",
+      "graph_delta": "B1 -> B2",
+      "preemption_basis": "graph-bound",
+      "route": "RECURSE",
+      "next_burden": "B2",
+      "owner_route": ["held"]
+    },
+    {
+      "source_burden": "B4",
+      "prior_land": "Land(B4)",
+      "delta": "Δ⁴B / Δκ exhausted the baseline proof-stack and exposed a non-baseline immunity shield. B4",
+      "reread": "R(H,Delta)",
+      "route_gradient": "∇ points to new ⁵B absent from 𝔅_LA because Δ⁴B exposed the post-land immunity shield.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "generated_burden_instantiation",
+      "mrp_resultant": "genuine-dependent -> instantiate ⁵B [generated-by: MRP(⁴B)] and RECURSE",
+      "graph_delta": "B4 -> B5",
+      "preemption_basis": "framework-bound",
+      "route": "RECURSE",
+      "next_burden": "B5",
+      "owner_route": ["FPD", "M8", "P7"],
+      "generated_by": "MRP(B4)"
+    },
+    {
+      "source_burden": "B5",
+      "prior_land": "Land(B5)",
+      "delta": "Δ⁵B / Δκ closed the generated immunity route. B5",
+      "reread": "R(H,Delta)",
+      "route_gradient": "∇ points to STOP after 𝔅_LA and 𝔅_MRP are landed.",
+      "divergence_state": "neutral",
+      "curl_state": "null",
+      "route_result_type": "no_new_resultant",
+      "mrp_resultant": "stable -> STOP with no new graph edge",
+      "graph_delta": "none",
+      "preemption_basis": "none",
+      "route": "STOP"
+    }
   ],
   "field_diagnostics": {
     "del_dot": {"target": "B", "status": "neutral"},
@@ -204,6 +281,11 @@ So the bounded claim closes here: 𝔅_LA has landed, 𝔅_MRP has landed, and t
   "closure": {"status": "COMPLETE"},
   "transfer_boundary": {"operator": "T_lang", "mode": "coupling-attempt"},
   "non_claims": ["no guaranteed uptake", "no hidden soul-state claim"],
+  "owner_activations": [
+    {"source": "MRP(B4)", "target": "B5", "owner": "FPD", "operation": "expose", "pressure": "immunity shield", "body_ref": "⁵B₁", "delta": "Δ⁵B:hidden total-system reserve exposed", "land": "Land(B5)+"},
+    {"source": "MRP(B4)", "target": "B5", "owner": "M8", "operation": "consequence-trace", "pressure": "burden-shift consequence", "body_ref": "⁵B₂", "delta": "Δ⁵B:immunity rescue made non-load-bearing", "land": "Land(B5)+"},
+    {"source": "MRP(B4)", "target": "B5", "owner": "P7", "operation": "bound", "pressure": "reopen condition", "body_ref": "⁵B₃", "delta": "Δ⁵B:scoped reopen condition bounded", "land": "Land(B5)+"}
+  ],
   "coverage_proof": {
     "initial_burden_set": ["B1", "B2", "B3", "B4"],
     "terminal_states": {

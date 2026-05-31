@@ -61,6 +61,8 @@ def excerpt(line: str) -> str:
 
 
 def scan_file(path: Path) -> list[str]:
+    if not path.is_file():
+        return []
     data = path.read_bytes()
     if is_binary(data):
         return []

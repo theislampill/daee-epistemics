@@ -57,6 +57,15 @@
     </label>
   </details>
 
+  <details class="outputGrapherAdvanced" data-surface-role="control">
+    <summary>Advanced: collapse certificate JSON</summary>
+    <label>
+      <span>Optional B.2 collapse certificate JSON</span>
+      <small>Use only to display a checker-produced certificate beside the graph. Browser display is advisory; proof-mode agreement still belongs to the Python checker.</small>
+      <textarea id="ogCertificateInput" spellcheck="false" placeholder='Optional collapse certificate, e.g. {"collapse_positive":true,"coverage_complete":true,"input_fingerprint":"..."}'></textarea>
+    </label>
+  </details>
+
   <div class="outputGrapherActions" data-surface-role="control">
     <button type="button" id="ogParseBtn">Parse / Graph</button>
     <span class="outputGrapherPrimaryView">Restorative Noetic Map View</span>

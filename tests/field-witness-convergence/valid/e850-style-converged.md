@@ -59,14 +59,14 @@ field_witness
   "nodes": [
     {"id": "B1", "type": "burden", "owners": ["M1"], "state": "landed"},
     {"id": "B2", "type": "burden", "owners": ["M8"], "state": "landed"},
-    {"id": "B3", "type": "generated_burden", "generated_by": "MRP(B2)", "owners": ["P7"], "state": "held-with-reason"}
+    {"id": "B3", "type": "generated_burden", "generated_by": "MRP(B2)", "generation_depth": 1, "owners": ["P7"], "state": "held-with-reason"}
   ],
   "edges": [
     {"from": "B1", "to": "B2", "type": "held_burden_activation"},
     {"from": "B2", "to": "B3", "type": "generated_burden_instantiation"}
   ],
   "generated_burdens": [
-    {"id": "B3", "generated_by": "MRP(B2)", "reason": "boundary pressure remained after B2 landed"}
+    {"id": "B3", "generated_by": "MRP(B2)", "generation_depth": 1, "reason": "boundary pressure remained after B2 landed"}
   ],
   "mrp_resultants": [
     {"source": "B1", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B1 -> B2", "route": "RECURSE"},
@@ -92,6 +92,16 @@ field_witness
     {"source": "MRP(B1)", "target": "B2", "owner": "M8", "operation": "trace", "pressure": "dependent-pressure", "body_ref": "B2_1", "delta": "Delta B2:dependent landed", "land": "Land(B2)+"},
     {"source": "MRP(B2)", "target": "B3", "owner": "P7", "operation": "bound", "pressure": "boundary-pressure", "body_ref": "B3_1", "delta": "Delta B3:boundary held", "land": "Land(B3)+"}
   ],
+  "normalized_activation_record": {
+    "n_frame": "fixture-generated-boundary",
+    "live_registers": [],
+    "burden_floor": ["B1", "B2"],
+    "per_burden": [
+      {"burden_id": "B1", "owner_id": "M1", "operation": "repair", "delta_result": "root repaired", "mrp_route_result_type": "held_burden_activation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B2", "owner_id": "M8", "operation": "trace", "delta_result": "dependent landed", "mrp_route_result_type": "generated_burden_instantiation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B3", "owner_id": "P7", "operation": "bound", "delta_result": "boundary held", "mrp_route_result_type": "no_new_resultant", "terminal_state": "held-with-reason", "generation_depth": 1}
+    ]
+  },
   "coverage_proof": {
     "initial_burden_set": ["B1", "B2"],
     "terminal_states": {
@@ -107,6 +117,7 @@ field_witness
     },
     "divergence_check": "neutral",
     "curl_check": "null",
+    "max_generation_depth": 1,
     "coverage_complete": true
   }
 }

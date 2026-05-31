@@ -10,6 +10,8 @@ import re
 import subprocess
 import sys
 
+from check_collapse_certificate_schema import certificate_errors
+from check_graph_completeness import graph_certificate
 from output_grapher_lib import burden_token, extract_embedded_field_witness, graph_html, parse_output, result_summary
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -24,6 +26,7 @@ SECTION = ROOT / "docs" / "index" / "sections" / "output-grapher.html"
 JS = ROOT / "docs" / "index" / "output-grapher.js"
 CSS = ROOT / "docs" / "index" / "output-grapher.css"
 FIXTURE_ROOT = ROOT / "tests" / "docs-output-grapher"
+GRAPH_FIXTURE_ROOT = ROOT / "tests" / "graph-completeness"
 
 
 def rel(path: Path) -> str:
@@ -49,6 +52,49 @@ def expected_mode(text: str, path: Path) -> str:
 
 def warning_failures(warnings: list[str]) -> list[str]:
     return [f"warning treated as proof-mode failure: {warning}" for warning in warnings]
+
+
+def load_json(path: Path) -> tuple[dict[str, object] | None, list[str]]:
+    if not path.exists():
+        return None, [f"{rel(path)}: collapse certificate file missing"]
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return None, [f"{rel(path)}: collapse certificate JSON invalid: {exc}"]
+    if not isinstance(payload, dict):
+        return None, [f"{rel(path)}: collapse certificate root must be an object"]
+    return payload, []
+
+
+def canonical_json(value: object) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def certificate_agreement_errors(output_path: Path, certificate_path: Path | None, input_path: Path | None) -> list[str]:
+    if certificate_path is None:
+        return ["certificate-backed Grapher mode requires --collapse-certificate"]
+    if input_path is None:
+        return ["certificate-backed Grapher mode requires --input / --input-path"]
+
+    certificate, errors = load_json(certificate_path)
+    if errors:
+        return errors
+    assert certificate is not None
+    found = certificate_errors(certificate)
+    if found:
+        return [f"{rel(certificate_path)}: {error}" for error in found]
+
+    expected, found = graph_certificate(output_path, input_path=input_path)
+    if found:
+        return found
+    if expected is None:
+        return [f"{rel(output_path)}: graph-completeness certificate emission returned no certificate"]
+    if canonical_json(certificate) != canonical_json(expected):
+        return [
+            f"{rel(output_path)}: collapse certificate does not match B.1/B.2/B.4 computed certificate "
+            f"for {rel(certificate_path)}"
+        ]
+    return []
 
 
 def check_static_artifact(errors: list[str]) -> None:
@@ -86,6 +132,14 @@ def check_static_artifact(errors: list[str]) -> None:
         "advanced field witness disclosure": "Advanced: separate field_witness JSON",
         "optional separate witness label": "Optional separate field_witness JSON",
         "optional separate witness help": "Use only if your field_witness is in a separate JSON block or file",
+        "advanced collapse certificate disclosure": "Advanced: collapse certificate JSON",
+        "optional collapse certificate label": "Optional B.2 collapse certificate JSON",
+        "optional collapse certificate help": "Browser display is advisory; proof-mode agreement still belongs to the Python checker",
+        "collapse certificate input": "ogCertificateInput",
+        "collapse certificate parser": "parseCollapseCertificate",
+        "collapse certificate model": "collapseCertificate",
+        "collapse certificate browser panel": "renderCertificateSummary",
+        "collapse certificate story export card": "outputGrapherCertificateDisplay",
         "primary map view label": "Restorative Noetic Map View",
         "map scope support": "What the Restorative Noetic Map shows",
         "input ontology scope": "ontological noetic structure",
@@ -295,7 +349,70 @@ def check_static_artifact(errors: list[str]) -> None:
     check_source_section_preservation(errors)
     check_single_paste_embedded_witness(errors)
     check_browser_formal_reread_state_comparison(errors)
+    check_browser_certificate_import_display(errors)
     check_paired_parser_alias_cleanup(errors)
+
+
+def check_browser_certificate_import_display(errors: list[str]) -> None:
+    source = (GRAPH_FIXTURE_ROOT / "valid" / "generated-burden-collapse-positive.md").read_text(encoding="utf-8")
+    certificate = (FIXTURE_ROOT / "valid-certificate-backed-generated-burden.collapse_certificate.json").read_text(encoding="utf-8")
+    node_script = f"""
+const fs = require('fs');
+global.window = {{}};
+global.document = {{
+  addEventListener: () => {{}},
+  getElementById: () => null,
+  querySelectorAll: () => []
+}};
+eval(fs.readFileSync({json.dumps(str(JS))}, 'utf8'));
+const source = {json.dumps(source)};
+const certificate = {json.dumps(certificate)};
+const model = window.daeeOutputGrapher.parseOutput(source, '', certificate);
+const svg = window.daeeOutputGrapher.renderGraph(model);
+const bad = window.daeeOutputGrapher.parseCollapseCertificate('{{}}');
+const required = [
+  'Collapse Certificate',
+  'input_fingerprint',
+  'outputGrapherCertificateDisplay',
+  'Browser certificate display is advisory',
+  'collapse_positive=true'
+];
+console.log(JSON.stringify({{
+  valid: model.collapseCertificate && model.collapseCertificate.valid,
+  present: model.collapseCertificate && model.collapseCertificate.present,
+  errors: model.errors || [],
+  warnings: model.warnings || [],
+  missing: required.filter(token => !svg.includes(token)),
+  invalidErrors: bad.errors || []
+}}));
+"""
+    result = subprocess.run(
+        ["node", "-e", node_script],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        timeout=30,
+    )
+    if result.returncode != 0:
+        errors.append(f"browser certificate import/display check failed to run: {(result.stderr or result.stdout).strip()}")
+        return
+    try:
+        parsed = json.loads(result.stdout or "{}")
+    except json.JSONDecodeError as exc:
+        errors.append(f"browser certificate import/display check emitted invalid JSON: {exc}")
+        return
+    if not parsed.get("present") or not parsed.get("valid"):
+        errors.append("browser certificate import/display must parse a valid certificate sidecar")
+    if parsed.get("errors"):
+        errors.append(f"browser certificate import/display valid fixture emitted errors: {parsed.get('errors')}")
+    missing = [str(item) for item in parsed.get("missing", [])]
+    if missing:
+        errors.append(f"browser certificate import/display SVG missing tokens: {missing}")
+    invalid_errors = [str(item) for item in parsed.get("invalidErrors", [])]
+    if not any("input_fingerprint" in item for item in invalid_errors):
+        errors.append("browser certificate parser must reject malformed/missing certificate fields")
 
 
 def check_paired_parser_alias_cleanup(errors: list[str]) -> None:
@@ -1142,6 +1259,50 @@ def check_fixtures(errors: list[str]) -> None:
                 errors.append(f"{rel(path)} should emit a public alias warning")
             if not warning_failures(result.warnings):
                 errors.append(f"{rel(path)} must be rejected by proof-mode warning gate")
+    check_certificate_backed_mode(errors)
+
+
+def check_certificate_backed_mode(errors: list[str]) -> None:
+    output = GRAPH_FIXTURE_ROOT / "valid" / "generated-burden-collapse-positive.md"
+    input_path = GRAPH_FIXTURE_ROOT / "inputs" / "generated-burden-collapse-positive.txt"
+    wrong_input = GRAPH_FIXTURE_ROOT / "inputs" / "wrong-collapse-input.txt"
+    valid_certificate = FIXTURE_ROOT / "valid-certificate-backed-generated-burden.collapse_certificate.json"
+    mismatched_certificate = FIXTURE_ROOT / "invalid-certificate-backed-mismatched-activations.collapse_certificate.json"
+
+    valid_errors = certificate_agreement_errors(output, valid_certificate, input_path)
+    if valid_errors:
+        errors.append(f"certificate-backed Grapher valid fixture failed: {valid_errors}")
+
+    missing_errors = certificate_agreement_errors(output, None, input_path)
+    if not missing_errors:
+        errors.append("certificate-backed Grapher mode must fail when no collapse certificate is supplied")
+
+    mismatch_errors = certificate_agreement_errors(output, mismatched_certificate, input_path)
+    if not mismatch_errors:
+        errors.append("certificate-backed Grapher mode must reject mismatched but schema-valid certificates")
+
+    wrong_input_errors = certificate_agreement_errors(output, valid_certificate, wrong_input)
+    if not wrong_input_errors:
+        errors.append("certificate-backed Grapher mode must reject certificates reused with a different D0 input")
+
+    certificate, found = load_json(valid_certificate)
+    if found:
+        errors.extend(found)
+    else:
+        rendered = graph_html(parse_output(output.read_text(encoding="utf-8")), "certificate display fixture", certificate)
+        required = [
+            "Collapse Certificate",
+            "Certificate-backed mode cross-checks this B.2 certificate",
+            "collapse_positive",
+            "coverage_complete",
+            "input_fingerprint",
+            "collapse-certificate-badge",
+            "∇·B=",
+            "∇×κ=",
+        ]
+        missing = [token for token in required if token not in rendered]
+        if missing:
+            errors.append(f"certificate-backed Grapher HTML missing certificate display tokens: {missing}")
 
 
 def check_skill_output(
@@ -1150,6 +1311,8 @@ def check_skill_output(
     allow_nonreconstructible: bool,
     fail_on_warnings: bool,
     out: Path | None,
+    collapse_certificate: Path | None,
+    input_path: Path | None,
 ) -> int:
     text = path.read_text(encoding="utf-8", errors="replace")
     result = parse_output(text)
@@ -1162,9 +1325,20 @@ def check_skill_output(
         text,
     ):
         result.errors.append("normal governed output lacks field_witness / graphable reconstruction payload")
+    if collapse_certificate or input_path:
+        if result.errors:
+            result.errors.append("certificate-backed Grapher mode requires graph reconstructibility before certificate agreement")
+        result.errors.extend(certificate_agreement_errors(path, collapse_certificate, input_path))
+    certificate_payload: dict[str, object] | None = None
+    if collapse_certificate and not result.errors:
+        loaded, found = load_json(collapse_certificate)
+        if found:
+            result.errors.extend(found)
+        else:
+            certificate_payload = loaded
     if out:
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(graph_html(result, f"Output Grapher Smoke: {path.name}"), encoding="utf-8")
+        out.write_text(graph_html(result, f"Output Grapher Smoke: {path.name}", certificate_payload), encoding="utf-8")
     summary = result_summary(result)
     print(f"skill-output: {path}")
     print(f"- reconstructible: {summary['reconstructible']}")
@@ -1203,14 +1377,27 @@ def check_skill_outputs(
     allow_nonreconstructible: bool,
     fail_on_warnings: bool,
     out: Path | None,
+    collapse_certificate: Path | None,
+    input_path: Path | None,
 ) -> int:
+    if (collapse_certificate or input_path) and len(paths) != 1:
+        print("certificate-backed Grapher mode supports exactly one --skill-output at a time")
+        return 1
     failures = 0
     if out and len(paths) > 1:
         out.mkdir(parents=True, exist_ok=True)
         print(f"skill-output batch graph directory: {out}")
     for path in paths:
         artifact = output_artifact_path(out, paths, path)
-        status = check_skill_output(path, expect_reconstructible, allow_nonreconstructible, fail_on_warnings, artifact)
+        status = check_skill_output(
+            path,
+            expect_reconstructible,
+            allow_nonreconstructible,
+            fail_on_warnings,
+            artifact,
+            collapse_certificate,
+            input_path,
+        )
         if status:
             failures += 1
     if len(paths) > 1:
@@ -1241,6 +1428,18 @@ def main(argv: list[str] | None = None) -> int:
             "this is treated as an output directory."
         ),
     )
+    parser.add_argument(
+        "--collapse-certificate",
+        type=Path,
+        help="B.2 collapse certificate JSON to cross-check against the skill output and raw D0 input.",
+    )
+    parser.add_argument(
+        "--input",
+        "--input-path",
+        dest="input_path",
+        type=Path,
+        help="Raw D0 input path for certificate-backed Grapher agreement.",
+    )
     args = parser.parse_args(argv)
 
     if args.skill_output:
@@ -1250,6 +1449,8 @@ def main(argv: list[str] | None = None) -> int:
             args.allow_nonreconstructible,
             args.fail_on_warnings,
             args.out,
+            args.collapse_certificate,
+            args.input_path,
         )
 
     errors: list[str] = []

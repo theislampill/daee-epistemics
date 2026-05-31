@@ -1,0 +1,33 @@
+{
+  "schema_version": "d1-hard-smoke-manifest-v1",
+  "corpus_id": "v0.4.3.0-rc4-surfaces",
+  "generated_skill_sha": "C29609AC6C5546E00B1D44784F801E2675BF5073EF264FA891D8188D070A3696",
+  "release_provenance_status": "frozen",
+  "stop_condition": "stop_on_first_failing_validator",
+  "validator_order": [
+    "act_surface_syntax",
+    "mrp_generated_burden",
+    "manual_smoke_render_contract",
+    "live_default_witness_contract",
+    "mid_reread_pressure",
+    "formal_reread_state_semantics",
+    "field_witness_convergence",
+    "graph_completeness",
+    "collapse_certificate_schema",
+    "owner_activation_ordering",
+    "output_grapher"
+  ],
+  "cases": [
+    {
+      "id": "missing-raw-input",
+      "prompt_sha": "1111111111111111111111111111111111111111111111111111111111111111",
+      "input": "input.md",
+      "output": "../../valid/complete-manifest/output.md",
+      "hashes": "../../valid/complete-manifest/hashes.json",
+      "collapse_certificate": "../../valid/complete-manifest/collapse_certificate.json",
+      "grapher_html": "../../valid/complete-manifest/grapher.html",
+      "surface_evidence": [],
+      "validators": []
+    }
+  ]
+}

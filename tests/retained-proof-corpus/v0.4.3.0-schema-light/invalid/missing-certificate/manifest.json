@@ -1,0 +1,24 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "invalid-missing-certificate",
+  "proof_boundary": "Invalid canary: a retained proof corpus case cannot omit its checker-owned collapse certificate.",
+  "cases": [
+    {
+      "id": "missing-certificate",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": ["B.1", "B.2"],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": "invalid canary",
+      "input": "../../valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "output": "../../valid/sidecar-backed/cases/a9-science-source/output.md",
+      "collapse_certificate": "missing-collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "6F2FB8D7E0F37487A4E018E119E1AE90EB43AE51C42B31564380A5DA875EF6F4",
+        "output": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6",
+        "collapse_certificate": "9D158B826F3002A61F07C9A11C0AA88BF9B56C2155A0B4EED34868290EC74FC1",
+        "grapher_html": "E84BF2E3B57C64EECF5AB3F8E3D73ECDC37B96E9FBC10FFA53AB01C9CEDBE942"
+      }
+    }
+  ]
+}

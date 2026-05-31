@@ -1,0 +1,20 @@
+{
+  "input_fingerprint": "3333333333333333333333333333333333333333333333333333333333333333",
+  "skill_version": "0.4.3.0",
+  "collapse_positive": false,
+  "coverage_complete": false,
+  "divergence_state": "bounded",
+  "curl_state": "held",
+  "diagnostic_completeness": true,
+  "live_registers_covered": ["xi", "heart"],
+  "max_generation_depth": 1,
+  "loopbreak_count": 0,
+  "loopbreak_grounds": [],
+  "verified_activations": ["B1"],
+  "hold_partial_nodes": [
+    {"id": "B2", "state": "carried-PARTIAL", "reason": "held for later source-order evidence"}
+  ],
+  "restoration_endpoint_reached": true,
+  "checker_version": "check_graph_completeness.py:b1-schema-light",
+  "timestamp": "2026-05-30T00:00:00Z"
+}

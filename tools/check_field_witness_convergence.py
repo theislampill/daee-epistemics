@@ -102,7 +102,6 @@ REGISTER_BURDEN_KEYWORDS = {
         "source-order",
         "source order",
         "source-status",
-        "proof",
         "tribunal",
         "testimony",
     ),
@@ -125,6 +124,12 @@ REGISTER_BURDEN_KEYWORDS = {
         "entailment",
         "downstream",
         "chain",
+        "curl",
+        "loop",
+        "circular",
+        "doubt-churn",
+        "proof-carousel",
+        "deception-loop",
     ),
     "heart": (
         "heart",
@@ -244,7 +249,13 @@ def live_register_obligations(text: str) -> list[str]:
     layer = extract_layer_a(text)
     found: list[str] = []
     for line in layer.splitlines():
-        if not re.search(r"(?i)\b(?:live noetic burden|live registers?|live_registers|IR\(N)", line):
+        label = re.sub(r"^\s*(?:[-*]\s*)?", "", line).strip()
+        if not (
+            re.search(r"(?i)^live\s+noetic\s+burden\s*[:=]", label)
+            or re.search(r"(?i)^live\s+registers?\s*[:=]", label)
+            or re.search(r"(?i)^live_registers\s*[:=]", label)
+            or (re.search(r"(?i)^IR\(N", label) and re.search(r"(?i)\blive\b", label))
+        ):
             continue
         if not re.search(r"(?i)\blive\b|IR\(N", line):
             continue
@@ -341,9 +352,83 @@ def register_floor_coverage(field_witness: dict[str, Any], terminals: dict[str, 
     return coverage_by_register
 
 
+def diagnostic_completeness_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    live_registers: list[str],
+    register_coverage: dict[str, list[str]],
+    strict: bool,
+) -> list[str]:
+    if not live_registers:
+        return []
+    prefix = f"{rel(path)}: "
+    cov = coverage(field_witness)
+    raw = cov.get("diagnostic_completeness")
+    if raw is None:
+        if strict:
+            return [prefix + "coverage_proof.diagnostic_completeness missing for live register proof"]
+        return []
+    if not isinstance(raw, dict):
+        return [prefix + "coverage_proof.diagnostic_completeness must be an object"]
+
+    claimed_live = []
+    for value in list_values(raw.get("live_registers")):
+        register = canonical_register(value)
+        if register in REGISTER_BURDEN_KEYWORDS and register not in claimed_live:
+            claimed_live.append(register)
+    if set(claimed_live) != set(live_registers):
+        return [
+            prefix
+            + f"coverage_proof.diagnostic_completeness.live_registers {claimed_live} must cover exactly Layer A live registers {live_registers}"
+        ]
+
+    raw_coverage = raw.get("coverage") or raw.get("coverage_mapping") or raw.get("register_coverage")
+    if not isinstance(raw_coverage, dict):
+        return [prefix + "coverage_proof.diagnostic_completeness.coverage mapping missing"]
+
+    errors: list[str] = []
+    ledgers = field_witness_ledger(field_witness)
+    floor = set(ledgers["B_LA"] or ledgers["B_total"])
+    for register in live_registers:
+        key_candidates = [register] + [
+            alias for alias, mapped in REGISTER_ALIASES.items() if mapped == register
+        ]
+        raw_burdens: Any = None
+        for key in key_candidates:
+            if key in raw_coverage:
+                raw_burdens = raw_coverage[key]
+                break
+        claimed_burdens = unique(
+            normalize_burden_id(str(item))
+            for item in list_values(raw_burdens)
+            if BURDEN_ID_RE.fullmatch(normalize_burden_id(str(item)))
+        )
+        if not claimed_burdens:
+            errors.append(prefix + f"diagnostic_completeness omits live register {register} coverage")
+            continue
+        for burden in claimed_burdens:
+            if burden not in floor:
+                errors.append(prefix + f"diagnostic_completeness maps live register {register} to non-floor burden {burden}")
+            if burden not in register_coverage.get(register, []):
+                errors.append(prefix + f"diagnostic_completeness maps live register {register} to burden {burden} without matching burden type")
+    if raw.get("complete") is False:
+        errors.append(prefix + "diagnostic_completeness.complete=false cannot support complete register floor")
+    return errors
+
+
 def coverage(field_witness: dict[str, Any]) -> dict[str, Any]:
     value = field_witness.get("coverage_proof")
     return value if isinstance(value, dict) else {}
+
+
+def int_value(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and re.fullmatch(r"\d+", value.strip()):
+        return int(value.strip())
+    return None
 
 
 def normalize_edges(raw_edges: Any) -> list[tuple[str, str]]:
@@ -505,6 +590,133 @@ def generated_burden_sources(field_witness: dict[str, Any]) -> dict[str, str]:
     return sources
 
 
+def generated_burden_records(field_witness: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    records: dict[str, dict[str, Any]] = {}
+    raw = field_witness.get("generated_burdens")
+    if isinstance(raw, dict):
+        for raw_burden, raw_payload in raw.items():
+            burden = normalize_burden_id(str(raw_burden))
+            if not BURDEN_ID_RE.fullmatch(burden):
+                continue
+            payload = raw_payload if isinstance(raw_payload, dict) else {"generated_by": raw_payload}
+            records[burden] = {
+                "source": generated_source(payload.get("generated_by")),
+                "depth": int_value(payload.get("generation_depth")),
+                "has_depth": "generation_depth" in payload,
+            }
+    elif isinstance(raw, list):
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            raw_burden = item.get("id") or item.get("burden") or item.get("target")
+            burden = normalize_burden_id(str(raw_burden or ""))
+            if not BURDEN_ID_RE.fullmatch(burden):
+                continue
+            records[burden] = {
+                "source": generated_source(item.get("generated_by")),
+                "depth": int_value(item.get("generation_depth")),
+                "has_depth": "generation_depth" in item,
+            }
+
+    raw_nodes = field_witness.get("nodes")
+    if isinstance(raw_nodes, list):
+        for item in raw_nodes:
+            if not isinstance(item, dict):
+                continue
+            burden = normalize_burden_id(str(item.get("id") or ""))
+            if not BURDEN_ID_RE.fullmatch(burden):
+                continue
+            if str(item.get("type") or "").strip() != "generated_burden" and "generated_by" not in item:
+                continue
+            record = records.setdefault(burden, {"source": "", "depth": None, "has_depth": False})
+            source = generated_source(item.get("generated_by"))
+            if source and not record.get("source"):
+                record["source"] = source
+            if "generation_depth" in item:
+                node_depth = int_value(item.get("generation_depth"))
+                if record.get("depth") is None:
+                    record["depth"] = node_depth
+                record["has_depth"] = True
+    return records
+
+
+def depth_contract_required(path: Path, field_witness: dict[str, Any]) -> bool:
+    try:
+        if path.resolve().is_relative_to(FIXTURE_ROOT.resolve()):
+            return True
+    except AttributeError:
+        try:
+            path.resolve().relative_to(FIXTURE_ROOT.resolve())
+            return True
+        except ValueError:
+            pass
+    cov = coverage(field_witness)
+    if "max_generation_depth" in cov:
+        return True
+    return any(record.get("has_depth") for record in generated_burden_records(field_witness).values())
+
+
+def generation_depth_errors(path: Path, field_witness: dict[str, Any], strict: bool) -> list[str]:
+    errors: list[str] = []
+    prefix = f"{rel(path)}: "
+    ledgers = field_witness_ledger(field_witness)
+    records = generated_burden_records(field_witness)
+    cov = coverage(field_witness)
+    depth_by_burden: dict[str, int] = {burden: 0 for burden in ledgers["B_LA"]}
+    concrete_depths: list[int] = [0]
+
+    for burden in ledgers["B_MRP"]:
+        record = records.get(burden)
+        if record is None:
+            if strict:
+                errors.append(prefix + f"B_MRP burden {burden} lacks generated_burdens generation_depth record")
+            continue
+        if not record.get("has_depth"):
+            if strict:
+                errors.append(prefix + f"B_MRP burden {burden} lacks generation_depth")
+            continue
+        depth = record.get("depth")
+        if depth is None:
+            errors.append(prefix + f"B_MRP burden {burden} generation_depth must be a non-negative integer")
+            continue
+        depth_by_burden[burden] = depth
+        concrete_depths.append(depth)
+
+    for burden in ledgers["B_MRP"]:
+        record = records.get(burden)
+        if not record or record.get("depth") is None:
+            continue
+        source = str(record.get("source") or "")
+        if not source:
+            continue
+        parent_depth = depth_by_burden.get(source)
+        if parent_depth is None:
+            parent_depth = 0 if source in ledgers["B_LA"] else None
+        if parent_depth is None:
+            continue
+        child_depth = int(record["depth"])
+        if child_depth <= parent_depth:
+            errors.append(
+                prefix + f"B_MRP burden {burden} generation_depth {child_depth} must be greater than parent {source} depth {parent_depth}"
+            )
+
+    max_depth_value = cov.get("max_generation_depth")
+    if strict and "max_generation_depth" not in cov:
+        errors.append(prefix + "coverage_proof.max_generation_depth missing")
+        return errors
+    if "max_generation_depth" in cov:
+        max_depth = int_value(max_depth_value)
+        if max_depth is None:
+            errors.append(prefix + "coverage_proof.max_generation_depth must be a non-negative integer")
+        else:
+            expected = max(concrete_depths)
+            if max_depth != expected:
+                errors.append(
+                    prefix + f"coverage_proof.max_generation_depth {max_depth} does not match generated burden max depth {expected}"
+                )
+    return errors
+
+
 def resultant_has_edge(resultant: dict[str, str], source: str, target: str) -> bool:
     graph = str(resultant.get("graph") or "")
     normalized = graph.replace("→", "->").replace(" ", "")
@@ -543,6 +755,214 @@ def owner_activation_targets(field_witness: dict[str, Any]) -> set[str]:
         if BURDEN_ID_RE.fullmatch(target):
             targets.add(target)
     return targets
+
+
+def normalized_record_required(path: Path, field_witness: dict[str, Any]) -> bool:
+    valid_root = FIXTURE_ROOT / "valid"
+    try:
+        if path.resolve().is_relative_to(valid_root.resolve()):
+            return True
+    except AttributeError:
+        try:
+            path.resolve().relative_to(valid_root.resolve())
+            return True
+        except ValueError:
+            pass
+    return "normalized_activation_record" in field_witness
+
+
+def normalized_free_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip()).lower()
+
+
+def delta_result_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if ":" in text:
+        return normalized_free_text(text.split(":", 1)[1])
+    text = text.replace("¹", "1").replace("²", "2").replace("³", "3")
+    patterns = [
+        r"(?i)^\s*(?:delta|δ|Δ)\s*\(\s*B\s*\d+\s*\)\s*:?\s*",
+        r"(?i)^\s*(?:delta|δ|Δ)\s+B\s*\d+\s*:?\s*",
+        r"(?i)^\s*(?:delta|δ|Δ)\s*B?\s*\d+\s*:?\s*",
+        r"(?i)^\s*(?:delta|δ|Δ)\s*(?:κ|kappa)\s*:?\s*",
+    ]
+    for pattern in patterns:
+        stripped = re.sub(pattern, "", text, count=1)
+        if stripped != text:
+            return normalized_free_text(stripped)
+    return normalized_free_text(text)
+
+
+def owner_activation_records_by_target(field_witness: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
+    records: dict[str, list[dict[str, str]]] = {}
+    raw = field_witness.get("owner_activations")
+    if not isinstance(raw, list):
+        return records
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        target = normalize_burden_id(str(item.get("target") or ""))
+        if not BURDEN_ID_RE.fullmatch(target):
+            continue
+        records.setdefault(target, []).append(
+            {
+                "owner": normalized_free_text(item.get("owner")),
+                "operation": normalized_free_text(item.get("operation")),
+                "delta_result": delta_result_text(item.get("delta")),
+            }
+        )
+    return records
+
+
+def mrp_route_types_by_burden(resultants: list[dict[str, str]]) -> dict[str, set[str]]:
+    route_types: dict[str, set[str]] = {}
+    for resultant in resultants:
+        route_type = str(resultant.get("type") or "").strip()
+        if not route_type:
+            continue
+        source = normalize_burden_id(str(resultant.get("source") or ""))
+        if BURDEN_ID_RE.fullmatch(source):
+            route_types.setdefault(source, set()).add(route_type)
+        for _edge_source, target in resultant_edges(resultant):
+            route_types.setdefault(target, set()).add(route_type)
+    return route_types
+
+
+def normalized_activation_record_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    live_registers: list[str],
+    strict: bool,
+) -> list[str]:
+    prefix = f"{rel(path)}: "
+    raw = field_witness.get("normalized_activation_record")
+    if raw is None:
+        if strict:
+            return [prefix + "field_witness.normalized_activation_record missing"]
+        return []
+    if not isinstance(raw, dict):
+        return [prefix + "field_witness.normalized_activation_record must be an object"]
+
+    errors: list[str] = []
+    ledgers = field_witness_ledger(field_witness)
+    terminals = terminal_payloads(field_witness)
+    activations_by_target = owner_activation_records_by_target(field_witness)
+    resultants = field_witness_mrp_resultants(field_witness)
+    route_types_by_burden = mrp_route_types_by_burden(resultants)
+    generated_records = generated_burden_records(field_witness)
+    expected_depths: dict[str, int] = {burden: 0 for burden in ledgers["B_LA"]}
+    for burden, record in generated_records.items():
+        depth = record.get("depth")
+        if isinstance(depth, int):
+            expected_depths[burden] = depth
+
+    if not str(raw.get("n_frame") or "").strip():
+        errors.append(prefix + "normalized_activation_record.n_frame missing")
+
+    if live_registers:
+        claimed_live = []
+        for value in list_values(raw.get("live_registers")):
+            register = canonical_register(value)
+            if register in REGISTER_BURDEN_KEYWORDS and register not in claimed_live:
+                claimed_live.append(register)
+        if set(claimed_live) != set(live_registers):
+            errors.append(
+                prefix
+                + f"normalized_activation_record.live_registers {claimed_live} must match Layer A live registers {live_registers}"
+            )
+
+    claimed_floor = [
+        normalize_burden_id(str(item))
+        for item in list_values(raw.get("burden_floor"))
+        if BURDEN_ID_RE.fullmatch(normalize_burden_id(str(item)))
+    ]
+    if claimed_floor != ledgers["B_LA"]:
+        errors.append(
+            prefix + f"normalized_activation_record.burden_floor {claimed_floor} must equal field_witness B_LA {ledgers['B_LA']}"
+        )
+
+    per_burden = raw.get("per_burden")
+    if not isinstance(per_burden, list):
+        errors.append(prefix + "normalized_activation_record.per_burden must be a list")
+        return errors
+
+    seen_burdens: set[str] = set()
+    seen_signatures: set[tuple[str, str, str, str]] = set()
+    expected_signatures = {
+        (burden, activation["owner"], activation["operation"], activation["delta_result"])
+        for burden, activations in activations_by_target.items()
+        for activation in activations
+        if burden in ledgers["B_total"]
+    }
+    for index, item in enumerate(per_burden):
+        if not isinstance(item, dict):
+            errors.append(prefix + f"normalized_activation_record.per_burden[{index}] must be an object")
+            continue
+        burden = normalize_burden_id(str(item.get("burden_id") or item.get("id") or item.get("burden") or ""))
+        if not BURDEN_ID_RE.fullmatch(burden):
+            errors.append(prefix + f"normalized_activation_record.per_burden[{index}] burden_id invalid")
+            continue
+        seen_burdens.add(burden)
+        if burden not in ledgers["B_total"]:
+            errors.append(prefix + f"normalized_activation_record.per_burden names {burden} outside B_total")
+
+        matching_activations = activations_by_target.get(burden, [])
+        owner = normalized_free_text(item.get("owner_id") or item.get("owner"))
+        if not owner:
+            errors.append(prefix + f"normalized_activation_record[{burden}].owner_id missing")
+        elif matching_activations and owner not in {activation["owner"] for activation in matching_activations}:
+            errors.append(prefix + f"normalized_activation_record[{burden}].owner_id does not match owner_activations")
+
+        operation = normalized_free_text(item.get("operation") or item.get("operation_family"))
+        if not operation:
+            errors.append(prefix + f"normalized_activation_record[{burden}].operation missing")
+        elif matching_activations and operation not in {activation["operation"] for activation in matching_activations}:
+            errors.append(prefix + f"normalized_activation_record[{burden}].operation does not match owner_activations")
+
+        delta_result = normalized_free_text(item.get("delta_result"))
+        if not delta_result:
+            errors.append(prefix + f"normalized_activation_record[{burden}].delta_result missing")
+        elif matching_activations and delta_result not in {activation["delta_result"] for activation in matching_activations}:
+            errors.append(prefix + f"normalized_activation_record[{burden}].delta_result does not match owner_activations")
+
+        signature = (burden, owner, operation, delta_result)
+        if all(signature):
+            if signature in seen_signatures:
+                errors.append(prefix + f"normalized_activation_record.per_burden duplicates activation {burden}/{owner}/{operation}/{delta_result}")
+            seen_signatures.add(signature)
+            if matching_activations and signature not in expected_signatures:
+                errors.append(prefix + f"normalized_activation_record[{burden}] row does not match any owner_activations row")
+
+        route_type = str(item.get("mrp_route_result_type") or item.get("route_result_type") or "").strip()
+        if not route_type:
+            errors.append(prefix + f"normalized_activation_record[{burden}].mrp_route_result_type missing")
+        elif route_types_by_burden.get(burden) and route_type not in route_types_by_burden[burden]:
+            errors.append(prefix + f"normalized_activation_record[{burden}].mrp_route_result_type does not match MRP resultants")
+
+        terminal_state = str(item.get("terminal_state") or "").strip()
+        expected_terminal = terminals.get(burden, {}).get("state", "")
+        if not terminal_state:
+            errors.append(prefix + f"normalized_activation_record[{burden}].terminal_state missing")
+        elif expected_terminal and terminal_state != expected_terminal:
+            errors.append(prefix + f"normalized_activation_record[{burden}].terminal_state does not match terminal_states")
+
+        depth = int_value(item.get("generation_depth"))
+        if depth is None:
+            errors.append(prefix + f"normalized_activation_record[{burden}].generation_depth must be a non-negative integer")
+        elif burden in expected_depths and depth != expected_depths[burden]:
+            errors.append(prefix + f"normalized_activation_record[{burden}].generation_depth does not match generated_burdens/B_LA depth")
+
+    missing = [burden for burden in ledgers["B_total"] if burden not in seen_burdens]
+    extra = [burden for burden in seen_burdens if burden not in ledgers["B_total"]]
+    if missing:
+        errors.append(prefix + f"normalized_activation_record.per_burden missing B_total burdens {missing}")
+    if extra:
+        errors.append(prefix + f"normalized_activation_record.per_burden has burdens outside B_total {extra}")
+    missing_activations = sorted(expected_signatures - seen_signatures)
+    if missing_activations:
+        formatted = ["/".join(signature) for signature in missing_activations]
+        errors.append(prefix + f"normalized_activation_record.per_burden missing owner_activations rows {formatted}")
+    return errors
 
 
 def root_burden_node_ids(field_witness: dict[str, Any]) -> list[str]:
@@ -615,6 +1035,15 @@ def convergence_errors(path: Path, text: str) -> list[str]:
 
     live_registers = live_register_obligations(text)
     register_coverage = register_floor_coverage(field_witness, terminals)
+    errors.extend(
+        diagnostic_completeness_errors(
+            path,
+            field_witness,
+            live_registers,
+            register_coverage,
+            strict=path.resolve().is_relative_to(FIXTURE_ROOT.resolve()) if hasattr(Path, "is_relative_to") else False,
+        )
+    )
     for register in live_registers:
         covered = register_coverage.get(register, [])
         if covered or non_load_bearing_register_proof(text, register):
@@ -624,7 +1053,16 @@ def convergence_errors(path: Path, text: str) -> list[str]:
         )
 
     generated_sources = generated_burden_sources(field_witness)
+    errors.extend(generation_depth_errors(path, field_witness, strict=depth_contract_required(path, field_witness)))
     resultants = field_witness_mrp_resultants(field_witness)
+    errors.extend(
+        normalized_activation_record_errors(
+            path,
+            field_witness,
+            live_registers,
+            strict=normalized_record_required(path, field_witness),
+        )
+    )
     for index, resultant in enumerate(resultants):
         result_type = str(resultant.get("type") or "").strip()
         if result_type in EDGE_REQUIRING_RESULTANT_TYPES and not resultant_edges(resultant):

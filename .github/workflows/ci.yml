@@ -23,6 +23,7 @@ jobs:
           python tools/build_compiled_runtime.py
           python tools/build_docs_index.py --check
           python tools/check_compiled_runtime_freshness.py
+          python tools/check_compiled_skill_self_contained.py
           python tools/check_level3_data_shapes.py --include-generated
           python tools/check_package_shape.py
           python tools/check_compiled_module_boundaries.py
@@ -40,6 +41,11 @@ jobs:
           python tools/check_metacompliance_current_canon.py
           python tools/check_register_formalism_bridge.py
           python tools/check_reconstructibility_and_mrp.py
+          python tools/check_manual_smoke_render_contract.py
+          python tools/check_collapse_certificate_schema.py
+          python tools/check_graph_completeness.py
+          python tools/check_hard_smoke_manifest.py
+          python tools/check_retained_proof_corpus.py
           python tools/check_closure_witness_graph.py --input tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md --field-witness tests/live-witness-fixtures/valid/closure-witness-dependency-graph.field_witness.json
           python tools/check_mid_reread_pressure.py
           python tools/check_mrp_generated_burden.py

@@ -1,0 +1,101 @@
+{
+  "contract_version": "0.4.3.0",
+  "policy_id": "diagnostic-ir-delta-result-vocabulary-v1",
+  "description": "Source-owned owner-local delta_result suffix vocabulary for governed ACT and normalized_activation_record emission.",
+  "owner_aliases": {
+    "authority-order-repair": "SOURCE",
+    "do-christian-extensions": "DO_CHRISTIAN",
+    "doubt-vs-skepticism": "DOUBT_SKEPTICISM",
+    "LoopBreak": "LOOPBREAK",
+    "source-status-repair": "SOURCE"
+  },
+  "owner_families": {
+    "M1": [
+      "self-authorizing-standard-invalidated",
+      "internal-contradiction-exposed",
+      "criterion-self-failed",
+      "self-authorizing-falsifiability-standard-invalidated"
+    ],
+    "M1-P": [
+      "performative-contradiction-exposed",
+      "speech-act-presupposition-named"
+    ],
+    "M3": [
+      "orphaned-intuition-identified",
+      "grounding-severed",
+      "normativity-restored-to-ground"
+    ],
+    "M7": [
+      "definition-anchored",
+      "semantic-anchor-stabilized",
+      "term-meaning-bounded",
+      "falsifiability-standard-defined"
+    ],
+    "M8": [
+      "consequence-traced",
+      "implication-demoted",
+      "mechanism-totality-demoted",
+      "entailment-blocked",
+      "dependency-exposed",
+      "coercive-clarity-entailment-demoted",
+      "finite-answer-evasion-claim-invalidated",
+      "total-veto-consequence-demoted"
+    ],
+    "M9": [
+      "predicate-separated",
+      "category-separated",
+      "referent-separated",
+      "person-nature-transfer-blocked",
+      "sense-separated"
+    ],
+    "FPD": [
+      "hidden-tribunal-blocked",
+      "imported-criterion-blocked",
+      "foreign-premise-exposed",
+      "smuggled-support-blocked",
+      "imported-control-criterion-blocked"
+    ],
+    "SOURCE": [
+      "source-order-repaired",
+      "hidden-support-blocked",
+      "science-source-bounded",
+      "proof-text-sorted",
+      "authority-order-repaired",
+      "proof-text-hidden-support-blocked",
+      "authority-order-separated",
+      "hidden-authority-source-status-bounded"
+    ],
+    "P1": [
+      "fitrah-reorientation-restored",
+      "tawhid-orientation-restored",
+      "sound-worship-frame-returned",
+      "fitrah-orientation-restored"
+    ],
+    "P3": [
+      "reason-revelation-order-stabilized"
+    ],
+    "P7": [
+      "scope-boundary-named",
+      "stop-condition-defined",
+      "held-route-bounded",
+      "reopen-condition-stated",
+      "personal-hiddenness-held-with-reason",
+      "reopen-boundary-licensed",
+      "shubhah-boundary-routed"
+    ],
+    "LOOPBREAK": [
+      "circular-dependency-broken",
+      "loop-grounded-in-owner-source"
+    ],
+    "DO_CHRISTIAN": [
+      "trinitarian-model-identified",
+      "fan-out-route-named"
+    ],
+    "DOUBT_SKEPTICISM": [
+      "doubt-distinguished-from-skeptical-methodology",
+      "burden-inverted",
+      "evidence-demand-tribunal-exposed",
+      "doubt-method-separated-from-sincere-question"
+    ]
+  }
+}

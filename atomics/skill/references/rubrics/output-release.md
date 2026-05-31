@@ -196,6 +196,10 @@ positive orientation, fitrah/tawhid direction, humane reorientation, or a return
 source-owned frame; other catalogue owners
 perform their own source-owned mechanism. Use `Result/state-change:` for high-mass submoves; that
 field and `Contribution-to-Land(...)` must record concrete state changes, not vague conclusion labels.
+For strict governed ACT/NAR rows, avoid `reopen-condition-stated` as the sole P7 delta result for a
+landed routed burden; use `reopen-boundary-licensed`, `held-route-bounded`, or
+`stop-condition-defined` so the state change is machine-visible while the body still names the
+reopen condition.
 High-mass or generated `TTP Operation Body:` sections need information-preserving operation mass
 before claiming `Land(...)`. The proof is owner-specific reconstructibility, not word count: the
 submove must preserve enough information to recover the targeted pressure, the selected owner/TTP,
@@ -728,6 +732,8 @@ no headline-only answer, skipped internal sub-burdens, generic prose substitute,
 Land(B) is supported by owner-specific operation and cumulative-state delta
 Restorative Response appears once after the final state/noetic re-read and releases no held downstream burden
 Restorative Response identifies restored order, restored criterion/source/warrant placement, relieved deformation/concealment, and what remains held
+If `𝔅_MRP` / `B_MRP` is non-empty, Restorative Response reflects every generated MRP pressure label that appears in generated-burden owner activations or generated-burden records; it may paraphrase those labels as public claim/framing/anticipatory language, but it must not leave generated pressures only in MRP resultants, Closure/Reconstruction Witness, or `field_witness`
+Graphable closure/collapse-positive output must make Restorative Response or Closing Formulation visibly carry both a fitrah/fiṭrah/tawhid/N_fiṭrī orientation term and a sound reason/ʿaql ṣarīḥ term
 Closing Formulation appears once at the end after Restorative Response
 Closing Formulation does not substitute for state/noetic re-read or self-close each burden
 Closing Formulation is practitioner-usable in hard/high-mass output: it names the established
@@ -809,6 +815,9 @@ return to sound source-owned frame. Conclusion-shaped lines such as "bounded
 refutation need not exhaust the whole system" or "held material remains held" are not enough unless
 they also perform the owner-specific operation, produce a recoverable state-change, and connect that
 change to the landing and scoped STOP/PARTIAL route.
+For strict governed ACT/NAR rows, avoid `reopen-condition-stated` as the sole P7 delta result for a
+landed routed burden; prefer `reopen-boundary-licensed`, `held-route-bounded`, or
+`stop-condition-defined`.
 For each high-mass submove, verify reconstructibility before release: target pressure identifiable;
 owner/TTP operation identifiable; operation visibly performed rather than merely named; burden-local
 state delta/result visible; Contribution-to-Land explains why the delta licenses `Land(...)`; and
@@ -851,6 +860,29 @@ burden IDs; `B_MRP` contains only generated post-Land burden IDs; `B_total` equa
 by `B_MRP`. Never place generated burdens in `B_LA`, omit generated burdens from `B_MRP`, or let the
 visible witness and field_witness disagree on the ledger split. It is not a substitute for the public
 Closure/Reconstruction Witness, Restorative Response, or Closing Formulation.
+For every terminal `STOP` / `no_new_resultant` row mirrored in `formal_reread_states[]`, include
+`no_new_resultant_proof` in that same row. Its `escape_routes_checked` field is a list of eight
+objects with `type`, boolean `live`, and `basis`, using exactly these types:
+`closure-boundary-immunity`, `proof-carousel`, `total-system-exhaustion`, `doubt-churn`,
+`moral-tribunal`, `authority-order-recoil`, `hidden-framework-recoil`, and
+`restoration-recoil`. The `restoration-recoil` object also carries canonical `subtype` such as
+`scope-protest`. The proof records `field_state_at_stop` (`divergence: neutral`,
+`curl: null|resolved`, literal string `b_live: "empty"`, `kappa_residual: 0`) and
+`stop_licensed: true`. If a
+checked route is still live, STOP is not licensed unless the row accounts for it as generated,
+held, HOLD, PARTIAL, RECURSE, LoopBreak, or non-load-bearing. Do not treat impressive terminal
+prose as a substitute for the proof object in capstone/governed proof output.
+For non-terminal generated or held route rows, `formal_reread_states[].escape_routes_checked[]`
+uses the same typed-object discipline: each live object has `type`, boolean `live`,
+`disposition`, `target_burden` when a concrete burden is generated or released, and `basis`.
+Use the disposition vocabulary for the escape-route object, not the MRP route-result-type
+vocabulary: `held` for a live route into an already inventoried `B_LA` / held burden,
+`generated-burden-instantiation` for a live route into a newly generated `B_MRP` burden,
+or `hold`, `partial`, `recurse`, `loopbreak`, `landed`, `non-load-bearing`, or
+`non-load-bearing-proof` as applicable. Do not write `held_burden_activation` or
+`generated_burden_instantiation` in `escape_routes_checked[].disposition`; those underscore
+tokens remain `MRP route result type` / `mrp_resultants[].type` values. Do not omit `live`; use
+`true` for generated/held pressure that licenses the route.
 Visible release ledgers must write `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP`; do not print `+` as the
 visible relation. Ordered concatenation belongs only to the machine `B_total` array. Near-misses
 such as `B_total = B_LA union B_MRP`, `B_total = B_LA ∪ B_MRP` without the canonical
@@ -865,6 +897,10 @@ includes an `Owner activations:` ledger repeating compact ACT records, and
 `field_witness.owner_activations[]` carries parser-stable `source`, `owner`, `operation`,
 `pressure`, `body_ref`, `delta`, `land`, and `ordering_role` fields. `parallel` and
 `optional_non_load_bearing` entries carry `ordering_group`; `contingent` entries carry `trigger`.
+Use `parallel` only for order-independent activations from two or more distinct owner families on
+the same target. If the same owner family performs multiple ACT rows on one burden, do not encode
+those duplicate-owner rows as a parallel group; keep a stable required ACT order or collapse them
+into one owner activation when one operation lands both pressures.
 The mirror only verifies agreement with the
 dereferenced Layer B operation body; it is not a graph source and cannot substitute for owner
 execution, state delta, or Contribution-to-Land.
@@ -877,9 +913,42 @@ is not release-proof witness agreement.
 `field_witness` is parser-stable JSON, not a prose summary. In normal governed output it should
 use top-level keys `B_LA`, `B_MRP`, `B_total`, `nodes`, `edges`, `generated_burdens`,
 `mrp_resultants`, `reread_records`, `field_diagnostics`, `terminal_states`, `closure`,
-`T_lang`, `non_claims`, and `coverage_proof`. `coverage_proof` carries `initial_burden_set`,
-`terminal_states`, and a `dependency_graph` object with `nodes`, `edges`, `roots`, and
-`acyclic`. Missing parser-stable MRP resultants, terminal states, generated-by provenance, or
+`T_lang`, `non_claims`, `owner_activations`, `owner_activation_ordering`,
+`normalized_activation_record`, and `coverage_proof`. `coverage_proof` carries
+`initial_burden_set`, `terminal_states`, and a `dependency_graph` object with `nodes`, `edges`,
+`roots`, and `acyclic`.
+`field_witness.normalized_activation_record` is the prose-stripped structural comparison surface for
+repeated-run proof. It records `n_frame`, `live_registers`, `burden_floor`, and `per_burden[]`
+rows with `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`,
+`terminal_state`, and `generation_depth`. It is not proof by itself and must agree with visible
+ACT rows, `owner_activations[]`, MRP resultants, terminal states, generated-burden depth, and the
+burden ledgers. `burden_floor` is a string list of B IDs only. `per_burden[]` is ACT-level despite
+its historical name: emit one row for every visible ACT / `field_witness.owner_activations[]`
+object, including multiple rows with the same `burden_id` when several owners land one burden. When
+`live_registers` is claimed in this record, Layer A must print an explicit `live registers: [...]`
+line with the same register set. `n_frame` is a stable kebab-case frame token selected by
+Diagnostic IR, not prose. For the narrow science-only source-order warrant frame, use exactly
+`science-only-source-order-warrant`. If the input says scientific explanation, empirical method, or
+scientific authority is the only knowledge source/criterion, the source-order gate is
+structurally live: execute `source-status-repair.source-order` before `M1.self-grounding-test` on
+the same burden and record `required_before: source-status-repair -> M1`, unless Layer A explicitly
+proves source-order non-load-bearing with a reason. For that science-only source-order canary, use
+exact pressure labels: `scientific-explanations-only-knowledge-source` for the source-status ACT and
+`only-science-counts-standard` for the M1 ACT. Use simple terminal-state maps in machine fields:
+`"terminal_states": {"B1": "landed"}` in both `field_witness` and `coverage_proof`.
+Use the exact Layer A concealment boundary
+`Concealment mode: sincere clarification/shubhah pressure path; boundary: diagnostic noetic covering only; no hidden soul-state or takfir judgment.`
+Do not label this narrow frame `mixed` unless at least two dominant source-owned refusal components
+are explicitly diagnosed and named.
+Machine-facing
+`field_witness.terminal_states` and `coverage_proof.terminal_states` are objects/maps keyed by `B`
+id, not arrays of terminal objects. In NAR, `delta_result` is the suffix token only, such as
+`science-source-bounded` or `self-authorizing-standard-invalidated`; do not include `Δ¹B:`,
+`Delta(B1):`, or any other burden-local prefix in
+`normalized_activation_record.per_burden[].delta_result`. Use only owner-local suffixes from
+`references/diagnostics/delta-result-vocabulary.json`
+(`diagnostic-ir-delta-result-vocabulary-v1`) for owner families listed there.
+Missing parser-stable MRP resultants, terminal states, generated-by provenance, or
 coverage proof means the output is not graphable by the current Output Grapher.
 Each `mrp_resultants` item carries a `source` key naming the landed burden (`"B1"`, not only
 `"target"` or `"id": "MRP(B1)"`) so the sidecar and visible witness compare without inference.

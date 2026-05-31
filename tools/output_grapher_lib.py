@@ -1122,15 +1122,68 @@ def result_summary(result: ParseResult) -> dict[str, Any]:
     }
 
 
-def graph_html(result: ParseResult, title: str = "Output Collapse Grapher Result") -> str:
+def certificate_html(collapse_certificate: dict[str, Any] | None) -> str:
+    if not collapse_certificate:
+        return ""
+    fields = [
+        ("collapse_positive", collapse_certificate.get("collapse_positive")),
+        ("coverage_complete", collapse_certificate.get("coverage_complete")),
+        ("diagnostic_completeness", collapse_certificate.get("diagnostic_completeness")),
+        ("divergence_state", collapse_certificate.get("divergence_state")),
+        ("curl_state", collapse_certificate.get("curl_state")),
+        ("max_generation_depth", collapse_certificate.get("max_generation_depth")),
+        ("restoration_endpoint_reached", collapse_certificate.get("restoration_endpoint_reached")),
+        ("input_fingerprint", collapse_certificate.get("input_fingerprint")),
+        ("verified_activations", ", ".join(str(item) for item in collapse_certificate.get("verified_activations", []))),
+        ("checker_version", collapse_certificate.get("checker_version")),
+    ]
+    rows = "\n".join(
+        f"<tr><td>{html.escape(label)}</td><td>{html.escape(str(value))}</td></tr>"
+        for label, value in fields
+        if value not in (None, "")
+    )
+    return (
+        "<section class=\"certificate-panel\">"
+        "<h2>Collapse Certificate</h2>"
+        "<p>Certificate-backed mode cross-checks this B.2 certificate against the output and raw input; graph reconstruction alone is not treated as proof.</p>"
+        f"<table><tbody>{rows}</tbody></table>"
+        "</section>"
+    )
+
+
+def certificate_svg_badge(collapse_certificate: dict[str, Any] | None, width: int) -> str:
+    if not collapse_certificate:
+        return ""
+    status = "positive" if collapse_certificate.get("collapse_positive") is True else "not positive"
+    coverage = "coverage=true" if collapse_certificate.get("coverage_complete") is True else "coverage=false"
+    divergence = str(collapse_certificate.get("divergence_state") or "unknown")
+    curl = str(collapse_certificate.get("curl_state") or "unknown")
+    fingerprint = str(collapse_certificate.get("input_fingerprint") or "")
+    short_fingerprint = fingerprint[:12] if fingerprint else "unbound"
+    x = max(760, width - 570)
+    return (
+        '<g id="collapse-certificate-badge">'
+        f'<rect x="{x}" y="20" width="535" height="58" rx="10" fill="#0f172a" stroke="#22c55e" stroke-width="1.4"/>'
+        f'<text x="{x + 14}" y="43" fill="#dcfce7" font-size="14" font-weight="700">Collapse Certificate: {html.escape(status)} / {html.escape(coverage)}</text>'
+        f'<text x="{x + 14}" y="65" fill="#bae6fd" font-size="11">∇·B={html.escape(divergence)}; ∇×κ={html.escape(curl)}; input={html.escape(short_fingerprint)}</text>'
+        "</g>"
+    )
+
+
+def graph_html(
+    result: ParseResult,
+    title: str = "Output Collapse Grapher Result",
+    collapse_certificate: dict[str, Any] | None = None,
+) -> str:
     nodes = list(result.nodes.values())
     positions: dict[str, tuple[int, int]] = {}
     width = 1390
     node_width = 170
     row_height = 72
     lane_gap = 46
-    positions["input"] = (30, 40)
-    y = 40
+    y_start = 116 if collapse_certificate else 40
+    positions["input"] = (30, y_start)
+    y = y_start
     burden_ids = result.burdens or [node.id for node in nodes if node.kind == "burden"]
     for burden in burden_ids:
         submoves = result.submoves.get(burden, [])
@@ -1201,18 +1254,22 @@ def graph_html(result: ParseResult, title: str = "Output Collapse Grapher Result
     validation_rows = "\n".join(f"<li class='error'>{html.escape(item)}</li>" for item in result.errors) or "<li>No hard errors.</li>"
     warning_rows = "\n".join(f"<li class='warn'>{html.escape(item)}</li>" for item in result.warnings + result.visible_vs_field_witness) or "<li>No warnings.</li>"
     verdict = "reconstructible" if result.reconstructible else "not reconstructible"
+    certificate_panel = certificate_html(collapse_certificate)
+    certificate_badge = certificate_svg_badge(collapse_certificate, width)
     return f"""<!doctype html>
 <html lang="en"><meta charset="utf-8"><title>{html.escape(title)}</title>
 <style>
 body{{font-family:system-ui,Segoe UI,sans-serif;background:#0b1020;color:#e5e7eb;margin:24px}}
 svg{{max-width:100%;background:#050914;border:1px solid #334155;border-radius:12px}}
 table{{width:100%;border-collapse:collapse;margin:14px 0}}td,th{{border:1px solid #334155;padding:6px;vertical-align:top}}th{{background:#111827}}
-.error{{color:#fecaca}}.warn{{color:#fde68a}}.summary{{display:flex;gap:10px;flex-wrap:wrap}}.pill{{border:1px solid #334155;border-radius:999px;padding:6px 10px;background:#111827}}
+.error{{color:#fecaca}}.warn{{color:#fde68a}}.summary{{display:flex;gap:10px;flex-wrap:wrap}}.pill{{border:1px solid #334155;border-radius:999px;padding:6px 10px;background:#111827}}.certificate-panel{{border:1px solid #166534;background:#07130c;border-radius:12px;padding:14px;margin:14px 0}}.certificate-panel h2{{margin-top:0;color:#bbf7d0}}
 </style>
 <h1>{html.escape(title)}</h1>
 <div class="summary"><span class="pill">Verdict: {verdict}</span><span class="pill">Burdens: {len(result.burdens)}</span><span class="pill">Submoves: {sum(len(v) for v in result.submoves.values())}</span><span class="pill">MRP: {len(result.mrp)}</span></div>
+{certificate_panel}
 <svg viewBox="0 0 {width} {height}" role="img" aria-label="Output collapse graph">
 <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>
+{certificate_badge}
 {''.join(edge_lines)}
 {''.join(node_lines)}
 </svg>

@@ -27,6 +27,7 @@ from check_mrp_generated_burden import (
     graph_submove_id,
     strict_owner_family,
 )
+from delta_result_vocabulary import DELTA_RESULT_VOCABULARY
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -41,6 +42,16 @@ PLAN_FIXTURE_ROOT = FIXTURE_ROOT / "plan-required"
 ORDERING_ROLES = {"required", "parallel", "contingent", "optional_non_load_bearing", "hold_partial"}
 NON_REQUIRED_ROLES = {"optional_non_load_bearing", "hold_partial"}
 OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
+SCIENCE_SOURCE_TOTALIZATION_PATTERNS = (
+    "only-science",
+    "science-only",
+    "only science",
+    "scientific-explanation",
+    "scientific explanations",
+    "scientific-authority",
+    "scientific authority",
+    "science-source",
+)
 
 
 OWNER_PRECEDENCE = {
@@ -55,8 +66,11 @@ OWNER_PRECEDENCE = {
     "M1": 80,
     "M1-P": 85,
     "M3": 90,
+    "P3": 95,
     "P7": 100,
     "P1": 110,
+    "DOUBT_SKEPTICISM": 120,
+    "LOOPBREAK": 130,
 }
 
 
@@ -177,6 +191,14 @@ def canonical_delta(value: Any, target: str) -> str:
 
     text = canonical_text(value)
     target_text = resolved_target.lower()
+    compact_match = re.match(r"^(?:δ|Δ)\s*(?:b)?\s*\d+\s*:?\s*(?P<suffix>.*)$", text)
+    if compact_match:
+        suffix = compact_match.group("suffix").strip()
+        return f"Delta({resolved_target}):{suffix}" if suffix else f"Delta({resolved_target})"
+    kappa_match = re.match(r"^(?:δ|Δ)\s*(?:κ|kappa)\s*:?\s*(?P<suffix>.*)$", text)
+    if kappa_match:
+        suffix = kappa_match.group("suffix").strip()
+        return f"Delta({resolved_target}):{suffix}" if suffix else f"Delta({resolved_target})"
     prefix_patterns = [
         rf"^(?:delta|δ|Δ)\s*\(\s*{re.escape(target_text)}\s*\)\s*:?\s*",
         rf"^(?:delta|δ|Δ)\s+{re.escape(target_text)}\s*:?\s*",
@@ -191,6 +213,42 @@ def canonical_delta(value: Any, target: str) -> str:
     if suffix and suffix != text:
         return f"Delta({resolved_target}):{suffix}"
     return f"Delta({resolved_target})"
+
+
+def delta_result_suffix(delta: str) -> str:
+    if ":" not in delta:
+        return ""
+    return canonical_text(delta.split(":", 1)[1])
+
+
+def delta_result_vocabulary_errors(label: str, owner: str, delta: str) -> list[str]:
+    vocabulary = DELTA_RESULT_VOCABULARY.get(owner)
+    if vocabulary is None:
+        return []
+    suffix = delta_result_suffix(delta)
+    if not suffix:
+        return [f"{label}: delta must include owner-local delta_result token for {owner}"]
+    if suffix not in vocabulary:
+        allowed = ", ".join(sorted(vocabulary))
+        return [
+            f"{label}: delta_result token {suffix!r} is outside controlled vocabulary "
+            f"for {owner}; allowed: {allowed}"
+        ]
+    return []
+
+
+def source_recoil_delta_errors(label: str, owner: str, pressure: str, delta: str) -> list[str]:
+    if owner != "SOURCE":
+        return []
+    if not any(token in pressure for token in ("recoil", "hidden-support", "future-support")):
+        return []
+    suffix = delta_result_suffix(delta)
+    if suffix == "hidden-support-blocked":
+        return []
+    return [
+        f"{label}: source-order recoil or hidden-support pressure must use "
+        "delta_result token 'hidden-support-blocked'"
+    ]
 
 
 def digest(value: Any) -> str:
@@ -268,6 +326,8 @@ def normalize_activation(
         errors.append(f"{label}: delta target {found_delta_target} does not match activation target {target}")
     elif target and not found_delta_target and not is_kappa_delta(raw_delta):
         errors.append(f"{label}: delta must name activation target {target} or use Delta-kappa")
+    errors.extend(delta_result_vocabulary_errors(label, owner, delta))
+    errors.extend(source_recoil_delta_errors(label, owner, pressure, delta))
 
     if missing:
         return None, errors
@@ -449,6 +509,7 @@ def activation_report(path: Path, *, require_plan: bool = False) -> ActivationRe
 
     rules = ordering_rules(field_witness)
     errors.extend(required_before_errors(path, activations, rules))
+    errors.extend(science_source_gate_errors(path, activations, rules))
     if require_plan:
         errors.extend(plan_surface_errors(path, activations, rules))
         errors.extend(parallel_group_errors(path, field_witness, activations))
@@ -517,6 +578,59 @@ def plan_surface_errors(path: Path, activations: list[Activation], rules: list[d
             errors.append(
                 f"{rel(path)}: target {target} has multiple load-bearing owner activations but no "
                 "deterministic required_before rule or parallel ordering group"
+            )
+    return errors
+
+
+def science_source_gate_errors(path: Path, activations: list[Activation], rules: list[dict[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    by_target: dict[str, list[Activation]] = {}
+    for activation in activations:
+        if activation.role not in NON_REQUIRED_ROLES:
+            by_target.setdefault(activation.target, []).append(activation)
+
+    before_after = {
+        (
+            graph_burden_id(rule.get("target")),
+            strict_owner_family(str(rule.get("before_owner") or rule.get("before") or "")),
+            strict_owner_family(str(rule.get("after_owner") or rule.get("after") or "")),
+        )
+        for rule in rules
+        if isinstance(rule, dict)
+    }
+
+    for target, target_activations in sorted(by_target.items()):
+        m1_activations = [activation for activation in target_activations if activation.owner == "M1"]
+        if not m1_activations:
+            continue
+        science_m1 = [
+            activation
+            for activation in m1_activations
+            if any(
+                pattern
+                in " ".join(
+                    [
+                        activation.pressure,
+                        activation.operation,
+                        activation.delta,
+                    ]
+                )
+                for pattern in SCIENCE_SOURCE_TOTALIZATION_PATTERNS
+            )
+        ]
+        if not science_m1:
+            continue
+        source_activations = [activation for activation in target_activations if activation.owner == "SOURCE"]
+        if not source_activations:
+            errors.append(
+                f"{rel(path)}: target {target} has science-only/source-order M1 pressure but no "
+                "source-status-repair or authority-order source gate activation"
+            )
+            continue
+        if (target, "SOURCE", "M1") not in before_after:
+            errors.append(
+                f"{rel(path)}: target {target} has science-only/source-order pressure but no "
+                "required_before edge from source-status-repair/SOURCE to M1"
             )
     return errors
 

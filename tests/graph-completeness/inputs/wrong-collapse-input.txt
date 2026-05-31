@@ -1,0 +1,1 @@
+This is a different raw D0 and must not reuse the baseline certificate.

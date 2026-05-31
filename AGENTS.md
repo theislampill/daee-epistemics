@@ -64,6 +64,50 @@ lightweight governance, not extra ceremony.
   patch only owner/checker pointers that reduce drift, and close each recommendation as done,
   changed, blocked, deferred, or unverified with check/smoke evidence.
 
+## IMPLEMENTAUDIT Operating Model
+
+For v0.4.3.0+ IMPLEMENTAUDIT work,
+`docs/audits/v0.4.3.0-implementaudit-orchestrator.md` is the active proof
+ledger. `VISION.md` is orientation only.
+
+The main Codex thread owns goal integrity, blocker ranking, proof-ledger
+updates, file-family locks, failure classification, release/provenance freeze,
+subagent report integration, and next-smallest-safe-action decisions.
+
+Use read-only subagents liberally for formalism, ledger, Graphify, checker
+design, false-pass, and schema audits. Read-only subagents must not patch,
+package, tag, upload, edit release notes, move assets, or treat Graphify output
+as proof. Every subagent report must include verdict, files inspected, commands
+run, findings table, required patches, required fixtures/canaries, what closes,
+what remains, and next smallest safe action.
+
+Patch lanes are sequential in the dirty worktree unless a separate git worktree
+is created. Use separate worktrees for parallel patch lanes, risky runtime or
+generator changes, graph-completeness/certificate work, hard schema migrations,
+Output Grapher certificate ingestion, CI/release preparation, and experimental
+tooling. Do not use worktrees for read-only audits or ordinary status reports.
+
+Graphify artifacts under `.daee/repo-graph/<timestamp>/` are read-only
+navigation aids. Consult `repo-relationship-report.md` and
+`implementaudit-ledger-evidence-map.md` before ledger/design tasks, but verify
+all candidate links with `rg`, source paths, checker paths, fixtures, smoke
+artifacts, hashes, command output, or orchestrator evidence. Do not add
+Graphify hooks, MCP, watch mode, Neo4j, CI wiring, or runtime dependency without
+a separate tooling decision.
+
+ActiveGraph status is `ACTIVEGRAPH_LATER`. It may become a future sidecar for
+proof events, ledger-row lifecycle, artifact hashes, subagent reports, blocker
+graphs, and next-action queries. Do not add it to runtime, CI, release gates, or
+agent behavior for the current line.
+
+Release/provenance remains frozen unless the orchestrator explicitly opens a
+release gate. Do not package, tag, upload, edit release notes, or move release
+assets from ordinary IMPLEMENTAUDIT lanes.
+
+For IMPLEMENTAUDIT execution templates, see
+`docs/audits/implementaudit-execution-templates.md`. Use these templates for
+ledger rows, failure compaction, subagent tasks, and pause/resume checkpoints.
+
 ## Operating Discipline Packs
 
 Use these packs as lightweight durable rules. Keep detailed guidance in

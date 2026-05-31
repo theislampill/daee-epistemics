@@ -372,6 +372,7 @@ EXTRA_INPUTS = [
     "skill/SKILL.md",
     "skill/references/diagnostics/framework-pipeline.yaml",
     "skill/references/diagnostics/module-catalogue.json",
+    "skill/references/diagnostics/delta-result-vocabulary.json",
     "skill/references/diagnostics/diagnostic-ir.schema.json",
     "skill/references/diagnostics/operative-contract.schema.json",
 ]
@@ -383,6 +384,7 @@ RUNTIME_METADATA_COPIES = [
     "skill/data/routing-precedence.yaml",
     "skill/data/trigger-matrix.json",
     "skill/references/diagnostics/module-catalogue.json",
+    "skill/references/diagnostics/delta-result-vocabulary.json",
     "skill/references/diagnostics/diagnostic-ir.schema.json",
     "skill/references/diagnostics/operative-contracts.md",
     "skill/references/diagnostics/operative-contract.schema.json",

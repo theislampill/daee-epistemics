@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema/collapse-certificate.schema.json",
+  "title": "DAEE Collapse Certificate",
+  "description": "Machine-readable B.2 collapse certificate emitted after graph-completeness verification. This schema defines the certificate shape only; it is not release provenance, interlocutor uptake proof, or a substitute for the B.1 checker evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "input_fingerprint",
+    "skill_version",
+    "collapse_positive",
+    "coverage_complete",
+    "divergence_state",
+    "curl_state",
+    "diagnostic_completeness",
+    "live_registers_covered",
+    "max_generation_depth",
+    "loopbreak_count",
+    "loopbreak_grounds",
+    "verified_activations",
+    "hold_partial_nodes",
+    "primary_track_closed",
+    "restoration_track_closed",
+    "divergence_positive_addressed",
+    "curl_resolved",
+    "terminal_stop_proof_complete",
+    "terminal_stop_proof_count",
+    "restoration_endpoint_reached",
+    "checker_version",
+    "timestamp"
+  ],
+  "properties": {
+    "input_fingerprint": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$",
+      "description": "SHA-256 fingerprint of normalized D0. B.4 owns the full fingerprinting semantics."
+    },
+    "skill_version": {
+      "type": "string",
+      "pattern": "^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:\\.[0-9]+)?(?:[-+][A-Za-z0-9.-]+)?$"
+    },
+    "collapse_positive": {
+      "type": "boolean"
+    },
+    "coverage_complete": {
+      "type": "boolean"
+    },
+    "divergence_state": {
+      "type": "string",
+      "enum": ["neutral", "non-neutral", "bounded", "settled"]
+    },
+    "curl_state": {
+      "type": "string",
+      "enum": ["null", "resolved", "held", "non-null"]
+    },
+    "diagnostic_completeness": {
+      "type": "boolean"
+    },
+    "live_registers_covered": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["heart", "xi", "Omega", "mu", "kappa"]
+      }
+    },
+    "max_generation_depth": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "loopbreak_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "loopbreak_grounds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "fitrah_ground",
+          "sound_reason_ground",
+          "necessary_knowledge",
+          "direct_contradiction_exposure",
+          "definition_discipline",
+          "source_status_correction",
+          "doubt_churn_boundary"
+        ]
+      }
+    },
+    "verified_activations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^B[0-9]+$"
+      }
+    },
+    "hold_partial_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^B[0-9]+$"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["held-with-reason", "carried-PARTIAL", "carried-RECURSE"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "primary_track_closed": {
+      "type": "boolean",
+      "description": "True when all primary-track burdens represented in the certificate are terminal or explicitly held/PARTIAL/RECURSE."
+    },
+    "restoration_track_closed": {
+      "type": "boolean",
+      "description": "True when all restoration-track burdens represented in the certificate are terminal or explicitly held/PARTIAL/RECURSE; vacuously true when no restoration track is present."
+    },
+    "divergence_positive_addressed": {
+      "type": "boolean",
+      "description": "True when every positive/non-neutral divergence state is routed to generated/held/LoopBreak/HOLD/PARTIAL/RECURSE or non-load-bearing proof."
+    },
+    "curl_resolved": {
+      "type": "boolean",
+      "description": "True when curl is null/resolved after traversal and C.7 curl accounting has passed."
+    },
+    "terminal_stop_proof_complete": {
+      "type": "boolean",
+      "description": "True only when terminal STOP/no_new_resultant states carry a verified C.8 no_new_resultant_proof object. False is allowed for schema-light governed outputs and must not be treated as full C.8 capstone proof."
+    },
+    "terminal_stop_proof_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of formal_reread_states[] entries carrying a structured no_new_resultant_proof object."
+    },
+    "restoration_endpoint_reached": {
+      "type": "boolean"
+    },
+    "checker_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    }
+  }
+}

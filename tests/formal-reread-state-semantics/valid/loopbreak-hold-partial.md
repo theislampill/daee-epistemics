@@ -26,7 +26,7 @@ field_witness
       "preemption_basis": "commitment-bound",
       "route": "LoopBreak(∇×T)",
       "loopbreak_target": "B1",
-      "loopbreak_ground": "same global doubt-churn repeats after every proof",
+      "loopbreak_ground": "doubt_churn_boundary",
       "loopbreak_delta": "Delta B1: proof-stack stopped and HOLD/PARTIAL licensed",
       "post_break_reread": "R(H,Delta)"
     }

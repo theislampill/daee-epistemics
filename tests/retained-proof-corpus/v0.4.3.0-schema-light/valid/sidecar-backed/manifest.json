@@ -1,0 +1,360 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "v0.4.3.0-schema-light-sidecar-backed",
+  "proof_boundary": "Retained governed-output copies that have raw input sidecars, checker-owned collapse certificates, warning-clean certificate-backed Grapher HTML, and row-specific orchestrator evidence. This corpus is an integrity gate, not a release/provenance claim.",
+  "cases": [
+    {
+      "id": "a9-science-source",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "A.9",
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/a9-delta-vocabulary-smokes/20260530-current-skill-60a9-science-source-v1/a9-science-source-current-skill-60a9-run1.md",
+      "input": "cases/a9-science-source/input.txt",
+      "output": "cases/a9-science-source/output.md",
+      "collapse_certificate": "cases/a9-science-source/collapse-certificate.json",
+      "grapher_html": "cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "6F2FB8D7E0F37487A4E018E119E1AE90EB43AE51C42B31564380A5DA875EF6F4",
+        "output": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6",
+        "collapse_certificate": "9D158B826F3002A61F07C9A11C0AA88BF9B56C2155A0B4EED34868290EC74FC1",
+        "grapher_html": "2D12DA99E4B9C6906E8CBE7AE599556C31A82459B86BDBE6A77527A12C99C896"
+      }
+    },
+    {
+      "id": "source-order-tlang",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.4",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/generated-burden-smokes/20260530-current-skill-60a9-source-order-tlang-v4/source-order-generated-tlang-current-skill-60a9-run4.md",
+      "input": "cases/source-order-tlang/input.txt",
+      "output": "cases/source-order-tlang/output.md",
+      "collapse_certificate": "cases/source-order-tlang/collapse-certificate.json",
+      "grapher_html": "cases/source-order-tlang/grapher.html",
+      "hashes": {
+        "input": "25D9957A81E9945CEB36CB7D3FED707A9AFBBB609A8636128D53E1B713BAD1AA",
+        "output": "64613192AC95048C1183E5B228A471A6A905F827EFDF1B1D7B2EF85105A5D44F",
+        "collapse_certificate": "A8108F459113DA91DB44AEF0C067618E4979444276E96B2B95AB5B18944F1E30",
+        "grapher_html": "AAD4B29B0FD83B5D5C3BE9DDE01F68BAE7FBE502510476F90CAF5F20874190BF"
+      }
+    },
+    {
+      "id": "restoration-track",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c56-restoration-track-v3/restoration-track-c56-current-skill-60a9-run3.md",
+      "input": "cases/restoration-track/input.txt",
+      "output": "cases/restoration-track/output.md",
+      "collapse_certificate": "cases/restoration-track/collapse-certificate.json",
+      "grapher_html": "cases/restoration-track/grapher.html",
+      "hashes": {
+        "input": "386745A504302D13D55EB46AE16E8842010FFC0553D390877BE2F55FCF02E873",
+        "output": "2016945D9635857834268D5450AF13DFCFACF720C3B3BA2EB69C112C55DC2CC9",
+        "collapse_certificate": "413FE697BB93962F7DA1CCD78F6FEAEAC2B907D478622524F83B62A6518D2E6F",
+        "grapher_html": "3EC4092C96C9FF29235A99A4A37BD3AAB0BDD40DB72862BD04E145F68D743748"
+      }
+    },
+    {
+      "id": "c7-loopbreak",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.7"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/c7-loopbreak-smokes/20260530-current-skill-60a9-doubt-churn-loopbreak-v2/doubt-churn-loopbreak-current-skill-60a9-run2.md",
+      "input": "cases/c7-loopbreak/input.txt",
+      "output": "cases/c7-loopbreak/output.md",
+      "collapse_certificate": "cases/c7-loopbreak/collapse-certificate.json",
+      "grapher_html": "cases/c7-loopbreak/grapher.html",
+      "hashes": {
+        "input": "4BCD6A4C879D78CD11F8027F53AFE6FA93CE2D8DA131DEB6A8F24687F59A3142",
+        "output": "D6F9EC23296A51F8464502E87E00DA70523D3B2BBF70008BD9D07B3C3AC28A9B",
+        "collapse_certificate": "92DF64BE407FCC7EC6AEB8847268BC457EAA4BCD919D71F366B397F096F8F70C",
+        "grapher_html": "3E3F16E26ED7636709380417E314EEF1A2F74D6C5D22E0E27618AB2F8476688B"
+      }
+    },
+    {
+      "id": "fitrah-restoration-recoil",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c5-fitrah-v1/fitrah-c5-current-skill-60a9-run1.md",
+      "input": "cases/fitrah-restoration-recoil/input.txt",
+      "output": "cases/fitrah-restoration-recoil/output.md",
+      "collapse_certificate": "cases/fitrah-restoration-recoil/collapse-certificate.json",
+      "grapher_html": "cases/fitrah-restoration-recoil/grapher.html",
+      "hashes": {
+        "input": "7CF6241CD1FE6D80AD77581B27C26BEF745FF2F5135B0CDE0A41290314116E4E",
+        "output": "647B72552B2DAC3BD3D652130A451F9079397DDF9384B27464C8811EA0052C88",
+        "collapse_certificate": "DB640A0DF97CB0DA6C28BBB7B51230CA2B162A7AA822DC57314058A86B0309CF",
+        "grapher_html": "8283448A23FDB0AF81E9559717B38AEF6068C0CC0D1DC44153C3EA9F1209E36B"
+      }
+    },
+    {
+      "id": "authority-return-recoil",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c5-authority-return-v2/authority-return-c5-current-skill-60a9-run2.md",
+      "input": "cases/authority-return-recoil/input.txt",
+      "output": "cases/authority-return-recoil/output.md",
+      "collapse_certificate": "cases/authority-return-recoil/collapse-certificate.json",
+      "grapher_html": "cases/authority-return-recoil/grapher.html",
+      "hashes": {
+        "input": "D4C9DE8D8C9D2B0B4829C1844E65DA4AF6D2B6BD1169F35F88A63BB4BDEAF82A",
+        "output": "DA77175601CCA93C1AEAA80F43FA813216C38ED98F271259D9C7AADBC3344533",
+        "collapse_certificate": "E51545D6B1F044808A637AF73A2020A6EE492EBD62FD5CEDCECCE724D3DC4FAF",
+        "grapher_html": "41374842F05723680D6E1DFAED6C0691C1DA88E04AA10B9D37D9E2DF025CAA6B"
+      }
+    },
+    {
+      "id": "uptake-guarantee-recoil",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c5-uptake-guarantee-v4/uptake-guarantee-c5-current-skill-60a9-run4.md",
+      "input": "cases/uptake-guarantee-recoil/input.txt",
+      "output": "cases/uptake-guarantee-recoil/output.md",
+      "collapse_certificate": "cases/uptake-guarantee-recoil/collapse-certificate.json",
+      "grapher_html": "cases/uptake-guarantee-recoil/grapher.html",
+      "hashes": {
+        "input": "0BF4A12B6C434A6EAAD51BB96699E5511BB79D05EC47314E46CC3D4EB631A51F",
+        "output": "13210541024401438C523E162A619EF13188E74E28101D0126702466DCF0238D",
+        "collapse_certificate": "3B25512BC706A65421BCB8055B37F15CF51E156DEBA153A2935DA9DFE0D366AE",
+        "grapher_html": "2CB50F255AD1E094F812046218CC310CD8082BE15FC6DE175DA15820A1B76193"
+      }
+    },
+    {
+      "id": "worship-frame-recoil",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": ".daee/restoration-track-smokes/20260530-current-skill-60a9-c5-worship-frame-v3/worship-frame-c5-current-skill-60a9-run3.md",
+      "input": "cases/worship-frame-recoil/input.txt",
+      "output": "cases/worship-frame-recoil/output.md",
+      "collapse_certificate": "cases/worship-frame-recoil/collapse-certificate.json",
+      "grapher_html": "cases/worship-frame-recoil/grapher.html",
+      "hashes": {
+        "input": "994423B7A9F6CB6F7BBA227C4DA3B12EEEB05721206E44BF7DE8939FE9D91822",
+        "output": "5EA18113CA0F7912CCF1EC868E59CDBD3D84DAF847FBB93E4ABE1EFCBDD6EA36",
+        "collapse_certificate": "0F29015552CFF55456BA4993E638B6D72795B95C52FB1D81A045D57C7E711F9C",
+        "grapher_html": "FA2664E3B15201589E853903A56B65A503B443371B80C6CC1300B2A0223DA3E5"
+      }
+    },
+    {
+      "id": "cd9a-mixed-concealment",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.1",
+        "D.2",
+        "D.3"
+      ],
+      "generated_skill_sha": "CD9A01411743B0ECC089E11645E9A927AFF17EAE56EA90B0DADEE33F2923C7CF",
+      "origin": ".daee/d3-concealment-smokes/20260530-current-skill-cd9a-mixed-concealment-v10/d3-mixed-concealment-current-skill-cd9a-run1.md",
+      "input": "cases/cd9a-mixed-concealment/input.txt",
+      "output": "cases/cd9a-mixed-concealment/output.md",
+      "collapse_certificate": "cases/cd9a-mixed-concealment/collapse-certificate.json",
+      "grapher_html": "cases/cd9a-mixed-concealment/grapher.html",
+      "hashes": {
+        "input": "65976CABE4151D878C15BD80D3583CCF0B43BB1E3D1AADFD511D4B0D83BC7EF6",
+        "output": "0A55BA4C2F2C7FC4C40BB148B86B49AC8E57B8A318BA9C42B9ABE5B0B7EE4D60",
+        "collapse_certificate": "433E6D2F5D87BA77DD3D8F398845BD584290E506561888E2A0161A74F4165767",
+        "grapher_html": "0B90379714019CF18867B0E941A05276AF586272D892BE5AC3127C3D7A9726C0"
+      }
+    },
+    {
+      "id": "mixed-family-authority",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "D.3",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9C66D24F9E14DBBE7CF5E9FE4E90ED2F51E8CC7315F61F928894DA124B4C9127",
+      "origin": ".daee/d3-concealment-smokes/20260530-current-skill-9c66-mixed-family-authority-v13/mixed-family-authority-current-skill-9c66-run1.md",
+      "input": "cases/mixed-family-authority/input.txt",
+      "output": "cases/mixed-family-authority/output.md",
+      "collapse_certificate": "cases/mixed-family-authority/collapse-certificate.json",
+      "grapher_html": "cases/mixed-family-authority/grapher.html",
+      "hashes": {
+        "input": "D4253EC258AAA6DD51426EF4B9449858524AC10F2AD01C524D7DDA1B22C461C5",
+        "output": "0F9C5C901E529D98428B55A07720950A6A81B72263DFB8871E69D1948BB824CA",
+        "collapse_certificate": "5BF0941497EE7FBD3BEAD8A539A7904A1DFFBA0D68A7366859515F0CFB0CFEBD",
+        "grapher_html": "A7A4D6B9FBE1E3E843ED3515C0D30448BB13642492C205A15DB3400498D6032A"
+      }
+    },
+    {
+      "id": "dad8-science-only-c8",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.2",
+        "C.3",
+        "C.8",
+        "D.3"
+      ],
+      "generated_skill_sha": "DAD8847A4348D67ADFA07AE5DE9F65B80F7707CFCF4C123CDCB07EDD671EEAE6",
+      "origin": ".daee/d3-concealment-smokes/20260530-current-skill-dad8-science-only-c8-proof/d3-science-only-c8-proof-current-skill-dad8-run1.md",
+      "input": "cases/dad8-science-only-c8/input.txt",
+      "output": "cases/dad8-science-only-c8/output.md",
+      "collapse_certificate": "cases/dad8-science-only-c8/collapse-certificate.json",
+      "grapher_html": "cases/dad8-science-only-c8/grapher.html",
+      "hashes": {
+        "input": "6D19F5BE347FDBCE0604E85660940C0D5755BBCC50D0485927FE31C702860771",
+        "output": "0F3DCB704A08D3392FD13111BFD2E0F589E008053AD40AD83D7B5BF702DD7448",
+        "collapse_certificate": "C5178232709E10DA54CFA7408E4D62EC1ABDD7BD92C5C75FC77D538D575C4C27",
+        "grapher_html": "6D0A31D864162434BCC72BDFE3551C96602E9D8FF17FFE1EF4DBE6F4E2FEA573"
+      }
+    },
+    {
+      "id": "dad8-testimony-c8",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "C.2",
+        "C.3",
+        "C.8"
+      ],
+      "generated_skill_sha": "DAD8847A4348D67ADFA07AE5DE9F65B80F7707CFCF4C123CDCB07EDD671EEAE6",
+      "origin": ".daee/c8-broadening-smokes/20260530-current-skill-dad8-testimony-source-order-c8-proof/testimony-source-order-c8-proof-current-skill-dad8-run1.md",
+      "input": "cases/dad8-testimony-c8/input.txt",
+      "output": "cases/dad8-testimony-c8/output.md",
+      "collapse_certificate": "cases/dad8-testimony-c8/collapse-certificate.json",
+      "grapher_html": "cases/dad8-testimony-c8/grapher.html",
+      "hashes": {
+        "input": "9543D40B727E6F580D21594C8E74F9E738F5724813C689F21203B7FE4CF91BCD",
+        "output": "5F07FDEAA615D60646443789599E326819EC105508458D7BCB1AEAD7FB15806E",
+        "collapse_certificate": "43F1C6EDB884BA1E9A19E7E7D40BD78D7803088C30CBA4F68A17E01425622D43",
+        "grapher_html": "84967B682F49D56F953250B4E505B2BF59D17D1E21C728B73C639281A3C2B517"
+      }
+    },
+    {
+      "id": "academic-prestige-authority",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "D.3",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9C66D24F9E14DBBE7CF5E9FE4E90ED2F51E8CC7315F61F928894DA124B4C9127",
+      "origin": ".daee/d3-concealment-smokes/20260530-current-skill-9c66-academic-prestige-authority-v1/academic-prestige-authority-current-skill-9c66-run1.md",
+      "input": "cases/academic-prestige-authority/input.txt",
+      "output": "cases/academic-prestige-authority/output.md",
+      "collapse_certificate": "cases/academic-prestige-authority/collapse-certificate.json",
+      "grapher_html": "cases/academic-prestige-authority/grapher.html",
+      "hashes": {
+        "input": "CD68CA1362A352AF2A1EAD02905D766207D0BC65176FE977EDC1A4BD3DE06442",
+        "output": "3084D879B2CCEDE49039B8EB44FD00E765C1C12A12C117AE61118249191DBF82",
+        "collapse_certificate": "39FEBA3888A95920948E8215F25B2404DDC790D42DD8566F62B208F0EABD7ED3",
+        "grapher_html": "18AE46213E2967748F158C4299931F3D637F90DF50D9ADF80BB033E8F608EE46"
+      }
+    }
+  ]
+}

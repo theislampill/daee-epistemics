@@ -4,7 +4,9 @@
 This is not a universal semantic grader. It treats the checker-derived
 CanonicalActivation as the encoded activation, dereferences body_ref, and
 checks whether owner, operation, pressure, delta/result, and Land facets can be
-recovered from the exact Layer B body and field_witness mirror.
+recovered from the exact Layer B body and field_witness mirror. It also builds a
+bounded reconstructed Layer B submove from the CanonicalActivation and verifies
+that the reconstructed submove passes the same semantic-facet contract.
 """
 
 from __future__ import annotations
@@ -294,7 +296,115 @@ def semantic_faithfulness_errors(path: Path, record: ActRecord, facets: DecodedF
     return errors
 
 
-def nla_decode_errors(path: Path, text: str) -> list[str]:
+def reconstruct_layer_b_submove(path: Path, record: ActRecord) -> tuple[str | None, list[str]]:
+    """Build the bounded B.5 reconstruction surrogate for one canonical ACT.
+
+    This is intentionally modest: it proves that the checker-owned activation
+    slots can regenerate a verifier-passable Layer B body. Full IR-state
+    reconstruction remains dependent on the hard register schema migration.
+    """
+
+    label = f"{rel(path)}: ACT {record.submove_ref}"
+    errors: list[str] = []
+    canonical = canonical_activation_from_record(record)
+    owner_family = strict_owner_family(canonical.owner)
+    if not owner_family:
+        errors.append(f"{label}: cannot reconstruct from non-catalogue owner {canonical.owner!r}")
+    if GENERIC_ACT_VALUE_RE.fullmatch(canonical.operation):
+        errors.append(f"{label}: cannot reconstruct from generic operation {canonical.operation!r}")
+    if GENERIC_ACT_VALUE_RE.fullmatch(canonical.pressure):
+        errors.append(f"{label}: cannot reconstruct from generic pressure {canonical.pressure!r}")
+    if GENERIC_ACT_VALUE_RE.fullmatch(record.delta_result):
+        errors.append(f"{label}: cannot reconstruct from generic delta/result {record.delta_result!r}")
+
+    land_target_tokens = [graph_burden_id(item) for item in land_targets(canonical.land)]
+    target = land_target_tokens[0] if land_target_tokens else ""
+    if not target:
+        errors.append(f"{label}: cannot reconstruct without Land target")
+    raw_body_ref = canonical.body_ref
+    body_ref = graph_submove_id(raw_body_ref)
+    body_ref_target = body_ref.split("_", 1)[0]
+    if target and body_ref_target and body_ref_target != target:
+        errors.append(f"{label}: cannot reconstruct body_ref {body_ref!r} into Land({target})")
+    if errors:
+        return None, errors
+
+    pressure = canonical.pressure
+    operation = canonical.operation
+    delta_result = record.delta_result
+    reconstructed = "\n".join(
+        (
+            f"### {raw_body_ref}[{canonical.owner}] - reconstructed {operation} over {pressure}",
+            f"Target: {pressure}.",
+            (
+                f"Operation: {operation} acts on {pressure}; owner family {owner_family} "
+                "performs the named operation rather than merely echoing the label."
+            ),
+            (
+                f"Result/state-change: {delta_result}; state-change: {pressure} is no "
+                f"longer load-bearing after {operation}."
+            ),
+            (
+                f"Contribution-to-Land({target}): This {delta_result} state change "
+                f"contributes to Land({target}) by making {pressure} no longer "
+                "load-bearing."
+            ),
+            "",
+            "TTP Operation Body:",
+            (
+                f"The reconstructed {owner_family} operation recovers {operation}, "
+                f"targets {pressure}, makes {delta_result} visible, and explains the "
+                f"local state change that licenses Land({target})."
+            ),
+        )
+    )
+    return reconstructed, []
+
+
+def reconstructed_submove_errors(
+    path: Path,
+    record: ActRecord,
+    reconstructed_submoves: list[str] | None = None,
+) -> list[str]:
+    label = f"{rel(path)}: ACT {record.submove_ref}"
+    reconstructed, errors = reconstruct_layer_b_submove(path, record)
+    if reconstructed is None:
+        return errors
+    target = target_token_from_submove_ref(record.body_ref)
+    blocks = submove_block_index(reconstructed, target).get(record.body_ref, []) if target else []
+    if len(blocks) != 1:
+        return errors + [f"{label}: reconstructed Layer B submove is not parser-stable"]
+    block = blocks[0]
+    _block_ref, block_owner = submove_block_ref_owner(block)
+    land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
+    land_target = land_target_tokens[0] if land_target_tokens else ""
+    facets = DecodedFacets(
+        body_ref=graph_submove_id(record.body_ref),
+        owner_family=strict_owner_family(record.owner),
+        operation=record.operation,
+        pressure=record.pi,
+        delta_result=record.delta_result,
+        land_target=land_target,
+        body_target=field_body(block, "Target"),
+        body_owner_family=strict_owner_family(block_owner),
+        body_operation=field_body_any(block, ("Operation", "What it does")),
+        body_result=field_body_any(block, ("Result", "Result/state-change")),
+        body_contribution=contribution_body(block),
+        body_prose=submove_operation_body(block),
+    )
+    errors.extend(semantic_faithfulness_errors(path, record, facets))
+    if facets.body_owner_family != facets.owner_family:
+        errors.append(f"{label}: reconstructed body owner does not match ACT owner family")
+    if not errors and reconstructed_submoves is not None:
+        reconstructed_submoves.append(reconstructed)
+    return errors
+
+
+def nla_decode_errors(
+    path: Path,
+    text: str,
+    reconstructed_submoves: list[str] | None = None,
+) -> list[str]:
     errors: list[str] = []
     field_witness, found = parse_field_witness(path, text)
     errors.extend(found)
@@ -329,6 +439,7 @@ def nla_decode_errors(path: Path, text: str) -> list[str]:
         errors.extend(activation_mirror_errors(path, record, target, mirror))
         if facets is not None:
             errors.extend(semantic_faithfulness_errors(path, record, facets))
+        errors.extend(reconstructed_submove_errors(path, record, reconstructed_submoves))
     return errors
 
 
@@ -347,9 +458,10 @@ def main() -> int:
     valid_checked = 0
     invalid_checked = 0
     output_checked = 0
+    reconstructed_submoves: list[str] = []
 
     for path in valid:
-        found = nla_decode_errors(path, read_text(path))
+        found = nla_decode_errors(path, read_text(path), reconstructed_submoves)
         if found:
             errors.extend(found)
         else:
@@ -364,7 +476,7 @@ def main() -> int:
         if not path.exists():
             errors.append(f"{path}: output path not found")
             continue
-        found = nla_decode_errors(path, read_text(path))
+        found = nla_decode_errors(path, read_text(path), reconstructed_submoves)
         if found:
             errors.extend(found)
         else:
@@ -379,6 +491,7 @@ def main() -> int:
     print("NLA decode semantic-faithfulness check: PASS")
     print(f"Valid fixtures checked: {valid_checked}")
     print(f"Invalid fixtures checked: {invalid_checked}")
+    print(f"Reconstructed submoves checked: {len(reconstructed_submoves)}")
     if args.outputs:
         print(f"Hosted/live outputs checked: {output_checked}")
     return 0

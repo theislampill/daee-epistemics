@@ -50,6 +50,7 @@ jobs:
           python tools/build_compiled_runtime.py
           python tools/build_docs_index.py --check
           python tools/check_compiled_runtime_freshness.py
+          python tools/check_compiled_skill_self_contained.py
           python tools/check_package_shape.py
           python tools/check_compiled_module_boundaries.py
           python tools/check_stub_integrity.py
@@ -67,6 +68,7 @@ jobs:
           python tools/check_register_formalism_bridge.py
           python tools/check_mrp_generated_burden.py
           python tools/check_mrp_route_invariants.py
+          python tools/check_manual_smoke_render_contract.py
           python tools/check_concealment_mode.py
           python tools/check_trinitarian_mrp_hotfix.py
           python tools/check_ttp_operator_contracts.py --strict
@@ -86,6 +88,12 @@ jobs:
           mkdir -p build
           python tools/package_skill.py "build/daee-epistemics-${VERSION}.skill.zip"
           cp "build/daee-epistemics-${VERSION}.skill.zip" "build/daee-epistemics-${VERSION}.skill"
+
+      - name: Verify package self-containment
+        shell: bash
+        run: |
+          python tools/check_compiled_skill_self_contained.py \
+            --package "build/daee-epistemics-${VERSION}.skill"
 
       - name: Write package provenance
         shell: bash

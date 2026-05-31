@@ -128,6 +128,15 @@ HIGH_LEVERAGE_ROUTE_RE = re.compile(
     r"guidance|shubha|shakk|rayb|authority[- ]order|transmission|criterion|"
     r"translation tribunal|admissibility tribunal|burden-gradient|dependency radius)\b"
 )
+DOUBT_CHURN_PROOF_STACK_RE = re.compile(
+    r"(?i)\b(?:more proof|another proof|proof-stack|proof stack|additional evidence dump|"
+    r"adding proof after proof|stacking another proof)\b"
+)
+ANTI_PROOF_STACKING_CONTEXT_RE = re.compile(
+    r"(?i)\b(?:not|no|without|refus(?:e|es|ed|ing)|will not|won't|do not|does not|"
+    r"cannot|can't|must not|blocked|stop(?:s|ped|ping)?|non[-_ ]claims?|"
+    r"held non-claim|rather than|instead of)\b"
+)
 HELD_OR_UNWORKED_ROUTE_RE = re.compile(
     r"(?i)\b(?:held beyond prompt|held beyond|beyond prompt|beyond bounded claim|"
     r"held outside scope|outside scope|not released|unreleased|not worked|unworked|"
@@ -291,6 +300,19 @@ def first_state(value: str) -> str:
         if re.match(rf"^{re.escape(allowed)}(?:\b|/|;|\s)", normalized):
             return allowed
     return re.split(r"\s*/\s*|\s+-\s+|\s+—\s+|\s*;\s*", value.strip(), maxsplit=1)[0].strip().lower()
+
+
+def has_positive_proof_stacking_after_doubt_churn(text: str) -> bool:
+    for match in DOUBT_CHURN_PROOF_STACK_RE.finditer(text):
+        window_start = text.rfind("\n", 0, match.start()) + 1
+        window_end = text.find("\n", match.end())
+        if window_end == -1:
+            window_end = len(text)
+        window = text[window_start:window_end]
+        if ANTI_PROOF_STACKING_CONTEXT_RE.search(window):
+            continue
+        return True
+    return False
 
 
 def mrp_refutation_content_errors(mrp: MrpBlock, label: str) -> list[str]:
@@ -799,7 +821,7 @@ def check_fixture(path: Path) -> list[str]:
             errors.append(f"{path}: doubt-churn requires STOP or LoopBreak(∇×T)")
         if has_edge(mrp.graph_delta):
             errors.append(f"{path}: doubt-churn must not create ordinary graph edge")
-        if re.search(r"(?i)\b(?:more proof|another proof|proof-stack|proof stack|additional evidence dump)\b", text):
+        if has_positive_proof_stacking_after_doubt_churn(text):
             errors.append(f"{path}: proof-stacking after doubt-churn")
     if mrp.finding == "reorientation":
         if not re.search(r"(?i)(?:already-landed signs|prior stable knowledge|fiṭrah|ʿaql ṣarīḥ)", text):

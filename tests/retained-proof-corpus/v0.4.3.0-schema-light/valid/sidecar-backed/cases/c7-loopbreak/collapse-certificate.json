@@ -1,0 +1,30 @@
+{
+  "checker_version": "check_graph_completeness.py:b1-schema-light",
+  "collapse_positive": true,
+  "coverage_complete": true,
+  "curl_resolved": true,
+  "curl_state": "resolved",
+  "diagnostic_completeness": true,
+  "divergence_positive_addressed": true,
+  "divergence_state": "neutral",
+  "hold_partial_nodes": [],
+  "input_fingerprint": "0f4833cd8b440d0d71d06f33f1c1bfa864f0cf8a591642276cc293b53750d92f",
+  "live_registers_covered": [
+    "kappa"
+  ],
+  "loopbreak_count": 1,
+  "loopbreak_grounds": [
+    "doubt_churn_boundary"
+  ],
+  "max_generation_depth": 0,
+  "primary_track_closed": true,
+  "restoration_endpoint_reached": true,
+  "restoration_track_closed": true,
+  "skill_version": "0.4.3.0",
+  "terminal_stop_proof_complete": true,
+  "terminal_stop_proof_count": 0,
+  "timestamp": "2026-05-30T00:00:00Z",
+  "verified_activations": [
+    "B1"
+  ]
+}

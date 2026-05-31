@@ -58,6 +58,32 @@ SOURCE_OWNED_CONCEALMENT = (
     "rayb",
     "clear",
 )
+SOURCE_COMPONENT_TOKEN_RE = re.compile(
+    r"(?i)\b(?:i['`]?rad|irad|juhud|inkar|istikbar|nifaq)\b|"
+    r"iʿrāḍ|juḥūd|inkār|istikbār|nifāq"
+)
+CLARIFICATION_PRESSURE_RE = re.compile(
+    r"(?i)\b(?:clarification\s+pressure|clarification\s*/\s*shubh?a?h|"
+    r"shubh?a?h|shakk|rayb|rāyb|tawahhum|wasw[āa]s|doubt-pressure|doubt\s+pressure|"
+    r"sincere\s+(?:uncertainty|clarification|inquiry)|ḥanīf\s+restoration|hanif\s+restoration)\b"
+)
+REFUSAL_SIGNAL_RE = re.compile(
+    r"(?i)\b(?:refus|repudiat|recognition\s+pressure|outward\s+denial|"
+    r"acknowledg(?:e|ment).*refus|pride|status\s+obstruction|volitional\s+alignment|"
+    r"surface\s+acceptance\s+without\s+genuine|performative\s+agreement)\b"
+)
+CLARIFICATION_ROUTE_RE = re.compile(
+    r"(?i)\b(?:route[sd]?\s+(?:toward|to|through)\s+clarification|"
+    r"clarification\s+(?:route|path)|not\s+(?:functioning\s+as\s+)?refusal|"
+    r"not\s+routed\s+to\s+refusal|not\s+(?:juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)|"
+    r"rather\s+than\s+(?:refusal|denial|obstinacy)|bounded\s+reassurance|"
+    r"source[- ]order\s+repair|fiṭrah\s+anchoring|fitrah\s+anchoring|V9)\b"
+)
+BAD_CLARIFICATION_REFUSAL_ROUTE_RE = re.compile(
+    r"(?i)\b(?:shubh?a?h|shakk|rayb|rāyb|clarification\s+pressure|sincere\s+uncertainty)"
+    r"[^.\n;]*(?:route[sd]?\s+(?:to|into)|assigned\s+to|classified\s+as|read\s+as|folded\s+into)"
+    r"[^.\n;]*(?:refusal|juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)\b"
+)
 HIGH_LEVERAGE_HELD_ROUTE_RE = re.compile(
     r"(?i)\b(?:independent lordship|canon[- ]wide|textual criticism|epistemology of canon|"
     r"full Christology|source/proof-stack|source authority|proof[- ]stack|mystery shield|"
@@ -408,7 +434,10 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "P3",
-        re.compile(r"(?i)\b(?:reason/revelation|reason and revelation|revelation tension|ʿaql|naql)\b"),
+        re.compile(
+            r"(?i)\b(?:reason/revelation|reason[- ]revelation|reason and revelation|"
+            r"revelation tension|ʿaql|naql)\b"
+        ),
     ),
     (
         "P4",
@@ -502,6 +531,19 @@ def generated_target(text: str) -> str:
         text,
     )
     return match.group("target") if match else ""
+
+
+def has_nonempty_b_mrp_ledger(text: str) -> bool:
+    ledger_re = re.compile(
+        rf"(?im)^\s*(?:[-*]\s*)?(?:{B_LEDGER}_MRP|B_MRP)\s*(?:\([^)]*\))?\s*=\s*(?P<body>.+)$"
+    )
+    for match in ledger_re.finditer(text):
+        body = match.group("body").strip()
+        if re.match(r"(?i)^(?:\{\s*\}|empty|none)\b", body):
+            continue
+        if re.search(rf"(?:[{SUP}]+B|B\d+)", body):
+            return True
+    return False
 
 
 def count_complete_submoves(section: str, target: str) -> int:
@@ -682,6 +724,9 @@ CLOSING_BOUNDARY_RE = re.compile(
     r"(?i)\b(?:held|reopen|reopenable|new burden|scope|scoped|bounded|partial|non[- ]load[- ]bearing|"
     r"without pretending|does not exhaust|cannot repair|honest scope)\b"
 )
+CLOSING_ESTABLISHED_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Established failure\s*:\s*[^\n]*\S")
+CLOSING_RESTORED_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Restored criterion/orientation\s*:\s*[^\n]*\S")
+CLOSING_BOUNDARY_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S")
 
 
 def public_tail_label_like(body: str) -> bool:
@@ -712,6 +757,17 @@ def public_tail_quality_errors(path: Path, text: str, hard_anchor_hits: int) -> 
         ):
             errors.append(
                 f"{path}: Closing Formulation is not reconstructible for high-mass governed output; it must name the established failure, restored criterion/orientation, and scoped boundary or reopen condition"
+            )
+        missing_slots: list[str] = []
+        if not CLOSING_ESTABLISHED_SLOT_RE.search(closing):
+            missing_slots.append("Established failure")
+        if not CLOSING_RESTORED_SLOT_RE.search(closing):
+            missing_slots.append("Restored criterion/orientation")
+        if not CLOSING_BOUNDARY_SLOT_RE.search(closing):
+            missing_slots.append("Scoped boundary or Reopen boundary")
+        if missing_slots:
+            errors.append(
+                f"{path}: Closing Formulation missing explicit high-mass slot(s): {', '.join(missing_slots)}"
             )
     return errors
 
@@ -837,7 +893,7 @@ CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"lands?|contributes? to|makes .* land|prevents?|blocks?|preserves?|keeps?|separates?|bars?|routes?|"
     r"held|generated|non[- ]load[- ]bearing|state change|delta|reopen|scope|"
     r"no longer|can no longer|cannot|establish(?:es|ed)?|shows?|"
-    r"completes?|compatible with|needed to|rests on|defeat(?:s|ed)?|"
+    r"completes?|compatible with|needed to|rests(?:\s+only)?\s+on|defeat(?:s|ed)?|"
     r"suppl(?:y|ies|ied)|restoration|requires?|requiring|without|stops? functioning)\b"
 )
 
@@ -1205,11 +1261,30 @@ def layer_b_mass_errors(path: Path, text: str) -> list[str]:
     return errors
 
 
+def concealment_source_components(value: str) -> set[str]:
+    aliases = {
+        "iʿrāḍ": "irad",
+        "i'rad": "irad",
+        "i`rad": "irad",
+        "irad": "irad",
+        "juḥūd": "juhud",
+        "juhud": "juhud",
+        "inkār": "inkar",
+        "inkar": "inkar",
+        "istikbār": "istikbar",
+        "istikbar": "istikbar",
+        "nifāq": "nifaq",
+        "nifaq": "nifaq",
+    }
+    return {aliases.get(match.group(0).lower(), match.group(0).lower()) for match in SOURCE_COMPONENT_TOKEN_RE.finditer(value)}
+
+
 def concealment_mode_errors(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     lines = [line.strip() for line in text.splitlines() if re.search(r"(?i)\bconcealment mode\s*:", line)]
     if not lines:
         return errors
+    lowered_text = text.lower()
     for line in lines:
         lowered = line.lower()
         if "none detected" in lowered:
@@ -1228,11 +1303,32 @@ def concealment_mode_errors(path: Path, text: str) -> list[str]:
         )
         if loose_only and not any(mode in lowered for mode in SOURCE_OWNED_CONCEALMENT):
             errors.append(f"{path}: loose concealment gloss replaces source-owned mode")
+        if "mixed" in lowered and len(concealment_source_components(line)) < 2:
+            errors.append(
+                f"{path}: mixed concealment mode must name at least two dominant source-owned component pressures in the mode line"
+            )
+        if (
+            "mixed" in lowered
+            and CLARIFICATION_PRESSURE_RE.search(line + "\n" + text)
+            and BAD_CLARIFICATION_REFUSAL_ROUTE_RE.search(line + "\n" + text)
+            and not CLARIFICATION_ROUTE_RE.search(line + "\n" + text)
+        ):
+            errors.append(
+                f"{path}: mixed concealment mode routes sincere shubhah/shakk-rāyb pressure into refusal language"
+            )
+        if (
+            "mixed" in lowered
+            and CLARIFICATION_PRESSURE_RE.search(line + "\n" + text)
+            and not REFUSAL_SIGNAL_RE.search(text)
+            and not CLARIFICATION_ROUTE_RE.search(line + "\n" + text)
+        ):
+            errors.append(
+                f"{path}: mixed concealment mode with sincere shubhah/shakk-rāyb pressure must route that pressure through clarification rather than refusal"
+            )
     if any(
         not any(clear in line.lower() for clear in ("clear", "clarification", "shubhah", "shubha", "shakk", "rayb"))
         for line in lines
     ):
-        lowered_text = text.lower()
         if not re.search(r"no hidden (?:soul-?state|interior)|hidden soul-?state", lowered_text):
             errors.append(f"{path}: concealment diagnostic lacks no-hidden-soul-state boundary")
         if "takfīr" not in lowered_text and "takfir" not in lowered_text:
@@ -1413,6 +1509,12 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         re.search(r"(?im)^\s*MRP route result type\s*:\s*loopbreak\b", text) is not None
         and "generated_burden_instantiation" not in text
     )
+    has_generated_flow = "generated_burden_instantiation" in text
+    has_generated_ledger = has_nonempty_b_mrp_ledger(text)
+    has_generated_marker = "[generated-by:" in text
+    requires_generated_burden = has_generated_flow or has_generated_ledger or has_generated_marker
+    if has_generated_ledger and not has_generated_flow and not loopbreak_without_generated:
+        errors.append(f"{path}: nonempty B_MRP ledger requires generated_burden_instantiation route evidence")
     required_literals = [
         "[Mid-Reread Pressure]",
         "Route-gradient:",
@@ -1422,12 +1524,13 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         "Graph delta:",
         "Field diagnostics:",
         "LoopBreak:",
-        "held_burden_activation",
         "Closure/Reconstruction Witness",
         "Restorative Response",
         "Closing Formulation",
     ]
-    if not loopbreak_without_generated:
+    if "held_burden_activation" in text:
+        required_literals.append("held_burden_activation")
+    if requires_generated_burden and not loopbreak_without_generated:
         required_literals.extend(
             [
                 "generated_burden_instantiation",
@@ -1477,9 +1580,9 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
     target = generated_target(text)
     if loopbreak_without_generated:
         target = ""
-    elif not target:
+    elif requires_generated_burden and not target:
         errors.append(f"{path}: missing generated burden node with generated-by marker")
-    else:
+    elif requires_generated_burden:
         marker_at = text.find(f"{target} [generated-by:")
         section = text[marker_at:] if marker_at >= 0 else text
         route_window = text[max(0, marker_at - 2500) : min(len(text), marker_at + 2500)] if marker_at >= 0 else text

@@ -58,6 +58,10 @@ SOURCE_COMPONENT_MODE_RE = re.compile(
     r"(?i)\b(?:irad|juhud|inkar|istikbar|nifaq)\b|"
     r"iʿrāḍ|juḥūd|inkār|istikbār|nifāq"
 )
+SOURCE_COMPONENT_TOKEN_RE = re.compile(
+    r"(?i)\b(?:i['`]?rad|irad|juhud|inkar|istikbar|nifaq)\b|"
+    r"iʿrāḍ|juḥūd|inkār|istikbār|nifāq"
+)
 MODE_UNKNOWN_RE = re.compile(r"(?i)\bmode-\?\b")
 UNRESOLVED_MODE_RE = re.compile(r"(?i)\b(?:underdetermined|unreadable|provisional|insufficient(?:ly)?\s+signalled|insufficient\s+basis)\b")
 LOOSE_GLOSS_RE = re.compile(
@@ -75,6 +79,18 @@ REFUSAL_SIGNAL_RE = re.compile(
     r"(?i)\b(?:refus|repudiat|recognition\s+pressure|outward\s+denial|"
     r"acknowledg(?:e|ment).*refus|pride|status\s+obstruction|volitional\s+alignment|"
     r"surface\s+acceptance\s+without\s+genuine|performative\s+agreement)\b"
+)
+CLARIFICATION_ROUTE_RE = re.compile(
+    r"(?i)\b(?:route[sd]?\s+(?:toward|to|through)\s+clarification|"
+    r"clarification\s+(?:route|path)|not\s+(?:functioning\s+as\s+)?refusal|"
+    r"not\s+routed\s+to\s+refusal|not\s+(?:juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)|"
+    r"rather\s+than\s+(?:refusal|denial|obstinacy)|bounded\s+reassurance|"
+    r"source[- ]order\s+repair|fiṭrah\s+anchoring|fitrah\s+anchoring|V9)\b"
+)
+BAD_CLARIFICATION_REFUSAL_ROUTE_RE = re.compile(
+    r"(?i)\b(?:shubh?a?h|shakk|rayb|rāyb|clarification\s+pressure|sincere\s+uncertainty)"
+    r"[^.\n;]*(?:route[sd]?\s+(?:to|into)|assigned\s+to|classified\s+as|read\s+as|folded\s+into)"
+    r"[^.\n;]*(?:refusal|juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)\b"
 )
 REQUESTER_SCOPE_RE = re.compile(
     r"(?i)\b(?:user|requester|asker|the\s+person\s+asking|the\s+Muslim\s+asking|the\s+da[ʿ'`]?i\s+asking)\b"
@@ -116,6 +132,28 @@ def is_mixed(value: str) -> bool:
 
 def has_source_component(value: str, block: str) -> bool:
     return bool(SOURCE_COMPONENT_MODE_RE.search(value) or SOURCE_COMPONENT_MODE_RE.search(block))
+
+
+def source_components(value: str) -> set[str]:
+    components: set[str] = set()
+    aliases = {
+        "iʿrāḍ": "irad",
+        "i'rad": "irad",
+        "i`rad": "irad",
+        "irad": "irad",
+        "juḥūd": "juhud",
+        "juhud": "juhud",
+        "inkār": "inkar",
+        "inkar": "inkar",
+        "istikbār": "istikbar",
+        "istikbar": "istikbar",
+        "nifāq": "nifaq",
+        "nifaq": "nifaq",
+    }
+    for match in SOURCE_COMPONENT_TOKEN_RE.finditer(value):
+        token = match.group(0).lower()
+        components.add(aliases.get(token, token))
+    return components
 
 
 def has_clarification_pressure(value: str, block: str) -> bool:
@@ -182,10 +220,29 @@ def check_text(path: Path, text: str) -> list[str]:
                     f"{path}: non-clear Concealment mode must preserve the diagnostic boundary "
                     "(no hidden soul-state / takfīr judgment)"
                 )
-            if is_mixed(value) and not has_source_component(value, block):
+            mixed_components = source_components(value)
+            if is_mixed(value) and len(mixed_components) < 2:
                 errors.append(
-                    f"{path}: mixed Concealment mode must name at least one source-owned component "
-                    "pressure (iʿrāḍ/juḥūd/inkār/istikbār/nifāq), not only a loose gloss"
+                    f"{path}: mixed Concealment mode must name at least two dominant source-owned component "
+                    "pressures in the mode line itself (iʿrāḍ/juḥūd/inkār/istikbār/nifāq), not only a loose gloss"
+                )
+            if (
+                is_mixed(value)
+                and has_clarification_pressure(value, block)
+                and BAD_CLARIFICATION_REFUSAL_ROUTE_RE.search(value + "\n" + block)
+                and not CLARIFICATION_ROUTE_RE.search(value + "\n" + block)
+            ):
+                errors.append(
+                    f"{path}: mixed Concealment mode routes sincere shubhah/shakk-rāyb pressure into refusal language"
+                )
+            if (
+                is_mixed(value)
+                and has_clarification_pressure(value, block)
+                and not REFUSAL_SIGNAL_RE.search(block)
+                and not CLARIFICATION_ROUTE_RE.search(value + "\n" + block)
+            ):
+                errors.append(
+                    f"{path}: mixed Concealment mode with sincere shubhah/shakk-rāyb pressure must route that pressure through clarification rather than refusal"
                 )
             if REFUSAL_MODE_RE.search(value) and not is_mixed(value) and CLARIFICATION_PRESSURE_RE.search(block) and not REFUSAL_SIGNAL_RE.search(block):
                 errors.append(

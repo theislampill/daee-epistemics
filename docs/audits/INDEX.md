@@ -43,6 +43,8 @@ sweep moves them.
 | `docs/audits/v0.4.3.x-mrp-concealment-audit-complement.md` | ACTIVE IMPLEMENTATION EVIDENCE | Complement to the external MRP/concealment audit with corrective real-smoke proof, held/generated MRP lineage, surface-open/framework-concealed concealment discipline, and bounded schema deferrals. |
 | `docs/audits/v0.4.3.0-rc1-closeout-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Internal RC1 closeout for v0.4.3.0 reconstructibility/MRP work, local CI-equivalent proof, commit boundary, and live/package proof caveats. |
 | `docs/audits/v0.4.3.0-audit-of-audits.md` | ACTIVE IMPLEMENTATION EVIDENCE | Audit-of-audits input and closure for targeted stale-status cleanup. |
+| `docs/audits/v0.4.3.0-open-work-ledger.md` | ACTIVE OPEN-WORK LEDGER | Forward formalism/proof work for managing agents after the published v0.4.3.0 asset; records dependency-ordered A/B/C rows that remain open and must not be treated as release notes or as already closed by publication. |
+| `docs/audits/v0.4.3.0-retained-smoke-sidecar-convention.md` | ACTIVE IMPLEMENTAUDIT PROCESS GUIDANCE | Checker-owned B.2/B.4 retained-smoke sidecar convention: raw input, collapse certificate, certificate-backed Grapher, hashes, proof boundaries, and scoped exclusions. |
 | `docs/audits/v0.4.3.0-future-work-ledger.md` | FUTURE-WORK SOURCE | Single ledger for deferred/tabled findings that should not remain scattered as live blockers. |
 
 ## Current Governance / Runtime Evidence
@@ -71,11 +73,20 @@ sweep moves them.
 
 ## Future Work / Deferred Items
 
-Use `docs/audits/v0.4.3.0-future-work-ledger.md` as the owner for tabled work
-instead of re-promoting repeated TODOs from historical audits.
+Use `docs/audits/v0.4.3.0-open-work-ledger.md` for dependency-ordered formalism,
+collapse-certificate, graph-completeness, NLA, and escape-route proof work that
+remains pertinent to the v0.4.3.0 line after release publication.
+
+Use `docs/audits/v0.4.3.0-future-work-ledger.md` as the owner for generic tabled
+work instead of re-promoting repeated TODOs from historical audits.
 
 | Deferred item | Current owner |
 |---|---|
+| Formal termination proof / generation-depth / MRP exhaustion lemmas | `docs/audits/v0.4.3.0-open-work-ledger.md` |
+| Collapse certificate and graph-completeness checker | `docs/audits/v0.4.3.0-open-work-ledger.md` |
+| Certificate-backed Output Grapher extension over existing grapher implementation | `docs/audits/v0.4.3.0-open-work-ledger.md` |
+| NLA isomorphism / normalized activation record / reproducibility harness | `docs/audits/v0.4.3.0-open-work-ledger.md` |
+| Typed escape-route closure proof | `docs/audits/v0.4.3.0-open-work-ledger.md` |
 | Trigger-eval taxonomy | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Retire/revise lifecycle criteria | `docs/audits/v0.4.3.0-future-work-ledger.md` |
 | Minimum execution load-floor shrink | `docs/audits/v0.4.3.0-future-work-ledger.md` |

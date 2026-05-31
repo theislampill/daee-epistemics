@@ -1,0 +1,134 @@
+{
+  "case_family": "criterion-import",
+  "claim_type": "moral",
+  "claim_level": "meta-epistemic",
+  "pattern_profile": "PF-10",
+  "deformation": "imported moral tribunal",
+  "concealment_mode": "clear",
+  "do_orient": "mixed",
+  "read_status": "dominant",
+  "confidence": "strong",
+  "alignment_state": "tribunal-loosened",
+  "recognition_strength": "medium",
+  "continuation_eligibility": "blocked",
+  "p7_stops_active": ["none"],
+  "reason_category": 3,
+  "routing_gate": "open",
+  "matched_modules": [
+    {"id": "M1-self-refutation", "module_class": "tactic"}
+  ],
+  "source_basis": {
+    "entries": [
+      {
+        "basis_type": "anchored",
+        "claim": "routing fork: imported criterion requires self-refutation pressure",
+        "source_kind": "module",
+        "module_id": "M1-self-refutation",
+        "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+      }
+    ]
+  },
+  "restoration_target": "return moral criterion to warranted order",
+  "reconstruction_fidelity": "pass",
+  "reconstructor_notes": "burden graph, terminal states, closure, and transfer boundary recover from IR plus visible witness",
+  "next_move": "test imported criterion before downstream content",
+  "output_shape": "single-response",
+  "post_render_gate": {
+    "cleared_this_pass": "imported tribunal no longer governs as neutral judge",
+    "remaining_live_distortions": "none",
+    "held_routes_rechecked": [],
+    "newly_released_routes": [],
+    "next_eligible_pass": "none",
+    "recursion_decision": "STOP"
+  },
+  "field_witness": {
+    "route_gradient": {
+      "eligible_routes": ["M1-self-refutation"],
+      "selected": "M1-self-refutation",
+      "reason": "B1 must land before STOP"
+    },
+    "burden_events": [
+      {
+        "owner": "M1-self-refutation",
+        "delta_nB": "B1 landed",
+        "delta_kappa": "no dependency remains live",
+        "result": "criterion pressure landed"
+      }
+    ],
+    "field_diagnostics": {
+      "divergence": {"target": "B", "status": "neutral"},
+      "curl": {"target": "kappa", "status": "null"}
+    },
+    "loopbreak": {
+      "licensed": false,
+      "target": "",
+      "ground": "",
+      "delta_effect": "",
+      "post_break_reread": ""
+    },
+    "reconstruction": {
+      "held_set": [],
+      "live_remainder": [],
+      "reread_scope": "dependency graph and terminal states"
+    },
+    "closure": {
+      "operator": "𝒞(Ψᴺ)",
+      "decision": "STOP",
+      "agent_field_status": "agent execution field closed with no remaining live distortion"
+    },
+    "transfer_boundary": {
+      "operator": "T_lang",
+      "from": "Ψᴺ",
+      "to": "Ψᴵ",
+      "mode": "coupling-attempt"
+    },
+    "register_deltas": [
+      {"register": "xi", "delta": "criterion warrant pressure landed"}
+    ],
+    "non_claims": [
+      "not truth or warrant proof",
+      "not interlocutor uptake"
+    ],
+    "provenance": {
+      "evidence_type": "negative-fixture",
+      "source": "tests/ir-fixtures/invalid/nar-delta-result-out-of-vocabulary.json",
+      "captured_by": "tools/check_ir_instance_integrity.py"
+    },
+    "normalized_activation_record": {
+      "n_frame": "fixture-imported-criterion",
+      "live_registers": ["xi"],
+      "burden_floor": ["B1"],
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "M1",
+          "operation": "self-refutation",
+          "delta_result": "generic-criterion-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0
+        }
+      ]
+    },
+    "coverage_proof": {
+      "initial_burden_set": ["B1"],
+      "terminal_states": {
+        "B1": {
+          "state": "landed",
+          "operator": "M1-self-refutation",
+          "delta_nB": "criterion pressure landed"
+        }
+      },
+      "dependency_graph": {
+        "nodes": ["B1"],
+        "edges": [],
+        "roots": ["B1"],
+        "parallel_groups": [],
+        "acyclic": true
+      },
+      "divergence_check": "neutral",
+      "curl_check": "null",
+      "coverage_complete": true
+    }
+  }
+}

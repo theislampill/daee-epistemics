@@ -1,0 +1,22 @@
+{
+  "raw_input_sha256": "F3F717A8B2AA1793C6F6611C515380D7F5EA9FA1089AB5FF521266B5679B7EA2",
+  "normalized_input_fingerprint": "A655F961E1A32000C4A555A62D245618A654535F60EA61ACDE156A86845E36D0",
+  "files": [
+    {
+      "path": "d1-rc4-seven-surface.input.txt",
+      "sha256": "F3F717A8B2AA1793C6F6611C515380D7F5EA9FA1089AB5FF521266B5679B7EA2"
+    },
+    {
+      "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+      "sha256": "45FFE688205750C1A85823619BDDF8243E6A38A4848FBF981E03808AADFD96D1"
+    },
+    {
+      "path": "d1-rc4-seven-surface-current-skill-87aa-run8.collapse_certificate.json",
+      "sha256": "6356623AED013C15181A497A49D28951375C655FB56EE98A11C136B26F274F8B"
+    },
+    {
+      "path": "grapher/d1-rc4-seven-surface-current-skill-87aa-run8.html",
+      "sha256": "1E88536AB5AAB886DC3E88AD399FA104DE5EAB08B10FCA80212092AD55346E78"
+    }
+  ]
+}

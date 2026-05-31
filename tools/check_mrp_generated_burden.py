@@ -180,6 +180,8 @@ SOURCE_OWNED_ACT_OPERATIONS = {
 }
 LOOSE_OWNER_ALIASES = {
     "AUTHORITY",
+    "BOUND",
+    "BOUNDARY",
     "BOUNDED",
     "DEFINITION",
     "MRP",
@@ -187,7 +189,10 @@ LOOSE_OWNER_ALIASES = {
     "OWNER",
     "PREMISE",
     "RESTORATION",
+    "SCOPE",
+    "SCOPE-BOUNDARY",
     "SOURCE",
+    "STOP",
     "TESTIMONY",
     "TRANSMISSION",
     "TTP",
@@ -484,18 +489,26 @@ def catalogue_owner_aliases() -> dict[str, str]:
 
 
 CATALOGUE_OWNER_ALIASES = catalogue_owner_aliases()
+STRICT_OWNER_CODE_RE = re.compile(
+    r"^(?:M1-P|M[1-9]|P[1-7]|V1[0-2]|V[1-9]|E[1-4]|F[1-3]|R[1-3]|FPD)(?:$|[-_./])"
+)
 
 
 def strict_owner_family(value: str) -> str:
     token = owner_alias_key(value)
     if token in LOOSE_OWNER_ALIASES:
         return ""
-    return CATALOGUE_OWNER_ALIASES.get(token) or owner_family(token)
+    family = CATALOGUE_OWNER_ALIASES.get(token)
+    if family:
+        return family
+    if STRICT_OWNER_CODE_RE.match(token):
+        return owner_family(token)
+    return ""
 
 
 def normalized_owner_token(value: str) -> str:
     token = value.strip().strip("[]").upper().replace(" ", "-")
-    family = strict_owner_family(token) or owner_family(token)
+    family = strict_owner_family(token)
     return family or token
 
 
@@ -1105,7 +1118,7 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
 def is_reconstructible_owner_operation(block: str) -> bool:
     if not is_mrp_operation_shaped_submove(block):
         return False
-    family = owner_family(submove_owner(block))
+    family = strict_owner_family(submove_owner(block))
     payload = operation_payload(block)
     if family == "M1":
         return bool(M1_RECONSTRUCTIBLE_RE.search(payload))

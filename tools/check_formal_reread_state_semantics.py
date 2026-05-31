@@ -64,6 +64,23 @@ OWNER_ROUTED_TYPES = {"held_burden_activation", "generated_burden_instantiation"
 STOP_TYPES = {"no_new_resultant", "none", "stable"}
 LOOPBREAK_TYPES = {"loopbreak"}
 CLOSED_STATES = {"landed", "cleared", "discharged-as-derivative", "held-with-reason"}
+LICENSED_LOOPBREAK_GROUNDS = {
+    "fitrah_ground",
+    "sound_reason_ground",
+    "necessary_knowledge",
+    "direct_contradiction_exposure",
+    "definition_discipline",
+    "source_status_correction",
+    "doubt_churn_boundary",
+}
+LOOPBREAK_GROUND_ALIASES = {
+    "same-global-doubt-churn-repeats-after-every-proof": "doubt_churn_boundary",
+    "doubt-churn-carousel": "doubt_churn_boundary",
+    "skepticism-carousel": "doubt_churn_boundary",
+    "recurring-repeated-that-too-could-be-fluctuation": "doubt_churn_boundary",
+    "recurring-that-too-could-be-fluctuation": "doubt_churn_boundary",
+    "that-too-could-be-fluctuation": "doubt_churn_boundary",
+}
 
 
 def rel(path: Path) -> str:
@@ -261,6 +278,19 @@ def expected_release(state: dict[str, Any]) -> str:
     return state_burden(state, "next_burden")
 
 
+def normalized_loopbreak_ground(value: Any) -> str:
+    text = state_value({"value": value}, "value")
+    if not text:
+        return ""
+    token = re.sub(r"[^A-Za-z0-9]+", "_", text.strip().lower()).strip("_")
+    if token in LICENSED_LOOPBREAK_GROUNDS:
+        return token
+    dash_token = token.replace("_", "-")
+    if "doubt-churn-carousel" in dash_token:
+        return "doubt_churn_boundary"
+    return LOOPBREAK_GROUND_ALIASES.get(dash_token, "")
+
+
 def complete_claimed(field_witness: dict[str, Any]) -> bool:
     cov = coverage(field_witness)
     if cov.get("coverage_complete") is True:
@@ -319,6 +349,11 @@ def check_loopbreak_state(path: Path, index: int, state: dict[str, Any], b_total
     target = state_burden(state, "loopbreak_target")
     if target not in b_total:
         errors.append(f"{label}: loopbreak_target {target!r} must be in B_total")
+    ground = normalized_loopbreak_ground(state.get("loopbreak_ground"))
+    if ground not in LICENSED_LOOPBREAK_GROUNDS:
+        errors.append(
+            f"{label}: loopbreak_ground must be one of {', '.join(sorted(LICENSED_LOOPBREAK_GROUNDS))}"
+        )
     if not formal_reread_values_agree(state.get("post_break_reread"), "R(H,Delta)"):
         errors.append(f"{label}: post_break_reread must invoke R(H,Delta)")
     if not burden_ids(state_value(state, "loopbreak_delta")):

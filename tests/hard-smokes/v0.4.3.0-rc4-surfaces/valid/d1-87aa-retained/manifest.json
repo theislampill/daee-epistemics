@@ -1,0 +1,161 @@
+{
+  "schema_version": "d1-hard-smoke-manifest-v1",
+  "corpus_id": "v0.4.3.0-rc4-surfaces",
+  "generated_skill_sha": "87AAAF3A4876925EAE24EB1396D1037C18A16C12C6CB8315805DF98E46D76190",
+  "release_provenance_status": "frozen",
+  "stop_condition": "stop_on_first_failing_validator",
+  "validator_order": [
+    "act_surface_syntax",
+    "mrp_generated_burden",
+    "manual_smoke_render_contract",
+    "live_default_witness_contract",
+    "mid_reread_pressure",
+    "formal_reread_state_semantics",
+    "field_witness_convergence",
+    "graph_completeness",
+    "collapse_certificate_schema",
+    "owner_activation_ordering",
+    "output_grapher"
+  ],
+  "cases": [
+    {
+      "id": "d1-rc4-seven-surface-current-skill-87aa-run8",
+      "prompt_sha": "7390573ACFB893D2743D1BD3191E518FECC874DA4BDB4B2EA0C26FBD08CDF181",
+      "input": "d1-rc4-seven-surface.input.txt",
+      "output": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+      "hashes": "d1-rc4-seven-surface-current-skill-87aa-run8.manifest-hashes.json",
+      "collapse_certificate": "d1-rc4-seven-surface-current-skill-87aa-run8.collapse_certificate.json",
+      "grapher_html": "grapher/d1-rc4-seven-surface-current-skill-87aa-run8.html",
+      "surface_evidence": [
+        {
+          "surface": "formal_reread_states_every_mrp_cycle",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "needles": [
+            "\"formal_reread_states\": [",
+            "\"route_result_type\": \"held_burden_activation\"",
+            "\"route_result_type\": \"generated_burden_instantiation\""
+          ]
+        },
+        {
+          "surface": "mixed_concealment_secondary_clarification",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "needles": [
+            "Concealment mode: mixed",
+            "secondary sincere clarification/shubhah pressure"
+          ]
+        },
+        {
+          "surface": "closing_formulation_three_slot",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "needles": [
+            "Established failure:",
+            "Restored criterion/orientation:",
+            "Reopen boundary:"
+          ]
+        },
+        {
+          "surface": "owner_activation_ordering_object",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "needles": [
+            "\"owner_activation_ordering\": {",
+            "\"required_before\": ["
+          ]
+        },
+        {
+          "surface": "two_track_primary_restoration_mrp",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "needles": [
+            "Restorative Response",
+            "\"source\": \"MRP(B3)\"",
+            "\"source\": \"MRP(B4)\""
+          ]
+        },
+        {
+          "surface": "graph_completeness_collapse_certificate_binding",
+          "path": "d1-rc4-seven-surface-current-skill-87aa-run8.collapse_certificate.json",
+          "needles": [
+            "\"collapse_positive\": true",
+            "\"coverage_complete\": true",
+            "\"input_fingerprint\": \"a655f961e1a32000c4a555a62d245618a654535f60ea61acde156a86845e36d0\""
+          ]
+        },
+        {
+          "surface": "output_grapher_warning_clean_certificate_input_agreement",
+          "path": "grapher/d1-rc4-seven-surface-current-skill-87aa-run8.html",
+          "needles": [
+            "Verdict: reconstructible",
+            "No warnings."
+          ]
+        }
+      ],
+      "validators": [
+        {
+          "id": "act_surface_syntax",
+          "command": "python tools/check_act_surface_syntax.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "mrp_generated_burden",
+          "command": "python tools/check_mrp_generated_burden.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "manual_smoke_render_contract",
+          "command": "python tools/check_manual_smoke_render_contract.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "live_default_witness_contract",
+          "command": "python tools/check_live_default_witness_contract.py .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "mid_reread_pressure",
+          "command": "python tools/check_mid_reread_pressure.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "formal_reread_state_semantics",
+          "command": "python tools/check_formal_reread_state_semantics.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "field_witness_convergence",
+          "command": "python tools/check_field_witness_convergence.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "graph_completeness",
+          "command": "python tools/check_graph_completeness.py --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md --input .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface.input.txt",
+          "verdict": "PASS",
+          "result": {
+            "collapse_positive": true,
+            "failures": []
+          }
+        },
+        {
+          "id": "collapse_certificate_schema",
+          "command": "python tools/check_collapse_certificate_schema.py --certificates .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.collapse_certificate.json",
+          "verdict": "PASS",
+          "result": {
+            "certificate_valid": true
+          }
+        },
+        {
+          "id": "owner_activation_ordering",
+          "command": "python tools/check_owner_activation_ordering.py --require-plan --outputs .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md",
+          "verdict": "PASS"
+        },
+        {
+          "id": "output_grapher",
+          "command": "python tools/check_output_grapher.py --skill-output .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.md --expect-reconstructible --fail-on-warnings --input .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface.input.txt --collapse-certificate .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/d1-rc4-seven-surface-current-skill-87aa-run8.collapse_certificate.json --out .daee/hard-smokes/v0.4.3.0-rc4-surfaces/20260530-072203-current-skill-d1-rc4/grapher/d1-rc4-seven-surface-current-skill-87aa-run8.html",
+          "verdict": "PASS",
+          "result": {
+            "reconstructible": true,
+            "warnings": []
+          }
+        }
+      ]
+    }
+  ]
+}

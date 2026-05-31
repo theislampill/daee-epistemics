@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
+from delta_result_vocabulary import delta_result_vocabulary_errors
 
 
 OMNIBUS_RE = re.compile(r"(?i)(?:^OMNIBUS-|/omnibus/|\\omnibus\\|\.md$|\.json$|\.ya?ml$|/|\\)")
@@ -55,9 +56,19 @@ FIELD_WITNESS_KEYS = {
     "provenance",
     "coverage_proof",
 }
-FIELD_WITNESS_OPTIONAL_KEYS = {"reread_pressure"}
+FIELD_WITNESS_OPTIONAL_KEYS = {"reread_pressure", "normalized_activation_record"}
 FIELD_WITNESS_ROUTE_KEYS = {"eligible_routes", "selected", "reason"}
 FIELD_WITNESS_BURDEN_EVENT_KEYS = {"owner", "delta_nB", "delta_kappa", "result"}
+FIELD_WITNESS_NAR_KEYS = {"n_frame", "live_registers", "burden_floor", "per_burden"}
+FIELD_WITNESS_NAR_ROW_KEYS = {
+    "burden_id",
+    "owner_id",
+    "operation",
+    "delta_result",
+    "mrp_route_result_type",
+    "terminal_state",
+    "generation_depth",
+}
 FIELD_WITNESS_DIAGNOSTIC_KEYS = {"divergence", "curl"}
 FIELD_WITNESS_TARGET_STATUS_KEYS = {"target", "status"}
 FIELD_WITNESS_LOOPBREAK_KEYS = {"licensed", "target", "ground", "delta_effect", "post_break_reread"}
@@ -244,6 +255,31 @@ POSITIVE_SAMPLE: dict[str, Any] = {
             "source": "tools/check_ir_instance_integrity.py",
             "captured_by": "embedded fixture",
         },
+        "normalized_activation_record": {
+            "n_frame": "fixture-imported-criterion",
+            "live_registers": ["xi", "kappa"],
+            "burden_floor": ["B1", "B2"],
+            "per_burden": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "M1",
+                    "operation": "self-refutation",
+                    "delta_result": "criterion-self-failed",
+                    "mrp_route_result_type": "no_new_resultant",
+                    "terminal_state": "landed",
+                    "generation_depth": 0,
+                },
+                {
+                    "burden_id": "B2",
+                    "owner_id": "M8",
+                    "operation": "dependency-discharge",
+                    "delta_result": "dependency-exposed",
+                    "mrp_route_result_type": "no_new_resultant",
+                    "terminal_state": "discharged-as-derivative",
+                    "generation_depth": 0,
+                },
+            ],
+        },
         "coverage_proof": {
             "initial_burden_set": ["B1", "B2"],
             "terminal_states": {
@@ -364,6 +400,18 @@ BAD_SAMPLES["field_witness_extra_key"] = (
 BAD_SAMPLES["field_witness_empty_burden_events"] = (
     _sample_with(lambda s: s["field_witness"].update({"burden_events": []})),
     "field_witness.burden_events must be a non-empty array",
+)
+BAD_SAMPLES["field_witness_nar_missing_per_burden"] = (
+    _sample_with(lambda s: s["field_witness"]["normalized_activation_record"].pop("per_burden")),
+    "field_witness.normalized_activation_record missing required field: per_burden",
+)
+BAD_SAMPLES["field_witness_nar_delta_result_out_of_vocabulary"] = (
+    _sample_with(
+        lambda s: s["field_witness"]["normalized_activation_record"]["per_burden"][0].update(
+            {"delta_result": "generic-criterion-repaired"}
+        )
+    ),
+    "delta_result token 'generic-criterion-repaired' is outside controlled vocabulary",
 )
 BAD_SAMPLES["field_witness_loopbreak_licensed_without_target"] = (
     _sample_with(lambda s: s["field_witness"]["loopbreak"].update({"licensed": True, "target": ""})),
@@ -614,6 +662,52 @@ def graph_has_cycle(nodes: list[str], edges: list[tuple[str, str]]) -> bool:
     return any(visit(node) for node in list(graph))
 
 
+def normalized_activation_record_errors(value: Any) -> list[str]:
+    label = "field_witness.normalized_activation_record"
+    errors = require_exact_keys(value, FIELD_WITNESS_NAR_KEYS, label)
+    if errors:
+        return errors
+    if not non_empty_string(value.get("n_frame")):
+        errors.append(f"schema: {label}.n_frame must be non-empty string")
+    for key in ("live_registers", "burden_floor"):
+        values = value.get(key)
+        if not isinstance(values, list) or not all(non_empty_string(item) for item in values):
+            errors.append(f"schema: {label}.{key} must be array of non-empty strings")
+    floor = value.get("burden_floor")
+    if isinstance(floor, list):
+        for item in floor:
+            if non_empty_string(item) and not re.fullmatch(r"B[0-9]+", item):
+                errors.append(f"schema: {label}.burden_floor item must be graph burden id: {item!r}")
+
+    per_burden = value.get("per_burden")
+    if not isinstance(per_burden, list) or not per_burden:
+        errors.append(f"schema: {label}.per_burden must be a non-empty array")
+        return errors
+    for index, item in enumerate(per_burden):
+        row_label = f"{label}.per_burden[{index}]"
+        row_errors = require_exact_keys(item, FIELD_WITNESS_NAR_ROW_KEYS, row_label)
+        errors.extend(row_errors)
+        if row_errors:
+            continue
+        if not re.fullmatch(r"B[0-9]+", str(item.get("burden_id") or "")):
+            errors.append(f"schema: {row_label}.burden_id must be graph burden id")
+        for key in FIELD_WITNESS_NAR_ROW_KEYS - {"generation_depth"}:
+            if not non_empty_string(item.get(key)):
+                errors.append(f"schema: {row_label}.{key} must be non-empty string")
+        depth = item.get("generation_depth")
+        if not isinstance(depth, int) or isinstance(depth, bool) or depth < 0:
+            errors.append(f"schema: {row_label}.generation_depth must be non-negative integer")
+        errors.extend(
+            "schema: " + error
+            for error in delta_result_vocabulary_errors(
+                row_label,
+                str(item.get("owner_id") or ""),
+                str(item.get("delta_result") or ""),
+            )
+        )
+    return errors
+
+
 def field_witness_errors(field_witness: Any) -> list[str]:
     errors = require_keys_with_optional(
         field_witness,
@@ -647,6 +741,9 @@ def field_witness_errors(field_witness: Any) -> list[str]:
             for key in FIELD_WITNESS_BURDEN_EVENT_KEYS:
                 if not non_empty_string(event.get(key)):
                     errors.append(f"schema: {label}.{key} must be non-empty string")
+
+    if "normalized_activation_record" in field_witness:
+        errors.extend(normalized_activation_record_errors(field_witness.get("normalized_activation_record")))
 
     diagnostics = field_witness["field_diagnostics"]
     errors.extend(require_exact_keys(diagnostics, FIELD_WITNESS_DIAGNOSTIC_KEYS, "field_witness.field_diagnostics"))

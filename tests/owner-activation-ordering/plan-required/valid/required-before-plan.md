@@ -12,8 +12,8 @@ field_witness
     ]
   },
   "owner_activations": [
-    {"source": "B1", "target": "B1", "owner": "source-status-repair", "operation": "sort", "pressure": "source-function", "body_ref": "B1_1", "delta": "Delta B1:source sorted", "land": "Land(B1)+", "ordering_role": "required"},
-    {"source": "B1", "target": "B1", "owner": "M9", "operation": "repair", "pressure": "root-predicate-pressure", "body_ref": "B1_2", "delta": "Delta B1:predicate repaired", "land": "Land(B1)+", "ordering_role": "required"}
+    {"source": "B1", "target": "B1", "owner": "source-status-repair", "operation": "sort", "pressure": "source-function", "body_ref": "B1_1", "delta": "Delta B1:source-order-repaired", "land": "Land(B1)+", "ordering_role": "required"},
+    {"source": "B1", "target": "B1", "owner": "M9", "operation": "repair", "pressure": "root-predicate-pressure", "body_ref": "B1_2", "delta": "Delta B1:predicate-separated", "land": "Land(B1)+", "ordering_role": "required"}
   ],
   "coverage_proof": {
     "initial_burden_set": ["B1"],

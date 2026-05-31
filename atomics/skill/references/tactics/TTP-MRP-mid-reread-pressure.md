@@ -111,9 +111,20 @@ Distinguish route result types:
 
 - `held_burden_activation`: MRP authorizes movement to an already-inventoried held burden. The
   edge may be recorded as route provenance, but MRP did not generate the node.
+  When the generating `formal_reread_states[]` row records `escape_routes_checked[]`, account the
+  live held route with `"disposition": "held"` and the ASCII target such as
+  `"target_burden": "B2"`. Do not write `held_burden_activation` in
+  `escape_routes_checked[].disposition`; that underscore token belongs only in `MRP route result
+  type` / `mrp_resultants[].type`.
 - `generated_burden_instantiation`: MRP discovers a new resultant burden not fully present in the
   initial Layer A inventory. It must instantiate a normal burden node such as
   `⁶B [generated-by: MRP(⁵B)]` using the next concrete unused burden token.
+  When the generating `formal_reread_states[]` row records `escape_routes_checked[]`, each live
+  route object includes `type`, boolean `live`, `disposition`, `target_burden`, and `basis`.
+  For the generated node, write `"live": true`, `"disposition": "generated-burden-instantiation"`,
+  and the generated ASCII target such as `"target_burden": "B3"`. Do not write
+  `generated_burden_instantiation` in `escape_routes_checked[].disposition`; that underscore token
+  belongs only in `MRP route result type` / `mrp_resultants[].type`. Do not omit the boolean.
   This is an insertion into the governed route, not a replacement for the initial burden cycle:
   after the generated node lands or holds, return to any remaining input-anchored held burdens as
   `R(H,Δ)` and the route-gradient license them.
@@ -122,6 +133,19 @@ Distinguish route result types:
   generated/partial/held accounting and terminal states.
 - `no_new_resultant`: MRP finds no additional resultant burden; normal routing may continue to the
   next already-held burden or close if no eligible held burden remains.
+  This is a no-edge proof, not a hypothetical next-token proof: do not name a
+  future concrete burden token such as `⁴B` / `B4` to say it was not generated.
+  Write `no newly generated burden`, `no new graph node`, or `no further B_MRP burden` instead.
+  A terminal STOP/no-new row must carry `formal_reread_states[].no_new_resultant_proof`, not only
+  a stable sentence. The proof object's `escape_routes_checked` is a list of eight objects with
+  `type`, boolean `live`, and `basis`, using exactly these types: `closure-boundary-immunity`,
+  `proof-carousel`, `total-system-exhaustion`, `doubt-churn`, `moral-tribunal`,
+  `authority-order-recoil`, `hidden-framework-recoil`, and `restoration-recoil`.
+  The `restoration-recoil` object also carries canonical `subtype` such as `scope-protest`.
+  The proof records the field state at STOP (`divergence: neutral`, `curl: null|resolved`,
+  literal string `b_live: "empty"`, `kappa_residual: 0`) and `stop_licensed: true`. If any route remains live,
+  the row must account for it as generated, held, HOLD, PARTIAL, RECURSE, LoopBreak, or
+  non-load-bearing; otherwise STOP is premature.
 - `loopbreak`: MRP detects churn/curl and blocks proof-stacking.
 - `hold_partial`: MRP detects real unresolved pressure and prevents false closure.
 
@@ -369,11 +393,16 @@ with the destination recorded in `R(H,Δ)`, `MRP resultant`, and `Graph delta`.
 The target, generated-by source, route-gradient, MRP resultant, and graph delta must be concrete
 public tokens. `Target: ⁿB`, `MRP(ⁿB)`, `Land(ᵏB)`, `Bk / ᵏB`, and `Graph delta: Bn -> Bn+1`
 are schematic documentation forms, not valid public/manual output.
-If `MRP route result type:` is `generated_burden_instantiation` or `Graph delta:` adds an edge,
-use `Finding: genuine-dependent`. Hidden-framework recoil may be the pressure source, slot, or
-resultant explanation, but it is not the graph-edge finding for generated burden movement.
+If `MRP route result type:` is `held_burden_activation` or `generated_burden_instantiation`, or if
+`Graph delta:` adds an edge, use `Finding: genuine-dependent`. `Finding: stable` is terminal-only:
+use it only with `MRP route result type: no_new_resultant`, `Graph delta: none`, and `Route: STOP`.
+Hidden-framework recoil may be the pressure source, slot, or resultant explanation, but it is not the
+graph-edge finding for held or generated burden movement.
 Print literal `Route-gradient:` immediately before `Finding:`; do not let `Graph delta:` or
 `Route:` carry the gradient silently.
+For terminal `no_new_resultant`, the route-gradient may say no further burden remains, but it must
+not print an unused future concrete burden token such as `⁴B` / `B4`; Grapher treats visible burden
+tokens as nodes.
 Default manual/public output must not render the legacy aliases `div.B`, `curl.k`, `curl.B`, or
 `Reread: R(H,Delta)` as the primary surface. Use `∇·B` / `∇×κ` and literal `R(H,Δ):` with
 `held routes rechecked`, `live remainder`, and `release/next` fields; pair ASCII aliases only
@@ -557,9 +586,12 @@ The closing tail cannot carry this proof by itself: Restorative Response, Closin
 Closure/Reconstruction Witness may summarize the boundary only after a generated/held burden or an
 explicit MRP HOLD/PARTIAL/non-load-bearing classification has already paid the recoil. Do not use
 P7 warmth or a scoped closing sentence as a substitute for generated-recoil owner execution.
-`Target:` must name the burden token explicitly, for example `Target: B2 / state-enforcement
-reduction`; mentioning `Land(B2)` only inside `Reread:` is not enough. If an older copied
-template shows only superscript `ⁿB`, render it as `Bn / <landed burden name>` in live output.
+`Target:` must name the burden token explicitly, for example `Target: ²B / B2 state-enforcement
+reduction`; mentioning `Land(²B)` only inside `Reread:` is not enough. If an older copied
+template shows ASCII-first `Bn`, render it as `ⁿB / Bn / <landed burden name>` in live output.
+In public `Landed delta`, `Route-gradient`, and pressure-activation prose, write `Land(²B)` or
+`after ²B lands`, not ASCII-only `Land(B2)`. Reserve ASCII graph IDs for JSON fields and paired
+fallback slots.
 
 The compact block is a parseable record, not a prose paragraph. `Finding`, `Pre-emption basis`,
 and `Route` must be one exact value from the template with no punctuation or added explanation.

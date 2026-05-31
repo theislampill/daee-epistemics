@@ -98,6 +98,17 @@ field_witness
     {"source": "MRP(B2)", "target": "B3", "owner": "M9", "operation": "predication-repair", "pressure": "ontology", "body_ref": "B3_1", "delta": "Delta B3:ontology separated", "land": "Land(B3)+"},
     {"source": "MRP(B3)", "target": "B4", "owner": "M8", "operation": "consequence-trace", "pressure": "dependency", "body_ref": "B4_1", "delta": "Delta B4:dependency traced", "land": "Land(B4)+"}
   ],
+  "normalized_activation_record": {
+    "n_frame": "fixture-register-floor",
+    "live_registers": ["xi", "mu", "Omega", "kappa"],
+    "burden_floor": ["B1", "B2", "B3", "B4"],
+    "per_burden": [
+      {"burden_id": "B1", "owner_id": "FPD", "operation": "foreign-premise-detection", "delta_result": "authority bounded", "mrp_route_result_type": "held_burden_activation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B2", "owner_id": "M7", "operation": "definition-anchor", "delta_result": "carrier decomposed", "mrp_route_result_type": "held_burden_activation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B3", "owner_id": "M9", "operation": "predication-repair", "delta_result": "ontology separated", "mrp_route_result_type": "held_burden_activation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B4", "owner_id": "M8", "operation": "consequence-trace", "delta_result": "dependency traced", "mrp_route_result_type": "no_new_resultant", "terminal_state": "landed", "generation_depth": 0}
+    ]
+  },
   "coverage_proof": {
     "initial_burden_set": ["B1", "B2", "B3", "B4"],
     "terminal_states": {
@@ -112,8 +123,19 @@ field_witness
       "roots": ["B1"],
       "acyclic": true
     },
+    "diagnostic_completeness": {
+      "live_registers": ["xi", "mu", "Omega", "kappa"],
+      "coverage": {
+        "xi": ["B1"],
+        "mu": ["B2"],
+        "Omega": ["B3"],
+        "kappa": ["B4"]
+      },
+      "complete": true
+    },
     "divergence_check": "neutral",
     "curl_check": "null",
+    "max_generation_depth": 0,
     "coverage_complete": true
   }
 }

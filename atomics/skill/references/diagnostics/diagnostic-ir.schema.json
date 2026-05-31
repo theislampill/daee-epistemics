@@ -696,6 +696,56 @@
             }
           }
         },
+        "normalized_activation_record": {
+          "$comment": "Schema-light reproducibility record. It is derived from owner_activations, MRP resultants, terminal states, and generated-burden depth; it is not proof by itself.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n_frame", "live_registers", "burden_floor", "per_burden"],
+          "properties": {
+            "n_frame": { "type": "string", "minLength": 1 },
+            "live_registers": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "burden_floor": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^B[0-9]+$" },
+              "uniqueItems": true
+            },
+            "per_burden": {
+              "$comment": "Historical field name. Rows are ACT/owner-activation level: one row per visible ACT / owner_activations[] object. Multiple rows may share a burden_id when several owners land one burden.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "burden_id",
+                  "owner_id",
+                  "operation",
+                  "delta_result",
+                  "mrp_route_result_type",
+                  "terminal_state",
+                  "generation_depth"
+                ],
+                "properties": {
+                  "burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "owner_id": { "type": "string", "minLength": 1 },
+                  "operation": { "type": "string", "minLength": 1 },
+                  "delta_result": {
+                    "$comment": "Suffix token only. For owner families listed in delta-result-vocabulary.json, check_ir_instance_integrity.py enforces membership in that owner-local vocabulary.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "mrp_route_result_type": { "type": "string", "minLength": 1 },
+                  "terminal_state": { "type": "string", "minLength": 1 },
+                  "generation_depth": { "type": "integer", "minimum": 0 }
+                }
+              }
+            }
+          }
+        },
         "coverage_proof": {
           "$comment": "Schema-light collapse reconstruction for field_witness. Coverage proves rendered accounting, not live noetic competence.",
           "type": "object",

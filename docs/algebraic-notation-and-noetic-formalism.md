@@ -109,6 +109,207 @@ partial because public language may fail to couple, be misunderstood, or be refu
 eligible route pressure before release; it does not choose from the whole possible field after
 routing gates have already excluded a path.
 
+### Canonical Route Tiebreaker
+
+`∇` may produce a preorder when multiple eligible routes are semantically parallel. For governed
+output and reproducibility, the dispatch surface extends that preorder to a deterministic total
+order before owner-plan emission:
+
+```text
+1. Source, criterion, and authority gates precede content owners.
+2. Register weight breaks content-owner ties: Ω > ξ > μ > κ > heart.
+3. Within the same register weight, catalogue position order wins.
+4. Within the same catalogue position, lexicographic owner_id order wins.
+```
+
+Parallel routes may still be recorded as parallel when they are genuinely non-order-bearing, but
+that parallelism must itself be explicit in `owner_activation_ordering.parallel_groups[]`.
+Otherwise each load-bearing activation receives a `required_before` relation or falls under the
+canonical total-order policy. This policy is a reproducibility discipline; it does not make owner
+precedence a truth metric, and it does not override source/IR gates.
+
+Science-only/source-totalization is the current narrow A.12 canary for this rule. When an input
+claims that scientific explanation, empirical method, or scientific authority is the only
+knowledge source or criterion, the source-order gate is live before the self-grounding test:
+`source-status-repair.source-order` precedes `M1.self-grounding-test` on the same burden unless
+the source-order pressure is explicitly proven non-load-bearing. The stable N-frame token for this
+frame is `science-only-source-order-warrant`. Its exact pressure labels are
+`scientific-explanations-only-knowledge-source` and `only-science-counts-standard`; its
+machine-facing terminal-state maps use `{"B1": "landed"}`.
+
+### Canonical Delta Result Token Discipline
+
+`Delta-nB` and `Delta-kappa` records must preserve the local result token that names what changed.
+For reproducibility, compact spellings such as `Delta(B1):predicate-separated`,
+`Delta B1:predicate-separated`, and `Delta¹B:predicate-separated` normalize to the same structural
+record:
+
+```text
+target = B1
+delta_result = predicate-separated
+```
+
+The token after the target is load-bearing. It must not be discarded during activation
+fingerprinting, NLA comparison, or witness reconstruction. Prose variation in the body may remain
+free, but the structural `delta_result` slot is part of the activation state.
+
+The bounded owner vocabulary for governed output is source-owned in
+`atomics/skill/references/diagnostics/delta-result-vocabulary.json`
+(`diagnostic-ir-delta-result-vocabulary-v1`) and copied into the compiled
+runtime metadata as `references/diagnostics/delta-result-vocabulary.json`.
+The table below mirrors that machine-readable source:
+
+| Owner | Valid `delta_result` tokens |
+|---|---|
+| `M1` | `self-authorizing-standard-invalidated`, `internal-contradiction-exposed`, `criterion-self-failed`, `self-authorizing-falsifiability-standard-invalidated` |
+| `M1-P` | `performative-contradiction-exposed`, `speech-act-presupposition-named` |
+| `M3` | `orphaned-intuition-identified`, `grounding-severed`, `normativity-restored-to-ground` |
+| `M7` | `definition-anchored`, `semantic-anchor-stabilized`, `term-meaning-bounded`, `falsifiability-standard-defined` |
+| `M8` | `consequence-traced`, `implication-demoted`, `mechanism-totality-demoted`, `entailment-blocked`, `dependency-exposed`, `coercive-clarity-entailment-demoted`, `finite-answer-evasion-claim-invalidated`, `total-veto-consequence-demoted` |
+| `M9` | `predicate-separated`, `category-separated`, `referent-separated`, `person-nature-transfer-blocked`, `sense-separated` |
+| `FPD` | `hidden-tribunal-blocked`, `imported-criterion-blocked`, `foreign-premise-exposed`, `smuggled-support-blocked`, `imported-control-criterion-blocked` |
+| `source-status-repair` / `authority-order-repair` | `source-order-repaired`, `hidden-support-blocked`, `science-source-bounded`, `proof-text-sorted`, `authority-order-repaired`, `proof-text-hidden-support-blocked`, `authority-order-separated`, `hidden-authority-source-status-bounded` |
+| `P1` | `fitrah-reorientation-restored`, `tawhid-orientation-restored`, `sound-worship-frame-returned`, `fitrah-orientation-restored` |
+| `P3` | `reason-revelation-order-stabilized` |
+| `P7` | `scope-boundary-named`, `stop-condition-defined`, `held-route-bounded`, `reopen-condition-stated`, `personal-hiddenness-held-with-reason`, `reopen-boundary-licensed`, `shubhah-boundary-routed` |
+| `LoopBreak` | `circular-dependency-broken`, `loop-grounded-in-owner-source` |
+| `do-christian-extensions` | `trinitarian-model-identified`, `fan-out-route-named` |
+| `doubt-vs-skepticism` | `doubt-distinguished-from-skeptical-methodology`, `burden-inverted`, `evidence-demand-tribunal-exposed`, `doubt-method-separated-from-sincere-question` |
+
+The current v0.4.3.0 checker slice preserves and compares compact delta suffixes so drift cannot
+hide behind equivalent `Delta(B)` targets, and rejects owner-local `delta_result` tokens outside
+the source-owned vocabulary for the strict owner families it checks. The vocabulary includes both
+the core formal tokens and the retained governed-smoke source-owned tokens needed to keep current
+proof artifacts under the same hard gate. Diagnostic IR field-witness sidecars also use this source
+for `normalized_activation_record.per_burden[].delta_result` validation.
+
+### NLA Isomorphism Between Execution Traces
+
+Two governed execution traces over the same normalized input `D0` are NLA-isomorphic when their
+visible verbalization encodes the same structural execution state, even if their explanatory prose
+varies. The isomorphism is over the noetic language activation slots, not over natural-language
+surface identity:
+
+```text
+NLA_isomorphic(E1,E2) =
+  same input_fingerprint
+  and same selected or held N frame
+  and same live register set {heart, xi, Omega, mu, kappa}
+  and same InitialBurdenSet structure
+  and same burden-to-register assignments
+  and same owner_activation_ordering plan
+  and for every B in B_total:
+      same owner_id for each load-bearing submove
+      same operation family
+      same Delta target
+      same delta_result token
+      same MRP route result type
+      same terminal state
+      same generation_depth where generated
+```
+
+Allowed variation:
+
+- explanatory prose inside the TTP Operation Body;
+- sentence ordering inside a non-load-bearing paragraph;
+- spelling variants that normalize to the same owner, target, token, or terminal state;
+- explicitly declared parallel owner groups when the activation plan says the order is not
+  load-bearing.
+
+Disallowed variation:
+
+- a different selected `N` frame or live-register set;
+- a different register-derived burden floor;
+- owner selection drift;
+- owner ordering drift outside declared parallel groups;
+- `delta_result` drift;
+- MRP resultant-type drift;
+- terminal-state drift;
+- generated-depth drift.
+
+This definition is the contract that `normalized_activation_record` will make machine-readable.
+Until that schema field exists, reproducibility checks compare the currently available
+field-witness owner plan, activation fingerprints, topology, pressure labels, and terminal states.
+
+### Normalized Activation Record Field
+
+`field_witness.normalized_activation_record` is the schema-light carrier for the NLA isomorphism
+slots. It strips explanatory prose and keeps the structural state needed for repeated-run
+comparison:
+
+```json
+{
+  "n_frame": "selected-or-held-frame",
+  "live_registers": ["xi", "Omega", "mu", "kappa"],
+  "burden_floor": ["B1", "B2"],
+  "per_burden": [
+    {
+      "burden_id": "B1",
+      "owner_id": "M9",
+      "operation": "predication-repair",
+      "delta_result": "predicate-separated",
+      "mrp_route_result_type": "generated_burden_instantiation",
+      "terminal_state": "landed",
+      "generation_depth": 0
+    }
+  ]
+}
+```
+
+`burden_floor` is a string list of B IDs. `per_burden[]` keeps its historical
+field name, but the rows are owner-activation/submove level: a burden with three
+load-bearing owners emits three rows with the same `burden_id` and distinct
+`owner_id` / `operation` / `delta_result` tuples.
+
+`n_frame` is a stable Diagnostic IR frame token, not explanatory prose. Repeated runs over the
+same frame reuse the same kebab-case token, including the science-only canary token
+`science-only-source-order-warrant`.
+
+`delta_result` in this record is the suffix token only. It records
+`science-source-bounded`, not `Delta(B1):science-source-bounded`; the burden-local target lives in
+the ACT/owner activation delta field.
+
+The record is not a self-authenticating proof. The convergence checker validates it against
+source-owned witness fields: `B_LA`, `B_total`, live-register obligations, `owner_activations`,
+`mrp_resultants`, terminal states, and generated-burden depth. If it disagrees with those fields,
+the normalized record fails rather than rewriting the proof around itself.
+
+### Termination Proof For The MRP Generation Chain
+
+For the state
+
+```text
+S = (N_space, N_sel_or_held, B_live, H, κ, Reg, Routes, SourceBasis, Gate, RenderGate)
+```
+
+the eligible route set `R(S)` is finite at every step: it is bounded by the finite owner
+catalogue, the finite current burden/register set, and the IR/routing/owner gates that constrain
+`∇`. The `select` step therefore chooses from a finite preorder rather than from an unbounded
+search space.
+
+Every `operate` step `ⁿBᵢ[OP] -> Sᵢ'` has one of two effects. Either it lands, discharges, or
+honestly holds the current burden, reducing the unresolved part of `B_live`; or it generates a
+new burden through `Land(B)+R(H,Delta)`. Generated burdens are ordered by the depth function:
+baseline burdens in `B_LA` have depth `0`, and a generated child `B'` has
+`d(B') = d(B)+1` relative to its parent. The field witness records this as
+`generated_burdens[].generation_depth` and `coverage_proof.max_generation_depth`. Since the
+checked traversal has a finite maximum depth and generated children must be strictly deeper than
+their parents, the generation graph is well-founded for the witnessed execution.
+
+`LoopBreak(∇×T)` is a partial transition (`⇀`), not a total step. It can fire only when nonzero
+curl is diagnosed and a licensed ground from the closed LoopBreak vocabulary is present. A valid
+LoopBreak names the target, ground, delta, and post-break reread; it therefore resolves or bounds
+the circular dependency that triggered it instead of adding another unbounded proof request.
+
+Thus every witnessed execution sequence reaches one of the finite terminal modes:
+
+```text
+STOP | HOLD | PARTIAL | RECURSE-to-a-strictly-deeper/generated-or-inventoried-burden
+```
+
+This is a machine-auditable termination discipline for the witnessed graph, not a theorem about
+all possible future interlocutor replies or a claim that no later burden can be posed.
+
 ## Closure Coverage And Collapse Proof
 
 The Closure/Reconstruction Witness uses the burden dependency graph as both a dependency
@@ -129,6 +330,35 @@ pre-release burden enumeration supplied by Layer A / Diagnostic IR before termin
 New burdens found during `R(H,Δ)` are newly live or next-pass candidates; they do not make the
 original initial set larger after the fact.
 
+Initial burden completeness is checked against the live register set, not against the model's
+retrospective claim that the listed burdens were enough:
+
+```text
+diagnostic_complete(D0, IR, B_LA) =
+  for every r in live_registers(IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)):
+    some B in B_LA has register_type(B) covering r
+```
+
+The machine witness records this as `coverage_proof.diagnostic_completeness`, including the live
+register list and a register-to-burden coverage mapping. A complete coverage certificate therefore
+has two directions: soundness, where every claimed burden is valid and terminally accounted, and
+diagnostic completeness, where the structural live-register obligations were not silently omitted
+from `B_LA`.
+
+Generation depth is the well-founded ordering over generated burdens:
+
+```text
+d(B) = 0         for every B in B_LA
+d(B') = d(B)+1   when B' in B_MRP is generated by Land(B) + R(H,Delta)
+```
+
+Every `field_witness.generated_burdens[]` entry for a `B_MRP` node carries
+`generation_depth`; `coverage_proof.max_generation_depth` records the finite maximum over the
+whole burden graph, with baseline-only traversals recording `0`. A generated child must have
+depth strictly greater than the parent named in `generated_by: MRP(B)`. This makes the
+termination argument auditable as a finite graph discipline rather than a prose assertion that
+generated burdens are exhausted.
+
 ```text
 coverage_complete =
   every burden in InitialBurdenSet appears exactly once in TerminalStates
@@ -144,6 +374,241 @@ Held or carried burdens can be valid terminal states for current-pass accounting
 mistaken for COMPLETE closure unless the witness also explains why the scoped field has no live
 outward pressure and no unresolved curl. Coverage completion is an accounting condition; positive
 collapse is a stronger closure condition.
+
+### MRP Exhaustion Lemma
+
+Define `B_live` after traversal as the set of burdens in `B_total` whose terminal state is absent
+or whose state is live without a HOLD, PARTIAL, or RECURSE disposition. Define `∇·B` as the
+post-Delta diagnostic predicate over that burden field. If `B_live` is non-empty after traversal,
+there remains outward burden-field pressure, so `∇·B` is non-neutral. Therefore, by
+contraposition:
+
+```text
+∇·B = neutral  ->  B_live = empty
+B_live = empty ->  every B in B_total is terminally accounted
+```
+
+Since `B_MRP` is a subset of `B_total`, neutral burden divergence implies every generated MRP
+burden is either landed, discharged, held with a reason, or explicitly carried as PARTIAL/RECURSE.
+It does not mean that the interlocutor accepted the response, that no later question can arise, or
+that a literal vector-divergence theorem has been proven. It means the runtime's current burden
+graph has no silent generated burden left outside terminal accounting.
+
+### Typed Escape Routes
+
+`escape_routes(D0, traversal)` is the finite typed set of post-Land routes that could preserve
+the defeated claim if the runtime silently skipped them. The closed v0.4.3.0 type set is:
+
+```text
+escape_routes = {
+  closure-boundary-immunity,
+  proof-carousel,
+  total-system-exhaustion,
+  doubt-churn,
+  moral-tribunal,
+  authority-order-recoil,
+  hidden-framework-recoil,
+  restoration-recoil
+}
+```
+
+After `Land(Bk) -> R(H,Delta)`, each live escape-route type must be accounted by one of these
+typed dispositions:
+
+```text
+generated_burden        -- instantiate a generated B_MRP node and route RECURSE
+held / PARTIAL / RECURSE -- carry the pressure honestly with a reason
+LoopBreak               -- when the route is a licensed curl/cycle repair
+non-load-bearing        -- explicitly prove the route is not live in this traversal
+```
+
+The field witness may record this as `formal_reread_states[].escape_routes_checked[]`, where each
+entry names the escape-route `type`, whether it is `live`, the typed disposition when live, the
+target/generated burden when applicable, and a non-empty `basis`. This is a closure discipline:
+printing `STOP` or `no_new_resultant` is not enough when a typed escape route remains live and
+unaccounted.
+
+#### Restoration-Recoil Subtypes
+
+`restoration-recoil` is a typed escape-route family, not a generic objection bucket. When it is
+listed in `escape_routes_checked[]`, the witness must include a canonical `subtype`. The
+v0.4.3.0 subtype set is:
+
+```text
+restoration_recoil_subtypes = {
+  fitrah-recoil,             -- resistance to fitrah/ground-state reorientation
+  authority-return-recoil,   -- return to source prestige or hidden authority order
+  worship-frame-recoil,      -- recoil against the restored worship/orientation frame
+  scope-protest,             -- protest that scoped closure is not global exhaustion
+  uptake-guarantee-recoil    -- demand that language guarantee interlocutor uptake
+}
+```
+
+Live restoration-recoil subtypes must either be carried honestly as `held`, `PARTIAL`,
+`LoopBreak`, or `non-load-bearing`, or be routed to an owner family licensed for that subtype:
+
+```text
+fitrah-recoil            -> P1 or R2
+authority-return-recoil  -> source-status-repair or authority-order-repair
+worship-frame-recoil     -> P1, R2, or P7
+scope-protest            -> P7 or M8
+uptake-guarantee-recoil  -> P7 plus the T_lang boundary
+```
+
+This is the C.5 restoration-recoil taxonomy only. It does not introduce the C.6 two-track
+`primary|restoration` field, does not extend the collapse-certificate schema, and does not claim
+that language delivery guarantees interlocutor uptake.
+
+#### Two-Track Primary/Restoration MRP
+
+After restoration-recoil is typed, generated burdens must also preserve which closure track they
+belong to. `B_LA` burdens are implicitly on the primary track. Every `B_MRP` burden records:
+
+```text
+generated_burdens[].track = primary | restoration
+```
+
+`primary` means the generated burden is still needed to land the original noetic deformation.
+`restoration` means the generated burden arose from the restorative move itself, usually through
+a live `restoration-recoil` escape-route entry after `Land(Bk) -> R(H,Delta)`.
+
+The graph-completeness checker evaluates the tracks separately:
+
+```text
+primary_track_closed      iff every primary-track burden is landed or honestly HOLD/PARTIAL/RECURSE
+restoration_track_closed  iff every restoration-track burden is landed or honestly HOLD/PARTIAL/RECURSE
+collapse_positive         requires no silent live burden on either track
+```
+
+A restoration-track generated burden must be backed by live `restoration-recoil`
+generated-route evidence, unless it is explicitly held, partial, or proven non-load-bearing. A
+primary-track burden cannot discharge a restoration recoil by being counted only as part of the
+original claim track. The B.2 certificate fields `primary_track_closed` and
+`restoration_track_closed` are a later certificate-schema lane; C.6 establishes the field-witness
+and B.1 checker semantics.
+
+#### `∇·B` / `∇×κ` Generated-Burden Consequence Rules
+
+The post-Land divergence and curl diagnostics are control predicates. They are not decorative
+notations printed beside an already chosen route. After `Land(Bk) -> R(H,Delta)`, the field state
+constrains the next legal transition:
+
+```text
+positive or non-neutral ∇·B
+  -> generated_burden_instantiation
+  -> held_burden_activation
+  -> HOLD / PARTIAL / RECURSE with source named
+  -> or explicit non-load-bearing proof
+
+non-null or held ∇×κ
+  -> LoopBreak(∇×T) with licensed ground
+  -> HOLD / PARTIAL / RECURSE with cycle named
+  -> or explicit non-load-bearing proof
+```
+
+Thus `STOP` / `no_new_resultant` is legal only when the current burden-field divergence is neutral
+and the curl state is null or resolved, unless the witness explicitly proves that the residual
+pressure is non-load-bearing for this traversal. A positive `∇·B` at STOP is hidden divergence. A
+non-null `∇×κ` without LoopBreak, HOLD/PARTIAL/RECURSE, or non-load-bearing proof is hidden curl.
+
+If `LoopBreak` fires but the post-break reread still names non-null or unresolved curl, the route
+must carry the residual cycle as HOLD/PARTIAL/RECURSE. It may not claim the curl is resolved while
+the field still reports live circular pressure. The structured terminal checklist for every
+`no_new_resultant` state is the C.8 terminal proof below.
+
+#### Structured `no_new_resultant` Terminal Proof
+
+A terminal `STOP` / `no_new_resultant` state must not be a confident sentence that substitutes for
+field traversal. In the graph-completeness proof surface, the terminal formal reread state carries
+a machine-readable proof object:
+
+```json
+{
+  "no_new_resultant_proof": {
+    "escape_routes_checked": [
+      {"type": "closure-boundary-immunity", "live": false, "basis": "..."},
+      {"type": "proof-carousel", "live": false, "basis": "..."},
+      {"type": "total-system-exhaustion", "live": false, "basis": "..."},
+      {"type": "doubt-churn", "live": false, "basis": "..."},
+      {"type": "moral-tribunal", "live": false, "basis": "..."},
+      {"type": "authority-order-recoil", "live": false, "basis": "..."},
+      {"type": "hidden-framework-recoil", "live": false, "basis": "..."},
+      {"type": "restoration-recoil", "subtype": "scope-protest", "live": false, "basis": "..."}
+    ],
+    "field_state_at_stop": {
+      "divergence": "neutral",
+      "curl": "null",
+      "b_live": "empty",
+      "kappa_residual": 0
+    },
+    "stop_licensed": true
+  }
+}
+```
+
+The proof object has three obligations:
+
+1. Every canonical escape-route type is checked exactly once. A route marked `live: false` needs a
+   named basis; a route marked `live: true` must point to generated-burden, held, HOLD/PARTIAL,
+   RECURSE, LoopBreak, or non-load-bearing evidence already represented in the trace.
+2. `field_state_at_stop` must agree with the formal state and the field diagnostics:
+   divergence is neutral, curl is null or resolved, `B_live` is empty, and `kappa_residual` is `0`.
+3. `stop_licensed` must be true. The license is earned by the structured field proof, not by the
+   model's closure prose.
+
+This keeps C.2/C.3 `escape_routes_checked[]` useful as optional state-local evidence while C.8
+hardens the terminal STOP condition itself.
+
+### Formalism-Emergent Escape-Route Closure
+
+Escape-route closure is not licensed by pre-voicing likely objections. A route becomes live only
+after the runtime lands the current burden and rereads the resulting state:
+
+```text
+Land(Bk)
+  -> R(H,Delta)
+  -> evaluate B_live, kappa, Reg, Routes
+  -> detect live escape_routes(D0, traversal)
+  -> generate B_MRP, route HOLD/PARTIAL/RECURSE, LoopBreak, or prove non-load-bearing
+```
+
+Thus a live `escape_routes_checked[]` entry must cite post-Land state evidence: the landed delta,
+the `R(H,Delta)` reread, the route-gradient, divergence/curl state, live register pressure, or a
+graph/commitment/framework pressure that appears after the delta. A stock list such as "the user
+might object" or "likely reply" is not an MRP resultant. It becomes checkable only when the
+post-Land state shows that the route is live and the witness records how it was generated, held,
+bounded, or dismissed as non-load-bearing.
+
+### Collapse-Positive Restoration Proof
+
+Define `controlling_misread(S)` over the runtime state `S` as true when some live or hidden burden,
+dependency, register pressure, route loop, or source/order deformation still governs the execution
+field after traversal. In the current schema-light proof surface, that means at least one of these
+holds: terminal accounting is incomplete, `∇·B` remains non-neutral, `∇×κ` remains non-null and
+unresolved, or live material is neither landed nor honestly held as PARTIAL/RECURSE.
+
+Within the scoped runtime execution field:
+
+```text
+controlling_misread(S) = false
+  iff coverage_complete
+      and ∇·B = neutral
+      and ∇×κ in {null, resolved}
+  iff collapse_positive(S)
+```
+
+The forward direction holds because if no governing misread remains, every diagnosed burden is
+terminally accounted, no outward burden pressure remains, and no unresolved circular dependency
+controls the route. The reverse direction holds by the definitions of coverage completeness, the
+MRP Exhaustion Lemma, and curl resolution: there is no silent burden, no live generated pressure,
+and no unresolved loop left with control of the runtime field.
+
+The endpoint `N_fiṭrī ∧ ʿaql ṣarīḥ` is therefore a restoration claim about the runtime-side
+orientation of the response: the obstructing misread no longer governs the field, so the response
+can be released from the fitri/sound-reason orientation rather than from the defeated frame. This
+does not install belief in the interlocutor, prove uptake, or claim access to the soul. By the
+`T_lang` partiality proof, the public response is a partial coupling attempt from the completed
+runtime field toward the diagnosed interlocutor field.
 
 ## Adjudication Summary
 
@@ -280,8 +745,11 @@ runtime must either license a loop-breaker or hold/recurse/partial the loop with
 loop-breaker names the target loop, grounding source, burden/submove, `Δ` effect, post-break
 `∇×T` reread, and closure/hold result. Owner-licensed grounds include fiṭrah, `ʿaql ṣarīḥ`,
 necessary knowledge, direct contradiction exposure, definition discipline, source-status
-correction, or another non-circular owner ground. It is invalid to use loop-breaking as arbitrary
-assertion.
+correction, or doubt-churn boundary. The machine vocabulary is closed:
+`fitrah_ground`, `sound_reason_ground`, `necessary_knowledge`,
+`direct_contradiction_exposure`, `definition_discipline`, `source_status_correction`, and
+`doubt_churn_boundary`. It is invalid to use loop-breaking as arbitrary assertion or to invoke an
+open-ended "another non-circular owner ground" without one of these licensed grounds.
 
 `𝒞(Ψᴺ)` is the positive closure-field condition over the agent execution field. It is not simply
 "no checklist item remains." The field must reach the target configuration: burdens landed or
@@ -300,6 +768,23 @@ candidate noetic structures, the runtime should hold alternatives through `read_
 `confidence`, `decisive_missing_differentiator`, `what_remains_live`, or route notes rather than
 certifying a single interlocutor field. This is still schema-light: uncertainty may be compact, and
 ordinary output should not grow a decorative uncertainty paragraph.
+
+### T_lang Partiality Proof
+
+`T_lang: Ψᴺ ⇢ Ψᴵ` is partial by the state definition. `Ψᴺ` is the runtime-accessible execution
+field: the system can inspect its selected/held `N`, live burdens, owner routes, deltas,
+diagnostics, closure state, and rendered response. `Ψᴵ` is not directly accessible; it is inferred
+from public discourse, profile signals, register evidence, source-status evidence, and later
+responses. The release step emits natural language into a public channel that may be misunderstood,
+refused, ignored, reframed, or answered from a different held structure.
+
+Therefore `T_lang` cannot be a total function from runtime closure to interlocutor update. It also
+cannot be an isomorphism, because the runtime's internal proof graph and the interlocutor's noetic
+field do not expose the same state space. It is not a surjection, because many possible
+interlocutor states are not reachable by one response and some are not under the runtime's control
+at all. The release claim is only that the response is structured to carry the completed
+`Ψᴺ` perturbation honestly. It is not a claim of soul access, guidance control, guaranteed uptake,
+or exhaustive model identity.
 
 The diagnostic is operative only when it changes owner/TTP eligibility, held material,
 hold/release posture, burden selection, dependency radius, `R(H,Δ)`, PARTIAL/RECURSE/COMPLETE,

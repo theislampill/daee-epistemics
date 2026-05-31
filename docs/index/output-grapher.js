@@ -278,7 +278,53 @@
   }
 
   function blankModel(){
-    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],ledger:{B_LA:[],B_MRP:[],B_total:[]},submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',sourceSections:[],zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{},mrpSourceTexts:{},burdenSetupTexts:{},burdenSetupHeadings:{},hiddenPremiseTexts:{},hiddenPremiseHeadings:{},compactLayerA:'',compactLayerAHeading:'',bannerText:'',closureWitnessText:''}};
+    return {nodes:{},edges:[],errors:[],warnings:[],initialBurdens:[],burdens:[],bodyBurdens:[],ledger:{B_LA:[],B_MRP:[],B_total:[]},submoves:{},terminals:{},mrp:{},graphEdges:[],generatedBurdens:{},closureComplete:false,hasLayerA:false,hasBanner:false,hasRestoration:false,legacyAliases:[],witnessMismatches:[],witnessSources:{embedded:false,separate:false},collapseCertificate:{present:false,valid:false,errors:[],fields:{},payload:null},inputDigest:'pasted daee-epistemics output',fieldType:'not detected',caseProfile:'not detected',claimType:'not detected',diagnosis:'not detected',held:'not detected',collapse:{},restorationAim:'not detected',restorativeResponse:'',closingFormulation:'',sourceSections:[],zones:{bodyProse:'',closureWitness:''},bodyExtract:{burdenTitles:{},submoveTexts:{},submoveDetails:{},landTexts:{},rereadTexts:{},mrpTexts:{},mrpSourceTexts:{},burdenSetupTexts:{},burdenSetupHeadings:{},hiddenPremiseTexts:{},hiddenPremiseHeadings:{},compactLayerA:'',compactLayerAHeading:'',bannerText:'',closureWitnessText:''}};
+  }
+
+  function parseCollapseCertificate(certificateText){
+    const raw=String(certificateText||'').trim();
+    const empty={present:false,valid:false,errors:[],fields:{},payload:null};
+    if(!raw) return empty;
+    let payload;
+    try{
+      payload=JSON.parse(raw);
+    }catch(err){
+      return {present:true,valid:false,errors:[`certificate JSON invalid: ${err.message||err}`],fields:{},payload:null};
+    }
+    if(!payload || typeof payload!=='object' || Array.isArray(payload)){
+      return {present:true,valid:false,errors:['certificate root must be a JSON object'],fields:{},payload:null};
+    }
+    const required=['input_fingerprint','collapse_positive','coverage_complete','diagnostic_completeness','divergence_state','curl_state','max_generation_depth','checker_version'];
+    const errors=required.filter(key=>payload[key]===undefined || payload[key]===null || payload[key]==='').map(key=>`certificate missing ${key}`);
+    const fields={
+      input_fingerprint:String(payload.input_fingerprint||''),
+      collapse_positive:payload.collapse_positive,
+      coverage_complete:payload.coverage_complete,
+      diagnostic_completeness:payload.diagnostic_completeness,
+      divergence_state:String(payload.divergence_state||''),
+      curl_state:String(payload.curl_state||''),
+      max_generation_depth:payload.max_generation_depth,
+      restoration_endpoint_reached:payload.restoration_endpoint_reached,
+      verified_activations:Array.isArray(payload.verified_activations)?payload.verified_activations.map(String):[],
+      checker_version:String(payload.checker_version||'')
+    };
+    return {present:true,valid:errors.length===0,errors,fields,payload};
+  }
+
+  function attachCollapseCertificate(model,certificateText){
+    const certificate=parseCollapseCertificate(certificateText);
+    model.collapseCertificate=certificate;
+    if(!certificate.present) return;
+    certificate.errors.forEach(error=>model.errors.push(`collapse certificate sidecar: ${error}`));
+    model.warnings.push('browser certificate display is advisory; run the Python certificate-backed Output Grapher checker for B.1/B.2/B.4 agreement');
+    const divergence=String(model.collapse?.divergence||model.collapse?.delDot||'').trim();
+    const curl=String(model.collapse?.curl||model.collapse?.delCross||'').trim();
+    if(certificate.valid && divergence && certificate.fields.divergence_state && !divergence.toLowerCase().includes(certificate.fields.divergence_state.toLowerCase())){
+      model.warnings.push(`collapse certificate sidecar divergence_state=${certificate.fields.divergence_state} differs from visible graph divergence=${divergence}`);
+    }
+    if(certificate.valid && curl && certificate.fields.curl_state && !curl.toLowerCase().includes(certificate.fields.curl_state.toLowerCase())){
+      model.warnings.push(`collapse certificate sidecar curl_state=${certificate.fields.curl_state} differs from visible graph curl=${curl}`);
+    }
   }
 
   function lineBurdens(line,model,lineNo){
@@ -352,7 +398,7 @@
     if(currentMrpBurden){const m=ensureMrp(model,currentMrpBurden,lineNo); if(!m.edges.some(e=>e[0]===s&&e[1]===t)) m.edges.push([s,t]);}
   }
 
-  function parseOutput(text,witnessText){
+  function parseOutput(text,witnessText,certificateText){
     const model=blankModel();
     addNode(model,{id:'input',kind:'input',label:'input',line:0,excerpt:'pasted daee-epistemics output'});
     const sourceText=String(text||'');
@@ -597,6 +643,7 @@
     if(zones.embeddedFieldWitness) compareWitness(model,zones.embeddedFieldWitness,'embedded field_witness');
     if(String(witnessText||'').trim()) compareWitness(model,witnessText,'separate field_witness');
     compareEmbeddedAndSeparateWitness(model,zones.embeddedFieldWitness,witnessText);
+    attachCollapseCertificate(model,certificateText);
     return model;
   }
 
@@ -1584,6 +1631,30 @@
     if(model.restorationAim&&model.restorationAim!=='not detected') return `Restoration aim from output: ${model.restorationAim}`;
     return collapseLabel(model);
   }
+  function certificateStatusLabel(model){
+    const cert=model.collapseCertificate||{};
+    if(!cert.present) return '';
+    if(!cert.valid) return 'certificate sidecar invalid';
+    return cert.fields?.collapse_positive===true?'certificate collapse_positive=true':'certificate displayed';
+  }
+  function renderCertificateSummary(model){
+    const cert=model.collapseCertificate||{};
+    if(!cert.present) return '';
+    const fields=cert.fields||{};
+    const status=cert.valid?'accepted for display':'invalid sidecar';
+    const fingerprint=fields.input_fingerprint?`${fields.input_fingerprint.slice(0,24)}...`:'missing';
+    const rows=[
+      `collapse_positive=${String(fields.collapse_positive)}`,
+      `coverage_complete=${String(fields.coverage_complete)}`,
+      `diagnostic_completeness=${String(fields.diagnostic_completeness)}`,
+      `∇·B=${fields.divergence_state||'missing'}`,
+      `∇×κ=${fields.curl_state||'missing'}`,
+      `max_generation_depth=${String(fields.max_generation_depth??'missing')}`,
+      `input_fingerprint=${fingerprint}`
+    ];
+    const errors=(cert.errors||[]).map(error=>`<li>${esc(error)}</li>`).join('');
+    return `<section class="outputGrapherTopCard outputGrapherCertificateCard"><h3>Collapse Certificate</h3><p><strong>${esc(status)}</strong></p><ul>${rows.map(row=>`<li>${esc(row)}</li>`).join('')}</ul>${errors?`<p class="outputGrapherError">Certificate sidecar problems:</p><ul>${errors}</ul>`:''}<p class="outputGrapherTechMeta">Browser display is advisory; proof-mode agreement still belongs to the Python certificate-backed checker.</p></section>`;
+  }
   function renderTopSummary(model){
     const inventory=baselineBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('')||'<li>not detected</li>';
     const generatedFollowup=generatedBurdenLabels(model,20).map(item=>`<li>${esc(item)}</li>`).join('');
@@ -1600,6 +1671,7 @@
       <section class="outputGrapherTopCard"><h3>Main Problems In The Reply</h3><ul>${inventory}</ul><p class="outputGrapherTechMeta">Baseline only: this section lists B_LA. Ledger: B_LA=${esc(baseline)}; B_MRP=${esc(generated)}; B_total=${esc(total)}; B_total = B_LA ∪ B_MRP when generated pressure is present.</p></section>
       ${generatedFollowup?`<section class="outputGrapherTopCard"><h3>Preempted Problems Surfaced By Reread</h3><ul>${generatedFollowup}</ul><p class="outputGrapherTechMeta">Technical: B_MRP. Generated burdens are shown separately from Main Problems and must carry generated-by MRP provenance.</p></section>`:''}
       <section class="outputGrapherTopCard"><h3>Closure / Restoration Status</h3><p><strong>${esc(collapseLabel(model))}</strong></p><p>The map shows whether the reply is closed, held, partial, or still live after the final pressure-check.</p><p class="outputGrapherTechMeta">Technical reading: route-gradient=${esc(collapse.routeGradient||'not detected')}; del-dot=${esc(collapse.delDot||collapse.divergence||'not detected')}; del-cross=${esc(collapse.delCross||collapse.curl||'not detected')}; T_lang=${esc(collapse.tLang||'boundary not detected')}</p></section>
+      ${renderCertificateSummary(model)}
     </div><div class="outputGrapherPillRow"><span class="outputGrapherPill ${pillStatus}">Parser verdict: ${model.errors.length?'not reconstructible':'reconstructible'}</span><span class="outputGrapherPill">Problems: ${model.burdens.length}</span><span class="outputGrapherPill">TTP moves: ${Object.values(model.submoves).reduce((a,b)=>a+b.length,0)}</span><span class="outputGrapherPill">Follow-up checks: ${Object.keys(model.mrp).length}</span><span class="outputGrapherPill">Terminal states: ${Object.keys(model.terminals).length}</span></div>`;
   }
 
@@ -1977,6 +2049,18 @@
     introParts.push(caseCard.svg); y+=caseCard.height+20;
     const verdictCard=storySectionBlock(verdict.headline,verdict.body,margin,y,cardW,{fill:'#071a12',stroke:'#10b981',maxLines:0,titleSize:38,bodySize:25,lineHeight:38,pad:34});
     introParts.push(verdictCard.svg); y+=verdictCard.height+18;
+    if(model.collapseCertificate?.present){
+      const cert=model.collapseCertificate, fields=cert.fields||{};
+      const certItems=[
+        `collapse_positive=${String(fields.collapse_positive)}`,
+        `coverage_complete=${String(fields.coverage_complete)}`,
+        `diagnostic_completeness=${String(fields.diagnostic_completeness)}`,
+        `input_fingerprint=${fields.input_fingerprint?String(fields.input_fingerprint).slice(0,32):'missing'}`,
+        `∇·B=${fields.divergence_state||'missing'}; ∇×κ=${fields.curl_state||'missing'}`
+      ];
+      const certCard=storySectionBlock('Collapse Certificate',certificateStatusLabel(model),margin,y,cardW,{fill:'#07130c',stroke:cert.valid?'#22c55e':'#ef4444',items:certItems,technical:'Browser certificate display is advisory; proof-mode agreement still belongs to the Python certificate-backed checker.',maxLines:0,titleSize:30,bodySize:21,lineHeight:32,pad:32,badges:[{label:cert.valid?'certificate sidecar':'invalid certificate sidecar',color:cert.valid?'#166534':'#991b1b'}],klass:'outputGrapherStoryPanel outputGrapherKeyValuePanel outputGrapherCertificateDisplay'});
+      introParts.push(certCard.svg); y+=certCard.height+18;
+    }
     const claimCard=storySectionBlock('Reply / claim being rejected',readerInputDigest(model),margin,y,cardW,{fill:'#111827',stroke:'#475569',maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
     introParts.push(claimCard.svg); y+=claimCard.height+18;
     const diagCard=storySectionBlock('What the reply depends on',diagnosisDigest(model,burdens),margin,y,cardW,{fill:'#0b1220',stroke:'#475569',items:diagnosisItems(model,burdens),technical:technicalDiagnosis(model),maxLines:0,titleSize:30,bodySize:22,lineHeight:34,pad:34});
@@ -2773,13 +2857,17 @@
   function init(){
     const parse=document.getElementById('ogParseBtn');
     if(!parse) return;
-    parse.addEventListener('click',()=>render(parseOutput(document.getElementById('ogOutputInput')?.value||'',document.getElementById('ogWitnessInput')?.value||'')));
+    parse.addEventListener('click',()=>render(parseOutput(
+      document.getElementById('ogOutputInput')?.value||'',
+      document.getElementById('ogWitnessInput')?.value||'',
+      document.getElementById('ogCertificateInput')?.value||''
+    )));
     document.getElementById('ogExportPngBtn')?.addEventListener('click',exportPng);
     document.getElementById('ogExportPngSectionsBtn')?.addEventListener('click',exportPngSections);
     document.getElementById('ogExportSvgBtn')?.addEventListener('click',exportSvg);
     document.getElementById('ogExportJsonBtn')?.addEventListener('click',exportJson);
     document.getElementById('ogExportMermaidBtn')?.addEventListener('click',exportMermaid);
   }
-  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport,sectionExportPlan,sourceRenderLayer};
+  window.daeeOutputGrapher={parseOutput,renderGraph,exportPng,exportPngSections,exportSvg,exportJson,exportCoverageReport,sectionExportPlan,sourceRenderLayer,parseCollapseCertificate};
   document.addEventListener('DOMContentLoaded',init);
 })();

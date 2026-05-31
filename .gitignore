@@ -5,6 +5,7 @@ HANDOFF.md
 
 # Build / release artifacts
 build/
+/.release/
 /skill/
 *.skill
 *.skill.zip
