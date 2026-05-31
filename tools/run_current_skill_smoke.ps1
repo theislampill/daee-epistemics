@@ -1,19 +1,35 @@
+[CmdletBinding(DefaultParameterSetName = "Run")]
 param(
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Run")]
+    [Parameter(Mandatory = $true, ParameterSetName = "ProofSidecarSelfTest")]
     [string]$Root,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Run")]
     [string]$CaseName,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Run")]
     [string]$PromptPath,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ParameterSetName = "Run")]
     [string]$RunDir,
 
+    [Parameter(ParameterSetName = "Run")]
     [string]$Model = "gpt-5.5",
 
-    [string]$OutputBaseName = ""
+    [Parameter(ParameterSetName = "Run")]
+    [string]$OutputBaseName = "",
+
+    [Parameter(ParameterSetName = "Run")]
+    [switch]$BuildProofSidecars,
+
+    [Parameter(ParameterSetName = "Run")]
+    [string]$RawInputPath = "",
+
+    [Parameter(ParameterSetName = "Run")]
+    [string]$ProofSidecarDir = "",
+
+    [Parameter(Mandatory = $true, ParameterSetName = "ProofSidecarSelfTest")]
+    [switch]$ProofSidecarSelfTest
 )
 
 $ErrorActionPreference = "Stop"
@@ -51,6 +67,7 @@ if ($currentPath -ne $rootPath) {
 $requiredFiles = @(
     (Join-Path $rootPath "skill\SKILL.md"),
     (Join-Path $rootPath "tools\build_compiled_runtime.py"),
+    (Join-Path $rootPath "tools\build_retained_proof_sidecars.py"),
     (Join-Path $rootPath "docs\audits\v0.4.3.0-implementaudit-orchestrator.md")
 )
 
@@ -60,11 +77,32 @@ foreach ($required in $requiredFiles) {
     }
 }
 
+if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
+    & python (Join-Path $rootPath "tools\build_retained_proof_sidecars.py") --self-test
+    if ($LASTEXITCODE -ne 0) {
+        throw "Proof sidecar self-test failed."
+    }
+    Write-Host "current-skill smoke proof-sidecar self-test: PASS"
+    return
+}
+
 $promptFullPath = Resolve-PathUnderRoot -RootPath $rootPath -PathValue $PromptPath
 if (-not (Test-Path -LiteralPath $promptFullPath -PathType Leaf)) {
     throw "PromptPath does not exist: $promptFullPath"
 }
 $promptFullPath = (Resolve-Path -LiteralPath $promptFullPath).Path
+
+$rawInputFullPath = $null
+if ($BuildProofSidecars) {
+    if ([string]::IsNullOrWhiteSpace($RawInputPath)) {
+        throw "RawInputPath is required when BuildProofSidecars is set."
+    }
+    $rawInputFullPath = Resolve-PathUnderRoot -RootPath $rootPath -PathValue $RawInputPath
+    if (-not (Test-Path -LiteralPath $rawInputFullPath -PathType Leaf)) {
+        throw "RawInputPath does not exist: $rawInputFullPath"
+    }
+    $rawInputFullPath = (Resolve-Path -LiteralPath $rawInputFullPath).Path
+}
 
 $runDirPath = Resolve-PathUnderRoot -RootPath $rootPath -PathValue $RunDir
 if (-not (Test-Path -LiteralPath $runDirPath -PathType Container)) {
@@ -134,6 +172,57 @@ finally {
 }
 Set-Content -LiteralPath $exitPath -Encoding ASCII -Value $codexExit
 
+$proofSidecarRecord = $null
+if (($codexExit -eq 0) -and $BuildProofSidecars) {
+    if ([string]::IsNullOrWhiteSpace($ProofSidecarDir)) {
+        $proofSidecarDirPath = Join-Path $runDirPath "proof-sidecars"
+    }
+    else {
+        $proofSidecarDirPath = Resolve-PathUnderRoot -RootPath $rootPath -PathValue $ProofSidecarDir
+    }
+    if (-not (Test-Path -LiteralPath $proofSidecarDirPath -PathType Container)) {
+        New-Item -ItemType Directory -Path $proofSidecarDirPath | Out-Null
+    }
+    $proofSidecarDirPath = (Resolve-Path -LiteralPath $proofSidecarDirPath).Path
+
+    $builderArgs = @(
+        (Join-Path $rootPath "tools\build_retained_proof_sidecars.py"),
+        "--input", $rawInputFullPath,
+        "--output", $outputPath,
+        "--out-dir", $proofSidecarDirPath,
+        "--prefix", $OutputBaseName,
+        "--force"
+    )
+    & python @builderArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "Proof sidecar build failed for CaseName='$CaseName'."
+    }
+
+    $proofCertificatePath = Join-Path $proofSidecarDirPath "$OutputBaseName.collapse-certificate.json"
+    $proofGrapherPath = Join-Path $proofSidecarDirPath "$OutputBaseName.grapher.html"
+    $proofHashesPath = Join-Path $proofSidecarDirPath "$OutputBaseName.hashes.json"
+    $proofSidecarRecord = [ordered]@{
+        raw_input = @{
+            path = $rawInputFullPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $rawInputFullPath).Hash
+        }
+        out_dir = $proofSidecarDirPath
+        collapse_certificate = @{
+            path = $proofCertificatePath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofCertificatePath).Hash
+        }
+        grapher_html = @{
+            path = $proofGrapherPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofGrapherPath).Hash
+        }
+        hashes = @{
+            path = $proofHashesPath
+            sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofHashesPath).Hash
+        }
+        command = "python $($builderArgs -join ' ')"
+    }
+}
+
 $hashRecord = [ordered]@{
     case_name = $CaseName
     root = $rootPath
@@ -162,6 +251,9 @@ $hashRecord = [ordered]@{
     }
     command = "codex $($codexArgs -join ' ')"
 }
+if ($null -ne $proofSidecarRecord) {
+    $hashRecord["proof_sidecars"] = $proofSidecarRecord
+}
 
 $hashRecord | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $hashPath -Encoding UTF8
 
@@ -175,3 +267,8 @@ Write-Host "output: $outputPath"
 Write-Host "log: $logPath"
 Write-Host "exit: $exitPath"
 Write-Host "hashes: $hashPath"
+if ($null -ne $proofSidecarRecord) {
+    Write-Host "proof-sidecar certificate: $($proofSidecarRecord.collapse_certificate.path)"
+    Write-Host "proof-sidecar grapher: $($proofSidecarRecord.grapher_html.path)"
+    Write-Host "proof-sidecar hashes: $($proofSidecarRecord.hashes.path)"
+}
