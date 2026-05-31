@@ -19,21 +19,23 @@ orchestration/custody metadata only, never proof.
 
 ## Tooling Boundary
 
-The currently exposed Codex lifecycle tool surface is limited. Tool discovery
-has exposed `resume_agent` and `close_agent`; it has not exposed reliable
-session creation, list, read, rename/title, hidden-sidebar inventory, or
+The currently exposed Codex lifecycle tool surface is limited but usable for
+fresh bounded scout sessions. Tool discovery has exposed `spawn_agent`,
+`wait_agent`, `send_input`, `resume_agent`, and `close_agent`; it has not
+exposed reliable session list, read, rename/title, hidden-sidebar inventory, or
 archive/delete controls in this run.
 
 Therefore:
 
 - session names below are the required naming convention for any session that is
-  created or renamed by an available future tool surface;
+  created by the available tool surface or renamed by a future tool surface;
 - this file is the tracked session map until stronger lifecycle tools are
   available;
 - no hidden UI session rename is claimed;
 - no session deletion is allowed;
-- no session close/archive is allowed unless the report is preserved in the
-  orchestrator/open ledger and the exact session ID is approved where required;
+- fresh scout/verification sessions may be closed after their reports are
+  integrated; historical D.8 cleanup still requires exact ID approval where
+  required;
 - existing historical sessions from D.8 remain governed by D.8, not this file.
 
 ## Session Classes
@@ -184,11 +186,17 @@ by exact ID/session.
 
 ## Current Exposed Agent Inventory
 
-The current environment exposes one named subagent in context:
+The current environment exposes the prior D.8 evidence agent plus the fresh
+read-only scout agents from the 2026-05-31 post-v0.4.3.x scout refresh:
 
 | Agent ID | Visible Name | Current Use | Rule |
 |---|---|---|---|
 | `019e7e9e-eed7-7712-8317-61ad892d2355` | Averroes | Prior D.8 read-only refresh evidence cited in target-row status | Preserve as evidence source; do not close/delete/archive without D.8 exact-ID approval |
+| `019e8004-5c45-78f3-9cc1-47116247f54d` | Kuhn | `SCOUT-ledger-truthfulness`; found docs-only truthfulness drift | May be closed after integration; no source changes |
+| `019e8004-7d1d-79a1-acd8-811c7b160628` | Ptolemy | `SCOUT-D3-mixed-concealment`; identified fixture 62 as D.3-adjacent owner-decision candidate and AS/MM static slices as already closed | May be closed after integration; no source changes |
+| `019e8004-9f59-7f13-86c1-66859ed5f7c8` | Fermat | `SCOUT-B-sidecar-residuals`; identified canonical coverage-target pinning as the next no-model sidecar/accounting candidate | May be closed after integration; no source changes |
+| `019e8004-c013-74b0-b0bb-3d3707b75b4c` | Peirce | `SCOUT-C5-C7-matrix`; confirmed current retained matrix closure for the named schema-light target set | May be closed after integration; no source changes |
+| `019e8004-ed90-7993-801e-33c5017ebcaa` | Nietzsche | `SCOUT-A13-follow-on`; confirmed A.13 follow-on remains owner-gated | May be closed after integration; no source changes |
 
 Historical 475-row D.8 inventory remains governed by
 `.daee/thread-audit/20260530-131739/subagent-sidebar-inventory.{json,md}` and
@@ -275,9 +283,13 @@ The managing session chooses exactly one lane using this priority:
 4. A.13.2 decision packet, not implementation;
 5. broader model-smoke work only with explicit authorization.
 
-Current selected lane after this policy update: finish the existing docs-only
-ledger truthfulness cleanup for D.3/MM-2, then return to the priority list
-above. No implementation session is opened by this policy update.
+Current selected lane after the 2026-05-31 scout refresh: docs-only ledger and
+session truthfulness. Specifically, record that AS-8/MM-2/MM-5/MM-7/MM-8 static
+D.3 slices are already source-boundary covered; fixture 62 remains a
+D.3-adjacent owner-decision candidate; B-sidecar canonical coverage-target
+pinning is the next no-model checker/accounting candidate; and A.13 follow-on
+implementation remains owner-gated. No implementation session is opened by this
+policy update.
 
 ## Boundaries
 
