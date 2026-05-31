@@ -346,6 +346,18 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
             missing_rows = [row for row in rows if row not in case_rows]
             if missing_rows:
                 errors.append(f"{prefix}.case_ids.{case_id}: missing target rows {missing_rows}")
+        if rows and case_ids:
+            target_rows = set(rows)
+            expected_case_ids = [
+                case_id
+                for case_id, case in cases_by_id.items()
+                if target_rows.issubset(set(string_list(case.get("rows")) or []))
+            ]
+            missing_case_ids = [case_id for case_id in expected_case_ids if case_id not in seen_case_ids]
+            if missing_case_ids:
+                errors.append(
+                    f"{prefix}.case_ids: missing retained cases carrying target rows {missing_case_ids}"
+                )
     return errors
 
 
