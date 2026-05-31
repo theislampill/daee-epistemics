@@ -164,6 +164,26 @@ MUTATION_ANTI_HOLD_RE = re.compile(
     r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|withhold|defer)\b.{0,160}"
     r"\b(?:next\s+topical\s+answer|topical\s+answer|content\s+answer)\b"
 )
+COLLAPSE_RADIUS_MAPPING_RE = re.compile(
+    r"(?is)\b(?:MM-8|collapse[- ]radius\s+mapping|map\s+collapse\s+radius|"
+    r"downstream\s+dependency\s+set)\b"
+)
+COLLAPSE_RADIUS_REREAD_RE = re.compile(
+    r"(?is)\b(?:all\s+dependent\s+(?:claims|routes)|dependent\s+claims/routes|"
+    r"dependency\s+map\s+and\s+reread|reread\s+dependency\s+radius)\b.{0,260}"
+    r"\b(?:STOP|HOLD|PARTIAL|RECURSE|NewB)\b|"
+    r"\b(?:STOP|HOLD|PARTIAL|RECURSE|NewB)\b.{0,260}"
+    r"\b(?:all\s+dependent\s+(?:claims|routes)|dependent\s+claims/routes|"
+    r"dependency\s+map\s+and\s+reread|reread\s+dependency\s+radius)\b"
+)
+COLLAPSE_RADIUS_ANTI_REREAD_RE = re.compile(
+    r"(?is)\b(?:answer\s+every\s+downstream\s+topic|downstream\s+topic\s+answers|"
+    r"downstream\s+claims)\b.{0,180}"
+    r"\b(?:released\s+anyway|not\s+(?:held|reread|blocked|deferred)|may\s+proceed|"
+    r"can\s+proceed|answered\s+without\s+reread)\b|"
+    r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|defer|reread)\b.{0,180}"
+    r"\b(?:downstream\s+topic\s+answers|downstream\s+claims|dependent\s+claims)\b"
+)
 IRAD_CONTEXT_RE = re.compile(
     r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
     r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
@@ -238,6 +258,19 @@ def has_mutation_comparison(text: str) -> bool:
     return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
 
 
+def has_collapse_radius_mapping(text: str) -> bool:
+    if not COLLAPSE_RADIUS_MAPPING_RE.search(text):
+        return False
+    required = (
+        r"\b(?:loaded\s+(?:assumption|node)|node\s+and\s+dependency\s+radius|node\s+is\s+typed)\b",
+        r"\bimmediate\s+(?:and\s+)?(?:downstream\s+)?routes\b|\bimmediate\s+routes\b",
+        r"\b(?:downstream|distant)\s+routes\b",
+        r"\bdepend(?:s|ent)?\s+on\s+the\s+node\b",
+        r"\b(?:dependency|collapse)[- ]radius\b",
+    )
+    return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
+
+
 def has_clarification_pressure(value: str, block: str) -> bool:
     return bool(CLARIFICATION_PRESSURE_RE.search(value) or CLARIFICATION_PRESSURE_RE.search(block))
 
@@ -263,6 +296,7 @@ def check_text(path: Path, text: str) -> list[str]:
     source_stack_ambiguous = bool(SOURCE_STACK_AMBIGUITY_RE.search(text))
     proof_packet_active = bool(PROOF_PACKET_RE.search(text))
     mutation_after_challenge_active = bool(MUTATION_AFTER_CHALLENGE_RE.search(text))
+    collapse_radius_mapping_active = bool(COLLAPSE_RADIUS_MAPPING_RE.search(text))
     if source_stack_ambiguous:
         if not SOURCE_USE_FUNCTION_RE.search(text):
             errors.append(
@@ -294,6 +328,17 @@ def check_text(path: Path, text: str) -> list[str]:
             errors.append(
                 f"{path}: MM-7 mutation-after-challenge must hold the next topical answer "
                 "until same-function survival versus NewB/new-burden status is decided"
+            )
+    if collapse_radius_mapping_active:
+        if not has_collapse_radius_mapping(text):
+            errors.append(
+                f"{path}: MM-8 collapse-radius mapping requires the loaded node, immediate routes, "
+                "downstream routes, node dependency, and dependency/collapse radius to be typed"
+            )
+        if COLLAPSE_RADIUS_ANTI_REREAD_RE.search(text) or not COLLAPSE_RADIUS_REREAD_RE.search(text):
+            errors.append(
+                f"{path}: MM-8 collapse-radius mapping must reread dependent claims/routes and decide "
+                "STOP, HOLD, PARTIAL, RECURSE, or NewB before downstream topic answers release"
             )
     if framework_active and not matches:
         errors.append(f"{path}: operative framework/worldview covering requires a visible Concealment mode line")
