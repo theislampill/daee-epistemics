@@ -367,7 +367,20 @@ def self_test() -> int:
     with TemporaryDirectory(prefix="promote-hash-record-", dir=scratch_root) as scratch_dir_name:
         scratch_dir = Path(scratch_dir_name)
         sidecar_hashes = scratch_dir / "sidecar.hashes.json"
-        write_json(sidecar_hashes, {"fixture": "promote-a9-from-smoke-hash-record"})
+        write_json(
+            sidecar_hashes,
+            {
+                "schema_version": "v0.4.3.0-retained-proof-sidecars-v1",
+                "input": rel(retained_paths["input"]),
+                "output": rel(retained_paths["output"]),
+                "artifacts": {
+                    "input": sha256_file(retained_paths["input"]),
+                    "output": sha256_file(retained_paths["output"]),
+                    "collapse_certificate": sha256_file(retained_paths["collapse_certificate"]),
+                    "grapher_html": sha256_file(retained_paths["grapher_html"]),
+                },
+            },
+        )
 
         valid_record = scratch_dir / "smoke.hashes.json"
         write_self_test_hash_record(
@@ -422,7 +435,11 @@ def self_test() -> int:
         try:
             source_paths_from_hash_record(invalid_record)
         except SystemExit as exc:
-            if "hash record output sha256 mismatch" not in str(exc):
+            stale_output_markers = (
+                "hash record output sha256 mismatch",
+                "output sha256 mismatch",
+            )
+            if not any(marker in str(exc) for marker in stale_output_markers):
                 print("retained proof case promotion self-test: FAIL")
                 print(f"- stale-output canary failed with unexpected error: {exc}")
                 return 1

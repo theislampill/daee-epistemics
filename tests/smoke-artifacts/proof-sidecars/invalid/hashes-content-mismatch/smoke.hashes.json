@@ -1,25 +1,25 @@
 {
-  "case_name": "proof-sidecar-hash-record-valid",
+  "case_name": "proof-sidecar-hash-record-hashes-content-mismatch",
   "output": {
-    "path": "output.md",
+    "path": "../../valid/complete/output.md",
     "sha256": "AEE2A5BB992C9533A42163958D3FA12505C65B94212E364A6FDFE09418EA82B4"
   },
   "proof_sidecars": {
     "raw_input": {
-      "path": "raw-input.md",
+      "path": "../../valid/complete/raw-input.md",
       "sha256": "A7E97859CF1356E1FAC165ABE8D2B6A2E143906E606D362D09F28F5CD1AB35B1"
     },
     "collapse_certificate": {
-      "path": "collapse-certificate.json",
+      "path": "../../valid/complete/collapse-certificate.json",
       "sha256": "6E56DBC162FF574E16AED1AAF1BF28C73A45D643EE75F3331575A39E496C297A"
     },
     "grapher_html": {
-      "path": "grapher.html",
+      "path": "../../valid/complete/grapher.html",
       "sha256": "A48DDE7BC5314FEFC6D87DF6D811D881FD28B1AD0494C62667ABF0E1216F0249"
     },
     "hashes": {
       "path": "sidecar.hashes.json",
-      "sha256": "88435DC87F3B843F0D302B40CFA503402A8B470FD40C298DD8FEE1902AE08767"
+      "sha256": "A4ECAC7186B4583787B139D205A821133B69BDFFF109EA813DC042BDBE10896C"
     },
     "command": "python tools/build_retained_proof_sidecars.py --input raw-input.md --out-dir . --prefix fixture"
   }
