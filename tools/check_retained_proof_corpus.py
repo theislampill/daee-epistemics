@@ -58,8 +58,15 @@ ALLOWED_COVERAGE_TARGET_FIELDS = set(REQUIRED_COVERAGE_TARGET_FIELDS)
 REQUIRED_CANONICAL_COVERAGE_TARGETS = {
     "b1-graph-completeness-retained-breadth": "B.1",
     "b2-collapse-certificate-retained-breadth": "B.2",
+    "b3-output-grapher-retained-breadth": "B.3",
     "b4-input-fingerprint-retained-breadth": "B.4",
     "b5-nla-decode-retained-breadth": "B.5",
+    "tlang-response-closure-retained-breadth": "T_lang",
+    "c5-named-restoration-recoil-subtypes": "C.5",
+    "c6-two-track-retained-breadth": "C.6",
+    "c7-divergence-curl-retained-breadth": "C.7",
+    "d2-closing-formulation-retained-breadth": "D.2",
+    "d3-mixed-concealment-retained-breadth": "D.3",
 }
 
 

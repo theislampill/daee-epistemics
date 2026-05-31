@@ -1,0 +1,176 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "v0.4.3.0-schema-light-sidecar-backed",
+  "proof_boundary": "Invalid canary: canonical retained sidecar manifest cannot omit the B.3 Output Grapher retained-breadth target.",
+  "coverage_targets": [
+    {
+      "id": "b1-graph-completeness-retained-breadth",
+      "description": "Canonical B.1 target retained for the canary baseline.",
+      "rows": [
+        "B.1"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b2-collapse-certificate-retained-breadth",
+      "description": "Canonical B.2 target retained for the canary baseline.",
+      "rows": [
+        "B.2"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b4-input-fingerprint-retained-breadth",
+      "description": "Canonical B.4 target retained while B.3 is omitted.",
+      "rows": [
+        "B.4"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "b5-nla-decode-retained-breadth",
+      "description": "Canonical B.5 target retained while B.3 is omitted.",
+      "rows": [
+        "B.5"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "tlang-response-closure-retained-breadth",
+      "description": "Canonical T_lang target retained while B.3 is omitted.",
+      "rows": [
+        "T_lang"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "c5-named-restoration-recoil-subtypes",
+      "description": "Canonical C.5 target retained while B.3 is omitted.",
+      "rows": [
+        "C.5"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil"
+      ]
+    },
+    {
+      "id": "c6-two-track-retained-breadth",
+      "description": "Canonical C.6 target retained while B.3 is omitted.",
+      "rows": [
+        "C.6"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "c7-divergence-curl-retained-breadth",
+      "description": "Canonical C.7 target retained while B.3 is omitted.",
+      "rows": [
+        "C.7"
+      ],
+      "case_ids": [
+        "fitrah-restoration-recoil",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "d2-closing-formulation-retained-breadth",
+      "description": "Canonical D.2 target retained while B.3 is omitted.",
+      "rows": [
+        "D.2"
+      ],
+      "case_ids": [
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "d3-mixed-concealment-retained-breadth",
+      "description": "Canonical D.3 target retained while B.3 is omitted.",
+      "rows": [
+        "D.3"
+      ],
+      "case_ids": [
+        "therapy-moral-tribunal"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "fitrah-restoration-recoil",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "T_lang"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": "invalid canary",
+      "input": "../../valid/sidecar-backed/cases/fitrah-restoration-recoil/input.txt",
+      "output": "../../valid/sidecar-backed/cases/fitrah-restoration-recoil/output.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/fitrah-restoration-recoil/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/fitrah-restoration-recoil/grapher.html",
+      "hashes": {
+        "input": "C3F2DF42279D933CCAC28428E06C3768443D64FF1B322D27D2178AD137D45CF8",
+        "output": "647B72552B2DAC3BD3D652130A451F9079397DDF9384B27464C8811EA0052C88",
+        "collapse_certificate": "FA31507A47DE4223323D1B16CB18924E0D808FD9257035F35CE42E8B2063D18A",
+        "grapher_html": "E8A7BE4A4AF91C63CF6E92F9303DFED3055095BC5B07FA1F949D5C6D9520746E"
+      }
+    },
+    {
+      "id": "therapy-moral-tribunal",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "D.3",
+        "T_lang"
+      ],
+      "generated_skill_sha": "0DBEC1A222EB1CFC061D07787EDE768D7CCC122FCA59AEF2B6292D7D7D112EDD",
+      "origin": "invalid canary",
+      "input": "../../valid/sidecar-backed/cases/therapy-moral-tribunal/input.txt",
+      "output": "../../valid/sidecar-backed/cases/therapy-moral-tribunal/output.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/therapy-moral-tribunal/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/therapy-moral-tribunal/grapher.html",
+      "hashes": {
+        "input": "716F6FB5A269B2D5AAFAABDB41D6CF5B844230F1ABFCC243BF05A733E9E0DE7C",
+        "output": "02C259F14F7DE76605BFB24FC51C3C12C22C90C1428BAD214EDDD325B3C70AE8",
+        "collapse_certificate": "139861D46CE83D1C844CA0CFCB5111A57043D4E6C43FCFB0F684FD66880A11C6",
+        "grapher_html": "8F8EE8110B390EB30A60DB8F9759355EC414209585EB9D246D5CA267BDBB6671"
+      }
+    }
+  ]
+}

@@ -283,13 +283,13 @@ The managing session chooses exactly one lane using this priority:
 4. A.13.2 decision packet, not implementation;
 5. broader model-smoke work only with explicit authorization.
 
-Current selected lane after the 2026-05-31 scout refresh: docs-only ledger and
-session truthfulness. Specifically, record that AS-8/MM-2/MM-5/MM-7/MM-8 static
-D.3 slices are already source-boundary covered; fixture 62 remains a
-D.3-adjacent owner-decision candidate; B-sidecar canonical coverage-target
-pinning is the next no-model checker/accounting candidate; and A.13 follow-on
-implementation remains owner-gated. No implementation session is opened by this
-policy update.
+Current lane state after the later 2026-05-31 follow-up: docs-only ledger and
+session truthfulness was committed/pushed, and the B-sidecar canonical
+coverage-target pinning candidate was implemented for all 11 current target
+IDs. AS-8/MM-2/MM-5/MM-7/MM-8 static D.3 slices remain source-boundary covered;
+fixture 62 remains a D.3-adjacent owner-decision candidate; and A.13 follow-on
+implementation remains owner-gated. No new implementation session is opened by
+this policy document itself.
 
 ## Boundaries
 
