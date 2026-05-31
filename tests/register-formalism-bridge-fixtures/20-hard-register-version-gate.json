@@ -1,0 +1,74 @@
+{
+  "id": "hard-register-version-gate",
+  "kind": "positive",
+  "matrix_cases": ["register_activation"],
+  "input": "A proof-method demand, predication confusion, carrier slogan, dependency loop, and restoration recoil all appear in the same noetic field.",
+  "covers": ["D0", "PsiN", "selected_N", "expanded_IR", "heart", "xi", "Omega", "mu", "kappa"],
+  "bridge_terms": {
+    "D0": "The surface discourse contains warrant, predication, carrier, dependency, and restoration-posture signals.",
+    "PsiN": "The encoded field keeps those signals as distinct register controls.",
+    "selected_N": "The selected frame supplies content, while the hard-register object records live control state.",
+    "expanded_IR": "The explicit hard-register version adds machine fields without changing schema-light default output.",
+    "heart": "The restoration-recoil function is live because the response posture itself can become a terminal blocker.",
+    "xi": "The warrant-authority function is live because the proof method is acting as the admissibility tribunal.",
+    "Omega": "The ontology-predication function is live because category transfer changes owner eligibility.",
+    "mu": "The memetic-carrier function is live because slogan compression changes burden selection.",
+    "kappa": "The dependency-collapse function is live because unresolved entailment pressure blocks false closure."
+  },
+  "control_effects": {
+    "owner_choice": ["proof-method-audit", "M9-predication-mode", "pattern-profiling"],
+    "hold_release": "Hold direct response until restoration posture and carrier pressure are typed.",
+    "burden_selection": "Select register-typed burdens from the hard-register live set.",
+    "reread": "After the first operation lands, reread dependency and restoration posture before STOP."
+  },
+  "ir_projection": {
+    "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+    "registers": {
+      "heart": {
+        "state": "live",
+        "functions": ["restoration-recoil"],
+        "basis": ["response posture itself is a possible restoration blocker"]
+      },
+      "xi": {
+        "state": "live",
+        "functions": ["warrant-authority"],
+        "basis": ["proof method governs admissibility"]
+      },
+      "Omega": {
+        "state": "live",
+        "functions": ["ontology-predication"],
+        "basis": ["category transfer changes predication owner eligibility"]
+      },
+      "mu": {
+        "state": "live",
+        "functions": ["memetic-carrier"],
+        "basis": ["slogan compression carries multiple pressures"]
+      },
+      "kappa": {
+        "state": "live",
+        "functions": ["dependency-collapse"],
+        "basis": ["unresolved entailment pressure blocks STOP"]
+      }
+    },
+    "claim_level": "meta-noetic",
+    "routing_gate": "register-hold",
+    "load_bearing_node": "hard-register live set controls owner choice, burden selection, and reread",
+    "matched_modules": ["proof-method-audit", "M9-predication-mode", "pattern-profiling", "recursive-state-transitions"],
+    "output_shape": "single-response",
+    "what_is_withheld_and_why": "Direct release is held until the explicit hard-register live set is reconciled.",
+    "post_render_gate": {
+      "cleared_this_pass": "hard-register state typed and routed",
+      "remaining_live_distortions": "dependency and restoration posture require reread",
+      "held_routes_rechecked": ["proof-method-audit", "M9-predication-mode", "recursive-state-transitions"],
+      "newly_released_routes": ["proof-method-audit"],
+      "next_eligible_pass": "work typed register burdens",
+      "recursion_decision": "RECURSE"
+    }
+  },
+  "source_governance_refs": [
+    "atomics/skill/references/diagnostics/proof-method-audit.md",
+    "atomics/skill/references/tactics/M9-predication-mode.md",
+    "atomics/skill/references/diagnostics/pattern-profiling.md",
+    "atomics/skill/references/diagnostics/recursive-state-transitions.md"
+  ]
+}

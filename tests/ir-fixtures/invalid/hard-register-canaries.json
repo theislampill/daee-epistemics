@@ -1,0 +1,259 @@
+[
+  {
+    "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+    "registers": {
+      "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "xi": { "state": "live", "functions": ["warrant-authority"], "basis": ["criterion pressure"] },
+      "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" }
+    },
+    "case_family": "hard-register-missing-field-canary",
+    "claim_type": "logical",
+    "claim_level": "meta-epistemic",
+    "pattern_profile": "PF-10",
+    "deformation": "missing hard register field",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 1,
+    "routing_gate": "open",
+    "matched_modules": [{ "id": "M1-self-refutation", "module_class": "tactic" }],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: self-refutation pressure",
+          "source_kind": "module",
+          "module_id": "M1-self-refutation",
+          "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+        }
+      ]
+    },
+    "restoration_target": "restore criterion order",
+    "next_move": "repair schema gate",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  {
+    "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+    "registers": {
+      "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "xi": { "state": "live", "functions": ["warrant-authority"], "basis": ["criterion pressure"] },
+      "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "mu": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "zeta": { "state": "live", "functions": ["invented"], "basis": ["invented register"] }
+    },
+    "case_family": "hard-register-unknown-key-canary",
+    "claim_type": "logical",
+    "claim_level": "meta-epistemic",
+    "pattern_profile": "PF-10",
+    "deformation": "unknown hard register key",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 1,
+    "routing_gate": "open",
+    "matched_modules": [{ "id": "M1-self-refutation", "module_class": "tactic" }],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: self-refutation pressure",
+          "source_kind": "module",
+          "module_id": "M1-self-refutation",
+          "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+        }
+      ]
+    },
+    "restoration_target": "restore criterion order",
+    "next_move": "repair schema gate",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  {
+    "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+    "registers": {
+      "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "xi": { "state": "live", "functions": ["generic-warrant"], "basis": ["criterion pressure"] },
+      "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "mu": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" }
+    },
+    "case_family": "hard-register-invalid-token-canary",
+    "claim_type": "logical",
+    "claim_level": "meta-epistemic",
+    "pattern_profile": "PF-10",
+    "deformation": "invalid hard register vocabulary token",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 1,
+    "routing_gate": "open",
+    "matched_modules": [{ "id": "M1-self-refutation", "module_class": "tactic" }],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: self-refutation pressure",
+          "source_kind": "module",
+          "module_id": "M1-self-refutation",
+          "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+        }
+      ]
+    },
+    "restoration_target": "restore criterion order",
+    "next_move": "repair schema gate",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  {
+    "registers": {
+      "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "xi": { "state": "live", "functions": ["warrant-authority"], "basis": ["criterion pressure"] },
+      "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "mu": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" }
+    },
+    "case_family": "schema-light-hard-register-leak-canary",
+    "claim_type": "logical",
+    "claim_level": "meta-epistemic",
+    "pattern_profile": "PF-10",
+    "deformation": "schema-light fixture accidentally includes hard-register object",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 1,
+    "routing_gate": "open",
+    "matched_modules": [{ "id": "M1-self-refutation", "module_class": "tactic" }],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: self-refutation pressure",
+          "source_kind": "module",
+          "module_id": "M1-self-refutation",
+          "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+        }
+      ]
+    },
+    "restoration_target": "restore criterion order",
+    "next_move": "repair schema gate",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    }
+  },
+  {
+    "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+    "registers": {
+      "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "xi": { "state": "live", "functions": ["warrant-authority"], "basis": ["criterion pressure"] },
+      "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "mu": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+      "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" }
+    },
+    "case_family": "hard-register-field-witness-mismatch-canary",
+    "claim_type": "logical",
+    "claim_level": "meta-epistemic",
+    "pattern_profile": "PF-10",
+    "deformation": "hard-register live set disagrees with field witness",
+    "concealment_mode": "clear",
+    "do_orient": "truth-seek",
+    "read_status": "dominant",
+    "confidence": "strong",
+    "alignment_state": "tribunal-loosened",
+    "recognition_strength": "medium",
+    "continuation_eligibility": "blocked",
+    "p7_stops_active": ["none"],
+    "reason_category": 1,
+    "routing_gate": "open",
+    "matched_modules": [{ "id": "M1-self-refutation", "module_class": "tactic" }],
+    "source_basis": {
+      "entries": [
+        {
+          "basis_type": "anchored",
+          "claim": "routing fork: self-refutation pressure",
+          "source_kind": "module",
+          "module_id": "M1-self-refutation",
+          "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"
+        }
+      ]
+    },
+    "restoration_target": "restore criterion order",
+    "next_move": "repair schema gate",
+    "output_shape": "single-response",
+    "post_render_gate": {
+      "cleared_this_pass": "none",
+      "remaining_live_distortions": "none",
+      "held_routes_rechecked": [],
+      "newly_released_routes": [],
+      "next_eligible_pass": "none",
+      "recursion_decision": "STOP"
+    },
+    "field_witness": {
+      "normalized_activation_record": {
+        "n_frame": "mismatch-canary",
+        "live_registers": ["Omega"],
+        "burden_floor": ["B1"],
+        "per_burden": [
+          {
+            "burden_id": "B1",
+            "owner_id": "M1",
+            "operation": "self-refutation",
+            "delta_result": "criterion-self-failed",
+            "mrp_route_result_type": "no_new_resultant",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          }
+        ]
+      }
+    }
+  }
+]

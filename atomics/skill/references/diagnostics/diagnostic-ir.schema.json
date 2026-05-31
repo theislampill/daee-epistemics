@@ -2,6 +2,117 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "skill/references/diagnostics/diagnostic-ir.schema.json",
   "title": "Diagnostic IR",
+  "$defs": {
+    "hardRegisterBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "functions", "basis"],
+      "properties": {
+        "state": { "type": "string", "enum": ["live", "held", "non_live"] },
+        "functions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "basis": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "non_live_reason": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "non_live" } }, "required": ["state"] },
+          "then": {
+            "required": ["non_live_reason"],
+            "properties": {
+              "functions": { "maxItems": 0 },
+              "basis": { "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "state": { "enum": ["live", "held"] } }, "required": ["state"] },
+          "then": {
+            "properties": {
+              "functions": { "minItems": 1 },
+              "basis": { "minItems": 1 }
+            }
+          }
+        }
+      ]
+    },
+    "heartRegister": {
+      "allOf": [
+        { "$ref": "#/$defs/hardRegisterBase" },
+        {
+          "properties": {
+            "functions": {
+              "items": {
+                "enum": ["affective-posture", "security-posture", "moral-recoil", "restoration-recoil"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "xiRegister": {
+      "allOf": [
+        { "$ref": "#/$defs/hardRegisterBase" },
+        {
+          "properties": {
+            "functions": {
+              "items": {
+                "enum": ["warrant-authority", "source-order", "proof-tribunal", "testimony-status"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "OmegaRegister": {
+      "allOf": [
+        { "$ref": "#/$defs/hardRegisterBase" },
+        {
+          "properties": {
+            "functions": {
+              "items": {
+                "enum": ["ontology-predication", "category-transfer", "referent-confusion", "creator-creation"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "muRegister": {
+      "allOf": [
+        { "$ref": "#/$defs/hardRegisterBase" },
+        {
+          "properties": {
+            "functions": {
+              "items": {
+                "enum": ["memetic-carrier", "compression-carrier", "defensive-stabilizer", "mutation-reproduction"]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "kappaRegister": {
+      "allOf": [
+        { "$ref": "#/$defs/hardRegisterBase" },
+        {
+          "properties": {
+            "functions": {
+              "items": {
+                "enum": ["dependency-collapse", "entailment-chain", "closure-boundary", "cycle-curl"]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -27,6 +138,24 @@
     "post_render_gate"
   ],
   "properties": {
+    "diagnostic_ir_schema_version": {
+      "type": "string",
+      "enum": ["0.4.3-hard-registers-v1"],
+      "description": "Optional A.13 hard-register schema marker. Omit for current schema-light Diagnostic IR behavior."
+    },
+    "registers": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A.13 hard-register object. It is valid only with diagnostic_ir_schema_version = 0.4.3-hard-registers-v1 and is not required by schema-light runtime output.",
+      "required": ["heart", "xi", "Omega", "mu", "kappa"],
+      "properties": {
+        "heart": { "$ref": "#/$defs/heartRegister" },
+        "xi": { "$ref": "#/$defs/xiRegister" },
+        "Omega": { "$ref": "#/$defs/OmegaRegister" },
+        "mu": { "$ref": "#/$defs/muRegister" },
+        "kappa": { "$ref": "#/$defs/kappaRegister" }
+      }
+    },
     "case_family": {
       "type": "string",
       "minLength": 1
@@ -904,6 +1033,28 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "diagnostic_ir_schema_version": { "const": "0.4.3-hard-registers-v1" }
+        },
+        "required": ["diagnostic_ir_schema_version"]
+      },
+      "then": {
+        "required": ["registers"]
+      }
+    },
+    {
+      "if": {
+        "required": ["registers"]
+      },
+      "then": {
+        "required": ["diagnostic_ir_schema_version"],
+        "properties": {
+          "diagnostic_ir_schema_version": { "const": "0.4.3-hard-registers-v1" }
+        }
+      }
+    },
     {
       "if": {
         "properties": {

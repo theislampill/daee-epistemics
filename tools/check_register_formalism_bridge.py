@@ -479,6 +479,16 @@ REGISTER_SCHEMA_KEYS = {
     "μ",
     "κ",
 }
+HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
+CANONICAL_HARD_REGISTER_SCHEMA_KEYS = {"heart", "xi", "Omega", "mu", "kappa"}
+FORBIDDEN_HARD_REGISTER_SCHEMA_KEYS = {"omega", "♥", "ξ", "Ω", "μ", "κ"}
+HARD_REGISTER_FUNCTIONS = {
+    "heart": {"affective-posture", "security-posture", "moral-recoil", "restoration-recoil"},
+    "xi": {"warrant-authority", "source-order", "proof-tribunal", "testimony-status"},
+    "Omega": {"ontology-predication", "category-transfer", "referent-confusion", "creator-creation"},
+    "mu": {"memetic-carrier", "compression-carrier", "defensive-stabilizer", "mutation-reproduction"},
+    "kappa": {"dependency-collapse", "entailment-chain", "closure-boundary", "cycle-curl"},
+}
 
 REQUIRED_TOKENS = {
     "docs/algebraic-notation-and-noetic-formalism.md": [
@@ -963,6 +973,76 @@ def nested_dict_keys(node: object) -> set[str]:
         for item in node:
             keys.update(nested_dict_keys(item))
     return keys
+
+
+def hard_register_projection_errors(fixture_id: str, projection: dict[str, object]) -> list[str]:
+    errors: list[str] = []
+    version = projection.get("diagnostic_ir_schema_version")
+    keys = nested_dict_keys(projection)
+
+    if version != HARD_REGISTER_SCHEMA_VERSION:
+        if version is not None:
+            errors.append(
+                f"{fixture_id}: ir_projection.diagnostic_ir_schema_version invalid: {version!r}"
+            )
+        forbidden = sorted(keys & (REGISTER_SCHEMA_KEYS | {"registers"}))
+        if forbidden:
+            errors.append(
+                f"{fixture_id}: schema-light fixture projection uses hard register-formalism "
+                f"bridge schema fields without {HARD_REGISTER_SCHEMA_VERSION}: {forbidden}"
+            )
+        return errors
+
+    registers = projection.get("registers")
+    if not isinstance(registers, dict):
+        errors.append(f"{fixture_id}: hard-register ir_projection requires registers object")
+        return errors
+
+    register_keys = set(registers)
+    forbidden = sorted(register_keys & FORBIDDEN_HARD_REGISTER_SCHEMA_KEYS)
+    if forbidden:
+        errors.append(f"{fixture_id}: hard-register ir_projection uses noncanonical register key(s): {forbidden}")
+    missing = sorted(CANONICAL_HARD_REGISTER_SCHEMA_KEYS - register_keys)
+    extra = sorted(register_keys - CANONICAL_HARD_REGISTER_SCHEMA_KEYS - FORBIDDEN_HARD_REGISTER_SCHEMA_KEYS)
+    if missing:
+        errors.append(f"{fixture_id}: hard-register ir_projection missing register key(s): {missing}")
+    if extra:
+        errors.append(f"{fixture_id}: hard-register ir_projection has unknown register key(s): {extra}")
+
+    for key in sorted(register_keys & CANONICAL_HARD_REGISTER_SCHEMA_KEYS):
+        item = registers.get(key)
+        if not isinstance(item, dict):
+            errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key} must be object")
+            continue
+        state = item.get("state")
+        functions = item.get("functions")
+        basis = item.get("basis")
+        if state not in {"live", "held", "non_live"}:
+            errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key}.state invalid")
+        if not isinstance(functions, list) or not all(isinstance(value, str) and value for value in functions):
+            errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key}.functions must be strings")
+            functions = []
+        if not isinstance(basis, list) or not all(isinstance(value, str) and value for value in basis):
+            errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key}.basis must be strings")
+            basis = []
+        if state in {"live", "held"}:
+            if not functions:
+                errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key}.functions required")
+            if not basis:
+                errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key}.basis required")
+            bad_functions = sorted(set(functions) - HARD_REGISTER_FUNCTIONS[key])
+            if bad_functions:
+                errors.append(
+                    f"{fixture_id}: hard-register ir_projection.registers.{key}.functions invalid: {bad_functions}"
+                )
+        elif state == "non_live":
+            if functions or basis:
+                errors.append(f"{fixture_id}: hard-register ir_projection.registers.{key} non_live must be empty")
+            if not isinstance(item.get("non_live_reason"), str) or not item["non_live_reason"].strip():
+                errors.append(
+                    f"{fixture_id}: hard-register ir_projection.registers.{key}.non_live_reason required"
+                )
+    return errors
 
 
 def audit_doc_path(root: Path) -> Path:
@@ -1542,9 +1622,7 @@ def validate_bridge_fixture(
     if not isinstance(projection, dict):
         errors.append(f"{fixture_id}: ir_projection must be present and object")
     else:
-        forbidden = sorted(nested_dict_keys(projection) & REGISTER_SCHEMA_KEYS)
-        if forbidden:
-            errors.append(f"{fixture_id}: fixture projection uses hard register-formalism bridge schema fields: {forbidden}")
+        errors.extend(hard_register_projection_errors(fixture_id, projection))
 
         matched = string_list(projection.get("matched_modules"))
         if not matched:
@@ -1832,9 +1910,21 @@ def check_schema_guard(root: Path, errors: list[str]) -> None:
             errors.append(f"{rel}: schema missing")
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
-        forbidden = sorted(set(iter_schema_field_names(data)) & REGISTER_SCHEMA_KEYS)
+        field_names = set(iter_schema_field_names(data))
+        forbidden = sorted(field_names & FORBIDDEN_HARD_REGISTER_SCHEMA_KEYS)
         if forbidden:
-            errors.append(f"{rel}: hard register-formalism bridge register schema fields present: {forbidden}")
+            errors.append(f"{rel}: noncanonical register schema fields present: {forbidden}")
+        canonical = field_names & CANONICAL_HARD_REGISTER_SCHEMA_KEYS
+        has_registers_object = "registers" in field_names
+        has_hard_version = HARD_REGISTER_SCHEMA_VERSION in json.dumps(data, ensure_ascii=False)
+        if canonical or has_registers_object:
+            if not has_hard_version:
+                errors.append(f"{rel}: hard register schema fields require {HARD_REGISTER_SCHEMA_VERSION}")
+            if not has_registers_object:
+                errors.append(f"{rel}: hard register schema keys present without registers object")
+            missing = sorted(CANONICAL_HARD_REGISTER_SCHEMA_KEYS - canonical)
+            if missing:
+                errors.append(f"{rel}: hard register schema missing canonical key(s): {missing}")
 
 
 def check_ledger_status(root: Path, errors: list[str]) -> None:

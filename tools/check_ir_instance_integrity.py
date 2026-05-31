@@ -141,6 +141,18 @@ FIELD_WITNESS_TERMINAL_STATES = {
     "cleared",
 }
 FIELD_WITNESS_CLOSURE_DECISIONS = {"COMPLETE", "STOP", "HOLD", "RECURSE", "PARTIAL"}
+HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
+HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
+HARD_REGISTER_KEY_SET = set(HARD_REGISTER_KEYS)
+HARD_REGISTER_STATES = {"live", "held", "non_live"}
+HARD_REGISTER_OPTIONAL_KEYS = {"state", "functions", "basis", "non_live_reason"}
+HARD_REGISTER_FUNCTIONS = {
+    "heart": {"affective-posture", "security-posture", "moral-recoil", "restoration-recoil"},
+    "xi": {"warrant-authority", "source-order", "proof-tribunal", "testimony-status"},
+    "Omega": {"ontology-predication", "category-transfer", "referent-confusion", "creator-creation"},
+    "mu": {"memetic-carrier", "compression-carrier", "defensive-stabilizer", "mutation-reproduction"},
+    "kappa": {"dependency-collapse", "entailment-chain", "closure-boundary", "cycle-curl"},
+}
 
 
 POSITIVE_SAMPLE: dict[str, Any] = {
@@ -317,6 +329,41 @@ def _sample_with(mutator) -> dict[str, Any]:  # noqa: ANN001
     return sample
 
 
+def _hard_register_sample(live_registers: tuple[str, ...] = ("xi", "kappa")) -> dict[str, Any]:
+    sample = deepcopy(POSITIVE_SAMPLE)
+    live = set(live_registers)
+    sample["diagnostic_ir_schema_version"] = HARD_REGISTER_SCHEMA_VERSION
+    sample["registers"] = {}
+    for key in HARD_REGISTER_KEYS:
+        if key in live:
+            function = sorted(HARD_REGISTER_FUNCTIONS[key])[0]
+            sample["registers"][key] = {
+                "state": "live",
+                "functions": [function],
+                "basis": [f"{key} pressure is live in the fixture diagnosis"],
+            }
+        else:
+            sample["registers"][key] = {
+                "state": "non_live",
+                "functions": [],
+                "basis": [],
+                "non_live_reason": "not diagnosed as live in this fixture",
+            }
+    sample["field_witness"]["normalized_activation_record"]["live_registers"] = [
+        key for key in HARD_REGISTER_KEYS if key in live
+    ]
+    return sample
+
+
+def _hard_register_sample_with(mutator) -> dict[str, Any]:  # noqa: ANN001
+    sample = _hard_register_sample()
+    mutator(sample)
+    return sample
+
+
+HARD_REGISTER_POSITIVE_SAMPLE = _hard_register_sample()
+
+
 BAD_SAMPLES["invented_module_id"] = (
     _sample_with(lambda s: s["matched_modules"].append({"id": "invented-owner", "module_class": "tactic"})),
     "module id not found in catalogue",
@@ -437,6 +484,32 @@ BAD_SAMPLES["field_witness_empty_non_claims"] = (
     _sample_with(lambda s: s["field_witness"].update({"non_claims": []})),
     "field_witness.non_claims must be non-empty array",
 )
+BAD_SAMPLES["hard_registers_without_version"] = (
+    _hard_register_sample_with(lambda s: s.pop("diagnostic_ir_schema_version")),
+    "registers require diagnostic_ir_schema_version",
+)
+BAD_SAMPLES["hard_register_version_without_registers"] = (
+    _hard_register_sample_with(lambda s: s.pop("registers")),
+    "registers required for hard-register schema version",
+)
+BAD_SAMPLES["hard_register_missing_field"] = (
+    _hard_register_sample_with(lambda s: s["registers"].pop("mu")),
+    "registers missing required field: mu",
+)
+BAD_SAMPLES["hard_register_unknown_key"] = (
+    _hard_register_sample_with(lambda s: s["registers"].update({"zeta": {"state": "live", "functions": [], "basis": []}})),
+    "registers additional property not allowed: zeta",
+)
+BAD_SAMPLES["hard_register_invalid_vocabulary_token"] = (
+    _hard_register_sample_with(lambda s: s["registers"]["xi"].update({"functions": ["generic-warrant"]})),
+    "registers.xi.functions invalid token",
+)
+BAD_SAMPLES["hard_register_nar_mismatch"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"]["normalized_activation_record"].update({"live_registers": ["xi"]})
+    ),
+    "hard-register live set mismatch",
+)
 
 COMPILED_MAP_BAD_SAMPLES = {
     "matched_module_absent_from_compiled_map": (
@@ -480,6 +553,108 @@ def string_list(value: Any) -> list[str]:
     return [item for item in value if isinstance(item, str)]
 
 
+def canonical_live_registers(registers: dict[str, Any]) -> list[str]:
+    live: list[str] = []
+    for key in HARD_REGISTER_KEYS:
+        value = registers.get(key)
+        if isinstance(value, dict) and value.get("state") in {"live", "held"}:
+            live.append(key)
+    return live
+
+
+def hard_register_errors(instance: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    version = instance.get("diagnostic_ir_schema_version")
+    registers = instance.get("registers")
+
+    if version is None:
+        if registers is not None:
+            errors.append(
+                f"schema: registers require diagnostic_ir_schema_version {HARD_REGISTER_SCHEMA_VERSION!r}"
+            )
+        return errors
+
+    if version != HARD_REGISTER_SCHEMA_VERSION:
+        errors.append(f"schema: diagnostic_ir_schema_version invalid enum value: {version!r}")
+        return errors
+    if not isinstance(registers, dict):
+        errors.append("schema: registers required for hard-register schema version")
+        return errors
+
+    extra = sorted(set(registers) - HARD_REGISTER_KEY_SET)
+    missing = sorted(HARD_REGISTER_KEY_SET - set(registers), key=HARD_REGISTER_KEYS.index)
+    if extra:
+        errors.append("schema: registers additional property not allowed: " + ", ".join(extra))
+    if missing:
+        errors.append("schema: registers missing required field: " + ", ".join(missing))
+
+    for key in HARD_REGISTER_KEYS:
+        if key not in registers:
+            continue
+        value = registers.get(key)
+        label = f"registers.{key}"
+        if not isinstance(value, dict):
+            errors.append(f"schema: {label} must be object")
+            continue
+        row_extra = sorted(set(value) - HARD_REGISTER_OPTIONAL_KEYS)
+        if row_extra:
+            errors.append(f"schema: {label} additional property not allowed: {', '.join(row_extra)}")
+        for required_field in ("state", "functions", "basis"):
+            if required_field not in value:
+                errors.append(f"schema: {label} missing required field: {required_field}")
+        state = value.get("state")
+        functions = value.get("functions")
+        basis = value.get("basis")
+        if state not in HARD_REGISTER_STATES:
+            errors.append(f"schema: {label}.state invalid enum value: {state!r}")
+        if not isinstance(functions, list) or not all(non_empty_string(item) for item in functions):
+            errors.append(f"schema: {label}.functions must be array of non-empty strings")
+            functions = []
+        if not isinstance(basis, list) or not all(non_empty_string(item) for item in basis):
+            errors.append(f"schema: {label}.basis must be array of non-empty strings")
+            basis = []
+        if state in {"live", "held"}:
+            if not functions:
+                errors.append(f"schema: {label}.functions required when state is {state}")
+            if not basis:
+                errors.append(f"schema: {label}.basis required when state is {state}")
+            invalid_functions = sorted(set(functions) - HARD_REGISTER_FUNCTIONS[key])
+            if invalid_functions:
+                errors.append(
+                    f"schema: {label}.functions invalid token(s): {', '.join(invalid_functions)}"
+                )
+        elif state == "non_live":
+            if functions:
+                errors.append(f"schema: {label}.functions must be empty when state is non_live")
+            if basis:
+                errors.append(f"schema: {label}.basis must be empty when state is non_live")
+            if not non_empty_string(value.get("non_live_reason")):
+                errors.append(f"schema: {label}.non_live_reason required when state is non_live")
+
+    field_witness = instance.get("field_witness")
+    if isinstance(field_witness, dict):
+        normalized = field_witness.get("normalized_activation_record")
+        if not isinstance(normalized, dict):
+            errors.append(
+                "schema: field_witness.normalized_activation_record required for hard-register reconciliation"
+            )
+        else:
+            claimed_live = normalized.get("live_registers")
+            if not isinstance(claimed_live, list) or not all(non_empty_string(item) for item in claimed_live):
+                errors.append(
+                    "schema: field_witness.normalized_activation_record.live_registers "
+                    "must reconcile with hard registers"
+                )
+            else:
+                expected = canonical_live_registers(registers)
+                if claimed_live != expected:
+                    errors.append(
+                        "schema: hard-register live set mismatch: "
+                        f"registers={expected!r} normalized_activation_record.live_registers={claimed_live!r}"
+                    )
+    return errors
+
+
 def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required = schema.get("required") or []
@@ -512,6 +687,7 @@ def schema_errors(instance: dict[str, Any], schema: dict[str, Any]) -> list[str]
 
     if "reason_category" in instance and instance.get("reason_category") not in REASON_CATEGORY_VALUES:
         errors.append(f"schema: reason_category invalid oneOf value: {instance.get('reason_category')!r}")
+    errors.extend(hard_register_errors(instance))
     p7_stops = instance.get("p7_stops_active")
     if isinstance(p7_stops, list):
         if "none" in p7_stops and len(p7_stops) > 1:
@@ -1177,6 +1353,15 @@ def check_bad_samples(
     positive_errors = validate_instance("positive sample", POSITIVE_SAMPLE, schema, catalogue, compiled_modules)
     if positive_errors:
         errors.extend(positive_errors)
+    hard_positive_errors = validate_instance(
+        "hard-register positive sample",
+        HARD_REGISTER_POSITIVE_SAMPLE,
+        schema,
+        catalogue,
+        compiled_modules,
+    )
+    if hard_positive_errors:
+        errors.extend(hard_positive_errors)
     for name, (sample, expected) in BAD_SAMPLES.items():
         found = validate_instance(name, sample, schema, catalogue, compiled_modules)
         if not any(expected in error for error in found):
