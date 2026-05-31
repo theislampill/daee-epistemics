@@ -124,6 +124,26 @@ SOURCE_PARADE_BLOCK_RE = re.compile(
     r"\b(?:block|blocks|blocked|withhold|withheld|hold)\b.{0,140}"
     r"\b(?:argument[- ]bank|source[- ]parade)\b"
 )
+LOADED_LABEL_CARRIER_RE = re.compile(
+    r"(?is)\b(?:MM-2|loaded[- ]label\s+carrier(?:\s+audit)?|"
+    r"label\s+as\s+(?:a\s+)?noetic\s+carrier|"
+    r"audit\s+the\s+label\s+as\s+(?:a\s+)?noetic\s+carrier)\b"
+)
+LOADED_LABEL_RELEASE_BLOCK_RE = re.compile(
+    r"(?is)\b(?:topical\s+rebuttal|doctrinal\s+content|proof\s+deployment|public\s+verdict)\b"
+    r".{0,260}\b(?:held|blocked|withheld|deferred|not\s+released)\b.{0,220}"
+    r"\b(?:carrier\s+function|carrier\s+typing|carrier\s+lands?|function\s+lands?)\b|"
+    r"\b(?:carrier\s+function|carrier\s+typing|carrier\s+lands?|function\s+lands?)\b"
+    r".{0,260}\b(?:topical\s+rebuttal|doctrinal\s+content|proof\s+deployment|public\s+verdict)\b"
+    r".{0,180}\b(?:held|blocked|withheld|deferred|not\s+released)\b"
+)
+LOADED_LABEL_ANTI_HOLD_RE = re.compile(
+    r"(?is)\b(?:topical\s+rebuttal|doctrinal\s+content|proof\s+deployment|public\s+verdict)\b"
+    r".{0,180}\b(?:released\s+anyway|not\s+(?:held|blocked|withheld|deferred)|"
+    r"may\s+proceed|can\s+proceed|already\s+released)\b|"
+    r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|withhold|defer)\b.{0,180}"
+    r"\b(?:topical\s+rebuttal|doctrinal\s+content|proof\s+deployment|public\s+verdict)\b"
+)
 PROOF_PACKET_RE = re.compile(
     r"(?is)\b(?:MM-5|proof[- ]packet|quote[- ]fragment|inherited\s+quote[- ]fragment)\b"
     r".{0,260}\b(?:compress(?:es|ed|ing)|opaque\s+warrant|already\s+contains|"
@@ -246,6 +266,23 @@ def has_proof_packet_reconstruction(text: str) -> bool:
     return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
 
 
+def has_loaded_label_carrier_typing(text: str) -> bool:
+    if not LOADED_LABEL_CARRIER_RE.search(text):
+        return False
+    label_named = bool(re.search(r"(?i)\b(?:label|slogan|loaded[- ]label)\b", text))
+    carrier_function = bool(
+        re.search(r"(?i)\b(?:carrier\s+function|function\s+is\s+typed|carrier\s+is\s+typed|transmits?)\b", text)
+    )
+    dimensions = (
+        r"\bontology\b|\bontological\b",
+        r"\bproof[- ](?:denominator|rule)\b|\bproof\s+rule\b",
+        r"\bsource[- ]status\b|\bauthority[- ]order\b",
+        r"\bshame\s+signal\b|\bprestige\s+signal\b|\bidentity\s+marker\b",
+    )
+    dimension_count = sum(1 for pattern in dimensions if re.search(pattern, text, re.IGNORECASE))
+    return label_named and carrier_function and dimension_count >= 2
+
+
 def has_mutation_comparison(text: str) -> bool:
     if not MUTATION_AFTER_CHALLENGE_RE.search(text):
         return False
@@ -294,6 +331,7 @@ def check_text(path: Path, text: str) -> list[str]:
     framework_active = bool(FRAMEWORK_SIGNAL_RE.search(text) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text))
     exception_visible = bool(CLEAR_EXCEPTION_RE.search(text))
     source_stack_ambiguous = bool(SOURCE_STACK_AMBIGUITY_RE.search(text))
+    loaded_label_carrier_active = bool(LOADED_LABEL_CARRIER_RE.search(text))
     proof_packet_active = bool(PROOF_PACKET_RE.search(text))
     mutation_after_challenge_active = bool(MUTATION_AFTER_CHALLENGE_RE.search(text))
     collapse_radius_mapping_active = bool(COLLAPSE_RADIUS_MAPPING_RE.search(text))
@@ -306,6 +344,18 @@ def check_text(path: Path, text: str) -> list[str]:
         if not SOURCE_PARADE_BLOCK_RE.search(text):
             errors.append(
                 f"{path}: AS-8 source-stack ambiguity must block argument-bank/source-parade release"
+            )
+    if loaded_label_carrier_active:
+        if not has_loaded_label_carrier_typing(text):
+            errors.append(
+                f"{path}: MM-2 loaded-label carrier audit requires the label/slogan carrier "
+                "function to be typed by naming transmitted ontology, proof-denominator/proof rule, "
+                "source-status/authority-order, or shame/prestige/identity pressure"
+            )
+        if LOADED_LABEL_ANTI_HOLD_RE.search(text) or not LOADED_LABEL_RELEASE_BLOCK_RE.search(text):
+            errors.append(
+                f"{path}: MM-2 loaded-label carrier audit must hold topical rebuttal, "
+                "doctrinal content, proof deployment, or public verdict until carrier function lands"
             )
     if proof_packet_active:
         if not has_proof_packet_reconstruction(text):
