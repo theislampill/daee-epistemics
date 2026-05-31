@@ -143,6 +143,27 @@ PROOF_PACKET_ANTI_HOLD_RE = re.compile(
     r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|withhold|defer)\b.{0,160}"
     r"\b(?:proof\s+answer|source\s+stack|doctrinal\s+conclusion)\b"
 )
+MUTATION_AFTER_CHALLENGE_RE = re.compile(
+    r"(?is)\b(?:MM-7|mutation[- ]after[- ]challenge|track\s+mutation\s+after\s+challenge|"
+    r"same\s+burden\s+returns|same-function\s+survival)\b"
+)
+MUTATION_RELEASE_BLOCK_RE = re.compile(
+    r"(?is)\b(?:next\s+topical\s+answer|topical\s+answer|content\s+answer)\b.{0,220}"
+    r"\b(?:held|blocked|withheld|deferred|not\s+released)\b.{0,220}"
+    r"\b(?:same-function\s+survival|NewB|new[- ]burden|genuinely\s+new\s+burden|mutation[- ]status|"
+    r"new[- ]burden\s+status)\b|"
+    r"\b(?:same-function\s+survival|NewB|new[- ]burden|genuinely\s+new\s+burden|mutation[- ]status|"
+    r"new[- ]burden\s+status)\b.{0,220}"
+    r"\b(?:next\s+topical\s+answer|topical\s+answer|content\s+answer)\b.{0,160}"
+    r"\b(?:held|blocked|withheld|deferred|not\s+released)\b"
+)
+MUTATION_ANTI_HOLD_RE = re.compile(
+    r"(?is)\b(?:next\s+topical\s+answer|topical\s+answer|content\s+answer)\b.{0,180}"
+    r"\b(?:not\s+(?:held|blocked|withheld|deferred)|released\s+anyway|may\s+proceed|can\s+proceed|"
+    r"already\s+released)\b|"
+    r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|withhold|defer)\b.{0,160}"
+    r"\b(?:next\s+topical\s+answer|topical\s+answer|content\s+answer)\b"
+)
 IRAD_CONTEXT_RE = re.compile(
     r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
     r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
@@ -205,6 +226,18 @@ def has_proof_packet_reconstruction(text: str) -> bool:
     return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
 
 
+def has_mutation_comparison(text: str) -> bool:
+    if not MUTATION_AFTER_CHALLENGE_RE.search(text):
+        return False
+    required = (
+        r"\bold\s+carrier\b",
+        r"\bnew\s+(?:formulation|wording|slogan)\b",
+        r"\b(?:preserved\s+function|same\s+proof\s+standard|same-function\s+survival)\b",
+        r"\b(?:regenerated\s+downstream\s+burden|downstream\s+burden\s+(?:is\s+)?regenerated)\b",
+    )
+    return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
+
+
 def has_clarification_pressure(value: str, block: str) -> bool:
     return bool(CLARIFICATION_PRESSURE_RE.search(value) or CLARIFICATION_PRESSURE_RE.search(block))
 
@@ -229,6 +262,7 @@ def check_text(path: Path, text: str) -> list[str]:
     exception_visible = bool(CLEAR_EXCEPTION_RE.search(text))
     source_stack_ambiguous = bool(SOURCE_STACK_AMBIGUITY_RE.search(text))
     proof_packet_active = bool(PROOF_PACKET_RE.search(text))
+    mutation_after_challenge_active = bool(MUTATION_AFTER_CHALLENGE_RE.search(text))
     if source_stack_ambiguous:
         if not SOURCE_USE_FUNCTION_RE.search(text):
             errors.append(
@@ -249,6 +283,17 @@ def check_text(path: Path, text: str) -> list[str]:
             errors.append(
                 f"{path}: MM-5 proof-packet compression must hold proof answer, source stack, "
                 "or doctrinal conclusion until packet reconstruction"
+            )
+    if mutation_after_challenge_active:
+        if not has_mutation_comparison(text):
+            errors.append(
+                f"{path}: MM-7 mutation-after-challenge requires comparison of old carrier, "
+                "new formulation, preserved function, and regenerated downstream burden"
+            )
+        if MUTATION_ANTI_HOLD_RE.search(text) or not MUTATION_RELEASE_BLOCK_RE.search(text):
+            errors.append(
+                f"{path}: MM-7 mutation-after-challenge must hold the next topical answer "
+                "until same-function survival versus NewB/new-burden status is decided"
             )
     if framework_active and not matches:
         errors.append(f"{path}: operative framework/worldview covering requires a visible Concealment mode line")
