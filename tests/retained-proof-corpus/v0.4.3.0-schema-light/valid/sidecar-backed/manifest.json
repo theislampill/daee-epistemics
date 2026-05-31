@@ -2,6 +2,67 @@
   "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
   "corpus_id": "v0.4.3.0-schema-light-sidecar-backed",
   "proof_boundary": "Retained governed-output copies that have raw input sidecars, checker-owned collapse certificates, warning-clean certificate-backed Grapher HTML, and row-specific orchestrator evidence. This corpus is an integrity gate, not a release/provenance claim.",
+  "coverage_targets": [
+    {
+      "id": "c5-named-restoration-recoil-subtypes",
+      "description": "Current named restoration-recoil subtype coverage retained as schema-light sidecar-backed evidence; this is not broad matrix completion.",
+      "rows": [
+        "C.5"
+      ],
+      "case_ids": [
+        "restoration-track",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil"
+      ]
+    },
+    {
+      "id": "c6-two-track-retained-breadth",
+      "description": "Current retained cases that carry two-track primary/restoration MRP closure evidence; this is retained-corpus accounting, not proof by manifest alone.",
+      "rows": [
+        "C.6"
+      ],
+      "case_ids": [
+        "source-order-tlang",
+        "restoration-track",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    },
+    {
+      "id": "c7-divergence-curl-retained-breadth",
+      "description": "Current retained cases that carry divergence/curl reread behavior evidence; this is retained-corpus accounting, not proof by manifest alone.",
+      "rows": [
+        "C.7"
+      ],
+      "case_ids": [
+        "source-order-tlang",
+        "restoration-track",
+        "c7-loopbreak",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ]
+    }
+  ],
   "cases": [
     {
       "id": "a9-science-source",

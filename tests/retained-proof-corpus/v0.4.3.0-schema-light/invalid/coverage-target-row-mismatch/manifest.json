@@ -1,0 +1,43 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "invalid-coverage-target-row-mismatch",
+  "proof_boundary": "Invalid canary: retained coverage targets must not cite a case for a row it does not carry.",
+  "coverage_targets": [
+    {
+      "id": "row-mismatch-target",
+      "description": "This target asks an A.9/B.* case to satisfy C.5.",
+      "rows": [
+        "C.5"
+      ],
+      "case_ids": [
+        "a9-science-source"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "a9-science-source",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "A.9",
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": "invalid canary",
+      "input": "../../valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "output": "../../valid/sidecar-backed/cases/a9-science-source/output.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+        "output": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6",
+        "collapse_certificate": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF",
+        "grapher_html": "87CEAFA9BED35B7B94A8CBEF3EFF4B3AEDB97D68CB1052350ED1FB41B2AD419B"
+      }
+    }
+  ]
+}

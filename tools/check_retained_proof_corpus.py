@@ -50,7 +50,10 @@ REQUIRED_CASE_FIELDS = {
 }
 ALLOWED_CASE_FIELDS = set(REQUIRED_CASE_FIELDS)
 REQUIRED_ROOT_FIELDS = {"schema_version", "corpus_id", "proof_boundary", "cases"}
-ALLOWED_ROOT_FIELDS = set(REQUIRED_ROOT_FIELDS)
+ALLOWED_ROOT_FIELDS = set(REQUIRED_ROOT_FIELDS) | {"coverage_targets"}
+CANONICAL_SIDECAR_MANIFEST = FIXTURE_ROOT / "valid" / "sidecar-backed" / "manifest.json"
+REQUIRED_COVERAGE_TARGET_FIELDS = {"id", "description", "rows", "case_ids"}
+ALLOWED_COVERAGE_TARGET_FIELDS = set(REQUIRED_COVERAGE_TARGET_FIELDS)
 
 
 def rel(path: Path) -> str:
@@ -271,15 +274,96 @@ def manifest_errors(path: Path) -> list[str]:
                 errors.append(f"cases[{index}].id: duplicate id {case['id']}")
             seen.add(case["id"])
         errors.extend(case_errors(path, case, index))
+    errors.extend(coverage_target_errors(path, payload))
     return errors
 
 
-def run_fixture_suite(root: Path) -> tuple[list[str], int, int]:
+def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    targets = payload.get("coverage_targets")
+    if targets is None:
+        if manifest_path.resolve() == CANONICAL_SIDECAR_MANIFEST.resolve():
+            errors.append("coverage_targets: canonical retained sidecar manifest must define row coverage targets")
+        return errors
+    if not isinstance(targets, list) or not targets:
+        return ["coverage_targets: must be a non-empty array when present"]
+
+    cases_by_id: dict[str, dict[str, Any]] = {
+        case["id"]: case
+        for case in payload.get("cases", [])
+        if isinstance(case, dict) and isinstance(case.get("id"), str)
+    }
+    seen_targets: set[str] = set()
+    for index, target in enumerate(targets):
+        prefix = f"coverage_targets[{index}]"
+        if not isinstance(target, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+
+        missing = sorted(REQUIRED_COVERAGE_TARGET_FIELDS - set(target))
+        extra = sorted(set(target) - ALLOWED_COVERAGE_TARGET_FIELDS)
+        if missing:
+            errors.append(f"{prefix}: missing fields {missing}")
+        if extra:
+            errors.append(f"{prefix}: unexpected fields {extra}")
+
+        target_id = target.get("id")
+        if not isinstance(target_id, str) or not CASE_ID_RE.match(target_id):
+            errors.append(f"{prefix}.id: must be a stable kebab-case id")
+        elif target_id in seen_targets:
+            errors.append(f"{prefix}.id: duplicate target id {target_id}")
+        else:
+            seen_targets.add(target_id)
+
+        if not isinstance(target.get("description"), str) or not target.get("description"):
+            errors.append(f"{prefix}.description: must be a non-empty string")
+
+        rows = string_list(target.get("rows"))
+        if rows is None:
+            errors.append(f"{prefix}.rows: must be a non-empty array of strings")
+            rows = []
+        else:
+            invalid_rows = [row for row in rows if not ROW_ID_RE.match(row)]
+            if invalid_rows:
+                errors.append(f"{prefix}.rows: invalid row ids {invalid_rows}")
+
+        case_ids = string_list(target.get("case_ids"))
+        if case_ids is None:
+            errors.append(f"{prefix}.case_ids: must be a non-empty array of strings")
+            case_ids = []
+
+        seen_case_ids: set[str] = set()
+        for case_id in case_ids:
+            if case_id in seen_case_ids:
+                errors.append(f"{prefix}.case_ids: duplicate case id {case_id}")
+                continue
+            seen_case_ids.add(case_id)
+            case = cases_by_id.get(case_id)
+            if case is None:
+                errors.append(f"{prefix}.case_ids: unknown case id {case_id}")
+                continue
+            case_rows = set(string_list(case.get("rows")) or [])
+            missing_rows = [row for row in rows if row not in case_rows]
+            if missing_rows:
+                errors.append(f"{prefix}.case_ids.{case_id}: missing target rows {missing_rows}")
+    return errors
+
+
+def coverage_target_count(path: Path) -> int:
+    payload, errors = load_json(path)
+    if errors or not isinstance(payload, dict):
+        return 0
+    targets = payload.get("coverage_targets")
+    return len(targets) if isinstance(targets, list) else 0
+
+
+def run_fixture_suite(root: Path) -> tuple[list[str], int, int, int]:
     errors: list[str] = []
     valid_checked = 0
     invalid_checked = 0
+    coverage_targets_checked = 0
     if not root.exists():
-        return [f"{rel(root)}: fixture root missing"], valid_checked, invalid_checked
+        return [f"{rel(root)}: fixture root missing"], valid_checked, invalid_checked, coverage_targets_checked
 
     for path in manifest_paths(root, "valid"):
         found = manifest_errors(path)
@@ -288,6 +372,7 @@ def run_fixture_suite(root: Path) -> tuple[list[str], int, int]:
             errors.extend(f"{rel(path)}: {error}" for error in found)
         else:
             valid_checked += 1
+            coverage_targets_checked += coverage_target_count(path)
 
     for path in manifest_paths(root, "invalid"):
         found = manifest_errors(path)
@@ -295,7 +380,7 @@ def run_fixture_suite(root: Path) -> tuple[list[str], int, int]:
             invalid_checked += 1
         else:
             errors.append(f"{rel(path)}: expected-invalid manifest unexpectedly passed")
-    return errors, valid_checked, invalid_checked
+    return errors, valid_checked, invalid_checked, coverage_targets_checked
 
 
 def main() -> int:
@@ -304,7 +389,7 @@ def main() -> int:
     parser.add_argument("--manifests", nargs="*", type=Path, default=[])
     args = parser.parse_args()
 
-    errors, valid_checked, invalid_checked = run_fixture_suite(args.root)
+    errors, valid_checked, invalid_checked, coverage_targets_checked = run_fixture_suite(args.root)
     direct_checked = 0
     for path in expand_paths(args.manifests):
         found = manifest_errors(path)
@@ -312,6 +397,7 @@ def main() -> int:
             errors.extend(f"{rel(path)}: {error}" for error in found)
         else:
             direct_checked += 1
+            coverage_targets_checked += coverage_target_count(path)
 
     errors.extend(hash_portability_errors())
 
@@ -324,6 +410,8 @@ def main() -> int:
     print("retained proof corpus check: PASS")
     print(f"Valid manifests checked: {valid_checked}")
     print(f"Invalid manifests checked: {invalid_checked}")
+    if coverage_targets_checked:
+        print(f"Coverage targets checked: {coverage_targets_checked}")
     if args.manifests:
         print(f"Direct manifests checked: {direct_checked}")
     return 0
