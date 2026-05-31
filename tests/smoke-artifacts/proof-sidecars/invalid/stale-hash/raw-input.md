@@ -1,0 +1,1 @@
+Stale hash canary input.

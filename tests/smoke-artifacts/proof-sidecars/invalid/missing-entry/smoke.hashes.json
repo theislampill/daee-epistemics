@@ -1,0 +1,9 @@
+{
+  "case_name": "proof-sidecar-hash-record-missing-entry",
+  "proof_sidecars": {
+    "collapse_certificate": {
+      "path": "collapse-certificate.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

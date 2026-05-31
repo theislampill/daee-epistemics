@@ -1,0 +1,22 @@
+{
+  "case_name": "proof-sidecar-hash-record-valid",
+  "proof_sidecars": {
+    "raw_input": {
+      "path": "raw-input.md",
+      "sha256": "A7E97859CF1356E1FAC165ABE8D2B6A2E143906E606D362D09F28F5CD1AB35B1"
+    },
+    "collapse_certificate": {
+      "path": "collapse-certificate.json",
+      "sha256": "6E56DBC162FF574E16AED1AAF1BF28C73A45D643EE75F3331575A39E496C297A"
+    },
+    "grapher_html": {
+      "path": "grapher.html",
+      "sha256": "A48DDE7BC5314FEFC6D87DF6D811D881FD28B1AD0494C62667ABF0E1216F0249"
+    },
+    "hashes": {
+      "path": "sidecar.hashes.json",
+      "sha256": "8BBA6258280F82F361C3436FF97AE1F0B76E640FAB3C1BE154C328773595FDD8"
+    },
+    "command": "python tools/build_retained_proof_sidecars.py --input raw-input.md --out-dir . --prefix fixture"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "case_name": "proof-sidecar-hash-record-missing-file",
+  "proof_sidecars": {
+    "raw_input": {
+      "path": "missing-input.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

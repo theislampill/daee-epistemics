@@ -1,0 +1,9 @@
+{
+  "case_name": "proof-sidecar-hash-record-malformed-sha",
+  "proof_sidecars": {
+    "raw_input": {
+      "path": "raw-input.md",
+      "sha256": "not-a-sha"
+    }
+  }
+}

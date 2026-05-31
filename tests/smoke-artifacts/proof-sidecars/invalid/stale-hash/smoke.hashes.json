@@ -1,0 +1,9 @@
+{
+  "case_name": "proof-sidecar-hash-record-stale-hash",
+  "proof_sidecars": {
+    "raw_input": {
+      "path": "raw-input.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  }
+}

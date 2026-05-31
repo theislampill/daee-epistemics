@@ -9,6 +9,7 @@ verdicts require reading input/output/verdict artifacts together.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -24,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 HARD_MIN_BYTES = 20_000
 DEFAULT_ROOT = ROOT / "smokes" / "runtime-grounding-v5"
+PROOF_SIDECAR_HASH_FIXTURE_ROOT = ROOT / "tests" / "smoke-artifacts" / "proof-sidecars"
 CURRENT_RELEASE_PENDING_ROOT = ROOT / "tests" / "smokes" / "current-release"
 CURRENT_RELEASE_VERSION = "v0.4.2.0"
 CURRENT_RELEASE_ROOT = CURRENT_RELEASE_PENDING_ROOT / CURRENT_RELEASE_VERSION
@@ -36,6 +38,7 @@ EXPECTED_CURRENT_RELEASE_CASES = REQUIRED_CURRENT_RELEASE_CASES | DEFERRED_CURRE
 RELEASE_SMOKE_WITNESS_MODE_RE = re.compile(r"(?i)\brelease-smoke witness capture mode\b")
 PACKAGE_FILENAME_CANONICAL_RE = re.compile(r"^[A-Za-z0-9._-]+\.skill(?:\.zip)?$")
 HASH_64_RE = re.compile(r"\b[0-9a-fA-F]{64}\b")
+FULL_HASH_64_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 RELEASE_FILENAME_ROW_RE = re.compile(r"(?im)^\|\s*Package filename\s*\|\s*([^|\r\n]+?)\s*\|")
 RELEASE_SHA_ROW_RE = re.compile(r"(?im)^\|\s*SHA256\s*\|\s*([^|\r\n]+?)\s*\|")
 SMOKE_FILENAME_LINE_RE = re.compile(r"(?im)^\s*-\s*package filename\s*:\s*(.+?)\s*$")
@@ -118,6 +121,21 @@ PROVENANCE_FIELDS = (
     "run timestamp:",
     "live-run vs handcrafted-regression classification:",
 )
+
+PROOF_SIDECAR_REQUIRED_ENTRIES = (
+    "raw_input",
+    "collapse_certificate",
+    "grapher_html",
+    "hashes",
+)
+
+PROOF_SIDECAR_INVALID_FIXTURE_EXPECTATIONS = {
+    "malformed-sha": "proof_sidecars.raw_input sha256 is malformed",
+    "missing-entry": "proof_sidecars missing required entry: raw_input",
+    "missing-file": "proof_sidecars.raw_input path does not exist",
+    "not-object": "proof_sidecars must be an object",
+    "stale-hash": "proof_sidecars.raw_input sha256 mismatch",
+}
 
 PACKAGE_HASH_RE = re.compile(r"(?im)^\s*-\s*package sha256:\s*[0-9a-f]{64}\s*$")
 LIVE_RUN_RE = re.compile(
@@ -1165,6 +1183,113 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.exists() else ""
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def resolve_hash_record_path(path_value: str, hash_record_path: Path) -> Path:
+    candidate = Path(path_value)
+    if candidate.is_absolute():
+        return candidate
+    return hash_record_path.parent / candidate
+
+
+def validate_proof_sidecars_record(record: object, hash_record_path: Path) -> list[str]:
+    if not isinstance(record, dict):
+        return ["proof_sidecars must be an object"]
+
+    errors: list[str] = []
+    for key in PROOF_SIDECAR_REQUIRED_ENTRIES:
+        entry = record.get(key)
+        if not isinstance(entry, dict):
+            errors.append(f"proof_sidecars missing required entry: {key}")
+            continue
+
+        path_value = entry.get("path")
+        sha256_value = entry.get("sha256")
+        if not isinstance(path_value, str) or not path_value.strip():
+            errors.append(f"proof_sidecars.{key} path is missing")
+            resolved_path: Path | None = None
+        else:
+            resolved_path = resolve_hash_record_path(path_value, hash_record_path)
+
+        if not isinstance(sha256_value, str) or not sha256_value.strip():
+            errors.append(f"proof_sidecars.{key} sha256 is missing")
+            expected_sha: str | None = None
+        elif not FULL_HASH_64_RE.match(sha256_value.strip()):
+            errors.append(f"proof_sidecars.{key} sha256 is malformed")
+            expected_sha = None
+        else:
+            expected_sha = sha256_value.strip().upper()
+
+        if resolved_path is None:
+            continue
+        if not resolved_path.is_file():
+            errors.append(f"proof_sidecars.{key} path does not exist: {path_value}")
+            continue
+        if expected_sha is None:
+            continue
+        actual_sha = sha256_file(resolved_path)
+        if actual_sha != expected_sha:
+            errors.append(
+                f"proof_sidecars.{key} sha256 mismatch: expected {expected_sha}, got {actual_sha}"
+            )
+    return errors
+
+
+def validate_hash_record_file(path: Path) -> list[str]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return [f"invalid hash-record JSON: {exc}"]
+    if not isinstance(payload, dict):
+        return ["hash record must be an object"]
+    if "proof_sidecars" not in payload:
+        return []
+    return validate_proof_sidecars_record(payload["proof_sidecars"], path)
+
+
+def validate_hash_records_under_root(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in sorted(root.rglob("*.hashes.json")):
+        for error in validate_hash_record_file(path):
+            errors.append(f"{path.relative_to(root).as_posix()}: {error}")
+    return errors
+
+
+def validate_proof_sidecar_hash_fixtures(root: Path = PROOF_SIDECAR_HASH_FIXTURE_ROOT) -> list[str]:
+    errors: list[str] = []
+    if not root.exists():
+        return [f"proof-sidecar hash fixture root is absent: {root}"]
+
+    valid_root = root / "valid"
+    invalid_root = root / "invalid"
+    valid_records = sorted(valid_root.glob("*/*.hashes.json"))
+    if not valid_records:
+        errors.append("proof-sidecar hash fixtures lack valid records")
+    for path in valid_records:
+        found = validate_hash_record_file(path)
+        if found:
+            errors.append(f"{path.relative_to(root).as_posix()}: valid fixture failed: {found!r}")
+
+    for fixture_name, expected in sorted(PROOF_SIDECAR_INVALID_FIXTURE_EXPECTATIONS.items()):
+        records = sorted((invalid_root / fixture_name).glob("*.hashes.json"))
+        if not records:
+            errors.append(f"proof-sidecar invalid fixture missing hash record: {fixture_name}")
+            continue
+        found = validate_hash_record_file(records[0])
+        if not any(expected in item for item in found):
+            errors.append(
+                f"proof-sidecar invalid fixture {fixture_name!r} was not rejected "
+                f"with {expected!r}; got {found!r}"
+            )
+    return errors
+
+
 def clean_field_value(value: str) -> str:
     return value.strip().strip("|").strip().strip("`").strip()
 
@@ -1927,6 +2052,7 @@ def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -
             f"smoke artifact root is absent: {root}. "
             "Pass --root explicitly when validating a local smoke suite."
         ]
+    errors.extend(validate_hash_records_under_root(root))
     deferred_cases = deferred_manifest_case_ids(root)
     helper_dirs = {"ir", "outputs", "verdicts"}
     fixture_dirs = sorted(
@@ -2181,6 +2307,12 @@ def main(argv: list[str]) -> int:
         help="Release artifact evidence markdown to compare smoke provenance against.",
     )
     parser.add_argument(
+        "--hash-record",
+        action="append",
+        default=[],
+        help="Validate a current-skill smoke *.hashes.json record, including optional proof_sidecars.",
+    )
+    parser.add_argument(
         "--no-release-artifacts",
         action="store_true",
         help="Disable release-artifact filename/SHA consistency checks intentionally.",
@@ -2207,11 +2339,19 @@ def main(argv: list[str]) -> int:
         filename=DEFAULT_RELEASE_PACKAGE_FILENAME,
         sha256=DEFAULT_RELEASE_PACKAGE_SHA256,
     ))
+    errors.extend(validate_proof_sidecar_hash_fixtures())
     errors.extend(validate_current_release_bad_samples(release_artifact or ReleaseArtifact(
         filename=DEFAULT_RELEASE_PACKAGE_FILENAME,
         sha256=DEFAULT_RELEASE_PACKAGE_SHA256,
     )))
     errors.extend(release_errors)
+    for hash_record_value in args.hash_record:
+        hash_record_path = Path(hash_record_value)
+        if not hash_record_path.exists():
+            errors.append(f"{hash_record_path.as_posix()}: hash record is absent")
+            continue
+        for error in validate_hash_record_file(hash_record_path):
+            errors.append(f"{hash_record_path.as_posix()}: {error}")
     if not args.samples_only:
         artifact_root = Path(args.root)
         if (
