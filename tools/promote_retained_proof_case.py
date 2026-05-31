@@ -16,6 +16,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from check_collapse_certificate_schema import certificate_errors
@@ -79,6 +80,52 @@ def load_json(path: Path) -> Any:
 
 def write_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def write_self_test_hash_record(
+    path: Path,
+    *,
+    case_name: str,
+    generated_skill_sha: str,
+    output_path: Path,
+    input_path: Path,
+    cert_path: Path,
+    graph_path: Path,
+    sidecar_hashes_path: Path,
+    output_sha: str | None = None,
+) -> None:
+    write_json(
+        path,
+        {
+            "case_name": case_name,
+            "skill": {
+                "sha256": generated_skill_sha,
+            },
+            "output": {
+                "path": str(output_path),
+                "sha256": output_sha or raw_sha256_file(output_path),
+            },
+            "proof_sidecars": {
+                "raw_input": {
+                    "path": str(input_path),
+                    "sha256": raw_sha256_file(input_path),
+                },
+                "collapse_certificate": {
+                    "path": str(cert_path),
+                    "sha256": raw_sha256_file(cert_path),
+                },
+                "grapher_html": {
+                    "path": str(graph_path),
+                    "sha256": raw_sha256_file(graph_path),
+                },
+                "hashes": {
+                    "path": str(sidecar_hashes_path),
+                    "sha256": raw_sha256_file(sidecar_hashes_path),
+                },
+                "command": "self-test",
+            },
+        },
+    )
 
 
 def resolve_existing(path: Path, label: str) -> Path:
@@ -308,65 +355,81 @@ def self_test() -> int:
         "20260530-current-skill-60a9-science-source-v1/"
         "a9-science-source-current-skill-60a9-run1.md"
     )
-    valid_record = (
-        ROOT
-        / "tests"
-        / "smoke-artifacts"
-        / "proof-sidecars"
-        / "valid"
-        / "promote-a9"
-        / "smoke.hashes.json"
-    )
-    source_paths, _, generated_skill_sha = source_paths_from_hash_record(valid_record)
-    if not generated_skill_sha:
-        raise SystemExit("self-test valid hash record lacks generated skill SHA")
-    validate_source_artifacts(
-        source_paths["input"],
-        source_paths["output"],
-        source_paths["collapse_certificate"],
-        source_paths["grapher_html"],
-    )
+    generated_skill_sha = "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3"
     case_dir = manifest_path.parent / "cases" / "a9-science-source"
     retained_paths = {
         field: case_dir / artifact_name
         for field, artifact_name in ARTIFACT_NAMES.items()
     }
-    expected = build_entry(
-        manifest_path,
-        "a9-science-source",
-        rows,
-        generated_skill_sha,
-        origin,
-        retained_paths,
-        source_paths,
-    )
-    errors = compare_existing(manifest_path, expected)
-    if errors:
-        print("retained proof case promotion self-test: FAIL")
-        for error in errors:
-            print(f"- {error}")
-        return 1
 
-    invalid_record = (
-        ROOT
-        / "tests"
-        / "smoke-artifacts"
-        / "proof-sidecars"
-        / "invalid"
-        / "promotion-stale-output"
-        / "smoke.hashes.json"
-    )
-    try:
-        source_paths_from_hash_record(invalid_record)
-    except SystemExit as exc:
-        if "hash record output sha256 mismatch" not in str(exc):
+    scratch_root = ROOT / ".daee" / "validation"
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(prefix="promote-hash-record-", dir=scratch_root) as scratch_dir_name:
+        scratch_dir = Path(scratch_dir_name)
+        sidecar_hashes = scratch_dir / "sidecar.hashes.json"
+        write_json(sidecar_hashes, {"fixture": "promote-a9-from-smoke-hash-record"})
+
+        valid_record = scratch_dir / "smoke.hashes.json"
+        write_self_test_hash_record(
+            valid_record,
+            case_name="promote-a9-from-smoke-hash-record",
+            generated_skill_sha=generated_skill_sha,
+            output_path=retained_paths["output"],
+            input_path=retained_paths["input"],
+            cert_path=retained_paths["collapse_certificate"],
+            graph_path=retained_paths["grapher_html"],
+            sidecar_hashes_path=sidecar_hashes,
+        )
+        source_paths, _, record_generated_skill_sha = source_paths_from_hash_record(valid_record)
+        if record_generated_skill_sha != generated_skill_sha:
             print("retained proof case promotion self-test: FAIL")
-            print(f"- stale-output canary failed with unexpected error: {exc}")
+            print("- generated skill SHA did not round-trip from hash record")
             return 1
-    else:
-        print("retained proof case promotion self-test: FAIL")
-        print("- stale-output canary was not rejected")
-        return 1
+        validate_source_artifacts(
+            source_paths["input"],
+            source_paths["output"],
+            source_paths["collapse_certificate"],
+            source_paths["grapher_html"],
+        )
+        expected = build_entry(
+            manifest_path,
+            "a9-science-source",
+            rows,
+            generated_skill_sha,
+            origin,
+            retained_paths,
+            source_paths,
+        )
+        errors = compare_existing(manifest_path, expected)
+        if errors:
+            print("retained proof case promotion self-test: FAIL")
+            for error in errors:
+                print(f"- {error}")
+            return 1
+
+        invalid_record = scratch_dir / "stale-output.hashes.json"
+        write_self_test_hash_record(
+            invalid_record,
+            case_name="promotion-stale-output",
+            generated_skill_sha=generated_skill_sha,
+            output_path=retained_paths["output"],
+            input_path=retained_paths["input"],
+            cert_path=retained_paths["collapse_certificate"],
+            graph_path=retained_paths["grapher_html"],
+            sidecar_hashes_path=sidecar_hashes,
+            output_sha="0" * 64,
+        )
+        try:
+            source_paths_from_hash_record(invalid_record)
+        except SystemExit as exc:
+            if "hash record output sha256 mismatch" not in str(exc):
+                print("retained proof case promotion self-test: FAIL")
+                print(f"- stale-output canary failed with unexpected error: {exc}")
+                return 1
+        else:
+            print("retained proof case promotion self-test: FAIL")
+            print("- stale-output canary was not rejected")
+            return 1
 
     print("retained proof case promotion self-test: PASS")
     return 0
