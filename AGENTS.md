@@ -95,10 +95,13 @@ artifacts, hashes, command output, or orchestrator evidence. Do not add
 Graphify hooks, MCP, watch mode, Neo4j, CI wiring, or runtime dependency without
 a separate tooling decision.
 
-ActiveGraph status is `ACTIVEGRAPH_LATER`. It may become a future sidecar for
-proof events, ledger-row lifecycle, artifact hashes, subagent reports, blocker
-graphs, and next-action queries. Do not add it to runtime, CI, release gates, or
-agent behavior for the current line.
+ActiveGraph status is `READY_EXPERIMENTAL_SIDECAR` when explicitly authorized
+for local IMPLEMENTAUDIT provenance experiments. Use it only under ignored
+`.daee/activegraph/<timestamp>/` scratch space for proof events, ledger-row
+lifecycle, artifact hashes, subagent reports, blocker graphs, and next-action
+queries. The Markdown open-work ledger and orchestrator remain canonical. Do
+not add ActiveGraph to runtime, CI, release gates, package/provenance, or
+autonomous agent behavior for the current line.
 
 Release/provenance remains frozen unless the orchestrator explicitly opens a
 release gate. Do not package, tag, upload, edit release notes, or move release
