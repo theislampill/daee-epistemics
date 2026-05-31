@@ -1,0 +1,35 @@
+{
+  "checker_version": "check_graph_completeness.py:b1-schema-light",
+  "collapse_positive": true,
+  "coverage_complete": true,
+  "curl_resolved": true,
+  "curl_state": "resolved",
+  "diagnostic_completeness": true,
+  "divergence_positive_addressed": true,
+  "divergence_state": "neutral",
+  "hold_partial_nodes": [],
+  "input_fingerprint": "f35252f6ed9726f1ebfbf666c679f8477bb02dfa1552d449bc69178eccd93b78",
+  "live_registers_covered": [
+    "heart",
+    "xi",
+    "mu",
+    "kappa"
+  ],
+  "loopbreak_count": 0,
+  "loopbreak_grounds": [],
+  "max_generation_depth": 1,
+  "primary_track_closed": true,
+  "restoration_endpoint_reached": true,
+  "restoration_track_closed": true,
+  "skill_version": "0.4.3.0",
+  "terminal_stop_proof_complete": true,
+  "terminal_stop_proof_count": 1,
+  "timestamp": "2026-05-30T00:00:00Z",
+  "verified_activations": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5"
+  ]
+}

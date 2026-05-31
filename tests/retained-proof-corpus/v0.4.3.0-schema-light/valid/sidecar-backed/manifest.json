@@ -479,6 +479,38 @@
         "collapse_certificate": "DDFA44AE275DC85427BA33B206D62733BA46DD9036E6816144126642B74988D0",
         "grapher_html": "41C5811A691A5C1843EF38C54993F87FE34691E4ACED0888DA75D75BD9F83FDE"
       }
+    },
+    {
+      "id": "therapy-moral-tribunal",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "C.1",
+        "C.2",
+        "C.3",
+        "C.6",
+        "C.7",
+        "C.8",
+        "D.2",
+        "D.3",
+        "T_lang"
+      ],
+      "generated_skill_sha": "0DBEC1A222EB1CFC061D07787EDE768D7CCC122FCA59AEF2B6292D7D7D112EDD",
+      "origin": ".daee/d3-concealment-smokes/20260531-current-skill-0dbe-therapy-moral-tribunal-v1/therapy-moral-tribunal-current-skill-0dbe-run1.md",
+      "input": "cases/therapy-moral-tribunal/input.txt",
+      "output": "cases/therapy-moral-tribunal/output.md",
+      "collapse_certificate": "cases/therapy-moral-tribunal/collapse-certificate.json",
+      "grapher_html": "cases/therapy-moral-tribunal/grapher.html",
+      "hashes": {
+        "input": "716F6FB5A269B2D5AAFAABDB41D6CF5B844230F1ABFCC243BF05A733E9E0DE7C",
+        "output": "02C259F14F7DE76605BFB24FC51C3C12C22C90C1428BAD214EDDD325B3C70AE8",
+        "collapse_certificate": "139861D46CE83D1C844CA0CFCB5111A57043D4E6C43FCFB0F684FD66880A11C6",
+        "grapher_html": "8F8EE8110B390EB30A60DB8F9759355EC414209585EB9D246D5CA267BDBB6671"
+      }
     }
   ]
 }
