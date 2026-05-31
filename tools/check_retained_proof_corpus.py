@@ -31,6 +31,7 @@ if hasattr(sys.stderr, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "retained-proof-corpus" / "v0.4.3.0-schema-light"
 SCHEMA_VERSION = "v0.4.3.0-retained-proof-corpus-v1"
+CANONICAL_CORPUS_ID = "v0.4.3.0-schema-light-sidecar-backed"
 CLASSIFICATION = "SIDECAR_BACKED_PROOF"
 SHA256_RE = re.compile(r"^[A-Fa-f0-9]{64}$")
 CASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -54,6 +55,12 @@ ALLOWED_ROOT_FIELDS = set(REQUIRED_ROOT_FIELDS) | {"coverage_targets"}
 CANONICAL_SIDECAR_MANIFEST = FIXTURE_ROOT / "valid" / "sidecar-backed" / "manifest.json"
 REQUIRED_COVERAGE_TARGET_FIELDS = {"id", "description", "rows", "case_ids"}
 ALLOWED_COVERAGE_TARGET_FIELDS = set(REQUIRED_COVERAGE_TARGET_FIELDS)
+REQUIRED_CANONICAL_COVERAGE_TARGETS = {
+    "b1-graph-completeness-retained-breadth": "B.1",
+    "b2-collapse-certificate-retained-breadth": "B.2",
+    "b4-input-fingerprint-retained-breadth": "B.4",
+    "b5-nla-decode-retained-breadth": "B.5",
+}
 
 
 def rel(path: Path) -> str:
@@ -294,6 +301,7 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
         if isinstance(case, dict) and isinstance(case.get("id"), str)
     }
     seen_targets: set[str] = set()
+    targets_by_id: dict[str, dict[str, Any]] = {}
     for index, target in enumerate(targets):
         prefix = f"coverage_targets[{index}]"
         if not isinstance(target, dict):
@@ -314,6 +322,7 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
             errors.append(f"{prefix}.id: duplicate target id {target_id}")
         else:
             seen_targets.add(target_id)
+            targets_by_id[target_id] = target
 
         if not isinstance(target.get("description"), str) or not target.get("description"):
             errors.append(f"{prefix}.description: must be a non-empty string")
@@ -358,7 +367,26 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
                 errors.append(
                     f"{prefix}.case_ids: missing retained cases carrying target rows {missing_case_ids}"
                 )
+    if is_canonical_sidecar_manifest(manifest_path, payload):
+        for target_id, required_row in REQUIRED_CANONICAL_COVERAGE_TARGETS.items():
+            target = targets_by_id.get(target_id)
+            if target is None:
+                errors.append(
+                    f"coverage_targets: canonical manifest missing required target {target_id}"
+                )
+                continue
+            target_rows = set(string_list(target.get("rows")) or [])
+            if required_row not in target_rows:
+                errors.append(
+                    f"coverage_targets.{target_id}.rows: must include {required_row}"
+                )
     return errors
+
+
+def is_canonical_sidecar_manifest(manifest_path: Path, payload: dict[str, Any]) -> bool:
+    if manifest_path.resolve() == CANONICAL_SIDECAR_MANIFEST.resolve():
+        return True
+    return payload.get("corpus_id") == CANONICAL_CORPUS_ID
 
 
 def coverage_target_count(path: Path) -> int:
