@@ -63,7 +63,13 @@ REQUIRED_STATE_FIELDS = {
 OWNER_ROUTED_TYPES = {"held_burden_activation", "generated_burden_instantiation"}
 STOP_TYPES = {"no_new_resultant", "none", "stable"}
 LOOPBREAK_TYPES = {"loopbreak"}
+HOLD_PARTIAL_TYPES = {"hold_partial"}
 CLOSED_STATES = {"landed", "cleared", "discharged-as-derivative", "held-with-reason"}
+HOLD_PARTIAL_TERMINAL_RE = re.compile(r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b")
+HOLD_PARTIAL_DETAIL_RE = re.compile(
+    r"(?i)\b(?:HOLD|PARTIAL|held[-/ ]?partial|held[- ]with[- ]reason|"
+    r"carried[-_ ]?PARTIAL|carried[-_ ]?RECURSE|partial[- ]real|held route)\b"
+)
 LICENSED_LOOPBREAK_GROUNDS = {
     "fitrah_ground",
     "sound_reason_ground",
@@ -321,6 +327,14 @@ def has_hold_or_partial(state: dict[str, Any]) -> bool:
     return bool(re.search(r"(?i)\b(?:HOLD|PARTIAL|RECURSE|bounded stop(?: condition)?)\b", haystack))
 
 
+def has_hold_partial_detail(state: dict[str, Any]) -> bool:
+    haystack = " ".join(
+        state_value(state, key)
+        for key in ("route_gradient", "mrp_resultant", "preemption_basis", "divergence_state", "curl_state")
+    )
+    return bool(HOLD_PARTIAL_DETAIL_RE.search(haystack))
+
+
 def terminal_loopbreak_closure(state: dict[str, Any]) -> bool:
     if state_value(state, "route_result_type") not in LOOPBREAK_TYPES:
         return False
@@ -490,6 +504,18 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
                 errors.append(f"{label}: loopbreak formal state must not set next_burden")
             if not has_hold_or_partial(item):
                 errors.append(f"{label}: loopbreak formal state requires explicit HOLD/PARTIAL accounting")
+        elif route_type in HOLD_PARTIAL_TYPES:
+            if route != "HOLD":
+                errors.append(f"{label}: hold_partial formal state must use Route: HOLD")
+            if graph_normalized_text(item.get("graph_delta")).strip().lower() != "none":
+                errors.append(f"{label}: hold_partial formal state graph_delta must be none")
+            if state_value(item, "next_burden"):
+                errors.append(f"{label}: hold_partial formal state must not set next_burden")
+            if not has_hold_partial_detail(item):
+                errors.append(f"{label}: hold_partial formal state requires explicit HOLD/PARTIAL accounting")
+            terminal = terminals.get(source, "")
+            if not terminal or not HOLD_PARTIAL_TERMINAL_RE.search(terminal):
+                errors.append(f"{label}: hold_partial source {source} must have HOLD/PARTIAL terminal accounting")
         else:
             errors.append(f"{label}: unsupported route_result_type {route_type!r}")
 
