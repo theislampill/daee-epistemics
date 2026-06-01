@@ -50,6 +50,31 @@
         "basis": ["unresolved entailment pressure blocks STOP"]
       }
     },
+    "field_witness": {
+      "normalized_activation_record": {
+        "live_registers": ["heart", "xi", "Omega", "mu", "kappa"]
+      },
+      "register_deltas": [
+        { "register": "heart", "delta": "restoration-recoil typed as live posture pressure" },
+        { "register": "xi", "delta": "warrant-authority pressure typed as live tribunal pressure" },
+        { "register": "Omega", "delta": "ontology-predication pressure typed as live category-transfer pressure" },
+        { "register": "mu", "delta": "memetic-carrier pressure typed as live slogan-compression pressure" },
+        { "register": "kappa", "delta": "dependency-collapse pressure typed as live entailment pressure" }
+      ],
+      "coverage_proof": {
+        "diagnostic_completeness": {
+          "live_registers": ["heart", "xi", "Omega", "mu", "kappa"],
+          "coverage": {
+            "heart": ["B1"],
+            "xi": ["B2"],
+            "Omega": ["B3"],
+            "mu": ["B4"],
+            "kappa": ["B5"]
+          },
+          "complete": true
+        }
+      }
+    },
     "claim_level": "meta-noetic",
     "routing_gate": "register-hold",
     "load_bearing_node": "hard-register live set controls owner choice, burden selection, and reread",
@@ -65,6 +90,37 @@
       "recursion_decision": "RECURSE"
     }
   },
+  "invalid_hard_register_ir_projections": [
+    {
+      "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+      "registers": {
+        "heart": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+        "xi": {
+          "state": "live",
+          "functions": ["warrant-authority"],
+          "basis": ["proof method governs admissibility"]
+        },
+        "Omega": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+        "mu": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" },
+        "kappa": { "state": "non_live", "functions": [], "basis": [], "non_live_reason": "not live" }
+      },
+      "field_witness": {
+        "normalized_activation_record": {
+          "live_registers": []
+        },
+        "register_deltas": [
+          { "register": "xi", "delta": "warrant-authority pressure typed as live tribunal pressure" }
+        ],
+        "coverage_proof": {
+          "diagnostic_completeness": {
+            "live_registers": ["xi"],
+            "coverage": { "xi": ["B1"] },
+            "complete": true
+          }
+        }
+      }
+    }
+  ],
   "source_governance_refs": [
     "atomics/skill/references/diagnostics/proof-method-audit.md",
     "atomics/skill/references/tactics/M9-predication-mode.md",

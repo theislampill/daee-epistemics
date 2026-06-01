@@ -480,7 +480,8 @@ REGISTER_SCHEMA_KEYS = {
     "κ",
 }
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
-CANONICAL_HARD_REGISTER_SCHEMA_KEYS = {"heart", "xi", "Omega", "mu", "kappa"}
+CANONICAL_HARD_REGISTER_SCHEMA_ORDER = ("heart", "xi", "Omega", "mu", "kappa")
+CANONICAL_HARD_REGISTER_SCHEMA_KEYS = set(CANONICAL_HARD_REGISTER_SCHEMA_ORDER)
 FORBIDDEN_HARD_REGISTER_SCHEMA_KEYS = {"omega", "♥", "ξ", "Ω", "μ", "κ"}
 HARD_REGISTER_FUNCTIONS = {
     "heart": {"affective-posture", "security-posture", "moral-recoil", "restoration-recoil"},
@@ -975,6 +976,88 @@ def nested_dict_keys(node: object) -> set[str]:
     return keys
 
 
+def canonical_hard_register_live_registers(registers: dict[str, object]) -> list[str]:
+    live: list[str] = []
+    for key in CANONICAL_HARD_REGISTER_SCHEMA_ORDER:
+        value = registers.get(key)
+        if isinstance(value, dict) and value.get("state") in {"live", "held"}:
+            live.append(key)
+    return live
+
+
+def hard_register_projection_field_witness_errors(
+    fixture_id: str,
+    projection: dict[str, object],
+    registers: dict[str, object],
+) -> list[str]:
+    errors: list[str] = []
+    field_witness = projection.get("field_witness")
+    if field_witness is None:
+        return errors
+    if not isinstance(field_witness, dict):
+        return [f"{fixture_id}: hard-register ir_projection.field_witness must be object"]
+
+    expected = canonical_hard_register_live_registers(registers)
+    normalized = field_witness.get("normalized_activation_record")
+    if not isinstance(normalized, dict):
+        errors.append(
+            f"{fixture_id}: hard-register ir_projection.field_witness.normalized_activation_record required"
+        )
+    else:
+        claimed_live = normalized.get("live_registers")
+        if claimed_live != expected:
+            errors.append(
+                f"{fixture_id}: hard-register live set mismatch: "
+                f"registers={expected!r} normalized_activation_record.live_registers={claimed_live!r}"
+            )
+
+    register_deltas = field_witness.get("register_deltas")
+    if isinstance(register_deltas, list):
+        seen = {
+            item.get("register")
+            for item in register_deltas
+            if isinstance(item, dict) and isinstance(item.get("register"), str)
+        }
+        missing = [register for register in expected if register not in seen]
+        for register in missing:
+            errors.append(
+                f"{fixture_id}: hard-register field_witness.register_deltas missing live register {register}"
+            )
+
+    coverage = field_witness.get("coverage_proof")
+    diagnostic = coverage.get("diagnostic_completeness") if isinstance(coverage, dict) else None
+    if not isinstance(diagnostic, dict):
+        errors.append(
+            f"{fixture_id}: hard-register field_witness.coverage_proof.diagnostic_completeness required"
+        )
+    else:
+        claimed_live = diagnostic.get("live_registers")
+        if claimed_live != expected:
+            errors.append(
+                f"{fixture_id}: diagnostic_completeness.live_registers mismatch: "
+                f"registers={expected!r} diagnostic_completeness.live_registers={claimed_live!r}"
+            )
+        coverage_map = diagnostic.get("coverage")
+        if not isinstance(coverage_map, dict):
+            errors.append(f"{fixture_id}: diagnostic_completeness.coverage must be object")
+        else:
+            extra = sorted(set(coverage_map) - set(expected))
+            if extra:
+                errors.append(
+                    f"{fixture_id}: diagnostic_completeness.coverage contains non-live register(s): {extra}"
+                )
+            for register in expected:
+                burdens = coverage_map.get(register)
+                if not isinstance(burdens, list) or not burdens:
+                    errors.append(
+                        f"{fixture_id}: diagnostic_completeness omits live register {register} coverage"
+                    )
+        if diagnostic.get("complete") is not True:
+            errors.append(f"{fixture_id}: diagnostic_completeness.complete must be true")
+
+    return errors
+
+
 def hard_register_projection_errors(fixture_id: str, projection: dict[str, object]) -> list[str]:
     errors: list[str] = []
     version = projection.get("diagnostic_ir_schema_version")
@@ -1042,6 +1125,7 @@ def hard_register_projection_errors(fixture_id: str, projection: dict[str, objec
                 errors.append(
                     f"{fixture_id}: hard-register ir_projection.registers.{key}.non_live_reason required"
                 )
+    errors.extend(hard_register_projection_field_witness_errors(fixture_id, projection, registers))
     return errors
 
 
@@ -1635,6 +1719,35 @@ def validate_bridge_fixture(
                 errors.append(f"{fixture_id}: matched module lacks bundle_path: {module_id}")
 
         decision = validate_post_render_gate(fixture_id, projection.get("post_render_gate"), errors)
+
+    invalid_hard_register_projections = payload.get("invalid_hard_register_ir_projections")
+    if invalid_hard_register_projections is not None:
+        if not isinstance(invalid_hard_register_projections, list) or not invalid_hard_register_projections:
+            errors.append(f"{fixture_id}: invalid_hard_register_ir_projections must be a non-empty array")
+        else:
+            for index, invalid_projection in enumerate(invalid_hard_register_projections, start=1):
+                if not isinstance(invalid_projection, dict):
+                    errors.append(f"{fixture_id}: invalid_hard_register_ir_projections[{index}] must be object")
+                    continue
+                canary_errors = hard_register_projection_errors(
+                    f"{fixture_id}.invalid_hard_register_ir_projections[{index}]",
+                    invalid_projection,
+                )
+                if not canary_errors:
+                    errors.append(
+                        f"{fixture_id}: invalid_hard_register_ir_projections[{index}] unexpectedly passed"
+                    )
+                elif not any(
+                    marker in " ".join(canary_errors)
+                    for marker in (
+                        "live set mismatch",
+                        "register_deltas missing live register",
+                        "diagnostic_completeness",
+                    )
+                ):
+                    errors.append(
+                        f"{fixture_id}: invalid_hard_register_ir_projections[{index}] did not hit hard-register reconciliation guard"
+                    )
 
     for source_ref in string_list(payload.get("source_governance_refs")):
         if not (root / source_ref).is_file():

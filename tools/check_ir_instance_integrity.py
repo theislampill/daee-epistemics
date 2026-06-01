@@ -85,6 +85,8 @@ FIELD_WITNESS_COVERAGE_KEYS = {
     "curl_check",
     "coverage_complete",
 }
+FIELD_WITNESS_COVERAGE_OPTIONAL_KEYS = {"diagnostic_completeness"}
+FIELD_WITNESS_DIAGNOSTIC_COMPLETENESS_KEYS = {"live_registers", "coverage", "complete"}
 FIELD_WITNESS_DEPENDENCY_GRAPH_KEYS = {"nodes", "edges", "roots", "parallel_groups", "acyclic"}
 FIELD_WITNESS_DEPENDENCY_EDGE_KEYS = {"from", "to"}
 FIELD_WITNESS_REREAD_PRESSURE_KEYS = {
@@ -144,6 +146,7 @@ FIELD_WITNESS_CLOSURE_DECISIONS = {"COMPLETE", "STOP", "HOLD", "RECURSE", "PARTI
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
 HARD_REGISTER_KEY_SET = set(HARD_REGISTER_KEYS)
+NONCANONICAL_HARD_REGISTER_KEYS = {"omega", "Ω", "♥", "ξ", "μ", "κ"}
 HARD_REGISTER_STATES = {"live", "held", "non_live"}
 HARD_REGISTER_OPTIONAL_KEYS = {"state", "functions", "basis", "non_live_reason"}
 HARD_REGISTER_FUNCTIONS = {
@@ -352,6 +355,15 @@ def _hard_register_sample(live_registers: tuple[str, ...] = ("xi", "kappa")) -> 
     sample["field_witness"]["normalized_activation_record"]["live_registers"] = [
         key for key in HARD_REGISTER_KEYS if key in live
     ]
+    sample["field_witness"]["coverage_proof"]["diagnostic_completeness"] = {
+        "live_registers": [key for key in HARD_REGISTER_KEYS if key in live],
+        "coverage": {
+            key: ["B1" if key != "kappa" else "B2"]
+            for key in HARD_REGISTER_KEYS
+            if key in live
+        },
+        "complete": True,
+    }
     return sample
 
 
@@ -510,6 +522,46 @@ BAD_SAMPLES["hard_register_nar_mismatch"] = (
     ),
     "hard-register live set mismatch",
 )
+BAD_SAMPLES["hard_register_register_delta_missing_live"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"].update(
+            {
+                "register_deltas": [
+                    item
+                    for item in s["field_witness"]["register_deltas"]
+                    if item.get("register") != "kappa"
+                ]
+            }
+        )
+    ),
+    "field_witness.register_deltas missing live hard register kappa",
+)
+BAD_SAMPLES["hard_register_noncanonical_delta_key"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"]["register_deltas"][0].update({"register": "Ω"})
+    ),
+    "field_witness.register_deltas uses noncanonical hard-register key",
+)
+BAD_SAMPLES["hard_register_diagnostic_completeness_missing"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"]["coverage_proof"].pop("diagnostic_completeness")
+    ),
+    "field_witness.coverage_proof.diagnostic_completeness required for hard-register reconciliation",
+)
+BAD_SAMPLES["hard_register_diagnostic_completeness_live_mismatch"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"]["coverage_proof"]["diagnostic_completeness"].update(
+            {"live_registers": ["xi"]}
+        )
+    ),
+    "diagnostic_completeness.live_registers must reconcile with hard registers",
+)
+BAD_SAMPLES["hard_register_diagnostic_completeness_coverage_missing"] = (
+    _hard_register_sample_with(
+        lambda s: s["field_witness"]["coverage_proof"]["diagnostic_completeness"]["coverage"].pop("kappa")
+    ),
+    "diagnostic_completeness omits live register kappa coverage",
+)
 
 COMPILED_MAP_BAD_SAMPLES = {
     "matched_module_absent_from_compiled_map": (
@@ -560,6 +612,117 @@ def canonical_live_registers(registers: dict[str, Any]) -> list[str]:
         if isinstance(value, dict) and value.get("state") in {"live", "held"}:
             live.append(key)
     return live
+
+
+def hard_register_field_witness_errors(
+    registers: dict[str, Any],
+    field_witness: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    expected = canonical_live_registers(registers)
+
+    normalized = field_witness.get("normalized_activation_record")
+    if not isinstance(normalized, dict):
+        errors.append(
+            "schema: field_witness.normalized_activation_record required for hard-register reconciliation"
+        )
+    else:
+        claimed_live = normalized.get("live_registers")
+        if not isinstance(claimed_live, list) or not all(non_empty_string(item) for item in claimed_live):
+            errors.append(
+                "schema: field_witness.normalized_activation_record.live_registers "
+                "must reconcile with hard registers"
+            )
+        elif claimed_live != expected:
+            errors.append(
+                "schema: hard-register live set mismatch: "
+                f"registers={expected!r} normalized_activation_record.live_registers={claimed_live!r}"
+            )
+
+    register_deltas = field_witness.get("register_deltas")
+    if isinstance(register_deltas, list):
+        seen: set[str] = set()
+        for item in register_deltas:
+            if not isinstance(item, dict):
+                continue
+            register = item.get("register")
+            if isinstance(register, str):
+                if register in NONCANONICAL_HARD_REGISTER_KEYS:
+                    errors.append(
+                        "schema: field_witness.register_deltas uses noncanonical hard-register key: "
+                        f"{register!r}"
+                    )
+                seen.add(register)
+        missing = [register for register in expected if register not in seen]
+        for register in missing:
+            errors.append(
+                f"schema: field_witness.register_deltas missing live hard register {register}"
+            )
+
+    coverage = field_witness.get("coverage_proof")
+    if isinstance(coverage, dict):
+        diagnostic = coverage.get("diagnostic_completeness")
+        if not isinstance(diagnostic, dict):
+            errors.append(
+                "schema: field_witness.coverage_proof.diagnostic_completeness "
+                "required for hard-register reconciliation"
+            )
+        else:
+            errors.extend(
+                require_exact_keys(
+                    diagnostic,
+                    FIELD_WITNESS_DIAGNOSTIC_COMPLETENESS_KEYS,
+                    "field_witness.coverage_proof.diagnostic_completeness",
+                )
+            )
+            claimed_live = diagnostic.get("live_registers")
+            if not isinstance(claimed_live, list) or not all(non_empty_string(item) for item in claimed_live):
+                errors.append(
+                    "schema: field_witness.coverage_proof.diagnostic_completeness.live_registers "
+                    "must be array of non-empty strings"
+                )
+            elif claimed_live != expected:
+                errors.append(
+                    "schema: diagnostic_completeness.live_registers must reconcile with hard registers: "
+                    f"registers={expected!r} diagnostic_completeness.live_registers={claimed_live!r}"
+                )
+            coverage_map = diagnostic.get("coverage")
+            initial = coverage.get("initial_burden_set")
+            floor = set(initial) if isinstance(initial, list) else set()
+            if not isinstance(coverage_map, dict):
+                errors.append(
+                    "schema: field_witness.coverage_proof.diagnostic_completeness.coverage "
+                    "must be object"
+                )
+            else:
+                extra = sorted(set(coverage_map) - set(expected))
+                if extra:
+                    errors.append(
+                        "schema: diagnostic_completeness.coverage contains non-live register(s): "
+                        + ", ".join(extra)
+                    )
+                for register in expected:
+                    burdens = coverage_map.get(register)
+                    if not isinstance(burdens, list) or not burdens:
+                        errors.append(f"schema: diagnostic_completeness omits live register {register} coverage")
+                        continue
+                    for burden in burdens:
+                        if not isinstance(burden, str) or not re.fullmatch(r"B\d+", burden):
+                            errors.append(
+                                f"schema: diagnostic_completeness maps live register {register} "
+                                f"to invalid burden {burden!r}"
+                            )
+                        elif floor and burden not in floor:
+                            errors.append(
+                                f"schema: diagnostic_completeness maps live register {register} "
+                                f"to non-floor burden {burden}"
+                            )
+            if diagnostic.get("complete") is not True:
+                errors.append(
+                    "schema: diagnostic_completeness.complete=false cannot support hard-register reconciliation"
+                )
+
+    return errors
 
 
 def hard_register_errors(instance: dict[str, Any]) -> list[str]:
@@ -633,25 +796,7 @@ def hard_register_errors(instance: dict[str, Any]) -> list[str]:
 
     field_witness = instance.get("field_witness")
     if isinstance(field_witness, dict):
-        normalized = field_witness.get("normalized_activation_record")
-        if not isinstance(normalized, dict):
-            errors.append(
-                "schema: field_witness.normalized_activation_record required for hard-register reconciliation"
-            )
-        else:
-            claimed_live = normalized.get("live_registers")
-            if not isinstance(claimed_live, list) or not all(non_empty_string(item) for item in claimed_live):
-                errors.append(
-                    "schema: field_witness.normalized_activation_record.live_registers "
-                    "must reconcile with hard registers"
-                )
-            else:
-                expected = canonical_live_registers(registers)
-                if claimed_live != expected:
-                    errors.append(
-                        "schema: hard-register live set mismatch: "
-                        f"registers={expected!r} normalized_activation_record.live_registers={claimed_live!r}"
-                    )
+        errors.extend(hard_register_field_witness_errors(registers, field_witness))
     return errors
 
 
@@ -1097,7 +1242,14 @@ def field_witness_errors(field_witness: Any) -> list[str]:
 
     coverage = field_witness.get("coverage_proof")
     if coverage is not None:
-        errors.extend(require_exact_keys(coverage, FIELD_WITNESS_COVERAGE_KEYS, "field_witness.coverage_proof"))
+        errors.extend(
+            require_keys_with_optional(
+                coverage,
+                FIELD_WITNESS_COVERAGE_KEYS,
+                FIELD_WITNESS_COVERAGE_OPTIONAL_KEYS,
+                "field_witness.coverage_proof",
+            )
+        )
         if isinstance(coverage, dict):
             initial = coverage.get("initial_burden_set")
             terminals = coverage.get("terminal_states")
@@ -1127,6 +1279,66 @@ def field_witness_errors(field_witness: Any) -> list[str]:
                     )
                 for key in set(terminal) - {"state", "operator", "delta_nB", "reason"}:
                     errors.append(f"schema: field_witness.coverage_proof.{burden} additional property not allowed: {key}")
+            diagnostic = coverage.get("diagnostic_completeness")
+            if diagnostic is not None:
+                errors.extend(
+                    require_exact_keys(
+                        diagnostic,
+                        FIELD_WITNESS_DIAGNOSTIC_COMPLETENESS_KEYS,
+                        "field_witness.coverage_proof.diagnostic_completeness",
+                    )
+                )
+                if isinstance(diagnostic, dict):
+                    live_registers = diagnostic.get("live_registers")
+                    if (
+                        not isinstance(live_registers, list)
+                        or not all(non_empty_string(item) for item in live_registers)
+                    ):
+                        errors.append(
+                            "schema: field_witness.coverage_proof.diagnostic_completeness.live_registers "
+                            "must be array of non-empty strings"
+                        )
+                    elif len(set(live_registers)) != len(live_registers):
+                        errors.append(
+                            "schema: field_witness.coverage_proof.diagnostic_completeness.live_registers "
+                            "must be unique"
+                        )
+                    diagnostic_coverage = diagnostic.get("coverage")
+                    if not isinstance(diagnostic_coverage, dict):
+                        errors.append(
+                            "schema: field_witness.coverage_proof.diagnostic_completeness.coverage "
+                            "must be object"
+                        )
+                    else:
+                        for register, burdens in diagnostic_coverage.items():
+                            if not non_empty_string(register):
+                                errors.append(
+                                    "schema: field_witness.coverage_proof.diagnostic_completeness.coverage "
+                                    "keys must be non-empty strings"
+                                )
+                                continue
+                            if not isinstance(burdens, list) or not burdens:
+                                errors.append(
+                                    "schema: field_witness.coverage_proof.diagnostic_completeness.coverage."
+                                    f"{register} must be non-empty B-id array"
+                                )
+                                continue
+                            for burden in burdens:
+                                if not isinstance(burden, str) or not re.fullmatch(r"B\d+", burden):
+                                    errors.append(
+                                        "schema: field_witness.coverage_proof.diagnostic_completeness.coverage."
+                                        f"{register} item must be burden ID"
+                                    )
+                                elif initial and burden not in initial:
+                                    errors.append(
+                                        "schema: field_witness.coverage_proof.diagnostic_completeness.coverage."
+                                        f"{register} maps to non-floor burden {burden}"
+                                    )
+                    if not isinstance(diagnostic.get("complete"), bool):
+                        errors.append(
+                            "schema: field_witness.coverage_proof.diagnostic_completeness.complete "
+                            "must be boolean"
+                        )
             dependency_graph = coverage.get("dependency_graph")
             errors.extend(
                 require_exact_keys(

@@ -868,6 +868,14 @@ contract permits a diagnostic or audit-style response.
     (`diagnostic-ir-delta-result-vocabulary-v1`). Governed ACT and NAR emission must use those
     tokens by construction for listed owner families; post-render checkers reject drift but are not
     the source of the vocabulary.
+- For explicit A.13 hard-register IR artifacts only
+  (`diagnostic_ir_schema_version = "0.4.3-hard-registers-v1"`), the hard-register live/held set
+  must reconcile with `field_witness.normalized_activation_record.live_registers`, live hard
+  registers named in `field_witness.register_deltas`, and
+  `field_witness.coverage_proof.diagnostic_completeness`. The canonical hard-register keys remain
+  `heart`, `xi`, `Omega`, `mu`, and `kappa`; `sigma` stays source-status/source-basis evidence and
+  is not a sixth hard-register key. This is a version-gated checker/fixture contract and does not
+  require schema-light governed outputs to emit hard-register fields by default.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,

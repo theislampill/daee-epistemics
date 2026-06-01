@@ -226,7 +226,15 @@
       },
       "divergence_check": "neutral",
       "curl_check": "null",
-      "coverage_complete": true
+      "coverage_complete": true,
+      "diagnostic_completeness": {
+        "live_registers": ["xi", "kappa"],
+        "coverage": {
+          "xi": ["B1"],
+          "kappa": ["B2"]
+        },
+        "complete": true
+      }
     }
   }
 }
