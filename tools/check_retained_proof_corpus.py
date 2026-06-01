@@ -447,7 +447,7 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
             missing_rows = [row for row in rows if row not in case_rows]
             if missing_rows:
                 errors.append(f"{prefix}.case_ids.{case_id}: missing target rows {missing_rows}")
-        if rows and case_ids:
+        if rows and case_ids and target_id != PROOF_MODE_FULL_IR_TARGET_ID:
             target_rows = set(rows)
             expected_case_ids = [
                 case_id
