@@ -1,0 +1,32 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "v0.4.3.0-b5-proof-mode-target-without-full-decode",
+  "proof_boundary": "Invalid canary: retained proof-mode full-IR coverage requires full_ir_decode.",
+  "coverage_targets": [
+    {
+      "id": "b5-4-retained-proof-mode-full-ir",
+      "description": "Invalid canary for B.5.4 proof_mode without full_ir_decode.",
+      "rows": ["B.5"],
+      "case_ids": ["proof-mode-without-full-decode"]
+    }
+  ],
+  "cases": [
+    {
+      "id": "proof-mode-without-full-decode",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": ["B.5"],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": "invalid retained-corpus canary: NLA fixture with proof_mode but no full_ir_decode",
+      "input": "../../valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "output": "../../../../nla-decode-semantic-faithfulness/invalid/canonical-ir-proof-mode-without-full-decode.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+        "output": "3F41391AC6A414D275B7A76A0142E1E6869DDFC0D41017B270FDDD1DA5707B76",
+        "collapse_certificate": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF",
+        "grapher_html": "87CEAFA9BED35B7B94A8CBEF3EFF4B3AEDB97D68CB1052350ED1FB41B2AD419B"
+      }
+    }
+  ]
+}

@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import check_nla_decode_semantic_faithfulness as nla_decode
 from check_collapse_certificate_schema import certificate_errors
 from check_graph_completeness import input_fingerprint_for_path
 
@@ -68,6 +69,11 @@ REQUIRED_CANONICAL_COVERAGE_TARGETS = {
     "d2-closing-formulation-retained-breadth": "D.2",
     "d3-mixed-concealment-retained-breadth": "D.3",
 }
+PROOF_MODE_FULL_IR_TARGET_ID = "b5-4-retained-proof-mode-full-ir"
+PROOF_MODE_FULL_IR_ROW = "B.5"
+PROOF_MODE_FULL_IR_SCHEMA = "b5-full-ir-proof-mode-v1"
+PROOF_MODE_FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
+PROOF_MODE_FULL_IR_RETAINED_MODE = "retained-proof-corpus-sidecar"
 
 
 def rel(path: Path) -> str:
@@ -256,6 +262,85 @@ def case_errors(manifest_path: Path, case: Any, index: int) -> list[str]:
     return errors
 
 
+def retained_full_ir_decode_case_errors(manifest_path: Path, case: dict[str, Any], target_prefix: str) -> list[str]:
+    """Verify a retained case that explicitly claims the B.5.4 proof-mode target."""
+    errors: list[str] = []
+    case_id = str(case.get("id") or "<unknown>")
+    prefix = f"{target_prefix}.case_ids.{case_id}"
+    output_path, path_error = resolve_manifest_path(manifest_path, case.get("output"))
+    if path_error:
+        return [f"{prefix}.output: {path_error}"]
+    assert output_path is not None
+    if not output_path.exists():
+        return [f"{prefix}.output: {rel(output_path)} missing"]
+
+    text = read_text(output_path)
+    field_witness, found = nla_decode.parse_field_witness(output_path, text)
+    errors.extend(f"{prefix}.output: {error}" for error in found)
+    if field_witness is None:
+        return errors
+
+    projection = field_witness.get("canonical_ir_projection")
+    if not isinstance(projection, dict):
+        errors.append(f"{prefix}.output: field_witness.canonical_ir_projection is required")
+        return errors
+
+    proof_mode = projection.get("proof_mode")
+    decoded_ir = projection.get("decoded_ir")
+    full_decode = projection.get("full_ir_decode")
+    if not isinstance(proof_mode, dict):
+        errors.append(f"{prefix}.output: field_witness.canonical_ir_projection.proof_mode is required")
+    if not isinstance(decoded_ir, dict):
+        errors.append(f"{prefix}.output: field_witness.canonical_ir_projection.decoded_ir is required")
+    if not isinstance(full_decode, dict):
+        errors.append(f"{prefix}.output: field_witness.canonical_ir_projection.full_ir_decode is required")
+    if errors:
+        return errors
+
+    if proof_mode.get("schema") != PROOF_MODE_FULL_IR_SCHEMA:
+        errors.append(
+            f"{prefix}.proof_mode.schema: must be {PROOF_MODE_FULL_IR_SCHEMA!r}"
+        )
+    if proof_mode.get("mode") != PROOF_MODE_FULL_IR_RETAINED_MODE:
+        errors.append(
+            f"{prefix}.proof_mode.mode: must be {PROOF_MODE_FULL_IR_RETAINED_MODE!r}"
+        )
+    if full_decode.get("schema") != PROOF_MODE_FULL_IR_DECODE_SCHEMA:
+        errors.append(
+            f"{prefix}.full_ir_decode.schema: must be {PROOF_MODE_FULL_IR_DECODE_SCHEMA!r}"
+        )
+
+    proof_sources = set(string_list(proof_mode.get("source_evidence")) or [])
+    full_sources = set(string_list(full_decode.get("source_evidence")) or [])
+    linked_sources = (
+        ("field_witness.canonical_ir_projection", "canonical_ir_projection"),
+        ("field_witness.canonical_ir_projection.decoded_ir", "canonical_ir_projection.decoded_ir"),
+    )
+    for proof_source, full_source in linked_sources:
+        if proof_source in proof_sources and full_source not in full_sources:
+            errors.append(
+                f"{prefix}.source_evidence: {proof_source!r} requires "
+                f"full_ir_decode source {full_source!r}"
+            )
+    if "field_witness.canonical_ir_projection.full_ir_decode" not in proof_sources:
+        errors.append(
+            f"{prefix}.source_evidence: proof_mode must name full_ir_decode as source evidence"
+        )
+
+    if proof_mode.get("arbitrary_nl_ir_parser_claim") is not False:
+        errors.append(f"{prefix}.proof_mode.arbitrary_nl_ir_parser_claim: must be false")
+    if proof_mode.get("default_runtime_emission_claim") is not False:
+        errors.append(f"{prefix}.proof_mode.default_runtime_emission_claim: must be false")
+    if proof_mode.get("t_lang_uptake_claim") is not False:
+        errors.append(f"{prefix}.proof_mode.t_lang_uptake_claim: must be false")
+
+    nla_found = nla_decode.nla_decode_errors(output_path, text)
+    if nla_found:
+        errors.append(f"{prefix}.output: NLA semantic faithfulness must pass for {PROOF_MODE_FULL_IR_TARGET_ID}")
+        errors.extend(f"{prefix}.output: {error}" for error in nla_found)
+    return errors
+
+
 def manifest_errors(path: Path) -> list[str]:
     payload, errors = load_json(path)
     if errors:
@@ -374,6 +459,13 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
                 errors.append(
                     f"{prefix}.case_ids: missing retained cases carrying target rows {missing_case_ids}"
                 )
+        if target_id == PROOF_MODE_FULL_IR_TARGET_ID:
+            if PROOF_MODE_FULL_IR_ROW not in set(rows):
+                errors.append(f"{prefix}.rows: must include {PROOF_MODE_FULL_IR_ROW}")
+            for case_id in case_ids:
+                case = cases_by_id.get(case_id)
+                if case is not None:
+                    errors.extend(retained_full_ir_decode_case_errors(manifest_path, case, prefix))
     if is_canonical_sidecar_manifest(manifest_path, payload):
         for target_id, required_row in REQUIRED_CANONICAL_COVERAGE_TARGETS.items():
             target = targets_by_id.get(target_id)

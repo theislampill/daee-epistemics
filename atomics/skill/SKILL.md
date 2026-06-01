@@ -44,8 +44,8 @@ Invocation-surface invariants retained here:
   payload. `field_witness` must carry `B_LA`, `B_MRP`, `B_total`, nodes, edges,
   generated-burden provenance, MRP resultants, formal reread states, terminal
   states, closure, T_lang, owner activations, owner_activation_ordering,
-  normalized_activation_record, and coverage_proof unless an explicit
-  no-graph/minimal mode says `graphing is unsupported` or graphing is partial.
+  normalized_activation_record, and coverage_proof unless explicit minimal mode
+  says graphing is unsupported/partial.
   Machine-facing `field_witness.terminal_states` and
   `coverage_proof.terminal_states` are objects/maps keyed by `B` id, not arrays
   of terminal objects.

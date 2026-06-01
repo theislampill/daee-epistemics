@@ -1019,6 +1019,60 @@
                 "t_lang_uptake_claim": { "type": "boolean" }
               }
             },
+            "emission_policy": {
+              "$comment": "Optional B.5.5 runtime/default emission policy marker. It is a separate machine-facing policy object layered on top of proof_mode v1, so proof_mode v1 keeps its default-runtime non-claim while this policy records the default emission contract for new proof-class closure outputs.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schema",
+                "mode",
+                "source_evidence",
+                "machine_facing",
+                "default_runtime",
+                "proof_class_closure_only",
+                "requires_projection",
+                "requires_decoded_ir",
+                "requires_full_ir_decode",
+                "visible_opening_header_required",
+                "legacy_schema_light_absent_valid",
+                "public_prose_replacement",
+                "arbitrary_nl_ir_parser_claim",
+                "t_lang_uptake_claim"
+              ],
+              "properties": {
+                "schema": { "type": "string", "const": "b5-full-ir-runtime-emission-v1" },
+                "mode": {
+                  "type": "string",
+                  "const": "default-runtime-when-proof-class-closure-claimed"
+                },
+                "source_evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "visible_noetic_field_opening",
+                      "visible_layer_a_diagnostic_ir_header",
+                      "field_witness.canonical_ir_projection",
+                      "field_witness.canonical_ir_projection.proof_mode",
+                      "field_witness.canonical_ir_projection.decoded_ir",
+                      "field_witness.canonical_ir_projection.full_ir_decode"
+                    ]
+                  },
+                  "uniqueItems": true
+                },
+                "machine_facing": { "type": "boolean" },
+                "default_runtime": { "type": "boolean" },
+                "proof_class_closure_only": { "type": "boolean" },
+                "requires_projection": { "type": "boolean" },
+                "requires_decoded_ir": { "type": "boolean" },
+                "requires_full_ir_decode": { "type": "boolean" },
+                "visible_opening_header_required": { "type": "boolean" },
+                "legacy_schema_light_absent_valid": { "type": "boolean" },
+                "public_prose_replacement": { "type": "boolean" },
+                "arbitrary_nl_ir_parser_claim": { "type": "boolean" },
+                "t_lang_uptake_claim": { "type": "boolean" }
+              }
+            },
             "decoded_ir": {
               "$comment": "Optional B.5.2 decode object. It is a checker-owned IR-like reconstruction from visible ACT plus field_witness/NAR/projection evidence; it is not arbitrary natural-language full IR decode.",
               "type": "object",

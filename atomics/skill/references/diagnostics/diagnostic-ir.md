@@ -916,6 +916,16 @@ contract permits a diagnostic or audit-style response.
   preserves schema-light absent-valid behavior, preserves the visible noetic-field opening
   banner and compact Layer A / Diagnostic IR header, and explicitly rejects arbitrary
   natural-language-to-IR parser, default runtime emission, and guaranteed `T_lang` uptake claims.
+- B.5.5 runtime/default emission policy: new governed outputs that claim proof-class closure
+  MUST emit `field_witness.canonical_ir_projection.emission_policy` when the projection stack
+  can be populated from visible ACT rows, NAR, and field-witness evidence, with
+  `schema: "b5-full-ir-runtime-emission-v1"` in addition to `proof_mode`, `decoded_ir`, and
+  `full_ir_decode`. This is a separate machine-facing policy object layered on top of B.5.3
+  proof-mode v1; it does not change the B.5.3 proof-mode non-claim that the proof-mode marker
+  itself is not a default-runtime claim. The policy is restricted to proof-class closure output,
+  preserves legacy schema-light absent-valid artifacts, requires the visible noetic-field banner
+  and compact Layer A / Diagnostic IR header, and explicitly rejects public-prose replacement,
+  arbitrary natural-language-to-IR parsing, and guaranteed `T_lang` uptake.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,

@@ -59,6 +59,7 @@ CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
 CANONICAL_IR_DECODE_SCHEMA = "b5-canonical-ir-decode-v1"
 FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
 FULL_IR_PROOF_MODE_SCHEMA = "b5-full-ir-proof-mode-v1"
+RUNTIME_EMISSION_POLICY_SCHEMA = "b5-full-ir-runtime-emission-v1"
 REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
 REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
@@ -201,6 +202,33 @@ FULL_IR_PROOF_MODE_SOURCE_EVIDENCE = {
     "visible_noetic_field_opening",
     "visible_layer_a_diagnostic_ir_header",
     "field_witness.canonical_ir_projection",
+    "field_witness.canonical_ir_projection.decoded_ir",
+    "field_witness.canonical_ir_projection.full_ir_decode",
+}
+RUNTIME_EMISSION_POLICY_KEYS = {
+    "schema",
+    "mode",
+    "source_evidence",
+    "machine_facing",
+    "default_runtime",
+    "proof_class_closure_only",
+    "requires_projection",
+    "requires_decoded_ir",
+    "requires_full_ir_decode",
+    "visible_opening_header_required",
+    "legacy_schema_light_absent_valid",
+    "public_prose_replacement",
+    "arbitrary_nl_ir_parser_claim",
+    "t_lang_uptake_claim",
+}
+RUNTIME_EMISSION_POLICY_MODES = {
+    "default-runtime-when-proof-class-closure-claimed",
+}
+RUNTIME_EMISSION_POLICY_SOURCE_EVIDENCE = {
+    "visible_noetic_field_opening",
+    "visible_layer_a_diagnostic_ir_header",
+    "field_witness.canonical_ir_projection",
+    "field_witness.canonical_ir_projection.proof_mode",
     "field_witness.canonical_ir_projection.decoded_ir",
     "field_witness.canonical_ir_projection.full_ir_decode",
 }
@@ -1144,6 +1172,68 @@ def full_ir_proof_mode_errors(path: Path, projection: dict[str, Any]) -> list[st
     return errors
 
 
+def runtime_emission_policy_errors(path: Path, projection: dict[str, Any]) -> list[str]:
+    label = f"{rel(path)}: field_witness.canonical_ir_projection.emission_policy"
+    policy = projection.get("emission_policy")
+    if policy is None:
+        return []
+    errors: list[str] = []
+    errors.extend(key_shape_errors(policy, RUNTIME_EMISSION_POLICY_KEYS, set(), label))
+    if not isinstance(projection.get("proof_mode"), dict):
+        errors.append(f"{label}: runtime emission policy requires proof_mode")
+    if not isinstance(projection.get("decoded_ir"), dict):
+        errors.append(f"{label}: runtime emission policy requires decoded_ir")
+    if not isinstance(projection.get("full_ir_decode"), dict):
+        errors.append(f"{label}: runtime emission policy requires full_ir_decode")
+    if errors:
+        return errors
+
+    if policy.get("schema") != RUNTIME_EMISSION_POLICY_SCHEMA:
+        errors.append(f"{label}: schema must be {RUNTIME_EMISSION_POLICY_SCHEMA!r}")
+    if policy.get("mode") not in RUNTIME_EMISSION_POLICY_MODES:
+        errors.append(f"{label}: mode is not controlled")
+
+    source_evidence = string_list(policy.get("source_evidence"))
+    if source_evidence is None:
+        errors.append(f"{label}: source_evidence must be a string list")
+    else:
+        source_set = set(source_evidence)
+        missing = sorted(RUNTIME_EMISSION_POLICY_SOURCE_EVIDENCE - source_set)
+        extra = sorted(source_set - RUNTIME_EMISSION_POLICY_SOURCE_EVIDENCE)
+        if missing:
+            errors.append(f"{label}: source_evidence missing required source(s): {missing}")
+        if extra:
+            errors.append(f"{label}: source_evidence has unknown source(s): {extra}")
+
+    for key in (
+        "machine_facing",
+        "default_runtime",
+        "proof_class_closure_only",
+        "requires_projection",
+        "requires_decoded_ir",
+        "requires_full_ir_decode",
+        "visible_opening_header_required",
+        "legacy_schema_light_absent_valid",
+    ):
+        if policy.get(key) is not True:
+            errors.append(f"{label}: {key} must be true")
+
+    for key in (
+        "public_prose_replacement",
+        "arbitrary_nl_ir_parser_claim",
+        "t_lang_uptake_claim",
+    ):
+        if policy.get(key) is not False:
+            errors.append(f"{label}: {key} must be false")
+
+    proof_mode = projection["proof_mode"]
+    if proof_mode.get("schema") != FULL_IR_PROOF_MODE_SCHEMA:
+        errors.append(f"{label}: proof_mode schema must be {FULL_IR_PROOF_MODE_SCHEMA!r}")
+    if proof_mode.get("default_runtime_emission_claim") is not False:
+        errors.append(f"{label}: B.5.3 proof_mode v1 default_runtime_emission_claim remains false")
+    return errors
+
+
 def canonical_ir_projection_errors(
     path: Path,
     field_witness: dict[str, Any],
@@ -1161,6 +1251,7 @@ def canonical_ir_projection_errors(
         + canonical_ir_decode_errors(path, field_witness, projection, records)
         + full_ir_decode_errors(path, field_witness, projection)
         + full_ir_proof_mode_errors(path, projection)
+        + runtime_emission_policy_errors(path, projection)
     )
 
 

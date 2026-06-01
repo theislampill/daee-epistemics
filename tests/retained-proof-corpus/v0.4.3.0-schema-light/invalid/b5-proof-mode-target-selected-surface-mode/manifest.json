@@ -1,0 +1,32 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "v0.4.3.0-b5-proof-mode-target-selected-surface-mode",
+  "proof_boundary": "Invalid canary: retained-corpus B.5.4 coverage requires retained-proof-corpus-sidecar mode, not selected-surface fixture mode.",
+  "coverage_targets": [
+    {
+      "id": "b5-4-retained-proof-mode-full-ir",
+      "description": "Invalid canary for B.5.4 proof_mode mode mismatch.",
+      "rows": ["B.5"],
+      "case_ids": ["selected-surface-proof-mode"]
+    }
+  ],
+  "cases": [
+    {
+      "id": "selected-surface-proof-mode",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": ["B.5"],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "origin": "invalid retained-corpus canary: selected-surface proof-mode fixture cannot stand in for a retained sidecar artifact",
+      "input": "../../valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "output": "../../../../nla-decode-semantic-faithfulness/valid/canonical-ir-full-decode-object-generated-graph.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+        "output": "6BBA2D62EDC11D09DACC515EEA7A2D0B158A0698FD0538967469575F2B460AB3",
+        "collapse_certificate": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF",
+        "grapher_html": "87CEAFA9BED35B7B94A8CBEF3EFF4B3AEDB97D68CB1052350ED1FB41B2AD419B"
+      }
+    }
+  ]
+}
