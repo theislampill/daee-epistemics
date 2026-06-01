@@ -35,7 +35,7 @@ CANONICAL_CORPUS_ID = "v0.4.3.0-schema-light-sidecar-backed"
 CLASSIFICATION = "SIDECAR_BACKED_PROOF"
 SHA256_RE = re.compile(r"^[A-Fa-f0-9]{64}$")
 CASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
-ROW_ID_RE = re.compile(r"^(?:A|B|C|D)\.[0-9]+|T_lang$")
+ROW_ID_RE = re.compile(r"(?:(?:A|B|C|D)\.[0-9]+|T_lang)")
 ARTIFACT_FIELDS = ("input", "output", "collapse_certificate", "grapher_html")
 REQUIRED_CASE_FIELDS = {
     "id",
@@ -179,7 +179,7 @@ def case_errors(manifest_path: Path, case: Any, index: int) -> list[str]:
     if rows is None:
         errors.append(f"{prefix}.rows: must be a non-empty array of strings")
     else:
-        invalid_rows = [row for row in rows if not ROW_ID_RE.match(row)]
+        invalid_rows = [row for row in rows if not ROW_ID_RE.fullmatch(row)]
         if invalid_rows:
             errors.append(f"{prefix}.rows: invalid row ids {invalid_rows}")
 
@@ -339,7 +339,7 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
             errors.append(f"{prefix}.rows: must be a non-empty array of strings")
             rows = []
         else:
-            invalid_rows = [row for row in rows if not ROW_ID_RE.match(row)]
+            invalid_rows = [row for row in rows if not ROW_ID_RE.fullmatch(row)]
             if invalid_rows:
                 errors.append(f"{prefix}.rows: invalid row ids {invalid_rows}")
 
