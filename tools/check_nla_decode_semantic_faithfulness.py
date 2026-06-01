@@ -56,6 +56,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "nla-decode-semantic-faithfulness"
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
+CANONICAL_IR_DECODE_SCHEMA = "b5-canonical-ir-decode-v1"
 REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
 REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
@@ -96,6 +97,33 @@ REGISTER_COMPOSITION_KEYS = {
 }
 REGISTER_COMPOSITION_SIGMA_KEYS = {"present", "inside_hard_registers", "role"}
 REGISTER_COMPOSITION_OWNER_HANDOFF_KEYS = {"selected", "held", "policy"}
+CANONICAL_IR_DECODE_KEYS = {
+    "schema",
+    "source_evidence",
+    "n_frame",
+    "live_registers",
+    "burden_floor",
+    "per_burden",
+    "diagnostic_completeness",
+}
+CANONICAL_IR_DECODE_OPTIONAL_KEYS = {"hard_registers", "register_composition"}
+CANONICAL_IR_DECODE_SOURCE_EVIDENCE = {
+    "visible_act",
+    "field_witness.owner_activations",
+    "normalized_activation_record",
+    "canonical_ir_projection",
+}
+CANONICAL_IR_DECODE_ROW_KEYS = {
+    "burden_id",
+    "owner_id",
+    "operation",
+    "pressure",
+    "body_ref",
+    "delta_result",
+    "mrp_route_result_type",
+    "terminal_state",
+    "generation_depth",
+}
 
 
 @dataclass(frozen=True)
@@ -233,6 +261,25 @@ def string_list(value: object) -> list[str] | None:
     return value
 
 
+def key_shape_errors(
+    value: Any,
+    required: set[str],
+    optional: set[str],
+    label: str,
+) -> list[str]:
+    if not isinstance(value, dict):
+        return [f"{label}: must be an object"]
+    keys = set(value)
+    missing = sorted(required - keys)
+    extra = sorted(keys - (required | optional))
+    errors: list[str] = []
+    if missing:
+        errors.append(f"{label}: missing required key(s): {missing}")
+    if extra:
+        errors.append(f"{label}: additional key(s) not allowed: {extra}")
+    return errors
+
+
 def diagnostic_completeness(field_witness: dict[str, Any]) -> dict[str, Any] | None:
     coverage = field_witness.get("coverage_proof")
     if not isinstance(coverage, dict):
@@ -261,6 +308,10 @@ def projection_row_set(records: list[ActRecord]) -> set[tuple[str, str, str, str
         target = land_target_tokens[0] if land_target_tokens else ""
         rows.add((target, strict_owner_family(record.owner), record.operation, record.delta_result))
     return rows
+
+
+def act_record_by_body_ref(records: list[ActRecord]) -> dict[str, ActRecord]:
+    return {graph_submove_id(record.body_ref): record for record in records}
 
 
 def canonical_ir_projection_common_errors(
@@ -586,6 +637,137 @@ def register_composition_projection_errors(path: Path, projection: dict[str, Any
     return errors
 
 
+def canonical_ir_decode_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    projection: dict[str, Any],
+    records: list[ActRecord],
+) -> list[str]:
+    decoded = projection.get("decoded_ir")
+    if decoded is None:
+        return []
+
+    label = f"{rel(path)}: field_witness.canonical_ir_projection.decoded_ir"
+    errors = key_shape_errors(
+        decoded,
+        CANONICAL_IR_DECODE_KEYS,
+        CANONICAL_IR_DECODE_OPTIONAL_KEYS,
+        label,
+    )
+    if errors:
+        return errors
+
+    if decoded.get("schema") != CANONICAL_IR_DECODE_SCHEMA:
+        errors.append(f"{label}: schema must be {CANONICAL_IR_DECODE_SCHEMA!r}")
+
+    source_evidence = string_list(decoded.get("source_evidence"))
+    if source_evidence is None:
+        errors.append(f"{label}: source_evidence must be a string list")
+    else:
+        missing_sources = sorted(CANONICAL_IR_DECODE_SOURCE_EVIDENCE - set(source_evidence))
+        extra_sources = sorted(set(source_evidence) - CANONICAL_IR_DECODE_SOURCE_EVIDENCE)
+        if missing_sources:
+            errors.append(f"{label}: source_evidence missing required source(s): {missing_sources}")
+        if extra_sources:
+            errors.append(f"{label}: source_evidence has unknown source(s): {extra_sources}")
+
+    for key in ("n_frame", "live_registers", "burden_floor", "diagnostic_completeness"):
+        if decoded.get(key) != projection.get(key):
+            errors.append(f"{label}: {key} does not match canonical_ir_projection")
+
+    projection_has_hard_registers = "hard_registers" in projection
+    decoded_has_hard_registers = "hard_registers" in decoded
+    if projection_has_hard_registers and not decoded_has_hard_registers:
+        errors.append(f"{label}: hard_registers required when projection has hard_registers")
+    elif decoded_has_hard_registers and decoded.get("hard_registers") != projection.get("hard_registers"):
+        errors.append(f"{label}: hard_registers does not match canonical_ir_projection")
+
+    projection_composition = projection.get("register_composition")
+    decoded_composition = decoded.get("register_composition")
+    if projection_composition is not None and decoded_composition != projection_composition:
+        errors.append(f"{label}: register_composition does not match canonical_ir_projection")
+    elif projection_composition is None and decoded_composition is not None:
+        errors.append(f"{label}: register_composition requires canonical_ir_projection.register_composition")
+
+    projection_rows = projection.get("per_burden")
+    decoded_rows = decoded.get("per_burden")
+    normalized = field_witness.get("normalized_activation_record")
+    nar_rows = normalized.get("per_burden") if isinstance(normalized, dict) else None
+    if not isinstance(projection_rows, list) or not isinstance(decoded_rows, list):
+        errors.append(f"{label}: per_burden must mirror canonical_ir_projection.per_burden")
+        return errors
+    if len(decoded_rows) != len(projection_rows):
+        errors.append(f"{label}: per_burden row count does not match canonical_ir_projection")
+    if isinstance(nar_rows, list) and len(decoded_rows) != len(nar_rows):
+        errors.append(f"{label}: per_burden row count does not match normalized_activation_record")
+
+    record_by_ref = act_record_by_body_ref(records)
+    mirrors = field_witness_activation_by_body_ref(field_witness)
+    for index, row in enumerate(decoded_rows):
+        row_label = f"{label}.per_burden[{index}]"
+        row_errors = key_shape_errors(row, CANONICAL_IR_DECODE_ROW_KEYS, set(), row_label)
+        errors.extend(row_errors)
+        if row_errors:
+            continue
+
+        core = canonical_projection_row(row)
+        if index < len(projection_rows):
+            projection_row = projection_rows[index]
+            if not isinstance(projection_row, dict):
+                errors.append(f"{row_label}: canonical_ir_projection row is not an object")
+            elif core != canonical_projection_row(projection_row):
+                errors.append(f"{row_label}: core row does not match canonical_ir_projection")
+        if isinstance(nar_rows, list) and index < len(nar_rows):
+            nar_row = nar_rows[index]
+            if not isinstance(nar_row, dict):
+                errors.append(f"{row_label}: normalized_activation_record row is not an object")
+            elif core != canonical_projection_row(nar_row):
+                errors.append(f"{row_label}: core row does not match normalized_activation_record")
+
+        pressure = row.get("pressure")
+        body_ref = graph_submove_id(row.get("body_ref"))
+        if not isinstance(pressure, str) or not pressure.strip():
+            errors.append(f"{row_label}: pressure must be a non-empty string")
+        if not body_ref:
+            errors.append(f"{row_label}: body_ref must be a non-empty submove ref")
+
+        record = record_by_ref.get(body_ref)
+        if record is None:
+            errors.append(f"{row_label}: no visible ACT row has body_ref {body_ref!r}")
+        else:
+            owner_family = strict_owner_family(str(row.get("owner_id") or ""))
+            land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
+            land_target = land_target_tokens[0] if land_target_tokens else ""
+            if graph_burden_id(row.get("burden_id")) != land_target:
+                errors.append(f"{row_label}: burden_id does not match ACT Land target")
+            if owner_family != strict_owner_family(record.owner):
+                errors.append(f"{row_label}: owner_id does not match visible ACT owner")
+            if row.get("operation") != record.operation:
+                errors.append(f"{row_label}: operation does not match visible ACT operation")
+            if row.get("pressure") != record.pi:
+                errors.append(f"{row_label}: pressure does not match visible ACT pressure")
+            if row.get("delta_result") != record.delta_result:
+                errors.append(f"{row_label}: delta_result does not match visible ACT delta")
+
+        mirror_items = mirrors.get(body_ref, [])
+        if len(mirror_items) != 1:
+            errors.append(f"{row_label}: field_witness.owner_activations must have exactly one mirror")
+        else:
+            mirror = mirror_items[0]
+            if strict_owner_family(str(row.get("owner_id") or "")) != strict_owner_family(str(mirror.get("owner") or "")):
+                errors.append(f"{row_label}: owner_id does not match field_witness mirror")
+            if row.get("operation") != mirror.get("operation"):
+                errors.append(f"{row_label}: operation does not match field_witness mirror")
+            if row.get("pressure") != mirror.get("pressure"):
+                errors.append(f"{row_label}: pressure does not match field_witness mirror")
+            mirror_delta = str(mirror.get("delta") or "").split(":", 1)[-1]
+            if row.get("delta_result") != mirror_delta:
+                errors.append(f"{row_label}: delta_result does not match field_witness mirror")
+            if body_ref != graph_submove_id(mirror.get("body_ref")):
+                errors.append(f"{row_label}: body_ref does not match field_witness mirror")
+    return errors
+
+
 def canonical_ir_projection_errors(
     path: Path,
     field_witness: dict[str, Any],
@@ -600,6 +782,7 @@ def canonical_ir_projection_errors(
         canonical_ir_projection_common_errors(path, field_witness, projection, records)
         + hard_register_projection_errors(path, field_witness, projection)
         + register_composition_projection_errors(path, projection)
+        + canonical_ir_decode_errors(path, field_witness, projection, records)
     )
 
 

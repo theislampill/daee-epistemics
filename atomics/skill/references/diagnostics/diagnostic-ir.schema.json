@@ -969,6 +969,87 @@
             "register_composition": {
               "$comment": "Optional B.5/register-composition evidence. Dedicated semantic checks remain owned by check_nla_decode_semantic_faithfulness.py.",
               "type": "object"
+            },
+            "decoded_ir": {
+              "$comment": "Optional B.5.2 decode object. It is a checker-owned IR-like reconstruction from visible ACT plus field_witness/NAR/projection evidence; it is not arbitrary natural-language full IR decode.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schema",
+                "source_evidence",
+                "n_frame",
+                "live_registers",
+                "burden_floor",
+                "per_burden",
+                "diagnostic_completeness",
+                "hard_registers"
+              ],
+              "properties": {
+                "schema": { "type": "string", "const": "b5-canonical-ir-decode-v1" },
+                "source_evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "visible_act",
+                      "field_witness.owner_activations",
+                      "normalized_activation_record",
+                      "canonical_ir_projection"
+                    ]
+                  },
+                  "uniqueItems": true
+                },
+                "n_frame": { "type": "string", "minLength": 1 },
+                "live_registers": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "uniqueItems": true
+                },
+                "burden_floor": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "per_burden": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "burden_id",
+                      "owner_id",
+                      "operation",
+                      "pressure",
+                      "body_ref",
+                      "delta_result",
+                      "mrp_route_result_type",
+                      "terminal_state",
+                      "generation_depth"
+                    ],
+                    "properties": {
+                      "burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
+                      "owner_id": { "type": "string", "minLength": 1 },
+                      "operation": { "type": "string", "minLength": 1 },
+                      "pressure": { "type": "string", "minLength": 1 },
+                      "body_ref": { "type": "string", "pattern": "^B[0-9]+_[0-9]+$" },
+                      "delta_result": { "type": "string", "minLength": 1 },
+                      "mrp_route_result_type": { "type": "string", "minLength": 1 },
+                      "terminal_state": { "type": "string", "minLength": 1 },
+                      "generation_depth": { "type": "integer", "minimum": 0 }
+                    }
+                  }
+                },
+                "diagnostic_completeness": {
+                  "type": "object"
+                },
+                "hard_registers": {
+                  "type": "object"
+                },
+                "register_composition": {
+                  "type": "object"
+                }
+              }
             }
           }
         },

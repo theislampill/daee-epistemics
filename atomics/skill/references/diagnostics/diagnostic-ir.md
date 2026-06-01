@@ -886,6 +886,20 @@ contract permits a diagnostic or audit-style response.
   default always-on runtime output, not full IR decode, and not proof of interlocutor uptake. It
   never replaces the visible opening noetic-field banner or the compact Layer A / Diagnostic IR
   header; those remain the human-facing field read and compliance surface.
+- B.5.2 opt-in decode object: a projection-bearing artifact MAY also emit
+  `field_witness.canonical_ir_projection.decoded_ir` with
+  `schema: "b5-canonical-ir-decode-v1"`. This object is a checker-owned
+  reconstruction surface from visible ACT rows plus `field_witness.owner_activations`,
+  `normalized_activation_record`, and `canonical_ir_projection`; it is not a free-standing
+  natural-language parser. It repeats the recoverable IR-like slots (`n_frame`,
+  `live_registers`, `burden_floor`, `diagnostic_completeness`, optional `hard_registers`,
+  optional `register_composition`, and `per_burden[]` rows with `owner_id`, `operation`,
+  `pressure`, `body_ref`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and
+  `generation_depth`) so a checker can prove the decode agrees with visible ACT/body evidence
+  and machine field-witness evidence. Schema-light projections may use `decoded_ir` without
+  hard-register fields; hard-register projections must keep decoded hard registers equal to the
+  projection. This remains an opt-in B.5 scaffold and does not claim arbitrary full IR decode,
+  runtime/default hard-register emission, guaranteed uptake, or package/provenance proof.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,
