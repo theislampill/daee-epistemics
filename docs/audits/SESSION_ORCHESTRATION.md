@@ -288,20 +288,25 @@ session truthfulness was committed/pushed, the B-sidecar canonical
 coverage-target pinning candidate was implemented for all 11 current target
 IDs, and the owner-approved A.13.2 checker/fixture reconciliation slice was
 implemented and live-CI verified. AS-8/MM-2/MM-5/MM-7/MM-8 static D.3 slices
-remain source-boundary covered; fixture 62 remains a D.3-adjacent
-owner-decision candidate; and any later A.13 runtime/default hard-register
-emission, A.13.3+, or full-IR implementation remains owner-gated. No new
+remain source-boundary covered; fixture 62 was later implemented as a
+D.3-adjacent no-model checker/canary slice at source commit
+`7cd7e1b24704fa0fdae7f5c5af3190a576b3f03a` with GitHub CI run
+`26729785206` PASS and Pages run `26729784807` PASS. Any later A.13
+runtime/default hard-register emission, A.13.3+, or full-IR implementation
+remains owner-gated. No new
 implementation session is opened by this policy document itself.
 
 Post-sidecar checkpoint after commit
 `e651756bc210e764b1c8a112eac6c216f20d642d`: read-only scouts Galileo
 (`019e8032-437a-7320-8e5c-7172e7010d2a`) and Aquinas
 (`019e8032-71a9-7240-8e62-465a3c4d0ed5`) reported no actionable stale wording
-and no owner-free no-model residual lane. The managing session should not open
-a new implementation session until the owner accepts fixture 62 as
-D.3-adjacent, opens later A.13/full-IR work, promotes D.8 archaeology, approves
-broad governed/model matrix work, or names another concrete residual with owner
-files.
+and no owner-free no-model residual lane. Fixture 62 was subsequently accepted
+under the standing no-model checker/fixture authorization and implemented, so
+the managing session should not reopen it unless CI or later evidence exposes
+drift. New implementation sessions remain limited to later A.13/full-IR work
+with owner approval, D.8 archaeology with exact approval, broad governed/model
+matrix work with explicit authorization, or another concrete residual with
+owner files.
 
 Fixture 62 decision prep now exists at
 `docs/audits/v0.4.3.x-fixture62-d3-adjacent-decision-packet.md`. It is a
