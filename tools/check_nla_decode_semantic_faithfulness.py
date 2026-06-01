@@ -54,6 +54,34 @@ if hasattr(sys.stderr, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "nla-decode-semantic-faithfulness"
+HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
+CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
+HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
+HARD_REGISTER_KEY_SET = set(HARD_REGISTER_KEYS)
+HARD_REGISTER_STATES = {"live", "held", "non_live"}
+HARD_REGISTER_FUNCTIONS = {
+    "heart": {"affective-posture", "security-posture", "moral-recoil", "restoration-recoil"},
+    "xi": {"warrant-authority", "source-order", "proof-tribunal", "testimony-status"},
+    "Omega": {"ontology-predication", "category-transfer", "referent-confusion", "creator-creation"},
+    "mu": {"memetic-carrier", "compression-carrier", "defensive-stabilizer", "mutation-reproduction"},
+    "kappa": {"dependency-collapse", "entailment-chain", "closure-boundary", "cycle-curl"},
+}
+PROJECTION_ROUTE_RESULT_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+}
+PROJECTION_TERMINAL_STATES = {"landed", "hold_partial"}
+PROJECTION_PER_BURDEN_KEYS = (
+    "burden_id",
+    "owner_id",
+    "operation",
+    "delta_result",
+    "mrp_route_result_type",
+    "terminal_state",
+    "generation_depth",
+)
 
 
 @dataclass(frozen=True)
@@ -159,6 +187,257 @@ def field_witness_activation_by_body_ref(field_witness: dict[str, Any]) -> dict[
         if body_ref:
             result.setdefault(body_ref, []).append(item)
     return result
+
+
+def string_list(value: object) -> list[str] | None:
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        return None
+    return value
+
+
+def diagnostic_completeness(field_witness: dict[str, Any]) -> dict[str, Any] | None:
+    coverage = field_witness.get("coverage_proof")
+    if not isinstance(coverage, dict):
+        return None
+    diagnostic = coverage.get("diagnostic_completeness")
+    return diagnostic if isinstance(diagnostic, dict) else None
+
+
+def canonical_hard_register_live_registers(registers: dict[str, Any]) -> list[str]:
+    live: list[str] = []
+    for key in HARD_REGISTER_KEYS:
+        value = registers.get(key)
+        if isinstance(value, dict) and value.get("state") in {"live", "held"}:
+            live.append(key)
+    return live
+
+
+def canonical_projection_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {key: row.get(key) for key in PROJECTION_PER_BURDEN_KEYS}
+
+
+def projection_row_set(records: list[ActRecord]) -> set[tuple[str, str, str, str]]:
+    rows: set[tuple[str, str, str, str]] = set()
+    for record in records:
+        land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
+        target = land_target_tokens[0] if land_target_tokens else ""
+        rows.add((target, strict_owner_family(record.owner), record.operation, record.delta_result))
+    return rows
+
+
+def canonical_ir_projection_common_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    projection: dict[str, Any],
+    records: list[ActRecord],
+) -> list[str]:
+    label = f"{rel(path)}: field_witness.canonical_ir_projection"
+    errors: list[str] = []
+    if projection.get("schema") != CANONICAL_IR_PROJECTION_SCHEMA:
+        errors.append(f"{label}: schema must be {CANONICAL_IR_PROJECTION_SCHEMA!r}")
+
+    normalized = field_witness.get("normalized_activation_record")
+    if not isinstance(normalized, dict):
+        return errors + [f"{label}: normalized_activation_record mirror is required"]
+
+    for key in ("n_frame", "live_registers", "burden_floor"):
+        if projection.get(key) != normalized.get(key):
+            errors.append(f"{label}: {key} does not match normalized_activation_record")
+
+    projection_diag = projection.get("diagnostic_completeness")
+    witness_diag = diagnostic_completeness(field_witness)
+    if not isinstance(projection_diag, dict):
+        errors.append(f"{label}: diagnostic_completeness object is required")
+    elif witness_diag is None:
+        errors.append(f"{label}: field_witness.coverage_proof.diagnostic_completeness is required")
+    elif projection_diag != witness_diag:
+        errors.append(f"{label}: diagnostic_completeness does not match field_witness coverage_proof")
+
+    live_registers = string_list(projection.get("live_registers"))
+    if live_registers is None:
+        errors.append(f"{label}: live_registers must be a string list")
+    burden_floor = string_list(projection.get("burden_floor"))
+    if burden_floor is None:
+        errors.append(f"{label}: burden_floor must be a string list")
+    n_frame = projection.get("n_frame")
+    if not isinstance(n_frame, str) or not n_frame.strip():
+        errors.append(f"{label}: n_frame must be a non-empty string")
+
+    nar_rows = normalized.get("per_burden")
+    projection_rows = projection.get("per_burden")
+    if not isinstance(nar_rows, list) or not isinstance(projection_rows, list):
+        errors.append(f"{label}: per_burden must mirror normalized_activation_record.per_burden")
+        return errors
+    if len(projection_rows) != len(nar_rows):
+        errors.append(f"{label}: per_burden row count does not match normalized_activation_record")
+
+    record_rows = projection_row_set(records)
+    for index, row in enumerate(projection_rows):
+        row_label = f"{label}.per_burden[{index}]"
+        if not isinstance(row, dict):
+            errors.append(f"{row_label}: row must be an object")
+            continue
+        missing = [key for key in PROJECTION_PER_BURDEN_KEYS if key not in row]
+        if missing:
+            errors.append(f"{row_label}: missing required key(s): {missing}")
+        if index < len(nar_rows):
+            nar_row = nar_rows[index]
+            if not isinstance(nar_row, dict):
+                errors.append(f"{row_label}: normalized_activation_record row is not an object")
+            elif canonical_projection_row(row) != canonical_projection_row(nar_row):
+                errors.append(f"{row_label}: row does not match normalized_activation_record")
+        owner_family = strict_owner_family(str(row.get("owner_id") or ""))
+        if not owner_family:
+            errors.append(f"{row_label}: owner_id is not catalogue-backed")
+        route_type = row.get("mrp_route_result_type")
+        if route_type not in PROJECTION_ROUTE_RESULT_TYPES:
+            errors.append(f"{row_label}: mrp_route_result_type is not controlled")
+        terminal = row.get("terminal_state")
+        if terminal not in PROJECTION_TERMINAL_STATES:
+            errors.append(f"{row_label}: terminal_state is not controlled")
+        generation_depth = row.get("generation_depth")
+        if type(generation_depth) is not int or generation_depth < 0:
+            errors.append(f"{row_label}: generation_depth must be a non-negative integer")
+        record_key = (
+            graph_burden_id(row.get("burden_id")),
+            owner_family,
+            str(row.get("operation") or ""),
+            str(row.get("delta_result") or ""),
+        )
+        if record_key not in record_rows:
+            errors.append(f"{row_label}: no visible ACT row decodes to this projection row")
+    return errors
+
+
+def hard_register_projection_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    projection: dict[str, Any],
+) -> list[str]:
+    label = f"{rel(path)}: field_witness.canonical_ir_projection"
+    errors: list[str] = []
+    version = projection.get("diagnostic_ir_schema_version")
+    if version is None:
+        if "hard_registers" in projection:
+            errors.append(f"{label}: hard_registers requires {HARD_REGISTER_SCHEMA_VERSION}")
+        return errors
+    if version != HARD_REGISTER_SCHEMA_VERSION:
+        return [f"{label}: diagnostic_ir_schema_version invalid: {version!r}"]
+
+    registers = projection.get("hard_registers")
+    if not isinstance(registers, dict):
+        return [f"{label}: hard-register projection requires hard_registers object"]
+    register_keys = set(registers)
+    missing = sorted(HARD_REGISTER_KEY_SET - register_keys)
+    extra = sorted(register_keys - HARD_REGISTER_KEY_SET)
+    if missing:
+        errors.append(f"{label}: hard_registers missing register key(s): {missing}")
+    if extra:
+        errors.append(f"{label}: hard_registers has unknown register key(s): {extra}")
+
+    for key in HARD_REGISTER_KEYS:
+        item = registers.get(key)
+        if not isinstance(item, dict):
+            errors.append(f"{label}.hard_registers.{key}: must be object")
+            continue
+        state = item.get("state")
+        functions = item.get("functions")
+        basis = item.get("basis")
+        if state not in HARD_REGISTER_STATES:
+            errors.append(f"{label}.hard_registers.{key}: state invalid")
+        if not isinstance(functions, list) or not all(isinstance(value, str) and value for value in functions):
+            errors.append(f"{label}.hard_registers.{key}: functions must be strings")
+            functions = []
+        if not isinstance(basis, list) or not all(isinstance(value, str) and value for value in basis):
+            errors.append(f"{label}.hard_registers.{key}: basis must be strings")
+            basis = []
+        if state in {"live", "held"}:
+            if not functions:
+                errors.append(f"{label}.hard_registers.{key}: functions required for live/held")
+            if not basis:
+                errors.append(f"{label}.hard_registers.{key}: basis required for live/held")
+            invalid_functions = sorted(set(functions) - HARD_REGISTER_FUNCTIONS[key])
+            if invalid_functions:
+                errors.append(f"{label}.hard_registers.{key}: invalid function(s): {invalid_functions}")
+        elif state == "non_live":
+            if functions or basis:
+                errors.append(f"{label}.hard_registers.{key}: non_live must have empty functions and basis")
+            if not isinstance(item.get("non_live_reason"), str) or not item["non_live_reason"].strip():
+                errors.append(f"{label}.hard_registers.{key}: non_live_reason required")
+
+    expected_live = canonical_hard_register_live_registers(registers)
+    if projection.get("live_registers") != expected_live:
+        errors.append(
+            f"{label}: hard-register live set mismatch: "
+            f"hard_registers={expected_live!r} live_registers={projection.get('live_registers')!r}"
+        )
+
+    normalized = field_witness.get("normalized_activation_record")
+    if isinstance(normalized, dict) and normalized.get("live_registers") != expected_live:
+        errors.append(
+            f"{label}: hard-register live set mismatch: "
+            f"hard_registers={expected_live!r} normalized_activation_record.live_registers="
+            f"{normalized.get('live_registers')!r}"
+        )
+
+    register_deltas = field_witness.get("register_deltas")
+    if not isinstance(register_deltas, list):
+        errors.append(f"{label}: field_witness.register_deltas required for hard-register projection")
+    else:
+        seen_hard = {
+            item.get("register")
+            for item in register_deltas
+            if isinstance(item, dict) and item.get("register") in HARD_REGISTER_KEY_SET
+        }
+        missing_live = [register for register in expected_live if register not in seen_hard]
+        extra_live = sorted(seen_hard - set(expected_live))
+        for register in missing_live:
+            errors.append(f"{label}: field_witness.register_deltas missing live register {register}")
+        if extra_live:
+            errors.append(f"{label}: field_witness.register_deltas contains non-live hard register(s): {extra_live}")
+
+    witness_diag = diagnostic_completeness(field_witness)
+    if not isinstance(witness_diag, dict):
+        errors.append(f"{label}: field_witness.coverage_proof.diagnostic_completeness required")
+    else:
+        if witness_diag.get("live_registers") != expected_live:
+            errors.append(
+                f"{label}: diagnostic_completeness.live_registers mismatch: "
+                f"hard_registers={expected_live!r} diagnostic_completeness.live_registers="
+                f"{witness_diag.get('live_registers')!r}"
+            )
+        coverage = witness_diag.get("coverage")
+        if not isinstance(coverage, dict):
+            errors.append(f"{label}: diagnostic_completeness.coverage must be object")
+        else:
+            extra_coverage = sorted(set(coverage) - set(expected_live))
+            if extra_coverage:
+                errors.append(
+                    f"{label}: diagnostic_completeness.coverage contains non-live register(s): {extra_coverage}"
+                )
+            for register in expected_live:
+                burdens = coverage.get(register)
+                if not isinstance(burdens, list) or not burdens:
+                    errors.append(f"{label}: diagnostic_completeness omits live register {register} coverage")
+        if witness_diag.get("complete") is not True:
+            errors.append(f"{label}: diagnostic_completeness.complete must be true")
+    return errors
+
+
+def canonical_ir_projection_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    records: list[ActRecord],
+) -> list[str]:
+    projection = field_witness.get("canonical_ir_projection")
+    if projection is None:
+        return []
+    if not isinstance(projection, dict):
+        return [f"{rel(path)}: field_witness.canonical_ir_projection must be an object"]
+    return (
+        canonical_ir_projection_common_errors(path, field_witness, projection, records)
+        + hard_register_projection_errors(path, field_witness, projection)
+    )
 
 
 def activation_mirror_errors(
@@ -419,6 +698,8 @@ def nla_decode_errors(
     errors.extend(f"{rel(path)}: {message}" for message in parse_errors)
     if not records:
         return errors + [f"{rel(path)}: no visible ACT records to decode"]
+
+    errors.extend(canonical_ir_projection_errors(path, field_witness, records))
 
     seen_body_refs: set[str] = set()
     for record in records:
