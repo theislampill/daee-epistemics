@@ -109,6 +109,13 @@ surface too small`.
    The literal `Matched owner/TTP route: [...]` line is required before owner submoves.
    ACT uses the uppercase field marker `Δ=` only; lowercase `δ=` is invalid even when the value
    after it is a valid `ΔⁿB:` or `Δκ:` token.
+   B.5 proof-mode/full-IR projection does not relax ACT syntax. Even when machine aliases use
+   ASCII graph IDs such as `B1` and `B1_1`, the visible release-proof ACT row still uses the
+   canonical `⟦ACT ... :: π=... :: body_ref=... :: Δ=... :: Land(...)+⟧` fence. Do not print
+   `[ACT ...]`, bare `ACT ...`, `pi=`, `delta_result=`, or `Land(B1)+` as the public ACT row
+   when Unicode transport is available. The submove heading may use an ASCII body-ref alias such
+   as `### B1_1[source-status-repair] - ...`, but the heading owner bracket is owner-family only;
+   the full `owner.operation` token belongs in the ACT row and `Operation:` line.
    The ledger symbol is exactly `𝔅` U+1D505, as in `𝔅_LA`; never write script `𝓑`
    U+1D4D1. The closure symbol is exactly `𝒞` U+1D49E, as in `𝒞(Ψᴺ)`; never write
    script `𝓒` U+1D4D2.
@@ -670,6 +677,14 @@ surface too small`.
    The record is not proof by itself; it must agree with `owner_activations[]`,
    `mrp_resultants[]`, `terminal_states`, `generated_burdens[]`, `B_LA`, `B_MRP`, `B_total`,
    and `coverage_proof`.
+   For B.5 proof-mode/full-IR retained evidence, `field_witness` is the JSON payload itself
+   after the literal `field_witness` heading; do not nest it under a top-level
+   `"field_witness"` wrapper. It must include `coverage_proof.dependency_graph` (`nodes`,
+   `edges`, `roots`, `acyclic`), `normalized_activation_record.burden_floor`, and
+   `normalized_activation_record.per_burden[]`. Terminal STOP/no-new-resultant rows include
+   `no_new_resultant_proof.escape_routes_checked` as a list, `field_state_at_stop` with neutral
+   divergence, null/resolved curl, literal `b_live: "empty"`, `kappa_residual: 0`, and
+   `stop_licensed: true`.
    Canonical `delta_result` tokens are owner-local. The machine-readable runtime metadata source is
    `references/diagnostics/delta-result-vocabulary.json`
    (`diagnostic-ir-delta-result-vocabulary-v1`); the list below mirrors that source. Use only these
