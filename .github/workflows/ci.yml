@@ -41,6 +41,7 @@ jobs:
           python tools/check_metacompliance_current_canon.py
           python tools/check_register_formalism_bridge.py
           python tools/check_reconstructibility_and_mrp.py
+          python tools/check_nla_decode_semantic_faithfulness.py
           python tools/check_manual_smoke_render_contract.py
           python tools/check_collapse_certificate_schema.py
           python tools/check_graph_completeness.py
