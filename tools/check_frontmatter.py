@@ -263,12 +263,23 @@ def check_skill_description_limit(data: dict, path: str) -> list[str]:
     return []
 
 
-def check_skill_metadata_files(verbose: bool) -> tuple[int, int]:
+def check_skill_metadata_files(verbose: bool, extra_paths: list[str] | None = None) -> tuple[int, int]:
     files_checked = 0
     files_with_errors = 0
 
-    for path in SKILL_METADATA_FILES:
+    paths = [*SKILL_METADATA_FILES, *(extra_paths or [])]
+    seen: set[str] = set()
+    for path in paths:
+        normalized = os.path.normcase(os.path.abspath(path))
+        if normalized in seen:
+            continue
+        seen.add(normalized)
         if not os.path.exists(path):
+            if path in (extra_paths or []):
+                files_checked += 1
+                files_with_errors += 1
+                print(f"\nERROR in {path}:")
+                print("  - Skill metadata file not found")
             continue
         data, parse_errors = extract_frontmatter(path)
         files_checked += 1
@@ -349,6 +360,11 @@ def main():
                         help="Print OK lines")
     parser.add_argument("--contract-version",
                         help="Require every YAML-bearing module to use this contract_version")
+    parser.add_argument("--extra-skill-metadata", action="append", default=[],
+                        help=(
+                            "Additional SKILL.md/frontmatter path to check against the "
+                            "skill metadata description limit, e.g. an installed user skill"
+                        ))
     args = parser.parse_args()
 
     root = args.dir
@@ -362,7 +378,10 @@ def main():
         args.verbose,
         args.contract_version,
     )
-    skill_checked, skill_errors = check_skill_metadata_files(args.verbose)
+    skill_checked, skill_errors = check_skill_metadata_files(
+        args.verbose,
+        args.extra_skill_metadata,
+    )
     errors += skill_errors
 
     print("-" * 60)

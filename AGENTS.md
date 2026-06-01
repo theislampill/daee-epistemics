@@ -137,6 +137,10 @@ the orchestrator and retained-corpus manifests, not in `AGENTS.md`.
   as description is too long, do not accept the collapsed generic answer as
   current-skill evidence. Use the repo-standard prompt-embedded generated
   `skill/SKILL.md` harness, or classify the run as a harness failure.
+  For installed/user-skill loadability checks, run
+  `python tools/check_frontmatter.py --extra-skill-metadata <installed SKILL.md>`
+  against the installed `SKILL.md`; a failure is harness/install-state evidence,
+  not source/runtime proof.
 - Retained proof-corpus promotion follows
   `docs/audits/v0.4.3.0-retained-smoke-sidecar-convention.md` and the manifest
   under `tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/`.
