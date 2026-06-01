@@ -105,7 +105,7 @@ Forbidden:
 - broad row rewrites outside the selected lane;
 - model-smoke campaign unless explicitly authorized;
 - package/tag/upload/release/provenance;
-- A.13.2 or later implementation without explicit owner approval.
+- A.13 follow-on implementation without explicit owner approval.
 
 Close/archive rule: may be closed after the managing session verifies the diff,
 checks, ledger update, and commit/push/CI status, or after it is explicitly
@@ -180,7 +180,7 @@ by exact ID/session.
 | `SCOUT-D3-mixed-concealment` | Scout | D.3 residuals, concealment fixtures/checker | Read-only; no model smokes | Candidate session; recent MM-2 lane closed by managing session | Close only after recommendation/evidence is in orchestrator |
 | `SCOUT-B-sidecar-residuals` | Scout | B.1/B.2/B.4/B.5 retained sidecars | Read-only; no sidecar mutation | Candidate future scout | Preserve if it identifies retained-corpus drift |
 | `SCOUT-C5-C7-matrix` | Scout | restoration-recoil/two-track/divergence-curl breadth | Read-only; no new cases/model smokes | Candidate future scout | Preserve if it identifies missing case-family proof |
-| `SCOUT-A13-follow-on` | Scout | A.13.2+ decision prep only | Read-only design; no implementation | Candidate future scout; owner approval required before any A.13.2 implementation | Preserve until owner decision is recorded |
+| `SCOUT-A13-follow-on` | Scout | A.13.3+ / full-IR decision prep only | Read-only design; no implementation | Candidate future scout; owner approval required before any runtime/default hard-register emission, A.13.3+, or full-IR implementation | Preserve until owner decision is recorded |
 | `VERIFY-ci-pages-boundary` | Verification | CI/Pages after commit/push | Read-only checks; no patch unless promoted | Used as a role by managing session after pushes | Close after run IDs and status are recorded |
 | `ARCHIVE-D8-approved-ids-only` | Archive/Cleanup | D.8 exact-ID cleanup only | No action unless exact IDs approved | Not active; D.8 safe subset already closed at spawn-edge level | No close/archive/delete beyond exact owner-approved IDs |
 
@@ -196,7 +196,7 @@ read-only scout agents from the 2026-05-31 post-v0.4.3.x scout refresh:
 | `019e8004-7d1d-79a1-acd8-811c7b160628` | Ptolemy | `SCOUT-D3-mixed-concealment`; identified fixture 62 as D.3-adjacent owner-decision candidate and AS/MM static slices as already closed | May be closed after integration; no source changes |
 | `019e8004-9f59-7f13-86c1-66859ed5f7c8` | Fermat | `SCOUT-B-sidecar-residuals`; identified canonical coverage-target pinning as the next no-model sidecar/accounting candidate; later implemented by commit `8a69d51511421ae57e473d2b3635dbb7a6c83930` | May be closed after integration; no source changes |
 | `019e8004-c013-74b0-b0bb-3d3707b75b4c` | Peirce | `SCOUT-C5-C7-matrix`; confirmed current retained matrix closure for the named schema-light target set | May be closed after integration; no source changes |
-| `019e8004-ed90-7993-801e-33c5017ebcaa` | Nietzsche | `SCOUT-A13-follow-on`; confirmed A.13 follow-on remains owner-gated | May be closed after integration; no source changes |
+| `019e8004-ed90-7993-801e-33c5017ebcaa` | Nietzsche | `SCOUT-A13-follow-on`; confirmed A.13 follow-on was owner-gated before the A.13.2 decision packet | May be closed after integration; no source changes |
 
 Historical 475-row D.8 inventory remains governed by
 `.daee/thread-audit/20260530-131739/subagent-sidebar-inventory.{json,md}` and
@@ -280,16 +280,18 @@ The managing session chooses exactly one lane using this priority:
 1. docs/ledger truthfulness if stale;
 2. no-model checker/fixture hardening;
 3. retained-corpus/accounting hardening;
-4. A.13.2 decision packet, not implementation;
+4. later A.13/full-IR decision packet, not implementation;
 5. broader model-smoke work only with explicit authorization.
 
 Current lane state after the later 2026-05-31 follow-up: docs-only ledger and
-session truthfulness was committed/pushed, and the B-sidecar canonical
+session truthfulness was committed/pushed, the B-sidecar canonical
 coverage-target pinning candidate was implemented for all 11 current target
-IDs. AS-8/MM-2/MM-5/MM-7/MM-8 static D.3 slices remain source-boundary covered;
-fixture 62 remains a D.3-adjacent owner-decision candidate; and A.13 follow-on
-implementation remains owner-gated. No new implementation session is opened by
-this policy document itself.
+IDs, and the owner-approved A.13.2 checker/fixture reconciliation slice was
+implemented and live-CI verified. AS-8/MM-2/MM-5/MM-7/MM-8 static D.3 slices
+remain source-boundary covered; fixture 62 remains a D.3-adjacent
+owner-decision candidate; and any later A.13 runtime/default hard-register
+emission, A.13.3+, or full-IR implementation remains owner-gated. No new
+implementation session is opened by this policy document itself.
 
 Post-sidecar checkpoint after commit
 `e651756bc210e764b1c8a112eac6c216f20d642d`: read-only scouts Galileo
@@ -310,12 +312,13 @@ The current owner-decision queue is
 `docs/audits/v0.4.3.x-owner-decision-queue.md`. The managing session should use
 that queue before opening any new implementation or scout session.
 
-A.13.2/full-IR/register-composition decision prep now exists at
-`docs/audits/v0.4.3.x-a13-2-full-ir-decision-prep-packet.md`. It is a docs-only
-owner-decision packet and recommends a checker/fixture-first hard-register
-field_witness/NAR/register-composition reconciliation slice if accepted. It is
-not approval to implement A.13.2, emit hard registers by default, start full IR
-decode, open fixture 62/D.3, or run model smokes.
+A.13.2/full-IR/register-composition decision prep exists at
+`docs/audits/v0.4.3.x-a13-2-full-ir-decision-prep-packet.md`. It is now
+historical decision-prep evidence: the owner accepted only the recommended
+checker/fixture-first hard-register field_witness/NAR/register-composition
+reconciliation slice, which was implemented separately. The packet is not
+approval to emit hard registers by default, start full IR decode, open fixture
+62/D.3, or run model smokes.
 
 ## Boundaries
 
@@ -327,8 +330,8 @@ This policy does not authorize:
 - GitHub release creation/update;
 - release/provenance;
 - release-asset edits;
-- A.13.2 or later implementation;
-- full IR decode;
+- A.13.3 or later implementation, runtime/default hard-register emission, or
+  full IR decode;
 - D.8 cleanup beyond exact approved IDs;
 - model-smoke campaigns;
 - parallel file mutation;
