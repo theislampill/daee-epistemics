@@ -56,6 +56,8 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "nla-decode-semantic-faithfulness"
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
+REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
+REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
 HARD_REGISTER_KEY_SET = set(HARD_REGISTER_KEYS)
 HARD_REGISTER_STATES = {"live", "held", "non_live"}
@@ -82,6 +84,18 @@ PROJECTION_PER_BURDEN_KEYS = (
     "terminal_state",
     "generation_depth",
 )
+REGISTER_COMPOSITION_KEYS = {
+    "schema",
+    "source_fixture",
+    "component_registers",
+    "sigma_boundary",
+    "composition_rule",
+    "owner_handoff",
+    "automatic_dispatch_chain",
+    "evidence",
+}
+REGISTER_COMPOSITION_SIGMA_KEYS = {"present", "inside_hard_registers", "role"}
+REGISTER_COMPOSITION_OWNER_HANDOFF_KEYS = {"selected", "held", "policy"}
 
 
 @dataclass(frozen=True)
@@ -424,6 +438,130 @@ def hard_register_projection_errors(
     return errors
 
 
+def register_composition_projection_errors(path: Path, projection: dict[str, Any]) -> list[str]:
+    composition = projection.get("register_composition")
+    if composition is None:
+        return []
+
+    label = f"{rel(path)}: field_witness.canonical_ir_projection.register_composition"
+    errors: list[str] = []
+    if not isinstance(composition, dict):
+        return [f"{label}: must be an object"]
+
+    keys = set(composition)
+    missing = sorted(REGISTER_COMPOSITION_KEYS - keys)
+    extra = sorted(keys - REGISTER_COMPOSITION_KEYS)
+    if missing:
+        errors.append(f"{label}: missing required key(s): {missing}")
+    if extra:
+        errors.append(f"{label}: additional key(s) not allowed: {extra}")
+
+    if composition.get("schema") != REGISTER_COMPOSITION_SCHEMA:
+        errors.append(f"{label}: schema must be {REGISTER_COMPOSITION_SCHEMA!r}")
+
+    source_fixture = composition.get("source_fixture")
+    if source_fixture != REGISTER_COMPOSITION_SOURCE_FIXTURE:
+        errors.append(f"{label}: source_fixture must be {REGISTER_COMPOSITION_SOURCE_FIXTURE!r}")
+    elif not (ROOT / source_fixture).is_file():
+        errors.append(f"{label}: source_fixture path does not exist")
+
+    component_registers = string_list(composition.get("component_registers"))
+    if component_registers is None:
+        errors.append(f"{label}: component_registers must be a string list")
+        component_registers = []
+    else:
+        component_set = set(component_registers)
+        missing_hard = sorted(HARD_REGISTER_KEY_SET - component_set)
+        unknown = sorted(component_set - HARD_REGISTER_KEY_SET)
+        if missing_hard:
+            errors.append(f"{label}: component_registers missing hard register(s): {missing_hard}")
+        if unknown:
+            errors.append(f"{label}: component_registers contains non-hard register(s): {unknown}")
+
+    projection_live = string_list(projection.get("live_registers")) or []
+    if component_registers and projection_live and component_registers != projection_live:
+        errors.append(f"{label}: component_registers must match projection live_registers")
+
+    sigma_boundary = composition.get("sigma_boundary")
+    if not isinstance(sigma_boundary, dict):
+        errors.append(f"{label}: sigma_boundary must be an object")
+    else:
+        sigma_keys = set(sigma_boundary)
+        missing_sigma = sorted(REGISTER_COMPOSITION_SIGMA_KEYS - sigma_keys)
+        extra_sigma = sorted(sigma_keys - REGISTER_COMPOSITION_SIGMA_KEYS)
+        if missing_sigma:
+            errors.append(f"{label}.sigma_boundary: missing required key(s): {missing_sigma}")
+        if extra_sigma:
+            errors.append(f"{label}.sigma_boundary: additional key(s) not allowed: {extra_sigma}")
+        if sigma_boundary.get("present") is not True:
+            errors.append(f"{label}.sigma_boundary: present must be true for fixture 63 composition")
+        if sigma_boundary.get("inside_hard_registers") is not False:
+            errors.append(f"{label}.sigma_boundary: sigma must remain outside hard_registers")
+        role = sigma_boundary.get("role")
+        if not isinstance(role, str) or "outside" not in role.lower():
+            errors.append(f"{label}.sigma_boundary: role must name sigma as outside the hard-register object")
+
+    composition_rule = composition.get("composition_rule")
+    if not isinstance(composition_rule, str) or not composition_rule.strip():
+        errors.append(f"{label}: composition_rule must be a non-empty string")
+    else:
+        rule = composition_rule.lower()
+        for term in ("composition", "not automatic", "owner"):
+            if term not in rule:
+                errors.append(f"{label}: composition_rule must include {term!r}")
+
+    owner_handoff = composition.get("owner_handoff")
+    if not isinstance(owner_handoff, dict):
+        errors.append(f"{label}: owner_handoff must be an object")
+    else:
+        handoff_keys = set(owner_handoff)
+        missing_handoff = sorted(REGISTER_COMPOSITION_OWNER_HANDOFF_KEYS - handoff_keys)
+        extra_handoff = sorted(handoff_keys - REGISTER_COMPOSITION_OWNER_HANDOFF_KEYS)
+        if missing_handoff:
+            errors.append(f"{label}.owner_handoff: missing required key(s): {missing_handoff}")
+        if extra_handoff:
+            errors.append(f"{label}.owner_handoff: additional key(s) not allowed: {extra_handoff}")
+        selected = string_list(owner_handoff.get("selected"))
+        held = string_list(owner_handoff.get("held"))
+        if not selected:
+            errors.append(f"{label}.owner_handoff.selected must be a non-empty string list")
+            selected = []
+        if held is None:
+            errors.append(f"{label}.owner_handoff.held must be a string list")
+            held = []
+        projection_owners = {
+            strict_owner_family(str(row.get("owner_id") or ""))
+            for row in projection.get("per_burden", [])
+            if isinstance(row, dict)
+        }
+        selected_families = {strict_owner_family(owner) for owner in selected}
+        missing_selected = sorted(owner for owner in selected_families if owner and owner not in projection_owners)
+        if missing_selected:
+            errors.append(f"{label}.owner_handoff.selected not backed by projection rows: {missing_selected}")
+        policy = owner_handoff.get("policy")
+        if not isinstance(policy, str) or not policy.strip():
+            errors.append(f"{label}.owner_handoff.policy must be a non-empty string")
+        else:
+            policy_text = policy.lower()
+            for term in ("owner eligibility", "not automatic", "dispatch"):
+                if term not in policy_text:
+                    errors.append(f"{label}.owner_handoff.policy must include {term!r}")
+
+    if composition.get("automatic_dispatch_chain") is not False:
+        errors.append(f"{label}: automatic_dispatch_chain must be false")
+
+    evidence = string_list(composition.get("evidence"))
+    if not evidence:
+        errors.append(f"{label}: evidence must be a non-empty string list")
+        evidence = []
+    evidence_text = " ".join(evidence).lower()
+    for term in ("fixture 63", "r(h,delta)", "owner eligibility"):
+        if term not in evidence_text:
+            errors.append(f"{label}: evidence must include {term!r}")
+
+    return errors
+
+
 def canonical_ir_projection_errors(
     path: Path,
     field_witness: dict[str, Any],
@@ -437,6 +575,7 @@ def canonical_ir_projection_errors(
     return (
         canonical_ir_projection_common_errors(path, field_witness, projection, records)
         + hard_register_projection_errors(path, field_witness, projection)
+        + register_composition_projection_errors(path, projection)
     )
 
 
