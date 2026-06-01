@@ -900,6 +900,15 @@ contract permits a diagnostic or audit-style response.
   hard-register fields; hard-register projections must keep decoded hard registers equal to the
   projection. This remains an opt-in B.5 scaffold and does not claim arbitrary full IR decode,
   runtime/default hard-register emission, guaranteed uptake, or package/provenance proof.
+- B.5 full-IR decode scaffold: a projection-bearing artifact MAY additionally emit
+  `field_witness.canonical_ir_projection.full_ir_decode` with
+  `schema: "b5-full-ir-decode-v1"`. This object is still opt-in and checker-owned, but it is
+  stronger than `decoded_ir`: it reconciles the decoded rows with `B_LA`, `B_MRP`, `B_total`,
+  `coverage_proof.dependency_graph`, terminal states, generated-burden provenance, formal
+  reread state, escape-route accounting, terminal `no_new_resultant_proof`, and source/sigma
+  boundary evidence where those fields are present. It is a field-witness-equivalent projection
+  scaffold, not a standalone natural-language parser, not default hard-register emission, not a
+  package/provenance claim, and not guaranteed `T_lang` uptake.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,

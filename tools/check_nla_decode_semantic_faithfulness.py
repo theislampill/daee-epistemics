@@ -57,6 +57,7 @@ FIXTURE_ROOT = ROOT / "tests" / "nla-decode-semantic-faithfulness"
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
 CANONICAL_IR_DECODE_SCHEMA = "b5-canonical-ir-decode-v1"
+FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
 REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
 REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
@@ -123,6 +124,60 @@ CANONICAL_IR_DECODE_ROW_KEYS = {
     "mrp_route_result_type",
     "terminal_state",
     "generation_depth",
+}
+FULL_IR_DECODE_KEYS = {
+    "schema",
+    "source_evidence",
+    "n_frame",
+    "live_registers",
+    "burden_floor",
+    "B_LA",
+    "B_MRP",
+    "B_total",
+    "dependency_graph",
+    "terminal_states",
+    "diagnostic_completeness",
+    "per_burden",
+    "generated_burdens",
+    "formal_reread",
+    "source_basis",
+}
+FULL_IR_DECODE_OPTIONAL_KEYS = {"hard_registers", "register_composition"}
+FULL_IR_DECODE_REQUIRED_SOURCE_EVIDENCE = {
+    "visible_act",
+    "field_witness.owner_activations",
+    "normalized_activation_record",
+    "canonical_ir_projection",
+    "canonical_ir_projection.decoded_ir",
+    "field_witness.coverage_proof",
+    "field_witness.coverage_proof.dependency_graph",
+}
+FULL_IR_DECODE_OPTIONAL_SOURCE_EVIDENCE = {
+    "field_witness.generated_burdens",
+    "field_witness.formal_reread_states",
+    "field_witness.source_basis",
+}
+FULL_IR_DECODE_SOURCE_EVIDENCE = (
+    FULL_IR_DECODE_REQUIRED_SOURCE_EVIDENCE | FULL_IR_DECODE_OPTIONAL_SOURCE_EVIDENCE
+)
+FULL_IR_DECODE_ROW_KEYS = CANONICAL_IR_DECODE_ROW_KEYS | {
+    "graph_role",
+    "generated_by",
+    "track",
+}
+FULL_IR_GRAPH_ROLES = {"root", "dependent", "isolated"}
+FULL_IR_TRACKS = {"baseline", "primary", "restoration"}
+FULL_IR_FORMAL_REREAD_KEYS = {
+    "states_present",
+    "divergence_state",
+    "curl_state",
+    "escape_routes_checked",
+    "no_new_resultant_proof",
+}
+FULL_IR_SOURCE_BASIS_KEYS = {
+    "source_basis_available",
+    "sigma_inside_hard_registers",
+    "basis",
 }
 
 
@@ -286,6 +341,89 @@ def diagnostic_completeness(field_witness: dict[str, Any]) -> dict[str, Any] | N
         return None
     diagnostic = coverage.get("diagnostic_completeness")
     return diagnostic if isinstance(diagnostic, dict) else None
+
+
+def burden_list(field_witness: dict[str, Any], key: str) -> list[str]:
+    value = field_witness.get(key)
+    if isinstance(value, list) and all(isinstance(item, str) and graph_burden_id(item) for item in value):
+        return [graph_burden_id(item) for item in value]
+    return []
+
+
+def coverage_proof(field_witness: dict[str, Any]) -> dict[str, Any]:
+    value = field_witness.get("coverage_proof")
+    return value if isinstance(value, dict) else {}
+
+
+def dependency_edges(graph: dict[str, Any]) -> list[tuple[str, str]]:
+    edges: list[tuple[str, str]] = []
+    raw_edges = graph.get("edges")
+    if not isinstance(raw_edges, list):
+        return edges
+    for raw in raw_edges:
+        if isinstance(raw, dict):
+            source = graph_burden_id(raw.get("from"))
+            target = graph_burden_id(raw.get("to"))
+        elif isinstance(raw, list) and len(raw) == 2:
+            source = graph_burden_id(raw[0])
+            target = graph_burden_id(raw[1])
+        else:
+            continue
+        if source and target:
+            edges.append((source, target))
+    return edges
+
+
+def graph_role_for_burden(burden_id: str, dependency_graph: dict[str, Any]) -> str:
+    roots = {graph_burden_id(item) for item in dependency_graph.get("roots", []) if graph_burden_id(item)}
+    incoming = {target for _, target in dependency_edges(dependency_graph)}
+    outgoing = {source for source, _ in dependency_edges(dependency_graph)}
+    if burden_id in roots:
+        return "root"
+    if burden_id in incoming:
+        return "dependent"
+    if burden_id in outgoing:
+        return "root"
+    return "isolated"
+
+
+def field_witness_generated_burdens(field_witness: dict[str, Any]) -> list[dict[str, Any]]:
+    generated = field_witness.get("generated_burdens")
+    if not isinstance(generated, list):
+        return []
+    return [item for item in generated if isinstance(item, dict)]
+
+
+def generated_burden_map(field_witness: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    for item in field_witness_generated_burdens(field_witness):
+        burden_id = graph_burden_id(item.get("id"))
+        if burden_id:
+            result[burden_id] = item
+    return result
+
+
+def formal_reread_states(field_witness: dict[str, Any]) -> list[dict[str, Any]]:
+    states = field_witness.get("formal_reread_states")
+    if not isinstance(states, list):
+        return []
+    return [item for item in states if isinstance(item, dict)]
+
+
+def flattened_escape_routes(states: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    routes: list[dict[str, Any]] = []
+    for state in states:
+        checked = state.get("escape_routes_checked")
+        if isinstance(checked, list):
+            routes.extend(item for item in checked if isinstance(item, dict))
+    return routes
+
+
+def terminal_no_new_resultant_proof(states: list[dict[str, Any]]) -> Any:
+    for state in reversed(states):
+        if "no_new_resultant_proof" in state:
+            return state.get("no_new_resultant_proof")
+    return None
 
 
 def canonical_hard_register_live_registers(registers: dict[str, Any]) -> list[str]:
@@ -768,6 +906,159 @@ def canonical_ir_decode_errors(
     return errors
 
 
+def full_ir_decode_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    projection: dict[str, Any],
+) -> list[str]:
+    full = projection.get("full_ir_decode")
+    if full is None:
+        return []
+
+    label = f"{rel(path)}: field_witness.canonical_ir_projection.full_ir_decode"
+    errors = key_shape_errors(full, FULL_IR_DECODE_KEYS, FULL_IR_DECODE_OPTIONAL_KEYS, label)
+    if errors:
+        return errors
+
+    decoded = projection.get("decoded_ir")
+    if not isinstance(decoded, dict):
+        errors.append(f"{label}: decoded_ir is required before full_ir_decode")
+        decoded = {}
+
+    if full.get("schema") != FULL_IR_DECODE_SCHEMA:
+        errors.append(f"{label}: schema must be {FULL_IR_DECODE_SCHEMA!r}")
+
+    source_evidence = string_list(full.get("source_evidence"))
+    if source_evidence is None:
+        errors.append(f"{label}: source_evidence must be a string list")
+    else:
+        source_set = set(source_evidence)
+        missing_sources = sorted(FULL_IR_DECODE_REQUIRED_SOURCE_EVIDENCE - source_set)
+        extra_sources = sorted(source_set - FULL_IR_DECODE_SOURCE_EVIDENCE)
+        if missing_sources:
+            errors.append(f"{label}: source_evidence missing required source(s): {missing_sources}")
+        if extra_sources:
+            errors.append(f"{label}: source_evidence has unknown source(s): {extra_sources}")
+        if field_witness_generated_burdens(field_witness) and "field_witness.generated_burdens" not in source_set:
+            errors.append(f"{label}: source_evidence must include field_witness.generated_burdens")
+        if formal_reread_states(field_witness) and "field_witness.formal_reread_states" not in source_set:
+            errors.append(f"{label}: source_evidence must include field_witness.formal_reread_states")
+
+    for key in ("n_frame", "live_registers", "burden_floor", "diagnostic_completeness"):
+        if full.get(key) != decoded.get(key):
+            errors.append(f"{label}: {key} does not match decoded_ir")
+
+    for key in ("B_LA", "B_MRP", "B_total"):
+        if full.get(key) != burden_list(field_witness, key):
+            errors.append(f"{label}: {key} does not match field_witness")
+
+    coverage = coverage_proof(field_witness)
+    dependency_graph = coverage.get("dependency_graph")
+    if not isinstance(dependency_graph, dict):
+        errors.append(f"{label}: field_witness.coverage_proof.dependency_graph is required")
+        dependency_graph = {}
+    if full.get("dependency_graph") != dependency_graph:
+        errors.append(f"{label}: dependency_graph does not match field_witness coverage_proof")
+    if full.get("terminal_states") != coverage.get("terminal_states"):
+        errors.append(f"{label}: terminal_states does not match field_witness coverage_proof")
+
+    expected_generated = field_witness_generated_burdens(field_witness)
+    if full.get("generated_burdens") != expected_generated:
+        errors.append(f"{label}: generated_burdens does not match field_witness")
+
+    if "hard_registers" in projection:
+        if full.get("hard_registers") != projection.get("hard_registers"):
+            errors.append(f"{label}: hard_registers does not match canonical_ir_projection")
+    elif "hard_registers" in full:
+        errors.append(f"{label}: hard_registers requires canonical_ir_projection.hard_registers")
+
+    if projection.get("register_composition") is not None:
+        if full.get("register_composition") != projection.get("register_composition"):
+            errors.append(f"{label}: register_composition does not match canonical_ir_projection")
+    elif "register_composition" in full:
+        errors.append(f"{label}: register_composition requires canonical_ir_projection.register_composition")
+
+    source_basis = full.get("source_basis")
+    source_label = f"{label}.source_basis"
+    source_errors = key_shape_errors(source_basis, FULL_IR_SOURCE_BASIS_KEYS, set(), source_label)
+    errors.extend(source_errors)
+    if not source_errors:
+        if not isinstance(source_basis.get("source_basis_available"), bool):
+            errors.append(f"{source_label}: source_basis_available must be boolean")
+        if source_basis.get("sigma_inside_hard_registers") is not False:
+            errors.append(f"{source_label}: sigma_inside_hard_registers must be false")
+        basis = string_list(source_basis.get("basis"))
+        if basis is None:
+            errors.append(f"{source_label}: basis must be a string list")
+
+    states = formal_reread_states(field_witness)
+    formal = full.get("formal_reread")
+    formal_label = f"{label}.formal_reread"
+    formal_errors = key_shape_errors(formal, FULL_IR_FORMAL_REREAD_KEYS, set(), formal_label)
+    errors.extend(formal_errors)
+    if not formal_errors:
+        states_present = bool(states)
+        if formal.get("states_present") is not states_present:
+            errors.append(f"{formal_label}: states_present does not match field_witness.formal_reread_states")
+        final_state = states[-1] if states else {}
+        expected_divergence = final_state.get("divergence_state", coverage.get("divergence_check"))
+        expected_curl = final_state.get("curl_state", coverage.get("curl_check"))
+        if formal.get("divergence_state") != expected_divergence:
+            errors.append(f"{formal_label}: divergence_state does not match terminal formal reread/coverage")
+        if formal.get("curl_state") != expected_curl:
+            errors.append(f"{formal_label}: curl_state does not match terminal formal reread/coverage")
+        if formal.get("escape_routes_checked") != flattened_escape_routes(states):
+            errors.append(f"{formal_label}: escape_routes_checked does not match field_witness.formal_reread_states")
+        if formal.get("no_new_resultant_proof") != terminal_no_new_resultant_proof(states):
+            errors.append(f"{formal_label}: no_new_resultant_proof does not match terminal formal reread state")
+
+    decoded_rows = decoded.get("per_burden")
+    full_rows = full.get("per_burden")
+    if not isinstance(decoded_rows, list) or not isinstance(full_rows, list):
+        errors.append(f"{label}: per_burden must mirror decoded_ir.per_burden")
+        return errors
+    if len(full_rows) != len(decoded_rows):
+        errors.append(f"{label}: per_burden row count does not match decoded_ir")
+
+    generated_map = generated_burden_map(field_witness)
+    b_la = set(burden_list(field_witness, "B_LA"))
+    for index, row in enumerate(full_rows):
+        row_label = f"{label}.per_burden[{index}]"
+        row_errors = key_shape_errors(row, FULL_IR_DECODE_ROW_KEYS, set(), row_label)
+        errors.extend(row_errors)
+        if row_errors:
+            continue
+        if index < len(decoded_rows):
+            decoded_row = decoded_rows[index]
+            if isinstance(decoded_row, dict):
+                decoded_core = {key: decoded_row.get(key) for key in CANONICAL_IR_DECODE_ROW_KEYS}
+                row_core = {key: row.get(key) for key in CANONICAL_IR_DECODE_ROW_KEYS}
+                if row_core != decoded_core:
+                    errors.append(f"{row_label}: core fields do not match decoded_ir")
+        burden_id = graph_burden_id(row.get("burden_id"))
+        expected_role = graph_role_for_burden(burden_id, dependency_graph)
+        if row.get("graph_role") not in FULL_IR_GRAPH_ROLES:
+            errors.append(f"{row_label}: graph_role is not controlled")
+        elif row.get("graph_role") != expected_role:
+            errors.append(f"{row_label}: graph_role does not match dependency_graph")
+        if row.get("track") not in FULL_IR_TRACKS:
+            errors.append(f"{row_label}: track is not controlled")
+        generated = generated_map.get(burden_id)
+        if generated:
+            if row.get("generated_by") != generated.get("generated_by"):
+                errors.append(f"{row_label}: generated_by does not match field_witness.generated_burdens")
+            if row.get("track") != generated.get("track"):
+                errors.append(f"{row_label}: track does not match field_witness.generated_burdens")
+        elif burden_id in b_la:
+            if row.get("generated_by") is not None:
+                errors.append(f"{row_label}: baseline burden generated_by must be null")
+            if row.get("track") != "baseline":
+                errors.append(f"{row_label}: baseline burden track must be 'baseline'")
+        else:
+            errors.append(f"{row_label}: burden_id is neither B_LA nor generated burden")
+    return errors
+
+
 def canonical_ir_projection_errors(
     path: Path,
     field_witness: dict[str, Any],
@@ -783,6 +1074,7 @@ def canonical_ir_projection_errors(
         + hard_register_projection_errors(path, field_witness, projection)
         + register_composition_projection_errors(path, projection)
         + canonical_ir_decode_errors(path, field_witness, projection, records)
+        + full_ir_decode_errors(path, field_witness, projection)
     )
 
 

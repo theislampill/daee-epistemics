@@ -1050,6 +1050,136 @@
                   "type": "object"
                 }
               }
+            },
+            "full_ir_decode": {
+              "$comment": "Optional B.5 full-IR decode scaffold. It reconciles decoded_ir with field_witness graph/terminal/generated-burden/formal-reread state where present. Dedicated semantic checks remain owned by check_nla_decode_semantic_faithfulness.py.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schema",
+                "source_evidence",
+                "n_frame",
+                "live_registers",
+                "burden_floor",
+                "B_LA",
+                "B_MRP",
+                "B_total",
+                "dependency_graph",
+                "terminal_states",
+                "diagnostic_completeness",
+                "per_burden",
+                "generated_burdens",
+                "formal_reread",
+                "source_basis"
+              ],
+              "properties": {
+                "schema": { "type": "string", "const": "b5-full-ir-decode-v1" },
+                "source_evidence": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "uniqueItems": true
+                },
+                "n_frame": { "type": "string", "minLength": 1 },
+                "live_registers": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "uniqueItems": true
+                },
+                "burden_floor": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "B_LA": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "B_MRP": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "B_total": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^B[0-9]+$" },
+                  "uniqueItems": true
+                },
+                "dependency_graph": { "type": "object" },
+                "terminal_states": { "type": "object" },
+                "diagnostic_completeness": { "type": "object" },
+                "per_burden": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "burden_id",
+                      "owner_id",
+                      "operation",
+                      "pressure",
+                      "body_ref",
+                      "delta_result",
+                      "mrp_route_result_type",
+                      "terminal_state",
+                      "generation_depth",
+                      "graph_role",
+                      "generated_by",
+                      "track"
+                    ],
+                    "properties": {
+                      "burden_id": { "type": "string", "pattern": "^B[0-9]+$" },
+                      "owner_id": { "type": "string", "minLength": 1 },
+                      "operation": { "type": "string", "minLength": 1 },
+                      "pressure": { "type": "string", "minLength": 1 },
+                      "body_ref": { "type": "string", "pattern": "^B[0-9]+_[0-9]+$" },
+                      "delta_result": { "type": "string", "minLength": 1 },
+                      "mrp_route_result_type": { "type": "string", "minLength": 1 },
+                      "terminal_state": { "type": "string", "minLength": 1 },
+                      "generation_depth": { "type": "integer", "minimum": 0 },
+                      "graph_role": { "type": "string", "enum": ["root", "dependent", "isolated"] },
+                      "generated_by": { "type": ["string", "null"] },
+                      "track": { "type": "string", "enum": ["baseline", "primary", "restoration"] }
+                    }
+                  }
+                },
+                "generated_burdens": { "type": "array" },
+                "formal_reread": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "states_present",
+                    "divergence_state",
+                    "curl_state",
+                    "escape_routes_checked",
+                    "no_new_resultant_proof"
+                  ],
+                  "properties": {
+                    "states_present": { "type": "boolean" },
+                    "divergence_state": { "type": "string", "minLength": 1 },
+                    "curl_state": { "type": "string", "minLength": 1 },
+                    "escape_routes_checked": { "type": "array" },
+                    "no_new_resultant_proof": { "type": ["object", "null"] }
+                  }
+                },
+                "source_basis": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["source_basis_available", "sigma_inside_hard_registers", "basis"],
+                  "properties": {
+                    "source_basis_available": { "type": "boolean" },
+                    "sigma_inside_hard_registers": { "type": "boolean" },
+                    "basis": {
+                      "type": "array",
+                      "items": { "type": "string", "minLength": 1 },
+                      "uniqueItems": true
+                    }
+                  }
+                },
+                "hard_registers": { "type": "object" },
+                "register_composition": { "type": "object" }
+              }
             }
           }
         },
