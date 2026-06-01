@@ -193,7 +193,7 @@ read-only scout agents from the 2026-05-31 post-v0.4.3.x scout refresh:
 |---|---|---|---|
 | `019e7e9e-eed7-7712-8317-61ad892d2355` | Averroes | Prior D.8 read-only refresh evidence cited in target-row status | Preserve as evidence source; do not close/delete/archive without D.8 exact-ID approval |
 | `019e8004-5c45-78f3-9cc1-47116247f54d` | Kuhn | `SCOUT-ledger-truthfulness`; found docs-only truthfulness drift | May be closed after integration; no source changes |
-| `019e8004-7d1d-79a1-acd8-811c7b160628` | Ptolemy | `SCOUT-D3-mixed-concealment`; identified fixture 62 as D.3-adjacent owner-decision candidate and AS/MM static slices as already closed | May be closed after integration; no source changes |
+| `019e8004-7d1d-79a1-acd8-811c7b160628` | Ptolemy | `SCOUT-D3-mixed-concealment`; identified fixture 62 as D.3-adjacent owner-decision candidate and AS/MM static slices as already closed; fixture 62 was later implemented under standing no-model checker/fixture authorization | May be closed after integration; no source changes |
 | `019e8004-9f59-7f13-86c1-66859ed5f7c8` | Fermat | `SCOUT-B-sidecar-residuals`; identified canonical coverage-target pinning as the next no-model sidecar/accounting candidate; later implemented by commit `8a69d51511421ae57e473d2b3635dbb7a6c83930` | May be closed after integration; no source changes |
 | `019e8004-c013-74b0-b0bb-3d3707b75b4c` | Peirce | `SCOUT-C5-C7-matrix`; confirmed current retained matrix closure for the named schema-light target set | May be closed after integration; no source changes |
 | `019e8004-ed90-7993-801e-33c5017ebcaa` | Nietzsche | `SCOUT-A13-follow-on`; confirmed A.13 follow-on was owner-gated before the A.13.2 decision packet | May be closed after integration; no source changes |

@@ -204,6 +204,21 @@ COLLAPSE_RADIUS_ANTI_REREAD_RE = re.compile(
     r"\b(?:do\s+not|does\s+not|must\s+not)\s+(?:hold|block|defer|reread)\b.{0,180}"
     r"\b(?:downstream\s+topic\s+answers|downstream\s+claims|dependent\s+claims)\b"
 )
+UNKNOWN_PATTERN_TYPED_RE = re.compile(
+    r"(?is)\b(?:unknown[- ]pattern[- ]typed|thin\s+case|no\s+(?:school|noetic\s+family))\b"
+    r".{0,420}\b(?:loaded[- ]label|proof[- ]standard|source[- ]status|source[- ]status\s+cue)\b|"
+    r"\b(?:loaded[- ]label|proof[- ]standard|source[- ]status|source[- ]status\s+cue)\b"
+    r".{0,420}\b(?:unknown[- ]pattern[- ]typed|thin\s+case|no\s+(?:school|noetic\s+family))\b"
+)
+UNKNOWN_PATTERN_TYPED_ANTI_FAMILY_LOCK_RE = re.compile(
+    r"(?is)\b(?:family[- ]locked|family[- ]locks|locked\s+(?:to|into)\s+(?:a\s+)?(?:family|school)|"
+    r"N\s+selection\s+resolved\s+as)\b"
+)
+UNKNOWN_PATTERN_TYPED_ANTI_TOPIC_RELEASE_RE = re.compile(
+    r"(?is)\b(?:topic\s+answer|topical\s+answer|content\s+answer|public\s+verdict)\b.{0,220}"
+    r"\b(?:released|answered|proceeds|given)\b.{0,220}\b(?:before|without)\b.{0,220}"
+    r"\b(?:typed\s+pressure|typed\s+operator|operator\s+routing|loaded[- ]label|proof[- ]standard|source[- ]status)\b"
+)
 IRAD_CONTEXT_RE = re.compile(
     r"(?i)\b(?:attention\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?given|"
     r"matter\s+(?:has\s+)?not\s+yet\s+(?:been\s+)?allowed\s+to\s+press|"
@@ -308,6 +323,24 @@ def has_collapse_radius_mapping(text: str) -> bool:
     return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
 
 
+def has_unknown_pattern_typed_routing(text: str) -> bool:
+    if not UNKNOWN_PATTERN_TYPED_RE.search(text):
+        return False
+    required = (
+        r"\bunknown[- ]pattern[- ]typed\b|\bthin\s+case\b",
+        r"\bloaded[- ]label\b",
+        r"\bproof[- ]standard\b",
+        r"\bsource[- ]status(?:\s+cue)?\b",
+        r"\b(?:typed\s+(?:pressure|operator|routing)|operator\s+pressure|route\s+by\s+typed)\b",
+        r"\b(?:held\s+N\s+selection|N\s+selection\s+(?:is\s+)?held|do\s+not\s+family[- ]lock|no\s+family[- ]lock)\b",
+        r"\b(?:topic\s+answer|topical\s+answer|content\s+answer|public\s+verdict|family\s+lock)\b"
+        r".{0,220}\b(?:held|blocked|withheld|deferred|not\s+released|before)\b|"
+        r"\b(?:held|blocked|withheld|deferred|not\s+released)\b.{0,220}"
+        r"\b(?:topic\s+answer|topical\s+answer|content\s+answer|public\s+verdict|family\s+lock)\b",
+    )
+    return all(re.search(pattern, text, re.IGNORECASE) for pattern in required)
+
+
 def has_clarification_pressure(value: str, block: str) -> bool:
     return bool(CLARIFICATION_PRESSURE_RE.search(value) or CLARIFICATION_PRESSURE_RE.search(block))
 
@@ -335,6 +368,7 @@ def check_text(path: Path, text: str) -> list[str]:
     proof_packet_active = bool(PROOF_PACKET_RE.search(text))
     mutation_after_challenge_active = bool(MUTATION_AFTER_CHALLENGE_RE.search(text))
     collapse_radius_mapping_active = bool(COLLAPSE_RADIUS_MAPPING_RE.search(text))
+    unknown_pattern_typed_active = bool(UNKNOWN_PATTERN_TYPED_RE.search(text))
     if source_stack_ambiguous:
         if not SOURCE_USE_FUNCTION_RE.search(text):
             errors.append(
@@ -389,6 +423,31 @@ def check_text(path: Path, text: str) -> list[str]:
             errors.append(
                 f"{path}: MM-8 collapse-radius mapping must reread dependent claims/routes and decide "
                 "STOP, HOLD, PARTIAL, RECURSE, or NewB before downstream topic answers release"
+            )
+    if unknown_pattern_typed_active:
+        if not has_unknown_pattern_typed_routing(text):
+            errors.append(
+                f"{path}: unknown-pattern-typed thin cases with loaded-label, proof-standard, "
+                "and source-status pressure must visibly route typed pressure before family-lock "
+                "or topic-answer release"
+            )
+        lower_text = text.lower()
+        safe_family_hold = (
+            "do not family-lock" in lower_text
+            or "no family-lock" in lower_text
+            or "family lock is held" in lower_text
+            or "family lock are held" in lower_text
+            or "family-lock is held" in lower_text
+        )
+        if UNKNOWN_PATTERN_TYPED_ANTI_FAMILY_LOCK_RE.search(text) and not safe_family_hold:
+            errors.append(
+                f"{path}: unknown-pattern-typed thin cases must not family-lock or resolve N "
+                "selection before typed operator/source/proof pressure is routed"
+            )
+        if UNKNOWN_PATTERN_TYPED_ANTI_TOPIC_RELEASE_RE.search(text):
+            errors.append(
+                f"{path}: unknown-pattern-typed thin cases must hold topic answers until "
+                "loaded-label, proof-standard, and source-status pressure are routed"
             )
     if framework_active and not matches:
         errors.append(f"{path}: operative framework/worldview covering requires a visible Concealment mode line")
