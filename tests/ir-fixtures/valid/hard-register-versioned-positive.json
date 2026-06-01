@@ -199,6 +199,71 @@
         }
       ]
     },
+    "canonical_ir_projection": {
+      "schema": "b5-canonical-ir-projection-v1",
+      "diagnostic_ir_schema_version": "0.4.3-hard-registers-v1",
+      "hard_registers": {
+        "heart": {
+          "state": "non_live",
+          "functions": [],
+          "basis": [],
+          "non_live_reason": "not diagnosed as live in this fixture"
+        },
+        "xi": {
+          "state": "live",
+          "functions": ["warrant-authority"],
+          "basis": ["criterion warrant pressure is live"]
+        },
+        "Omega": {
+          "state": "non_live",
+          "functions": [],
+          "basis": [],
+          "non_live_reason": "not diagnosed as live in this fixture"
+        },
+        "mu": {
+          "state": "non_live",
+          "functions": [],
+          "basis": [],
+          "non_live_reason": "not diagnosed as live in this fixture"
+        },
+        "kappa": {
+          "state": "live",
+          "functions": ["dependency-collapse"],
+          "basis": ["B2 dependency radius depends on B1 landing"]
+        }
+      },
+      "n_frame": "fixture-imported-criterion",
+      "live_registers": ["xi", "kappa"],
+      "burden_floor": ["B1", "B2"],
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "M1",
+          "operation": "self-refutation",
+          "delta_result": "criterion-self-failed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M8",
+          "operation": "dependency-discharge",
+          "delta_result": "dependency-exposed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "discharged-as-derivative",
+          "generation_depth": 0
+        }
+      ],
+      "diagnostic_completeness": {
+        "live_registers": ["xi", "kappa"],
+        "coverage": {
+          "xi": ["B1"],
+          "kappa": ["B2"]
+        },
+        "complete": true
+      }
+    },
     "coverage_proof": {
       "initial_burden_set": ["B1", "B2"],
       "terminal_states": {

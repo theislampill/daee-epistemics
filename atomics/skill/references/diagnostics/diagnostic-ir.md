@@ -876,6 +876,14 @@ contract permits a diagnostic or audit-style response.
   `heart`, `xi`, `Omega`, `mu`, and `kappa`; `sigma` stays source-status/source-basis evidence and
   is not a sixth hard-register key. This is a version-gated checker/fixture contract and does not
   require schema-light governed outputs to emit hard-register fields by default.
+- A.13.3.1 opt-in emission surface: a governed artifact MAY emit
+  `field_witness.canonical_ir_projection` only when the hard-register version is explicitly
+  selected. The projection carries `schema: "b5-canonical-ir-projection-v1"`,
+  `diagnostic_ir_schema_version: "0.4.3-hard-registers-v1"`, `hard_registers`, and mirrors of
+  NAR/diagnostic-completeness fields. It must reconcile with root hard registers, NAR live
+  registers, register deltas, and diagnostic completeness; `sigma` remains outside the
+  hard-register object. This projection is machine-facing opt-in evidence, not public prose, not
+  default always-on runtime output, not full IR decode, and not proof of interlocutor uptake.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,
