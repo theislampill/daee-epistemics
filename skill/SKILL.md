@@ -2309,18 +2309,20 @@ Top-salient invariants:
   must state the finding-to-route/graph/HOLD consequence in one line.
   For `no_new_resultant`, write a no-edge result such as `stable -> no new graph edge; STOP` and
   `Graph delta: none`; never restate a prior edge with phrases like `graph unchanged after ⁴B → ⁵B`.
-  Also do not name a hypothetical next burden token such as `⁴B` / `B4` to say it
-  was not generated; visible burden tokens are graph nodes.
+  Do not name hypothetical next burdens (`⁴B`/`B4`) to say none was generated;
+  visible burden tokens are graph nodes.
   The matching `field_witness.mrp_resultants[].graph` must be `none`.
+  If `Graph delta` has an edge, `Pre-emption basis` is `graph-bound`,
+  `commitment-bound`, or `framework-bound`, never `none`; `none` is no-edge only.
   When a `formal_reread_states[]` row mirrors terminal `STOP` / `no_new_resultant`, include
   `no_new_resultant_proof` in that same row. Its `escape_routes_checked` field is a list, not a
   map: one object for each canonical type `closure-boundary-immunity`, `proof-carousel`,
   `total-system-exhaustion`, `doubt-churn`, `moral-tribunal`, `authority-order-recoil`,
   `hidden-framework-recoil`, and `restoration-recoil`. Each object has `type`, boolean `live`,
   and `basis`; `restoration-recoil` also has a canonical `subtype` such as `scope-protest`.
-  The same canonical type list applies to live generated-route entries before
-  STOP. Do not invent types such as `bounded-answer-recoil`. If a bounded answer
-  could be used as immunity against the landed answer, record
+  The same type list applies to live generated-route entries before STOP. Do not
+  invent types such as `bounded-answer-recoil`. If a bounded answer could be
+  used as immunity against the landed answer, record
   `type: "closure-boundary-immunity"` with `disposition:
   "generated-burden-instantiation"` and the generated target burden. If the
   recoil is source-order or hidden-framework based, use `authority-order-recoil`
@@ -2336,7 +2338,8 @@ Top-salient invariants:
   live, STOP is not licensed unless the row also records generated, held, HOLD, PARTIAL,
   RECURSE, LoopBreak, or non-load-bearing proof. Prose such as "no further pressure remains" is
   not a substitute for this object in capstone/governed proof output.
-  `Graph delta` is `none` for STOP/LoopBreak. RECURSE must include a graph edge. HOLD may include
+  `Graph delta` is `none` for STOP/LoopBreak. RECURSE must include a graph edge and non-`none`
+  `Pre-emption basis`. HOLD may include
   a held graph edge only when `Terminal states:` marks the downstream node `held-with-reason` or
   `carried-PARTIAL`. `held_burden_activation` means the next node was already in the initial
   inventory; `generated_burden_instantiation` means a concrete reread such as `MRP(⁵B)` produced a new resultant node and the
@@ -2344,12 +2347,11 @@ Top-salient invariants:
   `## Burden 2 / ²B [generated-by: MRP(¹B)] — <title>`, with Layer A,
   Layer B, owner-bearing submoves, and `Land(²B)`/`HOLD(²B)`. LoopBreak is never a graph node or
   graph edge; render `Graph delta: none` and `Route: LoopBreak(∇×T)`.
-  Reconstructibility/node-lineage requirement: the visible output must let an evaluator map input ->
-  burden nodes -> submove nodes -> concrete `Land(¹B)` / `Land(²B)` -> R(H,Δ) -> MRP resultant -> graph/field_witness
-  delta/no-edge -> route -> closure/restoration. If a node in that chain is absent, route HOLD
-  or PARTIAL instead of claiming closure.
-  Every released burden-cycle must visibly include a concrete landing such as `Land(¹B)` or `Land(²B)` before `R(H,Δ)`;
-  a generic state paragraph or bare "burden landed" label does not replace the landing gate.
+  Reconstructibility: visible output maps input -> burdens -> submoves -> `Land`
+  -> R(H,Δ) -> MRP resultant -> graph/field_witness delta/no-edge -> route ->
+  closure/restoration. If a chain node is absent, route HOLD/PARTIAL. Every
+  released burden-cycle needs concrete `Land(¹B)`/`Land(²B)` before `R(H,Δ)`;
+  a generic state paragraph does not replace the landing gate.
   In default hard/multi-burden output, `[Mid-Reread Pressure]` is the mandatory route gate
   between a concrete landing such as `Land(¹B)` and any `Field diagnostics`, `LoopBreak`, route-bearing `R(H,Δ)`, next
   burden, HOLD/PARTIAL, or closure. If it is absent, `R(H,Δ)` may not release the next burden,
