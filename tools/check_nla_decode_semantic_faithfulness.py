@@ -58,6 +58,7 @@ HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
 CANONICAL_IR_DECODE_SCHEMA = "b5-canonical-ir-decode-v1"
 FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
+FULL_IR_PROOF_MODE_SCHEMA = "b5-full-ir-proof-mode-v1"
 REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
 REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
@@ -178,6 +179,30 @@ FULL_IR_SOURCE_BASIS_KEYS = {
     "source_basis_available",
     "sigma_inside_hard_registers",
     "basis",
+}
+FULL_IR_PROOF_MODE_KEYS = {
+    "schema",
+    "mode",
+    "source_evidence",
+    "machine_facing",
+    "schema_light_absent_valid",
+    "requires_decoded_ir",
+    "visible_opening_header_preserved",
+    "arbitrary_nl_ir_parser_claim",
+    "default_runtime_emission_claim",
+    "t_lang_uptake_claim",
+}
+FULL_IR_PROOF_MODE_MODES = {
+    "selected-surface",
+    "checker-owned-sidecar",
+    "retained-proof-corpus-sidecar",
+}
+FULL_IR_PROOF_MODE_SOURCE_EVIDENCE = {
+    "visible_noetic_field_opening",
+    "visible_layer_a_diagnostic_ir_header",
+    "field_witness.canonical_ir_projection",
+    "field_witness.canonical_ir_projection.decoded_ir",
+    "field_witness.canonical_ir_projection.full_ir_decode",
 }
 
 
@@ -1059,6 +1084,66 @@ def full_ir_decode_errors(
     return errors
 
 
+def full_ir_proof_mode_errors(path: Path, projection: dict[str, Any]) -> list[str]:
+    label = f"{rel(path)}: field_witness.canonical_ir_projection.proof_mode"
+    proof_mode = projection.get("proof_mode")
+    full_decode = projection.get("full_ir_decode")
+    decoded = projection.get("decoded_ir")
+    errors: list[str] = []
+
+    if full_decode is not None and proof_mode is None:
+        errors.append(
+            f"{rel(path)}: field_witness.canonical_ir_projection.full_ir_decode "
+            "requires proof_mode adoption marker"
+        )
+    if proof_mode is None:
+        return errors
+
+    errors.extend(key_shape_errors(proof_mode, FULL_IR_PROOF_MODE_KEYS, set(), label))
+    if full_decode is None:
+        errors.append(f"{label}: proof_mode requires full_ir_decode")
+    if not isinstance(decoded, dict):
+        errors.append(f"{label}: proof_mode requires decoded_ir")
+    if errors:
+        return errors
+
+    if proof_mode.get("schema") != FULL_IR_PROOF_MODE_SCHEMA:
+        errors.append(f"{label}: schema must be {FULL_IR_PROOF_MODE_SCHEMA!r}")
+    if proof_mode.get("mode") not in FULL_IR_PROOF_MODE_MODES:
+        errors.append(f"{label}: mode is not controlled")
+
+    source_evidence = string_list(proof_mode.get("source_evidence"))
+    if source_evidence is None:
+        errors.append(f"{label}: source_evidence must be a string list")
+    else:
+        source_set = set(source_evidence)
+        missing = sorted(FULL_IR_PROOF_MODE_SOURCE_EVIDENCE - source_set)
+        extra = sorted(source_set - FULL_IR_PROOF_MODE_SOURCE_EVIDENCE)
+        if missing:
+            errors.append(f"{label}: source_evidence missing required source(s): {missing}")
+        if extra:
+            errors.append(f"{label}: source_evidence has unknown source(s): {extra}")
+
+    for key in (
+        "machine_facing",
+        "schema_light_absent_valid",
+        "requires_decoded_ir",
+        "visible_opening_header_preserved",
+    ):
+        if proof_mode.get(key) is not True:
+            errors.append(f"{label}: {key} must be true")
+
+    for key in (
+        "arbitrary_nl_ir_parser_claim",
+        "default_runtime_emission_claim",
+        "t_lang_uptake_claim",
+    ):
+        if proof_mode.get(key) is not False:
+            errors.append(f"{label}: {key} must be false")
+
+    return errors
+
+
 def canonical_ir_projection_errors(
     path: Path,
     field_witness: dict[str, Any],
@@ -1075,6 +1160,7 @@ def canonical_ir_projection_errors(
         + register_composition_projection_errors(path, projection)
         + canonical_ir_decode_errors(path, field_witness, projection, records)
         + full_ir_decode_errors(path, field_witness, projection)
+        + full_ir_proof_mode_errors(path, projection)
     )
 
 

@@ -201,24 +201,6 @@ field_witness
       "coverage": {"xi": ["B1"], "kappa": ["B1"]},
       "complete": true
     },
-    "proof_mode": {
-      "schema": "b5-full-ir-proof-mode-v1",
-      "mode": "selected-surface",
-      "source_evidence": [
-        "visible_noetic_field_opening",
-        "visible_layer_a_diagnostic_ir_header",
-        "field_witness.canonical_ir_projection",
-        "field_witness.canonical_ir_projection.decoded_ir",
-        "field_witness.canonical_ir_projection.full_ir_decode"
-      ],
-      "machine_facing": true,
-      "schema_light_absent_valid": true,
-      "requires_decoded_ir": true,
-      "visible_opening_header_preserved": true,
-      "arbitrary_nl_ir_parser_claim": false,
-      "default_runtime_emission_claim": false,
-      "t_lang_uptake_claim": false
-    },
     "decoded_ir": {
       "schema": "b5-canonical-ir-decode-v1",
       "source_evidence": ["visible_act", "field_witness.owner_activations", "normalized_activation_record", "canonical_ir_projection"],

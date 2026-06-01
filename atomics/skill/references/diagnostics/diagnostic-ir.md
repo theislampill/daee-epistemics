@@ -909,6 +909,13 @@ contract permits a diagnostic or audit-style response.
   boundary evidence where those fields are present. It is a field-witness-equivalent projection
   scaffold, not a standalone natural-language parser, not default hard-register emission, not a
   package/provenance claim, and not guaranteed `T_lang` uptake.
+- B.5.3 proof-mode adoption marker: a projection-bearing artifact that elects the full-IR
+  proof-mode path MUST also emit `field_witness.canonical_ir_projection.proof_mode` with
+  `schema: "b5-full-ir-proof-mode-v1"`. The marker is machine-facing and states the selected
+  surface or checker-owned sidecar contract. It requires `decoded_ir` plus `full_ir_decode`,
+  preserves schema-light absent-valid behavior, preserves the visible noetic-field opening
+  banner and compact Layer A / Diagnostic IR header, and explicitly rejects arbitrary
+  natural-language-to-IR parser, default runtime emission, and guaranteed `T_lang` uptake claims.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,

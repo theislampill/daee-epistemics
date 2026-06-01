@@ -970,6 +970,55 @@
               "$comment": "Optional B.5/register-composition evidence. Dedicated semantic checks remain owned by check_nla_decode_semantic_faithfulness.py.",
               "type": "object"
             },
+            "proof_mode": {
+              "$comment": "Optional B.5.3 full-IR proof-mode adoption marker. When present, semantic checkers require decoded_ir plus full_ir_decode, preserve schema-light absent-valid behavior, and reject arbitrary-parser/default-runtime/T_lang uptake claims.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schema",
+                "mode",
+                "source_evidence",
+                "machine_facing",
+                "schema_light_absent_valid",
+                "requires_decoded_ir",
+                "visible_opening_header_preserved",
+                "arbitrary_nl_ir_parser_claim",
+                "default_runtime_emission_claim",
+                "t_lang_uptake_claim"
+              ],
+              "properties": {
+                "schema": { "type": "string", "const": "b5-full-ir-proof-mode-v1" },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "selected-surface",
+                    "checker-owned-sidecar",
+                    "retained-proof-corpus-sidecar"
+                  ]
+                },
+                "source_evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "visible_noetic_field_opening",
+                      "visible_layer_a_diagnostic_ir_header",
+                      "field_witness.canonical_ir_projection",
+                      "field_witness.canonical_ir_projection.decoded_ir",
+                      "field_witness.canonical_ir_projection.full_ir_decode"
+                    ]
+                  },
+                  "uniqueItems": true
+                },
+                "machine_facing": { "type": "boolean" },
+                "schema_light_absent_valid": { "type": "boolean" },
+                "requires_decoded_ir": { "type": "boolean" },
+                "visible_opening_header_preserved": { "type": "boolean" },
+                "arbitrary_nl_ir_parser_claim": { "type": "boolean" },
+                "default_runtime_emission_claim": { "type": "boolean" },
+                "t_lang_uptake_claim": { "type": "boolean" }
+              }
+            },
             "decoded_ir": {
               "$comment": "Optional B.5.2 decode object. It is a checker-owned IR-like reconstruction from visible ACT plus field_witness/NAR/projection evidence; it is not arbitrary natural-language full IR decode.",
               "type": "object",

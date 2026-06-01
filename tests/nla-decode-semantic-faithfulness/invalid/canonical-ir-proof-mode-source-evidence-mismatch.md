@@ -209,7 +209,7 @@ field_witness
         "visible_layer_a_diagnostic_ir_header",
         "field_witness.canonical_ir_projection",
         "field_witness.canonical_ir_projection.decoded_ir",
-        "field_witness.canonical_ir_projection.full_ir_decode"
+        "invented.full_ir_decode"
       ],
       "machine_facing": true,
       "schema_light_absent_valid": true,

@@ -236,7 +236,7 @@ field_witness
         "complete": true
       }
     },
-    "full_ir_decode": {
+    "full_ir_decode_removed": {
       "schema": "b5-full-ir-decode-v1",
       "source_evidence": ["visible_act", "field_witness.owner_activations", "normalized_activation_record", "canonical_ir_projection", "canonical_ir_projection.decoded_ir", "field_witness.coverage_proof", "field_witness.coverage_proof.dependency_graph", "field_witness.generated_burdens", "field_witness.formal_reread_states"],
       "n_frame": "generated-reserve-full-ir-decode",

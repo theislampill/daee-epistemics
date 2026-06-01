@@ -215,9 +215,9 @@ field_witness
       "schema_light_absent_valid": true,
       "requires_decoded_ir": true,
       "visible_opening_header_preserved": true,
-      "arbitrary_nl_ir_parser_claim": false,
-      "default_runtime_emission_claim": false,
-      "t_lang_uptake_claim": false
+      "arbitrary_nl_ir_parser_claim": true,
+      "default_runtime_emission_claim": true,
+      "t_lang_uptake_claim": true
     },
     "decoded_ir": {
       "schema": "b5-canonical-ir-decode-v1",
