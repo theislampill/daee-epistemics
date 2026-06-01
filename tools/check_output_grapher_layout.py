@@ -27,6 +27,12 @@ EXPORTED_BOTTOM_PADDING_MIN = 64
 EXPORTED_BOTTOM_PADDING_MAX = 140
 
 
+def configure_stdio() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
@@ -354,6 +360,7 @@ const html = `<!doctype html><meta charset="utf-8"><style>body{{margin:0;backgro
 
 
 def main() -> int:
+    configure_stdio()
     errors: list[str] = []
     for path in (JS, CSS, SECTION):
         if not path.exists():

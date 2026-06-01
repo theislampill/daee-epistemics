@@ -1178,6 +1178,10 @@
       .replace(/\bProceed to Closure\s*\/\s*Reconstruction Witness\.?/gi,'Proceed to formal closure accounting.')
       .replace(/\bClosure\s*\/\s*Reconstruction Witness\b/gi,'formal closure witness')
       .replace(/\bMRP resultants\b/gi,'follow-up pressure results')
+      .replace(/\bField diagnostics\s*:/gi,'Field state:')
+      .replace(/∇·B\s*:/g,'field pressure:')
+      .replace(/∇×κ\s*:/g,'dependency curl:')
+      .replace(/𝒞\(Ψᴺ\)\s*:/g,'closure field:')
       .trim();
   }
   function publicNodeLabel(node,model){
@@ -1291,7 +1295,7 @@
       .replace(/^After this(?: answer)?, what remains\?\s*[—:-]?\s*/i,'')
       .replace(/^R\(H,Δ\)\s*[—:-]?\s*/i,'')
       .replace(/^Follow-up(?: pressure check)?:\s*/i,'');
-    const pieces=cleaned.split(/\s*(?:;|\|)\s+|\s+•\s+|\s+(?=(?:Failure point|Known failure|Next link|What remained|Why it matters|Field diagnostics|MRP result(?:ant)?|Graph|Route|Target|Finding|Resultant)\b)/i)
+    const pieces=cleaned.split(/\s*(?:;|\|)\s+|\s+•\s+|\s+(?=(?:Failure point|Known failure|Next link|What remained|Why it matters|Field diagnostics|Field state|Field pressure|Dependency curl|MRP result(?:ant)?|Graph|Route|Target|Finding|Resultant)\b)/i)
       .map(x=>x.trim().replace(/^\s*[-–—]\s*/,''))
       .filter(x=>x.length>2);
     if(pieces.length>1) return pieces;
@@ -1670,8 +1674,8 @@
       `collapse_positive=${String(fields.collapse_positive)}`,
       `coverage_complete=${String(fields.coverage_complete)}`,
       `diagnostic_completeness=${String(fields.diagnostic_completeness)}`,
-      `∇·B=${fields.divergence_state||'missing'}`,
-      `∇×κ=${fields.curl_state||'missing'}`,
+      `field pressure=${fields.divergence_state||'missing'}`,
+      `dependency curl=${fields.curl_state||'missing'}`,
       `max_generation_depth=${String(fields.max_generation_depth??'missing')}`,
       `input_fingerprint=${fingerprint}`
     ];
@@ -2079,7 +2083,7 @@
         `coverage_complete=${String(fields.coverage_complete)}`,
         `diagnostic_completeness=${String(fields.diagnostic_completeness)}`,
         `input_fingerprint=${fields.input_fingerprint?String(fields.input_fingerprint).slice(0,32):'missing'}`,
-        `∇·B=${fields.divergence_state||'missing'}; ∇×κ=${fields.curl_state||'missing'}`
+        `field pressure=${fields.divergence_state||'missing'}; dependency curl=${fields.curl_state||'missing'}`
       ];
       const certCard=storySectionBlock('Collapse Certificate',certificateStatusLabel(model),margin,y,cardW,{fill:'#07130c',stroke:cert.valid?'#22c55e':'#ef4444',items:certItems,technical:'Browser certificate display is advisory; proof-mode agreement still belongs to the Python certificate-backed checker.',maxLines:0,titleSize:30,bodySize:21,lineHeight:32,pad:32,badges:[{label:cert.valid?'certificate sidecar':'invalid certificate sidecar',color:cert.valid?'#166534':'#991b1b'}],klass:'outputGrapherStoryPanel outputGrapherKeyValuePanel outputGrapherCertificateDisplay'});
       introParts.push(certCard.svg); y+=certCard.height+18;

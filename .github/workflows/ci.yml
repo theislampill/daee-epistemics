@@ -48,6 +48,8 @@ jobs:
           python tools/check_manual_smoke_render_contract.py
           python tools/check_collapse_certificate_schema.py
           python tools/check_graph_completeness.py
+          python tools/check_output_grapher.py
+          python tools/check_output_grapher_layout.py
           python tools/check_hard_smoke_manifest.py
           python tools/check_retained_proof_corpus.py
           python tools/build_retained_proof_sidecars.py --self-test
