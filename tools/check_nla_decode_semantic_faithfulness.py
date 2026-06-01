@@ -156,6 +156,30 @@ def parse_field_witness(path: Path, text: str) -> tuple[dict[str, Any] | None, l
     return field_witness, []
 
 
+def projection_opening_surface_errors(path: Path, text: str, field_witness: dict[str, Any]) -> list[str]:
+    projection = field_witness.get("canonical_ir_projection")
+    if not isinstance(projection, dict):
+        return []
+
+    errors: list[str] = []
+    label = f"{rel(path)}: field_witness.canonical_ir_projection"
+    lines = text.splitlines()
+    first_nonblank = next((line.strip() for line in lines if line.strip()), "")
+    head = "\n".join(lines[:10])
+    layer_a = re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer A\b.*(?:Compact DSL|DSL/IR|Diagnostic)", text)
+    field_heading = re.search(r"(?im)^\s*(?:#{1,6}\s*)?field_witness\b", text)
+
+    if "NOETIC FIELD EXECUTION" not in head:
+        errors.append(f"{label}: opt-in projection requires visible noetic-field opening banner")
+    if layer_a is None:
+        errors.append(f"{label}: opt-in projection requires visible Layer A / Diagnostic IR opening header")
+    elif field_heading is not None and field_heading.start() < layer_a.start():
+        errors.append(f"{label}: machine projection appears before visible Layer A opening header")
+    if first_nonblank in {"field_witness", "{", "```json"} or first_nonblank.startswith("{"):
+        errors.append(f"{label}: machine projection must not replace the human-facing opening field read")
+    return errors
+
+
 def target_token_from_submove_ref(ref: str) -> str:
     text = str(ref or "").strip()
     match = re.fullmatch(r"(B\d+)(?:[_\.]\d+)", text)
@@ -828,6 +852,7 @@ def nla_decode_errors(
     errors.extend(found)
     if field_witness is None:
         return errors
+    errors.extend(projection_opening_surface_errors(path, text, field_witness))
     mirrors = field_witness_activation_by_body_ref(field_witness)
     raw_activations = field_witness.get("owner_activations")
     if not isinstance(raw_activations, list):

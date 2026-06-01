@@ -2442,11 +2442,12 @@ Top-salient invariants:
 - `H(n+1) = (Hn ∪ InputLive_n) - Released_n`; held material carries until released or resolved.
 - `Land(B) -> [Mid-Reread Pressure] -> R`; the MRP activation record is required before STOP or RECURSE.
 
-**DEFAULT RENDER INVARIANT.** Default prints the noetic-field execution banner plus compact
-DSL/IR visibility, not clean prose alone and not raw Diagnostic IR:
+**DEFAULT RENDER INVARIANT.** Default prints noetic-field banner + compact DSL/IR visibility,
+not prose-only or raw Diagnostic IR:
 `Default = noetic-field banner + Layer A(compact DSL/IR header) + Layer B(bounded governed response) + R
 (+ next Burden while R licenses RECURSE) + final Restorative Response + final Closing Formulation`.
 Full IR, Case State, `matched_modules`, route/source/load ledgers stay out of default.
+Projection metadata never replaces this noetic-field read/header.
 Current bounded operator is one live noetic burden/function, not a route chain.
 Diagnostic IR, recursive traversal governance, and post-render gate stay fully active in every mode.
 Owners remain in named reference files.

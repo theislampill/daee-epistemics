@@ -883,7 +883,9 @@ contract permits a diagnostic or audit-style response.
   NAR/diagnostic-completeness fields. It must reconcile with root hard registers, NAR live
   registers, register deltas, and diagnostic completeness; `sigma` remains outside the
   hard-register object. This projection is machine-facing opt-in evidence, not public prose, not
-  default always-on runtime output, not full IR decode, and not proof of interlocutor uptake.
+  default always-on runtime output, not full IR decode, and not proof of interlocutor uptake. It
+  never replaces the visible opening noetic-field banner or the compact Layer A / Diagnostic IR
+  header; those remain the human-facing field read and compliance surface.
 - Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
   register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
   `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,
