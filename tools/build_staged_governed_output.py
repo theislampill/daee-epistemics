@@ -35,19 +35,21 @@ REQUIRED_NON_CLAIMS = {
 }
 ROLE_ORDER = [
     "visible_opening",
-    "layer_a",
-    "act_body",
-    "mrp",
-    "field_witness",
+    "layer_a_diagnostic_ir",
+    "layer_b_act",
+    "mrp_reread_terminal",
+    "field_witness_nar",
     "restorative_response",
+    "closing_formulation",
 ]
 ROLE_INDEX = {role: index for index, role in enumerate(ROLE_ORDER)}
 SINGLETON_ROLES = {
     "visible_opening",
-    "layer_a",
-    "mrp",
-    "field_witness",
+    "layer_a_diagnostic_ir",
+    "mrp_reread_terminal",
+    "field_witness_nar",
     "restorative_response",
+    "closing_formulation",
 }
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
@@ -84,6 +86,39 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
             re.IGNORECASE,
         ),
     ),
+    (
+        "Graphify/ActiveGraph proof claim",
+        re.compile(r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b", re.IGNORECASE),
+    ),
+]
+SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    ("visible noetic-field opening/header", re.compile(r"NOETIC FIELD EXECUTION|noetic-field", re.IGNORECASE)),
+    (
+        "compact Layer A / Diagnostic IR header",
+        re.compile(r"Layer A\b.*(?:DSL/IR|Diagnostic IR|Header)", re.IGNORECASE | re.DOTALL),
+    ),
+    (
+        "Layer A initial burden ledger",
+        re.compile(r"Initial burden set\b.*B[_ -]?LA|B[_ -]?LA\b.*Initial burden set", re.IGNORECASE | re.DOTALL),
+    ),
+    ("governed Layer B / ACT surface", re.compile(r"Layer B\b.*(?:ACT|Bounded Governed Response)", re.IGNORECASE | re.DOTALL)),
+    ("ACT body_ref tokens", re.compile(r"\bbody_ref=", re.IGNORECASE)),
+    ("Land surface", re.compile(r"Land\(", re.IGNORECASE)),
+    (
+        "MRP / reread / terminal-state surface",
+        re.compile(r"(?:\[Mid-Reread Pressure\]|MRP\(|R\(H,|Terminal states|MRP route result type)", re.IGNORECASE),
+    ),
+    (
+        "parser-stable field_witness surface",
+        re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b"),
+    ),
+    (
+        "normalized_activation_record / NAR evidence",
+        re.compile(r"normalized_activation_record|\bNAR\b", re.IGNORECASE),
+    ),
+    ("Closure/Reconstruction Witness", re.compile(r"Closure/Reconstruction Witness", re.IGNORECASE)),
+    ("Restorative Response", re.compile(r"(?im)^\s*(?:#+\s*)?Restorative Response\b")),
+    ("Closing Formulation", re.compile(r"(?im)^\s*(?:#+\s*)?Closing Formulation\b")),
 ]
 
 
@@ -160,6 +195,34 @@ def forbidden_text_errors(text: str, label: str) -> list[str]:
     return [f"{label}: forbidden {name}" for name, pattern in FORBIDDEN_PATTERNS if pattern.search(text)]
 
 
+def required_surface_errors(text: str) -> list[str]:
+    return [
+        f"assembled output: missing {label}"
+        for label, pattern in SURFACE_PATTERNS
+        if pattern.search(text) is None
+    ]
+
+
+def parse_output_targets(output: Any) -> tuple[int, int, list[str]]:
+    if not isinstance(output, dict):
+        return 0, 0, []
+    errors: list[str] = []
+    target_output_kb = output.get("target_output_kb", 0)
+    target_min_bytes = output.get("target_min_bytes", 0)
+    if target_output_kb in (None, ""):
+        target_output_kb = 0
+    if target_min_bytes in (None, ""):
+        target_min_bytes = 0
+    if not isinstance(target_output_kb, int) or target_output_kb < 0:
+        errors.append("output.target_output_kb: must be a non-negative integer")
+        target_output_kb = 0
+    if not isinstance(target_min_bytes, int) or target_min_bytes < 0:
+        errors.append("output.target_min_bytes: must be a non-negative integer")
+        target_min_bytes = 0
+    min_bytes = max(target_min_bytes, target_output_kb * 1024)
+    return target_output_kb, min_bytes, errors
+
+
 def validate_non_claims(non_claims: Any) -> list[str]:
     if not isinstance(non_claims, dict):
         return ["non_claims: must be an object"]
@@ -187,7 +250,7 @@ def section_payload_errors(section: Any, index: int) -> list[str]:
     return errors
 
 
-def assemble_manifest(manifest_path: Path, *, root: Path = ROOT) -> dict[str, Any]:
+def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_target: bool = False) -> dict[str, Any]:
     root = root.resolve()
     manifest_path = require_under_root(root, manifest_path, "manifest")
     manifest_dir = manifest_path.parent
@@ -203,10 +266,14 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT) -> dict[str, An
     errors.extend(validate_non_claims(payload.get("non_claims")))
 
     output = payload.get("output")
+    target_output_kb = 0
+    target_min_bytes = 0
     if not isinstance(output, dict):
         errors.append("output: must be an object")
         output_path = manifest_dir / "output.md"
     else:
+        target_output_kb, target_min_bytes, target_errors = parse_output_targets(output)
+        errors.extend(target_errors)
         try:
             output_path = resolve_output_path(root, manifest_dir, output.get("path"), "output.path")
         except AssemblyError as exc:
@@ -282,6 +349,13 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT) -> dict[str, An
         if not assembled.endswith("\n"):
             assembled += "\n"
     errors.extend(forbidden_text_errors(assembled, "assembled output"))
+    errors.extend(required_surface_errors(assembled))
+    assembled_bytes = len(assembled.encode("utf-8"))
+    if target_min_bytes and assembled_bytes < target_min_bytes and not allow_under_target:
+        errors.append(
+            "assembled output: under target size "
+            f"({assembled_bytes} bytes < {target_min_bytes} bytes)"
+        )
 
     if errors:
         raise AssemblyError("\n- ".join(["staged governed output assembly failed:", *errors]))
@@ -299,6 +373,9 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT) -> dict[str, An
             "path": rel(output_path, root),
             "sha256": output_hash,
             "bytes": output_path.stat().st_size,
+            "target_output_kb": target_output_kb,
+            "target_min_bytes": target_min_bytes,
+            "under_target_allowed": allow_under_target,
         },
         "sections": section_records,
         "non_claims": {key: payload["non_claims"].get(key) for key in sorted(REQUIRED_NON_CLAIMS)},
@@ -316,6 +393,7 @@ def manifest_for_sections(
     source_input: str,
     section_specs: list[tuple[str, str, str]],
     output_name: str = "output.md",
+    target_output_kb: int = 0,
 ) -> Path:
     sections_dir = case_dir / "sections"
     sections_dir.mkdir(parents=True, exist_ok=True)
@@ -339,7 +417,7 @@ def manifest_for_sections(
             "case_id": case_id,
             "source_input": source_input,
             "sections": sections_payload,
-            "output": {"path": output_name},
+            "output": {"path": output_name, "target_output_kb": target_output_kb},
             "non_claims": {
                 "not_release_provenance": True,
                 "not_model_behavior_by_itself": True,
@@ -350,18 +428,52 @@ def manifest_for_sections(
     return manifest_path
 
 
-def small_sections(*, act_text: str = "Layer B ACT body_ref=B1.s1.\nLand(B1): landed.\n") -> list[tuple[str, str, str]]:
+def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT row body_ref=B1.s1.\nLand(B1): landed.\n") -> list[tuple[str, str, str]]:
     return [
         ("opening", "visible_opening", "NOETIC FIELD EXECUTION\nCase opening preserved.\n"),
-        ("layer-a", "layer_a", "Layer A / Diagnostic IR Header\nN: source-order.\n"),
-        ("act-body", "act_body", act_text),
-        ("mrp", "mrp", "MRP(B1): terminal reread.\nR(H,Delta): neutral.\n"),
+        (
+            "layer-a",
+            "layer_a_diagnostic_ir",
+            "Layer A - Compact DSL/IR Header\n"
+            "- B_LA (B_LA) = {B1}\n"
+            "- B_MRP (B_MRP) = {}\n"
+            "- B_total (B_total) = B_LA union B_MRP\n"
+            "- Initial burden set: [B1]\n",
+        ),
+        ("act-body", "layer_b_act", act_text),
+        (
+            "mrp",
+            "mrp_reread_terminal",
+            "[Mid-Reread Pressure]\n"
+            "Target: B1\n"
+            "R(H,Delta): held routes rechecked: none; live remainder: none; release/next: closure.\n"
+            "MRP route result type: no_new_resultant\n"
+            "Terminal states: B1=landed.\n"
+            "Field diagnostics: del-dot-B: neutral; del-cross-kappa: null.\n"
+        ),
         (
             "field-witness",
-            "field_witness",
-            "field_witness\ncoverage_proof: divergence_check=neutral; curl_check=null.\nNAR: B1 landed.\n",
+            "field_witness_nar",
+            "Closure/Reconstruction Witness\n"
+            "field_witness\n"
+            "{\n"
+            "  \"B_LA\": [\"B1\"],\n"
+            "  \"B_MRP\": [],\n"
+            "  \"B_total\": [\"B1\"],\n"
+            "  \"coverage_proof\": {\n"
+            "    \"divergence_check\": \"neutral\",\n"
+            "    \"curl_check\": \"null\"\n"
+            "  },\n"
+            "  \"normalized_activation_record\": {\n"
+            "    \"n_frame\": \"self-test\",\n"
+            "    \"live_registers\": [\"xi\"],\n"
+            "    \"burden_floor\": [\"B1\"],\n"
+            "    \"per_burden\": []\n"
+            "  }\n"
+            "}\n",
         ),
-        ("release", "restorative_response", "Restorative Response\nClosing Formulation\n"),
+        ("release", "restorative_response", "Restorative Response\nRestored orientation.\n"),
+        ("closing", "closing_formulation", "Closing Formulation\nScoped boundary.\n"),
     ]
 
 
@@ -413,8 +525,8 @@ def run_self_test(root: Path) -> int:
     large_act_chunks = [
         (
             f"act-body-{index}",
-            "act_body",
-            ("Layer B ACT body_ref=B1.s%s.\nOperation: bounded section work.\nLand(B1): landed.\n" % index) * 900,
+            "layer_b_act",
+            ("Layer B - Bounded Governed Response\nACT body_ref=B1.s%s.\nOperation: bounded section work.\nLand(B1): landed.\n" % index) * 900,
         )
         for index in range(1, 5)
     ]
@@ -427,17 +539,33 @@ def run_self_test(root: Path) -> int:
             *large_act_chunks,
             *small_sections()[3:],
         ],
+        target_output_kb=200,
     )
     large_record = assemble_manifest(large_manifest, root=root)
     if large_record["output"]["bytes"] < 200 * 1024:
         raise AssemblyError("self-test valid large assembly did not reach 200KB")
+
+    valid_100kb_manifest = manifest_for_sections(
+        base_dir / "valid-100kb",
+        case_id="valid-100kb",
+        source_input="valid-100kb/input.md",
+        section_specs=[
+            *small_sections(act_text="Layer B - Bounded Governed Response\nACT body_ref=B1.s0.\nLand(B1): landed.\n")[:2],
+            *large_act_chunks[:2],
+            *small_sections()[3:],
+        ],
+        target_output_kb=100,
+    )
+    valid_100kb_record = assemble_manifest(valid_100kb_manifest, root=root)
+    if valid_100kb_record["output"]["bytes"] < 100 * 1024:
+        raise AssemblyError("self-test valid 100KB assembly did not reach 100KB")
 
     expect_invalid(
         root,
         base_dir,
         "invalid-missing-section",
         lambda payload, _case_dir: payload.__setitem__(
-            "sections", [section for section in payload["sections"] if section["role"] != "mrp"]
+            "sections", [section for section in payload["sections"] if section["role"] != "mrp_reread_terminal"]
         ),
     )
     expect_invalid(
@@ -451,7 +579,7 @@ def run_self_test(root: Path) -> int:
         base_dir,
         "invalid-out-of-order",
         lambda payload, _case_dir: payload.__setitem__(
-            "sections", [payload["sections"][4], *payload["sections"][:4], payload["sections"][5]]
+            "sections", [payload["sections"][4], *payload["sections"][:4], *payload["sections"][5:]]
         ),
     )
     expect_invalid(
@@ -459,6 +587,41 @@ def run_self_test(root: Path) -> int:
         base_dir,
         "invalid-path-escape",
         lambda payload, _case_dir: payload["sections"][0].__setitem__("path", "../escape.md"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-missing-visible-opening",
+        lambda payload, case_dir: replace_section_text(payload, case_dir, 0, "Opening without noetic header.\n"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-missing-field-witness-nar",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            4,
+            "Closure/Reconstruction Witness\nField Witness prose only.\nNormalized Activation Record prose only.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-missing-closing-formulation",
+        lambda payload, case_dir: replace_section_text(payload, case_dir, 6, "Scoped boundary only.\n"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-under-target-size",
+        lambda payload, _case_dir: payload["output"].__setitem__("target_output_kb", 100),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-duplicate-required-role",
+        lambda payload, _case_dir: payload["sections"].insert(1, dict(payload["sections"][0])),
     )
     expect_invalid(
         root,
@@ -500,6 +663,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--allow-under-target", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     return parser.parse_args()
 
@@ -511,7 +675,7 @@ def main() -> int:
         return run_self_test(root)
     if args.manifest is None:
         raise SystemExit("--manifest is required unless --self-test is used")
-    record = assemble_manifest(args.manifest, root=root)
+    record = assemble_manifest(args.manifest, root=root, allow_under_target=args.allow_under_target)
     print("staged governed output assembly: PASS")
     print(f"output: {record['output']['path']}")
     print(f"output sha256: {record['output']['sha256']}")

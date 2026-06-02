@@ -942,11 +942,12 @@ def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[st
     act_chunks = 1 if target <= 0 else max(1, min(8, (target + 24) // 25))
     return [
         ("opening", "visible_opening"),
-        ("layer-a", "layer_a"),
-        *[(f"act-body-{index}", "act_body") for index in range(1, act_chunks + 1)],
-        ("mrp-reread", "mrp"),
-        ("field-witness", "field_witness"),
-        ("release", "restorative_response"),
+        ("layer-a-diagnostic-ir", "layer_a_diagnostic_ir"),
+        *[(f"act-body-{index}", "layer_b_act") for index in range(1, act_chunks + 1)],
+        ("mrp-reread-terminal", "mrp_reread_terminal"),
+        ("field-witness-nar", "field_witness_nar"),
+        ("restorative-response", "restorative_response"),
+        ("closing-formulation", "closing_formulation"),
     ]
 
 
@@ -966,37 +967,61 @@ def release_section_prompt(
     target_output_kb: int | None,
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
+    target = max(0, int(target_output_kb or 0))
+    section_floor = max(0, (target * 1024 + section_count - 1) // section_count) if target else 0
     role_guidance = {
         "visible_opening": (
-            "Write only the visible noetic-field opening/header for the governed answer. "
-            "Do not include Layer B, field_witness, Restorative Response, or Closing Formulation."
+            "Write only the visible opening for the governed answer. It must contain the exact banner "
+            "`NOETIC FIELD EXECUTION` or the token `noetic-field`, plus the field/read/state surface a "
+            "normal `/daee-epistemics` answer exposes. Do not include Layer B, field_witness, "
+            "Restorative Response, or Closing Formulation."
         ),
-        "layer_a": (
-            "Write only the compact Layer A / Diagnostic IR public surface. "
-            "Do not include raw dev harness internals or downstream proof claims."
+        "layer_a_diagnostic_ir": (
+            "Write only the compact Layer A / Diagnostic IR public surface. It must include a Layer A "
+            "Compact DSL/IR or Diagnostic IR header, B_LA, B_MRP, B_total, and Initial burden set "
+            "ledger lines. Do not include raw dev harness internals or downstream proof claims."
         ),
-        "act_body": (
-            "Write only this bounded Layer B / ACT section. Include ACT-readable rows, body_ref tokens, "
-            "local operation/result prose, and Land(...) surfaces consistent with Stage 04. "
+        "layer_b_act": (
+            "Write only this bounded Layer B / ACT section. Include a governed Layer B header, "
+            "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
+            "consistent with Stage 04. Expand the operation bodies instead of summarizing them. "
             "Do not include MRP, field_witness, Restorative Response, or Closing Formulation."
         ),
-        "mrp": (
-            "Write only the MRP/reread/terminal-state section consistent with Stage 05. "
+        "mrp_reread_terminal": (
+            "Write only the MRP/reread/terminal-state section consistent with Stage 05. It must include "
+            "`[Mid-Reread Pressure]`, `R(H,Delta)` or `R(H,Δ)`, terminal states, `MRP route result type`, "
+            "`Graph delta`, `Field diagnostics`, and the STOP/HOLD/PARTIAL/RECURSE route consequence. "
             "Do not include final verifier sidecars or retained proof claims."
         ),
-        "field_witness": (
-            "Write only parser-stable field_witness/NAR evidence consistent with Stage 06 plus visible "
-            "Closure/Reconstruction Witness diagnostics for divergence and curl. The visible statuses must "
-            "match field_witness.coverage_proof divergence_check and curl_check."
+        "field_witness_nar": (
+            "Write only the Closure/Reconstruction Witness plus parser-stable `field_witness` JSON. "
+            "The section must contain a line that begins exactly `field_witness`, then a JSON object "
+            "with `B_LA`, `B_MRP`, `B_total`, `coverage_proof`, `owner_activations`, "
+            "`normalized_activation_record`, and any generated-burden/formal-reread mirrors required "
+            "by Stage 06. The visible divergence/curl statuses must match "
+            "`field_witness.coverage_proof.divergence_check` and `.curl_check`. Do not use prose-only "
+            "`Field Witness` or prose-only `Normalized Activation Record` labels."
         ),
         "restorative_response": (
-            "Write only the Restorative Response and Closing Formulation. Do not claim guaranteed uptake, "
-            "package/provenance, sidecar proof, retained promotion, broad model behavior, or broad A/B/C/D closure."
+            "Write only the Restorative Response section. Do not include Closing Formulation here. "
+            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "broad model behavior, or broad A/B/C/D closure."
+        ),
+        "closing_formulation": (
+            "Write only the Closing Formulation section. It must include explicit high-mass slots for "
+            "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
+            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "broad model behavior, or broad A/B/C/D closure."
         ),
     }
     target_line = ""
-    if target_output_kb:
-        target_line = f"\nOverall compiled output target: about {target_output_kb}KB across {section_count} sections.\n"
+    if target:
+        target_line = (
+            f"\nOverall compiled output floor: at least {target}KB across {section_count} sections. "
+            f"This section's rough share is {section_floor} bytes; expand governed content enough to "
+            "help the assembled output meet the floor. The harness will fail the assembly if the "
+            "compiled output is under target.\n"
+        )
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing one bounded section of stage-07-release-output for a staged
@@ -1047,6 +1072,7 @@ def write_compiled_release_manifest(
     raw_input_path: Path,
     section_entries: list[dict[str, str]],
     output_path: Path,
+    target_output_kb: int = 0,
 ) -> None:
     manifest_dir = manifest_path.parent
     write_json(
@@ -1064,7 +1090,7 @@ def write_compiled_release_manifest(
                 }
                 for entry in section_entries
             ],
-            "output": {"path": rel(output_path, manifest_dir)},
+            "output": {"path": rel(output_path, manifest_dir), "target_output_kb": int(target_output_kb or 0)},
             "non_claims": {
                 "not_release_provenance": True,
                 "not_model_behavior_by_itself": True,
@@ -1077,11 +1103,12 @@ def write_compiled_release_manifest(
 def split_text_for_compiled_self_test(text: str) -> list[tuple[str, str, str]]:
     plan = [
         ("opening", "visible_opening"),
-        ("layer-a", "layer_a"),
-        ("act-body", "act_body"),
-        ("mrp-reread", "mrp"),
-        ("field-witness", "field_witness"),
-        ("release", "restorative_response"),
+        ("layer-a-diagnostic-ir", "layer_a_diagnostic_ir"),
+        ("act-body", "layer_b_act"),
+        ("mrp-reread-terminal", "mrp_reread_terminal"),
+        ("field-witness-nar", "field_witness_nar"),
+        ("restorative-response", "restorative_response"),
+        ("closing-formulation", "closing_formulation"),
     ]
     lines = text.splitlines(keepends=True)
     if len(lines) < len(plan):
@@ -2292,6 +2319,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 raw_input_path=raw_input,
                 section_entries=section_entries,
                 output_path=output_path,
+                target_output_kb=args.target_output_kb,
             )
             stage_files.append(assembly_manifest_path)
             assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)

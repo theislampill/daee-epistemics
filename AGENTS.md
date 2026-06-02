@@ -103,6 +103,13 @@ queries. The Markdown open-work ledger and orchestrator remain canonical. Do
 not add ActiveGraph to runtime, CI, release gates, package/provenance, or
 autonomous agent behavior for the current line.
 
+When an IMPLEMENTAUDIT lane hits any failed required gate, failed checker,
+failed model retry, failed preflight, or other Andon condition, record the
+Andon, Hansei, 5 Whys, and Kaizen/countermeasure in the canonical audit ledger
+and, when explicitly authorized, in an ignored ActiveGraph sidecar before
+moving to commit, push, release-gate, or next-lane work. Treat skipping that
+failure-discipline record as its own process Andon.
+
 Release/provenance remains frozen unless the orchestrator explicitly opens a
 release gate. Do not package, tag, upload, edit release notes, or move release
 assets from ordinary IMPLEMENTAUDIT lanes.
