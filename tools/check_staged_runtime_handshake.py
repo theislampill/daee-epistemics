@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
 
@@ -141,6 +142,8 @@ STAGE07_OPTIONAL_VALIDATION_KEYS = {
     "manual_smoke_render_contract",
     "owner_activation_ordering",
 }
+RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
+RELEASE_CURL_STATES = {"null", "resolved", "non-null"}
 REREAD_DIVERGENCE_STATES = {"neutral", "non-neutral", "settled", "residual", "positive", "held"}
 REREAD_CURL_STATES = {"null", "resolved", "non-null", "held"}
 REREAD_ROUTE_RESULT_TYPES = {
@@ -719,6 +722,91 @@ def release_output_path_and_text(
     return output_path, text, errors
 
 
+def field_witness_coverage_status(field_witness: dict[str, Any] | None, key: str) -> str:
+    if not isinstance(field_witness, dict):
+        return ""
+    coverage = field_witness.get("coverage_proof")
+    if not isinstance(coverage, dict):
+        return ""
+    value = coverage.get(key)
+    if not isinstance(value, str):
+        return ""
+    return status_head(value)
+
+
+def release_field_diagnostics_from_text(output_text: str) -> dict[str, Any]:
+    witness = parse_closure_witness(output_text)
+    field_witness = extract_embedded_field_witness(output_text)
+    visible = {
+        "divergence_check": status_head(witness.divergence) if witness is not None else "",
+        "curl_check": status_head(witness.curl) if witness is not None else "",
+    }
+    field_witness_coverage = {
+        "divergence_check": field_witness_coverage_status(field_witness, "divergence_check"),
+        "curl_check": field_witness_coverage_status(field_witness, "curl_check"),
+    }
+    matches = (
+        visible["divergence_check"] in RELEASE_DIVERGENCE_STATES
+        and visible["curl_check"] in RELEASE_CURL_STATES
+        and visible == field_witness_coverage
+    )
+    return {
+        "visible": visible,
+        "field_witness_coverage": field_witness_coverage,
+        "matches": matches,
+    }
+
+
+def release_field_diagnostics_errors(label: str, diagnostics: Any, output_text: str | None) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(diagnostics, dict):
+        return [f"{label}: stage-07 release_field_diagnostics must be an object"]
+    visible = diagnostics.get("visible")
+    field_witness_coverage = diagnostics.get("field_witness_coverage")
+    if not isinstance(visible, dict):
+        errors.append(f"{label}: stage-07 release_field_diagnostics.visible must be an object")
+        visible = {}
+    if not isinstance(field_witness_coverage, dict):
+        errors.append(f"{label}: stage-07 release_field_diagnostics.field_witness_coverage must be an object")
+        field_witness_coverage = {}
+    visible_divergence = visible.get("divergence_check")
+    visible_curl = visible.get("curl_check")
+    coverage_divergence = field_witness_coverage.get("divergence_check")
+    coverage_curl = field_witness_coverage.get("curl_check")
+    if visible_divergence not in RELEASE_DIVERGENCE_STATES:
+        errors.append(
+            f"{label}: stage-07 release_field_diagnostics.visible.divergence_check must be one of "
+            f"{sorted(RELEASE_DIVERGENCE_STATES)}"
+        )
+    if coverage_divergence not in RELEASE_DIVERGENCE_STATES:
+        errors.append(
+            f"{label}: stage-07 release_field_diagnostics.field_witness_coverage.divergence_check must be one of "
+            f"{sorted(RELEASE_DIVERGENCE_STATES)}"
+        )
+    if visible_curl not in RELEASE_CURL_STATES:
+        errors.append(
+            f"{label}: stage-07 release_field_diagnostics.visible.curl_check must be one of "
+            f"{sorted(RELEASE_CURL_STATES)}"
+        )
+    if coverage_curl not in RELEASE_CURL_STATES:
+        errors.append(
+            f"{label}: stage-07 release_field_diagnostics.field_witness_coverage.curl_check must be one of "
+            f"{sorted(RELEASE_CURL_STATES)}"
+        )
+    computed_matches = visible == field_witness_coverage and not errors
+    if diagnostics.get("matches") is not computed_matches:
+        errors.append(f"{label}: stage-07 release_field_diagnostics.matches must equal checker-computed agreement")
+    if not computed_matches:
+        errors.append(f"{label}: stage-07 release_field_diagnostics visible and field_witness_coverage must agree")
+    if output_text is not None:
+        actual = release_field_diagnostics_from_text(output_text)
+        if diagnostics != actual:
+            errors.append(
+                f"{label}: stage-07 release_field_diagnostics must match checker extraction from release_output"
+            )
+    return errors
+
+
 def stage07_release_errors(
     label: str,
     record_path: Path,
@@ -778,6 +866,11 @@ def stage07_release_errors(
             for key, value in validation.items():
                 if value != "pass":
                     errors.append(f"{label}: stage-07 release_validation.{key} must be 'pass'")
+    release_field_diagnostics = stage07.get("release_field_diagnostics")
+    if mode in MODEL_MODES and release_field_diagnostics is None:
+        errors.append(f"{label}: model-mode stage-07 requires release_field_diagnostics object")
+    if release_field_diagnostics is not None:
+        errors.extend(release_field_diagnostics_errors(label, release_field_diagnostics, output_text))
     return errors
 
 

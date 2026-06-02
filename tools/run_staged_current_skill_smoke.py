@@ -21,6 +21,8 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
+
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -65,6 +67,8 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "manual_smoke_render_contract",
     "owner_activation_ordering",
 }
+RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
+RELEASE_CURL_STATES = {"null", "resolved", "non-null"}
 
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
@@ -149,6 +153,8 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Stage 06, do not use only `normalized_activation_record: true`; provide a "
             "structured `normalized_activation_record` object or `normalized_activation_record_details` "
             "with `n_frame`, `live_registers`, `burden_floor`, and `per_burden`. "
+            "`per_burden` must be a JSON array/list of objects; each object must include "
+            "a non-empty string `burden_id`. Do not emit `per_burden` as a burden-keyed object map. "
             "`register_deltas` must be parser-stable as an object or a list of objects with "
             "`register` and `delta`. If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
@@ -710,6 +716,18 @@ def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
             raise HarnessError(f"{label}.{key} must be a string list")
         value[key] = ordered_unique(list(raw))
     rows = value.get("per_burden")
+    if isinstance(rows, dict) and rows:
+        normalized_rows: list[dict[str, Any]] = []
+        for raw_burden_id, payload in rows.items():
+            if not isinstance(raw_burden_id, str) or not raw_burden_id:
+                raise HarnessError(f"{label}.per_burden map keys must be non-empty burden ids")
+            if not isinstance(payload, dict):
+                raise HarnessError(f"{label}.per_burden[{raw_burden_id}] must be an object")
+            row = dict(payload)
+            row.setdefault("burden_id", raw_burden_id)
+            normalized_rows.append(row)
+        rows = normalized_rows
+        value["per_burden"] = rows
     if not isinstance(rows, list) or not rows:
         raise HarnessError(f"{label}.per_burden must be a non-empty object list")
     for index, row in enumerate(rows):
@@ -884,6 +902,14 @@ Required public output surface:
 - Include Layer B / ACT rows consistent with the validated Stage 04 state.
 - Include MRP/reread/terminal-state surface consistent with Stage 05.
 - Include parser-stable field_witness/NAR evidence consistent with Stage 06.
+- Include visible Closure/Reconstruction Witness diagnostics for `∇·B` and
+  `∇×κ`, and include matching machine values in
+  `field_witness.coverage_proof.divergence_check` and
+  `field_witness.coverage_proof.curl_check`.
+- The visible `∇·B` status and coverage `divergence_check` status must be
+  identical after status-head normalization.
+- The visible `∇×κ` status and coverage `curl_check` status must be
+  identical after status-head normalization.
 - Include Restorative Response.
 - Include Closing Formulation.
 
@@ -1415,6 +1441,33 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    mapped_nar_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "¹B₂"],
+            "nar_burdens": ["B1"],
+            "owner_activations": ["¹B₁", "¹B₂"],
+            "normalized_activation_record": {
+                "n_frame": "science-only-source-order-warrant",
+                "live_registers": ["xi", "kappa"],
+                "burden_floor": ["B1"],
+                "per_burden": {
+                    "B1": {
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "terminal_state": "landed",
+                        "generation_depth": 0,
+                    }
+                },
+            },
+            "register_deltas": {"xi": "source-order-landed"},
+        },
+    )
+    mapped_rows = mapped_nar_stage06["normalized_activation_record"].get("per_burden")
+    if not isinstance(mapped_rows, list) or mapped_rows[0].get("burden_id") != "B1":
+        raise HarnessError("Self-test failed to normalize Stage 06 NAR per_burden map into object list")
     stage06_local_record = base_record(
         "self-test-a9-science-source-stage06",
         "staged-current-skill-stage-local-smoke",
@@ -1532,6 +1585,14 @@ def run_self_test(root: Path) -> int:
         "manual_smoke_render_contract": "pass",
         "owner_activation_ordering": "pass",
     }
+    replay_stage07 = stage_by_id(replay.get("stages", []), "stage-07-release-output") or {}
+    replay_release_output = replay_stage07.get("release_output") if isinstance(replay_stage07, dict) else {}
+    if not isinstance(replay_release_output, dict) or not isinstance(replay_release_output.get("path"), str):
+        raise HarnessError("Self-test replay record missing Stage 07 release_output.path")
+    replay_output_path = resolve_under_root(root, replay_release_output["path"], "self-test Stage 07 release output")
+    stage07_diagnostics = build_release_field_diagnostics(replay_output_path)
+    if stage07_diagnostics.get("matches") is not True:
+        raise HarnessError("Self-test replay output did not produce matching release_field_diagnostics")
     stage07_local_record = base_record(
         "self-test-a9-science-source-stage07",
         "staged-current-skill-stage-local-smoke",
@@ -1545,6 +1606,7 @@ def run_self_test(root: Path) -> int:
     )
     stage07_stage = dict(replay["stages"][6])
     stage07_stage["release_validation"] = dict(stage07_validation)
+    stage07_stage["release_field_diagnostics"] = dict(stage07_diagnostics)
     stage07_local_record["stages"] = [*replay["stages"][:6], stage07_stage]
     if stage07_local_record.get("stage_scope", {}).get("release_output") is not True:
         raise HarnessError("Self-test failed to mark Stage 07 scope as release-output producing")
@@ -1572,6 +1634,47 @@ def run_self_test(root: Path) -> int:
     )
     if invalid_result.returncode == 0:
         raise HarnessError("Self-test failed to reject model-mode Stage 07 missing release_validation")
+
+    stage07_missing_diagnostics = dict(stage07_local_record)
+    stage07_missing_diagnostics["case_id"] = "self-test-stage07-missing-release-field-diagnostics"
+    stage07_missing_diagnostics["stages"] = [dict(stage) for stage in stage07_local_record["stages"]]
+    stage07_missing_diagnostics["stages"][-1] = dict(stage07_missing_diagnostics["stages"][-1])
+    stage07_missing_diagnostics["stages"][-1].pop("release_field_diagnostics", None)
+    stage07_missing_diagnostics_path = run_dir / "stage07-missing-release-field-diagnostics.invalid.json"
+    write_json(stage07_missing_diagnostics_path, stage07_missing_diagnostics)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage07_missing_diagnostics_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject model-mode Stage 07 missing release_field_diagnostics")
+
+    stage07_mismatched_diagnostics = dict(stage07_local_record)
+    stage07_mismatched_diagnostics["case_id"] = "self-test-stage07-mismatched-release-field-diagnostics"
+    stage07_mismatched_diagnostics["stages"] = [dict(stage) for stage in stage07_local_record["stages"]]
+    stage07_mismatched_diagnostics["stages"][-1] = dict(stage07_mismatched_diagnostics["stages"][-1])
+    mismatched_diagnostics = json.loads(json.dumps(stage07_diagnostics))
+    mismatched_diagnostics["field_witness_coverage"]["divergence_check"] = "non-neutral"
+    mismatched_diagnostics["matches"] = True
+    stage07_mismatched_diagnostics["stages"][-1]["release_field_diagnostics"] = mismatched_diagnostics
+    stage07_mismatched_diagnostics_path = run_dir / "stage07-mismatched-release-field-diagnostics.invalid.json"
+    write_json(stage07_mismatched_diagnostics_path, stage07_mismatched_diagnostics)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage07_mismatched_diagnostics_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 07 mismatched release_field_diagnostics")
 
     stage07_failed_validation = dict(stage07_local_record)
     stage07_failed_validation["case_id"] = "self-test-stage07-failed-validation"
@@ -1642,6 +1745,42 @@ def visible_governed_output_errors(output_path: Path) -> list[str]:
     ]
     errors.extend(label for label, pattern in forbidden if re.search(pattern, text, re.IGNORECASE))
     return errors
+
+
+def coverage_status(field_witness: dict[str, Any] | None, key: str) -> str:
+    if not isinstance(field_witness, dict):
+        return ""
+    coverage = field_witness.get("coverage_proof")
+    if not isinstance(coverage, dict):
+        return ""
+    value = coverage.get(key)
+    if not isinstance(value, str):
+        return ""
+    return status_head(value)
+
+
+def build_release_field_diagnostics(output_path: Path) -> dict[str, Any]:
+    text = output_path.read_text(encoding="utf-8", errors="replace")
+    witness = parse_closure_witness(text)
+    field_witness = extract_embedded_field_witness(text)
+    visible = {
+        "divergence_check": status_head(witness.divergence) if witness is not None else "",
+        "curl_check": status_head(witness.curl) if witness is not None else "",
+    }
+    field_witness_coverage = {
+        "divergence_check": coverage_status(field_witness, "divergence_check"),
+        "curl_check": coverage_status(field_witness, "curl_check"),
+    }
+    matches = (
+        visible["divergence_check"] in RELEASE_DIVERGENCE_STATES
+        and visible["curl_check"] in RELEASE_CURL_STATES
+        and visible == field_witness_coverage
+    )
+    return {
+        "visible": visible,
+        "field_witness_coverage": field_witness_coverage,
+        "matches": matches,
+    }
 
 
 def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
@@ -1882,6 +2021,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
         release_validation = run_release_validators(root, output_path)
+        release_field_diagnostics = build_release_field_diagnostics(output_path)
         stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state") or {}
         stage07 = {
             "id": "stage-07-release-output",
@@ -1893,6 +2033,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             "closure_claim": "complete",
             "output_is_full_governed_answer": True,
             "release_validation": release_validation,
+            "release_field_diagnostics": release_field_diagnostics,
         }
         stages.append(stage07)
         if args.stop_after_stage == "stage-07-release-output":
@@ -1977,6 +2118,9 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         failed_record = dict(record)
         failed_record["stages"] = stages
         failed_record["failure"] = str(exc)
+        partial_output_path = run_dir / "output.md"
+        if partial_output_path.exists() and partial_output_path.stat().st_size > 0:
+            failed_record["stage07_release_field_diagnostics"] = build_release_field_diagnostics(partial_output_path)
         failure_record_path = records_dir / "staged-handoff-failure.json"
         write_json(failure_record_path, failed_record)
         hash_path = run_dir / "staged-smoke.hashes.json"

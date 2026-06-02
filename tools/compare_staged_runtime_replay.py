@@ -59,6 +59,7 @@ FIELDS_BY_STAGE = {
         "closure_claim",
         "output_is_full_governed_answer",
         "release_validation",
+        "release_field_diagnostics",
     ],
     "stage-08-verifier-sidecars": ["verifier_sidecars"],
 }
@@ -218,6 +219,21 @@ def release_validation_passes(value: Any) -> bool:
     return isinstance(value, dict) and bool(value) and all(item == "pass" for item in value.values())
 
 
+def release_field_diagnostics_passes(value: Any) -> bool:
+    if not isinstance(value, dict):
+        return False
+    visible = value.get("visible")
+    coverage = value.get("field_witness_coverage")
+    return (
+        isinstance(visible, dict)
+        and isinstance(coverage, dict)
+        and value.get("matches") is True
+        and visible == coverage
+        and visible.get("divergence_check") in {"neutral", "non-neutral"}
+        and visible.get("curl_check") in {"null", "resolved", "non-null"}
+    )
+
+
 def field_matches(stage_id: str, field: str, record_stage: dict[str, Any], replay_stage: dict[str, Any]) -> bool:
     record_raw = stage_field_value(stage_id, field, record_stage)
     replay_raw = stage_field_value(stage_id, field, replay_stage)
@@ -231,6 +247,9 @@ def field_matches(stage_id: str, field: str, record_stage: dict[str, Any], repla
             return True
     if stage_id == "stage-07-release-output" and field == "release_validation":
         if replay_raw is None and release_validation_passes(record_raw):
+            return True
+    if stage_id == "stage-07-release-output" and field == "release_field_diagnostics":
+        if replay_raw is None and release_field_diagnostics_passes(record_raw):
             return True
     return comparable_field(stage_id, field, record_raw) == comparable_field(stage_id, field, replay_raw)
 
@@ -469,9 +488,27 @@ def run_self_test() -> int:
         "manual_smoke_render_contract": "pass",
         "owner_activation_ordering": "pass",
     }
+    stage_map(stage07_prefix)["stage-07-release-output"]["release_field_diagnostics"] = {
+        "visible": {"divergence_check": "neutral", "curl_check": "null"},
+        "field_witness_coverage": {"divergence_check": "neutral", "curl_check": "null"},
+        "matches": True,
+    }
     if compare_records(stage07_prefix, replay, through_stage="stage-07-release-output"):
         print("compare staged runtime replay self-test: FAIL")
-        print("- Stage 07 fresh release_validation should compare to historical retained replay")
+        print("- Stage 07 fresh release_validation/field diagnostics should compare to historical retained replay")
+        return 1
+    stage07_bad_diagnostics = copy.deepcopy(stage07_prefix)
+    stage_map(stage07_bad_diagnostics)["stage-07-release-output"]["release_field_diagnostics"] = {
+        "visible": {"divergence_check": "neutral", "curl_check": "null"},
+        "field_witness_coverage": {"divergence_check": "non-neutral", "curl_check": "null"},
+        "matches": True,
+    }
+    if not any(
+        "stage-07-release-output.release_field_diagnostics" in item
+        for item in compare_records(stage07_bad_diagnostics, replay, through_stage="stage-07-release-output")
+    ):
+        print("compare staged runtime replay self-test: FAIL")
+        print("- Stage 07 release_field_diagnostics mismatch was not detected")
         return 1
     stage07_mismatch = copy.deepcopy(stage07_prefix)
     stage_map(stage07_mismatch)["stage-07-release-output"]["closure_claim"] = "partial"
