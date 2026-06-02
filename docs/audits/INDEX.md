@@ -45,6 +45,7 @@ sweep moves them.
 | `docs/audits/v0.4.3.0-audit-of-audits.md` | ACTIVE IMPLEMENTATION EVIDENCE | Audit-of-audits input and closure for targeted stale-status cleanup. |
 | `docs/audits/v0.4.3.0-open-work-ledger.md` | ACTIVE OPEN-WORK LEDGER | Forward formalism/proof work for managing agents after the published v0.4.3.0 asset; records dependency-ordered A/B/C rows that remain open and must not be treated as release notes or as already closed by publication. |
 | `docs/audits/v0.4.3.0-retained-smoke-sidecar-convention.md` | ACTIVE IMPLEMENTAUDIT PROCESS GUIDANCE | Checker-owned B.2/B.4 retained-smoke sidecar convention: raw input, collapse certificate, certificate-backed Grapher, hashes, proof boundaries, and scoped exclusions. |
+| `docs/audits/v0.4.3.x-b1-b2-staged-row-family-matrix.md` | ACTIVE IMPLEMENTATION EVIDENCE | B.1/B.2 staged row-family matrix design plus Brandolini-safe compiled-output assembly gate; no broad closure claim until required retained proof cases pass. |
 | `docs/audits/v0.4.3.0-future-work-ledger.md` | FUTURE-WORK SOURCE | Single ledger for deferred/tabled findings that should not remain scattered as live blockers. |
 
 ## Current Governance / Runtime Evidence

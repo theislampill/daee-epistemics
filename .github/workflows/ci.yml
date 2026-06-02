@@ -46,6 +46,7 @@ jobs:
           python tools/check_nla_decode_semantic_faithfulness.py
           python tools/check_staged_runtime_handshake.py
           python tools/build_staged_runtime_replay_record.py --self-test
+          python tools/build_staged_governed_output.py --self-test
           python tools/run_staged_current_skill_smoke.py --self-test
           python tools/compare_staged_runtime_replay.py --self-test
           python tools/check_tlang_response_closure.py --outputs tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/*/output.md

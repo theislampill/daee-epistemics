@@ -21,6 +21,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+import build_staged_governed_output as staged_output
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
 
 
@@ -69,6 +70,12 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
 }
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
 RELEASE_CURL_STATES = {"null", "resolved", "non-null"}
+RELEASE_OUTPUT_MODE_ALIASES = {
+    "single": "single-output",
+    "single-output": "single-output",
+    "compiled": "compiled-output",
+    "compiled-output": "compiled-output",
+}
 
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
@@ -922,6 +929,232 @@ ActiveGraph proof.
 """
 
 
+def normalize_release_output_mode(value: str) -> str:
+    try:
+        return RELEASE_OUTPUT_MODE_ALIASES[value]
+    except KeyError as exc:
+        allowed = ", ".join(sorted(RELEASE_OUTPUT_MODE_ALIASES))
+        raise HarnessError(f"Unknown release output mode {value!r}; expected one of {allowed}") from exc
+
+
+def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[str, str]]:
+    target = max(0, int(target_output_kb or 0))
+    act_chunks = 1 if target <= 0 else max(1, min(8, (target + 24) // 25))
+    return [
+        ("opening", "visible_opening"),
+        ("layer-a", "layer_a"),
+        *[(f"act-body-{index}", "act_body") for index in range(1, act_chunks + 1)],
+        ("mrp-reread", "mrp"),
+        ("field-witness", "field_witness"),
+        ("release", "restorative_response"),
+    ]
+
+
+def release_section_prompt(
+    *,
+    root: Path,
+    case_name: str,
+    raw_input_path: Path,
+    input_text: str,
+    input_digest: str,
+    skill_hash: str,
+    previous_stages: list[dict[str, Any]],
+    section_id: str,
+    section_role: str,
+    section_number: int,
+    section_count: int,
+    target_output_kb: int | None,
+) -> str:
+    previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
+    role_guidance = {
+        "visible_opening": (
+            "Write only the visible noetic-field opening/header for the governed answer. "
+            "Do not include Layer B, field_witness, Restorative Response, or Closing Formulation."
+        ),
+        "layer_a": (
+            "Write only the compact Layer A / Diagnostic IR public surface. "
+            "Do not include raw dev harness internals or downstream proof claims."
+        ),
+        "act_body": (
+            "Write only this bounded Layer B / ACT section. Include ACT-readable rows, body_ref tokens, "
+            "local operation/result prose, and Land(...) surfaces consistent with Stage 04. "
+            "Do not include MRP, field_witness, Restorative Response, or Closing Formulation."
+        ),
+        "mrp": (
+            "Write only the MRP/reread/terminal-state section consistent with Stage 05. "
+            "Do not include final verifier sidecars or retained proof claims."
+        ),
+        "field_witness": (
+            "Write only parser-stable field_witness/NAR evidence consistent with Stage 06 plus visible "
+            "Closure/Reconstruction Witness diagnostics for divergence and curl. The visible statuses must "
+            "match field_witness.coverage_proof divergence_check and curl_check."
+        ),
+        "restorative_response": (
+            "Write only the Restorative Response and Closing Formulation. Do not claim guaranteed uptake, "
+            "package/provenance, sidecar proof, retained promotion, broad model behavior, or broad A/B/C/D closure."
+        ),
+    }
+    target_line = ""
+    if target_output_kb:
+        target_line = f"\nOverall compiled output target: about {target_output_kb}KB across {section_count} sections.\n"
+    return f"""Runtime SHA256: {skill_hash}
+
+You are executing one bounded section of stage-07-release-output for a staged
+current-skill smoke. The final public `output.md` will be assembled by repo
+tooling from hash-checked section files; do not try to write the whole answer
+in this one message.
+
+Public interface boundary:
+- Preserve `/daee-epistemics` governed output shape across the assembled file.
+- Do not expose raw dev harness internals as a new public mode.
+- Do not include commentary about this harness, section manifest, or compiler.
+- Do not build or claim verifier sidecars, collapse certificates, Grapher output,
+  B.5 projection sidecars, retained promotion, package/provenance, guaranteed
+  uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
+  ActiveGraph proof.
+
+Case: {case_name}
+Raw input path: {rel(raw_input_path, root)}
+Input SHA256: {input_digest}
+Section: {section_number} of {section_count}
+Section id: {section_id}
+Section role: {section_role}
+{target_line}
+Raw input:
+```text
+{input_text}
+```
+
+Validated compact stage state:
+```json
+{previous}
+```
+
+Section task:
+{role_guidance[section_role]}
+
+Return only the public governed-output text for this section. Do not wrap it in
+JSON or code fences. Do not mention that this is a section unless the normal
+public governed answer itself needs a section heading.
+"""
+
+
+def write_compiled_release_manifest(
+    *,
+    root: Path,
+    manifest_path: Path,
+    case_name: str,
+    raw_input_path: Path,
+    section_entries: list[dict[str, str]],
+    output_path: Path,
+) -> None:
+    manifest_dir = manifest_path.parent
+    write_json(
+        manifest_path,
+        {
+            "schema": staged_output.ASSEMBLY_SCHEMA,
+            "case_id": case_name,
+            "source_input": rel(raw_input_path, root),
+            "sections": [
+                {
+                    "id": entry["id"],
+                    "path": rel(Path(entry["path"]), manifest_dir),
+                    "sha256": entry["sha256"],
+                    "role": entry["role"],
+                }
+                for entry in section_entries
+            ],
+            "output": {"path": rel(output_path, manifest_dir)},
+            "non_claims": {
+                "not_release_provenance": True,
+                "not_model_behavior_by_itself": True,
+                "not_sidecar_proof": True,
+            },
+        },
+    )
+
+
+def split_text_for_compiled_self_test(text: str) -> list[tuple[str, str, str]]:
+    plan = [
+        ("opening", "visible_opening"),
+        ("layer-a", "layer_a"),
+        ("act-body", "act_body"),
+        ("mrp-reread", "mrp"),
+        ("field-witness", "field_witness"),
+        ("release", "restorative_response"),
+    ]
+    lines = text.splitlines(keepends=True)
+    if len(lines) < len(plan):
+        raise HarnessError("Compiled-mode self-test source output is too small to split into required sections")
+    chunk_size = max(1, (len(lines) + len(plan) - 1) // len(plan))
+    sections: list[tuple[str, str, str]] = []
+    cursor = 0
+    for index, (section_id, role) in enumerate(plan):
+        remaining_sections = len(plan) - index
+        remaining_lines = len(lines) - cursor
+        take = max(1, remaining_lines - (remaining_sections - 1)) if remaining_sections == 1 else chunk_size
+        chunk = "".join(lines[cursor : cursor + take])
+        cursor += take
+        sections.append((section_id, role, chunk))
+    if cursor < len(lines):
+        section_id, role, chunk = sections[-1]
+        sections[-1] = (section_id, role, chunk + "".join(lines[cursor:]))
+    return sections
+
+
+def run_compiled_release_self_test(
+    *,
+    root: Path,
+    run_dir: Path,
+    replay_output_path: Path,
+    replay_record: Path,
+    replay: dict[str, Any],
+    stage07_validation: dict[str, str],
+) -> None:
+    compiled_dir = run_dir / "compiled-release-self-test"
+    source_text = replay_output_path.read_text(encoding="utf-8", errors="replace")
+    manifest_path = staged_output.manifest_for_sections(
+        compiled_dir,
+        case_id="self-test-a9-science-source-stage07-compiled",
+        source_input=rel(replay_output_path, root),
+        section_specs=split_text_for_compiled_self_test(source_text),
+    )
+    assembly_record = staged_output.assemble_manifest(manifest_path, root=root)
+    compiled_output_path = root / assembly_record["output"]["path"]
+    compiled_validation = run_release_validators(root, compiled_output_path)
+    compiled_diagnostics = build_release_field_diagnostics(compiled_output_path)
+    if compiled_diagnostics.get("matches") is not True:
+        raise HarnessError("Compiled-mode self-test output did not produce matching release_field_diagnostics")
+
+    stage07_local_record = base_record(
+        "self-test-a9-science-source-stage07-compiled",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-07-release-output",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage07-compiled",
+            replay_record,
+            stop_after_stage="stage-07-release-output",
+        ),
+    )
+    stage07_stage = dict(replay["stages"][6])
+    stage07_stage["release_output"] = {
+        "path": assembly_record["output"]["path"],
+        "sha256": assembly_record["output"]["sha256"],
+    }
+    stage07_stage["release_validation"] = dict(compiled_validation)
+    stage07_stage["release_field_diagnostics"] = dict(compiled_diagnostics)
+    stage07_stage["release_output_mode"] = "compiled-output"
+    stage07_stage["assembly_manifest"] = dict(assembly_record["assembly_manifest"])
+    stage07_stage["assembly_hashes"] = dict(assembly_record["hash_record"])
+    stage07_local_record["stages"] = [*replay["stages"][:6], stage07_stage]
+    compiled_record_path = compiled_dir / "staged-handoff-stage07-compiled-record.json"
+    write_json(compiled_record_path, stage07_local_record)
+    validate_replay_record(root, compiled_record_path)
+    if set(compiled_validation) != set(stage07_validation):
+        raise HarnessError("Compiled-mode self-test validator keys drifted from single-output Stage 07 keys")
+
+
 def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
     codex = shutil.which("codex")
     if codex is None:
@@ -1615,6 +1848,14 @@ def run_self_test(root: Path) -> int:
     stage07_local_path = run_dir / "staged-handoff-stage07-model-scope-record.json"
     write_json(stage07_local_path, stage07_local_record)
     validate_replay_record(root, stage07_local_path)
+    run_compiled_release_self_test(
+        root=root,
+        run_dir=run_dir,
+        replay_output_path=replay_output_path,
+        replay_record=replay_record,
+        replay=replay,
+        stage07_validation=stage07_validation,
+    )
 
     stage07_missing_validation = dict(stage07_local_record)
     stage07_missing_validation["case_id"] = "self-test-stage07-missing-validation"
@@ -1931,6 +2172,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     stages: list[dict[str, Any]] = []
     stage_files: list[Path] = []
     mode = "staged-current-skill-stage-local-smoke" if args.stop_after_stage else "staged-current-skill-smoke"
+    release_output_mode = normalize_release_output_mode(args.release_output_mode)
     record = base_record(
         args.case_name,
         mode,
@@ -1998,26 +2240,84 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 print(f"hashes: {rel(hash_path, root)}")
                 return 0
 
-        release = release_prompt(
-            root=root,
-            case_name=args.case_name,
-            raw_input_path=raw_input,
-            input_text=input_text,
-            input_digest=input_digest,
-            skill_hash=skill_hash,
-            previous_stages=stages,
-        )
-        release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
         output_path = run_dir / "output.md"
-        release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
-        write_text(release_prompt_path, release)
-        exit_code = invoke_codex(root, args.model, release, output_path, release_log_path)
-        stage_files.extend([release_prompt_path, output_path, release_log_path])
-        if exit_code != 0:
-            raise HarnessError(
-                f"stage-07-release-output: codex exec failed with exit code {exit_code}; "
-                f"see {rel(release_log_path, root)}"
+        assembly_record: dict[str, Any] | None = None
+        if release_output_mode == "compiled-output":
+            section_plan = compiled_release_section_plan(args.target_output_kb)
+            sections_dir = run_dir / "release-sections"
+            sections_dir.mkdir(parents=True, exist_ok=True)
+            section_entries: list[dict[str, str]] = []
+            for index, (section_id, section_role) in enumerate(section_plan, start=1):
+                section_prompt = release_section_prompt(
+                    root=root,
+                    case_name=args.case_name,
+                    raw_input_path=raw_input,
+                    input_text=input_text,
+                    input_digest=input_digest,
+                    skill_hash=skill_hash,
+                    previous_stages=stages,
+                    section_id=section_id,
+                    section_role=section_role,
+                    section_number=index,
+                    section_count=len(section_plan),
+                    target_output_kb=args.target_output_kb,
+                )
+                safe_section_id = section_id.replace("_", "-")
+                section_prompt_path = prompts_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.prompt.md"
+                section_output_path = sections_dir / f"{index:02d}-{safe_section_id}.md"
+                section_log_path = responses_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.codex-log.txt"
+                write_text(section_prompt_path, section_prompt)
+                exit_code = invoke_codex(root, args.model, section_prompt, section_output_path, section_log_path)
+                stage_files.extend([section_prompt_path, section_output_path, section_log_path])
+                if exit_code != 0:
+                    raise HarnessError(
+                        f"stage-07-release-output {section_id}: codex exec failed with exit code {exit_code}; "
+                        f"see {rel(section_log_path, root)}"
+                    )
+                if not section_output_path.exists() or section_output_path.stat().st_size == 0:
+                    raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
+                section_entries.append(
+                    {
+                        "id": section_id,
+                        "role": section_role,
+                        "path": str(section_output_path),
+                        "sha256": sha256_file(section_output_path),
+                    }
+                )
+            assembly_manifest_path = run_dir / "stage-07-output-assembly.manifest.json"
+            write_compiled_release_manifest(
+                root=root,
+                manifest_path=assembly_manifest_path,
+                case_name=args.case_name,
+                raw_input_path=raw_input,
+                section_entries=section_entries,
+                output_path=output_path,
             )
+            stage_files.append(assembly_manifest_path)
+            assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)
+            assembly_hash_path = output_path.with_suffix(output_path.suffix + ".assembly.hashes.json")
+            if assembly_hash_path.exists():
+                stage_files.append(assembly_hash_path)
+        else:
+            release = release_prompt(
+                root=root,
+                case_name=args.case_name,
+                raw_input_path=raw_input,
+                input_text=input_text,
+                input_digest=input_digest,
+                skill_hash=skill_hash,
+                previous_stages=stages,
+            )
+            release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
+            release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
+            write_text(release_prompt_path, release)
+            exit_code = invoke_codex(root, args.model, release, output_path, release_log_path)
+            stage_files.extend([release_prompt_path, output_path, release_log_path])
+            if exit_code != 0:
+                raise HarnessError(
+                    f"stage-07-release-output: codex exec failed with exit code {exit_code}; "
+                    f"see {rel(release_log_path, root)}"
+                )
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
         release_validation = run_release_validators(root, output_path)
@@ -2034,7 +2334,12 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             "output_is_full_governed_answer": True,
             "release_validation": release_validation,
             "release_field_diagnostics": release_field_diagnostics,
+            "release_output_mode": release_output_mode,
         }
+        if assembly_record is not None:
+            stage07["assembly_manifest"] = dict(assembly_record["assembly_manifest"])
+            stage07["assembly_hashes"] = dict(assembly_record["hash_record"])
+            stage07["target_output_kb"] = int(args.target_output_kb or 0)
         stages.append(stage07)
         if args.stop_after_stage == "stage-07-release-output":
             record["stages"] = stages
@@ -2158,6 +2463,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-dir", type=Path, default=None)
     parser.add_argument("--model", default="gpt-5.5")
     parser.add_argument("--stop-after-stage", choices=STAGE_ORDER[:7], default=None)
+    parser.add_argument("--release-output-mode", choices=sorted(RELEASE_OUTPUT_MODE_ALIASES), default="single-output")
+    parser.add_argument("--target-output-kb", type=int, default=0)
     return parser.parse_args()
 
 
