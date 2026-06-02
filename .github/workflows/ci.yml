@@ -44,6 +44,7 @@ jobs:
           python tools/check_owner_activation_ordering.py --require-plan --outputs tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/*/output.md
           python tools/check_reconstructibility_and_mrp.py
           python tools/check_nla_decode_semantic_faithfulness.py
+          python tools/check_staged_runtime_handshake.py
           python tools/check_tlang_response_closure.py --outputs tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/*/output.md
           python tools/check_manual_smoke_render_contract.py
           python tools/check_collapse_certificate_schema.py
