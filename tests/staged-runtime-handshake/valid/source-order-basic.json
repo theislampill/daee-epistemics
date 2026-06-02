@@ -102,10 +102,8 @@
       "requires": ["release_output"],
       "verifier_sidecars": {
         "b5_4_1": {
-          "claimed": true,
-          "builder": "tools/build_b5_full_ir_projection_sidecar.py",
-          "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
-          "role": "checker-owned-final-verifier",
+          "claimed": false,
+          "role": "synthetic-contract-placeholder",
           "non_claims": {
             "not_fresh_runtime_default_emission": true
           }

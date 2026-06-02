@@ -16,6 +16,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import check_nla_decode_semantic_faithfulness as nla_decode
+import check_retained_proof_corpus as retained
+
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -28,6 +31,8 @@ FIXTURE_ROOT = ROOT / "tests" / "staged-runtime-handshake"
 SCHEMA = "staged-runtime-handshake-v1"
 B5_SIDECAR_SCHEMA = "b5-retained-proof-mode-full-ir-sidecar-v1"
 B5_SIDECAR_BUILDER = "tools/build_b5_full_ir_projection_sidecar.py"
+RETAINED_BINDING_SCHEMA = "staged-runtime-retained-artifact-bindings-v1"
+B5_RETAINED_SIDECAR_FIELD = "b5_full_ir_projection_sidecar"
 STAGE_ORDER = [
     "stage-01-intake",
     "stage-02-layer-a-diagnostic-ir",
@@ -240,6 +245,20 @@ def relative_path_errors(path: Path, value: str, label: str) -> list[str]:
     return []
 
 
+def resolve_record_relative_path(record_path: Path, value: Any, label: str) -> tuple[Path | None, list[str]]:
+    if not isinstance(value, str):
+        return None, [f"{rel(record_path)}: {label} path must be a string"]
+    errors = relative_path_errors(record_path, value, label)
+    if errors:
+        return None, errors
+    resolved = (ROOT / value.replace("\\", "/")).resolve()
+    try:
+        resolved.relative_to(ROOT)
+    except ValueError:
+        return None, [f"{rel(record_path)}: {label} path must resolve inside the repo root"]
+    return resolved, []
+
+
 def path_reference_errors(path: Path, value: Any, trail: str = "") -> list[str]:
     errors: list[str] = []
     if isinstance(value, dict):
@@ -329,6 +348,253 @@ def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
     return errors
 
 
+def b5_claim(stage08: dict[str, Any]) -> dict[str, Any] | None:
+    verifier_sidecars = stage08.get("verifier_sidecars")
+    if not isinstance(verifier_sidecars, dict):
+        return None
+    b5 = verifier_sidecars.get("b5_4_1")
+    return b5 if isinstance(b5, dict) and b5.get("claimed") is True else None
+
+
+def manifest_case_by_id(manifest: dict[str, Any], case_id: str) -> dict[str, Any] | None:
+    cases = manifest.get("cases")
+    if not isinstance(cases, list):
+        return None
+    for case in cases:
+        if isinstance(case, dict) and case.get("id") == case_id:
+            return case
+    return None
+
+
+def expected_manifest_artifact_path(
+    manifest_path: Path,
+    case: dict[str, Any],
+    field: str,
+) -> tuple[Path | None, list[str]]:
+    value: Any
+    if field == B5_RETAINED_SIDECAR_FIELD:
+        sidecar = case.get(B5_RETAINED_SIDECAR_FIELD)
+        if not isinstance(sidecar, dict):
+            return None, [f"{field}: retained case lacks B.5 full-IR sidecar metadata"]
+        value = sidecar.get("path")
+    else:
+        value = case.get(field)
+    resolved, error = retained.resolve_manifest_path(manifest_path, value)
+    if error:
+        return None, [f"{field}: {error}"]
+    assert resolved is not None
+    return resolved, []
+
+
+def binding_artifact_errors(
+    record_path: Path,
+    bindings: dict[str, Any],
+    manifest_path: Path,
+    case: dict[str, Any],
+    field: str,
+    *,
+    required: bool = True,
+) -> tuple[Path | None, list[str]]:
+    label = f"artifact_bindings.artifacts.{field}"
+    artifacts = bindings.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return None, [f"{rel(record_path)}: artifact_bindings.artifacts must be an object"]
+    entry = artifacts.get(field)
+    if entry is None and not required:
+        return None, []
+    if not isinstance(entry, dict):
+        return None, [f"{rel(record_path)}: {label} must be an object"]
+    errors: list[str] = []
+    missing = sorted({"path", "sha256"} - set(entry))
+    if missing:
+        errors.append(f"{rel(record_path)}: {label} missing field(s): {missing}")
+    if "schema" in entry and field != B5_RETAINED_SIDECAR_FIELD:
+        errors.append(f"{rel(record_path)}: {label}.schema is only valid for retained sidecar artifacts")
+    if "builder" in entry and field != B5_RETAINED_SIDECAR_FIELD:
+        errors.append(f"{rel(record_path)}: {label}.builder is only valid for retained sidecar artifacts")
+
+    actual_path, found = resolve_record_relative_path(record_path, entry.get("path"), label)
+    errors.extend(found)
+    expected_path, expected_found = expected_manifest_artifact_path(manifest_path, case, field)
+    errors.extend(f"{rel(record_path)}: retained manifest case {error}" for error in expected_found)
+    if actual_path is not None and expected_path is not None and actual_path.resolve() != expected_path.resolve():
+        errors.append(
+            f"{rel(record_path)}: {label}.path must match retained manifest path {rel(expected_path)!r}"
+        )
+    if actual_path is not None and not actual_path.exists():
+        errors.append(f"{rel(record_path)}: {label}.path {rel(actual_path)} missing")
+
+    expected_hash = entry.get("sha256")
+    if not isinstance(expected_hash, str) or not SHA256_RE.fullmatch(expected_hash):
+        errors.append(f"{rel(record_path)}: {label}.sha256 must be a SHA256 hex digest")
+    elif actual_path is not None and actual_path.exists():
+        actual_hash = retained.sha256_file(actual_path)
+        if expected_hash.upper() != actual_hash:
+            errors.append(f"{rel(record_path)}: {label}.sha256 expected {expected_hash.upper()} but found {actual_hash}")
+
+    if field == B5_RETAINED_SIDECAR_FIELD:
+        sidecar = case.get(B5_RETAINED_SIDECAR_FIELD)
+        if not isinstance(sidecar, dict):
+            errors.append(f"{rel(record_path)}: {label} cannot be bound because retained case has no sidecar")
+        else:
+            if entry.get("schema") != B5_SIDECAR_SCHEMA:
+                errors.append(f"{rel(record_path)}: {label}.schema must be {B5_SIDECAR_SCHEMA!r}")
+            if entry.get("builder") != B5_SIDECAR_BUILDER:
+                errors.append(f"{rel(record_path)}: {label}.builder must be {B5_SIDECAR_BUILDER!r}")
+            manifest_hash = sidecar.get("sha256")
+            if isinstance(manifest_hash, str) and isinstance(expected_hash, str) and manifest_hash.upper() != expected_hash.upper():
+                errors.append(f"{rel(record_path)}: {label}.sha256 must match retained sidecar manifest hash")
+    else:
+        manifest_hashes = case.get("hashes")
+        manifest_hash = manifest_hashes.get(field) if isinstance(manifest_hashes, dict) else None
+        if isinstance(manifest_hash, str) and isinstance(expected_hash, str) and manifest_hash.upper() != expected_hash.upper():
+            errors.append(f"{rel(record_path)}: {label}.sha256 must match retained manifest hash")
+
+    return actual_path, errors
+
+
+def parsed_evidence_errors(
+    record_path: Path,
+    bindings: dict[str, Any],
+    output_path: Path,
+    stages: dict[str, dict[str, Any]],
+    *,
+    sidecar_required: bool,
+) -> list[str]:
+    label = f"{rel(record_path)}: artifact_bindings.parsed_evidence"
+    errors: list[str] = []
+    text = output_path.read_text(encoding="utf-8", errors="replace")
+    field_witness, found = nla_decode.parse_field_witness(output_path, text)
+    errors.extend(f"{rel(record_path)}: retained output: {error}" for error in found)
+    records, parse_errors = nla_decode.parse_act_records(nla_decode.public_execution_text(text))
+    errors.extend(f"{rel(record_path)}: retained output {rel(output_path)}: {error}" for error in parse_errors)
+    if not records:
+        errors.append(f"{rel(record_path)}: retained output must expose at least one parseable ACT row")
+
+    parsed = bindings.get("parsed_evidence")
+    if parsed is not None and not isinstance(parsed, dict):
+        errors.append(f"{label} must be an object when present")
+        parsed = {}
+    if isinstance(parsed, dict):
+        if parsed.get("field_witness") is not True:
+            errors.append(f"{label}.field_witness must be true")
+        visible_count = parsed.get("visible_act_records")
+        if not isinstance(visible_count, int) or visible_count != len(records):
+            errors.append(f"{label}.visible_act_records must equal parsed ACT count {len(records)}")
+        if parsed.get("normalized_activation_record") is not True:
+            errors.append(f"{label}.normalized_activation_record must be true")
+        if sidecar_required and parsed.get("b5_full_ir_projection_sidecar") is not True:
+            errors.append(f"{label}.b5_full_ir_projection_sidecar must be true for B.5.4.1 retained binding")
+
+    stage04 = stages.get("stage-04-burden-execution-act", {})
+    stage06 = stages.get("stage-06-field-witness-nar", {})
+    stage04_refs = set(list_field(stage04, "act_body_refs"))
+    parsed_refs = {record.body_ref for record in records if record.body_ref}
+    if stage04_refs and stage04_refs != parsed_refs:
+        errors.append(
+            f"{rel(record_path)}: stage-04 act_body_refs must match retained output ACT body_refs {sorted(parsed_refs)}"
+        )
+
+    if field_witness is None:
+        return errors
+    normalized = field_witness.get("normalized_activation_record")
+    if not isinstance(normalized, dict):
+        errors.append(f"{rel(record_path)}: retained output field_witness.normalized_activation_record is required")
+        return errors
+    nar_rows = normalized.get("per_burden")
+    if not isinstance(nar_rows, list) or not nar_rows:
+        errors.append(f"{rel(record_path)}: retained output NAR per_burden rows are required")
+    else:
+        nar_burdens = {
+            nla_decode.graph_burden_id(row.get("burden_id"))
+            for row in nar_rows
+            if isinstance(row, dict)
+        }
+        stage06_burdens = set(list_field(stage06, "nar_burdens"))
+        if stage06_burdens and stage06_burdens != nar_burdens:
+            errors.append(
+                f"{rel(record_path)}: stage-06 nar_burdens must match retained output NAR burdens {sorted(nar_burdens)}"
+            )
+    return errors
+
+
+def artifact_binding_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[str, Any]]) -> list[str]:
+    stage08 = stages.get("stage-08-verifier-sidecars", {})
+    claimed_b5 = b5_claim(stage08)
+    bindings = record.get("artifact_bindings")
+    if bindings is None:
+        if claimed_b5 is not None:
+            return [f"{rel(path)}: B.5.4.1 sidecar claim requires retained artifact_bindings"]
+        return []
+    if not isinstance(bindings, dict):
+        return [f"{rel(path)}: artifact_bindings must be an object"]
+
+    errors: list[str] = []
+    if bindings.get("schema") != RETAINED_BINDING_SCHEMA:
+        errors.append(f"{rel(path)}: artifact_bindings.schema must be {RETAINED_BINDING_SCHEMA!r}")
+    manifest_path, found = resolve_record_relative_path(path, bindings.get("retained_manifest"), "artifact_bindings.retained_manifest")
+    errors.extend(found)
+    case_id = bindings.get("case_id")
+    if not isinstance(case_id, str) or not case_id:
+        errors.append(f"{rel(path)}: artifact_bindings.case_id must be a non-empty string")
+    elif record.get("case_id") != case_id:
+        errors.append(f"{rel(path)}: artifact_bindings.case_id must match record case_id")
+
+    manifest: Any | None = None
+    case: dict[str, Any] | None = None
+    if manifest_path is not None:
+        if not manifest_path.exists():
+            errors.append(f"{rel(path)}: artifact_bindings.retained_manifest {rel(manifest_path)} missing")
+        else:
+            manifest, found = retained.load_json(manifest_path)
+            errors.extend(f"{rel(path)}: retained manifest: {error}" for error in found)
+            if isinstance(manifest, dict):
+                retained_found = retained.manifest_errors(manifest_path)
+                errors.extend(f"{rel(path)}: retained manifest: {error}" for error in retained_found)
+                if isinstance(case_id, str):
+                    case = manifest_case_by_id(manifest, case_id)
+                    if case is None:
+                        errors.append(f"{rel(path)}: artifact_bindings.case_id {case_id!r} not found in retained manifest")
+            else:
+                errors.append(f"{rel(path)}: artifact_bindings.retained_manifest must be a manifest object")
+
+    if case is None or manifest_path is None:
+        return errors
+
+    artifact_paths: dict[str, Path] = {}
+    for field in retained.ARTIFACT_FIELDS:
+        artifact_path, found = binding_artifact_errors(path, bindings, manifest_path, case, field)
+        errors.extend(found)
+        if artifact_path is not None:
+            artifact_paths[field] = artifact_path
+
+    sidecar_required = claimed_b5 is not None
+    sidecar_path, found = binding_artifact_errors(
+        path,
+        bindings,
+        manifest_path,
+        case,
+        B5_RETAINED_SIDECAR_FIELD,
+        required=sidecar_required,
+    )
+    errors.extend(found)
+    if claimed_b5 is not None and sidecar_path is None:
+        errors.append(f"{rel(path)}: B.5.4.1 sidecar claim requires retained B.5 full-IR projection sidecar binding")
+
+    output_path = artifact_paths.get("output")
+    if output_path is not None and output_path.exists():
+        errors.extend(
+            parsed_evidence_errors(
+                path,
+                bindings,
+                output_path,
+                stages,
+                sidecar_required=sidecar_required,
+            )
+        )
+    return errors
+
+
 def record_errors(path: Path, record: Any) -> list[str]:
     if not isinstance(record, dict):
         return [f"{rel(path)}: record root must be a JSON object"]
@@ -345,6 +611,7 @@ def record_errors(path: Path, record: Any) -> list[str]:
     errors.extend(non_claim_errors(path, record))
     errors.extend(sha_errors(path, record))
     errors.extend(path_reference_errors(path, record))
+    errors.extend(artifact_binding_errors(path, record, stages))
     if not errors:
         errors.extend(semantic_errors(path, stages))
     else:
