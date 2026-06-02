@@ -54,7 +54,20 @@
       "act_targets": ["B1"],
       "act_burdens": ["B1"],
       "act_body_refs": ["B1_1"],
-      "act_rows": ["ACT B1_1 source-status-repair/source-order -> Land(B1)"]
+      "act_rows": [
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+      ],
+      "act_row_details": [
+        {
+          "burden_id": "B1",
+          "body_ref": "B1_1",
+          "owner_id": "source-status-repair",
+          "operation": "source-order",
+          "pressure": "scientific-explanations-only-knowledge-source",
+          "delta_result": "source-order-landed",
+          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+        }
+      ]
     },
     {
       "id": "stage-05-mrp-reread-terminal-state",

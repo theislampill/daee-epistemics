@@ -94,6 +94,8 @@ MODEL_SCOPE_TYPES = {"focused-current-skill-smoke", "focused-current-skill-stage
 PASS_STATUS = {"pass", "held", "partial"}
 HELD_TERMINAL_STATES = {"hold_partial", "held", "held-with-reason", "partial", "carried-PARTIAL"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
 
 
 def rel(path: Path) -> str:
@@ -371,6 +373,143 @@ def list_field(stage: dict[str, Any], key: str) -> list[str]:
     return []
 
 
+def owner_routes_by_burden(stage03: dict[str, Any] | None) -> dict[str, set[str]]:
+    if not isinstance(stage03, dict):
+        return {}
+    routes = stage03.get("owner_routes")
+    if not isinstance(routes, list):
+        return {}
+    result: dict[str, set[str]] = {}
+    for route in routes:
+        if not isinstance(route, dict):
+            continue
+        burden_id = route.get("burden_id")
+        owner_id = route.get("owner_id")
+        if isinstance(burden_id, str) and burden_id and isinstance(owner_id, str) and owner_id:
+            result.setdefault(burden_id, set()).add(owner_id)
+    return result
+
+
+def act_body_ref(row: str) -> str | None:
+    match = ACT_BODY_REF_RE.search(row)
+    return match.group(1) if match else None
+
+
+def act_owner(row: str) -> str | None:
+    match = ACT_OWNER_RE.match(row.strip())
+    return match.group(1) if match else None
+
+
+def stage04_act_errors(
+    label: str,
+    stage03: dict[str, Any] | None,
+    stage04: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    raw_targets = stage04.get("act_targets")
+    raw_burdens = stage04.get("act_burdens")
+    raw_body_refs = stage04.get("act_body_refs")
+    raw_rows = stage04.get("act_rows")
+
+    act_targets = as_string_list(raw_targets)
+    act_burdens = as_string_list(raw_burdens)
+    act_body_refs = as_string_list(raw_body_refs)
+    act_rows = as_string_list(raw_rows)
+    if act_targets is None or not act_targets:
+        errors.append(f"{label}: stage-04 act_targets must be a non-empty string list")
+        act_targets = []
+    if act_burdens is None or not act_burdens:
+        errors.append(f"{label}: stage-04 act_burdens must be a non-empty string list")
+        act_burdens = []
+    if act_body_refs is None or not act_body_refs:
+        errors.append(f"{label}: stage-04 act_body_refs must be a non-empty string list")
+        act_body_refs = []
+    if act_rows is None or not act_rows:
+        errors.append(f"{label}: stage-04 act_rows must be a non-empty string list")
+        act_rows = []
+
+    missing_burdens = sorted(set(act_targets) - set(act_burdens))
+    if missing_burdens:
+        errors.append(f"{label}: stage-04 act_burdens missing act target(s): {missing_burdens}")
+    duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
+    if duplicate_refs:
+        errors.append(f"{label}: stage-04 act_body_refs must not contain duplicates: {duplicate_refs}")
+
+    row_refs: set[str] = set()
+    row_owners: set[str] = set()
+    for index, row in enumerate(act_rows):
+        row_label = f"{label}: stage-04 act_rows[{index}]"
+        stripped = row.strip()
+        if not stripped.startswith("⟦ACT"):
+            errors.append(f"{row_label} must start with canonical '⟦ACT'")
+        if "body_ref=" not in stripped:
+            errors.append(f"{row_label} must contain body_ref=")
+        if "Δ=" not in stripped:
+            errors.append(f"{row_label} must contain Δ=")
+        if "Land(" not in stripped:
+            errors.append(f"{row_label} must contain Land(")
+        if not stripped.endswith("⟧"):
+            errors.append(f"{row_label} must close with '⟧'")
+        ref = act_body_ref(stripped)
+        if ref is None:
+            errors.append(f"{row_label} must expose a parseable body_ref token")
+        else:
+            row_refs.add(ref)
+            if ref not in act_body_refs:
+                errors.append(f"{row_label} body_ref {ref!r} must appear in stage-04 act_body_refs")
+        owner = act_owner(stripped)
+        if owner:
+            row_owners.add(owner)
+
+    missing_row_refs = sorted(set(act_body_refs) - row_refs)
+    if act_body_refs and missing_row_refs:
+        errors.append(f"{label}: stage-04 act_body_refs missing from ACT rows: {missing_row_refs}")
+
+    owners_by_burden = owner_routes_by_burden(stage03)
+    eligible_owners = {owner for owners in owners_by_burden.values() for owner in owners}
+    unsupported_owners = sorted(row_owners - eligible_owners) if eligible_owners else []
+    if unsupported_owners:
+        errors.append(f"{label}: stage-04 ACT row owner(s) not backed by stage-03 owner_routes: {unsupported_owners}")
+
+    details = stage04.get("act_row_details")
+    if details is not None:
+        if not isinstance(details, list):
+            errors.append(f"{label}: stage-04 act_row_details must be a list when present")
+        else:
+            for index, detail in enumerate(details):
+                detail_label = f"{label}: stage-04 act_row_details[{index}]"
+                if not isinstance(detail, dict):
+                    errors.append(f"{detail_label} must be an object")
+                    continue
+                burden_id = detail.get("burden_id")
+                if not isinstance(burden_id, str) or not burden_id:
+                    errors.append(f"{detail_label}.burden_id must be a string")
+                elif burden_id not in set(act_targets) | set(act_burdens):
+                    errors.append(f"{detail_label}.burden_id must appear in act_targets or act_burdens")
+                body_ref = detail.get("body_ref")
+                if not isinstance(body_ref, str) or not body_ref:
+                    errors.append(f"{detail_label}.body_ref must be a string")
+                elif body_ref not in act_body_refs:
+                    errors.append(f"{detail_label}.body_ref must appear in act_body_refs")
+                owner_id = detail.get("owner_id")
+                if owner_id is not None:
+                    if not isinstance(owner_id, str) or not owner_id:
+                        errors.append(f"{detail_label}.owner_id must be a string when present")
+                    elif (
+                        isinstance(burden_id, str)
+                        and owners_by_burden.get(burden_id)
+                        and owner_id not in owners_by_burden[burden_id]
+                    ):
+                        errors.append(f"{detail_label}.owner_id must be backed by stage-03 owner_routes for {burden_id}")
+                act_row_value = detail.get("act_row")
+                if act_row_value is not None:
+                    if not isinstance(act_row_value, str) or not act_row_value:
+                        errors.append(f"{detail_label}.act_row must be a string when present")
+                    elif act_row_value not in act_rows:
+                        errors.append(f"{detail_label}.act_row must appear in act_rows")
+    return errors
+
+
 def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
     label = rel(path)
     errors: list[str] = []
@@ -416,6 +555,8 @@ def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
         errors.append(f"{label}: stage-03 route_targets is required")
     if stage02 is not None and stage03 is not None and route_targets != burden_floor:
         errors.append(f"{label}: stage-03 route_targets must match stage-02 burden_floor")
+    if stage04 is not None:
+        errors.extend(stage04_act_errors(label, stage03, stage04))
     if stage03 is not None and stage04 is not None and act_targets != route_targets:
         errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
     if stage04 is not None and stage06 is not None and act_body_refs != field_witness_body_refs:

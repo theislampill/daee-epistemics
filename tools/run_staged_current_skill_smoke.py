@@ -55,6 +55,8 @@ STAGE_ORDER = [
     "stage-08-verifier-sidecars",
 ]
 
+ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
         "title": "Intake boundary",
@@ -91,8 +93,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "produces": ["act_targets", "act_body_refs", "act_rows"],
         "requires": ["route_targets", "owner_routes"],
         "instructions": (
-            "Produce Layer B body refs and canonical/checker-normalizable ACT rows for the "
-            "routed burdens."
+            "Produce canonical ACT handoff evidence for the routed burdens. "
+            "`act_targets`, `act_burdens`, `act_body_refs`, and `act_rows` must be JSON "
+            "arrays of strings. Every ACT row must be an exact canonical row beginning "
+            "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
+            "`⟧`. If richer per-row metadata is useful, put it in optional "
+            "`act_row_details`; do not put objects in `act_rows` unless each object "
+            "also carries an explicit string `act_row` for harness normalization."
         ),
     },
     "stage-05-mrp-reread-terminal-state": {
@@ -323,6 +330,8 @@ def normalized_stage(stage_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         stage["requires"] = spec["requires"]
     if stage_id == "stage-03-routing-owner-gate":
         normalize_stage03_route_targets(stage)
+    if stage_id == "stage-04-burden-execution-act":
+        normalize_stage04_act_fields(stage)
     return stage
 
 
@@ -361,6 +370,66 @@ def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
         stage["normalization"] = normalization
         return
     raise HarnessError("stage-03 route_targets must be a non-empty list of burden-id strings")
+
+
+def extract_stage04_body_ref(act_row: str) -> str | None:
+    match = ACT_BODY_REF_RE.search(act_row)
+    return match.group(1) if match else None
+
+
+def normalize_string_list(stage: dict[str, Any], key: str, *, required: bool) -> list[str]:
+    value = stage.get(key)
+    if value is None and not required:
+        return []
+    if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
+        raise HarnessError(f"stage-04 {key} must be a string list")
+    normalized = ordered_unique(list(value))
+    stage[key] = normalized
+    return normalized
+
+
+def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
+    normalize_string_list(stage, "act_targets", required=True)
+    normalize_string_list(stage, "act_burdens", required=True)
+    raw_rows = stage.get("act_rows")
+    normalization = stage.get("normalization")
+    if not isinstance(normalization, dict):
+        normalization = {}
+
+    if isinstance(raw_rows, list) and raw_rows and all(isinstance(item, str) and item for item in raw_rows):
+        act_rows = ordered_unique(list(raw_rows))
+        stage["act_rows"] = act_rows
+    elif isinstance(raw_rows, list) and raw_rows and all(isinstance(item, dict) for item in raw_rows):
+        details = list(raw_rows)
+        act_rows = []
+        for index, detail in enumerate(details):
+            act_row = detail.get("act_row")
+            if not isinstance(act_row, str) or not act_row.strip():
+                raise HarnessError(
+                    f"stage-04 act_rows[{index}] object cannot be normalized without a string act_row"
+                )
+            act_rows.append(act_row)
+        stage["act_row_details"] = details
+        stage["act_rows"] = ordered_unique(act_rows)
+        normalization["act_rows_from_details"] = True
+        normalization["canonical_act_rows"] = list(stage["act_rows"])
+    else:
+        raise HarnessError("stage-04 act_rows must be a non-empty list of ACT row strings")
+
+    explicit_body_refs = stage.get("act_body_refs")
+    if explicit_body_refs is None or explicit_body_refs == []:
+        extracted = ordered_unique(
+            [ref for ref in (extract_stage04_body_ref(row) for row in stage["act_rows"]) if ref]
+        )
+        if not extracted:
+            raise HarnessError("stage-04 act_body_refs missing and no body_ref tokens were extractable from ACT rows")
+        stage["act_body_refs"] = extracted
+        normalization["act_body_refs_from_act_rows"] = True
+    else:
+        normalize_string_list(stage, "act_body_refs", required=True)
+
+    if normalization:
+        stage["normalization"] = normalization
 
 
 def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
@@ -697,6 +766,51 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize rich Stage 03 route_targets into burden-id list")
     if not isinstance(normalized.get("route_target_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 03 route metadata")
+
+    canonical_act_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=scientific-explanations-only-knowledge-source :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+    )
+    normalized_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [
+                {
+                    "burden_id": "B1",
+                    "body_ref": "¹B₁",
+                    "owner_id": "source-status-repair",
+                    "operation": "source-order",
+                    "act_row": canonical_act_row,
+                }
+            ],
+        },
+    )
+    if normalized_stage04.get("act_rows") != [canonical_act_row]:
+        raise HarnessError("Self-test failed to normalize Stage 04 object-shaped act_rows into strings")
+    if normalized_stage04.get("act_body_refs") != ["¹B₁"]:
+        raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
+    if not isinstance(normalized_stage04.get("act_row_details"), list):
+        raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [{"burden_id": "B1", "body_ref": "¹B₁"}],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 04 object-shaped act_rows without act_row")
     stage_local_record = base_record(
         "self-test-a9-science-source-stage03",
         "staged-current-skill-stage-local-smoke",
@@ -712,6 +826,22 @@ def run_self_test(root: Path) -> int:
     stage_local_path = run_dir / "staged-handoff-stage03-model-scope-record.json"
     write_json(stage_local_path, stage_local_record)
     validate_replay_record(root, stage_local_path)
+
+    stage04_local_record = base_record(
+        "self-test-a9-science-source-stage04",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-04-burden-execution-act",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage04",
+            replay_record,
+            stop_after_stage="stage-04-burden-execution-act",
+        ),
+    )
+    stage04_local_record["stages"] = [*replay["stages"][:3], normalized_stage04]
+    stage04_local_path = run_dir / "staged-handoff-stage04-model-scope-record.json"
+    write_json(stage04_local_path, stage04_local_record)
+    validate_replay_record(root, stage04_local_path)
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
