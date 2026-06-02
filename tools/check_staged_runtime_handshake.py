@@ -592,8 +592,30 @@ def nar_object_errors(
         return [f"{label}: stage-06 normalized activation record details must be an object"]
     errors: list[str] = []
     n_frame = nar.get("n_frame")
+    canonical_n_frame = ""
     if not isinstance(n_frame, str) or not n_frame.strip():
         errors.append(f"{label}: stage-06 NAR n_frame must be a non-empty string")
+    else:
+        canonical_n_frame = n_frame.strip()
+    n_frame_details = nar.get("n_frame_details")
+    if n_frame_details is not None:
+        if not isinstance(n_frame_details, dict):
+            errors.append(f"{label}: stage-06 NAR n_frame_details must be an object when present")
+        else:
+            detail_selected = n_frame_details.get("selected")
+            if detail_selected is not None:
+                if not isinstance(detail_selected, str) or not detail_selected.strip():
+                    errors.append(f"{label}: stage-06 NAR n_frame_details.selected must be a non-empty string when present")
+                elif canonical_n_frame and detail_selected.strip() != canonical_n_frame:
+                    errors.append(f"{label}: stage-06 NAR n_frame_details.selected must match canonical n_frame")
+            detail_held = n_frame_details.get("held")
+            if detail_held is not None and (
+                not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held)
+            ):
+                errors.append(f"{label}: stage-06 NAR n_frame_details.held must be a string list when present")
+    normalization = nar.get("normalization")
+    if normalization is not None and not isinstance(normalization, dict):
+        errors.append(f"{label}: stage-06 NAR normalization must be an object when present")
     live_registers = as_string_list(nar.get("live_registers"))
     if live_registers is None:
         errors.append(f"{label}: stage-06 NAR live_registers must be a string list")

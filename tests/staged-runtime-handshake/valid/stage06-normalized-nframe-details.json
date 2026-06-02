@@ -1,0 +1,299 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage06-normalized-nframe-details",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": [
+        "input_digest",
+        "retained_input"
+      ],
+      "requires": [],
+      "input_digest": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+      "retained_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "source_boundary_preserved": true
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": [
+        "burden_floor",
+        "selected_n_frame",
+        "live_registers"
+      ],
+      "requires": [
+        "input_digest"
+      ],
+      "burden_floor": [
+        "B1"
+      ],
+      "selected_n_frame": "science-only-source-order-warrant",
+      "live_registers": [
+        "xi",
+        "kappa"
+      ],
+      "unresolved_state": "none"
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "requires": [
+        "burden_floor"
+      ],
+      "route_targets": [
+        "B1"
+      ],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "eligibility": "retained-field-witness-owner-activation"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "M1",
+          "eligibility": "retained-field-witness-owner-activation"
+        }
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": [
+        "act_targets",
+        "act_body_refs",
+        "act_rows"
+      ],
+      "requires": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "act_targets": [
+        "B1"
+      ],
+      "act_burdens": [
+        "B1"
+      ],
+      "act_body_refs": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "act_rows": [
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧"
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": [
+        "terminal_states",
+        "dependency_graph_edges",
+        "no_new_resultant_proof"
+      ],
+      "requires": [
+        "act_rows"
+      ],
+      "terminal_states": {
+        "B1": "landed"
+      },
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": true
+    },
+    {
+      "id": "stage-06-field-witness-nar",
+      "status": "pass",
+      "produces": [
+        "field_witness_body_refs",
+        "nar_burdens",
+        "normalized_activation_record"
+      ],
+      "requires": [
+        "terminal_states",
+        "act_body_refs"
+      ],
+      "field_witness_body_refs": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "nar_burdens": [
+        "B1"
+      ],
+      "owner_activations": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "owner_activation_details": [
+        {
+          "body_ref": "¹B₁",
+          "burden_id": "B1",
+          "terminal_state": "landed",
+          "owner_id": "source-status-repair",
+          "operation": "source-order"
+        },
+        {
+          "body_ref": "¹B₂",
+          "burden_id": "B1",
+          "terminal_state": "landed",
+          "owner_id": "M1",
+          "operation": "self-grounding-test"
+        }
+      ],
+      "normalized_activation_record": {
+        "n_frame": "science-only-source-order-warrant",
+        "live_registers": [
+          "xi",
+          "kappa"
+        ],
+        "burden_floor": [
+          "B1"
+        ],
+        "per_burden": [
+          {
+            "burden_id": "B1",
+            "owner_id": "source-status-repair",
+            "operation": "source-order",
+            "delta_result": "science-source-bounded",
+            "mrp_route_result_type": "no_new_resultant",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          },
+          {
+            "burden_id": "B1",
+            "owner_id": "M1",
+            "operation": "self-grounding-test",
+            "delta_result": "self-authorizing-standard-invalidated",
+            "mrp_route_result_type": "no_new_resultant",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          }
+        ],
+        "n_frame_details": {
+          "selected": "science-only-source-order-warrant",
+          "held": [
+            "revelation-private-preference-frame"
+          ]
+        },
+        "normalization": {
+          "n_frame_from_selected_detail": true,
+          "canonical_n_frame": "science-only-source-order-warrant"
+        }
+      },
+      "normalized_activation_record_details": {
+        "n_frame": "science-only-source-order-warrant",
+        "live_registers": [
+          "xi",
+          "kappa"
+        ],
+        "burden_floor": [
+          "B1"
+        ],
+        "per_burden": [
+          {
+            "burden_id": "B1",
+            "owner_id": "source-status-repair",
+            "operation": "source-order",
+            "delta_result": "science-source-bounded",
+            "mrp_route_result_type": "no_new_resultant",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          },
+          {
+            "burden_id": "B1",
+            "owner_id": "M1",
+            "operation": "self-grounding-test",
+            "delta_result": "self-authorizing-standard-invalidated",
+            "mrp_route_result_type": "no_new_resultant",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          }
+        ]
+      },
+      "register_deltas": {}
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": [
+        "input_boundary_preserved"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-02-layer-a-diagnostic-ir",
+      "to": "stage-03-routing-owner-gate",
+      "checks": [
+        "burden_floor_to_route_targets",
+        "live_registers_present",
+        "n_frame_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-03-routing-owner-gate",
+      "to": "stage-04-burden-execution-act",
+      "checks": [
+        "owner_eligibility_backed",
+        "route_targets_to_act_targets"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-04-burden-execution-act",
+      "to": "stage-05-mrp-reread-terminal-state",
+      "checks": [
+        "act_body_refs_present",
+        "act_rows_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-05-mrp-reread-terminal-state",
+      "to": "stage-06-field-witness-nar",
+      "checks": [
+        "dependency_graph_explicit",
+        "terminal_states_to_field_witness"
+      ],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  },
+  "stage_scope": {
+    "stop_after_stage": "stage-06-field-witness-nar",
+    "stage_count": 6,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "stage06-normalized-nframe-details",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  }
+}

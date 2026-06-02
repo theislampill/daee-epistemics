@@ -163,6 +163,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Stage 06, do not use only `normalized_activation_record: true`; provide a "
             "structured `normalized_activation_record` object or `normalized_activation_record_details` "
             "with `n_frame`, `live_registers`, `burden_floor`, and `per_burden`. "
+            "`normalized_activation_record.n_frame` must be one non-empty string token. "
+            "Do not put `selected`/`held` objects in canonical `n_frame`; if those details "
+            "are useful, put them in `n_frame_details` or "
+            "`normalized_activation_record_details.n_frame_details`. "
             "`per_burden` must be a JSON array/list of objects; each object must include "
             "a non-empty string `burden_id`. Do not emit `per_burden` as a burden-keyed object map. "
             "`register_deltas` must be parser-stable as an object or a list of objects with "
@@ -773,8 +777,45 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
 
 
 def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
-    if not isinstance(value.get("n_frame"), str) or not value["n_frame"].strip():
+    raw_n_frame = value.get("n_frame")
+    if isinstance(raw_n_frame, dict):
+        selected = raw_n_frame.get("selected")
+        if not isinstance(selected, str) or not selected.strip():
+            raise HarnessError(f"{label}.n_frame object cannot be normalized without a non-empty string selected token")
+        if "n_frame_details" not in value:
+            value["n_frame_details"] = dict(raw_n_frame)
+        value["n_frame"] = selected.strip()
+        normalization = value.get("normalization")
+        if normalization is None:
+            normalization = {}
+        if not isinstance(normalization, dict):
+            raise HarnessError(f"{label}.normalization must be an object when present")
+        normalization["n_frame_from_selected_detail"] = True
+        normalization["canonical_n_frame"] = value["n_frame"]
+        value["normalization"] = normalization
+    elif isinstance(raw_n_frame, str) and raw_n_frame.strip():
+        value["n_frame"] = raw_n_frame.strip()
+    else:
         raise HarnessError(f"{label}.n_frame must be a non-empty string")
+    n_frame = value["n_frame"]
+    n_frame_details = value.get("n_frame_details")
+    if n_frame_details is not None:
+        if not isinstance(n_frame_details, dict):
+            raise HarnessError(f"{label}.n_frame_details must be an object when present")
+        detail_selected = n_frame_details.get("selected")
+        if detail_selected is not None:
+            if not isinstance(detail_selected, str) or not detail_selected.strip():
+                raise HarnessError(f"{label}.n_frame_details.selected must be a non-empty string when present")
+            if detail_selected.strip() != n_frame:
+                raise HarnessError(f"{label}.n_frame_details.selected must match canonical n_frame")
+        detail_held = n_frame_details.get("held")
+        if detail_held is not None and (
+            not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held)
+        ):
+            raise HarnessError(f"{label}.n_frame_details.held must be a string list when present")
+    normalization = value.get("normalization")
+    if normalization is not None and not isinstance(normalization, dict):
+        raise HarnessError(f"{label}.normalization must be an object when present")
     for key in ("live_registers", "burden_floor"):
         raw = value.get(key)
         if not isinstance(raw, list) or not all(isinstance(item, str) and item for item in raw):
@@ -1843,6 +1884,65 @@ def run_self_test(root: Path) -> int:
     mapped_rows = mapped_nar_stage06["normalized_activation_record"].get("per_burden")
     if not isinstance(mapped_rows, list) or mapped_rows[0].get("burden_id") != "B1":
         raise HarnessError("Self-test failed to normalize Stage 06 NAR per_burden map into object list")
+    selected_detail_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "¹B₂"],
+            "nar_burdens": ["B1"],
+            "owner_activations": ["¹B₁", "¹B₂"],
+            "normalized_activation_record": {
+                "n_frame": {
+                    "selected": "science-only-source-order-warrant",
+                    "held": ["revelation-private-preference-frame"],
+                },
+                "live_registers": ["xi", "kappa"],
+                "burden_floor": ["B1"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "terminal_state": "landed",
+                        "generation_depth": 0,
+                    }
+                ],
+            },
+            "register_deltas": {"xi": "source-order-landed"},
+        },
+    )
+    selected_detail_nar = selected_detail_stage06["normalized_activation_record"]
+    if selected_detail_nar.get("n_frame") != "science-only-source-order-warrant":
+        raise HarnessError("Self-test failed to normalize object-shaped Stage 06 n_frame to selected scalar")
+    selected_detail = selected_detail_nar.get("n_frame_details")
+    if not isinstance(selected_detail, dict) or selected_detail.get("selected") != "science-only-source-order-warrant":
+        raise HarnessError("Self-test failed to preserve object-shaped Stage 06 n_frame under n_frame_details")
+    selected_detail_normalization = selected_detail_nar.get("normalization")
+    if not isinstance(selected_detail_normalization, dict) or selected_detail_normalization.get("n_frame_from_selected_detail") is not True:
+        raise HarnessError("Self-test failed to record Stage 06 n_frame selected/detail normalization")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": {
+                    "n_frame": {"held": ["revelation-private-preference-frame"]},
+                    "live_registers": ["xi", "kappa"],
+                    "burden_floor": ["B1"],
+                    "per_burden": [{"burden_id": "B1"}],
+                },
+                "register_deltas": {"xi": "source-order-landed"},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject object-shaped Stage 06 n_frame without selected scalar")
     stage06_local_record = base_record(
         "self-test-a9-science-source-stage06",
         "staged-current-skill-stage-local-smoke",
