@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -21,7 +22,14 @@ from typing import Any
 
 from check_collapse_certificate_schema import certificate_errors
 from check_graph_completeness import input_fingerprint_for_path
-from check_retained_proof_corpus import SCHEMA_VERSION, manifest_errors
+from check_retained_proof_corpus import (
+    B5_FULL_IR_SIDECAR_BUILDER,
+    B5_FULL_IR_SIDECAR_FIELD,
+    B5_FULL_IR_SIDECAR_SCHEMA,
+    PROOF_MODE_FULL_IR_TARGET_ID,
+    SCHEMA_VERSION,
+    manifest_errors,
+)
 from check_smoke_artifacts import validate_hash_record_file
 
 
@@ -47,7 +55,10 @@ ARTIFACT_NAMES = {
     "collapse_certificate": "collapse-certificate.json",
     "grapher_html": "grapher.html",
 }
-OPTIONAL_CASE_FIELDS = {"b5_full_ir_projection_sidecar"}
+OPTIONAL_ARTIFACT_NAMES = {
+    B5_FULL_IR_SIDECAR_FIELD: "b5-full-ir-projection-sidecar.json",
+}
+OPTIONAL_CASE_FIELDS = {B5_FULL_IR_SIDECAR_FIELD}
 HASH_RECORD_ARTIFACT_MAP = {
     "input": ("proof_sidecars", "raw_input"),
     "output": ("output",),
@@ -72,6 +83,20 @@ def sha256_file(path: Path) -> str:
 
 def raw_sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest().upper()
+
+
+def run_checked(command: list[str]) -> None:
+    result = subprocess.run(
+        command,
+        cwd=ROOT,
+        check=False,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    if result.returncode != 0:
+        raise SystemExit(result.stdout.strip() or f"command failed: {' '.join(command)}")
 
 
 def load_json(path: Path) -> Any:
@@ -261,7 +286,7 @@ def build_entry(
     retained_paths: dict[str, Path],
     source_paths: dict[str, Path],
 ) -> dict[str, Any]:
-    return {
+    entry = {
         "id": case_id,
         "classification": "SIDECAR_BACKED_PROOF",
         "rows": rows,
@@ -278,6 +303,15 @@ def build_entry(
             "grapher_html": sha256_file(source_paths["grapher_html"]),
         },
     }
+    if B5_FULL_IR_SIDECAR_FIELD in source_paths:
+        sidecar_path = retained_paths[B5_FULL_IR_SIDECAR_FIELD]
+        entry[B5_FULL_IR_SIDECAR_FIELD] = {
+            "schema": B5_FULL_IR_SIDECAR_SCHEMA,
+            "path": manifest_relative(manifest_path, sidecar_path),
+            "sha256": sha256_file(source_paths[B5_FULL_IR_SIDECAR_FIELD]),
+            "builder": B5_FULL_IR_SIDECAR_BUILDER,
+        }
+    return entry
 
 
 def find_case(manifest: dict[str, Any], case_id: str) -> tuple[int | None, dict[str, Any] | None]:
@@ -312,7 +346,41 @@ def compare_existing(manifest_path: Path, expected: dict[str, Any]) -> list[str]
         actual_hash = sha256_file(retained_path)
         if actual_hash != expected_hash:
             errors.append(f"{existing[field]} hash drift: expected {expected_hash}, found {actual_hash}")
+    if B5_FULL_IR_SIDECAR_FIELD in expected and B5_FULL_IR_SIDECAR_FIELD in existing:
+        retained_path = (manifest_path.parent / existing[B5_FULL_IR_SIDECAR_FIELD]["path"]).resolve()
+        expected_hash = expected[B5_FULL_IR_SIDECAR_FIELD]["sha256"]
+        if not retained_path.exists():
+            errors.append(f"{existing[B5_FULL_IR_SIDECAR_FIELD]['path']} missing")
+        else:
+            actual_hash = sha256_file(retained_path)
+            if actual_hash != expected_hash:
+                errors.append(
+                    f"{existing[B5_FULL_IR_SIDECAR_FIELD]['path']} hash drift: "
+                    f"expected {expected_hash}, found {actual_hash}"
+                )
     return errors
+
+
+def add_case_to_coverage_targets(manifest: dict[str, Any], expected: dict[str, Any]) -> None:
+    targets = manifest.get("coverage_targets")
+    if not isinstance(targets, list):
+        return
+    case_id = expected["id"]
+    case_rows = set(expected.get("rows") or [])
+    has_b5_sidecar = B5_FULL_IR_SIDECAR_FIELD in expected
+    for target in targets:
+        if not isinstance(target, dict):
+            continue
+        target_rows = target.get("rows")
+        case_ids = target.get("case_ids")
+        if not isinstance(target_rows, list) or not isinstance(case_ids, list):
+            continue
+        target_id = target.get("id")
+        should_add = set(target_rows).issubset(case_rows)
+        if target_id == PROOF_MODE_FULL_IR_TARGET_ID:
+            should_add = has_b5_sidecar and "B.5" in case_rows
+        if should_add and case_id not in case_ids:
+            case_ids.append(case_id)
 
 
 def promote(manifest_path: Path, expected: dict[str, Any], source_paths: dict[str, Path], replace: bool) -> None:
@@ -333,16 +401,43 @@ def promote(manifest_path: Path, expected: dict[str, Any], source_paths: dict[st
         field: (manifest_path.parent / expected[field]).resolve()
         for field in ARTIFACT_NAMES
     }
+    if B5_FULL_IR_SIDECAR_FIELD in expected:
+        retained_paths[B5_FULL_IR_SIDECAR_FIELD] = (
+            manifest_path.parent / expected[B5_FULL_IR_SIDECAR_FIELD]["path"]
+        ).resolve()
     for path in retained_paths.values():
         require_under_root(path, "retained artifact path")
         path.parent.mkdir(parents=True, exist_ok=True)
     for field, source in source_paths.items():
+        if field == B5_FULL_IR_SIDECAR_FIELD:
+            continue
         shutil.copyfile(source, retained_paths[field])
+    if B5_FULL_IR_SIDECAR_FIELD in source_paths:
+        run_checked(
+            [
+                sys.executable,
+                str(ROOT / B5_FULL_IR_SIDECAR_BUILDER),
+                "--input",
+                str(retained_paths["input"]),
+                "--output",
+                str(retained_paths["output"]),
+                "--collapse-certificate",
+                str(retained_paths["collapse_certificate"]),
+                "--grapher-html",
+                str(retained_paths["grapher_html"]),
+                "--out",
+                str(retained_paths[B5_FULL_IR_SIDECAR_FIELD]),
+            ]
+        )
+        expected[B5_FULL_IR_SIDECAR_FIELD]["sha256"] = sha256_file(
+            retained_paths[B5_FULL_IR_SIDECAR_FIELD]
+        )
 
     if index is None:
         cases.append(expected)
     else:
         cases[index] = expected
+    add_case_to_coverage_targets(manifest, expected)
     write_json(manifest_path, manifest)
 
     errors = manifest_errors(manifest_path)
@@ -468,6 +563,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--collapse-certificate", type=Path)
     parser.add_argument("--grapher-html", type=Path)
+    parser.add_argument("--b5-full-ir-projection-sidecar", type=Path)
     parser.add_argument("--case-dir", type=Path)
     parser.add_argument("--check", action="store_true", help="validate against an existing retained case without writing")
     parser.add_argument("--source-only", action="store_true", help="validate source artifacts or hash-record inputs without comparing or writing a retained manifest")
@@ -486,6 +582,11 @@ def main() -> int:
             if any(manual_artifacts):
                 raise SystemExit("--hash-record cannot be combined with manual artifact path arguments")
             source_paths, _, _ = source_paths_from_hash_record(args.hash_record)
+            if args.b5_full_ir_projection_sidecar:
+                source_paths[B5_FULL_IR_SIDECAR_FIELD] = resolve_existing(
+                    args.b5_full_ir_projection_sidecar,
+                    "B.5 full-IR projection sidecar",
+                )
         else:
             if not all([args.input, args.output, args.collapse_certificate, args.grapher_html]):
                 raise SystemExit(
@@ -498,6 +599,11 @@ def main() -> int:
                 "collapse_certificate": resolve_existing(args.collapse_certificate, "collapse certificate"),
                 "grapher_html": resolve_existing(args.grapher_html, "Grapher HTML"),
             }
+            if args.b5_full_ir_projection_sidecar:
+                source_paths[B5_FULL_IR_SIDECAR_FIELD] = resolve_existing(
+                    args.b5_full_ir_projection_sidecar,
+                    "B.5 full-IR projection sidecar",
+                )
         validate_source_artifacts(
             source_paths["input"],
             source_paths["output"],
@@ -522,6 +628,11 @@ def main() -> int:
         source_paths, record_origin, record_generated_skill_sha = source_paths_from_hash_record(args.hash_record)
         origin = args.origin or record_origin
         generated_skill_sha = args.generated_skill_sha or record_generated_skill_sha
+        if args.b5_full_ir_projection_sidecar:
+            source_paths[B5_FULL_IR_SIDECAR_FIELD] = resolve_existing(
+                args.b5_full_ir_projection_sidecar,
+                "B.5 full-IR projection sidecar",
+            )
     else:
         if not all([args.input, args.output, args.collapse_certificate, args.grapher_html]):
             raise SystemExit(
@@ -533,6 +644,11 @@ def main() -> int:
             "collapse_certificate": resolve_existing(args.collapse_certificate, "collapse certificate"),
             "grapher_html": resolve_existing(args.grapher_html, "Grapher HTML"),
         }
+        if args.b5_full_ir_projection_sidecar:
+            source_paths[B5_FULL_IR_SIDECAR_FIELD] = resolve_existing(
+                args.b5_full_ir_projection_sidecar,
+                "B.5 full-IR projection sidecar",
+            )
         origin = args.origin
         generated_skill_sha = args.generated_skill_sha
     if not origin:
@@ -553,6 +669,10 @@ def main() -> int:
         field: case_dir / artifact_name
         for field, artifact_name in ARTIFACT_NAMES.items()
     }
+    if B5_FULL_IR_SIDECAR_FIELD in source_paths:
+        retained_paths[B5_FULL_IR_SIDECAR_FIELD] = (
+            case_dir / OPTIONAL_ARTIFACT_NAMES[B5_FULL_IR_SIDECAR_FIELD]
+        )
     expected = build_entry(
         manifest_path,
         args.case_id,

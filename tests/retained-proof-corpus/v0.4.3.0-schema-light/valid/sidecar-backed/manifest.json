@@ -27,7 +27,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -54,7 +55,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -81,7 +83,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -108,7 +111,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -129,7 +133,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -139,7 +144,8 @@
         "B.5"
       ],
       "case_ids": [
-        "a9-science-source"
+        "a9-science-source",
+        "staged-a9-science-source-proofbundle"
       ]
     },
     {
@@ -769,6 +775,35 @@
         "output": "02C259F14F7DE76605BFB24FC51C3C12C22C90C1428BAD214EDDD325B3C70AE8",
         "collapse_certificate": "139861D46CE83D1C844CA0CFCB5111A57043D4E6C43FCFB0F684FD66880A11C6",
         "grapher_html": "8F8EE8110B390EB30A60DB8F9759355EC414209585EB9D246D5CA267BDBB6671"
+      }
+    },
+    {
+      "id": "staged-a9-science-source-proofbundle",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5"
+      ],
+      "generated_skill_sha": "EE9F8B52133EFE881463952EFCBAB5FC078FC72AB90C267B3A1453F663E42862",
+      "origin": ".daee/staged-current-skill-smokes/20260602-a9-science-source-stage07-proofbundle-retry-v1/output.md",
+      "input": "cases/staged-a9-science-source-proofbundle/input.txt",
+      "output": "cases/staged-a9-science-source-proofbundle/output.md",
+      "collapse_certificate": "cases/staged-a9-science-source-proofbundle/collapse-certificate.json",
+      "grapher_html": "cases/staged-a9-science-source-proofbundle/grapher.html",
+      "hashes": {
+        "input": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+        "output": "0AEA1318E54C01B8CC3E4B0CC98BC80C03191F9E799831697544FA2BB713A2AA",
+        "collapse_certificate": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF",
+        "grapher_html": "2EF9A2CC8074C96ABE98E7D71A76AF612444C42DD9E768F82F71C43EBA9E4D67"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/staged-a9-science-source-proofbundle/b5-full-ir-projection-sidecar.json",
+        "sha256": "07C64F07770746F210117F15FB17B16A7623C1DF460D57959C5C6E50235B63F9",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
       }
     }
   ]
