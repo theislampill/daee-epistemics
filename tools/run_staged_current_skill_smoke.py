@@ -56,6 +56,15 @@ STAGE_ORDER = [
 ]
 
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+STAGE07_RELEASE_VALIDATION_KEYS = {
+    "visible_opening_header",
+    "nla_semantic_faithfulness",
+    "field_witness_convergence",
+    "formal_reread_state_semantics",
+    "graph_completeness_json",
+    "manual_smoke_render_contract",
+    "owner_activation_ordering",
+}
 
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
@@ -73,7 +82,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "requires": ["input_digest"],
         "instructions": (
             "Identify the selected/held N-frame, the burden floor, and live registers. "
-            "Do not release a final answer."
+            "The canonical `selected_n_frame` field must be a string token. "
+            "The canonical `burden_floor` and `live_registers` fields must be JSON "
+            "arrays of strings. If richer diagnostic metadata is useful, put it in "
+            "optional detail fields; do not replace the canonical string fields with "
+            "objects. Do not release a final answer."
         ),
     },
     "stage-03-routing-owner-gate": {
@@ -85,7 +98,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "unless the route is backed. The canonical `route_targets` field must be a "
             "JSON array of burden-id strings only, such as [\"B1\"]. If richer routing "
             "metadata is useful, put it in optional `route_target_details`; do not put "
-            "objects in `route_targets`."
+            "objects in `route_targets`. The canonical `owner_routes` field must be a "
+            "JSON array of objects with string `burden_id` and `owner_id` fields; richer "
+            "owner-order evidence may be placed in optional detail fields."
         ),
     },
     "stage-04-burden-execution-act": {
@@ -297,6 +312,8 @@ def validate_required_files(root: Path) -> dict[str, Path]:
         "field_witness_checker": root / "tools" / "check_field_witness_convergence.py",
         "formal_reread_checker": root / "tools" / "check_formal_reread_state_semantics.py",
         "graph_checker": root / "tools" / "check_graph_completeness.py",
+        "manual_render_checker": root / "tools" / "check_manual_smoke_render_contract.py",
+        "owner_ordering_checker": root / "tools" / "check_owner_activation_ordering.py",
     }
     missing = [f"{name}: {path}" for name, path in required.items() if not path.exists()]
     if missing:
@@ -347,8 +364,11 @@ def normalized_stage(stage_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     if spec is not None:
         stage["produces"] = spec["produces"]
         stage["requires"] = spec["requires"]
+    if stage_id == "stage-02-layer-a-diagnostic-ir":
+        normalize_stage02_diagnostic_fields(stage)
     if stage_id == "stage-03-routing-owner-gate":
         normalize_stage03_route_targets(stage)
+        normalize_stage03_owner_routes(stage)
     if stage_id == "stage-04-burden-execution-act":
         normalize_stage04_act_fields(stage)
     if stage_id == "stage-05-mrp-reread-terminal-state":
@@ -368,6 +388,75 @@ def ordered_unique(items: list[str]) -> list[str]:
     return result
 
 
+def normalization_object(stage: dict[str, Any]) -> dict[str, Any]:
+    normalization = stage.get("normalization")
+    if not isinstance(normalization, dict):
+        normalization = {}
+    return normalization
+
+
+def non_empty_string(value: Any) -> str | None:
+    return value if isinstance(value, str) and value.strip() else None
+
+
+def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
+    normalization = normalization_object(stage)
+
+    selected = stage.get("selected_n_frame")
+    if isinstance(selected, dict):
+        token = non_empty_string(selected.get("token") or selected.get("id") or selected.get("n_frame"))
+        if token is None:
+            raise HarnessError("stage-02 selected_n_frame object cannot be normalized without a string token")
+        stage["selected_n_frame_details"] = selected
+        stage["selected_n_frame"] = token
+        normalization["selected_n_frame_from_details"] = True
+    elif not isinstance(selected, str) or not selected.strip():
+        raise HarnessError("stage-02 selected_n_frame must be a non-empty string token")
+
+    floor = stage.get("burden_floor")
+    if isinstance(floor, list) and floor and all(isinstance(item, str) and item for item in floor):
+        stage["burden_floor"] = ordered_unique(list(floor))
+    elif isinstance(floor, list) and floor and all(isinstance(item, dict) for item in floor):
+        details = list(floor)
+        burden_ids: list[str] = []
+        for index, detail in enumerate(details):
+            burden_id = non_empty_string(detail.get("burden_id") or detail.get("id"))
+            if burden_id is None:
+                raise HarnessError(
+                    f"stage-02 burden_floor[{index}] object cannot be normalized without a string burden_id"
+                )
+            burden_ids.append(burden_id)
+        stage["burden_floor_details"] = details
+        stage["burden_floor"] = ordered_unique(burden_ids)
+        normalization["burden_floor_from_details"] = True
+        normalization["canonical_burden_floor"] = list(stage["burden_floor"])
+    else:
+        raise HarnessError("stage-02 burden_floor must be a non-empty list of burden-id strings")
+
+    registers = stage.get("live_registers")
+    if isinstance(registers, list) and registers and all(isinstance(item, str) and item for item in registers):
+        stage["live_registers"] = ordered_unique(list(registers))
+    elif isinstance(registers, list) and registers and all(isinstance(item, dict) for item in registers):
+        details = list(registers)
+        register_ids: list[str] = []
+        for index, detail in enumerate(details):
+            register_id = non_empty_string(detail.get("id") or detail.get("register"))
+            if register_id is None:
+                raise HarnessError(
+                    f"stage-02 live_registers[{index}] object cannot be normalized without a string id"
+                )
+            register_ids.append(register_id)
+        stage["live_register_details"] = details
+        stage["live_registers"] = ordered_unique(register_ids)
+        normalization["live_registers_from_details"] = True
+        normalization["canonical_live_registers"] = list(stage["live_registers"])
+    else:
+        raise HarnessError("stage-02 live_registers must be a non-empty list of register strings")
+
+    if normalization:
+        stage["normalization"] = normalization
+
+
 def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
     route_targets = stage.get("route_targets")
     if isinstance(route_targets, list) and all(isinstance(item, str) and item for item in route_targets):
@@ -385,14 +474,68 @@ def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
             burden_ids.append(burden_id)
         stage["route_target_details"] = details
         stage["route_targets"] = ordered_unique(burden_ids)
-        normalization = stage.get("normalization")
-        if not isinstance(normalization, dict):
-            normalization = {}
+        normalization = normalization_object(stage)
         normalization["route_targets_from_details"] = True
         normalization["canonical_route_targets"] = list(stage["route_targets"])
         stage["normalization"] = normalization
         return
     raise HarnessError("stage-03 route_targets must be a non-empty list of burden-id strings")
+
+
+def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
+    routes = stage.get("owner_routes")
+    if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
+        canonical: list[dict[str, Any]] = []
+        details: list[dict[str, Any]] = []
+        for index, route in enumerate(routes):
+            burden_id = non_empty_string(route.get("burden_id"))
+            owner_id = non_empty_string(route.get("owner_id"))
+            if burden_id is not None and owner_id is not None:
+                canonical.append(dict(route))
+                continue
+
+            target = non_empty_string(route.get("target") or route.get("burden_id"))
+            required = route.get("required")
+            if target is None or not isinstance(required, list) or not required:
+                raise HarnessError(
+                    f"stage-03 owner_routes[{index}] must carry burden_id/owner_id or target plus required owner rows"
+                )
+            details.append(route)
+            for required_index, required_row in enumerate(required):
+                if not isinstance(required_row, dict):
+                    raise HarnessError(
+                        f"stage-03 owner_routes[{index}].required[{required_index}] must be an object"
+                    )
+                owner = non_empty_string(required_row.get("owner_id") or required_row.get("owner"))
+                if owner is None:
+                    raise HarnessError(
+                        f"stage-03 owner_routes[{index}].required[{required_index}] cannot be normalized without owner"
+                    )
+                canonical_row: dict[str, Any] = {
+                    "burden_id": target,
+                    "owner_id": owner,
+                }
+                operation = non_empty_string(required_row.get("operation") or required_row.get("owner_operation"))
+                if operation is not None:
+                    canonical_row["operation"] = operation
+                eligibility = non_empty_string(route.get("classification") or route.get("policy_id"))
+                if eligibility is not None:
+                    canonical_row["eligibility"] = eligibility
+                canonical.append(canonical_row)
+
+        if not canonical:
+            raise HarnessError("stage-03 owner_routes must name at least one owner route")
+        stage["owner_routes"] = canonical
+        if details:
+            stage["owner_route_details"] = details
+            normalization = normalization_object(stage)
+            normalization["owner_routes_from_required_details"] = True
+            normalization["canonical_owner_routes"] = [
+                {"burden_id": row.get("burden_id"), "owner_id": row.get("owner_id")} for row in canonical
+            ]
+            stage["normalization"] = normalization
+        return
+    raise HarnessError("stage-03 owner_routes must be a non-empty list of owner-route objects")
 
 
 def extract_stage04_body_ref(act_row: str) -> str | None:
@@ -733,12 +876,23 @@ Validated compact stage state:
 {previous}
 ```
 
-Produce the final governed `output.md` only. It must contain the normal visible
-noetic-field opening, compact Layer A, Layer B governed operations with ACT rows,
-state reread/MRP accounting when live, parser-stable field_witness/NAR evidence,
-Restorative Response, and Closing Formulation. Do not include commentary about
-this harness. Do not claim package/provenance, guaranteed uptake, or broad A/B/C/D
-closure.
+Produce the final governed `output.md` only.
+
+Required public output surface:
+- Preserve the normal visible noetic-field opening/header.
+- Include the compact Layer A / Diagnostic IR opening header.
+- Include Layer B / ACT rows consistent with the validated Stage 04 state.
+- Include MRP/reread/terminal-state surface consistent with Stage 05.
+- Include parser-stable field_witness/NAR evidence consistent with Stage 06.
+- Include Restorative Response.
+- Include Closing Formulation.
+
+Do not include JSON-only stage scratch as the public answer.
+Do not include commentary about this harness.
+Do not build or claim verifier sidecars, collapse certificates, Grapher output,
+B.5 projection sidecars, retained promotion, package/provenance, guaranteed
+uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
+ActiveGraph proof.
 """
 
 
@@ -812,12 +966,18 @@ def base_record(
         "non_claims": non_claims,
     }
     if stop_after_stage is not None:
+        stop_index = STAGE_ORDER.index(stop_after_stage)
+        release_index = STAGE_ORDER.index("stage-07-release-output")
+        verifier_index = STAGE_ORDER.index("stage-08-verifier-sidecars")
         record["stage_scope"] = {
             "stop_after_stage": stop_after_stage,
             "stage_count": len(stage_order),
-            "not_release_output": True,
-            "not_verifier_sidecars": True,
+            "not_verifier_sidecars": stop_index < verifier_index,
         }
+        if stop_index < release_index:
+            record["stage_scope"]["not_release_output"] = True
+        else:
+            record["stage_scope"]["release_output"] = True
     if model_scope_payload is not None:
         record["model_scope"] = model_scope_payload
     return record
@@ -916,6 +1076,67 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test hash record did not preserve self-test mode")
     if loaded_hashes.get("model") is not None:
         raise HarnessError("Self-test hash record must not claim a model invocation")
+    normalized_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": {
+                "token": "science-only-source-order-warrant",
+                "basis": [
+                    "scientific explanations treated as the only knowledge source",
+                    "science-measurability treated as the criterion for whether an answer counts",
+                ],
+            },
+            "live_registers": [
+                {
+                    "id": "xi",
+                    "functions": ["warrant-authority", "source-order", "proof-tribunal"],
+                    "basis": "science is installed as the only admissible knowledge source and criterion",
+                },
+                {
+                    "id": "kappa",
+                    "functions": ["dependency-collapse"],
+                    "basis": "the only-science standard requires a self-grounding/dependency check before closure",
+                },
+            ],
+            "burden_floor": [
+                {
+                    "burden_id": "B1",
+                    "label": "science-only source-order/warrant standard",
+                    "register_types": ["xi", "kappa"],
+                }
+            ],
+        },
+    )
+    if normalized_stage02.get("selected_n_frame") != "science-only-source-order-warrant":
+        raise HarnessError("Self-test failed to normalize rich Stage 02 selected_n_frame into token")
+    if normalized_stage02.get("live_registers") != ["xi", "kappa"]:
+        raise HarnessError("Self-test failed to normalize rich Stage 02 live_registers into register ids")
+    if normalized_stage02.get("burden_floor") != ["B1"]:
+        raise HarnessError("Self-test failed to normalize rich Stage 02 burden_floor into burden-id list")
+    if not isinstance(normalized_stage02.get("selected_n_frame_details"), dict):
+        raise HarnessError("Self-test failed to preserve rich Stage 02 selected_n_frame details")
+    if not isinstance(normalized_stage02.get("live_register_details"), list):
+        raise HarnessError("Self-test failed to preserve rich Stage 02 live register details")
+    if not isinstance(normalized_stage02.get("burden_floor_details"), list):
+        raise HarnessError("Self-test failed to preserve rich Stage 02 burden-floor details")
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": {"basis": ["missing token"]},
+                "live_registers": [{"id": "xi"}],
+                "burden_floor": [{"burden_id": "B1"}],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject rich Stage 02 selected_n_frame without token")
+
     normalized = normalized_stage(
         "stage-03-routing-owner-gate",
         {
@@ -928,13 +1149,71 @@ def run_self_test(root: Path) -> int:
                     "register_types": ["xi", "kappa"],
                 }
             ],
-            "owner_routes": [],
+            "owner_routes": [{"burden_id": "B1", "owner_id": "source-status-repair"}],
         },
     )
     if normalized.get("route_targets") != ["B1"]:
         raise HarnessError("Self-test failed to normalize rich Stage 03 route_targets into burden-id list")
     if not isinstance(normalized.get("route_target_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 03 route metadata")
+    normalized_owner_routes = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "target": "B1",
+                    "policy_id": "diagnostic-ir-pressure-owner-floor-v1",
+                    "classification": "required_owner_sequence",
+                    "required": [
+                        {
+                            "owner": "source-status-repair",
+                            "operation": "source-order",
+                            "pressure_label": "scientific-explanations-only-knowledge-source",
+                        },
+                        {
+                            "owner": "M1",
+                            "operation": "self-grounding-test",
+                            "pressure_label": "only-science-counts-standard",
+                        },
+                    ],
+                }
+            ],
+        },
+    )
+    if normalized_owner_routes.get("owner_routes") != [
+        {
+            "burden_id": "B1",
+            "owner_id": "source-status-repair",
+            "operation": "source-order",
+            "eligibility": "required_owner_sequence",
+        },
+        {
+            "burden_id": "B1",
+            "owner_id": "M1",
+            "operation": "self-grounding-test",
+            "eligibility": "required_owner_sequence",
+        },
+    ]:
+        raise HarnessError("Self-test failed to normalize rich Stage 03 owner_routes into owner identities")
+    if not isinstance(normalized_owner_routes.get("owner_route_details"), list):
+        raise HarnessError("Self-test failed to preserve rich Stage 03 owner-route details")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [{"target": "B1", "required": [{}]}],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject rich Stage 03 owner route without owner id")
 
     canonical_act_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
@@ -1243,11 +1522,169 @@ def run_self_test(root: Path) -> int:
     )
     if invalid_result.returncode == 0:
         raise HarnessError("Self-test failed to reject Stage 06 release_output")
+
+    stage07_validation = {
+        "visible_opening_header": "pass",
+        "nla_semantic_faithfulness": "pass",
+        "field_witness_convergence": "pass",
+        "formal_reread_state_semantics": "pass",
+        "graph_completeness_json": "pass",
+        "manual_smoke_render_contract": "pass",
+        "owner_activation_ordering": "pass",
+    }
+    stage07_local_record = base_record(
+        "self-test-a9-science-source-stage07",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-07-release-output",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage07",
+            replay_record,
+            stop_after_stage="stage-07-release-output",
+        ),
+    )
+    stage07_stage = dict(replay["stages"][6])
+    stage07_stage["release_validation"] = dict(stage07_validation)
+    stage07_local_record["stages"] = [*replay["stages"][:6], stage07_stage]
+    if stage07_local_record.get("stage_scope", {}).get("release_output") is not True:
+        raise HarnessError("Self-test failed to mark Stage 07 scope as release-output producing")
+    if stage07_local_record.get("stage_scope", {}).get("not_release_output") is True:
+        raise HarnessError("Self-test Stage 07 scope must not carry not_release_output=true")
+    stage07_local_path = run_dir / "staged-handoff-stage07-model-scope-record.json"
+    write_json(stage07_local_path, stage07_local_record)
+    validate_replay_record(root, stage07_local_path)
+
+    stage07_missing_validation = dict(stage07_local_record)
+    stage07_missing_validation["case_id"] = "self-test-stage07-missing-validation"
+    stage07_missing_validation["stages"] = [dict(stage) for stage in stage07_local_record["stages"]]
+    stage07_missing_validation["stages"][-1] = dict(stage07_missing_validation["stages"][-1])
+    stage07_missing_validation["stages"][-1].pop("release_validation", None)
+    stage07_missing_validation_path = run_dir / "stage07-missing-release-validation.invalid.json"
+    write_json(stage07_missing_validation_path, stage07_missing_validation)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage07_missing_validation_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject model-mode Stage 07 missing release_validation")
+
+    stage07_failed_validation = dict(stage07_local_record)
+    stage07_failed_validation["case_id"] = "self-test-stage07-failed-validation"
+    stage07_failed_validation["stages"] = [dict(stage) for stage in stage07_local_record["stages"]]
+    stage07_failed_validation["stages"][-1] = dict(stage07_failed_validation["stages"][-1])
+    stage07_failed_validation["stages"][-1]["release_validation"] = dict(stage07_validation)
+    stage07_failed_validation["stages"][-1]["release_validation"]["nla_semantic_faithfulness"] = "fail"
+    stage07_failed_validation_path = run_dir / "stage07-failed-release-validation.invalid.json"
+    write_json(stage07_failed_validation_path, stage07_failed_validation)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage07_failed_validation_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 07 failed release_validation")
+
+    stage07_with_sidecars = dict(stage07_local_record)
+    stage07_with_sidecars["case_id"] = "self-test-stage07-with-sidecars"
+    stage07_with_sidecars["stages"] = [dict(stage) for stage in stage07_local_record["stages"]]
+    stage07_with_sidecars["stages"][-1] = dict(stage07_with_sidecars["stages"][-1])
+    stage07_with_sidecars["stages"][-1]["verifier_sidecars"] = {"claimed": True}
+    stage07_with_sidecars_path = run_dir / "stage07-with-sidecars.invalid.json"
+    write_json(stage07_with_sidecars_path, stage07_with_sidecars)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage07_with_sidecars_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 07 verifier_sidecars")
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
     print(f"hashes: {rel(hash_path, root)}")
     return 0
+
+
+def visible_governed_output_errors(output_path: Path) -> list[str]:
+    text = output_path.read_text(encoding="utf-8", errors="replace")
+    checks = [
+        ("visible noetic-field opening/header", r"NOETIC FIELD EXECUTION|noetic-field"),
+        ("compact Layer A / Diagnostic IR header", r"Layer A\b.*(DSL/IR|Diagnostic IR|Header)"),
+        ("governed Layer B / burden execution surface", r"Layer B\b|Bounded Governed Response|Burden\s+\d+"),
+        ("canonical ACT-readable rows", r"⟦ACT\b"),
+        ("ACT body_ref tokens", r"\bbody_ref="),
+        ("Land surface", r"Land\("),
+        ("MRP / reread / terminal state surface", r"MRP\(|R\(H,|Mid-Reread|Terminal states"),
+        ("parser-stable field_witness", r"(?m)^\s*field_witness\b"),
+        ("normalized_activation_record / NAR evidence", r"normalized_activation_record|\bNAR\b"),
+        ("Restorative Response", r"(?im)^\s*(?:#+\s*)?Restorative Response\b"),
+        ("Closing Formulation", r"(?im)^\s*(?:#+\s*)?Closing Formulation\b"),
+    ]
+    errors = [label for label, pattern in checks if re.search(pattern, text, re.IGNORECASE | re.MULTILINE) is None]
+    forbidden = [
+        ("harness commentary", r"You are executing stage-|Validated compact stage state|Return exactly one JSON object"),
+        ("package/provenance claim", r"\bpackage/provenance\b|provenance asset|release package|\.skill\b|GitHub Release"),
+        ("guaranteed T_lang uptake claim", r"T_lang guarantees|guaranteed T_lang uptake|guarantees interlocutor uptake"),
+        ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
+    ]
+    errors.extend(label for label, pattern in forbidden if re.search(pattern, text, re.IGNORECASE))
+    return errors
+
+
+def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
+    visible_errors = visible_governed_output_errors(output_path)
+    if visible_errors:
+        raise HarnessError(
+            "stage-07-release-output: visible governed output validation failed:\n- "
+            + "\n- ".join(visible_errors)
+        )
+    validators = [
+        (
+            "nla_semantic_faithfulness",
+            [sys.executable, str(root / "tools" / "check_nla_decode_semantic_faithfulness.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "field_witness_convergence",
+            [sys.executable, str(root / "tools" / "check_field_witness_convergence.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "formal_reread_state_semantics",
+            [sys.executable, str(root / "tools" / "check_formal_reread_state_semantics.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "graph_completeness_json",
+            [sys.executable, str(root / "tools" / "check_graph_completeness.py"), "--outputs", str(output_path), "--json"],
+        ),
+        (
+            "manual_smoke_render_contract",
+            [sys.executable, str(root / "tools" / "check_manual_smoke_render_contract.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "owner_activation_ordering",
+            [sys.executable, str(root / "tools" / "check_owner_activation_ordering.py"), "--outputs", str(output_path)],
+        ),
+    ]
+    results = {"visible_opening_header": "pass"}
+    for key, command in validators:
+        require_command_success(command, cwd=root)
+        results[key] = "pass"
+    missing = STAGE07_RELEASE_VALIDATION_KEYS - set(results)
+    if missing:
+        raise HarnessError(f"stage-07-release-output: internal validator set missing {sorted(missing)}")
+    return results
 
 
 def build_sidecars(
@@ -1365,7 +1802,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
 
     try:
         stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
-        if args.stop_after_stage is None:
+        if args.stop_after_stage is None or args.stop_after_stage == "stage-07-release-output":
             stage_ids_to_run = STAGE_ORDER[:6]
         for stage_id in stage_ids_to_run:
             prompt = stage_prompt(
@@ -1444,6 +1881,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             )
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
+        release_validation = run_release_validators(root, output_path)
         stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state") or {}
         stage07 = {
             "id": "stage-07-release-output",
@@ -1454,8 +1892,38 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             "release_terminal_states": stage05.get("terminal_states", {}),
             "closure_claim": "complete",
             "output_is_full_governed_answer": True,
+            "release_validation": release_validation,
         }
         stages.append(stage07)
+        if args.stop_after_stage == "stage-07-release-output":
+            record["stages"] = stages
+            handoff_record = records_dir / "staged-handoff-stage-local-record.json"
+            write_json(handoff_record, record)
+            validate_replay_record(root, handoff_record)
+            hash_path = run_dir / "staged-smoke.hashes.json"
+            write_hash_record(
+                hash_path,
+                root=root,
+                case_name=args.case_name,
+                mode=mode,
+                model=args.model,
+                skill_path=files["skill"],
+                replay_record=replay_record,
+                raw_input_path=raw_input,
+                run_dir=run_dir,
+                stage_files=stage_files + [handoff_record],
+                handoff_record=handoff_record,
+                output_path=output_path,
+                sidecar_paths=[],
+                verdict="STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after stage-07-release-output",
+            )
+            print("staged current-skill stage-local smoke: PASS")
+            print(f"run dir: {rel(run_dir, root)}")
+            print("stop-after-stage: stage-07-release-output")
+            print(f"output: {rel(output_path, root)}")
+            print(f"handoff record: {rel(handoff_record, root)}")
+            print(f"hashes: {rel(hash_path, root)}")
+            return 0
 
         sidecar_dir = run_dir / "proof-sidecars"
         sidecars = build_sidecars(root=root, raw_input=raw_input, output_path=output_path, out_dir=sidecar_dir, prefix=args.case_name)
@@ -1545,7 +2013,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--replay-record", type=Path, default=DEFAULT_REPLAY_RECORD)
     parser.add_argument("--run-dir", type=Path, default=None)
     parser.add_argument("--model", default="gpt-5.5")
-    parser.add_argument("--stop-after-stage", choices=STAGE_ORDER[:6], default=None)
+    parser.add_argument("--stop-after-stage", choices=STAGE_ORDER[:7], default=None)
     return parser.parse_args()
 
 

@@ -121,6 +121,26 @@ STAGE06_FORBIDDEN_FIELDS = {
     "restorative_response",
     "verifier_sidecars",
 }
+STAGE07_FORBIDDEN_FIELDS = {
+    "b5_full_ir_projection_sidecar",
+    "collapse_certificate",
+    "grapher_html",
+    "proof_sidecars",
+    "retained_promotion",
+    "verifier_sidecars",
+}
+STAGE07_CLOSURE_CLAIMS = {"complete", "hold", "partial", "recurse"}
+STAGE07_RELEASE_VALIDATION_KEYS = {
+    "visible_opening_header",
+    "nla_semantic_faithfulness",
+    "field_witness_convergence",
+    "formal_reread_state_semantics",
+    "graph_completeness_json",
+}
+STAGE07_OPTIONAL_VALIDATION_KEYS = {
+    "manual_smoke_render_contract",
+    "owner_activation_ordering",
+}
 REREAD_DIVERGENCE_STATES = {"neutral", "non-neutral", "settled", "residual", "positive", "held"}
 REREAD_CURL_STATES = {"null", "resolved", "non-null", "held"}
 REREAD_ROUTE_RESULT_TYPES = {
@@ -206,9 +226,18 @@ def expected_stage_order(path: Path, record: dict[str, Any]) -> tuple[list[str],
     expected = STAGE_ORDER[: STAGE_ORDER.index(stop_after) + 1]
     if stage_scope.get("stage_count") != len(expected):
         errors.append(f"{label}: stage_scope.stage_count must match stop_after_stage prefix length")
-    if stage_scope.get("not_release_output") is not True:
-        errors.append(f"{label}: stage_scope.not_release_output must be true")
-    if stage_scope.get("not_verifier_sidecars") is not True:
+    stop_index = STAGE_ORDER.index(stop_after)
+    release_index = STAGE_ORDER.index("stage-07-release-output")
+    verifier_index = STAGE_ORDER.index("stage-08-verifier-sidecars")
+    if stop_index < release_index:
+        if stage_scope.get("not_release_output") is not True:
+            errors.append(f"{label}: stage_scope.not_release_output must be true before stage-07")
+    else:
+        if stage_scope.get("release_output") is not True:
+            errors.append(f"{label}: stage_scope.release_output must be true for stage-07 scoped records")
+        if stage_scope.get("not_release_output") is True:
+            errors.append(f"{label}: stage_scope.not_release_output must not be true for stage-07 scoped records")
+    if stop_index < verifier_index and stage_scope.get("not_verifier_sidecars") is not True:
         errors.append(f"{label}: stage_scope.not_verifier_sidecars must be true")
     return expected, errors
 
@@ -631,6 +660,127 @@ def stage06_witness_nar_errors(
     return errors
 
 
+def visible_governed_output_errors(label: str, output_path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    checks = [
+        ("visible noetic-field opening/header", r"NOETIC FIELD EXECUTION|noetic-field"),
+        ("compact Layer A / Diagnostic IR header", r"Layer A\b.*(DSL/IR|Diagnostic IR|Header)"),
+        ("governed Layer B / burden execution surface", r"Layer B\b|Bounded Governed Response|Burden\s+\d+"),
+        ("canonical ACT-readable rows", r"⟦ACT\b"),
+        ("ACT body_ref tokens", r"\bbody_ref="),
+        ("Land surface", r"Land\("),
+        ("MRP / reread / terminal state surface", r"MRP\(|R\(H,|Mid-Reread|Terminal states"),
+        ("parser-stable field_witness", r"(?m)^\s*field_witness\b"),
+        ("normalized_activation_record / NAR evidence", r"normalized_activation_record|\bNAR\b"),
+        ("Restorative Response", r"(?im)^\s*(?:#+\s*)?Restorative Response\b"),
+        ("Closing Formulation", r"(?im)^\s*(?:#+\s*)?Closing Formulation\b"),
+    ]
+    for check_label, pattern in checks:
+        if re.search(pattern, text, re.IGNORECASE | re.MULTILINE) is None:
+            errors.append(f"{label}: stage-07 output {rel(output_path)} missing {check_label}")
+
+    forbidden_patterns = [
+        ("harness commentary", r"You are executing stage-|Validated compact stage state|Return exactly one JSON object"),
+        ("package/provenance claim", r"\bpackage/provenance\b|provenance asset|release package|\.skill\b|GitHub Release"),
+        ("guaranteed T_lang uptake claim", r"T_lang guarantees|guaranteed T_lang uptake|guarantees interlocutor uptake"),
+        ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
+    ]
+    for claim_label, pattern in forbidden_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            errors.append(f"{label}: stage-07 output {rel(output_path)} contains forbidden {claim_label}")
+    return errors
+
+
+def release_output_path_and_text(
+    record_path: Path,
+    stage07: dict[str, Any],
+) -> tuple[Path | None, str | None, list[str]]:
+    label = "stage-07 release_output"
+    release_output = stage07.get("release_output")
+    if not isinstance(release_output, dict):
+        return None, None, [f"{rel(record_path)}: {label} must be an object"]
+    errors: list[str] = []
+    missing = sorted({"path", "sha256"} - set(release_output))
+    if missing:
+        errors.append(f"{rel(record_path)}: {label} missing field(s): {missing}")
+    output_path, found = resolve_record_relative_path(record_path, release_output.get("path"), label)
+    errors.extend(found)
+    if output_path is None:
+        return None, None, errors
+    if not output_path.exists():
+        errors.append(f"{rel(record_path)}: {label}.path {rel(output_path)} missing")
+        return output_path, None, errors
+    expected_hash = release_output.get("sha256")
+    if isinstance(expected_hash, str) and SHA256_RE.fullmatch(expected_hash):
+        actual_hash = retained.sha256_file(output_path)
+        if expected_hash.upper() != actual_hash:
+            errors.append(f"{rel(record_path)}: {label}.sha256 expected {expected_hash.upper()} but found {actual_hash}")
+    text = output_path.read_text(encoding="utf-8", errors="replace")
+    return output_path, text, errors
+
+
+def stage07_release_errors(
+    label: str,
+    record_path: Path,
+    record: dict[str, Any],
+    stage05: dict[str, Any] | None,
+    stage07: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    forbidden = sorted(STAGE07_FORBIDDEN_FIELDS & set(stage07))
+    if forbidden:
+        errors.append(f"{label}: stage-07 must not emit verifier/sidecar/provenance field(s): {forbidden}")
+
+    output_path, output_text, found = release_output_path_and_text(record_path, stage07)
+    errors.extend(found)
+    visible_errors: list[str] = []
+    if output_path is not None and output_text is not None:
+        visible_errors = visible_governed_output_errors(label, output_path, output_text)
+
+    release_terminal_states = stage07.get("release_terminal_states")
+    if not isinstance(release_terminal_states, dict) or not release_terminal_states:
+        errors.append(f"{label}: stage-07 release_terminal_states must be a non-empty object")
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else None
+    if isinstance(terminal_states, dict) and terminal_states != release_terminal_states:
+        errors.append(f"{label}: stage-07 release_terminal_states must match stage-05 terminal_states")
+
+    closure_claim = stage07.get("closure_claim")
+    if closure_claim not in STAGE07_CLOSURE_CLAIMS:
+        errors.append(f"{label}: stage-07 closure_claim must be one of {sorted(STAGE07_CLOSURE_CLAIMS)}")
+    held_or_partial = False
+    if isinstance(terminal_states, dict):
+        held_or_partial = any(str(value) in HELD_TERMINAL_STATES for value in terminal_states.values())
+    if held_or_partial and closure_claim == "complete":
+        errors.append(f"{label}: stage-07 closure_claim must not be complete when Stage 05 held/partial states exist")
+
+    full_answer = stage07.get("output_is_full_governed_answer")
+    if full_answer is not True:
+        errors.append(f"{label}: stage-07 output_is_full_governed_answer must be true for a passing Stage 07 release-output record")
+    elif visible_errors:
+        errors.extend(visible_errors)
+
+    validation = stage07.get("release_validation")
+    mode = record.get("mode")
+    if mode in MODEL_MODES and not isinstance(validation, dict):
+        errors.append(f"{label}: model-mode stage-07 requires release_validation object")
+    if validation is not None:
+        if not isinstance(validation, dict):
+            errors.append(f"{label}: stage-07 release_validation must be an object when present")
+        else:
+            required = STAGE07_RELEASE_VALIDATION_KEYS
+            missing = sorted(required - set(validation))
+            if missing:
+                errors.append(f"{label}: stage-07 release_validation missing required key(s): {missing}")
+            allowed = required | STAGE07_OPTIONAL_VALIDATION_KEYS
+            unknown = sorted(set(validation) - allowed)
+            if unknown:
+                errors.append(f"{label}: stage-07 release_validation contains unknown key(s): {unknown}")
+            for key, value in validation.items():
+                if value != "pass":
+                    errors.append(f"{label}: stage-07 release_validation.{key} must be 'pass'")
+    return errors
+
+
 def generated_burden_ids(stage05: dict[str, Any]) -> tuple[set[str], list[str]]:
     raw = stage05.get("generated_burdens", [])
     if raw in (None, []):
@@ -1043,6 +1193,8 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
         errors.extend(stage05_mrp_errors(label, stage02, stage03, stage04, stage05))
     if stage06 is not None:
         errors.extend(stage06_witness_nar_errors(label, record, stage02, stage04, stage05, stage06))
+    if stage07 is not None:
+        errors.extend(stage07_release_errors(label, path, record, stage05, stage07))
     if stage05 is not None and isinstance(terminal_states, dict) and stage07 is not None and terminal_states != release_terminal_states:
         errors.append(f"{label}: stage-07 release_terminal_states must match stage-05 terminal_states")
 

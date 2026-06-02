@@ -54,6 +54,12 @@ FIELDS_BY_STAGE = {
         "normalized_activation_record_details",
         "register_deltas",
     ],
+    "stage-07-release-output": [
+        "release_terminal_states",
+        "closure_claim",
+        "output_is_full_governed_answer",
+        "release_validation",
+    ],
     "stage-08-verifier-sidecars": ["verifier_sidecars"],
 }
 
@@ -208,6 +214,10 @@ def is_empty_register_deltas(value: Any) -> bool:
     return False
 
 
+def release_validation_passes(value: Any) -> bool:
+    return isinstance(value, dict) and bool(value) and all(item == "pass" for item in value.values())
+
+
 def field_matches(stage_id: str, field: str, record_stage: dict[str, Any], replay_stage: dict[str, Any]) -> bool:
     record_raw = stage_field_value(stage_id, field, record_stage)
     replay_raw = stage_field_value(stage_id, field, replay_stage)
@@ -218,6 +228,9 @@ def field_matches(stage_id: str, field: str, record_stage: dict[str, Any], repla
         # a fresh Stage 06 retry emits parser-stable deltas. This is directional:
         # a richer replay target still requires the candidate to match it.
         if is_empty_register_deltas(replay_raw) and not is_empty_register_deltas(record_raw):
+            return True
+    if stage_id == "stage-07-release-output" and field == "release_validation":
+        if replay_raw is None and release_validation_passes(record_raw):
             return True
     return comparable_field(stage_id, field, record_raw) == comparable_field(stage_id, field, replay_raw)
 
@@ -437,6 +450,37 @@ def run_self_test() -> int:
     ):
         print("compare staged runtime replay self-test: FAIL")
         print("- Stage 06 field_witness_body_refs mismatch was not detected")
+        return 1
+    stage07_prefix = copy.deepcopy(replay)
+    stage07_ids = scoped_stage_ids("stage-07-release-output")
+    assert stage07_ids is not None
+    stage07_prefix["stage_order"] = stage07_ids
+    stage07_prefix["stages"] = [
+        stage
+        for stage in stage07_prefix.get("stages", [])
+        if isinstance(stage, dict) and stage.get("id") in stage07_ids
+    ]
+    stage_map(stage07_prefix)["stage-07-release-output"]["release_validation"] = {
+        "visible_opening_header": "pass",
+        "nla_semantic_faithfulness": "pass",
+        "field_witness_convergence": "pass",
+        "formal_reread_state_semantics": "pass",
+        "graph_completeness_json": "pass",
+        "manual_smoke_render_contract": "pass",
+        "owner_activation_ordering": "pass",
+    }
+    if compare_records(stage07_prefix, replay, through_stage="stage-07-release-output"):
+        print("compare staged runtime replay self-test: FAIL")
+        print("- Stage 07 fresh release_validation should compare to historical retained replay")
+        return 1
+    stage07_mismatch = copy.deepcopy(stage07_prefix)
+    stage_map(stage07_mismatch)["stage-07-release-output"]["closure_claim"] = "partial"
+    if not any(
+        "stage-07-release-output.closure_claim" in item
+        for item in compare_records(stage07_mismatch, replay, through_stage="stage-07-release-output")
+    ):
+        print("compare staged runtime replay self-test: FAIL")
+        print("- Stage 07 closure_claim mismatch was not detected")
         return 1
     with tempfile.TemporaryDirectory() as tmp:
         report = Path(tmp) / "comparison.md"

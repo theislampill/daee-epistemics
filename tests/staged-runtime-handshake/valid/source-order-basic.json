@@ -116,8 +116,8 @@
       "produces": ["release_output", "release_terminal_states"],
       "requires": ["field_witness_body_refs", "nar_burdens"],
       "release_output": {
-        "path": "tests/staged-runtime-handshake/valid/source-order-basic.output.md",
-        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
+        "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"
       },
       "release_terminal_states": {
         "B1": "landed"
