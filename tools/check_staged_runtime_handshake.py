@@ -255,11 +255,44 @@ def stage_map(record: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def failed_model_prefix_order(record: dict[str, Any]) -> list[str] | None:
+    """Return completed stage prefix for explicit failed model records.
+
+    This is for historical negative-evidence records only. It lets the checker
+    verify the completed prefix without pretending downstream stages exist.
+    """
+    if record.get("mode") not in MODEL_MODES:
+        return None
+    failure = record.get("failure")
+    if not isinstance(failure, str) or not failure.strip():
+        return None
+    if record.get("stage_scope") is not None:
+        return None
+    stage_items = record.get("stages")
+    if not isinstance(stage_items, list) or not stage_items:
+        return None
+    stage_ids: list[str] = []
+    for stage in stage_items:
+        if not isinstance(stage, dict):
+            return None
+        stage_id = stage.get("id")
+        if not isinstance(stage_id, str):
+            return None
+        stage_ids.append(stage_id)
+    expected = STAGE_ORDER[: len(stage_ids)]
+    if stage_ids != expected or len(stage_ids) >= len(STAGE_ORDER):
+        return None
+    return expected
+
+
 def expected_stage_order(path: Path, record: dict[str, Any]) -> tuple[list[str], list[str]]:
     label = rel(path)
     mode = record.get("mode")
     stage_scope = record.get("stage_scope")
     if stage_scope is None:
+        failed_prefix = failed_model_prefix_order(record)
+        if failed_prefix is not None:
+            return failed_prefix, []
         return list(STAGE_ORDER), []
     errors: list[str] = []
     if mode != STAGE_LOCAL_MODEL_MODE:
@@ -294,9 +327,11 @@ def sequence_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     label = rel(path)
     expected_order, found = expected_stage_order(path, record)
     errors.extend(found)
+    failed_prefix = failed_model_prefix_order(record)
     stage_order = record.get("stage_order")
     if stage_order != expected_order:
-        errors.append(f"{label}: stage_order must contain the required stages exactly once and in order")
+        if not (failed_prefix is not None and stage_order == STAGE_ORDER):
+            errors.append(f"{label}: stage_order must contain the required stages exactly once and in order")
 
     stage_items = record.get("stages")
     if not isinstance(stage_items, list):
@@ -328,6 +363,7 @@ def handoff_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[st
     errors: list[str] = []
     expected_order, found = expected_stage_order(path, record)
     errors.extend(found)
+    failed_prefix = failed_model_prefix_order(record)
     expected_pairs = {
         pair
         for pair in HANDOFF_CHECKS
@@ -344,6 +380,8 @@ def handoff_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[st
         pair = (source, target)
         if not isinstance(source, str) or not isinstance(target, str):
             errors.append(f"{hlabel}: from/to must be strings")
+            continue
+        if failed_prefix is not None and (source not in expected_order or target not in expected_order):
             continue
         if source not in stages:
             errors.append(f"{hlabel}: from references unknown stage {source!r}")
@@ -1168,6 +1206,8 @@ def stage04_act_errors(
     label: str,
     stage03: dict[str, Any] | None,
     stage04: dict[str, Any],
+    *,
+    allow_descriptive_burdens: bool = False,
 ) -> list[str]:
     errors: list[str] = []
     raw_targets = stage04.get("act_targets")
@@ -1197,7 +1237,7 @@ def stage04_act_errors(
                 noncanonical_burdens.append(value)
         if unparseable_burdens:
             errors.append(f"{label}: stage-04 act_burdens must name routed canonical burden ids: {unparseable_burdens}")
-        if noncanonical_burdens:
+        if noncanonical_burdens and not allow_descriptive_burdens:
             errors.append(
                 f"{label}: stage-04 act_burdens must use canonical ids, not descriptive labels: {noncanonical_burdens}"
             )
@@ -1347,7 +1387,14 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     if stage02 is not None and stage03 is not None and route_targets != burden_floor:
         errors.append(f"{label}: stage-03 route_targets must match stage-02 burden_floor")
     if stage04 is not None:
-        errors.extend(stage04_act_errors(label, stage03, stage04))
+        errors.extend(
+            stage04_act_errors(
+                label,
+                stage03,
+                stage04,
+                allow_descriptive_burdens=failed_model_prefix_order(record) is not None,
+            )
+        )
     if stage03 is not None and stage04 is not None and act_targets != route_targets:
         errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
 

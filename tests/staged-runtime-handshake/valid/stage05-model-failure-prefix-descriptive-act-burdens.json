@@ -1,0 +1,119 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage05-model-failure-prefix-descriptive-act-burdens",
+  "mode": "staged-current-skill-smoke",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar",
+    "stage-07-release-output",
+    "stage-08-verifier-sidecars"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1"],
+      "selected_n_frame": "source-order",
+      "live_registers": ["xi"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1"],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair"
+        }
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1"],
+      "act_burdens": ["1B / B1 source-order diagnostic burden"],
+      "act_body_refs": ["B1_1"],
+      "act_rows": [
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"],
+      "requires": ["act_rows"],
+      "terminal_states": {
+        "B1": "landed"
+      },
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": true
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": ["input_boundary_preserved"],
+      "status": "pass"
+    },
+    {
+      "from": "stage-02-layer-a-diagnostic-ir",
+      "to": "stage-03-routing-owner-gate",
+      "checks": ["burden_floor_to_route_targets", "live_registers_present", "n_frame_present"],
+      "status": "pass"
+    },
+    {
+      "from": "stage-03-routing-owner-gate",
+      "to": "stage-04-burden-execution-act",
+      "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"],
+      "status": "pass"
+    },
+    {
+      "from": "stage-04-burden-execution-act",
+      "to": "stage-05-mrp-reread-terminal-state",
+      "checks": ["act_body_refs_present", "act_rows_present"],
+      "status": "pass"
+    },
+    {
+      "from": "stage-05-mrp-reread-terminal-state",
+      "to": "stage-06-field-witness-nar",
+      "checks": ["dependency_graph_explicit", "terminal_states_to_field_witness"],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-smoke",
+    "case_count": 1,
+    "case_family": "stage05-model-failure-prefix",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  },
+  "failure": "stage-05 terminal_states missing ACT burden(s) before checker-side failure-prefix normalization"
+}
