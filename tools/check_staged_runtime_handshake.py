@@ -160,6 +160,7 @@ REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
+CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 
 
 def rel(path: Path) -> str:
@@ -195,6 +196,49 @@ def as_string_list(value: Any) -> list[str] | None:
     if not all(isinstance(item, str) and item for item in value):
         return None
     return list(value)
+
+
+def ordered_unique(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
+def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
+    text = value.strip()
+    if (allowed_ids is None or text in allowed_ids) and CANONICAL_BURDEN_ID_RE.fullmatch(text):
+        return text
+    matches = ordered_unique([f"B{match.group(1)}" for match in CANONICAL_BURDEN_ID_RE.finditer(text)])
+    if allowed_ids is not None:
+        matches = [match for match in matches if match in allowed_ids]
+    return matches[0] if len(matches) == 1 else None
+
+
+def canonical_burden_ids_from_strings(values: list[str], allowed_ids: set[str] | None = None) -> list[str] | None:
+    result: list[str] = []
+    for value in values:
+        burden_id = canonical_burden_id_from_text(value, allowed_ids)
+        if burden_id is None:
+            return None
+        result.append(burden_id)
+    return ordered_unique(result)
+
+
+def canonical_stage04_act_burdens(stage04: dict[str, Any] | None) -> set[str]:
+    if not isinstance(stage04, dict):
+        return set()
+    act_targets = set(list_field(stage04, "act_targets"))
+    raw = as_string_list(stage04.get("act_burdens"))
+    if raw:
+        canonical = canonical_burden_ids_from_strings(raw, act_targets or None)
+        if canonical is not None:
+            return set(canonical)
+        return set(raw)
+    return act_targets
 
 
 def stage_map(record: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -569,7 +613,7 @@ def stage06_witness_nar_errors(
         errors.append(f"{label}: stage-06 must not emit release/final/verifier field(s): {forbidden}")
 
     act_body_refs = list_field(stage04 or {}, "act_body_refs")
-    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    act_burdens = canonical_stage04_act_burdens(stage04)
     burden_floor = set(list_field(stage02 or {}, "burden_floor"))
     terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
     terminal_burdens = set(terminal_states) if isinstance(terminal_states, dict) else set()
@@ -943,7 +987,7 @@ def stage05_mrp_errors(
     if forbidden:
         errors.append(f"{label}: stage-05 must not emit release/final/verifier field(s): {forbidden}")
 
-    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    act_burdens = canonical_stage04_act_burdens(stage04)
     known_burdens = (
         set(list_field(stage02 or {}, "burden_floor"))
         | set(list_field(stage03 or {}, "route_targets"))
@@ -1141,6 +1185,22 @@ def stage04_act_errors(
     if act_burdens is None or not act_burdens:
         errors.append(f"{label}: stage-04 act_burdens must be a non-empty string list")
         act_burdens = []
+    else:
+        allowed_ids = set(act_targets) if act_targets else None
+        noncanonical_burdens: list[str] = []
+        unparseable_burdens: list[str] = []
+        for value in act_burdens:
+            canonical = canonical_burden_id_from_text(value, allowed_ids)
+            if canonical is None:
+                unparseable_burdens.append(value)
+            elif value != canonical:
+                noncanonical_burdens.append(value)
+        if unparseable_burdens:
+            errors.append(f"{label}: stage-04 act_burdens must name routed canonical burden ids: {unparseable_burdens}")
+        if noncanonical_burdens:
+            errors.append(
+                f"{label}: stage-04 act_burdens must use canonical ids, not descriptive labels: {noncanonical_burdens}"
+            )
     if act_body_refs is None or not act_body_refs:
         errors.append(f"{label}: stage-04 act_body_refs must be a non-empty string list")
         act_body_refs = []
@@ -1148,7 +1208,8 @@ def stage04_act_errors(
         errors.append(f"{label}: stage-04 act_rows must be a non-empty string list")
         act_rows = []
 
-    missing_burdens = sorted(set(act_targets) - set(act_burdens))
+    semantic_act_burdens = canonical_stage04_act_burdens(stage04)
+    missing_burdens = sorted(set(act_targets) - semantic_act_burdens)
     if missing_burdens:
         errors.append(f"{label}: stage-04 act_burdens missing act target(s): {missing_burdens}")
     duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
@@ -1246,7 +1307,7 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     act_targets = set(list_field(stage04 or {}, "act_targets"))
     act_body_refs = set(list_field(stage04 or {}, "act_body_refs"))
     field_witness_body_refs = set(list_field(stage06 or {}, "field_witness_body_refs"))
-    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    act_burdens = canonical_stage04_act_burdens(stage04)
     nar_burdens = set(list_field(stage06 or {}, "nar_burdens"))
 
     if stage02 is not None and not burden_floor:
@@ -1257,8 +1318,18 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
             errors.append(f"{label}: stage-03 route_targets must be a string list")
         details = stage03.get("route_target_details")
         if details is not None:
-            if not isinstance(details, list):
-                errors.append(f"{label}: stage-03 route_target_details must be a list when present")
+            if isinstance(details, dict):
+                for burden_id, detail in details.items():
+                    if not isinstance(burden_id, str) or not burden_id:
+                        errors.append(f"{label}: stage-03 route_target_details keys must be burden ids")
+                    elif burden_id not in route_targets:
+                        errors.append(
+                            f"{label}: stage-03 route_target_details[{burden_id!r}] must appear in route_targets"
+                        )
+                    if not isinstance(detail, dict):
+                        errors.append(f"{label}: stage-03 route_target_details[{burden_id!r}] must be an object")
+            elif not isinstance(details, list):
+                errors.append(f"{label}: stage-03 route_target_details must be a list or burden-id map when present")
             else:
                 for index, detail in enumerate(details):
                     if not isinstance(detail, dict):

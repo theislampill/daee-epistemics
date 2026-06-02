@@ -59,6 +59,7 @@ STAGE_ORDER = [
 ]
 
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 STAGE07_RELEASE_VALIDATION_KEYS = {
     "visible_opening_header",
     "nla_semantic_faithfulness",
@@ -121,7 +122,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "instructions": (
             "Produce canonical ACT handoff evidence for the routed burdens. "
             "`act_targets`, `act_burdens`, `act_body_refs`, and `act_rows` must be JSON "
-            "arrays of strings. Every ACT row must be an exact canonical row beginning "
+            "arrays of strings. `act_targets` and `act_burdens` must use canonical "
+            "burden-id strings only, such as [\"B1\"], not descriptive burden labels. "
+            "Every ACT row must be an exact canonical row beginning "
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
             "`⟧`. If richer per-row metadata is useful, put it in optional "
             "`act_row_details`; do not put objects in `act_rows` unless each object "
@@ -412,6 +415,17 @@ def non_empty_string(value: Any) -> str | None:
     return value if isinstance(value, str) and value.strip() else None
 
 
+def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
+    text = value.strip()
+    if allowed_ids is None or text in allowed_ids:
+        if CANONICAL_BURDEN_ID_RE.fullmatch(text):
+            return text
+    matches = ordered_unique([f"B{match.group(1)}" for match in CANONICAL_BURDEN_ID_RE.finditer(text)])
+    if allowed_ids is not None:
+        matches = [match for match in matches if match in allowed_ids]
+    return matches[0] if len(matches) == 1 else None
+
+
 def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
     normalization = normalization_object(stage)
 
@@ -567,13 +581,57 @@ def normalize_string_list(stage: dict[str, Any], key: str, *, required: bool) ->
     return normalized
 
 
+def normalize_stage04_burden_ids(
+    stage: dict[str, Any],
+    key: str,
+    *,
+    allowed_ids: set[str],
+    normalization: dict[str, Any],
+) -> list[str]:
+    value = stage.get(key)
+    if not isinstance(value, list) or not value:
+        raise HarnessError(f"stage-04 {key} must be a non-empty burden-id list")
+
+    canonical: list[str] = []
+    details: list[dict[str, Any]] = []
+    for index, item in enumerate(value):
+        if isinstance(item, str) and item.strip():
+            burden_id = canonical_burden_id_from_text(item, allowed_ids)
+            if burden_id is None:
+                raise HarnessError(f"stage-04 {key}[{index}] cannot be normalized to a routed burden id")
+            canonical.append(burden_id)
+            if item.strip() != burden_id:
+                details.append({"raw": item, "burden_id": burden_id})
+        elif isinstance(item, dict):
+            burden_id = non_empty_string(item.get("burden_id") or item.get("id"))
+            if burden_id is None:
+                raise HarnessError(f"stage-04 {key}[{index}] object cannot be normalized without a string burden_id")
+            burden_id = burden_id.strip()
+            if burden_id not in allowed_ids:
+                raise HarnessError(f"stage-04 {key}[{index}] burden_id is not routed: {burden_id}")
+            canonical.append(burden_id)
+            details.append(dict(item))
+        else:
+            raise HarnessError(f"stage-04 {key} must contain burden-id strings or burden objects")
+
+    stage[key] = ordered_unique(canonical)
+    if details:
+        stage[f"{key}_details"] = details
+        normalization[f"{key}_normalized_to_canonical_ids"] = True
+        normalization[f"canonical_{key}"] = list(stage[key])
+    return stage[key]
+
+
 def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
-    normalize_string_list(stage, "act_targets", required=True)
-    normalize_string_list(stage, "act_burdens", required=True)
+    act_targets = normalize_string_list(stage, "act_targets", required=True)
+    normalization = normalization_object(stage)
+    normalize_stage04_burden_ids(
+        stage,
+        "act_burdens",
+        allowed_ids=set(act_targets),
+        normalization=normalization,
+    )
     raw_rows = stage.get("act_rows")
-    normalization = stage.get("normalization")
-    if not isinstance(normalization, dict):
-        normalization = {}
 
     if isinstance(raw_rows, list) and raw_rows and all(isinstance(item, str) and item for item in raw_rows):
         act_rows = ordered_unique(list(raw_rows))
@@ -1530,6 +1588,35 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    normalized_stage04_rich_burdens = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["¹B / B1 source-order diagnostic burden"],
+            "act_rows": [canonical_act_row],
+        },
+    )
+    if normalized_stage04_rich_burdens.get("act_burdens") != ["B1"]:
+        raise HarnessError("Self-test failed to normalize rich Stage 04 act_burdens into burden ids")
+    if not isinstance(normalized_stage04_rich_burdens.get("act_burdens_details"), list):
+        raise HarnessError("Self-test failed to preserve rich Stage 04 act_burdens details")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["source-order diagnostic burden without canonical id"],
+                "act_rows": [canonical_act_row],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 04 act_burdens without canonical id")
     try:
         normalized_stage(
             "stage-04-burden-execution-act",
@@ -1606,6 +1693,34 @@ def run_self_test(root: Path) -> int:
     stage05_local_path = run_dir / "staged-handoff-stage05-model-scope-record.json"
     write_json(stage05_local_path, stage05_local_record)
     validate_replay_record(root, stage05_local_path)
+
+    rich_stage04_handoff_record = base_record(
+        "self-test-stage04-rich-burdens-to-stage05",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-05-mrp-reread-terminal-state",
+        model_scope_payload=model_scope(
+            "self-test-stage04-rich-burdens-to-stage05",
+            replay_record,
+            stop_after_stage="stage-05-mrp-reread-terminal-state",
+        ),
+    )
+    rich_stage03_detail_map = dict(replay["stages"][2])
+    rich_stage03_detail_map["route_target_details"] = {
+        "B1": {
+            "route_pressure": "source-order diagnostic burden",
+            "backing": "self-test detail map keyed by canonical burden id",
+        }
+    }
+    rich_stage04_handoff_record["stages"] = [
+        *replay["stages"][:2],
+        rich_stage03_detail_map,
+        normalized_stage04_rich_burdens,
+        normalized_stage05,
+    ]
+    rich_stage04_handoff_path = run_dir / "stage04-rich-burdens-stage05-handoff.valid.json"
+    write_json(rich_stage04_handoff_path, rich_stage04_handoff_record)
+    validate_replay_record(root, rich_stage04_handoff_path)
 
     generated_missing_terminal = dict(stage05_local_record)
     generated_missing_terminal["case_id"] = "self-test-stage05-generated-missing-terminal"
