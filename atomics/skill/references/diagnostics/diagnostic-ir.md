@@ -909,6 +909,21 @@ contract permits a diagnostic or audit-style response.
   boundary evidence where those fields are present. It is a field-witness-equivalent projection
   scaffold, not a standalone natural-language parser, not default hard-register emission, not a
   package/provenance claim, and not guaranteed `T_lang` uptake.
+- Strict projection-shape rule: proof-mode/full-IR output is invalid if it emits prose-shaped or
+  abbreviated substitutes for the checker-owned objects. The exact stack is
+  `canonical_ir_projection` (`schema`, `n_frame`, `live_registers`, `burden_floor`,
+  `per_burden`, `diagnostic_completeness`), `proof_mode` (`schema`, `mode`,
+  `source_evidence`, `machine_facing`, `schema_light_absent_valid`, `requires_decoded_ir`,
+  `visible_opening_header_preserved`, `arbitrary_nl_ir_parser_claim`,
+  `default_runtime_emission_claim`, `t_lang_uptake_claim`), `decoded_ir` (`schema`,
+  `source_evidence`, `n_frame`, `live_registers`, `burden_floor`, `per_burden`,
+  `diagnostic_completeness`), and `full_ir_decode` (`schema`, `source_evidence`, `n_frame`,
+  `live_registers`, `burden_floor`, `B_LA`, `B_MRP`, `B_total`, `dependency_graph`,
+  `terminal_states`, `diagnostic_completeness`, `per_burden`, `generated_burdens`,
+  `formal_reread`, `source_basis`). If the exact stack cannot be populated from visible ACT rows,
+  field_witness, NAR, formal reread, and source evidence, omit proof-mode/full-IR or mark
+  HOLD/PARTIAL; do not emit run-log summaries, claim labels, or prose-named fields as a
+  substitute.
 - B.5.3 proof-mode adoption marker: a projection-bearing artifact that elects the full-IR
   proof-mode path MUST also emit `field_witness.canonical_ir_projection.proof_mode` with
   `schema: "b5-full-ir-proof-mode-v1"`. The marker is machine-facing and states the selected
