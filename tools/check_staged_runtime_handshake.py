@@ -71,13 +71,26 @@ HANDOFF_CHECKS: dict[tuple[str, str], set[str]] = {
         "release_to_verifier_sidecars",
     },
 }
-REQUIRED_NON_CLAIMS = {
+NO_MODEL_MODES = {"no-model-fixture", "retained-artifact-replay", "self-test-no-model"}
+MODEL_MODES = {"staged-current-skill-smoke", "staged-current-skill-stage-local-smoke"}
+STAGE_LOCAL_MODEL_MODE = "staged-current-skill-stage-local-smoke"
+NO_MODEL_REQUIRED_NON_CLAIMS = {
     "not_model_smoke",
     "not_runtime_default_emission_proof",
     "not_arbitrary_nl_ir_parser",
     "not_package_provenance",
     "not_guaranteed_t_lang_uptake",
 }
+MODEL_REQUIRED_NON_CLAIMS = {
+    "not_broad_model_behavior",
+    "not_broad_model_matrix",
+    "not_runtime_default_emission_proof",
+    "not_arbitrary_nl_ir_parser",
+    "not_package_provenance",
+    "not_guaranteed_t_lang_uptake",
+    "not_graphify_or_activegraph_proof",
+}
+MODEL_SCOPE_TYPES = {"focused-current-skill-smoke", "focused-current-skill-stage-smoke"}
 PASS_STATUS = {"pass", "held", "partial"}
 HELD_TERMINAL_STATES = {"hold_partial", "held", "held-with-reason", "partial", "carried-PARTIAL"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
@@ -132,23 +145,50 @@ def stage_map(record: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def expected_stage_order(path: Path, record: dict[str, Any]) -> tuple[list[str], list[str]]:
+    label = rel(path)
+    mode = record.get("mode")
+    stage_scope = record.get("stage_scope")
+    if stage_scope is None:
+        return list(STAGE_ORDER), []
+    errors: list[str] = []
+    if mode != STAGE_LOCAL_MODEL_MODE:
+        errors.append(f"{label}: stage_scope is only valid for {STAGE_LOCAL_MODEL_MODE}")
+        return list(STAGE_ORDER), errors
+    if not isinstance(stage_scope, dict):
+        return list(STAGE_ORDER), [f"{label}: stage_scope must be an object"]
+    stop_after = stage_scope.get("stop_after_stage")
+    if stop_after not in STAGE_ORDER:
+        return list(STAGE_ORDER), [f"{label}: stage_scope.stop_after_stage must name a known stage"]
+    expected = STAGE_ORDER[: STAGE_ORDER.index(stop_after) + 1]
+    if stage_scope.get("stage_count") != len(expected):
+        errors.append(f"{label}: stage_scope.stage_count must match stop_after_stage prefix length")
+    if stage_scope.get("not_release_output") is not True:
+        errors.append(f"{label}: stage_scope.not_release_output must be true")
+    if stage_scope.get("not_verifier_sidecars") is not True:
+        errors.append(f"{label}: stage_scope.not_verifier_sidecars must be true")
+    return expected, errors
+
+
 def sequence_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[str, Any]]) -> list[str]:
     errors: list[str] = []
     label = rel(path)
+    expected_order, found = expected_stage_order(path, record)
+    errors.extend(found)
     stage_order = record.get("stage_order")
-    if stage_order != STAGE_ORDER:
+    if stage_order != expected_order:
         errors.append(f"{label}: stage_order must contain the required stages exactly once and in order")
 
     stage_items = record.get("stages")
     if not isinstance(stage_items, list):
         return errors + [f"{label}: stages must be a list"]
     stage_ids = [stage.get("id") if isinstance(stage, dict) else None for stage in stage_items]
-    if stage_ids != STAGE_ORDER:
+    if stage_ids != expected_order:
         errors.append(f"{label}: stages must contain the required stage records exactly once and in order")
     if len(stages) != len(stage_items):
         errors.append(f"{label}: stages contain duplicate or malformed ids")
 
-    for stage_id in STAGE_ORDER:
+    for stage_id in expected_order:
         stage = stages.get(stage_id)
         if stage is None:
             continue
@@ -167,6 +207,13 @@ def handoff_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[st
     if not isinstance(handoffs, list):
         return [f"{label}: handoffs must be a list"]
     errors: list[str] = []
+    expected_order, found = expected_stage_order(path, record)
+    errors.extend(found)
+    expected_pairs = {
+        pair
+        for pair in HANDOFF_CHECKS
+        if pair[0] in expected_order and pair[1] in expected_order
+    }
     seen: set[tuple[str, str]] = set()
     for index, handoff in enumerate(handoffs):
         hlabel = f"{label}: handoffs[{index}]"
@@ -192,14 +239,47 @@ def handoff_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[st
         if expected is None:
             errors.append(f"{hlabel}: handoff pair is not part of the staged contract")
             continue
+        if pair not in expected_pairs:
+            errors.append(f"{hlabel}: handoff pair is outside the scoped staged contract")
+            continue
         missing = sorted(expected - set(checks))
         if missing and handoff.get("status") == "pass":
             errors.append(f"{hlabel}: pass handoff missing required check(s): {missing}")
         if handoff.get("status") not in PASS_STATUS and handoff.get("status") != "fail":
             errors.append(f"{hlabel}: status must be pass, held, partial, or fail")
-    for pair in HANDOFF_CHECKS:
+    for pair in expected_pairs:
         if pair not in seen:
             errors.append(f"{label}: missing required handoff {pair[0]} -> {pair[1]}")
+    return errors
+
+
+def model_scope_errors(path: Path, record: dict[str, Any]) -> list[str]:
+    label = rel(path)
+    scope = record.get("model_scope")
+    if not isinstance(scope, dict):
+        return [f"{label}: model_scope must be an object for model-mode staged records"]
+    errors: list[str] = []
+    scope_type = scope.get("type")
+    if scope_type not in MODEL_SCOPE_TYPES:
+        errors.append(f"{label}: model_scope.type must be one of {sorted(MODEL_SCOPE_TYPES)}")
+    if record.get("mode") == STAGE_LOCAL_MODEL_MODE and scope_type != "focused-current-skill-stage-smoke":
+        errors.append(f"{label}: stage-local model smoke requires model_scope.type='focused-current-skill-stage-smoke'")
+    if scope.get("case_count") != 1:
+        errors.append(f"{label}: model_scope.case_count must be 1")
+    if not isinstance(scope.get("case_family"), str) or not scope["case_family"].strip():
+        errors.append(f"{label}: model_scope.case_family must be a non-empty string")
+    replay_target = scope.get("retained_replay_target")
+    if not isinstance(replay_target, str):
+        errors.append(f"{label}: model_scope.retained_replay_target must be a relative path string")
+    else:
+        errors.extend(relative_path_errors(path, replay_target, "model_scope.retained_replay_target"))
+        resolved = (ROOT / replay_target).resolve()
+        try:
+            resolved.relative_to(ROOT.resolve())
+        except ValueError:
+            errors.append(f"{label}: model_scope.retained_replay_target must resolve inside the repo")
+        if not resolved.exists():
+            errors.append(f"{label}: model_scope.retained_replay_target does not exist")
     return errors
 
 
@@ -209,10 +289,21 @@ def non_claim_errors(path: Path, record: dict[str, Any]) -> list[str]:
     if not isinstance(non_claims, dict):
         return [f"{label}: must be an object"]
     errors: list[str] = []
-    missing = sorted(REQUIRED_NON_CLAIMS - set(non_claims))
+    mode = record.get("mode")
+    if mode in NO_MODEL_MODES:
+        required = NO_MODEL_REQUIRED_NON_CLAIMS
+    elif mode in MODEL_MODES:
+        required = MODEL_REQUIRED_NON_CLAIMS
+        errors.extend(model_scope_errors(path, record))
+        if non_claims.get("not_model_smoke") is True:
+            errors.append(f"{label}.not_model_smoke: must not be true for model-mode staged records")
+    else:
+        errors.append(f"{rel(path)}: mode is not a recognized staged-runtime handshake mode")
+        required = NO_MODEL_REQUIRED_NON_CLAIMS
+    missing = sorted(required - set(non_claims))
     if missing:
         errors.append(f"{label}: missing required non-claim(s): {missing}")
-    for key in sorted(REQUIRED_NON_CLAIMS):
+    for key in sorted(required):
         if non_claims.get(key) is not True:
             errors.append(f"{label}.{key}: must be true")
     return errors
@@ -283,50 +374,70 @@ def list_field(stage: dict[str, Any], key: str) -> list[str]:
 def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
     label = rel(path)
     errors: list[str] = []
-    stage02 = stages.get("stage-02-layer-a-diagnostic-ir", {})
-    stage03 = stages.get("stage-03-routing-owner-gate", {})
-    stage04 = stages.get("stage-04-burden-execution-act", {})
-    stage05 = stages.get("stage-05-mrp-reread-terminal-state", {})
-    stage06 = stages.get("stage-06-field-witness-nar", {})
-    stage07 = stages.get("stage-07-release-output", {})
-    stage08 = stages.get("stage-08-verifier-sidecars", {})
+    stage02 = stages.get("stage-02-layer-a-diagnostic-ir")
+    stage03 = stages.get("stage-03-routing-owner-gate")
+    stage04 = stages.get("stage-04-burden-execution-act")
+    stage05 = stages.get("stage-05-mrp-reread-terminal-state")
+    stage06 = stages.get("stage-06-field-witness-nar")
+    stage07 = stages.get("stage-07-release-output")
+    stage08 = stages.get("stage-08-verifier-sidecars")
 
-    burden_floor = set(list_field(stage02, "burden_floor"))
-    route_targets = set(list_field(stage03, "route_targets"))
-    act_targets = set(list_field(stage04, "act_targets"))
-    act_body_refs = set(list_field(stage04, "act_body_refs"))
-    field_witness_body_refs = set(list_field(stage06, "field_witness_body_refs"))
-    act_burdens = set(list_field(stage04, "act_burdens") or list_field(stage04, "act_targets"))
-    nar_burdens = set(list_field(stage06, "nar_burdens"))
+    burden_floor = set(list_field(stage02 or {}, "burden_floor"))
+    route_targets = set(list_field(stage03 or {}, "route_targets"))
+    act_targets = set(list_field(stage04 or {}, "act_targets"))
+    act_body_refs = set(list_field(stage04 or {}, "act_body_refs"))
+    field_witness_body_refs = set(list_field(stage06 or {}, "field_witness_body_refs"))
+    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    nar_burdens = set(list_field(stage06 or {}, "nar_burdens"))
 
-    if not burden_floor:
+    if stage02 is not None and not burden_floor:
         errors.append(f"{label}: stage-02 burden_floor is required")
-    if not route_targets:
+    if stage03 is not None:
+        raw_route_targets = stage03.get("route_targets")
+        if as_string_list(raw_route_targets) is None:
+            errors.append(f"{label}: stage-03 route_targets must be a string list")
+        details = stage03.get("route_target_details")
+        if details is not None:
+            if not isinstance(details, list):
+                errors.append(f"{label}: stage-03 route_target_details must be a list when present")
+            else:
+                for index, detail in enumerate(details):
+                    if not isinstance(detail, dict):
+                        errors.append(f"{label}: stage-03 route_target_details[{index}] must be an object")
+                        continue
+                    burden_id = detail.get("burden_id")
+                    if not isinstance(burden_id, str) or not burden_id:
+                        errors.append(f"{label}: stage-03 route_target_details[{index}].burden_id must be a string")
+                    elif burden_id not in route_targets:
+                        errors.append(
+                            f"{label}: stage-03 route_target_details[{index}].burden_id must appear in route_targets"
+                        )
+    if stage03 is not None and not route_targets:
         errors.append(f"{label}: stage-03 route_targets is required")
-    if route_targets != burden_floor:
+    if stage02 is not None and stage03 is not None and route_targets != burden_floor:
         errors.append(f"{label}: stage-03 route_targets must match stage-02 burden_floor")
-    if act_targets != route_targets:
+    if stage03 is not None and stage04 is not None and act_targets != route_targets:
         errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
-    if act_body_refs != field_witness_body_refs:
+    if stage04 is not None and stage06 is not None and act_body_refs != field_witness_body_refs:
         errors.append(f"{label}: stage-06 field_witness_body_refs must match stage-04 act_body_refs")
-    missing_nar = sorted(act_burdens - nar_burdens)
+    missing_nar = sorted(act_burdens - nar_burdens) if stage04 is not None and stage06 is not None else []
     if missing_nar:
         errors.append(f"{label}: stage-06 nar_burdens missing ACT burden(s): {missing_nar}")
 
-    terminal_states = stage05.get("terminal_states")
-    release_terminal_states = stage07.get("release_terminal_states")
-    if not isinstance(terminal_states, dict) or not terminal_states:
+    terminal_states = stage05.get("terminal_states") if stage05 is not None else None
+    release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None
+    if stage05 is not None and (not isinstance(terminal_states, dict) or not terminal_states):
         errors.append(f"{label}: stage-05 terminal_states must be a non-empty object")
-    elif terminal_states != release_terminal_states:
+    elif stage05 is not None and stage07 is not None and terminal_states != release_terminal_states:
         errors.append(f"{label}: stage-07 release_terminal_states must match stage-05 terminal_states")
 
     held_or_partial = any(stage.get("status") in {"held", "partial"} for stage in stages.values())
     if isinstance(terminal_states, dict):
         held_or_partial = held_or_partial or any(str(value) in HELD_TERMINAL_STATES for value in terminal_states.values())
-    if held_or_partial and stage07.get("closure_claim") == "complete":
+    if held_or_partial and stage07 is not None and stage07.get("closure_claim") == "complete":
         errors.append(f"{label}: release must not claim complete closure after held/partial stage state")
 
-    verifier_sidecars = stage08.get("verifier_sidecars")
+    verifier_sidecars = stage08.get("verifier_sidecars") if stage08 is not None else None
     if isinstance(verifier_sidecars, dict):
         b5 = verifier_sidecars.get("b5_4_1")
         if isinstance(b5, dict) and b5.get("claimed") is True:

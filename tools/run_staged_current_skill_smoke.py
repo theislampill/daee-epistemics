@@ -80,7 +80,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "requires": ["burden_floor"],
         "instructions": (
             "Route the burden floor to owner/TTP eligibility. Do not activate an owner "
-            "unless the route is backed."
+            "unless the route is backed. The canonical `route_targets` field must be a "
+            "JSON array of burden-id strings only, such as [\"B1\"]. If richer routing "
+            "metadata is useful, put it in optional `route_target_details`; do not put "
+            "objects in `route_targets`."
         ),
     },
     "stage-04-burden-execution-act": {
@@ -157,12 +160,22 @@ HANDOFFS = [
     },
 ]
 
-NON_CLAIMS = {
-    "not_model_smoke": False,
+NO_MODEL_NON_CLAIMS = {
+    "not_model_smoke": True,
     "not_runtime_default_emission_proof": True,
     "not_arbitrary_nl_ir_parser": True,
     "not_package_provenance": True,
     "not_guaranteed_t_lang_uptake": True,
+}
+MODEL_NON_CLAIMS = {
+    "not_model_smoke": False,
+    "not_broad_model_behavior": True,
+    "not_broad_model_matrix": True,
+    "not_runtime_default_emission_proof": True,
+    "not_arbitrary_nl_ir_parser": True,
+    "not_package_provenance": True,
+    "not_guaranteed_t_lang_uptake": True,
+    "not_graphify_or_activegraph_proof": True,
 }
 
 
@@ -308,7 +321,46 @@ def normalized_stage(stage_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     if spec is not None:
         stage["produces"] = spec["produces"]
         stage["requires"] = spec["requires"]
+    if stage_id == "stage-03-routing-owner-gate":
+        normalize_stage03_route_targets(stage)
     return stage
+
+
+def ordered_unique(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+
+def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
+    route_targets = stage.get("route_targets")
+    if isinstance(route_targets, list) and all(isinstance(item, str) and item for item in route_targets):
+        stage["route_targets"] = ordered_unique(list(route_targets))
+        return
+    if isinstance(route_targets, list) and route_targets and all(isinstance(item, dict) for item in route_targets):
+        details = list(route_targets)
+        burden_ids: list[str] = []
+        for index, detail in enumerate(details):
+            burden_id = detail.get("burden_id")
+            if not isinstance(burden_id, str) or not burden_id.strip():
+                raise HarnessError(
+                    f"stage-03 route_targets[{index}] object cannot be normalized without a string burden_id"
+                )
+            burden_ids.append(burden_id)
+        stage["route_target_details"] = details
+        stage["route_targets"] = ordered_unique(burden_ids)
+        normalization = stage.get("normalization")
+        if not isinstance(normalization, dict):
+            normalization = {}
+        normalization["route_targets_from_details"] = True
+        normalization["canonical_route_targets"] = list(stage["route_targets"])
+        stage["normalization"] = normalization
+        return
+    raise HarnessError("stage-03 route_targets must be a non-empty list of burden-id strings")
 
 
 def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
@@ -478,19 +530,59 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
     return result.returncode
 
 
-def base_record(case_name: str, mode: str, *, not_model_smoke: bool) -> dict[str, Any]:
-    non_claims = dict(NON_CLAIMS)
-    non_claims["not_model_smoke"] = not_model_smoke
+def stage_order_for_stop(stop_after_stage: str | None) -> list[str]:
+    if stop_after_stage is None:
+        return list(STAGE_ORDER)
+    if stop_after_stage not in STAGE_ORDER:
+        raise HarnessError(f"Unknown stop-after-stage value: {stop_after_stage}")
+    return STAGE_ORDER[: STAGE_ORDER.index(stop_after_stage) + 1]
+
+
+def handoffs_for_stage_order(stage_order: list[str]) -> list[dict[str, Any]]:
+    included = set(stage_order)
+    return [dict(handoff) for handoff in HANDOFFS if handoff["from"] in included and handoff["to"] in included]
+
+
+def model_scope(case_name: str, replay_record: Path, *, stop_after_stage: str | None) -> dict[str, Any]:
     return {
+        "type": "focused-current-skill-stage-smoke" if stop_after_stage else "focused-current-skill-smoke",
+        "case_count": 1,
+        "case_family": "a9-science-source" if "a9-science-source" in case_name else case_name,
+        "retained_replay_target": rel(replay_record),
+    }
+
+
+def base_record(
+    case_name: str,
+    mode: str,
+    *,
+    not_model_smoke: bool,
+    stop_after_stage: str | None = None,
+    model_scope_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    stage_order = stage_order_for_stop(stop_after_stage)
+    non_claims = dict(NO_MODEL_NON_CLAIMS if not_model_smoke else MODEL_NON_CLAIMS)
+    non_claims["not_model_smoke"] = not_model_smoke
+    record: dict[str, Any] = {
         "schema": "staged-runtime-handshake-v1",
         "case_id": case_name,
         "mode": mode,
         "user_interface_preserved": True,
-        "stage_order": STAGE_ORDER,
+        "stage_order": stage_order,
         "stages": [],
-        "handoffs": HANDOFFS,
+        "handoffs": handoffs_for_stage_order(stage_order),
         "non_claims": non_claims,
     }
+    if stop_after_stage is not None:
+        record["stage_scope"] = {
+            "stop_after_stage": stop_after_stage,
+            "stage_count": len(stage_order),
+            "not_release_output": True,
+            "not_verifier_sidecars": True,
+        }
+    if model_scope_payload is not None:
+        record["model_scope"] = model_scope_payload
+    return record
 
 
 def write_hash_record(
@@ -586,6 +678,40 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test hash record did not preserve self-test mode")
     if loaded_hashes.get("model") is not None:
         raise HarnessError("Self-test hash record must not claim a model invocation")
+    normalized = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": [
+                {
+                    "burden_id": "B1",
+                    "route_target": "science-only-source-order-warrant",
+                    "register_types": ["xi", "kappa"],
+                }
+            ],
+            "owner_routes": [],
+        },
+    )
+    if normalized.get("route_targets") != ["B1"]:
+        raise HarnessError("Self-test failed to normalize rich Stage 03 route_targets into burden-id list")
+    if not isinstance(normalized.get("route_target_details"), list):
+        raise HarnessError("Self-test failed to preserve rich Stage 03 route metadata")
+    stage_local_record = base_record(
+        "self-test-a9-science-source-stage03",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-03-routing-owner-gate",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage03",
+            replay_record,
+            stop_after_stage="stage-03-routing-owner-gate",
+        ),
+    )
+    stage_local_record["stages"] = [*replay["stages"][:2], normalized]
+    stage_local_path = run_dir / "staged-handoff-stage03-model-scope-record.json"
+    write_json(stage_local_path, stage_local_record)
+    validate_replay_record(root, stage_local_path)
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
@@ -697,10 +823,20 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     skill_hash = sha256_file(files["skill"])
     stages: list[dict[str, Any]] = []
     stage_files: list[Path] = []
-    record = base_record(args.case_name, "staged-current-skill-smoke", not_model_smoke=False)
+    mode = "staged-current-skill-stage-local-smoke" if args.stop_after_stage else "staged-current-skill-smoke"
+    record = base_record(
+        args.case_name,
+        mode,
+        not_model_smoke=False,
+        stop_after_stage=args.stop_after_stage,
+        model_scope_payload=model_scope(args.case_name, replay_record, stop_after_stage=args.stop_after_stage),
+    )
 
     try:
-        for stage_id in STAGE_ORDER[:6]:
+        stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
+        if args.stop_after_stage is None:
+            stage_ids_to_run = STAGE_ORDER[:6]
+        for stage_id in stage_ids_to_run:
             prompt = stage_prompt(
                 root=root,
                 stage_id=stage_id,
@@ -726,6 +862,34 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             stages.append(stage)
             validate_incremental_handoffs(stages)
             write_json(records_dir / f"{stage_id}.stage.json", stage)
+            if args.stop_after_stage == stage_id:
+                record["stages"] = stages
+                handoff_record = records_dir / "staged-handoff-stage-local-record.json"
+                write_json(handoff_record, record)
+                validate_replay_record(root, handoff_record)
+                hash_path = run_dir / "staged-smoke.hashes.json"
+                write_hash_record(
+                    hash_path,
+                    root=root,
+                    case_name=args.case_name,
+                    mode=mode,
+                    model=args.model,
+                    skill_path=files["skill"],
+                    replay_record=replay_record,
+                    raw_input_path=raw_input,
+                    run_dir=run_dir,
+                    stage_files=stage_files + [handoff_record],
+                    handoff_record=handoff_record,
+                    output_path=None,
+                    sidecar_paths=[],
+                    verdict=f"STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after {stage_id}",
+                )
+                print("staged current-skill stage-local smoke: PASS")
+                print(f"run dir: {rel(run_dir, root)}")
+                print(f"stop-after-stage: {stage_id}")
+                print(f"handoff record: {rel(handoff_record, root)}")
+                print(f"hashes: {rel(hash_path, root)}")
+                return 0
 
         release = release_prompt(
             root=root,
@@ -792,7 +956,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             hash_path,
             root=root,
             case_name=args.case_name,
-            mode="staged-current-skill-smoke",
+            mode=mode,
             model=args.model,
             skill_path=files["skill"],
             replay_record=replay_record,
@@ -850,6 +1014,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--replay-record", type=Path, default=DEFAULT_REPLAY_RECORD)
     parser.add_argument("--run-dir", type=Path, default=None)
     parser.add_argument("--model", default="gpt-5.5")
+    parser.add_argument("--stop-after-stage", choices=STAGE_ORDER[:6], default=None)
     return parser.parse_args()
 
 
