@@ -93,6 +93,32 @@ MODEL_REQUIRED_NON_CLAIMS = {
 MODEL_SCOPE_TYPES = {"focused-current-skill-smoke", "focused-current-skill-stage-smoke"}
 PASS_STATUS = {"pass", "held", "partial"}
 HELD_TERMINAL_STATES = {"hold_partial", "held", "held-with-reason", "partial", "carried-PARTIAL"}
+TERMINAL_STATE_VALUES = HELD_TERMINAL_STATES | {"landed", "discharged-as-derivative"}
+STAGE05_FORBIDDEN_FIELDS = {
+    "closure_claim",
+    "collapse_certificate",
+    "field_witness",
+    "final_output",
+    "grapher_html",
+    "output_is_full_governed_answer",
+    "proof_sidecars",
+    "release_output",
+    "release_terminal_states",
+    "verifier_sidecars",
+}
+REREAD_DIVERGENCE_STATES = {"neutral", "non-neutral", "settled", "residual", "positive", "held"}
+REREAD_CURL_STATES = {"null", "resolved", "non-null", "held"}
+REREAD_ROUTE_RESULT_TYPES = {
+    "no_new_resultant",
+    "generated_burden_instantiation",
+    "hold_partial",
+    "partial_real",
+    "partial-real",
+    "genuine_dependent",
+    "genuine-dependent",
+    "loopbreak",
+}
+REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
@@ -373,6 +399,225 @@ def list_field(stage: dict[str, Any], key: str) -> list[str]:
     return []
 
 
+def generated_burden_ids(stage05: dict[str, Any]) -> tuple[set[str], list[str]]:
+    raw = stage05.get("generated_burdens", [])
+    if raw in (None, []):
+        return set(), []
+    errors: list[str] = []
+    if not isinstance(raw, list):
+        return set(), ["stage-05 generated_burdens must be a list when present"]
+    result: set[str] = set()
+    for index, item in enumerate(raw):
+        if isinstance(item, str) and item:
+            result.add(item)
+            continue
+        if isinstance(item, dict):
+            burden_id = item.get("id") or item.get("burden_id")
+            if isinstance(burden_id, str) and burden_id:
+                result.add(burden_id)
+                continue
+        errors.append(f"stage-05 generated_burdens[{index}] must be a burden id string or object with id/burden_id")
+    return result, errors
+
+
+def unresolved_burden_ids(stage05: dict[str, Any], proof: Any) -> tuple[set[str], list[str]]:
+    errors: list[str] = []
+    raw = stage05.get("unresolved_burdens", [])
+    if raw in (None, []):
+        result: set[str] = set()
+    elif isinstance(raw, list) and all(isinstance(item, str) and item for item in raw):
+        result = set(raw)
+    else:
+        result = set()
+        errors.append("stage-05 unresolved_burdens must be a string list when present")
+    if isinstance(proof, dict):
+        proof_raw = proof.get("unresolved_burdens", [])
+        if proof_raw in (None, []):
+            pass
+        elif isinstance(proof_raw, list) and all(isinstance(item, str) and item for item in proof_raw):
+            result.update(proof_raw)
+        else:
+            errors.append("stage-05 no_new_resultant_proof.unresolved_burdens must be a string list when present")
+    return result, errors
+
+
+def dependency_graph_edge_endpoints(edge: Any) -> tuple[str | None, str | None, str | None]:
+    if isinstance(edge, str):
+        if "->" in edge:
+            source, target = edge.split("->", 1)
+            return source.strip(), target.strip(), None
+        return None, None, "string edge must use 'from->to' form"
+    if isinstance(edge, dict):
+        source = edge.get("from") or edge.get("source")
+        target = edge.get("to") or edge.get("target")
+        if isinstance(source, str) and isinstance(target, str) and source and target:
+            return source, target, None
+        return None, None, "object edge must expose string from/to or source/target"
+    return None, None, "edge must be a string or object"
+
+
+def stage05_mrp_errors(
+    label: str,
+    stage02: dict[str, Any] | None,
+    stage03: dict[str, Any] | None,
+    stage04: dict[str, Any] | None,
+    stage05: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    forbidden = sorted(STAGE05_FORBIDDEN_FIELDS & set(stage05))
+    if forbidden:
+        errors.append(f"{label}: stage-05 must not emit release/final/verifier field(s): {forbidden}")
+
+    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    known_burdens = (
+        set(list_field(stage02 or {}, "burden_floor"))
+        | set(list_field(stage03 or {}, "route_targets"))
+        | set(list_field(stage04 or {}, "act_targets"))
+        | act_burdens
+    )
+    generated, found = generated_burden_ids(stage05)
+    errors.extend(f"{label}: {error}" for error in found)
+    known_burdens |= generated
+
+    terminal_states = stage05.get("terminal_states")
+    terminal_burdens: set[str] = set()
+    if not isinstance(terminal_states, dict) or not terminal_states:
+        errors.append(f"{label}: stage-05 terminal_states must be a non-empty object")
+    else:
+        for burden_id, state in terminal_states.items():
+            if not isinstance(burden_id, str) or not burden_id:
+                errors.append(f"{label}: stage-05 terminal_states keys must be non-empty burden ids")
+                continue
+            terminal_burdens.add(burden_id)
+            if not isinstance(state, str):
+                errors.append(f"{label}: stage-05 terminal_states[{burden_id!r}] must be a string")
+            elif state not in TERMINAL_STATE_VALUES:
+                errors.append(
+                    f"{label}: stage-05 terminal_states[{burden_id!r}] must use a controlled terminal state"
+                )
+        missing_act = sorted(act_burdens - terminal_burdens)
+        if missing_act:
+            errors.append(f"{label}: stage-05 terminal_states missing ACT burden(s): {missing_act}")
+        missing_generated = sorted(generated - terminal_burdens)
+        if missing_generated:
+            errors.append(f"{label}: stage-05 terminal_states missing generated burden(s): {missing_generated}")
+        unknown_terminal = sorted(terminal_burdens - known_burdens)
+        if unknown_terminal:
+            errors.append(f"{label}: stage-05 terminal_states names unknown burden(s): {unknown_terminal}")
+
+    edges = stage05.get("dependency_graph_edges")
+    if not isinstance(edges, list):
+        errors.append(f"{label}: stage-05 dependency_graph_edges must be a list")
+        edges = []
+    for index, edge in enumerate(edges):
+        source, target, error = dependency_graph_edge_endpoints(edge)
+        edge_label = f"{label}: stage-05 dependency_graph_edges[{index}]"
+        if error:
+            errors.append(f"{edge_label}: {error}")
+            continue
+        assert source is not None and target is not None
+        unknown = sorted({source, target} - known_burdens)
+        if unknown:
+            errors.append(f"{edge_label}: endpoint(s) must appear in known/generated burden set: {unknown}")
+
+    graph = stage05.get("dependency_graph")
+    if graph is not None:
+        if not isinstance(graph, dict):
+            errors.append(f"{label}: stage-05 dependency_graph must be an object when present")
+        else:
+            nodes = graph.get("nodes", [])
+            if not isinstance(nodes, list) or not all(isinstance(item, str) and item for item in nodes):
+                errors.append(f"{label}: stage-05 dependency_graph.nodes must be a string list when present")
+            else:
+                unknown_nodes = sorted(set(nodes) - known_burdens)
+                if unknown_nodes:
+                    errors.append(f"{label}: stage-05 dependency_graph.nodes names unknown burden(s): {unknown_nodes}")
+            graph_edges = graph.get("edges", [])
+            if not isinstance(graph_edges, list):
+                errors.append(f"{label}: stage-05 dependency_graph.edges must be a list when present")
+            else:
+                for index, edge in enumerate(graph_edges):
+                    source, target, error = dependency_graph_edge_endpoints(edge)
+                    graph_edge_label = f"{label}: stage-05 dependency_graph.edges[{index}]"
+                    if error:
+                        errors.append(f"{graph_edge_label}: {error}")
+                        continue
+                    assert source is not None and target is not None
+                    unknown = sorted({source, target} - known_burdens)
+                    if unknown:
+                        errors.append(f"{graph_edge_label}: endpoint(s) must appear in known/generated burden set: {unknown}")
+
+    proof = stage05.get("no_new_resultant_proof")
+    if proof is None:
+        errors.append(f"{label}: stage-05 no_new_resultant_proof is required")
+    unresolved, found = unresolved_burden_ids(stage05, proof)
+    errors.extend(f"{label}: {error}" for error in found)
+    if isinstance(proof, bool):
+        if proof is False and stage05.get("status") == "pass":
+            errors.append(f"{label}: stage-05 pass requires a positive no_new_resultant_proof")
+        if proof is True and unresolved:
+            errors.append(f"{label}: stage-05 no_new_resultant_proof true conflicts with unresolved burden(s): {sorted(unresolved)}")
+    elif isinstance(proof, dict):
+        proved = proof.get("proved")
+        if not isinstance(proved, bool):
+            errors.append(f"{label}: stage-05 no_new_resultant_proof.proved must be boolean")
+        if proved is True:
+            basis = proof.get("basis")
+            if not isinstance(basis, str) or not basis.strip():
+                errors.append(f"{label}: stage-05 no_new_resultant_proof.basis must be non-empty when proved=true")
+            if unresolved:
+                errors.append(f"{label}: stage-05 no_new_resultant_proof proved=true conflicts with unresolved burden(s): {sorted(unresolved)}")
+        if proved is False and stage05.get("status") == "pass":
+            errors.append(f"{label}: stage-05 pass requires no_new_resultant_proof.proved=true")
+    elif proof is not None:
+        errors.append(f"{label}: stage-05 no_new_resultant_proof must be boolean or object")
+
+    if unresolved and stage05.get("status") == "pass":
+        errors.append(f"{label}: stage-05 status must be held/partial/fail when unresolved_burdens are present")
+
+    reread_state = stage05.get("reread_state")
+    if reread_state is not None:
+        if not isinstance(reread_state, dict):
+            errors.append(f"{label}: stage-05 reread_state must be an object when present")
+        else:
+            divergence = reread_state.get("divergence_state")
+            curl = reread_state.get("curl_state")
+            route_result = reread_state.get("route_result_type")
+            route = reread_state.get("route")
+            if divergence is not None and divergence not in REREAD_DIVERGENCE_STATES:
+                errors.append(f"{label}: stage-05 reread_state.divergence_state is not controlled")
+            if curl is not None and curl not in REREAD_CURL_STATES:
+                errors.append(f"{label}: stage-05 reread_state.curl_state is not controlled")
+            if route_result is not None and route_result not in REREAD_ROUTE_RESULT_TYPES:
+                errors.append(f"{label}: stage-05 reread_state.route_result_type is not controlled")
+            if route is not None and route not in REREAD_ROUTES:
+                errors.append(f"{label}: stage-05 reread_state.route is not controlled")
+            if route == "STOP" and unresolved:
+                errors.append(f"{label}: stage-05 reread_state.route STOP conflicts with unresolved burden(s): {sorted(unresolved)}")
+
+    details = stage05.get("terminal_state_details")
+    if details is not None:
+        if not isinstance(details, list):
+            errors.append(f"{label}: stage-05 terminal_state_details must be a list when present")
+        else:
+            for index, detail in enumerate(details):
+                if not isinstance(detail, dict):
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}] must be an object")
+                    continue
+                burden_id = detail.get("burden_id")
+                state = detail.get("state")
+                if not isinstance(burden_id, str) or burden_id not in terminal_burdens:
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].burden_id must name a terminal burden")
+                if not isinstance(state, str) or state not in TERMINAL_STATE_VALUES:
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].state must use a controlled terminal state")
+                elif isinstance(terminal_states, dict) and terminal_states.get(burden_id) != state:
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].state must match terminal_states")
+                basis = detail.get("basis")
+                if basis is not None and (not isinstance(basis, str) or not basis.strip()):
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].basis must be non-empty when present")
+    return errors
+
+
 def owner_routes_by_burden(stage03: dict[str, Any] | None) -> dict[str, set[str]]:
     if not isinstance(stage03, dict):
         return {}
@@ -567,9 +812,9 @@ def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
 
     terminal_states = stage05.get("terminal_states") if stage05 is not None else None
     release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None
-    if stage05 is not None and (not isinstance(terminal_states, dict) or not terminal_states):
-        errors.append(f"{label}: stage-05 terminal_states must be a non-empty object")
-    elif stage05 is not None and stage07 is not None and terminal_states != release_terminal_states:
+    if stage05 is not None:
+        errors.extend(stage05_mrp_errors(label, stage02, stage03, stage04, stage05))
+    if stage05 is not None and isinstance(terminal_states, dict) and stage07 is not None and terminal_states != release_terminal_states:
         errors.append(f"{label}: stage-07 release_terminal_states must match stage-05 terminal_states")
 
     held_or_partial = any(stage.get("status") in {"held", "partial"} for stage in stages.values())

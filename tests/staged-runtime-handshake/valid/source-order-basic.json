@@ -78,7 +78,24 @@
         "B1": "landed"
       },
       "dependency_graph_edges": [],
-      "no_new_resultant_proof": true
+      "no_new_resultant_proof": {
+        "proved": true,
+        "basis": "B1 landed and no dependency edge or generated burden remains live.",
+        "unresolved_burdens": []
+      },
+      "reread_state": {
+        "divergence_state": "settled",
+        "curl_state": "resolved",
+        "route_result_type": "no_new_resultant",
+        "route": "STOP"
+      },
+      "terminal_state_details": [
+        {
+          "burden_id": "B1",
+          "state": "landed",
+          "basis": "ACT row Land(B1)+ landed the routed burden."
+        }
+      ]
     },
     {
       "id": "stage-06-field-witness-nar",

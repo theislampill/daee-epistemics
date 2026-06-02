@@ -223,6 +223,28 @@ def run_self_test() -> int:
         print("compare staged runtime replay self-test: FAIL")
         print("- unscoped Stage 04 prefix record should not compare as a full replay")
         return 1
+    stage05_prefix = copy.deepcopy(replay)
+    stage05_ids = scoped_stage_ids("stage-05-mrp-reread-terminal-state")
+    assert stage05_ids is not None
+    stage05_prefix["stage_order"] = stage05_ids
+    stage05_prefix["stages"] = [
+        stage
+        for stage in stage05_prefix.get("stages", [])
+        if isinstance(stage, dict) and stage.get("id") in stage05_ids
+    ]
+    if compare_records(stage05_prefix, replay, through_stage="stage-05-mrp-reread-terminal-state"):
+        print("compare staged runtime replay self-test: FAIL")
+        print("- Stage 05 prefix replay comparison produced mismatches")
+        return 1
+    stage05_mismatch = copy.deepcopy(stage05_prefix)
+    stage_map(stage05_mismatch)["stage-05-mrp-reread-terminal-state"]["terminal_states"] = {"B1": "held"}
+    if not any(
+        "stage-05-mrp-reread-terminal-state.terminal_states" in item
+        for item in compare_records(stage05_mismatch, replay, through_stage="stage-05-mrp-reread-terminal-state")
+    ):
+        print("compare staged runtime replay self-test: FAIL")
+        print("- Stage 05 terminal-state mismatch was not detected")
+        return 1
     with tempfile.TemporaryDirectory() as tmp:
         report = Path(tmp) / "comparison.md"
         write_report(

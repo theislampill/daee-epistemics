@@ -107,8 +107,16 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"],
         "requires": ["act_rows"],
         "instructions": (
-            "Produce dependency graph evidence, terminal states, and no-new-resultant or "
-            "HOLD/PARTIAL accounting."
+            "Produce Stage 05 JSON only. Do not write final answer prose, field_witness, "
+            "Closing Formulation, release output, verifier sidecars, or proof artifacts. "
+            "`terminal_states` must be a JSON object mapping every Stage 04 ACT burden id "
+            "to a controlled terminal-state string. `dependency_graph_edges` must be a "
+            "JSON array; use [] when no dependency edge remains. If no new resultant "
+            "burden is live, set `no_new_resultant_proof` to true or to an object "
+            "`{\"proved\": true, \"basis\": \"...\", \"unresolved_burdens\": []}`. "
+            "If a generated/MRP burden exists, list it under `generated_burdens` and "
+            "include it in `terminal_states`. If any burden remains unresolved, return "
+            "`status` held or partial, not pass, and expose `unresolved_burdens`."
         ),
     },
     "stage-06-field-witness-nar": {
@@ -332,6 +340,8 @@ def normalized_stage(stage_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         normalize_stage03_route_targets(stage)
     if stage_id == "stage-04-burden-execution-act":
         normalize_stage04_act_fields(stage)
+    if stage_id == "stage-05-mrp-reread-terminal-state":
+        normalize_stage05_mrp_fields(stage)
     return stage
 
 
@@ -432,6 +442,35 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
         stage["normalization"] = normalization
 
 
+def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
+    terminal_states = stage.get("terminal_states")
+    if not isinstance(terminal_states, dict) or not terminal_states:
+        raise HarnessError("stage-05 terminal_states must be a non-empty object")
+    if not all(isinstance(key, str) and key and isinstance(value, str) and value for key, value in terminal_states.items()):
+        raise HarnessError("stage-05 terminal_states must map burden-id strings to terminal-state strings")
+
+    edges = stage.get("dependency_graph_edges")
+    if edges is None:
+        graph = stage.get("dependency_graph")
+        if isinstance(graph, dict) and isinstance(graph.get("edges"), list):
+            stage["dependency_graph_edges"] = graph["edges"]
+        else:
+            raise HarnessError("stage-05 dependency_graph_edges must be a list")
+    elif not isinstance(edges, list):
+        raise HarnessError("stage-05 dependency_graph_edges must be a list")
+
+    if "no_new_resultant_proof" not in stage:
+        raise HarnessError("stage-05 no_new_resultant_proof is required")
+    proof = stage.get("no_new_resultant_proof")
+    if isinstance(proof, dict):
+        if not isinstance(proof.get("proved"), bool):
+            raise HarnessError("stage-05 no_new_resultant_proof.proved must be boolean")
+        if proof.get("proved") is True and not str(proof.get("basis") or "").strip():
+            raise HarnessError("stage-05 no_new_resultant_proof.basis is required when proved=true")
+    elif not isinstance(proof, bool):
+        raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
+
+
 def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
     if not isinstance(stage, dict):
         return []
@@ -470,6 +509,22 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
             raise HarnessError(f"stage-06 nar_burdens missing ACT burden(s): {missing}")
     if stage05 and stage05.get("terminal_states") in ({}, None):
         raise HarnessError("stage-05 terminal_states must be non-empty")
+    if stage04 and stage05:
+        terminal_states = stage05.get("terminal_states")
+        if not isinstance(terminal_states, dict):
+            raise HarnessError("stage-05 terminal_states must be a non-empty object")
+        act_burdens = set(list_field(stage04, "act_burdens") or list_field(stage04, "act_targets"))
+        missing = sorted(act_burdens - set(terminal_states))
+        if missing:
+            raise HarnessError(f"stage-05 terminal_states missing ACT burden(s): {missing}")
+        if not isinstance(stage05.get("dependency_graph_edges"), list):
+            raise HarnessError("stage-05 dependency_graph_edges must be a list")
+        proof = stage05.get("no_new_resultant_proof")
+        unresolved = stage05.get("unresolved_burdens") or []
+        if proof is True and unresolved:
+            raise HarnessError("stage-05 no_new_resultant_proof true conflicts with unresolved_burdens")
+        if isinstance(proof, dict) and proof.get("proved") is True and proof.get("unresolved_burdens"):
+            raise HarnessError("stage-05 no_new_resultant_proof proved=true conflicts with unresolved_burdens")
 
 
 def stage_prompt(
@@ -842,6 +897,85 @@ def run_self_test(root: Path) -> int:
     stage04_local_path = run_dir / "staged-handoff-stage04-model-scope-record.json"
     write_json(stage04_local_path, stage04_local_record)
     validate_replay_record(root, stage04_local_path)
+
+    normalized_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "Stage 04 ACT burden B1 landed; reread produced no generated burden.",
+                "unresolved_burdens": [],
+            },
+        },
+    )
+    stage05_local_record = base_record(
+        "self-test-a9-science-source-stage05",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-05-mrp-reread-terminal-state",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage05",
+            replay_record,
+            stop_after_stage="stage-05-mrp-reread-terminal-state",
+        ),
+    )
+    stage05_local_record["stages"] = [*replay["stages"][:4], normalized_stage05]
+    stage05_local_path = run_dir / "staged-handoff-stage05-model-scope-record.json"
+    write_json(stage05_local_path, stage05_local_record)
+    validate_replay_record(root, stage05_local_path)
+
+    generated_missing_terminal = dict(stage05_local_record)
+    generated_missing_terminal["case_id"] = "self-test-stage05-generated-missing-terminal"
+    generated_missing_terminal["model_scope"] = model_scope(
+        "self-test-stage05-generated-missing-terminal",
+        replay_record,
+        stop_after_stage="stage-05-mrp-reread-terminal-state",
+    )
+    generated_missing_terminal["stages"] = [dict(stage) for stage in stage05_local_record["stages"]]
+    generated_missing_terminal["stages"][-1] = dict(generated_missing_terminal["stages"][-1])
+    generated_missing_terminal["stages"][-1]["generated_burdens"] = ["B2"]
+    generated_missing_terminal_path = run_dir / "stage05-generated-missing-terminal.invalid.json"
+    write_json(generated_missing_terminal_path, generated_missing_terminal)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(generated_missing_terminal_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 05 generated burden missing terminal state")
+
+    no_new_with_unresolved = dict(stage05_local_record)
+    no_new_with_unresolved["case_id"] = "self-test-stage05-no-new-unresolved"
+    no_new_with_unresolved["model_scope"] = model_scope(
+        "self-test-stage05-no-new-unresolved",
+        replay_record,
+        stop_after_stage="stage-05-mrp-reread-terminal-state",
+    )
+    no_new_with_unresolved["stages"] = [dict(stage) for stage in stage05_local_record["stages"]]
+    no_new_with_unresolved["stages"][-1] = dict(no_new_with_unresolved["stages"][-1])
+    no_new_with_unresolved["stages"][-1]["unresolved_burdens"] = ["B2"]
+    no_new_with_unresolved["stages"][-1]["no_new_resultant_proof"] = True
+    no_new_with_unresolved_path = run_dir / "stage05-no-new-unresolved.invalid.json"
+    write_json(no_new_with_unresolved_path, no_new_with_unresolved)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(no_new_with_unresolved_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 05 no-new-resultant proof with unresolved burden")
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
