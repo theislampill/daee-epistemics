@@ -211,6 +211,33 @@ def field_witness_body_refs(field_witness: dict[str, Any]) -> list[str]:
     return unique_ordered(refs)
 
 
+def owner_activation_details(field_witness: dict[str, Any], terminal_states: dict[str, str]) -> list[dict[str, Any]]:
+    raw = field_witness.get("owner_activations")
+    details: list[dict[str, Any]] = []
+    if not isinstance(raw, list):
+        return details
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        body_ref = str(item.get("body_ref") or "").strip()
+        if not body_ref:
+            continue
+        burden_id = nla_decode.graph_burden_id(item.get("target") or item.get("source") or body_ref)
+        detail: dict[str, Any] = {"body_ref": body_ref}
+        if burden_id:
+            detail["burden_id"] = burden_id
+            if burden_id in terminal_states:
+                detail["terminal_state"] = terminal_states[burden_id]
+        owner_id = str(item.get("owner") or "").strip()
+        operation = str(item.get("operation") or "").strip()
+        if owner_id:
+            detail["owner_id"] = owner_id
+        if operation:
+            detail["operation"] = operation
+        details.append(detail)
+    return details
+
+
 def nar_burdens(field_witness: dict[str, Any]) -> list[str]:
     normalized = field_witness.get("normalized_activation_record")
     if not isinstance(normalized, dict):
@@ -379,7 +406,9 @@ def build_record(manifest_path: Path, case_id: str) -> tuple[dict[str, Any] | No
                 "field_witness_body_refs": field_witness_body_refs(field_witness),
                 "nar_burdens": nar_burdens(field_witness),
                 "owner_activations": field_witness_body_refs(field_witness),
+                "owner_activation_details": owner_activation_details(field_witness, terminal_states),
                 "normalized_activation_record": True,
+                "normalized_activation_record_details": normalized,
                 "register_deltas": register_delta_summary(field_witness),
             },
             {

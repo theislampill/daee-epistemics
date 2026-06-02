@@ -1,7 +1,7 @@
 {
   "schema": "staged-runtime-handshake-v1",
-  "case_id": "a9-science-source",
-  "mode": "retained-artifact-replay",
+  "case_id": "stage06-missing-field-witness-body-refs",
+  "mode": "staged-current-skill-stage-local-smoke",
   "user_interface_preserved": true,
   "stage_order": [
     "stage-01-intake",
@@ -9,9 +9,7 @@
     "stage-03-routing-owner-gate",
     "stage-04-burden-execution-act",
     "stage-05-mrp-reread-terminal-state",
-    "stage-06-field-witness-nar",
-    "stage-07-release-output",
-    "stage-08-verifier-sidecars"
+    "stage-06-field-witness-nar"
   ],
   "stages": [
     {
@@ -129,10 +127,6 @@
         "terminal_states",
         "act_body_refs"
       ],
-      "field_witness_body_refs": [
-        "¹B₁",
-        "¹B₂"
-      ],
       "nar_burdens": [
         "B1"
       ],
@@ -188,48 +182,6 @@
         ]
       },
       "register_deltas": {}
-    },
-    {
-      "id": "stage-07-release-output",
-      "status": "pass",
-      "produces": [
-        "release_output",
-        "release_terminal_states"
-      ],
-      "requires": [
-        "field_witness_body_refs",
-        "nar_burdens"
-      ],
-      "release_output": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
-        "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"
-      },
-      "release_terminal_states": {
-        "B1": "landed"
-      },
-      "closure_claim": "complete",
-      "output_is_full_governed_answer": true
-    },
-    {
-      "id": "stage-08-verifier-sidecars",
-      "status": "pass",
-      "produces": [
-        "verifier_sidecars"
-      ],
-      "requires": [
-        "release_output"
-      ],
-      "verifier_sidecars": {
-        "b5_4_1": {
-          "claimed": true,
-          "builder": "tools/build_b5_full_ir_projection_sidecar.py",
-          "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
-          "role": "checker-owned-final-verifier",
-          "non_claims": {
-            "not_fresh_runtime_default_emission": true
-          }
-        }
-      }
     }
   ],
   "handoffs": [
@@ -277,64 +229,28 @@
         "terminal_states_to_field_witness"
       ],
       "status": "pass"
-    },
-    {
-      "from": "stage-06-field-witness-nar",
-      "to": "stage-07-release-output",
-      "checks": [
-        "field_witness_nar_convergence"
-      ],
-      "status": "pass"
-    },
-    {
-      "from": "stage-07-release-output",
-      "to": "stage-08-verifier-sidecars",
-      "checks": [
-        "release_to_verifier_sidecars"
-      ],
-      "status": "pass"
     }
   ],
   "non_claims": {
-    "not_model_smoke": true,
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
     "not_runtime_default_emission_proof": true,
     "not_arbitrary_nl_ir_parser": true,
     "not_package_provenance": true,
-    "not_guaranteed_t_lang_uptake": true
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
   },
-  "artifact_bindings": {
-    "schema": "staged-runtime-retained-artifact-bindings-v1",
-    "retained_manifest": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/manifest.json",
-    "case_id": "a9-science-source",
-    "artifacts": {
-      "input": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt",
-        "sha256": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82"
-      },
-      "output": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
-        "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"
-      },
-      "collapse_certificate": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
-        "sha256": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF"
-      },
-      "grapher_html": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/grapher.html",
-        "sha256": "87CEAFA9BED35B7B94A8CBEF3EFF4B3AEDB97D68CB1052350ED1FB41B2AD419B"
-      },
-      "b5_full_ir_projection_sidecar": {
-        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/b5-full-ir-projection-sidecar.json",
-        "sha256": "ECC93F78FD46049329B0A0397B604892452897AA9A3CA8C53300211C09B6D652",
-        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
-        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
-    },
-    "parsed_evidence": {
-      "field_witness": true,
-      "visible_act_records": 2,
-      "normalized_activation_record": true,
-      "b5_full_ir_projection_sidecar": true
-    }
+  "stage_scope": {
+    "stop_after_stage": "stage-06-field-witness-nar",
+    "stage_count": 6,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "stage06-missing-field-witness-body-refs",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
   }
 }

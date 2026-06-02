@@ -106,6 +106,21 @@ STAGE05_FORBIDDEN_FIELDS = {
     "release_terminal_states",
     "verifier_sidecars",
 }
+STAGE06_FORBIDDEN_FIELDS = {
+    "Closing Formulation",
+    "Restorative Response",
+    "closure_claim",
+    "closing_formulation",
+    "collapse_certificate",
+    "final_output",
+    "grapher_html",
+    "output_is_full_governed_answer",
+    "proof_sidecars",
+    "release_output",
+    "release_terminal_states",
+    "restorative_response",
+    "verifier_sidecars",
+}
 REREAD_DIVERGENCE_STATES = {"neutral", "non-neutral", "settled", "residual", "positive", "held"}
 REREAD_CURL_STATES = {"null", "resolved", "non-null", "held"}
 REREAD_ROUTE_RESULT_TYPES = {
@@ -397,6 +412,223 @@ def list_field(stage: dict[str, Any], key: str) -> list[str]:
     if isinstance(value, list):
         return [str(item) for item in value if isinstance(item, str)]
     return []
+
+
+def owner_activation_body_refs(value: Any) -> tuple[list[str], list[dict[str, Any]], list[str]]:
+    if not isinstance(value, list) or not value:
+        return [], [], ["stage-06 owner_activations must be a non-empty list"]
+    if all(isinstance(item, str) and item for item in value):
+        return list(value), [], []
+    if all(isinstance(item, dict) for item in value):
+        refs: list[str] = []
+        details: list[dict[str, Any]] = []
+        errors: list[str] = []
+        for index, item in enumerate(value):
+            body_ref = item.get("body_ref")
+            if not isinstance(body_ref, str) or not body_ref:
+                errors.append(f"stage-06 owner_activations[{index}].body_ref must be a non-empty string")
+                continue
+            refs.append(body_ref)
+            details.append(item)
+        return refs, details, errors
+    return [], [], ["stage-06 owner_activations must be all body-ref strings or all objects with body_ref"]
+
+
+def register_delta_errors(label: str, value: Any) -> list[str]:
+    if isinstance(value, dict):
+        errors: list[str] = []
+        for register, delta in value.items():
+            if not isinstance(register, str) or not register:
+                errors.append(f"{label}: stage-06 register_deltas keys must be non-empty strings")
+                continue
+            if isinstance(delta, str):
+                if not delta:
+                    errors.append(f"{label}: stage-06 register_deltas[{register!r}] must be non-empty when string-shaped")
+            elif isinstance(delta, list):
+                if not all(isinstance(item, str) and item for item in delta):
+                    errors.append(f"{label}: stage-06 register_deltas[{register!r}] list values must be non-empty strings")
+            else:
+                errors.append(f"{label}: stage-06 register_deltas[{register!r}] must be a string or string list")
+        return errors
+    if isinstance(value, list):
+        errors = []
+        for index, item in enumerate(value):
+            if not isinstance(item, dict):
+                errors.append(f"{label}: stage-06 register_deltas[{index}] must be an object")
+                continue
+            register = item.get("register")
+            delta = item.get("delta")
+            if not isinstance(register, str) or not register:
+                errors.append(f"{label}: stage-06 register_deltas[{index}].register must be a non-empty string")
+            if not isinstance(delta, str) or not delta:
+                errors.append(f"{label}: stage-06 register_deltas[{index}].delta must be a non-empty string")
+        return errors
+    return [f"{label}: stage-06 register_deltas must be an object or list"]
+
+
+def nar_object_errors(
+    label: str,
+    nar: Any,
+    *,
+    burden_floor: set[str],
+    nar_burdens: set[str],
+    terminal_burdens: set[str],
+) -> list[str]:
+    if not isinstance(nar, dict):
+        return [f"{label}: stage-06 normalized activation record details must be an object"]
+    errors: list[str] = []
+    n_frame = nar.get("n_frame")
+    if not isinstance(n_frame, str) or not n_frame.strip():
+        errors.append(f"{label}: stage-06 NAR n_frame must be a non-empty string")
+    live_registers = as_string_list(nar.get("live_registers"))
+    if live_registers is None:
+        errors.append(f"{label}: stage-06 NAR live_registers must be a string list")
+    nar_floor = as_string_list(nar.get("burden_floor"))
+    if nar_floor is None:
+        errors.append(f"{label}: stage-06 NAR burden_floor must be a string list")
+        nar_floor_set: set[str] = set()
+    else:
+        nar_floor_set = set(nar_floor)
+        if nar_floor_set != burden_floor:
+            errors.append(f"{label}: stage-06 NAR burden_floor must match stage-02 burden_floor")
+    rows = nar.get("per_burden")
+    row_burdens: set[str] = set()
+    if not isinstance(rows, list) or not rows:
+        errors.append(f"{label}: stage-06 NAR per_burden must be a non-empty object list")
+    else:
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                errors.append(f"{label}: stage-06 NAR per_burden[{index}] must be an object")
+                continue
+            burden_id = row.get("burden_id")
+            if not isinstance(burden_id, str) or not burden_id:
+                errors.append(f"{label}: stage-06 NAR per_burden[{index}].burden_id must be a non-empty string")
+            else:
+                row_burdens.add(burden_id)
+            for key in ("owner_id", "operation", "terminal_state"):
+                value = row.get(key)
+                if value is not None and (not isinstance(value, str) or not value):
+                    errors.append(f"{label}: stage-06 NAR per_burden[{index}].{key} must be a non-empty string when present")
+            if "generation_depth" in row and not isinstance(row.get("generation_depth"), int):
+                errors.append(f"{label}: stage-06 NAR per_burden[{index}].generation_depth must be an integer when present")
+    missing_nar = sorted(nar_burdens - row_burdens)
+    if missing_nar:
+        errors.append(f"{label}: stage-06 NAR per_burden missing nar_burdens: {missing_nar}")
+    missing_terminal = sorted(terminal_burdens - row_burdens)
+    if missing_terminal:
+        errors.append(f"{label}: stage-06 NAR per_burden missing terminal burden(s): {missing_terminal}")
+    extra = sorted(row_burdens - (nar_burdens | terminal_burdens | burden_floor))
+    if extra:
+        errors.append(f"{label}: stage-06 NAR per_burden names unknown burden(s): {extra}")
+    return errors
+
+
+def stage06_witness_nar_errors(
+    label: str,
+    record: dict[str, Any],
+    stage02: dict[str, Any] | None,
+    stage04: dict[str, Any] | None,
+    stage05: dict[str, Any] | None,
+    stage06: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    forbidden = sorted(STAGE06_FORBIDDEN_FIELDS & set(stage06))
+    if forbidden:
+        errors.append(f"{label}: stage-06 must not emit release/final/verifier field(s): {forbidden}")
+
+    act_body_refs = list_field(stage04 or {}, "act_body_refs")
+    act_burdens = set(list_field(stage04 or {}, "act_burdens") or list_field(stage04 or {}, "act_targets"))
+    burden_floor = set(list_field(stage02 or {}, "burden_floor"))
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
+    terminal_burdens = set(terminal_states) if isinstance(terminal_states, dict) else set()
+
+    field_refs = as_string_list(stage06.get("field_witness_body_refs"))
+    if field_refs is None or not field_refs:
+        errors.append(f"{label}: stage-06 field_witness_body_refs must be a non-empty string list")
+        field_refs = []
+    elif act_body_refs and field_refs != act_body_refs:
+        errors.append(f"{label}: stage-06 field_witness_body_refs must exactly match stage-04 act_body_refs")
+
+    nar_raw = as_string_list(stage06.get("nar_burdens"))
+    if nar_raw is None or not nar_raw:
+        errors.append(f"{label}: stage-06 nar_burdens must be a non-empty string list")
+        nar_burdens: set[str] = set()
+    else:
+        nar_burdens = set(nar_raw)
+    missing_act = sorted(act_burdens - nar_burdens)
+    if missing_act:
+        errors.append(f"{label}: stage-06 nar_burdens missing ACT burden(s): {missing_act}")
+    missing_terminal = sorted(terminal_burdens - nar_burdens)
+    if missing_terminal:
+        errors.append(f"{label}: stage-06 nar_burdens missing terminal-state burden(s): {missing_terminal}")
+
+    owner_refs, owner_details, found = owner_activation_body_refs(stage06.get("owner_activations"))
+    errors.extend(f"{label}: {error}" for error in found)
+    if owner_refs and field_refs and owner_refs != field_refs:
+        errors.append(f"{label}: stage-06 owner_activations must exactly mirror field_witness_body_refs")
+    explicit_details = stage06.get("owner_activation_details")
+    if explicit_details is not None:
+        if not isinstance(explicit_details, list) or not all(isinstance(item, dict) for item in explicit_details):
+            errors.append(f"{label}: stage-06 owner_activation_details must be an object list when present")
+        else:
+            owner_details.extend(explicit_details)
+    for index, detail in enumerate(owner_details):
+        body_ref = detail.get("body_ref")
+        if not isinstance(body_ref, str) or not body_ref:
+            errors.append(f"{label}: stage-06 owner_activation_details[{index}].body_ref must be a non-empty string")
+        elif field_refs and body_ref not in field_refs:
+            errors.append(f"{label}: stage-06 owner_activation_details[{index}].body_ref must appear in field_witness_body_refs")
+        burden_id = detail.get("burden_id") or detail.get("target") or detail.get("source")
+        if burden_id is not None:
+            burden_id = nla_decode.graph_burden_id(burden_id)
+            if burden_id and burden_id not in nar_burdens:
+                errors.append(f"{label}: stage-06 owner_activation_details[{index}].burden_id must appear in nar_burdens")
+        for key in ("owner_id", "operation"):
+            value = detail.get(key)
+            if value is not None and (not isinstance(value, str) or not value):
+                errors.append(f"{label}: stage-06 owner_activation_details[{index}].{key} must be a non-empty string when present")
+        terminal_state = detail.get("terminal_state")
+        if terminal_state is not None and terminal_state not in TERMINAL_STATE_VALUES:
+            errors.append(f"{label}: stage-06 owner_activation_details[{index}].terminal_state must use a controlled terminal state")
+
+    nar_value = stage06.get("normalized_activation_record")
+    nar_details = stage06.get("normalized_activation_record_details")
+    mode = record.get("mode")
+    if nar_value is None:
+        errors.append(f"{label}: stage-06 normalized_activation_record is required")
+    elif isinstance(nar_value, bool):
+        if nar_value is not True:
+            errors.append(f"{label}: stage-06 normalized_activation_record boolean must be true")
+        if mode in MODEL_MODES and nar_details is None:
+            errors.append(f"{label}: model-mode stage-06 requires structured normalized_activation_record or normalized_activation_record_details")
+    elif isinstance(nar_value, dict):
+        errors.extend(
+            nar_object_errors(
+                label,
+                nar_value,
+                burden_floor=burden_floor,
+                nar_burdens=nar_burdens,
+                terminal_burdens=terminal_burdens,
+            )
+        )
+    else:
+        errors.append(f"{label}: stage-06 normalized_activation_record must be true or an object")
+    if nar_details is not None:
+        errors.extend(
+            nar_object_errors(
+                label,
+                nar_details,
+                burden_floor=burden_floor,
+                nar_burdens=nar_burdens,
+                terminal_burdens=terminal_burdens,
+            )
+        )
+
+    if "register_deltas" not in stage06:
+        errors.append(f"{label}: stage-06 register_deltas is required")
+    else:
+        errors.extend(register_delta_errors(label, stage06.get("register_deltas")))
+    return errors
 
 
 def generated_burden_ids(stage05: dict[str, Any]) -> tuple[set[str], list[str]]:
@@ -755,7 +987,7 @@ def stage04_act_errors(
     return errors
 
 
-def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
+def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[str, Any]]) -> list[str]:
     label = rel(path)
     errors: list[str] = []
     stage02 = stages.get("stage-02-layer-a-diagnostic-ir")
@@ -804,16 +1036,13 @@ def semantic_errors(path: Path, stages: dict[str, dict[str, Any]]) -> list[str]:
         errors.extend(stage04_act_errors(label, stage03, stage04))
     if stage03 is not None and stage04 is not None and act_targets != route_targets:
         errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
-    if stage04 is not None and stage06 is not None and act_body_refs != field_witness_body_refs:
-        errors.append(f"{label}: stage-06 field_witness_body_refs must match stage-04 act_body_refs")
-    missing_nar = sorted(act_burdens - nar_burdens) if stage04 is not None and stage06 is not None else []
-    if missing_nar:
-        errors.append(f"{label}: stage-06 nar_burdens missing ACT burden(s): {missing_nar}")
 
     terminal_states = stage05.get("terminal_states") if stage05 is not None else None
     release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None
     if stage05 is not None:
         errors.extend(stage05_mrp_errors(label, stage02, stage03, stage04, stage05))
+    if stage06 is not None:
+        errors.extend(stage06_witness_nar_errors(label, record, stage02, stage04, stage05, stage06))
     if stage05 is not None and isinstance(terminal_states, dict) and stage07 is not None and terminal_states != release_terminal_states:
         errors.append(f"{label}: stage-07 release_terminal_states must match stage-05 terminal_states")
 
@@ -1110,9 +1339,9 @@ def record_errors(path: Path, record: Any) -> list[str]:
     errors.extend(path_reference_errors(path, record))
     errors.extend(artifact_binding_errors(path, record, stages))
     if not errors:
-        errors.extend(semantic_errors(path, stages))
+        errors.extend(semantic_errors(path, record, stages))
     else:
-        errors.extend(semantic_errors(path, stages))
+        errors.extend(semantic_errors(path, record, stages))
     return errors
 
 

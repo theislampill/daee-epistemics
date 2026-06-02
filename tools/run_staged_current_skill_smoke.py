@@ -124,8 +124,19 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"],
         "requires": ["terminal_states", "act_body_refs"],
         "instructions": (
-            "Produce parser-stable field_witness/NAR summary fields that mirror ACT rows and "
-            "terminal states."
+            "Produce Stage 06 JSON only. Do not write a final answer, Restorative Response, "
+            "Closing Formulation, sidecars, release output, Grapher output, or certificate "
+            "evidence. `field_witness_body_refs` must be a JSON array of strings that exactly "
+            "matches Stage 04 `act_body_refs`. `nar_burdens` must include Stage 04 ACT burdens "
+            "and every Stage 05 terminal-state burden. `owner_activations` must be body-ref "
+            "strings, or objects with explicit string `body_ref` so the harness can normalize "
+            "them while preserving details under `owner_activation_details`. For model-mode "
+            "Stage 06, do not use only `normalized_activation_record: true`; provide a "
+            "structured `normalized_activation_record` object or `normalized_activation_record_details` "
+            "with `n_frame`, `live_registers`, `burden_floor`, and `per_burden`. "
+            "`register_deltas` must be parser-stable as an object or a list of objects with "
+            "`register` and `delta`. If Stage 06 cannot honestly mirror ACT/terminal evidence, "
+            "return status fail or partial; do not invent witness proof."
         ),
     },
 }
@@ -342,6 +353,8 @@ def normalized_stage(stage_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         normalize_stage04_act_fields(stage)
     if stage_id == "stage-05-mrp-reread-terminal-state":
         normalize_stage05_mrp_fields(stage)
+    if stage_id == "stage-06-field-witness-nar":
+        normalize_stage06_witness_nar_fields(stage)
     return stage
 
 
@@ -471,6 +484,98 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
 
+def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
+    field_refs = stage.get("field_witness_body_refs")
+    if not isinstance(field_refs, list) or not field_refs or not all(isinstance(item, str) and item for item in field_refs):
+        raise HarnessError("stage-06 field_witness_body_refs must be a non-empty string list")
+    stage["field_witness_body_refs"] = ordered_unique(list(field_refs))
+
+    nar_burdens = stage.get("nar_burdens")
+    if not isinstance(nar_burdens, list) or not nar_burdens or not all(isinstance(item, str) and item for item in nar_burdens):
+        raise HarnessError("stage-06 nar_burdens must be a non-empty string list")
+    stage["nar_burdens"] = ordered_unique(list(nar_burdens))
+
+    owner_activations = stage.get("owner_activations")
+    if isinstance(owner_activations, list) and owner_activations and all(isinstance(item, str) and item for item in owner_activations):
+        stage["owner_activations"] = ordered_unique(list(owner_activations))
+    elif isinstance(owner_activations, list) and owner_activations and all(isinstance(item, dict) for item in owner_activations):
+        details = list(owner_activations)
+        refs: list[str] = []
+        for index, detail in enumerate(details):
+            body_ref = detail.get("body_ref")
+            if not isinstance(body_ref, str) or not body_ref:
+                raise HarnessError(f"stage-06 owner_activations[{index}] object cannot be normalized without body_ref")
+            refs.append(body_ref)
+        stage["owner_activation_details"] = details
+        stage["owner_activations"] = ordered_unique(refs)
+        normalization = stage.get("normalization")
+        if not isinstance(normalization, dict):
+            normalization = {}
+        normalization["owner_activations_from_details"] = True
+        normalization["canonical_owner_activations"] = list(stage["owner_activations"])
+        stage["normalization"] = normalization
+    else:
+        raise HarnessError("stage-06 owner_activations must be body-ref strings or objects with body_ref")
+
+    if "normalized_activation_record" not in stage:
+        raise HarnessError("stage-06 normalized_activation_record is required")
+    normalized = stage.get("normalized_activation_record")
+    if isinstance(normalized, bool):
+        if normalized is not True:
+            raise HarnessError("stage-06 normalized_activation_record boolean must be true")
+    elif isinstance(normalized, dict):
+        normalize_stage06_nar_object(normalized, "stage-06 normalized_activation_record")
+    else:
+        raise HarnessError("stage-06 normalized_activation_record must be true or an object")
+    details = stage.get("normalized_activation_record_details")
+    if details is not None:
+        normalize_stage06_nar_object(details, "stage-06 normalized_activation_record_details")
+
+    if "register_deltas" not in stage:
+        raise HarnessError("stage-06 register_deltas is required")
+    register_deltas = stage.get("register_deltas")
+    if isinstance(register_deltas, dict):
+        for register, delta in register_deltas.items():
+            if not isinstance(register, str) or not register:
+                raise HarnessError("stage-06 register_deltas keys must be non-empty strings")
+            if isinstance(delta, str):
+                if not delta:
+                    raise HarnessError("stage-06 register_deltas string values must be non-empty")
+            elif isinstance(delta, list):
+                if not all(isinstance(item, str) and item for item in delta):
+                    raise HarnessError("stage-06 register_deltas list values must be non-empty strings")
+            else:
+                raise HarnessError("stage-06 register_deltas object values must be strings or string lists")
+    elif isinstance(register_deltas, list):
+        for index, item in enumerate(register_deltas):
+            if not isinstance(item, dict):
+                raise HarnessError(f"stage-06 register_deltas[{index}] must be an object")
+            if not isinstance(item.get("register"), str) or not item["register"]:
+                raise HarnessError(f"stage-06 register_deltas[{index}].register must be a non-empty string")
+            if not isinstance(item.get("delta"), str) or not item["delta"]:
+                raise HarnessError(f"stage-06 register_deltas[{index}].delta must be a non-empty string")
+    else:
+        raise HarnessError("stage-06 register_deltas must be an object or list")
+
+
+def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
+    if not isinstance(value.get("n_frame"), str) or not value["n_frame"].strip():
+        raise HarnessError(f"{label}.n_frame must be a non-empty string")
+    for key in ("live_registers", "burden_floor"):
+        raw = value.get(key)
+        if not isinstance(raw, list) or not all(isinstance(item, str) and item for item in raw):
+            raise HarnessError(f"{label}.{key} must be a string list")
+        value[key] = ordered_unique(list(raw))
+    rows = value.get("per_burden")
+    if not isinstance(rows, list) or not rows:
+        raise HarnessError(f"{label}.per_burden must be a non-empty object list")
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise HarnessError(f"{label}.per_burden[{index}] must be an object")
+        if not isinstance(row.get("burden_id"), str) or not row["burden_id"]:
+            raise HarnessError(f"{label}.per_burden[{index}].burden_id must be a non-empty string")
+
+
 def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
     if not isinstance(stage, dict):
         return []
@@ -500,13 +605,22 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
         if set(list_field(stage03, "route_targets")) != set(list_field(stage04, "act_targets")):
             raise HarnessError("stage-04 act_targets must match stage-03 route_targets")
     if stage04 and stage06:
-        if set(list_field(stage04, "act_body_refs")) != set(list_field(stage06, "field_witness_body_refs")):
+        if list_field(stage04, "act_body_refs") != list_field(stage06, "field_witness_body_refs"):
             raise HarnessError("stage-06 field_witness_body_refs must match stage-04 act_body_refs")
         act_burdens = set(list_field(stage04, "act_burdens") or list_field(stage04, "act_targets"))
         nar_burdens = set(list_field(stage06, "nar_burdens"))
         missing = sorted(act_burdens - nar_burdens)
         if missing:
             raise HarnessError(f"stage-06 nar_burdens missing ACT burden(s): {missing}")
+        owner_activations = list_field(stage06, "owner_activations")
+        if owner_activations != list_field(stage06, "field_witness_body_refs"):
+            raise HarnessError("stage-06 owner_activations must mirror field_witness_body_refs")
+    if stage05 and stage06:
+        terminal_states = stage05.get("terminal_states")
+        if isinstance(terminal_states, dict):
+            missing = sorted(set(terminal_states) - set(list_field(stage06, "nar_burdens")))
+            if missing:
+                raise HarnessError(f"stage-06 nar_burdens missing terminal-state burden(s): {missing}")
     if stage05 and stage05.get("terminal_states") in ({}, None):
         raise HarnessError("stage-05 terminal_states must be non-empty")
     if stage04 and stage05:
@@ -976,6 +1090,159 @@ def run_self_test(root: Path) -> int:
     )
     if invalid_result.returncode == 0:
         raise HarnessError("Self-test failed to reject Stage 05 no-new-resultant proof with unresolved burden")
+
+    structured_nar = {
+        "n_frame": "science-only-source-order-warrant",
+        "live_registers": ["xi", "kappa"],
+        "burden_floor": ["B1"],
+        "per_burden": [
+            {
+                "burden_id": "B1",
+                "owner_id": "source-status-repair",
+                "operation": "source-order",
+                "terminal_state": "landed",
+                "generation_depth": 0,
+            }
+        ],
+    }
+    normalized_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "¹B₂"],
+            "nar_burdens": ["B1"],
+            "owner_activations": [
+                {
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "source-status-repair",
+                    "operation": "source-order",
+                    "terminal_state": "landed",
+                },
+                {
+                    "body_ref": "¹B₂",
+                    "burden_id": "B1",
+                    "owner_id": "M1",
+                    "operation": "self-grounding-test",
+                    "terminal_state": "landed",
+                }
+            ],
+            "normalized_activation_record": structured_nar,
+            "register_deltas": {"xi": "source-order-landed"},
+        },
+    )
+    if normalized_stage06.get("owner_activations") != ["¹B₁", "¹B₂"]:
+        raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
+    if not isinstance(normalized_stage06.get("owner_activation_details"), list):
+        raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    stage06_local_record = base_record(
+        "self-test-a9-science-source-stage06",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-06-field-witness-nar",
+        model_scope_payload=model_scope(
+            "self-test-a9-science-source-stage06",
+            replay_record,
+            stop_after_stage="stage-06-field-witness-nar",
+        ),
+    )
+    stage06_local_record["stages"] = [*replay["stages"][:5], normalized_stage06]
+    stage06_local_path = run_dir / "staged-handoff-stage06-model-scope-record.json"
+    write_json(stage06_local_path, stage06_local_record)
+    validate_replay_record(root, stage06_local_path)
+
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": [{"burden_id": "B1"}],
+                "normalized_activation_record": structured_nar,
+                "register_deltas": {},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 06 owner_activation object without body_ref")
+
+    stage06_boolean_nar = dict(stage06_local_record)
+    stage06_boolean_nar["case_id"] = "self-test-stage06-boolean-nar-no-details"
+    stage06_boolean_nar["model_scope"] = model_scope(
+        "self-test-stage06-boolean-nar-no-details",
+        replay_record,
+        stop_after_stage="stage-06-field-witness-nar",
+    )
+    stage06_boolean_nar["stages"] = [dict(stage) for stage in stage06_local_record["stages"]]
+    stage06_boolean_nar["stages"][-1] = dict(stage06_boolean_nar["stages"][-1])
+    stage06_boolean_nar["stages"][-1].pop("normalized_activation_record_details", None)
+    stage06_boolean_nar["stages"][-1]["normalized_activation_record"] = True
+    stage06_boolean_nar_path = run_dir / "stage06-boolean-nar-no-details.invalid.json"
+    write_json(stage06_boolean_nar_path, stage06_boolean_nar)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage06_boolean_nar_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject model-mode Stage 06 boolean NAR without details")
+
+    stage06_floor_mismatch = dict(stage06_local_record)
+    stage06_floor_mismatch["case_id"] = "self-test-stage06-nar-floor-mismatch"
+    stage06_floor_mismatch["model_scope"] = model_scope(
+        "self-test-stage06-nar-floor-mismatch",
+        replay_record,
+        stop_after_stage="stage-06-field-witness-nar",
+    )
+    stage06_floor_mismatch["stages"] = [dict(stage) for stage in stage06_local_record["stages"]]
+    stage06_floor_mismatch["stages"][-1] = dict(stage06_floor_mismatch["stages"][-1])
+    stage06_floor_mismatch["stages"][-1]["normalized_activation_record"] = dict(structured_nar)
+    stage06_floor_mismatch["stages"][-1]["normalized_activation_record"]["burden_floor"] = ["B999"]
+    stage06_floor_mismatch_path = run_dir / "stage06-nar-floor-mismatch.invalid.json"
+    write_json(stage06_floor_mismatch_path, stage06_floor_mismatch)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage06_floor_mismatch_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 06 NAR burden_floor mismatch")
+
+    stage06_release_output = dict(stage06_local_record)
+    stage06_release_output["case_id"] = "self-test-stage06-release-output"
+    stage06_release_output["model_scope"] = model_scope(
+        "self-test-stage06-release-output",
+        replay_record,
+        stop_after_stage="stage-06-field-witness-nar",
+    )
+    stage06_release_output["stages"] = [dict(stage) for stage in stage06_local_record["stages"]]
+    stage06_release_output["stages"][-1] = dict(stage06_release_output["stages"][-1])
+    stage06_release_output["stages"][-1]["release_output"] = {"path": "output.md"}
+    stage06_release_output_path = run_dir / "stage06-release-output.invalid.json"
+    write_json(stage06_release_output_path, stage06_release_output)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage06_release_output_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 06 release_output")
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
