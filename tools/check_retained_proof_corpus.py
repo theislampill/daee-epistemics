@@ -51,6 +51,8 @@ REQUIRED_CASE_FIELDS = {
     "hashes",
 }
 ALLOWED_CASE_FIELDS = set(REQUIRED_CASE_FIELDS)
+B5_FULL_IR_SIDECAR_FIELD = "b5_full_ir_projection_sidecar"
+ALLOWED_CASE_FIELDS.add(B5_FULL_IR_SIDECAR_FIELD)
 REQUIRED_ROOT_FIELDS = {"schema_version", "corpus_id", "proof_boundary", "cases"}
 ALLOWED_ROOT_FIELDS = set(REQUIRED_ROOT_FIELDS) | {"coverage_targets"}
 CANONICAL_SIDECAR_MANIFEST = FIXTURE_ROOT / "valid" / "sidecar-backed" / "manifest.json"
@@ -74,6 +76,17 @@ PROOF_MODE_FULL_IR_ROW = "B.5"
 PROOF_MODE_FULL_IR_SCHEMA = "b5-full-ir-proof-mode-v1"
 PROOF_MODE_FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
 PROOF_MODE_FULL_IR_RETAINED_MODE = "retained-proof-corpus-sidecar"
+B5_FULL_IR_SIDECAR_SCHEMA = "b5-retained-proof-mode-full-ir-sidecar-v1"
+B5_FULL_IR_SIDECAR_BUILDER = "tools/build_b5_full_ir_projection_sidecar.py"
+B5_FULL_IR_SIDECAR_FIELDS = {"schema", "path", "sha256", "builder"}
+B5_FULL_IR_SIDECAR_SOURCE_FIELDS = {
+    "raw_input",
+    "governed_output",
+    "collapse_certificate",
+    "builder",
+}
+B5_FULL_IR_SIDECAR_SOURCE_OPTIONAL_FIELDS = {"grapher_html"}
+B5_FULL_IR_SIDECAR_TOP_FIELDS = {"schema", "source", "projection"}
 
 
 def rel(path: Path) -> str:
@@ -259,14 +272,164 @@ def case_errors(manifest_path: Path, case: Any, index: int) -> list[str]:
         if "MRP(" not in text:
             errors.append(f"{prefix}.output: missing MRP trace")
 
+    errors.extend(b5_full_ir_sidecar_entry_errors(manifest_path, case, prefix, paths))
+
     return errors
 
 
-def retained_full_ir_decode_case_errors(manifest_path: Path, case: dict[str, Any], target_prefix: str) -> list[str]:
-    """Verify a retained case that explicitly claims the B.5.4 proof-mode target."""
+def resolve_case_artifact_paths(manifest_path: Path, case: dict[str, Any], prefix: str) -> tuple[dict[str, Path], list[str]]:
+    paths: dict[str, Path] = {}
     errors: list[str] = []
+    for field in ARTIFACT_FIELDS:
+        path, error = resolve_manifest_path(manifest_path, case.get(field))
+        if error:
+            errors.append(f"{prefix}.{field}: {error}")
+            continue
+        assert path is not None
+        paths[field] = path
+    return paths, errors
+
+
+def b5_full_ir_sidecar_entry_errors(
+    manifest_path: Path,
+    case: dict[str, Any],
+    prefix: str,
+    paths: dict[str, Path],
+) -> list[str]:
+    entry = case.get(B5_FULL_IR_SIDECAR_FIELD)
+    if entry is None:
+        return []
+    label = f"{prefix}.{B5_FULL_IR_SIDECAR_FIELD}"
+    errors: list[str] = []
+    if not isinstance(entry, dict):
+        return [f"{label}: must be an object"]
+
+    missing = sorted(B5_FULL_IR_SIDECAR_FIELDS - set(entry))
+    extra = sorted(set(entry) - B5_FULL_IR_SIDECAR_FIELDS)
+    if missing:
+        errors.append(f"{label}: missing fields {missing}")
+    if extra:
+        errors.append(f"{label}: unexpected fields {extra}")
+    if entry.get("schema") != B5_FULL_IR_SIDECAR_SCHEMA:
+        errors.append(f"{label}.schema: must be {B5_FULL_IR_SIDECAR_SCHEMA!r}")
+    if entry.get("builder") != B5_FULL_IR_SIDECAR_BUILDER:
+        errors.append(f"{label}.builder: must be {B5_FULL_IR_SIDECAR_BUILDER!r}")
+
+    sidecar_path, path_error = resolve_manifest_path(manifest_path, entry.get("path"))
+    if path_error:
+        errors.append(f"{label}.path: {path_error}")
+        return errors
+    assert sidecar_path is not None
+    if not sidecar_path.exists():
+        errors.append(f"{label}.path: {rel(sidecar_path)} missing")
+        return errors
+
+    expected_hash = entry.get("sha256")
+    if not isinstance(expected_hash, str) or not SHA256_RE.match(expected_hash):
+        errors.append(f"{label}.sha256: must be a SHA-256 hex digest")
+    else:
+        actual_hash = sha256_file(sidecar_path)
+        if expected_hash.upper() != actual_hash:
+            errors.append(f"{label}.sha256: expected {expected_hash.upper()} but found {actual_hash}")
+
+    payload, found = load_json(sidecar_path)
+    errors.extend(f"{label}: {error}" for error in found)
+    if not isinstance(payload, dict):
+        return errors + [f"{label}: sidecar root must be an object"]
+    errors.extend(b5_full_ir_sidecar_payload_errors(sidecar_path, payload, label, paths))
+    return errors
+
+
+def b5_full_ir_sidecar_payload_errors(
+    sidecar_path: Path,
+    payload: dict[str, Any],
+    label: str,
+    paths: dict[str, Path],
+) -> list[str]:
+    errors: list[str] = []
+    missing = sorted(B5_FULL_IR_SIDECAR_TOP_FIELDS - set(payload))
+    extra = sorted(set(payload) - B5_FULL_IR_SIDECAR_TOP_FIELDS)
+    if missing:
+        errors.append(f"{label}: sidecar missing fields {missing}")
+    if extra:
+        errors.append(f"{label}: sidecar unexpected fields {extra}")
+    if payload.get("schema") != B5_FULL_IR_SIDECAR_SCHEMA:
+        errors.append(f"{label}.schema: must be {B5_FULL_IR_SIDECAR_SCHEMA!r}")
+
+    source = payload.get("source")
+    source_label = f"{label}.source"
+    if not isinstance(source, dict):
+        errors.append(f"{source_label}: must be an object")
+        source = {}
+    source_keys = set(source)
+    missing_source = sorted(B5_FULL_IR_SIDECAR_SOURCE_FIELDS - source_keys)
+    extra_source = sorted(source_keys - (B5_FULL_IR_SIDECAR_SOURCE_FIELDS | B5_FULL_IR_SIDECAR_SOURCE_OPTIONAL_FIELDS))
+    if missing_source:
+        errors.append(f"{source_label}: missing fields {missing_source}")
+    if extra_source:
+        errors.append(f"{source_label}: unexpected fields {extra_source}")
+    if source.get("builder") != B5_FULL_IR_SIDECAR_BUILDER:
+        errors.append(f"{source_label}.builder: must be {B5_FULL_IR_SIDECAR_BUILDER!r}")
+
+    expected_sources = {
+        "raw_input": paths.get("input"),
+        "governed_output": paths.get("output"),
+        "collapse_certificate": paths.get("collapse_certificate"),
+        "grapher_html": paths.get("grapher_html"),
+    }
+    for key, path in expected_sources.items():
+        if path is None:
+            continue
+        if key == "grapher_html" and key not in source:
+            continue
+        expected = rel(path)
+        if source.get(key) != expected:
+            errors.append(f"{source_label}.{key}: expected {expected!r}")
+
+    projection = payload.get("projection")
+    if not isinstance(projection, dict):
+        return errors + [f"{label}.projection: must be an object"]
+    proof_mode = projection.get("proof_mode")
+    if isinstance(proof_mode, dict) and proof_mode.get("mode") != PROOF_MODE_FULL_IR_RETAINED_MODE:
+        errors.append(
+            f"{label}.projection.proof_mode.mode: must be {PROOF_MODE_FULL_IR_RETAINED_MODE!r}"
+        )
+
+    output_path = paths.get("output")
+    if output_path is None or not output_path.exists():
+        return errors + [f"{label}: retained output is unavailable for sidecar validation"]
+    text = read_text(output_path)
+    field_witness, found = nla_decode.parse_field_witness(output_path, text)
+    errors.extend(f"{label}: {error}" for error in found)
+    records, parse_errors = nla_decode.parse_act_records(nla_decode.public_execution_text(text))
+    errors.extend(f"{label}: {rel(output_path)}: {message}" for message in parse_errors)
+    if field_witness is None:
+        return errors
+
+    output_errors = nla_decode.nla_decode_errors(output_path, text)
+    if output_errors:
+        errors.append(f"{label}: retained output must pass schema-light NLA before sidecar validation")
+        errors.extend(f"{label}: {error}" for error in output_errors)
+
+    projection_errors = nla_decode.canonical_ir_projection_object_errors(
+        output_path,
+        text,
+        field_witness,
+        records,
+        projection,
+    )
+    errors.extend(f"{label}: {error}" for error in projection_errors)
+    return errors
+
+
+def embedded_retained_full_ir_decode_errors(
+    manifest_path: Path,
+    case: dict[str, Any],
+    target_prefix: str,
+) -> list[str]:
     case_id = str(case.get("id") or "<unknown>")
     prefix = f"{target_prefix}.case_ids.{case_id}"
+    errors: list[str] = []
     output_path, path_error = resolve_manifest_path(manifest_path, case.get("output"))
     if path_error:
         return [f"{prefix}.output: {path_error}"]
@@ -339,6 +502,24 @@ def retained_full_ir_decode_case_errors(manifest_path: Path, case: dict[str, Any
         errors.append(f"{prefix}.output: NLA semantic faithfulness must pass for {PROOF_MODE_FULL_IR_TARGET_ID}")
         errors.extend(f"{prefix}.output: {error}" for error in nla_found)
     return errors
+
+
+def retained_full_ir_decode_case_errors(manifest_path: Path, case: dict[str, Any], target_prefix: str) -> list[str]:
+    """Verify a retained case that explicitly claims the B.5.4 proof-mode target."""
+    case_id = str(case.get("id") or "<unknown>")
+    prefix = f"{target_prefix}.case_ids.{case_id}"
+    embedded_errors = embedded_retained_full_ir_decode_errors(manifest_path, case, target_prefix)
+    if not embedded_errors:
+        return []
+    paths, path_errors = resolve_case_artifact_paths(manifest_path, case, prefix)
+    if path_errors:
+        return path_errors
+    if case.get(B5_FULL_IR_SIDECAR_FIELD) is None:
+        return embedded_errors
+    sidecar_errors = b5_full_ir_sidecar_entry_errors(manifest_path, case, prefix, paths)
+    if not sidecar_errors:
+        return []
+    return sidecar_errors
 
 
 def manifest_errors(path: Path) -> list[str]:

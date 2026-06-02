@@ -1244,8 +1244,31 @@ def canonical_ir_projection_errors(
         return []
     if not isinstance(projection, dict):
         return [f"{rel(path)}: field_witness.canonical_ir_projection must be an object"]
+    return canonical_ir_projection_object_errors(path, "", field_witness, records, projection)
+
+
+def canonical_ir_projection_object_errors(
+    path: Path,
+    text: str,
+    field_witness: dict[str, Any],
+    records: list[ActRecord],
+    projection: dict[str, Any],
+) -> list[str]:
+    """Validate an explicit projection object against already-emitted evidence.
+
+    Retained proof-corpus sidecars use this path. It does not parse prose into
+    IR; it checks a caller-supplied projection against visible ACT rows,
+    field_witness, NAR, and coverage evidence.
+    """
+
+    if not isinstance(projection, dict):
+        return [f"{rel(path)}: field_witness.canonical_ir_projection must be an object"]
+    projected_witness = dict(field_witness)
+    projected_witness["canonical_ir_projection"] = projection
+    opening_errors = projection_opening_surface_errors(path, text, projected_witness) if text else []
     return (
-        canonical_ir_projection_common_errors(path, field_witness, projection, records)
+        opening_errors
+        + canonical_ir_projection_common_errors(path, field_witness, projection, records)
         + hard_register_projection_errors(path, field_witness, projection)
         + register_composition_projection_errors(path, projection)
         + canonical_ir_decode_errors(path, field_witness, projection, records)

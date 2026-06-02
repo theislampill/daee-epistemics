@@ -47,6 +47,7 @@ ARTIFACT_NAMES = {
     "collapse_certificate": "collapse-certificate.json",
     "grapher_html": "grapher.html",
 }
+OPTIONAL_CASE_FIELDS = {"b5_full_ir_projection_sidecar"}
 HASH_RECORD_ARTIFACT_MAP = {
     "input": ("proof_sidecars", "raw_input"),
     "output": ("output",),
@@ -291,7 +292,10 @@ def compare_existing(manifest_path: Path, expected: dict[str, Any]) -> list[str]
     _, existing = find_case(manifest, expected["id"])
     if existing is None:
         return [f"case id not present in manifest: {expected['id']}"]
-    if existing != expected:
+    extra_fields = sorted(set(existing) - set(expected) - OPTIONAL_CASE_FIELDS)
+    missing_fields = sorted(set(expected) - set(existing))
+    projected_existing = {key: existing.get(key) for key in expected}
+    if missing_fields or extra_fields or projected_existing != expected:
         return [
             "existing manifest entry differs from proposed entry",
             f"expected={json.dumps(expected, sort_keys=True, ensure_ascii=False)}",

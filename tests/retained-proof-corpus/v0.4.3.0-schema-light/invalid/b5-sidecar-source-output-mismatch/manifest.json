@@ -1,0 +1,44 @@
+{
+  "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
+  "corpus_id": "invalid-a9-sidecar-source-output-mismatch",
+  "proof_boundary": "Invalid canary: sidecar source governed_output must match retained case output.",
+  "coverage_targets": [
+    {
+      "id": "b5-4-retained-proof-mode-full-ir",
+      "description": "Invalid canary for sidecar source governed_output must match retained case output.",
+      "rows": [
+        "B.5"
+      ],
+      "case_ids": [
+        "a9-sidecar-source-output-mismatch"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.5"
+      ],
+      "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
+      "input": "../../valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "output": "../../valid/sidecar-backed/cases/a9-science-source/output.md",
+      "collapse_certificate": "../../valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+      "grapher_html": "../../valid/sidecar-backed/cases/a9-science-source/grapher.html",
+      "hashes": {
+        "input": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+        "output": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6",
+        "collapse_certificate": "E8FB1C84BCB365184A8993C6E4274821E84FC57AB98A4371B6064FA33D78A8BF",
+        "grapher_html": "87CEAFA9BED35B7B94A8CBEF3EFF4B3AEDB97D68CB1052350ED1FB41B2AD419B"
+      },
+      "id": "a9-sidecar-source-output-mismatch",
+      "origin": "invalid retained-corpus canary: sidecar source governed_output must match retained case output",
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "b5-full-ir-projection-sidecar.json",
+        "sha256": "137FA3D04DEB310C44847F72AE212ECBA3E5BEB59F7F13DC8C9AEDAD18070EE6",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    }
+  ]
+}

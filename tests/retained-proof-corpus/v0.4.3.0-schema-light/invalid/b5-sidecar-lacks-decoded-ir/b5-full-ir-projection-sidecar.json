@@ -1,0 +1,222 @@
+{
+  "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+  "source": {
+    "raw_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt",
+    "governed_output": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
+    "collapse_certificate": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/collapse-certificate.json",
+    "builder": "tools/build_b5_full_ir_projection_sidecar.py",
+    "grapher_html": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/grapher.html"
+  },
+  "projection": {
+    "schema": "b5-canonical-ir-projection-v1",
+    "n_frame": "science-only-source-order-warrant",
+    "live_registers": [
+      "xi",
+      "kappa"
+    ],
+    "burden_floor": [
+      "B1"
+    ],
+    "per_burden": [
+      {
+        "burden_id": "B1",
+        "owner_id": "source-status-repair",
+        "operation": "source-order",
+        "delta_result": "science-source-bounded",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B1",
+        "owner_id": "M1",
+        "operation": "self-grounding-test",
+        "delta_result": "self-authorizing-standard-invalidated",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      }
+    ],
+    "diagnostic_completeness": {
+      "live_registers": [
+        "xi",
+        "kappa"
+      ],
+      "coverage": {
+        "xi": [
+          "B1"
+        ],
+        "kappa": [
+          "B1"
+        ]
+      }
+    },
+    "full_ir_decode": {
+      "schema": "b5-full-ir-decode-v1",
+      "source_evidence": [
+        "visible_act",
+        "field_witness.owner_activations",
+        "normalized_activation_record",
+        "canonical_ir_projection",
+        "canonical_ir_projection.decoded_ir",
+        "field_witness.coverage_proof",
+        "field_witness.coverage_proof.dependency_graph",
+        "field_witness.formal_reread_states"
+      ],
+      "n_frame": "science-only-source-order-warrant",
+      "live_registers": [
+        "xi",
+        "kappa"
+      ],
+      "burden_floor": [
+        "B1"
+      ],
+      "B_LA": [
+        "B1"
+      ],
+      "B_MRP": [],
+      "B_total": [
+        "B1"
+      ],
+      "dependency_graph": {
+        "nodes": [
+          "B1"
+        ],
+        "edges": [],
+        "roots": [
+          "B1"
+        ],
+        "acyclic": true
+      },
+      "terminal_states": {
+        "B1": "landed"
+      },
+      "diagnostic_completeness": {
+        "live_registers": [
+          "xi",
+          "kappa"
+        ],
+        "coverage": {
+          "xi": [
+            "B1"
+          ],
+          "kappa": [
+            "B1"
+          ]
+        }
+      },
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "operation": "source-order",
+          "delta_result": "science-source-bounded",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "scientific-explanations-only-knowledge-source",
+          "body_ref": "B1_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "M1",
+          "operation": "self-grounding-test",
+          "delta_result": "self-authorizing-standard-invalidated",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "only-science-counts-standard",
+          "body_ref": "B1_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        }
+      ],
+      "generated_burdens": [],
+      "formal_reread": {
+        "states_present": true,
+        "divergence_state": "neutral",
+        "curl_state": "null",
+        "escape_routes_checked": [],
+        "no_new_resultant_proof": {
+          "escape_routes_checked": [
+            {
+              "type": "closure-boundary-immunity",
+              "live": false,
+              "basis": "bounded answer is explicitly scoped and not used as immunity against future proof requests"
+            },
+            {
+              "type": "proof-carousel",
+              "live": false,
+              "basis": "no demand for infinite proof chain is present after self-grounding test"
+            },
+            {
+              "type": "total-system-exhaustion",
+              "live": false,
+              "basis": "the prompt asks whether Islam can answer without abandoning reason, not for total proof of every doctrine"
+            },
+            {
+              "type": "doubt-churn",
+              "live": false,
+              "basis": "sincere clarification remains open without converting into skeptical methodology"
+            },
+            {
+              "type": "moral-tribunal",
+              "live": false,
+              "basis": "no moral condemnation tribunal is asserted in the raw input"
+            },
+            {
+              "type": "authority-order-recoil",
+              "live": false,
+              "basis": "source-order pressure is landed inside B1"
+            },
+            {
+              "type": "hidden-framework-recoil",
+              "live": false,
+              "basis": "no hidden framework remains load-bearing beyond the science-only standard"
+            },
+            {
+              "type": "restoration-recoil",
+              "subtype": "scope-protest",
+              "live": false,
+              "basis": "restoration is scoped to source-order correction and does not claim guaranteed uptake"
+            }
+          ],
+          "field_state_at_stop": {
+            "divergence": "neutral",
+            "curl": "null",
+            "b_live": "empty",
+            "kappa_residual": 0
+          },
+          "stop_licensed": true
+        }
+      },
+      "source_basis": {
+        "source_basis_available": false,
+        "sigma_inside_hard_registers": false,
+        "basis": []
+      }
+    },
+    "proof_mode": {
+      "schema": "b5-full-ir-proof-mode-v1",
+      "mode": "retained-proof-corpus-sidecar",
+      "source_evidence": [
+        "visible_noetic_field_opening",
+        "visible_layer_a_diagnostic_ir_header",
+        "field_witness.canonical_ir_projection",
+        "field_witness.canonical_ir_projection.decoded_ir",
+        "field_witness.canonical_ir_projection.full_ir_decode"
+      ],
+      "machine_facing": true,
+      "schema_light_absent_valid": true,
+      "requires_decoded_ir": true,
+      "visible_opening_header_preserved": true,
+      "arbitrary_nl_ir_parser_claim": false,
+      "default_runtime_emission_claim": false,
+      "t_lang_uptake_claim": false
+    }
+  }
+}
