@@ -1047,6 +1047,20 @@ def stage07_route_type_for_burden(
     return final_type or "no_new_resultant"
 
 
+def stage07_dependency_graph_scaffold(
+    b_total: list[str],
+    edges: list[dict[str, str]],
+) -> tuple[str, list[str], list[list[str]]]:
+    if not b_total:
+        return "none", [], []
+    if edges:
+        roots = [b_total[0]]
+        return " -> ".join([f"{roots[0]} (root)", *[edge["to"] for edge in edges]]), roots, []
+    roots = list(b_total)
+    parallel_groups = [list(b_total)] if len(b_total) > 1 else []
+    return " || ".join(f"{burden} (root)" for burden in b_total), roots, parallel_groups
+
+
 def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
     stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
@@ -1151,7 +1165,6 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         terminal_states = {}
     terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
     edges = stage05_dependency_edges(stage05)
-    roots = [b_total[0]] if b_total else []
     final_source = b_total[-1] if b_total else ""
     reread_state = stage05.get("reread_state") if isinstance(stage05, dict) else {}
     if not isinstance(reread_state, dict):
@@ -1161,6 +1174,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     live_registers = list_field(stage02, "live_registers")
     diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
     burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    graph_line, roots, parallel_groups = stage07_dependency_graph_scaffold(b_total, edges)
     owner_activation_rows: list[dict[str, Any]] = []
     nar_rows: list[dict[str, Any]] = []
     for ref, detail in act_details.items():
@@ -1214,7 +1228,6 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "route": final_route,
             }
         )
-    graph_line = " -> ".join([f"{roots[0]} (root)", *[edge["to"] for edge in edges]]) if roots and edges else (f"{roots[0]} (root)" if roots else "none")
     visible_lines = [
         f"Initial burden set: [{', '.join(burden_floor)}]",
         f"B_LA = {{{', '.join(burden_floor)}}}",
@@ -1271,6 +1284,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "nodes": b_total,
                 "edges": [{"from": edge["from"], "to": edge["to"]} for edge in edges],
                 "roots": roots,
+                "parallel_groups": parallel_groups,
                 "acyclic": True,
             },
             "diagnostic_completeness": {
@@ -1292,6 +1306,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- If Stage 05 `generated_burdens` is empty, `B_MRP` is empty: visible `B_MRP = {}` and JSON `\"B_MRP\": []`; never place baseline Layer-A burdens in `B_MRP`.",
         "- `B_total` must equal `B_LA` plus `B_MRP` in order.",
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
+        "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `B1 (root) || B2 (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, not one summary row per burden.",
@@ -2915,6 +2930,11 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test compiled section budgets produced a non-positive section floor")
     if sum(min_section_bytes.values()) != 70 * 1024:
         raise HarnessError("Self-test compiled section budgets did not distribute the full target floor")
+    graph_line, graph_roots, graph_parallel = stage07_dependency_graph_scaffold(["B1", "B2", "B3"], [])
+    if graph_line != "B1 (root) || B2 (root) || B3 (root)":
+        raise HarnessError("Self-test Stage 07 graph scaffold omitted edge-empty parallel roots")
+    if graph_roots != ["B1", "B2", "B3"] or graph_parallel != [["B1", "B2", "B3"]]:
+        raise HarnessError("Self-test Stage 07 graph scaffold did not mirror edge-empty roots/parallel group")
     assigned_once = [
         ref
         for assignment in partition["assignments"]
