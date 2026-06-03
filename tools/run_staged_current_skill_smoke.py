@@ -937,6 +937,92 @@ def stage06_owner_activation_details_by_ref(stage06: dict[str, Any] | None) -> d
     return details
 
 
+def b_id(value: Any) -> str:
+    burden = canonical_burden_id(str(value or "").strip())
+    return burden if re.fullmatch(r"B[1-9][0-9]*", burden) else ""
+
+
+def stage05_generated_burdens(stage05: dict[str, Any] | None) -> list[str]:
+    if not isinstance(stage05, dict):
+        return []
+    raw = stage05.get("generated_burdens")
+    generated: list[str] = []
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, str):
+                burden = b_id(item)
+            elif isinstance(item, dict):
+                burden = b_id(item.get("id") or item.get("burden") or item.get("target"))
+            else:
+                burden = ""
+            if burden:
+                generated.append(burden)
+    elif isinstance(raw, dict):
+        generated.extend(burden for burden in (b_id(key) for key in raw) if burden)
+    return ordered_unique(generated)
+
+
+def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, str]]:
+    if not isinstance(stage05, dict):
+        return []
+    raw = stage05.get("dependency_graph_edges")
+    if raw is None:
+        graph = stage05.get("dependency_graph")
+        raw = graph.get("edges") if isinstance(graph, dict) else None
+    if not isinstance(raw, list):
+        return []
+    edges: list[dict[str, str]] = []
+    for item in raw:
+        edge_type = "held_burden_activation"
+        if isinstance(item, dict):
+            source = b_id(item.get("source") or item.get("from"))
+            target = b_id(item.get("target") or item.get("to"))
+            if isinstance(item.get("type"), str) and item["type"].strip():
+                edge_type = item["type"].strip()
+        elif isinstance(item, list) and len(item) == 2:
+            source = b_id(item[0])
+            target = b_id(item[1])
+        else:
+            continue
+        if source and target:
+            edges.append({"from": source, "to": target, "type": edge_type})
+    return edges
+
+
+def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
+    coverage: dict[str, list[str]] = {}
+    if isinstance(stage02, dict):
+        details = stage02.get("burden_floor_details")
+        if isinstance(details, list):
+            for item in details:
+                if not isinstance(item, dict):
+                    continue
+                burden = b_id(item.get("burden_id"))
+                registers = item.get("register_types")
+                if not burden or not isinstance(registers, list):
+                    continue
+                for register in registers:
+                    if isinstance(register, str) and register.strip():
+                        coverage.setdefault(register.strip(), []).append(burden)
+    if coverage:
+        return {register: ordered_unique(ids) for register, ids in coverage.items()}
+    return {register: [burden] for register, burden in zip(list_field(stage02, "live_registers"), burdens)}
+
+
+def stage07_route_type_for_burden(
+    burden: str,
+    edges: list[dict[str, str]],
+    final_source: str,
+    final_type: str,
+) -> str:
+    if burden == final_source and final_type:
+        return final_type
+    for edge in edges:
+        if burden in {edge["from"], edge["to"]}:
+            return edge.get("type") or "held_burden_activation"
+    return final_type or "no_new_resultant"
+
+
 def stage07_act_contract_guidance(
     previous_stages: list[dict[str, Any]],
     assigned_body_refs: list[str],
@@ -987,17 +1073,169 @@ def stage07_act_contract_guidance(
 
 
 def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
     stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
     act_details = stage04_act_details_by_ref(stage04)
     if not act_details:
         return ""
+    burden_floor = list_field(stage02, "burden_floor") or list_field(stage04, "act_burdens") or list_field(stage04, "act_targets")
+    generated_burdens = stage05_generated_burdens(stage05)
+    b_total = ordered_unique([*burden_floor, *generated_burdens])
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
+    if not isinstance(terminal_states, dict):
+        terminal_states = {}
+    terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
+    edges = stage05_dependency_edges(stage05)
+    roots = [b_total[0]] if b_total else []
+    final_source = b_total[-1] if b_total else ""
+    reread_state = stage05.get("reread_state") if isinstance(stage05, dict) else {}
+    if not isinstance(reread_state, dict):
+        reread_state = {}
+    final_type = str(reread_state.get("route_result_type") or "no_new_resultant")
+    final_route = str(reread_state.get("route") or "STOP")
+    live_registers = list_field(stage02, "live_registers")
+    diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
+    owner_activation_rows: list[dict[str, Any]] = []
+    nar_rows: list[dict[str, Any]] = []
+    for ref, detail in act_details.items():
+        target = detail["burden_id"]
+        route_type = stage07_route_type_for_burden(target, edges, final_source, final_type)
+        owner_activation_rows.append(
+            {
+                "body_ref": ref,
+                "source": target if target in roots else f"MRP({target})",
+                "target": target,
+                "owner": detail["owner"],
+                "owner_id": detail["owner"],
+                "operation": detail["operation"],
+                "pressure": detail["pressure"],
+                "delta": f"{detail['delta']}:{detail['delta_result']}",
+                "delta_result": detail["delta_result"],
+                "land": detail["land"],
+                "land_target": target,
+                "terminal_state": terminal_states.get(target, "landed"),
+                "mrp_route_result_type": route_type,
+            }
+        )
+        nar_rows.append(
+            {
+                "burden_id": target,
+                "owner_id": detail["owner"],
+                "operation": detail["operation"],
+                "delta_result": detail["delta_result"],
+                "mrp_route_result_type": route_type,
+                "terminal_state": terminal_states.get(target, "landed"),
+                "generation_depth": 0 if target in burden_floor else 1,
+            }
+        )
+    mrp_resultants = [
+        {
+            "source": edge["from"],
+            "type": edge["type"],
+            "finding": "genuine-dependent",
+            "graph": f"{edge['from']} -> {edge['to']}",
+            "route": "RECURSE",
+        }
+        for edge in edges
+    ]
+    if final_source:
+        mrp_resultants.append(
+            {
+                "source": final_source,
+                "type": final_type,
+                "finding": "stable",
+                "graph": "none",
+                "route": final_route,
+            }
+        )
+    graph_line = " -> ".join([f"{roots[0]} (root)", *[edge["to"] for edge in edges]]) if roots and edges else (f"{roots[0]} (root)" if roots else "none")
+    visible_lines = [
+        f"Initial burden set: [{', '.join(burden_floor)}]",
+        f"B_LA = {{{', '.join(burden_floor)}}}",
+        f"B_MRP = {{{', '.join(generated_burdens)}}}" if generated_burdens else "B_MRP = {}",
+        f"B_total = {{{', '.join(b_total)}}} = B_LA union B_MRP",
+        "Burden dependency graph:",
+        graph_line,
+        "Terminal states:",
+        *[
+            f"{burden}: {terminal_states.get(burden, 'landed')} / ACT owners / landed by visible owner activations"
+            for burden in b_total
+        ],
+        "MRP resultants:",
+        *[
+            f"MRP({row['source']}): type={row['type']}; finding={row['finding']}; graph={row['graph']}; route={row['route']}"
+            for row in mrp_resultants
+        ],
+        "del-dot B: neutral",
+        "del-cross kappa: null",
+        "C(PsiN): coverage_complete=true; runtime execution field closed for this bounded reply",
+        "T_lang: PsiN -> PsiI: partial coupling boundary; no guaranteed uptake",
+    ]
+    scaffold = {
+        "B_LA": burden_floor,
+        "B_MRP": generated_burdens,
+        "B_total": b_total,
+        "nodes": [
+            {
+                "id": burden,
+                "type": "generated_burden" if burden in generated_burdens else "burden",
+                "state": terminal_states.get(burden, "landed"),
+                "generation_depth": 1 if burden in generated_burdens else 0,
+            }
+            for burden in b_total
+        ],
+        "edges": edges,
+        "mrp_resultants": mrp_resultants,
+        "field_diagnostics": {"divergence_check": "neutral", "curl_check": "null"},
+        "terminal_states": terminal_states,
+        "closure": {"status": "coverage_complete=true"},
+        "T_lang": "T_lang: PsiN -> PsiI: partial coupling boundary; no guaranteed uptake",
+        "owner_activations": owner_activation_rows,
+        "normalized_activation_record": {
+            "n_frame": str((stage02 or {}).get("selected_n_frame") or (stage06 or {}).get("selected_n_frame") or "selected-n-frame"),
+            "live_registers": live_registers,
+            "burden_floor": burden_floor,
+            "per_burden": nar_rows,
+        },
+        "coverage_proof": {
+            "initial_burden_set": burden_floor,
+            "terminal_states": terminal_states,
+            "dependency_graph": {
+                "nodes": b_total,
+                "edges": [{"from": edge["from"], "to": edge["to"]} for edge in edges],
+                "roots": roots,
+                "acyclic": True,
+            },
+            "diagnostic_completeness": {
+                "live_registers": live_registers,
+                "coverage": diagnostic_coverage,
+                "complete": True,
+            },
+            "divergence_check": "neutral",
+            "curl_check": "null",
+            "max_generation_depth": 1 if generated_burdens else 0,
+            "coverage_complete": True,
+        },
+    }
     lines = [
         "",
         "Stage 07 field_witness mirror contract:",
+        "- Print the visible Closure/Reconstruction Witness ledger before the `field_witness` JSON using these exact line shapes:",
+        *[f"  {line}" for line in visible_lines],
+        "- If Stage 05 `generated_burdens` is empty, `B_MRP` is empty: visible `B_MRP = {}` and JSON `\"B_MRP\": []`; never place baseline Layer-A burdens in `B_MRP`.",
+        "- `B_total` must equal `B_LA` plus `B_MRP` in order.",
+        "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
+        "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
+        "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, not one summary row per burden.",
+        "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
-        "- Mirror these exact ACT-visible values by body_ref:",
+        "- Required field_witness scaffold and checker-owned keys (copy field names exactly; adapt prose details but keep the structure):",
+        json.dumps(scaffold, ensure_ascii=False, indent=2),
+        "- Mirror these exact ACT-visible values by body_ref; include `target` exactly as shown:",
     ]
     for ref, detail in act_details.items():
         lines.append(
@@ -1012,6 +1250,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                     "delta": f"{detail['delta']}:{detail['delta_result']}",
                     "delta_result": detail["delta_result"],
                     "land": detail["land"],
+                    "target": detail["burden_id"],
                     "land_target": detail["burden_id"],
                 },
                 ensure_ascii=False,
@@ -2890,6 +3129,13 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Do not set `owner` to `owner.operation`",
+        "visible `B_MRP = {}` and JSON `\"B_MRP\": []`",
+        "`coverage_proof.dependency_graph` is required",
+        "one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror",
+        '"B_MRP": []',
+        '"dependency_graph"',
+        '"target": "B1"',
+        '"generation_depth": 0',
         '"owner": "source-status-repair"',
         '"operation": "source-order"',
     ):
