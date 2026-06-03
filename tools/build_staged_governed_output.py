@@ -29,6 +29,9 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSEMBLY_SCHEMA = "staged-governed-output-assembly-v1"
 HASH_RECORD_SCHEMA = "staged-governed-output-assembly-hashes-v1"
 ACT_PARTITION_SCHEMA = "staged-act-partition-v1"
+SECTION_BUDGET_SCHEMA = "staged-section-budget-v1"
+SECTION_EXPANSIONS_SCHEMA = "staged-section-expansions-v1"
+CANONICAL_SCAFFOLD_SCHEMA = "staged-canonical-scaffold-v1"
 REQUIRED_NON_CLAIMS = {
     "not_release_provenance",
     "not_model_behavior_by_itself",
@@ -53,6 +56,12 @@ SINGLETON_ROLES = {
     "closing_formulation",
 }
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+CANONICAL_ROLE_HEADINGS = {
+    "field_witness_nar": {
+        "heading": "Closure/Reconstruction Witness",
+        "variants": [re.compile(r"^Closure\s*/\s*Reconstruction\s+Witness$", re.IGNORECASE)],
+    }
+}
 FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "harness commentary",
@@ -122,6 +131,7 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Closing Formulation", re.compile(r"(?im)^\s*(?:#+\s*)?Closing Formulation\b")),
 ]
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
 
 
 class AssemblyError(Exception):
@@ -205,6 +215,50 @@ def required_surface_errors(text: str) -> list[str]:
     ]
 
 
+def public_heading_text(line: str) -> str:
+    value = line.strip().lstrip("#").strip()
+    return value.rstrip("#").strip()
+
+
+def canonical_heading_pattern(heading: str) -> re.Pattern[str]:
+    return re.compile(rf"(?im)^\s*(?:#+\s*)?{re.escape(heading)}\s*$")
+
+
+def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
+    spec = CANONICAL_ROLE_HEADINGS.get(role)
+    if spec is None:
+        return text, None
+
+    heading = str(spec["heading"])
+    variant_patterns = list(spec["variants"])
+    lines = text.splitlines(keepends=True)
+    model_variants: list[str] = []
+
+    first_content_index = next((index for index, line in enumerate(lines) if line.strip()), None)
+    if first_content_index is not None:
+        first_heading = public_heading_text(lines[first_content_index])
+        if any(pattern.fullmatch(first_heading) for pattern in variant_patterns):
+            model_variants.append(first_heading)
+            del lines[first_content_index]
+            text = "".join(lines).lstrip("\ufeff")
+
+    inserted_headings: list[str] = []
+    if role == "field_witness_nar" and not model_variants and FIELD_WITNESS_LABEL_RE.search(text) is None:
+        return text, None
+    if canonical_heading_pattern(heading).search(text) is None:
+        text = f"{heading}\n{text.lstrip()}"
+        inserted_headings.append(heading)
+
+    if not inserted_headings and not model_variants:
+        return text, None
+    return text, {
+        "section_id": section_id,
+        "role": role,
+        "inserted_headings": inserted_headings,
+        "model_heading_variants_seen": model_variants,
+    }
+
+
 def parse_output_targets(output: Any) -> tuple[int, int, list[str]]:
     if not isinstance(output, dict):
         return 0, 0, []
@@ -223,6 +277,135 @@ def parse_output_targets(output: Any) -> tuple[int, int, list[str]]:
         target_min_bytes = 0
     min_bytes = max(target_min_bytes, target_output_kb * 1024)
     return target_output_kb, min_bytes, errors
+
+
+def section_budget_errors(
+    section_budgets: Any,
+    *,
+    section_records: list[dict[str, Any]],
+    allow_under_target: bool = False,
+) -> tuple[list[str], dict[str, Any] | None]:
+    if section_budgets is None:
+        return [], None
+    if not isinstance(section_budgets, dict):
+        return ["section_budgets: must be an object"], None
+
+    errors: list[str] = []
+    if section_budgets.get("schema") != SECTION_BUDGET_SCHEMA:
+        errors.append(f"section_budgets.schema: must be {SECTION_BUDGET_SCHEMA!r}")
+
+    target_output_bytes = section_budgets.get("target_output_bytes", 0)
+    if not isinstance(target_output_bytes, int) or target_output_bytes < 0:
+        errors.append("section_budgets.target_output_bytes: must be a non-negative integer")
+
+    role_min_bytes = section_budgets.get("role_min_bytes", {})
+    if role_min_bytes is not None and not isinstance(role_min_bytes, dict):
+        errors.append("section_budgets.role_min_bytes: must be an object when present")
+    elif isinstance(role_min_bytes, dict):
+        for role, value in role_min_bytes.items():
+            if role not in ROLE_INDEX:
+                errors.append(f"section_budgets.role_min_bytes.{role}: unsupported role")
+            if not isinstance(value, int) or value < 0:
+                errors.append(f"section_budgets.role_min_bytes.{role}: must be a non-negative integer")
+
+    min_section_bytes = section_budgets.get("min_section_bytes", {})
+    if not isinstance(min_section_bytes, dict):
+        errors.append("section_budgets.min_section_bytes: must be an object")
+        min_section_bytes = {}
+
+    record_by_id = {str(record["id"]): record for record in section_records}
+    for section_id, value in min_section_bytes.items():
+        if section_id not in record_by_id:
+            errors.append(f"section_budgets.min_section_bytes.{section_id}: unknown section id")
+            continue
+        if not isinstance(value, int) or value < 0:
+            errors.append(f"section_budgets.min_section_bytes.{section_id}: must be a non-negative integer")
+            continue
+        assembled_bytes = int(record_by_id[section_id].get("assembled_bytes", record_by_id[section_id]["bytes"]))
+        if value and assembled_bytes < value and not allow_under_target:
+            errors.append(
+                f"sections[{section_id}]: under section budget ({assembled_bytes} bytes < {value} bytes)"
+            )
+
+    if errors:
+        return errors, None
+    return [], {
+        "schema": SECTION_BUDGET_SCHEMA,
+        "target_output_bytes": target_output_bytes,
+        "role_min_bytes": dict(role_min_bytes or {}),
+        "min_section_bytes": dict(min_section_bytes),
+    }
+
+
+def validate_section_expansions(
+    section_expansions: Any,
+    *,
+    root: Path,
+    manifest_dir: Path,
+    section_role_by_id: dict[str, str],
+) -> tuple[list[str], dict[str, Any] | None]:
+    if section_expansions is None:
+        return [], None
+    if not isinstance(section_expansions, dict):
+        return ["section_expansions: must be an object"], None
+
+    errors: list[str] = []
+    if section_expansions.get("schema") != SECTION_EXPANSIONS_SCHEMA:
+        errors.append(f"section_expansions.schema: must be {SECTION_EXPANSIONS_SCHEMA!r}")
+    rounds_allowed = section_expansions.get("rounds_allowed", 0)
+    if not isinstance(rounds_allowed, int) or rounds_allowed < 0:
+        errors.append("section_expansions.rounds_allowed: must be a non-negative integer")
+
+    records = section_expansions.get("records", [])
+    if not isinstance(records, list):
+        errors.append("section_expansions.records: must be a list")
+        records = []
+
+    normalized_records: list[dict[str, Any]] = []
+    for index, record in enumerate(records):
+        label = f"section_expansions.records[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{label}: must be an object")
+            continue
+        section_id = record.get("section_id")
+        role = record.get("role")
+        round_index = record.get("round")
+        path_value = record.get("path")
+        expected_hash = record.get("sha256")
+        if not isinstance(section_id, str) or section_id not in section_role_by_id:
+            errors.append(f"{label}.section_id: unknown section id")
+        if not isinstance(role, str) or (isinstance(section_id, str) and section_role_by_id.get(section_id) != role):
+            errors.append(f"{label}.role: must match the section role")
+        if not isinstance(round_index, int) or round_index < 1:
+            errors.append(f"{label}.round: must be a positive integer")
+        if not isinstance(expected_hash, str) or SHA256_RE.fullmatch(expected_hash) is None:
+            errors.append(f"{label}.sha256: must be a SHA256 hex string")
+        try:
+            expansion_path = resolve_section_path(root, manifest_dir, path_value, f"{label}.path")
+        except AssemblyError as exc:
+            errors.append(str(exc))
+            continue
+        actual_hash = sha256_file(expansion_path)
+        if isinstance(expected_hash, str) and expected_hash.upper() != actual_hash:
+            errors.append(f"{label}.sha256: expected {expected_hash.upper()} but found {actual_hash}")
+        normalized_records.append(
+            {
+                "section_id": section_id,
+                "role": role,
+                "round": round_index,
+                "path": rel(expansion_path, root),
+                "sha256": actual_hash,
+                "bytes": expansion_path.stat().st_size,
+            }
+        )
+
+    if errors:
+        return errors, None
+    return [], {
+        "schema": SECTION_EXPANSIONS_SCHEMA,
+        "rounds_allowed": rounds_allowed,
+        "records": normalized_records,
+    }
 
 
 def validate_non_claims(non_claims: Any) -> list[str]:
@@ -427,20 +610,24 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         actual_hash = sha256_file(section_path)
         if expected_hash != actual_hash:
             errors.append(f"{label}.sha256: expected {expected_hash} but found {actual_hash}")
-        text = section_path.read_text(encoding="utf-8", errors="replace")
+        original_text = section_path.read_text(encoding="utf-8", errors="replace")
+        errors.extend(forbidden_text_errors(original_text, label))
+        text, scaffold_event = normalize_section_scaffold(section_id, role, original_text)
         errors.extend(forbidden_text_errors(text, label))
         section_texts.append(text)
         section_text_by_id[section_id] = text
         section_role_by_id[section_id] = role
-        section_records.append(
-            {
-                "id": section_id,
-                "role": role,
-                "path": rel(section_path, root),
-                "sha256": actual_hash,
-                "bytes": len(text.encode("utf-8")),
-            }
-        )
+        record = {
+            "id": section_id,
+            "role": role,
+            "path": rel(section_path, root),
+            "sha256": actual_hash,
+            "bytes": len(original_text.encode("utf-8")),
+            "assembled_bytes": len(text.encode("utf-8")),
+        }
+        if scaffold_event is not None:
+            record["canonical_scaffold"] = scaffold_event
+        section_records.append(record)
 
     missing_roles = [role for role in ROLE_ORDER if role_counts.get(role, 0) == 0]
     if missing_roles:
@@ -465,6 +652,19 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             section_role_by_id=section_role_by_id,
         )
     )
+    budget_found, normalized_budgets = section_budget_errors(
+        payload.get("section_budgets"),
+        section_records=section_records,
+        allow_under_target=allow_under_target,
+    )
+    errors.extend(budget_found)
+    expansion_found, normalized_expansions = validate_section_expansions(
+        payload.get("section_expansions"),
+        root=root,
+        manifest_dir=manifest_dir,
+        section_role_by_id=section_role_by_id,
+    )
+    errors.extend(expansion_found)
     assembled_bytes = len(assembled.encode("utf-8"))
     if target_min_bytes and assembled_bytes < target_min_bytes and not allow_under_target:
         errors.append(
@@ -497,6 +697,20 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
     }
     if payload.get("act_partition") is not None:
         record["act_partition"] = payload["act_partition"]
+    scaffold_events = [
+        section_record["canonical_scaffold"]
+        for section_record in section_records
+        if section_record.get("canonical_scaffold") is not None
+    ]
+    if scaffold_events:
+        record["canonical_scaffold"] = {
+            "schema": CANONICAL_SCAFFOLD_SCHEMA,
+            "events": scaffold_events,
+        }
+    if normalized_budgets is not None:
+        record["section_budgets"] = normalized_budgets
+    if normalized_expansions is not None:
+        record["section_expansions"] = normalized_expansions
     write_json(hash_record_path, record)
     record["hash_record"] = {"path": rel(hash_record_path, root), "sha256": sha256_file(hash_record_path)}
     write_json(hash_record_path, record)
@@ -512,6 +726,8 @@ def manifest_for_sections(
     output_name: str = "output.md",
     target_output_kb: int = 0,
     act_partition: dict[str, Any] | None = None,
+    section_budgets: dict[str, Any] | None = None,
+    section_expansions: dict[str, Any] | None = None,
 ) -> Path:
     sections_dir = case_dir / "sections"
     sections_dir.mkdir(parents=True, exist_ok=True)
@@ -542,6 +758,10 @@ def manifest_for_sections(
     }
     if act_partition is not None:
         payload["act_partition"] = act_partition
+    if section_budgets is not None:
+        payload["section_budgets"] = section_budgets
+    if section_expansions is not None:
+        payload["section_expansions"] = section_expansions
     write_json(manifest_path, payload)
     return manifest_path
 
@@ -702,6 +922,118 @@ def run_self_test(root: Path) -> int:
     valid_100kb_record = assemble_manifest(valid_100kb_manifest, root=root)
     if valid_100kb_record["output"]["bytes"] < 100 * 1024:
         raise AssemblyError("self-test valid 100KB assembly did not reach 100KB")
+
+    scaffold_manifest = manifest_for_sections(
+        base_dir / "valid-canonical-scaffold",
+        case_id="valid-canonical-scaffold",
+        source_input="valid-canonical-scaffold/input.md",
+        section_specs=[
+            *small_sections()[:4],
+            (
+                "field-witness",
+                "field_witness_nar",
+                "Closure / Reconstruction Witness\n"
+                "field_witness\n"
+                "{\n"
+                "  \"B_LA\": [\"B1\"],\n"
+                "  \"B_MRP\": [],\n"
+                "  \"B_total\": [\"B1\"],\n"
+                "  \"coverage_proof\": {\"divergence_check\": \"neutral\", \"curl_check\": \"null\"},\n"
+                "  \"normalized_activation_record\": {\"n_frame\": \"self-test\", \"live_registers\": [\"xi\"]}\n"
+                "}\n",
+            ),
+            *small_sections()[5:],
+        ],
+    )
+    scaffold_record = assemble_manifest(scaffold_manifest, root=root)
+    scaffold_output = (base_dir / "valid-canonical-scaffold" / "output.md").read_text(encoding="utf-8")
+    if "Closure/Reconstruction Witness" not in scaffold_output:
+        raise AssemblyError("self-test canonical scaffold did not insert exact closure witness heading")
+    if "Closure / Reconstruction Witness" in scaffold_output:
+        raise AssemblyError("self-test canonical scaffold left the model heading variant visible")
+    if not scaffold_record.get("canonical_scaffold"):
+        raise AssemblyError("self-test canonical scaffold did not record scaffold metadata")
+
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-under-section-budget",
+        lambda payload, _case_dir: payload.__setitem__(
+            "section_budgets",
+            {
+                "schema": SECTION_BUDGET_SCHEMA,
+                "target_output_bytes": 0,
+                "role_min_bytes": {},
+                "min_section_bytes": {"opening": 100_000},
+            },
+        ),
+    )
+
+    expanded_sections = small_sections()
+    expanded_sections[0] = (
+        "opening",
+        "visible_opening",
+        "NOETIC FIELD EXECUTION\n" + ("Expanded opening detail.\n" * 80),
+    )
+    expanded_case_dir = base_dir / "valid-section-budget-with-expansion"
+    expanded_manifest = manifest_for_sections(
+        expanded_case_dir,
+        case_id="valid-section-budget-with-expansion",
+        source_input="valid-section-budget-with-expansion/input.md",
+        section_specs=expanded_sections,
+        section_budgets={
+            "schema": SECTION_BUDGET_SCHEMA,
+            "target_output_bytes": 0,
+            "role_min_bytes": {},
+            "min_section_bytes": {"opening": 1_000},
+        },
+    )
+    expansion_path = expanded_case_dir / "expansions" / "opening-round-1.md"
+    expansion_path.parent.mkdir(parents=True, exist_ok=True)
+    expansion_path.write_text("Expanded opening detail.\n" * 40, encoding="utf-8", newline="\n")
+    expanded_payload = read_json(expanded_manifest)
+    if not isinstance(expanded_payload, dict):
+        raise AssertionError("expanded self-test manifest payload must be an object")
+    expanded_payload["section_expansions"] = {
+        "schema": SECTION_EXPANSIONS_SCHEMA,
+        "rounds_allowed": 1,
+        "records": [
+            {
+                "section_id": "opening",
+                "role": "visible_opening",
+                "round": 1,
+                "path": expansion_path.relative_to(expanded_case_dir).as_posix(),
+                "sha256": sha256_file(expansion_path),
+            }
+        ],
+    }
+    write_json(expanded_manifest, expanded_payload)
+    expanded_record = assemble_manifest(expanded_manifest, root=root)
+    if not expanded_record.get("section_budgets") or not expanded_record.get("section_expansions"):
+        raise AssemblyError("self-test section budget/expansion metadata was not recorded")
+
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-expansion-forbidden-claim",
+        lambda payload, case_dir: (
+            replace_section_text(
+                payload,
+                case_dir,
+                0,
+                "NOETIC FIELD EXECUTION\nGitHub Release asset proof claim.\n",
+            ),
+            payload.__setitem__(
+                "section_budgets",
+                {
+                    "schema": SECTION_BUDGET_SCHEMA,
+                    "target_output_bytes": 0,
+                    "role_min_bytes": {},
+                    "min_section_bytes": {"opening": 1},
+                },
+            ),
+        ),
+    )
 
     def assemble_partition_case(
         name: str,

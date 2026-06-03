@@ -1050,6 +1050,52 @@ def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[st
     ]
 
 
+SECTION_BUDGET_ROLE_WEIGHTS = {
+    "visible_opening": 5,
+    "layer_a_diagnostic_ir": 10,
+    "layer_b_act": 25,
+    "mrp_reread_terminal": 20,
+    "field_witness_nar": 15,
+    "restorative_response": 15,
+    "closing_formulation": 10,
+}
+
+
+def compiled_section_budgets(
+    section_plan: list[tuple[str, str]],
+    target_output_kb: int | None,
+) -> dict[str, Any] | None:
+    target_bytes = max(0, int(target_output_kb or 0)) * 1024
+    if target_bytes <= 0:
+        return None
+
+    role_counts: dict[str, int] = {}
+    for _section_id, role in section_plan:
+        role_counts[role] = role_counts.get(role, 0) + 1
+
+    role_min_bytes: dict[str, int] = {
+        role: (target_bytes * weight) // 100
+        for role, weight in SECTION_BUDGET_ROLE_WEIGHTS.items()
+    }
+    min_section_bytes: dict[str, int] = {}
+    role_seen: dict[str, int] = {}
+    for section_id, role in section_plan:
+        role_budget = role_min_bytes.get(role, 0)
+        count = max(1, role_counts.get(role, 1))
+        seen = role_seen.get(role, 0)
+        base = role_budget // count
+        remainder = role_budget % count
+        min_section_bytes[section_id] = base + (1 if seen < remainder else 0)
+        role_seen[role] = seen + 1
+
+    return {
+        "schema": staged_output.SECTION_BUDGET_SCHEMA,
+        "target_output_bytes": target_bytes,
+        "role_min_bytes": role_min_bytes,
+        "min_section_bytes": min_section_bytes,
+    }
+
+
 def partition_body_refs(body_refs: list[str], section_ids: list[str]) -> list[dict[str, Any]]:
     if not section_ids:
         return []
@@ -1090,6 +1136,7 @@ def release_section_prompt(
     section_number: int,
     section_count: int,
     target_output_kb: int | None,
+    section_min_bytes: int = 0,
     assigned_body_refs: list[str] | None = None,
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
@@ -1149,9 +1196,14 @@ def release_section_prompt(
     }
     target_line = ""
     if target:
+        section_budget_text = (
+            f"This section's validator-owned minimum is {section_min_bytes} UTF-8 bytes. "
+            if section_min_bytes
+            else f"This section's rough share is {section_floor} bytes. "
+        )
         target_line = (
             f"\nOverall compiled output floor: at least {target}KB across {section_count} sections. "
-            f"This section's rough share is {section_floor} bytes; expand governed content enough to "
+            f"{section_budget_text}Expand governed content enough to "
             "help the assembled output meet the floor. The harness will fail the assembly if the "
             "compiled output is under target.\n"
         )
@@ -1210,6 +1262,73 @@ public governed answer itself needs a section heading.
 """
 
 
+def release_section_expansion_prompt(
+    *,
+    root: Path,
+    case_name: str,
+    raw_input_path: Path,
+    input_digest: str,
+    skill_hash: str,
+    section_id: str,
+    section_role: str,
+    section_min_bytes: int,
+    current_bytes: int,
+    expansion_round: int,
+    max_rounds: int,
+    assigned_body_refs: list[str] | None,
+    existing_text: str,
+) -> str:
+    remaining = max(0, section_min_bytes - current_bytes)
+    assigned = json.dumps(assigned_body_refs or [], ensure_ascii=False)
+    role_notes = {
+        "layer_b_act": (
+            "Use only the assigned ACT body_refs. Do not add ACT rows for unassigned body_refs. "
+            "Expand owner operation bodies, local result prose, and Land(...) consequences."
+        ),
+        "field_witness_nar": (
+            "Add human-readable Closure/Reconstruction Witness detail without emitting a second "
+            "`field_witness` JSON object and without changing existing JSON proof values."
+        ),
+        "mrp_reread_terminal": (
+            "Expand MRP reread, terminal-state, graph-delta, and field-diagnostic detail without "
+            "changing the route result."
+        ),
+    }
+    return f"""Runtime SHA256: {skill_hash}
+
+You are expanding one already-generated stage-07 compiled output section inside
+the same bounded pilot run. This is not a second pilot. The harness will append
+your text to the same section file, hash it, and validate the assembled output.
+
+Case: {case_name}
+Raw input path: {rel(raw_input_path, root)}
+Input SHA256: {input_digest}
+Section id: {section_id}
+Section role: {section_role}
+Expansion round: {expansion_round} of {max_rounds}
+Current section bytes: {current_bytes}
+Required section minimum bytes: {section_min_bytes}
+Approximate remaining bytes needed: {remaining}
+Assigned ACT body_refs for this section: {assigned}
+
+Expansion contract:
+- Return only additional public governed-output text for this same section.
+- Do not repeat the whole section.
+- Do not contradict or replace existing text.
+- Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
+- Do not claim verifier sidecars, retained promotion, package/provenance, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
+- Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
+- {role_notes.get(section_role, "Add role-local governed detail that stays inside the current section boundary.")}
+
+Existing section text:
+```text
+{existing_text}
+```
+
+Return only the additional text to append.
+"""
+
+
 def write_compiled_release_manifest(
     *,
     root: Path,
@@ -1220,6 +1339,8 @@ def write_compiled_release_manifest(
     output_path: Path,
     target_output_kb: int = 0,
     act_partition: dict[str, Any] | None = None,
+    section_budgets: dict[str, Any] | None = None,
+    section_expansions: dict[str, Any] | None = None,
 ) -> None:
     manifest_dir = manifest_path.parent
     payload: dict[str, Any] = {
@@ -1244,6 +1365,10 @@ def write_compiled_release_manifest(
     }
     if act_partition is not None:
         payload["act_partition"] = act_partition
+    if section_budgets is not None:
+        payload["section_budgets"] = section_budgets
+    if section_expansions is not None:
+        payload["section_expansions"] = section_expansions
     write_json(manifest_path, payload)
 
 
@@ -1681,6 +1806,21 @@ def run_self_test(root: Path) -> int:
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂"]
     partition_plan = compiled_release_section_plan(70)
     partition = compiled_act_partition([partition_stage04], partition_plan)
+    budgets = compiled_section_budgets(partition_plan, 70)
+    if not isinstance(budgets, dict) or budgets.get("schema") != staged_output.SECTION_BUDGET_SCHEMA:
+        raise HarnessError("Self-test failed to derive compiled section budgets")
+    if budgets.get("target_output_bytes") != 70 * 1024:
+        raise HarnessError("Self-test compiled section budgets used the wrong target byte floor")
+    min_section_bytes = budgets.get("min_section_bytes")
+    if not isinstance(min_section_bytes, dict):
+        raise HarnessError("Self-test compiled section budgets did not produce per-section floors")
+    planned_section_ids = {section_id for section_id, _role in partition_plan}
+    if set(min_section_bytes) != planned_section_ids:
+        raise HarnessError("Self-test compiled section budgets did not cover every section exactly once")
+    if any(not isinstance(value, int) or value <= 0 for value in min_section_bytes.values()):
+        raise HarnessError("Self-test compiled section budgets produced a non-positive section floor")
+    if sum(min_section_bytes.values()) != 70 * 1024:
+        raise HarnessError("Self-test compiled section budgets did not distribute the full target floor")
     assigned_once = [
         ref
         for assignment in partition["assignments"]
@@ -2549,6 +2689,12 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         assembly_record: dict[str, Any] | None = None
         if release_output_mode == "compiled-output":
             section_plan = compiled_release_section_plan(args.target_output_kb)
+            section_budgets = compiled_section_budgets(section_plan, args.target_output_kb)
+            min_section_bytes = (
+                dict(section_budgets.get("min_section_bytes", {}))
+                if isinstance(section_budgets, dict)
+                else {}
+            )
             act_partition = compiled_act_partition(stages, section_plan)
             assigned_refs_by_section = {
                 str(item["section_id"]): list(item["body_refs"])
@@ -2557,8 +2703,14 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             }
             sections_dir = run_dir / "release-sections"
             sections_dir.mkdir(parents=True, exist_ok=True)
+            expansions_dir = run_dir / "release-section-expansions"
+            if args.section_expansion_rounds:
+                expansions_dir.mkdir(parents=True, exist_ok=True)
             section_entries: list[dict[str, str]] = []
+            expansion_records: list[dict[str, Any]] = []
             for index, (section_id, section_role) in enumerate(section_plan, start=1):
+                section_min_bytes = int(min_section_bytes.get(section_id, 0) or 0)
+                assigned_refs = assigned_refs_by_section.get(section_id)
                 section_prompt = release_section_prompt(
                     root=root,
                     case_name=args.case_name,
@@ -2572,7 +2724,8 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     section_number=index,
                     section_count=len(section_plan),
                     target_output_kb=args.target_output_kb,
-                    assigned_body_refs=assigned_refs_by_section.get(section_id),
+                    section_min_bytes=section_min_bytes,
+                    assigned_body_refs=assigned_refs,
                 )
                 safe_section_id = section_id.replace("_", "-")
                 section_prompt_path = prompts_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.prompt.md"
@@ -2588,6 +2741,67 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     )
                 if not section_output_path.exists() or section_output_path.stat().st_size == 0:
                     raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
+                for expansion_round in range(1, args.section_expansion_rounds + 1):
+                    current_text = section_output_path.read_text(encoding="utf-8", errors="replace")
+                    current_bytes = len(current_text.encode("utf-8"))
+                    if not section_min_bytes or current_bytes >= section_min_bytes:
+                        break
+                    expansion_prompt = release_section_expansion_prompt(
+                        root=root,
+                        case_name=args.case_name,
+                        raw_input_path=raw_input,
+                        input_digest=input_digest,
+                        skill_hash=skill_hash,
+                        section_id=section_id,
+                        section_role=section_role,
+                        section_min_bytes=section_min_bytes,
+                        current_bytes=current_bytes,
+                        expansion_round=expansion_round,
+                        max_rounds=args.section_expansion_rounds,
+                        assigned_body_refs=assigned_refs,
+                        existing_text=current_text,
+                    )
+                    expansion_prompt_path = (
+                        prompts_dir
+                        / f"stage-07-release-output-{index:02d}-{safe_section_id}-expansion-{expansion_round}.prompt.md"
+                    )
+                    expansion_output_path = (
+                        expansions_dir / f"{index:02d}-{safe_section_id}-expansion-{expansion_round}.md"
+                    )
+                    expansion_log_path = (
+                        responses_dir
+                        / f"stage-07-release-output-{index:02d}-{safe_section_id}-expansion-{expansion_round}.codex-log.txt"
+                    )
+                    write_text(expansion_prompt_path, expansion_prompt)
+                    exit_code = invoke_codex(root, args.model, expansion_prompt, expansion_output_path, expansion_log_path)
+                    stage_files.extend([expansion_prompt_path, expansion_output_path, expansion_log_path])
+                    if exit_code != 0:
+                        raise HarnessError(
+                            f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                            f"codex exec failed with exit code {exit_code}; see {rel(expansion_log_path, root)}"
+                        )
+                    if not expansion_output_path.exists() or expansion_output_path.stat().st_size == 0:
+                        raise HarnessError(
+                            f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                            "expansion output was not produced"
+                        )
+                    expansion_text = expansion_output_path.read_text(encoding="utf-8", errors="replace").strip()
+                    if not expansion_text:
+                        raise HarnessError(
+                            f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                            "expansion output was empty"
+                        )
+                    separator = "\n" if current_text.endswith("\n") else "\n\n"
+                    write_text(section_output_path, current_text + separator + expansion_text + "\n")
+                    expansion_records.append(
+                        {
+                            "section_id": section_id,
+                            "role": section_role,
+                            "round": expansion_round,
+                            "path": str(expansion_output_path),
+                            "sha256": sha256_file(expansion_output_path),
+                        }
+                    )
                 section_entries.append(
                     {
                         "id": section_id,
@@ -2606,6 +2820,23 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 output_path=output_path,
                 target_output_kb=args.target_output_kb,
                 act_partition=act_partition,
+                section_budgets=section_budgets,
+                section_expansions={
+                    "schema": staged_output.SECTION_EXPANSIONS_SCHEMA,
+                    "rounds_allowed": int(args.section_expansion_rounds or 0),
+                    "records": [
+                        {
+                            "section_id": record["section_id"],
+                            "role": record["role"],
+                            "round": record["round"],
+                            "path": rel(Path(record["path"]), assembly_manifest_path.parent),
+                            "sha256": record["sha256"],
+                        }
+                        for record in expansion_records
+                    ],
+                }
+                if args.section_expansion_rounds or expansion_records
+                else None,
             )
             stage_files.append(assembly_manifest_path)
             assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)
@@ -2779,6 +3010,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stop-after-stage", choices=STAGE_ORDER[:7], default=None)
     parser.add_argument("--release-output-mode", choices=sorted(RELEASE_OUTPUT_MODE_ALIASES), default="single-output")
     parser.add_argument("--target-output-kb", type=int, default=0)
+    parser.add_argument("--section-expansion-rounds", type=int, default=0)
     return parser.parse_args()
 
 
@@ -2790,6 +3022,8 @@ def main() -> int:
             f"Wrong current directory. Current={Path.cwd().resolve()}; expected root={root}. "
             "Run from the repo root so artifacts cannot bind another workspace."
         )
+    if args.section_expansion_rounds < 0:
+        raise HarnessError("--section-expansion-rounds must be a non-negative integer")
     if args.self_test:
         return run_self_test(root)
     if args.run_dir is None:
