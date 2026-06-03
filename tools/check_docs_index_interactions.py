@@ -449,6 +449,27 @@ def run_node_syntax_check(scripts: list[str], errors: list[str]) -> None:
                 errors.append(f"script {index}: JavaScript syntax error: {first}")
 
 
+def run_docs_output_grapher_smoke(errors: list[str]) -> None:
+    checker = ROOT / "tools" / "check_docs_output_grapher_smoke.py"
+    if not checker.is_file():
+        errors.append("tools/check_docs_output_grapher_smoke.py missing")
+        return
+    proc = subprocess.run(
+        [sys.executable, str(checker)],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout).strip().splitlines()
+        first = detail[0] if detail else "docs Output Grapher smoke failed"
+        errors.append(f"docs Output Grapher smoke failed: {first}")
+
+
 def expected_modules(errors: list[str]) -> list[dict[str, str]]:
     if not MODULE_CATALOGUE.exists():
         errors.append(f"{MODULE_CATALOGUE.relative_to(ROOT)}: missing module catalogue owner")
@@ -3132,6 +3153,7 @@ def main() -> int:
     run_generation_freshness_check(errors)
 
     run_node_syntax_check(parser.scripts, errors)
+    run_docs_output_grapher_smoke(errors)
 
     if errors:
         print("docs/index.html interaction check failed:")
