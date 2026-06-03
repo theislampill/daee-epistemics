@@ -1009,6 +1009,30 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
     return {register: [burden] for register, burden in zip(list_field(stage02, "live_registers"), burdens)}
 
 
+def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
+    burden_registers: dict[str, list[str]] = {}
+    if isinstance(stage02, dict):
+        details = stage02.get("burden_floor_details")
+        if isinstance(details, list):
+            for item in details:
+                if not isinstance(item, dict):
+                    continue
+                burden = b_id(item.get("burden_id"))
+                registers = item.get("register_types")
+                if not burden or not isinstance(registers, list):
+                    continue
+                values = [str(register).strip() for register in registers if str(register).strip()]
+                if values:
+                    burden_registers[burden] = ordered_unique(values)
+    if burden_registers:
+        return burden_registers
+    return {
+        burden: [register]
+        for burden, register in zip(burdens, list_field(stage02, "live_registers"))
+        if register
+    }
+
+
 def stage07_route_type_for_burden(
     burden: str,
     edges: list[dict[str, str]],
@@ -1021,6 +1045,45 @@ def stage07_route_type_for_burden(
         if burden in {edge["from"], edge["to"]}:
             return edge.get("type") or "held_burden_activation"
     return final_type or "no_new_resultant"
+
+
+def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    burden_floor = list_field(stage02, "burden_floor") or list_field(stage04, "act_burdens") or list_field(stage04, "act_targets")
+    if not burden_floor:
+        return ""
+    generated_burdens = stage05_generated_burdens(stage05)
+    b_total = ordered_unique([*burden_floor, *generated_burdens])
+    live_registers = list_field(stage02, "live_registers")
+    burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    burden_rows = []
+    for burden in burden_floor:
+        registers = burden_registers.get(burden, [])
+        register_text = ", ".join(registers) if registers else "register-types-from-Stage-02"
+        burden_rows.append(f"{burden} [{register_text}] status=initial-live")
+
+    visible_lines = [
+        f"Live registers: {', '.join(live_registers)}" if live_registers else "Live registers: none",
+        f"Initial burden set: [{', '.join(burden_floor)}]",
+        f"B_LA = {{{', '.join(burden_floor)}}}",
+        f"B_MRP = {{{', '.join(generated_burdens)}}}" if generated_burdens else "B_MRP = {}",
+        f"B_total = {{{', '.join(b_total)}}} = B_LA union B_MRP",
+        "Layer A burden/register rows:",
+        *burden_rows,
+    ]
+    lines = [
+        "",
+        "Stage 07 Layer A parser-stable contract:",
+        "- Print these checker-owned Layer A lines near the top of the Layer A section before prose expansion:",
+        *[f"  {line}" for line in visible_lines],
+        "- Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`; prose ledgers may follow only after the exact line exists.",
+        "- `B_LA` must equal the initial burden set; `B_MRP` must contain only Stage 05 generated burdens and must be `{}` when there are none.",
+        "- `B_total` must equal `B_LA` plus `B_MRP` in order and should use burden IDs, not only counts.",
+        "- Each Layer A burden/register row must expose the burden ID and its Stage 02 register type(s) so the field witness can prove live-register floor coverage.",
+    ]
+    return "\n".join(lines)
 
 
 def stage07_act_contract_guidance(
@@ -1097,6 +1160,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     final_route = str(reread_state.get("route") or "STOP")
     live_registers = list_field(stage02, "live_registers")
     diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
+    burden_registers = stage02_burden_register_types(stage02, burden_floor)
     owner_activation_rows: list[dict[str, Any]] = []
     nar_rows: list[dict[str, Any]] = []
     for ref, detail in act_details.items():
@@ -1181,6 +1245,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             {
                 "id": burden,
                 "type": "generated_burden" if burden in generated_burdens else "burden",
+                "register_types": burden_registers.get(burden, []),
                 "state": terminal_states.get(burden, "landed"),
                 "generation_depth": 1 if burden in generated_burdens else 0,
             }
@@ -1227,6 +1292,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- If Stage 05 `generated_burdens` is empty, `B_MRP` is empty: visible `B_MRP = {}` and JSON `\"B_MRP\": []`; never place baseline Layer-A burdens in `B_MRP`.",
         "- `B_total` must equal `B_LA` plus `B_MRP` in order.",
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
+        "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, not one summary row per burden.",
         "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
@@ -1620,7 +1686,9 @@ ACT partition contract for this section:
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
 """
     semantic_contract = ""
-    if section_role == "layer_b_act":
+    if section_role == "layer_a_diagnostic_ir":
+        semantic_contract = stage07_layer_a_contract_guidance(previous_stages)
+    elif section_role == "layer_b_act":
         semantic_contract = stage07_act_contract_guidance(previous_stages, assigned_body_refs or [])
     elif section_role == "field_witness_nar":
         semantic_contract = stage07_field_witness_contract_guidance(previous_stages)
@@ -3086,6 +3154,32 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    stage07_layer_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="layer-a-diagnostic-ir",
+        section_role="layer_a_diagnostic_ir",
+        section_number=2,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "Initial burden set: [B1]",
+        "B_LA = {B1}",
+        "B_MRP = {}",
+        "B_total = {B1} = B_LA union B_MRP",
+        "B1 [xi, kappa] status=initial-live",
+        "Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`",
+    ):
+        if required not in stage07_layer_prompt:
+            raise HarnessError(f"Self-test Stage 07 Layer A prompt omitted parser-stable scaffold: {required}")
     stage07_act_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -3093,7 +3187,7 @@ def run_self_test(root: Path) -> int:
         input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
         input_digest=sha256_file(raw_input),
         skill_hash="SELFTEST",
-        previous_stages=[normalized_stage04, normalized_stage06],
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
         section_id="act-body-1",
         section_role="layer_b_act",
         section_number=3,
@@ -3118,7 +3212,7 @@ def run_self_test(root: Path) -> int:
         input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
         input_digest=sha256_file(raw_input),
         skill_hash="SELFTEST",
-        previous_stages=[normalized_stage04, normalized_stage06],
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
         section_id="field-witness-nar",
         section_role="field_witness_nar",
         section_number=7,
@@ -3131,9 +3225,11 @@ def run_self_test(root: Path) -> int:
         "Do not set `owner` to `owner.operation`",
         "visible `B_MRP = {}` and JSON `\"B_MRP\": []`",
         "`coverage_proof.dependency_graph` is required",
+        "Each `nodes[]` burden payload must include `register_types`",
         "one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror",
         '"B_MRP": []',
         '"dependency_graph"',
+        '"register_types": [\n        "xi",\n        "kappa"\n      ]',
         '"target": "B1"',
         '"generation_depth": 0',
         '"owner": "source-status-repair"',
