@@ -59,6 +59,16 @@ STAGE_ORDER = [
 ]
 
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+ACT_ROW_DETAIL_RE = re.compile(
+    r"^\s*⟦ACT\s+(?P<body_ref>[^\s\[]+)"
+    r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
+    r"\s*::\s*π=(?P<pressure>[^\n]+?)"
+    r"\s*::\s*body_ref=(?P<body_ref_field>[^\s:⟧]+)"
+    r"\s*::\s*Δ=(?P<delta>[^:\s]+):(?P<delta_result>.+?)"
+    r"\s*::\s*(?P<land>Land\([^)\n]+\)\+?)⟧\s*$"
+)
+LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 STAGE07_RELEASE_VALIDATION_KEYS = {
     "visible_opening_header",
@@ -873,6 +883,143 @@ def stage_by_id(stages: list[dict[str, Any]], stage_id: str) -> dict[str, Any] |
     return None
 
 
+def canonical_burden_id(value: str) -> str:
+    text = str(value or "").strip()
+    if re.fullmatch(r"B[1-9][0-9]*", text):
+        return text
+    match = re.fullmatch(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B", text)
+    if match:
+        return f"B{match.group(1).translate(SUP_DIGITS)}"
+    return text
+
+
+def burden_id_from_land(land: str) -> str:
+    match = LAND_TARGET_RE.search(land)
+    return canonical_burden_id(match.group("target")) if match else ""
+
+
+def stage04_act_details_by_ref(stage04: dict[str, Any] | None) -> dict[str, dict[str, str]]:
+    details: dict[str, dict[str, str]] = {}
+    for row in list_field(stage04, "act_rows"):
+        match = ACT_ROW_DETAIL_RE.match(row)
+        if not match:
+            continue
+        body_ref = match.group("body_ref")
+        if body_ref != match.group("body_ref_field"):
+            continue
+        details[body_ref] = {
+            "row": row,
+            "body_ref": body_ref,
+            "owner": match.group("owner"),
+            "operation": match.group("operation"),
+            "pressure": match.group("pressure").strip(),
+            "delta": match.group("delta").strip(),
+            "delta_result": match.group("delta_result").strip(),
+            "land": match.group("land").strip(),
+            "burden_id": burden_id_from_land(match.group("land")),
+        }
+    return details
+
+
+def stage06_owner_activation_details_by_ref(stage06: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    if not isinstance(stage06, dict):
+        return {}
+    raw = stage06.get("owner_activation_details")
+    if not isinstance(raw, list):
+        return {}
+    details: dict[str, dict[str, Any]] = {}
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        body_ref = item.get("body_ref")
+        if isinstance(body_ref, str) and body_ref:
+            details[body_ref] = item
+    return details
+
+
+def stage07_act_contract_guidance(
+    previous_stages: list[dict[str, Any]],
+    assigned_body_refs: list[str],
+) -> str:
+    if not assigned_body_refs:
+        return ""
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
+    act_details = stage04_act_details_by_ref(stage04)
+    owner_details = stage06_owner_activation_details_by_ref(stage06)
+    missing = [ref for ref in assigned_body_refs if ref not in act_details]
+    if missing:
+        raise HarnessError(f"compiled Stage 07 ACT prompt missing canonical Stage 04 row(s): {missing}")
+
+    lines = [
+        "",
+        "Stage 07 NLA semantic-faithfulness contract for this ACT slice:",
+        "- Copy these canonical Stage 04 ACT rows exactly; do not rewrite their owner, operation, pressure, delta, body_ref, or Land slots:",
+    ]
+    lines.extend(f"  {act_details[ref]['row']}" for ref in assigned_body_refs)
+    lines.extend(
+        [
+            "- Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`; the body_ref must appear immediately after `ACT`.",
+            "- After each copied ACT row, emit exactly one dereferenceable public submove block for the same body_ref.",
+            "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
+            "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
+            "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
+            "Required submove block skeletons:",
+        ]
+    )
+    for ref in assigned_body_refs:
+        detail = dict(act_details[ref])
+        mirror = owner_details.get(ref, {})
+        if isinstance(mirror.get("burden_id"), str) and mirror["burden_id"]:
+            detail["burden_id"] = str(mirror["burden_id"])
+        burden_id = detail["burden_id"] or canonical_burden_id(ref.split("B", 1)[0] + "B")
+        lines.extend(
+            [
+                f"- {ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']}",
+                f"  Target: {detail['pressure']}.",
+                f"  Operation: {detail['operation']} must act on {detail['pressure']} with owner family {detail['owner']}.",
+                f"  Result/state-change: {detail['delta_result']}; state-change must be visible in local prose.",
+                f"  Contribution-to-Land({burden_id}): explain how {detail['delta_result']} contributes to Land({burden_id}).",
+                "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    act_details = stage04_act_details_by_ref(stage04)
+    if not act_details:
+        return ""
+    lines = [
+        "",
+        "Stage 07 field_witness mirror contract:",
+        "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
+        "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
+        "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
+        "- Mirror these exact ACT-visible values by body_ref:",
+    ]
+    for ref, detail in act_details.items():
+        lines.append(
+            "  "
+            + json.dumps(
+                {
+                    "body_ref": ref,
+                    "owner": detail["owner"],
+                    "owner_id": detail["owner"],
+                    "operation": detail["operation"],
+                    "pressure": detail["pressure"],
+                    "delta": f"{detail['delta']}:{detail['delta_result']}",
+                    "delta_result": detail["delta_result"],
+                    "land": detail["land"],
+                    "land_target": detail["burden_id"],
+                },
+                ensure_ascii=False,
+            )
+        )
+    return "\n".join(lines)
+
+
 def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
     stage02 = stage_by_id(stages, "stage-02-layer-a-diagnostic-ir")
     stage03 = stage_by_id(stages, "stage-03-routing-owner-gate")
@@ -1233,6 +1380,11 @@ ACT partition contract for this section:
 - Every assigned body_ref must appear exactly once in this section.
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
 """
+    semantic_contract = ""
+    if section_role == "layer_b_act":
+        semantic_contract = stage07_act_contract_guidance(previous_stages, assigned_body_refs or [])
+    elif section_role == "field_witness_nar":
+        semantic_contract = stage07_field_witness_contract_guidance(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing one bounded section of stage-07-release-output for a staged
@@ -1269,6 +1421,7 @@ Validated compact stage state:
 Section task:
 {role_guidance[section_role]}
 {partition_line}
+{semantic_contract}
 
 Return only the public governed-output text for this section. Do not wrap it in
 JSON or code fences. Do not mention that this is a section unless the normal
@@ -2694,6 +2847,54 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    stage07_act_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage04, normalized_stage06],
+        section_id="act-body-1",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    if canonical_act_row not in stage07_act_prompt:
+        raise HarnessError("Self-test Stage 07 ACT prompt omitted exact canonical Stage 04 ACT row")
+    for required in (
+        "Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`",
+        "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
+        "Contribution-to-Land(B1)",
+    ):
+        if required not in stage07_act_prompt:
+            raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    stage07_witness_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage04, normalized_stage06],
+        section_id="field-witness-nar",
+        section_role="field_witness_nar",
+        section_number=7,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "Do not set `owner` to `owner.operation`",
+        '"owner": "source-status-repair"',
+        '"operation": "source-order"',
+    ):
+        if required not in stage07_witness_prompt:
+            raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted mirror scaffold: {required}")
     mapped_nar_stage06 = normalized_stage(
         "stage-06-field-witness-nar",
         {
