@@ -54,6 +54,9 @@ EDGE_REQUIRING_RESULTANT_TYPES = {"held_burden_activation", "generated_burden_in
 B_TOTAL_LEDGER_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:𝔅_total\s*\(\s*)?B_total\s*\)?\s*(?:=|:)\s*\S"
 )
+B_LA_LEDGER_RE = re.compile(
+    r"(?i)^\s*(?:[-*]\s*)?(?:𝔅_LA\s*\(\s*)?B_LA\s*\)?\s*(?:=|:)\s*\S"
+)
 
 REGISTER_ALIASES = {
     "omega": "Omega",
@@ -208,7 +211,7 @@ def layer_a_obligations(text: str) -> dict[str, list[str]]:
         obligations["initial"] = unique(burden_ids(initial_match.group("body")))
 
     for line in layer.splitlines():
-        if re.search(r"\bB_LA\b", line):
+        if B_LA_LEDGER_RE.search(line):
             obligations["B_LA"] = unique(burden_ids(line_body(line)))
         if re.search(r"(?i)\blive noetic burden\b", line):
             obligations["live"].extend(burden_ids(line_body(line)))
