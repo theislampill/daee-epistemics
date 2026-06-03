@@ -165,6 +165,9 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Closing Formulation", public_heading_pattern("Closing Formulation")),
 ]
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.s][0-9]+)?$")
+ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
 OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
 ORDERING_ROLES = {"required", "parallel", "contingent", "optional_non_load_bearing", "hold_partial"}
@@ -767,6 +770,43 @@ def clean_body_ref(value: str) -> str:
     return value.strip().rstrip(".,;")
 
 
+def body_ref_burden_id(value: str) -> str:
+    ref = clean_body_ref(str(value or ""))
+    match = BODY_REF_BURDEN_RE.fullmatch(ref)
+    if match:
+        burden = match.group("burden")
+        if re.fullmatch(r"B[1-9][0-9]*", burden):
+            return burden
+        if re.fullmatch(r"[⁰¹²³⁴⁵⁶⁷⁸⁹]+B", burden):
+            return f"B{burden[:-1].translate(SUP_DIGITS)}"
+    match = ASCII_BODY_REF_RE.fullmatch(ref)
+    if match:
+        return f"B{match.group('burden')}"
+    return ""
+
+
+def body_ref_grouping_errors(refs: list[str], label: str) -> list[str]:
+    errors: list[str] = []
+    groups: list[str] = []
+    for ref in refs:
+        burden_id = body_ref_burden_id(ref)
+        if not burden_id:
+            continue
+        if not groups or groups[-1] != burden_id:
+            groups.append(burden_id)
+    seen: set[str] = set()
+    previous_number = 0
+    for burden_id in groups:
+        if burden_id in seen:
+            errors.append(f"{label}: burden {burden_id} body_ref assignments are not contiguous")
+        seen.add(burden_id)
+        number = int(burden_id[1:])
+        if number < previous_number:
+            errors.append(f"{label}: burden {burden_id} appears after a later burden group")
+        previous_number = max(previous_number, number)
+    return errors
+
+
 def body_refs_in_act_section(text: str) -> list[str]:
     refs: list[str] = []
     for match in BODY_REF_TOKEN_RE.finditer(text):
@@ -801,6 +841,7 @@ def act_partition_errors(
 
     assignments: dict[str, list[str]] = {}
     assigned_owner: dict[str, str] = {}
+    assigned_sequence: list[str] = []
     for index, raw in enumerate(raw_assignments):
         label = f"act_partition.assignments[{index}]"
         if not isinstance(raw, dict):
@@ -824,6 +865,7 @@ def act_partition_errors(
         if len(cleaned_refs) != len(set(cleaned_refs)):
             errors.append(f"{label}.body_refs: duplicate body_ref assignment inside section")
         assignments[section_id] = cleaned_refs
+        assigned_sequence.extend(cleaned_refs)
         for ref in cleaned_refs:
             previous = assigned_owner.get(ref)
             if previous and previous != section_id:
@@ -862,6 +904,8 @@ def act_partition_errors(
     missing_visible = sorted(ref for ref in assigned_refs if ref not in set(all_visible_refs))
     if missing_visible:
         errors.append(f"act_partition: assigned body_ref(s) not present in visible ACT output: {missing_visible}")
+    errors.extend(body_ref_grouping_errors(assigned_sequence, "act_partition.assignments"))
+    errors.extend(body_ref_grouping_errors(all_visible_refs, "act_partition.visible"))
     return errors
 
 
@@ -1788,6 +1832,18 @@ def run_self_test(root: Path) -> int:
         [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B2_1")],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B2_1"])],
         valid=True,
+    )
+    assemble_partition_case(
+        "valid-act-partition-contiguous-burden-groups",
+        [act_section("act-body-1", "B1_1", "B1_2"), act_section("act-body-2", "B2_1", "B2_2", "B3_1")],
+        [("act-body-1", ["B1_1", "B1_2"]), ("act-body-2", ["B2_1", "B2_2", "B3_1"])],
+        valid=True,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-spliced-burden-groups",
+        [act_section("act-body-1", "B1_1", "B3_1"), act_section("act-body-2", "B1_2", "B2_1")],
+        [("act-body-1", ["B1_1", "B3_1"]), ("act-body-2", ["B1_2", "B2_1"])],
+        valid=False,
     )
     assemble_partition_case(
         "invalid-act-partition-duplicate-visible",

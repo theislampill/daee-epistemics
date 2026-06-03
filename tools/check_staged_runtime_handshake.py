@@ -140,6 +140,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
 }
 STAGE07_OPTIONAL_VALIDATION_KEYS = {
     "manual_smoke_render_contract",
+    "public_burden_grouping",
     "owner_activation_ordering",
 }
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}

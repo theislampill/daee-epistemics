@@ -71,6 +71,8 @@ ACT_ROW_DETAIL_RE = re.compile(
 )
 LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
+BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
+ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 STAGE07_RELEASE_VALIDATION_KEYS = {
     "visible_opening_header",
     "nla_semantic_faithfulness",
@@ -78,6 +80,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "formal_reread_state_semantics",
     "graph_completeness_json",
     "manual_smoke_render_contract",
+    "public_burden_grouping",
     "owner_activation_ordering",
 }
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
@@ -358,6 +361,7 @@ def validate_required_files(root: Path) -> dict[str, Path]:
         "formal_reread_checker": root / "tools" / "check_formal_reread_state_semantics.py",
         "graph_checker": root / "tools" / "check_graph_completeness.py",
         "manual_render_checker": root / "tools" / "check_manual_smoke_render_contract.py",
+        "public_burden_grouping_checker": root / "tools" / "check_public_burden_grouping.py",
         "owner_ordering_checker": root / "tools" / "check_owner_activation_ordering.py",
     }
     missing = [f"{name}: {path}" for name, path in required.items() if not path.exists()]
@@ -903,6 +907,36 @@ def public_burden_id(value: str) -> str:
 
 def public_burden_list(values: list[str]) -> str:
     return ", ".join(public_burden_id(value) for value in values)
+
+
+def body_ref_burden_id(value: str) -> str:
+    text = str(value or "").strip()
+    match = BODY_REF_BURDEN_RE.fullmatch(text)
+    if match:
+        return canonical_burden_id(match.group("burden"))
+    match = ASCII_BODY_REF_RE.fullmatch(text)
+    if match:
+        return f"B{match.group('burden')}"
+    return ""
+
+
+def body_ref_completion_flags(all_body_refs: list[str], assigned_body_refs: list[str]) -> dict[str, dict[str, bool]]:
+    by_burden: dict[str, list[str]] = {}
+    for ref in all_body_refs:
+        burden_id = body_ref_burden_id(ref)
+        if burden_id:
+            by_burden.setdefault(burden_id, []).append(ref)
+    assigned = set(assigned_body_refs)
+    result: dict[str, dict[str, bool]] = {}
+    for burden_refs in by_burden.values():
+        for index, ref in enumerate(burden_refs):
+            if ref not in assigned:
+                continue
+            result[ref] = {
+                "first_for_burden": index == 0,
+                "last_for_burden": index == len(burden_refs) - 1,
+            }
+    return result
 
 
 def public_burden_set(values: list[str]) -> str:
@@ -1495,6 +1529,8 @@ def stage07_act_contract_guidance(
     stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
     act_details = stage04_act_details_by_ref(stage04)
     owner_details = stage06_owner_activation_details_by_ref(stage06)
+    all_body_refs = list_field(stage04, "act_body_refs")
+    completion_flags = body_ref_completion_flags(all_body_refs, assigned_body_refs)
     missing = [ref for ref in assigned_body_refs if ref not in act_details]
     if missing:
         raise HarnessError(f"compiled Stage 07 ACT prompt missing canonical Stage 04 row(s): {missing}")
@@ -1509,10 +1545,13 @@ def stage07_act_contract_guidance(
         [
             "- Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`; the body_ref must appear immediately after `ACT`.",
             "- After each copied ACT row, emit exactly one dereferenceable public submove block for the same body_ref.",
+            "- Emit a `## Burden N / ⁿB` heading only when this section contains the first Stage 04 body_ref for that burden.",
+            "- If this section continues a burden started in the prior ACT slice, continue with the next submove only; do not repeat the burden heading.",
             "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
-            "- After the submove block(s), emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...`; `Contribution-to-Land(Bn):` alone is not a landing line.",
+            "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
+            "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
         ]
     )
@@ -1524,14 +1563,18 @@ def stage07_act_contract_guidance(
         if isinstance(mirror.get("burden_id"), str) and mirror["burden_id"]:
             detail["burden_id"] = str(mirror["burden_id"])
         burden_id = detail["burden_id"] or canonical_burden_id(ref.split("B", 1)[0] + "B")
-        if burden_id and burden_id not in seen_landing_targets:
+        flags = completion_flags.get(ref, {})
+        public_burden = public_burden_id(burden_id)
+        if flags.get("first_for_burden"):
+            lines.append(f"- Start burden block: `## Burden {burden_id[1:]} / {public_burden} — <burden-local title>` before {ref}.")
+        else:
+            lines.append(f"- Continue the existing {public_burden} burden block for {ref}; do not emit a new burden heading.")
+        if burden_id and flags.get("last_for_burden") and burden_id not in seen_landing_targets:
             seen_landing_targets.add(burden_id)
-            public_burden = public_burden_id(burden_id)
             landing_lines.append(
                 f"  Land({public_burden}): summarize the cumulative state delta from the visible submove block(s); "
                 f"use `HOLD({public_burden}):` instead if the burden is not landed."
             )
-        public_burden = public_burden_id(burden_id)
         lines.extend(
             [
                 f"- {ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']}",
@@ -2081,8 +2124,49 @@ def partition_body_refs(body_refs: list[str], section_ids: list[str]) -> list[di
     if not section_ids:
         return []
     assignments = [{"section_id": section_id, "body_refs": []} for section_id in section_ids]
-    for index, body_ref in enumerate(body_refs):
-        assignments[index % len(assignments)]["body_refs"].append(body_ref)
+    if not body_refs:
+        return assignments
+
+    groups: list[list[str]] = []
+    for body_ref in body_refs:
+        burden_id = body_ref_burden_id(body_ref)
+        if groups and burden_id and body_ref_burden_id(groups[-1][-1]) == burden_id:
+            groups[-1].append(body_ref)
+        else:
+            groups.append([body_ref])
+
+    if len(groups) >= len(assignments):
+        group_index = 0
+        for section_index, assignment in enumerate(assignments):
+            remaining_sections = len(assignments) - section_index
+            remaining_groups = len(groups) - group_index
+            remaining_refs = sum(len(group) for group in groups[group_index:])
+            target_refs = max(1, (remaining_refs + remaining_sections - 1) // remaining_sections)
+            while group_index < len(groups):
+                group = groups[group_index]
+                if assignment["body_refs"] and remaining_groups <= remaining_sections:
+                    break
+                if assignment["body_refs"] and len(assignment["body_refs"]) + len(group) > target_refs:
+                    break
+                assignment["body_refs"].extend(group)
+                group_index += 1
+                remaining_groups = len(groups) - group_index
+            if section_index == len(assignments) - 1 and group_index < len(groups):
+                for group in groups[group_index:]:
+                    assignment["body_refs"].extend(group)
+                break
+        return assignments
+
+    cursor = 0
+    total = len(body_refs)
+    for section_index, assignment in enumerate(assignments):
+        remaining_sections = len(assignments) - section_index
+        remaining_refs = total - cursor
+        if remaining_refs <= 0:
+            break
+        take = max(1, (remaining_refs + remaining_sections - 1) // remaining_sections)
+        assignment["body_refs"].extend(body_refs[cursor : cursor + take])
+        cursor += take
     return assignments
 
 
@@ -2100,6 +2184,7 @@ def compiled_act_partition(
         "assignments": partition_body_refs(body_refs, act_section_ids),
         "no_duplicate_body_refs": True,
         "all_assigned_refs_present": True,
+        "contiguous_public_burden_groups": True,
     }
 
 
@@ -2123,6 +2208,16 @@ def release_section_prompt(
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     target = max(0, int(target_output_kb or 0))
     section_floor = max(0, (target * 1024 + section_count - 1) // section_count) if target else 0
+    stage04_for_prompt = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    all_act_body_refs = list_field(stage04_for_prompt, "act_body_refs")
+    assigned_for_prompt = assigned_body_refs or []
+    first_act_body_ref = all_act_body_refs[0] if all_act_body_refs else ""
+    is_first_act_slice = bool(assigned_for_prompt and assigned_for_prompt[0] == first_act_body_ref)
+    layer_b_header_instruction = (
+        "Include the exact governed header `## Layer B — Bounded Governed Response` because this is the first ACT slice. "
+        if is_first_act_slice
+        else "Do not emit `## Layer B — Bounded Governed Response`; the first ACT slice owns that single public Layer B header. "
+    )
     role_guidance = {
         "visible_opening": (
             "Write only the visible opening for the governed answer. It must contain the exact banner "
@@ -2136,12 +2231,12 @@ def release_section_prompt(
             "ledger lines. Do not include raw dev harness internals or downstream proof claims."
         ),
         "layer_b_act": (
-            "Write only this bounded Layer B / ACT section. Include the exact governed header "
-            "`## Layer B — Bounded Governed Response`, "
-            "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
+            "Write only this bounded Layer B / ACT section. "
+            + layer_b_header_instruction
+            + "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
             "consistent with Stage 04. Expand the operation bodies instead of summarizing them. "
             "Do not include MRP, field_witness, Restorative Response, or Closing Formulation. "
-            "This section is an ACT partition slice, not the whole Layer B body."
+            "This section is an ACT partition slice inside one coherent public Layer B body."
         ),
         "mrp_reread_terminal": (
             "Write only the MRP/reread/terminal-state section consistent with Stage 05. It must include "
@@ -2198,12 +2293,18 @@ def release_section_prompt(
     if section_role == "layer_b_act":
         assigned = assigned_body_refs or []
         assigned_json = json.dumps(assigned, ensure_ascii=False)
+        completion_flags_json = json.dumps(body_ref_completion_flags(all_act_body_refs, assigned), ensure_ascii=False)
         partition_line = f"""
 ACT partition contract for this section:
 - Assigned Stage 04 ACT body_refs: {assigned_json}
+- First Stage 04 ACT body_ref for the compiled answer: {json.dumps(first_act_body_ref, ensure_ascii=False)}
+- Per-body_ref completion flags for this section: {completion_flags_json}
 - Emit ACT rows only for those exact `body_ref=` tokens.
 - Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state.
 - Every assigned body_ref must appear exactly once in this section.
+- Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
+- Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
+- Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
 """
     semantic_contract = ""
@@ -2280,7 +2381,9 @@ def release_section_expansion_prompt(
     role_notes = {
         "layer_b_act": (
             "Use only the assigned ACT body_refs. Do not add ACT rows for unassigned body_refs. "
-            "Expand owner operation bodies, local result prose, and Land(...) consequences."
+            "Expand owner operation bodies, local result prose, and Land(...) consequences. "
+            "Do not repeat the main Layer B bounded heading or print Land(...) before all submoves "
+            "for that burden have rendered."
         ),
         "field_witness_nar": (
             "Add human-readable Closure/Reconstruction Witness detail without emitting a second "
@@ -3446,7 +3549,7 @@ def run_self_test(root: Path) -> int:
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
     partition_stage04 = dict(normalized_stage04)
-    partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂"]
+    partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"]
     partition_plan = compiled_release_section_plan(70)
     plan_roles = [role for _section_id, role in partition_plan]
     if plan_roles.index("field_witness_nar") <= plan_roles.index("closing_formulation"):
@@ -3492,6 +3595,17 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test produced duplicate compiled ACT partition assignments")
     if any(not assignment["body_refs"] for assignment in partition["assignments"]):
         raise HarnessError("Self-test compiled ACT partition left an ACT section empty for this fixture")
+    expected_partition = [
+        ["¹B₁", "¹B₂", "²B₁", "²B₂"],
+        ["³B₁", "³B₂"],
+        ["⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"],
+    ]
+    actual_partition = [assignment["body_refs"] for assignment in partition["assignments"]]
+    if actual_partition != expected_partition:
+        raise HarnessError(f"Self-test compiled ACT partition did not preserve whole burden groups: {actual_partition}")
+    small_partition = partition_body_refs(["¹B₁", "¹B₂", "²B₁", "²B₂"], [assignment["section_id"] for assignment in partition["assignments"]])
+    if [ref for assignment in small_partition for ref in assignment["body_refs"]] != ["¹B₁", "¹B₂", "²B₁", "²B₂"]:
+        raise HarnessError("Self-test small ACT partition did not preserve input body_ref order")
     normalized_stage04_rich_burdens = normalized_stage(
         "stage-04-burden-execution-act",
         {
@@ -4325,6 +4439,7 @@ def run_self_test(root: Path) -> int:
         "formal_reread_state_semantics": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
+        "public_burden_grouping": "pass",
         "owner_activation_ordering": "pass",
     }
     replay_stage07 = stage_by_id(replay.get("stages", []), "stage-07-release-output") or {}
@@ -4560,6 +4675,10 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
         (
             "manual_smoke_render_contract",
             [sys.executable, str(root / "tools" / "check_manual_smoke_render_contract.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "public_burden_grouping",
+            [sys.executable, str(root / "tools" / "check_public_burden_grouping.py"), "--outputs", str(output_path)],
         ),
         (
             "owner_activation_ordering",

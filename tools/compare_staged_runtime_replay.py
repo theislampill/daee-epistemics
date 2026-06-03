@@ -486,6 +486,7 @@ def run_self_test() -> int:
         "formal_reread_state_semantics": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
+        "public_burden_grouping": "pass",
         "owner_activation_ordering": "pass",
     }
     stage_map(stage07_prefix)["stage-07-release-output"]["release_field_diagnostics"] = {
