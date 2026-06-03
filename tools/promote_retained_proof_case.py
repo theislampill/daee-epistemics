@@ -285,6 +285,7 @@ def build_entry(
     origin: str,
     retained_paths: dict[str, Path],
     source_paths: dict[str, Path],
+    b5_sha_path: Path | None = None,
 ) -> dict[str, Any]:
     entry = {
         "id": case_id,
@@ -305,10 +306,11 @@ def build_entry(
     }
     if B5_FULL_IR_SIDECAR_FIELD in source_paths:
         sidecar_path = retained_paths[B5_FULL_IR_SIDECAR_FIELD]
+        b5_hash_path = b5_sha_path or source_paths[B5_FULL_IR_SIDECAR_FIELD]
         entry[B5_FULL_IR_SIDECAR_FIELD] = {
             "schema": B5_FULL_IR_SIDECAR_SCHEMA,
             "path": manifest_relative(manifest_path, sidecar_path),
-            "sha256": sha256_file(source_paths[B5_FULL_IR_SIDECAR_FIELD]),
+            "sha256": sha256_file(b5_hash_path),
             "builder": B5_FULL_IR_SIDECAR_BUILDER,
         }
     return entry
@@ -460,6 +462,9 @@ def self_test() -> int:
         field: case_dir / artifact_name
         for field, artifact_name in ARTIFACT_NAMES.items()
     }
+    retained_paths[B5_FULL_IR_SIDECAR_FIELD] = (
+        case_dir / OPTIONAL_ARTIFACT_NAMES[B5_FULL_IR_SIDECAR_FIELD]
+    )
 
     scratch_root = ROOT / ".daee" / "validation"
     scratch_root.mkdir(parents=True, exist_ok=True)
@@ -513,6 +518,47 @@ def self_test() -> int:
             source_paths,
         )
         errors = compare_existing(manifest_path, expected)
+        if errors:
+            print("retained proof case promotion self-test: FAIL")
+            for error in errors:
+                print(f"- {error}")
+            return 1
+
+        source_path_b5 = scratch_dir / "source-path-b5-sidecar.json"
+        write_json(
+            source_path_b5,
+            {
+                "schema": B5_FULL_IR_SIDECAR_SCHEMA,
+                "source": {
+                    "raw_input": ".daee/source/raw-input.md",
+                    "governed_output": ".daee/source/output.md",
+                    "collapse_certificate": ".daee/source/collapse-certificate.json",
+                    "grapher_html": ".daee/source/grapher.html",
+                    "builder": B5_FULL_IR_SIDECAR_BUILDER,
+                },
+                "projection": [],
+            },
+        )
+        source_paths_with_b5 = dict(source_paths)
+        source_paths_with_b5[B5_FULL_IR_SIDECAR_FIELD] = source_path_b5
+        expected_with_retained_b5 = build_entry(
+            manifest_path,
+            "a9-science-source",
+            rows,
+            generated_skill_sha,
+            origin,
+            retained_paths,
+            source_paths_with_b5,
+            b5_sha_path=retained_paths[B5_FULL_IR_SIDECAR_FIELD],
+        )
+        if (
+            expected_with_retained_b5[B5_FULL_IR_SIDECAR_FIELD]["sha256"]
+            != sha256_file(retained_paths[B5_FULL_IR_SIDECAR_FIELD])
+        ):
+            print("retained proof case promotion self-test: FAIL")
+            print("- retained B.5 sidecar hash was not used for check-mode expected entry")
+            return 1
+        errors = compare_existing(manifest_path, expected_with_retained_b5)
         if errors:
             print("retained proof case promotion self-test: FAIL")
             for error in errors:
@@ -681,6 +727,12 @@ def main() -> int:
         origin,
         retained_paths,
         source_paths,
+        b5_sha_path=(
+            retained_paths[B5_FULL_IR_SIDECAR_FIELD]
+            if args.check and B5_FULL_IR_SIDECAR_FIELD in retained_paths
+            and retained_paths[B5_FULL_IR_SIDECAR_FIELD].exists()
+            else None
+        ),
     )
 
     if args.check:

@@ -2060,7 +2060,7 @@ def release_section_prompt(
             "`field_witness.coverage_proof.divergence_check` and `.curl_check`. Every visible ACT row "
             "must have exactly one `field_witness.owner_activations[]` mirror with `body_ref`, `owner`, "
             "`owner_id`, `operation`, `pressure`, `delta`, `delta_result`, `land`, `land_target`, "
-            "`terminal_state`, and `mrp_route_result_type` when those values are visible or validated "
+            "`terminal_state`, `mrp_route_result_type`, and explicit `ordering_role` when those values are visible or validated "
             "upstream. Copy exact ACT-visible owner/operation/pressure/delta/Land values; do not invent "
             "missing proof values and do not add model-authored verification/self-claim fields. Sparse "
             "`owner_activations` are invalid for compiled Stage 07 proof output. Do not use prose-only "
@@ -4339,7 +4339,7 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
         ),
         (
             "owner_activation_ordering",
-            [sys.executable, str(root / "tools" / "check_owner_activation_ordering.py"), "--outputs", str(output_path)],
+            [sys.executable, str(root / "tools" / "check_owner_activation_ordering.py"), "--require-plan", "--outputs", str(output_path)],
         ),
     ]
     results = {"visible_opening_header": "pass"}

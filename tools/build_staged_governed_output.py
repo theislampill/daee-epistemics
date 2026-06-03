@@ -167,6 +167,7 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
 OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
+ORDERING_ROLES = {"required", "parallel", "contingent", "optional_non_load_bearing", "hold_partial"}
 ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 PUBLIC_GRAPH_CONTEXT_RE = re.compile(
     r"(?i)^\s*(?:[-*]\s*)?(?:"
@@ -361,6 +362,47 @@ def derive_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str,
     }
 
 
+def canonical_ordering_role(value: Any) -> str:
+    role = str(value or "required").strip().lower().replace("-", "_")
+    if role not in ORDERING_ROLES:
+        return "required"
+    return role
+
+
+def strip_trailing_line_whitespace(text: str) -> tuple[str, int]:
+    normalized: list[str] = []
+    changed = 0
+    for line in text.splitlines(keepends=True):
+        newline = ""
+        body = line
+        for suffix in ("\r\n", "\n", "\r"):
+            if line.endswith(suffix):
+                newline = suffix
+                body = line[: -len(suffix)]
+                break
+        trimmed = body.rstrip(" \t")
+        if trimmed != body:
+            changed += 1
+        normalized.append(trimmed + newline)
+    return "".join(normalized), changed
+
+
+def canonicalize_owner_activation_ordering_roles(field_witness: dict[str, Any]) -> int:
+    activations = field_witness.get("owner_activations")
+    if not isinstance(activations, list):
+        return 0
+
+    inserted = 0
+    for activation in activations:
+        if not isinstance(activation, dict):
+            continue
+        if activation.get("ordering_role") is not None:
+            continue
+        activation["ordering_role"] = canonical_ordering_role(activation.get("role"))
+        inserted += 1
+    return inserted
+
+
 def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] | None]:
     label = FIELD_WITNESS_LABEL_RE.search(text)
     if label is None:
@@ -376,17 +418,20 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
     field_witness = field_witness_payload_ref(payload)
     if field_witness is None:
         return text, None
-    if field_witness.get("owner_activation_ordering") is not None:
+    roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
+    event: dict[str, Any] = {}
+    if field_witness.get("owner_activation_ordering") is None:
+        ordering = derive_owner_activation_ordering(field_witness)
+        if ordering is not None:
+            field_witness["owner_activation_ordering"] = ordering
+            event["inserted_owner_activation_ordering"] = True
+            event["required_before_count"] = len(ordering["required_before"])
+    if roles_inserted:
+        event["inserted_owner_activation_ordering_roles"] = roles_inserted
+    if not event:
         return text, None
-    ordering = derive_owner_activation_ordering(field_witness)
-    if ordering is None:
-        return text, None
-    field_witness["owner_activation_ordering"] = ordering
     replacement = json.dumps(payload, indent=2, ensure_ascii=False)
-    return text[:start] + replacement + text[end:], {
-        "inserted_owner_activation_ordering": True,
-        "required_before_count": len(ordering["required_before"]),
-    }
+    return text[:start] + replacement + text[end:], event
 
 
 def public_burden_token(value: str) -> str:
@@ -895,6 +940,7 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         original_text = section_path.read_text(encoding="utf-8", errors="replace")
         errors.extend(forbidden_text_errors(original_text, label))
         text, scaffold_event = normalize_section_scaffold(section_id, role, original_text)
+        text, trimmed_trailing_whitespace_lines = strip_trailing_line_whitespace(text)
         errors.extend(forbidden_text_errors(text, label))
         section_texts.append(text)
         section_text_by_id[section_id] = text
@@ -907,6 +953,8 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             "bytes": len(original_text.encode("utf-8")),
             "assembled_bytes": len(text.encode("utf-8")),
         }
+        if trimmed_trailing_whitespace_lines:
+            record["trimmed_trailing_whitespace_lines"] = trimmed_trailing_whitespace_lines
         if scaffold_event is not None:
             record["canonical_scaffold"] = scaffold_event
         section_records.append(record)
@@ -1188,6 +1236,31 @@ def run_self_test(root: Path) -> int:
     if small_record["output"]["bytes"] <= 0:
         raise AssemblyError("self-test valid small assembly wrote an empty output")
 
+    trailing_whitespace_sections = list(small_sections())
+    trailing_whitespace_sections[0] = (
+        "opening",
+        "visible_opening",
+        "daee-epistemics - NOETIC FIELD EXECUTION  \nCase opening preserved.\t\n",
+    )
+    trailing_whitespace_manifest = manifest_for_sections(
+        base_dir / "valid-trailing-whitespace-normalization",
+        case_id="valid-trailing-whitespace-normalization",
+        source_input="valid-trailing-whitespace-normalization/input.md",
+        section_specs=trailing_whitespace_sections,
+    )
+    trailing_whitespace_record = assemble_manifest(trailing_whitespace_manifest, root=root)
+    trailing_whitespace_output = (
+        base_dir / "valid-trailing-whitespace-normalization" / "output.md"
+    ).read_text(encoding="utf-8")
+    if any(line.rstrip(" \t") != line for line in trailing_whitespace_output.splitlines()):
+        raise AssemblyError("self-test valid trailing whitespace normalization left line-end whitespace")
+    if not any(
+        section.get("trimmed_trailing_whitespace_lines") == 2
+        for section in trailing_whitespace_record.get("sections", [])
+        if isinstance(section, dict)
+    ):
+        raise AssemblyError("self-test valid trailing whitespace normalization metadata missing")
+
     large_act_chunks = [
         (
             f"act-body-{index}",
@@ -1376,6 +1449,7 @@ def run_self_test(root: Path) -> int:
         '"policy_id": "diagnostic-ir-pressure-owner-floor-v1"',
         '"before_owner": "source-status-repair"',
         '"after_owner": "M1"',
+        '"ordering_role": "required"',
     ):
         if required not in ordering_output:
             raise AssemblyError(f"self-test owner activation ordering insertion omitted {required}")
@@ -1392,6 +1466,48 @@ def run_self_test(root: Path) -> int:
         if isinstance(event, dict)
     ):
         raise AssemblyError("self-test owner activation ordering scaffold metadata missing")
+    if not any(
+        event.get("inserted_owner_activation_ordering_roles") == 2
+        for event in ordering_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test owner activation ordering role metadata missing")
+
+    preplanned_field_witness = ordering_field_witness.replace(
+        '  "owner_activations": [',
+        '  "owner_activation_ordering": {\n'
+        '    "policy_id": "diagnostic-ir-pressure-owner-floor-v1",\n'
+        '    "parallel_groups": [],\n'
+        '    "required_before": [\n'
+        '      {"target": "B1", "before_owner": "source-status-repair", "after_owner": "M1"}\n'
+        '    ]\n'
+        '  },\n'
+        '  "owner_activations": [',
+    )
+    preplanned_manifest = manifest_for_sections(
+        base_dir / "valid-owner-activation-ordering-role-insertion",
+        case_id="valid-owner-activation-ordering-role-insertion",
+        source_input="valid-owner-activation-ordering-role-insertion/input.md",
+        section_specs=[*small_sections()[:6], ("field-witness", "field_witness_nar", preplanned_field_witness)],
+    )
+    preplanned_record = assemble_manifest(preplanned_manifest, root=root)
+    preplanned_output = (
+        base_dir / "valid-owner-activation-ordering-role-insertion" / "output.md"
+    ).read_text(encoding="utf-8")
+    if preplanned_output.count('"ordering_role": "required"') != 2:
+        raise AssemblyError("self-test owner activation ordering role insertion missed preplanned activations")
+    preplanned_events = (
+        (preplanned_record.get("canonical_scaffold") or {}).get("events", [])
+        if isinstance(preplanned_record.get("canonical_scaffold"), dict)
+        else []
+    )
+    if not any(
+        event.get("inserted_owner_activation_ordering_roles") == 2
+        and event.get("inserted_owner_activation_ordering") is not True
+        for event in preplanned_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test preplanned owner activation ordering role metadata missing")
 
     graph_alias_manifest = manifest_for_sections(
         base_dir / "valid-public-graph-alias-canonicalization",

@@ -28,7 +28,8 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -56,7 +57,8 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -84,7 +86,8 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -112,7 +115,8 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -134,7 +138,8 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -145,7 +150,8 @@
       ],
       "case_ids": [
         "a9-science-source",
-        "staged-a9-science-source-proofbundle"
+        "staged-a9-science-source-proofbundle",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -167,7 +173,8 @@
         "exact-secularism",
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
-        "therapy-moral-tribunal"
+        "therapy-moral-tribunal",
+        "staged-secularism-proofbundle-pilot-v17"
       ]
     },
     {
@@ -803,6 +810,36 @@
         "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
         "path": "cases/staged-a9-science-source-proofbundle/b5-full-ir-projection-sidecar.json",
         "sha256": "07C64F07770746F210117F15FB17B16A7623C1DF460D57959C5C6E50235B63F9",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    },
+    {
+      "id": "staged-secularism-proofbundle-pilot-v17",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "T_lang"
+      ],
+      "generated_skill_sha": "EE9F8B52133EFE881463952EFCBAB5FC078FC72AB90C267B3A1453F663E42862",
+      "origin": ".daee/staged-row-family-smokes/20260603-secularism-pilot-v17/output.md",
+      "input": "cases/staged-secularism-proofbundle-pilot-v17/input.txt",
+      "output": "cases/staged-secularism-proofbundle-pilot-v17/output.md",
+      "collapse_certificate": "cases/staged-secularism-proofbundle-pilot-v17/collapse-certificate.json",
+      "grapher_html": "cases/staged-secularism-proofbundle-pilot-v17/grapher.html",
+      "hashes": {
+        "input": "58F60AC783DC58A337931C62DC666A439B31A5121B87A87C9610C1A6269F18CA",
+        "output": "2C207518131F727126A67071FF6C59F8A821ACBD084EDBB17261959631DFFDCC",
+        "collapse_certificate": "B36D33DA94AB03C7CB232D7E57AC30EDAE42A75ACA84B375A56CE4CF0E3C1728",
+        "grapher_html": "76F7650E80BF75419275CB92DF462FC923AB753549AAFEE1A5CE83EAA0EFEED0"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/staged-secularism-proofbundle-pilot-v17/b5-full-ir-projection-sidecar.json",
+        "sha256": "C0BA661540536CCB085019E4D87E48EC2A15448D71F7B2CCD6D0659DA66E1ABA",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
       }
     }
