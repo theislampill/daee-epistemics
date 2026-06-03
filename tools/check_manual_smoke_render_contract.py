@@ -535,6 +535,14 @@ def generated_target(text: str) -> str:
     return match.group("target") if match else ""
 
 
+def generated_source_for_target(text: str, target: str) -> str:
+    match = re.search(
+        rf"{re.escape(target)}\s*\[generated-by:\s*MRP\((?P<src>(?:[{SUP}]+B|B\d+))\)\]",
+        text,
+    )
+    return match.group("src") if match else ""
+
+
 def has_nonempty_b_mrp_ledger(text: str) -> bool:
     ledger_re = re.compile(
         rf"(?im)^\s*(?:[-*]\s*)?(?:{B_LEDGER}_MRP|B_MRP)\s*(?:\([^)]*\))?\s*=\s*(?P<body>.+)$"
@@ -1011,6 +1019,31 @@ def has_matched_owner_route(scope: str) -> bool:
     return False
 
 
+def generated_hold_unexecuted_accounting(full_text: str, section: str, target: str) -> bool:
+    source = generated_source_for_target(full_text, target) or generated_source_for_target(section, target)
+    if not source:
+        return False
+    if not re.search(rf"(?im)^\s*HOLD\({re.escape(target)}\)\s*:", section):
+        return False
+    if count_complete_submoves(section, target) > 0:
+        return False
+    combined = f"{section}\n{full_text}"
+    if not has_matched_owner_route(section) and not has_matched_owner_route(combined):
+        return False
+    if not re.search(r"(?i)(?:coverage_complete\s*=\s*false|\"coverage_complete\"\s*:\s*false)", combined):
+        return False
+    if not re.search(r"(?i)\b(?:unexecuted|no Stage 04 ACT rows|no ACT rows|unresolved|held-with-reason|carried|HOLD|PARTIAL|RECURSE)\b", combined):
+        return False
+    graph_edge_re = re.compile(
+        rf"(?is)(?:Target\s*:\s*MRP\({re.escape(source)}\).*?"
+        rf"MRP route result type\s*:\s*generated_burden_instantiation.*?"
+        rf"(?:{re.escape(source)}\s*(?:→|->)\s*{re.escape(target)}|{re.escape(target)}\s*\[generated-by:\s*MRP\({re.escape(source)}\)\]))"
+    )
+    if not graph_edge_re.search(full_text):
+        return False
+    return True
+
+
 def owner_specific_failure_message(owner: str) -> str:
     family = owner_family(owner)
     if family == "FPD":
@@ -1170,7 +1203,7 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     return True
 
 
-def mass_insufficiency_errors(path: Path, section: str, target: str, *, generated: bool) -> list[str]:
+def mass_insufficiency_errors(path: Path, section: str, target: str, *, generated: bool, full_text: str = "") -> list[str]:
     has_high_mass = generated or bool(HIGH_MASS_TERMS_RE.search(section))
     low_mass_claim = bool(LOW_MASS_ASSERTION_RE.search(section))
     has_license = bool(LOW_MASS_LICENSE_RE.search(section))
@@ -1188,6 +1221,8 @@ def mass_insufficiency_errors(path: Path, section: str, target: str, *, generate
             and re.search(r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:", block)
         )
     ]
+    if generated and generated_hold_unexecuted_accounting(full_text or section, section, target):
+        return []
     if not complete_blocks:
         if land_claimed and has_high_mass:
             return [
@@ -1265,7 +1300,7 @@ def layer_b_mass_errors(path: Path, text: str) -> list[str]:
         land_match = re.search(rf"(?im)^\s*(?:Land|HOLD)\({re.escape(target)}\)\s*:", section)
         if land_match:
             pre_land_section = section[: land_match.end()]
-            errors.extend(mass_insufficiency_errors(path, pre_land_section, target, generated=generated))
+            errors.extend(mass_insufficiency_errors(path, pre_land_section, target, generated=generated, full_text=text))
     return errors
 
 
@@ -1600,15 +1635,16 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         marker_at = text.find(f"{target} [generated-by:")
         section = text[marker_at:] if marker_at >= 0 else text
         route_window = text[max(0, marker_at - 2500) : min(len(text), marker_at + 2500)] if marker_at >= 0 else text
+        generated_held = generated_hold_unexecuted_accounting(text, section, target)
         if "generated_burden_instantiation" in text and not (
             has_matched_owner_route(section) or has_matched_owner_route(route_window)
         ):
             errors.append(f"{path}: MRP generated a burden but did not route it to matched source-owned TTPs")
-        if count_complete_submoves(section, target) < 2:
+        if count_complete_submoves(section, target) < 2 and not generated_held:
             errors.append(f"{path}: generated burden {target} lacks at least two complete owner-bearing Layer B submoves")
         if not re.search(rf"(?im)^\s*(?:Land|HOLD)\({re.escape(target)}\)\s*:", section):
             errors.append(f"{path}: generated burden {target} lacks Land/HOLD accounting")
-        if not re.search(rf"(?is)(?:Land|HOLD)\({re.escape(target)}\).*?\[Mid-Reread Pressure\]", section):
+        if not generated_held and not re.search(rf"(?is)(?:Land|HOLD)\({re.escape(target)}\).*?\[Mid-Reread Pressure\]", section):
             errors.append(f"{path}: generated burden {target} lacks post-land MRP/reread accounting")
 
     closure_at = text.find("Closure/Reconstruction Witness")

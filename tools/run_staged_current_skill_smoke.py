@@ -1024,6 +1024,19 @@ def stage04_act_details_by_ref(stage04: dict[str, Any] | None) -> dict[str, dict
     return details
 
 
+def stage04_owner_routes_by_burden(stage04: dict[str, Any] | None) -> dict[str, list[str]]:
+    routes: dict[str, list[str]] = {}
+    for detail in stage04_act_details_by_ref(stage04).values():
+        burden = detail.get("burden_id") or ""
+        owner = detail.get("owner") or ""
+        operation = detail.get("operation") or ""
+        if not burden or not owner:
+            continue
+        token = f"{owner}.{operation}" if operation else owner
+        routes.setdefault(burden, []).append(token)
+    return {burden: ordered_unique(tokens) for burden, tokens in routes.items()}
+
+
 def stage06_owner_activation_details_by_ref(stage06: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
     if not isinstance(stage06, dict):
         return {}
@@ -1045,6 +1058,15 @@ def b_id(value: Any) -> str:
     return burden if re.fullmatch(r"B[1-9][0-9]*", burden) else ""
 
 
+def burden_endpoint_id(value: Any) -> str:
+    direct = b_id(value)
+    if direct:
+        return direct
+    text = str(value or "").strip()
+    match = re.search(r"(?i)\bMRP\((?P<burden>[^)]+)\)", text)
+    return b_id(match.group("burden")) if match else ""
+
+
 def stage05_generated_burdens(stage05: dict[str, Any] | None) -> list[str]:
     if not isinstance(stage05, dict):
         return []
@@ -1055,7 +1077,7 @@ def stage05_generated_burdens(stage05: dict[str, Any] | None) -> list[str]:
             if isinstance(item, str):
                 burden = b_id(item)
             elif isinstance(item, dict):
-                burden = b_id(item.get("id") or item.get("burden") or item.get("target"))
+                burden = b_id(item.get("id") or item.get("burden_id") or item.get("burden") or item.get("target"))
             else:
                 burden = ""
             if burden:
@@ -1083,7 +1105,7 @@ def stage05_generated_burden_records(stage05: dict[str, Any] | None) -> list[dic
             burden = b_id(item)
             record: dict[str, Any] = {"id": burden} if burden else {}
         elif isinstance(item, dict):
-            burden = b_id(item.get("id") or item.get("burden") or item.get("target"))
+            burden = b_id(item.get("id") or item.get("burden_id") or item.get("burden") or item.get("target"))
             record = dict(item)
             if burden:
                 record["id"] = burden
@@ -1136,13 +1158,13 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
     for item in raw:
         edge_type = "held_burden_activation"
         if isinstance(item, dict):
-            source = b_id(item.get("source") or item.get("from"))
-            target = b_id(item.get("target") or item.get("to"))
+            source = burden_endpoint_id(item.get("from") or item.get("source"))
+            target = burden_endpoint_id(item.get("to") or item.get("target"))
             if isinstance(item.get("type"), str) and item["type"].strip():
                 edge_type = item["type"].strip()
         elif isinstance(item, list) and len(item) == 2:
-            source = b_id(item[0])
-            target = b_id(item[1])
+            source = burden_endpoint_id(item[0])
+            target = burden_endpoint_id(item[1])
         else:
             continue
         if source and target:
@@ -1289,9 +1311,11 @@ def stage07_formal_reread_states(
     mrp_resultants: list[dict[str, str]],
     terminal_states: dict[str, str],
     unresolved_burdens: list[str] | None = None,
+    owner_routes_by_burden: dict[str, list[str]] | None = None,
 ) -> list[dict[str, Any]]:
     states: list[dict[str, Any]] = []
     unresolved = set(unresolved_burdens or [])
+    owner_routes = owner_routes_by_burden or {}
     for row in mrp_resultants:
         source = row.get("source") or ""
         if not source:
@@ -1325,24 +1349,29 @@ def stage07_formal_reread_states(
             "route": route,
         }
         target = stage07_route_target_from_graph(graph)
+        public_graph = public_graph_value(graph)
+        public_source = public_burden_id(source)
+        public_target = public_graph_value(target or source)
         if route_type == "held_burden_activation":
             state["route_gradient"] = (
-                f"already-held {target} from Initial burden set / B_LA after R(H,Delta)."
+                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
                 if target
                 else f"held/B_LA route after {source}."
             )
             if target:
                 state["next_burden"] = target
-            state["owner_route"] = ["held"]
+            state["owner_route"] = owner_routes.get(target) or ["held"]
         elif route_type == "generated_burden_instantiation":
             state["route_gradient"] = (
-                f"newly generated {target} absent from B_LA after Delta {source}."
+                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
+                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
+                "and comes from post-Land field-pressure."
                 if target
                 else f"generated/new MRP route absent from B_LA after Delta {source}."
             )
             if target:
                 state["next_burden"] = target
-            state["owner_route"] = ["generated"]
+            state["owner_route"] = owner_routes.get(target) or ["generated"]
             state["generated_by"] = f"MRP({source})"
         else:
             state["route_gradient"] = (
@@ -1379,8 +1408,15 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     if not isinstance(stage05, dict) or not stage05:
         return ""
     burden_floor = list_field(stage02, "burden_floor") or list_field(stage04, "act_burdens") or list_field(stage04, "act_targets")
-    generated_burdens = stage05_generated_burdens(stage05)
+    generated_records = stage05_generated_burden_records(stage05)
+    generated_burdens = ordered_unique(
+        [*stage05_generated_burdens(stage05), *[str(record.get("id") or "") for record in generated_records if record.get("id")]]
+    )
+    generated_record_by_id = {str(record.get("id")): dict(record) for record in generated_records if record.get("id")}
     b_total = ordered_unique([*burden_floor, *generated_burdens])
+    act_owner_routes_by_burden = stage04_owner_routes_by_burden(stage04)
+    executed_act_burdens = set(act_owner_routes_by_burden)
+    owner_routes_by_burden = dict(act_owner_routes_by_burden)
     terminal_states_raw = stage05.get("terminal_states")
     terminal_states = terminal_states_raw if isinstance(terminal_states_raw, dict) else {}
     terminal_states = {
@@ -1391,7 +1427,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     reread_state = stage05.get("reread_state")
     if not isinstance(reread_state, dict):
         reread_state = {}
-    final_source = b_id(reread_state.get("source_burden")) or (b_total[-1] if b_total else "")
+    final_source = burden_endpoint_id(reread_state.get("source_burden") or reread_state.get("source")) or (b_total[-1] if b_total else "")
     final_type = str(reread_state.get("route_result_type") or "no_new_resultant").strip().rstrip(".;:,")
     final_route = str(reread_state.get("route") or "STOP").strip().rstrip(".;:,")
     if final_type in {"none", "stable", ""}:
@@ -1441,6 +1477,76 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             }
         )
 
+    for edge in edges:
+        target = edge["to"]
+        if target not in generated_burdens:
+            continue
+        record = generated_record_by_id.setdefault(
+            target,
+            {
+                "id": target,
+                "type": "generated_burden",
+                "generation_depth": 1,
+                "terminal_state": terminal_states.get(target, "held-with-reason"),
+            },
+        )
+        record.setdefault("generated_by", f"MRP({edge['from']})")
+
+    def route_tokens_for_burden(target: str) -> list[str]:
+        tokens = list(owner_routes_by_burden.get(target) or [])
+        record = generated_record_by_id.get(target, {})
+        raw_route = record.get("required_owner_route")
+        if isinstance(raw_route, list):
+            tokens.extend(str(item).strip() for item in raw_route if str(item).strip())
+        elif isinstance(raw_route, str) and raw_route.strip():
+            tokens.append(raw_route.strip())
+        return ordered_unique(tokens)
+
+    def matched_route_line(target: str) -> str:
+        tokens = route_tokens_for_burden(target)
+        if not tokens:
+            return "Matched owner/TTP route: [held] source-owned route pending explicit ACT execution"
+        return "Matched owner/TTP route: " + ", ".join(f"[{token}]" for token in tokens)
+
+    def generated_heading_lines() -> list[str]:
+        lines: list[str] = []
+        for burden in generated_burdens:
+            record = generated_record_by_id.get(burden, {})
+            generated_by = str(record.get("generated_by") or "")
+            source = b_id(generated_by.replace("MRP(", "").replace(")", ""))
+            if not source:
+                for edge in edges:
+                    if edge["to"] == burden:
+                        source = edge["from"]
+                        generated_by = f"MRP({source})"
+                        break
+            if not source:
+                continue
+            state = terminal_states.get(burden, "held-with-reason")
+            title = str(record.get("title") or record.get("reason") or "generated MRP burden").strip()
+            public_burden = public_burden_id(burden)
+            public_source = public_burden_id(source)
+            lines.extend(
+                [
+                    f"## Burden {burden[1:]} / {public_burden} [generated-by: MRP({public_source})] — {title}",
+                    "### Layer A — Generated Burden Accounting",
+                    f"- live noetic burden: {public_burden} [generated-by: MRP({public_source})]",
+                    f"- generated status: not in 𝔅_LA; present in 𝔅_MRP; terminal_state={state}",
+                    f"- {matched_route_line(burden)}",
+                ]
+            )
+            if burden in executed_act_burdens:
+                lines.append(
+                    f"Land({public_burden}): generated MRP burden has visible Stage 04 ACT execution; "
+                    "its landed/terminal status must match owner activations, MRP, and field_witness."
+                )
+            else:
+                lines.append(
+                    f"HOLD({public_burden}): generated MRP burden remains unresolved/unexecuted unless Stage 04 ACT rows actually execute it; "
+                    "coverage_complete=false; route remains HOLD/PARTIAL/RECURSE."
+                )
+        return lines
+
     def mrp_block_lines(row: dict[str, str]) -> list[str]:
         source = row["source"]
         graph = row["graph"]
@@ -1450,17 +1556,29 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         public_graph = public_graph_value(graph)
         public_source = public_burden_id(source)
         target = stage07_route_target_from_graph(graph)
+        public_target = public_graph_value(target or source)
         held_or_partial = route_type == "hold_partial" or unresolved_terminal(source)
         landed_state = terminal_states.get(source, "landed")
-        route_gradient = (
-            f"plain-gradient points to {route} through {public_graph} after R(H,Δ)."
-            if graph != "none"
-            else (
-                f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
-                if held_or_partial
-                else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
+        if route_type == "generated_burden_instantiation" and graph != "none":
+            route_gradient = (
+                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
+                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
+                "and comes from post-Land field-pressure."
             )
-        )
+        elif route_type == "held_burden_activation" and graph != "none":
+            route_gradient = (
+                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
+            )
+        else:
+            route_gradient = (
+                f"plain-gradient points to {route} through {public_graph} after R(H,Δ)."
+                if graph != "none"
+                else (
+                    f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
+                    if held_or_partial
+                    else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
+                )
+            )
         reread_line = (
             f"R(H,Δ): held routes rechecked: {public_graph}; "
             f"live remainder: {public_graph_value(target or source)}; release/next: {route}."
@@ -1487,6 +1605,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             f"Landed delta: {landed_delta}",
             "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency.",
             f"Route-gradient: {route_gradient}",
+            matched_route_line(target or source),
             f"Finding: {finding}",
             f"MRP route result type: {route_type}",
             f"MRP resultant: {finding} -> graph {public_graph}; route {route}",
@@ -1504,6 +1623,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     visible_lines: list[str] = []
     for row in mrp_resultants:
         visible_lines.extend(mrp_block_lines(row))
+    visible_lines.extend(generated_heading_lines())
     visible_lines.extend(["Terminal states:", *terminal_lines])
     lines = [
         "",
@@ -1646,6 +1766,9 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         [*stage05_generated_burdens(stage05), *[str(record.get("id") or "") for record in generated_records if record.get("id")]]
     )
     b_total = ordered_unique([*burden_floor, *generated_burdens])
+    act_owner_routes_by_burden = stage04_owner_routes_by_burden(stage04)
+    executed_act_burdens = set(act_owner_routes_by_burden)
+    owner_routes_by_burden = dict(act_owner_routes_by_burden)
     terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
     if not isinstance(terminal_states, dict):
         terminal_states = {}
@@ -1654,7 +1777,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     reread_state = stage05.get("reread_state") if isinstance(stage05, dict) else {}
     if not isinstance(reread_state, dict):
         reread_state = {}
-    final_source = b_id(reread_state.get("source_burden")) or (b_total[-1] if b_total else "")
+    final_source = burden_endpoint_id(reread_state.get("source_burden") or reread_state.get("source")) or (b_total[-1] if b_total else "")
     final_type = str(reread_state.get("route_result_type") or "no_new_resultant").strip().rstrip(".;:,")
     final_route = str(reread_state.get("route") or "STOP").strip().rstrip(".;:,")
     unresolved_burdens = stage05_unresolved_burdens(stage05)
@@ -1692,6 +1815,14 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         )
         record.setdefault("generated_by", f"MRP({edge['from']})")
         record.setdefault("reason", f"generated by {edge['from']} -> {target}")
+        raw_route = record.get("required_owner_route")
+        tokens: list[str] = []
+        if isinstance(raw_route, list):
+            tokens.extend(str(item).strip() for item in raw_route if str(item).strip())
+        elif isinstance(raw_route, str) and raw_route.strip():
+            tokens.append(raw_route.strip())
+        if tokens:
+            owner_routes_by_burden[target] = ordered_unique([*(owner_routes_by_burden.get(target) or []), *tokens])
     graph_line, roots, parallel_groups = stage07_dependency_graph_scaffold(b_total, edges)
     closed_terminal_states = {"landed", "cleared", "discharged-as-derivative", "held-with-reason"}
     coverage_complete = not unresolved_burdens and all(
@@ -1705,15 +1836,22 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     )
     divergence_status = "neutral" if coverage_complete else f"non-neutral / unresolved_burdens=[{unresolved_text}]"
     curl_status = "null" if coverage_complete else f"unresolved / generated_burden_hold=[{unresolved_text}]"
+    incoming_source_by_target = {edge["to"]: edge["from"] for edge in edges}
     owner_activation_rows: list[dict[str, Any]] = []
     nar_rows: list[dict[str, Any]] = []
     for ref, detail in act_details.items():
         target = detail["burden_id"]
         route_type = stage07_route_type_for_burden(target, edges, final_source, final_type)
+        incoming_source = incoming_source_by_target.get(target)
+        source = target if target in roots or not incoming_source else f"MRP({incoming_source})"
+        if target in generated_burdens:
+            generated_source = str(generated_record_by_id.get(target, {}).get("generated_by") or "")
+            if generated_source:
+                source = generated_source
         owner_activation_rows.append(
             {
                 "body_ref": ref,
-                "source": target if target in roots else f"MRP({target})",
+                "source": source,
                 "target": target,
                 "owner": detail["owner"],
                 "owner_id": detail["owner"],
@@ -1783,6 +1921,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         mrp_resultants,
         terminal_states,
         unresolved_burdens=unresolved_burdens,
+        owner_routes_by_burden=owner_routes_by_burden,
     )
 
     def terminal_state_line(burden: str) -> str:
@@ -1791,6 +1930,11 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             record = generated_record_by_id.get(burden, {})
             source = str(record.get("generated_by") or "MRP(source)")
             reason = str(record.get("reason") or "generated burden is held at this Stage 07 boundary")
+            if burden in executed_act_burdens:
+                return (
+                    f"{public_burden_id(burden)}: {state} / {public_graph_value(source)} / "
+                    f"visible Stage 04 ACT rows / {reason}"
+                )
             return f"{public_burden_id(burden)}: {state} / {public_graph_value(source)} / no Stage 04 ACT rows / {reason}"
         return f"{public_burden_id(burden)}: {state} / ACT owners / landed by visible owner activations"
 
@@ -1803,6 +1947,8 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         public_graph_line(b_total, edges),
         "Terminal states:",
         *[terminal_state_line(burden) for burden in b_total],
+        "Owner activations:",
+        *[detail["row"] for detail in act_details.values()],
         "MRP resultants:",
         *[
             f"MRP({public_burden_id(row['source'])}): type={row['type']}; finding={row['finding']}; graph={public_graph_value(row['graph'])}; route={row['route']}"
@@ -1923,6 +2069,90 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             )
         )
     return "\n".join(lines)
+
+
+def first_json_object_from_text(text: str) -> dict[str, Any] | None:
+    cursor = 0
+    decoder = json.JSONDecoder()
+    while True:
+        start = text.find("{", cursor)
+        if start < 0:
+            return None
+        try:
+            decoded, _end = decoder.raw_decode(text[start:])
+        except json.JSONDecodeError:
+            cursor = start + 1
+            continue
+        return decoded if isinstance(decoded, dict) else None
+
+
+def contract_scaffold_lines(contract: str, marker: str) -> list[str]:
+    lines = contract.splitlines()
+    collecting = False
+    collected: list[str] = []
+    for line in lines:
+        if not collecting:
+            if marker in line:
+                collecting = True
+            continue
+        if line.startswith("  "):
+            collected.append(line[2:])
+            continue
+        if collected and line.startswith("- "):
+            break
+    return collected
+
+
+def stage07_mrp_reread_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
+    contract = stage07_mrp_reread_contract_guidance(previous_stages)
+    lines = contract_scaffold_lines(contract, "Print these checker-complete public MRP blocks")
+    if not lines:
+        return ""
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def stage07_field_witness_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
+    contract = stage07_field_witness_contract_guidance(previous_stages)
+    visible_lines = contract_scaffold_lines(
+        contract,
+        "print the visible Closure/Reconstruction Witness ledger",
+    )
+    if not visible_lines:
+        return ""
+    scaffold_tail = contract.split("Required field_witness scaffold", 1)[-1]
+    payload = first_json_object_from_text(scaffold_tail)
+    if payload is None:
+        return ""
+    return (
+        "Closure/Reconstruction Witness\n"
+        + "\n".join(visible_lines).rstrip()
+        + "\n\nfield_witness\n"
+        + json.dumps(payload, ensure_ascii=False, indent=2)
+        + "\n"
+    )
+
+
+def canonical_compiled_structural_section(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any] | None]:
+    if section_role == "mrp_reread_terminal":
+        scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
+    elif section_role == "field_witness_nar":
+        scaffold = stage07_field_witness_section_scaffold(previous_stages)
+    else:
+        return text, None
+    if not scaffold:
+        return text, None
+    if text.strip() == scaffold.strip():
+        return text, None
+    return scaffold, {
+        "role": section_role,
+        "canonicalized_structural_stage07_section": True,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(scaffold.encode("utf-8")),
+    }
 
 
 def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
@@ -2119,10 +2349,10 @@ def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[st
 SECTION_BUDGET_ROLE_WEIGHTS = {
     "visible_opening": 5,
     "layer_a_diagnostic_ir": 10,
-    "layer_b_act": 25,
-    "mrp_reread_terminal": 20,
-    "field_witness_nar": 15,
-    "restorative_response": 15,
+    "layer_b_act": 55,
+    "mrp_reread_terminal": 1,
+    "field_witness_nar": 1,
+    "restorative_response": 18,
     "closing_formulation": 10,
 }
 
@@ -2139,10 +2369,15 @@ def compiled_section_budgets(
     for _section_id, role in section_plan:
         role_counts[role] = role_counts.get(role, 0) + 1
 
-    role_min_bytes: dict[str, int] = {
-        role: (target_bytes * weight) // 100
-        for role, weight in SECTION_BUDGET_ROLE_WEIGHTS.items()
-    }
+    role_min_bytes: dict[str, int] = {}
+    role_remainders: list[tuple[int, str]] = []
+    for role, weight in SECTION_BUDGET_ROLE_WEIGHTS.items():
+        numerator = target_bytes * weight
+        role_min_bytes[role] = numerator // 100
+        role_remainders.append((numerator % 100, role))
+    residual = target_bytes - sum(role_min_bytes.values())
+    for _remainder, role in sorted(role_remainders, reverse=True)[:residual]:
+        role_min_bytes[role] += 1
     min_section_bytes: dict[str, int] = {}
     role_seen: dict[str, int] = {}
     for section_id, role in section_plan:
@@ -4073,9 +4308,10 @@ def run_self_test(root: Path) -> int:
             ],
             "generated_burdens": [
                 {
-                    "id": "B2",
+                    "burden_id": "B2",
                     "generated_by": "MRP(B1)",
                     "generation_depth": 1,
+                    "required_owner_route": ["source-status-repair.source-order", "P7.scope-boundary"],
                     "reason": "self-test generated boundary remains live",
                 }
             ],
@@ -4177,9 +4413,10 @@ def run_self_test(root: Path) -> int:
             ],
             "generated_burdens": [
                 {
-                    "id": "B6",
+                    "burden_id": "B6",
                     "generated_by": "MRP(B5)",
                     "generation_depth": 1,
+                    "required_owner_route": ["source-status-repair.source-order", "P7.scope-boundary"],
                     "reason": "self-test generated burden remains live",
                 }
             ],
@@ -4249,6 +4486,219 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in wide_stage07_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 wide field_witness prompt omitted scaffold: {required}")
+
+    def synthetic_act_row(burden: str) -> str:
+        number = burden[1:]
+        public = public_burden_id(burden)
+        body_ref = f"{public}₁"
+        return (
+            f"⟦ACT {body_ref}[M8.trace] :: π=pressure-{number} :: "
+            f"body_ref={body_ref} :: Δ=Δ{public}:landed-{number} :: Land({public})+⟧"
+        )
+
+    def synthetic_stage04(burdens: list[str]) -> dict[str, Any]:
+        rows = [synthetic_act_row(burden) for burden in burdens]
+        return normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": burdens,
+                "act_burdens": burdens,
+                "act_rows": rows,
+            },
+        )
+
+    generated_topology_stage02 = {
+        "id": "stage-02-layer-a-diagnostic-ir",
+        "status": "pass",
+        "selected_n_frame": "self-test-generated-topology",
+        "live_registers": ["xi", "kappa"],
+        "burden_floor": ["B1", "B2", "B3", "B4", "B5"],
+        "burden_floor_details": [
+            {"burden_id": "B1", "register_types": ["xi"]},
+            {"burden_id": "B2", "register_types": ["kappa"]},
+            {"burden_id": "B3", "register_types": ["xi"]},
+            {"burden_id": "B4", "register_types": ["kappa"]},
+            {"burden_id": "B5", "register_types": ["xi", "kappa"]},
+        ],
+    }
+
+    def synthetic_generated_stage05(parent: str, generated: str, *, executed: bool) -> dict[str, Any]:
+        terminal_states = {burden: "landed" for burden in generated_topology_stage02["burden_floor"]}
+        terminal_states[generated] = "landed" if executed else "carried-RECURSE"
+        payload: dict[str, Any] = {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass" if executed else "partial",
+            "terminal_states": terminal_states,
+            "dependency_graph_edges": [
+                {
+                    "from": parent,
+                    "to": generated,
+                    "source": f"MRP({parent})",
+                    "type": "generated_burden_instantiation",
+                }
+            ],
+            "generated_burdens": [
+                {
+                    "burden_id": generated,
+                    "generated_by": f"MRP({parent})",
+                    "generation_depth": 1,
+                    "required_owner_route": ["source-status-repair.source-order", "P7.scope-boundary"],
+                    "reason": f"self-test {parent} generated {generated}",
+                }
+            ],
+            "reread_state": {
+                "source_burden": generated if executed else parent,
+                "route_result_type": "no_new_resultant" if executed else "generated_burden_instantiation",
+                "route": "STOP" if executed else "RECURSE",
+            },
+        }
+        if executed:
+            payload["no_new_resultant_proof"] = {
+                "proved": True,
+                "basis": "generated burden was actually executed and landed in Stage 04",
+                "unresolved_burdens": [],
+            }
+            payload["unresolved_burdens"] = []
+        else:
+            payload["no_new_resultant_proof"] = {
+                "proved": False,
+                "basis": "generated burden remains unresolved and carried",
+                "unresolved_burdens": [generated],
+            }
+            payload["unresolved_burdens"] = [generated]
+        return normalized_stage("stage-05-mrp-reread-terminal-state", payload)
+
+    def assert_generated_topology(parent: str, generated: str, *, executed: bool, label: str) -> None:
+        stage04 = synthetic_stage04([*generated_topology_stage02["burden_floor"], *([generated] if executed else [])])
+        stage05 = synthetic_generated_stage05(parent, generated, executed=executed)
+        stages_for_case = [generated_topology_stage02, stage04, stage05, normalized_stage06]
+        mrp_text = stage07_mrp_reread_section_scaffold(stages_for_case)
+        witness_text = stage07_field_witness_section_scaffold(stages_for_case)
+        payload = first_json_object_from_text(witness_text)
+        if payload is None:
+            raise HarnessError(f"Self-test {label} generated topology did not emit field_witness JSON")
+        if generated not in payload.get("B_MRP", []):
+            raise HarnessError(f"Self-test {label} generated burden {generated} missing from B_MRP")
+        if generated in payload.get("B_LA", []):
+            raise HarnessError(f"Self-test {label} generated burden {generated} was misclassified as B_LA")
+        if parent not in payload.get("B_LA", []):
+            raise HarnessError(f"Self-test {label} parent {parent} must remain a baseline B_LA burden")
+        generated_records = {
+            str(item.get("id") or item.get("burden_id")): item
+            for item in payload.get("generated_burdens", [])
+            if isinstance(item, dict)
+        }
+        record = generated_records.get(generated)
+        if not isinstance(record, dict) or record.get("generated_by") != f"MRP({parent})":
+            raise HarnessError(f"Self-test {label} generated_burdens provenance missing MRP({parent})")
+        edge = {"from": parent, "to": generated}
+        coverage_edges = payload.get("coverage_proof", {}).get("dependency_graph", {}).get("edges", [])
+        if edge not in coverage_edges:
+            raise HarnessError(f"Self-test {label} dependency graph missing {parent}->{generated}")
+        if not any(item.get("source") == parent and item.get("type") == "generated_burden_instantiation" for item in payload.get("mrp_resultants", [])):
+            raise HarnessError(f"Self-test {label} MRP resultants missing generated source {parent}")
+        public_marker = f"## Burden {generated[1:]} / {public_burden_id(generated)} [generated-by: MRP({public_burden_id(parent)})]"
+        if public_marker not in mrp_text:
+            raise HarnessError(f"Self-test {label} public generated marker missing")
+        later_baselines = [
+            burden
+            for burden in generated_topology_stage02["burden_floor"]
+            if int(burden[1:]) > int(parent[1:])
+        ]
+        for later in later_baselines:
+            if later not in payload.get("B_LA", []):
+                raise HarnessError(f"Self-test {label} later baseline {later} fell out of B_LA")
+        coverage_complete = payload.get("coverage_proof", {}).get("coverage_complete")
+        if executed:
+            if coverage_complete is not True:
+                raise HarnessError(f"Self-test {label} executed generated branch did not complete coverage")
+            if f"Land({public_burden_id(generated)})" not in mrp_text:
+                raise HarnessError(f"Self-test {label} executed generated branch did not render Land({generated})")
+            activations = [
+                item for item in payload.get("owner_activations", [])
+                if isinstance(item, dict) and item.get("target") == generated
+            ]
+            if not activations or activations[0].get("source") != f"MRP({parent})":
+                raise HarnessError(f"Self-test {label} executed generated branch lacked MRP(parent) owner activation")
+        else:
+            if coverage_complete is not False:
+                raise HarnessError(f"Self-test {label} held generated branch falsely completed coverage")
+            if f"HOLD({public_burden_id(generated)})" not in mrp_text:
+                raise HarnessError(f"Self-test {label} held generated branch did not render HOLD({generated})")
+            activations = [
+                item for item in payload.get("owner_activations", [])
+                if isinstance(item, dict) and item.get("target") == generated
+            ]
+            if activations:
+                raise HarnessError(f"Self-test {label} held generated branch invented owner activations")
+
+    assert_generated_topology("B1", "B6", executed=False, label="early-held")
+    assert_generated_topology("B3", "B6", executed=False, label="mid-held")
+    assert_generated_topology("B5", "B6", executed=False, label="terminal-held")
+    assert_generated_topology("B3", "B6", executed=True, label="mid-executed")
+    drifted_mrp_text = (
+        "[Mid-Reread Pressure]\n"
+        "Target: MRP(¹B)\n"
+        "R(H,Δ): old model prose only.\n"
+        "MRP route result type: generated_burden_instantiation\n"
+        "MRP resultant: model drift without generated heading\n"
+        "Route: RECURSE\n"
+    )
+    canonical_mrp_text, canonical_mrp_event = canonical_compiled_structural_section(
+        "mrp_reread_terminal",
+        drifted_mrp_text,
+        [wide_stage02, normalized_stage04, wide_stage05, normalized_stage06],
+    )
+    if not canonical_mrp_event:
+        raise HarnessError("Self-test Stage 07 structural MRP canonicalization did not record an event")
+    for required in (
+        "Target: MRP(⁵B) / Stage 05 terminal MRP source",
+        "Route-gradient: generated-gradient points to RECURSE through ⁵B → ⁶B after Delta ⁵B",
+        "## Burden 6 / ⁶B [generated-by: MRP(⁵B)]",
+        "HOLD(⁶B): generated MRP burden remains unresolved/unexecuted",
+        "Target: MRP(⁶B) / Stage 05 terminal MRP source",
+        "MRP route result type: hold_partial",
+        "Route: HOLD",
+    ):
+        if required not in canonical_mrp_text:
+            raise HarnessError(f"Self-test Stage 07 structural MRP canonicalization omitted scaffold: {required}")
+    if "old model prose only" in canonical_mrp_text:
+        raise HarnessError("Self-test Stage 07 structural MRP canonicalization retained drifted model MRP prose")
+
+    drifted_field_witness = (
+        "Closure/Reconstruction Witness\n"
+        "field_witness\n"
+        "{\n"
+        '  "B_LA": ["B1", "B2", "B3", "B4", "B5"],\n'
+        '  "B_MRP": ["B6"],\n'
+        '  "B_total": ["B1", "B2", "B3", "B4", "B5", "B6"],\n'
+        '  "generated_burdens": [{"id": "B6", "generated_by": "MRP(B5)"}],\n'
+        '  "mrp_resultants": [{"source": "B5", "type": "generated_burden_instantiation", "graph": "B5 -> B6", "route": "RECURSE"}],\n'
+        '  "formal_reread_states": [{"source_burden": "B5", "curl_state": null}],\n'
+        '  "coverage_proof": {"coverage_complete": true, "diagnostic_completeness": {"coverage": {"xi": ["B6"]}}}\n'
+        "}\n"
+    )
+    canonical_witness_text, canonical_witness_event = canonical_compiled_structural_section(
+        "field_witness_nar",
+        drifted_field_witness,
+        [wide_stage02, normalized_stage04, wide_stage05, normalized_stage06],
+    )
+    if not canonical_witness_event:
+        raise HarnessError("Self-test Stage 07 structural field_witness canonicalization did not record an event")
+    for required in (
+        '"B_MRP": [\n    "B6"\n  ]',
+        '"generated_by": "MRP(B5)"',
+        '"source_burden": "B6"',
+        '"route_result_type": "hold_partial"',
+        '"coverage_complete": false',
+        '"owner_route": [\n        "source-status-repair.source-order",\n        "P7.scope-boundary"\n      ]',
+    ):
+        if required not in canonical_witness_text:
+            raise HarnessError(f"Self-test Stage 07 structural field_witness canonicalization omitted scaffold: {required}")
+    if '"coverage_complete": true' in canonical_witness_text or '"curl_state": null' in canonical_witness_text:
+        raise HarnessError("Self-test Stage 07 structural field_witness canonicalization retained drifted proof values")
     generated_stage07_mrp_prompt = release_section_prompt(
         root=root,
         case_name="self-test-generated-burden",
@@ -4269,7 +4719,8 @@ def run_self_test(root: Path) -> int:
         "Target: MRP(¹B) / Stage 05 terminal MRP source",
         "R(H,Δ): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
         "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
-        "Route-gradient: plain-gradient points to RECURSE through ¹B → ²B after R(H,Δ).",
+        "Route-gradient: generated-gradient points to RECURSE through ¹B → ²B after Delta ¹B; newly generated ²B [generated-by: MRP(¹B)] is absent from 𝔅_LA and comes from post-Land field-pressure.",
+        "Matched owner/TTP route: [source-status-repair.source-order], [P7.scope-boundary]",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
         "MRP resultant: genuine-dependent -> graph ¹B → ²B; route RECURSE",
@@ -5162,6 +5613,14 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                             }
                         )
                         expansion_record_paths.add(str(expansion_output_path.resolve()))
+                current_text = section_output_path.read_text(encoding="utf-8", errors="replace")
+                canonical_text, canonical_event = canonical_compiled_structural_section(
+                    section_role,
+                    current_text,
+                    stages,
+                )
+                if canonical_event is not None:
+                    write_text(section_output_path, canonical_text)
                 section_entries.append(
                     {
                         "id": section_id,

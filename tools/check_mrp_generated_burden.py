@@ -504,13 +504,17 @@ STRICT_OWNER_CODE_RE = re.compile(
 
 def strict_owner_family(value: str) -> str:
     token = owner_alias_key(value)
-    if token in LOOSE_OWNER_ALIASES:
-        return ""
-    family = CATALOGUE_OWNER_ALIASES.get(token)
-    if family:
-        return family
-    if STRICT_OWNER_CODE_RE.match(token):
-        return owner_family(token)
+    candidates = [token]
+    if "." in token:
+        candidates.append(token.split(".", 1)[0])
+    for candidate in candidates:
+        if candidate in LOOSE_OWNER_ALIASES:
+            return ""
+        family = CATALOGUE_OWNER_ALIASES.get(candidate)
+        if family:
+            return family
+        if STRICT_OWNER_CODE_RE.match(candidate):
+            return owner_family(candidate)
     return ""
 
 
@@ -532,6 +536,22 @@ def matched_owner_route_tokens(scope: str) -> set[str]:
         for token_match in OWNER_ROUTE_TOKEN_RE.finditer(body):
             owners.add(normalized_owner_token(token_match.group(0)))
     return {owner for owner in owners if owner and owner not in {"NONE", "UNKNOWN"}}
+
+
+def parser_self_errors() -> list[str]:
+    route_scope = "Matched owner/TTP route: [source-status-repair.source-order], [authority-order-repair.sort]"
+    found = matched_owner_route_tokens(route_scope)
+    expected = {
+        normalized_owner_token("source-status-repair"),
+        normalized_owner_token("authority-order-repair"),
+    }
+    missing = expected - found
+    if missing:
+        return [
+            "checker self-canary: hyphenated owner.operation route tokens did not normalize "
+            f"to owner families; missing {sorted(missing)} from {sorted(found)}"
+        ]
+    return []
 
 
 def contribution_body(block: str) -> str:
@@ -1339,6 +1359,18 @@ def generated_node_has_terminal_stop(section: str, target: str) -> bool:
     )
 
 
+def generated_node_has_unexecuted_hold_accounting(text: str, section: str, target: str) -> bool:
+    if not re.search(rf"(?im)^\s*HOLD\({re.escape(target)}\)\s*:", section):
+        return False
+    if not re.search(r"(?i)\b(?:unexecuted|not executed|no Stage 04 ACT|no ACT rows|without ACT)\b", section):
+        return False
+    if not re.search(r"(?i)\b(?:HOLD|PARTIAL|RECURSE|held-with-reason|carried)\b", section):
+        return False
+    if not re.search(r"(?i)\bcoverage_complete\s*[:=]\s*false\b", text):
+        return False
+    return True
+
+
 def notation_errors(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     public_text = re.split(r"(?im)^\s*(?:#{1,6}\s*)?field_witness\s*$", text, maxsplit=1)[0]
@@ -1384,6 +1416,18 @@ def generated_burden_errors(path: Path, text: str, block: MrpBlock, *, enforce_p
         return errors
     section = generated_node_section(text, heading, target)
     route_scope = block.body + "\n" + owner_activation_route_section(section)
+    complete_submoves = complete_owner_submoves(section, target)
+    if not complete_submoves and generated_node_has_unexecuted_hold_accounting(text, section, target):
+        if not has_matched_owner_route(route_scope):
+            errors.append(f"{path}: generated burden {target} HOLD accounting must name matched source-owned TTP route")
+        if not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer A\b", section):
+            errors.append(f"{path}: generated burden {target} missing Layer A accounting")
+        closure_tail_text = closure_tail(text)
+        if target not in closure_tail_text or f"MRP({source})" not in closure_tail_text:
+            errors.append(f"{path}: closure witness must record generated node and MRP provenance")
+        if not MRP_RESULTANT_RE.search(closure_tail_text):
+            errors.append(f"{path}: closure witness missing MRP resultants ledger")
+        return errors
     errors.extend(
         owner_activation_errors(
             path,
@@ -1401,7 +1445,6 @@ def generated_burden_errors(path: Path, text: str, block: MrpBlock, *, enforce_p
     if not re.search(r"(?im)^\s*(?:#{1,6}\s*)?Layer B\s*[-—]\s*Governed Operation Body\b", section):
         errors.append(f"{path}: generated burden {target} missing Layer B governed operation body")
     owners = owner_submoves(section, target)
-    complete_submoves = complete_owner_submoves(section, target)
     if len(complete_submoves) < 2:
         errors.append(
             f"{path}: MRP({source}) recorded generated_burden_instantiation but no corresponding generated {target} with Layer B treatment was found in the output"
@@ -1661,7 +1704,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    errors: list[str] = []
+    errors: list[str] = parser_self_errors()
     warnings: list[str] = []
     valid, invalid = iter_fixtures(args.root)
     valid_checked = 0

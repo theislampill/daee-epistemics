@@ -548,7 +548,7 @@ def restoration_generated_targets(field_witness: dict[str, Any]) -> set[str]:
 
 
 def two_track_mrp_errors(path: Path, field_witness: dict[str, Any]) -> list[str]:
-    errors: list[str] = []
+    errors: list[str] = graph_checker_self_errors()
     ledgers = field_witness_ledger(field_witness)
     terminals = terminal_state_map(field_witness)
     tracks = generated_burden_tracks(field_witness)
@@ -1105,6 +1105,100 @@ def terminal_stop_proof_complete(field_witness: dict[str, Any], conditions: dict
     return bool(conditions["no_new_resultant_terminal_proof"]["pass"] and proof_count >= stop_count)
 
 
+def explicit_generated_hold_open(
+    field_witness: dict[str, Any],
+    *,
+    graph_edge_set: set[str],
+    resultant_edge_set: set[str],
+    divergence_curl_errors: list[str],
+    formal_errors: list[str],
+) -> bool:
+    ledgers = field_witness_ledger(field_witness)
+    b_mrp = set(ledgers["B_MRP"])
+    if not b_mrp or divergence_curl_errors or formal_errors:
+        return False
+    cov = coverage(field_witness)
+    if cov.get("coverage_complete") is not False:
+        return False
+    terminals = terminal_state_map(field_witness)
+    generated_sources = generated_burden_sources(field_witness)
+    open_generated: list[str] = []
+    for burden in sorted(b_mrp):
+        state = terminals.get(burden, "")
+        if state not in LIVE_TERMINAL_STATES | {"held-with-reason"}:
+            continue
+        source = generated_sources.get(burden, "")
+        edge = f"{source}->{burden}" if source else ""
+        if not edge or edge not in graph_edge_set or edge not in resultant_edge_set:
+            return False
+        open_generated.append(burden)
+    return bool(open_generated)
+
+
+def graph_checker_self_errors() -> list[str]:
+    field_witness = {
+        "B_LA": ["B1"],
+        "B_MRP": ["B2"],
+        "B_total": ["B1", "B2"],
+        "nodes": [
+            {"id": "B1", "type": "burden", "state": "landed"},
+            {
+                "id": "B2",
+                "type": "generated_burden",
+                "state": "held-with-reason",
+                "generated_by": "MRP(B1)",
+                "generation_depth": 1,
+            },
+        ],
+        "edges": [{"from": "B1", "to": "B2", "type": "generated_burden_instantiation"}],
+        "generated_burdens": [
+            {"id": "B2", "generated_by": "MRP(B1)", "generation_depth": 1, "track": "primary"}
+        ],
+        "mrp_resultants": [
+            {
+                "source": "B1",
+                "type": "generated_burden_instantiation",
+                "finding": "genuine-dependent",
+                "graph": "B1 -> B2",
+                "route": "RECURSE",
+            }
+        ],
+        "formal_reread_states": [
+            {
+                "source_burden": "B1",
+                "route_result_type": "generated_burden_instantiation",
+                "route": "RECURSE",
+                "next_burden": "B2",
+                "graph_delta": "B1 -> B2",
+                "route_gradient": "generated B2 remains HOLD/PARTIAL/RECURSE after R(H,Delta)",
+                "divergence_state": "non-neutral",
+                "curl_state": "unresolved",
+            }
+        ],
+        "field_diagnostics": {
+            "divergence_check": "non-neutral / unresolved_burdens=[B2]",
+            "curl_check": "unresolved / generated_burden_hold=[B2]",
+        },
+        "terminal_states": {"B1": "landed", "B2": "held-with-reason"},
+        "coverage_proof": {
+            "coverage_complete": False,
+            "dependency_graph": {
+                "nodes": ["B1", "B2"],
+                "edges": [{"from": "B1", "to": "B2"}],
+            },
+        },
+    }
+    if explicit_generated_hold_open(
+        field_witness,
+        graph_edge_set={"B1->B2"},
+        resultant_edge_set={"B1->B2"},
+        divergence_curl_errors=[],
+        formal_errors=[],
+    ):
+        return []
+    return ["checker self-canary: explicit generated-held open graph state was not accepted"]
+
+
 def track_closure_flags(field_witness: dict[str, Any]) -> tuple[bool, bool]:
     ledgers = field_witness_ledger(field_witness)
     terminals = terminal_state_map(field_witness)
@@ -1264,6 +1358,13 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
     escape_emergence_errors = formalism_emergent_escape_route_errors(field_witness)
     divergence_curl_errors = divergence_curl_generated_burden_errors(path, field_witness)
     no_new_proof_errors = no_new_resultant_terminal_proof_errors(path, field_witness)
+    generated_hold_open = explicit_generated_hold_open(
+        field_witness,
+        graph_edge_set=graph_edge_set,
+        resultant_edge_set=resultant_edge_set,
+        divergence_curl_errors=divergence_curl_errors,
+        formal_errors=formal_errors,
+    )
     track_errors = two_track_mrp_errors(path, field_witness)
     tracks = generated_burden_tracks(field_witness)
     restoration_targets = sorted(restoration_generated_targets(field_witness))
@@ -1324,12 +1425,18 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
             ),
         },
         "mrp_exhaustion": {
-            "pass": no_silent_live and divergence_head == "neutral",
-            "basis": f"divergence={divergence or '<missing>'}; terminals={terminals}",
+            "pass": no_silent_live and (divergence_head == "neutral" or generated_hold_open),
+            "basis": (
+                f"divergence={divergence or '<missing>'}; terminals={terminals}; "
+                f"generated_hold_open={generated_hold_open}"
+            ),
         },
         "curl_loopbreak_handling": {
-            "pass": not formal_errors and curl_head in {"null", "resolved"},
-            "basis": f"curl={curl or '<missing>'}; formal_reread_state_errors={len(formal_errors)}",
+            "pass": not formal_errors and (curl_head in {"null", "resolved"} or generated_hold_open),
+            "basis": (
+                f"curl={curl or '<missing>'}; formal_reread_state_errors={len(formal_errors)}; "
+                f"generated_hold_open={generated_hold_open}"
+            ),
         },
         "graph_structure": {
             "pass": (
@@ -1356,6 +1463,11 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
             "pass": True,
             "basis": "C.2/C.3 escape-route checks remain optional; C.8 no_new_resultant_proof is graph-fixture strict, governed-output adoption remains later",
         },
+        "generated_hold_open_state": {
+            "pass": True,
+            "active": generated_hold_open,
+            "basis": "explicit generated B_MRP HOLD/PARTIAL/RECURSE is valid-open graph state, not collapse-positive proof",
+        },
     }
 
 
@@ -1370,9 +1482,12 @@ def graph_report(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
 
     conditions = condition_rows(path, text, field_witness)
     failures = [name for name, row in conditions.items() if not row["pass"]]
+    graph_valid = not failures
+    generated_hold_open = bool(conditions.get("generated_hold_open_state", {}).get("active"))
     report = {
         "path": rel(path),
-        "collapse_positive": not failures,
+        "graph_valid": graph_valid,
+        "collapse_positive": graph_valid and not generated_hold_open,
         "conditions": conditions,
         "failures": failures,
         "boundary": "schema-light B.1 slice; not a B.2 collapse certificate",
@@ -1547,7 +1662,7 @@ def main() -> int:
             continue
         if report:
             reports.append(report)
-            if report["collapse_positive"]:
+            if report.get("graph_valid"):
                 output_checked += 1
             else:
                 errors.append(f"{rel(path)}: graph-completeness failures={report['failures']}")
