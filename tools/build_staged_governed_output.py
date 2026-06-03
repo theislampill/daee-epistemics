@@ -56,11 +56,40 @@ SINGLETON_ROLES = {
     "closing_formulation",
 }
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+
+
+def public_heading_pattern(heading: str) -> re.Pattern[str]:
+    escaped = re.escape(heading)
+    return re.compile(
+        rf"(?im)^\s*(?:#+\s*)?"
+        rf"(?:(?P<decor>\*\*|__|\*|_)\s*)?"
+        rf"{escaped}"
+        rf"(?(decor)\s*(?P=decor))"
+        rf"\s*(?:#+\s*)?$"
+    )
+
+
+def decorated_public_heading_variant_pattern(heading: str) -> re.Pattern[str]:
+    escaped = re.escape(heading)
+    return re.compile(rf"(?i)^(?P<decor>\*\*|__|\*|_)\s*{escaped}\s*(?P=decor)$")
+
+
 CANONICAL_ROLE_HEADINGS = {
     "field_witness_nar": {
         "heading": "Closure/Reconstruction Witness",
         "variants": [re.compile(r"^Closure\s*/\s*Reconstruction\s+Witness$", re.IGNORECASE)],
-    }
+        "insert_if_missing": True,
+    },
+    "restorative_response": {
+        "heading": "Restorative Response",
+        "variants": [decorated_public_heading_variant_pattern("Restorative Response")],
+        "insert_if_missing": False,
+    },
+    "closing_formulation": {
+        "heading": "Closing Formulation",
+        "variants": [decorated_public_heading_variant_pattern("Closing Formulation")],
+        "insert_if_missing": False,
+    },
 }
 FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
@@ -127,8 +156,8 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(r"normalized_activation_record|\bNAR\b", re.IGNORECASE),
     ),
     ("Closure/Reconstruction Witness", re.compile(r"Closure/Reconstruction Witness", re.IGNORECASE)),
-    ("Restorative Response", re.compile(r"(?im)^\s*(?:#+\s*)?Restorative Response\b")),
-    ("Closing Formulation", re.compile(r"(?im)^\s*(?:#+\s*)?Closing Formulation\b")),
+    ("Restorative Response", public_heading_pattern("Restorative Response")),
+    ("Closing Formulation", public_heading_pattern("Closing Formulation")),
 ]
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
@@ -221,7 +250,7 @@ def public_heading_text(line: str) -> str:
 
 
 def canonical_heading_pattern(heading: str) -> re.Pattern[str]:
-    return re.compile(rf"(?im)^\s*(?:#+\s*)?{re.escape(heading)}\s*$")
+    return public_heading_pattern(heading)
 
 
 def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
@@ -243,9 +272,12 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
             text = "".join(lines).lstrip("\ufeff")
 
     inserted_headings: list[str] = []
+    insert_if_missing = bool(spec.get("insert_if_missing", False))
     if role == "field_witness_nar" and not model_variants and FIELD_WITNESS_LABEL_RE.search(text) is None:
         return text, None
     if canonical_heading_pattern(heading).search(text) is None:
+        if not insert_if_missing and not model_variants:
+            return text, None
         text = f"{heading}\n{text.lstrip()}"
         inserted_headings.append(heading)
 
@@ -954,6 +986,38 @@ def run_self_test(root: Path) -> int:
     if not scaffold_record.get("canonical_scaffold"):
         raise AssemblyError("self-test canonical scaffold did not record scaffold metadata")
 
+    decorated_heading_manifest = manifest_for_sections(
+        base_dir / "valid-decorated-public-headings",
+        case_id="valid-decorated-public-headings",
+        source_input="valid-decorated-public-headings/input.md",
+        section_specs=[
+            *small_sections()[:5],
+            ("release", "restorative_response", "**Restorative Response**\nRestored orientation.\n"),
+            ("closing", "closing_formulation", "# __Closing Formulation__\nScoped boundary.\n"),
+        ],
+    )
+    decorated_heading_record = assemble_manifest(decorated_heading_manifest, root=root)
+    decorated_heading_output = (
+        base_dir / "valid-decorated-public-headings" / "output.md"
+    ).read_text(encoding="utf-8")
+    if "**Restorative Response**" in decorated_heading_output:
+        raise AssemblyError("self-test decorated Restorative Response heading was not canonicalized")
+    if "__Closing Formulation__" in decorated_heading_output:
+        raise AssemblyError("self-test decorated Closing Formulation heading was not canonicalized")
+    if "Restorative Response\nRestored orientation." not in decorated_heading_output:
+        raise AssemblyError("self-test decorated Restorative Response heading was not preserved canonically")
+    if "Closing Formulation\nScoped boundary." not in decorated_heading_output:
+        raise AssemblyError("self-test decorated Closing Formulation heading was not preserved canonically")
+    decorated_scaffold = decorated_heading_record.get("canonical_scaffold")
+    decorated_events = (
+        decorated_scaffold.get("events", [])
+        if isinstance(decorated_scaffold, dict)
+        else []
+    )
+    decorated_roles = {event.get("role") for event in decorated_events if isinstance(event, dict)}
+    if {"restorative_response", "closing_formulation"} - decorated_roles:
+        raise AssemblyError("self-test decorated heading scaffold metadata missing")
+
     expect_invalid(
         root,
         base_dir,
@@ -1145,6 +1209,39 @@ def run_self_test(root: Path) -> int:
         base_dir,
         "invalid-missing-closing-formulation",
         lambda payload, case_dir: replace_section_text(payload, case_dir, 6, "Scoped boundary only.\n"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-restorative-embedded-decoration",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            5,
+            "This paragraph mentions **Restorative Response** but is not a heading.\nRestored orientation.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-restorative-malformed-decoration",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            5,
+            "**Restorative Response*\nRestored orientation.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-closing-malformed-decoration",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            6,
+            "__Closing Formulation_\nScoped boundary.\n",
+        ),
     )
     expect_invalid(
         root,
