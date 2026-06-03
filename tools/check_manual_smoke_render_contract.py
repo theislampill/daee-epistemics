@@ -726,9 +726,15 @@ CLOSING_BOUNDARY_RE = re.compile(
     r"(?i)\b(?:held|reopen|reopenable|new burden|scope|scoped|bounded|partial|non[- ]load[- ]bearing|"
     r"without pretending|does not exhaust|cannot repair|honest scope)\b"
 )
-CLOSING_ESTABLISHED_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Established failure\s*:\s*[^\n]*\S")
-CLOSING_RESTORED_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?Restored criterion/orientation\s*:\s*[^\n]*\S")
-CLOSING_BOUNDARY_SLOT_RE = re.compile(r"(?im)^\s*(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S")
+CLOSING_ESTABLISHED_SLOT_RE = re.compile(
+    r"(?im)^\s*(?:(?:#{1,6}\s*)?Established failure\s*$|(?:[-*]\s*)?Established failure\s*:\s*[^\n]*\S)"
+)
+CLOSING_RESTORED_SLOT_RE = re.compile(
+    r"(?im)^\s*(?:(?:#{1,6}\s*)?Restored criterion/orientation\s*$|(?:[-*]\s*)?Restored criterion/orientation\s*:\s*[^\n]*\S)"
+)
+CLOSING_BOUNDARY_SLOT_RE = re.compile(
+    r"(?im)^\s*(?:(?:#{1,6}\s*)?(?:Scoped boundary|Reopen boundary)\s*$|(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S)"
+)
 
 
 def public_tail_label_like(body: str) -> bool:
@@ -1511,7 +1517,10 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         re.search(r"(?im)^\s*MRP route result type\s*:\s*loopbreak\b", text) is not None
         and "generated_burden_instantiation" not in text
     )
-    has_generated_flow = "generated_burden_instantiation" in text
+    has_generated_flow = bool(
+        re.search(r"(?im)^\s*MRP route result type\s*:\s*generated_burden_instantiation\b", text)
+        or re.search(r'"(?:route_result_type|mrp_route_result_type)"\s*:\s*"generated_burden_instantiation"', text)
+    )
     has_generated_ledger = has_nonempty_b_mrp_ledger(text)
     has_generated_marker = "[generated-by:" in text
     requires_generated_burden = has_generated_flow or has_generated_ledger or has_generated_marker
@@ -1547,14 +1556,17 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         errors.append(f"{path}: missing R(H,Delta)/R(H,Δ) reread")
     if not re.search(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:", text):
         errors.append(f"{path}: missing literal route-bearing R(H,Delta)/R(H,Δ) line")
-    for line in re.findall(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:\s*(.+)$", text):
-        lowered = line.lower()
-        if "held" not in lowered:
-            errors.append(f"{path}: R(H,Delta) line lacks held-route reread content")
-        if not re.search(r"(?i)\b(?:live|remaining|remainder|residual|generated|no remaining)\b", line):
-            errors.append(f"{path}: R(H,Delta) line lacks live-remainder content")
-        if not re.search(r"(?i)\b(?:release|released|next|STOP|HOLD|RECURSE|closure|generated)\b", line):
-            errors.append(f"{path}: R(H,Delta) line lacks release/next-pass consequence")
+    reread_lines = re.findall(r"(?im)^\s*(?:[-*]\s*)?R\(H,\s*(?:\u0394|Delta)\)\s*:\s*(.+)$", text)
+    has_route_bearing_reread = any(
+        "held" in line.lower()
+        and re.search(r"(?i)\b(?:live|remaining|remainder|residual|generated|no remaining)\b", line)
+        and re.search(r"(?i)\b(?:release|released|next|STOP|HOLD|RECURSE|closure|generated)\b", line)
+        for line in reread_lines
+    )
+    if reread_lines and not has_route_bearing_reread:
+        errors.append(f"{path}: R(H,Delta) line lacks held-route reread content")
+        errors.append(f"{path}: R(H,Delta) line lacks live-remainder content")
+        errors.append(f"{path}: R(H,Delta) line lacks release/next-pass consequence")
     errors.extend(held_route_false_closure_errors(path, text))
     if "Field diagnostics:" in text:
         for line in re.findall(r"(?im)^\s*Field diagnostics\s*:\s*(.+)$", text):

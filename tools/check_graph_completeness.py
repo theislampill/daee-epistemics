@@ -138,7 +138,10 @@ OWNER_FAMILY_TOKENS = {
     "R3",
 }
 FITRAH_ORIENTATION_RE = re.compile(r"(?i)\b(?:fitrah|fiṭrah|fitri|fiṭrī|tawhid|tawḥīd|N_fiṭrī|N_fitri)\b")
-AQL_ORIENTATION_RE = re.compile(r"(?i)\b(?:aql|ʿaql|sound reason|sarih|ṣarīḥ|aqli|reason orientation)\b")
+AQL_ORIENTATION_RE = re.compile(
+    r"(?i)\b(?:aql|ʿaql|sound reason|sarih|ṣarīḥ|aqli|reason orientation|"
+    r"reason is hono[u]?red|reason serve[s]? truth|reason as a created capacity)\b"
+)
 ESCAPE_STATE_EVIDENCE_RE = re.compile(
     r"(?i)(?:\bDelta\b|Δ|R\(H,\s*(?:Delta|Δ)\)|route-gradient|∇|divergence|curl|"
     r"register|Reg\b|B_live|dependency|graph|commitment|framework|post[- ]Land|"

@@ -74,6 +74,11 @@ def decorated_public_heading_variant_pattern(heading: str) -> re.Pattern[str]:
     return re.compile(rf"(?i)^(?P<decor>\*\*|__|\*|_)\s*{escaped}\s*(?P=decor)$")
 
 
+def embedded_decorated_public_heading_pattern(heading: str) -> re.Pattern[str]:
+    escaped = re.escape(heading)
+    return re.compile(rf"(?i)(?:\*\*|__|\*|_)\s*{escaped}\s*(?:\*\*|__|\*|_)")
+
+
 CANONICAL_ROLE_HEADINGS = {
     "field_witness_nar": {
         "heading": "Closure/Reconstruction Witness",
@@ -83,12 +88,12 @@ CANONICAL_ROLE_HEADINGS = {
     "restorative_response": {
         "heading": "Restorative Response",
         "variants": [decorated_public_heading_variant_pattern("Restorative Response")],
-        "insert_if_missing": False,
+        "insert_if_missing": True,
     },
     "closing_formulation": {
         "heading": "Closing Formulation",
         "variants": [decorated_public_heading_variant_pattern("Closing Formulation")],
-        "insert_if_missing": False,
+        "insert_if_missing": True,
     },
 }
 FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
@@ -260,8 +265,16 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
 
     heading = str(spec["heading"])
     variant_patterns = list(spec["variants"])
+    embedded_variant = embedded_decorated_public_heading_pattern(heading)
     lines = text.splitlines(keepends=True)
     model_variants: list[str] = []
+
+    for line in lines:
+        public_text = public_heading_text(line)
+        is_public_heading = canonical_heading_pattern(heading).fullmatch(line.strip()) is not None
+        is_model_variant = any(pattern.fullmatch(public_text) for pattern in variant_patterns)
+        if embedded_variant.search(line) and not is_public_heading and not is_model_variant:
+            raise AssemblyError(f"{section_id}: embedded decorated {heading} heading is not a public heading")
 
     first_content_index = next((index for index, line in enumerate(lines) if line.strip()), None)
     if first_content_index is not None:
@@ -1047,6 +1060,41 @@ def run_self_test(root: Path) -> int:
     if any(index < 0 for index in decorated_order) or decorated_order != sorted(decorated_order):
         raise AssemblyError("self-test decorated output did not preserve Restorative -> Closing -> witness -> field_witness order")
 
+    missing_heading_manifest = manifest_for_sections(
+        base_dir / "valid-missing-role-headings",
+        case_id="valid-missing-role-headings",
+        source_input="valid-missing-role-headings/input.md",
+        section_specs=[
+            *small_sections()[:4],
+            ("release", "restorative_response", "Restored orientation without role heading.\n"),
+            (
+                "closing",
+                "closing_formulation",
+                "### Established failure\nFailure established.\n"
+                "### Restored criterion/orientation\nRestored orientation.\n"
+                "### Scoped boundary\nScoped boundary.\n",
+            ),
+            small_sections()[6],
+        ],
+    )
+    missing_heading_record = assemble_manifest(missing_heading_manifest, root=root)
+    missing_heading_output = (
+        base_dir / "valid-missing-role-headings" / "output.md"
+    ).read_text(encoding="utf-8")
+    if "Restorative Response\nRestored orientation without role heading." not in missing_heading_output:
+        raise AssemblyError("self-test missing Restorative Response heading was not inserted")
+    if "Closing Formulation\n### Established failure" not in missing_heading_output:
+        raise AssemblyError("self-test missing Closing Formulation heading was not inserted")
+    missing_scaffold = missing_heading_record.get("canonical_scaffold")
+    missing_events = (
+        missing_scaffold.get("events", [])
+        if isinstance(missing_scaffold, dict)
+        else []
+    )
+    missing_roles = {event.get("role") for event in missing_events if isinstance(event, dict)}
+    if {"restorative_response", "closing_formulation"} - missing_roles:
+        raise AssemblyError("self-test missing role-heading scaffold metadata missing")
+
     expect_invalid(
         root,
         base_dir,
@@ -1237,7 +1285,9 @@ def run_self_test(root: Path) -> int:
         root,
         base_dir,
         "invalid-missing-closing-formulation",
-        lambda payload, case_dir: replace_section_text(payload, case_dir, 5, "Scoped boundary only.\n"),
+        lambda payload, _case_dir: payload.__setitem__(
+            "sections", [section for section in payload["sections"] if section["role"] != "closing_formulation"]
+        ),
     )
     expect_invalid(
         root,

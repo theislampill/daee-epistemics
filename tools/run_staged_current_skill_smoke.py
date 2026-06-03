@@ -2064,12 +2064,16 @@ def release_section_prompt(
             "`Field Witness` or prose-only `Normalized Activation Record` labels. Do not include Restorative Response or Closing Formulation here."
         ),
         "restorative_response": (
-            "Write only the Restorative Response section. Do not include Closing Formulation here. "
+            "Write only the Restorative Response section. Begin with the exact public role heading `Restorative Response`. "
+            "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint. "
+            "Do not include Closing Formulation here. "
             "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
         "closing_formulation": (
-            "Write only the Closing Formulation section. It must include explicit high-mass slots for "
+            "Write only the Closing Formulation section. Begin with the exact public role heading `Closing Formulation`. "
+            "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint. "
+            "It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
             "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
@@ -2277,6 +2281,32 @@ def split_text_for_compiled_self_test(text: str) -> list[tuple[str, str, str]]:
         ("closing-formulation", "closing_formulation"),
         ("field-witness-nar", "field_witness_nar"),
     ]
+    layer_b = re.search(r"(?im)^\s*##\s+Layer B\b", text)
+    mrp = re.search(r"(?im)^\s*\[Mid-Reread Pressure\]\s*$", text)
+    restorative = re.search(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\s*$", text)
+    closing = re.search(r"(?im)^\s*(?:#{1,6}\s*)?Closing Formulation\s*$", text)
+    witness = re.search(r"(?im)^\s*Closure/Reconstruction Witness\s*$", text)
+    first_line_end = text.find("\n")
+    marker_positions = [
+        first_line_end + 1 if first_line_end >= 0 else -1,
+        layer_b.start() if layer_b else -1,
+        mrp.start() if mrp else -1,
+        restorative.start() if restorative else -1,
+        closing.start() if closing else -1,
+        witness.start() if witness else -1,
+    ]
+    if all(position >= 0 for position in marker_positions) and marker_positions == sorted(marker_positions):
+        layer_a_start, layer_b_start, mrp_start, restorative_start, closing_start, witness_start = marker_positions
+        return [
+            ("opening", "visible_opening", text[:layer_a_start]),
+            ("layer-a-diagnostic-ir", "layer_a_diagnostic_ir", text[layer_a_start:layer_b_start]),
+            ("act-body", "layer_b_act", text[layer_b_start:mrp_start]),
+            ("mrp-reread-terminal", "mrp_reread_terminal", text[mrp_start:restorative_start]),
+            ("restorative-response", "restorative_response", text[restorative_start:closing_start]),
+            ("closing-formulation", "closing_formulation", text[closing_start:witness_start]),
+            ("field-witness-nar", "field_witness_nar", text[witness_start:]),
+        ]
+
     lines = text.splitlines(keepends=True)
     if len(lines) < len(plan):
         raise HarnessError("Compiled-mode self-test source output is too small to split into required sections")
@@ -3678,6 +3708,54 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    stage07_restorative_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="restorative-response",
+        section_role="restorative_response",
+        section_number=7,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "Begin with the exact public role heading `Restorative Response`",
+        "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint",
+        "Do not include Closing Formulation here",
+    ):
+        if required not in stage07_restorative_prompt:
+            raise HarnessError(f"Self-test Stage 07 Restorative prompt omitted role-heading scaffold: {required}")
+    stage07_closing_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="closing-formulation",
+        section_role="closing_formulation",
+        section_number=8,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "Begin with the exact public role heading `Closing Formulation`",
+        "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint",
+        "`### Established failure`",
+        "`### Restored criterion/orientation`",
+        "`### Scoped boundary`",
+    ):
+        if required not in stage07_closing_prompt:
+            raise HarnessError(f"Self-test Stage 07 Closing prompt omitted role-heading scaffold: {required}")
     stage07_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
