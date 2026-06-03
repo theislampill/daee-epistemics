@@ -9,6 +9,7 @@ self-test proves only harness wiring; it does not prove model behavior.
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -195,6 +196,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Do not put `selected`/`held` objects in canonical `n_frame`; if those details "
             "are useful, put them in `n_frame_details` or "
             "`normalized_activation_record_details.n_frame_details`. "
+            "When a structured `normalized_activation_record` is present, "
+            "`normalized_activation_record_details` is supplemental metadata only; any "
+            "`n_frame_details.selected` value there must match the canonical string "
+            "`normalized_activation_record.n_frame`. "
             "`per_burden` must be a JSON array/list of objects; each object must include "
             "a non-empty string `burden_id`. Do not emit `per_burden` as a burden-keyed object map. "
             "`register_deltas` must be parser-stable as an object or a list of objects with "
@@ -776,6 +781,7 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-06 normalized_activation_record must be true or an object")
     details = stage.get("normalized_activation_record_details")
     if details is not None:
+        hydrate_stage06_nar_details(details, normalized)
         normalize_stage06_nar_object(details, "stage-06 normalized_activation_record_details")
 
     if "register_deltas" not in stage:
@@ -870,6 +876,42 @@ def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
             raise HarnessError(f"{label}.per_burden[{index}] must be an object")
         if not isinstance(row.get("burden_id"), str) or not row["burden_id"]:
             raise HarnessError(f"{label}.per_burden[{index}].burden_id must be a non-empty string")
+
+
+def hydrate_stage06_nar_details(details: Any, canonical_nar: Any) -> None:
+    if not isinstance(details, dict):
+        raise HarnessError("stage-06 normalized_activation_record_details must be an object when present")
+    required = ("n_frame", "live_registers", "burden_floor", "per_burden")
+    missing = [key for key in required if key not in details]
+    if not missing:
+        return
+    if not isinstance(canonical_nar, dict):
+        raise HarnessError(
+            "stage-06 normalized_activation_record_details must include full NAR fields "
+            "when normalized_activation_record is not a structured object"
+        )
+    detail_frame = details.get("n_frame_details")
+    if detail_frame is not None:
+        if not isinstance(detail_frame, dict):
+            raise HarnessError("stage-06 normalized_activation_record_details.n_frame_details must be an object")
+        selected = non_empty_string(detail_frame.get("selected"))
+        if selected is not None and selected != canonical_nar.get("n_frame"):
+            raise HarnessError(
+                "stage-06 normalized_activation_record_details.n_frame_details.selected "
+                "must match canonical normalized_activation_record.n_frame"
+            )
+    for key in missing:
+        if key not in canonical_nar:
+            raise HarnessError(f"stage-06 canonical normalized_activation_record missing {key} for details hydration")
+        details[key] = copy.deepcopy(canonical_nar[key])
+    normalization = details.get("normalization")
+    if normalization is None:
+        normalization = {}
+    if not isinstance(normalization, dict):
+        raise HarnessError("stage-06 normalized_activation_record_details.normalization must be an object when present")
+    normalization["hydrated_from_normalized_activation_record"] = missing
+    normalization["canonical_n_frame"] = canonical_nar.get("n_frame")
+    details["normalization"] = normalization
 
 
 def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
@@ -4302,6 +4344,76 @@ def run_self_test(root: Path) -> int:
     selected_detail_normalization = selected_detail_nar.get("normalization")
     if not isinstance(selected_detail_normalization, dict) or selected_detail_normalization.get("n_frame_from_selected_detail") is not True:
         raise HarnessError("Self-test failed to record Stage 06 n_frame selected/detail normalization")
+    supplemental_details_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "¹B₂"],
+            "nar_burdens": ["B1"],
+            "owner_activations": ["¹B₁", "¹B₂"],
+            "normalized_activation_record": copy.deepcopy(structured_nar),
+            "normalized_activation_record_details": {
+                "n_frame_details": {
+                    "selected": "science-only-source-order-warrant",
+                    "held_frame_pressures": ["revelation-private-preference-frame"],
+                },
+                "per_burden_count": 1,
+                "generated_terminal_burdens_without_act": [],
+            },
+            "register_deltas": {"xi": "source-order-landed"},
+        },
+    )
+    supplemental_details = supplemental_details_stage06["normalized_activation_record_details"]
+    if supplemental_details.get("n_frame") != "science-only-source-order-warrant":
+        raise HarnessError("Self-test failed to hydrate supplemental Stage 06 NAR details from canonical NAR")
+    supplemental_normalization = supplemental_details.get("normalization")
+    if not isinstance(supplemental_normalization, dict) or "per_burden" not in supplemental_normalization.get(
+        "hydrated_from_normalized_activation_record", []
+    ):
+        raise HarnessError("Self-test failed to record supplemental Stage 06 NAR details hydration")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": copy.deepcopy(structured_nar),
+                "normalized_activation_record_details": {
+                    "n_frame_details": {"selected": "mismatched-frame"},
+                    "per_burden_count": 1,
+                },
+                "register_deltas": {"xi": "source-order-landed"},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject supplemental Stage 06 NAR details with mismatched n_frame")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": True,
+                "normalized_activation_record_details": {
+                    "n_frame_details": {"selected": "science-only-source-order-warrant"},
+                    "per_burden_count": 1,
+                },
+                "register_deltas": {"xi": "source-order-landed"},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject supplemental Stage 06 NAR details without structured canonical NAR")
     try:
         normalized_stage(
             "stage-06-field-witness-nar",
