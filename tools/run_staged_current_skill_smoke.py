@@ -1309,17 +1309,18 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             graph = f"{edge['from']} -> {edge['to']}"
             finding = "genuine-dependent" if final_type == "generated_burden_instantiation" else "held-dependent"
             final_route = final_route if final_route in {"RECURSE", "HOLD"} else "RECURSE"
+    public_graph = public_graph_value(graph)
     route_gradient = (
-        f"plain-gradient points to {final_route} through {graph} after R(H,Delta)."
+        f"plain-gradient points to {final_route} through {public_graph} after R(H,Δ)."
         if graph != "none"
-        else f"plain-gradient points to {final_route} after {final_source}; no live pressure remains."
+        else f"plain-gradient points to {final_route} after {public_burden_id(final_source)}; no live pressure remains."
     )
     reread_line = (
-        f"R(H,Delta): held routes rechecked: {public_graph_value(graph)}; "
+        f"R(H,Δ): held routes rechecked: {public_graph}; "
         f"live remainder: {public_graph_value(stage07_route_target_from_graph(graph) or final_source)}; "
         f"release/next: {final_route}."
         if graph != "none"
-        else f"R(H,Delta): held routes rechecked: none; live remainder: no remaining burden; "
+        else f"R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; "
         f"release/next: {final_route} after {public_burden_id(final_source)}."
     )
     preemption_basis = (
@@ -1330,20 +1331,20 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     landed_state = terminal_states.get(final_source, "landed")
     landed_delta = stage07_mrp_landed_delta(final_source, landed_state, final_type)
     terminal_lines = [
-        f"{burden}: {terminal_states.get(burden, 'landed')}"
+        f"{public_burden_id(burden)}: {terminal_states.get(burden, 'landed')}"
         for burden in b_total
     ]
     visible_lines = [
         "[Mid-Reread Pressure]",
-        f"Target: {final_source} / Stage 05 terminal MRP source",
+        f"Target: MRP({public_burden_id(final_source)}) / Stage 05 terminal MRP source",
         reread_line,
         f"Landed delta: {landed_delta}",
         "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency.",
         f"Route-gradient: {route_gradient}",
         f"Finding: {finding}",
         f"MRP route result type: {final_type}",
-        f"MRP resultant: {finding} -> graph {graph}; route {final_route}",
-        f"Graph delta: {graph}",
+        f"MRP resultant: {finding} -> graph {public_graph}; route {final_route}",
+        f"Graph delta: {public_graph}",
         f"Pre-emption basis: {preemption_basis}",
         "LoopBreak: not needed",
         f"Route: {final_route}",
@@ -1356,13 +1357,13 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         "Stage 07 public MRP block contract:",
         "- Print this checker-complete public MRP block in the MRP/reread/terminal section before prose expansion:",
         *[f"  {line}" for line in visible_lines],
-        "- `Target:` is required and must name the Stage 05 MRP source burden, for example `B4`; do not leave the target implicit in prose.",
+        "- `Target:` is required and must name the Stage 05 MRP source burden in public notation, for example `MRP(⁴B)`; do not leave the target implicit in prose.",
         "- `Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
         "- `MRP route result type:` must be one canonical token with no trailing punctuation: `held_burden_activation`, `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.",
         "- `MRP resultant:`, `Graph delta:`, `Pre-emption basis:`, and `Route:` are required public fields; field_witness and Closure/Reconstruction Witness mirrors do not replace them.",
         "- For terminal STOP/no-new-resultant, use `Graph delta: none`, `Route: STOP`, and do not invent a graph edge.",
         "- For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:` and `MRP resultant:`.",
-        "- Do not rely on a later `MRP(Bn): ...` closure-ledger row as the only public MRP evidence; the `[Mid-Reread Pressure]` block itself must be parseable.",
+        "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the `[Mid-Reread Pressure]` block itself must be parseable.",
     ]
     return "\n".join(lines)
 
@@ -1382,7 +1383,7 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
     for burden in burden_floor:
         registers = burden_registers.get(burden, [])
         register_text = ", ".join(registers) if registers else "register-types-from-Stage-02"
-        burden_rows.append(f"{burden} [{register_text}] status=initial-live")
+        burden_rows.append(f"{public_burden_id(burden)} [{register_text}] status=initial-live")
 
     visible_lines = [
         f"Live registers: {', '.join(live_registers)}" if live_registers else "Live registers: none",
@@ -1447,17 +1448,19 @@ def stage07_act_contract_guidance(
         burden_id = detail["burden_id"] or canonical_burden_id(ref.split("B", 1)[0] + "B")
         if burden_id and burden_id not in seen_landing_targets:
             seen_landing_targets.add(burden_id)
+            public_burden = public_burden_id(burden_id)
             landing_lines.append(
-                f"  Land({burden_id}): summarize the cumulative state delta from the visible submove block(s); "
-                f"use `HOLD({burden_id}):` instead if the burden is not landed."
+                f"  Land({public_burden}): summarize the cumulative state delta from the visible submove block(s); "
+                f"use `HOLD({public_burden}):` instead if the burden is not landed."
             )
+        public_burden = public_burden_id(burden_id)
         lines.extend(
             [
                 f"- {ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']}",
                 f"  Target: {detail['pressure']}.",
                 f"  Operation: {detail['operation']} must act on {detail['pressure']} with owner family {detail['owner']}.",
                 f"  Result/state-change: {detail['delta_result']}; state-change must be visible in local prose.",
-                f"  Contribution-to-Land({burden_id}): explain how {detail['delta_result']} contributes to Land({burden_id}).",
+                f"  Contribution-to-Land({public_burden}): explain how {detail['delta_result']} contributes to Land({public_burden}).",
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
         )
@@ -3640,7 +3643,7 @@ def run_self_test(root: Path) -> int:
         "𝔅_LA (B_LA) = {¹B}",
         "𝔅_MRP (B_MRP) = {}",
         "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}",
-        "B1 [xi, kappa] status=initial-live",
+        "¹B [xi, kappa] status=initial-live",
         "Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`",
     ):
         if required not in stage07_layer_prompt:
@@ -3664,10 +3667,10 @@ def run_self_test(root: Path) -> int:
     for required in (
         "Stage 07 public MRP block contract:",
         "[Mid-Reread Pressure]",
-        "Target: B1 / Stage 05 terminal MRP source",
-        "R(H,Delta): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
+        "Target: MRP(¹B) / Stage 05 terminal MRP source",
+        "R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
         "Landed delta: Delta B1: terminal state landed; MRP route result type no_new_resultant.",
-        "Route-gradient: plain-gradient points to STOP after B1; no live pressure remains.",
+        "Route-gradient: plain-gradient points to STOP after ¹B; no live pressure remains.",
         "Finding: stable",
         "MRP route result type: no_new_resultant",
         "MRP resultant: stable -> graph none; route STOP",
@@ -3703,8 +3706,8 @@ def run_self_test(root: Path) -> int:
     for required in (
         "Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`",
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
-        "Contribution-to-Land(B1)",
-        "Land(B1): summarize the cumulative state delta from the visible submove block(s)",
+        "Contribution-to-Land(¹B)",
+        "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
@@ -3883,14 +3886,14 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Target: B1 / Stage 05 terminal MRP source",
-        "R(H,Delta): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
+        "Target: MRP(¹B) / Stage 05 terminal MRP source",
+        "R(H,Δ): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
         "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
-        "Route-gradient: plain-gradient points to RECURSE through B1 -> B2 after R(H,Delta).",
+        "Route-gradient: plain-gradient points to RECURSE through ¹B → ²B after R(H,Δ).",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
-        "MRP resultant: genuine-dependent -> graph B1 -> B2; route RECURSE",
-        "Graph delta: B1 -> B2",
+        "MRP resultant: genuine-dependent -> graph ¹B → ²B; route RECURSE",
+        "Graph delta: ¹B → ²B",
         "Pre-emption basis: graph-bound MRP route recorded",
         "Route: RECURSE",
         "For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:`",

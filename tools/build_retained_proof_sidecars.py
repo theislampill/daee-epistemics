@@ -73,7 +73,15 @@ def ensure_writable(path: Path, force: bool) -> None:
 
 
 def run_command(command: list[str]) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(
+        command,
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
     if result.returncode != 0:
         joined = " ".join(command)
         raise SystemExit(

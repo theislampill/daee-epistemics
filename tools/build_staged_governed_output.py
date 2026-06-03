@@ -166,6 +166,15 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 ]
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
+OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
+ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+PUBLIC_GRAPH_CONTEXT_RE = re.compile(
+    r"(?i)^\s*(?:[-*]\s*)?(?:"
+    r"Initial burden set|Held burden set|Held routes|Burden dependency graph|"
+    r"Target|R\(H,|Route-gradient|MRP resultant|Graph delta|Graph-delta|"
+    r"Terminal states|MRP\(|formal_reread_state|∇ route pressure"
+    r")\b"
+)
 
 
 class AssemblyError(Exception):
@@ -258,10 +267,232 @@ def canonical_heading_pattern(heading: str) -> re.Pattern[str]:
     return public_heading_pattern(heading)
 
 
+def json_object_span_after(text: str, start: int) -> tuple[int, int] | None:
+    object_start = text.find("{", start)
+    if object_start < 0:
+        return None
+
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(object_start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return object_start, index + 1
+    return None
+
+
+def field_witness_payload_ref(payload: Any) -> dict[str, Any] | None:
+    if not isinstance(payload, dict):
+        return None
+    nested = payload.get("field_witness")
+    if isinstance(nested, dict):
+        return nested
+    return payload
+
+
+def activation_target(activation: Any) -> str:
+    if not isinstance(activation, dict):
+        return ""
+    for key in ("target", "burden_id", "source", "land_target"):
+        value = activation.get(key)
+        if isinstance(value, str) and value.strip():
+            match = re.search(r"\bB\d+\b", value, flags=re.IGNORECASE)
+            return match.group(0).upper() if match else value.strip()
+    return ""
+
+
+def activation_owner(activation: Any) -> str:
+    if not isinstance(activation, dict):
+        return ""
+    for key in ("owner", "owner_id"):
+        value = activation.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def derive_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str, Any] | None:
+    activations = field_witness.get("owner_activations")
+    if not isinstance(activations, list):
+        return None
+
+    by_target: dict[str, list[str]] = {}
+    for activation in activations:
+        target = activation_target(activation)
+        owner = activation_owner(activation)
+        if not target or not owner:
+            continue
+        owners = by_target.setdefault(target, [])
+        if not owners or owners[-1] != owner:
+            owners.append(owner)
+
+    required_before: list[dict[str, str]] = []
+    for target, owners in sorted(by_target.items()):
+        for before_owner, after_owner in zip(owners, owners[1:]):
+            required_before.append(
+                {
+                    "target": target,
+                    "before_owner": before_owner,
+                    "after_owner": after_owner,
+                }
+            )
+
+    if not required_before:
+        return None
+    return {
+        "policy_id": OWNER_ORDERING_POLICY_ID,
+        "parallel_groups": [],
+        "required_before": required_before,
+    }
+
+
+def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] | None]:
+    label = FIELD_WITNESS_LABEL_RE.search(text)
+    if label is None:
+        return text, None
+    span = json_object_span_after(text, label.end())
+    if span is None:
+        return text, None
+    start, end = span
+    try:
+        payload = json.loads(text[start:end])
+    except json.JSONDecodeError:
+        return text, None
+    field_witness = field_witness_payload_ref(payload)
+    if field_witness is None:
+        return text, None
+    if field_witness.get("owner_activation_ordering") is not None:
+        return text, None
+    ordering = derive_owner_activation_ordering(field_witness)
+    if ordering is None:
+        return text, None
+    field_witness["owner_activation_ordering"] = ordering
+    replacement = json.dumps(payload, indent=2, ensure_ascii=False)
+    return text[:start] + replacement + text[end:], {
+        "inserted_owner_activation_ordering": True,
+        "required_before_count": len(ordering["required_before"]),
+    }
+
+
+def public_burden_token(value: str) -> str:
+    return f"{str(value).translate(ASCII_TO_SUP_DIGITS)}B"
+
+
+def canonicalize_public_graph_alias_line(line: str) -> str:
+    updated = line
+    if re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
+        updated = re.sub(
+            r"\bB([5-9][0-9]*)\b",
+            lambda match: f"additional burden {match.group(1)}",
+            updated,
+        )
+    updated = re.sub(r"\bR\(H,\s*Delta\)", "R(H,Δ)", updated)
+    updated = re.sub(
+        r"\bMRP\(\s*B([1-9][0-9]*)\s*\)",
+        lambda match: f"MRP({public_burden_token(match.group(1))})",
+        updated,
+        flags=re.IGNORECASE,
+    )
+    updated = re.sub(
+        r"\b(Land|HOLD)\(\s*B([1-9][0-9]*)\s*\)",
+        lambda match: f"{match.group(1)}({public_burden_token(match.group(2))})",
+        updated,
+        flags=re.IGNORECASE,
+    )
+    updated = re.sub(
+        r"(?i)(formal_reread_state)\(\s*B([1-9][0-9]*)\s*\)",
+        lambda match: f"{match.group(1)}({public_burden_token(match.group(2))})",
+        updated,
+    )
+    updated = re.sub(
+        r"(?i)^(\s*(?:[-*]\s*)?Target\s*:\s*)B([1-9][0-9]*)\b",
+        lambda match: f"{match.group(1)}MRP({public_burden_token(match.group(2))})",
+        updated,
+    )
+    updated = re.sub(
+        r"(?m)^(\s*(?:[-*]\s*)?)B([1-9][0-9]*)(?=\s*:)",
+        lambda match: f"{match.group(1)}{public_burden_token(match.group(2))}",
+        updated,
+    )
+    if PUBLIC_GRAPH_CONTEXT_RE.search(updated) and "body_ref=" not in updated:
+        updated = re.sub(
+            r"\bB([1-9][0-9]*)\b",
+            lambda match: public_burden_token(match.group(1)),
+            updated,
+        )
+    if "body_ref=" not in updated:
+        updated = re.sub(
+            r"(?<![A-Za-z0-9_Δ])B([1-9][0-9]*)\b(?![._])",
+            lambda match: public_burden_token(match.group(1)),
+            updated,
+        )
+    return updated
+
+
+def canonicalize_public_graph_alias_scope(text: str) -> tuple[str, int]:
+    lines = text.splitlines(keepends=True)
+    changed = 0
+    updated_lines: list[str] = []
+    for line in lines:
+        updated = canonicalize_public_graph_alias_line(line)
+        if updated != line:
+            changed += 1
+        updated_lines.append(updated)
+    return "".join(updated_lines), changed
+
+
+def canonicalize_public_graph_aliases(text: str) -> tuple[str, dict[str, Any] | None]:
+    label = FIELD_WITNESS_LABEL_RE.search(text)
+    span = json_object_span_after(text, label.end()) if label is not None else None
+    if span is None:
+        updated, changed = canonicalize_public_graph_alias_scope(text)
+    else:
+        start, end = span
+        prefix, prefix_changed = canonicalize_public_graph_alias_scope(text[:start])
+        suffix, suffix_changed = canonicalize_public_graph_alias_scope(text[end:])
+        updated = prefix + text[start:end] + suffix
+        changed = prefix_changed + suffix_changed
+    if changed == 0:
+        return text, None
+    return updated, {
+        "canonicalized_public_graph_aliases": True,
+        "public_graph_alias_line_count": changed,
+    }
+
+
 def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
     spec = CANONICAL_ROLE_HEADINGS.get(role)
+    ordering_event: dict[str, Any] | None = None
+    if role == "field_witness_nar":
+        text, ordering_event = canonicalize_field_witness_ordering(text)
     if spec is None:
-        return text, None
+        text, graph_event = canonicalize_public_graph_aliases(text)
+        if ordering_event is None and graph_event is None:
+            return text, None
+        event = {
+            "section_id": section_id,
+            "role": role,
+        }
+        if ordering_event is not None:
+            event.update(ordering_event)
+        if graph_event is not None:
+            event.update(graph_event)
+        return text, event
 
     heading = str(spec["heading"])
     variant_patterns = list(spec["variants"])
@@ -293,15 +524,21 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
             return text, None
         text = f"{heading}\n{text.lstrip()}"
         inserted_headings.append(heading)
+    text, graph_event = canonicalize_public_graph_aliases(text)
 
-    if not inserted_headings and not model_variants:
+    if not inserted_headings and not model_variants and ordering_event is None and graph_event is None:
         return text, None
-    return text, {
+    event = {
         "section_id": section_id,
         "role": role,
         "inserted_headings": inserted_headings,
         "model_heading_variants_seen": model_variants,
     }
+    if ordering_event is not None:
+        event.update(ordering_event)
+    if graph_event is not None:
+        event.update(graph_event)
+    return text, event
 
 
 def parse_output_targets(output: Any) -> tuple[int, int, list[str]]:
@@ -1094,6 +1331,118 @@ def run_self_test(root: Path) -> int:
     missing_roles = {event.get("role") for event in missing_events if isinstance(event, dict)}
     if {"restorative_response", "closing_formulation"} - missing_roles:
         raise AssemblyError("self-test missing role-heading scaffold metadata missing")
+
+    ordering_field_witness = (
+        "Closure/Reconstruction Witness\n"
+        "Initial burden set: [¹B]\n"
+        "𝔅_LA (B_LA) = {¹B}\n"
+        "𝔅_MRP (B_MRP) = {}\n"
+        "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}\n"
+        "Burden dependency graph:\n"
+        "¹B (root)\n"
+        "Terminal states:\n"
+        "¹B: landed / ACT owners / landed by visible owner activations\n"
+        "MRP resultants:\n"
+        "MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP\n"
+        "∇·B: neutral / no remaining burden\n"
+        "∇×κ: null / no circular dependency\n"
+        "𝒞(Ψᴺ): COMPLETE / coverage_complete=true; runtime execution field remains bounded to this reply\n"
+        "T_lang: Ψᴺ -> Ψᴵ: partial coupling boundary; no guaranteed uptake\n"
+        "field_witness\n"
+        "{\n"
+        "  \"B_LA\": [\"B1\"],\n"
+        "  \"B_MRP\": [],\n"
+        "  \"B_total\": [\"B1\"],\n"
+        "  \"owner_activations\": [\n"
+        "    {\"target\": \"B1\", \"owner\": \"source-status-repair\", \"operation\": \"source-order\", \"body_ref\": \"¹B₁\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"M1\", \"operation\": \"self-grounding-test\", \"body_ref\": \"¹B₂\"}\n"
+        "  ],\n"
+        "  \"coverage_proof\": {\"divergence_check\": \"neutral\", \"curl_check\": \"null\"},\n"
+        "  \"normalized_activation_record\": {\"n_frame\": \"self-test\", \"live_registers\": [\"xi\"], \"burden_floor\": [\"B1\"], \"per_burden\": []}\n"
+        "}\n"
+    )
+    ordering_manifest = manifest_for_sections(
+        base_dir / "valid-owner-activation-ordering-insertion",
+        case_id="valid-owner-activation-ordering-insertion",
+        source_input="valid-owner-activation-ordering-insertion/input.md",
+        section_specs=[*small_sections()[:6], ("field-witness", "field_witness_nar", ordering_field_witness)],
+    )
+    ordering_record = assemble_manifest(ordering_manifest, root=root)
+    ordering_output = (
+        base_dir / "valid-owner-activation-ordering-insertion" / "output.md"
+    ).read_text(encoding="utf-8")
+    for required in (
+        '"owner_activation_ordering"',
+        '"policy_id": "diagnostic-ir-pressure-owner-floor-v1"',
+        '"before_owner": "source-status-repair"',
+        '"after_owner": "M1"',
+    ):
+        if required not in ordering_output:
+            raise AssemblyError(f"self-test owner activation ordering insertion omitted {required}")
+    ordering_scaffold = ordering_record.get("canonical_scaffold")
+    ordering_events = (
+        ordering_scaffold.get("events", [])
+        if isinstance(ordering_scaffold, dict)
+        else []
+    )
+    if not any(
+        event.get("inserted_owner_activation_ordering") is True
+        and event.get("required_before_count") == 1
+        for event in ordering_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test owner activation ordering scaffold metadata missing")
+
+    graph_alias_manifest = manifest_for_sections(
+        base_dir / "valid-public-graph-alias-canonicalization",
+        case_id="valid-public-graph-alias-canonicalization",
+        source_input="valid-public-graph-alias-canonicalization/input.md",
+        section_specs=small_sections(
+            act_text=(
+                "Layer B - Bounded Governed Response\n"
+                "B1: public source-order burden.\n"
+                "B1 [xi] status=initial-live.\n"
+                "∇ route pressure is live on B1 through the source-order problem.\n"
+                "ACT row body_ref=¹B₁.\n"
+                "Contribution-to-Land(B1): visible contribution.\n"
+                "Graph-delta reading: there is no B5 generated because B1 is already landed.\n"
+                "Land(B1): landed.\n"
+            )
+        ),
+    )
+    graph_alias_record = assemble_manifest(graph_alias_manifest, root=root)
+    graph_alias_output = (
+        base_dir / "valid-public-graph-alias-canonicalization" / "output.md"
+    ).read_text(encoding="utf-8")
+    for forbidden in ("Land(B1)", "Contribution-to-Land(B1)", "Target: B1", "R(H,Delta)", "no B5 generated"):
+        if forbidden in graph_alias_output:
+            raise AssemblyError(f"self-test public graph alias canonicalization retained {forbidden}")
+    for required in (
+        "¹B: public source-order burden.",
+        "¹B [xi] status=initial-live.",
+        "∇ route pressure is live on ¹B through the source-order problem.",
+        "Contribution-to-Land(¹B)",
+        "no additional burden 5 generated because ¹B is already landed",
+        "Land(¹B)",
+        "Target: MRP(¹B)",
+        "R(H,Δ)",
+    ):
+        if required not in graph_alias_output:
+            raise AssemblyError(f"self-test public graph alias canonicalization omitted {required}")
+    if '"B_LA": ["B1"]' not in graph_alias_output:
+        raise AssemblyError("self-test public graph alias canonicalization changed field_witness JSON machine IDs")
+    graph_alias_scaffold = graph_alias_record.get("canonical_scaffold")
+    graph_alias_events = (
+        graph_alias_scaffold.get("events", [])
+        if isinstance(graph_alias_scaffold, dict)
+        else []
+    )
+    if not any(
+        event.get("canonicalized_public_graph_aliases") is True
+        for event in graph_alias_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test public graph alias canonicalization metadata missing")
 
     expect_invalid(
         root,
