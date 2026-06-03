@@ -77,6 +77,20 @@ RELEASE_OUTPUT_MODE_ALIASES = {
     "compiled": "compiled-output",
     "compiled-output": "compiled-output",
 }
+TRANSPORT_ATTEMPTS_SCHEMA = "staged-model-subprocess-attempts-v1"
+TRANSPORT_RESUME_SCHEMA = "staged-transport-resume-v1"
+SEMANTIC_FAILURE_RE = re.compile(
+    r"(?i)\b("
+    r"assembly error|validator|validation failed|missing required surface|semantic|"
+    r"forbidden claim|hash mismatch|section budget|public output"
+    r")\b"
+)
+TRANSPORT_TIMEOUT_RE = re.compile(
+    r"(?i)\b("
+    r"timed out|timeout|connection reset|connection aborted|stream disconnected|"
+    r"network error|temporarily unavailable|service unavailable|gateway timeout"
+    r")\b"
+)
 
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
@@ -1341,6 +1355,7 @@ def write_compiled_release_manifest(
     act_partition: dict[str, Any] | None = None,
     section_budgets: dict[str, Any] | None = None,
     section_expansions: dict[str, Any] | None = None,
+    transport_resume: dict[str, Any] | None = None,
 ) -> None:
     manifest_dir = manifest_path.parent
     payload: dict[str, Any] = {
@@ -1369,6 +1384,8 @@ def write_compiled_release_manifest(
         payload["section_budgets"] = section_budgets
     if section_expansions is not None:
         payload["section_expansions"] = section_expansions
+    if transport_resume is not None:
+        payload["transport_resume"] = transport_resume
     write_json(manifest_path, payload)
 
 
@@ -1478,6 +1495,390 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
     result = run_checked(command, cwd=root, input_text=prompt)
     write_text(log_path, result.stdout)
     return result.returncode
+
+
+def read_text_if_exists(path: Path) -> str:
+    if not path.exists() or not path.is_file():
+        return ""
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def classify_transport_failure(exit_code: int, log_text: str) -> dict[str, Any]:
+    websocket_403_matches = re.findall(
+        r"(?is)(?:websocket|wss|ws)[^\n]{0,240}403\s+Forbidden|"
+        r"403\s+Forbidden[^\n]{0,240}(?:websocket|wss|ws)",
+        log_text,
+    )
+    http_fallback = re.search(r"(?i)(falling back to HTTP|HTTP fallback|fallback[^\n]{0,120}HTTP)", log_text) is not None
+    http_429 = re.search(r"(?i)(429\s+Too Many Requests|Too Many Requests|rate limit)", log_text) is not None
+    timeout = TRANSPORT_TIMEOUT_RE.search(log_text) is not None
+    semantic_failure = SEMANTIC_FAILURE_RE.search(log_text) is not None
+    transport_markers = bool(websocket_403_matches or http_fallback or http_429 or timeout)
+    return {
+        "websocket_403_count": len(websocket_403_matches),
+        "http_fallback": http_fallback,
+        "http_429": http_429,
+        "timeout_or_network": timeout,
+        "semantic_failure_marker": semantic_failure,
+        "retryable": exit_code != 0 and transport_markers,
+    }
+
+
+def expansion_subprocess_id(section_id: str, expansion_round: int) -> str:
+    safe_section_id = section_id.replace("_", "-")
+    return f"stage-07-release-output-{safe_section_id}-expansion-{expansion_round}"
+
+
+def attempt_path(path: Path, attempt: int) -> Path:
+    if attempt <= 1:
+        return path
+    name = path.name
+    for suffix in (".prompt.md", ".codex-log.txt"):
+        if name.endswith(suffix):
+            return path.with_name(f"{name[:-len(suffix)]}-attempt-{attempt}{suffix}")
+    return path.with_name(f"{path.stem}-attempt-{attempt}{path.suffix}")
+
+
+def path_hash_payload(root: Path, path: Path) -> dict[str, Any]:
+    payload: dict[str, Any] = {"path": rel(path, root), "exists": path.exists()}
+    if path.exists() and path.is_file():
+        payload["sha256"] = sha256_file(path)
+        payload["bytes"] = path.stat().st_size
+    return payload
+
+
+def transport_attempt_record(
+    *,
+    root: Path,
+    subprocess_id: str,
+    stage: str,
+    role: str,
+    section_id: str,
+    expansion_round: int,
+    attempt: int,
+    prompt_path: Path,
+    response_path: Path,
+    log_path: Path,
+    exit_code: int,
+    status: str,
+    transport: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "subprocess_id": subprocess_id,
+        "stage": stage,
+        "role": role,
+        "section_id": section_id,
+        "round": expansion_round,
+        "attempt": attempt,
+        "prompt": path_hash_payload(root, prompt_path),
+        "response": path_hash_payload(root, response_path),
+        "log": path_hash_payload(root, log_path),
+        "exit_code": exit_code,
+        "status": status,
+        "transport": transport,
+    }
+
+
+def write_transport_attempts_record(path: Path, *, root: Path, attempts: list[dict[str, Any]]) -> None:
+    write_json(
+        path,
+        {
+            "schema": TRANSPORT_ATTEMPTS_SCHEMA,
+            "attempt_count": len(attempts),
+            "attempts": attempts,
+        },
+    )
+
+
+def resolve_hash_payload_path(root: Path, payload: dict[str, Any], key: str) -> Path:
+    value = payload.get(key)
+    if not isinstance(value, dict) or not isinstance(value.get("path"), str):
+        raise HarnessError(f"Resume hash record missing {key}.path")
+    return resolve_under_root(root, Path(value["path"]), f"Resume {key}")
+
+
+def validate_hash_payload_file(root: Path, item: dict[str, Any], label: str) -> Path:
+    if not isinstance(item, dict) or not isinstance(item.get("path"), str) or not isinstance(item.get("sha256"), str):
+        raise HarnessError(f"{label}: missing path or sha256")
+    path = resolve_under_root(root, Path(item["path"]), label)
+    if not path.exists() or not path.is_file():
+        raise HarnessError(f"{label}: hashed artifact is missing: {rel(path, root)}")
+    actual = sha256_file(path)
+    expected = item["sha256"].upper()
+    if actual != expected:
+        raise HarnessError(f"{label}: hash mismatch for {rel(path, root)}; expected {expected} but found {actual}")
+    return path
+
+
+def hash_artifact_map(root: Path, hash_payload: dict[str, Any]) -> tuple[dict[str, str], list[Path]]:
+    artifacts = hash_payload.get("stage_artifacts")
+    if not isinstance(artifacts, list):
+        raise HarnessError("Resume hash record stage_artifacts must be a list")
+    artifact_hashes: dict[str, str] = {}
+    artifact_paths: list[Path] = []
+    for index, item in enumerate(artifacts):
+        path = validate_hash_payload_file(root, item, f"stage_artifacts[{index}]")
+        artifact_hashes[rel(path, root)] = item["sha256"].upper()
+        artifact_paths.append(path)
+    for key in ("skill", "replay_record", "raw_input"):
+        validate_hash_payload_file(root, hash_payload.get(key, {}), key)
+    return artifact_hashes, artifact_paths
+
+
+def require_hash_matched(path: Path, *, root: Path, artifact_hashes: dict[str, str], label: str) -> None:
+    key = rel(path, root)
+    expected = artifact_hashes.get(key)
+    if expected is None:
+        raise HarnessError(f"{label}: missing from prior hash record: {key}")
+    if not path.exists() or not path.is_file():
+        raise HarnessError(f"{label}: missing prior artifact: {key}")
+    actual = sha256_file(path)
+    if actual != expected:
+        raise HarnessError(f"{label}: hash mismatch for {key}; expected {expected} but found {actual}")
+
+
+def parse_stage07_expansion_failure(message: str) -> dict[str, Any]:
+    match = re.search(
+        r"stage-07-release-output\s+([A-Za-z0-9_-]+)\s+expansion\s+([0-9]+):"
+        r".*?see\s+([^\r\n]+?\.codex-log\.txt)",
+        message,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if match is None:
+        raise HarnessError("Resume failure record does not identify a Stage 07 expansion subprocess")
+    return {
+        "section_id": match.group(1),
+        "round": int(match.group(2)),
+        "log_path": Path(match.group(3).strip()),
+    }
+
+
+def load_stage07_resume_context(root: Path, run_dir: Path) -> dict[str, Any]:
+    hash_path = run_dir / "staged-smoke.hashes.json"
+    failure_record_path = run_dir / "records" / "staged-handoff-failure.json"
+    if not hash_path.exists():
+        raise HarnessError(f"Resume run missing hash record: {rel(hash_path, root)}")
+    if not failure_record_path.exists():
+        raise HarnessError(f"Resume run missing failure record: {rel(failure_record_path, root)}")
+    for forbidden in (
+        run_dir / "output.md",
+        run_dir / "stage-07-output-assembly.manifest.json",
+        run_dir / "output.md.assembly.hashes.json",
+    ):
+        if forbidden.exists():
+            raise HarnessError(f"Resume refuses run with existing final/assembly artifact: {rel(forbidden, root)}")
+    for forbidden_dir in (run_dir / "proof-sidecars", run_dir / "retained-promotion"):
+        if forbidden_dir.exists() and any(forbidden_dir.iterdir()):
+            raise HarnessError(f"Resume refuses run with downstream sidecars/promotion: {rel(forbidden_dir, root)}")
+
+    hash_payload = load_json(hash_path)
+    failure_payload = load_json(failure_record_path)
+    if not isinstance(hash_payload, dict) or not isinstance(failure_payload, dict):
+        raise HarnessError("Resume records must be JSON objects")
+    artifact_hashes, artifact_paths = hash_artifact_map(root, hash_payload)
+    stages = failure_payload.get("stages")
+    if not isinstance(stages, list) or len(stages) != 6:
+        raise HarnessError("Resume requires exactly completed Stage 01-06 records")
+    expected_stage_ids = STAGE_ORDER[:6]
+    for index, stage in enumerate(stages):
+        if not isinstance(stage, dict) or stage.get("id") != expected_stage_ids[index] or stage.get("status") != "pass":
+            raise HarnessError("Resume requires Stage 01-06 to be present and pass")
+    failure = failure_payload.get("failure")
+    if not isinstance(failure, str) or not failure.strip():
+        raise HarnessError("Resume failure record must include a failure string")
+    failed = parse_stage07_expansion_failure(failure)
+    log_path = resolve_under_root(root, failed["log_path"], "failed expansion log")
+    require_hash_matched(log_path, root=root, artifact_hashes=artifact_hashes, label="failed expansion log")
+    transport = classify_transport_failure(1, read_text_if_exists(log_path))
+    if transport.get("retryable") is not True:
+        raise HarnessError("Resume failure is not classified as retryable transport")
+
+    log_name_match = re.search(
+        r"stage-07-release-output-([0-9]+)-(.+)-expansion-([0-9]+)\.codex-log\.txt$",
+        log_path.name,
+    )
+    if log_name_match is None:
+        raise HarnessError("Resume failed expansion log name is not parseable")
+    section_index = int(log_name_match.group(1))
+    safe_section_id = log_name_match.group(2)
+    expansion_round = int(log_name_match.group(3))
+    prompt_path = run_dir / "prompts" / f"stage-07-release-output-{section_index:02d}-{safe_section_id}-expansion-{expansion_round}.prompt.md"
+    response_path = run_dir / "release-section-expansions" / f"{section_index:02d}-{safe_section_id}-expansion-{expansion_round}.md"
+    require_hash_matched(prompt_path, root=root, artifact_hashes=artifact_hashes, label="failed expansion prompt")
+    prior_attempt = transport_attempt_record(
+        root=root,
+        subprocess_id=expansion_subprocess_id(failed["section_id"], failed["round"]),
+        stage="stage-07-release-output",
+        role=failed["section_id"].replace("-", "_"),
+        section_id=failed["section_id"],
+        expansion_round=failed["round"],
+        attempt=1,
+        prompt_path=prompt_path,
+        response_path=response_path,
+        log_path=log_path,
+        exit_code=1,
+        status="failed_transport",
+        transport=transport,
+    )
+    return {
+        "schema": TRANSPORT_RESUME_SCHEMA,
+        "run_dir": rel(run_dir, root),
+        "hash_record": rel(hash_path, root),
+        "failure_record": rel(failure_record_path, root),
+        "raw_input_path": resolve_hash_payload_path(root, hash_payload, "raw_input"),
+        "replay_record_path": resolve_hash_payload_path(root, hash_payload, "replay_record"),
+        "stages": [dict(stage) for stage in stages],
+        "artifact_hashes": artifact_hashes,
+        "artifact_paths": artifact_paths,
+        "failed_expansion": {
+            "section_id": failed["section_id"],
+            "section_index": section_index,
+            "safe_section_id": safe_section_id,
+            "round": failed["round"],
+            "log_path": rel(log_path, root),
+        },
+        "prior_attempts": [prior_attempt],
+    }
+
+
+def existing_expansion_records_for_resume(
+    *,
+    root: Path,
+    run_dir: Path,
+    section_plan: list[tuple[str, str]],
+    max_rounds: int,
+    artifact_hashes: dict[str, str],
+) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    expansions_dir = run_dir / "release-section-expansions"
+    for index, (section_id, section_role) in enumerate(section_plan, start=1):
+        safe_section_id = section_id.replace("_", "-")
+        for expansion_round in range(1, max_rounds + 1):
+            expansion_path = expansions_dir / f"{index:02d}-{safe_section_id}-expansion-{expansion_round}.md"
+            if not expansion_path.exists():
+                continue
+            require_hash_matched(
+                expansion_path,
+                root=root,
+                artifact_hashes=artifact_hashes,
+                label="prior successful expansion",
+            )
+            records.append(
+                {
+                    "section_id": section_id,
+                    "role": section_role,
+                    "round": expansion_round,
+                    "path": str(expansion_path),
+                    "sha256": sha256_file(expansion_path),
+                }
+            )
+    return records
+
+
+def invoke_expansion_with_transport_policy(
+    *,
+    root: Path,
+    model: str,
+    prompt: str,
+    base_prompt_path: Path,
+    base_output_path: Path,
+    base_log_path: Path,
+    section_id: str,
+    section_role: str,
+    expansion_round: int,
+    first_attempt: int,
+    retry_rounds: int,
+    attempts: list[dict[str, Any]],
+    attempts_record_path: Path,
+    stage_files: list[Path],
+) -> Path:
+    if retry_rounds < 0:
+        raise HarnessError("--transport-retry-rounds must be a non-negative integer")
+    subprocess_id = expansion_subprocess_id(section_id, expansion_round)
+    last_attempt = first_attempt + retry_rounds
+    for attempt in range(first_attempt, last_attempt + 1):
+        prompt_path = attempt_path(base_prompt_path, attempt)
+        output_path = attempt_path(base_output_path, attempt)
+        log_path = attempt_path(base_log_path, attempt)
+        write_text(prompt_path, prompt)
+        exit_code = invoke_codex(root, model, prompt, output_path, log_path)
+        stage_files.extend([prompt_path, output_path, log_path])
+        log_text = read_text_if_exists(log_path)
+        transport = classify_transport_failure(exit_code, log_text)
+        if exit_code == 0:
+            if not output_path.exists() or output_path.stat().st_size == 0:
+                attempts.append(
+                    transport_attempt_record(
+                        root=root,
+                        subprocess_id=subprocess_id,
+                        stage="stage-07-release-output",
+                        role=section_role,
+                        section_id=section_id,
+                        expansion_round=expansion_round,
+                        attempt=attempt,
+                        prompt_path=prompt_path,
+                        response_path=output_path,
+                        log_path=log_path,
+                        exit_code=exit_code,
+                        status="failed_semantic",
+                        transport=transport,
+                    )
+                )
+                write_transport_attempts_record(attempts_record_path, root=root, attempts=attempts)
+                raise HarnessError(
+                    f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                    "expansion output was not produced"
+                )
+            attempts.append(
+                transport_attempt_record(
+                    root=root,
+                    subprocess_id=subprocess_id,
+                    stage="stage-07-release-output",
+                    role=section_role,
+                    section_id=section_id,
+                    expansion_round=expansion_round,
+                    attempt=attempt,
+                    prompt_path=prompt_path,
+                    response_path=output_path,
+                    log_path=log_path,
+                    exit_code=exit_code,
+                    status="pass",
+                    transport=transport,
+                )
+            )
+            write_transport_attempts_record(attempts_record_path, root=root, attempts=attempts)
+            return output_path
+        status = "failed_transport" if transport.get("retryable") is True else "failed_non_transport"
+        attempts.append(
+            transport_attempt_record(
+                root=root,
+                subprocess_id=subprocess_id,
+                stage="stage-07-release-output",
+                role=section_role,
+                section_id=section_id,
+                expansion_round=expansion_round,
+                attempt=attempt,
+                prompt_path=prompt_path,
+                response_path=output_path,
+                log_path=log_path,
+                exit_code=exit_code,
+                status=status,
+                transport=transport,
+            )
+        )
+        write_transport_attempts_record(attempts_record_path, root=root, attempts=attempts)
+        if transport.get("retryable") is not True:
+            raise HarnessError(
+                f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                f"codex exec failed with exit code {exit_code}; see {rel(log_path, root)}"
+            )
+        if attempt == last_attempt:
+            raise HarnessError(
+                f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                f"transport retry budget exhausted after {attempt - first_attempt + 1} attempt(s); "
+                f"see {rel(log_path, root)}"
+            )
+    raise HarnessError("transport retry loop exited unexpectedly")
 
 
 def stage_order_for_stop(stop_after_stage: str | None) -> list[str]:
@@ -1596,6 +1997,7 @@ def write_hash_record(
 
 
 def run_self_test(root: Path) -> int:
+    global invoke_codex
     files = validate_required_files(root)
     replay_record = DEFAULT_REPLAY_RECORD
     raw_input = DEFAULT_INPUT
@@ -1634,6 +2036,238 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test hash record did not preserve self-test mode")
     if loaded_hashes.get("model") is not None:
         raise HarnessError("Self-test hash record must not claim a model invocation")
+    transport_log = (
+        "websocket attempt failed: 403 Forbidden\n"
+        "falling back to HTTP transport\n"
+        "HTTP status: 429 Too Many Requests\n"
+    )
+    transport_classification = classify_transport_failure(1, transport_log)
+    if transport_classification.get("retryable") is not True:
+        raise HarnessError("Self-test failed to classify websocket 403/HTTP 429 as retryable transport")
+    if transport_classification.get("websocket_403_count") != 1 or transport_classification.get("http_429") is not True:
+        raise HarnessError("Self-test transport classification missed 403 or 429 markers")
+    semantic_classification = classify_transport_failure(
+        1,
+        "AssemblyError: validation failed; missing required surface in public output",
+    )
+    if semantic_classification.get("retryable") is True:
+        raise HarnessError("Self-test classified semantic validator failure as retryable transport")
+    if attempt_path(Path("response.md"), 2).name != "response-attempt-2.md":
+        raise HarnessError("Self-test attempt path did not suffix markdown response")
+    if attempt_path(Path("call.codex-log.txt"), 2).name != "call-attempt-2.codex-log.txt":
+        raise HarnessError("Self-test attempt path did not suffix codex log")
+
+    def artifact(path: Path) -> dict[str, str]:
+        return {"path": rel(path, root), "sha256": sha256_file(path)}
+
+    def write_resume_fixture(name: str) -> Path:
+        fixture_dir = run_dir / name
+        fixture_prompts = fixture_dir / "prompts"
+        fixture_responses = fixture_dir / "responses"
+        fixture_sections = fixture_dir / "release-sections"
+        fixture_records = fixture_dir / "records"
+        for directory in (fixture_prompts, fixture_responses, fixture_sections, fixture_records):
+            directory.mkdir(parents=True, exist_ok=True)
+        fixture_raw_input = fixture_dir / "raw-input.md"
+        failed_prompt = fixture_prompts / "stage-07-release-output-08-restorative-response-expansion-1.prompt.md"
+        failed_log = fixture_responses / "stage-07-release-output-08-restorative-response-expansion-1.codex-log.txt"
+        section_output = fixture_sections / "08-restorative-response.md"
+        write_text(fixture_raw_input, "Secularism test fixture input.\n")
+        write_text(failed_prompt, "Expand restorative response.\n")
+        write_text(failed_log, transport_log)
+        write_text(section_output, "## Restorative Response\n\nBase section text.\n")
+        failure_record = fixture_records / "staged-handoff-failure.json"
+        write_json(
+            failure_record,
+            {
+                "schema": "staged-runtime-handshake-v1",
+                "case_id": "self-test-transport-resume",
+                "mode": "staged-current-skill-smoke",
+                "stage_order": STAGE_ORDER,
+                "stages": [dict(stage) for stage in replay["stages"][:6]],
+                "handoffs": handoffs_for_stage_order(STAGE_ORDER),
+                "non_claims": MODEL_NON_CLAIMS,
+                "failure": (
+                    "stage-07-release-output restorative-response expansion 1: "
+                    f"codex exec failed with exit code 1; see {rel(failed_log, root)}"
+                ),
+            },
+        )
+        write_json(
+            fixture_dir / "staged-smoke.hashes.json",
+            {
+                "schema": "staged-current-skill-smoke-hashes-v1",
+                "case_name": "self-test-transport-resume",
+                "mode": "staged-current-skill-smoke",
+                "model": "fake-model",
+                "verdict": "STAGED_MODEL_HARNESS_NEGATIVE_EVIDENCE: transport fixture",
+                "run_dir": rel(fixture_dir, root),
+                "skill": artifact(files["skill"]),
+                "replay_record": artifact(replay_record),
+                "raw_input": artifact(fixture_raw_input),
+                "stage_artifacts": [
+                    artifact(failed_prompt),
+                    artifact(section_output),
+                    artifact(failed_log),
+                    artifact(failure_record),
+                ],
+                "handoff_record": artifact(failure_record),
+                "output": None,
+                "sidecars": [],
+                "non_claims": {
+                    "not_package_provenance": True,
+                    "not_retained_promotion": True,
+                    "not_broad_model_matrix": True,
+                    "not_graphify_or_activegraph_proof": True,
+                },
+            },
+        )
+        return fixture_dir
+
+    resume_fixture = write_resume_fixture("transport-resume-valid")
+    resume_context = load_stage07_resume_context(root, resume_fixture)
+    if resume_context["failed_expansion"].get("section_id") != "restorative-response":
+        raise HarnessError("Self-test resume preflight did not identify the failed expansion section")
+    if resume_context["prior_attempts"][0].get("status") != "failed_transport":
+        raise HarnessError("Self-test resume preflight did not record the failed transport attempt")
+
+    hash_mismatch_fixture = write_resume_fixture("transport-resume-hash-mismatch")
+    write_text(hash_mismatch_fixture / "release-sections" / "08-restorative-response.md", "mutated\n")
+    try:
+        load_stage07_resume_context(root, hash_mismatch_fixture)
+    except HarnessError as exc:
+        if "hash mismatch" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test resume preflight accepted a hash-mismatched artifact")
+
+    final_output_fixture = write_resume_fixture("transport-resume-final-output")
+    write_text(final_output_fixture / "output.md", "already final\n")
+    try:
+        load_stage07_resume_context(root, final_output_fixture)
+    except HarnessError as exc:
+        if "existing final/assembly artifact" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test resume preflight accepted an existing final output")
+
+    sidecar_fixture = write_resume_fixture("transport-resume-sidecar")
+    sidecar_path = sidecar_fixture / "proof-sidecars" / "sidecar.json"
+    write_json(sidecar_path, {"unexpected": True})
+    try:
+        load_stage07_resume_context(root, sidecar_fixture)
+    except HarnessError as exc:
+        if "downstream sidecars/promotion" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test resume preflight accepted existing sidecars")
+
+    manifest_fixture = write_resume_fixture("transport-resume-manifest")
+    manifest_context = load_stage07_resume_context(root, manifest_fixture)
+    manifest_attempt_output = (
+        manifest_fixture / "release-section-expansions" / "08-restorative-response-expansion-1-attempt-2.md"
+    )
+    write_text(manifest_attempt_output, "Successful resumed expansion.\n")
+    manifest_attempt_log = (
+        manifest_fixture / "responses" / "stage-07-release-output-08-restorative-response-expansion-1-attempt-2.codex-log.txt"
+    )
+    write_text(manifest_attempt_log, "ok\n")
+    manifest_attempt_prompt = (
+        manifest_fixture / "prompts" / "stage-07-release-output-08-restorative-response-expansion-1-attempt-2.prompt.md"
+    )
+    write_text(manifest_attempt_prompt, "Expand restorative response.\n")
+    manifest_attempts = list(manifest_context["prior_attempts"])
+    manifest_attempts.append(
+        transport_attempt_record(
+            root=root,
+            subprocess_id=expansion_subprocess_id("restorative-response", 1),
+            stage="stage-07-release-output",
+            role="restorative_response",
+            section_id="restorative-response",
+            expansion_round=1,
+            attempt=2,
+            prompt_path=manifest_attempt_prompt,
+            response_path=manifest_attempt_output,
+            log_path=manifest_attempt_log,
+            exit_code=0,
+            status="pass",
+            transport=classify_transport_failure(0, "ok\n"),
+        )
+    )
+    manifest_attempts_record = manifest_fixture / "records" / "stage-07-transport-attempts.json"
+    write_transport_attempts_record(manifest_attempts_record, root=root, attempts=manifest_attempts)
+    manifest_path = manifest_fixture / "stage-07-output-assembly.manifest.json"
+    write_compiled_release_manifest(
+        root=root,
+        manifest_path=manifest_path,
+        case_name="self-test-transport-resume",
+        raw_input_path=manifest_context["raw_input_path"],
+        section_entries=[
+            {
+                "id": "restorative-response",
+                "role": "restorative_response",
+                "path": str(manifest_fixture / "release-sections" / "08-restorative-response.md"),
+                "sha256": sha256_file(manifest_fixture / "release-sections" / "08-restorative-response.md"),
+            }
+        ],
+        output_path=manifest_fixture / "output.md",
+        transport_resume={
+            "schema": TRANSPORT_RESUME_SCHEMA,
+            "resumed": True,
+            "source_run_dir": manifest_context["run_dir"],
+            "failed_expansion": manifest_context["failed_expansion"],
+            "attempts_record": rel(manifest_attempts_record, manifest_path.parent),
+            "attempts": manifest_attempts,
+        },
+    )
+    manifest_payload = load_json(manifest_path)
+    if len(manifest_payload.get("transport_resume", {}).get("attempts", [])) != 2:
+        raise HarnessError("Self-test resume manifest did not record failed and successful attempts")
+
+    retry_fixture = run_dir / "transport-retry-budget"
+    retry_fixture.mkdir(parents=True, exist_ok=True)
+    retry_attempts: list[dict[str, Any]] = []
+    retry_stage_files: list[Path] = []
+    real_invoke_codex = invoke_codex
+
+    def fake_transport_failure(
+        _root: Path,
+        _model: str,
+        _prompt: str,
+        _output_path: Path,
+        log_path: Path,
+    ) -> int:
+        write_text(log_path, transport_log)
+        return 1
+
+    try:
+        invoke_codex = fake_transport_failure
+        try:
+            invoke_expansion_with_transport_policy(
+                root=root,
+                model="fake-model",
+                prompt="expand\n",
+                base_prompt_path=retry_fixture / "call.prompt.md",
+                base_output_path=retry_fixture / "call.md",
+                base_log_path=retry_fixture / "call.codex-log.txt",
+                section_id="restorative-response",
+                section_role="restorative_response",
+                expansion_round=1,
+                first_attempt=1,
+                retry_rounds=1,
+                attempts=retry_attempts,
+                attempts_record_path=retry_fixture / "stage-07-transport-attempts.json",
+                stage_files=retry_stage_files,
+            )
+        except HarnessError as exc:
+            if "transport retry budget exhausted after 2 attempt(s)" not in str(exc):
+                raise
+        else:
+            raise HarnessError("Self-test retry budget did not stop after the bounded attempts")
+    finally:
+        invoke_codex = real_invoke_codex
+    if len(retry_attempts) != 2:
+        raise HarnessError("Self-test retry budget did not record exactly two attempts")
     normalized_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -2599,10 +3233,19 @@ def build_sidecars(
 
 def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     files = validate_required_files(root)
-    replay_record = resolve_under_root(root, args.replay_record, "Replay record")
-    raw_input = resolve_under_root(root, args.raw_input_path, "Raw input")
-    validate_replay_record(root, replay_record)
     run_dir = resolve_under_root(root, args.run_dir, "Run directory")
+    resume_context: dict[str, Any] | None = None
+    if args.resume_run_dir is not None:
+        resume_run_dir = resolve_under_root(root, args.resume_run_dir, "Resume run directory")
+        if resume_run_dir != run_dir:
+            raise HarnessError("--resume-run-dir and --run-dir must identify the same directory")
+        resume_context = load_stage07_resume_context(root, resume_run_dir)
+        replay_record = resume_context["replay_record_path"]
+        raw_input = resume_context["raw_input_path"]
+    else:
+        replay_record = resolve_under_root(root, args.replay_record, "Replay record")
+        raw_input = resolve_under_root(root, args.raw_input_path, "Raw input")
+    validate_replay_record(root, replay_record)
     run_dir.mkdir(parents=True, exist_ok=True)
     prompts_dir = run_dir / "prompts"
     responses_dir = run_dir / "responses"
@@ -2614,10 +3257,19 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     input_text = raw_input.read_text(encoding="utf-8", errors="replace")
     input_digest = sha256_file(raw_input)
     skill_hash = sha256_file(files["skill"])
-    stages: list[dict[str, Any]] = []
-    stage_files: list[Path] = []
+    stages: list[dict[str, Any]] = list(resume_context["stages"]) if resume_context else []
+    stage_files: list[Path] = list(resume_context["artifact_paths"]) if resume_context else []
+    transport_attempts: list[dict[str, Any]] = list(resume_context["prior_attempts"]) if resume_context else []
+    transport_attempts_record_path = records_dir / "stage-07-transport-attempts.json"
+    if transport_attempts:
+        write_transport_attempts_record(transport_attempts_record_path, root=root, attempts=transport_attempts)
+        stage_files.append(transport_attempts_record_path)
     mode = "staged-current-skill-stage-local-smoke" if args.stop_after_stage else "staged-current-skill-smoke"
     release_output_mode = normalize_release_output_mode(args.release_output_mode)
+    if resume_context is not None and release_output_mode != "compiled-output":
+        raise HarnessError("--resume-run-dir requires --release-output-mode compiled")
+    if resume_context is not None and args.stop_after_stage not in (None, "stage-07-release-output"):
+        raise HarnessError("--resume-run-dir may only resume through stage-07-release-output or the full smoke")
     record = base_record(
         args.case_name,
         mode,
@@ -2627,63 +3279,64 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     )
 
     try:
-        stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
-        if args.stop_after_stage is None or args.stop_after_stage == "stage-07-release-output":
-            stage_ids_to_run = STAGE_ORDER[:6]
-        for stage_id in stage_ids_to_run:
-            prompt = stage_prompt(
-                root=root,
-                stage_id=stage_id,
-                case_name=args.case_name,
-                raw_input_path=raw_input,
-                input_text=input_text,
-                input_digest=input_digest,
-                skill_hash=skill_hash,
-                previous_stages=stages,
-            )
-            prompt_path = prompts_dir / f"{stage_id}.prompt.md"
-            response_path = responses_dir / f"{stage_id}.response.txt"
-            log_path = responses_dir / f"{stage_id}.codex-log.txt"
-            write_text(prompt_path, prompt)
-            exit_code = invoke_codex(root, args.model, prompt, response_path, log_path)
-            stage_files.extend([prompt_path, response_path, log_path])
-            if exit_code != 0:
-                raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
-            payload = extract_json_object(response_path.read_text(encoding="utf-8", errors="replace"))
-            stage = normalized_stage(stage_id, payload)
-            if stage.get("status") == "fail":
-                raise HarnessError(f"{stage_id}: model returned fail: {stage.get('error')}")
-            stages.append(stage)
-            validate_incremental_handoffs(stages)
-            write_json(records_dir / f"{stage_id}.stage.json", stage)
-            if args.stop_after_stage == stage_id:
-                record["stages"] = stages
-                handoff_record = records_dir / "staged-handoff-stage-local-record.json"
-                write_json(handoff_record, record)
-                validate_replay_record(root, handoff_record)
-                hash_path = run_dir / "staged-smoke.hashes.json"
-                write_hash_record(
-                    hash_path,
+        if resume_context is None:
+            stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
+            if args.stop_after_stage is None or args.stop_after_stage == "stage-07-release-output":
+                stage_ids_to_run = STAGE_ORDER[:6]
+            for stage_id in stage_ids_to_run:
+                prompt = stage_prompt(
                     root=root,
+                    stage_id=stage_id,
                     case_name=args.case_name,
-                    mode=mode,
-                    model=args.model,
-                    skill_path=files["skill"],
-                    replay_record=replay_record,
                     raw_input_path=raw_input,
-                    run_dir=run_dir,
-                    stage_files=stage_files + [handoff_record],
-                    handoff_record=handoff_record,
-                    output_path=None,
-                    sidecar_paths=[],
-                    verdict=f"STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after {stage_id}",
+                    input_text=input_text,
+                    input_digest=input_digest,
+                    skill_hash=skill_hash,
+                    previous_stages=stages,
                 )
-                print("staged current-skill stage-local smoke: PASS")
-                print(f"run dir: {rel(run_dir, root)}")
-                print(f"stop-after-stage: {stage_id}")
-                print(f"handoff record: {rel(handoff_record, root)}")
-                print(f"hashes: {rel(hash_path, root)}")
-                return 0
+                prompt_path = prompts_dir / f"{stage_id}.prompt.md"
+                response_path = responses_dir / f"{stage_id}.response.txt"
+                log_path = responses_dir / f"{stage_id}.codex-log.txt"
+                write_text(prompt_path, prompt)
+                exit_code = invoke_codex(root, args.model, prompt, response_path, log_path)
+                stage_files.extend([prompt_path, response_path, log_path])
+                if exit_code != 0:
+                    raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
+                payload = extract_json_object(response_path.read_text(encoding="utf-8", errors="replace"))
+                stage = normalized_stage(stage_id, payload)
+                if stage.get("status") == "fail":
+                    raise HarnessError(f"{stage_id}: model returned fail: {stage.get('error')}")
+                stages.append(stage)
+                validate_incremental_handoffs(stages)
+                write_json(records_dir / f"{stage_id}.stage.json", stage)
+                if args.stop_after_stage == stage_id:
+                    record["stages"] = stages
+                    handoff_record = records_dir / "staged-handoff-stage-local-record.json"
+                    write_json(handoff_record, record)
+                    validate_replay_record(root, handoff_record)
+                    hash_path = run_dir / "staged-smoke.hashes.json"
+                    write_hash_record(
+                        hash_path,
+                        root=root,
+                        case_name=args.case_name,
+                        mode=mode,
+                        model=args.model,
+                        skill_path=files["skill"],
+                        replay_record=replay_record,
+                        raw_input_path=raw_input,
+                        run_dir=run_dir,
+                        stage_files=stage_files + [handoff_record],
+                        handoff_record=handoff_record,
+                        output_path=None,
+                        sidecar_paths=[],
+                        verdict=f"STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after {stage_id}",
+                    )
+                    print("staged current-skill stage-local smoke: PASS")
+                    print(f"run dir: {rel(run_dir, root)}")
+                    print(f"stop-after-stage: {stage_id}")
+                    print(f"handoff record: {rel(handoff_record, root)}")
+                    print(f"hashes: {rel(hash_path, root)}")
+                    return 0
 
         output_path = run_dir / "output.md"
         assembly_record: dict[str, Any] | None = None
@@ -2707,7 +3360,20 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             if args.section_expansion_rounds:
                 expansions_dir.mkdir(parents=True, exist_ok=True)
             section_entries: list[dict[str, str]] = []
-            expansion_records: list[dict[str, Any]] = []
+            expansion_records: list[dict[str, Any]] = (
+                existing_expansion_records_for_resume(
+                    root=root,
+                    run_dir=run_dir,
+                    section_plan=section_plan,
+                    max_rounds=args.section_expansion_rounds,
+                    artifact_hashes=resume_context["artifact_hashes"],
+                )
+                if resume_context is not None
+                else []
+            )
+            expansion_record_paths = {str(Path(record["path"]).resolve()) for record in expansion_records}
+            if args.section_expansion_rounds:
+                stage_files.append(transport_attempts_record_path)
             for index, (section_id, section_role) in enumerate(section_plan, start=1):
                 section_min_bytes = int(min_section_bytes.get(section_id, 0) or 0)
                 assigned_refs = assigned_refs_by_section.get(section_id)
@@ -2731,16 +3397,24 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 section_prompt_path = prompts_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.prompt.md"
                 section_output_path = sections_dir / f"{index:02d}-{safe_section_id}.md"
                 section_log_path = responses_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.codex-log.txt"
-                write_text(section_prompt_path, section_prompt)
-                exit_code = invoke_codex(root, args.model, section_prompt, section_output_path, section_log_path)
-                stage_files.extend([section_prompt_path, section_output_path, section_log_path])
-                if exit_code != 0:
-                    raise HarnessError(
-                        f"stage-07-release-output {section_id}: codex exec failed with exit code {exit_code}; "
-                        f"see {rel(section_log_path, root)}"
+                if resume_context is not None and section_output_path.exists():
+                    require_hash_matched(
+                        section_output_path,
+                        root=root,
+                        artifact_hashes=resume_context["artifact_hashes"],
+                        label="resumed section output",
                     )
-                if not section_output_path.exists() or section_output_path.stat().st_size == 0:
-                    raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
+                else:
+                    write_text(section_prompt_path, section_prompt)
+                    exit_code = invoke_codex(root, args.model, section_prompt, section_output_path, section_log_path)
+                    stage_files.extend([section_prompt_path, section_output_path, section_log_path])
+                    if exit_code != 0:
+                        raise HarnessError(
+                            f"stage-07-release-output {section_id}: codex exec failed with exit code {exit_code}; "
+                            f"see {rel(section_log_path, root)}"
+                        )
+                    if not section_output_path.exists() or section_output_path.stat().st_size == 0:
+                        raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
                 for expansion_round in range(1, args.section_expansion_rounds + 1):
                     current_text = section_output_path.read_text(encoding="utf-8", errors="replace")
                     current_bytes = len(current_text.encode("utf-8"))
@@ -2772,13 +3446,36 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         responses_dir
                         / f"stage-07-release-output-{index:02d}-{safe_section_id}-expansion-{expansion_round}.codex-log.txt"
                     )
-                    write_text(expansion_prompt_path, expansion_prompt)
-                    exit_code = invoke_codex(root, args.model, expansion_prompt, expansion_output_path, expansion_log_path)
-                    stage_files.extend([expansion_prompt_path, expansion_output_path, expansion_log_path])
-                    if exit_code != 0:
-                        raise HarnessError(
-                            f"stage-07-release-output {section_id} expansion {expansion_round}: "
-                            f"codex exec failed with exit code {exit_code}; see {rel(expansion_log_path, root)}"
+                    if resume_context is not None and expansion_output_path.exists():
+                        require_hash_matched(
+                            expansion_output_path,
+                            root=root,
+                            artifact_hashes=resume_context["artifact_hashes"],
+                            label="resumed expansion output",
+                        )
+                    else:
+                        failed_expansion = resume_context.get("failed_expansion") if resume_context else None
+                        is_resumed_failed_expansion = (
+                            isinstance(failed_expansion, dict)
+                            and failed_expansion.get("section_id") == section_id
+                            and failed_expansion.get("round") == expansion_round
+                        )
+                        first_attempt = 2 if is_resumed_failed_expansion else 1
+                        expansion_output_path = invoke_expansion_with_transport_policy(
+                            root=root,
+                            model=args.model,
+                            prompt=expansion_prompt,
+                            base_prompt_path=expansion_prompt_path,
+                            base_output_path=expansion_output_path,
+                            base_log_path=expansion_log_path,
+                            section_id=section_id,
+                            section_role=section_role,
+                            expansion_round=expansion_round,
+                            first_attempt=first_attempt,
+                            retry_rounds=args.transport_retry_rounds,
+                            attempts=transport_attempts,
+                            attempts_record_path=transport_attempts_record_path,
+                            stage_files=stage_files,
                         )
                     if not expansion_output_path.exists() or expansion_output_path.stat().st_size == 0:
                         raise HarnessError(
@@ -2791,17 +3488,19 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                             f"stage-07-release-output {section_id} expansion {expansion_round}: "
                             "expansion output was empty"
                         )
-                    separator = "\n" if current_text.endswith("\n") else "\n\n"
-                    write_text(section_output_path, current_text + separator + expansion_text + "\n")
-                    expansion_records.append(
-                        {
-                            "section_id": section_id,
-                            "role": section_role,
-                            "round": expansion_round,
-                            "path": str(expansion_output_path),
-                            "sha256": sha256_file(expansion_output_path),
-                        }
-                    )
+                    if str(expansion_output_path.resolve()) not in expansion_record_paths:
+                        separator = "\n" if current_text.endswith("\n") else "\n\n"
+                        write_text(section_output_path, current_text + separator + expansion_text + "\n")
+                        expansion_records.append(
+                            {
+                                "section_id": section_id,
+                                "role": section_role,
+                                "round": expansion_round,
+                                "path": str(expansion_output_path),
+                                "sha256": sha256_file(expansion_output_path),
+                            }
+                        )
+                        expansion_record_paths.add(str(expansion_output_path.resolve()))
                 section_entries.append(
                     {
                         "id": section_id,
@@ -2811,6 +3510,18 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     }
                 )
             assembly_manifest_path = run_dir / "stage-07-output-assembly.manifest.json"
+            transport_resume_payload = None
+            if resume_context is not None:
+                transport_resume_payload = {
+                    "schema": TRANSPORT_RESUME_SCHEMA,
+                    "resumed": True,
+                    "source_run_dir": resume_context["run_dir"],
+                    "hash_record": resume_context["hash_record"],
+                    "failure_record": resume_context["failure_record"],
+                    "failed_expansion": resume_context["failed_expansion"],
+                    "attempts_record": rel(transport_attempts_record_path, assembly_manifest_path.parent),
+                    "attempts": transport_attempts,
+                }
             write_compiled_release_manifest(
                 root=root,
                 manifest_path=assembly_manifest_path,
@@ -2837,6 +3548,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 }
                 if args.section_expansion_rounds or expansion_records
                 else None,
+                transport_resume=transport_resume_payload,
             )
             stage_files.append(assembly_manifest_path)
             assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)
@@ -3011,6 +3723,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--release-output-mode", choices=sorted(RELEASE_OUTPUT_MODE_ALIASES), default="single-output")
     parser.add_argument("--target-output-kb", type=int, default=0)
     parser.add_argument("--section-expansion-rounds", type=int, default=0)
+    parser.add_argument("--transport-retry-rounds", type=int, default=0)
+    parser.add_argument("--resume-run-dir", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -3024,8 +3738,19 @@ def main() -> int:
         )
     if args.section_expansion_rounds < 0:
         raise HarnessError("--section-expansion-rounds must be a non-negative integer")
+    if args.transport_retry_rounds < 0:
+        raise HarnessError("--transport-retry-rounds must be a non-negative integer")
     if args.self_test:
         return run_self_test(root)
+    if args.resume_run_dir is not None:
+        resume_run_dir = resolve_under_root(root, args.resume_run_dir, "Resume run directory")
+        if args.run_dir is None:
+            args.run_dir = resume_run_dir
+        else:
+            run_dir = resolve_under_root(root, args.run_dir, "Run directory")
+            if run_dir != resume_run_dir:
+                raise HarnessError("--resume-run-dir and --run-dir must identify the same directory")
+            args.run_dir = run_dir
     if args.run_dir is None:
         timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
         args.run_dir = root / ".daee" / "staged-current-skill-smokes" / f"{timestamp}-{args.case_name}"
