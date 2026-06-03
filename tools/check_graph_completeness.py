@@ -294,11 +294,10 @@ def section_after_heading(text: str, heading: str) -> str:
 
 
 def restoration_orientation_present(text: str) -> bool:
-    public_text = public_execution_text(text)
     surface = "\n".join(
         (
-            section_after_heading(public_text, "Restorative Response"),
-            section_after_heading(public_text, "Closing Formulation"),
+            section_after_heading(text, "Restorative Response"),
+            section_after_heading(text, "Closing Formulation"),
         )
     )
     return bool(FITRAH_ORIENTATION_RE.search(surface) and AQL_ORIENTATION_RE.search(surface))

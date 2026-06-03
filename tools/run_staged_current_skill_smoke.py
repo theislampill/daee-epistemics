@@ -1245,15 +1245,24 @@ def stage07_act_contract_guidance(
             "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
+            "- After the submove block(s), emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...`; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "Required submove block skeletons:",
         ]
     )
+    landing_lines: list[str] = []
+    seen_landing_targets: set[str] = set()
     for ref in assigned_body_refs:
         detail = dict(act_details[ref])
         mirror = owner_details.get(ref, {})
         if isinstance(mirror.get("burden_id"), str) and mirror["burden_id"]:
             detail["burden_id"] = str(mirror["burden_id"])
         burden_id = detail["burden_id"] or canonical_burden_id(ref.split("B", 1)[0] + "B")
+        if burden_id and burden_id not in seen_landing_targets:
+            seen_landing_targets.add(burden_id)
+            landing_lines.append(
+                f"  Land({burden_id}): summarize the cumulative state delta from the visible submove block(s); "
+                f"use `HOLD({burden_id}):` instead if the burden is not landed."
+            )
         lines.extend(
             [
                 f"- {ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']}",
@@ -1264,6 +1273,8 @@ def stage07_act_contract_guidance(
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
         )
+    if landing_lines:
+        lines.extend(["Required standalone landing lines for this ACT slice:", *landing_lines])
     return "\n".join(lines)
 
 
@@ -3349,6 +3360,7 @@ def run_self_test(root: Path) -> int:
         "Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`",
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
         "Contribution-to-Land(B1)",
+        "Land(B1): summarize the cumulative state delta from the visible submove block(s)",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
