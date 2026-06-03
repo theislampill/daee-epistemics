@@ -403,6 +403,21 @@ def canonicalize_owner_activation_ordering_roles(field_witness: dict[str, Any]) 
     return inserted
 
 
+def canonicalize_formal_reread_curl_states(field_witness: dict[str, Any]) -> int:
+    states = field_witness.get("formal_reread_states")
+    if not isinstance(states, list):
+        return 0
+
+    normalized = 0
+    for state in states:
+        if not isinstance(state, dict):
+            continue
+        if state.get("curl_state") is None and "curl_state" in state:
+            state["curl_state"] = "null"
+            normalized += 1
+    return normalized
+
+
 def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] | None]:
     label = FIELD_WITNESS_LABEL_RE.search(text)
     if label is None:
@@ -419,6 +434,7 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
     if field_witness is None:
         return text, None
     roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
+    null_curl_states = canonicalize_formal_reread_curl_states(field_witness)
     event: dict[str, Any] = {}
     if field_witness.get("owner_activation_ordering") is None:
         ordering = derive_owner_activation_ordering(field_witness)
@@ -428,6 +444,8 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
             event["required_before_count"] = len(ordering["required_before"])
     if roles_inserted:
         event["inserted_owner_activation_ordering_roles"] = roles_inserted
+    if null_curl_states:
+        event["normalized_formal_reread_null_curl_states"] = null_curl_states
     if not event:
         return text, None
     replacement = json.dumps(payload, indent=2, ensure_ascii=False)
@@ -1508,6 +1526,101 @@ def run_self_test(root: Path) -> int:
         if isinstance(event, dict)
     ):
         raise AssemblyError("self-test preplanned owner activation ordering role metadata missing")
+
+    wide_null_curl_states = []
+    wide_mrp_resultants = []
+    for number in range(1, 7):
+        source = f"B{number}"
+        if number < 5:
+            target = f"B{number + 1}"
+            result_type = "held_burden_activation"
+            graph = f"{source} -> {target}"
+            route = "RECURSE"
+            gradient = f"already-held {target} from Initial burden set / B_LA after R(H,Delta)."
+            state_extra = f',\n      "next_burden": "{target}",\n      "owner_route": ["held"]'
+        elif number == 5:
+            target = "B6"
+            result_type = "generated_burden_instantiation"
+            graph = "B5 -> B6"
+            route = "RECURSE"
+            gradient = "newly generated B6 absent from B_LA after Delta B5."
+            state_extra = ',\n      "next_burden": "B6",\n      "owner_route": ["generated"],\n      "generated_by": "MRP(B5)"'
+        else:
+            result_type = "no_new_resultant"
+            graph = "none"
+            route = "STOP"
+            gradient = "STOP row is bounded; HOLD/PARTIAL accounting keeps B6 carried-RECURSE."
+            state_extra = (
+                ',\n      "no_new_resultant_proof": {'
+                '"escape_routes_checked": [], '
+                '"proved": false, '
+                '"basis": "B6 remains carried-RECURSE; no-new-resultant STOP is not licensed for coverage completion."'
+                "}"
+            )
+        finding = "stable" if graph == "none" else "genuine-dependent"
+        wide_mrp_resultants.append(
+            f'    {{"source": "{source}", "type": "{result_type}", "finding": "{finding}", "graph": "{graph}", "route": "{route}"}}'
+        )
+        terminal_state = "carried-RECURSE" if number == 6 else "landed"
+        wide_null_curl_states.append(
+            "    {\n"
+            f'      "source_burden": "{source}",\n'
+            f'      "prior_land": "Land({source}): terminal state {terminal_state}.",\n'
+            f'      "delta": "Delta {source}: terminal state {terminal_state}; MRP route result type {result_type}.",\n'
+            '      "reread": "R(H,Delta)",\n'
+            f'      "route_gradient": "{gradient}",\n'
+            '      "divergence_state": "neutral",\n'
+            '      "curl_state": null,\n'
+            f'      "route_result_type": "{result_type}",\n'
+            f'      "mrp_resultant": "{finding} -> graph {graph}; route {route}",\n'
+            f'      "graph_delta": "{graph}",\n'
+            '      "preemption_basis": "graph-bound MRP route recorded",\n'
+            f'      "route": "{route}"'
+            f"{state_extra}\n"
+            "    }"
+        )
+    wide_null_curl_field_witness = (
+        "Closure/Reconstruction Witness\n"
+        "field_witness\n"
+        "{\n"
+        '  "B_LA": ["B1", "B2", "B3", "B4", "B5"],\n'
+        '  "B_MRP": ["B6"],\n'
+        '  "B_total": ["B1", "B2", "B3", "B4", "B5", "B6"],\n'
+        '  "mrp_resultants": [\n'
+        + ",\n".join(wide_mrp_resultants)
+        + "\n  ],\n"
+        '  "formal_reread_states": [\n'
+        + ",\n".join(wide_null_curl_states)
+        + "\n  ],\n"
+        '  "coverage_proof": {"divergence_check": "non-neutral", "curl_check": "unresolved", "coverage_complete": false},\n'
+        '  "normalized_activation_record": {"n_frame": "self-test", "live_registers": ["xi"], "burden_floor": ["B1", "B2", "B3", "B4", "B5"], "per_burden": []}\n'
+        "}\n"
+    )
+    wide_null_curl_manifest = manifest_for_sections(
+        base_dir / "valid-wide-null-curl-normalization",
+        case_id="valid-wide-null-curl-normalization",
+        source_input="valid-wide-null-curl-normalization/input.md",
+        section_specs=[*small_sections()[:6], ("field-witness", "field_witness_nar", wide_null_curl_field_witness)],
+    )
+    wide_null_curl_record = assemble_manifest(wide_null_curl_manifest, root=root)
+    wide_null_curl_output = (
+        base_dir / "valid-wide-null-curl-normalization" / "output.md"
+    ).read_text(encoding="utf-8")
+    if '"curl_state": null' in wide_null_curl_output:
+        raise AssemblyError("self-test wide null curl normalization left JSON null curl_state")
+    if wide_null_curl_output.count('"curl_state": "null"') != 6:
+        raise AssemblyError("self-test wide null curl normalization did not preserve six parser-stable curl_state values")
+    wide_null_curl_events = (
+        (wide_null_curl_record.get("canonical_scaffold") or {}).get("events", [])
+        if isinstance(wide_null_curl_record.get("canonical_scaffold"), dict)
+        else []
+    )
+    if not any(
+        event.get("normalized_formal_reread_null_curl_states") == 6
+        for event in wide_null_curl_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test wide null curl normalization metadata missing")
 
     graph_alias_manifest = manifest_for_sections(
         base_dir / "valid-public-graph-alias-canonicalization",
