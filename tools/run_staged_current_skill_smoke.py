@@ -1061,6 +1061,124 @@ def stage07_dependency_graph_scaffold(
     return " || ".join(f"{burden} (root)" for burden in b_total), roots, parallel_groups
 
 
+def stage07_route_target_from_graph(value: Any) -> str:
+    match = re.search(r"\bB[1-9][0-9]*\s*(?:->|→)\s*(B[1-9][0-9]*)\b", str(value or ""))
+    return match.group(1) if match else ""
+
+
+def stage07_stop_proof(source: str) -> dict[str, Any]:
+    return {
+        "escape_routes_checked": [
+            {
+                "type": "closure-boundary-immunity",
+                "live": False,
+                "basis": f"MRP({source}) reported no new closure-boundary-immunity route after R(H,Delta).",
+            },
+            {
+                "type": "proof-carousel",
+                "live": False,
+                "basis": f"MRP({source}) reported no proof-carousel route after the terminal reread.",
+            },
+            {
+                "type": "total-system-exhaustion",
+                "live": False,
+                "basis": "The bounded Stage 07 reply licenses only this scoped terminal state, not a global total-system proof.",
+            },
+            {
+                "type": "doubt-churn",
+                "live": False,
+                "basis": f"MRP({source}) reports neutral divergence and null curl at STOP.",
+            },
+            {
+                "type": "moral-tribunal",
+                "live": False,
+                "basis": f"MRP({source}) did not expose a live moral-tribunal route.",
+            },
+            {
+                "type": "authority-order-recoil",
+                "live": False,
+                "basis": f"MRP({source}) did not expose a live authority-order recoil route.",
+            },
+            {
+                "type": "hidden-framework-recoil",
+                "live": False,
+                "basis": f"MRP({source}) did not expose a live hidden-framework recoil route.",
+            },
+            {
+                "type": "restoration-recoil",
+                "subtype": "scope-protest",
+                "live": False,
+                "basis": f"MRP({source}) did not expose a live restoration-recoil route.",
+            },
+        ],
+        "field_state_at_stop": {
+            "divergence": "neutral",
+            "curl": "null",
+            "b_live": "empty",
+            "kappa_residual": 0,
+        },
+        "stop_licensed": True,
+    }
+
+
+def stage07_formal_reread_states(
+    mrp_resultants: list[dict[str, str]],
+    terminal_states: dict[str, str],
+) -> list[dict[str, Any]]:
+    states: list[dict[str, Any]] = []
+    for row in mrp_resultants:
+        source = row.get("source") or ""
+        if not source:
+            continue
+        route_type = row.get("type") or "no_new_resultant"
+        route = row.get("route") or "STOP"
+        graph = row.get("graph") or "none"
+        terminal_state = terminal_states.get(source, "landed")
+        state: dict[str, Any] = {
+            "source_burden": source,
+            "prior_land": f"Land({source}): terminal state {terminal_state}.",
+            "delta": f"Delta {source}: terminal state {terminal_state}; MRP route result type {route_type}.",
+            "reread": "R(H,Delta)",
+            "divergence_state": "neutral",
+            "curl_state": "null",
+            "route_result_type": route_type,
+            "mrp_resultant": f"{row.get('finding') or 'stable'} -> graph {graph}; route {route}",
+            "graph_delta": graph,
+            "preemption_basis": (
+                "terminal states landed; B_MRP empty; no generated burden remains"
+                if str(graph).strip().lower() == "none"
+                else "graph-bound MRP route recorded"
+            ),
+            "route": route,
+        }
+        target = stage07_route_target_from_graph(graph)
+        if route_type == "held_burden_activation":
+            state["route_gradient"] = (
+                f"already-held {target} from Initial burden set / B_LA after R(H,Delta)."
+                if target
+                else f"held/B_LA route after {source}."
+            )
+            if target:
+                state["next_burden"] = target
+            state["owner_route"] = ["held"]
+        elif route_type == "generated_burden_instantiation":
+            state["route_gradient"] = (
+                f"newly generated {target} absent from B_LA after Delta {source}."
+                if target
+                else f"generated/new MRP route absent from B_LA after Delta {source}."
+            )
+            if target:
+                state["next_burden"] = target
+            state["owner_route"] = ["generated"]
+            state["generated_by"] = f"MRP({source})"
+        else:
+            state["route_gradient"] = f"STOP after {source}; no live pressure remains."
+            if route_type in {"no_new_resultant", "none", "stable"} or str(route).upper() == "STOP":
+                state["no_new_resultant_proof"] = stage07_stop_proof(source)
+        states.append(state)
+    return states
+
+
 def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
     stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
@@ -1228,6 +1346,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "route": final_route,
             }
         )
+    formal_reread_states = stage07_formal_reread_states(mrp_resultants, terminal_states)
     visible_lines = [
         f"Initial burden set: [{', '.join(burden_floor)}]",
         f"B_LA = {{{', '.join(burden_floor)}}}",
@@ -1244,6 +1363,11 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         *[
             f"MRP({row['source']}): type={row['type']}; finding={row['finding']}; graph={row['graph']}; route={row['route']}"
             for row in mrp_resultants
+        ],
+        "Formal reread states:",
+        *[
+            f"formal_reread_state({row['source_burden']}): reread={row['reread']}; type={row['route_result_type']}; graph={row['graph_delta']}; route={row['route']}"
+            for row in formal_reread_states
         ],
         "del-dot B: neutral",
         "del-cross kappa: null",
@@ -1266,6 +1390,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         ],
         "edges": edges,
         "mrp_resultants": mrp_resultants,
+        "formal_reread_states": formal_reread_states,
         "field_diagnostics": {"divergence_check": "neutral", "curl_check": "null"},
         "terminal_states": terminal_states,
         "closure": {"status": "coverage_complete=true"},
@@ -1311,6 +1436,8 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, not one summary row per burden.",
         "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
+        "- `formal_reread_states[]` is required; emit exactly one row for every `mrp_resultants[]` source and keep `source_burden`, `route_result_type`, `graph_delta`, and `route` aligned with that MRP row.",
+        "- Terminal `STOP` / `no_new_resultant` rows must set `reread` to `R(H,Delta)`, `divergence_state` to `neutral`, `curl_state` to `null`, `graph_delta` to `none`, omit `next_burden`, and include `no_new_resultant_proof.escape_routes_checked` as a JSON list.",
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
@@ -3247,8 +3374,16 @@ def run_self_test(root: Path) -> int:
         "`coverage_proof.dependency_graph` is required",
         "Each `nodes[]` burden payload must include `register_types`",
         "one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror",
+        "`formal_reread_states[]` is required",
+        "Terminal `STOP` / `no_new_resultant` rows must set",
         '"B_MRP": []',
         '"dependency_graph"',
+        '"formal_reread_states"',
+        '"source_burden": "B1"',
+        '"route_result_type": "no_new_resultant"',
+        '"graph_delta": "none"',
+        '"route": "STOP"',
+        '"no_new_resultant_proof"',
         '"register_types": [\n        "xi",\n        "kappa"\n      ]',
         '"target": "B1"',
         '"generation_depth": 0',
