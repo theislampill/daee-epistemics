@@ -1050,6 +1050,32 @@ def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[st
     ]
 
 
+def partition_body_refs(body_refs: list[str], section_ids: list[str]) -> list[dict[str, Any]]:
+    if not section_ids:
+        return []
+    assignments = [{"section_id": section_id, "body_refs": []} for section_id in section_ids]
+    for index, body_ref in enumerate(body_refs):
+        assignments[index % len(assignments)]["body_refs"].append(body_ref)
+    return assignments
+
+
+def compiled_act_partition(
+    previous_stages: list[dict[str, Any]],
+    section_plan: list[tuple[str, str]],
+) -> dict[str, Any]:
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    body_refs = list_field(stage04, "act_body_refs")
+    act_section_ids = [section_id for section_id, role in section_plan if role == "layer_b_act"]
+    if not body_refs:
+        raise HarnessError("compiled Stage 07 ACT partition requires Stage 04 act_body_refs")
+    return {
+        "schema": staged_output.ACT_PARTITION_SCHEMA,
+        "assignments": partition_body_refs(body_refs, act_section_ids),
+        "no_duplicate_body_refs": True,
+        "all_assigned_refs_present": True,
+    }
+
+
 def release_section_prompt(
     *,
     root: Path,
@@ -1064,6 +1090,7 @@ def release_section_prompt(
     section_number: int,
     section_count: int,
     target_output_kb: int | None,
+    assigned_body_refs: list[str] | None = None,
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     target = max(0, int(target_output_kb or 0))
@@ -1084,7 +1111,8 @@ def release_section_prompt(
             "Write only this bounded Layer B / ACT section. Include a governed Layer B header, "
             "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
             "consistent with Stage 04. Expand the operation bodies instead of summarizing them. "
-            "Do not include MRP, field_witness, Restorative Response, or Closing Formulation."
+            "Do not include MRP, field_witness, Restorative Response, or Closing Formulation. "
+            "This section is an ACT partition slice, not the whole Layer B body."
         ),
         "mrp_reread_terminal": (
             "Write only the MRP/reread/terminal-state section consistent with Stage 05. It must include "
@@ -1098,7 +1126,13 @@ def release_section_prompt(
             "with `B_LA`, `B_MRP`, `B_total`, `coverage_proof`, `owner_activations`, "
             "`normalized_activation_record`, and any generated-burden/formal-reread mirrors required "
             "by Stage 06. The visible divergence/curl statuses must match "
-            "`field_witness.coverage_proof.divergence_check` and `.curl_check`. Do not use prose-only "
+            "`field_witness.coverage_proof.divergence_check` and `.curl_check`. Every visible ACT row "
+            "must have exactly one `field_witness.owner_activations[]` mirror with `body_ref`, `owner`, "
+            "`owner_id`, `operation`, `pressure`, `delta`, `delta_result`, `land`, `land_target`, "
+            "`terminal_state`, and `mrp_route_result_type` when those values are visible or validated "
+            "upstream. Copy exact ACT-visible owner/operation/pressure/delta/Land values; do not invent "
+            "missing proof values and do not add model-authored verification/self-claim fields. Sparse "
+            "`owner_activations` are invalid for compiled Stage 07 proof output. Do not use prose-only "
             "`Field Witness` or prose-only `Normalized Activation Record` labels."
         ),
         "restorative_response": (
@@ -1121,6 +1155,18 @@ def release_section_prompt(
             "help the assembled output meet the floor. The harness will fail the assembly if the "
             "compiled output is under target.\n"
         )
+    partition_line = ""
+    if section_role == "layer_b_act":
+        assigned = assigned_body_refs or []
+        assigned_json = json.dumps(assigned, ensure_ascii=False)
+        partition_line = f"""
+ACT partition contract for this section:
+- Assigned Stage 04 ACT body_refs: {assigned_json}
+- Emit ACT rows only for those exact `body_ref=` tokens.
+- Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state.
+- Every assigned body_ref must appear exactly once in this section.
+- The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
+"""
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing one bounded section of stage-07-release-output for a staged
@@ -1156,6 +1202,7 @@ Validated compact stage state:
 
 Section task:
 {role_guidance[section_role]}
+{partition_line}
 
 Return only the public governed-output text for this section. Do not wrap it in
 JSON or code fences. Do not mention that this is a section unless the normal
@@ -1172,31 +1219,32 @@ def write_compiled_release_manifest(
     section_entries: list[dict[str, str]],
     output_path: Path,
     target_output_kb: int = 0,
+    act_partition: dict[str, Any] | None = None,
 ) -> None:
     manifest_dir = manifest_path.parent
-    write_json(
-        manifest_path,
-        {
-            "schema": staged_output.ASSEMBLY_SCHEMA,
-            "case_id": case_name,
-            "source_input": rel(raw_input_path, root),
-            "sections": [
-                {
-                    "id": entry["id"],
-                    "path": rel(Path(entry["path"]), manifest_dir),
-                    "sha256": entry["sha256"],
-                    "role": entry["role"],
-                }
-                for entry in section_entries
-            ],
-            "output": {"path": rel(output_path, manifest_dir), "target_output_kb": int(target_output_kb or 0)},
-            "non_claims": {
-                "not_release_provenance": True,
-                "not_model_behavior_by_itself": True,
-                "not_sidecar_proof": True,
-            },
+    payload: dict[str, Any] = {
+        "schema": staged_output.ASSEMBLY_SCHEMA,
+        "case_id": case_name,
+        "source_input": rel(raw_input_path, root),
+        "sections": [
+            {
+                "id": entry["id"],
+                "path": rel(Path(entry["path"]), manifest_dir),
+                "sha256": entry["sha256"],
+                "role": entry["role"],
+            }
+            for entry in section_entries
+        ],
+        "output": {"path": rel(output_path, manifest_dir), "target_output_kb": int(target_output_kb or 0)},
+        "non_claims": {
+            "not_release_provenance": True,
+            "not_model_behavior_by_itself": True,
+            "not_sidecar_proof": True,
         },
-    )
+    }
+    if act_partition is not None:
+        payload["act_partition"] = act_partition
+    write_json(manifest_path, payload)
 
 
 def split_text_for_compiled_self_test(text: str) -> list[tuple[str, str, str]]:
@@ -1629,6 +1677,21 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    partition_stage04 = dict(normalized_stage04)
+    partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂"]
+    partition_plan = compiled_release_section_plan(70)
+    partition = compiled_act_partition([partition_stage04], partition_plan)
+    assigned_once = [
+        ref
+        for assignment in partition["assignments"]
+        for ref in assignment["body_refs"]
+    ]
+    if sorted(assigned_once) != sorted(partition_stage04["act_body_refs"]):
+        raise HarnessError("Self-test failed to assign every Stage 04 ACT body_ref exactly once")
+    if len(assigned_once) != len(set(assigned_once)):
+        raise HarnessError("Self-test produced duplicate compiled ACT partition assignments")
+    if any(not assignment["body_refs"] for assignment in partition["assignments"]):
+        raise HarnessError("Self-test compiled ACT partition left an ACT section empty for this fixture")
     normalized_stage04_rich_burdens = normalized_stage(
         "stage-04-burden-execution-act",
         {
@@ -2486,6 +2549,12 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         assembly_record: dict[str, Any] | None = None
         if release_output_mode == "compiled-output":
             section_plan = compiled_release_section_plan(args.target_output_kb)
+            act_partition = compiled_act_partition(stages, section_plan)
+            assigned_refs_by_section = {
+                str(item["section_id"]): list(item["body_refs"])
+                for item in act_partition["assignments"]
+                if isinstance(item, dict)
+            }
             sections_dir = run_dir / "release-sections"
             sections_dir.mkdir(parents=True, exist_ok=True)
             section_entries: list[dict[str, str]] = []
@@ -2503,6 +2572,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     section_number=index,
                     section_count=len(section_plan),
                     target_output_kb=args.target_output_kb,
+                    assigned_body_refs=assigned_refs_by_section.get(section_id),
                 )
                 safe_section_id = section_id.replace("_", "-")
                 section_prompt_path = prompts_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.prompt.md"
@@ -2535,6 +2605,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 section_entries=section_entries,
                 output_path=output_path,
                 target_output_kb=args.target_output_kb,
+                act_partition=act_partition,
             )
             stage_files.append(assembly_manifest_path)
             assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)

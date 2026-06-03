@@ -28,6 +28,7 @@ if hasattr(sys.stderr, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 ASSEMBLY_SCHEMA = "staged-governed-output-assembly-v1"
 HASH_RECORD_SCHEMA = "staged-governed-output-assembly-hashes-v1"
+ACT_PARTITION_SCHEMA = "staged-act-partition-v1"
 REQUIRED_NON_CLAIMS = {
     "not_release_provenance",
     "not_model_behavior_by_itself",
@@ -120,6 +121,7 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Restorative Response", re.compile(r"(?im)^\s*(?:#+\s*)?Restorative Response\b")),
     ("Closing Formulation", re.compile(r"(?im)^\s*(?:#+\s*)?Closing Formulation\b")),
 ]
+BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 
 
 class AssemblyError(Exception):
@@ -233,6 +235,108 @@ def validate_non_claims(non_claims: Any) -> list[str]:
     ]
 
 
+def clean_body_ref(value: str) -> str:
+    return value.strip().rstrip(".,;")
+
+
+def body_refs_in_act_section(text: str) -> list[str]:
+    refs: list[str] = []
+    for match in BODY_REF_TOKEN_RE.finditer(text):
+        ref = clean_body_ref(match.group(1))
+        if ref:
+            refs.append(ref)
+    return refs
+
+
+def act_partition_errors(
+    partition: Any,
+    *,
+    section_text_by_id: dict[str, str],
+    section_role_by_id: dict[str, str],
+) -> list[str]:
+    if partition is None:
+        return []
+    if not isinstance(partition, dict):
+        return ["act_partition: must be an object"]
+
+    errors: list[str] = []
+    if partition.get("schema") != ACT_PARTITION_SCHEMA:
+        errors.append(f"act_partition.schema: must be {ACT_PARTITION_SCHEMA!r}")
+    if partition.get("no_duplicate_body_refs") is not True:
+        errors.append("act_partition.no_duplicate_body_refs: must be true")
+    if partition.get("all_assigned_refs_present") is not True:
+        errors.append("act_partition.all_assigned_refs_present: must be true")
+
+    raw_assignments = partition.get("assignments")
+    if not isinstance(raw_assignments, list) or not raw_assignments:
+        return errors + ["act_partition.assignments: must be a non-empty list"]
+
+    assignments: dict[str, list[str]] = {}
+    assigned_owner: dict[str, str] = {}
+    for index, raw in enumerate(raw_assignments):
+        label = f"act_partition.assignments[{index}]"
+        if not isinstance(raw, dict):
+            errors.append(f"{label}: must be an object")
+            continue
+        section_id = raw.get("section_id")
+        if not isinstance(section_id, str) or not section_id.strip():
+            errors.append(f"{label}.section_id: must be a non-empty string")
+            continue
+        section_id = section_id.strip()
+        if section_id not in section_text_by_id:
+            errors.append(f"{label}.section_id: unknown section {section_id!r}")
+        elif section_role_by_id.get(section_id) != "layer_b_act":
+            errors.append(f"{label}.section_id: section {section_id!r} is not a layer_b_act section")
+
+        body_refs = raw.get("body_refs")
+        if not isinstance(body_refs, list) or not all(isinstance(item, str) and item.strip() for item in body_refs):
+            errors.append(f"{label}.body_refs: must be a list of non-empty strings")
+            continue
+        cleaned_refs = [clean_body_ref(item) for item in body_refs]
+        if len(cleaned_refs) != len(set(cleaned_refs)):
+            errors.append(f"{label}.body_refs: duplicate body_ref assignment inside section")
+        assignments[section_id] = cleaned_refs
+        for ref in cleaned_refs:
+            previous = assigned_owner.get(ref)
+            if previous and previous != section_id:
+                errors.append(f"act_partition.assignments: body_ref {ref!r} assigned to both {previous!r} and {section_id!r}")
+            assigned_owner[ref] = section_id
+
+    layer_b_sections = [section_id for section_id, role in section_role_by_id.items() if role == "layer_b_act"]
+    for section_id in layer_b_sections:
+        if section_id not in assignments:
+            errors.append(f"act_partition.assignments: missing layer_b_act section {section_id!r}")
+
+    visible_refs_by_section: dict[str, list[str]] = {}
+    all_visible_refs: list[str] = []
+    for section_id in layer_b_sections:
+        visible_refs = body_refs_in_act_section(section_text_by_id.get(section_id, ""))
+        visible_refs_by_section[section_id] = visible_refs
+        all_visible_refs.extend(visible_refs)
+        assigned = set(assignments.get(section_id, []))
+        extra = sorted({ref for ref in visible_refs if ref not in assigned})
+        if extra:
+            errors.append(f"act_partition.{section_id}: unassigned body_ref(s) emitted: {extra}")
+        missing = sorted(ref for ref in assignments.get(section_id, []) if ref not in visible_refs)
+        if missing:
+            errors.append(f"act_partition.{section_id}: assigned body_ref(s) missing from section: {missing}")
+        if len(visible_refs) != len(set(visible_refs)):
+            errors.append(f"act_partition.{section_id}: duplicate visible ACT body_ref inside section")
+
+    if len(all_visible_refs) != len(set(all_visible_refs)):
+        duplicates = sorted({ref for ref in all_visible_refs if all_visible_refs.count(ref) > 1})
+        errors.append(f"act_partition: duplicate visible ACT body_ref(s) across sections: {duplicates}")
+
+    assigned_refs = set(assigned_owner)
+    unassigned_visible = sorted(ref for ref in set(all_visible_refs) if ref not in assigned_refs)
+    if unassigned_visible:
+        errors.append(f"act_partition: visible ACT body_ref(s) not assigned: {unassigned_visible}")
+    missing_visible = sorted(ref for ref in assigned_refs if ref not in set(all_visible_refs))
+    if missing_visible:
+        errors.append(f"act_partition: assigned body_ref(s) not present in visible ACT output: {missing_visible}")
+    return errors
+
+
 def section_payload_errors(section: Any, index: int) -> list[str]:
     label = f"sections[{index}]"
     if not isinstance(section, dict):
@@ -287,6 +391,8 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
 
     section_texts: list[str] = []
     section_records: list[dict[str, Any]] = []
+    section_text_by_id: dict[str, str] = {}
+    section_role_by_id: dict[str, str] = {}
     seen_ids: set[str] = set()
     role_counts: dict[str, int] = {role: 0 for role in ROLE_ORDER}
     previous_role_index = -1
@@ -324,6 +430,8 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         text = section_path.read_text(encoding="utf-8", errors="replace")
         errors.extend(forbidden_text_errors(text, label))
         section_texts.append(text)
+        section_text_by_id[section_id] = text
+        section_role_by_id[section_id] = role
         section_records.append(
             {
                 "id": section_id,
@@ -350,6 +458,13 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             assembled += "\n"
     errors.extend(forbidden_text_errors(assembled, "assembled output"))
     errors.extend(required_surface_errors(assembled))
+    errors.extend(
+        act_partition_errors(
+            payload.get("act_partition"),
+            section_text_by_id=section_text_by_id,
+            section_role_by_id=section_role_by_id,
+        )
+    )
     assembled_bytes = len(assembled.encode("utf-8"))
     if target_min_bytes and assembled_bytes < target_min_bytes and not allow_under_target:
         errors.append(
@@ -380,6 +495,8 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         "sections": section_records,
         "non_claims": {key: payload["non_claims"].get(key) for key in sorted(REQUIRED_NON_CLAIMS)},
     }
+    if payload.get("act_partition") is not None:
+        record["act_partition"] = payload["act_partition"]
     write_json(hash_record_path, record)
     record["hash_record"] = {"path": rel(hash_record_path, root), "sha256": sha256_file(hash_record_path)}
     write_json(hash_record_path, record)
@@ -394,6 +511,7 @@ def manifest_for_sections(
     section_specs: list[tuple[str, str, str]],
     output_name: str = "output.md",
     target_output_kb: int = 0,
+    act_partition: dict[str, Any] | None = None,
 ) -> Path:
     sections_dir = case_dir / "sections"
     sections_dir.mkdir(parents=True, exist_ok=True)
@@ -410,21 +528,21 @@ def manifest_for_sections(
             }
         )
     manifest_path = case_dir / "assembly.manifest.json"
-    write_json(
-        manifest_path,
-        {
-            "schema": ASSEMBLY_SCHEMA,
-            "case_id": case_id,
-            "source_input": source_input,
-            "sections": sections_payload,
-            "output": {"path": output_name, "target_output_kb": target_output_kb},
-            "non_claims": {
-                "not_release_provenance": True,
-                "not_model_behavior_by_itself": True,
-                "not_sidecar_proof": True,
-            },
+    payload: dict[str, Any] = {
+        "schema": ASSEMBLY_SCHEMA,
+        "case_id": case_id,
+        "source_input": source_input,
+        "sections": sections_payload,
+        "output": {"path": output_name, "target_output_kb": target_output_kb},
+        "non_claims": {
+            "not_release_provenance": True,
+            "not_model_behavior_by_itself": True,
+            "not_sidecar_proof": True,
         },
-    )
+    }
+    if act_partition is not None:
+        payload["act_partition"] = act_partition
+    write_json(manifest_path, payload)
     return manifest_path
 
 
@@ -508,6 +626,31 @@ def replace_section_text(payload: dict[str, Any], case_dir: Path, index: int, te
     payload["sections"][index]["sha256"] = sha256_file(path)
 
 
+def act_partition_payload(assignments: list[tuple[str, list[str]]]) -> dict[str, Any]:
+    return {
+        "schema": ACT_PARTITION_SCHEMA,
+        "assignments": [
+            {"section_id": section_id, "body_refs": body_refs}
+            for section_id, body_refs in assignments
+        ],
+        "no_duplicate_body_refs": True,
+        "all_assigned_refs_present": True,
+    }
+
+
+def act_section(section_id: str, *body_refs: str) -> tuple[str, str, str]:
+    rows = [
+        f"⟦ACT {body_ref}[M9.repair] :: π=predicate-transfer :: "
+        f"body_ref={body_ref} :: Δ=ΔB1:predicate-transfer-blocked :: Land(B1)+⟧"
+        for body_ref in body_refs
+    ]
+    return (
+        section_id,
+        "layer_b_act",
+        "Layer B - Bounded Governed Response\nACT records:\n" + "\n".join(rows) + "\nLand(B1): landed.\n",
+    )
+
+
 def run_self_test(root: Path) -> int:
     base_dir = root / ".daee" / "validation" / f"staged-governed-output-assembly-self-test-{uuid.uuid4().hex}"
     base_dir.mkdir(parents=True, exist_ok=True)
@@ -559,6 +702,66 @@ def run_self_test(root: Path) -> int:
     valid_100kb_record = assemble_manifest(valid_100kb_manifest, root=root)
     if valid_100kb_record["output"]["bytes"] < 100 * 1024:
         raise AssemblyError("self-test valid 100KB assembly did not reach 100KB")
+
+    def assemble_partition_case(
+        name: str,
+        act_sections: list[tuple[str, str, str]],
+        assignments: list[tuple[str, list[str]]],
+        *,
+        valid: bool,
+    ) -> None:
+        manifest = manifest_for_sections(
+            base_dir / name,
+            case_id=name,
+            source_input=f"{name}/input.md",
+            section_specs=[*small_sections()[:2], *act_sections, *small_sections()[3:]],
+            act_partition=act_partition_payload(assignments),
+        )
+        try:
+            assemble_manifest(manifest, root=root)
+        except AssemblyError:
+            if valid:
+                raise
+            return
+        if not valid:
+            raise AssemblyError(f"self-test expected invalid ACT partition to fail: {name}")
+
+    assemble_partition_case(
+        "valid-act-partition-disjoint",
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_2")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
+        valid=True,
+    )
+    assemble_partition_case(
+        "valid-act-partition-declared-generated",
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B2_1")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B2_1"])],
+        valid=True,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-duplicate-visible",
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_1")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_1"])],
+        valid=False,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-missing-assigned",
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
+        valid=False,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-unassigned-visible",
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_2")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B2_1"])],
+        valid=False,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-section-emits-all-rows",
+        [act_section("act-body-1", "B1_1", "B1_2"), act_section("act-body-2", "B1_2")],
+        [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
+        valid=False,
+    )
 
     expect_invalid(
         root,
