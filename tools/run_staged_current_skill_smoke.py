@@ -60,6 +60,7 @@ STAGE_ORDER = [
 
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 ACT_ROW_DETAIL_RE = re.compile(
     r"^\s*⟦ACT\s+(?P<body_ref>[^\s\[]+)"
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
@@ -893,6 +894,32 @@ def canonical_burden_id(value: str) -> str:
     return text
 
 
+def public_burden_id(value: str) -> str:
+    burden = canonical_burden_id(str(value or "").strip())
+    if re.fullmatch(r"B[1-9][0-9]*", burden):
+        return f"{burden[1:].translate(ASCII_TO_SUP_DIGITS)}B"
+    return str(value or "").strip()
+
+
+def public_burden_list(values: list[str]) -> str:
+    return ", ".join(public_burden_id(value) for value in values)
+
+
+def public_burden_set(values: list[str]) -> str:
+    return "{" + public_burden_list(values) + "}" if values else "{}"
+
+
+def public_graph_value(value: Any) -> str:
+    rendered = str(value or "")
+    rendered = re.sub(r"\bB[1-9][0-9]*\b", lambda match: public_burden_id(match.group(0)), rendered)
+    return rendered.replace("->", "→")
+
+
+def public_graph_line(b_total: list[str], edges: list[dict[str, str]]) -> str:
+    graph_line, _roots, _parallel_groups = stage07_dependency_graph_scaffold(b_total, edges)
+    return public_graph_value(graph_line)
+
+
 def burden_id_from_land(land: str) -> str:
     match = LAND_TARGET_RE.search(land)
     return canonical_burden_id(match.group("target")) if match else ""
@@ -1287,6 +1314,14 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         if graph != "none"
         else f"plain-gradient points to {final_route} after {final_source}; no live pressure remains."
     )
+    reread_line = (
+        f"R(H,Delta): held routes rechecked: {public_graph_value(graph)}; "
+        f"live remainder: {public_graph_value(stage07_route_target_from_graph(graph) or final_source)}; "
+        f"release/next: {final_route}."
+        if graph != "none"
+        else f"R(H,Delta): held routes rechecked: none; live remainder: no remaining burden; "
+        f"release/next: {final_route} after {public_burden_id(final_source)}."
+    )
     preemption_basis = (
         "terminal states landed; B_MRP empty; no generated burden remains"
         if graph == "none"
@@ -1301,7 +1336,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     visible_lines = [
         "[Mid-Reread Pressure]",
         f"Target: {final_source} / Stage 05 terminal MRP source",
-        "R(H,Delta): reread the landed burden field after the Stage 04 ACT deltas.",
+        reread_line,
         f"Landed delta: {landed_delta}",
         "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency.",
         f"Route-gradient: {route_gradient}",
@@ -1351,10 +1386,10 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
 
     visible_lines = [
         f"Live registers: {', '.join(live_registers)}" if live_registers else "Live registers: none",
-        f"Initial burden set: [{', '.join(burden_floor)}]",
-        f"B_LA = {{{', '.join(burden_floor)}}}",
-        f"B_MRP = {{{', '.join(generated_burdens)}}}" if generated_burdens else "B_MRP = {}",
-        f"B_total = {{{', '.join(b_total)}}} = B_LA union B_MRP",
+        f"Initial burden set: [{public_burden_list(burden_floor)}]",
+        f"𝔅_LA (B_LA) = {public_burden_set(burden_floor)}",
+        f"𝔅_MRP (B_MRP) = {public_burden_set(generated_burdens)}",
+        f"𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {public_burden_set(b_total)}",
         "Layer A burden/register rows:",
         *burden_rows,
     ]
@@ -1364,8 +1399,8 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
         "- Print these checker-owned Layer A lines near the top of the Layer A section before prose expansion:",
         *[f"  {line}" for line in visible_lines],
         "- Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`; prose ledgers may follow only after the exact line exists.",
-        "- `B_LA` must equal the initial burden set; `B_MRP` must contain only Stage 05 generated burdens and must be `{}` when there are none.",
-        "- `B_total` must equal `B_LA` plus `B_MRP` in order and should use burden IDs, not only counts.",
+        "- `𝔅_LA (B_LA)` must equal the initial burden set; `𝔅_MRP (B_MRP)` must contain only Stage 05 generated burdens and must be `{}` when there are none.",
+        "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required exactly as the public total-ledger relation, followed by the concrete public burden set.",
         "- Each Layer A burden/register row must expose the burden ID and its Stage 02 register type(s) so the field witness can prove live-register floor coverage.",
     ]
     return "\n".join(lines)
@@ -1572,21 +1607,21 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             record = generated_record_by_id.get(burden, {})
             source = str(record.get("generated_by") or "MRP(source)")
             reason = str(record.get("reason") or "generated burden is held at this Stage 07 boundary")
-            return f"{burden}: {state} / {source} / no Stage 04 ACT rows / {reason}"
-        return f"{burden}: {state} / ACT owners / landed by visible owner activations"
+            return f"{public_burden_id(burden)}: {state} / {public_graph_value(source)} / no Stage 04 ACT rows / {reason}"
+        return f"{public_burden_id(burden)}: {state} / ACT owners / landed by visible owner activations"
 
     visible_lines = [
-        f"Initial burden set: [{', '.join(burden_floor)}]",
-        f"B_LA = {{{', '.join(burden_floor)}}}",
-        f"B_MRP = {{{', '.join(generated_burdens)}}}" if generated_burdens else "B_MRP = {}",
-        f"B_total = {{{', '.join(b_total)}}} = B_LA union B_MRP",
+        f"Initial burden set: [{public_burden_list(burden_floor)}]",
+        f"𝔅_LA (B_LA) = {public_burden_set(burden_floor)}",
+        f"𝔅_MRP (B_MRP) = {public_burden_set(generated_burdens)}",
+        f"𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {public_burden_set(b_total)}",
         "Burden dependency graph:",
-        graph_line,
+        public_graph_line(b_total, edges),
         "Terminal states:",
         *[terminal_state_line(burden) for burden in b_total],
         "MRP resultants:",
         *[
-            f"MRP({row['source']}): type={row['type']}; finding={row['finding']}; graph={row['graph']}; route={row['route']}"
+            f"MRP({public_burden_id(row['source'])}): type={row['type']}; finding={row['finding']}; graph={public_graph_value(row['graph'])}; route={row['route']}"
             for row in mrp_resultants
         ],
         "Formal reread states:",
@@ -1594,9 +1629,9 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             f"formal_reread_state({row['source_burden']}): reread={row['reread']}; type={row['route_result_type']}; graph={row['graph_delta']}; route={row['route']}"
             for row in formal_reread_states
         ],
-        f"del-dot B: {divergence_status}",
-        f"del-cross kappa: {curl_status}",
-        f"C(PsiN): {closure_status}; runtime execution field remains bounded to the displayed handoff",
+        f"∇·B: {divergence_status} / runtime execution field remains bounded to the displayed handoff",
+        f"∇×κ: {curl_status} / runtime execution field remains bounded to the displayed handoff",
+        f"𝒞(Ψᴺ): {'COMPLETE' if coverage_complete else 'HOLD'} / {closure_status}; runtime execution field remains bounded to the displayed handoff",
         "T_lang: PsiN -> PsiI: partial coupling boundary; no guaranteed uptake",
     ]
     nodes_payload: list[dict[str, Any]] = []
@@ -1658,16 +1693,17 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     lines = [
         "",
         "Stage 07 field_witness mirror contract:",
-        "- Print the visible Closure/Reconstruction Witness ledger before the `field_witness` JSON using these exact line shapes:",
+        "- After Closing Formulation, print the visible Closure/Reconstruction Witness ledger, then emit the `field_witness` JSON as the final machine payload using these exact line shapes:",
         *[f"  {line}" for line in visible_lines],
-        "- If Stage 05 `generated_burdens` is empty, `B_MRP` is empty: visible `B_MRP = {}` and JSON `\"B_MRP\": []`; never place baseline Layer-A burdens in `B_MRP`.",
-        "- `B_total` must equal `B_LA` plus `B_MRP` in order.",
+        "- If Stage 05 `generated_burdens` is empty, `𝔅_MRP (B_MRP)` is empty: visible `𝔅_MRP (B_MRP) = {}` and JSON `\"B_MRP\": []`; never place baseline Layer-A burdens in `B_MRP`.",
+        "- Visible public burden IDs must use superscript notation such as `¹B`; JSON machine IDs remain canonical ASCII such as `B1`.",
+        "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required in the visible ledger; JSON `B_total` must equal JSON `B_LA` plus `B_MRP` in order.",
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
-        "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `B1 (root) || B2 (root)`, and JSON `parallel_groups` must mirror the full node group.",
-        "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `B1 (root); B2 (root); B4 -> B5`; never convert an edgeful graph into `B1 (root) -> B5` unless Stage 05 actually records that edge.",
+        "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
+        "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
         "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth` and `generated_by` provenance.",
         "- If Stage 05 leaves `unresolved_burdens` or `no_new_resultant_proof.proved=false`, do not claim `coverage_complete=true`; set `coverage_complete` false and keep the generated burden held/unresolved instead of synthesizing terminal STOP proof.",
-        "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `B4 -> B5`.",
+        "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, plus one MRP-owned row for each generated `B_MRP` burden that has no Stage 04 ACT rows; do not collapse these into one summary row per burden.",
@@ -1888,9 +1924,9 @@ def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[st
         ("layer-a-diagnostic-ir", "layer_a_diagnostic_ir"),
         *[(f"act-body-{index}", "layer_b_act") for index in range(1, act_chunks + 1)],
         ("mrp-reread-terminal", "mrp_reread_terminal"),
-        ("field-witness-nar", "field_witness_nar"),
         ("restorative-response", "restorative_response"),
         ("closing-formulation", "closing_formulation"),
+        ("field-witness-nar", "field_witness_nar"),
     ]
 
 
@@ -1989,7 +2025,7 @@ def release_section_prompt(
     role_guidance = {
         "visible_opening": (
             "Write only the visible opening for the governed answer. It must contain the exact banner "
-            "`NOETIC FIELD EXECUTION` or the token `noetic-field`, plus the field/read/state surface a "
+            "`daee-epistemics — NOETIC FIELD EXECUTION`, plus the field/read/state surface a "
             "normal `/daee-epistemics` answer exposes. Do not include Layer B, field_witness, "
             "Restorative Response, or Closing Formulation."
         ),
@@ -1999,7 +2035,8 @@ def release_section_prompt(
             "ledger lines. Do not include raw dev harness internals or downstream proof claims."
         ),
         "layer_b_act": (
-            "Write only this bounded Layer B / ACT section. Include a governed Layer B header, "
+            "Write only this bounded Layer B / ACT section. Include the exact governed header "
+            "`## Layer B — Bounded Governed Response`, "
             "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
             "consistent with Stage 04. Expand the operation bodies instead of summarizing them. "
             "Do not include MRP, field_witness, Restorative Response, or Closing Formulation. "
@@ -2012,7 +2049,7 @@ def release_section_prompt(
             "Do not include final verifier sidecars or retained proof claims."
         ),
         "field_witness_nar": (
-            "Write only the Closure/Reconstruction Witness plus parser-stable `field_witness` JSON. "
+            "Write only the Closure/Reconstruction Witness plus parser-stable `field_witness` JSON as the final compiled section after Closing Formulation. "
             "The section must contain a line that begins exactly `field_witness`, then a JSON object "
             "with `B_LA`, `B_MRP`, `B_total`, `coverage_proof`, `owner_activations`, "
             "`normalized_activation_record`, and any generated-burden/formal-reread mirrors required "
@@ -2024,7 +2061,7 @@ def release_section_prompt(
             "upstream. Copy exact ACT-visible owner/operation/pressure/delta/Land values; do not invent "
             "missing proof values and do not add model-authored verification/self-claim fields. Sparse "
             "`owner_activations` are invalid for compiled Stage 07 proof output. Do not use prose-only "
-            "`Field Witness` or prose-only `Normalized Activation Record` labels."
+            "`Field Witness` or prose-only `Normalized Activation Record` labels. Do not include Restorative Response or Closing Formulation here."
         ),
         "restorative_response": (
             "Write only the Restorative Response section. Do not include Closing Formulation here. "
@@ -2034,6 +2071,7 @@ def release_section_prompt(
         "closing_formulation": (
             "Write only the Closing Formulation section. It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
+            "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
             "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
@@ -2235,9 +2273,9 @@ def split_text_for_compiled_self_test(text: str) -> list[tuple[str, str, str]]:
         ("layer-a-diagnostic-ir", "layer_a_diagnostic_ir"),
         ("act-body", "layer_b_act"),
         ("mrp-reread-terminal", "mrp_reread_terminal"),
-        ("field-witness-nar", "field_witness_nar"),
         ("restorative-response", "restorative_response"),
         ("closing-formulation", "closing_formulation"),
+        ("field-witness-nar", "field_witness_nar"),
     ]
     lines = text.splitlines(keepends=True)
     if len(lines) < len(plan):
@@ -3279,6 +3317,9 @@ def run_self_test(root: Path) -> int:
     partition_stage04 = dict(normalized_stage04)
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂"]
     partition_plan = compiled_release_section_plan(70)
+    plan_roles = [role for _section_id, role in partition_plan]
+    if plan_roles.index("field_witness_nar") <= plan_roles.index("closing_formulation"):
+        raise HarnessError("Self-test compiled section plan must place field_witness after Closing Formulation")
     partition = compiled_act_partition([partition_stage04], partition_plan)
     budgets = compiled_section_budgets(partition_plan, 70)
     if not isinstance(budgets, dict) or budgets.get("schema") != staged_output.SECTION_BUDGET_SCHEMA:
@@ -3565,10 +3606,10 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Initial burden set: [B1]",
-        "B_LA = {B1}",
-        "B_MRP = {}",
-        "B_total = {B1} = B_LA union B_MRP",
+        "Initial burden set: [¹B]",
+        "𝔅_LA (B_LA) = {¹B}",
+        "𝔅_MRP (B_MRP) = {}",
+        "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}",
         "B1 [xi, kappa] status=initial-live",
         "Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`",
     ):
@@ -3594,6 +3635,7 @@ def run_self_test(root: Path) -> int:
         "Stage 07 public MRP block contract:",
         "[Mid-Reread Pressure]",
         "Target: B1 / Stage 05 terminal MRP source",
+        "R(H,Delta): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
         "Landed delta: Delta B1: terminal state landed; MRP route result type no_new_resultant.",
         "Route-gradient: plain-gradient points to STOP after B1; no live pressure remains.",
         "Finding: stable",
@@ -3654,7 +3696,10 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Do not set `owner` to `owner.operation`",
-        "visible `B_MRP = {}` and JSON `\"B_MRP\": []`",
+        "After Closing Formulation, print the visible Closure/Reconstruction Witness ledger",
+        "visible `𝔅_MRP (B_MRP) = {}` and JSON `\"B_MRP\": []`",
+        "JSON machine IDs remain canonical ASCII such as `B1`",
+        "`𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required",
         "`coverage_proof.dependency_graph` is required",
         "If the dependency edge list is non-empty",
         "Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`",
@@ -3726,10 +3771,10 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "B1 (root); B1 -> B2",
-        "B2: held-with-reason / MRP(B1) / no Stage 04 ACT rows",
-        "MRP(B1): type=generated_burden_instantiation; finding=genuine-dependent; graph=B1 -> B2; route=RECURSE",
-        "C(PsiN): coverage_complete=false; unresolved_burdens=[B2]",
+        "¹B (root); ¹B → ²B",
+        "²B: held-with-reason / MRP(¹B) / no Stage 04 ACT rows",
+        "MRP(¹B): type=generated_burden_instantiation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE",
+        "𝒞(Ψᴺ): HOLD / coverage_complete=false; unresolved_burdens=[B2]",
         '"B_MRP": [\n    "B2"\n  ]',
         '"generated_burdens"',
         '"id": "B2"',
@@ -3761,6 +3806,7 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Target: B1 / Stage 05 terminal MRP source",
+        "R(H,Delta): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
         "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
         "Route-gradient: plain-gradient points to RECURSE through B1 -> B2 after R(H,Delta).",
         "Finding: genuine-dependent",

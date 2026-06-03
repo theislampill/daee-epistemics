@@ -42,9 +42,9 @@ ROLE_ORDER = [
     "layer_a_diagnostic_ir",
     "layer_b_act",
     "mrp_reread_terminal",
-    "field_witness_nar",
     "restorative_response",
     "closing_formulation",
+    "field_witness_nar",
 ]
 ROLE_INDEX = {role: index for index, role in enumerate(ROLE_ORDER)}
 SINGLETON_ROLES = {
@@ -798,17 +798,17 @@ def manifest_for_sections(
     return manifest_path
 
 
-def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT row body_ref=B1.s1.\nLand(B1): landed.\n") -> list[tuple[str, str, str]]:
+def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT row body_ref=¹B₁.\nLand(¹B): landed.\n") -> list[tuple[str, str, str]]:
     return [
-        ("opening", "visible_opening", "NOETIC FIELD EXECUTION\nCase opening preserved.\n"),
+        ("opening", "visible_opening", "daee-epistemics — NOETIC FIELD EXECUTION\nCase opening preserved.\n"),
         (
             "layer-a",
             "layer_a_diagnostic_ir",
             "Layer A - Compact DSL/IR Header\n"
-            "- B_LA (B_LA) = {B1}\n"
-            "- B_MRP (B_MRP) = {}\n"
-            "- B_total (B_total) = B_LA union B_MRP\n"
-            "- Initial burden set: [B1]\n",
+            "- Initial burden set: [¹B]\n"
+            "- 𝔅_LA (B_LA) = {¹B}\n"
+            "- 𝔅_MRP (B_MRP) = {}\n"
+            "- 𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}\n",
         ),
         ("act-body", "layer_b_act", act_text),
         (
@@ -819,12 +819,35 @@ def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT 
             "R(H,Delta): held routes rechecked: none; live remainder: none; release/next: closure.\n"
             "MRP route result type: no_new_resultant\n"
             "Terminal states: B1=landed.\n"
-            "Field diagnostics: del-dot-B: neutral; del-cross-kappa: null.\n"
+            "Field diagnostics: ∇·B: neutral / no remaining burden; ∇×κ: null / no circular dependency.\n"
+        ),
+        ("release", "restorative_response", "Restorative Response\nRestored orientation.\n"),
+        (
+            "closing",
+            "closing_formulation",
+            "Closing Formulation\n"
+            "### Established failure\nFailure established.\n"
+            "### Restored criterion/orientation\nRestored orientation.\n"
+            "### Scoped boundary\nScoped boundary.\n",
         ),
         (
             "field-witness",
             "field_witness_nar",
             "Closure/Reconstruction Witness\n"
+            "Initial burden set: [¹B]\n"
+            "𝔅_LA (B_LA) = {¹B}\n"
+            "𝔅_MRP (B_MRP) = {}\n"
+            "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}\n"
+            "Burden dependency graph:\n"
+            "¹B (root)\n"
+            "Terminal states:\n"
+            "¹B: landed / ACT owners / landed by visible owner activations\n"
+            "MRP resultants:\n"
+            "MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP\n"
+            "∇·B: neutral / no remaining burden\n"
+            "∇×κ: null / no circular dependency\n"
+            "𝒞(Ψᴺ): COMPLETE / coverage_complete=true; runtime execution field remains bounded to this reply\n"
+            "T_lang: Ψᴺ -> Ψᴵ: partial coupling boundary; no guaranteed uptake\n"
             "field_witness\n"
             "{\n"
             "  \"B_LA\": [\"B1\"],\n"
@@ -842,8 +865,6 @@ def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT 
             "  }\n"
             "}\n",
         ),
-        ("release", "restorative_response", "Restorative Response\nRestored orientation.\n"),
-        ("closing", "closing_formulation", "Closing Formulation\nScoped boundary.\n"),
     ]
 
 
@@ -960,7 +981,7 @@ def run_self_test(root: Path) -> int:
         case_id="valid-canonical-scaffold",
         source_input="valid-canonical-scaffold/input.md",
         section_specs=[
-            *small_sections()[:4],
+            *small_sections()[:6],
             (
                 "field-witness",
                 "field_witness_nar",
@@ -974,7 +995,6 @@ def run_self_test(root: Path) -> int:
                 "  \"normalized_activation_record\": {\"n_frame\": \"self-test\", \"live_registers\": [\"xi\"]}\n"
                 "}\n",
             ),
-            *small_sections()[5:],
         ],
     )
     scaffold_record = assemble_manifest(scaffold_manifest, root=root)
@@ -991,9 +1011,10 @@ def run_self_test(root: Path) -> int:
         case_id="valid-decorated-public-headings",
         source_input="valid-decorated-public-headings/input.md",
         section_specs=[
-            *small_sections()[:5],
+            *small_sections()[:4],
             ("release", "restorative_response", "**Restorative Response**\nRestored orientation.\n"),
             ("closing", "closing_formulation", "# __Closing Formulation__\nScoped boundary.\n"),
+            small_sections()[6],
         ],
     )
     decorated_heading_record = assemble_manifest(decorated_heading_manifest, root=root)
@@ -1017,6 +1038,14 @@ def run_self_test(root: Path) -> int:
     decorated_roles = {event.get("role") for event in decorated_events if isinstance(event, dict)}
     if {"restorative_response", "closing_formulation"} - decorated_roles:
         raise AssemblyError("self-test decorated heading scaffold metadata missing")
+    decorated_order = [
+        decorated_heading_output.find("Restorative Response"),
+        decorated_heading_output.find("Closing Formulation"),
+        decorated_heading_output.find("Closure/Reconstruction Witness"),
+        decorated_heading_output.find("field_witness"),
+    ]
+    if any(index < 0 for index in decorated_order) or decorated_order != sorted(decorated_order):
+        raise AssemblyError("self-test decorated output did not preserve Restorative -> Closing -> witness -> field_witness order")
 
     expect_invalid(
         root,
@@ -1178,7 +1207,7 @@ def run_self_test(root: Path) -> int:
         base_dir,
         "invalid-out-of-order",
         lambda payload, _case_dir: payload.__setitem__(
-            "sections", [payload["sections"][4], *payload["sections"][:4], *payload["sections"][5:]]
+            "sections", [payload["sections"][6], *payload["sections"][:6]]
         ),
     )
     expect_invalid(
@@ -1200,7 +1229,7 @@ def run_self_test(root: Path) -> int:
         lambda payload, case_dir: replace_section_text(
             payload,
             case_dir,
-            4,
+            6,
             "Closure/Reconstruction Witness\nField Witness prose only.\nNormalized Activation Record prose only.\n",
         ),
     )
@@ -1208,7 +1237,7 @@ def run_self_test(root: Path) -> int:
         root,
         base_dir,
         "invalid-missing-closing-formulation",
-        lambda payload, case_dir: replace_section_text(payload, case_dir, 6, "Scoped boundary only.\n"),
+        lambda payload, case_dir: replace_section_text(payload, case_dir, 5, "Scoped boundary only.\n"),
     )
     expect_invalid(
         root,
@@ -1217,7 +1246,7 @@ def run_self_test(root: Path) -> int:
         lambda payload, case_dir: replace_section_text(
             payload,
             case_dir,
-            5,
+            4,
             "This paragraph mentions **Restorative Response** but is not a heading.\nRestored orientation.\n",
         ),
     )
@@ -1228,7 +1257,7 @@ def run_self_test(root: Path) -> int:
         lambda payload, case_dir: replace_section_text(
             payload,
             case_dir,
-            5,
+            4,
             "**Restorative Response*\nRestored orientation.\n",
         ),
     )
@@ -1239,7 +1268,7 @@ def run_self_test(root: Path) -> int:
         lambda payload, case_dir: replace_section_text(
             payload,
             case_dir,
-            6,
+            5,
             "__Closing Formulation_\nScoped boundary.\n",
         ),
     )
