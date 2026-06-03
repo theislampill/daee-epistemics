@@ -1198,7 +1198,7 @@ def stage07_formal_reread_states(
         state: dict[str, Any] = {
             "source_burden": source,
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
-            "delta": f"Delta {source}: terminal state {terminal_state}; MRP route result type {route_type}.",
+            "delta": stage07_mrp_landed_delta(source, terminal_state, route_type),
             "reread": "R(H,Delta)",
             "divergence_state": "neutral",
             "curl_state": "null",
@@ -1238,6 +1238,10 @@ def stage07_formal_reread_states(
                 state["no_new_resultant_proof"] = stage07_stop_proof(source)
         states.append(state)
     return states
+
+
+def stage07_mrp_landed_delta(source: str, terminal_state: str, route_type: str) -> str:
+    return f"Delta {source}: terminal state {terminal_state}; MRP route result type {route_type}."
 
 
 def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) -> str:
@@ -1289,6 +1293,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         else "graph-bound MRP route recorded"
     )
     landed_state = terminal_states.get(final_source, "landed")
+    landed_delta = stage07_mrp_landed_delta(final_source, landed_state, final_type)
     terminal_lines = [
         f"{burden}: {terminal_states.get(burden, 'landed')}"
         for burden in b_total
@@ -1297,7 +1302,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         "[Mid-Reread Pressure]",
         f"Target: {final_source} / Stage 05 terminal MRP source",
         "R(H,Delta): reread the landed burden field after the Stage 04 ACT deltas.",
-        f"Landed delta: Delta {final_source} / terminal state {landed_state}.",
+        f"Landed delta: {landed_delta}",
         "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency.",
         f"Route-gradient: {route_gradient}",
         f"Finding: {finding}",
@@ -1317,6 +1322,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         "- Print this checker-complete public MRP block in the MRP/reread/terminal section before prose expansion:",
         *[f"  {line}" for line in visible_lines],
         "- `Target:` is required and must name the Stage 05 MRP source burden, for example `B4`; do not leave the target implicit in prose.",
+        "- `Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
         "- `MRP route result type:` must be one canonical token with no trailing punctuation: `held_burden_activation`, `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.",
         "- `MRP resultant:`, `Graph delta:`, `Pre-emption basis:`, and `Route:` are required public fields; field_witness and Closure/Reconstruction Witness mirrors do not replace them.",
         "- For terminal STOP/no-new-resultant, use `Graph delta: none`, `Route: STOP`, and do not invent a graph edge.",
@@ -3588,7 +3594,7 @@ def run_self_test(root: Path) -> int:
         "Stage 07 public MRP block contract:",
         "[Mid-Reread Pressure]",
         "Target: B1 / Stage 05 terminal MRP source",
-        "Landed delta: Delta B1 / terminal state landed.",
+        "Landed delta: Delta B1: terminal state landed; MRP route result type no_new_resultant.",
         "Route-gradient: plain-gradient points to STOP after B1; no live pressure remains.",
         "Finding: stable",
         "MRP route result type: no_new_resultant",
@@ -3596,6 +3602,7 @@ def run_self_test(root: Path) -> int:
         "Graph delta: none",
         "Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains",
         "Route: STOP",
+        "`Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
         "`MRP route result type:` must be one canonical token with no trailing punctuation",
         "field_witness and Closure/Reconstruction Witness mirrors do not replace them",
     ):
@@ -3754,6 +3761,7 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Target: B1 / Stage 05 terminal MRP source",
+        "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
         "Route-gradient: plain-gradient points to RECURSE through B1 -> B2 after R(H,Delta).",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
