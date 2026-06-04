@@ -2928,6 +2928,23 @@ def normalize_release_output_mode(value: str) -> str:
         raise HarnessError(f"Unknown release output mode {value!r}; expected one of {allowed}") from exc
 
 
+def validate_compiled_budget_preflight(
+    release_output_mode: str,
+    target_output_kb: int | None,
+    section_expansion_rounds: int,
+) -> None:
+    target = max(0, int(target_output_kb or 0))
+    if release_output_mode != "compiled-output" or target <= 0:
+        return
+    if section_expansion_rounds > 0:
+        return
+    raise HarnessError(
+        "budgeted compiled output requires --section-expansion-rounds >= 1 "
+        "when --target-output-kb > 0 so selected sections can be expanded "
+        "before strict assembly validates section budgets"
+    )
+
+
 def compiled_release_section_plan(target_output_kb: int | None) -> list[tuple[str, str]]:
     target = max(0, int(target_output_kb or 0))
     act_chunks = 1 if target <= 0 else max(1, min(8, (target + 24) // 25))
@@ -2991,6 +3008,13 @@ def compiled_section_budgets(
         "role_min_bytes": role_min_bytes,
         "min_section_bytes": min_section_bytes,
     }
+
+
+def assemble_compiled_manifest(manifest_path: Path, *, root: Path) -> dict[str, Any]:
+    try:
+        return staged_output.assemble_manifest(manifest_path, root=root)
+    except staged_output.AssemblyError as exc:
+        raise HarnessError(f"stage-07-release-output: assembly failed: {exc}") from exc
 
 
 def partition_body_refs(body_refs: list[str], section_ids: list[str]) -> list[dict[str, Any]]:
@@ -3429,7 +3453,7 @@ def run_compiled_release_self_test(
         source_input=rel(replay_output_path, root),
         section_specs=split_text_for_compiled_self_test(source_text),
     )
-    assembly_record = staged_output.assemble_manifest(manifest_path, root=root)
+    assembly_record = assemble_compiled_manifest(manifest_path, root=root)
     compiled_output_path = root / assembly_record["output"]["path"]
     compiled_validation = run_release_validators(root, compiled_output_path)
     compiled_diagnostics = build_release_field_diagnostics(compiled_output_path)
@@ -4567,6 +4591,34 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test compiled section budgets produced a non-positive section floor")
     if sum(min_section_bytes.values()) != 70 * 1024:
         raise HarnessError("Self-test compiled section budgets did not distribute the full target floor")
+    try:
+        validate_compiled_budget_preflight("compiled-output", 70, 0)
+    except HarnessError as exc:
+        if "--section-expansion-rounds >= 1" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject budgeted compiled output without expansion capacity")
+    validate_compiled_budget_preflight("compiled-output", 70, 1)
+    validate_compiled_budget_preflight("single-output", 70, 0)
+    invalid_assembly_manifest = staged_output.manifest_for_sections(
+        run_dir / "invalid-assembly-wrapper",
+        case_id="self-test-compiled-assembly-error-wrapper",
+        source_input="self-test",
+        section_specs=staged_output.small_sections(),
+        section_budgets={
+            "schema": staged_output.SECTION_BUDGET_SCHEMA,
+            "target_output_bytes": 0,
+            "role_min_bytes": {},
+            "min_section_bytes": {"opening": 100000},
+        },
+    )
+    try:
+        assemble_compiled_manifest(invalid_assembly_manifest, root=root)
+    except HarnessError as exc:
+        if "stage-07-release-output: assembly failed:" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to wrap compiled assembly errors as HarnessError")
     graph_line, graph_roots, graph_parallel = stage07_dependency_graph_scaffold(["B1", "B2", "B3"], [])
     if graph_line != "B1 (root) || B2 (root) || B3 (root)":
         raise HarnessError("Self-test Stage 07 graph scaffold omitted edge-empty parallel roots")
@@ -6729,7 +6781,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 transport_resume=transport_resume_payload,
             )
             stage_files.append(assembly_manifest_path)
-            assembly_record = staged_output.assemble_manifest(assembly_manifest_path, root=root)
+            assembly_record = assemble_compiled_manifest(assembly_manifest_path, root=root)
             assembly_hash_path = output_path.with_suffix(output_path.suffix + ".assembly.hashes.json")
             if assembly_hash_path.exists():
                 stage_files.append(assembly_hash_path)
@@ -6920,6 +6972,12 @@ def main() -> int:
         raise HarnessError("--transport-retry-rounds must be a non-negative integer")
     if args.self_test:
         return run_self_test(root)
+    release_output_mode = normalize_release_output_mode(args.release_output_mode)
+    validate_compiled_budget_preflight(
+        release_output_mode,
+        args.target_output_kb,
+        args.section_expansion_rounds,
+    )
     if args.resume_run_dir is not None:
         resume_run_dir = resolve_under_root(root, args.resume_run_dir, "Resume run directory")
         if args.run_dir is None:
