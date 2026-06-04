@@ -1,0 +1,14 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "applicable_owner_body_not_loaded",
+  "catalogue_present": ["source-status-repair"],
+  "selected": ["source-status-repair"],
+  "owner_body_status": {"source-status-repair": "not_loaded"},
+  "route": "STOP",
+  "boundary": "coverage_complete=true",
+  "coverage_complete": true,
+  "land_claims": ["Land(B1)"],
+  "surface_rows": [
+    {"owner": "source-status-repair", "act_row": "ACT B1_1[source-status-repair.source-order] :: body_ref=B1_1 :: Land(B1)+", "body_ref": "B1_1", "body_ref_dereference": {"body_ref": "B1_1", "owner": "source-status-repair", "target": "missing source body", "operation": "source-order", "result": "source-function-bounded", "contribution": "Contribution-to-Land"}, "owner_activation": {"owner": "source-status-repair", "body_ref": "B1_1"}, "nar": {"owner": "source-status-repair"}, "field_witness": {"owner": "source-status-repair", "body_ref": "B1_1"}, "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["source-status-repair"]}}
+  ]
+}

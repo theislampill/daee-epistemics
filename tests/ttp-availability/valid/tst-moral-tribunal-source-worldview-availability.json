@@ -1,0 +1,147 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_applicable",
+  "catalogue_present": [
+    "FPD",
+    "M1P-performative-self-refutation",
+    "M8",
+    "M9",
+    "P1",
+    "P7",
+    "source-status-repair"
+  ],
+  "selected": [
+    "FPD",
+    "M1P-performative-self-refutation",
+    "M8",
+    "M9",
+    "P1",
+    "P7",
+    "source-status-repair"
+  ],
+  "unselected": [],
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "coverage_complete": true,
+  "surface_rows": [
+    {
+      "owner": "FPD",
+      "act_row": "ACT B1_1[FPD.foreign-premise] :: body_ref=B1_1 :: Land(B1)+",
+      "body_ref": "B1_1",
+      "body_ref_dereference": {
+        "body_ref": "B1_1",
+        "owner": "FPD",
+        "target": "moral tribunal pressure",
+        "operation": "expose foreign premise",
+        "result": "tribunal premise exposed",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "FPD", "body_ref": "B1_1"},
+      "nar": {"owner": "FPD"},
+      "field_witness": {"owner": "FPD", "body_ref": "B1_1"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["FPD"]}
+    },
+    {
+      "owner": "M1P-performative-self-refutation",
+      "act_row": "ACT B1_2[M1P-performative-self-refutation.performative-test] :: body_ref=B1_2 :: Land(B1)+",
+      "body_ref": "B1_2",
+      "body_ref_dereference": {
+        "body_ref": "B1_2",
+        "owner": "M1P-performative-self-refutation",
+        "target": "source-worldview tribunal pressure",
+        "operation": "test performative standard",
+        "result": "performative contradiction exposed",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "M1P-performative-self-refutation", "body_ref": "B1_2"},
+      "nar": {"owner": "M1P-performative-self-refutation"},
+      "field_witness": {"owner": "M1P-performative-self-refutation", "body_ref": "B1_2"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["M1P-performative-self-refutation"]}
+    },
+    {
+      "owner": "M8",
+      "act_row": "ACT B1_3[M8.dependency-trace] :: body_ref=B1_3 :: Land(B1)+",
+      "body_ref": "B1_3",
+      "body_ref_dereference": {
+        "body_ref": "B1_3",
+        "owner": "M8",
+        "target": "dependency pressure",
+        "operation": "trace tribunal dependency",
+        "result": "dependency exposed",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "M8", "body_ref": "B1_3"},
+      "nar": {"owner": "M8"},
+      "field_witness": {"owner": "M8", "body_ref": "B1_3"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["M8"]}
+    },
+    {
+      "owner": "M9",
+      "act_row": "ACT B1_4[M9.predication-repair] :: body_ref=B1_4 :: Land(B1)+",
+      "body_ref": "B1_4",
+      "body_ref_dereference": {
+        "body_ref": "B1_4",
+        "owner": "M9",
+        "target": "predication pressure",
+        "operation": "repair source-worldview predication",
+        "result": "predicate transfer blocked",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "M9", "body_ref": "B1_4"},
+      "nar": {"owner": "M9"},
+      "field_witness": {"owner": "M9", "body_ref": "B1_4"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["M9"]}
+    },
+    {
+      "owner": "P1",
+      "act_row": "ACT B1_5[P1.restore] :: body_ref=B1_5 :: Land(B1)+",
+      "body_ref": "B1_5",
+      "body_ref_dereference": {
+        "body_ref": "B1_5",
+        "owner": "P1",
+        "target": "restoration pressure",
+        "operation": "restore fitrah orientation",
+        "result": "fitrah orientation restored",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "P1", "body_ref": "B1_5"},
+      "nar": {"owner": "P1"},
+      "field_witness": {"owner": "P1", "body_ref": "B1_5"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["P1"]}
+    },
+    {
+      "owner": "P7",
+      "act_row": "ACT B1_6[P7.boundary] :: body_ref=B1_6 :: Land(B1)+",
+      "body_ref": "B1_6",
+      "body_ref_dereference": {
+        "body_ref": "B1_6",
+        "owner": "P7",
+        "target": "terminal boundary pressure",
+        "operation": "bound tribunal scope",
+        "result": "scope boundary named",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "P7", "body_ref": "B1_6"},
+      "nar": {"owner": "P7"},
+      "field_witness": {"owner": "P7", "body_ref": "B1_6"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["P7"]}
+    },
+    {
+      "owner": "source-status-repair",
+      "act_row": "ACT B1_7[source-status-repair.status] :: body_ref=B1_7 :: Land(B1)+",
+      "body_ref": "B1_7",
+      "body_ref_dereference": {
+        "body_ref": "B1_7",
+        "owner": "source-status-repair",
+        "target": "source status pressure",
+        "operation": "repair source status",
+        "result": "source status bounded",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "source-status-repair", "body_ref": "B1_7"},
+      "nar": {"owner": "source-status-repair"},
+      "field_witness": {"owner": "source-status-repair", "body_ref": "B1_7"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["source-status-repair"]}
+    }
+  ]
+}

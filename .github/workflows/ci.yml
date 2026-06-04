@@ -63,6 +63,7 @@ jobs:
           python tools/check_closure_witness_graph.py --input tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md --field-witness tests/live-witness-fixtures/valid/closure-witness-dependency-graph.field_witness.json
           python tools/check_mid_reread_pressure.py
           python tools/check_mrp_generated_burden.py
+          python tools/check_ttp_availability_canaries.py
           python tools/check_mrp_route_invariants.py
           python tools/check_concealment_mode.py
           python tools/check_trinitarian_mrp_hotfix.py

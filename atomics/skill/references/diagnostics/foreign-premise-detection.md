@@ -1,13 +1,17 @@
 ---
 id: foreign-premise-detection
-module_class: governance
+module_class: diagnostic
 canonical_path: skill/references/diagnostics/foreign-premise-detection.md
 contract_version: "0.4.0.0"
 load_when:
   - V1 Phase 2 axis classification; interlocutor's framework, criterion, or prior probability not yet examined
 emits:
   - upstream_findings
-catalogue_registered: false
+output_shapes:
+  - pass-through
+  - held-pending-upstream
+layer_constraint: layer-b-governed
+catalogue_registered: true
 verification_status: L_check
 direct_read_verified: true
 failure_conditions_present: true
@@ -26,6 +30,21 @@ Its purpose is to prevent the most common structural failure: a response that ad
 
 Category 1 does not waive this pass if a criterion-importing element is visible. Sound reason
 at the faculty level can still be presented through an imported tribunal at the case level.
+
+---
+
+## Runtime operator contract
+
+- Activation: a criterion, tribunal, prior, source-worldview, proof-method, or authority-order is imported as if it were neutral and governs the current burden.
+- Field target: the target-explicit criterion/tribunal/source-status/register pressure named by FPD; it may be τ, ξ, σ, μ, κ, route, or the current burden when that imported court is load-bearing.
+- Burden/submove form: governed `ⁿBᵢ[FPD.expose]` or equivalent owner-backed submove: target -> expose imported source/function/jurisdiction -> result/state constraint.
+- Δ effect: `ΔⁿB` demotes, refuses, holds, or routes the imported criterion; `Δκ` may expand when dependent content must be reread after the tribunal is no longer governing.
+- Possible ∇ reread: after FPD acts, run target-explicit `∇·κ`, `∇·ξ`, `∇×ξ`, `∇·route`, or current-burden pressure only when residual dependency, warrant, circularity, or route pressure remains.
+- R(H,Δ) obligation: after FPD lands or holds, `R(H,Δ)` rereads held material, downstream doctrine, owner eligibility, and closure state before STOP, HOLD, PARTIAL, or a generated burden is licensed.
+- Hold/release/closure effect: if the imported tribunal is exposed and no downstream pressure remains, release only the bounded landed result; if dependent content remains live or the owner body is unavailable, route HOLD/PARTIAL rather than fake closure.
+- Output boundary: `layer-b-governed` with output shapes `pass-through` and `held-pending-upstream`; default prose may name the imported criterion compactly, while full pass tables belong to audit/dsl render.
+- Negative constraints: no identity-label proof, no motive proof, no scalar summary closure, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, no truth-or-warrant claim from FPD, and no automatic expansion into every downstream topic.
+- Fixture/checker: `tools/check_ttp_operator_contracts.py --strict`, `tools/check_ttp_availability_canaries.py`, `tools/check_owner_activation_ordering.py`, and generated-MRP/NLA canaries guard callable availability, inert catalogue presence, and safe HOLD/PARTIAL failure.
 
 ---
 

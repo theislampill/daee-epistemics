@@ -1,0 +1,28 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_inert",
+  "catalogue_present": [
+    "FPD",
+    "M1P-performative-self-refutation",
+    "M8",
+    "M9",
+    "P1",
+    "P7",
+    "source-status-repair"
+  ],
+  "selected": [],
+  "unselected": [
+    "FPD",
+    "M1P-performative-self-refutation",
+    "M8",
+    "M9",
+    "P1",
+    "P7",
+    "source-status-repair"
+  ],
+  "B_LA": ["B1", "B2"],
+  "B_MRP": [],
+  "generated_burdens": [],
+  "coverage_complete": false,
+  "surface_rows": []
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_applicable",
+  "catalogue_present": ["V10", "source-status-repair", "M8", "P7"],
+  "selected": ["V10"],
+  "unselected": ["source-status-repair", "M8", "P7"],
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "coverage_complete": true,
+  "surface_rows": [
+    {
+      "owner": "V10",
+      "act_row": "ACT B1_1[V10.provenance] :: body_ref=B1_1 :: Land(B1)+",
+      "body_ref": "B1_1",
+      "body_ref_dereference": {
+        "body_ref": "B1_1",
+        "owner": "V10",
+        "target": "hadith source chain",
+        "operation": "vet provenance",
+        "result": "source function bounded",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "V10", "body_ref": "B1_1"},
+      "nar": {"owner": "V10"},
+      "field_witness": {"owner": "V10", "body_ref": "B1_1"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["V10"]}
+    }
+  ]
+}

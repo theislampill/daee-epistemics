@@ -480,7 +480,8 @@ def catalogue_owner_aliases() -> dict[str, str]:
                 continue
             raw_aliases = [entry.get("id"), Path(str(entry.get("path", ""))).stem]
             raw_aliases.extend(entry.get("aliases") or [])
-            family = next(
+            owner_family_override = str(entry.get("owner_family") or "").strip()
+            family = owner_family_override or next(
                 (
                     owner_family(str(alias))
                     for alias in raw_aliases
@@ -508,6 +509,8 @@ def strict_owner_family(value: str) -> str:
     if "." in token:
         candidates.append(token.split(".", 1)[0])
     for candidate in candidates:
+        if candidate == "V1" or candidate.startswith("V1-"):
+            return ""
         if candidate in LOOSE_OWNER_ALIASES:
             return ""
         family = CATALOGUE_OWNER_ALIASES.get(candidate)
@@ -1504,6 +1507,29 @@ def held_activation_errors(path: Path, text: str, block: MrpBlock) -> list[str]:
     return errors
 
 
+def no_new_resultant_errors(path: Path, text: str, block: MrpBlock) -> list[str]:
+    errors: list[str] = []
+    if EDGE_RE.search(block.graph_delta):
+        errors.append(f"{path}: no_new_resultant must not create graph edge")
+    source = block_target(block)
+    if not source:
+        return errors
+    section = burden_node_section(text, source)
+    if not section:
+        return errors
+    route_scope = block.body + "\n" + owner_activation_route_section(section)
+    records, parse_errors = parse_act_records(section)
+    errors.extend(f"{path}: {message}" for message in parse_errors)
+    if not records:
+        return errors
+    route_owners = matched_owner_route_tokens(route_scope)
+    blocks_by_ref = submove_block_index(section, source)
+    for record in records:
+        _families, found = validate_act_record(record, source, route_owners, blocks_by_ref, section)
+        errors.extend(f"{path}: {message}" for message in found)
+    return errors
+
+
 def generated_marker_consistency_errors(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     seen: set[tuple[str, str]] = set()
@@ -1535,8 +1561,8 @@ def block_route_type_errors(path: Path, text: str, block: MrpBlock, *, enforce_p
         return generated_burden_errors(path, text, block, enforce_public_notation=enforce_public_notation)
     if route_type == "held_burden_activation":
         return held_activation_errors(path, text, block)
-    if route_type == "no_new_resultant" and EDGE_RE.search(block.graph_delta):
-        return [f"{path}: no_new_resultant must not create graph edge"]
+    if route_type == "no_new_resultant":
+        return no_new_resultant_errors(path, text, block)
     if route_type == "loopbreak" and block.route != "LoopBreak(∇×T)":
         return [f"{path}: loopbreak route result type requires Route: LoopBreak(∇×T)"]
     if route_type == "hold_partial" and block.route != "HOLD":

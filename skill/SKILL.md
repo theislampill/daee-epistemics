@@ -260,17 +260,17 @@ surface too small`.
    `heart` live requires an affective/posture burden. Burdens may be multi-typed; coverage is
    required per live register, not one burden per register. The selected N-frame supplies each
    burden's label and content, while register liveness supplies the floor structure.
-   The Trinitarian John 17:3 row is a canary instance of this rule, not a runtime template. When the
-   Trinitarian N-frame activates `Omega`, `xi`, `mu`, and `kappa` through person/nature transfer,
-   proof-stack authority, model-carrier compression, and eternal-life entailment, the baseline
+   A selected hard-output row may serve as a canary instance of this rule, but not as a runtime
+   template. When the selected N-frame activates `Omega`, `xi`, `mu`, and `kappa` through
+   person/nature transfer, proof-stack authority, model-carrier compression, and entailment pressure, the baseline
    `B_LA` floor must cover those register types before any generated MRP burden. Do not merge
    proof-stack and entailment anchors into one register obligation, do not split restoration/tone
    into a required baseline burden, and do not place doctrine-immunity or bounded-reply recoil in
    `B_LA` unless the quoted input asserts that immunity as its own claim. If final closure names
-   broader John texts, sacred doctrine, full-system doctrine, or bounded-reply immunity after those
+   broader source texts, sacred doctrine, full-system doctrine, or bounded-reply immunity after those
    register-derived baseline burdens land, MRP may generate the next boundary-classification burden
    in `B_MRP`; it must not rewrite the original baseline set.
-   For that Trinitarian canary instance, do not use `parallel_groups`; use required owners with
+   For that selected hard-output canary instance, do not use `parallel_groups`; use required owners with
    stable `required_before` order and canary-exact pressure labels:
    `B1`: `do-christian-extensions.model-identification` with
    `trinitarian-person-nature-model-transfer`, then `M9.predication-repair` with
@@ -2629,9 +2629,9 @@ governing files are gate-integrity violations, not conservative loading choices.
    `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
    and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
    files is diagnosis without execution.
-   John 17:3 Trinitarian hard-output prompts follow
-   `do-christian-extensions.md`'s hard-output floor; do not claim
-   `coverage_complete=true` from a compact under-mass DO-12 answer.
+   Selected DO-12 hard-output prompts follow `do-christian-extensions.md`'s
+   hard-output floor; do not claim `coverage_complete=true` from a compact
+   under-mass DO-12 answer.
 
 5. **All matched_modules governing source identities:** Every entry in `matched_modules`
    corresponds to an original module ID and canonical module identity. In source-development

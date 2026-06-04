@@ -1,0 +1,25 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "applicable_owner_body_not_loaded",
+  "catalogue_present": ["FPD", "M1P-performative-self-refutation", "P7"],
+  "selected": ["FPD"],
+  "unselected": ["M1P-performative-self-refutation", "P7"],
+  "owner_body_status": {"FPD": "not_loaded"},
+  "route": "STOP",
+  "boundary": "coverage_complete=true",
+  "coverage_complete": true,
+  "retained_promotion_eligible": true,
+  "land_claims": ["Land(B1)"],
+  "surface_rows": [
+    {
+      "owner": "FPD",
+      "act_row": "ACT B1_1[FPD.foreign-premise] :: body_ref=B1_1 :: Land(B1)+",
+      "body_ref": "B1_1",
+      "body_ref_dereference": {"body_ref": "B1_1", "owner": "FPD", "target": "moral tribunal", "operation": "expose", "result": "foreign premise exposed"},
+      "owner_activation": {"owner": "FPD", "body_ref": "B1_1"},
+      "nar": {"owner": "FPD"},
+      "field_witness": {"owner": "FPD", "body_ref": "B1_1"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["FPD"]}
+    }
+  ]
+}

@@ -363,6 +363,57 @@ def field_witness_activation_by_body_ref(field_witness: dict[str, Any]) -> dict[
     return result
 
 
+def visible_activation_triplets(records: list[ActRecord]) -> set[tuple[str, str, str]]:
+    triplets: set[tuple[str, str, str]] = set()
+    for record in records:
+        land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
+        target = land_target_tokens[0] if land_target_tokens else ""
+        owner = strict_owner_family(record.owner)
+        if target and owner and record.operation:
+            triplets.add((target, owner, record.operation))
+    return triplets
+
+
+def activation_surface_coverage_errors(
+    path: Path,
+    field_witness: dict[str, Any],
+    records: list[ActRecord],
+) -> list[str]:
+    """Reject proof mirrors for owners not backed by visible ACT rows."""
+
+    label = rel(path)
+    errors: list[str] = []
+    visible_body_refs = {graph_submove_id(record.body_ref) for record in records}
+    for index, item in enumerate(field_witness.get("owner_activations") or [], start=1):
+        if not isinstance(item, dict):
+            continue
+        body_ref = graph_submove_id(item.get("body_ref"))
+        if body_ref and body_ref not in visible_body_refs:
+            errors.append(
+                f"{label}: field_witness.owner_activations[{index}] body_ref {body_ref} has no visible ACT row"
+            )
+
+    normalized = field_witness.get("normalized_activation_record")
+    if not isinstance(normalized, dict):
+        return errors
+    raw_rows = normalized.get("per_burden")
+    if not isinstance(raw_rows, list):
+        return errors
+    visible_triplets = visible_activation_triplets(records)
+    for index, row in enumerate(raw_rows, start=1):
+        if not isinstance(row, dict):
+            continue
+        burden = graph_burden_id(row.get("burden_id"))
+        owner = strict_owner_family(str(row.get("owner_id") or ""))
+        operation = str(row.get("operation") or "").strip()
+        if burden and owner and operation and (burden, owner, operation) not in visible_triplets:
+            errors.append(
+                f"{label}: normalized_activation_record.per_burden[{index}] "
+                f"{burden}/{owner}/{operation} has no visible ACT row"
+            )
+    return errors
+
+
 def string_list(value: object) -> list[str] | None:
     if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
         return None
@@ -1538,6 +1589,7 @@ def nla_decode_errors(
     if not records:
         return errors + [f"{rel(path)}: no visible ACT records to decode"]
 
+    errors.extend(activation_surface_coverage_errors(path, field_witness, records))
     errors.extend(canonical_ir_projection_errors(path, field_witness, records))
 
     seen_body_refs: set[str] = set()

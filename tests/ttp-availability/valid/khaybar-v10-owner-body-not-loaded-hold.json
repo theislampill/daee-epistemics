@@ -1,0 +1,14 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "applicable_owner_body_not_loaded",
+  "catalogue_present": ["V10", "M8", "P7"],
+  "selected": ["V10"],
+  "unselected": ["M8", "P7"],
+  "owner_body_status": {"V10": "not_loaded"},
+  "route": "HOLD",
+  "boundary": "PARTIAL / OWNER-BODY-NOT-LOADED: V10 transmission/content body missing; coverage_complete=false",
+  "coverage_complete": false,
+  "retained_promotion_eligible": false,
+  "land_claims": [],
+  "surface_rows": []
+}

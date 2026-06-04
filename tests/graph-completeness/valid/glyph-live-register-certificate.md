@@ -11,16 +11,18 @@ daee-epistemics - NOETIC FIELD EXECUTION
 ## Burden 1 / ¹B - science-only source-order warrant
 Matched owner/TTP route: [source-status-repair, M1]
 - ACT records:
-  ⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧
-  ⟦ACT B1_2[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=B1_2 :: Δ=ΔB1:self-authorizing-standard-invalidated :: Land(B1)+⟧
+  ⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧
+  ⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧
 
-### B1_1[source-status-repair] - bound the science source
+### ¹B₁[source-status-repair] - bound the science source
 - Target: scientific-explanations-only-knowledge-source.
-- Operation: source-order bounds science to empirical source function without turning it into the judge of all knowledge.
-- Result/state-change: science-source-bounded
-- Contribution-to-Land(¹B): the source-order overreach is exposed before the rule controls closure.
+- Operation: source-order sorts the scientific-explanations-only-knowledge-source pressure by allowing science to act as an empirical source while blocking its hidden promotion into the judge of all knowledge.
+- Result/state-change: science-source-bounded and hidden source-status overreach blocked.
+- Contribution-to-Land(¹B): the source-order repair lands because the scientific-explanations-only-knowledge-source overreach is sorted, bounded, and prevented before the rule controls closure.
 
-### B1_2[M1] - test the rule by its own standard
+The source-order operation tests the scientific-explanations-only-knowledge-source pressure, sorts the authority-order stack, blocks the hidden promotion, and leaves the science source bounded rather than load-bearing as a final tribunal.
+
+### ¹B₂[M1] - test the rule by its own standard
 - Target: only-science-counts-standard.
 - Operation: self-grounding-test applies the rule to itself.
 - Result/state-change: self-authorizing-standard-invalidated
@@ -68,8 +70,8 @@ The scoped pass is complete because the science-only criterion was bounded, its 
 - MRP resultants:
   MRP(B1): type=no_new_resultant; finding=stable; graph=none; route=STOP
 - Owner activations:
-  ⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧
-  ⟦ACT B1_2[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=B1_2 :: Δ=ΔB1:self-authorizing-standard-invalidated :: Land(B1)+⟧
+  ⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧
+  ⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧
 - ∇·B: neutral / no live burden remains
 - ∇×κ: null / no loop
 - 𝒞(Ψᴺ): coverage_complete=true; terminal route STOP
@@ -142,8 +144,8 @@ The scoped pass is complete because the science-only criterion was bounded, its 
     "status": "coverage_complete=true"
   },
   "owner_activations": [
-    {"source": "B1", "target": "B1", "owner": "source-status-repair", "operation": "source-order", "pressure": "scientific-explanations-only-knowledge-source", "body_ref": "B1_1", "delta": "Delta B1:science-source-bounded", "land": "Land(B1)+"},
-    {"source": "B1", "target": "B1", "owner": "M1", "operation": "self-grounding-test", "pressure": "only-science-counts-standard", "body_ref": "B1_2", "delta": "Delta B1:self-authorizing-standard-invalidated", "land": "Land(B1)+"}
+    {"source": "B1", "target": "B1", "owner": "source-status-repair", "operation": "source-order", "pressure": "scientific-explanations-only-knowledge-source", "body_ref": "¹B₁", "delta": "Delta B1:science-source-bounded", "land": "Land(B1)+"},
+    {"source": "B1", "target": "B1", "owner": "M1", "operation": "self-grounding-test", "pressure": "only-science-counts-standard", "body_ref": "¹B₂", "delta": "Delta B1:self-authorizing-standard-invalidated", "land": "Land(B1)+"}
   ],
   "generated_burdens": [],
   "normalized_activation_record": {

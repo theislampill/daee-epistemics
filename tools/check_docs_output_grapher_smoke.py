@@ -239,24 +239,34 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=DEFAULT_OUTPUT,
         help="Full daee-epistemics output Markdown to smoke. Defaults to a retained proof-owned docs-grapher case.",
     )
     parser.add_argument("--field-witness", type=Path, help="Optional separate field_witness JSON.")
     parser.add_argument("--certificate", type=Path, help="Optional collapse certificate JSON.")
+    parser.add_argument(
+        "--require-explicit-output",
+        action="store_true",
+        help="Fail unless --output was explicitly supplied. Use for exact fresh Stage 07 output readiness gates.",
+    )
     parser.add_argument("--json", action="store_true", help="Print full JSON smoke payload.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    payload = run_smoke(args.output, args.field_witness, args.certificate)
+    if args.require_explicit_output and args.output is None:
+        raise SystemExit(
+            "docs Output Grapher exact-output smoke requires --output; "
+            "the retained default fixture is not enough for a fresh Stage 07 artifact"
+        )
+    output = args.output or DEFAULT_OUTPUT
+    payload = run_smoke(output, args.field_witness, args.certificate)
     if args.json:
         print(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
         result = payload["result"]
         print("docs Output Grapher smoke: PASS")
-        print(f"output: {rel(args.output)}")
+        print(f"output: {rel(output)}")
         print(
             "parsed: "
             f"nodes={result['nodeCount']} edges={result['edgeCount']} "

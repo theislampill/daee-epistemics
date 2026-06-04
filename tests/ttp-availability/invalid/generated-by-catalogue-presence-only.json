@@ -1,0 +1,16 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "generated_by_mrp",
+  "catalogue_present": ["FPD", "P7"],
+  "selected": ["FPD"],
+  "unselected": ["P7"],
+  "generation_cause": "catalogue_presence",
+  "B_LA": ["B1"],
+  "B_MRP": ["B2"],
+  "generated_burdens": [
+    {"id": "B2", "generated_by": "MRP(B1)", "cause": "catalogue_presence"}
+  ],
+  "dependency_graph_edges": [["B1", "B2"]],
+  "coverage_complete": false,
+  "surface_rows": []
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_inert",
+  "catalogue_present": ["M8", "M9", "P1", "P7", "source-status-repair"],
+  "selected": [],
+  "unselected": ["M8", "M9", "P1", "P7", "source-status-repair"],
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "generated_burdens": [],
+  "coverage_complete": false,
+  "surface_rows": [
+    {
+      "owner": "M8",
+      "act_row": "ACT B1_1[M8.trace] :: body_ref=B1_1 :: Land(B1)+",
+      "body_ref": "B1_1",
+      "body_ref_dereference": {"body_ref": "B1_1", "owner": "M8", "target": "source-worldview recoil", "operation": "trace", "result": "dependency exposed"},
+      "owner_activation": {"owner": "M8", "body_ref": "B1_1"},
+      "nar": {"owner": "M8"},
+      "field_witness": {"owner": "M8", "body_ref": "B1_1"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["M8"]}
+    }
+  ]
+}

@@ -10,20 +10,20 @@ daee-epistemics — NOETIC FIELD EXECUTION
 ## Burden 1 / ¹B — local criterion repair
 Matched owner/TTP route: [M1]
 - ACT records:
-  ⟦ACT ¹B₁[M1.repair] :: π=root pressure :: body_ref=¹B₁ :: Δ=Δ¹B:root repaired :: Land(¹B)+⟧
+  ⟦ACT ¹B₁[M1.self-grounding-test] :: π=criterion self-grounding pressure :: body_ref=¹B₁ :: Δ=Δ¹B:criterion-self-failure-invalidated :: Land(¹B)+⟧
 
-### ¹B₁[M1] — repair the root pressure
-- Target: root pressure.
-- Operation: repair the local criterion before it controls closure.
-- Result/state-change: root repaired
-- Contribution-to-Land(¹B): the only baseline burden is landed.
+### ¹B₁[M1] — test the criterion by its own standard
+- Target: criterion self-grounding pressure.
+- Operation: self-grounding-test applies the local criterion to itself before it controls closure.
+- Result/state-change: criterion-self-failure invalidated and root pressure bounded.
+- Contribution-to-Land(¹B): the only baseline burden is landed because the self-grounding criterion fails by its own rule.
 
-Land(¹B): landed / M1 / root pressure repaired.
+Land(¹B): landed / M1 / criterion self-failure invalidated and root pressure bounded.
 
 [Mid-Reread Pressure]
 Target: ¹B / local criterion repair
 Reread: R(H,Δ)
-Landed delta: Delta B1: root repaired.
+Landed delta: Delta B1: criterion-self-failure invalidated and root pressure bounded.
 Pressure activations:
 - freeze-landed-move: terminal-state accounting — keep ¹B landed
 - dependency-tug: pressure class: cleared — no further edge
@@ -57,13 +57,13 @@ pressure, and the closing frame returns to fitrah with sound reason rather than 
 - 𝔅_MRP: []
 - 𝔅_total (B_total): [¹B]
 - Terminal states:
-  ¹B: landed / M1 / root pressure repaired
+  ¹B: landed / M1 / criterion self-failure invalidated and root pressure bounded
 - Burden dependency graph:
   ¹B (root)
 - MRP resultants:
   MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP
 - Owner activations:
-  ⟦ACT ¹B₁[M1.repair] :: π=root pressure :: body_ref=¹B₁ :: Δ=Δ¹B:root repaired :: Land(¹B)+⟧
+  ⟦ACT ¹B₁[M1.self-grounding-test] :: π=criterion self-grounding pressure :: body_ref=¹B₁ :: Δ=Δ¹B:criterion-self-failure-invalidated :: Land(¹B)+⟧
 - ∇·B: neutral / no live burden remains
 - ∇×κ: null / no loop
 - 𝒞(Ψᴺ): coverage_complete=true; terminal route STOP
@@ -86,7 +86,7 @@ pressure, and the closing frame returns to fitrah with sound reason rather than 
     {
       "source_burden": "B1",
       "prior_land": "Land(B1)",
-      "delta": "Delta B1: root repaired.",
+      "delta": "Delta B1: criterion-self-failure invalidated and root pressure bounded.",
       "reread": "R(H,Delta)",
       "route_gradient": "∇ points to STOP because 𝔅_LA is landed for this scoped fixture.",
       "divergence_state": "neutral",
@@ -131,7 +131,7 @@ pressure, and the closing frame returns to fitrah with sound reason rather than 
     "input_hash": "b692c3bbb4f15285f35338cb91cc313fa4c3462c201d8689d642455bdf2ed896"
   },
   "owner_activations": [
-    {"source": "B1", "target": "B1", "owner": "M1", "operation": "repair", "pressure": "root pressure", "body_ref": "¹B₁", "delta": "Delta B1:root repaired", "land": "Land(B1)+"}
+    {"source": "B1", "target": "B1", "owner": "M1", "operation": "self-grounding-test", "pressure": "criterion self-grounding pressure", "body_ref": "¹B₁", "delta": "Delta B1:criterion-self-failure-invalidated", "land": "Land(B1)+"}
   ],
   "generated_burdens": [],
   "coverage_proof": {

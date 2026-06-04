@@ -1,0 +1,28 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "generated_by_mrp",
+  "catalogue_present": ["FPD", "P7", "M8", "M9"],
+  "selected": ["FPD", "P7"],
+  "unselected": ["M8", "M9"],
+  "generation_cause": "live_pressure",
+  "B_LA": ["B1", "B2", "B3"],
+  "B_MRP": ["B4"],
+  "B_total": ["B1", "B2", "B3", "B4"],
+  "generated_burdens": [
+    {"id": "B4", "generated_by": "MRP(B1)", "cause": "live_pressure", "state": "carried-HOLD"}
+  ],
+  "dependency_graph_edges": [["B1", "B4"]],
+  "coverage_complete": false,
+  "surface_rows": [
+    {
+      "owner": "P7",
+      "act_row": "ACT B4_1[P7.bound] :: body_ref=B4_1 :: Land(B4)+",
+      "body_ref": "B4_1",
+      "body_ref_dereference": {"body_ref": "B4_1", "owner": "P7", "target": "generated TST recoil", "operation": "bound", "result": "scope boundary named"},
+      "owner_activation": {"owner": "P7", "body_ref": "B4_1"},
+      "nar": {"owner": "P7"},
+      "field_witness": {"owner": "P7", "body_ref": "B4_1"},
+      "mrp_reread": {"route_result_type": "generated_burden_instantiation", "owner_route": ["FPD", "P7"]}
+    }
+  ]
+}

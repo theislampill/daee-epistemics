@@ -1,46 +1,46 @@
 {
   "audit": "v0.4.1.0 TTP end-to-end operativity audit",
   "catalogue": "atomics/skill/references/diagnostics/module-catalogue.json",
-  "catalogue_count": 70,
+  "catalogue_count": 71,
   "class_counts": {
     "case-library": 19,
-    "diagnostic": 6,
+    "diagnostic": 7,
     "tactic": 25,
     "procedure": 7,
     "technique": 13
   },
   "status_counts": {
     "PASS": 13,
-    "PARTIAL": 57
+    "PARTIAL": 58
   },
   "priority_counts": {
     "P2": 19,
-    "P1": 51
+    "P1": 52
   },
   "dimension_counts": {
     "A_catalogue_integrity": {
-      "PASS": 70,
+      "PASS": 71,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "B_activation_condition": {
-      "PASS": 70,
+      "PASS": 71,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "C_field_target_clarity": {
-      "PASS": 70,
+      "PASS": 71,
       "PARTIAL": 0,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "D_burden_submove_semantics": {
-      "PASS": 69,
+      "PASS": 70,
       "PARTIAL": 0,
       "MISSING": 1,
       "UNCLEAR": 0,
@@ -48,27 +48,27 @@
     },
     "E_delta_effect": {
       "PASS": 1,
-      "PARTIAL": 39,
+      "PARTIAL": 40,
       "MISSING": 30,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "F_nabla_diagnostic_awareness": {
-      "PASS": 3,
+      "PASS": 4,
       "PARTIAL": 13,
       "MISSING": 54,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "G_reread_obligation": {
-      "PASS": 15,
+      "PASS": 16,
       "PARTIAL": 6,
       "MISSING": 49,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "H_hold_release_closure_effect": {
-      "PASS": 69,
+      "PASS": 70,
       "PARTIAL": 0,
       "MISSING": 1,
       "UNCLEAR": 0,
@@ -77,26 +77,26 @@
     "I_nla_reconstruction_fidelity": {
       "PASS": 1,
       "PARTIAL": 25,
-      "MISSING": 44,
+      "MISSING": 45,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "J_render_output_boundary": {
-      "PASS": 69,
+      "PASS": 70,
       "PARTIAL": 1,
       "MISSING": 0,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "K_negative_constraints": {
-      "PASS": 64,
+      "PASS": 65,
       "PARTIAL": 0,
       "MISSING": 6,
       "UNCLEAR": 0,
       "NOT_APPLICABLE": 0
     },
     "L_fixture_checker_coverage": {
-      "PASS": 50,
+      "PASS": 51,
       "PARTIAL": 2,
       "MISSING": 18,
       "UNCLEAR": 0,
@@ -106,7 +106,7 @@
   "defect_class_counts": {
     "TTP-DELTA-EFFECT-MISSING": 69,
     "TTP-NABLA-AWARENESS-MISSING": 67,
-    "TTP-NLA-TRACE-MISSING": 69,
+    "TTP-NLA-TRACE-MISSING": 70,
     "TTP-REREAD-MISSING": 55,
     "TTP-ARGUMENT-BANK-DRIFT": 1,
     "TTP-CLOSURE-EFFECT-MISSING": 1,
@@ -2987,6 +2987,50 @@
       "status": "PASS",
       "priority": "P2",
       "action": "add post-Delta field-diagnostic compatibility note; state Delta effect"
+    },
+    {
+      "id": "foreign-premise-detection",
+      "owner_file": "atomics/skill/references/diagnostics/foreign-premise-detection.md",
+      "class": "diagnostic",
+      "owner_sha256": "c4362cda8c3e51606c6b781e8c2d99d6e0840c8371d2765d364afbb7d2fe2f7c",
+      "owner_bytes_read": 16388,
+      "scores": {
+        "A_catalogue_integrity": "PASS",
+        "B_activation_condition": "PASS",
+        "C_field_target_clarity": "PASS",
+        "D_burden_submove_semantics": "PASS",
+        "E_delta_effect": "PARTIAL",
+        "F_nabla_diagnostic_awareness": "PASS",
+        "G_reread_obligation": "PASS",
+        "H_hold_release_closure_effect": "PASS",
+        "I_nla_reconstruction_fidelity": "MISSING",
+        "J_render_output_boundary": "PASS",
+        "K_negative_constraints": "PASS",
+        "L_fixture_checker_coverage": "PASS"
+      },
+      "direct_fixtures": [
+        "tests/ttp-availability/valid/callable-applicable-high-risk-owners.json",
+        "tests/ttp-availability/valid/callable-but-inert-catalogue-presence.json",
+        "tests/ttp-availability/valid/applicable-owner-body-not-loaded-hold.json",
+        "tests/owner-activation-ordering/valid/controlled-delta-result-owner-family-matrix.md"
+      ],
+      "indirect_fixtures": [
+        "tests/nla-decode-semantic-faithfulness/valid/canonical-act-long-owner-availability.md",
+        "tests/nla-decode-semantic-faithfulness/invalid/long-owner-unselected-catalogue-surface-leak.md"
+      ],
+      "checker_hits": [
+        "tools/check_ttp_availability_canaries.py",
+        "tools/check_ttp_operator_contracts.py --strict",
+        "tools/check_owner_activation_ordering.py",
+        "tools/check_nla_decode_semantic_faithfulness.py"
+      ],
+      "defect_classes": [
+        "TTP-NLA-TRACE-MISSING"
+      ],
+      "lean_risk": "Medium: callable availability and safe failure are now canaried, but semantic NLA breadth remains release-smoke evidence rather than this no-model audit",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "action": "added catalogue-backed governance owner metadata, runtime operator contract, FPD alias/delta canaries, inertness guard, and owner-body-not-loaded HOLD/PARTIAL canary; semantic breadth remains future smoke evidence"
     },
     {
       "id": "TTP-MRP-mid-reread-pressure",

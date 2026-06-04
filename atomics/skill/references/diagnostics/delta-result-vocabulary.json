@@ -7,8 +7,32 @@
     "do-attribute-precision": "DO_ATTRIBUTE",
     "do-christian-extensions": "DO_CHRISTIAN",
     "doubt-vs-skepticism": "DOUBT_SKEPTICISM",
+    "foreign-premise-detection": "FPD",
+    "husn-al-nazar": "HUSN_AL_NAZAR",
+    "husn-al-nazar-arguments": "HUSN_AL_NAZAR",
+    "inductive-fitri": "INDUCTIVE_FITRI",
+    "inductive-fitri-method": "INDUCTIVE_FITRI",
+    "M1-self-refutation": "M1",
     "LoopBreak": "LOOPBREAK",
-    "source-status-repair": "SOURCE"
+    "M1P": "M1-P",
+    "M1P-performative-self-refutation": "M1-P",
+    "M7-definition-anchor": "M7",
+    "M8-reductio": "M8",
+    "M9-predication-mode": "M9",
+    "P1-fitrah-restoration": "P1",
+    "P2-objection-mapping": "P2",
+    "P3-reason-revelation-tension": "P3",
+    "P4-maieutic": "P4",
+    "P5-already-believing": "P5",
+    "P6-universal-aqidah-principle": "P6",
+    "P7-restoration-stops": "P7",
+    "source-status-repair": "SOURCE",
+    "symmetric-taqlid": "SYMMETRIC_TAQLID",
+    "symmetric-taqlid-check": "SYMMETRIC_TAQLID",
+    "V12-tamanuc-exhaustion": "V12",
+    "V10-transmission-content-vetting": "V10",
+    "V3-regress-dissolution": "V3",
+    "V6-convergence": "V6"
   },
   "owner_families": {
     "M1": [
@@ -73,8 +97,24 @@
       "sound-worship-frame-returned",
       "fitrah-orientation-restored"
     ],
+    "P2": [
+      "objection-topology-mapped",
+      "objection-sequence-stabilized"
+    ],
     "P3": [
       "reason-revelation-order-stabilized"
+    ],
+    "P4": [
+      "recognition-elicitation-bounded",
+      "maieutic-question-routed"
+    ],
+    "P5": [
+      "article-strengthening-sequenced",
+      "examined-conviction-stabilized"
+    ],
+    "P6": [
+      "worldview-binding-exposed",
+      "pseudo-neutrality-bound"
     ],
     "P7": [
       "scope-boundary-named",
@@ -104,6 +144,35 @@
       "burden-inverted",
       "evidence-demand-tribunal-exposed",
       "doubt-method-separated-from-sincere-question"
+    ],
+    "HUSN_AL_NAZAR": [
+      "secondary-inference-routed",
+      "proof-readiness-stabilized"
+    ],
+    "INDUCTIVE_FITRI": [
+      "foundation-superstructure-separated",
+      "cross-cultural-variation-bounded"
+    ],
+    "SYMMETRIC_TAQLID": [
+      "symmetric-taqlid-classified",
+      "inward-examination-required"
+    ],
+    "V3": [
+      "regress-demand-dissolved",
+      "foundation-regress-bounded"
+    ],
+    "V6": [
+      "register-conflict-converted",
+      "convergence-pattern-integrated"
+    ],
+    "V10": [
+      "source-function-bounded",
+      "hidden-authority-source-status-bounded",
+      "proof-text-sorted"
+    ],
+    "V12": [
+      "plurality-claim-refused",
+      "independent-lordship-exhausted"
     ]
   }
 }

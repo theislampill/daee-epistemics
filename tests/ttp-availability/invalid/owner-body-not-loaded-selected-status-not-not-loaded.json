@@ -1,0 +1,14 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "applicable_owner_body_not_loaded",
+  "catalogue_present": ["source-status-repair"],
+  "selected": ["source-status-repair"],
+  "unselected": [],
+  "owner_body_status": {"source-status-repair": "loaded"},
+  "route": "HOLD",
+  "boundary": "PARTIAL / OWNER-BODY-NOT-LOADED: source-status-repair body missing; coverage_complete=false",
+  "coverage_complete": false,
+  "retained_promotion_eligible": false,
+  "land_claims": [],
+  "surface_rows": []
+}

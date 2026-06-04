@@ -67,6 +67,7 @@ jobs:
           python tools/check_smoke_artifacts.py
           python tools/check_register_formalism_bridge.py
           python tools/check_mrp_generated_burden.py
+          python tools/check_ttp_availability_canaries.py
           python tools/check_mrp_route_invariants.py
           python tools/check_manual_smoke_render_contract.py
           python tools/check_concealment_mode.py

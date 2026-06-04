@@ -51,6 +51,13 @@
       "module_class": "diagnostic"
     },
     {
+      "id": "foreign-premise-detection",
+      "path": "skill/references/diagnostics/foreign-premise-detection.md",
+      "module_class": "diagnostic",
+      "owner_family": "FPD",
+      "aliases": ["FPD"]
+    },
+    {
       "id": "hadith-authentication-epistemology",
       "path": "skill/references/diagnostics/hadith-authentication-epistemology.md",
       "module_class": "diagnostic"
@@ -168,7 +175,9 @@
     {
       "id": "M1P-performative-self-refutation",
       "path": "skill/references/tactics/M1P-performative-self-refutation.md",
-      "module_class": "tactic"
+      "module_class": "tactic",
+      "owner_family": "M1-P",
+      "aliases": ["M1-P", "M1P"]
     },
     {
       "id": "M2-prior-probability",
@@ -238,17 +247,23 @@
     {
       "id": "husn-al-nazar-arguments",
       "path": "skill/references/tactics/husn-al-nazar-arguments.md",
-      "module_class": "tactic"
+      "module_class": "tactic",
+      "owner_family": "HUSN_AL_NAZAR",
+      "aliases": ["husn-al-nazar"]
     },
     {
       "id": "inductive-fitri-method",
       "path": "skill/references/tactics/inductive-fitri-method.md",
-      "module_class": "tactic"
+      "module_class": "tactic",
+      "owner_family": "INDUCTIVE_FITRI",
+      "aliases": ["inductive-fitri"]
     },
     {
       "id": "symmetric-taqlid-check",
       "path": "skill/references/tactics/symmetric-taqlid-check.md",
-      "module_class": "tactic"
+      "module_class": "tactic",
+      "owner_family": "SYMMETRIC_TAQLID",
+      "aliases": ["symmetric-taqlid"]
     },
     {
       "id": "P1-fitrah-restoration",
@@ -293,7 +308,9 @@
     {
       "id": "V10-transmission-content-vetting",
       "path": "skill/references/techniques/V10-transmission-content-vetting.md",
-      "module_class": "technique"
+      "module_class": "technique",
+      "owner_family": "V10",
+      "aliases": ["V10"]
     },
     {
       "id": "V11-taqlid-transition",

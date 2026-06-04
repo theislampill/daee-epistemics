@@ -871,9 +871,9 @@ governing files are gate-integrity violations, not conservative loading choices.
    `do-attribute-precision.md` when person-multiplicity is live, `V8-bila-kayf-anchor.md`,
    and `V12-tamanuc-exhaustion.md`. Identifying the case without loading its governing
    files is diagnosis without execution.
-   John 17:3 Trinitarian hard-output prompts follow
-   `do-christian-extensions.md`'s hard-output floor; do not claim
-   `coverage_complete=true` from a compact under-mass DO-12 answer.
+   Selected DO-12 hard-output prompts follow `do-christian-extensions.md`'s
+   hard-output floor; do not claim `coverage_complete=true` from a compact
+   under-mass DO-12 answer.
 
 5. **All matched_modules governing source identities:** Every entry in `matched_modules`
    corresponds to an original module ID and canonical module identity. In source-development

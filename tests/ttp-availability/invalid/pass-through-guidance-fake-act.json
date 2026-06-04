@@ -1,0 +1,14 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_applicable",
+  "catalogue_present": ["V1-diagnostic", "heuristics"],
+  "selected": ["V1-diagnostic", "heuristics"],
+  "unselected": [],
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "coverage_complete": true,
+  "surface_rows": [
+    {"owner": "V1-diagnostic", "act_row": "ACT B1_1[V1-diagnostic.triage] :: body_ref=B1_1 :: Land(B1)+", "body_ref": "B1_1", "body_ref_dereference": {"body_ref": "B1_1", "owner": "V1-diagnostic", "target": "diagnostic pass-through", "operation": "triage", "result": "diagnostic-guidance-activated", "contribution": "Contribution-to-Land"}, "owner_activation": {"owner": "V1-diagnostic", "body_ref": "B1_1"}, "nar": {"owner": "V1-diagnostic"}, "field_witness": {"owner": "V1-diagnostic", "body_ref": "B1_1"}, "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["V1-diagnostic"]}},
+    {"owner": "heuristics", "act_row": "ACT B1_2[heuristics.apply] :: body_ref=B1_2 :: Land(B1)+", "body_ref": "B1_2", "body_ref_dereference": {"body_ref": "B1_2", "owner": "heuristics", "target": "background guidance", "operation": "apply", "result": "heuristic-guidance-activated", "contribution": "Contribution-to-Land"}, "owner_activation": {"owner": "heuristics", "body_ref": "B1_2"}, "nar": {"owner": "heuristics"}, "field_witness": {"owner": "heuristics", "body_ref": "B1_2"}, "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["heuristics"]}}
+  ]
+}
