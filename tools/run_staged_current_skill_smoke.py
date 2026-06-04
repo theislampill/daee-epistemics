@@ -142,7 +142,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "metadata is useful, put it in optional `route_target_details`; do not put "
             "objects in `route_targets`. The canonical `owner_routes` field must be a "
             "JSON array of objects with string `burden_id` and `owner_id` fields; richer "
-            "owner-order evidence may be placed in optional detail fields."
+            "owner-order evidence may be placed in optional detail fields. Route/context "
+            "labels, umbrella family labels, and case-library labels are not automatically "
+            "ACT owners; later ACT rows must use a callable selected owner/TTP floor. "
+            "If a selected route has no loaded callable owner body, preserve it as "
+            "HOLD/PARTIAL with OWNER-BODY-NOT-LOADED instead of converting the route "
+            "label into a fake ACT owner."
         ),
     },
     "stage-04-burden-execution-act": {
@@ -158,7 +163,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
             "`⟧`. If richer per-row metadata is useful, put it in optional "
             "`act_row_details`; do not put objects in `act_rows` unless each object "
-            "also carries an explicit string `act_row` for harness normalization."
+            "also carries an explicit string `act_row` for harness normalization. "
+            "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
+            "route/context umbrella label or code lookup. When the selected owner body "
+            "is unavailable or not loaded, emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED "
+            "handoff evidence instead of claiming `Land(...)`."
         ),
     },
     "stage-05-mrp-reread-terminal-state": {
@@ -1895,6 +1904,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         "- `MRP resultant:`, `Graph delta:`, `Pre-emption basis:`, and `Route:` are required public fields; field_witness and Closure/Reconstruction Witness mirrors do not replace them.",
         "- For terminal STOP/no-new-resultant, use `Graph delta: none`, `Route: STOP`, and do not invent a graph edge.",
         "- For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:` and `MRP resultant:`.",
+        "- Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold; every visible MRP source must have matching `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` rows, or remain non-MRP held-route prose.",
         "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the `[Mid-Reread Pressure]` block itself must be parseable.",
     ]
     return "\n".join(lines)
@@ -1970,6 +1980,8 @@ def stage07_act_contract_guidance(
             "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
+            "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels and code lookups are not load-bearing ACT owners.",
+            "- If the matched owner body is not loaded, emit HOLD/PARTIAL with `OWNER-BODY-NOT-LOADED` and do not emit `Land(Bn):` for that burden.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
@@ -2310,6 +2322,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, plus one MRP-owned row for each generated `B_MRP` burden that has no Stage 04 ACT rows; do not collapse these into one summary row per burden.",
         "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
         "- `formal_reread_states[]` is required; emit exactly one row for every `mrp_resultants[]` source and keep `source_burden`, `route_result_type`, `graph_delta`, and `route` aligned with that MRP row.",
+        "- The visible public MRP source set, Closure/Reconstruction Witness `MRP(...)` rows, JSON `mrp_resultants[]`, and JSON `formal_reread_states[]` must be exactly the same source set. If a public `MRP(G)` source is not in the scaffold, remove it or convert it to non-load-bearing held-route prose; do not leave an unmatched visible MRP block.",
         "- `curl_state` values must be parser-stable JSON strings. When curl is absent/resolved, emit JSON string `\"null\"`, never bare JSON null.",
         "- Terminal `STOP` / `no_new_resultant` rows must set `reread` to `R(H,Delta)`, `divergence_state` to `neutral`, `curl_state` to JSON string `\"null\"`, `graph_delta` to `none`, omit `next_burden`, and include `no_new_resultant_proof.escape_routes_checked` as a JSON list.",
         "- If a terminal `STOP` / `no_new_resultant` row is only a bounded MRP row for a generated or unresolved burden, keep `coverage_complete=false`, set `no_new_resultant_proof.proved=false`, and keep explicit HOLD/PARTIAL accounting instead of claiming clean closure.",
@@ -5093,6 +5106,7 @@ def run_self_test(root: Path) -> int:
         "`Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
         "`MRP route result type:` must be one canonical token with no trailing punctuation",
         "field_witness and Closure/Reconstruction Witness mirrors do not replace them",
+        "Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold",
     ):
         if required not in stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 MRP prompt omitted public-block scaffold: {required}")
@@ -5121,6 +5135,7 @@ def run_self_test(root: Path) -> int:
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
         "Contribution-to-Land(¹B)",
         "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
+        "route/context umbrella labels and code lookups are not load-bearing ACT owners",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
@@ -5368,6 +5383,7 @@ def run_self_test(root: Path) -> int:
         '"coverage_complete": false',
         '"proved": false',
         "explicit HOLD/PARTIAL accounting",
+        "visible public MRP source set, Closure/Reconstruction Witness `MRP(...)` rows, JSON `mrp_resultants[]`, and JSON `formal_reread_states[]` must be exactly the same source set",
     ):
         if required not in generated_stage07_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 generated-burden prompt omitted scaffold: {required}")
