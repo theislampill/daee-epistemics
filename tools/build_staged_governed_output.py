@@ -166,6 +166,7 @@ SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 ]
 BODY_REF_TOKEN_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+SUB_DIGITS = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.s][0-9]+)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
@@ -182,6 +183,14 @@ OWNER_ORDERING_FAMILY_ALIASES = {
 OWNER_ORDERING_CODE_RE = re.compile(r"^(?:M1-P|M[1-9]|P[1-7]|R[1-3]|FPD)$")
 ORDERING_ROLES = {"required", "parallel", "contingent", "optional_non_load_bearing", "hold_partial"}
 ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+ASCII_TO_SUB_DIGITS = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+PUBLIC_SUBMOVE_HEADING_RE = re.compile(
+    r"(?m)^(?P<prefix>\s*(?:#{1,6}\s*)?)"
+    r"(?P<ref>(?:B(?P<ascii_burden>[1-9][0-9]*)[_\.](?P<ascii_sub>[1-9][0-9]*)|"
+    r"(?P<public_burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+)B(?P<public_sub>[₀₁₂₃₄₅₆₇₈₉]+)))"
+    r"(?P<owner>\s*\[[A-Za-z][A-Za-z0-9_.\-/]*\])"
+    r"(?P<tail>(?:\s*\([^)]*\))?\s*(?:[-—:]).*)$"
+)
 PUBLIC_GRAPH_CONTEXT_RE = re.compile(
     r"(?i)^\s*(?:[-*]\s*)?(?:"
     r"Initial burden set|Held burden set|Held routes|Burden dependency graph|"
@@ -554,6 +563,53 @@ def public_burden_token(value: str) -> str:
     return f"{str(value).translate(ASCII_TO_SUP_DIGITS)}B"
 
 
+def canonical_submove_ref(value: str) -> str:
+    text = str(value or "").strip()
+    match = re.fullmatch(r"B([1-9][0-9]*)[_\.]([1-9][0-9]*)", text)
+    if match:
+        return f"B{match.group(1)}_{match.group(2)}"
+    match = re.fullmatch(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B([₀₁₂₃₄₅₆₇₈₉]+)", text)
+    if match:
+        return f"B{match.group(1).translate(SUP_DIGITS)}_{match.group(2).translate(SUB_DIGITS)}"
+    return text
+
+
+def public_submove_token(value: str) -> str:
+    canonical = canonical_submove_ref(value)
+    match = re.fullmatch(r"B([1-9][0-9]*)_([1-9][0-9]*)", canonical)
+    if not match:
+        return value
+    return f"{match.group(1).translate(ASCII_TO_SUP_DIGITS)}B{match.group(2).translate(ASCII_TO_SUB_DIGITS)}"
+
+
+def canonicalize_public_submove_headings(text: str) -> tuple[str, dict[str, Any] | None]:
+    seen: set[str] = set()
+    canonicalized = 0
+    demoted_duplicates = 0
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal canonicalized, demoted_duplicates
+        ref = match.group("ref")
+        canonical_ref = canonical_submove_ref(ref)
+        public_ref = public_submove_token(canonical_ref)
+        if public_ref != ref:
+            canonicalized += 1
+        tail = match.group("tail")
+        if canonical_ref in seen:
+            demoted_duplicates += 1
+            return f"{match.group('prefix')}Additional detail for {public_ref}{tail}"
+        seen.add(canonical_ref)
+        return f"{match.group('prefix')}{public_ref}{match.group('owner')}{tail}"
+
+    updated = PUBLIC_SUBMOVE_HEADING_RE.sub(replace, text)
+    if canonicalized == 0 and demoted_duplicates == 0:
+        return text, None
+    return updated, {
+        "canonicalized_public_submove_headings": canonicalized,
+        "demoted_duplicate_submove_headings": demoted_duplicates,
+    }
+
+
 def canonicalize_public_graph_alias_line(line: str) -> str:
     updated = line
     if re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
@@ -639,16 +695,21 @@ def canonicalize_public_graph_aliases(text: str) -> tuple[str, dict[str, Any] | 
 def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
     spec = CANONICAL_ROLE_HEADINGS.get(role)
     ordering_event: dict[str, Any] | None = None
+    submove_event: dict[str, Any] | None = None
     if role == "field_witness_nar":
         text, ordering_event = canonicalize_field_witness_ordering(text)
+    if role == "layer_b_act":
+        text, submove_event = canonicalize_public_submove_headings(text)
     if spec is None:
         text, graph_event = canonicalize_public_graph_aliases(text)
-        if ordering_event is None and graph_event is None:
+        if ordering_event is None and graph_event is None and submove_event is None:
             return text, None
         event = {
             "section_id": section_id,
             "role": role,
         }
+        if submove_event is not None:
+            event.update(submove_event)
         if ordering_event is not None:
             event.update(ordering_event)
         if graph_event is not None:
@@ -687,7 +748,7 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
         inserted_headings.append(heading)
     text, graph_event = canonicalize_public_graph_aliases(text)
 
-    if not inserted_headings and not model_variants and ordering_event is None and graph_event is None:
+    if not inserted_headings and not model_variants and ordering_event is None and graph_event is None and submove_event is None:
         return text, None
     event = {
         "section_id": section_id,
@@ -699,6 +760,8 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
         event.update(ordering_event)
     if graph_event is not None:
         event.update(graph_event)
+    if submove_event is not None:
+        event.update(submove_event)
     return text, event
 
 
@@ -1936,6 +1999,66 @@ def run_self_test(root: Path) -> int:
         if isinstance(event, dict)
     ):
         raise AssemblyError("self-test public graph alias canonicalization metadata missing")
+
+    public_submove_sections = list(small_sections())
+    public_submove_sections[2] = (
+        "act-body",
+        "layer_b_act",
+        "Layer B - Bounded Governed Response\n"
+        "ACT records:\n"
+        "⟦ACT B2_2[M9.predication-repair] :: π=predicate-transfer :: body_ref=B2_2 :: Δ=ΔB2:predicate-transfer-blocked :: Land(B2)+⟧\n"
+        "⟦ACT B3_1[V10.source-status] :: π=source-stack :: body_ref=B3_1 :: Δ=ΔB3:source-status-ordered :: Land(B3)+⟧\n"
+        "### B2_2[M9] - predication repair over predicate-transfer\n"
+        "Target: predicate-transfer.\n"
+        "Operation: predication-repair blocks category transfer.\n"
+        "Result/state-change: predicate-transfer-blocked.\n"
+        "Contribution-to-Land(B2): the predicate transfer is blocked.\n"
+        "### B2_2[M9] - additional owner operation body\n"
+        "Target: additional predication detail.\n"
+        "Operation: predication-repair explains retained category consequence.\n"
+        "Result/state-change: retained-category-clarified.\n"
+        "Contribution-to-Land(B2): additional detail must not become a second body_ref body.\n"
+        "### B3_1[V10] - source-status ordering over source-stack\n"
+        "Target: source-stack.\n"
+        "Operation: source-status orders the cited source stack.\n"
+        "Result/state-change: source-stack-ordered.\n"
+        "Contribution-to-Land(B3): source status is ordered.\n"
+        "Land(B2): landed.\n"
+        "Land(B3): landed.\n",
+    )
+    public_submove_manifest = manifest_for_sections(
+        base_dir / "valid-public-submove-heading-canonicalization",
+        case_id="valid-public-submove-heading-canonicalization",
+        source_input="valid-public-submove-heading-canonicalization/input.md",
+        section_specs=public_submove_sections,
+    )
+    public_submove_record = assemble_manifest(public_submove_manifest, root=root)
+    public_submove_output = (
+        base_dir / "valid-public-submove-heading-canonicalization" / "output.md"
+    ).read_text(encoding="utf-8")
+    if re.search(r"(?m)^\s*#{1,6}\s*B2_2\[M9\]", public_submove_output):
+        raise AssemblyError("self-test public submove canonicalization retained ASCII B2_2 heading")
+    if re.search(r"(?m)^\s*#{1,6}\s*B3_1\[V10\]", public_submove_output):
+        raise AssemblyError("self-test public submove canonicalization retained ASCII B3_1 heading")
+    if len(re.findall(r"(?m)^\s*#{1,6}\s*²B₂\[M9\]", public_submove_output)) != 1:
+        raise AssemblyError("self-test public submove canonicalization did not preserve exactly one B2_2 body")
+    if len(re.findall(r"(?m)^\s*#{1,6}\s*³B₁\[V10\]", public_submove_output)) != 1:
+        raise AssemblyError("self-test public submove canonicalization did not preserve exactly one B3_1 body")
+    if "Additional detail for ²B₂ - additional owner operation body" not in public_submove_output:
+        raise AssemblyError("self-test public submove canonicalization did not demote duplicate B2_2 detail")
+    public_submove_scaffold = public_submove_record.get("canonical_scaffold")
+    public_submove_events = (
+        public_submove_scaffold.get("events", [])
+        if isinstance(public_submove_scaffold, dict)
+        else []
+    )
+    if not any(
+        event.get("canonicalized_public_submove_headings", 0) >= 3
+        and event.get("demoted_duplicate_submove_headings") == 1
+        for event in public_submove_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test public submove canonicalization metadata missing")
 
     expect_invalid(
         root,

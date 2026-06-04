@@ -63,6 +63,7 @@ STAGE_ORDER = [
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+ASCII_TO_SUB_DIGITS = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
 ACT_ROW_DETAIL_RE = re.compile(
     r"^\s*⟦ACT\s+(?P<body_ref>[^\s\[]+)"
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
@@ -1178,6 +1179,17 @@ def public_burden_id(value: str) -> str:
     return str(value or "").strip()
 
 
+def public_submove_id(value: str) -> str:
+    text = str(value or "").strip()
+    match = re.fullmatch(r"B([1-9][0-9]*)[_\.]([1-9][0-9]*)", text)
+    if match:
+        return f"{match.group(1).translate(ASCII_TO_SUP_DIGITS)}B{match.group(2).translate(ASCII_TO_SUB_DIGITS)}"
+    match = re.fullmatch(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B([₀₁₂₃₄₅₆₇₈₉]+)", text)
+    if match:
+        return text
+    return text
+
+
 def public_burden_list(values: list[str]) -> str:
     return ", ".join(public_burden_id(value) for value in values)
 
@@ -2024,9 +2036,10 @@ def stage07_act_contract_guidance(
         [
             "- Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`; the body_ref must appear immediately after `ACT`.",
             "- After each copied ACT row, emit exactly one dereferenceable public submove block for the same body_ref.",
+            "- Public submove block headings must use canonical public notation such as `¹B₁[owner] - ...`, not ASCII `B1_1[owner]`; keep ASCII `body_ref=B1_1` only inside copied ACT rows and field_witness JSON.",
             "- Emit a `## Burden N / ⁿB` heading only when this section contains the first Stage 04 body_ref for that burden.",
             "- If this section continues a burden started in the prior ACT slice, continue with the next submove only; do not repeat the burden heading.",
-            "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
+            "- Each submove block heading must begin with that canonical public submove ID plus `[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
             "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners.",
@@ -2049,6 +2062,7 @@ def stage07_act_contract_guidance(
         burden_id = detail["burden_id"] or canonical_burden_id(ref.split("B", 1)[0] + "B")
         flags = completion_flags.get(ref, {})
         public_burden = public_burden_id(burden_id)
+        public_ref = public_submove_id(ref)
         if flags.get("first_for_burden"):
             lines.append(f"- Start burden block: `## Burden {burden_id[1:]} / {public_burden} — <burden-local title>` before {ref}.")
         else:
@@ -2061,7 +2075,7 @@ def stage07_act_contract_guidance(
             )
         lines.extend(
             [
-                f"- {ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']}",
+                f"- {public_ref}[{detail['owner']}] - {detail['operation']} over {detail['pressure']} (mirrors machine body_ref `{ref}`)",
                 f"  Target: {detail['pressure']}.",
                 f"  Operation: {detail['operation']} must act on {detail['pressure']} with owner family {detail['owner']}.",
                 f"  Result/state-change: {detail['delta_result']}; state-change must be visible in local prose.",

@@ -31,6 +31,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 SUP = "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079"
 SUB = "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"
+SUP_DIGITS = str.maketrans(SUP, "0123456789")
+ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", SUP)
 B_LEDGER = "\U0001d505"
 WRONG_B_LEDGER = "\U0001d4d1"
 WRONG_CLOSURE = "\U0001d4d2"
@@ -621,9 +623,28 @@ def held_route_false_closure_errors(path: Path, text: str) -> list[str]:
     return errors
 
 
+def submove_heading_ref_pattern(target: str) -> str:
+    target = str(target or "").strip()
+    ascii_target = ""
+    public_target = ""
+    match = re.fullmatch(r"B([1-9][0-9]*)", target)
+    if match:
+        ascii_target = f"B{match.group(1)}"
+        public_target = f"{match.group(1).translate(ASCII_TO_SUP_DIGITS)}B"
+    else:
+        match = re.fullmatch(rf"([{SUP}]+)B", target)
+        if match:
+            ascii_target = f"B{match.group(1).translate(SUP_DIGITS)}"
+            public_target = target
+    if not ascii_target:
+        return re.escape(target)
+    return rf"(?:{re.escape(ascii_target)}(?:[{SUB}]+|[_\.]\d+)|{re.escape(public_target)}(?:[{SUB}]+|[_\.]\d+))"
+
+
 def submove_blocks(section: str, target: str) -> list[str]:
+    ref_pattern = submove_heading_ref_pattern(target)
     heading_re = re.compile(
-        rf"(?im)^\s*(?:#{{1,6}}\s*)?{re.escape(target)}(?:[{SUB}]+|[_\.]\d+)\s*"
+        rf"(?im)^\s*(?:#{{1,6}}\s*)?{ref_pattern}\s*"
         rf"\[[A-Za-z][A-Za-z0-9/-]*\](?:\s*\([^)]*\))?\s*(?:[-\u2014:]).*$"
     )
     headings = list(heading_re.finditer(section))

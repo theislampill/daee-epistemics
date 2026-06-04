@@ -1395,7 +1395,11 @@ def decode_facets(path: Path, text: str, record: ActRecord) -> tuple[DecodedFace
 
     section = public_execution_text(text)
     raw_target = target_token_from_submove_ref(record.body_ref)
-    blocks = submove_block_index(section, raw_target).get(record.body_ref, []) if raw_target else []
+    blocks = (
+        submove_block_index(section, raw_target).get(graph_submove_id(record.body_ref), [])
+        if raw_target
+        else []
+    )
     if len(blocks) != 1:
         errors.append(f"{label}: body_ref must dereference to exactly one Layer B submove body")
         return None, errors
@@ -1539,7 +1543,11 @@ def reconstructed_submove_errors(
     if reconstructed is None:
         return errors
     target = target_token_from_submove_ref(record.body_ref)
-    blocks = submove_block_index(reconstructed, target).get(record.body_ref, []) if target else []
+    blocks = (
+        submove_block_index(reconstructed, target).get(graph_submove_id(record.body_ref), [])
+        if target
+        else []
+    )
     if len(blocks) != 1:
         return errors + [f"{label}: reconstructed Layer B submove is not parser-stable"]
     block = blocks[0]

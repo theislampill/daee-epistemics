@@ -1000,7 +1000,7 @@ def submove_block_index(section: str, target: str) -> dict[str, list[str]]:
     for block in complete_owner_submove_blocks(section, target):
         ref, _owner = submove_block_ref_owner(block)
         if ref:
-            index.setdefault(ref, []).append(block)
+            index.setdefault(graph_submove_id(ref), []).append(block)
     return index
 
 
@@ -1207,7 +1207,7 @@ def validate_act_record(
         )
     if not re.fullmatch(SUBMOVE_REF, record.body_ref):
         errors.append(f"ACT {record.submove_ref} body_ref {record.body_ref!r} is not a concrete submove reference")
-    blocks = blocks_by_ref.get(record.body_ref, [])
+    blocks = blocks_by_ref.get(graph_submove_id(record.body_ref), [])
     if len(blocks) != 1:
         errors.append(f"ACT {record.submove_ref} body_ref must dereference to exactly one Layer B submove block")
         return valid_families, errors

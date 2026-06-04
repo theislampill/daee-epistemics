@@ -787,7 +787,11 @@ def root_activation_semantic_errors(text: str, primary: str, item: dict[str, Any
         errors.append(f"visible ACT body_ref {graph_submove_id(record.body_ref)} does not belong to {primary}")
 
     raw_target = submove_target_token(record.body_ref)
-    blocks = submove_block_index(public_text, raw_target).get(record.body_ref, []) if raw_target else []
+    blocks = (
+        submove_block_index(public_text, raw_target).get(graph_submove_id(record.body_ref), [])
+        if raw_target
+        else []
+    )
     if len(blocks) != 1:
         errors.append(f"visible ACT body_ref {record.body_ref} must dereference to exactly one submove block")
         return errors
