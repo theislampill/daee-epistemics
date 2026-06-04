@@ -24,6 +24,7 @@ from typing import Any
 
 import build_staged_governed_output as staged_output
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
+from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, canonical_delta_owner
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -453,6 +454,147 @@ def non_empty_string(value: Any) -> str | None:
     return value if isinstance(value, str) and value.strip() else None
 
 
+def delta_token_key(value: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value or "").lower()).strip("-")
+
+
+def canonical_delta_result_for_owner(
+    owner: Any,
+    operation: Any,
+    pressure: Any,
+    raw_delta_result: Any,
+) -> str:
+    raw = str(raw_delta_result or "").strip()
+    if not raw:
+        return raw
+    family = canonical_delta_owner(str(owner or "")) or str(owner or "").strip().upper()
+    vocabulary = DELTA_RESULT_VOCABULARY.get(family)
+    if not vocabulary or raw in vocabulary:
+        return raw
+
+    combined = delta_token_key(f"{operation} {pressure} {raw}")
+    candidates: list[str] = []
+    if family == "DO_CHRISTIAN":
+        if any(token in combined for token in ("trinitarian", "person-nature", "model-transfer", "model-identification")):
+            candidates.append("trinitarian-model-identified")
+        if "fan-out" in combined:
+            candidates.append("fan-out-route-named")
+    elif family == "M7":
+        if any(token in combined for token in ("only-scope", "definition", "scope-defined")):
+            candidates.append("definition-anchored")
+        if "semantic" in combined or "meaning" in combined:
+            candidates.append("semantic-anchor-stabilized")
+        if "term" in combined:
+            candidates.append("term-meaning-bounded")
+        if "falsifiability" in combined:
+            candidates.append("falsifiability-standard-defined")
+    elif family == "M8":
+        if "entailment" in combined:
+            candidates.append("entailment-blocked")
+        if "consequence" in combined:
+            candidates.append("consequence-traced")
+        if "dependency" in combined:
+            candidates.append("dependency-exposed")
+        if "implication" in combined:
+            candidates.append("implication-demoted")
+    elif family == "M9":
+        if "person-nature" in combined:
+            candidates.append("person-nature-transfer-blocked")
+        if "category" in combined:
+            candidates.append("category-separated")
+        if "referent" in combined or "sender-sent" in combined:
+            candidates.append("referent-separated")
+        if "predicate" in combined or "predication" in combined:
+            candidates.append("predicate-separated")
+        if "sense" in combined:
+            candidates.append("sense-separated")
+    elif family == "SOURCE":
+        if "proof-text-hidden-support" in combined:
+            candidates.append("proof-text-hidden-support-blocked")
+        if "proof-text" in combined or "proof-stack" in combined:
+            candidates.append("proof-text-sorted")
+        if "source-order" in combined or "proof-stack-routed" in combined:
+            candidates.append("source-order-repaired")
+        if "hidden-support" in combined:
+            candidates.append("hidden-support-blocked")
+        if "authority-order" in combined:
+            candidates.append("authority-order-repaired")
+    elif family == "P7":
+        if "hold" in combined or "held" in combined:
+            candidates.append("held-route-bounded")
+        if "scope" in combined:
+            candidates.append("scope-boundary-named")
+        if "reopen" in combined:
+            candidates.append("reopen-condition-stated")
+
+    for candidate in ordered_unique(candidates):
+        if candidate in vocabulary:
+            return candidate
+    return raw
+
+
+def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str] | None]:
+    owner = item.get("owner") or item.get("owner_id")
+    operation = item.get("operation")
+    pressure = item.get("pressure")
+    raw_result = item.get("delta_result")
+    delta_value = str(item.get("delta") or "")
+    if not raw_result and ":" in delta_value:
+        raw_result = delta_value.split(":", 1)[1]
+    canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
+    if not raw_result or canonical == str(raw_result).strip():
+        return item, None
+    updated = dict(item)
+    updated["delta_result"] = canonical
+    if delta_value and ":" in delta_value:
+        updated["delta"] = delta_value.split(":", 1)[0] + ":" + canonical
+    return updated, {
+        "owner": str(owner or ""),
+        "operation": str(operation or ""),
+        "pressure": str(pressure or ""),
+        "raw_delta_result": str(raw_result).strip(),
+        "canonical_delta_result": canonical,
+    }
+
+
+def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
+    match = ACT_ROW_DETAIL_RE.match(row)
+    if not match:
+        return row, None
+    raw_result = match.group("delta_result").strip()
+    canonical = canonical_delta_result_for_owner(
+        match.group("owner"),
+        match.group("operation"),
+        match.group("pressure"),
+        raw_result,
+    )
+    if canonical == raw_result:
+        return row, None
+    start, end = match.span("delta_result")
+    return (
+        row[:start] + canonical + row[end:],
+        {
+            "body_ref": match.group("body_ref"),
+            "owner": match.group("owner"),
+            "operation": match.group("operation"),
+            "pressure": match.group("pressure").strip(),
+            "raw_delta_result": raw_result,
+            "canonical_delta_result": canonical,
+        },
+    )
+
+
+def canonicalize_stage04_act_rows(rows: list[str]) -> tuple[list[str], list[dict[str, str]]]:
+    canonical_rows: list[str] = []
+    rewrites: list[dict[str, str]] = []
+    for row in rows:
+        canonical_row, rewrite = canonicalize_stage04_act_row(row)
+        canonical_rows.append(canonical_row)
+        if rewrite:
+            rewrites.append(rewrite)
+    return ordered_unique(canonical_rows), rewrites
+
+
 def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
     text = value.strip()
     if allowed_ids is None or text in allowed_ids:
@@ -672,7 +814,7 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
     raw_rows = stage.get("act_rows")
 
     if isinstance(raw_rows, list) and raw_rows and all(isinstance(item, str) and item for item in raw_rows):
-        act_rows = ordered_unique(list(raw_rows))
+        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(list(raw_rows)))
         stage["act_rows"] = act_rows
     elif isinstance(raw_rows, list) and raw_rows and all(isinstance(item, dict) for item in raw_rows):
         details = list(raw_rows)
@@ -685,11 +827,14 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
                 )
             act_rows.append(act_row)
         stage["act_row_details"] = details
-        stage["act_rows"] = ordered_unique(act_rows)
+        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(act_rows))
+        stage["act_rows"] = act_rows
         normalization["act_rows_from_details"] = True
         normalization["canonical_act_rows"] = list(stage["act_rows"])
     else:
         raise HarnessError("stage-04 act_rows must be a non-empty list of ACT row strings")
+    if delta_rewrites:
+        normalization["delta_result_canonicalizations"] = delta_rewrites
 
     explicit_body_refs = stage.get("act_body_refs")
     if explicit_body_refs is None or explicit_body_refs == []:
@@ -751,7 +896,13 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
     if isinstance(owner_activations, list) and owner_activations and all(isinstance(item, str) and item for item in owner_activations):
         stage["owner_activations"] = ordered_unique(list(owner_activations))
     elif isinstance(owner_activations, list) and owner_activations and all(isinstance(item, dict) for item in owner_activations):
-        details = list(owner_activations)
+        details = []
+        delta_rewrites: list[dict[str, str]] = []
+        for raw_detail in owner_activations:
+            detail, rewrite = canonicalize_delta_fields(dict(raw_detail))
+            details.append(detail)
+            if rewrite:
+                delta_rewrites.append(rewrite)
         refs: list[str] = []
         for index, detail in enumerate(details):
             body_ref = detail.get("body_ref")
@@ -765,6 +916,8 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
             normalization = {}
         normalization["owner_activations_from_details"] = True
         normalization["canonical_owner_activations"] = list(stage["owner_activations"])
+        if delta_rewrites:
+            normalization["owner_activation_delta_result_canonicalizations"] = delta_rewrites
         stage["normalization"] = normalization
     else:
         raise HarnessError("stage-06 owner_activations must be body-ref strings or objects with body_ref")
@@ -871,11 +1024,24 @@ def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
         value["per_burden"] = rows
     if not isinstance(rows, list) or not rows:
         raise HarnessError(f"{label}.per_burden must be a non-empty object list")
+    delta_rewrites: list[dict[str, str]] = []
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             raise HarnessError(f"{label}.per_burden[{index}] must be an object")
         if not isinstance(row.get("burden_id"), str) or not row["burden_id"]:
             raise HarnessError(f"{label}.per_burden[{index}].burden_id must be a non-empty string")
+        updated, rewrite = canonicalize_delta_fields(row)
+        if rewrite:
+            rows[index] = updated
+            delta_rewrites.append(rewrite)
+    if delta_rewrites:
+        normalization = value.get("normalization")
+        if normalization is None:
+            normalization = {}
+        if not isinstance(normalization, dict):
+            raise HarnessError(f"{label}.normalization must be an object when present")
+        normalization["per_burden_delta_result_canonicalizations"] = delta_rewrites
+        value["normalization"] = normalization
 
 
 def hydrate_stage06_nar_details(details: Any, canonical_nar: Any) -> None:
@@ -2265,6 +2431,46 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
             raise HarnessError("stage-05 no_new_resultant_proof proved=true conflicts with unresolved_burdens")
 
 
+def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> str:
+    stage03 = stage_by_id(previous_stages, "stage-03-routing-owner-gate")
+    if not isinstance(stage03, dict):
+        return ""
+    owners: list[str] = []
+    for route in stage03.get("owner_routes") or []:
+        if isinstance(route, dict):
+            owner = non_empty_string(route.get("owner_id") or route.get("owner"))
+            if owner:
+                owners.append(owner)
+        elif isinstance(route, str) and route.strip():
+            owners.append(route.strip())
+    for detail in stage03.get("owner_route_details") or []:
+        if not isinstance(detail, dict):
+            continue
+        owner = non_empty_string(detail.get("owner_id") or detail.get("owner"))
+        if owner:
+            owners.append(owner)
+    families = ordered_unique(
+        [
+            family
+            for owner in owners
+            for family in [canonical_delta_owner(owner)]
+            if family and family in DELTA_RESULT_VOCABULARY
+        ]
+    )
+    if not families:
+        return ""
+    lines = [
+        "",
+        "Stage 04 controlled delta_result vocabulary:",
+        "- The token after the colon in each `Δ=...:<delta_result>` slot must be one of the source-owned owner-local tokens below.",
+        "- Do not invent near-synonyms such as `predicate-transfer-blocked`, `only-scope-defined`, `proof-stack-routed`, or `entailment-bounded`.",
+    ]
+    for family in families:
+        tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
+        lines.append(f"- {family}: {tokens}")
+    return "\n".join(lines)
+
+
 def stage_prompt(
     *,
     root: Path,
@@ -2278,6 +2484,9 @@ def stage_prompt(
 ) -> str:
     spec = STAGE_SPECS[stage_id]
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
+    extra_guidance = ""
+    if stage_id == "stage-04-burden-execution-act":
+        extra_guidance = stage04_delta_vocabulary_guidance(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing one bounded repo/dev staged current-skill smoke for daee-epistemics.
@@ -2305,6 +2514,7 @@ Previous validated compact stage state:
 
 Stage task:
 {spec['instructions']}
+{extra_guidance}
 
 Return exactly one JSON object and nothing else. Required shape:
 {{
@@ -3895,6 +4105,71 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    trinitarian_delta_guidance = stage04_delta_vocabulary_guidance(
+        [
+            {
+                "id": "stage-03-routing-owner-gate",
+                "owner_routes": [
+                    {"burden_id": "B1", "owner_id": "do-christian-extensions"},
+                    {"burden_id": "B1", "owner_id": "M9"},
+                    {"burden_id": "B2", "owner_id": "M7"},
+                    {"burden_id": "B2", "owner_id": "M9"},
+                    {"burden_id": "B3", "owner_id": "source-status-repair"},
+                    {"burden_id": "B3", "owner_id": "authority-order-repair"},
+                    {"burden_id": "B4", "owner_id": "M8"},
+                    {"burden_id": "B4", "owner_id": "M9"},
+                ],
+            }
+        ]
+    )
+    for required in (
+        "DO_CHRISTIAN: fan-out-route-named, trinitarian-model-identified",
+        "M7: definition-anchored",
+        "M8: coercive-clarity-entailment-demoted",
+        "M9: category-separated",
+        "SOURCE: authority-order-repaired",
+        "Do not invent near-synonyms such as `predicate-transfer-blocked`",
+    ):
+        if required not in trinitarian_delta_guidance:
+            raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
+    trinitarian_drift_rows = [
+        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=trinitarian-person-nature-model-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-transfer-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M9.predication-repair] :: π=father-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:predicate-transfer-blocked :: Land(¹B)+⟧",
+        "⟦ACT ²B₁[M7.definition-anchor] :: π=only-placement-analogy :: body_ref=²B₁ :: Δ=Δ²B:only-scope-defined :: Land(²B)+⟧",
+        "⟦ACT ²B₂[M9.predication-repair] :: π=2-plus-2-predicate-category :: body_ref=²B₂ :: Δ=Δ²B:predicate-category-separated :: Land(²B)+⟧",
+        "⟦ACT ³B₁[source-status-repair.source-order] :: π=john-1-1-and-1-john-5-20-proof-stack :: body_ref=³B₁ :: Δ=Δ³B:proof-stack-routed :: Land(³B)+⟧",
+        "⟦ACT ³B₂[authority-order-repair.sort] :: π=proof-text-hidden-support :: body_ref=³B₂ :: Δ=Δ³B:hidden-support-demoted :: Land(³B)+⟧",
+        "⟦ACT ⁴B₁[M8.consequence-trace] :: π=eternal-life-knowing-jesus-entailment :: body_ref=⁴B₁ :: Δ=Δ⁴B:entailment-bounded :: Land(⁴B)+⟧",
+        "⟦ACT ⁴B₂[M9.predication-repair] :: π=sender-sent-relation-category :: body_ref=⁴B₂ :: Δ=Δ⁴B:sender-sent-predication-separated :: Land(⁴B)+⟧",
+    ]
+    normalized_trinitarian_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3", "B4"],
+            "act_burdens": ["B1", "B2", "B3", "B4"],
+            "act_rows": trinitarian_drift_rows,
+        },
+    )
+    trinitarian_delta_results = [
+        stage04_act_details_by_ref(normalized_trinitarian_stage04)[ref]["delta_result"]
+        for ref in ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂"]
+    ]
+    if trinitarian_delta_results != [
+        "trinitarian-model-identified",
+        "predicate-separated",
+        "definition-anchored",
+        "category-separated",
+        "proof-text-sorted",
+        "proof-text-hidden-support-blocked",
+        "entailment-blocked",
+        "category-separated",
+    ]:
+        raise HarnessError("Self-test failed to canonicalize Trinitarian Stage 04 delta_result drift")
+    rewrites = normalized_trinitarian_stage04.get("normalization", {}).get("delta_result_canonicalizations")
+    if not isinstance(rewrites, list) or len(rewrites) != 8:
+        raise HarnessError("Self-test failed to record Trinitarian Stage 04 delta_result canonicalizations")
     partition_stage04 = dict(normalized_stage04)
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"]
     partition_plan = compiled_release_section_plan(70)
@@ -4181,6 +4456,79 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    normalized_stage06_delta_drift = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₂", "³B₂"],
+            "nar_burdens": ["B1", "B3"],
+            "owner_activations": [
+                {
+                    "body_ref": "¹B₂",
+                    "burden_id": "B1",
+                    "owner": "M9",
+                    "owner_id": "M9",
+                    "operation": "predication-repair",
+                    "pressure": "father-only-true-god-predicate-transfer",
+                    "delta": "Δ¹B:predicate-transfer-blocked",
+                    "delta_result": "predicate-transfer-blocked",
+                    "land": "Land(¹B)+",
+                    "terminal_state": "landed",
+                },
+                {
+                    "body_ref": "³B₂",
+                    "burden_id": "B3",
+                    "owner": "authority-order-repair",
+                    "owner_id": "authority-order-repair",
+                    "operation": "sort",
+                    "pressure": "proof-text-hidden-support",
+                    "delta": "Δ³B:hidden-support-demoted",
+                    "delta_result": "hidden-support-demoted",
+                    "land": "Land(³B)+",
+                    "terminal_state": "landed",
+                },
+            ],
+            "normalized_activation_record": {
+                "n_frame": "trinitarian-john-17-3-source-order-repair",
+                "live_registers": ["Omega", "xi"],
+                "burden_floor": ["B1", "B3"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M9",
+                        "operation": "predication-repair",
+                        "pressure": "father-only-true-god-predicate-transfer",
+                        "delta_result": "predicate-transfer-blocked",
+                        "terminal_state": "landed",
+                        "generation_depth": 0,
+                    },
+                    {
+                        "burden_id": "B3",
+                        "owner_id": "authority-order-repair",
+                        "operation": "sort",
+                        "pressure": "proof-text-hidden-support",
+                        "delta_result": "hidden-support-demoted",
+                        "terminal_state": "landed",
+                        "generation_depth": 0,
+                    },
+                ],
+            },
+            "register_deltas": {"Omega": "predicate-transfer-blocked", "xi": "hidden-support-demoted"},
+        },
+    )
+    delta_details = normalized_stage06_delta_drift.get("owner_activation_details") or []
+    if [item.get("delta_result") for item in delta_details] != [
+        "predicate-separated",
+        "proof-text-hidden-support-blocked",
+    ]:
+        raise HarnessError("Self-test failed to canonicalize Stage 06 owner_activation delta_result drift")
+    nar_delta_results = [
+        row.get("delta_result")
+        for row in normalized_stage06_delta_drift["normalized_activation_record"]["per_burden"]
+    ]
+    if nar_delta_results != ["predicate-separated", "proof-text-hidden-support-blocked"]:
+        raise HarnessError("Self-test failed to canonicalize Stage 06 NAR delta_result drift")
     stage07_layer_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
