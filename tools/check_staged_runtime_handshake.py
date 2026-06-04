@@ -143,6 +143,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mrp_generated_burden",
     "graph_completeness_json",
 }
 STAGE07_OPTIONAL_VALIDATION_KEYS = {

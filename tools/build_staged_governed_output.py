@@ -692,6 +692,13 @@ def canonicalize_public_graph_aliases(text: str) -> tuple[str, dict[str, Any] | 
     }
 
 
+def mark_canonical_scaffold_non_evidence(event: dict[str, Any]) -> dict[str, Any]:
+    event.setdefault("proof_authority", "none")
+    event.setdefault("proof_role", "non_evidence_canonicalization")
+    event.setdefault("proof_claim", False)
+    return event
+
+
 def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
     spec = CANONICAL_ROLE_HEADINGS.get(role)
     ordering_event: dict[str, Any] | None = None
@@ -714,7 +721,7 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
             event.update(ordering_event)
         if graph_event is not None:
             event.update(graph_event)
-        return text, event
+        return text, mark_canonical_scaffold_non_evidence(event)
 
     heading = str(spec["heading"])
     variant_patterns = list(spec["variants"])
@@ -762,7 +769,7 @@ def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[s
         event.update(graph_event)
     if submove_event is not None:
         event.update(submove_event)
-    return text, event
+    return text, mark_canonical_scaffold_non_evidence(event)
 
 
 def parse_output_targets(output: Any) -> tuple[int, int, list[str]]:
@@ -1442,6 +1449,22 @@ def act_section(section_id: str, *body_refs: str) -> tuple[str, str, str]:
     )
 
 
+def assert_scaffold_events_non_evidence(record: dict[str, Any], label: str) -> None:
+    scaffold = record.get("canonical_scaffold")
+    if not isinstance(scaffold, dict):
+        return
+    events = scaffold.get("events")
+    if not isinstance(events, list):
+        return
+    for index, event in enumerate(events, start=1):
+        if not isinstance(event, dict):
+            raise AssemblyError(f"self-test {label} canonical scaffold event {index} is not an object")
+        if event.get("proof_authority") != "none" or event.get("proof_role") != "non_evidence_canonicalization":
+            raise AssemblyError(f"self-test {label} canonical scaffold event {index} lacked non-evidence proof metadata")
+        if event.get("proof_claim") is not False:
+            raise AssemblyError(f"self-test {label} canonical scaffold event {index} claimed proof")
+
+
 def run_self_test(root: Path) -> int:
     base_dir = root / ".daee" / "validation" / f"staged-governed-output-assembly-self-test-{uuid.uuid4().hex}"
     base_dir.mkdir(parents=True, exist_ok=True)
@@ -1541,6 +1564,7 @@ def run_self_test(root: Path) -> int:
         ],
     )
     scaffold_record = assemble_manifest(scaffold_manifest, root=root)
+    assert_scaffold_events_non_evidence(scaffold_record, "canonical scaffold")
     scaffold_output = (base_dir / "valid-canonical-scaffold" / "output.md").read_text(encoding="utf-8")
     if "Closure/Reconstruction Witness" not in scaffold_output:
         raise AssemblyError("self-test canonical scaffold did not insert exact closure witness heading")
@@ -1967,6 +1991,7 @@ def run_self_test(root: Path) -> int:
         ),
     )
     graph_alias_record = assemble_manifest(graph_alias_manifest, root=root)
+    assert_scaffold_events_non_evidence(graph_alias_record, "public graph alias")
     graph_alias_output = (
         base_dir / "valid-public-graph-alias-canonicalization" / "output.md"
     ).read_text(encoding="utf-8")
@@ -2033,6 +2058,7 @@ def run_self_test(root: Path) -> int:
         section_specs=public_submove_sections,
     )
     public_submove_record = assemble_manifest(public_submove_manifest, root=root)
+    assert_scaffold_events_non_evidence(public_submove_record, "public submove")
     public_submove_output = (
         base_dir / "valid-public-submove-heading-canonicalization" / "output.md"
     ).read_text(encoding="utf-8")

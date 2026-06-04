@@ -76,16 +76,18 @@ LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
-STAGE07_RELEASE_VALIDATION_KEYS = {
+STAGE07_RELEASE_VALIDATION_ORDER = (
     "visible_opening_header",
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mrp_generated_burden",
     "graph_completeness_json",
     "manual_smoke_render_contract",
     "public_burden_grouping",
     "owner_activation_ordering",
-}
+)
+STAGE07_RELEASE_VALIDATION_KEYS = set(STAGE07_RELEASE_VALIDATION_ORDER)
 B5_PROJECTION_REQUIRED_TRUE_FIELDS = (
     "collapse_positive",
     "coverage_complete",
@@ -6662,11 +6664,16 @@ def run_self_test(root: Path) -> int:
         "nla_semantic_faithfulness": "pass",
         "field_witness_convergence": "pass",
         "formal_reread_state_semantics": "pass",
+        "mrp_generated_burden": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
         "public_burden_grouping": "pass",
         "owner_activation_ordering": "pass",
     }
+    if STAGE07_RELEASE_VALIDATION_ORDER.index("mrp_generated_burden") > STAGE07_RELEASE_VALIDATION_ORDER.index(
+        "graph_completeness_json"
+    ):
+        raise HarnessError("Self-test Stage 07 validator order must run MRP before graph completeness")
     replay_stage07 = stage_by_id(replay.get("stages", []), "stage-07-release-output") or {}
     replay_release_output = replay_stage07.get("release_output") if isinstance(replay_stage07, dict) else {}
     if not isinstance(replay_release_output, dict) or not isinstance(replay_release_output.get("path"), str):
@@ -6892,6 +6899,16 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
         (
             "formal_reread_state_semantics",
             [sys.executable, str(root / "tools" / "check_formal_reread_state_semantics.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "mrp_generated_burden",
+            [
+                sys.executable,
+                str(root / "tools" / "check_mrp_generated_burden.py"),
+                "--outputs",
+                str(output_path),
+                "--show-advisories",
+            ],
         ),
         (
             "graph_completeness_json",

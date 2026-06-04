@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from closure_witness_lib import extract_embedded_field_witness, extract_field_witness
+from check_mrp_generated_burden import strict_owner_family
 from check_mid_reread_pressure import parse_mrps
 
 
@@ -33,7 +34,7 @@ SUP_TO_ASCII = str.maketrans(SUP, "0123456789")
 SUB_TO_ASCII = str.maketrans(SUB, "0123456789")
 ASCII_TO_SUP = str.maketrans("0123456789", SUP)
 PUBLIC_ACT_RE = re.compile(
-    r"(?m)^\s*(?P<row>⟦ACT\s+(?P<head>[^\s\[]+).*?"
+    r"(?m)^\s*(?P<row>⟦ACT\s+(?P<head>[^\s\[]+)\[(?P<owner>[^\].\s]+)(?:\.[^\]]+)?\].*?"
     r"\s+body_ref=(?P<body_ref>[^\s:⟧]+).*?⟧)\s*$"
 )
 LAYER_B_BOUNDED_RE = re.compile(
@@ -51,6 +52,7 @@ BURDEN_HEADING_RE = re.compile(
 class ActRecord:
     body_ref: str
     burden_id: str
+    owner: str
     start: int
     end: int
     row: str
@@ -170,6 +172,34 @@ def field_mrp_sources(field_witness: dict[str, Any] | None) -> list[str]:
     return list(dict.fromkeys(value for value in sources if re.fullmatch(r"B[1-9][0-9]*", value)))
 
 
+def normalize_owner(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    return strict_owner_family(raw) or raw.lower().replace("_", "-")
+
+
+def field_owner_ordering_edges(field_witness: dict[str, Any] | None) -> list[tuple[str, str, str]]:
+    if not isinstance(field_witness, dict):
+        return []
+    ordering = field_witness.get("owner_activation_ordering")
+    if not isinstance(ordering, dict):
+        return []
+    required = ordering.get("required_before")
+    if not isinstance(required, list):
+        return []
+    edges: list[tuple[str, str, str]] = []
+    for item in required:
+        if not isinstance(item, dict):
+            continue
+        target = normalize_burden_id(item.get("target") or item.get("burden") or "")
+        before = normalize_owner(item.get("before_owner") or item.get("before"))
+        after = normalize_owner(item.get("after_owner") or item.get("after"))
+        if re.fullmatch(r"B[1-9][0-9]*", target) and before and after:
+            edges.append((target, before, after))
+    return edges
+
+
 def parse_visible_acts(public_body: str) -> list[ActRecord]:
     records: list[ActRecord] = []
     for match in PUBLIC_ACT_RE.finditer(public_body):
@@ -180,6 +210,7 @@ def parse_visible_acts(public_body: str) -> list[ActRecord]:
             ActRecord(
                 body_ref=chosen,
                 burden_id=body_ref_burden_id(chosen),
+                owner=normalize_owner(match.group("owner")),
                 start=match.start(),
                 end=match.end(),
                 row=match.group("row").strip(),
@@ -244,6 +275,19 @@ def validate_text(text: str, label: str) -> list[str]:
     for ref, count in sorted(visible_counts.items()):
         if count != 1:
             errors.append(f"{label}: visible ACT body_ref {ref} appears {count} times")
+
+    records_by_burden: dict[str, list[ActRecord]] = {}
+    for record in records:
+        records_by_burden.setdefault(record.burden_id, []).append(record)
+    for target, before, after in field_owner_ordering_edges(field_witness):
+        owner_order = [record.owner for record in records_by_burden.get(target, []) if record.owner]
+        if before not in owner_order or after not in owner_order:
+            continue
+        if owner_order.index(before) > owner_order.index(after):
+            errors.append(
+                f"{label}: public ACT owner order for {target} violates field_witness required_before "
+                f"{before} -> {after}"
+            )
 
     owner_refs = field_owner_body_refs(field_witness)
     if owner_refs:

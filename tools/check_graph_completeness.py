@@ -270,6 +270,23 @@ def burden_aliases(value: str) -> list[str]:
     return unique(aliases)
 
 
+def mrp_errors_for_burden(errors: list[str], burden: str) -> list[str]:
+    aliases = [alias for alias in burden_aliases(normalize_burden_id(burden)) if alias]
+    matched: list[str] = []
+    for error in errors:
+        surface = str(error)
+        for alias in aliases:
+            if re.fullmatch(r"B\d+", alias):
+                if re.search(rf"(?<![A-Za-z0-9_]){re.escape(alias)}(?![A-Za-z0-9_])", surface):
+                    matched.append(error)
+                    break
+                continue
+            if alias in surface:
+                matched.append(error)
+                break
+    return matched
+
+
 def submove_target_token(ref: str) -> str:
     text = str(ref or "").strip()
     match = re.fullmatch(r"(B\d+)(?:[_\.]\d+)", text)
@@ -851,6 +868,7 @@ def primary_root_verification(
         for error in convergence
         if "owner activation" in error or "landed terminal" in error or "body_ref" in error
     ]
+    root_mrp_errors = mrp_errors_for_burden(mrp_errors, primary)
     checks = {
         "primary_named": bool(primary),
         "in_B_LA": primary in ledgers["B_LA"],
@@ -860,13 +878,14 @@ def primary_root_verification(
         "terminal_landed": terminals.get(primary) == "landed",
         "has_complete_owner_activation": complete_activation,
         "has_semantic_root_activation": semantic_activation,
-        "mrp_act_evidence_passes": not mrp_errors,
+        "mrp_act_evidence_passes": not root_mrp_errors,
         "convergence_root_evidence_passes": not root_convergence_errors,
     }
     basis = (
         f"primary={primary or '<missing>'}; roots={roots}; incoming={incoming}; "
         f"terminal={terminals.get(primary, '<missing>')}; "
-        f"activation_count={len(activations)}; semantic_errors={unique(semantic_activation_errors)}; checks={checks}"
+        f"activation_count={len(activations)}; semantic_errors={unique(semantic_activation_errors)}; "
+        f"root_mrp_errors={root_mrp_errors}; checks={checks}"
     )
     return all(checks.values()), basis
 
@@ -1198,6 +1217,64 @@ def graph_checker_self_errors() -> list[str]:
     found = certificate_errors(sigma_certificate)
     if found:
         return [f"checker self-canary: sigma-filtered certificate failed schema: {error}" for error in found]
+
+    primary_root_text = """## Layer B - Bounded Governed Response
+⟦ACT ¹B₁[P7.boundary] :: π=finite answer scope boundary :: body_ref=¹B₁ :: Δ=Δ¹B:scope-boundary-named :: Land(¹B)+⟧
+
+### ¹B₁[P7] — name the finite answer boundary
+- Target: finite answer scope boundary.
+- Operation: P7.boundary names the finite answer scope boundary and stop condition.
+- Result: scope boundary named; the finite answer scope boundary is blocked from becoming an unbounded closure claim.
+- Contribution-to-Land(¹B): P7 establishes Land(¹B) by naming the scope boundary and preserving the stop condition.
+
+Land(¹B): landed.
+"""
+    primary_root_field_witness = {
+        "B_LA": ["B1"],
+        "B_MRP": ["B5"],
+        "B_total": ["B1", "B5"],
+        "owner_activations": [
+            {
+                "owner": "P7",
+                "operation": "boundary",
+                "pressure": "finite answer scope boundary",
+                "body_ref": "B1_1",
+                "delta": "Delta(B1)=scope-boundary-named",
+                "land": "Land(B1)+",
+                "source": "B1",
+                "target": "B1",
+            }
+        ],
+        "terminal_states": {"B1": "landed", "B5": "held-with-reason"},
+        "coverage_proof": {
+            "dependency_graph": {
+                "roots": ["B1"],
+                "nodes": ["B1", "B5"],
+                "edges": [{"from": "B1", "to": "B5"}],
+            },
+        },
+    }
+    downstream_pass, downstream_basis = primary_root_verification(
+        primary_root_text,
+        primary_root_field_witness,
+        {"B1": "landed", "B5": "held-with-reason"},
+        ["synthetic-output.md: ACT ⁵B₂ record alone does not pass; dereferenced body is not owner-specific"],
+        [],
+    )
+    if not downstream_pass:
+        return [
+            "checker self-canary: downstream MRP error incorrectly failed primary-root verification: "
+            + downstream_basis
+        ]
+    root_fail, _root_basis = primary_root_verification(
+        primary_root_text,
+        primary_root_field_witness,
+        {"B1": "landed", "B5": "held-with-reason"},
+        ["synthetic-output.md: ACT ¹B₁ record alone does not pass; dereferenced body is not owner-specific"],
+        [],
+    )
+    if root_fail:
+        return ["checker self-canary: root-local MRP error did not fail primary-root verification"]
 
     field_witness = {
         "B_LA": ["B1"],

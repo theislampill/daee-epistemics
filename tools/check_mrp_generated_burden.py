@@ -1695,8 +1695,8 @@ def required_hard_case_errors(path: Path, text: str) -> list[str]:
     acceptance vehicles. Fixture-only checks still prove grammar; these output
     gates prove runtime behavior in the named hard theological cases.
     """
-    stem = path.stem.lower()
-    required = any(name in stem for name in ("trinitarian", "tst", "khaybar"))
+    path_surface = path.as_posix().lower()
+    required = any(name in path_surface for name in ("trinitarian", "tst", "khaybar", "secularism"))
     if not required:
         return []
     if "generated_burden_instantiation" in text and "[generated-by: MRP(" in text:
