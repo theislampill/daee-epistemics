@@ -821,6 +821,7 @@ Layer A — Compact DSL/IR Header
 𝔅_MRP (B_MRP) = {}
 𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP
 Initial burden set: [¹B]
+𝔅_LA contains the initial burden only. 𝔅_MRP contains ²B only after MRP, so generated ²B must not backfill B_LA.
 
 Layer B — Governed Traversal
 
@@ -896,6 +897,12 @@ field_witness
         errors.append("Python parser misclassified source burden ¹B as generated from a generated-by provenance line")
     if parsed.generated_burdens.get("²B") != "MRP(¹B)":
         errors.append("Python parser did not retain generated-by provenance for generated target ²B")
+    if "²B" in parsed.ledger.get("B_LA", []):
+        errors.append("Python parser treated B_LA prose as a ledger assignment and backfilled generated ²B into B_LA")
+    if "²B" in parsed.initial_burdens:
+        errors.append("Python parser treated generated ²B heading/provenance as an initial burden")
+    if parsed.errors:
+        errors.append(f"Python parser errors on generated-B_MRP B_LA canary: {parsed.errors}")
     node_script = f"""
 const fs = require('fs');
 global.window = {{}};
@@ -932,6 +939,8 @@ if (!mainSegment) errors.push('could not isolate Main problems segment');
 if (mainSegment.includes('Problem ²B')) errors.push('generated B_MRP was backfilled into Main problems section');
 if (model.generatedBurdens['¹B']) errors.push('source burden ¹B was misclassified as generated from a generated-by provenance line');
 if (model.generatedBurdens['²B'] !== 'MRP(¹B)') errors.push('generated target ²B did not retain generated-by provenance');
+if (model.ledger.B_LA.includes('²B')) errors.push('B_LA prose was parsed as a ledger assignment and backfilled generated ²B into B_LA');
+if (model.initialBurdens.includes('²B')) errors.push('generated ²B heading/provenance was treated as an initial burden');
 const generatedBody = model.bodyExtract?.submoveDetails?.['²B₁']?.body || '';
 if (!generatedBody.includes('That produces a concrete graph state change')) errors.push('Contribution-to-Land Land(...) text truncated the generated submove operation body');
 if (model.errors.length) errors.push('parser errors: ' + model.errors.join('; '));

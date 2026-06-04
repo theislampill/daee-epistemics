@@ -1195,6 +1195,41 @@ def graph_checker_self_errors() -> list[str]:
         divergence_curl_errors=[],
         formal_errors=[],
     ):
+        curl_state = certificate_curl_state("unresolved", generated_hold_open=True)
+        hold_nodes = hold_partial_nodes(field_witness)
+        certificate = {
+            "input_fingerprint": "0" * 64,
+            "skill_version": DEFAULT_SKILL_VERSION,
+            "collapse_positive": False,
+            "coverage_complete": False,
+            "divergence_state": "non-neutral",
+            "curl_state": curl_state,
+            "diagnostic_completeness": True,
+            "live_registers_covered": [],
+            "max_generation_depth": 1,
+            "loopbreak_count": 0,
+            "loopbreak_grounds": [],
+            "verified_activations": ["B1"],
+            "hold_partial_nodes": hold_nodes,
+            "primary_track_closed": True,
+            "restoration_track_closed": True,
+            "divergence_positive_addressed": True,
+            "curl_resolved": False,
+            "terminal_stop_proof_complete": True,
+            "terminal_stop_proof_count": 0,
+            "restoration_endpoint_reached": False,
+            "checker_version": CHECKER_VERSION,
+            "timestamp": "2026-05-30T00:00:00Z",
+        }
+        if curl_state != "held":
+            return ["checker self-canary: generated-held certificate curl_state was not canonicalized to held"]
+        if certificate_coverage_complete({"coverage_completeness": {"pass": True}}, generated_hold_open=True):
+            return ["checker self-canary: generated-held certificate falsely reported coverage_complete"]
+        if not hold_nodes:
+            return ["checker self-canary: generated-held certificate omitted hold_partial_nodes"]
+        found = certificate_errors(certificate)
+        if found:
+            return [f"checker self-canary: generated-held certificate failed schema: {error}" for error in found]
         return []
     return ["checker self-canary: explicit generated-held open graph state was not accepted"]
 
@@ -1495,6 +1530,16 @@ def graph_report(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     return report, []
 
 
+def certificate_curl_state(curl: str, *, generated_hold_open: bool) -> str:
+    if generated_hold_open and curl == "unresolved":
+        return "held"
+    return curl
+
+
+def certificate_coverage_complete(conditions: dict[str, dict[str, Any]], *, generated_hold_open: bool) -> bool:
+    return bool(conditions["coverage_completeness"]["pass"] and not generated_hold_open)
+
+
 def graph_certificate(
     path: Path,
     input_fingerprint: str = "",
@@ -1513,8 +1558,10 @@ def graph_certificate(
 
     cov = coverage(field_witness)
     conditions = report["conditions"]
+    generated_hold_open = bool(conditions.get("generated_hold_open_state", {}).get("active"))
     divergence = status_head(diagnostic_status(field_witness, "divergence_check", "del_dot_B", "del-dot B"))
-    curl = status_head(diagnostic_status(field_witness, "curl_check", "del_cross_kappa", "del-cross kappa"))
+    raw_curl = status_head(diagnostic_status(field_witness, "curl_check", "del_cross_kappa", "del-cross kappa"))
+    curl = certificate_curl_state(raw_curl, generated_hold_open=generated_hold_open)
     grounds = loopbreak_grounds(field_witness)
     primary_track_closed, restoration_track_closed = track_closure_flags(field_witness)
     terminal_proof_count = terminal_stop_proof_count(field_witness)
@@ -1541,7 +1588,7 @@ def graph_certificate(
         "input_fingerprint": fingerprint,
         "skill_version": field_skill_version(field_witness),
         "collapse_positive": bool(report["collapse_positive"]),
-        "coverage_complete": bool(conditions["coverage_completeness"]["pass"]),
+        "coverage_complete": certificate_coverage_complete(conditions, generated_hold_open=generated_hold_open),
         "divergence_state": divergence,
         "curl_state": curl,
         "diagnostic_completeness": bool(conditions["diagnostic_completeness"]["pass"]),

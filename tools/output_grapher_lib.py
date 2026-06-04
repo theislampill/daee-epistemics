@@ -27,6 +27,13 @@ ASCII_CHAIN_TOKEN_RE = re.compile(r"\bB(\d+)\b")
 ASCII_SUBMOVE_RE = re.compile(r"\bB(\d+)_(\d+)\s*(?:\[([^\]\n]+)\])?")
 BAD_SUBSCRIPT_BURDEN_RE = re.compile(fr"\bB([{SUB_DIGITS}]+)\b")
 BURDEN_HEADING_RE = re.compile(r"^(?:#+\s*)?Burden\s+(\d+)\b", re.IGNORECASE)
+LEDGER_LINE_RE = re.compile(
+    r"^\s*(?:[-*]\s*)?"
+    r"(?:B_|𝔅_)(LA|MRP|total)\b"
+    r"(?:\s*\(\s*(?:B_|𝔅_)(?:LA|MRP|total)\s*\))?"
+    r"\s*(?:=|:)\s*(.*)$",
+    re.IGNORECASE,
+)
 LAND_RE = re.compile(fr"^\s*(?:[-*]\s*)?(?:\*\*)?(Land|HOLD)\(([{SUP_DIGITS}]+)B\)", re.IGNORECASE)
 ASCII_LAND_RE = re.compile(r"^\s*(?:[-*]\s*)?(?:\*\*)?(Land|HOLD)\(B(\d+)\)", re.IGNORECASE)
 MRP_RE = re.compile(fr"\bMRP\(([{SUP_DIGITS}]+)B\)")
@@ -363,14 +370,10 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             result.has_restoration = True
 
         line_burdens = extract_burdens(line, result, index)
-        ledger_line = re.search(r"^\s*(?:[-*]\s*)?(?:B_|𝔅_)(LA|MRP|total)\b", line, re.IGNORECASE)
+        ledger_line = LEDGER_LINE_RE.match(line)
         if ledger_line:
             key = "B_total" if ledger_line.group(1).lower() == "total" else f"B_{ledger_line.group(1).upper()}"
-            ledger_segment = line[ledger_line.start() :]
-            value_start = re.search(r"[=:]", ledger_segment)
-            ledger_segment = (
-                ledger_segment[value_start.end() :] if value_start else line[ledger_line.end() :]
-            )
+            ledger_segment = ledger_line.group(2)
             next_ledger = re.search(r"\b(?:B_|𝔅_)(?:LA|MRP|total)\b", ledger_segment, re.IGNORECASE)
             if next_ledger and next_ledger.start() > 0:
                 ledger_segment = ledger_segment[: next_ledger.start()]
@@ -382,8 +385,19 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
         if heading_match:
             heading_burden = burden_token(heading_match.group(1))
             line_burdens = [heading_burden] + [token for token in line_burdens if token != heading_burden]
-        is_initial_line = bool(re.search(r"initial burden|burden inventory|initial set|held/live burden", line, re.I))
+        is_initial_line = bool(
+            re.search(
+                r"^\s*(?:[-*]\s*)?(?:Initial burden set|initial burden inventory|initial burdens?|burden inventory|initial set|held/live burden)\s*[:=]",
+                line,
+                re.I,
+            )
+        )
         is_heading = bool(re.match(r"^(#+\s*)?(Burden\s+\d+\b|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\b)", stripped))
+        generated_by = MRP_RE.search(line)
+        generated_by_ascii = ASCII_MRP_RE.search(line)
+        is_generated_provenance_line = bool(
+            "generated-by" in line and line_burdens and (generated_by or generated_by_ascii)
+        )
 
         for token in line_burdens:
             if token not in result.burdens:
@@ -391,9 +405,9 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             if index <= body_line_count and token not in result.body_burdens:
                 result.body_burdens.append(token)
             add_node(result, GraphNode(token, "burden", token, line=index, excerpt=stripped[:220]))
-            if is_initial_line and token not in result.initial_burdens:
+            if is_initial_line and not is_generated_provenance_line and token not in result.initial_burdens:
                 result.initial_burdens.append(token)
-            if is_heading:
+            if is_heading and (not heading_match or token == heading_burden):
                 last_burden = token
 
         for match in CANONICAL_SUBMOVE_RE.finditer(line):
@@ -422,8 +436,6 @@ def parse_output(text: str, field_witness_text: str | None = None) -> ParseResul
             add_edge(result, GraphEdge(burden, submove, "burden-submove", line=index, excerpt=stripped[:220]))
             last_burden = burden
 
-        generated_by = MRP_RE.search(line)
-        generated_by_ascii = ASCII_MRP_RE.search(line)
         if "generated-by" in line and line_burdens and (generated_by or generated_by_ascii):
             source_burden = (
                 burden_token(_sup_to_int(generated_by.group(1)))

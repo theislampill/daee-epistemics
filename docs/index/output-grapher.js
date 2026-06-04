@@ -462,12 +462,10 @@
       const tLang=line.match(/T_lang\s*:\s*([^\n]+)/i); if(tLang) model.collapse.tLang=tLang[1].trim();
       const restAim=line.match(/Restoration (?:aim|target):\s*(.+)$/i); if(restAim){model.restorationAim=cleanParsed(restAim[1]); model.hasRestoration=true;}
       const burdens=lineBurdens(line,model,lineNo);
-      const ledgerLine=line.match(/^\s*(?:[-*]\s*)?(?:B_|𝔅_)(LA|MRP|total)\b\s*(?:baseline|generated|worked|ledger|burden|set|total|=|:|\s)*/i);
+      const ledgerLine=line.match(/^\s*(?:[-*]\s*)?(?:B_|𝔅_)(LA|MRP|total)\b(?:\s*\(\s*(?:B_|𝔅_)(?:LA|MRP|total)\s*\))?\s*(?:=|:)\s*(.*)$/i);
       if(ledgerLine){
         const key=ledgerLine[1].toLowerCase()==='la'?'B_LA':ledgerLine[1].toLowerCase()==='mrp'?'B_MRP':'B_total';
-        let ledgerSegment=line.slice(ledgerLine.index);
-        const ledgerValueStart=ledgerSegment.search(/[=:]/);
-        ledgerSegment=ledgerValueStart>=0?ledgerSegment.slice(ledgerValueStart+1):line.slice(ledgerLine.index+ledgerLine[0].length);
+        let ledgerSegment=ledgerLine[2]||'';
         const nextLedger=ledgerSegment.search(/\b(?:B_|𝔅_)(?:LA|MRP|total)\b/i);
         if(nextLedger>0) ledgerSegment=ledgerSegment.slice(0,nextLedger);
         ledgerSegment=cleanVisibleLedgerSegment(ledgerSegment);
@@ -478,13 +476,16 @@
       const headingMatch=trimmed.match(/^(?:#+\s*)?Burden\s+(\d+|B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\b/i);
       const headingBurden=headingMatch?sourceBurdenToken(headingMatch[1]):'';
       if(headingMatch){burdens.splice(0,burdens.length,headingBurden,...burdens.filter(b=>b!==headingBurden));}
-      const initial=/initial burden|burden inventory|initial set|held\/live burden/i.test(line);
+      const initial=/^\s*(?:[-*]\s*)?(?:Initial burden set|initial burden inventory|initial burdens?|burden inventory|initial set|held\/live burden)\s*[:=]/i.test(line);
       const heading=/^(#+\s*)?(Burden\s+(?:\d+|B\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\b|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B\b)/.test(trimmed);
+      const mrp=line.match(/\bMRP\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/);
+      const asciiGenerated=line.match(/\bMRP\(B(\d+)\)/);
+      const generatedProvenance=line.includes('generated-by')&&(mrp||asciiGenerated);
       burdens.forEach(b=>{
         if(!model.burdens.includes(b)) model.burdens.push(b);
         if(inBody&&!model.bodyBurdens.includes(b)) model.bodyBurdens.push(b);
         addNode(model,{id:b,kind:'burden',label:b,line:lineNo,excerpt:trimmed.slice(0,220)});
-        if(initial&&!model.initialBurdens.includes(b)) model.initialBurdens.push(b);
+        if(initial&&!generatedProvenance&&!model.initialBurdens.includes(b)) model.initialBurdens.push(b);
         if(heading&&b===headingBurden){
           lastBurden=b;
           currentSubmove='';
@@ -573,9 +574,7 @@
       const targetLine=cleanMarkdownLabelLine(trimmed);
       const target=targetLine.match(/^Target:\s*(?:B(\d+)|([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B)\b/i);
       if(pendingMrpBlock&&target){const b=target[1]?burden(target[1]):burden(supNum(target[2])); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed}); if(target[1]) warnLegacy(model,lineNo,target[0].trim(),`MRP(${b})`);}
-      const mrp=line.match(/\bMRP\(([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B\)/);
       if(mrp&&!line.includes('generated-by')){const b=burden(supNum(mrp[1])); currentMrpBurden=b; ensureMrp(model,b,lineNo); if(inBody) pushBodyMrp(model,b,trimmed); addEdge(model,{source:`R(H,Δ)@${b}`,target:`MRP(${b})`,kind:'reread-mrp',line:lineNo,excerpt:trimmed});}
-      const asciiGenerated=line.match(/\bMRP\(B(\d+)\)/);
       if(line.includes('generated-by')&&(mrp||asciiGenerated)){
         const sourceBurden=mrp?burden(supNum(mrp[1])):burden(asciiGenerated[1]);
         const generatedTarget=headingBurden || (lastBurden&&lastBurden!==sourceBurden?lastBurden:'') || burdens.find(b=>b!==sourceBurden);
