@@ -1,4 +1,4 @@
-<!-- case: tst-lillard -->
+<!-- profile: source-worldview-moral-tribunal -->
 
 ## Burden 1 / 1B - generic advice
 Target: objection.

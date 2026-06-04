@@ -537,7 +537,7 @@ def canonical_delta_result_for_owner(
         return raw
     candidates: list[str] = []
     if family == "DO_CHRISTIAN":
-        if any(token in combined for token in ("trinitarian", "person-nature", "model-transfer", "model-identification")):
+        if any(token in combined for token in ("selected-model", "person-nature", "model-transfer", "model-identification", "model-family")):
             candidates.append("trinitarian-model-identified")
         if "fan-out" in combined:
             candidates.append("fan-out-route-named")
@@ -4450,10 +4450,10 @@ def run_self_test(root: Path) -> int:
     non_claims = loaded_eligibility.get("non_claims")
     if not isinstance(non_claims, dict) or non_claims.get("not_b5_projection_sidecar") is not True:
         raise HarnessError("Self-test B.5 ineligibility record did not preserve non-claim boundary")
-    khaybar_like_stages = [
+    source_stack_like_stages = [
         {
             "id": "stage-02-layer-a-diagnostic-ir",
-            "selected_n_frame": "khaybar-source-status-self-test",
+            "selected_n_frame": "source-stack-status-self-test",
             "burden_floor": ["B1", "B2", "B3"],
             "burden_registers": {
                 "B1": ["source-status", "transmission"],
@@ -4480,13 +4480,13 @@ def run_self_test(root: Path) -> int:
             "B_LA": ["B1", "B2", "B3"],
             "B_MRP": ["B4"],
             "unresolved_burdens": ["B4"],
-            "selected_n_frame": "khaybar-source-status-self-test",
+            "selected_n_frame": "source-stack-status-self-test",
         },
     ]
-    khaybar_supplement = (
-        stage07_restorative_response_section_scaffold(khaybar_like_stages)
+    source_stack_supplement = (
+        stage07_restorative_response_section_scaffold(source_stack_like_stages)
         + "\n"
-        + stage07_closing_formulation_budget_supplement(khaybar_like_stages)
+        + stage07_closing_formulation_budget_supplement(source_stack_like_stages)
     )
     for forbidden in (
         "Father",
@@ -4498,8 +4498,8 @@ def run_self_test(root: Path) -> int:
         "sender-sent",
         "worship-orientation",
     ):
-        if forbidden.lower() in khaybar_supplement.lower():
-            raise HarnessError(f"Self-test Khaybar closing scaffold leaked case-specific term {forbidden!r}")
+        if forbidden.lower() in source_stack_supplement.lower():
+            raise HarnessError(f"Self-test source-stack closing scaffold leaked case-specific term {forbidden!r}")
 
     def artifact(path: Path) -> dict[str, str]:
         return {"path": rel(path, root), "sha256": sha256_file(path)}
@@ -4516,7 +4516,7 @@ def run_self_test(root: Path) -> int:
         failed_prompt = fixture_prompts / "stage-07-release-output-08-restorative-response-expansion-1.prompt.md"
         failed_log = fixture_responses / "stage-07-release-output-08-restorative-response-expansion-1.codex-log.txt"
         section_output = fixture_sections / "08-restorative-response.md"
-        write_text(fixture_raw_input, "Secularism test fixture input.\n")
+        write_text(fixture_raw_input, "Selected worldview test fixture input.\n")
         write_text(failed_prompt, "Expand restorative response.\n")
         write_text(failed_log, transport_log)
         write_text(section_output, "## Restorative Response\n\nBase section text.\n")
@@ -4975,7 +4975,7 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test failed to reject conflicting Stage 04 act_row_details body_ref")
-    trinitarian_delta_guidance = stage04_delta_vocabulary_guidance(
+    selected_model_delta_guidance = stage04_delta_vocabulary_guidance(
         [
             {
                 "id": "stage-03-routing-owner-gate",
@@ -5000,33 +5000,33 @@ def run_self_test(root: Path) -> int:
         "SOURCE: authority-order-repaired",
         "Do not invent near-synonyms such as `predicate-transfer-blocked`",
     ):
-        if required not in trinitarian_delta_guidance:
+        if required not in selected_model_delta_guidance:
             raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
-    trinitarian_drift_rows = [
-        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=trinitarian-person-nature-model-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-transfer-bounded :: Land(¹B)+⟧",
-        "⟦ACT ¹B₂[M9.predication-repair] :: π=father-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:predicate-transfer-blocked :: Land(¹B)+⟧",
+    selected_model_drift_rows = [
+        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:selected-model-transfer-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:predicate-transfer-blocked :: Land(¹B)+⟧",
         "⟦ACT ²B₁[M7.definition-anchor] :: π=only-placement-analogy :: body_ref=²B₁ :: Δ=Δ²B:only-scope-defined :: Land(²B)+⟧",
         "⟦ACT ²B₂[M9.predication-repair] :: π=2-plus-2-predicate-category :: body_ref=²B₂ :: Δ=Δ²B:predicate-category-separated :: Land(²B)+⟧",
-        "⟦ACT ³B₁[source-status-repair.source-order] :: π=john-1-1-and-1-john-5-20-proof-stack :: body_ref=³B₁ :: Δ=Δ³B:proof-stack-routed :: Land(³B)+⟧",
+        "⟦ACT ³B₁[source-status-repair.source-order] :: π=selected-proof-stack :: body_ref=³B₁ :: Δ=Δ³B:proof-stack-routed :: Land(³B)+⟧",
         "⟦ACT ³B₂[authority-order-repair.sort] :: π=proof-text-hidden-support :: body_ref=³B₂ :: Δ=Δ³B:hidden-support-demoted :: Land(³B)+⟧",
-        "⟦ACT ⁴B₁[M8.consequence-trace] :: π=eternal-life-knowing-jesus-entailment :: body_ref=⁴B₁ :: Δ=Δ⁴B:entailment-bounded :: Land(⁴B)+⟧",
+        "⟦ACT ⁴B₁[M8.consequence-trace] :: π=selected-entailment-pressure :: body_ref=⁴B₁ :: Δ=Δ⁴B:entailment-bounded :: Land(⁴B)+⟧",
         "⟦ACT ⁴B₂[M9.predication-repair] :: π=sender-sent-relation-category :: body_ref=⁴B₂ :: Δ=Δ⁴B:sender-sent-predication-separated :: Land(⁴B)+⟧",
     ]
-    normalized_trinitarian_stage04 = normalized_stage(
+    normalized_selected_model_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
         {
             "id": "stage-04-burden-execution-act",
             "status": "pass",
             "act_targets": ["B1", "B2", "B3", "B4"],
             "act_burdens": ["B1", "B2", "B3", "B4"],
-            "act_rows": trinitarian_drift_rows,
+            "act_rows": selected_model_drift_rows,
         },
     )
-    trinitarian_delta_results = [
-        stage04_act_details_by_ref(normalized_trinitarian_stage04)[ref]["delta_result"]
+    selected_model_delta_results = [
+        stage04_act_details_by_ref(normalized_selected_model_stage04)[ref]["delta_result"]
         for ref in ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂"]
     ]
-    if trinitarian_delta_results != [
+    if selected_model_delta_results != [
         "trinitarian-model-identified",
         "predicate-separated",
         "definition-anchored",
@@ -5036,10 +5036,10 @@ def run_self_test(root: Path) -> int:
         "entailment-blocked",
         "category-separated",
     ]:
-        raise HarnessError("Self-test failed to canonicalize Trinitarian Stage 04 delta_result drift")
-    rewrites = normalized_trinitarian_stage04.get("normalization", {}).get("delta_result_canonicalizations")
+        raise HarnessError("Self-test failed to canonicalize selected DO-family Stage 04 delta_result drift")
+    rewrites = normalized_selected_model_stage04.get("normalization", {}).get("delta_result_canonicalizations")
     if not isinstance(rewrites, list) or len(rewrites) != 8:
-        raise HarnessError("Self-test failed to record Trinitarian Stage 04 delta_result canonicalizations")
+        raise HarnessError("Self-test failed to record selected DO-family Stage 04 delta_result canonicalizations")
     source_stack_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
@@ -5473,7 +5473,7 @@ def run_self_test(root: Path) -> int:
                     "owner": "M9",
                     "owner_id": "M9",
                     "operation": "predication-repair",
-                    "pressure": "father-only-true-god-predicate-transfer",
+                    "pressure": "selected-predicate-transfer",
                     "delta": "Δ¹B:predicate-transfer-blocked",
                     "delta_result": "predicate-transfer-blocked",
                     "land": "Land(¹B)+",
@@ -5493,7 +5493,7 @@ def run_self_test(root: Path) -> int:
                 },
             ],
             "normalized_activation_record": {
-                "n_frame": "trinitarian-john-17-3-source-order-repair",
+                "n_frame": "selected-do12-source-order-repair",
                 "live_registers": ["Omega", "xi"],
                 "burden_floor": ["B1", "B3"],
                 "per_burden": [
@@ -5501,7 +5501,7 @@ def run_self_test(root: Path) -> int:
                         "burden_id": "B1",
                         "owner_id": "M9",
                         "operation": "predication-repair",
-                        "pressure": "father-only-true-god-predicate-transfer",
+                        "pressure": "selected-predicate-transfer",
                         "delta_result": "predicate-transfer-blocked",
                         "terminal_state": "landed",
                         "generation_depth": 0,

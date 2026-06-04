@@ -31,8 +31,7 @@ class ScopeGroup:
 
 
 @dataclass(frozen=True)
-class CaseSpec:
-    aliases: tuple[str, ...]
+class ProfileSpec:
     groups: tuple[ScopeGroup, ...]
 
 
@@ -40,20 +39,17 @@ def rx(pattern: str) -> re.Pattern[str]:
     return re.compile(pattern, re.IGNORECASE | re.MULTILINE)
 
 
-CASE_SPECS: dict[str, CaseSpec] = {}
+PROFILE_SPECS: dict[str, ProfileSpec] = {}
 
 
-def register(name: str, aliases: tuple[str, ...], groups: tuple[ScopeGroup, ...]) -> None:
-    spec = CaseSpec(aliases=(name, *aliases), groups=groups)
-    for alias in spec.aliases:
-        CASE_SPECS[alias] = spec
+def register_profile(name: str, groups: tuple[ScopeGroup, ...]) -> None:
+    PROFILE_SPECS[name] = ProfileSpec(groups=groups)
 
 
-register(
-    "tst-lillard",
-    ("tst", "lillard", "tst-eternal-punishment"),
+register_profile(
+    "source-worldview-moral-tribunal",
     (
-        ScopeGroup("named TST/Lillard source context", (rx(r"\bLillard\b"), rx(r"\bSatanist Temple\b|\bTST\b|\bSatanist\b"))),
+        ScopeGroup("named movement / source-worldview context", (rx(r"\bmoral tribunal\b|\bsource[- ]worldview\b|\bnamed movement\b|\bsource context\b"),)),
         ScopeGroup("eternal punishment / fire pressure", (rx(r"\beternal\b"), rx(r"\b(?:hell|hellfire|lake of fire|Jahannam|punishment)\b"))),
         ScopeGroup("bare non-belief / accountability compression", (rx(r"\bnon[- ]belief\b|\bkufr\b"), rx(r"\baccountability\b|\bhujjah\b|\bproof\b|\bculpability\b"))),
         ScopeGroup("convincing-every-person hiddenness pressure", (rx(r"\bconvinc(?:e|ing)\b"), rx(r"\bguidance\b|\bcoerc(?:e|ive|ion)\b|\bhiddenness\b"))),
@@ -63,11 +59,10 @@ register(
     ),
 )
 
-register(
-    "secularism",
-    ("refute-secularism", "secularism-exact"),
+register_profile(
+    "selected-worldview-source-totalization",
     (
-        ScopeGroup("secularism target", (rx(r"\bsecularism\b|\bsecular\b"),)),
+        ScopeGroup("selected worldview / public-reason target", (rx(r"\bworldview\b|\bpublic reason\b|\bpublic-neutral\b|\bneutral(?:ity)?\b"),)),
         ScopeGroup("neutrality / public reason claim", (rx(r"\bneutral(?:ity)?\b|\bpublic reason\b|\bpublic-neutral\b"),)),
         ScopeGroup("source-order / revelation boundary", (rx(r"\bsource[- ]order\b|\bsource status\b"), rx(r"\brevelation\b|\bprivate preference\b|\bprivate\b"))),
         ScopeGroup("ontology / reduction pressure", (rx(r"\bontology\b|\bontological\b|\bmatter\b|\blaws?\b|\bnature\b|\bmaterial\b"),)),
@@ -77,22 +72,20 @@ register(
     ),
 )
 
-register(
-    "trinitarian-j173",
-    ("trinitarian", "john17", "john-17-3", "j173"),
+register_profile(
+    "selected-do12-model-source-stack",
     (
-        ScopeGroup("John 17:3 target", (rx(r"\bJohn\s+17:3\b"),)),
         ScopeGroup("Father as only true God", (rx(r"\bFather\b"), rx(r"\bonly true God\b"))),
         ScopeGroup("Jesus/Son distinction", (rx(r"\bJesus\b|\bSon\b"), rx(r"\bsent\b|\bsender\b|\bChrist\b"))),
-        ScopeGroup("Trinity / Trinitarian model", (rx(r"\bTrinity\b|\bTrinitarian\b"),)),
+        ScopeGroup("selected model / person-nature pressure", (rx(r"\bmodel\b"), rx(r"\bperson\b|\bnature\b|\bperson/nature\b"))),
         ScopeGroup("only-placement / arithmetic analogy", (rx(r"\bonly\b"), rx(r"\b2\s*\+\s*2\b|\barithmetic\b|\banalogy\b"))),
-        ScopeGroup("cross-text proof stack", (rx(r"\bJohn\s+1:1\b"), rx(r"\b1\s+John\s+5:20\b"))),
+        ScopeGroup("cross-text proof stack", (rx(r"\bproof[- ]stack\b|\bcross[- ]text\b|\bsource[- ]order\b"), rx(r"\bhidden support\b|\bsource\b"))),
         ScopeGroup("eternal-life entailment", (rx(r"\beternal life\b"), rx(r"\bentail(?:ment)?\b|\bknowing Jesus\b|\bknowing\b"))),
         ScopeGroup("person/nature predication", (rx(r"\bperson\b|\bnature\b"), rx(r"\bpredicat(?:e|ion)\b|\bcategory\b"))),
         ScopeGroup("source-order / hidden support", (rx(r"\bsource[- ]order\b|\bproof[- ]stack\b"), rx(r"\bhidden support\b|\bsacred doctrine\b"))),
         ScopeGroup("DO-12 attribute-precision execution", (rx(r"\bdo-attribute-precision\b|\battribute(?:s| precision)?\b"), rx(r"\bperson/nature\b|\bperson\b.*\bnature\b|\bnature\b.*\bperson\b"))),
         ScopeGroup("identity/counting pressure", (rx(r"\bone\b|\bthree\b|\bcount(?:ing)?\b"), rx(r"\bis God\b|\bGod-language\b|\btrue God\b"))),
-        ScopeGroup("Trinitarian model-family discriminator", (rx(r"\bmodel\b"), rx(r"\bLatin\b|\bSocial\b|\brelative identity\b|\bstrict identity\b|\bmodalism\b|\btritheism\b|\bmissing discriminator\b|\bmodel family\b"))),
+        ScopeGroup("model-family discriminator", (rx(r"\bmodel\b"), rx(r"\bLatin\b|\bSocial\b|\brelative identity\b|\bstrict identity\b|\bmodalism\b|\btritheism\b|\bmissing discriminator\b|\bmodel family\b"))),
         ScopeGroup("worship/lordship referent", (rx(r"\bworship\b|\blordship\b|\bworship-status\b|\bLord\b"),)),
     ),
 )
@@ -120,11 +113,11 @@ def count_mrp(text: str) -> int:
     return len(re.findall(r"(?i)\bMRP\s*\(|MRP route result type|MRP resultant", text))
 
 
-def check_case(case: str, input_path: Path | None, output_path: Path, args: argparse.Namespace) -> list[str]:
+def check_profile(profile: str, input_path: Path | None, output_path: Path, args: argparse.Namespace) -> list[str]:
     errors: list[str] = []
-    spec = CASE_SPECS.get(case)
+    spec = PROFILE_SPECS.get(profile)
     if spec is None:
-        errors.append(f"unknown case '{case}'")
+        errors.append(f"unknown profile '{profile}'")
         return errors
 
     text = output_path.read_text(encoding="utf-8")
@@ -180,8 +173,8 @@ def check_case(case: str, input_path: Path | None, output_path: Path, args: argp
     return errors
 
 
-def fixture_case(path: Path) -> str | None:
-    match = re.search(r"<!--\s*case:\s*([A-Za-z0-9_.-]+)\s*-->", path.read_text(encoding="utf-8"))
+def fixture_profile(path: Path) -> str | None:
+    match = re.search(r"<!--\s*profile:\s*([A-Za-z0-9_.-]+)\s*-->", path.read_text(encoding="utf-8"))
     return match.group(1) if match else None
 
 
@@ -191,18 +184,18 @@ def run_fixtures() -> list[str]:
     invalid = sorted((FIXTURE_ROOT / "invalid").glob("*.md"))
     fixture_args = argparse.Namespace(min_bytes=None, min_burdens=1, min_submoves=1, min_mrp=1)
     for path in valid:
-        case = fixture_case(path)
-        if not case:
-            errors.append(f"{path}: missing <!-- case: ... --> marker")
+        profile = fixture_profile(path)
+        if not profile:
+            errors.append(f"{path}: missing <!-- profile: ... --> marker")
             continue
-        found = check_case(case, None, path, fixture_args)
+        found = check_profile(profile, None, path, fixture_args)
         errors.extend(found)
     for path in invalid:
-        case = fixture_case(path)
-        if not case:
-            errors.append(f"{path}: missing <!-- case: ... --> marker")
+        profile = fixture_profile(path)
+        if not profile:
+            errors.append(f"{path}: missing <!-- profile: ... --> marker")
             continue
-        found = check_case(case, None, path, fixture_args)
+        found = check_profile(profile, None, path, fixture_args)
         if not found:
             errors.append(f"{path}: invalid fixture unexpectedly passed")
     return errors
@@ -210,7 +203,7 @@ def run_fixtures() -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--case", choices=sorted(CASE_SPECS), help="prompt family to check")
+    parser.add_argument("--profile", choices=sorted(PROFILE_SPECS), help="semantic prompt-scope profile to check")
     parser.add_argument("--input", type=Path, help="input prompt text for direct prompt-anchor echo checks")
     parser.add_argument("--output", type=Path, help="governed output to check")
     parser.add_argument("--min-bytes", type=int, default=None, help="optional live hard-output byte floor")
@@ -220,10 +213,10 @@ def main() -> int:
     args = parser.parse_args()
 
     errors: list[str] = []
-    if args.case or args.output or args.input:
-        if not args.case or not args.output:
-            parser.error("--case and --output are required together")
-        errors.extend(check_case(args.case, args.input, args.output, args))
+    if args.profile or args.output or args.input:
+        if not args.profile or not args.output:
+            parser.error("--profile and --output are required together")
+        errors.extend(check_profile(args.profile, args.input, args.output, args))
     else:
         errors.extend(run_fixtures())
 
@@ -233,7 +226,7 @@ def main() -> int:
             print(f"- {error}")
         return 1
     if args.output:
-        print(f"hard-output scope fulfillment check: PASS - {args.case}: {args.output}")
+        print(f"hard-output scope fulfillment check: PASS - {args.profile}: {args.output}")
     else:
         print("hard-output scope fulfillment check: PASS - fixtures")
     return 0

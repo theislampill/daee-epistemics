@@ -545,8 +545,8 @@ M1/M1-P names the self-grounding or speech-act contradiction; M3 identifies the 
 intuition and why it cannot stay severed from its ground; M7 anchors the definition or semantic
 relation; M8 runs the consequence trace; M9 repairs predicate/category/referent/sense structure;
 source-status/authority-order sorts sources, citations, proof texts, authority, and hidden support;
-`do-christian-extensions` identifies the Christian pressure family and model/fan-out route, and
-for DO-12 Trinitarian model pressure its ACT / `field_witness` operation is
+`do-christian-extensions` identifies the selected Christian pressure family and model/fan-out
+route, and for selected DO-12 model pressure its ACT / `field_witness` operation is
 `model-identification`, never bare `route`;
 `do-second-loop` identifies the family-local hujjah/warning/record/accountability route;
 `doubt-vs-skepticism` distinguishes normal doubt from skeptical methodology and names the
@@ -566,22 +566,22 @@ proof discipline, or public restoration to prevent recoil. Instantiate a generat
 closure-boundary / immunity-recoil burden, route it to the matched owner family, work it in Layer B,
 then reread. Empty `𝔅_MRP` is allowed only with explicit low-recoil proof in the MRP block and
 `field_witness`.
-For reopened Trinitarian / DO-12 hard-smoke proof, the boundary is stricter: if the answer closes
-by saying broader doctrine, John 1:1 / 1 John 5:20, full-system metaphysics, alternate exegesis,
-or a bounded local reply is outside scope, treat that boundary as a post-Land
-boundary-as-immunity / full-system-doctrine-shield recoil. Instantiate a concrete generated
+For any selected hard-output proof, the boundary is stricter when closure names broader doctrine,
+source-stack, proof-text stack, full-system metaphysics, proof-carousel, hidden-framework,
+restoration-recoil, alternate exegesis, or bounded local reply language. Treat that boundary by
+semantic state, not by case name: if it is live after Land, instantiate a concrete generated
 `𝔅_MRP` burden such as `⁴B [generated-by: MRP(³B)]`, route it to P7/source-status/P1 or the
-source-owned owners selected by the reread, execute its Layer B body, and only then STOP. Do not
-close the reopened Trinitarian smoke with `𝔅_MRP = {}` by declaring the broader doctrine
-non-load-bearing inside the same final baseline burden.
-For named hard-theological acceptance smokes (Trinitarian, TST, Khaybar), the final
-non-load-bearing classification is itself the generated boundary proof whenever broader doctrine,
-source-stack, proof-text stack, full-system metaphysics, or bounded-answer language appears in the
-final reread or closure. Even if the initial ledger already contained a baseline doctrine-immunity
-burden, the post-Land boundary classification after that burden is a distinct MRP resultant.
-Instantiate and work a concrete `𝔅_MRP` burden to classify the boundary, then reread to STOP. Do
-not end these smokes with `MRP route result type: no_new_resultant` and empty `𝔅_MRP` merely
-because the same final baseline burden says the broader material is non-load-bearing.
+source-owned owners selected by the reread, execute its Layer B body, and only then STOP. If it is
+not live, emit explicit `no_new_resultant_proof` evidence with checked escape routes, empty live
+burden state, zero dependency residual, and `stop_licensed=true`. Do not close a selected
+hard-output route with `𝔅_MRP = {}` merely by declaring the boundary non-load-bearing inside the
+same final baseline burden.
+The final non-load-bearing classification is itself a generated-boundary proof whenever broader
+doctrine, source-stack, proof-text stack, full-system metaphysics, proof-carousel, hidden-framework,
+or bounded-answer language appears in the final reread or closure and remains live. Even if the
+initial ledger already contained a baseline boundary burden, post-Land boundary classification may
+be a distinct MRP resultant. Instantiate and work the concrete `𝔅_MRP` burden when live, then
+reread to STOP.
 The closing tail cannot carry this proof by itself: Restorative Response, Closing Formulation, and
 Closure/Reconstruction Witness may summarize the boundary only after a generated/held burden or an
 explicit MRP HOLD/PARTIAL/non-load-bearing classification has already paid the recoil. Do not use

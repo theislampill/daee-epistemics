@@ -494,9 +494,9 @@ testimony/tawatur/authentication pressure for transmission owners, predicate/cat
 pressure for predication owners, and register-hold/pastoral sequencing for grief owners.
 Hard/manual graphable output must make the owner mechanism visible enough to reconstruct:
 source-status/authority-order sorts citations, source-prestige, hidden support, and source
-function; do-christian-extensions identifies the Christian pressure family and model/fan-out route
-before content release, and for DO-12 Trinitarian model pressure its ACT / field_witness operation
-is `model-identification`, never bare `route`; doubt-vs-skepticism distinguishes normal doubt from skeptical methodology,
+function; do-christian-extensions identifies the selected Christian pressure family and
+model/fan-out route before content release, and for selected DO-12 model pressure its ACT /
+field_witness operation is `model-identification`, never bare `route`; doubt-vs-skepticism distinguishes normal doubt from skeptical methodology,
 the evidence-demand or modal-veto tribunal, and the burden inversion/LoopBreak consequence; P7
 names STOP/HOLD/PARTIAL, held-route boundary, and reopen condition. Unknown but source-owned
 catalogue owners remain eligible, but their operation body still needs a local mechanism, action,

@@ -779,8 +779,9 @@ contract permits a diagnostic or audit-style response.
   first freeze the baseline burden decomposition from stable pressure classes, then select required
   owner families from the pressure-owner floor, and only then render `Matched owner/TTP route`, ACT
   records, and Layer B submoves. The stable owner floor is:
-  source/criterion/authority gates before downstream content owners; Trinitarian
-  model/person-language identification before definition, predication, or consequence work;
+  source/criterion/authority gates before downstream content owners; selected
+  model/person-language identification before definition, predication, or consequence work when
+  model family changes predicate force;
   definition/meaning -> M7; predication/category/person-nature transfer -> M9;
   entailment/consequence/backread -> M8; source/proof-text/warrant/hidden support ->
   source-status/authority-order repair; scope/stop/bounded-reply/closure-immunity -> P7 after
@@ -941,26 +942,21 @@ contract permits a diagnostic or audit-style response.
   preserves legacy schema-light absent-valid artifacts, requires the visible noetic-field banner
   and compact Layer A / Diagnostic IR header, and explicitly rejects public-prose replacement,
   arbitrary natural-language-to-IR parsing, and guaranteed `T_lang` uptake.
-- Trinitarian John 17:3 owner-plan canary: the John 17:3 case is an instance of the
-  register-derived rule, not a runtime template. When its N-frame makes `Omega`, `xi`, `mu`, and
-  `kappa` live through the quoted reply's person/nature model transfer, proof-stack support,
-  model-carrier compression, and eternal-life/sent-one entailment, `B_LA` must cover those register
-  types before any generated MRP burden. The canary may expect stable labels such as
-  `trinitarian-person-nature-model-transfer`, `john-1-1-and-1-john-5-20-proof-stack`, and
-  `eternal-life-knowing-jesus-entailment`, but those labels are supplied by the Trinitarian N-frame
-  after live-register derivation. Boundary, doctrine-immunity, proof-carousel, or bounded-reply
-  recoil remains post-land/generated unless the input asserts it as an independent baseline claim.
-- For that Trinitarian canary instance, the deterministic owner plan does not use
-  `parallel_groups`; it emits required owner rows and required-before edges for the register-typed
-  burdens. These exact labels are canary expectations for the Trinitarian N-frame, not a general
-  B1-B5 floor template: B1 `do-christian-extensions.model-identification` /
-  `trinitarian-person-nature-model-transfer` before M9 / `father-only-true-god-predicate-transfer`;
-  B2 M7 / `only-placement-analogy` before M9 / `2-plus-2-predicate-category`; B3
-  `source-status-repair.source-order` / `john-1-1-and-1-john-5-20-proof-stack` before
-  `authority-order-repair.authority-order` / `proof-text-hidden-support`; B4 M8 /
-  `eternal-life-knowing-jesus-entailment` before M9 / `sender-sent-relation-category`; generated B5
-  P7 / `sacred-doctrine-bounded-reply-immunity` before `source-status-repair.source-order` /
-  `full-system-doctrine-hidden-support`.
+- Selected hard-output owner-plan canary: a retained fixture may instantiate the
+  register-derived rule, but it is not a runtime template. When the selected N-frame makes `Omega`,
+  `xi`, `mu`, and `kappa` live through selected model/person-language transfer, source/proof
+  support, carrier compression, and entailment/dependency pressure, `B_LA` must cover those
+  register types before any generated MRP burden. Fixture pressure labels are supplied by the
+  selected N-frame after live-register derivation and must not become a generic B1-B5 template.
+  Boundary, doctrine-immunity, proof-carousel, hidden-framework, or bounded-reply recoil remains
+  post-land/generated unless the input asserts it as an independent baseline claim.
+- For any selected canary instance, the deterministic owner plan does not use `parallel_groups` to
+  hide required order. It emits required owner rows and required-before edges from structural
+  dependencies: selected model identification before predication when model family changes
+  predicate force; definition before predication when a term anchor controls the claim;
+  source-status before authority-order when source function controls warrant; consequence tracing
+  before scope closure when entailment pressure controls the stop condition; and generated
+  boundary/source/proof-carousel owners only when post-Land MRP exposes that pressure as live.
 - When a load-bearing premise, criterion, or authority node has been cleared, `What remains live`
   should mark any dependent claims whose support has collapsed or whose status now requires
   re-evaluation before further routing.

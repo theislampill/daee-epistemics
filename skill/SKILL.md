@@ -226,7 +226,7 @@ surface too small`.
    `policy_id: "diagnostic-ir-pressure-owner-floor-v1"`. This is a pre-Layer-B selection policy:
    freeze the baseline burden decomposition from stable pressure classes before choosing owners.
    Stable owner floor:
-   source/criterion/authority gates before downstream content owners; Trinitarian
+   source/criterion/authority gates before downstream content owners; selected
    model/person-language identification before definition/predication/consequence work when
    specifically live; definition/meaning -> `M7`; predication/category/person-nature transfer ->
    `M9`; entailment/consequence/backread -> `M8`; source/proof-text/warrant/hidden-support ->
@@ -260,62 +260,33 @@ surface too small`.
    `heart` live requires an affective/posture burden. Burdens may be multi-typed; coverage is
    required per live register, not one burden per register. The selected N-frame supplies each
    burden's label and content, while register liveness supplies the floor structure.
-   A selected hard-output row may serve as a canary instance of this rule, but not as a runtime
-   template. When the selected N-frame activates `Omega`, `xi`, `mu`, and `kappa` through
-   person/nature transfer, proof-stack authority, model-carrier compression, and entailment pressure, the baseline
-   `B_LA` floor must cover those register types before any generated MRP burden. Do not merge
-   proof-stack and entailment anchors into one register obligation, do not split restoration/tone
-   into a required baseline burden, and do not place doctrine-immunity or bounded-reply recoil in
-   `B_LA` unless the quoted input asserts that immunity as its own claim. If final closure names
-   broader source texts, sacred doctrine, full-system doctrine, or bounded-reply immunity after those
+   A selected hard-output row may serve as fixture/audit evidence for this rule, but never as a
+   runtime template. When the selected N-frame activates `Omega`, `xi`, `mu`, and `kappa` through
+   selected model/person-language pressure, source/proof authority, carrier compression, and
+   entailment/dependency pressure, the baseline `B_LA` floor must cover those register types before
+   any generated MRP burden. Do not merge proof-stack and entailment anchors into one register
+   obligation, do not split restoration/tone into a required baseline burden, and do not place
+   doctrine-immunity, proof-carousel, or bounded-reply recoil in `B_LA` unless the quoted input
+   asserts that recoil as its own claim. If final closure names broader source texts,
+   full-system doctrine, hidden-framework support, or bounded-reply immunity after those
    register-derived baseline burdens land, MRP may generate the next boundary-classification burden
    in `B_MRP`; it must not rewrite the original baseline set.
-   For that selected hard-output canary instance, do not use `parallel_groups`; use required owners with
-   stable `required_before` order and canary-exact pressure labels:
-   `B1`: `do-christian-extensions.model-identification` with
-   `trinitarian-person-nature-model-transfer`, then `M9.predication-repair` with
-   `father-only-true-god-predicate-transfer`.
-   `B2`: `M7.definition-anchor` with `only-placement-analogy`, then `M9.predication-repair` with
-   `2-plus-2-predicate-category`.
-   `B3`: `source-status-repair.source-order` with `john-1-1-and-1-john-5-20-proof-stack`, then
-   `authority-order-repair.sort` with `proof-text-hidden-support`.
-   `B4`: `M8.consequence-trace` with `eternal-life-knowing-jesus-entailment`, then
-   `M9.predication-repair` with `sender-sent-relation-category`.
-   `B5` when generated: `P7.scope-boundary` with `sacred-doctrine-bounded-reply-immunity`, then
-   `source-status-repair.source-order` with `full-system-doctrine-hidden-support`.
-   The naturalism/default-carrier row is also a canary instance of the live-register rule, not a
-   replacement template for arbitrary inputs. When the selected N-frame activates `xi`, `mu`,
-   `Omega`, and `kappa` through a scientific-authority warrant tribunal,
-   naturalism-as-neutral-default carrier, ontological simplicity/reduction pressure, and
-   implication-chain veto, keep the register-derived `B_LA` floor stable and keep generated
-   boundary/proof-carousel recoil out of `B_LA` until MRP instantiates it. For this canary
-   instance, do not use `parallel_groups`; use required owners with stable `required_before` order
-   and exact pressure/delta labels:
-   `B1`: `FPD.foreign-premise-detection` with `scientific-authority-hidden-tribunal` and
-   `Δ¹B:hidden-tribunal-blocked`, then `source-status-repair.source-order` with
-   `publicly-measurable-scientific-authority` and `Δ¹B:science-source-bounded`, then
-   `M1.self-grounding-test` with `only-science-counts-standard` and
-   `Δ¹B:self-authorizing-standard-invalidated`.
-   `B2`: `M7.definition-anchor` with `naturalism-as-neutral-default-definition` and
-   `Δ²B:definition-anchored`, then `FPD.foreign-premise-detection` with
-   `neutral-default-imported-criterion` and `Δ²B:imported-criterion-blocked`, then
-   `M8.consequence-trace` with `default-carrier-consequence` and
-   `Δ²B:dependency-exposed`.
-   `B3`: `M9.predication-repair` with `ontological-simplicity-predicate` and
-   `Δ³B:predicate-separated`, then `M8.consequence-trace` with
-   `matter-laws-evolution-explain-minds-and-morality` and `Δ³B:mechanism-totality-demoted`,
-   then `M3.orphaned-intuition` with `moral-and-rational-normativity` and
-   `Δ³B:normativity-restored-to-ground`.
-   `B4`: `M8.consequence-trace` with `unnecessary-implication-chain-veto` and
-   `Δ⁴B:entailment-blocked`, then `M9.predication-repair` with
-   `explanation-layer-category-confusion` and `Δ⁴B:category-separated`, then
-   `P7.scope-boundary` with `scientific-tribunal-on-its-own-terms` and
-   `Δ⁴B:scope-boundary-named`.
-   `B5` when generated: `P7.scope-boundary` with `bounded-reply-boundary` and
-   `Δ⁵B:reopen-boundary-licensed`, then `source-status-repair.source-order` with
-   `proof-carousel-hidden-support` and `Δ⁵B:hidden-support-blocked`, then
-   `M8.consequence-trace` with `bounded-answer-incomplete-defeat-claim` and
-   `Δ⁵B:finite-answer-evasion-claim-invalidated`.
+   For any selected hard-output route, do not use `parallel_groups` to hide required order and do
+   not import fixture pressure labels into runtime as deterministic routing. Derive required owners,
+   pressure labels, and `required_before` edges from the selected DSL/IR structure: model
+   identification before predication when model family changes predicate force; definition before
+   predication when a term anchor controls the claim; source-status before authority-order when
+   source function controls warrant; consequence tracing before scope closure when entailment
+   pressure controls the stop condition; and generated boundary/source/proof-carousel owners only
+   when post-Land MRP exposes that pressure as live.
+   A selected source-totalization/default-carrier row may likewise serve as fixture/audit evidence
+   for the live-register rule, not as a replacement template for arbitrary inputs. When the selected
+   N-frame activates `xi`, `mu`, `Omega`, and `kappa` through a source-authority warrant tribunal,
+   default-carrier pressure, ontological reduction pressure, and implication-chain veto, keep the
+   register-derived `B_LA` floor stable and keep generated boundary/proof-carousel recoil out of
+   `B_LA` until MRP instantiates it. Use required owners with stable structural ordering from the
+   live pressure; do not require exact canary pressure/delta labels unless the fixture or retained
+   evidence itself is under test.
    Partition candidate owners into `required`, `parallel`, `contingent`,
    `optional_non_load_bearing`, or `hold_partial`; emit ACT records only for owners that actually
    execute, and tag each matching `field_witness.owner_activations[]` object with the same
@@ -404,7 +375,7 @@ surface too small`.
     holds the burden. If the operation body would only repeat a conclusion, route HOLD/PARTIAL or
     continue Layer B work instead of claiming `Land(...)`.
     FPD names the imported/foreign premise, criterion, hidden court, or smuggled support. In
-    default-carrier or naturalism-as-neutral-default cases, do not use an FPD owner row unless the
+    default-carrier or source-totalization routes, do not use an FPD owner row unless the
     target and body literally expose an imported criterion, imported premise, foreign premise,
     hidden tribunal/court, or smuggled support. Put one of those exact phrases in the `Target:` or
     `Operation:` line and again in the `TTP Operation Body:` paragraph, then state the
@@ -422,8 +393,7 @@ surface too small`.
     and grounding words is not M3 activation. M7
     explicitly uses definition-anchor/semantic-anchor/meaning language to stabilize the term under
     dispute, not merely mention "the term"; its `Target:` cannot be a label-only slug such as
-    `neutral-default`, and should name the contested term plus its function, such as
-    `naturalism-as-neutral-default definition`. M8 runs the "if granted, what follows" trace;
+    `neutral-default`, and should name the contested term plus its selected route function. M8 runs the "if granted, what follows" trace;
     in compact Result/state-change and ACT deltas, do not use `rerouted` as the only state-change
     token. Pair the trace with a checker-readable state word such as `routed`, `blocked`,
     `invalidated`, `demoted`, or `exposed-as-dependent`.
@@ -444,8 +414,8 @@ surface too small`.
     should visibly include sentences or labels for `Stop condition:`, `Held-route boundary:`, and
     `Reopen condition:` unless it routes HOLD/PARTIAL;
     do-christian-extensions confirms the Christian pressure family and identifies the
-    model/fan-out route rather than answering "the Trinity" in the abstract; for DO-12
-    Trinitarian model pressure, its ACT / field_witness operation is `model-identification`,
+    model/fan-out route rather than answering a named doctrine in the abstract; for selected DO-12
+    model pressure, its ACT / field_witness operation is `model-identification`,
     never bare `route`; do-second-loop
     confirms the DO-family route and names hujjah, warning, record, moral-protest,
     cognitive-science, or accountability mechanics; doubt-vs-skepticism distinguishes normal doubt
@@ -1342,9 +1312,10 @@ Short named-worldview hard-field gate:
 Noetic-structure hardness is not proportional to prompt length. A short input that names or
 implies a worldview, ideology, authority-order, epistemic regime, religious objection, or
 civilization-level criterion can instantiate a hard compound/source-request field even when the
-user does not enumerate every burden or ask for sources. Examples include "refute secularism",
-"respond to atheism", "answer liberalism", "dismantle naturalism", and "deal with this moral
-objection". Treat the named structure itself as source-status/noetic-frame material when it
+user does not enumerate every burden or ask for sources. A compact request to refute, answer, or
+evaluate a selected noetic structure is enough when that structure carries source-status,
+worldview, authority-order, moral-tribunal, anthropology, proof-standard, or public-reason pressure.
+Treat the named structure itself as source-status/noetic-frame material when it
 carries ontology, epistemology, authority order, moral tribunal, anthropology, proof standard,
 or public-reason criterion. Prompt brevity, generic wording, or absence of "bring sources" is
 not a STOP reason. Expand from the noetic structure, then execute, clear, hold, or mark PARTIAL

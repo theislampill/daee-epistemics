@@ -324,9 +324,9 @@ orphaned intuition; M7 stabilizes
 definition anchors, semantic anchors, and meaning for the contested term/relation; M8 traces consequences; M9 repairs predication/category structure;
 source-status and authority-order repair sort which source, citation, proof text, authority, or
 source function can carry which claim and prevent hidden support or source-prestige from doing
-unargued work; `do-christian-extensions` confirms the Christian pressure family and model/fan-out
-route before content release, and for DO-12 Trinitarian model pressure its ACT / `field_witness`
-operation is `model-identification`, never bare `route`; `do-second-loop` confirms the DO-family route and names the relevant
+unargued work; `do-christian-extensions` confirms the selected Christian pressure family and
+model/fan-out route before content release, and for selected DO-12 model pressure its ACT /
+`field_witness` operation is `model-identification`, never bare `route`; `do-second-loop` confirms the DO-family route and names the relevant
 hujjah, warning, record, moral-protest, cognitive-science, or accountability mechanism;
 `doubt-vs-skepticism` distinguishes normal doubt from skeptical methodology, names the evidence
 demand or modal-veto tribunal, and records the burden inversion or LoopBreak/P7 consequence; P7
@@ -390,20 +390,17 @@ immunity shield. If "broader system/exegesis held" is being used to close after 
 ledger lands, MRP must check whether the boundary itself is a post-Land escape route absent from
 `𝔅_LA`. If live, render it as a generated `𝔅_MRP` burden with Layer B work that blocks boundary
 language from rescuing the landed local reply.
-In the reopened Trinitarian / DO-12 hard-smoke gate, broader John 1:1 / 1 John 5:20 material,
-full-system doctrine, conciliar metaphysics, or "the local reply is bounded" language counts as a
-live boundary-as-immunity / full-system-doctrine-shield recoil after the model-pressure burden
-lands. It must be generated as non-baseline `𝔅_MRP`, receive its own Layer A/B treatment and
-owner-backed ACT/body execution, and then be reread before STOP. Do not keep `𝔅_MRP = {}` while
-using that same boundary to license closure.
-For named hard-theological acceptance smokes (Trinitarian, TST, Khaybar), a same-baseline
-`no_new_resultant` classification is insufficient once the output names broader doctrine,
-source-stack, proof-text stack, full-system metaphysics, or bounded-answer language in the final
-reread or closure. The non-load-bearing proof for that boundary must be rendered as a generated
-`𝔅_MRP` burden with owner-backed ACT/body execution, even if a baseline `𝔅_LA` burden already
-worked doctrine-immunity pressure. Only after that generated boundary burden lands may the final
-MRP block report `no_new_resultant` and STOP; otherwise route HOLD/PARTIAL with
-`coverage_complete=false`.
+For any selected hard-output route, a same-baseline `no_new_resultant` classification is
+insufficient once the output names broader doctrine, source-stack, proof-text stack,
+full-system metaphysics, proof-carousel, hidden-framework, restoration-recoil, or bounded-answer
+language in the final reread or closure. The runtime must decide from the selected DSL/IR
+structure, owner family, burden topology, source-status, route availability, generated-burden
+state, and public/witness parity, not from known smoke names or filenames. If the boundary is
+live, it must be rendered as a generated `𝔅_MRP` burden with owner-backed ACT/body execution.
+Only after that generated boundary burden lands may the final MRP block report
+`no_new_resultant` and STOP; otherwise route HOLD/PARTIAL with `coverage_complete=false`. If the
+boundary is not live, the output must provide an explicit `no_new_resultant_proof` with checked
+escape routes, empty live burden state, zero dependency residual, and `stop_licensed=true`.
 If not live, the final MRP block must explicitly record `no_new_resultant` and state that the
 broader-held material is outside the scoped claim, non-load-bearing, and cannot rescue the
 defeated local burden. A default hard noetic render that prints `𝔅_MRP = {}` while also leaving
@@ -983,9 +980,9 @@ tawahhum, or doubt-pressure, do not force the case into `juḥūd`, `inkār`, `i
 Render the adjacent pressure explicitly (`clarification pressure: shubhah / shakk-rāyb`) and route
 through clarification, V9, fiṭrah anchoring, source-order repair, bounded reassurance, or P7/DW
 hold as appropriate. A positive non-refusal concealment read does not mean no burden exists.
-Concealment mode scopes to the diagnostic target by default. A prompt like `refute secularism`
-diagnoses secularism as a noetic/worldview field; it does not diagnose the requester as personally
-concealed. If the requester posture is visible, render it as posture/context, not concealment,
+Concealment mode scopes to the diagnostic target by default. A prompt that targets a selected
+worldview, authority-order, source-status, or noetic structure diagnoses that structure as the
+field; it does not diagnose the requester as personally concealed. If the requester posture is visible, render it as posture/context, not concealment,
 unless the requester explicitly presents their own doubt, belief, refusal, or interior struggle as
 the diagnostic target. This target-scoping line prevents the concealment tool from becoming an
 unseen-person read.

@@ -51,9 +51,10 @@ NEGATED_DOWNSTREAM_RE = re.compile(
     r"(?:burden(?:s)?\s+)?(?:remain(?:s)?|live|remaining|follows)\b"
 )
 NAMED_AUTHORITY_RE = re.compile(
-    r"(?i)\b(?:secular(?:ism|ist)?|public reason|human rights|Satanic Temple|TST|"
-    r"Trinitarian|Trinity|Christian|atheis[mt]|naturalism|scientism|humanis[mt]|"
-    r"liberal(?:ism)?|materialis[mt]|worldview|theological authority|authority frame)\b"
+    r"(?i)\b(?:public reason|human rights|named movement|source-worldview|source stack|"
+    r"proof stack|moral tribunal|authority-order|source-status|source order|"
+    r"worldview|theological authority|authority frame|religious authority|"
+    r"epistemic regime|public authority|hidden framework|imported tribunal)\b"
 )
 ISLAMIC_RESTORATION_RE = re.compile(
     r"(?i)\b(?:Islamic|Allah|Qur[ʾ'’`]?an|Qur[ʾ'’`]?ānic|tawḥīd|tawhid|"

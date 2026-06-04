@@ -1,4 +1,4 @@
-<!-- case: trinitarian-j173 -->
+<!-- profile: selected-do12-model-source-stack -->
 
 ## Burden 1 / 1B - John 17:3 predication
 Target: John 17:3, where Jesus names the Father as the only true God and himself as the one sent.

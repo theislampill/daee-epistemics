@@ -1,4 +1,4 @@
-<!-- case: secularism -->
+<!-- profile: selected-worldview-source-totalization -->
 
 ## Burden 1 / 1B - secularism as neutral default
 Target: secularism as public reason and neutrality.

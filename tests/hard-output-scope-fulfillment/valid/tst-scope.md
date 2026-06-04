@@ -1,4 +1,4 @@
-<!-- case: tst-lillard -->
+<!-- profile: source-worldview-moral-tribunal -->
 
 ## Burden 1 / 1B - TST moral tribunal
 Target: Lillard's Satanist Temple / TST source context and the claim that eternal hellfire for non-belief is cruel.

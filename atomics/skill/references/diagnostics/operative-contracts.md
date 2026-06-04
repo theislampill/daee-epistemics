@@ -25,7 +25,7 @@ The contract layer makes existing per-file knowledge machine-parseable and linta
 
 The operative-contract layer is not a runtime dispatch substitute. Its operational value is **static discoverability and auditability**: it lets agents and future lint tools see which modules declare load conditions, companions, emitted fields, blocked moves, output constraints, and catalogue bindings before runtime routing decides which of them actually activate. This allows complex cases to expose a wider selectively routed field of candidate modules without making those modules ambient always-load.
 
-A complex Trinitarian, kalāmic, atheist, secular, or mixed higher-order case may surface many candidate modules through contracts and companions. That does not mean all candidates are active. The diagnostic IR still decides current-pass activation. The contract layer makes the candidate field auditable; the IR makes dispatch lawful.
+A complex theological, kalamic, worldview, source-order, or mixed higher-order case may surface many candidate modules through contracts and companions. That does not mean all candidates are active. The diagnostic IR still decides current-pass activation. The contract layer makes the candidate field auditable; the IR makes dispatch lawful.
 
 A declared load condition, companion, emitted field, or specialty marker is not execution evidence.
 When a TTP or owner actually activates at runtime, execution must still be visible in the owner
