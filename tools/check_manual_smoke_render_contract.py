@@ -194,7 +194,8 @@ STATE_CHANGE_RE = re.compile(
     r"identified|identifies|defined|defines|stabilized|stabilizes|refused|denied|self[- ]undercut|loses|loss|severed|separated from|"
     r"criterion[- ]self[- ]failed|self[- ]failed|"
     r"(?:non|not)[- ]load[- ]bearing|lands|landed|cleared|state change|delta|undermined|"
-    r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|anchors?|anchored)\b"
+    r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|restores|restoring|"
+    r"returned|returning|returns|anchors?|anchored)\b"
 )
 GENERIC_CONTRIBUTION_RE = re.compile(
     r"(?i)^\s*(?:it\s+)?(?:blocks?|preserves?|gives?|allows?|contributes?|lands?|makes?)\s+"
@@ -697,6 +698,11 @@ def section_after_heading(text: str, heading: str) -> str:
         tail,
     )
     return tail[: end.start()] if end else tail
+
+
+def anchored_heading_position(text: str, heading: str) -> int:
+    match = re.search(rf"(?im)^\s*(?:#{{1,6}}\s*)?{re.escape(heading)}\s*$", text)
+    return match.start() if match else -1
 
 
 PUBLIC_TAIL_LABEL_RE = re.compile(
@@ -1406,7 +1412,7 @@ def check_field_witness_contract(path: Path, text: str, require_field_witness: b
         errors.append(
             f"{path}: field_witness payload is nested under a wrapper; emit the parser-stable field_witness object itself"
         )
-    closing_at = text.find("Closing Formulation")
+    closing_at = anchored_heading_position(text, "Closing Formulation")
     if field_match and closing_at >= 0 and field_match.start() < closing_at:
         errors.append(f"{path}: field_witness appears before Closing Formulation; machine sidecar must be last or external")
     if require_field_witness and field_witness is None:
@@ -1647,9 +1653,9 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
         if not generated_held and not re.search(rf"(?is)(?:Land|HOLD)\({re.escape(target)}\).*?\[Mid-Reread Pressure\]", section):
             errors.append(f"{path}: generated burden {target} lacks post-land MRP/reread accounting")
 
-    closure_at = text.find("Closure/Reconstruction Witness")
-    restorative_at = text.find("Restorative Response")
-    closing_at = text.find("Closing Formulation")
+    closure_at = anchored_heading_position(text, "Closure/Reconstruction Witness")
+    restorative_at = anchored_heading_position(text, "Restorative Response")
+    closing_at = anchored_heading_position(text, "Closing Formulation")
     if restorative_at >= 0 and closing_at >= 0 and restorative_at > closing_at:
         errors.append(f"{path}: Closing Formulation must follow Restorative Response")
     if closing_at >= 0 and closure_at >= 0 and closure_at < closing_at:

@@ -481,10 +481,13 @@ def canonical_delta_result_for_owner(
         return raw
     family = canonical_delta_owner(str(owner or "")) or str(owner or "").strip().upper()
     vocabulary = DELTA_RESULT_VOCABULARY.get(family)
-    if not vocabulary or raw in vocabulary:
+    if not vocabulary:
         return raw
 
     combined = delta_token_key(f"{operation} {pressure} {raw}")
+    source_generic_repair = family == "SOURCE" and raw == "source-order-repaired"
+    if raw in vocabulary and not source_generic_repair:
+        return raw
     candidates: list[str] = []
     if family == "DO_CHRISTIAN":
         if any(token in combined for token in ("trinitarian", "person-nature", "model-transfer", "model-identification")):
@@ -523,12 +526,25 @@ def canonical_delta_result_for_owner(
     elif family == "SOURCE":
         if "proof-text-hidden-support" in combined:
             candidates.append("proof-text-hidden-support-blocked")
-        if "proof-text" in combined or "proof-stack" in combined:
+        if "hidden-support" in combined or "carrier-support" in combined or "recoil" in combined:
+            candidates.append("hidden-support-blocked")
+        if any(
+            token in combined
+            for token in (
+                "proof-text",
+                "proof-stack",
+                "source-stack",
+                "quran",
+                "qur-an",
+                "hadith",
+                "lexical",
+                "transmission",
+                "report",
+            )
+        ):
             candidates.append("proof-text-sorted")
         if "source-order" in combined or "proof-stack-routed" in combined:
-            candidates.append("source-order-repaired")
-        if "hidden-support" in combined:
-            candidates.append("hidden-support-blocked")
+            candidates.append("hidden-authority-source-status-bounded")
         if "authority-order" in combined:
             candidates.append("authority-order-repaired")
     elif family == "P7":
@@ -635,6 +651,20 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
     floor = stage.get("burden_floor")
     if isinstance(floor, list) and floor and all(isinstance(item, str) and item for item in floor):
         stage["burden_floor"] = ordered_unique(list(floor))
+        detail_alias = stage.get("burden_floor_details")
+        if detail_alias is None and isinstance(stage.get("burden_floor_detail"), list):
+            detail_alias = stage.get("burden_floor_detail")
+            stage["burden_floor_details"] = list(detail_alias)
+            normalization["burden_floor_detail_alias"] = True
+        if detail_alias is not None:
+            if not isinstance(detail_alias, list) or not all(isinstance(item, dict) for item in detail_alias):
+                raise HarnessError("stage-02 burden_floor_details must be a list of detail objects")
+            for index, detail in enumerate(detail_alias):
+                burden_id = non_empty_string(detail.get("burden_id") or detail.get("id"))
+                if burden_id is None:
+                    raise HarnessError(
+                        f"stage-02 burden_floor_details[{index}] object cannot be normalized without a string burden_id"
+                    )
     elif isinstance(floor, list) and floor and all(isinstance(item, dict) for item in floor):
         details = list(floor)
         burden_ids: list[str] = []
@@ -1450,7 +1480,7 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
 def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
     coverage: dict[str, list[str]] = {}
     if isinstance(stage02, dict):
-        details = stage02.get("burden_floor_details")
+        details = stage02.get("burden_floor_details") or stage02.get("burden_floor_detail")
         if isinstance(details, list):
             for item in details:
                 if not isinstance(item, dict):
@@ -1470,7 +1500,7 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
 def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
     burden_registers: dict[str, list[str]] = {}
     if isinstance(stage02, dict):
-        details = stage02.get("burden_floor_details")
+        details = stage02.get("burden_floor_details") or stage02.get("burden_floor_detail")
         if isinstance(details, list):
             for item in details:
                 if not isinstance(item, dict):
@@ -2579,6 +2609,99 @@ def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str
     return "\n".join(lines).strip() + "\n"
 
 
+def stage07_restorative_response_budget_supplement(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
+    burden_floor = (
+        list_field(stage02, "burden_floor")
+        or list_field(stage04, "act_burdens")
+        or list_field(stage06, "B_LA")
+        or list_field(stage05, "B_LA")
+    )
+    generated_records = {
+        str(record.get("id")): dict(record)
+        for record in stage05_generated_burden_records(stage05)
+        if record.get("id")
+    }
+    generated_burdens = ordered_unique(
+        [
+            *stage05_generated_burdens(stage05),
+            *[burden for burden in generated_records if burden],
+            *list_field(stage06, "B_MRP"),
+        ]
+    )
+    b_total = ordered_unique([*burden_floor, *generated_burdens])
+    unresolved_burdens = ordered_unique(
+        [
+            *stage05_unresolved_burdens(stage05),
+            *list_field(stage06, "unresolved_burdens"),
+        ]
+    )
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
+    if not isinstance(terminal_states, dict):
+        terminal_states = {}
+    terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
+    terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
+        generated_burdens=generated_burdens,
+        generated_record_by_id=generated_records,
+        terminal_states=terminal_states,
+        unresolved_burdens=unresolved_burdens,
+        executed_act_burdens=set(stage04_owner_routes_by_burden(stage04)),
+    )
+    burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    lines = [
+        "### Restorative reconstruction floor",
+        "",
+        "The restorative response stays tied to the selected noetic structure, the selected owner family, and the burden route that actually landed. It does not add catalogue mass merely because more TTPs are callable, and it does not hide a remaining generated burden behind smooth pastoral prose.",
+        "",
+        "### Restored burden order",
+        "",
+    ]
+    if not b_total:
+        lines.append("The visible burden ledger remains the scope of the restoration.")
+    for burden in b_total:
+        public_burden = public_burden_id(burden)
+        registers = ", ".join(burden_registers.get(burden, [])) or "local registers"
+        state = terminal_states.get(burden, "landed")
+        if burden in generated_burdens:
+            record = generated_records.get(burden, {})
+            generated_by = str(record.get("generated_by") or "MRP(selected-parent)")
+            if burden in unresolved_burdens or "hold" in state.lower() or "partial" in state.lower() or "recurse" in state.lower():
+                lines.append(
+                    f"- {public_burden}: generated by {public_graph_value(generated_by)}; registers={registers}; state={state}. Restoration keeps this pressure visible as HOLD/PARTIAL/RECURSE until selected ACT evidence executes it."
+                )
+            else:
+                lines.append(
+                    f"- {public_burden}: generated by {public_graph_value(generated_by)}; registers={registers}; state={state}. Restoration may treat it as landed only because visible execution evidence has already landed it."
+                )
+        else:
+            lines.append(
+                f"- {public_burden}: baseline burden; registers={registers}; state={state}. Restoration follows after its visible ACT submoves, Land(...), and R(H,Δ) consequence rather than replacing them."
+            )
+    held_text = public_burden_list(unresolved_burdens) if unresolved_burdens else "none"
+    lines.extend(
+        [
+            "",
+            "### Relieved pressure",
+            "",
+            "The restored field relieves only the pressure that the visible owner rows worked: criterion, source-order, proof-stack, predication, method, analogy, or restoration pressure named by the selected route. A later objection remains admissible only as a concrete burden with its own owner route.",
+            "",
+            "### Held/scoped/reopenable remainder",
+            "",
+            f"The remaining generated or unresolved burden set is {held_text}. When that set is non-empty, restoration is intentionally partial for that remainder and coverage_complete=false stays honest. When it is empty, restoration still stays bounded to the worked burden floor rather than claiming a total-system answer.",
+            "",
+            "### Fitrah and sound-reason return",
+            "",
+            "The public close returns the reader to tawhid, fitrah, and sound reason by naming the repaired criterion and the scoped reopen condition. It must be warm enough to restore orientation, but strict enough that comfort prose cannot turn held pressure into fake closure.",
+            "",
+            "The restoration should therefore tell the reader what changed in the field: which burden no longer governs, which criterion has been restored, which owner result made that restoration licensed, and which pressure remains outside the close. That is reader-facing care and proof discipline at the same time.",
+        ]
+    )
+    return "\n".join(lines).strip() + "\n"
+
+
 def stage07_mrp_reread_budget_supplement(previous_stages: list[dict[str, Any]]) -> str:
     stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
     stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
@@ -2693,6 +2816,9 @@ def compiled_section_budget_guardrail(
     elif section_role == "mrp_reread_terminal":
         marker = "### MRP terminal reconstruction floor"
         supplement = stage07_mrp_reread_budget_supplement(previous_stages)
+    elif section_role == "restorative_response":
+        marker = "### Restorative reconstruction floor"
+        supplement = stage07_restorative_response_budget_supplement(previous_stages)
     if not marker or marker in text:
         return text, None
     if not supplement:
@@ -4416,6 +4542,30 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve rich Stage 02 live register details")
     if not isinstance(normalized_stage02.get("burden_floor_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 02 burden-floor details")
+    singular_detail_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-register-alias-self-test",
+            "live_registers": ["xi", "sigma", "mu", "Omega", "kappa"],
+            "burden_floor": ["B1", "B2", "B3", "B4"],
+            "burden_floor_detail": [
+                {"burden_id": "B1", "register_types": ["xi", "sigma"]},
+                {"burden_id": "B2", "register_types": ["mu", "sigma"]},
+                {"burden_id": "B3", "register_types": ["Omega"]},
+                {"burden_id": "B4", "register_types": ["kappa"]},
+            ],
+        },
+    )
+    if not isinstance(singular_detail_stage02.get("burden_floor_details"), list):
+        raise HarnessError("Self-test failed to promote singular Stage 02 burden_floor_detail alias")
+    singular_coverage = stage02_register_coverage(singular_detail_stage02, singular_detail_stage02["burden_floor"])
+    if singular_coverage.get("kappa") != ["B4"]:
+        raise HarnessError("Self-test singular Stage 02 detail alias lost kappa coverage for B4")
+    singular_registers = stage02_burden_register_types(singular_detail_stage02, singular_detail_stage02["burden_floor"])
+    if singular_registers.get("B4") != ["kappa"]:
+        raise HarnessError("Self-test singular Stage 02 detail alias lost B4 register typing")
     try:
         normalized_stage(
             "stage-02-layer-a-diagnostic-ir",
@@ -4604,6 +4754,32 @@ def run_self_test(root: Path) -> int:
     rewrites = normalized_trinitarian_stage04.get("normalization", {}).get("delta_result_canonicalizations")
     if not isinstance(rewrites, list) or len(rewrites) != 8:
         raise HarnessError("Self-test failed to record Trinitarian Stage 04 delta_result canonicalizations")
+    source_stack_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=quran-hadith-lexical-source-stack :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+    )
+    source_recoil_row = (
+        "⟦ACT ¹B₂[source-status-repair.source-order] :: "
+        "π=source-order-recoil-hidden-support :: "
+        "body_ref=¹B₂ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+    )
+    normalized_source_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [source_stack_row, source_recoil_row],
+        },
+    )
+    source_delta_results = [
+        stage04_act_details_by_ref(normalized_source_stage04)[ref]["delta_result"]
+        for ref in ["¹B₁", "¹B₂"]
+    ]
+    if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
+        raise HarnessError("Self-test failed to canonicalize generic source-stack/recoil delta_result tokens")
     partition_stage04 = dict(normalized_stage04)
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"]
     partition_plan = compiled_release_section_plan(70)
@@ -5295,6 +5471,28 @@ def run_self_test(root: Path) -> int:
     for forbidden in ("byte budget", "manifest", "compiler", "Khaybar"):
         if forbidden in supplemented_mrp:
             raise HarnessError(f"Self-test MRP terminal budget guardrail leaked implementation/case term {forbidden}")
+    short_restorative = "Restorative Response\n\nRestored criterion/order: local route.\n"
+    supplemented_restorative, restorative_event = compiled_section_budget_guardrail(
+        "restorative_response",
+        short_restorative,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        1800,
+    )
+    if not restorative_event:
+        raise HarnessError("Self-test Restorative Response budget guardrail did not record an event")
+    if len(supplemented_restorative.encode("utf-8")) < 1800:
+        raise HarnessError("Self-test Restorative Response budget guardrail remained under the byte floor")
+    for required in (
+        "### Restorative reconstruction floor",
+        "### Restored burden order",
+        "### Held/scoped/reopenable remainder",
+        "catalogue mass",
+    ):
+        if required not in supplemented_restorative:
+            raise HarnessError(f"Self-test Restorative Response budget guardrail omitted {required}")
+    for forbidden in ("byte budget", "manifest", "compiler", "Trinitarian", "Khaybar", "TST", "Secularism"):
+        if forbidden in supplemented_restorative:
+            raise HarnessError(f"Self-test Restorative Response budget guardrail leaked implementation/case term {forbidden}")
     stage07_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
