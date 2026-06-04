@@ -1,0 +1,132 @@
+NOETIC FIELD EXECUTION
+
+## Layer A - Compact DSL/IR Header
+- live registers: xi and kappa are live.
+- live noetic burden: B1 / moral tribunal filter.
+- held: B2 / later baseline policy burden; B3 / later baseline consequence burden.
+- B_LA = {B1, B2, B3}
+- B_MRP = {B4}
+- B_total = B_LA union B_MRP
+- Initial burden set: [B1, B2, B3]
+
+## Layer B - Bounded Governed Response
+
+## Burden 1 / B1 - moral tribunal filter
+Matched owner/TTP route: [FPD, M1-P]
+Land(B1): moral tribunal filter landed as imported control.
+
+Restorative Response
+
+The scoped pass accounts for the source-worldview pressure without converting a generated TST recoil into closure.
+
+Closing Formulation
+
+Closure is HOLD/PARTIAL while B4 remains generated-held and B2/B3 remain baseline held burdens.
+
+Closure/Reconstruction Witness
+Initial burden set: [B1, B2, B3]
+B_LA = {B1, B2, B3}
+B_MRP = {B4}
+B_total = B_LA union B_MRP
+Burden dependency graph:
+B1 (root)
+B2 (root)
+B3 (root)
+B1 -> B4
+Terminal states:
+B1: landed / FPD-M1P / moral tribunal filter exposed
+B2: carried-RECURSE / baseline held
+B3: carried-RECURSE / baseline held
+B4: carried-RECURSE / generated-held unexecuted
+MRP resultants:
+MRP(B1): type=generated_burden_instantiation; finding=genuine-dependent; graph=B1 -> B4; route=HOLD
+del-dot B: non-neutral / B4 generated-held and B2/B3 baseline held
+del-cross kappa: null / generated proof-carousel recoil is carried as a B burden, not curl closure
+C(PsiN): coverage_complete=false; generated B4 remains unresolved
+T_lang: PsiN -> PsiI: partial coupling boundary; no guaranteed uptake
+
+field_witness
+{
+  "B_LA": ["B1", "B2", "B3"],
+  "B_MRP": ["B4"],
+  "B_total": ["B1", "B2", "B3", "B4"],
+  "nodes": [
+    {"id": "B1", "type": "burden", "title": "moral tribunal filter", "register_types": ["xi"], "state": "landed"},
+    {"id": "B2", "type": "burden", "title": "baseline policy burden", "register_types": ["kappa"], "state": "carried-RECURSE"},
+    {"id": "B3", "type": "burden", "title": "baseline consequence burden", "register_types": ["kappa"], "state": "carried-RECURSE"},
+    {"id": "B4", "type": "generated_burden", "title": "TST proof-carousel recoil", "register_types": ["xi"], "generated_by": "MRP(B1)", "generation_depth": 1, "track": "primary", "state": "carried-RECURSE"}
+  ],
+  "edges": [{"from": "B1", "to": "B4", "type": "generated_burden_instantiation"}],
+  "generated_burdens": [
+    {"id": "B4", "generated_by": "MRP(B1)", "generation_depth": 1, "track": "primary", "reason": "TST proof-carousel recoil remains unexecuted"}
+  ],
+  "mrp_resultants": [
+    {"source": "B1", "type": "generated_burden_instantiation", "finding": "genuine-dependent", "graph": "B1 -> B4", "route": "HOLD"}
+  ],
+  "formal_reread_states": [
+    {
+      "source_burden": "B1",
+      "prior_land": "Land(B1)",
+      "delta": "Delta B1: moral tribunal filter exposed; generated TST recoil remains unexecuted.",
+      "reread": "R(H,Delta)",
+      "route_gradient": "generated B4 absent from B_LA while B2 and B3 remain baseline burdens.",
+      "divergence_state": "non-neutral",
+      "curl_state": "null",
+      "route_result_type": "generated_burden_instantiation",
+      "mrp_resultant": "genuine-dependent -> instantiate B4 [generated-by: MRP(B1)] and HOLD",
+      "graph_delta": "B1 -> B4",
+      "preemption_basis": "framework-bound",
+      "route": "HOLD",
+      "next_burden": "B4",
+      "owner_route": ["FPD", "M1-P", "P7"],
+      "generated_by": "MRP(B1)",
+      "hold_partial_detail": "B4 is generated-held, unexecuted, and carried-RECURSE; coverage_complete=false."
+    }
+  ],
+  "field_diagnostics": {
+    "divergence_check": "non-neutral / B4 generated-held and B2/B3 baseline held",
+    "curl_check": "null"
+  },
+  "terminal_states": {
+    "B1": "landed",
+    "B2": "carried-RECURSE / baseline held",
+    "B3": "carried-RECURSE / baseline held",
+    "B4": "carried-RECURSE / generated-held unexecuted"
+  },
+  "closure": {"status": "coverage_complete=false"},
+  "owner_activations": [
+    {"source": "B1", "target": "B1", "owner": "FPD", "operation": "expose", "pressure": "moral tribunal filter", "body_ref": "B1_1", "delta": "Delta B1:imported-criterion-blocked", "land": "Land(B1)+"},
+    {"source": "B1", "target": "B1", "owner": "M1-P", "operation": "test", "pressure": "public moral self-exemption", "body_ref": "B1_2", "delta": "Delta B1:performative-contradiction-exposed", "land": "Land(B1)+"}
+  ],
+  "normalized_activation_record": {
+    "n_frame": "fixture-tst-generated-held",
+    "live_registers": ["xi", "kappa"],
+    "burden_floor": ["B1", "B2", "B3"],
+    "per_burden": [
+      {"burden_id": "B1", "owner_id": "FPD", "operation": "expose", "delta_result": "imported-criterion-blocked", "mrp_route_result_type": "generated_burden_instantiation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B1", "owner_id": "M1-P", "operation": "test", "delta_result": "performative-contradiction-exposed", "mrp_route_result_type": "generated_burden_instantiation", "terminal_state": "landed", "generation_depth": 0},
+      {"burden_id": "B2", "owner_id": "M8", "operation": "held-route", "delta_result": "held-route-bounded", "mrp_route_result_type": "held_burden_activation", "terminal_state": "carried-RECURSE", "generation_depth": 0},
+      {"burden_id": "B3", "owner_id": "P7", "operation": "held-route", "delta_result": "held-route-bounded", "mrp_route_result_type": "held_burden_activation", "terminal_state": "carried-RECURSE", "generation_depth": 0},
+      {"burden_id": "B4", "owner_id": "P7", "operation": "hold", "delta_result": "held-route-bounded", "mrp_route_result_type": "generated_burden_instantiation", "terminal_state": "carried-RECURSE", "generation_depth": 1}
+    ]
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1", "B2", "B3"],
+    "terminal_states": {
+      "B1": "landed",
+      "B2": "carried-RECURSE / baseline held",
+      "B3": "carried-RECURSE / baseline held",
+      "B4": "carried-RECURSE / generated-held unexecuted"
+    },
+    "dependency_graph": {"nodes": ["B1", "B2", "B3", "B4"], "edges": [["B1", "B4"]], "roots": ["B1", "B2", "B3"], "acyclic": true},
+    "diagnostic_completeness": {
+      "live_registers": ["xi", "kappa"],
+      "coverage": {"xi": ["B1"], "kappa": ["B2", "B3"]},
+      "complete": true
+    },
+    "divergence_check": "non-neutral / B4 generated-held and B2/B3 baseline held",
+    "curl_check": "null",
+    "max_generation_depth": 1,
+    "coverage_complete": false
+  }
+}

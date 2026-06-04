@@ -2364,9 +2364,9 @@ def stage07_restorative_response_section_scaffold(previous_stages: list[dict[str
         f"Restored criterion/order: Preserve the landed source-owned burden order {floor_text} "
         "and return the field to tawhid, fitrah, and sound reason without letting a later model "
         "override the local proof state.\n\n"
-        "Relieved pressure: The visible ACT and MRP rows block the reply's predicate-transfer, "
-        "source-order, proof-stack, analogy, and worship-orientation pressure from governing "
-        "the text before the text's own sender-sent order is heard.\n\n"
+        "Relieved pressure: The visible ACT and MRP rows block the reply's local premise, "
+        "source-order, proof-stack, analogy, source-status, and consequence pressure from "
+        "governing the answer before the visible burden order is worked.\n\n"
         f"Held/scoped/reopenable remainder: {remainder}\n"
     )
 
@@ -2415,7 +2415,7 @@ def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str
         "",
         f"The final close remains tied to {n_frame}. It does not ask the reader to accept a total-system verdict before the displayed burdens have done their work. It keeps the reply's pressure ordered by the visible burden floor, the landed ACT rows, the MRP reread, and the held remainder.",
         "",
-        "The closing therefore has three controlled claims. First, the stated reply fails where it tries to move the verse's predicate away from the addressed Father. Second, the repair is local to the argument actually made: word-placement, analogy, proof-text backread, co-knowledge inference, and worship-orientation pressure. Third, anything not executed as an ACT row remains reopenable as a named burden rather than being smuggled into a clean global close.",
+        "The closing therefore has three controlled claims. First, the stated reply fails only at the burden actually worked by the visible owner rows. Second, the repair is local to the argument actually made: source wording or report status, analogy, proof-stack backread, inference pressure, and source-order pressure. Third, anything not executed as an ACT row remains reopenable as a named burden rather than being smuggled into a clean global close.",
         "",
         "### Burden-state recap",
         "",
@@ -2446,7 +2446,7 @@ def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str
             "",
             f"The remaining live or generated burden set is {held_text}. When that set is non-empty, the close is intentionally a HOLD/PARTIAL close for that remainder. When it is empty, the close still remains bounded to concrete future burdens rather than to an unlimited proof-carousel.",
             "",
-            "This matters for the reader because the answer should not win by compression. The reply is answered where its stated moves actually operate: the exclusivity of the addressed Father, the sender/sent relation, the category mistake in the analogy, the secondary status of proof-text backreads, and the difference between salvific knowledge of the sent Messiah and identity with the God who sent him.",
+            "This matters for the reader because the answer should not win by compression. The reply is answered where its stated moves actually operate: the cited wording or report status, the source-order relation, the category mistake in the analogy, the secondary status of proof-stack backreads, and the difference between worked evidence and hidden support.",
             "",
             "The final formulation is therefore deliberately disciplined. It restores the order of the verse, names the burden that remains open if a further answer wants to continue, and refuses to convert a bounded refutation into an unbounded claim that every possible downstream doctrine has been exhausted.",
         ]
@@ -3855,6 +3855,56 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test attempt path did not suffix markdown response")
     if attempt_path(Path("call.codex-log.txt"), 2).name != "call-attempt-2.codex-log.txt":
         raise HarnessError("Self-test attempt path did not suffix codex log")
+    khaybar_like_stages = [
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "selected_n_frame": "khaybar-source-status-self-test",
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_registers": {
+                "B1": ["source-status", "transmission"],
+                "B2": ["proof-stack"],
+                "B3": ["consequence"],
+            },
+        },
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "B_LA": ["B1", "B2", "B3"],
+            "generated_burdens": [
+                {"id": "B4", "generated_by": "MRP(B1)", "generation_depth": 1, "track": "primary"}
+            ],
+            "unresolved_burdens": ["B4"],
+            "terminal_states": {
+                "B1": "landed",
+                "B2": "carried-RECURSE",
+                "B3": "carried-RECURSE",
+                "B4": "carried-RECURSE",
+            },
+        },
+        {
+            "id": "stage-06-field-witness-nar",
+            "B_LA": ["B1", "B2", "B3"],
+            "B_MRP": ["B4"],
+            "unresolved_burdens": ["B4"],
+            "selected_n_frame": "khaybar-source-status-self-test",
+        },
+    ]
+    khaybar_supplement = (
+        stage07_restorative_response_section_scaffold(khaybar_like_stages)
+        + "\n"
+        + stage07_closing_formulation_budget_supplement(khaybar_like_stages)
+    )
+    for forbidden in (
+        "Father",
+        "Messiah",
+        "John",
+        "Trinitarian",
+        "verse's predicate",
+        "co-knowledge",
+        "sender-sent",
+        "worship-orientation",
+    ):
+        if forbidden.lower() in khaybar_supplement.lower():
+            raise HarnessError(f"Self-test Khaybar closing scaffold leaked case-specific term {forbidden!r}")
 
     def artifact(path: Path) -> dict[str, str]:
         return {"path": rel(path, root), "sha256": sha256_file(path)}
