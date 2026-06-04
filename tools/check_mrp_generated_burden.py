@@ -102,7 +102,7 @@ ACT_RECORD_RE = re.compile(
     rf"\s*::\s*\u0394=(?P<delta>[^:\s]+):(?P<delta_result>.+?)"
     rf"\s*::\s*(?P<land>Land\([^)\n]+\)\+?)\u27e7)\s*$"
 )
-DELTA_NAME_RE = re.compile(rf"^(?:\u0394(?:{CANONICAL_TOKEN}|\u03ba))$")
+DELTA_NAME_RE = re.compile(rf"^(?:\u0394(?:{TOKEN}|\u03ba))$")
 GENERIC_ACT_VALUE_RE = re.compile(
     r"(?i)^\s*(?:pressure|target|result|state change|delta|land|body|route|"
     r"burden|thing|move|operation|owner activation|matched owner|generic pressure)\s*$"

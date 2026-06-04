@@ -889,10 +889,115 @@ def normalize_stage04_burden_ids(
     return stage[key]
 
 
+def parsed_stage04_act_detail(row: str) -> dict[str, str] | None:
+    match = ACT_ROW_DETAIL_RE.match(row)
+    if not match:
+        return None
+    body_ref = match.group("body_ref")
+    if body_ref != match.group("body_ref_field"):
+        return None
+    return {
+        "act_row": row,
+        "body_ref": body_ref,
+        "burden_id": burden_id_from_land(match.group("land")),
+        "owner_id": match.group("owner"),
+        "operation": match.group("operation"),
+    }
+
+
+def normalize_stage04_act_row_details(
+    stage: dict[str, Any],
+    *,
+    act_targets: list[str],
+    act_burdens: list[str],
+    normalization: dict[str, Any],
+) -> None:
+    raw_details = stage.get("act_row_details")
+    if raw_details is None:
+        return
+    if not isinstance(raw_details, list):
+        raise HarnessError("stage-04 act_row_details must be a list when present")
+
+    parsed_by_ref: dict[str, dict[str, str]] = {}
+    parsed_by_row: dict[str, dict[str, str]] = {}
+    for row in stage.get("act_rows", []):
+        parsed = parsed_stage04_act_detail(row)
+        if not parsed:
+            continue
+        parsed_by_ref[parsed["body_ref"]] = parsed
+        parsed_by_row[row] = parsed
+
+    allowed_burdens = set(act_targets) | set(act_burdens)
+    normalized: list[dict[str, Any]] = []
+    hydrated: list[dict[str, str]] = []
+    for index, detail in enumerate(raw_details):
+        if not isinstance(detail, dict):
+            raise HarnessError(f"stage-04 act_row_details[{index}] must be an object")
+
+        raw_act_row = non_empty_string(detail.get("act_row"))
+        raw_body_ref = non_empty_string(detail.get("body_ref"))
+        parsed = parsed_by_row.get(raw_act_row or "")
+        if parsed is None and raw_act_row:
+            parsed_from_raw = parsed_stage04_act_detail(raw_act_row)
+            if parsed_from_raw:
+                parsed = parsed_by_ref.get(parsed_from_raw["body_ref"])
+        if parsed is None and raw_body_ref:
+            parsed = parsed_by_ref.get(raw_body_ref)
+        if parsed is None:
+            raise HarnessError(
+                f"stage-04 act_row_details[{index}] cannot be normalized without "
+                "a parseable act_row or body_ref tied to Stage 04 act_rows"
+            )
+
+        item = dict(detail)
+        missing: list[str] = []
+        if raw_body_ref and raw_body_ref != parsed["body_ref"]:
+            raise HarnessError(
+                f"stage-04 act_row_details[{index}].body_ref disagrees with parsed ACT row body_ref"
+            )
+        if not raw_body_ref:
+            item["body_ref"] = parsed["body_ref"]
+            missing.append("body_ref")
+
+        raw_burden = non_empty_string(item.get("burden_id") or item.get("id") or item.get("target"))
+        parsed_burden = parsed["burden_id"]
+        if raw_burden:
+            canonical = canonical_burden_id_from_text(raw_burden, allowed_burdens or None)
+            if canonical is None:
+                raise HarnessError(f"stage-04 act_row_details[{index}].burden_id is not canonicalizable")
+            if parsed_burden and canonical != parsed_burden:
+                raise HarnessError(
+                    f"stage-04 act_row_details[{index}].burden_id disagrees with parsed ACT row Land()"
+                )
+            item["burden_id"] = canonical
+        else:
+            if not parsed_burden:
+                raise HarnessError(f"stage-04 act_row_details[{index}] cannot derive burden_id from ACT row")
+            item["burden_id"] = parsed_burden
+            missing.append("burden_id")
+
+        for field in ("owner_id", "operation", "act_row"):
+            value = non_empty_string(item.get(field))
+            parsed_value = parsed[field]
+            if value and field != "act_row" and value != parsed_value:
+                raise HarnessError(f"stage-04 act_row_details[{index}].{field} disagrees with parsed ACT row")
+            if not value or (field == "act_row" and value != parsed_value):
+                item[field] = parsed_value
+                missing.append(field)
+
+        normalized.append(item)
+        if missing:
+            hydrated.append({"body_ref": parsed["body_ref"], "fields": ",".join(ordered_unique(missing))})
+
+    stage["act_row_details"] = normalized
+    if hydrated:
+        normalization["act_row_details_hydrated_from_act_rows"] = hydrated
+
+
 def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
     act_targets = normalize_string_list(stage, "act_targets", required=True)
     normalization = normalization_object(stage)
-    normalize_stage04_burden_ids(
+    act_burdens = normalize_stage04_burden_ids(
         stage,
         "act_burdens",
         allowed_ids=set(act_targets),
@@ -934,6 +1039,13 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
         normalization["act_body_refs_from_act_rows"] = True
     else:
         normalize_string_list(stage, "act_body_refs", required=True)
+
+    normalize_stage04_act_row_details(
+        stage,
+        act_targets=act_targets,
+        act_burdens=act_burdens,
+        normalization=normalization,
+    )
 
     if normalization:
         stage["normalization"] = normalization
@@ -2132,6 +2244,12 @@ def stage07_act_contract_guidance(
             lines.append(
                 "  Procedure boundary: explicitly name the STOP/HOLD/PARTIAL or bounded-stop condition, "
                 "the held/non-load-bearing route boundary, and the reopen condition in this body."
+            )
+        elif family == "SOURCE":
+            lines.append(
+                "  SOURCE/source-status operation: explicitly sort source authority, source function, "
+                "proof-stack order, or hidden support for this exact pressure; do not merely say the "
+                "source route was handled."
             )
     if landing_lines:
         lines.extend(["Required standalone landing lines for this ACT slice:", *landing_lines])
@@ -4782,6 +4900,77 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    hydrated_missing_body_ref = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [canonical_act_row],
+            "act_row_details": [
+                {
+                    "burden_id": "B1",
+                    "body_ref": None,
+                    "owner_id": "source-status-repair",
+                    "operation": None,
+                    "act_row": canonical_act_row,
+                }
+            ],
+        },
+    )
+    hydrated_detail = hydrated_missing_body_ref["act_row_details"][0]
+    if hydrated_detail.get("body_ref") != "¹B₁" or hydrated_detail.get("operation") != "source-order":
+        raise HarnessError("Self-test failed to hydrate Stage 04 act_row_details from ACT row text")
+    hydrated_missing_burden = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [canonical_act_row],
+            "act_row_details": [
+                {
+                    "burden_id": None,
+                    "body_ref": "¹B₁",
+                    "owner_id": "source-status-repair",
+                    "operation": "source-order",
+                    "act_row": canonical_act_row,
+                }
+            ],
+        },
+    )
+    if hydrated_missing_burden["act_row_details"][0].get("burden_id") != "B1":
+        raise HarnessError("Self-test failed to hydrate Stage 04 act_row_details burden_id from Land()")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁"],
+                "act_rows": [canonical_act_row],
+                "act_row_details": [
+                    {
+                        "burden_id": "B1",
+                        "body_ref": "²B₁",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "act_row": canonical_act_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "body_ref disagrees" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject conflicting Stage 04 act_row_details body_ref")
     trinitarian_delta_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -5428,6 +5617,7 @@ def run_self_test(root: Path) -> int:
         "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
         "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
         "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
+        "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
