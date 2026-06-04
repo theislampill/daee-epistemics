@@ -143,10 +143,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "objects in `route_targets`. The canonical `owner_routes` field must be a "
             "JSON array of objects with string `burden_id` and `owner_id` fields; richer "
             "owner-order evidence may be placed in optional detail fields. Route/context "
-            "labels, umbrella family labels, and case-library labels are not automatically "
-            "ACT owners; later ACT rows must use a callable selected owner/TTP floor. "
-            "If a selected route has no loaded callable owner body, preserve it as "
-            "HOLD/PARTIAL with OWNER-BODY-NOT-LOADED instead of converting the route "
+            "labels, umbrella family labels, and case-library labels are route context, "
+            "not activation proof; later ACT rows must use a callable selected owner/TTP "
+            "floor. If a selected route has no loaded callable owner body, preserve it "
+            "as HOLD/PARTIAL with OWNER-BODY-NOT-LOADED instead of converting the route "
             "label into a fake ACT owner."
         ),
     },
@@ -165,9 +165,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`act_row_details`; do not put objects in `act_rows` unless each object "
             "also carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
-            "route/context umbrella label or code lookup. When the selected owner body "
-            "is unavailable or not loaded, emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED "
-            "handoff evidence instead of claiming `Land(...)`."
+            "route/context umbrella label, case-library label, noetic-frame label, or "
+            "code lookup. When the selected owner body is unavailable or not loaded, "
+            "emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED handoff evidence instead of "
+            "claiming `Land(...)`."
         ),
     },
     "stage-05-mrp-reread-terminal-state": {
@@ -1404,6 +1405,21 @@ def normalize_stage07_generated_terminal_accounting(
 def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, str]]:
     if not isinstance(stage05, dict):
         return []
+    generated_sources: dict[str, str] = {}
+    generated_targets = set(stage05_generated_burdens(stage05))
+    for record in stage05_generated_burden_records(stage05):
+        target = b_id(record.get("id") or record.get("burden_id") or record.get("target"))
+        if not target:
+            continue
+        generated_targets.add(target)
+        source = burden_endpoint_id(
+            record.get("generated_by")
+            or record.get("source")
+            or record.get("parent")
+            or record.get("generated_from")
+        )
+        if source:
+            generated_sources[target] = source
     raw = stage05.get("dependency_graph_edges")
     if raw is None:
         graph = stage05.get("dependency_graph")
@@ -1424,6 +1440,9 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
         else:
             continue
         if source and target:
+            generated_source = generated_sources.get(target)
+            if target in generated_targets and (not generated_source or generated_source == source):
+                edge_type = "generated_burden_instantiation"
             edges.append({"from": source, "to": target, "type": edge_type})
     return edges
 
@@ -1980,8 +1999,11 @@ def stage07_act_contract_guidance(
             "- Each submove block heading must begin `{body_ref}[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
-            "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels and code lookups are not load-bearing ACT owners.",
+            "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners.",
+            "- If the selected route names only an umbrella/context module, resolve to a callable owner/TTP floor before ACT; otherwise keep the route as HOLD/PARTIAL instead of inventing an ACT owner.",
             "- If the matched owner body is not loaded, emit HOLD/PARTIAL with `OWNER-BODY-NOT-LOADED` and do not emit `Land(Bn):` for that burden.",
+            "- The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution; do not merely restate the conclusion, cite an owner name, or summarize that the burden fails.",
+            "- Source/citation/proof-stack rows must name the concrete burden-local state change that the source-status, authority-order, proof-method, or transmission/content operation produces.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
@@ -5135,7 +5157,8 @@ def run_self_test(root: Path) -> int:
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
         "Contribution-to-Land(¹B)",
         "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
-        "route/context umbrella labels and code lookups are not load-bearing ACT owners",
+        "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
+        "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
@@ -5661,6 +5684,40 @@ def run_self_test(root: Path) -> int:
             if activations:
                 raise HarnessError(f"Self-test {label} held generated branch invented owner activations")
 
+    def assert_generated_edge_normalized(edge_type: str | None, label: str) -> None:
+        stage05 = synthetic_generated_stage05("B3", "B6", executed=False)
+        edge = stage05["dependency_graph_edges"][0]
+        if edge_type is None:
+            edge.pop("type", None)
+        else:
+            edge["type"] = edge_type
+        edges = stage05_dependency_edges(stage05)
+        if not edges or edges[0].get("type") != "generated_burden_instantiation":
+            raise HarnessError(f"Self-test {label} did not normalize generated B_MRP edge to generated_burden_instantiation")
+        stages_for_case = [
+            generated_topology_stage02,
+            synthetic_stage04(generated_topology_stage02["burden_floor"]),
+            stage05,
+            normalized_stage06,
+        ]
+        payload = first_json_object_from_text(stage07_field_witness_section_scaffold(stages_for_case))
+        if payload is None:
+            raise HarnessError(f"Self-test {label} did not emit field_witness JSON")
+        resultants = [
+            row for row in payload.get("mrp_resultants", [])
+            if isinstance(row, dict) and row.get("source") == "B3"
+        ]
+        if not resultants or resultants[0].get("type") != "generated_burden_instantiation":
+            raise HarnessError(f"Self-test {label} left generated B_MRP source misclassified in mrp_resultants")
+        states = [
+            row for row in payload.get("formal_reread_states", [])
+            if isinstance(row, dict) and row.get("source_burden") == "B3"
+        ]
+        if not states or states[0].get("route_result_type") != "generated_burden_instantiation":
+            raise HarnessError(f"Self-test {label} left generated B_MRP source misclassified in formal_reread_states")
+
+    assert_generated_edge_normalized(None, "generated-edge-missing-type")
+    assert_generated_edge_normalized("held_burden_activation", "generated-edge-held-type")
     assert_generated_topology("B1", "B6", executed=False, label="early-held")
     assert_generated_topology("B3", "B6", executed=False, label="mid-held")
     assert_generated_topology("B5", "B6", executed=False, label="terminal-held")
