@@ -86,6 +86,11 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "public_burden_grouping",
     "owner_activation_ordering",
 }
+B5_PROJECTION_REQUIRED_TRUE_FIELDS = (
+    "collapse_positive",
+    "coverage_complete",
+    "diagnostic_completeness",
+)
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
 RELEASE_CURL_STATES = {"null", "resolved", "non-null"}
 RELEASE_OUTPUT_MODE_ALIASES = {
@@ -317,6 +322,45 @@ def write_json(path: Path, payload: Any) -> None:
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def b5_projection_eligibility_errors(certificate: Any) -> list[str]:
+    if not isinstance(certificate, dict):
+        return ["collapse certificate root must be a JSON object"]
+    errors: list[str] = []
+    for key in B5_PROJECTION_REQUIRED_TRUE_FIELDS:
+        if certificate.get(key) is not True:
+            errors.append(f"{key} must be true before B.5 projection")
+    hold_nodes = certificate.get("hold_partial_nodes")
+    if hold_nodes not in (None, []):
+        errors.append("hold_partial_nodes must be empty before B.5 projection")
+    return errors
+
+
+def write_b5_projection_ineligibility(
+    *,
+    root: Path,
+    certificate_path: Path,
+    eligibility_path: Path,
+    errors: list[str],
+) -> None:
+    write_json(
+        eligibility_path,
+        {
+            "eligible": False,
+            "source_certificate": rel(certificate_path, root),
+            "errors": errors,
+            "boundary": (
+                "Stage 07-valid HOLD/PARTIAL/RECURSE output is not B.5 proof-projection "
+                "eligible until collapse_positive, coverage_complete, and diagnostic_completeness are true."
+            ),
+            "non_claims": {
+                "not_b5_projection_sidecar": True,
+                "not_retained_promotion_eligible": True,
+                "does_not_weaken_b5_validator": True,
+            },
+        },
+    )
 
 
 def resolve_under_root(root: Path, value: str | Path, label: str) -> Path:
@@ -4249,6 +4293,41 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test attempt path did not suffix markdown response")
     if attempt_path(Path("call.codex-log.txt"), 2).name != "call-attempt-2.codex-log.txt":
         raise HarnessError("Self-test attempt path did not suffix codex log")
+    eligible_certificate = {
+        "collapse_positive": True,
+        "coverage_complete": True,
+        "diagnostic_completeness": True,
+        "hold_partial_nodes": [],
+    }
+    if b5_projection_eligibility_errors(eligible_certificate):
+        raise HarnessError("Self-test rejected a B.5 projection-eligible certificate")
+    ineligible_certificate = {
+        "collapse_positive": False,
+        "coverage_complete": False,
+        "diagnostic_completeness": True,
+        "hold_partial_nodes": [{"id": "B6", "state": "carried-RECURSE"}],
+    }
+    eligibility_errors = b5_projection_eligibility_errors(ineligible_certificate)
+    for expected in (
+        "collapse_positive must be true before B.5 projection",
+        "coverage_complete must be true before B.5 projection",
+        "hold_partial_nodes must be empty before B.5 projection",
+    ):
+        if expected not in eligibility_errors:
+            raise HarnessError(f"Self-test B.5 projection eligibility missed {expected!r}")
+    eligibility_record = run_dir / "b5-full-ir-projection-eligibility.json"
+    write_b5_projection_ineligibility(
+        root=root,
+        certificate_path=run_dir / "collapse-certificate.json",
+        eligibility_path=eligibility_record,
+        errors=eligibility_errors,
+    )
+    loaded_eligibility = load_json(eligibility_record)
+    if loaded_eligibility.get("eligible") is not False:
+        raise HarnessError("Self-test B.5 ineligibility record did not preserve eligible=false")
+    non_claims = loaded_eligibility.get("non_claims")
+    if not isinstance(non_claims, dict) or non_claims.get("not_b5_projection_sidecar") is not True:
+        raise HarnessError("Self-test B.5 ineligibility record did not preserve non-claim boundary")
     khaybar_like_stages = [
         {
             "id": "stage-02-layer-a-diagnostic-ir",
@@ -6709,6 +6788,20 @@ def build_sidecars(
     certificate = out_dir / f"{prefix}.collapse-certificate.json"
     grapher = out_dir / f"{prefix}.grapher.html"
     b5_sidecar = out_dir / f"{prefix}.b5-full-ir-projection-sidecar.json"
+    eligibility_errors = b5_projection_eligibility_errors(load_json(certificate))
+    if eligibility_errors:
+        eligibility_path = out_dir / f"{prefix}.b5-full-ir-projection-eligibility.json"
+        write_b5_projection_ineligibility(
+            root=root,
+            certificate_path=certificate,
+            eligibility_path=eligibility_path,
+            errors=eligibility_errors,
+        )
+        raise HarnessError(
+            "stage-08-verifier-sidecars: B.5 full-IR projection ineligible: "
+            + "; ".join(eligibility_errors)
+            + f"; see {rel(eligibility_path, root)}"
+        )
     require_command_success(
         [
             sys.executable,

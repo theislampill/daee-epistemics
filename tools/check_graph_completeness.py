@@ -41,6 +41,7 @@ from check_field_witness_convergence import (
 )
 from check_formal_reread_state_semantics import formal_semantics_errors
 from check_formal_reread_state_semantics import normalized_loopbreak_ground
+from check_collapse_certificate_schema import REGISTERS as CERTIFICATE_REGISTERS
 from check_collapse_certificate_schema import certificate_errors
 from check_mrp_generated_burden import (
     GENERIC_ACT_VALUE_RE,
@@ -587,17 +588,25 @@ def two_track_mrp_errors(path: Path, field_witness: dict[str, Any]) -> list[str]
 
 
 def live_registers_covered(field_witness: dict[str, Any]) -> list[str]:
+    def certificate_register_subset(values: list[str]) -> list[str]:
+        covered: list[str] = []
+        for value in values:
+            register = canonical_register(value)
+            if register in CERTIFICATE_REGISTERS:
+                covered.append(register)
+        return unique(covered)
+
     cov = coverage(field_witness)
     diagnostic = cov.get("diagnostic_completeness")
     if isinstance(diagnostic, dict):
         values = list_values(diagnostic.get("live_registers"))
         if values:
-            return unique([canonical_register(value) for value in values])
+            return certificate_register_subset(values)
     normalized = field_witness.get("normalized_activation_record")
     if isinstance(normalized, dict):
         values = list_values(normalized.get("live_registers"))
         if values:
-            return unique([canonical_register(value) for value in values])
+            return certificate_register_subset(values)
     return []
 
 
@@ -1140,6 +1149,56 @@ def explicit_generated_hold_open(
 
 
 def graph_checker_self_errors() -> list[str]:
+    sigma_field_witness = {
+        "coverage_proof": {
+            "diagnostic_completeness": {
+                "live_registers": ["xi", "sigma", "mu", "Omega", "kappa"],
+            }
+        },
+        "normalized_activation_record": {
+            "live_registers": ["xi", "sigma", "mu", "Omega", "kappa"],
+        },
+    }
+    sigma_filtered = live_registers_covered(sigma_field_witness)
+    if sigma_filtered != ["xi", "mu", "Omega", "kappa"]:
+        return [
+            "checker self-canary: certificate hard-register coverage did not filter sigma "
+            f"from live_registers_covered, got {sigma_filtered}"
+        ]
+    sigma_only_field_witness = {
+        "coverage_proof": {"diagnostic_completeness": {"live_registers": ["sigma"]}},
+        "normalized_activation_record": {"live_registers": ["xi"]},
+    }
+    if live_registers_covered(sigma_only_field_witness):
+        return ["checker self-canary: sigma-only diagnostic coverage fell through to hard-register coverage"]
+    sigma_certificate = {
+        "input_fingerprint": "0" * 64,
+        "skill_version": DEFAULT_SKILL_VERSION,
+        "collapse_positive": True,
+        "coverage_complete": True,
+        "divergence_state": "neutral",
+        "curl_state": "null",
+        "diagnostic_completeness": True,
+        "live_registers_covered": sigma_filtered,
+        "max_generation_depth": 0,
+        "loopbreak_count": 0,
+        "loopbreak_grounds": [],
+        "verified_activations": ["B1"],
+        "hold_partial_nodes": [],
+        "primary_track_closed": True,
+        "restoration_track_closed": True,
+        "divergence_positive_addressed": True,
+        "curl_resolved": True,
+        "terminal_stop_proof_complete": True,
+        "terminal_stop_proof_count": 1,
+        "restoration_endpoint_reached": True,
+        "checker_version": CHECKER_VERSION,
+        "timestamp": "2026-05-30T00:00:00Z",
+    }
+    found = certificate_errors(sigma_certificate)
+    if found:
+        return [f"checker self-canary: sigma-filtered certificate failed schema: {error}" for error in found]
+
     field_witness = {
         "B_LA": ["B1"],
         "B_MRP": ["B2"],
