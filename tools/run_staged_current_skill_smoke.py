@@ -1494,6 +1494,10 @@ def stage07_formal_reread_states(
             r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
             terminal_state,
         ) is not None
+        target = stage07_route_target_from_graph(graph)
+        public_graph = public_graph_value(graph)
+        public_source = public_burden_id(source)
+        public_target = public_graph_value(target or source)
         state: dict[str, Any] = {
             "source_burden": source,
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
@@ -1505,7 +1509,7 @@ def stage07_formal_reread_states(
             "mrp_resultant": f"{row.get('finding') or 'stable'} -> graph {graph}; route {route}",
             "graph_delta": graph,
             "preemption_basis": (
-                f"bounded MRP row only; {source} remains {terminal_state} with HOLD/PARTIAL accounting"
+                f"bounded MRP row only; {public_source} remains {terminal_state} with HOLD/PARTIAL accounting"
                 if held_or_partial and str(graph).strip().lower() == "none"
                 else
                 "terminal states landed; B_MRP empty; no generated burden remains"
@@ -1514,10 +1518,6 @@ def stage07_formal_reread_states(
             ),
             "route": route,
         }
-        target = stage07_route_target_from_graph(graph)
-        public_graph = public_graph_value(graph)
-        public_source = public_burden_id(source)
-        public_target = public_graph_value(target or source)
         if route_type == "held_burden_activation":
             state["route_gradient"] = (
                 f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
@@ -1541,10 +1541,9 @@ def stage07_formal_reread_states(
             state["generated_by"] = f"MRP({source})"
         else:
             state["route_gradient"] = (
-                f"{route} row is limited to MRP({source}); HOLD/PARTIAL accounting keeps {source} "
-                f"unresolved ({terminal_state}) in the displayed field."
+                f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
                 if held_or_partial
-                else f"STOP after {source}; no live pressure remains."
+                else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
             )
             if route_type in {"no_new_resultant", "none", "stable"} or str(route).upper() == "STOP":
                 state["no_new_resultant_proof"] = (
@@ -1757,7 +1756,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             )
         )
         preemption_basis = (
-            f"bounded MRP row only; {source} remains {landed_state} with HOLD/PARTIAL accounting"
+            f"bounded MRP row only; {public_source} remains {landed_state} with HOLD/PARTIAL accounting"
             if held_or_partial and graph == "none"
             else "terminal states landed; B_MRP empty; no generated burden remains"
             if graph == "none"
@@ -2345,6 +2344,112 @@ def stage07_restorative_response_section_scaffold(previous_stages: list[dict[str
         "the text before the text's own sender-sent order is heard.\n\n"
         f"Held/scoped/reopenable remainder: {remainder}\n"
     )
+
+
+def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
+    burden_floor = (
+        list_field(stage02, "burden_floor")
+        or list_field(stage06, "B_LA")
+        or list_field(stage05, "B_LA")
+    )
+    generated_burdens = ordered_unique(
+        [
+            *stage05_generated_burdens(stage05),
+            *list_field(stage06, "B_MRP"),
+        ]
+    )
+    b_total = ordered_unique([*burden_floor, *generated_burdens])
+    unresolved_burdens = ordered_unique(
+        [
+            *stage05_unresolved_burdens(stage05),
+            *list_field(stage06, "unresolved_burdens"),
+        ]
+    )
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
+    if not isinstance(terminal_states, dict):
+        terminal_states = {}
+    burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    generated_records = {
+        str(record.get("id")): dict(record)
+        for record in stage05_generated_burden_records(stage05)
+        if record.get("id")
+    }
+    n_frame = ""
+    if isinstance(stage02, dict):
+        n_frame = str(stage02.get("selected_n_frame") or "")
+    if not n_frame and isinstance(stage06, dict):
+        n_frame = str(stage06.get("selected_n_frame") or "")
+    if not n_frame:
+        n_frame = "the selected noetic frame"
+
+    lines = [
+        "### Closure boundary confirmation",
+        "",
+        f"The final close remains tied to {n_frame}. It does not ask the reader to accept a total-system verdict before the displayed burdens have done their work. It keeps the reply's pressure ordered by the visible burden floor, the landed ACT rows, the MRP reread, and the held remainder.",
+        "",
+        "The closing therefore has three controlled claims. First, the stated reply fails where it tries to move the verse's predicate away from the addressed Father. Second, the repair is local to the argument actually made: word-placement, analogy, proof-text backread, co-knowledge inference, and worship-orientation pressure. Third, anything not executed as an ACT row remains reopenable as a named burden rather than being smuggled into a clean global close.",
+        "",
+        "### Burden-state recap",
+        "",
+    ]
+    if not b_total:
+        lines.append("The displayed burden ledger remains the governing scope of this close.")
+    for burden in b_total:
+        public_burden = public_burden_id(burden)
+        state = str(terminal_states.get(burden) or ("generated-held" if burden in generated_burdens else "landed"))
+        registers = ", ".join(burden_registers.get(burden, [])) or "local registers"
+        if burden in generated_burdens:
+            record = generated_records.get(burden, {})
+            generated_by = str(record.get("generated_by") or f"MRP({burden})")
+            lines.append(
+                f"- {public_burden}: generated by {public_graph_value(generated_by)}; state={state}; registers={registers}. "
+                "It is not counted as a baseline floor burden unless a later pass actually executes matching ACT rows."
+            )
+        else:
+            lines.append(
+                f"- {public_burden}: baseline burden; state={state}; registers={registers}. "
+                "Its local close is limited to the visible owner operation and its public Land(...) consequence."
+            )
+    held_text = public_burden_list(unresolved_burdens) if unresolved_burdens else "none"
+    lines.extend(
+        [
+            "",
+            "### Reopenable remainder",
+            "",
+            f"The remaining live or generated burden set is {held_text}. When that set is non-empty, the close is intentionally a HOLD/PARTIAL close for that remainder. When it is empty, the close still remains bounded to concrete future burdens rather than to an unlimited proof-carousel.",
+            "",
+            "This matters for the reader because the answer should not win by compression. The reply is answered where its stated moves actually operate: the exclusivity of the addressed Father, the sender/sent relation, the category mistake in the analogy, the secondary status of proof-text backreads, and the difference between salvific knowledge of the sent Messiah and identity with the God who sent him.",
+            "",
+            "The final formulation is therefore deliberately disciplined. It restores the order of the verse, names the burden that remains open if a further answer wants to continue, and refuses to convert a bounded refutation into an unbounded claim that every possible downstream doctrine has been exhausted.",
+        ]
+    )
+    return "\n".join(lines).strip() + "\n"
+
+
+def compiled_section_budget_guardrail(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+    section_min_bytes: int,
+) -> tuple[str, dict[str, Any] | None]:
+    if section_min_bytes <= 0 or len(text.encode("utf-8")) >= section_min_bytes:
+        return text, None
+    if section_role != "closing_formulation" or "### Closure boundary confirmation" in text:
+        return text, None
+    supplement = stage07_closing_formulation_budget_supplement(previous_stages)
+    if not supplement:
+        return text, None
+    supplemented = text.rstrip() + "\n\n" + supplement
+    return supplemented, {
+        "role": section_role,
+        "compiled_section_budget_guardrail": True,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(supplemented.encode("utf-8")),
+        "section_min_bytes": section_min_bytes,
+    }
 
 
 def canonical_compiled_structural_section(
@@ -4703,6 +4808,31 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_closing_prompt:
             raise HarnessError(f"Self-test Stage 07 Closing prompt omitted role-heading scaffold: {required}")
+    short_closing = "Closing Formulation\n\nShort governed close.\n"
+    supplemented_closing, supplement_event = compiled_section_budget_guardrail(
+        "closing_formulation",
+        short_closing,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        1800,
+    )
+    if not supplement_event:
+        raise HarnessError("Self-test Closing Formulation budget guardrail did not record an event")
+    if len(supplemented_closing.encode("utf-8")) < 1800:
+        raise HarnessError("Self-test Closing Formulation budget guardrail remained under the byte floor")
+    for required in ("### Closure boundary confirmation", "### Burden-state recap", "### Reopenable remainder"):
+        if required not in supplemented_closing:
+            raise HarnessError(f"Self-test Closing Formulation budget guardrail omitted {required}")
+    for forbidden in ("harness", "byte budget", "manifest", "compiler"):
+        if forbidden in supplemented_closing:
+            raise HarnessError(f"Self-test Closing Formulation budget guardrail leaked harness term {forbidden}")
+    unchanged_closing, unchanged_closing_event = compiled_section_budget_guardrail(
+        "closing_formulation",
+        short_closing + ("Already long enough. " * 120),
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        1000,
+    )
+    if unchanged_closing_event or "### Closure boundary confirmation" in unchanged_closing:
+        raise HarnessError("Self-test Closing Formulation budget guardrail mutated an over-floor section")
     stage07_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -4842,7 +4972,9 @@ def run_self_test(root: Path) -> int:
     proof = b6_state.get("no_new_resultant_proof")
     if not isinstance(proof, dict) or proof.get("proved") is not False:
         raise HarnessError("Self-test Stage 07 B6 unresolved row claimed clean no-new-resultant proof")
-    if "HOLD/PARTIAL" not in str(b6_state.get("route_gradient")) or "carried-RECURSE" not in str(b6_state.get("preemption_basis")):
+    if "plain-gradient holds ⁶B as HOLD/PARTIAL" not in str(b6_state.get("route_gradient")):
+        raise HarnessError("Self-test Stage 07 B6 unresolved row omitted public-token HOLD/PARTIAL route-gradient")
+    if "⁶B remains carried-RECURSE" not in str(b6_state.get("preemption_basis")):
         raise HarnessError("Self-test Stage 07 B6 unresolved row omitted generated-burden HOLD/PARTIAL accounting")
     wide_stage02 = dict(normalized_stage02)
     wide_stage02["burden_floor"] = ["B1", "B2", "B3", "B4", "B5"]
@@ -6076,6 +6208,15 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 )
                 if canonical_event is not None:
                     write_text(section_output_path, canonical_text)
+                    current_text = canonical_text
+                budget_text, budget_event = compiled_section_budget_guardrail(
+                    section_role,
+                    current_text,
+                    stages,
+                    section_min_bytes,
+                )
+                if budget_event is not None:
+                    write_text(section_output_path, budget_text)
                 section_entries.append(
                     {
                         "id": section_id,

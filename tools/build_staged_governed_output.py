@@ -170,6 +170,16 @@ BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
 OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
+OWNER_ORDERING_FAMILY_ALIASES = {
+    "AUTHORITY-ORDER-REPAIR": "SOURCE",
+    "DO-ATTRIBUTE-PRECISION": "DO_ATTRIBUTE",
+    "DO-CHRISTIAN-EXTENSIONS": "DO_CHRISTIAN",
+    "DO-SECOND-LOOP": "DO_SECOND_LOOP",
+    "DOUBT-VS-SKEPTICISM": "DOUBT_SKEPTICISM",
+    "PROOF-METHOD-AUDIT": "PROOF_METHOD",
+    "SOURCE-STATUS-REPAIR": "SOURCE",
+}
+OWNER_ORDERING_CODE_RE = re.compile(r"^(?:M1-P|M[1-9]|P[1-7]|R[1-3]|FPD)$")
 ORDERING_ROLES = {"required", "parallel", "contingent", "optional_non_load_bearing", "hold_partial"}
 ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 PUBLIC_GRAPH_CONTEXT_RE = re.compile(
@@ -330,20 +340,41 @@ def activation_owner(activation: Any) -> str:
     return ""
 
 
+def owner_ordering_family(owner: str) -> str:
+    token = str(owner or "").strip()
+    if "." in token:
+        token = token.split(".", 1)[0]
+    token = token.upper().replace("_", "-").replace(" ", "-")
+    if not token:
+        return ""
+    if token in OWNER_ORDERING_FAMILY_ALIASES:
+        return OWNER_ORDERING_FAMILY_ALIASES[token]
+    if OWNER_ORDERING_CODE_RE.fullmatch(token):
+        return token
+    return token
+
+
 def derive_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str, Any] | None:
     activations = field_witness.get("owner_activations")
     if not isinstance(activations, list):
         return None
 
     by_target: dict[str, list[str]] = {}
+    families_by_target: dict[str, set[str]] = {}
     for activation in activations:
         target = activation_target(activation)
         owner = activation_owner(activation)
         if not target or not owner:
             continue
+        family = owner_ordering_family(owner)
+        if not family:
+            continue
+        seen = families_by_target.setdefault(target, set())
+        if family in seen:
+            continue
+        seen.add(family)
         owners = by_target.setdefault(target, [])
-        if not owners or owners[-1] != owner:
-            owners.append(owner)
+        owners.append(owner)
 
     required_before: list[dict[str, str]] = []
     for target, owners in sorted(by_target.items()):
@@ -1534,6 +1565,47 @@ def run_self_test(root: Path) -> int:
         if isinstance(event, dict)
     ):
         raise AssemblyError("self-test owner activation ordering role metadata missing")
+
+    repeated_owner_field_witness = ordering_field_witness.replace(
+        "    {\"target\": \"B1\", \"owner\": \"source-status-repair\", \"operation\": \"source-order\", \"body_ref\": \"¹B₁\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"M1\", \"operation\": \"self-grounding-test\", \"body_ref\": \"¹B₂\"}\n",
+        "    {\"target\": \"B1\", \"owner\": \"do-christian-extensions\", \"operation\": \"model-identification\", \"body_ref\": \"¹B₁\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"M9\", \"operation\": \"predication-repair\", \"body_ref\": \"¹B₂\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"do-attribute-precision\", \"operation\": \"attribute-precision\", \"body_ref\": \"¹B₃\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"M9\", \"operation\": \"predication-repair\", \"body_ref\": \"¹B₄\"}\n",
+    )
+    repeated_owner_manifest = manifest_for_sections(
+        base_dir / "valid-owner-activation-ordering-repeated-family",
+        case_id="valid-owner-activation-ordering-repeated-family",
+        source_input="valid-owner-activation-ordering-repeated-family/input.md",
+        section_specs=[*small_sections()[:6], ("field-witness", "field_witness_nar", repeated_owner_field_witness)],
+    )
+    repeated_owner_record = assemble_manifest(repeated_owner_manifest, root=root)
+    repeated_owner_output = (
+        base_dir / "valid-owner-activation-ordering-repeated-family" / "output.md"
+    ).read_text(encoding="utf-8")
+    if '"before_owner": "do-attribute-precision",\n        "after_owner": "M9"' in repeated_owner_output:
+        raise AssemblyError("self-test owner ordering repeated-family insertion created a false cycle")
+    for required in (
+        '"before_owner": "do-christian-extensions"',
+        '"after_owner": "M9"',
+        '"before_owner": "M9"',
+        '"after_owner": "do-attribute-precision"',
+    ):
+        if required not in repeated_owner_output:
+            raise AssemblyError(f"self-test owner ordering repeated-family insertion omitted {required}")
+    repeated_owner_events = (
+        (repeated_owner_record.get("canonical_scaffold") or {}).get("events", [])
+        if isinstance(repeated_owner_record.get("canonical_scaffold"), dict)
+        else []
+    )
+    if not any(
+        event.get("inserted_owner_activation_ordering") is True
+        and event.get("required_before_count") == 2
+        for event in repeated_owner_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test owner ordering repeated-family metadata missing")
 
     preplanned_field_witness = ordering_field_witness.replace(
         '  "owner_activations": [',
