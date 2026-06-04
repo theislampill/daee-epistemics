@@ -354,25 +354,32 @@ def owner_ordering_family(owner: str) -> str:
     return token
 
 
+def owner_ordering_token(owner: str) -> str:
+    token = str(owner or "").strip()
+    if "." in token:
+        token = token.split(".", 1)[0]
+    return token.upper().replace("_", "-").replace(" ", "-")
+
+
 def derive_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str, Any] | None:
     activations = field_witness.get("owner_activations")
     if not isinstance(activations, list):
         return None
 
     by_target: dict[str, list[str]] = {}
-    families_by_target: dict[str, set[str]] = {}
+    tokens_by_target: dict[str, set[str]] = {}
     for activation in activations:
         target = activation_target(activation)
         owner = activation_owner(activation)
         if not target or not owner:
             continue
-        family = owner_ordering_family(owner)
-        if not family:
+        token = owner_ordering_token(owner)
+        if not token:
             continue
-        seen = families_by_target.setdefault(target, set())
-        if family in seen:
+        seen = tokens_by_target.setdefault(target, set())
+        if token in seen:
             continue
-        seen.add(family)
+        seen.add(token)
         owners = by_target.setdefault(target, [])
         owners.append(owner)
 
@@ -393,6 +400,69 @@ def derive_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str,
         "policy_id": OWNER_ORDERING_POLICY_ID,
         "parallel_groups": [],
         "required_before": required_before,
+    }
+
+
+def owner_ordering_rule_key(rule: dict[str, Any], *, family: bool = False) -> tuple[str, str, str]:
+    target = activation_target({"target": rule.get("target")})
+    before = str(rule.get("before_owner") or rule.get("before") or "")
+    after = str(rule.get("after_owner") or rule.get("after") or "")
+    if family:
+        before_owner = owner_ordering_family(before) or owner_ordering_token(before)
+        after_owner = owner_ordering_family(after) or owner_ordering_token(after)
+    else:
+        before_owner = owner_ordering_token(before)
+        after_owner = owner_ordering_token(after)
+    return target, before_owner, after_owner
+
+
+def merge_owner_activation_ordering(field_witness: dict[str, Any]) -> dict[str, Any]:
+    ordering = derive_owner_activation_ordering(field_witness)
+    if ordering is None:
+        return {}
+
+    raw = field_witness.get("owner_activation_ordering")
+    if not isinstance(raw, dict):
+        field_witness["owner_activation_ordering"] = ordering
+        return {
+            "inserted_owner_activation_ordering": True,
+            "required_before_count": len(ordering["required_before"]),
+        }
+
+    raw.setdefault("policy_id", OWNER_ORDERING_POLICY_ID)
+    if not isinstance(raw.get("parallel_groups"), list):
+        raw["parallel_groups"] = []
+    required_before = raw.get("required_before")
+    if not isinstance(required_before, list):
+        required_before = []
+        raw["required_before"] = required_before
+
+    existing_token_keys = {
+        owner_ordering_rule_key(rule)
+        for rule in required_before
+        if isinstance(rule, dict)
+    }
+    existing_family_keys = {
+        owner_ordering_rule_key(rule, family=True)
+        for rule in required_before
+        if isinstance(rule, dict)
+    }
+    added = 0
+    for rule in ordering["required_before"]:
+        token_key = owner_ordering_rule_key(rule)
+        family_key = owner_ordering_rule_key(rule, family=True)
+        if token_key in existing_token_keys or family_key in existing_family_keys:
+            continue
+        required_before.append(rule)
+        existing_token_keys.add(token_key)
+        existing_family_keys.add(family_key)
+        added += 1
+
+    if not added:
+        return {}
+    return {
+        "merged_owner_activation_ordering": True,
+        "required_before_added_count": added,
     }
 
 
@@ -469,13 +539,7 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
         return text, None
     roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
     null_curl_states = canonicalize_formal_reread_curl_states(field_witness)
-    event: dict[str, Any] = {}
-    if field_witness.get("owner_activation_ordering") is None:
-        ordering = derive_owner_activation_ordering(field_witness)
-        if ordering is not None:
-            field_witness["owner_activation_ordering"] = ordering
-            event["inserted_owner_activation_ordering"] = True
-            event["required_before_count"] = len(ordering["required_before"])
+    event: dict[str, Any] = merge_owner_activation_ordering(field_witness)
     if roles_inserted:
         event["inserted_owner_activation_ordering_roles"] = roles_inserted
     if null_curl_states:
@@ -1642,6 +1706,90 @@ def run_self_test(root: Path) -> int:
         if isinstance(event, dict)
     ):
         raise AssemblyError("self-test preplanned owner activation ordering role metadata missing")
+
+    partial_plan_field_witness = (
+        "Closure/Reconstruction Witness\n"
+        "Initial burden set: [¹B, ³B]\n"
+        "𝔅_LA (B_LA) = {¹B, ³B}\n"
+        "𝔅_MRP (B_MRP) = {}\n"
+        "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B, ³B}\n"
+        "Burden dependency graph:\n"
+        "¹B (root); ³B (root)\n"
+        "Terminal states:\n"
+        "¹B: landed / ACT owners / landed by visible owner activations\n"
+        "³B: landed / ACT owners / landed by visible owner activations\n"
+        "MRP resultants:\n"
+        "MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP\n"
+        "MRP(³B): type=no_new_resultant; finding=stable; graph=none; route=STOP\n"
+        "∇·B: neutral / no remaining burden\n"
+        "∇×κ: null / no circular dependency\n"
+        "𝒞(Ψᴺ): COMPLETE / coverage_complete=true; runtime execution field remains bounded to this reply\n"
+        "T_lang: Ψᴺ -> Ψᴵ: partial coupling boundary; no guaranteed uptake\n"
+        "field_witness\n"
+        "{\n"
+        "  \"B_LA\": [\"B1\", \"B3\"],\n"
+        "  \"B_MRP\": [],\n"
+        "  \"B_total\": [\"B1\", \"B3\"],\n"
+        "  \"owner_activation_ordering\": {\n"
+        "    \"policy_id\": \"diagnostic-ir-pressure-owner-floor-v1\",\n"
+        "    \"parallel_groups\": [],\n"
+        "    \"required_before\": [\n"
+        "      {\"target\": \"B1\", \"before_owner\": \"source-status-repair\", \"after_owner\": \"M1\"}\n"
+        "    ]\n"
+        "  },\n"
+        "  \"owner_activations\": [\n"
+        "    {\"target\": \"B1\", \"owner\": \"source-status-repair\", \"operation\": \"source-order\", \"body_ref\": \"¹B₁\"},\n"
+        "    {\"target\": \"B1\", \"owner\": \"M1\", \"operation\": \"self-grounding-test\", \"body_ref\": \"¹B₂\"},\n"
+        "    {\"target\": \"B3\", \"owner\": \"source-status-repair\", \"operation\": \"source-order\", \"body_ref\": \"³B₁\"},\n"
+        "    {\"target\": \"B3\", \"owner\": \"authority-order-repair\", \"operation\": \"sort\", \"body_ref\": \"³B₂\"}\n"
+        "  ],\n"
+        "  \"coverage_proof\": {\"divergence_check\": \"neutral\", \"curl_check\": \"null\"},\n"
+        "  \"normalized_activation_record\": {\"n_frame\": \"self-test\", \"live_registers\": [\"xi\"], \"burden_floor\": [\"B1\", \"B3\"], \"per_burden\": []}\n"
+        "}\n"
+    )
+    partial_plan_manifest = manifest_for_sections(
+        base_dir / "valid-owner-activation-ordering-partial-plan-merge",
+        case_id="valid-owner-activation-ordering-partial-plan-merge",
+        source_input="valid-owner-activation-ordering-partial-plan-merge/input.md",
+        section_specs=[*small_sections()[:6], ("field-witness", "field_witness_nar", partial_plan_field_witness)],
+    )
+    partial_plan_record = assemble_manifest(partial_plan_manifest, root=root)
+    partial_plan_output = (
+        base_dir / "valid-owner-activation-ordering-partial-plan-merge" / "output.md"
+    ).read_text(encoding="utf-8")
+    partial_label = FIELD_WITNESS_LABEL_RE.search(partial_plan_output)
+    if partial_label is None:
+        raise AssemblyError("self-test partial owner ordering output omitted field_witness label")
+    partial_span = json_object_span_after(partial_plan_output, partial_label.end())
+    if partial_span is None:
+        raise AssemblyError("self-test partial owner ordering output omitted field_witness JSON")
+    partial_payload = json.loads(partial_plan_output[partial_span[0] : partial_span[1]])
+    partial_field_witness = field_witness_payload_ref(partial_payload) or {}
+    partial_rules = (
+        (partial_field_witness.get("owner_activation_ordering") or {}).get("required_before")
+        if isinstance(partial_field_witness.get("owner_activation_ordering"), dict)
+        else []
+    )
+    if not any(
+        isinstance(rule, dict)
+        and rule.get("target") == "B3"
+        and rule.get("before_owner") == "source-status-repair"
+        and rule.get("after_owner") == "authority-order-repair"
+        for rule in partial_rules
+    ):
+        raise AssemblyError("self-test partial owner ordering merge omitted the B3 source-order rule")
+    partial_plan_events = (
+        (partial_plan_record.get("canonical_scaffold") or {}).get("events", [])
+        if isinstance(partial_plan_record.get("canonical_scaffold"), dict)
+        else []
+    )
+    if not any(
+        event.get("merged_owner_activation_ordering") is True
+        and event.get("required_before_added_count") == 1
+        for event in partial_plan_events
+        if isinstance(event, dict)
+    ):
+        raise AssemblyError("self-test partial owner ordering merge metadata missing")
 
     wide_null_curl_states = []
     wide_mrp_resultants = []
