@@ -2132,6 +2132,55 @@ def stage07_field_witness_section_scaffold(previous_stages: list[dict[str, Any]]
     )
 
 
+RESTORATIVE_SLOT_PATTERNS = (
+    re.compile(r"(?im)^\s*(?:[-*]\s*)?Restored criterion/(?:order|orientation)\s*:\s*\S"),
+    re.compile(r"(?im)^\s*(?:[-*]\s*)?Relieved pressure\s*:\s*\S"),
+    re.compile(r"(?im)^\s*(?:[-*]\s*)?Held/scoped/reopenable remainder\s*:\s*\S"),
+)
+
+
+def restorative_response_slots_present(text: str) -> bool:
+    return all(pattern.search(text) for pattern in RESTORATIVE_SLOT_PATTERNS)
+
+
+def stage07_restorative_response_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    burden_floor = list_field(stage02, "burden_floor") or list_field(stage05, "B_LA")
+    generated_burdens = stage05_generated_burdens(stage05)
+    unresolved_burdens = list_field(stage05, "unresolved_burdens")
+    if not unresolved_burdens and isinstance(stage05, dict):
+        proof = stage05.get("no_new_resultant_proof")
+        if isinstance(proof, dict):
+            unresolved_burdens = [
+                b_id(item) for item in proof.get("unresolved_burdens", []) if b_id(item)
+            ]
+    held = ordered_unique([*generated_burdens, *unresolved_burdens])
+    floor_text = public_burden_list(burden_floor) if burden_floor else "the displayed baseline burden floor"
+    held_text = public_burden_list(held) if held else "future concrete burdens only"
+    if held:
+        remainder = (
+            f"Generated or unresolved burden(s) {held_text} remain held/scoped/reopenable "
+            "unless a later bounded pass actually executes matching ACT rows; "
+            "coverage_complete=false stays honest for this closure boundary."
+        )
+    else:
+        remainder = (
+            "Specific future objections remain reopenable only as concrete named burdens; "
+            "no hidden proof-carousel or total-system demand is allowed to repair the landed reply."
+        )
+    return (
+        "Restorative Response\n\n"
+        f"Restored criterion/order: Preserve the landed source-owned burden order {floor_text} "
+        "and return the field to tawhid, fitrah, and sound reason without letting a later model "
+        "override the local proof state.\n\n"
+        "Relieved pressure: The visible ACT and MRP rows block the reply's predicate-transfer, "
+        "source-order, proof-stack, analogy, and worship-orientation pressure from governing "
+        "the text before the text's own sender-sent order is heard.\n\n"
+        f"Held/scoped/reopenable remainder: {remainder}\n"
+    )
+
+
 def canonical_compiled_structural_section(
     section_role: str,
     text: str,
@@ -2141,6 +2190,18 @@ def canonical_compiled_structural_section(
         scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
     elif section_role == "field_witness_nar":
         scaffold = stage07_field_witness_section_scaffold(previous_stages)
+    elif section_role == "restorative_response":
+        if restorative_response_slots_present(text):
+            return text, None
+        scaffold = stage07_restorative_response_section_scaffold(previous_stages)
+        body = re.sub(
+            r"(?is)^\s*(?:#{1,6}\s*)?Restorative Response\s*",
+            "",
+            text,
+            count=1,
+        ).lstrip()
+        if body:
+            scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
         return text, None
     if not scaffold:
@@ -2539,6 +2600,10 @@ def release_section_prompt(
         "restorative_response": (
             "Write only the Restorative Response section. Begin with the exact public role heading `Restorative Response`. "
             "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint. "
+            "It must include these exact parser-stable lines before any extended prose: "
+            "`Restored criterion/order: ...`, `Relieved pressure: ...`, and "
+            "`Held/scoped/reopenable remainder: ...`. "
+            "The remainder line must name any generated or unresolved B_MRP pressure that remains held/scoped/reopenable. "
             "Do not include Closing Formulation here. "
             "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
@@ -2669,6 +2734,11 @@ def release_section_expansion_prompt(
         "mrp_reread_terminal": (
             "Expand MRP reread, terminal-state, graph-delta, and field-diagnostic detail without "
             "changing the route result."
+        ),
+        "restorative_response": (
+            "Preserve the exact Restorative Response heading and keep the parser-stable lines "
+            "`Restored criterion/order:`, `Relieved pressure:`, and "
+            "`Held/scoped/reopenable remainder:` visible before any added prose."
         ),
     }
     return f"""Runtime SHA256: {skill_hash}
@@ -4219,10 +4289,47 @@ def run_self_test(root: Path) -> int:
     for required in (
         "Begin with the exact public role heading `Restorative Response`",
         "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint",
+        "`Restored criterion/order: ...`",
+        "`Relieved pressure: ...`",
+        "`Held/scoped/reopenable remainder: ...`",
         "Do not include Closing Formulation here",
     ):
         if required not in stage07_restorative_prompt:
             raise HarnessError(f"Self-test Stage 07 Restorative prompt omitted role-heading scaffold: {required}")
+    drifted_restorative_text = (
+        "Restorative Response\n\n"
+        "The answer restores tawhid and sound reason, but this model-authored prose does not "
+        "emit the required held remainder slot.\n"
+    )
+    canonical_restorative_text, canonical_restorative_event = canonical_compiled_structural_section(
+        "restorative_response",
+        drifted_restorative_text,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not canonical_restorative_event:
+        raise HarnessError("Self-test Stage 07 Restorative canonicalization did not record an event")
+    for required in (
+        "Restored criterion/order:",
+        "Relieved pressure:",
+        "Held/scoped/reopenable remainder:",
+    ):
+        if required not in canonical_restorative_text:
+            raise HarnessError(f"Self-test Stage 07 Restorative canonicalization omitted slot: {required}")
+    if canonical_restorative_text.count("Restorative Response") != 1:
+        raise HarnessError("Self-test Stage 07 Restorative canonicalization duplicated the heading")
+    already_slot_shaped_restorative = (
+        "Restorative Response\n\n"
+        "Restored criterion/order: keep the source-owned order.\n"
+        "Relieved pressure: block the proof-stack pressure.\n"
+        "Held/scoped/reopenable remainder: future concrete burdens remain reopenable.\n"
+    )
+    unchanged_restorative, unchanged_event = canonical_compiled_structural_section(
+        "restorative_response",
+        already_slot_shaped_restorative,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if unchanged_event or unchanged_restorative != already_slot_shaped_restorative:
+        raise HarnessError("Self-test Stage 07 Restorative canonicalization mutated an already slot-shaped section")
     stage07_closing_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
