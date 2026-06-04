@@ -1801,6 +1801,8 @@ def stage07_formal_reread_states(
             r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
             terminal_state,
         ) is not None
+        divergence_state = "non-neutral" if held_or_partial else "neutral"
+        curl_state = "unresolved" if held_or_partial else "null"
         target = stage07_route_target_from_graph(graph)
         public_graph = public_graph_value(graph)
         public_source = public_burden_id(source)
@@ -1810,8 +1812,8 @@ def stage07_formal_reread_states(
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
             "delta": stage07_mrp_landed_delta(source, terminal_state, route_type),
             "reread": "R(H,Delta)",
-            "divergence_state": "neutral",
-            "curl_state": "null",
+            "divergence_state": divergence_state,
+            "curl_state": curl_state,
             "route_result_type": route_type,
             "mrp_resultant": f"{row.get('finding') or 'stable'} -> graph {graph}; route {route}",
             "graph_delta": graph,
@@ -5908,9 +5910,11 @@ def run_self_test(root: Path) -> int:
     )
     if [row.get("source_burden") for row in wide_states] != ["B1", "B2", "B3", "B4", "B5", "B6"]:
         raise HarnessError("Self-test Stage 07 wide MRP formal reread states did not preserve B1-B6 source registration")
-    if any(row.get("curl_state") != "null" for row in wide_states):
-        raise HarnessError("Self-test Stage 07 wide MRP formal reread states emitted non-string/null curl_state")
+    if any(row.get("curl_state") != "null" for row in wide_states[:-1]):
+        raise HarnessError("Self-test Stage 07 wide MRP landed formal reread states emitted non-string/null curl_state")
     b6_state = wide_states[-1]
+    if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "unresolved":
+        raise HarnessError("Self-test Stage 07 B6 unresolved row did not mirror visible non-neutral/unresolved field diagnostics")
     if b6_state.get("route_result_type") != "no_new_resultant" or b6_state.get("route") != "STOP":
         raise HarnessError("Self-test Stage 07 B6 terminal row did not preserve STOP/no_new_resultant accounting")
     proof = b6_state.get("no_new_resultant_proof")
@@ -6011,6 +6015,7 @@ def run_self_test(root: Path) -> int:
         '"route_result_type": "hold_partial"',
         '"route": "HOLD"',
         '"curl_state": "null"',
+        '"curl_state": "unresolved"',
         '"coverage_complete": false',
         '"id": "B6"',
         '"generated_by": "MRP(B5)"',
@@ -6296,6 +6301,8 @@ def run_self_test(root: Path) -> int:
         '"generated_by": "MRP(B5)"',
         '"source_burden": "B6"',
         '"route_result_type": "hold_partial"',
+        '"divergence_state": "non-neutral"',
+        '"curl_state": "unresolved"',
         '"coverage_complete": false',
         '"owner_route": [\n        "source-status-repair.source-order",\n        "P7.scope-boundary"\n      ]',
     ):

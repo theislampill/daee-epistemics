@@ -145,6 +145,10 @@ SOURCE_OWNED_ACT_OPERATIONS = {
         "predication-repair": re.compile(
             r"(?is)\b(?:predicat|category|predicate transfer|reliability|reliable|separate|separated)\b"
         ),
+        "sense-split": re.compile(
+            r"(?is)\b(?:sense|referent|meaning[- ]conditions?|semantic|predicat|category|"
+            r"equivocat|split|separat|transfer|identity claim|count noun)\b"
+        ),
     },
     "P7": {
         "bound": re.compile(
