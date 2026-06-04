@@ -203,8 +203,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`normalized_activation_record.n_frame`. "
             "`per_burden` must be a JSON array/list of objects; each object must include "
             "a non-empty string `burden_id`. Do not emit `per_burden` as a burden-keyed object map. "
-            "`register_deltas` must be parser-stable as an object or a list of objects with "
-            "`register` and `delta`. If Stage 06 cannot honestly mirror ACT/terminal evidence, "
+            "`register_deltas` must be parser-stable as an object mapping register names to "
+            "a non-empty string or non-empty string array, or as a list of objects with "
+            "`register` plus `delta` as a non-empty string or non-empty string array. "
+            "If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
         ),
     },
@@ -881,6 +883,24 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
 
+def normalize_stage06_register_delta_value(
+    value: Any,
+    *,
+    empty_string_message: str,
+    list_message: str,
+    type_message: str,
+) -> str | list[str]:
+    if isinstance(value, str):
+        if not value:
+            raise HarnessError(empty_string_message)
+        return value
+    if isinstance(value, list):
+        if not value or not all(isinstance(item, str) and item for item in value):
+            raise HarnessError(list_message)
+        return ordered_unique(list(value))
+    raise HarnessError(type_message)
+
+
 def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
     field_refs = stage.get("field_witness_body_refs")
     if not isinstance(field_refs, list) or not field_refs or not all(isinstance(item, str) and item for item in field_refs):
@@ -944,22 +964,27 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
         for register, delta in register_deltas.items():
             if not isinstance(register, str) or not register:
                 raise HarnessError("stage-06 register_deltas keys must be non-empty strings")
-            if isinstance(delta, str):
-                if not delta:
-                    raise HarnessError("stage-06 register_deltas string values must be non-empty")
-            elif isinstance(delta, list):
-                if not all(isinstance(item, str) and item for item in delta):
-                    raise HarnessError("stage-06 register_deltas list values must be non-empty strings")
-            else:
-                raise HarnessError("stage-06 register_deltas object values must be strings or string lists")
+            register_deltas[register] = normalize_stage06_register_delta_value(
+                delta,
+                empty_string_message="stage-06 register_deltas string values must be non-empty",
+                list_message="stage-06 register_deltas list values must be non-empty strings",
+                type_message="stage-06 register_deltas object values must be strings or string lists",
+            )
     elif isinstance(register_deltas, list):
         for index, item in enumerate(register_deltas):
             if not isinstance(item, dict):
                 raise HarnessError(f"stage-06 register_deltas[{index}] must be an object")
             if not isinstance(item.get("register"), str) or not item["register"]:
                 raise HarnessError(f"stage-06 register_deltas[{index}].register must be a non-empty string")
-            if not isinstance(item.get("delta"), str) or not item["delta"]:
-                raise HarnessError(f"stage-06 register_deltas[{index}].delta must be a non-empty string")
+            item["delta"] = normalize_stage06_register_delta_value(
+                item.get("delta"),
+                empty_string_message=f"stage-06 register_deltas[{index}].delta must be a non-empty string",
+                list_message=f"stage-06 register_deltas[{index}].delta list values must be non-empty strings",
+                type_message=(
+                    f"stage-06 register_deltas[{index}].delta must be a non-empty string "
+                    "or non-empty string list"
+                ),
+            )
     else:
         raise HarnessError("stage-06 register_deltas must be an object or list")
 
@@ -4439,6 +4464,44 @@ def run_self_test(root: Path) -> int:
     write_json(stage05_local_path, stage05_local_record)
     validate_replay_record(root, stage05_local_path)
 
+    generated_carried_recurse_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "partial",
+            "terminal_states": {"B1": "landed", "B2": "carried-RECURSE"},
+            "dependency_graph_edges": [{"from": "B1", "to": "B2"}],
+            "generated_burdens": [
+                {
+                    "burden_id": "B2",
+                    "generated_by": "MRP(B1)",
+                    "terminal_state": "carried-RECURSE",
+                }
+            ],
+            "unresolved_burdens": ["B2"],
+            "no_new_resultant_proof": {
+                "proved": False,
+                "basis": "B2 was generated by MRP(B1) and remains unexecuted.",
+                "unresolved_burdens": ["B2"],
+            },
+        },
+    )
+    generated_carried_recurse_record = base_record(
+        "self-test-stage05-generated-carried-recurse",
+        "staged-current-skill-stage-local-smoke",
+        not_model_smoke=False,
+        stop_after_stage="stage-05-mrp-reread-terminal-state",
+        model_scope_payload=model_scope(
+            "self-test-stage05-generated-carried-recurse",
+            replay_record,
+            stop_after_stage="stage-05-mrp-reread-terminal-state",
+        ),
+    )
+    generated_carried_recurse_record["stages"] = [*replay["stages"][:4], generated_carried_recurse_stage05]
+    generated_carried_recurse_path = run_dir / "stage05-generated-carried-recurse.valid.json"
+    write_json(generated_carried_recurse_path, generated_carried_recurse_record)
+    validate_replay_record(root, generated_carried_recurse_path)
+
     rich_stage04_handoff_record = base_record(
         "self-test-stage04-rich-burdens-to-stage05",
         "staged-current-skill-stage-local-smoke",
@@ -4561,6 +4624,47 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    normalized_stage06_list_delta = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁"],
+            "nar_burdens": ["B1"],
+            "owner_activations": ["¹B₁"],
+            "normalized_activation_record": structured_nar,
+            "register_deltas": [
+                {"register": "Omega", "delta": ["B1:model-family-bounded", "B1:predicate-separated"]},
+                {"register": "xi", "delta": "B1:source-order-landed"},
+            ],
+        },
+    )
+    if normalized_stage06_list_delta["register_deltas"][0]["delta"] != [
+        "B1:model-family-bounded",
+        "B1:predicate-separated",
+    ]:
+        raise HarnessError("Self-test failed to preserve Stage 06 list-object register_deltas string lists")
+    for invalid_delta, message in [
+        ([], "empty string-list"),
+        (["B1:source-order-landed", 1], "non-string list member"),
+    ]:
+        try:
+            normalized_stage(
+                "stage-06-field-witness-nar",
+                {
+                    "id": "stage-06-field-witness-nar",
+                    "status": "pass",
+                    "field_witness_body_refs": ["¹B₁"],
+                    "nar_burdens": ["B1"],
+                    "owner_activations": ["¹B₁"],
+                    "normalized_activation_record": structured_nar,
+                    "register_deltas": [{"register": "xi", "delta": invalid_delta}],
+                },
+            )
+        except HarnessError:
+            pass
+        else:
+            raise HarnessError(f"Self-test failed to reject Stage 06 list-object register_deltas {message}")
     normalized_stage06_delta_drift = normalized_stage(
         "stage-06-field-witness-nar",
         {
@@ -5489,6 +5593,57 @@ def run_self_test(root: Path) -> int:
     stage06_local_path = run_dir / "staged-handoff-stage06-model-scope-record.json"
     write_json(stage06_local_path, stage06_local_record)
     validate_replay_record(root, stage06_local_path)
+
+    stage06_register_delta_list_record = dict(stage06_local_record)
+    stage06_register_delta_list_record["case_id"] = "self-test-stage06-register-delta-list-values"
+    stage06_register_delta_list_record["model_scope"] = model_scope(
+        "self-test-stage06-register-delta-list-values",
+        replay_record,
+        stop_after_stage="stage-06-field-witness-nar",
+    )
+    stage06_register_delta_list_record["stages"] = [dict(stage) for stage in stage06_local_record["stages"]]
+    stage06_register_delta_list_record["stages"][-1] = dict(stage06_register_delta_list_record["stages"][-1])
+    stage06_register_delta_list_record["stages"][-1]["register_deltas"] = [
+        {"register": "Omega", "delta": ["B1:model-family-bounded", "B1:predicate-separated"]},
+        {"register": "xi", "delta": "B1:source-order-landed"},
+    ]
+    stage06_register_delta_list_path = run_dir / "stage06-register-delta-list-values.valid.json"
+    write_json(stage06_register_delta_list_path, stage06_register_delta_list_record)
+    validate_replay_record(root, stage06_register_delta_list_path)
+
+    for invalid_delta, suffix in [
+        ([], "empty"),
+        (["B1:source-order-landed", 1], "non-string-member"),
+    ]:
+        invalid_register_delta_record = dict(stage06_register_delta_list_record)
+        invalid_register_delta_record["case_id"] = f"self-test-stage06-register-delta-list-{suffix}"
+        invalid_register_delta_record["model_scope"] = model_scope(
+            f"self-test-stage06-register-delta-list-{suffix}",
+            replay_record,
+            stop_after_stage="stage-06-field-witness-nar",
+        )
+        invalid_register_delta_record["stages"] = [
+            dict(stage) for stage in stage06_register_delta_list_record["stages"]
+        ]
+        invalid_register_delta_record["stages"][-1] = dict(invalid_register_delta_record["stages"][-1])
+        invalid_register_delta_record["stages"][-1]["register_deltas"] = [
+            {"register": "xi", "delta": invalid_delta}
+        ]
+        invalid_register_delta_path = run_dir / f"stage06-register-delta-list-{suffix}.invalid.json"
+        write_json(invalid_register_delta_path, invalid_register_delta_record)
+        invalid_result = run_checked(
+            [
+                sys.executable,
+                str(root / "tools" / "check_staged_runtime_handshake.py"),
+                "--records",
+                str(invalid_register_delta_path),
+            ],
+            cwd=root,
+        )
+        if invalid_result.returncode == 0:
+            raise HarnessError(
+                f"Self-test failed to reject Stage 06 register_deltas list-object {suffix} delta"
+            )
 
     try:
         normalized_stage(

@@ -93,7 +93,14 @@ MODEL_REQUIRED_NON_CLAIMS = {
 }
 MODEL_SCOPE_TYPES = {"focused-current-skill-smoke", "focused-current-skill-stage-smoke"}
 PASS_STATUS = {"pass", "held", "partial"}
-HELD_TERMINAL_STATES = {"hold_partial", "held", "held-with-reason", "partial", "carried-PARTIAL"}
+HELD_TERMINAL_STATES = {
+    "hold_partial",
+    "held",
+    "held-with-reason",
+    "partial",
+    "carried-PARTIAL",
+    "carried-RECURSE",
+}
 TERMINAL_STATE_VALUES = HELD_TERMINAL_STATES | {"landed", "discharged-as-derivative"}
 STAGE05_FORBIDDEN_FIELDS = {
     "closure_claim",
@@ -550,20 +557,24 @@ def owner_activation_body_refs(value: Any) -> tuple[list[str], list[dict[str, An
 
 
 def register_delta_errors(label: str, value: Any) -> list[str]:
+    def delta_value_errors(value_label: str, delta: Any) -> list[str]:
+        if isinstance(delta, str):
+            if not delta:
+                return [f"{value_label} must be non-empty when string-shaped"]
+            return []
+        if isinstance(delta, list):
+            if not delta or not all(isinstance(item, str) and item for item in delta):
+                return [f"{value_label} list values must be non-empty strings"]
+            return []
+        return [f"{value_label} must be a string or string list"]
+
     if isinstance(value, dict):
         errors: list[str] = []
         for register, delta in value.items():
             if not isinstance(register, str) or not register:
                 errors.append(f"{label}: stage-06 register_deltas keys must be non-empty strings")
                 continue
-            if isinstance(delta, str):
-                if not delta:
-                    errors.append(f"{label}: stage-06 register_deltas[{register!r}] must be non-empty when string-shaped")
-            elif isinstance(delta, list):
-                if not all(isinstance(item, str) and item for item in delta):
-                    errors.append(f"{label}: stage-06 register_deltas[{register!r}] list values must be non-empty strings")
-            else:
-                errors.append(f"{label}: stage-06 register_deltas[{register!r}] must be a string or string list")
+            errors.extend(delta_value_errors(f"{label}: stage-06 register_deltas[{register!r}]", delta))
         return errors
     if isinstance(value, list):
         errors = []
@@ -575,8 +586,7 @@ def register_delta_errors(label: str, value: Any) -> list[str]:
             delta = item.get("delta")
             if not isinstance(register, str) or not register:
                 errors.append(f"{label}: stage-06 register_deltas[{index}].register must be a non-empty string")
-            if not isinstance(delta, str) or not delta:
-                errors.append(f"{label}: stage-06 register_deltas[{index}].delta must be a non-empty string")
+            errors.extend(delta_value_errors(f"{label}: stage-06 register_deltas[{index}].delta", delta))
         return errors
     return [f"{label}: stage-06 register_deltas must be an object or list"]
 
