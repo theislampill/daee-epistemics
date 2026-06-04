@@ -65,6 +65,22 @@ Boundary: T_lang does not imply guaranteed uptake.
   "B_LA": ["B1", "B2", "B3", "B4"],
   "B_MRP": [],
   "B_total": ["B1", "B2", "B3", "B4"],
+  "normalized_activation_record": {
+    "n_frame": "selected-source-worldview-authority-order",
+    "source_status": "source-worldview",
+    "restoration_frame": "restoration-active",
+    "per_burden": [
+      {
+        "burden_id": "B1",
+        "owner_id": "P7",
+        "operation": "scope-boundary",
+        "delta_result": "scope-boundary-named",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      }
+    ]
+  },
   "owner_activations": [
     {
       "source": "B1",
@@ -90,8 +106,45 @@ Boundary: T_lang does not imply guaranteed uptake.
       "mrp_resultant": "stable -> no new resultant remains; route STOP.",
       "graph_delta": "none",
       "preemption_basis": "none",
-      "route": "STOP"
+      "route": "STOP",
+      "escape_routes_checked": [
+        {
+          "type": "authority-order",
+          "live": true,
+          "disposition": "requires-generated-burden",
+          "source_burden": "B1",
+          "target_burden": "B5",
+          "owner_family": "P7"
+        },
+        {
+          "type": "hidden-framework-recoil",
+          "live": true,
+          "disposition": "requires-generated-burden",
+          "source_burden": "B1",
+          "target_burden": "B5",
+          "owner_family": "P7"
+        }
+      ]
     }
-  ]
+  ],
+  "coverage_proof": {
+    "coverage_complete": false,
+    "terminal_states": {
+      "B1": "landed",
+      "B2": "carried-HOLD",
+      "B3": "carried-HOLD",
+      "B4": "carried-HOLD"
+    },
+    "proof_boundary_eligibility": [
+      {
+        "type": "source-worldview",
+        "live": true,
+        "disposition": "requires-generated-burden",
+        "source_burden": "B1",
+        "target_burden": "B5",
+        "owner_family": "P7"
+      }
+    ]
+  }
 }
 ```

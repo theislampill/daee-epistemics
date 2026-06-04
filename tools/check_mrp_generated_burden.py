@@ -176,9 +176,9 @@ SOURCE_OWNED_ACT_OPERATIONS = {
     },
     "DO_CHRISTIAN": {
         "model-identification": re.compile(
-            r"(?is)\b(?:model[- ]identification|which Trinitarian model|"
-            r"model is operative|Social Trinitarian|Latin/psychological|"
-            r"relative[- ]identity|mystery/apophatic|force varies by model)\b"
+            r"(?is)\b(?:model[- ]identification|selected[- ]model|matched[- ]model|"
+            r"model is operative|model family|which model|force varies by model|"
+            r"route[- ]model|owner[- ]model|model[- ]specific pressure)\b"
         ),
     },
     "DO_ATTRIBUTE": {
@@ -1676,75 +1676,132 @@ def candidate_review_warnings(path: Path, text: str) -> list[str]:
     if "generated_burden_instantiation" in route_types:
         return []
     initial = initial_burdens(text)
-    hard_reasons = semantic_hard_mrp_reasons(text)
+    hard_reasons = formal_hard_mrp_reasons(text)
     if len(initial) >= 4 and hard_reasons and route_types <= {"held_burden_activation", "no_new_resultant"}:
         return [
-            f"{path}: Hard-compound case produced only held_burden_activation across all MRP cycles. Review whether post-land escape routes should have generated a new burden."
+            f"{path}: Formal hard-MRP pressure produced only held_burden_activation across all MRP cycles. Review whether post-land escape routes should have generated a new burden."
         ]
     return []
 
 
-SEMANTIC_HARD_MRP_SIGNAL_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
-    (
-        "hard-source/source-stack",
-        re.compile(
-            r"(?i)\b(?:hard[- ]source|source[- ]stack|proof[- ]stack|source[- ]status|"
-            r"source[- ]order|source function|citation stack|transmission stack)\b"
-        ),
-    ),
-    (
-        "worldview/authority-order",
-        re.compile(
-            r"(?i)\b(?:source[- ]worldview|named[- ]worldview|worldview|authority[- ]order|"
-            r"authority frame|public reason|public authority|epistemic regime|moral tribunal|"
-            r"imported tribunal)\b"
-        ),
-    ),
-    (
-        "proof-carousel/hidden-framework",
-        re.compile(
-            r"(?i)\b(?:proof[- ]carousel|hidden[- ]framework|hidden support|hidden authority|"
-            r"framework recoil|source[- ]order recoil|bounded[- ]answer recoil|"
-            r"closure[- ]boundary|boundary[- ]as[- ]immunity|full[- ]system|broader doctrine)\b"
-        ),
-    ),
-    (
-        "restoration-recoil",
-        re.compile(
-            r"(?i)\b(?:restoration recoil|restoration frame|restorative response|"
-            r"tawhid|tawḥīd|fitrah|fiṭrah|sound reason)\b"
-        ),
-    ),
-)
+FORMAL_HARD_MRP_PRESSURE_TYPES = {
+    "authority-order",
+    "authority-order-recoil",
+    "closure-boundary-immunity",
+    "hard-source",
+    "hidden-framework",
+    "hidden-framework-recoil",
+    "moral-tribunal",
+    "proof-boundary",
+    "proof-carousel",
+    "proof-stack",
+    "restoration-recoil",
+    "source-stack",
+    "source-status",
+    "source-worldview",
+    "worldview-authority-order",
+}
+FORMAL_HARD_MRP_DISPOSITIONS = {
+    "carried-hold",
+    "carried-partial",
+    "carried-recurse",
+    "generated-burden-instantiation",
+    "hold",
+    "hold-partial",
+    "partial",
+    "requires-generated-burden",
+    "recurse",
+    "unresolved",
+}
+FORMAL_PRESSURE_LIST_KEYS = {
+    "escape_routes_checked",
+    "proof_boundary_eligibility",
+    "proof_boundary_routes",
+    "route_availability",
+}
+FORMAL_PRESSURE_TYPE_KEYS = {
+    "type",
+    "pressure_type",
+    "proof_boundary_type",
+    "source_status",
+    "source_status_class",
+    "n_frame",
+    "selected_n_frame",
+}
 
 
-def semantic_hard_mrp_reasons(text: str) -> list[str]:
-    """Return semantic reasons an output needs a generated-MRP/no-new proof gate.
+def formal_key(value: object) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value or "").strip().lower()).strip("-")
 
-    The gate is intentionally content-structural. It must not key proof
-    behavior to known smoke names, run-directory names, or fixture filenames.
-    """
 
-    reasons = [
-        label
-        for label, pattern in SEMANTIC_HARD_MRP_SIGNAL_PATTERNS
-        if pattern.search(text)
-    ]
-    if re.search(
-        r"(?im)^\s*║?\s*field\s*:\s*(?:MIXED NOETIC FIELD|NAMED WORLDVIEW|SOURCE-WORLDVIEW|"
-        r"HARD NOETIC|AUTHORITY FRAME)\b",
-        text,
-    ):
-        reasons.append("field-class")
-    if len(initial_burdens(text)) >= 3 and any(
-        reason in reasons
-        for reason in (
-            "hard-source/source-stack",
-            "worldview/authority-order",
-            "proof-carousel/hidden-framework",
-        )
-    ):
-        reasons.append("multi-burden-hard-field")
+def formal_bool(value: object) -> bool:
+    if value is True:
+        return True
+    return str(value).strip().lower() in {"true", "live", "active", "yes", "1"}
+
+
+def iter_formal_pressure_objects(value: object, path: str = "field_witness") -> list[tuple[str, dict[str, object]]]:
+    found: list[tuple[str, dict[str, object]]] = []
+    if isinstance(value, dict):
+        for key, item in value.items():
+            child_path = f"{path}.{key}"
+            if key in FORMAL_PRESSURE_LIST_KEYS and isinstance(item, list):
+                for index, entry in enumerate(item):
+                    if isinstance(entry, dict):
+                        found.append((f"{child_path}[{index}]", entry))
+            if isinstance(item, (dict, list)):
+                found.extend(iter_formal_pressure_objects(item, child_path))
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            if isinstance(item, (dict, list)):
+                found.extend(iter_formal_pressure_objects(item, f"{path}[{index}]"))
+    return found
+
+
+def formal_pressure_type(item: dict[str, object]) -> str:
+    for key in FORMAL_PRESSURE_TYPE_KEYS:
+        value = item.get(key)
+        if value:
+            return formal_key(value)
+    return ""
+
+
+def formal_pressure_is_live_or_unproved(item: dict[str, object], b_mrp: set[str]) -> bool:
+    disposition = formal_key(
+        item.get("disposition")
+        or item.get("route_result_type")
+        or item.get("route")
+        or item.get("terminal_state")
+        or item.get("state")
+    )
+    target = graph_burden_id(
+        item.get("target_burden")
+        or item.get("target")
+        or item.get("next_burden")
+        or item.get("generated_burden")
+    )
+    return (
+        formal_bool(item.get("live"))
+        or disposition in FORMAL_HARD_MRP_DISPOSITIONS
+        or bool(target and target not in b_mrp)
+    )
+
+
+def formal_hard_mrp_reasons(text: str) -> list[str]:
+    """Return formal DSL/IR reasons an output needs generated-MRP/no-new proof."""
+
+    payload, parse_error = field_witness_object(text)
+    if parse_error or payload is None:
+        return []
+    b_mrp = {graph_burden_id(item) for item in payload.get("B_MRP", []) if graph_burden_id(item)}
+    reasons: list[str] = []
+    for path, item in iter_formal_pressure_objects(payload):
+        pressure_type = formal_pressure_type(item)
+        if pressure_type not in FORMAL_HARD_MRP_PRESSURE_TYPES:
+            continue
+        if not formal_pressure_is_live_or_unproved(item, b_mrp):
+            continue
+        reasons.append(f"{pressure_type}@{path}")
     return sorted(dict.fromkeys(reasons))
 
 
@@ -1797,16 +1854,16 @@ def no_new_resultant_escape_proof_present(text: str) -> bool:
     return False
 
 
-def required_semantic_hard_mrp_errors(path: Path, text: str) -> list[str]:
-    """Fail hard generated-MRP gates by semantic pressure, never by filename."""
+def required_formal_hard_mrp_errors(path: Path, text: str) -> list[str]:
+    """Fail hard generated-MRP gates by formal witness pressure, never by filename/prose."""
 
-    reasons = semantic_hard_mrp_reasons(text)
+    reasons = formal_hard_mrp_reasons(text)
     if not reasons:
         return []
     if generated_mrp_proof_present(text) or no_new_resultant_escape_proof_present(text):
         return []
     return [
-        f"{path}: semantic hard generated-MRP gate ({', '.join(reasons)}) must prove "
+        f"{path}: formal hard generated-MRP gate ({', '.join(reasons)}) must prove "
         "non-empty B_MRP with generated_burden_instantiation or explicit "
         "no_new_resultant_proof.escape_routes_checked"
     ]
@@ -1845,6 +1902,7 @@ def main() -> int:
     valid, invalid = iter_fixtures(args.root)
     valid_checked = 0
     invalid_checked = 0
+    output_gate_valid_checked = 0
     output_gate_invalid_checked = 0
     output_checked = 0
     for path in valid:
@@ -1863,18 +1921,26 @@ def main() -> int:
     for path in sorted((args.root / "output-gate-invalid").glob("*.md")):
         text = read_text(path)
         found = check_text(path, text, enforce_public_notation=False)
-        found.extend(required_semantic_hard_mrp_errors(path, text))
-        if not any("semantic hard generated-MRP gate" in error for error in found):
-            errors.append(f"{path}: expected semantic hard generated-MRP gate did not fire")
+        found.extend(required_formal_hard_mrp_errors(path, text))
+        if not any("formal hard generated-MRP gate" in error for error in found):
+            errors.append(f"{path}: expected formal hard generated-MRP gate did not fire")
         else:
             output_gate_invalid_checked += 1
+    for path in sorted((args.root / "output-gate-valid").glob("*.md")):
+        text = read_text(path)
+        found = check_text(path, text, enforce_public_notation=False)
+        found.extend(required_formal_hard_mrp_errors(path, text))
+        if found:
+            errors.extend(found)
+        else:
+            output_gate_valid_checked += 1
     for path in expand_output_paths(args.outputs):
         if not path.exists():
             errors.append(f"{path}: output path not found")
             continue
         text = read_text(path)
         found = check_text(path, text, enforce_public_notation=False)
-        found.extend(required_semantic_hard_mrp_errors(path, text))
+        found.extend(required_formal_hard_mrp_errors(path, text))
         if found:
             errors.extend(found)
         else:
@@ -1892,6 +1958,8 @@ def main() -> int:
     print(f"Invalid fixtures checked: {invalid_checked}")
     if output_gate_invalid_checked:
         print(f"Output-gate invalid fixtures checked: {output_gate_invalid_checked}")
+    if output_gate_valid_checked:
+        print(f"Output-gate valid fixtures checked: {output_gate_valid_checked}")
     if args.outputs:
         print(f"Hosted/live outputs checked: {output_checked}")
     if args.show_advisories and warnings:

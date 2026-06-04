@@ -6,12 +6,13 @@ This checker validates runtime invariants that must hold across case families:
 - STOP cannot precede later burden or Layer B work.
 - Closure graph edges must be backed by MRP route/resultant records.
 - Directed acyclic downstream pressure belongs to ∇·T, not ∇×T.
-- Named authority/worldview frames with active Islamic restoration must not flatten to LOCAL CLAIM.
+- Formal source/worldview frames with active restoration routes must not flatten to LOCAL CLAIM.
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -50,16 +51,26 @@ NEGATED_DOWNSTREAM_RE = re.compile(
     r"(?:input-anchored\s+|downstream\s+|later\s+|next\s+|broad\s+)*"
     r"(?:burden(?:s)?\s+)?(?:remain(?:s)?|live|remaining|follows)\b"
 )
-NAMED_AUTHORITY_RE = re.compile(
-    r"(?i)\b(?:public reason|human rights|named movement|source-worldview|source stack|"
-    r"proof stack|moral tribunal|authority-order|source-status|source order|"
-    r"worldview|theological authority|authority frame|religious authority|"
-    r"epistemic regime|public authority|hidden framework|imported tribunal)\b"
-)
-ISLAMIC_RESTORATION_RE = re.compile(
-    r"(?i)\b(?:Islamic|Allah|Qur[ʾ'’`]?an|Qur[ʾ'’`]?ānic|tawḥīd|tawhid|"
-    r"hujjah|fitrah|sharī[ʿ']?ah|sharia|prophetic|restoration frame)\b"
-)
+FORMAL_NONLOCAL_FIELD_TOKENS = {
+    "authority-frame",
+    "authority-order",
+    "hard-source",
+    "hidden-framework",
+    "moral-tribunal",
+    "named-worldview",
+    "proof-stack",
+    "source-stack",
+    "source-status",
+    "source-worldview",
+    "worldview",
+}
+FORMAL_RESTORATION_TOKENS = {
+    "active-restoration",
+    "fitrah-restoration",
+    "restoration-active",
+    "restoration-frame",
+    "tawhid-restoration",
+}
 
 
 def read_text(path: Path) -> str:
@@ -69,6 +80,74 @@ def read_text(path: Path) -> str:
 def field_value(text: str) -> str:
     match = FIELD_RE.search(text)
     return match.group("field").strip() if match else ""
+
+
+def field_witness_object(text: str) -> dict[str, object] | None:
+    match = re.search(r"(?im)^\s*(?:#{1,6}\s*)?field_witness\s*$", text)
+    if not match:
+        return None
+    payload = text[match.end() :].strip()
+    fence = re.match(r"(?is)^```(?:json)?\s*(.*?)\s*```", payload)
+    if fence:
+        payload = fence.group(1).strip()
+    start = payload.find("{")
+    if start < 0:
+        return None
+    try:
+        decoded, _end = json.JSONDecoder().raw_decode(payload[start:])
+    except json.JSONDecodeError:
+        return None
+    return decoded if isinstance(decoded, dict) else None
+
+
+def formal_key(value: object) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value or "").strip().lower()).strip("-")
+
+
+def formal_values(value: object) -> set[str]:
+    keys = {
+        "authority_order",
+        "field_class",
+        "n_frame",
+        "owner",
+        "owner_family",
+        "owner_id",
+        "operation",
+        "restoration_frame",
+        "route_class",
+        "selected_n_frame",
+        "source_status",
+        "source_status_class",
+        "source_worldview",
+    }
+    found: set[str] = set()
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key in keys:
+                if isinstance(item, list):
+                    found.update(formal_key(entry) for entry in item if formal_key(entry))
+                else:
+                    token = formal_key(item)
+                    if token:
+                        found.add(token)
+            if isinstance(item, (dict, list)):
+                found.update(formal_values(item))
+    elif isinstance(value, list):
+        for item in value:
+            found.update(formal_values(item))
+    return found
+
+
+def formal_token_matches(tokens: set[str], needles: set[str]) -> bool:
+    return any(needle in token or token in needle for token in tokens for needle in needles)
+
+
+def formal_nonlocal_restoration_pressure(payload: dict[str, object]) -> bool:
+    tokens = formal_values(payload)
+    return formal_token_matches(tokens, FORMAL_NONLOCAL_FIELD_TOKENS) and formal_token_matches(
+        tokens,
+        FORMAL_RESTORATION_TOKENS,
+    )
 
 
 def block_target(block: MrpBlock) -> str:
@@ -131,9 +210,10 @@ def mixed_field_errors(path: Path, text: str) -> list[str]:
     field = field_value(text)
     if field != "LOCAL CLAIM":
         return []
-    if NAMED_AUTHORITY_RE.search(text) and ISLAMIC_RESTORATION_RE.search(text):
+    payload = field_witness_object(text)
+    if payload is not None and formal_nonlocal_restoration_pressure(payload):
         return [
-            f"{path}: named authority/worldview frame plus Islamic restoration must not classify as LOCAL CLAIM"
+            f"{path}: formal source/worldview frame plus active restoration route must not classify as LOCAL CLAIM"
         ]
     return []
 
