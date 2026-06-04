@@ -1336,6 +1336,62 @@ def stage05_unresolved_burdens(stage05: dict[str, Any] | None) -> list[str]:
     return ordered_unique(unresolved)
 
 
+GENERATED_UNEXECUTED_TERMINAL_STATE = "carried-RECURSE"
+GENERATED_UNEXECUTED_REASON = (
+    "generated burden has no Stage 04 ACT execution; remains HOLD/PARTIAL/RECURSE"
+)
+GENERATED_TERMINAL_LIVE_RE = re.compile(
+    r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse|owner-body-not-loaded|unexecuted|unresolved)\b"
+)
+GENERATED_TERMINAL_CLOSED_RE = re.compile(
+    r"(?i)^\s*(?:landed|cleared|closed|complete|discharged(?:-as-derivative)?)\s*$"
+)
+
+
+def normalize_stage07_generated_terminal_accounting(
+    *,
+    generated_burdens: list[str],
+    generated_record_by_id: dict[str, dict[str, Any]],
+    terminal_states: dict[str, str],
+    unresolved_burdens: list[str],
+    executed_act_burdens: set[str],
+) -> tuple[dict[str, str], list[str]]:
+    """Keep generated MRP burdens honest before Stage 07 witness construction."""
+    normalized_states = dict(terminal_states)
+    unresolved = list(unresolved_burdens)
+    for burden in generated_burdens:
+        record = generated_record_by_id.setdefault(
+            burden,
+            {
+                "id": burden,
+                "type": "generated_burden",
+                "generation_depth": 1,
+            },
+        )
+        if burden in executed_act_burdens:
+            record["activation_state"] = "generated_executed"
+            record.setdefault("terminal_state", str(normalized_states.get(burden) or "landed"))
+            continue
+
+        current_state = str(
+            normalized_states.get(burden)
+            or record.get("terminal_state")
+            or ""
+        ).strip()
+        if (
+            not current_state
+            or GENERATED_TERMINAL_CLOSED_RE.fullmatch(current_state)
+            or GENERATED_TERMINAL_LIVE_RE.search(current_state) is None
+        ):
+            current_state = GENERATED_UNEXECUTED_TERMINAL_STATE
+        normalized_states[burden] = current_state
+        record["terminal_state"] = current_state
+        record["activation_state"] = "generated_unexecuted"
+        record.setdefault("reason", GENERATED_UNEXECUTED_REASON)
+        unresolved.append(burden)
+    return normalized_states, ordered_unique(unresolved)
+
+
 def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, str]]:
     if not isinstance(stage05, dict):
         return []
@@ -1625,6 +1681,13 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
     if not final_route:
         final_route = "STOP"
     unresolved_burdens = stage05_unresolved_burdens(stage05)
+    terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
+        generated_burdens=generated_burdens,
+        generated_record_by_id=generated_record_by_id,
+        terminal_states=terminal_states,
+        unresolved_burdens=unresolved_burdens,
+        executed_act_burdens=executed_act_burdens,
+    )
     def unresolved_terminal(burden: str) -> bool:
         return burden in unresolved_burdens or re.search(
             r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
@@ -1793,7 +1856,12 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             f"Target: MRP({public_source}) / Stage 05 terminal MRP source",
             reread_line,
             f"Landed delta: {landed_delta}",
-            "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency.",
+            (
+                "Field diagnostics: del-dot B: non-neutral / unresolved burden remains; "
+                "del-cross kappa: unresolved / generated burden hold."
+                if held_or_partial
+                else "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency."
+            ),
             f"Route-gradient: {route_gradient}",
             matched_route_line(target or source),
             f"Finding: {finding}",
@@ -1937,6 +2005,12 @@ def stage07_act_contract_guidance(
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
         )
+        family = canonical_delta_owner(detail["owner"]) or str(detail["owner"]).strip().upper()
+        if family == "P7":
+            lines.append(
+                "  Procedure boundary: explicitly name the STOP/HOLD/PARTIAL or bounded-stop condition, "
+                "the held/non-load-bearing route boundary, and the reopen condition in this body."
+            )
     if landing_lines:
         lines.extend(["Required standalone landing lines for this ACT slice:", *landing_lines])
     return "\n".join(lines)
@@ -1963,6 +2037,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     if not isinstance(terminal_states, dict):
         terminal_states = {}
     terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
+    generated_record_by_id = {str(record.get("id")): dict(record) for record in generated_records if record.get("id")}
     edges = stage05_dependency_edges(stage05)
     reread_state = stage05.get("reread_state") if isinstance(stage05, dict) else {}
     if not isinstance(reread_state, dict):
@@ -1971,6 +2046,13 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     final_type = str(reread_state.get("route_result_type") or "no_new_resultant").strip().rstrip(".;:,")
     final_route = str(reread_state.get("route") or "STOP").strip().rstrip(".;:,")
     unresolved_burdens = stage05_unresolved_burdens(stage05)
+    terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
+        generated_burdens=generated_burdens,
+        generated_record_by_id=generated_record_by_id,
+        terminal_states=terminal_states,
+        unresolved_burdens=unresolved_burdens,
+        executed_act_burdens=executed_act_burdens,
+    )
     def unresolved_terminal(burden: str) -> bool:
         return burden in unresolved_burdens or re.search(
             r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
@@ -1988,7 +2070,6 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     live_registers = list_field(stage02, "live_registers")
     diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
     burden_registers = stage02_burden_register_types(stage02, burden_floor)
-    generated_record_by_id = {str(record.get("id")): dict(record) for record in generated_records if record.get("id")}
     for edge in edges:
         target = edge["to"]
         if target not in generated_burdens:
@@ -2373,6 +2454,7 @@ def stage07_restorative_response_section_scaffold(previous_stages: list[dict[str
 
 def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str, Any]]) -> str:
     stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
     stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
     stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
     burden_floor = (
@@ -2402,6 +2484,14 @@ def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str
         for record in stage05_generated_burden_records(stage05)
         if record.get("id")
     }
+    terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
+    terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
+        generated_burdens=generated_burdens,
+        generated_record_by_id=generated_records,
+        terminal_states=terminal_states,
+        unresolved_burdens=unresolved_burdens,
+        executed_act_burdens=set(stage04_owner_routes_by_burden(stage04)),
+    )
     n_frame = ""
     if isinstance(stage02, dict):
         n_frame = str(stage02.get("selected_n_frame") or "")
@@ -2454,6 +2544,104 @@ def stage07_closing_formulation_budget_supplement(previous_stages: list[dict[str
     return "\n".join(lines).strip() + "\n"
 
 
+def stage07_mrp_reread_budget_supplement(previous_stages: list[dict[str, Any]]) -> str:
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
+    burden_floor = (
+        list_field(stage02, "burden_floor")
+        or list_field(stage04, "act_burdens")
+        or list_field(stage04, "act_targets")
+        or list_field(stage06, "B_LA")
+    )
+    generated_records = {
+        str(record.get("id")): dict(record)
+        for record in stage05_generated_burden_records(stage05)
+        if record.get("id")
+    }
+    generated_burdens = ordered_unique(
+        [
+            *stage05_generated_burdens(stage05),
+            *[burden for burden in generated_records if burden],
+            *list_field(stage06, "B_MRP"),
+        ]
+    )
+    b_total = ordered_unique([*burden_floor, *generated_burdens])
+    terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
+    if not isinstance(terminal_states, dict):
+        terminal_states = {}
+    terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
+    unresolved_burdens = ordered_unique(
+        [
+            *stage05_unresolved_burdens(stage05),
+            *list_field(stage06, "unresolved_burdens"),
+        ]
+    )
+    terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
+        generated_burdens=generated_burdens,
+        generated_record_by_id=generated_records,
+        terminal_states=terminal_states,
+        unresolved_burdens=unresolved_burdens,
+        executed_act_burdens=set(stage04_owner_routes_by_burden(stage04)),
+    )
+    n_frame = ""
+    if isinstance(stage02, dict):
+        n_frame = str(stage02.get("selected_n_frame") or "")
+    if not n_frame and isinstance(stage06, dict):
+        n_frame = str(stage06.get("selected_n_frame") or "")
+    if not n_frame:
+        n_frame = "the selected noetic structure"
+
+    lines = [
+        "### MRP terminal reconstruction floor",
+        "",
+        f"The reread remains bounded to {n_frame}, the selected burden route, and the matched owner/TTP floor. It does not add burden mass from catalogue presence alone, and it does not erase live pressure merely to make a terminal row look complete.",
+        "",
+        "### Route-state ledger",
+        "",
+    ]
+    if not b_total:
+        lines.append("No concrete burden ledger was available beyond the selected route record.")
+    for burden in b_total:
+        public_burden = public_burden_id(burden)
+        state = str(terminal_states.get(burden) or "landed")
+        if burden in generated_burdens:
+            record = generated_records.get(burden, {})
+            generated_by = str(record.get("generated_by") or "MRP(selected-parent)")
+            route = "HOLD/PARTIAL/RECURSE" if burden in unresolved_burdens else "executed/landed only if ACT evidence exists"
+            lines.append(
+                f"- {public_burden}: generated by {public_graph_value(generated_by)}; state={state}; route={route}. "
+                "It is not a baseline 𝔅_LA burden unless the selected Layer A floor actually contained it."
+            )
+        else:
+            lines.append(
+                f"- {public_burden}: baseline 𝔅_LA burden; state={state}; route bounded by its visible ACT and R(H,Δ) evidence."
+            )
+    held_text = public_burden_list(unresolved_burdens) if unresolved_burdens else "none"
+    generated_text = public_burden_set(generated_burdens)
+    lines.extend(
+        [
+            "",
+            "### Stop/Hold boundary",
+            "",
+            f"𝔅_MRP (B_MRP) = {generated_text}. Unresolved or generated-held burdens: {held_text}.",
+            "A STOP/no_new_resultant row is clean only when the visible MRP block, terminal_states, formal_reread_states, coverage_proof, and Closure/Reconstruction Witness all agree that no generated or held burden remains live.",
+            "When a generated burden is merely present but not selected for ACT execution, it stays inert or held; when it is selected but not executed, the honest route is HOLD/PARTIAL/RECURSE rather than fake Land(B).",
+            "",
+            "### Catalogue availability boundary",
+            "",
+            "Callable owner/TTP availability is not activation. The reread may consult the selected callable catalogue after Land(B), but a catalogue entry adds no ACT row, no owner activation, and no burden node unless live pressure licenses that selected route.",
+            "If a selected owner body is unavailable, the route remains a named HOLD/PARTIAL boundary with OWNER-BODY-NOT-LOADED evidence rather than a landed proof claim.",
+            "",
+            "### Reconstruction agreement",
+            "",
+            "The public MRP block, visible terminal ledger, formal_reread_states row, generated_burdens provenance, dependency graph, and coverage proof must reconstruct the same selected route. If any one of those mirrors remains open, the terminal section must keep the open state visible instead of compressing it into global closure.",
+        ]
+    )
+    return "\n".join(lines).strip() + "\n"
+
+
 def compiled_section_budget_guardrail(
     section_role: str,
     text: str,
@@ -2462,9 +2650,16 @@ def compiled_section_budget_guardrail(
 ) -> tuple[str, dict[str, Any] | None]:
     if section_min_bytes <= 0 or len(text.encode("utf-8")) >= section_min_bytes:
         return text, None
-    if section_role != "closing_formulation" or "### Closure boundary confirmation" in text:
+    supplement = ""
+    marker = ""
+    if section_role == "closing_formulation":
+        marker = "### Closure boundary confirmation"
+        supplement = stage07_closing_formulation_budget_supplement(previous_stages)
+    elif section_role == "mrp_reread_terminal":
+        marker = "### MRP terminal reconstruction floor"
+        supplement = stage07_mrp_reread_budget_supplement(previous_stages)
+    if not marker or marker in text:
         return text, None
-    supplement = stage07_closing_formulation_budget_supplement(previous_stages)
     if not supplement:
         return text, None
     supplemented = text.rstrip() + "\n\n" + supplement
@@ -4987,6 +5182,29 @@ def run_self_test(root: Path) -> int:
     )
     if unchanged_closing_event or "### Closure boundary confirmation" in unchanged_closing:
         raise HarnessError("Self-test Closing Formulation budget guardrail mutated an over-floor section")
+    short_mrp_terminal = "[Mid-Reread Pressure]\nTarget: MRP(¹B)\n"
+    supplemented_mrp, supplemented_mrp_event = compiled_section_budget_guardrail(
+        "mrp_reread_terminal",
+        short_mrp_terminal,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        1600,
+    )
+    if not supplemented_mrp_event:
+        raise HarnessError("Self-test MRP terminal budget guardrail did not record an event")
+    if len(supplemented_mrp.encode("utf-8")) < 1600:
+        raise HarnessError("Self-test MRP terminal budget guardrail remained under the byte floor")
+    for required in (
+        "### MRP terminal reconstruction floor",
+        "### Route-state ledger",
+        "### Stop/Hold boundary",
+        "selected burden route",
+        "matched owner/TTP floor",
+    ):
+        if required not in supplemented_mrp:
+            raise HarnessError(f"Self-test MRP terminal budget guardrail omitted {required}")
+    for forbidden in ("byte budget", "manifest", "compiler", "Khaybar"):
+        if forbidden in supplemented_mrp:
+            raise HarnessError(f"Self-test MRP terminal budget guardrail leaked implementation/case term {forbidden}")
     stage07_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -5379,6 +5597,45 @@ def run_self_test(root: Path) -> int:
     assert_generated_topology("B3", "B6", executed=False, label="mid-held")
     assert_generated_topology("B5", "B6", executed=False, label="terminal-held")
     assert_generated_topology("B3", "B6", executed=True, label="mid-executed")
+    false_closed_generated_stage05 = copy.deepcopy(synthetic_generated_stage05("B3", "B6", executed=False))
+    false_closed_generated_stage05["terminal_states"]["B6"] = "landed"
+    false_closed_generated_stage05["unresolved_burdens"] = []
+    false_closed_generated_stage05["no_new_resultant_proof"] = {
+        "proved": True,
+        "basis": "negative fixture: generated burden was not executed but claimed clean terminal closure",
+        "unresolved_burdens": [],
+    }
+    false_closed_generated_stage05["reread_state"] = {
+        "source_burden": "B6",
+        "route_result_type": "no_new_resultant",
+        "route": "STOP",
+    }
+    false_closed_stages = [
+        generated_topology_stage02,
+        synthetic_stage04(generated_topology_stage02["burden_floor"]),
+        false_closed_generated_stage05,
+        normalized_stage06,
+    ]
+    false_closed_mrp_text = stage07_mrp_reread_section_scaffold(false_closed_stages)
+    false_closed_witness_text = stage07_field_witness_section_scaffold(false_closed_stages)
+    false_closed_payload = first_json_object_from_text(false_closed_witness_text)
+    if false_closed_payload is None:
+        raise HarnessError("Self-test generated false-closed canary did not emit field_witness JSON")
+    if false_closed_payload.get("terminal_states", {}).get("B6") == "landed":
+        raise HarnessError("Self-test generated false-closed canary left unexecuted B_MRP as landed")
+    if false_closed_payload.get("coverage_proof", {}).get("coverage_complete") is not False:
+        raise HarnessError("Self-test generated false-closed canary claimed coverage_complete=true")
+    if "HOLD(⁶B)" not in false_closed_mrp_text or "coverage_complete=false" not in false_closed_mrp_text:
+        raise HarnessError("Self-test generated false-closed canary did not render public HOLD/PARTIAL accounting")
+    false_closed_states = false_closed_payload.get("formal_reread_states", [])
+    if not any(
+        isinstance(row, dict)
+        and row.get("source_burden") == "B6"
+        and row.get("route_result_type") == "hold_partial"
+        and row.get("route") == "HOLD"
+        for row in false_closed_states
+    ):
+        raise HarnessError("Self-test generated false-closed canary did not normalize terminal STOP to HOLD")
     drifted_mrp_text = (
         "[Mid-Reread Pressure]\n"
         "Target: MRP(¹B)\n"
