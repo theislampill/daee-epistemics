@@ -105,7 +105,10 @@
         {
           "burden_id": "B1",
           "terminal_state": "landed",
-          "basis": "ACT row Land(B1)+ landed the routed burden."
+          "basis": [
+            "ACT row Land(B1)+ landed the routed burden.",
+            "No generated burden or dependency edge remains live after reread."
+          ]
         }
       ]
     },

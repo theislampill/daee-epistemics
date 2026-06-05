@@ -33,6 +33,7 @@ from delta_result_vocabulary import (
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
+from stage05_basis_contract import normalize_terminal_detail_basis
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -1312,8 +1313,11 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
                     f"stage-05 terminal_state_details[{index}].state must match terminal_states"
                 )
             basis = detail.get("basis")
-            if basis is not None and (not isinstance(basis, str) or not basis.strip()):
-                raise HarnessError(f"stage-05 terminal_state_details[{index}].basis must be non-empty when present")
+            normalized_basis, basis_error = normalize_terminal_detail_basis(basis)
+            if basis_error:
+                raise HarnessError(f"stage-05 terminal_state_details[{index}].basis {basis_error}")
+            if basis is not None:
+                detail["basis"] = normalized_basis
 
     edges = stage.get("dependency_graph_edges")
     if edges is None:
@@ -6576,7 +6580,10 @@ def run_self_test(root: Path) -> int:
                 {
                     "burden_id": "B1",
                     "terminal_state": "landed",
-                    "basis": "Live-style detail row; normalizer must preserve controlled terminal state.",
+                    "basis": [
+                        "Live-style detail row; normalizer must preserve controlled terminal state.",
+                        "List basis preserves multiple evidence clauses without becoming a delta_result.",
+                    ],
                 }
             ],
         },
@@ -6584,6 +6591,9 @@ def run_self_test(root: Path) -> int:
     terminal_detail = normalized_stage05.get("terminal_state_details", [{}])[0]
     if terminal_detail.get("state") != "landed":
         raise HarnessError("Self-test failed to normalize Stage 05 terminal_state detail into state")
+    terminal_basis = terminal_detail.get("basis")
+    if not isinstance(terminal_basis, list) or len(terminal_basis) != 2:
+        raise HarnessError("Self-test failed to preserve Stage 05 terminal_state detail list basis")
     try:
         normalized_stage(
             "stage-05-mrp-reread-terminal-state",
@@ -6623,6 +6633,29 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted delta/result detail as a Stage 05 terminal_state")
+    try:
+        normalized_stage(
+            "stage-05-mrp-reread-terminal-state",
+            {
+                "id": "stage-05-mrp-reread-terminal-state",
+                "status": "pass",
+                "terminal_states": {"B1": "landed"},
+                "dependency_graph_edges": [],
+                "no_new_resultant_proof": True,
+                "terminal_state_details": [
+                    {
+                        "burden_id": "B1",
+                        "state": "landed",
+                        "basis": [],
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "basis must be a non-empty string or non-empty list" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted empty Stage 05 terminal_state detail basis list")
     stage05_local_record = base_record(
         "self-test-a9-science-source-stage05",
         "staged-current-skill-stage-local-smoke",

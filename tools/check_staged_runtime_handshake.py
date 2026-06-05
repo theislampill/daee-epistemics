@@ -25,6 +25,7 @@ from delta_result_vocabulary import (
     owner_operation_vocabulary_errors,
     source_formal_delta_operation_errors,
 )
+from stage05_basis_contract import normalize_terminal_detail_basis
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
 
@@ -1355,8 +1356,9 @@ def stage05_mrp_errors(
                 elif isinstance(terminal_states, dict) and terminal_states.get(burden_id) != state:
                     errors.append(f"{label}: stage-05 terminal_state_details[{index}].state must match terminal_states")
                 basis = detail.get("basis")
-                if basis is not None and (not isinstance(basis, str) or not basis.strip()):
-                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].basis must be non-empty when present")
+                _normalized_basis, basis_error = normalize_terminal_detail_basis(basis)
+                if basis_error:
+                    errors.append(f"{label}: stage-05 terminal_state_details[{index}].basis {basis_error}")
     return errors
 
 
