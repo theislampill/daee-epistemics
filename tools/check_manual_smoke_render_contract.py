@@ -223,8 +223,10 @@ SOURCE_ORDER_REPAIR_EVIDENCE_RE = re.compile(
     r"source chain|source function|testimony source|report source)\b"
 )
 SOURCE_REPAIR_NEGATED_EVIDENCE_RE = re.compile(
-    r"(?is)\b(?:does not (?:sort|distinguish|perform)|do not (?:sort|distinguish|perform)|"
-    r"never (?:sorts?|distinguishes?|performs?)|"
+    r"(?is)\b(?:does not (?:sort|distinguish)|do not (?:sort|distinguish)|"
+    r"does not perform (?:source|authority|ordering|repair|transition|operation|work)|"
+    r"do not perform (?:source|authority|ordering|repair|transition|operation|work)|"
+    r"never (?:sorts?|distinguishes?)|never performs (?:source|authority|ordering|repair|transition|operation|work)|"
     r"not .*sort|not .*distinguish|only repeats?|merely repeats?|"
     r"generic repair language|label(?:s)? only|owner labels?)\b"
 )
