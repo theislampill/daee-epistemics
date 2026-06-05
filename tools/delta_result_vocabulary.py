@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -90,6 +91,7 @@ SOURCE_FORMAL_REPAIR_DELTA_OPERATIONS = {
     "authority-order-repaired": "authority-order-repair",
     "source-order-repaired": "source-order-repair",
 }
+PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS = ("proof-text", "proof-stack", "backread")
 
 
 def canonical_delta_owner(owner: str) -> str:
@@ -116,6 +118,42 @@ def delta_result_vocabulary_errors(label: str, owner: str, delta_result: str) ->
             f"for {family}; allowed: {allowed}"
         ]
     return []
+
+
+def pressure_key(value: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value or "").lower()).strip("-")
+
+
+def source_pressure_delta_errors(label: str, owner: str, pressure: str, delta_result: str) -> list[str]:
+    family = canonical_delta_owner(owner)
+    if family != "SOURCE":
+        return []
+    pressure_token = pressure_key(pressure)
+    has_hidden_support = (
+        "hidden-support" in pressure_token
+        or ("hidden" in pressure_token and "support" in pressure_token)
+    )
+    has_source_recoil = any(token in pressure_token for token in ("recoil", "future-support"))
+    if not (has_hidden_support or has_source_recoil):
+        return []
+
+    token = str(delta_result or "").strip()
+    is_proof_text_hidden_support = has_hidden_support and any(
+        marker in pressure_token for marker in PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS
+    )
+    if is_proof_text_hidden_support:
+        if token == "proof-text-hidden-support-blocked":
+            return []
+        return [
+            f"{label}: proof-text/proof-stack hidden-support pressure must use "
+            "delta_result token 'proof-text-hidden-support-blocked'"
+        ]
+    if token == "hidden-support-blocked":
+        return []
+    return [
+        f"{label}: source-order recoil or hidden-support pressure must use "
+        "delta_result token 'hidden-support-blocked'"
+    ]
 
 
 def owner_operation_vocabulary_errors(label: str, owner: str, operation: str) -> list[str]:

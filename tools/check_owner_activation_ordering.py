@@ -27,7 +27,7 @@ from check_mrp_generated_burden import (
     graph_submove_id,
     strict_owner_family,
 )
-from delta_result_vocabulary import DELTA_RESULT_VOCABULARY
+from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, source_pressure_delta_errors
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -255,33 +255,7 @@ def delta_result_vocabulary_errors(label: str, owner: str, delta: str) -> list[s
 
 
 def source_recoil_delta_errors(label: str, owner: str, pressure: str, delta: str) -> list[str]:
-    if owner != "SOURCE":
-        return []
-    pressure_key = canonical_text(pressure)
-    has_hidden_support = (
-        "hidden-support" in pressure_key
-        or ("hidden" in pressure_key and "support" in pressure_key)
-    )
-    has_source_recoil = any(token in pressure_key for token in ("recoil", "future-support"))
-    if not (has_hidden_support or has_source_recoil):
-        return []
-    suffix = delta_result_suffix(delta)
-    is_proof_text_hidden_support = has_hidden_support and any(
-        token in pressure_key for token in ("proof-text", "proof-stack", "backread")
-    )
-    if is_proof_text_hidden_support:
-        if suffix == "proof-text-hidden-support-blocked":
-            return []
-        return [
-            f"{label}: proof-text/proof-stack hidden-support pressure must use "
-            "delta_result token 'proof-text-hidden-support-blocked'"
-        ]
-    if suffix == "hidden-support-blocked":
-        return []
-    return [
-        f"{label}: source-order recoil or hidden-support pressure must use "
-        "delta_result token 'hidden-support-blocked'"
-    ]
+    return source_pressure_delta_errors(label, owner, pressure, delta_result_suffix(delta))
 
 
 def digest(value: Any) -> str:

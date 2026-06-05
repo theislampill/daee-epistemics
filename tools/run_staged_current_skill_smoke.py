@@ -31,6 +31,7 @@ from delta_result_vocabulary import (
     delta_result_vocabulary_errors,
     owner_operation_vocabulary_errors,
     source_formal_delta_operation_errors,
+    source_pressure_delta_errors,
 )
 
 
@@ -668,6 +669,9 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, raw_result)
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
+    pressure_errors = source_pressure_delta_errors("delta_result", owner, pressure, raw_result)
+    if pressure_errors:
+        raise HarnessError("; ".join(pressure_errors))
     canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
     if not raw_result or canonical == str(raw_result).strip():
         return item, None
@@ -746,6 +750,14 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     )
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
+    pressure_errors = source_pressure_delta_errors(
+        "Stage 04 ACT row",
+        match.group("owner"),
+        match.group("pressure"),
+        raw_result,
+    )
+    if pressure_errors:
+        raise HarnessError("; ".join(pressure_errors))
     canonical = canonical_delta_result_for_owner(
         match.group("owner"),
         match.group("operation"),
@@ -3549,6 +3561,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "`source-order-repair`. Broad `source-order`/`sort` operations may "
                 "use other SOURCE deltas, but they do not prove those compact formal transitions."
             )
+            lines.append(
+                "- SOURCE pressure-to-delta rule: pressure naming hidden support or "
+                "source-order recoil must use `hidden-support-blocked`; proof-text, "
+                "proof-stack, or backread hidden-support pressure must use "
+                "`proof-text-hidden-support-blocked`. Do not use `authority-order-separated` "
+                "or `source-order-repaired` to claim hidden-support blocking."
+            )
     return "\n".join(lines)
 
 
@@ -6138,6 +6157,31 @@ def run_self_test(root: Path) -> int:
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
         raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    invalid_source_hidden_support_delta_row = (
+        "⟦ACT ¹B₃[authority-order-repair.sort] :: "
+        "π=hidden-support-and-source-function-pressure :: "
+        "body_ref=¹B₃ :: Δ=Δ¹B:authority-order-separated :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_hidden_support_delta_row],
+                "act_row_details": self_test_act_row_details(
+                    [invalid_source_hidden_support_delta_row],
+                    {"¹B₃": "σ"},
+                ),
+            },
+        )
+    except HarnessError as exc:
+        if "hidden-support pressure must use delta_result token 'hidden-support-blocked'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted SOURCE hidden-support pressure with authority-order delta")
     invalid_source_operation_row = (
         "⟦ACT ¹B₁[source-status-repair.hidden-support-block] :: "
         "π=source-order-recoil-hidden-support :: "
@@ -6974,6 +7018,38 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted Stage 06 delta_result laundering")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₃"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₃"],
+                "normalized_activation_record": {
+                    "n_frame": "selected-source-hidden-support-repair",
+                    "live_registers": ["sigma", "xi"],
+                    "burden_floor": ["B1"],
+                    "per_burden": [
+                        {
+                            "burden_id": "B1",
+                            "owner_id": "authority-order-repair",
+                            "operation": "sort",
+                            "pressure": "hidden-support-and-source-function-pressure",
+                            "delta_result": "authority-order-separated",
+                            "terminal_state": "landed",
+                            "generation_depth": 0,
+                        }
+                    ],
+                },
+            },
+        )
+    except HarnessError as exc:
+        if "hidden-support pressure must use delta_result token 'hidden-support-blocked'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 06 NAR hidden-support pressure with authority-order delta")
     stage07_layer_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
