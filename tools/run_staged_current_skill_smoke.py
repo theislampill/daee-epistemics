@@ -30,6 +30,7 @@ from delta_result_vocabulary import (
     canonical_delta_owner,
     delta_result_vocabulary_errors,
     owner_operation_vocabulary_errors,
+    source_formal_delta_operation_errors,
 )
 
 
@@ -638,6 +639,9 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     if not raw_result and ":" in delta_value:
         raw_result = delta_value.split(":", 1)[1]
     require_delta_result_vocabulary("delta_result", owner, raw_result)
+    pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, raw_result)
+    if pair_errors:
+        raise HarnessError("; ".join(pair_errors))
     canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
     if not raw_result or canonical == str(raw_result).strip():
         return item, None
@@ -708,6 +712,14 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
         raise HarnessError(operation_errors[0])
     raw_result = match.group("delta_result").strip()
     require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), raw_result)
+    pair_errors = source_formal_delta_operation_errors(
+        "Stage 04 ACT row",
+        match.group("owner"),
+        match.group("operation"),
+        raw_result,
+    )
+    if pair_errors:
+        raise HarnessError("; ".join(pair_errors))
     canonical = canonical_delta_result_for_owner(
         match.group("owner"),
         match.group("operation"),
@@ -3431,6 +3443,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             lines.append(f"- {family} operations: {', '.join(sorted(operations))}")
         tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
         lines.append(f"- {family}: {tokens}")
+        if family == "SOURCE":
+            lines.append(
+                "- SOURCE formal repair pairing: `authority-order-repaired` requires "
+                "`authority-order-repair`; `source-order-repaired` requires "
+                "`source-order-repair`. Broad `source-order`/`sort` operations may "
+                "use other SOURCE deltas, but they do not prove those compact formal transitions."
+            )
     return "\n".join(lines)
 
 
@@ -6026,6 +6045,48 @@ def run_self_test(root: Path) -> int:
             "act_row_details": self_test_act_row_details([source_family_authority_row], {"¹B₁": "σ"}),
         },
     )
+    invalid_source_formal_source_pair_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=source-lineage-quotation-order :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_formal_source_pair_row],
+            },
+        )
+    except HarnessError as exc:
+        if "requires operation 'source-order-repair'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted source-order-repaired without source-order-repair operation")
+    invalid_source_formal_authority_pair_row = (
+        "⟦ACT ¹B₁[authority-order-repair.source-order] :: "
+        "π=authority-rank-tribunal-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_formal_authority_pair_row],
+            },
+        )
+    except HarnessError as exc:
+        if "requires operation 'authority-order-repair'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted authority-order-repaired without authority-order-repair operation")
     do_second_loop_rows = [
         "⟦ACT ¹B₁[do-second-loop.accountability-hujjah-compression] :: π=accountability-hujjah-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:accountability-hujjah-narrowed :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[do-second-loop.coercive-guidance-demand] :: π=coercive-guidance-demand :: body_ref=¹B₂ :: Δ=Δ¹B:coercive-guidance-demand-bounded :: Land(¹B)+⟧",
@@ -6460,7 +6521,7 @@ def run_self_test(root: Path) -> int:
             {
                 "burden_id": "B1",
                 "owner_id": "source-status-repair",
-                "operation": "source-order",
+                "operation": "source-order-repair",
                 "delta_result": "source-order-repaired",
                 "terminal_state": "landed",
                 "generation_depth": 0,
@@ -6479,7 +6540,7 @@ def run_self_test(root: Path) -> int:
                     "body_ref": "¹B₁",
                     "burden_id": "B1",
                     "owner_id": "source-status-repair",
-                    "operation": "source-order",
+                    "operation": "source-order-repair",
                     "delta_result": "source-order-repaired",
                     "terminal_state": "landed",
                 },
@@ -6524,7 +6585,7 @@ def run_self_test(root: Path) -> int:
                         {
                             "burden_id": "B1",
                             "owner_id": "source-status-repair",
-                            "operation": "source-order",
+                            "operation": "source-order-repair",
                             "delta": ["source-order-repaired"],
                             "terminal_state": "landed",
                         }
@@ -7681,7 +7742,7 @@ def run_self_test(root: Path) -> int:
                 "per_burden": {
                     "B1": {
                         "owner_id": "source-status-repair",
-                        "operation": "source-order",
+                        "operation": "source-order-repair",
                         "delta_result": "source-order-repaired",
                         "terminal_state": "landed",
                         "generation_depth": 0,
@@ -7713,7 +7774,7 @@ def run_self_test(root: Path) -> int:
                     {
                         "burden_id": "B1",
                         "owner_id": "source-status-repair",
-                        "operation": "source-order",
+                        "operation": "source-order-repair",
                         "delta_result": "source-order-repaired",
                         "terminal_state": "landed",
                         "generation_depth": 0,

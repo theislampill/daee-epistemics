@@ -340,13 +340,21 @@ Invocation-surface invariants retained here:
   `doubt-vs-skepticism`: `doubt-distinguished-from-skeptical-methodology`,
   `burden-inverted`, `evidence-demand-tribunal-exposed`,
   `doubt-method-separated-from-sincere-question`.
-  When using a canonical token that ends in `repaired`, especially
-  `source-status-repair.source-order` with `source-order-repaired`, the
-  dereferenced body must still state the burden-local effect with a concrete
-  state-change verb such as blocked, bounded, separated, stabilized, or
-  invalidated. Good shape: `Result/state-change: source order repaired;
-  attention veto blocked and source authority separated from the imported
-  tribunal.`
+  Compact SOURCE tokens ending in `repaired` are projections of formal
+  owner-operation transitions, not proof by token presence. Use
+  `source-order-repaired` only with the controlled SOURCE operation
+  `source-order-repair` over source lineage, quotation order, inherited-claim
+  order, source priority, or evidential dependency. Use
+  `authority-order-repaired` only with the controlled SOURCE operation
+  `authority-order-repair` over authority rank, tribunal order, source
+  sovereignty, or source-judging-office pressure. Broader
+  `source-status-repair.source-order` / `authority-order-repair.sort` rows may
+  still use precise non-generic SOURCE deltas such as `hidden-support-blocked`,
+  `proof-text-sorted`, `authority-order-separated`, or
+  `hidden-authority-source-status-bounded`, but they do not license the two
+  compact formal repair deltas. In all cases the dereferenced body must state
+  the burden-local effect with a concrete state-change verb such as blocked,
+  bounded, separated, stabilized, or invalidated.
 - Generated `B_MRP` owner bodies must be at least as operation-shaped as
   baseline bodies. For a generated boundary/proof-carousel burden, each
   submove must name the exact generated pressure, perform a base action, and

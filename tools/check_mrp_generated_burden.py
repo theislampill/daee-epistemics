@@ -45,6 +45,7 @@ from check_manual_smoke_render_contract import (
     submove_operation_body,
     target_pressure_identifiable,
 )
+from delta_result_vocabulary import source_formal_delta_operation_errors
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -1184,6 +1185,14 @@ def source_owned_operation_errors(record: ActRecord, family: str, block: str) ->
             f"ACT {record.submove_ref} operation {operation!r} is not performed in the dereferenced body"
         )
     if family == "SOURCE":
+        errors.extend(
+            source_formal_delta_operation_errors(
+                f"ACT {record.submove_ref}",
+                record.owner,
+                record.operation,
+                record.delta_result,
+            )
+        )
         result = field_body_any(block, ("Result", "Result/state-change"))
         contribution = contribution_body(block)
         operation_body = submove_operation_body(block)

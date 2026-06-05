@@ -86,6 +86,10 @@ def load_owner_operation_vocabulary(
 
 
 OWNER_OPERATION_VOCABULARY = load_owner_operation_vocabulary()
+SOURCE_FORMAL_REPAIR_DELTA_OPERATIONS = {
+    "authority-order-repaired": "authority-order-repair",
+    "source-order-repaired": "source-order-repair",
+}
 
 
 def canonical_delta_owner(owner: str) -> str:
@@ -131,3 +135,26 @@ def owner_operation_vocabulary_errors(label: str, owner: str, operation: str) ->
             f"for {family}; allowed: {allowed}"
         ]
     return []
+
+
+def source_formal_delta_operation_errors(
+    label: str,
+    owner: str,
+    operation: str,
+    delta_result: str,
+) -> list[str]:
+    family = canonical_delta_owner(owner)
+    if family != "SOURCE":
+        return []
+    delta_token = str(delta_result or "").strip()
+    expected_operation = SOURCE_FORMAL_REPAIR_DELTA_OPERATIONS.get(delta_token)
+    if not expected_operation:
+        return []
+    operation_token = str(operation or "").strip()
+    if operation_token == expected_operation:
+        return []
+    return [
+        f"{label}: SOURCE delta_result {delta_token!r} requires operation "
+        f"{expected_operation!r}; compact SOURCE repair deltas are typed transition "
+        "projections, not proof by generic operation or token presence"
+    ]

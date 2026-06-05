@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
+from delta_result_vocabulary import source_formal_delta_operation_errors
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
 
@@ -169,6 +170,10 @@ REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
+ACT_OWNER_OPERATION_DELTA_RE = re.compile(
+    r"^⟦ACT\s+[^\[]+\[(?P<owner>[^.\]]+)\.(?P<operation>[^\]]+)\]"
+    r".*?\bΔ=[^:\s]+:(?P<delta_result>[^:\s⟧]+)"
+)
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 MRP_GENERATED_BY_RE = re.compile(r"^MRP\((B[1-9][0-9]*)\)$")
 
@@ -658,6 +663,7 @@ def nar_object_errors(
                 value = row.get(key)
                 if value is not None and (not isinstance(value, str) or not value):
                     errors.append(f"{label}: stage-06 NAR per_burden[{index}].{key} must be a non-empty string when present")
+            errors.extend(object_source_formal_errors(f"{label}: stage-06 NAR per_burden[{index}]", row))
             if "generation_depth" in row and not isinstance(row.get("generation_depth"), int):
                 errors.append(f"{label}: stage-06 NAR per_burden[{index}].generation_depth must be an integer when present")
     missing_nar = sorted(nar_burdens - row_burdens)
@@ -736,6 +742,7 @@ def stage06_witness_nar_errors(
             value = detail.get(key)
             if value is not None and (not isinstance(value, str) or not value):
                 errors.append(f"{label}: stage-06 owner_activation_details[{index}].{key} must be a non-empty string when present")
+        errors.extend(object_source_formal_errors(f"{label}: stage-06 owner_activation_details[{index}]", detail))
         terminal_state = detail.get("terminal_state")
         if terminal_state is not None and terminal_state not in TERMINAL_STATE_VALUES:
             errors.append(f"{label}: stage-06 owner_activation_details[{index}].terminal_state must use a controlled terminal state")
@@ -1285,6 +1292,27 @@ def act_owner(row: str) -> str | None:
     return match.group(1) if match else None
 
 
+def act_row_source_formal_errors(label: str, row: str) -> list[str]:
+    match = ACT_OWNER_OPERATION_DELTA_RE.match(row.strip())
+    if not match:
+        return []
+    return source_formal_delta_operation_errors(
+        label,
+        match.group("owner"),
+        match.group("operation"),
+        match.group("delta_result"),
+    )
+
+
+def object_source_formal_errors(label: str, item: dict[str, Any]) -> list[str]:
+    owner = item.get("owner_id") or item.get("owner")
+    operation = item.get("operation")
+    delta_result = item.get("delta_result")
+    if owner is None or operation is None or delta_result is None:
+        return []
+    return source_formal_delta_operation_errors(label, str(owner), str(operation), str(delta_result))
+
+
 def stage04_act_errors(
     label: str,
     stage03: dict[str, Any] | None,
@@ -1350,6 +1378,7 @@ def stage04_act_errors(
             errors.append(f"{row_label} must contain body_ref=")
         if "Δ=" not in stripped:
             errors.append(f"{row_label} must contain Δ=")
+        errors.extend(act_row_source_formal_errors(row_label, stripped))
         if "Land(" not in stripped:
             errors.append(f"{row_label} must contain Land(")
         if not stripped.endswith("⟧"):
@@ -1405,6 +1434,11 @@ def stage04_act_errors(
                         and owner_id not in owners_by_burden[burden_id]
                     ):
                         errors.append(f"{detail_label}.owner_id must be backed by stage-03 owner_routes for {burden_id}")
+                for key in ("operation", "delta_result"):
+                    value = detail.get(key)
+                    if value is not None and (not isinstance(value, str) or not value):
+                        errors.append(f"{detail_label}.{key} must be a string when present")
+                errors.extend(object_source_formal_errors(detail_label, detail))
                 act_row_value = detail.get("act_row")
                 if act_row_value is not None:
                     if not isinstance(act_row_value, str) or not act_row_value:

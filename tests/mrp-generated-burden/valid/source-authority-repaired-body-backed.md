@@ -8,15 +8,15 @@ daee-epistemics - NOETIC FIELD EXECUTION
 
 ## Burden 1 / ¹B: Source authority ordering pressure
 
-Matched owner/TTP route: [authority-order-repair]
+Matched owner/TTP route: [authority-order-repair.authority-order-repair]
 - ACT records:
-  ⟦ACT ¹B₁[authority-order-repair.source-order] :: π=source-worldview-authority-order :: body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧
+  ⟦ACT ¹B₁[authority-order-repair.authority-order-repair] :: π=source-worldview-authority-order :: body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧
 
 Layer B - Governed Operation Body
 
-¹B₁[authority-order-repair] - source-order over source-worldview-authority-order
+¹B₁[authority-order-repair] - authority-order-repair over source-worldview-authority-order
 - Target: source-worldview-authority-order.
-- Operation: source-order sorts which source has judging authority over the live claim.
+- Operation: authority-order-repair sorts which source has judging authority over the live claim.
 - Result/state-change: authority-order-repaired. Revelation remains the source that judges the claim, while the rival worldview source is bounded as evidence of the objection's frame, not as a higher court over revelation.
 - Contribution-to-Land(¹B): authority-order-repaired contributes to Land(¹B) because the hidden tribunal is separated from the source-status question and can no longer certify or veto the revealed source.
 
@@ -50,7 +50,7 @@ Route: STOP
 - MRP resultants:
   MRP(B1): type=no_new_resultant; finding=stable; graph=none; route=STOP
 - Owner activations:
-  ⟦ACT ¹B₁[authority-order-repair.source-order] :: π=source-worldview-authority-order :: body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧
+  ⟦ACT ¹B₁[authority-order-repair.authority-order-repair] :: π=source-worldview-authority-order :: body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧
 
 ## field_witness
 ```json
@@ -59,7 +59,7 @@ Route: STOP
   "B_MRP": [],
   "B_total": ["B1"],
   "owner_activations": [
-    {"source": "B1", "target": "B1", "owner": "authority-order-repair", "operation": "source-order", "pressure": "source-worldview-authority-order", "body_ref": "¹B₁", "delta": "Δ¹B:authority-order-repaired", "land": "Land(¹B)+"}
+    {"source": "B1", "target": "B1", "owner": "authority-order-repair", "operation": "authority-order-repair", "pressure": "source-worldview-authority-order", "body_ref": "¹B₁", "delta": "Δ¹B:authority-order-repaired", "land": "Land(¹B)+"}
   ],
   "formal_reread_states": [
     {
