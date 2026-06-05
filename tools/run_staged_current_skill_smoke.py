@@ -291,7 +291,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`{\"proved\": true, \"basis\": \"...\", \"unresolved_burdens\": []}`. "
             "If a generated/MRP burden exists, list it under `generated_burdens` and "
             "include it in `terminal_states`. If any burden remains unresolved, return "
-            "`status` held or partial, not pass, and expose `unresolved_burdens`."
+            "`status` held or partial, not pass, and expose `unresolved_burdens`. "
+            "If `terminal_state_details` is present, each row must name `burden_id` "
+            "and a controlled `state` matching `terminal_states[burden_id]`; "
+            "`terminal_state` may be normalized to `state` only when the two values "
+            "are identical and controlled."
         ),
     },
     "stage-06-field-witness-nar": {
@@ -1265,6 +1269,39 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
                 f"({allowed}); got {burden_id}={terminal_state!r}. Put delta/result detail "
                 "in ACT/NAR/witness detail fields, not in terminal_states."
             )
+
+    details = stage.get("terminal_state_details")
+    if details is not None:
+        if not isinstance(details, list):
+            raise HarnessError("stage-05 terminal_state_details must be a list when present")
+        for index, detail in enumerate(details):
+            if not isinstance(detail, dict):
+                raise HarnessError(f"stage-05 terminal_state_details[{index}] must be an object")
+            burden_id = detail.get("burden_id")
+            if not isinstance(burden_id, str) or burden_id not in terminal_states:
+                raise HarnessError(
+                    f"stage-05 terminal_state_details[{index}].burden_id must name a terminal burden"
+                )
+            state = detail.get("state")
+            terminal_state = detail.get("terminal_state")
+            if state is None and terminal_state is not None:
+                state = terminal_state
+                detail["state"] = terminal_state
+            elif terminal_state is not None and state != terminal_state:
+                raise HarnessError(
+                    f"stage-05 terminal_state_details[{index}].state and .terminal_state must match"
+                )
+            if not isinstance(state, str) or state not in CONTROLLED_STAGE05_TERMINAL_STATES:
+                raise HarnessError(
+                    f"stage-05 terminal_state_details[{index}].state must use a controlled terminal state"
+                )
+            if terminal_states.get(burden_id) != state:
+                raise HarnessError(
+                    f"stage-05 terminal_state_details[{index}].state must match terminal_states"
+                )
+            basis = detail.get("basis")
+            if basis is not None and (not isinstance(basis, str) or not basis.strip()):
+                raise HarnessError(f"stage-05 terminal_state_details[{index}].basis must be non-empty when present")
 
     edges = stage.get("dependency_graph_edges")
     if edges is None:
@@ -6491,8 +6528,37 @@ def run_self_test(root: Path) -> int:
                 "basis": "Stage 04 ACT burden B1 landed; reread produced no generated burden.",
                 "unresolved_burdens": [],
             },
+            "terminal_state_details": [
+                {
+                    "burden_id": "B1",
+                    "terminal_state": "landed",
+                    "basis": "Live-style detail row; normalizer must preserve controlled terminal state.",
+                }
+            ],
         },
     )
+    terminal_detail = normalized_stage05.get("terminal_state_details", [{}])[0]
+    if terminal_detail.get("state") != "landed":
+        raise HarnessError("Self-test failed to normalize Stage 05 terminal_state detail into state")
+    try:
+        normalized_stage(
+            "stage-05-mrp-reread-terminal-state",
+            {
+                "id": "stage-05-mrp-reread-terminal-state",
+                "status": "pass",
+                "terminal_states": {"B1": "landed"},
+                "dependency_graph_edges": [],
+                "no_new_resultant_proof": True,
+                "terminal_state_details": [
+                    {"burden_id": "B1", "state": "held", "terminal_state": "landed"}
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "state and .terminal_state must match" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted conflicting Stage 05 terminal state detail dialect")
     try:
         normalized_stage(
             "stage-05-mrp-reread-terminal-state",

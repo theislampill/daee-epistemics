@@ -1341,6 +1341,13 @@ def stage05_mrp_errors(
                     continue
                 burden_id = detail.get("burden_id")
                 state = detail.get("state")
+                terminal_state = detail.get("terminal_state")
+                if state is None:
+                    state = terminal_state
+                elif terminal_state is not None and terminal_state != state:
+                    errors.append(
+                        f"{label}: stage-05 terminal_state_details[{index}].state and .terminal_state must match"
+                    )
                 if not isinstance(burden_id, str) or burden_id not in terminal_burdens:
                     errors.append(f"{label}: stage-05 terminal_state_details[{index}].burden_id must name a terminal burden")
                 if not isinstance(state, str) or state not in TERMINAL_STATE_VALUES:
