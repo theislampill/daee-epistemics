@@ -52,7 +52,7 @@
       "act_burdens": ["1B / B1 source-order diagnostic burden"],
       "act_body_refs": ["B1_1"],
       "act_rows": [
-        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧"
       ]
     },
     {

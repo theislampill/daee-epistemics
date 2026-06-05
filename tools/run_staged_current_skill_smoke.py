@@ -122,6 +122,10 @@ OWNER_REGISTER_AXIS_FLOORS = {
     "source-status-repair": {"σ"},
     "authority-order-repair": {"σ", "ξ"},
     "M9": {"μ", "ξ", "Ω"},
+    "PATTERN_PROFILE": {"μ", "κ", "σ", "ξ"},
+    "pattern-profiling": {"μ", "κ", "σ", "ξ"},
+    "V2": {"ξ", "κ", "μ", "Ω"},
+    "V2-reconstituting-reason": {"ξ", "κ", "μ", "Ω"},
     "proof-method-audit": {"σ", "ξ", "μ", "κ"},
     "do-second-loop": {"♥", "ξ", "Ω", "κ", "σ"},
     "P3-reason-revelation-tension": {"Ω", "κ", "σ"},
@@ -216,9 +220,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "owner-order evidence may be placed in optional detail fields. Route/context "
             "labels, umbrella family labels, and case-library labels are route context, "
             "not activation proof; later ACT rows must use a callable selected owner/TTP "
-            "floor. If a selected route has no loaded callable owner body, preserve it "
-            "as HOLD/PARTIAL with OWNER-BODY-NOT-LOADED instead of converting the route "
-            "label into a fake ACT owner."
+            "floor. A route is executable for Stage 04 only when the selected owner "
+            "family has source-owned operation and delta_result vocabulary, or when the "
+            "`owner_routes` row names a controlled `owner.operation` pair. If a selected "
+            "route has no loaded callable owner body, no controlled operation, or no "
+            "owner-local delta_result vocabulary, preserve it as HOLD/PARTIAL with "
+            "OWNER-BODY-NOT-LOADED / controlled-vocabulary-gap evidence instead of "
+            "converting the route label into a fake ACT owner."
         ),
     },
     "stage-04-burden-execution-act": {
@@ -259,9 +267,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
             "route/context umbrella label, case-library label, noetic-frame label, or "
-            "code lookup. When the selected owner body is unavailable or not loaded, "
-            "emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED handoff evidence instead of "
-            "claiming `Land(...)`."
+            "code lookup. When the selected owner body is unavailable/not loaded, or "
+            "when the selected owner has no controlled Stage 04 operation/delta_result "
+            "vocabulary, emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED / "
+            "controlled-vocabulary-gap handoff evidence instead of claiming `Land(...)`."
         ),
     },
     "stage-05-mrp-reread-terminal-state": {
@@ -3422,6 +3431,19 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
             raise HarnessError("stage-05 no_new_resultant_proof proved=true conflicts with unresolved_burdens")
 
 
+def split_route_owner_operation(owner: str) -> tuple[str, str]:
+    token = str(owner or "").strip().strip("[]")
+    if not token:
+        return "", ""
+    if canonical_delta_owner(token):
+        return token, ""
+    if "." in token:
+        owner_part, operation_part = token.split(".", 1)
+        if owner_part.strip() and operation_part.strip():
+            return owner_part.strip(), operation_part.strip()
+    return token, ""
+
+
 def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage03 = stage_by_id(previous_stages, "stage-03-routing-owner-gate")
     if not isinstance(stage03, dict):
@@ -3440,15 +3462,24 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         owner = non_empty_string(detail.get("owner_id") or detail.get("owner"))
         if owner:
             owners.append(owner)
+    route_tokens = [split_route_owner_operation(owner)[0] for owner in owners]
     families = ordered_unique(
         [
             family
-            for owner in owners
+            for owner in route_tokens
             for family in [canonical_delta_owner(owner)]
             if family and family in DELTA_RESULT_VOCABULARY
         ]
     )
-    if not families:
+    unmapped = ordered_unique(
+        [
+            owner
+            for owner in owners
+            if split_route_owner_operation(owner)[0]
+            and not canonical_delta_owner(split_route_owner_operation(owner)[0])
+        ]
+    )
+    if not families and not unmapped:
         return ""
     lines = [
         "",
@@ -3460,6 +3491,14 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         "- For M9 predication/identity pressure, use an M9 token such as `predicate-separated`; reserve DO_ATTRIBUTE tokens such as `predicate-identity-separated` for DO_ATTRIBUTE rows.",
         "- Do not invent near-synonyms such as `predicate-transfer-blocked`, `only-scope-defined`, `proof-stack-routed`, or `entailment-bounded`.",
     ]
+    if unmapped:
+        lines.append(
+            "- Routed owners without controlled Stage 04 operation/delta_result vocabulary: "
+            + ", ".join(unmapped)
+            + ". These routes are not executable ACT owners in this pass; emit HOLD/PARTIAL / "
+            "OWNER-BODY-NOT-LOADED / controlled-vocabulary-gap evidence or add source-owned "
+            "owner vocabulary with no-model canaries before claiming Land."
+        )
     for family in families:
         operations = OWNER_OPERATION_VOCABULARY.get(family)
         if operations:
@@ -5748,6 +5787,9 @@ def run_self_test(root: Path) -> int:
                     {"burden_id": "B4", "owner_id": "M8"},
                     {"burden_id": "B4", "owner_id": "M9"},
                     {"burden_id": "B5", "owner_id": "proof-method-audit"},
+                    {"burden_id": "B6", "owner_id": "V2.reconstituting-reason"},
+                    {"burden_id": "B7", "owner_id": "pattern-profiling"},
+                    {"burden_id": "B8", "owner_id": "unmapped-neutral-owner"},
                 ],
             }
         ]
@@ -5764,6 +5806,12 @@ def run_self_test(root: Path) -> int:
         "PROOF_METHOD: proof-denominator-exposed",
         "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status",
         "SOURCE: authority-order-repaired",
+        "V2 operations: proof-burden-order, reason-role-repair, reconstituting-reason",
+        "V2: frame-cleared",
+        "PATTERN_PROFILE operations: collapse-radius-mapping, loaded-label-carrier-audit",
+        "PATTERN_PROFILE: carrier-function-typed",
+        "Routed owners without controlled Stage 04 operation/delta_result vocabulary: unmapped-neutral-owner",
+        "controlled-vocabulary-gap evidence",
         "Tokens are family-local proof terms",
         "For M9 predication/identity pressure, use an M9 token such as `predicate-separated`",
         "Do not invent near-synonyms such as `predicate-transfer-blocked`",
@@ -5795,6 +5843,27 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in do_second_loop_guidance:
             raise HarnessError(f"Self-test Stage 04 do-second-loop/P3 guidance omitted {required}")
+    v2_pattern_rows = [
+        "⟦ACT ¹B₁[V2.reconstituting-reason] :: π=reason-as-sovereign-tribunal :: body_ref=¹B₁ :: Δ=Δ¹B:reason-role-repaired :: Land(¹B)+⟧",
+        "⟦ACT ²B₁[pattern-profiling.loaded-label-carrier-audit] :: π=worldview-carrier-compression :: body_ref=²B₁ :: Δ=Δ²B:carrier-function-typed :: Land(²B)+⟧",
+    ]
+    normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2"],
+            "act_burdens": ["B1", "B2"],
+            "act_rows": v2_pattern_rows,
+            "act_row_details": self_test_act_row_details(
+                v2_pattern_rows,
+                {
+                    "¹B₁": "ξ",
+                    "²B₁": "μ",
+                },
+            ),
+        },
+    )
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",

@@ -55,7 +55,7 @@
       "act_burdens": ["B1"],
       "act_body_refs": ["B1_1"],
       "act_rows": [
-        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧"
       ],
       "act_row_details": [
         {
@@ -64,8 +64,8 @@
           "owner_id": "source-status-repair",
           "operation": "source-order",
           "pressure": "source-order",
-          "delta_result": "source-order-landed",
-          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+          "delta_result": "source-function-bounded",
+          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧"
         }
       ]
     },
@@ -132,7 +132,7 @@
       ],
       "normalized_activation_record": true,
       "register_deltas": {
-        "xi": "source-order-landed",
+        "xi": "source-function-bounded",
         "kappa": "carried-RECURSE"
       }
     },
@@ -143,7 +143,7 @@
       "requires": ["field_witness_body_refs", "nar_burdens"],
       "release_output": {
         "path": "tests/staged-runtime-handshake/valid/stage05-generated-provenance.output.md",
-        "sha256": "F972ED66805A72920C074BDF47159ABC8974FF55A54A356C105614723E8E20B9"
+        "sha256": "51B8827EC1EFE7D97866565BCC49D1095CA98BD8E9A3E89224BA45E6C83A5D2A"
       },
       "release_terminal_states": {
         "B1": "landed",

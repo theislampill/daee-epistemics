@@ -67,7 +67,7 @@
       ],
       "act_body_refs": ["B1_1"],
       "act_rows": [
-        "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧"
       ],
       "act_row_details": [
         {
@@ -76,8 +76,8 @@
           "owner_id": "source-status-repair",
           "operation": "source-order",
           "pressure": "scientific-explanations-only-knowledge-source",
-          "delta_result": "source-order-landed",
-          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+          "delta_result": "science-source-bounded",
+          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧"
         }
       ]
     },
@@ -119,7 +119,7 @@
       "owner_activations": ["B1_1"],
       "normalized_activation_record": true,
       "register_deltas": {
-        "xi": "source-order-landed"
+        "xi": "science-source-bounded"
       }
     },
     {

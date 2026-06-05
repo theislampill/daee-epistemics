@@ -9,7 +9,7 @@
 
 Burden B1
 
-⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧
+⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧
 
 The visible owner body lands B1 while MRP keeps B2 as a generated carried burden.
 

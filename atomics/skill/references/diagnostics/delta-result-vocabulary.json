@@ -27,12 +27,15 @@
     "P5-already-believing": "P5",
     "P6-universal-aqidah-principle": "P6",
     "P7-restoration-stops": "P7",
+    "pattern-profiling": "PATTERN_PROFILE",
     "proof-method-audit": "PROOF_METHOD",
     "source-status-repair": "SOURCE",
     "symmetric-taqlid": "SYMMETRIC_TAQLID",
     "symmetric-taqlid-check": "SYMMETRIC_TAQLID",
     "V12-tamanuc-exhaustion": "V12",
     "V10-transmission-content-vetting": "V10",
+    "V2": "V2",
+    "V2-reconstituting-reason": "V2",
     "V3-regress-dissolution": "V3",
     "V6-convergence": "V6"
   },
@@ -126,6 +129,18 @@
     ],
     "SYMMETRIC_TAQLID": [
       "classify"
+    ],
+    "PATTERN_PROFILE": [
+      "loaded-label-carrier-audit",
+      "proof-packet-reconstruction",
+      "mutation-after-challenge-tracking",
+      "collapse-radius-mapping",
+      "pattern-profile"
+    ],
+    "V2": [
+      "reconstituting-reason",
+      "reason-role-repair",
+      "proof-burden-order"
     ],
     "V3": [
       "dissolve"
@@ -276,6 +291,19 @@
     "SYMMETRIC_TAQLID": [
       "symmetric-taqlid-classified",
       "inward-examination-required"
+    ],
+    "PATTERN_PROFILE": [
+      "carrier-function-typed",
+      "proof-packet-reconstructed",
+      "mutation-same-function-tracked",
+      "collapse-radius-mapped",
+      "pattern-profile-routed"
+    ],
+    "V2": [
+      "reason-role-repaired",
+      "tribunal-loosened",
+      "frame-cleared",
+      "proof-burden-order-restored"
     ],
     "V3": [
       "regress-demand-dissolved",

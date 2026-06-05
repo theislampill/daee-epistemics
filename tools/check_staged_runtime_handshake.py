@@ -17,7 +17,14 @@ from pathlib import Path
 from typing import Any
 
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
-from delta_result_vocabulary import source_formal_delta_operation_errors
+from delta_result_vocabulary import (
+    DELTA_RESULT_VOCABULARY,
+    OWNER_OPERATION_VOCABULARY,
+    canonical_delta_owner,
+    delta_result_vocabulary_errors,
+    owner_operation_vocabulary_errors,
+    source_formal_delta_operation_errors,
+)
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
 
@@ -176,6 +183,16 @@ ACT_OWNER_OPERATION_DELTA_RE = re.compile(
 )
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 MRP_GENERATED_BY_RE = re.compile(r"^MRP\((B[1-9][0-9]*)\)$")
+HELD_ROUTE_SIGNAL_KEYS = {
+    "body_status",
+    "eligibility",
+    "owner_body_status",
+    "reason",
+    "route_state",
+    "state",
+    "status",
+    "terminal_state",
+}
 
 
 def rel(path: Path) -> str:
@@ -231,6 +248,61 @@ def ordered_unique(items: list[str]) -> list[str]:
             seen.add(item)
             result.append(item)
     return result
+
+
+def route_is_held_or_partial(route: dict[str, Any]) -> bool:
+    for key in HELD_ROUTE_SIGNAL_KEYS:
+        value = route.get(key)
+        if not isinstance(value, str):
+            continue
+        normalized = value.strip().upper().replace("_", "-")
+        if (
+            "HOLD" in normalized
+            or "PARTIAL" in normalized
+            or "NOT-LOADED" in normalized
+            or "INERT" in normalized
+        ):
+            return True
+    return False
+
+
+def split_owner_operation_token(owner: str, operation: Any = None) -> tuple[str, str]:
+    owner_token = str(owner or "").strip().strip("[]")
+    operation_token = str(operation or "").strip() if isinstance(operation, str) else ""
+    if not owner_token:
+        return "", operation_token
+    if canonical_delta_owner(owner_token):
+        return owner_token, operation_token
+    if "." in owner_token:
+        owner_part, operation_part = owner_token.split(".", 1)
+        if owner_part.strip() and operation_part.strip():
+            return owner_part.strip(), operation_token or operation_part.strip()
+    return owner_token, operation_token
+
+
+def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str]:
+    if route_is_held_or_partial(route):
+        return []
+    raw_owner = route.get("owner_id") or route.get("owner")
+    if not isinstance(raw_owner, str) or not raw_owner.strip():
+        return [f"{label}: owner route must carry a non-empty owner_id"]
+    owner, operation = split_owner_operation_token(raw_owner, route.get("operation") or route.get("owner_operation"))
+    family = canonical_delta_owner(owner)
+    if not family:
+        return [
+            f"{label}: executable owner route {raw_owner!r} has no controlled owner family/delta_result vocabulary; "
+            "mark the route HOLD/PARTIAL / OWNER-BODY-NOT-LOADED or add source-owned owner vocabulary with canaries"
+        ]
+    if family not in DELTA_RESULT_VOCABULARY:
+        return [f"{label}: executable owner route {raw_owner!r} has no controlled delta_result vocabulary"]
+    if family not in OWNER_OPERATION_VOCABULARY:
+        return [
+            f"{label}: executable owner route {raw_owner!r} has no controlled owner-operation vocabulary; "
+            "route labels are not callable ACT owners"
+        ]
+    if operation:
+        return owner_operation_vocabulary_errors(label, owner, operation)
+    return []
 
 
 def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
@@ -1294,7 +1366,11 @@ def owner_routes_by_burden(stage03: dict[str, Any] | None) -> dict[str, set[str]
         burden_id = route.get("burden_id")
         owner_id = route.get("owner_id")
         if isinstance(burden_id, str) and burden_id and isinstance(owner_id, str) and owner_id:
-            result.setdefault(burden_id, set()).add(owner_id)
+            owner, _operation = split_owner_operation_token(owner_id, route.get("operation") or route.get("owner_operation"))
+            owners = result.setdefault(burden_id, set())
+            owners.add(owner_id)
+            if owner:
+                owners.add(owner)
     return result
 
 
@@ -1308,16 +1384,25 @@ def act_owner(row: str) -> str | None:
     return match.group(1) if match else None
 
 
-def act_row_source_formal_errors(label: str, row: str) -> list[str]:
+def act_row_owner_transition_errors(label: str, row: str) -> list[str]:
     match = ACT_OWNER_OPERATION_DELTA_RE.match(row.strip())
     if not match:
         return []
-    return source_formal_delta_operation_errors(
-        label,
-        match.group("owner"),
-        match.group("operation"),
-        match.group("delta_result"),
+    owner = match.group("owner")
+    operation = match.group("operation")
+    delta_result = match.group("delta_result")
+    errors: list[str] = []
+    errors.extend(owner_operation_vocabulary_errors(label, owner, operation))
+    errors.extend(delta_result_vocabulary_errors(label, owner, delta_result))
+    errors.extend(
+        source_formal_delta_operation_errors(
+            label,
+            owner,
+            operation,
+            delta_result,
+        )
     )
+    return errors
 
 
 def object_source_formal_errors(label: str, item: dict[str, Any]) -> list[str]:
@@ -1326,7 +1411,35 @@ def object_source_formal_errors(label: str, item: dict[str, Any]) -> list[str]:
     delta_result = item.get("delta_result")
     if owner is None or operation is None or delta_result is None:
         return []
-    return source_formal_delta_operation_errors(label, str(owner), str(operation), str(delta_result))
+    errors: list[str] = []
+    errors.extend(owner_operation_vocabulary_errors(label, str(owner), str(operation)))
+    errors.extend(delta_result_vocabulary_errors(label, str(owner), str(delta_result)))
+    errors.extend(source_formal_delta_operation_errors(label, str(owner), str(operation), str(delta_result)))
+    return errors
+
+
+def stage04_hold_partial_burdens(stage04: dict[str, Any]) -> set[str]:
+    held: set[str] = set()
+    for key in ("hold_partial", "hold_partial_routes", "held_or_partial_routes"):
+        value = stage04.get(key)
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if isinstance(item, str):
+                burden_id = canonical_burden_id_from_text(item)
+                if burden_id:
+                    held.add(burden_id)
+                continue
+            if not isinstance(item, dict):
+                continue
+            burden_id = item.get("burden_id") or item.get("target")
+            if not isinstance(burden_id, str):
+                continue
+            if route_is_held_or_partial(item) or key in {"hold_partial", "hold_partial_routes", "held_or_partial_routes"}:
+                canonical = canonical_burden_id_from_text(burden_id)
+                if canonical:
+                    held.add(canonical)
+    return held
 
 
 def stage04_act_errors(
@@ -1376,7 +1489,10 @@ def stage04_act_errors(
         act_rows = []
 
     semantic_act_burdens = canonical_stage04_act_burdens(stage04)
-    missing_burdens = sorted(set(act_targets) - semantic_act_burdens)
+    hold_partial_burdens = stage04_hold_partial_burdens(stage04)
+    if hold_partial_burdens and stage04.get("status") == "pass":
+        errors.append(f"{label}: stage-04 status must be held/partial/fail when hold_partial route evidence is present")
+    missing_burdens = sorted(set(act_targets) - semantic_act_burdens - hold_partial_burdens)
     if missing_burdens:
         errors.append(f"{label}: stage-04 act_burdens missing act target(s): {missing_burdens}")
     duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
@@ -1394,7 +1510,7 @@ def stage04_act_errors(
             errors.append(f"{row_label} must contain body_ref=")
         if "Δ=" not in stripped:
             errors.append(f"{row_label} must contain Δ=")
-        errors.extend(act_row_source_formal_errors(row_label, stripped))
+        errors.extend(act_row_owner_transition_errors(row_label, stripped))
         if "Land(" not in stripped:
             errors.append(f"{row_label} must contain Land(")
         if not stripped.endswith("⟧"):
@@ -1520,6 +1636,16 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
         raw_route_targets = stage03.get("route_targets")
         if as_string_list(raw_route_targets) is None:
             errors.append(f"{label}: stage-03 route_targets must be a string list")
+        owner_routes = stage03.get("owner_routes")
+        if not isinstance(owner_routes, list) or not owner_routes:
+            errors.append(f"{label}: stage-03 owner_routes must be a non-empty object list")
+        else:
+            for index, route in enumerate(owner_routes):
+                route_label = f"{label}: stage-03 owner_routes[{index}]"
+                if not isinstance(route, dict):
+                    errors.append(f"{route_label} must be an object")
+                    continue
+                errors.extend(route_owner_vocabulary_errors(route_label, route))
         details = stage03.get("route_target_details")
         if details is not None:
             if isinstance(details, dict):

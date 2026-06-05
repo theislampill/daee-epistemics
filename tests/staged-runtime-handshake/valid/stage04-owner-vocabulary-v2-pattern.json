@@ -1,0 +1,110 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage04-owner-vocabulary-v2-pattern",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {
+    "stop_after_stage": "stage-04-burden-execution-act",
+    "stage_count": 4,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "neutral-owner-vocabulary-canary",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/stage04-model-scope-act-details.json"
+  },
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1", "B2"],
+      "selected_n_frame": "neutral-owner-vocabulary-transition",
+      "live_registers": ["xi", "mu"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1", "B2"],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "V2.reconstituting-reason",
+          "eligibility": "catalogue-backed"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "pattern-profiling",
+          "operation": "loaded-label-carrier-audit",
+          "eligibility": "catalogue-backed"
+        }
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1", "B2"],
+      "act_burdens": ["B1", "B2"],
+      "act_body_refs": ["B1_1", "B2_1"],
+      "act_rows": [
+        "⟦ACT B1_1[V2.reconstituting-reason] :: π=reason-as-sovereign-tribunal :: body_ref=B1_1 :: Δ=ΔB1:reason-role-repaired :: Land(B1)+⟧",
+        "⟦ACT B2_1[pattern-profiling.loaded-label-carrier-audit] :: π=worldview-carrier-compression :: body_ref=B2_1 :: Δ=ΔB2:carrier-function-typed :: Land(B2)+⟧"
+      ],
+      "act_row_details": [
+        {
+          "burden_id": "B1",
+          "body_ref": "B1_1",
+          "owner_id": "V2",
+          "operation": "reconstituting-reason",
+          "register_axis": "ξ",
+          "delta_result": "reason-role-repaired",
+          "act_row": "⟦ACT B1_1[V2.reconstituting-reason] :: π=reason-as-sovereign-tribunal :: body_ref=B1_1 :: Δ=ΔB1:reason-role-repaired :: Land(B1)+⟧"
+        },
+        {
+          "burden_id": "B2",
+          "body_ref": "B2_1",
+          "owner_id": "pattern-profiling",
+          "operation": "loaded-label-carrier-audit",
+          "register_axis": "μ",
+          "delta_result": "carrier-function-typed",
+          "act_row": "⟦ACT B2_1[pattern-profiling.loaded-label-carrier-audit] :: π=worldview-carrier-compression :: body_ref=B2_1 :: Δ=ΔB2:carrier-function-typed :: Land(B2)+⟧"
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "live_registers_present", "n_frame_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  }
+}
