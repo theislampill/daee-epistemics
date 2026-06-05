@@ -69,6 +69,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "graph-completeness"
+FORMALISM_NEUTRAL_INVALID_DIR = ROOT / "tests" / "formalism-path-neutral" / "invalid"
 CHECKER_VERSION = "check_graph_completeness.py:b1-schema-light"
 DEFAULT_SKILL_VERSION = "0.4.3.0"
 ESCAPE_ROUTE_TYPES = {
@@ -533,12 +534,13 @@ def state_terminal_accounted(burden: str, terminals: dict[str, str]) -> bool:
 
 
 def track_contract_required(path: Path, field_witness: dict[str, Any]) -> bool:
-    if graph_contract_strict(path):
+    ledgers = field_witness_ledger(field_witness)
+    if ledgers["B_MRP"]:
         return True
     cov = coverage(field_witness)
     if isinstance(cov.get("mrp_tracks"), dict):
         return True
-    return any(track for track in generated_burden_tracks(field_witness).values())
+    return bool(generated_burden_tracks(field_witness))
 
 
 def restoration_generated_targets(field_witness: dict[str, Any]) -> set[str]:
@@ -984,9 +986,12 @@ def escape_route_accounting_errors(field_witness: dict[str, Any]) -> list[str]:
 
 
 def c8_proof_required(path: Path, field_witness: dict[str, Any]) -> bool:
-    if graph_contract_strict(path):
-        return True
-    return any("no_new_resultant_proof" in state for state in formal_reread_states(field_witness))
+    return any(
+        normalized_token(state.get("route_result_type")) in NO_NEW_RESULTANT_TYPES
+        or normalized_token(state.get("route")) == "stop"
+        or "no_new_resultant_proof" in state
+        for state in formal_reread_states(field_witness)
+    )
 
 
 def no_new_resultant_terminal_proof_errors(path: Path, field_witness: dict[str, Any]) -> list[str]:
@@ -1806,6 +1811,15 @@ def run_fixture_suite(root: Path) -> tuple[list[str], int, int]:
             continue
         if report and report["collapse_positive"]:
             errors.append(f"{rel(path)}: expected-invalid graph-completeness fixture unexpectedly passed")
+        else:
+            invalid_checked += 1
+    for path in sorted(FORMALISM_NEUTRAL_INVALID_DIR.glob("graph-*.md")):
+        report, found = graph_report(path)
+        if found:
+            invalid_checked += 1
+            continue
+        if report and report["collapse_positive"]:
+            errors.append(f"{rel(path)}: expected-invalid neutral graph-completeness fixture unexpectedly passed")
         else:
             invalid_checked += 1
     return errors, valid_checked, invalid_checked

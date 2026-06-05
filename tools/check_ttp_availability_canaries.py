@@ -36,6 +36,54 @@ REQUIRED_SURFACE_KEYS = (
     "field_witness",
     "mrp_reread",
 )
+OWNER_ALIASES = {
+    "authority-order-repair": "SOURCE",
+    "do-attribute-precision": "DO_ATTRIBUTE",
+    "do-christian-extensions": "DO_CHRISTIAN",
+    "doubt-vs-skepticism": "DOUBT_SKEPTICISM",
+    "foreign-premise-detection": "FPD",
+    "husn-al-nazar": "HUSN_AL_NAZAR",
+    "husn-al-nazar-arguments": "HUSN_AL_NAZAR",
+    "inductive-fitri": "INDUCTIVE_FITRI",
+    "inductive-fitri-method": "INDUCTIVE_FITRI",
+    "M1P": "M1-P",
+    "M1P-performative-self-refutation": "M1-P",
+    "P2-objection-mapping": "P2",
+    "P4-maieutic": "P4",
+    "P5-already-believing": "P5",
+    "P6-universal-aqidah-principle": "P6",
+    "source-status-repair": "SOURCE",
+    "symmetric-taqlid": "SYMMETRIC_TAQLID",
+    "symmetric-taqlid-check": "SYMMETRIC_TAQLID",
+    "V3-regress-dissolution": "V3",
+    "V6-convergence": "V6",
+    "V12-tamanuc-exhaustion": "V12",
+}
+OWNER_SPECIFIC_BODY_RE = {
+    "DO_ATTRIBUTE": re.compile(r"(?i)\b(?:attribute|person|nature|predicate|category|transfer)\b"),
+    "DO_CHRISTIAN": re.compile(r"(?i)\b(?:model|trinitarian|route|family|fan[- ]out)\b"),
+    "DOUBT_SKEPTICISM": re.compile(r"(?i)\b(?:doubt|skepticism|method|question)\b"),
+    "FPD": re.compile(r"(?i)\b(?:foreign|premise|criterion|tribunal|support)\b"),
+    "HUSN_AL_NAZAR": re.compile(r"(?i)\b(?:proof|readiness|infer|argument|nazar|evidence)\b"),
+    "INDUCTIVE_FITRI": re.compile(r"(?i)\b(?:fitri|inductive|foundation|sign|superstructure)\b"),
+    "M1": re.compile(r"(?i)\b(?:self|ground|standard|contradiction|authorize)\b"),
+    "M1-P": re.compile(r"(?i)\b(?:performative|speech[- ]act|presupposition|contradiction)\b"),
+    "M7": re.compile(r"(?i)\b(?:definition|anchor|semantic|meaning|term)\b"),
+    "M8": re.compile(r"(?i)\b(?:dependency|consequence|trace|entail|implication)\b"),
+    "M9": re.compile(r"(?i)\b(?:predication|person|nature|referent|sense|category)\b"),
+    "P1": re.compile(r"(?i)\b(?:fitrah|tawhid|orientation|restore|worship)\b"),
+    "P2": re.compile(r"(?i)\b(?:objection|topology|sequence|mapping)\b"),
+    "P3": re.compile(r"(?i)\b(?:reason|revelation|order|stabiliz)\b"),
+    "P4": re.compile(r"(?i)\b(?:maieutic|recognition|question|elicit)\b"),
+    "P5": re.compile(r"(?i)\b(?:belief|article|strengthen|conviction)\b"),
+    "P6": re.compile(r"(?i)\b(?:worldview|aqidah|binding|neutrality|principle)\b"),
+    "P7": re.compile(r"(?i)\b(?:scope|boundary|STOP|HOLD|PARTIAL|closure|reopen)\b"),
+    "SOURCE": re.compile(r"(?i)\b(?:source|authority|testimony|proof|witness|transmission|status|order)\b"),
+    "SYMMETRIC_TAQLID": re.compile(r"(?i)\b(?:taqlid|symmetric|imitation|authority|parity)\b"),
+    "V3": re.compile(r"(?i)\b(?:regress|dissolve|infinite|grounding)\b"),
+    "V6": re.compile(r"(?i)\b(?:convergence|register|conflict|integrat)\b"),
+    "V12": re.compile(r"(?i)\b(?:exhaust|plurality|tamanuc|refused)\b"),
+}
 
 
 def rel(path: Path) -> str:
@@ -129,6 +177,18 @@ def row_owner(row: dict[str, Any]) -> str:
     return str(row.get("owner") or "").strip()
 
 
+def owner_family_token(owner: str) -> str:
+    token = owner.strip()
+    if token in OWNER_ALIASES:
+        return OWNER_ALIASES[token]
+    upper = token.upper()
+    if upper in OWNER_ALIASES:
+        return OWNER_ALIASES[upper]
+    if re.fullmatch(r"M\d+(?:-P)?|P\d+|V\d+|FPD|SOURCE", upper):
+        return upper
+    return token
+
+
 def act_mentions_owner_and_ref(row: dict[str, Any], owner: str, body_ref: str) -> bool:
     act = str(row.get("act_row") or "")
     if not act or not body_ref:
@@ -153,6 +213,10 @@ def row_is_complete(row: dict[str, Any], owner: str) -> list[str]:
         body = " ".join(str(deref.get(key) or "") for key in ("target", "operation", "result", "contribution"))
         if not re.search(r"(?i)\b(?:target|pressure|operation|result|delta|land|bounded|exposed|routed|separated)\b", body):
             errors.append(f"{owner}: body_ref_dereference lacks operation/result/Land shape")
+        family = owner_family_token(owner)
+        owner_specific = OWNER_SPECIFIC_BODY_RE.get(family)
+        if owner_specific is not None and not owner_specific.search(body):
+            errors.append(f"{owner}: body_ref_dereference lacks selected-owner operation semantics")
 
     for key in ("owner_activation", "nar", "field_witness"):
         if surface_owner(row, key) != owner:

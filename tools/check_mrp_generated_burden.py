@@ -190,6 +190,9 @@ SOURCE_OWNED_ACT_OPERATIONS = {
         ),
     },
 }
+BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
+    "SOURCE": {"authority-order-repaired", "source-order-repaired"},
+}
 LOOSE_OWNER_ALIASES = {
     "AUTHORITY",
     "BOUND",
@@ -1183,6 +1186,20 @@ def is_reconstructible_for_act_family(family: str, block: str) -> bool:
     return True
 
 
+def delta_result_has_concrete_state_change(record: ActRecord, family: str, block: str) -> bool:
+    if GENERIC_ACT_VALUE_RE.fullmatch(record.delta_result):
+        return False
+    if STATE_CHANGE_RE.search(record.delta_result):
+        return True
+    supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
+    if record.delta_result not in supported:
+        return False
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    operation = submove_operation_body(block)
+    return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
 def validate_act_record(
     record: ActRecord,
     target: str,
@@ -1231,7 +1248,7 @@ def validate_act_record(
         errors.extend(source_owned_operation_errors(record, record_family, block))
     if not DELTA_NAME_RE.fullmatch(record.delta):
         errors.append(f"ACT {record.submove_ref} Delta field must name Delta burden state or Delta-kappa")
-    if GENERIC_ACT_VALUE_RE.fullmatch(record.delta_result) or not STATE_CHANGE_RE.search(record.delta_result):
+    if not delta_result_has_concrete_state_change(record, record_family, block):
         errors.append(f"ACT {record.submove_ref} Delta result must name a concrete burden-local state change")
     land_tokens = land_targets(record.land)
     if target not in land_tokens:

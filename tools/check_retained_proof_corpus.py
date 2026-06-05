@@ -20,7 +20,8 @@ from typing import Any
 
 import check_nla_decode_semantic_faithfulness as nla_decode
 from check_collapse_certificate_schema import certificate_errors
-from check_graph_completeness import input_fingerprint_for_path
+from check_field_witness_convergence import convergence_errors as field_witness_convergence_errors
+from check_graph_completeness import graph_report, input_fingerprint_for_path
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -271,6 +272,17 @@ def case_errors(manifest_path: Path, case: Any, index: int) -> list[str]:
             errors.append(f"{prefix}.output: missing field_witness")
         if "MRP(" not in text:
             errors.append(f"{prefix}.output: missing MRP trace")
+        row_set = set(rows or [])
+        if row_set & {"B.1", "B.2"}:
+            field_errors = field_witness_convergence_errors(output_path, text)
+            errors.extend(f"{prefix}.output.field_witness_convergence: {error}" for error in field_errors)
+            report, graph_errors = graph_report(output_path)
+            errors.extend(f"{prefix}.output.graph_completeness: {error}" for error in graph_errors)
+            if report is not None and not report.get("graph_valid"):
+                errors.append(
+                    f"{prefix}.output.graph_completeness: retained output graph-completeness failures="
+                    f"{report.get('failures')}"
+                )
 
     errors.extend(b5_full_ir_sidecar_entry_errors(manifest_path, case, prefix, paths))
 

@@ -42,6 +42,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "field-witness-convergence"
+FORMALISM_NEUTRAL_INVALID_DIR = ROOT / "tests" / "formalism-path-neutral" / "invalid"
 
 CLOSED_TERMINAL_STATES = {
     "landed",
@@ -644,19 +645,14 @@ def generated_burden_records(field_witness: dict[str, Any]) -> dict[str, dict[st
 
 
 def depth_contract_required(path: Path, field_witness: dict[str, Any]) -> bool:
-    try:
-        if path.resolve().is_relative_to(FIXTURE_ROOT.resolve()):
-            return True
-    except AttributeError:
-        try:
-            path.resolve().relative_to(FIXTURE_ROOT.resolve())
-            return True
-        except ValueError:
-            pass
+    ledgers = field_witness_ledger(field_witness)
+    records = generated_burden_records(field_witness)
+    if ledgers["B_MRP"] or records:
+        return True
     cov = coverage(field_witness)
     if "max_generation_depth" in cov:
         return True
-    return any(record.get("has_depth") for record in generated_burden_records(field_witness).values())
+    return any(record.get("has_depth") for record in records.values())
 
 
 def generation_depth_errors(path: Path, field_witness: dict[str, Any], strict: bool) -> list[str]:
@@ -761,17 +757,28 @@ def owner_activation_targets(field_witness: dict[str, Any]) -> set[str]:
 
 
 def normalized_record_required(path: Path, field_witness: dict[str, Any]) -> bool:
-    valid_root = FIXTURE_ROOT / "valid"
-    try:
-        if path.resolve().is_relative_to(valid_root.resolve()):
-            return True
-    except AttributeError:
-        try:
-            path.resolve().relative_to(valid_root.resolve())
-            return True
-        except ValueError:
-            pass
-    return "normalized_activation_record" in field_witness
+    if "normalized_activation_record" in field_witness:
+        return True
+    cov = coverage(field_witness)
+    if cov.get("normalized_activation_record_required") is True:
+        return True
+    proof_mode = field_witness.get("canonical_ir_projection")
+    if isinstance(proof_mode, dict) and proof_mode.get("normalized_activation_record_required") is True:
+        return True
+    return False
+
+
+def diagnostic_completeness_required(
+    field_witness: dict[str, Any],
+    live_registers: list[str],
+    register_coverage: dict[str, list[str]],
+) -> bool:
+    cov = coverage(field_witness)
+    if cov.get("diagnostic_completeness") is not None:
+        return True
+    if live_registers:
+        return True
+    return any(register_coverage.values())
 
 
 def normalized_free_text(value: Any) -> str:
@@ -1044,7 +1051,7 @@ def convergence_errors(path: Path, text: str) -> list[str]:
             field_witness,
             live_registers,
             register_coverage,
-            strict=path.resolve().is_relative_to(FIXTURE_ROOT.resolve()) if hasattr(Path, "is_relative_to") else False,
+            strict=diagnostic_completeness_required(field_witness, live_registers, register_coverage),
         )
     )
     for register in live_registers:
@@ -1173,6 +1180,12 @@ def main() -> int:
         found = convergence_errors(path, read_text(path))
         if not found:
             errors.append(f"{rel(path)}: expected-invalid convergence fixture unexpectedly passed")
+        else:
+            invalid_checked += 1
+    for path in sorted(FORMALISM_NEUTRAL_INVALID_DIR.glob("field-*.md")):
+        found = convergence_errors(path, read_text(path))
+        if not found:
+            errors.append(f"{rel(path)}: expected-invalid neutral convergence fixture unexpectedly passed")
         else:
             invalid_checked += 1
     for path in expand_paths(args.outputs):
