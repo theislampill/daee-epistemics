@@ -34,6 +34,90 @@
     "V3-regress-dissolution": "V3",
     "V6-convergence": "V6"
   },
+  "owner_operations": {
+    "M1": [
+      "test",
+      "self-grounding-test"
+    ],
+    "M1-P": [
+      "test",
+      "performative-test"
+    ],
+    "M7": [
+      "anchor"
+    ],
+    "M8": [
+      "consequence-trace",
+      "trace",
+      "dependency-trace"
+    ],
+    "M9": [
+      "predication-repair",
+      "sense-split",
+      "repair"
+    ],
+    "FPD": [
+      "expose",
+      "foreign-premise"
+    ],
+    "SOURCE": [
+      "source-order",
+      "sort",
+      "status"
+    ],
+    "P1": [
+      "restore"
+    ],
+    "P2": [
+      "map"
+    ],
+    "P3": [
+      "order"
+    ],
+    "P4": [
+      "elicit"
+    ],
+    "P5": [
+      "strengthen"
+    ],
+    "P6": [
+      "bind"
+    ],
+    "P7": [
+      "bound",
+      "boundary"
+    ],
+    "DO_CHRISTIAN": [
+      "model-identification"
+    ],
+    "DO_ATTRIBUTE": [
+      "attribute-precision"
+    ],
+    "DOUBT_SKEPTICISM": [
+      "method-distinction"
+    ],
+    "HUSN_AL_NAZAR": [
+      "infer"
+    ],
+    "INDUCTIVE_FITRI": [
+      "separate"
+    ],
+    "SYMMETRIC_TAQLID": [
+      "classify"
+    ],
+    "V3": [
+      "dissolve"
+    ],
+    "V6": [
+      "integrate"
+    ],
+    "V10": [
+      "provenance"
+    ],
+    "V12": [
+      "exhaust"
+    ]
+  },
   "owner_families": {
     "M1": [
       "self-authorizing-standard-invalidated",

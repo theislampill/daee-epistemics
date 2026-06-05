@@ -34,6 +34,34 @@ next `R(H,Delta)` decision. Specialty markers may surface candidate context; the
 operations or execution evidence by themselves. Contract metadata can help find the relevant owner;
 it cannot stand in for owner-floor pressure.
 
+The optional **Formal owner contract** section is a machine-readable JSON block
+inside the Markdown body, not a runtime dispatch field. It exists so checkers can
+ask whether an owner is callable for a selected route without relying on case
+names, file names, route labels, or adjacent prose keywords.
+
+Required formal owner contract keys, when a module declares the block:
+
+| Key | Meaning |
+|-----|---------|
+| `schema` | Must be `formal-owner-contract-v1`. |
+| `owner_id` | Catalogue module id. |
+| `owner_family` | Controlled owner family or route-family token used by checker vocabulary. |
+| `activation_feature` | Structural pressure that can make the owner eligible after diagnostic IR selection. |
+| `field_target` | DSL/IR field, burden, register, graph, or reread state the owner operates over. |
+| `operation_token` | Callable owner operation token(s) that may appear in ACT rows when selected. |
+| `delta_result` | Controlled owner-local result token(s) or route-result tokens. |
+| `reread_state_effect` | How `R(H,Delta)` / MRP / terminal-state accounting changes after operation. |
+| `hold_release_rule` | Conditions for landed, held, partial, recurred, inert, blocked, or not-loaded status. |
+| `negative_examples` | Minimal anti-patterns that must not count as owner execution. |
+
+Do not place runtime IR fields such as `case_family`, `matched_modules`,
+`pattern_profile`, fixture names, prompt paths, or selected smoke IDs in a
+formal owner contract. Those may remain in fixtures, retained records, and
+audit prose, but proof behavior is keyed by DSL/IR structure: selected/held
+`n_frame`, burden graph `DeltaB`, owner family, callable operation,
+source-status, route state, controlled `delta_result`, generated-burden state,
+public MRP visibility, and field_witness/formal_reread parity.
+
 ---
 
 ## Architecture Position

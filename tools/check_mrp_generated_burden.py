@@ -485,7 +485,7 @@ def catalogue_owner_aliases() -> dict[str, str]:
         for entry in entries:
             if not isinstance(entry, dict):
                 continue
-            raw_aliases = [entry.get("id"), Path(str(entry.get("path", ""))).stem]
+            raw_aliases = [entry.get("id")]
             raw_aliases.extend(entry.get("aliases") or [])
             owner_family_override = str(entry.get("owner_family") or "").strip()
             family = owner_family_override or next(
@@ -505,6 +505,62 @@ def catalogue_owner_aliases() -> dict[str, str]:
 
 
 CATALOGUE_OWNER_ALIASES = catalogue_owner_aliases()
+FORMAL_CONTRACT_HEADING = "## Formal owner contract"
+
+
+def formal_owner_contract_operations() -> dict[str, set[str]]:
+    operations: dict[str, set[str]] = {}
+    repo = Path(__file__).resolve().parents[1]
+    catalogue = repo / "atomics/skill/references/diagnostics/module-catalogue.json"
+    if not catalogue.is_file():
+        return operations
+    try:
+        payload = json.loads(catalogue.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return operations
+    for entry in payload.get("modules") or []:
+        if not isinstance(entry, dict):
+            continue
+        path_value = str(entry.get("path") or "")
+        if not path_value.startswith("skill/"):
+            continue
+        source = repo / "atomics/skill" / path_value[len("skill/") :]
+        if not source.is_file():
+            continue
+        text = source.read_text(encoding="utf-8", errors="replace")
+        start = text.find(FORMAL_CONTRACT_HEADING)
+        if start == -1:
+            continue
+        section = text[start:]
+        next_heading = re.search(r"(?m)^##\s+", section[len(FORMAL_CONTRACT_HEADING) :])
+        if next_heading:
+            section = section[: len(FORMAL_CONTRACT_HEADING) + next_heading.start()]
+        match = re.search(r"```json\s*(\{.*?\})\s*```", section, re.S)
+        if not match:
+            continue
+        try:
+            contract = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(contract, dict):
+            continue
+        raw_ops = contract.get("operation_token")
+        if isinstance(raw_ops, str):
+            op_set = {raw_ops.strip()} if raw_ops.strip() else set()
+        elif isinstance(raw_ops, list):
+            op_set = {str(item).strip() for item in raw_ops if str(item).strip()}
+        else:
+            op_set = set()
+        if not op_set:
+            continue
+        for key in (contract.get("owner_id"), contract.get("owner_family"), entry.get("id")):
+            token = str(key or "").strip()
+            if token:
+                operations[owner_alias_key(token)] = op_set
+    return operations
+
+
+FORMAL_OWNER_CONTRACT_OPERATIONS = formal_owner_contract_operations()
 STRICT_OWNER_CODE_RE = re.compile(
     r"^(?:M1-P|M[1-9]|P[1-7]|V1[0-2]|V[1-9]|E[1-4]|F[1-3]|R[1-3]|FPD)(?:$|[-_./])"
 )
@@ -1075,22 +1131,34 @@ def compact_record_shape(record: ActRecord) -> bool:
 
 
 def source_owned_operation_errors(record: ActRecord, family: str, block: str) -> list[str]:
+    errors: list[str] = []
     allowed = SOURCE_OWNED_ACT_OPERATIONS.get(family)
-    if not allowed:
-        return []
     operation = record.operation.strip()
+    formal_allowed = (
+        FORMAL_OWNER_CONTRACT_OPERATIONS.get(owner_alias_key(record.owner))
+        or FORMAL_OWNER_CONTRACT_OPERATIONS.get(owner_alias_key(family))
+    )
+    if formal_allowed and operation not in formal_allowed:
+        registered = ", ".join(sorted(formal_allowed))
+        errors.append(
+            f"ACT {record.submove_ref} operation {operation!r} is not declared by "
+            f"formal owner contract for {record.owner!r}; expected one of: {registered}"
+        )
+    if not allowed:
+        return errors
     operation_key = operation.lower()
     if operation_key not in allowed:
         registered = ", ".join(sorted(allowed))
-        return [
+        errors.append(
             f"ACT {record.submove_ref} operation {operation!r} is not a registered source-owned "
             f"operation for {record.owner!r}; expected one of: {registered}"
-        ]
+        )
+        return errors
     if not allowed[operation_key].search(operation_payload(block)):
-        return [
+        errors.append(
             f"ACT {record.submove_ref} operation {operation!r} is not performed in the dereferenced body"
-        ]
-    return []
+        )
+    return errors
 
 
 def operation_payload(block: str) -> str:
@@ -1823,7 +1891,46 @@ def formal_hard_mrp_reasons(text: str) -> list[str]:
 
 
 def generated_mrp_proof_present(text: str) -> bool:
-    return "generated_burden_instantiation" in text and "[generated-by: MRP(" in text
+    if "generated_burden_instantiation" not in text or "[generated-by: MRP(" not in text:
+        return False
+    payload, parse_error = field_witness_object(text)
+    if parse_error or payload is None:
+        return False
+    b_mrp = {graph_burden_id(item) for item in payload.get("B_MRP", []) if graph_burden_id(item)}
+    if not b_mrp:
+        return False
+    generated_records: dict[str, str] = {}
+    for item in payload.get("generated_burdens") or []:
+        if not isinstance(item, dict):
+            continue
+        burden = graph_burden_id(item.get("id") or item.get("burden_id"))
+        generated_by = graph_normalized_text(item.get("generated_by"))
+        if burden in b_mrp and re.fullmatch(r"MRP\(B\d+\)", generated_by):
+            generated_records[burden] = generated_by
+    if set(generated_records) != b_mrp:
+        return False
+    resultant_sources = {
+        graph_burden_id(item.get("source"))
+        for item in payload.get("mrp_resultants") or []
+        if isinstance(item, dict)
+        and str(item.get("type") or item.get("route_result_type") or "").strip()
+        == "generated_burden_instantiation"
+    }
+    reread_sources = {
+        graph_burden_id(item.get("source_burden") or item.get("source"))
+        for item in payload.get("formal_reread_states") or []
+        if isinstance(item, dict)
+        and str(item.get("route_result_type") or item.get("type") or "").strip()
+        == "generated_burden_instantiation"
+    }
+    for generated_by in generated_records.values():
+        match = re.fullmatch(r"MRP\((B\d+)\)", generated_by)
+        if not match:
+            return False
+        parent = match.group(1)
+        if parent not in resultant_sources or parent not in reread_sources:
+            return False
+    return True
 
 
 def no_new_resultant_escape_proof_present(text: str) -> bool:

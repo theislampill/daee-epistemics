@@ -133,7 +133,8 @@ field_witness
     },
     "register_composition": {
       "schema": "b5-register-composition-v1",
-      "source_fixture": "tests/routing-fixtures/63-register-composition-owner-handoff.json",
+      "source_fixture": "tests/nla-decode-semantic-faithfulness/fixtures/neutral-register-composition-owner-handoff.json",
+      "source_fixture_capability": "register-composition-owner-handoff-v1",
       "component_registers": ["heart", "xi", "Omega", "mu", "kappa"],
       "sigma_boundary": {"present": true, "inside_hard_registers": false, "role": "sigma is the discourse-pattern surface outside the hard-register object"},
       "composition_rule": "register composition names owner eligibility, not automatic dispatch; owners remain locally selected after reread",
@@ -144,7 +145,7 @@ field_witness
       },
       "automatic_dispatch_chain": false,
       "evidence": [
-        "fixture 63 register-composition owner handoff",
+        "register-composition-owner-handoff-v1 register-composition owner handoff",
         "owner eligibility aids rather than automatic dispatch chains",
         "R(H,Delta)/kappa reread governs release after Land(B1)"
       ]

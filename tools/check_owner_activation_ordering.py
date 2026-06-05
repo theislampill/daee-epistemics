@@ -181,6 +181,23 @@ def is_kappa_delta(value: Any) -> bool:
     return "κ" in text or "kappa" in text
 
 
+def kappa_delta_has_explicit_carrier(item: dict[str, Any]) -> bool:
+    fields = (
+        item.get("kappa_carrier"),
+        item.get("kappa_state"),
+        item.get("dependency_radius"),
+        item.get("reread_state_effect"),
+        item.get("reread"),
+        item.get("route_gradient"),
+        item.get("delta_evidence"),
+    )
+    text = " ".join(str(value or "") for value in fields).lower()
+    return bool(
+        ("kappa" in text or "κ" in text)
+        and ("r(h" in text or "reread" in text or "dependency" in text or "carrier" in text)
+    )
+
+
 def canonical_delta(value: Any, target: str) -> str:
     found_target = delta_target(value)
     resolved_target = found_target
@@ -191,11 +208,11 @@ def canonical_delta(value: Any, target: str) -> str:
 
     text = canonical_text(value)
     target_text = resolved_target.lower()
-    compact_match = re.match(r"^(?:δ|Δ)\s*(?:b)?\s*\d+\s*:?\s*(?P<suffix>.*)$", text)
+    compact_match = re.match(r"^(?:delta|δ|Δ)\s*(?:b)?\s*\d+\s*:?\s*(?P<suffix>.*)$", text)
     if compact_match:
         suffix = compact_match.group("suffix").strip()
         return f"Delta({resolved_target}):{suffix}" if suffix else f"Delta({resolved_target})"
-    kappa_match = re.match(r"^(?:δ|Δ)\s*(?:κ|kappa)\s*:?\s*(?P<suffix>.*)$", text)
+    kappa_match = re.match(r"^(?:delta|δ|Δ)\s*[-_ ]?\s*(?:κ|kappa)\s*:?\s*(?P<suffix>.*)$", text)
     if kappa_match:
         suffix = kappa_match.group("suffix").strip()
         return f"Delta({resolved_target}):{suffix}" if suffix else f"Delta({resolved_target})"
@@ -331,8 +348,15 @@ def normalize_activation(
     found_delta_target = delta_target(raw_delta)
     if target and found_delta_target and found_delta_target != target:
         errors.append(f"{label}: delta target {found_delta_target} does not match activation target {target}")
-    elif target and not found_delta_target and not is_kappa_delta(raw_delta):
-        errors.append(f"{label}: delta must name activation target {target} or use Delta-kappa")
+    elif target and not found_delta_target:
+        if is_kappa_delta(raw_delta):
+            if not kappa_delta_has_explicit_carrier(item):
+                errors.append(
+                    f"{label}: Delta-kappa without raw burden target requires explicit "
+                    "kappa carrier/dependency-radius/R(H,Delta) evidence"
+                )
+        else:
+            errors.append(f"{label}: delta must name activation target {target} or use Delta-kappa")
     errors.extend(delta_result_vocabulary_errors(label, owner, delta))
     errors.extend(source_recoil_delta_errors(label, owner, pressure, delta))
 

@@ -52,6 +52,52 @@ operator_pack_eligible: true
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
 - Fixture/checker: Direct routing fixtures cover this owner (26); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
 
+## Formal owner contract
+
+```json
+{
+  "schema": "formal-owner-contract-v1",
+  "owner_id": "M9-predication-mode",
+  "owner_family": "M9",
+  "activation_feature": [
+    "selected burden contains predicate, referent, sense, category, or transfer pressure",
+    "the live noetic structure requires semantic/predication repair before release"
+  ],
+  "field_target": [
+    "selected burden id",
+    "predicate or term under test",
+    "referent/sense/category relation",
+    "DeltaB and kappa dependency state"
+  ],
+  "operation_token": [
+    "predication-repair",
+    "sense-split",
+    "repair"
+  ],
+  "delta_result": [
+    "predicate-separated",
+    "category-separated",
+    "referent-separated",
+    "person-nature-transfer-blocked",
+    "sense-separated"
+  ],
+  "reread_state_effect": [
+    "records whether predication repair landed the current burden",
+    "holds downstream content until predicate/referent/category transfer is typed"
+  ],
+  "hold_release_rule": [
+    "Land is licensed only by a burden-local sense/category/referent operation",
+    "decorative predication vocabulary remains non-evidence",
+    "case labels do not license M9"
+  ],
+  "negative_examples": [
+    "person/nature words without a selected predicate transfer",
+    "operation alias not declared by the owner contract",
+    "semantic labels used without field_witness/body_ref parity"
+  ]
+}
+```
+
 
 **Type:** Meta-tactic
 **Deploy when:** An argument's validity depends on a term carrying an identical sense across shifted occurrences; a question's coherence depends on a term applying to a domain where its meaning-conditions are not instantiated; an inference drawn by empirical-observational method is applied to a subject that method cannot access; the divine-attribute question of whether a term applies univocally, equivocally, or analogically is operative; or loaded negative theological terms are being used as if they were neutral.

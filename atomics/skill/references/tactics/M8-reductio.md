@@ -37,6 +37,50 @@ operator_pack_eligible: true
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
 - Fixture/checker: Direct routing fixtures cover this owner (3); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
 
+## Formal owner contract
+
+```json
+{
+  "schema": "formal-owner-contract-v1",
+  "owner_id": "M8-reductio",
+  "owner_family": "M8",
+  "activation_feature": [
+    "a selected burden contains a premise or route whose consequence must be traced",
+    "the live noetic structure licenses reductio rather than topic-level critique"
+  ],
+  "field_target": [
+    "selected burden id",
+    "premise or proof-rule under test",
+    "dependency edge or entailment chain",
+    "DeltaB state"
+  ],
+  "operation_token": [
+    "consequence-trace",
+    "trace",
+    "dependency-trace"
+  ],
+  "delta_result": [
+    "consequence-traced",
+    "entailment-blocked",
+    "dependency-exposed"
+  ],
+  "reread_state_effect": [
+    "records whether the traced consequence lands the current burden",
+    "routes downstream pressure through MRP only when a live dependency remains"
+  ],
+  "hold_release_rule": [
+    "Land is licensed only by a burden-local consequence trace",
+    "untraced implications remain held or inert",
+    "case labels do not license reductio"
+  ],
+  "negative_examples": [
+    "owner name plus consequence keywords without a target premise",
+    "generic worldview critique with no selected burden edge",
+    "route label treated as M8 execution"
+  ]
+}
+```
+
 
 **Type:** Meta-tactic
 **Deploy when:** Interlocutor's position, followed consistently, produces consequences that are formally contradictory, obviously absurd, or that the interlocutor manifestly rejects.

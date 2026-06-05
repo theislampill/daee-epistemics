@@ -21,7 +21,34 @@ from compiled_runtime_lib import fail_with_errors, repo_root
 
 CATALOGUE = Path("atomics/skill/references/diagnostics/module-catalogue.json")
 AUDIT_JSON = Path("docs/audits/v0.4.1.0-ttp-end-to-end-operativity-audit.json")
+DELTA_VOCABULARY = Path("atomics/skill/references/diagnostics/delta-result-vocabulary.json")
 ALLOWED_CLASSES = {"case-library", "diagnostic", "procedure", "tactic", "technique"}
+FORMAL_OWNER_CONTRACT_REQUIRED = {
+    "M8-reductio",
+    "M9-predication-mode",
+    "TTP-MRP-mid-reread-pressure",
+}
+FORMAL_OWNER_CONTRACT_KEYS = {
+    "schema",
+    "owner_id",
+    "owner_family",
+    "activation_feature",
+    "field_target",
+    "operation_token",
+    "delta_result",
+    "reread_state_effect",
+    "hold_release_rule",
+    "negative_examples",
+}
+FORBIDDEN_FORMAL_CONTRACT_KEYS = {
+    "case_family",
+    "matched_modules",
+    "pattern_profile",
+    "fixture_name",
+    "case_name",
+    "prompt_path",
+    "source_fixture",
+}
 INHERITED_FIELD_OPERATOR_REQUIREMENTS = {
     "atomics/skill/references/diagnostics/recursive-state-transitions.md": (
         "Plain `∇` is the route-gradient read over the live field",
@@ -131,6 +158,7 @@ CONTRACT_HEADINGS = (
     "## Runtime operator contract",
     "## Runtime field-accounting contract",
 )
+FORMAL_CONTRACT_HEADING = "## Formal owner contract"
 
 STRICT_COMMON_FIELDS = (
     "Field target:",
@@ -183,6 +211,14 @@ def parse_frontmatter(text: str) -> dict[str, object]:
             if isinstance(existing, list):
                 existing.append(stripped[2:])
     return data
+
+
+def string_list(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value.strip()] if value.strip() else []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return []
 
 
 def resolve_owner(root: Path, legacy_path: str) -> Path:
@@ -240,6 +276,26 @@ def extract_runtime_contract(text: str) -> tuple[str | None, str]:
     return heading, text[start:end]
 
 
+def extract_formal_owner_contract(text: str) -> tuple[dict[str, object] | None, str | None]:
+    start = text.find(FORMAL_CONTRACT_HEADING)
+    if start == -1:
+        return None, None
+    section = text[start:]
+    next_heading = re.search(r"(?m)^##\s+", section[len(FORMAL_CONTRACT_HEADING) :])
+    if next_heading:
+        section = section[: len(FORMAL_CONTRACT_HEADING) + next_heading.start()]
+    match = re.search(r"```json\s*(\{.*?\})\s*```", section, re.S)
+    if not match:
+        return None, "formal owner contract must contain a JSON object fenced as ```json"
+    try:
+        payload = json.loads(match.group(1))
+    except json.JSONDecodeError as exc:
+        return None, f"formal owner contract JSON is invalid: {exc}"
+    if not isinstance(payload, dict):
+        return None, "formal owner contract JSON must be an object"
+    return payload, None
+
+
 def check_strict_contract(module_id: str, text: str, errors: list[str]) -> None:
     heading, contract = extract_runtime_contract(text)
     if not heading:
@@ -271,6 +327,61 @@ def check_strict_contract(module_id: str, text: str, errors: list[str]) -> None:
         errors.append(f"{module_id}: runtime contract must guard against scalar closure/collapse")
     if "? effect:" in contract or "Possible ? reread:" in contract or "R(H,?) obligation:" in contract:
         errors.append(f"{module_id}: runtime contract contains placeholder question-mark notation")
+
+
+def check_formal_owner_contract(
+    module_id: str,
+    module_class: str,
+    text: str,
+    delta_vocabulary: dict[str, object],
+    errors: list[str],
+) -> None:
+    contract, parse_error = extract_formal_owner_contract(text)
+    if contract is None:
+        if module_id in FORMAL_OWNER_CONTRACT_REQUIRED:
+            errors.append(f"{module_id}: missing Formal owner contract")
+        elif parse_error:
+            errors.append(f"{module_id}: {parse_error}")
+        return
+    if parse_error:
+        errors.append(f"{module_id}: {parse_error}")
+        return
+    missing = sorted(FORMAL_OWNER_CONTRACT_KEYS - set(contract))
+    if missing:
+        errors.append(f"{module_id}: formal owner contract missing keys: {missing}")
+    forbidden = sorted(FORBIDDEN_FORMAL_CONTRACT_KEYS & set(contract))
+    if forbidden:
+        errors.append(f"{module_id}: formal owner contract includes runtime/case fields: {forbidden}")
+    if contract.get("schema") != "formal-owner-contract-v1":
+        errors.append(f"{module_id}: formal owner contract schema must be 'formal-owner-contract-v1'")
+    if contract.get("owner_id") != module_id:
+        errors.append(f"{module_id}: formal owner contract owner_id mismatch")
+    owner_family = str(contract.get("owner_family") or "").strip()
+    if not owner_family:
+        errors.append(f"{module_id}: formal owner contract owner_family must be non-empty")
+    for key in (
+        "activation_feature",
+        "field_target",
+        "operation_token",
+        "delta_result",
+        "reread_state_effect",
+        "hold_release_rule",
+        "negative_examples",
+    ):
+        if not string_list(contract.get(key)):
+            errors.append(f"{module_id}: formal owner contract {key} must be a non-empty string/list")
+    operations = string_list(contract.get("operation_token"))
+    deltas = string_list(contract.get("delta_result"))
+    if module_class == "tactic" and not operations:
+        errors.append(f"{module_id}: tactic formal contract must declare operation_token")
+    owner_families = delta_vocabulary.get("owner_families")
+    if isinstance(owner_families, dict) and owner_family in owner_families:
+        allowed_deltas = {str(item) for item in owner_families.get(owner_family) or []}
+        unknown = sorted(set(deltas) - allowed_deltas)
+        if unknown:
+            errors.append(
+                f"{module_id}: formal owner contract delta_result outside owner vocabulary: {unknown}"
+            )
 
 
 def check_inherited_field_operator_requirements(root: Path, errors: list[str]) -> None:
@@ -307,6 +418,12 @@ def main(argv: list[str] | None = None) -> int:
     modules = payload.get("modules")
     if not isinstance(modules, list) or not modules:
         return fail_with_errors("TTP operator contracts", ["module catalogue has no modules list"])
+    delta_vocabulary_path = root / DELTA_VOCABULARY
+    if delta_vocabulary_path.is_file():
+        delta_vocabulary = json.loads(delta_vocabulary_path.read_text(encoding="utf-8"))
+    else:
+        delta_vocabulary = {}
+        errors.append(f"{DELTA_VOCABULARY.as_posix()}: missing delta-result vocabulary")
 
     check_inherited_field_operator_requirements(root, errors)
 
@@ -359,6 +476,7 @@ def main(argv: list[str] | None = None) -> int:
         for label, pattern in FORBIDDEN_PATTERNS.items():
             if pattern.search(text):
                 errors.append(f"{module_id}: forbidden TTP operator claim: {label}")
+        check_formal_owner_contract(module_id, str(module_class), text, delta_vocabulary, errors)
         if args.strict:
             check_strict_contract(module_id, text, errors)
 

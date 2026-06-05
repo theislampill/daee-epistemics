@@ -1,0 +1,29 @@
+{
+  "schema": "ttp-availability-canary-v1",
+  "scenario": "callable_applicable",
+  "catalogue_present": ["do-christian-extensions"],
+  "selected": ["do-christian-extensions"],
+  "unselected": [],
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "coverage_complete": true,
+  "surface_rows": [
+    {
+      "owner": "do-christian-extensions",
+      "act_row": "ACT B1_1[do-christian-extensions.route] :: body_ref=B1_1 :: Land(B1)+",
+      "body_ref": "B1_1",
+      "body_ref_dereference": {
+        "body_ref": "B1_1",
+        "owner": "do-christian-extensions",
+        "target": "selected owner family pressure",
+        "operation": "route through model family and predication words",
+        "result": "trinitarian-model-identified",
+        "contribution": "Contribution-to-Land"
+      },
+      "owner_activation": {"owner": "do-christian-extensions", "body_ref": "B1_1"},
+      "nar": {"owner": "do-christian-extensions"},
+      "field_witness": {"owner": "do-christian-extensions", "body_ref": "B1_1"},
+      "mrp_reread": {"route_result_type": "no_new_resultant", "owner_route": ["do-christian-extensions"]}
+    }
+  ]
+}

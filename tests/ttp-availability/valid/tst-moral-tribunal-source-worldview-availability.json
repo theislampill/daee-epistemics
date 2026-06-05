@@ -33,7 +33,7 @@
         "owner": "FPD",
         "target": "moral tribunal pressure",
         "operation": "expose foreign premise",
-        "result": "tribunal premise exposed",
+        "result": "foreign-premise-exposed",
         "contribution": "Contribution-to-Land"
       },
       "owner_activation": {"owner": "FPD", "body_ref": "B1_1"},
@@ -84,7 +84,7 @@
         "owner": "M9",
         "target": "predication pressure",
         "operation": "repair source-worldview predication",
-        "result": "predicate transfer blocked",
+        "result": "predicate-separated",
         "contribution": "Contribution-to-Land"
       },
       "owner_activation": {"owner": "M9", "body_ref": "B1_4"},
@@ -117,8 +117,8 @@
         "body_ref": "B1_6",
         "owner": "P7",
         "target": "terminal boundary pressure",
-        "operation": "bound tribunal scope",
-        "result": "scope boundary named",
+        "operation": "boundary tribunal scope",
+        "result": "scope-boundary-named",
         "contribution": "Contribution-to-Land"
       },
       "owner_activation": {"owner": "P7", "body_ref": "B1_6"},
@@ -135,7 +135,7 @@
         "owner": "source-status-repair",
         "target": "source status pressure",
         "operation": "repair source status",
-        "result": "source status bounded",
+        "result": "source-function-bounded",
         "contribution": "Contribution-to-Land"
       },
       "owner_activation": {"owner": "source-status-repair", "body_ref": "B1_7"},

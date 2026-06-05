@@ -80,12 +80,13 @@ field_witness
     "register_composition": {
       "schema": "b5-register-composition-v1",
       "source_fixture": "tests/routing-fixtures/63-register-composition-owner-handoff.json",
+      "source_fixture_capability": "register-composition-owner-handoff-v1",
       "component_registers": ["heart", "xi", "Omega", "mu", "sigma"],
       "sigma_boundary": {"present": true, "inside_hard_registers": true, "role": "sigma is inside the hard-register object"},
       "composition_rule": "register composition names owner eligibility, not automatic dispatch",
       "owner_handoff": {"selected": ["M8"], "held": [], "policy": "owner eligibility, not automatic dispatch"},
       "automatic_dispatch_chain": false,
-      "evidence": ["fixture 63", "owner eligibility", "R(H,Delta)"]
+      "evidence": ["register-composition-owner-handoff-v1", "owner eligibility", "R(H,Delta)"]
     }
   }
 }

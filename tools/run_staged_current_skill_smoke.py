@@ -3216,8 +3216,9 @@ Hard boundaries:
 - Do not claim broad model behavior, arbitrary NL-to-IR parsing, guaranteed T_lang uptake, or Graphify/ActiveGraph proof.
 - Preserve the public `/daee-epistemics` interface; stage artifacts are repo/dev scratch only.
 
-Case: {case_name}
-Raw input path: {rel(raw_input_path, root)}
+Run metadata: redacted from model-facing route surface; case IDs and paths are
+custody fields only and must not determine routing, owner selection, proof
+eligibility, or canonicalization.
 Input SHA256: {input_digest}
 
 Raw input:
@@ -3271,8 +3272,9 @@ Public interface boundary:
 - Preserve the visible opening noetic-field read/header.
 - Do not expose raw dev harness internals as a new public mode.
 
-Case: {case_name}
-Raw input path: {rel(raw_input_path, root)}
+Run metadata: redacted from model-facing route surface; case IDs and paths are
+custody fields only and must not determine routing, owner selection, proof
+eligibility, or canonicalization.
 Input SHA256: {input_digest}
 
 Raw input:
@@ -3631,8 +3633,9 @@ Public interface boundary:
   uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
   ActiveGraph proof.
 
-Case: {case_name}
-Raw input path: {rel(raw_input_path, root)}
+Run metadata: redacted from model-facing route surface; case IDs and paths are
+custody fields only and must not determine routing, owner selection, proof
+eligibility, or canonicalization.
 Input SHA256: {input_digest}
 Section: {section_number} of {section_count}
 Section id: {section_id}
@@ -3705,8 +3708,9 @@ You are expanding one already-generated stage-07 compiled output section inside
 the same bounded pilot run. This is not a second pilot. The harness will append
 your text to the same section file, hash it, and validate the assembled output.
 
-Case: {case_name}
-Raw input path: {rel(raw_input_path, root)}
+Run metadata: redacted from model-facing route surface; case IDs and paths are
+custody fields only and must not determine routing, owner selection, proof
+eligibility, or canonicalization.
 Input SHA256: {input_digest}
 Section id: {section_id}
 Section role: {section_role}
@@ -4314,10 +4318,12 @@ def handoffs_for_stage_order(stage_order: list[str]) -> list[dict[str, Any]]:
 
 
 def model_scope(case_name: str, replay_record: Path, *, stop_after_stage: str | None) -> dict[str, Any]:
+    del case_name
     return {
         "type": "focused-current-skill-stage-smoke" if stop_after_stage else "focused-current-skill-smoke",
         "case_count": 1,
-        "case_family": "a9-science-source" if "a9-science-source" in case_name else case_name,
+        "case_family": "metadata-redacted-dsl-ir-selected-by-input",
+        "case_metadata_role": "custody_only_not_route_or_proof",
         "retained_replay_target": rel(replay_record),
     }
 
@@ -4422,6 +4428,40 @@ def run_self_test(root: Path) -> int:
     raw_input = DEFAULT_INPUT
     validate_replay_record(root, replay_record)
     replay = load_json(replay_record)
+    named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
+    neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
+    if named_scope != neutral_scope:
+        raise HarnessError("Self-test model_scope changed under neutral case-name copy")
+    if named_scope.get("case_family") == "self-test-a9-science-source" or "a9-science-source" in str(
+        named_scope.get("case_family") or ""
+    ):
+        raise HarnessError("Self-test model_scope derived proof-facing case_family from case name")
+    if named_scope.get("case_metadata_role") != "custody_only_not_route_or_proof":
+        raise HarnessError("Self-test model_scope did not mark case metadata as custody-only")
+    prompt_a = stage_prompt(
+        root=root,
+        stage_id=STAGE_ORDER[0],
+        case_name="self-test-a9-science-source",
+        raw_input_path=DEFAULT_INPUT,
+        input_text="/daee-epistemics refute secularism",
+        input_digest="0" * 64,
+        skill_hash="1" * 64,
+        previous_stages=[],
+    )
+    prompt_b = stage_prompt(
+        root=root,
+        stage_id=STAGE_ORDER[0],
+        case_name="neutral-formal-route-copy",
+        raw_input_path=DEFAULT_INPUT.parent / "neutral-copy.md",
+        input_text="/daee-epistemics refute secularism",
+        input_digest="0" * 64,
+        skill_hash="1" * 64,
+        previous_stages=[],
+    )
+    if prompt_a != prompt_b:
+        raise HarnessError("Self-test stage prompt changed under neutral case-name/path copy")
+    if "self-test-a9-science-source" in prompt_a or "neutral-copy.md" in prompt_a:
+        raise HarnessError("Self-test stage prompt leaked case metadata into model-facing route surface")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)

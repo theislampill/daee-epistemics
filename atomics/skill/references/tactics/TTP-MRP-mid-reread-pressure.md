@@ -79,6 +79,58 @@ operator_pack_eligible: true
   catalogue owner; closure graph / `field_witness` consistency is checked by
   `tools/check_closure_witness_graph.py` and `tools/check_ir_instance_integrity.py`.
 
+## Formal owner contract
+
+```json
+{
+  "schema": "formal-owner-contract-v1",
+  "owner_id": "TTP-MRP-mid-reread-pressure",
+  "owner_family": "MRP",
+  "activation_feature": [
+    "post-land R(H,Delta) reread",
+    "target-explicit divergence/curl pressure",
+    "held or generated route pressure before STOP"
+  ],
+  "field_target": [
+    "current burden state DeltaB",
+    "held set H",
+    "B_LA/B_MRP membership",
+    "dependency_graph",
+    "terminal_states",
+    "field_witness.formal_reread_states"
+  ],
+  "operation_token": [
+    "mid-reread-pressure",
+    "generated-burden-instantiation",
+    "held-burden-activation",
+    "no-new-resultant-proof",
+    "hold-partial-route"
+  ],
+  "delta_result": [
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "hold_partial",
+    "loopbreak"
+  ],
+  "reread_state_effect": [
+    "records route_result_type before closure",
+    "adds generated_by provenance when B_MRP is instantiated",
+    "keeps coverage_complete=false while generated pressure remains unresolved"
+  ],
+  "hold_release_rule": [
+    "STOP is licensed only when no live held/generated route remains",
+    "generated unresolved pressure routes HOLD/PARTIAL/RECURSE with provenance",
+    "catalogue presence alone is inert"
+  ],
+  "negative_examples": [
+    "string-only generated_burden_instantiation marker without B_MRP parity",
+    "route label used as owner ACT execution",
+    "case-name or topic string used as MRP proof"
+  ]
+}
+```
+
 ## Operation
 
 MRP is the controlled activation harness inside `R(H,Δ)`. It does not answer a new topic and does

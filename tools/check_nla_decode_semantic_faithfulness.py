@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -54,6 +55,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "nla-decode-semantic-faithfulness"
+FORMAL_CONTRACT_HEADING = "## Formal owner contract"
 HARD_REGISTER_SCHEMA_VERSION = "0.4.3-hard-registers-v1"
 CANONICAL_IR_PROJECTION_SCHEMA = "b5-canonical-ir-projection-v1"
 CANONICAL_IR_DECODE_SCHEMA = "b5-canonical-ir-decode-v1"
@@ -61,7 +63,7 @@ FULL_IR_DECODE_SCHEMA = "b5-full-ir-decode-v1"
 FULL_IR_PROOF_MODE_SCHEMA = "b5-full-ir-proof-mode-v1"
 RUNTIME_EMISSION_POLICY_SCHEMA = "b5-full-ir-runtime-emission-v1"
 REGISTER_COMPOSITION_SCHEMA = "b5-register-composition-v1"
-REGISTER_COMPOSITION_SOURCE_FIXTURE = "tests/routing-fixtures/63-register-composition-owner-handoff.json"
+REGISTER_COMPOSITION_SOURCE_CAPABILITY = "register-composition-owner-handoff-v1"
 HARD_REGISTER_KEYS = ("heart", "xi", "Omega", "mu", "kappa")
 HARD_REGISTER_KEY_SET = set(HARD_REGISTER_KEYS)
 HARD_REGISTER_STATES = {"live", "held", "non_live"}
@@ -91,6 +93,7 @@ PROJECTION_PER_BURDEN_KEYS = (
 REGISTER_COMPOSITION_KEYS = {
     "schema",
     "source_fixture",
+    "source_fixture_capability",
     "component_registers",
     "sigma_boundary",
     "composition_rule",
@@ -221,6 +224,64 @@ RUNTIME_EMISSION_POLICY_KEYS = {
     "arbitrary_nl_ir_parser_claim",
     "t_lang_uptake_claim",
 }
+
+
+def owner_contract_key(value: str) -> str:
+    return re.sub(r"[\s_]+", "-", value.strip().strip("[]")).upper()
+
+
+def formal_owner_contract_operations() -> dict[str, set[str]]:
+    operations: dict[str, set[str]] = {}
+    catalogue = ROOT / "atomics/skill/references/diagnostics/module-catalogue.json"
+    if not catalogue.is_file():
+        return operations
+    try:
+        payload = json.loads(catalogue.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return operations
+    for entry in payload.get("modules") or []:
+        if not isinstance(entry, dict):
+            continue
+        path_value = str(entry.get("path") or "")
+        if not path_value.startswith("skill/"):
+            continue
+        source = ROOT / "atomics/skill" / path_value[len("skill/") :]
+        if not source.is_file():
+            continue
+        text = source.read_text(encoding="utf-8", errors="replace")
+        start = text.find(FORMAL_CONTRACT_HEADING)
+        if start == -1:
+            continue
+        section = text[start:]
+        next_heading = re.search(r"(?m)^##\s+", section[len(FORMAL_CONTRACT_HEADING) :])
+        if next_heading:
+            section = section[: len(FORMAL_CONTRACT_HEADING) + next_heading.start()]
+        match = re.search(r"```json\s*(\{.*?\})\s*```", section, re.S)
+        if not match:
+            continue
+        try:
+            contract = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(contract, dict):
+            continue
+        raw_ops = contract.get("operation_token")
+        if isinstance(raw_ops, str):
+            op_set = {raw_ops.strip()} if raw_ops.strip() else set()
+        elif isinstance(raw_ops, list):
+            op_set = {str(item).strip() for item in raw_ops if str(item).strip()}
+        else:
+            op_set = set()
+        if not op_set:
+            continue
+        for key in (contract.get("owner_id"), contract.get("owner_family"), entry.get("id")):
+            token = str(key or "").strip()
+            if token:
+                operations[owner_contract_key(token)] = op_set
+    return operations
+
+
+FORMAL_OWNER_CONTRACT_OPERATIONS = formal_owner_contract_operations()
 RUNTIME_EMISSION_POLICY_MODES = {
     "default-runtime-when-proof-class-closure-claimed",
 }
@@ -777,10 +838,22 @@ def register_composition_projection_errors(path: Path, projection: dict[str, Any
         errors.append(f"{label}: schema must be {REGISTER_COMPOSITION_SCHEMA!r}")
 
     source_fixture = composition.get("source_fixture")
-    if source_fixture != REGISTER_COMPOSITION_SOURCE_FIXTURE:
-        errors.append(f"{label}: source_fixture must be {REGISTER_COMPOSITION_SOURCE_FIXTURE!r}")
-    elif not (ROOT / source_fixture).is_file():
-        errors.append(f"{label}: source_fixture path does not exist")
+    if not isinstance(source_fixture, str) or not source_fixture.strip():
+        errors.append(f"{label}: source_fixture must be a non-empty relative custody path")
+    else:
+        source_path = ROOT / source_fixture
+        try:
+            source_path.resolve().relative_to(ROOT.resolve())
+        except ValueError:
+            errors.append(f"{label}: source_fixture must resolve inside the repo")
+        if not source_path.is_file():
+            errors.append(f"{label}: source_fixture path does not exist")
+
+    capability = composition.get("source_fixture_capability")
+    if capability != REGISTER_COMPOSITION_SOURCE_CAPABILITY:
+        errors.append(
+            f"{label}: source_fixture_capability must be {REGISTER_COMPOSITION_SOURCE_CAPABILITY!r}"
+        )
 
     component_registers = string_list(composition.get("component_registers"))
     if component_registers is None:
@@ -811,7 +884,7 @@ def register_composition_projection_errors(path: Path, projection: dict[str, Any
         if extra_sigma:
             errors.append(f"{label}.sigma_boundary: additional key(s) not allowed: {extra_sigma}")
         if sigma_boundary.get("present") is not True:
-            errors.append(f"{label}.sigma_boundary: present must be true for fixture 63 composition")
+            errors.append(f"{label}.sigma_boundary: present must be true for register-composition handoff")
         if sigma_boundary.get("inside_hard_registers") is not False:
             errors.append(f"{label}.sigma_boundary: sigma must remain outside hard_registers")
         role = sigma_boundary.get("role")
@@ -872,7 +945,7 @@ def register_composition_projection_errors(path: Path, projection: dict[str, Any
         errors.append(f"{label}: evidence must be a non-empty string list")
         evidence = []
     evidence_text = " ".join(evidence).lower()
-    for term in ("fixture 63", "r(h,delta)", "owner eligibility"):
+    for term in (REGISTER_COMPOSITION_SOURCE_CAPABILITY, "r(h,delta)", "owner eligibility"):
         if term not in evidence_text:
             errors.append(f"{label}: evidence must include {term!r}")
 
@@ -1384,6 +1457,16 @@ def decode_facets(path: Path, text: str, record: ActRecord) -> tuple[DecodedFace
         errors.append(f"{label}: owner {record.owner!r} is not catalogue-backed")
     if GENERIC_ACT_VALUE_RE.fullmatch(record.operation):
         errors.append(f"{label}: operation is generic and cannot be decoded faithfully")
+    formal_allowed = (
+        FORMAL_OWNER_CONTRACT_OPERATIONS.get(owner_contract_key(record.owner))
+        or FORMAL_OWNER_CONTRACT_OPERATIONS.get(owner_contract_key(owner_family))
+    )
+    if formal_allowed and record.operation not in formal_allowed:
+        expected = ", ".join(sorted(formal_allowed))
+        errors.append(
+            f"{label}: operation {record.operation!r} is not declared by formal owner contract; "
+            f"expected one of: {expected}"
+        )
 
     land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
     target = land_target_tokens[0] if land_target_tokens else ""

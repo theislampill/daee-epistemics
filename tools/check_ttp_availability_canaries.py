@@ -24,9 +24,14 @@ MODULE_CATALOGUE = ROOT / "atomics" / "skill" / "references" / "diagnostics" / "
 DELTA_VOCABULARY = ROOT / "atomics" / "skill" / "references" / "diagnostics" / "delta-result-vocabulary.json"
 
 SCHEMA = "ttp-availability-canary-v1"
+FORMAL_CONTRACT_HEADING = "## Formal owner contract"
 PASS_THROUGH_GUIDANCE = {"V1", "V1-diagnostic", "heuristics"}
 HELD_GENERATED_STATE_RE = re.compile(r"(?i)\b(?:held|hold|partial|carried|recurse|unresolved)\b")
 EXECUTED_GENERATED_STATE_RE = re.compile(r"(?i)\b(?:landed|executed|resolved)\b")
+OPERATION_NEGATION_RE = re.compile(
+    r"(?i)\b(?:did\s+not|does\s+not|do\s+not|not|never|without|failed\s+to|"
+    r"refused\s+to|unable\s+to|cannot|can't|didn't)\b"
+)
 REQUIRED_SURFACE_KEYS = (
     "act_row",
     "body_ref",
@@ -98,6 +103,72 @@ def load_json(path: Path) -> Any:
         return json.load(handle)
 
 
+def load_formal_owner_contracts() -> dict[str, dict[str, Any]]:
+    contracts: dict[str, dict[str, Any]] = {}
+    catalogue = load_json(MODULE_CATALOGUE)
+    for entry in catalogue.get("modules") or []:
+        if not isinstance(entry, dict):
+            continue
+        path_value = str(entry.get("path") or "")
+        if not path_value.startswith("skill/"):
+            continue
+        source_path = ROOT / "atomics/skill" / path_value[len("skill/") :]
+        if not source_path.is_file():
+            continue
+        text = source_path.read_text(encoding="utf-8", errors="replace")
+        start = text.find(FORMAL_CONTRACT_HEADING)
+        if start == -1:
+            continue
+        section = text[start:]
+        next_heading = re.search(r"(?m)^##\s+", section[len(FORMAL_CONTRACT_HEADING) :])
+        if next_heading:
+            section = section[: len(FORMAL_CONTRACT_HEADING) + next_heading.start()]
+        match = re.search(r"```json\s*(\{.*?\})\s*```", section, re.S)
+        if not match:
+            continue
+        try:
+            contract = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(contract, dict):
+            continue
+        owner_id = str(contract.get("owner_id") or entry.get("id") or "").strip()
+        owner_family = str(contract.get("owner_family") or "").strip()
+        if owner_id:
+            contracts[owner_id] = contract
+        if owner_family:
+            contracts[owner_family] = contract
+    return contracts
+
+
+def load_owner_vocabulary_section(section_name: str) -> dict[str, set[str]]:
+    payload = load_json(DELTA_VOCABULARY)
+    section = payload.get(section_name)
+    aliases = payload.get("owner_aliases") or {}
+    if not isinstance(section, dict):
+        return {}
+    values: dict[str, set[str]] = {}
+    for raw_owner, raw_items in section.items():
+        if isinstance(raw_items, list):
+            raw_item_list = raw_items
+        elif raw_items is None:
+            raw_item_list = []
+        else:
+            raw_item_list = [raw_items]
+        item_set = {str(item).strip() for item in raw_item_list if str(item).strip()}
+        if not item_set:
+            continue
+        owner = str(raw_owner).strip()
+        values[owner] = item_set
+    if isinstance(aliases, dict):
+        for alias, family in aliases.items():
+            family_key = str(family).strip()
+            alias_key = str(alias).strip()
+            if family_key in values and alias_key:
+                values[alias_key] = set(values[family_key])
+    return values
+
+
 def catalogue_tokens() -> set[str]:
     tokens: set[str] = set()
     catalogue = load_json(MODULE_CATALOGUE)
@@ -112,10 +183,6 @@ def catalogue_tokens() -> set[str]:
             value = str(alias or "").strip()
             if value:
                 tokens.add(value)
-        path = str(entry.get("path") or "").strip()
-        if path:
-            tokens.add(Path(path).stem)
-
     vocabulary = load_json(DELTA_VOCABULARY)
     aliases = vocabulary.get("owner_aliases") or {}
     if isinstance(aliases, dict):
@@ -135,6 +202,9 @@ def catalogue_tokens() -> set[str]:
 
 
 CATALOGUE_TOKENS = catalogue_tokens()
+FORMAL_OWNER_CONTRACTS = load_formal_owner_contracts()
+OWNER_OPERATION_VOCABULARY = load_owner_vocabulary_section("owner_operations")
+OWNER_DELTA_RESULT_VOCABULARY = load_owner_vocabulary_section("owner_families")
 
 
 def as_list(value: Any) -> list[Any]:
@@ -189,6 +259,89 @@ def owner_family_token(owner: str) -> str:
     return token
 
 
+def formal_contract_for_owner(owner: str) -> dict[str, Any] | None:
+    return FORMAL_OWNER_CONTRACTS.get(owner) or FORMAL_OWNER_CONTRACTS.get(owner_family_token(owner))
+
+
+def contract_operations(contract: dict[str, Any]) -> set[str]:
+    value = contract.get("operation_token")
+    if isinstance(value, str):
+        return {value.strip()} if value.strip() else set()
+    if isinstance(value, list):
+        return {str(item).strip() for item in value if str(item).strip()}
+    return set()
+
+
+def contract_delta_results(contract: dict[str, Any]) -> set[str]:
+    value = contract.get("delta_result")
+    if isinstance(value, str):
+        return {value.strip()} if value.strip() else set()
+    if isinstance(value, list):
+        return {str(item).strip() for item in value if str(item).strip()}
+    return set()
+
+
+def source_owned_operations_for_owner(owner: str) -> set[str]:
+    contract = formal_contract_for_owner(owner)
+    if contract is not None:
+        operations = contract_operations(contract)
+        if operations:
+            return operations
+    return (
+        OWNER_OPERATION_VOCABULARY.get(owner)
+        or OWNER_OPERATION_VOCABULARY.get(owner_family_token(owner))
+        or set()
+    )
+
+
+def source_owned_delta_results_for_owner(owner: str) -> set[str]:
+    contract = formal_contract_for_owner(owner)
+    if contract is not None:
+        deltas = contract_delta_results(contract)
+        if deltas:
+            return deltas
+    return (
+        OWNER_DELTA_RESULT_VOCABULARY.get(owner)
+        or OWNER_DELTA_RESULT_VOCABULARY.get(owner_family_token(owner))
+        or set()
+    )
+
+
+def act_owner_operation(act_row: str) -> tuple[str, str] | None:
+    match = re.search(r"\[[^\].\s]+\.(?P<operation>[A-Za-z0-9_.\-/]+)\]", act_row)
+    if not match:
+        return None
+    owner_match = re.search(r"\[(?P<owner>[^\].\s]+)\.", act_row)
+    if not owner_match:
+        return None
+    return owner_match.group("owner"), match.group("operation")
+
+
+def operation_token_recoverable(token: str, phrase: str) -> bool:
+    token_text = re.sub(r"[-_/]+", " ", token.lower()).strip()
+    phrase_text = re.sub(r"[-_/]+", " ", phrase.lower()).strip()
+    if token_text and token_text in phrase_text:
+        return True
+    token_words = [word for word in re.findall(r"[a-z0-9]+", token_text) if len(word) > 2]
+    phrase_words = set(re.findall(r"[a-z0-9]+", phrase_text))
+    return bool(token_words) and all(word in phrase_words for word in token_words)
+
+
+def operation_token_negated(token: str, phrase: str) -> bool:
+    if not operation_token_recoverable(token, phrase):
+        return False
+    phrase_text = re.sub(r"[-_/]+", " ", phrase.lower()).strip()
+    return bool(OPERATION_NEGATION_RE.search(phrase_text))
+
+
+def allowed_token_recoverable(allowed_tokens: set[str], phrase: str) -> bool:
+    return any(operation_token_recoverable(token, phrase) for token in allowed_tokens)
+
+
+def allowed_token_negated(allowed_tokens: set[str], phrase: str) -> bool:
+    return any(operation_token_negated(token, phrase) for token in allowed_tokens)
+
+
 def act_mentions_owner_and_ref(row: dict[str, Any], owner: str, body_ref: str) -> bool:
     act = str(row.get("act_row") or "")
     if not act or not body_ref:
@@ -199,8 +352,13 @@ def act_mentions_owner_and_ref(row: dict[str, Any], owner: str, body_ref: str) -
 def row_is_complete(row: dict[str, Any], owner: str) -> list[str]:
     errors: list[str] = []
     body_ref = surface_body_ref(row, "body_ref")
+    parsed_act = act_owner_operation(str(row.get("act_row") or ""))
     if not act_mentions_owner_and_ref(row, owner, body_ref):
         errors.append(f"{owner}: ACT row must name owner, body_ref={body_ref}, and Land(...)")
+    if parsed_act is None:
+        errors.append(f"{owner}: ACT row must expose owner.operation")
+    elif parsed_act[0] != owner:
+        errors.append(f"{owner}: ACT row owner {parsed_act[0]!r} must match selected owner")
 
     deref = row.get("body_ref_dereference")
     if not isinstance(deref, dict):
@@ -210,13 +368,56 @@ def row_is_complete(row: dict[str, Any], owner: str) -> list[str]:
             errors.append(f"{owner}: body_ref_dereference must match body_ref")
         if str(deref.get("owner") or "").strip() != owner:
             errors.append(f"{owner}: body_ref_dereference must carry selected owner")
+        deref_operation = str(deref.get("operation") or "").strip()
+        deref_result = str(deref.get("result") or "").strip()
+        activation = row.get("owner_activation") if isinstance(row.get("owner_activation"), dict) else {}
+        result_surface = " ".join(
+            str(value or "")
+            for value in (
+                row.get("delta_result"),
+                row.get("delta"),
+                activation.get("delta_result") if isinstance(activation, dict) else "",
+                activation.get("delta") if isinstance(activation, dict) else "",
+                deref_result,
+            )
+        )
+        act_operation = parsed_act[1] if parsed_act is not None else ""
+        allowed_operations = source_owned_operations_for_owner(owner)
+        allowed_deltas = source_owned_delta_results_for_owner(owner)
+        if allowed_operations:
+            if act_operation not in allowed_operations:
+                expected = ", ".join(sorted(allowed_operations))
+                errors.append(
+                    f"{owner}: operation {act_operation!r} is not declared by source-owned owner contract; "
+                    f"expected one of: {expected}"
+                )
+            if act_operation and not operation_token_recoverable(act_operation, deref_operation):
+                errors.append(
+                    f"{owner}: body_ref_dereference operation must recover ACT operation token "
+                    f"{act_operation!r}"
+                )
+            if act_operation and operation_token_negated(act_operation, deref_operation):
+                errors.append(
+                    f"{owner}: body_ref_dereference operation must not negate or disclaim "
+                    f"ACT operation token {act_operation!r}"
+                )
+        if allowed_deltas and not allowed_token_recoverable(allowed_deltas, result_surface):
+            expected = ", ".join(sorted(allowed_deltas))
+            errors.append(
+                f"{owner}: result/delta must recover source-owned delta_result; "
+                f"expected one of: {expected}"
+            )
+        if allowed_deltas and allowed_token_negated(allowed_deltas, result_surface):
+            errors.append(f"{owner}: result/delta must not negate or disclaim source-owned delta_result")
         body = " ".join(str(deref.get(key) or "") for key in ("target", "operation", "result", "contribution"))
         if not re.search(r"(?i)\b(?:target|pressure|operation|result|delta|land|bounded|exposed|routed|separated)\b", body):
             errors.append(f"{owner}: body_ref_dereference lacks operation/result/Land shape")
         family = owner_family_token(owner)
         owner_specific = OWNER_SPECIFIC_BODY_RE.get(family)
-        if owner_specific is not None and not owner_specific.search(body):
-            errors.append(f"{owner}: body_ref_dereference lacks selected-owner operation semantics")
+        if owner_specific is not None and not allowed_operations:
+            errors.append(f"{owner}: selected owner requires source-owned operation vocabulary, not regex-only semantics")
+        if owner_specific is not None and not allowed_deltas:
+            errors.append(f"{owner}: selected owner requires source-owned delta_result vocabulary, not regex-only semantics")
 
     for key in ("owner_activation", "nar", "field_witness"):
         if surface_owner(row, key) != owner:
