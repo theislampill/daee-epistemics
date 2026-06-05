@@ -4155,13 +4155,15 @@ def run_compiled_release_self_test(
         raise HarnessError("Compiled-mode self-test validator keys drifted from single-output Stage 07 keys")
 
 
-def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
+def build_codex_command(root: Path, model: str, output_path: Path) -> list[str]:
     codex = shutil.which("codex")
     if codex is None:
         raise HarnessError("codex CLI not found on PATH; model smoke is blocked by harness/credential environment")
-    command = [
+    return [
         codex,
         "exec",
+        "--ignore-user-config",
+        "--ephemeral",
         "-C",
         str(root),
         "-s",
@@ -4176,6 +4178,10 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
         str(output_path),
         "-",
     ]
+
+
+def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
+    command = build_codex_command(root, model, output_path)
     result = run_checked(command, cwd=root, input_text=prompt)
     write_text(log_path, result.stdout)
     return result.returncode
@@ -4688,6 +4694,11 @@ def run_self_test(root: Path) -> int:
     replay_record = DEFAULT_REPLAY_RECORD
     raw_input = DEFAULT_INPUT
     validate_replay_record(root, replay_record)
+    smoke_command = build_codex_command(root, "gpt-5.5", root / ".daee" / "validation" / "self-test-output.txt")
+    if "--ignore-user-config" not in smoke_command or "--ephemeral" not in smoke_command:
+        raise HarnessError("Self-test Codex subprocess command did not isolate mutable user config")
+    if 'approval_policy="never"' not in smoke_command or 'shell_environment_policy.inherit="all"' not in smoke_command:
+        raise HarnessError("Self-test Codex subprocess command lost approval/environment policy")
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
