@@ -632,7 +632,19 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
 
     floor = stage.get("burden_floor")
     if isinstance(floor, list) and floor and all(isinstance(item, str) and item for item in floor):
-        stage["burden_floor"] = ordered_unique(list(floor))
+        canonical_floor: list[str] = []
+        label_details: list[dict[str, str]] = []
+        for index, item in enumerate(floor):
+            raw = item.strip()
+            burden_id = canonical_burden_id_from_text(raw)
+            if burden_id is None:
+                raise HarnessError(
+                    f"stage-02 burden_floor[{index}] string cannot be normalized to one canonical burden id"
+                )
+            canonical_floor.append(burden_id)
+            if raw != burden_id:
+                label_details.append({"raw": raw, "burden_id": burden_id})
+        stage["burden_floor"] = ordered_unique(canonical_floor)
         detail_alias = stage.get("burden_floor_details")
         if detail_alias is None and isinstance(stage.get("burden_floor_detail"), list):
             detail_alias = stage.get("burden_floor_detail")
@@ -647,6 +659,11 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
                     raise HarnessError(
                         f"stage-02 burden_floor_details[{index}] object cannot be normalized without a string burden_id"
                     )
+        elif label_details:
+            stage["burden_floor_details"] = label_details
+        if label_details:
+            normalization["burden_floor_strings_normalized_to_ids"] = True
+            normalization["canonical_burden_floor"] = list(stage["burden_floor"])
     elif isinstance(floor, list) and floor and all(isinstance(item, dict) for item in floor):
         details = list(floor)
         burden_ids: list[str] = []
@@ -3205,6 +3222,12 @@ def stage_prompt(
     extra_guidance = ""
     if stage_id == "stage-04-burden-execution-act":
         extra_guidance = stage04_delta_vocabulary_guidance(previous_stages)
+    custody_metadata = {
+        "case_id": case_name,
+        "retained_input": rel(raw_input_path, root),
+        "input_digest": input_digest,
+    }
+    custody = json.dumps(custody_metadata, ensure_ascii=False, indent=2)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing one bounded repo/dev staged current-skill smoke for daee-epistemics.
@@ -3220,6 +3243,16 @@ Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
 eligibility, or canonicalization.
 Input SHA256: {input_digest}
+
+Custody metadata for Stage 01 only:
+```json
+{custody}
+```
+
+Use the custody metadata only to restate the intake boundary. It is not route
+evidence, owner-selection evidence, proof eligibility, canonicalization input,
+or a case library key. For Stage 01, copy `case_id`, `input_digest`, and
+`retained_input` exactly from this custody block into the JSON response.
 
 Raw input:
 ```text
@@ -4458,10 +4491,39 @@ def run_self_test(root: Path) -> int:
         skill_hash="1" * 64,
         previous_stages=[],
     )
-    if prompt_a != prompt_b:
-        raise HarnessError("Self-test stage prompt changed under neutral case-name/path copy")
-    if "self-test-a9-science-source" in prompt_a or "neutral-copy.md" in prompt_a:
-        raise HarnessError("Self-test stage prompt leaked case metadata into model-facing route surface")
+
+    def redact_stage01_custody(prompt: str) -> str:
+        return re.sub(
+            r"(?s)Custody metadata for Stage 01 only:\n```json\n.*?\n```\n\n",
+            "Custody metadata for Stage 01 only:\n```json\n<CUSTODY_ONLY_REDACTED>\n```\n\n",
+            prompt,
+            count=1,
+        )
+
+    if redact_stage01_custody(prompt_a) != redact_stage01_custody(prompt_b):
+        raise HarnessError("Self-test stage prompt changed outside the Stage 01 custody block")
+    for prompt, case_id, retained_path in (
+        (prompt_a, "self-test-a9-science-source", rel(DEFAULT_INPUT, root)),
+        (prompt_b, "neutral-formal-route-copy", rel(DEFAULT_INPUT.parent / "neutral-copy.md", root)),
+    ):
+        custody_start = prompt.find("Custody metadata for Stage 01 only:")
+        raw_start = prompt.find("Raw input:")
+        if custody_start < 0 or raw_start < custody_start:
+            raise HarnessError("Self-test Stage 01 prompt missing bounded custody block")
+        custody_slice = prompt[custody_start:raw_start]
+        non_custody = prompt[:custody_start] + prompt[raw_start:]
+        for expected in (f'"case_id": "{case_id}"', f'"retained_input": "{retained_path}"'):
+            if expected not in custody_slice:
+                raise HarnessError(f"Self-test Stage 01 custody block missing {expected!r}")
+            if expected in non_custody:
+                raise HarnessError(f"Self-test Stage 01 custody value leaked outside custody block: {expected!r}")
+    for invariant in (
+        "custody fields only and must not determine routing, owner selection, proof",
+        "Use the custody metadata only to restate the intake boundary",
+        "For Stage 01, copy `case_id`, `input_digest`, and",
+    ):
+        if invariant not in prompt_a:
+            raise HarnessError(f"Self-test Stage 01 custody prompt missing invariant {invariant!r}")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
@@ -4878,6 +4940,51 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve rich Stage 02 live register details")
     if not isinstance(normalized_stage02.get("burden_floor_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 02 burden-floor details")
+    label_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-burden-label-normalization-self-test",
+            "live_registers": ["xi", "kappa"],
+            "burden_floor": [
+                "B1: source-order/warrant pressure",
+                "B2: dependency-collapse pressure",
+            ],
+        },
+    )
+    if label_stage02.get("burden_floor") != ["B1", "B2"]:
+        raise HarnessError("Self-test failed to normalize labeled Stage 02 burden_floor strings into burden IDs")
+    if not isinstance(label_stage02.get("burden_floor_details"), list):
+        raise HarnessError("Self-test failed to preserve labeled Stage 02 burden_floor source strings")
+    label_stage03 = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1", "B2"],
+            "owner_routes": [
+                {"burden_id": "B1", "owner_id": "source-status-repair"},
+                {"burden_id": "B2", "owner_id": "M1"},
+            ],
+        },
+    )
+    validate_incremental_handoffs([label_stage02, label_stage03])
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "selected-route-bad-burden-label-self-test",
+                "live_registers": ["xi"],
+                "burden_floor": ["source-order/warrant pressure without burden id"],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 02 burden_floor string without a canonical burden id")
     singular_detail_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
