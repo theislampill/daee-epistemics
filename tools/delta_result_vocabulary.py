@@ -92,6 +92,16 @@ SOURCE_FORMAL_REPAIR_DELTA_OPERATIONS = {
     "source-order-repaired": "source-order-repair",
 }
 PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS = ("proof-text", "proof-stack", "backread")
+HELD_ROUTE_SIGNAL_KEYS = {
+    "body_status",
+    "eligibility",
+    "owner_body_status",
+    "reason",
+    "route_state",
+    "state",
+    "status",
+    "terminal_state",
+}
 
 
 def canonical_delta_owner(owner: str) -> str:
@@ -172,6 +182,61 @@ def owner_operation_vocabulary_errors(label: str, owner: str, operation: str) ->
             f"{label}: operation token {token!r} is outside controlled operation vocabulary "
             f"for {family}; allowed: {allowed}"
         ]
+    return []
+
+
+def route_is_held_or_partial(route: dict[str, Any]) -> bool:
+    for key in HELD_ROUTE_SIGNAL_KEYS:
+        value = route.get(key)
+        if not isinstance(value, str):
+            continue
+        normalized = value.strip().upper().replace("_", "-")
+        if (
+            "HOLD" in normalized
+            or "PARTIAL" in normalized
+            or "NOT-LOADED" in normalized
+            or "INERT" in normalized
+        ):
+            return True
+    return False
+
+
+def split_owner_operation_token(owner: str, operation: Any = None) -> tuple[str, str]:
+    owner_token = str(owner or "").strip().strip("[]")
+    operation_token = str(operation or "").strip() if isinstance(operation, str) else ""
+    if not owner_token:
+        return "", operation_token
+    if canonical_delta_owner(owner_token):
+        return owner_token, operation_token
+    if "." in owner_token:
+        owner_part, operation_part = owner_token.split(".", 1)
+        if owner_part.strip() and operation_part.strip():
+            return owner_part.strip(), operation_token or operation_part.strip()
+    return owner_token, operation_token
+
+
+def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str]:
+    if route_is_held_or_partial(route):
+        return []
+    raw_owner = route.get("owner_id") or route.get("owner")
+    if not isinstance(raw_owner, str) or not raw_owner.strip():
+        return [f"{label}: owner route must carry a non-empty owner_id"]
+    owner, operation = split_owner_operation_token(raw_owner, route.get("operation") or route.get("owner_operation"))
+    family = canonical_delta_owner(owner)
+    if not family:
+        return [
+            f"{label}: executable owner route {raw_owner!r} has no controlled owner family/delta_result vocabulary; "
+            "mark the route HOLD/PARTIAL / OWNER-BODY-NOT-LOADED or add source-owned owner vocabulary with canaries"
+        ]
+    if family not in DELTA_RESULT_VOCABULARY:
+        return [f"{label}: executable owner route {raw_owner!r} has no controlled delta_result vocabulary"]
+    if family not in OWNER_OPERATION_VOCABULARY:
+        return [
+            f"{label}: executable owner route {raw_owner!r} has no controlled owner-operation vocabulary; "
+            "route labels are not callable ACT owners"
+        ]
+    if operation:
+        return owner_operation_vocabulary_errors(label, owner, operation)
     return []
 
 

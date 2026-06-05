@@ -30,6 +30,7 @@ from delta_result_vocabulary import (
     canonical_delta_owner,
     delta_result_vocabulary_errors,
     owner_operation_vocabulary_errors,
+    route_owner_vocabulary_errors,
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
@@ -925,7 +926,11 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
             if burden_id is not None and owner_id is not None:
-                canonical.append(dict(route))
+                canonical_row = dict(route)
+                route_errors = route_owner_vocabulary_errors(f"stage-03 owner_routes[{index}]", canonical_row)
+                if route_errors:
+                    raise HarnessError(route_errors[0])
+                canonical.append(canonical_row)
                 continue
 
             target = non_empty_string(route.get("target") or route.get("burden_id"))
@@ -955,6 +960,12 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 eligibility = non_empty_string(route.get("classification") or route.get("policy_id"))
                 if eligibility is not None:
                     canonical_row["eligibility"] = eligibility
+                route_errors = route_owner_vocabulary_errors(
+                    f"stage-03 owner_routes[{index}].required[{required_index}]",
+                    canonical_row,
+                )
+                if route_errors:
+                    raise HarnessError(route_errors[0])
                 canonical.append(canonical_row)
 
         if not canonical:
@@ -5544,6 +5555,53 @@ def run_self_test(root: Path) -> int:
         pass
     else:
         raise HarnessError("Self-test failed to reject rich Stage 03 owner route without owner id")
+    normalized_m9_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "M9",
+                    "operation": "predication-repair",
+                    "route_status": "executable",
+                }
+            ],
+        },
+    )
+    if normalized_m9_route.get("owner_routes") != [
+        {
+            "burden_id": "B1",
+            "owner_id": "M9",
+            "operation": "predication-repair",
+            "route_status": "executable",
+        }
+    ]:
+        raise HarnessError("Self-test failed to accept controlled M9 Stage 03 operation")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M9",
+                        "operation": "predication-mode",
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "operation token 'predication-mode' is outside controlled operation vocabulary for M9" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted M9 mode label as an executable Stage 03 operation")
 
     canonical_act_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
