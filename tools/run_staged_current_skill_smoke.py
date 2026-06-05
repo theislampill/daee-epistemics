@@ -169,8 +169,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "burden-id strings only, such as [\"B1\"], not descriptive burden labels. "
             "Every ACT row must be an exact canonical row beginning "
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
-            "`⟧`. If richer per-row metadata is useful, put it in optional "
-            "`act_row_details`; do not put objects in `act_rows` unless each object "
+            "`⟧`. The token immediately after `⟦ACT` and the token after `body_ref=` "
+            "must be identical so the public ACT row, body_ref dereference, "
+            "owner_activation mirror, NAR, and field_witness all share one stable join key. "
+            "If richer per-row metadata is useful, put it in optional "
+            "`act_row_details`; when present, `act_row_details` must be a JSON array of "
+            "objects tied to the exact ACT row with `act_row` and/or matching `body_ref`, "
+            "not prose strings. Do not put objects in `act_rows` unless each object "
             "also carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
             "route/context umbrella label, case-library label, noetic-frame label, or "
@@ -207,7 +212,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "matches Stage 04 `act_body_refs`. `nar_burdens` must include Stage 04 ACT burdens "
             "and every Stage 05 terminal-state burden. `owner_activations` must be body-ref "
             "strings, or objects with explicit string `body_ref` so the harness can normalize "
-            "them while preserving details under `owner_activation_details`. For model-mode "
+            "them while preserving details under `owner_activation_details`. Object-shaped "
+            "`owner_activations` must include the exact Stage 04 `owner_id`, `operation`, "
+            "and owner-local `delta_result` for that same `body_ref`; do not replace "
+            "owner-local tokens with generic `delta` arrays. For model-mode "
             "Stage 06, do not use only `normalized_activation_record: true`; provide a "
             "structured `normalized_activation_record` object or `normalized_activation_record_details` "
             "with `n_frame`, `live_registers`, `burden_floor`, and `per_burden`. "
@@ -220,7 +228,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`n_frame_details.selected` value there must match the canonical string "
             "`normalized_activation_record.n_frame`. "
             "`per_burden` must be a JSON array/list of objects; each object must include "
-            "a non-empty string `burden_id`. Do not emit `per_burden` as a burden-keyed object map. "
+            "a non-empty string `burden_id`. When a row mirrors a Stage 04 owner activation, "
+            "include `owner_id`, `operation`, and the exact owner-local `delta_result`; "
+            "do not emit `per_burden` as a burden-keyed object map. "
             "`register_deltas` must be parser-stable as an object mapping register names to "
             "a non-empty string or non-empty string array, or as a list of objects with "
             "`register` plus `delta` as a non-empty string or non-empty string array. "
@@ -3198,6 +3208,8 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         "",
         "Stage 04 controlled delta_result vocabulary:",
         "- The token after the colon in each `Δ=...:<delta_result>` slot must be one of the source-owned owner-local tokens below.",
+        "- Tokens are family-local proof terms. Do not borrow a token from another owner family; if the chosen owner lacks that token, choose the nearest listed token for the chosen owner or route a different callable owner.",
+        "- For M9 predication/identity pressure, use an M9 token such as `predicate-separated`; reserve DO_ATTRIBUTE tokens such as `predicate-identity-separated` for DO_ATTRIBUTE rows.",
         "- Do not invent near-synonyms such as `predicate-transfer-blocked`, `only-scope-defined`, `proof-stack-routed`, or `entailment-bounded`.",
     ]
     for family in families:
@@ -5203,6 +5215,47 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test failed to reject conflicting Stage 04 act_row_details body_ref")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁"],
+                "act_rows": [canonical_act_row],
+                "act_row_details": ["B1: prose summary is not handoff evidence"],
+            },
+        )
+    except HarnessError as exc:
+        if "act_row_details[0] must be an object" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject prose string Stage 04 act_row_details")
+    mismatched_head_body_ref_row = (
+        "⟦ACT B1[source-status-repair.source-order] :: "
+        "π=scientific-explanations-only-knowledge-source :: "
+        "body_ref=B1.source-status-repair.source-order :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["B1.source-status-repair.source-order"],
+                "act_rows": [mismatched_head_body_ref_row],
+                "act_row_details": [{"act_row": mismatched_head_body_ref_row}],
+            },
+        )
+    except HarnessError as exc:
+        if "parseable act_row or body_ref tied to Stage 04 act_rows" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject Stage 04 ACT head/body_ref dialect mismatch")
     selected_model_delta_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -5226,6 +5279,8 @@ def run_self_test(root: Path) -> int:
         "M8: coercive-clarity-entailment-demoted",
         "M9: category-separated",
         "SOURCE: authority-order-repaired",
+        "Tokens are family-local proof terms",
+        "For M9 predication/identity pressure, use an M9 token such as `predicate-separated`",
         "Do not invent near-synonyms such as `predicate-transfer-blocked`",
     ):
         if required not in selected_model_delta_guidance:
@@ -5289,6 +5344,42 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted near-synonym Stage 04 delta_result laundering")
+    borrowed_do_attribute_delta_row = (
+        "⟦ACT ¹B₁[M9.predication-repair] :: "
+        "π=predicate-identity-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:predicate-identity-separated :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [borrowed_do_attribute_delta_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted DO_ATTRIBUTE delta_result borrowed by M9")
+    valid_do_attribute_delta_row = (
+        "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
+        "π=predicate-identity-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:predicate-identity-separated :: Land(¹B)+⟧"
+    )
+    normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [valid_do_attribute_delta_row],
+        },
+    )
     source_stack_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
@@ -5691,6 +5782,44 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                    }
+                ],
+                "normalized_activation_record": {
+                    "n_frame": "science-only-source-order-warrant",
+                    "live_registers": ["xi", "kappa"],
+                    "burden_floor": ["B1"],
+                    "per_burden": [
+                        {
+                            "burden_id": "B1",
+                            "owner_id": "source-status-repair",
+                            "operation": "source-order",
+                            "delta": ["source-order-repaired"],
+                            "terminal_state": "landed",
+                        }
+                    ],
+                },
+                "register_deltas": {"xi": ["source-order-repaired"]},
+            },
+        )
+    except HarnessError as exc:
+        if "delta_result must be a non-empty owner-local token for SOURCE" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 06 owner_activation without owner-local delta_result")
     normalized_stage06_list_delta = normalized_stage(
         "stage-06-field-witness-nar",
         {
