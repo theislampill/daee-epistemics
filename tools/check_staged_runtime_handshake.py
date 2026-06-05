@@ -213,6 +213,16 @@ def as_string_list(value: Any) -> list[str] | None:
     return list(value)
 
 
+def bare_burden_id_errors(label: str, field: str, values: list[str]) -> list[str]:
+    errors: list[str] = []
+    for index, value in enumerate(values):
+        if CANONICAL_BURDEN_ID_RE.fullmatch(value) is None:
+            errors.append(
+                f"{label}: {field}[{index}] must be a bare canonical burden id such as B1"
+            )
+    return errors
+
+
 def ordered_unique(items: list[str]) -> list[str]:
     seen: set[str] = set()
     result: list[str] = []
@@ -1459,7 +1469,13 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     stage07 = stages.get("stage-07-release-output")
     stage08 = stages.get("stage-08-verifier-sidecars")
 
-    burden_floor = set(list_field(stage02 or {}, "burden_floor"))
+    raw_burden_floor = stage02.get("burden_floor") if stage02 is not None else None
+    burden_floor_values = as_string_list(raw_burden_floor)
+    burden_floor = {
+        value
+        for value in (burden_floor_values or [])
+        if CANONICAL_BURDEN_ID_RE.fullmatch(value) is not None
+    }
     route_targets = set(list_field(stage03 or {}, "route_targets"))
     act_targets = set(list_field(stage04 or {}, "act_targets"))
     act_body_refs = set(list_field(stage04 or {}, "act_body_refs"))
@@ -1467,8 +1483,33 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     act_burdens = canonical_stage04_act_burdens(stage04)
     nar_burdens = set(list_field(stage06 or {}, "nar_burdens"))
 
-    if stage02 is not None and not burden_floor:
-        errors.append(f"{label}: stage-02 burden_floor is required")
+    if stage02 is not None:
+        if burden_floor_values is None or not burden_floor_values:
+            errors.append(f"{label}: stage-02 burden_floor must be a non-empty string list")
+        else:
+            errors.extend(bare_burden_id_errors(label, "stage-02 burden_floor", burden_floor_values))
+        floor_details = stage02.get("burden_floor_details")
+        if floor_details is not None:
+            if not isinstance(floor_details, list):
+                errors.append(f"{label}: stage-02 burden_floor_details must be a list when present")
+            else:
+                for index, detail in enumerate(floor_details):
+                    if not isinstance(detail, dict):
+                        errors.append(f"{label}: stage-02 burden_floor_details[{index}] must be an object")
+                        continue
+                    burden_id = detail.get("burden_id") or detail.get("id")
+                    if not isinstance(burden_id, str) or not burden_id:
+                        errors.append(
+                            f"{label}: stage-02 burden_floor_details[{index}].burden_id must be a string"
+                        )
+                    elif CANONICAL_BURDEN_ID_RE.fullmatch(burden_id) is None:
+                        errors.append(
+                            f"{label}: stage-02 burden_floor_details[{index}].burden_id must be a canonical burden id"
+                        )
+                    elif burden_id not in burden_floor:
+                        errors.append(
+                            f"{label}: stage-02 burden_floor_details[{index}].burden_id must appear in burden_floor"
+                        )
     if stage03 is not None:
         raw_route_targets = stage03.get("route_targets")
         if as_string_list(raw_route_targets) is None:

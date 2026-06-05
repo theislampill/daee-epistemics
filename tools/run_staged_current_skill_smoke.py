@@ -191,8 +191,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "instructions": (
             "Identify the selected/held N-frame, the burden floor, and live registers. "
             "The canonical `selected_n_frame` field must be a string token. "
-            "The canonical `burden_floor` and `live_registers` fields must be JSON "
-            "arrays of strings. If richer diagnostic metadata is useful, put it in "
+            "The canonical `burden_floor` field must be a JSON array of bare "
+            "canonical burden-id strings only, such as [\"B1\", \"B2\"]. Do not put "
+            "public labels, superscript burden markers, register axes, slashes, "
+            "source labels, or prose in `burden_floor`; put that richer burden "
+            "metadata in `burden_floor_details`. The canonical `live_registers` "
+            "field must be a JSON array of strings. If richer diagnostic metadata "
+            "is useful, put it in "
             "optional detail fields; do not replace the canonical string fields with "
             "objects. Do not release a final answer."
         ),
@@ -781,17 +786,13 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
     floor = stage.get("burden_floor")
     if isinstance(floor, list) and floor and all(isinstance(item, str) and item for item in floor):
         canonical_floor: list[str] = []
-        label_details: list[dict[str, str]] = []
         for index, item in enumerate(floor):
             raw = item.strip()
-            burden_id = canonical_burden_id_from_text(raw)
-            if burden_id is None:
+            if CANONICAL_BURDEN_ID_RE.fullmatch(raw) is None:
                 raise HarnessError(
-                    f"stage-02 burden_floor[{index}] string cannot be normalized to one canonical burden id"
+                    f"stage-02 burden_floor[{index}] must be a bare canonical burden id such as B1"
                 )
-            canonical_floor.append(burden_id)
-            if raw != burden_id:
-                label_details.append({"raw": raw, "burden_id": burden_id})
+            canonical_floor.append(raw)
         stage["burden_floor"] = ordered_unique(canonical_floor)
         detail_alias = stage.get("burden_floor_details")
         if detail_alias is None and isinstance(stage.get("burden_floor_detail"), list):
@@ -807,11 +808,14 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
                     raise HarnessError(
                         f"stage-02 burden_floor_details[{index}] object cannot be normalized without a string burden_id"
                     )
-        elif label_details:
-            stage["burden_floor_details"] = label_details
-        if label_details:
-            normalization["burden_floor_strings_normalized_to_ids"] = True
-            normalization["canonical_burden_floor"] = list(stage["burden_floor"])
+                if CANONICAL_BURDEN_ID_RE.fullmatch(burden_id) is None:
+                    raise HarnessError(
+                        f"stage-02 burden_floor_details[{index}].burden_id must be a canonical burden id"
+                    )
+                if burden_id not in stage["burden_floor"]:
+                    raise HarnessError(
+                        f"stage-02 burden_floor_details[{index}].burden_id must appear in burden_floor"
+                    )
     elif isinstance(floor, list) and floor and all(isinstance(item, dict) for item in floor):
         details = list(floor)
         burden_ids: list[str] = []
@@ -5221,23 +5225,32 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve rich Stage 02 live register details")
     if not isinstance(normalized_stage02.get("burden_floor_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 02 burden-floor details")
-    label_stage02 = normalized_stage(
+    detail_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
             "id": "stage-02-layer-a-diagnostic-ir",
             "status": "pass",
-            "selected_n_frame": "selected-route-burden-label-normalization-self-test",
+            "selected_n_frame": "selected-route-bare-burden-floor-self-test",
             "live_registers": ["xi", "kappa"],
-            "burden_floor": [
-                "B1: source-order/warrant pressure",
-                "B2: dependency-collapse pressure",
+            "burden_floor": ["B1", "B2"],
+            "burden_floor_details": [
+                {
+                    "burden_id": "B1",
+                    "label": "source-order/warrant pressure",
+                    "register_types": ["xi"],
+                },
+                {
+                    "burden_id": "B2",
+                    "label": "dependency-collapse pressure",
+                    "register_types": ["kappa"],
+                },
             ],
         },
     )
-    if label_stage02.get("burden_floor") != ["B1", "B2"]:
-        raise HarnessError("Self-test failed to normalize labeled Stage 02 burden_floor strings into burden IDs")
-    if not isinstance(label_stage02.get("burden_floor_details"), list):
-        raise HarnessError("Self-test failed to preserve labeled Stage 02 burden_floor source strings")
+    if detail_stage02.get("burden_floor") != ["B1", "B2"]:
+        raise HarnessError("Self-test failed to preserve bare Stage 02 burden_floor IDs")
+    if not isinstance(detail_stage02.get("burden_floor_details"), list):
+        raise HarnessError("Self-test failed to preserve Stage 02 burden_floor detail objects")
     label_stage03 = normalized_stage(
         "stage-03-routing-owner-gate",
         {
@@ -5250,7 +5263,37 @@ def run_self_test(root: Path) -> int:
             ],
         },
     )
-    validate_incremental_handoffs([label_stage02, label_stage03])
+    validate_incremental_handoffs([detail_stage02, label_stage03])
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "selected-route-labeled-burden-floor-self-test",
+                "live_registers": ["xi"],
+                "burden_floor": ["B1: source-order/warrant pressure"],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 02 prose-labeled burden_floor string")
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "selected-route-public-burden-floor-self-test",
+                "live_registers": ["xi"],
+                "burden_floor": ["¹B / ξ warrant-authority burden: selected source-authority pressure"],
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 02 public/register/prose burden_floor string")
     try:
         normalized_stage(
             "stage-02-layer-a-diagnostic-ir",

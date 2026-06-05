@@ -1,0 +1,110 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage02-bare-burden-floor-details",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate"
+  ],
+  "stage_scope": {
+    "stop_after_stage": "stage-03-routing-owner-gate",
+    "stage_count": 3,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "neutral-stage02-burden-floor-contract",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  },
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_boundary_preserved": true
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1", "B2"],
+      "burden_floor_details": [
+        {
+          "burden_id": "B1",
+          "label": "source-authority pressure",
+          "register_types": ["xi", "sigma"],
+          "basis": "source-status and authority-order pressure remain detail evidence, not the join key"
+        },
+        {
+          "burden_id": "B2",
+          "label": "dependency-collapse pressure",
+          "register_types": ["kappa", "mu"],
+          "basis": "dependency and semantic-load pressure stay attached by canonical burden id"
+        }
+      ],
+      "selected_n_frame": "selected-route-neutral-stage02-fixture",
+      "live_registers": ["xi", "sigma", "kappa", "mu"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1", "B2"],
+      "route_target_details": [
+        {
+          "burden_id": "B1",
+          "route_target": "source-authority-pressure",
+          "register_types": ["xi", "sigma"]
+        },
+        {
+          "burden_id": "B2",
+          "route_target": "dependency-collapse-pressure",
+          "register_types": ["kappa", "mu"]
+        }
+      ],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "SOURCE",
+          "eligibility": "catalogue-backed"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M8",
+          "eligibility": "catalogue-backed"
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": ["input_boundary_preserved"],
+      "status": "pass"
+    },
+    {
+      "from": "stage-02-layer-a-diagnostic-ir",
+      "to": "stage-03-routing-owner-gate",
+      "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  }
+}
