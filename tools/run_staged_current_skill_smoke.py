@@ -117,6 +117,7 @@ REGISTER_AXIS_ALIASES = {
     "h": "H",
 }
 OWNER_REGISTER_AXIS_FLOORS = {
+    "SOURCE": {"σ", "H", "κ", "μ", "ξ"},
     "source-status-repair": {"σ"},
     "authority-order-repair": {"σ", "ξ"},
     "M9": {"μ", "ξ", "Ω"},
@@ -548,7 +549,7 @@ def extract_json_object(text: str) -> dict[str, Any]:
     try:
         parsed = json.loads(stripped)
     except json.JSONDecodeError as exc:
-        raise HarnessError(f"Stage response was not a parseable JSON object: {exc}") from exc
+        raise HarnessError(f"Stage response was not a parseable JSON object: json_parse_failure: {exc}") from exc
     if not isinstance(parsed, dict):
         raise HarnessError("Stage response root must be a JSON object")
     return parsed
@@ -4698,6 +4699,18 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test model_scope derived proof-facing case_family from case name")
     if named_scope.get("case_metadata_role") != "custody_only_not_route_or_proof":
         raise HarnessError("Self-test model_scope did not mark case metadata as custody-only")
+    malformed_stage_responses = (
+        '{"id":"stage-02-layer-a-diagnostic-ir","status":"pass"}}',
+        '{"id":"stage-02-layer-a-diagnostic-ir","status":"pass"}{"id":"extra","status":"pass"}',
+    )
+    for malformed_response in malformed_stage_responses:
+        try:
+            extract_json_object(malformed_response)
+        except HarnessError as exc:
+            if "json_parse_failure" not in str(exc):
+                raise HarnessError("Self-test malformed Stage JSON did not classify as json_parse_failure") from exc
+        else:
+            raise HarnessError("Self-test accepted malformed multi-object Stage JSON as canonical proof")
     prompt_a = stage_prompt(
         root=root,
         stage_id=STAGE_ORDER[0],
@@ -5646,6 +5659,7 @@ def run_self_test(root: Path) -> int:
         "M9: category-separated",
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
         "PROOF_METHOD: proof-denominator-exposed",
+        "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status",
         "SOURCE: authority-order-repaired",
         "Tokens are family-local proof terms",
         "For M9 predication/identity pressure, use an M9 token such as `predicate-separated`",
@@ -5974,6 +5988,22 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted prose-derived SOURCE delta_result laundering")
+    source_family_authority_row = (
+        "⟦ACT ¹B₁[SOURCE.authority-order-repair] :: "
+        "π=authority-rank-tribunal-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧"
+    )
+    normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [source_family_authority_row],
+            "act_row_details": self_test_act_row_details([source_family_authority_row], {"¹B₁": "σ"}),
+        },
+    )
     do_second_loop_rows = [
         "⟦ACT ¹B₁[do-second-loop.accountability-hujjah-compression] :: π=accountability-hujjah-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:accountability-hujjah-narrowed :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[do-second-loop.coercive-guidance-demand] :: π=coercive-guidance-demand :: body_ref=¹B₂ :: Δ=Δ¹B:coercive-guidance-demand-bounded :: Land(¹B)+⟧",

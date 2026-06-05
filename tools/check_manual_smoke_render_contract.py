@@ -199,6 +199,29 @@ STATE_CHANGE_RE = re.compile(
     r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|restores|restoring|"
     r"returned|returning|returns|anchors?|anchored)\b"
 )
+SOURCE_AUTHORITY_REPAIR_STATE_RE = re.compile(
+    r"(?is)\b(?:authority[- ]order[- ]repaired|authority order is repaired)\b"
+)
+SOURCE_ORDER_REPAIR_STATE_RE = re.compile(
+    r"(?is)\b(?:source[- ]order[- ]repaired|source order is repaired)\b"
+)
+SOURCE_AUTHORITY_REPAIR_EVIDENCE_RE = re.compile(
+    r"(?is)\b(?:authority|rank|tribunal|judge|judging office|court|higher court|"
+    r"source[- ]sovereignty|source authority|authority[- ]order|outrank|"
+    r"approval standard|revelation .* judge|moral bench)\b"
+)
+SOURCE_ORDER_REPAIR_EVIDENCE_RE = re.compile(
+    r"(?is)\b(?:source[- ]order|source lineage|quotation chain|quotation order|"
+    r"quote(?:d|s)? order|inherited claim|inherited[- ]claim order|source priority|"
+    r"source precedence|evidential dependency|dependency route|derivation order|"
+    r"source chain|source function|testimony source|report source)\b"
+)
+SOURCE_REPAIR_NEGATED_EVIDENCE_RE = re.compile(
+    r"(?is)\b(?:does not (?:sort|distinguish|perform)|do not (?:sort|distinguish|perform)|"
+    r"never (?:sorts?|distinguishes?|performs?)|"
+    r"not .*sort|not .*distinguish|only repeats?|merely repeats?|"
+    r"generic repair language|label(?:s)? only|owner labels?)\b"
+)
 GENERIC_CONTRIBUTION_RE = re.compile(
     r"(?i)^\s*(?:it\s+)?(?:blocks?|preserves?|gives?|allows?|contributes?|lands?|makes?)\s+"
     r"(?:the\s+)?(?:move|burden|closure|target|direction|condition)\.?\s*$"
@@ -330,7 +353,10 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "M8",
         re.compile(
             r"(?i)\b(?:consequence trace|if (?:the )?.*?(?:granted|holds|accepted)|what follows|"
-            r"entails?|consequence|self[- ]undermining|vacuous|would make|leads to)\b"
+            r"entails?|consequence|self[- ]undermining|vacuous|would make|leads to|"
+            r"dependency trace|dependency[- ]trace|dependency chain|dependency edge|"
+            r"dependency carrier|depends on|dependent on|borrowed .* capital|"
+            r"non[- ]load[- ]bearing dependency)\b"
         ),
     ),
     (
@@ -1036,6 +1062,39 @@ def operation_body_has_state_delta(operation_body: str, result: str, contributio
     return bool(STATE_CHANGE_RE.search(delta_text) and contribution_explains_land(contribution))
 
 
+def source_repair_state_change_visible(
+    owner: str,
+    result: str,
+    contribution: str,
+    operation_body: str,
+) -> bool:
+    """SOURCE repair deltas are valid only when body-backed, not owner-label backed."""
+    if owner_family(owner) != "SOURCE":
+        return False
+    return bool(source_repair_transition_kind(result, contribution, operation_body))
+
+
+def source_repair_transition_kind(result: str, contribution: str, operation_body: str) -> str:
+    """Return the formal SOURCE repair kind proven by delta + dereferenced body."""
+    result_surface = " ".join((result, contribution))
+    evidence_surface = " ".join((contribution, operation_body))
+    if SOURCE_REPAIR_NEGATED_EVIDENCE_RE.search(operation_body):
+        return ""
+    if (
+        SOURCE_AUTHORITY_REPAIR_STATE_RE.search(result_surface)
+        and SOURCE_AUTHORITY_REPAIR_EVIDENCE_RE.search(evidence_surface)
+        and owner_specific_operation_performed("SOURCE", evidence_surface)
+    ):
+        return "authority-order"
+    if (
+        SOURCE_ORDER_REPAIR_STATE_RE.search(result_surface)
+        and SOURCE_ORDER_REPAIR_EVIDENCE_RE.search(evidence_surface)
+        and owner_specific_operation_performed("SOURCE", evidence_surface)
+    ):
+        return "source-order"
+    return ""
+
+
 def has_matched_owner_route(scope: str) -> bool:
     for match in OWNER_ROUTE_LINE_RE.finditer(scope):
         body = match.group("body").strip()
@@ -1219,7 +1278,10 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
         return False
     if not owner_performed:
         return False
-    if not STATE_CHANGE_RE.search(" ".join((result, contribution))):
+    if not (
+        STATE_CHANGE_RE.search(" ".join((result, contribution)))
+        or source_repair_state_change_visible(owner, result, contribution, operation_body)
+    ):
         return False
     if not operation_acts_on_pressure(target, operation_text):
         return False

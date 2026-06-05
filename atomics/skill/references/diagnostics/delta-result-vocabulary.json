@@ -65,6 +65,8 @@
       "foreign-premise-detection"
     ],
     "SOURCE": [
+      "authority-order-repair",
+      "source-order-repair",
       "source-order",
       "sort",
       "status"

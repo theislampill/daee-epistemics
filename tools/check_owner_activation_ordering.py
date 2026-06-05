@@ -257,14 +257,23 @@ def delta_result_vocabulary_errors(label: str, owner: str, delta: str) -> list[s
 def source_recoil_delta_errors(label: str, owner: str, pressure: str, delta: str) -> list[str]:
     if owner != "SOURCE":
         return []
-    if not any(token in pressure for token in ("recoil", "hidden-support", "future-support")):
+    pressure_key = canonical_text(pressure)
+    has_hidden_support = (
+        "hidden-support" in pressure_key
+        or ("hidden" in pressure_key and "support" in pressure_key)
+    )
+    has_source_recoil = any(token in pressure_key for token in ("recoil", "future-support"))
+    if not (has_hidden_support or has_source_recoil):
         return []
     suffix = delta_result_suffix(delta)
-    if "proof-text-hidden-support" in pressure:
+    is_proof_text_hidden_support = has_hidden_support and any(
+        token in pressure_key for token in ("proof-text", "proof-stack", "backread")
+    )
+    if is_proof_text_hidden_support:
         if suffix == "proof-text-hidden-support-blocked":
             return []
         return [
-            f"{label}: proof-text hidden-support pressure must use "
+            f"{label}: proof-text/proof-stack hidden-support pressure must use "
             "delta_result token 'proof-text-hidden-support-blocked'"
         ]
     if suffix == "hidden-support-blocked":

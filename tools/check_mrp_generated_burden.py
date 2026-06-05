@@ -38,6 +38,8 @@ from check_manual_smoke_render_contract import (
     owner_family,
     owner_specific_operation_performed,
     sentence_count,
+    source_repair_state_change_visible,
+    source_repair_transition_kind,
     submove_blocks,
     submove_owner,
     submove_operation_body,
@@ -140,6 +142,10 @@ SOURCE_OWNED_ACT_OPERATIONS = {
         "consequence-trace": re.compile(
             r"(?is)\b(?:consequence|entailment|trace|follows|therefore|downstream|implication)\b"
         ),
+        "dependency-trace": re.compile(
+            r"(?is)\b(?:dependency|dependent|depends|dependency[- ]trace|dependency[- ]chain|"
+            r"dependency[- ]edge|dependency[- ]carrier|borrowed .* capital|non[- ]load[- ]bearing)\b"
+        ),
     },
     "M9": {
         "predication-repair": re.compile(
@@ -159,6 +165,15 @@ SOURCE_OWNED_ACT_OPERATIONS = {
         ),
     },
     "SOURCE": {
+        "authority-order-repair": re.compile(
+            r"(?is)\b(?:authority|rank|tribunal|judge|judging office|court|higher court|"
+            r"source[- ]sovereignty|authority[- ]order|outrank|approval standard|moral bench)\b"
+        ),
+        "source-order-repair": re.compile(
+            r"(?is)\b(?:source[- ]order|source lineage|quotation chain|quotation order|"
+            r"quote(?:d|s)? order|inherited claim|source priority|evidential dependency|"
+            r"derivation order|source chain|source function|testimony source|report source)\b"
+        ),
         "source-order": re.compile(
             r"(?is)\b(?:source[- ]order|source status|warrant|authority|proof status|anti[- ]fluctuation)\b"
         ),
@@ -191,8 +206,18 @@ SOURCE_OWNED_ACT_OPERATIONS = {
     },
 }
 BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
+    "M8": {"consequence-traced", "dependency-exposed"},
     "SOURCE": {"authority-order-repaired", "source-order-repaired"},
 }
+M8_DEPENDENCY_TRACE_RE = re.compile(
+    r"(?is)\b(?:dependency|dependent|depends|dependency[- ]trace|dependency[- ]chain|"
+    r"dependency[- ]edge|dependency[- ]carrier|borrowed .* capital|"
+    r"hidden dependency|non[- ]load[- ]bearing dependency)\b"
+)
+M8_TRACE_STEP_RE = re.compile(
+    r"(?is)\b(?:trace|traces|traced|follow|follows|followed|downstream|"
+    r"what follows|if .* then|therefore|consequence|implication)\b"
+)
 LOOSE_OWNER_ALIASES = {
     "AUTHORITY",
     "BOUND",
@@ -1158,6 +1183,33 @@ def source_owned_operation_errors(record: ActRecord, family: str, block: str) ->
         errors.append(
             f"ACT {record.submove_ref} operation {operation!r} is not performed in the dereferenced body"
         )
+    if family == "SOURCE":
+        result = field_body_any(block, ("Result", "Result/state-change"))
+        contribution = contribution_body(block)
+        operation_body = submove_operation_body(block)
+        transition_kind = source_repair_transition_kind(result, contribution, operation_body)
+        if operation_key == "authority-order-repair":
+            if record.delta_result != "authority-order-repaired":
+                errors.append(
+                    f"ACT {record.submove_ref} SOURCE authority-order-repair must use "
+                    "delta_result 'authority-order-repaired'"
+                )
+            if transition_kind != "authority-order":
+                errors.append(
+                    f"ACT {record.submove_ref} SOURCE authority-order-repair lacks "
+                    "authority/rank/tribunal/source-sovereignty transition evidence"
+                )
+        if operation_key == "source-order-repair":
+            if record.delta_result != "source-order-repaired":
+                errors.append(
+                    f"ACT {record.submove_ref} SOURCE source-order-repair must use "
+                    "delta_result 'source-order-repaired'"
+                )
+            if transition_kind != "source-order":
+                errors.append(
+                    f"ACT {record.submove_ref} SOURCE source-order-repair lacks "
+                    "source-lineage/quotation/inherited-claim/evidential-dependency transition evidence"
+                )
     return errors
 
 
@@ -1208,7 +1260,10 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
         return False
     if not owner_performed:
         return False
-    if not STATE_CHANGE_RE.search(" ".join((result, contribution))):
+    if not (
+        STATE_CHANGE_RE.search(" ".join((result, contribution)))
+        or source_repair_state_change_visible(owner, result, contribution, operation_body)
+    ):
         return False
     if GENERIC_CONTRIBUTION_RE.fullmatch(contribution.strip()):
         return False
@@ -1257,6 +1312,8 @@ def is_reconstructible_for_act_family(family: str, block: str) -> bool:
 def delta_result_has_concrete_state_change(record: ActRecord, family: str, block: str) -> bool:
     if GENERIC_ACT_VALUE_RE.fullmatch(record.delta_result):
         return False
+    if family == "M8" and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("M8", set()):
+        return m8_delta_result_has_body_backing(record, block)
     if STATE_CHANGE_RE.search(record.delta_result):
         return True
     supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
@@ -1265,7 +1322,44 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     result = field_body_any(block, ("Result", "Result/state-change"))
     contribution = contribution_body(block)
     operation = submove_operation_body(block)
+    if family == "SOURCE":
+        return source_repair_state_change_visible(record.owner, result, contribution, operation)
     return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
+def m8_delta_result_has_body_backing(record: ActRecord, block: str) -> bool:
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    operation = field_body_any(block, ("Operation", "What it does"))
+    body = submove_operation_body(block)
+    payload = " ".join((record.pi, operation, result, contribution, body))
+    if not owner_specific_operation_performed("M8", payload):
+        return False
+    if not STATE_CHANGE_RE.search(" ".join((result, contribution, body))):
+        return False
+    if record.operation == "dependency-trace":
+        return bool(M8_DEPENDENCY_TRACE_RE.search(payload) and M8_TRACE_STEP_RE.search(payload))
+    return bool(M8_TRACE_STEP_RE.search(payload))
+
+
+def m8_dependency_trace_errors(record: ActRecord, block: str) -> list[str]:
+    if strict_owner_family(record.owner) != "M8" or record.operation != "dependency-trace":
+        return []
+    errors: list[str] = []
+    payload = operation_payload(block)
+    if record.delta_result != "dependency-exposed":
+        errors.append(
+            f"ACT {record.submove_ref} dependency-trace must use delta_result 'dependency-exposed'"
+        )
+    if not M8_DEPENDENCY_TRACE_RE.search(payload):
+        errors.append(
+            f"ACT {record.submove_ref} dependency-trace must name a dependency edge, carrier, or dependence relation"
+        )
+    if not M8_TRACE_STEP_RE.search(payload):
+        errors.append(
+            f"ACT {record.submove_ref} dependency-trace must visibly trace the dependency path"
+        )
+    return errors
 
 
 def validate_act_record(
@@ -1314,6 +1408,7 @@ def validate_act_record(
         errors.append(f"ACT {record.submove_ref} pi target is missing, generic, or not visible in dereferenced body")
     if record_family:
         errors.extend(source_owned_operation_errors(record, record_family, block))
+        errors.extend(m8_dependency_trace_errors(record, block))
     if not DELTA_NAME_RE.fullmatch(record.delta):
         errors.append(f"ACT {record.submove_ref} Delta field must name Delta burden state or Delta-kappa")
     if not delta_result_has_concrete_state_change(record, record_family, block):
