@@ -4962,6 +4962,70 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test raw literal input accepted a simultaneous raw-input-path")
+    path_preflight_input = run_dir / "slash-command-input.md"
+    write_text(path_preflight_input, "/neutral-command refute a compound prompt\n")
+    preflight_smoke_inputs(
+        argparse.Namespace(
+            case_name="neutral-slash-input-preflight",
+            raw_input=None,
+            raw_input_path=path_preflight_input,
+            replay_record=replay_record,
+            run_dir=run_dir / "path-input-preflight-run",
+            resume_run_dir=None,
+        ),
+        root,
+        emit=False,
+    )
+    preflight_smoke_inputs(
+        argparse.Namespace(
+            case_name="neutral-literal-input-preflight",
+            raw_input="/neutral-command refute a compound prompt",
+            raw_input_path=DEFAULT_INPUT,
+            replay_record=replay_record,
+            run_dir=run_dir / "literal-input-preflight-run",
+            resume_run_dir=None,
+        ),
+        root,
+        emit=False,
+    )
+    try:
+        preflight_smoke_inputs(
+            argparse.Namespace(
+                case_name="invalid-mixed-input-preflight",
+                raw_input="/neutral-command refute a compound prompt",
+                raw_input_path=path_preflight_input,
+                replay_record=replay_record,
+                run_dir=run_dir / "invalid-mixed-input-preflight-run",
+                resume_run_dir=None,
+            ),
+            root,
+            emit=False,
+        )
+    except HarnessError as exc:
+        if "mutually exclusive" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test input preflight accepted simultaneous literal and path inputs")
+    existing_preflight_run = run_dir / "existing-input-preflight-run"
+    existing_preflight_run.mkdir(parents=True)
+    try:
+        preflight_smoke_inputs(
+            argparse.Namespace(
+                case_name="invalid-existing-run-preflight",
+                raw_input=None,
+                raw_input_path=path_preflight_input,
+                replay_record=replay_record,
+                run_dir=existing_preflight_run,
+                resume_run_dir=None,
+            ),
+            root,
+            emit=False,
+        )
+    except HarnessError as exc:
+        if "Run directory already exists" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test input preflight accepted an existing run directory")
     stage_files: list[Path] = []
     for stage in replay["stages"]:
         stage_path = stages_dir / f"{stage['id']}.response.json"
@@ -8848,6 +8912,60 @@ def materialize_smoke_raw_input(
     return resolve_under_root(root, raw_input_path, "Raw input")
 
 
+def raw_input_preflight_payload(root: Path, raw_input_path: Path, raw_input_literal: str | None) -> dict[str, Any]:
+    if raw_input_literal is not None:
+        requested = raw_input_path if raw_input_path.is_absolute() else root / raw_input_path
+        if requested.resolve() != DEFAULT_INPUT.resolve():
+            raise HarnessError("--raw-input and --raw-input-path are mutually exclusive")
+        literal_text = str(raw_input_literal).rstrip() + "\n"
+        if not literal_text.strip():
+            raise HarnessError("--raw-input must not be empty")
+        return {
+            "mode": "literal",
+            "bytes": len(literal_text.encode("utf-8")),
+            "sha256": hashlib.sha256(literal_text.encode("utf-8")).hexdigest().upper(),
+        }
+    resolved = resolve_under_root(root, raw_input_path, "Raw input")
+    if not resolved.exists():
+        raise HarnessError(f"Raw input does not exist: {rel(resolved, root)}")
+    if not resolved.is_file():
+        raise HarnessError(f"Raw input must be a file: {rel(resolved, root)}")
+    text = resolved.read_text(encoding="utf-8", errors="replace")
+    if not text.strip():
+        raise HarnessError(f"Raw input must not be empty: {rel(resolved, root)}")
+    return {
+        "mode": "path",
+        "path": rel(resolved, root),
+        "bytes": resolved.stat().st_size,
+        "sha256": sha256_file(resolved),
+    }
+
+
+def preflight_smoke_inputs(args: argparse.Namespace, root: Path, *, emit: bool = True) -> int:
+    validate_required_files(root)
+    if args.resume_run_dir is not None:
+        raise HarnessError("--preflight-input-only validates fresh launches; do not combine it with --resume-run-dir")
+    replay_record = resolve_under_root(root, args.replay_record, "Replay record")
+    validate_replay_record(root, replay_record)
+    run_dir = resolve_under_root(root, args.run_dir, "Run directory")
+    if run_dir.exists():
+        raise HarnessError(f"Run directory already exists: {rel(run_dir, root)}")
+    raw_input_payload = raw_input_preflight_payload(root, args.raw_input_path, args.raw_input)
+    if emit:
+        print("staged current-skill input preflight: PASS")
+        print(f"case name: {args.case_name}")
+        print(f"run dir: {rel(run_dir, root)}")
+        if raw_input_payload["mode"] == "path":
+            print(f"raw input path: {raw_input_payload['path']}")
+        else:
+            print("raw input mode: literal")
+        print(f"raw input bytes: {raw_input_payload['bytes']}")
+        print(f"raw input sha256: {raw_input_payload['sha256']}")
+        print(f"replay record: {rel(replay_record, root)}")
+        print("non-claims: no model smoke; no staged response; no output.md; no sidecar; no retained promotion")
+    return 0
+
+
 def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     files = validate_required_files(root)
     run_dir = resolve_under_root(root, args.run_dir, "Run directory")
@@ -9350,6 +9468,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--preflight-input-only", action="store_true")
     parser.add_argument("--case-name", default="staged-a9-science-source")
     parser.add_argument("--raw-input", default=None)
     parser.add_argument("--raw-input-path", type=Path, default=DEFAULT_INPUT)
@@ -9385,6 +9504,11 @@ def main() -> int:
         args.target_output_kb,
         args.section_expansion_rounds,
     )
+    if args.preflight_input_only:
+        if args.run_dir is None:
+            timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d-%H%M%S")
+            args.run_dir = root / ".daee" / "staged-current-skill-smokes" / f"{timestamp}-{args.case_name}"
+        return preflight_smoke_inputs(args, root)
     if args.resume_run_dir is not None:
         resume_run_dir = resolve_under_root(root, args.resume_run_dir, "Resume run directory")
         if args.run_dir is None:
