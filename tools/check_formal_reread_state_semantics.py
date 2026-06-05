@@ -64,7 +64,7 @@ OWNER_ROUTED_TYPES = {"held_burden_activation", "generated_burden_instantiation"
 STOP_TYPES = {"no_new_resultant", "none", "stable"}
 LOOPBREAK_TYPES = {"loopbreak"}
 HOLD_PARTIAL_TYPES = {"hold_partial"}
-CLOSED_STATES = {"landed", "cleared", "discharged-as-derivative", "held-with-reason"}
+CLOSED_STATES = {"landed", "cleared", "discharged-as-derivative"}
 HOLD_PARTIAL_TERMINAL_RE = re.compile(r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b")
 HOLD_PARTIAL_DETAIL_RE = re.compile(
     r"(?i)\b(?:HOLD|PARTIAL|held[-/ ]?partial|held[- ]with[- ]reason|"
@@ -335,6 +335,10 @@ def has_hold_partial_detail(state: dict[str, Any]) -> bool:
     return bool(HOLD_PARTIAL_DETAIL_RE.search(haystack))
 
 
+def terminal_state_is_hold_partial(value: str) -> bool:
+    return bool(HOLD_PARTIAL_TERMINAL_RE.search(value or ""))
+
+
 def terminal_loopbreak_closure(state: dict[str, Any]) -> bool:
     if state_value(state, "route_result_type") not in LOOPBREAK_TYPES:
         return False
@@ -538,8 +542,21 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
     if complete_claimed(field_witness):
         if not stop_seen:
             errors.append(f"{rel(path)}: complete closure requires a terminal STOP/no_new_resultant formal state")
+        complete_hold_sources = sorted(
+            state_burden(item, "source_burden")
+            for item in raw_states
+            if isinstance(item, dict) and state_value(item, "route_result_type") in HOLD_PARTIAL_TYPES
+        )
+        if complete_hold_sources:
+            errors.append(
+                f"{rel(path)}: complete closure cannot include HOLD/PARTIAL formal state(s): "
+                f"{', '.join(complete_hold_sources)}"
+            )
         for burden in ledgers["B_total"]:
             state = terminals.get(burden, "")
+            if terminal_state_is_hold_partial(state):
+                errors.append(f"{rel(path)}: complete closure terminal {burden}:{state} remains HOLD/PARTIAL")
+                continue
             if state and state not in CLOSED_STATES:
                 errors.append(f"{rel(path)}: complete closure terminal {burden}:{state} is not closed")
 

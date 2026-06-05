@@ -2656,8 +2656,14 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             tokens.append(raw_route.strip())
         if tokens:
             owner_routes_by_burden[target] = ordered_unique([*(owner_routes_by_burden.get(target) or []), *tokens])
+    held_terminal_burdens = [
+        burden
+        for burden, state in terminal_states.items()
+        if re.search(r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b", str(state or ""))
+    ]
+    unresolved_burdens = ordered_unique([*unresolved_burdens, *held_terminal_burdens])
     graph_line, roots, parallel_groups = stage07_dependency_graph_scaffold(b_total, edges)
-    closed_terminal_states = {"landed", "cleared", "discharged-as-derivative", "held-with-reason"}
+    closed_terminal_states = {"landed", "cleared", "discharged-as-derivative"}
     coverage_complete = not unresolved_burdens and all(
         str(state).strip() in closed_terminal_states for state in terminal_states.values()
     )
@@ -2866,7 +2872,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
         "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth`, `track`, and `generated_by` provenance.",
-        "- If Stage 05 leaves `unresolved_burdens` or `no_new_resultant_proof.proved=false`, do not claim `coverage_complete=true`; set `coverage_complete` false and keep the generated burden held/unresolved instead of synthesizing terminal STOP proof.",
+        "- If Stage 05 leaves `unresolved_burdens`, any terminal state is `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, or otherwise HOLD/PARTIAL, or `no_new_resultant_proof.proved=false`, do not claim `coverage_complete=true`; set `coverage_complete` false and keep the burden held/unresolved instead of synthesizing terminal STOP proof.",
         "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
@@ -2876,7 +2882,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- The visible public MRP source set, Closure/Reconstruction Witness `MRP(...)` rows, JSON `mrp_resultants[]`, and JSON `formal_reread_states[]` must be exactly the same source set. If a public `MRP(G)` source is not in the scaffold, remove it or convert it to non-load-bearing held-route prose; do not leave an unmatched visible MRP block.",
         "- `curl_state` values must be parser-stable JSON strings. When curl is absent/resolved, emit JSON string `\"null\"`, never bare JSON null.",
         "- Terminal `STOP` / `no_new_resultant` rows must set `reread` to `R(H,Delta)`, `divergence_state` to `neutral`, `curl_state` to JSON string `\"null\"`, `graph_delta` to `none`, omit `next_burden`, and include `no_new_resultant_proof.escape_routes_checked` as a JSON list.",
-        "- If a terminal `STOP` / `no_new_resultant` row is only a bounded MRP row for a generated or unresolved burden, keep `coverage_complete=false`, set `no_new_resultant_proof.proved=false`, and keep explicit HOLD/PARTIAL accounting instead of claiming clean closure.",
+        "- Complete closure must have no HOLD/PARTIAL formal rows and no held terminal burdens. If a terminal `STOP` / `no_new_resultant` row is only a bounded MRP row for a generated or unresolved burden, keep `coverage_complete=false`, set `no_new_resultant_proof.proved=false`, and keep explicit HOLD/PARTIAL accounting instead of claiming clean closure.",
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
