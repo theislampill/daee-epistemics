@@ -68,7 +68,16 @@ ACT_ROW_DETAIL_RE = re.compile(
     r"^\s*⟦ACT\s+(?P<body_ref>[^\s\[]+)"
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
     r"\s*::\s*π=(?P<pressure>[^\n]+?)"
-    r"\s*::\s*body_ref=(?P<body_ref_field>[^\s:⟧]+)"
+    r"\s*::\s*body_ref=(?P<body_ref_field>[^\s\[:⟧]+)"
+    r"\s*::\s*Δ=(?P<delta>[^:\s]+):(?P<delta_result>.+?)"
+    r"\s*::\s*(?P<land>Land\([^)\n]+\)\+?)⟧\s*$"
+)
+ACT_ROW_OWNER_QUALIFIED_BODY_REF_RE = re.compile(
+    r"^\s*⟦ACT\s+(?P<body_ref>[^\s\[]+)"
+    r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
+    r"\s*::\s*π=(?P<pressure>[^\n]+?)"
+    r"\s*::\s*body_ref=(?P<body_ref_field>[^\s\[:⟧]+)"
+    r"\[(?P<body_ref_owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<body_ref_operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
     r"\s*::\s*Δ=(?P<delta>[^:\s]+):(?P<delta_result>.+?)"
     r"\s*::\s*(?P<land>Land\([^)\n]+\)\+?)⟧\s*$"
 )
@@ -76,6 +85,35 @@ LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
+REGISTER_AXIS_ALIASES = {
+    "N": "N",
+    "n": "N",
+    "m": "m",
+    "tau": "τ",
+    "τ": "τ",
+    "sigma": "σ",
+    "source_status": "σ",
+    "source-status": "σ",
+    "σ": "σ",
+    "heart": "♥",
+    "♥": "♥",
+    "xi": "ξ",
+    "ξ": "ξ",
+    "omega": "Ω",
+    "Omega": "Ω",
+    "Ω": "Ω",
+    "mu": "μ",
+    "μ": "μ",
+    "kappa": "κ",
+    "κ": "κ",
+    "H": "H",
+    "h": "H",
+}
+OWNER_REGISTER_AXIS_FLOORS = {
+    "source-status-repair": {"σ"},
+    "authority-order-repair": {"σ", "ξ"},
+    "M9": {"μ", "ξ", "Ω"},
+}
 STAGE07_RELEASE_VALIDATION_ORDER = (
     "visible_opening_header",
     "nla_semantic_faithfulness",
@@ -169,14 +207,26 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "burden-id strings only, such as [\"B1\"], not descriptive burden labels. "
             "Every ACT row must be an exact canonical row beginning "
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
-            "`⟧`. The token immediately after `⟦ACT` and the token after `body_ref=` "
-            "must be identical so the public ACT row, body_ref dereference, "
-            "owner_activation mirror, NAR, and field_witness all share one stable join key. "
-            "If richer per-row metadata is useful, put it in optional "
-            "`act_row_details`; when present, `act_row_details` must be a JSON array of "
-            "objects tied to the exact ACT row with `act_row` and/or matching `body_ref`, "
-            "not prose strings. Do not put objects in `act_rows` unless each object "
-            "also carries an explicit string `act_row` for harness normalization. "
+            "`⟧`. The token immediately after `⟦ACT` is the public owner-qualified "
+            "submove token, such as `¹B₁[source-status-repair.source-order]`; the "
+            "`body_ref=` value and every `act_body_refs[]` item must be only the bare "
+            "submove join key before the bracket, such as `¹B₁`. Do not put "
+            "`[owner.operation]` in `body_ref=` or `act_body_refs[]`. This keeps the "
+            "public ACT row, body_ref dereference, owner_activation mirror, NAR, and "
+            "field_witness tied to one stable DSL key while owner and operation remain "
+            "separate typed fields. "
+            "`act_row_details` is required and must be a JSON array of objects tied to "
+            "the exact ACT row with `act_row` and/or the same bare `body_ref`, not "
+            "owner-qualified body_ref strings or prose strings. Each detail object must "
+            "carry separate `body_ref`, `burden_id`, `owner_id`, `operation`, "
+            "`register_axis`, and `delta_result` evidence. `register_axis` must name the "
+            "noetic tuple/register field being acted on (`N`, `m`, `τ`, `σ`, `♥`, `ξ`, "
+            "`Ω`, `μ`, `κ`, or `H`); it is not a substitute for body_ref, owner, "
+            "operation, or delta_result. Source-status operations bind to `σ`; M9 "
+            "predication/meaning-density/residue repairs bind only to an approved M9 "
+            "axis (`μ`, `ξ`, or `Ω`). Do not guess by encoding the operation into "
+            "`body_ref`. Do not put objects in `act_rows` unless each object also "
+            "carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
             "route/context umbrella label, case-library label, noetic-frame label, or "
             "code lookup. When the selected owner body is unavailable or not loaded, "
@@ -576,7 +626,48 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     }
 
 
+def reject_stage04_owner_qualified_body_ref(row: str) -> None:
+    match = ACT_ROW_DETAIL_RE.match(row)
+    if match and match.group("body_ref") == match.group("body_ref_field"):
+        return
+
+    match = ACT_ROW_OWNER_QUALIFIED_BODY_REF_RE.match(row)
+    if match:
+        raise HarnessError(
+            "stage-04 ACT row body_ref must be the bare burden/submove join key; "
+            "owner.operation belongs in ACT bracket/object fields, not body_ref"
+        )
+
+
+def canonicalize_register_axis(value: Any) -> str | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return REGISTER_AXIS_ALIASES.get(value.strip())
+
+
+def require_stage04_register_axis(
+    *,
+    index: int,
+    item: dict[str, Any],
+    parsed: dict[str, str],
+) -> tuple[str, bool]:
+    raw_axis = item.get("register_axis", item.get("axis"))
+    axis = canonicalize_register_axis(raw_axis)
+    if axis is None:
+        raise HarnessError(f"stage-04 act_row_details[{index}].register_axis is required")
+
+    allowed_axes = OWNER_REGISTER_AXIS_FLOORS.get(parsed["owner_id"])
+    if allowed_axes is not None and axis not in allowed_axes:
+        raise HarnessError(
+            f"stage-04 act_row_details[{index}].register_axis {axis!r} is not approved for owner "
+            f"{parsed['owner_id']}"
+        )
+
+    return axis, isinstance(raw_axis, str) and raw_axis.strip() != axis
+
+
 def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
+    reject_stage04_owner_qualified_body_ref(row)
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
@@ -866,7 +957,29 @@ def parsed_stage04_act_detail(row: str) -> dict[str, str] | None:
         "burden_id": burden_id_from_land(match.group("land")),
         "owner_id": match.group("owner"),
         "operation": match.group("operation"),
+        "pressure": match.group("pressure").strip(),
+        "delta": match.group("delta"),
+        "delta_result": match.group("delta_result").strip(),
+        "land": match.group("land"),
     }
+
+
+def parsed_stage04_act_rows(stage: dict[str, Any]) -> list[dict[str, str]]:
+    parsed_rows: list[dict[str, str]] = []
+    for index, row in enumerate(stage.get("act_rows", [])):
+        parsed = parsed_stage04_act_detail(row)
+        if not parsed:
+            raise HarnessError(f"stage-04 act_rows[{index}] is not a parseable canonical ACT row")
+        parsed_rows.append(parsed)
+    return parsed_rows
+
+
+def reject_stage04_body_ref_token(raw_body_ref: str) -> None:
+    if "[" in raw_body_ref or "]" in raw_body_ref:
+        raise HarnessError(
+            "stage-04 body_ref must be the bare burden/submove join key; "
+            "owner.operation belongs in owner_id/operation fields"
+        )
 
 
 def normalize_stage04_act_row_details(
@@ -878,7 +991,7 @@ def normalize_stage04_act_row_details(
 ) -> None:
     raw_details = stage.get("act_row_details")
     if raw_details is None:
-        return
+        raise HarnessError("stage-04 act_row_details is required to carry typed owner/operation/register_axis evidence")
     if not isinstance(raw_details, list):
         raise HarnessError("stage-04 act_row_details must be a list when present")
 
@@ -900,13 +1013,21 @@ def normalize_stage04_act_row_details(
 
         raw_act_row = non_empty_string(detail.get("act_row"))
         raw_body_ref = non_empty_string(detail.get("body_ref"))
-        parsed = parsed_by_row.get(raw_act_row or "")
+        canonical_raw_act_row = None
+        if raw_act_row:
+            canonical_raw_act_row, raw_act_rewrite = canonicalize_stage04_act_row(raw_act_row)
+            if raw_act_rewrite:
+                normalization.setdefault("act_row_details_act_row_canonicalizations", []).append(raw_act_rewrite)
+        parsed = parsed_by_row.get(canonical_raw_act_row or raw_act_row or "")
         if parsed is None and raw_act_row:
-            parsed_from_raw = parsed_stage04_act_detail(raw_act_row)
+            parsed_from_raw = parsed_stage04_act_detail(canonical_raw_act_row or raw_act_row)
             if parsed_from_raw:
                 parsed = parsed_by_ref.get(parsed_from_raw["body_ref"])
-        if parsed is None and raw_body_ref:
-            parsed = parsed_by_ref.get(raw_body_ref)
+        canonical_raw_body_ref = raw_body_ref
+        if raw_body_ref:
+            reject_stage04_body_ref_token(raw_body_ref)
+        if parsed is None and canonical_raw_body_ref:
+            parsed = parsed_by_ref.get(canonical_raw_body_ref)
         if parsed is None:
             raise HarnessError(
                 f"stage-04 act_row_details[{index}] cannot be normalized without "
@@ -915,11 +1036,14 @@ def normalize_stage04_act_row_details(
 
         item = dict(detail)
         missing: list[str] = []
-        if raw_body_ref and raw_body_ref != parsed["body_ref"]:
+        if canonical_raw_body_ref and canonical_raw_body_ref != parsed["body_ref"]:
             raise HarnessError(
                 f"stage-04 act_row_details[{index}].body_ref disagrees with parsed ACT row body_ref"
             )
-        if not raw_body_ref:
+        if raw_body_ref and canonical_raw_body_ref != raw_body_ref:
+            item["body_ref"] = canonical_raw_body_ref
+            missing.append("body_ref")
+        elif not raw_body_ref:
             item["body_ref"] = parsed["body_ref"]
             missing.append("body_ref")
 
@@ -948,6 +1072,32 @@ def normalize_stage04_act_row_details(
             if not value or (field == "act_row" and value != parsed_value):
                 item[field] = parsed_value
                 missing.append(field)
+
+        detail_delta_result = non_empty_string(item.get("delta_result"))
+        if not detail_delta_result:
+            raise HarnessError(f"stage-04 act_row_details[{index}].delta_result is required")
+        require_delta_result_vocabulary(
+            f"stage-04 act_row_details[{index}].delta_result",
+            parsed["owner_id"],
+            detail_delta_result,
+        )
+        if detail_delta_result != parsed["delta_result"]:
+            raise HarnessError(
+                f"stage-04 act_row_details[{index}].delta_result disagrees with parsed ACT row"
+            )
+
+        register_axis, axis_rewritten = require_stage04_register_axis(
+            index=index,
+            item=item,
+            parsed=parsed,
+        )
+        if item.get("register_axis") != register_axis:
+            item["register_axis"] = register_axis
+            missing.append("register_axis")
+        if "axis" in item and item.get("axis") != register_axis:
+            item["axis"] = register_axis
+            if not axis_rewritten:
+                missing.append("axis")
 
         normalized.append(item)
         if missing:
@@ -992,17 +1142,27 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
     if delta_rewrites:
         normalization["delta_result_canonicalizations"] = delta_rewrites
 
+    parsed_rows = parsed_stage04_act_rows(stage)
+    row_body_refs = ordered_unique([item["body_ref"] for item in parsed_rows])
+
     explicit_body_refs = stage.get("act_body_refs")
     if explicit_body_refs is None or explicit_body_refs == []:
-        extracted = ordered_unique(
-            [ref for ref in (extract_stage04_body_ref(row) for row in stage["act_rows"]) if ref]
-        )
-        if not extracted:
+        if not row_body_refs:
             raise HarnessError("stage-04 act_body_refs missing and no body_ref tokens were extractable from ACT rows")
-        stage["act_body_refs"] = extracted
+        stage["act_body_refs"] = row_body_refs
         normalization["act_body_refs_from_act_rows"] = True
     else:
-        normalize_string_list(stage, "act_body_refs", required=True)
+        explicit_refs = normalize_string_list(stage, "act_body_refs", required=True)
+        normalized_refs: list[str] = []
+        for index, raw_ref in enumerate(explicit_refs):
+            reject_stage04_body_ref_token(raw_ref)
+            if raw_ref not in row_body_refs:
+                raise HarnessError(f"stage-04 act_body_refs[{index}] is not tied to a canonical ACT row body_ref")
+            normalized_refs.append(raw_ref)
+        normalized_refs = ordered_unique(normalized_refs)
+        if normalized_refs != row_body_refs:
+            raise HarnessError("stage-04 act_body_refs must match canonical ACT row body_refs in row order")
+        stage["act_body_refs"] = normalized_refs
 
     normalize_stage04_act_row_details(
         stage,
@@ -5120,6 +5280,30 @@ def run_self_test(root: Path) -> int:
         "π=scientific-explanations-only-knowledge-source :: "
         "body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
     )
+
+    def self_test_act_row_details(rows: list[str], axis_by_ref: dict[str, str]) -> list[dict[str, str]]:
+        details: list[dict[str, str]] = []
+        for row in rows:
+            parsed = parsed_stage04_act_detail(row)
+            if not parsed:
+                raise HarnessError("Self-test fixture contains an unparseable Stage 04 ACT row")
+            ref = parsed["body_ref"]
+            axis = axis_by_ref.get(ref)
+            if not axis:
+                raise HarnessError(f"Self-test fixture missing register axis for {ref}")
+            details.append(
+                {
+                    "burden_id": parsed["burden_id"],
+                    "body_ref": ref,
+                    "owner_id": parsed["owner_id"],
+                    "operation": parsed["operation"],
+                    "register_axis": axis,
+                    "delta_result": parsed["delta_result"],
+                    "act_row": row,
+                }
+            )
+        return details
+
     normalized_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
         {
@@ -5133,6 +5317,8 @@ def run_self_test(root: Path) -> int:
                     "body_ref": "¹B₁",
                     "owner_id": "source-status-repair",
                     "operation": "source-order",
+                    "register_axis": "σ",
+                    "delta_result": "science-source-bounded",
                     "act_row": canonical_act_row,
                 }
             ],
@@ -5159,6 +5345,8 @@ def run_self_test(root: Path) -> int:
                     "body_ref": None,
                     "owner_id": "source-status-repair",
                     "operation": None,
+                    "register_axis": "sigma",
+                    "delta_result": "science-source-bounded",
                     "act_row": canonical_act_row,
                 }
             ],
@@ -5182,6 +5370,8 @@ def run_self_test(root: Path) -> int:
                     "body_ref": "¹B₁",
                     "owner_id": "source-status-repair",
                     "operation": "source-order",
+                    "register_axis": "σ",
+                    "delta_result": "science-source-bounded",
                     "act_row": canonical_act_row,
                 }
             ],
@@ -5189,6 +5379,121 @@ def run_self_test(root: Path) -> int:
     )
     if hydrated_missing_burden["act_row_details"][0].get("burden_id") != "B1":
         raise HarnessError("Self-test failed to hydrate Stage 04 act_row_details burden_id from Land()")
+    owner_qualified_body_ref_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=scientific-explanations-only-knowledge-source :: "
+        "body_ref=¹B₁[source-status-repair.source-order] :: "
+        "Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁[source-status-repair.source-order]"],
+                "act_rows": [owner_qualified_body_ref_row],
+                "act_row_details": [
+                    {
+                        "burden_id": "B1",
+                        "body_ref": "¹B₁[source-status-repair.source-order]",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": owner_qualified_body_ref_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "owner.operation belongs in ACT bracket/object fields, not body_ref" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject owner-qualified Stage 04 body_ref fields")
+    accepted_layer_separated_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [canonical_act_row],
+            "act_row_details": [
+                {
+                    "burden_id": "B1",
+                    "body_ref": "¹B₁",
+                    "owner_id": "source-status-repair",
+                    "operation": "source-order",
+                    "register_axis": "sigma",
+                    "register_name": "source_status",
+                    "delta_result": "science-source-bounded",
+                    "act_row": canonical_act_row,
+                }
+            ],
+        },
+    )
+    if accepted_layer_separated_stage04["act_row_details"][0].get("register_axis") != "σ":
+        raise HarnessError("Self-test failed to accept separate source-status register_axis")
+    mismatched_owner_body_ref_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=scientific-explanations-only-knowledge-source :: "
+        "body_ref=¹B₁[M9.predication-repair] :: "
+        "Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁[M9.predication-repair]"],
+                "act_rows": [mismatched_owner_body_ref_row],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "register_axis": "μ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": mismatched_owner_body_ref_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "owner.operation belongs in ACT bracket/object fields, not body_ref" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject mismatched owner-qualified Stage 04 body_ref")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁[M9.predication-repair]"],
+                "act_rows": [canonical_act_row],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": canonical_act_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "owner.operation belongs in owner_id/operation fields" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject untied owner-qualified Stage 04 act_body_refs")
     try:
         normalized_stage(
             "stage-04-burden-execution-act",
@@ -5205,6 +5510,8 @@ def run_self_test(root: Path) -> int:
                         "body_ref": "²B₁",
                         "owner_id": "source-status-repair",
                         "operation": "source-order",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
                         "act_row": canonical_act_row,
                     }
                 ],
@@ -5252,7 +5559,7 @@ def run_self_test(root: Path) -> int:
             },
         )
     except HarnessError as exc:
-        if "parseable act_row or body_ref tied to Stage 04 act_rows" not in str(exc):
+        if "act_rows[0] is not a parseable canonical ACT row" not in str(exc):
             raise
     else:
         raise HarnessError("Self-test failed to reject Stage 04 ACT head/body_ref dialect mismatch")
@@ -5303,6 +5610,19 @@ def run_self_test(root: Path) -> int:
             "act_targets": ["B1", "B2", "B3", "B4"],
             "act_burdens": ["B1", "B2", "B3", "B4"],
             "act_rows": selected_model_controlled_rows,
+            "act_row_details": self_test_act_row_details(
+                selected_model_controlled_rows,
+                {
+                    "¹B₁": "Ω",
+                    "¹B₂": "Ω",
+                    "²B₁": "μ",
+                    "²B₂": "μ",
+                    "³B₁": "σ",
+                    "³B₂": "σ",
+                    "⁴B₁": "κ",
+                    "⁴B₂": "Ω",
+                },
+            ),
         },
     )
     selected_model_delta_results = [
@@ -5378,6 +5698,7 @@ def run_self_test(root: Path) -> int:
             "act_targets": ["B1"],
             "act_burdens": ["B1"],
             "act_rows": [valid_do_attribute_delta_row],
+            "act_row_details": self_test_act_row_details([valid_do_attribute_delta_row], {"¹B₁": "Ω"}),
         },
     )
     source_stack_row = (
@@ -5398,6 +5719,10 @@ def run_self_test(root: Path) -> int:
             "act_targets": ["B1"],
             "act_burdens": ["B1"],
             "act_rows": [source_stack_row, source_recoil_row],
+            "act_row_details": self_test_act_row_details(
+                [source_stack_row, source_recoil_row],
+                {"¹B₁": "σ", "¹B₂": "σ"},
+            ),
         },
     )
     source_delta_results = [
@@ -5521,6 +5846,7 @@ def run_self_test(root: Path) -> int:
             "act_targets": ["B1"],
             "act_burdens": ["¹B / B1 source-order diagnostic burden"],
             "act_rows": [canonical_act_row],
+            "act_row_details": self_test_act_row_details([canonical_act_row], {"¹B₁": "σ"}),
         },
     )
     if normalized_stage04_rich_burdens.get("act_burdens") != ["B1"]:
@@ -6614,6 +6940,11 @@ def run_self_test(root: Path) -> int:
 
     def synthetic_stage04(burdens: list[str]) -> dict[str, Any]:
         rows = [synthetic_act_row(burden) for burden in burdens]
+        axis_by_ref = {
+            parsed_stage04_act_detail(row)["body_ref"]: "κ"
+            for row in rows
+            if parsed_stage04_act_detail(row)
+        }
         return normalized_stage(
             "stage-04-burden-execution-act",
             {
@@ -6622,6 +6953,7 @@ def run_self_test(root: Path) -> int:
                 "act_targets": burdens,
                 "act_burdens": burdens,
                 "act_rows": rows,
+                "act_row_details": self_test_act_row_details(rows, axis_by_ref),
             },
         )
 
