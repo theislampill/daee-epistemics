@@ -23,6 +23,11 @@ from closure_witness_lib import (
     field_witness_graph_errors,
     parse_closure_witness,
 )
+from delta_result_vocabulary import (
+    delta_result_vocabulary_errors,
+    owner_operation_vocabulary_errors,
+    source_formal_delta_operation_errors,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -32,6 +37,7 @@ if hasattr(sys.stdout, "reconfigure"):
 SUP = "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079"
 SUB = "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"
 SUP_DIGITS = str.maketrans(SUP, "0123456789")
+SUB_DIGITS = str.maketrans(SUB, "0123456789")
 ASCII_TO_SUP_DIGITS = str.maketrans("0123456789", SUP)
 B_LEDGER = "\U0001d505"
 WRONG_B_LEDGER = "\U0001d4d1"
@@ -222,6 +228,19 @@ SOURCE_REPAIR_NEGATED_EVIDENCE_RE = re.compile(
     r"not .*sort|not .*distinguish|only repeats?|merely repeats?|"
     r"generic repair language|label(?:s)? only|owner labels?)\b"
 )
+PUBLIC_ACT_RECORD_RE = re.compile(
+    rf"(?m)^\s*\u27e6ACT\s+"
+    rf"(?P<submove_ref>(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+))"
+    rf"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\.(?P<operation>[A-Za-z][A-Za-z0-9_.\-/]*)\]"
+    rf"\s*::\s*\u03c0=(?P<pressure>[^\n]+?)"
+    rf"\s*::\s*body_ref=(?P<body_ref>[^\s:]+)"
+    rf"\s*::\s*\u0394=(?P<delta>[^:\s]+):(?P<delta_result>.+?)"
+    rf"\s*::\s*(?P<land>Land\([^)\n]+\)\+?)\u27e7\s*$"
+)
+SOURCE_COMPACT_FORMAL_DELTAS = {
+    "authority-order-repaired": "authority-order",
+    "source-order-repaired": "source-order",
+}
 GENERIC_CONTRIBUTION_RE = re.compile(
     r"(?i)^\s*(?:it\s+)?(?:blocks?|preserves?|gives?|allows?|contributes?|lands?|makes?)\s+"
     r"(?:the\s+)?(?:move|burden|closure|target|direction|condition)\.?\s*$"
@@ -681,6 +700,36 @@ def submove_blocks(section: str, target: str) -> list[str]:
     return blocks
 
 
+def canonical_submove_ref(value: str) -> str:
+    text = str(value or "").strip()
+    match = re.fullmatch(rf"([{SUP}]+)B([{SUB}]+)", text)
+    if match:
+        return f"B{match.group(1).translate(SUP_DIGITS)}_{match.group(2).translate(SUB_DIGITS)}"
+    match = re.fullmatch(r"B([1-9][0-9]*)[_\.]([1-9][0-9]*)", text)
+    if match:
+        return f"B{match.group(1)}_{match.group(2)}"
+    return text
+
+
+def submove_block_ref(block: str) -> str:
+    heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
+    match = re.search(
+        rf"(?P<ref>(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+))\s*\[",
+        heading,
+    )
+    return match.group("ref") if match else ""
+
+
+def submove_blocks_by_ref(text: str) -> dict[str, str]:
+    blocks: dict[str, str] = {}
+    for target, _generated, section in burden_sections(text):
+        for block in submove_blocks(section, target):
+            ref = submove_block_ref(block)
+            if ref:
+                blocks.setdefault(canonical_submove_ref(ref), block)
+    return blocks
+
+
 def field_body(block: str, name: str) -> str:
     match = re.search(rf"(?im)^\s*-?\s*{re.escape(name)}\s*:\s*(?P<body>.+)$", block)
     return match.group("body").strip() if match else ""
@@ -1093,6 +1142,81 @@ def source_repair_transition_kind(result: str, contribution: str, operation_body
     ):
         return "source-order"
     return ""
+
+
+def public_source_formal_transition_errors(path: Path, text: str) -> list[str]:
+    """Validate compact SOURCE repair deltas against visible ACT/body evidence.
+
+    The public ACT row is a compact projection. It proves a SOURCE formal repair
+    only when the owner/operation/delta tuple is controlled and body_ref
+    dereferences to public prose that performs the matching transition.
+    """
+    errors: list[str] = []
+    blocks_by_ref = submove_blocks_by_ref(text)
+    seen_records: set[str] = set()
+    for match in PUBLIC_ACT_RECORD_RE.finditer(text):
+        record = match.group(0).strip()
+        if record in seen_records:
+            continue
+        seen_records.add(record)
+
+        owner = match.group("owner").strip()
+        operation = match.group("operation").strip()
+        delta_result = match.group("delta_result").strip()
+        body_ref = match.group("body_ref").strip()
+        submove_ref = match.group("submove_ref").strip()
+        label = f"{path}: ACT {submove_ref}"
+
+        if "[" in body_ref or "]" in body_ref:
+            errors.append(
+                f"{label} body_ref must be the bare burden/submove join key; "
+                "owner.operation belongs in ACT bracket/object fields"
+            )
+            continue
+        if canonical_submove_ref(body_ref) != canonical_submove_ref(submove_ref):
+            errors.append(
+                f"{label} body_ref must name the exact same bare submove token, not {body_ref!r}"
+            )
+            continue
+        if owner_family(owner) != "SOURCE":
+            continue
+
+        operation_errors = owner_operation_vocabulary_errors("operation", owner, operation)
+        delta_errors = delta_result_vocabulary_errors("delta_result", owner, delta_result)
+        pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, delta_result)
+        errors.extend(f"{label}: {error}" for error in operation_errors)
+        errors.extend(f"{label}: {error}" for error in delta_errors)
+        errors.extend(f"{label}: {error}" for error in pair_errors)
+
+        expected_kind = SOURCE_COMPACT_FORMAL_DELTAS.get(delta_result)
+        if not expected_kind or operation_errors or delta_errors or pair_errors:
+            continue
+        block = blocks_by_ref.get(canonical_submove_ref(body_ref))
+        if not block:
+            errors.append(
+                f"{label} compact SOURCE repair delta lacks a dereferenced public Layer B body"
+            )
+            continue
+        result = field_body_any(block, ("Result", "Result/state-change"))
+        contribution_match = re.search(
+            r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:\s*(?P<body>.+)$",
+            block,
+        )
+        contribution = contribution_match.group("body").strip() if contribution_match else ""
+        operation_body = submove_operation_body(block)
+        transition_kind = source_repair_transition_kind(result, contribution, operation_body)
+        if transition_kind != expected_kind:
+            if expected_kind == "authority-order":
+                errors.append(
+                    f"{label} SOURCE authority-order-repair lacks "
+                    "authority/rank/tribunal/source-sovereignty transition evidence"
+                )
+            else:
+                errors.append(
+                    f"{label} SOURCE source-order-repair lacks "
+                    "source-lineage/quotation/inherited-claim/evidential-dependency transition evidence"
+                )
+    return errors
 
 
 def has_matched_owner_route(scope: str) -> bool:
@@ -1635,6 +1759,7 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
                     f"{path}: hard framework/proof-stack smoke closes with empty B_MRP without generated burden or explicit no-recoil proof"
                 )
     errors.extend(layer_b_mass_errors(path, text))
+    errors.extend(public_source_formal_transition_errors(path, text))
     errors.extend(public_tail_quality_errors(path, text, hard_anchor_hits))
 
     loopbreak_without_generated = (
