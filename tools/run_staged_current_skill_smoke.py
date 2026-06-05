@@ -2206,6 +2206,7 @@ def stage07_act_contract_guidance(
             "- If the selected route names only an umbrella/context module, resolve to a callable owner/TTP floor before ACT; otherwise keep the route as HOLD/PARTIAL instead of inventing an ACT owner.",
             "- If the matched owner body is not loaded, emit HOLD/PARTIAL with `OWNER-BODY-NOT-LOADED` and do not emit `Land(Bn):` for that burden.",
             "- The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution; do not merely restate the conclusion, cite an owner name, or summarize that the burden fails.",
+            "- Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton. Do not replace it with a result, pressure, route label, or prose description; result labels belong in `Result/state-change:` and local prose.",
             "- Source/citation/proof-stack rows must name the concrete burden-local state change that the source-status, authority-order, proof-method, or transmission/content operation produces.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
@@ -2248,6 +2249,25 @@ def stage07_act_contract_guidance(
             lines.append(
                 "  Procedure boundary: explicitly name the STOP/HOLD/PARTIAL or bounded-stop condition, "
                 "the held/non-load-bearing route boundary, and the reopen condition in this body."
+            )
+        elif family == "M8":
+            lines.append(
+                "  M8 consequence-trace operation: use the registered operation token `consequence-trace`; "
+                "assume the live pressure, trace at least one concrete downstream implication or entailment, "
+                "name why that consequence is blocked/demoted/unacceptable in the selected noetic frame, "
+                "and put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`."
+            )
+        elif family == "V10":
+            lines.append(
+                "  V10 provenance/content operation: visibly vet transmission/provenance, content, and authority/status "
+                "for this exact source pressure; do not merely cite, summarize, or sort sources without the "
+                "V10 transmission/content-authority operation body."
+            )
+        elif family == "DO_ATTRIBUTE":
+            lines.append(
+                "  Attribute-precision operation: type the person/nature or attribute relation, separate the relevant "
+                "levels of predication, name the category confusion or transfer being blocked, and make the "
+                "burden-local state change visible before Land."
             )
         elif family == "SOURCE":
             lines.append(
@@ -5621,10 +5641,141 @@ def run_self_test(root: Path) -> int:
         "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
         "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
         "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
+        "Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton.",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    stage07_m8_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-m8-operation",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[
+            normalized_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_rows": [
+                    "⟦ACT ¹B₁[M8.consequence-trace] :: π=entailment-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:entailment-bounded :: Land(¹B)+⟧"
+                ],
+                "act_body_refs": ["¹B₁"],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner": "M8",
+                        "operation": "consequence-trace",
+                        "pressure": "entailment-pressure",
+                        "delta": "Δ¹B",
+                        "delta_result": "entailment-bounded",
+                        "land": "Land(¹B)+",
+                    }
+                ],
+            },
+            normalized_stage05,
+            normalized_stage06,
+        ],
+        section_id="act-body-m8",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    for required in (
+        "M8 consequence-trace operation: use the registered operation token `consequence-trace`",
+        "put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`",
+    ):
+        if required not in stage07_m8_prompt:
+            raise HarnessError(f"Self-test Stage 07 M8 prompt omitted owner scaffold: {required}")
+    stage07_v10_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-v10-operation",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[
+            normalized_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_rows": [
+                    "⟦ACT ¹B₁[V10.provenance-content-authority] :: π=source-provenance-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:transmission-content-vetted :: Land(¹B)+⟧"
+                ],
+                "act_body_refs": ["¹B₁"],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner": "V10",
+                        "operation": "provenance-content-authority",
+                        "pressure": "source-provenance-pressure",
+                        "delta": "Δ¹B",
+                        "delta_result": "transmission-content-vetted",
+                        "land": "Land(¹B)+",
+                    }
+                ],
+            },
+            normalized_stage05,
+            normalized_stage06,
+        ],
+        section_id="act-body-v10",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    if "V10 provenance/content operation: visibly vet transmission/provenance, content, and authority/status" not in stage07_v10_prompt:
+        raise HarnessError("Self-test Stage 07 V10 prompt omitted owner scaffold")
+    stage07_attribute_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-attribute-operation",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[
+            normalized_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_rows": [
+                    "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: π=person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧"
+                ],
+                "act_body_refs": ["¹B₁"],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner": "do-attribute-precision",
+                        "operation": "attribute-precision",
+                        "pressure": "person-nature-transfer",
+                        "delta": "Δ¹B",
+                        "delta_result": "person-nature-transfer-blocked",
+                        "land": "Land(¹B)+",
+                    }
+                ],
+            },
+            normalized_stage05,
+            normalized_stage06,
+        ],
+        section_id="act-body-attribute",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    if "Attribute-precision operation: type the person/nature or attribute relation" not in stage07_attribute_prompt:
+        raise HarnessError("Self-test Stage 07 attribute prompt omitted owner scaffold")
     stage07_restorative_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
