@@ -287,7 +287,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
     },
     "stage-06-field-witness-nar": {
         "title": "field_witness / NAR",
-        "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"],
+        "produces": [
+            "field_witness_body_refs",
+            "nar_burdens",
+            "normalized_activation_record",
+            "register_deltas",
+        ],
         "requires": ["terminal_states", "act_body_refs"],
         "instructions": (
             "Produce Stage 06 JSON only. Do not write a final answer, Restorative Response, "
@@ -315,9 +320,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "a non-empty string `burden_id`. When a row mirrors a Stage 04 owner activation, "
             "include `owner_id`, `operation`, and the exact owner-local `delta_result`; "
             "do not emit `per_burden` as a burden-keyed object map. "
-            "`register_deltas` must be parser-stable as an object mapping register names to "
-            "a non-empty string or non-empty string array, or as a list of objects with "
-            "`register` plus `delta` as a non-empty string or non-empty string array. "
+            "Top-level `register_deltas` is a required Stage 06 produced field. It must be "
+            "parser-stable as an object mapping register names to a non-empty string or "
+            "non-empty string array, or as a list of objects with `register` plus `delta` "
+            "as a non-empty string or non-empty string array. Do not put register deltas "
+            "only inside `normalized_activation_record`; any NAR register-delta mirror is "
+            "supplemental and must not replace the top-level Stage 06 field. "
             "If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
         ),
@@ -1346,6 +1354,11 @@ def normalize_stage06_witness_nar_fields(stage: dict[str, Any]) -> None:
         normalize_stage06_nar_object(details, "stage-06 normalized_activation_record_details")
 
     if "register_deltas" not in stage:
+        if isinstance(normalized, dict) and "register_deltas" in normalized:
+            raise HarnessError(
+                "stage-06 register_deltas is required at top level; "
+                "normalized_activation_record.register_deltas is mirror evidence only"
+            )
         raise HarnessError("stage-06 register_deltas is required")
     register_deltas = stage.get("register_deltas")
     if isinstance(register_deltas, dict):
@@ -6604,6 +6617,25 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    nested_only_nar = dict(structured_nar)
+    nested_only_nar["register_deltas"] = {"xi": "source-order-repaired"}
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": nested_only_nar,
+            },
+        )
+    except HarnessError as exc:
+        if "register_deltas is required at top level" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 06 register_deltas nested only under NAR")
     try:
         normalized_stage(
             "stage-06-field-witness-nar",
@@ -7943,6 +7975,33 @@ def run_self_test(root: Path) -> int:
     stage06_local_path = run_dir / "staged-handoff-stage06-model-scope-record.json"
     write_json(stage06_local_path, stage06_local_record)
     validate_replay_record(root, stage06_local_path)
+
+    stage06_nested_only_record = dict(stage06_local_record)
+    stage06_nested_only_record["case_id"] = "self-test-stage06-register-deltas-nested-only"
+    stage06_nested_only_record["model_scope"] = model_scope(
+        "self-test-stage06-register-deltas-nested-only",
+        replay_record,
+        stop_after_stage="stage-06-field-witness-nar",
+    )
+    stage06_nested_only_record["stages"] = [dict(stage) for stage in stage06_local_record["stages"]]
+    stage06_nested_only_record["stages"][-1] = dict(stage06_nested_only_record["stages"][-1])
+    stage06_nested_nar = dict(stage06_nested_only_record["stages"][-1]["normalized_activation_record"])
+    stage06_nested_nar["register_deltas"] = {"xi": "source-order-repaired"}
+    stage06_nested_only_record["stages"][-1]["normalized_activation_record"] = stage06_nested_nar
+    stage06_nested_only_record["stages"][-1].pop("register_deltas", None)
+    stage06_nested_only_path = run_dir / "stage06-register-deltas-nested-only.invalid.json"
+    write_json(stage06_nested_only_path, stage06_nested_only_record)
+    invalid_result = run_checked(
+        [
+            sys.executable,
+            str(root / "tools" / "check_staged_runtime_handshake.py"),
+            "--records",
+            str(stage06_nested_only_path),
+        ],
+        cwd=root,
+    )
+    if invalid_result.returncode == 0:
+        raise HarnessError("Self-test failed to reject Stage 06 register_deltas nested only under NAR")
 
     stage06_register_delta_list_record = dict(stage06_local_record)
     stage06_register_delta_list_record["case_id"] = "self-test-stage06-register-delta-list-values"

@@ -791,7 +791,13 @@ def stage06_witness_nar_errors(
         )
 
     if "register_deltas" not in stage06:
-        errors.append(f"{label}: stage-06 register_deltas is required")
+        if isinstance(nar_value, dict) and "register_deltas" in nar_value:
+            errors.append(
+                f"{label}: stage-06 register_deltas is required at top level; "
+                "normalized_activation_record.register_deltas is mirror evidence only"
+            )
+        else:
+            errors.append(f"{label}: stage-06 register_deltas is required")
     else:
         errors.extend(register_delta_errors(label, stage06.get("register_deltas")))
     return errors
