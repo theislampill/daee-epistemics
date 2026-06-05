@@ -89,6 +89,7 @@ ACT_ROW_OWNER_QUALIFIED_BODY_REF_RE = re.compile(
 )
 LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
+STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 REGISTER_AXIS_ALIASES = {
@@ -119,8 +120,17 @@ OWNER_REGISTER_AXIS_FLOORS = {
     "source-status-repair": {"σ"},
     "authority-order-repair": {"σ", "ξ"},
     "M9": {"μ", "ξ", "Ω"},
+    "proof-method-audit": {"σ", "ξ", "μ", "κ"},
     "do-second-loop": {"♥", "ξ", "Ω", "κ", "σ"},
     "P3-reason-revelation-tension": {"Ω", "κ", "σ"},
+}
+CONTROLLED_STAGE05_TERMINAL_STATES = {
+    "landed",
+    "cleared",
+    "held-with-reason",
+    "carried-PARTIAL",
+    "carried-RECURSE",
+    "discharged-as-derivative",
 }
 STAGE07_RELEASE_VALIDATION_ORDER = (
     "visible_opening_header",
@@ -255,7 +265,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Produce Stage 05 JSON only. Do not write final answer prose, field_witness, "
             "Closing Formulation, release output, verifier sidecars, or proof artifacts. "
             "`terminal_states` must be a JSON object mapping every Stage 04 ACT burden id "
-            "to a controlled terminal-state string. `dependency_graph_edges` must be a "
+            "to one controlled terminal-state head only: landed, cleared, held-with-reason, "
+            "carried-PARTIAL, carried-RECURSE, or discharged-as-derivative. Put burden-local "
+            "delta_result/result detail in ACT/NAR/witness detail fields, not in "
+            "`terminal_states`; never emit values like `terminal_landed_*` as terminal "
+            "states. `dependency_graph_edges` must be a "
             "JSON array; use [] when no dependency edge remains. If no new resultant "
             "burden is live, set `no_new_resultant_proof` to true or to an object "
             "`{\"proved\": true, \"basis\": \"...\", \"unresolved_burdens\": []}`. "
@@ -1201,6 +1215,22 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-05 terminal_states must be a non-empty object")
     if not all(isinstance(key, str) and key and isinstance(value, str) and value for key, value in terminal_states.items()):
         raise HarnessError("stage-05 terminal_states must map burden-id strings to terminal-state strings")
+    for burden_id, terminal_state in terminal_states.items():
+        if not STAGE05_TERMINAL_BURDEN_ID_RE.fullmatch(burden_id):
+            raise HarnessError(
+                "stage-05 terminal_states keys must be canonical burden ids such as B1; "
+                f"got {burden_id!r}"
+            )
+        state = terminal_state.strip()
+        if state != terminal_state:
+            terminal_states[burden_id] = state
+        if state not in CONTROLLED_STAGE05_TERMINAL_STATES:
+            allowed = ", ".join(sorted(CONTROLLED_STAGE05_TERMINAL_STATES))
+            raise HarnessError(
+                "stage-05 terminal_states must use controlled terminal-state heads only "
+                f"({allowed}); got {burden_id}={terminal_state!r}. Put delta/result detail "
+                "in ACT/NAR/witness detail fields, not in terminal_states."
+            )
 
     edges = stage.get("dependency_graph_edges")
     if edges is None:
@@ -5601,6 +5631,7 @@ def run_self_test(root: Path) -> int:
                     {"burden_id": "B3", "owner_id": "authority-order-repair"},
                     {"burden_id": "B4", "owner_id": "M8"},
                     {"burden_id": "B4", "owner_id": "M9"},
+                    {"burden_id": "B5", "owner_id": "proof-method-audit"},
                 ],
             }
         ]
@@ -5611,7 +5642,10 @@ def run_self_test(root: Path) -> int:
         "DO_CHRISTIAN operations: model-identification",
         "M7: definition-anchored",
         "M8: coercive-clarity-entailment-demoted",
+        "M9 operations: predication-repair, repair, sense-split",
         "M9: category-separated",
+        "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
+        "PROOF_METHOD: proof-denominator-exposed",
         "SOURCE: authority-order-repaired",
         "Tokens are family-local proof terms",
         "For M9 predication/identity pressure, use an M9 token such as `predicate-separated`",
@@ -5619,6 +5653,8 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in selected_model_delta_guidance:
             raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
+    if "M9 operations: category-or-referent-separation" in selected_model_delta_guidance:
+        raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
     do_second_loop_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -5693,6 +5729,27 @@ def run_self_test(root: Path) -> int:
     rewrites = normalized_selected_model_stage04.get("normalization", {}).get("delta_result_canonicalizations")
     if rewrites:
         raise HarnessError("Self-test laundered selected DO-family Stage 04 delta_result tokens")
+    invalid_m9_operation_row = (
+        "⟦ACT ¹B₁[M9.category-or-referent-separation] :: "
+        "π=predicate-category-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:category-separated :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_m9_operation_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled operation vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted M9 delta/result label as an operation token")
     invalid_delta_row = (
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: "
         "π=selected-model-person-nature-transfer :: "
@@ -5735,6 +5792,48 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted DO_ATTRIBUTE delta_result borrowed by M9")
+    proof_method_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+        "π=proof-family-carrier-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    normalized_proof_method_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_method_row],
+            "act_row_details": self_test_act_row_details([proof_method_row], {"¹B₁": "ξ"}),
+        },
+    )
+    proof_method_detail = stage04_act_details_by_ref(normalized_proof_method_stage04)["¹B₁"]
+    if proof_method_detail.get("owner") != "proof-method-audit":
+        raise HarnessError("Self-test failed to preserve proof-method-audit ACT owner")
+    if proof_method_detail.get("delta_result") != "proof-family-carrier-typed":
+        raise HarnessError("Self-test failed to preserve proof-method-audit delta_result")
+    invalid_proof_method_operation_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
+        "π=proof-family-carrier-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_proof_method_operation_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled operation vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted proof-method route label as operation token")
     valid_do_attribute_delta_row = (
         "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
         "π=predicate-identity-pressure :: "
@@ -6150,6 +6249,26 @@ def run_self_test(root: Path) -> int:
             },
         },
     )
+    try:
+        normalized_stage(
+            "stage-05-mrp-reread-terminal-state",
+            {
+                "id": "stage-05-mrp-reread-terminal-state",
+                "status": "pass",
+                "terminal_states": {"B1": "terminal_landed_hidden_tribunal_blocked"},
+                "dependency_graph_edges": [],
+                "no_new_resultant_proof": {
+                    "proved": True,
+                    "basis": "negative fixture: delta/result detail was laundered as terminal state.",
+                    "unresolved_burdens": [],
+                },
+            },
+        )
+    except HarnessError as exc:
+        if "controlled terminal-state heads only" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted delta/result detail as a Stage 05 terminal_state")
     stage05_local_record = base_record(
         "self-test-a9-science-source-stage05",
         "staged-current-skill-stage-local-smoke",

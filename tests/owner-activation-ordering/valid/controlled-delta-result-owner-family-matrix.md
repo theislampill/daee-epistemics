@@ -26,7 +26,8 @@ field_witness
     {"source": "B1", "target": "B1", "owner": "V12-tamanuc-exhaustion", "operation": "exhaust", "pressure": "independent lordship plurality", "body_ref": "B1_18", "delta": "Delta B1:plurality-claim-refused", "land": "Land(B1)+"},
     {"source": "B1", "target": "B1", "owner": "husn-al-nazar-arguments", "operation": "infer", "pressure": "proof readiness", "body_ref": "B1_19", "delta": "Delta B1:secondary-inference-routed", "land": "Land(B1)+"},
     {"source": "B1", "target": "B1", "owner": "inductive-fitri-method", "operation": "separate", "pressure": "foundation superstructure", "body_ref": "B1_20", "delta": "Delta B1:foundation-superstructure-separated", "land": "Land(B1)+"},
-    {"source": "B1", "target": "B1", "owner": "symmetric-taqlid-check", "operation": "classify", "pressure": "inward taqlid check", "body_ref": "B1_21", "delta": "Delta B1:symmetric-taqlid-classified", "land": "Land(B1)+"}
+    {"source": "B1", "target": "B1", "owner": "symmetric-taqlid-check", "operation": "classify", "pressure": "inward taqlid check", "body_ref": "B1_21", "delta": "Delta B1:symmetric-taqlid-classified", "land": "Land(B1)+"},
+    {"source": "B1", "target": "B1", "owner": "proof-method-audit", "operation": "proof-family-and-carrier-audit", "pressure": "proof family carrier", "body_ref": "B1_22", "delta": "Delta B1:proof-family-carrier-typed", "land": "Land(B1)+"}
   ],
   "coverage_proof": {
     "initial_burden_set": ["B1"],

@@ -38,6 +38,71 @@ catalogue_registered: true
 - Negative constraints: no argument-bank drift, no scalar closure, no deterministic route freezing, no indiscriminate TTP spraying, no ∇ as Δ replacement, no proof-by-symbol, and no Shannon/reconstruction-branding/∇ truth-or-warrant claim.
 - Fixture/checker: Direct routing fixtures cover this owner (37); `tools/check_routing_parity.py`, `tools/check_ttp_operator_contracts.py`, and compiled-runtime freshness must remain green.
 
+## Formal owner contract
+
+```json
+{
+  "schema": "formal-owner-contract-v1",
+  "owner_id": "proof-method-audit",
+  "owner_family": "PROOF_METHOD",
+  "activation_feature": [
+    "proof grammar is the live burden",
+    "proof family, route, or denominator is doing criterion work",
+    "proof tool risks acting as tribunal over source-status or revelation"
+  ],
+  "field_target": [
+    "selected burden id",
+    "proof family and exact claim it carries",
+    "premise, inference form, and conclusion scope",
+    "criterion/source/warrant/predication/dependency state",
+    "DeltaB and kappa dependency state"
+  ],
+  "operation_token": [
+    "proof-family-and-carrier-audit",
+    "proof-family-classification",
+    "proof-denominator-audit",
+    "proof-route-status-audit",
+    "proof-overreach-audit"
+  ],
+  "delta_result": [
+    "proof-family-carrier-typed",
+    "proof-denominator-exposed",
+    "proof-route-status-clarified",
+    "proof-overreach-bounded",
+    "proof-tribunal-status-bounded"
+  ],
+  "reread_state_effect": [
+    "records whether proof-family, premise, inference form, conclusion scope, and tribunal status landed the current burden",
+    "rereads source-status, FPD, P3, V2, husn-al-nazar, and dependency-radius pressure before proof content release",
+    "carries downstream proof expansion as HOLD/PARTIAL when proof grammar still functions as unnamed tribunal"
+  ],
+  "hold_release_rule": [
+    "Land is licensed only when the proof family and carrier are typed with premise, inference form, conclusion scope, and tribunal status",
+    "local proof content may release only to the bounded result that landed",
+    "source-status, revelation jurisdiction, or excluded warrant routes remain held when proof method has not named its tribunal pressure"
+  ],
+  "negative_examples": [
+    "argument-bank answer without proof-family typing",
+    "route label used as operation token",
+    "proof grammar treated as neutral tribunal",
+    "Land(B) claimed without premise/inference/conclusion-scope change",
+    "source-status or revelation jurisdiction silently displaced by proof method"
+  ],
+  "required_public_evidence": [
+    "the proof family and claim carrier are named",
+    "premise, inference form, conclusion scope, and tribunal status are distinguished",
+    "the burden-state change is explicit",
+    "held downstream proof content remains marked when source-status or tribunal pressure is unresolved"
+  ],
+  "forbidden_public_evidence": [
+    "argument-bank answer without proof-family typing",
+    "proof grammar treated as a neutral tribunal",
+    "Land(B) without premise/inference/conclusion-scope change",
+    "source-status or revelation jurisdiction silently displaced by proof method"
+  ]
+}
+```
+
 
 This file is not an argument bank. It is a taxonomy and audit surface for proof families.
 
