@@ -5701,6 +5701,41 @@ def run_self_test(root: Path) -> int:
             "act_row_details": self_test_act_row_details([valid_do_attribute_delta_row], {"¹B₁": "Ω"}),
         },
     )
+    m9_residue_row = (
+        "⟦ACT ¹B₁[M9.predication-repair] :: "
+        "π=residue-slippage-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:sense-separated :: Land(¹B)+⟧"
+    )
+    accepted_m9_residue_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m9_residue_row],
+            "act_row_details": self_test_act_row_details([m9_residue_row], {"¹B₁": "xi"}),
+        },
+    )
+    if accepted_m9_residue_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to accept M9 residue/slippage register_axis")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [m9_residue_row],
+                "act_row_details": self_test_act_row_details([m9_residue_row], {"¹B₁": "σ"}),
+            },
+        )
+    except HarnessError as exc:
+        if "register_axis 'σ' is not approved for owner M9" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted source-status register_axis for M9")
     source_stack_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
@@ -5731,6 +5766,23 @@ def run_self_test(root: Path) -> int:
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
         raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [source_stack_row],
+                "act_row_details": self_test_act_row_details([source_stack_row], {"¹B₁": "μ"}),
+            },
+        )
+    except HarnessError as exc:
+        if "register_axis 'μ' is not approved for owner source-status-repair" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted meaning-density register_axis for source-status repair")
     invalid_source_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
