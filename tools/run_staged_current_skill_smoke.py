@@ -24,7 +24,13 @@ from typing import Any
 
 import build_staged_governed_output as staged_output
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
-from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, canonical_delta_owner, delta_result_vocabulary_errors
+from delta_result_vocabulary import (
+    DELTA_RESULT_VOCABULARY,
+    OWNER_OPERATION_VOCABULARY,
+    canonical_delta_owner,
+    delta_result_vocabulary_errors,
+    owner_operation_vocabulary_errors,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -113,6 +119,8 @@ OWNER_REGISTER_AXIS_FLOORS = {
     "source-status-repair": {"σ"},
     "authority-order-repair": {"σ", "ξ"},
     "M9": {"μ", "ξ", "Ω"},
+    "do-second-loop": {"♥", "ξ", "Ω", "κ", "σ"},
+    "P3-reason-revelation-tension": {"Ω", "κ", "σ"},
 }
 STAGE07_RELEASE_VALIDATION_ORDER = (
     "visible_opening_header",
@@ -225,7 +233,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "operation, or delta_result. Source-status operations bind to `σ`; M9 "
             "predication/meaning-density/residue repairs bind only to an approved M9 "
             "axis (`μ`, `ξ`, or `Ω`). Do not guess by encoding the operation into "
-            "`body_ref`. Do not put objects in `act_rows` unless each object also "
+            "`body_ref`. The ACT bracket owner token before the dot must be the full "
+            "selected owner id, not an abbreviation; long owner ids still use "
+            "`full-owner-id.operation` and the detail row mirrors that same `owner_id`. "
+            "The operation after the dot must be a controlled callable operation for "
+            "that owner family; route pressure and result labels belong in `π=` or "
+            "`delta_result`, not in the operation slot. Do not put objects in `act_rows` unless each object also "
             "carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
             "route/context umbrella label, case-library label, noetic-frame label, or "
@@ -671,6 +684,13 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
+    operation_errors = owner_operation_vocabulary_errors(
+        "Stage 04 ACT row",
+        match.group("owner"),
+        match.group("operation"),
+    )
+    if operation_errors:
+        raise HarnessError(operation_errors[0])
     raw_result = match.group("delta_result").strip()
     require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), raw_result)
     canonical = canonical_delta_result_for_owner(
@@ -3368,11 +3388,16 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         "",
         "Stage 04 controlled delta_result vocabulary:",
         "- The token after the colon in each `Δ=...:<delta_result>` slot must be one of the source-owned owner-local tokens below.",
+        "- The token after the dot in `[owner.operation]` must be one of the source-owned owner-local operation tokens below when a family lists operations.",
+        "- Keep route pressure, proof pressure, and result labels out of the operation slot. For example, hidden support belongs in `π=` or `delta_result`, not as `source-status-repair.hidden-support-block`.",
         "- Tokens are family-local proof terms. Do not borrow a token from another owner family; if the chosen owner lacks that token, choose the nearest listed token for the chosen owner or route a different callable owner.",
         "- For M9 predication/identity pressure, use an M9 token such as `predicate-separated`; reserve DO_ATTRIBUTE tokens such as `predicate-identity-separated` for DO_ATTRIBUTE rows.",
         "- Do not invent near-synonyms such as `predicate-transfer-blocked`, `only-scope-defined`, `proof-stack-routed`, or `entailment-bounded`.",
     ]
     for family in families:
+        operations = OWNER_OPERATION_VOCABULARY.get(family)
+        if operations:
+            lines.append(f"- {family} operations: {', '.join(sorted(operations))}")
         tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
         lines.append(f"- {family}: {tokens}")
     return "\n".join(lines)
@@ -5581,7 +5606,9 @@ def run_self_test(root: Path) -> int:
         ]
     )
     for required in (
+        "The token after the dot in `[owner.operation]` must be one of the source-owned owner-local operation tokens below",
         "DO_CHRISTIAN: fan-out-route-named, trinitarian-model-identified",
+        "DO_CHRISTIAN operations: model-identification",
         "M7: definition-anchored",
         "M8: coercive-clarity-entailment-demoted",
         "M9: category-separated",
@@ -5592,6 +5619,29 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in selected_model_delta_guidance:
             raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
+    do_second_loop_guidance = stage04_delta_vocabulary_guidance(
+        [
+            {
+                "id": "stage-03-routing-owner-gate",
+                "owner_routes": [
+                    {"burden_id": "B1", "owner_id": "do-second-loop"},
+                    {"burden_id": "B2", "owner_id": "P3-reason-revelation-tension"},
+                ],
+            }
+        ]
+    )
+    for required in (
+        "DO_SECOND_LOOP operations: accountability-hujjah-compression",
+        "coercive-guidance-demand",
+        "punishment-proportionality-accountability",
+        "DO_SECOND_LOOP: accountability-hujjah-narrowed",
+        "coercive-guidance-demand-bounded",
+        "punishment-proportionality-calibrated",
+        "P3 operations: order, reason-revelation-tension",
+        "P3: reason-revelation-order-stabilized",
+    ):
+        if required not in do_second_loop_guidance:
+            raise HarnessError(f"Self-test Stage 04 do-second-loop/P3 guidance omitted {required}")
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
@@ -5766,6 +5816,27 @@ def run_self_test(root: Path) -> int:
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
         raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    invalid_source_operation_row = (
+        "⟦ACT ¹B₁[source-status-repair.hidden-support-block] :: "
+        "π=source-order-recoil-hidden-support :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-text-hidden-support-blocked :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_operation_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled operation vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted source-status result pressure as operation token")
     try:
         normalized_stage(
             "stage-04-burden-execution-act",
@@ -5804,6 +5875,104 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted prose-derived SOURCE delta_result laundering")
+    do_second_loop_rows = [
+        "⟦ACT ¹B₁[do-second-loop.accountability-hujjah-compression] :: π=accountability-hujjah-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:accountability-hujjah-narrowed :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[do-second-loop.coercive-guidance-demand] :: π=coercive-guidance-demand :: body_ref=¹B₂ :: Δ=Δ¹B:coercive-guidance-demand-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₃[do-second-loop.punishment-proportionality-accountability] :: π=punishment-proportionality-pressure :: body_ref=¹B₃ :: Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧",
+    ]
+    normalized_do_second_loop_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": do_second_loop_rows,
+            "act_row_details": self_test_act_row_details(
+                do_second_loop_rows,
+                {"¹B₁": "κ", "¹B₂": "Ω", "¹B₃": "♥"},
+            ),
+        },
+    )
+    do_second_loop_delta_results = [
+        stage04_act_details_by_ref(normalized_do_second_loop_stage04)[ref]["delta_result"]
+        for ref in ["¹B₁", "¹B₂", "¹B₃"]
+    ]
+    if do_second_loop_delta_results != [
+        "accountability-hujjah-narrowed",
+        "coercive-guidance-demand-bounded",
+        "punishment-proportionality-calibrated",
+    ]:
+        raise HarnessError("Self-test failed to preserve exact DO_SECOND_LOOP delta_result tokens")
+    invalid_do_second_loop_delta_row = (
+        "⟦ACT ¹B₁[do-second-loop.accountability-hujjah-compression] :: "
+        "π=accountability-hujjah-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:scope-boundary-named :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_do_second_loop_delta_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted P7 delta_result borrowed by do-second-loop")
+    p3_long_owner_row = (
+        "⟦ACT ¹B₁[P3-reason-revelation-tension.reason-revelation-tension] :: "
+        "π=reason-revelation-public-admissibility-order :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:reason-revelation-order-stabilized :: Land(¹B)+⟧"
+    )
+    normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [p3_long_owner_row],
+            "act_row_details": self_test_act_row_details([p3_long_owner_row], {"¹B₁": "Ω"}),
+        },
+    )
+    p3_abbreviated_owner_row = (
+        "⟦ACT ¹B₁[P3.reason-revelation-tension] :: "
+        "π=reason-revelation-public-admissibility-order :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:reason-revelation-order-stabilized :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [p3_abbreviated_owner_row],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner_id": "P3-reason-revelation-tension",
+                        "operation": "reason-revelation-tension",
+                        "register_axis": "Ω",
+                        "delta_result": "reason-revelation-order-stabilized",
+                        "act_row": p3_abbreviated_owner_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "owner_id disagrees with parsed ACT row" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted abbreviated P3 owner token for long-owner ACT row")
     partition_stage04 = dict(normalized_stage04)
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"]
     partition_plan = compiled_release_section_plan(70)

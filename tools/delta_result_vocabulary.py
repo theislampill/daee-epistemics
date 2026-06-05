@@ -61,6 +61,33 @@ def load_delta_result_vocabulary(
 DELTA_RESULT_VOCABULARY, DELTA_RESULT_OWNER_ALIASES = load_delta_result_vocabulary()
 
 
+def load_owner_operation_vocabulary(
+    path: Path = VOCABULARY_PATH,
+) -> dict[str, frozenset[str]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    operations = payload.get("owner_operations") or {}
+    if not isinstance(operations, dict):
+        raise ValueError(f"{path}: owner_operations must be an object when present")
+    vocabulary: dict[str, frozenset[str]] = {}
+    for owner, values in operations.items():
+        if owner not in DELTA_RESULT_VOCABULARY:
+            raise ValueError(f"{path}: owner_operations key {owner!r} has no owner_families entry")
+        if not isinstance(values, list) or not values:
+            raise ValueError(f"{path}: owner_operations {owner!r} must list at least one token")
+        tokens: list[str] = []
+        for token in values:
+            if not isinstance(token, str) or not token.strip():
+                raise ValueError(f"{path}: owner_operations {owner!r} contains a blank token")
+            tokens.append(token.strip())
+        if len(set(tokens)) != len(tokens):
+            raise ValueError(f"{path}: owner_operations {owner!r} contains duplicate tokens")
+        vocabulary[owner] = frozenset(tokens)
+    return vocabulary
+
+
+OWNER_OPERATION_VOCABULARY = load_owner_operation_vocabulary()
+
+
 def canonical_delta_owner(owner: str) -> str:
     for form in owner_key_forms(owner):
         if form in DELTA_RESULT_OWNER_ALIASES:
@@ -82,6 +109,25 @@ def delta_result_vocabulary_errors(label: str, owner: str, delta_result: str) ->
         allowed = ", ".join(sorted(vocabulary))
         return [
             f"{label}: delta_result token {token!r} is outside controlled vocabulary "
+            f"for {family}; allowed: {allowed}"
+        ]
+    return []
+
+
+def owner_operation_vocabulary_errors(label: str, owner: str, operation: str) -> list[str]:
+    family = canonical_delta_owner(owner)
+    if not family:
+        return []
+    token = str(operation or "").strip()
+    if not token:
+        return [f"{label}: operation must be a non-empty owner-local token for {family}"]
+    vocabulary = OWNER_OPERATION_VOCABULARY.get(family)
+    if not vocabulary:
+        return []
+    if token not in vocabulary:
+        allowed = ", ".join(sorted(vocabulary))
+        return [
+            f"{label}: operation token {token!r} is outside controlled operation vocabulary "
             f"for {family}; allowed: {allowed}"
         ]
     return []

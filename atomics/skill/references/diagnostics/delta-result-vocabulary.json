@@ -6,6 +6,7 @@
     "authority-order-repair": "SOURCE",
     "do-attribute-precision": "DO_ATTRIBUTE",
     "do-christian-extensions": "DO_CHRISTIAN",
+    "do-second-loop": "DO_SECOND_LOOP",
     "doubt-vs-skepticism": "DOUBT_SKEPTICISM",
     "foreign-premise-detection": "FPD",
     "husn-al-nazar": "HUSN_AL_NAZAR",
@@ -44,7 +45,8 @@
       "performative-test"
     ],
     "M7": [
-      "anchor"
+      "anchor",
+      "definition-anchor"
     ],
     "M8": [
       "consequence-trace",
@@ -52,13 +54,15 @@
       "dependency-trace"
     ],
     "M9": [
+      "category-or-referent-separation",
       "predication-repair",
       "sense-split",
       "repair"
     ],
     "FPD": [
       "expose",
-      "foreign-premise"
+      "foreign-premise",
+      "foreign-premise-detection"
     ],
     "SOURCE": [
       "source-order",
@@ -66,13 +70,15 @@
       "status"
     ],
     "P1": [
-      "restore"
+      "restore",
+      "restoration"
     ],
     "P2": [
       "map"
     ],
     "P3": [
-      "order"
+      "order",
+      "reason-revelation-tension"
     ],
     "P4": [
       "elicit"
@@ -85,13 +91,20 @@
     ],
     "P7": [
       "bound",
-      "boundary"
+      "boundary",
+      "scope-boundary"
     ],
     "DO_CHRISTIAN": [
       "model-identification"
     ],
     "DO_ATTRIBUTE": [
       "attribute-precision"
+    ],
+    "DO_SECOND_LOOP": [
+      "accountability-hujjah-compression",
+      "coercive-guidance-demand",
+      "fitrah-ayat-baseline",
+      "punishment-proportionality-accountability"
     ],
     "DOUBT_SKEPTICISM": [
       "method-distinction"
@@ -112,7 +125,8 @@
       "integrate"
     ],
     "V10": [
-      "provenance"
+      "provenance",
+      "provenance-content-authority"
     ],
     "V12": [
       "exhaust"
@@ -222,6 +236,12 @@
       "person-nature-transfer-blocked",
       "attribute-multiplicity-bounded",
       "predicate-identity-separated"
+    ],
+    "DO_SECOND_LOOP": [
+      "accountability-hujjah-narrowed",
+      "coercive-guidance-demand-bounded",
+      "fitrah-ayat-baseline-established",
+      "punishment-proportionality-calibrated"
     ],
     "DOUBT_SKEPTICISM": [
       "doubt-distinguished-from-skeptical-methodology",

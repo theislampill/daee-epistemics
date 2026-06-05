@@ -98,10 +98,12 @@
         "foreign_premise": "my moral acceptability rule installed as tribunal over worship-worthiness",
         "upstream_findings": ["criterion-import", "tribunal-installation"],
         "matched_modules": [
+          {"id": "foreign-premise-detection", "module_class": "diagnostic"},
           {"id": "M1-self-refutation", "module_class": "tactic"}
         ],
         "source_basis": {
           "entries": [
+            {"basis_type": "anchored", "claim": "routing fork: imported tribunal requires foreign-premise detection before hiddenness content", "source_kind": "module", "module_id": "foreign-premise-detection", "source_ref": "atomics/skill/references/diagnostics/foreign-premise-detection.md"},
             {"basis_type": "anchored", "claim": "routing fork: imported tribunal requires self-refutation pressure before hiddenness content", "source_kind": "module", "module_id": "M1-self-refutation", "source_ref": "atomics/skill/references/tactics/M1-self-refutation.md"}
           ]
         },
